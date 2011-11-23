@@ -1,0 +1,34 @@
+#!/bin/csh
+
+cd /tmp
+rm -rf sc
+mkdir sc
+cd sc
+svn co https://svn.ecdf.ed.ac.uk/repo/user/medward2/sc
+mv sc src
+mkdir bin
+mv src/_readme.txt .
+mv src/doc .
+mv src/lilypond-graphics .
+mv src/examples .
+rm src/log.txt
+cd ..
+tar zcf ~/Desktop/sc.tar.gz sc
+rm -rf sc
+
+set michael = 0
+
+foreach arg ($*)
+        switch ($arg)
+                case "michael":
+                    set michael = 1
+                    breaksw
+    endsw
+end
+
+if ($michael) then
+    'echo' syncing doc
+    'rsync' -at --modify-window=1 --delete --exclude=".svn/" --exclude=".Trash/" ~/lisp/sc/src/doc/ /Volumes/medward2/html/sc/
+    'echo' copying archive
+    'cp' ~/Desktop/sc.tar.gz /Volumes/medward2/html/sc/
+endif

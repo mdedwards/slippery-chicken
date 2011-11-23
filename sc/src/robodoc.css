@@ -1,0 +1,390 @@
+/****h* ROBODoc/ROBODoc Cascading Style Sheet
+ * FUNCTION
+ *   This is the default cascading style sheet for documentation
+ *   generated with ROBODoc.
+ *   You can edit this file to your own liking and then use
+ *   it with the option
+ *      --css <filename>
+ *
+ *   This style-sheet defines the following layout
+ *      +----------------------------------------+
+ *      |    logo                                |
+ *      +----------------------------------------+
+ *      |    extra                               |
+ *      +----------------------------------------+
+ *      |                              | navi-   |
+ *      |                              | gation  |
+ *      |      content                 |         |
+ *      |                              |         |
+ *      +----------------------------------------+
+ *      |    footer                              |
+ *      +----------------------------------------+
+ *
+ *   This style-sheet is based on a style-sheet that was automatically
+ *   generated with the Strange Banana stylesheet generator.
+ *   See http://www.strangebanana.com/generator.aspx
+ *
+ ******
+ * $Id$
+ */
+
+body
+{
+        background: #1A1A1A;
+        text-align: justify;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 10pt;
+        color: #A1A1A1;
+        margin-top: 0px;
+        margin-left: 5%; 
+        margin-right: 5%;
+        vertical-align: top;
+}
+
+pre
+{
+
+        font-family: Monaco, Courier;
+        font-size: 10pt;
+        white-space: pre;
+        text-align: left; 
+}
+
+pre.source
+{
+    padding: 10px;
+    background: #1C1C1C;
+    border: dashed #333 1px;
+}
+
+p
+{
+    margin:15px;
+}
+
+p.item_name 
+{
+    font-weight: bolder;
+    margin:5px;
+    font-size: 105%;
+}
+
+#content
+{
+    border-color:        rgb(0,0,0);
+    padding:             40px 31px 14px 17px;
+    font-size:           100%;
+    border-left-width:   0px; 
+    border-right-width:  0px; 
+    border-top-width:    0px; 
+    border-bottom-width: 0px;
+    border-left-style:   none; 
+    border-right-style:  none; 
+    border-top-style:    none; 
+    border-bottom-style: none;
+    padding:             40px 31px 14px 17px;
+    text-align:          justify;
+    background: #1A1A1A;
+}
+
+#navigation
+{
+    /*background: #07B6CC;*/
+    /*background: #6776DC;*/
+    background: #344390;
+    color: #FFFFFF;
+    border-color:     rgb(0,0,0);
+    border-height: 2px;
+    /* the menu cells colour */
+    font-style:       normal;
+}
+
+a.menuitem
+{
+    font-size: 120%;
+    font-variant:        normal;
+    color:               #FFFFFF;
+    text-transform:      none;
+    font-weight:         normal;
+    padding:             1px 8px 3px 1px;
+    margin-left:         5px; 
+    margin-right:        5px; 
+    margin-top:          5px; 
+    margin-bottom:       5px;
+    text-align:          right;
+    border-color:        rgb(255,226,157);
+}
+
+#logo, #logo a
+{
+    color: #FFFFFF;
+/*    background: #24271E;*/
+    font-size: 150%;
+    font-style:         normal;
+    font-variant:       normal;
+    text-transform:     none;
+    font-weight:        bold;
+    padding:            20px 0px 40px 0px;
+    margin-top:         0px;
+    text-align:         left;
+}
+
+#extra, #extra a
+{
+    font-size: 128%;
+    font-style:          normal;
+    font-variant:        normal;
+    text-transform:      none;
+    font-weight:         normal;
+    border-left-width:   0px; 
+    border-right-width:  0px; 
+    border-top-width:    0px; 
+    border-bottom-width: 0px;
+    border-left-style:   none; 
+    border-right-style:  none; 
+    border-top-style:    none; 
+    border-bottom-style: none;
+    padding: 12px 12px 12px 12px;
+    text-align:          center;
+}
+
+#content a
+{
+   color:            #27D6FE;
+   text-decoration:    none;
+}
+
+#content a:hover, #content a:active
+{
+    color:              #838383;
+    text-decoration:    underline;
+}
+
+a.indexitem
+{
+    display: block;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+    color: #FFFFFF;
+    text-align: left;
+    /* border: dashed #333 1px; */
+    /*background: #344390;*/
+    /* background: #1C1C1C;*/
+    /* width: 75%; */
+    width: auto;
+    font-style:       normal;
+    font-variant:     normal;
+    text-transform:   none;
+    font-weight:      normal;
+    padding: 3px 3px 3px 3px;
+}
+hr { 
+    /* background-color: #344390; */ /*#07B6CC;*/
+    background-color: #A1A1A1;
+    border: 0;
+    margin: 40px 0 20px 0;
+    width: 100%;
+    height: 1px;
+}
+h1
+{
+    font-size: 151%;
+}
+
+h2
+{
+    font-size: 142%;
+}
+
+h3
+{
+    font-size: 133%;
+}
+
+h4
+{
+    font-size: 124%;
+}
+
+h5
+{
+    font-size: 115%;
+}
+
+h6
+{
+    font-size: 106%;
+}
+
+#navigation a
+{
+    text-decoration: none;
+}
+
+.menuitem:hover
+{
+}
+
+#extra a
+{
+    text-decoration: none;
+}
+
+#logo a
+{
+    text-decoration: none;
+}
+
+#extra a:hover
+{
+}
+
+/* layout */
+#navigation
+{
+    width:       16%; 
+/*    position:    relative; */
+    position: absolute;
+    top:         0px; 
+    right:       0; 
+    float:       right; 
+    text-align:  center;
+    margin-left: 50px;
+}
+
+.menuitem       {width: auto;}
+#content        {width: auto;}
+.menuitem       {display: block;}
+
+
+div#footer
+{
+    clear:      left;
+    width:      100%;
+    font-size:   71%;
+    margin-top: 50px;
+    border-top-style:    solid; 
+    border-top-width:    1px; 
+}
+
+div#footer a
+{
+    text-decoration:    none;
+}
+
+div#footer p
+{
+    margin:0;
+    padding:5px 10px
+}
+
+span.keyword
+{
+    color: #00F;
+}
+
+span.comment
+{
+    color: #080;
+}
+
+span.quote
+{
+    color: #F00;
+}
+
+span.squote
+{
+    color: #F0F;
+}
+
+span.sign
+{
+    color: #008B8B;
+}
+
+span.line_number
+{
+    color: #808080;
+}
+
+@media print
+{
+    #navigation {display: none;}
+    #content    {padding: 0px;}
+    #content a  {text-decoration: underline;}
+}
+
+/* design pages stuff */
+
+A.small {
+        font-size: 10pt;
+        font-weight: normal;
+        text-decoration:    none;
+        color: #3366CC; 
+}
+A.small-indent {
+        font-size: 10pt;
+        text-decoration:    none;
+        margin-left: 5%;
+        font-weight: normal;
+        color: #336699; 
+}
+TD.title {
+        background-color: #51596A;
+        color: #8C949C;
+        padding-top: 25px;
+}
+
+TD.left {
+        text-align: left;
+}
+DIV.type {
+        font-size: 10pt;
+        font-weight: bold;
+        padding-bottom: 15px;
+}
+DIV.left {
+        text-align: left;
+}
+P.superclasses { 
+        font-family: "courier new";
+        font-size: 10pt;
+}
+P.indent { 
+        margin-left: 5%; 
+}
+ol.indent { 
+        margin-left: 5%; 
+}
+DL { 
+        font-size: 11pt;
+        margin-left: 10%;
+}
+DL.top { 
+        margin-left: 5%;
+}
+DT {
+        font-weight: bold;
+}
+DD {
+}
+UL.subclass {
+        margin-top: 0;
+        margin-bottom: 0;
+        margin-left: 11pt;
+}
+PRE.indent { 
+        margin-left: 5%; 
+}
+SMALL {
+        font-size: 10pt;
+}
+DIV.footer { 
+        text-align: center; 
+        font-family: "courier new";
+        font-size: 10pt;
+        font-style: italic;
+}

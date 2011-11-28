@@ -1,5 +1,3 @@
-;;; 28.11.11 SEAN: changed item to "all.lsp" so that robodoc will not highlight
-;;; the word "all" in every instance as though it were a class with a doc page.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****h* _sc/all.lsp
 ;;; NAME 
@@ -18,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 20:04:28 Mon Nov  7 2011 GMT
+;;; $$ Last modified: 19:47:11 Mon Nov 28 2011 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -45,6 +43,9 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; 28.11.11 SEAN: changed item to "all.lsp" so that robodoc will not highlight
+;;; the word "all" in every instance as though it were a class with a doc page.
 
 (eval-when (compile)
   (declaim (optimize (speed 3) (safety 1) (space 0) (debug 0))))

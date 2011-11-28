@@ -7,11 +7,11 @@ cd sc
 svn co https://svn.ecdf.ed.ac.uk/repo/user/medward2/sc
 mv sc src
 mkdir bin
-mv src/_readme.txt .
-mv src/doc .
-mv src/lilypond-graphics .
-mv src/examples .
-rm src/log.txt
+# mv src/_readme.txt .
+# mv src/doc .
+# mv src/lilypond-graphics .
+# mv src/examples .
+# rm src/log.txt
 cd ..
 tar zcf ~/Desktop/sc.tar.gz sc
 rm -rf sc

@@ -1,4 +1,3 @@
-;;; 26.11.11 SEAN: Corrected NAME
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* _sc/activity-levels
 ;;; NAME 
@@ -19,7 +18,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 21:07:36 Mon Nov  7 2011 GMT
+;;; $$ Last modified: 19:46:22 Mon Nov 28 2011 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;

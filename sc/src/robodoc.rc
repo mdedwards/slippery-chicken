@@ -29,10 +29,12 @@ source items:
 #     SIDE EFFECTS
 options:
     --src ./
-    --doc ./doc/
+    --doc ../doc/
     --html
 #     --rtf
-#     --sections
+# 26.11.11 SEAN: uncommented --sections to allow methods to be listed below
+#classes in the doc 
+      --sections
     --multidoc
 #    --singledoc
     --index

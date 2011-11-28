@@ -64,7 +64,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod initialize-instance :after ((i named-object) &rest initargs)
+(defmethod initialize-instance :after  ((i named-object) &rest initargs)
   (declare (ignore initargs))
   ;; (print (data i))
   (check-named-object-id-type (id i)))
@@ -97,11 +97,11 @@
 (defmethod clone ((no named-object))
   (clone-with-new-class no 'named-object))
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; In order for this to work, every class must be able to be initialised with
 ;;; all slots nil.
-
 (defmethod clone-with-new-class ((no named-object) new-class)
   (let ((new (make-instance new-class :id nil :data nil)))
     (setf (slot-value new 'id) (basic-copy-object (id no))
@@ -110,6 +110,7 @@
           ;; copying of data in recursive-assoc-lists etc. 
           (slot-value new 'data) (basic-copy-object (data no)))
     new))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -121,6 +122,7 @@
 ;; Don't just change for clisp, causes too many oversights when working in ACL.
 ;; Instead use a different function name and call that throughout. 
 ;; #+clisp
+
 (defmethod sc-change-class ((no named-object) new-class)
   (clone-with-new-class no new-class))
 
@@ -151,6 +153,7 @@
                 ;; NB 1 != 1.0 
                 (number (eql id test))))))
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod combine-ids ((no1 named-object) (no2 named-object))
@@ -173,6 +176,7 @@
 
 (defun make-named-object (id data &optional tag)
   (make-instance 'named-object :id id :data data :tag tag))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

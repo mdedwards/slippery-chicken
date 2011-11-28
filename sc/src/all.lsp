@@ -1,5 +1,7 @@
+;;; 28.11.11 SEAN: changed item to "all.lsp" so that robodoc will not highlight
+;;; the word "all" in every instance as though it were a class with a doc page.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****h* _sc/all
+;;; ****h* _sc/all.lsp
 ;;; NAME 
 ;;; all
 ;;;

@@ -1,7 +1,8 @@
+;;; 26.11.11 SEAN: Corrected NAME
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* _sc/activity-levels
 ;;; NAME 
-;;; rthm-chain
+;;; activity-levels
 ;;;
 ;;; File:             activity-levels.lsp
 ;;;
@@ -45,6 +46,7 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (eval-when (compile)
   (declaim (optimize (speed 3) (safety 1) (space 0) (debug 0))))
@@ -106,10 +108,12 @@
   ;; got to do this so get-last returns the first ... doh!
   (loop for l in (data al) do (reset l 1)))
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((al activity-levels) stream)
   (format stream "~%ACTIVITY-LEVELS: "))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -123,6 +127,7 @@
   (loop for l in (data al) do 
        (loop for 10-list in (data l) do (reset 10-list))
        (reset l start-at)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

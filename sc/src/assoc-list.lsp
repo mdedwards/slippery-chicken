@@ -149,20 +149,19 @@
 ;;; top-level keys if accessing a recursive assoc-list.
 ;;; 
 ;;; EXAMPLE
-;;; (setf x (make-instance 'assoc-list :data '(
-;;; 					   (cat felix) 
-;;; 					   (dog fido) 
-;;; 					   (cow bessie))))
+;;; (setf x (make-instance 'assoc-list :data '((cat felix) 
+;;; 					    (dog fido) 
+;;; 					    (cow bessie))))
 ;;; (get-keys x) ; => (CAT DOG COW)
 ;;; 
 ;;; (setf y (make-instance 'assoc-list 
-;;;		       :data '(
-;;;			       (cat felix) 
-;;;			       (dog ((scottish terrier)
-;;;				     (german shepherd)
-;;;				     (irish wolfhound))) 
-;;;			       (cow bessie))))
-;;; (get-keys y) ; => (CAT DOG COW)
+;;; 		       :data '((cat felix) 
+;;; 			       (dog ((scottish terrier)
+;;; 				     (german shepherd)
+;;; 				     (irish wolfhound))) 
+;;; 			       (cow bessie))))
+;;; (get-keys y) 
+;;; ; => (CAT DOG COW)
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-keys ((al assoc-list))
@@ -184,24 +183,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Returns the first named-object in the data list.
+;;; 28.11.11 SEAN: Added info for ROBODoc
 ;;; ****m* assoc-list/get-first
 ;;; FUNCTION
 ;;; get-first:
-;;;
-;;; 
+;;; Returns the first named-object in the data list of the given assoc-list. 
 ;;; 
 ;;; ARGUMENTS:
-;;; 
+;;; An assoc-list.
 ;;; 
 ;;; RETURN VALUE: 
-;;; 
+;;; The first object in the data list of a given assoc-list.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
+;;;  		       :data '((jim beam)
+;;;  			       (four roses)
+;;; 			       (wild turkey))))
+;;; (get-first x)
+;;; ; => 
+;;; ; NAMED-OBJECT: id: JIM, tag: NIL,
+;;; ; data BEAM
+;;; ; ***************************************************************************
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-first ((al assoc-list))
@@ -210,25 +213,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Returns the last named-object in the data list.
-
+;;; 28.11.11 SEAN: Added info for ROBODoc
 ;;; ****m* assoc-list/get-last
 ;;; FUNCTION
 ;;; get-last:
-;;;
-;;; 
+;;; Returns the last named-object in the data list of a given assoc-list.
 ;;; 
 ;;; ARGUMENTS:
-;;; 
+;;; An assoc-list.
 ;;; 
 ;;; RETURN VALUE: 
-;;; 
+;;; The last object in the data list of a given assoc-list.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
+;;;  		       :data '((jim beam)
+;;;  			       (four roses)
+;;; 			       (wild turkey))))
+;;; (get-last x)
+;;; ; => 
+;;; ; NAMED-OBJECT: id: WILD, tag: NIL,
+;;; ; data TURKEY
+;;; ; ***************************************************************************
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-last ((al assoc-list))
@@ -257,23 +263,41 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; 28.11.11 SEAN: Added info for ROBODoc
 ;;; ****m* assoc-list/get-position
 ;;; FUNCTION
 ;;; get-position:
-;;;
-;;; 
+;;; Returns the index position (zero-based) of a named-object within a given 
+;;; assoc-list. 
 ;;; 
 ;;; ARGUMENTS:
-;;; 
+;;; The assoc-list key symbol (named-object id) of the object for which the
+;;; position is sought, and the assoc-list in which it is to be sought.
+;;;
+;;; Optional argument: An indexing integer. In this case, get-position will
+;;; search for the given object starting part-way into the list, skipping all
+;;; objects located at indices lower than the given integer (default = 0).
 ;;; 
 ;;; RETURN VALUE: 
-;;; 
+;;; The integer index of the named-object within the given assoc-list.
+;;;
+;;; NIL is returned if the object is not present in the assoc-list starting
+;;; with the index number given as the start argument (i.e., in the entire list
+;;; if the optional start argument is omitted).  
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
+;;;  		       :data '((jim beam)
+;;;  			       (four roses)
+;;; 			       (wild turkey))))
+;;; (get-position 'four x)
+;;; ; => 1 (1 bit, #x1, #o1, #b1)
+;;;
+;;; (get-position 'jack x)
+;;; ; => NIL
+;;;
+;;; (get-position 'jim x 1)
+;;; ; => NIL
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-position (key (al assoc-list) &optional (start 0))
@@ -311,6 +335,7 @@
 ;;; Mostly we define whether we want to warn in the instance itself but
 ;;; sometimes it would be good to warn or not on a call basis, hence the
 ;;; optional argument.
+
 ;;; NB This method actually returns the named object, not just the data
 ;;; associated with the key (use get-data-data for that)
 

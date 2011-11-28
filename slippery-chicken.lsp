@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:01:49 Tue Nov 15 2011 GMT
+;;; $$ Last modified: 15:06:25 Fri Nov 25 2011 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -729,7 +729,7 @@
 ;;;   where + can be used to indicate ties.  Pitch data is the usual cs4 or
 ;;;   (cs4 cd3) for chords, and nil or r indicates a rest.  NB all pitches are
 ;;;   sounding pitches, so written pitches will be created for transposing
-;;;   instruments where necesasry.
+;;;   instruments where necessary.
 ;;; - (key :consolidate-rests default t): whether shorter rests should
 ;;;   automatically be collapsed into a single longer rest.
 ;;; - (key :beat default nil): what beat will be used to consolidate rests

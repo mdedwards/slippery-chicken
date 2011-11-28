@@ -97,7 +97,6 @@
 (defmethod clone ((no named-object))
   (clone-with-new-class no 'named-object))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; In order for this to work, every class must be able to be initialised with
@@ -110,7 +109,6 @@
           ;; copying of data in recursive-assoc-lists etc. 
           (slot-value new 'data) (basic-copy-object (data no)))
     new))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -153,7 +151,6 @@
                 ;; NB 1 != 1.0 
                 (number (eql id test))))))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod combine-ids ((no1 named-object) (no2 named-object))
@@ -176,7 +173,6 @@
 
 (defun make-named-object (id data &optional tag)
   (make-instance 'named-object :id id :data data :tag tag))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

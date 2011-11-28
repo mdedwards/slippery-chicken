@@ -132,6 +132,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; 28.11.11 SEAN: Added info for robodoc
 ;;; ****m* assoc-list/get-keys
 ;;; FUNCTION
 ;;; get-keys:
@@ -148,20 +149,20 @@
 ;;; top-level keys if accessing a recursive assoc-list.
 ;;; 
 ;;; EXAMPLE
-(setf x (make-instance 'assoc-list :data '(
-					   (cat felix) 
-					   (dog fido) 
-					   (cow bessie))))
-(get-keys x) ; => (CAT DOG COW)
-
-(setf y (make-instance 'assoc-list 
-		       :data '(
-			       (cat felix) 
-			       (dog ((scottish terrier)
-				     (german shepherd)
-				     (irish wolfhound))) 
-			       (cow bessie))))
-(get-keys y) ; => (CAT DOG COW)
+;;; (setf x (make-instance 'assoc-list :data '(
+;;; 					   (cat felix) 
+;;; 					   (dog fido) 
+;;; 					   (cow bessie))))
+;;; (get-keys x) ; => (CAT DOG COW)
+;;; 
+;;; (setf y (make-instance 'assoc-list 
+;;;		       :data '(
+;;;			       (cat felix) 
+;;;			       (dog ((scottish terrier)
+;;;				     (german shepherd)
+;;;				     (irish wolfhound))) 
+;;;			       (cow bessie))))
+;;; (get-keys y) ; => (CAT DOG COW)
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-keys ((al assoc-list))

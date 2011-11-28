@@ -141,7 +141,8 @@
 ;;; An assoc-list.
 ;;; 
 ;;; RETURN VALUE: 
-;;; The keys only of all top-level association list pairs in the given assoc-list.
+;;; The keys only of all top-level association list pairs in the given
+;;; assoc-list. 
 ;;;
 ;;; get-keys is a method of the assoc-list class and therefore returns only
 ;;; top-level keys if accessing a recursive assoc-list.

@@ -362,8 +362,6 @@
              (push temp poss))))
     (nreverse poss)))
 
-        
-    
 ;;; NB this assumes the pitch-list contains notes that are already playable as
 ;;; a guitar chord (which was fine in cheat sheet, as that was the premise of
 ;;; our harmony).

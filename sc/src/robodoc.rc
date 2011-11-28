@@ -29,6 +29,7 @@ source items:
 #     SIDE EFFECTS
 options:
     --src ./
+# 28.11.11 SEAN: Changed the output dir to ../doc/ to suit new dir structure. 
     --doc ../doc/
     --html
 #     --rtf

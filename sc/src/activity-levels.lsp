@@ -1,5 +1,6 @@
+;;; 01.12.11 SEAN: Edited ROBODoc header for hierarchy-based TOC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/activity-levels
+;;; ****c* named-object/activity-levels
 ;;; NAME 
 ;;; activity-levels
 ;;;

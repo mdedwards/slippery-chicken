@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: Changed robodoc header (deleted underscore)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****h* _sc/permutations
+;;; ****h* sc/permutations
 ;;; NAME 
 ;;; permutations
 ;;;

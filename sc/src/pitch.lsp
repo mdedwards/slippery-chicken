@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: Changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/pitch
+;;; ****c* linked-named-object/pitch
 ;;; NAME 
 ;;; pitch
 ;;;

@@ -33,14 +33,14 @@ options:
     --doc ../doc/
     --html
 #     --rtf
-# 26.11.11 SEAN: uncommented --sections to allow methods to be listed below
-#classes in the doc 
-      --sections
+# 02.12.11 SEAN: commented --sections again to take hierarchy out of TOC
+#      --sections
     --multidoc
 #    --singledoc
     --index
     --tabsize 8
-#    --documenttitle "<a href='http://www.michael-edwards.org/sc>'>slippery chicken</a>"
+#    --documenttitle "<a href='http://www.michael-edwards.org/sc>'>slippery
+#chicken</a>" 
      --documenttitle "slippery chicken"
     --masterindex "Index,roboindex"
 #    --css robodoc-multi-blue.css

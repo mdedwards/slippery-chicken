@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: Changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/player
+;;; ****c* linked-named-object/player
 ;;; NAME 
 ;;; player
 ;;;

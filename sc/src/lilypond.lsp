@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: changd robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****h* _sc/lilypond
+;;; ****h* sc/lilypond
 ;;;
 ;;; File:             lilypond.lsp
 ;;;

@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/recursive-assoc-list
+;;; ****c* assoc-list/recursive-assoc-list
 ;;; NAME 
 ;;; recursive-assoc-list
 ;;;

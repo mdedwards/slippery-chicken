@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: changed robodoc header (deleted underscore)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****h* _sc/package 
+;;; ****h* sc/package 
 ;;; NAME package
 ;;;
 ;;; File:             package.lsp

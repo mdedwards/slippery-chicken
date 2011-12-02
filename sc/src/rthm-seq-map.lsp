@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: changed robodoc header to reflect hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/rthm-seq-map
+;;; ****c* sc-map/rthm-seq-map
 ;;; NAME 
 ;;; rthm-seq-map
 ;;;

@@ -1,5 +1,7 @@
+;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy (assigned
+;;; to bar-holder rather than sclist)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/player-section
+;;; ****c* bar-holder/player-section
 ;;; NAME 
 ;;; player-section
 ;;;

@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: Changed robodoc header.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****h* _sc/cmn-glyphs
+;;; ****h* sc/cmn-glyphs
 ;;; NAME 
 ;;; cmn-glyphs
 ;;;

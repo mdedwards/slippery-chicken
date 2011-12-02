@@ -1,5 +1,7 @@
+;;; 02.12.11 SEAN: Changed robodoc header to reflect class hierarchy (assigend
+;;; to bar-holder rather than rthm-seq-map
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/piece
+;;; ****c* bar-holder/piece
 ;;; NAME 
 ;;; piece
 ;;;

@@ -71,7 +71,7 @@
    ;; the next three slots are the times/durations in crotchets (1/4 notes),
    ;; useful for midi timing.
  
-  ;; 02.12.11 SEAN: Added ROBODoc info
+   ;; 02.12.11 SEAN: Added ROBODoc info
 
    ;;****S* bar-holder/start-time-qtrs
    ;; FUNCTION
@@ -300,8 +300,7 @@
 ;;; 02.12.11 SEAN: Added ROBODoc info
 ;;; ****m* bar-holder/transpose-bars
 ;;; FUNCTION
-;;; transpose-bars:
-;;; 
+;;;
 ;;; 
 ;;; ARGUMENTS:
 ;;; 
@@ -367,8 +366,6 @@
 ;;; 
 ;;; ****m* bar-holder/get-note
 ;;; FUNCTION
-;;; get-note:
-;;;
 ;;; Return an event from a bar.  bar-num and note-num are 1-based.  note-num
 ;;; can access the note of a chord like '(2 1) where 2 is the second "note" or
 ;;; non-rhythm event in the bar, and 1 is the first note in the chord counting
@@ -479,8 +476,6 @@
 
 ;;; ****m* bar-holder/change-notes
 ;;; FUNCTION
-;;; change-notes:
-;;;
 ;;; new-notes is a list of lists, each sublist being the notes for each bar in
 ;;; succession.  e.g. (change-notes bh 'vla 5 '((g3 gs4) nil (nil nil aqf5)))
 ;;; would change the notes in bars 5 and 7 (for the viola), whereas bar six,

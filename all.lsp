@@ -1,5 +1,6 @@
+;;; 01.12.11 SEAN: Edited ROBODoc header for hierarchy-based TOC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****h* _sc/all.lsp
+;;; ****h* sc/all.lsp
 ;;; NAME 
 ;;; all
 ;;;

@@ -1,5 +1,6 @@
+;;; 01.12.11 SEAN: Edited ROBODoc header for hierarchy-based TOC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/assoc-list
+;;; ****c* circular-sclist/assoc-list
 ;;; NAME 
 ;;; assoc-list
 ;;;
@@ -67,14 +68,14 @@
   ((warn-not-found :accessor warn-not-found :type boolean :initarg
                    :warn-not-found :initform t)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 
 ;;; Nothing to be done here as it is taken care of in the sclist class,
 ;;; including the call of verify-and-store which we have overridden below.  
 
 ;;; (defmethod initialize-instance :after ((al assoc-list) &rest initargs)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 
 #-(and clisp win32)
 (defmethod print-object :before ((al assoc-list) stream)
@@ -150,18 +151,34 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list :data '((cat felix) 
+<<<<<<< .mine
+;;;    					       (dog fido) 
+;;;					       (cow bessie))))
+;;; (get-keys x)
+;;; => (CAT DOG COW)
+;;;
+=======
 ;;;                                            (dog fido) 
 ;;;                                            (cow bessie))))
 ;;; (get-keys x) ; => (CAT DOG COW)
 ;;; 
+>>>>>>> .r381
 ;;; (setf y (make-instance 'assoc-list 
+<<<<<<< .mine
+;;;		           :data '((cat felix) 
+;;;			           (dog ((scottish terrier)
+;;;			    	         (german shepherd)
+;;;				         (irish wolfhound))) 
+;;;			           (cow bessie))))
+=======
 ;;;                    :data '((cat felix) 
 ;;;                            (dog ((scottish terrier)
 ;;;                                  (german shepherd)
 ;;;                                  (irish wolfhound))) 
 ;;;                            (cow bessie))))
+>>>>>>> .r381
 ;;; (get-keys y) 
-;;; ; => (CAT DOG COW)
+;;; => (CAT DOG COW)
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-keys ((al assoc-list))
@@ -172,7 +189,7 @@
            therefore ~%only the top-level keys are returned!"))
   (loop for obj in (data al) collect (id obj)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 
 (defmethod all-ids-unique ((al assoc-list))
   (loop for obj in (data al) and i from 0 
@@ -197,14 +214,19 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
+<<<<<<< .mine
+;;;  		           :data '((jim beam)
+;;;  			           (four roses)
+;;; 			           (wild turkey))))
+=======
 ;;;                    :data '((jim beam)
 ;;;                            (four roses)
 ;;;                            (wild turkey))))
+>>>>>>> .r381
 ;;; (get-first x)
-;;; ; => 
-;;; ; NAMED-OBJECT: id: JIM, tag: NIL,
-;;; ; data BEAM
-;;; ; ***************************************************************************
+;;; => 
+;;; NAMED-OBJECT: id: JIM, tag: NIL,
+;;; data BEAM
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-first ((al assoc-list))
@@ -227,13 +249,25 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
+<<<<<<< .mine
+;;;  		           :data '((jim beam)
+;;;  			           (four roses)
+;;; 			           (wild turkey))))
+=======
 ;;;                    :data '((jim beam)
 ;;;                            (four roses)
 ;;;                            (wild turkey))))
+>>>>>>> .r381
 ;;; (get-last x)
+<<<<<<< .mine
+;;; => 
+;;; NAMED-OBJECT: id: WILD, tag: NIL,
+;;; data TURKEY
+=======
 ;;; ; => 
 ;;; ; NAMED-OBJECT: id: WILD, tag: NIL,
 ;;; ; data TURKEY
+>>>>>>> .r381
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-last ((al assoc-list))
@@ -286,17 +320,23 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
+<<<<<<< .mine
+;;;  		           :data '((jim beam)
+;;;  			           (four roses)
+;;; 			           (wild turkey))))
+=======
 ;;;                    :data '((jim beam)
 ;;;                            (four roses)
 ;;;                            (wild turkey))))
+>>>>>>> .r381
 ;;; (get-position 'four x)
-;;; ; => 1 (1 bit, #x1, #o1, #b1)
+;;; => 1 (1 bit, #x1, #o1, #b1)
 ;;;
 ;;; (get-position 'jack x)
-;;; ; => NIL
+;;; => NIL
 ;;;
 ;;; (get-position 'jim x 1)
-;;; ; => NIL
+;;; => NIL
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-position (key (al assoc-list) &optional (start 0))
@@ -306,24 +346,34 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; 28.11.11 SEAN: Added ROBODoc info
 ;;; ****m* assoc-list/get-data-data
 ;;; FUNCTION
 ;;; get-data-data:
-;;; Just a short-cut for (data (get-data ...))
-;;; 
+;;; (Short-cut for (data (get-data ...))
+;;; Get the data associated with the given key of the given assoc-list. 
 ;;; 
 ;;; ARGUMENTS:
-;;; 
-;;; 
+;;; The assoc-list key symbol associated with the data list which is sought, 
+;;; and the assoc-list in which it is to be sought.
+;;;
+;;; Optional argument: T or NIL to indicate whether to issue a warning if no
+;;; such named-object can be found within the given assoc-list (default = T).
+;;;
 ;;; RETURN VALUE: 
-;;; 
+;;; If the given key is found within the given assoc-list, the data associated
+;;; with that key is returned.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
-;;; 
+;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
+;;;  		           :data '((jim beam)
+;;;  			           (four roses)
+;;; 			           (wild turkey))))
+;;; (get-data-data 'jim x)
+;;; => BEAM
+;;; (get-data-data 'four x)
+;;; => ROSES
+;;;
 ;;; SYNOPSIS
 (defmethod get-data-data (key (al assoc-list) &optional (warn t))
 ;;; ****
@@ -338,23 +388,42 @@
 ;;; NB This method actually returns the named object, not just the data
 ;;; associated with the key (use get-data-data for that)
 
+;;; 28.11.11 SEAN: Added ROBODoc info
 ;;; ****m* assoc-list/get-data
 ;;; FUNCTION
 ;;; get-data:
-;;;
-;;; 
+;;; Return the named-object (id, tag and data) that is identified by a given
+;;; key within a given assoc-list.  
 ;;; 
 ;;; ARGUMENTS:
-;;; 
+;;; The assoc-list key symbol (named-object id) of the object which is sought
+;;; and the assoc-list in which it is to be sought.
+;;;
+;;; Optional argument: T or NIL to indicate whether to issue a warning if no
+;;; such named-object can be found within the given assoc-list (default = T).
 ;;; 
 ;;; RETURN VALUE: 
-;;; 
+;;; If the given key is found within the given assoc-list, the full
+;;; named-object (id, tag and data) is returned.
+;;;
+;;; NIL is returned if the given key is not found in the given assoc-list.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
+;;;  		           :data '((jim beam)
+;;;  			           (four roses)
+;;; 			           (wild turkey))))
+;;; (get-data 'four x)
+;;; => 
+;;; NAMED-OBJECT: id: FOUR, tag: NIL, 
+;;; data: ROSES
+;;;
+;;; (get-data 'jack x)
+;;; => NIL
+;;; (get-data 'jack x t)
+;;; => NIL
+;;; (get-data 'jack x nil)
+;;; => NIL
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-data (key (al assoc-list) &optional (warn t))
@@ -373,24 +442,57 @@
 ;; todo: adding a two-bar rthm-seq to a rthm-seq-palette fails, possibly
 ;; because the two bars thing gets recursively make into something else???
 
+;;; 01.12.11 SEAN: Added ROBODoc info
 ;;; ****m* assoc-list/add
 ;;; FUNCTION
 ;;; add:
 ;;; Add a new element to the assoc-list.
 ;;; 
-;;; 
 ;;; ARGUMENTS:
+;;; A key/data pair as a quoted list, and the assoc-list to which it is to be 
+;;; added. 
 ;;; 
+;;; Optional argument: One more symbol or quoted list may be added as the value
+;;; for the "ignore" argument. This value will be ignored.
 ;;; 
 ;;; RETURN VALUE: 
-;;; 
+;;; Returns T if the given named-object is successfully added to the given
+;;; assoc-list. 
+;;;
+;;; Returns error messages if an attempt is made to add NIL to the given
+;;; assoc-list or if the given named-object is already present in the given
+;;; assoc-list. 
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
-;;; 
+;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
+;;;  		           :data '((jim beam)
+;;;  			           (four roses)
+;;; 			           (wild turkey))))
+;;; (add '(makers mark) x)
+;;; => T
+;;;
+;;; (get-data 'makers x)
+;;; =>
+;;; NAMED-OBJECT: id: MAKERS, tag: NIL, 
+;;; data: MARK
+;;;
+;;; (get-position 'makers x)
+;;; => 3 (2 bits, #x3, #o3, #b11)
+;;;
+;;; (add '() x)
+;;; => 
+;;; assoc-list::add: named-object is NIL!
+;;;    [Condition of type SIMPLE-ERROR]
+;;;
+;;; (add '(makers mark) x)
+;;; =>
+;;;  assoc-list::add: Can't add MAKERS to assoc-list with id KENTUCKY because
+;;;  key already exists! 
+;;;   [Condition of type SIMPLE-ERROR]
+;;;
+;;; (add '(knob creek) x '(jack daniels))
+;;; => T
+;;;
 ;;; SYNOPSIS
 (defmethod add (named-object (al assoc-list) &optional ignore)
 ;;; ****
@@ -413,23 +515,40 @@
 ;;; N.B. This replaces the whole named-object in the data list, not just the
 ;;; data of that object.  
 
+;;; 01.12.11 SEAN: Added ROBODoc info
+
 ;;; ****m* assoc-list/set-data
 ;;; FUNCTION
 ;;; set-data:
-;;;
-;;; 
+;;; Replace a given named-object within a given assoc-list. This method
+;;; replaces the whole object, not just the data of that object.
 ;;; 
 ;;; ARGUMENTS:
-;;; 
+;;; A key present within the given assoc-list, a key/data pair as a quoted
+;;; list, and the assoc-list in which to find and replace the given object. 
 ;;; 
 ;;; RETURN VALUE: 
+;;; Returns the new named-object.
 ;;; 
-;;; 
+;;; Returns NIL when the given key is not present within the given assoc-list.
+;;;
 ;;; EXAMPLE
+;;; (setf x (make-instance 'assoc-list 
+;;;		           :data '((cat felix) 
+;;;			           (dog fido) 
+;;;			           (cow bessie))))
+;;; (set-data 'dog '(dog spot) x)
+;;; => 
+;;; NAMED-OBJECT: id: DOG, tag: NIL, 
+;;; data: SPOT
 ;;; 
-;;; 
-;;; DATE
-;;; 
+;;; (set-data 'pig '(pig wilbur) x)
+;;; => NIL
+;;;
+;;; (set-data 'dog '(pig wilbur) x)
+;;; => 
+;;; NAMED-OBJECT: id: PIG, tag: NIL, 
+;;; data: WILBUR
 ;;; 
 ;;; SYNOPSIS
 (defmethod set-data (key new-value (al assoc-list))
@@ -448,23 +567,36 @@
 ;;; Add an element (could be any type) to the end of the list which is
 ;;; the data for <key>  
 
+;;; 01.12.11 SEAN: Added ROBODoc info
+
 ;;; ****m* assoc-list/add-to-list-data
 ;;; FUNCTION
 ;;; add-to-list-data:
+;;; Add an element of any type to the end of the data (list) associated with a
+;;; given key of a given assoc-list.
 ;;;
-;;; 
+;;; The data associated with the given key must already be a list.
 ;;; 
 ;;; ARGUMENTS:
-;;; 
+;;; An item of any type, a given key that must be present in the given 
+;;; assoc-list, and the given assoc-list.
 ;;; 
 ;;; RETURN VALUE: 
-;;; 
+;;; Returns the whole named-object to which the new element was added.
+;;;
+;;; This method will abort with an error if a key is sought which does not
+;;; exist within the given assoc-list. For such cases, use
+;;; add-to-list-data-force instead.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+;;; (setf x (make-instance 'assoc-list
+;;; 		           :data '((cat felix)
+;;;  			           (dog (fido spot))
+;;; 			           (cow bessie))))
+;;; (add-to-list-data 'rover 'dog x)
+;;; => 
+;;; NAMED-OBJECT: id: DOG, tag: NIL, 
+;;; data: (FIDO SPOT ROVER)
 ;;; 
 ;;; SYNOPSIS
 (defmethod add-to-list-data (new-element key (al assoc-list))
@@ -481,23 +613,42 @@
 
 ;;; 26.1.11: similar to add-to-list-data but if the key doesn't already exist,
 ;;; add it first, then the new element as a 1-element list
+
+;;; 01.12.11 SEAN: Added ROBODoc info
+
 ;;; ****m* assoc-list/add-to-list-data-force
 ;;; FUNCTION
 ;;; add-to-list-data-force:
+;;; Similar to add-to-list-data, but if the given key doesn't already exist in
+;;; the given assoc-list, it is first added, then the given new element is
+;;; added to that as a 1-element list. 
 ;;;
-;;; 
+;;; If the given key already exists within the given assoc-list, its data must
+;;; already be in the form of a list.
 ;;; 
 ;;; ARGUMENTS:
-;;; 
+;;; A (new) element of any type, a given key that may or may not be present in
+;;; the given assoc-list, and the the given assoc-list. 
 ;;; 
 ;;; RETURN VALUE: 
-;;; 
+;;; Returns the whole named-object to which the element was added when used
+;;; with a key that already exists within the given assoc-list.
+;;;
+;;; Returns T when used with a key that does not already exist in the given
+;;; assoc-list. 
 ;;; 
 ;;; EXAMPLE
+;;; (setf x (make-instance 'assoc-list
+;;;                        :data '((cat felix)
+;;;                                (dog (fido spot))
+;;;                                (cow bessie))))
+;;; (add-to-list-data-force 'rover 'dog x)
+;;; => 
+;;; NAMED-OBJECT: id: DOG, tag: NIL, 
+;;; data: (FIDO SPOT ROVER)
 ;;; 
-;;; 
-;;; DATE
-;;; 
+;;; (add-to-list-data-force 'wilbur 'pig x)
+;;; => T
 ;;; 
 ;;; SYNOPSIS
 (defmethod add-to-list-data-force (new-element key (al assoc-list))
@@ -508,23 +659,38 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; 01.12.11 SEAN: Added ROBODoc info
+
 ;;; ****m* assoc-list/set-nth-of-data
 ;;; FUNCTION
 ;;; set-nth-of-data:
-;;;
-;;; 
+;;; Replace a given member of a given data list within a given assoc-list.
 ;;; 
 ;;; ARGUMENTS:
+;;; The key (named-object id) associated with the data to be changed, the
+;;; zero-based integer index of the member of the list to be changed, the new 
+;;; value, and the assoc-list in which the change is to be made. 
 ;;; 
-;;; 
+;;; The data to be modified must already be in the form of a list.
+;;;
+;;; The index integer given must be less than the length of the data list to be
+;;; modified. 
+;;;
 ;;; RETURN VALUE: 
-;;; 
-;;; 
+;;; Returns the new value only.
+;;;
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+;;; (setf x (make-instance 'assoc-list
+;;;                        :data '((cat felix)
+;;;                                (dog (fido spot rover))
+;;;                                (cow bessie))))
+;;; (set-nth-of-data 'dog 0 'snoopy x)
+;;; => SNOOPY
+;;;
+;;; (get-data 'dog x)
+;;; => 
+;;; NAMED-OBJECT: id: DOG, tag: NIL, 
+;;; data: (SNOOPY SPOT ROVER)
 ;;; 
 ;;; SYNOPSIS
 (defmethod set-nth-of-data (key nth new-value (al assoc-list))
@@ -547,23 +713,39 @@
 ;;; the return values of the function call on the data.  arguments is a list of
 ;;; arguments to be passed to the function.  the function must take the data in
 ;;; the assoc-list as a first argument.
+
+;;; 01.12.11 SEAN: Added ROBODoc info
+
 ;;; ****m* assoc-list/map-data
 ;;; FUNCTION
 ;;; map-data:
-;;;
-;;; 
+;;; Map a function over the data in the assoc-list and return a list with the
+;;; results of that mapping.
 ;;; 
 ;;; ARGUMENTS:
-;;; 
+;;; The list to which the function is to be applied, and the function itself.
+;;;
+;;; Optional argument: Further arguments for the function.
 ;;; 
 ;;; RETURN VALUE: 
-;;; 
+;;; Returns a list of the values returned by the function call on the data.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+;;; (setf x (make-instance 'assoc-list
+;;;                        :data '((cat felix)
+;;;                                (dog (fido spot rover))
+;;;                                (cow bessie))))
+;;; (map-data x #'(lambda (y) (print '-+-+-+-) (print (data y))))
+;;; => (FELIX (FIDO SPOT ROVER) BESSIE)
+;;;
+;;; (setf x (make-instance 'assoc-list 
+;;;                        :data '((1 (1 2 3 4))
+;;;                                (2 (5 6 7 8))
+;;;                                (3 (9 10 11 12)))))
+;;; (map-data x #'(lambda (y) 
+;;;                 (loop for i in (data y) collect
+;;;                      (* i 2))))
+;;; => ((2 4 6 8) (10 12 14 16) (18 20 22 24))
 ;;; 
 ;;; SYNOPSIS
 (defmethod map-data ((al assoc-list) function &optional further-arguments)
@@ -585,22 +767,47 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; 01.12.11 SEAN: Added ROBODoc info
+
 ;;; ****f* assoc-list/make-assoc-list
 ;;; FUNCTION
 ;;; make-assoc-list:
-;;;
-;;; 
+;;; A function that provides a shortcut to creating an assoc-list, filling it
+;;; with data, and assigning a name to it.
 ;;; 
 ;;; ARGUMENTS:
-;;; 
+;;; The name of the assoc-list to be created and the data with which to fill
+;;; it.
+;;;
+;;; Optional keyword argument :warn-not-found. This argument allows the user to
+;;; determine whether a warning is issued when an index which doesn't exist is
+;;; used for lookup. It can be set to T or NIL and defaults to T.
 ;;; 
 ;;; RETURN VALUE: 
-;;; 
+;;; Returns the assoc-list as a named-object.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
+;;; (make-assoc-list 'looney-tunes '((bugs bunny)
+;;;                                    (daffy duck)
+;;;                                    (porky pig)))
+;;; => 
+;;; ASSOC-LIST: warn-not-found T
+;;; CIRCULAR-SCLIST: current 0
+;;; SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+;;; LINKED-NAMED-OBJECT: previous: NIL
+;;;                      this: NIL
+;;;                      next: NIL
+;;; NAMED-OBJECT: id: LOONEY-TUNES, tag: NIL, 
+;;; data: (
+;;; NAMED-OBJECT: id: BUGS, tag: NIL, 
+;;; data: BUNNY
+;;;        
+;;; NAMED-OBJECT: id: DAFFY, tag: NIL, 
+;;; data: DUCK
+;;;       
+;;; NAMED-OBJECT: id: PORKY, tag: NIL, 
+;;; data: PIG
+;;; )
 ;;; 
 ;;; 
 ;;; SYNOPSIS

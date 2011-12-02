@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: Changed ROBODoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/bar-holder
+;;; ****c* linked-named-object/bar-holder
 ;;; NAME 
 ;;; bar-holder
 ;;;
@@ -69,13 +70,66 @@
    (duration :accessor duration :type integer :initform 0)
    ;; the next three slots are the times/durations in crotchets (1/4 notes),
    ;; useful for midi timing.
+ 
+  ;; 02.12.11 SEAN: Added ROBODoc info
+
    ;;****S* bar-holder/start-time-qtrs
-   ;; NAME
-   ;; start-time-qtrs
-   (start-time-qtrs :accessor start-time-qtrs :initarg :start-time-qtrs
-                    :type integer :initform 0)
+   ;; FUNCTION
+   ;; Class slot to store the start-time of the bar-holder as measured in the
+   ;; number of quarter-notes. Useful for MIDI timing.
+   ;;
+   ;; ARGUMENTS:
+   ;; Accessor is start-time-qtrs. Initialized by keyword argument
+   ;; :start-time-qtrs. This argument takes an integer and defaults to 0.  
+   ;; 
+   ;; EXAMPLE
+   ;; (setf x (make-instance 'bar-holder :start-time-qtrs 10))
+   ;; (start-time-qtrs x)
+   ;; => 10 (4 bits, #xA, #o12, #b1010)
+   ;;
+   ;; SYNOPSIS
+   (start-time-qtrs :accessor start-time-qtrs :initarg :start-time-qtrs :type
+		    integer :initform 0)
+   ;; ****
+   ;; 02.12.11 SEAN: Added ROBODoc info
+   ;;****S* bar-holder/end-time-qtrs
+   ;; FUNCTION
+   ;; Class slot to store the end-time of the bar-holder as measured in the
+   ;; number of quarter-notes. Useful for MIDI timing.
+   ;; 
+   ;; ARGUMENTS:
+   ;; Accessor is end-time-qtrs. Initialized by keyword argument
+   ;; :end-time-qtrs. This argument takes an integer and defaults to 0. 
+   ;; 
+   ;; EXAMPLE
+   ;; (setf x (make-instance 'bar-holder :end-time-qtrs 20))
+   ;; (end-time-qtrs x)
+   ;; => 20 (5 bits, #x14, #o24, #b10100)
+   ;; 
+   ;; SYNOPSIS
    (end-time-qtrs :accessor end-time-qtrs :initarg :end-time-qtrs
                   :type integer :initform 0)
+   ;; ****
+
+   ;; 02.12.11 SEAN: Added ROBODoc info
+   ;;****S* bar-holder/duration-qtrs
+   ;; FUNCTION
+   ;; Class slot to store the duration of the bar-holder as measured in the
+   ;; number of quarter-notes. Useful for MIDI timing.
+   ;; 
+   ;; ARGUMENTS:
+   ;; Accessor is duration-qtrs. This slot has no initialization argument. It
+   ;; defaults to 0.  
+   ;;
+   ;; EXAMPLE
+   ;; (setf x (make-instance 'bar-holder))
+   ;; (setf (duration-qtrs x) 10)
+   ;; => 10 (4 bits, #xA, #o12, #b1010)
+   ;; 
+   ;; (duration-qtrs x)
+   ;; => 10 (4 bits, #xA, #o12, #b1010)
+   ;; 
+   ;; SYNOPSIS
    (duration-qtrs :accessor duration-qtrs :type integer :initform 0)
    ;; ****
    (num-bars :accessor num-bars :type integer :initform 0)
@@ -243,10 +297,10 @@
 
 ;;; When num-bars is nil, all bars in the bh from start-bar will be transposed.
 
+;;; 02.12.11 SEAN: Added ROBODoc info
 ;;; ****m* bar-holder/transpose-bars
 ;;; FUNCTION
 ;;; transpose-bars:
-;;;
 ;;; 
 ;;; 
 ;;; ARGUMENTS:

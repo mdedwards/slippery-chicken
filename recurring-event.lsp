@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/recurring-event
+;;; ****c* circular-sclist/recurring-event
 ;;; NAME 
 ;;; rthm-chain
 ;;;

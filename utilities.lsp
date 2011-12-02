@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: changed robodoc header
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****f* _sc/utilities
+;;; ****h* sc/utilities
 ;;; NAME 
 ;;; utilities
 ;;;

@@ -136,7 +136,6 @@
 ;;; 28.11.11 SEAN: Added info for robodoc
 ;;; ****m* assoc-list/get-keys
 ;;; FUNCTION
-;;; get-keys:
 ;;; Get a simple list of the keys in a given association list.
 ;;; 
 ;;; ARGUMENTS:
@@ -188,7 +187,6 @@
 ;;; 28.11.11 SEAN: Added info for ROBODoc
 ;;; ****m* assoc-list/get-first
 ;;; FUNCTION
-;;; get-first:
 ;;; Returns the first named-object in the data list of the given assoc-list. 
 ;;; 
 ;;; ARGUMENTS:
@@ -217,7 +215,6 @@
 ;;; 28.11.11 SEAN: Added info for ROBODoc
 ;;; ****m* assoc-list/get-last
 ;;; FUNCTION
-;;; get-last:
 ;;; Returns the last named-object in the data list of a given assoc-list.
 ;;; 
 ;;; ARGUMENTS:
@@ -266,7 +263,6 @@
 ;;; 28.11.11 SEAN: Added info for ROBODoc
 ;;; ****m* assoc-list/get-position
 ;;; FUNCTION
-;;; get-position:
 ;;; Returns the index position (zero-based) of a named-object within a given 
 ;;; assoc-list. 
 ;;; 
@@ -310,7 +306,6 @@
 ;;; 28.11.11 SEAN: Added ROBODoc info
 ;;; ****m* assoc-list/get-data-data
 ;;; FUNCTION
-;;; get-data-data:
 ;;; (Short-cut for (data (get-data ...))
 ;;; Get the data associated with the given key of the given assoc-list. 
 ;;; 
@@ -352,7 +347,6 @@
 ;;; 28.11.11 SEAN: Added ROBODoc info
 ;;; ****m* assoc-list/get-data
 ;;; FUNCTION
-;;; get-data:
 ;;; Return the named-object (id, tag and data) that is identified by a given
 ;;; key within a given assoc-list.  
 ;;; 
@@ -406,7 +400,6 @@
 ;;; 01.12.11 SEAN: Added ROBODoc info
 ;;; ****m* assoc-list/add
 ;;; FUNCTION
-;;; add:
 ;;; Add a new element to the assoc-list.
 ;;; 
 ;;; ARGUMENTS:
@@ -480,7 +473,6 @@
 
 ;;; ****m* assoc-list/set-data
 ;;; FUNCTION
-;;; set-data:
 ;;; Replace a given named-object within a given assoc-list. This method
 ;;; replaces the whole object, not just the data of that object.
 ;;; 
@@ -532,7 +524,6 @@
 
 ;;; ****m* assoc-list/add-to-list-data
 ;;; FUNCTION
-;;; add-to-list-data:
 ;;; Add an element of any type to the end of the data (list) associated with a
 ;;; given key of a given assoc-list.
 ;;;
@@ -579,7 +570,6 @@
 
 ;;; ****m* assoc-list/add-to-list-data-force
 ;;; FUNCTION
-;;; add-to-list-data-force:
 ;;; Similar to add-to-list-data, but if the given key doesn't already exist in
 ;;; the given assoc-list, it is first added, then the given new element is
 ;;; added to that as a 1-element list. 
@@ -624,7 +614,6 @@
 
 ;;; ****m* assoc-list/set-nth-of-data
 ;;; FUNCTION
-;;; set-nth-of-data:
 ;;; Replace a given member of a given data list within a given assoc-list.
 ;;; 
 ;;; ARGUMENTS:
@@ -679,7 +668,6 @@
 
 ;;; ****m* assoc-list/map-data
 ;;; FUNCTION
-;;; map-data:
 ;;; Map a function over the data in the assoc-list and return a list with the
 ;;; results of that mapping.
 ;;; 
@@ -732,7 +720,6 @@
 
 ;;; ****f* assoc-list/make-assoc-list
 ;;; FUNCTION
-;;; make-assoc-list:
 ;;; A function that provides a shortcut to creating an assoc-list, filling it
 ;;; with data, and assigning a name to it.
 ;;; 

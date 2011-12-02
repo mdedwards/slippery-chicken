@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/set-map
+;;; ****c* sc-map/set-map
 ;;; NAME 
 ;;; set-map
 ;;;

@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: Changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/complete-set
+;;; ****c* tl-set/complete-set
 ;;; NAME 
 ;;; complete-set
 ;;;

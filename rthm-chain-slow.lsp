@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/rthm-chain-slow
+;;; ****c* circular-sclist/rthm-chain-slow
 ;;; NAME 
 ;;; rthm-chain
 ;;;

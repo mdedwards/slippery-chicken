@@ -1,4 +1,8 @@
+;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****c* circular-sclist/popcorn
+;;; NAME 
+;;; assoc-list
 ;;;
 ;;; File:             popcorn.lsp
 ;;;

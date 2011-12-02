@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/rthm-seq-bar
+;;; ****c* sclist/rthm-seq-bar
 ;;; NAME 
 ;;; rthm-seq-bar
 ;;;

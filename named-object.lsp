@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: Changed ROBODoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/named-object
+;;; ****c* sc/named-object
 ;;; NAME 
 ;;; named-object
 ;;;

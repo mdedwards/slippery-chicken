@@ -1,5 +1,6 @@
+;;; 02.12.11 SEAN: Changed ROBODoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/instrument
+;;; ****c* linked-named-object/instrument
 ;;; NAME 
 ;;; instrument
 ;;;
@@ -379,7 +380,7 @@
 
 ;;; ****m* instrument/in-range
 ;;; FUNCTION
-;;; in-range: checks whether a pitch is in the range of the instrument or not.
+;;; Checks whether a pitch is in the range of the instrument or not.
 ;;; 
 ;;; ARGUMENTS:
 ;;; - the instrument instance

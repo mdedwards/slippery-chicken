@@ -151,32 +151,17 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list :data '((cat felix) 
-<<<<<<< .mine
 ;;;    					       (dog fido) 
 ;;;					       (cow bessie))))
 ;;; (get-keys x)
 ;;; => (CAT DOG COW)
 ;;;
-=======
-;;;                                            (dog fido) 
-;;;                                            (cow bessie))))
-;;; (get-keys x) ; => (CAT DOG COW)
-;;; 
->>>>>>> .r381
 ;;; (setf y (make-instance 'assoc-list 
-<<<<<<< .mine
 ;;;		           :data '((cat felix) 
 ;;;			           (dog ((scottish terrier)
 ;;;			    	         (german shepherd)
 ;;;				         (irish wolfhound))) 
 ;;;			           (cow bessie))))
-=======
-;;;                    :data '((cat felix) 
-;;;                            (dog ((scottish terrier)
-;;;                                  (german shepherd)
-;;;                                  (irish wolfhound))) 
-;;;                            (cow bessie))))
->>>>>>> .r381
 ;;; (get-keys y) 
 ;;; => (CAT DOG COW)
 ;;; 
@@ -214,15 +199,9 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-<<<<<<< .mine
 ;;;  		           :data '((jim beam)
 ;;;  			           (four roses)
 ;;; 			           (wild turkey))))
-=======
-;;;                    :data '((jim beam)
-;;;                            (four roses)
-;;;                            (wild turkey))))
->>>>>>> .r381
 ;;; (get-first x)
 ;;; => 
 ;;; NAMED-OBJECT: id: JIM, tag: NIL,
@@ -249,25 +228,13 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-<<<<<<< .mine
 ;;;  		           :data '((jim beam)
 ;;;  			           (four roses)
 ;;; 			           (wild turkey))))
-=======
-;;;                    :data '((jim beam)
-;;;                            (four roses)
-;;;                            (wild turkey))))
->>>>>>> .r381
 ;;; (get-last x)
-<<<<<<< .mine
 ;;; => 
 ;;; NAMED-OBJECT: id: WILD, tag: NIL,
 ;;; data TURKEY
-=======
-;;; ; => 
-;;; ; NAMED-OBJECT: id: WILD, tag: NIL,
-;;; ; data TURKEY
->>>>>>> .r381
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-last ((al assoc-list))
@@ -320,15 +287,9 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-<<<<<<< .mine
 ;;;  		           :data '((jim beam)
 ;;;  			           (four roses)
 ;;; 			           (wild turkey))))
-=======
-;;;                    :data '((jim beam)
-;;;                            (four roses)
-;;;                            (wild turkey))))
->>>>>>> .r381
 ;;; (get-position 'four x)
 ;;; => 1 (1 bit, #x1, #o1, #b1)
 ;;;

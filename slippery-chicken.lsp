@@ -1,6 +1,5 @@
-;;; 02.12.11 SEAN: Changed ROBODoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* named-object/slippery-chicken
+;;; ****c* _sc/slippery-chicken
 ;;; NAME 
 ;;; slippery-chicken
 ;;; 
@@ -18,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:55:36 Fri Dec  2 2011 GMT
+;;; $$ Last modified: 17:53:28 Sat Dec  3 2011 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -997,6 +996,8 @@
 
 ;;; ****m* slippery-chicken/get-bar-from-ref
 ;;; FUNCTION
+;;; get-bar-from-ref:
+;;;
 ;;; Return a rthm-seq-bar object from the piece.  Sequenz-num and bar-num are
 ;;; 1-based. 
 ;;; 

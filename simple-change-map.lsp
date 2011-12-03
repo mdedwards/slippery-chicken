@@ -1,4 +1,3 @@
-;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* change-map/simple-change-map
 ;;; NAME 
@@ -23,7 +22,7 @@
 ;;;
 ;;; Creation date:    March 31st 2002
 ;;;
-;;; $$ Last modified: 19:36:09 Fri Mar 19 2010 GMT
+;;; $$ Last modified: 17:54:37 Sat Dec  3 2011 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;

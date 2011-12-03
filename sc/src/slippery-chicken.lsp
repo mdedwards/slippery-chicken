@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:06:25 Fri Nov 25 2011 GMT
+;;; $$ Last modified: 15:55:36 Fri Dec  2 2011 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1998,6 +1998,7 @@
                   (clone (written-pitch-or-chord start-event))))
          (last-event start-event)
          last-bar)
+    ;; (print porc)
     (unless (zerop (notes-needed bar))
       (unless porc
         (error "slippery-chicken::tie-over-rest-bars-aux: can't tie from last ~

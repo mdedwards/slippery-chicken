@@ -1,4 +1,3 @@
-;;; 01.12.11 SEAN: Edited ROBODoc header for hierarchy-based TOC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* circular-sclist/assoc-list
 ;;; NAME 
@@ -21,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 19:50:58 Mon Nov 28 2011 GMT
+;;; $$ Last modified: 18:09:07 Sat Dec  3 2011 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -150,17 +149,17 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list :data '((cat felix) 
-;;;    					       (dog fido) 
-;;;					       (cow bessie))))
+;;;                                            (dog fido) 
+;;;                                            (cow bessie))))
 ;;; (get-keys x)
 ;;; => (CAT DOG COW)
 ;;;
 ;;; (setf y (make-instance 'assoc-list 
-;;;		           :data '((cat felix) 
-;;;			           (dog ((scottish terrier)
-;;;			    	         (german shepherd)
-;;;				         (irish wolfhound))) 
-;;;			           (cow bessie))))
+;;;                        :data '((cat felix) 
+;;;                                (dog ((scottish terrier)
+;;;                                      (german shepherd)
+;;;                                      (irish wolfhound))) 
+;;;                                (cow bessie))))
 ;;; (get-keys y) 
 ;;; => (CAT DOG COW)
 ;;; 
@@ -197,9 +196,9 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-;;;  		           :data '((jim beam)
-;;;  			           (four roses)
-;;; 			           (wild turkey))))
+;;;                        :data '((jim beam)
+;;;                                (four roses)
+;;;                                (wild turkey))))
 ;;; (get-first x)
 ;;; => 
 ;;; NAMED-OBJECT: id: JIM, tag: NIL,
@@ -225,9 +224,9 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-;;;  		           :data '((jim beam)
-;;;  			           (four roses)
-;;; 			           (wild turkey))))
+;;;                        :data '((jim beam)
+;;;                                (four roses)
+;;;                                (wild turkey))))
 ;;; (get-last x)
 ;;; => 
 ;;; NAMED-OBJECT: id: WILD, tag: NIL,
@@ -283,9 +282,9 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-;;;  		           :data '((jim beam)
-;;;  			           (four roses)
-;;; 			           (wild turkey))))
+;;;                        :data '((jim beam)
+;;;                                (four roses)
+;;;                                (wild turkey))))
 ;;; (get-position 'four x)
 ;;; => 1 (1 bit, #x1, #o1, #b1)
 ;;;
@@ -322,9 +321,9 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-;;;  		           :data '((jim beam)
-;;;  			           (four roses)
-;;; 			           (wild turkey))))
+;;;                        :data '((jim beam)
+;;;                                (four roses)
+;;;                                (wild turkey))))
 ;;; (get-data-data 'jim x)
 ;;; => BEAM
 ;;; (get-data-data 'four x)
@@ -365,9 +364,9 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-;;;  		           :data '((jim beam)
-;;;  			           (four roses)
-;;; 			           (wild turkey))))
+;;;                        :data '((jim beam)
+;;;                                (four roses)
+;;;                                (wild turkey))))
 ;;; (get-data 'four x)
 ;;; => 
 ;;; NAMED-OBJECT: id: FOUR, tag: NIL, 
@@ -419,9 +418,9 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-;;;  		           :data '((jim beam)
-;;;  			           (four roses)
-;;; 			           (wild turkey))))
+;;;                        :data '((jim beam)
+;;;                                (four roses)
+;;;                                (wild turkey))))
 ;;; (add '(makers mark) x)
 ;;; => T
 ;;;
@@ -487,9 +486,9 @@
 ;;;
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list 
-;;;		           :data '((cat felix) 
-;;;			           (dog fido) 
-;;;			           (cow bessie))))
+;;;                        :data '((cat felix) 
+;;;                                (dog fido) 
+;;;                                (cow bessie))))
 ;;; (set-data 'dog '(dog spot) x)
 ;;; => 
 ;;; NAMED-OBJECT: id: DOG, tag: NIL, 
@@ -542,9 +541,9 @@
 ;;; 
 ;;; EXAMPLE
 ;;; (setf x (make-instance 'assoc-list
-;;; 		           :data '((cat felix)
-;;;  			           (dog (fido spot))
-;;; 			           (cow bessie))))
+;;;                        :data '((cat felix)
+;;;                                (dog (fido spot))
+;;;                                (cow bessie))))
 ;;; (add-to-list-data 'rover 'dog x)
 ;;; => 
 ;;; NAMED-OBJECT: id: DOG, tag: NIL, 

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 18:09:07 Sat Dec  3 2011 GMT
+;;; $$ Last modified: 18:32:07 Sat Dec  3 2011 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -717,47 +717,47 @@
 
 ;;; 01.12.11 SEAN: Added ROBODoc info
 
+#|
 ;;; ****f* assoc-list/make-assoc-list
-;;; FUNCTION
-;;; A function that provides a shortcut to creating an assoc-list, filling it
-;;; with data, and assigning a name to it.
-;;; 
-;;; ARGUMENTS:
-;;; The name of the assoc-list to be created and the data with which to fill
-;;; it.
-;;;
-;;; Optional keyword argument :warn-not-found. This argument allows the user to
-;;; determine whether a warning is issued when an index which doesn't exist is
-;;; used for lookup. It can be set to T or NIL and defaults to T.
-;;; 
-;;; RETURN VALUE: 
-;;; Returns the assoc-list as a named-object.
-;;; 
-;;; EXAMPLE
-;;; (make-assoc-list 'looney-tunes '((bugs bunny)
-;;;                                    (daffy duck)
-;;;                                    (porky pig)))
-;;; => 
-;;; ASSOC-LIST: warn-not-found T
-;;; CIRCULAR-SCLIST: current 0
-;;; SCLIST: sclist-length: 3, bounds-alert: T, copy: T
-;;; LINKED-NAMED-OBJECT: previous: NIL
-;;;                      this: NIL
-;;;                      next: NIL
-;;; NAMED-OBJECT: id: LOONEY-TUNES, tag: NIL, 
-;;; data: (
-;;; NAMED-OBJECT: id: BUGS, tag: NIL, 
-;;; data: BUNNY
-;;;        
-;;; NAMED-OBJECT: id: DAFFY, tag: NIL, 
-;;; data: DUCK
-;;;       
-;;; NAMED-OBJECT: id: PORKY, tag: NIL, 
-;;; data: PIG
-;;; )
-;;; 
-;;; 
-;;; SYNOPSIS
+FUNCTION
+A function that provides a shortcut to creating an assoc-list, filling it
+with data, and assigning a name to it.
+
+ARGUMENTS:
+The name of the assoc-list to be created and the data with which to fill
+it.
+
+Optional keyword argument :warn-not-found. This argument allows the user to
+determine whether a warning is issued when an index which doesn't exist is
+used for lookup. It can be set to T or NIL and defaults to T.
+
+RETURN VALUE: 
+Returns the assoc-list as a named-object.
+
+EXAMPLE
+(make-assoc-list 'looney-tunes '((bugs bunny)
+                                   (daffy duck)
+                                   (porky pig)))
+=> 
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL
+                     this: NIL
+                     next: NIL
+NAMED-OBJECT: id: LOONEY-TUNES, tag: NIL, 
+data: (
+NAMED-OBJECT: id: BUGS, tag: NIL, 
+data: BUNNY
+       
+NAMED-OBJECT: id: DAFFY, tag: NIL, 
+data: DUCK
+      
+NAMED-OBJECT: id: PORKY, tag: NIL, 
+data: PIG)
+
+SYNOPSIS
+|#
 (defun make-assoc-list (id al &key (warn-not-found t))
 ;;; ****
   (make-instance 'assoc-list :data al :id id :warn-not-found warn-not-found))

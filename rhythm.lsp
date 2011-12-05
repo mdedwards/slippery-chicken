@@ -75,7 +75,7 @@
    ;; when compound rhythms are given (e.g. q+s.), the value of all the rhythms
    ;; together; this will only be set for the first of the compound, the others
    ;; will be nil.  When rthm-seqs are made, this slot is calculated.  This is
-   ;; still with  reference to qtr=60.  
+   ;; still with reference to qtr=60.  
    (compound-duration :accessor compound-duration :type number :initform -1)
    ;; rq is in relation to quarter notes so rq of q is 1, e is 1/2, w is 4 etc.
    (rq :accessor rq :initform nil)

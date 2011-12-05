@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:53:28 Sat Dec  3 2011 GMT
+;;; $$ Last modified: 18:21:21 Sat Dec  3 2011 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -180,7 +180,7 @@
                 ;; make-slippery-chicken, so that any changes we make here
                 ;; don't affect the outside objects.
                    (clone (instrument-palette sc)))
-                  ((instrumen-palette sc)
+                  ((instrument-palette sc)
                    (make-instrument-palette
                     (make-name 'instrument-palette)
                     (instrument-palette sc)))

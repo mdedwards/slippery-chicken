@@ -64,7 +64,7 @@ p
 
 p.item_name 
 {
-    font-weight: bolder;
+    font-weight: bolder; 
     margin:5px;
     font-size: 105%;
 }
@@ -123,7 +123,7 @@ a.menuitem
     font-style:         normal;
     font-variant:       normal;
     text-transform:     none;
-    font-weight:        bold;
+    font-weight:        bold; 
     padding:            20px 0px 40px 0px;
     margin-top:         0px;
     text-align:         left;
@@ -367,7 +367,7 @@ DL.top {
         margin-left: 5%;
 }
 DT {
-        font-weight: bold;
+        font-weight: bold; 
 }
 DD {
 }

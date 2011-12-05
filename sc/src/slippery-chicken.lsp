@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* _sc/slippery-chicken
+;;; ****c* sc/slippery-chicken
 ;;; NAME 
 ;;; slippery-chicken
 ;;; 
@@ -19,7 +19,8 @@
 ;;;
 ;;; $$ Last modified: 18:21:21 Sat Dec  3 2011 GMT
 ;;;
-;;; SVN ID: $Id$
+;;; SVN ID: $Id: slippery-chicken.lsp 385 2011-12-02 20:01:04Z reed@seanreed.ie
+;;; $ 
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -341,9 +342,8 @@
 
 ;;; ****m* slippery-chicken/clone
 ;;; FUNCTION
-;;; clone:
-;;; copy (clone) the instance and all data associated with the slippery-chicken
-;;; object  
+;;; Copy (clone) the instance and all data associated with the slippery-chicken
+;;; object.  
 ;;; 
 ;;; ARGUMENTS:
 ;;; - the slippery-chicken object you want to copy/clone

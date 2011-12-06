@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* circular-sclist/assoc-list
+#| ****c* circular-sclist/assoc-list
 ;;; NAME 
 ;;; assoc-list
 ;;;
@@ -24,7 +24,7 @@
 ;;;
 ;;; SVN ID: $Id$
 ;;;
-;;; ****
+#| **** |#
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
 ;;;
 ;;;                   This file is part of slippery-chicken

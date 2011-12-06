@@ -65,20 +65,15 @@ ignore files:
     "a test_*"
 accept files:
     *.lsp
+# 06.12.11 SEAN: changed the header-, remark-, and end-markers to allow for
+# better looking html layout of the EXAMPLE block.
 header markers:
-    ;;; ****
-    ;; ****
-    ;;;****
-    ;;****
+    #| ****
 remark markers:
     ;;;
     ;;  
 end markers:
-    ;;; ****
-    ;;;****
-    ;; ****
-    ;;****
-    #****
+    #| **** |#
 # header separate characters:
 #     ,
 # header ignore characters:
@@ -87,10 +82,10 @@ remark begin markers:
     #|
 remark end markers:
     |#
-source line comments:
-    ;;;
-    ;;
-    ;
+#source line comments:
+#    ;;;
+#    ;;
+#    ;
 keywords:
     if
     loop

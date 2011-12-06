@@ -133,39 +133,40 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 28.11.11 SEAN: Added info for robodoc
-;;; ****m* assoc-list/get-keys
-;;; FUNCTION
-;;; Get a simple list of the keys in a given association list.
-;;; 
-;;; ARGUMENTS:
-;;; An assoc-list.
-;;; 
-;;; RETURN VALUE: 
-;;; The keys only of all top-level association list pairs in the given
-;;; assoc-list. 
-;;;
-;;; get-keys is a method of the assoc-list class and therefore returns only
-;;; top-level keys if accessing a recursive assoc-list.
-;;; 
-;;; EXAMPLE
-;;; (setf x (make-instance 'assoc-list :data '((cat felix) 
-;;;                                            (dog fido) 
-;;;                                            (cow bessie))))
-;;; (get-keys x)
-;;; => (CAT DOG COW)
-;;;
-;;; (setf y (make-instance 'assoc-list 
-;;;                        :data '((cat felix) 
-;;;                                (dog ((scottish terrier)
-;;;                                      (german shepherd)
-;;;                                      (irish wolfhound))) 
-;;;                                (cow bessie))))
-;;; (get-keys y) 
-;;; => (CAT DOG COW)
-;;; 
-;;; SYNOPSIS
+
+#| ****m* assoc-list/get-keys
+;; FUNCTION
+;; Get a simple list of the keys in a given association list.
+;;
+;; ARGUMENTS:
+;; An assoc-list.
+;;
+;; RETURN VALUE: 
+;; The keys only of all top-level association list pairs in the given
+;; assoc-list. 
+;;
+;; get-keys is a method of the assoc-list class and therefore returns only
+;; top-level keys if accessing a recursive assoc-list.
+;; EXAMPLE 
+(setf x (make-instance 'assoc-list :data '((cat felix) 
+                                           (dog fido) 
+                                           (cow bessie))))
+(get-keys x)
+=> (CAT DOG COW)
+
+(setf y (make-instance 'assoc-list 
+                       :data '((cat felix) 
+                               (dog ((scottish terrier)
+                                     (german shepherd)
+                                     (irish wolfhound))) 
+                               (cow bessie))))
+(get-keys y) 
+=> (CAT DOG COW)
+;;
+;; SYNOPSIS
+|# 
 (defmethod get-keys ((al assoc-list))
-;;; ****
+#| **** |#
   (when (is-ral al)
     (warn "assoc-list::get-keys: ~
            The get-keys method comes from the assoc-list class and ~

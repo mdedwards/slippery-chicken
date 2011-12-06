@@ -1,4 +1,3 @@
-;;; 01.12.11 SEAN: Edited ROBODoc header for hierarchy-based TOC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* named-object/activity-levels
 ;;; NAME 
@@ -47,6 +46,7 @@
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; 01.12.11 SEAN: Edited ROBODoc header to reflect class hierarchy
 
 (eval-when (compile)
   (declaim (optimize (speed 3) (safety 1) (space 0) (debug 0))))

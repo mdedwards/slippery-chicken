@@ -1,4 +1,3 @@
-;;; 01.12.11 SEAN: Edited ROBODoc header for hierarchy-based TOC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****h* sc/all.lsp
 ;;; NAME 
@@ -44,6 +43,8 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; 01.12.11 SEAN: Edited ROBODoc header for hierarchy-based TOC
 
 ;;; 28.11.11 SEAN: changed item to "all.lsp" so that robodoc will not highlight
 ;;; the word "all" in every instance as though it were a class with a doc page.

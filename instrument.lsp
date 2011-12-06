@@ -1,4 +1,3 @@
-;;; 02.12.11 SEAN: Changed ROBODoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* linked-named-object/instrument
 ;;; NAME 
@@ -48,6 +47,8 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; 02.12.11 SEAN: Changed ROBODoc header to reflect class hierarchy
 
 (eval-when (compile)
   (declaim (optimize (speed 3) (safety 1) (space 0) (debug 0))))

@@ -28,7 +28,8 @@
  * $Id$
  */
 
-/* Redefining the <strong> to take out the boldness */
+/* Redefining the <strong> to take out the boldness and make the corresponding*/
+   /* terms white instead*/ 
 strong
 {
     font-weight: normal;

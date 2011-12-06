@@ -28,6 +28,13 @@
  * $Id$
  */
 
+/* Redefining the <strong> to take out the boldness */
+strong
+{
+    font-weight: normal;
+    color: white;
+}
+
 body
 {
         background: #1A1A1A;

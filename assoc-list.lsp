@@ -23,8 +23,8 @@
 ;;; $$ Last modified: 18:32:07 Sat Dec  3 2011 GMT
 ;;;
 ;;; SVN ID: $Id$
-;;;
-#| **** |#
+|#
+;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
 ;;;
 ;;;                   This file is part of slippery-chicken
@@ -166,7 +166,7 @@
 ;; SYNOPSIS
 |# 
 (defmethod get-keys ((al assoc-list))
-#| **** |#
+;; ****
   (when (is-ral al)
     (warn "assoc-list::get-keys: ~
            The get-keys method comes from the assoc-list class and ~
@@ -185,7 +185,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 28.11.11 SEAN: Added info for ROBODoc
-;;; ****m* assoc-list/get-first
+#| ****m* assoc-list/get-first
 ;;; FUNCTION
 ;;; Returns the first named-object in the data list of the given assoc-list. 
 ;;; 
@@ -196,16 +196,17 @@
 ;;; The first object in the data list of a given assoc-list.
 ;;; 
 ;;; EXAMPLE
-;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-;;;                        :data '((jim beam)
-;;;                                (four roses)
-;;;                                (wild turkey))))
-;;; (get-first x)
-;;; => 
-;;; NAMED-OBJECT: id: JIM, tag: NIL,
-;;; data BEAM
+(setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
+                       :data '((jim beam)
+                               (four roses)
+                               (wild turkey))))
+(get-first x)
+=> 
+NAMED-OBJECT: id: JIM, tag: NIL,
+data BEAM
 ;;; 
-;;; SYNOPSIS
+;;; SYNOPSIS 
+|#
 (defmethod get-first ((al assoc-list))
 ;;; ****
   (first (data al)))
@@ -213,7 +214,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 28.11.11 SEAN: Added info for ROBODoc
-;;; ****m* assoc-list/get-last
+#| ****m* assoc-list/get-last
 ;;; FUNCTION
 ;;; Returns the last named-object in the data list of a given assoc-list.
 ;;; 
@@ -224,16 +225,17 @@
 ;;; The last object in the data list of a given assoc-list.
 ;;; 
 ;;; EXAMPLE
-;;; (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-;;;                        :data '((jim beam)
-;;;                                (four roses)
-;;;                                (wild turkey))))
-;;; (get-last x)
-;;; => 
-;;; NAMED-OBJECT: id: WILD, tag: NIL,
-;;; data TURKEY
+(setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
+                       :data '((jim beam)
+                               (four roses)
+                               (wild turkey))))
+(get-last x)
+=> 
+NAMED-OBJECT: id: WILD, tag: NIL,
+data TURKEY
 ;;; 
 ;;; SYNOPSIS
+|#
 (defmethod get-last ((al assoc-list))
 ;;; ****
   (first (last (data al))))

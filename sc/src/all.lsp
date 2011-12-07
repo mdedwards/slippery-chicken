@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 19:47:11 Mon Nov 28 2011 GMT
+;;; $$ Last modified: 18:55:06 Wed Dec  7 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -143,6 +143,10 @@
            "midi1" "midi2" "midi3" "cmn")
          do
          (load-cm-file f))))
+
+(defun sc-load-cm-all ()
+  (declare (special *slippery-chicken-src-path*))
+  (load (format nil "~acm-2.6.0/src/cm.lisp" *slippery-chicken-src-path*)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

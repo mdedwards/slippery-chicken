@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 18:23:35 Wed Dec  7 2011 ICT
+;;; $$ Last modified: 18:26:57 Wed Dec  7 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 |#
@@ -361,7 +361,7 @@ NIL
 ;;; associated with the key (use get-data-data for that)
 
 ;;; 28.11.11 SEAN: Added ROBODoc info
-#| ****m* assoc-list/get-data
+;;; ****m* assoc-list/get-data
 ;;; FUNCTION
 ;;; Return the named-object (id, tag and data) that is identified by a given
 ;;; key within a given assoc-list.  
@@ -380,6 +380,7 @@ NIL
 ;;; NIL is returned if the given key is not found in the given assoc-list.
 ;;; 
 ;;; EXAMPLE
+#|
 (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
                        :data '((jim beam)
                                (four roses)
@@ -390,16 +391,23 @@ NAMED-OBJECT: id: FOUR, tag: NIL,
 data: ROSES
 
 (get-data 'jack x)
-=> NIL
+=> 
+WARNING:
+   assoc-list::get-data: Could not find data with key JACK in assoc-list with
+   id KENTUCKY  
+NIL
 
 (get-data 'jack x t)
-=> NIL
+=> 
+WARNING:
+   assoc-list::get-data: Could not find data with key JACK in assoc-list with
+   id KENTUCKY  
+NIL
 
 (get-data 'jack x nil)
 => NIL
-
-;;; SYNOPSIS
 |#
+;;; SYNOPSIS
 (defmethod get-data (key (al assoc-list) &optional (warn t))
 ;;; ****
   (let ((pos (get-position key al)))

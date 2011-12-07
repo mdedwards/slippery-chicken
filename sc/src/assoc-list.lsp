@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 18:20:57 Wed Dec  7 2011 ICT
+;;; $$ Last modified: 18:23:35 Wed Dec  7 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 |#
@@ -336,6 +336,13 @@ data TURKEY
 
 (get-data-data 'four x)
 => ROSES
+
+(get-data-data 'jack x)
+=>
+WARNING:
+   assoc-list::get-data: Could not find data with key JACK in assoc-list with
+   id KENTUCKY  
+NIL
 |#
 ;;; SYNOPSIS
 (defmethod get-data-data (key (al assoc-list) &optional (warn t))

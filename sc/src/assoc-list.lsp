@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 19:33:00 Wed Dec  7 2011 ICT
+;;; $$ Last modified: 20:25:23 Wed Dec  7 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -57,12 +57,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass assoc-list (circular-sclist)
-  ;;****S* assoc-list/warn-not-found
-  ;; NAME
-  ;; warn-not-found
-  ;; whether to issue a warning when an index which doesn't exist is used for
-  ;; lookup.  Set to nil if you want to check for data without getting warnings.
-  ;; ****
   ((warn-not-found :accessor warn-not-found :type boolean :initarg
                    :warn-not-found :initform t)))
 

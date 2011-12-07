@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#| ****c* circular-sclist/assoc-list
+;;; ****c* circular-sclist/assoc-list
 ;;; NAME             
 ;;; assoc-list
 ;;;
@@ -20,10 +20,9 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 18:26:57 Wed Dec  7 2011 ICT
+;;; $$ Last modified: 19:33:00 Wed Dec  7 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
-|#
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
 ;;;
@@ -187,7 +186,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 28.11.11 SEAN: Added info for ROBODoc
-#| ****m* assoc-list/get-first
+;;; ****m* assoc-list/get-first
 ;;; FUNCTION
 ;;; Returns the first named-object in the data list of the given assoc-list. 
 ;;; 
@@ -198,6 +197,7 @@
 ;;; The first object in the data list of a given assoc-list.
 ;;; 
 ;;; EXAMPLE
+#|
 (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
                        :data '((jim beam)
                                (four roses)
@@ -206,9 +206,9 @@
 => 
 NAMED-OBJECT: id: JIM, tag: NIL,
 data BEAM
+|#
 ;;; 
 ;;; SYNOPSIS 
-|#
 (defmethod get-first ((al assoc-list))
 ;;; ****
   (first (data al)))
@@ -216,7 +216,7 @@ data BEAM
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 28.11.11 SEAN: Added info for ROBODoc
-#| ****m* assoc-list/get-last
+;;; ****m* assoc-list/get-last
 ;;; FUNCTION
 ;;; Returns the last named-object in the data list of a given assoc-list.
 ;;; 
@@ -227,6 +227,7 @@ data BEAM
 ;;; The last object in the data list of a given assoc-list.
 ;;; 
 ;;; EXAMPLE
+#|
 (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
                        :data '((jim beam)
                                (four roses)
@@ -265,7 +266,7 @@ data TURKEY
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 28.11.11 SEAN: Added info for ROBODoc
-#| ****m* assoc-list/get-position
+;;; ****m* assoc-list/get-position
 ;;; FUNCTION
 ;;; Returns the index position (zero-based) of a named-object within a given 
 ;;; assoc-list. 
@@ -286,6 +287,7 @@ data TURKEY
 ;;; if the optional start argument is omitted).  
 ;;; 
 ;;; EXAMPLE
+#|
 (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
                        :data '((jim beam)
                                (four roses)
@@ -425,7 +427,7 @@ NIL
 ;; because the two bars thing gets recursively make into something else???
 
 ;;; 01.12.11 SEAN: Added ROBODoc info
-#| ****m* assoc-list/add
+;;; ****m* assoc-list/add
 ;;; FUNCTION
 ;;; Add a new element to the assoc-list.
 ;;; 
@@ -445,6 +447,7 @@ NIL
 ;;; assoc-list. 
 ;;; 
 ;;; EXAMPLE
+#|
 (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
                        :data '((jim beam)
                                (four roses)
@@ -462,9 +465,8 @@ data: MARK
 
 (add '(knob creek) x '(jack daniels))
 => T
-
-;;; SYNOPSIS
 |#
+;;; SYNOPSIS
 (defmethod add (named-object (al assoc-list) &optional ignore)
 ;;; ****
   (declare (ignore ignore))  
@@ -488,7 +490,7 @@ data: MARK
 
 ;;; 01.12.11 SEAN: Added ROBODoc info
 
-#| ****m* assoc-list/set-data
+;;; ****m* assoc-list/set-data
 ;;; FUNCTION
 ;;; Replace a given named-object within a given assoc-list. This method
 ;;; replaces the whole object, not just the data of that object.
@@ -503,6 +505,7 @@ data: MARK
 ;;; Returns NIL when the given key is not present within the given assoc-list.
 ;;;
 ;;; EXAMPLE
+#|
 (setf x (make-instance 'assoc-list 
                        :data '((cat felix) 
                                (dog fido) 
@@ -519,9 +522,8 @@ data: SPOT
 => 
 NAMED-OBJECT: id: PIG, tag: NIL, 
 data: WILBUR
-
-;;; SYNOPSIS
 |#
+;;; SYNOPSIS
 (defmethod set-data (key new-value (al assoc-list))
 ;;; ****
   (setf new-value (check-or-force-named-object new-value))
@@ -540,7 +542,7 @@ data: WILBUR
 
 ;;; 01.12.11 SEAN: Added ROBODoc info
 
-#| ****m* assoc-list/add-to-list-data
+;;; ****m* assoc-list/add-to-list-data
 ;;; FUNCTION
 ;;; Add an element of any type to the end of the data (list) associated with a
 ;;; given key of a given assoc-list.
@@ -559,6 +561,7 @@ data: WILBUR
 ;;; add-to-list-data-force instead.
 ;;; 
 ;;; EXAMPLE
+#|
 (setf x (make-instance 'assoc-list
                        :data '((cat felix)
                                (dog (fido spot))
@@ -567,9 +570,8 @@ data: WILBUR
 => 
 NAMED-OBJECT: id: DOG, tag: NIL, 
 data: (FIDO SPOT ROVER)
-
-;;; SYNOPSIS
 |#
+;;; SYNOPSIS
 (defmethod add-to-list-data (new-element key (al assoc-list))
 ;;; ****
   (let ((data (get-data-data key al)))

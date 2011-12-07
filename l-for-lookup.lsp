@@ -37,7 +37,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 16:15:42 Sat Sep 18 2010 BST
+;;; $$ Last modified: 16:39:59 Wed Dec  7 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -181,7 +181,28 @@
 
 ;;; N.B. scaler and offset are ignored by this method!
 
+;;; ****m* l-for-lookup/do-simple-lookup
+;;; FUNCTION
+;;; do-simple-lookup:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod do-simple-lookup ((lflu l-for-lookup) seed stop)
+;;; ****
   (reset lflu)
   (get-l-sequence lflu seed stop)
   (loop for ref in (l-sequence lflu) collect

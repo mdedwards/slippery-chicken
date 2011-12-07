@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 18:32:07 Sat Dec  3 2011 GMT
+;;; $$ Last modified: 16:24:08 Wed Dec  7 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 |#
@@ -131,44 +131,46 @@
     cscl))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; 28.11.11 SEAN: Added info for robodoc
 
-#| ****m* assoc-list/get-keys
-;; FUNCTION
-;; Get a simple list of the keys in a given association list.
-;;
-;; ARGUMENTS:
-;; An assoc-list.
-;;
-;; RETURN VALUE: 
-;; The keys only of all top-level association list pairs in the given
-;; assoc-list. 
-;;
-;; get-keys is a method of the assoc-list class and therefore returns only
-;; top-level keys if accessing a recursive assoc-list.
-;; EXAMPLE 
-(setf x (make-instance 'assoc-list :data '((cat felix) 
-                                           (dog fido) 
-                                           (cow bessie))))
-(get-keys x)
+;;; ****m* assoc-list/get-keys
+;;; FUNCTION
+;;; Get a simple list of the keys in a given association list.
+;;;
+;;; ARGUMENTS:
+;;; An assoc-list.
+;;;
+;;; Optional argument: T or NIL (default T) to indicate whether a warning
+;;; should be issued when the first argument is a recursive assoc-list.
+;;;
+;;; RETURN VALUE: 
+;;; A list of the keys only of all top-level association list pairs in the given
+;;; assoc-list. 
+;;;
+;;; get-keys is a method of the assoc-list class and therefore returns only
+;;; top-level keys if accessing a recursive assoc-list.
+;;; EXAMPLE 
+#| 
+(let ((al (make-assoc-list 'al-test '((cat felix) 
+                                      (dog fido) 
+                                      (cow bessie)))))
+  (get-keys al))
 => (CAT DOG COW)
 
-(setf y (make-instance 'assoc-list 
-                       :data '((cat felix) 
-                               (dog ((scottish terrier)
-                                     (german shepherd)
-                                     (irish wolfhound))) 
-                               (cow bessie))))
-(get-keys y) 
+(let ((ral (make-ral 'ral-test
+                            '((cat felix) 
+                              (dog ((scottish terrier)
+                                    (german shepherd)
+                                    (irish wolfhound))) 
+                              (cow bessie)))))
+  (get-keys ral nil))
 => (CAT DOG COW)
-;;
-;; SYNOPSIS
 |# 
-(defmethod get-keys ((al assoc-list))
-;; ****
-  (when (is-ral al)
-    (warn "assoc-list::get-keys: ~
+;;; SYNOPSIS
+(defmethod get-keys ((al assoc-list) &optional (warn t))
+  ;; ****
+  (when (and warn (is-ral al))
+    (warn "assoc-list::get-keys: ~%~
            The get-keys method comes from the assoc-list class and ~
            therefore ~%only the top-level keys are returned!"))
   (loop for obj in (data al) collect (id obj)))
@@ -741,8 +743,8 @@ data: (SNOOPY SPOT ROVER)
 ;;
 ;; EXAMPLE
 (make-assoc-list 'looney-tunes '((bugs bunny)
-				 (daffy duck)
-				 (porky pig)))
+                                 (daffy duck)
+                                 (porky pig)))
 => 
 ASSOC-LIST: warn-not-found T
 CIRCULAR-SCLIST: current 0

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 17:26:23 Wed Dec  7 2011 ICT
+;;; $$ Last modified: 19:43:55 Wed Dec  7 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -305,14 +305,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;  Any rhythms in the rsb will be deleted and then rhythm objects will be
-;;; taken one by one from the <rhythms> argument until the bar is full.  The
-;;; number of rhythms used is returned.
+;;;  
 
 ;;; ****m* rthm-seq-bar/fill-with-rhythms
 ;;; FUNCTION
 ;;; fill-with-rhythms:
-;;;
+;;; Any rhythms in the rsb will be deleted and then rhythm objects will be
+;;; taken one by one from the <rhythms> argument until the bar is full.  The
+;;; number of rhythms used is returned.
 ;;; 
 ;;; 
 ;;; DATE:

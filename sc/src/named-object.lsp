@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th December 2000
 ;;;
-;;; $$ Last modified: 22:38:27 Sun Feb  6 2011 ICT
+;;; $$ Last modified: 01:14:29 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -174,6 +174,11 @@
 
 (defun make-named-object (id data &optional tag)
   (make-instance 'named-object :id id :data data :tag tag))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun named-object-p (thing)
+  (typep thing 'named-object))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

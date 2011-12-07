@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 16:24:08 Wed Dec  7 2011 ICT
+;;; $$ Last modified: 18:10:46 Wed Dec  7 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 |#
@@ -666,43 +666,51 @@ data: (SNOOPY SPOT ROVER)
 
 ;;; 26.1.11: map a function over the data in the assoc-list; returns a list of
 ;;; the return values of the function call on the data.  arguments is a list of
-;;; arguments to be passed to the function.  the function must take the data in
-;;; the assoc-list as a first argument.
+;;; arguments to be passed to the function.  the function 
 
 ;;; 01.12.11 SEAN: Added ROBODoc info
 
-#| ****m* assoc-list/map-data
+;;; ****m* assoc-list/map-data
 ;;; FUNCTION
-;;; Map a function over the data in the assoc-list and return a list with the
-;;; results of that mapping.
+;;; Map a function over the data in the assoc-list.
 ;;; 
 ;;; ARGUMENTS:
-;;; The list to which the function is to be applied, and the function itself.
-;;;
-;;; Optional argument: Further arguments for the function.
+;;; - the assoc-list to which the function is to be applied 
+;;; - the function to be applied.  This must take the data in the assoc-list as
+;;;   a first argument. 
+;;; - Optional argument(s): Further arguments for the function.
 ;;; 
 ;;; RETURN VALUE: 
 ;;; Returns a list of the values returned by the function call on the data.
 ;;; 
 ;;; EXAMPLE
-(setf x (make-instance 'assoc-list
-                       :data '((cat felix)
-                               (dog (fido spot rover))
-                               (cow bessie))))
-(map-data x #'(lambda (y) (print '-+-+-+-) (print (data y))))
-=> (FELIX (FIDO SPOT ROVER) BESSIE)
+#|
+A simple example that does nothing other than print the steps involved:
+(let ((al (make-assoc-list 'al-test
+                           '((cat felix)
+                             (dog (fido spot rover))
+                             (cow bessie)))))
+  (map-data al #'(lambda (y) (print '-+-+-+-) (print (data y)))))
+=> 
+-+-+-+- 
+FELIX 
+-+-+-+- 
+(FIDO SPOT ROVER) 
+-+-+-+- 
+BESSIE 
+(FELIX (FIDO SPOT ROVER) BESSIE)
 
-(setf x (make-instance 'assoc-list 
-                       :data '((1 (1 2 3 4))
-                               (2 (5 6 7 8))
-                               (3 (9 10 11 12)))))
-(map-data x #'(lambda (y) 
-                (loop for i in (data y) collect
-                     (* i 2))))
+Now for something that actually does something i.e. multiplies data by 2
+(let ((al (make-assoc-list 'al-test
+                           '((1 (1 2 3 4))
+                             (2 (5 6 7 8))
+                             (3 (9 10 11 12))))))
+  (map-data al #'(lambda (y) 
+                   (loop for i in (data y) collect
+                        (* i 2)))))
 => ((2 4 6 8) (10 12 14 16) (18 20 22 24))
-
-;;; SYNOPSIS
 |#
+;;; SYNOPSIS
 (defmethod map-data ((al assoc-list) function &optional further-arguments)
 ;;; ****
   (loop for no in (data al) 

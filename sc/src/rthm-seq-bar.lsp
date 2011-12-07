@@ -1,4 +1,3 @@
-;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* sclist/rthm-seq-bar
 ;;; NAME 
@@ -24,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 12:42:50 Mon Sep 26 2011 BST
+;;; $$ Last modified: 17:26:23 Wed Dec  7 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -263,7 +262,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rthm-seq-bar/delete-cmn-marks
+;;; FUNCTION
+;;; delete-cmn-marks:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-cmn-marks ((rsb rthm-seq-bar))
+;;; ****
   (loop for event in (rhythms rsb) do
         (when (event-p event)
           (delete-cmn-marks event))))
@@ -289,6 +309,26 @@
 ;;; taken one by one from the <rhythms> argument until the bar is full.  The
 ;;; number of rhythms used is returned.
 
+;;; ****m* rthm-seq-bar/fill-with-rhythms
+;;; FUNCTION
+;;; fill-with-rhythms:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod fill-with-rhythms ((rsb rthm-seq-bar) rhythms
                               &key
                               ;; 24.3.11 add this too to make sure written
@@ -300,6 +340,7 @@
                               (new-id "rhythms-inserted-by-fill-with-rhythms")
                               (warn t)
                               (is-full-error t))
+;;; ****
   (delete-rhythms rsb)
   (let ((count 
          (loop for r in rhythms and i from 1 do
@@ -333,7 +374,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rthm-seq-bar/all-rests
+;;; FUNCTION
+;;; all-rests:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod all-rests ((rsb rthm-seq-bar))
+;;; ****
   (rhythms-all-rests (rhythms rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -412,7 +474,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rthm-seq-bar/force-rest-bar
+;;; FUNCTION
+;;; force-rest-bar:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod force-rest-bar ((rsb rthm-seq-bar))
+;;; ****
   (let ((new (get-whole-bar-rest (get-time-sig rsb)))
         (first (first (rhythms rsb))))
     ;; 2.2.11 copy over some useful slots of the event class
@@ -649,7 +732,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rthm-seq-bar/delete-beams
+;;; FUNCTION
+;;; delete-beams:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-beams ((rsb rthm-seq-bar))
+;;; ****
   (setf (beams rsb) nil)
   (loop for r in (rhythms rsb) do
         (delete-beam r))
@@ -657,7 +761,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rthm-seq-bar/delete-tuplets
+;;; FUNCTION
+;;; delete-tuplets:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-tuplets ((rsb rthm-seq-bar))
+;;; ****
   (setf (tuplets rsb) nil)
   (loop for r in (rhythms rsb) do
         (delete-tuplet-bracket r)))
@@ -694,6 +819,26 @@
 ;;; Given a tuplet, this will add it to the beats of the bar.  If tuplet is
 ;;; nil, it will try to figure things out for itself.
 
+;;; ****m* rthm-seq-bar/auto-put-tuplet-bracket-on-beats
+;;; FUNCTION
+;;; auto-put-tuplet-bracket-on-beats:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod auto-put-tuplet-bracket-on-beats 
   ((rsb rthm-seq-bar) tuplet 
    &optional 
@@ -702,6 +847,7 @@
    (beat-number t)
    ;; delete the tuplets already there?
    (delete t))
+;;; ****
   (when delete 
     (delete-tuplets rsb))
   (if (not tuplet)
@@ -728,7 +874,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rthm-seq-bar/auto-beam
+;;; FUNCTION
+;;; auto-beam:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod auto-beam ((rsb rthm-seq-bar) &optional (beat nil) (check-dur t))
+;;; ****
   (unless (is-rest-bar rsb)
     (let ((beats (get-beats rsb beat check-dur))
           (start nil)
@@ -929,8 +1096,29 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rthm-seq-bar/get-nth-non-rest-rhythm
+;;; FUNCTION
+;;; get-nth-non-rest-rhythm:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-nth-non-rest-rhythm (index (rsb rthm-seq-bar)
                                     &optional (error t))
+;;; ****
   (let ((result
          (loop for r in (rhythms rsb) with i = -1 do
                (unless (is-rest r)
@@ -946,8 +1134,29 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rthm-seq-bar/get-nth-rest
+;;; FUNCTION
+;;; get-nth-rest:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-nth-rest (index (rsb rthm-seq-bar)
                          &optional (error t))
+;;; ****
   (let ((result
          (loop for r in (rhythms rsb) with i = -1 do
                (when (is-rest r)
@@ -963,8 +1172,29 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; index is 0-based of course.
+;;; ****m* rthm-seq-bar/get-nth-event
+;;; FUNCTION
+;;; get-nth-event:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-nth-event (index (rsb rthm-seq-bar)
                           &optional (error t))
+;;; ****
   (unless (integer>=0 index)
     (error "~a ~%rthm-seq-bar::get-nth-event: index = ~a!" rsb index))
   (let ((events (rhythms rsb)))
@@ -977,7 +1207,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rthm-seq-bar/get-last-event
+;;; FUNCTION
+;;; get-last-event:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-last-event ((rsb rthm-seq-bar))
+;;; ****
   (get-nth-event (1- (num-rhythms rsb)) rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -985,7 +1236,28 @@
 ;;; 28/2/07: gets the nth note that needs an attack, i.e. not a rest and not
 ;;; tied.  
 
+;;; ****m* rthm-seq-bar/get-nth-attack
+;;; FUNCTION
+;;; get-nth-attack:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-nth-attack (index (rsb rthm-seq-bar) &optional (warn t))
+;;; ****
   (if (or (< index 0)
           (>= index (notes-needed rsb)))
       (when warn
@@ -1010,8 +1282,29 @@
 ;;; NB Always returns a new rsb
 ;;; Just re-creates scaled rhythms with beams etc. where appropriate 
 
+;;; ****m* rthm-seq-bar/scale
+;;; FUNCTION
+;;; scale:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod scale ((rsb rthm-seq-bar) scaler
                   &optional ignore1 ignore2 ignore3)
+;;; ****
   (declare (ignore ignore1) (ignore ignore2) (ignore ignore3))
   (let* ((new-time-sig (scale (get-time-sig rsb) scaler))
          (result (make-rest-bar new-time-sig (write-time-sig rsb))))
@@ -1081,8 +1374,29 @@
 ;;; tied.  
 ;;; NB this does not check that the right rhythms are now in the bars!
 
+;;; ****m* rthm-seq-bar/set-nth-attack
+;;; FUNCTION
+;;; set-nth-attack:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-nth-attack (index (e event) (rsb rthm-seq-bar) 
                            &optional (warn t))
+;;; ****
   (if (or (< index 0)
           (>= index (notes-needed rsb)))
       (when warn
@@ -1106,7 +1420,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rthm-seq-bar/get-last-attack
+;;; FUNCTION
+;;; get-last-attack:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-last-attack ((rsb rthm-seq-bar) &optional (warn t))
+;;; ****
   (get-nth-attack (1- (notes-needed rsb)) rsb warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1150,6 +1485,8 @@
   rsb)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Intra-phrasal looping
 ;;; Creates a list of new bars (with new time signatures) formed by chopping
 ;;; the current bar at points given in chop-points.  This is a list of
 ;;; 2-element lists each of which specifies the start and end points of a beat
@@ -1157,8 +1494,29 @@
 ;;; used for all beats in the bar (so specifying chop-points adding up to a
 ;;; quarter note then trying to apply that to a 5/8 bar won't work).
 
+;;; ****m* rthm-seq-bar/chop
+;;; FUNCTION
+;;; chop:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod chop ((rsb rthm-seq-bar) 
                  &optional chop-points (unit 's) rthm-seq-id)
+;;; ****
   (declare (ignore ignore))
   (let* ((quarter-in-semiquavers
           ;; these are the chop points for a quarter note being divided into
@@ -1428,18 +1786,81 @@
 
 ;;; Return the time-sig object for this bar.
 
+;;; ****m* rthm-seq-bar/get-time-sig
+;;; FUNCTION
+;;; get-time-sig:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-time-sig ((rsb rthm-seq-bar) &optional ignore)
+;;; ****
   (declare (ignore ignore))
   (nth (time-sig rsb) (all-time-sigs rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rthm-seq-bar/get-time-sig-as-list
+;;; FUNCTION
+;;; get-time-sig-as-list:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-time-sig-as-list ((rsb rthm-seq-bar))
+;;; ****
   (data (get-time-sig rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rthm-seq-bar/time-sig-equal
+;;; FUNCTION
+;;; time-sig-equal:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod time-sig-equal ((rsb1 rthm-seq-bar) (rsb2 rthm-seq-bar))
+;;; ****
   (time-sig-equal (get-time-sig rsb1) (get-time-sig rsb2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2035,6 +2456,26 @@
 
 ;;; Returns a clone of the rsb (whether destructively is nil or not).
 
+;;; ****m* rthm-seq-bar/transpose
+;;; FUNCTION
+;;; transpose:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod transpose ((rsb rthm-seq-bar) semitones
                       &key
                       ;; when t, then the events will be replaced by the
@@ -2044,6 +2485,7 @@
                       ;; or chord.
                       (chord-function #'transpose)
                       (pitch-function #'transpose))
+;;; ****
   (let ((result (clone rsb))
         (events (loop for event in (rhythms rsb) do
                   (unless (event-p event)
@@ -2141,8 +2583,29 @@
 ;;; seeing if this results in less accidentals in the bar (bar 201 pno-lh of
 ;;; cheat sheet for instance. 
 
+;;; ****m* rthm-seq-bar/respell-bar
+;;; FUNCTION
+;;; respell-bar:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod respell-bar ((rsb rthm-seq-bar) sc player 
                         &optional written last-attack-previous-bar)
+;;; ****
   (loop 
       with p
       ;; with p-enh
@@ -2231,7 +2694,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 26.9.11: forces all notes in bar to their enharmonic equivalent
 
+;;; ****m* rthm-seq-bar/enharmonic
+;;; FUNCTION
+;;; enharmonic:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod enharmonic ((rsb rthm-seq-bar) &key written force-naturals)
+;;; ****
   (loop for r in (rhythms rsb) do
        (enharmonic r :written written :force-naturals force-naturals)))
 
@@ -2294,8 +2778,29 @@
 ;;; (this is meant to be done at the rthm-seq stage, not once the whole piece
 ;;; has been generated).
 ;;; returns a list of new rthm-seq-bars if successful or nil if not.
+;;; ****m* rthm-seq-bar/split
+;;; FUNCTION
+;;; split:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod split ((rsb rthm-seq-bar) &key
                   (min-beats 2) (max-beats 5) warn ignore)
+;;; ****
   (declare (ignore ignore))
   (let* ((ts (get-time-sig rsb))
          (num-mult (if (compound ts) 3 1))
@@ -2344,14 +2849,58 @@
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 20.7.11 (Pula)
+;;; ****m* rthm-seq-bar/set-written
+;;; FUNCTION
+;;; set-written:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-written ((rsb rthm-seq-bar) transposition)
+;;; ****
   (loop for event in (rhythms rsb) do
        (set-written event transposition)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rthm-seq-bar/delete-written
+;;; FUNCTION
+;;; delete-written:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-written ((rsb rthm-seq-bar))
+;;; ****
   (loop for event in (rhythms rsb) do
        (delete-written event)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 1-based and inclusive and counting rests and ties, not just struck notes
 ;;; if end-event is nil go to the end of the bar
 (defmethod make-rests ((rsb rthm-seq-bar) start-event &optional end-event)
@@ -2370,20 +2919,85 @@
   (gen-stats rsb)
   t)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* rthm-seq-bar/set-midi-channel
+;;; FUNCTION
+;;; set-midi-channel:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-midi-channel ((rsb rthm-seq-bar) midi-channel
                              microtonal-midi-channel)
+;;; ****
   (loop for e in (rhythms rsb) do
        (set-midi-channel e midi-channel microtonal-midi-channel)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 22.9.11 
+;;; ****m* rthm-seq-bar/reset-8va
+;;; FUNCTION
+;;; reset-8va:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod reset-8va ((rsb rthm-seq-bar))
+;;; ****
   (loop for r in (rhythms rsb) do
        (reset-8va r)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 23.9.11 
+;;; ****m* rthm-seq-bar/set-8va
+;;; FUNCTION
+;;; set-8va:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-8va ((rsb rthm-seq-bar) 8va)
+;;; ****
   (loop for r in (rhythms rsb) do
        (setf (8va r) 8va)))
 
@@ -2393,7 +3007,28 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* rthm-seq-bar/make-rthm-seq-bar
+;;; FUNCTION
+;;; make-rthm-seq-bar:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-rthm-seq-bar (rhythms &optional name)
+;;; ****
   (if (rthm-seq-bar-p rhythms)
       rhythms
     (make-instance 'rthm-seq-bar :data rhythms :id name)))
@@ -2405,11 +3040,32 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* rthm-seq-bar/make-rest-bar
+;;; FUNCTION
+;;; make-rest-bar:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-rest-bar (time-sig write-time-sig &optional 
                                               (show-rest t)
                                               missing-duration
                                               player-section-ref nth-seq
                                               nth-bar)
+;;; ****
   (let* ((ts (if (typep time-sig 'time-sig) 
                  time-sig
                (make-time-sig time-sig)))

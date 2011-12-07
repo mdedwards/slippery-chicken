@@ -1,4 +1,3 @@
-;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* assoc-list/l-for-lookup
 ;;; NAME 
@@ -33,11 +32,20 @@
 ;;;                   The transition is based on a fibonacci algorithm
 ;;;                   (see below).
 ;;;
+;;;                   The sequences are stored in the data slot. The l-sequence
+;;;                   will be a list like (3 1 1 2 1 2 2 3 1 2 2 3 2 3 3 1).
+;;;                   These are the references into the assoc-list (the 1, 2, 3
+;;;                   ids in the list below).
+;;;
+;;;                   e.g. ((1 ((2 3 7) (11 16 12)))
+;;;                         (2 ((4 5 9) (13 14 17)))
+;;;                         (3 ((1 6 8) (15 18 19))))
+;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 16:39:59 Wed Dec  7 2011 ICT
+;;; $$ Last modified: 16:59:56 Wed Dec  7 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -73,14 +81,6 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; The sequences are stored in the data slot
-;;; The l-sequence will be a list like (3 1 1 2 1 2 2 3 1 2 2 3 2 3 3 1).
-;;; These are the references into the assoc-list (the 1, 2, 3 ids in the list
-;;; below).  
-;;; e.g. ((1 ((2 3 7) (11 16 12)))
-;;;       (2 ((4 5 9) (13 14 17)))
-;;;       (3 ((1 6 8) (15 18 19))))
 
 (defclass l-for-lookup (assoc-list)
   ((rules :accessor rules :type assoc-list :initarg :rules :initform nil)
@@ -175,17 +175,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; do-lookup does the transitioning between groups and circular returning from
-;;; lists.  Sometimes we want a simple lookup procedure where a ref always
-;;; returns a specific and single piece of data.
-
-;;; N.B. scaler and offset are ignored by this method!
-
 ;;; ****m* l-for-lookup/do-simple-lookup
 ;;; FUNCTION
 ;;; do-simple-lookup:
 ;;;
-;;; 
+;;; do-lookup does the transitioning between groups and circular returning from
+;;; lists.  Sometimes we want a simple lookup procedure where a ref always
+;;; returns a specific and single piece of data.
+;;; N.B. scaler and offset are ignored by this method!
 ;;; 
 ;;; DATE:
 ;;; 
@@ -232,42 +229,43 @@
 ;;; - the l-sequence
 ;;; 
 ;;; EXAMPLE
-;;; (let ((x (make-l-for-lookup 
-;;;          'ternary-lfl
-;;;           ;; the sequences
-;;;           ;; so the transition takes place over the 3 given lists and
-;;;           ;; i.e. from x to y to z, and each time one of these lists is
-;;;           ;; used, it will circularly return the next value.
-;;;          '((1 ((ax1 ax2 ax3) (ay1 ay2 ay3 ay4)     (az2)))
-;;;            (2 ((bx1 bx2 bx3) (by1 by2 by3 by4 by5) (bz1 bz2 bz3)))
-;;;            (3 ((cx1 cx2 cx3) (cy2 cy2 cy3)         (cz1 cz2))))
-;;;           ;; the rules
-;;;          '((1 (1 2 2 2 1 1))
-;;;            (2 (2 1 2 3 2 1))
-;;;            (3 (2 3 2 2 2 3 3))))))
-;;;  (do-lookup x 1 200))
-;;;  -->
-;;; (AX1 BX1 BX2 BX3 AX2 AX3 BX1 AX1 BX2 CX1 BX3 AX2 BX1 AX3 BX2 CX2 BX3 AX1 BX1
-;;;  AY1 BX2 CY2 BX3 AX2 AX3 BY1 BX1 BX2 AX1 AX2 AY2 BX3 BX1 BX2 AX3 AX1 BX3 AY3
-;;;  BX1 CX3 BY2 AX2 AY4 BX2 BX3 BX1 AX3 AY1 BX2 AX1 BY3 CY2 BX3 AY2 BX1 CX1 BY4
-;;;  BX2 BY5 CY3 CY2 BY1 AY3 BX3 CY2 BY2 AX2 AY4 BX1 BY3 BY4 AX3 AY1 BX2 AX1 BY5
-;;;  CX2 BY1 AY2 AY3 BY2 BY3 BX3 AX2 AY4 BY4 AY1 BY5 CY3 BY1 AY2 BY2 CY2 BY3 BY4
-;;;  BY5 CY2 CY3 BY1 AY3 BY2 CY2 BY3 AY4 AY1 BY4 BY5 BY1 AY2 AY3 BY2 AY4 BY3 CZ1
-;;;  BY4 AY1 AY2 BY5 BY1 BY2 AY3 AZ2 BY3 AY4 BZ1 CY2 BY4 AY1 BY5 CZ2 BY1 BY2 BY3
-;;;  CY3 CZ1 BY4 AY2 BY5 CZ2 BZ2 AY3 AZ2 BY1 BY2 BY3 AY4 AY1 AZ2 BY4 BZ3 BY5 AY2
-;;;  AZ2 BY1 AY3 BZ1 CZ1 BY2 AZ2 BZ2 AY4 BZ3 CY2 BY3 AZ2 BZ1 AZ2 BY4 CZ2 BZ2 AY1
-;;;  AZ2 BZ3 BY5 BZ1 AY2 AZ2 AY3 BZ2 BZ3 BZ1 AZ2 AZ2 AY4 BY1 BZ2 BZ3 AZ2 AZ2 BZ1
-;;;  AZ2 BZ2 CZ1 BZ3 AZ2 BZ1 AZ2 BZ2 CZ2 BZ3)
-;;; ((CX3 1) (CX1 2) (BX1 10) (AX3 6) (BX2 10) (AX1 7) (CX2 2) (BX3 10) (AX2 7)
-;;;  (CY3 4) (BY2 10) (CY2 9) (BY3 10) (BY4 10) (AY1 9) (BY5 10) (AY2 9) (AY3 9)
-;;;  (AY4 9) (BY1 11) (CZ1 4) (BZ1 7) (AZ2 16) (BZ2 7) (CZ2 4) (BZ3 7))
-;;; (1 2 2 2 1 1 2 1 2 3 2 1 2 1 2 3 2 1 2 1 2 3 2 1 1 2 2 2 1 1 1 2 2 2 1 1 2
-;;;  1 2 3 2 1 1 2 2 2 1 1 2 1 2 3 2 1 2 3 2 2 2 3 3 2 1 2 3 2 1 1 2 2 2 1 1 2
-;;;  1 2 3 2 1 1 2 2 2 1 1 2 1 2 3 2 1 2 3 2 2 2 3 3 2 1 2 3 2 1 1 2 2 2 1 1 2
-;;;  1 2 3 2 1 1 2 2 2 1 1 2 1 2 3 2 1 2 3 2 2 2 3 3 2 1 2 3 2 1 1 2 2 2 1 1 1
-;;;  2 2 2 1 1 2 1 2 3 2 1 2 1 2 3 2 1 2 1 2 3 2 1 1 2 2 2 1 1 1 2 2 2 1 1 1 2
-;;;  2 2 1 1 2 1 2 3 2 1 2 1 2 3 2)
-
+#|
+(let ((x (make-l-for-lookup 
+          'ternary-lfl
+          ;; the sequences
+          ;; so the transition takes place over the 3 given lists and
+          ;; i.e. from x to y to z, and each time one of these lists is
+          ;; used, it will circularly return the next value.
+          '((1 ((ax1 ax2 ax3) (ay1 ay2 ay3 ay4)     (az2)))
+            (2 ((bx1 bx2 bx3) (by1 by2 by3 by4 by5) (bz1 bz2 bz3)))
+            (3 ((cx1 cx2 cx3) (cy2 cy2 cy3)         (cz1 cz2))))
+          ;; the rules
+          '((1 (1 2 2 2 1 1))
+            (2 (2 1 2 3 2 1))
+            (3 (2 3 2 2 2 3 3))))))
+  (do-lookup x 1 200))
+ =>
+(AX1 BX1 BX2 BX3 AX2 AX3 BX1 AX1 BX2 CX1 BX3 AX2 BX1 AX3 BX2 CX2 BX3 AX1 BX1
+ AY1 BX2 CY2 BX3 AX2 AX3 BY1 BX1 BX2 AX1 AX2 AY2 BX3 BX1 BX2 AX3 AX1 BX3 AY3
+ BX1 CX3 BY2 AX2 AY4 BX2 BX3 BX1 AX3 AY1 BX2 AX1 BY3 CY2 BX3 AY2 BX1 CX1 BY4
+ BX2 BY5 CY3 CY2 BY1 AY3 BX3 CY2 BY2 AX2 AY4 BX1 BY3 BY4 AX3 AY1 BX2 AX1 BY5
+ CX2 BY1 AY2 AY3 BY2 BY3 BX3 AX2 AY4 BY4 AY1 BY5 CY3 BY1 AY2 BY2 CY2 BY3 BY4
+ BY5 CY2 CY3 BY1 AY3 BY2 CY2 BY3 AY4 AY1 BY4 BY5 BY1 AY2 AY3 BY2 AY4 BY3 CZ1
+ BY4 AY1 AY2 BY5 BY1 BY2 AY3 AZ2 BY3 AY4 BZ1 CY2 BY4 AY1 BY5 CZ2 BY1 BY2 BY3
+ CY3 CZ1 BY4 AY2 BY5 CZ2 BZ2 AY3 AZ2 BY1 BY2 BY3 AY4 AY1 AZ2 BY4 BZ3 BY5 AY2
+ AZ2 BY1 AY3 BZ1 CZ1 BY2 AZ2 BZ2 AY4 BZ3 CY2 BY3 AZ2 BZ1 AZ2 BY4 CZ2 BZ2 AY1
+ AZ2 BZ3 BY5 BZ1 AY2 AZ2 AY3 BZ2 BZ3 BZ1 AZ2 AZ2 AY4 BY1 BZ2 BZ3 AZ2 AZ2 BZ1
+ AZ2 BZ2 CZ1 BZ3 AZ2 BZ1 AZ2 BZ2 CZ2 BZ3)
+((CX3 1) (CX1 2) (BX1 10) (AX3 6) (BX2 10) (AX1 7) (CX2 2) (BX3 10) (AX2 7)
+ (CY3 4) (BY2 10) (CY2 9) (BY3 10) (BY4 10) (AY1 9) (BY5 10) (AY2 9) (AY3 9)
+ (AY4 9) (BY1 11) (CZ1 4) (BZ1 7) (AZ2 16) (BZ2 7) (CZ2 4) (BZ3 7))
+(1 2 2 2 1 1 2 1 2 3 2 1 2 1 2 3 2 1 2 1 2 3 2 1 1 2 2 2 1 1 1 2 2 2 1 1 2 1 2
+ 3 2 1 1 2 2 2 1 1 2 1 2 3 2 1 2 3 2 2 2 3 3 2 1 2 3 2 1 1 2 2 2 1 1 2 1 2 3 2
+ 1 1 2 2 2 1 1 2 1 2 3 2 1 2 3 2 2 2 3 3 2 1 2 3 2 1 1 2 2 2 1 1 2 1 2 3 2 1 1
+ 2 2 2 1 1 2 1 2 3 2 1 2 3 2 2 2 3 3 2 1 2 3 2 1 1 2 2 2 1 1 1 2 2 2 1 1 2 1 2
+ 3 2 1 2 1 2 3 2 1 2 1 2 3 2 1 1 2 2 2 1 1 1 2 2 2 1 1 1 2 2 2 1 1 2 1 2 3 2 1
+ 2 1 2 3 2)
+|#
 ;;; SYNOPSIS
 (defmethod do-lookup ((lflu l-for-lookup) seed stop &optional scaler)
 ;;; ****
@@ -298,7 +296,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* l-for-lookup/reset
+;;; FUNCTION
+;;; reset:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod reset ((lflu l-for-lookup) &optional ignore)
+;;; ****
   (declare (ignore ignore))
   (loop for no in (data lflu) do
         (loop for cscl in (data no) do
@@ -366,20 +385,21 @@
 ;;; a list of results of user-defined length
 ;;; 
 ;;; EXAMPLE
-;;; (defparameter +amore-notes-progression+
-;;;   (make-l-for-lookup 'amore-notes-progressions
-;;;                      '((1 ((2)))
-;;;                        (2 ((1 3)))
-;;;                        (3 ((4 2)))
-;;;                        (4 ((6 3 5)))
-;;;                        (5 ((2 4)))
-;;;                        (6 ((4 7)))
-;;;                        (7 ((3))))
-;;;                      nil))
-;;;                      
-;;; (get-linear-sequence +amore-notes-progression+ 2 30) ->
-;;; (1 2 3 2 1 2 3 4 5 2 1 2 3 2 1 2 3 4 6 7 3 2 1 2 3 4 3 2 1 2)
-;;; 
+#|
+(defparameter +amore-notes-progression+
+  (make-l-for-lookup 'amore-notes-progressions
+                     '((1 ((2)))
+                       (2 ((1 3)))
+                       (3 ((4 2)))
+                       (4 ((6 3 5)))
+                       (5 ((2 4)))
+                       (6 ((4 7)))
+                       (7 ((3))))
+                     nil))
+                     
+(get-linear-sequence +amore-notes-progression+ 2 30) 
+=> (1 2 3 2 1 2 3 4 5 2 1 2 3 2 1 2 3 4 6 7 3 2 1 2 3 4 3 2 1 2)
+|#
 ;;; SYNOPSIS
 (defmethod get-linear-sequence ((lflu l-for-lookup) seed stop-length
                                 &optional (reset t))
@@ -420,20 +440,21 @@
 ;;; The l-sequence as a list.
 ;;; 
 ;;; EXAMPLE
-;;; (defparameter +amore-notes-progression+
-;;;   (make-l-for-lookup 'amore-notes-progressions 
-;;;                  nil
-;;;                  '((1 (2))
-;;;                    (2 (1 3))
-;;;                    (3 (4 2))
-;;;                    (4 (6 3 5))
-;;;                    (5 (2 4))
-;;;                    (6 (4 7))
-;;;                    (7 (3)))))
-;;; (get-l-sequence +amore-notes-progression+ 2 30) -->
-;;; (2 4 2 4 7 4 2 2 4 2 4 2 4 7 4 2 2 4 4 2 4 7 4 2 2 4 2 4 2 2)
-;;; (0 14 0 13 0 0 3)
-;;; 
+#|
+(defparameter +amore-notes-progression+
+  (make-l-for-lookup 'amore-notes-progressions 
+                 nil
+                 '((1 (2))
+                   (2 (1 3))
+                   (3 (4 2))
+                   (4 (6 3 5))
+                   (5 (2 4))
+                   (6 (4 7))
+                   (7 (3)))))
+(get-l-sequence +amore-notes-progression+ 2 30) 
+=> (2 4 2 4 7 4 2 2 4 2 4 2 4 7 4 2 2 4 4 2 4 7 4 2 2 4 2 4 2 2)
+   (0 14 0 13 0 0 3)
+|#
 ;;; SYNOPSIS
 (defmethod get-l-sequence ((lflu l-for-lookup) seed stop-length)
 ;;; ****
@@ -508,8 +529,9 @@
 ;;; 
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
+#|
+
+|#
 ;;; SYNOPSIS
 (defun make-l-for-lookup (id sequences rules &key (auto-check-redundancy nil)
                                                   (offset 0)
@@ -597,7 +619,28 @@
 ;;; (fibonacci 20) -> (8 5 3 2 1 1 0) 20
 ;;; (fibonacci-start-at-2 20) -> (8 5 3 2) 18
 
+;;; ****f* l-for-lookup/fibonacci-start-at-2
+;;; FUNCTION
+;;; fibonacci-start-at-2:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun fibonacci-start-at-2 (max-sum)
+;;; ****
   (multiple-value-bind
       (series sum)
       (fibonacci (+ 2 max-sum)) ; + 2 so we can hit max-sum if need be
@@ -626,9 +669,10 @@
 ;;; a list of the transition
 ;;; 
 ;;; EXAMPLE
-;;; (fibonacci-transition 35 0 1) ->
-;;; (0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 1 0 1 0 1 0 1 0 1 0 1 0 1 1 0 1 1 1 1 1)
-;;; 
+#|
+(fibonacci-transition 35 0 1)
+=> (0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 1 0 1 0 1 0 1 0 1 0 1 0 1 1 0 1 1 1 1 1)
+|#
 ;;; SYNOPSIS
 (defun fibonacci-transition (num-items &optional
                                        (item1 0)
@@ -751,11 +795,13 @@
 ;;; a list of transitions of length <total-items>
 ;;; 
 ;;; EXAMPLE
-;;; (fibonacci-transitions 100 4) -->
-;;; (0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 1 0 0 1 0 1 0 1 1 0 1 1 0 1 1 1 1 1 1 1
-;;;  1 1 2 1 1 2 1 1 2 1 2 1 2 2 1 2 2 1 2 2 2 2 2 2 2 2 2 3 2 2 3 2 2 3 2 3 2 3
-;;;  3 2 3 3 2 3 3 3 3 3 2 3 3 3 3 3 3 3 3 3 3 3 3 3 3)
-;;; 
+#|
+(fibonacci-transitions 100 4) 
+=>
+(0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 1 0 0 1 0 1 0 1 1 0 1 1 0 1 1 1 1 1 1 1
+ 1 1 2 1 1 2 1 1 2 1 2 1 2 2 1 2 2 1 2 2 2 2 2 2 2 2 2 3 2 2 3 2 2 3 2 3 2 3
+ 3 2 3 3 2 3 3 3 3 3 2 3 3 3 3 3 3 3 3 3 3 3 3 3 3)
+|#
 ;;; SYNOPSIS
 (defun fibonacci-transitions (total-items levels)
 ;;; ****
@@ -827,9 +873,10 @@
 ;;; number of times it occurs.
 ;;; 
 ;;; EXAMPLE
-;;; (count-elements '(1 4 5 7 3 4 1 5 4 8 5 7 3 2 3 6 3 4 5 4 1 4 8 5 7 3 2)) 
-;;;     -> ((1 3) (2 2) (3 5) (4 6) (5 5) (6 1) (7 3) (8 2))
-;;; 
+#|
+(count-elements '(1 4 5 7 3 4 1 5 4 8 5 7 3 2 3 6 3 4 5 4 1 4 8 5 7 3 2)) 
+=> ((1 3) (2 2) (3 5) (4 6) (5 5) (6 1) (7 3) (8 2))
+|#
 ;;; SYNOPSIS
 (defun count-elements (list)
 ;;; ****

@@ -1,4 +1,3 @@
-;;; 02.12.11 SEAN: Changed robodoc header (deleted underscore)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****h* sc/permutations
 ;;; NAME 
@@ -18,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 12:42:48 Thu Feb  3 2011 ICT
+;;; $$ Last modified: 17:08:47 Wed Dec  7 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -53,16 +52,35 @@
 
 (in-package :slippery-chicken)
 
-;;; todo: for robodoc, this shouldn't be a class
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; returns the elements of <list> permutated and as a flat list, unless 
 ;;; <sublists> is t whereupon the the result is a list of lists each one 
 ;;; a permutation of <list>
 
+;;; ****f* permutations/inefficiently-permutate
+;;; FUNCTION
+;;; inefficiently-permutate:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun inefficiently-permutate (list &key (max nil) (skip 0) (fix t)
                                           (sublists nil))
+;;; ****
   (let ((permutations (inefficient-permutations (length list)
                                                 :max max
                                                 :skip skip
@@ -84,7 +102,28 @@
 ;;; <skip> allows you to skip a number of permutations, which only makes sense
 ;;; if fix is t.
 
+;;; ****f* permutations/inefficient-permutations
+;;; FUNCTION
+;;; inefficient-permutations:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun inefficient-permutations (level &key (max nil) (skip 0) (fix t))
+;;; ****
   (let* ((result '())
          (natural-max (loop for i from 2 to level with j = 1 do 
                            (setf j (* j i)) 
@@ -128,7 +167,28 @@
 ;;;  (0 3 2 1) (3 0 2 1) (2 3 0 1) (3 2 0 1) (1 2 3 0) (2 1 3 0) (1 3 2 0)
 ;;;  (3 1 2 0) (2 3 1 0) (3 2 1 0))
 
+;;; ****f* permutations/permutations
+;;; FUNCTION
+;;; permutations:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun permutations (level)
+;;; ****
   (if (> level 8)
       (let ((stream (open "permutations.txt"
                           :direction :output :if-exists :overwrite
@@ -160,7 +220,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* permutations/permutate
+;;; FUNCTION
+;;; permutate:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun permutate (list)
+;;; ****
   (loop for p in (permutations (length list)) collect
       (loop for e in p collect (nth e list))))
 
@@ -557,15 +638,56 @@
             (make-random-state state)
             (error "permutations::random-rep: Repeatable random-state not ~
                     yet implemented for this lisp."))))
+  ;; ****f* permutations/random-rep
+  ;; FUNCTION
+  ;; random-rep:
+  ;;
+  ;; 
+  ;; 
+  ;; DATE:
+  ;; 
+  ;; 
+  ;; ARGUMENTS:
+  ;; 
+  ;; 
+  ;; RETURN VALUE: 
+  ;; 
+  ;; 
+  ;; EXAMPLE
+  #|
+
+  |#
+  ;; SYNOPSIS
   (defun random-rep (below &optional (reset nil))
+    ;; ****
     (when reset
       (setf current-state (make-random-state state)))
     (random below current-state)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Stolen and modified from Common Music
+;;; Modified from Common Music's shuffle function :)
 
+;;; ****f* permutations/shuffle
+;;; FUNCTION
+;;; shuffle:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun shuffle (seq &key 
                     (start 0) 
                     (end (length seq))
@@ -573,6 +695,7 @@
                     (fix t)
                     (reset t)
                     &aux (width (- end start)))
+;;; ****
   (if (< width 2)
       seq
     (progn
@@ -595,12 +718,33 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* permutations/multi-shuffle
+;;; FUNCTION
+;;; multi-shuffle:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun multi-shuffle (seq num-shuffles &key 
                                        (start 0) 
                                        (end (length seq))
                                        (copy t)
                                        (fix t)
                                        (reset t))
+;;; ****
   (loop 
       with result = seq
                     ;; repeat num-shuffles 
@@ -612,7 +756,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* permutations/multi-shuffle-with-perms
+;;; FUNCTION
+;;; multi-shuffle-with-perms:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun multi-shuffle-with-perms (seq num-shuffles)
+;;; ****
   (if (zerop num-shuffles)
       seq
     (let* ((len (length seq))
@@ -632,7 +797,28 @@
 ;;; (move-repeats '(1 2 3 3 4 5 6 7 8 8 9 10)) ->
 ;;; (1 2 3 4 3 5 6 7 8 9 8 10)
 
+;;; ****f* permutations/move-repeats
+;;; FUNCTION
+;;; move-repeats:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun move-repeats (list &optional (test #'eq))
+;;; ****
   (let ((result (list (first list)))
         (rest (rest list)))
     (loop
@@ -677,7 +863,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; More permutation routines, stolen/found at 
+;;; More permutation routines; found at 
 ;;; http://groups.google.com.ai/group/comp.lang.lisp/browse_thread/thread/
 ;;; e9313dd883b48008/ce4e2243623a16e7?lnk=raot on 6/7/09
 
@@ -797,6 +983,7 @@
                             (push perm perms))))
     perms))
 
+#|
 ;; examples
 ;;   .
 ;;    .
@@ -812,6 +999,7 @@
                       (lambda (x)
                         (print-it x)
                         (read-char)))) 
+|#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF permutations.lsp

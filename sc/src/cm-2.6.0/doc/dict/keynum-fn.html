@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>keynum</title>
+</head>
+<body>
+<div id="content">
+
+<!-- Entry: "keynum" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">keynum</code> <var>freq</var> {<var>keyword</var> <var>value</var>}*<code>)</code></dd>
+</dl>
+
+<p>
+Returns the key number of <var>freq</var>, which can be a note name,
+key number, Hertz value or list of the same. If <var>freq</var> is in
+Hertz then the return value will be a <em>floating point keynum</em>
+where the fractional portion times 100 represents that may cents above
+the integer keynum. For example, the floating point keynum 60.5 stands
+for the Hertz value 50 cents above Middle C, or 269.291 Hz.
+</p>
+
+<p>
+<code class="entry">keynum</code> supports the following keyword arguments:
+</p>
+
+<dl>
+<dt><code class="keyword">:hz</code> <var>boolean</var></dt>
+<dd>
+If <var>true</var> then a numerical <var>freq</var> is interpreted as
+a Hertz value rather than as a key number.
+</dd>
+
+<dt><code class="keyword">:in</code> {<a href="tuning-cls.html"> <var>tuning</var></a> | <a href="mode-cls.html"> <var>mode</var></a>}</dt>
+<dd>
+The tuning or mode to return the key number from. The default value
+is <a href="scale-var.html"><code>*scale*</code></a>.
+If <var>mode</var> is specified then <var>freq</var> is a modal key
+number and the value returned is the equivalent key number in the
+mode's tuning.
+</dd>
+
+<dt><code class="keyword">:in?</code>  {<a
+href="tuning-cls.html"> <var>tuning</var></a> | <a
+href="mode-cls.html"> <var>mode</var></a>}</dt>
+<dd>
+Tests if <var>freq</var> references a key number in 
+<var>tuning</var> or <var>mode</var>. Returns the key number
+or <var>false</var>.
+</dd>
+
+<dt><code class="keyword">:to</code> <var>mode</var></dt>
+<dd>
+Forces <var>freq</var> to the closet key number in <var>mode</var>.
+</dd>
+
+<dt><code class="keyword">:through</code> {<a
+href="tuning-cls.html"> <var>tuning</var></a> | <a
+href="mode-cls.html"> <var>mode</var></a>}</dt>
+<dd>
+Filters <var>freq</var> through <var>tuning</var> or <var>mode</var>
+and returns the closest integer tuning keynum.
+</dd>
+
+</dl>
+
+<h4>Examples:</h4>
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Converting Hertz and note names to keynums.
+</p>
+<pre class="code">
+(keynum 'c4)
+<span class="result">&rArr;</span> 60
+(keynum 440 <span class="keyword">:hz</span> #t)
+<span class="result">&rArr;</span> 69
+(keynum 446.4 <span class="keyword">:hz</span> #t)
+<span class="result">&rArr;</span> 69.25
+(keynum 446.4 <span class="keyword">:hz</span> #t <span class="keyword">:through</span> *scale*)
+<span class="result">&rArr;</span> 69
+(keynum '(cs5 ds fs gs as cs6))
+<span class="result">&rArr;</span> (73 75 78 80 82 85)
+</pre>
+</div>
+
+</p>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Modal keynums.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">dorian</span> (<a href="new-mac.html">new</a> <a href="mode-cls.html">mode</a> <span class="keyword">:notes</span> '(c d ef f g a b c)))
+
+(keynum 60 <span class="keyword">:to</span> dorian)
+<span class="result">&rArr;</span> 35
+(keynum 35 <span class="keyword">:in</span> dorian)
+<span class="result">&rArr;</span> 60
+(keynum 61 <span class="keyword">:in?</span> dorian)
+<span class="result">&rArr;</span> #f
+(keynum 61 <span class="keyword">:through</span> dorian)
+<span class="result">&rArr;</span> 60
+</pre>
+</div>
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="hertz-fn.html"><kbd>hertz</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="invert-fn.html"><kbd>invert</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="note-fn.html"><kbd>note</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="note-accidental-fn.html"><kbd>note-accidental</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="note-name-fn.html"><kbd>note-name</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="octave-number-fn.html"><kbd>octave-number</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="pitch-class-fn.html"><kbd>pitch-class</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="prime-form-fn.html"><kbd>prime-form</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scale-max-fn.html"><kbd>scale-max</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scale-min-fn.html"><kbd>scale-min</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scale-mod-fn.html"><kbd>scale-mod</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scale-order-fn.html"><kbd>scale-order</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scalelt-fn.html"><kbd>scale&lt;</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scalelteql-fn.html"><kbd>scale&lt;=</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scaleeql-fn.html"><kbd>scale=</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scalegt-fn.html"><kbd>scale&gt;</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scalegteql-fn.html"><kbd>scale&gt;=</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="transpose-fn.html"><kbd>transpose</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.6 $, $Date: 2005/02/13 02:17:47 $)</div>
+</div>
+</body>
+</html>
+
+

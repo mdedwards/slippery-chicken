@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>axis</title>
+</head>
+<body>
+<div id="content">
+
+<!-- Entry: "axis" -->
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">axis</code></dd>
+</dl>
+
+<p>
+Implements axis displays for the horizontal and vertical dimensions of
+a <a href="plotter-topic.html">Plotter</a> window. Use <a
+href="log-axis-cls.html"><code>log-axis</code></a> for logarithmic
+displays.
+</p>
+
+<p id="args"><code class="entry">axis</code> supports the following slot initializations:
+</p>
+
+<dl>
+
+<dt><code class="keyword">:minimum</code> <var>number</var></dt>
+<dd>The minimum value displayed on the axis. Defaults to 0.</dd>
+
+<dt><code class="keyword">:maximum</code> <var>number</var></dt>
+<dd>The maximum value displayed on the axis. An axis must have a
+maximum set but this value can be changed during the display.</dd>
+
+<dt><code class="keyword">:increment</code> <var>number</var></dt>
+<dd>The stepping amount between axis value labels displayed along the
+axis. <a href="log-axis-cls.html">log-axis</a> treats this value as
+the logarithm <em>base</em> and allows the keyword  <code
+class="keyword">:base</code> to be used in place of <code class="keyword">:increment</code>.
+</dd>
+
+<dt><code class="keyword">:ticks-per-increment</code> <var>number</var></dt>
+<dd>The number of ticks, or graduals, drawn within each increment along
+the axis.  If the value is 1 then a single large tick is drawn at each
+label point. If the value is more than 1 the additional ticks are
+drawn slightly smaller and evenly spaced within the
+increment.</dd>
+
+<dt><code class="keyword">:slot</code> {<var>symbol</var> | <var>list</var>}</dt>
+<dd>The slot or slots in CLOS data that the axis accesses in order to
+plot values.  If one slot is specified it determines the position along
+the axis that the value will appear. If a list of two slots is
+specified then the second slot controls the point's extent (width or height) along the axis.
+</dd>
+
+<dt><code class="keyword">:labeler</code> {<var>string</var> | <var>function</var>}</dt>
+<dd>Either a format string or a Lisp function of one argument that
+will be called to produce each label string drawn along the axis.
+Defaults to <span class="string">"~2,F"</span>, which displays a
+floating point value rounded to two places. </dd>
+
+<dt><code class="keyword">:zoom</code> <var>number</var></dt>
+<dd>A zooming scaler for the axis display, defaults to 1. Since this
+value scales the size of plotter's off-screen bitmap be
+reasonable.</dd>
+
+<dt><code class="keyword">:pixels-per-increment</code> <var>number</var></dt>
+<dd>The number of pixels each increment claims along the axis at <code
+class="keyword">:zoom</code> 1.  Defaults to 60 since this number is
+evenly divisible by so many common values of <code
+class="keyword">:ticks-per-increment</code>.</dd>
+
+<dt><code class="keyword">:pixels-per-label</code> <var>number</var></dt>
+<dd>The width/height in pixels of the labeling area on either side of
+the vertical/horizontal axis lines. Defaults to 60.</dd>
+</dl>
+
+<h4>Examples:</h4>
+<p>
+See the <a href="plotter-topic.html#examples">Examples</a> section in
+the Plotter topic documentation.
+</p>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="log-axis-cls.html"><code>log-axis</code></a> [Class]</li>
+<li><a href="axis-fn.html"><code>axis</code></a> [Function]</li>
+<li><a href="defaxis-mac.html"><code>defaxis</code></a> [Macro]</li>
+<li><a href="plotter-fn.html"><code>plotter</code></a> [Function]</li>
+<li><a href="plotter-topic.html">Plotter</a> [Topic]</li>
+</ul>
+
+<!-- end content -->
+</div> 
+<hr class="inv"/>
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.2 $, $Date: 2005/02/13 02:17:47 $)</div>
+</div>
+</body>
+</html>

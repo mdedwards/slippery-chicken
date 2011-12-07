@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>player-stream</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "player-stream" -->
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><span class="syntax"><code class="entry">player-stream</code></span></dd>
+</dl>
+
+
+<p>
+A subclass of <a
+href="midishare-stream-cls.html"><kbd>midishare-stream</kbd></a> that
+implements input and output to a Midishare Player multi-track
+sequencer application. A <kbd>player-stream</kbd> is automatically
+created when you specify a file with a ".mp" extension.  The name of
+the player stream will become the player's application name used by
+Midishare.
+</p>
+
+<p><code class="entry">player-stream</code> supports the following slot initializations:
+</p>
+<dl>
+
+
+<dt><code class="keyword">:track</code> <var>integer</var></dt>
+<dd>
+
+
+Events generated to a player are placed in the track number specified
+by <code class="keyword">:track</code> according to the value of <code class="keyword">:seq-mode</code>.
+If <code class="keyword">:seq-mode</code> is <code class="keyword">:replace</code> (the default) then the
+the track contents at <code class="keyword">:track</code> are replaced.  If
+<code class="keyword">:seq-mode</code> is <code class="keyword">:add</code> then new tracks are created
+starting at <code class="keyword">:track</code> and incrementing by 1 each time the <a
+href="events-fn.html"><kbd>events</kbd></a> function outputs to the player.
+
+</dd>
+
+
+
+<dt><code class="keyword">:seq-mode</code> {<code class="keyword">:replace</code> | <code class="keyword">:add</code>}</dt>
+<dd>
+
+
+Determines if events sent to the player either replace the current
+sequence or are added as a new track in the sequence. The default
+value is <code class="keyword">:replace</code>.
+
+</dd>
+
+
+<dt><code class="keyword">:play</code> <var>boolean</var></dt>
+<dd>
+
+
+If true then the player application is automatically started once
+output to the player has concluded. If <code class="keyword">:play</code> is false then
+the player is not automatically started. In either case a
+player-stream can be controlled interactively in the Lisp interpreter
+using the functions <a
+href="player-start-fn.html"><kbd>player-start</kbd></a>, <a
+href="player-stop-fn.html"><kbd>player-stop</kbd></a>, <a
+href="player-pause-fn.html"><kbd>player-pause</kbd></a> and <a
+href="player-cont-fn.html"><kbd>player-cont</kbd></a>.  The default
+value of <code class="keyword">:play</code> is true.
+
+</dd>
+
+
+<dt><code class="keyword">:tempo</code> <var>bmp</var></dt>
+<dd>
+
+
+The initial tempo of the player, specfied in beats per minute.  The
+default value is tempo 60.
+
+</dd>
+
+</dl>
+
+
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="clm-audio-stream-cls.html"><kbd>clm-audio-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="clm-stream-cls.html"><kbd>clm-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="cmn-stream-cls.html"><kbd>cmn-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="io-mac.html"><kbd>io</kbd></a><kbd>&nbsp;</kbd>[Macro]</li>
+<li><a href="midi-connections-var.html"><kbd>*midi-connections*</kbd></a><kbd>&nbsp;</kbd>[Variable]</li>
+<li><a href="midi-stream-cls.html"><kbd>midi-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="midi-file-stream-cls.html"><kbd>midi-file-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="player-stream-cls.html"><kbd>player-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="sco-stream-cls.html"><kbd>sco-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2003/07/07 21:27:41 $)</div>
+</div>
+</body>
+</html>
+
+

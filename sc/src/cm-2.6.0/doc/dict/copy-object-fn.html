@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>copy-object</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "copy-object" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><span class="syntax">(<code class="entry">copy-object</code> <var>object</var>)</span></dd>
+</dl>
+
+
+<p>
+Returns a copy of <var>object.</var> Slot values in the
+new and old objects are identical, that is the slot
+values are transferred not copied.  <kbd>copy-object</kbd> uses
+<kbd>allocate-instance</kbd> to create the new object and 
+<kbd>fill-object</kbd> to set its slot values.
+</p>
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="hshi-mac.html"><kbd>#i</kbd></a><kbd>&nbsp;</kbd>[Macro]</li>
+<li><a href="defobject-mac.html"><kbd>defobject</kbd></a><kbd>&nbsp;</kbd>[Macro]</li>
+<li><a href="new-mac.html"><kbd>new</kbd></a><kbd>&nbsp;</kbd>[Macro]</li>
+</ul>
+
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2003/07/07 21:27:41 $)</div>
+</div>
+</body>
+</html>
+
+

@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>fm-spectrum</title>
+</head>
+<body>
+<div id="content">
+
+
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">fm-spectrum</code> <var>carrier</var> <var>ratio</var> <var>index</var> {<var>keyword</var> <var>value</var>}*<code>)</code></dd>
+</dl>
+
+<p>
+Returns a list of frequencies, and optionally amplitudes, of the FM
+sidebands generated from a
+ <var>carrier</var> frequency in Hertz, a
+carrier/modulator <var>ratio</var> and an FM <var>index</var>.
+
+<!-- Returns a list containing the frequencies and optional amplitudes of
+sidebands calculated by Frequency Modulation. <var>Carrier</var> is
+the carrier frequency in Hertz, <var>ratio</var> is the
+carrier/modulator ratio and <var>index</var> is the FM index. -->
+
+Frequency components in the output spectrum can be Hertz values,
+key numbers or note names, as specified by keyword arguments to the
+function.
+</p>
+
+<p id="args">
+<code class="entry">fm-spectrum</code> supports the following keyword arguments:
+</p>
+
+<dl>
+
+<dt>
+<code class="keyword">:spectrum</code> {<code class="keyword">:raw</code> | <code class="keyword">:hertz</code> | <code class="keyword">:keynum</code> | <code class="keyword">:note</code>}
+</dt>
+<dd>
+Determines the format of the frequency components returned in the
+output spectrum. If the value is <code class="keyword">:raw</code>
+then values in the output spectrum are in Hertz but may contain
+negative values.  If the value is <code class="keyword">:hertz</code>
+then negative frequency components are reflected into the positive
+frequency domain with their amplitudes inverted. Otherwise floating
+point key numbers or note names are returned.  The default value
+is <code class="keyword">:raw</code>.
+</dd>
+
+<dt><code class="keyword">:amplitudes</code> {<var>boolean</var>
+| <code class="keyword">:normalized</code> | <code
+class="keyword">:weights</code>}</dt>
+
+<dd>
+Specifies whether sideband amplitudes are included in the output
+spectrum or not. If the value is false then only frequency components
+are returned. If the value is true then each sideband component is a
+list (<var>frequency</var> <var>amplitude</var>). If the value
+is <code class="keyword">:normalized</code> then the amplitude value
+of each component is normalized between 0 and 1. If the value is <code
+class="keyword">:weights</code> then the output spectrum can be passed
+directly to a <a href="random-cls.html">random</a> pattern with
+amplitudes converted to probability weights.  The default value is
+false.
+</dd>
+
+<dt><code class="keyword">:ignore-zero</code> <var>boolean</var></dt>
+<dd>
+If true then sidebands with zero amplitude are ignored, otherwise
+their frequency will be set to 0.0 or set to the rest symbol R if
+notes or key numbers are generated. The default value is true if the
+output spectrum contains Hertz values, key numbers or note names
+otherwise it is false.
+</dd>
+
+<dt><code class="keyword">:sideband-scaler</code> {<var>false</var> | <var>number</var>}</dt>
+<dd>
+If the value is false then the number of sidebands in the output
+spectrum is 1+round(index). If the value is a number then the number
+of sidebands generated is round(index*scaler). According to Dick Moore
+(pg. 325, Elements of Computer Music) a value of 1.7 will give all
+sidebands down to 60 dB; use 1.5 for 40 dB down. The default value is
+false.
+</dd>
+
+<dt><code class="keyword">:invert</code> <var>boolean</var></dt>
+<dd>If true then the spectrum is inverted before it is returned. The
+default value is false.</dd>
+
+<dt><code class="keyword">:minimum</code> <var>freq</var></dt>
+<dd>
+If specified, then components in the output spectrum that are lower
+than <var>freq</var> will be octave-shifted upwards until they are
+equal to or greater than this value.  <var>Freq</var> should be the
+same frequency format as the output components.
+</dd>
+
+<dt><code class="keyword">:maximum</code> <var>freq</var></dt>
+<dd>
+If specified, then components in the output spectrum that are higher than
+<var>freq</var> will be octave-shifted downwards until they are equal to
+or less than this value.  <var>Freq</var> should be the same
+frequency format as the output components. The default value is false.
+</dd>
+
+<dt><code class="keyword">:scale-order</code> {<code class="keyword">:up</code> | <code class="keyword">:down</code> | <code class="keyword">:random</code>}</dt>
+<dd>Determines the ordering of the components in the output
+spectrum: <code class="keyword">:up</code> for low-to-high, <code
+class="keyword">:down</code> for high-to-low and <code
+class="keyword">:random</code> for random (shuffled) order. The
+default value is <code class="keyword">:up</code>.
+</dd>
+
+<dt>
+<code class="keyword">:remove-duplicates</code> <var>boolean</var>
+</dt>
+<dd>
+If true then the output spectrum will not contain any duplicate components.
+The default value is false.
+</dd>
+
+</dl>
+
+
+<h4>Examples:</h4>
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Frequency modulated spectra.
+</p>
+<pre class="code">
+(fm-spectrum 100 1.4 3)
+<span class="result">&rArr;</span> (-460.0 -320.0 -180.0 -40.0 100.0 240.0 380.0 520.0 660.0)
+
+(fm-spectrum 100 1.4 3 <span class="keyword">:spectrum</span> '<span class="keyword">:hertz</span>)
+<span class="result">&rArr;</span> (40.0 100.0 180.0 240.0 320.0 380.0 460.0 520.0 660.0)
+
+(fm-spectrum 100 1.4 3 <span class="keyword">:spectrum</span> '<span class="keyword">:keynum</span>)
+<span class="result">&rArr;</span> (27.48682 43.349957 53.525925 58.506374 63.486816 66.46195 69.76957 71.892105 76.019554)
+
+(fm-spectrum 100 1.4 3 <span class="keyword">:spectrum</span> '<span class="keyword">:note</span> <span class="keyword">:scale-order</span> '<span class="keyword">:down</span>)
+<span class="result">&rArr;</span> (e5 c5 bf4 fs4 ef4 b3 fs3 g2 ef1)
+
+(fm-spectrum 100 1.4 3 <span class="keyword">:spectrum</span> '<span class="keyword">:note</span> <span class="keyword">:minimum</span> 'c4 <span class="keyword">:maximum</span> 'b4)
+<span class="result">&rArr;</span> (ef4 e4 fs4 g4 bf4 b4 c5)
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> FM chords.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">fm-bell</span> tone )
+  (<span class="special">let</span> ((cen (<a href="hertz-fn.html">hertz</a> tone))
+        (rat (<a href="between-fn.html">between</a> 1.1 1.6))
+        (ind (<a href="pick-fn.html">pick</a> 2 2.4 3)))
+    (fm-spectrum cen rat ind <span class="keyword">:spectrum</span> '<span class="keyword">:note</span>
+                 <span class="keyword">:minimum</span> (<a href="transpose-fn.html">transpose</a> tone -12)
+                 <span class="keyword">:maximum</span> (<a href="transpose-fn.html">transpose</a> tone 12))))
+
+(<span class="special">define</span> (<span class="defined">ring-bells</span> reps rate)
+  (<span class="special">let</span> ((tones (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a>
+                 <span class="keyword">:of</span> '((a4 <span class="keyword">:weight</span> 3)
+                       (a3 <span class="keyword">:max</span> 1)))))
+    (<a href="process-mac.html">process</a> repeat reps
+             for tone = (<a href="next-fn.html">next</a> tones)
+             for bell = (fm-bell tone) 
+             output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                         <span class="keyword">:keynum</span> tone
+                         <span class="keyword">:duration</span> 5
+                         <span class="keyword">:amplitude</span> .8)
+             when (<a href="odds-fn.html">odds</a> .65)
+             each k in bell
+             output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                         <span class="keyword">:keynum</span> k
+                         <span class="keyword">:duration</span> 5
+                         <span class="keyword">:amplitude</span> .5)
+             wait rate)))
+
+(<a href="events-fn.html">events</a> (ring-bells 20 1.25) <span class="string">"bells.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"bells.mid"</span>
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="rm-spectrum-fn.html"><code>rm-spectrum</code></a> [Function]</li>
+</ul>
+
+</div>
+
+<hr class="inv"/>
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.5 $, $Date: 2005/03/08 17:13:06 $)</div>
+</div>
+</body>
+</html>

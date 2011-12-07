@@ -1,0 +1,363 @@
+;;; **********************************************************************
+;;; $Name: rel-2_6_0 $
+;;; $Revision: 1.1.1.1 $
+;;; $Date: 2003/06/25 10:45:05 $
+;;;
+;;; File:         ligeti.cm
+;;;
+;;; Summary:      Algorithmic model of Gyñrgy Ligeti's Etude No. 1,
+;;;               "D»sordre"
+;;;
+;;; Author:       Tobias Kunze
+;;; e-Mail:       tkunze@ccrma.stanford.edu
+;;; Org:          CCRMA, Stanford University
+;;;
+;;; Orig-Date:    07-Mar-99 at 19:38:40
+;;; Last-Mod:     18-Nov-02 at 00:37:08 by Tobias Kunze Brise“o
+;;;
+;;; Revision:     
+;;;
+;;; Description:  This code requires Common Music 2.3.4 or higher.
+;;;
+;;; Changes:
+;;;   11-Mar-99   tk   released
+;;;   23-Jan-02   hkt  converted to cm2, rewrote to reduce algos.
+;;;   08-May-02   hkt  converted to transposer and range objects.
+;;;   12-Nov-02   hkt  converted to cm 2.4.0
+;;;   17-Nov-02   tk   fixed voicing lookups, final synchronization; added
+;;;                    channels 
+
+(in-package :cm)
+
+;;;
+;;; Converting eighth note pulse to time
+
+(define eighth-pulse (rhythm 'e 76 'w))
+
+(define (eighth-time number-of-eighths)
+  (* eighth-pulse number-of-eighths))
+
+;;;
+;;; Foreground and background amps. adjust to your needs
+
+(define fg-amp .7)  
+(define bg-amp .5)
+
+;;;
+;;; Upper Foreground
+
+(define white-mode
+  (new mode :steps '(c d e f g a b c)))
+
+(define white-fg-steps
+  '( 0  0  1  0  2  1 -1		; Phrase a
+    -1 -1  2  1  3  2 -2		; Phrase a'
+     2  2  4  3  5  4 -1 0 3 2 6 5))	; Phrase b
+
+(define (make-white-fg-notes note)
+  ;; convert note in MIDI scale to modal equivalent
+  (let ((step (keynum note :to white-mode )))
+    ;; pattern of steps is offset
+    ;; from a constantly rising offset
+    (new transposer 
+         :of (new cycle :of white-fg-steps)
+         :by (new range :initially step :by 1))))
+
+(define (make-white-fg-rhythms )
+  (new cycle
+    :of
+    (list 3 5 3 5 5 3 7			; cycle 1
+          3 5 3 5 5 3 7
+          3 5 3 5 5 3 3 4 5 3 3 5
+          3 5 3 4 5 3 8			; cycle 2
+          3 5 3 4 5 3 8
+          3 5 3 4 5 3 3 5 5 3 3 4
+          3 5 3 5 5 3 7			; cycle 3
+          3 5 3 5 5 3 7
+          3 5 3 5 5 3 3 4 5 3 3 5
+          3 5 3 4 5 2 7			; cycle 4
+          2 4 2 4 4 2 5
+          2 3 2 3 3 1 1 3 3 1 1 3
+          1 2 1 2 2 1 3			; cycle 5
+          1 2 1 2 2 1 3
+          1 2 1 2 2 1 1 2 2 1 1 2
+          1 2 1 2 2 1 3			; cycle 6
+          1 2 1 2 2 1 3
+          1 2 1 2 2 1 1 2 2 1 1 2
+          1 2 1 2 2 1 3			; cycle 7
+          1 2 1 2 2 1 2
+          1 2 1 2 2 1 1 2 2 1 1 2
+          1 2 1 2 2 1 2			; cycle 8
+          1 2 1 2 2 1 2
+          1 2 1 2 2 1 1 2 2 1 1 2
+          1 2 1 2 2 1 2			; cycle 9
+          1 2 1 2 1 1 2
+          1 2 1 2 2 1 1 1 2 1 1 1
+          1 2 1 1 1 1 2			; cycle 10
+          1 1 1 1 1 1 2
+          1 1 1 1 1 1 1 1 1 1 1 1
+          (new cycle
+            :of
+            (new cycle
+              :of
+              (list 3 5 3 5 5 3 8       ; cycle 11-14
+                    3 5 3 5 5 3 8
+                    3 5 3 5 5 3 3 5 5 3 3 5))
+            :for 3)
+          3 5 3 5 5 3 8			; cycle 14
+          3 5 3 5 5 3 8
+          3 5 3 5 5 3			; cuts off here
+          )))
+
+;;;
+;;; Lower Foreground
+
+(define black-mode 
+  (new mode :steps '(cs ds fs gs as cs)))
+
+(define black-fg-steps
+  '(0  0  1  0  2  2  0			; Phrase a
+    1  1  2  1 -2 -2 -1			; Phrase a'
+    ; Phrase b
+    1  1  2  2  0 -1 -4 -3  0 -1  3  2  1 -1  0 -3 -2 -3 -5))
+
+(define (make-black-fg-notes note)
+  (let* ((cycle-length (length black-fg-steps))
+	 (warp-point (+ (* cycle-length 7) 7 7 8))
+         (step (keynum note :to black-mode)))
+    (new transposer
+      :of (new transposer 
+            :of (new cycle :of black-fg-steps )
+            :stepping (new line 
+                        :of 
+                        (list (new cycle :of 0 :for warp-point)
+                              20 )))
+      :by (new range :initially step :by -2))))
+
+(define (make-black-fg-rhythms )
+  (new cycle
+    :of '(3 5 3 5 5 3 8			; cycle 1
+          3 5 3 5 5 3 8
+          3 5 3 5 5 3 3 5  5 3 3 5 3 5 3 5 5 3 8
+          3 5 3 5 5 3 8			; cycle 2 (same)
+          3 5 3 5 5 3 8
+          3 5 3 5 5 3 3 5  5 3 3 5 3 5 3 5 5 3 8
+          3 5 3 5 5 3 8			; cycle 3
+          3 5 3 5 5 2 7
+          3 4 3 4 4 2 2 4  4 2 2 3 2 3 1 3 3 1 4
+          1 3 1 2 2 1 3			; cycle 4 starts in synch w/ cycle 5u
+          1 2 1 2 2 1 3
+          1 2 1 2 2 1 1 2  2 1 1 2 1 2 1 2 2 1 3
+          1 3 1 2 2 1 3			; cycle 5
+          1 2 1 2 2 1 3
+          1 2 1 2 2 1 1 2  2 1 1 2 1 2 1 2 2 1 2
+          1 2 1 2 2 1 2			; cycle 6
+          1 2 1 2 2 1 2
+          1 2 1 2 2 1 1 2  2 1 1 2 1 2 1 2 2 1 2
+          1 2 1 2 2 1 2			; cycle 7
+          1 2 1 2 2 1 2
+          1 2 1 2 2 1 1 2  1 1 1 2 1 1 1 1 1 1 2
+          1 1 1 1 1 1 2			; cycle 8
+          1 1 1 1 1 1 2
+          1 1 1 1 1 1 1 1  5 3 3 5 3 5 3 5 5 3 8
+          3 5 3 5 5 3 8			; cycle 9
+          3 5 3 5 5 3 8
+          3 5 3 5 5 3 3 5  6 3 3 5 3 5 3 6 5 3 8
+          3 6 3 5 5 3 9			; cycle 10
+          3 5 3 5 6 3 8
+          3 5 3 6 5 3 3 5  6 3 3 5 3 5 3 6 5 3 9
+          3 7 3 8 9 3 13	        ; cycle 11
+          3 11 3 21			; cuts off here
+          )))
+
+(define (fg-mono mode keynums rhythms)
+  (process for key = (keynum (next keynums) :from mode)
+           for rhy = (eighth-time (next rhythms))
+           output (new midi :time (now)
+                       :keynum key
+                       :amplitude fg-amp
+                       :duration rhy)
+           wait rhy
+           until (eop? rhythms)))
+
+#|
+;;;
+;;; play upper foreground 
+
+(events (fg-mono white-mode 
+                 (make-white-fg-notes 'b4)
+                 (make-white-fg-rhythms))
+        "ligeti.midi")
+
+;;;
+;;; play lower foreground 
+
+(events (fg-mono black-mode 
+                 (make-black-fg-notes 'ds4)
+                 (make-black-fg-rhythms))
+        "ligeti.midi")
+
+;;;
+;;; play both foregrounds together
+
+(events (list
+         (fg-mono white-mode 
+                  (make-white-fg-notes 'b4)
+                  (make-white-fg-rhythms))
+         (fg-mono black-mode 
+                  (make-black-fg-notes 'ds4)
+                  (make-black-fg-rhythms)))
+        "ligeti.midi")
+|#
+
+;;;
+;;; Add octaves and a fake background
+
+(define (desordre-w/octaves mode ntes rhys)
+  (let ((fg-time 0) 
+        (fg-eighths 0)
+        (mode-deg 0))
+    (list
+     ;; foreground process
+     (process with dur and key
+              set fg-time = (now)
+              set mode-deg = (next ntes)
+              set key = (keynum mode-deg :from mode)
+              set fg-eighths = (next rhys)
+              set dur = (eighth-time fg-eighths)
+              output (new midi 
+                       :time fg-time
+                       :keynum key
+                       :duration (- dur .01)
+                       :amplitude fg-amp)
+              output (new midi
+                       :time fg-time
+                       :keynum (+ key 12)
+                       :duration (- dur .01) 
+                       :amplitude fg-amp)
+              wait dur
+              until (eop? rhys))
+     ;; background process fills in 8th note pulses with
+     ;; randomly selected mode notes based on current 
+     ;; foreground note.
+     (process with pat = (new range
+                           :from (pval mode-deg)
+                           :stepping (new random
+                                       :of '((1 weight 3)
+                                             2 
+                                             (3 weight .5 max 1)))
+                           :for (pval fg-eighths))
+              repeat 1064
+              for k = (keynum (next pat) :from mode)
+              unless (or (= (now) fg-time)
+                         (not (<= 0 k 127)))
+              output (new midi
+                       :time (now)
+                       :keynum k
+                       :duration (- eighth-pulse .01)
+                       :amplitude bg-amp)
+              wait eighth-pulse))))
+    
+#|
+(events (append
+         (desordre-w/octaves white-mode
+                             (make-white-fg-notes 'b3)
+                             (make-white-fg-rhythms))
+         (desordre-w/octaves black-mode
+                             (make-black-fg-notes 'ds3)
+                             (make-black-fg-rhythms)))
+        "ligeti.midi")
+|#
+
+;;;
+;;; Finally, add the "correct" voicings
+
+(define (desordre-voices mode ntes rhys chord voimap fgchan bgchan)
+  (let ((mode-octave (scale-divisions mode))
+        (fg-time 0)
+        (fg-8ths 0)
+        (mode-deg 0))
+    
+    (list
+     ;; foreground process
+     (process with rhy and voi and key
+              and voices = (new transposer
+                             :of (new heap :of chord
+                                     :for (pval voi))
+                             :on (pval mode-deg))
+              for count from 0
+              set fg-time = (now)
+              set mode-deg = (next ntes)
+              set key = (keynum mode-deg :from mode)
+              set fg-8ths = (next rhys)
+              set rhy = (eighth-time fg-8ths)
+              set voi = (lookup count voimap)
+              output
+              (new midi :time (now)
+		   :channel fgchan
+		:keynum key
+		:duration rhy
+		:amplitude fg-amp)
+              wait rhy
+              if (equal? voi true)
+              ;;
+              ;; add lower octave until 1 after cycle 11 ...
+              ;;
+              output 
+              (new midi :time (now)
+		   :channel fgchan
+                   :keynum (- key 12) 
+                   :duration rhy
+                   :amplitude fg-amp)
+              else 
+              ;; ... else add:  2 voices until  2 before cycle 12
+              ;;                3 voices until 11 after  cycle 12
+              ;;                4 voices thereafter
+              output
+              (loop for k in (next voices true)
+                    collect (new midi
+				 :channel fgchan
+                              :time (now)
+                              :keynum (keynum k :from mode)
+                              :duration (- rhy .01)))
+              until (eop? rhys))
+     ;; background process. 
+     (process with notes = (new range
+                             :from (pval (- mode-deg 
+                                            mode-octave))
+                             :stepping
+                             (new random :of '((1 :weight 3)
+                                               2 
+                                               (3 :weight .5 :max 1)))
+                             :for (pval fg-8ths))
+              for i below 1064
+              for k = (keynum (next notes) :from mode)
+              unless (or (= (now) fg-time)
+                         (not (<= 0 k 127)))
+              output (new midi 
+			  :channel bgchan
+                       :time (now)
+                       :keynum k
+                       :duration (- eighth-pulse .01)
+                       :amplitude bg-amp)
+              wait eighth-pulse))))
+
+#|
+(events (append 
+         (desordre-voices white-mode
+                          (make-white-fg-notes 'b4)
+                          (make-white-fg-rhythms)
+                          '(-1 -2 -3 -4 -5 -6)
+                          (list 0 true 261 1 284 2 297 3)
+			  0 1)
+         (desordre-voices black-mode  
+                          (make-black-fg-notes 'ds4)
+                          (make-black-fg-rhythms)
+                          '(-1 -2 -3 -4)
+                          (list 0 true 254 1 286 2)
+			  2 3))
+        "/home/tkunze/ligeti.midi")
+|#
+
+;;;
+;;; -*- EOF -*-

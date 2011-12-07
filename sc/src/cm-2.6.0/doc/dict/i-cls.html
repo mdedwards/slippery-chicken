@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>i</title>
+</head>
+<body>
+<div id="content">
+
+<!-- Entry: "i" -->
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><span class="syntax"><span class="entry">i</span> </span></dd>
+</dl>
+
+<p>
+A root class defining Csound i-statement events.
+</p>
+
+<p>
+<span class="entry">i</span> supports the following slot initializations:
+</p>
+
+<dl>
+
+<dt>
+<span class="keyword">:ins</span> <var>number</var>
+</dt>
+<dd>
+Sets the i-statement number of the event.
+</dd>
+
+<dt>
+<span class="keyword">:time</span> <var>number</var>
+</dt>
+<dd>
+Sets the start time of the event.
+</dd>
+
+<dt>
+<span class="keyword">:dur</span> <var>number</var>
+</dt>
+<dd>
+Sets the duration of the event.
+</dd>
+</dl>
+
+<h4 id="examples">Examples:</h4>
+
+<div class="float" id="example1">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Defining a new i event
+</p>
+<pre class="code">
+(<a href="defobject-mac.html">defobject</a> i1 (i)
+  (freq amp)
+  (<span class="keyword">:parameters</span> time dur freq amp))
+</pre>
+</div>
+
+<div class="float" id="example2">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Generating a Csound score.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">blur</span> n)
+  (<a href="process-mac.html">process</a> repeat n
+           output (<a href="new-mac.html">new</a> i1 <span class="keyword">:time</span> (<a href="now-fn.html">now</a>) 
+                       <span class="keyword">:freq</span> (<a href="between-fn.html">between</a> 20 2000) <span class="comment">; Hertz</span>
+                       <span class="keyword">:dur</span> .4 <span class="keyword">:amp</span> .1)
+	   wait .015))
+
+<span class="comment">; score file header string</span>
+(<span class="special">define</span> <span class="defined">sco-header</span>  
+  <span class="string">"f1 0 8192 10 0.0  0.41 0.06 0.04 0.00 0.11 0.02 0.00 0.00"</span>)
+
+(<a href="events-fn.html">events</a> (blur) <span class="string">"blur.sco"</span> 0
+	<span class="keyword">:header</span> sco-header
+	<span class="keyword">:options</span> <span class="string">"-d -m0 -A"</span>
+	<span class="keyword">:orchestra</span> <span class="string">"blur.orc" </span>
+	<span class="keyword">:output</span> <span class="string">"blur.aiff"</span>)
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="f-cls.html">f</a> [Class]</li>
+<li><a href="sco-stream-cls.html">sco-stream</a> [Class]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2005/02/10 01:11:44 $)</div>
+</div>
+</body>
+</html>
+
+

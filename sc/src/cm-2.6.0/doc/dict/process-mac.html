@@ -1,0 +1,356 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>process</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Macro]</dt>
+<dd><code>(</code><code class="entry">process</code> {<var>clause</var>}+<code>)</code></dd>
+</dl>
+
+
+<p>
+Defines an iterative musical process using the same basic syntax as
+Lisp's <code>loop</code> macro. The body of a process definition
+consists of  a series of clauses, each clause begins with a clausal
+operator.  There are four broad categories of clauses:
+</p>
+
+
+<ol>
+<li>Initializations and finalizations:
+<table>
+<tr><td><a href="#with.clause"><code>with</code></a></td> <td>declares and initializes local process variables</td></tr>
+<tr><td><a href="#initially.clause"><code>initially</code></a></td><td>performs an action before iteration starts</td></tr>
+<tr><td><a href="#finally.clause"><code>finally</code></a></td><td>performs a final action immediately after process stops</td></tr>
+</table>
+</li>
+
+<li>Iterations
+<table>
+<tr><td><a href="#repeat.clause"><code>repeat</code></a></td><td>sets the number of times the process runs</td></tr>
+<tr><td><a href="#for.clause"><code>for</code></a></td><td>defines a variable over a range of values, stops process when done</td></tr>
+</table>
+</li>
+
+<li>Actions
+<table>
+<tr><td><a href="#do.clause"><code>do</code></a></td><td>evaluates one or more Lisp statements</td></tr>
+<tr><td><a href="#each.clause"><code>each</code></a></td><td>iterates action clause</td></tr>
+<tr><td><a href="#output.clause"><code>output</code></a></td><td>outputs an event into the open output stream</td></tr>
+<tr><td><a href="#sprout.clause"><code>sprout</code></a></td><td>inserts a new object into the scheduling queue</td></tr>
+<tr><td><a href="#wait.clause"><code>wait</code></a></td><td>process waits a specified amount of time before running again</td></tr>
+</table>
+</li>
+
+<li>Conditionals
+
+<table>
+<tr><td><a href="#while.clause"><code>while</code></a></td><td>evaluates an action if a test is true or stops the process if false</td></tr>
+<tr><td><a href="#until.clause"><code>until</code></a></td><td>evaluates an action if a test is or stops the process if true</td></tr>
+<tr><td><a href="#when.clause"><code>when</code></a></td><td>evaluates an action if a test is true</td></tr>
+<tr><td><a href="#unless.clause"><code>unless</code></a></td><td>evaluates an action if a test is false</td></tr>
+<tr><td><a href="#if.clause"><code>if</code></a></td><td>evaluates one or more "then" or "else" actions based on a test</td></tr>
+</table>
+</li>
+</ol>
+
+<p>
+Iteration and action clauses are executed in the same order in which
+they appear in the code but the first action clause must appear after
+all initialization and iteration clauses.  If more than one iteration
+clause is specified the process terminates as soon as the earliest
+iteration terminates.
+</p>
+
+<h4>Initializations and finalizations</h4>
+
+<dl>
+<dt><code>with</code> <var>var</var> [<code>=</code> <var>form</var>] {<code>and</code> <var>var2</var> [<code>=</code> <var>form2</var>]}*</dt>
+<dd>
+
+<a name="with.clause"></a>
+Declares local process variables and their optional initial values. The
+forms in a <code>with</code> clause are processed one time only immediately
+before process iteration starts.
+
+Each variable declaration in the <code>with</code> clause
+can be specified as either:
+<ul>
+<li>the name of the variable.</li>
+<li>the name of the variable and an initial value separated by <code>=</code>. </li>
+</ul>
+
+If an initial value is not specified a variable is initialized to false.
+Use <code>and</code> to separate variables if more than one variable is declared.
+Declarations are processed in left to right order
+so a <code>=</code> value may reference variables declared to the left.
+<br/>Example clause syntax:
+  <blockquote>
+  <pre>with a and b = 32 and c = (* (random b) 4)
+</pre></blockquote>
+</dd>
+
+
+
+<dt><code>initially</code> <var>form</var></dt>
+<dd>
+
+<a name="initially.clause"></a>
+Evaluates <var>form</var> when the process is created and before the process starts running.
+<br/>Example clause syntax:
+<blockquote>
+<pre>initially (print 'initializing!)
+</pre></blockquote>
+</dd>
+
+
+<dt><code>finally</code> <var>form</var></dt>
+<dd>
+
+<a name="finally.clause"></a>
+Evaluates <var>form</var> immediately after the process stops.
+<br/>Example clause syntax:
+<blockquote>
+<pre>do ...
+finally (print 'all-done!)
+</pre></blockquote>
+</dd>
+
+</dl>
+
+
+
+<h4>Iterations</h4>
+
+<dl>
+
+<dt><code>repeat</code> <var>form</var></dt>
+<dd>
+
+<a name="repeat.clause"></a>
+Causes the process to run <var>form</var> number of times and then
+<a href="#stop.function">stop</a>. 
+<br/>Example clause syntax:
+<blockquote>
+<pre>repeat 23
+</pre></blockquote>
+</dd>
+
+
+<dt><code>for</code> <var>var</var> <code>=</code> <var>form</var> [<code>then</code> <var>form2</var>]</dt>
+<dd>
+
+<a name="for.clause"></a>
+Sets <var>var</var> to the value of <var>form</var> on each iteration.
+If <code>then</code> is supplied <var>var</var> is set to <var>form</var> 
+on the first iteration and to <var>form2</var> on subsequent iterations.
+<br/>Example clause syntax:
+<blockquote>
+<pre>for k = (now)
+for p = 60 then (+ p (random 10))
+</pre></blockquote>
+</dd>
+
+
+<dt><code>for</code> <var>var</var> [<code>from</code> <var>form</var>] [<code>to</code> | <code>below</code> <var>form</var>] [<code>by</code> <var>form</var>]</dt>
+<dd>
+
+Iterates <var>var</var> over a range of numbers. If the sequence is bounded
+the process <a href="#stop.function">stops</a> once the last number has been reached.
+
+<ul>
+<li><code>from</code> sets the starting value of<var>var</var>, defaults to 0.</li>
+<li><code>to</code> establishes an inclusive ceiling on the iteration and stops
+the process once the value has been reached. </li>
+<li><code>below</code> sets an exclusive ceiling on the iteration and stops
+the process just before the value has been reached.</li>
+<li><code>by</code> provides an optional increment for <var>var</var>, defaults to 1.</li>
+</ul>
+
+<br/>Example clause syntax:
+<blockquote>
+<pre>for k below 10
+for p from 10 to 100 by 5 
+</pre></blockquote>
+</dd>
+
+
+<dt><code>for</code> <var>var</var> {<code>in</code> | <code>on</code>} <var>list</var> [<code>by</code> <var>function</var>]</dt>
+<dd>
+
+Sets <var>var</var> to successive elements or tails of <var>list</var> and
+<a href="#stop.function">stops</a> process when iteration is done.
+
+<ul>
+<li><code>in</code> maps <var>var</var> over successive elements in <var>list</var>.</li> 
+<li><code>on</code> maps <var>var</var> over successive tails of <var>list</var>.</li>
+<li><code>by</code> specifies an optional stepping function. Defaults to <code>cdr</code>.</li>
+</ul>
+
+<br/>Example clause syntax:
+<blockquote>
+<pre>for k in '(c4 d4 ef5 fs)
+</pre></blockquote>
+</dd>
+
+</dl>
+
+
+<h4>Actions</h4>
+
+<dl>
+<dt><code>output</code> <var>object</var> [<code>to</code> <var>io</var>]</dt>
+<dd>
+
+<a name="output.clause"></a>
+Outputs <var>object</var> to an open output stream. If <code>to</code> is is not specified
+the default open output stream is used.
+The Lisp function <a href="#output.function"><code>output</code></a> is available
+for use inside a <code>do</code> clause definition.
+</dd>
+
+
+<dt><code>wait</code> <var>seconds</var></dt>
+<dd>
+
+<a name="wait.clause"></a>
+Causes the process to wait <var>seconds</var> amount of time before running again.
+The Lisp function <a href="#wait.function"><code>wait</code></a> is available
+for use inside a <code>do</code> clause definition.
+</dd>
+
+
+<a name="sprout.clause"></a>
+<dt><code>sprout</code> <var>object</var> [<code>at</code> <var>time</var>]</dt>
+<dd>
+
+<a name="wait.clause"></a>
+Inserts <var>object</var> into the currently running scheduling queue
+<code>at</code> an optional time. If the <code>at</code> time is not specified
+the object is inserted at the current time.
+The Lisp function <a href="#sprout.function"><code>sprout</code></a> is available
+for use inside a <code>do</code> clause definition.
+</dd>
+
+
+<dt><code>do</code> {<var>form</var>}+</dt>
+<dd>
+
+<a name="do.clause"></a>
+Introduces one or more Lisp <var>forms</var> as part of the process definition.
+</dd>
+
+
+
+<dt><code>set</code> <var>var</var> <var>=</var> <var>form</var></dt>
+<dd>
+
+<a name="set.clause"></a>
+Sets the variable <var>var</var> to the value of <var>form</var>. Set only sets the variable, i.e. it
+does not actually declare or bind the variable in the process.
+</dd>
+
+
+<dt><code>each</code> <var>var</var> {<code>in</code> | <code>from</code>} <var>form</var> [<code>as</code> <var>...</var>] <var>action</var></dt>
+<dd>
+
+<a name="each.clause"></a>
+Defines an iteration over the <var>action</var> clause. <code>Each</code> supports the same stepping clauses 
+that <code>for</code> does. The difference between <code>for</code> and <code>each</code> is that the
+former defines a process iteration while <code>each</code> 
+defines an iterative action inside the process.  The following
+two clause descriptions are equivalent:
+
+<blockquote>
+<pre>each i in lst output ...
+do (loop for i in lst do (output ...))</pre>
+</blockquote>
+</dd>
+
+</dl>
+
+<h4>Conditionals</h4>
+
+<dl>
+<dt><code>while</code> <var>test</var> <var>action</var></dt>
+<dd>
+
+<a name="while.clause"></a>
+Triggers <var>action</var> clause as long as <var>test</var> is true otherwise <a href="#stop.function">stops</a> process.
+<br/>Example clause syntax:
+
+<blockquote>
+<pre>while (< (now) end-time)
+do ...
+</pre></blockquote>
+</dd>
+
+
+<dt><code>until</code> <var>test</var> <var>action</var></dt>
+<dd>
+
+<a name="until.clause"></a>
+Triggers <var>action</var> clause as long as <var>test</var> is false otherwise <a href="#stop.function">stops</a> process.
+<br/>Example clause syntax:
+<blockquote>
+<pre>until (= freq 440)
+do ...
+</pre></blockquote>
+</dd>
+
+
+<dt><code>when</code> <var>test</var> <var>action</var></dt>
+<dd>
+
+<a name="when.clause"></a>
+Triggers <var>action</var> clause whenever <var>test</var> is true. 
+</dd>
+
+
+<dt><code>unless</code> <var>test</var> <var>action</var></dt>
+<dd>
+
+<a name="unless.clause"></a>
+Triggers <var>action</var> clause whenever <var>test</var> is false. 
+</dd>
+
+
+<dt><code>if</code> <var>test</var> [<var>action</var> {<code>and</code> <var>action</var>}*] [<code>else</code> <var>action</var> {<code>and</code> <var>action</var>}*]</dt>
+<dd>
+
+<a name="if.clause"></a>
+Triggers one or more <var>action</var> clauses if <var>test</var> is true otherwise triggers
+one or more optional <code>else</code> action clauses.
+</dd>
+
+
+</dl>
+
+
+<h4>Examples:</h4>
+
+<p>
+The file <a href="../../etc/examples/intro.cm">intro.cm</a>
+contains numerous examples of <code>process</code> descriptions.
+</p>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.3 $, $Date: 2005/03/20 02:08:16 $)</div>
+</div>
+</body>
+</html>
+
+

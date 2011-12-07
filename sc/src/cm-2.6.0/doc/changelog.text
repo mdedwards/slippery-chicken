@@ -1,0 +1,2768 @@
+CM 2.6.0
+
+o ASDF loading and installing now supported (Thanks Greg Pfeil)
+  See cm/cm.asd and http://www.cliki.net/asdf for more information.
+
+o New graphical interface tools in GTK2 added for x86/SBCL, x86/CMUCL
+  and Darwin/OpenMCL:
+  1. Reimplemented PLOTTER graphics. See:
+       doc/dict/plotter-topic.html
+       etc/examples/plotter.cm
+  2. New CMIO window provides a "front end" to CM input/output. See:
+       doc/dict/cmio-topic.html
+
+o Real-time MIDI process scheduling and interactive MIDI input/output
+  now supported in OSX/OpenMCL. See the section "Low Level Support" in
+  in the MIDI topic documentation for more information:
+    doc/dict/midi-topic.html
+
+o New highlevel MIDI event classes replace the MIDIMSG class for
+  generating events to MIDI files MidiShare streams
+  1. Channel Messages classes:
+       midi
+       midi-note-on
+       midi-note-off
+       midi-key-pressure
+       midi-control-change
+       midi-program-change
+       midi-channel-pressure
+       midi-pitch-bend
+  2. System Messages classes:
+       midi-system-event
+  3. MIDI File Meta Message classes:
+       midi-sequence-number
+       midi-text-event
+       midi-eot
+       midi-tempo-change
+       midi-smpte-offset
+       midi-time-signature
+       midi-key-signature
+       midi-sequence-event
+
+o New spectral composition function RM-SPECTRUM generates a
+  spectrum of notes/keynums using ring modulation. see:
+    doc/dict/rm-spectrum.html
+
+o New chance composition function RANSEGS returns random segments from
+  a specfied distibuition type. See:
+    doc/doct/ransegs-fn.html
+
+o Major documentation upgrade (but still not complete...):
+  1. Added new Pattern overview topic page:
+       doc/dict/pattern-topic.html
+  2. Rewrote all pattern class documention with new examples.
+  3. Added documentation for undocumented COPIER pattern:
+       doc/dict/copier-cls.html
+  4. Added new main MIDI topic page:
+       doc/dict/midi-topic.html
+  5. Added new documentation for all "high-level" midi classes, see 
+     links at the top of the main MIDI topic pages.
+  6. Rewrote documentation for all randomness functions with new
+     examples, see dictionary entries on ransegs, pick, pickl, etc.
+  7. Added documentation on new chance function RANSEGS:
+       doc/dict/ransegs-fn.html
+    Added documentation for undocumented function FM-SPECTRUM:
+       doc/dict/fm-spectrum.html
+  8. New summary tables list important commands in doc/emacs.httml
+  9. Updated cvs instructions in doc/install.html
+
+o Changes to pattern implementations:
+    1. Random patterns that contain only sub-patterns now have a
+       default period length of 1, which causes the random pattern's
+       period length to track the period lengths of its sub-patterns.
+    2. copier periods can now track sub-pattern periods using the new
+       :repeat-for initialization
+    3. new function rewrite-generation returns the next full generation
+       from a rewrite pattern. specify false to its optional second
+       argument to return the current generation without recalculating
+       it first.
+
+o MIDI write-event method for midi-files now treats events with zero
+  amplitude as equivalent to events with keynums less than zero:
+  nothing is written to the file and the file's output time is not
+  updated.
+  
+o Importing CLM score files now supported.
+
+o If Midishare is properly installed then CM autoloads it at load
+  time.  Untested in a saved image and recommend that you use
+  bin/cm.sh without saving an image.
+
+o Common Music's "midi.port" is implemented by a subclass of
+  midishare-stream.  The midi-port represents the CM client
+  appliation in Midishare. The following new functions and vars are
+  defined and documented in midi-topic.html
+    midi-open
+    midi-open?
+    midi-close
+    *mp*
+
+o New 'cmn' object for generating CMN notes and CMN staff expressions
+  (variables and function calls) to cmn-streams and midi files. See
+  dict/cmn-cls.html for more information.
+
+o The calling syntax of the following functions have changed. (They
+  all formerly mixed &optional and &key args.)
+  (plotter-data plotter &key layer ...)
+  (plotter-front-layer plotter)
+  (plotter-property plotter prop &rest ...)
+  (invert list &optional pc?)
+
+o The functions 'hertz', 'note' and 'keynum' have been reimplemented
+   to provide additional functionality and to make these functions
+   behave more uniformly. This has resulted in one incompatible
+   change: the :HZ tag used by note and keynum is now a true keyword
+   parameter: i.e. (note 440 :hz t) not (note 440 :hz) The :hz tag will
+   continue to work for the time being but with a warning.
+   Be sure to read the updated entries in the dictionary.
+
+o Modes can now be defined with more or fewer than 12 semitones per
+  octave. This new functionality introduced an incompatible change
+  in the syntax of mode definion:
+  1. To specify note names, use  :degrees or :notes, not the
+     :steps init. (Use :notes to create a mode with typed intervals
+     that insure proper spelling when the mode is transposed. Use
+     :degrees for notes or keynums if you do not care about
+     preserving spelling or for any mode that does not use
+     the chromatic scale as its tuning.
+  2. A :degree or :note list uses the last item to mark the octave:
+     ie ':degrees (c d ef f fs g)' defines a 7-semitone octave.
+  3. Use the :steps init to specify the mode as a list of intervals
+     between mode degress. the octave size of the mode will be set
+     to the sum of the intervals: (2 1 2 1 1) = 7 semitone octave
+
+o Rhythmic symbols can now include a minus sign that negates their
+  value, i.e. -q = -1.0. Such values can be interpreted as "resting"
+  values.  A minus sign prepended to a rhythmic expression negates the
+  entire expression, not just the first symbol: -w-q = -(w-q) = -3.0
+  not -5.0.
+
+o new function linux-play-midi-file for playing .mid files on
+  linux. uses a format string in *linux-midi=file-player*
+  to exec an external player. by default this string is set to:
+       "timidity --quiet=2 ~a &"
+
+o 'wait' now performs abs on wait values so that negative (rest)
+   values are handled correctly
+
+o CM now looks for an init file ".cminit.lisp" in the user's home
+  directory and, if it exists, loads it after loading the "sitewide"
+  cminit.lisp sp the personal init file can override sitewide
+  behavior. Put an explicit (use-package ...) at the top of the file
+  to ensure that forms are evalled in a particular package.
+
+o make-cm has new :extensions parameter for loading extensions. see:
+    doc/dict/make-cm-fn.html
+
+o Support for loading "sitewide" cminit.lisp files in CLISP 2.33
+
+o CM ported to SBCL, a variant of CMUCL.
+
+BUG FIXES:
+
+1. MIDI events with keynum < 0 no longer side effect the midi file.
+2. Rewrite pattern now parses wildcard * token in rules correctly.
+3. Quantize now rounds up or down the same for even or odd numbers.
+
+----------------------------------------------------------------------
+CM 2.4.2
+Maintenance release 
+
+o Fixed numerous formatting bugs reported by Nando.
+o Fixed make-cm to only check writability on actual file writes.
+o Fixed cmu.lisp to work with CMUCL 19 and gag their compiler.
+o Fixed pkg.lisp to not intern any symbols in cl-user package.
+o Fixed make.lisp to handle inconsistent implementation version
+  strings provided in cmucl.
+o Fixed cm.sh to handle same cmucl issue, and bug in OX X.
+o Added link to Emacs doc on home page.
+o Added link to first mention of cm.sh in install.html
+o Fixed open-io to check for availability of MidiShare (Nando)
+o Added write-event method for midimsg objects.
+o Added more midishare tests to test.cm
+o Made midishare *dbg* trace a bit more intelligible
+
+CM 2.4.1
+
+o CM's installation process has been completely rewritten to make it
+  easier to install. See:
+    http:/commonmusic.sf.net/doc/install.html
+    http:/commonmusic.sf.net/doc/dict/make-cm-fn.html
+  for more info.
+
+o a new shell script bin/cm.sh can be use to autoload CM.  It works
+  with every supported Lisp implementation and can start CM running in
+  a terminal or under Emacs/XEmacs.  type 'bin/cm.sh -h' in the
+  terminal for more info.
+
+o CM now works more flexibly with CLM, CMN and Midishare.  It is no
+  longer necessary to save image files with these systems hardwired
+  together. Instead, you can compile these systems seperately and then
+  load them when you want to use them. This allows you to work with
+  the most up-to-date versions of the software without have to rebuild
+  images.
+
+o You no longer have to compile CLM insturments in the CM package to
+  work with them in CM -- compiled instruments will create CM object
+  definitions even if the ins was compiled without CM around. (You
+  need to install the latest CLM-2 tarball for this to work.)
+
+o CM has a new test suite (etc/test.cm) that I use to check the system
+  in its various configurations before releasing the software.
+
+o The main CM/readme.text has been updated with a new "matrix" of
+  supported Lisps, OS, and tested features.
+
+o  CM now works in the OpenMCL 0.14.
+
+----------------------------------------------------------------------
+CM 2.4.0 now supports a direct MIDI driver connection using Grame's
+Midishare real-time MIDI operating system. CM defines two new IO classes 
+for working with Midishare:
+
+  midishare-stream:  interface to Grame's real-time MIDI library
+
+    A midshare-stream is very similar to the old "midi.port" and how
+    Mi_D handled things.  You can define a "logical channel map" for 
+    routing MIDI to various Driver ports, and you can have multiple 
+    connections active at one time (well, as soon as Grame fixes
+    this in OSX...)
+
+  player-stream: interface to Grame's MIDI sequencer library
+
+    A player stream lets CM process either "add" or "replace" events
+    in tracks of a Midishare player (sequencer). Once CM outpus to a
+    player you can use the following set of function interactively (in
+    the lisp inpterpreter) to affect the playback behavior:
+
+         player-start
+         player-stop
+         player-pause
+         player-cont
+         player-set-tempo
+         player-mute
+         player-unmute
+         player-solo
+         player-unsolo
+         player-save-midifile
+         player-load-midifile
+
+You can create midishare-stream or player-stream objects using 'new',
+'io' or by including a ".ms" or ".mp" extension (for midishare-stream
+and player-stream, respectively) in its name.  In addtion, for
+backwards compatibility the special name "midi.port" will open a
+Midishare stream whose client name is set to "Common Music".
+
+(events (foo) "midi.port")      ; send events to Midishare
+(events (foo) "whatever.ms")    ; send events to Midisahre
+(events (foo) "whatever.mp")    ; send events to a Player track.
+
+
+----------------------------------------------------------------------
+Features and bug fixes in cm-2.4.0:
+
+o event output can now be sent to arbitrary streams in additin to files.
+  All of the io classes that handle input/output have been renamed 
+  '-stream' to reflect this new generalization:
+
+    sco-file -> sco-stream
+    clm-file -> clm-stream
+    audio-file -> clm-audio-file
+    midi-file  -> midi-stream
+    cmn-file -> cmn-stream
+
+  To output to a file just specify the filename as before.
+
+  To output events to an arbitrary stream, create the event stream
+  and use its :stream argument to pass it your Lisp stream destination.
+  For example, to send CSound events to stdout:
+
+  (define out (new sco-stream :stream *standard-output*))
+  (events (blur) out :header whatever)
+
+  Note that some Lisp implementations provide special functions
+  for  specialized output to pipes and streams. For example in CLISP
+  you can used the 'make-pipe-output-stream'. to pipe your output to
+  some app.
+
+  All of cm's event streams classes now have a new 'mime-type' property
+  that is (currently) unused.
+
+o import-events for midi-streams has been completely reimplemented
+  * tempo changes in level1 midi files is now handled correctly.
+  * track zero is always  parsed for a 'tempo map'.
+  * tempo maps are applied to all imported tracks in a level1 file.
+  * tempo and tempo maps in the file can be overridden using the
+    new :tempo arg to import-events.
+  * :time-format for importing is now either :beats or :ticks.
+    The default is :beats, which causes tempo scaleing. If :ticks
+    are specified then time values are imported using the raw tick
+    values in the file.
+  * the :note-type arg has been renamed :keynum-format and allows
+    :hertz in addition to :keynum or :note.
+
+o function 'fm-spectrum' added to the sources (see chapter 23)
+
+
+o new function 'scale-order' puts a list of notes/keynums in
+  some canonical order:
+
+  (scale-order list [type] [unique?])
+
+  List is the list to order. Type is a keyword that specifies
+  how the list is ordered, Possible values are  :up :down or :random
+  The default value is :up. If unique? is true then the list
+  returned by scale-order will contain only unique frequency values.
+
+o CM's src/ subdirectory has TAGS file for searching using meta-. in Xemacs. 
+  Type:
+    M-x visit tags file
+  Then use
+    M-.
+  To view the cm sorces for a function or symbol at point.
+
+BUG FIXES:
+
+o 'keynum' and 'note' now correctly handle Lists of hertz values,
+o  the 'with' operator in 'process' is now macroexpanded correctly.
+
+
+
+Features and bug fixes for CM 2.4.0:
+
+o new 'copier' pattern returns multiple copies of each period of a
+  specified pattern. functions similar to the old 'repeat' macro.
+
+o 'Palindrome' is now a true pattern and the :elide value can change
+  on each cycle of its data.
+
+o The 'join' pattern class made easier to use -- by default the
+  first pattern listed in the join determines the period length of the
+  join.
+
+o 'funcall' pattern now respects period length (bug fix).
+
+o 'heap' pattern now copies data before side affecting (bug fix)
+
+o new ':pickto' initialization for range pattern produces
+  random selection a la between:
+
+    (new range :from 10 :pickto 30)
+
+o patterns now have 'make-load-form' methods and can be saved to
+  files. but patterns like funcall and pval that contain lexical
+  closures will not save correctly.
+
+O CM's scheme-to-cltl translator (src/stocl.lisp) now works in all
+  common lisps so anyone can generate the .lisp files from the .scm
+  files. see the comments at the top of the file for more info.
+
+o CM now saves an 'xcm' script that automatically starts the saved
+  image under Xemacs in a dedicated frame. xcm sets everything up
+  for you, including a scratch buffer in Lisp Mode.  The verion of
+  Lisp-mode it provides includes a Lisp menu with easy evaluation
+  rules (C-x/C-e at point, after point, on region) and some other
+  stuff. CM now also makes the 'cm' and 'xcm' scripts executable for
+  you when it generates them.
+
+o etc/xemacs/listener.el improved:
+  1. lisp-listener function takes optional second arg that specifies
+  the implmentation of the inferior lisp. This optional arg allows
+  commands to be made smarter. If the arg is not specified then the
+  Listener attempts to determine the implementation from the program
+  string you give it to run.  Current implementations are "guile"
+  "openmcl" "clisp" "cmucl" and "acl".
+
+  2. The command C-x C-.  aborts to toplevel in the inferior Lisp
+  buffer no matter what the Error level is or what Lisp you are
+  running.  C-x C-. can be issued from inside the edit buffer, ie you
+  do not need to switch to the listener.
+
+  3. Background color of Listerner can be changed via:
+
+  M-x set-listener-bgcolor
+
+  Type Tab at the prompt for a list of possible colors.
+
+  4. Quitting Listener will quit Xemacs if its the only 
+  active frame.
+
+o the file etc/mtxt/mtxt.lisp contains the source code for the meta
+  markup "language" that I use to generate CM's docs and book.
+  mtxt.lisp works in any common Lisp, at some point ill move it to
+  scheme.
+
+o *midi-gm-mode* is now back. if true (the default) then
+  midi-print-message "pretty prints" GM midi messages.
+
+o Dictionary formatting improved.
+
+o CM now compiles and runs in MCL 5.0 beta on OSX.
+
+---------------------------------------------------------------------------
+o cm.lisp now sets *readtable* to *cm-readtable*
+o build variable save-cm can be set to nil to stop cm from saving images.
+o #! is now #& to work in Guile. #! will continue to work in CLTL.
+o new 'each' iteration clause in process. see dictonary and last entry in intro.cm
+o new 'join' pattern implemented the old defmultiple-item from cm-1.4. see dictinary
+o added plotter back in macos 9.2/mcl
+o added midi user constants and data back (formally mu.lisp now midix.lisp)
+o added defprocess back
+o added copy-object back
+o fixed :channel-tuning bug in events
+o fixed :ratios tuning bug
+o improved dictionary (better layout, missing entries, bugs)
+
+
+readded sv macro
+fixed bug in events that didnt pass user args on to hooks.
+markov allows pattern of data.
+fixed :reflet mode in drunk
+add :stop mode to drunk, if bounds are exceeded then
+drunk returns false.
+added :avoid argument to drunk. If specified
+this value is precluded from being selected.
+fix bug in events that didnt pass on user args
+to hook function.
+
+Features and bug fixes for CM 2.4.0:
+o Fixed CMN clef printing bug.
+o Changed CMN staff layout to allow per score staffing like 
+  in cm-2.3.4
+o import load-foreign for cmu
+o added i and f classes for csound.
+o added &rest parameter feature for csound 
+  see example at end of sco.scm
+o cm.lisp script now prints out better info.
+
+
+Features and bug fixes for CM 2.4.0:
+
+o ported CM to Open MCL/OSX
+
+o CMN supported again in Common Lisp. I think ive made it
+  much easier to use.  See example in intro.cmn for
+  more info. Please send me feedback on this new method
+  if you use CMN!
+
+o CLM2/audio supported again in Common Lisp CM. Ill add
+  it scheme next.
+
+o CM now loads a scheme compatibilty file into Common Lisp      
+  unless you tell it not to. To block scheme symbols from
+  being defined in the Common Music package do
+      (push :no-scheme *features*)
+  before you load cm.lisp
+
+o File versioning now supported by file type. To turn file 
+  versioning on/off you call the appropriate function:
+
+  (set-midi-file-versions! #t)
+  (set-clm-file-versions! #t)
+  (set-audio-file-versions! #t)
+  (set-sco-file-versions! #t)
+  and so on.
+
+o Changed CD to behave like Linux CD -- calling CD
+  without an arg now puts you in your home directory.
+  This is incompatible with the last release -- sorry!
+
+o Added PWD function to print current working directory.
+
+o Added QUIT and EXIT functions to Common Music package.
+
+o Changed #i instance printing to show slot names rather
+  than keyword initializations.
+
+o Added <event> class for easy subclassing.
+
+o Fixed nasty while/until bug in process.
+
+o Fixed multiple transposer bugs.
+
+o Fixed multiple range bugs.
+
+o Ligeti example working.
+
+o Includes a nice cm script for clisp/Linux that Tobias
+  Kunze wrote. The script even installs over the net if it
+  has to!
+
+
+
+
+Changes to File and Port handling:
+
+ o The CM logical host is no longer supported (or needed...)
+
+ o The new 'cd' function can be used to get/set the "current
+   working directory" for file io. This can be used instead
+   of logical pathnames to write output to various locations
+   without haveing to specify full pathnames.
+
+ o Init files are no longer auto loaded (see next point).
+   This only worked in MCL and ACL anyway. 
+
+ o CM now automatically saves a script file in the cm
+   binary directory when it builds from sources. The script
+   file is a shell command to start up CM once it has
+   been saved.  The shell command autoloads a cminit.lisp file
+   located in the same directory as the image and script.
+   You may have to set execute permissions on the script:
+     chmod a+x bin/cm
+
+ o The functions 'set-midi-file-hook!', 'set-sco-file-hook!'
+   'set-clm-file-hook!' and 'set-audio-file-hook!' can be
+   used to auotmatically call a function when output of these
+   types is generated.  See etc/examples/intro.cm for examples.
+   Three hooks are predefined for midi file playing:
+   'mac-play-midi-file' plays midi via QuickTime on MacOS
+   'oss-play-midi-file' uses /usr/bin/playmidi on Linux and
+   'win-play-midi-file' uses the Windows Media Player.
+
+ o I havn't hooked audio files back into CLM's innards yet. 
+   For now just generate .clm files and load them into clm.
+   You can use the function 'formals->defobject' to compute
+   an object declaration given a CLM function spec.
+   
+ o Default <midi-file> tempo is now 60 bpm.
+
+ o <midi-port> is not supported in this relase. Use midi files
+   instead and set the output hook.
+
+ o <audio-file> is not supported in this relase. This is
+   next on my list.
+
+
+Changes to the CM object system:
+
+ o CM classes are now represented by both variables and names. 
+   The class variable is consistently named <class>, where class
+   is the name of the class. For example the variable <cycle>
+   holds the pattern class named cycle.
+
+ o 'defobject' now computes optimized write-event methods for any
+   class declared with :parameters specified. This means that 
+   compiling defobjects may increase the speed at which they
+   generate output.
+
+ o There is no longer any root <event> class or a required time
+   slot. Any object can output to a cm port or file if it has a
+   method defined on 'write-event'. (Defobject generates these
+   methods automatically.) To designate a slot for holding the
+   scheduling time value include ":accessor object-time"
+   as part of the slot's definition. (Subclasses will inherit
+   this accessor automatically.)
+
+ o GOOPS is close to, but not the same as CLOS. In order to get CM
+   working in both systems I made some compromises:
+
+   1. Initargs are internally always keywords. 
+   2. The 'new' macro allows initargs to be specified as symbols or
+      keywords. 'new' signals an error if an initarg is not 
+      recognized for the specified class.
+   3. 'make-instance' only supports keyword initargs. make-instance
+      may not signal an error if the initarg is unrecogonized.
+   The following are equivalents:
+     (new cycle of (list 1 2 3))
+     (make-instance <cycle> :of (list 1 2 3))
+
+ o There is no longer a process object class and the 'defprocess'
+   macro has been removed. it was really just sugar coating
+   for a function anyway so just use define or defun instead.
+   For example,
+     (defprocess foo (a b) (process ...))
+   is now either:
+    (define (foo a b) (process ...))
+    (defun foo (a b) (process ...))
+
+ o The 'subobjects' slot of <seq> now holds a flat list of 
+   subobjects. (These were previously held in a specialized
+   structure.
+
+ o Any object can output to a midi file if it has a method defined
+   on 'object->midi'. the method should return a midi object
+   or list of midi objects.
+
+
+Changes to patterns:
+
+o The 'next' function no longer returns a second value
+  along with the element read from the pattern. To get the
+  current state of a pattern use the 'pattern-state' function
+  on the pattern itself. To test if a pattern is at end-of-period
+  use the 'eop?' predicate on the pattern object.
+
+o The ':returning' option to patterns expects a function of
+  one argument and is passed the value read from the pattern.
+
+o The ':of' option to the 'funcall' pattern now expects a
+  thunk (function of no arguments) as its value.
+
+o The syntax (new pval {expr}) is no longer supported.
+  Instead use the new 'pval' macro or supply a function 
+  of no arguements to the pval's ':of' option:
+    (pval {expr})
+    (new pval of (lambda () {expr}))
+
+
+Changes to printing and read macros:
+
+o The #n, #k and #h and [] read macros have been removed.
+
+o #i is a read-macro for instances and it is defined for all
+  objects. If you don't want this behavior set *print-object*
+  to #f.
+
+
+Code Portability
+
+o the 'define' special form is implemented in CLTL.
+  define can be used to define both variables and
+  functions.  define does not return a value
+
+o the CM variables 'true' and 'false' can be used instead
+  of nil/t or #f/#t. This allows your code to be
+  source porable between CL and Scheme.
+
+o The 'process' macro supports a 'set' clause that
+  assigns BUT DOES NOT BIND the variable:
+
+  (let ((foo 1))
+     (process repeat 10
+              set foo = (list j)
+              ...))
+  
+  This lets you write code without setf or SET!. 
+
+o The file src/scheme.lisp contains some additional scheme
+  definitions you can use in CL. Ill add more over time.
+  Please send me any that you find yourself implementing!
+  
+o loop.scm provides an implementation of the CLTL2 loop
+  macro. Some cursory tests indicate that the speed of
+  this loop is equivalent to Guile's 'do' macro.
+
+o cltl.scm contains functions and macros that provide some
+  compatibility with cltl2. The file includes find, position,
+  byte, ldb, dpb among others. It also provides a macro 
+  callewd with-args that implements required, &optional, &key,
+  &rest and &aux parameter binding given a list of argument
+  values.  For example, the CL defun:
+
+     (defun foo (a b &key (c 1) (d c)) ...)
+    
+  can be implemented in Scheme as:
+
+     (define (foo . args)
+       (with-args (args a b &key (c 1) (d c)) 
+         ...))
+
+o There are also a number of CL compbabilty modules for Guile. 
+  I deliberatly decided to not require these because when I
+  started this Scheme port I wanted to maximize the ability of
+  moving CM to other Schemes (Bigloo?). If I had to do it over
+  again, I'd use Guile's goodies!
+  CM only uses Goops and pretty-print from Guile's modules.
+
+    
+Miscellaneous changes:
+
+ o CM documentation now in dictonary format. The entry point
+   is doc/dict/dictionary.html
+
+ o 'shuffle' now only accepts lists
+
+ o Keyword arguments to 'markov-analyze' changed:
+     (markov-analyze list &key order print? pattern?
+                     sort? print-decimals key)              
+
+ o CM no longer requires or assumes CL case insensitivity.
+
+ o The file listener.el implements an XEmacs Lisp listener window
+   that will work with guile and cltl2. See the comments in the file
+   for information on how to use it.
+
+ o Michael Klingbeil fixed 'vary' to work with negative values.
+
+
+Known Problems:
+
+ o the 'system' call does not seen to work in Window/Guile
+   so currently setting output hooks doesnt work.
+
+____________________________________________________________________
+
+
+Features and bug fixes for CM 2.3.4:
+
+o CM ported to SBCL Common Lisp 0.7.2
+
+o New RANGE pattern enumerates numbers in a range.  Can also
+  be used for creating cycles and bounded random walks.
+
+o New TRANSPOSER object replaces the hackish intervals macro.
+  TRANSPOSER is not itselef a pattern but allows patterns in
+  its data. The object also supports 12-tone manipulations like
+  inversion,  retrograde, retrograde-inversion and  
+  multiplicative and modulus from an offset. 
+
+o DEFPROCESS can now return a list of processes. See the new 
+  file "cm:examples;reich.cm" for an example of this.  The
+  file "cm:examples;ligeti.cm" also contains process lists
+  as well as uses of the new RANGE and TRANPOSER objects.
+
+o The SPROUT and OUTPUT process clauses now allow lists of
+  objects to be sprouted or output.
+
+o New "typed" pattern inits can be used in place of OF:
+    NOTES
+    KEYNUMS
+    RHYTHMS
+    AMPLITUDES
+    INTERVALS
+  These all cause data specified as their value to be parsed
+  according to the function for which the init is named.  For
+  example, the following two are equivalent:
+
+    (new cycle of '(c5 d e) parsing #'note)
+    (new cycle notes '(c5 d e))
+
+o KEYNUM and NOTE now support an explicit :TO scale.
+
+o New tuning entries in cm:etc;examples;scales.cm for
+  Sargam, Just, Meantone, Werckmeister 3, and 
+  Wendy Carlos' Alpha scale.
+
+o New LOOKUP function performs non-interpolating x-to-y lookup.
+  Y values do not need to be numbers.
+
+o New RESCALE-ENVELOPE rescales an envelope according to new
+  upper and lower bounds on either axis.
+
+o New SCALE-MOD function performs modulus operations on notes.
+
+o DEFOBJECT now defines slot accessors for slot discriptions that
+  don't explicity provide them. The name of the accessor will be
+  <class>-<slot> where <class> is the name of the object being
+  defined and <slot> is the name of the slot. To declare a slot
+  without any accessor specify :ACCESSOR NIL in its description. 
+
+o Examples of pattern definitions like:
+    (new cycle a b c)
+  have been removed from documentation. Examples now always
+  show explicit OF initializations like:
+    (new cycle of '(a b c))
+
+o The (new pattern ... in ...) hack has been removed from
+  documentation but continues to work.
+
+o TRANSPOSE now accepts note names in its second arg.
+
+o New contrib file: cm:etc;contrib;bezier.lisp implements
+  bezier curves in Plotter thanks to Bret Battey.
+
+o More example tunings and modes added to "cm:examples;scale.cm"
+
+o cm:ect;contrib;cm.el supports easy point and region evaluation
+  for inf-lisp in XEMACS. also supples an inferior lisp that runs
+  in its own frame and key bindings that allow APPLE commands
+  for eval, copy, paste etc.
+
+o Lots of mode/tuning bugs fixed, thanks to Bret Battey for
+  finding them!
+
+____________________________________________________________________
+Features and bug fixes in CM 2.3.3
+
+o CM ported and tested in:
+  * ACL 6.1 Windows/Linux/OSX. (You can get a free, renewable
+    license for ACL 6.1 from http://www.franz.com.)
+  * CLISP 2.28 Windows/Linux.
+
+o Improved CLM support:
+  * New IMPORT-EVENTS method for .clm files parses instrument
+    calls into CM objects and returns them in a list or seq.
+  * CM now passes _all_ with-sound options to CLM.
+  * All file and dac io now handled direclty by CLM. the CLM 
+    entries in cm:etc;handlers.lisp have been removed.
+  * New :TRACE-OUTPUT option for AUDIO-FILE (.aiff, .wav .snd)
+    causes CLM events to print their instruments and start times
+    as they are output to the open audio file.
+  * INS subclasses now inherit default values for &optional
+    instrument args.
+  * Parameter decimal formatting in CLM score files removed. 
+  * CM filenames with "wav", "snd" or "aiff" extensions now
+    pass default :TYPE and :FORMAT args to CLM:INIT-WITH-SOUND
+    so the sound file's type and data format agree with 
+    the file's extension. this behavior can be
+    overridden woth explicit :TYPE and :FORMAT values.
+
+o Tunings and modes are fully implemented. 
+  * Tunings can now be defined with note tables.
+  * Mode steps can now be defined in terms of "typed intervals" 
+    (see discussion below) so notes returned in the mode agree
+    with the mode's current tonic + step spellings.
+  * Modes can now be defined on any tuning, not just the
+    standard chromatic scale.
+  * Tuning keynums are "unbounded" so hertz <-> keynum conversion
+    can be calculated in any octave. (Tuning note tables are only
+    defined over a specified number of octaves, default is 10.)
+  * New file cm:examples;scale.cm contains some example tunings
+    and mode definitions.
+
+o Arguments to NOTE, KEYNUM, HERTZ  have changed to allow new
+  functionality. The most important changes are:
+
+  * Specific tunings and modes can bw specied to the functions
+    using the new :IN and :FROM argument.
+    :IN specifies the scale to use, and defaults to *SCALE*.
+    The :FROM argument allows keynums and notes in one scale to
+    be converted from one scale to their equivalents in another
+    scale.
+
+  * New :ACCIDENTAL argument to NOTE causes the note returned
+    to agree with the specified accidental.  The value of
+    :ACCIDENTAL can also be a list, in which case the list 
+    specifies a preference ordering of possible note spellings.
+      ? (note 60 :accidental 's)
+      BS3
+    
+  * Hertz values input to NOTE and KEYNUM must be explicitly
+    "tagged" by adding :HERTZ or :HZ (symbol or keyword) after
+    the value. This behavior is not "backward compatible".
+      ? (note 60)         ; return note name of keynum 60.
+      ? (note 60 :hz)     ; return note name of frequency 60.
+
+  * The variable *NUMERICAL-FREQUENCY-FORMAT* has been removed.
+
+o New "typed interval" preserves note spelling in transposition.
+  Typed invervals are created using the new INTERVAL function
+  and can be decoded using DECODE-INTERVAL. See the new section
+  about type intervals in the standard scale documentation in
+  "scales.html". 
+
+o TRASPOSE now allow the transpostion amount to be either the
+  integer half steps or a "typed interval".
+
+o New global variable *SCALE* holds the default scale (tuning or
+  mode) used by functions like NOTE, HERTZ, KEYNUM and TRANSPOSE.
+  *SCALE* is initialy set to the standard chromatic scale.
+
+o New global variable *STANDARD-CHROMATIC-SCALE* holds an instance
+  of the standard chromatic scale.
+
+o The functions CENT->SCALER and SCALER->CENT have been
+  renamed to CENTS->SCALER and SCALER->CENTS.
+
+o The function OCTAVE has been renamed OCTAVE-NUMBER.   
+
+o The functions MODEIFY and UNMODEIFY have been removed.
+  The same functionality can be achieved by using the
+  :FROM and :IN scale arguements to KEYNUM and NOTE.
+
+o THe macro INTERVALS is no longer documeted and will dissapear
+  in an upcoming releawse.  I will replace this messy hack by
+  a new object class that implements complex pattern transposition.
+
+_____________________________________________________________________
+Features and bug fixes in CM 2.3.2
+
+o tuning steps can be specified using cents or ratios and
+the step values can be incremental or absolute. If absolute
+steps are specified then the "octave width" is set to the
+last entry:
+
+  (new tuning cents (loop repeat 12 collect 100))
+  (new tuning cents  (loop for i to 1200 by 100 collect i)
+  (new tuning ratios '(1 9/8  3/2 27/16    2)
+
+o intervals macro supports MODE arg. if specified the intervals
+  returned from the pattern are mapped from the mode into
+  their equivalents in the standard chromatic scale. this
+
+o MODEIFY and UNMODEIFY now take optional arg to coerce calues
+  to/from mode degees to keynums, hertz values or note names.
+
+o aiff-file renamed AUDIO-FILE. by default the audio-type of an
+  audio-file is determined from the file's extension (aiff,
+  snd, wav).
+
+o new CHANNEL-TUNING initialization for midi port and midi files
+  supports both pre-tuneed equal division channel tuning or tuning
+  as needed on a per note basis.  The changes are as follows:
+    1. the DIVISIONS-PER-SEMITONE initarg to midi files and ports has
+       been renamed CHANNEL-TUNING
+    2. if the value of CHANNEL-TUNING is a number between 1-16 then 
+       midi channels are pretuned to that number equal semitone
+       divisions. This is how DIVISIONS-PER-SEMITONE worked.
+    3. If the value of MICROTUING is T then floating point key numbers
+       trigger pitch bends to be sent before each key number.
+    4. In either case the midi note is routed to a channel determined
+       by the system.
+  See the documentation on MIDI-PORT for more information.
+
+o markov-analyze now supports :sort and :decimals arguments.
+  the :print? arg has been renamed to :print (sorry!)
+
+o new contribuation file cm/etc/contrib samples.cm implement a
+  software sampler using CLM's Mix object.  it creates a
+ "sample database" from a directory of sample files and provides 
+  some useful functions to work with samples and CLM's MIX
+  instrument.  The function FIND-SAMPLE finds the closest sample
+  to a floating point keynum. The function TUNE-SAMPLE srates
+  shifts the sample to correspond to the same freqency as the
+  the floating point keynumber you specify. the function 
+  DEGREE->MIXAB translates a panning position in degress to MIX's 
+  panning :AB channel scalers.
+
+o new example file cm/etc/examples/sinewave.ins is a simple clm
+  instrument you can use to learn about envelopes, glissando
+  and panning.
+
+o new PLAY function for playing files. methods are currently
+  defined for midi-file and audio-file.
+
+_____________________________________________________________________
+Features and bug fixes in CM 2.3.1
+
+o New MODE and TUNING classes support user defined scales.
+  The functions MODEIFY, UNMODEIFY and FILTER-MODE allow
+  conversion between modes/tunings and the standard chromatic
+  scale. See new section 4.1.2 "Modes and Tunings" in 
+  doc/ref/tools.html for more information.
+
+o PROCESS macro completely reimplemented, new clauses added:
+   OUTPUT {object} [INTO <io>]
+   WAIT {value}
+   WAIT-UNTIL {value}
+   SPROUT {object} [AT {time}]
+   INITIALLY {expr}
+   IF {expr} {clause} {AND {clause}}* [ELSE {clause} {AND {clause}}*]
+   WHEN {expr} {clause} {AND {clause}}*
+   UNLESS {expr} {clause} {AND {clause}}*
+
+  PROCESS error messages now contain a clause context string.
+  PROCESS now warns if non-terminating algorithm is defined.
+  Examples in process.cm reflect new process syntax.
+  See doc/ref/processes.html for updated description.
+
+o CHORD object reimplemented, now always return a LIST of
+  chord members, ie (next [c4 e4 g4]) => (C4 E4 G4)
+  See section 4.1.3 "Chords" in doc/ref/tools.html for more
+  information.
+
+o new MIN and MAX options to the INTERVALS macro.
+
+o new DOEACH macro.
+
+o (NEXT {thing} T) now returns a list even if {thing} 
+  is not a pattern.
+
+o New example file "ligeti.cm" has Tobias Kunze's modeling of
+  Ligeti's first piano etude (Disordre).
+
+Incompatible changes:
+- MARKOV-ANALYZE arguments simplified and the return value changed.
+  Its now possible to return a markov pattern object from the
+  function.  See new documentation in doc/ref/tools.html
+- SPROUT now requires its time arg. This arg was previously
+  optional. Documentation for sprout was incorrect and
+  has been fixed, see doc/ref/process.html
+- TRANSPOSE now returns note names if either argument is a note.
+- SCALER-TO-CENTS renamed SCALER->CENT
+- CENTS-TO-SCALER renamed CENT->SCALER
+- SUBHOLDERS has been renamed SUBCONTAINERS.
+- CHORDING? function removed.
+- FLAGS slot removed from all objects.
+- Some system class names and class organization has changed to
+     accomodate Scheme port. This should not affect anyone.
+  
+Bug FIxes:
+- KEYNUM now rounds instead of trucnating.
+- INTERVALS with STEP option fixed to postincrement the
+  transposition offset. To get the former behavior (preincrement
+   the transpositino use the new PRESTEP option.
+
+_____________________________________________________________________
+Features and bug fixes in CM 2.3
+
+o Updated documentation with new sections, examples and entries.
+  Greatly improved formatting and appearance thanks to Tobias Kunze,
+  who also designed a really cool new splashscreen for CM:
+  http://www-camil.music.uiuc.edu/software/cm/splashscreen.gif
+  Reference manual also has new entries, examples, and sections.
+
+o Plotter enhancements:
+  - Added "Import..." item to File menu. Copy/Paste calls Import
+    automatically if the clipboard contains coordinate lists.
+  - Export dialog now lets you select floating point resolution.
+  - Added "Delete Plot" to Plot menu.
+  - Removed "New" from File menu.
+  - Removed "Default" item and renamed "New Default..."
+    item to "Point Size..." in the slot menu.
+  - Removed assorted debugging trace messages.
+
+o Two new contrib files:
+  - cm;contrib;cm.el:  an EMACS edit mode for XEMACS with the same
+    key bindings for LISP evaluation and Copy/paste as MCL (It
+    defines the ALT key next to the Spacebar as the Mac's
+    COMMAND key). The CM mode also runs a Lisp Listener in a
+    separate XEMACS frame and provides much better mouse evaluation
+    support that inf-lisp.  CM mode also has indentation rules 
+    defined for CLM, CM and CMN.  See the comments at the top of
+    the file for more information.
+  - cm;examples;ring.cm: some rotation patterns for change ringing.  
+
+o On the Macintosh CM is now saved as a true application with
+  its own Finder icons, splashscreen and a new Mac "creator"
+  type CM-2. If you dont want the splashscreen (but cripes it only
+  lasts 2 seconds) then put (setf *cm-splashscreen* nil)
+  in your cminit.lisp file.
+  If you want to continue to save CM as a MCL application 
+  (the old way) then set  new build parameter CM-APP-TYPE to :LISP.
+  CM-APP-TYPE can be:
+    :CMDEV   save cm as its own app including compiler.
+    :CM      save cm as its own app no complier (binary release).
+    :LISP    save cm as lisp image.
+  The default is :CMDEV.
+
+o The HELP function supports a new keyword :TYPE that controls
+  what types of entries are listed. Can be :all :class :clause
+  :function :macro :menu or :variable. On the Macintosh the
+  Help Worksheet allows the help entry types to be specified 
+  using the new pop-up menu of Help types.
+
+o Removed the MIDIT object. The MIDI object now outputs microtonal
+  keynums (Michael Klingbeil) so MIDIT is no longer necessary.
+
+o New microtonal support in MIDI. New options to MIDI port and files:
+     :DIVISIONS-PER-SEMITONE  (defaults to 1)
+     :PITCH-BEND-WIDTH        (defaults to 2)
+  If :divisions-per-semitone is more than 1 then that many channels
+  are claimed by CM and returned to produce microtonal output at the 
+  resolution of :divisions-per-semitone.
+  MIDI events with floating point key numbers kkk.cc will automatically
+  be  routed by the system to the proper channel to produce the
+  cent portion of the keynum (cc) at the resolution of
+  :divisions-per-semitone.
+
+o Removed the RELEASE slot from MIDI objects
+
+o New #E read macro for creating musical events. #E is similar to
+  Lisp's #S read macro except that #E creates EVENT instances.
+
+o PRINT-OBJECT now prints events as #E expressions.
+
+o New *E-FORMAT* variable controls how event slots in #E
+  expressions are printed:
+     T                 - print all slots with values.
+     :TERSE            - print all slots with non-default values.
+     :PARAMETERS       - print all parameter slots with values. 
+     :TERSE-PARAMETERS - print all parameters with non-default values.
+  The default value is T.
+
+o The OF option to patterns now accepts non-lists as data so
+  the forms (new pattern of 'x) and (new pattern of '(x)) are
+  equivalent.
+
+o INTERPL and TENDENCY now allow the :SCALE and :OFFSET args to be
+  alternately specified as :MIN an :MAX. In this case :offset
+  is set to :min and :scale is set to (max-min).
+
+o CM ported to MCL 4.3.1 and ACL 6.1
+
+BUG FIXES:
+o rewrite pattern ignored INITIALLY arg.
+o palindrome pattern ignored ELIDE arg.
+o SAVE in plotter wrote temporary cache values to files.
+o PASTE in plotter updated the incorrect view when the
+  destination view was not the same as the source view.
+o EXPORT in plotter always exported selection to window.
+o Plotter error when no coords defined in new plot.
+o Plotter error when all coords at time 0.0.
+
+_____________________________________________________________________
+Features and bug fixes in CM 2.2.1 
+
+o Ported CM to CMUCL and CLISP 2.27.
+o Updated documentation and etc/emacs sample init file.
+o SAVE-OBJECT saves seqs to files.
+o Process objects to be created using new.
+o CM now appends the version number to the default image name.
+
+Bug Fixes
+o Fixed bug in set-cm-host-dir that ignored :wild-inferiors
+o Handlers for midi and clm files fixed to allow :PLAY NIL
+o insert-object now works with null subs.
+o fixed parse-parameter-specs to add keyword args for CLM.
+o removed parameter checks for csound's F class and I class.
+
+_____________________________________________________________________
+Features and bug fixes from CM 2.2. I've listed the changes
+that affect all ports first:
+
+o New support for CSOUND courtesy of Donald Craig at CARTAH. The
+changes require that you recompile any csound object definitions.
+   1. New F class implements dynamic ftable statements in .sco
+      files.  See the entry in the cm reference and the example file
+      "cm:examples;ftable-demo.lisp" for more info.
+   2. New *PRINT-DECIMALS* variable controls the default number
+      of decimal places a parameter value is rounded to when
+      printing. The value of *print-decimals* should be an
+      integer between 0 and 7. The default value is 3.
+   3. New :DECIMALS keyword option to parameter declarations in
+      DEFOBJECT allows decimal precision to be controlled on a per
+      slot basis. See cm:examples;beep.lisp for an example. 
+   4. The :header option to sco-file can now be a string or list 
+      of strings. If the latter, each string in the header list
+      will be printed on a new line.
+   5. defobject no longer checks  parameter ordering for csound
+      objects.
+
+o Reorganized the Common Music Reference into a number of chapter 
+  files and improved the overall appearance.  I also changed the 
+  format of the entries to agree more closely with the format of
+  entries in CLtL2. The main file for the reference is
+  cm-2.2/doc/ref/cmr.html 
+
+o EVENTS now allows objects to be referenced by name, ie
+  (events "foo") is equivalent to (events #!foo )
+
+o New FINALLY clause for the process macro executes a form when
+  the process has finished. The FINALLY form can be used to
+  "clean up" or to sprout to a new process without having to
+  know when the current process actually ends.
+
+o DEFPROCESS now always creates a function defintion. Previously,
+  a function was only defined if the defprocess had lambda args. 
+  Now a process  can be referenced three ways, depending on your
+  preference:  #!foo (foo) "foo"
+
+o Process objects now have an :args slot initialization
+  whose value can be an argument list to pass to the
+  process when it is scheduled to run. The net result is that a
+  process can be manipulated as function or as an object;
+  which style to use is simply a matter of preference.
+
+o Added back the AMPLITUDE function from cm 1.4. Its syntax has
+  slightly changed, see cmr.html for more information.
+
+o New INVERT function inverts a list of freqs.  The inversion can
+  be either strict or "mod 12". See cmr.html for more info.
+
+o VARY function changed to accept an optional argument that 
+  places the variant value either :around, :above or :below
+  the specified value. The default is :around
+  (vary 100 .05 :above) => 100-105
+  (vary 100 .05 :below) => 95-100
+  (vary 100 .05 :around) => 97.5-102.5
+  This is an incompatible change since the former definition
+  calculated value +- variance.
+
+o TRANSPOSE now transposes both note sets and interval sets, ie
+  both of these are now possible:
+  (transpose '(0 1 2 3) 'g4)
+  (transpose '(c4 cs d ef) 7)
+
+o New INTERVALS macro, see docs for more info.
+
+o ODDS changed to accept an optional random state object.
+
+o New F rhythm qualifer for quituplets, ie F16 for quituplet
+  sixteenths. Courtesy of Hans Peter Kyburg.
+
+o New contrib file cm:contrin;abbrev.cm contains numerous
+  macros for easily specfiying various types of patterns.
+  (Hanspeter Kyburz)
+
+o New contrib file cm:contrib;sampler.cm provides an object
+  for working with large collections of aiff files using
+  CLM1's mix function.  I used it extensivly when composing
+  Aeolian Harp on a collection of plucked piano samples in
+  aiff files parsed from the McGill CD.  sample.cm also has
+  other support functions for cutting samples out of audio
+  files and so forth. sampler.cm has received additional
+  modifications from Michael Klingbeil.
+
+o The [] chording read macro has been added back.
+
+o New :exact-rhythms option for CMN streams.
+
+PLOTTER:
+
+o Plotter's interface made sleeker by replacing the rename
+  buffer with a rename menu item.
+
+o Edit Object worksheet now supports expressions and slot
+  references in value typeing fields.  If more than one object
+  is edited the worksheet expressions are evaluated for each
+  object in the selection. Edit Object now basically has the
+  same functionallity of Stella's old MAP commands.
+
+o New Find worksheet
+  Finds and selects all object in which a given query expression
+  is true.  Querys are fomulated graphically in the Find window.
+  A single query can consist of multiple tests connected by
+  AND or OR. 
+
+o New Edit menu command Quantize
+  Quantizes selection to grid or to a specified resolution.
+
+o New Edit menu command Select
+  Selects points or region withing the specified boundaries.
+
+o New Edit menu command Rescale
+  Proporitionally rescales selected points to lie withing new 
+  minimum and maximum boundaries.  By reversing the values in the
+  min and max fields the rescale dialog can also be used to effect
+  retrograde and inversion in point data.
+
+o New Edit menu command Set Mouse Hooks
+  Calls a user specified function whenever the appropriate mouse
+  event occurs. THere are currenlly two types o hooks:
+  :add-point-hook and :selection-hook.   
+
+o Grid drawing for Keynum and note axis marks c e g with darker lines
+  so you can tell more clearly what notes are being plotted.
+
+o A new main Plot menu encorporates the functionality of the
+  old Plot pop-up menu
+
+o Cosmetic changes to home page cm.html.
+  
+o Lisp code for examples in in plotter.html can be found in
+  cm:examples;plotter.cm
+
+
+o When a new graphing slot is specified on the Vertical dimension
+  a new display axis is automatically created if the current
+  axis is not approportate for the new variable.
+
+
+
+This will be the last release with new "features" for a while as I
+try to port the kernel and Plotter to Guile...
+
+_____________________________________________________________________
+
+Features and bug fixes from CM 2.1
+
+o Plotter, a new GUI tool. Check out the cool gifs!
+
+http://www-camil.music.uiuc.edu/software/cm/installed/cm-2.1/doc/plotter.html
+
+  - Lets you display any set of CLOS objects in four different
+    graphings styles: line, scatter, piano roll and histogram.
+  - Up to 5 dimenensions in your data sets can be simultaneously
+    displayed.
+  - Sound output to any cm destination. Mix output from multiple
+    plots, play single plots or play selected points in a plot.
+  - Multiple plotter windows and multiple plots per window,
+    Copy/Paste between plotter windows, load/save, export.
+  - Editor supports point and region selections, edit marks,
+    axis sweeping.
+  - GUI fully integerated into CM2. plot is subclass of Seq,
+    plotter windows can be output destination for process events.
+  - Superfast Scrolling/Zooming courtesy of Michael Klingbeil.
+  - GUI layout and nice html menu help ideas stolen from Snd.
+
+o New MIDIT object (Tuned Midi) for working with microtonal
+  tunings. MIDITs do not send pitch bends, they distribute 
+  microtones across a range of channels you initialize using
+  SETBEND and CLEARBEND processes or the Tune Channels dialog
+  window (MIDI menu on Mac). MIDITs support up to 16 divisions
+  per semitone, rougly 6 cents per division.  MIDIT comes courtesy
+  of Michael Klingbeil. see docs and "cm:examples;processes.cm"
+  for more info.
+
+o New contrib function FM-SPECTRUM in "cm:etc;contrib;fm.lisp".
+  This is the main function I used to write Aeloian Harp. It 
+  will return an fm "spectrum" as note sets, floating point keynums
+  or hertz values. The amplitudes of the spectral components can
+  optionally be included in the spectrum. FM-SPECTRUM can also
+  invert the spectrum and fit it within high and low boundaries.
+  The last example in process.cm use the function with the chord
+  and funcall patterns to output fm pseudo-jazz harmonies.
+
+o CHORD pattern added back to Cm-2. The new CHORDING? function
+  tells you if a pattern is chording or not.  Note that in Cm-2 
+  a chord does not automatically stop time from incrementing so
+  you can now strum chords, for example.  See the docs and
+  "cm:examples;processes.cm" for several examples.
+
+o New RAN function supports many different types of random
+  distributions: uniform, beta, gaussian, exponential, cauchy
+  high-pass, low-pass, band-pass, poisson and gamma. See docs for
+  more information.
+
+o New CM menu, dialogs and worksheets on the Mac.
+    
+o KEYNUM no longer rounds Hz values so keynums now accurately
+  encode Hertz values. Use with MIDIT divisions to quantize Hz
+  values to a very fine accuracy.
+
+o New functions CENTS-TO-SCALER and SCALER-TO-CENTS.
+
+o New HISTOGRAM function creates a histogram from a data list. 
+  (Michael Klingbeil)
+
+o New HISTO macro creates a histrogram by executing a form some
+  number of times.
+
+o OUTPUT now takes optional stream argument so a process can now
+  output to more than one destination.
+
+o Standard scale now defined to just above 22050, includes entries
+  for double sharps and double flats.
+
+o MAP-SUBOBJECTS now also maps subholders by default.
+
+o FIT, SCALE<, SCALE<=, SCALE=, SCALE>=, and SCALE> functions added
+  back into CM-2. sorry!
+
+o Tons of bug fixes, tons of new bugs added.
+
+I anticipate that the next release will happen fairly quickly as i 
+add things to Plotter. Please send suggestions and bug reports.
+I intend to port Plotter to linux later this Spring.
+
+_____________________________________________________________________
+Features and bug fixes from CM 2.0
+
+Common Music 2.0 is a complete rewrite of the system.
+Version 2.0 is smaller, faster, more powerful and (I hope) simpler
+to use than earlier versions. The major new piece of functionality
+is a new mechanism for defining algorithmic processes called
+defprocess. defprocess replaces algorithm, generator and mute in
+earlier releases of CM, but unlike these earlier forms it places no
+restrictions on how many or what types of events are output each
+pass. Defining a process is as simple as writing a Lisp loop, which
+defprocess deliberatly resembles. All of loop's iteration clauses
+are supported by defprocess. See
+http://www-camil.music.uiuc.edu/software/cm/doc/api.html#Musical_Processes.chapter
+for more information.
+
+Other main features of CM 2.0:
+
+o New consless scheduler runs six times faster than the previous
+  scheduler. It also runs without side effects so multiple
+  instances of the same object can execute concurrently.
+o Revised object system is smaller and simpler.
+o File and Port input/output has been completely reimplemented, file
+  output now includes optional versioning.
+o user defined handlers can be associated with files for arbitrary
+  post-processing of results.
+o Improved csound support, revised I event class, new function
+  IMPORT-EVENTS translates csound scores into data sequences in CM.
+  Importing supports sorting and most .sco file "carry" features.
+o New generalized PATTERN class replaces item streams.
+o New reference manual
+  http://www-camil.music.uiuc.edu/sotware/cm-2.0/doc/api.html
+o Top level lisp functions replace command interpreter.
+o Simpler installation.
+o System is now released under the GNU Copyright license.
+
+_____________________________________________________________________
+ 
+
+Features and bug fixes from CM 1.4 
+
+Most of the changes in 1.4 affect the Macintosh port of Common Music.
+These changes are too numerous to account here -- suffice it to say
+that CM's GUI interface underwent a drastic revision! New features
+include Enved, a graphical editor for displaying and editing musical
+data, a new Common Music menu design, and new dialogs, including
+Mix Output (COMMAND-U) and the MIDI setup connection dialog.
+
+New Dictonary entries:
+enved.html
+*MIDI-OPEN-AUTOMATICALLY*
+
+_____________________________________________________________________
+
+
+Features and bug fixes from CM 1.3 
+
+o New tempo objects side effects output streams for dynamic global 
+tempo changes. Tempo objects can also be written to output files. 
+See new Timing and Tempo entries in the dictionary. 
+
+o New class Multi-Stream supports multiple file and file 
+types being managed simultaneously during output processing 
+
+o New VRML output syntax. This is as of yet experimental and not 
+a syntax option but the file can be compiled/loaded by hand.
+Feedback  is greatly appreciated. See cm/kernel/vrml.lisp. 
+
+o New Meter and Key classes implement meter changes and key 
+signatures, useful for working with output syntaxes like CMN and 
+MIDI. See dictionary entries for more information. 
+
+o midifile-import completely rewritten to better support Level 1 
+MIDI files. midifile-import now allows data to be imported either 
+in logical or raw time formats, allows any subset of tracks to be 
+imported at once, allows any set of channel and/or meta opcode 
+types to be skipped on a per channel basis, etc. See the new 
+entry in the dictionary. 
+
+o All MIDI messages types are now supported, as are constants for 
+General MIDI patch changes, drum kit specifications, manufacturer 
+ID codes, SMTP time coding, controller definitions, etc. 
+
+o New variable *midi-gm-mode* may be set to T in order to enable 
+printing of GM patches and drum kit names.
+
+o New system patch facility automatically loads system patches. 
+
+o New functions note-class, interval-class, and prime-form for 
+working with note sets. See new entries in dictionary. 
+
+o New interval type preserves note spelling during transposition and 
+note generation within the intervals macro. All intervals up to 
+doubly-augmented and doubly-diminshed within an octave are 
+predefined. See the dictionary entry on definterval [Macro] for 
+more information. 
+
+o Interval streams now automatically coerce the "return values" to be 
+the same type as the transposition offset specified to the pattern. 
+
+o *chromatic-scale* now supports double sharps and flats. 
+
+o New Parameters commmand in Stella displays object parameters. 
+
+o New :clm-bin-directory and :cmn-bin-directory arguments to make-cm 
+for loading binary files kept apart from sources. If not 
+specified, these arguments default to :clm-directory and 
+:cmn-directory, respectively. 
+
+o markov-analyze now allows a null stream to be specfied, in which 
+case the lisp expression that creates the markov pattern is 
+returned (contributed by Jim Meehan). 
+
+
+Changes: 
+
+o Mac lib "Mi_D Library PPC (MCL)" has been renamed "libmi_d.so"
+
+o Keyword arguments to midifile-import have changed. 
+
+o With the introduction of the Tempo, Key and Meter classes, CM no 
+longer writes a time signature or tempo change in a midifile unless 
+you explicitly set its Tempo and Timesig slots. 
+
+o Modes are no longer side-effect by interval streams. 
+
+o DEFMDDE has been renamed MODE. 
+
+o the Intervals macro no longer takes a "returning" argument. 
+
+Bug fixes: 
+
+Lots.  Really.
+
+_____________________________________________________________________
+
+
+
+Features and bug fixes from CM 1.2 (27.3.98)
+
+o New version of Mi_D support.
+  1 *midi-preferences* is superceded by *midi-default-connections*
+  2 see the new MIDI documentation, in particular the entries on
+    - *midi-default-channel-map* and *midi-default-route-map*
+    - *midi-default-max-logical-channels*, *midi-default-max-routes*, 
+      *midi-default-max-connections*, *midi-default-max-mappings* and
+      *midi-default-queue-size*
+o Dictionary has been completely reorganized and is now frame based.
+o New macro DEFMULTI supports sending packets of MIDI program changes.
+o New option :NOTE-OFF-STACK to midifile-import. If true (the default)
+  then multiple note offs are paired to note ons with the same
+  channel using a FIFO scheme, otherwise FILO.
+o New *midifile-player* var, can be used to play midifiles in ports
+  of CM that do not support a direct connection to the MIDI driver.
+
+Bug fixes:
+
+
+_____________________________________________________________________
+
+Features and bug fixes from 1.1.0 (18.11.97)
+
+Features:
+o Low level MIDI completely reimplemented to use Tobias Kunze's
+  portable MIDI library.
+o MIDI Meta Messages can now be imported.
+o Introducing Mindy, a graphic front end (MCL) to designing networks
+  of CLOS objects. To learn more about Mindy,
+  load doc/tutorials/mindy/*.cm
+o New document doc/contrib/loop.html discusses iteration and loop.
+o New help facility: HELP command and "Help..." menu item now try to
+  use Netscape to display text.  Help also supports topic searching.
+  The CM Dictionary has been reworked to hold all documentation for
+  the system including stella command documentation,  midi message
+  documentaton (formerly midi.html) and the api (formally api.text).
+o MIX and SEQ now allow the optional specification of an output
+  stream, which defaults to the the currently open stream.
+  mix 1,2 0 play nil              ; mix to currently open stream.
+  mix 1,2 0 test.midi play nil    ; mix to test.midi
+o New ! command  for history execution. ! repeats a previous input line.
+  use ! ? to print the current history. type DOC ! for more information.
+o defobject now creates CLM objects without definstrument definitions.
+o New containers INFILE and MIDI-INFILE produce output events from 
+  a file.
+o new MUTE and UNMUTE commands for making objects silent or sounding.
+  muted objects dont produce output but still increment time.
+o OPEN {thread} creates a "copy stream" that caches all output to {thread}.
+o #! (find-object) now works with streams as well as objects. to ensure
+  case sensitivity put the file name inside "" , ie #!"test.midi"
+o Commands REHASH, LISTEN, SYNTAX, SLISTEN, SWRITE and WRITE have
+  been removed.
+o parse-rhythm now takes optional errorp argument. default is t.
+
+Bug fixes:
+o CENTS now coerces to float to avoid fixnum overflow
+o Added RHYTHM method to return item streams unparsed.
+o CLM streams now post-process specified options correctly.
+o MIDI real-time scheduling now handles time incrementing correctly
+o undefined excl::variable-globally-special-p fixed.
+o timeing bug on midi-messages to files fixed.
+o fixed print-object bug that omitted spaces before pointer display.
+o fixed load-cm to not load clm or cmn if directory set but
+  not on the syntax list.
+
+_____________________________________________________________________
+
+Features and bug fixes from 1.0.0  (15.7.96)
+The main focus for this release has been in adding real time support
+to Common Music. Most of this effort has been in optimizing
+the scheduler and eliminating all non-explicit memory allocation
+in the run time system.  
+
+This work has necessitated the addition of several major new features
+and the reworking many of existing primitives:
+
+o New "Working with Algorithms in Real-time" chapter in Stella Tutorial. 
+o The scheduler has been optimized and rewritten to use resources and
+  now runs conless. See build/benchmarks.text for more information.
+o Two system clock modes are now supported: :SECONDS and :MILLISECONDS.
+  When the clock mode is :seconds (the default), values for rhythm,
+  start, duration, etc. may be expressed as rational or floating
+  point time values. If the clock mode is :milliseconds, 
+  time value must be expressed in integer milliseconds.
+ :Millisecond time mode is consles" and may result in much faster
+  system time calculation.
+o The new function CLOCK-MODE returns or resets the system clock mode.
+  The clock mode defaults to :SECONDS.
+o New CLOCK and SCHEDULING options to the OPEN command in stella.
+o Rhythm streams now produce integer millisecond values if the clock mode
+  is :milliseconds. If clock mode is :seconds, the values returned are 
+  now dependant on the tempo factor: an integer tempo produces rational
+  rhythmic values, a floating point tempo produces floating point values.
+o *standard-tempo* now defaults to 60.0 not 60, so by default the
+  system still produces floating point seconds.
+0 :return-type made more general and now applies to many functions:
+   interp, rescale, expl, explseg, explsegs, tendency, fit.
+  If :return-type is not specified, the value returned depends on the
+  type of value produced by the calculation iteself so if all X and Y
+  values are rational than rational values will be returned. If X or Y
+  values are floating point then floating point values are returned.
+  :return-type '(float n) rounds the value to n digits.
+o New functions EXPLSEG and EXPLSEGS
+o *random-range* variable controls how the random pattern calculates
+  probabilities.  Set to most-positive-fixnum to enable conless
+  probability calculation.
+
+Other new features:
+
+o 32 logical channels of MIDI now supported. Each logical channel
+  can be individually routed to 2 ports, 16 channels per port.
+o New function MIDI-RECEIVE for MIDI processing. In MCL 3.0 and ACL
+  the processing happens asynchronously.  See the RECEIVE command
+  in stella or the new "Receive..." window in Capella.
+o definstrument supports new :printer argument for specialized
+  printing, and :time-parameter for specifying the parameter
+  to pass time in.
+o New features for midi-note objects:
+  1) Duratation is optional, if unset it defaults to rhythm.
+  2) Amplitude and Release values have been made consistent:
+       Amplitudes >1 are assumed to be integer midi velocities <128
+       Releases <1 are assumed to be logical amplitudes.
+  3) Amplitude default to 64.
+o New rhythm characters: M=Maximum (w*8), L=Long (w*4), B=Breve (w*2)
+  The rhythm character D=Double has been removed.
+o New macro MESSAGE-CASE for message type conditionalization.
+o New function SHUFFLE
+o New function SCALE-MEMBER for testing scale reference membership.
+o New output syntax M4C (Music 4C).
+o New initializer and finalizer slots for event streams. if specified
+  they are invoked just before/after streams are opened/closed.
+o Removed *compile-algorithms* added compile-algorithm
+o DEFMODE now allows modes to be specified by note names.
+o Funtions MODE-NOTE, MODE-DEGREE and MODE-PITCH documented.
+o TENDENCY allows alternative random generators to be specified.
+
+Bug Fixes:
+
+o Fixed command parser to read strings inside of lists.
+o Fixed interval streams to allow rests.
+o Fixed real time scheduling to not ignore rests.
+o Added fheader back in the system.
+o Sprout fixed in Clisp.
+o notes default to the middle octave for each substream steam
+o unbounded number streams no longer break and have a period of 1.
+o MIDI-NOTEs now signal error for out of bounds keynums.
+o *standard-chromatic-scale* now defined to 131 notes.
+o *rest-pitch* now most-negative-single-float.
+ 
+_____________________________________________________________________
+
+Features and bug fixes from 2.2.96
+
+o Added Timesig and Tempo slots to midi-file streams.
+  Default Timesig is 4/4, 24 clocks, 8 32nds
+  Default Tempo is 120, as specified by MIDI spec.
+o Added Scaled-to slot for clm-sound-file streams.
+
+Bug Fixes:
+
+o Fixed various pathname problems in CLISP DOS port.
+o fixed retrograde to handle :chording states
+o fixed transpose to handle rests,
+
+_____________________________________________________________________
+
+Features and bug fixes from 26.1.96
+o dictionary.html and stella.html split into smaller files for
+  easier web browsing. all docs now pass HTML error checks.
+o Added OS/2 and WIN32 as features for CLISP. File extensions are 
+  currently still handled like dos -- LSP and FSL.
+o moved cm.el from examples/ directory to site/ directory.
+
+Bug Fixes:
+
+o Rewrote clm.lisp to not use a class allocated par slot.
+  clm-note now uses normal object parameters.
+o If bin-directory and cm-directory are the same, the fasl files
+  are now stored with the sources instead of in the main directory.
+o Fixed build bug in mcl 2.0.1 that didnt require :resources properly
+o Fixed CLISP port to load cminit.lisp
+o Fixed mk2stella.m to handle score files without info tags (Leigh Smith)
+
+_____________________________________________________________________
+
+Features and bug fixes from 11-1-96.
+o All documentation converted to html format. doc/cm.html is
+  the Common Music home page.
+o make-cm prompts for a site directory for locally customized files.
+  If you specify anything other than cm/site, you must move any
+  of the scripts you use from cm/site to your site directory.
+o transpose and invert now work on lists of notes. if the inversion
+  point is NIL then the list is inverted such that it occupies the
+  same range as the prime.
+o new functions scale-max and scale-min return the highest
+  and lowest note referneces in specified notes.
+o New slot chanmap for Midi streams allows channel maps to
+  be specified. A channel map is a 16 element vector
+  that is indexed by midi-note channel to return the
+  actual channel for the midi data. A :chanmap argument
+  may also be specified to midifile-play.
+o new note-type option to import command with midi files. Value
+  can be note, pitch, or degree. defaults to degree.
+o Midi Play window now uses streams menu.
+o CSound Improvements (Tobias Kunze)
+  1) added variables *csound-command-string* and
+     *soundfile-play-command-string*.  this seems much more useful,
+     since people can customize what to use. I reinitialize them to
+     "/usr/local/bin/csound" and "/usr/sbin/sfplay -nice", respectively
+  2) added "args" slot to the csound-score-file class to be
+     able to pass options on the command line, ie:
+       Stella [Top-Level]: mix foo 0 args "-o newtest.aiff -A -m0 -d"
+ 3) play-using-syntax is much more powerful in output file handling.
+     options in the args slot override the output slot.
+  4) print-object and write-event always output ins slots.
+     makes much more sense than adding the ins slot everytime.
+  BTW: csound ist 500% mehr efficient with the "CYNTHIA" editor von
+  Jean Piche at U MOntreal.
+
+Changes:
+o Source directory structure has changed.
+o Stella and CM packages have been merged.
+o .stella extension has been renamed .cm
+
+Bug Fixes:
+o print-object for midi notes now tests to see if the channels
+  slot has a value before attempting to print it.
+
+_____________________________________________________________________
+
+Features and bug fixes from 23-11-95.
+
+New Ports:
+o MCL 3.0.
+o CLISP 1995-08-12, including real time midi on NeXTStep.
+  (Thank you Leigh Smith)
+
+Capella:
+o New main Common Music menu.
+o COMMAND-U keystoke sends musical output from any window to the
+  current output stream. Streams are made current either by creating
+  them or selecting them from the Streams submenu. Holding the
+  command key down when selecting a stream brings up an info browser
+  on the stream
+o New output editor replaces Seq and Mix worksheets. (Tobias Kunze).
+o Info browsers now support output stream editing.
+o Single clicks now collapse multiple selections in listings.
+o Capella tutorial rewritten.
+
+Stella:
+o New CSOUND note class Csound-note implements scorefile output
+  for all subclasses. If your note objects inherit from Csound-Note
+  then you dont have to define any output methods.  See 
+  CSOUND entry in dictionary.rtf for more information.
+o Importing Csound .sco files implelemented.  Only straight scores
+   at the moment -- no dot-pfields, no octcps statements, no nothing,
+   just blanco absolute values. (Thank you Anders Vinjar.)
+   See Csound entry in dictionary.rtf for more information.
+o New Mix and Seq commands replace Listen, Slisten, Write Swrite.
+  Avoid using Listen and SListen, they will disappear in a later
+  release.
+o Open sets the current output stream to the open file or port.
+o New Duplicate command does Copy/Paste for you.
+o $ notation no longer necessary in command expressions.  
+o New streams no longer prompt for modification.
+o Stella tutorial updated.
+
+General:
+o Streams completely reimplemented
+o Documentation and READMEs updated.
+o new function EXPL returns exponential values optionally scaled
+  and offset.
+o new constructor macro PATHNAMES creates item streams of file names.
+  Useful for creating complex patterns in sound file mixes 
+  (Anders Vinjar). See dictionary.rtf for more information.
+o Replaced system's few explict evals with funcalls.
+o Music Kit scorefile importing fixed and improved (Leigh Smith).
+  Importing now automaticall creates output stream in stella with
+  header slot containing the header of the imported score file. Music
+  Kit midi objects named MkMidi in Stella, and now have tempo and
+  timeSignature slots.
+BUG FIXES:
+o Code walker package bugs in ACL4.2/SGI fixed.
+_____________________________________________________________________
+
+Features and bug fixes from 8-Aug-95.
+
+GENERAL:
+o  build.lisp script can now save image on first pass.
+o  stella.rtf tutorial updated and revised.
+o  contrib/ directory updated.  goodies.lisp holds a number of new
+   utility functions. automata.lisp implements 1 and 2D cellular
+   autmomata with many examples including Conways's "Life" game and a
+   graphic visualizer for MCL.  random.lisp implements various non
+   linear random number generators.
+o  New macro DEFMODE creates transposable musical scale modes. All
+   system functions now work transparently with modes as well as
+   scales. see dictionary.rtf.
+o  New function RESCALE maps a specified value to a new domain. see
+   dictionary.rtf
+o  New function FIT returns shifted value lying between an upper and
+   lower bounds by either wrapping or reflecting the value mod the
+   boundart range. see dictionary.rtf.
+o  New macro WITH-VARS-SNAPSHOTTED creates lexical closures
+   over loop variable values.  See stella.rtf and dictionary.rtf.
+o  New algorithm macro WITH-PAST-VALUES implements variable value
+   histories. See dictionary.rtf and chapter 7 in stella.rtf
+o  Algorithm slot names may appear as expressions in item streams.
+o  New #e read macro expands to (expr ...)
+o  The system now warns only if the class of the object changes when
+   an object is redefined.
+o  Output errors no longer use modal warnings anymore.
+o  FUNCTION-VALUE renamed to INTERP but old name continues to work. 
+o  New function TENDENCY implements tendency masks. see dictionary.
+o  New comment object displays text and may be placed inside
+   threads and merges along with musical data.
+o  DEFMULTIPLE-ITEM now returns the first non-nil substate encountered
+   when :all was specified as the :element-period. this allows useful 
+   state information to be returned from the item when it is not at
+   end-of-period.
+o  Import now accepts Name argument. Importing midi files accepts
+   the additional arguments: Channels, Start, End
+o  The "named" item stream constructor option now evaluates its value.
+o  The "min" and "max" random item options may now be item streams or 
+   exprs.
+
+CLM:
+o  stella:definstrument automatically defines an object class
+   for the clm instument it creates. see dictionary.rtf.
+o  New trace option for CLM soundfile streams.  If true, instrument
+   begin times are printed as the soundfile is written.
+
+MIDI:
+o  MIDI realtime and file output reimplemented, now several time faster.
+o  MIDI level 1 files can now be read, most midifile functions support
+   new keyword arguments :start, :end and :track.
+o  New "release" slot for Midi-notes defines note off velocity.
+o  Midi-notes with R as a note value are interpreted as rests.
+
+SGIMIX:
+o  revised implementation of sgimix syntax.
+
+CAPELLA:
+o  Envelope editor now allows pasted expressions interp, 
+   interpolation, list and quote expressions.
+o  Time is now optionally displayable in listing browsers 
+o  Window positioning code in capella now made smarter.
+
+Bug Fixes:
+o  Pick checks length of sequence.
+o  Playscore looks under /usr/local/bin for music kit.
+o  Importing midi files now preserves all midi information in the file.
+o  Importing midi files now can use a preallocated container.
+o  Play-file now parses its options correctly.
+o  Interval streams now handles gapped scales correctly
+
+_____________________________________________________________________
+
+Features and bug fixes from 24-Mar-95.
+1) CM ported to CMU CL/SGI. Should work in any CMU CL port.
+1) CM (re)ported to NeXT/Intel/GCL1.1 and suports midi realtime with
+   MusicKit 4.1 thanks to Leigh Smith (leigh@psychokiller.dialix.oz.au)
+2) New :MIX syntax for Oyvind Hammer's (oyvindha@notam.uio.no) realtime
+   mixing program "mix" on the SGI.  Implemented by Anders Vinjar
+   (anders.vinjar@notam.uio.no). Get mix from notam.uio.no:/pub/sgi.
+3) Capella improvements:
+   a) New graphic envelope editor, supports copy/paste and various
+      output formats. Look under Utilities in the Stella menu.
+   b) Controls, Icons and Listing views completely reimplemented.
+      Listing views are now higly optimized and work well with very
+      long sequences of data (2000+ subobjects). Controls now work
+      better with color and are more dynamiclly responsive.
+   c) New "Play..." option in MIDI submenu for playing Midifiles.
+   d) New "Move" Worksheet for positional editing: swapping, rotating,
+      shuffling and reversing.
+
+Bug Fixes
+1) show-documentation in Stella now fixed. Broken by last release.
+2) import-file doesnt drop channel messages. NOT FIXED
+3) midifile routines no longer insist on .midi extensions.
+
+_____________________________________________________________________
+Features and bug fixes from 24-Jan-95.
+1) First release of Capella, a graphical interface for Common Music.
+   Capella currently runs only on the Macintosh under MCL 2.0 or higher.
+   Just build the system as usual; the saved image will contain a Stella
+   menu and you can take it from there. See the Help menu under Capella
+   for more information.  Select Load Example to load a little tutorial
+   on Capella. Capella is jointly implemented by Tobias Kunze
+   (tkunze@ccrma.stanford.edu) and myself.
+2) MIDI on the Mac now supports QuickTime MIDI, send problems/suggestions
+   to tkunze@ccrma.stanford.edu
+3) Midi data now prints with one less space and now memory pointer tag.
+
+Bug Fixes:
+1) Fixed bug in archive-object that caused error when time slot unbound.
+
+_____________________________________________________________________
+
+Features and bug fixes from 8-Nov-94.
+1) The documentation files under doc/ have been completely reworked,
+   examples checked, etc. item-streams.rtf has been completely
+   rewritten. dictionary.rtf has new format and new entries:
+   defmultiple-item, find-item-stream, midi-note, multiple-item-bind,
+   mute, rewrite, sprout and standard-chromatic-scale. scales.rtf and
+   most of the stuff under doc/contrib have been thrown out.
+2) New REWRITE pattern provides a general term rewriting facility.
+   Useful for implementing finite automata, l-systems, etc. See
+   dictionary.rtf for more information.  See stella/examples/rewrite.lisp
+   for example.
+3) Most examples under stella/examples have been checked and updated.
+4) GRAPH pattern now warns if you supply a list of ids rather than a
+   random item stream of ids.
+5) Rhythms and note names now work as default node ids.
+6) #i has new pattern char W for rewrite pattern.
+7) The LINKED-TO option now evaluates its argument. This is an 
+   incompatible change.
+
+Bug Fixed
+
+1) *cm-state*, find-item-stream. map-dta exported from common music
+   package.
+2) number streams now use local random-states.
+
+___________________________________________________________________
+
+Features and bug fixes from 11-Oct-94.
+1) Pathnames may be delimited by "" in commands.
+2) New Emacs customization file contrib/cm.el defines indentation
+   for Common Music forms.
+3) MCL printing-random-thing prints hex.
+4) note objects can now be placed directly inside merges.
+5) find-object and #! automatically append the found object to the
+   current container when used as top level forms in the body of a
+   thread, merge or heap definition, 
+6) The syntax of PICK changed. Pick now works with any type of
+   Lisp sequence or subrange of a sequence, and can avoid direct
+   reselection of an element. See dictionary for more
+   information. The old version of PICK is now called PICKL (for
+   pick list)
+7) heaps may now be specified to layout
+
+Bug Fixes:
+
+1) fixed contrib/naturalize.lisp to use map-object not mapref.
+2) fixed spelling of sequential-amplitude-stream.
+3) exprs now allowed in note, rhythm and ampliutude streams.
+4) double definition of csound-sound-file fixed.
+
+___________________________________________________________________
+
+Features and bug fixes from 10-Aug-94.
+
+1) CMusic and CMix syntaxes implemented by Charlie Baker
+   (baker@polka.ccmrc.ucsb.edu). The file cm/stella/examples/ks.lisp 
+   contains an example cmusic object implementation.
+2) New RETROGRADE macro returns the reverse of an item stream period.
+3) New documetation files: doc/lispintro.rtf provides an overview
+   of the most important characteristics of lisp. doc/lispstyle.rtf
+   is a compendium of lisp programming tips.
+4) The Run command now takes an INTO {thread} option.  If INTO is specified,
+   all events produced by Run will be appended to the contents of
+   {thread}, which is the name of a preexisting or a new thread.
+5) SListen now allows rests to be placed between the repititions of 
+   a single object.
+6) Formatting-slots has two new directives.
+   1) :decimals formats floating point values to some number of places.
+       use :decimals 0 to coerce to integers.
+   2) :print-if :always causes unbound slots to appear as "-unset-" 
+      in the formatting display. this is better than explicitly 
+      providing a :default-value of +slot-unset+.
+7) New PICK function randomly selects from a series of choices.
+8) Absolute time values can now be specified to musical notes. any object
+   that inherits from Element can now have its time set absolutely in one
+   of two ways:
+	1) specify the time via the "start" initialization arg, ie:
+	   (object midi-note start 10 rhythm 2)
+        2) set the time slot, then IOR the objects flags using the
+           the system constant +absolute+,  ie:
+           (setf (slot-value x 'time) 23)
+	   (setf (slot-value x 'flags) 
+             (logior (slot-value x 'flags) +absolute+))
+9) Standard scale now has 10 octaves.
+10) Algorithm macroexpansion is improved. Walked code now uses
+   symbol-macrolet instead of with-slots, item streams definitions can
+   now reference slot values in the running algorithm, vars
+   declarations can reference algorithm slot values in binding
+   expressions, and warnings are printed for local let variables that
+   shadow slot names. 
+
+Bug Fixes:
+
+1)  A bug in the Map command that ignored generators has been fixed.
+2)  Midifile-play now sends sysex messages.
+3)  Midi-message objects now send sysex messages properly.
+__________________________________________________________________
+
+Features and bug fixes from 29 April 1994.
+
+1) Same features as last release, but system has been ported to CLISP,
+   sans midi real time. See README.CLISP for more info.
+2) Build parameters also simplified.  There is no more default-syntax
+   to set: the first syntax listed in syntax automatically becomes
+   the default syntax when the system boots up.
+
+___________________________________________________________________
+
+Features and bug fixes from 24 April 1994.
+
+1) Full port of CM to Windows/ACLPC, including real time midi
+   implemented by Joe Fosco (b38669@anl.gov).
+
+2) New mapping operator Analyze performs statistical analysis on
+   a per slot basis.  For each slot, analyze first displays global
+   statistics on the number of descrete values, their min, max and
+   average, and then prints a breakdown for each value found its 
+   count, percentage and positions. The position information shows
+   consective values using a ":" delimiter between the positions.
+
+3) New mapping operators Quantize, Quantize! and Round size slot
+   values. Round rounds values to n digits. Quantize fits values to
+   be a multiple of a certain step size, Quantize! is like Quantize
+   but uses log scaling.
+
+
+
+Bug fixes:
+1) :TL appears on *features* list.
+2) midifile-parse no longer signals an error if it cannot find
+   a note on for a given note off. Instead, the note off is simply
+   ignored.
+
+___________________________________________________________________
+
+Features and bug fixes from 30 March 1994.
+
+1) Item streams have been completely reimplemented to support a 
+   number of new features:
+
+  a) Period lengths of 0 now supported. if an embedded stream sets
+     its period to 0 it "disappears" in its superior's pattern until
+     its reselected and it sets its period greater than 0. 0 length 
+     periods permit all sorts of interesting patterns that were formally
+     either impossible or exceedingly difficult to describe. here is a
+     very simple example of a cycle whose inner 2 elements occur just
+     every third cycle:
+	(setf x (items A (items B C for (items 2 0 0)) D))
+	(read-items x 20)
+	(A B C D A D A D A B C D A D A D)  
+
+  b) New pattern type ROTATION rotates its elements according 
+     to an optional "change value" supplied via the CHANGE option.
+     See dictionary.rtf for more info. The file 
+     stella/examples/change-ringing.lisp contains definitions that
+     implement various types of change ringing rotations.
+
+  c) New constructor option COUNTING controls whether a period counts
+     subperiods or values. If COUNTING is PERIODS (the default) then
+     the number of elements returned in a period is the sum of all
+     the subperiod lengths encountered in the period.  this has been
+     the normal behavior for item streams in the past. if COUNTING is
+     VALUE, the number of elements returned in a period is exactly 
+     equal to the period length.
+
+  d) New constructor option TRAVERSING controls whether a stream 
+     visits its subitems in depth first or breadth first mode. If
+     TRAVERSING is DEPTH (the default) then the pattern is only
+     incremented when the current element has returned end of period.
+     this has been the normal behavior of item streams in the past. if
+     TRAVERSING is BREADTH, then the pattern is incremented after each
+     value has been read, regardless of whether or not the subelement 
+     is at end of period. (another, less efficient way to impleement 
+     traversing breadth would be to set the period lengths of all
+     substreams to 1.)
+
+  e) All constructor macros now expand directly to make-instance 
+     instead of to intermediate constructor functions.
+  
+  f) ITEM is roughly 25% faster on the NeXT, depending on pattern and
+     datatype. Its only about 5% faster on a MAC IIci.
+
+  g) Palindrome and amplitudes are now represented by true classes.
+
+  Incompatible changes:
+
+  a) VOICINGS removed. Instead, both INTERVALS and STEPS will
+     increment their offset in parallel with the pattern if the offset
+     is specified using a new ON option instead of FROM. In other words:
+	(VOICINGS ... FROM ...) = (INTERVALS ... ON ...)
+
+  b) SERIES are implemented as a subclass of cyclic-interval-stream,
+     so the offset changes once each period. (form, modulus and multiple
+     change each time the series repeats)
+
+  c) FIRST, INITIALLY and REINITIALLY options removed. This affects
+     random, heap and graph patterns.
+
+  d) Default period length for graphs are now the number of nodes.
+
+  e) All constructor functions except make-item-stream removed.
+
+  f) DECRESCENDO renamed DIMINUENDO.
+
+
+2) Defscale now supports the creation of gapped and general scales
+   in addition to equal-tempered. See dictionary.rtf for more info.
+   Examples of various types of scales can be found in 
+   examples/defscales.lisp
+
+3) New output syntax RT writes input files for Paul Lanske's RT
+   sound file mixing program (NeXT only).  Stella also provides a
+   a PlayNote object to output rt file statements.  See the
+   implementation file stella/rt.lisp for more information. The file 
+   stella/examples/rt.stella contains an example algorithm.
+
+4) New global variable *compile-algorithms* controls if stella should
+   try to compile the code for an algorithm or generator as it is being 
+   defined. defaults to nil. see dictionary.rtf for more info.
+
+5) algorithms now have initialzer and finalizer slots to hold
+   functions that you want funcalled just before and just after
+   the algorithm has been scheduled.
+
+Bug fixes:
+
+1) Mirror and repeat macros now work properly.
+
+2) cmn output method for midi data now coerces midi notenums to 
+   frequency.
+
+3) The Load command doesn't automatically try to compile .lisp files
+   when it loads them. if you want this use Load with compile t 
+   option.
+
+4) defobject only adds :initargs when necessary.
+
+5) importing music kit scorefiles now works properly.
+
+_____________________________________________________________________
+
+Features and bug fixes from 4-Feb-93.
+
+1) Markov selection using graphs now possible via new item stream
+   option PREVIOUS and new function IDSEL. See entries in dictionary.rtf;
+   the file stella/examples/markov has the Stephen Foster example from 
+   Dodge-Jerse chapter 8.
+
+2) defmultiple-item takes new keyword argument :element-state, for
+   selecting which element's state to return as the state of the multiple
+   item when its not :end-of-period.  this allows tracking the state of 
+   chords,etc inside the multiple-item.
+
+3) new #i read macro for shorter item stream definition, see 
+   dictionary.rt for more info.
+_____________________________________________________________________
+
+Features and bug fixes from 2-Feb-93.
+
+1) New command RUN executes the specified objects and updates their time
+   values without producing any output. Current time values may then be
+   referenced in editing operations, ie
+	run foo,bar
+	map foo while (< $time 50) when (> $time 20) transpose note -3
+	set bar amp (interpl $time 0 .1 50 .3)
+
+2) clm interface improved:
+    a) all sound file attributes now specifiable via Open, ie
+		open foo.snd verbose t srate 44100 play nil 
+    b) envelope processing for .snd and .clm files now made easier
+       by using the new (:format :careful) option in formatting-slots
+       and collecting-slots. see dictionary for more info.
+3) formatting-slots now handles &rest arguments.
+4) defobject now takes an optional :parameters argument for declaring
+   certain slots to be "parameters". the system does not yet automatically
+   write output methods.
+
+Bug fixes:
+    Many clm/stella interface bugs solved.
+    catch/throw problems in map fixed
+    map operators while and until now print their results.
+    formatting-slots no longer prints double seperators between values
+_____________________________________________________________________
+
+Features and bug fixes from 2-Nov-93.
+
+1) Command prompting and processing has changed. 
+
+  Main prompting improvements:
+
+  1) All commands are now fully specifiable from the command line. A new
+     global variable *command-prompting* controls whether or Stella
+     prompts for missing or illegal command arguments. The default value
+     of *command-prompting* is T, so by default stella behaves as it has
+     in the past. If nil, missing or illegal command line arguments
+     result in an error/syntax message and an immediate return to the
+     main prompt.  Set to nil if you like a  terser input style.
+
+  2) Help texts completely rewritten. New tutorial sections: 2.4.2, 2.4.3
+     New dictionary entries: FHEADER, REPEAT, *command-prompting*,
+     *mapping-mode*, *mapping-depth, *listing-length*
+
+  3) Underlying lisp functions cleaned up, renamed and made "public".
+     See stella/api.text for a list of these functions and variables.
+
+  4) New type of command argument called "pairs"  is similar to Lisp's
+     &keywords args except:
+	1) you dont need to precede name with a colon (but you can).
+	2) their values are "carefully" evaluated, ie as Map evaluates.
+	3) underlying api functions all use pairs not keywords.
+
+  Main Syntax Changes:
+
+  1) Object reference parsing is now stricter: a reference to a series
+     of objects ment as a single command argument MUST include commas
+     between the individual references, or the entire reference must be
+     delimited within []. So "Listen 1 2 3 4" will no longer work but
+    "Listen 1,2,3,4" or "Listen [1 2 3 4]" or "Listen 1 , 2 , 3 , 4"
+     will work. The main  commands affected by this change are LIST and
+     LISTEN, WRITE, SWRITE and SLISTEN.  More than one offsets for LISTEN
+     and WRITE can be givin on the command line delimited with comma. 
+     See help text.
+
+  2) The specification of container positions has been simplified. To
+     append, just give the name or position of the container. Otherwise,
+     specify the insertion point as a positional reference:
+   	add bar,baz[32] foo	   ; append Bar and Baz[32] to Foo
+	add bar,baz[32] foo[4]	   ; insert Bar and Baz[32] at Foo[4]
+
+  3) Pathnames with spaces can now be specified if the entire pathaname
+     is delimited within "", 
+
+  Summary of changed commands. See help text for more info:
+
+  ADD                now accepts optional pair arguments.
+  ARCHIVE            now accepts optional pair arguments.
+  CL                 now accepts line of input to process.
+  DELETE             now accepts optional pair arguments.
+  LIST               now more compact.
+  LISTEN             now accepts optional pair arguments.
+  LOAD               now accepts optional pair arguments.
+  PASTE              now can paste to range and point, optional name.
+  PLAY               now accepts optional pair arguments
+  PARAMETERS         removed.
+  REHASH             obsolete.
+  REMOVE             now works for multiply linked conatiners.
+  RETROGRADE         works for subranges as well as containers.
+  SHUFFLE            works for subranges as well as containers.
+  SLISTEN            now accepts optional pair arguments.
+  SWRITE             now accepts optional pair arguments.
+  TLIST              now accepts optional pair arguments.
+  WRITE              now accepts optional pair arguments.
+
+2) The following are new functions, variables and macros. See the dictionary
+   for more information:
+
+   Function FHEADER sets file headers via Lisp. 
+
+   Macro REPEAT repeats the current period of an item stream
+   zero or more times. 
+   
+   User variables: *post-process*, *command-prompting*,
+                   *listing-length*, *mapping-mode*, *mapping-depth*
+
+
+3) New system containers: 
+   
+   TOC (Table Of Contents), the container of all system containers
+   Syntaxes, the container of all currently loaded syntaxes.
+
+4) Functional item streams and read items now optionally pass not only
+   the values of the current period, but the states as well.
+   see dictionary.
+
+Bug Fixes:
+
+1) Tlist on algorithms now works.
+2) midifile-parse now handles tracks without an initial tempo change.
+3) datatype integer and voicing exported from common music.
+4) functional streams now have "prop" option exported
+_____________________________________________________________________
+
+Features and bug fixes from 15-Sep-93.
+
+1) By default, defscorefile and with-part are not built into the cm
+   image, and the top level package is set to Stella when Lisp boots up.
+   If you still want to use defscorefile, set the defscorefile parameter
+   in build.lisp to T.
+
+1) Output streams now have three additional slots: Start, End and
+   Timescale.  Only events >= start and <= end  are output. Timescale
+   scales values related to time by that amount, but since time scaling
+   generally involves slots other than just Time (for example, duration),
+   it is left up each method on write-event to perform time scaling or
+   not.  All Midi and Music Kit classes support times scaling for start
+   and duration values.
+
+2) The Open command now allows slots to be unset by specifying Unset
+   or None (or :none or :unset if you are a real lisper) as their
+   "value".  Examples:
+
+	open test.midi start 10 end 40 timescale 2.5
+        open test.midi timescale none
+
+3) New Map operators List and Show.  Similar to Find, but they list
+   or show each referenced object.
+
+4) The $slot notation no longer returns 0 if the slot is unbound or
+   does not exist. Instead, it throws out of the current object.
+   Throwing allows operators like Minimize or Lowest to avoid calculating
+   with bogus 0 values when the currently mapped object does not have a
+   value for the specified slot, or is of a completely different class.
+
+5) Thanks to Tobias Kunze, Stella now functions similar to the normal
+   lisp listener in MCL:
+   1) <return> brings the selected text to the active spot
+   2) <backspace> no longer rubs out the prompt
+   3) Command-. pops the error stack instead of throwing immediately
+      to the top level.
+
+6) New global variable *default-midi-pathname* holds the default midi
+   output file pathname. All midi output functions merge the supplied
+   pathname with the default pathname to form the fully specified output
+   file pathname.  The initial value of *default-midi-pathname* is
+   "test.midi" in the user's home directory.
+
+Bug Fixes:
+
+1) Aborting from the file prompt in Write and SWrite now works.
+
+_____________________________________________________________________
+
+
+Features and bug fixes from 5-Aug-93.
+
+1) New support for CMN syntax:
+
+a) Chapter 12 in tutorial "Manuscripting data using CMN" rewritten to 
+   include new sections 12.5.1 "The open command" and 12.7  "Advanced CMN 
+   stream customizations"
+b) Staffing in CMN may now be by container, midi channel, or user 
+   specified. A new staffer slot for CMN streams holds a function reponsible 
+   for mapping objects in stella to their proper CMN staves. By default 
+   this staffer function is container-staff, which groups objects in staves 
+   according to their containers in stella. By setting staffer to the 
+   function channel-staff, midi data can be organized in CMN staves 
+   according to midi channel. See tutorial for more information.
+c) New marker slot in CMN streams may hold a function for adding cmn 
+   directives just after each note has been sent to CMN. Use a marker 
+   function to progrmatically send marking information to CMN, for example, 
+   to add a wedge to each note if the amplitude is above .4, etc.  See 
+   tutorial for more information.
+d) New staves macro allows staffing information to be easily supplied. 
+   See dictionary.rtf for more information.  Removed the old STAFF command 
+   from Edit when editing CMN staves. Now just use the staves macro to set 
+   the staves slot.
+e) If the system is built with MIDI syntax, the CMN object now also 
+   receives a channel slot.
+f) See also: entry on Open below, newly rewritten CMN chapter in the 
+   tutorial; new additions to appendix A in tutorial; dictionary entry on 
+   staves; channel.tl script in the stella/scripts directory.
+
+2) new variable *respect-note-spelling* decides if the notes macro should 
+   keep note names the same as specified by the user.  If common music is 
+   built with CMN, the defult value of *respect-note-spelling*  is true, 
+   which makes manuscript output from algorithms, etc much more friendly.  
+   If CMN is not built into the system, the default value is nil, which 
+   preserves the original behavior of the notes macro
+
+3) the pitches macro no longer quantizes floating point data to fit in 
+   a scale.
+
+3) new variable *syntaxes* holds the list of syntaxes currently loaded 
+   into Common Music.
+
+4) The directory stella/examples/blee contains new composition examples 
+   by Brent Lee.
+
+5) Tutorial may now be used in conjunction with the Music Kit simply 
+   by switching syntax. The midi objects will then output to music kit, with 
+   midi channel info selecting various preset synthpatches in the MusicKit.  
+   Music Kit data may also output to CMN for manuscripting.
+
+6) CSound syntax fully implemented in Stella. See stella/examples/i1.lisp 
+   for an example of declaring csound objects and output methods. 
+
+7) New Heap container class and constructor. A heap is a subclass of 
+   thread, but shuffles its material each time it is initialized for 
+   outputting, which allows score structure to involve random permutation.
+
+8) New macros defobject and formatting-slots simplify defining new 
+   classes of objects and new output methods. Chapter 9 in tutorial rewritten 
+   and simplified. See tutorial and dictonary.rtf for more information.
+
+9) Show command now prints definition code for algorithms and generators.
+
+10) Reloading material from an archive now warns about redefining objects.
+
+11) New examples files from CCRMA workshop in stella/examples.
+
+12) New Unset command for unbinding slots. Also available as an operator 
+   in MAP.
+
+13) New Change command for changing the class of objects. Allows optional
+   slot initialization in redefined objects according to a {newslot oldslot}*
+   list. Also available as an operator in MAP. 
+
+14) Open now allows files and listeners to be initialized, ie
+        open test.score header *header*
+   would create or update a music stream for test.score and set its header 
+   attribute to the value of *header*.  See appendix ??? in the tutorial for 
+   detailed information about streams attributes.
+
+15) new build.lisp parameter "defscorefile" will allow the optional 
+   inclusion of the the old runtime system  of common music (defscorefile, 
+   with-part, defpart, etc.  For this release only, the default value will 
+   be T (in fact, don't set it to nil); thereafter it will default to NIL, 
+   which means that the old system will not be loaded into common music and 
+   the default package will become stella.
+
+16) cm.tar.Z is now much smaller becuase I remove a ton of old/stale  
+   documentation. Ive also removed dictonary entries to defscorefile,  
+   with-part, defpart etc. If you want them keep an old dictionary around.
+
+17) To accomodate an upcoming port to DOS, a few file names have been  
+   changed to insure unique names within 8 characters.
+
+   stella/tutorial/:
+        stella-tutorial.rtf			stella.rtf
+   midi/examples/:
+        real-time.lisp				rt.lisp
+        real-time-examples.lisp		rtexamp.lisp
+   doc/:
+        item-stream-examples.rtf combined with item-streams.rtf		
+   mk/examples/:
+        DBWave1vi-1.lisp DBWave1A.lisp
+        DBWave1vi-2.lisp DBWave1B.lisp
+        DBWave1vi-3.lisp DBWave1C.lisp
+        DBWave2vi-1.lisp DBWave2A.lisp
+        DBWave2vi-2.lisp DBWave2B.lisp
+        DBWave2vi-3.lisp DBWave2C.lisp
+
+Note that untarring the new cm.tar into your old source directory will 
+not remove the old files.
+
+18) :MIDI pushed on feature list
+
+Bug fixes:
+
+1) Fixed bug that caused algorithms to not increment themselves after
+   the last note. This change may cause existing code to run slightly
+   differently!
+2) Fixed superfluous warnings in MCL when defining algorithms and generators.
+3) Fixed status updating bug that cause an algorithm's status to get 
+   improperly updated if the algorithm reads from multiple item streams.
+4) Fixed Go bug that caused an error upon moving focus to an algorithm.
+_____________________________________________________________________
+
+Features and bug fixes from 14-Jun-93:
+
+1) New SCRIPT command in Stella reads editor input from a specified file, 
+   which may contain both lisp and command expressions.  Script files have 
+   a default extention of ".tl" to distinguish them from normal lisp files, 
+   which cannot contain command expressions.  Scripts are handy for 
+   storing complicated editing sequences, or commands that you issue 
+   repeatedly.  In addition, I am building up a library of scripts that 
+   place Stella in "automatic pilot mode" to demonstrate various simple 
+   command sequences. These demos can be found in the directory 
+   stella/scripts. Be sure to read README in that directory before 
+   loading any of these files.  I will continue to update and add to this 
+   directory.
+
+2) Tobias Kunze has implemented some really nice editor extensions in MCL 
+   to support Stella input and command evaluation from other windows and 
+   buffers. See contrib/mcl-stella.lisp for more info.
+
+3) The MAP command operators sum, collect, maximize, minimize, lowest, 
+   highest, and count now support an optional "global result variable", 
+   which will receive values that the operator produces.  Result variables 
+   are updated each time an operator's clause is processed so other 
+   clauses may reference the current value in their expressions.  To 
+   specify a results variable use the INTO option. For example:
+	map * sum $rhythm into timesum and collect timesum into timelist
+   would define a global variable timesum to hold the total of all rhythm 
+   slots and a variable timelist to hold the list of all summed start times.
+
+4) New MAP operators UNTIL and WHILE allow processing to terminate before 
+   all  objects have been mapped. Until terminates mapping as soon as its 
+   expr returns true.  While terminates as soon as its expr returns false. 
+   For example,
+	map * while (< $duration 1.2) increment rhythm .3
+   would process the objects in * until a duration >= 1.2 was encountered.
+
+5) Commands may now span more than one line of input if the entire command 
+   is delimited by a pair of curly brackets {}, ie:
+
+	{map t2 collect $note into mynotes
+	     when (member $note '(c4 c5 c6))
+	          transpose note (between 1 11)}
+
+6) New item constructors EXPR and FN. Expr creates an item out of lisp code 
+   (variables, expressions, etc). The ITEM function is then used to evaluate 
+   and return the value of an EXPR. The FN constructor is like EXPR, but 
+   creates an item from a function object.
+
+        <cl> (setf s (let ((x 0)) (items 1 (expr (incf x)) for 20 )))
+        #<CYCLIC-ITEM-STREAM 133341111> 
+
+        <cl> (read-items s) ; works even though x no longer exists
+        (1 1 1 2 1 3 1 4 1 5 1 6 1 7 1 8 1 9 1 10) 
+
+   see dictonary.rtf for more information.
+
+7) New OPEN command in stella opens a listener for the specified syntax, if 
+   possible.
+
+Bug fixes:
+
+1) the :KILL value to item inside with-part or algorithm may now be 
+   specified as a variable
+2) Numbers macro fixed to supply correct limit value.
+3) Numbers documented in dictionary.rtf   
+4) mcl-midi.lisp fixed to work with opcode midi tools.
+5) doitems item variable now properly bound.
+
+_____________________________________________________________________
+
+
+Features and bug fixes from 11-May-93:
+
+1) Macintosh mididriver routines and interface reimplemented by Tobias Kunze 
+   (tkunze@mvax.kgw.tu-berlin.de).
+  a) you no longer need anything from MPW, just debinhex the
+     supplied midi/mcl-midi.c.o.hqx file and away you go. 
+     Although it has only be tested on a IIci, SE/30, a PowerBook 170, and
+     a  Quadra 700, it should run on all Macintoshes with a hard disk and
+     at least 6 megabytes of RAM and 8 megabytes of disk storage, 
+     running Macintosh System Software 6.0.4 or later (including System
+     7) or A/UX 3.0.
+  b) "unlimited" midi message writing is supported by managing the mididriver's
+     buffers dynamically.  CM now allows about @40000 future unblocked 
+     messages; once all buffers are full the system drops into blocking mode so
+     you can still send more data.
+  c) A handy Midi utility menu is provided.
+
+2) New item stream constructor macro NUMBERS creates number streams for cyclic 
+   or random number generation. numbers is similar in spirit to Lisp's loop 
+   iteration macro, with the essential difference that numbers is used in 
+   conjunction with item to return the next number, and numbers permits any 
+   numeric option value to be replaced by an item stream of values, ie:
+	(numbers to 10)
+	(numbers from 1 below (items 5 10) in random)
+	(numbers by (items .1 .2) below 1)
+	(numbers from (items 0 1) to (numbers 10 to 20 in random))
+   Only the cyclic and random patterns are currently implemented.  See 
+   doc/dictonary.rtf for more information.
+
+3) midifile-play reimplemented by Tobias Kunze to use the open midi port 
+   rather than an external program. This allows you to play midifiles 
+   directly from Lisp without any ancillary program, which avoids blocking 
+   on NeXT 3.0 because playmidifile isnt used, and allows midi files to be 
+   played on the Mac without leaving lisp.  Play-midifile now supports the 
+   optional specification of :start :end times in the file, and a :timescale 
+   factor for "zooming" in and out of the sound.  See doc/midi.rtf for more 
+   information.
+
+4) Site initialization file. If a file called cminit.lisp or cminit.fasl 
+   exists in either *common-music-directory* or the directory containing 
+   the booted common music image, then it is loaded when common music boots 
+   up.  This can be used to automatically load patch files and system 
+   extensions, or to reset system variables like *common-music-directory* in 
+   the event that the image is run on a filesystem other than the one it was 
+   created on. Site initialization does not work in AKCL.
+
+
+5) The FOR option to item stream constructors now permits the period length 
+   to be specified as a function which will be funcalled to return the length 
+   of the next period.  This feature can be used, for example, to keep two 
+   item streams "in parallel", ie:
+
+   (items (items A for (items 5 6 7 in random) named Foo)
+          (items Z for #'(lambda () (period-length #@Foo))))
+
+   would cause the item Z to be generated as many times as the item A, no 
+   matter what the current period length of Foo actually is.
+
+Bug Fixes:
+
+1) Staff command for CMN output streams now allows renaming.
+
+2) Midi files written in MCL now have their macintosh file types set to Midi.
+
+3) tl.lisp no longer clobbers ccl:show-documentation in MCL.
+
+_____________________________________________________________________
+
+
+Features and bug fixes from April 5, 93:
+
+1) New CMN output syntax in Stella for postscript output via CMN. Chapter 12 
+   "Manuscripting data using CMN" in stella-tutorial.rtf has documentation 
+   and examples.
+
+2) New LAYOUT macro for organizing musical material. See chapter 13 
+   "Describing musical layout" for documentation and examples.
+
+3) Mutes and algorithm sprouting implemented. See section 7.10 "About 
+   Algorithms"  and new section 7.11 "Creating structure dynamically" for 
+   documentation and examples.
+
+4) Much work finishing/debugging Macintosh port, which now functions as well 
+   as the NeXT port.
+
+5) New VARS declaration for algorithms and generators declares variables 
+   that are local to the object and reinitialized every time the object 
+   begins output processing. See section 7.10.2 for more details.
+
+6) The DOITEMS iteration varible may now be either a single variable, or a 
+   list of two varibles, (var1 var2), where the var1 is the iteration varible 
+   and var2 is the state variable. Supplying a state variable allows forms in 
+   the body of doitems to access the current state of the stream.  For example:
+
+   (doitems ((i s) (notes [c3 e g]  [c3 e g]  [c3 e g] 
+                          [c3 e g]  [c3 e g]  [c3 e g]))
+     (element midi-note note i amplitude .5 duration .15 
+              rhythm (if (eq s ':chording) 0.0 .5)))
+
+7) SListen now prompts for the number of times to sequence if just one 
+   selection is specified to the command. Note that a single selection can 
+   itself be a subrange, ie:
+
+    Stella [Top-level]: Slisten foo
+    Stella [Top-level]: Slisten foo[1:5]
+
+8) The initially option to random, heap and graph streams now accept the 
+   value ANY, which causes the stream to randomly select its initial datum.
+
+9) Variable *pprint-archive* controls whether or not objects are pretty 
+   printed when archived. Pretty printing takes slightly longer than normal 
+   printing, put produces a more legible result.  Pretty printing is only 
+   important if you want  to list or edit a .stella file.
+
+Bug Fixes:
+
+1) Fixed pathname problem in MCL that caused file extensions to appear twice.
+
+1) Read macro #@ in MCL now handles both ccl's and cm's meaning.
+
+1) Fixed referencing bug that didn't parse names starting with a number.
+
+2) Fixed bug that still added containers with id NIL to table.
+
+3) All known problems with symbol export/import between the common-music 
+   and stella packages are fixed.
+
+5) Fixed even more timing bugs fixed with respect to merges. 
+
+6) New bug: In NeXTStep 3.0, midi output sometimes dies during output 
+   processing when using Listen. Try again after issuing the Close command, 
+   or simply use the Write command to generate a midi file. The system 
+   will automatically prompt for a midi file to be played after it is written.
+
+_____________________________________________________________________
+
+
+Features and bug fixes from Feb 15, 93:
+
+1) Port of Common Music to SGI Iris under Franz Allegro 4.1. (Midi real time
+   not yet completed)
+2) Fixed Stella run in MCL. Editor now supports copy/paste and buffer 
+   evaluation via Command-E. Command-. now aborts back to the Editor, rather 
+   than the Lisp Listener.
+
+_____________________________________________________________________
+
+
+Features and bug fixes from Jan 1, 93:
+
+1) New referencing scheme in Stella makes it possible to reference groups 
+   of objects in parallel. This allows comparative querying to be supported. 
+   For example the command:
+	map :::2 find (eq $note[1] $note[2])
+   would map pairwise over all the objects in the current focus container 
+   and return the starting positions of each pair of object that had identical 
+   values in their note slots.  For more information, see the tutorial 
+   section 2.5, or the 'help referencing' topic in the editor.
+
+2) New output syntax CMN allows postscript output using Bill Schottstaedts 
+   Common Music Notation package to be produced. Stella must be built with 
+   CMN loaded for this to work. Once syntax is set to cmn, either postscript 
+   or a cmn input file can be generated bu specifying the appropriate file 
+   extension to the write command.
+
+3) Many new mapping operators added: find, count, delete, undelete, insert, 
+   append, append-at insert-at.  For more information, see the tutorial 
+   section 9.1 or the 'help map' topic in the editor
+
+4) New system container called Io-Streams holds all currently defined output 
+   streams. To change the characteristics of stream that already exsts, 
+   list the contents of io-streams to find the stream in question, then used 
+   the edit command. For example:
+	edit io-streams[2]
+   would edit the 2nd stream object in io-streams.
+
+5) New :element-period options for defmultiple-item have been implemented by 
+   Fernando Lopez Lezcano:
+   :ANY --> any element that reaches end of period returns end of period
+   :ALL --> only returns end of period when all elements agree on end of 
+            period at the same time. 
+   :ANY C1 ... CN --> any followed by some component streams, same as any but 
+            only taking into account  the C1...CN components
+   :ALL C1 ... CN --> :all followed by some component streams, same as :all 
+	    but only taking into account the C1...CN components. 
+   C1 ... CN --> component streams: same as :ALL C1...CN
+
+6) Fixed bug in common music's restp function that caused it to fail with 
+   floating point argument.
+
+_____________________________________________________________________
+
+
+Features and bug fixes from Sept 30, 92.
+
+Much work in implementing and debugging Stella. There is a brand new tutorial 
+about composing in Stella in stella/tutorial/stella-tutorial.rtf
+
+new option "initially-from" for interval streams. The initially-from option 
+is similar to the from option, except that it supplies the offset for the 
+initial period of the interval stream only. Subsequent periods use the last 
+computed value from the stream as the offset value for the current period, 
+causing the new period to start wherever the last period left off. from, 
+initially-from and linked-to are mutually exclusive options.
+
+new option "linked-to" for interval streams.  The linked-to option may be 
+used in conjuntion with a named item steam to link the offset of the current 
+period to the last value that the named stream returned.  The name of the 
+stream to  link to should not be quoted.   from, initially-from and linked-to 
+are mutually exclusive options.
+
+new scale reference predicates: scale=, scale<, scale>.  the new functions 
+provide predicate testing for scale degree references. references may be 
+note, pitch or degree.
+
+new :play command for Franz Lisp.  the :play command plays .snd, .score, 
+.midi or .clm files using the appropriate methods.  default file to play is 
+the last generated score file.
+
+new iteration macro: doitems.  The doitems macro is like Lisp's dotimes and 
+dolist interation macros, but provides iteration over items read from a 
+suppied item stream.
+
+____________________________________________________________________
+
+Features and bug fixes from July 19, 92.
+
+Change to defscorefile
+
+by default, the item function used inside with-part  will notice rests and 
+chords in any type of item stream, not just in note streams.
+
+Change to the in-tempo function:
+
+in-tempo (and the tempo macro) now support an optional second argument, beat, 
+that specifies a pulse value for the tempo.  If no beat is specified the 
+default value of quarter note is used:
+
+Example: 	(in-tempo 60 'q.)
+
+Fix to the decrescedo macro
+
+Fixed the bug that caused only crescendos to be made...
+
+Change to the intervals and steps macro
+rests inserted in either the interval specification or the offset stream 
+will have their intended effect, but remember that the offset is reread just 
+once every period. 
+
+Change to the graph pattern type
+The to id descriptions for each graph node may now be item streams of id's.  
+This is a simple way of implementing some pattern type other than the default 
+random selection.
+Example: 	(items (a to (items b c))
+				   (b to (a))
+				   (c to (items a b c in palindrome))
+				 in graph)		
+
+Change to the palindrome pattern type
+The elided option to the palindrome pattern type now supports a variety
+of elision values:
+	nil, no		no elision at end points of palidrome
+	t, yes		elision at both start and end of palinrome
+	start		elision at just the start of the palidrome
+	end			elision at just the end of the palindrome
+Example:		(items a b c in palindrome elided start)
+
+Tempo scaling in nested rhythm streams now works. The system returns an inner 
+stream's rhythm without rescaling it by the outer streams own tempo factor.  
+another way to look at this is that, for a given stream, its tempo factor is 
+only applied to elements in the stream that are actually rhythmic data. 
+elements that came from embedded streams remain in the embedded stream's own 
+tempo, whatever that might happen to be:

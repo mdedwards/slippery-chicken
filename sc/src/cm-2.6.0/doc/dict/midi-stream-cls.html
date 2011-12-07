@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>midi-stream</title>
+</head>
+<body>
+<div id="content">
+
+<!-- Entry: "midi-stream" -->
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">midi-stream</code></dd>
+</dl>
+
+
+<p>
+Defines a common set of slots available in subclasses
+<a href="midi-file-stream-cls.html"><code>midi-file-stream</code></a>,
+<a href="midishare-stream-cls.html"><code>midishare-stream</code></a> and
+<a href="player-stream-cls.html"><code>player-stream</code></a>.
+</p>
+
+<p>
+<code class="entry">midi-stream</code> supports the following slot initializations:
+</p>
+<dl>
+
+<dt>
+<code class="keyword">:channel-map</code> <var>list</var></dt>
+<dd>
+ 
+A list or vector of logical channel defininitions.  Each entry in the
+map is a two-element list: (<var>port channel</var>) that defines the
+integer port id and integer channel number of the logical channel at
+that position.  If no list is specified the value defaults to the
+global variable <a
+href="midi-channel-map-var.html"><code>*midi-channel-map*</code></a>.
+</dd>
+
+<dt id="channel_tuning"><code class="keyword">:channel-tuning</code> {<var>boolean</var> | <var>1-15</var> | <var>list</var>}</dt>
+<dd>
+Determines the manner in which floating point key numbers
+<var>kkk.cc</var> are tuned, where <var>kkk.cc</var> is interpreted as
+the frequency <var>cc</var> cents above the MIDI integer
+keynum <var>kkk</var>.  The default value is false, which means that
+floating point key numbers are rounded to the nearest inteter MIDI
+keynum as they are sent to the MIDI file or port. If the value is true
+then floating point events are preceded by pitch bends to make the
+microtonal adjustment and both messages are sent to the next available
+channel. By default, the entire range of channels 0-15 are cycled
+through in round-robin fashion to minimize the likelihood that a pitch
+bend value will affect a sounding note.  (Set the
+variable <code>*midi-skip-drum-channel*</code> to true if you want to
+omit channel 9 from the channel rotation.)  To cycle through only a
+subrange of channels specify a list: (<var>true start end</var>) where
+<var>start</var> and <var>end</var> specify the inclusive starting and
+ending bounds for the channel rotation.  If the value is an integer
+1-15 inclusive then floating point key numbers are quantized to that
+number of divisions per semitone. For example, a value of 2 will
+quantize floating point key numbers to to the nearest quarter-tone
+This method of channel tuning much more efficient than then
+note-by-note method, but quantization means that you will not get the
+precise microtonal values encoded in the key numbers. However, since
+the maximimum of 15 divisions per semitone provides for a quantization
+step size of 6.6 cents (very close to the minimum perceivable change
+by humans), in most cases quantization can provide a sufficiently
+close approximation to the actual microtonal value.  By default
+channel allocation for quanitization starts at channel 0. To specify a
+different starting channel use a list: (<var>n start</var>),
+where <var>n</var> is the channel tuning value and <var>start</var> is
+the starting channel.
+</dd>
+
+<dt><code
+class="keyword">:pitch-bend-width</code> <var>integer</var></dt>
+<dd>
+Declares the pitch bend width in semitones of the synthesizer. This
+value is used to calculate pitch bend values for microtonal frequency
+resolution. The default value is 2, which means that the synthesizer
+uses a maximum pitch bend range of one whole step up and down.
+</dd>
+
+</dl>
+
+
+<!-- See also -->
+<h4>See also:</h4>
+<ul>
+<li><a href="clm-audio-stream-cls.html"><code>clm-audio-stream</code></a> [Class]</li>
+<li><a href="clm-stream-cls.html"><code>clm-stream</code></a> [Class]</li>
+<li><a href="cmn-stream-cls.html"><code>cmn-stream</code></a> [Class]</li>
+<li><a href="io-mac.html"><code>io</code></a> [Macro]</li>
+<li><a href="midi-file-stream-cls.html"><code>midi-file-stream</code></a> [Class]</li>
+<li><a href="midishare-stream-cls.html"><code>midishare-stream</code></a> [Class]</li>
+<li><a href="player-stream-cls.html"><code>player-stream</code></a> [Class]</li>
+<li><a href="sco-stream-cls.html"><code>sco-stream</code></a> [Class]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.5 $, $Date: 2005/03/20 02:08:37 $)</div>
+</div>
+</body>
+</html>
+
+

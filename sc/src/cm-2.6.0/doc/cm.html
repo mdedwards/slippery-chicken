@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "css/cm.css";
+
+</style>
+<title>Common Music</title>
+</head>
+
+<body style="background:white;">
+
+<table>
+
+<tr>
+  <td><img style="" src="img/cmlogobw.png" alt="[cmlogobw.png]"/></td>
+  <td><span style="font: normal 64px sans-serif; color:#444">Common Music</span><td>
+</tr>
+</table>
+
+<div id="content">
+
+<!-- background:#D8D5EC -->
+
+<h2>About</h2>
+
+<p>
+Common Music (CM) is an object-oriented music composition environment.
+It produces sound by transforming a high-level representation of
+musical structure into a variety of control protocols for sound
+synthesis and display. Common Music defines an extensive library of
+compositional tools and an API through which the composer can easily
+modify and extend the system.
+</p>
+
+<p>
+CM is released under the GNU copyleft software license. See <a
+href="gpl.text">gpl.text</a> for information about the terms and
+conditions of this agreement.
+</p>
+
+<p>
+Sources, runtime images and CVS access are all available from the 
+<a href="http://sourceforge.net/projects/commonmusic/">Common Music project at Sourceforge</a>.
+</p>
+
+<h2>History</h2>
+
+<p>
+Common Music began in 1989 as a response to the proliferation of
+different audio hardware, software and computers that resulted from
+the introduction of low cost processors. As choices increased it
+became clear that composers would be well served by a system that
+defined a portable, powerful and consistent interface to the myriad
+sound rendering possibilities. Work on Common Music began in 1989 when
+the author was a guest composer at <a
+href="http://ccrma-www.stanford.edu/">CCRMA</a>, Stanford
+University. Most of the system as it exists today was implemented at
+the Institut f&uuml;r Musik und Akustik at the <a
+href="http://www.zkm.de">Zentrum f&uuml;r Kunst und
+Medientechnologie</a> in Karlsruhe, Germany, where the author worked
+for five years. Common Music continues to evolve today at the
+University of Illinois at Urbana-Champaign, where the author is now a
+professor of music composition. In 1996 Common Music received First
+Prize in the computer-assisted composition category at the <i>1er
+Concours International de Logiciels Musicaux</i> in Bourges, France
+</p>
+
+
+<h2>Documentation</h2>
+
+<ul>
+<li><a href="dict/index.html">Common Music Dictionary</a></li>
+<li><a href="install.html">Installing Common Music</a></li>
+<li><a href="emacs.html">Running Common Music under (X)Emacs</a></li>
+<li><a href="../etc/examples">Source Examples</a></li>
+<li><a href="changelog.text">Change History</a></li>
+</ul>
+
+
+<h2>Links</h2>
+
+<ul>
+
+<li>
+<a href="http://www-2.cs.cmu.edu/Groups/AI/html/hyperspec/HyperSpec/FrontMatter/">Common Lisp HyperSpec</a>
+</li>
+
+<li>
+<a href="http://www.cs.cmu.edu/afs/cs.cmu.edu/project/ai-repository/ai/html/cltl/cltl2.html">Common  Lisp: the Language (2nd Edition)</a>
+</li>
+
+<li>
+<a href="http://common-lisp.net">Common-Lisp.net</a>
+</li>
+
+<li>
+<a href="http://www.apl.jhu.edu/~hall/lisp.html">Common Lisp Resources</a>
+</li>
+</ul>
+
+<h2 id="implementations">Supported Lisp Implementations</h2>
+
+<p>
+Common Music is implemented in Scheme (Guile) and Common Lisp and
+runs in the following configurations:
+</p>
+
+<div class="float">
+<table class="float">
+<tr>
+<td>&nbsp;</td>
+<th class="col" align="center">Linux</th>
+<th class="col" align="center">OS X</th>
+<th class="col" align="center">Windows</th>
+<th class="col" align="center">MacOS</th>
+</tr>
+
+<th class="row">ACL</th>
+<td align="center">&times;</td>
+<td align="center">&times;</td>
+<td align="center">&times;</td>
+<td align="center">&nbsp;</td>
+</tr>
+<tr>
+<th class="row" >CLISP</th>
+<td align="center">&times;</td>
+<td align="center">&times;</td>
+<td align="center">&times;</td>
+<td align="center">&nbsp;</td>
+</tr>
+<tr>
+<th class="row" >CMUCL</th>
+<td align="center">&times;</td>
+<td align="center">&nbsp;</td>
+<td align="center">&nbsp;</td>
+<td align="center">&nbsp;</td>
+</tr>
+<tr>
+<th class="row">Guile</th>
+<td align="center">&times;</td>
+<td align="center">&times;</td>
+<td align="center">&nbsp;</td>
+</tr>
+<tr>
+<tr>
+<th class="row">MCL</th>
+<td align="center">&nbsp;</td>
+<td align="center">&times;</td>
+<td align="center">&nbsp;</td>
+<td align="center">&times;</td>
+</tr>
+<tr>
+<th class="row">OpenMCL</th>
+<td align="center">&times;</td>
+<td align="center">&times;</td>
+<td align="center">&nbsp;</td>
+<td align="center">&nbsp;</td>
+</tr>
+
+<tr>
+<th class="row">SBCL</th>
+<td align="center">&times;</td>
+<td align="center">&times;</td>
+<td align="center">&nbsp;</td>
+<td align="center">&nbsp;</td>
+</tr>
+
+</table>
+</div>
+
+<dl>
+<dt>
+<a href="http://www.franz.com/">Allegro Common Lisp (ACL)</a>
+</dt>
+<dd>
+A full-featured commercial CL for Linux, Windows and OSX.  Includes a
+native CLOS and a graphical interface.
+</dd>
+<dt>
+<a href="http://sourceforge.net/projects/clisp/">CLISP</a></dt>
+<dd>
+An opensource ANSI CL that runs practically everywhere.  Includes a
+native CLOS, is actively supported.
+</dd>
+
+<dt><a href="http://www.cons.org/cmucl/">CMUCL</a></dt>
+<dd>
+An opensource ANSI CL for Linux. Includes a very good compiler.
+</dd>
+
+<dt>
+<a href="http://www.gnu.org/software/guile/guile.html">Guile Scheme</a>
+</dt>
+<dd>
+Gnu's full-featured Scheme for Linux, OSX, and Cygwin. Includes GOOPS,
+the Guile object system.
+</dd>
+
+<dt>
+<a href="http://www.digitool.com/">Macintosh Common Lisp (MCL)</a>
+</dt>
+<dd>
+A commercial ANSI CL available for Macintosh.  Includes a native CLOS
+and a graphical interface.
+</dd>
+
+<dt>
+<a href="http://openmcl.clozure.com/">OpenMCL</a>
+</dt>
+<dd>
+An opensource version MCL for OSX and LinuxPPC.  Includes a native
+CLOS, true (native) multi-processing, callbacks, is actively
+supported.
+</dd>
+
+<dt><a href="http://www.cons.org/cmucl/">Steel Bank Common Lisp (SBCL)</a></dt>
+<dd>
+An opensource ANSI CL (offshoot from CMUCL) for Linux and OS
+X. Includes a very good compiler and is actively supported.
+</dd>
+
+</dl>
+
+<h2>Contact</h2>
+
+<p>
+Please contact me with questions or comments or to tell me of any
+compositions you create using CM.  To receive email information
+about <a href="http://ccrma-www.stanford.edu/">CCRMA</a>'s family of
+Lisp music programs (CM, <a
+href="http://www-ccrma.stanford.edu/software/clm/">CLM</a> and <a
+href="http://www-ccrma.stanford.edu/software/cmn/">CMN</a>) please
+join the CMDIST mailing list by e-mailing your request to: <a
+href="mailto:cmdist-request@ccrma.stanford.edu">cmdist-request@ccrma.stanford.edu</a>.
+</p>
+
+<p>
+Rick Taube
+<br/>Associate Professor Composition/Theory
+<br/>School of Music
+<br/>University of Illinois
+<br/>Urbana, IL
+<br/>Net: <a href="mailto:taube@uiuc.edu">taube@uiuc.edu</a>
+<br/>Fax: +1 (217) 355 5780
+<br/>Vox: +1 (217) 244 2684
+</p>
+
+<!-- p>
+<a href="http://validator.w3.org:8001/check?uri=referer">
+<img src="http://www.w3.org/Icons/valid-xhtml10" 
+     alt="Valid XHTML 1.0!" height="31" width="88" />
+</a>
+</p -->
+
+
+</div> <!-- end "content" -->
+
+<!-- Footer -->
+
+<div id="footer" style="margin-top: 1em; border:none;">
+
+<div id="author" style="color:#9999bb;">H. Taube</div>
+<div id="cvs-info" style="color:#9999bb;">
+$Source: /cvsroot/commonmusic/cm/doc/cm.html,v $ $Name: rel-2_6_0 $
+</div>
+</div>
+</body>
+</html>

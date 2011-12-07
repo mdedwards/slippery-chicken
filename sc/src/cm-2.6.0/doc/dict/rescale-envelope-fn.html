@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>rescale-envelope</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "rescale-envelope" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><span class="syntax">(<code class="entry">rescale-envelope</code> <var>env</var> [<code class="keyword">:x-min</code> <var>n</var>] [<code class="keyword">:x-max</code> <var>n</var>] [<code class="keyword">:y-min</code> <var>n</var>] [<code class="keyword">:y-max</code> <var>n</var>])</span></dd>
+</dl>
+
+
+<p>
+Returns a copy of <var>env</var> with x and y values optionally rescaled to lie between new minima and maxima.
+</p>
+
+<!-- Interaction 1 -->
+<div class="float" id="repl_0-1">
+<pre class="shell">cm&gt; <span class="input">(rescale-envelope '(0 0 .5 .5 1 1) :y-min 100 :y-max 200 )</span>
+(0 100 0.5 150.0 1 200)
+cm&gt; <span class="input">(rescale-envelope '(0 0 .5 .5 1 1) :x-min 0 :x-max 100 )</span>
+(0 0 50.0 0.5 100 1)
+cm&gt; <span class="input">(rescale-envelope '(0 0 .5 .5 1 1) :x-max 100 :y-max 100 )</span>
+(0 0 50.0 50.0 100 100)
+cm&gt;</pre>
+</div>
+
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="interp-fn.html"><kbd>interp</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="interpl-fn.html"><kbd>interpl</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="lookup-fn.html"><kbd>lookup</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="tendency-fn.html"><kbd>tendency</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2003/07/07 21:27:41 $)</div>
+</div>
+</body>
+</html>
+
+

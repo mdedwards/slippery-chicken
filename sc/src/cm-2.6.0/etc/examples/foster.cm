@@ -1,0 +1,101 @@
+;;; **********************************************************************
+;;; $Name: rel-2_6_0 $
+;;; $Revision: 1.2 $
+;;; $Date: 2003/10/24 19:11:48 $
+;;;
+;;; Second-order Markov process. The transition table is taken 
+;;; from chapter 8 of "Computer Music" by Dodge/Jerse.
+;;;   channel 0 = slow string (pg 50)
+;;;   channel 1 = grand piano (pg 1)
+
+(define (foster len octave chan)
+  (let ((p1                             ; p1 is a second order Markov process
+         (new markov
+           :of '((b3  d4  -> d4)
+                 (cs4 d4  -> (d4 .3125) (e4 .3125) (a4 .3125))
+                 (d4  d4  -> (cs4 .125) (d4 .125) (e4 .5625) (fs4 .125)
+                  (a4 .0625))
+                 (e4  d4  -> (b3 .0625) (d4 .0625) (e4 .25) (fs4 .3125)
+                  (a4 .0625) (cs5 .0625) (d5 .1875))
+                 (fs4 d4  -> (e4 .75) (fs4 .1875) (g4 .0625))
+                 (a4  d4  -> (e4 .6875) (fs4 .3125))
+                 (b4  d4  -> d4)
+                 (d4  b3  -> d4)
+                 (d4  cs4 -> d4)
+                 (e4  cs4 -> d4)
+                 (d4  e4  -> (d4 .1875) (e4 .25) (fs4 .5) (a4 .0625))
+                 (e4  e4  -> (cs4 .0625) (d4 .75) (e4 .0625) (fs4 .125))
+                 (fs4 e4  -> (cs4 .125) (d4 .4375) (e4 .1875) (fs4 .125)
+                  (a4 .0625) (d5 .0625))
+                 (d4  fs4 -> (e4 .4375) (fs4 .1875) (g4 .125) (a4 .25))
+                 (e4  fs4 -> (d4 .0625) (e4 .1875) (fs4 .3125) (g4 .25)
+                  (a4 .0625)
+                  (b4 .0625)) 
+                 (fs4 fs4 -> (d4 .1875) (e4 .25) (fs4 .3125) (g4 .125)
+                  (a4 .0625))
+                 (g4  fs4 -> (e4 .5) (g4 .5))
+                 (a4  fs4 -> (d4 .3125) (e4 .25) (fs4 .1875) (g4 .0625)
+                  (a4 .125) 
+                  (b4 .0625))
+                 (b4  fs4 -> (e4 .6875) (fs4 .3125))
+                 (d4  g4  -> (fs4 .6875) (b4 .3125))
+                 (fs4 g4  -> (fs4 .25) (g4 .1875) (a4 .3125) (b4 .1875))
+                 (g4  g4  -> (g4 .5) (a4 .5))
+                 (a4  g4  -> fs4)
+                 (b4  g4  -> b4)
+                 (a4  gs4 -> a4)
+                 (d4  a4  -> (fs4 .25) (a4 .75))
+                 (e4  a4  -> (a4 .8125) (b4 .1875))
+                 (fs4 a4  -> (fs4 .125) (a4 .625) (b4 .1875) (d5 .0625))
+                 (g4  a4  -> (d4 .125) (a4 .625) (d5 .25))
+                 (gs4 a4  -> a4)
+                 (a4  a4  -> (fs4 .25) (g4 .0625) (gs4 .0625)
+                  (a4 .3125) (b4 .3125)) 
+                 (b4  a4  -> (d4 .0625) (fs4 .5625) (g4 .0625) (a4 .125)
+                  (b4 .0625) (d5 .125))
+                 (d5  a4  -> (fs4 .875) (a4 .125))
+                 (e5  a4  -> a4)
+                 (fs4 b4  -> a4)
+                 (g4  b4  -> a4)
+                 (a4  b4  -> (d4 .0625) (fs4 .0625) (a4 .75) (b4 .0625)
+                  (b4 .0625))
+                 (b4  b4  -> (fs4 .125) (a4 .75) (d5 .125))
+                 (cs5 b4  -> a4)
+                 (d5  b4  -> (g4 .0625) (a4 .3125) (b4 .3125) (d5 .25))
+                 (d4  cs5 -> d5)
+                 (d5  cs5 -> (b4 .75) (d5 .25)) 
+                 (e5  cs5 -> d5)
+                 (d4  d5  -> (a4 .125) (b4 .6875) (cs5 .1875) )
+                 (e4  d5  -> cs5)
+                 (a4  d5  -> (a4 .3125) (b4 .3125) (cs5 .1875) (d5 .125))
+                 (b4  d5  -> (a4 .5625) (b4 .125) (cs5 .3125))
+                 (cs5 d5  -> (b4 .3125) (e5 .625))
+                 (d5  d5  -> b4)
+                 (d5 e5  -> (a4 .3125) (cs5 .6875)))))
+        (p2 (new random
+              :of `((,(new cycle :of '(h h)) weight .375)
+                    (,(new cycle :of '(q q q q)) weight .125)
+                    (,(new cycle :of '(h q q)) weight .125)
+                    (,(new cycle :of '(q q h)) weight .125)
+                    (, (new cycle :of '(q h q)) weight .25)
+                    (w weight .125)))))
+          
+          ;; the process simply reads data from the 2 markov patterns
+          (process repeat len
+                   for k = (next p1)
+                   for d = (rhythm (next p2) 200)
+                   output
+                   (new midi keynum (transpose k octave) channel chan
+                        time (now) duration d amplitude .5)
+                   wait d)))
+
+;;; Sample call that generates 4 parallel foster processes
+;;; in different octaves. Select "Slow Strings" on the four
+;;; channels to get a pretty good Copeland sound....
+;
+; (events (list (foster 90 -12 0)
+;               (foster 90 0 0)
+;               (foster 90 12 0)
+;               (foster 90 24 0))
+;        "foster.midi")
+

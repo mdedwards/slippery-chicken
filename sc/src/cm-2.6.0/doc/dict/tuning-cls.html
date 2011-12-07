@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>tuning</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "tuning" -->
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><span class="syntax"><code class="entry">tuning</code></span></dd>
+</dl>
+
+
+<p>
+A scale definition with Hertz frequencies, key numbers and
+(optionally) note names assigned to each scale degree.
+</p>
+
+<p><code class="entry">tuning</code> supports the following slot initializations:
+</p>
+<dl>
+
+
+<dt><code class="keyword">:name</code> {<var>string</var> | <var>symbol</var>}</dt>
+<dd>
+
+An optional name for the tuning. 
+</dd>
+
+
+<dt><code class="keyword">:lowest</code> <var>number</var></dt>
+<dd>
+
+The lowest Hertz value defined in the scale. Defaults to
+8.175, which is C-1 in the standard chromatic scale.
+</dd>
+
+
+<dt><code class="keyword">:cents</code> <var>list</var></dt>
+<dd>
+
+One octave of the tuning specified as a list of cent values.
+Fewer or more than 12 degrees may be specified and an "octave" does
+not have to equal 1200 cents.
+If the cent values in <var>list</var> start with 0 and are in
+increasing order they specify the cent difference from the lowest
+degree to each degree above it. In this case the last value
+in <var>list</var> determines the octave width of the scale.
+If <var>list</var> does not begin with 0 then the cents values describe
+the distances between adjacent steps. In this case the octave width is set
+to the sum of the cent steps.
+<p>
+To define a tuning with note names specify each step as a list:
+<kbd>(</kbd><var>cent</var><kbd> {</kbd><var>note</var><kbd>}*)</kbd>
+where <var>cent</var> is the cent value followed by one or
+more <var>note</var> declarations. Each <var>note</var> declaration
+may consist of symbol <var>note</var> or a list <kbd>(</kbd><var>note</var><kbd> [:accidental s])</kbd>
+where the value of <code class="keyword">:accidental</code> is the "subsymbol" of <var>note</var>
+that represents the accidental. For example, the 8th step in the
+definition of the standard chromatic scale is:
+</p>
+<blockquote>
+<p>
+<kbd>(100 (af :accidental f) (gs  :accidental s))</kbd>
+</p>
+</blockquote>
+</dd>
+
+
+<dt><code class="keyword">:ratios</code> <var>list</var></dt>
+<dd>
+
+Exactly like <kbd>cents</kbd> except that the tuning values are
+specified as ratios (direct frequency scalers) rather than as cent values.
+</dd>
+
+
+<dt><code class="keyword">:octaves</code> {<var>number</var> | <var>list</var>}</dt>
+<dd>
+
+The number of octaves defined in the scale. Defaults to 10.
+The value can be a number or a list of
+two values <kbd>(</kbd><var>start end</var><kbd>)</kbd> where
+<var>start</var> is the first octave number and <var>end</var> is the
+last octave number.  Specify false if the tuning has no octaves. 
+</dd>
+
+
+<dt><code class="keyword">:keynum-offset</code> <var>integer</var></dt>
+<dd>
+
+A integer offset to add to all keynums values returned by
+<kbd>keynum</kbd>. Defaults to 0.
+</dd>
+
+
+<dt><code class="keyword">:default-octave</code> <var>integer</var></dt>
+<dd>
+The default octave for notes without octave numbers. Defaults to the 4th octave.
+</dd>
+</dl>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> A quarter-tone scale with no note names.
+</p>
+<pre class="code">
+(<a href="new-mac.html">new</a> tuning <span class="keyword">:name</span> 'qt <span class="keyword">:cents</span> (<span class="special">loop</span> repeat 24 collect 50))
+<span class="result">&rArr;</span> #&lt;tuning: <span class="string">"qt"</span>&gt;
+(<a href="hertz-fn.html">hertz</a> 138 <span class="keyword">:in</span> #&amp;qt)
+<span class="result">&rArr;</span> 440.0
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> A Slendro with note names and no octaves.
+</p>
+<pre class="code">
+(<a href="new-mac.html">new</a> tuning <span class="keyword">:name</span> 'slendro 
+     <span class="keyword">:lowest</span> 220.0
+     <span class="keyword">:octaves</span> #f
+     <span class="keyword">:cents</span> '((0    nem0)
+              (218  barang0)
+              (473  gulu0)
+              (721  dada0)
+              (954  lima0)
+              (1213 nem1)
+              (1458 barang1)
+              (1695 gulu1)
+              (1929 dada1)
+              (2174 lima1)
+              (2441 nem2)))
+</pre>
+</div>
+
+<p>
+See the file
+<a href="../../etc/examples/scales.cm">scales.cm</a> for examples of tuning and mode definitions.
+</p>
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="mode-cls.html"><kbd>mode</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.3 $, $Date: 2005/02/13 16:16:21 $)</div>
+</div>
+</body>
+</html>
+
+

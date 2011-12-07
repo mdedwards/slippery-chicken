@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>amplitude</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "amplitude" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">amplitude</code> <var>amp</var> [<var>softest</var>] [<var>loudest</var>] [<var>power</var>]<code>)</code></dd>
+</dl>
+
+
+<p>
+Converts a logical amplitude <var>amp</var> to an amplitude value
+according to its optional arguments. A logical amplitude is a value
+from 0.0 to 1.0 inclusive, or one of the following symbols:
+</p>
+
+<blockquote>
+<code>niente pppp ppp pp p mp mf f ff fff ffff</code>
+</blockquote>
+
+<p>
+<code class="entry">amplitude</code> supports the following optional arguments:
+</p>
+
+<dl>
+<dt><var>softest</var> </dt>
+<dd>
+The value to return when <var>amp</var> is 0
+or <code>niente</code>. The default value is 
+<a href="softest-var.html"><code>*softest*</code></a>.
+
+<dt><var>loudest</var></dt>
+<dd>
+The value to return when <var>amp</var> is 1 or <code>ffff</code>.
+The default value is <a href="loudest-var.html"><code>*loudest*</code></a>.</dd>
+
+<dt> <var>power</var></dt>
+<dd>If <var>power</var> is 1 then the amplitude returned is calculated
+linearly, otherwise the value lies on an exponential
+curve <var>amp</var><var><span
+style="font-size:smaller;"><sup><var>power</sup></var></sup>.  The
+default value is <a
+href="power-var.html"><code>*power*</code></a>.</dd></dd>
+</dl>
+
+<h4>Examples:</h4>
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Calculating amplitude values.
+</p>
+<pre class="code">
+(amplitude 'mp)
+<span class="result">&rArr;</span> .5
+(amplitude 'mp 0 127)
+<span class="result">&rArr;</span> 63.5
+(amplitude .5 0 1 4)
+<span class="result">&rArr;</span> 0.0625
+</pre>
+</div>
+
+
+<!-- See also -->
+<h4>See also:</h4>
+<ul>
+<li><a href="loudest-var.html"><kbd>*loudest*</kbd></a><kbd>&nbsp;</kbd>[Variable]</li>
+<li><a href="power-var.html"><kbd>*power*</kbd></a><kbd>&nbsp;</kbd>[Variable]</li>
+<li><a href="softest-var.html"><kbd>*softest*</kbd></a><kbd>&nbsp;</kbd>[Variable]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.2 $, $Date: 2005/02/13 02:17:47 $)</div>
+</div>
+</body>
+</html>
+
+

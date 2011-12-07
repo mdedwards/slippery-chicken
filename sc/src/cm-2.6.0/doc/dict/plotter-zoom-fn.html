@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>plotter-zoom</title>
+</head>
+<body>
+<div id="content">
+
+<!-- Entry: "plotter-zoom" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><span class="syntax">(<code class="entry">plotter-zoom</code> <var>plotter</var> [<span class="keyword">:x</span> <var>scaler</var>] [<span class="keyword">:y</span> <var>scaler</var>])</span></dd>
+</dl>
+
+<p>
+Returns the current zoom value of each axis, possibly applying new
+zoom values to the axes first, according to
+each <var>scaler</var>. If <var>scaler</var> is a number then it is a
+multiplier on the drawing size of the dimension, where 1 means 100%.
+If <var>scaler</var> is boolean true then the axis is zoomed so that
+it fits the current size of the visible display
+region. Otherwise, <var>scaler</var> should be boolean false, in which
+case no zoom is applied to that dimension. The default value
+for <var>scaler</var> is false.
+</p>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="plotter-topic.html#api">Plotter API</a> [Topic]</li>
+</ul>
+
+<!-- end content -->
+</div> 
+<hr class="inv"/>
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2004/11/19 03:12:25 $)</div>
+</div>
+</body>
+</html>

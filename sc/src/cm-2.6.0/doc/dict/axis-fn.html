@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>axis</title>
+</head>
+<body>
+<div id="content">
+
+<!-- Entry: "axis" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">axis</code> <var>prototype</var> {<var>keyword</var> <var>value</var>}*<code>)</code></dd>
+</dl>
+
+<p>
+Returns a new axis for controlling the horizontal or vertical
+dimension of a <a href="plotter-fn.html">plotter</a> display according
+to its <var>prototype</var> and keyword arguments.
+<var>Prototype</var> is the keyword name of an <var>axis
+prototype</var>: a preallocated instance of <a
+href="axis-cls.html"><code>axis</code></a> or
+<a href="log-axis-cls.html"><code>log-axis</code></a> that serves as a template for
+instantiating new axes with similar characteristics.  Plotter defines
+a few prototypes to cover the most common display configurations
+(<a href="#table1">Table 1</a>); the <a
+href="defaxis-mac.html">defaxis</a> macro can be used to create new
+axis prototypes.
+</p>
+
+<div class="float" id="table1">
+<p class="captxt">
+<span class="floatlabel">Table 1.</span> Predefined axis prototypes
+and their default characteristics.
+</p>
+
+<table class="float">
+<tr><th class="rcol">prototype</th><th class="rcol">minimum</th><th class="rcol">maximum</th><th class="rcol">increment</th><th class="rcol">ticks-per-increment</th><th class="rcol">labeler</th></tr>
+<tr><td class="rcell"><code class="keyword">:normalized</code></td><td class="rcell">0</td><td class="rcell">1</td><td class="rcell">1/4</td><td class="rcell">5</td><td class="rcell"> <span class="string">"~,2F"</span> </td></tr>
+<tr><td class="rcell"><code class="keyword">:percentage</code></td><td class="rcell">0</td><td class="rcell">100</td><td class="rcell">25</td><td class="rcell">5</td><td class="rcell"><em>func</em><span style="font-size:smaller;vertical-align:super"> 1</span></td></tr>
+<tr><td class="rcell"><code class="keyword">:seconds</code></td><td class="rcell">0</td><td class="rcell"> </td><td class="rcell">1</td><td class="rcell">4</td><td class="rcell"> <span class="string">"~,2F"</span> </td></tr>
+<tr><td class="rcell"><code class="keyword">:milliseconds</code></td><td class="rcell">0</td><td class="rcell"> </td><td class="rcell">1000</td><td class="rcell">4</td><td class="rcell"><em>func</em></td></tr>
+<tr><td class="rcell"><code class="keyword">:keynum</code></td><td class="rcell">0</td><td class="rcell">132</td><td class="rcell">12</td><td class="rcell">12</td><td class="rcell"><em>func</em></td></tr>
+<tr><td class="rcell"><code class="keyword">:frequency</code></td><td class="rcell">0</td><td class="rcell">22050</td><td class="rcell"></td><td class="rcell">1</td><td class="rcell"> <span class="string">"~,2F"</span> </td></tr>
+<tr><td class="rcell"><code class="keyword">:hertz</code><span style="font-size:smaller;vertical-align:super;">2</span></td><td class="rcell">8.176</td><td class="rcell">16744.035</td><td class="rcell">2</td><td class="rcell">12</td><td class="rcell"> <span class="string">"~,2F"</span> </td></tr>
+<tr><td class="rcell"><code>nil</code><span style="font-size:smaller;vertical-align:super;">3</span></td><td class="rcell">0</td><td class="rcell"> </td><td class="rcell"></td><td class="rcell">1</td><td class="rcell"> <span class="string">"~,1F"</span> </td></tr>
+</table>
+
+<p style="font-style:normal;font-size:smaller;">
+<span style="vertical-align:super;">1</span>  Where
+<em>func</em> is (<span class="special">lambda</span> (n)
+(prin1-to-string (floor n))).<br/>
+
+<span style="vertical-align:super;">2</span> The <code
+class="keyword">:hertz</code> prototype is an instance of the <a
+href="log-axis-cls.html">log-axis</a> class and treats its increment
+as the logarithmic <em>base</em> for its display.<br/>
+
+
+<span style="vertical-align:super;">3</span> The prototype
+<code>nil</code> provides defaults for axes created without a
+prototype.
+</p>
+</div>
+
+<p>
+Following the <var>prototype</var> name comes zero or more keyword
+initializations as appropriate for the class of the new axis. These
+initializations override any default value that the axis would
+otherwise receive from <var>prototype</var>. See the documentation
+on <a href="axis-cls.html">axis</a> and <a
+href="log-axis-cls.html">log-axis</a> for a discussion of available
+keyword arguments.
+</p>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Creating customized axes for a plotter display.
+</p>
+<pre class="code">
+<span class="comment">;; create a percentage axis with % sign in labels.</span>
+(axis <span class="keyword">:percentage</span> <span class="keyword">:labeler</span> <span class="string">"~D%"</span>)
+
+<span class="comment">;;; display 30 seconds with ticks every half second.</span>
+(axis <span class="keyword">:seconds</span> <span class="keyword">:maximum</span> 30 <span class="keyword">:ticks-per-increment</span> 2)
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> How to redefine slots of an existing prototype.
+</p>
+<pre class="code"><span class="comment">;;; reset ticks-per-increment in the :normalized prototype.</span>
+(setf (slot-value (find-prototype ':normalized)
+                  'ticks-per-increment)
+      5)
+</pre>
+</div>
+
+
+
+<h4>See also:</h4>
+<ul>
+<li><a href="defaxis-mac.html"><code>defaxis</code></a> [Macro]</li>
+<li><a href="plotter-topic.html">Plotter</a> [Topic]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.2 $, $Date: 2005/02/13 02:17:47 $)</div>
+</div>
+</body>
+</html>

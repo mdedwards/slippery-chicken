@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>shell</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "shell" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">shell</code> <var>cmd</var> {<var>keyword</var> <var>value</var>}<code>)</code></dd>
+</dl>
+
+<p>
+Passes the <var>cmd</var> string to the operating system for execution.
+Returns whatever the underlying Lisp implementation returns, typically a process object or false.
+</p>
+
+<p id="args"><code class="entry">shell</code> supports the following keyword arguments:
+</p>
+<dl>
+
+<dt><span class="keyword">:output</span> <var>boolean</var></dt>
+<dd>
+If true then any command output will be visible
+on the standard output, otherwise it will not. The default value is true.
+</dd>
+
+<dt><span class="keyword">:wait</span> <var>boolean</var></dt>
+<dd>
+If true then the function will not return until
+the command has completed execution, otherwise the function returns
+immediately after the command process starts. The default value is true.
+</dd>
+</dl>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="cd-fn.html"><code>cd</code></a> [Function]</li>
+<li><a href="cm-version-fn.html"><code>cm-version</code></a> [Function]</li>
+<li><a href="date-and-time-fn.html"><code>date-and-time</code></a> [Function]</li>
+<li><a href="pwd-fn.html"><code>pwd</code></a> [Function]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.3 $, $Date: 2005/02/13 02:17:47 $)</div>
+</div>
+</body>
+</html>
+
+

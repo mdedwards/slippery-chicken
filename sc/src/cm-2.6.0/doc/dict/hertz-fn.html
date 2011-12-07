@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>hertz</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "hertz" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">hertz</code> <var>freq</var> {<var>keyword</var> <var>value</var>}*<code>)</code></dd>
+</dl>
+
+<p>
+Returns the Hertz value of <var>freq</var>, which can be a note name,
+key number, Hertz value or list of the same. 
+</p>
+
+<p>
+<code class="entry">hertz</code> supports the following keyword arguments:
+</p>
+
+<dl>
+<dt><code class="keyword">:hz</code> <var>boolean</var></dt>
+<dd>
+If <var>true</var> then a numerical <var>freq</var> is interpreted as
+a Hertz value rather than as a key number.
+</dd>
+
+<dt><code class="keyword">:in</code> <a href="tuning-cls.html"> <var>tuning</var></a></dt>
+<dd>
+The tuning to return the Hertz value from.  The default value is
+<a href="scale-var.html"><code>*scale*</code></a>. 
+</dd>
+
+<dt><code class="keyword">:through</code> {<a href="tuning-cls.html"> <var>tuning</var></a> | <a href="mode-cls.html"> <var>mode</var></a>}</dt>
+<dd>
+Filters <var>freq</var> through <var>tuning</var> or <var>mode</var>
+and returns the Hertz value of the closest Hertz values.
+</dd>
+</dl>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Converting notes and key numbers to Hertz.
+</p>
+<pre class="code">
+(hertz 'c4)
+<span class="result">&rArr;</span> 261.625
+(hertz '(a4 c5 e))
+<span class="result">&rArr;</span> (440.0 523.2511 659.2552)
+(hertz 0)
+<span class="result">&rArr;</span> 8.175
+(hertz '(69 69.5 70))
+<span class="result">&rArr;</span> (440.0 452.892 466.163)
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Tunings and Hertz.
+</p>
+<pre class="code">
+<span class="comment">;;; define a scale whose steps are harmonics 8-16.</span>
+(<span class="special">define</span> <span class="defined">harms</span>
+  (<a href="new-mac.html">new</a> <a href="tuning-cls.html">tuning</a> <span class="keyword">:ratios</span> (<span class="special">loop</span> for i from 8 to 16 collect (/ i 8))
+       <span class="keyword">:lowest</span> (hertz 'c0)))
+
+<span class="comment">;; middle c octave</span>
+(hertz (<span class="special">loop</span> for k from 32 to 40 collect k) <span class="keyword">:in</span> harms)
+<span class="result">&rArr;</span> (261.625 294.328 327.031 359.735 392.438 425.14 457.844 490.54 523.25)
+</pre>
+</div>
+
+<h4>See Also:</h4>
+<ul>
+<li><a href="invert-fn.html"><code>invert</code></a> [Function]</li>
+<li><a href="keynum-fn.html"><code>keynum</code></a> [Function]</li>
+<li><a href="note-fn.html"><code>note</code></a> [Function]</li>
+<li><a href="note-accidental-fn.html"><code>note-accidental</code></a> [Function]</li>
+<li><a href="note-name-fn.html"><code>note-name</code></a> [Function]</li>
+<li><a href="octave-number-fn.html"><code>octave-number</code></a> [Function]</li>
+<li><a href="pitch-class-fn.html"><code>pitch-class</code></a> [Function]</li>
+<li><a href="prime-form-fn.html"><code>prime-form</code></a> [Function]</li>
+<li><a href="scale-max-fn.html"><code>scale-max</code></a> [Function]</li>
+<li><a href="scale-min-fn.html"><code>scale-min</code></a> [Function]</li>
+<li><a href="scale-mod-fn.html"><code>scale-mod</code></a> [Function]</li>
+<li><a href="scale-order-fn.html"><code>scale-order</code></a> [Function]</li>
+<li><a href="scalelt-fn.html"><code>scale&lt;</code></a> [Function]</li>
+<li><a href="scalelteql-fn.html"><code>scale&lt;=</code></a> [Function]</li>
+<li><a href="scaleeql-fn.html"><code>scale=</code></a> [Function]</li>
+<li><a href="scalegt-fn.html"><code>scale&gt;</code></a> [Function]</li>
+<li><a href="scalegteql-fn.html"><code>scale&gt;=</code></a> [Function]</li>
+<li><a href="transpose-fn.html"><code>transpose</code></a> [Function]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.3 $, $Date: 2005/02/13 02:17:47 $)</div>
+</div>
+</body>
+</html>
+
+

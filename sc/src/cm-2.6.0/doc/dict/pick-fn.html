@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>pick</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">pick</code> <var>arg</var> <var>...</var><code>)</code></dd>
+</dl>
+
+<p>
+Returns a randomly selected argument to the function.
+</p>
+
+<h4>Examples:</h4>
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> The <code>pick</code> function.
+</p>
+<pre class="code">
+(pick 1 2 3 4 5)
+<span class="result">&rArr;</span> 3
+(pick 1 2 3 4 5)
+<span class="result">&rArr;</span> 2
+(pick 1 1 1 0 2) <span class="comment">; poor man's weighted selection</span>
+<span class="result">&rArr;</span> 1
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Random selection using <code>pick</code>.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">play-pick</span> len)
+  (<a href="process-mac.html">process</a> repeat len
+           for o = (pick 0 0 -24 24)
+           for r = (pick .1 .2 .2 .2 .4)
+           for k = (<a href="between-fn.html">between</a> 60 67)
+           for a = (pick .25 .25 .24 .5 .5 .75)
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                       <span class="keyword">:duration</span> (* r (pick 1.5 .5))
+                       <span class="keyword">:keynum</span> (+ k o)
+                       <span class="keyword">:amplitude</span> a)
+           wait r))
+
+(<a href="events-fn.html">events</a> (play-pick 60) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+         
+<h4>See also:</h4>
+<ul>
+<li><a href="between-fn.html"><kbd>between</kbd></a> [Function]</li>
+<li><a href="drunk-fn.html"><kbd>drunk</kbd></a> [Function]</li>
+<li><a href="odds-fn.html"><kbd>odds</kbd></a> [Function]</li>
+<li><a href="pickl-fn.html"><kbd>pickl</kbd></a> [Function]</li>
+<li><a href="ran-fn.html"><kbd>ran</kbd></a> [Function]</li>
+<li><a href="ransegs-fn.html"><code>ransegs</code></a> [Function]</li>
+<li><a href="shuffle-fn.html"><kbd>shuffle</kbd></a> [Function]</li>
+<li><a href="vary-fn.html"><kbd>vary</kbd></a> [Function]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.3 $, $Date: 2005/03/21 17:53:09 $)</div>
+</div>
+</body>
+</html>
+
+

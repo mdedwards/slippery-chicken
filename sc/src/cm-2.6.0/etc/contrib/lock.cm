@@ -1,0 +1,142 @@
+;;; $Name: rel-2_6_0 $
+;;; $Revision: 1.1.1.1 $
+;;; $Date: 2003/06/25 10:45:05 $
+
+(in-package :cm)
+
+;;; lock.lisp
+;;; a time-based locking facility.  A locked datum becomes automatically
+;;; unlocked after a specified period of time. algorithms can use this
+;;; facility to "claim" values that should not be used for a specified
+;;; unit of time:
+;;;
+;;; (locked? <thing> <time>)
+;;; Returns true if <thing> is locked at <time>.
+;;;
+;;; (lock <thing> <start-time> <end-time>)
+;;; Claims <thing> between times <start-time> and <end-time>
+;;;
+;;; (unlock <thing> <time>)
+;;; Explicitly unlocks <thing> at <time>.  This is normally not necessary
+;;; since locking expires automatically as time is incremented.
+;;;
+;;; (unlock-all)
+;;; Unlocks everything. An algorithm should use this
+;;; to reinitialize the locking mechanism before running.
+;;;
+
+(defclass lock ()
+  ((table :initarg table :initarg :table :accessor lock-table)
+   (count :initform 0 :initarg count :initarg :count :accessor lock-count)
+   (maximum :initarg maximum :initarg :maximum :accessor lock-maximum)))
+
+(defmethod initialize-instance :after ((object lock) &rest args)
+  (declare (ignore args))
+  (unless (slot-boundp object 'table)
+    (setf (slot-value object 'table) (make-hash-table)))
+  (unless (slot-boundp object 'maximum)
+    (setf (slot-value object 'maximum) most-positive-fixnum)))
+
+(defun make-lock (&rest args) (apply #'make-instance 'lock args))
+
+(defparameter *lock* (make-lock))
+
+(defun locked? (thing time &optional (lock *lock*)
+                      &aux (table (lock-table lock)))
+  (and (setf thing (gethash thing table))
+       (<= (car thing) time (cdr thing))))
+
+(defun lock (thing from to &optional (lock *lock*)
+                   &aux (table (lock-table lock)))
+  ;(format t "~%Locking ~A from ~S to ~S" thing from to ) 
+  (let ((v (gethash thing table)))
+    (unless v 
+      (setf (gethash thing table) (setf v (cons nil nil)))
+      (incf (lock-count lock)))
+    (setf (car v) from (cdr v) to)
+    thing))
+
+(defun unlock (thing time &optional (lock *lock*)
+                     &aux (table (lock-table lock)))
+  (let ((v (gethash thing table)))
+    (when (and v (not (eql (cdr v) -1)))
+      (setf (car v) time (cdr v) -1)
+      (when (> (lock-count lock) 0)
+        (decf (lock-count lock))))
+    thing))
+
+(defun unlock-all (&optional (lock *lock*)) 
+  (clrhash (lock-table lock))
+  (setf (lock-count lock) 0))
+
+(defun num-locked (&optional (lock *lock*))
+  (lock-count lock))
+
+(defun show-locked (&optional (lock *lock*) all)
+  (maphash (if all #'(lambda (a b) (format t "~%~S:	~S" a b))
+               #'(lambda (a b)
+                   (when (> (cdr b) (car b))
+                     (format t "~%~S:	~S" a b))))
+           (lock-table lock)))
+
+(defmacro unlocked-value (form time &optional rep)
+  ;; eval form until unlocked result or rep number of interations occur.
+  (let ((var (gensym))
+        (tim (gensym)))
+    (if rep
+      (let ((cnt (gensym)) (len (gensym)))
+        `(let ((,tim ,time)
+               (,cnt 0) 
+               (, len ,rep)
+               ,var)
+           (loop do (setf ,var ,form) 
+                 while (and ,tim (locked? ,var, tim) (< ,cnt ,len))
+                 do (incf ,cnt)
+                 finally
+                 (return 
+                  (progn
+                    (when (and ,tim (= ,cnt ,len))
+                      (warn "Failed to get an unlocked value ~
+                             after ~D tries. Returning ~S." ,len ,var))
+                    ,var)))))
+      `(let ((,tim ,time) ,var)
+         (loop do (setf ,var ,form)
+               while (and ,tim (locked? ,var, tim))
+               finally (return ,var))))))
+
+(defun next-unlocked (pat time &key trace? (lock *lock*))
+  (loop for thing = (next pat)
+        if (locked? thing time lock)
+        do (if trace?
+             ;; optional trace of locking mechanism
+             (format t "~%Skipping locked item ~S @ ~S." 
+                     thing time))
+        else return thing))
+
+#|
+
+(defprocess locker (len pat dur &optional trace?)
+  (unlock-all )
+  (process repeat len
+           for n = (now)
+           for d = (rhythm (next dur) 90)
+           for r = (rhythm (next dur) 90)
+           ;; picks until it gets an unlocked item.
+           for k = (next-unlocked pat n :trace? trace?)
+           do
+           (output
+            (new midi time (now)
+                 keynum k duration d))
+           ;; lock keynum for duration of note.
+           (lock k n (+ n d))
+           (when trace?
+             (format t "~%Locking ~S from ~S to ~S." k n (+ n d)))
+           (wait r)))
+
+
+(events (locker 40
+                (new random of #k(c4 d ef f g af bf c5))
+                (new random of '(s e q))
+                t)
+        "midi.port")
+|#

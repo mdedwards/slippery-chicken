@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>*midi-connections*</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "*midi-connections*" -->
+<dl class="dictsyntax">
+<dt>[Variable]</dt>
+<dd><span class="syntax"><code class="entry">*midi-connections*</code></span></dd>
+</dl>
+
+
+<p>
+Default MIDI connections used by 
+<a href="midishare-stream-cls.html"><kbd>midishare-stream</kbd></a> if
+the connections are not specified when the stream is created.
+Connections are specied as a list: (<var>input output</var>) where
+<var>input</var> and <var>output</var> are both the string name of a
+Midishare client application to connect to. The default value is
+<kbd>(<span class="string">"MidiShare" "MidiShare"</span>)</kbd>
+which establishes both input and output connections directly to the
+main Midishare driver application.  Specify false as either the input
+or output connection if it is is not wanted when the stream is opened.
+</p>
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="midi-stream-cls.html"><kbd>midi-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="midi-channel-map-var.html"><kbd>*midi-channel-map*</kbd></a><kbd>&nbsp;</kbd>[Variable]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2003/07/07 21:27:41 $)</div>
+</div>
+</body>
+</html>

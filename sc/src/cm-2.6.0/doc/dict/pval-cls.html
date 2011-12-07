@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>pval</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">pval</code></dd>
+</dl>
+
+<p>
+A specialized pattern that evaluates its data whenever <a
+href="next-fn.html">next</a> selects it in a pattern. The name stands
+for "pattern evaluation".
+</p>
+
+<p>
+See <a href="patterns-topic.html#pattern_inits">generic pattern
+initializations</a> for documentation on keyword
+initializations to the pattern.
+</p>
+
+<h4>Examples:</h4>
+
+<div class="float" id="example_1">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Embed a random number selection as the second element of a pattern.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">pat1</span> (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:of</span> (list 'a 
+                                  (<a href="pval-mac.html">pval</a> (<a href="between-fn.html">between</a> 1000 5000))
+                                  'b)))
+(<a href="next-fn.html">next</a> pat1 12)
+<span class="result">&rArr;</span> (a 2760 b a 3589 b a 1175 b a 1515 b)
+</pre>
+</div>
+
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Changing a weighted distribution as a function of time. 
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">john-cage</span> offset)
+  <span class="comment">;; notes CAGE emerge out of a background of G dorian.</span>
+  (<span class="special">let*</span> ((w 0)                      <span class="comment">; weight of CAGE</span>
+         (d (<a href="pval-fn.html">pval</a> w))               <span class="comment">; eval in pattern</span>
+         (p (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a>
+              <span class="keyword">:of</span> `((g3 <span class="keyword">:weight</span> ,d) <span class="comment">; weight of G</span>
+                    (a3 <span class="keyword">:weight</span> ,d) <span class="comment">; weight of A</span>
+                    bf3
+                    (c4 <span class="keyword">:weight</span> ,d) <span class="comment">; weight of C</span>
+                    d4
+                    (e4 <span class="keyword">:weight</span> ,d) <span class="comment">; weight of E</span>
+                    f4
+                    (g4 <span class="keyword">:weight</span> ,d) <span class="special"></span><span class="comment">; weight of G</span>
+                    (r <span class="keyword">:max</span> 1 <span class="keyword">:weight</span> .25)) <span class="comment">; add rests</span>
+              <span class="keyword">:for</span> 1))
+         (q (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> 
+              <span class="keyword">:of</span> (list 1/16 1/8
+                        (<a href="new-mac.html">new</a> <a href="line-fn.html">line</a> <span class="keyword">:of</span> 1/32 <span class="keyword">:for</span> 2 )))))
+    (<a href="process-mac.html">process</a> repeat 100
+             for n = (<a href="next-fn.html">next</a> p)
+             for r = (<a href="rhythm-fn.html">rhythm</a> (<a href="next-fn.html">next</a> q) 65)
+             for i from 0
+             <span class="comment">;; interpolate new weight for CAGE notes.</span>
+             set w = (<a href="interp-fn.html">interp</a> i 0 .5 90 4)
+             output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                         <span class="keyword">:duration</span> r 
+                         <span class="keyword">:keynum</span> (<a href="transpose-fn.html">transpose</a> n offset))
+             wait r)))
+
+(<a href="events-fn.html">events</a> (<span class="special">loop</span> for o in '(-12 0 12 24)
+              collect (cage o))
+        <span class="string">"test.mid"</span>
+        (<span class="special">loop</span> for r in '(0 h w w.)
+              collect (<a href="rhythm-fn.html">rhythm</a> r 65)))
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+
+
+
+
+
+
+<h4>See also:</h4>
+<ul>
+<li><a href="pval-mac.html"><code>pval</code></a> [Macro]</li>
+<li><a href="patterns-topic.html#pattern_classes">Pattern classes</a> [Topic]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.3 $, $Date: 2005/03/18 14:33:23 $)</div>
+</div>
+</body>
+</html>
+
+

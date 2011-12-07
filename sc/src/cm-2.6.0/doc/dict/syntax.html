@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>Common Music Dictionary</title>
+</head>
+<body>
+<div id="content">
+
+
+<div style="text-align: center; background: #e6e6ff;">
+<h2>Typographic Conventions</h2>
+</div>
+
+<!--p>
+Dictionary documentation uses the following typographic conventions:
+</p-->
+
+<ul>
+
+<li>
+Definition terms are printed in fixed-width bold face:
+<blockquote>
+<p><code class="entry">cents-&gt;scaler</code></p>
+</blockquote>
+</li>
+
+<li>
+Literals and programming code are printed in fixed-width face:
+<blockquote>
+<code>(list (note 60) (rhythm 'h.))</code>
+</blockquote>
+</li>
+
+<li>
+Variables and metavariables (names that stand for pieces of code) are printed in italic face:
+<blockquote>
+<p><var>number</var></p>
+</blockquote>
+</li>
+
+<li>Terms separated by | are exclusive choices, that is, exactly one must apply:
+<blockquote>
+<p><var>number</var> | <var>boolean</var></p>
+</blockquote>
+</li>
+
+<li>
+<p>Braces { } and brackets [ ] are sometimes used to associate or group
+the enclosed terms. They are never written in actual code.
+</p>
+<ul>
+<li>
+Braces group the enclosed terms into a single entity. Thus:
+<blockquote>
+<p>{<var>number</var> | <var>boolean</var>}</p>
+</blockquote>
+<p>describes single value that is either a number or a boolean.</p>
+</li>
+
+<li>
+Brackets make the enclosed term optional. An optional term may appear
+at most one time. For example, in the following definition:
+
+<blockquote>
+<p>
+<code>(</code><code class="entry">odds</code> <var>prob</var> [<var>trueval</var>] [<var>falseval</var>]<code>)</code>
+</p>
+</blockquote>
+<var>prob</var> is a required argument that may be followed by up to
+two optional values. Thus, each of the following calls is correct: 
+<blockquote>
+<pre>(odds .5)
+(odds 1 'win)
+(odds .2 <span class="string">"Yup"</span> <span class="string">"Nope"</span>)</pre>
+</blockquote>
+</li>
+
+</ul>
+</li>
+
+<li>
+A star * after a brace means that the enclosed terms may be specified
+zero or more times. For example:
+<blockquote>
+<p>
+<code>(</code><code class="entry">new</code> <var>class</var> {<var>keyword value</var>}*<code>)</code>
+</p>
+</blockquote>
+
+means that any number of <var>keyword</var> and <var>value</var> pairs,
+including none, may follow the required <var>class</var> argument. Each of the following calls is correct:
+
+<blockquote>
+<p><code>(new midi)<br/>
+(new midi <span class="keyword">:time</span> 10)<br/>
+(new midi <span class="keyword">:keynum</span> 22 <span class="keyword">:duration</span> 3)</code></p>
+</blockquote>
+</li>
+
+<li>
+<p>A plus + after a brace means that the enclosed terms may be specified one or more times.</p>
+</li>
+
+<li>
+A sequence of three dots means the rest of the arguments, no matter how many. For example:
+
+<blockquote>
+<p>
+<code>(</code><code class="entry">pick</code> <var>arg</var> ...<code>)</code>
+</p>
+</blockquote>
+means that any number of additional values, including none, may
+follow <var>arg</var>.
+</li>
+
+<li>
+<p>
+In coding examples evaluation is indicated using the right
+arrow:
+<blockquote>
+<p><code><span class="result">&rArr;</span></code></p>
+</blockquote>
+and syntax highlighting distinguishes important syntactic units:
+</p>
+<blockquote>
+<table cellspacing="10">
+<tr><th class="col">keyword</th><th class="col">string</th><th class="col">special</th><th class="col">comment</th></tr>
+<tr><td><code><span class="keyword">:music</span></code></td><td><code><span class="string">"Hello, world"</span></code></td><td><code><span class="special">loop</span></code></td><td><code><span class="comment">;; buggy!</span></code></td></tr>
+</table>
+</blockquote>
+</li>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.5 $, $Date: 2005/02/13 16:16:21 $)</div>
+</div>
+</body>
+</html>
+

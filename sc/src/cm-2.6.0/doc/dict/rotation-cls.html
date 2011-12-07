@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>rotation</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">rotation</code></dd>
+</dl>
+
+
+<p>
+Permutes elements according to one or more rotational descriptions.  A
+rotation is a list of (up to) four integers that controls an iterative
+"swapping" process that is mapped over all the data to produce the
+next permutation:
+</p>
+
+<blockquote>
+  <code>(</code><var>start</var> <var>step</var> <var>width</var> [<var>end</var><code>])</code>
+</blockquote>
+<p>
+<var>Start</var> is the starting index (zero based) in the pattern's
+data for swapping to begin, <var>step</var> is the stepping increment
+between swaps, <var>width</var> is the distance between the elements
+to swap, and <var>end</var> is the position (inclusive) in the data to
+stop swapping at. The default rotation list is (0 1 1), 
+causes elements in the pattern to rotate leftward, as shown in Table 1.
+</p>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Table 1.</span> Permutations of A B C using
+(0 1 1) as the rotation. Lower case letters indicate an intermediate
+step in the rotation and the _ marks the swap at each step.
+</p>
+
+<table>
+<tr><th class="lcol">Permutation</th><th class="lcol">Swap #1</th><th class="lcol">Swap #2</th></tr>
+<tr><td>A B C</td><td>b_a c</td><td>b c_a</td></tr>
+<tr><td>B C A</td><td>c_b a</td><td>c a_b</td></tr>
+<tr><td>C A B</td><td>a_c b</td><td>a b_c</td></tr>
+<tr><td>A B C</td><td>...</td><td> </td></tr>
+</table>
+</div>
+
+<p>
+</p>
+
+
+<p><code class="entry">rotation</code> supports the following slot initializations:
+</p>
+<dl>
+<dt>
+<code class="keyword">:rotations</code> { <var>list</var> | <var>pattern</var> }
+<dd>
+The rotation list or pattern that produces rotation lists.
+</dd>
+
+</dl>
+
+<p>
+See <a href="patterns-topic.html#pattern_inits">generic pattern
+initializations</a> for documentation on additional keyword
+initializations to the pattern.
+</p>
+
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> The rotation pattern.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">pat1</span> (<a href="new-mac.html">new</a> rotation <span class="keyword">:of</span> '(a b c d) <span class="keyword">:rotations</span> '(0 2 1 3)))
+
+(<a href="next-fn.html">next</a> pat1 #t)
+<span class="result">&rArr;</span> (a b c d)
+(<a href="next-fn.html">next</a> pat1 #t)
+<span class="result">&rArr;</span> (b a d c)
+(<a href="next-fn.html">next</a> pat1 #t)
+<span class="result">&rArr;</span> (a b d c)
+
+(<span class="special">define</span> <span class="defined">pat1</span>
+  (<a href="new-mac.html">new</a> rotation <span class="keyword">:of</span> '(a b c d)
+       <span class="keyword">:rotations</span> (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:of</span> '((0 1 2) (1 1 2)))))
+
+(<span class="special">loop</span> repeat 5 collect (<a href="next-fn.html">next</a> pat1 #t))
+<span class="result">&rArr;</span> ((a b c d) (c d a b) (c b a d) (a d c b) (a b c d))
+
+</pre>
+</div>
+
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Rotating a descending whole-tone figure with fixed notes.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">pat1</span>
+   (<a href="new-mac.html">new</a> rotation
+        <span class="keyword">:notes</span> `(, (<a href="new-mac.html">new</a> <a href="range-fn.html">range</a> <span class="keyword">:by</span> -2 <span class="keyword">:initially</span> (<a href="keynum-fn.html">keynum</a> 'c6))
+                   b3 f4 g5 ef6)
+        <span class="keyword">:rotations</span> (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:of</span> '((0 1 1) (0 1 2)))))
+
+(<span class="special">define</span> (<span class="defined">play-pat</span> reps pat rate)
+  (<a href="process-mac.html">process</a> repeat reps
+           for n = (<a href="next-fn.html">next</a> pat)
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                       <span class="keyword">:amplitude</span> (<span class="special">if</span> (symbol? n) .35 .7)
+                       <span class="keyword">:keynum</span> n
+                       <span class="keyword">:duration</span> (<span class="special">if</span> (symbol? n) 
+                                     (* rate 2.5)
+                                     (* rate 4)))
+           wait rate))
+
+(<a href="events-fn.html">events</a> (play-pat 69 pat1 .5) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+
+
+
+<p>
+The file <a href="../../etc/examples/cring.cm">cring.cm</a> contains
+example rotations that implement different change ringing sequences
+developed by English church bell ringers.
+</p>
+
+<h4>See also:</h4>
+<ul>
+</ul>
+<li><a href="patterns-topic.html#pattern_classes">Pattern classes</a> [Topic]</li>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.3 $, $Date: 2005/03/15 17:49:12 $)</div>
+</div>
+</body>
+</html>
+
+

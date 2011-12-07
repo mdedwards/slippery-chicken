@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>midi-program-change</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">midi-program-change</code></dd>
+</dl>
+
+<p>
+A MIDI control change or mode change event.  See 
+
+<a href="http://www.midi.org/about-midi/gm/gm1sound.shtml">General
+MIDI Level 1 Sound Set</a> for a table listing General MIDI (GM)
+program change messages.
+
+</p>
+
+<p><code class="entry">midi-program-change</code> supports the following slot initializations:
+</p>
+
+<dl>
+<dt><code class="keyword">:time</code> <var>number</var></dt>
+<dd>The start time of the object.</dd>
+<dt><code class="keyword">:channel</code> <var>integer</var></dt>
+<dd>A MIDI channel number, defaults to 0.</dd>
+<dt><code class="keyword">:program</code> <var>integer</var></dt>
+<dd>
+A MIDI program change value from 0-127. Note that most MIDI
+documentation lists program changes starting with 1. You must
+subtract 1 from these values. For example, Grand Piano is 0 (not 1).
+</dd>
+
+</dl>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Creating a "Multi" setup.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">multi</span> (time multi)
+  (<a href="new-mac.html">new</a> <a href="seq-cls.html">seq</a> <span class="keyword">:time</span> time
+     <span class="keyword">:subobjects</span>
+     (<span class="special">loop</span> for x in multi
+           collect
+           (<a href="new-mac.html">new</a> midi-program-change <span class="keyword">:time</span> 0
+               <span class="keyword">:channel</span> (first x) <span class="keyword">:program</span> (second x)))))
+
+(<span class="special">define</span> (<span class="defined">squeek</span> reps)
+  <span class="comment">;; assign random notes to instrument channels</span>
+  (<a href="process-mac.html">process</a> repeat reps
+           for key = (<a href="between-fn.html">between</a> 40 80)
+           for dur = (<a href="pick-fn.html">pick</a> .5 1 1.5 2)
+           for chan = (<span class="special">if</span> (<a href="scalelteql.html">scale&lt;=</a> key 'c4)
+                          (<a href="pick-fn.html">pick</a> 0 1) 
+                          (<a href="pick-fn.html">pick</a> 2 3))
+           output (<a href="new-mac.html">new</a> midi <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                       <span class="keyword">:duration</span> .2
+                       <span class="keyword">:keynum</span> key <span class="keyword">:channel</span> chan)
+           wait (<a href="pick-fn.html">pick</a> 0 .25 .5 .75 1)))
+
+<span class="comment">;;; chan 0=bass, chan 1=trombone, 2=violin, 3=flute</span>
+(<span class="special">define</span> <span class="defined">myins</span> '((0 32) (1 57) (2 40) (3 73)))
+
+(<a href="events-fn.html">events</a> (list (multi 0 myins) (squeek 30))
+        <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+
+<h4>See also: </h4>
+<ul>
+<li>
+<a href="midi-topic.html#midi_event_classes">MIDI event classes</a> [Topic]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.5 $, $Date: 2005/03/20 02:08:37 $)</div>
+</div>
+</body>
+</html>

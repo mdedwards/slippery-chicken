@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>seq</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "seq" -->
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">seq</code></dd>
+</dl>
+
+<p>
+Holds a list of time sorted subobjects.
+</p>
+
+<p>
+<code class="entry">seq</code> supports the following slot initializations:
+</p>
+
+<dl>
+
+<dt>
+<code class="keyword">:name</code> {<var>symbol</var> | <var>string</var>}
+</dt>
+<dd>
+An optional name for the object. If specified, the object can be
+retrieved from its name using the read macro <a
+href="hshamp-mac.html">#&amp;</a> or the <a
+href="find-object-fn.html">find-object</a> function.
+</dd>
+
+<dt><span class="keyword">:subobjects</span> <var>list</var></dt>
+<dd>A list of time ordered subobjects, typically muscial events or
+other seq objects.</dd>
+
+<dt><span class="keyword">:time</span> <var>number</var></dt>
+<dd>An optional start time of the seq.</dd>
+
+</dl>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class "captxt">
+<span class="floatlabel">Example 1.</span> Creating a seq of midi events.
+</p>
+
+<pre class="code">
+(<a href="new-mac.html">new</a> seq <span class="keyword">:name</span> 'test</span>
+         <span class="keyword">:subobjects</span> (<span class="special">loop</span> for i below 10
+                           collect (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> i)))
+<span class="result">&rArr;</span> #&lt;seq "test"&gt;
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="list-named-objects-fn.html"><kbd>list-named-objects</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="list-subobjects-fn.html"><kbd>list-subobjects</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="map-subobjects-fn.html"><kbd>map-subobjects</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="object-name-fn.html"><kbd>object-name</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="object-time-fn.html"><kbd>object-time</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="remove-subobjects-fn.html"><kbd>remove-subobjects</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="subobjects-fn.html"><kbd>subobjects</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+</ul>
+
+
+
+
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.4 $, $Date: 2005/03/07 04:14:00 $)</div>
+</div>
+</body>
+</html>
+
+

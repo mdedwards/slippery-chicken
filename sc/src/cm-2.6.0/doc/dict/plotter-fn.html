@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>plotter</title>
+</head>
+<body>
+<div id="content">
+
+<!-- Entry: "plotter" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><span class="syntax">(<code class="entry">plotter</code> {<var>keyword value</var>}* {<var>data</var>}*)</span></dd>
+</dl>
+
+<p>
+Returns a plotter window configured according to <var>keyword</var>
+arguments and displaying zero or more <var>data</var> sets.
+</p>
+
+<p id="args"><code class="entry">plotter</code> supports the following keyword arguments:
+</p>
+<dl>
+
+<dt><span class="keyword">:title</span> <var>string</var></dt>
+<dd>The title that appears in the title bar the top of the
+window. Defaults to "Untitled".</dd>
+
+<dt><span class="keyword">:x-axis</span> {<var>axis</var>
+| <a href="axis-fn.html#table1"><var>prototype</var></a>}</dt>
+<dd>Specifies the horizontal display axis. The value can be an axis
+object or a keyword axis prototype name. See the <a
+href="axis-fn.html">axis</a> function for more information.  If no
+axis is supplied then plotter will attempt to create an appropriate
+axis based on an examination of all <var>data</var> sets.</dd>
+
+<dt><span class="keyword">:y-axis</span> <var>axis</var></dt>
+<dd>Like <span class="keyword">:x-axis</span> except that it controls
+the vertical display.</dd>
+
+<dt><span class="keyword">:point-class</span> <var>symbol</var></dt>
+<dd>The CLOS class to instantiate when adding new points to the
+display, including points created when numerical data is passed to
+plotter. The default point class is <a
+href="point-cls.html">point</a>.</dd>
+
+<dt><span class="keyword">:view</span> {<var>symbol</var>
+| <var>list</var>}</dt>
+<dd>A keyword symbol or list of keyword symbols controlling the
+initial plotting style of each layer in the display. If a symbol is
+specified it controls all the data sets passed in to plotter. If the
+value is a list of views then each value in the list is paired with
+its corresponding data set in the argument list.  Available views are:
+<ul>
+<li><span class="keyword">:line-and-point</span></li>
+<li><span class="keyword">:line</span></li>
+<li><span class="keyword">:point</span></li>
+<li><span class="keyword">:bar</span></li>
+<li><span class="keyword">:bar-and-point</span></li>
+<li><span class="keyword">:box</span></li>
+<li><span class="keyword">:bubble</span></li>
+<li><span class="keyword">:notation</span></li>
+</ul>
+</dd>
+
+<dt><span class="keyword">:color</span> {<var>string</var>
+| <var>list</var>}</dt>
+<dd>A string or list of strings that determines the color each layer
+will use in the display. The string can be a rgb hex value in the
+format <span class="string">"#rrggbb"</span> or the name of a color
+defined in <a href="http://sedition.com/perl/rgb.html">rgb.text</a>.
+Values are assigned to layers in the same manner as <span
+class="keyword">:view</span>.</dd>
+
+<dt><span class="keyword">:line-width</span> {<var>integer</var>
+| <var>list</var>}</dt>
+<dd>An integer or list of integers controlling the line-width (in
+pixels) used in each layer.  Values are assigned in the same manner
+as <span class="keyword">:view</span>.</dd>
+
+<dt><span class="keyword">:point-width</span> {<var>integer</var>
+| <var>list</var>}</dt>
+<dd>An integer or list of integers controlling the point-width (in
+pixels) used in each layer.  Values are assigned in the same manner
+as <span class="keyword">:view</span>.</dd>
+
+<dt><span class="keyword">:point-height</span> {<var>integer</var>
+| <var>list</var>}</dt>
+<dd>An integer or list of integers controlling the point-height (in
+pixels) used in each layer.  Values are assigned in the same manner
+as <span class="keyword">:view</span>.</dd>
+
+<dt><span class="keyword">:point-size</span> {<var>integer</var>
+| <var>list</var>}</dt>
+<dd>Short-hand for specifying identical values to <span
+class="keyword">:point-width</span> and <span
+class="keyword">:point-height</span>.</dd>
+
+<dt><span class="keyword">:x-slot</span> {<var>symbol</var>
+| <var>list</var>}</dt>
+<dd>Short-hand for specifying a <span class="keyword">:slot</span> in
+the x-axis. See <a href="axis-cls.html#args">axis initializations</a> for
+more information.</dd>
+
+<dt><span class="keyword">:y-slot</span> {<var>symbol</var>
+| <var>list</var>}</dt>
+<dd>Like <span class="keyword">:x-slot</span> but for the y-axis.</dd>
+
+<dt><span class="keyword">:zoom</span> <var>number</var></dt>
+<dd>Short-hand for specifying an identical <span class="keyword">:zoom</span> value to both axes.</dd>
+
+<dt><span class="keyword">:event-layering</span> {<span class="keyword">:add</span> | <span class="keyword">:mix</span> | <span class="keyword">:replace</span> | <span class="keyword">:overwrite</span>}</dt>
+<dd>
+Determines how generated musical events are added to the window. If
+the value is <span class="keyword">:add</span> then the new events are
+added as a new layer.  If the value is <span
+class="keyword">:mix</span> then the new events are mixed into the
+contents of the focus layer.  If the value is <span
+class="keyword">:replace</span> then the events replace the contents
+of the current focus layer.  If the value is <span
+class="keyword">:overwrite</span> then the events replace existing
+events that occupy the same time line as the new events. The default
+value is <span class="keyword">:add</span>.
+</dd>
+
+</dl>
+
+<p>
+Following all keyword arguments comes zero or more data sets to
+display.  Data sets can be specified in three different formats:
+</p>
+<ul>
+<li>Lists of x y coordinate values.</li>
+<li>Lists of CLOS objects.</li>
+<li><a href="seq-cls.html">seq</a> objects containing CLOS objects.</li>
+</ul>
+
+<p>
+If lists of x y values are specified then plotter will convert these
+to true point lists using the value of <span
+class="keyword">:point-class</span> or the <a
+href="point-cls.html">point</a> class if nothing is specified.
+</p>
+
+<h4>Examples:</h4>
+<p>
+See the <a href="plotter-topic.html#examples">Examples</a> section in
+Plotter's main entry.
+</p>
+
+
+
+<h4>See also:</h4>
+<ul>
+<li><a href="plotter-topic.html#api">Plotter API</a> [Topic]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.2 $, $Date: 2005/02/09 18:11:28 $)</div>
+</div>
+</body>
+</html>

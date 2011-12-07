@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>markov</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">markov</code></dd>
+</dl>
+
+
+<p>
+Implements nth order Markov chains. 
+Each element in the pattern is specified as a transition rule list:
+</p>
+
+<blockquote>
+<p><code>(</code>{<var>past</var>}* <code>-&gt;</code> {<var>next</var> | <code>(</code><var>next weight</var><code>)</code>}+ <code>)</code></p>
+</blockquote>
+
+<p>
+where <var>past</var> is zero or more identifiers that define the
+"left hand" side of the transition rule and <var>next</var> are the
+rule's outcomes.  The number of past choices in the left hand side
+determines the Markov order of the pattern (<a href="table_1">Table
+1</a>).  Every transition rule must have the same number of
+identifiers in the left hand side; those closer to the rule's
+transition marker <code>-&gt;</code> are more recent past choices.
+The special "wildcard" identifier * can appear anywhere in the left
+hand side to match any past value at that position.  By default, each
+outcome in the right side of the rule has the same probability of
+being selected. To alter the probability of an outcome relative to the
+other outcomes in the transtion, specify the outcome together with
+its <var>weight</var> as a list. If <var>weight</var> is a pattern
+then a new probabilty distribution for the transition rule will be
+calculated each time the transition rule is triggered.
+</p>
+
+<div class="float" id="table_1">
+<p class="captxt">
+<span class="floatlabel">Table 1.</span> Example transition rules.
+</p>
+<table>
+<tr><th class="lcol">Rule</th><th class="lcol">Description</th></tr>
+<tr><td><code>(c -&gt; a (b 2) c)</code></td><td>1st order rule, outcome b twice as likely as a or c</td></tr>
+<tr><td><code>(w a -&gt; e r (d 3) g)</code></td><td>2nd order rule, outcome d half as likely as e r or g</td></tr>
+<tr><td><code>(* x a -&gt; foo bif zuz)</code></td><td>3rd order rule,  matches anything followed by x and a</td></tr>
+<tr><td><code>(-&gt; a (b .1) c)</code></td><td>0th order rule is weighted <a href="random-cls.html">random</a> selection.</td></tr>
+</table>
+</div>
+
+
+<p>
+<code class="entry">markov</code> supports the following slot initializations:
+</p>
+<dl>
+
+<dt>
+ <code class="keyword">:produces</code> <code>({</code><var>id</var> <var>value</var>}+<code>)</code></dt>
+<dd>
+A list of one or more pairs that associate a <var>value</var> to
+return from the pattern for each <var>id</var> specified. Values in
+this list override the default behavior of returning the id itself
+from the pattern.  If <var>value</var> is a pattern then that pattern
+will produce a period of elements each time <var>id</var> is selected.
+</dd>
+
+<dt><code class="keyword">:past</code> <code>(</code><var>past</var> <var>...</var><code>)</code></dt>
+<dd>
+Initializes the pattern with a list of past choices. 
+</dd>
+
+</dl>
+
+<h4>Examples:</h4>
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Name That Tune
+</p>
+<pre class="code">
+(<a href="define-fn.html">define</a> <span class="defined">pat1</span>
+  (<a href="new-mac.html">new</a> markov
+       <span class="keyword">:of</span> '((d4 c4 -&gt; (f4 .5) (g4 .5))
+             (d4 bf4 -&gt; bf4)
+             (c4 d4 -&gt; c4)
+             (c4 c4 -&gt; (d4 .667) (c5 0.333))
+             (c4 f4 -&gt; e4)
+             (c4 g4 -&gt; f4)
+             (c4 c5 -&gt; a4)
+             (f4 c4 -&gt; c4) 
+             (f4 e4 -&gt; (c4 .5) (d4 .5))
+             (f4 g4 -&gt; f4)
+             (e4 d4 -&gt; bf4)
+             (e4 c4 -&gt; c4)
+             (g4 f4 -&gt; c4)
+             (c5 a4 -&gt; f4)
+             (a4 f4 -&gt; (e4 .5) (g4 .5))
+             (bf4 a4 -&gt; f4)
+             (bf4 bf4 -&gt; a4))))
+
+(<span class="special">define</span> (<span class="defined">play-pat</span> reps pat rate)
+  (<a href="process-mac.html">process</a> repeat reps
+           for k = (<a href="next-fn.html">next</a> pat)
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>) <span class="keyword">:duration</span> (* rate 1.5)
+                       <span class="keyword">:keynum</span> k)
+           wait rate))
+                                 
+(<a href="events-fn.html">events</a> (play-pat 60 pat1 .125) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Second order rhythms.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">pat1</span>
+  (<a href="new-mac.html">new</a> markov <span class="keyword">:for</span> 20 <span class="keyword">:past</span> '(q q)
+       <span class="keyword">:of</span> '((e s -&gt; s)
+             (q s -&gt; e.)
+             (q. s -&gt; s)
+             (h s -&gt; e.)
+             (e e -&gt; s e e. q q. q.. h)
+             (* e -&gt; e)
+             (* s -&gt; e e. q q. q.. h)
+             (* h -&gt; e e. q q. q.. h)
+             (* q.. -&gt; s)
+             (* q. -&gt; e s)
+             (* q -&gt; e e. q q. q.. h)
+             (* e. -&gt; s))))
+
+(<span class="special">define</span> (<span class="defined">play-pat</span> reps pat tmpo)
+  (<a href="process-mac.html">process</a> with k = 60
+           repeat reps
+           for r = (<a href="rhythm-fn.html">rhythm</a> (<a href="next-fn.html">next</a> pat) tmpo)
+           set k = (<a href="drunk-fn.html">drunk</a> k 6 <span class="keyword">:low</span> 30 <span class="keyword">:high</span> 90 <span class="keyword">:mode</span> '<span class="keyword">:jump</span>)
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>) <span class="keyword">:duration</span> (* r 1.5)
+                       <span class="keyword">:keynum</span> k)
+           wait r))
+
+(<a href="events-fn.html">events</a> (play-pat 60 pat1 120) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="patterns-topic.html#pattern_classes">Pattern classes</a> [Topic]</li>
+<li><a href="markov-analyze-fn.html"><code>markov-analyze</code></a> [Function]</li>
+<li><a href="../../etc/examples/foster.cm">foster.cm</a> [Example]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.3 $, $Date: 2005/03/17 19:42:00 $)</div>
+</div>
+</body>
+</html>
+
+

@@ -1,0 +1,394 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>Patterns</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Topic]</dt>
+<dd>Patterns</dd>
+</dl>
+
+<p>
+Patterns are objects that generate data according to pattern specific
+ordering rules. Patterns can hold any sort of Lisp data and may
+include nested sub-patterns that define smaller (local) orderings
+within the surrounding pattern. 
+</p>
+
+<h4>Pattern Classes</h4>
+
+<p>
+The system provides a number of generic pattern types that can used
+individually or nested together to form composite patterns:
+</p>
+
+<div class="float" id="table_1">
+<p class="captxt">
+<span class="floatlabel">Table 1.</span> Generic pattern classes.
+</p>
+<table>
+<tr><th class="lcol">Pattern</th><th class="lcol">Description</th></tr>
+<tr><td> <a href="cycle-cls.html"><code>cycle</code> </a> </td><td>loops over elements in a continuous cycle</td></tr>
+<tr><td><a href="line-cls.html"><code>line</code></a></td><td>enumerates sequentially and sticks on last element</td></tr>
+<tr><td><a href="palindrome-cls.html"><code>palindrome</code></a></td><td>generates elements forwards and backwards</td></tr>
+<tr><td><a href="heap-cls.html"><code>heap</code></a></td><td>randomly
+permutes elements</td></tr>
+<tr><td><a href="random-cls.html"><code>random</code></a></td><td>selects elements from a weighted distribution</td></tr>
+<tr><td><a href="markov-cls.html"><code>markov</code></a></td><td>returns nth order Markov chains of its elements</td></tr>
+<tr><td><a href="graph-cls.html"><code>graph</code></a></td><td>generates elements from a directed graph</td></tr>
+<tr><td><a href="funcall-cls.html"><code>funcall</code></a></td><td>computes elements by function call</td></tr>
+<tr><td><a href="rotation-cls.html"><code>rotation</code></a></td><td>returns systematic permutations of its elements</td></tr>
+<tr><td><a href="rewrite-cls.html"><code>rewrite</code></a></td><td>generates elements by rewrite rules</td></tr>
+</table>
+</div>
+
+<p>
+There are also a few specialized pattern classes that implement more
+specific, or restricted, functionality:
+</p>
+
+<div class="float" id="table_2">
+<p class="captxt">
+<span class="floatlabel">Table 2.</span> Specialized pattern classes.
+</p>
+<table>
+<tr><th class="lcol">Pattern</th><th class="lcol">Description</th></tr>
+<tr><td><a href="copier-cls.html"><code>copier</code></a></td><td>copies and repeats periods of a sub-pattern</td></tr>
+<tr><td><a href="range-cls.html"><code>range</code></a></td><td>iterates numbers in a range</td></tr>
+<tr><td><a href="join-cls.html"><code>join</code></a></td><td>merges patterns together into a single stream of data</td></tr>
+<tr><td><a
+href="transposer-cls.html"><code>transposer</code></a></td><td>transposes
+and optionally inverts and reverses pattern data</td></tr>
+<tr><td><a
+href="chord-cls.html"><code>chord</code></a></td><td>returns lists of chord data</td></tr>
+<tr><td><a href="pval-cls.html"><code>pval</code></a></td><td>evaluates a pattern value</td></tr>
+</table>
+</div>
+
+<h4 id="pattern_inits">Generic Pattern Initializations</h4>
+
+<p>
+The pattern classes listed in <a href="#table_1">Table 1</a> all support
+the following slot initializations:
+</p>
+
+<dl>
+<dt>
+<code class="keyword">:of</code> <var>data</var>
+</dt>
+
+<dd>
+  Specifies the element or list of elements to generate from the
+  pattern.  This data can include sub-patterns. The <code
+  class="keyword">:of</code> initialization has several aliases that
+  parse the associated pattern data into musical information:
+  <dl>
+    <dt><code class="keyword">:notes</code> <var>data</var></dt> 
+    <dd>
+      Parses <var>data</var> into <a href="note-fn.html">note
+      names</a>. If <var>data</var> contains notes then octave numbers
+      only need to be added when they change from the previous note.
+    </dd>
+    <dt><code class="keyword">:keynums</code> <var>data</var></dt> 
+    <dd>
+      Like <code class="keyword">:notes</code> but parses data into <a
+      href="keynum-fn.html">key numbers</a>.
+    </dd>
+    <dt><code class="keyword">:hertz</code> <var>data</var></dt> 
+    <dd>
+      Like <code class="keyword">:notes</code> but parses data into <a
+      href="hertz-fn.html">hertz values</a>.
+    </dd>
+    <dt><code class="keyword">:rhythms</code> <var>data</var></dt> 
+    <dd>
+      Parses logical rhythms into <a href="rhythm-fn.html">rhythmic
+      values</a>.
+    </dd>
+    <dt><code class="keyword">:amplitudes</code> <var>data</var></dt> 
+    <dd>
+      Parses logical amplitudes into <a
+href="amplitude-fn.html">amplitude values</a>.
+    </dd>
+</dl>
+</dd>
+
+<dt>
+<code class="keyword">:for</code> {<var>number</var> | <var>pattern</var>}
+</dt>
+<dd>
+Sets the period length of the pattern to <var>number</var>
+or <var>pattern</var> of numbers. The period length determines the
+size (number of elements) in each period, or chunk, of elements that
+the pattern generates. 
+</dd>
+
+<dt>
+<code class="keyword">:repeat</code> <var>number</var>
+</dt>
+<dd>
+Sets an optional repetition limit for the pattern. Once the limit has
+been reached the pattern will return an
+<a href="eodqmk-fn.html">end of data</a> marker instead of elements.
+</dd>
+
+<dt>
+<code class="keyword">:name</code> {<var>string</var> | <var>symbol</var>}
+</dt>
+<dd>
+Sets the name of the pattern to <var>string</var> or to the print name
+of <var>symbol</var>.  A named pattern can be recalled  as a "motive" inside a surrounding pattern by fetching the object from its name using the <a href="hshamp-mac.html">#&amp;</a> read macro or the <a href="find-object-fn.html">find-object</a> function.
+</dd>
+
+<dt>
+<code class="keyword">:returning</code> <var>function</var>
+</dt>
+<dd>
+An optional function to apply to each element as it is generated from
+the pattern. The function is passed one argument, the element, and
+should return the value to substitute in its place as the value
+returned from the pattern.
+</dd>
+
+<dt>
+<code class="keyword">:parsing</code> <var>function</var>
+</dt>
+<dd>
+An optional function to apply to the data passed to the <code
+class="keyword">:of</code> initialization when the pattern is created.
+The function is passed one argument, the element to parse, and should
+return the value to substitute in its place in the pattern.
+</dd>
+
+</dl>
+
+<p>
+Consult the dictionary entries of each pattern for additional keyword
+initializations specific to each class.
+</p>
+
+<h4>Working with Patterns</h4>
+
+<p>
+Use the <a href="new-mac.html"><code>new</code></a> macro or the
+generic function <code>make-instance</code> to create patterns and
+the <a href="next-fn.html">next</a> function to read successive
+elements from them:
+</p>
+
+<div class="float" id="example_1">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Creating patterns and
+reading their elements.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">pat1</span> (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:keynums</span> '(a4 b c5 d)))
+
+(<a href="next-fn.html">next</a> pat1)
+<span class="result">&rArr;</span> 69
+(<a href="next-fn.html">next</a> pat1)
+<span class="result">&rArr;</span> 71
+(<a href="next-fn.html">next</a> pat1 2)
+<span class="result">&rArr;</span> (72 74)
+(<a href="next-fn.html">next</a> pat1 #t)
+<span class="result">&rArr;</span> (69 71 72 74)
+
+(<span class="special">define</span> (<span class="defined">play-pat</span> times knums durs amps tmpo)
+  (<a href="process-mac.html">process</a> repeat times
+           for k = (<a href="next-fn.html">next</a> knums)
+           for r = (* (<a href="next-fn.html">next</a> durs) tmpo)
+           for a = (<a href="next-fn.html">next</a> amps)
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>) 
+                       <span class="keyword">:keynum</span> k
+                       <span class="keyword">:duration</span> (* r 1.5)
+                       <span class="keyword">:amplitude</span> a)
+           wait r))
+
+(<a href="events-fn.html">events</a> (play-pat 20 pat1 .125 .3 1) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<p>
+The next example demonstrates the use of sub-patterns in pattern
+building.  The <var>pat1</var> pattern randomly chooses between two
+sub-patterns: a <a href="cycle-cls.html">cycle</a> of white notes and
+a <a href="heap,-fn.html">heap,</a> or "shuffling", of black
+notes. The <var>pat2</var> pattern is a rhythmic cycle looping over
+two elements, the symbol e (eighth note) and a <a
+href="line-cls.html">line</a> pattern that generates four sixteenths
+(s) in succession:
+</p>
+
+<div class="float" id="example_2">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Patterns and sub-patterns.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">pat1</span> 
+  (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <a href=":of-fn.html">:of</a> (list (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:keynums</span> '(a4 b c5 d))
+                        (<a href="new-mac.html">new</a> <a href="cycle-cls.html">heap</a> <span class="keyword">:keynums</span> '(gs4 as cs5 ds)))))
+
+(<span class="special">define</span> <span class="defined">pat2</span>
+  (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:rhythms</span> `(e ,(<a href="new-mac.html">new</a> <a href="line-fn.html">line</a> <span class="keyword">:rhythms</span> 's <span class="keyword">:for</span> 4))))
+
+(<a href="events-fn.html">events</a> (play-pat 60 pat1 pat2 .1 .5) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<p>
+
+<!-- Use <code>make-instance</code> instead of <a
+href="new-mac.html">new</a> if the pattern's class may vary at run
+time. --> Since <code>make-instance</code> evaluates its first
+argument (<a href="new-mac.html">new</a> does not) the class of
+the pattern it creates can vary at runtime:
+</p>
+
+<div class="float" id="example_3">
+<p class="captxt">
+<span class="floatlabel">Example 3.</span> Creating patterns programmatically.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">play-pats</span> pats trope reps rate)
+  (<a href="process-mac.html">process</a> with dur = (* rate 2.5)
+           repeat reps
+           for len = (<a href="pick-fn.html">pick</a> 8 12 16)
+           for pat = (make-instance (<a href="next-fn.html">next</a> pats)
+                                    <span class="keyword">:keynums</span> trope
+                                    <span class="keyword">:for</span> len)
+           each k in (<a href="next-fn.html">next</a> pat #t) as x from 0 by rate
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (+ (<a href="now-fn.html">now</a>) x)
+                       <span class="keyword">:keynum</span> k
+                       <span class="keyword">:duration</span> dur)
+           wait (* rate len)))
+           
+<span class="comment">;;; a pattern of pattern class names</span>
+(<span class="special">define</span> <span class="defined">pcns</span>
+  (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:of</span> '((heap <span class="keyword">:weight</span> 2) line cycle
+                    palindrome rotation))
+
+(<a href="events-fn.html">events</a> (play-pats pcns '(a4 b c5 d) 12 .1) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<p>
+The <code>play-pats</code> process creates patterns by selecting a
+class from a pattern of classes and then
+calling <code>make-instance</code> on the selected pattern class to
+create the pattern. The process then iterates over one period of the
+pattern and outputs a <a href="midi-cls.html">midi</a> note each element.
+</p>
+
+<p>
+The preceding three examples all illustrate that the pattern
+accessor <a href="next-fn.html">next</a> can read single elements,
+specified numbers of elements or whole periods of elements from a
+pattern, and that the period length and the number of elements in a
+pattern do not have to be the same.  The period length can be any
+non-negative integer (including zero) or a pattern of integers, in
+which case a new length is chosen from the pattern for each new
+period.  If a sub-pattern ever sets its period length to zero, it
+"disappears" inside the surrounding pattern until it is selected
+again. By changing period lengths dynamically even very simple pattern
+types can produce interesting effects.
+</p>
+
+<p>
+In the next example only cycle patterns are used but the sub-patterns
+vary their lengths according to different cycles. The overall effect
+is a bit like a "musical mobile" in which the cycles of
+elements rotate about each other in different orbits.
+</p>
+
+<div class="float" id="example_4">
+<p class="captxt">
+<span class="floatlabel">Example 4.</span> Period length patterns.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">pat1</span>
+  (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:of</span> (list (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:notes</span> '(a4 b c5 d) 
+                            <span class="keyword">:for</span> (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:of</span> '(4 3 2 1 0)))
+                       (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:of</span> '(e4 e5 e6 e3)
+                            <span class="keyword">:for</span> (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:of</span> '(0 1 2 3)))
+                       (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:of</span> '(f5 ef4) <span class="keyword">:for</span> 1))))
+
+(<span class="special">define</span> <span class="defined">pat2</span>
+  (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:rhythms</span> `(e ,(<a href="new-mac.html">new</a> <a href="line-fn.html">line</a> <span class="keyword">:rhythms</span> 's <span class="keyword">:for</span> 4))))
+
+(<a href="events-fn.html">events</a> (play-pat 80 pat1 pat2 .4 .75) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<p>
+The repeat factor of a pattern establishes a limit on the number of
+periods that a pattern can generate. Once a pattern reaches this
+maximum it will return an <a href="eopqmk.html">end of data</a> marker
+for all subsequent calls to <a href="next-fn.html">next</a>.  By using
+the <a href="eodqmk-fn.html">eod?</a> and <a
+href="eopqmk-fn.html">eop?</a> functions, a process can treat the
+repeat factor and the period length as markers to control musical
+evolution, without knowing their actual values.
+</p>
+
+<div class="float" id="example_5">
+<p class="captxt">
+<span class="floatlabel">Example 5.</span> Checking for end-of-period
+and end-of-data conditions.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">play-trope</span> pat trope reps rate amp)
+  <span class="comment">;; play trope for reps number of periods and make the first
+  ;; note in each period louder than the others.</span>
+  (<span class="special">let</span> ((p (make-instance pat <span class="keyword">:notes</span> trope
+                          <span class="keyword">:for</span> (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:of</span> '(1 2 3 4 5))
+                          <span class="keyword">:repeat</span> reps)))
+    (<a href="process-fn.html">process</a> with a = amp
+             for n = (<a href="next-fn.html">next</a> p)
+             until (<a href="eod?-fn.html">eod?</a> p)  <span class="comment">; stop at end of data</span>
+             output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                         <span class="keyword">:keynum</span> n
+                         <span class="keyword">:amplitude</span> a
+                         <span class="keyword">:duration</span> (* rate 2.5))
+             <span class="comment">;; if end of period, make the next note loud</span>
+             when (<a href="eopqmk-fn.html">eop?</a> p) set a = amp else set a = (* amp .6)
+             wait rate)))
+
+(<a href="events-fn.html">events</a> (play-trope 'cycle '(a4 b c5 d) 30 .1 .8) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+
+(<a href="events-fn.html">events</a> (list (play-trope 'heap '(a3 b c4 d e f g a) 80 .1 .7)
+              (play-trope 'cycle '(a4 b c5 d e ) 70 .1 .7)
+              (play-trope 'cycle '(a5 b c6 d) 60 .1 .8))
+        <span class="string">"test.mid"</span>
+        '(0 4 10))
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+
+<h4>See also:</h4>
+<ul>
+<li><a href="#table_1">Generic pattern classes</a></li>
+<li><a href="#table_2">Specialized pattern classes</a></li>
+<li><a href="process-mac.html"><code>process</code></a> [Macro]</li>
+</ul>
+
+<!-- End content -->
+</div>
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.7 $, $Date: 2005/03/18 14:33:22 $)</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>rm-spectrum</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">rm-spectrum</code> <var>spectrum1</var> <var>spectrum2</var> {<var>keyword</var> <var>value</var>}*<code>)</code></dd>
+</dl>
+
+<p>
+Ring modulates <var>spectrum1</var> with <var>spectrum2</var> and
+returns the list of pairwise sum and difference tones. Spectral
+components in the input lists can be Hertz values, key numbers or note
+names but both lists must contain identical types. For convenience
+sake, a spectrum consisting of one frequency can be specified as a
+single value.
+</p>
+
+<p id="args">
+<code class="entry">rm-spectrum</code> supports the following keyword arguments:
+</p>
+
+<dl>
+
+<dt>
+<code class="keyword">:spectrum</code> {<code class="keyword">:note</code> | <code class="keyword">:keynum</code> | <code class="keyword">:hertz</code>}
+</dt>
+<dd>
+Determines the frequency format (hertz values, key numbers or note
+names) of the components returned in the output spectrum. If the
+argument is not specified then the output components will be the same
+type as the input components.
+</dd>
+
+<dt>
+<code class="keyword">:hz</code> <var>boolean</var>
+</dt>
+<dd>
+Specify true if input components are numerical Hertz values otherwise
+numbers are assumed to be key numbers. The default value is
+false.</dd>
+
+<dt><code class="keyword">:minimum</code> <var>freq</var></dt>
+<dd>
+If specified, then components in the output spectrum that are lower than
+<var>freq</var> will be octave-shifted upwards until they are equal to
+or greater than this value.  <var>Freq</var> should be the same
+frequency format as the input components.
+</dd>
+
+
+<dt><code class="keyword">:maximum</code> <var>freq</var></dt>
+<dd>
+If specified, then components in the output spectrum that are higher than
+<var>freq</var> will be octave-shifted downwards until they are equal to
+or less than this value.  <var>Freq</var> should be the same
+frequency format as the input components.
+</dd>
+
+<dt><code class="keyword">:scale-order</code> {<code class="keyword">:up</code> | <code class="keyword">:down</code> | <code class="keyword">:random</code>}</dt>
+<dd>Determines the ordering of the components in the output
+spectrum: <code class="keyword">:up</code> for low-to-high, <code
+class="keyword">:down</code> for high-to-low and <code
+class="keyword">:random</code> for random (shuffled) order. The
+default value is <code class="keyword">:up</code>.
+</dd>
+
+<dt>
+<code class="keyword">:remove-duplicates</code> <var>boolean</var>
+</dt>
+<dd>
+If true then the output spectrum will not contain any duplicate
+components. The default value is false.
+</dd>
+
+</dl>
+
+<h4>Examples:</h4>
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Ring modulated spectra.
+</p>
+<pre class="code">
+(rm-spectrum 'd5 'e5)
+<span class="result">&rArr;</span> (d2 ef6)
+
+(rm-spectrum 'a4 '(c4 ds5) <span class="keyword">:spectrum</span> '<span class="keyword">:keynum</span>)
+<span class="result">&rArr;</span> (53.36887 53.741356 77.07837 84.25864)
+
+(rm-spectrum '(300 400) 550 <span class="keyword">:hz</span> #t)
+<span class="result">&rArr;</span> (150 250 850 950)
+
+(rm-spectrum '(300 400) 550 <span class="keyword">:hz</span> #t <span class="keyword">:spectrum</span> '<span class="keyword">:note</span>)
+<span class="result">&rArr;</span> (d3 b3 af5 bf5)
+
+(rm-spectrum '(c4 e4) '(c4 e4 g4) <span class="keyword">:scale-order</span> '<span class="keyword">:down</span>)
+<span class="result">&rArr;</span> (fs5 e5 d5 d5 c3 cs2 cs2 b1)
+
+(rm-spectrum '(c4 e4) '(c4 e4 g4) <span class="keyword">:remove-duplicates</span> #t)
+<span class="result">&rArr;</span> (b1 cs2 c3 d5 e5 fs5)
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Ring modulating random scale selections.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">random-rm</span> num select)
+  (<span class="special">let</span> ((sel (<a href="new-mac.html">new</a> <a href="heap-cls.html">heap</a> <span class="keyword">:of</span> select
+                  <span class="keyword">:for</span> (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:of</span> '(1 2 3)))))
+    (<span class="special">process</span> repeat num
+             for set1 = (<a href="next-fn.html">next</a> sel #t)
+             for set2 = (<a href="next-fn.html">next</a> sel #t)
+             for set3 = (rm-spectrum set1 set2 <span class="keyword">:spectrum</span> '<span class="keyword">:note</span>
+                                     <span class="keyword">:remove-duplicates</span> #t)
+             <span class="comment">;; play set1 as chord</span>
+             each k in set1 
+             output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>) <span class="keyword">:keynum</span> k)
+             <span class="comment">;; play set2 as chord .5 secs later</span>
+             each k in set2
+             output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (+ (<a href="now-fn.html">now</a>) .5) <span class="keyword">:keynum</span> k)
+             <span class="comment">;; strum ring modulated set 1 sec later</span>
+             each k in set3 as x from 0 by .1
+             output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (+ (<a href="now-fn.html">now</a>) 1 x) <span class="keyword">:keynum</span> k)
+             wait 3)))
+
+(<a href="events-fn.html">events</a> (random-rm 15 (<span class="special">loop</span> for i from 60 to 72 collect i))
+        <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+
+(<a href="events-fn.html">events</a> (random-rm 15 '(60 62 63 65 67 68 70 72))
+        <span class="string">"test.mid"</span>)                   
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="fm-spectrum-fn.html"><code>fm-spectrum</code></a> [Function]</li>
+</ul>
+
+</div>
+
+<hr class="inv"/>
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.3 $, $Date: 2005/03/08 15:51:13 $)</div>
+</div>
+</body>
+</html>

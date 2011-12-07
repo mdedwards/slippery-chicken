@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>odds</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">odds</code> <var>prob</var> [<var>true</var>] [<var>false</var>] [<var>state</var>]<code>)</code></dd>
+</dl>
+
+<p>
+Returns <var>true</var> if a randomly generated number is less
+than <var>prob</var>, otherwise false. The default values
+for <var>true</var> and <var>false</var> are boolean true and false,
+respectively. <var>state</var> is a random state object and defaults
+to <code>*random-state*</code>
+</p>
+
+
+<h4>Examples:</h4>
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> The <code>odds</code> function.
+</p>
+<pre class="code">
+(odds .5)
+#f
+(odds .5 60)
+60
+(odds 1)
+<span class="result">&rArr;</span> #t
+(odds 0 'win)
+<span class="result">&rArr;</span> #f
+(odds .2 <span class="string">"Yup"</span> <span class="string">"Nope")</span>
+<span class="result">&rArr;</span> <span class="string">"Nope"</span>
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Play octaves with increasing probability.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">play-octs</span> reps lb ub)
+  <span class="comment">;; no octaves at start all at end</span>
+  (<a href="process-mac.html">process</a> with env = '(0 0 .1 0 .8 .75 1 1)
+           for i below reps
+           <span class="comment">;; probability of adding octave</span>
+           for p = (<a href="interpl-fn.html">interpl</a> (/ i reps) env)
+           for k = (<a href="between-fn.html">between</a> lb ub k)
+           for r = (odds .3 .4 .2)
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                       <span class="keyword">:keynum</span> k
+                       <span class="keyword">:duration</span> (* r 1.5))
+           when (odds p)
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                       <span class="keyword">:keynum</span> (+ k 12)
+                       <span class="keyword">:duration</span> (* r 1.5))
+           wait r))
+
+(<a href="events-fn.html">events</a> (play-octs 60 60 80) "test.mid")
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="between-fn.html"><code>between</code></a> [Function]</li>
+<li><a href="drunk-fn.html"><code>drunk</code></a> [Function]</li>
+<li><a href="pick-fn.html"><code>pick</code></a> [Function]</li>
+<li><a href="pickl-fn.html"><code>pickl</code></a> [Function]</li>
+<li><a href="ran-fn.html"><code>ran</code></a> [Function]</li>
+<li><a href="ransegs-fn.html"><code>ransegs</code></a> [Function]</li>
+<li><a href="shuffle-fn.html"><code>shuffle</code></a> [Function]</li>
+<li><a href="vary-fn.html"><code>vary</code></a> [Function]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.3 $, $Date: 2005/03/21 17:53:08 $)</div>
+</div>
+</body>
+</html>
+
+

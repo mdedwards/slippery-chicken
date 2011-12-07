@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>defobject</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "defobject" -->
+<dl class="dictsyntax">
+<dt>[Macro]</dt>
+<dd><span class="syntax">(<code class="entry">defobject</code> <var>name</var> <var>supers</var> <var>slots</var> [(<code class="keyword">:parameters</code> <var>...</var>)])</span></dd>
+</dl>
+
+
+<p>
+Defines a new class of object. <var>name</var> is the name for
+the new class. <var>supers</var> a list of superclasses or <kbd>()</kbd>.
+<var>slots</var> is a list of slot specification or <kbd>()</kbd>. 
+Each slot can be either the name of a slot or a list in the form:
+</p>
+
+<blockquote>
+<p>(<var>slot</var> <code class="keyword">:initform</code> <code class="keyword">:accessor</code> <code class="keyword">:reader</code> <code class="keyword">:writer</code> <code class="keyword">:initarg</code>)</p>
+</blockquote>
+
+<p>
+<code>defobject</code> automatically declares <var>slot</var> and adds its
+its keyword as an initialization argument for <kbd>new</kbd> and <kbd>make-instance</kbd>.
+
+Following <var>slots</var> comes an optional <code class="keyword">:parameters</code>
+declaration:
+</p>
+
+<blockquote>
+<p>(<code class="keyword">:parameters</code> ...)</p>
+</blockquote>
+
+<p>
+Where the arguments following the <code class="keyword">:parameters</code> keyword are the
+names of the slots that are instrument parameters.  Slots listed are
+considered to be required parameters unless preceded by a lambda
+keyword <kbd>&amp;optional</kbd>, <kbd>&amp;key</kbd> or
+<kbd>&amp;rest</kbd>. A required parameter means that an error is
+signaled if the slot is unbound during score
+generation. <kbd>&amp;optional</kbd> parameters are ignored if
+unbound. <kbd>&amp;key</kbd> parameters are also optional but the slot
+value is preceded by its keyword in the output file.  A single
+<kbd>&amp;rest</kbd> parameter is a list of values that are "spread"
+over a number of parameters in the output file.
+</p>
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="hshi-mac.html"><kbd>#i</kbd></a><kbd>&nbsp;</kbd>[Macro]</li>
+<li><a href="copy-object-fn.html"><kbd>copy-object</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="new-mac.html"><kbd>new</kbd></a><kbd>&nbsp;</kbd>[Macro]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2003/07/07 21:27:41 $)</div>
+</div>
+</body>
+</html>
+
+

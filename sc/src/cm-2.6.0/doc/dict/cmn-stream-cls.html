@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>cmn-stream</title>
+</head>
+<body>
+<div id="content">
+
+<!-- Entry: "cmn-stream" -->
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><span class="syntax"><code class="entry">cmn-stream</code></span></dd>
+</dl>
+<p>
+Implements <a href="http://ccrma.stanford.edu/software/cmn/">CMN</a>
+manuscript output to .eps files and .cmn source files. This class is
+automatically chosen when you specify a file with a .eps or .cmn
+extension to the <a href="events-fn.html">events</a> function.
+</p>
+
+
+<p><code class="entry">cmn-stream</code> supports the following slot
+initializations:
+</p>
+
+<dl>
+
+<dt><code class="keyword">:exact</code> <var>boolean</var></dt>
+<dd>
+If true and all time values in the score are expressed as rational
+numbers (integer or ratio) then CMN's time-line parsing avoids
+rhythmic quantization problems caused by floating point round-off
+errors.
+</dd>
+
+<dt><code class="keyword">:staffing</code> <var>list</var></dt>
+<dd>
+A list of staff descriptions defining the attributes of the CMN
+manuscript staffs.  Objects in the score set their staff by specifying
+the appropriate staff id (for example by using the <code
+class="keyword">:channel</code> value of a <a
+href="midi-cls.html">midi</a> object or the <code
+class="keyword">:staff</code> value of a <a
+href="cmn-cls.html">cmn</a> object.) Each staff description in
+<var>list</var> is a list in the format:
+
+<blockquote>
+<code>(<var>id</var> [<span class="keyword">:name</span> <var>string</var>] [<span class="keyword">:clef</span> <var>symbol</var>] [<span class="keyword">:meter</span> <var>list</var>]) </code>
+</blockquote>
+
+where <var>id</var> is an integer staff identifier followed by
+optional keyword and value pairs.  The value of <code
+class="keyword">:name</code> is a string name for the staff and
+defaults to "staff-<var>n</var>" where <var>n</var> is the staff id.
+The value of <code class="keyword">:clef</code> is a keyword clef
+name: <code class="keyword">:treble</code>, <code
+class="keyword">:bass</code>, <code class="keyword">:alto</code>,
+etc., or a list of clef names. If a clef not specified then CMN will
+choose whatever clef(s) it thinks best as it manuscripts the objects
+in the score.  If the clef is <code class="keyword">:both</code> then
+you get a grand staff. If the value is a list it these choices will
+limit CMN's clef choices to that list. The value of <code
+class="keyword">:meter</code> is a meter list for the staff like (3
+4), (7 8) and so on. See below for an example of a staffing list.
+</dd>
+</dl>
+
+In addition to the initializations listed above, cmn-stream will
+ pass on any <a
+href="http://ccrma.stanford.edu/software/cmn/cmn/cmn.html#house-style">CMN
+score attribute</a>
+The most common of these are:
+<dl>
+<dt><code class="keyword">:size</code> <var>integer</var></dt>
+<dd>
+The overall (font) size of the score. Defaults to 40.
+</dd>
+<dt> <code class="keyword">:title</code> <var>string</var></dt>
+<dd>
+The title of the score printed at top of page.
+</dd>
+<dt><code class="keyword">:metronome</code> <var>integer</var></dt>
+<dd>
+The tempo for parsing the time-line of score objects.
+</dd>
+</dl>
+<p>
+Consult the <a
+href="http://ccrma.stanford.edu/software/cmn/cmn/cmn.html">CMN
+manual</a> for more information.
+</p>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class "captxt">
+<span class="floatlabel">Example 1.</span> Outputting to CMN scores.
+</p>
+<pre class="code">(<span class="special">define</span> (<span class="defined">testit</span> stf len nts)
+  <span class="comment">;; midi channel numbers map to staves.</span>
+  (<span class="special">let</span> ((nts (<a href="new-mac.html">new</a> <a href="heap-cls.html">heap</a> <span class="keyword">:notes</span> nts))
+        (rhy (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a>
+               <span class="keyword">:of</span> (list 1 
+                         (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:of</span> '(1/2 1/2))))))
+    (<a href="process-mac.html">process</a> while (< (<a href="now-fn.html">now</a>) len)
+             for n = (<a href="next-fn.html">next</a> nts)
+             for r = (<a href="next-fn.html">next</a> rhy)
+             output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                         <span class="keyword">:duration</span> r
+                         <span class="keyword">:keynum</span> n
+                         <span class="keyword">:channel</span> stf)
+             wait r)))
+
+<span class="comment">;;; define staff descriptions</span>
+(<span class="special">define</span> <span class="defined">staffs</span>
+  '((0 <span class="keyword">:name</span> <span class="string">"Viola"</span> <span class="keyword">:clef</span> <span class="keyword">:alto</span> <span class="keyword">:meter</span> (4 4))
+    (2 <span class="keyword">:name</span> <span class="string">"Flute"</span> <span class="keyword">:clef</span> <span class="keyword">:treble</span> <span class="keyword">:meter</span> (4 4))))
+
+<span class="comment">;;; generate an .eps file</span>
+(<a href="events-fn.html">events</a> (list (testit 0 12 '(c3 d ef f g))
+              (testit 1 12 '(c5 d ef f g)))
+        <span class="string">"testit.eps"</span> 
+        <span class="keyword">:staffing</span> staffs
+        <span class="keyword">:size</span> 24
+        <span class="keyword">:exact</span> true
+        <span class="keyword">:title</span> <span class="string">"Hiho!"</span>)
+
+<span class="comment">;;; another way to set score properties </span>
+(<a href="io-mac.html">io</a> <span class="string">"duet.cmn"</span> <span class="keyword">:staffing</span> staffs <span class="keyword">:size</span> 20
+    <span class="keyword">:exact</span> true <span class="keyword">:title</span> <span class="string">"Duet"</span>)
+
+<span class="comment">;;; generate a .cmn file</span>
+(<a href="events-fn.html">events</a> (list (testit 0 12 '(c3 d ef f g))
+              (testit 1 12 '(c5 d ef f g)))
+        "duet.cmn")
+</pre>
+</div>
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="cmn-cls.html"><kbd>cmn</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="midi-cls.html"><kbd>midi</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="io-mac.html"><kbd>io</kbd></a><kbd>&nbsp;</kbd>[Macro]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.2 $, $Date: 2004/05/17 17:37:01 $)</div>
+</div>
+</body>
+</html>
+
+

@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>transpose</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "transpose" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">transpose</code> <var>freq</var> <var>interval</var> [<var>scale</var>]<code>)</code></dd>
+</dl>
+
+<p>
+Returns the transposed value of <var>freq</var>
+in <var>scale</var>. <var>freq</var> may be a note name, key number or
+list of the same. <var>Interval</var> may be an integer, <a href="interval-fn.html">encoded interval</a> or note.
+</p>
+
+<p id="args"><code class="entry">transpose</code> supports the following optional arguments:
+</p>
+
+<dl>
+<dt><var>scale</var></dt> 
+<dd>The <a href="tuning-cls.html"><code>tuning</code></a> in which the transposion occurs. The default value is <a href="scale-var.html"><code>*scale*</code></a></dd>
+</dl>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Transposing key number, notes and modes.
+</p>
+<pre class="code">
+(transpose 'a4 1)
+<span class="result">&rArr;</span> bf4
+(transpose 69 -1)
+<span class="result">&rArr;</span> 68
+(transpose '(0 4 7) 60)
+<span class="result">&rArr;</span> (60 64 67)
+(transpose '(0 3 4) 'as4)
+<span class="result">&rArr;</span> (bf4 cs5 d5)
+(transpose '(c4 e g) (<a href="interval-fn.html">interval</a> 'aug 4))
+<span class="result">&rArr;</span> (fs4 as4 cs5)
+(<a href="new-mac.html">new</a> <a href="mode-cls.html">mode</a> <span class="keyword">:name</span> 'phrygian <span class="keyword">:degrees</span> '(e f g a b c d e))
+<span class="result">&rArr;</span> #&lt;mode: <span class="string">"phrygian"</span> (on e)&gt;
+(transpose #&amp;phrygian 'bf)
+<span class="result">&rArr;</span> #&lt;mode: <span class="string">"phrygian"</span> (on bf)&gt;
+</pre>
+</div>
+
+
+
+
+<h4>See also:</h4>
+<ul>
+<li><a href="hertz-fn.html"><code>hertz</code></a>[Function]</li>
+<li><a href="invert-fn.html"><code>invert</code></a> [Function]</li>
+<li><a href="keynum-fn.html"><code>keynum</code></a> [Function]</li>
+<li><a href="note-fn.html"><code>note</code></a> [Function]</li>
+<li><a href="note-accidental-fn.html"><code>note-accidental</code></a> [Function]</li>
+<li><a href="note-name-fn.html"><code>note-name</code></a> [Function]</li>
+<li><a href="octave-number-fn.html"><code>octave-number</code></a> [Function]</li>
+<li><a href="pitch-class-fn.html"><code>pitch-class</code></a> [Function]</li>
+<li><a href="prime-form-fn.html"><code>prime-form</code></a> [Function]</li>
+<li><a href="scale-max-fn.html"><code>scale-max</code></a> [Function]</li>
+<li><a href="scale-min-fn.html"><code>scale-min</code></a> [Function]</li>
+<li><a href="scale-mod-fn.html"><code>scale-mod</code></a> [Function]</li>
+<li><a href="scale-order-fn.html"><code>scale-order</code></a> [Function]</li>
+<li><a href="scalelt-fn.html"><code>scale&lt;</code></a> [Function]</li>
+<li><a href="scalelteql-fn.html"><code>scale&lt;=</code></a> [Function]</li>
+<li><a href="scaleeql-fn.html"><code>scale=</code></a> [Function]</li>
+<li><a href="scalegt-fn.html"><code>scale&gt;</code></a> [Function]</li>
+<li><a href="scalegteql-fn.html"><code>scale&gt;=</code></a> [Function]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.2 $, $Date: 2005/02/13 16:16:21 $)</div>
+</div>
+</body>
+</html>
+
+

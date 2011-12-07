@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 18:10:46 Wed Dec  7 2011 ICT
+;;; $$ Last modified: 18:20:57 Wed Dec  7 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 |#
@@ -309,7 +309,7 @@ data TURKEY
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 28.11.11 SEAN: Added ROBODoc info
-#| ****m* assoc-list/get-data-data
+;;; ****m* assoc-list/get-data-data
 ;;; FUNCTION
 ;;; (Short-cut for (data (get-data ...))
 ;;; Get the data associated with the given key of the given assoc-list. 
@@ -326,6 +326,7 @@ data TURKEY
 ;;; with that key is returned.
 ;;; 
 ;;; EXAMPLE
+#| 
 (setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
                        :data '((jim beam)
                                (four roses)
@@ -335,13 +336,13 @@ data TURKEY
 
 (get-data-data 'four x)
 => ROSES
-
-;;;
-;;; SYNOPSIS
 |#
+;;; SYNOPSIS
 (defmethod get-data-data (key (al assoc-list) &optional (warn t))
 ;;; ****
-  (data (get-data key al warn)))
+  (let ((no (get-data key al warn)))
+    (when no
+        (data no))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

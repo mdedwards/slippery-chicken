@@ -30,7 +30,8 @@ source items:
 options:
     --src ./
 # 28.11.11 SEAN: Changed the output dir to ../doc/ to suit new dir structure. 
-    --doc ../doc/
+# 7.12.11 ME: changed to ../doc/robodoc
+    --doc ../doc/robodoc/
     --html
 #     --rtf
 # 02.12.11 SEAN: commented --sections again to take hierarchy out of TOC
@@ -68,10 +69,13 @@ accept files:
 # 06.12.11 SEAN: changed the header-, remark-, and end-markers to allow for
 # better looking html layout of the EXAMPLE block.
 header markers:
-    #| ****
+    ;;; ****
+    ;; ****
 remark markers:
     ;;;
-    ;;  
+    ;;
+    #|
+    |#  
 end markers:
     ;;; **** 
     ;; ****

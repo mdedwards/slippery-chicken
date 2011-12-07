@@ -144,19 +144,20 @@
 ;;; top-level keys if accessing a recursive assoc-list.
 ;;; EXAMPLE 
 #| 
-(let ((al (make-assoc-list 'al-test '((cat felix) 
-                                      (dog fido) 
-                                      (cow bessie)))))
+(let ((al (make-assoc-list 'test '((cat felix) 
+				   (dog fido) 
+				   (cow bessie)))))
   (get-keys al))
+
 => (CAT DOG COW)
 
-(let ((ral (make-ral 'ral-test
-                            '((cat felix) 
-                              (dog ((scottish terrier)
-                                    (german shepherd)
-                                    (irish wolfhound))) 
-                              (cow bessie)))))
-  (get-keys ral nil))
+(let ((al (make-assoc-list 'test '((cat felix) 
+				   (dog ((scottish terrier)
+					 (german shepherd)
+					 (irish wolfhound))) 
+				   (cow bessie)))))
+  (get-keys al))
+
 => (CAT DOG COW)
 |# 
 ;;; SYNOPSIS
@@ -180,6 +181,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 28.11.11 SEAN: Added info for ROBODoc
+;;; 07.12.11 SEAN: modified example
 ;;; ****m* assoc-list/get-first
 ;;; FUNCTION
 ;;; Returns the first named-object in the data list of the given assoc-list. 
@@ -192,11 +194,11 @@
 ;;; 
 ;;; EXAMPLE
 #|
-(setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-                       :data '((jim beam)
-                               (four roses)
-                               (wild turkey))))
-(get-first x)
+(let ((al (make-assoc-list 'test '((jim beam)
+				   (four roses)
+				   (wild turkey)))))
+  (get-first al))
+
 => 
 NAMED-OBJECT: id: JIM, tag: NIL,
 data BEAM
@@ -210,6 +212,7 @@ data BEAM
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 28.11.11 SEAN: Added info for ROBODoc
+;;; 07.12.11 SEAN: modified example
 ;;; ****m* assoc-list/get-last
 ;;; FUNCTION
 ;;; Returns the last named-object in the data list of a given assoc-list.
@@ -222,11 +225,11 @@ data BEAM
 ;;; 
 ;;; EXAMPLE
 #|
-(setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-                       :data '((jim beam)
-                               (four roses)
-                               (wild turkey))))
-(get-last x)
+(let ((al (make-assoc-list 'test '((jim beam)
+				   (four roses)
+				   (wild turkey)))))
+  (get-last al))
+
 => 
 NAMED-OBJECT: id: WILD, tag: NIL,
 data TURKEY
@@ -260,6 +263,7 @@ data TURKEY
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 28.11.11 SEAN: Added info for ROBODoc
+;;; 07.12.11 SEAN: modified example
 ;;; ****m* assoc-list/get-position
 ;;; FUNCTION
 ;;; Returns the index position (zero-based) of a named-object within a given 
@@ -282,17 +286,25 @@ data TURKEY
 ;;; 
 ;;; EXAMPLE
 #|
-(setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-                       :data '((jim beam)
-                               (four roses)
-                               (wild turkey))))
-(get-position 'four x)
-=> 1 (1 bit, #x1, #o1, #b1)
+(let ((al (make-assoc-list 'test '((jim beam) 
+				   (four roses) 
+				   (wild turkey)))))
+  (get-position 'four al))
 
-(get-position 'jack x)
+=> 1
+
+(let ((al (make-assoc-list 'test '((jim beam) 
+				   (four roses) 
+				   (wild turkey)))))
+  (get-position 'jack al))
+
 => NIL
 
-(get-position 'jim x 1)
+(let ((al (make-assoc-list 'test '((jim beam) 
+				   (four roses) 
+				   (wild turkey)))))
+  (get-position 'jim al 1))
+
 => NIL
 
 ;;; SYNOPSIS
@@ -305,6 +317,7 @@ data TURKEY
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 28.11.11 SEAN: Added ROBODoc info
+;;; 07.12.11 SEAN: modified example
 ;;; ****m* assoc-list/get-data-data
 ;;; FUNCTION
 ;;; (Short-cut for (data (get-data ...))
@@ -323,22 +336,22 @@ data TURKEY
 ;;; 
 ;;; EXAMPLE
 #| 
-(setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-                       :data '((jim beam)
-                               (four roses)
-                               (wild turkey))))
-(get-data-data 'jim x)
-=> BEAM
+(let ((al (make-assoc-list 'test '((jim beam) 
+				   (four roses) 
+				   (wild turkey)))))
+  (get-data-data 'jim al))
 
-(get-data-data 'four x)
-=> ROSES
+=> BEAM 
 
-(get-data-data 'jack x)
-=>
+(let ((al (make-assoc-list 'test '((jim beam) 
+				   (four roses) 
+				   (wild turkey)))))
+  (get-data-data 'jack al))
+
+=> NIL
 WARNING:
    assoc-list::get-data: Could not find data with key JACK in assoc-list with
-   id KENTUCKY  
-NIL
+   id TEST 
 |#
 ;;; SYNOPSIS
 (defmethod get-data-data (key (al assoc-list) &optional (warn t))
@@ -349,18 +362,16 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Mostly we define whether we want to warn in the instance itself but
-;;; sometimes it would be good to warn or not on a call basis, hence the
-;;; optional argument.
-
-;;; NB This method actually returns the named object, not just the data
-;;; associated with the key (use get-data-data for that)
-
 ;;; 28.11.11 SEAN: Added ROBODoc info
+;;; 07.12.11 SEAN: Moved Michael's comments into the ROBODoc documentation
+;;; 07.12.11 SEAN: Modified the EXAMPLE block
 ;;; ****m* assoc-list/get-data
 ;;; FUNCTION
 ;;; Return the named-object (id, tag and data) that is identified by a given
-;;; key within a given assoc-list.  
+;;; key within a given assoc-list. 
+;;;
+;;; NB This method actually returns the named object, not just the data
+;;; associated with the key (use get-data-data for that) 
 ;;; 
 ;;; ARGUMENTS:
 ;;; The assoc-list key symbol (named-object id) of the object which is sought
@@ -368,6 +379,10 @@ NIL
 ;;;
 ;;; Optional argument: T or NIL to indicate whether to issue a warning if no
 ;;; such named-object can be found within the given assoc-list (default = T).
+;;;
+;;; Mostly we define whether we want to warn in the instance itself but
+;;; sometimes it would be good to warn or not on a call basis, hence the
+;;; optional argument.
 ;;; 
 ;;; RETURN VALUE: 
 ;;; If the given key is found within the given assoc-list, the full
@@ -377,30 +392,40 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-                       :data '((jim beam)
-                               (four roses)
-                               (wild turkey))))
-(get-data 'four x)
+(let ((al (make-assoc-list 'test '((jim beam) 
+				   (four roses) 
+				   (wild turkey)))))
+  (get-data 'four al))
+
 => 
 NAMED-OBJECT: id: FOUR, tag: NIL, 
 data: ROSES
 
-(get-data 'jack x)
-=> 
+(let ((al (make-assoc-list 'test '((jim beam) 
+				   (four roses) 
+				   (wild turkey)))))
+  (get-data 'jack al))
+
+=> NIL
 WARNING:
    assoc-list::get-data: Could not find data with key JACK in assoc-list with
-   id KENTUCKY  
-NIL
+   id TEST
 
-(get-data 'jack x t)
-=> 
+(let ((al (make-assoc-list 'test '((jim beam) 
+				   (four roses) 
+				   (wild turkey)))))
+  (get-data 'jack al t))
+
+=> NIL 
 WARNING:
    assoc-list::get-data: Could not find data with key JACK in assoc-list with
-   id KENTUCKY  
-NIL
+   id TEST
 
-(get-data 'jack x nil)
+(let ((al (make-assoc-list 'test '((jim beam) 
+				   (four roses) 
+				   (wild turkey)))))
+  (get-data 'jack al nil))
+
 => NIL
 |#
 ;;; SYNOPSIS
@@ -421,6 +446,7 @@ NIL
 ;; because the two bars thing gets recursively make into something else???
 
 ;;; 01.12.11 SEAN: Added ROBODoc info
+;;; 07.12.11 SEAN: Modified example
 ;;; ****m* assoc-list/add
 ;;; FUNCTION
 ;;; Add a new element to the assoc-list.
@@ -442,22 +468,36 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(setf x (make-instance 'assoc-list :id 'kentucky :tag 'bourbon
-                       :data '((jim beam)
-                               (four roses)
-                               (wild turkey))))
-(add '(makers mark) x)
+(let ((al (make-assoc-list 'test '((jim beam)
+				   (four roses)
+				   (wild turkey)))))
+  (add '(makers mark) al))
+
 => T
 
-(get-data 'makers x)
+(let ((al (make-assoc-list 'test '((jim beam)
+				   (four roses)
+				   (wild turkey)))))
+  (add '(makers mark) al)
+  (get-data 'makers al))
+
 =>
 NAMED-OBJECT: id: MAKERS, tag: NIL, 
 data: MARK
 
-(get-position 'makers x)
-=> 3 (2 bits, #x3, #o3, #b11)
+(let ((al (make-assoc-list 'test '((jim beam)
+				   (four roses)
+				   (wild turkey)))))
+  (add '(makers mark) al)
+  (get-position 'makers al))
 
-(add '(knob creek) x '(jack daniels))
+=> 3
+
+(let ((al (make-assoc-list 'test '((jim beam)
+				   (four roses)
+				   (wild turkey)))))
+  (add '(knob creek) al '(jack daniels)))
+
 => T
 |#
 ;;; SYNOPSIS
@@ -478,12 +518,8 @@ data: MARK
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Not to be used for adding data, only replacing!
-;;; N.B. This replaces the whole named-object in the data list, not just the
-;;; data of that object.  
-
 ;;; 01.12.11 SEAN: Added ROBODoc info
-
+;;; 07.12.11 SEAN: Modified example
 ;;; ****m* assoc-list/set-data
 ;;; FUNCTION
 ;;; Replace a given named-object within a given assoc-list. This method
@@ -500,19 +536,30 @@ data: MARK
 ;;;
 ;;; EXAMPLE
 #|
-(setf x (make-instance 'assoc-list 
-                       :data '((cat felix) 
-                               (dog fido) 
-                               (cow bessie))))
-(set-data 'dog '(dog spot) x)
+(let ((al (make-assoc-list 'test '((cat felix)
+				   (dog fido)
+				   (cow bessie)))))
+  (set-data 'dog '(dog spot) al))
+
 => 
 NAMED-OBJECT: id: DOG, tag: NIL, 
 data: SPOT
 
-(set-data 'pig '(pig wilbur) x)
-=> NIL
+(let ((al (make-assoc-list 'test '((cat felix)
+				   (dog fido)
+				   (cow bessie)))))
+  (set-data 'pig '(pig wilbur) al))
 
-(set-data 'dog '(pig wilbur) x)
+=> NIL
+WARNING:
+   assoc-list::set-data: Could not find data with key PIG in assoc-list with id
+   TEST 
+
+(let ((al (make-assoc-list 'test '((cat felix)
+				   (dog fido)
+				   (cow bessie)))))
+  (set-data 'dog '(pig wilbur) al))
+
 => 
 NAMED-OBJECT: id: PIG, tag: NIL, 
 data: WILBUR
@@ -531,11 +578,8 @@ data: WILBUR
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Add an element (could be any type) to the end of the list which is
-;;; the data for <key>  
-
 ;;; 01.12.11 SEAN: Added ROBODoc info
-
+;;; 07.12.11 SEAN: Modified example
 ;;; ****m* assoc-list/add-to-list-data
 ;;; FUNCTION
 ;;; Add an element of any type to the end of the data (list) associated with a
@@ -556,11 +600,11 @@ data: WILBUR
 ;;; 
 ;;; EXAMPLE
 #|
-(setf x (make-instance 'assoc-list
-                       :data '((cat felix)
-                               (dog (fido spot))
-                               (cow bessie))))
-(add-to-list-data 'rover 'dog x)
+(let ((al (make-assoc-list 'test '((cat felix)
+				   (dog (fido spot))
+				   (cow bessie)))))
+  (add-to-list-data 'rover 'dog al))
+
 => 
 NAMED-OBJECT: id: DOG, tag: NIL, 
 data: (FIDO SPOT ROVER)
@@ -578,11 +622,8 @@ data: (FIDO SPOT ROVER)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 26.1.11: similar to add-to-list-data but if the key doesn't already exist,
-;;; add it first, then the new element as a 1-element list
-
 ;;; 01.12.11 SEAN: Added ROBODoc info
-
+;;; 07.12.11 SEAN: Modified example
 ;;; ****m* assoc-list/add-to-list-data-force
 ;;; FUNCTION
 ;;; Similar to add-to-list-data, but if the given key doesn't already exist in
@@ -605,17 +646,22 @@ data: (FIDO SPOT ROVER)
 ;;; 
 ;;; EXAMPLE
 #|
-(setf x (make-instance 'assoc-list
-                       :data '((cat felix)
-                               (dog (fido spot))
-                               (cow bessie))))
-(add-to-list-data-force 'rover 'dog x)
+(let ((al (make-assoc-list 'test '((cat felix)
+				   (dog (fido spot))
+				   (cow bessie)))))
+  (add-to-list-data-force 'rover 'dog al))
+
 => 
 NAMED-OBJECT: id: DOG, tag: NIL, 
 data: (FIDO SPOT ROVER)
 
-(add-to-list-data-force 'wilbur 'pig x)
-=> T
+(let ((al (make-assoc-list 'test '((cat felix)
+				   (dog (fido spot))
+				   (cow bessie)))))
+  (add-to-list-data-force 'wilbur 'pig al)
+  (get-keys al))
+
+=> (CAT DOG COW PIG)
 |#
 ;;; SYNOPSIS
 (defmethod add-to-list-data-force (new-element key (al assoc-list))

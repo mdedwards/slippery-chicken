@@ -583,7 +583,7 @@ data: (FIDO SPOT ROVER)
 
 ;;; 01.12.11 SEAN: Added ROBODoc info
 
-#| ****m* assoc-list/add-to-list-data-force
+;;; ****m* assoc-list/add-to-list-data-force
 ;;; FUNCTION
 ;;; Similar to add-to-list-data, but if the given key doesn't already exist in
 ;;; the given assoc-list, it is first added, then the given new element is
@@ -604,6 +604,7 @@ data: (FIDO SPOT ROVER)
 ;;; assoc-list. 
 ;;; 
 ;;; EXAMPLE
+#|
 (setf x (make-instance 'assoc-list
                        :data '((cat felix)
                                (dog (fido spot))
@@ -615,9 +616,8 @@ data: (FIDO SPOT ROVER)
 
 (add-to-list-data-force 'wilbur 'pig x)
 => T
-
-;;; SYNOPSIS
 |#
+;;; SYNOPSIS
 (defmethod add-to-list-data-force (new-element key (al assoc-list))
 ;;; ****
   (if (get-data key al nil)
@@ -628,7 +628,7 @@ data: (FIDO SPOT ROVER)
 
 ;;; 01.12.11 SEAN: Added ROBODoc info
 
-#| ****m* assoc-list/set-nth-of-data
+;;; ****m* assoc-list/set-nth-of-data
 ;;; FUNCTION
 ;;; Replace a given member of a given data list within a given assoc-list.
 ;;; 
@@ -646,6 +646,7 @@ data: (FIDO SPOT ROVER)
 ;;; Returns the new value only.
 ;;;
 ;;; EXAMPLE
+#|
 (setf x (make-instance 'assoc-list
                        :data '((cat felix)
                                (dog (fido spot rover))
@@ -657,9 +658,8 @@ data: (FIDO SPOT ROVER)
 => 
 NAMED-OBJECT: id: DOG, tag: NIL, 
 data: (SNOOPY SPOT ROVER)
-
-;;; SYNOPSIS
 |#
+;;; SYNOPSIS
 (defmethod set-nth-of-data (key nth new-value (al assoc-list))
 ;;; ****
   (let ((pos (get-position key al)))
@@ -745,7 +745,7 @@ Now for something that actually does something i.e. multiplies data by 2
 ;;; 01.12.11 SEAN: Added ROBODoc info
 
 
-#| ****f* assoc-list/make-assoc-list
+;; ****f* assoc-list/make-assoc-list
 ;; FUNCTION
 ;; A function that provides a shortcut to creating an assoc-list, filling it
 ;; with data, and assigning a name to it.
@@ -762,6 +762,7 @@ Now for something that actually does something i.e. multiplies data by 2
 ;; Returns the assoc-list as a named-object.
 ;;
 ;; EXAMPLE
+#|
 (make-assoc-list 'looney-tunes '((bugs bunny)
                                  (daffy duck)
                                  (porky pig)))
@@ -782,9 +783,8 @@ data: DUCK
       
 NAMED-OBJECT: id: PORKY, tag: NIL, 
 data: PIG)
-
-;; SYNOPSIS
 |#
+;; SYNOPSIS
 (defun make-assoc-list (id al &key (warn-not-found t))
 ;;; ****
   (make-instance 'assoc-list :data al :id id :warn-not-found warn-not-found))

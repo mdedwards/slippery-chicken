@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 18:55:06 Wed Dec  7 2011 ICT
+;;; $$ Last modified: 23:46:43 Wed Dec  7 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -54,6 +54,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defconstant +slippery-chicken-version+ "1.00")
+
 ;;; Make sure any typed-in float constants are high-precision; default is
 ;;; single-float  
 (setf *read-default-float-format* 'double-float)
@@ -70,6 +72,17 @@
   #+allegro ".fasl")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun sc (&optional (logo t))
+  ;; (declare (special +slippery-chicken-version+))
+  (setf *package* (find-package :sc))
+  (let ((title (format nil "slippery chicken version ~a"
+                       +slippery-chicken-version+)))
+    (if logo
+        (format t "(\\  }\\   ~%(  \\_('>   ~a~%(__(=_)  ~%   -\"=   ~%" title)
+        (print title)))
+  #+sbcl t
+  #-sbcl (values))
 
 (defun get-path-minus-file-and-last-dir (file)
   (flet ((till-last-slash (x)
@@ -116,6 +129,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; 7.12.11 rather than load just parts of CM, let's just run its build script
+;;; and make it all (some users might want to take advantage of the whole of
+;;; Rick's system). 
+(defun sc-load-cm-all ()
+  (declare (special *slippery-chicken-src-path*))
+  (load (format nil "~acm-2.6.0/src/cm.lisp" *slippery-chicken-src-path*)))
+
+#|
 ;;; 13.2.10: We're no longer expecting a fully-working latest Common Music
 ;;; system as Rick has ventured off into Scheme land.  Just use CM 2.6.0
 ;;; (thanks Rick!) and load the files we need for the functionality we need.
@@ -143,14 +164,12 @@
            "midi1" "midi2" "midi3" "cmn")
          do
          (load-cm-file f))))
-
-(defun sc-load-cm-all ()
-  (declare (special *slippery-chicken-src-path*))
-  (load (format nil "~acm-2.6.0/src/cm.lisp" *slippery-chicken-src-path*)))
+|#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(sc-load-cm)
+;; (sc-load-cm)
+(sc-load-cm-all)
 ;;; CM doesn't put itself on the features list anymore....
 (pushnew :cm *features*)
 (pushnew :cm-2 *features*)

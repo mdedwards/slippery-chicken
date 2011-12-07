@@ -1,0 +1,653 @@
+;;; **********************************************************************
+;;; $Name: rel-2_6_0 $
+;;; $Revision: 1.2 $
+;;; $Date: 2003/12/30 01:41:31 $
+;;;
+;;;
+;;; 1. Basic processes definition and file output. 
+;;;
+;;; Its a good idea to define processes inside functions so that
+;;; different versions of the process can be created simply by
+;;; calling the function with different input values. 
+;;;
+
+(define (sinus len cycl low hi rhy dur amp)
+  ;; sinus is a function that creates a process. the process
+  ;; will play midi notes in a "sine wave" of cycl periods over
+  ;; len number of notes. sin's value (-1 to 1) is rescaled
+  ;; to lie between the specified low and hi keynums.
+  (process for i below len
+           output
+           (new midi :time (now)
+                :keynum (rescale (sin (* 2 pi (/ i len) cycl))
+                                 -1
+                                 1
+                                 low
+                                 hi)
+                :amplitude amp 
+                :duration dur)
+           wait rhy))
+
+;; Now call the function to create a process.
+
+(sinus 80 4 20 100 .1 .1 .6)
+
+;; Notice that you didn't actually hear anything. This is because
+;; calling the function only creates a process it doesn't run it.
+;; In order to hear the output from a Sinus process you need to
+;; schedule it to output events to some destination. Most
+;; (but not all) destinations are simply files on the disk. You
+;; can specify full pathnames for files or you can set CM's
+;; current working directory using the 'cd' function and then
+;; specify just the file name and extension without having to
+;; type the full directory path. The cd function both gets and
+;; sets the current working directory:
+
+(cd)                     ; print the current working directory
+
+;; To set the directory, specify it as a string argument to cd.
+;; The string should end with whatever directory character is
+;; used by your operating system.  For Linux, OSX and Windows 
+;; use "/". For MacOS use the ":" as the directory delimiter. 
+
+(cd "/tmp/")             ; Linux/OSX/Windows
+(cd "macintosh hd:")     ; MacOS 9.x
+
+;; The function that actually outputs events is called 'events'.
+;; So now we will use it to output a Sinus process to a midi file
+;; in the current working directory:
+
+(events (sinus 80 4 20 100 .1 .1 .6) "test.midi")
+
+;; Each type of output file (.midi, .clm, .sco etc) allows you to
+;; set a "hook" that is called after a file of that type is written.
+;; CM provides several default hooks you can use to play midi files
+;; on Linux, Mac, or Windows. Choose the one for your OS:
+
+(set-midi-output-hook! #'oss-play-midi-file)  ; LINUX: playmidi
+(set-midi-output-hook! #'mac-play-midi-file)  ; MAC: QuickTime
+(set-midi-output-hook! #'win-play-midi-file)  ; WINDOWS: MediaPlayer
+
+;; After setting the appropriate output hook you can generate a file
+;; and with a bit of luck you may actually hear something!
+
+(events (sinus 80 4 20 100 .1 .1 .6) "test.midi")
+
+;; Setting the hook to false turns it off.
+
+(set-midi-output-hook! false)  ; turn it off if you want.
+
+;; Setting hooks is a fine thing to put in your cminit.lisp file.
+;; This file is located in the same directory as the CM Lisp image.
+
+
+;;; **********************************************************************
+;;;
+;;; 2. More on events and objects.
+;;;
+;;; You can "mix" concurrent output from multiple objects
+;;; by specifying them in a list to 'events'.  You can also give
+;;; each object in the list its own start time by passing a
+;;; list of starts after the output file. In this example the 
+;;; first process starts at time 0 and the second starts at time 2.
+;;;
+
+(events (list (sinus 80 4 20 100 .1 .1 .6)  
+	      (sinus 60 5.7 50 80 .1 .1 .6))
+	"test.midi"
+	'(0 2))          ; start time offsets in the scorefile.
+
+;;; If you dont want to use a process to output events you can
+;;; simply pass a list of objects to the events function:
+
+(define stuff
+  (loop repeat 20
+        ;; increment start randomly 70% of time
+        for start = 0 
+        then (+ start (odds .7 
+                            (pick .125 .25 .5) 
+                            0 ))
+        for k = (between 50 90)    ; pick a key, any key
+        collect (new midi :time start	
+                     :keynum k :duration (pick .5 1))))
+
+(events stuff "test.midi")
+
+;; if you want to give a name to your stuff you can use
+;; a seq object:
+
+(new seq :name 'stuffy
+     :subobjects
+     (loop repeat 20
+           ;; increment start randomly 70% of time
+           for start = 0 
+           then (+ start (odds .7 (pick .125 .25 .5) 
+                               0 ))
+           for k = (between 50 90)    ; pick a key, any key
+           collect (new midi time start	
+                        keynum k duration (pick .5 1))))
+
+;; Once you've created an object with a name you can reference
+;; it by specifying its name with the #& read macro:
+
+(object-name #&stuffy)
+(list-subobjects #&stuffy)
+
+;; You can also run a process and output its events to a seq.
+
+(new seq name 'wavy)                  ; create empty seq
+(events (sinus 80 4 20 100 .1 .1 .6)  ; cache output in new seq
+        #&wavy) 
+(list-subobjects #&wavy)              ; list wavy's subobjects.
+(save-object #&wavy "wave.cm")        ; save data to reload later
+(events #&wavy "test.midi")           ; output wavy
+(events (list (sinus 60 5.7 50 80 .1 .1 .6)
+              #&wavy)
+	"test.midi")                  ; mix both to file.
+
+
+;;; **********************************************************************
+;;;
+;;; 3. Initializing IO objects. 
+;;; the 'io' macro lets you initialize various options in files and ports.
+;;; For example, you can set "file versions" to true or false using the
+;;; io macro. Versioning creates file names with numbers append to the
+;;; basename so that sucessive outputs don't overwrite the same file.
+;;; (Tip: whenever you need to specify a boolean value you can use
+;;; CM's 'true' and 'false" variables instead of hardwiring t/nil or
+;;; #f/#t into your code. This will allow your programs run in either 
+;;; scheme or cltl without modification.)
+;;;
+
+(io "test.midi" :versions true) 
+
+(events (sinus 60 5.7 50 80 .1 .1 .6)   ; do this several times..
+        "test.midi")
+
+(io "test.midi" :versions false)         ; turn back off.
+
+(events (sinus 60 5.7 50 80 .1 .1 .6) "test.midi")
+
+
+;;; **********************************************************************
+;;;
+;;; 4. Defining new objects. 
+;;; In this example we define a new object called simp that will output
+;;; to clm, sco and midi files. The simp object is declared with four
+;;; required parameters: beg end amp and freq. We also add an 'ins' slot
+;;; so that it can handle the differnet instrument naming conventions in
+;;; clm and csound. If you only use one syntheisis package you wouldn't
+;;; need to do this.
+;;; note that we associate the system function OBJECT-TIME with the 
+;;; 'beg' slot so these values will become the time value used by the
+;;; scheduler when it executes. Some slot must be so designated or you
+;;; will lose bigtime if you try to output the object to a score file.
+;;;
+
+(defobject simp () 
+           ((ins :initform 'simp :accessor object-name)
+            (beg :accessor object-time)
+            (dur :initform 1)
+            (amp :initform .5)
+            (freq :initform 440))
+  (:parameters beg dur amp freq))
+
+;; Now define a simple process that output simps...
+
+(define (simp-1 num)
+  (process repeat num
+	   output (new simp
+                    :beg (now) :dur 1 :amp .5
+                    :freq (between 220 440))
+	   wait (pick 0 1 2)))
+
+;; ... and output 20 simps to a clm file.
+
+(events (simp-1 20) "test.clm")
+
+;; Next we define a variant process that outputs simps
+;; with names picked randomly from a list.
+
+(define (simp-2 num names)
+  (process repeat num
+	   output (new simp :beg (now)
+		       :ins (and names (pickl names))
+		       :dur 1 :amp .5
+		       :freq (between 220 440))
+	   wait (pick 0 1 2)))
+
+(events (simp-2 20 '("i1" "i2" "i3"))  ; write to i1 i2 or i3 
+	"test.sco")
+
+;; Finally we define a method on the system function
+;; 'object->midi' that converts simp data into midi data.
+;; Choose the version for your Lisp:
+
+;; GUILE:
+(define-method (object->midi (obj <simp>))
+  ;; create a midi object and pass it values from a simp.
+  ;; convert simp's hertz values to keynums.
+  (new midi :time (object-time obj)
+       :duration (simp-dur obj)
+       :keynum (keynum (simp-freq obj) ':hz)
+       :amplitude (simp-amp obj)))
+
+;; COMMON LISP:
+(defmethod object->midi ((obj simp))
+  ;; create a midi object and pass it values from a simp.
+  ;; convert simp's hertz values to keynums.
+  (new midi :time (object-time obj)
+       :duration (simp-dur obj)
+       :keynum (keynum (simp-freq obj) ':hz)
+       :amplitude (simp-amp obj)))
+
+
+;; try out the conversion...
+
+(object->midi (new simp :beg 0 :dur 1 :amp .5 :freq 440))
+
+;; ... and now write some simp events to a midi file.
+
+(events (simp-2 20 false) "test.midi")
+
+
+;;; **********************************************************************
+;;;
+;;; 5.  patterns and interpolation
+;;;
+
+(define (ex4)
+  ;; create a heap of keynums out of a list of notes.
+  (process with pat = (new heap :keynums '(c4 d ef f g af bf c5))
+           and rhy = .1
+           for i from 0
+	   ;; iterpolate an amp between .2 and .8 every 6 notes.
+	   for a = (interp (mod i 6) 0 .2 5 .8)
+           repeat 48
+           output (new midi :time (now)
+                       :keynum (next pat)
+                       :duration (* rhy 1.25)
+                       :amplitude a)
+           
+           wait rhy))
+
+(events (ex4) "test.midi")
+
+
+;;; **********************************************************************
+;;;
+;;; 6.  Using two output statements for simultaneous voices.
+;;;
+
+(define (simul )
+  (process with pat = (new heap :keynums '(c4 d ef f g af bf c5))
+           and rhy = .1
+           for i from 0
+           for k = (next pat)
+           repeat 40
+           output (new midi :time (now) 
+                       :keynum k 
+                       :duration (* rhy 1.25)
+                       :amplitude (interp (mod i 6) 0 .2 5 .8))
+           output (new midi :time (now) 
+                       :keynum (+ k (pick -24 -12 12 24))
+                       :duration (* rhy 1.25)
+                       :amplitude (interp (mod i 6) 0 .2 5 .8))
+           wait rhy))
+
+(events (simul) "test.midi")
+
+
+;;; **********************************************************************
+;;;
+;;; 7.  Chords.  A cyclic pattern holds 3 chords and a single note.
+;;; The second chord selects three members from a heap each time 
+;;; it is picked.The doeach macro maps each element regardless of
+;;; whether the element is a single note or a list of
+;;; notes generated by a chord.
+;;;
+
+(define (chordy)
+  (let ((pat (new cycle :of (list
+			     (new chord :of '(c4 e4 g4))
+			     (new chord 
+			       :of (new heap 
+				     :of '(df4 ef4 gf4 af4 bf4 df5 ef5)
+				     :for 3))
+			     (new chord :of '(e4 a4 cs5))
+			     (new random 
+			       :of '(bf3 (ef1 weight .5 max 2))
+			       :for 1)))))
+    (process repeat 32
+             do (doeach (k (next pat))
+                  (output (new midi :keynum k :time (now))))
+             wait .5)))
+
+(events (chordy) "test.midi")
+
+;; Like the above example but this one strums the chord.
+;; Strum speed is independant of actual rhythm.
+
+(define (chordy-2 )
+  (let ((pat (new cycle :of (list
+			     (new chord :of '(c4 e4 g4))
+			     (new chord 
+			       :of (new heap 
+				     :of '(df4 ef4 gf4 af4 bf4 df5 ef5)
+				     :for 3))
+			     (new chord :of '(e4 a4 cs5))
+			     (new random 
+			       :of '(bf3 (ef1 weight .5 max 2))
+			       :for 1)))))
+    (process with ss = .05
+             repeat 32
+             for z = (now)
+             do (doeach (k (next pat))
+                  (output (new midi :time z
+                               :keynum k :duration .45 :amplitude .6))
+                  (incf z ss))
+             wait .5)))
+
+(events (chordy-2) "test.midi")
+
+
+;;; **********************************************************************
+;;;
+;;; 8. Defining a recursive process with four input args. 
+;;; sprout's second arg is the time to start the sprouted object.
+;;;
+
+(define (sierpinski knum ints dur amp depth)
+  (let ((len (length ints)))
+    (process for i in ints
+             for k = (transpose knum i)
+             output (new midi :time (now) :duration dur 
+                         :amplitude amp :keynum k)
+             when (> depth 1)
+	     ;; sprout a process on output note
+	     sprout
+             (sierpinski (transpose k 12) ints
+                         (/ dur len) amp (- depth 1))
+             
+             
+             wait dur)))
+
+(events (sierpinski 'a0 '(0 7 5 ) 3 .5 4) "test.midi")
+
+(events (sierpinski 'a0 '(0 -1 2 13) 6 .5 4) "test.midi")
+
+
+;;; **********************************************************************
+;;;
+;;; 9. more than one instance of the same process can be
+;;; scheduled as long it only side effects local varibales.
+;;;
+
+(define (octie )
+  (let ((p (new heap :keynums '(c4 d ef f g af b)))
+        (x (pick -24 -12 0 12 24))) ; pick a new octave each time
+    (process with rhy = .1
+             for i from 0
+             repeat 40
+             output (new midi :time (now) 
+			 :keynum (transpose (next p) x) 
+			 :duration (* rhy 1.25)
+			 :amplitude (interp (mod i 6) 0 .2 5 .8))
+             wait rhy)))
+
+;; try several times to hear random octave selection.
+
+(events (list (octie) (octie)) "test.midi")
+(events (list (octie) (octie)) "test.midi")
+(events (list (octie) (octie)) "test.midi")
+
+;;; **********************************************************************
+;;;
+;;; 10. tkunze's ghosts. A slightly more complex example demonstrating
+;;; iteration (dolist), using let inside process, and sprouting
+;;; different types of objects.
+;;;
+
+(define (ghosts )
+  (process repeat 12
+           for tim = (now)
+           for ahead = (* (+ tim .5) 2)
+           for tone = (between 53 77)
+           for high = (>= tone 65)
+           for rhy = (rhythm (pick 1/16 1/8 3/16) )
+           for amp = (if high .6 .4)
+           output (new midi :time tim :keynum tone
+                       :duration rhy :amplitude amp)
+           
+           if high
+           sprout (new midi :time ahead :keynum (+ tone 24)
+                       :duration ahead :amplitude .5)
+           and
+           sprout
+           (let ((knum tone))
+             (process repeat 5
+                      for k = (+ 39 (mod knum 13)) then (+ k 13)
+                      do (output 
+                          (new midi :time (now) :keynum k 
+                               :amplitude .3 :duration 10))
+                      (wait (/ rhy 4))))
+           at (* ahead 2)
+           if (= rhy .75)
+           do (dolist (i '(-18 -23))
+                (sprout
+                 (new midi :time (+ tim .5)
+                      :keynum (transpose tone i)
+                      :duration .05 :amplitude .4)
+                 (now)))
+           wait rhy ))
+
+(events (ghosts) "test.midi")
+
+
+;;; **********************************************************************
+;;;
+;;; 11. pvals and random patterns with changing probabilities.
+;;; cage demonstrates random probability controlled as a function
+;;; of time. over the course of 100 passes the process gradually prefers
+;;; the notes C,A,G and E over the other notes of G dorian. A random
+;;; weight W is assigned to the notes C, A, G and E when the pattern is
+;;; created. Then, when the process runs, a value for W is interpolated
+;;; on each pass. Since the pattern was created before the process began
+;;; running, the CAGE weights in the pattern must be specified as a PVAL
+;;; (pattern value), which has the effect of delaying evaluation of W
+;;; until the process actually reads the pattern using the NEXT function.
+;;;
+
+(define (cage offset)
+  (let* ((w 0)				; weight of C, A, G and E is 0
+         (prob (pval w))		; pval evals W as pattern runs
+         (pat1 (new random
+		 :of `((g3 weight ,prob) ; delay G's weight using pval
+		       (a3 weight ,prob) ; delay A's weight using pval
+		       bf3
+		       (c4 weight ,prob) ; delay C's weight using pval
+		       d4
+		       (e4 weight ,prob)	; delay E's weight using pval
+		       f4
+		       (g4 weight ,prob)	; delay G's weight using pval
+		       (r max 1 weight .25)) ; allow rests
+		 :for 1))
+         (pat2 (new random of (list 1/16
+				    1/8
+				    (new cycle :of 1/32 :for 2 )))))
+    (process repeat 100
+             for n = (next pat1)
+             for r = (rhythm (next pat2) 65)
+             for i from 0
+             ;; assign a new weight to W based on current pass.
+             set w = (interp i 0 .5 90 4)
+	     output (new midi :time (now)
+                         :duration r 
+                         :keynum (if offset
+                                   (transpose n offset)
+                                   n))
+             wait r))) 
+
+;;; Four cage processes in different octaves
+
+(events (loop for o in '(-12 0 12 24) collect (cage o))
+	"test.midi")
+
+
+;;; **********************************************************************
+;;;
+;;; 12. CMN output. 
+;;; This only works in Common Lisp and only if you loaded CMN into Lisp
+;;; before you built CM.
+;;;
+;;; If you want to control how CMN displays the notes you send it
+;;; you can preset staff attributes using the :staffing init to
+;;; cmn files. THe value of :staffing is a list of staff description,
+;;; each discription is itself a list:
+;;;   (<id> :name <name> :clef <clef> :meter <meter>)
+;;; for example:
+;;;   (0 :name "Banjo" :clef :treble :meter (4 4))
+;;; Id is an integer that identifies the staff. This integer is the
+;;; "connection" between the data you want to display in CMN and the
+;;; staff it will appear in. THe value of :Name is an optional string 
+;;; name for the staff, it defaults "staff-n" where n is the staff id.
+;;; The value of :clef is an optional keyword clef name or list of
+;;; clef names. If a clef not specified then CMN will do whatever it
+;;; thinks best. If the clef is :both then you get a grand staff. If
+;;; the clef is a list it limits CMN's clef choices to that list when
+;;; it displays the data. THe value :meter is an meter for the staff. 
+;;; If you provide; one it should be a list like (3 4). 
+;;;
+;;;(define mystaffs
+;;;  '((0 :name "Cello" :clef :bass :meter (4 4))
+;;;    (1 :name "Oboe" :clef :treble :meter (4 4))
+;;;    (2 :name "Flute" :clef :treble :meter (4 4))))
+;;;
+;;; You can load a cmn file after it is written by setting
+;;; the CMN output hook:
+;;;
+;;;   (set-cmn-output-hook! #'load)
+;;;
+;;; You can set score attributes as inits to the file. The special init
+;;; ':exact-rhythms t' means you are sending rational time values
+;;; (ratios) rather than weird floating point values. In this
+;;; case a duration of 1 means "quater note". For example:
+;;; 
+;;; (io "test.cmn" :exact-rhythms t :size 24 :title "Hiho!")
+;;;
+;;; The connection between CMN and your data is made by implemeting
+;;; a method on CM's generic function 'object->cmn'. This function
+;;; converts an object you want to display into a LIST of display data.
+;;; CM predefines a method for MIDI events, you can do the same for
+;;; whatever your data is. The method for MIDI events looks like:
+;;;
+;;; (defmethod object->cmn (obj) 
+;;;   (list (midi-channel obj)
+;;;         (midi-duration obj)
+;;;         (note (midi-keynum obj))))
+;;;
+;;; The 'object->cmn" method can return a list one of two formats. 
+;;; The first format produces "notes":
+;;;
+;;;    (id duration note ... )
+;;;
+;;; Id is an integer identifying the staff that the display should
+;;; appear on. If there is currently no staff for that id then one 
+;;; will be automatically created. Use 'set-cmn-staff!' to predefine 
+;;; staves. Duration is the duration of the cmn note.  Note is a note
+;;; name like 'cs4' or whatever. The ... args are whatever else you
+;;; want to attach to the cmn note. These are symbols or expressions
+;;; that will be evaluaed in the context of CMN's variables and
+;;; functions. THe second possible format for the data list is
+;;;
+;;;    (id cmn-variable/expr)
+;;;
+;;; This adds a single cmn variable or expression to the staff 
+;;; belonging to id.
+;;;
+
+(define (testit stf len nts)
+  (let ((nts (new heap :notes nts))
+        ;; choose quater or two eighths
+        (rhy (new random
+               :of (list 1 
+                         (new cycle :of '(1/2 1/2))))))
+    (process while (< (now) len)
+             for n = (next nts)
+             for r = (next rhy)
+             output (new midi :time (now)
+                         :duration r
+                         :keynum n
+                         :channel stf)
+             wait r)))
+
+(define staffs
+  '((0 :name "Viola" :clef :alto :meter (4 4))
+    (2 :name "Flute" :clef :treble :meter (4 4))))
+
+;;; generate a .eps file
+
+(events (list (testit 0 12 '(c3 d ef f g))
+              (testit 1 12 '(c5 d ef f g)))
+        "testit.eps" 
+        :staffing staffs
+        :size 24
+        :title "Hiho!")
+
+;;; generate a .cmn file
+
+(events (list (testit 0 12 '(c3 d ef f g))
+              (testit 1 12 '(c5 d ef f g)))
+        "testit.cmn" 
+        :staffing staffs
+        :size 24
+        :title "Hiho!")
+
+
+;;; **********************************************************************
+;;;
+;;; 13. Microtonal output in MIDI and the 'each' process clause
+
+;;; define a tuning that uses harmonics 8-16 as scale degrees.
+
+(define harms
+  (new tuning :ratios (loop for i from 8 to 16 collect (/ i 8))
+       :lowest (hertz 'c5)))
+
+(define (playharms )
+  (process with p = (new cycle 
+                      of (list (new random :of (list 0 8 16) :for 1)
+                               (new chord :of
+                                    (new heap :of '(1 2 3 4 5 6 7)
+                                         :for 3))) )
+           repeat 31
+           for x = (next p)
+           if (number? x)
+           output (new midi :time (now) :duration .2
+                       :keynum (keynum x :from harms))
+           else
+           ;; if a chord (list) of notes is selected fromthe pattern
+           ;; then iterate over each element in the chord and output it.
+           each n in x 
+           output (new midi :time (now) :duration .2
+                       :keynum (keynum n :from harms))
+           wait .25))
+
+;;; Channel tuning in MIDI for microtonal output. the first example 
+;;; quantizes to a 48 tone octave using 4 channels on the MIDI synth.
+;;; the second example performs note-by-note tuning, ie no quantization
+;;; and all channels are cycled in round robin style to minimize the 
+;;; likelyhood that a pitch bend will affect a sounding note. the third
+;;; example turns off channel tuning.
+
+(events (playharms) "test.midi" :channel-tuning 48)
+
+(events (playharms) "test.midi" :channel-tuning true)
+
+(events (playharms) "test.midi" :channel-tuning false)
+
+
+
+
+
+

@@ -1,0 +1,1021 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+  <meta content="text/html; charset=iso-8859-1"
+ http-equiv="content-type"/>
+
+<style type="text/css" media="all">
+@import "css/cm.css";
+</style>
+<title>Running Common Music under (X)Emacs</title>
+</head>
+
+<body>
+<!-- Navbar -->
+<div id="header">
+<div id="logo">
+<img src="img/cmlogosw.png" width="50" height="50" alt="[img/cmlogosw.png]" title=""/>
+</div>
+
+<div class="inv">Navigation:</div>
+<ul class="nav">
+<li class="nav1"><a href="cm.html">Home Page</a></li>
+<li class="navn"><a href="dict/">Dictionary</a></li>
+<li class="navn"><a href="../etc/examples/">Examples</a></li>
+</ul>
+</div>
+
+<hr class="inv"/>
+<div id="content">
+
+<h1>Running Common Music under X/Emacs</h1>
+
+<h2>Contents</h2>
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#installing">Installing X/Emacs</a>
+  <ol>
+  <li><a href="#downloading">Downloading distributions</a></li>
+  <li><a href="#distributions">Suggested binary distributions for running Common Music</a></li>
+  <li><a href="#customizing">Customizing X/Emacs</a></li> 
+  <li><a href="#initfile">The X/Emacs initialization file</a></li>
+  <li><a href="#commands">Emacs keyboard commands</a></li>
+  <li><a href="#command_summary">Emacs command summary</a></li>
+  </ol>
+</li>
+
+<li><a href="#running">Running Common Music under X/Emacs</a>
+  <ol>
+  <li><a href="#quick_start">Quick-start (Linux, OS X, Cygwin)</a></li>
+  <li><a href="#win_start">Running CM in X/Emacs under Windows</a></li>
+  <li><a href="#emacs_start">Starting Common Music from inside X/Emacs</a></li>
+  </ol>
+</li>
+
+<li><a href="#listener">The X/Emacs Lisp Listener</a>
+  <ol>
+  <li><a href="#listener_menu">The Listener menu</a></li> 
+  <li><a href="#listener_window">The Listener window</a></li>
+  <li><a href="#listener_menubar">The Listener menubar</a></li>
+  <li><a href="#listener_input">Entering input in the Listener</a></li>
+  </ol>
+</li>
+
+<li><a href="#tips">X/Emacs Tips</a>
+<ol>
+<li><a href="#tip_version">Determining the version of X/Emacs</a></li>
+<li><a href="#tip_apple">Apple keyboard shortcuts for OSX X/Emacs</a></li>
+<li><a href="#tip_Emacs_error">Avoiding startup error message on OSX X/Emacs</a></li>
+
+</ol>
+</li>
+</ol>
+
+<h2 id="introduction">1. Introduction</h2>
+<p>
+The <a href="http://www.gnu.org/software/emacs/emacs.html">Emacs</a>
+and <a href="http://www.xemacs.org">XEmacs</a> editors (jointly
+referred to as X/Emacs in this document) support Lisp editing and
+evaluation within a single, consistent GUI environment.  This tight
+integration between Lisp editing and evaluation lets the composer
+develop Lisp programs inside a powerful programming editor and
+interactively <em>evaluate</em> the Lisp code inside Common Music
+using simple editor commands. The Common Music application runs in its
+own dedicated Listener window as an <em>inferior process</em>
+(sub-process) of X/Emacs. This Listener window is a full-featured,
+interactive Lisp interpreter with its own command history and input
+editing features.
+</p>
+
+<p>
+The whole point of running Common Music inside X/Emacs is to integrate
+Lisp editing and evaluation in a single, easy-to-use graphical
+environment.  Some older installations of Emacs run the editor in what
+is called <em>console mode</em>, directly inside the command shell
+window without mouse support or a GUI. If your system already has an
+<code>emacs</code> command installed on it (see <a
+href="#tip_version">Tip 1</a>), make sure that it starts a windowed,
+GUI version of the editor.  If your installed X/Emacs is old (prior to
+the 21.3 branch) or doesn't support a GUI then don't bother using it,
+follow the links provided below to download and install a newer
+version for your system.
+</p>
+
+<h2 id="installing">2. Installing X/Emacs</h2>
+
+<p>
+Which editor you choose to install and work with is really a matter of
+personal taste.  Both editors are free, provide the same basic editing
+services, and run on practically every operating system available
+today. The primary difference between the two applications lies in
+their divergent GUI designs. Without commenting on which design is
+"better" (see: <a
+href="http://www.xemacs.org/About/XEmacsVsGNUemacs.html"> XEmacs
+vs. GNU Emacs</a>), it is probably fair to say that the typical user
+will feel most comfortable in an editor whose "look and feel" matches
+the host operating system's native window manager. On Linux, Cygwin
+and Windows this is XEmacs, on OS X it is an <em>Aqua</em> Emacs.
+</p>
+
+<h3 id="downloading">2.1 Downloading distributions</h3>
+
+<p>
+<em>Regardless of which editor you choose, install a recent (21.3.1 or
+later), stable, fully-configured distribution that includes all elisp
+sources</em>. (X)Emacs distributions typically consist of several
+parts: the core editor, the Emacs Lisp (elisp) source files, and lots
+of add-on packages.  The size of a fully configured distribution is
+very large, between 20 and 30 megabytes for a binary release depending
+on the editor and operating system involved.  Even if downloading will
+require up to several hours (on a 56k modem, for example), you should
+take whatever time is necessary to install a fully configured X/Emacs
+including elisp sources; you will come to use more and more of
+X/Emacs' features and add-on packages as you gain familiarity with the
+editor.
+</p>
+
+<h4 id="distributions">2.2 Suggested binary distributions for running Common Music</h4>
+
+<p>
+Common Music has been tested in the most recent stable releases of the
+following distributions:
+</p>
+
+<dl>
+<dt>Linux:</dt>
+<dd>
+<a href="http://www.xemacs.org/Download/index.html">XEmacs</a>
+</dd>
+
+<dt>OS X:</dt>
+<dd>
+<a href="http://www.mindlube.com/products/emacs/">Emacs for OS X</a>
+(Aqua)
+</dd>
+
+<dt>Windows 2000/XP: </dt>
+<dd>
+<a href="http://www.xemacs.org/Download/win32/">XEmacs for Windows</a>
+<br/> Download using the <a
+href="http://www.xemacs.org/Download/win32/netinstaller.html#installation">net install
+method</a> with this <a
+href="http://www.xemacs.org/Download/win32/setup.exe">setup.exe</a>.
+(Cygwin install available on the same page.)
+</dd>
+
+<dt>MacOS: </dt>
+<dd>
+<a href="http://www.digitool.com/MCL-getting-started/gs_36.htm">Fred
+in MCL</a> is an acceptable Emacs substitute. (The name Fred stands
+for Fred Resembles Emacs Deliberately.)
+</dd>
+</dl>
+
+<h3 id="customizing">2.3 Customizing X/Emacs</h3>
+<p>
+Once you have downloaded and installed X/Emacs you can customize it
+for working with Common Music and programming in Lisp by activating
+<em>syntax highlighting</em> to colorize Lisp code according to Lisp
+syntax rules.
+</p>
+
+<ul>
+<li>Start X/Emacs</li>
+
+<li>
+Select Syntax Highlighting from the Options menu at the top of the
+Emacs window.  If Syntax Highlighting has a sub-menu, make sure that
+its Automatic feature is checked in the sub-menu.
+</li>
+
+<li>
+Set any other options you want and then select Save Options from the
+Options menu. X/Emacs then prompts you to confirm saving your changes
+in ~/.emacs or ~/.xemacs/init.el.  Type 'y' to confirm.
+</li>
+</ul>
+
+<h3 id="initfile">2.4 The X/Emacs initialization file</h3>
+<p>
+Saving the customized options creates or updates a personal <em>emacs
+initialization file</em> that X/Emacs loads each time it starts. You
+can add your own Emacs commands (elisp expressions) to this file to
+set up the editor exactly the way you want.  XEmacs normally saves the
+init file as ~/.xemacs/init.el, that is, the file init.el in the
+.xemacs/ subdirectory of your home folder. Emacs uses ~/.emacs, the
+file .emacs located in your home directory. On Unix-flavored machines
+(Linux, OS X, Cygwin, etc) the dotted names (.xemacs/ and .emacs) make
+the init files "invisible" in normal directory listings and file
+browsing windows.
+</p>
+
+<h3 id="commands">2.5 Emacs keyboard commands</h3>
+
+<p>
+X/Emacs supports the mouse-oriented, point-and-click operations used
+in most word processors, but the real power of Emacs lies in
+its <em>keyboard commands</em> &mdash; short, simple keystrokes that
+invoke the editing, formatting and cursor motion capabilities of the
+editor. Emacs keyboard commands are formed by holding down the Control
+and/or Meta keys while typing a keystroke that identified the command.
+The Control key is located in the lower left-hand corner of the
+keyboard.  The location of the Meta key varies; it is usually found
+either to the left of the Spacebar or to the right of the Control key.
+<!-- The Emacs initialization file for this class sets Meta to be the
+key immediately to the right of Control key. This arrangement
+allows Apple's Command key to continue its normal function as the
+generic OS X shortcut key. -->
+</p>
+ 
+<p>
+Most Emacs documentation refer to the Control and Meta keys using
+shorthand names <span class="emacscmd">C-</span> and <span
+class="emacscmd">M-</span> respectively. Underlines are sometimes
+included to indicate <em>combinations</em> of keystrokes that are
+typed with the Control and/or Meta keys depressed. For example:
+</p>
+
+<ul>
+<li>
+<span class="emacscmd"><span class="emacskey">C-h</span></span> means to hold down the Control key while you type
+the <span class="emacscmd">h</span> key.
+</li>
+
+<li>
+<span class="emacscmd"><span class="emacskey">C-x C-s</span></span>
+means to hold down the Control key as you type the <span
+class="emacscmd">x</span> key, then continue to hold Control down
+while you type the <span class="emacscmd">s</span> key.
+
+</li>
+
+<li>
+<span class="emacscmd"><span class="emacskey">M-x</span></span> means
+to hold down the Meta key while you type <span
+class="emacscmd">x</span>.
+</li>
+
+<li>
+<span class="emacscmd"><span class="emacskey">C-M-f</span></span>
+means to hold down both Control and Meta while you type <span
+class="emacscmd">f</span>.
+</li>
+
+<li>
+<span class="emacscmd"><span class="emacskey">C-h</span> t</span>
+means to first type <span class="emacscmd"><span
+class="emacskey">C-h</span></span>, then <em>release</em> the control
+key and type just the <span class="emacscmd">t</span> key.
+</li>
+
+<li>
+<span class="emacscmd"><span class="emacskey">M-x</span>
+lisp-mode</span> means to hold down Meta while you type <span
+class="emacscmd">x</span>, then release both keys and type the
+word <span class="emacscmd">lisp-mode</span>.
+</li>
+
+</ul>
+
+
+<h3 id="command_summary">2.6 Emacs Command Summary</h3>
+
+<h4>2.6.1 Cursor Motion Commands</h4>
+
+<table class="float" width="75%">
+<tr><th class="lcol">Command</th> <th class="lcol">Meaning</th></tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-f</span></span></td>
+  <td>forward one character</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-b</span></span></td>
+
+  <td>back one character</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-p</span></span></td>
+  <td>previous line</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-n</span></span></td>
+
+  <td>next line</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-a</span></span></td>
+  <td>beginning of line</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-e</span></span></td>
+
+  <td>end of the line</td>
+</tr>
+
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">M-f</span></span></td>
+  <td>forward one word</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">M-b</span></span></td>
+
+  <td>back one word</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-M-f</span></span></td>
+  <td>forward one expression</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-M-b</span></span></td>
+
+  <td>back one expression</td>
+</tr>
+
+</table>
+
+
+<h4>2.6.2 Scrolling Commands</h4>
+
+<table class="float" width="75%">
+
+<tr><th class="lcol">Command</th> <th class="lcol">Meaning</th></tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-v</span></span></td>
+  <td>down one screenfull</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">M-v</span></span></td>
+  <td>up one screenfull</td>
+
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">M-&gt;</span></span></td>
+  <td>beginning of file</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">M-&lt;</span></span></td>
+  <td>end of file</td>
+
+</tr>
+
+</table>
+
+
+<h4>2.6.3 Editing Commands</h4>
+
+<table class="float" width="75%" >
+
+<tr><th class="lcol">Command</th> <th class="lcol">Meaning</th></tr>
+
+<tr>
+  <td >
+
+    <span class="emacscmd"><span class="emacskey">C-g</span></span>
+  </td>
+  <td >abort current command</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-d</span></span></td>
+  <td>delete character</td>
+
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">M-d</span></span></td>
+  <td>delete word</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-M-d</span></span></td>
+  <td>delete expression</td>
+
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-k</span></span></td>
+  <td>kill (cut) to end of line, keep in pasteboard</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-<em>spacebar</em></span></span></td>
+  <td>set the <em>mark</em>, the starting position of a region.</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-w</span></span></td>
+  <td>cut from mark to here, keep in pasteboard</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">M-w</span></span></td>
+  <td>copy from mark to here, keep in pasteboard</td>
+
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-y</span></span></td>
+  <td>yank back last thing in pasteboard</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-s</span></span></td>
+  <td>interactive text search</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">M-%</span></span></td>
+  <td>interactive search and replace</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-]</span></span></td>
+  <td>abort recursive editing mode</td>
+
+</tr>
+
+</table>
+
+
+<h4>2.6.4 File Commands</h4>
+
+<table class="float" width="75%" >
+
+<tr><th class="lcol">Command</th> <th class="lcol">Meaning</th></tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-x C-f</span></span></td>
+
+  <td>open file (new or existing)</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-x C-s</span></span></td>
+  <td>save buffer changes</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-x C-w</span></span></td>
+
+  <td>write buffer to new name</td>
+</tr>
+
+<tr>
+  <td >
+    <span class="emacscmd"><span class="emacskey">M-x</span> revert-buffer</span>
+  </td>
+  <td >throw away buffer changes and reload file</td>
+
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-x C-c</span></span></td>
+  <td>exit emacs</td>
+</tr>
+
+</table>
+
+<h4>2.6.5 Buffer and Window Commands</h4>
+
+<table class="float" width="75%" >
+
+<tr><th class="lcol">Command</th> <th class="lcol">Meaning</th></tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-x k</span></span></td>
+  <td>kill current buffer</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-x b</span></span></td>
+
+  <td>switch to buffer</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-x C-b</span></span></td>
+  <td>list all buffers</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-x</span> 1</span></td>
+
+  <td>only one window</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-x</span> 2</span></td>
+  <td>two windows</td>
+</tr>
+
+<tr>
+
+  <td><span class="emacscmd"><span class="emacskey">C-x</span> o</span></td>
+  <td>other window</td>
+</tr>
+
+</table>
+
+<h4>2.6.6 Help Commands</h4>
+
+<table class="float" width="75%" >
+<tr><th class="lcol">Command</th> <th class="lcol">Meaning</th></tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-h ?</span></span></td>
+  <td>list  help commands</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-h b</span></span></td>
+  <td>list all keyboard commands</td>
+
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-h b</span></span></td>
+  <td>describe a key command</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-h t</span></span></td>
+  <td>online tutorial</td>
+
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">C-h a</span></span></td>
+  <td>apropos word</td>
+</tr>
+
+</table>
+
+<h4>2.6.7 Directory Editor</h4>
+
+<table class="float" width="75%" >
+
+<tr><th class="lcol">Command</th> <th class="lcol">Meaning</th></tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">M-x</span> dired</span></td>
+  <td>start up directory editor</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd">return</span></td>
+  <td>edit file or enter directory</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd">d</span></td>
+  <td>mark file for deletion</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd">u</span></td>
+  <td>un-mark file for deletion</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd">x</span></td>
+  <td>Really expunge files marked for deletion</td>
+
+</tr>
+
+</table>
+
+<h4>2.6.8 JuSt FoR fUn Commands</h4>
+
+<table class="float" width="75%" >
+<tr><th class="lcol">Command</th> <th class="lcol">Meaning</th></tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">M-x</span> doctor</span></td>
+
+  <td>find out why nobody likes you</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">M-x</span> life</span></td>
+  <td>Game Of Life (cellular automaton)</td>
+</tr>
+
+<tr>
+
+  <td><span class="emacscmd"><span class="emacskey">M-x</span> yow</span></td>
+  <td>words of wisdom from Zippy the Pinhead</td>
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">M-x</span> dunnet</span></td>
+  <td>text-based adventure game</td>
+
+</tr>
+
+<tr>
+  <td><span class="emacscmd"><span class="emacskey">M-x</span> spook</span></td>
+  <td>scary CIA anarchistic somebody shoot me!</td>
+</tr>
+</table>
+
+<p>
+In order to become an efficient X/Emacs Lisp user you should spend
+several hours familiarizing yourself with Emacs and its keyboard
+commands.  Here are some places you can start:</p>
+
+<ul>
+
+<li>
+Perform the interactive Emacs Tutorial, available from the Help menu
+or by typing the command <span class="emacscmd"><span
+class="emacskey">C-h</span> t</span>
+</li>
+
+<li>
+<a href="http://www.xemacs.org/Documentation/21.5/html/new-users-guide.html">
+Getting Started With XEmacs</a>
+</li>
+
+<li>
+<a href="http://www.gnu.org/software/emacs/manual/html_chapter/emacs_toc.html">
+The Emacs Manual</a>
+</li>
+
+<li>
+<a href="http://www.gnu.org/software/emacs/elisp-manual/html_chapter/elisp.html#SEC_Top">
+The GNU Emacs Lisp Reference Manual</a>
+</li>
+</ul>
+
+<h2 id="running">3. Running Common Music under X/Emacs</h2>
+
+<p>
+The remaining sections of this document assume that you have already
+downloaded Common Music and can start a GUI X/Emacs on your
+system. See the document <a href="install.html">Installing Common
+Music</a> for more information about downloading and installing CM.
+</p>
+
+<h3 id="quick_start">3.1 Quick-start (Linux, OS X, Cygwin)</h3>
+
+<p>
+
+The easiest way to start CM under X/Emacs is to pass your favorite
+editor command to the bin/cm.sh script.  Here are several examples on
+different systems. Each example assumes that you have
+already <code>cd</code>'ed to the Common Music installation directory:
+</p>
+
+<div class="float">
+<p class="captxt">Starting CM under xemacs on Linux:</p>
+<pre class="shell">% <span class="input">bin/cm.sh -e xemacs</span></pre>
+</div>
+
+<div class="float">
+<p class="captxt">Starting CM under /Application/Emacs on OS X:</p>
+<pre class="shell">% <span class="input">bin/cm.sh -e Emacs</span></pre>
+</div>
+
+<div class="float">
+<p class="captxt">Starting CM in Guile under Emacs on Cygwin:</p>
+<pre class="shell">$ <span class="input">bin/cm.sh -l guile -e emacs</span></pre>
+</div>
+
+<p>
+See the <a href="dict/cm-sh.html"><code>cm.sh</code> documentation</a>
+for more information about using the script to run Common Music.
+</p>
+
+<h3 id="win_start">3.2 Running CM in X/Emacs under Windows</h3>
+
+<p>
+You cannot use cm.sh in the Windows command interpreter.  However, you
+can add code to your X/Emacs init file that will accomplish basically
+the same thing. These instructions are outlined in the next section <a
+href="#emacs_start">Starting Common Music from inside X/Emacs</a>.
+</p>
+
+<h3 id="emacs_start">3.3 Starting Common Music from inside X/Emacs</h3>
+
+<p>
+You can start Common Music from inside a running X/Emacs session if
+you add the following forms your X/Emacs init file.  The example shown
+below is set up for a Windows installation.  Change the pathname of
+the <code>cm-direcoty</code> to reflect your machine and use the Unix
+form of the directory delimiter / even if you are on Windows.  If you
+are <em>not</em> on Windows then change the name of the
+<code>cm-startfile</code> from cm.bat to cm.sh.
+</p>
+
+<div class="float">
+<p class="captxt">Loading CM's listener into X/Emacs on Windows.
+</p>
+<pre class="code"><span class="comment">;;; Edit the cm-directory string to point to the
+;;; CM installation directory on your machine.
+;;; On Unix machines change cm.bat to cm.sh
+</span>
+(<span class="special">defvar</span> <span class="defined">cm-directory</span> <span class="string">"C:/Lisp/cm-2.4.1"</span>)
+
+(<span class="special">defvar</span> <span class="defined">cm-startfile</span> <span class="string">"cm.bat"</span>)
+
+(<span class="special">let*</span> ((els (concat cm-directory <span class="string">"/etc/xemacs"</span>))
+       (bin (concat cm-directory <span class="string">"/bin/"</span>
+                    cm-startfile))
+       (load-path (cons els load-path)))
+  (load <span class="string">"listener"</span>)
+  (load <span class="string">"cm"</span>)
+  (setq inferior-lisp-program bin))</pre>
+</div>
+
+<p>
+Save the changes (<span class="emacscmd"><span
+class="emacskey">C-x</span></span> <span class="emacscmd"><span
+class="emacskey">C-s</span></span>) and quit X/Emacs (<span
+class="emacscmd"><span class="emacskey">C-x</span></span> <span
+class="emacscmd"><span class="emacskey">C-c</span></span>).  Then
+restart X/Emacs and type <span class="emacscmd"><span
+class="emacskey">C-x</span> l</span> to start Common Music's Listener
+window. Alternately, you can set the current buffer into Lisp-mode
+(<span class="emacscmd"><span class="emacskey">M-x</span>
+lisp-mode</span>) and then select the Lisp Listener item from the
+Listener menu that appears in the X/Emacs menu bar.
+</p>
+
+<h2 id="listener">4. The X/Emacs Lisp Listener </h2>
+
+<p>
+The Lisp Listener runs Common Music in a dedicated X/Emacs
+<em>frame</em>, or window, as a subprocess of the editor. This means
+that when you quit the editor you will also quit the Common Music
+session running in the Listener. There are two parts to the Listener,
+the Listener window itself and the Listener menu that automatically
+appears in the editing window whenever you editing in
+<em>lisp-mode</em>, the Emacs editing mode that supports Lisp program
+editing commands. This mode is automatically activated whenever you
+edit a .lisp, .cm or .ins text file.
+</p>
+
+<h3 id="listener_menu">4.1 The Listener menu</h3> 
+
+<p>
+The Listener menu is available in the main X/Emacs menu bar whenever
+Lisp-Mode is the active mode in the editing window. The menu provides
+commands for starting and stopping the Listener, evaluating
+expressions in the Listener and formatting Lisp code in the edit
+window. The following menu items are defined:
+</p>
+
+<dl>
+<dt>Lisp Listener (<span class="emacscmd"><span class="emacskey">C-x</span> l</span>)</dt>
+<dd>
+Starts Common Music running in the Listener window. If the Listener is
+already running then it is reselected as the front-most window.
+</dd>
+
+<dt>Quit Listener</dt>
+<dd>
+Quits and closes the active Listener window.
+</dd>
+
+<dt>Eval Selection (<span class="emacscmd"><span class="emacskey">C-x</span> <span class="emacskey">C-e</span></span>)</dt>
+<dd>
+Evaluates the current selection in the edit window by "sending" it to
+the Listener. The current selection is:
+<ul>
+<li>
+A Lisp expression that starts at the cursor's position.
+</li>
+<li>
+A Lisp expression that ends just <em>before</em> the cursor's position.
+</li>
+<li>
+All Lisp expression(s) inside a selected region of the edit window.
+</li>
+</ul>
+</dd>
+
+<dt>Eval Buffer (<span class="emacscmd"><span class="emacskey">C-x</span> <span class="emacskey">C-h</span></span>)</dt>
+<dd>
+Evaluates all of the expressions in the edit window.
+</dd>
+
+<dt>Macroexpand  (<span class="emacscmd"><span class="emacskey">C-x</span> <span class="emacskey">C-m</span></span>)</dt>
+<dd>
+Performs macroexpansion on the current edit selection.
+</dd>
+
+<dt>Abort Error (<span class="emacscmd"><span class="emacskey">C-x</span> <span class="emacskey">C-.</span></span>)</dt>
+<dd>
+Resumes the Listener's normal read-eval-print loop after an error
+occurs.
+</dd>
+
+<dt>Indent (<span class="emacscmd">TAB</span>)</dt>
+<dd>
+Reformats the selected edit region or the current edit line according
+to proper Lisp indentation rules.
+</dd>
+
+<dt>Comment Region</dt>
+<dd>
+Prepends the Lisp comment character <code>;</code> to the start of
+each line in the region. A Lisp comment is not evaluated.
+</dd>
+
+<dt>Remove Comments</dt>
+<dd>
+Undoes the effects of Comment Region.
+</dd>
+
+
+<dt>Tools</dt>
+<dd>
+The Tools sub-menu holds Lisp commands specific to the Lisp
+implementation running in the Listener. Consult your Common Lisp or
+Scheme documentation for more information.
+</dd>
+</dl>
+
+<h3 id="listener_window">4.2 The Listener window</h3>
+<p>
+The Listener window is a graphic front end to a Lisp read eval print
+loop.  It consists of a menubar and a Listener pane in which input
+expressions may entered and their evaluated results observed.
+</p>
+
+<h4 id="listener_menubar">4.2.1 The Listener menubar</h4>
+<p>
+The Listener menubar contains three menus: File, Edit and Buffers.  The
+File menu defines the following commands:
+</p>
+
+<dl>
+
+<dt>New...</dt>
+<dd>
+Creates a new X/Emacs edit window ready for Lisp-mode editing.
+</dd>
+
+<dt>Open...</dt>
+<dd>
+Opens a file for editing in the X/Emacs edit window.
+</dd>
+
+<dt>Load...</dt>
+<dd>
+Loads a file into the Lisp Listener.
+</dd>
+
+<dt>Quit Listener</dt>
+<dd>
+Quits and closes the Listener window.
+</dd>
+</dl>
+
+<p>
+The Edit menu is the XEmacs edit menu.
+</p>
+
+<p>
+The Buffers menu contains a list of all the Lisp files that are
+currently available for editing in X/Emacs. Selecting a file from the
+Buffers menu makes it the active, front-most edit window.
+</p>
+
+<h4 id="listener_input">4.2.2 Entering input in the Listener</h4>
+<p>
+The Listener window is a dedicated Lisp read-eval-print loop.  Lisp
+expressions are input at the current <em>listening point</em> located
+just to the right of the most recent input prompt. When the Return key
+is pressed, Lisp first reads the input, then evaluates it and finally
+prints the results back to the Listener window on the next line. Any
+expression visible in the window can be copy/pasted to the input point
+by placing the cursor just to the right of the expression and then
+typing Return. The copied expression can then be edited at the input
+point using regular X/Emacs editing commands. Press the Return key to
+enter it into Lisp.  The Listener records each input expression in its
+<em>input history list</em>.  Previous input expressions can by
+recalled from the list using <span class="emacscmd"><span
+class="emacskey">C-&lt;uparrow&gt;</span></span> to move backward and
+<span class="emacscmd"><span
+class="emacskey">C-&lt;downarrow&gt;</span></span> to move forward
+through the list, and Return to reenter the desired input once it has
+been selected.
+</p>
+
+<h2 id="tips">5. X/Emacs Tips </h2>
+
+<dl>
+<dt id="tip_version">
+1. Determining the version of X/Emacs
+</dt>
+<dd>
+Use the <code>which</code> command to see if an X/Emacs command is
+installed on your path. If it is, then use the <code>--version</code>
+option to see what version it is.
+
+<div class="float">
+<p class="captxt">Version number of an (old) installed X/Emacs.
+</p>
+<pre class="shell">% <span class="input">which xemacs</span>
+no xemacs in /bin /sbin /usr/bin /usr/sbin
+% <span class="input">which emacs</span>
+/usr/bin/emacs
+% <span class="input">emacs --version</span>
+GNU Emacs 21.1.1
+Copyright (C) 2001 Free Software Foundation, Inc.
+GNU Emacs comes with ABSOLUTELY NO WARRANTY.
+You may redistribute copies of Emacs
+under the terms of the GNU General Public License.
+For more information about these matters,
+see the file named COPYING.
+%</pre>
+</div>
+</dd>
+
+<dt id="tip_apple">
+2. Apple keyboard shortcuts for OSX X/Emacs
+</dt>
+<dd>
+You can use the standard Apple shortcuts for copy/paste etc. by adding
+the following forms to your X/Emacs init file:
+
+<div class="float">
+<p class="captxt">Apple command definitions for Mac shortcuts.
+</p>
+<pre class="code"><span class="comment">;; move Meta next to Control to free up Apple key.</span>
+(setq mac-command-key-is-meta nil)
+<span class="comment">;; standard Apple key commands</span>
+(global-set-key [(alt a)] 'mark-whole-buffer)
+(global-set-key [(alt v)] 'yank)
+(global-set-key [(alt c)] 'kill-ring-save)
+(global-set-key [(alt x)] 'kill-region)
+(global-set-key [(alt s)] 'save-buffer)
+(global-set-key [(alt l)] 'goto-line)
+(global-set-key [(alt o)] 'find-file)
+(global-set-key [(alt f)] 'isearch-forward)
+(global-set-key [(alt g)] 'isearch-repeat-forward)
+(global-set-key [(alt w)]
+                (lambda ()
+                  (interactive)
+                  (kill-buffer (current-buffer))))
+(global-set-key [(alt ?.)] 'keyboard-quit)
+(global-set-key [(alt z)] 'undo)</pre>
+</div>
+</dd>
+
+<dt id="tip_Emacs_error">
+3. Avoiding startup error message on OSX X/Emacs
+</dt>
+<dd>
+When you start OS X Emacs from a shell (via cm.sh, for example), the
+application may complain about missing directories. These directories
+are actually installed under the application. You can stop the error
+message from occuring if you have root privledges by installing
+two links, as shown in this interaction.
+
+<div class="float">
+<p class="captxt">Installing links for Emacs.
+</p>
+<pre class="shell">
+$ su root
+$ mkdir -p /usr/local/share/emacs
+$ cd /usr/local/share/emacs/
+$ ln -s /Applications/Emacs.app/Contents/Resources/site-lisp site-lisp
+$ ln -s /Applications/Emacs.app/Contents/Resources/ 21.3.50
+</pre>
+</div>
+</dd>
+</dl>
+
+<p>
+<a href="http://validator.w3.org:8001/check?uri=referer">
+<img src="http://www.w3.org/Icons/valid-xhtml10" 
+     alt="Valid XHTML 1.0!" height="31" width="88" />
+</a>
+</p>
+
+</div> <!-- end content -->
+<div id="footer">
+<div id="author">H. Taube</div>
+<div id="cvs-info">$Name: rel-2_6_0 $: $Source: /cvsroot/commonmusic/cm/doc/emacs.html,v $ ($Revision: 1.19 $, $Date: 2005/03/11 23:52:27 $)</div>
+</div>
+</body>
+</html>
+

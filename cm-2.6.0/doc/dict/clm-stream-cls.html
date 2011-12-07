@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>clm-stream</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "clm-stream" -->
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><span class="syntax"><code class="entry">clm-stream</code></span></dd>
+</dl>
+
+
+<p>
+Implements output to CLM score files. This class is automatically
+chosen when you specify a file with a ".clm" extension. 
+</p>
+
+<p><code class="entry">clm-stream</code> supports the following slot initializations:
+</p>
+<dl>
+
+
+<dt><code class="keyword">:play</code> {<var>true</var> | <var>false</var> | <code class="keyword">:load</code>}</dt>
+<dd>
+
+
+If true the .clm score file is loaded by <kbd>clm-load</kbd> and the resulting
+sound file is played after it has been generated. If <code class="keyword">:play</code> is <code class="keyword">:load</code> 
+then the  score file is loaded but the 
+resulting sound file is not played. The default value is true.
+
+</dd>
+
+
+</dl>
+
+
+
+<p>
+Other keyword initializations are passed to <kbd>clm:clm-load</kbd>. 
+</p>
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="clm-audio-stream-cls.html"><kbd>clm-audio-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="cmn-stream-cls.html"><kbd>cmn-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="io-mac.html"><kbd>io</kbd></a><kbd>&nbsp;</kbd>[Macro]</li>
+<li><a href="midi-stream-cls.html"><kbd>midi-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="sco-stream-cls.html"><kbd>sco-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+</ul>
+
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2003/07/07 21:27:41 $)</div>
+</div>
+</body>
+</html>
+
+

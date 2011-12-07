@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>transposer</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">transposer</code></dd>
+</dl>
+
+
+<p>
+A pattern that combines transposition data with transposition offsets
+to return notes, key numbers or lists of the same. Transposed data may be
+optionally retrograded and inverted.
+</p>
+
+<p>
+<code class="entry">transposer</code> supports the following slot
+initializations:
+</p>
+
+<dl>
+<dt><code class="keyword">:of</code> {<var>list</var> | <var>pattern</var>}</dt>
+<dd>
+The transposition data. Elements in <var>list</var>
+or <var>pattern</var> can be notes or key numbers. A <var>list</var>
+is treated as a single unit by the transposer.
+</dd>
+
+<dt><code class="keyword">:by</code> {<var>note</var> | <var>keynum</var> | <var>pattern</var>}</dt>
+<dd>
+Sets the transposition offset. If a pattern is specified a new offset
+is selected each period of the transposition data. The alias
+name <code class="keyword">:on</code> can also be used for this
+initialization.
+</dd>
+
+<dt><code class="keyword">:stepping</code> {<var>pattern</var>}</dt>
+<dd>
+Like <code class="keyword">:by</code> except that a new transposition
+offset is selected each time an element is transposed rather than once
+each period.
+</dd>
+
+<dt>
+<code class="keyword">:form</code> {<code class="keyword">:p</code>
+| <code class="keyword">:i</code> | <code class="keyword">:r</code>
+| <code class="keyword">:ri</code> | <var>pattern</var>}
+</dt>
+<dd>
+A symbol or pattern of symbols that specifies the "row form" for list
+data returned by the transposer, where <code class="keyword">:p</code>
+stands for prime, <code class="keyword">:i</code> for inversion, <code
+class="keyword">:r</code> for retrograde and <code
+class="keyword">:ri</code> for retrograde-inversion. Either symbols or
+keywords can be used to specify the row form. A new row form is read
+each time the transposition offset changes.
+</dd>
+
+<dt><code class="keyword">:mod</code> {<var>number</var> | <var>pattern</var>}</dt>
+<dd>
+Optional modulus on list data.
+</dd>
+
+<dt><code class="keyword">:scale</code> {<var>scale</var>}</dt>
+<dd>
+The scale to transpose data in. The default value is the <a href="chromatic-scale-var.html">*chromatic-scale*</a>.
+</dd>
+
+</dl>
+
+<p>
+See <a href="patterns-topic.html#pattern_inits">generic pattern
+initializations</a> for documentation on additional keyword
+initializations to the pattern.
+</p>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Wandering chords.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">pat1</span>
+  (<a href="new-mac.html">new</a> transposer
+       <a href=":of-fn.html">:of</a> (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:of</span> '(((0 2 6 11) <span class="keyword">:weight</span> 1)
+                             ((0 3 5 10) <span class="keyword">:weight</span> .25)
+                             ((0 4 9 15) <span class="keyword">:weight</span> .5)
+                             ((0 3 11) <span class="keyword">:weight</span> .5)
+                             ((0 8 11) <span class="keyword">:weight</span> .5)))
+       <span class="keyword">:stepping</span> (<a href="new-mac.html">new</a> <a href="range-fn.html">range</a> <span class="keyword">:from</span> 60 <span class="keyword">:to</span> 70 <span class="keyword">:downto</span> 50
+                      <span class="keyword">:stepping</span> (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a>
+                                     <span class="keyword">:of</span> '(-1 1 -2 2 -3 3)))))
+
+(<span class="special">define</span> (<span class="defined">play-pat</span> reps pat rate)
+  (<a href="process-mac.html">process</a> repeat reps
+           each k in (<a href="next-fn.html">next</a> pat)
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                       <span class="keyword">:keynum</span> k
+                       <span class="keyword">:duration</span> (* rate 1.5))
+           wait rate))
+
+(<a href="events-fn.html">events</a> (play-pat 50 pat1 .3) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<div class="float" id="example_2">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Random 12-tone generator
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">ran-row</span> end)
+  (<span class="special">let</span> ((rows (<a href="new-mac.html">new</a> transposer
+                <span class="keyword">:of</span> (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:of</span> '(0 1 6 -5 10 11 5 16 15 21 26 20))
+                <span class="keyword">:on</span> (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:keynums</span> '(c4 cs3 b3 fs4 fs3))))
+        (rhys (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> 
+                <span class="keyword">:of</span> `((t <span class="keyword">:min</span> 4) (s <span class="keyword">:min</span> 2) 
+                      (q <span class="keyword">:weight</span> 3)
+                      (te <span class="keyword">:min</span> 3) (tq <span class="keyword">:min</span> 3) 
+                      ,(<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:of</span> '(e. s))
+                      (e <span class="keyword">:weight</span> 2))))
+        (amps (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:of</span> '((mf <span class="keyword">:weight</span> 7)
+                                (mp <span class="keyword">:weight</span> 3)
+                                p))))
+    (<a href="process-mac.html">process</a> while (&lt; (<a href="now-fn.html">now</a> #t) end)
+             for k = (<a href="next-fn.html">next</a> rows)
+             for r = (<a href="rhythm-fn.html">rhythm</a> (<a href="next-fn.html">next</a> rhys) 70)
+             for a = (<a href="amplitude-fn.html">amplitude</a> (<a href="next-fn.html">next</a> amps))
+             output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                         <span class="keyword">:keynum</span> k <span class="keyword">:amplitude</span> a
+                         <span class="keyword">:duration</span> r)
+             wait r )))
+(<a href="events-fn.html">events</a> (ran-row 30) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="patterns-topic.html#pattern_classes">Pattern classes</a> [Topic]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.2 $, $Date: 2005/03/18 14:33:23 $)</div>
+</div>
+</body>
+</html>
+
+

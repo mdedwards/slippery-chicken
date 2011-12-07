@@ -1,0 +1,361 @@
+/*
+ * File:           cm.css
+ *
+ * Summary:        
+ *
+ * Author:         Tobias Kunze
+ * E-Mail:         t AT fictive DOT com
+ */
+
+body {
+  margin: 1em;
+  padding: 0px;
+  color: black;
+  background-color: white;
+  font: normal 100% sans-serif;
+}
+
+a	  { text-decoration: none; }
+a:link    { color: #4444aa; }
+a:visited { color: #32327f; }
+a:hover   { color: #aaaaff; }
+a:active  { color: #ddddff; }
+a:hover, a:active {
+  text-decoration: underline;
+}
+
+h1 {
+  font: bold 200% sans-serif;
+  color: #666;
+}
+h2 {
+  font: bold 168% sans-serif;
+  color: #555;
+}
+h3 {
+  font: bold 141% sans-serif;
+  color: #444;
+}
+h4 {
+  font: bold 119% sans-serif;
+  color: #333;
+}
+h5 {
+  font: bold 100% sans-serif;
+  color: #222;
+}
+
+acronym, abbr {
+  font-variant: small-caps;
+  border-bottom: 1px dotted #333;
+  cursor: help;
+}
+acronym {
+  text-transform: lowercase;
+  font-variant: small-caps;
+}
+acronym.nohelp, abbr.nohelp {
+  border-bottom: none;
+  cursor: default;
+}
+
+del {
+  color: #644;
+}
+ins {
+  color: #464;
+  text-decoration: none;
+}
+
+/* Header & Footer */
+
+div#header {
+  text-align: center;
+  border-bottom: 1px solid #aaa;
+}
+div#footer {
+  text-align: center;
+  border-top: 1px solid #aaa;
+}
+ul.nav {
+  clear: both;
+  margin: .5em;
+  padding: 0px .5em;
+}
+div#header ul.nav {
+  margin-top: -1.5em;
+}
+div#footer ul.nav {
+  margin-bottom: 1.5em;
+}
+li.nav1, li.navn {
+  display: inline;
+  padding: 0px .5em;
+}
+li.navn {
+  border-left: 1px dotted #aaa;
+}
+
+div#logo {
+  float: right;
+  margin: 0px;
+  padding: 0px;
+}
+div#author {
+  float: left;
+}
+div#version {
+  float: left;
+}
+div#date {
+  float: right;
+}
+div#cvs-info {
+  float: right;
+}
+div#author, div#date, div#copyright, div#version, div#cvs-info {
+  font-size: 84%;
+  color: #aaa;
+}
+
+.inv {
+  display: none;
+}
+
+/* Content */
+
+div#content {
+  padding: 2em 3em;
+}
+
+var {
+  font-family: sans-serif;
+  font-style: oblique;
+}
+
+span.chapter-nr {
+  display: block;
+}
+
+div.float, dl.implnote, dl.lisprule {
+  margin: 2em 4em;
+}
+
+dl.lisprule { 
+  font-weight: bold;
+}
+
+/* Chapter quotations, "fixed" for IE 6 */
+
+blockquote.quotation {
+  margin-left: 44.45%;
+  margin-right: 0em;
+  padding-right: 0px;
+  }
+
+p.quotetext { 
+  margin-left: 0em;
+  text-indent: 0em;
+  text-align: justify;
+  font-style: italic;
+ }
+
+p.quoteinfo { 
+  margin-left: 0em;
+  margin-top: .5em;
+  text-indent: 0em;
+  font-style: normal;
+  text-align: right;
+}
+
+p.tablenote { 
+  margin-top: .5em;
+  text-indent: 0em;
+  font-style: normal;
+  font-size: 80%;
+  text-align: left;
+}
+
+div.float p {
+  margin-bottom: .5em;
+/*  font-style: italic;  */
+}
+
+/* caption printing */
+
+p.captxt {
+  display: table;
+  margin: 1em auto;
+  font-style: italic;
+  font-weight: normal;
+  text-align: justify;
+}
+
+span.floatlabel {
+  font-weight: bold;
+  color: #222;
+}
+pre.code {
+  margin: 0px;
+  padding: .5em 0px;
+  border-top: 1px dashed #aaa;
+  border-bottom: 1px dashed #aaa;
+}
+
+pre.shell {
+  margin: 0px;
+  padding: .5em .5em;
+  border: 1px solid gray;
+  background: #f7f7f7;
+}
+
+p.wrapshell {
+  margin: 0px;
+  font-style: normal;
+  font-family: monospace;
+  padding: .5em .5em;
+  border: 1px solid gray;
+  background: #f7f7f7;
+}
+
+/* specific to dictionary */
+
+ul.dictindex { 
+  margin: 0em;
+  padding: .25em;
+}
+
+ul.dictindex li {
+    list-style: none;
+  }
+
+span.syntax {
+  font-style: normal;
+}
+
+code.keyword { 
+  color: #b22222;
+}
+
+code.entry { 
+  font-style: normal;
+  font-weight: bold;
+}
+
+span.entry { 
+  font-weight: bold;
+}
+
+ol.toc, ul.toc {
+/*  font: normal 119% sans-serif; */
+}
+
+ul.media {
+  margin: 0px;
+  padding: .25em 0em; /* .25em .5em; */
+}
+
+ul.media li {
+  list-style: none;
+}
+
+dt.lispnote     { color: #4b4; }
+dt.platformnote { color: #b44; }
+
+table.float {
+  /* margin: .5em;  auto; */
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray; /* try tone darker than tk's */
+}
+
+tbody.transitions tr td {
+  text-align: center;
+}
+
+th.col {
+  border-bottom: 1px solid silver; /* dashed #aaa; */
+  text-align: center; /*left*/
+}
+
+th.lcol {
+  border-bottom: 1px solid silver;
+  text-align: left; /*left*/
+}
+
+th.rcol {
+  border-bottom: 1px solid silver;
+  text-align: right;
+}
+
+th.row {
+ /* border-right: 1px solid silver; */ /* dashed #aaa; */
+  text-align: left;
+  padding-right: .5em;
+}
+
+th.rrow {
+  text-align: right;
+  padding-left: .5em;
+}
+
+td.rcell {
+  text-align: right;         
+}
+
+td.lcell {
+  text-align: left;
+}
+
+
+img {
+  border: none;
+}
+
+/* Syntax Highlighting */
+
+span.emacscmd { font-weight: bold; font-size: smaller; }
+span.emacskey { text-decoration: underline }
+span.string  {color: #228b22;} 
+span.comment {font-style: italic; color: gray;} /* slate gray3 */
+span.keyword {color: #b22222;}
+span.special {color: #d2691e;}
+span.defined {color: #ff0000;}
+span.result {font-weight: bold; color: silver;}
+span.input  {font-weight: bold;}
+span.prompt, span.output  { }
+
+
+/* span.printout { color: #3f7f7f; font-size: smaller; } */
+div.printout {
+  margin: 0px;
+  color: #3f7f7f;
+  font-size: smaller; 
+  background: #f7f7f7;
+}
+
+
+
+
+
+span.author {font-style: normal;}
+span.book, span.journal {font-style: italic;}
+span.article {font-style: normal;}
+span.publisher {font-style: normal;}
+
+dl.syntax dt {
+  float: right;
+}
+dl.syntax dd {
+  margin: 0px;
+}
+
+dl.dictsyntax {background: #e6e6ff}
+
+dl.dictsyntax dt {
+  float: right;
+}
+dl.dictsyntax dd {
+  margin: 0px;
+}
+
+/* EOF */

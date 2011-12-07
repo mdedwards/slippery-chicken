@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>ransegs</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">ransegs</code> <var>len</var> {<var>keyword</var> <var>value</var>}*<code>)</code></dd>
+</dl>
+
+<p>
+Returns a list of <var>len</var> number of random segments from a
+specified distribution type. Segment values are either sample points
+or increments between points in the distribution. If points are
+returned they are sorted lowest to highest.
+</p>
+
+<p id="args">
+<code class="entry">ransegs</code> supports the following keyword arguments:
+</p>
+
+<dl>
+<dt>
+<code class="keyword">:type</code> <var>keyword</var></dt>
+<dd>The type of random distribution to sample points from. The default type is <span class="keyword">:uniform</span>. See
+documentation on <a href="ran-fn.html">ran</a> for more information.
+</dd>
+
+<dt>
+<code class="keyword">:sum</code> <var>number</var></dt>
+<dd>If this argument is specified then the function returns increments
+between sample points in the distribution and the segments are scaled
+so that they sum to <var>number</var>. If this argument is not
+specified then sample points, rather than increments, are returned.
+</dd>
+
+<dt><code class="keyword">:min</code> <var>number</var></dt>
+<dd>The minimum value to return from the distribution. The default
+value is 0.0<!-- This argument excludes the use of <code class="keyword">:sum</code-->.</dd>
+
+<dt><code class="keyword">:max</code> <var>number</var></dt>
+<dd>The maximum value to return from the distribution. The default value is 1.0<!-- This argument excludes the use of <code class="keyword">:sum</code-->.</dd>
+
+<dt><code class="keyword">:a</code> <var>number</var></dt>
+<dd>A parameter whose meaning depends on the distribution type.
+See documentation on <a href="ran-fn.html">ran</a> for more information.</dd>
+
+<dt><code class="keyword">:b</code> <var>number</var></dt>
+<dd>A parameter whose meaning depends on the distribution type.
+See documentation on <a href="ran-fn.html">ran</a> for more information.</dd>
+
+</dl>
+
+<p>The <code class="keyword">:sum</code> argument cannot be specified if
+either <code class="keyword">:min</code> or <code
+class="keyword">:max</code> appear as arguments to the function.</p>
+
+<h4>Examples:</h4>
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> The <code>ransegs</code> function.
+</p>
+<pre class="code">
+(ransegs 5 <span class="keyword">:min</span> 2 <span class="keyword">:max</span> 4)
+<span class="result">&rArr;</span> (2 2.2559445 3.4245749 3.7436724 4)
+(ransegs 5 <span class="keyword">:max</span> 10 <span class="keyword">:type</span> '<span class="keyword">:high-pass</span>)
+<span class="result">&rArr;</span> (0.0 7.4660807 8.559072 9.499652 10)
+(ransegs 5 <span class="keyword">:sum</span> 10 <span class="keyword">:type</span> '<span class="keyword">:high-pass</span>)
+<span class="result">&rArr;</span> (5.330133 0.32402468 1.5141625 1.9792953 0.85238457)
+(ransegs 5 <span class="keyword">:min</span> -10 <span class="keyword">:max</span> 10 <span class="keyword">:type</span> '<span class="keyword">:mean</span>)
+<span class="result">&rArr;</span> (-10 -5.596928 1.3310728 7.758129 10)
+</pre>
+</div>
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> High pass segments for increasing rain drops.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">rainy-play</span> len tot lb ub)
+  (<span class="special">let</span> ((segs (ransegs len <span class="keyword">:sum</span> tot <span class="keyword">:type</span> '<span class="keyword">:high-pass</span>)))
+    (<a href="process-mac.html">process</a> for i from 0
+             for s in segs
+             unless (= i 0)
+             output
+             (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                  <span class="keyword">:amplitude</span> (<a href="interp-fn.html">interp</a> i 0 .2 len .7)
+                  <span class="keyword">:duration</span> (<a href="between-fn.html">between</a> .1 .25)
+                  <span class="keyword">:keynum</span> (<a href="between-fn.html">between</a> lb ub))
+             wait s
+             finally
+             (<a href="output-fn.html">output</a> (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                          <span class="keyword">:duration</span> .35
+                          <span class="keyword">:amplitude</span> .8
+                          <span class="keyword">:keynum</span> (<a href="pick-fn.html">pick</a> ub (- ub 5) lb))))))
+                
+(<a href="events-fn.html">events</a> (list (rainy-play 30 20 84 96)
+              (rainy-play 30 20 72 84)
+              (rainy-play 30 20 60 72)
+              (rainy-play 30 20 48 60))
+        <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+
+<h4>See also:</h4>
+<ul>
+<li><a href="explsegs-fn.html"><kbd>explseg</kbd></a> [Function]</li>
+<li><a href="rescale-fn.html"><kbd>rescale</kbd></a> [Function]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2005/03/22 02:13:49 $)</div>
+</div>
+</body>
+</html>
+
+

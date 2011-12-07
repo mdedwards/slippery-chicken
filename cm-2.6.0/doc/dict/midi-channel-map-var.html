@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>*midi-channel-map*</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "*midi-channel-map*" -->
+<dl class="dictsyntax">
+<dt>[Variable]</dt>
+<dd><span class="syntax"><code class="entry">*midi-channel-map*</code></span></dd>
+</dl>
+
+<p>
+A default MIDI channel map used by subclasses of 
+<a href="midi-stream-cls.html"><kbd>midi-stream</kbd></a> if a map is not
+specified when the stream is created.  A channel map is a list or
+vector of logical channel defininitions. Each definition in the map is
+a two-element list: (<var>port channel</var>) that specifies the
+integer port id and integer channel number of the logical channel
+defined by that position.  The default channel map defined by CM
+provides 64 logical channels using four ports (0-3) and 16 channels
+(0-15) per port.
+</p>
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="midi-stream-cls.html"><kbd>midi-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="midi-connections-var.html"><kbd>*midi-connections*</kbd></a><kbd>&nbsp;</kbd>[Variable]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2003/07/07 21:27:41 $)</div>
+</div>
+</body>
+</html>

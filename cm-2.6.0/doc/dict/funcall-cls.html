@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>funcall</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "funcall" -->
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">funcall</code></dd>
+</dl>
+
+<p>
+Calls a function each time a new period of items is needed. The
+function is passed no arguments and must return the list of elements
+representing the next period in the pattern, or false if there are no
+more elements.
+</p>
+
+<p>
+See <a href="patterns-topic.html#pattern_inits">generic pattern
+initializations</a> for documentation on keyword initializations to
+the pattern.
+</p>
+
+
+<h4>Examples:</h4>
+<!--div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Periods with no direct reselection
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">noreps</span> n lb ub) 
+  (<span class="special">loop</span> repeat n for x = (<a href="between-fn.html">between</a> lb ub x) 
+        collect x))
+
+(<span class="special">define</span> <span class="defined">pat1</span>
+  (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a>
+       <span class="keyword">:of</span> (list (<a href="new-mac.html">new</a> funcall <span class="keyword">:of</span> (lambda () (noreps 4 50 60)))
+                 (<a href="new-mac.html">new</a> funcall <span class="keyword">:of</span> (lambda () (noreps 8 60 70)))
+                 (<a href="new-mac.html">new</a> funcall <span class="keyword">:of</span> (lambda () (noreps 4 80 90)))))) 
+
+(<a href="next-fn.html">next</a> pat1 #t)
+<span class="result">&rArr;</span> (56 50 54 55 64 60 66 64 66 67 62 64 89 80 86 89)
+
+(<a href="next-fn.html">next</a> pat1 #t)
+<span class="result">&rArr;</span> (55 50 53 54 69 67 69 68 67 66 64 63 85 88 82 83)
+</pre>
+</div-->
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Generating random rhythms followed by their retrograde.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">non-retro</span> pat)
+  (<a href="new-mac.html">new</a> funcall <a href=":of-fn.html">:of</a> (<span class="special">lambda</span> ()
+                     (<span class="special">let</span> ((per (<a href="next-fn.html">next</a> pat #t)))
+                       (append per (reverse per))))))
+
+(<span class="special">define</span> <span class="defined">messiaen</span>
+  (non-retro (<a href="new-mac.html">new</a> <a href="heap-cls.html">heap</a> <span class="keyword">:of</span> '(s e e. q q+s e.)
+                 <span class="keyword">:for</span> (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:of</span> '(3 4 5 )))))
+
+(<a href="next-fn.html">next</a> messiaen #t)
+<span class="result">&rArr;</span> (q+s e s e. e. s e q+s)
+(<a href="next-fn.html">next</a> messiaen #t)
+<span class="result">&rArr;</span> (e. q e e. e. e q e.)
+(<a href="next-fn.html">next</a> messiaen #t)
+<span class="result">&rArr;</span> (s q+s q q q+s s)
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Generating P I R and RI of a row.
+</p>
+<pre class="code">
+(<span class="special">let</span> ((alban '(0 3 7 11 14 17 21 25 28 30 32 34)))
+  (<span class="special">define</span> <span class="defined">albans</span>
+    (<a href="new-mac.html">new</a> <a href="heap-cls.html">heap</a>
+         <span class="keyword">:of</span> (list (<a href="new-mac.html">new</a> funcall <span class="keyword">:of</span> (<span class="special">lambda</span> () alban))
+                   (<a href="new-mac.html">new</a> funcall <span class="keyword">:of</span> (<span class="special">lambda</span> () (<a href="invert-fn.html">invert</a> alban)))
+                   (<a href="new-mac.html">new</a> funcall <span class="keyword">:of</span> (<span class="special">lambda</span> () (reverse alban)))
+                   (<a href="new-mac.html">new</a> funcall <span class="keyword">:of</span> (<span class="special">lambda</span> () 
+                                      (reverse (<a href="invert-fn.html">invert</a> alban))))))))
+
+(<span class="special">define</span> <span class="defined">transp</span> (<a href="new-mac.html">new</a> funcall <span class="keyword">:of</span> (<span class="special">lambda</span> () (<a href="between-fn.html">between</a> 55 68))))
+
+(<span class="special">define</span> (<span class="defined">play-rows</span> reps rows keys rate)
+  (<a href="process-mac.html">process</a> with key
+           for i below reps
+           when (= (mod i 12) 0)
+           set key = (<a href="next-fn.html">next</a> keys)
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>) 
+                       <span class="keyword">:keynum</span> (<a href="transpose-fn.html">transpose</a> (<a href="next-fn.html">next</a> rows) key)
+                       <span class="keyword">:duration</span> (* rate 1.5))
+           wait rate))
+
+(<a href="events-fn.html">events</a> (play-rows 120 albans transp .1) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<!--p>
+See <a href="copier-cls.html#example_2">copier documentation</a> for another example of funcall.
+</p-->
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="patterns-topic.html#pattern_classes">Pattern classes</a> [Topic]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.2 $, $Date: 2005/03/15 02:04:31 $)</div>
+</div>
+</body>
+</html>
+
+

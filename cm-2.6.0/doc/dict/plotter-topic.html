@@ -1,0 +1,573 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>Plotter</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Topic]</dt>
+<dd><span class="syntax">Plotter</span></dd>
+</dl>
+
+<p>
+Plotter is a graphical tool for displaying, editing and sequencing
+data.  Data can be passed to <a
+href="plotter-fn.html">plotter</a> in several different formats: lists
+of x y coordinate values, lists of CLOS objects, or <a
+href="seq-cls.html">seq</a> objects containing CLOS objects. Once data
+has been loaded it can be manipulated (displayed, edited, searched,
+sequenced) using the GUI or by calling the underlying <a href="#api">
+Plotter functions</a> from the Lisp interpreter.
+</p>
+
+<h2 id="api">Plotter API</h2>
+<p>
+The following entries describe Plotter's functional interface:
+</p>
+
+<ul>
+<li><a href="axis-fn.html">axis</a></li>
+<li><a href="defaxis-mac.html">defaxis</a></li>
+<li><a href="plotter-fn.html">plotter</a></li>
+<li><a href="plotter-add-layer-fn.html">plotter-add-layer</a></li>
+<li><a href="plotter-close-fn.html">plotter-close</a></li>
+<li><a href="plotter-data-fn.html">plotter-data</a></li>
+<li><a href="plotter-front-styling-fn.html">plotter-front-styling</a></li>
+<li><a href="plotter-property-fn.html">plotter-property</a></li>
+<li><a href="plotter-redraw-fn.html">plotter-redraw</a></li>
+<li><a href="plotter-resize-fn.html">plotter-resize</a></li>
+<li><a href="plotter-scroll-fn.html">plotter-scroll</a></li>
+<li><a href="plotter-zoom-fn.html">plotter-zoom</a></li>
+<li><a href="point-cls.html">point</a></li>
+</ul>
+
+
+<h2>Displays, Axes, Layers and Points</h2>
+
+<p>
+A plotter window provides a two-dimensional view onto one or more sets
+of coordinate data.  Sets are grouped into <em>displays</em> where
+each display defines a particular mapping of the data to their point
+presentation in the display. A display's visual characteristics are
+controlled by <a href="axis-cls.html">axis</a> objects that determine
+which slots in the data sets are plotted and how the slot values are
+mapped into the display's presentation. Each axis can control up to
+two slots so a total of four degrees of interest can be mapped to the
+horizontal, vertical, width, and height properties of points drawn in
+the window.
+
+<!-- Axis objects can be left up to Plotter to determine or they can
+be created and passed into <a href="plotter-fn.html">plotter</a> along
+with the data.  The easiest way to create an axis is to base it on a
+predefined axis <a href="axis-fn.html#table1">prototype</a>. -->
+
+See the documentation on <a href="axis-fn.html">axis</a> and <a
+href="defaxis-mac.html">defaxis</a> for more information.
+</p>
+
+<p>
+Within a single display each individual data set appears in its own
+<em>layer</em>. Plot editing takes place on the front-most layer;
+background layers can be brought forward by clicking on their visible
+points or by selecting the desired layer using the View>Layer
+menu. Layers can be made transparent, invisible or opaque.  If a layer
+is transparent then data sets behind it are also visible (<a
+href="#example1">Example 1</a>). If a layer is made invisible then its
+data will not appear in the display until it once again made visible.
+</p>
+
+<p>
+Depending on how the display axes are defined, each layer of data can
+switch between seven basic viewing styles:
+</p>
+
+<ul>
+<li><a href="#example1">Line and point</a></li>
+<li><a href="#example3">Line</a></li>
+<li><a href="#example2">Point</a></li>
+<li><a href="#example4">Bar and point</a></li>
+<li><a href="#example2">Bar</a></li>
+<li><a href="#example5">Box</a></li>
+<li>Bubble</li>
+<li><span style="color:gray;">Notation (not yet implemented)</span></li>
+</ul>
+
+<h2>Selections</h2>
+
+<p>
+A <em>selection</em> is a group of points or a region of the display
+that has been highlighted for editing. Editing commands affect only the
+current selection. Selection can be initiated with the mouse or by
+evaluating <em>selection expressions</em> using the <a
+href="#editing_tool">Editing Tool</a>.
+</p>
+
+<p>
+Plotter supports two types of selections: <em>regions</em> and
+<em>points</em>. Regions define a range of values within the span of
+the horizontal and/or vertical axes. Points represent the slot values
+that are being depicted in the display.  Point selections are drawn in
+black; region selections are drawn in a highlighted background color.
+</p>
+<p>
+To cancel the current selection use the Edit>Clear menu item or
+left-click on an empty portion of the display.
+</p>
+
+<h3>Point selection with the mouse</h3>
+
+<p>
+Points in the front-most layer can be selected by left-clicking them
+with the mouse. Use Control-left-click to add a point to an existing
+selection or to remove the point if it is currently selected. To
+select all the points within a rectangular region of the display,
+press the left-button down and sweep out the region of interest in the
+display. Releasing the button will select all the points within
+highlighted region. To select all the points in the layer use the
+Edit>Select All menu item.
+</p>
+
+
+<h3>Region selection with the mouse</h3>
+
+<p>
+To select regions in a display, activate the "Cursor Mode" tab in the
+<a href="#editing_tool">Editing Tool</a> and press the "Select
+Regions" radio button. Then mouse-drag regions in the display to
+select them.</p>
+
+<h3>Converting between point and region selections</h3>
+
+<p>
+To convert an existing selection from one type to the other, select
+the target type (either "Select Points" or "Select Regions") in the
+Cursor Mode tab of the <a href="#editing_tool">Editing Tool</a>. The
+existing selection in the Plotter window will then switch to the
+target type.
+</p>
+
+<h2>Editing</h2>
+
+<p>
+Once point or region selection has been established it can be edited
+using mouse gestures or by selecting commands from the Edit menu or
+Editing Toll. Editing commands only affect the current selection in
+the front-most layer of the display. Region editing is not yet
+implemented.
+</p>
+
+<h3>Point editing with the mouse</h3>
+
+<p>
+To move a point selection, mouse-drag it to its new location.
+Selected points are drawn in outline as they are moved.  Release the
+mouse to complete the move.
+</p>
+
+<p>
+To delete the current selection, press the Backspace or Delete keys or
+use the Edit>Delete menu item.  To select and delete points in a
+single operation, use the "Delete Points" mode found under the Cursor
+Mode tab of the <a href="#editing_tool">Editing Tool</a>.
+</p>
+
+<p>
+To add new points to the display, use the "Add Points" mode found
+under the Cursor Mode tab in the <a href="#editing_tool">Editing
+Tool</a>. Select or enter the class to use for creating points each
+time you click in the Plotter display.  To "draw" points along a
+trajectory, hold the mouse down and draw the shape.  New points will
+be added at the pixel distance indicated by the spin button controller
+in the Add Points line.
+</p>
+
+<p>
+To edit slot value(s) in the selected points, double-click the
+selection to open an Edit Object window. If the selection contains
+only a single point then all the object's slot values will be visible
+in the slot value buffers. To change a slot's value, click inside its
+associated edit buffer, type the new value and press return. If the
+current selection contains multiple points no slot values will be
+displayed in the edit buffers but typing a value and pressing
+return will set that value in <em>every</em> selected object.
+</p>
+
+
+<h2>The Menubar</h2>
+<p>
+Not yet written.
+</p>
+
+<h2>Tool Windows</h2>
+
+<p>
+<em>Tool</em> windows facilitate working with the plotter display in
+some way.  Tools belong to the plotter they affect and are
+automatically closed when the plotter window itself is closed. Only
+one tool window of each type is open at any one time.  Tools perform
+actions <em>immediately</em>, that is, there are no annoying OK,
+Cancel or Revert buttons to protect you from messing up your data.
+</p>
+
+<h3 id="editing_tool">Editing Tool</h3>
+<p>
+The Editing Tool facilitates editing and point selection in the
+plotter window.  The tool currently contains three tabbed displays:
+Cursor Mode, Selecting, and Mouse Control.
+</p>
+<dl>
+<dt>Cursor Mode</dt>
+<dd>
+Selects between four possible editing modes: Select Points, Select
+Regions, Add Points and Delete Points. Each mode is indicated by an
+appropriate cursor in the Plotter display.
+</dd>
+
+<dt>Selecting</dt>
+<dd>
+Select points by evaluating expressions. There are two different ways
+to select by expression, both methods are activated by pressing the
+Return key when the cursor is inside a constituent expression
+field. <em>Positional selection</em> selects points according to their
+ordinal position in the data set. A lower bound, upper bound and
+increment may be specified. Use the increment to select only those
+points that lie at multiples of the increment between the starting and
+ending indices. <em>Conditional selection</em> selects points by
+mapping all data and selecting only those points for which the
+conditional slot clause(s) you specify return true.  If more than one
+clause is specified they are AND'ed together.
+</dd>
+
+<dt>Mouse Controls</dt>
+<dd>
+Allows various aspects of mouse behavior to be controlled. Activate
+"Connstrain motion" to restrict mouse movement to the specified
+dimension (horizontal or vertical) as selections are made, point
+selections are moved, or new points are added. Activate "Draw mouse
+guide" to display cross-hairs when the mouse moves (not yet
+implemented).  Activate "Set 'Add Points' hook" to specify a function
+to called on each new point whenever adding is triggered by a mouse
+click the display. The hook function should return a point or a list
+of point to add or false to stop any point from being added (not yet
+implemented).
+</dd>
+</dl>
+
+<h3>Zooming Tool</h3> 
+
+<p>
+The Zooming Tool the aspect ratio of the display along its horizontal
+and/or vertical axes to be controlled. Zooming factors apply to all
+layers in the display. The tool also lets the <em>zooming policy</em>
+to be set, i.e. what parts of the display are affected by zooming. By
+default, point sizes are affected and lines sizes are not. Zooming
+without affecting either lines or points allows the distances between
+points to be recalibrated without changing the actual size of the
+points in the display.
+</p>
+
+<h3>Coloring Tool</h3>
+<p>
+The coloring tool allows he color of the front-most layer to be changed.
+</p>
+
+
+
+<h3>Sizing Tool</h3>
+<p>
+The sizing tool allows the <em>basic size</em> of points and lines to
+be controlled. The basic size is the line or point size at zoom factor
+1.
+</p>
+
+<h2 id="examples">Examples</h2>
+
+<div class="float" id="example1">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Three layers in the
+default <span class="keyword">:line-and-point</span> view at half
+zoom.
+</p>
+<pre class="code">
+(<a href="plotter-fn.html">plotter</a> <span class="keyword">:zoom</span> .5
+         (<span class="special">loop</span> for x from 0 to 1 by .2
+               for y = (random 1.0)
+               collect x collect y)
+         (<span class="special">loop</span> for x from 0 to 1 by 1/10
+               for y from 0 to 1 by 1/10
+               collect x collect y)
+         (<span class="special">loop</span> for x from 0 to 1 by .25
+               for y = (expt 10 (- x))
+               collect x collect y))
+</pre>
+<p>
+<img src="plotter1.png" alt="[plotter1.png]"/>
+</p>
+</div>
+
+<div class="float" id="example2">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Plotting a random
+distribution with its histogram using <span class="keyword">:point</span> and <span class="keyword">:bar</span>.
+</p>
+<pre class="code">
+(<span class="special">let*</span> ((maxh 0)
+       (hist (make-list 100 <span class="keyword">:initial-element</span> 0))
+       (rans (<span class="special">loop</span> for x from 0 below 100
+                   for y = (floor (+ (random 100)
+                                     (random 100) )
+                                  2)
+                   collect x collect y
+                   do (incf (elt hist y))
+                   (setf maxh (max (elt hist y) maxh))))
+       (bars (<span class="special">loop</span> for y in hist for x from 0
+                   when (> y 0) collect x
+                   and collect (* (/ y maxh) 100))))
+  (<a href="plotter-fn.html">plotter</a> :title <span class="string">"Mean distribution and histogram"</span>
+           <span class="keyword">:x-axis</span> (<a href="axis-fn.html">axis</a> <span class="keyword">:percentage</span>)
+           <span class="keyword">:y-axis</span> (<a href="axis-fn.html">axis</a> <span class="keyword">:percentage</span>)
+           <span class="keyword">:view</span> '(<span class="keyword">:point</span> <span class="keyword">:bar</span>)
+           <span class="keyword">:color</span> '(<span class="string">"plum4"</span> <span class="string">"dark red"</span>)
+           <span class="keyword">:point-size</span> 6
+           rans
+           bars))
+</pre>
+<p>
+<img src="plotter2.png" alt="[plotter2.png]"/>
+</p>
+
+</div>
+
+<div class="float" id="example3">
+<p class="captxt">
+<span class="floatlabel">Example 3.</span> Defining new axis prototypes and <span class="keyword">:line</span> and <span class="keyword">:bar-and-point</span> views.
+</p>
+<pre class="code">(<a href="defaxis-mac.html">defaxis</a> <span class="keyword">:unit</span> ()
+  <span class="keyword">:minimum</span> -1 <span class="keyword">:maximum</span> 1
+  <span class="keyword">:increment</span> 1/2
+  <span class="keyword">:labeler</span> <span class="string">"~,2F"</span>
+  <span class="keyword">:ticks-per-increment</span> 2)
+
+(<a href="defaxis-mac.html">defaxis</a> <span class="keyword">:radians</span> ()
+  <span class="keyword">:minimum</span> 0 <span class="keyword">:maximum</span> (* pi 2)
+  <span class="keyword">:increment</span> (/ pi 2)
+  <span class="keyword">:ticks-per-increment</span> 2
+  <span class="keyword">:labeler</span> (<span class="special">lambda</span> (x)
+             (format nil <span class="string">"~Spi"</span> (rationalize (/ x pi)))))
+
+(<a href="plotter-fn.html">plotter</a> <span class="keyword">:y-axis</span> (<a href="axis-fn.html">axis</a> <span class="keyword">:unit</span> <span class="keyword">:slot</span> 'y)
+         <span class="keyword">:x-axis</span> (<a href="axis-fn.html">axis</a> <span class="keyword">:radians</span> <span class="keyword">:slot</span> 'x)
+         <span class="keyword">:point-size</span> 5
+         <span class="keyword">:view</span> '(<span class="keyword">:line</span> <span class="keyword">:bar-and-point</span>)
+         (<span class="special">loop</span> for x from 0 to 1 by 1/100
+               for r = (* 2 pi x)
+               collect r collect (sin r))
+         (<span class="special">loop</span> for x from 0 to 1 by 1/20
+               for r = (* 2 pi x)
+               collect r collect (sin r)))
+</pre>
+<p>
+<img src="plotter3.png" alt="[plotter3.png]"/>
+</p>
+</div>
+
+<div class="float" id="example4">
+<p class="captxt">
+<span class="floatlabel">Example 4.</span> Plotting linear amplitude
+vs. log frequency.
+</p>
+<pre class="code">
+(<span class="special">let</span> ((fund 110)
+      (harms 16))
+  (<a href="plotter-fn.html">plotter</a> <span class="keyword">:x-axis</span> (<a href="axis-fn.html">axis</a> <span class="keyword">:hertz</span> <span class="keyword">:slot</span> 'x
+                         <span class="keyword">:minimum</span> fund
+                         <span class="keyword">:maximum</span> (* fund harms))
+           <span class="keyword">:y-axis</span> (<a href="axis-fn.html">axis</a> <span class="keyword">:normalized</span> <span class="keyword">:slot</span> 'y)
+           <span class="keyword">:color</span> "dark violet"
+           <span class="keyword">:view</span> '<span class="keyword">:bar-and-point</span>
+           <span class="keyword">:point-size</span> 5
+           (<span class="special">loop</span> for h from 1 to harms
+                 collect (* fund h)
+                 collect (/ 1 h))))
+</pre>
+<p>
+<img src="plotter4.png" alt="[plotter4.png]"/>
+</p>
+</div>
+
+
+<div class="float" id="example5">
+<p class="captxt">
+<span class="floatlabel">Example 5.</span>  Sequencing micro-tonal MIDI
+data using the <span class="keyword">:box</span> view.  Musical
+example by Michael Klingbeil taken from Chapter 10 of
+<a href="http://www.thomsonpublishingservices.co.uk/catalog/info.asp?isbn=9026519753">Notes from the Metalevel</a>.
+</p>
+<pre class="code">(<span class="special">defparameter</span> ct9 '(t 0 8)) <span class="comment">; micro-tuning in 1st 9 channels</span>
+
+(<span class="special">defun</span> <span class="defined">arpeggiate-exprhy</span> (keynums time rate midpoint-frac
+                                  amplow amphi legato bass-legato
+                                  bass-cutoff last-legato)
+  (<span class="special">let*</span> ((segs (length keynums))
+         (last (1- segs))
+         (midpoint (floor (* segs midpoint-frac)))
+         <span class="comment">;; deltas below midpoint follow one curve, above another.</span>
+         (deltas (append (<a href="explsegs-fn.html">explsegs</a> midpoint (* midpoint-frac time) 
+                                   rate)
+                         (<a href="explsegs-fn.html">explsegs</a> (- segs midpoint)
+                                   (* (- 1 midpoint-frac) time)
+                                   (/ 1 rate)))))
+    (<a href="process-mac.html">process</a> for i from 0
+             for k in keynums
+             for d in deltas
+             for r = (<span class="special">if</span> (&lt; k bass-cutoff)
+                       bass-legato
+                       (<span class="special">if</span> (= i last)
+                         (* last-legato d)
+                         (* legato d)))
+             for a = (<a href="between-fn.html">between</a> 0.45 0.5)
+             then (<a href="drunk-fn.html">drunk</a> a 0.1 <span class="keyword">:low</span> amplow <span class="keyword">:high</span> amphi )
+             output (<a href="new-mac.html">new</a> midi <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                         <span class="keyword">:keynum</span> k 
+                         <span class="keyword">:amplitude</span> a
+                         <span class="keyword">:duration</span> r)
+             wait d)))
+
+(<span class="special">defun</span> <span class="defined">distort-harmonics</span> (fund distort)
+  (<span class="special">loop</span> for h from 1 below (floor (/ 25.0 distort)) 
+        if (<a href="odds-fn.html">odds</a> (* 0.9 distort))
+        collect (<a href="keynum-fn.html">keynum</a> (* fund (expt h distort))
+                        <span class="keyword">:hz</span> t)))
+
+(<span class="special">defun</span> <span class="defined">arpa-harmonic</span> (note dur gap)
+  <span class="comment">;; spawn overlapping arpeggios with mean duration of dur and mean
+  ;; gap between arpeggio starts of gap seconds. each arpeggio is
+  ;; upward with the general direction of arpeggio starting notes
+  ;; moving downward</span>
+  (<a href="process-mac.html">process</a> with fund = (<a href="hertz-fn.html">hertz</a> note)
+           for distort from 0.7 below 1.05 by 0.05
+           for notes = (distort-harmonics fund distort)
+           sprout
+           (arpeggiate-exprhy notes
+                              (* (<a href="vary-fn.html">vary</a> dur 0.1) distort)
+                              (<a href="between-fn.html">between</a> 4.0 0.25)
+                              (<a href="between-fn.html">between</a> 0.3 0.6)
+                              0.3  <span class="comment">; amplow</span>
+                              0.8  <span class="comment">; amphi</span>
+                              <span class="comment">; bass-legato </span>
+                              (* dur distort 0.7)
+                              2.0   <span class="comment">; legato </span>
+                              59    <span class="comment">; bass cutoff</span>
+                              1.0)  <span class="comment">; last-legato</span>
+           wait (<a href="vary-fn.html">vary</a> gap 0.4)))
+
+
+(<span class="special">defparameter</span> <span class="defined">pw</span>
+  (<a href="plotter-fn.html">plotter</a> <span class="keyword">:x-axis</span> (<a href="axis-fn.html">axis</a> <span class="keyword">:seconds</span> <span class="keyword">:maximum</span> 60
+                         <span class="keyword">:labeler</span> (<span class="special">lambda</span> (x)
+                                    (prin1-to-string (floor x)))
+                         <span class="keyword">:slot</span> '(time duration))
+           <span class="keyword">:y-axis</span> (<a href="axis-fn.html">axis</a> <span class="keyword">:keynum</span> <span class="keyword">:minimum</span> 24 <span class="keyword">:maximum</span> 96
+                         <span class="keyword">:pixels-per-increment</span> 96
+                         <span class="keyword">:labeler</span> (<span class="special">lambda</span> (x)
+                                    (format nil "~A" (<a href="note-fn.html">note</a> x)))
+                         :slot 'keynum)
+           <span class="keyword">:view</span> '<span class="keyword">:box</span> 
+           <span class="keyword">:point-height</span> 6
+           (<a href="events-fn.html">events</a> (arpa-harmonic 'g1 7.0 5.0) 
+                   (<a href="new-mac.html">new</a> <a href="seq-cls.html">seq</a>))
+           (<a href="events-fn.html">events</a> (arpa-harmonic 'g1 7.0 5.0) 
+                   (<a href="new-mac.html">new</a> <a href="seq-cls.html">seq</a>))))
+
+(<a href="events-fn.html">events</a> (<a href="plotter-data-fn.html">plotter-data</a> pw) "arpa.mid" <span class="keyword">:channel-tuning</span> ct9)
+</pre>
+<p>
+<img src="plotter5.png" alt="[plotter5.png]"/>
+</p>
+
+<p>
+<span style="font-size:large"><span style="color:red;">&rarr;</span> <a href="arpa.mid">arpa.mid</a></span>
+</p>
+</div>
+
+
+<h2>Supported Environments</h2>
+
+<p>
+See the documentation on <a href="../install.html#configure_plotter">Configuring Plotter</a> for the list of supported Lisp environments and pre-installation instructions.
+</p>
+
+
+
+
+<h2>Lacun&aelig; and Bugs</h2>
+
+<p>
+Plotter currently supports basic display, selection and editing
+commands but many important features remain to be designed and
+implemented, particularly those related to sequence editing. I would
+welcome ideas for new features, opinions on how to improve existing
+features, and code contributions.
+</p>
+
+<p>
+The next round of implementation will try to address the following
+missing features:
+</p>
+
+<ul>
+<li>Tabbed selection for switching between multiple (alternate)
+displays, and tabbed layer selection within a single display</li>
+<li>Load/save, import/export, computing new layers from
+algorithms</li>
+<li>Playback and sound io (audio and midi) in general. For example a
+"transport" tool could be developed to facilitate outputting real-time
+to MidiShare.</li>
+<li>New display types (Notation, Listing, etc.)</li>
+<li>Copy/Paste in/to/from plotter windows</li> 
+<li>Lots of sequencing commands</li>
+</ul>
+
+All known X11 issues under Darwin have been fixed, but only by
+calling <code>gtk-main</code> explicitly when a plotter window is
+open. The most important side-effect of this is that the Lisp Listener
+is now unavailable for input while a Plotter window is open. I hope to
+have an answer for this at some point. I do plan to provide an
+"Edit>Eval" item so that Lisp expressions can be evaled even if the
+Listener is blocked.
+
+
+<h3 id="bugs">Open Problems</h3> 
+
+<ul>
+
+<li>
+Display during scrolling under Linux/X11 is choppy. I'm not sure why
+this happens, and it does not occur on Darwin/X11. Maybe the solution
+is to get a Mac :).
+</li>
+
+<li>
+The selected graphing style in the View menu does not automatically
+reset when a new layer is selected from the View>Layer sub-menu.
+</li>
+
+</ul>
+
+
+<!-- Content -->
+</div>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.3 $, $Date: 2005/02/13 02:17:47 $)</div>
+</div>
+</body>
+</html>

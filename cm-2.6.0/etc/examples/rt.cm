@@ -1,0 +1,366 @@
+;;; **********************************************************************
+;;; Real time examples using Midishare/OSX with zero optimization.
+;;; Just for fun we use a max-ish forward chaining system based on
+;;; 'boxes' (see objects.scm). The examples here are shown in Common
+;;; Lisp but the box implementation (and the first 10 examples or so)
+;;; should work in any Scheme or CLTL.  A 'box' is just a function
+;;; that performs forward chaining. You create a box by passing a
+;;; function to the 'box' constructor. The function 'box->' sets
+;;; 'outboxes' (forward chaining targets) for a specified box, and
+;;; 'bang!' triggers forward chaining, optionally setting box funargs
+;;; first. See the comments in object.scm for more info.
+
+;;; if you are in Guile eval these before testing the examples:
+;;; (defmacro defparameter (a b) `(define ,a ,b))
+;;; (define evenp even?)
+
+(defparameter plus (box #'+))       ; define an adder
+(defparameter prin (box #'print))   ; define a printer
+(box-> plus prin)                   ; plus sends to prin
+(bang! plus 1 2 3 4 5)              ; bang + with args 1 2 3 4 5
+(bang! plus)                        ; bang w/out updating args
+
+;;;
+;;; a box can work with any type of function.  this example uses a
+;;; named function (print), an anonymous lambda and an anonymous
+;;; closure around the lexical variable i:
+
+(defparameter prin (box #'print))
+(defparameter anon (box (lambda () (list :anon (random 1000)))))
+(defparameter clos (box (let ((i 0)) 
+                          #'(lambda () (list :clos (incf i))))))
+(box-> anon prin)
+(box-> clos prin)
+(loop repeat 10
+   do (bang! anon)
+     (bang! clos))
+
+;;;
+;;; a box can pass any number of values (including none) to any number
+;;; of outboxes (including none)
+
+(defparameter data (box (lambda () (values 1 2 (random 1000) 4 5))))
+(defparameter hiho (box (lambda (a b c d e) (list :hiho! a b c d e))))
+(defparameter prin (box #'print))
+(box-> data hiho)
+(box-> hiho prin prin prin)
+(loop repeat 5 do (bang! data))
+
+;;;
+;;; the :stop! flag halts propagation from a box from happening.
+;;; in this example only even random numbers are passed through
+;;; to the prin box.
+
+(defparameter rani (box (lambda () (random 100))))
+(defparameter even (box (lambda (x) (if (evenp x) x :stop!))))
+(defparameter prin (box #'print))
+(box-> rani even)
+(box-> even prin)
+(loop repeat 10 do (bang! rani))
+
+;;;
+;;; the :send! flag sends values to outboxes WITHOUT banging:
+
+(defparameter vals (box (lambda () (values :send! 'a (random 1000) 3))))
+(defparameter adds (box #'list))
+(defparameter prin (box #'print))
+(box-> vals adds)
+(box-> adds prin)
+(bang! vals)       ; vals sets outbox args w/out bang
+(bang! adds)       ; last value cached by vals is printed
+
+;;; 
+;;; you can create cyclic networks that "feedback" to parent
+;;; nodes. be careful...
+
+(defparameter topb (box (lambda (i) i)))
+(defparameter incr (box (lambda (i) (+ i 1))))
+(defparameter prin (box (lambda (i) 
+                          (print i)
+                          (values :send! i))))
+(box-> topb incr)
+(box-> incr prin)
+(box-> prin topb)  ; cyclic network, dont try to print box!!
+(bang! topb 0)     ; start iteration at some value
+(bang! topb)       ; count upward until topb is reset.
+
+;;;
+;;; bret's lehmer pattern is another feedback net:
+;;; LEHMER: x(t+1) = [(x(t) * A) + B] wrap (MIN MAX)
+
+(defparameter lehmer
+  ;; could have a box control each arg of course...
+  (box (lambda (x a b lo hi)
+         (fit (+ (* x a) b) lo hi :wrap))))
+
+(defparameter feedbk
+  ;; sets arg[0] in outbox but does not bang it
+  (box (lambda (x) (values :send! :argn 0 x))))
+
+(defparameter showme (box #'print))
+
+(box-> lehmer showme feedbk)
+(box-> feedbk lehmer)
+
+;; init lehmer:  x(t-1)  A    B    min  max
+(boxargs lehmer '(0.9    1.1  0.5  0.0  1.0))
+;; show some
+(dotimes (i 20) (bang! lehmer))
+
+
+
+
+
+;;;
+;;; both :bang! and :send! allow specific forward args to be set using
+;;; the :argn flag, which treats successor values as {argn value}
+;;; pairs.
+
+(defparameter vals (box (lambda () (values (random 10)
+                                           (random 100)
+                                           (random 1000)))))
+(defparameter arg2 (box (lambda () 
+                          ;; bangs with outlet arg[1] = :hiho!
+                          (values :bang! :argn 1 ':hiho!))))
+(defparameter prin (box (lambda (a b c)
+                          (print  (list a b c)))))
+(box-> vals prin)
+(box-> arg2 prin)
+(loop repeat 5
+     do
+     (bang! vals)
+     (bang! arg2))
+
+;;;
+;;; here's one way to iterate, i'm sure there are cleverer ways...
+
+(defparameter iter (box (lambda (n box)
+                          (dotimes (i n) (bang! box))
+                          :stop!)))
+(defparameter rani (box (lambda () (random 1000))))
+(defparameter prin (box #'print))
+(box-> rani prin)
+(bang! iter 10 rani)
+
+;;;
+;;; ok, enough fun with boxes. lets make some sound.
+;;; we start with a 'midi through':
+
+(defparameter midiin (box (lambda (e) e)))
+(defparameter midiout (box (lambda (e) (output e))))
+(box-> midiin midiout)
+
+(if (not (midi-open?)) (midi-open))
+(receive (lambda (e) (bang! midiin e)))  ; set our input hook
+;;; play some notes...then stop receiving:
+(receive )
+
+;;
+;;; we can "parse" incoming MIDI evs into data lists (or whatever):
+
+(defparameter midiin (box (lambda (e) e)))
+(defparameter midiout (box (lambda (e) (output e))))
+(defparameter info (box (lambda (e)
+                          (if (= (ms:evType e) 1) ; note on
+                            (list (ms:port e)
+                                  (ms:chan e)
+                                  (ms:date e)
+                                  (ms:pitch e)
+                                  (ms:vel e))
+                            :stop!))))
+(defparameter prin (box #'print))
+
+(box-> midiin info midiout)
+(box-> info prin)
+(receive (lambda (e) (bang! midiin e)))
+(receive)
+
+;;;
+;;; a network that transposes midi evs by random amounts:
+;;; midiin only passes On or Off evs forward.
+;;; midiout sends evs out.
+;;; tran transposes ev by an interval i.
+;;; arg0 sets arg[0] of its outbox and bangs.
+;;; int1 sets arg[1] of its outbox without bang.
+
+(defparameter midiin
+  (box (lambda (e)
+         (if (member (ms:evType e) '( 0 1))
+           e :stop!))))
+
+(defparameter midiout (box (lambda (ev) (output ev))))
+
+(defparameter arg0
+  (box (lambda (e) (values :bang! :argn 0 e))))
+
+(defparameter int1
+  ;; set arg[1] of outbox with new interval
+  (box (lambda ()
+         (values :send! :argn 1 (pick -12 12 -13 13)))))
+
+(defparameter tran
+  (box (lambda (ev i)
+         (let ((n (ms:midiCopyEv ev)))
+           (ms:pitch n (+ i (ms:pitch n)))
+           n))))
+
+(box-> midiin arg0 midiout)
+(box-> arg0 tran)
+(box-> tran midiout)
+(box-> int1 tran)
+(boxargs tran '(nil 0))  ; initialize tran with args (nil 0)
+
+(receive (lambda (e) (bang! midiin e)))
+;; alternate playing notes and banging int1
+(bang! int1)   ; bang this to set a new transp.
+(receive )     ; stop receivomg
+
+;;; We can create musical processes (functions) on the fly and send
+;;; them through the network to be sprouted. In this example our
+;;; midiin passes ons and offs to midiout and to info, which strips
+;;; NoteOns into keynum and velocity args, which are then passed on to
+;;; muse. muse either sprouts a musical process or not, as it sees
+;;; fit.
+
+(defparameter midiin
+  (box (lambda (e)
+         (if (member (ms:evType e) '( 0 1))
+           e :stop!))))
+
+(defparameter midiout
+  (box (lambda (ev)
+         (if (functionp ev)
+           (sprout ev)
+           (output ev)))))
+
+(defparameter info
+  (box (lambda (ev) 
+         (if (= (ms:evType ev) 1)
+           (values (ms:pitch ev)
+                   (ms:vel ev))
+           ':stop!))))
+
+(defparameter muse
+  (box (lambda (knum vel)
+         (if (odds .25)
+           :stop!
+           (process with pat = (new heap :of '(0 -1 1 -2 2 -3 3))
+                    for i below 20
+                    for k = (next pat)
+                    output
+                    (ms:new typeNote
+                      :keynum (+ knum k)
+                      :velocity (round (interp i 0 vel 19 30))
+                      :duration 100)
+                    wait 100)))))
+
+(box-> midiin midiout info)
+(box-> info muse)
+(box-> muse midiout)
+
+(if (not (midi-open?)) (midi-open))
+(receive (lambda (e) (bang! midiin e)))                  
+(receive )
+
+;;;
+;;; This example uses fm-spectrum to sprout an FM harmonization of
+;;; "carrier" input notes. The louder you play the more fm index, the
+;;; larger/compex the set. the mrat box lets you set the mratio,
+;;; initially 1.
+
+(defparameter spec 
+  ;; returs a spectum of midiEvs with kenums rounded to nearest legal
+  ;; midi keynum in fm spectrum.  would be better to send out pitch
+  ;; bends...
+  (box (lambda (key vel mrat )
+         (loop for i in (fm-spectrum (hertz key)
+                                     mrat
+                                     (rescale vel 0 127 0 10)
+                                     :keynum
+                                     :ignore-zero t
+                                     :amplitudes nil)
+            for k = (round i)
+            if (<= 0 k 127)
+            collect (ms:new typeNote
+                      :keynum k
+                      :velocity vel
+                      :duration 500)))))
+             
+(defparameter info
+  ;; bang spec with 1st and second arg updated
+  (box (lambda (e)
+         (if (= (ms:evType e) 1)
+           (values :bang!
+                   :argn 0 (ms:pitch e) 1 (ms:vel e))
+           :stop!))))
+
+(defparameter mrat
+  ;; update spec's 3rd arg with new mratio
+  (box (lambda (r) (values :send! :argn 2 r))))
+
+(defparameter midiin (box (lambda (e) e)))
+
+(defparameter midiout
+  ;; send single event or map lists of events
+  ;; and arpeggiate
+  (box (lambda (e)
+         (if (list? e)
+           (loop for ee in e
+                for i from 0 by 100
+                do (output ee i))
+           (output e)))))
+
+(box-> midiin info)
+(box-> info spec)
+(box-> mrat spec)    ; mratio  updater
+(box-> spec midiout)
+(boxargs spec '(60 60 1)) ; initialize
+(bang! mrat 1)            ; set spec's mratio to 1
+(receive (lambda (e) (bang! midiin e)))
+;;; play some soft/louder notes in middle register, then...
+(bang! mrat pi)  ; set inharmonic ratio and play some more...
+(receive)        ; stop
+
+;;;
+;;; now make keydowns play lehmer
+;;;
+
+(defparameter lehmer (box (lambda (x a b lo hi)
+                            (fit (+ (* x a) b) lo hi :wrap))))
+(defparameter feedbk
+  (box (lambda (x) (values :send! :argn 0 x))))
+(defparameter A
+  (box (lambda (a) (values :send! :argn 1 a))))
+(defparameter B
+  (box (lambda (b) (values :send! :argn 2 b))))
+(defparameter bangon
+  ;; pass bang on only for true keydowns
+  (box (lambda (e) 
+         (if (and (= (ms:evType e) 1)
+                  (> (ms:vel e) 0))
+           :bang!
+           :stop!))))
+(defparameter playit
+  ;; rescale x lehmer melody
+  ;; could make rescale params into boxes too...
+  (box (lambda (x)
+         (ms:new typeNote :duration 500
+                 :keynum (round (rescale x 0.0 1.0 20 100))
+                 :velocity 60))))
+(defparameter midiin (box (lambda (e) e)))
+(defparameter midiout (box (lambda (e) (output e))))
+
+(box-> midiin bangon)
+(box-> bangon lehmer)
+(box-> lehmer playit feedbk)
+(box-> feedbk lehmer)
+(box-> A lehmer)
+(box-> B lehmer)
+(box-> playit midiout)
+(boxargs lehmer '(0.9    1.1  0.5  0.0  1.0))
+
+(if (not (midi-open?)) (midi-open))
+(receive (lambda (e) (bang! midiin e)))
+;;; have some fun, then stop...
+(receive ) 
+

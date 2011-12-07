@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>chord</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">chord</code></dd>
+</dl>
+
+<p>
+A specialized pattern that returns sub-pattern periods as lists of
+chord elements. 
+</p>
+
+<p>
+See <a href="patterns-topic.html#pattern_inits">generic pattern
+initializations</a> for documentation on additional keyword
+initializations to the pattern.
+</p>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Cycle of randomized chords.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">pat1</span>
+  (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> 
+       <span class="keyword">:of</span> (list (<a href="new-mac.html">new</a> chord 
+                      <span class="keyword">:of</span> (<a href="new-mac.html">new</a> <a href="heap-cls.html">heap</a> <span class="keyword">:notes</span> '(c5 d ef f g af bf c6) 
+                               <span class="keyword">:for</span> (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:of</span> '(4 5))))
+                 (<a href="new-mac.html">new</a> chord
+                      <span class="keyword">:of</span> (<a href="new-mac.html">new</a> <a href="heap-cls.html">heap</a> <span class="keyword">:notes</span> '(c4 d ef f g af bf c5) 
+                               <span class="keyword">:for</span> (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:of</span> '(4 5))))
+                 (<a href="new-mac.html">new</a> chord
+                      <span class="keyword">:of</span> (<a href="new-mac.html">new</a> <a href="heap-cls.html">heap</a> <span class="keyword">:notes</span> '(c3 d ef f g af bf c) 
+                               <span class="keyword">:for</span> (<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:of</span> '(4 5)))))))
+
+(<span class="special">define</span> (<span class="defined">play-pat</span> reps pat amp tempo)
+  (<span class="special">let</span> ((rhy (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:of</span> '(e e e s))))
+    (<a href="process-mac.html">process</a> repeat reps
+             for r = (<a href="rhythm-fn.html">rhythm</a> (<a href="next-fn.html">next</a> rhy) tempo)
+             each k in (<a href="next-fn.html">next</a> pat)
+             output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                         <span class="keyword">:keynum</span> k
+                         <span class="keyword">:amplitude</span> amp
+                         <span class="keyword">:duration</span> (* r .75))
+             wait r)))
+
+(<a href="events-fn.html">events</a> (play-pat 40 pat1 .8 120) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+
+
+<h4>See also:</h4>
+<ul>
+<li><a href="patterns-topic.html#pattern_classes">Pattern classes</a> [Topic]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.3 $, $Date: 2005/03/18 14:33:22 $)</div>
+</div>
+</body>
+</html>
+
+

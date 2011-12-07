@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>doeach</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "doeach" -->
+<dl class="dictsyntax">
+<dt>[Macro]</dt>
+<dd><span class="syntax">(<code class="entry">doeach</code> (<var>var</var> <var>data</var>) {<var>forms</var>}*)</span></dd>
+</dl>
+
+
+<p>
+If <var>data</var> is a list <kbd>doeach</kbd> iterates over the
+list and evaluates <var>forms</var> with <var>var</var> to successive elements from the list.
+If <var>data</var> is not a list then <var>forms</var> are evaluated with <var>var</var> bound to
+the <var>data</var> itself.
+<kbd>doeach</kbd> is useful for processing both lists and non-lists alike, for example, 
+to output pattern data that contains both <a href="chord-cls.html">chords</a> and single notes.
+</p>
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="output-fn.html"><kbd>output</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="sprout-fn.html"><kbd>sprout</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2003/07/07 21:27:41 $)</div>
+</div>
+</body>
+</html>
+
+

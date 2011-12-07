@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>note</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "note" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><span class="syntax"> 
+<dd><code>(</code><code class="entry">note</code> <var>freq</var> {<var>keyword</var> <var>value</var>}*<code>)</code></dd>
+</dl>
+
+<p>
+Returns the note name of <var>freq</var>, which can be a note name,
+key number, Hertz value or list of the same.
+
+<p>
+<code class="entry">note</code> supports the following keyword arguments:
+</p>
+
+<dl>
+<dt><code class="keyword">:hz</code> <var>boolean</var></dt>
+<dd>
+If <var>true</var> then a numerical <var>freq</var> is interpreted as
+a Hertz value rather than as a key number.
+</dd>
+
+<dt><code class="keyword">:in</code> {<a href="tuning-cls.html"> <var>tuning</var></a> | <a href="mode-cls.html"> <var>mode</var></a>}</dt>
+<dd>
+The tuning or mode to return the note from. The default value is
+ <a href="scale-var.html"><code>*scale*</code></a>.  If a mode is
+specified then <var>freq</var> must be a modal key number.
+</dd>
+
+<dt><code class="keyword">:in?</code> {<a
+href="tuning-cls.html"> <var>tuning</var></a> | <a
+href="mode-cls.html"> <var>mode</var></a>}</dt>
+<dd>
+Tests if <var>freq</var> references a note name in the specified tuning
+or mode. Returns the note name or <var>false</var>.  
+</dd>
+
+<dt><code class="keyword">:through</code> <a href="mode-cls.html"><var>mode</var></a></dt>
+<dd>
+Filters <var>freq</var> through <var>mode</var> and returns the closest note.
+</dd>
+</dl>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Converting key numbers and Hertz values to notes.
+</p>
+<pre class="code">
+(note 440 <span class="keyword">:hz</span> #t)
+<span class="result">&rArr;</span> a4
+(note 60)
+<span class="result">&rArr;</span> c4
+(note '(c4 d e1 f g5 ef f))
+<span class="result">&rArr;</span> (c4 d4 e1 f1 g5 ef5 f5)
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Modes and notes.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">octatonic</span> (<a href="new-mac.html">new</a> <a href="mode-cls.html">mode</a> <span class="keyword">:notes</span> '(c d ef f fs gs a b c)))
+
+(note 'cs4 <span class="keyword">:in?</span> octatonic)
+<span class="result">&rArr;</span> #f
+(note 'ef4 <span class="keyword">:in?</span> octatonic)
+<span class="result">&rArr;</span> ef4
+(<span class="special">loop</span> for k from 35 repeat 8 collect (note k <span class="keyword">:in</span> octatonic))
+<span class="result">&rArr;</span> (c4 d4 ef4 f4 g4 af4 bf4 c5)
+(<span class="special">loop</span> repeat 10 for n = (<a href="between-fn.html">between</a> 60 72) 
+      collect (note n <span class="keyword">:through</span> octatonic))
+<span class="result">&rArr;</span> (af4 f4 d4 af4 c4 c4 af4 c4 bf4 c4)
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="hertz-fn.html"><code>hertz</code></a> [Function]</li>
+<li><a href="invert-fn.html"><code>invert</code></a> [Function]</li>
+<li><a href="keynum-fn.html"><code>keynum</code></a> [Function]</li>
+<li><a href="note-accidental-fn.html"><code>note-accidental</code></a> [Function]</li>
+<li><a href="note-name-fn.html"><code>note-name</code></a> [Function]</li>
+<li><a href="octave-number-fn.html"><code>octave-number</code></a> [Function]</li>
+<li><a href="pitch-class-fn.html"><code>pitch-class</code></a> [Function]</li>
+<li><a href="prime-form-fn.html"><code>prime-form</code></a> [Function]</li>
+<li><a href="scale-max-fn.html"><code>scale-max</code></a> [Function]</li>
+<li><a href="scale-min-fn.html"><code>scale-min</code></a> [Function]</li>
+<li><a href="scale-mod-fn.html"><code>scale-mod</code></a> [Function]</li>
+<li><a href="scale-order-fn.html"><code>scale-order</code></a> [Function]</li>
+<li><a href="scalelt-fn.html"><code>scale&lt;</code></a> [Function]</li>
+<li><a href="scalelteql-fn.html"><code>scale&lt;=</code></a> [Function]</li>
+<li><a href="scaleeql-fn.html"><code>scale=</code></a> [Function]</li>
+<li><a href="scalegt-fn.html"><code>scale&gt;</code></a> [Function]</li>
+<li><a href="scalegteql-fn.html"><code>scale&gt;=</code></a> [Function]</li>
+<li><a href="transpose-fn.html"><code>transpose</code></a> [Function]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.7 $, $Date: 2005/02/13 16:16:21 $)</div>
+</div>
+</body>
+</html>
+
+

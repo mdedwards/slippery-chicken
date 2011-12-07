@@ -1,0 +1,55 @@
+This is the README for Common Music (CM). Common Music is released
+under the GNU Software License.  See  the file doc/gpl.text for the
+terms of this agreement. 
+
+The project home for Common Music is at:
+  http://www.sourceforge.net/projects/commonmusic
+
+Documentation for the system is located in the doc/ directory: 
+  o Installation instructions are in doc/install.html
+  o The Common Music dictionary is in doc/dict/index.html. 
+  o The home page is in doc/cm.html
+
+The system has been tested in the following OS/Lisp configurations:
+
+                         core .sco .mid .cmn .clm .aiff midishare
+  Linux:
+    ACL 5.0 (beta)         x    x    x    x    x    x
+    Clisp 2.31             x    x    x    x    x    x
+    CMUCL 18e              x    x    x    x    x    x    x
+    Guile 1.6.0            x    x    x
+  OS X:
+    ACL 6.2trial           x    x    x
+    Clisp 2.31             x    x    x    x    x    x
+    Guile 1.6.0            x    x    x  
+    MCL 5.0                x    x    x    x    x    
+    OpenMCL 0.13, 0.14     x    x    x    x    x    x    x 
+  FreeBSD:
+    Clisp 2.31             x    x    x    x    x
+    CMUCL 18e              x    x    x    x    x
+    Guile 1.6.4            x    x    x
+  Windows 2000:
+    ACL 501                x    x    x    x    x
+    Clisp 2.31             x    x    x    x    x
+  Windows/Cygwin:
+    Clisp 2.31             x    x    x    x    x
+    Guile 1.6.0            x    x    x    x    x
+  MacOS (9.2)
+    MCL 4.2, 4.3           x    x    x    x    x    x    x
+
+The example file etc/examples/intro.cm is a fine place to start.
+
+Please feel free to contact me with bug reports and suggestions.
+There is a mailing list assocated with the CCRMA suite of Lisp
+programs (CLM, CMN, CM and Snd). To join the list send your request to
+cmdist-request@ccrma.stanford.edu
+
+Rick Taube
+Associate Professor Composition/Theory
+School of Music
+University of Illinois
+Urbana IL 61821
+Net: taube@uiuc.edu
+Vox: (217) 244-2684
+Fax: (217) 244-8319
+

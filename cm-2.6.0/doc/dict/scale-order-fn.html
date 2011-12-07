@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>scale-order</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "scale-order" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><span class="syntax">(<code class="entry">scale-order</code> <var>list</var> [<var>type</var>] [<var>unique?</var>])</span></dd>
+</dl>
+
+
+<p>
+Reorders <var>list</var> of notes or keynums. <var>Type</var> is a keyword that determines how the
+list is ordered, possible values are <code class="keyword">:up</code>, <code class="keyword">:down</code> or <code class="keyword">:random</code>.
+The default value is <code class="keyword">:up</code>. If <var>unique?</var> is true then the results
+will not contain any duplicate note names or key numbers.
+</p>
+
+<!-- Interaction 1 -->
+<div class="float" id="repl_0-1">
+<pre class="shell">cm&gt; <span class="input">(scale-order '(c4 b3 g4 fs2))</span>
+(fs2 b3 c4 g4)
+cm&gt; <span class="input">(scale-order '(c4 b3 g4 b3 c4 fs2) :down true)</span>
+(g4 c4 b3 fs2)
+cm&gt;</pre>
+</div>
+
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="hertz-fn.html"><kbd>hertz</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="invert-fn.html"><kbd>invert</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="keynum-fn.html"><kbd>keynum</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="note-fn.html"><kbd>note</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="note-accidental-fn.html"><kbd>note-accidental</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="note-name-fn.html"><kbd>note-name</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="octave-number-fn.html"><kbd>octave-number</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="pitch-class-fn.html"><kbd>pitch-class</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="prime-form-fn.html"><kbd>prime-form</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scale-max-fn.html"><kbd>scale-max</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scale-min-fn.html"><kbd>scale-min</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scale-order-fn.html"><kbd>scale-order</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scalelt-fn.html"><kbd>scale&lt;</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scalelteql-fn.html"><kbd>scale&lt;=</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scaleeql-fn.html"><kbd>scale=</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scalegt-fn.html"><kbd>scale&gt;</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="scalegteql-fn.html"><kbd>scale&gt;=</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="transpose-fn.html"><kbd>transpose</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2003/07/07 21:27:41 $)</div>
+</div>
+</body>
+</html>
+
+

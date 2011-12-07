@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>object-&gt;cmn</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "object->cmn" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><span class="syntax">(<code class="entry">object-&gt;cmn</code> <var>object</var>)</span></dd>
+</dl>
+
+
+<p>
+Converts <var>object</var> into a list of CMN data.  The connection between
+CMN and any event object is made by implemeting a method on this
+generic function.  The method can return a list one of two formats.
+The first format produces CMN note infomation:
+</p>
+
+<blockquote>
+<p>
+   (<var>id duration note ... </var>)
+</p>
+</blockquote>
+
+<p>
+where <var>id</var> is an integer identifying the staff that the display
+should appear in. If there is currently no staff for that id then one
+is automatically created. <var>Duration</var> is the duration of the cmn note
+and <var>note</var> is a note name like 'cs4'. The ... args are anything else
+that should be attached to the cmn note. These are symbols or
+expressions that will be evaluaed in the context of CMN's variable
+and function names.
+</p>
+
+<p>
+The second possible format for the data list is:
+</p>
+
+<blockquote>
+<p>
+(<var>id cmn-variable/expr</var>)
+</p>
+</blockquote>
+
+<p>
+This adds a single cmn variable or expression to the staff 
+belonging to <var>id</var>.
+</p>
+
+<!-- Interaction 1 -->
+<div class="float" id="repl_0-1">
+<pre class="shell">cm&gt; <span class="input">(defmethod object-&gt;cmn (obj) </span>
+    <span class="input">  (list (midi-channel obj)</span>
+    <span class="input">        (midi-duration obj)</span>
+    <span class="input">        (note (midi-keynum obj))))</span>
+cm&gt;</pre>
+</div>
+
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="cmn-stream-cls.html"><kbd>cmn-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2003/07/07 21:27:41 $)</div>
+</div>
+</body>
+</html>
+

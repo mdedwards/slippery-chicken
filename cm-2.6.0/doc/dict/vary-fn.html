@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>vary</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">vary</code> <var>value</var> <var>pct</var> [<var>fit</var>] [<var>state</var>]<code>)</code></dd>
+</dl>
+
+<p>
+Returns a random number that deviates from <var>value</var> by up
+to <var>pct</var> percentage. The optional <var>fit</var> parameter
+determines how the variance will be applied to <var>value</var>: <code
+class="keyword">:above</code> returns a percentage variance
+with <var>value</var> at the minimum, <code
+class="keyword">:below</code> returns a percentage variance
+with <var>value</var> at the maximum and <code
+class="keyword">:around</code> returns a percentage variance
+with <var>value</var> in the middle.  The default value is <code
+class="keyword">:around</code>.
+</p>
+
+<h4>Examples:</h4>
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> The <code>vary</code> function.
+</p>
+<pre class="code">
+(vary 100 .05 )
+<span class="result">&rArr;</span> 98.2
+(vary 100 .05 )
+<span class="result">&rArr;</span> 102.34006
+(vary 100 .05 '<span class="keyword">:above</span>)
+<span class="result">&rArr;</span> 103.237
+(vary 100 .05 '<span class="keyword">:below</span>)
+<span class="result">&rArr;</span> 96.933
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Varied pulse rate.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">play-vary</span> len lb ub rate env)
+  (<a href="process-mac.html">process</a> for i below len
+           for r = (vary rate (<a href="interpl-fn.html">interpl</a> (/ i len) env))
+           for k = (<a href="between-fn.html">between</a> lb ub k)
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                      <span class="keyword">:keynum</span> k 
+                      <span class="keyword">:duration</span> (* r 1.5))
+           wait r))
+
+(<span class="special">define</span> <span class="defined">varyenv</span> '(0 0 .1 0 .5 .75 .9 0 1 0))
+
+(<a href="events-fn.html">events</a> (play-vary 60 70 90 .2 varyenv) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+
+<h4>See also:</h4>
+<ul>
+<li><a href="between-fn.html"><kbd>between</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="drunk-fn.html"><kbd>drunk</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="odds-fn.html"><kbd>odds</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="pick-fn.html"><kbd>pick</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="pickl-fn.html"><kbd>pickl</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="ran-fn.html"><kbd>ran</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="ransegs-fn.html"><code>ransegs</code></a> [Function]</li>
+<li><a href="shuffle-fn.html"><kbd>shuffle</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.3 $, $Date: 2005/03/21 17:53:10 $)</div>
+</div>
+</body>
+</html>
+
+

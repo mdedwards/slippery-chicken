@@ -1,0 +1,195 @@
+;;; **********************************************************************
+;;; $Name: rel-2_6_0 $
+;;; $Revision: 1.1.1.1 $
+;;; $Date: 2003/06/25 10:45:05 $
+;;;
+;;; Assorted tunings and modes.
+;;;
+
+(in-package :cm)
+
+;;;
+;;; Below is my equal tempered sargam definition in the form of a function I 
+;;; use to quickly create sargam scales on any given SA or tonic hertz. If one 
+;;; were to create a standalone scale, a good SA would be c3, descending 2 
+;;; octaves below and ascending 2 octaves above, ie
+;;; (sargam (hertz 'c3) 2 4)
+;;; "B. Battey" <bbattey@u.washington.edu>
+;;;
+
+(define (sargam sa-hz sa-octave-num octaves)
+  (new tuning
+       :name (string-append "sargam-" (object->string sa-hz))
+       :lowest (* sa-hz (/ (expt 2 sa-octave-num)))
+       :octaves octaves
+       :cents '((0    SA)
+                (100  RE<)
+                (200  RE)
+                (300  GA<)
+                (400  GA)
+                (500  MA)
+                (600  MA>)        
+                (700  PA)
+                (800  DA<)
+                (900  DA)
+                (1000 NI<)
+                (1100 NI)
+                (1200 SA))))
+
+;;;
+;;; bolen-pierce 13-tone equal temperment with 3:1 octave
+;;;
+
+(new tuning :name 'bolen-pierce
+     :ratios (loop for i to 13 
+                   collect (expt 3.0 (/ i 13)))
+     :lowest 16.351597)
+
+;;;
+;;; 1/4-tone equal temperment with note names. 
+;;; defined over the same octaves as standard scale.
+;;; ">" is accidental for 1/4 sharp, "<" is 1/4 flat.
+;;;
+
+(new tuning :name 'quarter-tone
+     :octaves '(-1 10)
+     :lowest 6.875
+     :keynum-offset 3
+     :default-octave 5
+     :cents '((50 c (cn  :accidental n) (bs  :accidental s :octave -1))
+              (50 (c> :accidental >))
+              (50 (cs :accidental  s) (df :accidental f))
+              (50 (d< :accidental <))
+              (50 d (dn :accidental  n))
+              (50 (d> :accidental >))
+              (50 (ef :accidental  f) (ds :letter d :accidental s))
+              (50 (e< :accidental <))
+              (50 e (en :accidental  n) (ff  :accidental f))
+              (50 (e> :accidental >) (f< :accidental <))
+              (50 f (fn :accidental  n) (es  :accidental s))
+              (50 (f> :accidental >))
+              (50 (fs :accidental  s) (gf :accidental f))
+              (50 (g< :accidental <))
+              (50 g (gn  :accidental n))
+              (50 (g> :accidental >))
+              (50 (af  :accidental f) (gs  :accidental s))
+              (50 (a< :accidental <))
+              (50 a (an  :accidental n)) 
+              (50 (a> :accidental >))
+              (50 (bf  :accidental f) (as  :accidental s))
+              (50 (b< :accidental <))
+              (50 b (bn  :accidental n) (cf  :accidental f  :octave +1))
+              (50 (b> :accidental >) (c< :accidental < :octave +1)))) 
+
+;;;
+;;; A Slendro with note names, no octave.
+;;;
+
+(new tuning :name 'slendro 
+     :lowest 220.0
+     :octaves false
+     :cents '((0    nem0)
+             (218  barang0)
+             (473  gulu0)
+             (721  dada0)
+             (954  lima0)
+             
+             (1213 nem1)
+             (1458 barang1)
+             (1695 gulu1)
+             (1929 dada1)
+             (2174 lima1)
+             
+             (2441 nem2)))
+
+;;;
+;;; A Pelog with note names, no octave.
+;;;
+
+(new tuning :name 'pelog 
+     :lowest 220.0
+     :octaves false
+     :cents '((0    nem0)
+              (125  barang0)
+              (266  bem0)
+              (563  gulu0)
+              (676  dada0)
+              (800  pelog0)
+              (965  lima0)
+              
+              (1220 nem1)
+              (1360 barang1)
+              (1503 bem1)
+              (1778 gulu1)
+              (1905 dada1)
+              (2021 pelog1)
+              (2225 lima1)
+              
+              (2447 nem2)))
+
+;;;
+;;; Just tuning
+;;;
+
+(new tuning :name 'just
+     :ratios '((1 c)
+               (16/15 cs)
+               (9/8 d)
+               (6/5 ds )
+               (5/4 e)
+               (4/3 f)
+               (45/32 fs )
+               (3/2 g)
+               (8/5 gs )
+               (5/3 a)
+               (16/9 as)
+               (15/8 b)
+               2/1))
+
+;;;
+;;; Meantone
+;;;
+
+(new tuning :name 'meantone
+     :cents '((0 c)
+              (86 cs)
+              (192 d)
+              (312 ds)
+              (384 e)
+              (504 f)
+              (578 fs)
+              (696 g)
+              (771 gs)
+              (888 a)
+              (1008 as)
+              (1082 b)
+              1200))
+
+;;;
+;;; Werckmeister 3 tuning
+;;;
+
+(new tuning 
+  :name 'werckmeister3
+  :cents '((0 c)
+           (94 cs)
+           (192 d)
+           (278 ds)
+           (390 e)
+           (475 f)
+           (588 fs)
+           (696 g)
+           (790 gs)
+           (888 a)
+           (975 as)
+           (1092 b)
+           1200))
+
+;;;
+;;; Wendy Carlos' Alpha scale has just 5ths, 4ths, 3rds 
+;;; and m7ths but  no true octave (1248 Cents)
+;;;
+
+(new tuning :name 'alpha :cents (loop repeat 17 collect 78))
+
+

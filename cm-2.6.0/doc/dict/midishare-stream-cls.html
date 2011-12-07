@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>midishare-stream</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "midishare-stream" -->
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><span class="syntax"><code class="entry">midishare-stream</code></span></dd>
+</dl>
+
+<p>
+A subclass of <a href="midi-stream-cls.html"><kbd>midi-stream</kbd></a> that
+implements direct-to-driver MIDI io using <a
+href="http://www.grame.fr">Grame's</a> real-time <a
+href="http://www.grame.fr/MidiShare/">Midishare</a> operating system.
+A <kbd>midishare-stream</kbd> is automatically created when you
+specify a file with a ".ms" extension or specify the name "midi.port".
+The name of the stream will becme the "client name" used by Midishare.
+For "backwards compatibility" the name "midi.port" will create a
+<kbd>midishare-stream</kbd> whose client name is "Common Music".
+</p>
+
+<p><code class="entry">midishare-stream</code> supports the following slot initializations:
+</p>
+<dl>
+
+<dt><code class="keyword">:connections</code> <var>list</var></dt>
+<dd>
+
+A list of two strings specifying the names of the input and output
+Midishare client applications to connect to. If a connections list is
+not specified it will default to the value of the global variable <a
+href="midi-connections-var.html"><kbd>*midi-connections*</kbd></a>.
+</dd>
+
+</dl>
+
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="clm-audio-stream-cls.html"><kbd>clm-audio-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="clm-stream-cls.html"><kbd>clm-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="cmn-stream-cls.html"><kbd>cmn-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="io-mac.html"><kbd>io</kbd></a><kbd>&nbsp;</kbd>[Macro]</li>
+<li><a href="midi-connections-var.html"><kbd>*midi-connections*</kbd></a><kbd>&nbsp;</kbd>[Variable]</li>
+<li><a href="midi-stream-cls.html"><kbd>midi-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="midi-file-stream-cls.html"><kbd>midi-file-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="player-stream-cls.html"><kbd>player-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+<li><a href="sco-stream-cls.html"><kbd>sco-stream</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2003/07/07 21:27:41 $)</div>
+</div>
+</body>
+</html>
+
+

@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>drunk</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">drunk</code> <var>n</var> <var>width</var> {<var>keyword</var> <var>value</var>}* <code>)</code></dd> 
+</dl>
+
+<p>
+Returns a random value constrained to lie
+between <var>n-width</var>and <var>n+width</var> according to keyword
+arguments specified to the function. Calling the function with
+previous values of <var>n</var> implements random walks (brown noise).
+</p>
+
+<p id="args"><code class="entry">drunk</code> supports the following
+keyword arguments:
+</p>
+
+<dl>
+
+<dt>
+<code class="keyword">:mode</code> {<var>keyword</var> | <var>number</var>}
+</dt>
+<dd>
+Determines what to do if the return value exceeds boundary conditions
+specified to the function. The following keyword modes are are
+recognized:
+
+<table>
+<tr><td><code class="keyword">:reflect</code></td> <td>value is reflected back into bounds</td></tr>
+<tr><td><code class="keyword">:limit</code></td> <td>nearest boundary value is returned</td></tr>
+<tr><td><code class="keyword">:reset</code> </td> <td>value is centered between boundaries</td></tr>
+<tr><td><code class="keyword">:jump</code></td> <td>value randomly positioned</td></tr>
+<tr><td><code class="keyword">:stop</code> </td> <td>returns false as value of function</td></tr>
+</table>
+Otherwise, the value should be the <var>number</var> to return as the value of
+the function.  The default value is <span
+class="keyword">:reflect</span>.
+</dd>
+
+<dt>
+<code class="keyword">:low</code> <var>number</var>
+</dt>
+<dd>
+Sets a lower bound on the random walk. If the boundary is exceeded,
+the value returned is determined by <code
+class="keyword">:mode</code>.
+</dd>
+
+<dt>
+<code class="keyword">:high</code> <var>number</var>
+</dt>
+<dd>
+Sets an upper bound on the random walk. If the boundary is exceeded,
+the value returned is determined by <code
+class="keyword">:mode</code>.
+</dd>
+
+<dt>
+<code class="keyword">:avoid</code> <var>number</var>
+</dt>
+<dd>
+If specified, the value returned will not equal <var>number</var>.
+</dd>
+
+<dt><code class="keyword">:state</code> <var>state</var></dt>
+<dd>
+The random state object. The value defaults to <code>*random-state*</code>.
+</dd>
+
+</dl>
+
+<h4>Examples:</h4>
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> The <code>drunk</code> function.
+</p>
+<pre class="code">
+(<span class="special">loop</span> repeat 10 
+      for r = 60 then (drunk r 3)
+      collect r)
+<span class="result">&rArr;</span> (60 62 61 60 58 60 62 63 65 67)
+(drunk 40 2 :low 60 :high 72)
+<span class="result">&rArr;</span> 63
+(drunk 40 2 :low 60 :high 72 :mode ':stop)
+<span class="result">&rArr;</span> #f
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Random walk for keynum and amplitude.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">stagger</span> len low high step)
+  (<span class="special">let</span> ((k (/ (- high low) 2))
+        (a (<a href="between-fn.html">between</a> .1 .9)))
+    (<a href="process-mac.html">process</a> repeat len
+             for r = (<a href="pick-fn.html">pick</a> 1/8 1/4) 
+             set k = (drunk k step <span class="keyword">:high</span> high
+                            <span class="keyword">:low</span> low <span class="keyword">:mode</span> '<span class="keyword">:jump</span>)
+             set a = (drunk a .1 <span class="keyword">:low</span> .2 
+                            <span class="keyword">:high</span> .9 <span class="keyword">:mode</span> .5)
+             output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                         <span class="keyword">:duration</span> (* r 1.5)
+                         <span class="keyword">:keynum</span> k
+                         <span class="keyword">:amplitude</span> a)
+             wait r)))
+
+(<a href="events-fn.html">events</a> (list (stagger 80 40 80 3) 
+              (stagger 60 20 40 7)
+              (stagger 40 70 90 5))
+       "test.mid" '(0 4 6))
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="between-fn.html"><kbd>between</kbd></a> [Function]</li>
+<li><a href="odds-fn.html"><kbd>odds</kbd></a> [Function]</li>
+<li><a href="pick-fn.html"><kbd>pick</kbd></a> [Function]</li>
+<li><a href="pickl-fn.html"><kbd>pickl</kbd></a> [Function]</li>
+<li><a href="ran-fn.html"><kbd>ran</kbd></a> [Function]</li>
+<li><a href="ransegs-fn.html"><code>ransegs</code></a> [Function]</li>
+<li><a href="shuffle-fn.html"><kbd>shuffle</kbd></a> [Function]</li>
+<li><a href="vary-fn.html"><kbd>vary</kbd></a> [Function]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.2 $, $Date: 2005/03/21 17:53:08 $)</div>
+</div>
+</body>
+</html>
+
+

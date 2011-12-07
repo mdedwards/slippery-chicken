@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>midi-system-event</title>
+</head>
+
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">midi-system-event</code></dd>
+</dl>
+
+<p>
+A MIDI system event.
+</p>
+
+<p id="args">
+<code class="entry">midi-system-event</code> supports the following slot initializations:
+</p>
+
+<dl>
+<dt><code class="keyword">:time</code> <var>number</var></dt>
+<dd>The start time of the object.</dd>
+<dt><code class="keyword">:type</code> <var>integer</var></dt>
+<dd>The "system type" of the message, an integer 0-3 corresponding to
+one of the following conditions: (0) sysex, (1) qframe, (2) songpos (3) songsel.
+</dd>
+<dt><code class="keyword">:data</code> {<var>list</var> | <var>integer</var>}</dt>
+<dd>The event data. For systex messages the data is a list of bytes,
+omitting any initial #xF0 and terminal #xF7 tags. Otherwise the value
+should be an integer appropriate for the type of system message being
+created.
+</dd>
+</dl>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> The <code>midi-system-event</code> event.
+</p>
+<pre class="code">
+(<a href="new-mac.html">new</a> midi-system-event <span class="keyword">:time</span> 0 <span class="keyword">:type</span> 0
+     <span class="keyword">:data</span> '(#xb0 #x63 #x37 #xb0 #x62 #x00 #xb0 #x06 #x60))
+
+(<a href="new-mac.html">new</a> midi-system-event <span class="keyword">:time</span> 0 <span class="keyword">:type</span> 2
+     <span class="keyword">:data</span> 33)
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="midi-topic.html#midi_event_classes">MIDI event classes</a> [Topic]</li>
+<li><a href="midi-topic.html#midi_score_classes">MIDI score classes</a> [Topic]</li>
+</ul>
+
+<!-- end content -->
+</div>
+
+<hr class="inv"/>
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2005/03/20 02:07:21 $)</div>
+</div>
+</body>
+</html>

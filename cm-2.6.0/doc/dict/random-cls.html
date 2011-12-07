@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>random</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">random</code></dd>
+</dl>
+
+<p>
+Generates data in random order (sampling with replacement).  By
+default, each element in a random pattern has an equal probability of
+being selected and each element may be repeated in direct succession
+any number of times.  This behavior can be modified for any element by
+specifying the element as a <var>random node</var> list:
+<!--  a list containing the
+element followed by keyword and value pairs:-->
+</p>
+
+<blockquote>
+<p><code>(</code><var>element</var> {<var>keyword value</var>}*<code>)</code></p>
+</blockquote>
+
+<p>
+where <var>element</var> is the item or sub-pattern to generate
+and the possible <var>keyword value</var> pairs are:
+</p>
+
+<blockquote>
+<dl>
+<dt><code class="keyword">:weight</code> {<var>number</var> | <var>pattern</var>}</dt>
+<dd>
+Sets the probability of the node relative to the probabilities of the
+other nodes in the pattern.  The weight may also be specified as
+a <var>pattern</var> of numbers, in which case a new weight will be
+selected for each period in the random pattern. The default value is
+1.
+</dd>
+
+<dt><code class="keyword">:min</code> <var>number</var></dt>
+<dd>
+Sets a floor on how many direct repetitions or <var>element</var> must be
+made before a new element might be selected.
+</dd>
+
+<dt><code class="keyword">:max</code> <var>number</var></dt>
+<dd>
+Sets a ceiling on how many direct repetitions of the element might be
+made before a new element must be selected.
+</dd>
+</dl>
+</blockquote>
+
+<p>
+<code class="entry">random</code> supports the following slot initializations:
+</p>
+
+<dl>
+<dt><code class="keyword">:state</code> <var>random-state</var></dt>
+<dd>
+Sets the random state object of the pattern to <var>random-state</var>. Defaults to <code>*random-state*</code>.
+</dd>
+</dl>
+
+<p>
+See <a href="patterns-topic.html#pattern_inits">generic pattern
+initializations</a> for documentation on additional keyword
+initializations to the pattern.
+</p>
+
+<h4>Examples:</h4>
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> The random pattern.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">pat1</span> (<a href="new-mac.html">new</a> random <span class="keyword">:of</span> '((a <span class="keyword">:max</span> 1) b (c <span class="keyword">:weight</span> 4) d)))
+
+(<a href="next-fn.html">next</a> pat1 12)
+<span class="result">&rArr;</span> (a c c c a c c c d b c c)
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Changing random probability
+as a function of time.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">black-to-white</span> reps trope envl rate)
+  <span class="comment">;; move from black keys to white keys in trope over rep iterations.</span>
+  (<span class="special">let*</span> ((pn 0)
+         (pw (<a href="pval-mac.html">pval</a> pn)) <span class="comment">; white probability</span>
+         (pb (<a href="pval-mac.html">pval</a> (- 1 pn))) <span class="comment">; black probability</span>
+         (rp (<a href="new-mac.html">new</a> random <span class="keyword">:of</span> (<span class="special">loop</span> for n in trope
+                                   for w = (member (<a href="note-name-fn.html">note-name</a> n)
+                                                   '(c d e f g a b))
+                                   collect
+                                   <span class="comment">;; node for white note uses pw</span>
+                                   (list n <span class="keyword">:weight</span> (<span class="special">if</span> w pw pb))))))
+    (<a href="process-mac.html">process</a> for i below reps
+             set pn = (<a href="interpl-fn.html">interpl</a> (/ i reps) envl)
+             output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>) <span class="keyword">:keynum</span> (<a href="next-fn.html">next</a> rp)
+                         <span class="keyword">:duration</span> (* rate 1.5))
+             wait rate)))
+
+(<span class="special">define</span> <span class="defined">mel</span> (<a href="note-fn.html">note</a> '(c4 cs d ds e f fs g gs a as b c5)))
+
+(<span class="special">define</span> <span class="defined">env</span> '(0 0 .2 0 .8 1 1 1))
+
+(<a href="events-fn.html">events</a> (black-to-white 180 mel env .1) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+<h4>See also:</h4>
+<ul>
+<li><a href="patterns-topic.html#pattern_classes">Pattern classes</a> [Topic]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.2 $, $Date: 2005/03/13 20:42:13 $)</div>
+</div>
+</body>
+</html>
+
+

@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>midi-key-signature</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">midi-key-signature</code></dd>
+</dl>
+
+<p>
+A MIDI key signature event.
+</p>
+
+<p>
+<code class="entry">midi-key-signature</code> supports the following
+slot initializations:
+</p>
+
+<dl>
+<dt><code class="keyword">:time</code> <var>number</var></dt>
+<dd>The start time of the object.</dd>
+
+<dt><code class="keyword">:key</code> <var>integer</var></dt>
+<dd>An integer -7-7, where -7 means seven flats, 0 means no sharps or flats, and 7 means seven sharps. The default value is 0.</dd>
+
+<dt><code class="keyword">:mode</code> <var>integer</var></dt>
+<dd>An integer 0-1, where 0 means major and 1 means minor. The default value is 0.</dd>
+</dl>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> The <code>midi-key-signature</code> event.
+</p>
+<pre class="code">
+<span class="comment">;;; Ab major</span>
+(<a href="new-mac.html">new</a> midi-key-signature <span class="keyword">:time</span> 0 <span class="keyword">:key</span> -4)
+
+<span class="comment">;;; A# minor</span>
+(<a href="new-mac.html">new</a> midi-key-signature <span class="keyword">:time</span> 0 <span class="keyword">:key</span> 7 <span class="keyword">:mode</span> 1)
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Generating time and key signatures.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">major</span> (<a href="new-mac.html">new</a> <a href="mode-fn.html">mode</a> <span class="keyword">:degrees</span> '(c d e f g a b c)))
+
+(<span class="special">define</span> (<span class="defined">gen-measures</span> mea tempo )
+  <span class="comment">;; generate measures, each with own time and key signatures</span>
+  (<span class="special">let</span> ((tonics (<a href="new-mac.html">new</a> <a href="heap-cls.html">heap</a> <span class="keyword">:of</span> '((c 0) (cs 7) (d 2) (ef -3)
+                                (e 4) (f -1) (fs 6) (g 1)))))
+    (<a href="process-mac.html">process</a> with rhy = (<a href="rhythm-fn.html">rhythm</a> 'e tempo)
+             repeat mea
+             for bpm = (<a href="pick-fn.html">pick</a> 2 3 4 5) <span class="comment">; beats in measure</span>
+             for ton = (<a href="next-fn.html">next</a> tonics)  <span class="comment">; keysig info</span>
+             do (<a href="transpose-fn.html">transpose</a> major (first ton)) <span class="comment">; shift mode</span>
+             output (<a href="new-mac.html">new</a> <a href="midi-key-signature-cls.html">midi-key-signature</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                         <span class="keyword">:key</span> (second ton))
+             output (<a href="new-mac.html">new</a> <a href="midi-time-signature-cls.html">midi-time-signature</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                         <span class="keyword">:numerator</span> bpm <span class="keyword">:denominator</span> 4)
+             each k = (<a href="between-fn.html">between</a> 28 42) <span class="comment">; modal keynums 48-72</span>
+             as i below (1- (* bpm 2))
+             output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (+ (<a href="now-fn.html">now</a>) (* rhy i))
+                         <span class="keyword">:keynum</span> (<a href="keynum-fn.html">keynum</a> k <span class="keyword">:in</span> major)
+                         <span class="keyword">:duration</span> rhy)
+             wait (* rhy bpm))))
+
+(<a href="events-fn.html">events</a> (gen-measures 8 120) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+(<a href="midi-file-print-fn.html">midi-file-print</a> <span class="string">"test.mid"</span>)
+</pre>
+</div>
+
+<h4>See also: </h4>
+<ul>
+<li>
+<a href="midi-topic.html#midi_event_classes">MIDI event classes</a> [Topic]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2005/03/20 02:07:21 $)</div>
+</div>
+</body>
+</html>

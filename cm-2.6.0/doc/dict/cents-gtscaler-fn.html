@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>cents-&gt;scaler</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">cents-&gt;scaler</code> <var>cents</var><code>)</code></dd>
+</dl>
+
+<p>
+Convert <var>cents</var> value to a scaler value.
+</p>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Converting cents to multiplier on frequency.
+</p>
+<pre class="code">
+(cents-&gt;scaler 100)
+<span class="result">&rArr;</span> 1.0594630943592953
+(<a href="note-fn.html">note</a> (* 440 (cents->scaler -1100)) <span class="keyword">:hz</span> #t)
+<span class="result">&rArr;</span> bf3
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="scaler-gtcents-fn.html"><code>scaler-&gt;cents</code></a> [Function]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.2 $, $Date: 2005/02/13 02:17:47 $)</div>
+</div>
+</body>
+</html>
+
+

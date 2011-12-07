@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>events</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "events" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">events</code> <var>objects</var> <var>destination</var> [<var>ahead</var>] {<var>keyword</var> <var>value</var>}*<code>)</code></span></dd>
+</dl>
+
+
+<p>
+Writes events from <var>objects</var>
+to <var>destination</var>. <var>Objects</var> can be a single object
+(i.e. an event, <a href="seq-cls.html">seq</a> or <a
+href="process-mac.html">process</a>) or a list of
+objects. <var>Destination</var> can be a file, port, seq or <a
+href="plotter-topic.html">plotter</a> window.  If <var>ahead</var> is
+supplied it sets the start time offset for <var>objects</var> added
+to <var>destination</var>. If <var>ahead</var> is a number it is
+applied to all <var>objects</var>. Otherwise, if <var>ahead</var> is a
+list of numbers, then each number in the list is matched in left to
+right order with its corresponding object
+in <var>objects</var>. Following
+<var>ahead</var> may come any number of initializations suitable for
+<var>destination</var> or to its post-processing hooks. <code>events</code> returns <var>destination</var> as its value.
+</p>
+
+<h4>Examples:</h4>
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> The <code>events</code> function.</e
+</p>
+
+<pre class="code">
+(events (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> 0) <span class="string">"test.midi"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+
+(<span class="special">define</span> (<span class="defined">test</span> len knum rhy dur)
+  <span class="comment">;; generate some random midi events</span>
+  (<a href="process-mac.html">process</a> repeat len
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>) 
+                      <span class="keyword">:keynum</span> (<a href="between-fn.html">between</a> knum (+ knum 12))
+                      <span class="keyword">:duration</span> dur)
+           wait rhy))
+
+(events (test 10 60 .1 .5) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Start time offsets.
+</p>
+<pre class="code">
+<span class="comment">;;; generate into a new seq at time 30.</span>
+(events (test 5 60 .2 .5)
+        (<a href="new-mac.html">new</a> <a href="seq-fn.html">seq</a> <span class="keyword">:name</span> 'catch) 
+        30)
+<span class="result">&rArr;</span> #&lt;seq <span class="string">"catch"</span>&gt;
+(<a href="list-subobjects-fn.html">list-subobjects</a> #&amp;catch)
+   0. #i(midi time 30.0 keynum 69 duration 0.5 amplitude 64 channel 0)
+   1. #i(midi time 30.5 keynum 68 duration 0.5 amplitude 64 channel 0)
+   2. #i(midi time 31.0 keynum 65 duration 0.5 amplitude 64 channel 0)
+   3. #i(midi time 31.5 keynum 62 duration 0.5 amplitude 64 channel 0)
+   4. #i(midi time 32.0 keynum 68 duration 0.5 amplitude 64 channel 0)
+<span class="comment">;;; three processes, each starting one second later.</span>
+(events (list (test 30 80 .1 .5)
+              (test 20 60 .1 .5)
+              (test 10 40 .1 .5))
+        <span class="string">"test.mid"</span>
+        '(0 1 2) <span class="keyword">:timesig</span> '(2 4))
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="set-clm-output-hook-fn.html"><kbd>set-clm-output-hook!</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="set-midi-output-hook-fn.html"><kbd>set-midi-output-hook!</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+<li><a href="set-sco-output-hook-fn.html"><kbd>set-sco-output-hook!</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.2 $, $Date: 2005/02/18 23:34:21 $)</div>
+</div>
+</body>
+</html>
+
+

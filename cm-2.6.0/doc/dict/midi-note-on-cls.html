@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>midi-note-on</title>
+</head>
+
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">midi-note-on</code></dd>
+</dl>
+
+<p>
+A MIDI note on event.
+</p>
+
+<p id="args">
+<code class="entry">midi-note-on</code> supports the following slot initializations:
+</p>
+
+<dl>
+<dt><code class="keyword">:time</code> <var>number</var></dt>
+<dd>The start time of the object.</dd>
+<dt><code class="keyword">:channel</code> <var>integer</var></dt>
+<dd>A MIDI channel number. The default value is 0.</dd>
+<dt><code class="keyword">:keynum</code> <var>integer</var></dt>
+<dd>A MIDI key number</dd>
+<dt><code class="keyword">:velocity</code> <var>integer</var></dt>
+<dd>A MIDI velocity. The default value is 64.</dd>
+</dl>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> The <code>midi-note-on</code> and <code>midi-note-off</code> events.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">on-and-off</span> reps k1 k2 v1 v2)
+  (<a href="process-mac.html">process</a> repeat reps
+           for k = (<a href="between-fn.html">between</a> k1 k2)
+           for v = (<a href="between-fn.html">between</a> v1 v2)
+           for r = (<a href="between-fn.html">between</a> .5 2.0)
+           output (<a href="new-mac.html">new</a> midi-note-on <span class="keyword">:time</span> (<a href="now-fn.html">now</a>) 
+                                    <span class="keyword">:keynum</span> k
+                                    <span class="keyword">:velocity</span> v)
+           sprout (<a href="new-mac.html">new</a> <a href="midi-note-off-cls.html">midi-note-off</a> <span class="keyword">:time</span> (+ (<a href="now-fn.html">now</a>) (* r 1.5))
+                                     <span class="keyword">:keynum</span> k
+                                     <span class="keyword">:velocity</span> (<a href="between-fn.html">between</a> 10 v))
+           wait r))
+
+(<a href="events-fn.html">events</a> (on-and-off 20 40 60 40 80) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="midi-topic.html#midi_event_classes">MIDI event classes</a> [Topic]</li>
+<li><a href="midi-topic.html#midi_score_classes">MIDI score classes</a> [Topic]</li>
+</ul>
+
+<!-- end content -->
+</div>
+
+<hr class="inv"/>
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2005/03/20 02:07:21 $)</div>
+</div>
+</body>
+</html>

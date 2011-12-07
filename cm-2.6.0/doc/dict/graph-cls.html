@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>graph</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">graph</code></dd>
+</dl>
+
+<p>
+Generates elements by traversing a graph of nodes and returning the
+element at each node. The transition from one node to the next is
+accomplished by applying a user-specified selection function to the
+current node to return the identifier of the subsequent node.  Each
+element in the pattern is specified as a <em>graph node</em> list:
+<!-- Generates elements stored in graph nodes by traversing the graph
+according to transition rules associated with each node.  Each element
+in the pattern is specified as a graph node list: -->
+</p>
+
+<blockquote>
+<p><code>(</code><var>element</var> {<var>keyword</var> <var>value</var>}+<code>)</code></p>
+</blockquote>
+
+<p>
+where <var>element</var> is the value or sub-pattern in the node and
+is followed by one or more <var>keyword value</var> pairs:
+</p>
+
+<blockquote>
+<dl>
+<dt>
+<code class="keyword">:id</code> {<var>integer</var> | <var>symbol</var>}</dt>
+<dd>
+Identifies the node with a unique name or number in the graph.  If
+omitted the identifier defaults to the <var>element</var>, but since
+the element may be a sub-pattern or a list it is good practice to
+always provide explicit ids.
+</dd>
+
+<dt>
+<code class="keyword">:to</code> {<var>id</var> | <var>pattern</var>}</dt>
+<dd>
+Specifies the transition rule for the graph node. The value may be a
+node identifier or a pattern of identifiers.  This
+keyword can also be specified as a "right-arrow" -&gt;.
+</dd>
+</dl>
+</blockquote>
+
+<p>
+<code class="entry">graph</code> supports the following slot initializations:
+</p>
+<dl>
+
+<dt><code class="keyword">:of</code> <var>list</var></dt>
+<dd>
+The list of <var>graph nodes</var> to traverse in the pattern. Each</dd>
+
+<dt><code class="keyword">:selector</code> <var>function</var></dt>
+<dd>
+Sets the node selection function of the graph. This function is passed
+three values, the pattern, the last node selected and the list of ids
+representing past selections.  Defaults to the system's graph
+traversal function <kbd>#'default-graph-node-select</kbd>.
+</dd>
+
+<dt><code class="keyword">:props</code> <var>list</var></dt>
+<dd>
+A property list to associate with the graph. This list can be used to
+cache information for a specified <code
+class="keyword">:selector</code> function.
+</dd>
+
+<dt><code class="keyword">:starting-node-index</code> <var>integer</var></dt>
+<dd>
+Sets the node at position <var>index</var> in the node list as the
+initial node for the pattern. The default value is 0, which means that
+first node in the node list will produce the first value in the
+pattern.
+</dd>
+
+<dt><code class="keyword">:last</code> <code>(</code>{<var>id</var>}*<code>)</code></dt>
+<dd>
+Initializes the graph to a specific list of ids representing past node
+choices. Can be used in conjunction with implementing Markov selection.
+</dd>
+</dl>
+
+<p>
+See <a href="patterns-topic.html#pattern_inits">generic pattern
+initializations</a> for documentation on additional keyword
+initializations to the pattern.
+</p>
+
+
+<h4>Examples:</h4>
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> An Alberti bass figure.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">pat1</span>
+  (<a href="new-mac.html">new</a> graph <span class="keyword">:notes</span> `((c3 <span class="keyword">:id</span> 1 <span class="keyword">:to</span> 3)
+                      (e  <span class="keyword">:id</span> 2 <span class="keyword">:to</span> 3)
+                      (g  <span class="keyword">:id</span> 3
+                          <span class="keyword">:to</span> ,(<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:of</span> '(2 1))))))
+
+(<a href="next-fn.html">next</a> pat1 12)
+<span class="result">&rArr;</span> (c3 g3 e3 g3 c3 g3 e3 g3 c3 g3 e3 g3)
+</pre>
+</div>
+
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> A quasi-Markov chant with
+periodic breath.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">pat1</span>
+  (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a>
+       <span class="keyword">:of</span> `(,(<a href="new-mac.html">new</a> graph <span class="keyword">:for</span> (<a href="new-mac.html">new</a> <a href="heap-cls.html">heap</a> <span class="keyword">:of</span> '(6 8 12))
+                   <span class="keyword">:of</span> `((c4 <span class="keyword">:id</span> 1
+                             <span class="keyword">:to</span> ,(<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:of</span> '(2 5)))
+                         (d4 <span class="keyword">:id</span> 2 
+                             <span class="keyword">:to</span> ,(<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:of</span> '(1 3)))
+                         (ef4 <span class="keyword">:id</span> 3 
+                              <span class="keyword">:to</span> ,(<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:of</span> '(2 4)))
+                         (f4 <span class="keyword">:id</span> 4
+                             <span class="keyword">:to</span> ,(<a href="new-mac.html">new</a> <a href="random-cls.html">random</a> <span class="keyword">:of</span> '(3 5)))
+                         (,(<a href="new-mac.html">new</a> <a href="heap-cls.html">heap</a> <span class="keyword">:of</span> '(g4 a4 bf4 c5))
+                             <span class="keyword">:id</span> 5 
+                             <span class="keyword">:to</span> ,(<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:of</span> '(1 2 3 4)))))
+             r)))
+
+(<span class="special">define</span> (<span class="defined">play-pat</span> reps pat rate)
+  (<a href="process-mac.html">process</a> repeat reps 
+           for k = (<a href="next-fn.html">next</a> pat)
+           unless (<a href="rest?-fn.html">rest?</a> k)
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                       <span class="keyword">:keynum</span> k
+                       <span class="keyword">:duration</span> (* rate 1.5))
+           wait rate))
+
+(<a href="events-fn.html">events</a> (play-pat 80 pat1 .2) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="patterns-topic.html#pattern_classes">Pattern classes</a> [Topic]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.3 $, $Date: 2005/03/14 14:41:46 $)</div>
+</div>
+</body>
+</html>
+

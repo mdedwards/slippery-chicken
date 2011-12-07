@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>cmn</title>
+</head>
+<body>
+<div id="content">
+
+<!-- Entry: "cmn" -->
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">cmn</code></dd>
+</dl>
+
+<p>
+Holds note and staff expressions (variables and function calls) to
+manuscript with <a href="cmn-stream-cls.html">CMN streams</a>.
+</p>
+
+<p><code class="entry">cmn</code> supports the following slot initializations:
+</p>
+<dl>
+
+<dt><code class="keyword">:time</code> <var>number</var></dt>
+<dd>The start time of the object in the score.</dd>
+
+<dt><code class="keyword">:staff</code> <var>number</var> </dt>
+<dd>
+The identifier of the staff to which the expression is added. Defaults
+to 0.</dd>
+
+<dt><code class="keyword">:expr</code> <var>expr</var> </dt>
+<dd>
+The CMN expession to add to the staff. If the value is a note name or
+keynum and a <code class="keyword">:duration</code> for the object is
+specfied then a new CMN note definition is added to the staff at the
+current score time. Otherwise, the value of <code
+class="keyword">:expr</code> can be any CMN expression (function call
+list or variable name) to add to the staff.  For sake of clarity the
+<code class="keyword">:expr</code> initialzation can also be specified
+as <code class="keyword">:note</code>.
+</dd>
+
+<dt><code class="keyword">:duration</code> <var>number</var></dt>
+<dd>
+The duration (in seconds) of a <code class="keyword">:note</code>
+definition.
+</dd>
+
+<dt><code class="keyword">:data</code> <var>list</var></dt>
+<dd>
+A list of additional expressions to add to the note or staff.
+</dd>
+
+</dl>
+
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class "captxt">
+<span class="floatlabel">Example 1.</span> CMN expressions.
+</p>
+<pre class="code"><span class="comment">;;; a meter expression</span>
+(<a href="new-mac.html">new</a> cmn <span class="keyword">:time</span> 0 <span class="keyword">:expr</span> '(meter 3 4))
+
+<span class="comment">;;; a note defintion</span>
+(<a href="new-mac.html">new</a> cmn <span class="keyword">:time</span> 0 <span class="keyword">:note</span> 'c4 <span class="keyword">:duration</span> 3)
+
+<span class="comment">;;; a note in staff 3 with markup added</span>
+(<a href="new-mac.html">new</a> cmn <span class="keyword">:staff</span> 3 <span class="keyword">:expr</span> 'c4 <span class="keyword">:duration</span> .5
+     <span class="keyword">:data</span> '(accent ff))
+</pre>
+</div>
+
+<div class="float">
+<p class "captxt">
+<span class="floatlabel">Example 2.</span> Outputting CMN objects to scores.
+</p>
+<pre class="code">
+(<a href="new-mac.html">new</a> <a href="seq-cls.html">seq</a> <span class="keyword">:name</span> 'sevens
+     <span class="keyword">:subobjects</span>
+     (list (<a href="new-mac.html">new</a> cmn <span class="keyword">:time</span> 0 <span class="keyword">:expr</span> '(meter 7 8))
+           (<a href="new-mac.html">new</a> cmn <span class="keyword">:time</span> 0 <span class="keyword">:expr</span> 'cs-major)
+           (<a href="new-mac.html">new</a> cmn <span class="keyword">:time</span> 0 <span class="keyword">:note</span> 'c4
+                <span class="keyword">:duration</span> (<a href="rhythm-fn.html">rhythm</a> 'h..)
+                <span class="keyword">:data</span> '(pppp))
+           (<a href="new-mac.html">new</a> cmn <span class="keyword">:time</span> 3.5
+                <span class="keyword">:note</span> 'df5 <span class="keyword">:duration</span> (<a href="rhythm-fn.html">rhythm</a> 'e)
+                <span class="keyword">:data</span> '(accent sfz))
+           (<a href="new-mac.html">new</a> cmn <span class="keyword">:time</span> 4 <span class="keyword">:note</span> 'f4
+                <span class="keyword">:duration</span> 2
+                <span class="keyword">:data</span> '(mp fermata))))
+
+<span class="comment">;;; generate an .eps file</span>
+(<a href="events-fn.html">events</a> <a href="hshamp-mac.html">#&amp;</a>sevens <span class="string">"sevens.eps"</span>)
+
+<span class="comment">;;; generate a .cmn input file</span>
+(<a href="events-fn.html">events</a> <a href="hshamp-mac.html">#&amp;</a>sevens <span class="string">"sevens.cmn"</span> <span class="keyword">:size</span> 20)
+
+<span class="comment">;;; generate a .mid file</span>
+(<a href="events-fn.html">events</a> #&amp;sevens <span class="string">"sevens.mid"</span>)
+</pre>
+</div>
+
+<span class="floatlabel">Example 3.</span> CMN output to MIDI files includes tempo, key and meter markups.</span>
+</p>
+<pre class="code">
+(<a href="midi-file-print-fn.html">midi-file-print</a> <span class="string">"sevens.mid"</span>)
+File: sevens.mid 
+Format: 0
+Tracks: 1
+Division: 480
+Track 0, length 52
+       0 #&lt;Tempo Change 1000 ms&gt;
+       0 #&lt;Time Signature 7/8 (24 clocks, 8 32nds)&gt;
+       0 #&lt;Key Signature 7 sharps, major&gt;
+       0 #&lt;Note-On 0 60 64&gt;
+    1680 #&lt;Note-Off 0 60 127&gt;
+       0 #&lt;Note-On 0 73 64&gt;
+     240 #&lt;Note-Off 0 73 127&gt;
+       0 #&lt;Note-On 0 65 64&gt;
+     960 #&lt;Note-Off 0 65 127&gt;
+"seven.mid"</pre>
+</div>
+
+
+<div class="float">
+<p class "captxt">
+<span class="floatlabel">Example 3.</span> Generate random metered
+measures in customized staffs.
+</p>
+<pre class="code">(<span class="special">define</span> (<span class="defined">ranmeas</span> meas maxstaff low hi)
+  (<a href="process-mac.html">process</a> with cnt = 0 and bea
+           and mea = (<a href="new-mac.html">new</a> <a href="heap-cls.html">heap</a> <span class="keyword">:of</span> '( 7 3 5 4))
+           and num = 1
+           <span class="comment">;; start new measure...</span>
+           if (= cnt 0)
+           set bea = (<a href="next-fn.html">next</a> mea)
+           and set cnt = bea
+           and set num = (+ num 1)
+           and output (<a href="new-mac.html">new</a> cmn <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                           <span class="keyword">:expr</span> `(meter ,bea 8))
+           <span class="comment">;; always output note, 50% are accented</span>
+           output (<a href="new-mac.html">new</a> cmn <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                       <span class="keyword">:note</span> (<a href="between-fn.html">between</a> low hi)
+                       <span class="keyword">:staff</span> (random maxstaff)
+                       <span class="keyword">:duration</span> 1/2
+                       <span class="keyword">:data</span> (<a href="odds-fn.html">odds</a> .5 '(accent)))
+           set cnt = (- cnt 1)
+           until (and (= cnt 0) (= num meas))
+           wait 1/2))
+
+<span class="comment">;; output a single staff</span>
+(<a href="events-fn.html">events</a> (ranmeas 15 1 60 80) <span class="string">"test.eps"</span> :size 20)
+
+<span class="comment">;;; define custom staff descriptions for the cmn score.</span>
+(<span class="special">define</span> <span class="defined">ins</span>
+  '((0 <span class="keyword">:name</span> <span class="string">"Bb Cl."</span> <span class="keyword">:clef</span> <span class="keyword">:treble</span>)
+    (1 <span class="keyword">:name</span> <span class="string">"Viola"</span> <span class="keyword">:clef</span> <span class="keyword">:alto</span>)))
+
+<span class="comment">;;; insure staffing, title and font size for score.</span>
+(<a href="io-mac.html">io</a> <span class="string">"duet.eps"</span> <span class="keyword">:staffing</span> ins <span class="keyword">:size</span> 20
+    <span class="keyword">:title</span> <span class="string">"Etude for Two"</span>)
+
+(<a href="events-fn.html">events</a> (ranmeas 15 2 50 80) <span class="string">"duet.eps"</span>)</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="cmn-stream-cls.html"><code>cmn-stream</code></a> [Class]</li>
+
+</div>
+<hr class="inv"/>
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.3 $, $Date: 2005/02/13 16:16:20 $)</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>rewrite-generation</title>
+</head>
+
+<body>
+<div id="content">
+<!-- begin content -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">rewrite-generation</code> <var>pattern</var> [<var>fresh</var>]<code>)</code></dd>
+</dl>
+
+<p>
+Returns an entire generation from a <a
+href="rewrite-cls.html">rewrite</a> <var>pattern</var> as a list.
+If <var>fresh</var> is true then the generation is first rewritten
+before it is returned, otherwise the pattern's existing generation is
+returned. The default value of <var>fresh</var> is false. 
+</p>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Returning successive generations from a rewrite pattern.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">pat1</span>
+  (<a href="new-mac.html">new</a> <a href="rewrite-fn.html">rewrite</a> <span class="keyword">:of</span> '((a <span class="keyword">:-&gt;</span> (a b)) (b <span class="keyword">:-&gt;</span> c) (c <span class="keyword">:-&gt;</span> a))))
+
+(rewrite-generation pat1)
+<span class="result">&rArr;</span> (a)
+(rewrite-generation pat1 #t)
+<span class="result">&rArr;</span> (a b)
+(rewrite-generation pat1 #t)
+<span class="result">&rArr;</span> (a b c)
+(rewrite-generation pat1 #t)
+<span class="result">&rArr;</span> (a b c a)
+(rewrite-generation pat1 #t)
+<span class="result">&rArr;</span> (a b c a a b)
+(rewrite-generation pat1 #t)
+<span class="result">&rArr;</span> (a b c a a b a b c)
+(rewrite-generation pat1)
+<span class="result">&rArr;</span> (a b c a a b a b c)
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="rewrite-cls.html"><code>rewrite</code></a> [Class]</li>
+<li><a href="patterns-topic.html#pattern_classes">Pattern classes</a> [Topic]</li>
+</ul>
+
+</div> <!-- end content -->
+<hr class="inv"/>
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2005/03/17 19:41:30 $)</div>
+</div>
+</body>
+</html>

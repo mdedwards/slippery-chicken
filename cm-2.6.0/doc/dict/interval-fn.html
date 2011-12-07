@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>interval</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "interval" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><span class="syntax">(<code class="entry">interval</code> <var>arg</var> [<var>arg2</var>])</span></dd>
+</dl>
+
+
+<p>
+Encodes a typed interval from an external description specified in
+<var>arg</var> and <var>arg2</var>. If <var>arg</var> and <var>arg2</var> are both notes in the
+standard chromatic scale then a typed interval is encoded by
+"subtracting" the first note from the second such that an ascending
+interval will be encoded if <var>arg2</var> is a higher than <var>arg</var>,
+otherwise a descending interval is encoded.  If <var>arg</var> is a "note
+class" (a note with no octave number) then the encoded interval is
+always ascending regardless of <var>arg2</var>.
+</p>
+
+<p>
+If <var>arg</var> is not a note then it should name the <var>quality</var> of the
+interval and <var>arg2</var> should be its <var>size</var>.  Possible interval
+qualities and their shorthand "nicknames" are:
+</p>
+
+<blockquote>
+<table >
+<tr><td><kbd>doubly-diminished</kbd>, <kbd>ddim</kbd>, <kbd>dd</kbd></td></tr>   
+<tr><td><kbd>diminished</kbd>, <kbd>dim</kbd>, <kbd>d</kbd></td></tr>
+<tr><td><kbd>minor</kbd>, <kbd>min</kbd>, <kbd>mi</kbd></td></tr>
+<tr><td><kbd>major</kbd>, <kbd>maj</kbd>, <kbd>ma</kbd>, <kbd>mj</kbd></td></tr>
+<tr><td><kbd>perfect</kbd>, <kbd>p</kbd></td></tr>
+<tr><td><kbd>augmented</kbd>, <kbd>aug</kbd>, <kbd>a</kbd></td></tr>
+<tr><td><kbd>doubly-augmented</kbd>, <kbd>aaug</kbd>, <kbd>aa</kbd></td></tr>
+</table>
+</blockquote>
+
+<p>
+Qualities can be expressed as keywords or regular symbols.  The size
+specified in <var>arg2</var> is the positive or negative number of "letter
+steps", where 1 means unison, 2 means a second, 8 means an octave, 10
+mean a tenth, 15 means two octaves and so on.
+</p>
+
+<p>
+Some sample interval specifications:
+</p>
+
+<blockquote>
+<table >
+<tr><td>Perfect unison</td><td><kbd>(interval 'perfect 1)</kbd></td></tr>
+<tr><td>major third</td><td><kbd>(interval 'maj 3)</kbd></td></tr>
+<tr><td>augmented fourth down</td><td><kbd>(interval 'a -4)</kbd></td></tr>
+<tr><td>doubly-diminished octave</td><td><kbd>(interval 'dd 8)</kbd></td></tr>
+<tr><td>minor tenth down</td><td><kbd>(interval 'minor -10)</kbd></td></tr>
+<tr><td>perfect fifth</td><td><kbd>(interval 'p 5)</kbd></td></tr>
+<tr><td>doubly augmented seventh</td><td><kbd>(interval 'aaug 7)</kbd></td></tr>
+</table>
+</blockquote>
+
+<p>
+If <var>arg2</var> is not specified then <var>arg</var> should be a list of two
+values. In this case the first value in the list becomes the value of
+<var>arg</var> and the second value in the list becomes the value for
+<var>arg2</var>. The following four expressions all create an augmented 6th
+interval:
+</p>
+
+<blockquote>
+<table >
+<tr><td><kbd>(interval 'fs4 'dss5)</kbd></td></tr>
+<tr><td><kbd>(interval '(fs4 dss5))</kbd></td></tr>
+<tr><td><kbd>(interval 'aug 6)</kbd></td></tr>
+<tr><td><kbd>(interval '(aug 6))</kbd></td></tr>
+</table>
+</blockquote>
+
+<!-- Interaction 1 -->
+<div class="float" id="repl_0-1">
+<pre class="shell">cm&gt; <span class="input">(interval 'c4 'ds4)</span>
+86275
+cm&gt; <span class="input">(transpose 'g4 86275)</span>
+as4
+cm&gt; <span class="input">(transpose 'c4 (interval :aug 4))</span>
+fs4
+cm&gt; <span class="input">(transpose 'c4 (interval '(dim 5) ))</span>
+gf4
+cm&gt; <span class="input">(transpose 'cs4 (interval 'min -10 ))</span>
+as2
+cm&gt; <span class="input">(transpose 'es4 (interval :p 12 ))</span>
+bs5
+cm&gt; <span class="input">(transpose 'fs3 (interval '(:dd 10) ))</span>
+aff4
+cm&gt;</pre>
+</div>
+
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="decode-interval-fn.html"><kbd>decode-interval</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2003/07/07 21:27:41 $)</div>
+</div>
+</body>
+</html>
+
+

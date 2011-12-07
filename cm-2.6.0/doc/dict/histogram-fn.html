@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>histogram</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "histogram" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><span class="syntax">(<code class="entry">histogram</code> <var>data</var> <var>min</var> <var>max</var> <var>slots</var>)</span></dd>
+</dl>
+
+
+<p>
+Returns a histogram of <var>numbers</var>. <var>min</var> and <var>max</var> are
+the lower and upper bounds for values in <var>numbers</var>. 
+<var>slots</var> is the number of sampling segements between 
+low and high to count.
+</p>
+
+<!-- Interaction 1 -->
+<div class="float" id="repl_0-1">
+<pre class="shell">cm&gt; <span class="input">(histogram (loop repeat 100 collect (random 700)) 0 700 7)</span>
+(17 15 13 12 11 19 13)
+cm&gt;</pre>
+</div>
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="markov-analyze-fn.html"><kbd>markov-analyze</kbd></a><kbd>&nbsp;</kbd>[Function]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2003/07/07 21:27:41 $)</div>
+</div>
+</body>
+</html>
+
+

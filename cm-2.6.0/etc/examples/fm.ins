@@ -1,0 +1,56 @@
+;;; **********************************************************************
+;;; $Name: rel-2_6_0 $
+;;; $Revision: 1.2 $
+;;; $Date: 2005/01/13 23:53:26 $
+
+;;; An example fm instrument definition. definstrument automatically
+;;; creates a new class of CLM event called Fm and defines a slot
+;;; for each lambda parameter declared by the instrument.
+;;;
+
+(in-package :cm)
+
+(definstrument fm (time duration frequency amplitude
+                        &key (amplitude-env '(0 0 25 1 75 1 100 0))
+                        (mratio 1) (index 1) (index-env '(0 1 100 1))
+                        (degree 0) (distance 0) (reverb 0))
+  (let* ((beg (seconds->samples time))
+         (end (seconds->samples (+ time duration)))
+         (car (make-oscil :frequency frequency))
+         (mod (make-oscil :frequency (* frequency mratio)))
+         (ampf (make-env :envelope amplitude-env :scaler amplitude 
+                         :duration duration))
+         (devf (make-env :envelope index-env 
+                         :duration duration
+                         :scaler (in-hz (* frequency mratio index))))
+         (loc (make-locsig :degree degree :distance distance 
+                           :reverb reverb)))
+    (run
+     (loop for i from beg to end
+           do
+           (locsig loc i (* (env ampf) 
+                            (oscil car (* (env devf) 
+                                          (oscil mod)))))))))
+
+#|
+
+;; output 20 random Fm notes.
+
+(define (random-fm n)
+  (process repeat n
+           output
+           (new fm :time (now) :amplitude .15 
+                :duration .1 
+                :frequency (between 220 880)
+                :index (interp (now) 0 0 10 10))
+           wait .25))
+
+;; write an aiff file.
+
+(events (random-fm 20) "test.aiff" 0 :trace-output t :play t)
+
+;;; write a .clm file and autload it.
+
+(events (random-fm 20) "test.clm" 0 :output "foo.aiff")
+
+|#

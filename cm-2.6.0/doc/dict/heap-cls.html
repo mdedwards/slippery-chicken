@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>heap</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "heap" -->
+<dl class="dictsyntax">
+<dt>[Class]</dt>
+<dd><code class="entry">heap</code></dd>
+</dl>
+
+
+<p>
+Generates  random permutations of its elements (sampling without
+replacement).
+</p>
+
+<p>
+<code class="entry">heap</code> supports the following slot initializations:
+</p>
+<dl>
+
+<dt><code class="keyword">:state</code> <var>random-state</var></dt>
+<dd>
+Sets the random state object of the pattern
+to <var>random-state</var>. Defaults to <kbd>*random-state*</kbd>.
+</dd>
+</dl>
+
+<p>
+See <a href="patterns-topic.html#pattern_inits">generic pattern
+initializations</a> for documentation on additional keyword
+initializations to the pattern.
+</p>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> The heap pattern.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">pat1</span> (<a href="new-mac.html">new</a> heap <span class="keyword">:keynums</span> '(a4 b c5 d)))
+
+(<a href="next-fn.html">next</a> pat1 #t)
+<span class="result">&rArr;</span> (69 72 74 71)
+(<a href="next-fn.html">next</a> pat1 #t)
+<span class="result">&rArr;</span> (72 74 71 69)
+(<a href="next-fn.html">next</a> pat1 #t)
+<span class="result">&rArr;</span> (72 71 69 74)
+(<a href="next-fn.html">next</a> pat1 #t)
+<span class="result">&rArr;</span> (71 69 74 72)
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> Two levels of heaps.
+</p>
+<pre class="code">
+(<span class="special">define</span> <span class="defined">pat1</span>
+  (<a href="new-mac.html">new</a> heap
+       <span class="keyword">:of</span> (list (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:notes</span> '(c4 cs d ef e f))
+                 (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:of</span> (list (<a href="new-mac.html">new</a> heap <span class="keyword">:notes</span> '(c3 cs d ef))
+                                      (<a href="new-mac.html">new</a> heap <span class="keyword">:notes</span> '(e3 f fs g))
+                                      (<a href="new-mac.html">new</a> heap <span class="keyword">:notes</span> '(gs3 a as b))))
+                 (<a href="new-mac.html">new</a> <a href="cycle-cls.html">cycle</a> <span class="keyword">:notes</span> '(fs2 g gs a as b)))))
+
+(<span class="special">define</span> (<span class="defined">play-pat</span> reps pat rate)
+  (<a href="process-mac.html">process</a> repeat reps
+           for k = (<a href="next-fn.html">next</a> pat)
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>) <span class="keyword">:keynum</span> k
+                       <span class="keyword">:duration</span> (* rate 1.5))
+           wait rate))
+
+(<a href="events-fn.html">events</a> (play-pat 120 pat1 .1) <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="patterns-topic.html#pattern_classes">Pattern classes</a> [Topic]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.2 $, $Date: 2005/03/13 20:42:13 $)</div>
+</div>
+</body>
+</html>
+
+

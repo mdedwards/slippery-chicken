@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>ran</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">ran</code> {<var>keyword</var> <var>value</var>}*<code>)</code></dd>
+</dl>
+
+
+<p>
+Generates random numbers in a variety of distributions according to its keyword arguments.
+</p>
+
+<p><code class="entry">ran</code> supports the following keyword arguments:
+</p>
+<dl>
+
+<dt><code class="keyword">:below</code> <var>number</var></dt>
+<dd>
+Sets the exclusive upper bounds for random number generation. Defaults to a value
+specific to the type of distribution specified, usually 1.0.
+</dd>
+
+<dt><code class="keyword">:from</code> <var>number</var></dt>
+<dd>
+Sets the inclusive upper bounds for random number generation. Defaults to a value
+specific to the type of distribution, usually 0.0.
+</dd>
+
+<dt><code class="keyword">:type</code></dt>
+<dd>
+Sets the distribution for random number generation to type specified 
+as a symbol or keyword.  Defaults to <code class="keyword">:uniform</code>.
+
+<p>
+<code class="entry">ran</code> supports the following distribution types:
+</p>
+
+<dl>
+  <dt><code class="keyword">:uniform</code></dt>
+  <dd>Equal probability distribution.
+  </dd>
+
+  <dt><code class="keyword">:low-pass</code></dt>
+  <dd>Likelihood of lower numbers is greater then higher
+  numbers. Density is f(x)=2*(1-x) for {x 0&lt;1} and mean is .2929.
+  </dd>
+
+  <dt><code class="keyword">:high-pass</code></dt>
+  <dd>Likelihood if higher numbers is greater than lower numbers. 
+      Density is f(x)=2*(1-x) for {x 0&lt;1} and mean is .2929. 
+  </dd>
+
+  <dt><code class="keyword">:mean</code></dt>
+  <dd>Likelihood of mid-range numbers is greater than lower or higher
+  numbers. Mean is n/2.
+  </dd>
+
+  <dt><code class="keyword">:beta</code></dt>
+  <dd>
+  The <span class="keyword">:a</span> and <span
+  class="keyword">:b</span> parameters determine the shape of the
+  distribution. When a=b=1 the distribution is uniform. When a=b, the
+  distribution is symmetric around .5.  When a&lt;1 and b&lt;1 then
+  the density of larger and smaller numbers increases. When a&gt;1 and
+  b&gt;1, density is similar to the gaussian distribution.
+  </dd>
+
+  <dt><code class="keyword">:exponential</code></dt>
+  <dd>Returns a floating point value greater than zero.  The <code
+  class="keyword">:a</code> parameter is a stretching factor;
+  increasing its value "prefers" smaller numbers. The distribution is
+  unbounded but when a=1 then %99.9 of the time the value returned
+  will be than 6.9077554, i.e. -log(.001). The distribution density is
+  f(x)=(exp -x) with a mean of 1.0.
+  </dd>
+
+  <dt><code class="keyword">:gaussian</code></dt>
+  <dd>Gaussian (normal) distribution returns an unbounded value. The
+  spread (standard deviation) is 1.0 centered at 0, so 68.26% of the
+  results are between -1 and 1 inclusive and 99.74% of the results are
+  between -3 and 3 inclusive.
+  </dd>
+
+  <dt><code class="keyword">:cauchy</code></dt>
+  <dd>Returns an unbounded value. The density function is a bell
+  shaped curve centered at 0 similar to a normal distribution but with
+  more values at the extremes.  The mean and standard deviation of the
+  Cauchy distribution are undefined.  If parameter <span
+  class="keyword">:a</span> is true then only positive values are
+  returned.  Density is f(x)=1/(pi(1 + x^2)).
+  </dd>
+
+  <dt><code class="keyword">:poisson</code></dt>
+  <dd>A discrete distribution: returns positive integer values,
+  theoretically unbounded but practically limited by the shape
+  parameter. Parameter <code class="keyword">:a</code> controls the
+  distribution's shape and must be positive: the mean is a and the
+  standard deviation is sqrt(a).
+  </dd>
+
+  <dt><code class="keyword">:gamma</code></dt>
+  <dd>Returns a floating point value greater than 0. Parameter <code
+  class="keyword">:a</code> controls the distribution's shape and
+  should be a positive integer (if a non-integer is provided, the
+  value is rounded.) When a=1, the distribution is the same as
+  exponential. As its value increases, the probability density
+  function becomes a curve with mean=a and standard deviation =
+  sqrt(a)
+  </dd>
+</dl>
+
+</dd>
+
+<dt>
+<code class="keyword">:a</code> <var>number</var></dt>
+<dd>
+A control parameter whose interpretation depends on the distribution type.
+</dd>
+
+
+<dt>
+<code class="keyword">:b</code> <var>number</var></dt>
+<dd>
+A control parameter whose interpretation depends on the distribution type.
+</dd>
+
+<dt><code class="keyword">:state</code> <var>state</var></dt>
+<dd>
+The random state object. The value defaults to <code>*random-state*</code>.
+</dd>
+
+</dl>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> The <code>ran</code> function.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">play-ran</span> type len rate key1 key2)
+  (<a href="process-mac.html">process</a> repeat len
+           for r = (ran <span class="keyword">:type</span> type)
+           for k = (<a href="rescale-fn.html">rescale</a> r 0.0 1.0 key1 key2)
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>)
+                       <span class="keyword">:keynum</span> k
+                       <span class="keyword">:duration</span> (* rate 1.5))
+           wait rate))
+
+<span class="comment">;;; Playing uniform distribution.</span>
+(<a href="events-fn.html">events</a> (play-ran '<span class="keyword">:uniform</span> 100 .1 20 100)
+        <span class="string">"test.mid"</span> <span class="keyword">:channel-tuning</span> 4)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+<span class="comment">;;; Playing the low pass distribution.</span>
+(<a href="events-fn.html">events</a> (play-ran '<span class="keyword">:low</span> 50 .1 20 100)
+        <span class="string">"test.mid"</span> <span class="keyword">:channel-tuning</span> 4)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+<span class="comment">;;; Playing the high pass distribution.</span>
+(<a href="events-fn.html">events</a> (play-ran <span class="keyword">:high</span> 50 .1 20 100)
+        <span class="string">"test.mid"</span> <span class="keyword">:channel-tuning</span> 4)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> The beta distribution.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">rain</span> len rate env key1 key2 amp)
+  (<a href="process-mac.html">process</a> for i below len
+           for e = (<a href="interpl-fn.html">interpl</a> (/ i len) env)
+           for v = (<a href="vary-fn.html">vary</a> rate e <span class="keyword">:above</span>)
+           <span class="comment">;; rescale e to control shape of beta distribution
+           ;; when e=0 z=.4, and when e=1 z=1.</span>
+           for z = (<a href="rescale-fn.html">rescale</a> e 0 1 1 .4)
+           for b = (ran <span class="keyword">:type</span> '<span class="keyword">:beta</span> <span class="keyword">:a</span> z <span class="keyword">:b</span> z)
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (+ (<a href="now-fn.html">now</a>) v)
+                       <span class="keyword">:duration</span> v
+                       <span class="keyword">:keynum</span> (<a href="between-fn.html">between</a> key1 key2)
+                       <span class="keyword">:amplitude</span> (<a href="rescale-fn.html">rescale</a> b 0 1 .1 amp))
+           wait rate))
+
+(<span class="special">define</span> <span class="defined">rain-env</span> '(0 1 .4 0 .6 0 1 1))
+
+(<a href="events-fn.html">events</a> (list (rain 80 .5 rain-env 70 90 .8)
+              (rain 40 1 rain-env 40 60 .8)
+              (rain 20 2 rain-env 20 40 .9))
+        <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="between-fn.html"><code>between</code></a> [Function]</li>
+<li><a href="drunk-fn.html"><code>drunk</code></a> [Function]</li>
+<li><a href="odds-fn.html"><code>odds</code></a> [Function]</li>
+<li><a href="pick-fn.html"><code>pick</code></a> [Function]</li>
+<li><a href="pickl-fn.html"><code>pickl</code></a> [Function]</li>
+<li><a href="ranseg-fn.html"><code>ransegs</code></a> [Function]</li>
+<li><a href="shuffle-fn.html"><code>shuffle</code></a> [Function]</li>
+<li><a href="vary-fn.html"><code>vary</code></a> [Function]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.4 $, $Date: 2005/03/21 17:53:09 $)</div>
+</div>
+</body>
+</html>
+
+

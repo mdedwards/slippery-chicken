@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>markov-analyze</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "markov-analyze" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><span class="syntax">(<code class="entry">markov-analyze</code> <var>list</var> [<code class="keyword">:order</code> <var>i</var>] [<code class="keyword">:print?</code> <var>b</var>] [<code class="keyword">:pattern?</code> <var>b</var>] [<code class="keyword">:key</code> <var>l</var>])</span></dd>
+</dl>
+
+
+<p>
+Performs an analysis of elements in <var>list</var> and prints or returns the results.
+</p>
+
+<p><code class="entry">markov-analyze</code> supports the following keyword arguments:
+</p>
+<dl>
+
+
+
+<dt><code class="keyword">:order</code> <var>number</var></dt>
+<dd>
+
+The order of the Markov analysis, defaults to 1. 
+</dd>
+
+
+<dt><code class="keyword">:print</code> {<var>true</var> | <code class="keyword">:table</code> | <code class="keyword">:pattern</code> | <var>false</var>}</dt>
+<dd>
+
+If the value is true (the default) then two results are printed, a
+transition table and a pattern description. The transition table that
+is printer details the distribution of inputs and outputs in the data.
+The pattern description that is printed will instantiate that table if
+it is evalutated. If <code class="keyword">:print</code> is just <code class="keyword">:table</code> or <code class="keyword">:pattern</code> 
+then only that form of the analysis is printed.  If <code class="keyword">:print</code>
+is false then no analysis is printed.
+</dd>
+
+
+<dt><code class="keyword">:pattern</code> {<var>false</var> | <var>true</var>}</dt>
+<dd>
+
+If false (the default) then <kbd>markov-analyze</kbd> does not
+return values. If <code class="keyword">:pattern?</code> is true then a
+markov pattern based on the analysis transition table is returned.
+</dd>
+
+
+<dt><code class="keyword">:key</code> <var>function</var></dt>
+<dd>
+
+A Lisp function to apply to each item in <var>sequence</var>. <var>function</var>
+should take one argument and return the actual datum to be analyzed.
+</dd>
+
+
+<dt><code class="keyword">:sort</code> {<var>list</var> | <var>function</var>}</dt>
+<dd>
+
+Specifies the order of labels in the columns and rows of
+the table. If a list of labels
+is specified its ordering determines
+the column order of the table. If <code class="keyword">:sort</code> is a function it
+is passed to <kbd>sort</kbd> to sort the table labels.
+</dd>
+
+
+<dt><code class="keyword">:decimals</code> <var>number</var></dt>
+<dd>
+
+Specifies the number of decimals to use when printing
+the table. Defaults to 3.
+</dd>
+
+</dl>
+
+
+
+
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="markov-cls.html"><kbd>markov</kbd></a><kbd>&nbsp;</kbd>[Class]</li>
+</ul>
+
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.1 $, $Date: 2003/07/07 21:27:41 $)</div>
+</div>
+</body>
+</html>
+
+

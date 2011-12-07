@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>make-cm</title>
+</head>
+<body>
+<div id="content">
+
+
+<!-- Entry: "make-cm" -->
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><span class="syntax">(<code class="entry">make-cm</code> 
+[<code class="keyword">:save-image</code> <var>bool</var>] 
+[<code class="keyword">:delete-fasls</code> <var>bool</var>] 
+[<code class="keyword">:bin-directory</code> <var>dir</var>] 
+[<code class="keyword">:scheme</code> <var>bool</var>]
+[<code class="keyword">:verbose</code> <var>bool</var>] 
+[<code class="keyword">:force</code> <var>bool</var>]
+[<code class="keyword">:extensions</code> <var>bool</var>] 
+)</span></dd>
+</dl>
+
+<p>
+Compiles, loads and saves the Common Music application according to 
+its keyword build parameters.  This function is called automatically
+if you build Common Music in its default configuration by loading the file
+<a href="../../src/cm.lisp">src/cm.lisp</a>.
+To customize the build process, or to enable interactive prompting for each
+build parameter during the make process, load the file
+<a href="../../src/make.lisp">src/make.lisp</a> and
+call <code>make-cm</code> by hand.
+
+Note that the function's name is interned as an internal symbol of the
+CL-USER package.
+
+<!--
+Loading src/make.lisp interns the <code>make-cm</code> function in the
+CL-USER package, not the CM package. -->
+
+</p>
+<p><code class="entry">make-cm</code> supports the following keyword build parameters:
+</p>
+
+<dl>
+
+<dt><code class="keyword">:save-image</code> {<var>true</var> |
+<var>false</var> | <code class="keyword">:if-no-compile</code>}</dt>
+<dd>
+If <var>true</var> then <code>make-cm</code> saves Common Music in a
+lisp image file (cm.img) and immediately exits from the current Lisp
+session.  If the value is <code class="keyword">:if-no-compile</code>
+than an image is saved only if no source files are compiled during the
+make pass. If the value is <var>false</var> then no image file is
+saved. The default value is <var>false</var>.
+</dd>
+
+<dt><code class="keyword">:delete-fasls</code> {<var>true</var> |
+<var>false</var>}</dt>
+<dd>
+If <var>true</var> then compiled files are deleted after an image has
+been savedm, otherwise they are not deleted.  The default value is
+<var>true</var> if <code class="keyword">:save-image</code> is <var>true</var>
+otherwise the default value is <var>false</var>.
+</dd>
+
+
+<dt><code class="keyword">:bin-directory</code> {<var>true</var>
+| <var>false</var> | <var>string</var> }</dt>
+<dd>
+Specifies the directory in which compiled files and (optionally) image
+files are saved to. You must have write permission in this
+directory. If the value is <var>true</var> then the binary directory
+is set to the bin/ subdirectory of the Common Music installation
+directory. If the value is <var>false</var> (or if you do not have
+write permission in the bin directory) then no compilation or image
+saving will occur but source files will still be loaded.  Othewise,
+the value should a fully specified pathname (string) to the directory
+in which to save binaries. The default value is <var>true</var>.
+</dd>
+
+<dt><code class="keyword">:scheme</code> {<var>true</var> |
+<var>false</var>}</dt>
+<dd>
+If <var>true</var> then Scheme syntax is enabled in Common Lisp, if
+<var>false</var> it is not. The default value is <var>true</var>.
+</dd>
+
+
+<dt><code class="keyword">:verbose</code> {<var>true</var> |
+<var>false</var>}</dt>
+<dd>
+If <var>true</var> then information about the make progress is printed
+to the terminal, if <var>false</var> it is not.  A <var>false</var>
+value will not stop compiler warnings or other implementation output
+from occuring. The default value is <var>true</var>.
+</dd>
+
+<dt><code class="keyword">:extensions</code> {<var>list</var> |
+<var>false</var>}</dt>
+<dd>
+A list of user-supplied extensions to process as CM loads up. Each
+entry in the list should be a function to evaluate or a filename
+(string) to load. The extensions list is normally processed inside the
+Common Music package after the system loads itself. To process some
+(or all) of the entries before any CM files are loaded, add the
+keyword <span class="keyword">:before</span> to the front of the list.
+Preprocessing can be turned off for later entries in the extensions
+list by including the keyword <span class="keyword">:after</span> in
+front of those entries that should be be processed in the normal,
+post-loading manner.
+</dd>
+
+<!--
+<dt><code class="keyword">:make-file</code> {<var>string</var> |
+<var>true</var> | <var>false</var>}</dt>
+<dd>
+A string name or pathname for saving a make-script to rebuild the
+application using current build parameter values. If the value is
+<var>true</var> then the file "makecm.lisp" is saved in the lib/
+subdirectory of the run directory. If the value is <var>false</var>
+then no make file is saved.
+</dd>
+-->
+
+<!-- 
+<dt><code class="keyword">:run-command</code> {<var>string</var> |
+<var>true</var> | <var>false</var>}</dt>
+<dd>
+A string name or pathname to save a command script that starts the CM
+application running inside <a href="../emacs.html">Emacs or XEmacs</a>,
+or a terminal if neither editor can be located. If the value is
+<var>true</var> then the shell script is named <a
+href="cm-script.html">cm</a> and saved in the run directory. If the
+value is <var>false</var> then no script file is saved.
+</dd>
+-->
+
+<dt><code class="keyword">:force</code> {<var>true</var> |
+<var>false</var>}</dt>
+<dd>
+Determines what to do if <code>make-cm</code> is called in a Lisp
+environment that already contains Common
+Music. Normally, <code>make-cm</code> should be invoked in a fresh
+Lisp session without CM already loaded. If the CM package is already
+present when <code>make-cm</code> is called then the function will
+immediately return <code>nil</code> without doing anything unless its
+<code class="keyword">:force</code> parameter is explicitly set
+to <code>t</code>. The default value is <var>false</var>.
+</dd>
+
+</dl>
+
+<!-- Examples -->
+<h4>Examples:</h4>
+
+
+<!-- Interaction -->
+<div class="float" >
+<p class="captxt">Build Common Music in its default configuration.</p>
+<pre class="shell">&gt; <span class="input">(load "/Lisp/cm-2.4.0/src/cm.lisp")</span>
+; Compiling /Lisp/cm-2.4.0/src/clm-stubs.lisp.
+; Loading /Lisp/cm-2.4.0/bin/clm-stubs.pfsl.
+<em>[...build output deleted...]</em>
+; Saving start-up script '/Lisp/cm-2.4.0/bin/cm'.
+; Copying application files...
+; Garbage collecting...
+</pre>
+</div>
+
+<!-- Interaction -->
+<div class="float" >
+<p class="captxt">Build using custom bin directory and not deleting compiled files 
+ after image save.</p>
+<pre class="shell">&gt; <span class="input">(load "/Lisp/cm-2.4.0/src/make.lisp")</span>
+#P"/Lisp/cm-2.4.0/src/make.lisp"
+&gt; <span class="input">(make-cm :bin-directory "/Lisp/bin/cm" :delete-fasls nil)</span>
+; Compiling /Lisp/cm-2.4.0/src/clm-stubs.lisp.
+; Loading /Lisp/bin/cm-2.4.0/clm-stubs.pfsl.
+<em>[...build output deleted...]</em>
+; Garbage collecting...
+</pre>
+</div>
+
+<!-- Interaction -->
+<div class="float" >
+<p class="captxt">Build using interactive prompting.</p>
+<pre class="shell">&gt; <span class="input">(load "/Lisp/cm-2.4.0/src/make.lisp")</span>
+#P"/Lisp/cm-2.4.0/src/make.lisp"
+&gt; <span class="input">(make-cm :prompt t)</span>
+Making Common Music from '/Lisp/cm-2.4.0/'.
+Type '?' for help, '^' to abort and
+Return to accept defaults shown in [].
+
+Binary directory: [/Lisp/cm-2.4.0/bin/] <span class="input">?</span>
+Type the full pathname to the directory that you want compiled files
+and/or the Common Music image file to be saved in. You must have write
+permission in this directory. 
+Binary directory: [/Lisp/cm-2.4.0/bin/]
+Include Scheme compatibility? (Y/N): [Y] 
+Save CM image file? (Y/N/:if-no-compile): [Y]
+Delete compiled files after saving image?: [Y] <span class="input">n</span>
+Making Common Music with build parameters:
+  :bin-directory "/Lisp/cm-2.4.0/bin/"
+  :scheme t
+  :save-image t
+  :delete-fasls nil
+
+Are these values correct? (Y/N): <span class="input">y</span>
+
+; Compiling /Lisp/cm-2.4.0/src/clm-stubs.lisp.
+; Loading /Lisp/cm-2.4.0/bin:/clm-stubs.pfsl.
+<em>[...build output deleted...]</em>
+; Garbage collecting...
+; Saving application image.
+; Bye!
+</pre>
+</div>
+
+
+<!-- See also -->
+<h4>See Also:</h4>
+<ul>
+<li><a href="cm-sh.html"><kbd>cm.sh</kbd></a><kbd>&nbsp;</kbd>[Script]</li>
+</ul>
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.10 $, $Date: 2004/06/19 16:17:45 $)</div>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

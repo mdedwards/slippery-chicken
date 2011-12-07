@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<style type="text/css" media="all">
+@import "../css/cm.css";
+</style>
+<title>between</title>
+</head>
+<body>
+<div id="content">
+
+<dl class="dictsyntax">
+<dt>[Function]</dt>
+<dd><code>(</code><code class="entry">between</code> <var>lb</var> <var>ub</var> [<var>avoid</var>] [<var>state</var>]<code>)</code></dd></dl>
+
+<p>
+Returns a random number equal to or greater than <var>lb</var> but
+less than <var>ub</var>. If both <var>lb</var> and <var>ub</var> are
+integers then an integer value is returned, otherwise a floating point
+value is returned.  If <var>avoid</var> is specified then the random
+value selected will not equal it. The optional random <var>state</var>
+defaults to <code>*random-state*</code>.
+</p>
+
+<h4>Examples:</h4>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 1.</span> Random selection using <code>between</code>.
+</p>
+<pre class="code">
+(between 1 3)
+<span class="result">&rArr;</span> 2
+(between 1 2.0)
+<span class="result">&rArr;</span> 1.8205206
+(between 1 1)
+<span class="result">&rArr;</span> 1
+<span class="comment">;;; random integers without direct repetition</span>
+(<span class="special">loop</span> repeat 10 for n = (between 1 5 n) collect n)
+<span class="result">&rArr;</span> (4 2 3 4 1 4 2 3 1 4)
+</pre>
+</div>
+
+<div class="float">
+<p class="captxt">
+<span class="floatlabel">Example 2.</span> A random process using <code>between</code>.
+</p>
+<pre class="code">
+(<span class="special">define</span> (<span class="defined">play-between</span> lo hi k1 k2 r1 r2 a1 a2 c1 c2)
+  (<a href="process-mac.html">process</a> repeat (between lo hi)
+           for k = (between k1 k2 k) <span class="comment">; no repeated note</span>
+           for r = (between r1 r2)
+           for d = (* r (between .5 1.5))
+           for a = (between a1 a2)
+           for c = (between c1 c2)
+           output (<a href="new-mac.html">new</a> <a href="midi-cls.html">midi</a> <span class="keyword">:time</span> (<a href="now-fn.html">now</a>) 
+                       <span class="keyword">:keynum</span> k
+                       <span class="keyword">:amplitude</span> a 
+                       <span class="keyword">:duration</span> d)
+           wait r))
+
+(<a href="events-fn.html">events</a> (play-between 10 20 30 60 .5 1.5 .2 .8 0 6)
+        <span class="string">"test.mid"</span>)
+<span class="result">&rArr;</span> <span class="string">"test.mid"</span>
+</pre>
+</div>
+
+<h4>See also:</h4>
+<ul>
+<li><a href="drunk-fn.html"><code>drunk</code></a> [Function]</li>
+<li><a href="odds-fn.html"><code>odds</code></a> [Function]</li>
+<li><a href="pick-fn.html"><code>pick</code></a> [Function]</li>
+<li><a href="pickl-fn.html"><code>pickl</code></a> [Function]</li>
+<li><a href="ran-fn.html"><code>ran</code></a> [Function]</li>
+<li><a href="ransegs-fn.html"><code>ransegs</code></a> [Function]</li>
+<li><a href="shuffle-fn.html"><code>shuffle</code></a> [Function]</li>
+<li><a href="vary-fn.html"><code>vary</code></a> [Function]</li>
+</ul>
+
+</div>
+<hr class="inv"/>
+
+<!-- Footer -->
+<div id="footer">
+<div id="version">$Name: rel-2_6_0 $</div>
+<div id="cvs-info">($Revision: 1.5 $, $Date: 2005/03/21 17:52:57 $)</div>
+</div>
+</body>
+</html>
+
+

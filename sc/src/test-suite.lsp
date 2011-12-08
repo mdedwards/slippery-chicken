@@ -20,8 +20,6 @@
 
 (defvar *test-name* nil)
 
-;;; MDE removed named-object-p: now in class
-
 (defmacro with-gensyms ((&rest names) &body body)
   "Generate code that expands into a LET that binds each named variable to a
   GENSYM'd symbol"
@@ -192,3 +190,4 @@
     (test-assoc-list)))
 
 ;;; MDE: shouldn't we then call test-all in this file?
+(test-all)

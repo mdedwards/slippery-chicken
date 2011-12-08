@@ -50,6 +50,7 @@
 (defun report-result (result form)
   "Report the results of a single test case. Called by 'check."
   ;;; MDE: shouldn't we only print if it fails?
+  ;;; MDE: put in a line break or two
   (format t "~:[FAIL~;pass~] ... ~a: ~a~%" result *test-name* form)
   result)
 

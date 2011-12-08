@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified: 21:59:59 Mon Feb 28 2011 ICT
+;;; $$ Last modified: 21:19:24 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -65,8 +65,7 @@
    ;; beats per minute, i.e. the actual tempo
    (bpm :accessor bpm :type number :initarg :bpm :initform 60.0)
    ;; e.g. "Allegro con moto"
-   (description :accessor description :type string :initarg :description
-                :initform nil)
+   (description :accessor description :initarg :description :initform nil)
    ;; the quarter note tempo, no matter what beat is given
    (qtr-bpm :accessor qtr-bpm :type number :initform -1)
    ;; the number of microseconds (usecs) per MIDI quarter note

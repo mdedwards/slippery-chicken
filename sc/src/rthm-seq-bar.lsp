@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 19:43:55 Wed Dec  7 2011 ICT
+;;; $$ Last modified: 21:18:45 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -148,11 +148,11 @@
    ;; attach a rehearsal letter to the bar line?
    ;; 31.1.11 NB in lilypond this will be attached to the last note in the bar
    ;; and actually goes on the bar line at the end of this bar.
-   (rehearsal-letter :accessor rehearsal-letter :type string :initform nil)
+   (rehearsal-letter :accessor rehearsal-letter :initform nil)
    ;; which sequenz number of the section is this?  definitely 0-based
-   (nth-seq :accessor nth-seq :type integer :initform nil)
+   (nth-seq :accessor nth-seq :initform nil)
    ;; which bar number of the sequenz is this?
-   (nth-bar :accessor nth-bar :type integer :initform nil)
+   (nth-bar :accessor nth-bar :initform nil)
    ;; 30/3/07 when writing parts we can get get-cmn-data to ignore the bar if
    ;; it's part of a multi-bar rest.  This slot is set automatically in
    ;; sc::multi-bar-rests and will be T if the bar is part of a multi-bar rest

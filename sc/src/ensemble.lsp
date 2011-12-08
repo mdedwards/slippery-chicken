@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 19:33:07 Fri Mar 19 2010 GMT
+;;; $$ Last modified: 21:10:51 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -74,7 +74,7 @@
    ;; cloned. The instruments list contains a simple symbol (id for lookup into
    ;; the instrument-palette) instead of a new instrument
    ;; definition/instantiation.
-   (instrument-palette :accessor instrument-palette :type ensemble 
+   (instrument-palette :accessor instrument-palette
                        :initarg :instrument-palette :initform nil))) 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 13:05:17 Sat Feb 26 2011 ICT
+;;; $$ Last modified: 21:13:07 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -67,9 +67,8 @@
 
 (defclass instrument (linked-named-object)
   ;; the name that should appear on this instrument's staff in the score
-  ((staff-name :accessor staff-name :type string :initarg :staff-name 
-               :initform nil)
-   (staff-short-name :accessor staff-short-name :type string :initarg 
+  ((staff-name :accessor staff-name :initarg :staff-name :initform nil)
+   (staff-short-name :accessor staff-short-name :initarg 
                      :staff-short-name :initform nil)
    ;; the lowest written note of the ins, given as a note symbol, converted to
    ;; pitch object.
@@ -111,9 +110,9 @@
    ;; whether in score, this instrument should write bar-lines or not; given as
    ;; an integer which specifies for how many instruments above this one the
    ;; bar line should be drawn (for grouping systems).
-   (score-write-bar-line :accessor score-write-bar-line :type integer 
+   (score-write-bar-line :accessor score-write-bar-line
                          :initarg :score-write-bar-line :initform 1)
-   (largest-fast-leap :accessor largest-fast-leap :type number 
+   (largest-fast-leap :accessor largest-fast-leap  
                       :initarg :largest-fast-leap :initform nil)
    ;; when choosing pitches, we can try to select the highest or lowest,
    ;; otherwise if nil, then we go for the middle (should be nil 'high or 'low)
@@ -125,8 +124,8 @@
    ;; function that can select chords for the instrument.  NB This should be a
    ;; symbol not a function object, so when making instruments just 'my-fun not
    ;; #'my-fun 
-   (chord-function :accessor chord-function :type function 
-                   :initarg :chord-function :initform nil)
+   (chord-function :accessor chord-function :initarg :chord-function
+                   :initform nil)
    ;; we might want to limit our instrument to playing a certain subset of a
    ;; set (for instance to select chords); if so, then set the following slot
    ;; to the id of the subset--obviously this means that this subset would have

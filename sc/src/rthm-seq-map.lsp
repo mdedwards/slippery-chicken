@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 13:41:18 Wed Feb  9 2011 ICT
+;;; $$ Last modified: 21:23:42 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -73,7 +73,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass rthm-seq-map (sc-map)
-  ((num-players :accessor num-players :type integer :initform nil)
+  ((num-players :accessor num-players :initform nil)
    ;; 15.2.10 allow players to be specified rather than just auto-generated so
    ;; that the rthm-chain subclass can specify it.
    (players :accessor players :type list :initarg :players :initform nil)))

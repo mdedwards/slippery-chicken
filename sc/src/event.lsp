@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:04:15 Thu Nov  3 2011 GMT
+;;; $$ Last modified: 21:30:24 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -64,9 +64,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass event (rhythm)
-  ((start-time :accessor start-time :type float :initarg :start-time 
-               :initform nil)
-   (end-time :accessor end-time :type float :initform nil)
+  ((start-time :accessor start-time :initarg :start-time :initform nil)
+   (end-time :accessor end-time :initform nil)
    ;; either a pitch or a chord object
    (pitch-or-chord :accessor pitch-or-chord :initarg :pitch-or-chord
                    :initform nil) 
@@ -94,7 +93,7 @@
                     :start-time-qtrs :initform -1)
     ;; 4/5/06 a list e.g. '(6 8) that will be used to create a midi
    ;; time-signature event when this event is output to a midi file via cm.
-   (midi-time-sig :accessor midi-time-sig :type list :initarg :midi-time-sig 
+   (midi-time-sig :accessor midi-time-sig :initarg :midi-time-sig 
                   :initform '())
    ;; these will be set automatically in sc-make-sequenz; this is a list of
    ;; two-element lists specifying the channel and the program; should be 1 or
@@ -109,8 +108,7 @@
    (instrument-change :accessor instrument-change :type list :initform nil)
    ;; store the tempo when a change is made, otherwise leave at nil.  NB this
    ;; is a tempo object, not a simple bpm number.  
-   (tempo-change :accessor tempo-change :type tempo :initarg :tempo-change
-                 :initform nil)
+   (tempo-change :accessor tempo-change :initarg :tempo-change :initform nil)
    ;; whether to display the tempo-change or not
    (display-tempo :accessor display-tempo :type boolean 
                   :initarg :display-tempo :initform nil)

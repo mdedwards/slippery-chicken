@@ -46,7 +46,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 09:48:49 Tue Mar  1 2011 ICT
+;;; $$ Last modified: 21:14:34 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -84,7 +84,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass sc-map (recursive-assoc-list)
-  ((palette :accessor palette :type palette :initarg :palette :initform nil)
+  ((palette :accessor palette :initarg :palette :initform nil)
    ;; often sc-map data is generated algorithmically but individual elements of
    ;; the lists need to be changed; this can be done here with a list of lists
    ;; of the type (((1 2 vla) 3 20b) ((2 3 vln) 4 16a)); each list is a change,

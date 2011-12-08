@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 17:08:47 Wed Dec  7 2011 ICT
+;;; $$ Last modified: 19:33:38 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -630,7 +630,10 @@
                         902114504 1056113704 3287833608
                         3868596840 1609723208 2448829096
                         2364715144 3788915944)))
-         #+openmcl
+         #+ccl
+         #.(CCL::INITIALIZE-MRG31K3P-STATE 2022741898 1381830813 2119763740
+                                           188361518 1311787362 653778830)
+         #+(and openmcl (not ccl))
          #.(RANDOM-STATE 27764 35226)
          )
        (current-state 

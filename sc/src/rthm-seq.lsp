@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 17:22:45 Wed Dec  7 2011 ICT
+;;; $$ Last modified: 21:16:42 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -94,7 +94,7 @@
    ;; 25.1.11 another id/tag made up of the time signatures of the bars, so if
    ;; we had a 2/4 and a 3/4 bar, this would be "02040304" NB this is only
    ;; created and stored if we call get-time-sigs-tag
-   (time-sigs-tag :accessor time-sigs-tag :type string :initform nil)
+   (time-sigs-tag :accessor time-sigs-tag :initform nil)
    (num-rests :accessor num-rests :type integer :initform 0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

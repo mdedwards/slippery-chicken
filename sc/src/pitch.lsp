@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 12:33:54 Sat Oct 22 2011 BST
+;;; $$ Last modified: 20:22:04 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -62,33 +62,31 @@
 (defclass pitch (linked-named-object)
   ;; the closest midi-note (integer, c4 = 60) to this pitch; when micro-
   ;; tones, then this will always be the chromatic tone 1/4 tone lower.
-  ((midi-note :accessor midi-note :type integer :initarg :midi-note 
-              :initform nil)
+  ((midi-note :accessor midi-note :initarg :midi-note :initform nil)
    ;; the midi pitch-bend (in semitones) to create microtones NB this is always
    ;; upwards 
    (pitch-bend :accessor pitch-bend :type float :initform 0.0)
    (degree :accessor degree :type integer :initarg :degree :initform -1)
-   (score-note :accessor score-note :type string :initform nil)
+   (score-note :accessor score-note :initform nil)
    ;; the given id minus the accidental e.g. cs4 = c4, dqf2 = d2
    (white-note :accessor white-note :type symbol :initform nil)
    ;; the number of the note in a white-note octave, i.e. c = 0, d = 1, e = 2
    ;; (in octave 0) .... gs4 = 4 + (4 x 7) = 32
-   (white-degree :accessor white-degree :type integer :initform nil)
+   (white-degree :accessor white-degree :initform nil)
    ;; 22.10.11 always the note below a microtone as pitch-bend is always up
    (nearest-chromatic :accessor nearest-chromatic :type symbol :initform nil)
    ;; just the accidental part of the note e.g. s, f or qf etc.
    (accidental :accessor accidental :type symbol :initform nil)
-   (frequency :accessor frequency :type float :initarg :frequency
-              :initform nil)
+   (frequency :accessor frequency :initarg :frequency :initform nil)
    (midi-channel :accessor midi-channel :type integer :initarg :midi-channel
                  :initform 0)
    (octave :accessor octave :type integer :initform -1)
    (natural :accessor natural :type boolean :initform nil)
-   (qtr-sharp :accessor qtr-sharp :type boolean :initform nil)
+   (qtr-sharp :accessor qtr-sharp :initform nil)
    (sharp :accessor sharp :type boolean :initform nil)
-   (qtr-flat :accessor qtr-flat :type boolean :initform nil)
+   (qtr-flat :accessor qtr-flat :initform nil)
    (flat :accessor flat :type boolean :initform nil)
-   (qtr-tone :accessor qtr-tone :type boolean :initform nil)
+   (qtr-tone :accessor qtr-tone :initform nil)
    (micro-tone :accessor micro-tone :type boolean :initform nil)
    (show-accidental :accessor show-accidental :type boolean 
                     :initarg :show-accidental :initform t)
@@ -104,7 +102,7 @@
    (no-8ve :accessor no-8ve :type symbol :initform nil)
    ;; e.g. from fs4 -> f
    (no-8ve-no-acc :accessor no-8ve-no-acc :type symbol :initform nil)
-   (src :accessor src :type float :initarg :src :initform nil)
+   (src :accessor src :initarg :src :initform nil)
    (src-ref-pitch :accessor src-ref-pitch :type symbol :initarg :src-ref-pitch
                   :initform 'c4)
    ;; when frequency is given, we have to update id and vice-versa.  This slot
@@ -288,7 +286,7 @@
                                 (as-symbol nil)
                                 (package :sc))
   (unless (integer>=0 new-octave)
-    (error "sc-set::get-chromatic: octave must be an integer >= 0: ~a"
+    (error "pitch::transpose-to-octave: octave must be an integer >= 0: ~a"
            new-octave))
   (let ((transp (* 12 (- new-octave (octave p)))))
     (transpose p transp :as-symbol as-symbol :package package)))

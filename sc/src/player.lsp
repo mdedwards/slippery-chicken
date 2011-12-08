@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 18:24:03 Sat Jan 29 2011 ICT
+;;; $$ Last modified: 21:11:14 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -60,7 +60,7 @@
 (defclass player (linked-named-object)
   ;; an instrument-palette that contains the instrument objects to be
   ;; cloned and stored in the data list
-  ((instrument-palette :accessor instrument-palette :type ensemble 
+  ((instrument-palette :accessor instrument-palette
                        :initarg :instrument-palette :initform nil)
    ;; any additional arguments to the call to cmn::staff, like staff size,
    ;; number of lines etc.   Instead of being real cmn function calls as they

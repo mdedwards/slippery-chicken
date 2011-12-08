@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 21:44:59 Wed Oct 19 2011 BST
+;;; $$ Last modified: 21:20:10 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -58,7 +58,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass pitch-seq-palette (palette)
-  ((num-notes :accessor num-notes :type integer :initarg :num-notes 
+  ((num-notes :accessor num-notes :initarg :num-notes 
               :initform nil)
    ;; 24/3/07: a list of instruments that are specifically mentioned in the
    ;; pitch-seqs  

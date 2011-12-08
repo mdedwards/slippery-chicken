@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 23:46:43 Wed Dec  7 2011 ICT
+;;; $$ Last modified: 23:24:40 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -53,6 +53,8 @@
   (declaim (optimize (speed 3) (safety 1) (space 0) (debug 0))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#+sbcl (unlock-package "COMMON-LISP")
 
 (defconstant +slippery-chicken-version+ "1.00")
 
@@ -95,15 +97,19 @@
 ;; #+(or clisp allegro openmcl) ;; (and allegro (not allegro-cl-lite)))
 #-allegro-cl-lite
 (defun sc-compile-and-load (file &optional (just-load nil) (dir nil))
-  (declare (special *slippery-chicken-src-path*))
+  ;; (declare (special *slippery-chicken-src-path*))
   (unless dir
-    (setq dir (directory-namestring *slippery-chicken-src-path*)))
-  (unless dir
-    (error "Variable *slippery-chicken-src-path* must be set!"))
+    ;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
+    ;; than from global 
+    ;; (setq dir (directory-namestring *slippery-chicken-src-path*)))
+    (setq dir (directory-namestring (truename *load-pathname*))))
+  ;; (unless dir
+  ;;    (error "Variable *slippery-chicken-src-path* must be set!"))
   #+allegro
   (progn
-    (cl-user::chdir *slippery-chicken-src-path*)
-    (setf *default-pathname-defaults* (pathname *slippery-chicken-src-path*)))
+    (cl-user::chdir dir) ; *slippery-chicken-src-path*)
+    (setf *default-pathname-defaults* (pathname dir)))
+                                        ;*slippery-chicken-src-path*)))
   (let ((out (format nil "~a~abin~a~a~a"
                      (get-path-minus-file-and-last-dir dir)
                      *dir-separator*
@@ -133,8 +139,11 @@
 ;;; and make it all (some users might want to take advantage of the whole of
 ;;; Rick's system). 
 (defun sc-load-cm-all ()
-  (declare (special *slippery-chicken-src-path*))
-  (load (format nil "~acm-2.6.0/src/cm.lisp" *slippery-chicken-src-path*)))
+  ;; (declare (special *slippery-chicken-src-path*))
+  (load (format nil "~acm-2.6.0/src/cm.lisp" 
+                (directory-namestring (truename *load-pathname*))))
+  ;;;*slippery-chicken-src-path*)))
+  )
 
 #|
 ;;; 13.2.10: We're no longer expecting a fully-working latest Common Music
@@ -170,7 +179,7 @@
 
 ;; (sc-load-cm)
 (sc-load-cm-all)
-;;; CM doesn't put itself on the features list anymore....
+;;; CM doesn't put itself on the features list anymore?
 (pushnew :cm *features*)
 (pushnew :cm-2 *features*)
 

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 21:16:42 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 23:55:55 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1156,8 +1156,11 @@
          (rthms (get-rhythms rsret)))
     (setf (bars rsret)
           (loop for bar in new-bars for count from 1 with ate = 0 with temp do
-               (setf temp (fill-with-rhythms bar (subseq rthms ate)
-                                             :warn nil :is-full-error nil))
+               (setf temp (fill-with-rhythms
+                           bar (subseq rthms ate)
+                           ;;MDE Thu Dec  8 23:55:31 2011 -- changed to key arg
+                           ;; :warn nil :is-full-error nil))
+                           :warn nil :is-full-error is-full-error))
                (if temp
                    (progn
                      (incf ate temp)

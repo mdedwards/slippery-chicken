@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 21:13:07 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 00:33:59 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -184,9 +184,9 @@
         (setf (transposition ins) (semitones-to-transposition tr-st)))
       (when (and tr tr-st)
         (unless (check-transposition-against-semitones tr tr-st)
-          (error "instrument::initialize-instance: ~ 
-                  Transposition given as ~a which is not ~a ~
-                  semitones (the given transposition-semitones)"
+          (error "instrument::initialize-instance: ~
+                  Transposition given as ~a which is not ~a semitones ~
+                  (given in the transposition-semitones slot)"
                  tr tr-st)))
       (when (and (not tr)
                  (not tr-st))

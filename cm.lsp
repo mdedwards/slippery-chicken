@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 12:37:46 Sat Oct 22 2011 BST
+;;; $$ Last modified: 00:14:36 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -127,9 +127,11 @@
       rem)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+#|
+;;; obsolete
 (defun list-midi-events (file)
   (cm::list-objects (cm::import-events file)))
+|#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -315,13 +317,13 @@
   (let ((events (cm::import-events file :tracks track)))
     (loop for e in (cm::subobjects events) 
        for time = (cm::object-time e)
-       with sum = 0 
+       ;; with sum = 0 
        with last-ts
        with new-ts
        with last-time = 0
        with last-tempo = -1
        with new-tempo = -1
-       with num-bars = 0
+       ;; with num-bars = 0
        with result = '()
        with calc = nil
        with total-bars = 0
@@ -407,8 +409,9 @@
                and collect (cm::object-time e)
                ;; see midi3.lisp line 85
                and collect tempo
-               do
-               (setf last-time (cm::object-time e))))))
+               ;; do
+                 ;; (setf last-time (cm::object-time e))
+                 ))))
     (midi-tempo-curve-aux (append result (list duration tempo)))))
 
 ;;; strangely we get simultaneities in the midi tempo curve e.g. '(0 60 0 60 0
@@ -643,7 +646,8 @@
   (decf old-channel)
   (let ((midi-stream (import-events file))
         (degree (if (numberp note) note (keynum note)))
-        (new-file (format nil "~a-one-note.mid" (path-minus-extension file)))
+        (new-file (format nil "~a-one-note.mid"
+                          (sc::path-minus-extension file)))
         (new '()))
     (map-subobjects (lambda (n) 
                       (when (or (not old-channel)

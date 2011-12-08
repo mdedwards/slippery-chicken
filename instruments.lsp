@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 14:51:07 Tue Nov 22 2011 GMT
+;;; $$ Last modified: 00:24:17 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -322,6 +322,7 @@
 ;;; nb this assumes we're not playing <string> open
 (defun guitar-chord-from-arbitrary-pitches-aux 
     (pitch-list pitch-list-index tuning tuning-dist string fret)
+  (declare (ignore fret))
   (let* ((one (nth pitch-list-index pitch-list))
          (others (loop with str-offset = (- (nth string tuning-dist))
                     for f from 1 to 3
@@ -343,6 +344,7 @@
 ;;; see default-chord-function above for description of arguments.
 (defun guitar-chord-from-arbitrary-pitches (curve-num index pitch-list
                                             pitch-seq instrument set)
+  (declare (ignore set instrument pitch-seq index curve-num))
   (let* ((tuning (loop for n in '(e2 a2 d3 g3 b3 e4) collect (make-pitch n)))
          (tuning-dist (cons 0 (loop with lowest = (first tuning)
                                  for p in (rest tuning)

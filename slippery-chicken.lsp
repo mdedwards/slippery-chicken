@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:51:14 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 00:01:22 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id: slippery-chicken.lsp 385 2011-12-02 20:01:04Z reed@seanreed.ie
 ;;; $ 
@@ -171,7 +171,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod initialize-instance :after ((sc slippery-chicken) &rest initargs)
-  (declare (ignore initargs))
+  (declare (ignore initargs)
+           (special +slippery-chicken-standard-instrument-palette+))
   (let ((given-tempo-map (tempo-map sc)))
     (flet ((make-name (name) (format nil "~a-~a" (id sc) name)))
       (setf (instrument-palette sc)
@@ -4392,6 +4393,7 @@
                                   (min-page-turn '(2 1))
                                   ;; sim to rehearsal letters
                                   (tempi-all-players t))
+  (declare (special cl-user::*slippery-chicken-src-path*))
   (when (and (numberp start-bar) (numberp end-bar) (>= start-bar end-bar))
     (error "slippery-chicken::write-lp-date-for-all: start-bar = ~a, ~
             end-bar = ~a???" start-bar end-bar))

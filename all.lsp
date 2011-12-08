@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 23:24:40 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 00:05:24 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -57,6 +57,11 @@
 #+sbcl (unlock-package "COMMON-LISP")
 
 (defconstant +slippery-chicken-version+ "1.00")
+
+;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
+;;; than from user's global 
+(defparameter *slippery-chicken-src-path*
+  (directory-namestring (truename *load-pathname*)))
 
 ;;; Make sure any typed-in float constants are high-precision; default is
 ;;; single-float  
@@ -99,17 +104,14 @@
 (defun sc-compile-and-load (file &optional (just-load nil) (dir nil))
   ;; (declare (special *slippery-chicken-src-path*))
   (unless dir
-    ;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
-    ;; than from global 
-    ;; (setq dir (directory-namestring *slippery-chicken-src-path*)))
-    (setq dir (directory-namestring (truename *load-pathname*))))
+    (setq dir (directory-namestring *slippery-chicken-src-path*)))
+  ;; (setq dir (directory-namestring (truename *load-pathname*))))
   ;; (unless dir
   ;;    (error "Variable *slippery-chicken-src-path* must be set!"))
   #+allegro
   (progn
-    (cl-user::chdir dir) ; *slippery-chicken-src-path*)
-    (setf *default-pathname-defaults* (pathname dir)))
-                                        ;*slippery-chicken-src-path*)))
+    (cl-user::chdir *slippery-chicken-src-path*)
+    (setf *default-pathname-defaults* *slippery-chicken-src-path*))
   (let ((out (format nil "~a~abin~a~a~a"
                      (get-path-minus-file-and-last-dir dir)
                      *dir-separator*
@@ -139,11 +141,10 @@
 ;;; and make it all (some users might want to take advantage of the whole of
 ;;; Rick's system). 
 (defun sc-load-cm-all ()
-  ;; (declare (special *slippery-chicken-src-path*))
+  (declare (special *slippery-chicken-src-path*))
   (load (format nil "~acm-2.6.0/src/cm.lisp" 
-                (directory-namestring (truename *load-pathname*))))
-  ;;;*slippery-chicken-src-path*)))
-  )
+                ;; (directory-namestring (truename *load-pathname*))))
+                *slippery-chicken-src-path*)))
 
 #|
 ;;; 13.2.10: We're no longer expecting a fully-working latest Common Music

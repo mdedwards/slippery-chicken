@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    March 31st 2002
 ;;;
-;;; $$ Last modified: 17:54:37 Sat Dec  3 2011 GMT
+;;; $$ Last modified: 23:52:22 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -82,7 +82,7 @@
   (loop for i in (data scm) do
       (unless (numberp (id i))
         (error "simple-change-map::verify-and-store: Only number ids ~
-                allowed: i in ~a"
+                allowed: ~a in ~a"
                (id i) (id scm))))
   (sort (data scm) #'(lambda (x y) (< (id x) (id y)))))
 

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    18th March 2002
 ;;;
-;;; $$ Last modified: 11:03:07 Wed Apr 21 2010 BST
+;;; $$ Last modified: 00:20:47 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -361,7 +361,9 @@
       ;; (print first-bar)
       ;; (print (bar-duration first-bar))
       ;; (print (get-time-sig first-bar))
-      (consolidate-rests first-bar beat)
+      ;; MDE Thu Dec  8 23:57:26 2011 -- changed following call
+      ;; (consolidate-rests first-bar beat)
+      (consolidate-rests first-bar :beat beat)
       (consolidate-notes first-bar nil beat)
       (when auto-beam
         ;; todo: this doesn't work either...

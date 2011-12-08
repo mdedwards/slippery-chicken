@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:56:56 Thu Nov  3 2011 GMT
+;;; $$ Last modified: 00:36:31 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -815,42 +815,43 @@
                    (pathname-device sndfile)
                    (directory-namestring sndfile)
                    (pathname-name sndfile))
-       :direction :input :if-does-not-exist :error)
+           :direction :input :if-does-not-exist :error)
     (with-open-file
         (txt (format nil "~azzz__~a.txt" 
                      outdir
                      (file-namestring sndfile))
-         :direction :output :if-exists :error)
+             :direction :output :if-exists :error)
       (loop 
-          with name 
-          with time 
-          with count = 0 
-          do
-            (multiple-value-bind
-                (line eof)
-                (read-line mrk nil)
-              (multiple-value-bind
-                  (param value)
-                  (get-parameter line)
-                (when (string= param "name")      
-                  (setf name (if (string= value "*")
-                                 nil
-                               value))
-                  (incf count))
-                (when (string= param "pos")
-                  (setf time (float (/ (read-from-string value)
-                                       sampling-rate)))
-                    (format txt "~&~a, ~,6f;" count time))
-                (when eof 
-                  (terpri txt)
-                  (format t "~%~%~a markers read~%" count)
-                  (return t))))))))
+         with count = 0
+         with time
+         do
+         (multiple-value-bind
+               (line eof)
+             (read-line mrk nil)
+           (multiple-value-bind
+                 (param value)
+               (get-parameter line)
+             #|
+             (when (string= param "name")      
+             (setf name (if (string= value "*")
+             nil
+             value))
+             (incf count))
+             |#
+               (when (string= param "pos")
+                 (setf time (float (/ (read-from-string value)
+                                      sampling-rate)))
+                 (format txt "~&~a, ~,6f;" count time))
+               (when eof 
+                 (terpri txt)
+                 (format t "~%~%~a markers read~%" count)
+                 (return t))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #|
-(wavelab-to-audacity-marker-file 
- "/music/limine/nuendo/zkm-compressed-reverb-44-24.MRK" 88200)
-|#
+             (wavelab-to-audacity-marker-file 
+"/music/limine/nuendo/zkm-compressed-reverb-44-24.MRK" 88200)
+             |#
 
 (defun wavelab-to-audacity-marker-file (file &optional (sampling-rate 44100))
   (with-open-file 

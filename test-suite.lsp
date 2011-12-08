@@ -18,16 +18,13 @@
 
 ;;; 07.12.2011 
 
-(defun named-object-p (thing)
-  (typep thing 'named-object))
+(defvar *test-name* nil)
 
 (defmacro with-gensyms ((&rest names) &body body)
   "Generate code that expands into a LET that binds each named variable to a
   GENSYM'd symbol"
   `(let ,(loop for n in names collect `(,n (gensym)))
      ,@body))
-
-(defvar *test-name* nil)
 
 (defmacro deftest (name parameters &body body)
   "Define a test function. Within a test function we can call other test
@@ -56,20 +53,20 @@
 (deftest test-al-get-keys () 
   (check
     (equal (get-keys (make-assoc-list 'test '((cat felix)
-					      (dog fido)
-					      (cow bessie))))
-	   '(cat dog cow))
+                                              (dog fido)
+                                              (cow bessie))))
+           '(cat dog cow))
     (equal (get-keys (make-assoc-list 'test '((cat felix)
-					      (dog ((scottish terrier)
-						    (german shepherd)
-						    (irish wolfhound)))
-					      (cow bessie))))
-	   '(cat dog cow))))
+                                              (dog ((scottish terrier)
+                                                    (german shepherd)
+                                                    (irish wolfhound)))
+                                              (cow bessie))))
+           '(cat dog cow))))
 
 (deftest test-al-get-first ()
   (let ((al (make-assoc-list 'test '((jim beam)
-				     (four roses)
-				     (wild turkey)))))
+                                     (four roses)
+                                     (wild turkey)))))
     (check
       (named-object-p (get-first al))
       (eq (id (get-first al)) 'jim)
@@ -77,8 +74,8 @@
 
 (deftest test-al-get-last ()
   (let ((al (make-assoc-list 'test '((jim beam)
-				     (four roses)
-				     (wild turkey)))))
+                                     (four roses)
+                                     (wild turkey)))))
     (check
       (named-object-p (get-last al))
       (eq (id (get-last al)) 'wild)
@@ -86,8 +83,8 @@
 
 (deftest test-al-get-position ()
   (let ((al (make-assoc-list 'test '((jim beam)
-				     (four roses)
-				     (wild turkey)))))
+                                     (four roses)
+                                     (wild turkey)))))
     (check
       (eq (get-position 'four al) 1)  
       (eq (get-position 'jack al) nil)
@@ -96,8 +93,8 @@
 ;; this one is supposed to produce a warning for the third EQ boolean 
 (deftest test-al-get-data-data ()
   (let ((al (make-assoc-list 'test '((jim beam)
-				     (four roses)
-				     (wild turkey)))))
+                                     (four roses)
+                                     (wild turkey)))))
     (check
       (eq (get-data-data 'jim al) 'beam)
       (eq (get-data-data 'jack al) 'nil))))
@@ -105,8 +102,8 @@
 ;; this one is supposed to produce warnings for the 3rd and 4th EQ booleans
 (deftest test-al-get-data ()
   (let ((al (make-assoc-list 'al-test '((jim beam) 
-					(four roses) 
-					(wild turkey)))))
+                                        (four roses) 
+                                        (wild turkey)))))
     (check
       (named-object-p (get-data 'four al))
       (eq (id (get-data 'four al)) 'four)
@@ -117,8 +114,8 @@
 
 (deftest test-al-add ()
   (let ((al (make-assoc-list 'test '((jim beam)
-				     (four roses)
-				     (wild turkey)))))
+                                     (four roses)
+                                     (wild turkey)))))
     (check
       (add '(makers mark) al)
       (named-object-p (get-data 'makers al))
@@ -130,8 +127,8 @@
 ;; this one is supposed to produce a warning on the 3rd EQ boolean
 (deftest test-al-set-data ()
   (let ((al (make-assoc-list 'test '((cat felix)
-				     (dog fido)
-				     (cow bessie)))))
+                                     (dog fido)
+                                     (cow bessie)))))
     (check
       (named-object-p (set-data 'dog '(dog spot) al))
       (eq (id (set-data 'dog '(dog spot) al)) 'dog)
@@ -142,8 +139,8 @@
 
 (deftest test-al-add-to-list-data ()
   (let ((al (make-assoc-list 'test '((cat felix)
-				     (dog (fido spot))
-				     (cow bessie)))))
+                                     (dog (fido spot))
+                                     (cow bessie)))))
     (check
       (named-object-p (add-to-list-data 'rover 'dog al))
       (eq (id (get-data 'dog al)) 'dog)
@@ -151,8 +148,8 @@
 
 (deftest test-al-add-to-list-data-force ()
   (let ((al (make-assoc-list 'test '((cat felix)
-				     (dog (fido spot))
-				     (cow bessie)))))
+                                     (dog (fido spot))
+                                     (cow bessie)))))
     (check
       (named-object-p (add-to-list-data-force 'rover 'dog al))
       (eq (id (get-data 'dog al)) 'dog)

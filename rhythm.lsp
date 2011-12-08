@@ -1,4 +1,3 @@
-;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* linked-named-object/rhythm
 ;;; NAME 
@@ -19,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 21:40:26 Tue Nov 22 2011 GMT
+;;; $$ Last modified: 18:51:19 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -126,7 +125,7 @@
    (cmn-marks-in-part :accessor cmn-marks-in-part :type list 
                       :initarg :cmn-marks-in-part :initform nil)
    ;; 30.1.11 add another couple of slots for lilypond
-   (letter-value :accessor letter-value :type integer :initform nil)
+   (letter-value :accessor letter-value :type integer :initform -1)
    (tuplet-scaler :accessor tuplet-scaler :type rational :initform 1)
    (grace-note-duration :accessor grace-note-duration :initform 0.05
                         :allocation :class )))

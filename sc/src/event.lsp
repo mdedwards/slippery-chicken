@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:30:24 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 23:49:05 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -577,8 +577,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod delete-clefs ((e event) &optional (warn t) ignore2 ignore3)
-  (declare (ignore ignore1 ignore2 ignore3))
+(defmethod delete-clefs ((e event) &optional (warn t) ignore1 ignore2)
+  (declare (ignore ignore1 ignore2))
   ;; 12.4.11 warn if no clef
   (if (get-clef e)
       (setf (cmn-objects-before e)

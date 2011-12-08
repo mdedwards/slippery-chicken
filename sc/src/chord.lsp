@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 21:02:51 Mon Nov  7 2011 GMT
+;;; $$ Last modified: 23:45:16 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -89,6 +89,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf micro-tone) (value (c chord))
+  (declare (ignore value))
   (error "chord::(setf micro-tone): micro-tone slot cannot be setf'd; ~
           it is handled automatically according to pitches in chord"))
 

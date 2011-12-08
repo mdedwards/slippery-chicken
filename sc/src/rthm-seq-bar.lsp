@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 21:18:45 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 00:28:59 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -668,7 +668,7 @@
      with i = 0
      with new-e
      with current-e = (get-nth-non-rest-rhythm 0 rsb)
-     with ceb
+     ;; with ceb
      with saw-note = nil
      for r in rthms 
      do
@@ -682,7 +682,8 @@
        (error "rthm-seq-bar::consolidated-rthms-to-events: ~
                   current-e is nil"))
      (setf new-e (clone-with-new-class r 'event)
-           ceb (bracket current-e))
+           ;; ceb (bracket current-e)
+           )
      ;; 5.3.11 this is definitely wrong in some cases
      ;; (bracket new-e) (bracket current-e))
      (when (and saw-note (not (bracket r))
@@ -1517,7 +1518,6 @@
 (defmethod chop ((rsb rthm-seq-bar) 
                  &optional chop-points (unit 's) rthm-seq-id)
 ;;; ****
-  (declare (ignore ignore))
   (let* ((quarter-in-semiquavers
           ;; these are the chop points for a quarter note being divided into
           ;; semiquavers.  The first number is the start semi-quaver, the
@@ -2276,8 +2276,9 @@
                   finally 
                   (when rqq
                     (setf result
-                          (append (handle-rqq rqq (reverse pitches) bnum 
-                                              (rhythms rsb))
+                          (append (handle-rqq
+                                   rqq (reverse pitches) bnum (rhythms rsb)
+                                   process-event-fun in-c)
                                   result)))
                   (return (nreverse result)))
                ;; change second arg to t if we want real cmn bar
@@ -3484,7 +3485,7 @@
                     from." bar-num rhythms i))
           (unless (rhythm-p r)
             (error "~a~%rthm-seq-bar::consolidate-notes-aux: bar num ~a ~
-                    Element ~a is not a rhythm: ~a" bar-num rhythms i)))
+                    Element ~a is not a rhythm: ~a" rhythms bar-num rhythms i)))
     (let ((result nil)
           (tied-to (is-tied-to (first rhythms)))
           (tied-from (is-tied-from (first (last rhythms))))

@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 20:13:50 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 23:59:17 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -688,7 +688,7 @@
        ;; (format t "~%replace-multi-bar-events: before: ~a"
        ;; (length (rhythms bar)))
        (when consolidate-rests
-         (consolidate-rests bar beat)
+         (consolidate-rests bar :beat beat)
          ;; (format t "~%replace-multi-bar-events: after: ~a" (length
          ;; (rhythms bar))) 
          ;;

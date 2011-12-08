@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 18:51:19 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 19:12:33 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -81,7 +81,7 @@
    (undotted-value :accessor undotted-value :type number :initform -1.0)
    (num-dots :accessor num-dots :type integer :initform 0)
    (num-flags :accessor num-flags :type integer :initform 0)
-   (score-rthm :accessor score-rthm :type symbol :initform nil)
+   (score-rthm :accessor score-rthm :initform nil)
    ;; whether this rhythm is a rest i.e. was given in parentheses
    (is-rest :accessor is-rest :type boolean :initarg :is-rest :initform nil)
    ;; whether this is simply a whole bar rest or not.

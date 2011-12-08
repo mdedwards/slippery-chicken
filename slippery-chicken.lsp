@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:21:21 Sat Dec  3 2011 GMT
+;;; $$ Last modified: 21:39:14 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id: slippery-chicken.lsp 385 2011-12-02 20:01:04Z reed@seanreed.ie
 ;;; $ 
@@ -68,7 +68,7 @@
    ;; 24.3.11: method shorten-large-fast-leaps uses a max duration for a fast
    ;; note in seconds as a key arg, but it's hard to access as a user, so
    ;; specify it as part of the sc class.
-   (fast-leap-threshold :accessor fast-leap-threshold :type float
+   (fast-leap-threshold :accessor fast-leap-threshold 
                         :initarg :fast-leap-threshold :initform 0.125)
    ;;****S* slippery-chicken/rthm-seq-map-replacements 
    ;; NAME
@@ -122,7 +122,7 @@
                           :initarg :instruments-hierarchy :initform nil)
    ;; in the case of the sndfile-palette, we put the palette first in a list,
    ;; the paths second and the extensions third
-   (snd-output-dir :accessor snd-output-dir :type string
+   (snd-output-dir :accessor snd-output-dir
                    :initarg :snd-output-dir :initform "~/snd/")
    (sndfile-palette :accessor sndfile-palette :initarg :sndfile-palette
                     :initform nil)
@@ -160,8 +160,7 @@
                    :initform nil)  
    ;; 31.1.11: this title will be used in lilypond file names so it's perhaps
    ;; best to avoid spaces etc.
-   (title :accessor title :type string :initarg :title 
-          :initform "slippery-chicken-piece")
+   (title :accessor title :initarg :title :initform "slippery-chicken-piece")
    ;; 10/3/07: simply a list of bar numbers where a rehearsal letter should be
    ;; written (automatically)
    (rehearsal-letters :accessor rehearsal-letters :type list 
@@ -1791,7 +1790,8 @@
         (when (and mark bar note)
           (when verbose
             (format t "~%---add-marks: ~a at bar ~a, note ~a" mark bar note))
-          (acmtn p bar note mark)
+          ;; (acmtn p bar note mark)
+          (add-cmn-marks-to-note sc bar note p mark)
           (setf bar nil
                 note nil)))))
 
@@ -4985,6 +4985,7 @@
 
 ;;; Use this function to randomly generate the <entry-points> to clm-loops
 
+#+clm
 (defun random-loop-points (outfile sndfile 
                            &key 
                            ;; the minimum number of time points for an output
@@ -5291,57 +5292,60 @@
   ;; do this to reset the seq count
   (make-section-for-player nil sc nil)
   (loop for i in (data rsm) do
-        (let* ((data (data i))
-               (data-data (data data))
-               (last-event nil)
-               (last-pitch-seen nil)
-               (section nil))
-          ;; data has to be a ral, but the question is, is it a ral of
-          ;; player-sections to be or a subsection?
-          (if (is-ral (data (first data-data)))
-              (progn
-                (setf section (sc-change-class (rsm-to-piece data sc) 'section)
-                      (data i) section
-                      last-event 
-                      (unless (zerop (num-bars section))
-                        (get-last-event 
-                         (get-last-bar section))))
-                (when (pitch-or-chord last-event)
-                  (setf last-pitch-seen (pitch-or-chord last-event))))
-            (setf (data i) (sc-change-class data 'section)
-                  (data (data i)) 
-                  ;; 7/3/07: we do this convoluted double loop to ensure that
-                  ;; we get-notes for the player in the order specified in the
-                  ;; given hierarchy.
-                  (loop 
-                      with result = (ml nil (length data-data))
-                      for pl in (instruments-hierarchy sc)
-                      do
+       (let* ((data (data i))
+              (data-data (data data))
+              (last-event nil)
+              (last-pitch-seen nil)
+              (section nil))
+         ;; data has to be a ral, but the question is, is it a ral of
+         ;; player-sections to be or a subsection?
+         (if (is-ral (data (first data-data)))
+             (progn
+               (setf section (sc-change-class (rsm-to-piece data sc) 'section)
+                     (data i) section
+                     last-event 
+                     (unless (zerop (num-bars section))
+                       (get-last-event 
+                        (get-last-bar section))))
+               (when (pitch-or-chord last-event)
+                 (setf last-pitch-seen (pitch-or-chord last-event))))
+             (progn 
+               ;; MDE Thu Dec  8 21:39:07 2011 -- print section ID
+               (format t "~&******* section ~a" (full-ref data))
+               (setf (data i) (sc-change-class data 'section)
+                     (data (data i)) 
+                     ;; 7/3/07: we do this convoluted double loop to ensure
+                     ;; that we get-notes for the player in the order specified
+                     ;; in the given hierarchy.
+                     (loop 
+                        with result = (ml nil (length data-data))
+                        for pl in (instruments-hierarchy sc)
+                        do
                         (loop 
-                            for player in data-data 
-                            for player-name = (first (last (this player)))
-                            for player-section = 
-                              (when (eq player-name pl)
-                                (format t "~&Getting notes for ~a" player-name)
-                                (make-section-for-player player sc last-event
-                                                         last-pitch-seen))
-                              ;; collect player-section
-                            for i from 0
-                            do
-                              (when player-section
-                                (setf (nth i result) player-section)
-                                ;; todo: is last-event important here???
-                                (unless (zerop (num-bars player-section))
-                                  ;; last-event is used for ties over to the
-                                  ;; beginning of bar 1 in a new seq
-                                  (setf last-event
-                                    (get-last-event 
-                                     (get-last-bar player-section)))
-                                  (when (pitch-or-chord last-event)
-                                    ;; this one is used to avoid 8ves
-                                    (setf last-pitch-seen 
-                                      (pitch-or-chord last-event))))))
-                      finally (return result))))))
+                           for player in data-data 
+                           for player-name = (first (last (this player)))
+                           for player-section = 
+                           (when (eq player-name pl)
+                             (format t "~&Getting notes for ~a" player-name)
+                             (make-section-for-player player sc last-event
+                                                      last-pitch-seen))
+                           ;; collect player-section
+                           for i from 0
+                           do
+                           (when player-section
+                             (setf (nth i result) player-section)
+                             ;; todo: is last-event important here???
+                             (unless (zerop (num-bars player-section))
+                               ;; last-event is used for ties over to the
+                               ;; beginning of bar 1 in a new seq
+                               (setf last-event
+                                     (get-last-event 
+                                      (get-last-bar player-section)))
+                               (when (pitch-or-chord last-event)
+                                 ;; this one is used to avoid 8ves
+                                 (setf last-pitch-seen 
+                                       (pitch-or-chord last-event))))))
+                        finally (return result)))))))
   rsm)
             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

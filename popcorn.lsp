@@ -1,4 +1,3 @@
-;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* circular-sclist/popcorn
 ;;; NAME 
@@ -25,7 +24,7 @@
 ;;;
 ;;; Creation date:    3rd February 2011 (Ko Lanta, Thailand)
 ;;;
-;;; $$ Last modified: 22:41:49 Tue Oct 18 2011 BST
+;;; $$ Last modified: 20:00:20 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;

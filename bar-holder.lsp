@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 20:48:53 Mon Nov  7 2011 GMT
+;;; $$ Last modified: 21:29:20 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -65,10 +65,10 @@
   ((start-bar :accessor start-bar :initarg :start-bar :type integer
               :initform 0)
    (end-bar :accessor end-bar :initarg :end-bar :type integer :initform 0)
-   (start-time :accessor start-time :initarg :start-time :type integer
+   (start-time :accessor start-time :initarg :start-time
                :initform 0)
-   (end-time :accessor end-time :initarg :end-time :type integer :initform 0)
-   (duration :accessor duration :type integer :initform 0)
+   (end-time :accessor end-time :initarg :end-time :initform 0)
+   (duration :accessor duration :initform 0)
    ;; the next three slots are the times/durations in crotchets (1/4 notes),
    ;; useful for midi timing.
  
@@ -81,7 +81,7 @@
    ;;
    ;; ARGUMENTS:
    ;; Accessor is start-time-qtrs. Initialized by keyword argument
-   ;; :start-time-qtrs. This argument takes an integer and defaults to 0.  
+   ;; :start-time-qtrs. This argument defaults to 0.  
    ;; 
    ;; EXAMPLE
    ;; (setf x (make-instance 'bar-holder :start-time-qtrs 10))
@@ -89,8 +89,8 @@
    ;; => 10 (4 bits, #xA, #o12, #b1010)
    ;;
    ;; SYNOPSIS
-   (start-time-qtrs :accessor start-time-qtrs :initarg :start-time-qtrs :type
-		    integer :initform 0)
+   (start-time-qtrs :accessor start-time-qtrs :initarg :start-time-qtrs
+                    :initform 0)
    ;; ****
    ;; 02.12.11 SEAN: Added ROBODoc info
    ;;****S* bar-holder/end-time-qtrs
@@ -100,7 +100,7 @@
    ;; 
    ;; ARGUMENTS:
    ;; Accessor is end-time-qtrs. Initialized by keyword argument
-   ;; :end-time-qtrs. This argument takes an integer and defaults to 0. 
+   ;; :end-time-qtrs. This argument defaults to 0. 
    ;; 
    ;; EXAMPLE
    ;; (setf x (make-instance 'bar-holder :end-time-qtrs 20))
@@ -109,7 +109,7 @@
    ;; 
    ;; SYNOPSIS
    (end-time-qtrs :accessor end-time-qtrs :initarg :end-time-qtrs
-                  :type integer :initform 0)
+                  :initform 0)
    ;; ****
 
    ;; 02.12.11 SEAN: Added ROBODoc info
@@ -131,7 +131,7 @@
    ;; => 10 (4 bits, #xA, #o12, #b1010)
    ;; 
    ;; SYNOPSIS
-   (duration-qtrs :accessor duration-qtrs :type integer :initform 0)
+   (duration-qtrs :accessor duration-qtrs :initform 0)
    ;; ****
    (num-bars :accessor num-bars :type integer :initform 0)
    (num-notes :accessor num-notes :type integer :initform 0)

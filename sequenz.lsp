@@ -1,5 +1,3 @@
-;;; 02.12.11 SEAN: Changed ROBODoc header to reflect class hierarchy (assigned
-;;; it to bar-holder rather than rthm-seq)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* bar-holder/sequenz
 ;;; NAME 
@@ -25,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified: 11:14:31 Wed Mar 16 2011 GMT
+;;; $$ Last modified: 21:25:30 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -52,6 +50,9 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; 02.12.11 SEAN: Changed ROBODoc header to reflect class hierarchy (assigned
+;;; it to bar-holder rather than rthm-seq)
 
 (eval-when (compile)
   (declaim (optimize (speed 3) (safety 1) (space 0) (debug 0))))

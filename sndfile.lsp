@@ -1,4 +1,3 @@
-;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* linked-named-object/sndfile
 ;;; NAME 
@@ -20,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 19:36:31 Fri Mar 19 2010 GMT
+;;; $$ Last modified: 21:24:31 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -63,12 +62,12 @@
 (defclass sndfile (linked-named-object)
   ((path :accessor path :type string :initarg :path :initform nil)
    ;; the sound's full duration
-   (snd-duration :accessor snd-duration :type float :initform nil)
+   (snd-duration :accessor snd-duration :initform nil)
    ;; the duration the user wants
-   (duration :accessor duration :type number :initarg :duration :initform nil)
+   (duration :accessor duration :initarg :duration :initform nil)
    ;; this shouldn't be given as well as duration
    (end :accessor end :type number :initarg :end :initform nil)
-   (channels :accessor channels :type integer :initform nil)
+   (channels :accessor channels :initform nil)
    ;; where we want to start in the file (secs).
    (start :accessor start :type number :initarg :start :initform 0.0)
    ;; a simple textual description slot useful for identifying sounds

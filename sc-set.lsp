@@ -1,4 +1,3 @@
-;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* sclist/sc-set
 ;;; NAME 
@@ -19,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 17:51:57 Sat Jan 29 2011 ICT
+;;; $$ Last modified: 21:15:36 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -77,7 +76,7 @@
    ;; or sections and subsections, the current sequence count), so we can store
    ;; the notes used against that instrument for the current count in a
    ;; recursive-assoc-list.
-   (used-notes :accessor used-notes :type recursive-assoc-list :initform nil)))
+   (used-notes :accessor used-notes :initform nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -194,9 +193,9 @@
                           (package :sc)
                           (invert nil)) ;; this will get just the microtones
   (let ((result (loop for p in (data s)
-                    unless (if invert
-                               (not (micro-tone p))
-                             (micro-tone p))
+                   unless (if invert
+                              (not (micro-tone p))
+                              (micro-tone p))
                    collect (clone p))))
     ;; (print result)
     (if octave
@@ -204,16 +203,16 @@
          result octave 
          :as-symbols as-symbols :package package 
          :remove-duplicates remove-duplicates)
-      result)))
+        result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod get-non-chromatic ((s sc-set) 
                               &key 
                               (octave nil)
-                              (as-symbol nil)
+                              (as-symbols nil)
                               (package :sc))
-  (get-chromatic s :octave octave :as-symbol as-symbol :package package 
+  (get-chromatic s :octave octave :as-symbols as-symbols :package package 
                  :invert t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

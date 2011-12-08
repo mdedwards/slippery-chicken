@@ -1,5 +1,3 @@
-;;; 02.12.11 SEAN: Changed robodoc header to reflect class hierarchy (assigend
-;;; to bar-holder rather than rthm-seq-map
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* bar-holder/piece
 ;;; NAME 
@@ -28,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 10:42:36 Sat Apr  2 2011 BST
+;;; $$ Last modified: 20:13:50 Thu Dec  8 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -701,7 +699,9 @@
          ;; rthms less than the given beat!
          (when (> (beat-duration (get-time-sig bar))
                   (duration (make-rhythm beat)))
-           (consolidate-rests bar nil beat)))
+           ;; 8.12.11 this call is wrong (picked up by CCL)
+           ;; (consolidate-rests bar nil beat)))
+           (consolidate-rests bar)))
        (delete-beams bar)
        (delete-tuplets bar)
        (when auto-beam

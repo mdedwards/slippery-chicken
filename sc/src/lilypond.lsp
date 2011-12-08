@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 00:49:16 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 00:51:50 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -53,7 +53,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; To use the markup commands which refer to graphics files, you will need to
-;;; copy the graphics in the doc/media/lilypond-graphics directory 
+;;; copy the graphics in doc/media/lilypond-graphics.zip 
 ;;; into the directory containing the lilypond source files you want
 ;;; to process.  
 ;;;

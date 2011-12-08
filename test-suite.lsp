@@ -20,45 +20,45 @@
 
 (in-package :sc)
 
-(defvar *test-name* nil)
+(defvar *sc-test-name* nil)
 
-(defmacro with-gensyms ((&rest names) &body body)
+(defmacro sc-test-with-gensyms ((&rest names) &body body)
   "Generate code that expands into a LET that binds each named variable to a
   GENSYM'd symbol"
   `(let ,(loop for n in names collect `(,n (gensym)))
      ,@body))
 
-(defmacro deftest (name parameters &body body)
+(defmacro sc-deftest (name parameters &body body)
   "Define a test function. Within a test function we can call other test
   functions or use 'check' to run individual test cases."
   `(defun ,name ,parameters
-     (let ((*test-name* (append *test-name* (list ',name))))
+     (let ((*sc-test-name* (append *sc-test-name* (list ',name))))
        ,@body)))
 
-(defmacro check (&body forms)
+(defmacro sc-test-check (&body forms)
   "Run each expression in 'forms' as a test case."
-  `(combine-results
-    ,@(loop for f in forms collect `(report-result ,f ',f))))
+  `(sc-test-combine-results
+    ,@(loop for f in forms collect `(sc-test-report-result ,f))))
 
-(defmacro combine-results (&body forms)
+(defmacro sc-test-combine-results (&body forms)
   "Combine the results (as booleans) of evaluating 'forms' in order." 
-  (with-gensyms (result)
+  (sc-test-with-gensyms (result)
     `(let ((,result t))
        ,@(loop for f in forms collect `(unless ,f (setf ,result nil))) 
        ,result)))
 
-(defun report-result (result form)
+(defun sc-test-report-result (result)
   "Report the results of a single test case. Called by 'check."
   ;;; MDE: shouldn't we only print if it fails?
   ;;; MDE: put in a line break or two
-  (format t "~:[FAIL~;pass~] ... ~a: ~a~%" result *test-name* form)
+  (format t "~:[FAIL~;pass~] ... ~a~%" result *sc-test-name*)
   result)
 
 ;;; MDE: why deftest, rather than just test straight away?  Isn't it a pain to
 ;;; have to define this here, then add it to test-assoc-list call below, then
 ;;; add that to test-all below that, then actually call it?
-(deftest test-al-get-keys () 
-  (check
+(sc-deftest test-al-get-keys () 
+  (sc-test-check
     (equal (get-keys (make-assoc-list 'test '((cat felix)
                                               (dog fido)
                                               (cow bessie))))
@@ -70,49 +70,49 @@
                                               (cow bessie))))
            '(cat dog cow))))
 
-(deftest test-al-get-first ()
+(sc-deftest test-al-get-first ()
   (let ((al (make-assoc-list 'test '((jim beam)
                                      (four roses)
                                      (wild turkey)))))
-    (check
+    (sc-test-check
       (named-object-p (get-first al))
       (eq (id (get-first al)) 'jim)
       (eq (data (get-first al)) 'beam))))
 
-(deftest test-al-get-last ()
+(sc-deftest test-al-get-last ()
   (let ((al (make-assoc-list 'test '((jim beam)
                                      (four roses)
                                      (wild turkey)))))
-    (check
+    (sc-test-check
       (named-object-p (get-last al))
       (eq (id (get-last al)) 'wild)
       (eq (data (get-last al)) 'turkey))))
 
-(deftest test-al-get-position ()
+(sc-deftest test-al-get-position ()
   (let ((al (make-assoc-list 'test '((jim beam)
                                      (four roses)
                                      (wild turkey)))))
-    (check
+    (sc-test-check
       (eq (get-position 'four al) 1)  
       (eq (get-position 'jack al) nil)
       (eq (get-position 'jim al 1) nil))))
 
 ;; this one is supposed to produce a warning for the third EQ boolean 
-(deftest test-al-get-data-data ()
+(sc-deftest test-al-get-data-data ()
   (let ((al (make-assoc-list 'test '((jim beam)
                                      (four roses)
                                      (wild turkey)))))
-    (check
+    (sc-test-check
       (eq (get-data-data 'jim al) 'beam)
       ;; 8.12.11 ME: this was 'nil: removed quote
       (eq (get-data-data 'jack al) nil))))
 
 ;; this one is supposed to produce warnings for the 3rd and 4th EQ booleans
-(deftest test-al-get-data ()
+(sc-deftest test-al-get-data ()
   (let ((al (make-assoc-list 'al-test '((jim beam) 
                                         (four roses) 
                                         (wild turkey)))))
-    (check
+    (sc-test-check
       (named-object-p (get-data 'four al))
       (eq (id (get-data 'four al)) 'four)
       (eq (data (get-data 'four al)) 'roses)
@@ -120,11 +120,11 @@
       (eq (get-data 'jack al t) nil)
       (eq (get-data 'jack al nil) nil))))
 
-(deftest test-al-add ()
+(sc-deftest test-al-add ()
   (let ((al (make-assoc-list 'test '((jim beam)
                                      (four roses)
                                      (wild turkey)))))
-    (check
+    (sc-test-check
       (add '(makers mark) al)
       (named-object-p (get-data 'makers al))
       (eq (id (get-data 'makers al)) 'makers)
@@ -133,11 +133,11 @@
       (add '(knob creek) al '(jack daniels)))))
 
 ;; this one is supposed to produce a warning on the 3rd EQ boolean
-(deftest test-al-set-data ()
+(sc-deftest test-al-set-data ()
   (let ((al (make-assoc-list 'test '((cat felix)
                                      (dog fido)
                                      (cow bessie)))))
-    (check
+    (sc-test-check
       (named-object-p (set-data 'dog '(dog spot) al))
       (eq (id (set-data 'dog '(dog spot) al)) 'dog)
       (eq (data (set-data 'dog '(dog spot) al)) 'spot)
@@ -145,20 +145,20 @@
       (eq (id (set-data 'dog '(pig wilbur) al)) 'pig)
       (eq (get-data-data 'pig al) 'wilbur))))
 
-(deftest test-al-add-to-list-data ()
+(sc-deftest test-al-add-to-list-data ()
   (let ((al (make-assoc-list 'test '((cat felix)
                                      (dog (fido spot))
                                      (cow bessie)))))
-    (check
+    (sc-test-check
       (named-object-p (add-to-list-data 'rover 'dog al))
       (eq (id (get-data 'dog al)) 'dog)
       (equal (get-data-data 'dog al) '(fido spot rover)))))
 
-(deftest test-al-add-to-list-data-force ()
+(sc-deftest test-al-add-to-list-data-force ()
   (let ((al (make-assoc-list 'test '((cat felix)
                                      (dog (fido spot))
                                      (cow bessie)))))
-    (check
+    (sc-test-check
       (named-object-p (add-to-list-data-force 'rover 'dog al))
       (eq (id (get-data 'dog al)) 'dog)
       (equal (get-data-data 'dog al) '(fido spot rover))
@@ -170,8 +170,8 @@
 ;;; these are the test groupings for the individual classes then:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftest test-assoc-list ()
-  (combine-results
+(sc-deftest test-assoc-list ()
+  (sc-test-combine-results
     (test-al-get-keys)
     (test-al-get-first)
     (test-al-get-last)
@@ -187,8 +187,8 @@
 ;;; this then runs the entire suite.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftest test-all ()
-  (combine-results
+(sc-deftest test-all ()
+  (sc-test-combine-results
     (test-assoc-list)))
 
 ;;; MDE: shouldn't we then call test-all in this file?

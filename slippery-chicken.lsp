@@ -17,10 +17,9 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 00:01:22 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 02:12:14 Fri Dec  9 2011 ICT
 ;;;
-;;; SVN ID: $Id: slippery-chicken.lsp 385 2011-12-02 20:01:04Z reed@seanreed.ie
-;;; $ 
+;;; SVN ID: $Id$ 
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards

@@ -18,6 +18,8 @@
 
 ;;; 07.12.2011 
 
+(in-package :sc)
+
 (defvar *test-name* nil)
 
 (defmacro with-gensyms ((&rest names) &body body)

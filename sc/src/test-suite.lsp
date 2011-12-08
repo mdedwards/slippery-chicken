@@ -20,6 +20,8 @@
 
 (defvar *test-name* nil)
 
+;;; MDE removed named-object-p: now in class
+
 (defmacro with-gensyms ((&rest names) &body body)
   "Generate code that expands into a LET that binds each named variable to a
   GENSYM'd symbol"
@@ -47,9 +49,13 @@
 
 (defun report-result (result form)
   "Report the results of a single test case. Called by 'check."
+  ;;; MDE: shouldn't we only print if it fails?
   (format t "~:[FAIL~;pass~] ... ~a: ~a~%" result *test-name* form)
   result)
 
+;;; MDE: why deftest, rather than just test straight away?  Isn't it a pain to
+;;; have to define this here, then add it to test-assoc-list call below, then
+;;; add that to test-all below that, then actually call it?
 (deftest test-al-get-keys () 
   (check
     (equal (get-keys (make-assoc-list 'test '((cat felix)
@@ -97,7 +103,8 @@
                                      (wild turkey)))))
     (check
       (eq (get-data-data 'jim al) 'beam)
-      (eq (get-data-data 'jack al) 'nil))))
+      ;; 8.12.11 ME: this was 'nil: removed quote
+      (eq (get-data-data 'jack al) nil))))
 
 ;; this one is supposed to produce warnings for the 3rd and 4th EQ booleans
 (deftest test-al-get-data ()
@@ -182,3 +189,5 @@
 (deftest test-all ()
   (combine-results
     (test-assoc-list)))
+
+;;; MDE: shouldn't we then call test-all in this file?

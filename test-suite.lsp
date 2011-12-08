@@ -16,7 +16,9 @@
 ;;; on completion to report the overall result. (T = all has passed, NIL =
 ;;; there's a FAIL in there somewhere).
 
-;;; 07.12.2011 
+;;; 07.12.2011 SAR: 
+;;;
+;;; 08.12.2011 SAR: Added "sc-" to all names
 
 (in-package :sc)
 
@@ -38,7 +40,7 @@
 (defmacro sc-test-check (&body forms)
   "Run each expression in 'forms' as a test case."
   `(sc-test-combine-results
-    ,@(loop for f in forms collect `(sc-test-report-result ,f))))
+    ,@(loop for f in forms collect `(sc-test-report-result ,f ',f))))
 
 (defmacro sc-test-combine-results (&body forms)
   "Combine the results (as booleans) of evaluating 'forms' in order." 
@@ -47,11 +49,12 @@
        ,@(loop for f in forms collect `(unless ,f (setf ,result nil))) 
        ,result)))
 
-(defun sc-test-report-result (result)
-  "Report the results of a single test case. Called by 'check."
-  ;;; MDE: shouldn't we only print if it fails?
-  ;;; MDE: put in a line break or two
-  (format t "~:[FAIL~;pass~] ... ~a~%" result *sc-test-name*)
+;; 08.12.11 SAR: Modified to print only FAIL output
+(defun sc-test-report-result (result form)
+  "Report the results of a single test case. Called by 'sc-test-check. Print
+  output only when test fails."
+  (unless (eq result t)
+    (format t "~%FAIL: ~a: ~a~%" *sc-test-name* form))
   result)
 
 ;;; MDE: why deftest, rather than just test straight away?  Isn't it a pain to
@@ -68,7 +71,7 @@
                                                     (german shepherd)
                                                     (irish wolfhound)))
                                               (cow bessie))))
-           '(cat dog cow))))
+           '(cat dog cows))))
 
 (sc-deftest test-al-get-first ()
   (let ((al (make-assoc-list 'test '((jim beam)
@@ -99,6 +102,7 @@
 
 ;; this one is supposed to produce a warning for the third EQ boolean 
 (sc-deftest test-al-get-data-data ()
+  (format t "~%        !!! One warning as desired output !!!~%")
   (let ((al (make-assoc-list 'test '((jim beam)
                                      (four roses)
                                      (wild turkey)))))
@@ -109,6 +113,7 @@
 
 ;; this one is supposed to produce warnings for the 3rd and 4th EQ booleans
 (sc-deftest test-al-get-data ()
+  (format t "~%        !!! Two warnings as desired output !!!~%")
   (let ((al (make-assoc-list 'al-test '((jim beam) 
                                         (four roses) 
                                         (wild turkey)))))
@@ -134,6 +139,7 @@
 
 ;; this one is supposed to produce a warning on the 3rd EQ boolean
 (sc-deftest test-al-set-data ()
+  (format t "~%        !!! One warning as desired output !!!~%")
   (let ((al (make-assoc-list 'test '((cat felix)
                                      (dog fido)
                                      (cow bessie)))))

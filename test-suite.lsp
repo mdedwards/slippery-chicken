@@ -18,11 +18,15 @@
 
 ;;; 07.12.2011 SAR: 
 ;;;
-;;; 08.12.2011 SAR: Added "sc-" to all names
+;;; 08.12.2011 SAR: Added "sc-" to all macro and function names (but not
+;;; individual test names).
 
 (in-package :sc)
 
-(defvar *sc-test-name* nil)
+;;; 08.12.2011 SAR: Added a new global variable to hold the complete list of
+;;; all tests named as they're made. (This is a crude approach, I know.)
+(defparameter *sc-test-name* nil)
+(defparameter *sc-test-all-tests* nil)
 
 (defmacro sc-test-with-gensyms ((&rest names) &body body)
   "Generate code that expands into a LET that binds each named variable to a
@@ -30,9 +34,12 @@
   `(let ,(loop for n in names collect `(,n (gensym)))
      ,@body))
 
+;;; 08.12.2011 SAR: Added a line to push the name of each newly defined test
+;;; into the list of all tests
 (defmacro sc-deftest (name parameters &body body)
   "Define a test function. Within a test function we can call other test
-  functions or use 'check' to run individual test cases."
+  functions or use 'sc-test-check' to run individual test cases."
+  (unless (member `,name *sc-test-all-tests*) (push `,name *sc-test-all-tests*))
   `(defun ,name ,parameters
      (let ((*sc-test-name* (append *sc-test-name* (list ',name))))
        ,@body)))
@@ -46,20 +53,23 @@
   "Combine the results (as booleans) of evaluating 'forms' in order." 
   (sc-test-with-gensyms (result)
     `(let ((,result t))
-       ,@(loop for f in forms collect `(unless ,f (setf ,result nil))) 
+       ,@(loop for f in forms collect `(unless ,f (setf ,result nil)))
        ,result)))
 
 ;; 08.12.11 SAR: Modified to print only FAIL output
 (defun sc-test-report-result (result form)
-  "Report the results of a single test case. Called by 'sc-test-check. Print
+  "Report the results of a single test case. Called by 'sc-test-check'. Print 
   output only when test fails."
   (unless (eq result t)
     (format t "~%FAIL: ~a: ~a~%" *sc-test-name* form))
   result)
 
-;;; MDE: why deftest, rather than just test straight away?  Isn't it a pain to
-;;; have to define this here, then add it to test-assoc-list call below, then
-;;; add that to test-all below that, then actually call it?
+;;; 08.12.11 SAR: Added a macro to test all tests stored in the
+;;; *sc-test-all-tests* list
+(defmacro sc-test-test-all ()
+  `(sc-test-combine-results
+     ,@(loop for at in *sc-test-all-tests* collect (list at))))
+
 (sc-deftest test-al-get-keys () 
   (sc-test-check
     (equal (get-keys (make-assoc-list 'test '((cat felix)
@@ -71,7 +81,7 @@
                                                     (german shepherd)
                                                     (irish wolfhound)))
                                               (cow bessie))))
-           '(cat dog cows))))
+           '(cat dog cow))))
 
 (sc-deftest test-al-get-first ()
   (let ((al (make-assoc-list 'test '((jim beam)
@@ -171,31 +181,16 @@
       (add-to-list-data-force 'wilber 'pig al)
       (equal (get-keys al) '(cat dog cow pig)))))
 
+;;; *sc-test-all-tests*
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; these are the test groupings for the individual classes then:
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 08.12.11 TODO: Figure out the confounded macros enough to be able to
+;;; automatically generate sublists of tests, so that we can, for example, test  
+;;; only the methods/functions for just one individual class etc.
 
-(sc-deftest test-assoc-list ()
-  (sc-test-combine-results
-    (test-al-get-keys)
-    (test-al-get-first)
-    (test-al-get-last)
-    (test-al-get-position)
-    (test-al-get-data-data)
-    (test-al-get-data)
-    (test-al-add)
-    (test-al-set-data)
-    (test-al-add-to-list-data)
-    (test-al-add-to-list-data-force)))
+;;; 08.12.11 For now I'm leaving the actual call of the test-suite commented
+;;; (see below) until further consultation with Michael. On my Lisp
+;;; implementation, when I load this file with the last call uncommented I
+;;; get a T even when individual tests FAIL. If I load this file and then
+;;; enter the call below at the prompt it functions correctly.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; this then runs the entire suite.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(sc-deftest test-all ()
-  (sc-test-combine-results
-    (test-assoc-list)))
-
-;;; MDE: shouldn't we then call test-all in this file?
-(test-all)
+;;; (sc-test-test-all)

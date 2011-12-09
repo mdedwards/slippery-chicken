@@ -60,7 +60,9 @@
 (defun sc-test-report-result (result form)
   "Report the results of a single test case. Called by 'sc-test-check'. Print 
   output only when test fails."
-  (unless (eq result t)
+  ;; MDE Fri Dec  9 14:30:44 2011 -- no need for eq test
+  ;; (unless (eq result t)
+  (unless result
     (format t "~%FAIL: ~a: ~a~%" *sc-test-name* form))
   result)
 
@@ -193,14 +195,21 @@
     (sc-test-check
      (pitch-p (lowest-written af))
      (pitch-p (highest-written af))
-     (pitch-p (lowest-sounding af))
+     (pitch-p (lowest-sounding af))     
      (pitch-p (highest-sounding af))
+     (not (pitch= (lowest-written af) (highest-written af)))
      (pitch-p (first (missing-notes af))))
-    ;; test setf methods work
-    (setf (lowest-written af) 'b3)
+    ;; test setf methods work i.e. create pitch objects out of symbols
+    (setf (lowest-written af) 'b3
+          (highest-sounding af) 'b7
+          (missing-notes af) 'g4) ; should be a list but will be created
+    ;; (print af)
     (sc-test-check 
      (pitch-p (lowest-written af))
-     (pitch= (lowest-written af) 'fs3))))
+     (pitch-p (highest-sounding af))
+     (pitch-p (first (missing-notes af)))
+     (pitch= (highest-written af) (make-pitch 'e8))
+     (pitch= (lowest-sounding af) (make-pitch 'fs3)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

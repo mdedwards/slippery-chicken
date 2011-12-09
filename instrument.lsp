@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 13:31:26 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 14:41:16 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -135,8 +135,8 @@
    (microtones :accessor microtones :type boolean :initarg :microtones
                :initform nil)
    ;; a list of any notes which the instrument can't play, usually certain
-   ;; quarter tones NB These are written notes, not sounding, in the case of
-   ;; transposing instruments.
+   ;; quarter tones NB These are given as written notes, not sounding, in the
+   ;; case of transposing instruments, but are then stored as sounding notes 
    (missing-notes :accessor missing-notes :type list :initarg :missing-notes
                   :initform nil) 
    ;; 5/3/07: no longer needed (never was used...); chord-function obviates
@@ -199,6 +199,14 @@
       ;;; MDE Fri Dec  9 13:31:15 2011 -- merely to trigger the setf method
       (setf (missing-notes ins) (missing-notes ins))
       (if lw
+          (setf (lowest-written ins) lw)
+          (setf (lowest-sounding ins) ls))
+      (if hw
+          (setf (highest-written ins) hw)
+          (setf (highest-sounding ins) hs))
+      #|
+      ;;; MDE Fri Dec  9 14:02:00 2011 -- this logic is now in the setf methods
+      (if lw
           (setf (lowest-sounding ins) (transpose-note
                                        lw (transposition-semitones ins)))
           (setf (lowest-written ins) (transpose-note
@@ -215,6 +223,7 @@
             (lowest-written ins) (make-pitch (lowest-written ins))
             (highest-sounding ins) (make-pitch (highest-sounding ins))
             (highest-written ins) (make-pitch (highest-written ins)))
+      |#
       (setf (clefs ins) (if (clefs ins)
                             (reverse (clefs ins))
                             (list (starting-clef ins)))
@@ -229,6 +238,41 @@
       (when (and (chords ins)
                  (not (chord-function ins)))
         (setf (chord-function ins) 'default-chord-function)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; MDE Fri Dec  9 13:20:20 2011
+(defmethod (setf missing-notes) (new-value (ins instrument))
+  (unless (listp new-value)
+    (setf new-value (list new-value)))
+  (setf (slot-value ins 'missing-notes)
+        (loop for pitch in new-value collect 
+             (transpose (make-pitch pitch) (transposition-semitones ins)))))
+
+(defmethod (setf lowest-written) (new-value (ins instrument))
+  (setf (slot-value ins 'lowest-written) (make-pitch new-value)
+        (slot-value ins 'lowest-sounding)
+        (when (lowest-written ins)
+          (transpose (lowest-written ins) (transposition-semitones ins)))))
+
+(defmethod (setf highest-written) (new-value (ins instrument))
+  (setf (slot-value ins 'highest-written) (make-pitch new-value)
+        (slot-value ins 'highest-sounding)
+        (when (highest-written ins)
+          (transpose (highest-written ins) (transposition-semitones ins)))))
+
+(defmethod (setf lowest-sounding) (new-value (ins instrument))
+  (setf (slot-value ins 'lowest-sounding) (make-pitch new-value)
+        (slot-value ins 'lowest-written)
+        (when (lowest-sounding ins)
+          (transpose (lowest-sounding ins) (- (transposition-semitones ins))))))
+
+(defmethod (setf highest-sounding) (new-value (ins instrument))
+  (setf (slot-value ins 'highest-sounding) (make-pitch new-value)
+        (slot-value ins 'highest-written)
+        (when (highest-sounding ins)
+          (transpose (highest-sounding ins)
+                     (- (transposition-semitones ins))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -311,17 +355,6 @@
     (error "instrument::check-starting-clef: Don't recognise ~a ~
             (did you type an extra (superfluous) quote?)"
            (starting-clef ins))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; MDE Fri Dec  9 13:20:20 2011
-(defmethod (setf missing-notes) (new-value (ins instrument))
-  (unless (listp new-value)
-    (setf new-value (list new-value)))
-  (setf (slot-value ins 'missing-notes)
-        (loop for note in new-value collect 
-             (make-pitch (transpose-note note (transposition-semitones ins))))))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

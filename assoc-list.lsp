@@ -675,6 +675,7 @@ data: (FIDO SPOT ROVER)
 ;;; 01.12.11 SEAN: Added ROBODoc info
 
 ;;; ****m* assoc-list/set-nth-of-data
+;;; 08.12.11 SEAN: Modified example
 ;;; FUNCTION
 ;;; Replace a given member of a given data list within a given assoc-list.
 ;;; 
@@ -693,14 +694,19 @@ data: (FIDO SPOT ROVER)
 ;;;
 ;;; EXAMPLE
 #|
-(setf x (make-instance 'assoc-list
-                       :data '((cat felix)
-                               (dog (fido spot rover))
-                               (cow bessie))))
-(set-nth-of-data 'dog 0 'snoopy x)
+(let ((al (make-assoc-list 'test '((cat felix)
+				   (dog (fido spot rover))
+				   (cow bessie)))))
+  (set-nth-of-data 'dog 0 'snoopy al))
+
 => SNOOPY
 
-(get-data 'dog x)
+(let ((al (make-assoc-list 'test '((cat felix)
+				   (dog (fido spot rover))
+				   (cow bessie)))))
+  (set-nth-of-data 'dog 0 'snoopy al) 
+  (get-data 'dog al))
+
 => 
 NAMED-OBJECT: id: DOG, tag: NIL, 
 data: (SNOOPY SPOT ROVER)
@@ -722,43 +728,23 @@ data: (SNOOPY SPOT ROVER)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 26.1.11: map a function over the data in the assoc-list; returns a list of
-;;; the return values of the function call on the data.  arguments is a list of
-;;; arguments to be passed to the function.  the function 
-
 ;;; 01.12.11 SEAN: Added ROBODoc info
-
+;;; 08.12.11 SEAN: Modified example
 ;;; ****m* assoc-list/map-data
 ;;; FUNCTION
 ;;; Map a function over the data in the assoc-list.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS
 ;;; - the assoc-list to which the function is to be applied 
 ;;; - the function to be applied.  This must take the data in the assoc-list as
 ;;;   a first argument. 
 ;;; - Optional argument(s): Further arguments for the function.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE 
 ;;; Returns a list of the values returned by the function call on the data.
 ;;; 
 ;;; EXAMPLE
 #|
-A simple example that does nothing other than print the steps involved:
-(let ((al (make-assoc-list 'al-test
-                           '((cat felix)
-                             (dog (fido spot rover))
-                             (cow bessie)))))
-  (map-data al #'(lambda (y) (print '-+-+-+-) (print (data y)))))
-=> 
--+-+-+- 
-FELIX 
--+-+-+- 
-(FIDO SPOT ROVER) 
--+-+-+- 
-BESSIE 
-(FELIX (FIDO SPOT ROVER) BESSIE)
-
-Now for something that actually does something i.e. multiplies data by 2
 (let ((al (make-assoc-list 'al-test
                            '((1 (1 2 3 4))
                              (2 (5 6 7 8))
@@ -766,6 +752,7 @@ Now for something that actually does something i.e. multiplies data by 2
   (map-data al #'(lambda (y) 
                    (loop for i in (data y) collect
                         (* i 2)))))
+
 => ((2 4 6 8) (10 12 14 16) (18 20 22 24))
 |#
 ;;; SYNOPSIS
@@ -789,8 +776,6 @@ Now for something that actually does something i.e. multiplies data by 2
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 01.12.11 SEAN: Added ROBODoc info
-
-
 ;; ****f* assoc-list/make-assoc-list
 ;; FUNCTION
 ;; A function that provides a shortcut to creating an assoc-list, filling it

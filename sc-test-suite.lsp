@@ -83,6 +83,9 @@
                                               (cow bessie))))
            '(cat dog cow))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; assoc-list tests
+
 (sc-deftest test-al-get-first ()
   (let ((al (make-assoc-list 'test '((jim beam)
                                      (four roses)
@@ -181,6 +184,26 @@
       (add-to-list-data-force 'wilber 'pig al)
       (equal (get-keys al) '(cat dog cow pig)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Dec  9 13:36:05 2011
+(sc-deftest test-instrument ()
+  (let ((af (clone
+             (get-data 'alto-flute 
+                       +slippery-chicken-standard-instrument-palette+))))
+    (sc-test-check
+     (pitch-p (lowest-written af))
+     (pitch-p (highest-written af))
+     (pitch-p (lowest-sounding af))
+     (pitch-p (highest-sounding af))
+     (pitch-p (first (missing-notes af))))
+    ;; test setf methods work
+    (setf (lowest-written af) 'b3)
+    (sc-test-check 
+     (pitch-p (lowest-written af))
+     (pitch= (lowest-written af) 'fs3))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; *sc-test-all-tests*
 
 ;;; 08.12.11 TODO: Figure out the confounded macros enough to be able to
@@ -194,3 +217,6 @@
 ;;; enter the call below at the prompt it functions correctly.
 
 ;;; (sc-test-test-all)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; EOF sc-test-suite.lsp

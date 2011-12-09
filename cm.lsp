@@ -1,4 +1,3 @@
-;;; 02.12.11 SEAN: changed robodoc header.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****h* sc/cm
 ;;; NAME 
@@ -20,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 00:14:36 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 18:28:36 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;

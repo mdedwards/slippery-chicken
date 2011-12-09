@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 00:05:24 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 18:35:47 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -67,12 +67,12 @@
 ;;; single-float  
 (setf *read-default-float-format* 'double-float)
 
-(defvar *dir-separator*
+(defparameter *dir-separator*
   #+(or windows mswindows win32) #\\
-  ;; #+mcl #\:
+  ;; #+mcl #\: ; back in pre-OSX days
   #+unix #\/)
 
-(defvar *fasl-extension*
+(defparameter *fasl-extension*
   #+clisp ".fas"
   #+openmcl ".dfsl"
   #+sbcl ".fasl"
@@ -81,7 +81,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun sc (&optional (logo t))
-  ;; (declare (special +slippery-chicken-version+))
   (setf *package* (find-package :sc))
   (let ((title (format nil "slippery chicken version ~a"
                        +slippery-chicken-version+)))
@@ -99,15 +98,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; #+(or clisp allegro openmcl) ;; (and allegro (not allegro-cl-lite)))
 #-allegro-cl-lite
 (defun sc-compile-and-load (file &optional (just-load nil) (dir nil))
-  ;; (declare (special *slippery-chicken-src-path*))
   (unless dir
     (setq dir (directory-namestring *slippery-chicken-src-path*)))
-  ;; (setq dir (directory-namestring (truename *load-pathname*))))
-  ;; (unless dir
-  ;;    (error "Variable *slippery-chicken-src-path* must be set!"))
   #+allegro
   (progn
     (cl-user::chdir *slippery-chicken-src-path*)
@@ -143,15 +137,15 @@
 (defun sc-load-cm-all ()
   (declare (special *slippery-chicken-src-path*))
   (load (format nil "~acm-2.6.0/src/cm.lisp" 
-                ;; (directory-namestring (truename *load-pathname*))))
                 *slippery-chicken-src-path*)))
 
-#|
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 13.2.10: We're no longer expecting a fully-working latest Common Music
 ;;; system as Rick has ventured off into Scheme land.  Just use CM 2.6.0
 ;;; (thanks Rick!) and load the files we need for the functionality we need.
+;;; NB Only working in SBCL for now.
 
-(defun sc-load-cm ()
+(defun sc-load-cm-essentials ()
   ;; the patch to common music's src directory needs to be defined
   ;; before we call this function
   ;; e.g. (defparameter *slippery-chicken-cm-path*
@@ -169,18 +163,16 @@
     (loop for f in 
          '("pkg" "sbcl" "clos" "iter" "level1" "utils" "mop" "objects" "data" 
            "scales" "spectral" "patterns" "io" "scheduler" "sco" "clm" "clm2" 
-           ;; "midishare" "midishare" "loop" 
-           ;; "midishare" "player"
+           ;; "midishare" "midishare" "loop" "midishare" "player"
            "midi1" "midi2" "midi3" "cmn")
          do
          (load-cm-file f))))
-|#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (sc-load-cm)
+(sc-load-cm-essentials)
 (sc-load-cm-all)
-;;; CM doesn't put itself on the features list anymore?
+;;; It seems CM doesn't put itself on the features list but sc needs it.
 (pushnew :cm *features*)
 (pushnew :cm-2 *features*)
 

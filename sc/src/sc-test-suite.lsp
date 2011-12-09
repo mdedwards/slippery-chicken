@@ -73,23 +73,23 @@
 (sc-deftest test-al-get-keys () 
   (sc-test-check
     (equal (get-keys (make-assoc-list 'test '((cat felix)
-					      (dog fido)
-					      (cow bessie)))) 
-	   '(cat dog cow))
+                                              (dog fido)
+                                              (cow bessie)))) 
+           '(cat dog cow))
     (equal (get-keys (make-assoc-list 'test '((cat felix)
-					      (dog ((scottish terrier)   
-						    (german shepherd)
-						    (irish wolfhound)))  
-					      (cow bessie))))
-	   '(cat dog cow))))
+                                              (dog ((scottish terrier)   
+                                                    (german shepherd)
+                                                    (irish wolfhound)))  
+                                              (cow bessie))))
+           '(cat dog cow))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; assoc-list tests
 
 (sc-deftest test-al-get-first ()
   (let ((al (make-assoc-list 'test '((jim beam)
-				     (four roses)
-				     (wild turkey))))) 
+                                     (four roses)
+                                     (wild turkey))))) 
     (sc-test-check
       (named-object-p (get-first al))
       (eq (id (get-first al)) 'jim)
@@ -97,8 +97,8 @@
 
 (sc-deftest test-al-get-last ()
   (let ((al (make-assoc-list 'test '((jim beam)
-				     (four roses)
-				     (wild turkey))))) 
+                                     (four roses)
+                                     (wild turkey))))) 
     (sc-test-check
       (named-object-p (get-last al))
       (eq (id (get-last al)) 'wild)
@@ -106,8 +106,8 @@
 
 (sc-deftest test-al-get-position ()
   (let ((al (make-assoc-list 'test '((jim beam)
-				     (four roses)
-				     (wild turkey))))) 
+                                     (four roses)
+                                     (wild turkey))))) 
     (sc-test-check
       (eq (get-position 'four al) 1)  
       (eq (get-position 'jack al) nil)
@@ -117,8 +117,8 @@
 (sc-deftest test-al-get-data-data ()
   (format t "~%        !!! One warning as desired output !!!~%") 
   (let ((al (make-assoc-list 'test '((jim beam)
-				     (four roses)
-				     (wild turkey))))) 
+                                     (four roses)
+                                     (wild turkey))))) 
     (sc-test-check
       (eq (get-data-data 'jim al) 'beam)
       ;; 8.12.11 ME: this was 'nil: removed quote
@@ -128,8 +128,8 @@
 (sc-deftest test-al-get-data ()
   (format t "~%        !!! Two warnings as desired output !!!~%")
   (let ((al (make-assoc-list 'al-test '((jim beam) 
-					(four roses) 
-					(wild turkey)))))
+                                        (four roses) 
+                                        (wild turkey)))))
     (sc-test-check
       (named-object-p (get-data 'four al))
       (eq (id (get-data 'four al)) 'four)
@@ -140,8 +140,8 @@
 
 (sc-deftest test-al-add ()
   (let ((al (make-assoc-list 'test '((jim beam)
-				     (four roses)
-				     (wild turkey))))) 
+                                     (four roses)
+                                     (wild turkey))))) 
     (sc-test-check
       (add '(makers mark) al)
       (named-object-p (get-data 'makers al))
@@ -154,8 +154,8 @@
 (sc-deftest test-al-set-data ()
   (format t "~%        !!! One warning as desired output !!!~%")
   (let ((al (make-assoc-list 'test '((cat felix)
-				     (dog fido)
-				     (cow bessie)))))
+                                     (dog fido)
+                                     (cow bessie)))))
     (sc-test-check
       (named-object-p (set-data 'dog '(dog spot) al))
       (eq (id (set-data 'dog '(dog spot) al)) 'dog)
@@ -166,8 +166,8 @@
 
 (sc-deftest test-al-add-to-list-data ()
   (let ((al (make-assoc-list 'test '((cat felix)
-				     (dog (fido spot))
-				     (cow bessie)))))
+                                     (dog (fido spot))
+                                     (cow bessie)))))
     (sc-test-check
       (named-object-p (add-to-list-data 'rover 'dog al))
       (eq (id (get-data 'dog al)) 'dog)
@@ -175,8 +175,8 @@
 
 (sc-deftest test-al-add-to-list-data-force ()
   (let ((al (make-assoc-list 'test '((cat felix)
-				     (dog (fido spot))
-				     (cow bessie)))))
+                                     (dog (fido spot))
+                                     (cow bessie)))))
     (sc-test-check
       (named-object-p (add-to-list-data-force 'rover 'dog al))
       (eq (id (get-data 'dog al)) 'dog)
@@ -186,34 +186,34 @@
 
 ;;; 08.12.11 SAR
 (sc-deftest test-al-set-nth-of-data ()
-	    (let ((al (make-assoc-list 'test '((cat felix)
-					       (dog (fido spot rover))
-					       (cow bessie)))))
-	      (sc-test-check
-	       (eq (set-nth-of-data 'dog 0 'snoopy al) 'snoopy)
-	       (named-object-p (get-data 'dog al))
-	       (equal (get-data-data 'dog al) '(snoopy spot rover)))))
+            (let ((al (make-assoc-list 'test '((cat felix)
+                                               (dog (fido spot rover))
+                                               (cow bessie)))))
+              (sc-test-check
+               (eq (set-nth-of-data 'dog 0 'snoopy al) 'snoopy)
+               (named-object-p (get-data 'dog al))
+               (equal (get-data-data 'dog al) '(snoopy spot rover)))))
 
 ;;; 08.12.11 SAR
 (sc-deftest test-al-map-data ()
-	    (let ((al (make-assoc-list 'test '((1 (2 3))
-					       (2 (3 4))
-					       (3 (5 6))))))
-	      (sc-test-check
-	       (equal (map-data al #'(lambda (y)
-				       (loop for i in (data y) collect
-					    (* i 2)))) 
-		      '((4 6) (6 8) (10 12))))))
+            (let ((al (make-assoc-list 'test '((1 (2 3))
+                                               (2 (3 4))
+                                               (3 (5 6))))))
+              (sc-test-check
+               (equal (map-data al #'(lambda (y)
+                                       (loop for i in (data y) collect
+                                            (* i 2)))) 
+                      '((4 6) (6 8) (10 12))))))
 
 ;;; 08.12.11 SAR
 (sc-deftest test-al-map-data ()
-	    (let ((al (make-assoc-list 'test '((bugs bunny)
-					       (daffy duck)
-					       (porky pig)))))
-	      (sc-test-check
-	       (named-object-p al)
-	       (equal (get-keys al) '(bugs daffy porky))
-	       (eq (get-data-data 'daffy al) 'duck))))
+            (let ((al (make-assoc-list 'test '((bugs bunny)
+                                               (daffy duck)
+                                               (porky pig)))))
+              (sc-test-check
+               (named-object-p al)
+               (equal (get-keys al) '(bugs daffy porky))
+               (eq (get-data-data 'daffy al) 'duck))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Dec  9 13:36:05 2011
@@ -245,7 +245,7 @@
 ;;; *sc-test-all-tests*
 
 ;;; 08.12.11 TODO: Figure out the confounded macros enough to be able to
-;;; automatically generate sublists of tests, so that we can, for example, test  
+;;; automatically generate sublists of tests, so that we can, for example, test
 ;;; only the methods/functions for just one individual class etc.
 
 ;;; 08.12.11 For now I'm leaving the actual call of the test-suite commented

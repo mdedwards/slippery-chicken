@@ -1,4 +1,3 @@
-;;; 02.12.11 SEAN: changd robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****h* sc/lilypond
 ;;;
@@ -19,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 00:51:50 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 18:36:28 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;

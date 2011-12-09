@@ -1,5 +1,3 @@
-;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy (assigned
-;;; to bar-holder rather than sclist)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* bar-holder/player-section
 ;;; NAME 
@@ -25,7 +23,7 @@
 ;;;
 ;;; Creation date:    18th March 2002
 ;;;
-;;; $$ Last modified: 00:20:47 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 18:57:16 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;

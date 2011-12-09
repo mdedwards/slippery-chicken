@@ -1,4 +1,3 @@
-;;; 02.12.11 SEAN: changed robodoc header to reflect hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* sc-map/rthm-seq-map
 ;;; NAME 
@@ -35,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 21:23:42 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 18:59:42 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;

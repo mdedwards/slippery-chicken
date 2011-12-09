@@ -1,4 +1,3 @@
-;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* sclist/sc-scale
 ;;; NAME 
@@ -28,7 +27,7 @@
 ;;;
 ;;; Creation date:    August 3rd 2010 Edinburgh
 ;;;
-;;; $$ Last modified: 00:06:09 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 18:57:32 Fri Dec  9 2011 ICT
 ;;;
 ;;;
 ;;; SVN ID: $Id$

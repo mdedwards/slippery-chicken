@@ -60,7 +60,7 @@
 (defun sc-test-report-result (result form)
   "Report the results of a single test case. Called by 'sc-test-check'. Print  
   output only when test fails."
-  (unless result
+  (unless (eq result t)
     (format t "~%FAIL: ~a: ~a~%" *sc-test-name* form))
   result)
 
@@ -82,9 +82,6 @@
 						    (irish wolfhound)))  
 					      (cow bessie))))
 	   '(cat dog cow))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; assoc-list tests
 
 (sc-deftest test-al-get-first ()
   (let ((al (make-assoc-list 'test '((jim beam)
@@ -186,61 +183,36 @@
 
 ;;; 08.12.11 SAR
 (sc-deftest test-al-set-nth-of-data ()
-	    (let ((al (make-assoc-list 'test '((cat felix)
-					       (dog (fido spot rover))
-					       (cow bessie)))))
-	      (sc-test-check
-	       (eq (set-nth-of-data 'dog 0 'snoopy al) 'snoopy)
-	       (named-object-p (get-data 'dog al))
-	       (equal (get-data-data 'dog al) '(snoopy spot rover)))))
-
-;;; 08.12.11 SAR
-(sc-deftest test-al-map-data ()
-	    (let ((al (make-assoc-list 'test '((1 (2 3))
-					       (2 (3 4))
-					       (3 (5 6))))))
-	      (sc-test-check
-	       (equal (map-data al #'(lambda (y)
-				       (loop for i in (data y) collect
-					    (* i 2)))) 
-		      '((4 6) (6 8) (10 12))))))
-
-;;; 08.12.11 SAR
-(sc-deftest test-al-map-data ()
-	    (let ((al (make-assoc-list 'test '((bugs bunny)
-					       (daffy duck)
-					       (porky pig)))))
-	      (sc-test-check
-	       (named-object-p al)
-	       (equal (get-keys al) '(bugs daffy porky))
-	       (eq (get-data-data 'daffy al) 'duck))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Fri Dec  9 13:36:05 2011
-(sc-deftest test-instrument ()
-  (let ((af (clone
-             (get-data 'alto-flute 
-                       +slippery-chicken-standard-instrument-palette+))))
+  (let ((al (make-assoc-list 'test '((cat felix)
+				     (dog (fido spot rover))
+				     (cow bessie)))))
     (sc-test-check
-      (pitch-p (lowest-written af))
-      (pitch-p (highest-written af))
-      (pitch-p (lowest-sounding af))     
-      (pitch-p (highest-sounding af))
-      (not (pitch= (lowest-written af) (highest-written af)))
-      (pitch-p (first (missing-notes af))))
-    ;; test setf methods work i.e. create pitch objects out of symbols
-    (setf (lowest-written af) 'b3
-          (highest-sounding af) 'b7
-          (missing-notes af) 'g4)       ; should be a list but will be created
-    ;; (print af)
-    (sc-test-check 
-      (pitch-p (lowest-written af))
-      (pitch-p (highest-sounding af))
-      (pitch-p (first (missing-notes af)))
-      (pitch= (highest-written af) (make-pitch 'e8))
-      (pitch= (lowest-sounding af) (make-pitch 'fs3)))))
+      (eq (set-nth-of-data 'dog 0 'snoopy al) 'snoopy)
+      (named-object-p (get-data 'dog al))
+      (equal (get-data-data 'dog al) '(snoopy spot rover)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 08.12.11 SAR
+(sc-deftest test-al-map-data ()
+  (let ((al (make-assoc-list 'test '((1 (2 3))
+				     (2 (3 4))
+				     (3 (5 6))))))
+    (sc-test-check
+      (equal (map-data al #'(lambda (y)
+			      (loop for i in (data y) collect
+				   (* i 2)))) 
+	     '((4 6) (6 8) (10 12))))))
+
+;;; 08.12.11 SAR
+(sc-deftest test-al-map-data ()
+  (let ((al (make-assoc-list 'test '((bugs bunny)
+				     (daffy duck)
+				     (porky pig)))))
+    (sc-test-check
+      (named-object-p al)
+      (equal (get-keys al) '(bugs daffy porky))
+      (eq (get-data-data 'daffy al) 'duck))))
+	
+
 
 ;;; *sc-test-all-tests*
 
@@ -254,8 +226,4 @@
 ;;; get a T even when individual tests FAIL. If I load this file and then
 ;;; enter the call below at the prompt it functions correctly.
 
-(unless (sc-test-test-all)
-  (error "test-suite-failed"))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; EOF sc-test-suite.lsp
+;;; (sc-test-test-all)

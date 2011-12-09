@@ -46,7 +46,8 @@ options:
     --masterindex "Index,roboindex"
 #    --css robodoc-multi-blue.css
 #    --css anthropod.css
-    --css robodoc.css
+# 09.12.11 SEAN: changed reference to one single stylesheet located in doc/
+    --css ../doc/sc-stylesheet.css
 #     --css randombanana.css
 #    --nopre
 headertypes:

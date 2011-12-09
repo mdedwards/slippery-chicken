@@ -193,23 +193,23 @@
              (get-data 'alto-flute 
                        +slippery-chicken-standard-instrument-palette+))))
     (sc-test-check
-     (pitch-p (lowest-written af))
-     (pitch-p (highest-written af))
-     (pitch-p (lowest-sounding af))     
-     (pitch-p (highest-sounding af))
-     (not (pitch= (lowest-written af) (highest-written af)))
-     (pitch-p (first (missing-notes af))))
+      (pitch-p (lowest-written af))
+      (pitch-p (highest-written af))
+      (pitch-p (lowest-sounding af))     
+      (pitch-p (highest-sounding af))
+      (not (pitch= (lowest-written af) (highest-written af)))
+      (pitch-p (first (missing-notes af))))
     ;; test setf methods work i.e. create pitch objects out of symbols
     (setf (lowest-written af) 'b3
           (highest-sounding af) 'b7
-          (missing-notes af) 'g4) ; should be a list but will be created
+          (missing-notes af) 'g4)       ; should be a list but will be created
     ;; (print af)
     (sc-test-check 
-     (pitch-p (lowest-written af))
-     (pitch-p (highest-sounding af))
-     (pitch-p (first (missing-notes af)))
-     (pitch= (highest-written af) (make-pitch 'e8))
-     (pitch= (lowest-sounding af) (make-pitch 'fs3)))))
+      (pitch-p (lowest-written af))
+      (pitch-p (highest-sounding af))
+      (pitch-p (first (missing-notes af)))
+      (pitch= (highest-written af) (make-pitch 'e8))
+      (pitch= (lowest-sounding af) (make-pitch 'fs3)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -225,7 +225,8 @@
 ;;; get a T even when individual tests FAIL. If I load this file and then
 ;;; enter the call below at the prompt it functions correctly.
 
-;;; (sc-test-test-all)
+(unless (sc-test-test-all)
+  (error "test-suite-failed"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF sc-test-suite.lsp

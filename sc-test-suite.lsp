@@ -70,6 +70,10 @@
   `(sc-test-combine-results
      ,@(loop for at in *sc-test-all-tests* collect (list at))))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; assoc-list tests
+
 (sc-deftest test-al-get-keys () 
   (sc-test-check
     (equal (get-keys (make-assoc-list 'test '((cat felix)
@@ -82,9 +86,6 @@
                                                     (irish wolfhound)))  
                                               (cow bessie))))
            '(cat dog cow))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; assoc-list tests
 
 (sc-deftest test-al-get-first ()
   (let ((al (make-assoc-list 'test '((jim beam)
@@ -186,34 +187,54 @@
 
 ;;; 08.12.11 SAR
 (sc-deftest test-al-set-nth-of-data ()
-            (let ((al (make-assoc-list 'test '((cat felix)
-                                               (dog (fido spot rover))
-                                               (cow bessie)))))
-              (sc-test-check
-               (eq (set-nth-of-data 'dog 0 'snoopy al) 'snoopy)
-               (named-object-p (get-data 'dog al))
-               (equal (get-data-data 'dog al) '(snoopy spot rover)))))
+  (let ((al (make-assoc-list 'test '((cat felix)
+				     (dog (fido spot rover))
+				     (cow bessie)))))
+    (sc-test-check
+      (eq (set-nth-of-data 'dog 0 'snoopy al) 'snoopy)
+      (named-object-p (get-data 'dog al))
+      (equal (get-data-data 'dog al) '(snoopy spot rover)))))
 
 ;;; 08.12.11 SAR
 (sc-deftest test-al-map-data ()
-            (let ((al (make-assoc-list 'test '((1 (2 3))
-                                               (2 (3 4))
-                                               (3 (5 6))))))
-              (sc-test-check
-               (equal (map-data al #'(lambda (y)
-                                       (loop for i in (data y) collect
-                                            (* i 2)))) 
-                      '((4 6) (6 8) (10 12))))))
+  (let ((al (make-assoc-list 'test '((1 (2 3))
+				     (2 (3 4))
+				     (3 (5 6))))))
+    (sc-test-check
+      (equal (map-data al #'(lambda (y)
+			      (loop for i in (data y) collect
+				   (* i 2)))) 
+	     '((4 6) (6 8) (10 12))))))
 
 ;;; 08.12.11 SAR
-(sc-deftest test-al-map-data ()
-            (let ((al (make-assoc-list 'test '((bugs bunny)
-                                               (daffy duck)
-                                               (porky pig)))))
-              (sc-test-check
-               (named-object-p al)
-               (equal (get-keys al) '(bugs daffy porky))
-               (eq (get-data-data 'daffy al) 'duck))))
+(sc-deftest test-al-make-assoc-list ()
+  (let ((al (make-assoc-list 'test '((bugs bunny)
+				     (daffy duck)
+				     (porky pig)))))
+    (sc-test-check
+      (named-object-p al)
+      (equal (get-keys al) '(bugs daffy porky))
+      (eq (get-data-data 'daffy al) 'duck))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; rthm-seq-bar tests
+
+;;; 09.12.11 SAR
+(sc-deftest test-rsb-make-rthm-seq-bar ()
+  (sc-test-check
+    (rthm-seq-bar-p (make-rthm-seq-bar '((2 4) q e s s)))
+    (equal (data (make-rthm-seq-bar '((2 4) q e s s))) '((2 4) q e s s))
+    (make-rthm-seq-bar '((2 4) q e s s) 'test)
+    (make-rthm-seq-bar '((2 4) 4 8 16 16))
+    (make-rthm-seq-bar '((2 4) q. e))
+    (make-rthm-seq-bar '((2 4) 4\. 8))
+    (make-rthm-seq-bar '((2 4) q +16.+32 e))
+    (make-rthm-seq-bar '((2 4) q +16\.+32 e))
+    (make-rthm-seq-bar '((2 4) q \+16\.+32 e))
+    (make-rthm-seq-bar '((2 4) 4+8 8))
+    (make-rthm-seq-bar '((2 4) 4.+8))
+    (make-rthm-seq-bar '((2 4) te te te q))
+    (make-rthm-seq-bar '((2 4) { 3 te te te } q))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Dec  9 13:36:05 2011

@@ -264,11 +264,6 @@
 
 ;;; ****m* rthm-seq-bar/delete-cmn-marks
 ;;; FUNCTION
-;;; delete-cmn-marks:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS:
@@ -309,14 +304,9 @@
 
 ;;; ****m* rthm-seq-bar/fill-with-rhythms
 ;;; FUNCTION
-;;; fill-with-rhythms:
 ;;; Any rhythms in the rsb will be deleted and then rhythm objects will be
 ;;; taken one by one from the <rhythms> argument until the bar is full.  The
 ;;; number of rhythms used is returned.
-;;; 
-;;; 
-;;; DATE:
-;;; 
 ;;; 
 ;;; ARGUMENTS:
 ;;; 
@@ -376,12 +366,7 @@
 
 ;;; ****m* rthm-seq-bar/all-rests
 ;;; FUNCTION
-;;; all-rests:
 ;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
 ;;; 
 ;;; ARGUMENTS:
 ;;; 
@@ -476,11 +461,6 @@
 
 ;;; ****m* rthm-seq-bar/force-rest-bar
 ;;; FUNCTION
-;;; force-rest-bar:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS:
@@ -735,11 +715,6 @@
 
 ;;; ****m* rthm-seq-bar/delete-beams
 ;;; FUNCTION
-;;; delete-beams:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS:
@@ -764,11 +739,6 @@
 
 ;;; ****m* rthm-seq-bar/delete-tuplets
 ;;; FUNCTION
-;;; delete-tuplets:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS:
@@ -822,11 +792,6 @@
 
 ;;; ****m* rthm-seq-bar/auto-put-tuplet-bracket-on-beats
 ;;; FUNCTION
-;;; auto-put-tuplet-bracket-on-beats:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS:
@@ -877,11 +842,6 @@
 
 ;;; ****m* rthm-seq-bar/auto-beam
 ;;; FUNCTION
-;;; auto-beam:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS:
@@ -3008,24 +2968,64 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; 09.12.11 SEAN: Added ROBODoc info
 ;;; ****f* rthm-seq-bar/make-rthm-seq-bar
 ;;; FUNCTION
-;;; make-rthm-seq-bar:
+;;; Public interface for creating a rthm-seq-bar object, each instance of which
+;;; which holds one of the individual bars that reside in a rhythmic
+;;; sequence. 
 ;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; This class is responsible for parsing lists containing rhythms and time
+;;; signatures, but not for parsing these things themselves--that is done by
+;;; separate classes.  
 ;;; 
 ;;; ARGUMENTS:
-;;; 
+;;; - A list of rhythmic durations, which may include ties and dots. Durations
+;;; may be written as numeric (integer) values or may use the CM/CMN/SCORE
+;;; alphabetic shorthand s=16, e=8, q=4, h=2, w=1. 
+;;;
+;;; make-rthm-seq-bar requires a time signature. If no time signature is
+;;; provided, the most recently defined time signature will be used. If one is
+;;; provided, it must be included as the first element of the data list. The
+;;; time signature is formulated as an unquoted list containing two integers,
+;;; the first being the number of beats in the bar and the second being the
+;;; beat unit for the bar. 
+;;;
+;;; - Optional argument: A name (symbol) for the object ID.
 ;;; 
 ;;; RETURN VALUE: 
-;;; 
+;;; Returns a rthm-seq-bar.
 ;;; 
 ;;; EXAMPLE
 #|
+(make-rthm-seq-bar '((2 4) q e s s))
 
+=> 
+RTHM-SEQ-BAR:
+[...]
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: ((2 4) Q E S S)
+
+(make-rthm-seq-bar '((2 4) q e s s) 'test)
+=> 
+RTHM-SEQ-BAR:
+[...]
+NAMED-OBJECT: id: TEST, tag: NIL, 
+data: ((2 4) Q E S S)
+
+(make-rthm-seq-bar '((2 4) q \+16\.+32 e))
+=> 
+RTHM-SEQ-BAR:
+[...]
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: ((2 4) Q +16.+32 E)
+
+(make-rthm-seq-bar '((2 4) { 3 te te te } q)) 
+=> 
+RTHM-SEQ-BAR:
+[...]
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: ((2 4) { 3 TE TE TE } Q)
 |#
 ;;; SYNOPSIS
 (defun make-rthm-seq-bar (rhythms &optional name)

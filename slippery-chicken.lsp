@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 02:12:14 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 19:54:47 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -160,6 +160,8 @@
    ;; 31.1.11: this title will be used in lilypond file names so it's perhaps
    ;; best to avoid spaces etc.
    (title :accessor title :initarg :title :initform "slippery-chicken-piece")
+   ;; MDE Fri Dec  9 19:43:58 2011 -- for lilypond
+   (composer :accessor composer :initarg :composer :initform nil)
    ;; 10/3/07: simply a list of bar numbers where a rehearsal letter should be
    ;; written (automatically)
    (rehearsal-letters :accessor rehearsal-letters :type list 
@@ -390,6 +392,7 @@
           (slot-value no 'staff-groupings) (copy-list (staff-groupings sc))
           (slot-value no 'piece) (clone (piece sc))
           (slot-value no 'title) (title sc)
+          (slot-value no 'composer) (composer sc)
           (slot-value no 'warn-ties) (warn-ties sc)
           (slot-value no 'set-limits-high) (my-copy-list (set-limits-high sc))
           (slot-value no 'set-limits-low) (my-copy-list (set-limits-low sc))
@@ -2420,6 +2423,7 @@
 (defmethod print-object :before ((sc slippery-chicken) stream)
   (format stream "~%SLIPPERY-CHICKEN: ~
                   ~%                      title: ~a ~
+                  ~%                      composer: ~a ~
                   ~%                set-palette: ~a ~
                   ~%                    set-map: ~a ~
                   ~%               hint-pitches: ~a ~
@@ -2431,7 +2435,7 @@
                   ~%                   ensemble: ~a 
                   ~%      instruments-hierarchy: ~a 
                   ~%        fast-leap-threshold: ~a "
-          (title sc) (id (set-palette sc)) (id (set-map sc))
+          (title sc) (composer sc) (id (set-palette sc)) (id (set-map sc))
           (id (hint-pitches sc)) (id (rthm-seq-map sc))
           (id (rthm-seq-palette sc)) (id (tempo-map sc)) (tempo-curve sc)
           (id (instrument-palette sc)) (id (ensemble sc))
@@ -4361,10 +4365,10 @@
                                   ;; can be in in C or not
                                   (in-c nil)
                                   (barline-thickness 0.5)
-                                  (top-margin 10) ; mm
+                                  (top-margin 10)    ; mm
                                   (bottom-margin 10) ; mm
-                                  (left-margin 20) ;mm
-                                  (line-width 17) ;cm
+                                  (left-margin 20)   ;mm
+                                  (line-width 17)    ;cm
                                   (page-nums t)
                                   ;; print every bar number unless
                                   ;; multi-bar-rest?
@@ -4398,7 +4402,10 @@
             end-bar = ~a???" start-bar end-bar))
   (let* ((path (trailing-slash base-path))
          (players (players sc))
-         (def-file (string-downcase (format nil "~a-def.ly" (title sc))))
+         ;; MDE Fri Dec  9 19:33:28 2011 -- replace spaces with hyphens so good
+         ;; for file names  
+         (title-hyphens (substitute #\- #\  (title sc)))
+         (def-file (string-downcase (format nil "~a-def.ly" title-hyphens)))
          (staff-group (if group-barlines "StaffGroup" "ChoirStaff"))
          (players-strings
           (loop for player in (players sc)
@@ -4409,7 +4416,12 @@
          (def-file-path (concatenate 'string path def-file)))
     (labels ((no-header-footer (stream)
                (format stream 
-                       "~%\\header {~%  tagline = ##f~%  composer = ##f~%}"))
+                       "~%\\header {~%  title =\"~a\" ~%  tagline = ##f~%  ~
+                         composer = ~a~%}"
+                       (title sc)
+                       (if (composer sc) 
+                           (format nil "\"~a\"" (composer sc))
+                           "##f")))
              (new-voice (pname player stream &optional include-name) 
                ;; pname must be the same as the file name we'll write with the
                ;; notes (+ .ly) so no - or _
@@ -4434,7 +4446,7 @@
                                    #(ly:make-moment ~a ~a)"
                            (first min-page-turn) (second min-page-turn)))
                  (format stream "~%  \\include \"~a-~a.ly\"~%}"
-                         (title sc) (if include-name include-name pname))))
+                         title-hyphens (if include-name include-name pname))))
              (score-tag (pname stream &optional new-staff-group end-staff-group)
                (when new-staff-group
                  ;; 24.7.11: to avoid barlines across groups
@@ -4520,12 +4532,12 @@
            for pname in players-strings
            ;; this must come after 'in players-strings' otherwise we crash
            for end = (= gcount gnum) do
-             ;; (format t "~%~a ~a ~a" pname gcount gnum)
-             (score-tag pname out (= 1 gcount) end)
-             (if end
-                 (setf gnum (pop groups)
-                       gcount 1)
-                 (incf gcount)))
+           ;; (format t "~%~a ~a ~a" pname gcount gnum)
+           (score-tag pname out (= 1 gcount) end)
+           (if end
+               (setf gnum (pop groups)
+                     gcount 1)
+               (incf gcount)))
         (format out "~%  >>~%}")
         ;; create the written parts variable
         (format out "~%written = {~%  <<")
@@ -4537,8 +4549,9 @@
       ;; write the main score file
       (with-open-file
           (out 
-           (concatenate 'string path (string-downcase 
-                                      (format nil "_~a-score.ly" (title sc))))
+           (concatenate 'string path
+                        (string-downcase 
+                         (format nil "_~a-score.ly" title-hyphens)))
            :direction :output :if-does-not-exist :create
            :if-exists :rename-and-delete)
         (format out "~&\\version \"~a\"" lp-version)
@@ -4554,7 +4567,7 @@
              (out 
               (concatenate 'string path (string-downcase 
                                          (format nil "~a-~a-part.ly" 
-                                                 (title sc) pname)))
+                                                 title-hyphens pname)))
               :direction :output :if-does-not-exist :create
               :if-exists :rename-and-delete)
            (if (needs-transposition player)
@@ -4565,7 +4578,7 @@
          for pname in players-strings do
          (write-lp-data-for-player 
           sc player 
-          (concatenate 'string path (format nil "~a-~a.ly" (title sc) pname))
+          (concatenate 'string path (format nil "~a-~a.ly" title-hyphens pname))
           :all-bar-nums all-bar-nums
           :rehearsal-letters-font-size rehearsal-letters-font-size
           :in-c in-c :start-bar start-bar :end-bar end-bar))
@@ -4581,7 +4594,7 @@
          (when (needs-transposition player)
            (write-lp-data-for-player 
             sc player 
-            (format nil "~a~a-~a-written.ly" path (title sc) pname)
+            (format nil "~a~a-~a-written.ly" path title-hyphens pname)
             :all-bar-nums all-bar-nums :in-c nil :start-bar start-bar
             :end-bar end-bar)))))
   t)
@@ -4952,13 +4965,14 @@
                                         set-limits-low set-limits-high
                                         instrument-palette ensemble 
                                         rehearsal-letters fast-leap-threshold
-                                        instruments-hierarchy title
+                                        instruments-hierarchy title composer
                                         (warn-ties t))
   ;; we make the given name a global!!!
   (set name
        (make-instance 'slippery-chicken 
          :id name
          :title title
+         :composer composer
          :rthm-seq-palette rthm-seq-palette
          :rthm-seq-map rthm-seq-map
          :rthm-seq-map-replacements rthm-seq-map-replacements

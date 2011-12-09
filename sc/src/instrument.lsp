@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 00:33:59 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 13:31:26 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -196,20 +196,18 @@
         (written-sounding-error "lowest-written" "lowest-sounding"))
       (when (and hw hs)
         (written-sounding-error "highest-written" "highest-sounding"))
-      (setf (missing-notes ins)
-        (loop for note in (missing-notes ins) collect 
-              (make-pitch 
-               (transpose-note note (transposition-semitones ins)))))
+      ;;; MDE Fri Dec  9 13:31:15 2011 -- merely to trigger the setf method
+      (setf (missing-notes ins) (missing-notes ins))
       (if lw
           (setf (lowest-sounding ins) (transpose-note
                                        lw (transposition-semitones ins)))
-        (setf (lowest-written ins) (transpose-note
-                                    ls (- (transposition-semitones ins)))))
+          (setf (lowest-written ins) (transpose-note
+                                      ls (- (transposition-semitones ins)))))
       (if hw
           (setf (highest-sounding ins) (transpose-note
                                         hw (transposition-semitones ins)))
-        (setf (highest-written ins) (transpose-note
-                                     hs (- (transposition-semitones ins)))))
+          (setf (highest-written ins) (transpose-note
+                                       hs (- (transposition-semitones ins)))))
       ;; 5.8.10 we say in the class def that these will be pitch objects but at
       ;; the mo they're symbols; handle this now and hope it doesn't break
       ;; anything :)
@@ -219,10 +217,10 @@
             (highest-written ins) (make-pitch (highest-written ins)))
       (setf (clefs ins) (if (clefs ins)
                             (reverse (clefs ins))
-                          (list (starting-clef ins)))
+                            (list (starting-clef ins)))
             (clefs-in-c ins) (if (clefs-in-c ins) 
                                  (reverse (clefs-in-c ins))
-                               (copy-list (clefs ins))))
+                                 (copy-list (clefs ins))))
       (when pn
         (unless (or (prefers-high ins)
                     (prefers-low ins))
@@ -313,6 +311,17 @@
     (error "instrument::check-starting-clef: Don't recognise ~a ~
             (did you type an extra (superfluous) quote?)"
            (starting-clef ins))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; MDE Fri Dec  9 13:20:20 2011
+(defmethod (setf missing-notes) (new-value (ins instrument))
+  (unless (listp new-value)
+    (setf new-value (list new-value)))
+  (setf (slot-value ins 'missing-notes)
+        (loop for note in new-value collect 
+             (make-pitch (transpose-note note (transposition-semitones ins))))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified: 20:23:38 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 14:16:48 Fri Dec  9 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -175,7 +175,6 @@
   tls)
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; In this case upper and lower are further limits that will be compared to
 ;;; those of the instrument when limiting the set.  Returns a pitch list
 ;;; though, not a set object.

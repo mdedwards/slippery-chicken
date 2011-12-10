@@ -1059,11 +1059,17 @@
 
 ;;; ****m* rthm-seq-bar/get-nth-non-rest-rhythm
 ;;; FUNCTION
-;;; Get the value and attributes of the first rhythm object stored in the given
-;;; rthm-seq-bar. 
+;;; Get the value and attributes of the first non-rest rhythm object stored in
+;;; the given rthm-seq-bar. 
 ;;; 
 ;;; ARGUMENTS
-;;; - 
+;;; - The zero-based index number indicating which non-rest-rhythm is sought (0
+;;; = the first non-rest-rhythm, 1 = the second etc.)
+;;; - The given rthm-seq-bar object in which to search.
+;;; 
+;;; OPTIONS
+;;; - Optional argument: T or NIL indicating whether to print an error message
+;;; if the given index is not reachable in the given rthm-seq-bar data list.
 ;;; 
 ;;; RETURN VALUE: 
 ;;; 

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 14:18:05 Sat Dec 10 2011 ICT
+;;; $$ Last modified: 14:21:58 Sat Dec 10 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1301,14 +1301,27 @@
 ;;;
 ;;; ARGUMENTS:
 ;;; - the list of rhythm symbols
-;;; - whether to create a circular-sclist from the result (if nil a simple list
+;;; - (optional, default nil) whether to create a circular-sclist from the
+;;;   result (if nil a simple list 
 ;;; will be returned).
 ;;; 
 ;;; RETURN VALUE: 
 ;;; a list or circular-sclist of the rhythm objects
 ;;; 
 ;;; EXAMPLE
-;;; (rhythm-list '(q w+e q. h. h+s e.+q) t))
+#|
+(rhythm-list '(q w+e q. h. h+s e.+q) t))
+=>
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 9, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL
+                     this: NIL
+                     next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (
+RHYTHM: value: 4.0f0
+.....
+|#
 ;;; 
 ;;; DATE  4.8.10  
 ;;; SYNOPSIS

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 19:12:33 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 14:18:05 Sat Dec 10 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -187,7 +187,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rhythm/force-rest
+;;; FUNCTION
+;;; force-rest:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod force-rest ((r rhythm))
+;;; ****
   (setf (needs-new-note r) nil
         (is-tied-to r) nil
         ;; 24.2.11 need to kill the beam too
@@ -260,7 +281,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rhythm/scale
+;;; FUNCTION
+;;; scale:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod scale ((r rhythm) scaler &optional (clone t) ignore1 ignore2)
+;;; ****
   (declare (ignore ignore1)
            (ignore ignore2))
   (when clone
@@ -308,17 +350,80 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rhythm/rhythm-equal
+;;; FUNCTION
+;;; rhythm-equal:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod rhythm-equal ((r1 rhythm) (r2 rhythm))
+;;; ****
   (equal-within-tolerance (value r1) (value r2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rhythm/rhythm/
+;;; FUNCTION
+;;; rhythm/:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod rhythm/ ((r1 rhythm) (r2 rhythm))
+;;; ****
   (/ (duration r1) (duration r2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rhythm/is-multiple
+;;; FUNCTION
+;;; is-multiple:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod is-multiple ((r1 rhythm) (r2 rhythm))
+;;; ****
   (whole-num-p (rhythm/ r1 r2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -340,8 +445,9 @@
 ;;; always t
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
+#|
+
+|#
 ;;; SYNOPSIS
 (defmethod add-cmn-mark ((r rhythm) mark &optional warn-rest)
 ;;; ****
@@ -357,7 +463,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 26.7.11 (Pula)
+;;; ****m* rhythm/add-cmn-mark-once
+;;; FUNCTION
+;;; add-cmn-mark-once:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-cmn-mark-once ((r rhythm) mark &optional warn-rest)
+;;; ****
   (when mark
     (unless (has-cmn-mark r mark)
       (add-cmn-mark r mark warn-rest))))
@@ -385,7 +512,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rhythm/rm-cmn-marks
+;;; FUNCTION
+;;; rm-cmn-marks:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod rm-cmn-marks ((r rhythm) marks &optional (warn t))
+;;; ****
   (unless (listp marks)
     (setf marks (list marks)))
   (loop for m in marks do
@@ -401,7 +549,28 @@
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rhythm/replace-cmn-mark
+;;; FUNCTION
+;;; replace-cmn-mark:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod replace-cmn-mark ((r rhythm) what with &optional before)
+;;; ****
   (let ((new (substitute with what (if before
                                        (cmn-objects-before r)
                                        (cmn-marks r)))))
@@ -411,7 +580,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rhythm/delete-cmn-marks
+;;; FUNCTION
+;;; delete-cmn-marks:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-cmn-marks ((r rhythm))
+;;; ****
   (unless (is-rest r)
     (delete-cmn-marks (pitch-or-chord r))
     (when (written-pitch-or-chord r)
@@ -434,23 +624,107 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rhythm/has-cmn-mark
+;;; FUNCTION
+;;; has-cmn-mark:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod has-cmn-mark ((r rhythm) mark)
+;;; ****
   (member mark (cmn-marks r)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 5.4.11
+;;; ****m* rhythm/accented-p
+;;; FUNCTION
+;;; accented-p:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod accented-p ((r rhythm))
+;;; ****
   (has-cmn-mark r 'a))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rhythm/begin-slur-p
+;;; FUNCTION
+;;; begin-slur-p:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod begin-slur-p ((r rhythm))
+;;; ****
   (has-cmn-mark r 'beg-sl))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rhythm/end-slur-p
+;;; FUNCTION
+;;; end-slur-p:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod end-slur-p ((r rhythm))
+;;; ****
   (has-cmn-mark r 'end-sl))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -462,7 +736,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rhythm/delete-beam
+;;; FUNCTION
+;;; delete-beam:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-beam ((r rhythm))
+;;; ****
   (setf (beam r) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -479,7 +774,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rhythm/duration-secs
+;;; FUNCTION
+;;; duration-secs:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod duration-secs ((r rhythm) &optional (tempo 60))
+;;; ****
   (unless (typep tempo 'tempo)
     (setf tempo (make-tempo tempo)))
   (* (qtr-dur tempo) (duration r)))
@@ -616,10 +932,52 @@
 ;;; NB these functions only return a single rhythm, rather than a list with
 ;;; ties so e.g. q+s returns tq...
 
+;;; ****m* rhythm/add
+;;; FUNCTION
+;;; add:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add ((r1 rhythm) (r2 rhythm) &optional warn)
+;;; ****
   (arithmetic r1 r2 #'+ warn))
 
+;;; ****m* rhythm/subtract
+;;; FUNCTION
+;;; subtract:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod subtract ((r1 rhythm) (r2 rhythm) &optional warn)
+;;; ****
   (arithmetic r1 r2 #'- warn))
 
 (defmethod arithmetic ((r1 rhythm) (r2 rhythm) function warn)
@@ -640,8 +998,29 @@
 
 ;;; if duration t then rthm is a duration in secs, not a known rhythm like 'e
 
+;;; ****f* rhythm/make-rhythm
+;;; FUNCTION
+;;; make-rhythm:
+;;;
+;;; 
+;;; 
+;;; DATE:
+;;; 
+;;; 
+;;; ARGUMENTS:
+;;; 
+;;; 
+;;; RETURN VALUE: 
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-rhythm (rthm &key (is-rest nil) (is-tied-to nil) (duration nil)
-                    (tempo 60.0)) ;; only if duration t
+                    (tempo 60.0))
+;;; **** ;; only if duration t
   (cond ((rhythm-p rthm) (clone rthm))
         ((not duration)
          (make-instance 'rhythm :data rthm :is-rest is-rest 

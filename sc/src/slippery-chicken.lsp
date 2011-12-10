@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:54:47 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 19:58:10 Sat Dec 10 2011 ICT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4194,7 +4194,7 @@
        (loop for bar-num from start-bar to end-bar 
           for bar = (get-bar sc bar-num player)
           do
-          (when (all-rests bar)
+          (when (all-rests? bar)
             (force-rest-bar bar))))
   t)
             

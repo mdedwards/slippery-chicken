@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 00:28:59 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 19:57:39 Sat Dec 10 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -364,24 +364,30 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rthm-seq-bar/all-rests
+;;; ****m* rthm-seq-bar/all-rests?
 ;;; FUNCTION
-;;;
+;;; test whether all rhythms in a bar are rests.
 ;;; 
 ;;; ARGUMENTS:
-;;; 
+;;; - a rthm-seq-bar object
 ;;; 
 ;;; RETURN VALUE: 
-;;; 
+;;; T if all rhythms are rests, otherwise nil
 ;;; 
 ;;; EXAMPLE
 #|
-
+(let ((rsb1 (make-rthm-seq-bar '((2 4) q q)))
+      (rsb2 (make-rthm-seq-bar '((2 4) (q) (q)))))
+  (print (all-rests? rsb1))
+  (all-rests? rsb2))
+=>
+NIL 
+T
 |#
 ;;; SYNOPSIS
-(defmethod all-rests ((rsb rthm-seq-bar))
+(defmethod all-rests? ((rsb rthm-seq-bar))
 ;;; ****
-  (rhythms-all-rests (rhythms rsb)))
+  (rhythms-all-rests? (rhythms rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  21.7.11 (Pula): This method is by no means error-free, especially as it
@@ -403,7 +409,7 @@
                   (duration (make-rhythm min))
                   0.0))
     ;; (format t "~%bar ~a ~a" (bar-num rsb) (length (first beats)))
-    (if (all-rests rsb)
+    (if (all-rests? rsb)
         (force-rest-bar rsb)
         (flet ((consolidate (rthm count)
                  (if (< (duration rthm) min)
@@ -414,7 +420,7 @@
           ;; (format t "~%~a beats" (length beats))
           (loop for beat in beats do
              ;; (print (length beat))
-               (if (rhythms-all-rests beat)
+               (if (rhythms-all-rests? beat)
                    ;; 21.7.11
                    (setf current (list (clone rest-beat)))
                    (loop for r in beat do
@@ -1578,7 +1584,7 @@
                            "")
                        start-time end-time))
       (update-time result 0 0 tempo)
-      (if (all-rests result)
+      (if (all-rests? result)
           (force-rest-bar result)
         (setf (parent-start-end result) (list start-attack end-attack)))
       ;; use the beat of the parent rsb to set the beams for this extract.
@@ -3751,10 +3757,10 @@ data: ((2 4) { 3 TE TE TE } Q)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun rhythms-all-rests (rthms)
+(defun rhythms-all-rests? (rthms)
   (loop for r in rthms do
         (unless (rhythm-p r)
-          (error "~a~%rthm-seq-bar::rhythms-all-rests: not a rhythm!" r))
+          (error "~a~%rthm-seq-bar::rhythms-all-rests?: not a rhythm!" r))
         (unless (is-rest r)
           (return nil))
       finally (return t)))

@@ -3,13 +3,17 @@
 items:
     NAME
     FUNCTION
+# 10.12.11 SEAN: Added ARGUMENTS, OPTIONS, and RETURNS to the items block
+    ARGUMENTS
+    OPTIONS
+    RETURN VALUE
+    EXAMPLE		
     SYNOPSIS
     INPUTS
     OUTPUTS
     SIDE EFFECTS
     HISTORY
     BUGS
-    EXAMPLE
 ignore items:
     HISTORY
     BUGS
@@ -19,8 +23,8 @@ ignore items:
 #       OUTPUTS
 #       SYNOPSIS
 source items:
-    SYNOPSIS
-    EXAMPLE
+     EXAMPLE
+     SYNOPSIS
 # preformatted items:
 #     INPUTS
 #     OUTPUTS

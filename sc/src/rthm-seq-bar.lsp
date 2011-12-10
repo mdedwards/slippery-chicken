@@ -1059,15 +1059,11 @@
 
 ;;; ****m* rthm-seq-bar/get-nth-non-rest-rhythm
 ;;; FUNCTION
-;;; get-nth-non-rest-rhythm:
-;;;
+;;; Get the value and attributes of the first rhythm object stored in the given
+;;; rthm-seq-bar. 
 ;;; 
-;;; 
-;;; DATE:
-;;; 
-;;; 
-;;; ARGUMENTS:
-;;; 
+;;; ARGUMENTS
+;;; - 
 ;;; 
 ;;; RETURN VALUE: 
 ;;; 

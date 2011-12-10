@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 20:25:23 Wed Dec  7 2011 ICT
+;;; $$ Last modified: 00:33:42 Sun Dec 11 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -146,17 +146,17 @@
 ;;; EXAMPLE 
 #| 
 (let ((al (make-assoc-list 'test '((cat felix) 
-				   (dog fido) 
-				   (cow bessie)))))
+                                   (dog fido) 
+                                   (cow bessie)))))
   (get-keys al))
 
 => (CAT DOG COW)
 
 (let ((al (make-assoc-list 'test '((cat felix) 
-				   (dog ((scottish terrier)
-					 (german shepherd)
-					 (irish wolfhound))) 
-				   (cow bessie)))))
+                                   (dog ((scottish terrier)
+                                         (german shepherd)
+                                         (irish wolfhound))) 
+                                   (cow bessie)))))
   (get-keys al))
 
 => (CAT DOG COW)
@@ -196,8 +196,8 @@
 ;;; EXAMPLE
 #|
 (let ((al (make-assoc-list 'test '((jim beam)
-				   (four roses)
-				   (wild turkey)))))
+                                   (four roses)
+                                   (wild turkey)))))
   (get-first al))
 
 => 
@@ -227,8 +227,8 @@ data BEAM
 ;;; EXAMPLE
 #|
 (let ((al (make-assoc-list 'test '((jim beam)
-				   (four roses)
-				   (wild turkey)))))
+                                   (four roses)
+                                   (wild turkey)))))
   (get-last al))
 
 => 
@@ -290,22 +290,22 @@ data TURKEY
 ;;; EXAMPLE
 #|
 (let ((al (make-assoc-list 'test '((jim beam) 
-				   (four roses) 
-				   (wild turkey)))))
+                                   (four roses) 
+                                   (wild turkey)))))
   (get-position 'four al))
 
 => 1
 
 (let ((al (make-assoc-list 'test '((jim beam) 
-				   (four roses) 
-				   (wild turkey)))))
+                                   (four roses) 
+                                   (wild turkey)))))
   (get-position 'jack al))
 
 => NIL
 
 (let ((al (make-assoc-list 'test '((jim beam) 
-				   (four roses) 
-				   (wild turkey)))))
+                                   (four roses) 
+                                   (wild turkey)))))
   (get-position 'jim al 1))
 
 => NIL
@@ -341,15 +341,15 @@ data TURKEY
 ;;; EXAMPLE
 #| 
 (let ((al (make-assoc-list 'test '((jim beam) 
-				   (four roses) 
-				   (wild turkey)))))
+                                   (four roses) 
+                                   (wild turkey)))))
   (get-data-data 'jim al))
 
 => BEAM 
 
 (let ((al (make-assoc-list 'test '((jim beam) 
-				   (four roses) 
-				   (wild turkey)))))
+                                   (four roses) 
+                                   (wild turkey)))))
   (get-data-data 'jack al))
 
 => NIL
@@ -399,8 +399,8 @@ WARNING:
 ;;; EXAMPLE
 #|
 (let ((al (make-assoc-list 'test '((jim beam) 
-				   (four roses) 
-				   (wild turkey)))))
+                                   (four roses) 
+                                   (wild turkey)))))
   (get-data 'four al))
 
 => 
@@ -408,8 +408,8 @@ NAMED-OBJECT: id: FOUR, tag: NIL,
 data: ROSES
 
 (let ((al (make-assoc-list 'test '((jim beam) 
-				   (four roses) 
-				   (wild turkey)))))
+                                   (four roses) 
+                                   (wild turkey)))))
   (get-data 'jack al))
 
 => NIL
@@ -418,8 +418,8 @@ WARNING:
    id TEST
 
 (let ((al (make-assoc-list 'test '((jim beam) 
-				   (four roses) 
-				   (wild turkey)))))
+                                   (four roses) 
+                                   (wild turkey)))))
   (get-data 'jack al t))
 
 => NIL 
@@ -428,8 +428,8 @@ WARNING:
    id TEST
 
 (let ((al (make-assoc-list 'test '((jim beam) 
-				   (four roses) 
-				   (wild turkey)))))
+                                   (four roses) 
+                                   (wild turkey)))))
   (get-data 'jack al nil))
 
 => NIL
@@ -461,7 +461,7 @@ WARNING:
 ;;; - A key/data pair as a quoted list.
 ;;; - The assoc-list to which it is to be added.
 ;;; 
-;;; OPTIONS
+;;; OPTIONAL ARGUMENTS
 ;;; - Optional argument: One more symbol or quoted list may be added as the 
 ;;; value for the "ignore" argument. This value will be ignored.
 ;;; 
@@ -476,15 +476,15 @@ WARNING:
 ;;; EXAMPLE
 #|
 (let ((al (make-assoc-list 'test '((jim beam)
-				   (four roses)
-				   (wild turkey)))))
+                                   (four roses)
+                                   (wild turkey)))))
   (add '(makers mark) al))
 
 => T
 
 (let ((al (make-assoc-list 'test '((jim beam)
-				   (four roses)
-				   (wild turkey)))))
+                                   (four roses)
+                                   (wild turkey)))))
   (add '(makers mark) al)
   (get-data 'makers al))
 
@@ -493,16 +493,16 @@ NAMED-OBJECT: id: MAKERS, tag: NIL,
 data: MARK
 
 (let ((al (make-assoc-list 'test '((jim beam)
-				   (four roses)
-				   (wild turkey)))))
+                                   (four roses)
+                                   (wild turkey)))))
   (add '(makers mark) al)
   (get-position 'makers al))
 
 => 3
 
 (let ((al (make-assoc-list 'test '((jim beam)
-				   (four roses)
-				   (wild turkey)))))
+                                   (four roses)
+                                   (wild turkey)))))
   (add '(knob creek) al '(jack daniels)))
 
 => T
@@ -545,8 +545,8 @@ data: MARK
 ;;; EXAMPLE
 #|
 (let ((al (make-assoc-list 'test '((cat felix)
-				   (dog fido)
-				   (cow bessie)))))
+                                   (dog fido)
+                                   (cow bessie)))))
   (set-data 'dog '(dog spot) al))
 
 => 
@@ -554,8 +554,8 @@ NAMED-OBJECT: id: DOG, tag: NIL,
 data: SPOT
 
 (let ((al (make-assoc-list 'test '((cat felix)
-				   (dog fido)
-				   (cow bessie)))))
+                                   (dog fido)
+                                   (cow bessie)))))
   (set-data 'pig '(pig wilbur) al))
 
 => NIL
@@ -564,8 +564,8 @@ WARNING:
    TEST 
 
 (let ((al (make-assoc-list 'test '((cat felix)
-				   (dog fido)
-				   (cow bessie)))))
+                                   (dog fido)
+                                   (cow bessie)))))
   (set-data 'dog '(pig wilbur) al))
 
 => 
@@ -610,8 +610,8 @@ data: WILBUR
 ;;; EXAMPLE
 #|
 (let ((al (make-assoc-list 'test '((cat felix)
-				   (dog (fido spot))
-				   (cow bessie)))))
+                                   (dog (fido spot))
+                                   (cow bessie)))))
   (add-to-list-data 'rover 'dog al))
 
 => 
@@ -657,8 +657,8 @@ data: (FIDO SPOT ROVER)
 ;;; EXAMPLE
 #|
 (let ((al (make-assoc-list 'test '((cat felix)
-				   (dog (fido spot))
-				   (cow bessie)))))
+                                   (dog (fido spot))
+                                   (cow bessie)))))
   (add-to-list-data-force 'rover 'dog al))
 
 => 
@@ -666,8 +666,8 @@ NAMED-OBJECT: id: DOG, tag: NIL,
 data: (FIDO SPOT ROVER)
 
 (let ((al (make-assoc-list 'test '((cat felix)
-				   (dog (fido spot))
-				   (cow bessie)))))
+                                   (dog (fido spot))
+                                   (cow bessie)))))
   (add-to-list-data-force 'wilbur 'pig al)
   (get-keys al))
 
@@ -706,15 +706,15 @@ data: (FIDO SPOT ROVER)
 ;;; EXAMPLE
 #|
 (let ((al (make-assoc-list 'test '((cat felix)
-				   (dog (fido spot rover))
-				   (cow bessie)))))
+                                   (dog (fido spot rover))
+                                   (cow bessie)))))
   (set-nth-of-data 'dog 0 'snoopy al))
 
 => SNOOPY
 
 (let ((al (make-assoc-list 'test '((cat felix)
-				   (dog (fido spot rover))
-				   (cow bessie)))))
+                                   (dog (fido spot rover))
+                                   (cow bessie)))))
   (set-nth-of-data 'dog 0 'snoopy al) 
   (get-data 'dog al))
 

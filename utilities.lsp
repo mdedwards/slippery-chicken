@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 18:36:07 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 20:35:55 Sat Dec 10 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1400,6 +1400,16 @@
   (if (listp thing)
       thing
       (list thing)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Implementation of the Collatz conjecture (see
+;;; http://en.wikipedia.org/wiki/Collatz_conjecture)
+(defun hailstone (n)
+  (loop collect n while (> n 1) 
+     do (setf n (if (oddp n)
+                    (1+ (* 3 n))
+                    (/ n 2)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

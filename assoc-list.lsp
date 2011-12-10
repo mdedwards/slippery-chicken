@@ -130,15 +130,16 @@
 ;;; FUNCTION
 ;;; Get a simple list of the keys in a given association list.
 ;;;
-;;; ARGUMENTS:
-;;; An assoc-list.
+;;; ARGUMENTS
+;;; - An assoc-list.
 ;;;
-;;; Optional argument: T or NIL (default T) to indicate whether a warning
+;;; OPTIONS
+;;; - Optional argument: T or NIL (default T) to indicate whether a warning  
 ;;; should be issued when the first argument is a recursive assoc-list.
 ;;;
-;;; RETURN VALUE: 
-;;; A list of the keys only of all top-level association list pairs in the given
-;;; assoc-list. 
+;;; RETURN VALUE 
+;;; A list of the keys only of all top-level association list pairs in the
+;;; given assoc-list. 
 ;;;
 ;;; get-keys is a method of the assoc-list class and therefore returns only
 ;;; top-level keys if accessing a recursive assoc-list.
@@ -186,10 +187,10 @@
 ;;; FUNCTION
 ;;; Returns the first named-object in the data list of the given assoc-list. 
 ;;; 
-;;; ARGUMENTS:
-;;; An assoc-list.
+;;; ARGUMENTS
+;;; - An assoc-list.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE 
 ;;; The first object in the data list of a given assoc-list.
 ;;; 
 ;;; EXAMPLE
@@ -217,10 +218,10 @@ data BEAM
 ;;; FUNCTION
 ;;; Returns the last named-object in the data list of a given assoc-list.
 ;;; 
-;;; ARGUMENTS:
-;;; An assoc-list.
+;;; ARGUMENTS
+;;; - An assoc-list.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE 
 ;;; The last object in the data list of a given assoc-list.
 ;;; 
 ;;; EXAMPLE
@@ -269,15 +270,17 @@ data TURKEY
 ;;; Returns the index position (zero-based) of a named-object within a given 
 ;;; assoc-list. 
 ;;; 
-;;; ARGUMENTS:
-;;; The assoc-list key symbol (named-object id) of the object for which the
-;;; position is sought, and the assoc-list in which it is to be sought.
+;;; ARGUMENTS
+;;; - The assoc-list key symbol (named-object id) of the object for which the 
+;;; position is sought.
+;;; - The assoc-list in which it is to be sought.
 ;;;
-;;; Optional argument: An indexing integer. In this case, get-position will
+;;; OPTIONS
+;;; - Optional argument: An indexing integer. In this case, get-position will 
 ;;; search for the given object starting part-way into the list, skipping all
 ;;; objects located at indices lower than the given integer (default = 0).
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE 
 ;;; The integer index of the named-object within the given assoc-list.
 ;;;
 ;;; NIL is returned if the object is not present in the assoc-list starting
@@ -323,14 +326,15 @@ data TURKEY
 ;;; (Short-cut for (data (get-data ...))
 ;;; Get the data associated with the given key of the given assoc-list. 
 ;;; 
-;;; ARGUMENTS:
-;;; The assoc-list key symbol associated with the data list which is sought, 
-;;; and the assoc-list in which it is to be sought.
+;;; ARGUMENTS
+;;; - The assoc-list key symbol associated with the data list which is sought. 
+;;; - The assoc-list in which it is to be sought.
 ;;;
-;;; Optional argument: T or NIL to indicate whether to issue a warning if no
+;;; OPTIONS
+;;; - Optional argument: T or NIL to indicate whether to issue a warning if no 
 ;;; such named-object can be found within the given assoc-list (default = T).
 ;;;
-;;; RETURN VALUE: 
+;;; RETURN VALUE 
 ;;; If the given key is found within the given assoc-list, the data associated
 ;;; with that key is returned.
 ;;; 
@@ -373,18 +377,20 @@ WARNING:
 ;;; NB This method actually returns the named object, not just the data
 ;;; associated with the key (use get-data-data for that) 
 ;;; 
-;;; ARGUMENTS:
-;;; The assoc-list key symbol (named-object id) of the object which is sought
-;;; and the assoc-list in which it is to be sought.
+;;; ARGUMENTS
+;;; - The assoc-list key symbol (named-object id) of the object which is
+;;; sought. 
+;;; - The assoc-list in which it is to be sought.
 ;;;
-;;; Optional argument: T or NIL to indicate whether to issue a warning if no
-;;; such named-object can be found within the given assoc-list (default = T).
+;;; OPTIONS
+;;; - Optional argument: T or NIL to indicate whether to issue a warning if no 
+;;; such named-object can be found within the given assoc-list (default = T)
 ;;;
 ;;; Mostly we define whether we want to warn in the instance itself but
 ;;; sometimes it would be good to warn or not on a call basis, hence the
 ;;; optional argument.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE 
 ;;; If the given key is found within the given assoc-list, the full
 ;;; named-object (id, tag and data) is returned.
 ;;;
@@ -451,14 +457,15 @@ WARNING:
 ;;; FUNCTION
 ;;; Add a new element to the assoc-list.
 ;;; 
-;;; ARGUMENTS:
-;;; A key/data pair as a quoted list, and the assoc-list to which it is to be 
-;;; added. 
+;;; ARGUMENTS
+;;; - A key/data pair as a quoted list.
+;;; - The assoc-list to which it is to be added.
 ;;; 
-;;; Optional argument: One more symbol or quoted list may be added as the value
-;;; for the "ignore" argument. This value will be ignored.
+;;; OPTIONS
+;;; - Optional argument: One more symbol or quoted list may be added as the 
+;;; value for the "ignore" argument. This value will be ignored.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE 
 ;;; Returns T if the given named-object is successfully added to the given
 ;;; assoc-list. 
 ;;;
@@ -525,11 +532,12 @@ data: MARK
 ;;; Replace a given named-object within a given assoc-list. This method
 ;;; replaces the whole object, not just the data of that object.
 ;;; 
-;;; ARGUMENTS:
-;;; A key present within the given assoc-list, a key/data pair as a quoted
-;;; list, and the assoc-list in which to find and replace the given object. 
+;;; ARGUMENTS
+;;; - A key present within the given assoc-list.
+;;; - A key/data pair as a quoted list.
+;;; - The assoc-list in which to find and replace the given object.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE 
 ;;; Returns the new named-object.
 ;;; 
 ;;; Returns NIL when the given key is not present within the given assoc-list.
@@ -587,11 +595,12 @@ data: WILBUR
 ;;;
 ;;; The data associated with the given key must already be a list.
 ;;; 
-;;; ARGUMENTS:
-;;; An item of any type, a given key that must be present in the given 
-;;; assoc-list, and the given assoc-list.
+;;; ARGUMENTS
+;;; - An item of any type.
+;;; - A given key that must be present in the given assoc-list.
+;;; - The given assoc-list.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE 
 ;;; Returns the whole named-object to which the new element was added.
 ;;;
 ;;; This method will abort with an error if a key is sought which does not
@@ -633,11 +642,12 @@ data: (FIDO SPOT ROVER)
 ;;; If the given key already exists within the given assoc-list, its data must
 ;;; already be in the form of a list.
 ;;; 
-;;; ARGUMENTS:
-;;; A (new) element of any type, a given key that may or may not be present in
-;;; the given assoc-list, and the the given assoc-list. 
+;;; ARGUMENTS
+;;; - A (new) element of any type.
+;;; - A given key that may or may not be present in the given assoc-list.
+;;; - The the given assoc-list.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE 
 ;;; Returns the whole named-object to which the element was added when used
 ;;; with a key that already exists within the given assoc-list.
 ;;;
@@ -679,17 +689,18 @@ data: (FIDO SPOT ROVER)
 ;;; FUNCTION
 ;;; Replace a given member of a given data list within a given assoc-list.
 ;;; 
-;;; ARGUMENTS:
-;;; The key (named-object id) associated with the data to be changed, the
-;;; zero-based integer index of the member of the list to be changed, the new 
-;;; value, and the assoc-list in which the change is to be made. 
+;;; ARGUMENTS
+;;; - The key (named-object id) associated with the data to be changed.
+;;; - The zero-based integer index of the member of the list to be changed.
+;;; - The new value.
+;;; - The assoc-list in which the change is to be made.
 ;;; 
 ;;; The data to be modified must already be in the form of a list.
 ;;;
 ;;; The index integer given must be less than the length of the data list to be
 ;;; modified. 
 ;;;
-;;; RETURN VALUE: 
+;;; RETURN VALUE 
 ;;; Returns the new value only.
 ;;;
 ;;; EXAMPLE
@@ -735,9 +746,11 @@ data: (SNOOPY SPOT ROVER)
 ;;; Map a function over the data in the assoc-list.
 ;;; 
 ;;; ARGUMENTS
-;;; - the assoc-list to which the function is to be applied 
-;;; - the function to be applied.  This must take the data in the assoc-list as
-;;;   a first argument. 
+;;; - The assoc-list to which the function is to be applied.
+;;; - The function to be applied.  This must take the data in the assoc-list as
+;;; a first argument. 
+;;;
+;;; OPTIONS
 ;;; - Optional argument(s): Further arguments for the function.
 ;;; 
 ;;; RETURN VALUE 
@@ -781,15 +794,16 @@ data: (SNOOPY SPOT ROVER)
 ;; A function that provides a shortcut to creating an assoc-list, filling it
 ;; with data, and assigning a name to it.
 ;;
-;; ARGUMENTS:
-;; The name of the assoc-list to be created and the data with which to fill
-;; it.
+;; ARGUMENTS
+;; - The name of the assoc-list to be created.
+;; - The data with which to fill it.
 ;;
-;; Optional keyword argument :warn-not-found. This argument allows the user to
-;; determine whether a warning is issued when an index which doesn't exist is
-;; used for lookup. It can be set to T or NIL and defaults to T.
+;; OPTIONS
+;; - Optional keyword argument :warn-not-found. This argument allows the user
+;; to determine whether a warning is issued when an index which doesn't exist
+;; is used for lookup. It can be set to T or NIL and defaults to T.
 ;;
-;; RETURN VALUE: 
+;; RETURN VALUE 
 ;; Returns the assoc-list as a named-object.
 ;;
 ;; EXAMPLE

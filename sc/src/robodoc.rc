@@ -3,9 +3,9 @@
 items:
     NAME
     FUNCTION
-# 10.12.11 SEAN: Added ARGUMENTS, OPTIONS, and RETURNS to the items block
+# 10.12.11 SEAN: Added ARGUMENTS, OPTIONAL ARGUMENTS, and RETURNS to the items block
     ARGUMENTS
-    OPTIONS
+    OPTIONAL ARGUMENTS
     RETURN VALUE
     EXAMPLE		
     SYNOPSIS

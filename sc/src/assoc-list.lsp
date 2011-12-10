@@ -384,7 +384,7 @@ WARNING:
 ;;;
 ;;; OPTIONS
 ;;; - Optional argument: T or NIL to indicate whether to issue a warning if no 
-;;; such named-object can be found within the given assoc-list (default = T)
+;;; such named-object can be found within the given assoc-list (default = T).
 ;;;
 ;;; Mostly we define whether we want to warn in the instance itself but
 ;;; sometimes it would be good to warn or not on a call basis, hence the

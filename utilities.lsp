@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 20:35:55 Sat Dec 10 2011 ICT
+;;; $$ Last modified: 00:45:18 Sun Dec 11 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1405,6 +1405,8 @@
 
 ;;; Implementation of the Collatz conjecture (see
 ;;; http://en.wikipedia.org/wiki/Collatz_conjecture)
+;;; (loop for i from 5 to 30 do
+;;;        (print i) (print (loop for n in (hailstone i) sum n)))
 (defun hailstone (n)
   (loop collect n while (> n 1) 
      do (setf n (if (oddp n)

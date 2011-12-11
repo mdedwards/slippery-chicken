@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 16:59:56 Wed Dec  7 2011 ICT
+;;; $$ Last modified: 07:38:36 Sun Dec 11 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -658,12 +658,13 @@
 ;;; fibinacci relationships.
 ;;; fibonacci-transition-aux1 gradually decreases item1 and increases item2,
 ;;; this does the same but continues to increase item2 until it completely
-;;; dominates 
+;;; dominates. 
 ;;; 
 ;;; ARGUMENTS:
 ;;; - number of items you want returned in your list
-;;; - (optional) item 1 (i.e. what we start with)
-;;; - (optional) item 2 (i.e. what we end with)
+;;; - (optional) item 1 (i.e. what we start with); can be any Lisp type,
+;;;   including lists.  
+;;; - (optional) item 2 (i.e. what we end with); can also be any Lisp type.
 ;;; 
 ;;; RETURN VALUE: 
 ;;; a list of the transition

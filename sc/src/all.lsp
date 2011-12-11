@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 19:24:35 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 12:19:26 Sun Dec 11 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -60,19 +60,19 @@
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 
-(defparameter *slippery-chicken-src-path*
+(defparameter +slippery-chicken-src-path+
   (directory-namestring (truename *load-pathname*)))
 
 ;;; Make sure any typed-in float constants are high-precision; default is
 ;;; single-float  
 (setf *read-default-float-format* 'double-float)
 
-(defparameter *dir-separator*
+(defparameter +sc-dir-separator+
   #+(or windows mswindows win32) #\\
   ;; #+mcl #\: ; back in pre-OSX days
   #+unix #\/)
 
-(defparameter *fasl-extension*
+(defparameter +sc-fasl-extension+
   #+clisp ".fas"
   #+openmcl ".dfsl"
   #+sbcl ".fasl"
@@ -90,9 +90,10 @@
   #+sbcl t
   #-sbcl (values))
 
+;;; old stuff; could have used pathname functions for this....
 (defun get-path-minus-file-and-last-dir (file)
   (flet ((till-last-slash (x)
-                          (subseq x 0 (position *dir-separator* x
+                          (subseq x 0 (position +sc-dir-separator+ x
                                                 :from-end t))))
     (till-last-slash (till-last-slash file))))
 
@@ -101,19 +102,19 @@
 #-allegro-cl-lite
 (defun sc-compile-and-load (file &optional (just-load nil) (dir nil))
   (unless dir
-    (setq dir (directory-namestring *slippery-chicken-src-path*)))
+    (setq dir (directory-namestring +slippery-chicken-src-path+)))
   #+allegro
   (progn
-    (cl-user::chdir *slippery-chicken-src-path*)
-    (setf *default-pathname-defaults* *slippery-chicken-src-path*))
+    (cl-user::chdir +slippery-chicken-src-path+)
+    (setf *default-pathname-defaults* +slippery-chicken-src-path+))
   (let ((out (format nil "~a~abin~a~a~a"
                      (get-path-minus-file-and-last-dir dir)
-                     *dir-separator*
-                     *dir-separator*
+                     +sc-dir-separator+
+                     +sc-dir-separator+
                      (pathname-name file)
-                     *fasl-extension*))
+                     +sc-fasl-extension+))
         (in (format nil "~a~asrc~a~a" (get-path-minus-file-and-last-dir dir)
-                    *dir-separator* *dir-separator* file)))
+                    +sc-dir-separator+ +sc-dir-separator+ file)))
     (print out)
     (print in)
     (if just-load
@@ -135,9 +136,9 @@
 ;;; and make it all (some users might want to take advantage of the whole of
 ;;; Rick's system). 
 (defun sc-load-cm-all ()
-  (declare (special *slippery-chicken-src-path*))
+  (declare (special +slippery-chicken-src-path+))
   (load (format nil "~acm-2.6.0/src/cm.lisp" 
-                *slippery-chicken-src-path*)))
+                +slippery-chicken-src-path+)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 13.2.10: We're no longer expecting a fully-working latest Common Music

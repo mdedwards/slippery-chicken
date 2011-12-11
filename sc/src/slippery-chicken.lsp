@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:58:10 Sat Dec 10 2011 ICT
+;;; $$ Last modified: 12:06:04 Sun Dec 11 2011 ICT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4396,7 +4396,7 @@
                                   (min-page-turn '(2 1))
                                   ;; sim to rehearsal letters
                                   (tempi-all-players t))
-  (declare (special cl-user::*slippery-chicken-src-path*))
+  (declare (special cl-user::+slippery-chicken-src-path+))
   (when (and (numberp start-bar) (numberp end-bar) (>= start-bar end-bar))
     (error "slippery-chicken::write-lp-date-for-all: start-bar = ~a, ~
             end-bar = ~a???" start-bar end-bar))
@@ -4509,7 +4509,7 @@
         (format out "~%}~%~%#(set-global-staff-size ~a)~%~%" staff-size)
         (when use-custom-markup
           (format out "~%\\include \"~alilypond.ly\"~%~%"
-                  cl-user::*slippery-chicken-src-path*))
+                  cl-user::+slippery-chicken-src-path+))
         (princ "global = {" out) 
         (terpri out)
         (princ "  \\key c \\major" out)

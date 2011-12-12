@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 10:59:41 Mon Dec 12 2011 ICT
+;;; $$ Last modified: 23:48:42 Mon Dec 12 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -231,7 +231,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((i rhythm) stream)
-  (format stream "~%RHYTHM: value: ~a, ~
+  (format stream "~&RHYTHM: value: ~a, ~
                             duration: ~a, ~
                             rq: ~a, ~
                             is-rest: ~a, ~
@@ -252,7 +252,7 @@
                             marks-in-part: ~a, ~
                             letter-value: ~a, ~
                   ~%        tuplet-scaler: ~a, ~
-                            grace-note-duration: ~a,"
+                            grace-note-duration: ~a"
           (value i) (duration i) (rq i) (is-rest i) (score-rthm i)
           (undotted-value i) 
           (num-flags i) (num-dots i) (is-tied-to i) (is-tied-from i)

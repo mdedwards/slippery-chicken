@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 19:00:20 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 00:38:42 Tue Dec 13 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -120,7 +120,7 @@
           unless (= (num-notes psp) (sclist-length ps))
           do (error "pitch-seq-palette::verify-and-store: ~%~
                      In pitch-seq ~a from palette ~a:~%~
-                    Each pitch sequence must have ~a notes (you have ~a): ~%~a"
+                     Each pitch sequence must have ~a notes (you have ~a): ~%~a"
                     (id ps) (id psp) (num-notes psp) (sclist-length ps)
                     (data psp))
           do (setf (nth j (data psp)) ps))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 10th 2002
 ;;;
-;;; $$ Last modified: 19:33:35 Fri Mar 19 2010 GMT
+;;; $$ Last modified: 23:42:59 Mon Dec 12 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -80,9 +80,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((lno linked-named-object) stream)
-  (format stream "~&LINKED-NAMED-OBJECT: previous: ~a~
-                  ~%                     this: ~a~
-                  ~%                     next: ~a"
+  (format stream "~&LINKED-NAMED-OBJECT: previous: ~a, ~
+                                         this: ~a, ~
+                                         next: ~a"
           (previous lno) (this lno) (next lno)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

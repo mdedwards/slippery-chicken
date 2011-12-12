@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    4th December 2000
 ;;;
-;;; $$ Last modified: 18:28:33 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 23:54:14 Mon Dec 12 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -72,8 +72,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :after ((i named-object) stream)
-  (format stream "~&********************************************************~
-                  ***********************~%"))
+  (format stream "~&**************~%"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -84,13 +83,13 @@
          ;; distinguish it from symbols.
          (id-print (if (stringp id)
                        (concatenate 'string "\"" id "\"")
-                     id)))
+                       id)))
     (format stream "~&NAMED-OBJECT: id: ~a, tag: ~a, ~&data: ~a"
             id-print 
             (tag i)
             (if (typep i 'sc-set)
                 (get-ids-from-pitch-list data)
-              data))))
+                data))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

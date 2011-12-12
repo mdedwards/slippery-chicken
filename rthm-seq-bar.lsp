@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 09:28:09 Mon Dec 12 2011 ICT
+;;; $$ Last modified: 23:52:36 Mon Dec 12 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -326,13 +326,13 @@
 #|
 (let ((rsb (make-rthm-seq-bar '((3 4) q q q))))
   (fill-with-rhythms rsb (loop for r in '(e e e e e e)
-			  collect (make-rhythm r))))
+                          collect (make-rhythm r))))
 
 => 6
 
 (let ((rsb (make-rthm-seq-bar '((3 4) q q q))))
   (fill-with-rhythms rsb (loop for r in '(e e e e e e)
-			  collect (make-rhythm r)))
+                          collect (make-rhythm r)))
   (print-simple rsb))
 
 => NIL
@@ -340,7 +340,7 @@
 
 (let ((rsb (make-rthm-seq-bar '((3 4) q q q))))
   (fill-with-rhythms rsb (loop for r in '(e e e e e e)
-			  collect (make-rhythm r)))
+                          collect (make-rhythm r)))
   (print rsb))
 
 =>
@@ -2082,43 +2082,44 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((i rthm-seq-bar) stream)
-  (format stream "~%RTHM-SEQ-BAR: time-sig: ~a ~a~
-                  ~%              time-sig-given: ~a~
-                  ~%              bar-num: ~a~
-                  ~%              old-bar-nums: ~a~
-                  ~%              write-bar-num: ~a~
-                  ~%              start-time: ~a~
-                  ~%              start-time-qtrs: ~a~
-                  ~%              is-rest-bar: ~a~
-                  ~%              multi-bar-rest: ~a~
-                  ~%              show-rest: ~a~
-                  ~%              notes-needed: ~a~
-                  ~%              score-tuplets: ~a~
-                  ~%              tuplets: ~a~
-                  ~%              nudge-factor: ~a~
-                  ~%              beams: ~a~
-                  ~%              current-time-sig: ~a~
-                  ~%              write-time-sig: ~a~
-                  ~%              num-rests: ~a~
-                  ~%              num-rhythms: ~a~
-                  ~%              num-score-notes: ~a~
-                  ~%              rhythms: ~a~
-                  ~%              missing-duration: ~a~
-                  ~%              bar-line-type: ~a~
-                  ~%              player-section-ref: ~a~
-                  ~%              nth-seq: ~a~
-                  ~%              nth-bar: ~a~
-                  ~%              rehearsal-letter: ~a~
+  (format stream "~%RTHM-SEQ-BAR: time-sig: ~a ~a, ~
+                                  time-sig-given: ~a, ~
+                                  bar-num: ~a, ~
+                  ~%              old-bar-nums: ~a, ~
+                                  write-bar-num: ~a, ~
+                                  start-time: ~a, ~
+                  ~%              start-time-qtrs: ~a, ~
+                                  is-rest-bar: ~a, ~
+                                  multi-bar-rest: ~a, ~
+                  ~%              show-rest: ~a, ~
+                                  notes-needed: ~a, ~
+                                  score-tuplets: ~a, ~
+                  ~%              tuplets: ~a, ~
+                                  nudge-factor: ~a, ~
+                                  beams: ~a, ~
+                  ~%              current-time-sig: ~a, ~
+                                  write-time-sig: ~a, ~
+                                  num-rests: ~a, ~
+                  ~%              num-rhythms: ~a, ~
+                                  num-score-notes: ~a, ~
+                                  parent-start-end: ~a, ~
+                  ~%              missing-duration: ~a, ~
+                                  bar-line-type: ~a, ~
+                                  player-section-ref: ~a, ~
+                  ~%              nth-seq: ~a, ~
+                                  nth-bar: ~a, ~
+                                  rehearsal-letter: ~a, ~
                   ~%              all-time-sigs: (not printed for ~
-                                  brevity's sake)"
+                                  brevity's sake) ~
+                  ~%              rhythms: ~a"
           (time-sig i) (get-time-sig-as-list i) (time-sig-given i) (bar-num i)
           (old-bar-nums i) (write-bar-num i)
           (start-time i) (start-time-qtrs i) (is-rest-bar i) (multi-bar-rest i)
           (show-rest i) (notes-needed i) (score-tuplets i) (tuplets i)
           (nudge-factor i) (beams i) (current-time-sig i) (write-time-sig i) 
-          (num-rests i) (num-rhythms i) (num-score-notes i) (rhythms i)
+          (num-rests i) (num-rhythms i) (num-score-notes i) (parent-start-end i)
           (missing-duration i) (bar-line-type i) (player-section-ref i)
-          (nth-seq i) (nth-bar i) (rehearsal-letter i)))
+          (nth-seq i) (nth-bar i) (rehearsal-letter i) (rhythms i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

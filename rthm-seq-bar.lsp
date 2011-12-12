@@ -1258,8 +1258,8 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; - The zero-based index number indicating which non-rest-rhythm is sought.
 ;;; - The given rthm-seq-bar object in which to search.
 ;;; 
-;;; OPTIONS
-;;; - Optional argument: T or NIL indicating whether to print an error message
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL indicating whether to print an error message
 ;;; if the given index is greater than the number of non-rest rhythms in the
 ;;; RHYTHMS list (minus one to compensate for the zero-based indexing).
 ;;; (Default = T).  
@@ -1337,7 +1337,7 @@ rthm-seq-bar::get-nth-non-rest-rhythm: Couldn't get non-rest rhythm with index
 ;;; - The given rthm-seq-bar object in which to search.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - Optional argument: T or NIL indicating whether to print an error message
+;;; - T or NIL indicating whether to print an error message
 ;;; if the given index is greater than the number of rests in the RHYTHMS list
 ;;; (minus one to compensate for the zero-based indexing) (default = T).  
 ;;; 
@@ -1464,7 +1464,7 @@ Evaluation aborted on #<SIMPLE-ERROR>
 ;;; - The given rthm-seq-bar object in which to search.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - Optional argument: T or NIL indicating whether to print a warning message
+;;; - T or NIL indicating whether to print a warning message
 ;;; if the given index is greater than the number of attacks in the RHYTHMS
 ;;; list (minus one to compensate for the zero-based indexing) (default = T).  
 ;;; 
@@ -1538,11 +1538,6 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
 
 ;;; ****m* rthm-seq-bar/scale
 ;;; FUNCTION
-;;; scale:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -1624,28 +1619,63 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 12/3/07: sets the nth note that needs an attack, i.e. not a rest and not
-;;; tied.  
 ;;; NB this does not check that the right rhythms are now in the bars!
-
+;;; 12.12.11 SAR: Added ROBODoc info
 ;;; ****m* rthm-seq-bar/set-nth-attack
 ;;; FUNCTION
-;;; set-nth-attack:
+;;; Sets the value of the nth rhythm object of a given rthm-seq-bar that needs
+;;; an attack; i.e., not a rest and not a tied note.
 ;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; NB: This method does not check to ensure that the resulting rthm-seq-bar
+;;; contains the right number of beats.
 ;;; 
 ;;; ARGUMENTS 
+;;; - A zero-based index number for the attacked note to change.
+;;; - An event.
+;;; - A rthm-seq-bar object.
 ;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL indicating whether to print a warning message if the given index
+;;; is greater than the number of attacks in the RHYTHMS list (minus one to
+;;; compensate for the zero-based indexing) (default = T).   
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; An event object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((rsb (make-rthm-seq-bar '((2 4) q+e s s))))
+  (set-nth-attack 1 (make-event 'e4 'q) rsb))
 
+=>
+EVENT: start-time: NIL, end-time: NIL, 
+[...]
+PITCH: frequency: 329.6275526703903d0, midi-note: 64, midi-channel: NIL 
+[...]
+NAMED-OBJECT: id: E4, tag: NIL, 
+data: E4
+[...]
+RHYTHM: value: 4.0, duration: 1.0, rq: 1, is-rest: NIL, score-rthm: 4.0, 
+[...]
+NAMED-OBJECT: id: Q, tag: NIL, 
+data: Q
+
+(let ((rsb (make-rthm-seq-bar '((2 4) q+e s s))))
+  (set-nth-attack 2 (make-event 'e4 'q) rsb)
+  (loop for r in (rhythms rsb) collect (data r)))
+
+=> ("Q" "E" S Q)
+
+(let ((rsb (make-rthm-seq-bar '((2 4) q+e s s))))
+  (set-nth-attack 3 (make-event 'e4 'q) rsb))
+
+=> NIL
+rthm-seq-bar::set-nth-attack: index (3) < 0 or >= notes-needed (3)
+
+(let ((rsb (make-rthm-seq-bar '((2 4) q+e s s))))
+  (set-nth-attack 3 (make-event 'e4 'q) rsb nil))
+
+=> NIL
 |#
 ;;; SYNOPSIS
 (defmethod set-nth-attack (index (e event) (rsb rthm-seq-bar) 
@@ -1675,22 +1705,43 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rthm-seq-bar/get-last-attack
+;;; 12.12.11 SAR: Added ROBODoc info
 ;;; FUNCTION
-;;; get-last-attack:
-;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; Gets the rhythm object for the last note in a given rthm-seq-bar that needs
+;;; an attack, i.e. not a rest and not a tied note. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - The given rthm-seq-bar object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL indicating whether to print a warning message if the given index
+;;; is greater than the number of attacks in the RHYTHMS list (minus one to
+;;; compensate for the zero-based indexing) (default = T).  
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rhythm object.
+;;;
+;;; Returns NIL if the given index is higher than the highest possible index of
+;;; attacks in the given rthm-seq-bar object.
+;;; Get the rhythm object of the last 
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((rsb (make-rthm-seq-bar '((3 4) q+e (e) s (s) e))))
+  (get-last-attack rsb))
+
+=>
+RHYTHM: value: 8.0, duration: 0.5, rq: 1/2, is-rest: NIL, score-rthm: 8.0, 
+        undotted-value: 8, num-flags: 1, num-dots: 0, is-tied-to: NIL, 
+        is-tied-from: NIL, compound-duration: 0.5, is-grace-note: NIL, 
+        needs-new-note: T, beam: NIL, bracket: NIL, rqq-note: NIL, 
+        rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 8, 
+        tuplet-scaler: 1, grace-note-duration: 0.05,
+LINKED-NAMED-OBJECT: previous: NIL
+                     this: NIL
+                     next: NIL
+NAMED-OBJECT: id: E, tag: NIL, 
+data: E
 
 |#
 ;;; SYNOPSIS
@@ -1750,12 +1801,7 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
 
 ;;; ****m* rthm-seq-bar/chop
 ;;; FUNCTION
-;;; chop:
 ;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
 ;;; 
 ;;; ARGUMENTS 
 ;;; 

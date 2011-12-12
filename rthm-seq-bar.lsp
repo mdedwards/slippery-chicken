@@ -266,10 +266,10 @@
 ;;; FUNCTION
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENT
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -816,8 +816,8 @@ data: ((2 4) Q E S S)
 ;;; FUNCTION
 ;;; Remove any beaming indications from the rthm-seq-bar object. 
 ;;;
-;;; NB: This method changes the data for the rthm-seq-bar objects's BEAMS slot
-;;; and the  individual BEAM slots of the RHYTHMs contained within the
+;;; NB: This method changes the data for the rthm-seq-bar object's BEAMS slot 
+;;; and the individual BEAM slots of the RHYTHMs contained within the
 ;;; rthm-seq-bar's RHYTHMS slot. It does not change the value of the
 ;;; rthm-seq-bar's DATA slot.
 ;;;
@@ -832,26 +832,26 @@ data: ((2 4) Q E S S)
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((rbs (make-rthm-seq-bar '((2 4) - s s - s - s s s - s s))))
-  (delete-beams rbs))
+(let ((rsb (make-rthm-seq-bar '((2 4) - s s - s - s s s - s s))))
+  (delete-beams rsb))
 
 => T
 
 (let ((rbs (make-rthm-seq-bar '((2 4) - s s - s - s s s - s s))))
-  (delete-beams rbs)
-  (beams rbs))
+  (delete-beams rsb)
+  (beams rsb))
 
 => NIL
 
-(let ((rbs (make-rthm-seq-bar '((2 4) - s s - s - s s s - s s))))
-  (delete-beams rbs)
+(let ((rsb (make-rthm-seq-bar '((2 4) - s s - s - s s s - s s))))
+  (delete-beams rsb)
   (loop for r in (rhythms rbs) collect (beam r)))
 
 => (NIL NIL NIL NIL NIL NIL NIL NIL)
 
 (let ((rbs (make-rthm-seq-bar '((2 4) - s s - s - s s s - s s))))
-  (delete-beams rbs)
-  (print rbs))
+  (delete-beams rsb)
+  (print rsb))
 
 =>
 RTHM-SEQ-BAR: time-sig: 1 (2 4)
@@ -869,25 +869,7 @@ RTHM-SEQ-BAR: time-sig: 1 (2 4)
               tuplets: NIL
               nudge-factor: 0.35
               beams: NIL
-              current-time-sig: 1
-              write-time-sig: T
-              num-rests: 0
-              num-rhythms: 8
-              num-score-notes: 8
-              rhythms: (
 [...]
-)
-              missing-duration: NIL
-              bar-line-type: 0
-              player-section-ref: NIL
-              nth-seq: NIL
-              nth-bar: NIL
-              rehearsal-letter: NIL
-              all-time-sigs: (not printed for brevity's sake)
-SCLIST: sclist-length: 13, bounds-alert: T, copy: T
-LINKED-NAMED-OBJECT: previous: NIL
-                     this: NIL
-                     next: NIL
 NAMED-OBJECT: id: NIL, tag: NIL, 
 data: ((2 4) - S S - S - S S S - S S)
 |#
@@ -902,12 +884,19 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rthm-seq-bar/delete-tuplets
-
+;;; 12.12.11 SAR: Added ROBODoc info
 ;;; FUNCTION
-;;; 
+;;; Removes all indications for tuplet brackets from a given rthm-seq-bar
+;;; object. 
+;;;
+;;; NB: This method does not alter the tuplet rhythmic durations; it only
+;;; removes the tuplet bracket from the score.
+;;;
 ;;; ARGUMENTS 
+;;; - A rthm-seq-bar.
 ;;; 
 ;;; RETURN VALUE  
+;;; 
 ;;; 
 ;;; EXAMPLE
 #|
@@ -948,12 +937,12 @@ data: ((2 4) - S S - S - S S S - S S)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Given a tuplet, this will add it to the beats of the bar.  If tuplet is
-;;; nil, it will try to figure things out for itself.
-
 ;;; ****m* rthm-seq-bar/auto-put-tuplet-bracket-on-beats
+;;; 12.12.11 SAR: Added ROBODoc info
 ;;; FUNCTION
-;;; 
+;;; Given a rthm-seq-bar object with tuplet rhythms, this method will add the
+;;; appropriate tuplet bracket it to the beats of the bar in the score. If
+;;; tuplet is NIL, the method will try to figure things out itself. 
 ;;; 
 ;;; ARGUMENTS 
 ;;; 
@@ -1002,17 +991,59 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rthm-seq-bar/auto-beam
+;;; 12.12.11 SAR: Added ROBODoc info
 ;;; FUNCTION
-;;; 
+;;; Automatically add beaming indications to RHYTHMs of the given rthm-seq-bar
+;;; object.
+;;;
+;;; NB: This method does not modify the DATA slot of the rthm-seq-bar object
+;;; itself. Instead, it modifies the BEAM value for the individual RHYTHMs.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq-bar object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - The beat basis for the given rthm-seq-bar. This will affect which notes
+;;; get beamed together. This value can be either numeric (4, 8 16 etc.) or
+;;; CMN/CM-shorthand (q, e, s etc). If no beat is given, the method defaults
+;;; this value to NIL and takes the beat from the current time signature. 
+;;; - Check-dur. This argument can be set to T or NIL. If T, the method will
+;;; make sure there is a complete beat of rhythms for each beat of the bar
+;;; (default = T). 
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((rsb (make-rthm-seq-bar '((2 4) e e s s s s))))
+  (auto-beam rsb))
+
+=> NIL
+
+(let ((rsb (make-rthm-seq-bar '((2 4) e e s s s s))))
+  (auto-beam rsb)
+  (loop for r in (rhythms rsb) collect (beam r)))
+
+=> (1 0 1 NIL NIL 0)
+
+(let ((rsb (make-rthm-seq-bar '((2 4) e e s s s s))))
+  (auto-beam rsb 8)
+  (loop for r in (rhythms rsb) collect (beam r)))
+
+=> (NIL NIL 1 0 1 0)
+
+(let ((rsb (make-rthm-seq-bar '((2 4) e e s s s s))))
+  (auto-beam rsb 8 t)
+  (loop for r in (rhythms rsb) collect (beam r)))
+
+=> (NIL NIL 1 0 1 0)
+
+(let ((rsb (make-rthm-seq-bar '((2 4) e e s s s s))))
+  (auto-beam rsb 8 nil)
+  (loop for r in (rhythms rsb) collect (beam r)))
+
+=> (NIL NIL 1 0 1 0)
 
 |#
 ;;; SYNOPSIS
@@ -1220,23 +1251,61 @@ data: ((2 4) - S S - S - S S S - S S)
 
 ;;; ****m* rthm-seq-bar/get-nth-non-rest-rhythm
 ;;; FUNCTION
-;;; Get the value and attributes of the first non-rest rhythm object stored in
+;;; Get the rhythm object of the first non-rest rhythm object stored in
 ;;; the given rthm-seq-bar. 
 ;;; 
 ;;; ARGUMENTS
-;;; - The zero-based index number indicating which non-rest-rhythm is sought (0
-;;; = the first non-rest-rhythm, 1 = the second etc.)
+;;; - The zero-based index number indicating which non-rest-rhythm is sought.
 ;;; - The given rthm-seq-bar object in which to search.
 ;;; 
 ;;; OPTIONS
 ;;; - Optional argument: T or NIL indicating whether to print an error message
-;;; if the given index is not reachable in the given rthm-seq-bar data list.
+;;; if the given index is greater than the number of non-rest rhythms in the
+;;; RHYTHMS list (minus one to compensate for the zero-based indexing).
+;;; (Default = T).  
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rhythm object.
+;;;
+;;; Returns NIL if the given index is higher than the highest possible index of
+;;; non-rest rhythms in the given rthm-seq-bar object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((rsb (make-rthm-seq-bar '((2 4) e (e) s s (s) s))))
+  (get-nth-non-rest-rhythm 0 rsb))
+
+=> 
+RHYTHM: value: 8.0, duration: 0.5, rq: 1/2, is-rest: NIL, score-rthm: 8.0, 
+        undotted-value: 8, num-flags: 1, num-dots: 0, is-tied-to: NIL, 
+        is-tied-from: NIL, compound-duration: 0.5, is-grace-note: NIL, 
+        needs-new-note: T, beam: NIL, bracket: NIL, rqq-note: NIL, 
+        rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 8, 
+        tuplet-scaler: 1, grace-note-duration: 0.05,
+LINKED-NAMED-OBJECT: previous: NIL
+                     this: NIL
+                     next: NIL
+NAMED-OBJECT: id: E, tag: NIL, 
+data: E
+
+(let ((rsb (make-rthm-seq-bar '((2 4) e (e) s s (s) s))))
+  (data (get-nth-non-rest-rhythm 1 rsb)))
+
+=> S
+
+(let ((rsb (make-rthm-seq-bar '((2 4) e (e) s s (s) s))))
+  (data (get-nth-non-rest-rhythm 4 rsb)))
+
+=>
+Evaluation aborted on #<SIMPLE-ERROR>
+rthm-seq-bar::get-nth-non-rest-rhythm: Couldn't get non-rest rhythm with index
+   4 for bar number -1 
+   [Condition of type SIMPLE-ERROR]
+
+(let ((rsb (make-rthm-seq-bar '((2 4) e (e) s s (s) s))))
+  (get-nth-non-rest-rhythm 4 rsb nil))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -1259,22 +1328,59 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rthm-seq-bar/get-nth-rest
+;;; 12.12.11 SAR: Added ROBODoc info
 ;;; FUNCTION
-;;; get-nth-rest:
-;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; Gets the rhythm object of the nth rest in a given rthm-seq-bar.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - The zero-based index number indicating which rest is sought.
+;;; - The given rthm-seq-bar object in which to search.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - Optional argument: T or NIL indicating whether to print an error message
+;;; if the given index is greater than the number of rests in the RHYTHMS list
+;;; (minus one to compensate for the zero-based indexing) (default = T).  
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rhythm object.
+;;;
+;;; Returns NIL if the given index is higher than the highest possible index of
+;;; rests in the given rthm-seq-bar object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((rsb (make-rthm-seq-bar '((3 4) e (e) s s (s) s (q)))))
+  (get-nth-rest 0 rsb))
+
+=>
+RHYTHM: value: 8.0, duration: 0.5, rq: 1/2, is-rest: T, score-rthm: 8.0, 
+        undotted-value: 8, num-flags: 1, num-dots: 0, is-tied-to: NIL, 
+        is-tied-from: NIL, compound-duration: 0.5, is-grace-note: NIL, 
+        needs-new-note: NIL, beam: NIL, bracket: NIL, rqq-note: NIL, 
+        rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 8, 
+        tuplet-scaler: 1, grace-note-duration: 0.05,
+LINKED-NAMED-OBJECT: previous: NIL
+                     this: NIL
+                     next: NIL
+NAMED-OBJECT: id: E, tag: NIL, 
+data: E
+
+(let ((rsb (make-rthm-seq-bar '((3 4) e (e) s s (s) s (q)))))
+  (data (get-nth-rest 2 rsb)))
+
+=> Q
+
+(let ((rsb (make-rthm-seq-bar '((3 4) e (e) s s (s) s (q)))))
+  (get-nth-rest 3 rsb t))
+
+Evaluation aborted on #<SIMPLE-ERROR>
+ rthm-seq-bar::get-nth-rest: Couldn't get rest with index 3
+   [Condition of type SIMPLE-ERROR]
+
+(let ((rsb (make-rthm-seq-bar '((3 4) e (e) s s (s) s (q)))))
+  (get-nth-rest 3 rsb nil))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -1298,12 +1404,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; index is 0-based of course.
 ;;; ****m* rthm-seq-bar/get-nth-event
 ;;; FUNCTION
-;;; get-nth-event:
 ;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
 ;;; 
 ;;; ARGUMENTS 
 ;;; 
@@ -1333,11 +1434,6 @@ data: ((2 4) - S S - S - S S S - S S)
 
 ;;; ****m* rthm-seq-bar/get-last-event
 ;;; FUNCTION
-;;; get-last-event:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -1357,26 +1453,60 @@ data: ((2 4) - S S - S - S S S - S S)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 28/2/07: gets the nth note that needs an attack, i.e. not a rest and not
-;;; tied.  
-
+;;; 12.12.11 SAR: Added ROBODoc info
 ;;; ****m* rthm-seq-bar/get-nth-attack
 ;;; FUNCTION
-;;; get-nth-attack:
-;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; Gets the rhythm object for the nth note in a given rthm-seq-bar that needs
+;;; an attack, i.e. not a rest and not tied. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - The zero-based index number indicating which attack is sought.
+;;; - The given rthm-seq-bar object in which to search.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - Optional argument: T or NIL indicating whether to print a warning message
+;;; if the given index is greater than the number of attacks in the RHYTHMS
+;;; list (minus one to compensate for the zero-based indexing) (default = T).  
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rhythm object.
+;;;
+;;; Returns NIL if the given index is higher than the highest possible index of
+;;; attacks in the given rthm-seq-bar object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((rsb (make-rthm-seq-bar '((3 4) q+e (e) s (s) e))))
+  (get-nth-attack 0 rsb))
+
+=> 
+RHYTHM: value: 4.0, duration: 1.0, rq: 1, is-rest: NIL, score-rthm: 4.0, 
+        undotted-value: 4, num-flags: 0, num-dots: 0, is-tied-to: NIL, 
+        is-tied-from: NIL, compound-duration: 1.0, is-grace-note: NIL, 
+        needs-new-note: T, beam: NIL, bracket: NIL, rqq-note: NIL, 
+        rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 4, 
+        tuplet-scaler: 1, grace-note-duration: 0.05,
+LINKED-NAMED-OBJECT: previous: NIL
+                     this: NIL
+                     next: NIL
+NAMED-OBJECT: id: "Q", tag: NIL, 
+data: Q
+
+(let ((rsb (make-rthm-seq-bar '((3 4) q+e (e) s (s) e))))
+  (data (get-nth-attack 1 rsb)))
+
+=> S
+
+(Let ((rsb (make-rthm-seq-bar '((3 4) q+e (e) s (s) e))))
+  (get-nth-attack 3 rsb))
+
+=> NIL
+WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
+
+(Let ((rsb (make-rthm-seq-bar '((3 4) q+e (e) s (s) e))))
+  (get-nth-attack 3 rsb nil))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -1385,7 +1515,7 @@ data: ((2 4) - S S - S - S S S - S S)
   (if (or (< index 0)
           (>= index (notes-needed rsb)))
       (when warn
-        (warn "~a~&rthm-seq-bar::get-nth-attack: ~
+        (warn "~a~&rthm-seq-bar::get-nth-attack:  ~
                 index (~a) < 0 or >= notes-needed (~a)"
               rsb index (notes-needed rsb)))
     (let* ((count 0)

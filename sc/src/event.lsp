@@ -114,7 +114,7 @@
    ;; the bar number this event is in.
    (bar-num :accessor bar-num :type integer :initarg :bar-num :initform -1)
    ;; clefs etc. that come before a note. todo: 1.3.11 change this to
-   ;; cmn-marks-before because we no longer store cmn objects, just symbols;
+   ;; marks-before because we no longer store cmn objects, just symbols;
    ;; sim for bar-holder add method
    (cmn-objects-before :accessor cmn-objects-before :type list 
                        :initarg :cmn-objects-before :initform nil)
@@ -249,20 +249,20 @@
 ;;; 2.4.11: return a list of the dynamics attached to an event.
 (defmethod get-dynamics ((e event))
   (remove-if #'(lambda (x) (not (is-dynamic x)))
-             (cmn-marks e)))
+             (marks e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; NB This doesn't change the amplitude
 (defmethod remove-dynamics ((e event))
-  (setf (cmn-marks e) 
+  (setf (marks e) 
         (remove-if #'(lambda (x) (is-dynamic x))
-                   (cmn-marks e))))
+                   (marks e))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 5.4.11: remove existing dynamics if we're about to add one
-(defmethod add-cmn-mark :before ((e event) mark &optional warn-rest)
+(defmethod add-mark :before ((e event) mark &optional warn-rest)
   (declare (ignore warn-rest))
   (when (is-dynamic mark)
     (remove-dynamics e)))
@@ -270,7 +270,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 15.3.11: update amplitude if we set a dynamic as a mark
-(defmethod add-cmn-mark :after ((e event) mark &optional warn-rest)
+(defmethod add-mark :after ((e event) mark &optional warn-rest)
   (declare (ignore warn-rest))
   (when (is-dynamic mark)
     ;; (remove-dynamics e)
@@ -278,14 +278,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 3.2.11 automatically add a cmn-mark with a corresponding dynamic
+;;; 3.2.11 automatically add a mark with a corresponding dynamic
 (defmethod (setf amplitude) :after (value (e event))
   (unless value
     (error "event::(setf amplitude): value is nil!"))
   (unless (is-rest e)
     ;; delete existing dynamics first
     ;; (remove-dynamics e)
-    (add-cmn-mark e (amplitude-to-dynamic value nil)))) ; no warning if > 1.0
+    (add-mark e (amplitude-to-dynamic value nil)))) ; no warning if > 1.0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -309,8 +309,8 @@
              ;; the cmn-data for a chord should be added to the event (whereas
              ;; the cmn-data for a pitch is only added to that pitch, probably
              ;; just a note-head change) 
-             (loop for m in (cmn-marks value) do
-                  (add-cmn-mark e m)))
+             (loop for m in (marks value) do
+                  (add-mark e m)))
       ;; 26/3/07: nil shouldn't result in making a chord!
       (list (setf (slot-value e 'pitch-or-chord)
                   (if value
@@ -386,7 +386,7 @@
         (slot-value to 'cmn-objects-before) (my-copy-list
                                              (cmn-objects-before from))
         ;; this is actually from the rhythm class but we need it in any case
-        (slot-value to 'cmn-marks) (my-copy-list (cmn-marks from))
+        (slot-value to 'marks) (my-copy-list (marks from))
         (slot-value to 'duration-in-tempo) (duration-in-tempo from)
         (slot-value to 'compound-duration-in-tempo) 
         (compound-duration-in-tempo from)
@@ -480,7 +480,7 @@
                   (show-accidental new) (if (eq (accidental new) 'n)
                                             nil
                                             (show-accidental pitch))
-                  (cmn-marks new) (my-copy-list (cmn-marks pitch)))
+                  (marks new) (my-copy-list (marks pitch)))
             (if written
                 (if (is-chord e)
                     (setf (nth (1- chord-note-ref) 
@@ -537,7 +537,7 @@
     (error "~a~%event::add-arrow: start-text/end-text can't be an empty string!"
            e))
   (add-cmn-object-before e (list 'arrow start-text end-text))
-  (add-cmn-mark e 'start-arrow))
+  (add-mark e 'start-arrow))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 24.9.11
@@ -545,12 +545,12 @@
   (when (and warn-rest (is-rest e))
     (warn "~a~&event::add-trill: add trill to rest?" e))
   (add-cmn-object-before e 'beg-trill-a)
-  (add-cmn-mark e (list 'trill-note trill-note)))
+  (add-mark e (list 'trill-note trill-note)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 24.9.11
 (defmethod end-trill ((e event))
-  (add-cmn-mark e 'end-trill-a))
+  (add-mark e 'end-trill-a))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -657,7 +657,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod get-dynamic ((e event))
-  (loop for m in (cmn-marks e) do
+  (loop for m in (marks e) do
        (when (member m '(niente pppp ppp pp p mp mf f ff fff ffff))
              (return m))))
 
@@ -679,8 +679,8 @@
         ;; end comes after the note in order to include it under the bracket 
         (move-elements '(circled-x x-head triangle flag-head beg-8va beg-8vb
                          hairpin0 beg-trill-a triangle-up mensural <<)
-                       (cmn-marks e) (cmn-objects-before e))
-      (setf (cmn-marks e) from
+                       (marks e) (cmn-objects-before e))
+      (setf (marks e) from
             (cmn-objects-before e) to))
     (let* ((poc (if (and in-c (not (from-8ve-transposing-ins e)))
                     (pitch-or-chord e)
@@ -793,16 +793,16 @@
               (push "\]" result)
               (push "\[" result)))
         (push " " result)
-        (when (cmn-marks e)
+        (when (marks e)
           ;; 22.5.11: getting a little tricky this but: in cmn we attach ottava
           ;; begin and end marks to the same note and everything's fine; in
           ;; lilypond, the begin or end must alwyays come before the note.  we
-          ;; can't move the end to the next note's cmn-marks-before because
+          ;; can't move the end to the next note's marks-before because
           ;; that wouldn't work in cmn, so just move it to the end of the
-          ;; cmn-marks 
+          ;; marks 
           (loop for mark in (move-to-end
                              'end-8va 
-                             (move-to-end 'end-8vb (cmn-marks e)))
+                             (move-to-end 'end-8vb (marks e)))
              for lp-mark = (lp-get-mark mark (num-flags e))
              do
              (when lp-mark
@@ -823,7 +823,7 @@
 #+cmn
 (defmethod get-cmn-data ((e event) &optional bar-num from-pitch-info-only
                          process-event-fun (in-c t) 
-                         display-cmn-marks-in-part
+                         display-marks-in-part
                          print-time ignore1 ignore2)
   (declare (ignore ignore1 ignore2))
   ;; (print in-c)
@@ -855,18 +855,18 @@
                (rqq-note e)
                (cmn::cmn-note nil (rqq-note e) nil (num-dots e) nil nil nil 
                               (is-tied-to e) (is-tied-from e) bar-num 
-                              (append (cmn-marks e) 
-                                      (when display-cmn-marks-in-part
-                                        (cmn-marks e)))
+                              (append (marks e) 
+                                      (when display-marks-in-part
+                                        (marks e)))
                               (when (display-tempo e)
                                 (cmn-tempo (tempo-change e)))
                               ;; can't set short name in cmn: it's auto-done
                               (first (instrument-change e)))))
           ((is-rest e) (cmn::cmn-rest (rq e) (num-dots e) (num-flags e) 
                                       (bracket e) bar-num 
-                                      (append (cmn-marks e)
-                                              (when display-cmn-marks-in-part
-                                                (cmn-marks e)))
+                                      (append (marks e)
+                                              (when display-marks-in-part
+                                                (marks e)))
                                       (when print-time
                                         (cmn-time e))
                                       (when (display-tempo e)
@@ -878,9 +878,9 @@
           ((is-grace-note e) (cmn::cmn-grace-note 
                               (get-cmn-data porc nil nil 'e)
                               ;; (id (pitch-or-chord e))
-                              (append (cmn-marks e)
-                                      (when display-cmn-marks-in-part
-                                        (cmn-marks e)))))
+                              (append (marks e)
+                                      (when display-marks-in-part
+                                        (marks e)))))
           ;; this note wasn't generated by a cmn rqq call so get the cmn note
           ;; and use it's duration, beaming etc. info. 
           (t (cmn::cmn-note (get-cmn-data porc nil nil)
@@ -889,9 +889,9 @@
                             (num-dots e) (num-flags e) (beam e) (bracket e)
                             (is-tied-to e) (is-tied-from e)
                             bar-num 
-                            (append (cmn-marks e)
-                                    (when display-cmn-marks-in-part
-                                      (cmn-marks e)))
+                            (append (marks e)
+                                    (when display-marks-in-part
+                                      (marks e)))
                             (when print-time
                               (cmn-time e))
                             (when (display-tempo e)
@@ -1110,7 +1110,7 @@
   (setf (pitch-or-chord e) nil
         (written-pitch-or-chord e) nil
         ;; 23.7.11 (Pula) remove marks that can only be used on a note
-        (cmn-marks e) (remove-if #'mark-for-note-only (cmn-marks e))
+        (marks e) (remove-if #'mark-for-note-only (marks e))
         ;; (8va e) 0
         (cmn-objects-before e) (remove-if #'mark-for-note-only
                                           (cmn-objects-before e))))
@@ -1118,7 +1118,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 22.9.11 
 (defmethod reset-8va ((e event))
-  (rm-cmn-marks e '(beg-8va beg-8vb end-8va end-8vb) nil)
+  (rm-marks e '(beg-8va beg-8vb end-8va end-8vb) nil)
   (setf (8va e) 0))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1126,7 +1126,7 @@
 (defmethod force-artificial-harmonic ((e event))
   (let* ((p1 (transpose (pitch-or-chord e) -24))
          (p2 (transpose p1 5)))
-    (add-cmn-mark p2 'flag-head)
+    (add-mark p2 'flag-head)
     (setf (pitch-or-chord e) (make-chord (list p1 p2)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

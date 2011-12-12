@@ -237,7 +237,7 @@
 #+cmn
 (defmethod get-cmn-data ((s sequenz) &optional section write-section-info
                          process-event-fun in-c
-                         display-cmn-marks-in-part
+                         display-marks-in-part
                          display-time ignore1 ignore2)
   (declare (ignore ignore1 ignore2))
   ;; this is cheap but to avoid always passing another arg, we push the sequenz
@@ -266,7 +266,7 @@
          (bars (progn
                  (when (> (num-rhythms (get-first-bar s))
                           0)
-                   (add-cmn-mark (get-nth-event 0 (get-first-bar s))
+                   (add-mark (get-nth-event 0 (get-first-bar s))
                                  (when text
                                    (cmn::sc-cmn-text text 
                                                      :dx 0.0
@@ -277,7 +277,7 @@
                     ;; multi-bar-rest  
                     unless (eq (multi-bar-rest rsb) t)
                     collect (get-cmn-data rsb process-event-fun in-c
-                                          display-cmn-marks-in-part
+                                          display-marks-in-part
                                           display-time)))))
     bars))
 

@@ -14,14 +14,14 @@
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
 ;;; Purpose:          Allow the specification of tempi by just a number
-;;;                   (defaulting to crotchet-number) or a list where the first
+;;;                   (defaulting to crotchet number) or a list where the first
 ;;;                   element would be the beat, the second the speed. 
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    6th May 2006
 ;;;
-;;; $$ Last modified: 19:36:36 Fri Mar 19 2010 GMT
+;;; $$ Last modified: 10:18:52 Mon Dec 12 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -97,6 +97,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; e.g. (make-tempo-map 'tm '((1 44) (4 66) (7 (h 60)))))
 (defun make-tempo-map (id tm)
   (make-instance 'tempo-map :data tm :id id 
                  :warn-not-found nil

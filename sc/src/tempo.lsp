@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified: 19:00:34 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 09:51:21 Mon Dec 12 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -160,6 +160,11 @@
                      :description (third bpm) :id id)
     (make-instance 'tempo :bpm bpm :beat beat :id id 
                    :description description)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun tempo-p (thing)
+  (typep thing 'tempo))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

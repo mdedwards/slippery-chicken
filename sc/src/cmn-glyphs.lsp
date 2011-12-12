@@ -1,4 +1,3 @@
-;;; 02.12.11 SEAN: Changed robodoc header.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****h* sc/cmn-glyphs
 ;;; NAME 
@@ -19,7 +18,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 19:32:49 Fri Mar 19 2010 GMT
+;;; $$ Last modified: 09:01:19 Mon Dec 12 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -487,7 +486,4 @@
         (otherwise (cmn-error "unknown note head type: ~A" head-type))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF cmn-glyphs.lsp
-
-

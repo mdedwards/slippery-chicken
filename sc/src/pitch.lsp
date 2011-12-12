@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 18:28:06 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 09:26:55 Mon Dec 12 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -92,7 +92,7 @@
    (accidental-in-parentheses :accessor accidental-in-parentheses :type boolean
                               :initform nil)
    ;; e.g. for changing the note head of an individual note in a chord.
-   (cmn-marks :accessor cmn-marks :type list :initarg :cmn-marks 
+   (marks :accessor marks :type list :initarg :marks 
               :initform nil)
    ;; in the circle of 5ths, how far advanced is this pitch i.e. a natural is
    ;; 0, fs and bf are 1, cs and ef are 2 ... microtones are 0.
@@ -124,7 +124,7 @@
                            no-8ve-no-acc: ~a~
                   ~%       show-accidental: ~a, white-degree: ~a, ~
                   ~%       accidental: ~a, ~
-                  ~%       accidental-in-parentheses: ~a, cmn-marks: ~a"
+                  ~%       accidental-in-parentheses: ~a, marks: ~a"
           (frequency i) (midi-note i) (midi-channel i) 
           (pitch-bend i)
           (degree i) (data-consistent i) (white-note i)
@@ -136,7 +136,7 @@
           (octave i) (c5ths i) (no-8ve i) (no-8ve-no-acc i)
           (show-accidental i) (white-degree i) 
           (accidental i)
-          (accidental-in-parentheses i) (cmn-marks i)))
+          (accidental-in-parentheses i) (marks i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -156,7 +156,7 @@
         (slot-value to 'accidental-in-parentheses) (accidental-in-parentheses
                                                     from)  
         (slot-value to 'show-accidental) (show-accidental from)
-        (slot-value to 'cmn-marks) (my-copy-list (cmn-marks from))
+        (slot-value to 'marks) (my-copy-list (marks from))
         (slot-value to 'src-ref-pitch) (src-ref-pitch from)
         (slot-value to 'data-consistent) (data-consistent from)))
 
@@ -223,8 +223,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod delete-cmn-marks ((p pitch))
-  (setf (cmn-marks p) nil))
+(defmethod delete-marks ((p pitch))
+  (setf (marks p) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -545,9 +545,9 @@
                                      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod add-cmn-mark ((p pitch) mark &optional warn-rest)
+(defmethod add-mark ((p pitch) mark &optional warn-rest)
   (declare (ignore warn-rest))
-  (push mark (cmn-marks p)))
+  (push mark (marks p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -579,8 +579,8 @@
                                               :initial-element #\'))
                   ((< octave 3) (make-string (- 3 octave)
                                              :initial-element #\,))))
-         ;; 27.8.11 don't forget cmn-marks e.g. harmonic heads
-         (marks (format nil "~{~a~^~}" (loop for mark in (cmn-marks p)
+         ;; 27.8.11 don't forget marks e.g. harmonic heads
+         (marks (format nil "~{~a~^~}" (loop for mark in (marks p)
                                             collect (lp-get-mark mark))))
          ;; 22.5.11 there is no n for natural in lilypond, rather just the note
          ;; name e.g. c not cn 
@@ -649,9 +649,9 @@
                 around a non-existent accidental!" p))
       (setf (second result) (list (second result) 'cmn::in-parentheses
                                   '(cmn::dx -0.14))))
-    (when (cmn-marks p)
+    (when (marks p)
       (setf result (append (if (listp result) result (list result))
-                           (cmn::get-all-cmn-marks (cmn-marks p)))))
+                           (cmn::get-all-cmn-marks (marks p)))))
     ;; (format t "~%rthm: ~a" (eval (rm-package rhythm :cmn)))
     (if just-list
         result

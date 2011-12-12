@@ -118,7 +118,7 @@
                          write-section-info
                          process-event-fun 
                          (in-c t)
-                         display-cmn-marks-in-part
+                         display-marks-in-part
                          display-time
                          ignore)
   (declare (ignore ignore))
@@ -130,7 +130,7 @@
      ;; sequenz class.
      for data = (get-cmn-data seq (when section-ref (cons i section-ref))
                               write-section-info process-event-fun in-c
-                              display-cmn-marks-in-part display-time)
+                              display-marks-in-part display-time)
      if append? 
      append data
      else collect data))

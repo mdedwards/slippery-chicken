@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 14:21:58 Sat Dec 10 2011 ICT
+;;; $$ Last modified: 10:59:41 Mon Dec 12 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -120,10 +120,10 @@
    ;; functionality.  Need a class with class variables for return strings
    ;; etc. and a way of indicating whether the mark should be written before or
    ;; after the pitch data.
-   (cmn-marks :accessor cmn-marks :type list :initarg :cmn-marks 
+   (marks :accessor marks :type list :initarg :marks 
               :initform nil)
-   (cmn-marks-in-part :accessor cmn-marks-in-part :type list 
-                      :initarg :cmn-marks-in-part :initform nil)
+   (marks-in-part :accessor marks-in-part :type list 
+                      :initarg :marks-in-part :initform nil)
    ;; 30.1.11 add another couple of slots for lilypond
    (letter-value :accessor letter-value :type integer :initform -1)
    (tuplet-scaler :accessor tuplet-scaler :type rational :initform 1)
@@ -166,9 +166,9 @@
           (slot-value named-object 'is-whole-bar-rest) (is-whole-bar-rest i)
           (slot-value named-object 'is-tied-to) (is-tied-to i)
           (slot-value named-object 'is-tied-from) (is-tied-from i)
-          (slot-value named-object 'cmn-marks) (my-copy-list (cmn-marks i))
-          (slot-value named-object 'cmn-marks-in-part)
-          (my-copy-list (cmn-marks-in-part i))
+          (slot-value named-object 'marks) (my-copy-list (marks i))
+          (slot-value named-object 'marks-in-part)
+          (my-copy-list (marks-in-part i))
           (slot-value named-object 'compound-duration) (compound-duration i)
           (slot-value named-object 'is-grace-note) (is-grace-note i)
           (slot-value named-object 'beam) (beam i)
@@ -216,7 +216,7 @@
         (is-tied-from r) nil
         (is-rest r) t)
   ;; 22.7.11 (Pula)
-  (rm-cmn-marks r '(beg-sl end-sl) nil)
+  (rm-marks r '(beg-sl end-sl) nil)
   r)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -228,38 +228,37 @@
                 (t "note"))
           (data r)))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((i rhythm) stream)
-  (format stream "~%RHYTHM: value: ~a~
-                  ~%        duration: ~a~
-                  ~%        rq: ~a~
-                  ~%        is-rest: ~a~
-                  ~%        score-rthm: ~a~
-                  ~%        undotted-value: ~a~
-                  ~%        num-flags: ~a~
-                  ~%        num-dots: ~a~
-                  ~%        is-tied-to: ~a~
-                  ~%        is-tied-from: ~a~
-                  ~%        compound-duration: ~a~
-                  ~%        is-grace-note: ~a~
-                  ~%        needs-new-note: ~a~
-                  ~%        beam: ~a~
-                  ~%        bracket: ~a~
-                  ~%        rqq-note: ~a~
-                  ~%        rqq-info: ~a~
-                  ~%        cmn-marks: ~a~
-                  ~%        cmn-marks-in-part: ~a~
-                  ~%        letter-value: ~a~
-                  ~%        tuplet-scaler: ~a~
-                  ~%        grace-note-duration: ~a"
+  (format stream "~%RHYTHM: value: ~a, ~
+                            duration: ~a, ~
+                            rq: ~a, ~
+                            is-rest: ~a, ~
+                            score-rthm: ~a, ~
+                  ~%        undotted-value: ~a, ~
+                            num-flags: ~a, ~
+                            num-dots: ~a, ~
+                            is-tied-to: ~a, ~
+                  ~%        is-tied-from: ~a, ~
+                            compound-duration: ~a, ~
+                            is-grace-note: ~a, ~
+                  ~%        needs-new-note: ~a, ~
+                            beam: ~a, ~
+                            bracket: ~a, ~
+                            rqq-note: ~a, ~
+                  ~%        rqq-info: ~a, ~
+                            marks: ~a, ~
+                            marks-in-part: ~a, ~
+                            letter-value: ~a, ~
+                  ~%        tuplet-scaler: ~a, ~
+                            grace-note-duration: ~a,"
           (value i) (duration i) (rq i) (is-rest i) (score-rthm i)
           (undotted-value i) 
           (num-flags i) (num-dots i) (is-tied-to i) (is-tied-from i)
           (compound-duration i) (is-grace-note i) (needs-new-note i)
-          (beam i) (bracket i) (rqq-note i) (rqq-info i) (cmn-marks i)
-          (cmn-marks-in-part i) (letter-value i) (tuplet-scaler i)
+          (beam i) (bracket i) (rqq-note i) (rqq-info i) (marks i)
+          (marks-in-part i) (letter-value i) (tuplet-scaler i)
           (grace-note-duration i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -428,9 +427,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rhythm/add-cmn-mark
+;;; ****m* rhythm/add-mark
 ;;; FUNCTION
-;;; add-cmn-mark:
+;;; add-mark:
 ;;;
 ;;; Add an articulation or any other special mark to a rhythm (most useful in
 ;;; the event subclass for changing note heads etc.)
@@ -449,23 +448,23 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod add-cmn-mark ((r rhythm) mark &optional warn-rest)
+(defmethod add-mark ((r rhythm) mark &optional warn-rest)
 ;;; ****
   (when mark
     (when (and warn-rest (is-rest r))
-      (warn "~a~&rhythm::add-cmn-mark: add ~a to rest?" r mark))
+      (warn "~a~&rhythm::add-mark: add ~a to rest?" r mark))
     ;; 9.4.11 check we haven't already got the mark
-    (when (has-cmn-mark r mark)
-      (warn "rhythm::add-cmn-mark: ~a already present but adding again!: ~a"
+    (when (has-mark r mark)
+      (warn "rhythm::add-mark: ~a already present but adding again!: ~a"
             mark r))
-    (push mark (cmn-marks r))
+    (push mark (marks r))
     t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 26.7.11 (Pula)
-;;; ****m* rhythm/add-cmn-mark-once
+;;; ****m* rhythm/add-mark-once
 ;;; FUNCTION
-;;; add-cmn-mark-once:
+;;; add-mark-once:
 ;;;
 ;;; 
 ;;; 
@@ -483,26 +482,26 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod add-cmn-mark-once ((r rhythm) mark &optional warn-rest)
+(defmethod add-mark-once ((r rhythm) mark &optional warn-rest)
 ;;; ****
   (when mark
-    (unless (has-cmn-mark r mark)
-      (add-cmn-mark r mark warn-rest))))
+    (unless (has-mark r mark)
+      (add-mark r mark warn-rest))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 21/4/10 can't call this add-cmn-marks as that method exists and it takes
+;;; 21/4/10 can't call this add-marks as that method exists and it takes
 ;;; one argument only.
-(defmethod rhythm-add-cmn-marks ((r rhythm) marks &optional warn-rest)
+(defmethod rhythm-add-marks ((r rhythm) marks &optional warn-rest)
   (if (listp marks)
       (loop for mark in marks do
-           (add-cmn-mark r mark warn-rest))
-      (add-cmn-mark r marks warn-rest)))
+           (add-mark r mark warn-rest))
+      (add-mark r marks warn-rest)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod add-cmn-mark-in-part ((r rhythm) mark)
-  (push mark (cmn-marks-in-part r)))
+(defmethod add-mark-in-part ((r rhythm) mark)
+  (push mark (marks-in-part r)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 26.9.11 nothing to do
@@ -512,9 +511,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rhythm/rm-cmn-marks
+;;; ****m* rhythm/rm-marks
 ;;; FUNCTION
-;;; rm-cmn-marks:
+;;; rm-marks:
 ;;;
 ;;; 
 ;;; 
@@ -532,26 +531,26 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod rm-cmn-marks ((r rhythm) marks &optional (warn t))
+(defmethod rm-marks ((r rhythm) marks &optional (warn t))
 ;;; ****
   (unless (listp marks)
     (setf marks (list marks)))
   (loop for m in marks do
-       (if (member m (cmn-marks r))
+       (if (member m (marks r))
            ;; #'equal so that sub-lists can be removed too
-           (setf (cmn-marks r) (remove m (cmn-marks r) :test #'equal))
+           (setf (marks r) (remove m (marks r) :test #'equal))
            (when warn
-             (warn "rhythm::rm-cmn-marks: no mark ~a in ~a ~a"
-                   m (cmn-marks r)
+             (warn "rhythm::rm-marks: no mark ~a in ~a ~a"
+                   m (marks r)
                    (if (event-p r)
                        (format nil " (bar ~a)" (bar-num r))
                        ""))))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rhythm/replace-cmn-mark
+;;; ****m* rhythm/replace-mark
 ;;; FUNCTION
-;;; replace-cmn-mark:
+;;; replace-mark:
 ;;;
 ;;; 
 ;;; 
@@ -569,20 +568,20 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod replace-cmn-mark ((r rhythm) what with &optional before)
+(defmethod replace-mark ((r rhythm) what with &optional before)
 ;;; ****
   (let ((new (substitute with what (if before
                                        (cmn-objects-before r)
-                                       (cmn-marks r)))))
+                                       (marks r)))))
     (if before 
         (setf (cmn-objects-before r) new)
-        (setf (cmn-marks r) new))))
+        (setf (marks r) new))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rhythm/delete-cmn-marks
+;;; ****m* rhythm/delete-marks
 ;;; FUNCTION
-;;; delete-cmn-marks:
+;;; delete-marks:
 ;;;
 ;;; 
 ;;; 
@@ -600,13 +599,13 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod delete-cmn-marks ((r rhythm))
+(defmethod delete-marks ((r rhythm))
 ;;; ****
   (unless (is-rest r)
-    (delete-cmn-marks (pitch-or-chord r))
+    (delete-marks (pitch-or-chord r))
     (when (written-pitch-or-chord r)
-      (delete-cmn-marks (written-pitch-or-chord r))))
-  (setf (cmn-marks r) nil))
+      (delete-marks (written-pitch-or-chord r))))
+  (setf (marks r) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -624,9 +623,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rhythm/has-cmn-mark
+;;; ****m* rhythm/has-mark
 ;;; FUNCTION
-;;; has-cmn-mark:
+;;; has-mark:
 ;;;
 ;;; 
 ;;; 
@@ -644,9 +643,9 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod has-cmn-mark ((r rhythm) mark)
+(defmethod has-mark ((r rhythm) mark)
 ;;; ****
-  (member mark (cmn-marks r)))
+  (member mark (marks r)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -673,7 +672,7 @@
 ;;; SYNOPSIS
 (defmethod accented-p ((r rhythm))
 ;;; ****
-  (has-cmn-mark r 'a))
+  (has-mark r 'a))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -699,7 +698,7 @@
 ;;; SYNOPSIS
 (defmethod begin-slur-p ((r rhythm))
 ;;; ****
-  (has-cmn-mark r 'beg-sl))
+  (has-mark r 'beg-sl))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -725,7 +724,7 @@
 ;;; SYNOPSIS
 (defmethod end-slur-p ((r rhythm))
 ;;; ****
-  (has-cmn-mark r 'end-sl))
+  (has-mark r 'end-sl))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

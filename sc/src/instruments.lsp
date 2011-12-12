@@ -393,7 +393,7 @@
                                        (pitch-list-to-symbols notes)))
             last-chord (copy-list notes)
             chord (make-chord notes))
-      (add-cmn-mark chord (when show-fingering
+      (add-mark chord (when show-fingering
                             (apply #'cmn::fingering 
                                    (append
                                     (reverse 

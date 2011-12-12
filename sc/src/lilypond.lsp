@@ -199,7 +199,7 @@
            (uc "\\unaCorda ")
            (tc "\\treCorde ")
 ;;; ****
-           (t (error "cmn::get-cmn-marks: unrecognised mark: ~a" mark))))
+           (t (error "cmn::get-marks: unrecognised mark: ~a" mark))))
         ;; 25.6.11 a 2 element list will generate a 'transition arrow' with the
         ;; first element as the starting text and the second as end text.  The
         ;; elements will be converted to lowercase strings unless they're
@@ -245,7 +245,7 @@
                        (char1out (if down #\_ #\^)))
                   (format nil "~c\\markup { ~a } " char1out mk)))
         ;; if it's a list then it's a bunch of arguments to sc-cmn-text
-        ;; otherwise it might be a cmn-mark (e.g. text) already
+        ;; otherwise it might be a mark (e.g. text) already
         ;; ignore cmn stuff but warn
         (t (warn "lilypond::get-lp-mark: unknown mark: ~a" mark))))))
 

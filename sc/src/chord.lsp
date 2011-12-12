@@ -63,14 +63,14 @@
    (micro-tone :accessor micro-tone :type boolean :initform nil)
    ;; dynamics, accents etc. exactly the code used by cmn.  These will simply
    ;; be copied over to the event when the chord is bound to an event. 
-   (cmn-marks :accessor cmn-marks :type list :initarg :cmn-marks 
+   (marks :accessor marks :type list :initarg :marks 
               :initform nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod delete-cmn-marks ((c chord))
-  (setf (cmn-marks c) nil)
-  (loop for pitch in (data c) do (delete-cmn-marks pitch)))
+(defmethod delete-marks ((c chord))
+  (setf (marks c) nil)
+  (loop for pitch in (data c) do (delete-marks pitch)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -95,8 +95,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((c chord) stream)
-  (format stream "~%CHORD: auto-sort: ~a, cmn-marks: ~a, micro-tone: ~a"
-          (auto-sort c) (cmn-marks c) (micro-tone c)))
+  (format stream "~%CHORD: auto-sort: ~a, marks: ~a, micro-tone: ~a"
+          (auto-sort c) (marks c) (micro-tone c)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -118,7 +118,7 @@
   (let ((sclist (call-next-method)))
     (setf (slot-value sclist 'auto-sort) (auto-sort c)
           (slot-value sclist 'micro-tone) (micro-tone c)
-          (slot-value sclist 'cmn-marks) (my-copy-list (cmn-marks c)))
+          (slot-value sclist 'marks) (my-copy-list (marks c)))
     sclist))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -209,9 +209,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* chord/add-cmn-mark
+;;; ****m* chord/add-mark
 ;;; FUNCTION
-;;; add-cmn-mark:
+;;; add-mark:
 ;;;
 ;;; 
 ;;; 
@@ -228,10 +228,10 @@
 ;;; 
 ;;; 
 ;;; SYNOPSIS
-(defmethod add-cmn-mark ((c chord) mark &optional warn-rest)
+(defmethod add-mark ((c chord) mark &optional warn-rest)
 ;;; ****
   (declare (ignore warn-rest))
-  (push mark (cmn-marks c)))
+  (push mark (marks c)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -387,7 +387,7 @@
           for pitch in (data c)
           for new = (transpose pitch semitones)
                     ;; copy over the cmn marks (like special note heads etc.)
-          do (setf (cmn-marks new) (my-copy-list (cmn-marks pitch)))
+          do (setf (marks new) (my-copy-list (marks pitch)))
           collect new))
     ;; 8.2. 11: got to this here too now
     (set-micro-tone result)

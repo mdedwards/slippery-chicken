@@ -107,7 +107,7 @@
                          (write-section-info t)
                          process-event-fun
                          (in-c t)
-                         display-cmn-marks-in-part
+                         display-marks-in-part
                          display-time)
   (unless (and instrument (atom instrument))
     (error "section::get-cmn-data: One and only one instrument must be ~
@@ -117,7 +117,7 @@
          ;; (data no) here is a subsection.
            (get-cmn-data (data no) instrument empty append? 
                          write-section-info process-event-fun in-c
-                         display-cmn-marks-in-part display-time))
+                         display-marks-in-part display-time))
       (let ((player-section (get-data instrument s)))
         (if empty
             (get-cmn-data (clone-as-rest-player-section player-section nil nil
@@ -128,7 +128,7 @@
             (get-cmn-data player-section
                           (when write-section-info (full-ref s))
                           append? write-section-info process-event-fun in-c
-                          display-cmn-marks-in-part display-time)))))
+                          display-marks-in-part display-time)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

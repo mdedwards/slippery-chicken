@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 19:57:39 Sat Dec 10 2011 ICT
+;;; $$ Last modified: 09:28:09 Mon Dec 12 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -262,7 +262,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rthm-seq-bar/delete-cmn-marks
+;;; ****m* rthm-seq-bar/delete-marks
 ;;; FUNCTION
 ;;; 
 ;;; 
@@ -277,11 +277,11 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod delete-cmn-marks ((rsb rthm-seq-bar))
+(defmethod delete-marks ((rsb rthm-seq-bar))
 ;;; ****
   (loop for event in (rhythms rsb) do
         (when (event-p event)
-          (delete-cmn-marks event))))
+          (delete-marks event))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -491,8 +491,8 @@ T
             (score-marks new) (score-marks first)
             ;; 20.6.11: some marks can only be attached to a note so don't copy
             ;; these over 
-            (cmn-marks new) (remove-if #'mark-for-note-only (cmn-marks first))
-            (cmn-marks-in-part new) (cmn-marks-in-part first)
+            (marks new) (remove-if #'mark-for-note-only (marks first))
+            (marks-in-part new) (marks-in-part first)
             (midi-time-sig new) (midi-time-sig first)
             (midi-program-changes new) (midi-program-changes first)
             ;; can't setf nil...
@@ -502,7 +502,7 @@ T
             (cmn-objects-before new) (cmn-objects-before first)))
     ;; 26.7.11 (Pula): don't copy over 8ve marks: could screw things up but
     ;; then the caller should be aware of this when deleting bars etc.
-    (rm-cmn-marks new '(beg-8va beg-8vb end-8va end-8vb) nil)
+    (rm-marks new '(beg-8va beg-8vb end-8va end-8vb) nil)
     ;; now this bar
     (setf (rhythms rsb) (list new)
           (show-rest rsb) t
@@ -602,7 +602,7 @@ T
                               (setf (is-tied-from new) nil))
                             (setf (num-flags new) 
                               (rthm-num-flags (/ 4 (* (duration new) 2/3))))
-                            ;; beam and cmn-marks of r2 will be lost
+                            ;; beam and marks of r2 will be lost
                             (when (and (event-p r1)
                                        (event-p r2))
                               (setf (end-time new) (end-time r2))
@@ -683,9 +683,9 @@ T
        ;; some slots, e.g. compound-duration will still be wrong but
        ;; update-slots will take care of that later 
        (copy-event-slots current-e new-e)
-       ;; 6/6/07 don't need cmn-marks when this is tied to!
+       ;; 6/6/07 don't need marks when this is tied to!
        (when (is-tied-to new-e)
-         (delete-cmn-marks new-e)))
+         (delete-marks new-e)))
      (when (and (needs-new-note new-e)
                 (not (start-time new-e)))
        (error "rthm-seq-bar::consolidated-rthms-to-events: ~
@@ -1286,10 +1286,10 @@ T
               for new-r = (scale r scaler)
               do
                 ;; for good reason scaling doesn't copy over beams, brackets,
-                ;; and cmn-marks... 
+                ;; and marks... 
                 (setf (beam new-r) (beam r)
                       (bracket new-r) (bracket r)
-                      (cmn-marks new-r) (my-copy-list (cmn-marks r)))
+                      (marks new-r) (my-copy-list (marks r)))
                 ;; (format t "~&old ~a new ~a" (num-flags r) (num-flags new-r))
                 ;; NB this could mean that the beams slot of rsb is no longer
                 ;; correct...  
@@ -1595,8 +1595,8 @@ T
       ;; (parent-start-end result))
       (loop for r in (rhythms result) do
             (when (and (is-rest r)
-                       (cmn-marks r))
-              (format t "~a~%rest with cmn-marks!" r)))
+                       (marks r))
+              (format t "~a~%rest with marks!" r)))
       result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1642,7 +1642,7 @@ T
                           (needs-new-note new) (needs-new-note e)
                           (beam new) (beam e)
                           (bracket new) (bracket e)
-                          (cmn-marks new) (my-copy-list (cmn-marks e))
+                          (marks new) (my-copy-list (marks e))
                           (cmn-objects-before new) (cmn-objects-before e)
                           (amplitude new) (amplitude e))
                   ;; if we can't get a single rthm for the new duration then
@@ -1655,8 +1655,8 @@ T
                               from duration ~a secs"
                              (- end-time start-time)))))
                 (when (and (is-rest new)
-                           (cmn-marks new))
-                  (error "~a~%rthm-seq-bar::get-events: rest with cmn-marks?"
+                           (marks new))
+                  (error "~a~%rthm-seq-bar::get-events: rest with marks?"
                          new))
                 (push new result)))))
     (setf result (nreverse result))
@@ -1669,7 +1669,7 @@ T
           (unless got-strike
             (when (is-tied-to e)
               (force-rest e)
-              (delete-cmn-marks e))))
+              (delete-marks e))))
     (when result
       (setf (is-tied-from (first (last result))) nil))
     ;; our first attack was numbered 1, so 1- to get a list reference that can
@@ -2061,8 +2061,8 @@ T
                       tempo-change: ~a" rsb))
             (push (get-lp-data (tempo-change e1)) result))
           (push (lp-rest-bar rsb ts) result)
-          (when (cmn-marks e1)
-            (loop for m in (cmn-marks e1)
+          (when (marks e1)
+            (loop for m in (marks e1)
                  ;; lilypond has a special fermata markup for rest bars...
                  for lpm = (if (eq m 'pause)
                                "^\\fermataMarkup"
@@ -2117,7 +2117,7 @@ T
 
 #+cmn
 (defmethod get-cmn-data ((rsb rthm-seq-bar) &optional process-event-fun in-c
-                         display-cmn-marks-in-part display-time
+                         display-marks-in-part display-time
                          ignore1 ignore2 ignore3 ignore4)
   (declare (ignore ignore1 ignore2 ignore3 ignore4))
   ;; 4/4/06: don't do this here anymore, rather do it in sc::respell-notes so
@@ -2138,7 +2138,7 @@ T
                                 ;; 1.3.11 got to turn the mark symbols into cmn
                                 ;; marks. can use e1 instead of
                                 ;; (get-nth-event 0 rsb))
-                                (cmn::get-all-cmn-marks (cmn-marks e1))
+                                (cmn::get-all-cmn-marks (marks e1))
                                 (list 
                                  (cmn::rq
                                   (- (rationalize
@@ -2150,7 +2150,7 @@ T
                         (apply (if mbr #'cmn::measure-rest
                                    #'cmn::whole-measure-rest)
                                (append 
-                                (cmn::get-all-cmn-marks (cmn-marks e1))
+                                (cmn::get-all-cmn-marks (marks e1))
                                 (when (display-tempo e1)
                                   ;; this is now a list
                                   (cmn-tempo (tempo-change e1)))
@@ -2233,11 +2233,11 @@ T
                     (if (is-grace-note event) 
                         ;; 21/4/10 display time on grace note or note
                         (get-cmn-data event bnum nil process-event-fun in-c
-                                      display-cmn-marks-in-part 
+                                      display-marks-in-part 
                                       (and first display-time))
                         ;; here we put the bar num in as text
                         (push (get-cmn-data event bnum nil process-event-fun
-                                            in-c display-cmn-marks-in-part 
+                                            in-c display-marks-in-part 
                                             (and first display-time))
                               result)))
                   (setf first nil)

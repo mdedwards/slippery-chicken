@@ -239,7 +239,7 @@
         ;; curve as needing a chord: to select this each instrument needs a
         ;; function object that can select a chord from any given pitches.  In
         ;; the case of the guitar we also want to write the fingering above the
-        ;; chord: we can set (cmn-marks chords) to be this: the fingering is
+        ;; chord: we can set (marks chords) to be this: the fingering is
         ;; the tag of the set!
         
         ;; try to use our pitch curve with only notes not already used but if

@@ -459,7 +459,7 @@
     (when rest
       (setf (pitch-or-chord rest) new-note))
     (loop for m in marks do
-         (add-cmn-mark rest m))
+         (add-mark rest m))
     rest))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -522,19 +522,19 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod add-cmn-mark-to-note ((bh bar-holder) bar-num note-num player mark)
+(defmethod add-mark-to-note ((bh bar-holder) bar-num note-num player mark)
   (let ((note (get-note bh bar-num note-num player)))
     (when note
-      (add-cmn-mark note mark))))
+      (add-mark note mark))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 28.2.11 use this to add marks to e.g. rests.  1-based
-(defmethod add-cmn-mark-to-event ((bh bar-holder) bar-num event-num player
+(defmethod add-mark-to-event ((bh bar-holder) bar-num event-num player
                                   mark)
   (let ((event (get-event bh bar-num event-num player)))
     (when event
-      (add-cmn-mark event mark))))
+      (add-mark event mark))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -546,9 +546,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* bar-holder/delete-all-cmn-marks
+;;; ****m* bar-holder/delete-all-marks
 ;;; FUNCTION
-;;; delete-all-cmn-marks:
+;;; delete-all-marks:
 ;;;
 ;;; 
 ;;; 
@@ -565,7 +565,7 @@
 ;;; 
 ;;; 
 ;;; SYNOPSIS
-(defmethod delete-all-cmn-marks ((bh bar-holder) start-bar num-bars player)
+(defmethod delete-all-marks ((bh bar-holder) start-bar num-bars player)
 ;;; ****
   (unless num-bars
     (setf num-bars (- (num-bars bh)
@@ -576,15 +576,15 @@
       for bar = (get-bar bh bar-num player)
       repeat num-bars 
       do 
-        (delete-cmn-marks bar))
+        (delete-marks bar))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod bh-delete-cmn-marks ((bh bar-holder) bar-num note-num player)
+(defmethod bh-delete-marks ((bh bar-holder) bar-num note-num player)
   (let ((note (get-note bh bar-num note-num player)))
     (when note
-      (setf (cmn-marks note) nil)))
+      (setf (marks note) nil)))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

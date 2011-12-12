@@ -533,17 +533,43 @@ data: NIL
 
 ;;; ****m* rthm-seq-bar/force-rest-bar
 ;;; FUNCTION
+;;; Force all rhythms of a rthm-seq-bar object to be replaced by rest.
 ;;; 
+;;; NB: This method changes the value of the RHYTHMS slot of the rthm-seq-bar
+;;; but not the value of the rthm-seq-bar DATA slot.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq-bar object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns a rthm-seq-bar object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
+  (force-rest-bar rsb))
 
+=>
+RTHM-SEQ-BAR: time-sig: 1 (2 4)
+              time-sig-given: T
+              bar-num: -1
+              old-bar-nums: NIL
+              write-bar-num: NIL
+              start-time: -1.0
+              start-time-qtrs: -1.0
+              is-rest-bar: T
+[...]
+RHYTHM: value: 2.0, duration: 2.0, rq: 2, is-rest: T,
+[...]
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: ((2 4) Q E S S)
+
+(let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
+  (force-rest-bar rsb)
+  (print-simple rsb))
+
+=>
+(2 4): rest 2,
 |#
 ;;; SYNOPSIS
 (defmethod force-rest-bar ((rsb rthm-seq-bar))

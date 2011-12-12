@@ -812,18 +812,84 @@ data: ((2 4) Q E S S)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rthm-seq-bar/delete-beams
+;;; 12.12.11 SAR: Added ROBODoc info
 ;;; FUNCTION
-;;; 
+;;; Remove any beaming indications from the rthm-seq-bar object. 
+;;;
+;;; NB: This method changes the data for the rthm-seq-bar objects's BEAMS slot
+;;; and the  individual BEAM slots of the RHYTHMs contained within the
+;;; rthm-seq-bar's RHYTHMS slot. It does not change the value of the
+;;; rthm-seq-bar's DATA slot.
+;;;
+;;; NB: Neither the presence nor absence of beams are not reflected in the
+;;; output of the print-simple method.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq-bar object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((rbs (make-rthm-seq-bar '((2 4) - s s - s - s s s - s s))))
+  (delete-beams rbs))
 
+=> T
+
+(let ((rbs (make-rthm-seq-bar '((2 4) - s s - s - s s s - s s))))
+  (delete-beams rbs)
+  (beams rbs))
+
+=> NIL
+
+(let ((rbs (make-rthm-seq-bar '((2 4) - s s - s - s s s - s s))))
+  (delete-beams rbs)
+  (loop for r in (rhythms rbs) collect (beam r)))
+
+=> (NIL NIL NIL NIL NIL NIL NIL NIL)
+
+(let ((rbs (make-rthm-seq-bar '((2 4) - s s - s - s s s - s s))))
+  (delete-beams rbs)
+  (print rbs))
+
+=>
+RTHM-SEQ-BAR: time-sig: 1 (2 4)
+              time-sig-given: T
+              bar-num: -1
+              old-bar-nums: NIL
+              write-bar-num: NIL
+              start-time: -1.0
+              start-time-qtrs: -1.0
+              is-rest-bar: NIL
+              multi-bar-rest: NIL
+              show-rest: T
+              notes-needed: 8
+              score-tuplets: NIL
+              tuplets: NIL
+              nudge-factor: 0.35
+              beams: NIL
+              current-time-sig: 1
+              write-time-sig: T
+              num-rests: 0
+              num-rhythms: 8
+              num-score-notes: 8
+              rhythms: (
+[...]
+)
+              missing-duration: NIL
+              bar-line-type: 0
+              player-section-ref: NIL
+              nth-seq: NIL
+              nth-bar: NIL
+              rehearsal-letter: NIL
+              all-time-sigs: (not printed for brevity's sake)
+SCLIST: sclist-length: 13, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL
+                     this: NIL
+                     next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: ((2 4) - S S - S - S S S - S S)
 |#
 ;;; SYNOPSIS
 (defmethod delete-beams ((rsb rthm-seq-bar))
@@ -836,18 +902,15 @@ data: ((2 4) Q E S S)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rthm-seq-bar/delete-tuplets
+
 ;;; FUNCTION
-;;; 
 ;;; 
 ;;; ARGUMENTS 
 ;;; 
-;;; 
 ;;; RETURN VALUE  
-;;; 
 ;;; 
 ;;; EXAMPLE
 #|
-
 |#
 ;;; SYNOPSIS
 (defmethod delete-tuplets ((rsb rthm-seq-bar))

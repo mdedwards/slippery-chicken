@@ -115,7 +115,7 @@
                         (page-height 29.7)
                         (page-width 21.0)
                         (automatic-octave-signs nil)
-                        (display-cmn-marks-in-part nil)
+                        (display-marks-in-part nil)
                         (display-time nil)
                         (size 15))
   (object-is-nil? ensemble "piece::cmn-display" 'ensemble)
@@ -129,7 +129,7 @@
   (let* ((just-empty (eq empty-staves 'only))
          (cmn-data (get-cmn-data p players empty-staves set-map 
                                  write-section-info process-event-fun in-c
-                                 display-cmn-marks-in-part display-time))
+                                 display-marks-in-part display-time))
          (cmn-data-num-bars (length (first cmn-data)))
          (num-bars (num-bars p))
          ;; (first-ins (first cmn-data))
@@ -271,7 +271,7 @@
                          (write-section-info t)
                          (process-event-fun nil)
                          (in-c t)
-                         display-cmn-marks-in-part
+                         display-marks-in-part
                          display-time)
   (let ((just-empty (eq empty-staves 'only))
         (cmn-data
@@ -285,7 +285,7 @@
                ;; the data of the named-object is the section
                  (get-cmn-data (data no) player nil t 
                                write-section-info process-event-fun 
-                               in-c display-cmn-marks-in-part 
+                               in-c display-marks-in-part 
                                (and (zerop count) display-time)))))
         (empty (when empty-staves
                  (format t "~&Generating empty staves...")

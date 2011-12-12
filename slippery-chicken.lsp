@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:06:04 Sun Dec 11 2011 ICT
+;;; $$ Last modified: 10:48:37 Mon Dec 12 2011 ICT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -95,15 +95,18 @@
    (instrument-change-map :accessor instrument-change-map :initarg
                           :instrument-change-map :initform nil)
    ;; this can contain bar references or bar numbers and looks something like
-   ;; '((1 (q 160)) (200 (q 120 "meno mosso")))
-   ;; where 1 is the bar, q is the beat and 160 is the bpm
+   ;; '((1 (q 160)) ((2 2 2) 96)) (200 (q 120 "meno mosso")))
+   ;; where 1 is the bar, q is the beat and 160 is the bpm.  The (2 2 2) is a
+   ;; reference to a bar of the form (section-number sequence-number
+   ;; bar-number).  References are converted to bar numbers before being stored
+   ;; in the map.
    (tempo-map :accessor tempo-map :initarg :tempo-map :initform nil)
    ;; 24.1.11 we can also specify a tempo curve and this will generate the
    ;; tempo-map for us.  The x scale will be fitted to the number of bars and a
-   ;; new tempo will be written every few bars, as indicated in the first
-   ;; argument in the list; the second element is the beat rhythm e.g. 
-   ;; '(10 q (0 60 100 120))
-   ;; NB the curve should start at 0 but the map will start at 1
+   ;; new tempo will be written every X bars, as indicated in the first
+   ;; argument in the list (10 in the following example); the second element is
+   ;; the beat rhythm e.g.  '(10 q (0 60 100 120)) NB the curve should start at
+   ;; 0 but the map will start at 1
    (tempo-curve :accessor tempo-curve :type list :initarg :tempo-curve 
                 :initform nil)
    ;; this contains the instrument definitions referenced in the ensemble.
@@ -501,7 +504,7 @@
                         (rehearsal-letters-all-players nil)
                         ;; some marks (e.g. text) are added to parts only,
                         ;; i.e. they're not in the main score 
-                        (display-cmn-marks-in-part nil)
+                        (display-marks-in-part nil)
                         ;; similar to rehearsal-letters-all-players
                         (tempi-all-players nil)
                         (players nil)
@@ -553,7 +556,7 @@
   (cmn-display (piece sc)
                :auto-bar-nums auto-bar-nums
                :start-bar start-bar
-               :display-cmn-marks-in-part display-cmn-marks-in-part
+               :display-marks-in-part display-marks-in-part
                :start-bar-numbering start-bar-numbering
                :page-nums page-nums
                :group-separation group-separation
@@ -1610,7 +1613,7 @@
                  (setf note (join-note-octave n o))))
              (setf (pitch-or-chord e) note))
            ;; NB note might be nil but mark not hence this isn't in the when
-           (rhythm-add-cmn-marks e (nth count marks)))
+           (rhythm-add-marks e (nth count marks)))
         ;; this hack gets the current bar number so we return where we left off
         (next-event sc nil))
       ;; the bar-holder method
@@ -1623,31 +1626,31 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod add-cmn-mark-to-note ((sc slippery-chicken)
+(defmethod add-mark-to-note ((sc slippery-chicken)
                                  bar-num note-num player mark)
-  (add-cmn-mark-to-note (piece sc) bar-num note-num player mark))
+  (add-mark-to-note (piece sc) bar-num note-num player mark))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 1-based
-(defmethod add-cmn-mark-to-event ((sc slippery-chicken) bar-num event-num player
+(defmethod add-mark-to-event ((sc slippery-chicken) bar-num event-num player
                                   mark)
-  (add-cmn-mark-to-event (piece sc) bar-num event-num player mark))
+  (add-mark-to-event (piece sc) bar-num event-num player mark))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 28.2.11  event-num can be an integer (1-based) or a list of event numbers 1
 ;;; for each instrument counting from the top of the score down
-(defmethod add-cmn-mark-all-players ((sc slippery-chicken)
+(defmethod add-mark-all-players ((sc slippery-chicken)
                                      bar-num event-num mark)
   (if (listp event-num)
       (unless (= (num-players (piece sc)) (length event-num))
-        (error "slippery-chicken::add-cmn-mark-all-players: event-num list ~
+        (error "slippery-chicken::add-mark-all-players: event-num list ~
                 must contain a number for each player: ~a" event-num))
       (setf event-num (ml event-num (num-players (piece sc)))))
   (loop for player in (players sc) and enum in event-num do
        ;; (format t "~%~a ~a ~a ~a" bar-num enum player mark)
-       (add-cmn-mark-to-event (piece sc) bar-num enum player mark))
+       (add-mark-to-event (piece sc) bar-num enum player mark))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1665,12 +1668,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; A cmn mark can only be applied to one note, after that, the mark will not
 ;;; display, so instead of storing the same mark in several notes, pass a
-;;; function that creates a cmn-mark, and call that function to create a
+;;; function that creates a mark, and call that function to create a
 ;;; separate instance of the cmn mark for each note that it should be applied
 ;;; to. 
-;;; 1.3.11 as cmn-marks are now all symbols, this is obsolete
+;;; 1.3.11 as marks are now all symbols, this is obsolete
 #|
-(defmethod add-cmn-mark-to-notes ((sc slippery-chicken) mark-function player
+(defmethod add-mark-to-notes ((sc slippery-chicken) mark-function player
                                   notes)
   (loop 
       for bar in notes 
@@ -1678,7 +1681,7 @@
       for notes = (rest bar)
       do
         (loop for n in notes do
-              (add-cmn-mark-to-note sc bar-num-or-ref n player 
+              (add-mark-to-note sc bar-num-or-ref n player 
                                     (funcall mark-function))))
   t)
 |#
@@ -1689,7 +1692,7 @@
 ;;; '((1 1 5) (3 2 7)) meaning bar 1, notes 1 to 5 inclusive, bar 3, notes 2 to
 ;;; 7 inclusive. 
 
-(defmethod add-cmn-mark-to-notes-from-to ((sc slippery-chicken)
+(defmethod add-mark-to-notes-from-to ((sc slippery-chicken)
                                           mark-function player
                                           notes)
   (loop 
@@ -1699,13 +1702,13 @@
       with expansion
       do
       (unless (= (length notes) 2)
-        (error "slippery-chicken::add-cmn-mark-to-notes-from-to: ~
+        (error "slippery-chicken::add-mark-to-notes-from-to: ~
                 Each bar is a 3 note list: bar-num start-note end-note: ~a"
                bar))
       (setf expansion (loop for i from (first notes) to (second notes) 
                         collect i))
       (loop for n in expansion do
-        (add-cmn-mark-to-note sc bar-num-or-ref n player 
+        (add-mark-to-note sc bar-num-or-ref n player 
                               (funcall mark-function))))
   t)
 
@@ -1717,7 +1720,7 @@
 ;;; list sets the exact note to start/stop at.  NB noteheads need before to be
 ;;; t in lilypond but bear in mind they're automatically moved over in
 ;;; event::get-lp-data.  players can be a single symbol or list.
-(defmethod add-cmn-marks-to-notes ((sc slippery-chicken) start end players before
+(defmethod add-marks-to-notes ((sc slippery-chicken) start end players before
                                    &rest marks)
   (let* ((stlist (listp start))
          (ndlist (listp end))
@@ -1736,7 +1739,7 @@
                        (loop for m in marks do
                             (funcall (if before 
                                          #'add-cmn-object-before-note
-                                         #'add-cmn-mark-to-note)
+                                         #'add-mark-to-note)
                                      sc bar-num i p m))))))
       (if (= stbar ndbar)
           (do-bar stbar stnote ndnote)
@@ -1767,8 +1770,8 @@
 ;;;                         (wt "WT")
 ;;;                         (h harm))
 
-(defmethod add-marks ((sc slippery-chicken) player-data 
-                      &key shorthand (warn t) verbose)
+(defmethod add-marks-sh ((sc slippery-chicken) player-data 
+                         &key shorthand (warn t) verbose)
   (loop for player in player-data
      for p = (first player) do
      (loop with bar with note with mark
@@ -1794,42 +1797,42 @@
           (when verbose
             (format t "~%---add-marks: ~a at bar ~a, note ~a" mark bar note))
           ;; (acmtn p bar note mark)
-          (add-cmn-marks-to-note sc bar note p mark)
+          (add-marks-to-note sc bar note p mark)
           (setf bar nil
                 note nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod add-cmn-marks-to-note ((sc slippery-chicken) bar-num note-num
+(defmethod add-marks-to-note ((sc slippery-chicken) bar-num note-num
                                   player &rest marks)
   ;; make sure we have a flat list and no sublists as perhaps created by
-  ;; cmn::get-cmn-marks 
+  ;; cmn::get-marks 
   (setf marks (flatten marks))
   ;; (print marks)
   (let ((note (get-note (piece sc) bar-num note-num player)))
     (when note
       (loop for mark in marks do
-            (add-cmn-mark note mark))))
+            (add-mark note mark))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod rm-cmn-marks-from-note ((sc slippery-chicken) bar-num note-num
+(defmethod rm-marks-from-note ((sc slippery-chicken) bar-num note-num
                                    player &rest marks)
   ;; make sure we have a flat list and no sublists as perhaps created by
-  ;; cmn::get-cmn-marks 
+  ;; cmn::get-marks 
   (setf marks (flatten marks))
   (let ((note (get-note (piece sc) bar-num note-num player)))
     (when note
       ;; 21.9.11 no warning here
-      (rm-cmn-marks note marks nil)))
+      (rm-marks note marks nil)))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 6.4.11: removes only the given marks, not all marks.  if players are nil,
 ;;; then all players will be processed
-(defmethod rm-cmn-marks-from-notes ((sc slippery-chicken) start end
+(defmethod rm-marks-from-notes ((sc slippery-chicken) start end
                                     players &rest marks)
   (unless players
     (setf players (players sc)))
@@ -1847,7 +1850,7 @@
                     (setf end-note (num-score-notes
                                     (get-bar sc bar-num player))))
                   (loop for i from start-note to end-note do
-                       (rm-cmn-marks-from-note
+                       (rm-marks-from-note
                         sc bar-num i player marks)))))
       (if (= stbar ndbar)
           (do-bar stbar stnote ndnote)
@@ -1862,7 +1865,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod rm-slurs ((sc slippery-chicken) start end players)
-  (rm-cmn-marks-from-notes sc start end players '(beg-sl end-sl)))
+  (rm-marks-from-notes sc start end players '(beg-sl end-sl)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1872,14 +1875,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod sc-delete-cmn-marks ((sc slippery-chicken) bar-num note-num player)
-  (bh-delete-cmn-marks (piece sc) bar-num note-num player))
+(defmethod sc-delete-marks ((sc slippery-chicken) bar-num note-num player)
+  (bh-delete-marks (piece sc) bar-num note-num player))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod sc-delete-cmn-marks-from-event ((sc slippery-chicken)
+(defmethod sc-delete-marks-from-event ((sc slippery-chicken)
                                            bar-num event-num player)
-  (setf (cmn-marks (get-event sc bar-num event-num player)) nil))
+  (setf (marks (get-event sc bar-num event-num player)) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2008,13 +2011,13 @@
         (error "slippery-chicken::tie-over-rest-bars-aux: can't tie from last ~
               event of bar ~a" bar-num))
       ;; remove any staccato or tenuto marks from this event
-      (rm-cmn-marks start-event '(s t as) nil)
+      (rm-marks start-event '(s t as) nil)
       (when porc
-        (delete-cmn-marks porc))
+        (delete-marks porc))
       (when wporc
-        (delete-cmn-marks wporc))
+        (delete-marks wporc))
       ;; replace accent-staccato with just accent
-      (replace-cmn-mark start-event 'as 'a)
+      (replace-mark start-event 'as 'a)
       ;; our last event may have been tied to following events...
       (loop 
           for i from start-event-pos
@@ -2188,11 +2191,11 @@
               note ~a, ~a" bar-num note-num player))
     (setf (is-tied-from start-event) t)
     ;; remove any staccato or tenuto marks from this event
-    (rm-cmn-marks start-event '(s as t) nil)
+    (rm-marks start-event '(s as t) nil)
     (when porc
-      (delete-cmn-marks porc))
+      (delete-marks porc))
     (when wporc
-      (delete-cmn-marks wporc))
+      (delete-marks wporc))
     (loop 
        for e = (next-event sc player)
        for bnum = (next-event sc nil)
@@ -2261,13 +2264,13 @@
                                ;; bars doesn't trigger this clause
                                note-num -1)
                          ;; (print-simple event)
-                         (rm-cmn-marks event 'beg-sl))
+                         (rm-marks event 'beg-sl))
                        (warn "slippery-chicken::delete-slur (~a): no slur to ~
                               delete: ~a" player event))
                    (when (and in-slur (end-slur-p event))
                      (setf happy nil)
                      ;; (print-simple event)
-                     (rm-cmn-marks event 'end-sl))))
+                     (rm-marks event 'end-sl))))
              (setf happy nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2310,7 +2313,7 @@
                   (when start-e
                     (get-pitch-symbol start-e nil))))
         (when rm-slurs-first
-          (rm-cmn-marks e '(beg-sl end-sl) nil))
+          (rm-marks e '(beg-sl end-sl) nil))
         (cond ((and (needs-new-note e) ;; start slur
                     (not start-e))
                (setf start-e e)
@@ -2333,14 +2336,14 @@
                (unless (or (begin-slur-p start-e)
                            (end-slur-p last-e))
                  (when rm-staccatos
-                   (replace-cmn-mark start-e 'as 'a)
-                   (replace-cmn-mark last-e 'as 'a)
-                   (rm-cmn-marks start-e 'te nil)
-                   (rm-cmn-marks last-e 'te nil)
-                   (rm-cmn-marks start-e 's nil)
-                   (rm-cmn-marks last-e 's nil))
-                 (add-cmn-mark start-e 'beg-sl)
-                 (add-cmn-mark last-e 'end-sl))
+                   (replace-mark start-e 'as 'a)
+                   (replace-mark last-e 'as 'a)
+                   (rm-marks start-e 'te nil)
+                   (rm-marks last-e 'te nil)
+                   (rm-marks start-e 's nil)
+                   (rm-marks last-e 's nil))
+                 (add-mark start-e 'beg-sl)
+                 (add-mark last-e 'end-sl))
                (when verbose
                  (format t "~&~a -> ~a" 
                          (get-pitch-symbol start-e nil)
@@ -2365,8 +2368,8 @@
                ;; todo: this doesn't work: we haven't yet found those
                ;; notes in the middle... 
                ;; in the middle of a slur so remove staccatos
-               (replace-cmn-mark e 'as 'a)
-               (rm-cmn-marks e 's nil)))
+               (replace-mark e 'as 'a)
+               (rm-marks e 's nil)))
         (setf last-e e)))
   ;; 9.4.11
   (check-slurs sc)
@@ -2751,8 +2754,8 @@
                                              (data 
                                               (pitch-or-chord event)))
                                             (pitch-or-chord event)))
-                                       (cmn-marks new-pitch)
-                                       (cmn-marks (pitch-or-chord event))
+                                       (marks new-pitch)
+                                       (marks (pitch-or-chord event))
                                        (pitch-or-chord event)
                                        new-pitch
                                        (written-pitch-or-chord event)
@@ -2957,14 +2960,14 @@
                   (delete-clefs e)
                   (unless (eq new-clef current-clef)
                     (add-clef e new-clef))
-                  (add-cmn-mark e (if dt 'beg-8va 'beg-8vb)))
+                  (add-mark e (if dt 'beg-8va 'beg-8vb)))
                 ;; if we see any other clef at all we can assume the octave
                 ;; +/- is at and end, but only delete the clef if we've gone
                 ;; double-x to x
                 (when octave-clef
                   (setf dt (eq octave-clef 'double-treble)
                         db (eq octave-clef 'double-bass))
-                  (add-cmn-mark last-note (if dt 'end-8va 'end-8vb))
+                  (add-mark last-note (if dt 'end-8va 'end-8vb))
                   (when (or (and dt (eq clef 'treble))
                             (and db (eq clef 'bass)))
                     (delete-clefs e))
@@ -3014,8 +3017,8 @@
            (loop for e = (next-event sc player)
               while (and e (<= (bar-num e) end-bar)) do
               (when (and under8v (not (zerop under8v))
-                         (or (has-cmn-mark e 'beg-8va)
-                             (has-cmn-mark e 'beg-8vb)))
+                         (or (has-mark e 'beg-8va)
+                             (has-mark e 'beg-8vb)))
                 (warn "slippery-chicken::split-octave-brackets: ~
                         ~a, bar ~a: new octavation starting when already in one"
                        player (bar-num e)))
@@ -3029,11 +3032,11 @@
                      (print (is-rest last-note))
                      (print (is-rest e))
                      (when last-note
-                       (add-cmn-mark-once last-note
+                       (add-mark-once last-note
                                           (if (= 1 under8v) 'end-8va 'end-8vb)))
-                     (add-cmn-mark-once e (if (= 1 under8v) 'beg-8va 'beg-8vb))
+                     (add-mark-once e (if (= 1 under8v) 'beg-8va 'beg-8vb))
                      (loop for r in rests do
-                          (rm-cmn-marks r '(beg-8va beg-8vb) nil)
+                          (rm-marks r '(beg-8va beg-8vb) nil)
                           (setf (8va r) 0))
                      (reset)
                      (setf last-note e))
@@ -3070,9 +3073,9 @@
                       rests nil)))
           (when (and carry (not (is-rest e)))
             (print (bar-num e))
-            (add-cmn-mark-once e (if (= 1 carry) 'beg-8va 'beg-8vb))
+            (add-mark-once e (if (= 1 carry) 'beg-8va 'beg-8vb))
             (loop for r in rests do 
-                 (rm-cmn-marks r '(beg-8va beg-8vb) nil)
+                 (rm-marks r '(beg-8va beg-8vb) nil)
                  (setf (8va r) 0))
             (setf rests nil
                   carry nil)))))
@@ -3097,15 +3100,15 @@
           (setf bracket (8va e))
           (unless (zerop bracket)
             (if (is-rest e)
-                (if (or (has-cmn-mark e 'end-8va)
-                        (has-cmn-mark e 'end-8vb))
+                (if (or (has-mark e 'end-8va)
+                        (has-mark e 'end-8vb))
                     (progn
                       (print (bar-num e))
-                      (add-cmn-mark-once last-note
+                      (add-mark-once last-note
                                          (if (= 1 bracket) 'end-8va 'end-8vb))
                       (push e rests)
                       (loop for r in rests do 
-                           (rm-cmn-marks r '(end-8va end-8vb) nil)
+                           (rm-marks r '(end-8va end-8vb) nil)
                            (setf (8va r) 0)))
                     ;; it's a rest without end bracket
                     (push e rests))
@@ -3147,7 +3150,7 @@
                   (write-time-sig bar)
                   (> (bar-line-type bar) 0)
                   ;; 28.2.11 there's a pause or something on this rest...
-                  (and (rhythms bar) (cmn-marks (first (rhythms bar))))
+                  (and (rhythms bar) (marks (first (rhythms bar))))
                   ;; we're in a multi-bar rest but tempo changes i.e. tempo
                   ;; change on first bar of multi is fine 
                   (and (> count 0)
@@ -4270,7 +4273,7 @@
   (unless to-bar
     (setf to-bar bar-num))
   (let ((dyn (sc-remove-dynamic sc bar-num player from)))
-    (add-cmn-mark (get-event sc to-bar to player) dyn)))
+    (add-mark (get-event sc to-bar to player) dyn)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5755,9 +5758,9 @@
                       #|
                       ;; no longer add these as marks, rather store the ;
                       ;; instrument change in the dedicated event slot ;
-  (add-cmn-mark event (cmn::new-staff-name 
+  (add-mark event (cmn::new-staff-name 
                       (staff-name instrument)))
-  (add-cmn-mark 
+  (add-mark 
                       event (cmn::sc-cmn-text (staff-name instrument))))
                       |#
                       (setf (instrument-change event)
@@ -5799,10 +5802,10 @@
       (error "~a ~a ~%slippery-chicken::sc-make-sequenz: Didn't use all ~
               the notes!  Still have ~a left."
              rthm-seq pitch-seq (length notes)))
-    ;; the cmn-marks given in the rthm-seq were not interpreted in that class,
+    ;; the marks given in the rthm-seq were not interpreted in that class,
     ;; first here when all the rhythms have been converted to events.
     ;; 19/2/07: move this method over to the rthm-seq class and call it there
-    ;; (add-cmn-marks sequenz)
+    ;; (add-marks sequenz)
     ;; (print "exiting sc-make-sequenz")
     sequenz))
             
@@ -5898,7 +5901,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 24.1.11: convert a tempo-curve to a tempo map, unless tempo-map is not nil,
-;;; whereupon we simply return that.  remember that the tempo curve's first
+;;; whereupon we simply return that.  Remember that the tempo curve's first
 ;;; element is the frequency in bars, second element is the beat rhythm, and
 ;;; the third is the curve itself.
 ;;; NB the curve should start at 0 but the map will start at bar 1

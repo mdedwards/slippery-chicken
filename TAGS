@@ -6,17 +6,17 @@ activity-levels.lsp,164
 (defmethod reset 122,4437
 (defmethod active 139,5192
 
-all.lsp,389
+all.lsp,395
 (defconstant +slippery-chicken-version+ 59,2300
-(defparameter *slippery-chicken-src-path*63,2452
-(defparameter *dir-separator*70,2691
-(defparameter *fasl-extension*75,2811
-(defun sc 83,2999
-(defun get-path-minus-file-and-last-dir 93,3326
-(defun sc-compile-and-load 102,3680
-(defun sc-compile-and-load 129,4670
-(defun sc-load-cm-all 137,4978
-(defun sc-load-cm-essentials 148,5491
+(defparameter +slippery-chicken-src-path+63,2452
+(defparameter +sc-dir-separator+70,2691
+(defparameter +sc-fasl-extension+75,2814
+(defun sc 83,3005
+(defun get-path-minus-file-and-last-dir 94,3395
+(defun sc-compile-and-load 103,3752
+(defun sc-compile-and-load 130,4757
+(defun sc-load-cm-all 138,5065
+(defun sc-load-cm-essentials 149,5578
 
 assoc-list.lsp,820
 (defclass assoc-list 59,2351

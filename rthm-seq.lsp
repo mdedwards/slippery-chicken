@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 23:55:55 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 10:34:07 Mon Dec 12 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -75,9 +75,11 @@
   ((bars :accessor bars :type list :initform nil)
    (pitch-seq-palette :accessor pitch-seq-palette :initarg :pitch-seq-palette
                       :initform nil)
+   ;; MDE Mon Dec 12 08:58:00 2011 -- back when we generated input files for
+   ;; Leland Smith's Score. 
    ;; markings for score, eg "s 18/f 2;" etc.
-   (marks :accessor marks :type string :initarg :marks :initform ";")
-   (cmn-marks :accessor cmn-marks :type list :initarg :cmn-marks :initform nil)
+   ;; (marks :accessor marks :type string :initarg :marks :initform ";")
+   (marks :accessor marks :type list :initarg :marks :initform nil)
    (num-bars :accessor num-bars :type integer :initform 0)
    (num-rhythms :accessor num-rhythms :type integer :initform 0)
    ;; this is the sum of notes-needed from the rthm-seq-bars
@@ -140,22 +142,22 @@
       ;; Collect some handy data.
       (gen-stats rs)
       ;; these come after gen-stats!
-      (handle-cmn-marks rs)
-      (add-cmn-marks rs)
+      (handle-marks rs)
+      (add-marks rs)
       (init-psp rs))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; cmn-marks are expected like this:
+;;; marks are expected like this:
 ;;; ((s 1 2 5 6) (a 13 14) (p 1) (f 13) (p 15))))
 ;;; i.e. with sublists, one for each accent
 ;;; it's easier like this though: (as 1 5 6 t 11 15 16)))
 ;;; so change the latter into the former
 
-(defmethod handle-cmn-marks ((rs rthm-seq))
-  (let ((mks (cmn-marks rs)))
+(defmethod handle-marks ((rs rthm-seq))
+  (let ((mks (marks rs)))
     (when (and mks (simple-listp mks))
-      (setf (cmn-marks rs)
+      (setf (marks rs)
         (loop 
             with result = '()
             with temp = '()
@@ -218,14 +220,13 @@
                   ~%          duration: ~a~
                   ~%          psp-inversions: ~a~
                   ~%          marks: ~a~
-                  ~%          cmn-marks: ~a~
                   ~%          time-sigs-tag: ~a~
                   ~%          handled-first-note-tie: ~a~
                   ~%         (for brevity's sake, slots ~
                   pitch-seq-palette and bars are not printed)"
           (num-bars i) (num-rhythms i) (num-notes i) (num-score-notes i)
-          (num-rests i) (duration i) (psp-inversions i) (marks i) (cmn-marks i)
-          (time-sigs-tag i) (handled-first-note-tie i)))
+          (num-rests i) (duration i) (psp-inversions i) ; (marks i)
+          (marks i) (time-sigs-tag i) (handled-first-note-tie i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -251,8 +252,8 @@
           (slot-value sclist 'pitch-seq-palette) 
           (when (pitch-seq-palette rs)
             (clone (pitch-seq-palette rs)))
-          (slot-value sclist 'marks) (basic-copy-object (marks rs))
-          (slot-value sclist 'cmn-marks) (my-copy-list (cmn-marks rs))
+          ;; (slot-value sclist 'marks) (basic-copy-object (marks rs))
+          (slot-value sclist 'marks) (my-copy-list (marks rs))
           (slot-value sclist 'num-bars) (num-bars rs)
           (slot-value sclist 'num-rhythms) (num-rhythms rs)
           (slot-value sclist 'num-notes) (num-notes rs)
@@ -945,9 +946,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rthm-seq/add-cmn-marks
+;;; ****m* rthm-seq/add-marks
 ;;; FUNCTION
-;;; add-cmn-marks:
+;;; add-marks:
 ;;;
 ;;; 
 ;;; 
@@ -965,18 +966,18 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod add-cmn-marks ((rs rthm-seq))
+(defmethod add-marks ((rs rthm-seq))
 ;;; ****
-  (loop for i in (cmn-marks rs) do
+  (loop for i in (marks rs) do
         ;; when the list is like (a 1 4) it means accent on notes 1 to 4
         ;; (a 1) means accent on note 1
         ;; (a 1 4 6 8) means accents on notes 1, 4, 6 and 8
         ;; if you want an accent on notes 1 and 4, you have to do (a 1) (a 4)
         (if (> (length i) 3)
             (loop for note in (cdr i) with mark = (first i) do
-                  (add-cmn-marks-aux rs mark note))
+                  (add-marks-aux rs mark note))
           ;; we have a start-end note pair...
-          (add-cmn-marks-aux rs (first i) (second i) (third i)))))
+          (add-marks-aux rs (first i) (second i) (third i)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -984,42 +985,42 @@
 ;;; the mark that will be created when get-cmn-data is called. 
 
 #+cmn
-(defmethod add-cmn-marks-aux ((rs rthm-seq) mark start-note &optional end-note)
+(defmethod add-marks-aux ((rs rthm-seq) mark start-note &optional end-note)
   ;; get-nth-non-rest-rhythm is 0-based, we're 1-based here.
   (decf start-note)
   (if end-note
       (decf end-note)
     (setf end-note start-note))
   (when (> end-note (1- (num-score-notes rs)))
-    (error "~a~%sequenz::add-cmn-marks-aux: ~a notes in seq, but mark on ~a"
+    (error "~a~%sequenz::add-marks-aux: ~a notes in seq, but mark on ~a"
            rs (num-score-notes rs) (1+ end-note)))
   ;; cond in case we want to add other special cases later...
   (cond ((eq mark 'slur)
          ;; slurs are a special case...
          (unless (> end-note start-note)
-           (error "sequenz::add-cmn-marks-aux: slurs must be over ~
+           (error "sequenz::add-marks-aux: slurs must be over ~
                    more than one note: (~a ~a)" 
                   start-note end-note))
-         (add-cmn-mark (get-nth-non-rest-rhythm start-note rs) 
+         (add-mark (get-nth-non-rest-rhythm start-note rs) 
                        ;; (first (cmn::get-cmn-marks 'begin-slur)))
                        'beg-sl)
-         (add-cmn-mark (get-nth-non-rest-rhythm end-note rs) 
+         (add-mark (get-nth-non-rest-rhythm end-note rs) 
                        ;;(first (cmn::get-cmn-marks 'end-slur))))
                        'end-sl))
         (t
-         ;; get-cmn-marks returns a list as some single marks need two
-         ;; cmn-marks (like accent-staccato) 
+         ;; get-marks returns a list as some single marks need two
+         ;; marks (like accent-staccato) 
          (loop 
              for i from start-note to end-note 
              for event = (get-nth-non-rest-rhythm i rs)
                          ;; got to make the marks new each time...
                          #|
-             for cmn-marks = (cmn::get-cmn-marks mark)
-             do (loop for m in cmn-marks do
-             (add-cmn-mark event m))))))
+             for marks = (cmn::get-cmn-marks mark)
+             do (loop for m in marks do
+             (add-mark event m))))))
              |#
              do
-               (add-cmn-mark event mark)))))
+               (add-mark event mark)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1305,6 +1306,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#|
+MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
 (defun write-seqs-to-score-file (file rthm-seqs &optional
                                                 (left-margin 1.2) 
                                                 (right-margin 200)
@@ -1324,7 +1327,7 @@
                     (marks rs)          ; marks
                     (third score-strings) ; beams
                     (fourth score-strings)))))) ; ties
-
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Given a rhythmic unit, e.g. 32nd, and a time sig, return a rthm-seq made up

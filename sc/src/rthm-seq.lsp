@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 10:34:07 Mon Dec 12 2011 ICT
+;;; $$ Last modified: 00:09:38 Tue Dec 13 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -900,43 +900,46 @@
 |#
 ;;; SYNOPSIS
 (defmethod chop ((rs rthm-seq) &optional chop-points 
-                                         (unit 's)
-                                         (number-bars-first t))
+                 (unit 's)
+                 (number-bars-first t))
 ;;; ****
   (when number-bars-first
     (set-bar-nums rs))
   (loop 
-    ;; the rthm-seq-bar needs to know where we are in the pitch-seq so it can
-    ;; skip that many notes when pulling out the correct ones for itself.
-      with attacks = 0
-      with count = 1
-      with psp = (pitch-seq-palette rs)
-      with result = '()
-      for bar in (bars rs) 
-                 ;; we stored the positions of the start and end notes of the
-                 ;; old bar that's cannibalised in
-                 ;; rthm-seq-bar::new-bar-from-time-range. We use these numbers
-                 ;; ___plus___ the number of attacked notes in the bars
-                 ;; previous to the current in order to get a sub-sequence out
-                 ;; of the pitch-seq-palette and apply it to the new rthm-seq.
-      for new-bars = (chop bar chop-points unit (list-to-string (this rs) "-"))
-      do
-        (loop 
-            for bar in new-bars 
-            for pse = (parent-start-end bar)
-            with rs 
-            do
-              (setf rs (make-rthm-seq (list count (list (list bar))))
-                    (tag rs) (id bar))
-              (unless (is-rest-bar bar)
-                (setf (pitch-seq-palette rs) 
-                  (psp-subseq psp
-                              (+ attacks (first pse))
-                              (+ attacks (second pse)))))
-              (push rs result)
-              (incf count))
-        (incf attacks (notes-needed bar))
-      finally (return (nreverse result))))
+     ;; the rthm-seq-bar needs to know where we are in the pitch-seq so it can
+     ;; skip that many notes when pulling out the correct ones for itself.
+     with attacks = 0
+     with count = 1
+     with psp = (pitch-seq-palette rs)
+     with result = '()
+     for bar in (bars rs) 
+     ;; we stored the positions of the start and end notes of the old bar
+     ;; that's cannibalised in rthm-seq-bar::new-bar-from-time-range. We use
+     ;; these numbers ___plus___ the number of attacked notes in the bars
+     ;; previous to the current in order to get a sub-sequence out of the
+     ;; pitch-seq-palette and apply it to the new rthm-seq.
+     for new-bars = (chop bar chop-points unit (list-to-string (this rs) "-"))
+     do
+     (loop 
+        for bar in new-bars 
+        for pse = (parent-start-end bar)
+        with rs 
+        do
+        (setf rs (make-rthm-seq (list count (list (list bar))))
+              (tag rs) (id bar))
+        (unless (is-rest-bar bar)
+          (let ((start (+ attacks (first pse)))
+                (end (+ attacks (second pse))))
+            ;; MDE Tue Dec 13 00:04:12 2011 -- check!
+            (unless (= (- end start) (num-notes rs))
+              (error "rthm-seq::chop: new rthm-seq has ~a notes, but ~
+                      parent-start-end = ~a" (num-notes rs) pse))
+            (setf (pitch-seq-palette rs) 
+                  (psp-subseq psp start end))))
+        (push rs result)
+        (incf count))
+     (incf attacks (notes-needed bar))
+     finally (return (nreverse result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

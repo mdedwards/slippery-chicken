@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:48:37 Mon Dec 12 2011 ICT
+;;; $$ Last modified: 23:27:44 Mon Dec 12 2011 ICT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5712,20 +5712,17 @@
                                   ;; rthm-seq last-note-previous-seq
                                   (id rthm-seq) player)
                                  ;; TODO: fix this:
-                                 ;; this is a complete fraud of course
-                                 ;; but I've got to get on with composition
-                                 ;; and can't find this bug...
                                  (warn "Cludging to 'b4!")
                                  (setf last-note-previous-seq
                                        (make-event 'b4 'q)))
                                (clone (pitch-or-chord 
                                        last-note-previous-seq))))))
     #|
-    ;; this checks that there are no ties to the first note in a seq ; ; ; ; ; ;
-  (when (is-tied-to (get-nth-event 0 (get-bar sequenz 0 t)))
+    ;; this checks that there are no ties to the first note in a seq 
+    (when (is-tied-to (get-nth-event 0 (get-bar sequenz 0 t)))
     (error "slippery-chicken::sc-make-sequenz: ~
               Tied first note of sequenz not allowed!"))
-  |#
+    |#
     (loop for bar in (bars sequenz) and bar-num from 1 do
           ;; first of all set all the bars to write--then change in 
           ;; sequenz::update-slots depending upon real bar num
@@ -5755,14 +5752,6 @@
                       ;; note (this makes use of new cmn code by me and
                       ;; hopefully added to main repository by Bill).
                       ;; (instrument change is registered here)
-                      #|
-                      ;; no longer add these as marks, rather store the ;
-                      ;; instrument change in the dedicated event slot ;
-  (add-mark event (cmn::new-staff-name 
-                      (staff-name instrument)))
-  (add-mark 
-                      event (cmn::sc-cmn-text (staff-name instrument))))
-                      |#
                       (setf (instrument-change event)
                             (if (staff-short-name instrument)
                                 (list (staff-name instrument)
@@ -5786,11 +5775,6 @@
                                (error "~a~a~%slippery-chicken::~
                                        sc-make-sequenz: no current-note (1)!"
                                       rthm-seq pitch-seq))
-                             #|
-                             (format t "~&seq-num ~a, ~a tying ~a to ~a"
-                              global-seq-num player (id last-note)
-                              (id current-note))
-                             |#
                              (clone current-note)))))
                   (when transpose
                     (set-written event transpose))

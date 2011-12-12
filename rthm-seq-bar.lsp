@@ -303,6 +303,7 @@
 ;;;  
 
 ;;; ****m* rthm-seq-bar/fill-with-rhythms
+;;; 12.12.11 SAR: Added ROBODoc info
 ;;; FUNCTION
 ;;; Any rhythms in the rthm-seq-bar object will be deleted and then rhythm
 ;;; objects will be taken one by one from the <rhythms> argument until the bar
@@ -334,9 +335,8 @@
 			  collect (make-rhythm r)))
   (print-simple rsb))
 
-(3 4): note E, note E, note E, note E, note E, note E, 
 => NIL
-
+(3 4): note E, note E, note E, note E, note E, note E, 
 
 (let ((rsb (make-rthm-seq-bar '((3 4) q q q))))
   (fill-with-rhythms rsb (loop for r in '(e e e e e e)
@@ -428,24 +428,27 @@ data: NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rthm-seq-bar/all-rests?
+;;; 12.12.11 SAR: Modified example and tidied ROBODoc descrips.
 ;;; FUNCTION
-;;; test whether all rhythms in a bar are rests.
+;;; Test whether all rhythms in a rthm-seq-bar object are rests.
 ;;; 
 ;;; ARGUMENTS 
-;;; - a rthm-seq-bar object
+;;; - A rthm-seq-bar object.
 ;;; 
 ;;; RETURN VALUE  
-;;; T if all rhythms are rests, otherwise nil
+;;; T if all rhythms are rests, otherwise NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((rsb1 (make-rthm-seq-bar '((2 4) q q)))
-      (rsb2 (make-rthm-seq-bar '((2 4) (q) (q)))))
-  (print (all-rests? rsb1))
-  (all-rests? rsb2))
-=>
-NIL 
-T
+(let ((rsb (make-rthm-seq-bar '((2 4) (q) (e) (s) (s)))))
+  (all-rests? rsb))
+
+=> T
+
+(let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
+  (all-rests? rsb))
+
+=> NIL
 |#
 ;;; SYNOPSIS
 (defmethod all-rests? ((rsb rthm-seq-bar))

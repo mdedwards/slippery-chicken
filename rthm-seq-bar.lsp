@@ -304,18 +304,81 @@
 
 ;;; ****m* rthm-seq-bar/fill-with-rhythms
 ;;; FUNCTION
-;;; Any rhythms in the rsb will be deleted and then rhythm objects will be
-;;; taken one by one from the <rhythms> argument until the bar is full.  The
-;;; number of rhythms used is returned.
+;;; Any rhythms in the rthm-seq-bar object will be deleted and then rhythm
+;;; objects will be taken one by one from the <rhythms> argument until the bar
+;;; is full. The number of rhythms used is returned. 
+;;;
+;;; NB: This method does not change the DATA of the rthm-seq-bar object itself
+;;; to reflect the new rhythms. Instead, it changes the contents of the RHYTHMS
+;;; slot within that object and changes the DATA of the rthm-seq-bar object to
+;;; NIL. It also assigns the ID of the named-object to
+;;; "rhythms-inserted-by-fill-with-rhythms". 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS
+;;; - A rthm-seq-bar object.
+;;; - A list of rhythms.
 ;;; 
-;;; 
-;;; RETURN VALUE: 
-;;; 
+;;; RETURN VALUE
+;;; The number of rhythms used.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((rsb (make-rthm-seq-bar '((3 4) q q q))))
+  (fill-with-rhythms rsb (loop for r in '(e e e e e e)
+			  collect (make-rhythm r))))
+
+=> 6
+
+(let ((rsb (make-rthm-seq-bar '((3 4) q q q))))
+  (fill-with-rhythms rsb (loop for r in '(e e e e e e)
+			  collect (make-rhythm r)))
+  (print-simple rsb))
+
+(3 4): note E, note E, note E, note E, note E, note E, 
+=> NIL
+
+
+(let ((rsb (make-rthm-seq-bar '((3 4) q q q))))
+  (fill-with-rhythms rsb (loop for r in '(e e e e e e)
+			  collect (make-rhythm r)))
+  (print rsb))
+
+=>
+RTHM-SEQ-BAR: time-sig: 0 (3 4)
+              time-sig-given: T
+              bar-num: -1
+              old-bar-nums: NIL
+              write-bar-num: NIL
+              start-time: -1.0
+              start-time-qtrs: -1.0
+              is-rest-bar: NIL
+              multi-bar-rest: NIL
+              show-rest: T
+              notes-needed: 6
+              score-tuplets: NIL
+              tuplets: NIL
+              nudge-factor: 0.35
+              beams: NIL
+              current-time-sig: 0
+              write-time-sig: T
+              num-rests: 0
+              num-rhythms: 6
+              num-score-notes: 6
+              rhythms: (
+RHYTHM: value: 8.0, duration: 0.5, rq: 1/2, is-rest: NIL, score-rthm: 8.0, 
+        undotted-value: 8, num-flags: 1, num-dots: 0, is-tied-to: NIL, 
+        is-tied-from: NIL, compound-duration: 0.5, is-grace-note: NIL, 
+        needs-new-note: T, beam: NIL, bracket: NIL, rqq-note: NIL, 
+        rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 8, 
+        tuplet-scaler: 1, grace-note-duration: 0.05,
+LINKED-NAMED-OBJECT: previous: NIL
+                     this: NIL
+                     next: NIL
+NAMED-OBJECT: id: E, tag: NIL, 
+data: E
+[...]
+NAMED-OBJECT: id: "rhythms-inserted-by-fill-with-rhythms", tag: NIL, 
+data: NIL
 
 |#
 ;;; SYNOPSIS
@@ -368,10 +431,10 @@
 ;;; FUNCTION
 ;;; test whether all rhythms in a bar are rests.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - a rthm-seq-bar object
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; T if all rhythms are rests, otherwise nil
 ;;; 
 ;;; EXAMPLE
@@ -469,10 +532,10 @@ T
 ;;; FUNCTION
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -723,10 +786,10 @@ T
 ;;; FUNCTION
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -747,10 +810,10 @@ T
 ;;; FUNCTION
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -800,10 +863,10 @@ T
 ;;; FUNCTION
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -850,10 +913,10 @@ T
 ;;; FUNCTION
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1077,7 +1140,7 @@ T
 ;;; - Optional argument: T or NIL indicating whether to print an error message
 ;;; if the given index is not reachable in the given rthm-seq-bar data list.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1112,10 +1175,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1150,10 +1213,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1185,10 +1248,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1214,10 +1277,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1260,10 +1323,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1352,10 +1415,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1398,10 +1461,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1472,10 +1535,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1763,10 +1826,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1790,10 +1853,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1816,10 +1879,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -2434,10 +2497,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -2561,10 +2624,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -2672,10 +2735,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -2756,10 +2819,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -2827,10 +2890,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -2853,10 +2916,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -2899,10 +2962,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -2927,10 +2990,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -2954,10 +3017,10 @@ T
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -2987,7 +3050,7 @@ T
 ;;; signatures, but not for parsing these things themselves--that is done by
 ;;; separate classes.  
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - A list of rhythmic durations, which may include ties and dots. Durations
 ;;; may be written as numeric (integer) values or may use the CM/CMN/SCORE
 ;;; alphabetic shorthand s=16, e=8, q=4, h=2, w=1. 
@@ -2999,9 +3062,10 @@ T
 ;;; the first being the number of beats in the bar and the second being the
 ;;; beat unit for the bar. 
 ;;;
-;;; - Optional argument: A name (symbol) for the object ID.
+;;; OPTIONAL ARGUMENTS
+;;; - A name (symbol) for the object ID.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE   
 ;;; Returns a rthm-seq-bar.
 ;;; 
 ;;; EXAMPLE
@@ -3058,10 +3122,10 @@ data: ((2 4) { 3 TE TE TE } Q)
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS  
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE    
 ;;; 
 ;;; 
 ;;; EXAMPLE

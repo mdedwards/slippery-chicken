@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 11:23:38 Tue Dec 13 2011 ICT
+;;; $$ Last modified: 12:29:46 Tue Dec 13 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -934,9 +934,9 @@
             (setf (pitch-seq-palette rs) psp-new)
             ;; MDE Tue Dec 13 00:04:12 2011 -- check!
             (unless (= (num-notes psp-new) (num-notes rs))
-              (error "~a~%~%~a~%rthm-seq::chop: new rthm-seq has ~a notes, but ~
-                      psp has ~a"
-                     rs (pitch-seq-palette rs) (num-notes rs)
+              (error "~a~%~%~a~%~%~a~%rthm-seq::chop: new rthm-seq has ~a ~
+                      notes, but psp has ~a"
+                     rs (print-simple rs) (pitch-seq-palette rs) (num-notes rs)
                      (num-notes psp-new)))))
         (push rs result)
         (incf count))

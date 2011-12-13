@@ -909,19 +909,73 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; if duration t then rthm is a duration in secs, not a known rhythm like 'e
-
+;;; 13.12.11 SAR: Added ROBODoc info
 ;;; ****f* rhythm/make-rhythm
 ;;; FUNCTION
-;;; 
+;;; Make a rhythm object.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A duration either as a numeric representation of a rhythm (subdivision of
+;;; a whole note; 1 = whole note, 2 = half note, 4 = quarter, 8 = eighth etc),
+;;; an alphabetic shorthand for a duration (ie, 's, 'e, 'q etc.), or duration
+;;; in seconds.  
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :is-rest to denote whether the given duration is a rest
+;;; or not. T = rest. Default = NIL
+;;; - keyword argument :is-tied-to to denote whether the given duration is tied
+;;; later to the next duration in a given rthm-seq-bar/rthm-seq object. T =
+;;; tied. Default = NIL.
+;;; - keyword argument :duration indicates whether the duration given has been
+;;; given as a duration in seconds, not a known rhythm like 'e or 8. T
+;;; indicates that the given duration is a duration in seconds. Default = NIL.
+;;; - keyword argument :tempo indicates the tempo for the given rhythm. This
+;;; is not related to any tempi applied, rather one that is reflected in the
+;;; duration-in-tempo slot of event.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rhythm object.
 ;;; 
 ;;; EXAMPLE
 #|
+(make-rhythm 16)
+
+=>
+RHYTHM: value: 16.0, duration: 0.25, rq: 1/4, is-rest: NIL, score-rthm: 16.0, 
+        undotted-value: 16, num-flags: 2, num-dots: 0, is-tied-to: NIL, 
+        is-tied-from: NIL, compound-duration: 0.25, is-grace-note: NIL, 
+        needs-new-note: T, beam: NIL, bracket: NIL, rqq-note: NIL, 
+        rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 16, 
+        tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: 16, tag: NIL, 
+data: 16
+
+(make-rhythm 16 :is-rest t :is-tied-to t)
+
+=> 
+RHYTHM: value: 16.0, duration: 0.25, rq: 1/4, is-rest: T, score-rthm: 16.0, 
+        undotted-value: 16, num-flags: 2, num-dots: 0, is-tied-to: T, 
+        is-tied-from: NIL, compound-duration: 0.25, is-grace-note: NIL, 
+        needs-new-note: NIL, beam: NIL, bracket: NIL, rqq-note: NIL, 
+        rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 16, 
+        tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: 16, tag: NIL, 
+data: 16
+
+(make-rhythm .23 :duration t)
+
+=> 
+RHYTHM: value: 17.391304, duration: 0.23, rq: 23/100, is-rest: NIL, score-rthm: NIL, 
+        undotted-value: -1.0, num-flags: 0, num-dots: 0, is-tied-to: NIL, 
+        is-tied-from: NIL, compound-duration: 0.23, is-grace-note: NIL, 
+        needs-new-note: T, beam: NIL, bracket: NIL, rqq-note: NIL, 
+        rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: -1, 
+        tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: NIL
 
 |#
 ;;; SYNOPSIS

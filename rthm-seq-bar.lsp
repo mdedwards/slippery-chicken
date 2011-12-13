@@ -2085,25 +2085,28 @@ data: E
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Return the time-sig object for this bar.
-
 ;;; ****m* rthm-seq-bar/get-time-sig
 ;;; FUNCTION
-;;; get-time-sig:
-;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; Return the time-sig object for the given rthm-seq-bar object.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq-bar object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A time-sig object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
+  (get-time-sig rsb))
+
+=> 
+TIME-SIG: num: 2, denom: 4, duration: 2.0, compound: NIL, midi-clocks: 24, 
+          num-beats: 2 
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "0204", tag: NIL, 
+data: (2 4)
 
     |#
 ;;; SYNOPSIS

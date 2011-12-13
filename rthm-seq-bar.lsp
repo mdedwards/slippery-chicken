@@ -2119,22 +2119,20 @@ data: (2 4)
 
 ;;; ****m* rthm-seq-bar/get-time-sig-as-list
 ;;; FUNCTION
-;;; get-time-sig-as-list:
-;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; Get the time signature for a given rthm-seq-bar object in list form.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq-bar object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
+  (get-time-sig-as-list rsb))
 
+=> (2 4)
     |#
 ;;; SYNOPSIS
 (defmethod get-time-sig-as-list ((rsb rthm-seq-bar))
@@ -2145,22 +2143,28 @@ data: (2 4)
 
 ;;; ****m* rthm-seq-bar/time-sig-equal
 ;;; FUNCTION
-;;; time-sig-equal:
-;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; Check to see if two given rthm-seq-bar objects have the same time signature.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - Two rthm-seq-bar objects.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; T if the given rthm-seq-bar objects have the same time signature.
+;;; NIL if the given rthm-seq-bar objects have different times signatures.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((rsb1 (make-rthm-seq-bar '((2 4) q e s s)))
+      (rsb2 (make-rthm-seq-bar '((2 4) s s e q))))
+  (time-sig-equal rsb1 rsb2))
 
+=> T
+
+(let ((rsb1 (make-rthm-seq-bar '((2 4) q e s s)))
+      (rsb2 (make-rthm-seq-bar '((3 4) q+e e s s s s))))
+  (time-sig-equal rsb1 rsb2))
+
+=> NIL
     |#
 ;;; SYNOPSIS
 (defmethod time-sig-equal ((rsb1 rthm-seq-bar) (rsb2 rthm-seq-bar))
@@ -2764,11 +2768,6 @@ data: (2 4)
 
 ;;; ****m* rthm-seq-bar/transpose
 ;;; FUNCTION
-;;; transpose:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 

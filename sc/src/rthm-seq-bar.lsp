@@ -532,6 +532,7 @@ data: NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rthm-seq-bar/force-rest-bar
+;;; 12.12.11 SAR: Added ROBODoc info
 ;;; FUNCTION
 ;;; Force all rhythms of a rthm-seq-bar object to be replaced by rest.
 ;;; 
@@ -1250,6 +1251,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rthm-seq-bar/get-nth-non-rest-rhythm
+;;; 12.12.11 SAR: Added ROBODoc info
 ;;; FUNCTION
 ;;; Get the rhythm object of the first non-rest rhythm object stored in
 ;;; the given rthm-seq-bar. 
@@ -2086,6 +2088,7 @@ data: E
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rthm-seq-bar/get-time-sig
+;;; 13.12.11 SAR: Added ROBODoc info
 ;;; FUNCTION
 ;;; Return the time-sig object for the given rthm-seq-bar object.
 ;;; 
@@ -2118,6 +2121,7 @@ data: (2 4)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rthm-seq-bar/get-time-sig-as-list
+;;; 13.12.11 SAR: added robodoc info
 ;;; FUNCTION
 ;;; Get the time signature for a given rthm-seq-bar object in list form.
 ;;; 
@@ -2142,6 +2146,7 @@ data: (2 4)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rthm-seq-bar/time-sig-equal
+;;; 13.12.11 SAR: Added robodoc info
 ;;; FUNCTION
 ;;; Check to see if two given rthm-seq-bar objects have the same time signature.
 ;;; 
@@ -2890,11 +2895,6 @@ data: (2 4)
 
 ;;; ****m* rthm-seq-bar/respell-bar
 ;;; FUNCTION
-;;; respell-bar:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -3001,11 +3001,6 @@ data: (2 4)
 
 ;;; ****m* rthm-seq-bar/enharmonic
 ;;; FUNCTION
-;;; enharmonic:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -3085,11 +3080,6 @@ data: (2 4)
 ;;; returns a list of new rthm-seq-bars if successful or nil if not.
 ;;; ****m* rthm-seq-bar/split
 ;;; FUNCTION
-;;; split:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -3156,11 +3146,6 @@ data: (2 4)
 ;;; 20.7.11 (Pula)
 ;;; ****m* rthm-seq-bar/set-written
 ;;; FUNCTION
-;;; set-written:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -3182,11 +3167,6 @@ data: (2 4)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* rthm-seq-bar/delete-written
 ;;; FUNCTION
-;;; delete-written:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -3225,14 +3205,8 @@ data: (2 4)
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* rthm-seq-bar/set-midi-channel
 ;;; FUNCTION
-;;; set-midi-channel:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -3256,11 +3230,6 @@ data: (2 4)
 ;;; 22.9.11 
 ;;; ****m* rthm-seq-bar/reset-8va
 ;;; FUNCTION
-;;; reset-8va:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -3283,11 +3252,6 @@ data: (2 4)
 ;;; 23.9.11 
 ;;; ****m* rthm-seq-bar/set-8va
 ;;; FUNCTION
-;;; set-8va:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -3387,24 +3351,48 @@ data: (2 4)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****f* rthm-seq-bar/make-rest-bar
+;;; 13.12.11 SAR: Added ROBODoc info
 ;;; FUNCTION
-;;; make-rest-bar:
-;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; Make a rthm-seq-bar object that consists of a bar of rest.
 ;;; 
 ;;; ARGUMENTS  
-;;; 
+;;; - The time signature of the rthm-seq-bar object to be made, as a quoted
+;;; list.
+;;; - T or NIL instruction on whether to print the time signature in score
+;;; output. 
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - show-rest
+;;; - missing-duration
+;;; - player-section-ref
+;;; - nth-seq
+;;; - nth-bar
 ;;; 
 ;;; RETURN VALUE    
-;;; 
+;;; A rthm-seq-bar object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((rsb-rb (make-rest-bar '(2 4) nil t)))
+  (format t "~%time-sig: ~a~%is-rest-bar: ~a~%write-time-sig: ~a~%show-rest: ~a~%"
+	  (data (get-time-sig rsb-rb))
+	  (is-rest-bar rsb-rb)
+	  (write-time-sig rsb-rb)
+	  (show-rest rsb-rb))
+  (print-simple rsb-rb)
+  rsb-rb)
 
-  |#
+=>
+RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: T, bar-num: -1, 
+[...]
+
+time-sig: (2 4)
+is-rest-bar: T
+write-time-sig: NIL
+show-rest: T
+(2 4): rest 2,
+
+ |#
 ;;; SYNOPSIS
 (defun make-rest-bar (time-sig write-time-sig &optional 
                                               (show-rest t)

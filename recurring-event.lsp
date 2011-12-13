@@ -197,10 +197,10 @@
 ;;; lookup into return-data.  If no return-data, then the element itself will
 ;;; be returned.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the recurring-event object
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; Data from the return-data slot (or the return-data-cycle element) when
 ;;; we're on a boundary, otherwise nil 
 ;;;
@@ -246,10 +246,10 @@
 ;;; Call this repeatedly in a loop to find out whether we're on a period
 ;;; boundary (t) or not (nil).  Object keeps track of its own internal state.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the recurring-event object
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; t or nil
 ;;; 
 ;;; SYNOPSIS

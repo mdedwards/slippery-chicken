@@ -315,11 +315,11 @@
 ;;; write a midi file with each chord in the palette played at 1 second
 ;;; intervals. 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the set-palette
 ;;; - the path for the midi file
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; always t
 ;;; 
 ;;; SYNOPSIS
@@ -355,11 +355,11 @@
 ;;; force-micro-tone:
 ;;; change the micro-tone slot of all pitches in all the sets to <value>.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - a set-palette 
 ;;; - t or nil
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; always t
 ;;; 
 ;;; SYNOPSIS
@@ -393,7 +393,7 @@
 ;;; make-set-palette:
 ;;; create a set-palette object.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the id
 ;;; - the data
 ;;; - recurse-simple-data: whether to interpret two-element data lists as
@@ -401,7 +401,7 @@
 ;;; - warn-note-found: whether to print warnings when data is not found with
 ;;;   subsequent calls to get-data.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; a set-palette
 ;;; 
 ;;; EXAMPLE
@@ -537,10 +537,10 @@
 ;;; set-palette-p:
 ;;; test whether an object is a set-palette
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; a lisp object
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; t or nil
 ;;; SYNOPSIS
 (defun set-palette-p (thing)
@@ -558,7 +558,7 @@
 ;;; Create a set-palette containing sub palettes based on ring modulation
 ;;; routines applied to the given notes.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - a list of notes, each of which we'll make a sub-set-palette from using
 ;;;   set-palette-from-ring-mod 
 ;;; - the id for the top-level set-palette; ids of sub-set-palettes are the
@@ -570,7 +570,8 @@
 ;;;    suitable bass notes for the generated sets.
 ;;; - (key :do-bass) whether to add notes created by the ring-mod-bass function
 ;;; 
-;;; RETURN VALUE: the recursive set-palette
+;;; RETURN VALUE  
+;;; - the recursive set-palette
 ;;; EXAMPLE
 ;;;       (recursive-set-palette-from-ring-mod '(a4 cs5 g5 b5) 
 ;;;       'altogether '(5 6 7 9)))

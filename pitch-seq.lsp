@@ -178,7 +178,7 @@
 ;;; an instrument over the duration of the whole piece.  They always refer to
 ;;; sounding pitches.  
 ;;;
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - pitch-seq object
 ;;; - instrument object 
 ;;; - set object
@@ -188,7 +188,7 @@
 ;;; - the sequence number (for diagnostics)
 ;;; - the last note of the previous sequence, as a pitch object
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; a list of pitch objects
 (defmethod get-notes ((ps pitch-seq) instrument set hint-pitch limit-high
                       limit-low seq-num last-note-previous-seq)

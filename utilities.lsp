@@ -206,12 +206,12 @@
 ;;; find out whether the members of the list given as the second argument are
 ;;; all present in the list that forms the first argument.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS     
 ;;; - the list we need to find members of the second argument in
 ;;; - the list whose members we need to find in the first list
 ;;; - (optional) the test 
 ;;;
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; t or nil
 ;;; 
 ;;; EXAMPLE

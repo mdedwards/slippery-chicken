@@ -1150,7 +1150,7 @@
 ;;; make-event: create an event object for holding rhythm, pitch, and timing
 ;;; data. 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - a pitch or chord: this can be one of those objects (will be added to the
 ;;;   pitch-or-chord slot without cloning), or a pitch symbol or list of pitch
 ;;;   symbols (for a chord)
@@ -1174,7 +1174,7 @@
 ;;; - (key: microtones-midi-channel default nil): if the event is microtonal,
 ;;;   the midi-channel the microtonal notes will be played on.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; an event object
 ;;; 
 ;;; EXAMPLE
@@ -1348,7 +1348,7 @@
 ;;; at the beginning.  NB If the first event doesn't start at 0, its start time
 ;;; will be conserved.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - flat list of events
 ;;; - the event in the list to start at, either a time in seconds or a position
 ;;;   for nth
@@ -1356,7 +1356,7 @@
 ;;;   as an index; if t, it's a time in seconds that we skip along to in the
 ;;;   events list.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; flat list of wrapped and time-adjusted events
 ;;; 
 ;;; DATE: 12.8.2010

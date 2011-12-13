@@ -187,10 +187,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -215,7 +215,7 @@
 ;;; do-lookup: Generate the l-seq from the rules and use it to do the
 ;;; Fibonacci-based transitioning lookup of values in the sequences.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the l-for-lookup instance
 ;;; - the initial seed (int, symbol etc. i.e. whatever matches a given rule)
 ;;; - how many items to generate (integer)
@@ -223,7 +223,7 @@
 ;;;   (will use the instances scaler slot if nil).  NB The instance's offset
 ;;;   slot is used to add to numerical values before returning.
 ;;; 
-;;; RETURN VALUE: 3 values:
+;;; RETURN VALUE  3 values:
 ;;; - the list returned by the lookup procedure
 ;;; - the distribution of the various
 ;;; - the l-sequence
@@ -305,10 +305,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -375,13 +375,13 @@
 ;;; in order for this to work.  Seen very loosely, it works a bit like a
 ;;; first-order markov chain but without the randomness.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the l-for-lookup instance
 ;;; - the starting value used for lookup
 ;;; - how many results to generate
 ;;; - (optional) whether to reset the circular lists before proceeding
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; a list of results of user-defined length
 ;;; 
 ;;; EXAMPLE
@@ -431,12 +431,12 @@
 ;;; makes for evenly distributed results which are different for each seed.
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the l-for-lookup instance
 ;;; - the start seed to get the process running i.e. one of the rule keys
 ;;; - how many elements to generate
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; The l-sequence as a list.
 ;;; 
 ;;; EXAMPLE
@@ -522,10 +522,10 @@
 ;;;
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -578,10 +578,10 @@
 ;;; less than <max-sum>.  Returns the fibonacci number < max-sum as a second
 ;;; value.  
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; the maximum number the fibonacci numbers should sum to
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; the list of fibonacci numbers and the next in the series.
 ;;; 
 ;;; EXAMPLE
@@ -628,10 +628,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -660,13 +660,13 @@
 ;;; this does the same but continues to increase item2 until it completely
 ;;; dominates. 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - number of items you want returned in your list
 ;;; - (optional) item 1 (i.e. what we start with); can be any Lisp type,
 ;;;   including lists.  
 ;;; - (optional) item 2 (i.e. what we end with); can also be any Lisp type.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; a list of the transition
 ;;; 
 ;;; EXAMPLE
@@ -788,11 +788,11 @@
 ;;; 
 ;;; DATE 18.2.10
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - how many items you want to generate (integer)
 ;;; - how many states (levels) you want to transition through (integer) or if
 ;;;   you give a list, the items in the list will be used to transition.
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; a list of transitions of length <total-items>
 ;;; 
 ;;; EXAMPLE
@@ -865,11 +865,11 @@
 ;;; count-elements: count the number of times each element in the list comes
 ;;; forth.  Modified 15.8.10 to show items in pairs.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; a (generally flat) list of numbers or symbols (or anything that eql can
 ;;; match on: member's default test).
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; a sorted list of two-element lists: the argument list element and the
 ;;; number of times it occurs.
 ;;; 

@@ -448,7 +448,7 @@
 ;;; NB This method is not generally called by the user (though it can be of
 ;;; course), rather it's called by the init function.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the rthm-chain object
 ;;; - (key :rests default: t) whether to generate the rests
 ;;; - (key :stick default: t)  whether to generate the sticking points
@@ -471,7 +471,7 @@
 ;;; - (key :wrap default nil): when we create the 1-beat rythms' and slow
 ;;;    rhythms' order, we can choose to start at any point in the list
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; the number of rthm-seqs we've generated
 ;;; 
 ;;; SYNOPSIS
@@ -788,7 +788,7 @@
 ;;; which they occurred.  When creating the extra voice then, we actually start
 ;;; ahead of the main voice, by choosing <offset> similar rthm-seqs in advance
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the rthm-chain instance
 ;;; - the parent voice i.e. a reference into the create rthm-seq-map (e.g. '(1
 ;;; perc1) 
@@ -796,7 +796,7 @@
 ;;; - (optional: offset default 1): which similar rthm-seq to start at (so
 ;;; generated voice will be ahead of main voice)
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; t
 ;;; 
 ;;; EXAMPLE

@@ -102,7 +102,7 @@
 ;;;
 ;;; DATE 30/3/06
 ;;;
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the rth-seq-palette object
 ;;; - (key :selection-fun default #'create-psps-default) the selection function
 ;;;   object that will return the pitch-seq numbers. Takes two arguments only:
@@ -138,7 +138,7 @@
 ;;;               (15 ((1 2 5 5 5 5 5 5 5 5 4 5 2 1 2) 
 ;;;                    (2 1 5 1 5 1 6 5 1 5 2 5 1 2 6))))))
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; always t
 ;;; 
 ;;; SYNOPSIS
@@ -183,10 +183,10 @@
 ;;; palette.  This ensures that each rthm-seq starts over again at the first
 ;;; given pitch-seq.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the rthm-seq-palette object
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; always t
 ;;; 
 ;;; SYNOPSIS
@@ -382,12 +382,12 @@
   ;; certain length, a (recursive!) attempt will be made to make one up from
   ;; two sequences of lesser length.
   ;; 
-  ;; ARGUMENTS:
+  ;; ARGUMENTS 
   ;; - number of notes we need a psp for
   ;; - the pitch-seq data (see documentation for create psps method).  Ideally
   ;; this would only be passed the first time the function is called.
   ;; 
-  ;; RETURN VALUE: 
+  ;; RETURN VALUE  
   ;; a list of numbers suitable for use in creating a pitch-seq
   ;; 
   ;; SYNOPSIS

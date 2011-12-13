@@ -79,7 +79,7 @@
    ;; Class slot to store the start-time of the bar-holder as measured in the
    ;; number of quarter-notes. Useful for MIDI timing.
    ;;
-   ;; ARGUMENTS:
+   ;; ARGUMENTS 
    ;; Accessor is start-time-qtrs. Initialized by keyword argument
    ;; :start-time-qtrs. This argument defaults to 0.  
    ;; 
@@ -98,7 +98,7 @@
    ;; Class slot to store the end-time of the bar-holder as measured in the
    ;; number of quarter-notes. Useful for MIDI timing.
    ;; 
-   ;; ARGUMENTS:
+   ;; ARGUMENTS 
    ;; Accessor is end-time-qtrs. Initialized by keyword argument
    ;; :end-time-qtrs. This argument defaults to 0. 
    ;; 
@@ -118,7 +118,7 @@
    ;; Class slot to store the duration of the bar-holder as measured in the
    ;; number of quarter-notes. Useful for MIDI timing.
    ;; 
-   ;; ARGUMENTS:
+   ;; ARGUMENTS 
    ;; Accessor is duration-qtrs. This slot has no initialization argument. It
    ;; defaults to 0.  
    ;;
@@ -303,10 +303,10 @@
 ;;; FUNCTION
 ;;;
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -373,13 +373,13 @@
 ;;; from the bottom.  NB note-num counts tied notes i.e. it's not the attack
 ;;; number 
 ;;;
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the bar-holder object (e.g. piece)
 ;;; - the bar number (starting from 1) 
 ;;; - the note number (starting from 1) 
 ;;; - the player (symbol)
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; An event object, or pitch if accessing a chord.
 ;;; 
 ;;; SYNOPSIS
@@ -487,7 +487,7 @@
 ;;; If use-last octave, then notes can be given like '((a3 b g cs4))
 ;;; i.e. you only give the octave if it changes. 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the bar-holder object (e.g. piece)
 ;;; - the sc player (symbol)
 ;;; - which bar to start at (integer)
@@ -496,7 +496,7 @@
 ;;;    be used if any notes are specificed without an octave (doesn't work with
 ;;;    chords).  
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; always t
 ;;;
 ;;; EXAMPLE
@@ -552,10 +552,10 @@
 ;;;
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE

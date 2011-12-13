@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 00:09:38 Tue Dec 13 2011 ICT
+;;; $$ Last modified: 11:23:38 Tue Dec 13 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -922,20 +922,22 @@
      do
      (loop 
         for bar in new-bars 
-        for pse = (parent-start-end bar)
+        for pse = (print (parent-start-end bar))
         with rs 
         do
         (setf rs (make-rthm-seq (list count (list (list bar))))
               (tag rs) (id bar))
         (unless (is-rest-bar bar)
-          (let ((start (+ attacks (first pse)))
-                (end (+ attacks (second pse))))
+          (let* ((start (+ attacks (first pse)))
+                 (end (+ attacks (second pse)))
+                 (psp-new (psp-subseq psp start end)))
+            (setf (pitch-seq-palette rs) psp-new)
             ;; MDE Tue Dec 13 00:04:12 2011 -- check!
-            (unless (= (- end start) (num-notes rs))
-              (error "rthm-seq::chop: new rthm-seq has ~a notes, but ~
-                      parent-start-end = ~a" (num-notes rs) pse))
-            (setf (pitch-seq-palette rs) 
-                  (psp-subseq psp start end))))
+            (unless (= (num-notes psp-new) (num-notes rs))
+              (error "~a~%~%~a~%rthm-seq::chop: new rthm-seq has ~a notes, but ~
+                      psp has ~a"
+                     rs (pitch-seq-palette rs) (num-notes rs)
+                     (num-notes psp-new)))))
         (push rs result)
         (incf count))
      (incf attacks (notes-needed bar))

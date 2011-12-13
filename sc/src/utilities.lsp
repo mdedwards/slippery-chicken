@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 00:45:18 Sun Dec 11 2011 ICT
+;;; $$ Last modified: 11:57:44 Tue Dec 13 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1287,14 +1287,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun factor (num fac)
+  (when (zerop fac)
+    (error "utilities::factor: 2nd argument cannot be 0: (factor ~a ~a)"
+           num fac))
   (zerop (mod num fac)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun octave-freqs (freq1 freq2 &optional (unison-also t))
   (or (and unison-also (= freq1 freq2))
-      (factor (/ freq1 freq2) 2)
-      (factor (/ freq2 freq1) 2)))
+      (power-of-2 (/ freq1 freq2))
+      (power-of-2 (/ freq2 freq1))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

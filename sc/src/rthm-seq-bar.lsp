@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 23:52:36 Mon Dec 12 2011 ICT
+;;; $$ Last modified: 11:49:05 Tue Dec 13 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1859,18 +1859,18 @@ data: E
                                     ;; start-time and end-time range between 0
                                     ;; and the full duration of the bar.
                                     &key (time-relative-to-bar-start t)
-                                         (rthm-seq-id "")
-                                         (tempo 60.0)
-                                         (midi-channel 0)
-                                         (microtones-midi-channel 0))
+                                    (rthm-seq-id "")
+                                    (tempo 60.0)
+                                    (midi-channel 0)
+                                    (microtones-midi-channel 0))
   (let* ((bar-start (start-time rsb))
          (new-dur (- end-time start-time))
          (start (if time-relative-to-bar-start
                     start-time
-                  (- start-time bar-start)))
+                    (- start-time bar-start)))
          (end (if time-relative-to-bar-start
                   end-time
-                (- end-time bar-start)))
+                  (- end-time bar-start)))
          ;; clone the bar and update its time starting from 0 to make sure we
          ;; have the right data
          (rsb-clone (clone rsb))
@@ -1882,12 +1882,12 @@ data: E
     (rhythms-to-events rsb-clone)
     (update-time rsb-clone 0 0 tempo)
     (multiple-value-bind
-        (start-attack end-attack events)
+          (start-attack end-attack events)
         (get-events rsb-clone start end)
       (setf missing-start (if events
                               (- (start-time (first events))
                                  start)
-                            new-dur)
+                              new-dur)
             missing-end (when events
                           (- end-time (start-time (first (last events))))))
       (unless (almost-zero missing-start)
@@ -1917,13 +1917,15 @@ data: E
       (update-time result 0 0 tempo)
       (if (all-rests? result)
           (force-rest-bar result)
-        (setf (parent-start-end result) (list start-attack end-attack)))
+          (setf (parent-start-end result) (list start-attack end-attack)))
       ;; use the beat of the parent rsb to set the beams for this extract.
       (auto-beam result beat)
       (setf (time-sig-given result) t)
-      ;; (format t "~%get-events: ~a->~a: num-notes: ~a, ~a"
-      ;; start-time end-time (notes-needed result)
-      ;; (parent-start-end result))
+      #|
+      (format t "~%get-events: ~a->~a: num-notes: ~a, ~a"
+      start-time end-time (notes-needed result)
+      (parent-start-end result))
+      |#
       (loop for r in (rhythms result) do
             (when (and (is-rest r)
                        (marks r))
@@ -2033,10 +2035,10 @@ data: E
                 (end-time event) (+ (start-time event) 
                                     (compound-duration-in-tempo event)))
           #|
-          (when (midi-program-changes event)
-            (format t "~&rsb::update-time: ~&~a ~a" 
-            time (midi-program-changes event)))
-            |#
+      (when (midi-program-changes event)
+         (format t "~&rsb::update-time: ~&~a ~a" 
+       time (midi-program-changes event)))
+      |#
           (incf time-qtrs (duration event))
           (incf time (duration-in-tempo event)))
     (unless (is-rest-bar rsb)
@@ -2059,10 +2061,10 @@ data: E
   (unless (time-sig-p value)
     (setf value (make-time-sig value)))
   #|
-    (error "rthm-seq-bar::time-sig: Only time-sig objects may be setf'd ~
+      (error "rthm-seq-bar::time-sig: Only time-sig objects may be setf'd ~
             here: ~a"
-            value))
-            |#
+  value))
+    |#
   (let ((current (store-time-sig rsb value)))
     (setf (slot-value rsb 'time-sig) current
           (time-sig-given rsb) t
@@ -2103,7 +2105,7 @@ data: E
 ;;; EXAMPLE
 #|
 
-|#
+    |#
 ;;; SYNOPSIS
 (defmethod get-time-sig ((rsb rthm-seq-bar) &optional ignore)
 ;;; ****
@@ -2130,7 +2132,7 @@ data: E
 ;;; EXAMPLE
 #|
 
-|#
+    |#
 ;;; SYNOPSIS
 (defmethod get-time-sig-as-list ((rsb rthm-seq-bar))
 ;;; ****
@@ -2156,7 +2158,7 @@ data: E
 ;;; EXAMPLE
 #|
 
-|#
+    |#
 ;;; SYNOPSIS
 (defmethod time-sig-equal ((rsb1 rthm-seq-bar) (rsb2 rthm-seq-bar))
 ;;; ****
@@ -2166,23 +2168,23 @@ data: E
 
 #| 17/7/05: obsolete code as ties are handled now at the piece level
 
-;;; Usually only struck (non-tied and non-rest) notes will have their
-;;; compound-duration set to include any following tied notes, but when the
-;;; first note of the bar is tied, this has to be the one to get the updated
-;;; compound duration.  Tied first notes of the bar are handled separately with
-;;; handle-first-note-ties in the rthm-seq class
+;;; Usually only struck (non-tied and non-rest) notes will have their ;
+;;; compound-duration set to include any following tied notes, but when the ;
+;;; first note of the bar is tied, this has to be the one to get the updated ;
+;;; compound duration.  Tied first notes of the bar are handled separately with ;
+;;; handle-first-note-ties in the rthm-seq class ;
 
-(defmethod update-compound-durations ((rsb rthm-seq-bar))
-  ;; (print 'update-compound-durations)
-  ;; 0 will ensure that if the first note is a tie, this will nevertheless be
-  ;; updated
-  (let ((last-struck 0))
-    (loop for r in (rest (rhythms rsb)) and i from 1 do
-          (when (needs-new-note r)
-            (setq last-struck i))
-          (when (is-tied-to r)
-            (inc-nth-rthm rsb last-struck (compound-duration r))))))
-|#
+    (defmethod update-compound-durations ((rsb rthm-seq-bar))
+  ;; (print 'update-compound-durations) ;
+  ;; 0 will ensure that if the first note is a tie, this will nevertheless be ;
+  ;; updated                            ;
+(let ((last-struck 0))
+(loop for r in (rest (rhythms rsb)) and i from 1 do
+(when (needs-new-note r)
+(setq last-struck i))
+(when (is-tied-to r)
+(inc-nth-rthm rsb last-struck (compound-duration r))))))
+    |#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; NB Only increments the COMPOUND-DURATION slot, nothing else!!!
@@ -2775,7 +2777,7 @@ data: E
 ;;; EXAMPLE
 #|
 
-|#
+    |#
 ;;; SYNOPSIS
 (defmethod transpose ((rsb rthm-seq-bar) semitones
                       &key
@@ -2902,7 +2904,7 @@ data: E
 ;;; EXAMPLE
 #|
 
-|#
+    |#
 ;;; SYNOPSIS
 (defmethod respell-bar ((rsb rthm-seq-bar) sc player 
                         &optional written last-attack-previous-bar)
@@ -2938,22 +2940,22 @@ data: E
                   ;; p-enh (enharmonic p nil)
                   next-attack (get-nth-attack (1+ attack-num) rsb nil)
                   #|
-                  next-attack-p (when next-attack
-                                  (if written
-                                      (written-pitch-or-chord next-attack)
-                                      (pitch-or-chord next-attack)))
-                                      |#
+    next-attack-p (when next-attack
+                  (if written
+                  (written-pitch-or-chord next-attack)
+                  (pitch-or-chord next-attack)))
+    |#
                   )
             ;; 9.2.11
             (unless p
               (error "rthm-seq-bar::respell-bar: p is nil in: ~%~a!" rsb))
             (when (enharmonics-exist rsb p t written)
               #|
-              (or (or (chord-p last-attack-p)
+    (or (or (chord-p last-attack-p)
               (not (bad-interval p-enh last-attack-p)))
               (or (chord-p next-attack-p)
               (not (bad-interval p-enh next-attack-p)))))
-              |#
+  |#
               (enharmonic e :written written)
               ;; don't need p as it was anymore so get the (enharmonic) pitch
               (setf p (if written
@@ -3013,7 +3015,7 @@ data: E
 ;;; EXAMPLE
 #|
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod enharmonic ((rsb rthm-seq-bar) &key written force-naturals)
 ;;; ****
@@ -3097,7 +3099,7 @@ data: E
 ;;; EXAMPLE
 #|
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod split ((rsb rthm-seq-bar) &key
                   (min-beats 2) (max-beats 5) warn ignore)
@@ -3168,7 +3170,7 @@ data: E
 ;;; EXAMPLE
 #|
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod set-written ((rsb rthm-seq-bar) transposition)
 ;;; ****
@@ -3194,7 +3196,7 @@ data: E
 ;;; EXAMPLE
 #|
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod delete-written ((rsb rthm-seq-bar))
 ;;; ****
@@ -3240,7 +3242,7 @@ data: E
 ;;; EXAMPLE
 #|
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod set-midi-channel ((rsb rthm-seq-bar) midi-channel
                              microtonal-midi-channel)
@@ -3268,7 +3270,7 @@ data: E
 ;;; EXAMPLE
 #|
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod reset-8va ((rsb rthm-seq-bar))
 ;;; ****
@@ -3295,7 +3297,7 @@ data: E
 ;;; EXAMPLE
 #|
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod set-8va ((rsb rthm-seq-bar) 8va)
 ;;; ****
@@ -3339,35 +3341,35 @@ data: E
 ;;; 
 ;;; EXAMPLE
 #|
-(make-rthm-seq-bar '((2 4) q e s s))
+  (make-rthm-seq-bar '((2 4) q e s s))
 
-=> 
-RTHM-SEQ-BAR:
-[...]
-NAMED-OBJECT: id: NIL, tag: NIL, 
-data: ((2 4) Q E S S)
+  => 
+  RTHM-SEQ-BAR:
+  [...]
+  NAMED-OBJECT: id: NIL, tag: NIL, 
+  data: ((2 4) Q E S S)
 
-(make-rthm-seq-bar '((2 4) q e s s) 'test)
-=> 
-RTHM-SEQ-BAR:
-[...]
-NAMED-OBJECT: id: TEST, tag: NIL, 
-data: ((2 4) Q E S S)
+  (make-rthm-seq-bar '((2 4) q e s s) 'test)
+  => 
+  RTHM-SEQ-BAR:
+  [...]
+  NAMED-OBJECT: id: TEST, tag: NIL, 
+  data: ((2 4) Q E S S)
 
-(make-rthm-seq-bar '((2 4) q \+16\.+32 e))
-=> 
-RTHM-SEQ-BAR:
-[...]
-NAMED-OBJECT: id: NIL, tag: NIL, 
-data: ((2 4) Q +16.+32 E)
+  (make-rthm-seq-bar '((2 4) q \+16\.+32 e))
+  => 
+  RTHM-SEQ-BAR:
+  [...]
+  NAMED-OBJECT: id: NIL, tag: NIL, 
+  data: ((2 4) Q +16.+32 E)
 
-(make-rthm-seq-bar '((2 4) { 3 te te te } q)) 
-=> 
-RTHM-SEQ-BAR:
-[...]
-NAMED-OBJECT: id: NIL, tag: NIL, 
-data: ((2 4) { 3 TE TE TE } Q)
-|#
+  (make-rthm-seq-bar '((2 4) { 3 te te te } q)) 
+  => 
+  RTHM-SEQ-BAR:
+  [...]
+  NAMED-OBJECT: id: NIL, tag: NIL, 
+  data: ((2 4) { 3 TE TE TE } Q)
+  |#
 ;;; SYNOPSIS
 (defun make-rthm-seq-bar (rhythms &optional name)
 ;;; ****
@@ -3400,7 +3402,7 @@ data: ((2 4) { 3 TE TE TE } Q)
 ;;; EXAMPLE
 #|
 
-|#
+  |#
 ;;; SYNOPSIS
 (defun make-rest-bar (time-sig write-time-sig &optional 
                                               (show-rest t)
@@ -3964,44 +3966,44 @@ data: ((2 4) { 3 TE TE TE } Q)
     (flatten (nreverse result))))
   
 #|
-(defun consolidate-notes-aux5 (rthms)
-  (print 'aux5)
-  (print-simple-rthm-list rthms)
-  (let ((ties (get-tied-rthms rthms))
-        (result '()))
-    ;; (print-simple-list (flatten ties))
-    (terpri)
-    (loop for tied in ties 
-       for tied-sum = (when tied (sum-rhythms-duration tied))
-       with now = 0.0
-       do 
-       (when tied
-         ;; (print tied)
-         (push 
-          (if (> (length tied) 1)
-              (let ((rat (make-tied
-                          (rationalize-if-necessary 
-                           tied-sum
-                           :rest nil
-                           :keep-it-simple t
-                           :error-on-fail t))))
-                (if (or (= (length tied) (length rat))
-                        ;; 14.2.11 we don't want tuplets being made into
-                        ;; non-tuplets scanning beats e.g. tq te+tq te
-                        ;; becoming tq q te
-                        (and (not (float-int-p now)) ; are we on a beat?
-                             (/= 1 (print (tuplet-scaler (first result))))
-                             ;; (= 1 (tuplet-scaler (first rat)))))
-                             (>= (- (print (floor (+ now tied-sum)))
-                                    (print (floor now)))
-                                 1)))
-                    tied
-                    rat))
-              (first tied))
-          result)
-         (incf now tied-sum)))
-    (flatten (nreverse result))))
-|#
+  (defun consolidate-notes-aux5 (rthms)
+(print 'aux5)
+(print-simple-rthm-list rthms)
+(let ((ties (get-tied-rthms rthms))
+(result '()))
+;; (print-simple-list (flatten ties))
+(terpri)
+(loop for tied in ties 
+for tied-sum = (when tied (sum-rhythms-duration tied))
+with now = 0.0
+do 
+(when tied
+  ;; (print tied)
+(push 
+(if (> (length tied) 1)
+(let ((rat (make-tied
+(rationalize-if-necessary 
+tied-sum
+:rest nil
+:keep-it-simple t
+:error-on-fail t))))
+(if (or (= (length tied) (length rat))
+        ;; 14.2.11 we don't want tuplets being made into
+        ;; non-tuplets scanning beats e.g. tq te+tq te
+        ;; becoming tq q te
+(and (not (float-int-p now))            ; are we on a beat?
+(/= 1 (print (tuplet-scaler (first result))))
+;; (= 1 (tuplet-scaler (first rat)))))
+(>= (- (print (floor (+ now tied-sum)))
+(print (floor now)))
+1)))
+tied
+rat))
+(first tied))
+result)
+(incf now tied-sum)))
+(flatten (nreverse result))))
+  |#
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 

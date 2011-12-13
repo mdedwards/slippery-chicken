@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 11:57:44 Tue Dec 13 2011 ICT
+;;; $$ Last modified: 12:15:05 Tue Dec 13 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1298,6 +1298,12 @@
   (or (and unison-also (= freq1 freq2))
       (power-of-2 (/ freq1 freq2))
       (power-of-2 (/ freq2 freq1))))
+
+;;; MDE Tue Dec 13 12:08:03 2011 -- whether either freq is a partial of the other
+(defun partial-freqs (freq1 freq2 &optional (unison-also t))
+  (or (and unison-also (= freq1 freq2))
+      (factor freq1 freq2)
+      (factor freq2 freq1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

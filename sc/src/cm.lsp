@@ -551,14 +551,14 @@
 ;;;
 ;;; the MIDI event slots in the file are printed to the Lisp interpreter.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the path to the MIDI file
 ;;; - (optional) if track it's an index to the track list.  NB some
 ;;; CM-generated (i.e slippery-chicken generated too) MIDI files write each
 ;;; channel in a different track so track would seem synonymous with channel
 ;;; here. 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; the number of MIDI events
 ;;; 
 ;;; SYNOPSIS
@@ -578,11 +578,11 @@
 ;;;
 ;;; Print highest and lowest note in a MIDI file
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - path to midi file
 ;;; - (optional) track: if an integer it's an index to the track list
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; highest and lowest note (using values function)
 ;;; 
 ;;; DATE 30.12.10
@@ -624,14 +624,14 @@
 ;; write all midi notes in the file out to a new file using the single note
 ;; <note> and <channel>.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the file path as a string
 ;;; - the note to write (symbol or midi note number)
 ;;; - the new channel to write note to (counting from 1)
 ;;; - (optional) the old channel: if given, only notes on this channel will be
 ;;;    written (counting from 1).
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; the path to the new file
 ;;; 
 ;;; EXAMPLE

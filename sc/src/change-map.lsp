@@ -185,10 +185,10 @@
 ;;;
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -223,10 +223,10 @@
 ;;;
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE

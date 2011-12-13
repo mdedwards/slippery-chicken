@@ -128,12 +128,12 @@
 ;;; octaves if such is the structure of the notes passed at initialisation.
 ;;; This is usually only called automatically at initialisation etc.
 ;;;
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the sc-scale object
 ;;; - the note to begin the scale on (as a symbol e.g. 'c0) and to store
 ;;;   in the tonic slot.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; a list of the pitch objects in the scale; these are also stored in the
 ;;; scale-pitches slot. 
 ;;; 
@@ -162,7 +162,7 @@
 ;;; NB If you pass <tonic> this will change the instance's tonic and
 ;;; re-calculate scale-pitches accordingly before getting the pitch.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the sc-scale object
 ;;; - the degree (1-based) of the scale, counting from the first note of the
 ;;;   scale above or on the C in the given octave.  This can of course be
@@ -173,7 +173,7 @@
 ;;; - (key :nth default nil): return the position of the requested degree in
 ;;;   the whole scale list, instead of the pitch object.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; either the pitch object or its position in the scale list.
 ;;;
 ;;; EXAMPLE
@@ -207,14 +207,14 @@
 ;;; Strictly speaking, we're searching for a particular pitch class e.g. given
 ;;; 'Ds1, find the degree of the first D# in, say, octave 6.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the sc-scale instance
 ;;; - the pitch whose class we're looking for
 ;;; - the octave to search
 ;;; - (optional default nil) whether to return the position in the scale list
 ;;;   instead of the degree (T or NIL) 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; integer: the degree, counting from 1, of the found note.
 ;;; 
 ;;; EXAMPLE
@@ -250,11 +250,11 @@
 ;;; NB The scale will only repeat at octaves if that is the interval structure
 ;;; of <notes>
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the starting note, as a pitch symbol (e.g. 'c0)
 ;;; - a pitch symbol list that provides the interval structure for the scale
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; an sc-scale object
 ;;; 
 ;;; EXAMPLE

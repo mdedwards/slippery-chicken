@@ -306,12 +306,12 @@
 ;;; test whether two pitches are of the same pitch class i.e. both Cs, or F#s,
 ;;; irrespective of octave. 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - pitch 1
 ;;; - pitch 2
 ;;; - whether to treat enharmonics as equivalents e.g. B# and C
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; t or nil
 ;;; 
 ;;; EXAMPLE
@@ -819,7 +819,7 @@
 ;;; remove-octaves: removes octaves from a list of pitches.  The lower notes
 ;;; will remain and octaves of them removed.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - a list of pitches: may be pitch objects or symbols.
 ;;; - (key :as-symbol default nil): return note symbols.
 ;;; - (key :package default slippery-chicken): the lisp package the note symbols
@@ -828,7 +828,7 @@
 ;;; allowed (e.g. double octaves), so this is a single number or list of
 ;;; acceptable octaves e.g. :allow 2 would mean double-octaves are left alone.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; a list of pitch objects (default) or frequencies (default if the first
 ;;; element of the pitch-list is a number i.e. frequency) or note symbols ff
 ;;; :as-symbol is t.

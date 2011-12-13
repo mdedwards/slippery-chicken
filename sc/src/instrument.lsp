@@ -424,13 +424,13 @@
 ;;; FUNCTION
 ;;; Checks whether a pitch is in the range of the instrument or not.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the instrument instance
 ;;; - the pitch (object or symbol)
 ;;; - (optional default nil) whether this is checking the sounding or written
 ;;; range (default i.e. nil is written)
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; t or nil; 0 or 1 as second value depending on whether too high (1) or too
 ;;; low (0)
 ;;; 
@@ -640,7 +640,7 @@
 ;;; index plus that below it, or that above it if no notes are below.  Or just
 ;;; return a single-note chord if neither of those cases are possible.
 ;;;
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; The chord-function defined for an instrument should take six arguments: 
 ;;; - the current number from the pitch curve
 ;;; - the index that this was translated into by the offset and
@@ -653,7 +653,7 @@
 ;;; - the current instrument object
 ;;; - the current set object.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; a chord object
 ;;; 
 ;;; SYNOPSIS

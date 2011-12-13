@@ -139,12 +139,12 @@
 ;;; Return the list of rthm-seq-palette references for the given player and
 ;;; section.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the rthm-seq-map object
 ;;; - the section (list or symbol)
 ;;; - the player (symbol)
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; a list of references, each of which could itself be a list
 ;;; 
 ;;; DATE 29.12.10
@@ -162,13 +162,13 @@
 ;;;
 ;;; Change the rthm-seq references in the rthm-seq-map.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the rthm-seq-map object
 ;;; - the section reference (symbol or list)
 ;;; - the player reference (symbol)
 ;;; - the list of new reference ids
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; - the named object whose id is the player and data is the new list of
 ;;; references. 
 ;;; 
@@ -194,7 +194,7 @@
 ;;; Using recurring-event data, generate repeating sequences at given cycle
 ;;; points.  Modifies num-beats.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the rthm-seq-map instance
 ;;; - the cycle data (i.e. recurring-event class's data slot--see
 ;;;   rthm-chain.lsp)  
@@ -212,7 +212,7 @@
 ;;; - (key :print default nil): print the rthm-seq id and number of times
 ;;; -  repeated 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; the number of bars added
 ;;; 
 ;;; EXAMPLE
@@ -520,7 +520,7 @@
 ;;; Returns the number of notes in the rthm-seq-map for the given player and
 ;;; palette. 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the rthm-seq-map object
 ;;; - the player (symbol)
 ;;; - the palette the references in the map refer to
@@ -528,7 +528,7 @@
 ;;; notes that need new events or the number of notes in the score. NB a chord
 ;;; counts as one note only.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; the number of notes (integer)
 ;;; 
 ;;; EXAMPLE

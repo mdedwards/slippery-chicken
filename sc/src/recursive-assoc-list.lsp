@@ -196,10 +196,10 @@
 ;;; args are only for recursive calls (and almost certainly because I'm too
 ;;; tired right now to figure out how to do the recursion properly :)  
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the recursive-assoc-list object
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; the recursive-assoc-list object
 ;;; 
 ;;; SYNOPSIS
@@ -344,11 +344,11 @@
 ;;; is a means of making a collection of data before perhaps adding more with
 ;;; potentially conflicting ids.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the recursive-assoc-list
 ;;; - the top-level new id for the current data
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; the new recursive-assoc-list
 ;;; 
 ;;; DATE 10.4.10

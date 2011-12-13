@@ -69,11 +69,11 @@
 ;;; write a midi file with each chord in the palette played at 1 second
 ;;; intervals. 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the set-palette
 ;;; - the path for the midi file
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; always t
 ;;; 
 ;;; SYNOPSIS

@@ -349,10 +349,10 @@
 ;;; Copy (clone) the instance and all data associated with the slippery-chicken
 ;;; object.  
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the slippery-chicken object you want to copy/clone
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; a slippery-chicken object
 ;;; 
 ;;; EXAMPLE
@@ -416,11 +416,11 @@
 ;;; change-bar-line-type:
 ;;; change single to double bar lines and vice-versa
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the slippery-chicken object
 ;;; - the bar number at the end of which you want the bar line to change
 ;;; - bar line type: 0 = normal, 1 double bar, 2 final double bar
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; always t 
 ;;; 
 ;;; SYNOPSIS
@@ -440,11 +440,11 @@
 ;;; generated Lilypond files first; if so, regenerated your slippery-chicken
 ;;; and re-call.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the slippery-chicken object
 ;;; - and lots of &key args: see synopsis
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; always t
 ;;; 
 ;;; SYNOPSIS
@@ -648,7 +648,7 @@
 ;;;
 ;;; Add an event object to a bar either at the end of at the given position.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the slippery-chicken object
 ;;; - the new event object
 ;;; - the bar number or reference (of the form '(section sequence bar) where
@@ -657,7 +657,7 @@
 ;;; - (key :position default nil): the position in the bar (0-based) where the
 ;;; event should be spliced; if nil then it's put at the end.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; always t
 ;;; 
 ;;; SYNOPSIS
@@ -677,7 +677,7 @@
 ;;; Replace events already in the parts with new events.  All references are
 ;;; 1-based.  Works for one bar at a time only.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the slippery-chicken object
 ;;; - the player (symbol)
 ;;; - the bar number; can also be a reference like 
@@ -690,7 +690,7 @@
 ;;;   triplet bracket starting at event  0 and ending at event 5 (inclusive and
 ;;;   counting rests). 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; always t (from piece class method)
 ;;; 
 ;;; SYNOPSIS
@@ -719,7 +719,7 @@
 ;;; can't just leave the last bar half-filled expecting the existing events to
 ;;; make up the rest.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the slippery-chicken object
 ;;; - the player (symbol)
 ;;; - the start bar.  This can be an absolute bar number or a list of the form 
@@ -744,7 +744,7 @@
 ;;; - (key :tuplet-bracket default nil): whether to automatically add tuplet
 ;;;   (e.g. triplet) brackets to the new events (integer).
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; The number of new events used to replace the old ones.
 ;;;
 ;;; EXAMPLE
@@ -986,10 +986,10 @@
 ;;;
 ;;; Return the number of bars in the piece.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the slippery-chicken object
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; The number of bars (integer).
 ;;; 
 ;;; SYNOPSIS
@@ -1006,14 +1006,14 @@
 ;;; Return a rthm-seq-bar object from the piece.  Sequenz-num and bar-num are
 ;;; 1-based. 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the slippery-chicken object
 ;;; - the section reference/id (symbol, number, list)
 ;;; - the player (symbol)
 ;;; - the sequence number in the section (integer, counting from 1)
 ;;; - the bar number in the sequence (integer, counting from 1)
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; the rthm-seq-bar object
 ;;; 
 ;;; SYNOPSIS
@@ -1209,7 +1209,7 @@
 ;;;
 ;;; Returns the number of notes between start-bar and end-bar (both inclusive).
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the slippery-chicken object
 ;;; - start-bar (integer)
 ;;; - end-bar (integer)
@@ -1220,7 +1220,7 @@
 ;;; can be a single symbol or a list of players; if nil all players will be
 ;;; counted. 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; the number of notes (integer)
 ;;; 
 ;;; EXAMPLE
@@ -1423,7 +1423,7 @@
   ;; return nil, after which calling without a bar number will return the
   ;; events. 
   ;; 
-  ;; ARGUMENTS:
+  ;; ARGUMENTS 
   ;; - the slippery-chicken object
   ;; - the player (symbol)
   ;; - (optional default nil): whether to return only notes that need attacks or
@@ -1433,7 +1433,7 @@
   ;; actually get events returned.
   ;; - (optional default nil): the end bar (number)
   ;; 
-  ;; RETURN VALUE: 
+  ;; RETURN VALUE  
   ;; 
   ;; 
   ;; EXAMPLE
@@ -1522,10 +1522,10 @@
 ;;;
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1567,7 +1567,7 @@
 ;;; FUNCTION
 ;;; change-notes:
 ;;;
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; same as bar-holder class but with one extra
 ;;; - (optional default nil): a list of marks to be added to the notes: only
 ;;; when using the simple flat list; in this case the notes and marks must be
@@ -1582,7 +1582,7 @@
 ;;; up; in contrast to the bar-holder method, if a flat list is passed then we
 ;;; only give a note for each attack i.e. ties don't count as new notes.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; If a flat note list, the bar at which we stopped, otherwise t.
 ;;; 
 ;;; SYNOPSIS
@@ -2499,10 +2499,10 @@
 ;;; defined e.g. in the set-map.  NB the num-sections slot of slippery-chicken
 ;;; is the number of sections and sub-sections.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the slippery-chicken object
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; the number of sections (integer)
 ;;; 
 ;;; SYNOPSIS
@@ -2636,12 +2636,12 @@
 ;;; Attempt to tame those melodic leaps that are very fast and larger than the
 ;;; limit defined in the instrument class.
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the slippery-chicken object
 ;;; - threshold: the max duration of a fast note, in seconds.
 ;;; - whether to print what we're going (t or nil)
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; always t
 ;;; 
 ;;; SYNOPSIS
@@ -4156,7 +4156,7 @@
 ;;;
 ;;; See documentation in piece class method.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; always t
 ;;; 
 ;;; SYNOPSIS

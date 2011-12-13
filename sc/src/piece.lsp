@@ -775,7 +775,7 @@
 ;;; 
 ;;; DATE 29.1.10
 ;;;
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the piece instance (usually provided by calling from the slippery-chicken
 ;;; class)  
 ;;; - a list of instruments in the piece, ordered in terms of importance
@@ -784,7 +784,7 @@
 ;;; NB the optional arguments are actually required in this class (not in
 ;;; slippery-chicken) but the rebar-fun is not yet used.
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; always t
 ;;; 
 ;;; SYNOPSIS

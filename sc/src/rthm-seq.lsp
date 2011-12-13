@@ -277,10 +277,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -310,10 +310,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -349,10 +349,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -385,10 +385,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -412,10 +412,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -439,10 +439,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -465,10 +465,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -491,10 +491,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -530,10 +530,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -606,10 +606,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -786,10 +786,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -824,10 +824,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -888,10 +888,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -960,10 +960,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1038,10 +1038,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1115,10 +1115,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1225,10 +1225,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1274,10 +1274,10 @@
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1356,10 +1356,10 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1456,10 +1456,10 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1510,10 +1510,10 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
 ;;; DATE:
 ;;; 
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE

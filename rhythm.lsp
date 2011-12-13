@@ -189,17 +189,12 @@
 
 ;;; ****m* rhythm/force-rest
 ;;; FUNCTION
-;;; force-rest:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -282,17 +277,12 @@
 
 ;;; ****m* rhythm/scale
 ;;; FUNCTION
-;;; scale:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -351,17 +341,12 @@
 
 ;;; ****m* rhythm/rhythm-equal
 ;;; FUNCTION
-;;; rhythm-equal:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -377,17 +362,12 @@
 
 ;;; ****m* rhythm/rhythm/
 ;;; FUNCTION
-;;; rhythm/:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -403,17 +383,12 @@
 
 ;;; ****m* rhythm/is-multiple
 ;;; FUNCTION
-;;; is-multiple:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -429,18 +404,16 @@
 
 ;;; ****m* rhythm/add-mark
 ;;; FUNCTION
-;;; add-mark:
-;;;
 ;;; Add an articulation or any other special mark to a rhythm (most useful in
 ;;; the event subclass for changing note heads etc.)
 ;;; 
-;;; ARGUMENTS:
+;;; ARGUMENTS 
 ;;; - the rhythm object
 ;;; - the mark
 ;;; - (optional default nil) whether to issue a warning when trying to add
 ;;; marks to a rest
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; always t
 ;;; 
 ;;; EXAMPLE
@@ -464,17 +437,12 @@
 ;;; 26.7.11 (Pula)
 ;;; ****m* rhythm/add-mark-once
 ;;; FUNCTION
-;;; add-mark-once:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -513,17 +481,12 @@
 
 ;;; ****m* rhythm/rm-marks
 ;;; FUNCTION
-;;; rm-marks:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -550,17 +513,12 @@
 
 ;;; ****m* rhythm/replace-mark
 ;;; FUNCTION
-;;; replace-mark:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -581,17 +539,12 @@
 
 ;;; ****m* rhythm/delete-marks
 ;;; FUNCTION
-;;; delete-marks:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -625,17 +578,12 @@
 
 ;;; ****m* rhythm/has-mark
 ;;; FUNCTION
-;;; has-mark:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -652,17 +600,12 @@
 ;;; 5.4.11
 ;;; ****m* rhythm/accented-p
 ;;; FUNCTION
-;;; accented-p:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -678,17 +621,12 @@
 
 ;;; ****m* rhythm/begin-slur-p
 ;;; FUNCTION
-;;; begin-slur-p:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -704,17 +642,12 @@
 
 ;;; ****m* rhythm/end-slur-p
 ;;; FUNCTION
-;;; end-slur-p:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -737,17 +670,12 @@
 
 ;;; ****m* rhythm/delete-beam
 ;;; FUNCTION
-;;; delete-beam:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -775,17 +703,12 @@
 
 ;;; ****m* rhythm/duration-secs
 ;;; FUNCTION
-;;; duration-secs:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -933,17 +856,12 @@
 
 ;;; ****m* rhythm/add
 ;;; FUNCTION
-;;; add:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -957,17 +875,12 @@
 
 ;;; ****m* rhythm/subtract
 ;;; FUNCTION
-;;; subtract:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -999,17 +912,12 @@
 
 ;;; ****f* rhythm/make-rhythm
 ;;; FUNCTION
-;;; make-rhythm:
-;;;
 ;;; 
 ;;; 
-;;; DATE:
+;;; ARGUMENTS 
 ;;; 
 ;;; 
-;;; ARGUMENTS:
-;;; 
-;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1298,13 +1206,12 @@
 ;;; rhythm-list: Create a list of rhythms from symbols, possibly involving ties
 ;;; and not needing meters etc. (i.e. not as strict as rthm-seq) 
 ;;;
-;;; ARGUMENTS:
+;;; ARGUMENTS  
 ;;; - the list of rhythm symbols
 ;;; - (optional, default nil) whether to create a circular-sclist from the
-;;;   result (if nil a simple list 
-;;; will be returned).
+;;;   result (if nil a simple list will be returned).
 ;;; 
-;;; RETURN VALUE: 
+;;; RETURN VALUE   
 ;;; a list or circular-sclist of the rhythm objects
 ;;; 
 ;;; EXAMPLE

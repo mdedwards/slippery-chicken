@@ -895,10 +895,36 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; - A rthm-seq-bar.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
-;;; 
+;;; NIL
+;;;
 ;;; EXAMPLE
 #|
+(let ((rsb (make-rthm-seq-bar '((2 4) { 3 te te te } q))))
+  (tuplets rsb))
+
+=> ((3 0 2))
+
+(let ((rsb (make-rthm-seq-bar '((2 4) { 3 te te te } q))))
+  (delete-tuplets rsb))
+
+=> NIL
+
+(let ((rsb (make-rthm-seq-bar '((2 4) { 3 te te te } q))))
+  (delete-tuplets rsb)
+  (tuplets rsb))
+
+=> NIL
+
+(let ((rsb (make-rthm-seq-bar '((2 4) { 3 te te te } q))))
+  (loop for r in (rhythms rsb) collect (bracket r)))
+
+=> (((1 3)) (-1) (1) NIL)
+
+(let ((rsb (make-rthm-seq-bar '((2 4) { 3 te te te } q))))
+  (delete-tuplets rsb)
+  (loop for r in (rhythms rsb) collect (bracket r)))
+
+=> (NIL NIL NIL NIL)
 |#
 ;;; SYNOPSIS
 (defmethod delete-tuplets ((rsb rthm-seq-bar))

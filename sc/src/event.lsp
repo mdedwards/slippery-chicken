@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:58:31 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 17:33:24 Wed Dec 14 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1192,6 +1192,10 @@
                    (amplitude 0.7)
                    (tempo 60))
 ;;; **** 
+  ;; MDE Wed Dec 14 17:32:18 2011 
+  (when (and pitch-or-chord is-rest)
+    (error "event::make-event: an event can't have pitch data (~a) and be a rest:"
+           pitch-or-chord))
   (let* ((r (make-rhythm rthm :is-rest is-rest :is-tied-to is-tied-to
                          :duration duration :tempo tempo))
          (e (when r (clone-with-new-class r 'event))))

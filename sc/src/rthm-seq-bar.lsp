@@ -965,19 +965,60 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; ****m* rthm-seq-bar/auto-put-tuplet-bracket-on-beats
 ;;; 12.12.11 SAR: Added ROBODoc info
 ;;; FUNCTION
-;;; Given a rthm-seq-bar object with tuplet rhythms, this method will add the
-;;; appropriate tuplet bracket it to the beats of the bar in the score. If
-;;; tuplet is NIL, the method will try to figure things out itself. 
+;;; Given a rthm-seq-bar object with tuplet rhythms and an indication of which
+;;; tuplet value to place, this method will automatically add the appropriate
+;;; tuplet bracket it to the beats of the bar in the printed score output. If
+;;; the TUPLET argument is set to NIL, the method will proceed on the basis of
+;;; best-guessing rules.   
 ;;; 
-;;; ARGUMENTS 
-;;; 
+;;; ARGUMENTS
+;;; - A rthm-seq-bar object
+;;; - An integer indicating the tuplet value (e.g. 3 for triplets, 5 for
+;;; quintuplets etc.)
 ;;; 
 ;;; RETURN VALUE  
+;;; Returns T.
 ;;; 
-;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - beat. The beat basis for the bar. If NIL (default), the beat is taken
+;;; from the time signature.
+;;; - beat-number. The beat number within the bar to look for tuplets. If set
+;;; to T (default), all beats in the bar will be examined for possible
+;;; tuplets. 
+;;; - delete. Whether to delete the tuplet bracket indicators already present
+;;; in the given rthm-seq-bar object (default = T).
+;;;
 ;;; EXAMPLE
 #|
+(let ((rsb (make-rthm-seq-bar '((2 4) te te te q))))
+  (tuplets rsb))
 
+=> NIL
+
+(let ((rsb (make-rthm-seq-bar '((2 4) te te te q))))
+  (loop for r in (rhythms rsb) collect (bracket r))
+
+=> (NIL NIL NIL NIL)
+
+(let ((rsb (make-rthm-seq-bar '((2 4) te te te q))))
+  (auto-put-tuplet-bracket-on-beats rsb 3))
+
+=> T
+
+(let ((rsb (make-rthm-seq-bar '((2 4) te te te q))))
+  (auto-put-tuplet-bracket-on-beats rsb 3)
+  (print (tuplets rsb))
+  (print (loop for r in (rhythms rsb) collect (bracket r))))
+
+=>
+((3 0 2)) 
+(((1 3)) (-1) (1) NIL)
+
+(let ((rsb (make-rthm-seq-bar '((2 4) te te te q))))
+  (auto-put-tuplet-bracket-on-beats rsb nil)
+  (tuplets rsb))
+
+=> ((3 0 2))
 |#
 ;;; SYNOPSIS
 (defmethod auto-put-tuplet-bracket-on-beats 
@@ -1563,6 +1604,7 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
 ;;; Just re-creates scaled rhythms with beams etc. where appropriate 
 
 ;;; ****m* rthm-seq-bar/scale
+;;; Wed Dec 14 17:52:07 GMT 2011 SAR: Added robodoc info
 ;;; FUNCTION
 ;;; 
 ;;; 
@@ -3103,25 +3145,81 @@ data: (2 4)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;  27.1.11
-;;; NB This will only work if we can split into whole beats e.g. a 4/4 bar will
-;;; not be split into 5/8 + 3/8.  We don't copy over and update bar start-times
-;;; (this is meant to be done at the rthm-seq stage, not once the whole piece
-;;; has been generated).
-;;; returns a list of new rthm-seq-bars if successful or nil if not.
+;;; Wed Dec 14 18:04:01 GMT 2011 SAR: Added robodoc info
 ;;; ****m* rthm-seq-bar/split
 ;;; FUNCTION
-;;; 
-;;; 
+;;; Splits a given rthm-seq-bar into multiple smaller rthm-seq-bar
+;;; objects. This will only work if the given rthm-seq-bar object can be split
+;;; into whole beats; e.g. a 4/4 bar will not be split into 5/8 + 3/8. 
+;;;
+;;; The keyword arguments :min-beats and :max-beats serve as guidelines rather
+;;; than strict cut-offs. In some cases, the method may only be able to
+;;; effectively split the given rthm-seq-bar by dividing it into segments that
+;;; exceed the length stipulated by these arguments (see example below). 
+;;;
+;;; Depending on the min-beats/max-beats arguments stipulated by the user or
+;;; the rhythmic structure of the given rthm-seq-bar object, the given
+;;; rthm-seq-bar may not be splittable, in which case NIL is returned. If the
+;;; keyword argument :warn is set to T, a warning will be also be printed in
+;;; such cases.
+;;;
+;;; NB The method does not copy over and update bar start-times (this is meant
+;;; to be done at the rthm-seq stage, not once the whole piece has been
+;;; generated). 
+;;;
 ;;; ARGUMENTS 
+;;; - A rthm-seq-bar object.
 ;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :min-beats. This argument takes an integer value to
+;;; indicate the minimum number of beats in any of the new rthm-seq-bar
+;;; objects created. This serves as a guideline only and may occasionally be
+;;; exceeded in value by the method. Default value = 2.
+;;; - keyword argument :max-beats. This argument takes an integer value to
+;;; indicate the maximum number of beats in any of the new rthm-seq-bar objects
+;;; created. This serves as a guideline only and may occasionally be exceeded
+;;; in value by the method. Default value = 5.
+;;; - keyword argument :warn. Indicates whether to print a warning if the
+;;; rthm-seq-bar object is unsplittable. Value T = print a warning. Defaults to
+;;; NIL. 
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns a list of rthm-seq-bar objects if successful, NIL if not. 
 ;;; 
 ;;; EXAMPLE
 #|
+(let* ((rsb (make-rthm-seq-bar '((7 4) h. e e +e. e. e q)))
+       (rsb-splt (split rsb)))
+  (loop for i in rsb-splt collect
+       (loop for r in (rhythms i) collect (data r))))
 
-  |#
+=> ((H.) (E E "E." E. E Q))
+
+(let* ((rsb (make-rthm-seq-bar '((7 4) h. e e +e. e. e q)))
+       (rsb-splt (split rsb)))
+  (loop for i in rsb-splt do (print-simple i)))
+
+=>
+(3 4): note H., 
+(4 4): note E, note E, note E., note E., note E, note Q,
+
+(let* ((rsb (make-rthm-seq-bar '((7 4) h. e e +e. e. e q)))
+       (rsb-splt (split rsb :min-beats 1 :max-beats 3)))
+  (loop for i in rsb-splt do (print-simple i)))
+
+=>
+(3 4): note H., 
+(1 4): note E, note E, 
+(2 4): note E., note E., note E, 
+(1 4): note Q, 
+
+(let ((rsb (make-rthm-seq-bar '((7 4) h. e e +e. e. e q))))
+  (split rsb :max-beats 1 :warn t))
+
+=> NIL
+WARNING: rthm-seq-bar::split: couldn't split bar:
+
+|#
 ;;; SYNOPSIS
 (defmethod split ((rsb rthm-seq-bar) &key
                   (min-beats 2) (max-beats 5) warn ignore)
@@ -3392,11 +3490,17 @@ data: (2 4)
 ;;; output. 
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - show-rest
-;;; - missing-duration
-;;; - player-section-ref
-;;; - nth-seq
-;;; - nth-bar
+;;; - show-rest. This argument indicates whether or not to print the rest in
+;;; the printed score output (CMN/LilyPond). Default = T.
+;;; 
+;;; The remaining optional arguments are set internally by the 
+;;; slippery-chicken class, but can be read by the user for debugging.
+;;; - missing-duration: Indicates whether the bar is missing a duration. 
+;;; - player-section-ref: The current player and section of the given
+;;; rthm-seq-bar object.
+;;; - nth-seq: The current sequenz (with a "z") of the given rthm-seq-bar
+;;; object.  
+;;; - nth-bar: The current bar number of the given rthm-seq-bar object. 
 ;;; 
 ;;; RETURN VALUE    
 ;;; A rthm-seq-bar object.

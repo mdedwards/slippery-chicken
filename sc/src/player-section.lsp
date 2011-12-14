@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    18th March 2002
 ;;;
-;;; $$ Last modified: 18:57:16 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 14:19:26 Wed Dec 14 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -344,7 +344,7 @@
             ;; this of course means that some rehearsal letters will be moved
             ;; around a little. 
             (rehearsal-letter first-bar) rehearsal-letter)
-      ;; no need to update score-tuplets, tuplets, beams, missing-duration
+      ;; no need to update tuplets, beams, missing-duration
       ;; 
       ;; the parent-start-end, id, previous, this, next and tag slots of the
       ;; first bar will be copied over in the clone; those of the other bars

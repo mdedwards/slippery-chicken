@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 11:49:05 Tue Dec 13 2011 ICT
+;;; $$ Last modified: 14:30:11 Wed Dec 14 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -103,7 +103,7 @@
    ;; (generic: 'tuplet') as indicated in the comments to that function.  Those
    ;; discerned by the function are stored here.  These are indices and
    ;; 0-based. 
-   (score-tuplets :accessor score-tuplets :type list :initform nil)
+   ;; (score-tuplets :accessor score-tuplets :type list :initform nil)
    ;; the above is for SCORE, the following for CMN (see parse-rhythms)
    (tuplets :accessor tuplets :type list :initform nil)
    ;; In SCORE, how far to extend tuplet brackets when it's over a rest at
@@ -205,7 +205,7 @@
                           else collect rthm)
             (rhythms rsb) rhythms)
       ;; Store the given bracketing information in tuplets.
-      (setf (score-tuplets rsb) (second parsed)
+      (setf ;; (score-tuplets rsb) (second parsed)
             (beams rsb) (third parsed)
             ;; sort the tuplets according to the order of the note on which the
             ;; brackets start.
@@ -355,7 +355,6 @@ RTHM-SEQ-BAR: time-sig: 0 (3 4)
               multi-bar-rest: NIL
               show-rest: T
               notes-needed: 6
-              score-tuplets: NIL
               tuplets: NIL
               nudge-factor: 0.35
               beams: NIL
@@ -599,7 +598,7 @@ data: ((2 4) Q E S S)
     ;; now this bar
     (setf (rhythms rsb) (list new)
           (show-rest rsb) t
-          (score-tuplets rsb) nil
+          ;; (score-tuplets rsb) nil
           (tuplets rsb) nil
           (beams rsb) nil)
     (gen-stats rsb)))
@@ -866,7 +865,6 @@ RTHM-SEQ-BAR: time-sig: 1 (2 4)
               multi-bar-rest: NIL
               show-rest: T
               notes-needed: 8
-              score-tuplets: NIL
               tuplets: NIL
               nudge-factor: 0.35
               beams: NIL
@@ -1235,7 +1233,7 @@ data: ((2 4) - S S - S - S S S - S S)
           (slot-value sclist 'show-rest) (show-rest rsb)
           (slot-value sclist 'rehearsal-letter) (rehearsal-letter rsb)
           (slot-value sclist 'notes-needed) (notes-needed rsb)
-          (slot-value sclist 'score-tuplets) (my-copy-list (score-tuplets rsb))
+          ;;(slot-value sclist 'score-tuplets) (my-copy-list (score-tuplets rsb))
           (slot-value sclist 'tuplets) (my-copy-list (tuplets rsb))
           (slot-value sclist 'beams) (my-copy-list (beams rsb))
           (slot-value sclist 'bar-num) (bar-num rsb)
@@ -2283,7 +2281,6 @@ data: (2 4)
                                   multi-bar-rest: ~a, ~
                   ~%              show-rest: ~a, ~
                                   notes-needed: ~a, ~
-                                  score-tuplets: ~a, ~
                   ~%              tuplets: ~a, ~
                                   nudge-factor: ~a, ~
                                   beams: ~a, ~
@@ -2305,7 +2302,7 @@ data: (2 4)
           (time-sig i) (get-time-sig-as-list i) (time-sig-given i) (bar-num i)
           (old-bar-nums i) (write-bar-num i)
           (start-time i) (start-time-qtrs i) (is-rest-bar i) (multi-bar-rest i)
-          (show-rest i) (notes-needed i) (score-tuplets i) (tuplets i)
+          (show-rest i) (notes-needed i) (tuplets i)
           (nudge-factor i) (beams i) (current-time-sig i) (write-time-sig i) 
           (num-rests i) (num-rhythms i) (num-score-notes i) (parent-start-end i)
           (missing-duration i) (bar-line-type i) (player-section-ref i)
@@ -3375,10 +3372,10 @@ data: (2 4)
 #|
 (let ((rsb-rb (make-rest-bar '(2 4) nil t)))
   (format t "~%time-sig: ~a~%is-rest-bar: ~a~%write-time-sig: ~a~%show-rest: ~a~%"
-	  (data (get-time-sig rsb-rb))
-	  (is-rest-bar rsb-rb)
-	  (write-time-sig rsb-rb)
-	  (show-rest rsb-rb))
+          (data (get-time-sig rsb-rb))
+          (is-rest-bar rsb-rb)
+          (write-time-sig rsb-rb)
+          (show-rest rsb-rb))
   (print-simple rsb-rb)
   rsb-rb)
 
@@ -3448,7 +3445,7 @@ show-rest: T
                   ;; previous notes (e.g. in previous bar).
                   (start-pos (if (char= #\+ (aref rthm-string 0))
                                  1
-                               0)))
+                                 0)))
              (1+ (count #\+ rthm-string :start start-pos)))))
     (when rhythms
       ;; the position at which which we got a '{'; zero-based and with e.g. 'e
@@ -3491,25 +3488,27 @@ show-rest: T
             ;; list to store the rhythms in
             (rthms '()))
         (loop for i in rhythms do
-              (setf interned (if (symbolp i) (rm-package i) i))
-              (cond
+             (setf interned (if (symbolp i) (rm-package i) i))
+             (cond
                ((eq interned '{) (setq get-tuplet t)
-                                 (incf got-left-brackets))
+                (incf got-left-brackets))
                ((eq interned '}) (unless (> expect-right-brackets 0)
                                    (error "rthm-seq-bar::parse-rhythms:~%~
                                            Read } without seeing { beforehand:~
                                            ~%~a"
                                           rhythms))
-                                 (decf expect-right-brackets)
-                                 (let ((tuplet-num (pop tuplets)))
-                                   (push (list tuplet-num
-                                               (pop 
-                                                score-left-bracket-positions) 
-                                               (+ num-notes -1 
-                                                  (if (atom last-rthm)
-                                                      0
-                                                    nudge-factor))) 
-                                         score-tuplet-positions)
+                (decf expect-right-brackets)
+                (let ((tuplet-num (pop tuplets)))
+                  #| MDE Wed Dec 14 14:21:27 2011 -- obsolete
+                  (push (list tuplet-num
+                  (pop 
+                  score-left-bracket-positions) 
+                  (+ num-notes -1 
+                  (if (atom last-rthm)
+                  0
+                  nudge-factor))) 
+                  score-tuplet-positions)
+                  |#
                                    (push (list tuplet-num 
                                                (pop left-bracket-positions)
                                                (1- num-rthms))
@@ -3589,8 +3588,11 @@ show-rest: T
                   not a closing '-': ~%~a" 
                  rhythms))
         (setf rthms (nreverse rthms)
-              score-tuplet-positions (nreverse score-tuplet-positions)
+              ;; score-tuplet-positions (nreverse score-tuplet-positions)
               tuplet-positions (nreverse tuplet-positions))
+        ;; MDE Wed Dec 14 14:22:35 2011 -- score-tuplet-positions now nil but
+        ;; no need to remove: just keep same data structure so as not to
+        ;; introduce bugs above 
         (list rthms score-tuplet-positions beam-positions
               tuplet-positions)))))
 
@@ -3956,7 +3958,7 @@ show-rest: T
     (flatten (nreverse result))))
   
 #|
-  (defun consolidate-notes-aux5 (rthms)
+                  (defun consolidate-notes-aux5 (rthms)
 (print 'aux5)
 (print-simple-rthm-list rthms)
 (let ((ties (get-tied-rthms rthms))
@@ -3993,7 +3995,7 @@ rat))
 result)
 (incf now tied-sum)))
 (flatten (nreverse result))))
-  |#
+                  |#
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 

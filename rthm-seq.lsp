@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 12:29:46 Tue Dec 13 2011 ICT
+;;; $$ Last modified: 17:40:12 Wed Dec 14 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -922,7 +922,7 @@
      do
      (loop 
         for bar in new-bars 
-        for pse = (print (parent-start-end bar))
+        for pse = (parent-start-end bar)
         with rs 
         do
         (setf rs (make-rthm-seq (list count (list (list bar))))

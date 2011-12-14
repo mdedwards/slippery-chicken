@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 14:30:11 Wed Dec 14 2011 ICT
+;;; $$ Last modified: 17:39:37 Wed Dec 14 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1950,59 +1950,66 @@ data: E
       (rhythms-to-events rsb)
       (update-time rsb 0 0 60))
     (loop 
-        for e in (rhythms rsb) 
-        do
-          (when (needs-new-note e)
-            (incf attack-count))
-          (when (and (>= (start-time e) start-time)
-                     (< (start-time e) end-time))
-            (when (and (needs-new-note e) (zerop start-attack))
-              (setf start-attack attack-count))
-            ;; this will mean once we're outside our time range, we've got the
-            ;; last attack we saw within it
-            (setf end-attack attack-count)
-            (if (<= (end-time e) end-time)
-                (push e result)
-              ;; this rhythm is too long: need to chop it off at end-time
-              (let* ((dur (- end-time (start-time e)))
-                     (new (make-event (pitch-or-chord e) dur
-                                      :start-time (start-time e)
-                                      :is-rest (is-rest e)
-                                      :is-tied-to (is-tied-to e)
-                                      :duration t)))
-                (if new
-                    (setf (is-grace-note new) (is-grace-note e)
-                          (needs-new-note new) (needs-new-note e)
-                          (beam new) (beam e)
-                          (bracket new) (bracket e)
-                          (marks new) (my-copy-list (marks e))
-                          (cmn-objects-before new) (cmn-objects-before e)
-                          (amplitude new) (amplitude e))
-                  ;; if we can't get a single rthm for the new duration then
-                  ;; new will be nil and we should just create a rest
-                  (progn
-                    (setf new (make-rest (- end-time start-time) :duration t
-                                         :start-time (start-time e)))
-                    (unless new
-                      (error "rthm-seq-bar::get-events: can't create rest ~
+       for e in (rhythms rsb) 
+       do
+       (when (needs-new-note e)
+         (incf attack-count))
+       (when (and (>= (start-time e) start-time)
+                  (< (start-time e) end-time))
+         (when (and (needs-new-note e) (zerop start-attack))
+           (setf start-attack attack-count))
+         ;; this will mean once we're outside our time range, we've got the
+         ;; last attack we saw within it
+         (setf end-attack attack-count)
+         ;; (format t "~&***start/end ~a ~a~&~a" start-attack end-attack e)
+         (if (<= (end-time e) end-time)
+             (push e result)
+             ;; this rhythm is too long: need to chop it off at end-time
+             (let* ((dur (- end-time (start-time e)))
+                    (new (make-event (pitch-or-chord e) dur
+                                     :start-time (start-time e)
+                                     ;; MDE Wed Dec 14 17:37:52 2011 
+                                     ;; :is-rest (is-rest e)
+                                     :is-tied-to (is-tied-to e)
+                                     :duration t)))
+               ;; MDE Wed Dec 14 17:37:42 2011 
+               (setf (is-rest new) (is-rest e))
+               (if new
+                   (setf (is-grace-note new) (is-grace-note e)
+                         (needs-new-note new) (needs-new-note e)
+                         (beam new) (beam e)
+                         (bracket new) (bracket e)
+                         (marks new) (my-copy-list (marks e))
+                         (cmn-objects-before new) (cmn-objects-before e)
+                         (amplitude new) (amplitude e))
+                   ;; if we can't get a single rthm for the new duration then
+                   ;; new will be nil and we should just create a rest
+                   (progn
+                     ;; MDE Wed Dec 14 17:24:09 2011 
+                     (unless (is-rest e)
+                       (decf end-attack))
+                     (setf new (make-rest (- end-time start-time) :duration t
+                                          :start-time (start-time e)))
+                     (unless new
+                       (error "rthm-seq-bar::get-events: can't create rest ~
                               from duration ~a secs"
-                             (- end-time start-time)))))
-                (when (and (is-rest new)
-                           (marks new))
-                  (error "~a~%rthm-seq-bar::get-events: rest with marks?"
-                         new))
-                (push new result)))))
+                              (- end-time start-time)))))
+               (when (and (is-rest new)
+                          (marks new))
+                 (error "~a~%rthm-seq-bar::get-events: rest with marks?"
+                        new))
+               (push new result)))))
     (setf result (nreverse result))
     (loop for e in result with got-strike = nil do
-          ;; delete the beaming info (do auto-beam in new-bar-from-time-range)
-          ;; NB the bracketing info could still cause problems....
-          (setf (beam e) nil)
-          (when (needs-new-note e)
-            (setf got-strike t))
-          (unless got-strike
-            (when (is-tied-to e)
-              (force-rest e)
-              (delete-marks e))))
+       ;; delete the beaming info (do auto-beam in new-bar-from-time-range)
+       ;; NB the bracketing info could still cause problems....
+         (setf (beam e) nil)
+         (when (needs-new-note e)
+           (setf got-strike t))
+         (unless got-strike
+           (when (is-tied-to e)
+             (force-rest e)
+             (delete-marks e))))
     (when result
       (setf (is-tied-from (first (last result))) nil))
     ;; our first attack was numbered 1, so 1- to get a list reference that can

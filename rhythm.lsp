@@ -189,17 +189,21 @@
 
 ;;; ****m* rhythm/force-rest
 ;;; FUNCTION
-;;; 
+;;; Force the given rhythm object to be a rest.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rhythm object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rhythm object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((r (make-rhythm 8)))
+  (force-rest r)
+  (is-rest r))
 
+=> T
 |#
 ;;; SYNOPSIS
 (defmethod force-rest ((r rhythm))
@@ -277,16 +281,59 @@
 
 ;;; ****m* rhythm/scale
 ;;; FUNCTION
-;;; 
+;;; Change the value of a rhythm object's duration value by scaling.
 ;;; 
 ;;; ARGUMENTS 
+;;; - A rhythm object.
+;;; - A scaling factor.
 ;;; 
-;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - clone. This argument determines whether a new rhythm object is made or
+;;; the duration value of the old object is replaced. When set to T, a new
+;;; object is made based on the duration value of the original. When set to
+;;; NIL, the original duration value is replaced (see example). Default = T. 
+;;;
 ;;; RETURN VALUE  
-;;; 
+;;; A rhythm object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((r (make-rhythm 4)))
+  (data (scale r 2)))
+
+=> H
+
+(let ((r (make-rhythm 4)))
+  (data (scale r 3)))
+
+=> H.
+
+(let ((r (make-rhythm 4)))
+  (data (scale r .5)))
+
+=> E
+
+(let ((r (make-rhythm 4)))
+  (dotimes (i 5) 
+    (print (value (scale r .5)))))
+
+=>
+8.0 
+8.0 
+8.0 
+8.0 
+8.0
+
+(let ((r (make-rhythm 4)))
+  (dotimes (i 5)
+    (print (value (scale r .5 nil)))))
+
+=>
+8.0 
+16.0 
+32.0 
+64.0 
+128.0
 
 |#
 ;;; SYNOPSIS
@@ -341,16 +388,44 @@
 
 ;;; ****m* rhythm/rhythm-equal
 ;;; FUNCTION
-;;; 
+;;; Compares the values of two rhythm objects to determine if they are equal. 
+;;;
+;;; NB rhythm-equal compares the values only, so rhythms with the same values
+;;; will still be considered equal even if their other attributes (such as
+;;; :is-rest and :is-tied-to etc.) are different.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A first rhythm object.
+;;; - A second rhythm object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; T if the values of the given rhythm objects are equal, else NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((r1 (make-rhythm 4))
+      (r2 (make-rhythm 4)))
+  (rhythm-equal r1 r2))
+
+=> T
+
+(let ((r1 (make-rhythm 4))
+      (r2 (make-rhythm 8)))
+  (rhythm-equal r1 r2))
+
+=> NIL
+
+(let ((r1 (make-rhythm 4 :is-rest T))
+      (r2 (make-rhythm 4 :is-rest NIL)))
+  (rhythm-equal r1 r2))
+
+=> T
+
+(let ((r1 (make-rhythm 4 :is-tied-to T))
+      (r2 (make-rhythm 4 :is-tied-to NIL)))
+  (rhythm-equal r1 r2))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -362,16 +437,29 @@
 
 ;;; ****m* rhythm/rhythm/
 ;;; FUNCTION
-;;; 
+;;; Determines the ratio of one rhythm object's duration to that of a second
+;;; rhythm object by use of division. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rhythm object.
+;;; - A second rhythm object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A number.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((r1 (make-rhythm 'q))
+      (r2 (make-rhythm 'e)))
+  (rhythm/ r1 r2))
+
+=> 2.0
+
+(let ((r1 (make-rhythm 'q))
+      (r3 (make-rhythm 's.)))
+  (rhythm/ r1 r3))
+
+=> 2.6666667
 
 |#
 ;;; SYNOPSIS
@@ -916,19 +1004,19 @@
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A duration either as a numeric representation of a rhythm (subdivision of
-;;; a whole note; 1 = whole note, 2 = half note, 4 = quarter, 8 = eighth etc),
-;;; an alphabetic shorthand for a duration (ie, 's, 'e, 'q etc.), or duration
-;;; in seconds.  
+;;; a whole note; 2 = half note, 4 = quarter, 8 = eighth etc), a quoted
+;;; alphabetic shorthand for a duration (ie, 'h, 'q, 'e etc.), or an absolute
+;;; duration in seconds.     
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :is-rest to denote whether the given duration is a rest
-;;; or not. T = rest. Default = NIL
+;;; or not. T = rest. Default = NIL.
 ;;; - keyword argument :is-tied-to to denote whether the given duration is tied
 ;;; later to the next duration in a given rthm-seq-bar/rthm-seq object. T =
 ;;; tied. Default = NIL.
-;;; - keyword argument :duration indicates whether the duration given has been
-;;; given as a duration in seconds, not a known rhythm like 'e or 8. T
-;;; indicates that the given duration is a duration in seconds. Default = NIL.
+;;; - keyword argument :duration indicates whether the duration argument has
+;;; been given as a duration in seconds, not a known rhythm like 'e or 8. T
+;;; indicates that the duration is a duration in seconds. Default = NIL.   
 ;;; - keyword argument :tempo indicates the tempo for the given rhythm. This
 ;;; is not related to any tempi applied, rather one that is reflected in the
 ;;; duration-in-tempo slot of event.

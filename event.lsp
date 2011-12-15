@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:33:24 Wed Dec 14 2011 ICT
+;;; $$ Last modified: 19:22:58 Wed Dec 14 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -177,7 +177,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/set-midi-channel
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-midi-channel ((e event) midi-channel microtonal-midi-channel)
+;;; ****
   (let ((noc (pitch-or-chord e)))
     (when noc
       (if (is-chord e)
@@ -186,6 +205,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/get-midi-channel
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-midi-channel ((e event))
   (let ((noc (pitch-or-chord e)))
     (when noc
@@ -202,6 +239,25 @@
 ;;; changes will all be written despite no new pitches.
 
 #+cm-2
+;;; ****
+;;; ****m*event/output-midi
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod output-midi ((e event) &optional (time-offset 0.0) force-velocity)
   ;; 14.3.11: can't output events that haven't got time etc.
   (unless (start-time e)
@@ -247,13 +303,51 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 2.4.11: return a list of the dynamics attached to an event.
+;;; ****m*event/get-dynamics
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-dynamics ((e event))
+;;; ****
   (remove-if #'(lambda (x) (not (is-dynamic x)))
              (marks e)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; NB This doesn't change the amplitude
+;;; ****m*event/remove-dynamics
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod remove-dynamics ((e event))
   (setf (marks e) 
         (remove-if #'(lambda (x) (is-dynamic x))
@@ -266,6 +360,7 @@
   (declare (ignore warn-rest))
   (when (is-dynamic mark)
     (remove-dynamics e)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -278,8 +373,29 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 3.2.11 automatically add a mark with a corresponding dynamic
+;;; 3.2.11 change amplitude slot and automatically add a mark to set a
+;;; corresponding dynamic NB Sean: check that the right label is attached in
+;;; robodo i.e. not just event/amplitude but event/setf amplitude
+;;; ****m*event/setf amplitude
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod (setf amplitude) :after (value (e event))
+;;; ****
   (unless value
     (error "event::(setf amplitude): value is nil!"))
   (unless (is-rest e)
@@ -289,7 +405,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/setf tempo-change
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod (setf tempo-change) (value (e event))
+;;; ****
   (typecase value
     (tempo (setf (slot-value e 'tempo-change) (clone value)))
     (number (setf (slot-value e 'tempo-change) (make-tempo value)))
@@ -418,7 +553,26 @@
 ;;; In the following methods the optional argument refers to whether we should
 ;;; handle the written or sounding pitch in the event. 
 
+;;; ****m*event/sharp-p
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod sharp-p ((e event) &optional written)
+;;; ****
   (when (is-single-pitch e)
     (sharp (if written
                (written-pitch-or-chord e)
@@ -426,6 +580,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/flat-p
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod flat-p ((e event) &optional written)
   (when (is-single-pitch e)
     (flat (if written
@@ -434,18 +606,55 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/natural-p
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod natural-p ((e event) &optional written)
   (when (is-single-pitch e)
     (natural (if written
               (written-pitch-or-chord e)
             (pitch-or-chord e)))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; NB doesn't work on chords!
+;;; ****m*event/enharmonic
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod enharmonic ((e event) &key written force-naturals 
                        ;; 1-based
                        chord-note-ref)
-  ;; NB doesn't work on chords!
   ;; 5/6/07 works on chords given a reference into the chord counting from 1
   ;; and the lowest note upwards 
   ;; 11.4.11: works on all notes in chords if chord-note-ref is nil
@@ -493,14 +702,54 @@
                           new)
                     (setf (pitch-or-chord e) new))))
           e))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/pitch-
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod pitch- ((e1 event) (e2 event))
+;;; ****
   (pitch- (pitch-or-chord e1) (pitch-or-chord e2)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; NB could screw up timing info in a bar
+;;; ****m*event/inc-duration
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod inc-duration ((e event) inc)
   (incf (duration-in-tempo e) inc)
   (incf (compound-duration-in-tempo e) inc)
@@ -510,8 +759,28 @@
 
 ;; time-sig should be a time-sig object but we can't compile that class before
 ;; this one  
-(defmethod set-midi-time-sig ((e event) time-sig) 
+;;; ****m*event/set-midi-time-sig
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod set-midi-time-sig ((e event) time-sig)
+;;; **** 
   (setf (midi-time-sig e) (clone time-sig)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 25.6.11: for transitions from one playing state to another.
@@ -527,7 +796,26 @@
 ;;; end-arrow mark should be attached to the note where the end text should
 ;;; appear.
 
+;;; ****m*event/add-arrow
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-arrow ((e event) start-text end-text &optional warn-rest)
+;;; ****
   (when (and warn-rest (is-rest e))
     (warn "~a~&event::add-arrow: add arrow to rest?" e))
   ;; 26.7.11 (Pula): if there's not start/end text the arrow won't be shown in
@@ -541,7 +829,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 24.9.11
+;;; ****m*event/add-trill
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-trill ((e event) trill-note &optional warn-rest)
+;;; ****
   (when (and warn-rest (is-rest e))
     (warn "~a~&event::add-trill: add trill to rest?" e))
   (add-cmn-object-before e 'beg-trill-a)
@@ -549,6 +856,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 24.9.11
+;;; ****m*event/end-trill
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod end-trill ((e event))
   (add-mark e 'end-trill-a))
 
@@ -557,10 +882,30 @@
 (defmethod add-cmn-object-before ((e event) cmn-object)
   ;; (print cmn-object)
   (push cmn-object (cmn-objects-before e)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/add-clef
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-clef ((e event) clef &optional ignore1 ignore2 ignore3)
+;;; ****
   (declare (ignore ignore1 ignore2 ignore3))
   (let ((cl (list 'clef clef)))
     (unless (member cl (cmn-objects-before e) :test #'equal)
@@ -568,6 +913,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/get-clef
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-clef ((e event) &optional ignore1 ignore2 ignore3)
   (declare (ignore ignore1 ignore2 ignore3))
   (second (find-if #'(lambda (el) (when (listp el) 
@@ -576,6 +939,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/delete-clefs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-clefs ((e event) &optional (warn t) ignore1 ignore2)
   (declare (ignore ignore1 ignore2))
   ;; 12.4.11 warn if no clef
@@ -585,16 +966,54 @@
                        (cmn-objects-before e)))
       (when warn
         (warn "event::delete-clefs: no clef to delete: ~a" e))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/get-amplitude
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-amplitude ((e event) &optional (midi nil))
   (if midi
       (round (* (amplitude e) 127))
     (amplitude e)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/get-pitch-symbol
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-pitch-symbol ((e event) &optional (written t))
   (let ((obj (if (and written (written-pitch-or-chord e))
                  (written-pitch-or-chord e)
@@ -603,6 +1022,7 @@
       (if (chord-p obj)
           (get-pitch-symbols obj)
         (id obj)))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -631,10 +1051,30 @@
           (seventh result) dx1
           (eighth result) dy1
           (nth index (bracket e)) result)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/no-accidental
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod no-accidental ((e event))
+;;; ****
   (no-accidental (pitch-or-chord e))
   (when (written-pitch-or-chord e)
     (no-accidental (written-pitch-or-chord e))))
@@ -656,7 +1096,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/get-dynamic
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-dynamic ((e event))
+;;; ****
   (loop for m in (marks e) do
        (when (member m '(niente pppp ppp pp p mp mf f ff fff ffff))
              (return m))))
@@ -909,13 +1368,50 @@
 
 ;;; If a chord, the return the number of notes in the chord.
 
+;;; ****m*event/is-chord
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod is-chord ((e event))
+;;; ****
   (let ((noc (pitch-or-chord e)))
     (when (typep noc 'chord)
       (sclist-length noc))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/is-single-pitch
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod is-single-pitch ((e event))
   (typep (pitch-or-chord e) 'pitch))
   
@@ -927,6 +1423,24 @@
 ;;; or may not be nil in that case (transposition could be dependent on the
 ;;; note or chord and not a fixed shift.
 
+;;; ****m*event/transpose
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod transpose ((e event) semitones
                       &key
                       destructively
@@ -956,30 +1470,108 @@
                   (funcall pitch-function wnoc semitones)
                   (funcall chord-function wnoc semitones)))))
     result))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/set-written
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-written ((e event) transposition)
+;;; ****
   (when (pitch-or-chord e)
     (setf (written-pitch-or-chord e) 
       (transpose (clone (pitch-or-chord e)) transposition))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/delete-written
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-written ((e event))
   (setf (written-pitch-or-chord e) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/lowest
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod lowest ((e event))
+;;; ****
   (let ((porc (pitch-or-chord e)))
     (if (chord-p porc)
         (lowest porc)
       porc)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/highest
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod highest ((e event))
+;;; ****
   (let ((porc (pitch-or-chord e)))
     (if (chord-p porc)
         (highest porc)
@@ -990,7 +1582,26 @@
 ;;; returns distance in semitones from e1 to e2; chords taken into
 ;;; consideration. 
 
+;;; ****m*event/event-distance
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod event-distance ((e1 event) (e2 event))
+;;; ****
   (let ((e1-high (highest e1))
         (e2-high (highest e2))
         (e1-low (lowest e1))
@@ -1106,7 +1717,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m*event/force-rest
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod force-rest :after ((e event))
+;;; **** 
   (setf (pitch-or-chord e) nil
         (written-pitch-or-chord e) nil
         ;; 23.7.11 (Pula) remove marks that can only be used on a note
@@ -1123,7 +1753,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 20.8.11
+;;; ****m*event/force-artificial-harmonic
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod force-artificial-harmonic ((e event))
+;;; ****
   (let* ((p1 (transpose (pitch-or-chord e) -24))
          (p2 (transpose p1 5)))
     (add-mark p2 'flag-head)
@@ -1210,7 +1859,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f*event/make-rest
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-rest (rthm &key start-time duration (tempo 60))
+;;; ****
   (make-event nil rthm :start-time start-time :duration duration :tempo tempo
               :is-rest t))
 
@@ -1260,7 +1928,26 @@
 ;;; notes can be a single note or a list of notes.  If the latter then they'll
 ;;; be popped off one after the other.
 
+;;; ****f*event/make-punctuation-events
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-punctuation-events (distances rhythm notes)
+;;; ****
   (unless (listp notes)
     (setf notes (list notes)))
   (loop for d in distances
@@ -1279,7 +1966,26 @@
 ;;; chord) and rhythm and a single datum is the rhythm of a rest
 ;;; e.g. (make-events '((g4 q) e s ((fs3 g4) s)))
 
+;;; ****f*event/make-events
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-events (data-list &optional midi-channel microtones-midi-channel)
+;;; ****
   (loop for data in data-list 
      for event =
      (if (listp data)
@@ -1312,8 +2018,27 @@
 ;;; e.g. '(cs4 ds5) will set a chord.  Pitches for tied notes only have to be
 ;;; given once.
 
+;;; ****f*event/make-events2
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-events2 (rhythms pitches
                      &optional midi-channel microtones-midi-channel)
+;;; ****
   (let ((rhythms (rhythm-list rhythms))
         (ps (my-copy-list pitches))
         (poc nil))
@@ -1333,11 +2058,48 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f*event/event-p
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun event-p (thing)
+;;; ****
   (typep thing 'event))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f*event/sort-event-list
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun sort-event-list (event-list)
   (sort event-list #'(lambda (x y) (< (start-time x) (start-time y)))))
 
@@ -1404,10 +2166,30 @@
              last-start (start-time event))
        (push event result))
     (nreverse result)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f*event/is-dynamic
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun is-dynamic (mark)
+;;; ****
   (member mark '(niente pppp ppp pp p mp mf f ff fff ffff)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

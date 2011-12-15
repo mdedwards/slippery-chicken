@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 12:15:05 Tue Dec 13 2011 ICT
+;;; $$ Last modified: 16:12:44 Thu Dec 15 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1421,6 +1421,22 @@
      do (setf n (if (oddp n)
                     (1+ (* 3 n))
                     (/ n 2)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Dec 15 15:57:32 2011
+
+(defun load-from-examples-dir (file)
+  (format t "~%~%*******  Loading ~a" file)
+  (load (make-pathname
+         :directory 
+         (list :absolute cl-user::+slippery-chicken-home-dir+ "examples" file))))
+
+(defun load-from-test-suite-dir (file)
+  (format t "~%~%*******  Loading ~a" file)
+  (load (make-pathname
+         :directory 
+         (list :absolute cl-user::+slippery-chicken-home-dir+ "test-suite"
+               file))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

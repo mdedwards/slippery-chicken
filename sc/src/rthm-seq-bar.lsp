@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 17:39:37 Wed Dec 14 2011 ICT
+;;; $$ Last modified: 18:58:55 Wed Dec 14 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2036,7 +2036,10 @@ data: E
              (let* ((dur (- end-time (start-time e)))
                     (new (make-event (pitch-or-chord e) dur
                                      :start-time (start-time e)
-                                     ;; MDE Wed Dec 14 17:37:52 2011 
+                                     ;; MDE Wed Dec 14 17:37:52 2011 -- if we
+                                     ;; use the key word, it might be
+                                     ;; overridden if poc is nil, so set it
+                                     ;; below 
                                      ;; :is-rest (is-rest e)
                                      :is-tied-to (is-tied-to e)
                                      :duration t)))
@@ -3143,7 +3146,6 @@ data: (2 4)
     rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;;  27.1.11
 ;;; Wed Dec 14 18:04:01 GMT 2011 SAR: Added robodoc info
 ;;; ****m* rthm-seq-bar/split
@@ -3255,6 +3257,8 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
     ;; it could be that we're left with 1 beat over so stuff that in the last
     ;; bar 
     (when (and new-bars (= 1 (/ num num-mult)))
+      ;; MDE Wed Dec 14 18:31:25 2011 -- we could warn if the extra beat will
+      ;; make a bar > max-beats, but not now.
       (let* ((last-bar (first new-bars)) ; we're pushing ;
              (last-bar-ts (get-time-sig last-bar)))
         (setf (rhythms last-bar) (append (rhythms last-bar) rthms)

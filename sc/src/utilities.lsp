@@ -1425,14 +1425,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Dec 15 15:57:32 2011
 
+;;; SAR Thu Dec 15 11:45:12 GMT 2011: added carriage returns to formatted text
+
 (defun load-from-examples-dir (file)
-  (format t "~%~%*******  Loading ~a" file)
+  (format t "~%~%*******  Loading ~a~%" file)
   (load (make-pathname
          :directory 
          (list :absolute cl-user::+slippery-chicken-home-dir+ "examples" file))))
 
 (defun load-from-test-suite-dir (file)
-  (format t "~%~%*******  Loading ~a" file)
+  (format t "~%~%*******  Loading ~a~%" file)
   (load (make-pathname
          :directory 
          (list :absolute cl-user::+slippery-chicken-home-dir+ "test-suite"

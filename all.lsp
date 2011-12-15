@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 12:19:26 Sun Dec 11 2011 ICT
+;;; $$ Last modified: 16:12:18 Thu Dec 15 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -56,12 +56,20 @@
 
 #+sbcl (unlock-package "COMMON-LISP")
 
+(in-package :cl-user)
+
 (defconstant +slippery-chicken-version+ "1.00")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 
 (defparameter +slippery-chicken-src-path+
   (directory-namestring (truename *load-pathname*)))
+
+(defparameter +slippery-chicken-home-dir+
+  (directory-namestring
+   (make-pathname
+    :directory
+    (butlast (pathname-directory cl-user::+slippery-chicken-src-path+)))))
 
 ;;; Make sure any typed-in float constants are high-precision; default is
 ;;; single-float  

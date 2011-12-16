@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 17:40:12 Wed Dec 14 2011 ICT
+;;; $$ Last modified: 17:01:27 Fri Dec 16 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -989,7 +989,6 @@
 ;;; 14/4/07: no longer create real cmn marks here, rather just the symbol for
 ;;; the mark that will be created when get-cmn-data is called. 
 
-#+cmn
 (defmethod add-marks-aux ((rs rthm-seq) mark start-note &optional end-note)
   ;; get-nth-non-rest-rhythm is 0-based, we're 1-based here.
   (decf start-note)

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 09:26:55 Mon Dec 12 2011 ICT
+;;; $$ Last modified: 10:49:26 Sat Dec 17 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -77,8 +77,7 @@
    ;; just the accidental part of the note e.g. s, f or qf etc.
    (accidental :accessor accidental :type symbol :initform nil)
    (frequency :accessor frequency :initarg :frequency :initform nil)
-   (midi-channel :accessor midi-channel :type integer :initarg :midi-channel
-                 :initform 0)
+   (midi-channel :accessor midi-channel :initarg :midi-channel :initform 0)
    (octave :accessor octave :type integer :initform -1)
    (natural :accessor natural :type boolean :initform nil)
    (qtr-sharp :accessor qtr-sharp :initform nil)

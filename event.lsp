@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:22:58 Wed Dec 14 2011 ICT
+;;; $$ Last modified: 10:14:22 Sat Dec 17 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -751,9 +751,16 @@
 |#
 ;;; SYNOPSIS
 (defmethod inc-duration ((e event) inc)
-  (incf (duration-in-tempo e) inc)
-  (incf (compound-duration-in-tempo e) inc)
-  (incf (end-time e) inc))
+  (if (and (numberp (duration-in-tempo e))
+           (numberp (compound-duration-in-tempo e))
+           (numberp (end-time e)))
+      (progn
+        (incf (duration-in-tempo e) inc)
+        (incf (compound-duration-in-tempo e) inc)
+        (incf (end-time e) inc))
+      (error "~a~%~%event::inc-duration: can't incrememnt non-number slots ~
+              duration-in-tempo, compound-duration-in-tempo, end-time."
+             e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

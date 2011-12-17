@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 23:27:44 Mon Dec 12 2011 ICT
+;;; $$ Last modified: 10:17:42 Sat Dec 17 2011 ICT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3730,6 +3730,10 @@
      (num-sections 1)
      (get-time-sig-changes nil)
      (include-rests nil))
+  ;; MDE Sat Dec 17 10:16:25 2011 -- when running cheat-sheet.lsp I was getting
+  ;; some invalid data in duration-in-tempo, compound-duration-in-tempo,
+  ;; end-time slots; this fixed it
+  (update-slots sc)
   (unless num-sections
     (setf num-sections (get-num-top-level-sections sc)))
   (let* ((sections (get-section-refs sc start-section num-sections))

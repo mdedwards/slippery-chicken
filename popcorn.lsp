@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    3rd February 2011 (Ko Lanta, Thailand)
 ;;;
-;;; $$ Last modified: 20:00:20 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 10:56:31 Sat Dec 17 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -66,23 +66,23 @@
 
 (defclass popcorn (circular-sclist)
   ;; our results
-  ((kernels :accessor kernels :type list :initform nil)
+  ((kernels :accessor kernels :initform nil)
    ;; the running total
-   (total :accessor total :type float :initform -1.0)
+   (total :accessor total :initform -1.0)
    ;; the number of kernels we've generated so far
-   (numk :accessor numk :type integer :initform -1)
+   (numk :accessor numk :initform -1)
    ;; the current average
-   (mean :accessor mean :type float :initform -1.0)
+   (mean :accessor mean :initform -1.0)
    ;; whether to use fixed-randomness (for repeatable results) or not
-   (fixed-random :accessor fixed-random :type boolean :initarg :fixed-random
+   (fixed-random :accessor fixed-random :initarg :fixed-random
                  :initform t)
    ;; the min/max multipliers we'll use to scale the average when creating
    ;; spikes
-   (min-spike :accessor min-spike :type float :initarg :min-spike :initform 2.0)
-   (max-spike :accessor max-spike :type float :initarg :max-spike :initform 4.0)
+   (min-spike :accessor min-spike :initarg :min-spike :initform 2.0)
+   (max-spike :accessor max-spike :initarg :max-spike :initform 4.0)
    ;; the min/max value of the kernels so far
-   (mink :accessor mink :type float :initform -1.0)
-   (maxk :accessor maxk :type float :initform -1.0)))
+   (mink :accessor mink :initform -1.0)
+   (maxk :accessor maxk :initform -1.0)))
    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

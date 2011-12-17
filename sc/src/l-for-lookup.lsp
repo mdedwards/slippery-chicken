@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 07:38:36 Sun Dec 11 2011 ICT
+;;; $$ Last modified: 09:30:50 Sat Dec 17 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -83,7 +83,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass l-for-lookup (assoc-list)
-  ((rules :accessor rules :type assoc-list :initarg :rules :initform nil)
+  ((rules :accessor rules :initarg :rules :initform nil)
    (auto-check-redundancy :accessor auto-check-redundancy :type boolean
                           :initarg :auto-check-redundancy :initform nil)
    ;; what get-l-sequence returns

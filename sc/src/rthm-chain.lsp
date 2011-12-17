@@ -68,7 +68,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 17:56:04 Fri Jul  1 2011 BST
+;;; $$ Last modified: 10:53:35 Sat Dec 17 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -188,8 +188,8 @@
    ;; from this list at init so it would be best to apply something similar (if
    ;; desired) if not accepting the default--in any case if a cscl is provided
    ;; it will be used instead of the default procession.
-   (sticking-rthms :accessor sticking-rthms :type list
-                   :initarg :sticking-rthms :initform '(e e e. q e s))
+   (sticking-rthms :accessor sticking-rthms :initarg :sticking-rthms
+                   :initform '(e e e. q e s))
    ;; when we stick, how many repeats do we have? when we've exhausted this
    ;; list we just start back at the beginning again.  NB we make a cscl
    ;; procession out of this at init, unless a cscl is provided.

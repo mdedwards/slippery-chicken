@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 16:12:44 Thu Dec 15 2011 ICT
+;;; $$ Last modified: 10:53:10 Sat Dec 17 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1429,17 +1429,13 @@
 
 (defun load-from-examples-dir (file)
   (format t "~%~%*******  Loading ~a~%" file)
-  (load (make-pathname
-         :directory 
-         (list :absolute cl-user::+slippery-chicken-home-dir+ "examples" file))))
+  (load 
+     (format nil "~aexamples/~a" cl-user::+slippery-chicken-home-dir+ file)))
 
 (defun load-from-test-suite-dir (file)
   (format t "~%~%*******  Loading ~a~%" file)
-  (load (make-pathname
-         :directory 
-         (list :absolute cl-user::+slippery-chicken-home-dir+ "test-suite"
-               file))))
+  (load 
+     (format nil "~atest-suite/~a" cl-user::+slippery-chicken-home-dir+ file)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp
-

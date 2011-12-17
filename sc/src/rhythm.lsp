@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 23:48:42 Mon Dec 12 2011 ICT
+;;; $$ Last modified: 09:27:36 Sat Dec 17 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -125,7 +125,7 @@
    (marks-in-part :accessor marks-in-part :type list 
                       :initarg :marks-in-part :initform nil)
    ;; 30.1.11 add another couple of slots for lilypond
-   (letter-value :accessor letter-value :type integer :initform -1)
+   (letter-value :accessor letter-value :initform -1)
    (tuplet-scaler :accessor tuplet-scaler :type rational :initform 1)
    (grace-note-duration :accessor grace-note-duration :initform 0.05
                         :allocation :class )))

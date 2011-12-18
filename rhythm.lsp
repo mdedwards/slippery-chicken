@@ -471,16 +471,30 @@
 
 ;;; ****m* rhythm/is-multiple
 ;;; FUNCTION
-;;; 
+;;; Determines if the value of one rhythm object is a multiple of the value of
+;;; a second rhythm object. This is established by dividing the one by the
+;;; other and checking to see if the quotient is a whole number.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A first rhythm object.
+;;; - A second rhythm object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns T if true and NIL if not. Always also returns the quotient.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((r1 (make-rhythm 'q))
+      (r2 (make-rhythm 'e)))
+  (is-multiple r1 r2))
+
+=> T, 2.0
+
+(let ((r1 (make-rhythm 'q))
+      (r2 (make-rhythm 'e.)))
+  (is-multiple r1 r2))
+
+=> NIL, 1.3333333333333333
 
 |#
 ;;; SYNOPSIS
@@ -492,20 +506,75 @@
 
 ;;; ****m* rhythm/add-mark
 ;;; FUNCTION
-;;; Add an articulation or any other special mark to a rhythm (most useful in
-;;; the event subclass for changing note heads etc.)
+;;; Add an articulation, dynamic, slur or any other mark to a rhythm (also
+;;; useful in the event subclass for changing note heads etc.) Multiple marks
+;;; can be added separately and consecutively to the same rhythm object. 
+;;;
+;;; A warning is printed if the same mark is added to the same rhythm object
+;;; more than once. 
+;;;
+;;; NB: This method does not check to see if the mark added is a valid mark. 
 ;;; 
 ;;; ARGUMENTS 
-;;; - the rhythm object
-;;; - the mark
-;;; - (optional default nil) whether to issue a warning when trying to add
-;;; marks to a rest
+;;; - A rhythm object.
+;;; - A mark.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicated whether to issue a warning when trying to add marks
+;;; to a rest. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
-;;; always t
+;;; Always T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((r (make-rhythm 'q)))
+  (marks r))
+
+=> NIL
+
+(let ((r (make-rhythm 'q)))
+  (add-mark r 'a))
+
+=> T
+
+(let ((r (make-rhythm 'q)))
+  (add-mark r 's)
+  (marks r))
+
+=> (S)
+
+(let ((r (make-rhythm 'q)))
+  (add-mark r 'col-legno)
+  (add-mark r 'as)
+  (add-mark r 'x-head)
+  (marks r))
+
+=> (X-HEAD AS COL-LEGNO)
+
+(let ((r (make-rhythm 'q)))
+  (add-mark r 's)
+  (add-mark r 's))
+
+=> T
+WARNING: rhythm::add-mark: S already present but adding again!: 
+
+(let ((r (make-rhythm 'e :is-rest t)))
+  (add-mark r 'at)
+  (print (is-rest r))
+  (print (marks r)))
+
+=>
+T 
+(AT)
+
+(let ((r (make-rhythm 'e :is-rest t)))
+  (add-mark r 'at t))
+
+=> T
+WARNING: 
+[...]
+rhythm::add-mark: add AT to rest?
 
 |#
 ;;; SYNOPSIS

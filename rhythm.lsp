@@ -840,16 +840,32 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 
 ;;; ****m* rhythm/has-mark
 ;;; FUNCTION
-;;; 
+;;; Check to see if a given rhythm object posseses a specified mark.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rhythm object.
+;;; - A mark.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns the mark sought as a single-item list if the given object does
+;;; indeed possess the specified mark in its MARKS slot; otherwise, returns
+;;; NIL. 
 ;;; 
 ;;; EXAMPLE
 #|
+;; Add a specific mark and check to see if the rhythm object has it.
+(let ((r (make-rhythm 'q)))
+  (add-mark r 'a)
+  (has-mark r 'a))
+
+=> (A)
+
+;; Check to see if the given rhythm object possess a mark we know it doesn't. 
+(let ((r (make-rhythm 'q)))
+  (add-mark r 'a)
+  (has-mark r 's))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS

@@ -470,6 +470,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rhythm/is-multiple
+;;; 18.12.11 SAR Added robodoc info
 ;;; FUNCTION
 ;;; Determines if the value of one rhythm object is a multiple of the value of
 ;;; a second rhythm object. This is established by dividing the one by the
@@ -505,6 +506,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rhythm/add-mark
+;;; 18.12.11 SAR: Added robodoc info
 ;;; FUNCTION
 ;;; Add an articulation, dynamic, slur or any other mark to a rhythm (also
 ;;; useful in the event subclass for changing note heads etc.) Multiple marks
@@ -594,16 +596,47 @@ rhythm::add-mark: add AT to rest?
 ;;; 26.7.11 (Pula)
 ;;; ****m* rhythm/add-mark-once
 ;;; FUNCTION
-;;; 
+;;; Apply the given mark to the given rhythm object, but do so only if the
+;;; given rhythm object does not yet have the mark.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rhythm object.
+;;; - A mark.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether or not to print a warning when attempting to
+;;; apply a mark to a rest.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns T if the mark is succssfully applied (if the rhythm object did not
+;;; already possess the mark), otherwise NIL if the mark was not applied
+;;; because the rhythm object already had it.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((r (make-rhythm 'q)))
+  (add-mark-once r 'a))
+
+=> T
+
+(let ((r (make-rhythm 'q)))
+  (add-mark-once r 'a)
+  (marks r))
+
+=> (A)
+
+(let ((r (make-rhythm 'q)))
+  (add-mark-once r 'a)
+  (add-mark-once r 'a))
+
+=> NIL
+
+(let ((r (make-rhythm 'q)))
+  (add-mark-once r 'a)
+  (add-mark-once r 'a)
+  (marks r))
+
+=> (A)
 
 |#
 ;;; SYNOPSIS

@@ -68,7 +68,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 10:53:35 Sat Dec 17 2011 ICT
+;;; $$ Last modified: 19:37:21 Mon Dec 19 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -992,6 +992,7 @@
       (setf result (wrap-list result wrap)))
     (make-cscl result :id id)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 26/1/10
 ;;; start with just 3 items/events and successively add new ones until a max of
 ;;; <items>--this can be a list or integer (must be a min of 4)
@@ -1093,7 +1094,7 @@
 ;;; if <auto-inc> we will automatically increment the count of the returned
 ;;; key.
 ;;; <start> and <end> are inclusive.
-(defun hash-least-used (hash &key (start 0) end (ignore) (auto-inc t))
+(defun hash-least-used (hash &key (start 0) end ignore (auto-inc t))
   (unless end
     (setf end (hash-table-count hash)))
   (let ((count most-positive-fixnum)
@@ -1103,7 +1104,15 @@
                  (when (and (>= key start)
                             (<= key end)
                             (not (member key ignore))
-                            (< val count))
+                            ;; MDE Mon Dec 19 19:36:15 2011 -- in order to get
+                            ;; the same result across different lisps, and
+                            ;; bearing in mind that the keys are in any old
+                            ;; order, we choose the key with the lowest value
+                            ;; should several have the same value.
+                            (or 
+                             (and (= val count)
+                                  (< key result))
+                             (< val count)))
                    (setf count val
                          result key)))
              hash)

@@ -671,17 +671,68 @@ rhythm::add-mark: add AT to rest?
 
 ;;; ****m* rhythm/rm-marks
 ;;; FUNCTION
-;;; 
-;;; 
+;;; Remove a specified mark (or a list of specified marks) from the MARKS slot
+;;; of a given rhythm object. If the mark specified is not present in the given
+;;; rhythm object's MARKS slot, a warning is printed. If some marks of a list
+;;; of specified marks are present in the rhythm object's MARKS slot and other
+;;; aren't, those that are will be removed and a warning will be printed for
+;;; the rest.
+;;;
 ;;; ARGUMENTS 
-;;; 
+;;; - A rhythm object.
+;;; - A mark or list of marks.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - A T or NIL to indicate whether a warning is to be printed if the
+;;; specified mark is not present in the given rhythm object's MARKS slot. 
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Always returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method itself returns NIL
+(let ((r (make-rhythm 'q)))
+  (add-mark-once r 'a)
+  (rm-marks r 'a))
 
+=> NIL
+
+;; Adding a list of marks to r, then removing only 's
+(let ((r (make-rhythm 'q)))
+  (loop for m in '(a s pizz col-legno x-head) do 
+       (add-mark-once r m))
+  (rm-marks r 's)
+  (marks r))
+
+=> (X-HEAD COL-LEGNO PIZZ A)
+
+;; Removing a list of marks from r
+(let ((r (make-rhythm 'q)))
+  (loop for m in '(a s pizz col-legno x-head) do 
+       (add-mark-once r m))
+  (rm-marks r '(s a))
+  (marks r))
+
+=> (X-HEAD COL-LEGNO PIZZ)
+
+;; Attempting to remove a mark that isn't present results in a warning
+;; being printed by default
+(let ((r (make-rhythm 'q)))
+  (loop for m in '(a s pizz col-legno x-head) do 
+       (add-mark-once r m))
+  (rm-marks r 'zippy))
+
+=> NIL
+WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A) 
+
+;; Suppress printing the warning when the specified mark isn't present
+(let ((r (make-rhythm 'q)))
+  (loop for m in '(a s pizz col-legno x-head) do 
+       (add-mark-once r m))
+  (rm-marks r 'zippy nil))
+
+=> NIL
 |#
 ;;; SYNOPSIS
 (defmethod rm-marks ((r rhythm) marks &optional (warn t))
@@ -703,16 +754,37 @@ rhythm::add-mark: add AT to rest?
 
 ;;; ****m* rhythm/replace-mark
 ;;; FUNCTION
-;;; 
+;;; Replace a specified mark of a given rhythm object with a second specified
+;;; mark. If a rhythm object contains more than one mark, individual marks can
+;;; be changed without modifying the remaining marks.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rhythm object.
+;;; - The mark to be replaced.
+;;; - The new mark.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - 
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns the new value of the MARKS slot of the given object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Make a rhythm object, add the mark 'a, then replace 'a with 's
+(let ((r (make-rhythm 'q)))
+  (add-mark r 'a)
+  (replace-mark r 'a 's))
+
+=> (S)
+
+;; Make a rhythm object, add a list of marks, replace just the 'pizz mark with
+;; a 'batt mark
+(let ((r (make-rhythm 'q)))
+  (loop for m in '(a s pizz col-legno) do (add-mark-once r m))
+  (replace-mark r 'pizz 'batt))
+
+=> (COL-LEGNO BATT S A)
 
 |#
 ;;; SYNOPSIS

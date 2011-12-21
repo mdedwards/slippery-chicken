@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 10:53:10 Sat Dec 17 2011 ICT
+;;; $$ Last modified: 16:46:15 Wed Dec 21 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -59,10 +59,10 @@
 ;;; format e.g. 00:12.2 
 
 (defun secs-to-mins-secs (seconds &key (separator ":") (same-width nil))
-  (unless (numberp seconds)
-    (error "utilities::secs-to-mins-secs: ~a should be a number." seconds))
+  (unless (and (numberp seconds) (>= seconds 0))
+    (error "utilities::secs-to-mins-secs: ~a should be a number > 0." seconds))
   (multiple-value-bind
-      (minutes seconds)
+        (minutes seconds)
       (floor seconds 60)
     ;; the formatting of the seconds results in rounding up 59.99999 to 60.0
     ;; which is not what we want...  
@@ -71,9 +71,9 @@
       (incf minutes))
     (if same-width
         (format nil "~2,'0d~a~3,2$" minutes separator seconds)
-      (if (> minutes 0)
-          (format nil "~d~a~3,2$" minutes separator seconds)
-        (format nil "~,3f" seconds)))))
+        (if (> minutes 0)
+            (format nil "~d~a~3,2$" minutes separator seconds)
+            (format nil "~,3f" seconds)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1194,6 +1194,9 @@
 ;;; (split-groups 31 10) -> (10 10 10 1)
 
 (defun split-groups (num divider)
+  (unless (and (> num 0) (> divider 0))
+    (error "utilities::split-groups: num (~a) and dividor (~a) should both ~
+            be > 0" num divider))
   (multiple-value-bind
       (div rem)
       (floor num divider)
@@ -1226,6 +1229,8 @@
 ;; low and high are inclusive except if float given: then we can't quite reach
 ;; high.  
 (defun between (low high &optional fixed-random)
+  (unless (> high low)
+    (error "utilities::between: high (~a) should be > low (~a)" high low))
   (if (and (integerp low) (integerp high))
       (+ low (funcall (if fixed-random #'random-rep #'random)
                       (1+ (- high low))))

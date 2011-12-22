@@ -1323,19 +1323,90 @@ NIL
 ;;; ****
   (arithmetic r1 r2 #'+ warn))
 
-;;; ****m* rhythm/subtract
+;;; ****m* rhythm/subtract 
 ;;; 22.12.11 SAR: Added robodoc info
 ;;; FUNCTION
-;;; 
+;;; Create a new rhythm object with a duration that is equal to the difference
+;;; between the duration of two other given rhythm objects.   
+;;;
+;;; NB: This method only returns a single rhythm rather than a list with
+;;; ties. Thus h - e., for example, returns TQ... 
+;;;
+;;; If the resulting duration cannot be presented as a single rhythm, the DATA
+;;; slot of the resulting rhythm object is set to NIL, though the VALUE and
+;;; DURATION slots are still set with the corresponding numeric values. 
+;;;
+;;; If the resulting duration is equal to or less than 0, NIL is returned and
+;;; an optional warning may be printed.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A first rhythm object.
+;;; - A second rhythm object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether a warning is to be printed when the
+;;; resulting duration is less than or equal to 0. Default = 0.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rhythm object if the resulting duration is greater than 0, else NIL and
+;;; the optional warning.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Make a new rhythm object with a duration equal to one quarter minus one
+;; eighth. 
+(let ((r1 (make-rhythm 'q))
+      (r2 (make-rhythm 'e)))
+  (subtract r1 r2))
+
+=> 
+RHYTHM: value: 8.0f0, duration: 0.5, rq: 1/2, is-rest: NIL, score-rthm: 8.0f0, 
+        undotted-value: 8, num-flags: 1, num-dots: 0, is-tied-to: NIL, 
+        is-tied-from: NIL, compound-duration: 0.5, is-grace-note: NIL, 
+        needs-new-note: T, beam: NIL, bracket: NIL, rqq-note: NIL, 
+        rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 8, 
+        tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: E, tag: NIL, 
+data: E 
+
+;; A half minus a dotted eighth is represented as a triplet half
+(let ((r1 (make-rhythm 'h))
+      (r2 (make-rhythm 'e.)))
+  (data (subtract r1 r2)))
+
+=> TQ...
+
+;; If the resulting duration is 0 or less, return NIL, with no warning by
+;; default 
+(let ((r1 (make-rhythm 'e))
+      (r2 (make-rhythm 'q)))
+  (subtract r1 r2))
+
+=> NIL
+
+;; Setting the optional argument to t returns a warning when the resulting
+;; duration is less than 0
+(let ((r1 (make-rhythm 'e))
+      (r2 (make-rhythm 'q)))
+  (subtract r1 r2 t))
+
+=> NIL
+WARNING: rhythm::arithmetic: new duration is -0.5; can't create rhythm
+
+;; Subtracting a septuplet-16th from a quarter results in a duration that
+;; cannot be represented as a single rhythm, therefore setting the DATA to NIL
+;; while VALUE and DURATION are still set.
+(let ((r1 (make-rhythm 4))
+      (r2 (make-rhythm 28)))
+  (print (value (subtract r1 r2)))
+  (print (duration (subtract r1 r2)))
+  (print (data (subtract r1 r2))))
+
+=>
+4.666666666666666 
+0.8571428571428572 
+NIL
 
 |#
 ;;; SYNOPSIS
@@ -1706,34 +1777,70 @@ data: NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****f* rhythm/rhythm-list
+;;; 22.12.11 SAR: Added robodoc info
 ;;; FUNCTION
-;;; rhythm-list: Create a list of rhythms from symbols, possibly involving ties
-;;; and not needing meters etc. (i.e. not as strict as rthm-seq) 
+;;; Create a list of rhythms from symbols, possibly involving ties and not
+;;; needing meters etc. (i.e. not as strict as rthm-seq). 
 ;;;
 ;;; ARGUMENTS  
-;;; - the list of rhythm symbols
-;;; - (optional, default nil) whether to create a circular-sclist from the
-;;;   result (if nil a simple list will be returned).
+;;; - The list of rhythm symbols.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL indicates whether to create a circular-sclist from the
+;;; result. If NIL, a simple list will be returned (default = NIL).
 ;;; 
 ;;; RETURN VALUE   
-;;; a list or circular-sclist of the rhythm objects
+;;; A list or circular-sclist of the rhythm objects.
 ;;; 
 ;;; EXAMPLE
 #|
-(rhythm-list '(q w+e q. h. h+s e.+q) t))
+;; Create a list of rhythm objects
+(rhythm-list '(q w+e q. h.+s e.+ts))
+
+=>(
+RHYTHM: value: 4.0f0, duration: 1.0
+[...]    
+RHYTHM: value: 1.0f0, duration: 4.0
+[...]    
+RHYTHM: value: 8.0f0, duration: 0.5
+[...]    
+RHYTHM: value: 2.6666666666666665, duration: 1.5
+[...]    
+RHYTHM: value: 1.3333333333333333, duration: 3.0
+[...]    
+RHYTHM: value: 16.0f0, duration: 0.25
+[...]    
+RHYTHM: value: 5.333333333333333, duration: 0.75
+[...]    
+RHYTHM: value: 24.0f0, duration: 0.16666666666666666
+)
+
+;; Collect the data from each of the individual rhythm objects in the list. 
+(let ((rl (rhythm-list '(q w+e q. h.+s e.+ts))))
+  (print (loop for r in rl collect (data r))))
+
+=> (Q "W" "E" Q. "H." "S" "E." "TS")
+
+;; Set the optional argument to T to create a circular-sclist instead
+(rhythm-list '(q w+e q. h.+s e.+ts) t)
+
 =>
 CIRCULAR-SCLIST: current 0
-SCLIST: sclist-length: 9, bounds-alert: T, copy: T
-LINKED-NAMED-OBJECT: previous: NIL
-                     this: NIL
-                     next: NIL
+SCLIST: sclist-length: 8, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: NIL, tag: NIL, 
 data: (
-RHYTHM: value: 4.0f0
-.....
+[...]
+)
+
+;; Create a circular-sclist and check that it's a circular-sclist using cscl-p 
+(let ((rl (rhythm-list '(q w+e q. h.+s e.+ts) t)))
+  (cscl-p rl))
+
+=> T
+
 |#
 ;;; 
-;;; DATE  4.8.10  
 ;;; SYNOPSIS
 (defun rhythm-list (rthms &optional circular)
 ;;; ****

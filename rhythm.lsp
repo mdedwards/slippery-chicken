@@ -595,6 +595,7 @@ rhythm::add-mark: add AT to rest?
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 26.7.11 (Pula)
 ;;; ****m* rhythm/add-mark-once
+;;; 19.12.11 SAR: Added robodoc info
 ;;; FUNCTION
 ;;; Apply the given mark to the given rhythm object, but do so only if the
 ;;; given rhythm object does not yet have the mark.
@@ -670,6 +671,7 @@ rhythm::add-mark: add AT to rest?
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rhythm/rm-marks
+;;; 19.12.11 SAR: Added robodoc info
 ;;; FUNCTION
 ;;; Remove a specified mark (or a list of specified marks) from the MARKS slot
 ;;; of a given rhythm object. If the mark specified is not present in the given
@@ -753,6 +755,7 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rhythm/replace-mark
+;;; 19.12.11 SAR: Added robodoc info
 ;;; FUNCTION
 ;;; Replace a specified mark of a given rhythm object with a second specified
 ;;; mark. If a rhythm object contains more than one mark, individual marks can
@@ -839,6 +842,7 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rhythm/has-mark
+;;; 19.12.11 SAR: Added robodoc info
 ;;; FUNCTION
 ;;; Check to see if a given rhythm object posseses a specified mark.
 ;;; 
@@ -847,9 +851,9 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 ;;; - A mark.
 ;;; 
 ;;; RETURN VALUE  
-;;; Returns the mark sought as a single-item list if the given object does
-;;; indeed possess the specified mark in its MARKS slot; otherwise, returns
-;;; NIL. 
+;;; If the specified mark is indeed found in the MARKS slot of the given rhythm
+;;; object, the tail of the list of marks contained in that slot is returned;
+;;; otherwise NIL is returned.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -877,17 +881,44 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 
 ;;; 5.4.11
 ;;; ****m* rhythm/accented-p
+;;; 22.12.11 SAR: Added robodoc info
 ;;; FUNCTION
-;;; 
+;;; Check the MARKS slot of a given rhythm object to determine if it possesses
+;;; an accent mark. The rhythm object may also possess other marks as well. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rhythm object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; If the accent mark ('a) is indeed found in the MARKS slot of the given
+;;; rhythm object, the tail of the list of marks contained in that slot is
+;;; returned; otherwise NIL is returned.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Make a rhythm object, add an accent, and test for the presence of the accent
+(let ((r (make-rhythm 'q)))
+  (add-mark-once r 'a)
+  (accented-p r))
+
+=> (A)
+
+;; Check if an accent mark is among all marks in the MARKS slot
+(let ((r (make-rhythm 'q)))
+  (add-mark-once r 's)
+  (add-mark-once r 'a)
+  (accented-p r))
+
+=> (A S)
+
+;; Add an accent and staccato, then remove the accent and test for it
+(let ((r (make-rhythm 'q)))
+  (add-mark-once r 'a)
+  (add-mark-once r 's)
+  (rm-marks r 'a)
+  (accented-p r))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -898,17 +929,43 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rhythm/begin-slur-p
+;;; 22.12.11 SAR: Added robodoc info
 ;;; FUNCTION
-;;; 
+;;; Check to see if the MARKS slot of a given rhythm object contains a mark for
+;;; the beginning of a slur ('beg-sl). The rhythm object may also possess other
+;;; marks as well. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rhythm object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; If the 'beg-sl mark is indeed found in the MARKS slot of the given rhythm
+;;; object, the tail of the list of marks contained in that slot is returned;
+;;; otherwise NIL is returned.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a rhythm object, add a 'beg-sl mark and check for it
+(let ((r (make-rhythm 'q)))
+  (add-mark-once r 'beg-sl)
+  (begin-slur-p r))
+
+=> (BEG-SL)
+
+;; Add several marks to a rhythm object and check for 'beg-sl
+(let ((r (make-rhythm 'q)))
+  (loop for m in '(a s beg-sl) do (add-mark-once r m))
+  (begin-slur-p r))
+
+=> (BEG-SL S A)
+
+;; Add a 'beg-sl mark to a rhythm object, then delete it and check for it
+(let ((r (make-rhythm 'q)))
+  (add-mark-once r 'beg-sl)
+  (rm-marks r 'beg-sl)
+  (begin-slur-p r))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -919,17 +976,43 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rhythm/end-slur-p
+;;; 22.12.11 SAR: Added robodoc info
 ;;; FUNCTION
-;;; 
+;;; Check to see if the MARKS slot of a given rhythm object contains a mark for
+;;; the ending of a slur ('end-sl). The rhythm object may also possess other
+;;; marks as well.  
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rhythm object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; If the 'end-sl mark is indeed found in the MARKS slot of the given rhythm
+;;; object, the tail of the list of marks contained in that slot is returned;
+;;; otherwise NIL is returned.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a rhythm object, add a 'end-sl mark and check for it
+(let ((r (make-rhythm 'q)))
+  (add-mark-once r 'end-sl)
+  (end-slur-p r))
+
+=> (END-SL)
+
+;; Add several marks to a rhythm object and check for 'end-sl
+(let ((r (make-rhythm 'q)))
+  (loop for m in '(a s end-sl) do (add-mark-once r m))
+  (end-slur-p r))
+
+=> (END-SL S A)
+
+;; Add an 'end-sl mark to a rhythm object, then delete it and check for it
+(let ((r (make-rhythm 'q)))
+  (add-mark-once r 'end-sl)
+  (rm-marks r 'end-sl)
+  (end-slur-p r))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -948,16 +1031,38 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 
 ;;; ****m* rhythm/delete-beam
 ;;; FUNCTION
-;;; 
+;;; Removes indication for the start (1) or end (0) of a beam from the BEAM
+;;; slot of a given rhythm object, replacing them with NIL.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rhythm object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Always returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Manually set the beam of a rhythm object and delete it to see result NIL
+(let ((r (make-rhythm 'e)))
+  (setf (beam r) 1)
+  (delete-beam r))
+
+=> NIL
+
+;; Make a rthm-seq-bar object with beam indications, then check the BEAM slot
+;; of each rhythm object in the rthm-seq-bar object.
+(let ((rsb (make-rthm-seq-bar '((2 4) - s s e - q))))
+  (loop for r in (rhythms rsb) collect (beam r)))
+
+=> (1 NIL 0 NIL)
+
+;; Make a rthm-seq-bar object with beam indications, delete them all, then
+;; check the beam slot of each rhythm object in the rthm-seq-bar object.
+(let ((rsb (make-rthm-seq-bar '((2 4) - s s e - q))))
+  (loop for r in (rhythms rsb) do (delete-beam r))
+  (loop for r in (rhythms rsb) collect (beam r)))
+
+=> (NIL NIL NIL NIL)
 
 |#
 ;;; SYNOPSIS

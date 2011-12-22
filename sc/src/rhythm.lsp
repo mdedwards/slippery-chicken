@@ -1030,6 +1030,7 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rhythm/delete-beam
+;;; 22.12.11 SAR: Added robodoc info
 ;;; FUNCTION
 ;;; Removes indication for the start (1) or end (0) of a beam from the BEAM
 ;;; slot of a given rhythm object, replacing them with NIL.
@@ -1085,17 +1086,36 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rhythm/duration-secs
+;;; 22.12.11 SAR: Added robodoc info
 ;;; FUNCTION
-;;; 
+;;; Determine the absolute duration in seconds of a given rhythm object at a
+;;; given quarter-note tempo. If no tempo is specified, a tempo of 60 is
+;;; assumed.  
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rhythm object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - A numerical tempo value based on quarter-note beats per minute.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A real number (floating point) representing the absolute duration of the
+;;; given rhythm object in seconds.  
 ;;; 
 ;;; EXAMPLE
 #|
+;; Determine the duration in seconds of a quarter note with a default tempo of
+;;; quarter = 60
+(let ((r (make-rhythm 'q)))
+  (duration-secs r))
+
+=> 1.0
+
+;; Specifying a different tempo results in a different duration in seconds 
+(let ((r (make-rhythm 'q)))
+  (duration-secs r 96))
+
+=> 0.625
 
 |#
 ;;; SYNOPSIS
@@ -1234,21 +1254,68 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; NB these functions only return a single rhythm, rather than a list with
-;;; ties so e.g. q+s returns tq...
-
 ;;; ****m* rhythm/add
+;;; 22.12.11 SAR: Added robodoc info
 ;;; FUNCTION
-;;; 
+;;; Create a new rhythm object with a duration that is equal to the sum of the
+;;; duration of two other given rhythm objects. 
+;;;
+;;; NB: This method only returns a single rhythm rather than a list with
+;;; ties. Thus q+s, for example, returns TQ... 
+;;;
+;;; If the resulting duration cannot be presented as a single rhythm, the DATA
+;;; slot of the resulting rhythm object is set to NIL, though the VALUE and
+;;; DURATION slots are still set with the corresponding numeric values. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A first rhythm object.
+;;; - A second rhythm object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; T or NIL to indicate whether a warning is issued when a rhythm cannot be
+;;; made because the resulting value is 0 or a negative duration. Default =
+;;; NIL (no warning issued).
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rhythm object. Returns NIL when the object cannot be made.
 ;;; 
 ;;; EXAMPLE
 #|
+;; A quarter plus an eighth makes a dotted quarter
+(let ((r1 (make-rhythm 'q))
+      (r2 (make-rhythm 'e)))
+  (add r1 r2))
+
+=>
+RHYTHM: value: 2.6666666666666665, duration: 1.5, rq: 3/2, is-rest: NIL, score-rthm: 4.0f0., 
+        undotted-value: 4, num-flags: 0, num-dots: 1, is-tied-to: NIL, 
+        is-tied-from: NIL, compound-duration: 1.5, is-grace-note: NIL, 
+        needs-new-note: T, beam: NIL, bracket: NIL, rqq-note: NIL, 
+        rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 4, 
+        tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: Q., tag: NIL, 
+data: Q.
+
+;; A quarter plus a triplet-eighth is presented as a triplet-half
+(let ((r1 (make-rhythm 'q))
+      (r2 (make-rhythm 'te)))
+  (data (add r1 r2)))
+
+=> TH
+
+;; A quarter plus a septuplet-16th cannot be represented as a single rhythm and
+;; therefore produces an object with a VALUE and DURATION but no DATA
+(let ((r1 (make-rhythm 4))
+      (r2 (make-rhythm 28)))
+  (print (value (add r1 r2)))
+  (print (duration (add r1 r2)))
+  (print (data (add r1 r2))))
+
+=>
+3.5 
+1.1428571428571428 
+NIL
 
 |#
 ;;; SYNOPSIS
@@ -1257,6 +1324,7 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
   (arithmetic r1 r2 #'+ warn))
 
 ;;; ****m* rhythm/subtract
+;;; 22.12.11 SAR: Added robodoc info
 ;;; FUNCTION
 ;;; 
 ;;; 
@@ -1291,7 +1359,6 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; if duration t then rthm is a duration in secs, not a known rhythm like 'e
 ;;; 13.12.11 SAR: Added ROBODoc info
 ;;; ****f* rhythm/make-rhythm
 ;;; FUNCTION

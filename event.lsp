@@ -177,21 +177,36 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/set-midi-channel
+;;; ****m* event/set-midi-channel
 ;;; FUNCTION
-;;; 
+;;; Set the MIDI-channel and microtonal MIDI-channel for the pitch object
+;;; within a given event object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
+;;; - A whole number indicating the MIDI-channel to be used for playback of
+;;; this event object.
+;;; - A whole number indicating the MIDI-channel to be used for playback of the
+;;; microtonal pitch material of this event.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the value of the MIDI-channel setting (a whole number) if the
+;;; MIDI-channel slot has been set, otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Unless specified the MIDI channel of a newly created event object defaults
+;;; to NIL.
+(let ((e (make-event 'c4 'q)))
+  (midi-channel (pitch-or-chord e)))
+
+=> NIL
+
+(let ((e (make-event 'c4 'q)))
+  (set-midi-channel e 7 8)
+  (midi-channel (pitch-or-chord e)))
+
+=> 7
 
 |#
 ;;; SYNOPSIS
@@ -205,7 +220,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/get-midi-channel
+;;; ****m* event/get-midi-channel
 ;;; FUNCTION
 ;;; 
 ;;; 
@@ -2073,23 +2088,45 @@ W
 ;;; ****f* event/make-punctuation-events
 ;;; Thu Dec 22 20:53:16 EST 2011 SAR: Added robodoc info
 ;;; FUNCTION
-;;; Given a list of numbers and a rhythm, create a list of single rhythms
-;;; surrounded by rests at distances indicated by the numbers.
-;;; e.g. (make-punctuation-events '(3 5 8) 's) -> s (e) s (q) s (e.) (q)
-;;; notes can be a single note or a list of notes.  If the latter then they'll
-;;; be popped off one after the other.
+;;; Given a list of numbers, a rhythm, and a note name or list of note names,
+;;; create a new list of single rhythms separated by rests. 
+;;;
+;;; The rhythm specified serves as the basis for the new list. The numbers
+;;; specified represent groupings in the new list that are each made up of one 
+;;; rhythm followed by rests. Each consecutive grouping in the new list has the
+;;; length of each consecutive number in the numbers list multiplied by the
+;;; rhythm specified. 
+;;;
+;;; Notes can be a single note or a list of notes. If the latter, they'll be
+;;; used one after the other, repeating the final note once reached.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list of grouping lengths.
+;;; - A rhythm.
+;;; - A note name or list of note names.
 ;;; 
 ;;; RETURN VALUE
 ;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a list of three groups that are 2, 3, and 5 16th-notes long, with the
+;; first note of each grouping being a C4, then print-simple it's contents. 
+(let ((pe (make-punctuation-events '(2 3 5) 's 'c4)))
+  (loop for e in pe do (print-simple e)))
+
+=>
+C4 S, rest S, C4 S, rest S, rest S, C4 S, rest S, rest S, rest S, rest S,
+
+;; Create a list of "punctuated" events using a list of note names. Once the
+;; final note name is reached, it is repeated for all remaining non-rest
+;; rhythms.  
+(let ((pe (make-punctuation-events '(2 3 5 8) 'q '(c4 e4))))
+  (loop for e in pe do (print-simple e)))
+
+=>
+C4 Q, rest Q, E4 Q, rest Q, rest Q, E4 Q, rest Q, rest Q, rest Q, rest Q, E4 Q,
+rest Q, rest Q, rest Q, rest Q, rest Q, rest Q, rest Q, 
 
 |#
 ;;; SYNOPSIS
@@ -2109,25 +2146,42 @@ W
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; makes a list of events with the given data where a list indicates note (or
-;;; chord) and rhythm and a single datum is the rhythm of a rest
-;;; e.g. (make-events '((g4 q) e s ((fs3 g4) s)))
-
-;;; ****f*event/make-events
+;;; ****f* event/make-events
+;;; SAR Fri Dec 23 13:41:36 EST 2011: Added robodoc info
 ;;; FUNCTION
-;;; 
+;;; Make a list of events using the specified data, whereby a list indicates a
+;;; note (or chord) and its rhythm and a single datum is the rhythm of a rest.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
+;;; - A list.
+;;;  
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A whole number indicating the MIDI channel on which the event is to be
+;;; played. 
+;;; - A whole number indicating the MIDI channel on which microtonal pitches of
+;;; the event are to be played.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a list of events including a quarter note, two rests, and a chord,
+;; then print-simple its contents
+(let ((e (make-events '((g4 q) e s ((d4 fs4 a4) s)))))
+  (loop for i in e do (print-simple i)))
+
+=>
+G4 Q, rest E, rest S, (D4 FS4 A4) S,
+
+;; Create a list of events to be played on MIDI-channel 3, then check the MIDI
+;; channels of each sounding note
+(let ((e (make-events '((g4 q) e s (a4 s) q e (b4 s)) 3)))
+  (loop for i in e
+     when (not (is-rest i))
+     collect (midi-channel (pitch-or-chord i))))
+
+=> (3 3 3)
 
 |#
 ;;; SYNOPSIS
@@ -2159,27 +2213,47 @@ W
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 23.3.11: like make-events but rhythms and pitches given in separate lists
-;;; so that e.g. we can make use of ties with '+'.  nil or r given as a pitch
-;;; means it will be a rest otherwise e.g. 'cs4 will set a single pitch or
-;;; e.g. '(cs4 ds5) will set a chord.  Pitches for tied notes only have to be
-;;; given once.
-
-;;; ****f*event/make-events2
+;;; ****f* event/make-events2
+;;; SAR Fri Dec 23 13:41:36 EST 2011: Added robodoc info
 ;;; FUNCTION
-;;; 
+;;; Like make-events, but rhythms and pitches are given in separate lists to
+;;; allow for rhythms with ties using "+" etc. "Nil" or "r" given in the pitch
+;;; list indicates a rest; otherwise, a single note name will set a single
+;;; pitch while a list of note names will set a chord. Pitches for tied notes
+;;; only have to be given once.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list of rhythms.
+;;; - A list of note names (including NIL or R for rests).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A whole number value to indicate the MIDI channel on which to play back
+;;; the event.
+;;; - A whole number value to indicate the MIDI channel on which to play back
+;;; microtonal pitch material for the event.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a make-events2 list and use the print-simple function to retrieve its
+;; contents. 
+(let ((e (make-events2 '(q e e. h+s 32 q+te) '(cs4 d4 (e4 g4 b5) nil a3 r))))
+  (loop for i in e do (print-simple i)))
+
+=>
+CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
+
+;; Create a list of events using make-events2, indicating they be played back
+;; on MIDI-channel 3, then print the corresponding slots to check it
+(let ((e (make-events2 '(q e. h+s 32 q+te) '(cs4 b5 nil a3 r) 3)))
+  (loop for i in e
+     when (not (is-rest i))
+     collect (midi-channel (pitch-or-chord i))))
+
+=>
+(3 3 3)
 
 |#
 ;;; SYNOPSIS
@@ -2205,21 +2279,42 @@ W
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****f*event/event-p
+;;; ****f* event/event-p
 ;;; FUNCTION
-;;; 
+;;; Test to confirm that a given object is an event object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An object.
 ;;; 
 ;;; RETURN VALUE
+;;; T if the tested object is indeed an event object, otherwise NIL.
 ;;; 
-;;; 
-;;; EXAMPLE
+;;; EXAMPLE 
 #|
+;; Create an event and then test whether it is an event object
+(let ((e (make-event 'c4 'q)))
+  (event-p e))
+
+=> T
+
+;; Create a non-event object and test whether it is an event object
+(let ((e (make-rhythm 4)))
+  (event-p e))
+
+=> NIL
+
+;; The make-rest function also creates an event
+(let ((e (make-rest 4)))
+  (event-p e))
+
+=> T
+
+;; The make-punctuation-events, make-events and make-events2 functions create
+;; lists of events, not events themselves.
+(let ((e (make-events '((g4 q) e s))))
+  (event-p e))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -2228,15 +2323,11 @@ W
   (typep thing 'event))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; ****f*event/sort-event-list
+;;; ****f* event/sort-event-list
 ;;; FUNCTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
 ;;; 
 ;;; 
 ;;; RETURN VALUE
@@ -2248,13 +2339,13 @@ W
 |#
 ;;; SYNOPSIS
 (defun sort-event-list (event-list)
+;;; ****
   (sort event-list #'(lambda (x y) (< (start-time x) (start-time y)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****f* event/wrap-events-list
 ;;; FUNCTION
-;;; wrap-events-list:
 ;;; Given a list of time-ascending events, wrap the list at a given point so we
 ;;; start there, go to the end, and keep going where the last event
 ;;; would have ended, using the start times added to this from those we skipped
@@ -2271,8 +2362,6 @@ W
 ;;; 
 ;;; RETURN VALUE  
 ;;; flat list of wrapped and time-adjusted events
-;;; 
-;;; DATE: 12.8.2010
 ;;; 
 ;;; SYNOPSIS
 (defun wrap-events-list (events start-at &key (time nil))
@@ -2313,25 +2402,31 @@ W
              last-start (start-time event))
        (push event result))
     (nreverse result)))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****f*event/is-dynamic
+;;; ****f* event/is-dynamic
 ;;; FUNCTION
-;;; 
+;;; Determine whether a specified symbol belongs to the list of predefined
+;;; dynamic marks.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A symbol.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; NIL if the specified mark is not found on the predifined list of possible
+;;; dynamic marks, otherwise the tail of the list of possible dynamics starting
+;;; with the given dynamic.
 ;;; 
 ;;; EXAMPLE
 #|
+(is-dynamic 'pizz)
+
+=> NIL
+
+(is-dynamic 'f)
+
+=> (F FF FFF FFFF)
 
 |#
 ;;; SYNOPSIS

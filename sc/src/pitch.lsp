@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 10:49:26 Sat Dec 17 2011 ICT
+;;; $$ Last modified: 18:50:17 Fri Dec 23 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -546,6 +546,7 @@
 
 (defmethod add-mark ((p pitch) mark &optional warn-rest)
   (declare (ignore warn-rest))
+  (validate-mark mark)
   (push mark (marks p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

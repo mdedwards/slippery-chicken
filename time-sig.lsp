@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    12th February 2001
 ;;;
-;;; $$ Last modified: 19:01:44 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 16:46:08 Fri Dec 23 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -164,12 +164,21 @@
   (format nil "~a ~a" (num ts) (denom ts)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; NB Always returns a new time-sig.
+;;; NB Always returns a new time-sig.  we divide the denominator by the scaler
+;;; rather than the numerator * the scaler, thus preserving meter (duple,
+;;; triple etc.) 
 
 (defmethod scale ((ts time-sig) scaler
                   &optional ignore1 ignore2 ignore3)
   (declare (ignore ignore1) (ignore ignore2) (ignore ignore3))
-  (make-time-sig (list (num ts) (/ (denom ts) scaler))))
+  (let ((denom-scaled (/ (denom ts) scaler)))
+    ;; for now we force denominators of 2,4,8... so not allowing e.g. 4/5 a la
+    ;; Ferneyhough 
+    (unless (power-of-2 denom-scaled)
+      (error "~a~&time-sig::scale: using a scaler of ~a, can't create a ~
+              time signature with a denominator of ~a" ts scaler denom-scaled))
+    ;; got to floor it as we might have a float e.g. 8.0
+    (make-time-sig (list (num ts) (floor denom-scaled)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -1816,8 +1816,9 @@
 ;;; - keyword argument :start-time. The start time of the event in seconds.
 ;;; Default = NIL.
 ;;; - keyword argument :is-rest. Set to T or NIL to indicate whether or not the
-;;; given event is a rest. Default = NIL. NB: If the given event is set to be a
-;;; rest, the pitch-or-chord slot must be set to NIL.
+;;; given event is a rest. Default = NIL. NB: The make-rest method is better
+;;; suited to making rests; however, if using make-event to do so, the
+;;; pitch-or-chord slot must be set to NIL. 
 ;;; - keyword argument :is-tied-to. This argument is for score output and
 ;;; playing purposes. Set to T or NIL to indicate whether this event is tied to
 ;;; the previous event (i.e. it won't sound indpendently). Default = NIL. 
@@ -1958,21 +1959,69 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****f*event/make-rest
+;;; ****f* event/make-rest
+;;; Thu Dec 22 20:53:16 EST 2011 SAR: Added robodoc info
 ;;; FUNCTION
-;;; 
+;;; Create an event object that consists of a rest.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A rhythm (duration).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :start-time. A number representing the start-time of the
+;;; event in seconds.
+;;; - keyword argument :duration. T or NIL. T indicates that the duration given
+;;; is a value of absolute seconds rather than a known rhythm
+;;; (e.g. 'e). Default = NIL.
+;;; - keyword duration :tempo. Beats per minute. Default = 60.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - An event object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Make an event object consisting of a quarter rest
+(make-rest 4)
+
+=> 
+EVENT: start-time: NIL, end-time: NIL, 
+       duration-in-tempo: 0.0, 
+       compound-duration-in-tempo: 0.0, 
+       amplitude: 0.7, score-marks: NIL,  
+       bar-num: -1, cmn-objects-before: NIL, 
+       tempo-change: NIL 
+       instrument-change: NIL 
+       display-tempo: NIL, start-time-qtrs: -1, 
+       midi-time-sig: NIL, midi-program-changes: NIL, 
+       8va: 0
+       pitch-or-chord: NIL
+       written-pitch-or-chord: NIL
+RHYTHM: value: 4.0, duration: 1.0, rq: 1, is-rest: T, score-rthm: 4.0f0, 
+        undotted-value: 4, num-flags: 0, num-dots: 0, is-tied-to: NIL, 
+        is-tied-from: NIL, compound-duration: 1.0, is-grace-note: NIL, 
+        needs-new-note: NIL, beam: NIL, bracket: NIL, rqq-note: NIL, 
+        rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 4, 
+        tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: 4, tag: NIL, 
+data: 4
+
+;; Make an event object consisting of 4 seconds of rest (rather than a quarter;
+;; indicated by the :duration t) starting at time-point 13.7 seconds, then
+;; print the corresponding slot values.
+(let ((e (make-rest 4 :start-time 13.7 :duration t)))
+  (print (is-rest e))
+  (print (data e))
+  (print (duration e))
+  (print (value e))
+  (print (start-time e)))
+
+=>
+T 
+W 
+4.0 
+1.0f0 
+13.7
 
 |#
 ;;; SYNOPSIS
@@ -2021,15 +2070,14 @@ T
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 
-;;; Given a list of numbers and a rhythm, create single rhythms surrounded by
-;;; rests at distances indicated by the numbers
+;;; ****f* event/make-punctuation-events
+;;; Thu Dec 22 20:53:16 EST 2011 SAR: Added robodoc info
+;;; FUNCTION
+;;; Given a list of numbers and a rhythm, create a list of single rhythms
+;;; surrounded by rests at distances indicated by the numbers.
 ;;; e.g. (make-punctuation-events '(3 5 8) 's) -> s (e) s (q) s (e.) (q)
 ;;; notes can be a single note or a list of notes.  If the latter then they'll
 ;;; be popped off one after the other.
-
-;;; ****f*event/make-punctuation-events
-;;; FUNCTION
-;;; 
 ;;; 
 ;;; ARGUMENTS
 ;;; 
@@ -2038,7 +2086,7 @@ T
 ;;; 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|

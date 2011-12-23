@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    12th February 2001
 ;;;
-;;; $$ Last modified: 16:46:08 Fri Dec 23 2011 ICT
+;;; $$ Last modified: 17:25:18 Fri Dec 23 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -164,22 +164,32 @@
   (format nil "~a ~a" (num ts) (denom ts)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; NB Always returns a new time-sig.  we divide the denominator by the scaler
-;;; rather than the numerator * the scaler, thus preserving meter (duple,
-;;; triple etc.) 
+;;; NB Always returns a new time-sig.  By default we divide the denominator by
+;;; the scaler rather than the numerator * the scaler, thus preserving meter
+;;; (duple, triple etc.).  If that doesn't give us a 'normal' meter we'll do
+;;; numerator * scaler instead.  
 
 (defmethod scale ((ts time-sig) scaler
-                  &optional ignore1 ignore2 ignore3)
-  (declare (ignore ignore1) (ignore ignore2) (ignore ignore3))
-  (let ((denom-scaled (/ (denom ts) scaler)))
+                  &optional (preserve-meter t) ignore1 ignore2)
+  (declare (ignore ignore1) (ignore ignore2))
+  (let ((denom-scaled (/ (denom ts) scaler))
+        (num-scaled (* (num ts) scaler))
+        tmp)
     ;; for now we force denominators of 2,4,8... so not allowing e.g. 4/5 a la
     ;; Ferneyhough 
-    (unless (power-of-2 denom-scaled)
-      (error "~a~&time-sig::scale: using a scaler of ~a, can't create a ~
-              time signature with a denominator of ~a" ts scaler denom-scaled))
-    ;; got to floor it as we might have a float e.g. 8.0
-    (make-time-sig (list (num ts) (floor denom-scaled)))))
-
+    (cond ((and preserve-meter (power-of-2 denom-scaled))
+           ;; got to floor it as we might have a float e.g. 8.0
+           (make-time-sig (list (num ts) (floor denom-scaled))))
+          ((and (> num-scaled 0) (float-int-p num-scaled))
+           (setf num-scaled (floor num-scaled)
+                 tmp (denom ts))
+           (when (= num-scaled 1)
+             (setf num-scaled 2
+                   tmp (* tmp 2)))
+           (make-time-sig (list num-scaled tmp)))
+          (t (error "~a~&time-sig::scale: using a scaler of ~a, can't create a ~
+                     valid new time signature" ts scaler)))))
+          
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod is-compound ((ts time-sig))

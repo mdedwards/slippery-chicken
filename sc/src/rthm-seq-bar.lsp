@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 18:58:55 Wed Dec 14 2011 ICT
+;;; $$ Last modified: 17:20:45 Fri Dec 23 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1601,7 +1601,8 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; NB Always returns a new rsb
-;;; Just re-creates scaled rhythms with beams etc. where appropriate 
+;;; Just re-creates scaled rhythms with beams etc. where appropriate.
+;;; See time-sig::scale for details on how we create the new meter.
 
 ;;; ****m* rthm-seq-bar/scale
 ;;; Wed Dec 14 17:52:07 GMT 2011 SAR: Added robodoc info
@@ -1620,10 +1621,10 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
 |#
 ;;; SYNOPSIS
 (defmethod scale ((rsb rthm-seq-bar) scaler
-                  &optional ignore1 ignore2 ignore3)
+                  &optional (preserve-meter t) ignore1 ignore2)
 ;;; ****
-  (declare (ignore ignore1) (ignore ignore2) (ignore ignore3))
-  (let* ((new-time-sig (scale (get-time-sig rsb) scaler))
+  (declare (ignore ignore1) (ignore ignore2))
+  (let* ((new-time-sig (scale (get-time-sig rsb) scaler preserve-meter))
          (result (make-rest-bar new-time-sig (write-time-sig rsb))))
     (setf (bar-num result) (bar-num rsb)
           (write-bar-num result) (write-bar-num rsb)

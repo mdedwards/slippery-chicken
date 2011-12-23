@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 17:38:50 Fri Dec 23 2011 ICT
+;;; $$ Last modified: 18:58:10 Fri Dec 23 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -515,7 +515,9 @@
 ;;; A warning is printed if the same mark is added to the same rhythm object
 ;;; more than once. 
 ;;;
-;;; NB: This method does not check to see if the mark added is a valid mark. 
+;;; NB: This method checks to see if the mark added is a valid mark and will
+;;; warn if it doesn't exist (but it will still add it, in case you have your
+;;; own processing logic for it).
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rhythm object.
@@ -589,6 +591,11 @@ rhythm::add-mark: add AT to rest?
     (when (has-mark r mark)
       (warn "rhythm::add-mark: ~a already present but adding again!: ~a"
             mark r))
+    ;; MDE Fri Dec 23 18:44:20 2011 -- check marks exist now, so as to avoid
+    ;; surprises down the line. NB even when a mark doesn't exist in CMN or LP
+    ;; the following calls should work as they'll return "" i.e. there should
+    ;; be a case for them even if we can't create them.
+    (validate-mark mark)
     (push mark (marks r))
     t))
 
@@ -1874,6 +1881,17 @@ data: (
 
 (defun rhythms-as-symbols (rthms)
   (loop for r in rthms collect (data r)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun validate-mark (mark)
+  (unless (lp-get-mark mark :silent t)
+    (warn "~&rhythm::validate-mark: no Lilypond mark for ~a (but ~
+           adding anyway)."
+          mark))
+  (unless (cmn::get-cmn-marks mark :silent t)
+    (warn "~&rhythm::validate-mark: no CMN mark for ~a (but adding anyway)."
+          mark)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF rhythm.lsp

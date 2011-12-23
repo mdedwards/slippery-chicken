@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 18:36:28 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 18:41:01 Fri Dec 23 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -65,11 +65,13 @@
 ;;; lp-get-mark:
 ;;; Translation function for Lilypond marks (dynamics, accents, etc.).  Not
 ;;; generally called by the user but the list of symbols that can be used will
-;;; be useful.
-(defun lp-get-mark (mark &optional (num-flags 0))
+;;; be useful.  If <silent> then non-existing marks will not produce
+;;; warnings/errors (but we'll return nil). 
+(defun lp-get-mark (mark &key (num-flags 0) silent)
   (flet ((no-lp-mark (mark)
-           (warn "lilypond:lp-get-mark: Sorry but ~a is not yet available ~
-                  for sc->Lilypond; ignoring" mark)
+           (when silent
+             (warn "lilypond:lp-get-mark: Sorry but ~a is not yet available ~
+                    for sc->Lilypond; ignoring" mark))
            ""))
     (when mark
       (typecase mark
@@ -199,7 +201,8 @@
            (uc "\\unaCorda ")
            (tc "\\treCorde ")
 ;;; ****
-           (t (error "cmn::get-marks: unrecognised mark: ~a" mark))))
+           (t (unless silent
+                (error "lilypond::lp-get-mark: unrecognised mark: ~a" mark)))))
         ;; 25.6.11 a 2 element list will generate a 'transition arrow' with the
         ;; first element as the starting text and the second as end text.  The
         ;; elements will be converted to lowercase strings unless they're
@@ -231,8 +234,9 @@
            ;; 3/11/11 sometimes we just want to insert text as given, e.g. with
            ;; funny markup code
            (text (second mark))
-           (t (error "lilypond::lp-get-mark: unrecognised mark as list: ~a"
-                     mark))))
+           (t (unless silent
+                (error "lilypond::lp-get-mark: unrecognised mark as list: ~a"
+                       mark)))))
         ;; 27.5.11: use expicit \markup command instead of ^
         ;; and here's a quick hack: put all strings up or down according to
         ;; whether there's a ^ or _ as first char, or if neither, it's up (^)
@@ -247,7 +251,8 @@
         ;; if it's a list then it's a bunch of arguments to sc-cmn-text
         ;; otherwise it might be a mark (e.g. text) already
         ;; ignore cmn stuff but warn
-        (t (warn "lilypond::get-lp-mark: unknown mark: ~a" mark))))))
+        (t (unless silent
+             (warn "lilypond::get-lp-mark: unknown mark: ~a" mark)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

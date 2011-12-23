@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 12:46:04 Thu Nov  3 2011 GMT
+;;; $$ Last modified: 18:48:17 Fri Dec 23 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -174,6 +174,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun get-cmn-marks (mark &key
+                      silent
                       (dx 0.0)
                       (dy 0.0)
                       text
@@ -184,9 +185,10 @@
   ;; (declare (special accent staccato tenuto))
   ;; (print text)
   (flet ((no-cmn-mark (mark)
-           (warn "cmn:get-cmn-marks: Sorry but ~a is not yet available ~
-                  for cmn output; ignoring" mark)
-           nil))
+           (unless silent
+             (warn "cmn:get-cmn-marks: Sorry but ~a is not yet available ~
+                    for cmn output; ignoring" mark))
+           ""))
     (when mark
       (setf mark (sc::rm-package mark :cmn))
       (let ((the-text (when text (sc-cmn-text text :dy text-dy :dx text-dx 
@@ -326,7 +328,8 @@
              (ped-up (list (-pedal)))
              (uc (list (sc-cmn-text "una corda")))
              (tc (list (sc-cmn-text "tre corde")))
-             (t (error "cmn::get-cmn-marks: unrecognised mark: ~a" mark))))
+             (t (unless silent
+                  (error "cmn::get-cmn-marks: unrecognised mark: ~a" mark)))))
           (string (list (sc-cmn-text mark)))
           ;; if it's a list then it's usually a bunch of arguments to
           ;; sc-cmn-text 

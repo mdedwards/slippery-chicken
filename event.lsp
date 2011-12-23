@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:14:22 Sat Dec 17 2011 ICT
+;;; $$ Last modified: 18:41:52 Fri Dec 23 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1269,7 +1269,7 @@
           (loop for mark in (move-to-end
                              'end-8va 
                              (move-to-end 'end-8vb (marks e)))
-             for lp-mark = (lp-get-mark mark (num-flags e))
+             for lp-mark = (lp-get-mark mark :num-flags (num-flags e))
              do
              (when lp-mark
                (push lp-mark result))))
@@ -1903,9 +1903,9 @@ W
 ;; MIDI channel 1 and has an amplitude of 0.5, then print these values by
 ;; accessing the corresponding slots.
 (let ((e (make-event 'c4 4 
-		     :is-tied-to t 
-		     :midi-channel 1 
-		     :amplitude 0.5)))
+                     :is-tied-to t 
+                     :midi-channel 1 
+                     :amplitude 0.5)))
   (print (is-tied-to e))
   (print (midi-channel (pitch-or-chord e)))
   (print (amplitude e)))

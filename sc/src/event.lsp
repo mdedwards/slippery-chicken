@@ -12,7 +12,7 @@
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
 ;;; Purpose:          Implementation of the event class which holds data for
-;;;                   the contstruction of an audible event, be it a midi note,
+;;;                   the construction of an audible event, be it a midi note,
 ;;;                   a sample (with corresponding sampling-rate conversion
 ;;;                   factor) or chord of these types.
 ;;;
@@ -1802,40 +1802,132 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****f* event/make-event
+;;; SAR Thu Dec 22 17:53:00 EST 2011: Minor layout edits to MDE info 
 ;;; FUNCTION
-;;; make-event: create an event object for holding rhythm, pitch, and timing
-;;; data. 
+;;; Create an event object for holding rhythm, pitch, and timing data.
 ;;; 
 ;;; ARGUMENTS 
-;;; - a pitch or chord: this can be one of those objects (will be added to the
-;;;   pitch-or-chord slot without cloning), or a pitch symbol or list of pitch
-;;;   symbols (for a chord)
-;;; - the event's rhythm e.g. 'e.  If this is a number, its interpretation is
-;;;   dependent on the value of duration (see below).  NB if this is a rhythm
-;;;   object, it will be cloned. 
-;;; - (key: start-time default nil): the start time of the event, in seconds.
-;;; - (key: is-rest default nil): whether the event is a rest (t or nil)
-;;; - (key: is-tied-to default nil): for score and playing purposes, whether
-;;;   there's a tie to this event i.e. it won't sound indpendently.
-;;; - (key: duration default nil): the duration of the event NB if duration t
-;;;   then rthm is a duration in secs, not a known rhythm like 'e
-;;;   i.e. (make-event 'c4 4 :duration nil) is  a quarter note, with duration 1,
-;;;   but (make-event '(c4 d4) 4 :duration t) is a whole duration, with duration
-;;;   4 (both assuming tempo of 60).
-;;; - (key: amplitude default 0.7): amplitude of the event: 0.0->1.0
-;;; - (key: tempo default 60): the tempo of the event, as a normal bpm number.
-;;;   This is only used when creating the rhythm slots e.g. duration.
-;;; - (key: midi-channel default nil): the midi channel the event should be
-;;;   played back on 
-;;; - (key: microtones-midi-channel default nil): if the event is microtonal,
-;;;   the midi-channel the microtonal notes will be played on.
+;;; - A pitch or chord. This can be one of those objects (will be added to the
+;;; pitch-or-chord slot without cloning), or a pitch symbol or list of pitch
+;;; symbols (for a chord).
+;;; - The event's rhythm (e.g. 'e). If this is a number, its interpretation is
+;;; dependent on the value of duration (see below). NB if this is a rhythm
+;;; object, it will be cloned.  
+;;; - keyword argument :start-time. The start time of the event in seconds.
+;;; Default = NIL.
+;;; - keyword argument :is-rest. Set to T or NIL to indicate whether or not the
+;;; given event is a rest. Default = NIL. NB: If the given event is set to be a
+;;; rest, the pitch-or-chord slot must be set to NIL.
+;;; - keyword argument :is-tied-to. This argument is for score output and
+;;; playing purposes. Set to T or NIL to indicate whether this event is tied to
+;;; the previous event (i.e. it won't sound indpendently). Default = NIL. 
+;;; - keyword argument :duration. T or NIL to indicate whether the specified
+;;; duration of the event has been stated in absolute seconds, not a known
+;;; rhythm like 'e. Thus (make-event 'c4 4 :duration nil) indicates a quarter
+;;; note with duration 1, but (make-event '(c4 d4) 4 :duration t) indicates a
+;;; whole note with an absolute duration of 4 seconds (both assuming a tempo of
+;;; 60). Default = NIL. 
+;;; - keyword agument :amplitude sets the amplitude of the event. Possible
+;;; values span from 0.0 (silent) to maximum of 1.0. Default = 0.7.
+;;; - keyword argument :tempo. A number to indicate the tempo of the event as a
+;;; normal bpm value. Default = 60. This argument is only used when creating
+;;; the rhythm slots (e.g. duration). 
+;;; - keyword argument :midi-channel. A number from 0 to 127 indicating the
+;;; MIDI channel on which the event should be played back. Default = NIL. 
+;;; - keyword argument :microtones-midi-channel. If the event is microtonal,
+;;; this argument indicates the MIDI-channel to be used for the playback of the
+;;; microtonal notes. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE  
-;;; an event object
+;;; - An event object.
 ;;; 
 ;;; EXAMPLE
-;;; a whole-note (semi-breve) chord: (make-event '(c4 d4) 4 :duration t)
-;;; a quarter-note (crotchet) c#:    (make-event 'cs4 4)
+#|
+;; A quarter-note (crotchet) C
+(make-event 'c4 4)
+
+=> 
+EVENT: start-time: NIL, end-time: NIL, 
+       duration-in-tempo: 0.0, 
+       compound-duration-in-tempo: 0.0, 
+       amplitude: 0.7, score-marks: NIL,  
+       bar-num: -1, cmn-objects-before: NIL, 
+       tempo-change: NIL 
+       instrument-change: NIL 
+       display-tempo: NIL, start-time-qtrs: -1, 
+       midi-time-sig: NIL, midi-program-changes: NIL, 
+       8va: 0
+       pitch-or-chord: 
+PITCH: frequency: 261.6255569458008, midi-note: 60, midi-channel: NIL 
+       pitch-bend: 0.0 
+       degree: 120, data-consistent: T, white-note: C4
+       nearest-chromatic: C4
+       src: 1.0, src-ref-pitch: C4, score-note: C4 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 4, c5ths: 0, no-8ve: C, no-8ve-no-acc: C
+       show-accidental: T, white-degree: 28, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: C4, tag: NIL, 
+data: C4
+       written-pitch-or-chord: NIL
+RHYTHM: value: 4.0, duration: 1.0, rq: 1, is-rest: NIL, score-rthm: 4.0f0, 
+        undotted-value: 4, num-flags: 0, num-dots: 0, is-tied-to: NIL, 
+        is-tied-from: NIL, compound-duration: 1.0, is-grace-note: NIL, 
+        needs-new-note: T, beam: NIL, bracket: NIL, rqq-note: NIL, 
+        rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 4, 
+        tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: 4, tag: NIL, 
+data: 4
+
+;; Create a whole-note (semi-breve) chord, then print its data, value, duration
+;; and pitch content
+(let ((e (make-event '(c4 e4 g4) 4 :duration t)))
+  (print (data e))
+  (print (value e))
+  (print (duration e))
+  (print (loop for p in (data (pitch-or-chord e)) collect (data p))))
+
+=>
+W 
+1.0f0 
+4.0 
+(C4 E4 G4) 
+
+;; Create a single-pitch quarter-note event which is tied to, plays back on
+;; MIDI channel 1 and has an amplitude of 0.5, then print these values by
+;; accessing the corresponding slots.
+(let ((e (make-event 'c4 4 
+		     :is-tied-to t 
+		     :midi-channel 1 
+		     :amplitude 0.5)))
+  (print (is-tied-to e))
+  (print (midi-channel (pitch-or-chord e)))
+  (print (amplitude e)))
+
+=>
+T 
+1 
+0.5
+
+;; Create an event object that consists of a quarter-note rest and print the
+;; contents of the corresponding slots
+(let ((e (make-event nil 'q :is-rest t)))
+  (print (pitch-or-chord e))
+  (print (data e))
+  (print (is-rest e)))
+
+=>
+NIL 
+Q 
+T
+
+|#
+
 ;;; 
 ;;; SYNOPSIS
 (defun make-event (pitch-or-chord rthm &key 

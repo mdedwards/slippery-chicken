@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 19:00:54 Fri Dec 23 2011 ICT
+;;; $$ Last modified: 22:57:23 Fri Dec 23 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1885,14 +1885,25 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; MDE Fri Dec 23 22:53:26 2011 
 (defun validate-mark (mark)
-  (unless (lp-get-mark mark :silent t)
-    (warn "~&rhythm::validate-mark: no Lilypond mark for ~a (but ~
+  (unless (cmn-mark-p mark)
+    (unless (lp-get-mark mark :silent t)
+      (warn "~&rhythm::validate-mark: no Lilypond mark for ~a (but ~
            adding anyway)."
-          mark))
-  (unless (cmn::get-cmn-marks mark :silent t)
-    (warn "~&rhythm::validate-mark: no CMN mark for ~a (but adding anyway)."
-          mark)))
+            mark))
+    (unless (cmn::get-cmn-marks mark :silent t)
+      (warn "~&rhythm::validate-mark: no CMN mark for ~a (but adding anyway)."
+            mark))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Dec 23 22:53:26 2011 
+
+(defun cmn-mark-p (thing)
+  (or (typep thing 'cmn::sundry)
+      (typep thing 'cmn::dynamics)
+      (typep thing 'cmn::self-acting)
+      (typep thing 'cmn::text)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF rhythm.lsp

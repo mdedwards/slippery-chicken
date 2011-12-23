@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 09:27:36 Sat Dec 17 2011 ICT
+;;; $$ Last modified: 17:38:50 Fri Dec 23 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1323,6 +1323,7 @@ NIL
 ;;; ****
   (arithmetic r1 r2 #'+ warn))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* rhythm/subtract 
 ;;; 22.12.11 SAR: Added robodoc info
 ;;; FUNCTION
@@ -1414,6 +1415,7 @@ NIL
 ;;; ****
   (arithmetic r1 r2 #'- warn))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod arithmetic ((r1 rhythm) (r2 rhythm) function warn)
   ;; must use compound-duration so as to take ties into consideration
   (let* ((dur (funcall function (compound-duration r1) (compound-duration r2))))

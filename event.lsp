@@ -178,6 +178,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* event/set-midi-channel
+;;; 23.12.11 SAR: Added robodoc info
 ;;; FUNCTION
 ;;; Set the MIDI-channel and microtonal MIDI-channel for the pitch object
 ;;; within a given event object.
@@ -219,26 +220,38 @@
         (setf (midi-channel noc) midi-channel)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* event/get-midi-channel
+;;; 23.12.11 SAR Added Robodoc info
 ;;; FUNCTION
-;;; 
+;;; Retrieve the value set for the midi-channel slot of the pitch object within
+;;; a given event object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An integer representing the given midi-channel value.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The default midi-channel value for a newly created event-object is NIL
+;;; unless otherwise specified.
+(let ((e (make-event 'c4 'q)))
+  (get-midi-channel e))
+
+=> NIL
+
+;; Create an event object, set its MIDI-channel and retrieve it
+(let ((e (make-event 'c4 'q)))
+  (set-midi-channel e 11 12)
+  (get-midi-channel e))
+
+=> 11
 
 |#
 ;;; SYNOPSIS
 (defmethod get-midi-channel ((e event))
+;;; ****
   (let ((noc (pitch-or-chord e)))
     (when noc
       (if (is-chord e)
@@ -254,8 +267,7 @@
 ;;; changes will all be written despite no new pitches.
 
 #+cm-2
-;;; ****
-;;; ****m*event/output-midi
+;;; ****m* event/output-midi
 ;;; FUNCTION
 ;;; 
 ;;; 
@@ -274,6 +286,7 @@
 |#
 ;;; SYNOPSIS
 (defmethod output-midi ((e event) &optional (time-offset 0.0) force-velocity)
+;;; ****
   ;; 14.3.11: can't output events that haven't got time etc.
   (unless (start-time e)
     (error "event::output-midi: start-time nil! Call update slots perhaps:~%~a"
@@ -317,22 +330,42 @@
       result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 2.4.11: return a list of the dynamics attached to an event.
-;;; ****m*event/get-dynamics
+;;; ****m* event/get-dynamics
+;;; 23.12.11 SAR Added robodoc info
 ;;; FUNCTION
-;;; 
+;;; Get the dynamic marks from a given event object. If other non-dynamic
+;;; events are also contained in the MARKS slot of the rhythm object within the
+;;; given event object, these are disregarded and only the dynamic marks are
+;;; returned.  
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; The dynamics stored in the MARKS slot of the rhythm object within the given
+;;; event object. NIL is returned if no dynamic marks are attached to the given
+;;; event object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create an event object and get the dynamics attached to that object. These
+;; are NIL by default (unless otherwise specified).
+(let ((e (make-event 'c4 'q)))
+  (get-dynamics e))
+
+=> NIL
+
+;; Create an event object, add one dynamic and one non-dynamic mark, print all
+;; marks, then retrieve only the dynamics.
+(let ((e (make-event 'c4 'q)))
+  (add-mark-once e 'ppp)
+  (add-mark-once e 'pizz)
+  (print (marks e))
+  (get-dynamics e))
+
+=>
+(PIZZ PPP)
+(PPP)
 
 |#
 ;;; SYNOPSIS
@@ -340,30 +373,49 @@
 ;;; ****
   (remove-if #'(lambda (x) (not (is-dynamic x)))
              (marks e)))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; NB This doesn't change the amplitude
-;;; ****m*event/remove-dynamics
+;;; ****m* event/remove-dynamics
 ;;; FUNCTION
+;;; Remove all dynamic symbols from the list of marks attached to a given event
+;;; object. 
 ;;; 
+;;; NB: This doesn't change the amplitude.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the modified list of marks attached to the given event object if
+;;; the specified dynamic was initially present in that list and successfully
+;;; removed, otherwise returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create an event object, add one dynamic mark and one non-dynamic mark, print
+;; all marks attached to the object, and remove just the dynamics from that
+;; list of all marks.
+(let ((e (make-event 'c4 'q)))
+  (add-mark-once e 'ppp)
+  (add-mark-once e 'pizz)
+  (print (marks e))
+  (remove-dynamics e))
+
+=>
+(PIZZ PPP)
+(PIZZ)
+
+;; Attempting to remove dynamics when none are present returns NIL.
+(let ((e (make-event 'c4 'q)))
+  (remove-dynamics e))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
 (defmethod remove-dynamics ((e event))
+;;; ****
   (setf (marks e) 
         (remove-if #'(lambda (x) (is-dynamic x))
                    (marks e))))
@@ -375,7 +427,6 @@
   (declare (ignore warn-rest))
   (when (is-dynamic mark)
     (remove-dynamics e)))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -388,24 +439,71 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 3.2.11 change amplitude slot and automatically add a mark to set a
-;;; corresponding dynamic NB Sean: check that the right label is attached in
-;;; robodo i.e. not just event/amplitude but event/setf amplitude
-;;; ****m*event/setf amplitude
+;;; ****m* event/setf amplitude
+;;; SAR Fri Dec 23 16:54:59 EST 2011 Added robodoc info
 ;;; FUNCTION
-;;; 
-;;; 
+;;; Change the amplitude slot of a given event object and automatically add a
+;;; mark to set a corresponding dynamic.
+;;;
+;;; Numbers greater than 1.0 and less than 0.0 will also be stored in the
+;;; amplitude slot of the given event object without issuing a warning, though
+;;; corresponding dynamic marks are only available for values between 0.0 and
+;;; 1.0. 
+;;;
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An amplitude value (real number).
+;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the specified amplitude value.
 ;;; 
 ;;; EXAMPLE
 #|
+;; When no amplitude is specified, new event objects are created with a default
+;; amplitude of 0.7.
+(let ((e (make-event 'c4 'q)))
+  (amplitude e))
+
+=> 0.7
+
+;; Setting an amplitude returns the amplitude set
+(let ((e (make-event 'c4 'q)))
+  (setf (amplitude e) .3))
+
+=> 0.3
+
+;; Create an event object, set its amplitude, then print the contents of the
+;; amplitude and marks slots to see the dynamic setting.
+(let ((e (make-event 'c4 'q)))
+  (setf (amplitude e) .3)
+  (print (amplitude e))
+  (print (marks e)))
+
+=>
+0.3 
+(PP)
+
+;; Setting an amplitude greater than 1.0 or less than 0.0 sets the amplitude
+;; correspondingly but assigns no new value to the marks slot, as there is no
+;; corresponding dynamic mark. 
+(let ((e (make-event 'c4 'q)))
+  (setf (amplitude e) 1.3)
+  (print (amplitude e))
+  (print (marks e)))
+
+=>
+1.3 
+NIL
+
+;; The above can cause confusion when an amplitude is re-set to above 1.0 or
+;; below 0.0, leaving a prior dynamic still attached.
+(let ((e (make-event 'c4 'q)))
+  (setf (amplitude e) 0.3)
+  (setf (amplitude e) 1.3)
+  (print (amplitude e))
+  (print (marks e)))
+
+=> (PP)
 
 |#
 ;;; SYNOPSIS
@@ -420,21 +518,58 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/setf tempo-change
+;;; ****m* event/setf tempo-change
+;;; SAR Fri Dec 23 18:07:41 EST 2011 Added robodoc info
 ;;; FUNCTION
-;;; 
+;;; Store the tempo when a change is made. 
+;;;
+;;; NB: This creates a full tempo object, not just a number representing bpm. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
+;;; - A number indicating the new tempo bpm.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a tempo object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Creation of a new event object sets the tempo-change slot to NIL by default,
+;; unless otherwise specified.
+(let ((e (make-event 'c4 'q)))
+  (tempo-change e))
+
+=> NIL
+
+;; The tempo-change method returns a tempo object
+(let ((e (make-event 'c4 'q)))
+  (setf (tempo-change e) 132))
+
+=> 
+TEMPO: bpm: 132, beat: 4, beat-value: 4.0, qtr-dur: 0.45454545454545453 
+       qtr-bpm: 132.0, usecs: 454545, description: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: 132
+
+;; The new tempo object is stored in the event object's tempo-change slot.
+(let ((e (make-event 'c4 'q)))
+  (setf (tempo-change e) 132)
+  e)
+
+=> 
+EVENT: start-time: NIL, end-time: NIL, 
+       duration-in-tempo: 0.0, 
+       compound-duration-in-tempo: 0.0, 
+       amplitude: 0.7, score-marks: NIL,  
+       bar-num: -1, cmn-objects-before: NIL, 
+       tempo-change: 
+TEMPO: bpm: 132, beat: 4, beat-value: 4.0, qtr-dur: 0.45454545454545453 
+       qtr-bpm: 132.0, usecs: 454545, description: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: 132
+[...]
 
 |#
 ;;; SYNOPSIS
@@ -565,24 +700,40 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; In the following methods the optional argument refers to whether we should
-;;; handle the written or sounding pitch in the event. 
-
-;;; ****m*event/sharp-p
+;;; ****m* event/sharp-p
+;;; SAR Fri Dec 23 18:37:45 EST 2011 Added Robodoc info
 ;;; FUNCTION
-;;; 
+;;; Determine whether the pitch of a given event object has a sharp.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether the test is to handle the written or
+;;; sounding pitch in the event. T = written. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the note tested has a sharp, otherwise NIL (ie, is natural or
+;;; has a flat).
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns T when the note is sharp
+(let ((e (make-event 'cs4 'q)))
+  (sharp-p e))
+
+=> T
+
+;; Returns NIL when the note is not sharp (ie, is flat or natural)
+(let ((e (make-event 'c4 'q)))
+  (sharp-p e))
+
+=> NIL
+
+(let ((e (make-event 'df4 'q)))
+  (sharp-p e))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -595,25 +746,45 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/flat-p
+;;; ****m* event/flat-p
+;;; SAR Fri Dec 23 18:46:59 EST 2011 Added robodoc info
 ;;; FUNCTION
-;;; 
+;;; Determine whether the pitch of a given event object has a flat.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether the test is to handle the written or
+;;; sounding pitch in the event. T = written. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the note tested has a flat, otherwise NIL (ie, is natural or
+;;; has a sharp).
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns T when the note is flat
+(let ((e (make-event 'df4 'q)))
+  (flat-p e))
+
+=> T
+
+;; Returns NIL when the note is not flat (ie, is sharp or natural)
+(let ((e (make-event 'c4 'q)))
+  (flat-p e))
+
+=> NIL
+
+(let ((e (make-event 'cs4 'q)))
+  (flat-p e))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
 (defmethod flat-p ((e event) &optional written)
+;;; ****
   (when (is-single-pitch e)
     (flat (if written
               (written-pitch-or-chord e)
@@ -621,55 +792,120 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/natural-p
+;;; ****m* event/natural-p
+;;; SAR Fri Dec 23 18:52:55 EST 2011 Added robodoc info
 ;;; FUNCTION
-;;; 
+;;; Determine whether the pitch of a given event object is a natural note (no
+;;; sharps or flats).
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether the test is to handle the written or
+;;; sounding pitch in the event. T = written. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the note tested is natural, otherwise NIL (ie, has a flat or 
+;;; has a sharp).
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns T when the note is natural
+(let ((e (make-event 'c4 'q)))
+  (natural-p e))
+
+=> T
+
+;; Returns NIL when the note is not natural (ie, is sharp or flat)
+(let ((e (make-event 'cs4 'q)))
+  (natural-p e))
+
+=> NIL
+
+(let ((e (make-event 'df4 'q)))
+  (natural-p e))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
 (defmethod natural-p ((e event) &optional written)
+;;; ****
   (when (is-single-pitch e)
     (natural (if written
               (written-pitch-or-chord e)
             (pitch-or-chord e)))))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; NB doesn't work on chords!
-;;; ****m*event/enharmonic
+;;; SAR Fri Dec 23 20:04:27 EST 2011 Added robodoc info
+;;; ****m* event/enharmonic
 ;;; FUNCTION
+;;; Change the data slot of the pitch object within the given event object to
+;;; its enharmonic equivalent.
+;;;
+;;; In its default form, this method only applies to note names that already
+;;; contain an indication for an accidental (such as DF4 or BS3). "White-key"
+;;; note names (such as B3 or C4) will not produce an enharmonic equivalent. In
+;;; order to access this feature, set the :force-naturals argument to T.
 ;;; 
+;;; NB: Doesn't work on chords.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :written. T or NIL to indicate whether the test is to
+;;; handle the written or sounding pitch in the event. T = written. Default =
+;;; NIL. 
+;;; - keyword argument :force-naturals. T or NIL to indicate whether to force
+;;; "natural" note names that contain no F or S in their name to convert to
+;;; their enharmonic equivalent (ie, B3 = CF4)
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An event object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method alone returns an event object
+(let ((e (make-event 'cs4 'q)))
+  (enharmonic e))
+
+=> 
+EVENT: start-time: NIL, end-time: NIL, 
+[...]
+
+;; Create an event, change it's note to the enharmonic equivalent, and print
+;; it.
+(let ((e (make-event 'cs4 'q)))
+  (enharmonic e)
+  (data (pitch-or-chord e)))
+
+=> DF4
+
+;; Without the :force-naturals keyword, no "white-key" note names convert to
+;; enharmonic equivalents
+(let ((e (make-event 'b3 'q)))
+  (enharmonic e)
+  (data (pitch-or-chord e)))
+
+=> B3
+
+;; Set the :force-naturals keyword argument to T to enable switching white-key
+;; note-names to enharmonic equivalents
+(let ((e (make-event 'b3 'q)))
+  (enharmonic e :force-naturals t)
+  (data (pitch-or-chord e)))
+
+=> CF4
 
 |#
 ;;; SYNOPSIS
 (defmethod enharmonic ((e event) &key written force-naturals 
                        ;; 1-based
                        chord-note-ref)
+;;; ****
   ;; 5/6/07 works on chords given a reference into the chord counting from 1
   ;; and the lowest note upwards 
   ;; 11.4.11: works on all notes in chords if chord-note-ref is nil
@@ -717,44 +953,55 @@
                           new)
                     (setf (pitch-or-chord e) new))))
           e))))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/pitch-
+;;; SAR Fri Dec 23 20:32:23 EST 2011 Added robodoc info
+;;; ****m* event/pitch-
 ;;; FUNCTION
+;;; Determine the interval in half-steps between two pitches. 
 ;;; 
-;;; 
+;;; NB: This is determined by subtracting the MIDI note value of one event from
+;;; the other. Negative numbers may result if the greater MIDI note value is
+;;; subtracted from the lesser.
+;;;
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A first event object.
+;;; - A second event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A number.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((e1 (make-event 'c4 'q))
+      (e2 (make-event 'a3 'q)))
+  (pitch- e1 e2))
+
+=> 3.0
+
+;; Subtracting the upper from the lower note returns a negative number
+(let ((e1 (make-event 'a3 'q))
+      (e2 (make-event 'c4 'q)))
+  (pitch- e1 e2))
+
+=> -3.0
 
 |#
 ;;; SYNOPSIS
 (defmethod pitch- ((e1 event) (e2 event))
 ;;; ****
   (pitch- (pitch-or-chord e1) (pitch-or-chord e2)))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; NB could screw up timing info in a bar
-;;; ****m*event/inc-duration
+;;; SAR Fri Dec 23 20:45:16 EST 2011 Added robodoc info
+;;; ****m* event/inc-duration
 ;;; FUNCTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
 ;;; 
 ;;; 
 ;;; RETURN VALUE
@@ -766,6 +1013,7 @@
 |#
 ;;; SYNOPSIS
 (defmethod inc-duration ((e event) inc)
+;;; ****
   (if (and (numberp (duration-in-tempo e))
            (numberp (compound-duration-in-tempo e))
            (numberp (end-time e)))
@@ -781,7 +1029,7 @@
 
 ;; time-sig should be a time-sig object but we can't compile that class before
 ;; this one  
-;;; ****m*event/set-midi-time-sig
+;;; ****m* event/set-midi-time-sig
 ;;; FUNCTION
 ;;; 
 ;;; 
@@ -802,7 +1050,6 @@
 (defmethod set-midi-time-sig ((e event) time-sig)
 ;;; **** 
   (setf (midi-time-sig e) (clone time-sig)))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 25.6.11: for transitions from one playing state to another.
@@ -2280,6 +2527,7 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****f* event/event-p
+;;; 23.12.11 SAR Added robodoc info
 ;;; FUNCTION
 ;;; Test to confirm that a given object is an event object.
 ;;; 
@@ -2345,6 +2593,7 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****f* event/wrap-events-list
+;;; 23.12.11 SAR Added robodoc info
 ;;; FUNCTION
 ;;; Given a list of time-ascending events, wrap the list at a given point so we
 ;;; start there, go to the end, and keep going where the last event
@@ -2406,6 +2655,7 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****f* event/is-dynamic
+;;; 23.12.11 SAR Added Robodoc info
 ;;; FUNCTION
 ;;; Determine whether a specified symbol belongs to the list of predefined
 ;;; dynamic marks.

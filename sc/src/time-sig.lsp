@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    12th February 2001
 ;;;
-;;; $$ Last modified: 11:48:05 Sat Dec 24 2011 ICT
+;;; $$ Last modified: 13:00:36 Sat Dec 24 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -241,9 +241,11 @@
     (cond ((and preserve-meter (power-of-2 denom-scaled))
            ;; got to floor it as we might have a float e.g. 8.0
            (make-time-sig (list (num ts) (floor denom-scaled))))
+          ;; OK scale the numerator instead
           ((and (> num-scaled 0) (float-int-p num-scaled))
            (setf num-scaled (floor num-scaled)
                  tmp (denom ts))
+           ;; prefer e.g. 2/8 to 1/4
            (when (= num-scaled 1)
              (setf num-scaled 2
                    tmp (* tmp 2)))
@@ -453,18 +455,22 @@
             (return (make-time-sig
                      (get-preferred-time-sig (list num denom))))))))
 
-(defun get-preferred-time-sig (given &optional
-                                     ;; these need to be given pairwise
-                                     (preferred '(((1 16) (2 32))
-                                                  ((2 4) (4 8))
-                                                  ((1 8) (2 16)))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun get-preferred-time-sig (given 
+                               &optional
+                               ;; these need to be given pairwise
+                               (preferred '(((1 16) (2 32))
+                                            ((2 4) (4 8))
+                                            ;; MDE Sat Dec 24 13:00:09 2011
+                                            ((1 4) (2 8))
+                                            ((1 8) (2 16)))))
   (let ((result (loop
-                    for pair in preferred 
-                    for yes = (first pair)
-                    for no = (second pair)
-                    do
-                      (when (equal given no)
-                        (return yes)))))
+                   for pair in preferred 
+                   for yes = (first pair)
+                   for no = (second pair)
+                   do
+                   (when (equal given no)
+                     (return yes)))))
     (if result result given)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

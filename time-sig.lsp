@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    12th February 2001
 ;;;
-;;; $$ Last modified: 17:25:18 Fri Dec 23 2011 ICT
+;;; $$ Last modified: 11:48:05 Sat Dec 24 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -143,7 +143,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* time-sig/beat-duration
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod beat-duration ((ts time-sig))
+;;; ****
   (let ((denom-dur (/ 4.0 (denom ts))))
     (if (compound ts)
         (* 3 denom-dur)
@@ -151,7 +170,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* time-sig/get-beat-as-rhythm
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-beat-as-rhythm ((ts time-sig) &optional (handle-compound))
+;;; ****
   (let ((result (make-rhythm (denom ts))))
     (if (and handle-compound
              (is-compound ts))
@@ -160,8 +198,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#|
+;;; MDE Sat Dec 24 11:46:35 2011 -- now obsolete
 (defmethod score-time-sig ((ts time-sig))
   (format nil "~a ~a" (num ts) (denom ts)))
+
+|#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; NB Always returns a new time-sig.  By default we divide the denominator by
@@ -169,8 +211,27 @@
 ;;; (duple, triple etc.).  If that doesn't give us a 'normal' meter we'll do
 ;;; numerator * scaler instead.  
 
+;;; ****m* time-sig/scale
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod scale ((ts time-sig) scaler
                   &optional (preserve-meter t) ignore1 ignore2)
+;;; ****
   (declare (ignore ignore1) (ignore ignore2))
   (let ((denom-scaled (/ (denom ts) scaler))
         (num-scaled (* (num ts) scaler))
@@ -192,7 +253,26 @@
           
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* time-sig/is-compound
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod is-compound ((ts time-sig))
+;;; ****
   ;; I know this isn't really true, but only consider time sigs with beat types
   ;; >= 8 to be potentially compound
   ;; TODO: adjust midi-clocks accordingly
@@ -205,6 +285,24 @@
 ;;; duration (2/4, 4/8, 8/16 etc.) return time-sig-equal-duration; otherwise
 ;;; nil.
 
+;;; ****m* time-sig/time-sig-equal
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod time-sig-equal ((ts1 time-sig) (ts2 time-sig))
   (cond ((and (= (denom ts1) (denom ts2))
               (= (num ts1) (num ts2)))
@@ -214,8 +312,27 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* time-sig/get-whole-bar-rest
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-whole-bar-rest ((ts time-sig))
   (make-rest (/ (denom ts) (num ts))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -267,6 +384,7 @@
         (loop for e in (rest (butlast result)) do
               (setf (is-tied-from e) t)))
       result)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -274,7 +392,26 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* time-sig/make-time-sig
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-time-sig (ts)
+;;; ****
   (cond ((time-sig-p ts) ts)
         ((not ts) (error "make-time-sig: argument can't be nil!"))
         (t (make-instance 'time-sig :data ts))))

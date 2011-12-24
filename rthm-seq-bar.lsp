@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 17:20:45 Fri Dec 23 2011 ICT
+;;; $$ Last modified: 12:18:22 Sat Dec 24 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -580,7 +580,6 @@ data: ((2 4) Q E S S)
     (when (event-p first)
       (setf (start-time new) (start-time first)
             (start-time-qtrs new) (start-time-qtrs first)
-            (score-marks new) (score-marks first)
             ;; 20.6.11: some marks can only be attached to a note so don't copy
             ;; these over 
             (marks new) (remove-if #'mark-for-note-only (marks first))
@@ -591,7 +590,7 @@ data: ((2 4) Q E S S)
             (slot-value new 'tempo-change) (tempo-change first)
             (display-tempo new) (display-tempo first)
             (bar-num new) (bar-num first)
-            (cmn-objects-before new) (cmn-objects-before first)))
+            (marks-before new) (marks-before first)))
     ;; 26.7.11 (Pula): don't copy over 8ve marks: could screw things up but
     ;; then the caller should be aware of this when deleting bars etc.
     (rm-marks new '(beg-8va beg-8vb end-8va end-8vb) nil)
@@ -2052,7 +2051,7 @@ data: E
                          (beam new) (beam e)
                          (bracket new) (bracket e)
                          (marks new) (my-copy-list (marks e))
-                         (cmn-objects-before new) (cmn-objects-before e)
+                         (marks-before new) (marks-before e)
                          (amplitude new) (amplitude e))
                    ;; if we can't get a single rthm for the new duration then
                    ;; new will be nil and we should just create a rest
@@ -2602,8 +2601,8 @@ data: (2 4)
                                         (write-bar-num rsb))
                                (bar-num rsb))
                   do
-                  (when (cmn-objects-before event)
-                    (loop for o in (cmn-objects-before event) 
+                  (when (marks-before event)
+                    (loop for o in (marks-before event) 
                        ;; a clef change appears as a 2-element
                        ;; list e.g. (clef treble)
                        for cmn-o = (if (and (listp o)

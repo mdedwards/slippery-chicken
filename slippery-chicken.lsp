@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:17:42 Sat Dec 17 2011 ICT
+;;; $$ Last modified: 12:12:36 Sat Dec 24 2011 ICT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -549,7 +549,7 @@
   (when auto-clefs
     (format t "~&Inserting automatic clefs....")
     (auto-clefs sc :players players :verbose nil :in-c in-c
-                :delete-cmn-objects-before nil))
+                :delete-marks-before nil))
   ;; 26/4/10: some processes turn notes into rests so turn bars of rests only
   ;; into rest-bars proper 
   (cleanup-rest-bars sc)
@@ -1738,7 +1738,7 @@
                   (loop for i from start-note to end-note do
                        (loop for m in marks do
                             (funcall (if before 
-                                         #'add-cmn-object-before-note
+                                         #'add-mark-before-note
                                          #'add-mark-to-note)
                                      sc bar-num i p m))))))
       (if (= stbar ndbar)
@@ -1869,9 +1869,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod add-cmn-object-before-note ((sc slippery-chicken)
-                                       bar-num note-num player cmn-object)
-  (add-cmn-object-before-note (piece sc) bar-num note-num player cmn-object))
+(defmethod add-mark-before-note ((sc slippery-chicken)
+                                       bar-num note-num player mark)
+  (add-mark-before-note (piece sc) bar-num note-num player mark))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1886,9 +1886,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod sc-delete-cmn-objects-before ((sc slippery-chicken)
+(defmethod sc-delete-marks-before ((sc slippery-chicken)
                                          bar-num note-num player)
-  (delete-cmn-objects-before (piece sc) bar-num note-num player))
+  (delete-marks-before (piece sc) bar-num note-num player))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2862,7 +2862,7 @@
 (defmethod auto-clefs ((sc slippery-chicken) 
                        &key verbose in-c players 
                        (delete-clefs t)
-                       (delete-cmn-objects-before nil))
+                       (delete-marks-before nil))
   (loop 
      for player in (if players players (players sc)) 
      do
@@ -2888,8 +2888,8 @@
              for event in (rhythms bar)
              with clefs with written with pitch
              do
-             (when delete-cmn-objects-before
-               (setf (cmn-objects-before event) nil))
+             (when delete-marks-before
+               (setf (marks-before event) nil))
              ;; 1.2.11 delete clefs first
              (when delete-clefs 
                (delete-clefs event nil)) ; don't warn if there's no clef
@@ -4484,7 +4484,7 @@
       (when auto-clefs
         (format t "~&Inserting automatic clefs....")
         (auto-clefs sc :players players :verbose nil :in-c in-c
-                    :delete-cmn-objects-before nil))
+                    :delete-marks-before nil))
       (when rehearsal-letters-all-players 
         (format t "~&Setting rehearsal letters....")
         (set-rehearsal-letters sc players))
@@ -4594,7 +4594,7 @@
       ;; making sure we don't use the in-c clefs for the instrument
       (when auto-clefs
         (auto-clefs sc :players players :verbose nil :in-c nil
-                    :delete-cmn-objects-before nil))
+                    :delete-marks-before nil))
       (loop for player in (players sc)
          for pname in players-strings do
          ;; got to write the written (i.e. not sounding) notes for the part

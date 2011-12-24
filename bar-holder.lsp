@@ -538,11 +538,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod add-cmn-object-before-note ((bh bar-holder)
-                                       bar-num note-num player cmn-object)
+(defmethod add-mark-before-note ((bh bar-holder)
+                                       bar-num note-num player mark)
   (let ((note (get-note bh bar-num note-num player)))
     (when note
-      (add-cmn-object-before note cmn-object))))
+      (add-mark-before note mark))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -589,10 +589,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod delete-cmn-objects-before ((bh bar-holder) bar-num note-num player)
+(defmethod delete-marks-before ((bh bar-holder) bar-num note-num player)
   (let ((note (get-note bh bar-num note-num player)))
     (when note
-      (setf (cmn-objects-before note) nil))))
+      (setf (marks-before note) nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

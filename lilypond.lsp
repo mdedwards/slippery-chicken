@@ -140,7 +140,7 @@
            (end-8va "\\ottava #0 ")
            (beg-8vb "\\ottava #-1 ")
            (end-8vb "\\ottava #0 ")
-           ;; NB note heads should be added via (add-cmn-object-before ... so if
+           ;; NB note heads should be added via (add-mark-before ... so if
            ;; adding new, add the mark symbol to the move-elements call in
            ;; event::get-lp-data 
            (circled-x "\\once \\override NoteHead #'style = #'xcircle ")

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified: 09:51:21 Mon Dec 12 2011 ICT
+;;; $$ Last modified: 11:45:52 Sat Dec 24 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -118,7 +118,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* tempo/tempo-equal
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod tempo-equal ((t1 tempo) (t2 tempo))
+;;; ****
   (cond ((and (= (bpm t1) (bpm t2))
               (= (beat-value t1) (beat-value t2)))
          t)
@@ -154,7 +173,26 @@
 
 ;; e.g. (make-tempo 60) (make-tempo 60 :beat 'q.) (make-tempo '(60 q.))
 
+;;; ****f* tempo/make-tempo
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-tempo (bpm &key (beat 4) id description)
+;;; ****
   (if (listp bpm)
       (make-instance 'tempo :bpm (first bpm) :beat (second bpm) 
                      :description (third bpm) :id id)

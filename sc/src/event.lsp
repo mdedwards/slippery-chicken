@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:41:52 Fri Dec 23 2011 ICT
+;;; $$ Last modified: 12:30:41 Sat Dec 24 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -80,9 +80,6 @@
    (duration-in-tempo :accessor duration-in-tempo :type number :initform 0.0)
    (compound-duration-in-tempo :accessor compound-duration-in-tempo 
                                :type number :initform 0.0)
-   ;; as of yet unused
-   (score-marks :accessor score-marks :type list :initarg :score-marks 
-                :initform nil)
    ;; 6/5/6 start time in crotchets: now that we're using tempo changes in the
    ;; midi output we have to have different times and durations for midi
    ;; events.  (If we tell CM to output an event at 0.5 secs but then write a
@@ -115,9 +112,9 @@
    (bar-num :accessor bar-num :type integer :initarg :bar-num :initform -1)
    ;; clefs etc. that come before a note. todo: 1.3.11 change this to
    ;; marks-before because we no longer store cmn objects, just symbols;
-   ;; sim for bar-holder add method
-   (cmn-objects-before :accessor cmn-objects-before :type list 
-                       :initarg :cmn-objects-before :initform nil)
+   ;; sim for bar-holder add method -- DONE 24.12.11
+   (marks-before :accessor marks-before :type list :initarg :marks-before
+                 :initform nil)
    ;(rqq-notes :accessor rqq-notes :type list :initform nil :allocation :class)
    (amplitude :accessor amplitude :type float :initarg :amplitude 
               :initform 0.7)))
@@ -152,10 +149,9 @@
           (slot-value rthm 'written-pitch-or-chord)
           (basic-copy-object (written-pitch-or-chord e))
           (slot-value rthm '8va) (8va e)
-          (slot-value rthm 'score-marks) (my-copy-list (score-marks e))
           (slot-value rthm 'display-tempo) (display-tempo e)
-          (slot-value rthm 'cmn-objects-before) (my-copy-list
-                                                 (cmn-objects-before e))
+          (slot-value rthm 'marks-before) (my-copy-list
+                                                 (marks-before e))
           (slot-value rthm 'midi-program-changes) (my-copy-list
                                                    (midi-program-changes e))
           (slot-value rthm 'amplitude) (amplitude e)
@@ -620,8 +616,8 @@ data: 132
   (format stream "~%EVENT: start-time: ~a, end-time: ~a, ~
                   ~%       duration-in-tempo: ~a, ~
                   ~%       compound-duration-in-tempo: ~a, ~
-                  ~%       amplitude: ~a, score-marks: ~a,  ~
-                  ~%       bar-num: ~a, cmn-objects-before: ~a, ~
+                  ~%       amplitude: ~a ~
+                  ~%       bar-num: ~a, marks-before: ~a, ~
                   ~%       tempo-change: ~a ~
                   ~%       instrument-change: ~a ~
                   ~%       display-tempo: ~a, start-time-qtrs: ~a, ~
@@ -631,14 +627,11 @@ data: 132
                   ~%       written-pitch-or-chord: ~a"
           (start-time i) (end-time i) (duration-in-tempo i) 
           (compound-duration-in-tempo i)
-          (amplitude i) (score-marks i)
-          (bar-num i) (cmn-objects-before i) (tempo-change i)
-          (instrument-change i)
-          (display-tempo i) (start-time-qtrs i) 
+          (amplitude i) (bar-num i) (marks-before i) (tempo-change i)
+          (instrument-change i) (display-tempo i) (start-time-qtrs i) 
           (when (midi-time-sig i)
             (data (midi-time-sig i)))
-          (midi-program-changes i)
-          (8va i) (pitch-or-chord i)
+          (midi-program-changes i) (8va i) (pitch-or-chord i)
           (written-pitch-or-chord i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -667,9 +660,8 @@ data: 132
                                          (pitch-or-chord from))
         (slot-value to 'written-pitch-or-chord) 
         (basic-copy-object (written-pitch-or-chord from))
-        (slot-value to 'score-marks) (my-copy-list (score-marks from))
-        (slot-value to 'cmn-objects-before) (my-copy-list
-                                             (cmn-objects-before from))
+        (slot-value to 'marks-before) (my-copy-list
+                                             (marks-before from))
         ;; this is actually from the rhythm class but we need it in any case
         (slot-value to 'marks) (my-copy-list (marks from))
         (slot-value to 'duration-in-tempo) (duration-in-tempo from)
@@ -1093,7 +1085,7 @@ EVENT: start-time: NIL, end-time: NIL,
             (and (stringp end-text) (zerop (length end-text))))
     (error "~a~%event::add-arrow: start-text/end-text can't be an empty string!"
            e))
-  (add-cmn-object-before e (list 'arrow start-text end-text))
+  (add-mark-before e (list 'arrow start-text end-text))
   (add-mark e 'start-arrow))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1120,7 +1112,7 @@ EVENT: start-time: NIL, end-time: NIL,
 ;;; ****
   (when (and warn-rest (is-rest e))
     (warn "~a~&event::add-trill: add trill to rest?" e))
-  (add-cmn-object-before e 'beg-trill-a)
+  (add-mark-before e 'beg-trill-a)
   (add-mark e (list 'trill-note trill-note)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1148,9 +1140,10 @@ EVENT: start-time: NIL, end-time: NIL,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod add-cmn-object-before ((e event) cmn-object)
-  ;; (print cmn-object)
-  (push cmn-object (cmn-objects-before e)))
+(defmethod add-mark-before ((e event) mark)
+  ;; (print mark)
+  (validate-mark mark)
+  (push mark (marks-before e)))
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1177,8 +1170,8 @@ EVENT: start-time: NIL, end-time: NIL,
 ;;; ****
   (declare (ignore ignore1 ignore2 ignore3))
   (let ((cl (list 'clef clef)))
-    (unless (member cl (cmn-objects-before e) :test #'equal)
-      (add-cmn-object-before e cl))))
+    (unless (member cl (marks-before e) :test #'equal)
+      (add-mark-before e cl))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1204,7 +1197,7 @@ EVENT: start-time: NIL, end-time: NIL,
   (declare (ignore ignore1 ignore2 ignore3))
   (second (find-if #'(lambda (el) (when (listp el) 
                                     (eq 'clef (first el))))
-                   (cmn-objects-before e))))
+                   (marks-before e))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1230,9 +1223,9 @@ EVENT: start-time: NIL, end-time: NIL,
   (declare (ignore ignore1 ignore2))
   ;; 12.4.11 warn if no clef
   (if (get-clef e)
-      (setf (cmn-objects-before e)
+      (setf (marks-before e)
             (remove-if #'(lambda (x) (and (listp x) (eq (first x) 'clef)))
-                       (cmn-objects-before e)))
+                       (marks-before e)))
       (when warn
         (warn "event::delete-clefs: no clef to delete: ~a" e))))
 ;;; ****
@@ -1407,9 +1400,9 @@ EVENT: start-time: NIL, end-time: NIL,
         ;; end comes after the note in order to include it under the bracket 
         (move-elements '(circled-x x-head triangle flag-head beg-8va beg-8vb
                          hairpin0 beg-trill-a triangle-up mensural <<)
-                       (marks e) (cmn-objects-before e))
+                       (marks e) (marks-before e))
       (setf (marks e) from
-            (cmn-objects-before e) to))
+            (marks-before e) to))
     (let* ((poc (if (and in-c (not (from-8ve-transposing-ins e)))
                     (pitch-or-chord e)
                     (written-pitch-or-chord e)))
@@ -1439,8 +1432,9 @@ EVENT: start-time: NIL, end-time: NIL,
             (push (format nil "~a~%" (lp-set-instrument short t)) result))
           (push (format nil "s1*0\^\\markup { ~a }~%" (lp-flat-sign long))
                 result)))
-      (when (cmn-objects-before e)
-        (loop for thing in (cmn-objects-before e) do
+      (when (marks-before e)
+        (loop for thing in (marks-before e) do
+             ;; handle clefs here rather than in lp-get-mark
              (if (and (listp thing) (eq (first thing) 'clef))
                  (push 
                   (if (eq 'percussion (second thing))
@@ -2011,8 +2005,8 @@ EVENT: start-time: NIL, end-time: NIL,
         ;; 23.7.11 (Pula) remove marks that can only be used on a note
         (marks e) (remove-if #'mark-for-note-only (marks e))
         ;; (8va e) 0
-        (cmn-objects-before e) (remove-if #'mark-for-note-only
-                                          (cmn-objects-before e))))
+        (marks-before e) (remove-if #'mark-for-note-only
+                                          (marks-before e))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 22.9.11 
@@ -2113,8 +2107,8 @@ EVENT: start-time: NIL, end-time: NIL,
 EVENT: start-time: NIL, end-time: NIL, 
        duration-in-tempo: 0.0, 
        compound-duration-in-tempo: 0.0, 
-       amplitude: 0.7, score-marks: NIL,  
-       bar-num: -1, cmn-objects-before: NIL, 
+       amplitude: 0.7,
+       bar-num: -1, marks-before: NIL, 
        tempo-change: NIL 
        instrument-change: NIL 
        display-tempo: NIL, start-time-qtrs: -1, 
@@ -2249,8 +2243,8 @@ T
 EVENT: start-time: NIL, end-time: NIL, 
        duration-in-tempo: 0.0, 
        compound-duration-in-tempo: 0.0, 
-       amplitude: 0.7, score-marks: NIL,  
-       bar-num: -1, cmn-objects-before: NIL, 
+       amplitude: 0.7, 
+       bar-num: -1, marks-before: NIL, 
        tempo-change: NIL 
        instrument-change: NIL 
        display-tempo: NIL, start-time-qtrs: -1, 

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 18:48:17 Fri Dec 23 2011 ICT
+;;; $$ Last modified: 12:27:48 Sat Dec 24 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -301,9 +301,9 @@
              (mv (list (sc-cmn-text "molto vib")))
              (poco-crini (list (sc-cmn-text "poco crini")))
              (harm (list (natural-harmonic)))
-             ;; 20.6.11 for the flute: see lilypond.lsp for the actual symbols we
-             ;; want; these here are just gap-fillers
-             ;; 23.7.11 (Pula): just to keep lilypond targetted scores happy
+             ;; 20.6.11 for the flute: see lilypond.lsp for the actual symbols
+             ;; we want; these here are just gap-fillers 23.7.11 (Pula): just
+             ;; to keep lilypond targetted scores happy
              (triangle-up (list (note-head :triangle)))
              (bracket-end (no-cmn-mark 'bracket-end))
              (aeolian-light (list (natural-harmonic)))

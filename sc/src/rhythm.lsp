@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 22:57:23 Fri Dec 23 2011 ICT
+;;; $$ Last modified: 12:36:23 Sat Dec 24 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -802,10 +802,10 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 (defmethod replace-mark ((r rhythm) what with &optional before)
 ;;; ****
   (let ((new (substitute with what (if before
-                                       (cmn-objects-before r)
+                                       (marks-before r)
                                        (marks r)))))
     (if before 
-        (setf (cmn-objects-before r) new)
+        (setf (marks-before r) new)
         (setf (marks r) new))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1887,7 +1887,9 @@ data: (
 
 ;;; MDE Fri Dec 23 22:53:26 2011 
 (defun validate-mark (mark)
-  (unless (cmn-mark-p mark)
+  ;; MDE Sat Dec 24 12:32:42 2011 -- remember clefs are handled differently
+  ;; i.e. not by lp-get-mark and get-cmn-marks  
+  (unless (or (cmn-mark-p mark) (clef-list-p mark))
     (unless (lp-get-mark mark :silent t)
       (warn "~&rhythm::validate-mark: no Lilypond mark for ~a (but ~
            adding anyway)."
@@ -1895,6 +1897,11 @@ data: (
     (unless (cmn::get-cmn-marks mark :silent t)
       (warn "~&rhythm::validate-mark: no CMN mark for ~a (but adding anyway)."
             mark))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Dec 24 12:34:40 2011 -- marks for clefs are stored as e.g. (clef
+;;; treble)  
+(defun clef-list-p (thing)
+  (and (listp thing) (eq (first thing) 'clef)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Dec 23 22:53:26 2011 

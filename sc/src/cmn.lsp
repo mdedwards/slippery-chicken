@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 12:27:48 Sat Dec 24 2011 ICT
+;;; $$ Last modified: 09:06:58 Sun Dec 25 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -336,6 +336,7 @@
           (list ;; (print (symbolp (print (first mark))))
            (case (sc::rm-package (first mark) :cmn)
              (arrow (no-cmn-mark 'arrow)) ; ignore lilypond arrow
+             (trill-note (no-cmn-mark 'trill-note)) ; ignore lilypond trill
              (t (list (apply #'sc-cmn-text mark)))))
           ;; otherwise it might be a cmn-mark (e.g. text) already
           (t (list mark)))))))

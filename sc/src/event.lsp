@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 08:53:43 Sun Dec 25 2011 ICT
+;;; $$ Last modified: 09:11:06 Sun Dec 25 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1112,6 +1112,9 @@ EVENT: start-time: NIL, end-time: NIL,
 ;;; ****
   (when (and warn-rest (is-rest e))
     (warn "~a~&event::add-trill: add trill to rest?" e))
+  ;; MDE Sun Dec 25 09:10:39 2011 -- just call this and let it throw an error
+  ;; if we've not entered a valid pitch 
+  (make-pitch trill-note)
   (add-mark-before e 'beg-trill-a)
   (add-mark e (list 'trill-note trill-note)))
 

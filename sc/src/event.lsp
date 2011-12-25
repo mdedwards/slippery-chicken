@@ -216,6 +216,7 @@
         (setf (midi-channel noc) midi-channel)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; ****m* event/get-midi-channel
 ;;; 23.12.11 SAR Added Robodoc info
 ;;; FUNCTION
@@ -326,8 +327,9 @@
       result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* event/get-dynamics
+
 ;;; 23.12.11 SAR Added robodoc info
+;;; ****m* event/get-dynamics
 ;;; FUNCTION
 ;;; Get the dynamic marks from a given event object. If other non-dynamic
 ;;; events are also contained in the MARKS slot of the rhythm object within the
@@ -1019,24 +1021,45 @@ EVENT: start-time: NIL, end-time: NIL,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; time-sig should be a time-sig object but we can't compile that class before
-;; this one  
+;;; SAR Sat Dec 24 09:03:26 EST 2011
 ;;; ****m* event/set-midi-time-sig
 ;;; FUNCTION
-;;; 
+;;; Sets a MIDI time signature for the given event object. This must be a
+;;; time-sig object, not just a time signature list.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
+;;; - A time-sig object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a time-sig object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Creating a new event object sets the midi-time-sig slot to NIL by default
+(let ((e (make-event 'c4 'q)))
+  (midi-time-sig e))
 
+=> NIL
+
+;; The set-midi-time-sig method returns a time-sig object
+(let ((e (make-event 'c4 'q)))
+  (set-midi-time-sig e (make-time-sig '(3 4))))
+
+=> 
+TIME-SIG: num: 3, denom: 4, duration: 3.0, compound: NIL, midi-clocks: 24,
+num-beats: 3 
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "0304", tag: NIL, 
+data: (3 4)
+
+;; Set the midi-time-sig slot and read the data of the given time-sig object
+(let ((e (make-event 'c4 'q)))
+  (set-midi-time-sig e (make-time-sig '(3 4)))
+  (data (midi-time-sig e)))
+
+=> (3 4)
 |#
 ;;; SYNOPSIS
 (defmethod set-midi-time-sig ((e event) time-sig)
@@ -1057,12 +1080,19 @@ EVENT: start-time: NIL, end-time: NIL,
 ;;; end-arrow mark should be attached to the note where the end text should
 ;;; appear.
 
-;;; ****m*event/add-arrow
+;;; SAR Sat Dec 24 09:14:50 EST 2011 Added robodoc info
+;;; ****m* event/add-arrow
 ;;; FUNCTION
-;;; 
+;;; Adds a start-arrow mark to the given event object and stores text that is
+;;; to be attached to the start and end of the given arrow for LilyPond
+;;; output. 
+;;;
+;;; NB: A separate end-arrow mark should be attached to the note where the end
+;;; text is to appear.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An event object.
+;;; - 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; 
@@ -1093,8 +1123,10 @@ EVENT: start-time: NIL, end-time: NIL,
   (add-mark e 'start-arrow))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; 24.9.11
-;;; ****m*event/add-trill
+;;; SAR Sat Dec 24 09:36:27 EST 2011 Added robodoc info
+;;; ****m* event/add-trill
 ;;; FUNCTION
 ;;; 
 ;;; 
@@ -1124,25 +1156,35 @@ EVENT: start-time: NIL, end-time: NIL,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 24.9.11
-;;; ****m*event/end-trill
+;;; SAR Sat Dec 24 10:50:33 EST 2011
+;;; ****m* event/end-trill
 ;;; FUNCTION
-;;; 
+;;; Adds an 'end-trill-a mark to the MARKS slot of the given event object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T
 ;;; 
 ;;; EXAMPLE
 #|
+;; The end-trill method returns T
+(let ((e (make-event 'c4 'q)))
+  (end-trill e))
 
+=> T
+
+;; Add an 'end-trill-a and check the MARKS slot to see that it's there 
+(let ((e (make-event 'c4 'q)))
+  (end-trill e)
+  (marks e))
+
+=> (END-TRILL-A)
 |#
 ;;; SYNOPSIS
 (defmethod end-trill ((e event))
+;;; ****
   (add-mark e 'end-trill-a))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1151,25 +1193,53 @@ EVENT: start-time: NIL, end-time: NIL,
   ;; (print mark)
   (validate-mark mark)
   (push mark (marks-before e)))
-;;; ****
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/add-clef
+;;; SAR Sat Dec 24 10:59:52 EST 2011 Added robodoc info
+;;; ****m* event/add-clef
 ;;; FUNCTION
-;;; 
+;;; Add a clef indication to the MARKS-BEFORE slot of the given event object. 
+;;;
+;;; NB: This method does not check that the clef-name added is indeed a clef,
+;;; nor does it check to see if other clefs have already been attached to the
+;;; same event object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An event object.
+;;; - A clef name (symbol).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - (Internal "ignore" arguments only; not needed by the user).
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the contents (list) of the MARKS-BEFORE slot if successful.
+;;;
+;;; Returns NIL if the clef name is already present in the MARKS-BEFORE slot
+;;; and is therefore not added.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Successfully adding a clef returns the contents of the MARKS-BEFORE slot 
+(let ((e (make-event 'c4 'q)))
+  (add-clef e 'treble))
+
+=> ((CLEF TREBLE))
+
+;; Returns NIL if the clef name is already present
+(let ((e (make-event 'c4 'q)))
+  (add-clef e 'treble)
+  (add-clef e 'treble))
+
+=> NIL
+
+;; Add a clef name to the marks-before slot and check that it's there
+(let ((e (make-event 'c4 'q)))
+  (add-clef e 'bass)
+  (marks-before e))
+
+=> ((CLEF BASS))
 
 |#
 ;;; SYNOPSIS
@@ -1187,25 +1257,43 @@ EVENT: start-time: NIL, end-time: NIL,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/get-clef
+;;; SAR Sat Dec 24 11:16:49 EST 2011 Added robodoc info
+;;; ****m* event/get-clef
 ;;; FUNCTION
-;;; 
+;;; Return the symbol associated with the key CLEF in the MARKS-BEFORE slot of
+;;; the given event object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - (Internal "ignore" arguments only; not needed by the user).
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the given clef name as a symbol if successful.
+;;;
+;;; Returns NIL if there is no clef name found in the MARKS-BEFORE slot of the
+;;; given event object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns NIL when no clef is found
+(let ((e (make-event 'c4 'q)))
+  (get-clef e))
+
+=> NIL
+
+;; Returns the clef name as symbol when successful.
+(let ((e (make-event 'c4 'q)))
+  (add-clef e 'treble)
+  (get-clef e))
+
+=> TREBLE
 
 |#
 ;;; SYNOPSIS
 (defmethod get-clef ((e event) &optional ignore1 ignore2 ignore3)
+;;; ****
   (declare (ignore ignore1 ignore2 ignore3))
   (second (find-if #'(lambda (el) (when (listp el) 
                                     (eq 'clef (first el))))
@@ -1213,25 +1301,64 @@ EVENT: start-time: NIL, end-time: NIL,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/delete-clefs
+;;; SAR Sat Dec 24 11:47:30 EST 2011
+;;; ****m* event/delete-clefs
 ;;; FUNCTION
-;;; 
+;;; Delete any clef names found in the MARKS-BEFORE slot of a given event
+;;; object. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether or not to print a warning when there are no
+;;; clef marks to delete.
+;;; - (Other internal "ignore" arguments only; not needed by the user).
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Always NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns NIL when no clef marks are found to delete, and prints a warning by
+;; default. 
+(let ((e (make-event 'c4 'q)))
+  (delete-clefs e))
+
+=> NIL
+WARNING: event::delete-clefs: no clef to delete:
+[...]
+
+;; Setting the optional WARN argument to T suprresses the warning when no clefs
+;; are found.
+(let ((e (make-event 'c4 'q)))
+  (delete-clefs e nil))
+
+=> NIL
+
+;; Also returns NIL when successful
+(let ((e (make-event 'c4 'q)))
+  (add-clef e 'treble)
+  (delete-clefs e))
+
+=> NIL
+
+;; Create an event, add a clef, print the MARKS-BEFORE slot, delete the event,
+;; print MARKS-BEFORE again to make sure it's gone
+(let ((e (make-event 'c4 'q)))
+  (add-clef e 'treble)
+  (print (marks-before e))
+  (delete-clefs e)
+  (print (marks-before e)))
+
+=>
+((CLEF TREBLE)) 
+NIL 
 
 |#
 ;;; SYNOPSIS
 (defmethod delete-clefs ((e event) &optional (warn t) ignore1 ignore2)
+;;; ****
   (declare (ignore ignore1 ignore2))
   ;; 12.4.11 warn if no clef
   (if (get-clef e)
@@ -1240,55 +1367,97 @@ EVENT: start-time: NIL, end-time: NIL,
                        (marks-before e)))
       (when warn
         (warn "event::delete-clefs: no clef to delete: ~a" e))))
-;;; ****
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/get-amplitude
+;;; SAR Sat Dec 24 12:00:55 EST 2011 Added robodoc info
+;;; ****m* event/get-amplitude
 ;;; FUNCTION
-;;; 
+;;; Return the amplitude attached to a given event object.
+;;;
+;;; An optional argument allows the amplitude to be converted to and returned
+;;; as a MIDI value.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether the amplitude value is to be returned as a
+;;; standard digital amplitude (a number between 0.0 and 1.0) or as a standard
+;;; MIDI velocity value (a whole number between 0 and 127). T = MIDI
+;;; value. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; If the optional argument is set to NIL, returns a real number.
+;;;
+;;; If the optional argument is set to T, returns a whole number (and a
+;;; remainder).  
 ;;; 
 ;;; EXAMPLE
 #|
+;; Get the amplitude as a decimal value. (Each new event object has a default
+;; amplitude of 0.7). 
+(let ((e (make-event 'c4 'q)))
+  (get-amplitude e))
+
+=> 0.7
+
+;; Get the amplitude as a rounded MIDI value.
+(let ((e (make-event 'c4 'q)))
+  (get-amplitude e t))
+
+=> 89, -0.10000000000000853
 
 |#
 ;;; SYNOPSIS
 (defmethod get-amplitude ((e event) &optional (midi nil))
+;;; ****
   (if midi
       (round (* (amplitude e) 127))
     (amplitude e)))
-;;; ****
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/get-pitch-symbol
+;;; SAR Sat Dec 24 12:13:59 EST 2011
+;;; ****m* event/get-pitch-symbol
 ;;; FUNCTION
-;;; 
+;;; Retrieve the pitch symbol (CM/CMN note-name notation) of a given event
+;;; object. Returns a single symbol if the given event object consists of a
+;;; single pitch; otherwise, returns a list of pitch symbols if the given event
+;;; object consists of a chord.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :written. T or NIL to indicate whether the test is to
+;;; handle the event's written or sounding pitch. T = written. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A symbol, if the event object consists of only a single pitch, otherwise a
+;;; list of pitch symbols if the event object consists of a chord.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Get the pitch symbol of an event object with a single pitch
+(let ((e (make-event 'c4 'q)))
+  (get-pitch-symbol e))
+
+=> C4
+
+;; Getting the pitch symbol of an event object that consists of a chord returns
+;; a list of pitch symbols
+(let ((e (make-event '(c4 e4 g4) 'q)))
+  (get-pitch-symbol e))
+
+=> (C4 E4 G4)
 
 |#
 ;;; SYNOPSIS
 (defmethod get-pitch-symbol ((e event) &optional (written t))
+;;; ****
   (let ((obj (if (and written (written-pitch-or-chord e))
                  (written-pitch-or-chord e)
                (pitch-or-chord e))))
@@ -1296,7 +1465,7 @@ EVENT: start-time: NIL, end-time: NIL,
       (if (chord-p obj)
           (get-pitch-symbols obj)
         (id obj)))))
-;;; ****
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1325,25 +1494,38 @@ EVENT: start-time: NIL, end-time: NIL,
           (seventh result) dx1
           (eighth result) dy1
           (nth index (bracket e)) result)))
-;;; ****
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/no-accidental
+;;; SAR Sat Dec 24 12:28:31 EST 2011 Added robodoc info
+;;; ****m* event/no-accidental
 ;;; FUNCTION
-;;; 
+;;; Sets the SHOW-ACCIDENTAL and ACCIDENTAL-IN-PARENTHESES slots of the given
+;;; event object to NIL.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Always returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The SHOW-ACCIDENTAL slot is automatically set to T on new event objects
+;; that consist of a sharp or flat note.
+(let ((e (make-event 'cs4 'q)))
+  (show-accidental (pitch-or-chord e)))
+
+=> T
+
+;; The method no-accidental sets the SHOW-ACCIDENTAL slot to NIL (and the
+;; ACCIDENTAL-IN-PARENTHESES if not already).
+(let ((e (make-event 'cs4 'q)))
+  (no-accidental e)
+  (show-accidental (pitch-or-chord e)))
+
+=> NIL  
 
 |#
 ;;; SYNOPSIS
@@ -1370,14 +1552,12 @@ EVENT: start-time: NIL, end-time: NIL,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/get-dynamic
+;;; SAR Sat Dec 24 13:47:47 EST 2011 Added robodoc info
+;;; ****m* event/get-dynamic
 ;;; FUNCTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
 ;;; 
 ;;; 
 ;;; RETURN VALUE
@@ -1641,23 +1821,39 @@ EVENT: start-time: NIL, end-time: NIL,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; If a chord, the return the number of notes in the chord.
-
-;;; ****m*event/is-chord
+;;; SAR Sat Dec 24 15:15:57 EST 2011 Added robodoc info
+;;; ****m* event/is-chord
 ;;; FUNCTION
-;;; 
+;;; Test to determine whether a given event object consists of a chord (as
+;;; opposed to a single pitch or a rest). 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - If the given event object is a chord, the method returns a number that is
+;;; the number of notes in the chord.
+;;; - Returns NIL if the given event object is not a chord.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns NIL if not a chord
+(let ((e (make-event 'c4 'q)))
+  (is-chord e))
+
+=> NIL
+
+;; If a chord, returns the number of notes in the chord 
+(let ((e (make-event '(c4 e4 g4) 'q)))
+  (is-chord e))
+
+=> 3
+
+;; A rest is not a chord
+(let ((e (make-rest 'q)))
+  (is-chord e))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -1669,50 +1865,126 @@ EVENT: start-time: NIL, end-time: NIL,
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/is-single-pitch
+;;; SAR Sat Dec 24 15:31:18 EST 2011 Added robodoc info
+;;; ****m* event/is-single-pitch
 ;;; FUNCTION
-;;; 
+;;; Test to see if an event object consists of a single pitch (as opposed to a
+;;; chord or a rest).
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the given event object consists of a single pitch, otherwise
+;;; returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns T if the event object consists of a single pitch
+(let ((e (make-event 'c4 'q)))
+  (is-single-pitch e))
+
+=> T
+
+;; Returns NIL if the event object is a chord
+(let ((e (make-event '(c4 e4 g4) 'q)))
+  (is-single-pitch e))
+
+=> NIL
+
+;; Also returns NIL if the event object is a rest
+(let ((e (make-rest 'q)))
+  (is-single-pitch e))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
 (defmethod is-single-pitch ((e event))
+;;; ****
   (typep (pitch-or-chord e) 'pitch))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 
-;;; Transpose the event by semitones (not degrees!).  If functions are given,
-;;; they will be used for the note or chord in the event, whereby semitones may
-;;; or may not be nil in that case (transposition could be dependent on the
-;;; note or chord and not a fixed shift.
+;;; If functions are given, they will be used for the note or chord in the
+;;; event, whereby semitones may or may not be nil in that case (transposition
+;;; could be dependent on the note or chord and not a fixed shift). 
 
-;;; ****m*event/transpose
+;;; SAR Sat Dec 24 15:46:23 EST 2011 Added robodoc info
+;;; ****m* event/transpose
 ;;; FUNCTION
-;;; 
+;;; Transpose the pitch content of a given event object by a specified number
+;;; of semitones. This method can be applied to chords or single-pitches.
+;;;
+;;; NB: By default this method returns a modified clone of the original rather
+;;; than changing the values of the original itself. The user can choose to
+;;; replace the values of the original by setting the keyword argument
+;;; :destructively to T.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An event object.
+;;; - A number (can be positive or negative).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :destructively. T or NIL to indicate whether the method
+;;; is to change (replace) the pitch values of the original event object (T) or
+;;; return a new event object with the new pitches (NIL). Default = NIL.
+;;; - keyword argument :chord-function
+;;; - keyword argument :pitch-function
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An event object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Transpose returns an event object
+(let ((e (make-event 'c4 'q)))
+  (transpose e 1))
+
+=> 
+EVENT: start-time: NIL, end-time: NIL, 
+       duration-in-tempo: 0.0, 
+[...]
+
+;; By default transpose returns a modified clone, leaving the original event
+;; object untouched. 
+(let ((e (make-event 'c4 'q)))
+  (print (data (pitch-or-chord (transpose e 1))))
+  (print (data (pitch-or-chord e))))
+
+=>
+CS4 
+C4 
+
+;; When the keyword argument :destructively is set to T, the data of the
+;; original event object is replaced
+(let ((e (make-event 'c4 'q)))
+  (transpose e 1 :destructively t)
+  (data (pitch-or-chord e)))
+
+=> CS4
+
+;; Can transpose by 0 as well (effectively no transposition)
+(let ((e (make-event 'c4 'q)))
+  (transpose e 0 :destructively t)
+  (data (pitch-or-chord e)))
+
+=> C4
+
+;; ...or by negative intervals
+(let ((e (make-event 'c4 'q)))
+  (transpose e -3 :destructively t)
+  (data (pitch-or-chord e)))
+
+=> A3
+
+;; Can transpose chords too
+(let ((e (make-event '(c4 e4 g4) 'q)))
+  (transpose e -3 :destructively t)
+  (loop for p in (data (pitch-or-chord e)) collect (data p)))
+
+=> (A3 CS4 E4)
 
 |#
 ;;; SYNOPSIS
@@ -1723,6 +1995,7 @@ EVENT: start-time: NIL, end-time: NIL,
                       ;; or chord.
                       (chord-function #'transpose)
                       (pitch-function #'transpose))
+;;; ****
   ;; 22.7.11 (Pula): handle destructive case now
   ;; (declare (ignore destructively))
   (when (and (not (is-rest e))
@@ -1745,25 +2018,60 @@ EVENT: start-time: NIL, end-time: NIL,
                   (funcall pitch-function wnoc semitones)
                   (funcall chord-function wnoc semitones)))))
     result))
-;;; ****
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/set-written
+;;; SAR Sat Dec 24 16:51:34 EST 2011 Added robodoc info
+;;; ****m* event/set-written
 ;;; FUNCTION
-;;; 
+;;; Set the written pitch (as opposed to sounding; i.e., for transposing
+;;; instruments) of a given event object. The sounding pitch remains unchanged
+;;; as a pitch object in the PITCH-OR-CHORD slot, while the written pitch is
+;;; added as a pitch object to the WRITTEN-PITCH-OR-CHORD slot.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
+;;; - A whole number indicating the number of semitones (positive or negative)
+;;; by which the sounding pitch is to be tranposed to create the written
+;;; pitch. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A pitch object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns a pitch object (here for example for a B-flat Trumpet or Clarinet) 
+(let ((e (make-event 'c4 'q)))
+  (set-written e -2))
+
+=> 
+PITCH: frequency: 233.08186975464196, midi-note: 58, midi-channel: NIL 
+       pitch-bend: 0.0 
+       degree: 116, data-consistent: T, white-note: B3
+       nearest-chromatic: BF3
+       src: 0.8908987045288086, src-ref-pitch: C4, score-note: BF3 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: T, natural: NIL, 
+       octave: 3, c5ths: 1, no-8ve: BF, no-8ve-no-acc: B
+       show-accidental: T, white-degree: 27, 
+       accidental: F, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: BF3, tag: NIL, 
+data: BF3
+
+;; Create a single-pitch event object, set it's written pitch to two half-steps
+;; lower, and print the corresponding data slots
+(let ((e (make-event 'c4 'q)))
+  (set-written e -2)
+  (print (data (pitch-or-chord e)))
+  (print (data (written-pitch-or-chord e))))
+
+=>
+C4
+BF3
 
 |#
 ;;; SYNOPSIS
@@ -1772,48 +2080,88 @@ EVENT: start-time: NIL, end-time: NIL,
   (when (pitch-or-chord e)
     (setf (written-pitch-or-chord e) 
       (transpose (clone (pitch-or-chord e)) transposition))))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/delete-written
+;;; SAR Sat Dec 24 17:15:48 EST 2011 Added robodoc info
+;;; ****m* event/delete-written
 ;;; FUNCTION
-;;; 
+;;; Delete the contents of the WRITTEN-PITCH-OR-CHORD slot of a given event
+;;; object and reset to NIL.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Always returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create an event object, print the contents of the written-pitch-or-chord
+;; slot to see it's set to NIL, set-written to -2, print the contents of the
+;; corresponding slot to see the data of the newly created pitch object, 
+;; delete-written, print the contents of the written-pitch-or-chord slot to see
+;; it's empty.
+(let ((e (make-event 'c4 'q)))
+  (print (written-pitch-or-chord e))
+  (set-written e -2)
+  (print (data (written-pitch-or-chord e)))
+  (delete-written e)
+  (print (written-pitch-or-chord e)))
+
+=>
+NIL 
+BF3 
+NIL
 
 |#
 ;;; SYNOPSIS
 (defmethod delete-written ((e event))
+;;; ****
   (setf (written-pitch-or-chord e) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/lowest
+;;; SAR Sat Dec 24 17:32:15 EST 2011 Added robodoc info
+;;; ****m* event/lowest
 ;;; FUNCTION
-;;; 
+;;; Get the lowest pitch (of a chord) in a given event object. If the given
+;;; event object contains a single pitch only, that pitch is returned.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A pitch object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns a pitch object
+(let ((e (make-event 'c4 'q)))
+  (lowest e))
+
+=> 
+PITCH: frequency: 261.6255569458008, midi-note: 60, midi-channel: NIL 
+       pitch-bend: 0.0 
+       degree: 120, data-consistent: T, white-note: C4
+       nearest-chromatic: C4
+       src: 1.0, src-ref-pitch: C4, score-note: C4 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 4, c5ths: 0, no-8ve: C, no-8ve-no-acc: C
+       show-accidental: T, white-degree: 28, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: C4, tag: NIL, 
+data: C4
+
+;; Returns the lowest note of a chord object within an event object
+(let ((e (make-event '(d4 fs4 a4) 'q)))
+  (data (lowest e)))
+
+=> D4
 
 |#
 ;;; SYNOPSIS
@@ -1823,25 +2171,49 @@ EVENT: start-time: NIL, end-time: NIL,
     (if (chord-p porc)
         (lowest porc)
       porc)))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/highest
+;;; SAR Sat Dec 24 19:08:03 EST 2011 Added robodoc info
+;;; ****m* event/highest
 ;;; FUNCTION
-;;; 
+;;; Get the highest pitch (of a chord) in a given event object. If the given
+;;; event object contains a single pitch only, that pitch is returned.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A pitch object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns a pitch object
+(let ((e (make-event 'c4 'q)))
+  (highest e))
+
+=> 
+PITCH: frequency: 261.6255569458008, midi-note: 60, midi-channel: NIL 
+       pitch-bend: 0.0 
+       degree: 120, data-consistent: T, white-note: C4
+       nearest-chromatic: C4
+       src: 1.0, src-ref-pitch: C4, score-note: C4 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 4, c5ths: 0, no-8ve: C, no-8ve-no-acc: C
+       show-accidental: T, white-degree: 28, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: C4, tag: NIL, 
+data: C4
+
+;; Returns the highest note of a chord object within an event object
+(let ((e (make-event '(d4 fs4 a4) 'q)))
+  (data (highest e)))
+
+=> A4
 
 |#
 ;;; SYNOPSIS
@@ -1854,24 +2226,48 @@ EVENT: start-time: NIL, end-time: NIL,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; returns distance in semitones from e1 to e2; chords taken into
-;;; consideration. 
+;;; chords taken into consideration. 
 
-;;; ****m*event/event-distance
+;;; SAR Sat Dec 24 19:15:03 EST 2011 Added robodoc info
+;;; ****m* event/event-distance
 ;;; FUNCTION
-;;; 
+;;; Get the distance (interval) in semitones between the pitch level of one
+;;; event object and a second. Negative numbers indicate direction interval
+;;; directionality. 
+;;;
+;;; Event-distance can also be determined between chords, in which case the
+;;; distance is measured between the highest pitch of one event object and the
+;;; lowest of the other.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A first event object.
+;;; - A second event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A number.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The semitone distance between two single pitches in ascending direction
+(let ((e1 (make-event 'c4 'q))
+      (e2 (make-event 'e4 'q)))
+  (event-distance e1 e2))
+
+=> 4.0
+
+;; The semitone distance between two single pitches in descending direction
+(let ((e1 (make-event 'c4 'q))
+      (e2 (make-event 'e4 'q)))
+  (event-distance e2 e1))
+
+=> -4.0
+
+;; The semitone distance between two chords in ascending direction
+(let ((e1 (make-event '(c4 e4 g4) 'q))
+      (e2 (make-event '(d4 f4 a4) 'q)))
+  (event-distance e1 e2))
+
+=> 9.0
 
 |#
 ;;; SYNOPSIS

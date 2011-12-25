@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 16:27:02 Sat Dec 24 2011 ICT
+;;; $$ Last modified: 16:03:57 Sun Dec 25 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -627,7 +627,7 @@ data: ((2 4) Q E S S)
   (loop for r in (rhythms rsb) count (is-tied-from r)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; 
 ;;; When a bunch of short notes are tied to each other, make one (or a few)
 ;;; notes of them.  If check-dur, make sure we get an exact beat's worth of
 ;;; rhythms.
@@ -657,7 +657,7 @@ data: ((2 4) Q E S S)
     ;; (unless (< (num-notes-tied-from rsb) 2)
     (unless (zerop (num-notes-tied-from rsb))
       (let ((beats (get-beats rsb beat check-dur))
-            rthms)
+            tmp rthms)
         (when beats
           ;; (error "~a~%rthm-seq-bar::consolidate-notes: no rhythms!" rsb))
           (setf rthms (loop for beat in beats
@@ -672,10 +672,12 @@ data: ((2 4) Q E S S)
           ;; 14.2.11 don't try and consolidate anything beyond a beat if there
           ;; are tuplets.  todo: extend this to look at consecutive groups of
           ;; beats and test for tuplets
+          ;; (print 'here)
           (unless (has-tuplets rthms)
-            (setf rthms (consolidate-notes-aux rthms 
+            (setf tmp (consolidate-notes-aux rthms 
                                                (bar-num rsb)
-                                               (get-beat-as-rhythm rsb))))
+                                               (get-beat-as-rhythm rsb)))
+            (when tmp (setf rthms tmp)))
           (setf (rhythms rsb) 
                 (if (event-p (first (rhythms rsb)))
                     (consolidated-rthms-to-events rsb rthms)
@@ -3993,6 +3995,8 @@ show-rest: T
 ;;; suffices for now.
 
 (defun consolidate-notes-aux (rhythms &optional (bar-num -1) match-rhythm)
+  ;; (print 'consolidate-notes-aux-in)
+  ;; (print-rhythms-rqs rhythms)
   (when (contains-ties rhythms)
     ;; (loop for r in rhythms do (format t "~a " (rq r)))
     (loop for r in rhythms and i from 0 do 
@@ -4046,6 +4050,8 @@ show-rest: T
         (error "~%rthm-seq-bar::consolidate-notes-aux: bar num: ~a ~
                 Consolidated rthms sum (~a) != previous sum (~a)"
                bar-num sum-consol sum))
+      ;; (print 'consolidate-notes-aux-out)
+      ;; (print-rhythms-rqs result)
       result)))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
@@ -4125,6 +4131,7 @@ show-rest: T
         (result '()))
     (loop for tied in ties do 
          (when tied
+           ;; (print 'aux5-tied)
            ;; (print tied)
            (push 
             (if (> (length tied) 1)
@@ -4133,8 +4140,10 @@ show-rest: T
                              (sum-rhythms-duration tied)
                              :rest nil
                              :keep-it-simple t
-                             :error-on-fail t))))
-                  (if (= (length tied) (length rat))
+                             :error-on-fail nil))))
+                  ;; (print 'rat)
+                  ;; (print rat)
+                  (if (or (not rat) (= (length tied) (length rat)))
                       tied
                       rat))
                 (first tied))
@@ -4142,43 +4151,43 @@ show-rest: T
     (flatten (nreverse result))))
   
 #|
-                  (defun consolidate-notes-aux5 (rthms)
-(print 'aux5)
-(print-simple-rthm-list rthms)
-(let ((ties (get-tied-rthms rthms))
-(result '()))
-;; (print-simple-list (flatten ties))
-(terpri)
-(loop for tied in ties 
-for tied-sum = (when tied (sum-rhythms-duration tied))
-with now = 0.0
-do 
-(when tied
-  ;; (print tied)
-(push 
-(if (> (length tied) 1)
-(let ((rat (make-tied
-(rationalize-if-necessary 
-tied-sum
-:rest nil
-:keep-it-simple t
-:error-on-fail t))))
-(if (or (= (length tied) (length rat))
-        ;; 14.2.11 we don't want tuplets being made into
-        ;; non-tuplets scanning beats e.g. tq te+tq te
-        ;; becoming tq q te
-(and (not (float-int-p now))            ; are we on a beat?
-(/= 1 (print (tuplet-scaler (first result))))
-;; (= 1 (tuplet-scaler (first rat)))))
-(>= (- (print (floor (+ now tied-sum)))
-(print (floor now)))
-1)))
-tied
-rat))
-(first tied))
-result)
-(incf now tied-sum)))
-(flatten (nreverse result))))
+(defun consolidate-notes-aux5 (rthms)
+  (print 'aux5)
+  (print-simple-rthm-list rthms)
+  (let ((ties (get-tied-rthms rthms))
+        (result '()))
+;; (print-simple-list (flatten ties))   ; ;
+    (terpri)
+    (loop for tied in ties 
+       for tied-sum = (when tied (sum-rhythms-duration tied))
+       with now = 0.0
+       do 
+       (when tied
+  ;; (print tied)                       ; ;
+         (push 
+          (if (> (length tied) 1)
+              (let ((rat (make-tied
+                          (rationalize-if-necessary 
+                           tied-sum
+                           :rest nil
+                           :keep-it-simple t
+                           :error-on-fail t))))
+                (if (or (= (length tied) (length rat))
+        ;; 14.2.11 we don't want tuplets being made into ; ;
+        ;; non-tuplets scanning beats e.g. tq te+tq te ; ;
+        ;; becoming tq q te             ; ;
+                        (and (not (float-int-p now))       ; are we on a beat? 
+                             (/= 1 (print (tuplet-scaler (first result))))
+;; (= 1 (tuplet-scaler (first rat)))))  ; ;
+                             (>= (- (print (floor (+ now tied-sum)))
+                                    (print (floor now)))
+                                 1)))
+                    tied
+                    rat))
+              (first tied))
+          result)
+         (incf now tied-sum)))
+    (flatten (nreverse result))))
                   |#
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 

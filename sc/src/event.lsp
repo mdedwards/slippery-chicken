@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:11:06 Sun Dec 25 2011 ICT
+;;; $$ Last modified: 09:20:34 Sun Dec 25 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1077,6 +1077,10 @@ EVENT: start-time: NIL, end-time: NIL,
 ;;; SYNOPSIS
 (defmethod add-arrow ((e event) start-text end-text &optional warn-rest)
 ;;; ****
+  (unless (and (stringp start-text) (stringp end-text))
+    (error "~a~&event::add-arrow: start-text (~a) and end-text (~a) must ~
+            both be strings"
+           e start-text end-text))
   (when (and warn-rest (is-rest e))
     (warn "~a~&event::add-arrow: add arrow to rest?" e))
   ;; 26.7.11 (Pula): if there's not start/end text the arrow won't be shown in

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 16:04:56 Sun Dec 25 2011 ICT
+;;; $$ Last modified: 16:22:34 Sun Dec 25 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1512,18 +1512,18 @@ data: NIL
 ;;; SYNOPSIS
 (defun make-rhythm (rthm &key (is-rest nil) (is-tied-to nil) (duration nil)
                     (tempo 60.0))
-;;; **** 
-  ;;  (unless rthm 
-  ;;  (error "event::make-rhythm: <rthm> can't be nil"))
-  ;; only if duration t
+;;; ****                                ;
+  ;;  (unless rthm                      ;
+  ;;  (error "event::make-rhythm: <rthm> can't be nil")) ;
+  ;; only if duration t                 ;
   (cond ((rhythm-p rthm) (clone rthm))
         ((and rthm (not duration))
          (make-instance 'rhythm :data rthm :is-rest is-rest 
                         :is-tied-to is-tied-to))
-        ((and duration rthm)
+        ((and (numberp duration) rthm)
          (error "rhythm::make-rhythm: can't process both a <rthm> (~a) and ~
-                 <duration> (~a)" rthm duration))
-        ((and duration (not rthm))
+                 <duration> (~a) (duration should be T or NIL)" rthm duration))
+        ((and rthm duration)
          (let ((rthm-letter
                 (get-rhythm-letter-for-duration 
                  rthm :tempo tempo :warn nil :error-on-fail nil)))

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:12:36 Sat Dec 24 2011 ICT
+;;; $$ Last modified: 12:17:23 Sun Dec 25 2011 ICT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1515,7 +1515,6 @@
   (get-rest (piece sc) bar-num rest-num player))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* slippery-chicken/get-event
 ;;; FUNCTION
 ;;; get-event:

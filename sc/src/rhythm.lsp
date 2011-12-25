@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 12:36:23 Sat Dec 24 2011 ICT
+;;; $$ Last modified: 16:04:56 Sun Dec 25 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -230,27 +230,27 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((i rhythm) stream)
-  (format stream "~&RHYTHM: value: ~a, ~
-                            duration: ~a, ~
+  (format stream "~&RHYTHM: value: ~,3f, ~
+                            duration: ~,3f, ~
                             rq: ~a, ~
                             is-rest: ~a, ~
-                            score-rthm: ~a, ~
-                  ~%        undotted-value: ~a, ~
+                  ~%        score-rthm: ~,3f, ~
+                            undotted-value: ~a, ~
                             num-flags: ~a, ~
                             num-dots: ~a, ~
-                            is-tied-to: ~a, ~
-                  ~%        is-tied-from: ~a, ~
-                            compound-duration: ~a, ~
-                            is-grace-note: ~a, ~
-                  ~%        needs-new-note: ~a, ~
+                  ~%        is-tied-to: ~a, ~
+                            is-tied-from: ~a, ~
+                            compound-duration: ~,3f, ~
+                  ~%        is-grace-note: ~a, ~
+                            needs-new-note: ~a, ~
                             beam: ~a, ~
                             bracket: ~a, ~
-                            rqq-note: ~a, ~
-                  ~%        rqq-info: ~a, ~
+                  ~%        rqq-note: ~a, ~
+                            rqq-info: ~a, ~
                             marks: ~a, ~
                             marks-in-part: ~a, ~
-                            letter-value: ~a, ~
-                  ~%        tuplet-scaler: ~a, ~
+                  ~%        letter-value: ~a, ~
+                            tuplet-scaler: ~a, ~
                             grace-note-duration: ~a"
           (value i) (duration i) (rq i) (is-rest i) (score-rthm i)
           (undotted-value i) 
@@ -1512,19 +1512,26 @@ data: NIL
 ;;; SYNOPSIS
 (defun make-rhythm (rthm &key (is-rest nil) (is-tied-to nil) (duration nil)
                     (tempo 60.0))
-;;; **** ;; only if duration t
+;;; **** 
+  ;;  (unless rthm 
+  ;;  (error "event::make-rhythm: <rthm> can't be nil"))
+  ;; only if duration t
   (cond ((rhythm-p rthm) (clone rthm))
-        ((not duration)
+        ((and rthm (not duration))
          (make-instance 'rhythm :data rthm :is-rest is-rest 
                         :is-tied-to is-tied-to))
-        (duration 
+        ((and duration rthm)
+         (error "rhythm::make-rhythm: can't process both a <rthm> (~a) and ~
+                 <duration> (~a)" rthm duration))
+        ((and duration (not rthm))
          (let ((rthm-letter
                 (get-rhythm-letter-for-duration 
                  rthm :tempo tempo :warn nil :error-on-fail nil)))
            (make-instance 'rhythm 
                           :data (when rthm-letter rthm-letter)
                           :duration (if rthm-letter -1 rthm)
-                          :is-rest is-rest :is-tied-to is-tied-to)))))
+                          :is-rest is-rest :is-tied-to is-tied-to)))
+        (t nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1652,6 +1659,7 @@ data: NIL
          (dod-r (if rest
                     (make-rest doddle)
                   (make-rhythm doddle))))
+    ;; (format t "rationalize-if-necessary dur-secs:~a,dod-r:~a" dur-secs dod-r)
     (if (and dod-r
              (or (not keep-it-simple)
                  (< (num-dots dod-r) 2)))

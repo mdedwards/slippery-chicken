@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:20:34 Sun Dec 25 2011 ICT
+;;; $$ Last modified: 13:17:50 Sun Dec 25 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2611,7 +2611,7 @@ T
 ;;; **** 
   ;; MDE Wed Dec 14 17:32:18 2011 
   (when (and pitch-or-chord is-rest)
-    (error "event::make-event: an event can't have pitch data (~a) and be a rest:"
+    (error "event::make-event: an rest can't have pitch data (~a):"
            pitch-or-chord))
   (let* ((r (make-rhythm rthm :is-rest is-rest :is-tied-to is-tied-to
                          :duration duration :tempo tempo))

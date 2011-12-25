@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 12:18:22 Sat Dec 24 2011 ICT
+;;; $$ Last modified: 16:27:02 Sat Dec 24 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -459,7 +459,26 @@ data: NIL
 ;;; was developed for combining lots of short rests into a longer one.  In
 ;;; particular we need to develop an algorithm for resolving simple things e,q
 ;;; as rests...
+;;; ****m* rthm-seq-bar/consolidate-rests
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod consolidate-rests ((rsb rthm-seq-bar) &key beat min warn)
+;;; ****
   ;; (print 'consolidate-rests)
   ;; (print (length (rhythms rsb)))
   (let ((beats (get-beats rsb beat))
@@ -613,7 +632,26 @@ data: ((2 4) Q E S S)
 ;;; notes of them.  If check-dur, make sure we get an exact beat's worth of
 ;;; rhythms.
 
+;;; ****m* rthm-seq-bar/consolidate-notes
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod consolidate-notes ((rsb rthm-seq-bar) &optional check-dur beat)
+;;; ****
   (unless (is-rest-bar rsb)
     ;; 11/4/07 only do this if we've got some tied notes in the bar
     ;; (unless (< (num-notes-tied-from rsb) 2)
@@ -771,13 +809,18 @@ data: ((2 4) Q E S S)
                 (/= (tuplet-scaler r) 1))
        (setf (bracket new-e) (bracket current-e)))
      (unless (is-rest r)
-       ;; some slots, e.g. compound-duration will still be wrong but
-       ;; update-slots will take care of that later 
-       (copy-event-slots current-e new-e)
+       ;; MDE Sat Dec 24 16:22:06 2011 -- 
+       (when (event-p current-e)
+         ;; some slots, e.g. compound-duration will still be wrong but
+         ;; update-slots will take care of that later 
+         (copy-event-slots current-e new-e))
        ;; 6/6/07 don't need marks when this is tied to!
        (when (is-tied-to new-e)
          (delete-marks new-e)))
      (when (and (needs-new-note new-e)
+                ;; MDE Sat Dec 24 16:25:02 2011 -- otherwise we can't
+                ;; consolidate a rthm-seq from a palette
+                (event-p current-e)
                 (not (start-time new-e)))
        (error "rthm-seq-bar::consolidated-rthms-to-events: ~
                   bar ~a no start-time! ~&current-e: ~&~a ~&new-e: ~&~a"
@@ -4001,7 +4044,7 @@ show-rest: T
         (print-rhythms-rqs rhythms)
         (print-rhythms-rqs result)
         (error "~%rthm-seq-bar::consolidate-notes-aux: bar num: ~a ~
-              Consolidated rthms sum (~a) != previous sum (~a)"
+                Consolidated rthms sum (~a) != previous sum (~a)"
                bar-num sum-consol sum))
       result)))
     

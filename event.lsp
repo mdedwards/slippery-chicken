@@ -2392,21 +2392,40 @@ data: C4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m*event/force-rest
+;;; SAR Sun Dec 25 08:23:34 EST 2011 Added robodoc info
+;;; ****m* event/force-rest
 ;;; FUNCTION
-;;; 
+;;; Changes a given event object to a rest by setting both the PITCH-OR-CHORD
+;;; and WRITTEN-PITCH-OR-CHORD slots to NIL and the IS-REST slot to T.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - An event object
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns an event object.
+(let ((e (make-event 'c4 'q)))
+  (force-rest e))
+
+=> 
+EVENT: start-time: NIL, end-time: NIL, 
+[...]
+
+;; Create an event object, apply force-rest, then print the corresponding slots
+;; to see the effectiveness of the method
+(let ((e (make-event 'c4 'q)))
+  (force-rest e)
+  (print (pitch-or-chord e))
+  (print (written-pitch-or-chord e))
+  (print (is-rest e)))
+
+=>
+NIL 
+NIL 
+T
 
 |#
 ;;; SYNOPSIS
@@ -2427,22 +2446,52 @@ data: C4
   (setf (8va e) 0))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; 20.8.11
-;;; ****m*event/force-artificial-harmonic
+;;; SAR Sun Dec 25 08:50:52 EST 2011
+;;; ****m* event/force-artificial-harmonic
 ;;; FUNCTION
-;;; 
+;;; Change the pitch-or-chord content of a given event object such that the
+;;; existing pitch will be notated as an artificial harmonic. 
+;;;
+;;; The method creates pitch data for an artificial harmonic that will result
+;;; in the specified pitch, rather than adding an artificial harmonic to the
+;;; specified pitch. Thus, the method changes the existing pitch content by
+;;; transposing the specified pitch down two octaves and adding a new pitch one
+;;; perfect fourth above it (changing the given pitch object to a chord
+;;; object). It then also adds the mark 'flag-head to the MARKS slot of the
+;;; upper pitch for printing layout so that the upper pitch is printed as a
+;;; diamond. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Always returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns NIL.
+(let ((e (make-event 'c7 'q)))
+  (force-artificial-harmonic e))
+
+=> NIL
+
+;; Create an event object, apply force-artificial-harmonic, then get the new
+;; pitch material
+(let ((e (make-event 'c7 'q)))
+  (force-artificial-harmonic e)
+  (loop for p in (data (pitch-or-chord e)) collect (data p)))
+
+=> (C5 F5)
+
+;; Create an event object, apply force-artificial-harmonic, then get the marks
+;; attached to each note in the object to see the 'flag-head
+(let ((e (make-event 'c7 'q)))
+  (force-artificial-harmonic e)
+  (loop for p in (data (pitch-or-chord e)) collect (marks p)))
+
+=> (NIL (FLAG-HEAD))
 
 |#
 ;;; SYNOPSIS

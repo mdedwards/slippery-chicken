@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:30:41 Sat Dec 24 2011 ICT
+;;; $$ Last modified: 08:53:43 Sun Dec 25 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1166,9 +1166,14 @@ EVENT: start-time: NIL, end-time: NIL,
 
 |#
 ;;; SYNOPSIS
-(defmethod add-clef ((e event) clef &optional ignore1 ignore2 ignore3)
+(defmethod add-clef ((e event) clef &optional (delete-others t) ignore1 ignore2)
 ;;; ****
-  (declare (ignore ignore1 ignore2 ignore3))
+  (declare (ignore ignore1 ignore2))
+  (when delete-others
+    (delete-clefs e nil))
+  ;; no '(clef treble) otherwise we'll end up with '(clef (clef treble))
+  (unless (and (symbolp clef) (is-clef clef))
+    (error "~a~&event::add-clef: ~a is not a clef." e clef))
   (let ((cl (list 'clef clef)))
     (unless (member cl (marks-before e) :test #'equal)
       (add-mark-before e cl))))
@@ -1838,7 +1843,7 @@ EVENT: start-time: NIL, end-time: NIL,
   (let ((porc (pitch-or-chord e)))
     (if (chord-p porc)
         (highest porc)
-      porc)))
+        porc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1863,19 +1868,23 @@ EVENT: start-time: NIL, end-time: NIL,
 
 |#
 ;;; SYNOPSIS
-(defmethod event-distance ((e1 event) (e2 event))
+(defmethod event-distance ((e1 event) (e2 event) &optional absolute)
 ;;; ****
-  (let ((e1-high (highest e1))
-        (e2-high (highest e2))
-        (e1-low (lowest e1))
-        (e2-low (lowest e2)))
-    ;; only high notes are considered important for the 'feel' of the direction
-    ;; here     
-    (if (pitch> e2-high e1-high)
-        ;; we're going up
-        (- (midi-note-float e2-high) (midi-note-float e1-low))
-      ;; we're going down
-      (- (midi-note-float e2-low) (midi-note-float e1-high)))))
+  (let* ((e1-high (highest e1))
+         (e2-high (highest e2))
+         (e1-low (lowest e1))
+         (e2-low (lowest e2))
+         (result
+          ;; only high notes are considered important for the 'feel' of the
+          ;; direction here
+          (if (pitch> e2-high e1-high)
+              ;; we're going up
+              (- (midi-note-float e2-high) (midi-note-float e1-low))
+              ;; we're going down
+              (- (midi-note-float e2-low) (midi-note-float e1-high)))))
+    (if absolute
+        (abs result)
+        result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2684,6 +2693,20 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 ;;; has it as with an alto (I think)
 (defun lp-percussion-clef ()
     "\\set Staff.middleCPosition = #-6 \\set Staff.clefGlyph = #\"clefs.percussion\" \\set Staff.clefPosition = #0 ")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sun Dec 25 08:41:20 2011 
+(defun is-clef (mark)
+  (let ((clef (typecase mark
+                (list (when (and (equalp (first mark) 'clef)
+                                 (= 2 (length mark)))
+                        (second mark)))
+                (symbol mark)
+                (t nil))))
+    (when (and clef
+               (member clef '(treble bass alto tenor double-treble double-bass
+                              percussion soprano baritone)))
+      t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

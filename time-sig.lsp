@@ -306,6 +306,7 @@
 |#
 ;;; SYNOPSIS
 (defmethod time-sig-equal ((ts1 time-sig) (ts2 time-sig))
+;;; ****
   (cond ((and (= (denom ts1) (denom ts2))
               (= (num ts1) (num ts2)))
          t)
@@ -386,7 +387,7 @@
         (loop for e in (rest (butlast result)) do
               (setf (is-tied-from e) t)))
       result)))
-;;; ****
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

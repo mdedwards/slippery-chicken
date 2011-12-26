@@ -836,13 +836,14 @@ data: 132
 ;;; SAR Fri Dec 23 20:04:27 EST 2011 Added robodoc info
 ;;; ****m* event/enharmonic
 ;;; FUNCTION
-;;; Change the data slot of the pitch object within the given event object to
-;;; its enharmonic equivalent.
+;;; Change the pitch of the pitch object within the given event object to its
+;;; enharmonic equivalent.   
 ;;;
 ;;; In its default form, this method only applies to note names that already
-;;; contain an indication for an accidental (such as DF4 or BS3). "White-key"
-;;; note names (such as B3 or C4) will not produce an enharmonic equivalent. In
-;;; order to access this feature, set the :force-naturals argument to T.
+;;; contain an indication for an accidental (such as DF4 or BS3), while
+;;; "white-key" note names (such as B3 or C4) will not produce an enharmonic
+;;; equivalent. In order to change white-key pitches to their enharmonic
+;;; equivalents, set the :force-naturals argument to T. 
 ;;; 
 ;;; NB: Doesn't work on chords.
 ;;; 

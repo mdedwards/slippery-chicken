@@ -3208,20 +3208,96 @@ data: (2 4)
                                 (pitch-or-chord e))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 26.9.11: forces all notes in bar to their enharmonic equivalent
 
+;;; SAR Mon Dec 26 11:52:16 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq-bar/enharmonic
 ;;; FUNCTION
+;;; Change the pitches of the events within a given rthm-seq-bar object to
+;;; their enharmonic equivalents. 
 ;;; 
-;;; 
+;;; In its default form, this method only applies to note names that already
+;;; contain an indication for an accidental (such as DF4 or BS3), while
+;;; "white-key" note names (such as B3 or C4) will not produce an enharmonic
+;;; equivalent. In order to change white-key pitches to their enharmonic
+;;; equivalents, set the :force-naturals argument to T. 
+;;;
 ;;; ARGUMENTS 
+;;; - A rthm-seq-bar object.
 ;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :written. T or NIL to indicate whether the test is to
+;;; handle the written or sounding pitch in the event. T = written. Default =
+;;; NIL. 
+;;; - keyword argument :force-naturals. T or NIL to indicate whether to force
+;;; "natural" note names that contain no F or S in their name to convert to
+;;; their enharmonic equivalent (ie, B3 = CF4)
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Always returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns NIL.
+(let ((rsb (make-rthm-seq-bar `((3 8) 
+				,(make-event 'cs4 'q) 
+				,(make-event 'ds4 'e)))))
+  (enharmonic rsb))
+
+=> NIL
+
+;; Create a rthm-seq-bar object with events, apply the enharmonic method, and
+;; print the corresponding slots to see the changes
+(let ((rsb (make-rthm-seq-bar `((3 8) 
+				,(make-event 'cs4 'q) 
+				,(make-event 'ds4 'e))))) 
+  (enharmonic rsb)
+  (loop for p in (data rsb)
+     when (event-p p)
+     collect (data (pitch-or-chord p))))
+
+=> (DF4 EF4)
+
+;; By default, the method will not change white-key pitches
+(let ((rsb (make-rthm-seq-bar `((3 8) 
+				,(make-event 'c4 'q) 
+				,(make-event 'f4 'e))))) 
+  (enharmonic rsb)
+  (loop for p in (data rsb)
+     when (event-p p)
+     collect (data (pitch-or-chord p))))
+
+=> (C4 F4)
+
+;; This can be forced by setting the :force-naturals argument to T 
+(let ((rsb (make-rthm-seq-bar `((3 8) 
+				,(make-event 'c4 'q) 
+				,(make-event 'f4 'e))))) 
+  (enharmonic rsb :force-naturals t)
+  (loop for p in (data rsb)
+     when (event-p p)
+     collect (data (pitch-or-chord p))))
+
+=> (BS3 ES4)
+
+;; Apply the set-written method to fill the WRITTEN-PITCH-OR-CHORD slot, print
+;; its contents, apply the enharmonic method with the :written keyword argument
+;; set to T, then print the pitch data of the same slot again to see the
+;; change.  
+(let ((rsb (make-rthm-seq-bar `((3 8) 
+				,(make-event 'cs4 'q) 
+				,(make-event 'fs4 'e)))))
+  (set-written rsb -3)
+  (print (loop for p in (data rsb)
+	    when (event-p p)
+	    collect (data (written-pitch-or-chord p))))
+  (enharmonic rsb :written t)
+  (print (loop for p in (data rsb)
+	    when (event-p p)
+	    collect (data (written-pitch-or-chord p)))))
+
+=>
+(BF3 EF4) 
+(AS3 DS4)
 
   |#
 ;;; SYNOPSIS
@@ -3412,18 +3488,45 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 20.7.11 (Pula)
+;;; SAR Mon Dec 26 12:41:17 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq-bar/set-written
 ;;; FUNCTION
-;;; 
+;;; Set the written pitch (as opposed to sounding; i.e., for transposing
+;;; instruments) of an event object within a given rthm-seq-bar object. The
+;;; sounding pitch remains unchanged as a pitch object in the PITCH-OR-CHORD
+;;; slot, while the written pitch is added as a pitch object to the
+;;; WRITTEN-PITCH-OR-CHORD slot. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq-bar-object
+;;; - A whole number (positive or negative) indicating the transposition by
+;;; semitones.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Always returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns NIL
+(let ((rsb (make-rthm-seq-bar `((3 8) 
+				 ,(make-event 'cs4 'q) 
+				 ,(make-event 'fs4 'e)))))
+  (set-written rsb -2))
+
+=> NIL
+
+;; Set the written pitch transposition to 2 semitones lower, then check the
+;; data of the WRITTEN-PITCH-OR-CHORD slot of each event to see the
+;; corresponding pitches 
+(let ((rsb (make-rthm-seq-bar `((3 8) 
+				 ,(make-event 'cs4 'q) 
+				 ,(make-event 'fs4 'e)))))
+  (set-written rsb -2)
+  (loop for p in (data rsb)
+     when (event-p p)
+     collect (data (written-pitch-or-chord p))))
+
+=> (B3 E4)
 
   |#
 ;;; SYNOPSIS

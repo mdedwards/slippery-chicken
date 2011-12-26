@@ -1512,19 +1512,63 @@ Evaluation aborted on #<SIMPLE-ERROR>
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; index is 0-based of course.
+;;; SAR Sun Dec 25 20:52:48 EST 2011 Added robodoc info
 ;;; ****m* rthm-seq-bar/get-nth-event
 ;;; FUNCTION
+;;; Get the nth event (rhythm) in the given rthm-seq-bar object. This is a
+;;; zero-based index.
 ;;;
+;;; The method defaults to interrupting with an error if the n-value is greater
+;;; than the number of items in the rthm-seq-bar. This can be disabled using
+;;; the optional argument.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq-bar object.
+;;; - An index number.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; T or NIL to indicate whether to interrupt and drop into the debugger with
+;;; an error. Default = T.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rhythm object when successful. 
+;;;
+;;; Returns NIL when the specified index number is greater than the number of
+;;; events in the rthm-seq-bar object. Also prints an error in this case by
+;;; default, which can be suppressed by setting the optional argument to NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Zero-based indexing. Returns a rhythm object when successful.
+(let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
+  (get-nth-event 0 rsb))
+
+=> 
+RHYTHM: value: 4.000, duration: 1.000, rq: 1, is-rest: NIL, 
+        score-rthm: 4.0f0, undotted-value: 4, num-flags: 0, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 1.000, 
+        is-grace-note: NIL, needs-new-note: T, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: NIL, marks-in-part: NIL, 
+        letter-value: 4, tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: Q, tag: NIL, 
+data: Q
+
+;; Interrupts with an error and drops into the debugger by default if the
+;; specified index number is greater than the number of events in the
+;; rthm-seq-bar. 
+(let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
+  (get-nth-event 4 rsb))
+
+=>
+rthm-seq-bar::get-nth-event: Couldn't get event with index 4
+   [Condition of type SIMPLE-ERROR]
+
+;; The error can be suppressed by setting the optional argument to NIL
+(let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
+  (get-nth-event 4 rsb nil))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -1543,18 +1587,33 @@ Evaluation aborted on #<SIMPLE-ERROR>
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sun Dec 25 21:07:00 EST 2011 Added robodoc info
 ;;; ****m* rthm-seq-bar/get-last-event
 ;;; FUNCTION
-;;; 
+;;; Get the last event (rhythm) of a given rthm-seq-bar object.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq-bar object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns a rhythm object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns a rhythm object.
+(let ((rsb (make-rthm-seq-bar '((2 4) s s e q))))
+  (get-last-event rsb))
+
+=> 
+RHYTHM: value: 4.000, duration: 1.000, rq: 1, is-rest: NIL, 
+        score-rthm: 4.0f0, undotted-value: 4, num-flags: 0, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 1.000, 
+        is-grace-note: NIL, needs-new-note: T, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: NIL, marks-in-part: NIL, 
+        letter-value: 4, tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: Q, tag: NIL, 
+data: Q
 
 |#
 ;;; SYNOPSIS
@@ -1732,7 +1791,6 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; NB this does not check that the right rhythms are now in the bars!
 ;;; 12.12.11 SAR: Added ROBODoc info
 ;;; ****m* rthm-seq-bar/set-nth-attack
 ;;; FUNCTION
@@ -1817,8 +1875,8 @@ rthm-seq-bar::set-nth-attack: index (3) < 0 or >= notes-needed (3)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rthm-seq-bar/get-last-attack
 ;;; 12.12.11 SAR: Added ROBODoc info
+;;; ****m* rthm-seq-bar/get-last-attack
 ;;; FUNCTION
 ;;; Gets the rhythm object for the last note in a given rthm-seq-bar that needs
 ;;; an attack, i.e. not a rest and not a tied note. 
@@ -2208,8 +2266,8 @@ data: E
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rthm-seq-bar/get-time-sig
 ;;; 13.12.11 SAR: Added ROBODoc info
+;;; ****m* rthm-seq-bar/get-time-sig
 ;;; FUNCTION
 ;;; Return the time-sig object for the given rthm-seq-bar object.
 ;;; 
@@ -2241,8 +2299,8 @@ data: (2 4)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rthm-seq-bar/get-time-sig-as-list
 ;;; 13.12.11 SAR: added robodoc info
+;;; ****m* rthm-seq-bar/get-time-sig-as-list
 ;;; FUNCTION
 ;;; Get the time signature for a given rthm-seq-bar object in list form.
 ;;; 
@@ -2266,8 +2324,8 @@ data: (2 4)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rthm-seq-bar/time-sig-equal
 ;;; 13.12.11 SAR: Added robodoc info
+;;; ****m* rthm-seq-bar/time-sig-equal
 ;;; FUNCTION
 ;;; Check to see if two given rthm-seq-bar objects have the same time signature.
 ;;; 
@@ -2889,20 +2947,53 @@ data: (2 4)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Returns a clone of the rsb (whether destructively is nil or not).
-
+;;; SAR Sun Dec 25 21:29:01 EST 2011 SAR Added robodoc info
 ;;; ****m* rthm-seq-bar/transpose
 ;;; FUNCTION
-;;; 
-;;; 
+;;; Transpose the pitches of event objects stored in a rthm-seq-bar object by a
+;;; specified number of semitones (positive for up, negative for down).
+;;;
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq-bar object.
+;;; - A whole number (positive or negative).
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :destructively. Set to T or NIL to indicate whether the
+;;; slot values of the original rthm-seq-bar object should be changed or not
+;;; (even though the method always returns a clone). T = change the
+;;; originals. Default = NIL.
+;;; - chord-function
+;;; - pitch-function
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; This method returns a clone of the rthm-seq-bar object whether the keyword
+;;; argument :destructively is set to T or NIL. It does change the
+;;; corresponding slot values of the original when set to T even though it
+;;; returns the clone.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a rthm-seq-bar object using make-event, transpose the contained
+;; pitches destructively, and read the values of the corresponding slots to see
+;; the change.
+(let ((rsb (make-rthm-seq-bar `((3 8) 
+				,(make-event 'c4 'q) 
+				,(make-event 'd4 'e)))))
+  (transpose rsb 3 :destructively 3)
+  (loop for p from 0 below (- (length (data rsb)) 1) 
+     collect (data (pitch-or-chord (get-nth-event p rsb)))))
+
+=> (EF4 F4)
+
+;; Do the same thing without the :destructively keyword being set to T
+(let ((rsb (make-rthm-seq-bar `((3 8) 
+				,(make-event 'c4 'q) 
+				,(make-event 'd4 'e)))))
+  (transpose rsb 3)
+  (loop for p from 0 below (- (length (data rsb)) 1) 
+     collect (data (pitch-or-chord (get-nth-event p rsb)))))
+
+=> (C4 D4)
 
     |#
 ;;; SYNOPSIS

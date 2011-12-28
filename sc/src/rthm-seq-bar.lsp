@@ -3677,6 +3677,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;; value of the 8VA slots for those events. Set the 8VA slots to 2 and print
 ;; the value of those slots to see the change. Apply the reset-8va method to
 ;; remove any values and reset the slots to NIL, and print the results.
+
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
 					   collect (make-event 'cs4 'e))))))
   (print (loop for e in (rhythms rsb) collect (8va e)))
@@ -3722,6 +3723,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 #|
 
 ;; The method returns NIL
+
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
 					   collect (make-event 'cs4 'e))))))
   (set-8va rsb 2))
@@ -3730,18 +3732,21 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 
 ;; Create a rthm-seq-bar object with event objects, set the 8va slot to 2, and
 ;; access and print it to see it's new value.
+
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
 					   collect (make-event 'cs4 'e))))))
   (set-8va rsb 2)
   (loop for e in (rhythms rsb) collect (8va e)))
 
 => (2 2 2)
+
 |#
 ;;; SYNOPSIS
 (defmethod set-8va ((rsb rthm-seq-bar) 8va)
 ;;; ****
   (loop for e in (rhythms rsb) do
-       (if (eventp e)
+     ;; SAR Wed Dec 28 09:12:36 EST 2011: changed EVENTP to EVENT-P
+       (if (event-p e)
            (setf (8va e) 8va)
            (error "~a~&rthm-seq-bar::set-8va: bar must contain event ~
                    objects (not rhythms)."))))

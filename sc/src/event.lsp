@@ -2407,6 +2407,7 @@ data: C4
 ;;; 
 ;;; EXAMPLE
 #|
+
 ;; The method returns an event object.
 (let ((e (make-event 'c4 'q)))
   (force-rest e))

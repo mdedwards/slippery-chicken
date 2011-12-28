@@ -540,18 +540,47 @@ data: ((2 4) (S) E (S) Q)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   
+;;; SAR Wed Dec 28 09:51:25 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/get-nth-bar
 ;;; FUNCTION
-;;; 
+;;; Get the nth rthm-seq-bar object from a given rthm-seq object.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq object.
+;;; - An index number (zero-based).
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns a rthm-seq-bar object if successful.
+;;;
+;;; Returns NIL and prints a warning if the specified index number is greater
+;;; than the number of rthm-seq-bar objects (minus one) in the given rthm-seq
+;;; object. 
 ;;; 
 ;;; EXAMPLE
 #|
+;;; The method returns a rhtm-seq-bar object when successful
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (get-nth-bar 1 rs))
+
+=> 
+RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1, 
+[...]
+NAMED-OBJECT: id: "NIL-bar2", tag: NIL, 
+data: ((E) Q (E))
+
+;; Returns a warning and prints NIL when the specified index number is greater
+;; than the number of rthm-seq-bar objects in the given rthm-seq object
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (get-nth-bar 11 rs))
+
+=> NIL
+WARNING: rthm-seq::rthm-seq-check-bounds: Illegal list reference: 11 
 
 |#
 ;;; SYNOPSIS
@@ -562,18 +591,30 @@ data: ((2 4) (S) E (S) Q)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Dec 28 10:02:34 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/get-last-bar
 ;;; FUNCTION
-;;;
+;;; Get the last rthm-seq-bar object of a given rthm-seq object.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rthm-seq-bar object.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; The method returns a rthm-seq-bar object 
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (get-last-bar rs))
+
+=> 
+RTHM-SEQ-BAR: time-sig: 6 (3 8), time-sig-given: T, bar-num: -1, 
+[...]
+data: ((3 8) S S E. S)
 
 |#
 ;;; SYNOPSIS
@@ -585,16 +626,41 @@ data: ((2 4) (S) E (S) Q)
 
 ;;; ****m* rthm-seq/get-last-attack
 ;;; FUNCTION
-;;; 
+;;; Gets the rhythm object for the last note that needs an attack (i.e. not a
+;;; rest and not a tied note) in a given rthm-seq object.
 ;;; 
 ;;; ARGUMENTS 
+;;; - A rthm-seq object.
 ;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL indicating whether to print a warning message if the given index
+;;; (minus one) is greater than the number of attacks in the rthm-seq object
+;;; (default = T). This is a carry-over argument from the get-nth-attack method
+;;; called within the get-last-attack method and not likely to be needed for
+;;; use with get-last-attack.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rhythm object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns a rhythm object
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (get-last-attack rs))
+
+=> 
+RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL, 
+        score-rthm: 16.0f0, undotted-value: 16, num-flags: 2, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 0.250, 
+        is-grace-note: NIL, needs-new-note: T, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: NIL, marks-in-part: NIL, 
+        letter-value: 16, tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: S, tag: NIL, 
+data: S
 
 |#
 ;;; SYNOPSIS
@@ -604,18 +670,54 @@ data: ((2 4) (S) E (S) Q)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Dec 28 10:27:21 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/get-last-event
 ;;; FUNCTION
-;;; 
+;;; Get the last event object (or rhythm object) of a given rthm-seq-bar
+;;; object. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns an event (or rhythm) object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The last event is a rhythm object
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (get-last-event rs))
+
+=> 
+RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL, 
+        score-rthm: 16.0f0, undotted-value: 16, num-flags: 2, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 0.250, 
+        is-grace-note: NIL, needs-new-note: T, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: NIL, marks-in-part: NIL, 
+        letter-value: 16, tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: S, tag: NIL, 
+data: S
+
+;; The last event is an event object
+(let ((rs (make-rthm-seq `((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. ,(make-event 'c4 's)))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (get-last-event rs))
+
+=> 
+EVENT: start-time: NIL, end-time: NIL, 
+[...]
+PITCH: frequency: 261.6255569458008, midi-note: 60, midi-channel: NIL 
+[...]
+RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL, 
+[...]
+NAMED-OBJECT: id: S, tag: NIL, 
+data: S
 
 |#
 ;;; SYNOPSIS
@@ -625,34 +727,93 @@ data: ((2 4) (S) E (S) Q)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Insert a bar in the rthm-seq and re-init it; if there's a
-;;; pitch-seq given (list of numbers, or list of lists), splice this
-;;; in in the appropriate place.
-
-;;; bar-num is the bar number of the bar to be inserted, relative to
-;;; the rthm-seq and 1-based, e.g. if 3, then it will come before the
-;;; present third bar.
 
 ;;; We assume here that ties are taken care of within the new bar!
 
-;;; TODO: test that the pitch-seq-palette splicing actually works; add
+;;; TODO: Test that the pitch-seq-palette splicing actually works; add
 ;;; inversions if that was in the original 
 
+;;; SAR Wed Dec 28 12:08:30 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/insert-bar
 ;;; FUNCTION
-;;; 
+;;; Insert a rthm-seq-bar object into the given rthm-seq object and re-init
+;;; it. If there's a pitch-seq/pitch-seq-palette given (list of numbers, or list
+;;; of lists), splice this in at the appropriate location.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq object.
+;;; - A rthm-seq-bar object.
+;;; - A bar number (integer). This argument is the bar number of the bar to be
+;;; inserted, relative to the rthm-seq and 1-based; e.g., if 3, then it will
+;;; come before the present third bar.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - A pitch-seq object.
+;;; - (three ignore arguments for sc-internal use only)
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns T if successful.
+;;;
+;;; Drops into the debugger with an error if the specified bar-number argument
+;;; is greater than the number of rthm-seq-bar objects in the given rthm-seq. 
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns T when successful
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (insert-bar rs (make-rthm-seq-bar '((3 4) q. e e s s)) 3))
+
+=> T
+
+;; Create a rthm-seq object with three rthm-seq-bars and print contents of the
+;; NUM-BARS slot to confirm that it contains 3 objects. Insert a bar before the
+;; third item and print the value of the NUM-BARS slot again to confirm that
+;; there are now 4 objects. Use print-simple and get-nth-bar to confirm that
+;; the 3rd object (with a zero-based index of 2) is indeed the one inserted.  
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (print (num-bars rs))
+  (insert-bar rs (make-rthm-seq-bar '((3 4) q. e e s s)) 3)
+  (print (num-bars rs))
+  (print-simple (get-nth-bar 2 rs)))
+
+=>
+3 
+4 
+(3 4): note Q., note E, note E, note S, note S,
+
+;; Attempting to insert a bar with an index number greater than the number of
+;; objects currently in the rthm-seq object drops into the debugger with an
+;; error 
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (insert-bar rs (make-rthm-seq-bar '((3 4) q. e e s s)) 11))
+
+=>
+rthm-seq::insert-bar: only 3 bars in rthm-seq!
+   [Condition of type SIMPLE-ERROR]
+
+;; Inserting a rthm-seq-bar using the optional pitch-seq argument splices the
+;; specified value of that argument into the existing pitch-seq-palette
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+  (insert-bar rs (make-rthm-seq-bar '((3 4) q. e e s s)) 3 '((1 2 3 4 5)))
+  (loop for ps in (data (pitch-seq-palette rs)) collect (data ps)))
+
+=> ((1 2 3 1 1 2 3 4 5 1 2 3 4))
 
 |#
 ;;; SYNOPSIS
+
 (defmethod insert-bar ((rs rthm-seq) (rsb rthm-seq-bar) bar-num
                        &optional pitch-seq ignore1 ignore2 ignore3)
 ;;; ****

@@ -1611,7 +1611,8 @@ rthm-seq-bar::get-nth-event: Couldn't get event with index 4
 ;;; SAR Sun Dec 25 21:07:00 EST 2011 Added robodoc info
 ;;; ****m* rthm-seq-bar/get-last-event
 ;;; FUNCTION
-;;; Get the last event (rhythm) of a given rthm-seq-bar object.
+;;; Get the last event object (or rhythm object) of a given rthm-seq-bar
+;;; object. 
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-bar object.
@@ -1900,16 +1901,18 @@ rthm-seq-bar::set-nth-attack: index (3) < 0 or >= notes-needed (3)
 ;;; 12.12.11 SAR: Added ROBODoc info
 ;;; ****m* rthm-seq-bar/get-last-attack
 ;;; FUNCTION
-;;; Gets the rhythm object for the last note in a given rthm-seq-bar that needs
-;;; an attack, i.e. not a rest and not a tied note. 
+;;; Gets the rhythm object for the last note that needs an attack (i.e. not a
+;;; rest and not a tied note) in a given rthm-seq-bar object.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - The given rthm-seq-bar object.
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL indicating whether to print a warning message if the given index
-;;; is greater than the number of attacks in the RHYTHMS list (minus one to
-;;; compensate for the zero-based indexing) (default = T).  
+;;; (minus one) is greater than the number of attacks in the RHYTHMS list
+;;; (default = T). This is a carry-over argument from the get-nth-attack method
+;;; called within the get-last-attack method and not likely to be needed for
+;;; use with get-last-attack.
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rhythm object.

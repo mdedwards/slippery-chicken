@@ -173,8 +173,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* event/set-midi-channel
 ;;; 23.12.11 SAR: Added robodoc info
+;;; ****m* event/set-midi-channel
 ;;; FUNCTION
 ;;; Set the MIDI-channel and microtonal MIDI-channel for the pitch object
 ;;; within a given event object.

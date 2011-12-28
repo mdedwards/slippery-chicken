@@ -268,23 +268,55 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Dec 27 19:55:22 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/get-nth-non-rest-rhythm
 ;;; FUNCTION
-;;; get-nth-non-rest-rhythm:
-;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; Get the nth non-rest rhythm object stored in the given rthm-seq object. 
 ;;; 
 ;;; ARGUMENTS 
+;;; - The zero-based index number indicating which non-rest-rhythm is sought.
+;;; - The given rthm-seq object in which to search.
 ;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL indicating whether to print an error message if the given index 
+;;; is greater than the number of non-rest rhythms in given rthm-seq object 
+;;; (minus 1 to compensate for the zero-based indexing). (Default = T.)   
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rhythm object.
+;;;
+;;; Returns NIL if the given index is higher than the highest possible index of
+;;; non-rest rhythms in the given rthm-seq-bar object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns a rhythm object when successful
+(let ((rs (make-rthm-seq '((((2 4) q e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3 4))))))
+  (get-nth-non-rest-rhythm 4 rs))
+
+=> 
+RHYTHM: value: 4.000, duration: 1.000, rq: 1, is-rest: NIL, 
+        score-rthm: 4.0f0, undotted-value: 4, num-flags: 0, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 1.000, 
+        is-grace-note: NIL, needs-new-note: T, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: NIL, marks-in-part: NIL, 
+        letter-value: 4, tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: Q, tag: NIL, 
+data: Q
+
+;; The method returns NIL when the specified index is greater than the number
+;; of items in the rthm-seq object
+(let ((rs (make-rthm-seq '((((2 4) q e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3 4))))))
+  (get-nth-non-rest-rhythm 11 rs))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -301,23 +333,53 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Dec 27 20:13:33 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/get-nth-attack
 ;;; FUNCTION
-;;; get-nth-attack:
-;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; Gets the rhythm object for the nth note in a given rthm-seq object that
+;;; needs an attack, i.e. not a rest and not tied. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - The zero-based index number indicating which attack is sought.
+;;; - The given rthm-seq object in which to search.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL indicating whether to print a warning message if the given index
+;;; is greater than the number of attacks in the rthm-seq object (minus one to
+;;; compensate for the zero-based indexing) (default = T).   
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rhythm object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns a rhythm object when successful
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (get-nth-attack 4 rs))
+
+=> 
+RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL, 
+        score-rthm: 16.0f0, undotted-value: 16, num-flags: 2, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 0.250, 
+        is-grace-note: NIL, needs-new-note: T, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: NIL, marks-in-part: NIL, 
+        letter-value: 16, tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: S, tag: NIL, 
+data: S
+
+;; The method returns NIL when the specified index is greater than the numbe of
+;; items in the given rthm-seq object.
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (get-nth-attack 11 rs nil))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -340,23 +402,75 @@
 
 ;;; NB this does not check that the right rhythms are now in the bar!
 
+;;; SAR Tue Dec 27 20:38:03 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/set-nth-attack
 ;;; FUNCTION
-;;; set-nth-attack:
+;;; Sets the value of the nth rhythm object of a given rthm-seq object that
+;;; needs an attack; i.e., not a rest and not a tied note.
 ;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; NB: This method does not check to ensure that the resulting rthm-seq bars
+;;; contain the right number of beats.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A zero-based index number for the attacked note to change.
+;;; - An event.
+;;; - A rthm-seq object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL indicating whether to print a warning message if the given index
+;;; is greater than the number of attacks in the rthm-seq object (minus one to
+;;; compensate for the zero-based indexing) (default = T).  
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; - An event object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns an event object
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (set-nth-attack 2 (make-event 'c4 'q) rs))
+
+=> 
+EVENT: start-time: NIL, end-time: NIL, 
+[...]
+       pitch-or-chord: 
+PITCH: frequency: 261.6255569458008, midi-note: 60, midi-channel: NIL 
+[...]
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: C4, tag: NIL, 
+data: C4
+[...]
+       written-pitch-or-chord: NIL
+RHYTHM: value: 4.000, duration: 1.000, rq: 1, is-rest: NIL, 
+[...]
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: Q, tag: NIL, 
+data: Q
+
+;; Create a rthm-seq object, apply set-nth-attack, print the corresponding
+;; slots to see the change
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (set-nth-attack 2 (make-event 'c4 'q) rs)
+  (loop for b in (bars rs) 
+     collect (loop for r in (rhythms b) collect (data r))))
+
+=> (("Q" "E" S Q) (E Q E) (S S E. S))
+
+;; The method returns NIL when the specified index is greater than the number
+;; of rhythms in the rthm-seq object
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (set-nth-attack 11 (make-event 'c4 'q) rs))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -364,35 +478,58 @@
                            &optional (error t))
 ;;; ****
   (loop 
-      for bar in (bars rs) 
-      for nnn = (notes-needed bar)
-      do
-        (if (< index (print nnn))
-            (return (set-nth-attack index e bar error))
-          (decf index nnn))))
+     for bar in (bars rs) 
+     for nnn = (notes-needed bar)
+     do
+       (if (< index (print nnn))
+	   (return (set-nth-attack index e bar error))
+	   (decf index nnn))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Can't use the sclist method because the bars are stored in the bars slot,
 ;;; not in the data slot. 
 
+;;; SAR Tue Dec 27 21:24:15 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/set-nth-bar
 ;;; FUNCTION
-;;; set-nth-bar:
-;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; Change the contents of the nth rthm-seq-bar object in the given rthm-seq. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A zero-based index number for the bar to change.
+;;; - A rthm-seq-bar object containing the new bar.
+;;; - A rthm-seq object. 
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rthm-seq-bar object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns what is passed to it as the new-bar argument (generally a
+;; rthm-seq-bar object.
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (set-nth-bar 1 (make-rthm-seq-bar '((2 4) (s) e (s) q)) rs))
+
+=> 
+RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: T, bar-num: -1, 
+[...]
+data: ((2 4) (S) E (S) Q)
+
+;; Create a rthm-seq object, change the second bar (index 1) using the
+;; set-nth-bar method, and print the contents of the rhythms data to see the
+;; changes. 
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (set-nth-bar 1 (make-rthm-seq-bar '((2 4) (s) e (s) q)) rs)
+  (loop for b in (bars rs)
+     collect (loop for r in (rhythms b) collect (data r))))
+
+=> (("Q" "E" S S) (S E S Q) (S S E. S))
 
 |#
 ;;; SYNOPSIS
@@ -405,11 +542,6 @@
   
 ;;; ****m* rthm-seq/get-nth-bar
 ;;; FUNCTION
-;;; get-nth-bar:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -432,12 +564,7 @@
 
 ;;; ****m* rthm-seq/get-last-bar
 ;;; FUNCTION
-;;; get-last-bar:
 ;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
 ;;; 
 ;;; ARGUMENTS 
 ;;; 
@@ -458,11 +585,6 @@
 
 ;;; ****m* rthm-seq/get-last-attack
 ;;; FUNCTION
-;;; get-last-attack:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -484,11 +606,6 @@
 
 ;;; ****m* rthm-seq/get-last-event
 ;;; FUNCTION
-;;; get-last-event:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -523,11 +640,6 @@
 
 ;;; ****m* rthm-seq/insert-bar
 ;;; FUNCTION
-;;; insert-bar:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -599,11 +711,6 @@
 
 ;;; ****m* rthm-seq/get-time-sigs
 ;;; FUNCTION
-;;; get-time-sigs:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -779,12 +886,7 @@
 
 ;;; ****m* rthm-seq/combine
 ;;; FUNCTION
-;;; combine:
 ;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
 ;;; 
 ;;; ARGUMENTS 
 ;;; 
@@ -817,11 +919,6 @@
 
 ;;; ****m* rthm-seq/add-bar
 ;;; FUNCTION
-;;; add-bar:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -881,11 +978,6 @@
 
 ;;; ****m* rthm-seq/chop
 ;;; FUNCTION
-;;; chop:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -953,11 +1045,6 @@
 
 ;;; ****m* rthm-seq/add-marks
 ;;; FUNCTION
-;;; add-marks:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -1030,11 +1117,6 @@
 
 ;;; ****m* rthm-seq/scale
 ;;; FUNCTION
-;;; scale:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -1107,11 +1189,6 @@
 
 ;;; ****m* rthm-seq/get-rhythms
 ;;; FUNCTION
-;;; get-rhythms:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -1217,11 +1294,6 @@
 ;;;  27.1.11.  see rthm-seq-bar class method for caveats.
 ;;; ****m* rthm-seq/split
 ;;; FUNCTION
-;;; split:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -1266,21 +1338,93 @@
 
 ;;; ****f* rthm-seq/make-rthm-seq
 ;;; FUNCTION
-;;; make-rthm-seq:
-;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; Creates a rthm-seq object from a list of at least bars and generally also a
+;;; list of pitch sequences. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A list with the following items:
+;;;   - A symbol that will be used as the ID of the seq
+;;;   - Another list, containing two items:
+;;;     - A list of rthm-seq-bars and
+;;;     - A list of pitch-seqs attached to the :pitch-seq-palette accessor
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :psp-inversions. 
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns a rthm-seq object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Make a rthm-seq object with the ID seq1 that contains one 2/4 bar of
+;; rhythms and one pitch sequence in the pitch-seq-palette
+(make-rthm-seq '(seq1 ((((2 4) q e s s))
+		       :pitch-seq-palette ((1 2 3 4)))))
+
+=> 
+RTHM-SEQ: num-bars: 1
+          num-rhythms: 4
+          num-notes: 4
+          num-score-notes: 4
+          num-rests: 0
+          duration: 2.0
+          psp-inversions: NIL
+          marks: NIL
+          time-sigs-tag: NIL
+          handled-first-note-tie: NIL
+         (for brevity's sake, slots pitch-seq-palette and bars are not printed)
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: SEQ1, tag: NIL, 
+data: ((((2 4) Q E S S)) PITCH-SEQ-PALETTE (1 2 3 4))
+
+;; A rthm-seq object with two bars of rhythms and two pitch-seqs in the
+;; pitch-seq-palette. There must be as many items in each pitch-seq list as
+;; there are rythms in each rthm-seq-bar.
+(make-rthm-seq '(seq1 ((((2 4) q e s s)
+			((e) q (e)))
+		       :pitch-seq-palette ((1 2 3 4 5)
+					   (2 4 6 8 10)))))
+
+=> 
+RTHM-SEQ: num-bars: 2
+          num-rhythms: 7
+          num-notes: 5
+          num-score-notes: 5
+          num-rests: 2
+          duration: 4.0
+          psp-inversions: NIL
+          marks: NIL
+          time-sigs-tag: NIL
+          handled-first-note-tie: NIL
+         (for brevity's sake, slots pitch-seq-palette and bars are not printed)
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: SEQ1, tag: NIL, 
+data: ((((2 4) Q E S S) ((E) Q (E))) PITCH-SEQ-PALETTE
+       ((1 2 3 4 5) (2 4 6 8 10)))
+
+;; The pitch-seq-palette may be omitted, and time signatures may be changed 
+(make-rthm-seq '(seq1 ((((2 4) q e s s)
+			((e) q (e))
+			((3 8) s s e. s)))))
+
+=> 
+RTHM-SEQ: num-bars: 3
+          num-rhythms: 11
+          num-notes: 9
+          num-score-notes: 9
+          num-rests: 2
+          duration: 5.5
+          psp-inversions: NIL
+          marks: NIL
+          time-sigs-tag: NIL
+          handled-first-note-tie: NIL
+         (for brevity's sake, slots pitch-seq-palette and bars are not printed)
+SCLIST: sclist-length: 1, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: SEQ1, tag: NIL, 
+data: ((((2 4) Q E S S) ((E) Q (E)) ((3 8) S S E. S)))
 
 |#
 ;;; SYNOPSIS
@@ -1310,7 +1454,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#|
+
+#| 
+
 MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
 (defun write-seqs-to-score-file (file rthm-seqs &optional
                                                 (left-margin 1.2) 
@@ -1331,34 +1477,34 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
                     (marks rs)          ; marks
                     (third score-strings) ; beams
                     (fourth score-strings)))))) ; ties
+
 |#
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Given a rhythmic unit, e.g. 32nd, and a time sig, return a rthm-seq made up
-;;; of bars whose rhythms are multiples of the numbers in the multipliers list
-;;; e.g. given a unit of 32nd and multipliers and 4/4 '(7 9 16) we should get a
-;;; bar with (e.. 32+q h)
-;;; At this point the unit should be a whole number divisor of the beat in the
-;;; time-sig, i.e. quintuple eights won't work in 4/4
 ;;; todo: should be able to verify-and-store when adding (add) data to an
 ;;;       assoc-list--fails and causes an rsp to have num-data 0 
 ;;; 
 ;;; thing to bear in mind with-auto-beam is that auto-beam will call
 ;;; get-beats and if we've created durations longer than 1
 
+;;; SAR Tue Dec 27 16:58:57 EST 2011: Added robodoc info
 ;;; ****f* rthm-seq/make-rthm-seq-from-unit-multipliers
 ;;; FUNCTION
-;;; make-rthm-seq-from-unit-multipliers:
+;;; Given a rhythmic unit, e.g. 32nd, a list of multipliers (e.g. '(7 9 16)),
+;;; and a time sig (e.g. '(4 4)), return a rthm-seq object made up of bars
+;;; whose rhythms are multiples of the numbers in the multipliers list. 
 ;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; At this point the unit should be a whole number divisor of the beat in the
+;;; time-sig, i.e. quintuple eighths won't work in 4/4.
 ;;; 
 ;;; ARGUMENTS 
 ;;; 
 ;;; 
 ;;; RETURN VALUE  
+;;; e.g. given a unit of 32nd and multipliers and 4/4 '(7 9 16) we should get a
+;;; bar with (e.. 32+q h)
 ;;; 
 ;;; 
 ;;; EXAMPLE
@@ -1439,20 +1585,21 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Jan 2010
+
 ;;; <fragments> is a list of rhythms with ids
+
 ;;; <references> is a list of ids into fragments: these will be collated to
 ;;; create the rthm-seq.  Each element is a sublist: this will make up a whole
 ;;; bar according to the <meters> scheme.
+
 ;;; NB No pitch-seqs can be passed as yet.
+
 ;;; <meters> is a list of the meters (either single numerators: default-beat
 ;;; will then be the denominator) or num/denum lists
+
+;;; SAR Tue Dec 27 18:54:58 EST 2011
 ;;; ****f* rthm-seq/make-rthm-seq-from-fragments
 ;;; FUNCTION
-;;; make-rthm-seq-from-fragments:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -1496,27 +1643,70 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 11.2.10: sometimes we just want to initialize a bunch of rhythms but take
-;;; advantage of rthm-seq's ability to add tuplet/beaming info.  Do this here
+;;; 11.2.10: 
+;;;  Do this here
 ;;; with bar being a list of rhythms and time-sig a list (e.g. (2 4)) that
 ;;; those rhythms add up to
+
+;;; SAR Tue Dec 27 19:04:04 EST 2011: Added robodoc info
 ;;; ****f* rthm-seq/make-rhythms
 ;;; FUNCTION
-;;; make-rhythms:
-;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; Initialize a group of rhythms, taking advantage of rthm-seq's ability to
+;;; add tuplet and beaming info.
 ;;; 
 ;;; ARGUMENTS 
+;;; - A list of rhythms equalling one full bar
+;;; - The time signature of that bar as a list (e.g (2 4))
 ;;; 
-;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indiate whether to divide the resulting list into sublists,
+;;; each of which are the equivalent of one beat long. Default = NIL.
+;;;
 ;;; RETURN VALUE  
-;;; 
+;;; - A list
 ;;; 
 ;;; EXAMPLE
 #|
+;; Apply the function and test that the result is a list
+(let ((rs (make-rhythms '(q e s s) '(2 4))))
+  (listp rs))
+
+=> T
+
+;; Apply the function and see that we've created a list with 4 elements
+(let ((rs (make-rhythms '(q e s s) '(2 4))))
+  (length rs))
+
+=> 4
+
+;; Apply the function with the optional split-into-beats argument set to T and
+;; see that we now have two lists, each equalling one beat in combined
+;; length. Print the data of the contents.
+(let ((rs (make-rhythms '(q e s s) '(2 4) t)))
+  (print (length rs))
+  (print (loop for b in rs collect (length b)))
+  (print (loop for b in rs 
+	    collect (loop for r in b 
+		       collect (data r)))))
+
+=>
+2 
+(1 3) 
+((Q) (E S S))
+
+;; Apply the function using beam indications then print the BEAM slots of the
+;; individual rhythm objects contained in the result
+(let ((rs (make-rhythms '(q - e s s -) '(2 4))))
+  (loop for r in rs collect (beam r)))
+
+=> (NIL 1 NIL 0)
+
+;; Apply the function using tuplet indications then print the BRACKET slots of
+;; the individual rhythms objects contained in the result
+(let ((rs (make-rhythms '( { 3 te te te } - e s s -) '(2 4))))
+  (loop for r in rs collect (bracket r)))
+
+=> (((1 3)) (-1) (1) NIL NIL NIL)
 
 |#
 ;;; SYNOPSIS

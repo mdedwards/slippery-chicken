@@ -264,18 +264,39 @@
 
 ;;; ****m* rthm-seq-bar/delete-marks
 ;;; FUNCTION
-;;; 
+;;; Delete all marks from the event objects contained within a given
+;;; rthm-seq-bar object.
 ;;; 
 ;;; ARGUMENT
-;;; 
+;;; - A rthm-seq-bar object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Always returns NIL.
 ;;; 
 ;;; EXAMPLE
+
 #|
 
+;; Create a rthm-seq-bar object and print the contents of the MARKS slots of
+;; the contained event objects to see they're set to NIL by default. Fill them
+;; each with a 's (staccato) mark and print the results. Apply the delete-marks
+;; method and print the results again to see that the values have been reset to
+;; NIL. 
+(let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
+					   collect (make-event 'cs4 'e))))))
+  (print (loop for e in (rhythms rsb) collect (marks e)))
+  (loop for e in (rhythms rsb) do (add-mark-once e 's))
+  (print (loop for e in (rhythms rsb) collect (marks e)))
+  (delete-marks rsb)
+  (print (loop for e in (rhythms rsb) collect (marks e))))
+
+=>
+(NIL NIL NIL) 
+((S) (S) (S)) 
+(NIL NIL NIL)
+
 |#
+
 ;;; SYNOPSIS
 (defmethod delete-marks ((rsb rthm-seq-bar))
 ;;; ****
@@ -1362,8 +1383,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; ****m* rthm-seq-bar/get-nth-non-rest-rhythm
 ;;; 12.12.11 SAR: Added ROBODoc info
 ;;; FUNCTION
-;;; Get the rhythm object of the first non-rest rhythm object stored in
-;;; the given rthm-seq-bar. 
+;;; Get the nth non-rest rhythm object stored in the given rthm-seq-bar.  
 ;;; 
 ;;; ARGUMENTS
 ;;; - The zero-based index number indicating which non-rest-rhythm is sought.
@@ -1383,6 +1403,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns a rhythm object when successful
 (let ((rsb (make-rthm-seq-bar '((2 4) e (e) s s (s) s))))
   (get-nth-non-rest-rhythm 0 rsb))
 
@@ -1646,6 +1667,7 @@ data: Q
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns a rhythm object when successful
 (let ((rsb (make-rthm-seq-bar '((3 4) q+e (e) s (s) e))))
   (get-nth-attack 0 rsb))
 
@@ -3639,18 +3661,36 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; SAR Mon Dec 26 14:49:27 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq-bar/reset-8va
 ;;; FUNCTION
-;;; 
+;;; Reset the 8VA slots of all event ojbects within a given rthm-seq-object to
+;;; 0 (no ottava/ottava bassa transposition).
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq-bar object
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Always returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
 
-  |#
+;; Create a rthm-seq-bar object consisting of event objects, print the default
+;; value of the 8VA slots for those events. Set the 8VA slots to 2 and print
+;; the value of those slots to see the change. Apply the reset-8va method to
+;; remove any values and reset the slots to NIL, and print the results.
+(let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
+					   collect (make-event 'cs4 'e))))))
+  (print (loop for e in (rhythms rsb) collect (8va e)))
+  (set-8va rsb 2)
+  (print (loop for e in (rhythms rsb) collect (8va e)))
+  (reset-8va rsb)
+  (print (loop for e in (rhythms rsb) collect (8va e))))
+
+=>
+(0 0 0) 
+(2 2 2) 
+(0 0 0)
+
+|#
 ;;; SYNOPSIS
 (defmethod reset-8va ((rsb rthm-seq-bar))
 ;;; ****
@@ -3659,20 +3699,40 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 23.9.11 
+
+;;; SAR Mon Dec 26 19:34:55 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq-bar/set-8va
 ;;; FUNCTION
-;;; 
+;;; Set the 8VA (ottava) slots of the event objects within a given rthm-seq-bar 
+;;; object. This number can be positive or negative.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq-bar object.
+;;; - A number indicating the number of octaves to be transposed in either
+;;; direction (ottava/ottava bassa).
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Always returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
 
-  |#
+;; The method returns NIL
+(let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
+					   collect (make-event 'cs4 'e))))))
+  (set-8va rsb 2))
+
+=> NIL
+
+;; Create a rthm-seq-bar object with event objects, set the 8va slot to 2, and
+;; access and print it to see it's new value.
+(let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
+					   collect (make-event 'cs4 'e))))))
+  (set-8va rsb 2)
+  (loop for e in (rhythms rsb) collect (8va e)))
+
+=> (2 2 2)
+|#
 ;;; SYNOPSIS
 (defmethod set-8va ((rsb rthm-seq-bar) 8va)
 ;;; ****

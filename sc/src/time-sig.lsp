@@ -199,6 +199,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #|
+
 ;;; MDE Sat Dec 24 11:46:35 2011 -- now obsolete
 (defmethod score-time-sig ((ts time-sig))
   (format nil "~a ~a" (num ts) (denom ts)))

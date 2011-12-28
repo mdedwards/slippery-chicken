@@ -781,7 +781,9 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 ;;; Returns the new value of the MARKS slot of the given object.
 ;;; 
 ;;; EXAMPLE
+
 #|
+
 ;; Make a rhythm object, add the mark 'a, then replace 'a with 's
 (let ((r (make-rhythm 'q)))
   (add-mark r 'a)
@@ -791,6 +793,7 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 
 ;; Make a rhythm object, add a list of marks, replace just the 'pizz mark with
 ;; a 'batt mark
+
 (let ((r (make-rhythm 'q)))
   (loop for m in '(a s pizz col-legno) do (add-mark-once r m))
   (replace-mark r 'pizz 'batt))
@@ -798,6 +801,7 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 => (COL-LEGNO BATT S A)
 
 |#
+
 ;;; SYNOPSIS
 (defmethod replace-mark ((r rhythm) what with &optional before)
 ;;; ****
@@ -810,20 +814,45 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Dec 26 20:59:50 EST 2011 Added robodoc info
 ;;; ****m* rhythm/delete-marks
 ;;; FUNCTION
-;;; 
+;;; Delete any marks in the MARKS slot of an event object created within a
+;;; rhythm object, replacing the entire list of the MARKS slot with NIL.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rhythm object.
 ;;; 
 ;;; RETURN VALUE  
+;;; Always returns NIL.
 ;;; 
-;;; 
-;;; EXAMPLE
+;;; EXAMPLE 
+
 #|
+;; The method returns NIL
+(let ((r (make-rhythm (make-event 'c4 'q))))
+  (loop for m in '(a s pizz) do (add-mark-once r m))
+  (delete-marks r))
+
+=> NIL
+
+;; Create a rhythm object consisting of an event object and print the default
+;; contents of the MARKS slot. Set the MARKS slot to contain three marks and
+;; print the result. Apply the delete-marks method and print the result.
+(let ((r (make-rhythm (make-event 'c4 'q))))
+  (print (marks r))
+  (loop for m in '(a s pizz) do (add-mark-once r m))
+  (print (marks r))
+  (delete-marks r) 
+  (print (marks r)))
+
+=> 
+NIL 
+(PIZZ S A) 
+NI
 
 |#
+
 ;;; SYNOPSIS
 (defmethod delete-marks ((r rhythm))
 ;;; ****

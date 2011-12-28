@@ -872,16 +872,69 @@ rthm-seq::insert-bar: only 3 bars in rthm-seq!
 
 ;;; ****m* rthm-seq/get-time-sigs
 ;;; FUNCTION
-;;; 
+;;; Return a list of time-sig objects for each of the rthm-seq-bar objects in a
+;;; given rthm-seq object. 
+;;;
+;;; One time signature is returned for each rthm-seq-bar object, even if two or
+;;; more consecutive objects have the same time signature. 
+;;;
+;;; Optionally, this method can return a list of time signatures in list form
+;;; (e.g. ((2 4) (3 4)) etc.) rather than a list of time-sig objects.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether to return the time signatures as time-sig
+;;; objects or a list of two-item lists. T = time-sig objects. Default = T.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns a list of time-sig objects by default. Optionally a list of time
+;;; signatures as two-item lists can be returned instead.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Return a list of time-sig objects, one for each rthm-seq-bar object even if
+;; consecutive rthm-seq-bar objects have the same time signature
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+  (get-time-sigs rs))
+
+=> (
+TIME-SIG: num: 2, denom: 4, duration: 2.0, compound: NIL, midi-clocks: 24, num-beats: 2
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "0204", tag: NIL, 
+data: (2 4)
+**************
+
+    
+TIME-SIG: num: 2, denom: 4, duration: 2.0, compound: NIL, midi-clocks: 24, num-beats: 2
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "0204", tag: NIL, 
+data: (2 4)
+**************
+
+    
+TIME-SIG: num: 3, denom: 8, duration: 1.5, compound: T, midi-clocks: 24, num-beats: 1
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "0308", tag: NIL, 
+data: (3 8)
+**************
+)
+
+;; Return the same as a list of two-item lists instead
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+  (get-time-sigs rs t))
+
+=> ((2 4) (2 4) (3 8))
 
 |#
 ;;; SYNOPSIS
@@ -1041,25 +1094,80 @@ rthm-seq::insert-bar: only 3 bars in rthm-seq!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Combine two rthm-seqs into one, updating slots for the new object (it is a
-;;; clone).
-;;; N.B. marks slot is ignored for now (it is as of yet unused)
-
+;;; SAR Wed Dec 28 14:11:09 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/combine
 ;;; FUNCTION
+;;; Combine two rthm-seqs into one, updating slots for the new object, which is
+;;; a clone.
 ;;;
+;;; N.B. marks slot is ignored for now (it is as of yet unused)
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A first rthm-seq object.
+;;; - A second rthm-seq object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; - A rthm-seq object.
 ;;; 
 ;;; EXAMPLE
+
 #|
 
+;; The method returns a rthm-seq object
+(let ((rs1 (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 1 1 2 3 4)))))
+      (rs2 (make-rthm-seq '((((4 4) h+e (e) { 3 te te te })
+			    ((5 8) e e+32 s. +q)
+			    ((3 4) (q) q q))
+			   :pitch-seq-palette ((1 2 3 4 1 2 3 1 2))))))
+  (combine rs1 rs2))
+
+=>
+RTHM-SEQ: num-bars: 6
+          num-rhythms: 25
+          num-notes: 17
+          num-score-notes: 21
+          num-rests: 4
+          duration: 15.0
+          psp-inversions: NIL
+          marks: NIL
+          time-sigs-tag: NIL
+          handled-first-note-tie: NIL
+         (for brevity's sake, slots pitch-seq-palette and bars are not printed)
+SCLIST: sclist-length: 6, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "NIL-NIL", tag: NIL, 
+data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
+       ((1 2 3 1 1 2 3 4))
+       (((4 4) H+E (E) { 3 TE TE TE }) ((5 8) E E+32 S. +Q) ((3 4) (Q) Q Q))
+       PITCH-SEQ-PALETTE ((1 2 3 4 1 2 3 1 2)))
+
+;; With the same combine call, print the collected contents of the BARS slot
+;; and the PITCH-SEQ-PALETTE slot of the new rthm-seq object
+(let ((rs1 (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 1 1 2 3 4)))))
+      (rs2 (make-rthm-seq '((((4 4) h+e (e) { 3 te te te })
+			    ((5 8) e e+32 s. +q)
+			    ((3 4) (q) q q))
+			   :pitch-seq-palette ((1 2 3 4 1 2 3 1 2))))))
+  (print (loop for b in (bars (combine rs1 rs2)) collect (data b)))
+  (print (loop for ps in (data (pitch-seq-palette (combine rs1 rs2))) 
+	    collect (data ps))))
+
+=>
+(((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)
+ ((4 4) H+E (E) { 3 TE TE TE }) ((5 8) E E+32 S. +Q) ((3 4) (Q) Q Q)) 
+((1 2 3 1 1 2 3 4 1 2 3 4 1 2 3 1 2))
+
 |#
+|#
+
 ;;; SYNOPSIS
+
 (defmethod combine ((rs1 rthm-seq) (rs2 rthm-seq))
 ;;; ****
   (let ((result (clone rs1)))
@@ -1078,6 +1186,8 @@ rthm-seq::insert-bar: only 3 bars in rthm-seq!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+;;; SAR Wed Dec 28 14:47:33 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/add-bar
 ;;; FUNCTION
 ;;; 

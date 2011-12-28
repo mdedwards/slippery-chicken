@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:17:50 Sun Dec 25 2011 ICT
+;;; $$ Last modified: 11:13:55 Wed Dec 28 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -73,7 +73,7 @@
                            :initarg :written-pitch-or-chord :initform nil) 
    ;; 13.4.11 separate from transposing instruments, we have 8va/8vb signs that
    ;; force us to transpose the pitches an octave: indicate the number of
-   ;; octaves to transpose here
+   ;; octaves to transpose here (currently limited to 1 or -1).
    (8va :accessor 8va :type integer :initform 0)
    ;; the duration slot of rhythm is the duration in seconds of the rthm at
    ;; tempo qtr=60.  This is the duration adjusted for the actual tempo.
@@ -2502,6 +2502,12 @@ T
          (p2 (transpose p1 5)))
     (add-mark p2 'flag-head)
     (setf (pitch-or-chord e) (make-chord (list p1 p2)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod (setf 8va) :before (value (e event))
+  (unless (or (= value 0) (= value -1) (= value 1))
+    (error "event::(setf 8va): 8va slot can only be -1, 0, or 1")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

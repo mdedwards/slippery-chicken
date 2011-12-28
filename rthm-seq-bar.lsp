@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 16:23:10 Sun Dec 25 2011 ICT
+;;; $$ Last modified: 11:19:15 Wed Dec 28 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3694,8 +3694,12 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; SYNOPSIS
 (defmethod reset-8va ((rsb rthm-seq-bar))
 ;;; ****
-  (loop for r in (rhythms rsb) do
-       (reset-8va r)))
+  (loop for e in (rhythms rsb) do
+       (if (eventp e)
+           (reset-8va e)
+           (error "~a~&rthm-seq-bar::reset-8va: bar must contain event ~
+                   objects (not rhythms)."))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 23.9.11 
@@ -3736,8 +3740,11 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; SYNOPSIS
 (defmethod set-8va ((rsb rthm-seq-bar) 8va)
 ;;; ****
-  (loop for r in (rhythms rsb) do
-       (setf (8va r) 8va)))
+  (loop for e in (rhythms rsb) do
+       (if (eventp e)
+           (setf (8va e) 8va)
+           (error "~a~&rthm-seq-bar::set-8va: bar must contain event ~
+                   objects (not rhythms)."))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

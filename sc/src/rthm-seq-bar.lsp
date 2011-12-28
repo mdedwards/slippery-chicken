@@ -3695,11 +3695,11 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 (defmethod reset-8va ((rsb rthm-seq-bar))
 ;;; ****
   (loop for e in (rhythms rsb) do
-       (if (eventp e)
+       ;; SAR Wed Dec 28 09:12:36 EST 2011: changed EVENTP to EVENT-P
+       (if (event-p e)
            (reset-8va e)
            (error "~a~&rthm-seq-bar::reset-8va: bar must contain event ~
                    objects (not rhythms)."))))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 23.9.11 

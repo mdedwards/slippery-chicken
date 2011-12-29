@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:55:15 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 19:27:17 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -168,6 +168,7 @@
 
 (defmethod initialize-instance :after ((e event) &rest initargs)
   (declare (ignore initargs))
+  ;; (print 'event)
   (when (pitch-or-chord e)
     (setf (pitch-or-chord e) (pitch-or-chord e))))
 
@@ -2513,6 +2514,7 @@ T
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod delete-marks ((e event))
+  ;; (print 'dme)
   (unless (is-rest e)
     (delete-marks (pitch-or-chord e))
     (when (written-pitch-or-chord e)

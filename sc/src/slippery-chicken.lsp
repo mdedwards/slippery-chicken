@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:17:23 Sun Dec 25 2011 ICT
+;;; $$ Last modified: 19:47:42 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2768,6 +2768,13 @@
                             (multiple-value-bind
                                   (e nth-bar nth-event)
                                 (get-nth-attack qni seq)
+                              (unless (and e nth-bar nth-event)
+                                (error "~a~&slippery-chicken::shorten-large-~
+                                        fast-leaps: couldn't get-nth-attack"
+                                       seq))
+                              (unless first-bar-num
+                                (error "slippery-chicken::shorten-large-fast-~
+                                        leaps: first-bar-num is NIL!"))
                               (loop 
                                  with bar-num = (+ nth-bar 
                                                    first-bar-num)

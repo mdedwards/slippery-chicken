@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 18:55:20 Tue Feb  8 2011 ICT
+;;; $$ Last modified: 10:42:42 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -141,7 +141,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch-seq/invert
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod invert ((ps pitch-seq))
+;;; ****
   (let* ((sorted (sort (remove-duplicates (data ps))
                        #'<))
          (len-1 (1- (length sorted)))
@@ -162,7 +181,6 @@
                           (read-from-string name)))))))
     (setf (instruments result) (copy-list (instruments ps)))
     result))
-                
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -442,7 +460,26 @@
 ;; name of the pitch-seq given as the second element; or a 1-element list
 ;; whereupon id will be used to create the name of the pitch-seq.
 
+;;; ****f* pitch-seq/make-pitch-seq
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-pitch-seq (id-data &optional (id nil))
+;;; ****
   (let* ((id-data-given (and (listp id-data) 
                              (= 2 (length id-data))
                              (listp (second id-data))))

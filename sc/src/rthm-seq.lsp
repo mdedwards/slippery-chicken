@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 12:26:50 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 12:48:29 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1798,7 +1798,8 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
 ;;;       assoc-list--fails and causes an rsp to have num-data 0 
 ;;; 
 ;;; thing to bear in mind with-auto-beam is that auto-beam will call
-;;; get-beats and if we've created durations longer than 1
+;;; get-beats and if we've created durations longer than 1 this could create
+;;; errors.
 
 ;;; SAR Tue Dec 27 16:58:57 EST 2011: Added robodoc info
 ;;; ****f* rthm-seq/make-rthm-seq-from-unit-multipliers
@@ -1829,7 +1830,7 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
                                             ;; each beat.
                                             (tuplet nil)
                                             (tag nil)
-                                            (auto-beam t) ; see above
+                                            (auto-beam nil) ; see above
                                             (id "from-multipliers"))
 ;;; ****
   ;; (print 'make-rthm-seq-from-unit-multipliers)

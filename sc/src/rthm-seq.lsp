@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 12:13:57 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 12:26:50 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1211,7 +1211,7 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
   (incf (num-rests rs) (num-rests rsb))
   (incf (num-notes rs) (notes-needed rsb))
   (incf (num-score-notes rs) (num-score-notes rsb))
-  (incf (duration rs) (duration rsb))
+  (incf (duration rs) (bar-duration rsb))
   ;; TODO: what about the psp?
   )
 

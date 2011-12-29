@@ -1387,18 +1387,59 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Dec 28 21:11:57 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/scale
 ;;; FUNCTION
-;;; 
+;;; Scale the durations of the rhythm objects in a given rthm-seq object by the
+;;; specified factor. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq object.
+;;; - A real number.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns a rthm-seq object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns a rthm-seq object.
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+  (scale rs 3))
+
+=> 
+RTHM-SEQ: num-bars: 3
+          num-rhythms: 11
+          num-notes: 8
+          num-score-notes: 9
+          num-rests: 2
+          duration: 16.5
+          psp-inversions: NIL
+          marks: NIL
+          time-sigs-tag: NIL
+          handled-first-note-tie: NIL
+         (for brevity's sake, slots pitch-seq-palette and bars are not printed)
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
+       ((1 2 3 1 1 2 3 4)))
+
+;; Create a rthm-seq object, scale the durations by 3 times using the scale
+;; method, and print-simple the corresponding slots to see the results
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+  (print-simple (scale rs 3)))
+
+=>
+rthm-seq NIL
+(6 4): note H., note Q., note E., note E., 
+(6 4): rest Q., note H., rest Q., 
+(9 8): note E., note E., note E., note E.,
 
 |#
 ;;; SYNOPSIS

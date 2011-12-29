@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 21:10:51 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 20:35:00 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -200,8 +200,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; N.B. If you have an ensemble with a player doubling two instruments, be
-;;; sure to indicate a staff name!  E.g.
-;;; (fl1 ((piccolo violin) :staff-name "flute")) works but
+;;; sure to indicate some key-word argument or other as
+;;; (fl1 ((piccolo violin) :midi-channel 1)) works but
 ;;; (fl1 ((piccolo violin))) thinks that piccolo is a nested ensemble!!!
 
 (defun make-ensemble (id ensemble &key bar-line-writers instrument-palette)

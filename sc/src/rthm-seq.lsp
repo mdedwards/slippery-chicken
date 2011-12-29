@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 13:10:58 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 18:18:24 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1182,7 +1182,6 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 ((1 2 3 1 1 2 3 4 1 2 3 4 1 2 3 1 2))
 
 |#
-|#
 
 ;;; SYNOPSIS
 
@@ -1410,7 +1409,7 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
   (decf start-note)
   (if end-note
       (decf end-note)
-    (setf end-note start-note))
+      (setf end-note start-note))
   (when (> end-note (1- (num-score-notes rs)))
     (error "~a~%sequenz::add-marks-aux: ~a notes in seq, but mark on ~a"
            rs (num-score-notes rs) (1+ end-note)))
@@ -1422,25 +1421,20 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
                    more than one note: (~a ~a)" 
                   start-note end-note))
          (add-mark (get-nth-non-rest-rhythm start-note rs) 
-                       ;; (first (cmn::get-cmn-marks 'begin-slur)))
-                       'beg-sl)
+                   ;; (first (cmn::get-cmn-marks 'begin-slur)))
+                   'beg-sl)
          (add-mark (get-nth-non-rest-rhythm end-note rs) 
-                       ;;(first (cmn::get-cmn-marks 'end-slur))))
-                       'end-sl))
+                   ;;(first (cmn::get-cmn-marks 'end-slur))))
+                   'end-sl))
         (t
          ;; get-marks returns a list as some single marks need two
          ;; marks (like accent-staccato) 
          (loop 
-             for i from start-note to end-note 
-             for event = (get-nth-non-rest-rhythm i rs)
-                         ;; got to make the marks new each time...
-                         #|
-             for marks = (cmn::get-cmn-marks mark)
-             do (loop for m in marks do
-             (add-mark event m))))))
-             |#
-             do
-               (add-mark event mark)))))
+            for i from start-note to end-note 
+            for event = (get-nth-non-rest-rhythm i rs)
+            ;; got to make the marks new each time...
+            do
+            (add-mark event mark)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -1612,7 +1612,6 @@ RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL,
 => ("Q" "E" S S E Q E S S E. S)
 
 |#
-|#
 ;;; SYNOPSIS
 (defmethod get-rhythms ((rs rthm-seq))
 ;;; ****
@@ -1755,6 +1754,7 @@ RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL,
   (split rs))
 
 =>
+
 RTHM-SEQ: num-bars: 5
           num-rhythms: 22
           num-notes: 20
@@ -1823,7 +1823,6 @@ rthm-seq NIL
 (2 4): note H, 
 (3 4): note Q., note E, note E, note S, note S,
 
-|#
 |#
 ;;; SYNOPSIS
 (defmethod split ((rs rthm-seq) 

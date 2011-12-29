@@ -1994,12 +1994,13 @@ data: E
 
 ;;; Intra-phrasal looping
 ;;; Creates a list of new bars (with new time signatures) formed by chopping
-;;; the current bar at points given in chop-points.  This is a list of
+;;; the current bar at points given in chop-points. This is a list of
 ;;; 2-element lists each of which specifies the start and end points of a beat
-;;; in the unit specified by the unit argument.  These chop points are then
+;;; in the unit specified by the unit argument. These chop points are then
 ;;; used for all beats in the bar (so specifying chop-points adding up to a
 ;;; quarter note then trying to apply that to a 5/8 bar won't work).
 
+;;; SAR Thu Dec 29 16:50:33 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq-bar/chop
 ;;; FUNCTION
 ;;;

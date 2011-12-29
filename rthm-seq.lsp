@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 12:59:42 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 13:10:58 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -393,18 +393,25 @@ data: S
 ;;; SYNOPSIS
 (defmethod get-nth-attack (index (rs rthm-seq)
                            &optional (error t))
-;;; ****
-  (loop 
-      for bar in (bars rs) 
-      for bar-count from 0
-      for nnn = (notes-needed bar)
-      do
-        (if (< index nnn)
-            (multiple-value-bind
-                (event nth-in-bar)
-                (get-nth-attack index bar error)
-              (return (values event bar-count nth-in-bar)))
-          (decf index nnn))))
+;;; ****                                ;
+  (let* ((i index)
+         (result
+          (loop 
+             for bar in (bars rs) 
+             for bar-count from 0
+             for nnn = (notes-needed bar)
+             do
+             (if (< i nnn)
+                 (multiple-value-bind
+                       (event nth-in-bar)
+                     (get-nth-attack i bar error)
+                   (return (values event bar-count nth-in-bar)))
+                 (decf i nnn)))))
+    (when error
+      (unless result
+        (error "~a~&rthm-seq::get-nth-attack: Couldn't get attack with index ~a"
+               rs index)))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -485,11 +492,14 @@ data: Q
 (defmethod set-nth-attack (index (e event) (rs rthm-seq)
                            &optional (error t))
 ;;; ****
+  (when (and error (>= index (num-notes rs)))
+    (error "~a~&rthm-seq::set-nth-attack: Can't set attack ~a as only ~a notes ~
+             in the rthm-seq" rs index (num-notes rs)))
   (loop 
      for bar in (bars rs) 
      for nnn = (notes-needed bar)
      do
-       (if (< index (print nnn))
+       (if (< index nnn)
            (return (set-nth-attack index e bar error))
            (decf index nnn))))
 

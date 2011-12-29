@@ -308,13 +308,26 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: Q, tag: NIL, 
 data: Q
 
-;; The method returns NIL when the specified index is greater than the number
-;; of items in the rthm-seq object
+;; By default, the method drops into the debugger with an error when the
+;; specified index is greater than the number of items in the given rthm-seq 
+;; object. 
 (let ((rs (make-rthm-seq '((((2 4) q e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :pitch-seq-palette ((1 2 3 4 1 1 2 3 4))))))
   (get-nth-non-rest-rhythm 11 rs))
+
+=>
+rthm-seq::get-nth-non-rest-rhythm: Couldn't get non-rest rhythm with index 11
+   [Condition of type SIMPLE-ERROR]
+
+;; This error can be suppressed, simply returning NIL, by setting the optional
+;; argument to NIL.
+(let ((rs (make-rthm-seq '((((2 4) q e s s)
+                            ((e) q (e))
+                            ((3 8) s s e. s))
+                           :pitch-seq-palette ((1 2 3 4 1 1 2 3 4))))))
+  (get-nth-non-rest-rhythm 11 rs nil))
 
 => NIL
 
@@ -353,8 +366,8 @@ data: Q
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL indicating whether to print a warning message if the given index
-;;; is greater than the number of attacks in the rthm-seq object (minus one to
-;;; compensate for the zero-based indexing) (default = T).   
+;;; is greater than the number of attacks (minus one) in the rthm-seq object 
+;;; (default = T).    
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rhythm object.
@@ -379,16 +392,28 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: S, tag: NIL, 
 data: S
 
-;; The method returns NIL when the specified index is greater than the numbe of
-;; items in the given rthm-seq object.
+;; By default, the method drops into the debugger with an error when the
+;; specified index is greater than the number of items in the given rthm-seq
+;; object. 
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+                            ((e) q (e))
+                            ((3 8) s s e. s))
+                           :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (get-nth-attack 11 rs))
+
+=>
+rthm-seq::get-nth-attack: Couldn't get attack with index 11
+   [Condition of type SIMPLE-ERROR]
+
+;; This error can be suppressed, simply returning NIL, by setting the optional
+;; argument to NIL.
 (let ((rs (make-rthm-seq '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
   (get-nth-attack 11 rs nil))
 
-=> NIL
-
+=> NIL, 0, NIL 
 |#
 ;;; SYNOPSIS
 (defmethod get-nth-attack (index (rs rthm-seq)
@@ -482,13 +507,26 @@ data: Q
 
 => (("Q" "E" S Q) (E Q E) (S S E. S))
 
-;; The method returns NIL when the specified index is greater than the number
-;; of rhythms in the rthm-seq object
+;; By default, the method drops into the debugger with an error when the
+;; specified index is greater than the number ofitems in the given rthm-seq
+;; object. 
 (let ((rs (make-rthm-seq '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))
                            :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
   (set-nth-attack 11 (make-event 'c4 'q) rs))
+
+=> 
+rthm-seq::set-nth-attack: Can't set attack 11 as only 8 notes in the rthm-seq
+   [Condition of type SIMPLE-ERROR]
+
+;; This error can be suppressed, simply returning NIL, by setting the optional
+;; argument to NIL.
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+                            ((e) q (e))
+                            ((3 8) s s e. s))
+                           :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (set-nth-attack 11 (make-event 'c4 'q) rs nil))
 
 => NIL
 
@@ -762,6 +800,11 @@ data: S
 ;;; Insert a rthm-seq-bar object into the given rthm-seq object and re-init
 ;;; it. If there's a pitch-seq/pitch-seq-palette given (list of numbers, or list
 ;;; of lists), splice this in at the appropriate location.
+;;;
+;;; NB: This method sets the values of the individual slots but leaves the DATA
+;;; slot untouched (for cases in which the user might want to see where the new
+;;; data originated from, or otherwise use the old data somehow, such as in a
+;;; new rthm-seq object).
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq object.
@@ -1123,7 +1166,12 @@ data: (3 8)
 ;;; Combine two rthm-seqs into one, updating slots for the new object, which is
 ;;; a clone.
 ;;;
-;;; N.B. marks slot is ignored for now (it is as of yet unused)
+;;; NB: The MARKS slot is ignored for now (it is as of yet 
+;;;
+;;; NB: This method sets the values of the individual slots but leaves the DATA
+;;; slot untouched (for cases in which the user might want to see where the new
+;;; data originated from, or otherwise use the old data somehow, such as in a
+;;; new rthm-seq object).
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A first rthm-seq object.
@@ -1207,7 +1255,6 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 ;;; SAR Wed Dec 28 14:47:33 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/add-bar
@@ -1375,24 +1422,9 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
   (add-marks rs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SAR Thu Dec 29 12:09:16 EST 2011: Removed robodoc info
 
-;;; ****m* rthm-seq/add-marks
-;;; FUNCTION
-;;; 
-;;; 
-;;; ARGUMENTS 
-;;; 
-;;; 
-;;; RETURN VALUE  
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
-;;; SYNOPSIS
 (defmethod add-marks ((rs rthm-seq))
-;;; ****
   (loop for i in (marks rs) do
         ;; when the list is like (a 1 4) it means accent on notes 1 to 4
         ;; (a 1) means accent on note 1
@@ -1724,6 +1756,11 @@ RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL,
 ;;; is returned. If the keyword argument :warn is set to T, a warning will be
 ;;; also printed in such cases.
 ;;;
+;;; NB: This method sets the values of the individual slots but leaves the DATA
+;;; slot untouched (for cases in which the user might want to see where the new
+;;; data originated from, or otherwise use the old data somehow, such as in a
+;;; new rthm-seq object).
+;;;
 ;;; ARGUMENTS 
 ;;; - A rthm-seq object.
 ;;;
@@ -1974,7 +2011,6 @@ data: ((((2 4) Q E S S) ((E) Q (E)) ((3 8) S S E. S)))
 
 
 #| 
-
 MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
 (defun write-seqs-to-score-file (file rthm-seqs &optional
                                                 (left-margin 1.2) 
@@ -1994,41 +2030,77 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
                     (second score-strings) ; rhythms
                     (marks rs)          ; marks
                     (third score-strings) ; beams
-                    (fourth score-strings)))))) ; ties
-
-|#
-
+                    (fourth score-strings)))))) ; ties |#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; todo: should be able to verify-and-store when adding (add) data to an
 ;;;       assoc-list--fails and causes an rsp to have num-data 0 
 ;;; 
-;;; thing to bear in mind with-auto-beam is that auto-beam will call
-;;; get-beats and if we've created durations longer than 1 this could create
-;;; errors.
-
 ;;; SAR Tue Dec 27 16:58:57 EST 2011: Added robodoc info
 ;;; ****f* rthm-seq/make-rthm-seq-from-unit-multipliers
 ;;; FUNCTION
-;;; Given a rhythmic unit, e.g. 32nd, a list of multipliers (e.g. '(7 9 16)),
-;;; and a time sig (e.g. '(4 4)), return a rthm-seq object made up of bars
-;;; whose rhythms are multiples of the numbers in the multipliers list. 
+;;; Given a rhythmic unit, e.g. 32, a list of multipliers (e.g. '(7 9 16)),
+;;; and a time signature (e.g. '(4 4)), return a rthm-seq object made up of
+;;; bars whose rhythms are multiples of the specified unit by the numbers in
+;;; the multipliers list.  
 ;;;
 ;;; At this point the unit should be a whole number divisor of the beat in the
-;;; time-sig, i.e. quintuple eighths won't work in 4/4.
+;;; time signature, i.e. quintuple eighths won't work in 4/4.
+;;;
+;;; NB: Setting the auto-beam keyword argument to T can result in errors if
+;;; creating durations longer than 1 beat, as auto-beam will call
+;;; get-beats. :auto-beam is therefore set to NIL by default.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rhythmic duration unit.
+;;; - A list of multipliers.
+;;; - A time signature.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :tuplet. Can be set to T or NIL. Default = NIL.
+;;; - keyword argument :tag.  Can be set to T or NIL. Default = NIL.
+;;; - keyword argument :auto-beam.  Can be set to T or NIL. Default = NIL. When
+;;; T, the method will attempt to automatically set beaming indicators among
+;;; the resulting rthm-seq-bar objects. This can result in errors if the
+;;; resulting rhythms have a duration of more than 1 beat.
+;;; - keyword argument :id. Default = "from-multipliers".
 ;;; 
 ;;; RETURN VALUE  
-;;; e.g. given a unit of 32nd and multipliers and 4/4 '(7 9 16) we should get a
-;;; bar with (e.. 32+q h)
-;;; 
+;;; Returns a rthm-seq object.
 ;;; 
 ;;; EXAMPLE
-#|
+#| 
+;; Make a rthm-seq object using the rhythmic unit of a 16th-note, rhythms that
+;; are 4, 2, 2, 4 and 4 16th-notes long, and a time signature of 2/4; then
+;; print-simple the object returned to see the results.
+(let ((rs (make-rthm-seq-from-unit-multipliers 's '(4 2 2 4 4) '(2 4))))
+  (print-simple rs))
 
+=>
+rthm-seq from-multipliers
+(2 4): note Q, note E, note E, 
+(2 4): note Q, note Q, 
+
+;; Make a rthm-seq object using the rhythmic unit of a 32nd note, combinations
+;; of irregular duration, and a time signature of 4/4; then print-simple the
+;; returned object to see the results.
+(let ((rs (make-rthm-seq-from-unit-multipliers 32 '(7 9 16) '(4 4))))
+  (print-simple rs))
+
+=>
+rthm-seq from-multipliers
+(4 4): note E.., note 32, note Q, note H
+
+;; The print-simple output of the above example disregards the ties. We can
+;; check to make sure that there are only three attacked rhythms in the result
+;; by reading the values of the IS-TIED-FROM and IS-TIED-TO slots, which show
+;; that the 32 is tied to the Q
+(let ((rs (make-rthm-seq-from-unit-multipliers 32 '(7 9 16) '(4 4))))
+  (loop for b in (bars rs)
+       collect (loop for r in (rhythms b) collect (is-tied-from r))
+       collect (loop for r in (rhythms b) collect (is-tied-to r))))
+
+=> ((NIL T NIL NIL) (NIL NIL T NIL)) 
 |#
 ;;; SYNOPSIS
 (defun make-rthm-seq-from-unit-multipliers (unit multipliers time-sig 

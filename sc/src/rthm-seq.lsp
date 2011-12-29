@@ -1443,18 +1443,59 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Dec 28 21:11:57 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/scale
 ;;; FUNCTION
-;;; 
+;;; Scale the durations of the rhythm objects in a given rthm-seq object by the
+;;; specified factor. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq object.
+;;; - A real number.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns a rthm-seq object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns a rthm-seq object.
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+  (scale rs 3))
+
+=> 
+RTHM-SEQ: num-bars: 3
+          num-rhythms: 11
+          num-notes: 8
+          num-score-notes: 9
+          num-rests: 2
+          duration: 16.5
+          psp-inversions: NIL
+          marks: NIL
+          time-sigs-tag: NIL
+          handled-first-note-tie: NIL
+         (for brevity's sake, slots pitch-seq-palette and bars are not printed)
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
+       ((1 2 3 1 1 2 3 4)))
+
+;; Create a rthm-seq object, scale the durations by 3 times using the scale
+;; method, and print-simple the corresponding slots to see the results
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+  (print-simple (scale rs 3)))
+
+=>
+rthm-seq NIL
+(6 4): note H., note Q., note E., note E., 
+(6 4): rest Q., note H., rest Q., 
+(9 8): note E., note E., note E., note E.,
 
 |#
 ;;; SYNOPSIS
@@ -1515,19 +1556,62 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Dec 28 16:35:40 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/get-rhythms
 ;;; FUNCTION
-;;; 
+;;; Get the rhythm objects in a given rthm-seq object, contained in a list.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns a list of rhythm objects
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+  (get-rhythms rs))
 
+=>
+(
+RHYTHM: value: 4.000, duration: 1.000, rq: 1, is-rest: NIL, 
+[...]
+RHYTHM: value: 8.000, duration: 0.500, rq: 1/2, is-rest: NIL, 
+[...] 
+RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL, 
+[...] 
+RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL, 
+[...] 
+RHYTHM: value: 8.000, duration: 0.500, rq: 1/2, is-rest: T, 
+[...] 
+RHYTHM: value: 4.000, duration: 1.000, rq: 1, is-rest: NIL, 
+[...] 
+RHYTHM: value: 8.000, duration: 0.500, rq: 1/2, is-rest: T, 
+[...] 
+RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL, 
+[...] 
+RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL, 
+[...] 
+RHYTHM: value: 5.333, duration: 0.750, rq: 3/4, is-rest: NIL, 
+[...]
+RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL, 
+[...]
+)
+
+;; Get just the rhythm labels from the same rthm-seq object
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+  (loop for r in (get-rhythms rs) collect (data r)))
+
+=> ("Q" "E" S S E Q E S S E. S)
+
+|#
 |#
 ;;; SYNOPSIS
 (defmethod get-rhythms ((rs rthm-seq))
@@ -1619,20 +1703,127 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;  27.1.11.  see rthm-seq-bar class method for caveats.
+;;;  27.1.11. 
+;;; SAR Wed Dec 28 19:24:23 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/split
 ;;; FUNCTION
-;;; 
-;;; 
+;;; Splits the rthm-seq-bar objects of a given rthm-seq object into multiple
+;;; smaller rthm-seq-bar objects, creating a new rthm-seq object with a greater
+;;; number of bars than the original. This will only work if the given
+;;; rthm-seq-bar objects can be split into whole beats; e.g., a 4/4 bar will
+;;; not be split into 5/8 + 3/8.
+;;;
+;;; The keyword arguments :min-beats and :max-beats serve as guidelines rather
+;;; than strict cut-offs. In some cases, the method may only be able to
+;;; effectively split the given rthm-seq-bar by dividing it into segments that
+;;; slightly exceed the length stipulated by these arguments (see example
+;;; below). 
+;;;
+;;; Depending on the min-beats/max-beats arguments stipulated by the user or
+;;; the rhythmic structure of the given rthm-seq-bar objects, the given
+;;; rthm-seq-bar or rthm-seq objects may not be splittable, in which case NIL
+;;; is returned. If the keyword argument :warn is set to T, a warning will be
+;;; also printed in such cases.
+;;;
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :min-beats. This argument takes an integer value to
+;;; indicate the minimum number of beats in any of the new rthm-seq-bar
+;;; objects created. This serves as a guideline only and may occasionally be
+;;; exceeded in value by the method. Default value = 2.
+;;; - keyword argument :max-beats. This argument takes an integer value to
+;;; indicate the maximum number of beats in any of the new rthm-seq-bar objects
+;;; created. This serves as a guideline only and may occasionally be exceeded
+;;; in value by the method. Default value = 5.
+;;; - keyword argument :warn. Indicates whether to print a warning if the
+;;; rthm-seq-bar object is unsplittable. Value T = print a warning. Defaults to
+;;; NIL. 
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rthm-seq object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns a new rthm-seq object
+(let ((rs (make-rthm-seq '((((4 4) q e s s (e) e e (e))
+			    ((3 4) s s e s e s e. s)
+			    ((5 4) h q. e e s s))
+			   :pitch-seq-palette ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
+						3 4 5 6))))))
+  (split rs))
 
+=>
+RTHM-SEQ: num-bars: 5
+          num-rhythms: 22
+          num-notes: 20
+          num-score-notes: 20
+          num-rests: 2
+          duration: 12.0
+          psp-inversions: NIL
+          marks: NIL
+          time-sigs-tag: NIL
+          handled-first-note-tie: NIL
+         (for brevity's sake, slots pitch-seq-palette and bars are not printed)
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: ((((4 4) Q E S S (E) E E (E)) ((3 4) S S E S E S E. S)
+        ((5 4) H Q. E E S S))
+       PITCH-SEQ-PALETTE ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2 3 4 5 6)))
+
+;; Without setting the :min-beats and :max-beats arguments, the following
+;; rthm-seq object is broken down from 3 to 5 rthm-seq-bar objects
+(let* ((rs (make-rthm-seq '((((4 4) q e s s (e) e e (e))
+			     ((3 4) s s e s e s e. s)
+			     ((5 4) h q. e e s s))
+			    :pitch-seq-palette ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
+						 3 4 5 6)))))
+       (rssplt (split rs)))
+  (print-simple rssplt))
+
+=>
+rthm-seq NIL
+(2 4): note Q, note E, note S, note S, 
+(2 4): rest E, note E, note E, rest E, 
+(3 4): note S, note S, note E, note S, note E, note S, note E., note S, 
+(2 4): note H, 
+(3 4): note Q., note E, note E, note S, note S,
+
+;; Setting :min-beats to 4 affects the resulting subdivisions to larger bars
+(let* ((rs (make-rthm-seq '((((4 4) q e s s (e) e e (e))
+			     ((3 4) s s e s e s e. s)
+			     ((5 4) h q. e e s s))
+			    :pitch-seq-palette ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
+						 3 4 5 6)))))
+       (rssplt (split rs :min-beats 4)))
+  (print-simple rssplt))
+
+=>
+rthm-seq NIL
+(4 4): note Q, note E, note S, note S, rest E, note E, note E, rest E, 
+(3 4): note S, note S, note E, note S, note E, note S, note E., note S, 
+(5 4): note H, note Q., note E, note E, note S, note S, 
+
+;; Even though :max-beats is set to 2, an occasional 3/4 bar is constructed
+(let* ((rs (make-rthm-seq '((((4 4) q e s s (e) e e (e))
+			     ((3 4) s s e s e s e. s)
+			     ((5 4) h q. e e s s))
+			    :pitch-seq-palette ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
+						 3 4 5 6)))))
+       (rssplt (split rs :max-beats 2)))
+  (print-simple rssplt))
+
+=>
+rthm-seq NIL
+(2 4): note Q, note E, note S, note S, 
+(2 4): rest E, note E, note E, rest E, 
+(3 4): note S, note S, note E, note S, note E, note S, note E., note S, 
+(2 4): note H, 
+(3 4): note Q., note E, note E, note S, note S,
+
+|#
 |#
 ;;; SYNOPSIS
 (defmethod split ((rs rthm-seq) 

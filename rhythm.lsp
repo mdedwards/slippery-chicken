@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 16:22:34 Sun Dec 25 2011 ICT
+;;; $$ Last modified: 12:09:15 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -856,10 +856,6 @@ NI
 ;;; SYNOPSIS
 (defmethod delete-marks ((r rhythm))
 ;;; ****
-  (unless (is-rest r)
-    (delete-marks (pitch-or-chord r))
-    (when (written-pitch-or-chord r)
-      (delete-marks (written-pitch-or-chord r))))
   (setf (marks r) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

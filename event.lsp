@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:13:55 Wed Dec 28 2011 ICT
+;;; $$ Last modified: 11:55:15 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2509,6 +2509,14 @@ T
 (defmethod (setf 8va) :before (value (e event))
   (unless (or (= value 0) (= value -1) (= value 1))
     (error "event::(setf 8va): 8va slot can only be -1, 0, or 1")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod delete-marks ((e event))
+  (unless (is-rest e)
+    (delete-marks (pitch-or-chord e))
+    (when (written-pitch-or-chord e)
+      (delete-marks (written-pitch-or-chord e)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

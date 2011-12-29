@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 18:50:17 Fri Dec 23 2011 ICT
+;;; $$ Last modified: 08:08:09 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -222,7 +222,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch/delete-marks
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-marks ((p pitch))
+;;; ****
   (setf (marks p) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -232,6 +251,24 @@
 ;;; the ignore fields are there because of the transpose method in tl-set,
 ;;; chord and event.  
 
+;;; ****m* pitch/transpose
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod transpose ((p pitch) semitones &key (as-symbol nil) (package :sc)
                       ignore)
   (declare (ignore ignore))
@@ -257,10 +294,29 @@
 
 ;;; Rounds to the nearest chromatic (MIDI) pitch.
 
+;;; ****m* pitch/pitch-round
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod pitch-round ((p pitch) 
                         &key
                         (as-symbol nil)
                         (package :sc))
+;;; ****
   ;; we can't use lisp's round function as in the case of x.5 it
   ;; rounds to the nearest even number so (round 1.5) => 2 and 
   ;; (round 2.5) => 2 
@@ -270,6 +326,7 @@
     (if as-symbol
         (rm-package sym package)
       (make-pitch sym))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -279,10 +336,29 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch/transpose-to-octave
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod transpose-to-octave ((p pitch) new-octave 
                                 &key
                                 (as-symbol nil)
                                 (package :sc))
+;;; ****
   (unless (integer>=0 new-octave)
     (error "pitch::transpose-to-octave: octave must be an integer >= 0: ~a"
            new-octave))
@@ -291,7 +367,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch/pitch=
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod pitch= ((p1 pitch) (p2 pitch) &optional enharmonics-are-equal)
+;;; ****
   (and (equal-within-tolerance (frequency p1) (frequency p2))
        (or enharmonics-are-equal (eq (data p1) (data p2)))
        (= (midi-note p1) (midi-note p2))
@@ -327,46 +422,197 @@
            (eq (no-8ve p1) (no-8ve (enharmonic p2))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; this really sees if the note symbol (data slot) is equal
+;;; ****m* pitch/note=
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
 
+|#
+;;; SYNOPSIS
 (defmethod note= ((p1 pitch) (p2 pitch))
-  (eq (data p1) (data p2)))
+;;; ****
+  (equalp (data p1) (data p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch/pitch<
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod pitch< ((p1 pitch) (p2 pitch))
   (< (frequency p1) (frequency p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch/pitch>
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod pitch> ((p1 pitch) (p2 pitch))
+;;; ****
   (> (frequency p1) (frequency p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch/pitch<=
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod pitch<= ((p1 pitch) (p2 pitch))
+;;; ****
   (<= (frequency p1) (frequency p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch/pitch>=
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod pitch>= ((p1 pitch) (p2 pitch))
+;;; ****
   (>= (frequency p1) (frequency p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch/pitch-in-range
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod pitch-in-range ((p pitch) (lowest pitch) (highest pitch))
+;;; ****
   (and (pitch>= p lowest)
        (pitch<= p highest)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch/pitch-min
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod pitch-min ((p1 pitch) (p2 pitch))
+;;; ****
   (if (> (frequency p1) (frequency p2))
       p2
     p1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch/pitch-max
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod pitch-max ((p1 pitch) (p2 pitch))
+;;; ****
   (if (< (frequency p1) (frequency p2))
       p2
     p1))
@@ -374,23 +620,99 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; whole semitone subtraction 
+;;; ****m* pitch/midi-
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod midi- ((p1 pitch) (p2 pitch))
+;;; ****
   (- (midi-note p1) (midi-note p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch/degree-
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod degree- ((p1 pitch) (p2 pitch))
+;;; ****
   (- (degree p1) (degree p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; NB this takes pitch bend into consideration
+;;; ****m* pitch/pitch-
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod pitch- ((p1 pitch) (p2 pitch))
+;;; ****
   (- (midi-note-float p1) (midi-note-float p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; NB returns a new pitch object
+;;; ****m* pitch/pitch-inc
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
 
+|#
+;;; SYNOPSIS
 (defmethod pitch-inc ((p pitch) semitones)
+;;; ****
   (make-pitch (degree-to-note (+ (degree p) semitones))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -399,6 +721,7 @@
 ;;; when enharmonics-are-true, then gs4-af5 would be 1
 
 (defmethod is-octave ((p1 pitch) (p2 pitch) &optional (enharmonics-are-true t))
+;;; ****
   (let ((diff (- (degree p2) (degree p1))))
     (multiple-value-bind
         (octaves remainder)
@@ -477,7 +800,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch/set-midi-channel
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-midi-channel ((p pitch) midi-channel microtones-midi-channel)
+;;; ****
   (setf (midi-channel p) 
         (if (micro-tone p)
             (progn
@@ -544,7 +886,26 @@
                                      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch/add-mark
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-mark ((p pitch) mark &optional warn-rest)
+;;; ****
   (declare (ignore warn-rest))
   (validate-mark mark)
   (push mark (marks p)))
@@ -731,7 +1092,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; whether two pitches are an octave apart but one is differently inflected
-
 (defmethod white-octave ((p1 pitch) (p2 pitch))
   (is-octave (make-pitch (white-note p1))
              (make-pitch (white-note p2))))
@@ -744,7 +1104,26 @@
 
 ;;; If note is a symbol, treat it as a note-name, when a number, as a freq.
 
+;;; ****f* pitch/make-pitch
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-pitch (note &key (src-ref-pitch 'c4) (midi-channel 0))
+;;; ****
   (when note
     (typecase note
       (pitch note) ; ignore midi-channel here
@@ -763,9 +1142,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* pitch/transpose-pitch-list
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun transpose-pitch-list (pitch-list semitones &optional 
                              (return-symbols nil)
                              (package :sc))
+;;; ****
   (let* ((pl (loop for p in pitch-list collect (make-pitch p)))
          (result (loop for p in pl collect (transpose p semitones))))
     (if return-symbols
@@ -774,11 +1172,30 @@
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* pitch/transpose-pitch-list-to-octave
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun transpose-pitch-list-to-octave (pitch-list octave
                                        &key
                                        as-symbols
                                        (package :sc)
                                        (remove-duplicates t))
+;;; ****
   (let ((result (loop for p in (init-pitch-list pitch-list t) collect
                       (transpose-to-octave p octave
                                            :as-symbol as-symbols
@@ -793,7 +1210,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* pitch/pitch-list-to-symbols
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun pitch-list-to-symbols (pitch-list &optional (package :sc))
+;;; ****
   (loop for p in pitch-list collect 
         (cond ((pitch-p p) (rm-package (data p) package))
               ((symbolp p) p)
@@ -803,9 +1239,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Sort a list from low to high
+;;; ****f* pitch/sort-pitch-list
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun sort-pitch-list (pitch-list &optional 
                         (return-symbols nil)
                         (package :sc))
+;;; ****
   (let* ((pl (loop for p in pitch-list collect (make-pitch p)))
          (result (sort pl #'pitch<)))
     (if return-symbols
@@ -875,9 +1330,28 @@
 ;;; Using the first note in the list as the reference point, invert
 ;;; the rest according to their distance from it.
 
+;;; ****f* pitch/invert-pitch-list
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun invert-pitch-list (pitch-list &optional
                           (return-symbols nil)
                           (package :sc))
+;;; ****
   ;; just in case they're symbols 
   (let* ((pl (sort-pitch-list
               (loop for p in pitch-list collect (make-pitch p))))
@@ -1056,9 +1530,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* pitch/pitch-member
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun pitch-member (pitch pitch-list 
                      &optional (enharmonics-are-equal t)
                                (test #'pitch=))
+;;; ****
   ;; just in case they're not pitch objects already...
   (setf pitch-list (init-pitch-list pitch-list nil)
         pitch (make-pitch pitch))
@@ -1068,9 +1561,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* pitch/remove-pitches
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun remove-pitches (pitch-list remove 
                        &key (enharmonics-are-equal t)
                             (return-symbols nil))
+;;; ****
   ;; convert all notes to pitch objects if they aren't already.
   (setf pitch-list (init-pitch-list pitch-list nil)
         remove (init-pitch-list remove nil))
@@ -1084,9 +1596,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod enharmonic ((p pitch) &key (warn t)) ;; ignore1 ignore2)
-  ;; (declare (ignore ignore1 ignore2))
-  ;; (print (id p))
+;;; ****m* pitch/enharmonic
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod enharmonic ((p pitch) &key (warn t))
+;;; ****
   (make-pitch (enharmonic-equivalent (id p) warn)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1096,7 +1625,26 @@
 ;;; doesn't sort and may change original order of lists so sort afterwards from
 ;;; lowest to highest pitch.
 
+;;; ****f* pitch/pitch-intersection
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun pitch-intersection (pitch-list1 pitch-list2)
+;;; ****
   (sort (intersection (init-pitch-list pitch-list1 nil)
                       (init-pitch-list pitch-list2 nil)
                       :test #'pitch=)
@@ -1105,10 +1653,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; pitch can be a pitch octave, frequency, or note symbol
+;;; ****f* pitch/in-octave
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun in-octave (pitch octave)
+;;; ****
   (let ((p (make-pitch pitch)))
     (= octave (octave p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF pitch.lsp

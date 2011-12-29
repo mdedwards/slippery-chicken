@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 00:38:42 Tue Dec 13 2011 ICT
+;;; $$ Last modified: 10:43:57 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -134,14 +134,52 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch-seq-palette/add-inversions
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-inversions ((psp pitch-seq-palette))
+;;; ****
   (loop for ps in (data psp) do
         (add (invert ps) psp))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch-seq-palette/combine
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod combine ((psp1 pitch-seq-palette) (psp2 pitch-seq-palette))
+;;; ****
   (let ((result (clone psp1)))
     (setf (id result) (combine-ids psp1 psp2)
           (num-notes result) (+ (num-notes psp1) (num-notes psp2)))
@@ -236,7 +274,26 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* pitch-seq-palette/make-psp
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-psp (id num-notes pitch-seqs)
+;;; ****
   ;; let's try and catch errors here before sclist complains...
   (loop for i in pitch-seqs unless (listp i)
      ;; todo: I think this is causing an error when we indicate a chord as

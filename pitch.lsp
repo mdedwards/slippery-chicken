@@ -271,6 +271,7 @@
 ;;; SYNOPSIS
 (defmethod transpose ((p pitch) semitones &key (as-symbol nil) (package :sc)
                       ignore)
+;;; ****
   (declare (ignore ignore))
   (let ((new-note (transpose-note (id p) semitones))
         new-pitch)
@@ -466,6 +467,7 @@
 |#
 ;;; SYNOPSIS
 (defmethod pitch< ((p1 pitch) (p2 pitch))
+;;; ****
   (< (frequency p1) (frequency p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 18:18:24 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 19:55:16 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -395,23 +395,28 @@ data: S
                            &optional (error t))
 ;;; ****                                ;
   (let* ((i index)
+         (bar-cnt 0)
+         (bar-nth nil)
          (result
           (loop 
              for bar in (bars rs) 
              for bar-count from 0
              for nnn = (notes-needed bar)
              do
+             ;; (print nnn)             ;
              (if (< i nnn)
                  (multiple-value-bind
                        (event nth-in-bar)
                      (get-nth-attack i bar error)
-                   (return (values event bar-count nth-in-bar)))
+                   (setf bar-nth nth-in-bar
+                         bar-cnt bar-count)
+                   (return event))
                  (decf i nnn)))))
     (when error
       (unless result
         (error "~a~&rthm-seq::get-nth-attack: Couldn't get attack with index ~a"
-               rs index)))))
-
+               rs index)))
+    (values result bar-cnt bar-nth)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

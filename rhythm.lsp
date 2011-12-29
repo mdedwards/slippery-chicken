@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 12:09:15 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 19:27:58 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -136,6 +136,7 @@
   (declare (ignore initargs))
   ;; todo: should really here for a number and try to find the letter, dots for
   ;; that duration 
+  ;; (print 'rhythm)
   (cond ((data i)
          (parse-rhythm i)
          (unless (id i)
@@ -854,8 +855,9 @@ NI
 |#
 
 ;;; SYNOPSIS
-(defmethod delete-marks ((r rhythm))
+(defmethod delete-marks :before ((r rhythm))
 ;;; ****
+  ;; (print 'dmr)
   (setf (marks r) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

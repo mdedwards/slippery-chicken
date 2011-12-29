@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 11:51:55 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 19:39:26 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1709,26 +1709,26 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
 |#
 ;;; SYNOPSIS
 (defmethod get-nth-attack (index (rsb rthm-seq-bar) &optional (warn t))
-;;; ****
+;;; ****                                ;
   (if (or (< index 0)
           (>= index (notes-needed rsb)))
       (when warn
         (warn "~a~&rthm-seq-bar::get-nth-attack:  ~
                 index (~a) < 0 or >= notes-needed (~a)"
               rsb index (notes-needed rsb)))
-    (let* ((count 0)
-           (event-count 0)
-           (result (loop for r in (rhythms rsb) do
-                         (when (needs-new-note r)
-                           (if (= count index)
-                               (return r)
-                             (incf count)))
-                         (incf event-count))))
-      (when (and warn (not result))
-        (warn "~a~&rthm-seq-bar::get-nth-attack: ~
+      (let* ((count 0)
+             (event-count 0)
+             (result (loop for r in (rhythms rsb) do
+                          (when (needs-new-note r)
+                            (if (= count index)
+                                (return r)
+                                (incf count)))
+                          (incf event-count))))
+        (when (and warn (not result))
+          (warn "~a~&rthm-seq-bar::get-nth-attack: ~
                 Couldn't get nth attack.  Index: ~a,  notes-needed: ~a"
-              rsb index (notes-needed rsb)))
-      (values result event-count))))
+                rsb index (notes-needed rsb)))
+        (values result event-count))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; NB Always returns a new rsb

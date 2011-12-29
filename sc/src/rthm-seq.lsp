@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 12:48:29 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 12:59:42 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -322,14 +322,22 @@ data: Q
 ;;; SYNOPSIS
 (defmethod get-nth-non-rest-rhythm (index (rs rthm-seq)
                                     &optional (error t))
-;;; ****
-  (loop 
-      for bar in (bars rs) 
-      for nsn = (num-score-notes bar)
-      do
-        (if (< index nsn)
-            (return (get-nth-non-rest-rhythm index bar error))
-          (decf index nsn))))
+;;; ****                                ; ;
+  (let* ((i index)
+         (result
+          (loop 
+             for bar in (bars rs) 
+             for nsn = (num-score-notes bar)
+             do
+             (if (< i nsn)
+                 (return (get-nth-non-rest-rhythm i bar error))
+                 (decf i nsn)))))
+    (when error
+      (unless result
+        (error "~a~&rthm-seq::get-nth-non-rest-rhythm: Couldn't get ~
+                non-rest rhythm with index ~a"
+               rs index)))
+    result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

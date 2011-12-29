@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 11:19:15 Wed Dec 28 2011 ICT
+;;; $$ Last modified: 11:51:55 Thu Dec 29 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -264,7 +264,7 @@
 
 ;;; ****m* rthm-seq-bar/delete-marks
 ;;; FUNCTION
-;;; Delete all marks from the event objects contained within a given
+;;; Delete all marks from the rhythm (or event) objects contained within a given
 ;;; rthm-seq-bar object.
 ;;; 
 ;;; ARGUMENT
@@ -283,7 +283,7 @@
 ;; method and print the results again to see that the values have been reset to
 ;; NIL. 
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'cs4 'e))))))
+                                           collect (make-event 'cs4 'e))))))
   (print (loop for e in (rhythms rsb) collect (marks e)))
   (loop for e in (rhythms rsb) do (add-mark-once e 's))
   (print (loop for e in (rhythms rsb) collect (marks e)))
@@ -300,10 +300,15 @@
 ;;; SYNOPSIS
 (defmethod delete-marks ((rsb rthm-seq-bar))
 ;;; ****
+  (loop for r in (rhythms rsb) do
+       (delete-marks r)))
+
+#|
+MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not only event objects but rhythms too lose their marks
   (loop for event in (rhythms rsb) do
         (when (event-p event)
           (delete-marks event))))
-
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod delete-rhythms ((rsb rthm-seq-bar))
@@ -3002,7 +3007,7 @@ data: (2 4)
 ;; pitches destructively, and read the values of the corresponding slots to see
 ;; the change.
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'c4 'e))))))
+                                           collect (make-event 'c4 'e))))))
   (transpose rsb 3 :destructively 3)
   (loop for p in (rhythms rsb)
      collect (data (pitch-or-chord p))))
@@ -3011,7 +3016,7 @@ data: (2 4)
 
 ;; Do the same thing without the :destructively keyword being set to T
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'c4 'e))))))
+                                           collect (make-event 'c4 'e))))))
   (transpose rsb 3)
   (loop for p in (rhythms rsb)
      collect (data (pitch-or-chord p))))
@@ -3261,7 +3266,7 @@ data: (2 4)
 #|
 ;; The method returns NIL.
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'cs4 'e))))))
+                                           collect (make-event 'cs4 'e))))))
   (enharmonic rsb))
 
 => NIL
@@ -3269,7 +3274,7 @@ data: (2 4)
 ;; Create a rthm-seq-bar object with events, apply the enharmonic method, and
 ;; print the corresponding slots to see the changes
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'cs4 'e)))))) 
+                                           collect (make-event 'cs4 'e)))))) 
   (enharmonic rsb)
   (loop for p in (rhythms rsb)
      collect (get-pitch-symbol p)))
@@ -3278,7 +3283,7 @@ data: (2 4)
 
 ;; By default, the method will not change white-key pitches
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'c4 'e))))))
+                                           collect (make-event 'c4 'e))))))
   (enharmonic rsb)
   (loop for p in (rhythms rsb)
      collect (get-pitch-symbol p)))
@@ -3287,7 +3292,7 @@ data: (2 4)
 
 ;; This can be forced by setting the :force-naturals argument to T 
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'c4 'e))))))
+                                           collect (make-event 'c4 'e))))))
   (enharmonic rsb :force-naturals t)
   (loop for p in (rhythms rsb)
      collect (get-pitch-symbol p)))
@@ -3299,13 +3304,13 @@ data: (2 4)
 ;; set to T, then print the pitch data of the same slot again to see the
 ;; change.  
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'cs4 'e))))))
+                                           collect (make-event 'cs4 'e))))))
   (set-written rsb -3)
   (print (loop for p in (rhythms rsb)
-	    collect (get-pitch-symbol p)))
+            collect (get-pitch-symbol p)))
   (enharmonic rsb :written t)
   (print (loop for p in (rhythms rsb)
-	    collect (get-pitch-symbol p))))
+            collect (get-pitch-symbol p))))
 
 =>
 (BF3 BF3 BF3) 
@@ -3521,7 +3526,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 #|
 ;; The method returns NIL
 (let ((rsb (make-rthm-seq-bar  `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'cs4 'e))))))
+                                           collect (make-event 'cs4 'e))))))
   (set-written rsb -2))
 
 => NIL
@@ -3530,7 +3535,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;; data of the WRITTEN-PITCH-OR-CHORD slot of each event to see the
 ;; corresponding pitches 
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'cs4 'e))))))
+                                           collect (make-event 'cs4 'e))))))
   (set-written rsb -2)
   (loop for p in (rhythms rsb)
      collect (get-pitch-symbol p)))
@@ -3567,15 +3572,15 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;; objects. Apply the delete-written method and print the contents of the
 ;; WRITTEN-PITCH-OR-CHORD slots to see they're empty. 
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'cs4 'e))))))
+                                           collect (make-event 'cs4 'e))))))
   (print (loop for p in (rhythms rsb)
-	    collect (written-pitch-or-chord p)))
+            collect (written-pitch-or-chord p)))
   (set-written rsb -2)
   (print (loop for p in (rhythms rsb)
-	    collect (get-pitch-symbol p)))
+            collect (get-pitch-symbol p)))
   (delete-written rsb)
   (print (loop for p in (rhythms rsb)
-	    collect (written-pitch-or-chord p))))
+            collect (written-pitch-or-chord p))))
 
 =>
 (NIL NIL NIL) 
@@ -3633,7 +3638,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;; Create a rthm-seq-bar using event objects and check the MIDI-CHANNEL slots
 ;; of those event objects to see that they are NIL by default.
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'cs4 'e))))))
+                                           collect (make-event 'cs4 'e))))))
   (loop for p in (rhythms rsb)
      collect (midi-channel (pitch-or-chord p))))
 
@@ -3643,7 +3648,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;; print the MIDI-CHANNEL slots of each of the individual events to see that
 ;; they've been set.
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'cs4 'e))))))
+                                           collect (make-event 'cs4 'e))))))
   (set-midi-channel rsb 13 14)
   (loop for p in (rhythms rsb)
        collect (midi-channel (pitch-or-chord p))))
@@ -3682,7 +3687,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;; remove any values and reset the slots to NIL, and print the results.
 
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'cs4 'e))))))
+                                           collect (make-event 'cs4 'e))))))
   (print (loop for e in (rhythms rsb) collect (8va e)))
   (set-8va rsb 1)
   (print (loop for e in (rhythms rsb) collect (8va e)))
@@ -3729,7 +3734,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;; The method returns NIL
 
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'cs4 'e))))))
+                                           collect (make-event 'cs4 'e))))))
   (set-8va rsb 1))
 
 => NIL
@@ -3738,7 +3743,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;; access and print it to see it's new value.
 
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-					   collect (make-event 'cs4 'e))))))
+                                           collect (make-event 'cs4 'e))))))
   (set-8va rsb 1)
   (loop for e in (rhythms rsb) collect (8va e)))
 

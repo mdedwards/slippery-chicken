@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 19:55:16 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 19:06:46 Fri Dec 30 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1272,17 +1272,30 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 
 |#
 ;;; SYNOPSIS
-(defmethod add-bar ((rs rthm-seq) (rsb rthm-seq-bar))
-;;; **** 
-  (setf (bars rs) (econs (bars rs) rsb))
-  (incf (num-bars rs))
+;;; MDE Fri Dec 30 18:36:28 2011 -- added optional  psp
+(defmethod add-bar ((rs rthm-seq) (rsb rthm-seq-bar) &optional psp)
+;;; ****
+  ;; MDE Fri Dec 30 18:36:42 2011 -- check our psp has the right number of
+  ;; notes or if we didn't pass one add a made-up one
+  (if psp
+      (unless (= (num-notes psp) (notes-needed rsb))
+        (error "~a~&rthm-seq::add-bar: the pitch-seq-palette needs ~a notes"
+               psp (notes-needed rsb)))
+      (setf psp (make-psp 'add-bar-tmp (notes-needed rsb)
+                          (get-psps-as-list (notes-needed rsb)
+                                            ;; get as many pitch-seqs as there
+                                            ;; are in the rthm-seq currently
+                                            (num-data (pitch-seq-palette rs))))))
+  (setf (pitch-seq-palette rs) (combine (pitch-seq-palette rs) psp)
+        (bars rs) (econs (bars rs) rsb))
+  ;; MDE Fri Dec 30 18:22:54 2011 -- no need for this as the setf bars method
+  ;; calls gen-stats  
+  ;; (incf (num-bars rs))
   (incf (num-rhythms rs) (num-rhythms rsb))
   (incf (num-rests rs) (num-rests rsb))
   (incf (num-notes rs) (notes-needed rsb))
   (incf (num-score-notes rs) (num-score-notes rsb))
-  (incf (duration rs) (bar-duration rsb))
-  ;; TODO: what about the psp?
-  )
+  (incf (duration rs) (bar-duration rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1494,9 +1507,9 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 #|
 ;; The method returns a rthm-seq object.
 (let ((rs (make-rthm-seq '((((2 4) q+e s s)
-			    ((e) q (e))
-			    ((3 8) s s e. s))
-			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+                            ((e) q (e))
+                            ((3 8) s s e. s))
+                           :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
   (scale rs 3))
 
 => 
@@ -1520,9 +1533,9 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 ;; Create a rthm-seq object, scale the durations by 3 times using the scale
 ;; method, and print-simple the corresponding slots to see the results
 (let ((rs (make-rthm-seq '((((2 4) q+e s s)
-			    ((e) q (e))
-			    ((3 8) s s e. s))
-			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+                            ((e) q (e))
+                            ((3 8) s s e. s))
+                           :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
   (print-simple (scale rs 3)))
 
 =>
@@ -1605,9 +1618,9 @@ rthm-seq NIL
 #|
 ;; Returns a list of rhythm objects
 (let ((rs (make-rthm-seq '((((2 4) q+e s s)
-			    ((e) q (e))
-			    ((3 8) s s e. s))
-			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+                            ((e) q (e))
+                            ((3 8) s s e. s))
+                           :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
   (get-rhythms rs))
 
 =>
@@ -1638,9 +1651,9 @@ RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL,
 
 ;; Get just the rhythm labels from the same rthm-seq object
 (let ((rs (make-rthm-seq '((((2 4) q+e s s)
-			    ((e) q (e))
-			    ((3 8) s s e. s))
-			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+                            ((e) q (e))
+                            ((3 8) s s e. s))
+                           :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
   (loop for r in (get-rhythms rs) collect (data r)))
 
 => ("Q" "E" S S E Q E S S E. S)
@@ -1786,10 +1799,10 @@ RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL,
 #|
 ;; The method returns a new rthm-seq object
 (let ((rs (make-rthm-seq '((((4 4) q e s s (e) e e (e))
-			    ((3 4) s s e s e s e. s)
-			    ((5 4) h q. e e s s))
-			   :pitch-seq-palette ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
-						3 4 5 6))))))
+                            ((3 4) s s e s e s e. s)
+                            ((5 4) h q. e e s s))
+                           :pitch-seq-palette ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
+                                                3 4 5 6))))))
   (split rs))
 
 =>
@@ -1815,10 +1828,10 @@ data: ((((4 4) Q E S S (E) E E (E)) ((3 4) S S E S E S E. S)
 ;; Without setting the :min-beats and :max-beats arguments, the following
 ;; rthm-seq object is broken down from 3 to 5 rthm-seq-bar objects
 (let* ((rs (make-rthm-seq '((((4 4) q e s s (e) e e (e))
-			     ((3 4) s s e s e s e. s)
-			     ((5 4) h q. e e s s))
-			    :pitch-seq-palette ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
-						 3 4 5 6)))))
+                             ((3 4) s s e s e s e. s)
+                             ((5 4) h q. e e s s))
+                            :pitch-seq-palette ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
+                                                 3 4 5 6)))))
        (rssplt (split rs)))
   (print-simple rssplt))
 
@@ -1832,10 +1845,10 @@ rthm-seq NIL
 
 ;; Setting :min-beats to 4 affects the resulting subdivisions to larger bars
 (let* ((rs (make-rthm-seq '((((4 4) q e s s (e) e e (e))
-			     ((3 4) s s e s e s e. s)
-			     ((5 4) h q. e e s s))
-			    :pitch-seq-palette ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
-						 3 4 5 6)))))
+                             ((3 4) s s e s e s e. s)
+                             ((5 4) h q. e e s s))
+                            :pitch-seq-palette ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
+                                                 3 4 5 6)))))
        (rssplt (split rs :min-beats 4)))
   (print-simple rssplt))
 
@@ -1847,10 +1860,10 @@ rthm-seq NIL
 
 ;; Even though :max-beats is set to 2, an occasional 3/4 bar is constructed
 (let* ((rs (make-rthm-seq '((((4 4) q e s s (e) e e (e))
-			     ((3 4) s s e s e s e. s)
-			     ((5 4) h q. e e s s))
-			    :pitch-seq-palette ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
-						 3 4 5 6)))))
+                             ((3 4) s s e s e s e. s)
+                             ((5 4) h q. e e s s))
+                            :pitch-seq-palette ((1 2 3 4 5 6 1 2 3 4 5 6 7 8 1 2
+                                                 3 4 5 6)))))
        (rssplt (split rs :max-beats 2)))
   (print-simple rssplt))
 

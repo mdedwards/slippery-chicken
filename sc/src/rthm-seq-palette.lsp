@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 15:40:12 Sat Feb  5 2011 ICT
+;;; $$ Last modified: 18:47:44 Fri Dec 30 2011 ICT
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -436,6 +436,12 @@
                 (append (create-psps-default left nil) 
                         (create-psps-default right nil)))))))))
         
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Dec 30 18:45:55 2011 -- used in rthm-seq::add-bar
+(defun get-psps-as-list (num-notes num-pss)
+  ;; reset our lists
+  (create-psps-default nil nil)
+  (loop repeat num-pss collect (create-psps-default num-notes nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF rthm-seq-palette.lsp

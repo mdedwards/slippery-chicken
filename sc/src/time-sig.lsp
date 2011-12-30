@@ -145,19 +145,28 @@
 
 ;;; ****m* time-sig/beat-duration
 ;;; FUNCTION
-;;; 
+;;; Get the duration in seconds of one beat of the given time-signature at a
+;;; tempo of quarter=60.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A time-sig object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A number.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Beat duration in seconds for time-signature 2/4 at quarter=60
+(let ((ts (make-time-sig '(2 4))))
+  (beat-duration ts))
+
+=> 1.0
+
+;; Beat duration in seconds for 6/8 at quarter=60
+(let ((ts (make-time-sig '(6 8))))
+  (beat-duration ts))
+
+=> 1.5
 
 |#
 ;;; SYNOPSIS
@@ -396,21 +405,31 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Dec 29 20:21:17 EST 2011
 ;;; ****f* time-sig/make-time-sig
 ;;; FUNCTION
-;;; 
+;;; Create a time-sig object. In addition to the numerator and denominator
+;;; values, the object also stores other automatically calculated information,
+;;; such as whether the signature is simple or compound, the duration of one
+;;; bar of the given time signature in seconds, the number of midi-clocks, etc. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A two-item list of numbers, the first being the numerator (number of
+;;; beats per measure), the second being the denominator (beat type).
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - A time-sig object.
 ;;; 
 ;;; EXAMPLE
 #|
+(make-time-sig '(2 4))
+
+=> 
+TIME-SIG: num: 2, denom: 4, duration: 2.0, compound: NIL, midi-clocks: 24, num-beats: 2
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "0204", tag: NIL, 
+data: (2 4)
 
 |#
 ;;; SYNOPSIS

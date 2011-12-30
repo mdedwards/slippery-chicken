@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:27:17 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 12:25:39 Fri Dec 30 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2513,7 +2513,7 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod delete-marks ((e event))
+(defmethod delete-marks :after ((e event))
   ;; (print 'dme)
   (unless (is-rest e)
     (delete-marks (pitch-or-chord e))

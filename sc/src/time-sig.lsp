@@ -179,21 +179,54 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR 30.12.11 Added robodoc info
+
 ;;; ****m* time-sig/get-beat-as-rhythm
 ;;; FUNCTION
-;;; 
+;;; Get the beat unit of a given time-sig object and return it as a rhythm.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A time-sig object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; T or NIL to indicate whether to consider the beat of a compound meter to
+;;; be the denominator of the time signature (such as 8 for 6/8) or the beat
+;;; duration derived from the traditionally understood beat of that meter (such
+;;; as Q. for 6/8). NIL = denominator. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A rhythm object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns a rhythm object
+(let ((ts (make-time-sig '(2 4))))
+  (get-beat-as-rhythm ts))
+
+=> 
+RHYTHM: value: 4.000, duration: 1.000, rq: 1, is-rest: NIL, 
+        score-rthm: 4.0f0, undotted-value: 4, num-flags: 0, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 1.000, 
+        is-grace-note: NIL, needs-new-note: T, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: NIL, marks-in-part: NIL, 
+        letter-value: 4, tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: 4, tag: NIL, 
+data: 4
+
+;; Default for compound meters is to return the denominator of the time
+;; signature 
+(let ((ts (make-time-sig '(6 8))))
+  (data (get-beat-as-rhythm ts)))
+
+=> 8
+
+;; Setting the optional argument to T returns the compound beat of a compound
+;; meter rather than the denominator of the time signature
+(let ((ts (make-time-sig '(6 8))))
+  (data (get-beat-as-rhythm ts t)))
+
+=> Q.
 
 |#
 ;;; SYNOPSIS
@@ -208,36 +241,73 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #|
-
 ;;; MDE Sat Dec 24 11:46:35 2011 -- now obsolete
+
 (defmethod score-time-sig ((ts time-sig))
-  (format nil "~a ~a" (num ts) (denom ts)))
+  (format nil "~a ~a" (num ts) (denom ts))) 
 
 |#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; NB Always returns a new time-sig.  By default we divide the denominator by
 ;;; the scaler rather than the numerator * the scaler, thus preserving meter
 ;;; (duple, triple etc.).  If that doesn't give us a 'normal' meter we'll do
 ;;; numerator * scaler instead.  
 
+;;; SAR Fri Dec 30 17:37:55 EST 2011: Added robodoc info
 ;;; ****m* time-sig/scale
 ;;; FUNCTION
-;;; 
+;;; Scale the value of the given time-sig object by a specified factor.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A time-sig object.
+;;; - A number (scaling factor).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; T or NIL to indicate whether or not to preserve the meter by maintaining
+;;; the same number of beats as the numerator of the time signature. T =
+;;; preserve the meter. Default = T. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A time-sig object.
 ;;; 
 ;;; EXAMPLE
+
 #|
+;; Scaling a (2 4) time-sig object by 3 creates a new time-sig object with a
+;; value of 6/4 
+(let ((ts (make-time-sig '(2 4))))
+  (scale ts 3))
+
+=> 
+TIME-SIG: num: 6, denom: 4, duration: 6.0, compound: NIL, midi-clocks: 24, num-beats: 6
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "0604", tag: NIL, 
+data: (6 4)
+
+;; Scaling a (2 4) time-sig object by 2 by default preserves the meter
+(let ((ts (make-time-sig '(2 4))))
+  (data (scale ts 2)))
+
+=> (2 2)
+
+;; Scaling a (2 4) time-sig object by 2 with the optional argument set to NIL
+;; changes the meter and results in a 4/4
+(let ((ts (make-time-sig '(2 4))))
+  (data (scale ts 2 nil)))
+
+=> (4 4)
+
+;; Halving the value of a time-sig object is achieved using a factor of .5
+(let ((ts (make-time-sig '(2 4))))
+  (data (scale ts .5)))
+
+=> (2 8)
 
 |#
+
 ;;; SYNOPSIS
 (defmethod scale ((ts time-sig) scaler
                   &optional (preserve-meter t) ignore1 ignore2)
@@ -265,21 +335,32 @@
           
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Dec 30 17:57:59 EST 2011: Added robodoc info
 ;;; ****m* time-sig/is-compound
 ;;; FUNCTION
-;;; 
+;;; Determine whether the value of a given time-sig object is a compound time
+;;; signature. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A time-sig object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T if the value of the given time-sig object is a compound time signature,
+;;; otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Testing a time-sig object with a 2/4 time signature returns NIL
+(let ((ts (make-time-sig '(2 4))))
+  (is-compound ts))
+
+=> NIL
+
+;; Testing a time-sig object with a 6/8 time signature returns T
+(let ((ts (make-time-sig '(6 8))))
+  (is-compound ts))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -293,25 +374,45 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; if the time-sigs are really the same, return true; if they have the same
-;;; duration (2/4, 4/8, 8/16 etc.) return time-sig-equal-duration; otherwise
-;;; nil.
-
+;;; SAR Fri Dec 30 18:04:00 EST 2011: Added robodoc info
 ;;; ****m* time-sig/time-sig-equal
 ;;; FUNCTION
-;;; 
+;;; Determine whether the values of two given time-sig objects are the same. If
+;;; they are identical in signature, return T; if they are different signatures
+;;; but have the same duration (e.g. 2/4, 4/8, 8/16 etc.) return
+;;; TIME-SIG-EQUAL-DURATION; otherwise return NIL.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A first time-sig object.
+;;; - A second time-sig object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the time signatures are identical; returns
+;;; TIME-SIG-EQUAL-DURATION if they are different signatures with the same
+;;; duration; otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Two identical signatures return T
+(let ((ts1 (make-time-sig '(2 4)))
+      (ts2 (make-time-sig '(2 4))))
+  (time-sig-equal ts1 ts2))
+
+=> T
+
+;; Two different signatures of the same duration return TIME-SIG-EQUAL-DURATION 
+(let ((ts1 (make-time-sig '(2 4)))
+      (ts2 (make-time-sig '(4 8))))
+  (time-sig-equal ts1 ts2))
+
+=> TIME-SIG-EQUAL-DURATION
+
+;; Two completely different signatures return NIL
+(let ((ts1 (make-time-sig '(2 4)))
+      (ts2 (make-time-sig '(3 4))))
+  (time-sig-equal ts1 ts2))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -325,27 +426,67 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Dec 30 18:14:43 EST 2011: Added robodoc info
 ;;; ****m* time-sig/get-whole-bar-rest
 ;;; FUNCTION
-;;; 
+;;; Create an event object consisting of a rest equal in duration to one full
+;;; bar of the given time-sig object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A time-sig object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns an event object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns an event object
+(let ((ts (make-time-sig '(2 4))))
+  (get-whole-bar-rest ts))
+
+=> 
+EVENT: start-time: NIL, end-time: NIL, 
+       duration-in-tempo: 0.0, 
+       compound-duration-in-tempo: 0.0, 
+       amplitude: 0.7 
+       bar-num: -1, marks-before: NIL, 
+       tempo-change: NIL 
+       instrument-change: NIL 
+       display-tempo: NIL, start-time-qtrs: -1, 
+       midi-time-sig: NIL, midi-program-changes: NIL, 
+       8va: 0
+       pitch-or-chord: NIL
+       written-pitch-or-chord: NIL
+RHYTHM: value: 2.000, duration: 2.000, rq: 2, is-rest: T, 
+        score-rthm: 2.0f0, undotted-value: 2, num-flags: 0, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 2.000, 
+        is-grace-note: NIL, needs-new-note: NIL, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: NIL, marks-in-part: NIL, 
+        letter-value: 2, tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: 2, tag: NIL, 
+data: 2
+
+;; The rhythmic value of the event object returned is equal to the rhythmic
+;; duration of a full bar in the given time signature, the PITCH-OR-CHORD slot
+;; is set to NIL, and the IS-REST slot is set to T.
+(let* ((ts (make-time-sig '(2 4)))
+       (tswbr (get-whole-bar-rest ts)))
+  (print (value tswbr))
+  (print (pitch-or-chord tswbr))
+  (print (is-rest tswbr)))
+
+=>
+2.0 
+NIL 
+T
 
 |#
 ;;; SYNOPSIS
 (defmethod get-whole-bar-rest ((ts time-sig))
-  (make-rest (/ (denom ts) (num ts))))
 ;;; ****
+  (make-rest (/ (denom ts) (num ts))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

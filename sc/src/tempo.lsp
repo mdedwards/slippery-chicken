@@ -118,6 +118,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Dec 29 19:18:02 EST 2011: Added robodoc info
 ;;; ****m* tempo/tempo-equal
 ;;; FUNCTION
 ;;; 
@@ -171,23 +172,47 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; e.g. (make-tempo 60) (make-tempo 60 :beat 'q.) (make-tempo '(60 q.))
-
+;;; SAR Thu Dec 29 19:21:44 EST 2011: Added robodoc info
 ;;; ****f* tempo/make-tempo
 ;;; FUNCTION
-;;; 
+;;; Make a tempo object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A number indicating beats per minute.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :beat. Sets the "beat" value of the beats per minute;
+;;; i.e., 'q (or 4) for "quarter = xx bpm" etc. Default = 4.
+;;; - keyword argument :id. Sets the ID of the tempo object.
+;;; - keyword argument :description. A text description (string) of the tempo,
+;;; such as "Allegro con brio" etc.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A tempo object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Default beat is a quarter, thus the following makes a tempo object of
+;; quarter=60. 
+(make-tempo 60)
+
+=> 
+TEMPO: bpm: 60, beat: 4, beat-value: 4.0, qtr-dur: 1.0 
+       qtr-bpm: 60.0, usecs: 1000000, description: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: 60
+
+;; Set the beat using the :beat keyword argument. Thus, the following makes a
+;; tempo object of dotted-quarter = 96.
+(make-tempo 96 :beat 'q.)
+
+;; Add a text description, which is stored in the tempo object's DESCRIPTION
+;; slot. 
+(let ((tt (make-tempo 76 :beat 2 :description "Allegretto")))
+  (description tt))
+
+=> "Allegretto"
 
 |#
 ;;; SYNOPSIS
@@ -196,8 +221,8 @@
   (if (listp bpm)
       (make-instance 'tempo :bpm (first bpm) :beat (second bpm) 
                      :description (third bpm) :id id)
-    (make-instance 'tempo :bpm bpm :beat beat :id id 
-                   :description description)))
+      (make-instance 'tempo :bpm bpm :beat beat :id id 
+		     :description description)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

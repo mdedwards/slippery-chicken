@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 09:06:58 Sun Dec 25 2011 ICT
+;;; $$ Last modified: 15:38:16 Fri Dec 30 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -288,6 +288,7 @@
              (pause (list (fermata)))
              (pizz (list (sc-cmn-text "pizz")))
              (ord (list (sc-cmn-text "ord.")))
+             (niente (list (sc-cmn-text "niente")))
              (pizzp (list (sc-cmn-text "(pizz)")))
              (clb (list (sc-cmn-text "clb")))
              (clt (list (sc-cmn-text "clt")))

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 19:11:51 Fri Dec 30 2011 ICT
+;;; $$ Last modified: 21:02:40 Fri Dec 30 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1346,8 +1346,7 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 
 |#
 ;;; SYNOPSIS
-(defmethod chop ((rs rthm-seq) &optional chop-points 
-                 (unit 's)
+(defmethod chop ((rs rthm-seq) &optional chop-points (unit 's)
                  (number-bars-first t))
 ;;; ****
   (when number-bars-first

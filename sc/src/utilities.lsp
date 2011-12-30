@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 16:46:15 Wed Dec 21 2011 ICT
+;;; $$ Last modified: 15:28:18 Fri Dec 30 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1368,12 +1368,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun amplitude-to-dynamic (amp &optional (warn t))
-  (if (and (>= amp 0) (<= amp 1.0))
-      (nth (round (* 10 amp))
-           '(niente pppp ppp pp p mp mf f ff fff ffff))
-      (when warn
-        (warn "utilities::amplitude-to-dynamic: can only handle >=0 & <= 1: ~a"
-              amp))))
+  (let ((dynamics '(niente pppp ppp pp p mp mf f ff fff ffff)))
+    (flet ((warn-range (direction)      ; t=too high, nil= too low
+             (when warn
+               (if direction
+                   (warn "utilities::amplitude-to-dynamic: ~a is > 1.0. ~
+                          setting to maximum dynamic." amp)
+                   (warn "utilities::amplitude-to-dynamic: ~a is < 0.0. ~
+                          setting to minimum dynamic." amp)))))
+      (cond ((> amp 1.0) (warn-range t) (first (last dynamics)))
+            ((< amp 0.0) (warn-range nil) (first dynamics))
+            (t (nth (round (* 10 amp)) dynamics))))))
+             
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:25:39 Fri Dec 30 2011 ICT
+;;; $$ Last modified: 15:37:07 Fri Dec 30 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -430,9 +430,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 15.3.11: update amplitude if we set a dynamic as a mark
-(defmethod add-mark :after ((e event) mark &optional warn-rest)
-  (declare (ignore warn-rest))
-  (when (is-dynamic mark)
+(defmethod add-mark :after ((e event) mark &optional (update-amplitude t))
+  (when (and update-amplitude (is-dynamic mark))
     ;; (remove-dynamics e)
     (setf (slot-value e 'amplitude) (dynamic-to-amplitude mark))))
 
@@ -508,12 +507,15 @@ NIL
 ;;; SYNOPSIS
 (defmethod (setf amplitude) :after (value (e event))
 ;;; ****
-  (unless value
-    (error "event::(setf amplitude): value is nil!"))
+  (unless (and value (numberp value))
+    (error "event::(setf amplitude): value is not a number: ~a" value))
   (unless (is-rest e)
     ;; delete existing dynamics first
     ;; (remove-dynamics e)
-    (add-mark e (amplitude-to-dynamic value nil)))) ; no warning if > 1.0
+    ;; no warning if > 1.0 < 0.0
+    ;; MDE Fri Dec 30 15:36:42 2011 -- add-mark updates amplitude if we give it
+    ;; a dynamic but that would limit us to 0.0->1.0 so don't allow this here 
+    (add-mark e (amplitude-to-dynamic value nil) nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

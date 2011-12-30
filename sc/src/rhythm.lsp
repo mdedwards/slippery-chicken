@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 19:27:58 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 12:25:27 Fri Dec 30 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -855,7 +855,7 @@ NI
 |#
 
 ;;; SYNOPSIS
-(defmethod delete-marks :before ((r rhythm))
+(defmethod delete-marks ((r rhythm))
 ;;; ****
   ;; (print 'dmr)
   (setf (marks r) nil))

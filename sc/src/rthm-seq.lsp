@@ -1403,7 +1403,9 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 ;;; SYNOPSIS
 (defmethod delete-marks ((rs rthm-seq))
 ;;; ****
-  (setf (marks rs) nil)
+  ;; MDE Fri Dec 30 12:22:26 2011 -- can't use (setf marks... as that would
+  ;; result in a stack overflow 
+  (setf (slot-value rs 'marks) nil)
   (loop for bar in (bars rs) do (delete-marks bar)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

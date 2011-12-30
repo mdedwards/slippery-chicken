@@ -121,20 +121,30 @@
 ;;; SAR Thu Dec 29 19:18:02 EST 2011: Added robodoc info
 ;;; ****m* tempo/tempo-equal
 ;;; FUNCTION
-;;; 
+;;; Test to determine whether the values of two tempo objects are equal.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A first tempo object.
+;;; - A second tempo object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the values of the two tempo objects are equal, otherwise NIL. 
 ;;; 
 ;;; EXAMPLE
 #|
+;; Equal
+(let ((tt1 (make-tempo 60))
+      (tt2 (make-tempo 60)))
+  (tempo-equal tt1 tt2))
 
+=> T
+
+;; Not equal
+(let ((tt1 (make-tempo 60))
+      (tt2 (make-tempo 96)))
+  (tempo-equal tt1 tt2))
+
+=> NIL
 |#
 ;;; SYNOPSIS
 (defmethod tempo-equal ((t1 tempo) (t2 tempo))

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified: 11:45:52 Sat Dec 24 2011 ICT
+;;; $$ Last modified: 19:21:37 Fri Dec 30 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -96,7 +96,7 @@
 (defmethod initialize-instance :after ((i tempo) &rest initargs)
   (declare (ignore initargs))
   (setf (beat-value i) (value (make-rhythm (beat i)))
-        (qtr-dur i) (* (/ 60.0 (bpm i)) (/ (beat-value i) 4))
+        (qtr-dur i) (* (/ 60.0 (bpm i)) (/ (beat-value i) 4.0))
         (qtr-bpm i) (* (bpm i) (/ 4 (beat-value i)))
         (usecs i) (floor (* 1000000 (qtr-dur i)))
         ;; just for the hell set the data slot of the named-object parent to
@@ -232,7 +232,7 @@ data: 60
       (make-instance 'tempo :bpm (first bpm) :beat (second bpm) 
                      :description (third bpm) :id id)
       (make-instance 'tempo :bpm bpm :beat beat :id id 
-		     :description description)))
+                     :description description)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

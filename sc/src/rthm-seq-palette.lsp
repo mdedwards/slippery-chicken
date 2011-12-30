@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 18:47:44 Fri Dec 30 2011 ICT
+;;; $$ Last modified: 19:11:21 Fri Dec 30 2011 ICT
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -350,98 +350,6 @@
 
 (defun rsp-p (thing)
   (typep thing 'rthm-seq-palette))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(let ((seqs '((1 (((3)) ((3)) ((1)) ((25))))
-              (2 ((3 4) (5 2) ((25) 25) (1 25)))
-              (3 (((3) 4 (3)) (5 (9) 6) (1 2 4) (5 2 (2)) (6 2 3)))
-              (4 ((3 4 3 4) (5 3 6 4) ((9) 4 5 (11)) (2 (10) 4 8)))
-              (5 (((5) (5) 6 (5) 8) ((7) (7) (7) 4 8) (11 8 4 10 2) 
-                  ((7) (7) 4 (9) (9))))
-              (6 ((4 (5) (5) 3 (6) (6)) ((3) 8 (3) 9 (3) 8) (9 3 9 5 10 6)))
-              (7 (((8) (8) (8) 5 (9) 6 (9)) (9 3 8 4 7 5 4)
-                  ((3) 4 (3) 5 (3) 4 (3))))
-              (8 (((3) (3) 4 (3) (3) 1 5 4) (10 3 9 3 8 3 7 4)
-                  (3 5 8 2 8 9 4 11)))
-              (9 ((3 6 4 (7) 4 (7) 3 6 (7)) (10 (2) 9 (2) 8 (2) 7 (2) 3) 
-                  (2 (9) 3 (9) 4 (9) (9) 6 (11))))
-              (10 ((9 9 9 (3) 9 9 (3) 5 9 5) (8 9 8 9 5 9 9 5 6 6)))
-              (12 ((1 2 5 5 5 5 5 5 5 5 4 5) (2 1 5 1 5 1 6 5 1 5 2 5)))
-              (13 ((1 2 5 5 5 5 5 5 5 5 4 5 2) (2 1 5 1 5 1 6 5 1 5 2 5 1)))
-              (14 ((1 2 5 5 5 5 5 5 5 5 4 5 2 1) 
-                   (2 1 5 1 5 1 6 5 1 5 2 5 1 2)))
-              (15 ((1 2 5 5 5 5 5 5 5 5 4 5 2 1 2) 
-                   (2 1 5 1 5 1 6 5 1 5 2 5 1 2 6)))))
-      (seqs-al nil))
-  ;; ****f* rthm-seq-palette/create-psps-default
-  ;; FUNCTION
-  ;; create-psps-default
-  ;;
-  ;; Create pitch-sequences for the create-psps method.  This is the callback
-  ;; function that is passed by default.  This (and the above lists) was first
-  ;; used in I Kill by Proxy.  If data isn't provided for a sequence of a
-  ;; certain length, a (recursive!) attempt will be made to make one up from
-  ;; two sequences of lesser length.
-  ;; 
-  ;; ARGUMENTS 
-  ;; - number of notes we need a psp for
-  ;; - the pitch-seq data (see documentation for create psps method).  Ideally
-  ;; this would only be passed the first time the function is called.
-  ;; 
-  ;; RETURN VALUE  
-  ;; a list of numbers suitable for use in creating a pitch-seq
-  ;; 
-  ;; SYNOPSIS
-  (defun create-psps-default (num-notes data-lists)
-    ;; (print data-lists)
-    ;; ****
-    ;; 3.2.11 need to reinitialize our cscls the first time we call
-    ;; create-psps, otherwise the only way to get the same piece each time is
-    ;; to reload all sc source files i.e. restart lisp
-    (unless (or num-notes data-lists)
-      (setf seqs-al nil))
-    (when (or data-lists (not seqs-al))
-      (let ((dl (if (and data-lists (listp data-lists))
-                    data-lists
-                    ;; e.g. if data-lists is t, we'll use the default data again
-                    seqs)))
-        ;; make an assoc-list of circular sc-lists out of the sequences.
-        (setf dl
-              (loop
-                 for l in dl
-                 for order = (first l)
-                 for pss = (second l)
-                 do
-                 (loop for ps in pss do
-                    ;; check we've the right number of notes.
-                      (unless (= order (length ps))
-                        (error "kill-get-ps: need ~a elements, got ~a: ~a"
-                               order (length ps) ps)))
-                 collect
-                 (list order (make-cscl pss)))
-              seqs-al (make-assoc-list 'create-psps-default dl))))
-    (when (and (numberp num-notes) (> num-notes 0))
-      (let ((ps (get-data num-notes seqs-al nil)))
-        (if ps
-            (get-next (data ps))
-            (progn
-              ;; must avoid infinite recursions....
-              (when (= 1 num-notes)
-                (error "rthm-seq-palette::create-psps-default: no data for 1!~
-                    Avoiding infinite recursion."))
-              (let* ((left (floor num-notes 2))
-                     (right left))
-                (when (oddp num-notes)
-                  (incf left))
-                (append (create-psps-default left nil) 
-                        (create-psps-default right nil)))))))))
-        
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Fri Dec 30 18:45:55 2011 -- used in rthm-seq::add-bar
-(defun get-psps-as-list (num-notes num-pss)
-  ;; reset our lists
-  (create-psps-default nil nil)
-  (loop repeat num-pss collect (create-psps-default num-notes nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF rthm-seq-palette.lsp

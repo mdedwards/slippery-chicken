@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 19:06:46 Fri Dec 30 2011 ICT
+;;; $$ Last modified: 19:11:51 Fri Dec 30 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1281,6 +1281,8 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
       (unless (= (num-notes psp) (notes-needed rsb))
         (error "~a~&rthm-seq::add-bar: the pitch-seq-palette needs ~a notes"
                psp (notes-needed rsb)))
+      ;; if no psp make one from the default data lists in
+      ;; pitch-seq-palette::create-psps-default 
       (setf psp (make-psp 'add-bar-tmp (notes-needed rsb)
                           (get-psps-as-list (notes-needed rsb)
                                             ;; get as many pitch-seqs as there

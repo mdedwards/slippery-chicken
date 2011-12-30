@@ -446,7 +446,8 @@
 ;;; Numbers greater than 1.0 and less than 0.0 will also be stored in the
 ;;; amplitude slot of the given event object without issuing a warning, though
 ;;; corresponding dynamic marks are only available for values between 0.0 and
-;;; 1.0. 
+;;; 1.0. Any value above 1.0 or below 0.0 will result in a dynamic marking of
+;;; FFFF and NIENTE respectively.
 ;;;
 ;;; ARGUMENTS
 ;;; - An amplitude value (real number).
@@ -482,26 +483,17 @@
 (PP)
 
 ;; Setting an amplitude greater than 1.0 or less than 0.0 sets the amplitude
-;; correspondingly but assigns no new value to the marks slot, as there is no
-;; corresponding dynamic mark. 
-(let ((e (make-event 'c4 'q)))
-  (setf (amplitude e) 1.3)
-  (print (amplitude e))
-  (print (marks e)))
+;; correspondingly and sets the dynamic mark to FFFF or NIENTE accordingly. 
+(let ((e1 (make-event 'c4 'q))
+      (e2 (make-event 'c4 'q)))
+  (setf (amplitude e1) 1.3)
+  (setf (amplitude e2) -1.3)
+  (print (marks e1))
+  (print (marks e2)))
 
 =>
-1.3 
-NIL
-
-;; The above can cause confusion when an amplitude is re-set to above 1.0 or
-;; below 0.0, leaving a prior dynamic still attached.
-(let ((e (make-event 'c4 'q)))
-  (setf (amplitude e) 0.3)
-  (setf (amplitude e) 1.3)
-  (print (amplitude e))
-  (print (marks e)))
-
-=> (PP)
+(FFFF) 
+(NIENTE)
 
 |#
 ;;; SYNOPSIS
@@ -1096,16 +1088,46 @@ data: (3 4)
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
-;;; - 
+;;; - A start-text string.
+;;; - An end-text string.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; T or NIL to indicate whether or not to print a warning when trying to
+;;; attach an arrow and accompanying marks to a rest. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create an event object and see that the MARKS-BEFORE and MARKS slots are set
+;;; to NIL by default
+(let ((e (make-event 'c4 'q)))
+  (print (marks-before e))
+  (print (marks e)))
+
+=>
+NIL
+NIL
+
+;; Create an event object, apply the add-arrow method, and print the
+;; corresponding slots to see the changes.
+(let ((e (make-event 'c4 'q)))
+  (add-arrow e "start here" "end here")
+  (print (marks-before e))
+  (print (marks e)))
+
+=>
+((ARROW "start here" "end here")) 
+(START-ARROW) 
+
+;; Create an event object that is a rest and apply the add-arrow method with
+;; the optional argument set to T to see the warning printed.
+(let ((e (make-event nil 'q)))
+  (add-arrow e "start here" "end here" t))
+
+=> T
+event::add-arrow: add arrow to rest?
 
 |#
 ;;; SYNOPSIS
@@ -1129,22 +1151,83 @@ data: (3 4)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 24.9.11
-;;; SAR Sat Dec 24 09:36:27 EST 2011 Added robodoc info
+;;; SAR Fri Dec 30 11:21:12 EST 2011: Added robodoc info
 ;;; ****m* event/add-trill
 ;;; FUNCTION
-;;; 
+;;; Used for adding pitched trills to printed score output. Adds the necessary
+;;; values to the MARKS and MARKS-BEFORE slots of a given event object.
+;;;
+;;; NB: The main interface for adding trills by hand is
+;;; slippery-chicken::trill, which is the class-method combination that
+;;; should be accessed for this purpose.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An event object.
+;;; - A pitch-symbol for the trill note.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; T or NIL to indicate whether or not to print a warning when attaching trill
+;;; information to a rest. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
+;;; Always returns T.
 ;;; 
+;;; NB: At the moment the method will also print the reminder warning that this
+;;; is a LilyPond-only mark.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create an event object and print the contents of the MARKS-BEFORE and MARKS
+;; slots to see that they're empty by default.
+(let ((e (make-event 'c4 'q)))
+  (print (marks-before e))
+  (print (marks e)))
+
+=>
+NIL
+NIL
+
+;; Create an event object, add a trill to the note 'D4, and print the
+;; corresponding slots to see the changes
+(let ((e (make-event 'c4 'q)))
+  (add-trill e 'd4)
+  (print (marks-before e))
+  (print (marks e)))
+
+=>
+WARNING: 
+rhythm::validate-mark: no CMN mark for BEG-TRILL-A (but adding anyway).
+
+(BEG-TRILL-A) 
+((TRILL-NOTE D4))
+
+;; By default the method adds prints no warning when adding a mark to a rest
+(let ((e (make-event nil 'q)))
+  (add-trill e 'd4)
+  (print (marks-before e))
+  (print (marks e)))
+
+=>
+WARNING: 
+rhythm::validate-mark: no CMN mark for BEG-TRILL-A (but adding anyway).
+
+(BEG-TRILL-A) 
+((TRILL-NOTE D4))
+
+;; Set the optional argument to T to have the method print a warning when
+;; attaching a mark to a rest
+(let ((e (make-event nil 'q)))
+  (add-trill e 'd4 t)
+  (print (marks-before e))
+  (print (marks e)))
+
+=>
+event::add-trill: add trill to rest?
+WARNING: 
+rhythm::validate-mark: no CMN mark for BEG-TRILL-A (but adding anyway).
+
+(BEG-TRILL-A) 
+((TRILL-NOTE D4))
 
 |#
 ;;; SYNOPSIS
@@ -2230,14 +2313,13 @@ data: C4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; chords taken into consideration. 
-
 ;;; SAR Sat Dec 24 19:15:03 EST 2011 Added robodoc info
 ;;; ****m* event/event-distance
 ;;; FUNCTION
 ;;; Get the distance (interval) in semitones between the pitch level of one
 ;;; event object and a second. Negative numbers indicate direction interval
-;;; directionality. 
+;;; directionality. An optional argument allows distances to be always printed
+;;; as absloute values (positive).
 ;;;
 ;;; Event-distance can also be determined between chords, in which case the
 ;;; distance is measured between the highest pitch of one event object and the
@@ -2246,6 +2328,10 @@ data: C4
 ;;; ARGUMENTS
 ;;; - A first event object.
 ;;; - A second event object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; T or NIL for whether the the value should be returned as an absolute value
+;;; (i.e., always positive). Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; A number.
@@ -2265,6 +2351,14 @@ data: C4
   (event-distance e2 e1))
 
 => -4.0
+
+;; Set the optional argument to T to get the absolute distance (positive
+;; number)
+(let ((e1 (make-event 'c4 'q))
+      (e2 (make-event 'e4 'q)))
+  (event-distance e2 e1 t))
+
+=> 4.0
 
 ;; The semitone distance between two chords in ascending direction
 (let ((e1 (make-event '(c4 e4 g4) 'q))

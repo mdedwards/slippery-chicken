@@ -1298,9 +1298,10 @@ NI
 ;;; NB: This method only returns a single rhythm rather than a list with
 ;;; ties. Thus q+s, for example, returns TQ... 
 ;;;
-;;; If the resulting duration cannot be presented as a single rhythm, the DATA
-;;; slot of the resulting rhythm object is set to NIL, though the VALUE and
-;;; DURATION slots are still set with the corresponding numeric values. 
+;;; If the resulting duration cannot be presented as a single, notatable
+;;; rhythm, the DATA slot of the resulting rhythm object is set to NIL, though
+;;; the VALUE and DURATION slots are still set with the corresponding numeric
+;;; values.  
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A first rhythm object.
@@ -1339,8 +1340,9 @@ data: Q.
 
 => TH
 
-;; A quarter plus a septuplet-16th cannot be represented as a single rhythm and
-;; therefore produces an object with a VALUE and DURATION but no DATA
+;; A quarter plus a septuplet-16th cannot be represented as a single, notatable
+;; rhythm and therefore produces an object with a VALUE and DURATION but no
+;; DATA 
 (let ((r1 (make-rhythm 4))
       (r2 (make-rhythm 28)))
   (print (value (add r1 r2)))

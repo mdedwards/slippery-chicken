@@ -1259,16 +1259,55 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 ;;; SAR Wed Dec 28 14:47:33 EST 2011: Added robodoc info
 ;;; ****m* rthm-seq/add-bar
 ;;; FUNCTION
-;;; 
+;;; Add a rthm-seq-bar object to the end of a given rthm-seq object.
+;;;
+;;; NB: If the rthm-seq-bar object is added without specifying a
+;;; pitch-seq-palette, the method automatically adds notes to the existing
+;;; pitch-seq-palette. 
 ;;; 
 ;;; ARGUMENTS 
+;;; - A rhtm-seq object.
+;;; - A rthm-seq-bar object.
 ;;; 
-;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - A pitch-seq-palette. 
+;;;
 ;;; RETURN VALUE  
-;;; 
+;;; Returns the new value of the DURATION slot of the given rthm-seq object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns the new value of the DURATION slot
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+  (add-bar rs (make-rthm-seq-bar '((5 8) e e+32 s. +q))))
+
+=> 10.5
+
+;; Apply the method and print the rhythms objects of the given rthm-seq object
+;; to see the changes
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+  (add-bar rs (make-rthm-seq-bar '((5 8) e e+32 s. +q)))
+  (loop for b in (bars rs)
+       collect (loop for r in (rhythms b) collect (data r))))
+
+=> (("Q" "E" S S) (E Q E) (S S E. S) (E "E" "32" S. "Q"))
+
+;; Apply the method and print the DATA slot of the update PITCH-SEQ-PALETTE
+;; slot to see the new notes that have been automatically added
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+			    ((e) q (e))
+			    ((3 8) s s e. s))
+			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+  (add-bar rs (make-rthm-seq-bar '((5 8) e e+32 s. +q)))
+  (data (first (data (pitch-seq-palette rs)))))
+
+=> (1 2 3 1 1 2 3 4 3 4 3)
 
 |#
 ;;; SYNOPSIS

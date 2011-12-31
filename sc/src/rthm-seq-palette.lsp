@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 19:11:21 Fri Dec 30 2011 ICT
+;;; $$ Last modified: 09:47:05 Sat Dec 31 2011 ICT
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -209,8 +209,27 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rthm-seq-palette/scale
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod scale ((rsp rthm-seq-palette) scaler
                   &optional ignore1 ignore2 ignore3)
+;;; ****
   (declare (ignore ignore1) (ignore ignore2) (ignore ignore3))
   (loop 
       for rs in (data rsp) 
@@ -247,6 +266,24 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+cmn
+;;; ****m* rthm-seq-palette/cmn-display
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod cmn-display ((rsp rthm-seq-palette)
                         &key
                         (all-output-in-one-file t)
@@ -256,6 +293,7 @@
                         (page-nums t)
                         (seqs-per-system 1)
                         (size 15))
+;;; ****
   (format t "~&Generating rthm-seqs...")
   (let* ((cmn-data (get-cmn-data rsp))
          (sys
@@ -292,9 +330,28 @@
 ;;; rthm-seq in the argument is replaced by a list of rthm-seqs that are one
 ;;; 'slice' of the original rthm-seq.
 
+;;; ****m* rthm-seq-palette/chop
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod chop ((rsp rthm-seq-palette) &optional chop-points 
                                                   (unit 's)
                                                   (number-bars-first t))
+;;; ****
   (let ((result (ral-to-rsp (duplicate-structure rsp) nil))
         (refs (get-all-refs rsp)))
     (loop 
@@ -310,8 +367,27 @@
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; see rthm-seq method
+;;; ****m* rthm-seq-palette/get-multipliers
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
 
+|#
+;;; SYNOPSIS
 (defmethod get-multipliers ((rsp rthm-seq-palette) rthm &optional id round)
+;;; ****
   (get-multipliers (get-data id rsp) rthm round))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -320,7 +396,26 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* rthm-seq-palette/make-rsp
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-rsp (id data &key (psp-inversions nil))
+;;; ****
   (make-instance 'rthm-seq-palette :id id :data data
                  :psp-inversions psp-inversions))
 

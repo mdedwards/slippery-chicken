@@ -74,7 +74,7 @@
  
    ;; 02.12.11 SEAN: Added ROBODoc info
 
-   ;;****S* bar-holder/start-time-qtrs
+   ;;****iS* bar-holder/start-time-qtrs
    ;; FUNCTION
    ;; Class slot to store the start-time of the bar-holder as measured in the
    ;; number of quarter-notes. Useful for MIDI timing.
@@ -93,7 +93,7 @@
                     :initform 0)
    ;; ****
    ;; 02.12.11 SEAN: Added ROBODoc info
-   ;;****S* bar-holder/end-time-qtrs
+   ;;****iS* bar-holder/end-time-qtrs
    ;; FUNCTION
    ;; Class slot to store the end-time of the bar-holder as measured in the
    ;; number of quarter-notes. Useful for MIDI timing.
@@ -113,7 +113,7 @@
    ;; ****
 
    ;; 02.12.11 SEAN: Added ROBODoc info
-   ;;****S* bar-holder/duration-qtrs
+   ;;****iS* bar-holder/duration-qtrs
    ;; FUNCTION
    ;; Class slot to store the duration of the bar-holder as measured in the
    ;; number of quarter-notes. Useful for MIDI timing.

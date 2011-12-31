@@ -683,9 +683,8 @@ data: (FIDO SPOT ROVER)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 01.12.11 SEAN: Added ROBODoc info
-
-;;; ****m* assoc-list/set-nth-of-data
 ;;; 08.12.11 SEAN: Modified example
+;;; ****m* assoc-list/set-nth-of-data
 ;;; FUNCTION
 ;;; Replace a given member of a given data list within a given assoc-list.
 ;;; 

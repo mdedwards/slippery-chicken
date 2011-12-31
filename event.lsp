@@ -175,6 +175,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 23.12.11 SAR: Added robodoc info
+
 ;;; ****m* event/set-midi-channel
 ;;; FUNCTION
 ;;; Set the MIDI-channel and microtonal MIDI-channel for the pitch object
@@ -218,8 +219,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* event/get-midi-channel
 ;;; 23.12.11 SAR Added Robodoc info
+
+;;; ****m* event/get-midi-channel
 ;;; FUNCTION
 ;;; Retrieve the value set for the midi-channel slot of the pitch object within
 ;;; a given event object.
@@ -330,6 +332,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 23.12.11 SAR Added robodoc info
+
 ;;; ****m* event/get-dynamics
 ;;; FUNCTION
 ;;; Get the dynamic marks from a given event object. If other non-dynamic
@@ -437,8 +440,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* event/setf amplitude
 ;;; SAR Fri Dec 23 16:54:59 EST 2011 Added robodoc info
+
+;;; ****m* event/setf amplitude
 ;;; FUNCTION
 ;;; Change the amplitude slot of a given event object and automatically add a
 ;;; mark to set a corresponding dynamic.
@@ -511,8 +515,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* event/setf tempo-change
 ;;; SAR Fri Dec 23 18:07:41 EST 2011 Added robodoc info
+
+;;; ****m* event/setf tempo-change
 ;;; FUNCTION
 ;;; Store the tempo when a change is made. 
 ;;;
@@ -689,8 +694,9 @@ data: 132
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* event/sharp-p
 ;;; SAR Fri Dec 23 18:37:45 EST 2011 Added Robodoc info
+
+;;; ****m* event/sharp-p
 ;;; FUNCTION
 ;;; Determine whether the pitch of a given event object has a sharp.
 ;;; 
@@ -735,8 +741,9 @@ data: 132
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* event/flat-p
 ;;; SAR Fri Dec 23 18:46:59 EST 2011 Added robodoc info
+
+;;; ****m* event/flat-p
 ;;; FUNCTION
 ;;; Determine whether the pitch of a given event object has a flat.
 ;;; 
@@ -781,8 +788,9 @@ data: 132
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* event/natural-p
 ;;; SAR Fri Dec 23 18:52:55 EST 2011 Added robodoc info
+
+;;; ****m* event/natural-p
 ;;; FUNCTION
 ;;; Determine whether the pitch of a given event object is a natural note (no
 ;;; sharps or flats).
@@ -829,6 +837,7 @@ data: 132
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Dec 23 20:04:27 EST 2011 Added robodoc info
+
 ;;; ****m* event/enharmonic
 ;;; FUNCTION
 ;;; Change the pitch of the pitch object within the given event object to its
@@ -947,6 +956,7 @@ EVENT: start-time: NIL, end-time: NIL,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Dec 23 20:32:23 EST 2011 Added robodoc info
+
 ;;; ****m* event/pitch-
 ;;; FUNCTION
 ;;; Determine the interval in half-steps between two pitches. 
@@ -985,8 +995,11 @@ EVENT: start-time: NIL, end-time: NIL,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
 ;;; NB could screw up timing info in a bar
+
 ;;; SAR Fri Dec 23 20:45:16 EST 2011 Added robodoc info
+
 ;;; ****m* event/inc-duration
 ;;; FUNCTION
 ;;; 
@@ -1018,6 +1031,7 @@ EVENT: start-time: NIL, end-time: NIL,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 09:03:26 EST 2011
+
 ;;; ****m* event/set-midi-time-sig
 ;;; FUNCTION
 ;;; Sets a MIDI time signature for the given event object. This must be a
@@ -1077,7 +1091,12 @@ data: (3 4)
 ;;; appear.
 
 ;;; SAR Sat Dec 24 09:14:50 EST 2011 Added robodoc info
+;;; SAR Sat Dec 31 09:22:16 EST 2011 Put date in DATE block
+
 ;;; ****m* event/add-arrow
+;;; DATE
+;;; 25 Jun 2011
+;;;
 ;;; FUNCTION
 ;;; Adds a start-arrow mark to the given event object and stores text that is
 ;;; to be attached to the start and end of the given arrow for LilyPond
@@ -1150,9 +1169,13 @@ event::add-arrow: add arrow to rest?
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 24.9.11
 ;;; SAR Fri Dec 30 11:21:12 EST 2011: Added robodoc info
+;;; SAR Sat Dec 31 09:22:57 EST 2011: Put date in DATE block
+
 ;;; ****m* event/add-trill
+;;; DATE
+;;; 24 Sep 2011 
+;;;
 ;;; FUNCTION
 ;;; Used for adding pitched trills to printed score output. Adds the necessary
 ;;; values to the MARKS and MARKS-BEFORE slots of a given event object.
@@ -1242,9 +1265,14 @@ rhythm::validate-mark: no CMN mark for BEG-TRILL-A (but adding anyway).
   (add-mark e (list 'trill-note trill-note)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 24.9.11
-;;; SAR Sat Dec 24 10:50:33 EST 2011
+
+;;; SAR Sat Dec 24 10:50:33 EST 2011: Added robodoc info
+;;; SAR Sat Dec 31 09:18:11 EST 2011: Added DATE back
+
 ;;; ****m* event/end-trill
+;;; DATE
+;;; 24 Sep 2011
+;;; 
 ;;; FUNCTION
 ;;; Adds an 'end-trill-a mark to the MARKS slot of the given event object.
 ;;; 
@@ -1305,11 +1333,13 @@ rhythm::validate-mark: no CMN mark for BEG-TRILL-A (but adding anyway).
 |#
 ;;; SYNOPSIS
 (defmethod has-mark-before ((e event) mark)
+;;; ****
   (member mark (marks-before e) :test #'equal))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 10:59:52 EST 2011 Added robodoc info
+
 ;;; ****m* event/add-clef
 ;;; FUNCTION
 ;;; Add a clef indication to the MARKS-BEFORE slot of the given event object. 
@@ -1371,6 +1401,7 @@ rhythm::validate-mark: no CMN mark for BEG-TRILL-A (but adding anyway).
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 11:16:49 EST 2011 Added robodoc info
+
 ;;; ****m* event/get-clef
 ;;; FUNCTION
 ;;; Return the symbol associated with the key CLEF in the MARKS-BEFORE slot of
@@ -1415,6 +1446,7 @@ rhythm::validate-mark: no CMN mark for BEG-TRILL-A (but adding anyway).
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 11:47:30 EST 2011
+
 ;;; ****m* event/delete-clefs
 ;;; FUNCTION
 ;;; Delete any clef names found in the MARKS-BEFORE slot of a given event
@@ -1485,6 +1517,7 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 12:00:55 EST 2011 Added robodoc info
+
 ;;; ****m* event/get-amplitude
 ;;; FUNCTION
 ;;; Return the amplitude attached to a given event object.
@@ -1534,6 +1567,7 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 12:13:59 EST 2011
+
 ;;; ****m* event/get-pitch-symbol
 ;;; FUNCTION
 ;;; Retrieve the pitch symbol (CM/CMN note-name notation) of a given event
@@ -1612,6 +1646,7 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 12:28:31 EST 2011 Added robodoc info
+
 ;;; ****m* event/no-accidental
 ;;; FUNCTION
 ;;; Sets the SHOW-ACCIDENTAL and ACCIDENTAL-IN-PARENTHESES slots of the given
@@ -1666,6 +1701,7 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 13:47:47 EST 2011 Added robodoc info
+
 ;;; ****m* event/get-dynamic
 ;;; FUNCTION
 ;;; 
@@ -1935,6 +1971,7 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 15:15:57 EST 2011 Added robodoc info
+
 ;;; ****m* event/is-chord
 ;;; FUNCTION
 ;;; Test to determine whether a given event object consists of a chord (as
@@ -1979,6 +2016,7 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 15:31:18 EST 2011 Added robodoc info
+
 ;;; ****m* event/is-single-pitch
 ;;; FUNCTION
 ;;; Test to see if an event object consists of a single pitch (as opposed to a
@@ -2025,6 +2063,7 @@ NIL
 ;;; could be dependent on the note or chord and not a fixed shift). 
 
 ;;; SAR Sat Dec 24 15:46:23 EST 2011 Added robodoc info
+
 ;;; ****m* event/transpose
 ;;; FUNCTION
 ;;; Transpose the pitch content of a given event object by a specified number
@@ -2136,6 +2175,7 @@ C4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 16:51:34 EST 2011 Added robodoc info
+
 ;;; ****m* event/set-written
 ;;; FUNCTION
 ;;; Set the written pitch (as opposed to sounding; i.e., for transposing
@@ -2197,6 +2237,7 @@ BF3
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 17:15:48 EST 2011 Added robodoc info
+
 ;;; ****m* event/delete-written
 ;;; FUNCTION
 ;;; Delete the contents of the WRITTEN-PITCH-OR-CHORD slot of a given event
@@ -2236,6 +2277,7 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 17:32:15 EST 2011 Added robodoc info
+
 ;;; ****m* event/lowest
 ;;; FUNCTION
 ;;; Get the lowest pitch (of a chord) in a given event object. If the given
@@ -2288,6 +2330,7 @@ data: C4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 19:08:03 EST 2011 Added robodoc info
+
 ;;; ****m* event/highest
 ;;; FUNCTION
 ;;; Get the highest pitch (of a chord) in a given event object. If the given
@@ -2340,6 +2383,7 @@ data: C4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 19:15:03 EST 2011 Added robodoc info
+
 ;;; ****m* event/event-distance
 ;;; FUNCTION
 ;;; Get the distance (interval) in semitones between the pitch level of one
@@ -2517,6 +2561,7 @@ data: C4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sun Dec 25 08:23:34 EST 2011 Added robodoc info
+
 ;;; ****m* event/force-rest
 ;;; FUNCTION
 ;;; Changes a given event object to a rest by setting both the PITCH-OR-CHORD
@@ -2572,9 +2617,12 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 20.8.11
-;;; SAR Sun Dec 25 08:50:52 EST 2011
+;;; SAR Sun Dec 25 08:50:52 EST 2011: Added robodoc info
+;;; SAR Sat Dec 31 09:20:00 EST 2011: Put date in DATE block
+
 ;;; ****m* event/force-artificial-harmonic
+;;; DATE 20 Aug 2011
+;;; 
 ;;; FUNCTION
 ;;; Change the pitch-or-chord content of a given event object such that the
 ;;; existing pitch will be notated as an artificial harmonic. 
@@ -2658,8 +2706,9 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****f* event/make-event
 ;;; SAR Thu Dec 22 17:53:00 EST 2011: Minor layout edits to MDE info 
+
+;;; ****f* event/make-event
 ;;; FUNCTION
 ;;; Create an event object for holding rhythm, pitch, and timing data.
 ;;; 
@@ -2816,8 +2865,9 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****f* event/make-rest
 ;;; Thu Dec 22 20:53:16 EST 2011 SAR: Added robodoc info
+
+;;; ****f* event/make-rest
 ;;; FUNCTION
 ;;; Create an event object that consists of a rest.
 ;;; 
@@ -2927,8 +2977,9 @@ W
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 
-;;; ****f* event/make-punctuation-events
 ;;; Thu Dec 22 20:53:16 EST 2011 SAR: Added robodoc info
+
+;;; ****f* event/make-punctuation-events
 ;;; FUNCTION
 ;;; Given a list of numbers, a rhythm, and a note name or list of note names,
 ;;; create a new list of single rhythms separated by rests. 
@@ -2988,8 +3039,9 @@ rest Q, rest Q, rest Q, rest Q, rest Q, rest Q, rest Q,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****f* event/make-events
 ;;; SAR Fri Dec 23 13:41:36 EST 2011: Added robodoc info
+
+;;; ****f* event/make-events
 ;;; FUNCTION
 ;;; Make a list of events using the specified data, whereby a list indicates a
 ;;; note (or chord) and its rhythm and a single datum is the rhythm of a rest.
@@ -3055,8 +3107,9 @@ G4 Q, rest E, rest S, (D4 FS4 A4) S,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****f* event/make-events2
 ;;; SAR Fri Dec 23 13:41:36 EST 2011: Added robodoc info
+
+;;; ****f* event/make-events2
 ;;; FUNCTION
 ;;; Like make-events, but rhythms and pitches are given in separate lists to
 ;;; allow for rhythms with ties using "+" etc. "Nil" or "r" given in the pitch
@@ -3121,8 +3174,9 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****f* event/event-p
 ;;; 23.12.11 SAR Added robodoc info
+
+;;; ****f* event/event-p
 ;;; FUNCTION
 ;;; Test to confirm that a given object is an event object.
 ;;; 
@@ -3187,8 +3241,9 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****f* event/wrap-events-list
 ;;; 23.12.11 SAR Added robodoc info
+
+;;; ****f* event/wrap-events-list
 ;;; FUNCTION
 ;;; Given a list of time-ascending events, wrap the list at a given point so we
 ;;; start there, go to the end, and keep going where the last event
@@ -3249,8 +3304,9 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****f* event/is-dynamic
 ;;; 23.12.11 SAR Added Robodoc info
+
+;;; ****f* event/is-dynamic
 ;;; FUNCTION
 ;;; Determine whether a specified symbol belongs to the list of predefined
 ;;; dynamic marks.

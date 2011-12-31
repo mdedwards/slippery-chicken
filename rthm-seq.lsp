@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 21:02:40 Fri Dec 30 2011 ICT
+;;; $$ Last modified: 09:46:33 Sat Dec 31 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1279,9 +1279,9 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 #|
 ;; Returns the new value of the DURATION slot
 (let ((rs (make-rthm-seq '((((2 4) q+e s s)
-			    ((e) q (e))
-			    ((3 8) s s e. s))
-			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+                            ((e) q (e))
+                            ((3 8) s s e. s))
+                           :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
   (add-bar rs (make-rthm-seq-bar '((5 8) e e+32 s. +q))))
 
 => 10.5
@@ -1289,9 +1289,9 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 ;; Apply the method and print the rhythms objects of the given rthm-seq object
 ;; to see the changes
 (let ((rs (make-rthm-seq '((((2 4) q+e s s)
-			    ((e) q (e))
-			    ((3 8) s s e. s))
-			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+                            ((e) q (e))
+                            ((3 8) s s e. s))
+                           :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
   (add-bar rs (make-rthm-seq-bar '((5 8) e e+32 s. +q)))
   (loop for b in (bars rs)
        collect (loop for r in (rhythms b) collect (data r))))
@@ -1301,9 +1301,9 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 ;; Apply the method and print the DATA slot of the update PITCH-SEQ-PALETTE
 ;; slot to see the new notes that have been automatically added
 (let ((rs (make-rthm-seq '((((2 4) q+e s s)
-			    ((e) q (e))
-			    ((3 8) s s e. s))
-			   :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
+                            ((e) q (e))
+                            ((3 8) s s e. s))
+                           :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
   (add-bar rs (make-rthm-seq-bar '((5 8) e e+32 s. +q)))
   (data (first (data (pitch-seq-palette rs)))))
 
@@ -1596,7 +1596,26 @@ rthm-seq NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; e.g. (get-multipliers '(e. s q e e) 's) -> (3 1 4 2 2)
+;;; ****m* rthm-seq/get-multipliers
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-multipliers ((rs rthm-seq) rthm &optional round ignore)
+;;; ****
   (declare (ignore ignore))
   (let ((durs (loop for bar in (bars rs) with rest-dur = 0.0 with result = '() 
                  appending

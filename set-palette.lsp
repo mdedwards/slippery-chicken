@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 17:47:30 Sat Jan 29 2011 ICT
+;;; $$ Last modified: 09:49:17 Sat Dec 31 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -83,8 +83,6 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 
 (eval-when (compile)
   (declaim (optimize (speed 3) (safety 1) (space 0) (debug 0))))
@@ -122,6 +120,24 @@
 
 ;;; todo: there's a bug here that tries to put all sets on one page!
 #+cmn
+;;; ****m* set-palette/cmn-display
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod cmn-display ((sp set-palette)
                         &key
                         ;; 10.3.10: display on 4 staves (treble+15 bass-15)?
@@ -139,6 +155,7 @@
                         (automatic-octave-signs nil)
                         (include-missing-chromatic t)
                         (include-missing-non-chromatic t))
+;;; ****
   ;; some defaults above are good for 2-staff display but not 4...
   (unless text-y-offset
       (setf text-y-offset (if 4stave 1.9 2.1)))
@@ -819,6 +836,7 @@
             (warn "set-palette::ring-mod-bass: can't get bass from ~a!"
                   freqs))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun ring-mod-bass-old (freqs &key (bass-octave 3) (low 'a0) (high 'g3)
                       (warn t) (return-notes nil))

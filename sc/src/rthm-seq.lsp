@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 09:46:33 Sat Dec 31 2011 ICT
+;;; $$ Last modified: 17:02:48 Sat Dec 31 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1257,6 +1257,7 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Dec 28 14:47:33 EST 2011: Added robodoc info
+;;; MDE Fri Dec 30 18:36:28 2011 -- added optional  psp
 ;;; ****m* rthm-seq/add-bar
 ;;; FUNCTION
 ;;; Add a rthm-seq-bar object to the end of a given rthm-seq object.
@@ -1311,7 +1312,6 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 
 |#
 ;;; SYNOPSIS
-;;; MDE Fri Dec 30 18:36:28 2011 -- added optional  psp
 (defmethod add-bar ((rs rthm-seq) (rsb rthm-seq-bar) &optional psp)
 ;;; ****
   ;; MDE Fri Dec 30 18:36:42 2011 -- check our psp has the right number of

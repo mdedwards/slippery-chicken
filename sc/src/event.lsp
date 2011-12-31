@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:37:07 Fri Dec 30 2011 ICT
+;;; $$ Last modified: 10:53:11 Sat Dec 31 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1278,9 +1278,34 @@ rhythm::validate-mark: no CMN mark for BEG-TRILL-A (but adding anyway).
 
 (defmethod add-mark-before ((e event) mark)
   ;; (print mark)
+  ;; MDE Sat Dec 31 10:51:37 2011 
+  (when (has-mark-before e mark)
+    (warn "rhythm::add-mark-before: ~a already present but adding again!: ~a"
+          mark e))
   (validate-mark mark)
   (push mark (marks-before e)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* event/has-mark-before
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod has-mark-before ((e event) mark)
+  (member mark (marks-before e) :test #'equal))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1341,6 +1366,7 @@ rhythm::validate-mark: no CMN mark for BEG-TRILL-A (but adding anyway).
   (let ((cl (list 'clef clef)))
     (unless (member cl (marks-before e) :test #'equal)
       (add-mark-before e cl))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

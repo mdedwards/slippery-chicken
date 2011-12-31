@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 12:25:27 Fri Dec 30 2011 ICT
+;;; $$ Last modified: 10:48:50 Sat Dec 31 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -910,7 +910,7 @@ NI
 ;;; SYNOPSIS
 (defmethod has-mark ((r rhythm) mark)
 ;;; ****
-  (member mark (marks r)))
+  (member mark (marks r) :test #'equal))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

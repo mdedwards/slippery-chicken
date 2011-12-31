@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 17:02:48 Sat Dec 31 2011 ICT
+;;; $$ Last modified: 17:07:31 Sat Dec 31 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1263,7 +1263,7 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 ;;; Add a rthm-seq-bar object to the end of a given rthm-seq object.
 ;;;
 ;;; NB: If the rthm-seq-bar object is added without specifying a
-;;; pitch-seq-palette, the method automatically adds notes to the existing
+;;; pitch-seq-palette, the method automatically adds data to the existing
 ;;; pitch-seq-palette. 
 ;;; 
 ;;; ARGUMENTS 

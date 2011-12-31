@@ -269,6 +269,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Tue Dec 27 19:55:22 EST 2011: Added robodoc info
+
 ;;; ****m* rthm-seq/get-nth-non-rest-rhythm
 ;;; FUNCTION
 ;;; Get the nth non-rest rhythm object stored in the given rthm-seq object. 
@@ -355,6 +356,7 @@ rthm-seq::get-nth-non-rest-rhythm: Couldn't get non-rest rhythm with index 11
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Tue Dec 27 20:13:33 EST 2011: Added robodoc info
+
 ;;; ****m* rthm-seq/get-nth-attack
 ;;; FUNCTION
 ;;; Gets the rhythm object for the nth note in a given rthm-seq object that
@@ -448,6 +450,7 @@ rthm-seq::get-nth-attack: Couldn't get attack with index 11
 ;;; NB this does not check that the right rhythms are now in the bar!
 
 ;;; SAR Tue Dec 27 20:38:03 EST 2011: Added robodoc info
+
 ;;; ****m* rthm-seq/set-nth-attack
 ;;; FUNCTION
 ;;; Sets the value of the nth rhythm object of a given rthm-seq object that
@@ -552,6 +555,7 @@ rthm-seq::set-nth-attack: Can't set attack 11 as only 8 notes in the rthm-seq
 ;;; not in the data slot. 
 
 ;;; SAR Tue Dec 27 21:24:15 EST 2011: Added robodoc info
+
 ;;; ****m* rthm-seq/set-nth-bar
 ;;; FUNCTION
 ;;; Change the contents of the nth rthm-seq-bar object in the given rthm-seq. 
@@ -602,6 +606,7 @@ data: ((2 4) (S) E (S) Q)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   
 ;;; SAR Wed Dec 28 09:51:25 EST 2011: Added robodoc info
+
 ;;; ****m* rthm-seq/get-nth-bar
 ;;; FUNCTION
 ;;; Get the nth rthm-seq-bar object from a given rthm-seq object.
@@ -653,6 +658,7 @@ WARNING: rthm-seq::rthm-seq-check-bounds: Illegal list reference: 11
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Dec 28 10:02:34 EST 2011: Added robodoc info
+
 ;;; ****m* rthm-seq/get-last-bar
 ;;; FUNCTION
 ;;; Get the last rthm-seq-bar object of a given rthm-seq object.
@@ -732,6 +738,7 @@ data: S
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Dec 28 10:27:21 EST 2011: Added robodoc info
+
 ;;; ****m* rthm-seq/get-last-event
 ;;; FUNCTION
 ;;; Get the last event object (or rhythm object) of a given rthm-seq-bar
@@ -795,6 +802,7 @@ data: S
 ;;; inversions if that was in the original 
 
 ;;; SAR Wed Dec 28 12:08:30 EST 2011: Added robodoc info
+
 ;;; ****m* rthm-seq/insert-bar
 ;;; FUNCTION
 ;;; Insert a rthm-seq-bar object into the given rthm-seq object and re-init
@@ -1161,6 +1169,7 @@ data: (3 8)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Dec 28 14:11:09 EST 2011: Added robodoc info
+
 ;;; ****m* rthm-seq/combine
 ;;; FUNCTION
 ;;; Combine two rthm-seqs into one, updating slots for the new object, which is
@@ -1258,6 +1267,7 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 
 ;;; SAR Wed Dec 28 14:47:33 EST 2011: Added robodoc info
 ;;; MDE Fri Dec 30 18:36:28 2011 -- added optional  psp
+
 ;;; ****m* rthm-seq/add-bar
 ;;; FUNCTION
 ;;; Add a rthm-seq-bar object to the end of a given rthm-seq object.
@@ -1531,6 +1541,7 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Dec 28 21:11:57 EST 2011: Added robodoc info
+
 ;;; ****m* rthm-seq/scale
 ;;; FUNCTION
 ;;; Scale the durations of the rhythm objects in a given rthm-seq object by the
@@ -1663,6 +1674,7 @@ rthm-seq NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Dec 28 16:35:40 EST 2011: Added robodoc info
+
 ;;; ****m* rthm-seq/get-rhythms
 ;;; FUNCTION
 ;;; Get the rhythm objects in a given rthm-seq object, contained in a list.
@@ -1808,9 +1820,14 @@ RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;  27.1.11. 
+;;;   
 ;;; SAR Wed Dec 28 19:24:23 EST 2011: Added robodoc info
+;;; SAR Sat Dec 31 09:26:36 EST 2011: Put date in DATE block
+
 ;;; ****m* rthm-seq/split
+;;; DATE
+;;; 27 Jan 2011
+;;; 
 ;;; FUNCTION
 ;;; Splits the rthm-seq-bar objects of a given rthm-seq object into multiple
 ;;; smaller rthm-seq-bar objects, creating a new rthm-seq object with a greater
@@ -2111,6 +2128,7 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
 ;;;       assoc-list--fails and causes an rsp to have num-data 0 
 ;;; 
 ;;; SAR Tue Dec 27 16:58:57 EST 2011: Added robodoc info
+
 ;;; ****f* rthm-seq/make-rthm-seq-from-unit-multipliers
 ;;; FUNCTION
 ;;; Given a rhythmic unit, e.g. 32, a list of multipliers (e.g. '(7 9 16)),
@@ -2249,8 +2267,6 @@ rthm-seq from-multipliers
               
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Jan 2010
-
 ;;; <fragments> is a list of rhythms with ids
 
 ;;; <references> is a list of ids into fragments: these will be collated to
@@ -2264,6 +2280,9 @@ rthm-seq from-multipliers
 
 ;;; SAR Tue Dec 27 18:54:58 EST 2011
 ;;; ****f* rthm-seq/make-rthm-seq-from-fragments
+;;; DATE
+;;; Jan 2010
+;;; 
 ;;; FUNCTION
 ;;; 
 ;;; 
@@ -2308,13 +2327,13 @@ rthm-seq from-multipliers
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 11.2.10: 
-;;;  Do this here
-;;; with bar being a list of rhythms and time-sig a list (e.g. (2 4)) that
-;;; those rhythms add up to
-
 ;;; SAR Tue Dec 27 19:04:04 EST 2011: Added robodoc info
+;;; SAR Sat Dec 31 09:24:15 EST 2011: Put date in DATE block
+
 ;;; ****f* rthm-seq/make-rhythms
+;;; DATE
+;;; 11 Feb 2010
+;;; 
 ;;; FUNCTION
 ;;; Initialize a group of rhythms, taking advantage of rthm-seq's ability to
 ;;; add tuplet and beaming info.

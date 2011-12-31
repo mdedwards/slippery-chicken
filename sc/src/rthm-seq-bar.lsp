@@ -328,8 +328,9 @@ MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not
 
 ;;;  
 
-;;; ****m* rthm-seq-bar/fill-with-rhythms
 ;;; 12.12.11 SAR: Added ROBODoc info
+
+;;; ****m* rthm-seq-bar/fill-with-rhythms
 ;;; FUNCTION
 ;;; Any rhythms in the rthm-seq-bar object will be deleted and then rhythm
 ;;; objects will be taken one by one from the <rhythms> argument until the bar
@@ -452,8 +453,8 @@ data: NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rthm-seq-bar/all-rests?
 ;;; 12.12.11 SAR: Modified example and tidied ROBODoc descrips.
+;;; ****m* rthm-seq-bar/all-rests?
 ;;; FUNCTION
 ;;; Test whether all rhythms in a rthm-seq-bar object are rests.
 ;;; 
@@ -881,8 +882,8 @@ data: ((2 4) Q E S S)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rthm-seq-bar/delete-beams
 ;;; 12.12.11 SAR: Added ROBODoc info
+;;; ****m* rthm-seq-bar/delete-beams
 ;;; FUNCTION
 ;;; Remove any beaming indications from the rthm-seq-bar object. 
 ;;;
@@ -952,8 +953,8 @@ data: ((2 4) - S S - S - S S S - S S)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rthm-seq-bar/delete-tuplets
 ;;; 12.12.11 SAR: Added ROBODoc info
+;;; ****m* rthm-seq-bar/delete-tuplets
 ;;; FUNCTION
 ;;; Removes all indications for tuplet brackets from a given rthm-seq-bar
 ;;; object. 
@@ -1032,8 +1033,9 @@ data: ((2 4) - S S - S - S S S - S S)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rthm-seq-bar/auto-put-tuplet-bracket-on-beats
 ;;; 12.12.11 SAR: Added ROBODoc info
+
+;;; ****m* rthm-seq-bar/auto-put-tuplet-bracket-on-beats
 ;;; FUNCTION
 ;;; Given a rthm-seq-bar object with tuplet rhythms and an indication of which
 ;;; tuplet value to place, this method will automatically add the appropriate
@@ -1126,8 +1128,8 @@ data: ((2 4) - S S - S - S S S - S S)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rthm-seq-bar/auto-beam
 ;;; 12.12.11 SAR: Added ROBODoc info
+;;; ****m* rthm-seq-bar/auto-beam
 ;;; FUNCTION
 ;;; Automatically add beaming indications to RHYTHMs of the given rthm-seq-bar
 ;;; object.
@@ -1385,8 +1387,8 @@ data: ((2 4) - S S - S - S S S - S S)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rthm-seq-bar/get-nth-non-rest-rhythm
 ;;; 12.12.11 SAR: Added ROBODoc info
+;;; ****m* rthm-seq-bar/get-nth-non-rest-rhythm
 ;;; FUNCTION
 ;;; Get the nth non-rest rhythm object stored in the given rthm-seq-bar.  
 ;;; 
@@ -1464,8 +1466,8 @@ rthm-seq-bar::get-nth-non-rest-rhythm: Couldn't get non-rest rhythm with index
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* rthm-seq-bar/get-nth-rest
 ;;; 12.12.11 SAR: Added ROBODoc info
+;;; ****m* rthm-seq-bar/get-nth-rest
 ;;; FUNCTION
 ;;; Gets the rhythm object of the nth rest in a given rthm-seq-bar.
 ;;; 
@@ -3377,8 +3379,14 @@ data: (2 4)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  27.1.11
+
 ;;; Wed Dec 14 18:04:01 GMT 2011 SAR: Added robodoc info
+;;; SAR Sat Dec 31 08:58:52 EST 2011: Added DATE back to robodoc info
+
 ;;; ****m* rthm-seq-bar/split
+;;; DATE
+;;; 27 Jan 2011
+;;;
 ;;; FUNCTION
 ;;; Splits a given rthm-seq-bar into multiple smaller rthm-seq-bar
 ;;; objects. This will only work if the given rthm-seq-bar object can be split
@@ -3505,9 +3513,13 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
           nil))))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 20.7.11 (Pula)
+;;; 
 ;;; SAR Mon Dec 26 12:41:17 EST 2011: Added robodoc info
+;;;
 ;;; ****m* rthm-seq-bar/set-written
+;;; DATE
+;;; 20 Jul 2011 (Pula)
+;;; 
 ;;; FUNCTION
 ;;; Set the written pitch (as opposed to sounding; i.e., for transposing
 ;;; instruments) of an event object within a given rthm-seq-bar object. The
@@ -3666,9 +3678,13 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 22.9.11 
 ;;; SAR Mon Dec 26 14:49:27 EST 2011: Added robodoc info
+;;; SAR Sat Dec 31 09:06:03 EST 2011: Added DATE block
+
 ;;; ****m* rthm-seq-bar/reset-8va
+;;; DATE
+;;; 22 Sep 2011 
+;;; 
 ;;; FUNCTION
 ;;; Reset the 8VA slots of all event ojbects within a given rthm-seq-object to
 ;;; 0 (no ottava/ottava bassa transposition).
@@ -3712,10 +3728,14 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
                    objects (not rhythms)."))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 23.9.11 
 
 ;;; SAR Mon Dec 26 19:34:55 EST 2011: Added robodoc info
+;;; SAR Sat Dec 31 09:06:51 EST 2011: Added DATE back
+
 ;;; ****m* rthm-seq-bar/set-8va
+;;; DATE
+;;; 23 Sep 2011 
+;;; 
 ;;; FUNCTION
 ;;; Set the 8VA (ottava) slots of the event objects within a given rthm-seq-bar 
 ;;; object. This number can be positive or negative. Only the values 1, 0 and
@@ -3841,8 +3861,8 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****f* rthm-seq-bar/make-rest-bar
 ;;; 13.12.11 SAR: Added ROBODoc info
+;;; ****f* rthm-seq-bar/make-rest-bar
 ;;; FUNCTION
 ;;; Make a rthm-seq-bar object that consists of a bar of rest.
 ;;; 

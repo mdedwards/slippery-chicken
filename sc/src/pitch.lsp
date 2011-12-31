@@ -1108,16 +1108,20 @@
 
 ;;; ****f* pitch/make-pitch
 ;;; FUNCTION
-;;; 
+;;; Create a pitch object, specifying at least a note as either a symbol or a
+;;; number. When the note is specified as a symbol it is treated as a note
+;;; name; when it is specified as a number, it is treated as a frequency.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A note, either as a alphanumeric note name or a numeric herz frequency. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :src-ref-pitch. 
+;;; - keyword argument :midi-channel. An integer indicating which MIDI channel
+;;; is to be used for playback of this pitch.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - A pitch object.
 ;;; 
 ;;; EXAMPLE
 #|

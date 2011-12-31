@@ -327,6 +327,7 @@
               (15 ((1 2 5 5 5 5 5 5 5 5 4 5 2 1 2) 
                    (2 1 5 1 5 1 6 5 1 5 2 5 1 2 6)))))
       (seqs-al nil))
+
   ;; ****f* rthm-seq-palette/create-psps-default
   ;; FUNCTION
   ;; create-psps-default
@@ -347,8 +348,9 @@
   ;; 
   ;; SYNOPSIS
   (defun create-psps-default (num-notes data-lists)
-    ;; (print data-lists)
     ;; ****
+    ;; (print data-lists)
+
     ;; 3.2.11 need to reinitialize our cscls the first time we call
     ;; create-psps, otherwise the only way to get the same piece each time is
     ;; to reload all sc source files i.e. restart lisp

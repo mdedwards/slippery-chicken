@@ -184,9 +184,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch-seq/get-notes
 ;;; FUNCTION
-;;; get-notes:
-;;; 
 ;;; This gets notes from the sets, limiting the notes used to the range of the
 ;;; instrument and any other ranges defined in the slippery-chicken class.  If
 ;;; either the instrument or set are missing it just gets the relative pitches
@@ -211,6 +210,7 @@
 ;;; a list of pitch objects
 (defmethod get-notes ((ps pitch-seq) instrument set hint-pitch limit-high
                       limit-low seq-num last-note-previous-seq)
+;;; ****
   (declare (ignore hint-pitch))
   ;; (print ps)
   ;; (print instrument)

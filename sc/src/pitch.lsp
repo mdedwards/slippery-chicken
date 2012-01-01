@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 08:08:09 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 13:02:54 Sun Jan  1 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -111,7 +111,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((i pitch) stream)
-  (format stream "~%PITCH: frequency: ~a, midi-note: ~a, midi-channel: ~d ~
+  (format stream "~%PITCH: frequency: ~,3f, midi-note: ~a, midi-channel: ~d ~
                   ~%       pitch-bend: ~a ~
                   ~%       degree: ~a, data-consistent: ~a, white-note: ~a~
                   ~%       nearest-chromatic: ~a~
@@ -789,6 +789,9 @@
         ;; (set-natural p)
         (set-white-note p)
         (setf (data p) (id p)
+              ;; MDE Sun Jan  1 13:02:37 2012 -- otherwise it's single float so
+              ;; causes comparison errors
+              (frequency p) (coerce (frequency p) 'double-float)
               ;; degree in the current scale
               (degree p) (round (freq-to-degree (frequency p)))
               (midi-note p) (note-to-midi

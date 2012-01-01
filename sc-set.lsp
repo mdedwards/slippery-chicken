@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 23:54:17 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 18:13:06 Sat Dec 31 2011 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -256,7 +256,35 @@
 ;;; times.  NB we assume the set is sorted.  See also make-stack in the
 ;;; complete-set class to make a stack from a simple list of pitch symbols.
 
+;;; ****m* sc-set/stack
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+(let ((set (make-sc-set '(c4 e4 g4))))
+  (print (stack set 1))
+  (stack set 3))
+SC-SET: auto-sort: T, used-notes: 
+...
+data: (F3 AF3 C4 E4 G4 B4 D5)
+**************
+SC-SET: auto-sort: T, used-notes: 
+...
+data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
+|#
+;;; SYNOPSIS
 (defmethod stack ((s sc-set) &optional (num-stacks 1) id)
+;;; ****
   (let* ((distances (get-interval-structure s))
          (degrees (get-degrees s))
          (result degrees))

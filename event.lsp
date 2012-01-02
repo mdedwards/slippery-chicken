@@ -335,18 +335,23 @@
 
 ;;; ****m* event/get-dynamics
 ;;; FUNCTION
-;;; Get the dynamic marks from a given event object. If other non-dynamic
-;;; events are also contained in the MARKS slot of the rhythm object within the
-;;; given event object, these are disregarded and only the dynamic marks are
-;;; returned.  
+;;; Get the list of dynamic marks from a given event object, assuming there are
+;;; multiple dynamics present. If other non-dynamic events are also contained
+;;; in the MARKS slot of the rhythm object within the given event object, these
+;;; are disregarded and only the dynamic marks are returned.  
+;;;
+;;; NB: This method is similar to the event::get-dynamic, but is intended for
+;;; use should multiple dynamics have somehow become attached to the same
+;;; event. The method event::get-dynamic is the method that should generally be
+;;; used.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; The dynamics stored in the MARKS slot of the rhythm object within the given
-;;; event object. NIL is returned if no dynamic marks are attached to the given
-;;; event object.
+;;; A list containing the dynamics stored in the MARKS slot of the rhythm
+;;; object within the given event object. NIL is returned if no dynamic marks
+;;; are attached to the given event object.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -368,6 +373,17 @@
 =>
 (PIZZ PPP)
 (PPP)
+
+;; Should multiple dynamics have become attached to the same event object,
+;; get-dynamics will return all dynamics present in the MARKS slot
+(let ((e (make-event 'c4 'q)))
+  (add-mark-once e 'pizz)
+  (add-mark-once e 'ppp)
+  (push 'fff (marks e))
+  (print (marks e))
+  (get-dynamics e))
+
+=> (FFF PPP)
 
 |#
 ;;; SYNOPSIS
@@ -1183,6 +1199,10 @@ event::add-arrow: add arrow to rest?
 ;;; NB: The main interface for adding trills by hand is
 ;;; slippery-chicken::trill, which is the class-method combination that
 ;;; should be accessed for this purpose.
+;;;
+;;; NB: This method will check to see if the specified trill marks are already
+;;; present in the MARKS and MARKS-BEFORE slots. If it is, the method will
+;;; print a warning but will add the specified trill marks anyway. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
@@ -1251,6 +1271,20 @@ rhythm::validate-mark: no CMN mark for BEG-TRILL-A (but adding anyway).
 
 (BEG-TRILL-A) 
 ((TRILL-NOTE D4))
+
+;; Adding a trill that is already there will result in a warning being printed
+;; but will add the mark anyway
+(let ((e (make-event 'c4 'q)))
+  (loop repeat 4 do (add-trill e 'd4))
+  (print (marks-before e))
+  (print (marks e)))
+
+=>
+WARNING:
+   rhythm::add-mark: (TRILL-NOTE D4) already present but adding again!: 
+[...]
+(BEG-TRILL-A BEG-TRILL-A BEG-TRILL-A BEG-TRILL-A) 
+((TRILL-NOTE D4) (TRILL-NOTE D4) (TRILL-NOTE D4) (TRILL-NOTE D4))
 
 |#
 ;;; SYNOPSIS
@@ -1700,20 +1734,42 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Sat Dec 24 13:47:47 EST 2011 Added robodoc info
+;;; SAR Sat Dec 31 12:32:24 EST 2011: Add robodoc info
 
 ;;; ****m* event/get-dynamic
 ;;; FUNCTION
-;;; 
+;;; Gets the dynamic marking attached to a given event object. 
+;;;
+;;; NB: This method is similar to the event::get-dynamics method, but assumes
+;;; that there is only one dynamic and returns that dynamic as a single symbol
+;;; rather than a list. If the user suspects that multiple dynamics may have
+;;; somehow have been added to the MARKS slot of the event class, use
+;;; get-dynamics to obtain a list of all dynamics in that slot; otherise, this
+;;; is the method that should be generally used.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; The symbol representing the dynamic if there is one attached to that event,
+;;; otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns just the dynamic marking from the MARKS list, as a symbol
+(let ((e (make-event 'c4 'q)))
+  (add-mark-once e 'ppp)
+  (add-mark-once e 'pizz)
+  (get-dynamic e))
+
+=> PPP
+
+;; The method returns NIL if there is no dynamic in the MARKS list
+(let ((e (make-event 'c4 'q)))
+  (add-mark-once e 'pizz)
+  (get-dynamic e))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS

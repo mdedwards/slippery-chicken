@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 15:28:18 Fri Dec 30 2011 ICT
+;;; $$ Last modified: 11:49:53 Mon Jan  2 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -321,9 +321,22 @@
 ;;; Sometimes a series of calculations ends up with floating-point errors
 ;;; making your variable a little smaller or larger than you expect.  So use
 ;;; this test instead of =
+;;; MDE Mon Jan  2 11:30:32 2012 -- the following returns NIL!
+;;; (equal-within-tolerance
+;;;   (coerce 261.63 'short-float) 
+;;;   (coerce 261.63 'double-float))
+;;; might be best at some point to calculate with the max relative error (%)
+;;; but for now we'll just have to fiddle tolerance (epsilon) e.g.
+;;; (equal-within-tolerance
+;;;   (coerce 261.63 'short-float) 
+;;;   (coerce 261.63 'double-float) 0.00001) => T
 
-(defun equal-within-tolerance (a b &optional (tolerance 0.000001))
+
+(defun equal-within-tolerance (a b &optional (tolerance 0.000001d0))
+  ;; BTW coercing a and b to 'double-float doesn't help if they are of
+  ;; different float types to begin with.
   (<= (abs (- a b)) tolerance))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

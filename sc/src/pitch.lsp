@@ -222,21 +222,41 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Jan  2 11:59:06 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/delete-marks
 ;;; FUNCTION
-;;; 
+;;; Delete all marks stored in the MARKS slot of the given pitch object and
+;;; reset the slot to NIL.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A pitch object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Always returns NIL
 ;;; 
 ;;; EXAMPLE
 #|
+;; Add two marks, then delete them. The method returns NIL
+(let ((p (make-pitch 'c4)))
+  (add-mark p 'pizz)
+  (add-mark p 'a)
+  (delete-marks p))
+
+=> NIL
+
+;; Add two marks and print the MARKS slot to see the changes. Then apply the
+;; delete-marks method and print the MARKS slot to see the changes.
+(let ((p (make-pitch 'c4)))
+  (add-mark p 'pizz)
+  (add-mark p 'a)
+  (print (marks p))
+  (delete-marks p)
+  (print (marks p)))
+
+=> 
+(A PIZZ) 
+NIL 
 
 |#
 ;;; SYNOPSIS
@@ -246,26 +266,105 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Semitones can be fractional.  Returns a new pitch with make-pitch rather
-;;; than altering the current pitch object.  
 ;;; the ignore fields are there because of the transpose method in tl-set,
 ;;; chord and event.  
 
+;;; SAR Mon Jan  2 12:52:40 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/transpose
 ;;; FUNCTION
-;;; 
+;;; Transpose the pitch information (frequency, note-name, midi-note etc.) of a
+;;; given pitch object by a specified number of semitones. The number of
+;;; semitones specified can be fractional; however, all fractional values will
+;;; be rounded to the nearest quarter-tone frequency.
+;;;
+;;; NB: This method returns a new pitch object rather than altering the values
+;;; of the current pitch object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A pitch object.
+;;; - A number representing the number of semitones to be transposed, and which
+;;; can be fractional.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword object :as-symbol. T or NIL to indicate whether the method is to
+;;; return an entire pitch object or just a note-name symbol of the new
+;;; pitch. NIL = a new pitch object. Default = NIL.
+;;; - keyword object :package. The package in which the transposition is
+;;; performed. Defaults to :sc. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A pitch object by default.
+;;;
+;;; If the :as-symbol argument is set to T, then a note-name symbol is returned
+;;; instead. 
 ;;; 
 ;;; EXAMPLE
 #|
+;; By default the method returns a pitch object
+(let ((p (make-pitch 'c4)))
+  (transpose p 2))
+
+=> 
+PITCH: frequency: 293.665, midi-note: 62, midi-channel: 0 
+       pitch-bend: 0.0 
+       degree: 124, data-consistent: T, white-note: D4
+       nearest-chromatic: D4
+       src: 1.1224620342254639, src-ref-pitch: C4, score-note: D4 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 4, c5ths: 0, no-8ve: D, no-8ve-no-acc: D
+       show-accidental: T, white-degree: 29, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: D4, tag: NIL, 
+data: D4
+
+;; Setting the :as-symbol keyword argument to T returns just the note-name
+;; symbol of the new pitch instead
+(let ((p (make-pitch 'c4)))
+  (transpose p 2 :as-symbol t))
+
+=> D4
+
+;; The semitones argument can be set to a decimal-point fraction, which may
+;; result in quarter-tone pitch values being returned
+(let ((p (make-pitch 'c4)))
+  (transpose p 2.5))
+
+=> 
+PITCH: frequency: 302.270, midi-note: 62, midi-channel: 0 
+       pitch-bend: 0.4999996689937518 
+       degree: 125, data-consistent: T, white-note: D4
+       nearest-chromatic: D4
+       src: 1.1553527116775513, src-ref-pitch: C4, score-note: DS4 
+       qtr-sharp: 1, qtr-flat: NIL, qtr-tone: 1,  
+       micro-tone: T, 
+       sharp: NIL, flat: NIL, natural: NIL, 
+       octave: 4, c5ths: 0, no-8ve: DQS, no-8ve-no-acc: D
+       show-accidental: T, white-degree: 29, 
+       accidental: QS, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: DQS4, tag: NIL, 
+data: DQS4
+
+;; Fractional semitone arguments are automatically rounded to the nearest
+;; quarter-tone, causing x.5 and x.7, for example, to return the same result,
+;; while x.3 and x.1 will return the same value as the given integer
+(let ((p (make-pitch 'c4)))
+  (print (transpose p 2 :as-symbol t))
+  (print (loop for s from 0 to 4 
+	    collect (transpose p (+ 2 (* s .1)) :as-symbol t)))
+  (print (loop for s from 5 to 9
+	    collect (transpose p (+ 2 (* s .1)) :as-symbol t))))
+
+=>
+D4 
+(D4 D4 D4 D4 D4) 
+(DQS4 DQS4 DQS4 DQS4 DQS4)
 
 |#
 ;;; SYNOPSIS
@@ -293,23 +392,53 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Rounds to the nearest chromatic (MIDI) pitch.
+;;; SAR Mon Jan  2 13:44:14 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/pitch-round
 ;;; FUNCTION
-;;; 
+;;; Rounds the value of a specified pitch object to the nearest chromatic
+;;; semitone (non-microtonal MIDI) pitch.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A pitch object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword object :as-symbol. T or NIL to indicate whether the method is to
+;;; return an entire pitch object or just a note-name symbol of the new
+;;; pitch. NIL = a new pitch object. Default = NIL.
+;;; - keyword object :package. The package in which the transposition is
+;;; performed. Defaults to :sc. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A pitch object by default.
+;;;
+;;; If the :as-symbol argument is set to T, then a note-name symbol is returned
+;;; instead. 
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns a pitch object by default; here an example rounding a quarter-tone
+;;; note-name symbol to the nearest chromatic pitch
+(let ((p (make-pitch 'CQS4)))
+  (pitch-round p))
+
+=> 
+PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
+[...]
+NAMED-OBJECT: id: C4, tag: NIL, 
+data: C4
+
+;; Also rounds frequencies to the nearest chromatic pitch. This example first
+;; prints the original values automatically stored with frequency 269.0
+;; (rounded by default to the nearest quarter-tone), then the new value rounded
+;; to the nearest chromatic semitone
+(let ((p (make-pitch 269.0)))
+  (print (data p))
+  (print (pitch-round p :as-symbol t)))
+
+=>
+CQS4 
+C4 
 
 |#
 ;;; SYNOPSIS
@@ -337,21 +466,62 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Jan  2 14:03:51 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/transpose-to-octave
 ;;; FUNCTION
-;;; 
+;;; Transpose the values of a given pitch object to a specified octave.
+;;;
+;;; NB: This method creates a new pitch object rather than replacing the values
+;;; of the original.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A pitch object.
+;;; - A number indicating the new octave.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword object :as-symbol. T or NIL to indicate whether the method is to
+;;; return an entire pitch object or just a note-name symbol of the new
+;;; pitch. NIL = a new pitch object. Default = NIL.
+;;; - keyword object :package. The package in which the transposition is
+;;; performed. Defaults to :sc. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A pitch object by default.
+;;;
+;;; If the :as-symbol argument is set to T, then a note-name symbol is returned
+;;; instead. 
 ;;; 
 ;;; EXAMPLE
 #|
+;; Transpose the values of a pitch object containing middle-C (octave 4) to the
+;;; C of the treble clef (octave 5)
+(let ((p (make-pitch 'c4)))
+  (transpose-to-octave p 5))
+
+=> 
+PITCH: frequency: 523.251, midi-note: 72, midi-channel: 0 
+       pitch-bend: 0.0 
+       degree: 144, data-consistent: T, white-note: C5
+       nearest-chromatic: C5
+       src: 2.0, src-ref-pitch: C4, score-note: C5 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 5, c5ths: 0, no-8ve: C, no-8ve-no-acc: C
+       show-accidental: T, white-degree: 35, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: C5, tag: NIL, 
+data: C5
+
+;; Setting the :as-symbol argument to T returns a note-name symbol instead of a
+;; pitch object
+(let ((p (make-pitch 'c4)))
+  (transpose-to-octave p 5 :as-symbol t))
+
+=> C5
 
 |#
 ;;; SYNOPSIS
@@ -368,21 +538,77 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Jan  2 14:14:56 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/pitch=
 ;;; FUNCTION
+;;; Determines if the note-name and chromatic semtione MIDI values of two
+;;; specified pitch objects are the same.
+;;;
+;;; By default, this method returns NIL when comparing enharmonic pitches. This
+;;; can behavior can be changed by setting the optional argument to T, upon
+;;; which enharmonic pitches are considered equal.
+;;;
+;;; NB: This method cannot be used to compare pitch objects created using
+;;; frequencies with those created using note-names. Use the method
+;;; pitch::note= for that procedure instead.
 ;;; 
+;;; NB: Pitch objects created using frequencies are only considered equal if
+;;; their frequency values are within 0.000001 of each other.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A first pitch object.
+;;; - A second pitch object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; T or NIL to indicate whether or not enharmonic pitches are considered
+;;; equal. T = enharmonic pitches are considered equal. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T if the values of the two specified pitch objects are equal, otherwise
+;;; NIL. 
 ;;; 
 ;;; EXAMPLE
 #|
+;; Comparison of equal pitch objects created using note-name symbols returns T 
+(let ((p1 (make-pitch 'C4))
+      (p2 (make-pitch 'C4)))
+  (pitch= p1 p2))
+
+=> T 
+
+;; Comparison of unequal pitch objects created using note-name symbols returns
+NIL 
+(let ((p1 (make-pitch 'C4))
+      (p2 (make-pitch 'D4)))
+  (pitch= p1 p2))
+
+=> NIL
+
+;; Comparison of enharmonically equivalent pitch objects returns NIL by default 
+;; Comparison of equal pitch objects created using note-name symbols returns T 
+(let ((p1 (make-pitch 'CS4))
+      (p2 (make-pitch 'DF4)))
+  (pitch= p1 p2))
+
+=> NIL
+
+;; Comparison of enharmonically equivalent pitch objects return T when the
+;; optional argument is set to T
+;; Comparison of equal pitch objects created using note-name symbols returns T 
+(let ((p1 (make-pitch 'C4))
+      (p2 (make-pitch 'C4)))
+  (pitch= p1 p2 t))
+
+=> T
+
+;; Comparison of pitch objects created using frequencies with those created
+;; using note-name symbols return NIL
+(let ((p1 (make-pitch 'C4))
+      (p2 (make-pitch 261.63)))
+  (pitch= p1 p2))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -395,25 +621,63 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Jan  2 17:05:31 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/pitch-class-eq
+;;; DATE 
+;;; 14 Aug 2010
+;;; 
 ;;; FUNCTION
-;;; pitch-class-eq:
-;;; test whether two pitches are of the same pitch class i.e. both Cs, or F#s,
-;;; irrespective of octave. 
+;;; Test whether the values of two pitch objects are of the same pitch class,
+;;; i.e. both Cs, or F#s,irrespective of octave. 
 ;;; 
 ;;; ARGUMENTS 
-;;; - pitch 1
-;;; - pitch 2
-;;; - whether to treat enharmonics as equivalents e.g. B# and C
+;;; - A first pitch object.
+;;; - A second pitch object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; T or NIL to indicate whether or not enharmonic pitches are considered
+;;; equal. T = enharmonic pitches are considered equal. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
-;;; t or nil
+;;; T if the values of the two pitch objects are of the same pitch class,
+;;; otherwise NIL.
 ;;; 
 ;;; EXAMPLE
-;;; (pitch-class-eq (make-pitch 'c3) (make-pitch 'bs8) t) -> T
-;;; 
-;;; DATE 14.8.2010
-;;; 
+#|
+;; A comparison of two pitch objects with values of the same pitch class
+;;; returns T
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'c5)))
+  (pitch-class-eq p1 p2))
+
+=> T
+
+;; A comparison of two pitch objects with values of differing pitch classes
+;; returns NIL
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'cs5)))
+  (pitch-class-eq p1 p2))
+
+=> NIL
+
+;; A comparison of two pitch objects with enharmonically equivalent pitch
+;; classes returns NIL by default
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'bs4)))
+  (pitch-class-eq p1 p2))
+
+=> NIL
+
+;; Setting the optional argument to T causes the method to consider
+;; enharmonically equivalent pitch classes equal
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'bs4)))
+  (pitch-class-eq p1 p2 t))
+
+=> T
+
+|#
 ;;; SYNOPSIS
 (defmethod pitch-class-eq ((p1 pitch) (p2 pitch)
                            &optional enharmonics-are-equal)
@@ -423,22 +687,47 @@
            (eq (no-8ve p1) (no-8ve (enharmonic p2))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; this really sees if the note symbol (data slot) is equal
+
+;;; SAR Mon Jan  2 18:23:01 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/note=
 ;;; FUNCTION
-;;; 
+;;; Tests to see the note-name symbols (values in the DATA slots) of two given
+;;; pitch objects are equal. 
+;;;
+;;; NB: This method allows for the comparison of pitch objects created using
+;;; frequency numbers and those created using note-name symbols.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A first pitch object.
+;;; - A second pitch object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T if the note-name symbols of the given pitch objects are equal, otherwise
+;;; NIL.  
 ;;; 
 ;;; EXAMPLE
 #|
+;; Two pitch objects with equal note-name symbols return T
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'c4)))
+  (note= p1 p2))
+
+=> T
+;; Two pitch objects with unequal note-name symbols return F
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'd4)))
+  (note= p1 p2))
+
+=> NIL
+
+;; Pitch objects created using frequency numbers and those created using
+;; note-name symbols can be effectively compared using this method
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 261.63)))
+  (note= p1 p2))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -448,21 +737,69 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Jan  2 18:33:30 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/pitch<
 ;;; FUNCTION
-;;; 
+;;; Test to see if the frequency value of one specified pitch object is lesser
+;;; than that of a second.
+;;;
+;;; NB: Due to the fact that a given note-name may encompass several
+;;; fractionally different frequencies (e.g. both 261.626 and 261.627 are both
+;;; considered to be C4), this method is not suitable for comparing pitch
+;;; objects of which one was created using a frequency and the other was
+;;; created using a note-name symbol.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A pitch object.
+;;; - A second pitch object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the frequency value of the first pitch object is lesser than
+;;; that of the second, otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; T is returned when the frequency of the first pitch is lesser than that of
+;; the second
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'd4)))
+  (pitch< p1 p2))
+
+=> T
+
+;; NIL is returned when the frequency of the first pitch is not lesser than
+;; that of the second
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'd4)))
+  (pitch< p2 p1))
+
+=> NIL
+
+;; Equivalent pitches return NIL
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'c4)))
+  (pitch< p2 p1))
+
+=> NIL
+
+;; This method can be effectively used to compare the frequency values of two
+;; pitch objects that were both created using frequency numbers
+(let ((p1 (make-pitch 261.63))
+      (p2 (make-pitch 293.66)))
+  (pitch< p1 p2))
+
+=> T  
+
+;; Due to sc's numerical accuracy, this method is not suitable for comparing
+;; pitch objects of which one was created using a note-name symbol and the
+;; other was created using a numerical frequency value. Such comparisons may
+;; return misleading results.
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 261.63)))
+  (pitch< p1 p2))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -893,19 +1230,37 @@
 
 ;;; ****m* pitch/add-mark
 ;;; FUNCTION
-;;; 
+;;; Add a specified mark to the MARKS slot of the given pitch object.
+;;;
+;;; NB: The add-mark method does not check first to see whether the mark being
+;;; added is a legitimate mark, nor does it check to see whther the mark has
+;;; already been added.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A pitch object.
+;;; - A symbol that is a mark.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list. The method returns the entire contents of the given pitch object's
+;;; MARKS slot as a list.
 ;;; 
 ;;; EXAMPLE
 #|
+;; By default the MARKS slot of a newly created pitch object is set to NIL
+(let ((p (make-pitch 'c4)))
+  (marks p))
+
+=> NIL
+
+;; Add two marks and print the contents of the given pitch object's MARKS slot
+;; to see the changes
+(let ((p (make-pitch 'c4)))
+  (add-mark p 'pizz)
+  (add-mark p 'a)
+  (print (marks p)))  
+
+=>
+(A PIZZ)
 
 |#
 ;;; SYNOPSIS

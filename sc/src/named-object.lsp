@@ -11,8 +11,21 @@
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
-;;; Purpose:          implementation of the named-object class which is the
+;;; Purpose:          Implementation of the named-object class which is the
 ;;;                   base class for all of the slippery-chicken classes.
+;;;
+;;;                   The data slot of the named-object class and its
+;;;                   subclasses generally holds the original data passed when
+;;;                   creating the object. In anything but the simplest of
+;;;                   classes this may quickly become out-of-date as the object
+;;;                   is manipulated, but is nevertheless retained so that a)
+;;;                   the user can see what data was used to create an object,
+;;;                   and b) the user can derive new objects from an object's
+;;;                   original data. Data relevant to a specific subclass is
+;;;                   often stored in slots other than :data, e.g. bars,
+;;;                   rhythms, etc. so the user should not be alarmed if the
+;;;                   data slot itself does not seem to reflect changes made to
+;;;                   an object.   
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
@@ -169,6 +182,8 @@
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 
 (defun make-named-object (id data &optional tag)
   (make-instance 'named-object :id id :data data :tag tag))

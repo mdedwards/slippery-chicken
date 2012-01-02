@@ -1107,19 +1107,22 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; If note is a symbol, treat it as a note-name, when a number, as a freq.
+;;; SAR Sat Dec 31 12:19:46 EST 2011: Added robodoc info
 
 ;;; ****f* pitch/make-pitch
 ;;; FUNCTION
-;;; Create a pitch object, specifying at least a note as either a symbol or a
-;;; number. When the note is specified as a symbol it is treated as a note
-;;; name; when it is specified as a number, it is treated as a frequency.
+;;; Create a pitch object, specifying a note as either a symbol or a
+;;; number. When the note is specified as a symbol, it is treated as a
+;;; note-name; when it is specified as a number, it is treated as a frequency
+;;; in hertz.
 ;;; 
 ;;; ARGUMENTS
-;;; - A note, either as a alphanumeric note name or a numeric herz frequency. 
+;;; - A note, either as a alphanumeric note name or a numeric hertz frequency.  
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :src-ref-pitch. 
+;;; - keyword argument :src-ref-pitch. A note-name symbol indicating the
+;;; perceived fundamental pitch of a given digital audio file, to allow for
+;;; later transposition of that audio file using note-names.
 ;;; - keyword argument :midi-channel. An integer indicating which MIDI channel
 ;;; is to be used for playback of this pitch.
 ;;; 
@@ -1128,6 +1131,44 @@
 ;;; 
 ;;; EXAMPLE
 #|
+;; Make a pitch object using a note-name symbol
+(make-pitch 'c4)
+
+=> 
+PITCH: frequency: 261.6255569458008, midi-note: 60, midi-channel: 0 
+       pitch-bend: 0.0 
+       degree: 120, data-consistent: T, white-note: C4
+       nearest-chromatic: C4
+       src: 1.0, src-ref-pitch: C4, score-note: C4 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 4, c5ths: 0, no-8ve: C, no-8ve-no-acc: C
+       show-accidental: T, white-degree: 28, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: C4, tag: NIL, 
+data: C4
+
+;; Make a pitch object using a frequency in hertz and including a value for the
+;; keyword argument :midi-channel, then print the DATA and MIDI-NOTE slots to
+;; see the method's automatic conversion for those value
+(let ((p (make-pitch 261.63 :midi-channel 1)))
+  (print (data p))
+  (print (midi-note p)))
+
+=>
+C4
+60
+
+;; Make a pitch object for use with a digital audio file that includes a
+;; note-name symbol for the sample-rate-conversion reference pitch; then print
+;; the SRC slot of the resulting pitch object
+(let ((p (make-pitch 'c4 :src-ref-pitch 'a4)))
+  (src p))
+
+=> 0.5946035487490308
 
 |#
 ;;; SYNOPSIS

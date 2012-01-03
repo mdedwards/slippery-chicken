@@ -208,6 +208,12 @@
 ;;; 
 ;;; RETURN VALUE  
 ;;; a list of pitch objects
+;;;
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-notes ((ps pitch-seq) instrument set hint-pitch limit-high
                       limit-low seq-num last-note-previous-seq)
 ;;; ****
@@ -423,6 +429,7 @@
                 clef)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 #|
 ;;; No longer necessary, taken care of in get-relative-notes.
 (defmethod relative-int-to-note (int (ps pitch-seq))
@@ -456,25 +463,75 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; id-data can either be a 2-element list whereupon the first element is the
-;; name of the pitch-seq given as the second element; or a 1-element list
-;; whereupon id will be used to create the name of the pitch-seq.
+;;; SAR Tue Jan  3 17:56:59 EST 2012: Added robodoc info
 
 ;;; ****f* pitch-seq/make-pitch-seq
 ;;; FUNCTION
-;;; 
+;;; Create a pitch-seq object.
+;;;
+;;; This function can be either called with one argument, consisting of a
+;;; two-item list, in which the first item is the pitch-seq ID and the second
+;;; is a list of numbers representing the pitch curve of the intended pitch
+;;; sequence; or it can be created with two arguments, the first of which being
+;;; the list of numbers representing the pitch curve and the second being the
+;;; pitch-seq's ID.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A two-item list, of which the first item is a symbol to be used as the
+;;; object's ID, and the second is a list of integers representing the general
+;;; contour of the pitch sequence.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - If the optional argument format is used, the first argument is to be only
+;;; a list of numbers representing the general contour of the pitch sequence,
+;;; and the second is to be a symbol for the pitch-seq object's ID.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - A pitch-seq object.
 ;;; 
 ;;; EXAMPLE
+
 #|
+
+;; The first creation option is using one argument that is a two-item list,
+;; whereby the first item is a symbol to be used as the pitch-seq object's ID
+;; and the second is a list of numbers representing the general contour of the
+;; pitch sequence. 
+(make-pitch-seq '(pseq1 (1 2 1 1 3)))
+
+=>
+PITCH-SEQ: notes: NIL
+           highest: 3
+           lowest: 1
+           original-data: (1 2 1 1 3)
+           user-id: T
+           instruments: NIL
+           relative-notes: (not printed for sake of brevity)
+           relative-notes-length: 25
+SCLIST: sclist-length: 5, bounds-alert: T, copy: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: PSEQ1, tag: NIL, 
+data: (1 2 1 1 3)
+
+;; The second creation option uses two arguments, the first of which is a list
+;; of numbers representing the general contour of the pitch sequence, the
+;; second of which is a symbol which will be used as the pith-seq object's ID. 
+(make-pitch-seq '(2 1 1 3 1) 'pseq2)
+
+=> 
+PITCH-SEQ: notes: NIL
+           highest: 3
+           lowest: 1
+           original-data: (2 1 1 3 1)
+           user-id: NIL
+           instruments: NIL
+           relative-notes: (not printed for sake of brevity)
+           relative-notes-length: 25
+SCLIST: sclist-length: 5, bounds-alert: T, copy: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: PSEQ2, tag: NIL, 
+data: (2 1 1 3 1)
+
 
 |#
 ;;; SYNOPSIS

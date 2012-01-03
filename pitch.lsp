@@ -1043,7 +1043,9 @@ NIL
 ;;; the second and third specified pitch objects, otherwise NIL.
 ;;; 
 ;;; EXAMPLE
+
 #|
+
 ;; The method returns T when the frequency value of the first pitch object
 ;; falls between that of the second and third pitch objects.
 (let ((p (make-pitch 'c4))
@@ -1089,21 +1091,54 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan  3 08:34:55 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/pitch-min
 ;;; FUNCTION
-;;; 
+;;; Determine which of two specified pitch objects has the lower frequency
+;;; value and return that pitch object.
+;;;
+;;; NB: If the two frequency values are equal, the method returns a pitch
+;;; object equivalent to both.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A first pitch object.
+;;; - A second ptich object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A pitch object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Compare two pitch objects and return the one with the lower frequency value 
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'd4)))
+  (pitch-min p1 p2))
+
+=> 
+PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
+       pitch-bend: 0.0 
+       degree: 120, data-consistent: T, white-note: C4
+       nearest-chromatic: C4
+       src: 1.0, src-ref-pitch: C4, score-note: C4 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 4, c5ths: 0, no-8ve: C, no-8ve-no-acc: C
+       show-accidental: T, white-degree: 28, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: C4, tag: NIL, 
+data: C4
+
+;; Comparing two pitch objects with equal frequency values returns a pitch
+;; object equal to both
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'c4)))
+  (data (pitch-min p1 p2)))
+
+=> C4
 
 |#
 ;;; SYNOPSIS
@@ -1115,21 +1150,55 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan  3 09:05:50 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/pitch-max
 ;;; FUNCTION
-;;; 
+;;; Determine which of two specified pitch objects has the greater frequency 
+;;; value and return that pitch object.
+;;;
+;;; NB: If the two frequency values are equal, the method returns a pitch
+;;; object equivalent to both.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A first pitch object.
+;;; - A second ptich object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A pitch object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Compare two pitch objects and return the one with the greater frequency
+;;; value 
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'd4)))
+  (pitch-max p1 p2))
+
+=> 
+PITCH: frequency: 293.665, midi-note: 62, midi-channel: 0 
+       pitch-bend: 0.0 
+       degree: 124, data-consistent: T, white-note: D4
+       nearest-chromatic: D4
+       src: 1.1224620342254639, src-ref-pitch: C4, score-note: D4 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 4, c5ths: 0, no-8ve: D, no-8ve-no-acc: D
+       show-accidental: T, white-degree: 29, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: D4, tag: NIL, 
+data: D4
+
+;; Comparing two pitch objects with equal frequency values returns a pitch
+;; object equal to both
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'c4)))
+  (data (pitch-max p1 p2)))
+
+=> C4
 
 |#
 ;;; SYNOPSIS
@@ -1141,22 +1210,40 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; whole semitone subtraction 
+;;; SAR Tue Jan  3 09:20:52 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/midi-
 ;;; FUNCTION
-;;; 
+;;; Determine the difference in number of semitones between the values of the
+;;; MIDI values of two given pitch objects. 
+;;;
+;;; NB: This method does not return absolute difference; instead, it may return
+;;; positive or negative results depending on the order in which the pitch
+;;; objects are given. (This will aid in revealing directionality.)
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A first pitch object.
+;;; - A second pitch object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a number. The number may be positive or negative.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Subtracting the lower pitch object from the higher returns a positive number
+(let ((p1 (make-pitch 'd4))
+      (p2 (make-pitch 'c4)))
+  (midi- p1 p2))
+
+=> 2
+
+;; Reversing the order in which the pitch objects are entered may return a
+;; negative number
+(let ((p1 (make-pitch 'd4))
+      (p2 (make-pitch 'c4)))
+  (midi- p2 p1))
+
+=> -2
 
 |#
 ;;; SYNOPSIS
@@ -1166,21 +1253,44 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan  3 09:32:33 EST 2012: Added robodoc info
+ 
 ;;; ****m* pitch/degree-
 ;;; FUNCTION
+;;; Determine the difference between the quarter-tone degree of one pitch
+;;; object and that of a second. 
+;;;
+;;; NB: This method does not return absolute difference; instead, it may return
+;;; positive or negative results depending on the order in which the pitch
+;;; objects are given. (This will aid in revealing directionality.)
 ;;; 
-;;; 
+;;; NB: The DEGREE slot is measured in quarter-tones, not semitones. Thus,
+;;; middle-C is degree 120, not 60, and the difference between two consecutive
+;;; semitones is 2, not 1.
+;;;
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A first pitch object.
+;;; - A second pitch object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a number. The number may be positive or negative.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Subtracting the lower pitch object from the higher returns a positive number
+(let ((p1 (make-pitch 'd4))
+      (p2 (make-pitch 'c4)))
+  (degree- p1 p2))
+
+=> 4
+
+;; Reversing the order in which the pitch objects are entered may return a
+;; negative number
+(let ((p1 (make-pitch 'd4))
+      (p2 (make-pitch 'c4)))
+  (degree- p2 p1))
+
+=> -4
 
 |#
 ;;; SYNOPSIS

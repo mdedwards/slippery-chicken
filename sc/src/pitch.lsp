@@ -1435,21 +1435,48 @@ data: D4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan  3 10:22:16 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/set-midi-channel
 ;;; FUNCTION
+;;; Set the MIDI-CHANNEL slot of the given pitch object. 
+;;;
+;;; The method takes two mandatory arguments in addition to the given pitch
+;;; object, the first being the MIDI-channel used for non-microtonal pitch
+;;; objects, the second that used for microtonal pitch objects. 
 ;;; 
+;;; NB: The pitch object only has one MIDI-CHANNEL slot, and determines whether
+;;; that slot is set to the specfied non-microtonal or microtonal midi-channel
+;;; argument based on whether or not the pitch of the given pitch object is
+;;; determined to be a microtone or not.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A pitch object.
+;;; - A number indicating the MIDI channel which is to be used to play back
+;;; non-microtonal pitches.
+;;; - A number indicating the MIDI channel which is to be used to play back
+;;; microtonal pitches.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A number indicating which value has been set to the given pitch object's
+;;; MIDI-CHANEL slot. 
 ;;; 
 ;;; EXAMPLE
 #|
+;; When the pitch of the given pitch object is non-microtonal, the method sets
+;; that pitch object's MIDI-CHANNEL slot to the first value specified.
+(let ((p (make-pitch 'c4)))
+  (set-midi-channel p 11 12)
+  (midi-channel p))
+
+=> 11
+
+;; When the pitch of the given pitch object is microtonal, the method sets
+;; that pitch object's MIDI-CHANNEL slot to the second value specified.
+(let ((p (make-pitch 'cqs4)))
+  (set-midi-channel p 11 12))
+
+=> 12
 
 |#
 ;;; SYNOPSIS
@@ -1840,21 +1867,71 @@ C4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan  3 10:51:55 EST 2012: Added robodoc info
+
 ;;; ****f* pitch/transpose-pitch-list
 ;;; FUNCTION
-;;; 
+;;; Transpose the values of a list of pitch objects by a specified number of
+;;; semitones. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list of pitch objects.
+;;; - A number indicating the number of semitones by which the list is to be
+;;; transposed. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL indicating whether the method is to return a list of pitch
+;;; objects or a list of note-name symbols for those pitch objects. T =
+;;; note-name symbols. Default = NIL.
+;;; - The name of the package to perform the tranpositions. Default = :sc. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; By default, the method returns a list of pitch objects. When the first
+;;; optional argument is set to T, a list of note-name symbols is returned
+;;; instead. 
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a list of pitch objects and apply the transpose-pitch-list method
+;; with the semitones argument set to 2
+(let ((pl))
+  (setf pl (loop for m from 60 to 71 collect (make-pitch (midi-to-note m))))
+  (transpose-pitch-list pl 2))
+
+=>
+(
+PITCH: frequency: 293.665, midi-note: 62, midi-channel: 0 
+[...]
+PITCH: frequency: 311.127, midi-note: 63, midi-channel: 0 
+[...]
+PITCH: frequency: 329.628, midi-note: 64, midi-channel: 0 
+[...]
+PITCH: frequency: 349.228, midi-note: 65, midi-channel: 0 
+[...]
+PITCH: frequency: 369.994, midi-note: 66, midi-channel: 0 
+[...]
+PITCH: frequency: 391.995, midi-note: 67, midi-channel: 0 
+[...]
+PITCH: frequency: 415.305, midi-note: 68, midi-channel: 0 
+[...]
+PITCH: frequency: 440.000, midi-note: 69, midi-channel: 0 
+[...]
+PITCH: frequency: 466.164, midi-note: 70, midi-channel: 0 
+[...]
+PITCH: frequency: 493.883, midi-note: 71, midi-channel: 0 
+[...]
+PITCH: frequency: 523.251, midi-note: 72, midi-channel: 0 
+[...]
+PITCH: frequency: 554.365, midi-note: 73, midi-channel: 0 
+[...]
+)
+
+;; Perform the same action with the return-symbols optional argument set to T
+(let ((pl))
+  (setf pl (loop for m from 60 to 71 collect (make-pitch (midi-to-note m))))
+  (print (transpose-pitch-list pl 2 t)))
+
+=> (D4 EF4 E4 F4 FS4 G4 AF4 A4 BF4 B4 C5 CS5)
 
 |#
 ;;; SYNOPSIS
@@ -1865,26 +1942,89 @@ C4
   (let* ((pl (loop for p in pitch-list collect (make-pitch p)))
          (result (loop for p in pl collect (transpose p semitones))))
     (if return-symbols
-      (pitch-list-to-symbols result package)
-      result)))
+	(pitch-list-to-symbols result package)
+	result)))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan  3 11:19:09 EST 2012: Added to robodoc info
+
 ;;; ****f* pitch/transpose-pitch-list-to-octave
 ;;; FUNCTION
-;;; 
+;;; Transpose the pitch values of a list of pitch objects into a specififed
+;;; octave. The individual initial pitch objects can have initial pitch values
+;;; of different octaves.  
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list of pitch objects.
+;;; - A number indicating the octave in which the resulting list should be.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :as-symbols. Set to T or NIL to indicate whether the
+;;; method is to return a list of pitch objects or a list of the note-name
+;;; symbols from those pitch objects. T = return as symbols. Default = NIL. 
+;;; - keyword argument :package. The package in which the transposition is to
+;;; be performed. Default = :sc.
+;;; - keyword argument :remove-duplicates. Set to T or NIL to indicate whether
+;;; any duplicate pitch objects are to be removed from the resulting list. T =
+;;; remove duplicates. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a list of pitch objects by default. When the keyword argument
+;;; :as-symbols is set to T, the method returns a list of note-name symbols
+;;; instead. 
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a list of four pitch objects from random MIDI numbers and print it,
+;; then apply transpose-pitch-list-to-octave, setting the octave argument to 4,
+;; and print the result
+(let ((pl))
+  (setf pl (loop repeat 4 collect (make-pitch (midi-to-note (random 128)))))
+  (print (loop for p in pl collect (data p)))
+  (print (transpose-pitch-list-to-octave pl 4)))
+
+=>
+(CS7 F7 B0 D4) 
+(
+PITCH: frequency: 493.883, midi-note: 71, midi-channel: 0 
+[...]
+data: B4
+[...]
+PITCH: frequency: 293.665, midi-note: 62, midi-channel: 0 
+[...]
+data: D4
+[...]
+PITCH: frequency: 277.183, midi-note: 61, midi-channel: 0 
+[...]
+data: CS4
+[...]
+PITCH: frequency: 349.228, midi-note: 65, midi-channel: 0 
+[...]
+data: F4
+)
+
+;; Setting the keyword argument :as-symbols to T return a list of note-names 
+;; instead 
+(let ((pl))
+  (setf pl (loop repeat 4 collect (make-pitch (midi-to-note (random 128)))))
+  (print (loop for p in pl collect (data p)))
+  (print (transpose-pitch-list-to-octave pl 4 :as-symbols t)))
+
+=>
+(D5 E1 C7 AF1) 
+(E4 AF4 D4 C4)
+
+;; The method removes duplicate pitch objects from the resulting list by
+;; default 
+(let ((pl))
+  (setf pl (loop repeat 4 collect (make-pitch (midi-to-note (random 128)))))
+  (print (loop for p in pl collect (data p)))
+  (print (transpose-pitch-list-to-octave pl 4 :as-symbols t)))
+
+=>
+(B7 AF1 AF7 G1) 
+(G4 AF4 B4)
 
 |#
 ;;; SYNOPSIS
@@ -1908,21 +2048,30 @@ C4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan  3 11:54:57 EST 2012: Added robodoc info
+
 ;;; ****f* pitch/pitch-list-to-symbols
 ;;; FUNCTION
-;;; 
+;;; Return as a list the note-name values from a given list of pitch objects.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list of pitch objects.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - The package in which to process the list of pitches. Default = :sc.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of note-name symbols
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a list of pitch objects and apply the pitch-list-to-symbols method 
+(let ((pl))
+  (setf pl (loop for m from 0 to 127 by 13 
+	      collect (make-pitch (midi-to-note m))))
+  (pitch-list-to-symbols pl))
+
+=> (C-1 CS0 D1 EF2 E3 F4 FS5 G6 AF7 A8)
 
 |#
 ;;; SYNOPSIS
@@ -1936,22 +2085,69 @@ C4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Sort a list from low to high
+;;; SAR Tue Jan  3 12:26:26 EST 2012: Added robodoc info
+
 ;;; ****f* pitch/sort-pitch-list
 ;;; FUNCTION
-;;; 
+;;; Sort a list of pitch objects from low to high based on their frequency
+;;; value.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list of pitch objects.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether the method is to return a list of pitch
+;;; objects or a list of note-name symbols.
+;;; - The package in which the operation is to be performed. Default = :sc.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a list of pitch objects by default. When the first optional
+;;; argument is set to T, the method returns a list of note-name symbols
+;;; instead. 
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a list of pitch objects by passing downward through a series of MIDI
+;; values and print the result. Then apply the sort-pitch-list method and print
+;; the result of that to see the list now ordered from low to high.
+(let ((pl))
+  (setf pl (loop for m from 64 downto 60
+	      collect (make-pitch (midi-to-note m))))
+  (print (loop for p in pl collect (data p)))
+  (print (sort-pitch-list pl)))
+
+=>
+(E4 EF4 D4 CS4 C4) 
+(
+PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
+[...]
+data: C4
+[...]
+PITCH: frequency: 277.183, midi-note: 61, midi-channel: 0 
+[...]
+data: CS4
+[...]
+PITCH: frequency: 293.665, midi-note: 62, midi-channel: 0 
+[...]
+data: D4
+[...]
+PITCH: frequency: 311.127, midi-note: 63, midi-channel: 0 
+[...]
+data: EF4
+[...]
+PITCH: frequency: 329.628, midi-note: 64, midi-channel: 0 
+[...]
+data: E4
+)
+
+;; Setting the first optional argument to T causes the method to return a list
+;; of note-name symbols instead
+(let ((pl))
+  (setf pl (loop for m from 64 downto 60
+	      collect (make-pitch (midi-to-note m))))
+  (sort-pitch-list pl t))
+
+=> (C4 CS4 D4 EF4 E4)
 
 |#
 ;;; SYNOPSIS
@@ -1967,28 +2163,70 @@ C4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan  3 12:40:02 EST 2012: Edited MDE robodoc info
+
 ;;; ****f* pitch/remove-octaves
 ;;; FUNCTION
-;;; remove-octaves: removes octaves from a list of pitches.  The lower notes
-;;; will remain and octaves of them removed.
+;;; Removes all but one of any pitch items in a given list that have the same
+;;; pitch-class but different octaves, keeping the lowest instance only.
+;;;
+;;; The list of pitch items may be a list of pitch objects or a list of
+;;; note-name symbols. 
 ;;; 
 ;;; ARGUMENTS 
-;;; - a list of pitches: may be pitch objects or symbols.
-;;; - (key :as-symbol default nil): return note symbols.
-;;; - (key :package default slippery-chicken): the lisp package the note symbols
-;;; should be in.
-;;; - (key :allow default nil): could be that you want certain octaves to be
-;;; allowed (e.g. double octaves), so this is a single number or list of
-;;; acceptable octaves e.g. :allow 2 would mean double-octaves are left alone.
+;;; - A list of pitch items. These may be pitch objects or note-name symbols. 
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :as-symbol. T or NIL indicating whether the object is to
+;;; return a list of pitch objects or a list of note-name symbols. T = return
+;;; pitch objects. Default = NIL.
+;;; - keyword argument :package. The Lisp package in which the note-name
+;;; symbols should be processed. Default = :sc.
+;;; - keyword argument :allow. T or NIL to indicate whether pitch objects of
+;;; certain, specified octave-doublings are to be kept even if they are not the 
+;;; lowest. This argument takes the form of either a single number or a list of
+;;; numbers. NB: This number does not indicate the octave in which the pitch
+;;; object is found, but rather pitch objects that are the specified number of
+;;; octaves above the lowest instance of the pitch class. Thus, :allow 2
+;;; indicates keeping the lowest pitch plus any instances of the same pitch
+;;; class two octaves above that lowest pitch (i.e., double-octaves).
 ;;; 
 ;;; RETURN VALUE  
-;;; a list of pitch objects (default) or frequencies (default if the first
-;;; element of the pitch-list is a number i.e. frequency) or note symbols ff
-;;; :as-symbol is t.
+;;; Returns a list of pitch objects by default. If the keyword argument
+;;; :as-symbol is set to T, the method returns a list of note-name symbols
+;;; instead. 
+;;; If the first element of the pitch list is a number (i.e. a frequency), the
+;;; method returns a list of frequencies. 
 ;;; 
 ;;; EXAMPLE
-;;; (remove-octaves '(c1 c2 g3) :as-symbol t) -> (C1 C3)
-;;; 
+#|
+;; The method returns a list of pitch objects by default
+(remove-octaves '(c1 c2 c3 g3))
+
+=> (
+PITCH: frequency: 32.703, midi-note: 24, midi-channel: 0 
+[...]
+data: C1
+[...]
+PITCH: frequency: 195.998, midi-note: 55, midi-channel: 0 
+[...]
+data: G3
+[...]
+)
+
+;; If the first element of the pitch list is a frequency, the method returns a
+;; list of frequencies
+(remove-octaves '(261.63 523.26 1046.52 196.00))
+
+=> (261.6300048828125 196.0)
+
+;; Setting keyword argument :as-symbol to T returns a list of note-name symbols
+;; instead 
+(remove-octaves '(261.63 523.26 1046.52 196.00) :as-symbol t)
+
+=> (C4 G3)
+
+|#
 ;;; SYNOPSIS
 (defun remove-octaves (pitch-list &key as-symbol allow (package :sc))
 ;;; ****
@@ -2025,24 +2263,70 @@ C4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 
-;;; Using the first note in the list as the reference point, invert
-;;; the rest according to their distance from it.
+
+;;; SAR Tue Jan  3 13:58:09 EST 2012: Added robodoc info
 
 ;;; ****f* pitch/invert-pitch-list
 ;;; FUNCTION
-;;; 
+;;; Using the lowest note in the list as the reference point, invert the rest
+;;; of a given list of pitch items according to their distance from it. 
+;;;
+;;; The list of pitch items may consist of either note-name symbols, pitch
+;;; objects or frequency numbers.
+;;;
+;;; NB: This function adheres to a concept of inversion more related to
+;;; interval set theory than to the traditional inversion of a melodic
+;;; contour. The given list of pitch items is first sorted from low to high
+;;; before the internal semitone intervals are assessed. The resulting list
+;;; will therefore always be in chromatic order, rather than having the
+;;; inverted melodic contour of the orginal.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list of pitch items. This may consist of pitch objects, note-name
+;;; symbols, or frequency numbers.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether the result should be a list of pitch objects
+;;; or a list of note-name symbols. T = note-name symbols. Default = NIL.
+;;; - The package in which the process is to be performed. Default = :sc.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns list of pitch objects by default. If the first optional argument is
+;;; set to T, the function will return a list of note-name symbols instead.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The function returns a list of pitch objects by default
+(let ((pl))
+  (setf pl (loop for m in '(E4 G4 A4 C4) collect (make-pitch m)))
+  (invert-pitch-list pl))
+
+=>
+(
+PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
+[...]
+data: C4
+[...]
+PITCH: frequency: 207.652, midi-note: 56, midi-channel: 0 
+[...]
+data: AF3
+[...]
+PITCH: frequency: 174.614, midi-note: 53, midi-channel: 0 
+[...]
+data: F3
+[...]
+PITCH: frequency: 155.563, midi-note: 51, midi-channel: 0 
+[...]
+data: EF3
+)
+
+;; Setting the first optional argument to T will cause the function to return a
+;; list of note-name symbols instead
+(let ((pl))
+  (setf pl '(329.63 392.00 440.00 261.63))
+  (invert-pitch-list pl t))
+
+=> (C4 AF3 F3 EF3)
 
 |#
 ;;; SYNOPSIS
@@ -2057,8 +2341,8 @@ C4
          (distances (loop for p in pl collect (pitch- lowest p)))
          (result (loop for st in distances collect (transpose lowest st))))
     (if return-symbols
-      (pitch-list-to-symbols result package)
-      result)))
+	(pitch-list-to-symbols result package)
+	result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2228,21 +2512,59 @@ C4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan  3 14:37:17 EST 2012: Added robodoc info
+
 ;;; ****f* pitch/pitch-member
 ;;; FUNCTION
-;;; 
+;;; Test whether a specified pitch is a member of a given list of pitches.
+;;;
+;;; This function can take pitch objects, note-name symbols or numerical
+;;; frequency values (or lists thereor) as its arguments.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A pitch item. This may be a pitch object, a note-name symbol or a
+;;; numerical frequency value.
+;;; - A list of pitch items. These items may be pitch objects, note-name
+;;; symbols, or numerical frequency values.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether or not the function should consider
+;;; enharmonically equivalent pitches to be equal. T = enharmonics are
+;;; considered equal. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the tail of the tested list starting with the specified pitch if
+;;; the pitch is indeed a member of that list, otherwise returns NIL. NB: The
+;;; list returned is a list of pitch objects.
 ;;; 
 ;;; EXAMPLE
+
 #|
+;; Returns NIL if the specified pitch item is not a member of the given list 
+(let ((pl '(c4 d4 e4)))
+  (pitch-member 'f4 pl))
+
+=> NIL
+
+;; Returns the tail of the given list starting from the specified pitch if that
+;; pitch is indeed a member of the tested list
+(let ((pl '(c4 d4 e4)))
+  (pitch-list-to-symbols (pitch-member 'd4 pl)))
+
+=> (D4 E4)
+
+;; Enharmonically equivalent pitches are considered equal by default
+(let ((pl '(c4 ds4 e4)))
+  (pitch-list-to-symbols (pitch-member 'ef4 pl)))
+
+=> (DS4 E4)
+
+;; Enharmonic equivalence can be turned off by setting the first optional
+;; argument to NIL
+(let ((pl '(c4 ds4 e4)))
+  (pitch-list-to-symbols (pitch-member 'ef4 pl nil)))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -2259,21 +2581,86 @@ C4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan  3 15:30:17 EST 2012: Added robodoc info
+
 ;;; ****f* pitch/remove-pitches
 ;;; FUNCTION
-;;; 
+;;; Remove a list of specified pitch items from a given list of pitch
+;;; items. Even if only one pitch item is to be removed it should be stated as
+;;; a list. 
+;;;
+;;; The pitch items can be in the form of pitch objects, note-name symbols or
+;;; numerical frequency values.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list of pitch items from which the specified list of pitches is to be
+;;; removed. These can take the form of pitch objects, note-name symbols or
+;;; numerical frequency values.
+;;; - A list of pitch items to remove from the given list. These can take the
+;;; form of pitch objects, note-name symbols or numerical frequency
+;;; values. Even if only one pitch is to be removed is must be stated as a
+;;; list. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :enharmonics-are-equal. Set to T or NIL to indicate
+;;; whether or not enharmonically equivalent pitches are to be considered the
+;;; same pitch. T = enharmonically equaivalent pitches are equal. Default = T. 
+;;; - keyword argument :return-symbols. Set to T or NIL to indicate whether the
+;;; function is to return a list of pitch objects or note-name symbols. T =
+;;; note-name symbols. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a list of pitch objects by default. When the keyword argument
+;;; :return-symbols is set to T, the function will return a list of note-names
+;;; instead. 
+;;;
+;;; If the specified list of pitches to be removed are not found in the given
+;;; list, the entire list is returned.
 ;;; 
 ;;; EXAMPLE
+
 #|
+;; By default the function returns a list of pitch objects
+(let ((pl '(c4 d4 e4)))
+  (remove-pitches pl '(d4 e4)))
+
+=> (
+PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
+[...]
+data: C4
+[...]
+)
+
+;; Setting the keyword argument :return-symbols to T causes the function to
+;; return a list of note-name symbols instead. Note in this example too that
+;; even when only one pitch item is being removed, it must be stated as a list. 
+(let ((pl '(261.62 293.66 329.62)))
+  (remove-pitches pl '(293.66) :return-symbols t))
+
+=> (C4 E4)
+
+;; The function will also accept pitch objects
+(let ((pl (loop for n in '(c4 d4 e4) collect (make-pitch n))))
+  (remove-pitches pl `(,(make-pitch 'e4)) :return-symbols t))
+
+=> (C4 D4)
+
+;; By default the function considers enharmonically equivalent pitches to be
+;; equal 
+(let ((pl (loop for n in '(c4 ds4 e4) collect (make-pitch n))))
+  (remove-pitches pl '(ef4) :return-symbols t))
+
+=> (C4 E4)
+
+;; This feature can be turned off by setting the :enharmonics-are-equal keyword
+;; argument to NIL. In this case here, the specified pitch is therefore not
+;; found in the given list and the entire original list is returned. 
+(let ((pl (loop for n in '(c4 ds4 e4) collect (make-pitch n))))
+  (remove-pitches pl '(ef4) 
+		  :return-symbols t
+		  :enharmonics-are-equal nil))
+
+=> (C4 DS4 E4)
 
 |#
 ;;; SYNOPSIS
@@ -2294,21 +2681,44 @@ C4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan  3 16:21:34 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/enharmonic
 ;;; FUNCTION
-;;; 
+;;; Get the enharmonic equivalent of the given pitch object. Two chromatically
+;;; consecutive "white-note" pitches (e.g. B-sharp/C-natural) are considered
+;;; enharmonically equivalent. If there is no enharmonic equivalent, the
+;;; function just returns the same note.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A pitch object
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to print a warning. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A pitch object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; A "black-key" enharmonic equivalent
+(let ((p (make-pitch 'cs4)))
+  (data (enharmonic p)))
+
+=> DF4
+
+;; Two chromatically consecutive "white-keys" are enharmonically equivalent
+(let ((p (make-pitch 'f4)))
+  (data (enharmonic p)))
+
+=> ES4
+
+;; The function returns a pitch object with the same pitch value if there is no
+;; enharmonic equivalent
+(let ((p (make-pitch 'g4)))
+  (data (enharmonic p)))
+
+=> G4
 
 |#
 ;;; SYNOPSIS

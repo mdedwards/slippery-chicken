@@ -2700,6 +2700,7 @@ data: C4
 ;;; A pitch object.
 ;;; 
 ;;; EXAMPLE
+
 #|
 ;; A "black-key" enharmonic equivalent
 (let ((p (make-pitch 'cs4)))
@@ -2728,26 +2729,46 @@ data: C4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Return those pitches common to both lists.  Can be lists of pitch objects
-;;; or pitch symbols, or a mixture of both.  Lisp's intersection function
-;;; doesn't sort and may change original order of lists so sort afterwards from
-;;; lowest to highest pitch.
+;;; Lisp's intersection function doesn't sort and may change original order of
+;;; lists so sort afterwards from lowest to highest pitch.
+
+;;; SAR Tue Jan  3 16:57:15 EST 2012: Added robodoc info
 
 ;;; ****f* pitch/pitch-intersection
 ;;; FUNCTION
-;;; 
+;;; Return pitch objects whose values consist of pitches common to two given
+;;; lists of pitch items. The given lists of pitch items can consist of pitch
+;;; objects or note-name symbols, or one list of one type and the second of the
+;;; other. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A first list of pitch objects.
+;;; - A second list of pitch objects.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a list of pitch objects that are common to both original lists.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns a list of pitch objects
+(let ((p1 '(c4 d4 e4 f4))
+      (p2 (loop for nn in '(d4 e4 f4 g4) collect (make-pitch nn))))
+  (pitch-intersection p1 p2))
+
+(
+PITCH: frequency: 293.665, midi-note: 62, midi-channel: 0 
+[...]
+data: D4
+[...]
+PITCH: frequency: 329.628, midi-note: 64, midi-channel: 0 
+[...]
+data: E4
+[...]
+PITCH: frequency: 349.228, midi-note: 65, midi-channel: 0 
+[...]
+data: F4
+[...]
+) 
 
 |#
 ;;; SYNOPSIS
@@ -2760,24 +2781,55 @@ data: C4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; pitch can be a pitch octave, frequency, or note symbol
+;;; SAR Tue Jan  3 17:39:38 EST 2012: Added robodoc info
+
+;;; pitch can be a pitch object, frequency, or note symbol
+
 ;;; ****f* pitch/in-octave
 ;;; FUNCTION
-;;; 
+;;; Test to see if a specified pitch item falls within a specified octave. The
+;;; pitch item can be a pitch object, a numerical frequency value, or a
+;;; note-name symbol. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A pitch item. This can be a pitch object, a numerical frequency value, or
+;;; a note-name symbol. 
+;;; - A number that is the specified octave designator (e.g. the "4" in "C4").
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T if the specified pitch item falls within the specified octave, otherwise
+;;; NIL. 
 ;;; 
 ;;; EXAMPLE
+
 #|
+;; The function returns NIL if the specified pitch item does not fall within
+;; the specified octave.
+(let ((p (make-pitch 'c4)))
+  (in-octave p 3))
+
+=> NIL
+
+;; The function will accept pitch objects
+(let ((p (make-pitch 'c4)))
+  (in-octave p 4))
+
+=> T
+
+;; The function will accept numerical frequency values
+(let ((p 261.63))
+  (in-octave p 4))
+
+=> T
+
+;; The function will accept note-name symbols
+(let ((p 'c4))
+  (in-octave p 4))
+
+=> T
 
 |#
+
 ;;; SYNOPSIS
 (defun in-octave (pitch octave)
 ;;; ****

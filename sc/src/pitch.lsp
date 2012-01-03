@@ -741,7 +741,7 @@ NIL
 
 ;;; ****m* pitch/pitch<
 ;;; FUNCTION
-;;; Test to see if the frequency value of one specified pitch object is lesser
+;;; Test to see if the frequency value of one specified pitch object is less
 ;;; than that of a second.
 ;;;
 ;;; NB: Due to the fact that a given note-name may encompass several
@@ -755,12 +755,12 @@ NIL
 ;;; - A second pitch object.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns T if the frequency value of the first pitch object is lesser than
+;;; Returns T if the frequency value of the first pitch object is less than
 ;;; that of the second, otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
-;; T is returned when the frequency of the first pitch is lesser than that of
+;; T is returned when the frequency of the first pitch is less than that of
 ;; the second
 (let ((p1 (make-pitch 'c4))
       (p2 (make-pitch 'd4)))
@@ -768,7 +768,7 @@ NIL
 
 => T
 
-;; NIL is returned when the frequency of the first pitch is not lesser than
+;; NIL is returned when the frequency of the first pitch is not less than
 ;; that of the second
 (let ((p1 (make-pitch 'c4))
       (p2 (make-pitch 'd4)))
@@ -809,23 +809,72 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Jan  2 20:21:17 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/pitch>
 ;;; FUNCTION
-;;; 
+;;; Test to see if the frequency value of one specified pitch object is greater
+;;; than that of a second.
+;;;
+;;; NB: Due to the fact that a given note-name may encompass several
+;;; fractionally different frequencies (e.g. both 261.626 and 261.627 are both
+;;; considered to be C4), this method is not suitable for comparing pitch
+;;; objects of which one was created using a frequency and the other was
+;;; created using a note-name symbol.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A pitch object.
+;;; - A second pitch object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the frequency value of the first pitch object is greater than
+;;; that of the second, otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; T is returned when the frequency of the first pitch is greater than that of
+;; the second
+(let ((p1 (make-pitch 'd4))
+      (p2 (make-pitch 'c4)))
+  (pitch> p1 p2))
+
+=> T
+
+;; NIL is returned when the frequency of the first pitch is not greater than
+;; that of the second
+(let ((p1 (make-pitch 'd4))
+      (p2 (make-pitch 'c4)))
+  (pitch> p2 p1))
+
+=> NIL
+
+;; Equivalent pitches return NIL
+(let ((p1 (make-pitch 'd4))
+      (p2 (make-pitch 'd4)))
+  (pitch> p2 p1))
+
+=> NIL
+
+;; This method can be effectively used to compare the frequency values of two
+;; pitch objects that were both created using frequency numbers
+(let ((p1 (make-pitch 293.66))
+      (p2  (make-pitch 261.63)))
+  (pitch> p1 p2))
+
+=> T  
+
+;; Due to sc's numerical accuracy, this method is not suitable for comparing
+;; pitch objects of which one was created using a note-name symbol and the
+;; other was created using a numerical frequency value. Such comparisons may
+;; return misleading results.
+(let ((p1 (make-pitch 261.63))
+      (p2 (make-pitch 'c4)))
+  (pitch> p1 p2))
+
+=> T
 
 |#
+
 ;;; SYNOPSIS
 (defmethod pitch> ((p1 pitch) (p2 pitch))
 ;;; ****
@@ -833,21 +882,69 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Jan  2 20:30:57 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/pitch<=
 ;;; FUNCTION
-;;; 
+;;; Test to see if the frequency value of one specified pitch object is less
+;;; than or equal to than that of a second.
+;;;
+;;; NB: Due to the fact that a given note-name may encompass several
+;;; fractionally different frequencies (e.g. both 261.626 and 261.627 are both
+;;; considered to be C4), this method is not suitable for comparing pitch
+;;; objects of which one was created using a frequency and the other was
+;;; created using a note-name symbol.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A pitch object.
+;;; - A second pitch object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the frequency value of the first pitch object is less than or
+;;; equal to that of the second, otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; T is returned when the frequency of the first pitch is less than or equal to
+;; that of the second
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'd4)))
+  (pitch<= p1 p2))
+
+=> T
+
+;; NIL is returned when the frequency of the first pitch is not less than or
+;; equal to that of the second
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'd4)))
+  (pitch<= p2 p1))
+
+=> NIL
+
+;; Equivalent pitches return T
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'c4)))
+  (pitch<= p2 p1))
+
+=> T
+
+;; This method can be effectively used to compare the frequency values of two
+;; pitch objects that were both created using frequency numbers
+(let ((p1 (make-pitch 261.63))
+      (p2 (make-pitch 293.66)))
+  (pitch<= p1 p2))
+
+=> T  
+
+;; Due to sc's numerical accuracy, this method is not suitable for comparing
+;; pitch objects of which one was created using a note-name symbol and the
+;; other was created using a numerical frequency value. Such comparisons may
+;; return misleading results.
+(let ((p1 (make-pitch 261.63))
+      (p2 (make-pitch 'c4)))
+  (pitch<= p1 p2))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -857,21 +954,69 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Jan  2 20:41:48 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/pitch>=
 ;;; FUNCTION
-;;; 
+;;; Test to see if the frequency value of one specified pitch object is greater
+;;; than or equal to than that of a second.
+;;;
+;;; NB: Due to the fact that a given note-name may encompass several
+;;; fractionally different frequencies (e.g. both 261.626 and 261.627 are both
+;;; considered to be C4), this method is not suitable for comparing pitch
+;;; objects of which one was created using a frequency and the other was
+;;; created using a note-name symbol.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A pitch object.
+;;; - A second pitch object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the frequency value of the first pitch object is greater than
+;;; or equal to that of the second, otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; T is returned when the frequency of the first pitch is greater than or equal
+;;; to that of the second
+(let ((p1 (make-pitch 'd4))
+      (p2 (make-pitch 'c4)))
+  (pitch>= p1 p2))
+
+=> T
+
+;; NIL is returned when the frequency of the first pitch is not greater than or
+;; equal to that of the second
+(let ((p1 (make-pitch 'd4))
+      (p2 (make-pitch 'c4)))
+  (pitch>= p2 p1))
+
+=> NIL
+
+;; Equivalent pitches return T
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'c4)))
+  (pitch>= p2 p1))
+
+=> T
+
+;; This method can be effectively used to compare the frequency values of two
+;; pitch objects that were both created using frequency numbers
+(let ((p1 (make-pitch 293.66)) 
+      (p2 (make-pitch 261.63)))
+  (pitch>= p1 p2))
+
+=> T  
+
+;; Due to sc's numerical accuracy, this method is not suitable for comparing
+;; pitch objects of which one was created using a note-name symbol and the
+;; other was created using a numerical frequency value. Such comparisons may
+;; return misleading results.
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 261.63)))
+  (pitch>= p1 p2))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -881,21 +1026,59 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Jan  2 20:48:13 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/pitch-in-range
 ;;; FUNCTION
-;;; 
+;;; Determine whether the frequency of a given pitch object falls between the
+;;; frequencies of two other given pitch objects.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
+;;; - A first pitch object.
+;;; - A second pitch object, which must be lower than the third.
+;;; - A third pitch object, which must be higher than the second.
+;;;
 ;;; RETURN VALUE
-;;; 
+;;; T if the frequency value of the first specified pitch object falls between
+;;; the second and third specified pitch objects, otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns T when the frequency value of the first pitch object
+;; falls between that of the second and third pitch objects.
+(let ((p (make-pitch 'c4))
+      (l (make-pitch 'g3))
+      (h (make-pitch 'a7)))
+  (pitch-in-range p l h))
+
+=> T
+
+;; The method returns NIL when the frequency value of the first pitch object is
+;; below the range designated by the frequency values of the other two objects.
+(let ((p (make-pitch 'g3))
+      (l (make-pitch 'c4))
+      (h (make-pitch 'a7)))
+  (pitch-in-range p l h))
+
+=> NIL
+
+;; The method returns NIL when the frequency value of the first pitch object is
+;; above the range designated by the frequency values of the other two objects.
+(let ((p (make-pitch 'a7))
+      (l (make-pitch 'g3))
+      (h (make-pitch 'c4)))
+  (pitch-in-range p l h))
+
+=> NIL
+
+;; The method will also return NIL if the frequency value of the second pitch
+;; object is higher than that of the third
+(let ((p (make-pitch 'c4))
+      (l (make-pitch 'a7))
+      (h (make-pitch 'g3)))
+  (pitch-in-range p l h))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS

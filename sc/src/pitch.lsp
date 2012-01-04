@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 13:02:54 Sun Jan  1 2012 ICT
+;;; $$ Last modified: 14:21:33 Wed Jan  4 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -357,9 +357,9 @@ data: DQS4
 (let ((p (make-pitch 'c4)))
   (print (transpose p 2 :as-symbol t))
   (print (loop for s from 0 to 4 
-	    collect (transpose p (+ 2 (* s .1)) :as-symbol t)))
+            collect (transpose p (+ 2 (* s .1)) :as-symbol t)))
   (print (loop for s from 5 to 9
-	    collect (transpose p (+ 2 (* s .1)) :as-symbol t))))
+            collect (transpose p (+ 2 (* s .1)) :as-symbol t))))
 
 =>
 D4 
@@ -543,18 +543,19 @@ data: C5
 ;;; ****m* pitch/pitch=
 ;;; FUNCTION
 ;;; Determines if the note-name and chromatic semtione MIDI values of two
-;;; specified pitch objects are the same.
+;;; specified pitch objects are the same (or very close to each other in the
+;;; case of frequency and src slot comparison).  
 ;;;
 ;;; By default, this method returns NIL when comparing enharmonic pitches. This
 ;;; can behavior can be changed by setting the optional argument to T, upon
 ;;; which enharmonic pitches are considered equal.
 ;;;
-;;; NB: This method cannot be used to compare pitch objects created using
-;;; frequencies with those created using note-names. Use the method
-;;; pitch::note= for that procedure instead.
+;;; NB: This method may return NIL when comparing pitch objects created using
+;;; frequencies with those created using note-names. The method
+;;; pitch::note= may be more useful in this case.
 ;;; 
 ;;; NB: Pitch objects created using frequencies are only considered equal if
-;;; their frequency values are within 0.000001 of each other.
+;;; their frequency values are within 0.01Hz of each other.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A first pitch object.
@@ -612,12 +613,14 @@ NIL
 
 |#
 ;;; SYNOPSIS
-(defmethod pitch= ((p1 pitch) (p2 pitch) &optional enharmonics-are-equal)
+(defmethod pitch= ((p1 pitch) (p2 pitch) &optional enharmonics-are-equal
+                   (frequency-tolerance 0.01) (src-tolerance 0.0001))
 ;;; ****
-  (and (equal-within-tolerance (frequency p1) (frequency p2))
+  (and (equal-within-tolerance (frequency p1) (frequency p2)
+                               frequency-tolerance)
        (or enharmonics-are-equal (eq (data p1) (data p2)))
        (= (midi-note p1) (midi-note p2))
-       (equal-within-tolerance (src p1) (src p2))))
+       (equal-within-tolerance (src p1) (src p2) src-tolerance)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1587,8 +1590,18 @@ data: D4
 (defmethod add-mark ((p pitch) mark &optional warn-rest)
 ;;; ****
   (declare (ignore warn-rest))
+  (when (has-mark p mark)
+    (warn "~a~&pitch::add-mark: mark ~a already present but adding again!"
+          p mark))
   (validate-mark mark)
   (push mark (marks p)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Jan  4 14:20:30 2012 
+
+(defmethod has-mark ((p pitch) mark)
+;;; ****
+  (has-mark-aux (marks p) mark))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1942,8 +1955,8 @@ PITCH: frequency: 554.365, midi-note: 73, midi-channel: 0
   (let* ((pl (loop for p in pitch-list collect (make-pitch p)))
          (result (loop for p in pl collect (transpose p semitones))))
     (if return-symbols
-	(pitch-list-to-symbols result package)
-	result)))
+        (pitch-list-to-symbols result package)
+        result)))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2068,7 +2081,7 @@ data: F4
 ;; Create a list of pitch objects and apply the pitch-list-to-symbols method 
 (let ((pl))
   (setf pl (loop for m from 0 to 127 by 13 
-	      collect (make-pitch (midi-to-note m))))
+              collect (make-pitch (midi-to-note m))))
   (pitch-list-to-symbols pl))
 
 => (C-1 CS0 D1 EF2 E3 F4 FS5 G6 AF7 A8)
@@ -2112,7 +2125,7 @@ data: F4
 ;; the result of that to see the list now ordered from low to high.
 (let ((pl))
   (setf pl (loop for m from 64 downto 60
-	      collect (make-pitch (midi-to-note m))))
+              collect (make-pitch (midi-to-note m))))
   (print (loop for p in pl collect (data p)))
   (print (sort-pitch-list pl)))
 
@@ -2144,7 +2157,7 @@ data: E4
 ;; of note-name symbols instead
 (let ((pl))
   (setf pl (loop for m from 64 downto 60
-	      collect (make-pitch (midi-to-note m))))
+              collect (make-pitch (midi-to-note m))))
   (sort-pitch-list pl t))
 
 => (C4 CS4 D4 EF4 E4)
@@ -2341,8 +2354,8 @@ data: EF3
          (distances (loop for p in pl collect (pitch- lowest p)))
          (result (loop for st in distances collect (transpose lowest st))))
     (if return-symbols
-	(pitch-list-to-symbols result package)
-	result)))
+        (pitch-list-to-symbols result package)
+        result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2657,8 +2670,8 @@ data: C4
 ;; found in the given list and the entire original list is returned. 
 (let ((pl (loop for n in '(c4 ds4 e4) collect (make-pitch n))))
   (remove-pitches pl '(ef4) 
-		  :return-symbols t
-		  :enharmonics-are-equal nil))
+                  :return-symbols t
+                  :enharmonics-are-equal nil))
 
 => (C4 DS4 E4)
 

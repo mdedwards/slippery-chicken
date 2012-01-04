@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 18:59:51 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 14:02:27 Wed Jan  4 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -321,9 +321,28 @@
 ;;; set can be a set object, whereupon the new set will be cloned from the
 ;;; given, or a list of notes.
 
+;;; ****f* complete-set/make-complete-set
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-complete-set (set &key id tag subsets related-sets 
                                    (transposition 0) (auto-sort t)
                                    limit-upper limit-lower complete)
+;;; ****
   (if (typep set 'complete-set)
       (let ((copy (clone set)))
         (when (or subsets related-sets (not auto-sort) complete)

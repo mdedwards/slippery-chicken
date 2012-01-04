@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 18:13:06 Sat Dec 31 2011 ICT
+;;; $$ Last modified: 13:58:03 Wed Jan  4 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -63,7 +63,9 @@
               :initform t)
    ;; sometimes it's useful to divide sc-sets into subsets.  These can be given
    ;; here in the form of an assoc-list of pitches which must be part of the
-   ;; main set (data slot).
+   ;; main set (data slot).  One use might be to create subsets that particular
+   ;; instruments can play; these would then be selected in the chord-function
+   ;; passed to the instrument object.
    (subsets :accessor subsets :initarg :subsets :initform nil)
    ;; this is similiar to subsets only that the pitches given here don't have
    ;; to be part of the main set.  Can be used, for example, for pitches
@@ -146,6 +148,24 @@
 ;;; default only get those microtones less than a quarter tone.  Move
 ;;; all pitches to <octave> if not nil.
 
+;;; ****m* sc-set/round-inflections
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod round-inflections ((s sc-set) 
                               &key
                               qtr-tones-also
@@ -153,6 +173,7 @@
                               (remove-duplicates t) ;; only if octave!
                               (as-symbols nil)
                               (package :sc))
+;;; ****
   (let ((result
          (loop for p in (data s) 
              when (if qtr-tones-also
@@ -175,7 +196,26 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; just change the micro-tone slot of all pitches to <value>
+;;; ****m* sc-set/force-micro-tone
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod force-micro-tone ((s sc-set) &optional value)
+;;; ****
   (loop for p in (data s) do
        (setf (micro-tone p) value)))
 
@@ -185,13 +225,33 @@
 ;;; Get the notes from the set that are normal chromatic notes,
 ;;; i.e. no microtones.  If octave is given, put them all into that octave
 
+;;; ****m* sc-set/get-chromatic
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-chromatic ((s sc-set) 
                           &key 
                           (octave nil)
                           (remove-duplicates t) ;; only if octave!
                           (as-symbols nil)
                           (package :sc)
-                          (invert nil)) ;; this will get just the microtones
+                          (invert nil))
+;;; **** 
+  ;; this will get just the microtones
   (let ((result (loop for p in (data s)
                    unless (if invert
                               (not (micro-tone p))
@@ -207,11 +267,30 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sc-set/get-non-chromatic
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-non-chromatic ((s sc-set) 
                               &key 
                               (octave nil)
                               (as-symbols nil)
                               (package :sc))
+;;; ****
   (get-chromatic s :octave octave :as-symbols as-symbols :package package 
                  :invert t))
 
@@ -222,9 +301,28 @@
 ;;; reference-pitch is the apparent pitch of the sample we're going to
 ;;; transpose.  
 
+;;; ****m* sc-set/get-semitones
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-semitones ((s sc-set) &optional 
                                 (reference-pitch 'c4)
                                 (offset 0))
+;;; ****
   (loop for srt in 
         (get-srts-aux (data s) reference-pitch offset)
       collect (srt srt)))
@@ -236,22 +334,60 @@
 ;;; reference-pitch is the apparent pitch of the sample we're going to
 ;;; transpose.  
 
+;;; ****m* sc-set/get-srts
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-srts ((s sc-set) &optional 
                                 (reference-pitch 'c4)
                                 (offset 0))
+;;; ****
   (get-srts-aux (data s) reference-pitch offset))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sc-set/subset-get-srts
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod subset-get-srts  ((s sc-set) subset &optional 
                                                (reference-pitch 'c4)
                                                (offset 0))
+;;; ****
   (get-srts-aux (data (get-data subset (subsets s)))
                 reference-pitch offset))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;  Get the interval structure of the set from bottom to top note and add
+;;; Get the interval structure of the set from bottom to top note and add
 ;;; notes to the top and bottom using the same structure.  Repeat num-stacks
 ;;; times.  NB we assume the set is sorted.  See also make-stack in the
 ;;; complete-set class to make a stack from a simple list of pitch symbols.
@@ -293,40 +429,155 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
     ;; return a new set, using the given id or if not given, the same id as the
     ;; original set 
     (make-sc-set (degrees-to-notes result) :id (if id id (id s)))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Get the degree distances of each note to the bottom note of the set
 ;;; (assumes set is sorted).
 
+;;; ****m* sc-set/get-interval-structure
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-interval-structure ((s sc-set))
+;;; ****
   (let ((lowest-degree (degree (first (data s)))))
     (loop for i in (rest (data s)) collect
           (- (degree i) lowest-degree))))
      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sc-set/set-position
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-position ((p pitch) (s sc-set))
+;;; ****
   (position p (data s) :test #'pitch=))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sc-set/get-degrees
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-degrees ((s sc-set))
+;;; ****
   (loop for p in (data s) collect (degree p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sc-set/get-freqs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-freqs  ((s sc-set))
+;;; ****
   (loop for p in (data s) collect (frequency p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sc-set/get-midi
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-midi  ((s sc-set))
+;;; ****
   (loop for p in (data s) collect (midi-note p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sc-set/get-semitones-from-middle-note
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-semitones-from-middle-note ((s sc-set) &optional subset)
+;;; ****
   (let* ((notes (if subset (get-data-data subset (subsets s))
                   (data s)))
          (middle (floor (length notes) 2))
@@ -338,7 +589,26 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 ;;; A new set is made out of the data of the two arguments.  This
 ;;; means of course that subsets etc. get lost.
 
+;;; ****m* sc-set/add
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add ((s1 sc-set) (s2 sc-set) &optional ignore)
+;;; ****
   (declare (ignore ignore))
   (flet ((get-id (object)
            (if (and (linked-named-object-p object)
@@ -352,17 +622,74 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sc-set/contains-pitches
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod contains-pitches ((s sc-set) pitches)
+;;; ****
   (all-members (data s) (init-pitch-list pitches nil) #'pitch=))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sc-set/create-chord
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod create-chord ((s sc-set))
+;;; ****
   (make-chord (data s)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sc-set/create-event
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod create-event ((s sc-set) rhythm start-time &optional start-time-qtrs)
+;;; ****
   (unless start-time-qtrs
     (setf start-time-qtrs start-time))
   (let ((e (make-event (create-chord s) rhythm :start-time start-time)))
@@ -371,7 +698,26 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sc-set/pitch-symbols
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod pitch-symbols ((s sc-set))
+;;; ****
   (get-ids-from-pitch-list (data s)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -391,6 +737,7 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
           (unless (pitch-p p)
             (setf p (make-pitch p)))
         collect (* offset-srt (/ (frequency p) freq)))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -411,7 +758,26 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* sc-set/make-sc-set
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-sc-set (sc-set &key id subsets related-sets (auto-sort t))
+;;; ****
   (make-instance 'sc-set :id id :data sc-set :subsets subsets 
                  :related-sets related-sets :auto-sort auto-sort))
 

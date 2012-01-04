@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 14:41:16 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 13:51:16 Wed Jan  4 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -123,7 +123,13 @@
    ;; if the instrument can play chords then it will need a reference to a
    ;; function that can select chords for the instrument.  NB This should be a
    ;; symbol not a function object, so when making instruments just 'my-fun not
-   ;; #'my-fun 
+   ;; #'my-fun.
+   ;; MDE Mon Jan  2 16:42:36 2012 
+   ;; When defining sets, you can use the subsets assoc-list of a set object to
+   ;; assign particular chords to specific instruments.  These could then be
+   ;; selected and used/modified in the chord-function given to the instrument,
+   ;; e.g.  
+   ;;     (let* ((subset (get-data 'guitar (subsets set)))
    (chord-function :accessor chord-function :initarg :chord-function
                    :initform nil)
    ;; we might want to limit our instrument to playing a certain subset of a
@@ -372,8 +378,27 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* instrument/transposing-instrument-p
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod transposing-instrument-p ((ins instrument) 
                                      &optional (ignore-octaves t))
+;;; ****
   (cond ((zerop (transposition-semitones ins)) 
          nil)
         ((and ignore-octaves
@@ -397,25 +422,101 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 5.2.11 
-(defmethod set-prefers-low ((ins instrument) &optional ignore) 
+;;; ****m* instrument/set-prefers-low
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod set-prefers-low ((ins instrument) &optional ignore)
+;;; **** 
   (declare (ignore ignore))
   (setf (prefers-notes ins) 'low))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 5.2.11 
+;;; ****m* instrument/set-prefers-high
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-prefers-high ((ins instrument) &optional ignore) 
+;;; ****
   (declare (ignore ignore))
   (setf (prefers-notes ins) 'high))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* instrument/prefers-low
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod prefers-low ((ins instrument))
+;;; ****
   (eq (prefers-notes ins) 'low))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* instrument/prefers-high
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod prefers-high ((ins instrument))
+;;; ****
   (eq (prefers-notes ins) 'high))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -444,6 +545,7 @@
          (too-low (pitch< p low))
          (out (not (or too-high too-low))))
     (values out (cond (too-high 1) (too-low 0)))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -460,6 +562,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* instrument/make-instrument
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-instrument (id &key staff-name
                         staff-short-name
                                 lowest-written
@@ -481,6 +601,7 @@
                                 missing-notes
                                 prefers-notes
                                 chord-function)
+;;; ****
   (make-instance 'instrument :id id
                  :staff-name staff-name
                  :staff-short-name staff-short-name

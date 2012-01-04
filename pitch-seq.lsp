@@ -141,21 +141,25 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan  3 19:27:45 EST 2012: Added robodoc info
+
 ;;; ****m* pitch-seq/invert
 ;;; FUNCTION
-;;; 
+;;; Invert the pitch sequence contour attached to a given pitch-seq object. The
+;;; inversion uses only the same numbers from the original pitch contour list. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A pitch-seq object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A pitch-seq object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((ps (make-pitch-seq '(pseq1 (1 2 1 3 4 7)))))
+  (data (invert ps)))
+
+=> (7 4 7 3 2 1)
 
 |#
 ;;; SYNOPSIS
@@ -184,30 +188,32 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan  3 19:35:29 EST 2012: Edited robodoc info
+
 ;;; ****m* pitch-seq/get-notes
 ;;; FUNCTION
 ;;; This gets notes from the sets, limiting the notes used to the range of the
-;;; instrument and any other ranges defined in the slippery-chicken class.  If
+;;; instrument and any other ranges defined in the slippery-chicken class. If
 ;;; either the instrument or set are missing it just gets the relative pitches
 ;;; we use to display a pitch sequence.
 ;;;
-;;; limit-high and limit-low are pitch objects: they are extra range definers
+;;; limit-high and limit-low are pitch objects. They are extra range definers
 ;;; that are given to the slippery-chicken object to control the pitch curve of
-;;; an instrument over the duration of the whole piece.  They always refer to
+;;; an instrument over the duration of the whole piece. They always refer to
 ;;; sounding pitches.  
 ;;;
 ;;; ARGUMENTS 
-;;; - pitch-seq object
-;;; - instrument object 
-;;; - set object
-;;; - a hint pitch (ignored for now)
-;;; - a pitch-object defining the highest possible note
-;;; - a pitch-object defining the lowest possible note
-;;; - the sequence number (for diagnostics)
-;;; - the last note of the previous sequence, as a pitch object
+;;; - A pitch-seq object.
+;;; - An instrument object.
+;;; - An sc-set object.
+;;; - A hint pitch (ignored for now).
+;;; - A pitch-object defining the highest possible note.
+;;; - A pitch-object defining the lowest possible note.
+;;; - The sequence number (for diagnostics).
+;;; - The last note of the previous sequence, as a pitch object.
 ;;; 
 ;;; RETURN VALUE  
-;;; a list of pitch objects
+;;; Returns a list of pitch objects.
 ;;;
 ;;; EXAMPLE
 #|

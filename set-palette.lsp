@@ -20,7 +20,7 @@
 ;;;                   Note that the sets in this palette may refer to
 ;;;                   previously defined sets in order to obviate retyping note
 ;;;                   lists.  Hence the reference to bcl-chord2 in the
-;;;                   bcl-chord3 set of the example below  will instantiate a
+;;;                   bcl-chord3 set of the example below will instantiate a
 ;;;                   set based on a transposed clone of that set previously
 ;;;                   stored as bcl-chord2.  
 ;;;

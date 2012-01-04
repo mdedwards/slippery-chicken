@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 14:21:33 Wed Jan  4 2012 ICT
+;;; $$ Last modified: 18:04:11 Wed Jan  4 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1346,9 +1346,9 @@ data: D4
 
 |#
 ;;; SYNOPSIS
-(defmethod pitch-inc ((p pitch) semitones)
+(defmethod pitch-inc ((p pitch) &optional (degrees 1))
 ;;; ****
-  (make-pitch (degree-to-note (+ (degree p) semitones))))
+  (make-pitch (degree-to-note (+ (degree p) degrees))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2247,11 +2247,10 @@ data: G3
     (setf allow (list allow)))
   (let ((return-freqs (numberp (first pitch-list))))
     (loop 
-       ;; 5.4.10: don't know what the logic was in this comment; guess it made
-       ;; sense in the context I originally developed the function in:
+       ;; 5.4.10: original comment:
        ;; "by reversing it we favour the notes that were
-       ;; already there, removing the octaves that come later"
-       ;; end effect is though that we will remove higher octaves assuming this
+       ;; already there, removing the octaves that come later";
+       ;; effect is though that we will remove higher octaves assuming this
        ;; is an ascending pitch list.
        with pitches = (loop for p in (reverse pitch-list) 
                          collect (make-pitch p))
@@ -2271,7 +2270,7 @@ data: G3
                      (return-freqs (frequency p))
                      (t p))
        into result
-       finally (return (reverse result)))))
+       finally (return (nreverse result)))))
               
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

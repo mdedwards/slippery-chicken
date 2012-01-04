@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 10:48:50 Sat Dec 31 2011 ICT
+;;; $$ Last modified: 14:21:49 Wed Jan  4 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -592,8 +592,8 @@ rhythm::add-mark: add AT to rest?
       (warn "~a~&rhythm::add-mark: add ~a to rest?" r mark))
     ;; 9.4.11 check we haven't already got the mark
     (when (has-mark r mark)
-      (warn "rhythm::add-mark: ~a already present but adding again!: ~a"
-            mark r))
+      (warn "~a~&rhythm::add-mark: mark ~a already present but adding again!"
+            r mark))
     ;; MDE Fri Dec 23 18:44:20 2011 -- check marks exist now, so as to avoid
     ;; surprises down the line. NB even when a mark doesn't exist in CMN or LP
     ;; the following calls should work as they'll return "" i.e. there should
@@ -921,7 +921,7 @@ NI
 ;;; SYNOPSIS
 (defmethod has-mark ((r rhythm) mark)
 ;;; ****
-  (member mark (marks r) :test #'equal))
+  (has-mark-aux (marks r) mark))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1972,6 +1972,11 @@ data: (
       (typep thing 'cmn::dynamics)
       (typep thing 'cmn::self-acting)
       (typep thing 'cmn::text)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun has-mark-aux (list mark)
+  (member mark list :test #'equal))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF rhythm.lsp

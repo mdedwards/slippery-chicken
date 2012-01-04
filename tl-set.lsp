@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified: 14:16:48 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 14:01:17 Wed Jan  4 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -107,7 +107,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* tl-set/stack
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod stack ((tls tl-set) &optional (num-stacks 1) id)
+;;; ****
   (declare (ignore num-stacks id))
   (let ((sc-set (call-next-method)))
     (clone-with-new-class sc-set 'tl-set)))
@@ -122,8 +141,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 
-
 (defmethod (setf limit-upper) :before (value (tls tl-set))
   (declare (ignore value))
   (error "tl-set::(setf limit): ~
@@ -131,8 +148,6 @@
           method instead: tl-set id: ~a" (id tls)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 
 
 (defmethod (setf limit-lower) :before (value (tls tl-set))
   (declare (ignore value))
@@ -142,11 +157,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 
+;;; ****m* tl-set/transpose
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
 
+|#
+;;; SYNOPSIS
 (defmethod transpose ((tls tl-set) semitones 
                       &key do-related-sets
                       ignore1 ignore2)
+;;; ****
   (declare (ignore ignore1) (ignore ignore2))
   (setf (slot-value tls 'data) (transpose-pitch-list (data tls) semitones)
         (slot-value tls 'transposition) semitones)
@@ -163,7 +195,26 @@
 ;;; c0 and b10 are the highest and lowest pitches of the quarter-tone scale
 ;;; defined in scale.lsp (16.35 and 31608.55 Hz respectively) 
 
+;;; ****m* tl-set/limit
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod limit ((tls tl-set) &key upper lower do-related-sets)
+;;; ****
   (let ((u (limit-get-pitch upper 'b10)) ;; 'b10 and 'c0 are just defaults
         (l (limit-get-pitch lower 'c0)))
     (setf (slot-value tls 'limit-upper) u
@@ -181,8 +232,27 @@
 ;;; 13/1/10: be careful with this: if this function is returning nil, it could
 ;;; be because the set pitches are microtonal, when you're not expecting that.
 
+;;; ****m* tl-set/limit-for-instrument
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod limit-for-instrument ((tls tl-set) (ins instrument)
                                  &key upper lower do-related-sets)
+;;; ****
   ;; if we have upper and/or lower, find out which is
   ;; highest/lowest: these or the instrument's range; then use this to
   ;; limit the set.
@@ -221,10 +291,29 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* tl-set/make-tl-set
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-tl-set (set &key id subsets related-sets
                              limit-upper limit-lower
                              (transposition 0)
                              (auto-sort t))
+;;; ****
   (make-instance 'tl-set :id id :data set :subsets subsets 
                  :related-sets related-sets :auto-sort auto-sort
                  :limit-upper limit-upper :limit-lower limit-lower

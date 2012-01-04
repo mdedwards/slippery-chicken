@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 17:16:57 Sat Dec 31 2011 ICT
+;;; $$ Last modified: 11:55:43 Mon Jan  2 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -225,7 +225,7 @@
 ;;; 
 ;;; RETURN VALUE  3 values:
 ;;; - the list returned by the lookup procedure
-;;; - the distribution of the various
+;;; - the distribution of the values returned by lookup
 ;;; - the l-sequence
 ;;; 
 ;;; EXAMPLE

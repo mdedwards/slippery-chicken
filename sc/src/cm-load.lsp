@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    7th February 2003
 ;;;
-;;; $$ Last modified: 21:07:59 Mon Nov  7 2011 GMT
+;;; $$ Last modified: 18:12:03 Wed Jan  4 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -235,6 +235,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setf *scale* (find-object 'quarter-tone))
+;; (setf *scale* (find-object 'chromatic-scale))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

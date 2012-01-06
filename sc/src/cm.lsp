@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 18:28:36 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 00:47:25 Sat Jan  7 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -123,7 +123,10 @@
     (if (or (equal-within-tolerance 1 rem .0001)
             (equal-within-tolerance 0 rem .0001))
         0.0
-      rem)))
+        ;; rem)))
+        ;; MDE Sat Jan  7 00:39:10 2012 -- instead of the above try
+        ;; rounding to 0.01 (1 cent) 
+        (/ (round rem 0.01) 100.0))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #|

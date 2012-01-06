@@ -982,6 +982,7 @@ NIL
 ;;; or equal to that of the second, otherwise NIL.
 ;;; 
 ;;; EXAMPLE
+
 #|
 ;; T is returned when the frequency of the first pitch is greater than or equal
 ;;; to that of the second
@@ -1284,6 +1285,7 @@ data: D4
 ;;; EXAMPLE
 
 #|
+
 ;; Subtracting the lower pitch object from the higher returns a positive number
 (let ((p1 (make-pitch 'd4))
       (p2 (make-pitch 'c4)))
@@ -1332,23 +1334,77 @@ data: D4
   (- (midi-note-float p1) (midi-note-float p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; NB returns a new pitch object
+
+;;; SAR Fri Jan  6 14:37:59 EST 2012: Added robodoc info
+
 ;;; ****m* pitch/pitch-inc
 ;;; FUNCTION
-;;; Increment the value of a given pitch object by a specified number of
-;;; degrees.
+;;; Increment the value of a given pitch object by one degree (default) or by a
+;;; specified number of degrees (optional argument).
+;;;
+;;; NB: The slippery-chicken package uses a quarter-tone degree system by
+;;; default, so any function or method involving a degree argument will be
+;;; measured in quarter-tones, not semitones. Thus, while the MIDI note value
+;;; for 'C4 is 60 (chromatic semitones), (note-to-degree 'C4) will return
+;;; 120. Thus, this method will increment by one quarter-tone by default, and
+;;; any value the chooser uses for the optional argument is also number of
+;;; quarter-tones. 
+;;;
+;;; NB: This method returns a new pitch object rather than modifying the values
+;;; of the original. 
 ;;; 
 ;;; ARGUMENTS
-;;; A pitch object.
+;;; - A pitch object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number indicating the step (in degrees) by which the pitch value is to
+;;; be incremented. Defaults = 1.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a pitch object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method by default returns a pitch object and increments by one
+;; quarter-tone 
+(let ((p (make-pitch 'c4)))
+  (pitch-inc p))
+
+=> 
+PITCH: frequency: 269.292, midi-note: 60, midi-channel: 0 
+       pitch-bend: 0.5 
+       degree: 121, data-consistent: T, white-note: C4
+       nearest-chromatic: C4
+       src: 1.0293022394180298, src-ref-pitch: C4, score-note: CS4 
+       qtr-sharp: 1, qtr-flat: NIL, qtr-tone: 1,  
+       micro-tone: T, 
+       sharp: NIL, flat: NIL, natural: NIL, 
+       octave: 4, c5ths: 0, no-8ve: CQS, no-8ve-no-acc: C
+       show-accidental: T, white-degree: 28, 
+       accidental: QS, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: CQS4, tag: NIL, 
+data: CQS4
+
+;; Using the optional argument, increment steps can be changed; for example,
+;; here to one semitone (= 2 quarter-tones)
+(let ((p (make-pitch 'c4)))
+  (data (pitch-inc p 2)))
+
+=> CS4
+
+;; Here the method increments by 4 quarter-tones = 1 whole-tone 
+(let ((p (make-pitch 'c4)))
+  (data (pitch-inc p 4)))
+
+=> D4
+
+;; Incrementing by an additional number of quarter-tones at each pass 
+(let ((p (make-pitch 'c4)))
+  (loop for i from 0 to 4 collect (data (pitch-inc p i))))
+
+=> (C4 CQS4 CS4 DQF4 D4)
 
 |#
 ;;; SYNOPSIS

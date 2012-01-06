@@ -290,8 +290,9 @@ NIL
 ;;; - keyword object :as-symbol. T or NIL to indicate whether the method is to
 ;;; return an entire pitch object or just a note-name symbol of the new
 ;;; pitch. NIL = a new pitch object. Default = NIL.
-;;; - keyword object :package. The package in which the transposition is
-;;; performed. Defaults to :sc. 
+;;; - keyword argument :package. Used to identify a separate Lisp package in
+;;; which to itern result. This is really only applicable is combination with
+;;; :as-symbol set to T. Default = :sc.
 ;;; 
 ;;; RETURN VALUE
 ;;; A pitch object by default.
@@ -406,8 +407,9 @@ D4
 ;;; - keyword object :as-symbol. T or NIL to indicate whether the method is to
 ;;; return an entire pitch object or just a note-name symbol of the new
 ;;; pitch. NIL = a new pitch object. Default = NIL.
-;;; - keyword object :package. The package in which the transposition is
-;;; performed. Defaults to :sc. 
+;;; - keyword argument :package. Used to identify a separate Lisp package in
+;;; which to itern result. This is really only applicable is combination with
+;;; :as-symbol set to T. Default = :sc.
 ;;; 
 ;;; RETURN VALUE
 ;;; A pitch object by default.
@@ -483,9 +485,10 @@ C4
 ;;; - keyword object :as-symbol. T or NIL to indicate whether the method is to
 ;;; return an entire pitch object or just a note-name symbol of the new
 ;;; pitch. NIL = a new pitch object. Default = NIL.
-;;; - keyword object :package. The package in which the transposition is
-;;; performed. Defaults to :sc. 
-;;; 
+;;; - keyword argument :package. Used to identify a separate Lisp package in
+;;; which to itern result. This is really only applicable is combination with
+;;; :as-symbol set to T. Default = :sc.
+;;;
 ;;; RETURN VALUE
 ;;; A pitch object by default.
 ;;;
@@ -1279,6 +1282,7 @@ data: D4
 ;;; Returns a number. The number may be positive or negative.
 ;;; 
 ;;; EXAMPLE
+
 #|
 ;; Subtracting the lower pitch object from the higher returns a positive number
 (let ((p1 (make-pitch 'd4))
@@ -1303,13 +1307,14 @@ data: D4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; NB this takes pitch bend into consideration
 ;;; ****m* pitch/pitch-
 ;;; FUNCTION
-;;; 
+;;; Get the distance in semitones between the values of two pitch objects. This
+;;; method also takes fractional values into consideration.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A first pitch object.
+;;; - A second pitch object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; 
@@ -1330,10 +1335,11 @@ data: D4
 ;;; NB returns a new pitch object
 ;;; ****m* pitch/pitch-inc
 ;;; FUNCTION
-;;; 
+;;; Increment the value of a given pitch object by a specified number of
+;;; degrees.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; A pitch object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; 
@@ -1556,8 +1562,9 @@ data: D4
 ;;; Add a specified mark to the MARKS slot of the given pitch object.
 ;;;
 ;;; NB: The add-mark method does not check first to see whether the mark being
-;;; added is a legitimate mark, nor does it check to see whther the mark has
-;;; already been added.
+;;; added is a legitimate mark. It does print a warning, however, when the
+;;; specified mark is already present in the MARKS slot, though it adds it
+;;; anyway. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A pitch object.
@@ -1566,6 +1573,9 @@ data: D4
 ;;; RETURN VALUE
 ;;; A list. The method returns the entire contents of the given pitch object's
 ;;; MARKS slot as a list.
+;;;
+;;; Prints a warning when the specified mark is already present in the given
+;;; pitch object's MARKs slot.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -1584,6 +1594,18 @@ data: D4
 
 =>
 (A PIZZ)
+
+;; Prints a warning when the specified mark is already present in the MARKS
+;; slot, though it adds it again anyway.
+(let ((p (make-pitch 'c4)))
+  (add-mark p 'pizz)
+  (add-mark p 'pizz)
+  (marks p))
+
+=> (PIZZ PIZZ)
+WARNING: 
+pitch::add-mark: mark PIZZ already present but adding again!
+
 
 |#
 ;;; SYNOPSIS
@@ -1976,8 +1998,9 @@ PITCH: frequency: 554.365, midi-note: 73, midi-channel: 0
 ;;; - keyword argument :as-symbols. Set to T or NIL to indicate whether the
 ;;; method is to return a list of pitch objects or a list of the note-name
 ;;; symbols from those pitch objects. T = return as symbols. Default = NIL. 
-;;; - keyword argument :package. The package in which the transposition is to
-;;; be performed. Default = :sc.
+;;; - keyword argument :package. Used to identify a separate Lisp package in
+;;; which to itern result. This is really only applicable is combination with
+;;; :as-symbol set to T. Default = :sc.
 ;;; - keyword argument :remove-duplicates. Set to T or NIL to indicate whether
 ;;; any duplicate pitch objects are to be removed from the resulting list. T =
 ;;; remove duplicates. Default = T.
@@ -2185,7 +2208,7 @@ data: E4
 ;;;
 ;;; The list of pitch items may be a list of pitch objects or a list of
 ;;; note-name symbols. 
-;;; 
+;;;
 ;;; ARGUMENTS 
 ;;; - A list of pitch items. These may be pitch objects or note-name symbols. 
 ;;;
@@ -2193,8 +2216,9 @@ data: E4
 ;;; - keyword argument :as-symbol. T or NIL indicating whether the object is to
 ;;; return a list of pitch objects or a list of note-name symbols. T = return
 ;;; pitch objects. Default = NIL.
-;;; - keyword argument :package. The Lisp package in which the note-name
-;;; symbols should be processed. Default = :sc.
+;;; - keyword argument :package. Used to identify a separate Lisp package in
+;;; which to itern result. This is really only applicable is combination with
+;;; :as-symbol set to T. Default = :sc.
 ;;; - keyword argument :allow. T or NIL to indicate whether pitch objects of
 ;;; certain, specified octave-doublings are to be kept even if they are not the 
 ;;; lowest. This argument takes the form of either a single number or a list of
@@ -2202,7 +2226,14 @@ data: E4
 ;;; object is found, but rather pitch objects that are the specified number of
 ;;; octaves above the lowest instance of the pitch class. Thus, :allow 2
 ;;; indicates keeping the lowest pitch plus any instances of the same pitch
-;;; class two octaves above that lowest pitch (i.e., double-octaves).
+;;; class two octaves above that lowest pitch (i.e., double-octaves). However,
+;;; it is important to note that the function first removes any octave
+;;; doublings that are not excepted by the :allow argument, which may produce
+;;; confusing results. Given a list of consecutive octaves, such as '(C1 C2 C3
+;;; C4) and an :allow value of 2, the function will first remove any equal
+;;; pitch classes that are are not 2 octaves apart, resulting in C2, C3, and C4
+;;; being removed as they are one octave distant from C1, C2 and C3. The result
+;;; of the function using these values would therefore be '(C1).
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns a list of pitch objects by default. If the keyword argument

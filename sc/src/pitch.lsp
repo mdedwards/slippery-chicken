@@ -1283,9 +1283,7 @@ data: D4
 ;;; Returns a number. The number may be positive or negative.
 ;;; 
 ;;; EXAMPLE
-
 #|
-
 ;; Subtracting the lower pitch object from the higher returns a positive number
 (let ((p1 (make-pitch 'd4))
       (p2 (make-pitch 'c4)))
@@ -1317,9 +1315,6 @@ data: D4
 ;;; ARGUMENTS
 ;;; - A first pitch object.
 ;;; - A second pitch object.
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
 ;;; 
 ;;; RETURN VALUE
 ;;; 

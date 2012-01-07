@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 13:51:16 Wed Jan  4 2012 ICT
+;;; $$ Last modified: 15:27:25 Sat Jan  7 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -89,6 +89,8 @@
    ;; what key the instrument is in
    (transposition :accessor transposition :initarg :transposition
                   :initform nil)  
+   ;; MDE Sat Jan  7 15:19:26 2012 -- if this isn't in clefs list it will be
+   ;; added and a warning issued 
    (starting-clef :accessor starting-clef :type symbol :initarg :starting-clef 
                   :initform 'treble)
    ;; what clefs the instrument can use, as symbols; user gives order in
@@ -210,37 +212,25 @@
       (if hw
           (setf (highest-written ins) hw)
           (setf (highest-sounding ins) hs))
-      #|
-      ;;; MDE Fri Dec  9 14:02:00 2011 -- this logic is now in the setf methods
-      (if lw
-          (setf (lowest-sounding ins) (transpose-note
-                                       lw (transposition-semitones ins)))
-          (setf (lowest-written ins) (transpose-note
-                                      ls (- (transposition-semitones ins)))))
-      (if hw
-          (setf (highest-sounding ins) (transpose-note
-                                        hw (transposition-semitones ins)))
-          (setf (highest-written ins) (transpose-note
-                                       hs (- (transposition-semitones ins)))))
-      ;; 5.8.10 we say in the class def that these will be pitch objects but at
-      ;; the mo they're symbols; handle this now and hope it doesn't break
-      ;; anything :)
-      (setf (lowest-sounding ins) (make-pitch (lowest-sounding ins))
-            (lowest-written ins) (make-pitch (lowest-written ins))
-            (highest-sounding ins) (make-pitch (highest-sounding ins))
-            (highest-written ins) (make-pitch (highest-written ins)))
-      |#
       (setf (clefs ins) (if (clefs ins)
                             (reverse (clefs ins))
                             (list (starting-clef ins)))
             (clefs-in-c ins) (if (clefs-in-c ins) 
                                  (reverse (clefs-in-c ins))
                                  (copy-list (clefs ins))))
+      ;; MDE Sat Jan  7 15:22:49 2012 -- 
+      (when (and (starting-clef ins) (not (member (starting-clef ins)
+                                                  (clefs ins))))
+        (warn "~a~&instrument::initialize-instance: starting-clef (~a) is not ~
+               a member of clefs (~a) so adding automatically"
+              ins (starting-clef ins) (clefs ins))
+        (setf (clefs ins) (econs (clefs ins) (starting-clef ins))))
       (when pn
         (unless (or (prefers-high ins)
                     (prefers-low ins))
-          (error "instrument::initialize-instance: prefers-notes should be ~
-                  either nil, 'high or 'low")))
+          (error "~a~&instrument::initialize-instance: prefers-notes should be ~
+                  either nil, 'high or 'low"
+                 ins)))
       (when (and (chords ins)
                  (not (chord-function ins)))
         (setf (chord-function ins) 'default-chord-function)))))
@@ -355,9 +345,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod check-starting-clef ((ins instrument))
-  (unless (member (starting-clef ins) 
-                  '(treble alto tenor bass percussion double-bass 
-                    double-treble))
+  (unless (is-clef (starting-clef ins))
     (error "instrument::check-starting-clef: Don't recognise ~a ~
             (did you type an extra (superfluous) quote?)"
            (starting-clef ins))))
@@ -699,9 +687,9 @@
 #|
 ;; Make-instrument for the flute:
 (make-instrument 'flute :staff-name "Flute" :staff-short-name "Fl."
-		 :lowest-written 'c4 :highest-written 'd7 
-		 :starting-clef 'treble :midi-program 74 :chords nil
-		 :microtones t :missing-notes '(cqs4 dqf4))
+                 :lowest-written 'c4 :highest-written 'd7 
+                 :starting-clef 'treble :midi-program 74 :chords nil
+                 :microtones t :missing-notes '(cqs4 dqf4))
 
 => 
 INSTRUMENT: lowest-written: 
@@ -731,13 +719,13 @@ data: NIL
 
 ;; A make-instrument for the b-flat bass clarinet
 (make-instrument 'bass-clarinet :staff-name "Bass Clarinet" :lowest-written 'c3 
-		 :highest-written 'g6 :staff-short-name "Bass Cl." 
-		 :chords nil :midi-program 72 :starting-clef 'treble
-		 :microtones t :prefers-notes 'low
-		 :missing-notes '(aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3 eqf3
-				  dqs3 dqf3 cqs3)
-		 :clefs '(treble) :clefs-in-c '(treble bass)
-		 :transposition-semitones -14)
+                 :highest-written 'g6 :staff-short-name "Bass Cl." 
+                 :chords nil :midi-program 72 :starting-clef 'treble
+                 :microtones t :prefers-notes 'low
+                 :missing-notes '(aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3 eqf3
+                                  dqs3 dqf3 cqs3)
+                 :clefs '(treble) :clefs-in-c '(treble bass)
+                 :transposition-semitones -14)
 
 => 
 INSTRUMENT: lowest-written: 
@@ -758,27 +746,27 @@ data: NIL
 |#
 ;;; SYNOPSIS
 (defun make-instrument (id &key 
-			staff-name
+                        staff-name
                         staff-short-name
-			lowest-written
-			highest-written
-			lowest-sounding
-			highest-sounding
-			transposition
-			transposition-semitones
-			(starting-clef 'treble)
-			clefs
-			(largest-fast-leap 999)
-			score-write-in-c
-			(score-write-bar-line 1)
-			(midi-program 1)
-			chords
-			clefs-in-c
-			subset-id
-			microtones
-			missing-notes
-			prefers-notes
-			chord-function)
+                        lowest-written
+                        highest-written
+                        lowest-sounding
+                        highest-sounding
+                        transposition
+                        transposition-semitones
+                        (starting-clef 'treble)
+                        clefs
+                        (largest-fast-leap 999)
+                        score-write-in-c
+                        (score-write-bar-line 1)
+                        (midi-program 1)
+                        chords
+                        clefs-in-c
+                        subset-id
+                        microtones
+                        missing-notes
+                        prefers-notes
+                        chord-function)
 ;;; ****
   (make-instance 'instrument :id id
                  :staff-name staff-name

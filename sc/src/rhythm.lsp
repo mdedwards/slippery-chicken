@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 14:21:49 Wed Jan  4 2012 ICT
+;;; $$ Last modified: 15:17:10 Sat Jan  7 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1962,7 +1962,9 @@ data: (
 ;;; MDE Sat Dec 24 12:34:40 2011 -- marks for clefs are stored as e.g. (clef
 ;;; treble)  
 (defun clef-list-p (thing)
-  (and (listp thing) (eq (first thing) 'clef)))
+  (and (listp thing)
+       (eq (first thing) 'clef)
+       (is-clef (second thing))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Dec 23 22:53:26 2011 

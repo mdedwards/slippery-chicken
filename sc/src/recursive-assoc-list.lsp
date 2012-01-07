@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 19:02:21 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 08:07:24 Sat Jan  7 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -140,8 +140,27 @@
 ;;; Get the previous named-object in the ral (or <how-many previous>), looking
 ;;; into all recursive rals along the way.
 
+;;; ****m* recursive-assoc-list/get-previous
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-previous ((ral recursive-assoc-list) keys 
                          &optional (how-many 1))
+;;; ****
   (link-named-objects ral)
   (let ((this (get-data keys ral)))
     (when this
@@ -182,7 +201,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* recursive-assoc-list/relink-named-objects
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod relink-named-objects ((ral recursive-assoc-list))
+;;; ****
   (setf (linked ral) nil)
   (link-named-objects ral))
 
@@ -252,9 +290,29 @@
     (setf (linked ral) t))
   ral)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* recursive-assoc-list/r-count-elements
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod r-count-elements ((ral recursive-assoc-list))
+;;; ****
   (let ((len (sclist-length ral)))
     (loop for thing in (data ral) do
           (when (is-ral (data thing))
@@ -265,8 +323,27 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* recursive-assoc-list/get-data
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-data :around (ids (ral recursive-assoc-list) 
-                             &optional (warn t))
+                                 &optional (warn t))
+;;; ****
   (unless (listp ids)
     (setf ids (list ids)))
   (let* ((next (call-next-method (first ids) ral warn))
@@ -287,7 +364,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* recursive-assoc-list/add
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add (named-object (ral recursive-assoc-list) &optional ref)
+;;; ****
   (let ((where (if ref 
                    (data (get-data ref ral))
                  ral)))
@@ -311,7 +407,26 @@
 ;;; you reference a key that exists, then it's data is a list that data will be
 ;;; added to the end of.
 
+;;; ****m* recursive-assoc-list/ral-econs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod ral-econs (data key (ral recursive-assoc-list))
+;;; ****
   (unless (listp key)
     (setf key (list key)))
   (let ((butlast (butlast key))
@@ -361,7 +476,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* recursive-assoc-list/add-empty-parcel
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-empty-parcel ((ral recursive-assoc-list) id &optional new-class)
+;;; ****
   (let ((sub-ral (make-ral (format nil "sub-ral-of-~a" (id ral))
                            nil)))
     (when new-class
@@ -372,7 +506,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* recursive-assoc-list/set-data
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-data (key new-value (ral recursive-assoc-list))
+;;; ****
   (if (or (atom key)
           (= 1 (length key)))
       (call-next-method (if (atom key) key (first key)) new-value ral)
@@ -395,7 +548,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* recursive-assoc-list/get-first
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-first ((ral recursive-assoc-list))
+;;; ****
   (let* ((first (call-next-method))
          (data-first (when first (data first))))
     (if (is-ral data-first)
@@ -409,7 +581,26 @@
 ;;; nested ral, then the result is the reference into the top-level ral, not
 ;;; the argument.
 
+;;; ****m* recursive-assoc-list/get-first-ref
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-first-ref ((ral recursive-assoc-list))
+;;; ****
   (let* ((first (first (data ral)))
          (first-data (data first)))
     (if (is-ral first-data)
@@ -418,7 +609,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* recursive-assoc-list/get-last
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-last ((ral recursive-assoc-list))
+;;; ****
   (let* ((last (call-next-method))
          (last-data (data last)))
     (if (is-ral last-data)
@@ -427,9 +637,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* recursive-assoc-list/get-all-refs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-all-refs ((ral recursive-assoc-list) 
                          &optional 
                          (single-ref-as-list t))
+;;; ****
   (when (data ral)
     (link-named-objects ral)
     (loop 
@@ -445,7 +674,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* recursive-assoc-list/get-last-ref
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-last-ref ((ral recursive-assoc-list))
+;;; ****
   (let* ((last (first (last (data ral))))
          (last-data (data last)))
     (if (is-ral last-data)
@@ -456,7 +704,26 @@
 
 ;;; Check whether the data really is recursive
 
+;;; ****m* recursive-assoc-list/recursivep
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod recursivep ((ral recursive-assoc-list))
+;;; ****
   (loop for i in (data ral)
       if (is-ral (data i)) do (return t)
       finally (return nil)))
@@ -467,6 +734,24 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* recursive-assoc-list/make-ral
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-ral (id ral &key (recurse-simple-data t) (warn-not-found t)
                  (tag nil) (full-ref nil))
   (make-instance 'recursive-assoc-list :data ral :id id 
@@ -476,7 +761,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* recursive-assoc-list/lisp-assoc-listp
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun lisp-assoc-listp (candidate &optional (recurse-simple-data t))
+;;; ****
   (when (and candidate (listp candidate))
     (dolist (x candidate t)
             ;; (print x)
@@ -500,7 +804,26 @@
 ;;; Check whether a list contains only atoms which could be used as assoc-list
 ;;; ids. 
 
+;;; ****f* recursive-assoc-list/assoc-list-id-list
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun assoc-list-id-list (id-list)
+;;; ****
   (when (listp id-list)
     (loop for i in id-list unless (assoc-list-id-p i) do (return nil)
         finally (return t))))

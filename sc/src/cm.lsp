@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 00:47:25 Sat Jan  7 2012 ICT
+;;; $$ Last modified: 18:06:31 Sat Jan  7 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -116,12 +116,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; MDE Sat Jan  7 18:06:01 2012 -- this will always return >= 0 <= 1.0 so a
+;;; bend upwards from the nearest chromatic note below our freq 
 (defun get-pitch-bend (freq)
   (let* ((chromatic-degree (freq-to-degree freq t))
          (rem (rem chromatic-degree 1)))
     ;; float discrepancies result in e.g. c#4 being 60.999996....
-    (if (or (equal-within-tolerance 1 rem .0001)
-            (equal-within-tolerance 0 rem .0001))
+    (if (or (equal-within-tolerance 1 rem .005) ; used to be .0001
+            (equal-within-tolerance 0 rem .005))
         0.0
         ;; rem)))
         ;; MDE Sat Jan  7 00:39:10 2012 -- instead of the above try
@@ -449,7 +451,7 @@
 (defun set-pitch-bend (time channel bend)
   ;; (declare (special midimsg msg))
   ;; (output (new midimsg time time msg 
-  ;; (print 'pitch-bend)
+  ;; (format t "~&set-pitch-bend: time ~a channel ~a bend ~a" time channel bend)
   (new midi-pitch-bend :time time :channel channel
        :bend (rescale bend -2 2 -8192 8191)))
 

@@ -366,21 +366,44 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan  7 11:32:53 EST 2012: Added robodoc info
+
 ;;; ****m* instrument/transposing-instrument-p
 ;;; FUNCTION
-;;; 
+;;; Determine whether a given instrument object defines a transposing
+;;; instrument. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An instrument object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - ignore-octaves. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the given instrument object defines a transposing instrument,
+;;; otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns NIL if the instrument is not a transposing instrument
+(let ((i1 (make-instrument 'instrument-one)))
+  (transposing-instrument-p i1))
+
+=> NIL
+
+;; Returns T if the instrument object has been defined using a non-NIL value
+;; for :transposition
+(let ((i2 (make-instrument 'instrument-two :transposition 'bf)))
+  (transposing-instrument-p i2))
+
+=> T
+
+;; Returns T if the instrument object has been defined using a non-0 value for
+;; :transposition-semitones 
+(let ((i3 (make-instrument 'instrument-two :transposition-semitones -3)))
+  (transposing-instrument-p i3))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -409,22 +432,53 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 5.2.11 
+;;; SAR Sat Jan  7 11:52:08 EST 2012
+
 ;;; ****m* instrument/set-prefers-low
-;;; FUNCTION
+;;; DATE
+;;; 05 Feb 2011
 ;;; 
+;;; FUNCTION
+;;; Sets the PREFERS-NOTES slot of the given instrument object to 'LOW.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An instrument object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; (- optional ignore argument; for internal use only).
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns symbol LOW.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns symbol LOW by default
+(let ((i1 (make-instrument 'inst)))
+  (set-prefers-low i1))
+
+=> LOW
+
+;; Create an instrument object with only an ID, print the PREFERS-NOTES slot to
+;; see that it is NIL by default, apply the set-prefers-low, and print the
+;; slot again to see the changes
+(let ((i1 (make-instrument 'inst)))
+  (print (prefers-notes i1))
+  (set-prefers-low i1)
+  (print (prefers-notes i1)))
+
+=> 
+NIL 
+LOW
+
+;; Reset to LOW from HIGH
+(let ((i1 (make-instrument 'inst :prefers-notes 'high)))
+  (print (prefers-notes i1))
+  (set-prefers-low i1)
+  (print (prefers-notes i1)))
+
+=>
+HIGH 
+LOW
 
 |#
 ;;; SYNOPSIS
@@ -435,22 +489,54 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 5.2.11 
+;;; SAR Sat Jan  7 12:02:59 EST 2012: Added robodoc info
+
 ;;; ****m* instrument/set-prefers-high
-;;; FUNCTION
+;;; DATE
+;;; 05 Feb 2011
 ;;; 
+;;; FUNCTION
+;;; Sets the PREFERS-NOTES slot of the given instrument object to 'HIGH.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An instrument object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; (- optional ignore argument; for internal use only).
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns symbol HIGH.
 ;;; 
 ;;; EXAMPLE
 #|
+
+;; Returns symbol HIGH by default
+(let ((i1 (make-instrument 'inst)))
+  (set-prefers-high i1))
+
+=> HIGH
+
+;; Create an instrument object with only an ID, print the PREFERS-NOTES slot to
+;; see that it is NIL by default, apply the set-prefers-high, and print the
+;; slot again to see the changes
+(let ((i1 (make-instrument 'inst)))
+  (print (prefers-notes i1))
+  (set-prefers-high i1)
+  (print (prefers-notes i1)))
+
+=> 
+NIL 
+HIGH
+
+;; Reset to HIGH from LOW
+(let ((i1 (make-instrument 'inst :prefers-notes 'low)))
+  (print (prefers-notes i1))
+  (set-prefers-high i1)
+  (print (prefers-notes i1)))
+
+=>
+LOW
+HIGH 
 
 |#
 ;;; SYNOPSIS
@@ -461,21 +547,39 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan  7 12:08:12 EST 2012: Added robodoc info
+
 ;;; ****m* instrument/prefers-low
 ;;; FUNCTION
-;;; 
+;;; Determine whether the PREFERS-NOTES slot of a given instrument object is
+;;; set to 'LOW. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An instrument object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the PREFERS-NOTES slot of the given instrument object is set
+;;; to 'LOW, otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns T if the PREFERS-NOTES slot of the given instrument object is set to
+;; 'LOW 
+(let ((i1 (make-instrument 'inst :prefers-notes 'low)))
+  (prefers-low i1))
+
+=> T
+
+;; Returns NIL if the PREFERS-NOTES slot of the given instrument object is not
+;; set to 'LOW
+(let ((i1 (make-instrument 'inst1))
+      (i2 (make-instrument 'inst2 :prefers-notes 'high)))
+  (print (prefers-low i1))
+  (print (prefers-low i2)))
+
+=>
+NIL 
+NIL 
 
 |#
 ;;; SYNOPSIS
@@ -485,21 +589,39 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan  7 12:15:24 EST 2012: Added robodoc info
+
 ;;; ****m* instrument/prefers-high
 ;;; FUNCTION
-;;; 
+;;; Determine whether the PREFERS-NOTES slot of a given instrument object is
+;;; set to 'HIGH. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An instrument object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the PREFERS-NOTES slot of the given instrument object is set
+;;; to 'HIGH, otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns T if the PREFERS-NOTES slot of the given instrument object is set to
+;; 'HIGH
+(let ((i1 (make-instrument 'inst :prefers-notes 'high)))
+  (prefers-high i1))
+
+=> T
+
+;; Returns NIL if the PREFERS-NOTES slot of the given instrument object is not
+;; set to 'HIGH
+(let ((i1 (make-instrument 'inst1))
+      (i2 (make-instrument 'inst2 :prefers-notes 'low)))
+  (print (prefers-high i1))
+  (print (prefers-high i2)))
+
+=>
+NIL 
+NIL 
 
 |#
 ;;; SYNOPSIS
@@ -509,19 +631,58 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan  7 12:20:15 EST 2012: Added robodoc info
+
 ;;; ****m* instrument/in-range
 ;;; FUNCTION
-;;; Checks whether a pitch is in the range of the instrument or not.
+;;; Checks whether a specified pitch falls within the defined range of a given
+;;; instrument object or not.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the instrument instance
-;;; - the pitch (object or symbol)
-;;; - (optional default nil) whether this is checking the sounding or written
-;;; range (default i.e. nil is written)
+;;; - An instrument object.
+;;; - A pitch item (pitch object or note-naem symbol).
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether the pitch specified ist to be compared with
+;;; the given pitch object's sounding or written range. T = Sounding. Default =
+;;; NIL. If T, a secondary NIL is also returned to indicate that the specified
+;;; pitch is neither too high nor too low.
 ;;; 
 ;;; RETURN VALUE  
-;;; t or nil; 0 or 1 as second value depending on whether too high (1) or too
-;;; low (0)
+;;; Returns T if the specified pitch falls between the
+;;; lowest-sounding/lowest-written and the highest-sounding/highest-written
+;;; pitches of the given pitch object.
+;;;
+;;; If the specified pitch is outside of the range, an additional value of 0 or
+;;; 1 is also returned to indicate whether the specified pithc is too high (1)
+;;; or too low (0).
+;;;
+;;; EXAMPLE
+
+#|
+;; Determine if a pitch provided as a note-name symbol falls within the written
+;; range of a non-transposing instrument
+(let ((i1 (make-instrument 'inst1 :lowest-written 'bf3 :highest-written 'a6)))
+  (in-range i1 'c4))
+
+=> T, NIL
+
+;; Determine if a pitch provided as a note-name symbol falls within the
+;; sounding range of a transposing instrument, using the optional argument T
+(let ((i2 (make-instrument 'inst1 :lowest-written 'fs3 :highest-written 'c6
+			   :transposition 'BF)))
+  (in-range i2 'c6 T))
+
+=> NIL, 1
+
+;; A pitch object can be used as the specified pitch
+(let ((i2 (make-instrument 'inst1 :lowest-written 'fs3 :highest-written 'c6
+			   :transposition 'BF)))
+  (in-range i2 (make-pitch 'd6)))
+
+=> NIL, 1
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod in-range ((ins instrument) pitch &optional sounding)
@@ -609,7 +770,10 @@
 ;;;   for the :transposition argument but not for the :transposition-semitones
 ;;;   argument, and there are multiple semitone transposition options for the
 ;;;   key specified, the method will choose the most common semitone
-;;;   transposition for that given key.
+;;;   transposition for that given key. NB: When using keyword argument
+;;;   :transposition rather than :transposition-semitones, sc will have a
+;;;   warning printed by cm with indications as to which direction the
+;;;   transposition has been undertaken.
 ;;;
 ;;; - keyword argument :transposition-semitones. Integer (positive or
 ;;;   negative). The number of semitones lower that a given instrument sounds
@@ -627,10 +791,11 @@
 ;;;
 ;;; - keyword argument :clefs. List of symbols. All clefs that a given
 ;;;   instrument may use in the course of a piece. Clefs are to be given in
-;;;   order of preference. Defaults automatically to value given to
-;;;   :starting-clef. NB: If a separate list is indeed given here, the user
-;;;   must re-enter the starting clef if it is to be included in that list,
-;;;   otherwise it will be omitted.  
+;;;   order of preference. Defaults automatically to the value given to
+;;;   :starting-clef if no other clefs are specified. NB: If a separate list is
+;;;   indeed given here, the method will automatically add the value for
+;;;   :starting-clef as well, should it have been omitted. In this case, a
+;;;   warning will also be printed.
 ;;;
 ;;; - keyword argument :clefs-in-c. List of symbols. Similar to :clefs, but
 ;;;   designates which clefs an instrument uses in a C-score; for example, bass 
@@ -639,7 +804,9 @@
 ;;;
 ;;; - keyword argument :largest-fast-leap. Number. This value indicates the
 ;;;   largest interval, in semitones, that a player can feasibly perform at a
-;;;   fast tempo on the given instrument. Default = 999.
+;;;   fast tempo on the given instrument. Default = 999. "Fast" here is
+;;;   determined for the whole piece by the slippery-chicken class's
+;;;   fast-leap-threshold slot. 
 ;;;
 ;;; - keyword argument :score-write-in-c. T or NIL. Determines whether the
 ;;;   musical material for the given instrument should be printed in C.
@@ -667,7 +834,7 @@
 ;;;   certain quarter-tones. These are to be given by the user as written-pitch
 ;;;   note-name symbols, but are always stored by the method as sounding
 ;;;   pitches. 
-
+;;;
 ;;; - keyword argument :prefers-notes. Symbol. 'high, 'low or NIL. This value
 ;;;   indicates whether to give preference, when choosing notes for the given
 ;;;   instrument, to pitches from the upper or lower end of the instrument's

@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    6th September 2001
 ;;;
-;;; $$ Last modified: 13:23:03 Sat Feb  5 2011 ICT
+;;; $$ Last modified: 13:01:33 Sat Jan  7 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -48,8 +48,6 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 02.12.11 SEAN: Changed robodoc header to reflect class hierarchy
 
 (eval-when (compile)
   (declaim (optimize (speed 3) (safety 1) (space 0) (debug 0))))
@@ -89,13 +87,51 @@
 
 ;;; 5.2.11 optional argument is actually required (but optional because of
 ;;; instrument class method).  instrument is a symbol
-(defmethod set-prefers-low ((ip instrument-palette) &optional instrument) 
+;;; ****m* instrument-palette/set-prefers-low
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod set-prefers-low ((ip instrument-palette) &optional instrument)
+;;; **** 
   (set-prefers-low (get-data instrument ip)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 5.2.11 sim to above
+;;; ****m* instrument-palette/set-prefers-high
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-prefers-high ((ip instrument-palette) &optional instrument)
+;;; ****
   (set-prefers-high (get-data instrument ip)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -104,9 +140,29 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* instrument-palette/make-instrument-palette
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-instrument-palette (id ip &key (warn-not-found t))
+;;; ****
   (make-instance 'instrument-palette :data ip :id id
                  :warn-not-found warn-not-found))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 20:35:00 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 12:57:23 Sat Jan  7 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -224,13 +224,13 @@
 
 (defun tessitura-aux (ensemble)
   (/ (loop for thing in (data ensemble) 
-         sum (cond ((typep thing 'player)
-                    (tessitura-degree thing))
-                   ((is-ral (data thing))
-                    (tessitura-aux (data thing)))
-                   (t (error "ensemble::tessitura-aux: ~
-                               what's this doing here?: ~a"
-                             thing))))
+        sum (cond ((typep thing 'player)
+                   (tessitura-degree thing))
+                  ((is-ral (data thing))
+                   (tessitura-aux (data thing)))
+                  (t (error "ensemble::tessitura-aux: ~
+                             wrong data type: ~a"
+                            thing))))
      (num-data ensemble)))
                                  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

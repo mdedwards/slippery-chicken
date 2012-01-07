@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified: 12:20:39 Wed Jan 26 2011 ICT
+;;; $$ Last modified: 08:03:16 Sat Jan  7 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -117,7 +117,26 @@
 
 ;;; Safe version of subseq that checks start and end points.
 
+;;; ****m* sclist/sc-subseq
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod sc-subseq ((scl sclist) start finish &optional (fun #'error))
+;;; ****
   (unless (and (>= start 0)
                (<= finish (sclist-length scl))
                (< start finish))
@@ -128,20 +147,77 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sclist/sc-nthcdr
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod sc-nthcdr (nth (scl sclist))
+;;; ****
   (setf (data scl) (nthcdr nth (data scl))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; add something destructively to the end of the list (inefficient of course).
+;;; ****m* sclist/sclist-econs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod sclist-econs ((scl sclist) element)
+;;; ****
   (setf (data scl) (econs (data scl) element)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Get the nth element (zero-based) of data.
 
+;;; ****m* sclist/get-nth
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-nth (index (i sclist))
+;;; ****
   (when (and i (sclist-check-bounds i index))
     (nth index (data i))))
 
@@ -150,7 +226,26 @@
 ;;; Set the nth element (zero-based) of data.  NB this doesn't auto-grow the
 ;;; list!. 
 
+;;; ****m* sclist/set-nth
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-nth (index new-element (i sclist))
+;;; ****
   (when (sclist-check-bounds i index)
     (setf (nth index (data i)) new-element)))
 
@@ -169,7 +264,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sclist/sclist-remove-elements
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod sclist-remove-elements ((scl sclist) start how-many)
+;;; ****
   (sclist-check-bounds scl start)
   (sclist-check-bounds scl (1- (+ start how-many)))
   ;; do this to avoid the automatic calling of verify-and-store and
@@ -181,7 +295,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sclist/combine
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod combine ((scl1 sclist) (scl2 sclist))
+;;; ****
   (let ((result (clone scl1)))
     (setf (data result) (append (data scl1) (my-copy-list (data scl2))))
     result))
@@ -224,7 +357,26 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* sclist/make-sclist
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-sclist (list &key (id nil) (bounds-alert t) (copy t))
+;;; ****
   (make-instance 'sclist :id id :data list :bounds-alert bounds-alert
                  :copy copy))
 

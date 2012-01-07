@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 18:04:11 Wed Jan  4 2012 ICT
+;;; $$ Last modified: 18:12:40 Sat Jan  7 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -62,8 +62,9 @@
   ;; the closest midi-note (integer, c4 = 60) to this pitch; when micro-
   ;; tones, then this will always be the chromatic tone 1/4 tone lower.
   ((midi-note :accessor midi-note :initarg :midi-note :initform nil)
-   ;; the midi pitch-bend (in semitones) to create microtones NB this is always
-   ;; upwards 
+   ;; the midi pitch-bend (in semitones) to create microtones; accurate to 0.01
+   ;; (by design: that's 1 cent), so frequency might not reflect this exactly
+   ;; MDE Sat Jan  7 17:12:48 2012 -- NB this is no longer always upwards 
    (pitch-bend :accessor pitch-bend :type float :initform 0.0)
    (degree :accessor degree :type integer :initarg :degree :initform -1)
    (score-note :accessor score-note :initform nil)
@@ -72,7 +73,6 @@
    ;; the number of the note in a white-note octave, i.e. c = 0, d = 1, e = 2
    ;; (in octave 0) .... gs4 = 4 + (4 x 7) = 32
    (white-degree :accessor white-degree :initform nil)
-   ;; 22.10.11 always the note below a microtone as pitch-bend is always up
    (nearest-chromatic :accessor nearest-chromatic :type symbol :initform nil)
    ;; just the accidental part of the note e.g. s, f or qf etc.
    (accidental :accessor accidental :type symbol :initform nil)
@@ -200,12 +200,6 @@
                         time
                         amplitude
                         duration  
-                        ;; now this means of course we can't have any
-                        ;; microtonal chords (with normal and
-                        ;; inflected pitches) but somehow this seems
-                        ;; preferable to hogging several channels per
-                        ;; instrument...doesn't it???  todo: rethink
-                        ;; this!!!!
                         ;; 1- because cm channels start at 0
                         (1- (midi-channel p))))
 
@@ -1433,7 +1427,7 @@ data: CQS4
     (let* ((id (id p))
            (f (frequency p))
            (no-brackets (remove-accidental-in-parentheses-indicator id))
-           (freq (when f (coerce f 'float))))
+           (freq (when f (coerce f 'double-float))))
       (when (and freq
                  (<= freq 0.0))
         (error "~a~%pitch::update-pitch: weird frequency (~a)"
@@ -1467,14 +1461,25 @@ data: CQS4
         (unless (src p)
           (setf (src p) (/ (frequency p)
                            (note-to-freq (src-ref-pitch p)))))
-        (setf (qtr-sharp p) (is-qtr-sharp (id p))
-              (sharp p) (is-sharp (id p))
-              (qtr-flat p) (is-qtr-flat (id p))
-              (natural p) (is-natural (id p))
-              (flat p) (is-flat (id p))
-              (pitch-bend p) (get-pitch-bend (frequency p))
-              (micro-tone p) (not (zerop (pitch-bend p)))
-              (qtr-tone p) (or (qtr-sharp p) (qtr-flat p)))
+        ;; MDE Sat Jan 7 17:00:35 2012 -- freq-to-note will get the nearest
+        ;; note; if the freq of that is > our given freq, we'll end up with the
+        ;; note above our freq _and_ a high pitch-bend (get-pitch-bend always
+        ;; return > 0)--clearly wrong.
+        (let ((pb (get-pitch-bend (frequency p))))
+          ;; (format t "~&~a ~a ~a" (frequency p) (note-to-freq (id p)) pb)
+          (when (and (not (zerop pb))
+                     (< (frequency p) (note-to-freq (id p))))
+            (setf pb (- pb 1.0)))
+          (unless (and (> pb -1.0) (< pb 1.0))
+            (error "pitch::update-pitch: pitch-bend is ~a!" pb))
+          (setf (qtr-sharp p) (is-qtr-sharp (id p))
+                (sharp p) (is-sharp (id p))
+                (qtr-flat p) (is-qtr-flat (id p))
+                (natural p) (is-natural (id p))
+                (flat p) (is-flat (id p))
+                (pitch-bend p) pb
+                (micro-tone p) (not (zerop (pitch-bend p)))
+                (qtr-tone p) (or (qtr-sharp p) (qtr-flat p))))
         (set-score-note p)
         ;; (set-natural p)
         (set-white-note p)
@@ -1485,9 +1490,9 @@ data: CQS4
               ;; degree in the current scale
               (degree p) (round (freq-to-degree (frequency p)))
               (midi-note p) (note-to-midi
-                                   (if (micro-tone p)
-                                       (nearest-chromatic p)
-                                       (id p)))
+                             (if (micro-tone p)
+                                 (nearest-chromatic p)
+                                 (id p)))
               (c5ths p) (cond ((flat p) (1+ (position (no-8ve-no-acc p) c5f)))
                               ((sharp p) (1+ (position (no-8ve-no-acc p) c5s)))
                               (t 0))

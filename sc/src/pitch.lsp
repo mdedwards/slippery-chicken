@@ -337,7 +337,7 @@ data: D4
 
 => 
 PITCH: frequency: 302.270, midi-note: 62, midi-channel: 0 
-       pitch-bend: 0.4999996689937518 
+       pitch-bend: 0.5 
        degree: 125, data-consistent: T, white-note: D4
        nearest-chromatic: D4
        src: 1.1553527116775513, src-ref-pitch: C4, score-note: DS4 
@@ -1283,6 +1283,7 @@ data: D4
 ;;; Returns a number. The number may be positive or negative.
 ;;; 
 ;;; EXAMPLE
+
 #|
 ;; Subtracting the lower pitch object from the higher returns a positive number
 (let ((p1 (make-pitch 'd4))
@@ -1310,7 +1311,7 @@ data: D4
 ;;; ****m* pitch/pitch-
 ;;; FUNCTION
 ;;; Get the distance in semitones between the values of two pitch objects. This
-;;; method also takes fractional values into consideration.
+;;; method also takes fractional values into consideration. The
 ;;; 
 ;;; ARGUMENTS
 ;;; - A first pitch object.
@@ -1321,6 +1322,28 @@ data: D4
 ;;; 
 ;;; EXAMPLE
 #|
+;; Get the distance between two "white-keys"
+(let ((p1 (make-pitch 'd4))
+      (p2 (make-pitch 'c4)))
+ (pitch- p1 p2))
+
+=> 2.0
+
+;; Get the distance in semitones between two frequencies (rounded to the
+;; nearest degree, which by default is quarter-tones)
+(let ((p1 (make-pitch 293.66))
+      (p2 (make-pitch 261.63)))
+ (pitch- p1 p2))
+
+=> 2.0
+
+;; Getting the distance in semitones between pitches with fractional values can
+;; return fractional results
+(let ((p1 (make-pitch 'dqs4))
+      (p2 (make-pitch 'c4)))
+ (pitch- p1 p2))
+
+=> 2.5
 
 |#
 ;;; SYNOPSIS
@@ -1907,7 +1930,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
 (make-pitch 'c4)
 
 => 
-PITCH: frequency: 261.6255569458008, midi-note: 60, midi-channel: 0 
+PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
        pitch-bend: 0.0 
        degree: 120, data-consistent: T, white-note: C4
        nearest-chromatic: C4
@@ -2324,8 +2347,8 @@ data: G3
 ;; list of frequencies
 (remove-octaves '(261.63 523.26 1046.52 196.00))
 
-=> (261.6300048828125 196.0)
-
+=> (261.63 196.0)
+ 
 ;; Setting keyword argument :as-symbol to T returns a list of note-name symbols
 ;; instead 
 (remove-octaves '(261.63 523.26 1046.52 196.00) :as-symbol t)

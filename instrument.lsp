@@ -562,45 +562,223 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jan  6 19:06:39 EST 2012: Added robodoc info
+
 ;;; ****f* instrument/make-instrument
 ;;; FUNCTION
-;;; 
+;;; Create an instrument object, specifying the values for a number of
+;;; parameters for describing characteristics of a given instrument, such as
+;;; lowest and highest pitch, transposition, clefs used by the instrument etc. 
+;;;
+;;; NB: The user will generally define instruments will in the context of the
+;;; make-instrument-palette function and added directly to the
+;;; +slippery-chicken-standard-instrument-palette+ parameter of the file
+;;; instruments.lsp, using the keyword structure shown below in the OPTIONAL
+;;; ARGUMENTS.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A symbol that is the instrument ID.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :staff-name. String. This is the unabbreviated
+;;;   instrument name that will be used for the first page of printed scores.  
 ;;; 
+;;; - keyword argument :staff-short-name. String. This is the abbreviated
+;;;   instrument name that will be used for subsequent pages of printed
+;;;   scores. 
+;;; 
+;;; - keyword argument :lowest-written. Note-name symbol. This is the lowest
+;;;   written pitch available on the given instrument. Defaults to NIL. A user
+;;;   may only define either the lowest-written value or the lowest-sounding
+;;;   value. If a lowest-written value is given, the method automatically
+;;;   determines the lowest-sounding value based on the lowest-written value
+;;;   and the transposition value. 
+;;;
+;;; - keyword argument :highest-written. Note-name symbol. This is the highest
+;;;   written pitch available on the given instrument. Defaults to NIL. A user
+;;;   may only define either the highest-written value or the highest-sounding
+;;;   value. If a highest-written value is given, the method automatically
+;;;   determines the highest-sounding value based on the highest-written value
+;;;   and the transposition value. 
+;;;
+;;; - keyword argument :lowest-sounding. Note-name symbol. This is the lowest
+;;;   sounding pitch available on the given instrument. Defaults to NIL. A user
+;;;   may only define either the lowest-sounding value or the lowest-written
+;;;   value. If a lowest-sounding value is given, the method automatically
+;;;   determines the lowest-written value based on the lowest-sounding value
+;;;   and the transposition value. 
+;;;
+;;; - keyword argument :highest-sounding. Note-name symbol. This is the highest 
+;;;   sounding pitch available on the given instrument. Defaults to NIL. A user 
+;;;   may only define either the highest-sounding value or the highest-written
+;;;   value. If a highest-sounding value is given, the method automatically
+;;;   determines the highest-written value based on the highest-sounding value
+;;;   and the transposition value. 
+;;;
+;;; - keyword argument :transposition. Note-name symbol. This is the key of the
+;;;   given instrument (such as the "B-flat" of the "B-flat clarinet"), given
+;;;   as a note-name symbol (such as 'BF for B-flat). If a value is only given
+;;;   for the :transposition argument but not for the :transposition-semitones
+;;;   argument, and there are multiple semitone transposition options for the
+;;;   key specified, the method will choose the most common semitone
+;;;   transposition for that given key.
+;;;
+;;; - keyword argument :transposition-semitones. Integer (positive or
+;;;   negative). The number of semitones lower that a given instrument sounds
+;;;   than written, e.g. -2 for B-flat Clarinet. If a value is only given for
+;;;   the :transposition-semitones argument but not for the :transposition
+;;;   argument, the method will automatically determine the key for the
+;;;   :transposition argument. The listener will drop into the debugger with an
+;;;   error if a key is given for the :transposition argument and the number
+;;;   specified for the :transposition-semitones does not correspond with that
+;;;   key. 
+;;;
+;;; - keyword argument :starting-clef. Symbol. This value determines the first
+;;;   clef that a given instrument is to use if that instrument can use
+;;;   different clefs. Default = 'treble. 
+;;;
+;;; - keyword argument :clefs. List of symbols. All clefs that a given
+;;;   instrument may use in the course of a piece. Clefs are to be given in
+;;;   order of preference. Defaults automatically to value given to
+;;;   :starting-clef. NB: If a separate list is indeed given here, the user
+;;;   must re-enter the starting clef if it is to be included in that list,
+;;;   otherwise it will be omitted.  
+;;;
+;;; - keyword argument :clefs-in-c. List of symbols. Similar to :clefs, but
+;;;   designates which clefs an instrument uses in a C-score; for example, bass 
+;;;   clarinet may notated in bass cleff for sounding pitches though it is
+;;;   standardly notated in treble clef for written pitches.
+;;;
+;;; - keyword argument :largest-fast-leap. Number. This value indicates the
+;;;   largest interval, in semitones, that a player can feasibly perform at a
+;;;   fast tempo on the given instrument. Default = 999.
+;;;
+;;; - keyword argument :score-write-in-c. T or NIL. Determines whether the
+;;;   musical material for the given instrument should be printed in C.
+;;;   T = print in C. Default = NIL. 
+;;;
+;;; - keyword argument :score-write-bar-line. Integer. This argument is used
+;;;   for indicating system-grouping in the printed score. The given integer
+;;;   specifies how many instruments above this one should be grouped together
+;;;   with an unbroken bar-line. Default = 1.
+;;;
+;;; - keyword argument :midi-program. Integer. The number of the MIDI program
+;;;   to be used for playing back this instrument. Default = 1.
+;;;
+;;; - keyword argument :chords. T or NIL. Indicates whether the given
+;;;   instrument is capable of playing chords (starting with 2-note
+;;;   simultaneities, but not multiphonics). 
+
+;;; - keyword argument :subset-id. 
+
+;;; - keyword argument :microtones. T or NIL. Indicates whether the instrument
+;;;   can play microtones.
+;;;
+;;; - keyword argument :missing-notes. A list of note-name symbols. This is a
+;;;   list of any notes which the given instrument can't play, for example
+;;;   certain quarter-tones. These are to be given by the user as written-pitch
+;;;   note-name symbols, but are always stored by the method as sounding
+;;;   pitches. 
+
+;;; - keyword argument :prefers-notes. Symbol. 'high, 'low or NIL. This value
+;;;   indicates whether to give preference, when choosing notes for the given
+;;;   instrument, to pitches from the upper or lower end of the instrument's
+;;;   range. When NIL, preference is given to notes from its middle
+;;;   register. Default = NIL.
+;;;
+;;; - keyword argument :chord-function. If the given instrument can play chords
+;;;   then it will need a reference to a function that can select chords for
+;;;   it. NB This should be a symbol not a function object; thus, 'my-fun not
+;;;   #'my-fun. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns an instrument object.
 ;;; 
 ;;; EXAMPLE
+
 #|
+;; Make-instrument for the flute:
+(make-instrument 'flute :staff-name "Flute" :staff-short-name "Fl."
+		 :lowest-written 'c4 :highest-written 'd7 
+		 :starting-clef 'treble :midi-program 74 :chords nil
+		 :microtones t :missing-notes '(cqs4 dqf4))
+
+=> 
+INSTRUMENT: lowest-written: 
+PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
+[...]
+, highest-written:
+PITCH: frequency: 2349.318, midi-note: 98, midi-channel: 0 
+[...]
+lowest-sounding: 
+PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
+[...]
+, highest-sounding: 
+PITCH: frequency: 2349.318, midi-note: 98, midi-channel: 0 
+            starting-clef: TREBLE, clefs: (TREBLE), clefs-in-c: (TREBLE)
+            prefers-notes: NIL, midi-program: 74
+            transposition: C, transposition-semitones: 0
+            score-write-in-c: NIL, score-write-bar-line: 1
+            chords: NIL, chord-function: NIL, 
+            total-bars: 0 total-notes: 0, total-duration: 0.0
+            total-degrees: 0, microtones: T
+            missing-notes: (CQS4 DQF4), subset-id: NIL
+            staff-name: Flute, staff-short-name : Fl.,
+            largest-fast-leap: 999
+[...]
+NAMED-OBJECT: id: FLUTE, tag: NIL, 
+data: NIL
+
+;; A make-instrument for the b-flat bass clarinet
+(make-instrument 'bass-clarinet :staff-name "Bass Clarinet" :lowest-written 'c3 
+		 :highest-written 'g6 :staff-short-name "Bass Cl." 
+		 :chords nil :midi-program 72 :starting-clef 'treble
+		 :microtones t :prefers-notes 'low
+		 :missing-notes '(aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3 eqf3
+				  dqs3 dqf3 cqs3)
+		 :clefs '(treble) :clefs-in-c '(treble bass)
+		 :transposition-semitones -14)
+
+=> 
+INSTRUMENT: lowest-written: 
+PITCH: frequency: 130.813, midi-note: 48, midi-channel: 0 
+[...]
+, highest-written: 
+PITCH: frequency: 1567.982, midi-note: 91, midi-channel: 0 
+[...]
+            lowest-sounding: 
+PITCH: frequency: 58.270, midi-note: 34, midi-channel: 0 
+[...]
+, highest-sounding: 
+PITCH: frequency: 698.456, midi-note: 77, midi-channel: 0 
+[...]
+NAMED-OBJECT: id: BASS-CLARINET, tag: NIL, 
+data: NIL
 
 |#
 ;;; SYNOPSIS
-(defun make-instrument (id &key staff-name
+(defun make-instrument (id &key 
+			staff-name
                         staff-short-name
-                                lowest-written
-                                highest-written
-                                lowest-sounding
-                                highest-sounding
-                                transposition
-                                transposition-semitones
-                                (starting-clef 'treble)
-                                clefs
-                                (largest-fast-leap 999)
-                                score-write-in-c
-                                (score-write-bar-line 1)
-                                (midi-program 1)
-                                chords
-                                clefs-in-c
-                                subset-id
-                                microtones
-                                missing-notes
-                                prefers-notes
-                                chord-function)
+			lowest-written
+			highest-written
+			lowest-sounding
+			highest-sounding
+			transposition
+			transposition-semitones
+			(starting-clef 'treble)
+			clefs
+			(largest-fast-leap 999)
+			score-write-in-c
+			(score-write-bar-line 1)
+			(midi-program 1)
+			chords
+			clefs-in-c
+			subset-id
+			microtones
+			missing-notes
+			prefers-notes
+			chord-function)
 ;;; ****
   (make-instance 'instrument :id id
                  :staff-name staff-name
@@ -751,28 +929,25 @@
 
 ;;; ****f* instrument/default-chord-function
 ;;; FUNCTION
-;;; default-chord-function:
-;;; 
 ;;; If an instrument is able to play chords, we need to define a function to
 ;;; select notes from a list that it can play as a chord.  This function (as
 ;;; a symbol) is passed as a slot to the instrument instance.
 ;;; 
 ;;; This is the default function; it returns a 2-note chord with the note at
-;;; index plus that below it, or that above it if no notes are below.  Or just
-;;; return a single-note chord if neither of those cases are possible.
+;;; index plus that below it, or that above it if no notes are below. Or it
+;;; just returns a single-note chord if neither of those cases are possible.
 ;;;
 ;;; ARGUMENTS 
-;;; The chord-function defined for an instrument should take six arguments: 
-;;; - the current number from the pitch curve
-;;; - the index that this was translated into by the offset and
+;;; - The current number from the pitch curve.
+;;; - The index that this was translated into by the offset and
 ;;;   scaler (based on trying to get a best fit for the instrument and set).
 ;;;   This can be assumed to be a legal reference into pitch-list as it was
 ;;;   calculated as fitting in pitch-seq::get-notes.
-;;; - the pitch-list that we created from the set, taking the instrument's range
-;;;   and other notes already played by other instruments
-;;; - the current pitch-seq object                        
-;;; - the current instrument object
-;;; - the current set object.
+;;; - The pitch-list that we created from the set, taking the instrument's range
+;;;   and other notes already played by other instruments.
+;;; - The current pitch-seq object.                        
+;;; - The current instrument object.
+;;; - The current set object.
 ;;; 
 ;;; RETURN VALUE  
 ;;; a chord object

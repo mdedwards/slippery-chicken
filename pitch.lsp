@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 18:12:40 Sat Jan  7 2012 ICT
+;;; $$ Last modified: 22:40:29 Sat Jan  7 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -76,6 +76,12 @@
    (nearest-chromatic :accessor nearest-chromatic :type symbol :initform nil)
    ;; just the accidental part of the note e.g. s, f or qf etc.
    (accidental :accessor accidental :type symbol :initform nil)
+   ;; MDE Sat Jan 7 22:40:26 2012 -- NB if a pitch object is created form a
+   ;; frequency (rather than note symbol) then the given frequency is stored
+   ;; and the note/midi-note etc. nearest to it will be stored also.  So the
+   ;; frequency might not be the exact frequency of the reflected note.  This
+   ;; is by design, so that unusual temperaments can retain exact frequencies
+   ;; and show nearest notes etc.
    (frequency :accessor frequency :initarg :frequency :initform nil)
    (midi-channel :accessor midi-channel :initarg :midi-channel :initform 0)
    (octave :accessor octave :type integer :initform -1)

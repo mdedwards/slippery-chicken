@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    6th September 2001
 ;;;
-;;; $$ Last modified: 13:01:33 Sat Jan  7 2012 ICT
+;;; $$ Last modified: 09:52:44 Sun Jan  8 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -70,12 +70,12 @@
 
 (defmethod verify-and-store :after ((ip instrument-palette))
   (loop for i in (data ip) and j from 0 do
-        (if (typep (data i) 'recursive-assoc-list)
-            (error "instrument-palette::verify-and-store: ~
+       (if (typep (data i) 'recursive-assoc-list)
+           (error "instrument-palette::verify-and-store: ~
                     In order to allow nested ensembles, nested ~
                     instrument palettes have to be avoided: ~a"
-                   (id ip))
-          (setf (nth j (data ip)) (apply #'make-instrument
+                  (id ip))
+           (setf (nth j (data ip)) (apply #'make-instrument
                                           (cons (id i) (data i)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -115,22 +115,22 @@
 ;; Define an instrument-palette object, then set the PREFERS-NOTES slot of the
 ;; instrument object 'piccolo within that instrument-palette object to 'LOW
 (let ((ip (make-instrument-palette 'inst-pal 
-				   '((piccolo (:transposition-semitones 12
-					       :lowest-written d4
-					       :highest-written c6))   
-				     (bf-clarinet (:transposition-semitones -2 
-						   :lowest-written e3 
-						   :highest-written c6)) 
-				     (horn (:transposition f
-					    :transposition-semitones -7  
-					    :lowest-written f2 
-					    :highest-written c5))   
-				     (violin (:lowest-written g3
-					      :highest-written c7 
-					      :chords t)) 
-				     (viola (:lowest-written c3
-					     :highest-written f6 
-					     :chords t))))))
+                                   '((piccolo (:transposition-semitones 12
+                                               :lowest-written d4
+                                               :highest-written c6))   
+                                     (bf-clarinet (:transposition-semitones -2 
+                                                   :lowest-written e3 
+                                                   :highest-written c6)) 
+                                     (horn (:transposition f
+                                            :transposition-semitones -7  
+                                            :lowest-written f2 
+                                            :highest-written c5))   
+                                     (violin (:lowest-written g3
+                                              :highest-written c7 
+                                              :chords t)) 
+                                     (viola (:lowest-written c3
+                                             :highest-written f6 
+                                             :chords t))))))
   (set-prefers-low ip 'piccolo))
 
 => LOW
@@ -171,26 +171,25 @@
 ;;; EXAMPLE
 #|
 
-#|
 ;; Define an instrument-palette object, then set the PREFERS-NOTES slot of the
 ;; instrument object 'piccolo within that instrument-palette object to 'HIGH 
 (let ((ip (make-instrument-palette 'inst-pal 
-				   '((piccolo (:transposition-semitones 12
-					       :lowest-written d4
-					       :highest-written c6))   
-				     (bf-clarinet (:transposition-semitones -2 
-						   :lowest-written e3 
-						   :highest-written c6)) 
-				     (horn (:transposition f
-					    :transposition-semitones -7  
-					    :lowest-written f2 
-					    :highest-written c5))   
-				     (violin (:lowest-written g3
-					      :highest-written c7 
-					      :chords t)) 
-				     (viola (:lowest-written c3
-					     :highest-written f6 
-					     :chords t))))))
+                                   '((piccolo (:transposition-semitones 12
+                                               :lowest-written d4
+                                               :highest-written c6))   
+                                     (bf-clarinet (:transposition-semitones -2 
+                                                   :lowest-written e3 
+                                                   :highest-written c6)) 
+                                     (horn (:transposition f
+                                            :transposition-semitones -7  
+                                            :lowest-written f2 
+                                            :highest-written c5))   
+                                     (violin (:lowest-written g3
+                                              :highest-written c7 
+                                              :chords t)) 
+                                     (viola (:lowest-written c3
+                                             :highest-written f6 
+                                             :chords t))))))
   (set-prefers-high ip 'piccolo))
 
 => HIGH
@@ -230,17 +229,17 @@
 #|
 ;; Returns an instrument-palette object
 (make-instrument-palette 'inst-pal 
-			 '((piccolo (:transposition-semitones 12
-				     :lowest-written d4 :highest-written c6))  
-			   (bf-clarinet (:transposition-semitones -2
-					 :lowest-written e3 
-					 :highest-written c6)) 
-			   (horn (:transposition f :transposition-semitones -7 
-				  :lowest-written f2 :highest-written c5)) 
-			   (violin (:lowest-written g3 :highest-written c7
-				    :chords t)) 
-			   (viola (:lowest-written c3 :highest-written f6
-				   :chords t))))
+                         '((piccolo (:transposition-semitones 12
+                                     :lowest-written d4 :highest-written c6))  
+                           (bf-clarinet (:transposition-semitones -2
+                                         :lowest-written e3 
+                                         :highest-written c6)) 
+                           (horn (:transposition f :transposition-semitones -7 
+                                  :lowest-written f2 :highest-written c5)) 
+                           (violin (:lowest-written g3 :highest-written c7
+                                    :chords t)) 
+                           (viola (:lowest-written c3 :highest-written f6
+                                   :chords t))))
 
 =>
 INSTRUMENT-PALETTE: 

@@ -754,6 +754,7 @@
 ;;; SYNOPSIS
 (defun make-ral (id ral &key (recurse-simple-data t) (warn-not-found t)
                  (tag nil) (full-ref nil))
+;;; ****
   (make-instance 'recursive-assoc-list :data ral :id id 
                  :recurse-simple-data recurse-simple-data
                  :warn-not-found warn-not-found

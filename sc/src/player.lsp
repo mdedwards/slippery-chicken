@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 09:54:52 Sun Jan  8 2012 ICT
+;;; $$ Last modified: 10:08:22 Sun Jan  8 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -114,12 +114,13 @@
                          (setf (doubles p) t)
                          (make-doublings-al (id p) data ip))
                        ;; copy the instrument as it may be used many times.
-                       (let ((ins (get-data data ip)))
-                         (unless ins
-                           (error "player::init: can't find instrument in ~
+                       (when (and data ip)
+                         (let ((ins (get-data data ip)))
+                           (unless ins
+                             (error "player::init: can't find instrument in ~
                                    instrument-palette:~%instrument: ~a~
                                    ~%palette:~%~a" data ip))
-                         (clone ins))))))
+                           (clone ins)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

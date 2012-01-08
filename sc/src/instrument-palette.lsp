@@ -85,23 +85,55 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 5.2.11 optional argument is actually required (but optional because of
-;;; instrument class method).  instrument is a symbol
+;;; SAR Sat Jan  7 14:28:16 EST 2012: Added robodoc info
+
 ;;; ****m* instrument-palette/set-prefers-low
-;;; FUNCTION
+;;; DATE
+;;; 05 Feb 2011
 ;;; 
+;;; FUNCTION
+;;; Set the PREFERS-NOTES slot of a specified instrument object within a given
+;;; instrument-palette object to 'LOW. The instrument object is specified
+;;; using the ID symbol assigned to it within the instrument-palette object
+;;; definition. 
+;;; 
+;;; NB: The optional argument is actually required, but is listed as optional
+;;; because of the attributes of the instrument class method.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An instrument-palette object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A symbol that is the ID of the instrument object within the
+;;;   instrument-palette object definition.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the symbol 'LOW.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Define an instrument-palette object, then set the PREFERS-NOTES slot of the
+;; instrument object 'piccolo within that instrument-palette object to 'LOW
+(let ((ip (make-instrument-palette 'inst-pal 
+				   '((piccolo (:transposition-semitones 12
+					       :lowest-written d4
+					       :highest-written c6))   
+				     (bf-clarinet (:transposition-semitones -2 
+						   :lowest-written e3 
+						   :highest-written c6)) 
+				     (horn (:transposition f
+					    :transposition-semitones -7  
+					    :lowest-written f2 
+					    :highest-written c5))   
+				     (violin (:lowest-written g3
+					      :highest-written c7 
+					      :chords t)) 
+				     (viola (:lowest-written c3
+					     :highest-written f6 
+					     :chords t))))))
+  (set-prefers-low ip 'piccolo))
+
+=> LOW
 
 |#
 ;;; SYNOPSIS
@@ -111,22 +143,57 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 5.2.11 sim to above
+;;; SAR Sat Jan  7 15:36:44 EST 2012 Added robodoc info
+
 ;;; ****m* instrument-palette/set-prefers-high
+;;; DATE 
+;;; 05 Feb 2011
+;;;
 ;;; FUNCTION
+;;; Set the PREFERS-NOTES slot of a specified instrument object within a given
+;;; instrument-palette object to 'HIGH. The instrument object is specified
+;;; using the ID symbol assigned to it within the instrument-palette object
+;;; definition. 
 ;;; 
+;;; NB: The optional argument is actually required, but is listed as optional
+;;; because of the attributes of the instrument class method.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An instrument-palette object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A symbol that is the ID of the instrument object within the
+;;;   instrument-palette object definition.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the symbol 'HIGH.
 ;;; 
 ;;; EXAMPLE
 #|
+
+#|
+;; Define an instrument-palette object, then set the PREFERS-NOTES slot of the
+;; instrument object 'piccolo within that instrument-palette object to 'HIGH 
+(let ((ip (make-instrument-palette 'inst-pal 
+				   '((piccolo (:transposition-semitones 12
+					       :lowest-written d4
+					       :highest-written c6))   
+				     (bf-clarinet (:transposition-semitones -2 
+						   :lowest-written e3 
+						   :highest-written c6)) 
+				     (horn (:transposition f
+					    :transposition-semitones -7  
+					    :lowest-written f2 
+					    :highest-written c5))   
+				     (violin (:lowest-written g3
+					      :highest-written c7 
+					      :chords t)) 
+				     (viola (:lowest-written c3
+					     :highest-written f6 
+					     :chords t))))))
+  (set-prefers-high ip 'piccolo))
+
+=> HIGH
 
 |#
 ;;; SYNOPSIS
@@ -140,21 +207,55 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan  7 13:43:00 EST 2012: Added robodoc info
+
 ;;; ****f* instrument-palette/make-instrument-palette
 ;;; FUNCTION
-;;; 
+;;; Create an instrument-palette object from a list of instrument descriptions
+;;; based on the keyword arguments of make-instrument.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A symbol that will serve as the ID for the instrument-palette object. 
+;;; - A list of instrument descriptions based on the keyword arguments of
+;;;   make-instrument. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :warn-not-found. T or NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An instrument palette.
 ;;; 
 ;;; EXAMPLE
+
 #|
+;; Returns an instrument-palette object
+(make-instrument-palette 'inst-pal 
+			 '((piccolo (:transposition-semitones 12
+				     :lowest-written d4 :highest-written c6))  
+			   (bf-clarinet (:transposition-semitones -2
+					 :lowest-written e3 
+					 :highest-written c6)) 
+			   (horn (:transposition f :transposition-semitones -7 
+				  :lowest-written f2 :highest-written c5)) 
+			   (violin (:lowest-written g3 :highest-written c7
+				    :chords t)) 
+			   (viola (:lowest-written c3 :highest-written f6
+				   :chords t))))
+
+=>
+INSTRUMENT-PALETTE: 
+PALETTE: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 5
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 5, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: INST-PAL, tag: NIL, 
+data: (
+[...]
 
 |#
 ;;; SYNOPSIS

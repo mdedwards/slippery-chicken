@@ -1128,5 +1128,11 @@ data: NIL
         (make-chord (list p1 p2))
       (make-chord (list p1)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Sat Jan  7 14:20:45 EST 2012: Added instrument-p function
+(defun instrument-p (thing)
+  (typep thing 'instrument))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF instrument.lsp

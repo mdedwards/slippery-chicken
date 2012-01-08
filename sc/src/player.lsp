@@ -62,7 +62,7 @@
   ((instrument-palette :accessor instrument-palette
                        :initarg :instrument-palette :initform nil)
    ;; any additional arguments to the call to cmn::staff, like staff size,
-   ;; number of lines etc.   Instead of being real cmn function calls as they
+   ;; number of lines etc. Instead of being real cmn function calls, as they
    ;; would be in normal cmn, this is a simple list of pairs: 
    ;; e.g. '(staff-size .8 staff-lines 3)
    (cmn-staff-args :accessor cmn-staff-args :type list :initarg :cmn-staff-args
@@ -152,21 +152,54 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan  7 18:29:17 EST 2012: Added robodoc info
+
 ;;; ****m* player/plays-transposing-instrument
 ;;; FUNCTION
-;;; 
+;;; Determine whether a given player object has one or more transposing
+;;; instrument objects assigned to it.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A player object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - ignore-octaves.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if one or more of the instrument objects assigned to the given
+;;; player object has a transposition value other than C or a
+;;; transposition-semitones value other than 0.
 ;;; 
 ;;; EXAMPLE
+
 #|
+;; Create a player object using the 'b-flat-clarinet instrument object
+;; definition from the default +slippery-chicken-standard-instrument-palette+,
+;; then apply the method. 
+(let* ((ip +slippery-chicken-standard-instrument-palette+)
+       (plr (make-player 'cl ip 'b-flat-clarinet)))
+  (plays-transposing-instrument plr))
+
+=> T
+
+;; Create a player object using the 'flute instrument object definition from
+;; the default +slippery-chicken-standard-instrument-palette+, then apply the
+;; method. 
+(let* ((ip +slippery-chicken-standard-instrument-palette+)
+       (plr (make-player 'fl ip 'flute)))
+  (plays-transposing-instrument plr))
+
+=> NIL
+
+;; Create a player object using a list that consists of the 'flute and
+;; 'alto-sax instrument object definitions from the default
+;; +slippery-chicken-standard-instrument-palette+, then apply the method to see
+;; that it returns T even when only one of the instruments is transposing.
+(let* ((ip +slippery-chicken-standard-instrument-palette+)
+       (plr (make-player 'fl ip '(flute alto-sax))))
+  (plays-transposing-instrument plr))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -181,21 +214,36 @@
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan  7 18:46:02 EST 2012: Added robodoc info
+
 ;;; ****m* player/microtonal-chords-p
 ;;; FUNCTION
-;;; 
+;;; Determines whether the MICROTONES-MIDI-CHANNEL slot of the given player
+;;; object is set to a value greater than 0, indicating that the player and its
+;;; instrument are capable of performing microtonal chords.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A player object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the value stored in the MICROTONES-MIDI-CHANNEL slot of the
+;;; given player object is greater than 0, otherwise returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns T
+(let* ((ip +slippery-chicken-standard-instrument-palette+)
+       (plr (make-player 'vln ip 'violin :microtones-midi-channel 2)))
+  (microtonal-chords-p plr))
+
+=> T
+
+;; Returns NIL
+(let* ((ip +slippery-chicken-standard-instrument-palette+)
+       (plr (make-player 'pno ip 'piano)))
+  (microtonal-chords-p plr))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -360,19 +408,90 @@
 
 ;;; ****f* player/make-player
 ;;; FUNCTION
-;;; 
+;;; Create a player object from a specified instrument-palette object and a
+;;; specified instrument or list of instruments which that player plays. 
+;;;
+;;; The player obect is separte from the instrument object as on player in an
+;;; ensemble may perform more than one instrument ("double"), such as flute and
+;;; piccolo, clarinet and bass clarinet, or sax, flute and clarinet.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A symbol which will be the ID of the resulting player object.
+;;; - An instrument-palette object.
+;;; - A symbol or a list of symbols that are the the instruments from the
+;;;   specified instrument-palette object that the given player will play, as
+;;;   spelled and defined within the instrument-palette object. NB: If only one
+;;;   instrument is to be assigned to the given player, it should be stated as
+;;;   symbol rather than a list, to avoid errors in the DOUBLES slot.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
+;;; - keyword argument :cmn-staff-args. A list of pairs that indicate any
+;;;   additional arguments to the call to cmn::staff for this player, such as
+;;;   staff size, number of lines etc. Instead of being real cmn function
+;;;   calls, as they would be in normal cmn, this is a simple list of pairs;
+;;;   e.g. '(staff-size .8 staff-lines 3). Defaults to NIL.
+;;; - keyword argument :microtones-midi-channel. An integer that indicates the
+;;;   MIDI channel on which any microtonal pitch material for this player is to
+;;;   be played back. Default = -1.
+;;; - keyword argument :midi-channel. An integer that indicates the MIDI
+;;;   channel on which any non-microtonal pitch material for this player is to
+;;;   be played back. Default = 1.
+;;;
 ;;; RETURN VALUE
-;;; 
+;;; Returns a player object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a player object with just one instrument object
+(let ((ip (make-instrument-palette 
+	    'inst-pal 
+	    '((picc (:transposition-semitones 12 :lowest-written d4
+		     :highest-written c6)) 
+	      (flute (:lowest-written c4 :highest-written d7))  
+	      (clar (:transposition-semitones -2 :lowest-written e3
+		     :highest-written c6))  
+	      (horn (:transposition f :transposition-semitones -7
+		     :lowest-written f2 :highest-written c5))    
+	      (vln (:lowest-written g3 :highest-written c7 :chords t))  
+	      (vla (:lowest-written c3 :highest-written f6 :chords t))))))
+  (make-player 'player-one ip 'flute))
+
+=> 
+PLAYER: (id instrument-palette): INST-PAL 
+doubles: NIL, cmn-staff-args: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: PLAYER-ONE, tag: NIL, 
+data: 
+INSTRUMENT: lowest-written: 
+[...]
+NAMED-OBJECT: id: FLUTE, tag: NIL, 
+data: NIL
+
+;; Create a player object with two instruments, setting the midi channels using
+;; the keyword arguments, then print the corresponding slots to see the changes 
+(let* ((ip (make-instrument-palette 
+	    'inst-pal 
+	    '((picc (:transposition-semitones 12 :lowest-written d4
+		     :highest-written c6)) 
+	      (flute (:lowest-written c4 :highest-written d7))  
+	      (clar (:transposition-semitones -2 :lowest-written e3
+		     :highest-written c6))  
+	      (horn (:transposition f :transposition-semitones -7
+		     :lowest-written f2 :highest-written c5))    
+	      (vln (:lowest-written g3 :highest-written c7 :chords t))  
+	      (vla (:lowest-written c3 :highest-written f6 :chords t))))) 
+       (plr (make-player 'player-one ip '(flute picc) 
+			 :midi-channel 1
+			 :microtones-midi-channel 2)))
+  (print (loop for i in (data (data plr)) collect (id i)))
+  (print (midi-channel plr))
+  (print (microtones-midi-channel plr)))
+
+=>
+(FLUTE PICC) 
+1 
+2
+
 
 |#
 ;;; SYNOPSIS
@@ -400,6 +519,13 @@
                                    ref))
                        collect (clone ins))))
             
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Sat Jan  7 16:08:08 EST 2012: Added player-p function
+
+(defun player-p (thing)
+  (typep thing 'player))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; EOF player.lsp

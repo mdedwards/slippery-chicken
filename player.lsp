@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 12:58:53 Sat Jan  7 2012 ICT
+;;; $$ Last modified: 09:54:52 Sun Jan  8 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -101,17 +101,19 @@
                 player: ~a, cmn-staff-args: ~a" 
                (id p) staff-args))
       (setf (cmn-staff-args p)
-        (loop 
-            for fun in staff-args by #'cddr 
-            and arg in (cdr staff-args) by #'cddr collect 
-              (funcall (symbol-function (rm-package fun :cmn))
-                       (rm-package arg :cmn)))))
-    (setf (data p) (if (listp data)
+            (loop 
+               for fun in staff-args by #'cddr 
+               and arg in (cdr staff-args) by #'cddr collect 
+               (funcall (symbol-function (rm-package fun :cmn))
+                        (rm-package arg :cmn)))))
+    ;; MDE Sun Jan  8 09:05:18 2012 -- one instrument in a list shouldn't make
+    ;; a doubling player 
+    (setf (data p) (if (and (listp data) (> (length data) 1))
                        ;; he/she plays more than one instrument.
                        (progn
                          (setf (doubles p) t)
                          (make-doublings-al (id p) data ip))
-                     ;; copy the instrument as it may be used many times.
+                       ;; copy the instrument as it may be used many times.
                        (let ((ins (get-data data ip)))
                          (unless ins
                            (error "player::init: can't find instrument in ~
@@ -391,14 +393,17 @@
 (defmethod player-get-instrument ((p player) &optional ins (warn t))
 ;;; ****
   (let* ((data (data p)))
-    (if (typep data 'assoc-list)
-        (get-data ins data)
-      (progn
-        (when (and warn ins)
-          (warn "player::player-get-instrument: player ~a has only 1 ~
+    (if (doubles p) ; (typep data 'assoc-list) ; doubles
+        (if ins
+            (get-data ins data)
+            (error "player::player-get-instrument: ~a doubles so you need to ~
+                    pass the ID of the instrument you want." (id p)))
+        (progn
+          (when (and warn ins)
+            (warn "player::player-get-instrument: player ~a has only 1 ~
                  instrument so optional argument ~a is being ignored"
-                (id p) ins))
-        data))))
+                  (id p) ins))
+          data))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -444,16 +449,16 @@
 #|
 ;; Create a player object with just one instrument object
 (let ((ip (make-instrument-palette 
-	    'inst-pal 
-	    '((picc (:transposition-semitones 12 :lowest-written d4
-		     :highest-written c6)) 
-	      (flute (:lowest-written c4 :highest-written d7))  
-	      (clar (:transposition-semitones -2 :lowest-written e3
-		     :highest-written c6))  
-	      (horn (:transposition f :transposition-semitones -7
-		     :lowest-written f2 :highest-written c5))    
-	      (vln (:lowest-written g3 :highest-written c7 :chords t))  
-	      (vla (:lowest-written c3 :highest-written f6 :chords t))))))
+            'inst-pal 
+            '((picc (:transposition-semitones 12 :lowest-written d4
+                     :highest-written c6)) 
+              (flute (:lowest-written c4 :highest-written d7))  
+              (clar (:transposition-semitones -2 :lowest-written e3
+                     :highest-written c6))  
+              (horn (:transposition f :transposition-semitones -7
+                     :lowest-written f2 :highest-written c5))    
+              (vln (:lowest-written g3 :highest-written c7 :chords t))  
+              (vla (:lowest-written c3 :highest-written f6 :chords t))))))
   (make-player 'player-one ip 'flute))
 
 => 
@@ -470,19 +475,19 @@ data: NIL
 ;; Create a player object with two instruments, setting the midi channels using
 ;; the keyword arguments, then print the corresponding slots to see the changes 
 (let* ((ip (make-instrument-palette 
-	    'inst-pal 
-	    '((picc (:transposition-semitones 12 :lowest-written d4
-		     :highest-written c6)) 
-	      (flute (:lowest-written c4 :highest-written d7))  
-	      (clar (:transposition-semitones -2 :lowest-written e3
-		     :highest-written c6))  
-	      (horn (:transposition f :transposition-semitones -7
-		     :lowest-written f2 :highest-written c5))    
-	      (vln (:lowest-written g3 :highest-written c7 :chords t))  
-	      (vla (:lowest-written c3 :highest-written f6 :chords t))))) 
+            'inst-pal 
+            '((picc (:transposition-semitones 12 :lowest-written d4
+                     :highest-written c6)) 
+              (flute (:lowest-written c4 :highest-written d7))  
+              (clar (:transposition-semitones -2 :lowest-written e3
+                     :highest-written c6))  
+              (horn (:transposition f :transposition-semitones -7
+                     :lowest-written f2 :highest-written c5))    
+              (vln (:lowest-written g3 :highest-written c7 :chords t))  
+              (vla (:lowest-written c3 :highest-written f6 :chords t))))) 
        (plr (make-player 'player-one ip '(flute picc) 
-			 :midi-channel 1
-			 :microtones-midi-channel 2)))
+                         :midi-channel 1
+                         :microtones-midi-channel 2)))
   (print (loop for i in (data (data plr)) collect (id i)))
   (print (midi-channel plr))
   (print (microtones-midi-channel plr)))

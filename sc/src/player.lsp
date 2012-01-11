@@ -194,6 +194,15 @@
 
 => NIL
 
+;; Although the intended procedure is to list single instruments as once-off
+;; symbols (as in the previous example), single instruments can also be added
+;; as a one-item list
+(let* ((ip +slippery-chicken-standard-instrument-palette+)
+       (plr (make-player 'fl ip '(flute))))
+  (doubles plr))
+
+=> NIL
+
 ;; Create a player object using a list that consists of the 'flute and
 ;; 'alto-sax instrument object definitions from the default
 ;; +slippery-chicken-standard-instrument-palette+, then apply the method to see

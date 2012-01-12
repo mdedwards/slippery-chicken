@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:47:42 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 11:24:14 Thu Jan 12 2012 ICT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -177,170 +177,174 @@
 (defmethod initialize-instance :after ((sc slippery-chicken) &rest initargs)
   (declare (ignore initargs)
            (special +slippery-chicken-standard-instrument-palette+))
-  (let ((given-tempo-map (tempo-map sc)))
-    (flet ((make-name (name) (format nil "~a-~a" (id sc) name)))
-      (setf (instrument-palette sc)
-            (cond ((instrument-palette-p (instrument-palette sc))
-                ;; clone objects if they're already initialised outside of
-                ;; make-slippery-chicken, so that any changes we make here
-                ;; don't affect the outside objects.
-                   (clone (instrument-palette sc)))
-                  ((instrument-palette sc)
-                   (make-instrument-palette
-                    (make-name 'instrument-palette)
-                    (instrument-palette sc)))
-                  ;; 15.11.11 if none given, use the standard palette
-                  (t +slippery-chicken-standard-instrument-palette+))
-            (ensemble sc)
-            (if (ensemble-p (ensemble sc))
-                (clone (ensemble sc))
-                (apply #'make-ensemble 
-                       ;; got to do the apply to make sure we use the key
-                       ;; arguments, if any
-                       (append
-                        (cons (make-name 'ensemble)
-                              (ensemble sc))
-                        (list :instrument-palette
-                              (instrument-palette sc)))))
-            (instrument-change-map sc)
-            (if (instrument-change-map-p
-                 (instrument-change-map sc))
-                (clone (instrument-change-map sc))
-                (make-instrument-change-map
-                 (make-name 'instrument-change-map)
-                 (instrument-change-map sc)))
-            (set-palette sc)
-            (if (set-palette-p (set-palette sc))
-                (clone (set-palette sc))
-                (make-set-palette (make-name 'set-palette)
-                                  (set-palette sc))))
-      ;; don't just make a set-map with nil!!!!
-      (when (set-map sc)
-        (setf (set-map sc) 
-              (clone-with-new-class ;; 11.3.10 set-map is its own class now
-               (if (sc-map-p (set-map sc))
-                   (let ((clone (clone (set-map sc))))
-                     (setf (replacements clone) (set-map-replacements sc))
-                     clone)
-                   (make-sc-map (make-name 'set-map)
-                                (set-map sc) 
-                                :replacements 
-                                (set-map-replacements sc)
-                                :recurse-simple-data nil))
-               'set-map)))
-      (unless (sc-map-p (set-map sc))
-        (error "~a~%slippery-chicken::initialize-instance:~%~
+  ;; MDE Thu Jan 12 11:15:13 2012 -- in order to clone we need to be able to
+  ;; init the object without slot values then setf them afterwards 
+  (when (and (set-map sc) (ensemble sc) (rthm-seq-map sc) (rthm-seq-palette sc)
+             (set-palette sc))
+    (let ((given-tempo-map (tempo-map sc)))
+      (flet ((make-name (name) (format nil "~a-~a" (id sc) name)))
+        (setf (instrument-palette sc)
+              (cond ((instrument-palette-p (instrument-palette sc))
+                     ;; clone objects if they're already initialised outside of
+                     ;; make-slippery-chicken, so that any changes we make here
+                     ;; don't affect the outside objects.
+                     (clone (instrument-palette sc)))
+                    ((instrument-palette sc)
+                     (make-instrument-palette
+                      (make-name 'instrument-palette)
+                      (instrument-palette sc)))
+                    ;; 15.11.11 if none given, use the standard palette
+                    (t +slippery-chicken-standard-instrument-palette+))
+              (ensemble sc)
+              (if (ensemble-p (ensemble sc))
+                  (clone (ensemble sc))
+                  (apply #'make-ensemble 
+                         ;; got to do the apply to make sure we use the key
+                         ;; arguments, if any
+                         (append
+                                 (cons (make-name 'ensemble)
+                                       (ensemble sc))
+                                 (list :instrument-palette
+                                       (instrument-palette sc)))))
+              (instrument-change-map sc)
+              (if (instrument-change-map-p
+                   (instrument-change-map sc))
+                  (clone (instrument-change-map sc))
+                  (make-instrument-change-map
+                   (make-name 'instrument-change-map)
+                   (instrument-change-map sc)))
+              (set-palette sc)
+              (if (set-palette-p (set-palette sc))
+                  (clone (set-palette sc))
+                  (make-set-palette (make-name 'set-palette)
+                                    (set-palette sc))))
+        ;; don't just make a set-map with nil!!!!
+        (when (set-map sc)
+          (setf (set-map sc) 
+                (clone-with-new-class ;; 11.3.10 set-map is its own class now
+                 (if (sc-map-p (set-map sc))
+                     (let ((clone (clone (set-map sc))))
+                       (setf (replacements clone) (set-map-replacements sc))
+                       clone)
+                     (make-sc-map (make-name 'set-map)
+                                  (set-map sc) 
+                                  :replacements 
+                                  (set-map-replacements sc)
+                                  :recurse-simple-data nil))
+                 'set-map)))
+        (unless (sc-map-p (set-map sc))
+          (error "~a~%slippery-chicken::initialize-instance:~%~
                     Cannot proceed: set map is either nil or not a set map!"
-               (set-map sc)))
-      ;; 29/3/10: it's not ok to have nil references in the set-palette
-      (link (set-map sc) (set-palette sc) nil)
-      (link-named-objects (set-palette sc))
-      (link-named-objects (set-map sc))
-      (check-first-bar-ins-for-doubling-players (ensemble sc)
-                                                (instrument-change-map sc)
-                                                (this (get-first 
-                                                       (set-map sc))))
-      (setf (snd-output-dir sc) (trailing-slash (snd-output-dir sc))
-            (rthm-seq-palette sc)
-            (if (rsp-p (rthm-seq-palette sc))
-                (clone (rthm-seq-palette sc))
-                (make-rsp (make-name 'rthm-seq-palette)
-                          (rthm-seq-palette sc)))
-            (rthm-seq-map sc)
-            (if (rthm-seq-map-p (rthm-seq-map sc))
-                (let ((clone (clone (rthm-seq-map sc))))
-                  (setf (replacements clone) (rthm-seq-map-replacements sc))
-                  clone)
-                (make-rthm-seq-map 
-                 (make-name 'rthm-seq-map)
-                 (rthm-seq-map sc)
-                 :recurse-simple-data nil
-                 :replacements 
-                 (rthm-seq-map-replacements sc))))
-      ;; it's ok to have nil in the rthm-seq-maps of course
-      (link (rthm-seq-map sc) (rthm-seq-palette sc))
-      (check-instruments sc)
-      (check-maps (set-map sc)
-                  (rthm-seq-map sc))
-      (setf (pitch-seq-map sc)
-            (if (sc-map-p (pitch-seq-map sc))
-                (clone (pitch-seq-map sc))
-                (generate-pitch-sequence-map (rthm-seq-map sc) sc))
-            (hint-pitches sc)
-            (if (change-map-p (hint-pitches sc))
-                (clone (hint-pitches sc))
-                (make-change-map (make-name 'hint-piches) 
-                                 t
-                                 (hint-pitches sc))))
-      (let ((sfp (sndfile-palette sc)))
-        (setf (sndfile-palette sc)
-              (if (sndfile-palette-p sfp)
-                  (clone sfp)
-                  (make-sfp (make-name 'sound-file-palette)
-                            (first sfp) 
-                            :paths (second sfp)
-                            :extensions (third sfp)))))
-      (setf (num-sections sc) (count-section-refs (set-map sc)))
-      (handle-set-limits sc)
-      ;; (print (set-limits-low sc))
-      ;; we have a chicken before the egg situation here: we can't
-      ;; create a tempo-map without a piece because we need
-      ;; reference to the bar numbers, but we can't create a piece
-      ;; without a tempo-map because we need the tempi to calculate
-      ;; start times.  As a solution, create a piece with a
-      ;; temporary tempo-map of qtr=60 then update it later.
-      (setf (tempo-map sc) '((1 60))
-            (piece sc) (sc-make-piece sc (warn-ties sc))
-            ;; map might be nil as we have a curve instead so handle this
-            (tempo-map sc) (tempo-curve-to-map given-tempo-map (tempo-curve sc)
-                                               (num-bars sc))
-            ;; this calls the setf method so it's not as useless as it
-            ;; looks.  
-            (bars-per-system-map sc) (bars-per-system-map sc)))
-    (linked (rthm-seq-map sc))
-    (link-named-objects (rthm-seq-map sc))
-    (let ((sg (staff-groupings sc)))
-      (if sg
-          (unless 
-              (and (listp sg)
-                   (= (num-players (ensemble sc))
-                      (loop for i in sg do 
-                           (unless (integer>0 i)
-                             (error 
-                              "slippery-chicken::initialize-instance:~
+                 (set-map sc)))
+        ;; 29/3/10: it's not ok to have nil references in the set-palette
+        (link (set-map sc) (set-palette sc) nil)
+        (link-named-objects (set-palette sc))
+        (link-named-objects (set-map sc))
+        (check-first-bar-ins-for-doubling-players (ensemble sc)
+                                                  (instrument-change-map sc)
+                                                  (this (get-first 
+                                                         (set-map sc))))
+        (setf (snd-output-dir sc) (trailing-slash (snd-output-dir sc))
+              (rthm-seq-palette sc)
+              (if (rsp-p (rthm-seq-palette sc))
+                  (clone (rthm-seq-palette sc))
+                  (make-rsp (make-name 'rthm-seq-palette)
+                            (rthm-seq-palette sc)))
+              (rthm-seq-map sc)
+              (if (rthm-seq-map-p (rthm-seq-map sc))
+                  (let ((clone (clone (rthm-seq-map sc))))
+                    (setf (replacements clone) (rthm-seq-map-replacements sc))
+                    clone)
+                  (make-rthm-seq-map 
+                   (make-name 'rthm-seq-map)
+                   (rthm-seq-map sc)
+                   :recurse-simple-data nil
+                   :replacements 
+                   (rthm-seq-map-replacements sc))))
+        ;; it's ok to have nil in the rthm-seq-maps of course
+        (link (rthm-seq-map sc) (rthm-seq-palette sc))
+        (check-instruments sc)
+        (check-maps (set-map sc)
+                    (rthm-seq-map sc))
+        (setf (pitch-seq-map sc)
+              (if (sc-map-p (pitch-seq-map sc))
+                  (clone (pitch-seq-map sc))
+                  (generate-pitch-sequence-map (rthm-seq-map sc) sc))
+              (hint-pitches sc)
+              (if (change-map-p (hint-pitches sc))
+                  (clone (hint-pitches sc))
+                  (make-change-map (make-name 'hint-piches) 
+                                   t
+                                   (hint-pitches sc))))
+        (let ((sfp (sndfile-palette sc)))
+          (setf (sndfile-palette sc)
+                (if (sndfile-palette-p sfp)
+                    (clone sfp)
+                    (make-sfp (make-name 'sound-file-palette)
+                              (first sfp) 
+                              :paths (second sfp)
+                              :extensions (third sfp)))))
+        (setf (num-sections sc) (count-section-refs (set-map sc)))
+        (handle-set-limits sc)
+        ;; (print (set-limits-low sc))
+        ;; we have a chicken before the egg situation here: we can't
+        ;; create a tempo-map without a piece because we need
+        ;; reference to the bar numbers, but we can't create a piece
+        ;; without a tempo-map because we need the tempi to calculate
+        ;; start times.  As a solution, create a piece with a
+        ;; temporary tempo-map of qtr=60 then update it later.
+        (setf (tempo-map sc) '((1 60))
+              (piece sc) (sc-make-piece sc (warn-ties sc))
+              ;; map might be nil as we have a curve instead so handle this
+              (tempo-map sc) (tempo-curve-to-map given-tempo-map (tempo-curve sc)
+                                                 (num-bars sc))
+              ;; this calls the setf method so it's not as useless as it
+              ;; looks.  
+              (bars-per-system-map sc) (bars-per-system-map sc)))
+      (linked (rthm-seq-map sc))
+      (link-named-objects (rthm-seq-map sc))
+      (let ((sg (staff-groupings sc)))
+        (if sg
+            (unless 
+                (and (listp sg)
+                     (= (num-players (ensemble sc))
+                        (loop for i in sg do 
+                             (unless (integer>0 i)
+                               (error 
+                                "slippery-chicken::initialize-instance:~
                               staff-groupings should be a list of ~
                               integers: ~a"
-                              sg))
-                           sum i)))
-            (error "slippery-chicken::initialize-instance: ~%~
+                                sg))
+                             sum i)))
+              (error "slippery-chicken::initialize-instance: ~%~
                   staff-groupings should be a list of integers summing ~
                   to the number ~%of instruments in the ensemble:  ~a"
-                   sg))
-          ;; 10.11.11: if no staff-groupings given, just make the whole ensemble
-          ;; one big group 
-          (setf (staff-groupings sc) (list (num-players (ensemble sc))))))
-    ;; the order of players in the piece (from rthm-seq-map) is alphabetical,
-    ;; but we want them as given in the ensemble...
-    (setf (players (piece sc)) (players (ensemble sc)))
-    ;; make a double bar at end of piece
-    (change-bar-line-type sc (num-bars (piece sc)) 2)
-    ;; have to call this again now that we've got the real tempo-map
-    (update-slots sc (tempo-map sc) 0.0 0.0 1 nil nil (warn-ties sc))
-    ;; (print (get-data 1 (set-palette sc)))
-    ;; 25.3.11 the make-slippery-chicken function might set this to nil thus
-    ;; overriding the class default 
-    (unless (fast-leap-threshold sc)
-      (setf (fast-leap-threshold sc) 0.125))
-    (format t "~&Shortening short, fast leaps...")
-    (format t "~&Shortened ~a large fast leaps"
-            (shorten-large-fast-leaps sc :verbose nil))
-    ;; make sure tempo changes get registered in midi output
-    (update-events-tempo sc)
-    ;; 28.1.11: can't believe we haven't done this before
-    (check-time-sigs sc)
-    ;; 5.4.11
-    (cleanup-rest-bars sc)
-    (set-rehearsal-letters sc (get-groups-top-ins sc))))
+                     sg))
+            ;; 10.11.11: if no staff-groupings given, just make the whole
+            ;; ensemble one big group
+            (setf (staff-groupings sc) (list (num-players (ensemble sc))))))
+      ;; the order of players in the piece (from rthm-seq-map) is alphabetical,
+      ;; but we want them as given in the ensemble...
+      (setf (players (piece sc)) (players (ensemble sc)))
+      ;; make a double bar at end of piece
+      (change-bar-line-type sc (num-bars (piece sc)) 2)
+      ;; have to call this again now that we've got the real tempo-map
+      (update-slots sc (tempo-map sc) 0.0 0.0 1 nil nil (warn-ties sc))
+      ;; (print (get-data 1 (set-palette sc)))
+      ;; 25.3.11 the make-slippery-chicken function might set this to nil thus
+      ;; overriding the class default 
+      (unless (fast-leap-threshold sc)
+        (setf (fast-leap-threshold sc) 0.125))
+      (format t "~&Shortening short, fast leaps...")
+      (format t "~&Shortened ~a large fast leaps"
+              (shorten-large-fast-leaps sc :verbose nil))
+      ;; make sure tempo changes get registered in midi output
+      (update-events-tempo sc)
+      ;; 28.1.11: can't believe we haven't done this before
+      (check-time-sigs sc)
+      ;; 5.4.11
+      (cleanup-rest-bars sc)
+      (set-rehearsal-letters sc (get-groups-top-ins sc)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -365,8 +369,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; todo: this isn't working for some strange reason...
-
 (defmethod clone-with-new-class :around ((sc slippery-chicken) new-class)
   (declare (ignore new-class))
   (let ((no (call-next-method)))
@@ -381,12 +383,12 @@
           (slot-value no 'fast-leap-threshold) (fast-leap-threshold sc)
           (my-copy-list (set-map-replacements sc))
           (slot-value no 'hint-pitches) (clone (hint-pitches sc))
-          ;; (slot-value no 'ensemble) (clone (ensemble sc))
+          (slot-value no 'instrument-palette) (clone (instrument-palette sc))
+          (slot-value no 'ensemble) (clone (ensemble sc))
           (slot-value no 'instrument-change-map) 
           (clone (instrument-change-map sc))
           (slot-value no 'tempo-map) (clone (tempo-map sc))
           (slot-value no 'tempo-curve) (my-copy-list (tempo-curve sc))
-          ;;(slot-value no 'instrument-palette) (clone (instrument-palette sc))
           (slot-value no 'instruments-write-bar-nums) 
           (copy-list (instruments-write-bar-nums sc))
           (slot-value no 'snd-output-dir) (snd-output-dir sc)
@@ -401,7 +403,8 @@
           (slot-value no 'set-limits-low) (my-copy-list (set-limits-low sc))
           (slot-value no 'rehearsal-letters) 
           (my-copy-list (rehearsal-letters sc))
-          (slot-value no 'num-sections) (num-sections sc))))
+          (slot-value no 'num-sections) (num-sections sc))
+    no))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

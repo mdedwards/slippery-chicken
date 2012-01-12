@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 00:33:42 Sun Dec 11 2011 ICT
+;;; $$ Last modified: 10:37:05 Thu Jan 12 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -315,7 +315,10 @@ data TURKEY
 (defmethod get-position (key (al assoc-list) &optional (start 0))
 ;;; ****
   (loop for i in (nthcdr start (data al)) and j from start
-    if (id-eq key i) do (return j)))
+     unless (named-object-p i) do
+       (error "~a~&assoc-list::get-position: element ~a is not a named-object."
+              al j)
+     when (id-eq key i) do (return j)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -462,8 +465,8 @@ WARNING:
 ;;; - The assoc-list to which it is to be added.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - Optional argument: One more symbol or quoted list may be added as the 
-;;; value for the "ignore" argument. This value will be ignored.
+;;; - Optional argument: The optional argument will be ignored; it exists only
+;;;   because of its use in the recursive-assoc-list class.
 ;;; 
 ;;; RETURN VALUE 
 ;;; Returns T if the given named-object is successfully added to the given
@@ -503,7 +506,7 @@ data: MARK
 (let ((al (make-assoc-list 'test '((jim beam)
                                    (four roses)
                                    (wild turkey)))))
-  (add '(knob creek) al '(jack daniels)))
+  (add '(knob creek) al))
 
 => T
 |#

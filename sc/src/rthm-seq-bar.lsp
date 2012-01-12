@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 18:32:08 Fri Dec 30 2011 ICT
+;;; $$ Last modified: 08:42:45 Thu Jan 12 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4483,46 +4483,6 @@ show-rest: T
                 (first tied))
             result)))
     (flatten (nreverse result))))
-  
-#|
-(defun consolidate-notes-aux5 (rthms)
-  (print 'aux5)
-  (print-simple-rthm-list rthms)
-  (let ((ties (get-tied-rthms rthms))
-        (result '()))
-;; (print-simple-list (flatten ties))   ; ;
-    (terpri)
-    (loop for tied in ties 
-       for tied-sum = (when tied (sum-rhythms-duration tied))
-       with now = 0.0
-       do 
-       (when tied
-  ;; (print tied)                       ; ;
-         (push 
-          (if (> (length tied) 1)
-              (let ((rat (make-tied
-                          (rationalize-if-necessary 
-                           tied-sum
-                           :rest nil
-                           :keep-it-simple t
-                           :error-on-fail t))))
-                (if (or (= (length tied) (length rat))
-        ;; 14.2.11 we don't want tuplets being made into ; ;
-        ;; non-tuplets scanning beats e.g. tq te+tq te ; ;
-        ;; becoming tq q te             ; ;
-                        (and (not (float-int-p now))       ; are we on a beat? 
-                             (/= 1 (print (tuplet-scaler (first result))))
-;; (= 1 (tuplet-scaler (first rat)))))  ; ;
-                             (>= (- (print (floor (+ now tied-sum)))
-                                    (print (floor now)))
-                                 1)))
-                    tied
-                    rat))
-              (first tied))
-          result)
-         (incf now tied-sum)))
-    (flatten (nreverse result))))
-                  |#
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 

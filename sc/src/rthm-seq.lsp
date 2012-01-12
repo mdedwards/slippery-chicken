@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 17:07:31 Sat Dec 31 2011 ICT
+;;; $$ Last modified: 11:47:04 Thu Jan 12 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -336,7 +336,7 @@ rthm-seq::get-nth-non-rest-rhythm: Couldn't get non-rest rhythm with index 11
 ;;; SYNOPSIS
 (defmethod get-nth-non-rest-rhythm (index (rs rthm-seq)
                                     &optional (error t))
-;;; ****                                ; ;
+;;; ****                                
   (let* ((i index)
          (result
           (loop 
@@ -350,6 +350,66 @@ rthm-seq::get-nth-non-rest-rhythm: Couldn't get non-rest rhythm with index 11
       (unless result
         (error "~a~&rthm-seq::get-nth-non-rest-rhythm: Couldn't get ~
                 non-rest rhythm with index ~a"
+               rs index)))
+    result))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; MDE Thu Jan 12 11:38:07 2012 
+;;; ****m* rthm-seq/get-nth-rhythm
+;;; FUNCTION
+;;; Gets the rhythm (or event) object for the nth note in a given rthm-seq
+;;; object.
+;;; 
+;;; ARGUMENTS 
+;;; - The zero-based index number indicating which attack is sought.
+;;; - The given rthm-seq object in which to search.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL indicating whether to print an error message if the given index
+;;; is greater than the number of attacks (minus one) in the rthm-seq object 
+;;; (default = T).    
+;;; 
+;;; RETURN VALUE  
+;;; A rhythm or event object.
+;;; 
+;;; EXAMPLE
+#|
+(let ((rs (make-rthm-seq '((((2 4) q+e s s)
+                            ((e) q (e))
+                            ((3 8) s s e. s))
+                           :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
+  (get-nth-rhythm 4 rs))
+
+=>
+
+RHYTHM: value: 8.000, duration: 0.500, rq: 1/2, is-rest: T, 
+        score-rthm: 8.0f0, undotted-value: 8, num-flags: 1, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 0.500, 
+        is-grace-note: NIL, needs-new-note: NIL, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: NIL, marks-in-part: NIL, 
+        letter-value: 8, tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: E, tag: NIL, 
+data: E
+**************
+
+|#
+;;; SYNOPSIS
+(defmethod get-nth-rhythm (index (rs rthm-seq) &optional (error t))
+;;; ****
+  (let* ((i index)
+         (result
+          (loop 
+             for bar in (bars rs) 
+             for nsn = (num-score-notes bar)
+             do
+             (if (< i nsn)
+                 (return (get-nth-event i bar error))
+                 (decf i nsn)))))
+    (when error
+      (unless result
+        (error "~a~&rthm-seq::get-nth-event: Couldn't get event with index ~a"
                rs index)))
     result))
 

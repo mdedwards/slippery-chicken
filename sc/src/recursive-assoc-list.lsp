@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 08:07:24 Sat Jan  7 2012 ICT
+;;; $$ Last modified: 09:14:30 Thu Jan 12 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -386,7 +386,7 @@
 ;;; ****
   (let ((where (if ref 
                    (data (get-data ref ral))
-                 ral)))
+                   ral)))
     (unless (is-ral where)
       (error "recursive-assoc-list::add: can't add to reference ~a ~
               because object with this reference is not a ~
@@ -475,7 +475,8 @@
             :tag (if (tag ral) (tag ral) 'from-parcel-data)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; add an empty level of recursion
+;;; 
 ;;; ****m* recursive-assoc-list/add-empty-parcel
 ;;; FUNCTION
 ;;; 

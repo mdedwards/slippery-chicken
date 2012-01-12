@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified: 21:25:30 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 10:46:07 Thu Jan 12 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -84,7 +84,8 @@
 (defmethod clone-with-new-class :around ((s sequenz) new-class)
   (declare (ignore new-class))
   (let ((rs (call-next-method)))
-    (setf (slot-value rs 'pitch-curve) (my-copy-list (pitch-curve rs)))))
+    (setf (slot-value rs 'pitch-curve) (my-copy-list (pitch-curve rs)))
+    rs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

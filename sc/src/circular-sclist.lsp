@@ -78,8 +78,6 @@
 
 ;;; ****m* circular-sclist/get-next
 ;;; FUNCTION
-;;; get-next:
-;;;
 ;;; 
 ;;; 
 ;;; ARGUMENTS 

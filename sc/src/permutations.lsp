@@ -60,8 +60,6 @@
 
 ;;; ****f* permutations/inefficiently-permutate
 ;;; FUNCTION
-;;; inefficiently-permutate:
-;;;
 ;;; 
 ;;; 
 ;;; DATE:

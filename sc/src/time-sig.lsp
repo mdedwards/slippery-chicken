@@ -190,10 +190,10 @@
 ;;; - A time-sig object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; T or NIL to indicate whether to consider the beat of a compound meter to
-;;; be the denominator of the time signature (such as 8 for 6/8) or the beat
-;;; duration derived from the traditionally understood beat of that meter (such
-;;; as Q. for 6/8). NIL = denominator. Default = NIL.
+;;; - T or NIL to indicate whether to consider the beat of a compound meter to  
+;;;   be the denominator of the time signature (such as 8 for 6/8) or the beat  
+;;;   duration derived from the traditionally understood beat of that meter
+;;;   (such as Q. for 6/8). NIL = denominator. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; A rhythm object.
@@ -267,9 +267,9 @@ data: 4
 ;;; - A number (scaling factor).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; T or NIL to indicate whether or not to preserve the meter by maintaining
-;;; the same number of beats as the numerator of the time signature. T =
-;;; preserve the meter. Default = T. 
+;;; - T or NIL to indicate whether or not to preserve the meter by maintaining 
+;;;   the same number of beats as the numerator of the time signature. T = 
+;;;   preserve the meter. Default = T. 
 ;;; 
 ;;; RETURN VALUE
 ;;; A time-sig object.
@@ -562,7 +562,7 @@ T
 ;;; 
 ;;; ARGUMENTS
 ;;; - A two-item list of numbers, the first being the numerator (number of
-;;; beats per measure), the second being the denominator (beat type).
+;;;   beats per measure), the second being the denominator (beat type). 
 ;;; 
 ;;; RETURN VALUE
 ;;; - A time-sig object.

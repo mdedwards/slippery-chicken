@@ -280,8 +280,8 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL indicating whether to print an error message if the given index 
-;;; is greater than the number of non-rest rhythms in given rthm-seq object 
-;;; (minus 1 to compensate for the zero-based indexing). (Default = T.)   
+;;;   is greater than the number of non-rest rhythms (minus 1) in given
+;;;   rthm-seq object.  (Default = T.)   
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rhythm object.
@@ -367,8 +367,8 @@ rthm-seq::get-nth-non-rest-rhythm: Couldn't get non-rest rhythm with index 11
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL indicating whether to print an error message if the given index
-;;; is greater than the number of attacks (minus one) in the rthm-seq object 
-;;; (default = T).    
+;;;   is greater than the number of attacks (minus 1) in the rthm-seq object  
+;;;   (default = T).    
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rhythm or event object.
@@ -427,9 +427,9 @@ data: E
 ;;; - The given rthm-seq object in which to search.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL indicating whether to print a warning message if the given index
-;;; is greater than the number of attacks (minus one) in the rthm-seq object 
-;;; (default = T).    
+;;; - T or NIL indicating whether to print an error message if the given index
+;;;   is greater than the number of attacks (minus 1) in the rthm-seq object 
+;;;   (default = T).    
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rhythm object.
@@ -525,9 +525,9 @@ rthm-seq::get-nth-attack: Couldn't get attack with index 11
 ;;; - A rthm-seq object.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL indicating whether to print a warning message if the given index
-;;; is greater than the number of attacks in the rthm-seq object (minus one to
-;;; compensate for the zero-based indexing) (default = T).  
+;;; - T or NIL indicating whether to print an error message if the given index 
+;;;   is greater than the number of attacks (minus 1) in the rthm-seq object
+;;;   (default = T).   
 ;;; 
 ;;; RETURN VALUE  
 ;;; - An event object.
@@ -761,10 +761,10 @@ data: ((3 8) S S E. S)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL indicating whether to print a warning message if the given index
-;;; (minus one) is greater than the number of attacks in the rthm-seq object
-;;; (default = T). This is a carry-over argument from the get-nth-attack method
-;;; called within the get-last-attack method and not likely to be needed for
-;;; use with get-last-attack.
+;;;   (minus 1) is greater than the number of attacks in the rthm-seq object 
+;;;   (default = T). This is a carry-over argument from the get-nth-attack
+;;;   method called within the get-last-attack method and not likely to be
+;;;   needed for use with get-last-attack.
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rhythm object.
@@ -878,8 +878,8 @@ data: S
 ;;; - A rthm-seq object.
 ;;; - A rthm-seq-bar object.
 ;;; - A bar number (integer). This argument is the bar number of the bar to be
-;;; inserted, relative to the rthm-seq and 1-based; e.g., if 3, then it will
-;;; come before the present third bar.
+;;;   inserted, relative to the rthm-seq and 1-based; e.g., if 3, then it will 
+;;;   come before the present third bar.
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - A pitch-seq object.
@@ -1020,7 +1020,7 @@ rthm-seq::insert-bar: only 3 bars in rthm-seq!
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether to return the time signatures as time-sig
-;;; objects or a list of two-item lists. T = time-sig objects. Default = T.
+;;;   objects or a list of two-item lists. T = time-sig objects. Default = T. 
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns a list of time-sig objects by default. Optionally a list of time
@@ -1917,16 +1917,16 @@ RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL,
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :min-beats. This argument takes an integer value to
-;;; indicate the minimum number of beats in any of the new rthm-seq-bar
-;;; objects created. This serves as a guideline only and may occasionally be
-;;; exceeded in value by the method. Default value = 2.
+;;;   indicate the minimum number of beats in any of the new rthm-seq-bar 
+;;;   objects created. This serves as a guideline only and may occasionally be 
+;;;   exceeded in value by the method. Default value = 2.
 ;;; - keyword argument :max-beats. This argument takes an integer value to
-;;; indicate the maximum number of beats in any of the new rthm-seq-bar objects
-;;; created. This serves as a guideline only and may occasionally be exceeded
-;;; in value by the method. Default value = 5.
+;;;   indicate the maximum number of beats in any of the new rthm-seq-bar
+;;;   objects created. This serves as a guideline only and may occasionally be
+;;;   exceeded in value by the method. Default value = 5.
 ;;; - keyword argument :warn. Indicates whether to print a warning if the
-;;; rthm-seq-bar object is unsplittable. Value T = print a warning. Defaults to
-;;; NIL. 
+;;;   rthm-seq-bar object is unsplittable. Value T = print a warning. Defaults
+;;;   to NIL. 
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rthm-seq object.
@@ -2212,9 +2212,9 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
 ;;; - keyword argument :tuplet. Can be set to T or NIL. Default = NIL.
 ;;; - keyword argument :tag.  Can be set to T or NIL. Default = NIL.
 ;;; - keyword argument :auto-beam.  Can be set to T or NIL. Default = NIL. When
-;;; T, the method will attempt to automatically set beaming indicators among
-;;; the resulting rthm-seq-bar objects. This can result in errors if the
-;;; resulting rhythms have a duration of more than 1 beat.
+;;;   T, the method will attempt to automatically set beaming indicators among 
+;;;   the resulting rthm-seq-bar objects. This can result in errors if the 
+;;;   resulting rhythms have a duration of more than 1 beat.
 ;;; - keyword argument :id. Default = "from-multipliers".
 ;;; 
 ;;; RETURN VALUE  
@@ -2404,7 +2404,7 @@ rthm-seq from-multipliers
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indiate whether to divide the resulting list into sublists,
-;;; each of which are the equivalent of one beat long. Default = NIL.
+;;;   each of which are the equivalent of one beat long. Default = NIL. 
 ;;;
 ;;; RETURN VALUE  
 ;;; - A list

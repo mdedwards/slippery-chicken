@@ -184,9 +184,9 @@
 ;;; ARGUMENTS
 ;;; - An event object.
 ;;; - A whole number indicating the MIDI-channel to be used for playback of
-;;; this event object.
+;;;   this event object.
 ;;; - A whole number indicating the MIDI-channel to be used for playback of the
-;;; microtonal pitch material of this event.
+;;;   microtonal pitch material of this event.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns the value of the MIDI-channel setting (a whole number) if the
@@ -464,7 +464,7 @@
 ;;; mark to set a corresponding dynamic.
 ;;;
 ;;; Numbers greater than 1.0 and less than 0.0 will also be stored in the
-;;; amplitude slot of the given event object without issuing a warning, though
+;;; amplitude slot of the given event object without printing a warning, though 
 ;;; corresponding dynamic marks are only available for values between 0.0 and
 ;;; 1.0. Any value above 1.0 or below 0.0 will result in a dynamic marking of
 ;;; FFFF and NIENTE respectively.
@@ -503,7 +503,7 @@
 (PP)
 
 ;; Setting an amplitude greater than 1.0 or less than 0.0 sets the amplitude
-;; correspondingly and sets the dynamic mark to FFFF or NIENTE accordingly. 
+;; correspondingly and sets the dynamic mark to FFFF or NIENTE respectively.  
 (let ((e1 (make-event 'c4 'q))
       (e2 (make-event 'c4 'q)))
   (setf (amplitude e1) 1.3)
@@ -721,7 +721,7 @@ data: 132
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether the test is to handle the written or
-;;; sounding pitch in the event. T = written. Default = NIL.
+;;;   sounding pitch in the event. T = written. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns T if the note tested has a sharp, otherwise NIL (ie, is natural or
@@ -768,7 +768,7 @@ data: 132
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether the test is to handle the written or
-;;; sounding pitch in the event. T = written. Default = NIL.
+;;;   sounding pitch in the event. T = written. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns T if the note tested has a flat, otherwise NIL (ie, is natural or
@@ -816,7 +816,7 @@ data: 132
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether the test is to handle the written or
-;;; sounding pitch in the event. T = written. Default = NIL.
+;;;   sounding pitch in the event. T = written. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns T if the note tested is natural, otherwise NIL (ie, has a flat or 
@@ -872,11 +872,11 @@ data: 132
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :written. T or NIL to indicate whether the test is to
-;;; handle the written or sounding pitch in the event. T = written. Default =
-;;; NIL. 
+;;;   handle the written or sounding pitch in the event. T = written. Default = 
+;;;   NIL. 
 ;;; - keyword argument :force-naturals. T or NIL to indicate whether to force
-;;; "natural" note names that contain no F or S in their name to convert to
-;;; their enharmonic equivalent (ie, B3 = CF4)
+;;;   "natural" note names that contain no F or S in their name to convert to 
+;;;   their enharmonic equivalent (ie, B3 = CF4)
 ;;; 
 ;;; RETURN VALUE
 ;;; An event object.
@@ -1127,8 +1127,8 @@ data: (3 4)
 ;;; - An end-text string.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; T or NIL to indicate whether or not to print a warning when trying to
-;;; attach an arrow and accompanying marks to a rest. Default = NIL.
+;;; - T or NIL to indicate whether or not to print a warning when trying to 
+;;;   attach an arrow and accompanying marks to a rest. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns T.
@@ -1209,8 +1209,8 @@ event::add-arrow: add arrow to rest?
 ;;; - A pitch-symbol for the trill note.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; T or NIL to indicate whether or not to print a warning when attaching trill
-;;; information to a rest. Default = NIL.
+;;; - T or NIL to indicate whether or not to print a warning when attaching
+;;;   trill information to a rest. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; Always returns T.
@@ -1245,6 +1245,7 @@ rhythm::validate-mark: no CMN mark for BEG-TRILL-A (but adding anyway).
 ((TRILL-NOTE D4))
 
 ;; By default the method adds prints no warning when adding a mark to a rest
+;; (though it still prints the warning that there is no CMN mark)
 (let ((e (make-event nil 'q)))
   (add-trill e 'd4)
   (print (marks-before e))
@@ -1491,7 +1492,7 @@ WARNING:
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether or not to print a warning when there are no
-;;; clef marks to delete.
+;;;   clef marks to delete.
 ;;; - (Other internal "ignore" arguments only; not needed by the user).
 ;;; 
 ;;; RETURN VALUE
@@ -1564,9 +1565,9 @@ NIL
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether the amplitude value is to be returned as a
-;;; standard digital amplitude (a number between 0.0 and 1.0) or as a standard
-;;; MIDI velocity value (a whole number between 0 and 127). T = MIDI
-;;; value. Default = NIL.
+;;;   standard digital amplitude (a number between 0.0 and 1.0) or as a
+;;;   standard MIDI velocity value (a whole number between 0 and 127). T = MIDI 
+;;;   value. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; If the optional argument is set to NIL, returns a real number.
@@ -1614,7 +1615,7 @@ NIL
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :written. T or NIL to indicate whether the test is to
-;;; handle the event's written or sounding pitch. T = written. Default = T.
+;;;   handle the event's written or sounding pitch. T = written. Default = T. 
 ;;; 
 ;;; RETURN VALUE
 ;;; A symbol, if the event object consists of only a single pitch, otherwise a
@@ -2038,7 +2039,7 @@ NIL
 ;;; 
 ;;; RETURN VALUE
 ;;; - If the given event object is a chord, the method returns a number that is
-;;; the number of notes in the chord.
+;;;   the number of notes in the chord.
 ;;; - Returns NIL if the given event object is not a chord.
 ;;; 
 ;;; EXAMPLE
@@ -2136,8 +2137,8 @@ NIL
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :destructively. T or NIL to indicate whether the method
-;;; is to change (replace) the pitch values of the original event object (T) or
-;;; return a new event object with the new pitches (NIL). Default = NIL.
+;;;   is to change (replace) the pitch values of the original event object (T)
+;;;   or return a new event object with the new pitches (NIL). Default = NIL.
 ;;; - keyword argument :chord-function
 ;;; - keyword argument :pitch-function
 ;;; 
@@ -2242,8 +2243,8 @@ C4
 ;;; ARGUMENTS
 ;;; - An event object.
 ;;; - A whole number indicating the number of semitones (positive or negative)
-;;; by which the sounding pitch is to be tranposed to create the written
-;;; pitch. 
+;;;   by which the sounding pitch is to be tranposed to create the written 
+;;;   pitch. 
 ;;; 
 ;;; RETURN VALUE
 ;;; A pitch object.
@@ -2456,8 +2457,8 @@ data: C4
 ;;; - A second event object.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; T or NIL for whether the the value should be returned as an absolute value
-;;; (i.e., always positive). Default = NIL.
+;;; - T or NIL for whether the the value should be returned as an absolute
+;;;   value (i.e., always positive). Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; A number.
@@ -2770,36 +2771,38 @@ T
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A pitch or chord. This can be one of those objects (will be added to the
-;;; pitch-or-chord slot without cloning), or a pitch symbol or list of pitch
-;;; symbols (for a chord).
+;;;   pitch-or-chord slot without cloning), or a pitch symbol or list of pitch 
+;;;   symbols (for a chord).
 ;;; - The event's rhythm (e.g. 'e). If this is a number, its interpretation is
-;;; dependent on the value of duration (see below). NB if this is a rhythm
-;;; object, it will be cloned.  
+;;;   dependent on the value of duration (see below). NB if this is a rhythm 
+;;;   object, it will be cloned.  
+;;;
+;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :start-time. The start time of the event in seconds.
-;;; Default = NIL.
+;;;   Default = NIL.
 ;;; - keyword argument :is-rest. Set to T or NIL to indicate whether or not the
-;;; given event is a rest. Default = NIL. NB: The make-rest method is better
-;;; suited to making rests; however, if using make-event to do so, the
-;;; pitch-or-chord slot must be set to NIL. 
+;;;   given event is a rest. Default = NIL. NB: The make-rest method is better 
+;;;   suited to making rests; however, if using make-event to do so, the 
+;;;   pitch-or-chord slot must be set to NIL.  
 ;;; - keyword argument :is-tied-to. This argument is for score output and
-;;; playing purposes. Set to T or NIL to indicate whether this event is tied to
-;;; the previous event (i.e. it won't sound indpendently). Default = NIL. 
+;;;   playing purposes. Set to T or NIL to indicate whether this event is tied
+;;;   to the previous event (i.e. it won't sound indpendently). Default = NIL.  
 ;;; - keyword argument :duration. T or NIL to indicate whether the specified
-;;; duration of the event has been stated in absolute seconds, not a known
-;;; rhythm like 'e. Thus (make-event 'c4 4 :duration nil) indicates a quarter
-;;; note with duration 1, but (make-event '(c4 d4) 4 :duration t) indicates a
-;;; whole note with an absolute duration of 4 seconds (both assuming a tempo of
-;;; 60). Default = NIL. 
+;;;   duration of the event has been stated in absolute seconds, not a known 
+;;;   rhythm like 'e. Thus (make-event 'c4 4 :duration nil) indicates a quarter 
+;;;   note with duration 1, but (make-event '(c4 d4) 4 :duration t) indicates a 
+;;;   whole note with an absolute duration of 4 seconds (both assuming a tempo
+;;;   of 60). Default = NIL. 
 ;;; - keyword agument :amplitude sets the amplitude of the event. Possible
-;;; values span from 0.0 (silent) to maximum of 1.0. Default = 0.7.
+;;;   values span from 0.0 (silent) to maximum of 1.0. Default = 0.7. 
 ;;; - keyword argument :tempo. A number to indicate the tempo of the event as a
-;;; normal bpm value. Default = 60. This argument is only used when creating
-;;; the rhythm slots (e.g. duration). 
+;;;   normal bpm value. Default = 60. This argument is only used when creating 
+;;;   the rhythm slots (e.g. duration). 
 ;;; - keyword argument :midi-channel. A number from 0 to 127 indicating the
-;;; MIDI channel on which the event should be played back. Default = NIL. 
+;;;   MIDI channel on which the event should be played back. Default = NIL.  
 ;;; - keyword argument :microtones-midi-channel. If the event is microtonal,
-;;; this argument indicates the MIDI-channel to be used for the playback of the
-;;; microtonal notes. Default = NIL. 
+;;;   this argument indicates the MIDI-channel to be used for the playback of
+;;;   the microtonal notes. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE  
 ;;; - An event object.
@@ -2932,10 +2935,10 @@ T
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :start-time. A number representing the start-time of the
-;;; event in seconds.
+;;;   event in seconds.
 ;;; - keyword argument :duration. T or NIL. T indicates that the duration given
-;;; is a value of absolute seconds rather than a known rhythm
-;;; (e.g. 'e). Default = NIL.
+;;;   is a value of absolute seconds rather than a known rhythm
+;;;   (e.g. 'e). Default = NIL. 
 ;;; - keyword duration :tempo. Beats per minute. Default = 60.
 ;;; 
 ;;; RETURN VALUE
@@ -3107,9 +3110,9 @@ rest Q, rest Q, rest Q, rest Q, rest Q, rest Q, rest Q,
 ;;;  
 ;;; OPTIONAL ARGUMENTS
 ;;; - A whole number indicating the MIDI channel on which the event is to be
-;;; played. 
+;;;   played. 
 ;;; - A whole number indicating the MIDI channel on which microtonal pitches of
-;;; the event are to be played.
+;;;   the event are to be played.
 ;;; 
 ;;; RETURN VALUE
 ;;; A list.
@@ -3179,9 +3182,9 @@ G4 Q, rest E, rest S, (D4 FS4 A4) S,
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - A whole number value to indicate the MIDI channel on which to play back
-;;; the event.
+;;;   the event.
 ;;; - A whole number value to indicate the MIDI channel on which to play back
-;;; microtonal pitch material for the event.
+;;;   microtonal pitch material for the event.
 ;;; 
 ;;; RETURN VALUE
 ;;; A list.

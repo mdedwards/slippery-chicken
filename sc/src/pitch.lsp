@@ -284,15 +284,15 @@ NIL
 ;;; ARGUMENTS
 ;;; - A pitch object.
 ;;; - A number representing the number of semitones to be transposed, and which
-;;; can be fractional.
+;;;   can be fractional.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword object :as-symbol. T or NIL to indicate whether the method is to
-;;; return an entire pitch object or just a note-name symbol of the new
-;;; pitch. NIL = a new pitch object. Default = NIL.
+;;; - keyword object :as-symbol. T or NIL to indicate whether the method is to 
+;;;   return an entire pitch object or just a note-name symbol of the new 
+;;;   pitch. NIL = a new pitch object. Default = NIL.
 ;;; - keyword argument :package. Used to identify a separate Lisp package in
-;;; which to itern result. This is really only applicable is combination with
-;;; :as-symbol set to T. Default = :sc.
+;;;   which to itern result. This is really only applicable is combination with  
+;;;   :as-symbol set to T. Default = :sc.
 ;;; 
 ;;; RETURN VALUE
 ;;; A pitch object by default.
@@ -405,11 +405,11 @@ D4
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword object :as-symbol. T or NIL to indicate whether the method is to
-;;; return an entire pitch object or just a note-name symbol of the new
-;;; pitch. NIL = a new pitch object. Default = NIL.
+;;;   return an entire pitch object or just a note-name symbol of the new 
+;;;   pitch. NIL = a new pitch object. Default = NIL.
 ;;; - keyword argument :package. Used to identify a separate Lisp package in
-;;; which to itern result. This is really only applicable is combination with
-;;; :as-symbol set to T. Default = :sc.
+;;;   which to itern result. This is really only applicable is combination with 
+;;;   :as-symbol set to T. Default = :sc.
 ;;; 
 ;;; RETURN VALUE
 ;;; A pitch object by default.
@@ -483,11 +483,11 @@ C4
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword object :as-symbol. T or NIL to indicate whether the method is to
-;;; return an entire pitch object or just a note-name symbol of the new
-;;; pitch. NIL = a new pitch object. Default = NIL.
+;;;   return an entire pitch object or just a note-name symbol of the new
+;;;   pitch. NIL = a new pitch object. Default = NIL.
 ;;; - keyword argument :package. Used to identify a separate Lisp package in
-;;; which to itern result. This is really only applicable is combination with
-;;; :as-symbol set to T. Default = :sc.
+;;;   which to itern result. This is really only applicable is combination with 
+;;;   :as-symbol set to T. Default = :sc.
 ;;;
 ;;; RETURN VALUE
 ;;; A pitch object by default.
@@ -565,8 +565,8 @@ data: C5
 ;;; - A second pitch object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; T or NIL to indicate whether or not enharmonic pitches are considered
-;;; equal. T = enharmonic pitches are considered equal. Default = NIL.
+;;; - T or NIL to indicate whether or not enharmonic pitches are considered 
+;;;   equal. T = enharmonic pitches are considered equal. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; T if the values of the two specified pitch objects are equal, otherwise
@@ -642,8 +642,8 @@ NIL
 ;;; - A second pitch object.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; T or NIL to indicate whether or not enharmonic pitches are considered
-;;; equal. T = enharmonic pitches are considered equal. Default = NIL.
+;;; - T or NIL to indicate whether or not enharmonic pitches are considered 
+;;;   equal. T = enharmonic pitches are considered equal. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE  
 ;;; T if the values of the two pitch objects are of the same pitch class,
@@ -1376,7 +1376,7 @@ data: D4
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - A number indicating the step (in degrees) by which the pitch value is to
-;;; be incremented. Defaults = 1.
+;;;   be incremented. Defaults = 1. 
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns a pitch object.
@@ -1547,9 +1547,9 @@ data: CQS4
 ;;; ARGUMENTS
 ;;; - A pitch object.
 ;;; - A number indicating the MIDI channel which is to be used to play back
-;;; non-microtonal pitches.
+;;;   non-microtonal pitches.
 ;;; - A number indicating the MIDI channel which is to be used to play back
-;;; microtonal pitches.
+;;;   microtonal pitches.
 ;;; 
 ;;; RETURN VALUE
 ;;; A number indicating which value has been set to the given pitch object's
@@ -1916,10 +1916,10 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :src-ref-pitch. A note-name symbol indicating the
-;;; perceived fundamental pitch of a given digital audio file, to allow for
-;;; later transposition of that audio file using note-names.
+;;;   perceived fundamental pitch of a given digital audio file, to allow for 
+;;;   later transposition of that audio file using note-names. 
 ;;; - keyword argument :midi-channel. An integer indicating which MIDI channel
-;;; is to be used for playback of this pitch.
+;;;   is to be used for playback of this pitch.
 ;;; 
 ;;; RETURN VALUE
 ;;; - A pitch object.
@@ -1997,12 +1997,12 @@ C4
 ;;; ARGUMENTS
 ;;; - A list of pitch objects.
 ;;; - A number indicating the number of semitones by which the list is to be
-;;; transposed. 
+;;;   transposed. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL indicating whether the method is to return a list of pitch
-;;; objects or a list of note-name symbols for those pitch objects. T =
-;;; note-name symbols. Default = NIL.
+;;;   objects or a list of note-name symbols for those pitch objects. T = 
+;;;   note-name symbols. Default = NIL.
 ;;; - The name of the package to perform the tranpositions. Default = :sc. 
 ;;; 
 ;;; RETURN VALUE
@@ -2081,14 +2081,14 @@ PITCH: frequency: 554.365, midi-note: 73, midi-channel: 0
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :as-symbols. Set to T or NIL to indicate whether the
-;;; method is to return a list of pitch objects or a list of the note-name
-;;; symbols from those pitch objects. T = return as symbols. Default = NIL. 
+;;;   method is to return a list of pitch objects or a list of the note-name 
+;;;   symbols from those pitch objects. T = return as symbols. Default = NIL.  
 ;;; - keyword argument :package. Used to identify a separate Lisp package in
-;;; which to itern result. This is really only applicable is combination with
-;;; :as-symbol set to T. Default = :sc.
+;;;   which to itern result. This is really only applicable is combination with 
+;;;   :as-symbol set to T. Default = :sc.
 ;;; - keyword argument :remove-duplicates. Set to T or NIL to indicate whether
-;;; any duplicate pitch objects are to be removed from the resulting list. T =
-;;; remove duplicates. Default = T.
+;;;   any duplicate pitch objects are to be removed from the resulting list. 
+;;;   T = remove duplicates. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns a list of pitch objects by default. When the keyword argument
@@ -2218,7 +2218,7 @@ data: F4
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether the method is to return a list of pitch
-;;; objects or a list of note-name symbols.
+;;;   objects or a list of note-name symbols.
 ;;; - The package in which the operation is to be performed. Default = :sc.
 ;;; 
 ;;; RETURN VALUE
@@ -2297,34 +2297,37 @@ data: E4
 ;;; ARGUMENTS 
 ;;; - A list of pitch items. These may be pitch objects or note-name symbols. 
 ;;;
+
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :as-symbol. T or NIL indicating whether the object is to
-;;; return a list of pitch objects or a list of note-name symbols. T = return
-;;; pitch objects. Default = NIL.
+;;;   return a list of pitch objects or a list of note-name symbols. T = return
+;;;   pitch objects. Default = NIL.
 ;;; - keyword argument :package. Used to identify a separate Lisp package in
-;;; which to itern result. This is really only applicable is combination with
-;;; :as-symbol set to T. Default = :sc.
+;;;   which to itern result. This is really only applicable is combination with 
+;;;   :as-symbol set to T. Default = :sc.
 ;;; - keyword argument :allow. T or NIL to indicate whether pitch objects of
-;;; certain, specified octave-doublings are to be kept even if they are not the 
-;;; lowest. This argument takes the form of either a single number or a list of
-;;; numbers. NB: This number does not indicate the octave in which the pitch
-;;; object is found, but rather pitch objects that are the specified number of
-;;; octaves above the lowest instance of the pitch class. Thus, :allow 2
-;;; indicates keeping the lowest pitch plus any instances of the same pitch
-;;; class two octaves above that lowest pitch (i.e., double-octaves). However,
-;;; it is important to note that the function first removes any octave
-;;; doublings that are not excepted by the :allow argument, which may produce
-;;; confusing results. Given a list of consecutive octaves, such as '(C1 C2 C3
-;;; C4) and an :allow value of 2, the function will first remove any equal
-;;; pitch classes that are are not 2 octaves apart, resulting in C2, C3, and C4
-;;; being removed as they are one octave distant from C1, C2 and C3. The result
-;;; of the function using these values would therefore be '(C1).
+;;;   certain, specified octave-doublings are to be kept even if they are not
+;;;   the lowest. This argument takes the form of either a single number or a
+;;;   list of numbers. NB: This number does not indicate the octave in which
+;;;   the pitch object is found, but rather pitch objects that are the
+;;;   specified number of octaves above the lowest instance of the pitch
+;;;   class. Thus, :allow 2 indicates keeping the lowest pitch plus any
+;;;   instances of the same pitch class two octaves above that lowest pitch
+;;;   (i.e., double-octaves). However, it is important to note that the
+;;;   function first removes any octave doublings that are not excepted by the
+;;;   :allow argument, which may produce confusing results. Given a list of
+;;;   consecutive octaves, such as '(C1 C2 C3 C4) and an :allow value of 2, the
+;;;   function will first remove any equal pitch classes that are are not 2
+;;;   octaves apart, resulting in C2, C3, and C4 being removed as they are one
+;;;   octave distant from C1, C2 and C3. The result of the function using these
+;;;   values would therefore be '(C1). 
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns a list of pitch objects by default. If the keyword argument
 ;;; :as-symbol is set to T, the method returns a list of note-name symbols
-;;; instead. 
-;;; If the first element of the pitch list is a number (i.e. a frequency), the
+;;; instead.
+;;; 
+;;; If the first element of the pitch list is a number (i.e. a frequency), the 
 ;;; method returns a list of frequencies. 
 ;;; 
 ;;; EXAMPLE
@@ -2411,11 +2414,11 @@ data: G3
 ;;; 
 ;;; ARGUMENTS
 ;;; - A list of pitch items. This may consist of pitch objects, note-name
-;;; symbols, or frequency numbers.
+;;;   symbols, or frequency numbers.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether the result should be a list of pitch objects
-;;; or a list of note-name symbols. T = note-name symbols. Default = NIL.
+;;;   or a list of note-name symbols. T = note-name symbols. Default = NIL.
 ;;; - The package in which the process is to be performed. Default = :sc.
 ;;; 
 ;;; RETURN VALUE
@@ -2651,14 +2654,14 @@ data: EF3
 ;;; 
 ;;; ARGUMENTS
 ;;; - A pitch item. This may be a pitch object, a note-name symbol or a
-;;; numerical frequency value.
+;;;   numerical frequency value.
 ;;; - A list of pitch items. These items may be pitch objects, note-name
-;;; symbols, or numerical frequency values.
+;;;   symbols, or numerical frequency values.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether or not the function should consider
-;;; enharmonically equivalent pitches to be equal. T = enharmonics are
-;;; considered equal. Default = T.
+;;;   enharmonically equivalent pitches to be equal. T = enharmonics are 
+;;;   considered equal. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns the tail of the tested list starting with the specified pitch if
@@ -2722,20 +2725,21 @@ data: EF3
 ;;; 
 ;;; ARGUMENTS
 ;;; - A list of pitch items from which the specified list of pitches is to be
-;;; removed. These can take the form of pitch objects, note-name symbols or
-;;; numerical frequency values.
+;;;   removed. These can take the form of pitch objects, note-name symbols or 
+;;;   numerical frequency values.
 ;;; - A list of pitch items to remove from the given list. These can take the
-;;; form of pitch objects, note-name symbols or numerical frequency
-;;; values. Even if only one pitch is to be removed is must be stated as a
-;;; list. 
+;;;   form of pitch objects, note-name symbols or numerical frequency 
+;;;   values. Even if only one pitch is to be removed is must be stated as a 
+;;;   list. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :enharmonics-are-equal. Set to T or NIL to indicate
-;;; whether or not enharmonically equivalent pitches are to be considered the
-;;; same pitch. T = enharmonically equaivalent pitches are equal. Default = T. 
+;;;   whether or not enharmonically equivalent pitches are to be considered the 
+;;;   same pitch. T = enharmonically equaivalent pitches are equal.
+;;;   Default = T.  
 ;;; - keyword argument :return-symbols. Set to T or NIL to indicate whether the
-;;; function is to return a list of pitch objects or note-name symbols. T =
-;;; note-name symbols. Default = NIL.
+;;;   function is to return a list of pitch objects or note-name symbols. T = 
+;;;   note-name symbols. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns a list of pitch objects by default. When the keyword argument
@@ -2921,7 +2925,7 @@ data: F4
 ;;; 
 ;;; ARGUMENTS
 ;;; - A pitch item. This can be a pitch object, a numerical frequency value, or
-;;; a note-name symbol. 
+;;;   a note-name symbol. 
 ;;; - A number that is the specified octave designator (e.g. the "4" in "C4").
 ;;; 
 ;;; RETURN VALUE

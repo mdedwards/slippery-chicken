@@ -194,10 +194,10 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :beat. Sets the "beat" value of the beats per minute;
-;;; i.e., 'q (or 4) for "quarter = xx bpm" etc. Default = 4.
+;;;   i.e., 'q (or 4) for "quarter = xx bpm" etc. Default = 4. 
 ;;; - keyword argument :id. Sets the ID of the tempo object.
 ;;; - keyword argument :description. A text description (string) of the tempo,
-;;; such as "Allegro con brio" etc.
+;;;   such as "Allegro con brio" etc.
 ;;; 
 ;;; RETURN VALUE
 ;;; A tempo object.

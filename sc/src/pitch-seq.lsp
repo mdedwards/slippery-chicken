@@ -484,13 +484,13 @@
 ;;; 
 ;;; ARGUMENTS
 ;;; - A two-item list, of which the first item is a symbol to be used as the
-;;; object's ID, and the second is a list of integers representing the general
-;;; contour of the pitch sequence.
+;;;   object's ID, and the second is a list of integers representing the general 
+;;;   contour of the pitch sequence.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - If the optional argument format is used, the first argument is to be only
-;;; a list of numbers representing the general contour of the pitch sequence,
-;;; and the second is to be a symbol for the pitch-seq object's ID.
+;;;   a list of numbers representing the general contour of the pitch sequence, 
+;;;   and the second is to be a symbol for the pitch-seq object's ID. 
 ;;; 
 ;;; RETURN VALUE
 ;;; - A pitch-seq object.

@@ -367,12 +367,10 @@
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :id. A symbol that will be the ID of the given sclist
 ;;;   object. Default = NIL.
-;;;
 ;;; - keyword argument :bounds-alert. T or NIL to indicate whether a warning
 ;;;   should be issued when a request is given to set or get an out-of-bounds
 ;;;   element (i.e. not enough elements in list). T = print warning. Default =
 ;;;   NIL.  
-;;;
 ;;; - keyword argument :copy. T or NIL to indicate whether the data list of the
 ;;;   given sclist object should be copied, with modifications being applied to
 ;;;   the copy, or modified itself (setf'd). T = copy. Default = T.

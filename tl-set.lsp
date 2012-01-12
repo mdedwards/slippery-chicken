@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified: 14:01:17 Wed Jan  4 2012 ICT
+;;; $$ Last modified: 08:34:31 Thu Jan 12 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -262,20 +262,20 @@
                                      upper
                                      (make-pitch 
                                       (highest-sounding ins)))
-                                  (highest-sounding ins))
+                                    (highest-sounding ins))
                          :lower (if lower
                                     (pitch-max 
                                      lower
                                      (make-pitch 
                                       (lowest-sounding ins)))
-                                  (lowest-sounding ins))
+                                    (lowest-sounding ins))
                          :do-related-sets do-related-sets))
          (set-pitches (if (microtones ins)
                           (data ins-set)
-                        ;; 21/2/07:
-                        ;; if our instrument can't play microtones just get
-                        ;; the normal chromatic notes from the set 
-                        (get-chromatic ins-set)))
+                          ;; 21/2/07:
+                          ;; if our instrument can't play microtones just get
+                          ;; the normal chromatic notes from the set 
+                          (get-chromatic ins-set)))
          (set-pitches-rm (if (missing-notes ins)
                              (remove-pitches set-pitches
                                              (missing-notes ins)

@@ -1046,19 +1046,19 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; ARGUMENTS
 ;;; - A rthm-seq-bar object
 ;;; - An integer indicating the tuplet value (e.g. 3 for triplets, 5 for
-;;; quintuplets etc.)
+;;;   quintuplets etc.)
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns T.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - beat. The beat basis for the bar. If NIL (default), the beat is taken
-;;; from the time signature.
+;;;   from the time signature.
 ;;; - beat-number. The beat number within the bar to look for tuplets. If set
-;;; to T (default), all beats in the bar will be examined for possible
-;;; tuplets. 
+;;;   to T (default), all beats in the bar will be examined for possible 
+;;;   tuplets. 
 ;;; - delete. Whether to delete the tuplet bracket indicators already present
-;;; in the given rthm-seq-bar object (default = T).
+;;;   in the given rthm-seq-bar object (default = T).
 ;;;
 ;;; EXAMPLE
 #|
@@ -1142,12 +1142,12 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - The beat basis for the given rthm-seq-bar. This will affect which notes
-;;; get beamed together. This value can be either numeric (4, 8 16 etc.) or
-;;; CMN/CM-shorthand (q, e, s etc). If no beat is given, the method defaults
-;;; this value to NIL and takes the beat from the current time signature. 
+;;;   get beamed together. This value can be either numeric (4, 8 16 etc.) or  
+;;;   CMN/CM-shorthand (q, e, s etc). If no beat is given, the method defaults 
+;;;   this value to NIL and takes the beat from the current time signature.  
 ;;; - Check-dur. This argument can be set to T or NIL. If T, the method will
-;;; make sure there is a complete beat of rhythms for each beat of the bar
-;;; (default = T). 
+;;;   make sure there is a complete beat of rhythms for each beat of the bar 
+;;;   (default = T). 
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns NIL.
@@ -1397,10 +1397,9 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; - The given rthm-seq-bar object in which to search.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL indicating whether to print an error message
-;;; if the given index is greater than the number of non-rest rhythms in the
-;;; RHYTHMS list (minus one to compensate for the zero-based indexing).
-;;; (Default = T).  
+;;; - T or NIL indicating whether to print an error message if the given index 
+;;;   is greater than the number of non-rest rhythms in the RHYTHMS list (minus 
+;;;   one to compensate for the zero-based indexing). (Default = T).  
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rhythm object.
@@ -1476,9 +1475,9 @@ rthm-seq-bar::get-nth-non-rest-rhythm: Couldn't get non-rest rhythm with index
 ;;; - The given rthm-seq-bar object in which to search.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL indicating whether to print an error message
-;;; if the given index is greater than the number of rests in the RHYTHMS list
-;;; (minus one to compensate for the zero-based indexing) (default = T).  
+;;; - T or NIL indicating whether to print an error message if the given index
+;;;   is greater than the number of rests in the RHYTHMS list (minus one to 
+;;;   compensate for the zero-based indexing) (default = T).    
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rhythm object.
@@ -1555,8 +1554,8 @@ Evaluation aborted on #<SIMPLE-ERROR>
 ;;; - An index number.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; T or NIL to indicate whether to interrupt and drop into the debugger with
-;;; an error. Default = T.
+;;; - T or NIL to indicate whether to interrupt and drop into the debugger with 
+;;;   an error. Default = T.
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rhythm object when successful. 
@@ -1663,9 +1662,9 @@ data: Q
 ;;; - The given rthm-seq-bar object in which to search.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL indicating whether to print a warning message
-;;; if the given index is greater than the number of attacks in the RHYTHMS
-;;; list (minus one to compensate for the zero-based indexing) (default = T).  
+;;; - T or NIL indicating whether to print a warning message if the given index
+;;;   is greater than the number of attacks in the RHYTHMS list (minus one to 
+;;;   compensate for the zero-based indexing) (default = T).   
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rhythm object.
@@ -1837,8 +1836,8 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL indicating whether to print a warning message if the given index
-;;; is greater than the number of attacks in the RHYTHMS list (minus one to
-;;; compensate for the zero-based indexing) (default = T).   
+;;;   (minus one) is greater than the number of attacks in the RHYTHMS
+;;;   list. Default = T.    
 ;;; 
 ;;; RETURN VALUE  
 ;;; An event object.
@@ -1916,10 +1915,10 @@ rthm-seq-bar::set-nth-attack: index (3) < 0 or >= notes-needed (3)
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL indicating whether to print a warning message if the given index
-;;; (minus one) is greater than the number of attacks in the RHYTHMS list
-;;; (default = T). This is a carry-over argument from the get-nth-attack method
-;;; called within the get-last-attack method and not likely to be needed for
-;;; use with get-last-attack.
+;;;   (minus one) is greater than the number of attacks in the RHYTHMS list 
+;;;   (default = T). This is a carry-over argument from the get-nth-attack
+;;;   method called within the get-last-attack method and not likely to be
+;;;   needed for use with get-last-attack.
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rhythm object.
@@ -2992,9 +2991,9 @@ data: (2 4)
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :destructively. Set to T or NIL to indicate whether the
-;;; slot values of the original rthm-seq-bar object should be changed or not
-;;; (even though the method always returns a clone). T = change the
-;;; originals. Default = NIL.
+;;;   slot values of the original rthm-seq-bar object should be changed or not 
+;;;   (even though the method always returns a clone). T = change the
+;;;   originals. Default = NIL.
 ;;; - chord-function
 ;;; - pitch-function
 ;;; 
@@ -3256,11 +3255,11 @@ data: (2 4)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :written. T or NIL to indicate whether the test is to
-;;; handle the written or sounding pitch in the event. T = written. Default =
-;;; NIL. 
+;;;   handle the written or sounding pitch in the event. T = written. Default = 
+;;;   NIL. 
 ;;; - keyword argument :force-naturals. T or NIL to indicate whether to force
-;;; "natural" note names that contain no F or S in their name to convert to
-;;; their enharmonic equivalent (ie, B3 = CF4)
+;;;   "natural" note names that contain no F or S in their name to convert to 
+;;;   their enharmonic equivalent (ie, B3 = CF4)
 ;;; 
 ;;; RETURN VALUE  
 ;;; Always returns NIL.
@@ -3412,16 +3411,16 @@ data: (2 4)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :min-beats. This argument takes an integer value to
-;;; indicate the minimum number of beats in any of the new rthm-seq-bar
-;;; objects created. This serves as a guideline only and may occasionally be
-;;; exceeded in value by the method. Default value = 2.
+;;;   indicate the minimum number of beats in any of the new rthm-seq-bar 
+;;;   objects created. This serves as a guideline only and may occasionally be 
+;;;   exceeded in value by the method. Default value = 2.
 ;;; - keyword argument :max-beats. This argument takes an integer value to
-;;; indicate the maximum number of beats in any of the new rthm-seq-bar objects
-;;; created. This serves as a guideline only and may occasionally be exceeded
-;;; in value by the method. Default value = 5.
+;;;   indicate the maximum number of beats in any of the new rthm-seq-bar
+;;;   objects created. This serves as a guideline only and may occasionally be
+;;;   exceeded in value by the method. Default value = 5.
 ;;; - keyword argument :warn. Indicates whether to print a warning if the
-;;; rthm-seq-bar object is unsplittable. Value T = print a warning. Defaults to
-;;; NIL. 
+;;;   rthm-seq-bar object is unsplittable. Value T = print a warning. Defaults
+;;;   to NIL. 
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns a list of rthm-seq-bar objects if successful, NIL if not. 
@@ -3530,7 +3529,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-bar-object
 ;;; - A whole number (positive or negative) indicating the transposition by
-;;; semitones.
+;;;   semitones.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Always returns NIL.
@@ -3639,9 +3638,9 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-bar object.
 ;;; - A whole number indicating the MIDI channel to be used for the
-;;; equal-tempered pitch material of the given rthm-seq-bar object.
+;;;   equal-tempered pitch material of the given rthm-seq-bar object. 
 ;;; - A whole number indicating the MIDI channel to be used for microtonal
-;;; pitch material of the given rthm-seq-bar object. 
+;;;   pitch material of the given rthm-seq-bar object. 
 ;;; 
 ;;; RETURN VALUE  
 ;;; Always returns NIL.
@@ -3744,7 +3743,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-bar object.
 ;;; - A number indicating the number of octaves to be transposed in either
-;;; direction (ottava/ottava bassa).
+;;;   direction (ottava/ottava bassa). 
 ;;; 
 ;;; RETURN VALUE  
 ;;; Always returns NIL.
@@ -3800,8 +3799,8 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A list of rhythmic durations, which may include ties and dots. Durations
-;;; may be written as numeric (integer) values or may use the CM/CMN/SCORE
-;;; alphabetic shorthand s=16, e=8, q=4, h=2, w=1. 
+;;;   may be written as numeric (integer) values or may use the CM/CMN/SCORE 
+;;;   alphabetic shorthand s=16, e=8, q=4, h=2, w=1. 
 ;;;
 ;;; make-rthm-seq-bar requires a time signature. If no time signature is
 ;;; provided, the most recently defined time signature will be used. If one is
@@ -3868,21 +3867,21 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 
 ;;; ARGUMENTS  
 ;;; - The time signature of the rthm-seq-bar object to be made, as a quoted
-;;; list.
+;;;   list.
 ;;; - T or NIL instruction on whether to print the time signature in score
-;;; output. 
+;;;   output. 
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - show-rest. This argument indicates whether or not to print the rest in
-;;; the printed score output (CMN/LilyPond). Default = T.
+;;;   the printed score output (CMN/LilyPond). Default = T.
 ;;; 
 ;;; The remaining optional arguments are set internally by the 
 ;;; slippery-chicken class, but can be read by the user for debugging.
 ;;; - missing-duration: Indicates whether the bar is missing a duration. 
 ;;; - player-section-ref: The current player and section of the given
-;;; rthm-seq-bar object.
+;;;   rthm-seq-bar object.
 ;;; - nth-seq: The current sequenz (with a "z") of the given rthm-seq-bar
-;;; object.  
+;;;   object.  
 ;;; - nth-bar: The current bar number of the given rthm-seq-bar object. 
 ;;; 
 ;;; RETURN VALUE    

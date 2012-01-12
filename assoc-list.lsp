@@ -135,7 +135,7 @@
 ;;;
 ;;; OPTIONS
 ;;; - Optional argument: T or NIL (default T) to indicate whether a warning  
-;;; should be issued when the first argument is a recursive assoc-list.
+;;;   should be printed when the first argument is a recursive assoc-list. 
 ;;;
 ;;; RETURN VALUE 
 ;;; A list of the keys only of all top-level association list pairs in the
@@ -272,13 +272,13 @@ data TURKEY
 ;;; 
 ;;; ARGUMENTS
 ;;; - The assoc-list key symbol (named-object id) of the object for which the 
-;;; position is sought.
+;;;   position is sought.
 ;;; - The assoc-list in which it is to be sought.
 ;;;
 ;;; OPTIONS
 ;;; - Optional argument: An indexing integer. In this case, get-position will 
-;;; search for the given object starting part-way into the list, skipping all
-;;; objects located at indices lower than the given integer (default = 0).
+;;;   search for the given object starting part-way into the list, skipping all
+;;;   objects located at indices lower than the given integer (default = 0). 
 ;;; 
 ;;; RETURN VALUE 
 ;;; The integer index of the named-object within the given assoc-list.
@@ -334,8 +334,8 @@ data TURKEY
 ;;; - The assoc-list in which it is to be sought.
 ;;;
 ;;; OPTIONS
-;;; - Optional argument: T or NIL to indicate whether to issue a warning if no 
-;;; such named-object can be found within the given assoc-list (default = T).
+;;; - Optional argument: T or NIL to indicate whether to print a warning if no  
+;;;   such named-object can be found within the given assoc-list (default = T).
 ;;;
 ;;; RETURN VALUE 
 ;;; If the given key is found within the given assoc-list, the data associated
@@ -386,8 +386,8 @@ WARNING:
 ;;; - The assoc-list in which it is to be sought.
 ;;;
 ;;; OPTIONS
-;;; - Optional argument: T or NIL to indicate whether to issue a warning if no 
-;;; such named-object can be found within the given assoc-list (default = T).
+;;; - Optional argument: T or NIL to indicate whether to print a warning if no 
+;;;   such named-object can be found within the given assoc-list (default = T). 
 ;;;
 ;;; Mostly we define whether we want to warn in the instance itself but
 ;;; sometimes it would be good to warn or not on a call basis, hence the
@@ -750,7 +750,7 @@ data: (SNOOPY SPOT ROVER)
 ;;; ARGUMENTS
 ;;; - The assoc-list to which the function is to be applied.
 ;;; - The function to be applied.  This must take the data in the assoc-list as
-;;; a first argument. 
+;;;   a first argument. 
 ;;;
 ;;; OPTIONS
 ;;; - Optional argument(s): Further arguments for the function.
@@ -802,8 +802,8 @@ data: (SNOOPY SPOT ROVER)
 ;;
 ;; OPTIONS
 ;; - Optional keyword argument :warn-not-found. This argument allows the user
-;; to determine whether a warning is issued when an index which doesn't exist
-;; is used for lookup. It can be set to T or NIL and defaults to T.
+;;   to determine whether a warning is issued when an index which doesn't exist  
+;;   is used for lookup. It can be set to T or NIL and defaults to T.
 ;;
 ;; RETURN VALUE 
 ;; Returns the assoc-list as a named-object.

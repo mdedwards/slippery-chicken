@@ -290,9 +290,9 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - clone. This argument determines whether a new rhythm object is made or
-;;; the duration value of the old object is replaced. When set to T, a new
-;;; object is made based on the duration value of the original. When set to
-;;; NIL, the original duration value is replaced (see example). Default = T. 
+;;;   the duration value of the old object is replaced. When set to T, a new 
+;;;   object is made based on the duration value of the original. When set to 
+;;;   NIL, the original duration value is replaced (see example). Default = T. 
 ;;;
 ;;; RETURN VALUE  
 ;;; A rhythm object.
@@ -528,7 +528,7 @@
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicated whether to issue a warning when trying to add marks
-;;; to a rest. Default = NIL.
+;;;   to a rest. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Always T.
@@ -621,7 +621,7 @@ rhythm::add-mark: add AT to rest?
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether or not to print a warning when attempting to
-;;; apply a mark to a rest.
+;;;   apply a mark to a rest.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns T if the mark is succssfully applied (if the rhythm object did not
@@ -702,8 +702,8 @@ rhythm::add-mark: add AT to rest?
 ;;; - A mark or list of marks.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - A T or NIL to indicate whether a warning is to be printed if the
-;;; specified mark is not present in the given rhythm object's MARKS slot. 
+;;; - T or NIL to indicate whether a warning is to be printed if the specified
+;;;   mark is not present in the given rhythm object's MARKS slot.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Always returns NIL.
@@ -1328,9 +1328,9 @@ NI
 ;;; - A second rhythm object.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; T or NIL to indicate whether a warning is issued when a rhythm cannot be
-;;; made because the resulting value is 0 or a negative duration. Default =
-;;; NIL (no warning issued).
+;;; - T or NIL to indicate whether a warning is printed when a rhythm cannot be
+;;;   made because the resulting value is 0 or a negative duration. Default = 
+;;;   NIL (no warning issued).
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rhythm object. Returns NIL when the object cannot be made.
@@ -1405,7 +1405,7 @@ NIL
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether a warning is to be printed when the
-;;; resulting duration is less than or equal to 0. Default = 0.
+;;;   resulting duration is less than or equal to 0. Default = 0. 
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rhythm object if the resulting duration is greater than 0, else NIL and
@@ -1499,22 +1499,22 @@ NIL
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A duration either as a numeric representation of a rhythm (subdivision of
-;;; a whole note; 2 = half note, 4 = quarter, 8 = eighth etc), a quoted
-;;; alphabetic shorthand for a duration (ie, 'h, 'q, 'e etc.), or an absolute
-;;; duration in seconds.     
+;;;   a whole note; 2 = half note, 4 = quarter, 8 = eighth etc), a quoted 
+;;;   alphabetic shorthand for a duration (ie, 'h, 'q, 'e etc.), or an absolute 
+;;;   duration in seconds.     
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :is-rest to denote whether the given duration is a rest
-;;; or not. T = rest. Default = NIL.
+;;;   or not. T = rest. Default = NIL.
 ;;; - keyword argument :is-tied-to to denote whether the given duration is tied
-;;; later to the next duration in a given rthm-seq-bar/rthm-seq object. T =
-;;; tied. Default = NIL.
+;;;   later to the next duration in a given rthm-seq-bar/rthm-seq object. T = 
+;;;   tied. Default = NIL.
 ;;; - keyword argument :duration indicates whether the duration argument has
-;;; been given as a duration in seconds, not a known rhythm like 'e or 8. T
-;;; indicates that the duration is a duration in seconds. Default = NIL.   
+;;;   been given as a duration in seconds, not a known rhythm like 'e or 8. T 
+;;;   indicates that the duration is a duration in seconds. Default = NIL.   
 ;;; - keyword argument :tempo indicates the tempo for the given rhythm. This
-;;; is not related to any tempi applied, rather one that is reflected in the
-;;; duration-in-tempo slot of event.
+;;;   is not related to any tempi applied, rather one that is reflected in the 
+;;;   duration-in-tempo slot of event.
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rhythm object.
@@ -1858,7 +1858,7 @@ data: NIL
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL indicates whether to create a circular-sclist from the
-;;; result. If NIL, a simple list will be returned (default = NIL).
+;;;   result. If NIL, a simple list will be returned (default = NIL). 
 ;;; 
 ;;; RETURN VALUE   
 ;;; A list or circular-sclist of the rhythm objects.

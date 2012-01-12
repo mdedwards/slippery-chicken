@@ -1052,13 +1052,14 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; Returns T.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - beat. The beat basis for the bar. If NIL (default), the beat is taken
-;;;   from the time signature.
-;;; - beat-number. The beat number within the bar to look for tuplets. If set
-;;;   to T (default), all beats in the bar will be examined for possible 
-;;;   tuplets. 
-;;; - delete. Whether to delete the tuplet bracket indicators already present
-;;;   in the given rthm-seq-bar object (default = T).
+;;; - An integer indicating beat basis for the bar, or NIL. If NIL (default),
+;;;   the beat is taken from the time signature.
+;;; - An integer indicating the beat number within the bar to look for
+;;;   tuplets, or T. If  T (default), all beats in the bar will be examined for
+;;;   possible tuplets. 
+;;; - T or NIL to indicate whether to delete the tuplet bracket indicators
+;;;   already present in the given rthm-seq-bar object. T = delete. 
+;;;   Default = T. 
 ;;;
 ;;; EXAMPLE
 #|

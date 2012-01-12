@@ -119,19 +119,50 @@
 
 ;;; ****m* sclist/sc-subseq
 ;;; FUNCTION
-;;; 
+;;; Return a subsequence from a given sclist based on starting and finishing
+;;; indices. 
+;;;
+;;; NB: This method uses Common Lisp's subseq function and thus inherits its
+;;; attributes, whereby the START argument indicates the zero-based index of
+;;; the first list item to be returned and teh FINISH argument indicates the
+;;; zero-based index of the first list item after that NOT to be returned.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An sclist object.
+;;; - An integer indicating the zero-based index of the first list item to be
+;;;   returned. 
+;;; - An integer indicating the zero-based index of the first list item after
+;;;   the START item to not be returned.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - (fun #'error).
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list.
+;;;
+;;; An error is returned if the user attempts to apply the method with START
+;;; and FINISH arguments that are beyond the bounds of the given sclist
+;;; object. 
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns a sublist from the given list. The START argument indicates the
+;; zero-based index of the first item in the given list to be returned and the
+;; FINISH argument indicates the zero-based index of the first item after that
+;; to NOT be returned. 
+(let ((scl (make-sclist '(1 2 3 4 5 6 7 8 9))))
+  (sc-subseq scl 2 7))
+
+=> (3 4 5 6 7)
+
+;; Drops into the debugger with an error if one of the indexing arguments is
+;; beyond the bounds of the given sclist object
+(let ((scl (make-sclist '(1 2 3 4 5 6 7 8 9))))
+  (sc-subseq scl 0 15))
+
+=
+sclist::sc-subseq: Illegal indices for above list: 0 15 (length = 9)
+   [Condition of type SIMPLE-ERROR]
 
 |#
 ;;; SYNOPSIS

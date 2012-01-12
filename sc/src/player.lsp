@@ -382,21 +382,86 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Jan 12 18:36:07 GMT 2012: Added robodoc info
+
 ;;; ****m* player/player-get-instrument
 ;;; FUNCTION
-;;; 
+;;; Get the instrument object assigned to a single-instrument player object or
+;;; get the specified instrument object assigned to a multiple-instrument
+;;; player object.  
+;;;
+;;; NB: This method will drop into the debugger with an error if no optional
+;;; argument is supplied when applying the method to a multiple-instrument
+;;; player obect. It will also print a warning when supplying an optional
+;;; argument to a player object that contains only one instrument object.  
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A player object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - Actually a required object for multiple-instrument player objects: The
+;;;   symbol that is the ID of the sought-after instrument object, as it
+;;;   appears in the instrument-palette with which the player object which
+;;;   made. If the given player object consists of only one instrument object,
+;;;   this argument is disregarded and a warning is printed.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns an instrument object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns an instrument object. Needs no optional argument when applied to a
+;; player object that contains only one instrument object
+(let* ((ip +slippery-chicken-standard-instrument-palette+)
+       (plr (make-player 'pno ip 'piano)))
+   (player-get-instrument plr))
+
+=>
+INSTRUMENT:
+[...]
+NAMED-OBJECT: id: PIANO, tag: NIL, 
+data: NIL
+
+;; Returns the only existing instrument object and prints a warning if using
+;; the optional argument when applying to a single-instrument player object 
+(let* ((ip +slippery-chicken-standard-instrument-palette+)
+       (plr (make-player 'pno ip 'piano)))
+  (id (player-get-instrument plr 'piano)))
+
+=> PIANO
+WARNING:
+   player::player-get-instrument: player PNO has only 1 instrument so optional
+argument PIANO is being ignored 
+
+;; Asking for a non-existent instrument obect from a single-instrument player
+;; object returns the only existing instrument object instead
+(let* ((ip +slippery-chicken-standard-instrument-palette+)
+       (plr (make-player 'pno ip 'piano)))
+  (id (player-get-instrument plr 'marimba)))
+
+=> PIANO
+WARNING:
+   player::player-get-instrument: player PNO has only 1 instrument so optional
+argument PIANO is being ignored 
+
+;; The ID desired instrument object must be specified when applying the method
+;; to a mutliple-instrument player object
+(let* ((ip +slippery-chicken-standard-instrument-palette+)
+       (plr (make-player 'percussion ip '(marimba vibraphone))))
+  (id (player-get-instrument plr 'marimba)))
+
+=> MARIMBA
+
+;; Interrupts and drops into the debugger when the optional argument is omitted
+;; in applying the method to a multiple-instrument player object
+(let* ((ip +slippery-chicken-standard-instrument-palette+)
+       (plr (make-player 'percussion ip '(marimba vibraphone))))
+   (player-get-instrument plr))
+
+=>
+player::player-get-instrument: PERCUSSION doubles so you need to pass the ID of
+the instrument you want. 
+   [Condition of type SIMPLE-ERROR]
 
 |#
 ;;; SYNOPSIS

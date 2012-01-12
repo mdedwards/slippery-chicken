@@ -178,21 +178,40 @@ sclist::sc-subseq: Illegal indices for above list: 0 15 (length = 9)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Jan 12 21:11:34 GMT 2012: Added robodoc info
+
 ;;; ****m* sclist/sc-nthcdr
 ;;; FUNCTION
-;;; 
+;;; Get the tail (rest) of a given sclist object beginning with and including
+;;; the specified zero-based index number.
+;;;
+;;; NB: This method is destructive and replaces the contents of the given list
+;;; with the sublist returned by the method.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An index number.
+;;; - An sclist object
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a list.
+;;;
+;;; Returns NIL if the specified index is greater (minus 1) than the number of
+;;; items in the given list.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create an sclist object and get the tail of the list starting at place
+;; 4. The subset returned replaces the data of the original.
+(let ((scl (make-sclist '(0 1 2 3 4 5 6 7 8 9))))
+  (sc-nthcdr 4 scl)
+  (data scl))
+
+=> (4 5 6 7 8 9)
+
+(let ((scl (make-sclist '(0 1 2 3 4 5 6 7 8 9))))
+  (sc-nthcdr 14 scl))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -202,22 +221,28 @@ sclist::sc-subseq: Illegal indices for above list: 0 15 (length = 9)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; add something destructively to the end of the list (inefficient of course).
+;;; SAR Thu Jan 12 21:34:40 GMT 2012: Added robodoc info
+
 ;;; ****m* sclist/sclist-econs
 ;;; FUNCTION
-;;; 
+;;; Add a single item to the end of a given sclist object.
+;;;
+;;; NB: This method destructively modifies the list.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An sclist object.
+;;; - An item to add to the end of the given sclist object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - The new value (list) of the given sclist object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Add a single integer to the end of a list of integers
+(let ((scl (make-sclist '(0 1 2 3 4))))
+  (sclist-econs scl 5))
+
+=> (0 1 2 3 4 5)
 
 |#
 ;;; SYNOPSIS
@@ -227,23 +252,40 @@ sclist::sc-subseq: Illegal indices for above list: 0 15 (length = 9)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Get the nth element (zero-based) of data.
+;;; SAR Thu Jan 12 22:27:11 GMT 2012: Added robodoc info
 
 ;;; ****m* sclist/get-nth
 ;;; FUNCTION
-;;; 
+;;; Get the nth element (zero-based) of data in a given sclist object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An index integer.
+;;; - An sclist object.
 ;;; 
 ;;; RETURN VALUE
+;;; Returns the item at index n within the given sclist object.
 ;;; 
-;;; 
+;;; Returns NIL and prints a warning if the specified index is greater than the
+;;; number of items in the given list (minus 1).
+;;;
 ;;; EXAMPLE
+
 #|
+;; Get the 3th item from the given sclist object
+(let ((scl (make-sclist '(cat dog cow pig sheep))))
+  (get-nth 3 scl))
+
+=> PIG
+
+;; Returns NIL and prints a warning when the specified index is beyond the
+;; bounds of the given list
+(let ((scl (make-sclist '(cat dog cow pig sheep))))
+  (get-nth 31 scl))
+
+=> 
+NIL
+WARNING: sclist::sclist-check-bounds: Illegal list reference: 31 
+(length = 5) (sclist id = NIL)
 
 |#
 ;;; SYNOPSIS
@@ -254,24 +296,48 @@ sclist::sc-subseq: Illegal indices for above list: 0 15 (length = 9)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Set the nth element (zero-based) of data.  NB this doesn't auto-grow the
-;;; list!. 
+;;; SAR Thu Jan 12 22:35:56 GMT 2012: Added robodoc info
 
 ;;; ****m* sclist/set-nth
 ;;; FUNCTION
-;;; 
+;;; Set the nth element (zero-based) of a given sclist object.
+;;;
+;;; NB: This doesn't auto-grow the list.  
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An index integer.
+;;; - An sclist object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the item added if successful.
+;;;
+;;; Returns NIL and prints a warning if the specified index number is greater
+;;; than the number of items in the list (minus 1)
 ;;; 
 ;;; EXAMPLE
+
 #|
+;; Returns the item added
+(let ((scl (make-sclist '(cat dog cow pig sheep))))
+  (set-nth 3 'horse scl))
+
+=> HORSE
+
+;; Access the DATA slot to see the change
+(let ((scl (make-sclist '(cat dog cow pig sheep))))
+  (set-nth 3 'horse scl)
+  (data scl))
+
+=> (CAT DOG COW HORSE SHEEP)
+
+;; Returns NIL and prints a warning if the index number is beyond the bounds of
+;; the list
+(let ((scl (make-sclist '(cat dog cow pig sheep))))
+  (set-nth 31 'horse scl))
+
+=> NIL
+WARNING: sclist::sclist-check-bounds: Illegal list reference: 31 
+(length = 5) (sclist id = NIL)
 
 |#
 ;;; SYNOPSIS
@@ -295,21 +361,45 @@ sclist::sc-subseq: Illegal indices for above list: 0 15 (length = 9)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Jan 12 22:49:24 GMT 2012: Added robodoc info
+
 ;;; ****m* sclist/sclist-remove-elements
 ;;; FUNCTION
-;;; 
+;;; Remove a specified number of consecutive items from a given sclist object. 
+;;;
+;;; NB: This is a destructive method and replaces the data of the given sclist
+;;; object with the newly created sublist.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An sclist object.
+;;; - The index integer within the given list with which to start (inclusive
+;;;   and zero-based).
+;;; - An integer that is the number of items to remove.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns 
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Returns an sclist object.
+(let ((scl (make-sclist '(0 1 2 3 4 5 6 7 8 9))))
+  (sclist-remove-elements scl 3 4))
+
+=> 
+SCLIST: sclist-length: 6, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (0 1 2 7 8 9)
+
+;; Drops into the debugger with an error if the given sclist object has fewer
+;; items than specified for the START or HOW-MANY arguments
+(let ((scl (make-sclist '(0 1 2 3 4 5 6 7 8 9))))
+  (data (sclist-remove-elements scl 3 41)))
+
+=> 
+remove-elements: arguments 2 and 3 must be integers < the length of argument 1: 
+3 41 10 
+   [Condition of type SIMPLE-ERROR]
 
 |#
 ;;; SYNOPSIS
@@ -326,21 +416,31 @@ sclist::sc-subseq: Illegal indices for above list: 0 15 (length = 9)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Jan 12 23:01:18 GMT 2012: Added robodoc info
+
 ;;; ****m* sclist/combine
 ;;; FUNCTION
-;;; 
+;;; Combine the contents of two given sclist objects into one list.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A first sclist object.
+;;; - A second sclist ojbect.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns an sclist object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Combine the contents of two sclist objects to make a new one
+(let ((scl1 (make-sclist '(0 1 2 3 4)))
+      (scl2 (make-sclist '(5 6 7 8 9))))
+  (combine scl1 scl2))
+
+=> 
+SCLIST: sclist-length: 10, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (0 1 2 3 4 5 6 7 8 9)
 
 |#
 ;;; SYNOPSIS

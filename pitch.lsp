@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 22:40:29 Sat Jan  7 2012 ICT
+;;; $$ Last modified: 09:49:37 Fri Jan 13 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -76,7 +76,7 @@
    (nearest-chromatic :accessor nearest-chromatic :type symbol :initform nil)
    ;; just the accidental part of the note e.g. s, f or qf etc.
    (accidental :accessor accidental :type symbol :initform nil)
-   ;; MDE Sat Jan 7 22:40:26 2012 -- NB if a pitch object is created form a
+   ;; MDE Sat Jan 7 22:40:26 2012 -- NB if a pitch object is created from a
    ;; frequency (rather than note symbol) then the given frequency is stored
    ;; and the note/midi-note etc. nearest to it will be stored also.  So the
    ;; frequency might not be the exact frequency of the reflected note.  This
@@ -1911,6 +1911,12 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;; note-name; when it is specified as a number, it is treated as a frequency
 ;;; in hertz.
 ;;; 
+;;; NB if a pitch object is created from a frequency (rather than note symbol)
+;;; then the given frequency is stored and the note/midi-note etc. nearest to
+;;; it will be stored also.  So the frequency might not be the exact frequency
+;;; of the reflected note.  This is by design, so that unusual temperaments can
+;;; retain exact frequencies and show nearest notes etc.
+;;; 
 ;;; ARGUMENTS
 ;;; - A note, either as a alphanumeric note name or a numeric hertz frequency.  
 ;;; 
@@ -1948,7 +1954,7 @@ data: C4
 
 ;; Make a pitch object using a frequency in hertz and including a value for the
 ;; keyword argument :midi-channel, then print the DATA and MIDI-NOTE slots to
-;; see the method's automatic conversion for those value
+;; see the method's automatic conversion for those values.
 (let ((p (make-pitch 261.63 :midi-channel 1)))
   (print (data p))
   (print (midi-note p)))

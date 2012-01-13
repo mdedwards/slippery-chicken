@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    February 19th 2001
 ;;;
-;;; $$ Last modified: 19:00:01 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 09:53:17 Fri Jan 13 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -137,7 +137,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* circular-sclist/at-start
+;;; FUNCTION
+;;; are we at the start of the list?
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod at-start ((cscl circular-sclist))
+;;; ****
   (zerop (current cscl)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -233,8 +252,8 @@ data: (1 2 3 4)
 
 ;; Can be created using nested lists
 (let ((cscl (make-cscl '((1 (4 5 6))
-			 (2 (7 8 9))
-			 (3 (10 11 12))))))
+                         (2 (7 8 9))
+                         (3 (10 11 12))))))
   (data cscl))
 
 => ((1 (4 5 6)) (2 (7 8 9)) (3 (10 11 12)))
@@ -264,7 +283,6 @@ WARNING: sclist::sclist-check-bounds: Illegal list reference: 11
   (get-nth 11 cscl))
 
 => NIL
-
 
 |#
 ;;; SYNOPSIS

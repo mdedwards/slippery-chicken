@@ -76,21 +76,41 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jan 13 12:36:30 GMT 2012: Added robodoc info
+
 ;;; ****m* circular-sclist/get-next
 ;;; FUNCTION
-;;; 
+;;; Get the next item in a given circular-sclist object. The class
+;;; automatically keeps track of the last item retrieved. If the final item of
+;;; the given circular-sclist object was the last item retrieved, the method
+;;; begins again at the beginning of the list.
 ;;; 
 ;;; ARGUMENTS 
+;;; - A circular-sclist object.
 ;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;;
-;;;
 ;;; RETURN VALUE  
-;;; 
+;;; An item from the given circular-sclist object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Repeatedly calling get-next retrieves each subsequent item from the
+;; given circular-sclist object. When the list has been exhausted, retrieval
+;; begins again from the head of the list.
+(let ((cscl (make-cscl '(0 1 2 3 4))))
+  (loop repeat 10 
+     do (print (get-next cscl))))
+
+=>
+0 
+1 
+2 
+3 
+4 
+0 
+1 
+2 
+3 
+4
 
 |#
 ;;; SYNOPSIS
@@ -109,21 +129,33 @@
 ;;; function (what was I thinking?) but don't want to change this basic
 ;;; functionality now for fear of corrupting other dependent methods.
 
+;;; SAR Fri Jan 13 12:48:06 GMT 2012: Added robodoc info
+
 ;;; ****m* circular-sclist/get-last
 ;;; FUNCTION
-;;; 
+;;; Return the the most recent item retrieved in a circular-sclist object.
 ;;; 
 ;;; ARGUMENTS 
+;;; - A circular-sclist object.
 ;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;;
-;;;
 ;;; RETURN VALUE  
-;;; 
+;;; An item from the given circular-sclist object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Retrieves the final item in the list at creation
+(let ((cscl (make-cscl '(0 1 2 3 4))))
+  (get-last cscl))
+
+=> 4
+
+;; Get and print a number of items from the list using get-next, then return
+;; the most recent item retrieved using get-last
+(let ((cscl (make-cscl '(0 1 2 3 4))))
+  (loop repeat 7 do (print (get-next cscl)))
+  (get-last cscl))
+
+=> 1
 
 |#
 ;;; SYNOPSIS
@@ -137,21 +169,34 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jan 13 12:53:41 GMT 2012: Added robodoc info
+
 ;;; ****m* circular-sclist/at-start
 ;;; FUNCTION
-;;; are we at the start of the list?
+;;; Determines whether the pointer for the given circular-sclist object is at
+;;; the head of its list.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A circular-sclist object.
 ;;; 
 ;;; RETURN VALUE
 ;;; 
 ;;; 
 ;;; EXAMPLE
 #|
+;; At creation the pointer is located at the start of the list
+(let ((cscl (make-cscl '(0 1 2 3 4))))
+  (at-start cscl))
+
+=> T
+
+;; Retrieve a number of the items using get-next, then determine whether the
+;; pointer is located at the start of the list
+(let ((cscl (make-cscl '(0 1 2 3 4))))
+  (loop repeat 7 do (get-next cscl))
+  (at-start cscl))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -176,19 +221,52 @@
 
 ;;; ****m* circular-sclist/reset
 ;;; FUNCTION
-;;; 
+;;; Reset the pointer of a given circular-sclist object. The pointer is reset
+;;; to 0 by default, but the desired index may be specified using the optional
+;;; argument. 
+;;;
+;;; NB: An immediately subsequent get-next call will retrieve the item at the
+;;; index to which the pointer is reset. An immediately subsequent get-last
+;;; call will retrieve the item at the index one-less than the value to which
+;;; the pointer is set.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A circular-sclist object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;;
+;;; - An index integer to which the pointer for the given circular-sclist
+;;;   object should be reset.
 ;;;
 ;;; RETURN VALUE  
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Resets to 0 by default. Here: Get a number of items using get-next, reset
+;; the pointer, and apply get-next again.
+(let ((cscl (make-cscl '(0 1 2 3 4))))
+  (loop repeat 8 do (print (get-next cscl)))
+  (reset cscl)
+  (get-next cscl))
+
+=> 0
+
+;; Reset to a specified index
+(let ((cscl (make-cscl '(0 1 2 3 4))))
+  (loop repeat 8 do (print (get-next cscl)))
+  (reset cscl 3)
+  (get-next cscl))
+
+=> 3
+
+;; By default, get-last will then retrieve the item at index one less than the
+;; reset value
+(let ((cscl (make-cscl '(0 1 2 3 4))))
+  (loop repeat 8 do (print (get-next cscl)))
+  (reset cscl 3)
+  (get-last cscl))
+
+=> 2
 
 |#
 ;;; SYNOPSIS

@@ -177,15 +177,11 @@
 
 ;;; ****m* l-for-lookup/do-simple-lookup
 ;;; FUNCTION
-;;; do-simple-lookup:
-;;;
 ;;; do-lookup does the transitioning between groups and circular returning from
 ;;; lists.  Sometimes we want a simple lookup procedure where a ref always
 ;;; returns a specific and single piece of data.
+;;;
 ;;; N.B. scaler and offset are ignored by this method!
-;;; 
-;;; DATE:
-;;; 
 ;;; 
 ;;; ARGUMENTS 
 ;;; 
@@ -244,6 +240,7 @@
             (2 (2 1 2 3 2 1))
             (3 (2 3 2 2 2 3 3))))))
   (do-lookup x 1 200))
+
  =>
 (AX1 BX1 BX2 BX3 AX2 AX3 BX1 AX1 BX2 CX1 BX3 AX2 BX1 AX3 BX2 CX2 BX3 AX1 BX1
  AY1 BX2 CY2 BX3 AX2 AX3 BY1 BX1 BX2 AX1 AX2 AY2 BX3 BX1 BX2 AX3 AX1 BX3 AY3
@@ -516,17 +513,32 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jan 13 17:09:19 GMT 2012: Add robodoc info
+
 ;;; ****f* l-for-lookup/make-l-for-lookup
 ;;; FUNCTION
-;;; make-l-for-lookup:
-;;;
-;;; 
+;;; Create an l-for-lookup object. The l-for-lookup object uses techniques
+;;; associated with Lindenmayer-systems (or L-systems) by storing a series of
+;;; rules about how to produce new, self-referential sequences from the data of
+;;; original, shorter sequences.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A symbol that will be the object's ID.
+;;; - A sequence (list) or list of sequences, that serve as the initial state,
+;;;   from which the permutations are to be produced.
+;;; - A production rule or list of production rules, consisting of a
+;;;   predecessor and a sucessor, defining how to expand and replace the
+;;;   individual predecessor items.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :auto-check-redundancy. Default = NIL.
+;;; - keyword argument :scaler. Factor by which to scale the values returned by
+;;;   do-lookup. Default = 1. 
+;;; - keyword argument :offest. Number to be added to values returned by
+;;;   do-lookup (after they are scaled). Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns an l-for-lookup object.
 ;;; 
 ;;; EXAMPLE
 #|

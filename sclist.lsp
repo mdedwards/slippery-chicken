@@ -228,6 +228,9 @@ sclist::sc-subseq: Illegal indices for above list: 0 15 (length = 9)
 ;;; Add a single item to the end of a given sclist object.
 ;;;
 ;;; NB: This method destructively modifies the list.
+;;;
+;;; NB: This method adds any element specified as a single item. For combining
+;;; two lists into one see sclist/combine.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An sclist object.

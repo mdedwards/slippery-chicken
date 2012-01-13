@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 10:42:42 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 18:10:52 Thu Jan 12 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -259,6 +259,7 @@
                                           (subsets set))))
              num-set-pitches offset scaler)
         ;; (print set-pitches-rm)
+        ;; todo: document this feature
         ;; If (subset-id instrument) was set (to limit the pitches for that
         ;; instrument to the subset with this id) then use only pitches in
         ;; subset; also set used to be only those that are in the subset.

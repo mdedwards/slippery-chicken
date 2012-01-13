@@ -83,15 +83,16 @@
 ;;; ARGUMENTS 
 ;;; 
 ;;; 
+;;; OPTIONAL ARGUMENTS
+;;;
+;;;
 ;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
-;;; 
+#|
+
+|#
 ;;; SYNOPSIS
 (defmethod get-next ((cscl circular-sclist))
 ;;; ****
@@ -110,22 +111,21 @@
 
 ;;; ****m* circular-sclist/get-last
 ;;; FUNCTION
-;;; get-last:
-;;;
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
 ;;; 
 ;;; 
+;;; OPTIONAL ARGUMENTS
+;;;
+;;;
 ;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
-;;; 
+#|
+
+|#
 ;;; SYNOPSIS
 (defmethod get-last ((cscl circular-sclist))
 ;;; ****
@@ -157,22 +157,21 @@
 
 ;;; ****m* circular-sclist/reset
 ;;; FUNCTION
-;;; reset:
-;;;
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
 ;;; 
 ;;; 
+;;; OPTIONAL ARGUMENTS
+;;;
+;;;
 ;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
-;;; 
+#|
+
+|#
 ;;; SYNOPSIS
 (defmethod reset ((cscl circular-sclist) &optional where)
 ;;; ****
@@ -199,22 +198,75 @@
 
 ;;; ****f* circular-sclist/make-cscl
 ;;; FUNCTION
-;;; make-cscl:
-;;;
-;;; 
+;;; Create a circular-sclist object from a specified list of items. The items
+;;; themselves may also be lists. 
 ;;; 
 ;;; ARGUMENTS 
+;;; - A list.
 ;;; 
-;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :id. A symbol that will be used as the ID for the
+;;;   created circular-sclist object. Default = NIL.
+;;; - keyword argument :bounds-alert. T or NIL to indicate whether or not to
+;;;   print a warning if when an attempt is made to access the object using an
+;;;   out-of-bounds index number (i.e., not enough elements in the list). 
+;;;   T = print a warning. Default = T. 
+;;; - keywords argument :copy. T or NIL to indicate whether the data list
+;;;   should be copied to a new object or modified in the original. T =
+;;;   copy. Default = T.
+;;;
 ;;; RETURN VALUE  
-;;; 
+;;; A circular-sclist object.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
-;;; 
+#|
+;; Returns a circular-sclist object with ID of NIL, bounds-alert=T and copy=T
+;; by default
+(make-cscl '(1 2 3 4))
+
+=> 
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 4, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (1 2 3 4)
+
+;; Can be created using nested lists
+(let ((cscl (make-cscl '((1 (4 5 6))
+			 (2 (7 8 9))
+			 (3 (10 11 12))))))
+  (data cscl))
+
+=> ((1 (4 5 6)) (2 (7 8 9)) (3 (10 11 12)))
+
+;; Setting the ID
+(make-cscl '(1 2 3 4) :id 'test-cscl)
+
+=> 
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 4, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: TEST-CSCL, tag: NIL, 
+data: (1 2 3 4)
+
+;; By default, attempts to access the object with an out-of-bounds index result 
+;; in a warning being printed
+(let ((cscl (make-cscl '(1 2 3 4))))
+  (get-nth 11 cscl))
+
+=>
+NIL
+WARNING: sclist::sclist-check-bounds: Illegal list reference: 11 
+(length = 4) (sclist id = NIL)
+
+;; This can be suppressed by creating the object with :bounds-alert set to NIL 
+(let ((cscl (make-cscl '(1 2 3 4) :bounds-alert nil)))
+  (get-nth 11 cscl))
+
+=> NIL
+
+
+|#
 ;;; SYNOPSIS
 (defun make-cscl (list &key (id nil) (bounds-alert t) (copy t))
 ;;; ****

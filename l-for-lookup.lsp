@@ -742,28 +742,39 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Same as fibonacci but eliminates the final 0 and 1s; can also reach max-sum
-;;; rather than having to be < it.
-;;; (fibonacci 20) -> (8 5 3 2 1 1 0) 20
-;;; (fibonacci-start-at-2 20) -> (8 5 3 2) 18
+;;; SAR Sat Jan 14 17:11:23 GMT 2012: Added robodoc info
 
 ;;; ****f* l-for-lookup/fibonacci-start-at-2
 ;;; FUNCTION
-;;; fibonacci-start-at-2:
+;;; Return the longest possible list of sequential Fibonacci numbers, excluding 
+;;; 0 and 1, whose combined sum is less than or equal to the specified
+;;; value. The list is returned in descending sequential order.
 ;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; The function also returns as a second value the greatest possible
+;;; Fibonacci number that is less than or equal to the specified test number.
+;;;
+;;; NB: This function differs from the plain fibonacci function in three
+;;; points: a) it excludes 0 and 1, b) the combined sum may also be equal
+;;; to the specified value as well as being below it, and c) the second
+;;; returned value may also be equal to the test number.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; A number that is to be the test number.
 ;;; 
 ;;; RETURN VALUE  
+;;; A list of descending sequential Fibonacci numbers, of which list the last
+;;; element is 2.
 ;;; 
-;;; 
+;;; Also returns as a second result the greatest possible Fibonacci number that
+;;; is less than or equal to the specified test number.
+;;;
 ;;; EXAMPLE
+
 #|
+;; The combined sum may also be equal to the test number.
+(fibonacci-start-at-2 18)
+
+=> (8 5 3 2), 18
 
 |#
 ;;; SYNOPSIS
@@ -777,30 +788,50 @@ data: (
             (- sum 3))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan 14 17:27:09 GMT 2012: Edited robodoc info
+
 ;;; ****f* l-for-lookup/fibonacci-transition
 ;;; FUNCTION
-;;; fibonacci-transition:
-;;; 
-;;; Say you want a transition between two repeating states over a period of x
-;;; repetitions; this gives you a gradual break in of the second state using
-;;; fibinacci relationships.
-;;; fibonacci-transition-aux1 gradually decreases item1 and increases item2,
-;;; this does the same but continues to increase item2 until it completely
-;;; dominates. 
+;;; Uses Fibonacci relationships to produces a sequence that is a gradual
+;;; transition from one repeating state to a second over n repetitions. The
+;;; function gradually increases the frequency of the second repeating state
+;;; until it completely dominates. 
+;;;
+;;; NB: The similar but separate function fibonacci-transition-aux1 gradually
+;;; decreases state 1 and increases state 2.
 ;;; 
 ;;; ARGUMENTS 
-;;; - number of items you want returned in your list
-;;; - (optional) item 1 (i.e. what we start with); can be any Lisp type,
-;;;   including lists.  
-;;; - (optional) item 2 (i.e. what we end with); can also be any Lisp type.
-;;; 
+;;; - An integer that is the desired number of elements in the resulting list
+;;;   (i.e., the number of repetitions over which the transition is to occur).
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - Repeating item 1 (starting state). This can be any Lisp type, including
+;;;   lists. Default = 0.  
+;;; - Repeating item 2 (target state): This can also be any Lisp type. 
+;;;   Default = 1.  
+;;;
 ;;; RETURN VALUE  
-;;; a list of the transition
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
-(fibonacci-transition 35 0 1)
-=> (0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 1 0 1 0 1 0 1 0 1 0 1 0 1 1 0 1 1 1 1 1)
+;; Defaults to 0 and 1 (no optional arguments)
+(fibonacci-transition 31)
+
+=> (0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 1 0 1 1 1 0 1 0 1 1 0 1 1 1 1 1)
+
+;; Using optional arguments set to numbers
+(fibonacci-transition 23 11 37)
+
+=> (11 11 11 11 37 11 11 37 11 37 11 37 11 37 37 11 37 11 37 11 37 37 37) 
+
+;; Using lists
+(fibonacci-transition 27 '(1 2 3) '(5 6 7))
+
+=> ((1 2 3) (1 2 3) (1 2 3) (1 2 3) (5 6 7) (1 2 3) (1 2 3) (5 6 7) (1 2 3)
+    (1 2 3) (5 6 7) (1 2 3) (5 6 7) (1 2 3) (5 6 7) (1 2 3) (5 6 7) (5 6 7)
+    (1 2 3) (5 6 7) (5 6 7) (1 2 3) (5 6 7) (5 6 7) (5 6 7) (5 6 7) (5 6 7))
+
 |#
 ;;; SYNOPSIS
 (defun fibonacci-transition (num-items &optional
@@ -838,7 +869,7 @@ data: (
 
 ;;; Say you want a transition between two repeating states over a period of x
 ;;; repetitions; this gives you a gradual break in of the second state using
-;;; fibinacci relationships.
+;;; Fibonacci relationships.
 ;;; <item1> is the start item, <item2> the item we want to transition towards
 ;;; e.g. (fibonacci-transition-aux1 21 0 1) ->
 ;;; (0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 1 0 1 0 1 1)   
@@ -893,43 +924,59 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan 14 17:50:08 GMT 2012: Edited robodoc info
 
 ;;; ****f* l-for-lookup/fibonacci-transitions
-;;; FUNCTION
-;;; fibonacci-transitions:
+;;; DATE
+;;; 18 Feb 2010
 ;;;
-;;; This allows multiple transitions 
-;;; so <levels>=2 would just return 0s and 1; 3 would have 0,1,2; 1 just 0
-;;; 
-;;; When we use items-per-transition for generating the fibonacci
-;;; transition, although the numbers returned by that function are
-;;; about equal, the transition results in an uneven spread of numbers
-;;; e.g.  (count-elements (fibonacci-transitions-aux 200 3)) --> (0 60
-;;; 1 100 2 40) in fact we seem to get 3/5 of the first and 2/5 of the
-;;; last element with the middle elements being equal.  Looking again,
-;;; I see that the number of the first element + number of last is
-;;; close to or the same as the number of the middle numbers, which
-;;; are always about the same or equal and is total-items / 1-
-;;; levels--so this is the number that will be missing from the first
-;;; and last (in a 3:2 proportion). Try and balance this out (won't be
-;;; perfect but pretty near).
-;;; 
-;;; DATE 18.2.10
-;;; 
+;;; FUNCTION
+;;; This function builds on the concept of the function fibonacci-transition by
+;;; allowing multiple consecutive transitions over a specified number of
+;;; repetitions. The function either produces sequences consisting of
+;;; transitions from each consecutive increasing number to its upper
+;;; neighbor, starting from 0 and continuing through a specified number of
+;;; integers, or it can be used to produce a sequence by transitioning between
+;;; each element of a user-specified list of items.
+;;;
 ;;; ARGUMENTS 
-;;; - how many items you want to generate (integer)
-;;; - how many states (levels) you want to transition through (integer) or if
-;;;   you give a list, the items in the list will be used to transition.
+;;; - An integer indicating the number of repetitions over which the
+;;;   transitions are to be performed.
+;;; - Either:
+;;;   - An integer indicating the number of consecutive values, starting from
+;;;     0, the function is to transition (i.e. 3 will produce a sequence that
+;;;     transitions from 0 to 1, then from 1 to 2 and finally from 2 to 3), or 
+;;;   - A list of items of any type (including lists) through which the
+;;;     function is to transition.
+;;;
 ;;; RETURN VALUE  
-;;; a list of transitions of length <total-items>
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
-(fibonacci-transitions 100 4) 
-=>
-(0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 1 0 0 1 0 1 0 1 1 0 1 1 0 1 1 1 1 1 1 1
- 1 1 2 1 1 2 1 1 2 1 2 1 2 2 1 2 2 1 2 2 2 2 2 2 2 2 2 3 2 2 3 2 2 3 2 3 2 3
- 3 2 3 3 2 3 3 3 3 3 2 3 3 3 3 3 3 3 3 3 3 3 3 3 3)
+;; Using just an integer transitions from 0 to 1 below that integer
+(fibonacci-transitions 76 4)
+
+=> (0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 1 0 1 0 1 1 0 1 0 1 1 1 1 1 1 1 2 1 1 2 1 2 1
+    2 2 1 2 1 2 2 2 2 2 2 2 3 2 2 3 2 3 2 3 3 2 3 2 3 3 3 2 3 3 3 3 3 3 3 3 3 3)
+
+;; Using a list transitions consecutively through that list
+(fibonacci-transitions 152 '(1 2 3 4))
+
+=> (1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 2 1 1 1 1 2 1 1 2 1 1 2 1 2 1 2
+    2 1 2 1 2 2 1 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 3 2 2 3 2 2 3 2 3 2 3
+    3 2 3 2 3 3 2 3 3 2 3 3 3 3 3 3 3 3 3 3 3 3 4 3 3 3 3 4 3 3 4 3 3 4 3 4 3 4
+    4 3 4 3 4 4 3 4 4 3 4 4 4 4 4 3 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4)
+
+;; A list of lists is also viable
+(fibonacci-transitions 45 '((1 2 3) (4 5 4) (3 2 1)))
+
+=> ((1 2 3) (1 2 3) (1 2 3) (1 2 3) (1 2 3) (4 5 4) (1 2 3) (1 2 3) (4 5 4)
+    (1 2 3) (4 5 4) (1 2 3) (4 5 4) (1 2 3) (4 5 4) (1 2 3) (4 5 4) (1 2 3)
+    (4 5 4) (4 5 4) (4 5 4) (4 5 4) (4 5 4) (3 2 1) (4 5 4) (3 2 1) (4 5 4)
+    (3 2 1) (4 5 4) (3 2 1) (4 5 4) (3 2 1) (4 5 4) (3 2 1) (3 2 1) (3 2 1)
+    (4 5 4) (3 2 1) (3 2 1) (3 2 1) (3 2 1) (3 2 1) (3 2 1) (3 2 1) (3 2 1))
+
 |#
 ;;; SYNOPSIS
 (defun fibonacci-transitions (total-items levels)

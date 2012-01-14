@@ -15,3 +15,18 @@ implementing the remix-in algorithm of cheat sheet (see get-loops seqs)
     (update-events-tempo sc players))
   (when multi-bar-rests
 
+;;; SAR Sat Jan 14 18:06:04 GMT 2012:
+;;; taken from l-for-lookup::fibonacci-transitions
+;;; MDE: When we use items-per-transition for generating the Fibonacci
+;;; transition, although the numbers returned by that function are
+;;; about equal, the transition results in an uneven spread of numbers
+;;; e.g.  (count-elements (fibonacci-transitions-aux 200 3)) --> (0 60
+;;; 1 100 2 40) in fact we seem to get 3/5 of the first and 2/5 of the
+;;; last element with the middle elements being equal.  Looking again,
+;;; I see that the number of the first element + number of last is
+;;; close to or the same as the number of the middle numbers, which
+;;; are always about the same or equal and is total-items / 1-
+;;; levels--so this is the number that will be missing from the first
+;;; and last (in a 3:2 proportion). Try and balance this out (won't be
+;;; perfect but pretty near).
+

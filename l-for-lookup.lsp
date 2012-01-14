@@ -175,22 +175,48 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan 14 14:07:14 GMT 2012: Edited robodoc info
+
 ;;; ****m* l-for-lookup/do-simple-lookup
 ;;; FUNCTION
-;;; do-lookup does the transitioning between groups and circular returning from
-;;; lists.  Sometimes we want a simple lookup procedure where a ref always
-;;; returns a specific and single piece of data.
+;;; Performs a simple lookup procedure whereby a given reference key always
+;;; returns a specific and single piece of data. This is different from
+;;; do-lookup, which performs a transitioning between lists and returns items
+;;; from those lists in a circular manner. do-simple-lookup always returns the
+;;; first element of the sequence list associated with a given key-ID.
 ;;;
-;;; N.B. scaler and offset are ignored by this method!
+;;; N.B. the SCALER and OFFSET slots are ignored by this method.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - An l-for-lookup object.
+;;; - The start seed, or axiom, that is the initial state of the L-system. This
+;;;   must be the key-id of one of the sequences.
+;;; - An integer that is the number of elements to be returned.
 ;;; 
 ;;; RETURN VALUE  
 ;;; 
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create an l-for-lookup object using three production rules and three
+;; sequences of three lists. Applying do-simple-lookup returns the first
+;; element of each sequence based on the L-sequence of keys created by the
+;; rules of the give l-for-lookup object.
+(let ((lfl (make-l-for-lookup 
+	    'lfl-test
+	    '((1 ((ax1 ax2 ax3) (ay1 ay2 ay3 ay4) (az1 az2 az3 az4 az5)))
+	      (2 ((bx1 bx2 bx3) (by1 by2 by3 by4) (bz1 bz2 bz3 bz4 bz5)))
+	      (3 ((cx1 cx2 cx3) (cy2 cy2 cy3 cy4) (cz1 cz2 cz3 cz4 cz5))))
+	    '((1 (1 2 2 2 1 1))
+	      (2 (2 1 2 3 2))
+	      (3 (2 3 2 2 2 3 3))))))
+  (do-simple-lookup lfl 1 21))
+
+=> ((AX1 AX2 AX3) (BX1 BX2 BX3) (BX1 BX2 BX3) (BX1 BX2 BX3) (AX1 AX2 AX3)
+    (AX1 AX2 AX3) (BX1 BX2 BX3) (AX1 AX2 AX3) (BX1 BX2 BX3) (CX1 CX2 CX3)
+    (BX1 BX2 BX3) (BX1 BX2 BX3) (AX1 AX2 AX3) (BX1 BX2 BX3) (CX1 CX2 CX3)
+    (BX1 BX2 BX3) (BX1 BX2 BX3) (AX1 AX2 AX3) (BX1 BX2 BX3) (CX1 CX2 CX3)
+    (BX1 BX2 BX3))
 
 |#
 ;;; SYNOPSIS
@@ -206,62 +232,77 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan 14 13:29:20 GMT 2012: Edited robodoc info
+
 ;;; ****m* l-for-lookup/do-lookup
 ;;; FUNCTION
-;;; do-lookup: Generate the l-seq from the rules and use it to do the
-;;; Fibonacci-based transitioning lookup of values in the sequences.
+;;; Generate an L-sequence from the rules of the specified l-for-lookup object
+;;; and use it to perform the Fibonacci-based transitioning lookup of values in
+;;; the specified sequences. 
 ;;; 
 ;;; ARGUMENTS 
-;;; - the l-for-lookup instance
-;;; - the initial seed (int, symbol etc. i.e. whatever matches a given rule)
-;;; - how many items to generate (integer)
-;;; - (optional default nil) a scaler to scale returned numerical values by
-;;;   (will use the instances scaler slot if nil).  NB The instance's offset
-;;;   slot is used to add to numerical values before returning.
+;;; - An l-for-lookup object.
+;;; - The start seed, or axiom, that is the initial state of the L-system. This
+;;;   must be the key-id of one of the sequences.
+;;; - An integer that is the length of the sequence to be returned. NB: This
+;;;   number does not indicate the number of L-system passes, but only the
+;;;   number of elements in the list returned, which may be the first segment
+;;;   of a sequence returned by a pass that actually generates a much longer
+;;;   sequence. 
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - A number which is the factor by which returned numerical values are to be
+;;;   scaled. If NIL, the method will use the value in the given l-for-lookup
+;;;   object's SCALER slot instead. Default = NIL. NB: The value of the given
+;;;   l-for-lookup object's OFFSET slot is additionally used to increase
+;;;   numerical values before they are returned.
 ;;; 
-;;; RETURN VALUE  3 values:
-;;; - the list returned by the lookup procedure
-;;; - the distribution of the values returned by lookup
-;;; - the l-sequence
+;;; RETURN VALUE
+;;; This method returns three lists:
+;;; - The resulting sequence.
+;;; - The distribution of the values returned by the lookup.
+;;; - The L-sequence of the key-IDs.
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((x (make-l-for-lookup 
-          'ternary-lfl
-          ;; the sequences
-          ;; so the transition takes place over the 3 given lists and
-          ;; i.e. from x to y to z, and each time one of these lists is
-          ;; used, it will circularly return the next value.
-          '((1 ((ax1 ax2 ax3) (ay1 ay2 ay3 ay4)     (az2)))
-            (2 ((bx1 bx2 bx3) (by1 by2 by3 by4 by5) (bz1 bz2 bz3)))
-            (3 ((cx1 cx2 cx3) (cy2 cy2 cy3)         (cz1 cz2))))
-          ;; the rules
-          '((1 (1 2 2 2 1 1))
-            (2 (2 1 2 3 2 1))
-            (3 (2 3 2 2 2 3 3))))))
-  (do-lookup x 1 200))
 
- =>
-(AX1 BX1 BX2 BX3 AX2 AX3 BX1 AX1 BX2 CX1 BX3 AX2 BX1 AX3 BX2 CX2 BX3 AX1 BX1
- AY1 BX2 CY2 BX3 AX2 AX3 BY1 BX1 BX2 AX1 AX2 AY2 BX3 BX1 BX2 AX3 AX1 BX3 AY3
- BX1 CX3 BY2 AX2 AY4 BX2 BX3 BX1 AX3 AY1 BX2 AX1 BY3 CY2 BX3 AY2 BX1 CX1 BY4
- BX2 BY5 CY3 CY2 BY1 AY3 BX3 CY2 BY2 AX2 AY4 BX1 BY3 BY4 AX3 AY1 BX2 AX1 BY5
- CX2 BY1 AY2 AY3 BY2 BY3 BX3 AX2 AY4 BY4 AY1 BY5 CY3 BY1 AY2 BY2 CY2 BY3 BY4
- BY5 CY2 CY3 BY1 AY3 BY2 CY2 BY3 AY4 AY1 BY4 BY5 BY1 AY2 AY3 BY2 AY4 BY3 CZ1
- BY4 AY1 AY2 BY5 BY1 BY2 AY3 AZ2 BY3 AY4 BZ1 CY2 BY4 AY1 BY5 CZ2 BY1 BY2 BY3
- CY3 CZ1 BY4 AY2 BY5 CZ2 BZ2 AY3 AZ2 BY1 BY2 BY3 AY4 AY1 AZ2 BY4 BZ3 BY5 AY2
- AZ2 BY1 AY3 BZ1 CZ1 BY2 AZ2 BZ2 AY4 BZ3 CY2 BY3 AZ2 BZ1 AZ2 BY4 CZ2 BZ2 AY1
- AZ2 BZ3 BY5 BZ1 AY2 AZ2 AY3 BZ2 BZ3 BZ1 AZ2 AZ2 AY4 BY1 BZ2 BZ3 AZ2 AZ2 BZ1
- AZ2 BZ2 CZ1 BZ3 AZ2 BZ1 AZ2 BZ2 CZ2 BZ3)
-((CX3 1) (CX1 2) (BX1 10) (AX3 6) (BX2 10) (AX1 7) (CX2 2) (BX3 10) (AX2 7)
- (CY3 4) (BY2 10) (CY2 9) (BY3 10) (BY4 10) (AY1 9) (BY5 10) (AY2 9) (AY3 9)
- (AY4 9) (BY1 11) (CZ1 4) (BZ1 7) (AZ2 16) (BZ2 7) (CZ2 4) (BZ3 7))
-(1 2 2 2 1 1 2 1 2 3 2 1 2 1 2 3 2 1 2 1 2 3 2 1 1 2 2 2 1 1 1 2 2 2 1 1 2 1 2
- 3 2 1 1 2 2 2 1 1 2 1 2 3 2 1 2 3 2 2 2 3 3 2 1 2 3 2 1 1 2 2 2 1 1 2 1 2 3 2
- 1 1 2 2 2 1 1 2 1 2 3 2 1 2 3 2 2 2 3 3 2 1 2 3 2 1 1 2 2 2 1 1 2 1 2 3 2 1 1
- 2 2 2 1 1 2 1 2 3 2 1 2 3 2 2 2 3 3 2 1 2 3 2 1 1 2 2 2 1 1 1 2 2 2 1 1 2 1 2
- 3 2 1 2 1 2 3 2 1 2 1 2 3 2 1 1 2 2 2 1 1 1 2 2 2 1 1 1 2 2 2 1 1 2 1 2 3 2 1
- 2 1 2 3 2)
+;; Create an l-for-lookup object in which the sequences are defined such that
+;; the transition takes place over the 3 given lists and from x to y to z, and
+;; apply the do-lookup method to see the results. Each time one of these lists
+;; is accessed, it will circularly return the next value. 
+(let ((lfl (make-l-for-lookup 
+	    'lfl-test
+	    '((1 ((ax1 ax2 ax3) (ay1 ay2 ay3 ay4) (az1 az2 az3 az4 az5)))
+	      (2 ((bx1 bx2 bx3) (by1 by2 by3 by4) (bz1 bz2 bz3 bz4 bz5)))
+	      (3 ((cx1 cx2 cx3) (cy2 cy2 cy3 cy4) (cz1 cz2 cz3 cz4 cz5))))
+	    '((1 (1 2 2 2 1 1))
+	      (2 (2 1 2 3 2))
+	      (3 (2 3 2 2 2 3 3))))))
+  (do-lookup lfl 1 211))
+
+=> 
+(AX1 BX1 BX2 BX3 AX2 AX3 BX1 AX1 BX2 CX1 BX3 BX1 AX2 BX2 CX2 BX3 BX1 AX3 BX2
+     CX3 BX3 AX1 BY1 BX1 BX2 AY1 AX2 AX3 BX3 BX1 BX2 AX1 AX2 BX3 AY2 BX1 CX1
+     BY2 AX3 BX2 BX3 BX1 AX1 AY3 BX2 AX2 BY3 CY2 BX3 BX1 CX2 BY4 BX2 BX3 CX3
+     CY2 BY1 AY4 BX1 CX1 BY2 BX2 AY1 BY3 CY3 BY4 AX3 BX3 BY1 BX1 AY2 AX1 BY2
+     AY3 BY3 CY4 BX2 BY4 CX2 BY1 BX3 BY2 CY2 CX3 BY3 AY4 BY4 CY2 BY1 BX1 AX2
+     BY2 CY3 BY3 AY1 BY4 BY1 BY2 AY2 AY3 BY3 AY4 BY4 CY4 BY1 BY2 CY2 BY3 BY4
+     BY1 CY2 CY3 BY2 AY1 BY3 CY4 BY4 AY2 BY1 BY2 BY3 AY3 AY4 BY4 AY1 BY1 CZ1
+     BZ1 BY2 AY2 BY3 CY2 BY4 BY1 AY3 BY2 CY2 BY3 AY4 BY4 BZ2 BY1 AZ1 AY1 AY2
+     BY2 BY3 BY4 AY3 AY4 AZ2 BZ3 BY1 BY2 AY1 AY2 BZ4 AZ3 BY3 CZ2 BY4 BZ5 AY3
+     BY1 CY3 BZ1 BY2 AZ4 BZ2 CZ3 BZ3 AZ5 BY3 BZ4 BY4 AY4 AZ1 AY1 BZ5 BZ1 BY1
+     AZ2 AZ3 BZ2 AY2 BZ3 CY4 BY2 AZ4 BZ4 BZ5 BZ1 AZ5 AZ1 BZ2 AZ2 BY3 CZ4 BZ3
+     BZ4 CY2 BZ5 BZ1 BZ2 CZ5 CZ1 BZ3 AZ3 BZ4 CZ2 BZ5), 
+((CX1 3) (AX3 5) (AX1 6) (BX2 11) (CX2 3) (BX3 11) (CX3 3) (BX1 12) (AX2 6)
+ (AY3 7) (CY3 4) (CZ3 1) (BY4 14) (AY4 7) (AY1 8) (BY1 15) (AY2 8) (CY4 4) 
+ (BY2 15) (AZ4 2) (AZ5 2) (AZ1 3) (AZ2 3) (BY3 15) (CZ4 1) (CY2 9) (BZ1 5) 
+ (BZ25) (CZ5 1) (CZ1 2) (BZ3 5) (AZ3 3) (BZ4 5) (CZ2 2) (BZ5 5)), 
+(1 2 2 2 1 1 2 1 2 3 2 2 1 2 3 2 2 1 2 3 2 1 2 2 2 1 1 1 2 2 2 1 1 2 1 2 3 2 1
+   2 2 2 1 1 2 1 2 3 2 2 3 2 2 2 3 3 2 1 2 3 2 2 1 2 3 2 1 2 2 2 1 1 2 1 2 3 2 
+   2 3 2 2 2 3 3 2 1 2 3 2 2 1 2 3 2 1 2 2 2 1 1 2 1 2 3 2 2 3 2 2 2 3 3 2 1 2
+   3 2 1 2 2 2 1 1 2 1 2 3 2 2 1 2 3 2 2 1 2 3 2 1 2 2 2 1 1 1 2 2 2 1 1 1 2 2
+   2 1 1 2 1 2 3 2 2 1 2 3 2 2 1 2 3 2 1 2 2 2 1 1 1 2 2 2 1 1 2 1 2 3 2 1 2 2
+   2 1 1 2 1 2 3 2 2 3 2 2 2 3 3 2 1 2 3 2)
 |#
 ;;; SYNOPSIS
 (defmethod do-lookup ((lflu l-for-lookup) seed stop &optional scaler)
@@ -293,15 +334,21 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan 14 15:02:42 GMT 2012: Added robodoc info
+
 ;;; ****m* l-for-lookup/reset
 ;;; FUNCTION
-;;; 
+;;; Sets the counters (index pointers) of all circular-sclist objects stored
+;;; within a given l-for-lookup object back to zero.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - An l-for-lookup object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - (an optional IGNORE argument for internal use only).
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Always NIL.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -354,43 +401,49 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan 14 14:28:09 GMT 2012: Edited robodoc info
 
 ;;; ****m* l-for-lookup/get-linear-sequence
 ;;; FUNCTION
-;;; get-linear-sequence:
+;;; Instead of creating L-sequences with specified rules, use the given
+;;; sequences to generate a simply sequential list. 
+;;;
+;;; The method first returns the first element in the list whose ID matches the 
+;;; SEED argument, then that element is used as the ID for the next
+;;; lookup. Each time a sequence is accessed, the next element in the sequence 
+;;; is returned (if there is more than one), circling to the head of the list
+;;; once its end is reached.  
+;;;
+;;; In order for this method to function properly, no rules can have been
+;;; entered for the given l-for-lookup object (that slot must be set to NIL). 
 ;;; 
-;;; Instead of creating true l-seqs with rules, just use the sequences to
-;;; generate a sequential list from the sequences i.e. the seed returns the
-;;; first in its result list, then that's used for lookup; next time we have
-;;; the seed, the second result in its list will be used (if it exists) etc..
-;;; No rules (second list after id) must be in the l-for-lookup instance slot
-;;; in order for this to work.  Seen very loosely, it works a bit like a
-;;; first-order markov chain but without the randomness.
+;;; Seen very loosely, this method functions a bit like a first-order Markov
+;;; chain, but without the randomness. 
 ;;; 
 ;;; ARGUMENTS 
-;;; - the l-for-lookup instance
-;;; - the starting value used for lookup
-;;; - how many results to generate
-;;; - (optional) whether to reset the circular lists before proceeding
+;;; - An l-for-lookup object.
+;;; - The seed, which is the starting key for the resulting sequence. This must
+;;;   be the key-ID of one of the sequences. 
+;;; - An integer that is the number of elements to be in the resulting list.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether to reset the pointers of the given circular
+;;;   lists before proceeding. T = reset. Default = T. 
 ;;; 
 ;;; RETURN VALUE  
-;;; a list of results of user-defined length
+;;; A list of results of user-defined length.
 ;;; 
 ;;; EXAMPLE
 #|
-(defparameter +amore-notes-progression+
-  (make-l-for-lookup 'amore-notes-progressions
-                     '((1 ((2)))
-                       (2 ((1 3)))
-                       (3 ((4 2)))
-                       (4 ((6 3 5)))
-                       (5 ((2 4)))
-                       (6 ((4 7)))
-                       (7 ((3))))
-                     nil))
-                     
-(get-linear-sequence +amore-notes-progression+ 2 30) 
-=> (1 2 3 2 1 2 3 4 5 2 1 2 3 2 1 2 3 4 6 7 3 2 1 2 3 4 3 2 1 2)
+(let ((lfl (make-l-for-lookup 'lfl-test
+			      '((1 ((2 3)))
+				(2 ((3 1 2)))
+				(3 ((1))))
+			      NIL)))
+  (get-linear-sequence lfl 1 23))
+
+=> (1 2 3 1 3 1 2 1 3 1 2 2 3 1 3 1 2 1 3 1 2 2 3)
+
 |#
 ;;; SYNOPSIS
 (defmethod get-linear-sequence ((lflu l-for-lookup) seed stop-length
@@ -410,42 +463,63 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan 14 12:10:43 GMT 2012: Edited robodoc info
+
 ;;; ****m* l-for-lookup/get-l-sequence
 ;;; FUNCTION
-;;; get-l-sequence:
+;;; Return an L-sequence of the key-ids for the rules of a given l-for-lookup
+;;; object, created using the rules of that object. This method can be called
+;;; with an l-for-lookup object that contains no sequences, as it only returns
+;;; a list of the key-ids for the object's rules. 
 ;;;
-;;; Return an l-sequence from the l-for-lookup object rules.  This method can
-;;; be called in an l-system without sequences.  The second returned value is a
-;;; count of the rule keys--in the given order--in the result list (so 1
-;;; appears 0 times in the example, 2 14 times, etc.).
-;;; 
-;;; It seems that systems where one rule key gives all other keys as a result
-;;; makes for evenly distributed results which are different for each seed.
-;;; 
+;;; Tip: It seems that systems where one rule key yields all other keys as a
+;;; result makes for evenly distributed results which are different for each
+;;; seed.  
 ;;; 
 ;;; ARGUMENTS 
-;;; - the l-for-lookup instance
-;;; - the start seed to get the process running i.e. one of the rule keys
-;;; - how many elements to generate
+;;; - An l-for-lookup object.
+;;; - The start seed, or axiom, that is the initial state of the L-system. This
+;;;   must be the key-id of one of the sequences.
+;;; - An integer that is the length of the sequence to be returned. NB: This
+;;;   number does not indicate the number of L-system passes, but only the
+;;;   number of elements in the list returned, which may be the first segment
+;;;   of a sequence returned by a pass that actually generates a much longer
+;;;   sequence. 
 ;;; 
 ;;; RETURN VALUE  
-;;; The l-sequence as a list.
+;;; A list that is the L-sequence of rule key-ids.
+;;;
+;;; The second value returned is a count of each of the rule keys in the
+;;; sequence created, in their given order. 
 ;;; 
 ;;; EXAMPLE
 #|
-(defparameter +amore-notes-progression+
-  (make-l-for-lookup 'amore-notes-progressions 
-                 nil
-                 '((1 (2))
-                   (2 (1 3))
-                   (3 (4 2))
-                   (4 (6 3 5))
-                   (5 (2 4))
-                   (6 (4 7))
-                   (7 (3)))))
-(get-l-sequence +amore-notes-progression+ 2 30) 
-=> (2 4 2 4 7 4 2 2 4 2 4 2 4 7 4 2 2 4 4 2 4 7 4 2 2 4 2 4 2 2)
-   (0 14 0 13 0 0 3)
+
+;; Create an l-for-lookup object with three rules and generate a new sequence
+;; of 29 rule keys from those rules. The l-for-lookup object here has been
+;; created with the SEQUENCES argument set to NIL, as the get-l-sequence
+;; function requires no sequences. The second list returned indicates the
+;; number of times each key appears in the resulting sequence (thus 1 appears 5
+;; times, 2 appears 12 times etc.)
+(let ((lfl (make-l-for-lookup 'lfl-test
+			      NIL
+			      '((1 (2))
+				(2 (1 3))
+				(3 (3 2))))))
+  (get-l-sequence lfl 1 29))
+
+=> (2 3 2 3 2 1 3 2 3 2 3 2 1 3 2 3 2 1 3 3 2 1 3 2 3 2 3 2 1), (5 12 12) 
+
+;; A similar example using symbols rather than numbers as keys and data
+(let ((lfl (make-l-for-lookup 'lfl-test
+			      NIL
+			      '((a (b))
+				(b (a c))
+				(c (c b))))))
+  (get-l-sequence lfl 'a 19))
+
+=> (A C C B A C C B A C B C B A C C B A C), (5 5 9)
+
 |#
 ;;; SYNOPSIS
 (defmethod get-l-sequence ((lflu l-for-lookup) seed stop-length)
@@ -516,12 +590,16 @@
 ;;; associated with Lindenmayer-systems (or L-systems) by storing a series of
 ;;; rules about how to produce new, self-referential sequences from the data of
 ;;; original, shorter sequences.
+;;;
+;;; NB: This method just stores the data concerning sequences and rules. To
+;;; manipulate the data and create new sequences, see do-lookup or
+;;; get-l-sequence etc.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A symbol that will be the object's ID.
-;;; - A sequence (list) or list of sequences, that serve as the initial state,
-;;;   from which the permutations are to be produced.
-;;; - A production rule or list of production rules, consisting of a
+;;; - A sequence (list) or list of sequences, that serve(s) as the initial
+;;;   material, from which the new sequence is to be produced.
+;;; - A production rule or list of production rules, each consisting of a
 ;;;   predecessor and a sucessor, defining how to expand and replace the
 ;;;   individual predecessor items.
 ;;;
@@ -612,24 +690,32 @@ data: (
    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan 14 16:14:01 GMT 2012: Edited robodoc info
+
 ;;; ****f* l-for-lookup/fibonacci
 ;;; FUNCTION
-;;; fibonacci:
+;;; Return the longest possible list of sequential Fibonacci numbers whose
+;;; combined sum is less than the specified value. The list is returned in
+;;; descending sequential order, ending with 0. 
 ;;;
-;;; Return the fibonacci numbers in a list ending at 0 that add up to a maximum 
-;;; less than <max-sum>.  Returns the fibonacci number < max-sum as a second
-;;; value.  
+;;; The function also returns the greatest possible Fibonacci number below the
+;;; specified test number as a second value. 
 ;;; 
 ;;; ARGUMENTS 
-;;; the maximum number the fibonacci numbers should sum to
+;;; A number that is to be the test number.
 ;;; 
 ;;; RETURN VALUE  
-;;; the list of fibonacci numbers and the next in the series.
+;;; A list of descending sequential Fibonacci numbers, of which list the last
+;;; element is 0.
 ;;; 
+;;; Also returns the greatest possible Fibonacci number below the specified
+;;; test number as a second result.
+;;;
 ;;; EXAMPLE
-;;; (fibonacci 5000) -->
-;;;    (1597 987 610 377 233 144 89 55 34 21 13 8 5 3 2 1 1 0)
-;;;     4181
+#|
+(fibonacci 5000)
+ => (1597 987 610 377 233 144 89 55 34 21 13 8 5 3 2 1 1 0), 4181
+|#
 ;;; 
 ;;; SYNOPSIS
 (defun fibonacci (max-sum)
@@ -902,23 +988,32 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan 14 16:04:03 GMT 2012: Edited robodoc info
+
+;;; MDE:  A (generally flat) list of numbers or symbols (or anything that EQL,
+;;; which is MEMBER's default test) can match on).
+
+;;; 15.8.10 MDE: Modified to show items in pairs. 
+
 ;;; ****f* l-for-lookup/count-elements
 ;;; FUNCTION
-;;; count-elements: count the number of times each element in the list comes
-;;; forth.  Modified 15.8.10 to show items in pairs.
+;;; Count the number of times each element occurs in a given list. 
 ;;; 
 ;;; ARGUMENTS 
-;;; a (generally flat) list of numbers or symbols (or anything that eql can
-;;; match on: member's default test).
+;;; - A list of numbers or symbols (or anything which can be compared using
+;;;   EQL). 
 ;;; 
 ;;; RETURN VALUE  
-;;; a sorted list of two-element lists: the argument list element and the
-;;; number of times it occurs.
+;;; Returns a sorted list of two-element lists, each consisting of one list
+;;; element from the specified list and the number of times that element occurs
+;;; in the list.   
 ;;; 
 ;;; EXAMPLE
 #|
-(count-elements '(1 4 5 7 3 4 1 5 4 8 5 7 3 2 3 6 3 4 5 4 1 4 8 5 7 3 2)) 
+(count-elements '(1 4 5 7 3 4 1 5 4 8 5 7 3 2 3 6 3 4 5 4 1 4 8 5 7 3 2))
+
 => ((1 3) (2 2) (3 5) (4 6) (5 5) (6 1) (7 3) (8 2))
+
 |#
 ;;; SYNOPSIS
 (defun count-elements (list)

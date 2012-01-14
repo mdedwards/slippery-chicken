@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 19:33:38 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 12:55:58 Sat Jan 14 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -667,7 +667,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Modified from Common Music's shuffle function :)
+;;; Modified from Common Music's shuffle function.
 
 ;;; ****f* permutations/shuffle
 ;;; FUNCTION

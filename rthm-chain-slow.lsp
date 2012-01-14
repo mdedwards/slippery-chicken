@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 19:26:40 Thu Feb 24 2011 MYT
+;;; $$ Last modified: 22:06:28 Fri Jan 13 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -89,6 +89,20 @@
     ;; this is the default order of the time signatures i.e. the order of
     ;; selecting a two-beat or a three-beat rhythms
     (setf (data rcs) '(2 3 2 2 3 2 2 3 3 3))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod print-object :before ((rcs rthm-chain-slow) stream)
+  (format stream "~%RTHM-CHAIN-SLOW: 2beat: (too long to print)~
+                  ~%                 3beat: (too long to print)~
+                  ~%                 2beat-order: ~a~
+                  ~%                 3beat-order: ~a~
+                  ~%                 transitions: ~a~
+                  ~%                 num-groups: ~a~
+                  ~%                 current-beats: ~a~
+                  ~%                 beat: ~a"
+          (2beat-order rcs) (3beat-order rcs) (transitions rcs) (num-groups rcs)
+          (current-beats rcs) (beat rcs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; bear in mind a single group looks something like

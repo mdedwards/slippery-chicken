@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:24:14 Thu Jan 12 2012 ICT
+;;; $$ Last modified: 15:25:27 Fri Jan 13 2012 ICT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -540,7 +540,6 @@
   (unless players 
     (setf players (players (ensemble sc))))
   (when rehearsal-letters-all-players 
-    ;; todo: this is still not working ....
     (set-rehearsal-letters sc players))
   (when tempi-all-players 
     (update-events-tempo sc players))

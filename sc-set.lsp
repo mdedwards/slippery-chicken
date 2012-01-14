@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 13:58:03 Wed Jan  4 2012 ICT
+;;; $$ Last modified: 10:33:52 Sat Jan 14 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -423,13 +423,17 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 ;;; ****
   (let* ((distances (get-interval-structure s))
          (degrees (get-degrees s))
-         (result degrees))
+         (result degrees)
+         chord)
     (loop repeat num-stacks do
           (setf result (stack-aux result distances)))
+    (setf result (degrees-to-notes result))
+    ;; MDE Sat Jan 14 10:25:25 2012 -- try and get better spellings
+    (setf chord (make-chord result :midi-channel 1 :microtones-midi-channel 2))
+    (respell-chord chord)
     ;; return a new set, using the given id or if not given, the same id as the
     ;; original set 
-    (make-sc-set (degrees-to-notes result) :id (if id id (id s)))))
-;;; ****
+    (make-sc-set (data chord) :id (if id id (id s)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -747,13 +751,13 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
         (max (note-to-degree 'b10))
         (result (copy-list degrees)))
     (loop for d in distances 
-          for low = (- lowest d)
-          for high = (+ highest d)
-          do 
-          (when (<= high max)
-            (push high result))
-          (when (> low 0 )
-            (push low result)))
+       for low = (- lowest d)
+       for high = (+ highest d)
+       do 
+       (when (<= high max)
+         (push high result))
+       (when (> low 0 )
+         (push low result)))
     (sort result #'<)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,0 +1,17 @@
+MDE Fri Jan 13 15:22:25 2012 -- in fibonacci (l-for-lookup), consider
+implementing the remix-in algorithm of cheat sheet (see get-loops seqs)
+
+;;; ****m* rthm-seq/insert-bar
+;;; TODO: Test that the pitch-seq-palette splicing actually works; add
+;;; inversions if that was in the original 
+
+;;; ****m* slippery-chicken/cmn-display
+  (unless players 
+    (setf players (players (ensemble sc))))
+  (when rehearsal-letters-all-players 
+    ;; todo: this is still not working ....
+    (set-rehearsal-letters sc players))
+  (when tempi-all-players 
+    (update-events-tempo sc players))
+  (when multi-bar-rests
+

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 11:47:04 Thu Jan 12 2012 ICT
+;;; $$ Last modified: 21:55:01 Fri Jan 13 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -858,9 +858,6 @@ data: S
 
 ;;; We assume here that ties are taken care of within the new bar!
 
-;;; TODO: Test that the pitch-seq-palette splicing actually works; add
-;;; inversions if that was in the original 
-
 ;;; SAR Wed Dec 28 12:08:30 EST 2011: Added robodoc info
 
 ;;; ****m* rthm-seq/insert-bar
@@ -1412,26 +1409,27 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 
 #+cmn
 (defmethod get-cmn-data ((rs rthm-seq) 
-                         &optional ignore1 ignore2 ignore3 ignore4 ignore5 
-                                   ignore6 ignore7 ignore8)
-  (declare (ignore ignore1 ignore2 ignore3 ignore4 ignore5 ignore6 ignore7
-                   ignore8))
+                         ;; MDE Fri Jan 13 19:58:53 2012 -- no accidentals!
+                         &optional (no-accidentals nil) 
+                         ignore2 ignore3 ignore4 ignore5 
+                         ignore6 ignore7 ignore8)
+  (declare (ignore ignore2 ignore3 ignore4 ignore5 ignore6 ignore7 ignore8))
   ;; call the method from the slippery-chicken class to convert the rthm-seq to
   ;; a sequenz so that we can then call the get-cmn-data method of that class. 
-  (let ((sequenz (sc-make-sequenz rs nil nil 
-                                  (when (pitch-seq-palette rs)
-                                    (get-nth 0 (pitch-seq-palette rs)))
-                                  nil nil nil nil 
-                                  ;; just give any event as the last one from
-                                  ;; the previous seq because we're only
-                                  ;; displaying the rthm-seq-palette anyway.
-                                  ;; If we have notes tied to at the beg of a
-                                  ;; seq this might cause tie errors when
-                                  ;; calling cmn.
-                                  (make-event 'b4 'q) 
-                                  nil nil nil nil)))
+  (let ((sequenz (sc-make-sequenz
+                  rs nil nil 
+                  (when (pitch-seq-palette rs)
+                    (get-nth 0 (pitch-seq-palette rs)))
+                  nil nil nil nil 
+                  ;; just give any event as the last one from the previous seq
+                  ;; because we're only displaying the rthm-seq-palette anyway.
+                  ;; If we have notes tied to at the beg of a seq this might
+                  ;; cause tie errors when calling cmn.
+                  (make-event 'b4 'q) 
+                  nil nil nil nil)))
     ;; put all the bars together...
-    (flatten (get-cmn-data sequenz 'show-id-and-tag-only t))))
+    (flatten (get-cmn-data sequenz 'show-id-and-tag-only t 
+                           (when no-accidentals #'no-accidental)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2035,6 +2033,11 @@ rthm-seq NIL
     (gen-stats ret)
     (update-write-time-sig ret)
     ret))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod no-accidental ((rs rthm-seq))
+  (loop for bar in (bars rs) do (no-accidental bar)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 11:27:23 Thu Jan 12 2012 ICT
+;;; $$ Last modified: 21:33:00 Fri Jan 13 2012 ICT
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -248,20 +248,18 @@
 
 #+cmn
 (defmethod get-cmn-data ((rsp rthm-seq-palette) 
-                         &optional ignore1 ignore2 ignore3 ignore4 ignore5 
-                                   ignore6 ignore7 ignore8)
-  (declare (ignore ignore1 ignore2 ignore3 ignore4 ignore5 ignore6 ignore7
+                         ;; MDE Fri Jan 13 19:58:53 2012 -- no accidentals!
+                         &optional (no-accidentals nil) 
+                         ignore2 ignore3 ignore4 ignore5 ignore6 ignore7 ignore8)
+  (declare (ignore ignore2 ignore3 ignore4 ignore5 ignore6 ignore7
                    ignore8))
   (loop 
       for rs in (data rsp) 
       if (is-ral (data rs))
-      append (get-cmn-data (data rs))
-      ;; collect (get-cmn-data (data rs)))
-      ;; else append (get-cmn-data rs)
-      else collect (econs (get-cmn-data rs) 
-                          (cmn::line-mark))
-           ;;collect (cmn::line-mark)
-           ))
+     ;; MDE Fri Jan 13 20:01:07 2012 -- no-accidentals!
+      append (get-cmn-data (data rs) no-accidentals)
+      else collect (econs (get-cmn-data rs no-accidentals) 
+                          (cmn::line-mark))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -291,11 +289,13 @@
                         (staff-separation 3)
                         (line-separation 5)
                         (page-nums t)
+                        (no-accidentals t)
                         (seqs-per-system 1)
                         (size 15))
 ;;; ****
   (format t "~&Generating rthm-seqs...")
-  (let* ((cmn-data (get-cmn-data rsp))
+  ;; MDE Fri Jan 13 20:01:58 2012 -- no accidentals
+  (let* ((cmn-data (get-cmn-data rsp no-accidentals)) 
          (sys
           (loop 
               with voices = (ml nil seqs-per-system)

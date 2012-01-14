@@ -68,7 +68,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 19:37:21 Mon Dec 19 2011 ICT
+;;; $$ Last modified: 22:06:45 Fri Jan 13 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -150,7 +150,11 @@
    (1-beat-fibonacci :accessor 1-beat-fibonacci :type boolean
                      :initarg :1-beat-fibonacci :initform nil)
    ;; whether we'll use fibonacci transitions or the procession algorithm in
-   ;; the generation of the 2/3-beat rhythm order
+   ;; the generation of the 2/3-beat rhythm order i.e. the order in which each
+   ;; 2beat unit is used when necessary, not the order in which we select a
+   ;; 2beat or 3beat unit.  That is decided by the next element in the data
+   ;; slot of rcs (rthm-chain-slow); this just rotates around 
+   ;; '(2 3 2 2 3 2 2 3 3 3))))
    (slow-fibonacci :accessor slow-fibonacci :type boolean 
                    :initarg :slow-fibonacci :initform nil)
    ;; how many 1-beat rhythms are their in a group?

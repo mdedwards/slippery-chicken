@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:53:11 Sat Dec 31 2011 ICT
+;;; $$ Last modified: 09:26:29 Sat Jan 14 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -631,14 +631,14 @@ data: 132
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((i event) stream)
-  (format stream "~%EVENT: start-time: ~a, end-time: ~a, ~
-                  ~%       duration-in-tempo: ~a, ~
-                  ~%       compound-duration-in-tempo: ~a, ~
-                  ~%       amplitude: ~a ~
+  (format stream "~%EVENT: start-time: ~,3f, end-time: ~,3f, ~
+                  ~%       duration-in-tempo: ~,3f, ~
+                  ~%       compound-duration-in-tempo: ~,3f, ~
+                  ~%       amplitude: ~,3f ~
                   ~%       bar-num: ~a, marks-before: ~a, ~
                   ~%       tempo-change: ~a ~
                   ~%       instrument-change: ~a ~
-                  ~%       display-tempo: ~a, start-time-qtrs: ~a, ~
+                  ~%       display-tempo: ~a, start-time-qtrs: ~,3f, ~
                   ~%       midi-time-sig: ~a, midi-program-changes: ~a, ~
                   ~%       8va: ~a~
                   ~%       pitch-or-chord: ~a~
@@ -1714,9 +1714,10 @@ NIL
 ;;; SYNOPSIS
 (defmethod no-accidental ((e event))
 ;;; ****
-  (no-accidental (pitch-or-chord e))
-  (when (written-pitch-or-chord e)
-    (no-accidental (written-pitch-or-chord e))))
+  (unless (is-rest e) ; MDE Fri Jan 13 19:49:57 2012 -- just checking...
+    (no-accidental (pitch-or-chord e))
+    (when (written-pitch-or-chord e)
+      (no-accidental (written-pitch-or-chord e)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2021,9 +2022,10 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod cmn-time ((e event))
-  (cmn::sc-cmn-text 
-   (secs-to-mins-secs (start-time e))
-   :font-size 6))
+  (when (start-time e)
+    (cmn::sc-cmn-text 
+     (secs-to-mins-secs (start-time e))
+     :font-size 6)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

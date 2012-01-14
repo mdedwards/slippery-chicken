@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 15:38:16 Fri Dec 30 2011 ICT
+;;; $$ Last modified: 09:50:41 Sat Jan 14 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -188,7 +188,8 @@
            (unless silent
              (warn "cmn:get-cmn-marks: Sorry but ~a is not yet available ~
                     for cmn output; ignoring" mark))
-           ""))
+           ;; ""))
+           nil))
     (when mark
       (setf mark (sc::rm-package mark :cmn))
       (let ((the-text (when text (sc-cmn-text text :dy text-dy :dx text-dx 
@@ -267,7 +268,8 @@
              (trill-n (list (trill (ornament-sign natural))))
              (trill-s (list (trill (ornament-sign sharp))))
              ;; 23.9.11 trill with aux note in ()
-             (trill-a (no-cmn-mark 'trill-a))
+             (beg-trill-a (no-cmn-mark 'beg-trill-a))
+             (end-trill-a (no-cmn-mark 'end-trill-a))
              (x-head (list (note-head :x)))
              (square (list (note-head :square)))
              (slash (list (note-head :slash)))
@@ -338,6 +340,8 @@
            (case (sc::rm-package (first mark) :cmn)
              (arrow (no-cmn-mark 'arrow)) ; ignore lilypond arrow
              (trill-note (no-cmn-mark 'trill-note)) ; ignore lilypond trill
+             ;; this is also for lilypond markup code so ignore
+             (text (no-cmn-mark (format nil "lilypond-markup: ~a" mark)))
              (t (list (apply #'sc-cmn-text mark)))))
           ;; otherwise it might be a cmn-mark (e.g. text) already
           (t (list mark)))))))

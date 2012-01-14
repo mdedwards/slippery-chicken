@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 08:42:45 Thu Jan 12 2012 ICT
+;;; $$ Last modified: 09:42:21 Sat Jan 14 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2489,7 +2489,7 @@ data: (2 4)
                                   bar-num: ~a, ~
                   ~%              old-bar-nums: ~a, ~
                                   write-bar-num: ~a, ~
-                                  start-time: ~a, ~
+                                  start-time: ~,3f, ~
                   ~%              start-time-qtrs: ~a, ~
                                   is-rest-bar: ~a, ~
                                   multi-bar-rest: ~a, ~
@@ -2506,12 +2506,11 @@ data: (2 4)
                                   parent-start-end: ~a, ~
                   ~%              missing-duration: ~a, ~
                                   bar-line-type: ~a, ~
-                                  player-section-ref: ~a, ~
-                  ~%              nth-seq: ~a, ~
+                  ~%              player-section-ref: ~a, ~
+                                  nth-seq: ~a, ~
                                   nth-bar: ~a, ~
-                                  rehearsal-letter: ~a, ~
-                  ~%              all-time-sigs: (not printed for ~
-                                  brevity's sake) ~
+                  ~%              rehearsal-letter: ~a, ~
+                                  all-time-sigs: (too long to print) ~
                   ~%              rhythms: ~a"
           (time-sig i) (get-time-sig-as-list i) (time-sig-given i) (bar-num i)
           (old-bar-nums i) (write-bar-num i)
@@ -2677,6 +2676,7 @@ data: (2 4)
                          display-marks-in-part display-time
                          ignore1 ignore2 ignore3 ignore4)
   (declare (ignore ignore1 ignore2 ignore3 ignore4))
+  ;; (print rsb)
   ;; 4/4/06: don't do this here anymore, rather do it in sc::respell-notes so
   ;; that we can respell notes. 
   ;; (auto-accidentals rsb)
@@ -3780,6 +3780,13 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
            (setf (8va e) 8va)
            (error "~a~&rthm-seq-bar::set-8va: bar must contain event ~
                    objects (not rhythms)."))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod no-accidental ((rsb rthm-seq-bar))
+  (loop for r in (rhythms rsb) do 
+       (when (event-p r)
+         (no-accidental r))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -295,11 +295,6 @@
 
 ;;; ****m* l-for-lookup/reset
 ;;; FUNCTION
-;;; reset:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -533,15 +528,50 @@
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :auto-check-redundancy. Default = NIL.
 ;;; - keyword argument :scaler. Factor by which to scale the values returned by
-;;;   do-lookup. Default = 1. 
+;;;   do-lookup. Default = 1. Does not modify the original data.
 ;;; - keyword argument :offest. Number to be added to values returned by
-;;;   do-lookup (after they are scaled). Default = NIL.
+;;;   do-lookup (after they are scaled). Default = NIL. Does not modify the
+;;;   original data. 
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns an l-for-lookup object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create an l-for-lookup object based on the Lindenmayer rules (A->AB) and
+;; (B->A), using the defaults for the keyword arguments
+(make-l-for-lookup 'l-sys-a
+		   '((1 ((a)))
+		     (2 ((b))))
+		   '((1 (1 2)) (2 (1))))
+
+=>
+L-FOR-LOOKUP:
+[...]
+              l-sequence: NIL
+              l-distribution: NIL
+              ll-distribution: NIL
+              group-indices: NIL
+              scaler: 1
+              offset: 0
+              auto-check-redundancy: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: L-SYS-A, tag: NIL, 
+data: (
+[...]
+
+;; A larger list of sequences, with keyword arguments specified
+(make-l-for-lookup 'lfl-test
+			      '((1 ((2 3 4) (5 6 7)))
+				(2 ((3 4 5) (6 7 8)))
+				(3 ((4 5 6) (7 8 9))))
+			      '((1 (3)) (2 (3 1)) (3 (1 2)))
+			      :scaler 1
+			      :offset 0
+			      :auto-check-redundancy nil)
 
 |#
 ;;; SYNOPSIS

@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 11:55:43 Mon Jan  2 2012 ICT
+;;; $$ Last modified: 10:03:40 Sun Jan 15 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -84,6 +84,10 @@
 
 (defclass l-for-lookup (assoc-list)
   ((rules :accessor rules :initarg :rules :initform nil)
+   ;; MDE Sun Jan 15 09:27:58 2012 -- given some rules (e.g. in simplest form,
+   ;; a set of keys that return only one result each) we'll get a result of the
+   ;; same length no matter how many results we ask for. This can sometimes
+   ;; be problematic so do a check if requested.
    (auto-check-redundancy :accessor auto-check-redundancy :type boolean
                           :initarg :auto-check-redundancy :initform nil)
    ;; what get-l-sequence returns
@@ -203,13 +207,13 @@
 ;; element of each sequence based on the L-sequence of keys created by the
 ;; rules of the give l-for-lookup object.
 (let ((lfl (make-l-for-lookup 
-	    'lfl-test
-	    '((1 ((ax1 ax2 ax3) (ay1 ay2 ay3 ay4) (az1 az2 az3 az4 az5)))
-	      (2 ((bx1 bx2 bx3) (by1 by2 by3 by4) (bz1 bz2 bz3 bz4 bz5)))
-	      (3 ((cx1 cx2 cx3) (cy2 cy2 cy3 cy4) (cz1 cz2 cz3 cz4 cz5))))
-	    '((1 (1 2 2 2 1 1))
-	      (2 (2 1 2 3 2))
-	      (3 (2 3 2 2 2 3 3))))))
+            'lfl-test
+            '((1 ((ax1 ax2 ax3) (ay1 ay2 ay3 ay4) (az1 az2 az3 az4 az5)))
+              (2 ((bx1 bx2 bx3) (by1 by2 by3 by4) (bz1 bz2 bz3 bz4 bz5)))
+              (3 ((cx1 cx2 cx3) (cy2 cy2 cy3 cy4) (cz1 cz2 cz3 cz4 cz5))))
+            '((1 (1 2 2 2 1 1))
+              (2 (2 1 2 3 2))
+              (3 (2 3 2 2 2 3 3))))))
   (do-simple-lookup lfl 1 21))
 
 => ((AX1 AX2 AX3) (BX1 BX2 BX3) (BX1 BX2 BX3) (BX1 BX2 BX3) (AX1 AX2 AX3)
@@ -271,13 +275,13 @@
 ;; apply the do-lookup method to see the results. Each time one of these lists
 ;; is accessed, it will circularly return the next value. 
 (let ((lfl (make-l-for-lookup 
-	    'lfl-test
-	    '((1 ((ax1 ax2 ax3) (ay1 ay2 ay3 ay4) (az1 az2 az3 az4 az5)))
-	      (2 ((bx1 bx2 bx3) (by1 by2 by3 by4) (bz1 bz2 bz3 bz4 bz5)))
-	      (3 ((cx1 cx2 cx3) (cy2 cy2 cy3 cy4) (cz1 cz2 cz3 cz4 cz5))))
-	    '((1 (1 2 2 2 1 1))
-	      (2 (2 1 2 3 2))
-	      (3 (2 3 2 2 2 3 3))))))
+            'lfl-test
+            '((1 ((ax1 ax2 ax3) (ay1 ay2 ay3 ay4) (az1 az2 az3 az4 az5)))
+              (2 ((bx1 bx2 bx3) (by1 by2 by3 by4) (bz1 bz2 bz3 bz4 bz5)))
+              (3 ((cx1 cx2 cx3) (cy2 cy2 cy3 cy4) (cz1 cz2 cz3 cz4 cz5))))
+            '((1 (1 2 2 2 1 1))
+              (2 (2 1 2 3 2))
+              (3 (2 3 2 2 2 3 3))))))
   (do-lookup lfl 1 211))
 
 => 
@@ -436,10 +440,10 @@
 ;;; EXAMPLE
 #|
 (let ((lfl (make-l-for-lookup 'lfl-test
-			      '((1 ((2 3)))
-				(2 ((3 1 2)))
-				(3 ((1))))
-			      NIL)))
+                              '((1 ((2 3)))
+                                (2 ((3 1 2)))
+                                (3 ((1))))
+                              NIL)))
   (get-linear-sequence lfl 1 23))
 
 => (1 2 3 1 3 1 2 1 3 1 2 2 3 1 3 1 2 1 3 1 2 2 3)
@@ -502,20 +506,20 @@
 ;; number of times each key appears in the resulting sequence (thus 1 appears 5
 ;; times, 2 appears 12 times etc.)
 (let ((lfl (make-l-for-lookup 'lfl-test
-			      NIL
-			      '((1 (2))
-				(2 (1 3))
-				(3 (3 2))))))
+                              NIL
+                              '((1 (2))
+                                (2 (1 3))
+                                (3 (3 2))))))
   (get-l-sequence lfl 1 29))
 
 => (2 3 2 3 2 1 3 2 3 2 3 2 1 3 2 3 2 1 3 3 2 1 3 2 3 2 3 2 1), (5 12 12) 
 
 ;; A similar example using symbols rather than numbers as keys and data
 (let ((lfl (make-l-for-lookup 'lfl-test
-			      NIL
-			      '((a (b))
-				(b (a c))
-				(c (c b))))))
+                              NIL
+                              '((a (b))
+                                (b (a c))
+                                (c (c b))))))
   (get-l-sequence lfl 'a 19))
 
 => (A C C B A C C B A C B C B A C C B A C), (5 5 9)
@@ -527,6 +531,9 @@
   (let* ((rules (rules lflu))
          (keys (get-keys rules))
          (result '()))
+    (unless (numberp stop-length)
+      (error "l-for-lookup::get-l-sequence: stop-length (~a) should be an ~
+             integer" stop-length))
     (unless (integerp stop-length)
       (warn "l-for-lookup::get-l-sequence: stop-length should be an integer ~
              but is ~a so rounding!!!" 
@@ -619,9 +626,9 @@
 ;; Create an l-for-lookup object based on the Lindenmayer rules (A->AB) and
 ;; (B->A), using the defaults for the keyword arguments
 (make-l-for-lookup 'l-sys-a
-		   '((1 ((a)))
-		     (2 ((b))))
-		   '((1 (1 2)) (2 (1))))
+                   '((1 ((a)))
+                     (2 ((b))))
+                   '((1 (1 2)) (2 (1))))
 
 =>
 L-FOR-LOOKUP:
@@ -643,13 +650,13 @@ data: (
 
 ;; A larger list of sequences, with keyword arguments specified
 (make-l-for-lookup 'lfl-test
-			      '((1 ((2 3 4) (5 6 7)))
-				(2 ((3 4 5) (6 7 8)))
-				(3 ((4 5 6) (7 8 9))))
-			      '((1 (3)) (2 (3 1)) (3 (1 2)))
-			      :scaler 1
-			      :offset 0
-			      :auto-check-redundancy nil)
+                              '((1 ((2 3 4) (5 6 7)))
+                                (2 ((3 4 5) (6 7 8)))
+                                (3 ((4 5 6) (7 8 9))))
+                              '((1 (3)) (2 (3 1)) (3 (1 2)))
+                              :scaler 1
+                              :offset 0
+                              :auto-check-redundancy nil)
 
 |#
 ;;; SYNOPSIS
@@ -669,6 +676,7 @@ data: (
   ;; some rules rule out the opportunity to ever accrue stop-length results so
   ;; recursion would go on until we run out of stack space.  Avoid that.
   (cond ((> current-recurse max-recurse) nil)
+        ;; so we could quit with a result > stop-length
         ((>= (length l-values) stop-length) l-values)
         (t (get-l-sequence-aux rules stop-length max-recurse 
                                (1+ current-recurse) 
@@ -923,9 +931,25 @@ data: (
     (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE original thoughts:
+;;;
+;;; This allows multiple transitions 
+;;; so <levels>=2 would just return 0s and 1; 3 would have 0,1,2; 1 just 0
+;;; 
+;;; When we use items-per-transition for generating the fibonacci
+;;; transition, although the numbers returned by that function are
+;;; about equal, the transition results in an uneven spread of numbers
+;;; e.g.  (count-elements (fibonacci-transitions-aux 200 3)) --> (0 60
+;;; 1 100 2 40) in fact we seem to get 3/5 of the first and 2/5 of the
+;;; last element with the middle elements being equal.  Looking again,
+;;; I see that the number of the first element + number of last is
+;;; close to or the same as the number of the middle numbers, which
+;;; are always about the same or equal and is total-items / 1-
+;;; levels--so this is the number that will be missing from the first
+;;; and last (in a 3:2 proportion). Try and balance this out (won't be
+;;; perfect but pretty near).
 
 ;;; SAR Sat Jan 14 17:50:08 GMT 2012: Edited robodoc info
-
 ;;; ****f* l-for-lookup/fibonacci-transitions
 ;;; DATE
 ;;; 18 Feb 2010

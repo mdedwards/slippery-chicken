@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 10:03:40 Sun Jan 15 2012 ICT
+;;; $$ Last modified: 17:55:10 Mon Jan 16 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -743,8 +743,9 @@ data: (
            sum (+ x y))
      (incf cumulative-sum sum)
      (when (> cumulative-sum max-sum)
+       ;; (print cumulative-sum)
+       ;; (print sum)
        ;; we're not using sum this time as we're over our limit.
-       ;; return can be used in loops to exit immediately
        (return (values result (1+ (- cumulative-sum sum)))))
      (push sum result)))
 

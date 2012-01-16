@@ -705,7 +705,7 @@ data: (
 ;;; FUNCTION
 ;;; Return the longest possible list of sequential Fibonacci numbers whose
 ;;; combined sum is less than or equal to the specified value. The list is
-;;; returned in a descending sequential order, ending with 0.  
+;;; returned in descending sequential order, ending with 0.  
 ;;;
 ;;; The function also returns as a second individual value the first Fibonacci
 ;;; number that is greater than the sum of the list returned. 
@@ -730,7 +730,6 @@ data: (
 ;;;
 ;;; EXAMPLE
 #|
-
 ;; Returns a list of consecutive Fibonacci numbers from 0 whose sum is equal to
 ;; or less than the value specified. The second number returned is the first
 ;; Fibonacci number whose value is greater than the sum of the list, and will
@@ -781,13 +780,12 @@ data: (
 ;;; 0 and 1, whose combined sum is less than or equal to the specified
 ;;; value. The list is returned in descending sequential order.
 ;;;
-;;; The function also returns as a second value the greatest possible
-;;; Fibonacci number that is less than or equal to the specified test number.
+;;; The function also returns as a second value the sum of the list.
 ;;;
-;;; NB: This function differs from the plain fibonacci function in three
-;;; points: a) it excludes 0 and 1, b) the combined sum may also be equal
-;;; to the specified value as well as being below it, and c) the second
-;;; returned value may also be equal to the test number.
+;;; NB: In addition to excluding 0 and 1, this function also differs from the
+;;;     plain fibonacci function in that the second value returned is the sum
+;;;     of the list rather than the first Fibonacci number greater than that
+;;;     sum.  
 ;;; 
 ;;; ARGUMENTS 
 ;;; A number that is to be the test number.
@@ -796,20 +794,38 @@ data: (
 ;;; A list of descending sequential Fibonacci numbers, of which list the last
 ;;; element is 2.
 ;;; 
-;;; Also returns as a second result the greatest possible Fibonacci number that
-;;; is less than or equal to the specified test number.
+;;; Also returns as a second result the sum of the list.
 ;;;
 ;;; EXAMPLE
 #|
-;; As opposed to the plain "fibonacci" function, fibonacci-start-at-2 allows
-;; the combined sum to also be equal to the test number. 
-(fibonacci 20)
+;; Returns a list whose sum is less than or equal to the number specified as
+;; the function's only argument
+(fibonacci-start-at-2 17) 
+
+=> (5 3 2), 10
+
+(fibonacci-start-at-2 20) 
+
+=> (8 5 3 2), 18
+
+;; Two examples showing the different results of fibonacci
+;; vs. fibonacci-start-at-2 
+
+;; 1
+(fibonacci 18) 
+
+=> (5 3 2 1 1 0), 13
+
+(fibonacci-start-at-2 18) 
+
+=> (8 5 3 2), 18
+
+;; 2
+(fibonacci 20) 
 
 => (8 5 3 2 1 1 0), 21
 
-
-
-(fibonacci-start-at-2 18)
+(fibonacci-start-at-2 20) 
 
 => (8 5 3 2), 18
 

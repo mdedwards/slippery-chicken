@@ -698,31 +698,52 @@ data: (
    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Jan 16 13:58:39 GMT 2012: Edited robodoc info
 ;;; SAR Sat Jan 14 16:14:01 GMT 2012: Edited robodoc info
 
 ;;; ****f* l-for-lookup/fibonacci
 ;;; FUNCTION
 ;;; Return the longest possible list of sequential Fibonacci numbers whose
-;;; combined sum is less than the specified value. The list is returned in
-;;; descending sequential order, ending with 0. 
+;;; combined sum is less than or equal to the specified value. The list is
+;;; returned in a descending sequential order, ending with 0.  
 ;;;
-;;; The function also returns the greatest possible Fibonacci number below the
-;;; specified test number as a second value. 
+;;; The function also returns as a second individual value the first Fibonacci
+;;; number that is greater than the sum of the list returned. 
+;;;
+;;; NB: The value of the second number returned will always be equal to the sum
+;;;     of the list plus one. In most cases that number will be less than the
+;;;     number specified as the argument to the fibonacci function, and
+;;;     sometimes it will be equal to the number specified; but in cases where
+;;;     the sum of the list returned is equal to the number specified, the
+;;;     second number returned will be equal to the specified number plus one.
 ;;; 
 ;;; ARGUMENTS 
 ;;; A number that is to be the test number.
 ;;; 
 ;;; RETURN VALUE  
 ;;; A list of descending sequential Fibonacci numbers, of which list the last
-;;; element is 0.
-;;; 
-;;; Also returns the greatest possible Fibonacci number below the specified
-;;; test number as a second result.
+;;; element is 0. 
+;;;
+;;; Also returns as a second individual value the first Fibonacci number that
+;;; is greater than the sum of the list returned, which will always be the sum
+;;; of that list plus one.
 ;;;
 ;;; EXAMPLE
 #|
+
+;; Returns a list of consecutive Fibonacci numbers from 0 whose sum is equal to
+;; or less than the value specified. The second number returned is the first
+;; Fibonacci number whose value is greater than the sum of the list, and will
+;; always be the sum of the list plus one.
 (fibonacci 5000)
+
  => (1597 987 610 377 233 144 89 55 34 21 13 8 5 3 2 1 1 0), 4181
+
+;; The sum of the list
+(+ 1597 987 610 377 233 144 89 55 34 21 13 8 5 3 2 1 1 0) 
+
+=> 4180
+
 |#
 ;;; 
 ;;; SYNOPSIS

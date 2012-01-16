@@ -751,6 +751,7 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sun Jan 15 16:30:14 GMT 2012: Edited robodoc info
 ;;; SAR Sat Jan 14 17:11:23 GMT 2012: Added robodoc info
 
 ;;; ****f* l-for-lookup/fibonacci-start-at-2
@@ -778,9 +779,15 @@ data: (
 ;;; is less than or equal to the specified test number.
 ;;;
 ;;; EXAMPLE
-
 #|
-;; The combined sum may also be equal to the test number.
+;; As opposed to the plain "fibonacci" function, fibonacci-start-at-2 allows
+;; the combined sum to also be equal to the test number. 
+(fibonacci 20)
+
+=> (8 5 3 2 1 1 0), 21
+
+
+
 (fibonacci-start-at-2 18)
 
 => (8 5 3 2), 18

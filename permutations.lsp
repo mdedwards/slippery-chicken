@@ -62,12 +62,12 @@
 ;;; FUNCTION
 ;;; 
 ;;; 
-;;; DATE:
-;;; 
-;;; 
 ;;; ARGUMENTS 
 ;;; 
 ;;; 
+;;; OPTIONAL ARGUMENTS
+;;;
+;;;
 ;;; RETURN VALUE  
 ;;; 
 ;;; 
@@ -100,23 +100,81 @@
 ;;; <skip> allows you to skip a number of permutations, which only makes sense
 ;;; if fix is t.
 
+;;; SAR Sun Jan 15 21:34:41 GMT 2012: Added robodoc info
+
 ;;; ****f* permutations/inefficient-permutations
 ;;; FUNCTION
-;;; inefficient-permutations:
+;;; Return a shuffled, non-systematic list of permutations of all possible
+;;; permutations of a set of consecutive integers beginning with zero. The
+;;; function's first argument, <level>, is an integer that determines how many
+;;; consecutive integers from 0 are to be used for the process. An optional
+;;; keyword argument <max> allows the user to specify the maximum number of
+;;; permutations to return. 
 ;;;
+;;; This function differs from the "permutations" function in that it's result
+;;; is not ordered systematically. 
+;;;
+;;; The function simply returns a list of <max> permutations of the numbers
+;;; less than <level>, i.e. it doesn't permutate a given list.  
+;;;
+;;; The function is inefficient in so far as it simply shuffles the numbers and
+;;; so always has to check whether the new list already contains the shuffled
+;;; before storing it.
 ;;; 
-;;; 
-;;; DATE:
-;;; 
-;;; 
+;;; The order of the permutations returned will always be the same unless <fix>
+;;; is set to NIL. Keyword argument <skip> allows the user to skip a number of
+;;; permutations, which only makes sense if :fix is set to T.
+;;;
 ;;; ARGUMENTS 
+;;; An integer that indicates how many consecutive integers from 0 are to be
+;;; used for the process. 
 ;;; 
-;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :max. An integer that indicates the maximum number of
+;;;   permutations to be returned.
+;;; - keyword argument :skip. An integer that indicates a number of
+;;;   permutations to skip.
+;;; - keyword argument :fix. T or NIL to indicate whether the given sequence
+;;;   should always be shuffled with the same (fixed) random seed (thus always
+;;;   producing the same result). T = fixed seed. Default = T.
+;;;
 ;;; RETURN VALUE  
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Creating a shuffled, non-systematic list of all permutations of consecutive
+;; integers 0 to 4 
+(inefficient-permutations 4)
+
+=> ((2 3 0 1) (3 1 2 0) (2 0 3 1) (1 0 2 3) (1 2 3 0) (0 2 3 1) (2 1 0 3)
+    (0 1 2 3) (2 3 1 0) (1 2 0 3) (3 0 1 2) (3 1 0 2) (1 3 2 0) (1 0 3 2)
+    (2 0 1 3) (3 2 1 0) (2 1 3 0) (3 2 0 1) (1 3 0 2) (0 2 1 3) (3 0 2 1)
+    (0 1 3 2) (0 3 2 1) (0 3 1 2))
+
+;; Using 0 to 4 again, but limiting the number of results returned to a maximum
+;; of 7
+(inefficient-permutations 4 :max 7)
+
+=> ((2 3 0 1) (3 1 2 0) (2 0 3 1) (1 0 2 3) (1 2 3 0) (0 2 3 1) (2 1 0 3))
+
+;; The same call will return the same "random" results each time by default
+(loop repeat 4 do (print (inefficient-permutations 3 :max 5)))
+
+=>
+((2 0 1) (2 1 0) (0 2 1) (1 0 2) (1 2 0)) 
+((2 0 1) (2 1 0) (0 2 1) (1 0 2) (1 2 0)) 
+((2 0 1) (2 1 0) (0 2 1) (1 0 2) (1 2 0)) 
+((2 0 1) (2 1 0) (0 2 1) (1 0 2) (1 2 0))
+
+;; Setting the :fix argument to NIL will result in differnt returns
+(loop repeat 4 do (print (inefficient-permutations 3 :max 5 :fix nil)))
+
+=>
+((1 0 2) (0 1 2) (1 2 0) (2 1 0) (0 2 1)) 
+((1 2 0) (2 0 1) (2 1 0) (1 0 2) (0 1 2)) 
+((0 1 2) (1 0 2) (2 0 1) (1 2 0) (2 1 0)) 
+((0 2 1) (1 2 0) (0 1 2) (2 0 1) (1 0 2))
 
 |#
 ;;; SYNOPSIS
@@ -125,11 +183,11 @@
   (let* ((result '())
          (natural-max (loop for i from 2 to level with j = 1 do 
                            (setf j (* j i)) 
-                           finally (return j)))
+			 finally (return j)))
          (num-perms (+ skip
                        (if max 
-                         max
-                         natural-max)))
+			   max
+			   natural-max)))
          (start (loop for i below level collect i))
          (current '())
          (reset fix)
@@ -155,33 +213,38 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; This is a more efficient permutation algorithm but the results will always
-;;; be in a certain order, with the same number at the end until that
-;;; permutation is exhausted, then the number below it always etc. e.g. 
-
-;;; (permutations 4) ->
-;;; ((0 1 2 3) (1 0 2 3) (0 2 1 3) (2 0 1 3) (1 2 0 3) (2 1 0 3) (0 1 3 2)
-;;;  (1 0 3 2) (0 3 1 2) (3 0 1 2) (1 3 0 2) (3 1 0 2) (0 2 3 1) (2 0 3 1)
-;;;  (0 3 2 1) (3 0 2 1) (2 3 0 1) (3 2 0 1) (1 2 3 0) (2 1 3 0) (1 3 2 0)
-;;;  (3 1 2 0) (2 3 1 0) (3 2 1 0))
+;;; SAR Sat Jan 14 22:26:30 GMT 2012: Added robodoc info
 
 ;;; ****f* permutations/permutations
 ;;; FUNCTION
-;;; permutations:
+;;; Systematically produce a list of all possible permutations of a set of
+;;; consecutive integers beginning with zero. The function's only argument,
+;;; <level>, is an integer that determines how many consecutive integers from 0
+;;; are to be used for the process.
 ;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; This is a more efficient permutation algorithm, but the results will always 
+;;; be in a certain order, with the same number at the end until that
+;;; permutation is exhausted, then the number below that etc. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; An integer that indicates how many consecutive integers from 0 are to be
+;;; used for the process. 
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A list of sequences (lists), each of which is a permutation of the
+;;; original. 
 ;;; 
 ;;; EXAMPLE
 #|
+;; Produce a list consisting of all permutations that can be made of 4
+;; consecutive integers starting with 0 (i.e., (0 1 2 3))
+(permutations 4)
+
+=>
+((0 1 2 3) (1 0 2 3) (0 2 1 3) (2 0 1 3) (1 2 0 3) (2 1 0 3) (0 1 3 2)
+ (1 0 3 2) (0 3 1 2) (3 0 1 2) (1 3 0 2) (3 1 0 2) (0 2 3 1) (2 0 3 1)
+ (0 3 2 1) (3 0 2 1) (2 3 0 1) (3 2 0 1) (1 2 3 0) (2 1 3 0) (1 3 2 0)
+ (3 1 2 0) (2 3 1 0) (3 2 1 0))
 
 |#
 ;;; SYNOPSIS
@@ -218,23 +281,30 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan 14 22:25:23 GMT 2012: Added robodoc info
+
 ;;; ****f* permutations/permutate
 ;;; FUNCTION
-;;; permutate:
+;;; Systematically produce a list of all possible permutations of an original
+;;; list of elements of any type.
 ;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
+;;; NB: Such lists can quickly become very long, so slippery-chicken
+;;; automatically defaults to printing the resulting list to a file and
+;;; printing a warning above a certain length. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A list with elements of any type.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A list of lists that are all possible permutations of the original,
+;;; specified list.
 ;;; 
 ;;; EXAMPLE
 #|
+(permutate '(a b c))
+
+=> ((A B C) (B A C) (A C B) (C A B) (B C A) (C B A))
+
 
 |#
 ;;; SYNOPSIS
@@ -641,16 +711,14 @@
                     yet implemented for this lisp."))))
   ;; ****f* permutations/random-rep
   ;; FUNCTION
-  ;; random-rep:
   ;;
-  ;; 
-  ;; 
-  ;; DATE:
-  ;; 
   ;; 
   ;; ARGUMENTS 
   ;; 
   ;; 
+  ;; OPTIONAL ARGUMENTS
+  ;; 
+  ;;
   ;; RETURN VALUE  
   ;; 
   ;; 
@@ -669,102 +737,204 @@
 
 ;;; Modified from Common Music's shuffle function.
 
+;;; SAR Sun Jan 15 17:01:34 GMT 2012: Added robodoc info
+
 ;;; ****f* permutations/shuffle
 ;;; FUNCTION
-;;; shuffle:
+;;; Create a random ordering of a given sequence or a subsequence of a given
+;;; sequence. 
 ;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
-;;; 
+;;; NB: The order of the permutations returned will always be the same unless
+;;; keyword argument :fix is set to NIL.  
+;;;  
 ;;; ARGUMENTS 
+;;; - A sequence.
 ;;; 
-;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :start. A zero-based index integer indicating the first
+;;;   element of a subsequence to be shuffled. Default = 0.
+;;; - keyword argument :end. A zero-based index integer indicating the last
+;;;   element of a subsequence to be shuffled. Default = the length of the
+;;;   given sequence.
+;;; - keyword argument :copy. T or NIL to indicate whether the given sequence
+;;;   should be copied before it is modified or shoudl be destructively
+;;;   shuffled. T = copy. Default = T.
+;;; - keyword argument :fix. T or NIL to indicate whether the given sequence
+;;;   should always be shuffled with the same (fixed) random seed (thus always
+;;;   producing the same result). T = fixed seed. Default = T.
+;;; - keyword argument :reset. T or NIL to indicate whether the random state
+;;;   should be reset before the function is performed. 
+;;;   T = reset. Default = T. 
+;;;
 ;;; RETURN VALUE  
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Simple shuffle with default keywords.
+(shuffle '(1 2 3 4 5 6 7))
+
+=> (5 4 3 6 7 1 2)
+
+;; Always returns the same result by default.
+(loop repeat 4 do (print (shuffle '(1 2 3 4 5 6 7))))
+
+=>
+(5 4 3 6 7 1 2) 
+(5 4 3 6 7 1 2) 
+(5 4 3 6 7 1 2) 
+(5 4 3 6 7 1 2)
+
+;; Set keyword argument :fix to NIL to return different results each time 
+(loop repeat 4 do (print (shuffle '(1 2 3 4 5 6 7) :fix nil)))
+
+=>
+(1 2 6 3 5 4 7) 
+(1 3 5 2 7 4 6) 
+(4 7 2 5 1 6 3) 
+(1 5 3 7 4 2 6)
+
+;; Set keyword arguments :start and :end to shuffle just a subsequence of the
+;; given sequence
+(loop repeat 4 
+   do (print (shuffle '(1 2 3 4 5 6 7) 
+		      :fix nil
+		      :start 2
+		      :end 5)))
+
+=>
+(1 2 5 4 3 6 7) 
+(1 2 3 5 4 6 7) 
+(1 2 4 5 3 6 7) 
+(1 2 3 4 5 6 7)
 
 |#
 ;;; SYNOPSIS
 (defun shuffle (seq &key 
-                    (start 0) 
-                    (end (length seq))
-                    (copy t)
-                    (fix t)
-                    (reset t)
-                    &aux (width (- end start)))
+		(start 0) 
+		(end (length seq))
+		(copy t)
+		(fix t)
+		(reset t)
+		&aux (width (- end start)))
 ;;; ****
   (if (< width 2)
       seq
-    (progn
-      (when (and copy (typep seq 'list))
-        (setf seq (copy-list seq)))
-      ;; call once just to initialize state
-      (when (and fix reset)
-        (random-rep 10 t))
-      (loop for i from start to (1- end)
-            for i2 = (+ start 
-                        (if fix 
-                            (random-rep width)
-                          (random width)))
-            do 
-            (when (or (< i 0) (< i2 0))
-              (error "permutations::shuffle: indices < 0!"))
-            (rotatef (elt seq i) 
-                     (elt seq i2)))
-      seq)))
+      (progn
+	(when (and copy (typep seq 'list))
+	  (setf seq (copy-list seq)))
+	;; call once just to initialize state
+	(when (and fix reset)
+	  (random-rep 10 t))
+	(loop for i from start to (1- end)
+	   for i2 = (+ start 
+		       (if fix 
+			   (random-rep width)
+			   (random width)))
+	   do 
+	     (when (or (< i 0) (< i2 0))
+	       (error "permutations::shuffle: indices < 0!"))
+	     (rotatef (elt seq i) 
+		      (elt seq i2)))
+	seq)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sun Jan 15 21:13:57 GMT 2012: Added robodoc info
+
 ;;; ****f* permutations/multi-shuffle
 ;;; FUNCTION
-;;; multi-shuffle:
-;;;
+;;; Applies the shuffle function a specified number of times to a specified
+;;; list.  
 ;;; 
-;;; 
-;;; DATE:
-;;; 
-;;; 
+;;; NB: As with the plain shuffle function, the order of the permutations
+;;; returned will always be the same unless the keyword argument :fix is set 
+;;; to NIL.   
+;;;  
 ;;; ARGUMENTS 
+;;; - A sequence.
 ;;; 
-;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :start. A zero-based index integer indicating the first
+;;;   element of a subsequence to be shuffled. Default = 0.
+;;; - keyword argument :end. A zero-based index integer indicating the last
+;;;   element of a subsequence to be shuffled. Default = the length of the
+;;;   given sequence.
+;;; - keyword argument :copy. T or NIL to indicate whether the given sequence
+;;;   should be copied before it is modified or should be destructively
+;;;   shuffled. T = copy. Default = T.
+;;; - keyword argument :fix. T or NIL to indicate whether the given sequence
+;;;   should always be shuffled with the same (fixed) random seed (thus always
+;;;   producing the same result). T = fixed seed. Default = T.
+;;; - keyword argument :reset. T or NIL to indicate whether the random state
+;;;   should be reset before the function is performed. 
+;;;   T = reset. Default = T. 
+;;;
 ;;; RETURN VALUE  
-;;; 
+;;; - A sequence.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Simple multi-shuffle with default keywords.
+(multi-shuffle '(a b c d e f g) 3)
+
+=> (B A C E D G F)
+
+;; Always returns the same result by default.
+(loop repeat 4 do (print (multi-shuffle '(a b c d e f g) 3)))
+
+=>
+(B A C E D G F) 
+(B A C E D G F) 
+(B A C E D G F) 
+(B A C E D G F)
+
+;; Set keyword argument :fix to NIL to return different results each time 
+(loop repeat 4 do (print (multi-shuffle '(a b c d e f g) 3 :fix nil)))
+
+=>
+(G C F B D E A) 
+(A G F B D C E) 
+(A B D G C F E) 
+(G C A D E F B)
+
+;; Set keyword arguments :start and :end to shuffle just a subsequence of the
+;; given sequence
+(loop repeat 4 
+   do (print (multi-shuffle '(a b c d e f g) 3
+			    :fix nil
+			    :start 2
+			    :end 5)))
+
+=>
+(A B D E C F G) 
+(A B E C D F G) 
+(A B E D C F G) 
+(A B D C E F G)
 
 |#
 ;;; SYNOPSIS
 (defun multi-shuffle (seq num-shuffles &key 
-                                       (start 0) 
-                                       (end (length seq))
-                                       (copy t)
-                                       (fix t)
-                                       (reset t))
+		      (start 0) 
+		      (end (length seq))
+		      (copy t)
+		      (fix t)
+		      (reset t))
 ;;; ****
   (loop 
-      with result = seq
-                    ;; repeat num-shuffles 
-      for i below num-shuffles
-      do
-        (setf result (shuffle result :start start :end end :copy copy :fix fix
-                              :reset reset))
-      finally (return result)))
+     with result = seq
+     ;; repeat num-shuffles 
+     for i below num-shuffles
+     do
+       (setf result (shuffle result :start start :end end :copy copy :fix fix
+			     :reset reset))
+     finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****f* permutations/multi-shuffle-with-perms
 ;;; FUNCTION
-;;; multi-shuffle-with-perms:
 ;;;
-;;; 
-;;; 
-;;; DATE:
-;;; 
 ;;; 
 ;;; ARGUMENTS 
 ;;; 
@@ -800,16 +970,14 @@
 
 ;;; ****f* permutations/move-repeats
 ;;; FUNCTION
-;;; move-repeats:
-;;;
-;;; 
-;;; 
-;;; DATE:
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
 ;;; 
 ;;; 
+;;; OPTIONAL ARGUMENTS
+;;;
+;;;
 ;;; RETURN VALUE  
 ;;; 
 ;;; 

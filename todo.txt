@@ -15,3 +15,48 @@ implementing the remix-in algorithm of cheat sheet (see get-loops seqs)
     (update-events-tempo sc players))
   (when multi-bar-rests
 
+;;; For some reason, when this is a :before method, clisp in windows crashes
+;;; with a SIGSEV fault (it's no problem with clisp under linux)!  Can't find
+;;; the reason so don't descend into any further methods.  todo: fix this!
+#+(and clisp win32)
+(defmethod print-object ((al assoc-list) stream)
+
+;; todo: adding a two-bar rthm-seq to a rthm-seq-palette fails, possibly
+;; because the two bars thing gets recursively make into something else???
+;;; ****m* assoc-list/add
+
+;;; todo: is this really recounting notes etc. when we manually call it?
+(defmethod update-slots ((bh bar-holder)
+
+(defmethod update-slots ((bh bar-holder)
+....
+            (incf (num-notes bh) (num-notes thing))
+            (incf (num-score-notes bh) (num-score-notes thing))
+            (incf (num-rests bh) (num-rests thing))
+            ;; only sections, subsections and sequenzes should update bar and
+            ;; start-time, the player-sections all have the same start-time and
+            ;; bar. 
+            ;; todo: update the num-notes etc. for each separate instrument...
+            (when loop-update
+              (setf bar (1+ (end-bar thing))
+                    time-qtrs (end-time-qtrs thing)
+                    time (end-time thing))))))
+
+;;; todo: this is inconsistent in naming (e.g. note is not a class, but pitch
+;;; and event are) and returns a different type depending on whether we're
+;;; accessing a chord note (pitch) or single note (event).  Rethink the
+;;; interface here.
+;;; 
+;;; ****m* bar-holder/get-note
+
+
+(defun cmn-display (system-list 
+....
+       (full-last-line nil)
+       (automatic-line-breaks automatic-line-breaks)
+       (first-measure-number start-bar-numbering)
+       ;; todo: these don't seem to work--ask Bill.
+       (staff-name-font "Verdana")
+       (staff-name-font-scaler .6)
+       (default-font '("Verdana" "Verdana-Italic" "Verdana-Bold" 
+                       "Verdana-BoldItalic"))

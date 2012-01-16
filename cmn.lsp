@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 09:50:41 Sat Jan 14 2012 ICT
+;;; $$ Last modified: 23:41:34 Sun Jan 15 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -658,7 +658,6 @@
        (full-last-line nil)
        (automatic-line-breaks automatic-line-breaks)
        (first-measure-number start-bar-numbering)
-       ;; todo: these don't seem to work--ask Bill.
        (staff-name-font "Verdana")
        (staff-name-font-scaler .6)
        (default-font '("Verdana" "Verdana-Italic" "Verdana-Bold" 

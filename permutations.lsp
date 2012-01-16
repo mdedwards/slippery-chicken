@@ -54,28 +54,93 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; returns the elements of <list> permutated and as a flat list, unless 
-;;; <sublists> is t whereupon the the result is a list of lists each one 
-;;; a permutation of <list>
+;;; SAR Mon Jan 16 21:14:16 GMT 2012: Deleted MDE's comment, as it was taken
+;;; nearly verbatim into the robodoc info below.
 
 ;;; SAR Mon Jan 16 17:11:38 GMT 2012: Added robodoc info
 
 ;;; ****f* permutations/inefficiently-permutate
 ;;; FUNCTION
 ;;; Return a shuffled, non-systematically ordered list of all possible
-;;; permutations of an original sequence of elements of any type.
+;;; permutations of an original sequence of elements of any type. An
+;;; optional keyword argument <max> allows the user to specify the maximum
+;;; number of permutations to return. 
+;;;
+;;; As opposed to the function "permutate", inefficiently-permutate returns the
+;;; elements of the specified <list> as a flat list, unless the keyword
+;;; argument <sublists> is set to T, whereupon the function returns the result
+;;; as a list of lists, each one being a permutation of <list>.
+;;;
+;;; The function is inefficient in so far as it simply shuffles the numbers and
+;;; so always has to check whether the new list already contains the shuffled
+;;; before storing it.
 ;;; 
+;;; The order of the permutations returned will always be the same unless <fix>
+;;; is set to NIL. 
+;;;
+;;; Keyword argument <skip> allows the user to skip a number of permutations,
+;;; which is only sensible if :fix is set to T. 
+;;;
 ;;; ARGUMENTS 
-;;; 
+;;; - A list.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;;
+;;; - keyword argument :max. An integer that indicates the maximum number of
+;;;   permutations to be returned.
+;;; - keyword argument :skip. An integer that indicates a number of
+;;;   permutations to skip.
+;;; - keyword argument :fix. T or NIL to indicate whether the given sequence
+;;;   should always be shuffled with the same (fixed) random seed (thus always
+;;;   producing the same result). T = fixed seed. Default = T.
+;;; - keyword argument :sublists. T or NIL to indicate whether the returned
+;;;   result should be flattened into a one-dimensional list or should be left
+;;;   as a list of lists. T = leave as list of lists. Default = NIL.
 ;;;
 ;;; RETURN VALUE  
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+;; By default the function returns a flattened list of all possible
+;; permutations in a shuffled (random) order
+(inefficiently-permutate '(a b c))
+
+=> (C A B C B A A C B B A C B C A A B C)
+
+;; The length of the list returned can be potentially shortened using the :max
+;; keyword argument. Note here that the value given here refers to the number
+;; of permutations before the list is flattened, not to the number of
+;; individual items in the flattened list.
+(inefficiently-permutate '(a b c) :max 3)
+
+=> (C A B C B A A C B) 
+
+;; By default the function is set to using a fixed random seed, causing it to
+;; return the same result each time
+(loop repeat 4 do (print (inefficiently-permutate '(a b c))))
+
+=>
+(C A B C B A A C B B A C B C A A B C) 
+(C A B C B A A C B B A C B C A A B C) 
+(C A B C B A A C B B A C B C A A B C) 
+(C A B C B A A C B B A C B C A A B C) 
+
+;; Setting the :fix keyword argument to NIL allows the function to produce
+;; different output each time
+(loop repeat 4 do (print (inefficiently-permutate '(a b c) :fix nil)))
+
+=>
+(B A C A C B B C A A B C C B A C A B) 
+(A C B B A C C B A C A B B C A A B C) 
+(A C B B A C B C A A B C C A B C B A) 
+(B A C A B C C A B C B A B C A A C B) 
+
+;; Setting the :sublists keyword argument to T causes the function to return a
+;; list of lists instead
+(inefficiently-permutate '(a b c) :sublists t)
+
+=> ((C A B) (C B A) (A C B) (B A C) (B C A) (A B C))
+
 
 |#
 ;;; SYNOPSIS

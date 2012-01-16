@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 21:29:20 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 22:41:49 Sun Jan 15 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -245,7 +245,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; N.B. Although tempo-map is optional, it is in fact required
-;;; todo: is this really recounting notes etc. when we manually call it?
 (defmethod update-slots ((bh bar-holder)
                          &optional
                          tempo-map
@@ -279,7 +278,6 @@
             ;; only sections, subsections and sequenzes should update bar and
             ;; start-time, the player-sections all have the same start-time and
             ;; bar. 
-            ;; todo: update the num-notes etc. for each separate instrument...
             (when loop-update
               (setf bar (1+ (end-bar thing))
                     time-qtrs (end-time-qtrs thing)
@@ -360,11 +358,6 @@
           (return (get-bar bhl bar-num player)))))
         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; todo: this is inconsistent in naming (e.g. note is not a class, but pitch
-;;; and event are) and returns a different type depending on whether we're
-;;; accessing a chord note (pitch) or single note (event).  Rethink the
-;;; interface here.
-;;; 
 ;;; ****m* bar-holder/get-note
 ;;; FUNCTION
 ;;; Return an event from a bar.  bar-num and note-num are 1-based.  note-num

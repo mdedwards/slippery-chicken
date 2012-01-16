@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 10:37:05 Thu Jan 12 2012 ICT
+;;; $$ Last modified: 22:40:11 Sun Jan 15 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -73,9 +73,6 @@
 (defmethod print-object :before ((al assoc-list) stream)
   (format stream "~%ASSOC-LIST: warn-not-found ~a" (warn-not-found al)))
 
-;;; For some reason, when this is a :before method, clisp in windows crashes
-;;; with a SIGSEV fault (it's no problem with clisp under linux)!  Can't find
-;;; the reason so don't descend into any further methods.  todo: fix this!
 #+(and clisp win32)
 (defmethod print-object ((al assoc-list) stream)
   (format stream "~%ASSOC-LIST: warn-not-found ~a, ~
@@ -450,9 +447,6 @@ WARNING:
               key (id al))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; todo: adding a two-bar rthm-seq to a rthm-seq-palette fails, possibly
-;; because the two bars thing gets recursively make into something else???
 
 ;;; 01.12.11 SEAN: Added ROBODoc info
 ;;; 07.12.11 SEAN: Modified example

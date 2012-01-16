@@ -58,9 +58,12 @@
 ;;; <sublists> is t whereupon the the result is a list of lists each one 
 ;;; a permutation of <list>
 
+;;; SAR Mon Jan 16 17:11:38 GMT 2012: Added robodoc info
+
 ;;; ****f* permutations/inefficiently-permutate
 ;;; FUNCTION
-;;; 
+;;; Return a shuffled, non-systematically ordered list of all possible
+;;; permutations of an original sequence of elements of any type.
 ;;; 
 ;;; ARGUMENTS 
 ;;; 
@@ -90,40 +93,43 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Jan 16 15:56:52 GMT 2012: Deleted those portions of MDE's comment
+;;; here that were taken verbatim into the robodoc data below.
+
+;;; MDE:
 ;;; This function ensures a mixed bag of permutations (i.e. avoiding all the 0s
-;;; at the beginning first, then all the 1s etc.).  We return simply a list of
-;;; <max> permutations of the numbers less than <level>, i.e. we don't
-;;; permutate a given list.  It is inefficient in so far as it simply shuffles
+;;; at the beginning first, then all the 1s etc.).  
+;;; It is inefficient in so far as it simply shuffles
 ;;; the numbers and so always has to check whether we have the shuffle already
-;;; before we store it.  The order of the permutations (and therefore the
-;;; result) returned will always be the same unless <fix> is set to nil.
-;;; <skip> allows you to skip a number of permutations, which only makes sense
-;;; if fix is t.
+;;; before we store it.  
 
 ;;; SAR Sun Jan 15 21:34:41 GMT 2012: Added robodoc info
 
 ;;; ****f* permutations/inefficient-permutations
 ;;; FUNCTION
-;;; Return a shuffled, non-systematic list of permutations of all possible
-;;; permutations of a set of consecutive integers beginning with zero. The
-;;; function's first argument, <level>, is an integer that determines how many
-;;; consecutive integers from 0 are to be used for the process. An optional
-;;; keyword argument <max> allows the user to specify the maximum number of
-;;; permutations to return. 
+;;; Return a shuffled, non-systematic list of all possible permutations of a
+;;; set of consecutive integers beginning with zero. 
+;;;
+;;; The function's first argument, <level>, is an integer that determines how
+;;; many consecutive integers from 0 are to be used for the process. An
+;;; optional keyword argument <max> allows the user to specify the maximum
+;;; number of permutations to return. 
 ;;;
 ;;; This function differs from the "permutations" function in that it's result
 ;;; is not ordered systematically. 
 ;;;
 ;;; The function simply returns a list of <max> permutations of the numbers
-;;; less than <level>, i.e. it doesn't permutate a given list.  
+;;; less than <level>; it does not permutate a given list.  
 ;;;
 ;;; The function is inefficient in so far as it simply shuffles the numbers and
 ;;; so always has to check whether the new list already contains the shuffled
 ;;; before storing it.
 ;;; 
 ;;; The order of the permutations returned will always be the same unless <fix>
-;;; is set to NIL. Keyword argument <skip> allows the user to skip a number of
-;;; permutations, which only makes sense if :fix is set to T.
+;;; is set to NIL. 
+;;;
+;;; Keyword argument <skip> allows the user to skip a number of permutations,
+;;; which is only sensible if :fix is set to T. 
 ;;;
 ;;; ARGUMENTS 
 ;;; An integer that indicates how many consecutive integers from 0 are to be
@@ -289,8 +295,8 @@
 ;;; list of elements of any type.
 ;;;
 ;;; NB: Such lists can quickly become very long, so slippery-chicken
-;;; automatically defaults to printing the resulting list to a file and
-;;; printing a warning above a certain length. 
+;;;     automatically defaults to outputting the resulting list to a file and 
+;;;     printing a warning when the results exceed a certain length. 
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A list with elements of any type.

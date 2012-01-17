@@ -351,6 +351,7 @@ MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not
 ;;; 
 ;;; EXAMPLE
 #|
+
 (let ((rsb (make-rthm-seq-bar '((3 4) q q q))))
   (fill-with-rhythms rsb (loop for r in '(e e e e e e)
                           collect (make-rhythm r))))
@@ -1994,27 +1995,187 @@ data: E
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Intra-phrasal looping
-;;; Creates a list of new bars (with new time signatures) formed by chopping
-;;; the current bar at points given in chop-points. This is a list of
-;;; 2-element lists each of which specifies the start and end points of a beat
-;;; in the unit specified by the unit argument. These chop points are then
-;;; used for all beats in the bar (so specifying chop-points adding up to a
-;;; quarter note then trying to apply that to a 5/8 bar won't work).
+;;; SAR Tue Jan 17 16:54:39 GMT 2012: Delete MDE's comment here and moved it
+;;; nearly verbatim to the documentation below.
 
-;;; SAR Thu Dec 29 16:50:33 EST 2011: Added robodoc info
+;;; SAR Tue Jan 17 16:54:23 GMT 2012: Added robodoc info
+
 ;;; ****m* rthm-seq-bar/chop
 ;;; FUNCTION
+;;; Creates a list of new rthm-seq-bar objects, with new time signatures, which
+;;; are formed by systematically chopping the bar represented by the current
+;;; rthm-seq-bar into segments. 
 ;;;
+;;; The method creates these segments based on chop-point pairs specified in
+;;; the <chop-points> argument, which is a list of 2-element lists, each of
+;;; which specifies the start and end points of a rhythmic span within the
+;;; bounds of a given beat, measured in the unit specified by the <unit>
+;;; argument. 
+;;;
+;;; The chop points specified are used to individually process each beat in the
+;;; given rthm-seq-bar object; thus, chop-points specified for the subdivisions
+;;; of a quarter note will not work if applied to a 5/8 bar.
+;;;
+;;; The method fills each newly created rthm-seq-bar object with one rhythmic
+;;; duration that is equal to the length of the bar. If the beginning of the
+;;; given chop segment coincides with an attack in the original bar, the result
+;;; is a sounding note; if not, the result is a rest. NB: In this abstraction
+;;; of the class for the sake of this documentation, sounding notes will appear
+;;; as NIL. 
+;;;
+;;; The chop function is the basis for slippery-chicken's feature of
+;;; intra-phrasal looping.
 ;;; 
 ;;; ARGUMENTS 
+;;; - A rthm-seq-bar object.
 ;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - <chop-points> A list of integer pairs, each of which delineates a segment
+;;;   of the beat of the given rthm-seq-bar object measured in the rhythmic
+;;;   unit specified by the <unit> argument. Thus, if all possible spans of
+;;;   sixteenth-notes within a quarter-note, starting from the first sixteenth,
+;;;   were delineated, they would span from 1 to 4 (the full quarter), 1 to 3
+;;;   (the first dotted 8th of the quarter), 1 to 2 (the first 8th) and 1 to 1
+;;;   (the first 16th of the quarter); the process could continue then with all
+;;;   rhythmic durations contained within the bounds of the same quarter
+;;;   starting on the second 16th, etc. The default chop-points for a quarter
+;;;   are '((1 4) (1 3) (1 2) (2 4) (2 3) (3 4) (1 1) (2 2) (3 3) (4 4)).
+;;; - <unit>. The rhythmic duration that serves as the unit of measurement for
+;;;   the chop points. Default = 's.
+;;; - <rthm-seq-id>. A symbol that will be the ID for the list created.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A list of rthm-seq-bar objects.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Systematically subdivide each quarter-note of a 2/4 bar containing two
+;; quarter-notes into all possible segments whose durations are multiples of a
+;; sixteenth-note unit, and print-simple the resulting list. The quarter-note
+;; subdivision is re-specified here sightly differently to the default for the
+;; sake of systematic clarity. Only those segments whose start point coincide
+;; with an attack in the original bar, i.e. those that begin on the first
+;; sixteenth of each  beat, will be assigned a NIL (which will later become
+;; a sounding note); all others are assigned a rest.
+
+(let* ((rsb (make-rthm-seq-bar '((2 4) q q)))
+       (ch (chop rsb 
+		 '((1 4) (1 3) (1 2) (1 1) (2 4) (2 3) (2 2) (3 4) (3 3) (4 4))   
+		 's))) 
+  (loop for b in ch do (print-simple b)))
+
+=>
+(1 4): NIL Q, 
+(3 16): NIL E., 
+(1 8): NIL E, 
+(1 16): NIL S, 
+(3 16): rest 16/3, 
+(1 8): rest 8, 
+(1 16): rest 16, 
+(1 8): rest 8, 
+(1 16): rest 16, 
+(1 16): rest 16, 
+(1 4): NIL Q, 
+(3 16): NIL E., 
+(1 8): NIL E, 
+(1 16): NIL S, 
+(3 16): rest 16/3, 
+(1 8): rest 8, 
+(1 16): rest 16, 
+(1 8): rest 8, 
+(1 16): rest 16, 
+(1 16): rest 16,
+
+;; The same thing, but returning all possible segments within the bounds of a
+;; quarter-note whose durations that are multiple of an 8th-note unit
+(let* ((rsb (make-rthm-seq-bar '((2 4) q q)))
+       (choprsb (chop rsb 
+		      '((1 2) (1 1) (2 2))
+		      'e)))
+  (loop for b in choprsb do (print-simple b)))
+
+=>
+(1 4): NIL Q, 
+(1 8): NIL E, 
+(1 8): rest 8, 
+(1 4): NIL Q, 
+(1 8): NIL E, 
+(1 8): rest 8,
+
+;; Adapt the 16th-note example above to a starting rthm-seq-bar object with 
+;; more complex rhythmic content. Note here, too, that the rthm-seq-bar object
+;; being segmented contains rhythmic durations smaller than the <unit>
+;; argument. 
+(let* ((rsb (make-rthm-seq-bar '((4 4) - (s) (32) 32 (s) s - - +s+32 (32) (e) -
+				 (q) (s) s (e))))  
+       (choprsb (chop rsb 
+		      '((1 4) (1 3) (1 2) (1 1) (2 4) (2 3) (2 2) (3 4) (3 3) (4 4))
+		      's)))
+  (loop for b in choprsb do (print-simple b)))
+
+=>
+(1 4): rest S, rest 32, NIL 32, rest S, NIL S, 
+(3 16): rest S, rest 32, NIL 32, rest S, 
+(1 8): rest S, rest 32, NIL 32, 
+(1 16): rest 16, 
+(3 16): rest 32, NIL 32, rest S, NIL S, 
+(1 8): rest 32, NIL 32, rest S, 
+(1 16): rest 32, NIL 32, 
+(1 8): rest S, NIL S, 
+(1 16): rest 16, 
+(1 16): NIL S, 
+(1 4): rest 4, 
+(3 16): rest 16/3, 
+(1 8): rest 8, 
+(1 16): rest 16, 
+(3 16): rest 16/3, 
+(1 8): rest 8, 
+(1 16): rest 16, 
+(1 8): rest 8, 
+(1 16): rest 16, 
+(1 16): rest 16, 
+(1 4): rest 4, 
+(3 16): rest 16/3, 
+(1 8): rest 8, 
+(1 16): rest 16, 
+(3 16): rest 16/3, 
+(1 8): rest 8, 
+(1 16): rest 16, 
+(1 8): rest 8, 
+(1 16): rest 16, 
+(1 16): rest 16, 
+(1 4): rest S, NIL S, rest E, 
+(3 16): rest S, NIL S, rest S, 
+(1 8): rest S, NIL S, 
+(1 16): rest 16, 
+(3 16): NIL S, rest E, 
+(1 8): NIL S, rest S, 
+(1 16): NIL S, 
+(1 8): rest 8, 
+(1 16): rest 16, 
+(1 16): rest 16,
+
+;; The same again with a <unit> of eighths
+(let* ((rsb (make-rthm-seq-bar '((4 4) - (s) (32) 32 (s) s - - +s+32 (32) (e) -
+				 (q) (s) s (e))))  
+       (choprsb (chop rsb 
+		      '((1 2) (1 1) (2 2))
+		      'e)))
+  (loop for b in choprsb do (print-simple b)))
+
+=>
+(1 4): rest S, rest 32, NIL 32, rest S, NIL S, 
+(1 8): rest S, rest 32, NIL 32, 
+(1 8): rest S, NIL S, 
+(1 4): rest 4, 
+(1 8): rest 8, 
+(1 8): rest 8, 
+(1 4): rest 4, 
+(1 8): rest 8, 
+(1 8): rest 8, 
+(1 4): rest S, NIL S, rest E, 
+(1 8): rest S, NIL S, 
+(1 8): rest 8,
 
 |#
 ;;; SYNOPSIS

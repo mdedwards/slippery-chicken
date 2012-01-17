@@ -1434,9 +1434,9 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Intra-phrasal looping
-;;; Calls chop-bar for each rsb in the seq--see rthm-seq-bar::chop-bar for
-;;; details.  Returns a list of rthm-seqs each containing just one of the bars
-;;; returned by chop-bar.
+;;; Calls chop for each rsb in the seq--see rthm-seq-bar::chop for        
+;;; details. Returns a list of rthm-seqs each containing just one of the bars
+;;; returned by chop. 
 
 ;;; ****m* rthm-seq/chop
 ;;; FUNCTION

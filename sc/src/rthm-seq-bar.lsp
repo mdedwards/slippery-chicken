@@ -2023,7 +2023,7 @@ data: E
 ;;; of the class for the sake of this documentation, sounding notes will appear
 ;;; as NIL. 
 ;;;
-;;; The chop function is the basis for slippery-chicken's feature of
+;;; The chop method is the basis for slippery-chicken's feature of
 ;;; intra-phrasal looping.
 ;;; 
 ;;; ARGUMENTS 

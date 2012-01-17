@@ -1433,23 +1433,199 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Intra-phrasal looping
-;;; Calls chop for each rsb in the seq--see rthm-seq-bar::chop for        
-;;; details. Returns a list of rthm-seqs each containing just one of the bars
-;;; returned by chop. 
+;;; SAR Tue Jan 17 20:56:27 GMT 2012: Deleted MDE comment here, as it has been
+;;; transferred nearly verbatim into the robodoc info.
+
+;;; SAR Tue Jan 17 20:56:12 GMT 2012: Added robodoc info
 
 ;;; ****m* rthm-seq/chop
 ;;; FUNCTION
-;;; 
+;;; Applies the chop method to each rthm-seq-bar object contained in the given
+;;; rthm-seq object (see rthm-seq-bar::chop for details), returning a list of
+;;; rthm-seq objects, each of which contains just one of the rthm-seq-bar
+;;; objects returned by chop.
+;;;
+;;; The chop method is the basis for slippery-chicken's feature of
+;;; intra-phrasal looping.
+;;;
+;;; NB: Since the chop method functions by comparing each beat of the given
+;;;     rthm-seq-bar object to the specified <chop-points> pattern for
+;;;     segmenting that beat, all rthm-seq-bar objects in multi-bar sequences
+;;;     must be evenly divisible by the beat for which the pattern is
+;;;     defined. For example, if the <chop-points> argument defines a quarter
+;;;     note, all bars in the given rthm-seq object must be evenly divisible by
+;;;     a quarter note, and a rthm-seq consisting of a 2/4, a 3/4 and a 3/8 bar
+;;;     would fail at the 3/8 bar with an error.  
 ;;; 
 ;;; ARGUMENTS 
+;;; - A rthm-seq object.
 ;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - <chop-points>. A list of integer pairs, each of which delineates a
+;;;   segment of the beat of the given rthm-seq-bar object measured in the
+;;;   rhythmic unit specified by the <unit> argument. See the documentation for 
+;;;   rthm-seq-bar::chop for more details.
+;;; - <unit>. The rhythmic duration that serves as the unit of measurement for
+;;;   the chop points. Default = 's.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A list of rthm-seq objects.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a rthm-seq with three bars, all having a quarter-note beat basis,
+;; apply chop, and print-simple the resulting list of new rthm-seq-bar
+;; objects. The rthm-seq numbers printed with this are the IDs of the rthm-seq
+;; objects, not the bar-nums of the individual rthm-seq-bar objects. 
+(let* ((rs (make-rthm-seq '(seq1 ((((2 4) q e s s)
+				   ((e) q (e))
+				   (s s (e) e. s))
+				  :pitch-seq-palette ((1 2 3 4 5 6 7 8 9)
+						      (9 8 7 6 5 4 3 2 1))))))
+       (ch (chop rs
+		 '((1 1) (1 2) (1 3) (1 4) (2 2) (2 3) (2 4) (3 3) (3 4) (4 4))
+		 's)))
+  (loop for rs-obj in ch do (print-simple rs-obj)))
+
+=>
+rthm-seq 1
+(1 16): NIL S, 
+rthm-seq 2
+(1 8): NIL E, 
+rthm-seq 3
+(3 16): NIL E., 
+rthm-seq 4
+(1 4): NIL Q, 
+rthm-seq 5
+(1 16): rest 16, 
+rthm-seq 6
+(1 8): rest 8, 
+rthm-seq 7
+(3 16): rest 16/3, 
+rthm-seq 8
+(1 16): rest 16, 
+rthm-seq 9
+(1 8): rest 8, 
+rthm-seq 10
+(1 16): rest 16, 
+rthm-seq 11
+(1 16): NIL S, 
+rthm-seq 12
+(1 8): NIL E, 
+rthm-seq 13
+(3 16): NIL E, NIL S, 
+rthm-seq 14
+(1 4): NIL E, NIL S, NIL S, 
+rthm-seq 15
+(1 16): rest 16, 
+rthm-seq 16
+(1 8): rest S, NIL S, 
+rthm-seq 17
+(3 16): rest S, NIL S, NIL S, 
+rthm-seq 18
+(1 16): NIL S, 
+rthm-seq 19
+(1 8): NIL S, NIL S, 
+rthm-seq 20
+(1 16): NIL S, 
+rthm-seq 21
+(1 16): rest 16, 
+rthm-seq 22
+(1 8): rest 8, 
+rthm-seq 23
+(3 16): rest E, NIL S, 
+rthm-seq 24
+(1 4): rest E, NIL E, 
+rthm-seq 25
+(1 16): rest 16, 
+rthm-seq 26
+(1 8): rest S, NIL S, 
+rthm-seq 27
+(3 16): rest S, NIL E, 
+rthm-seq 28
+(1 16): NIL S, 
+rthm-seq 29
+(1 8): NIL E, 
+rthm-seq 30
+(1 16): rest 16, 
+rthm-seq 31
+(1 16): rest 16, 
+rthm-seq 32
+(1 8): rest 8, 
+rthm-seq 33
+(3 16): rest 16/3, 
+rthm-seq 34
+(1 4): rest 4, 
+rthm-seq 35
+(1 16): rest 16, 
+rthm-seq 36
+(1 8): rest 8, 
+rthm-seq 37
+(3 16): rest 16/3, 
+rthm-seq 38
+(1 16): rest 16, 
+rthm-seq 39
+(1 8): rest 8, 
+rthm-seq 40
+(1 16): rest 16, 
+rthm-seq 41
+(1 16): NIL S, 
+rthm-seq 42
+(1 8): NIL S, NIL S, 
+rthm-seq 43
+(3 16): NIL S, NIL S, rest S, 
+rthm-seq 44
+(1 4): NIL S, NIL S, rest E, 
+rthm-seq 45
+(1 16): NIL S, 
+rthm-seq 46
+(1 8): NIL S, rest S, 
+rthm-seq 47
+(3 16): NIL S, rest E, 
+rthm-seq 48
+(1 16): rest 16, 
+rthm-seq 49
+(1 8): rest 8, 
+rthm-seq 50
+(1 16): rest 16, 
+rthm-seq 51
+(1 16): NIL S, 
+rthm-seq 52
+(1 8): NIL E, 
+rthm-seq 53
+(3 16): NIL E., 
+rthm-seq 54
+(1 4): NIL E., NIL S, 
+rthm-seq 55
+(1 16): rest 16, 
+rthm-seq 56
+(1 8): rest 8, 
+rthm-seq 57
+(3 16): rest E, NIL S, 
+rthm-seq 58
+(1 16): rest 16, 
+rthm-seq 59
+(1 8): rest S, NIL S, 
+rthm-seq 60
+(1 16): NIL S,
+
+;; Attempting to apply the method to a rthm-seq object in which not all bars
+;; have time-signatures that are divisible by the beat defined in the
+;; <chop-points> argument will result in dropping into the debugger with an error
+(let* ((rs (make-rthm-seq '(seq1 ((((2 4) q e s s)
+				   ((e) q (e))
+				   ((3 8) (e) e. s))
+				  :pitch-seq-palette ((1 2 3 4 5 6 7)
+						      (9 8 7 6 5 4 3))))))
+       (ch (chop rs
+		 '((1 1) (1 2) (1 3) (1 4) (2 2) (2 3) (2 4) (3 3) (3 4) (4 4))
+		 's)))
+  (loop for rs-obj in ch do (print-simple rs-obj)))
+
+=>
+rthm-seq-bar::get-beats: Can't find an exact beat of rhythms 
+   (dur: 0.75 beat-dur: 0.5)!
+   [Condition of type SIMPLE-ERROR]
 
 |#
 ;;; SYNOPSIS

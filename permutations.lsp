@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 12:55:58 Sat Jan 14 2012 ICT
+;;; $$ Last modified: 12:14:41 Tue Jan 17 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -322,32 +322,32 @@
 (defun permutations (level)
 ;;; ****
   (if (> level 8)
-      (let ((stream (open "permutations.txt"
+      (let ((stream (open "/tmp/permutations.txt"
                           :direction :output :if-exists :overwrite
                           :if-does-not-exist :create)))
-        (warn "I doubt you have the system requirements to return the ~a ~%~
-               results of this operation so I'm writing them into the file ~%~
-               'permutations.txt'." 
+        (warn "permutations::permutations: This call will return ~a ~%~
+               results so they are being written to the file ~%~
+               '/tmp/permutations.txt'." 
               (loop for i from 2 to level with j = 1 do 
-                (setf j (* j i)) 
-                finally (return j)))
+                   (setf j (* j i)) 
+                   finally (return j)))
         (permutations-aux level stream)
         (close stream))
-    (permutations-aux level)))
+      (permutations-aux level)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun permutations-aux (level &optional (stream nil) (result '())
-                               (current '()))
+                         (current '()))
   ;;(format t "~&result: ~a current: ~a" result current)
   (if (= (length current) level)
       (if stream 
           (print current stream)
-        (push current result))
-    (loop for i below level do
-      (unless (member i current)
-        (setf result (permutations-aux level stream result 
-                                       (cons i current))))))
+          (push current result))
+      (loop for i below level do
+           (unless (member i current)
+             (setf result (permutations-aux level stream result 
+                                            (cons i current))))))
   result)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -381,8 +381,12 @@
 ;;; SYNOPSIS
 (defun permutate (list)
 ;;; ****
-  (loop for p in (permutations (length list)) collect
-      (loop for e in p collect (nth e list))))
+  (unless (listp list)
+    (error "permutations::permutate: argument (~a) must be a list." list))
+  (let ((ps (permutations (length list))))
+    (when (listp ps) ; otherwise there were too many and they're written to a file
+      (loop for p in ps collect
+           (loop for e in p collect (nth e list))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

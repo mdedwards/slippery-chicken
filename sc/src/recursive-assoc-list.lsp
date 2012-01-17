@@ -227,7 +227,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* recursive-assoc-list/link-named-objects
 ;;; FUNCTION
-;;; link-named-objects:
 ;;; From the named objects in the data slots of the rals, create
 ;;; linked-named-objects to hold pointers (actually keys) to the previous and
 ;;; next objects in the ral, whether recursive or not.  The previous and next
@@ -453,9 +452,7 @@
 
 ;;; ****m* recursive-assoc-list/parcel-data
 ;;; FUNCTION
-;;; parcel-data:
-;;; 
-;;; Put all the data into a named-object i.e. add a level of recursion.  This
+;;; Put all the data into a named-object, i.e. add a level of recursion.  This
 ;;; is a means of making a collection of data before perhaps adding more with
 ;;; potentially conflicting ids.
 ;;; 

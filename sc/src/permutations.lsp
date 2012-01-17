@@ -172,7 +172,7 @@
 
 ;;; ****f* permutations/inefficient-permutations
 ;;; FUNCTION
-;;; Return a shuffled, non-systematic list of all possible permutations of a
+;;; Return a shuffled, non-systematic list of all possible permutations of a  
 ;;; set of consecutive integers beginning with zero. 
 ;;;
 ;;; The function's first argument, <level>, is an integer that determines how
@@ -184,11 +184,11 @@
 ;;; is not ordered systematically. 
 ;;;
 ;;; The function simply returns a list of <max> permutations of the numbers
-;;; less than <level>; it does not permutate a given list.  
+;;; less than <level>; it does not permutate a given list.   
 ;;;
 ;;; The function is inefficient in so far as it simply shuffles the numbers and
 ;;; so always has to check whether the new list already contains the shuffled
-;;; before storing it.
+;;; before storing it. 
 ;;; 
 ;;; The order of the permutations returned will always be the same unless <fix>
 ;;; is set to NIL. 
@@ -784,21 +784,57 @@
             (make-random-state state)
             (error "permutations::random-rep: Repeatable random-state not ~
                     yet implemented for this lisp."))))
+
+  ;; SAR Tue Jan 17 12:25:56 GMT 2012: Added robodoc info
+
   ;; ****f* permutations/random-rep
   ;; FUNCTION
-  ;;
+  ;; Return a non-negative random number that is less than the specified
+  ;; value. An optional argument allows for the random state to be reset.
   ;; 
   ;; ARGUMENTS 
-  ;; 
+  ;; - A number.
   ;; 
   ;; OPTIONAL ARGUMENTS
+  ;; - T or NIL to indicate whether the random state should be reset before the
+  ;;   function is performed. T = reset. Default = NIL.  
   ;; 
   ;;
   ;; RETURN VALUE  
-  ;; 
+  ;; A number.
   ;; 
   ;; EXAMPLE
   #|
+  ;; By default returns a different value each time
+  (loop repeat 10 do (print (random-rep 5)))
+  
+  =>
+  1 
+  3 
+  4 
+  4 
+  3 
+  4 
+  2 
+  0 
+  2 
+  0
+
+  ;; Setting the optional argument to T resets the random state before
+  ;; performing the function
+  (loop repeat 10 do (print (random-rep 5 t)))
+
+  =>
+  3 
+  3 
+  3 
+  3 
+  3 
+  3 
+  3 
+  3 
+  3 
+  3
 
   |#
   ;; SYNOPSIS
@@ -810,8 +846,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Modified from Common Music's shuffle function.
-
 ;;; SAR Sun Jan 15 17:01:34 GMT 2012: Added robodoc info
 
 ;;; ****f* permutations/shuffle
@@ -820,7 +854,9 @@
 ;;; sequence. 
 ;;;
 ;;; NB: The order of the permutations returned will always be the same unless
-;;; keyword argument :fix is set to NIL.  
+;;;     keyword argument :fix is set to NIL.  
+;;;
+;;; NB: This function is modified from Common Music's shuffle funciton.
 ;;;  
 ;;; ARGUMENTS 
 ;;; - A sequence.
@@ -923,8 +959,8 @@
 ;;; list.  
 ;;; 
 ;;; NB: As with the plain shuffle function, the order of the permutations
-;;; returned will always be the same unless the keyword argument :fix is set 
-;;; to NIL.   
+;;;     returned will always be the same unless the keyword argument
+;;;     :fix is set to NIL.   
 ;;;  
 ;;; ARGUMENTS 
 ;;; - A sequence.
@@ -1007,18 +1043,56 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan 17 11:33:14 GMT 2012: Added robodoc info
+
 ;;; ****f* permutations/multi-shuffle-with-perms
 ;;; FUNCTION
+;;; Returns a shuffled (random and unordered) list of permutations of
+;;; the specified list after a specified number of shuffles. Similar
+;;; to the "multi-shuffle" function, but uses the function
+;;; "inefficient-permutations" as part of the process.
 ;;;
-;;; 
+;;; The <num-shuffles> argument allows the user to always return the
+;;; same specific permutation.
+;;;
+;;; NB: This function always uses a fixed random seed and has no
+;;;     optional arguments to allow the user to alter that setting.
+
 ;;; ARGUMENTS 
-;;; 
+;;; - A list.
+;;; - An integer that is the number of permutations to be returned.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; - A list that is a single permutation of the specified list.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns a random and unordered permutation of the specified list
+(let ((l '(0 1 2 3 4)))
+  (multi-shuffle-with-perms l 7))
+
+=> (3 1 4 2 0) 
+
+;; Always returns the same result
+(loop repeat 4 do (print (multi-shuffle-with-perms '(0 1 2 3 4) 7)))
+
+=>
+(3 1 4 2 0) 
+(3 1 4 2 0) 
+(3 1 4 2 0) 
+(3 1 4 2 0)
+
+;; Different <num-shuffles> values return different permutations
+(loop for i from 0 to 5 
+   do (print (multi-shuffle-with-perms '(0 1 2 3 4) i)))
+
+=>
+(0 1 2 3 4) 
+(1 4 2 0 3) 
+(0 3 1 4 2) 
+(4 0 2 1 3) 
+(1 2 3 4 0) 
+(2 1 3 0 4)
 
 |#
 ;;; SYNOPSIS
@@ -1034,30 +1108,61 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; When a permutation results in something like (a b c) (c a b) the event c is
-;;; repeated: check for this and move the offending element to the next place 
-;;; that won't repeat (where possible).
-;;; (move-repeats '((a b c) (c a b) (d e f) (a b c) (g h i))) ->
-;;; ((A B C) (D E F) (C A B) (A B C) (G H I))
-;;; Works with simple lists too:
-;;; (move-repeats '(1 2 3 3 4 5 6 7 8 8 9 10)) ->
-;;; (1 2 3 4 3 5 6 7 8 9 8 10)
+
+;;; SAR Tue Jan 17 13:35:46 GMT 2012: Removed MDE's comments as they were
+;;; repeated nearly verbatim in the robodoc below. Also moved MDE's examples to
+;;; the EXAMPLES block.
+
+;;; SAR Tue Jan 17 13:35:32 GMT 2012: Added robodoc info
 
 ;;; ****f* permutations/move-repeats
 ;;; FUNCTION
-;;; 
+;;; Move, when possible, any permutations within a given list that result in
+;;; repeated elements. 
+;;;
+;;; When two consecutive permutations produce a repeated element, such as the c
+;;; in '((a b c) (c b a)), the function moves the offending element to the next
+;;; place in the given list that won't produce a repetition. When no such place
+;;; can be found in the remainder of the list, the offending element is moved
+;;; to the end of the given list and a warning is printed.
+;;;
+;;; This function can be applied to simple lists as well.
+;;;
+;;; NB: This function only checks for places in the rest of the given list
+;;;     after the offending element, and not prior to it in the list. Thus,
+;;;     (move-repeats '(3 3 1)) will return (3 1 3), while 
+;;;     (move-repeats '(1 3 3)) will leave the list untouched and print a
+;;;     warning. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A list.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;;
+;;; - A function that serves as the comparison test. Default = #'eq. 
 ;;;
 ;;; RETURN VALUE  
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Used with a list of lists
+(move-repeats '((a b c) (c a b) (d e f) (a b c) (g h i)))
+
+=> ((A B C) (D E F) (C A B) (A B C) (G H I))
+
+;;; Works with simple lists too:
+(move-repeats '(1 2 3 3 4 5 6 7 8 8 9 10))
+
+=> (1 2 3 4 3 5 6 7 8 9 8 10)
+
+;; Moves the offending element to the end of the list and prints a warning when
+;; no solution can be found  
+(move-repeats '((a b c d) (d c b a) (b c a d) (c a b d)))
+
+=> ((A B C D) (B C A D) (C A B D) (D C B A))
+WARNING:
+   move-repeats: can't find non-repeating place! 
+   present element: (D C B A), elements left: 1
 
 |#
 ;;; SYNOPSIS

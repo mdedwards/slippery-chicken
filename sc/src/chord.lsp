@@ -171,8 +171,6 @@
 ;;; beware: just returns the midi-channel of the first pitch in the data list.
 ;;; ****m* chord/get-midi-channel
 ;;; FUNCTION
-;;; get-midi-channel:
-;;;
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -275,7 +273,6 @@
 
 ;;; ****m* chord/get-pitch-symbols
 ;;; FUNCTION
-;;; get-pitch-symbols:
 ;;;
 ;;; 
 ;;; 
@@ -317,6 +314,7 @@
 |#
 ;;; SYNOPSIS
 (defmethod no-accidental ((c chord))
+;;; ****
   (loop for p in (data c) do
         (no-accidental p)))
 
@@ -353,7 +351,6 @@
 
 ;;; ****m* chord/lowest
 ;;; FUNCTION
-;;; lowest:
 ;;;
 ;;; 
 ;;; 
@@ -385,7 +382,6 @@
 
 ;;; ****m* chord/highest
 ;;; FUNCTION
-;;; highest:
 ;;;
 ;;; 
 ;;; 
@@ -421,7 +417,6 @@
 
 ;;; ****m* chord/transpose
 ;;; FUNCTION
-;;; transpose:
 ;;;
 ;;; 
 ;;; 
@@ -478,7 +473,6 @@
 
 ;;; ****m* chord/sort-pitches
 ;;; FUNCTION
-;;; sort-pitches:
 ;;;
 ;;; 
 ;;; 
@@ -522,7 +516,6 @@
 
 ;;; ****m* chord/chord-member
 ;;; FUNCTION
-;;; chord-member:
 ;;;
 ;;; 
 ;;; 
@@ -551,7 +544,6 @@
 
 ;;; ****m* chord/common-notes
 ;;; FUNCTION
-;;; common-notes:
 ;;;
 ;;; 
 ;;; 
@@ -633,7 +625,6 @@
 
 ;;; ****m* chord/respell-chord
 ;;; FUNCTION
-;;; respell-chord:
 ;;;
 ;;; 
 ;;; 
@@ -801,7 +792,7 @@
 
 ;;; ****m* chord/has-notes
 ;;; FUNCTION
-;;; has-notes: checks whether there are notes in this chord or not (make-chord
+;;; checks whether there are notes in this chord or not (make-chord
 ;;; nil) is a valid function call and creates a chord object with no notes.
 ;;; 
 ;;; ARGUMENTS 
@@ -824,7 +815,6 @@
 ;;; NB this takes pitch bend into consideration
 ;;; ****m* chord/pitch-
 ;;; FUNCTION
-;;; pitch-:
 ;;;
 ;;; 
 ;;; 
@@ -853,7 +843,6 @@
 
 ;;; ****f* chord/make-chord
 ;;; FUNCTION
-;;; make-chord:
 ;;;
 ;;; 
 ;;; 

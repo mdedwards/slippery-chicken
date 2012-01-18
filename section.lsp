@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    23rd March 2002
 ;;;
-;;; $$ Last modified: 10:52:37 Wed Apr 21 2010 BST
+;;; $$ Last modified: 17:18:05 Wed Jan 18 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -74,7 +74,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* section/has-subsections
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod has-subsections ((s section))
+;;; ****
   (typep (data (first (data s))) 'section))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -84,7 +103,26 @@
 ;;; that we can have a sequenz method with the same name which only requires
 ;;; the bar-num argument. 
 
+;;; ****m* section/get-bar
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-bar ((s section) bar-num &optional player)
+;;; ****
   (unless player
     (error "bar-holder::get-bar: player argument is required!"))
   (if (has-subsections s)
@@ -172,7 +210,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* section/get-all-players
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-all-players ((s section))
+;;; ****
   (loop for player-section in (data s) collect
         (id player-section)))
 
@@ -180,6 +237,24 @@
 
 ;;; This function will only combine short bars into longer ones, it won't split
 ;;; up bars and recombine. 
+;;; ****m* section/re-bar
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod re-bar ((s section)
                    &key start-bar 
                         end-bar
@@ -187,6 +262,7 @@
                         verbose
                         ;; could also be a beat rhythmic unit
                         (auto-beam t))
+;;; ****
   (if (has-subsections s)
       (loop for sub-section in (data s) do
             (re-bar sub-section :start-bar start-bar :end-bar end-bar

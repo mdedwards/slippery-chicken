@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 18:58:44 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 17:13:24 Wed Jan 18 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -68,7 +68,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* chord/delete-marks
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-marks ((c chord))
+;;; ****
   (setf (marks c) nil)
   (loop for pitch in (data c) do (delete-marks pitch)))
 
@@ -176,7 +195,26 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+cm-2
+;;; ****m* chord/output-midi-note
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod output-midi-note ((c chord) time amplitude duration)
+;;; ****
   (loop for p in (data c) collect
         (output-midi-note p time amplitude duration)))
 
@@ -260,6 +298,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* chord/no-accidental
+;;; FUNCTION
+;;; don't show any accidentals when writing a score; none in parentheses either
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod no-accidental ((c chord))
   (loop for p in (data c) do
         (no-accidental p)))
@@ -289,7 +345,11 @@
 ;;; ****
   (equal (get-pitch-symbols c1) (get-pitch-symbols c2)))
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; usually a chord is auto-sorted so we can return (first (data c)) but check
+;;; to make sure. 
 
 ;;; ****m* chord/lowest
 ;;; FUNCTION
@@ -313,13 +373,13 @@
 (defmethod lowest ((c chord))
 ;;; ****
   (loop
-      with first = (first (data c))
-      with result = first
-      for p in (rest (data c)) 
-      do
-        (when (pitch< p first)
-          (setf result p))
-      finally (return result)))
+     with first = (first (data c))
+     with result = first
+     for p in (rest (data c)) 
+     do
+     (when (pitch< p first)
+       (setf result p))
+     finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -412,6 +472,9 @@
   (loop for pitch in (data c) collect (get-cmn-data pitch force-natural nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; usually we auto-sort so this shouldn't need to be called directly; it's
+;;; called in init
 
 ;;; ****m* chord/sort-pitches
 ;;; FUNCTION

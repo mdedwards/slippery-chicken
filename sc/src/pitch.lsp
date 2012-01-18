@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 09:49:37 Fri Jan 13 2012 ICT
+;;; $$ Last modified: 17:02:43 Wed Jan 18 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -462,6 +462,24 @@ C4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* pitch/no-accidental
+;;; FUNCTION
+;;; don't show any accidentals when writing a score; none in parentheses either
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod no-accidental ((p pitch))
   (setf (show-accidental p) nil
         (accidental-in-parentheses p) nil))
@@ -538,6 +556,7 @@ data: C5
            new-octave))
   (let ((transp (* 12 (- new-octave (octave p)))))
     (transpose p transp :as-symbol as-symbol :package package)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

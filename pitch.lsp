@@ -481,6 +481,7 @@ C4
 |#
 ;;; SYNOPSIS
 (defmethod no-accidental ((p pitch))
+;;; ****
   (setf (show-accidental p) nil
         (accidental-in-parentheses p) nil))
 

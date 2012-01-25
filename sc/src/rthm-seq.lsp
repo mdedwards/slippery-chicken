@@ -1443,7 +1443,7 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 ;;; Applies the chop method to each rthm-seq-bar object contained in the given
 ;;; rthm-seq object (see rthm-seq-bar::chop for details), returning a list of
 ;;; rthm-seq objects, each of which contains just one of the rthm-seq-bar
-;;; objects returned by chop.
+;;; objects created with chop.
 ;;;
 ;;; The chop method is the basis for slippery-chicken's feature of
 ;;; intra-phrasal looping.
@@ -2647,3 +2647,9 @@ rthm-seq from-multipliers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; EOF rthm-seq.lsp
+
+
+
+
+
+

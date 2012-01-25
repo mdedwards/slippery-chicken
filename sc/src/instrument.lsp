@@ -752,14 +752,12 @@ NIL
 ;;;   value. If a lowest-sounding value is given, the method automatically
 ;;;   determines the lowest-written value based on the lowest-sounding value
 ;;;   and the transposition value. 
-;;;
 ;;; - keyword argument :highest-sounding. Note-name symbol. This is the highest 
 ;;;   sounding pitch available on the given instrument. Defaults to NIL. A user 
 ;;;   may only define either the highest-sounding value or the highest-written
 ;;;   value. If a highest-sounding value is given, the method automatically
 ;;;   determines the highest-written value based on the highest-sounding value
 ;;;   and the transposition value. 
-;;;
 ;;; - keyword argument :transposition. Note-name symbol. This is the key of the
 ;;;   given instrument (such as the "B-flat" of the "B-flat clarinet"), given
 ;;;   as a note-name symbol (such as 'BF for B-flat). If a value is only given

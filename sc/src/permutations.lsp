@@ -145,7 +145,7 @@
 |#
 ;;; SYNOPSIS
 (defun inefficiently-permutate (list &key (max nil) (skip 0) (fix t)
-                                          (sublists nil))
+				(sublists nil))
 ;;; ****
   (let ((permutations (inefficient-permutations (length list)
                                                 :max max
@@ -153,8 +153,8 @@
                                                 :fix fix)))
     (if sublists
         (loop for l in permutations collect
-              (loop for e in l collect (nth e list)))
-      (loop for p in (flatten permutations) collect (nth p list)))))
+	     (loop for e in l collect (nth e list)))
+	(loop for p in (flatten permutations) collect (nth p list)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

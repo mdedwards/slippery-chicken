@@ -2852,7 +2852,7 @@ data: C4
 ;;; - A pitch object
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL to print a warning. Default = T.
+;;; - T or NIL to print a warning when no enharmonic can be found. Default = T. 
 ;;; 
 ;;; RETURN VALUE
 ;;; A pitch object.

@@ -88,7 +88,7 @@
    ;;; The reference into a top-level ral to get to this ral.  When this is
    ;;; nil, then the ral is top-level itself.
    (full-ref :accessor full-ref :type list :initarg :full-ref 
-               :initform nil)
+	     :initform nil)
    (num-data :accessor num-data :type integer :initform -1)
    ;; whether or not we've already called link-named-objects (which is a bit of
    ;; an expensive function that we won't always need to call so only do it
@@ -200,6 +200,8 @@
     (setf (num-data ral) (r-count-elements ral))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Wed Jan 25 11:36:51 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/relink-named-objects
 ;;; FUNCTION
@@ -734,19 +736,86 @@
 
 ;;; ****f* recursive-assoc-list/make-ral
 ;;; FUNCTION
-;;; 
+;;; Create a recursive-assoc-list object, whic allows and automatically
+;;; instantiates association lists inside of association lists to any level of
+;;; nesting. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A symbol that is the object's ID.
+;;; - A list of nested lists, or a list.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+
+;;; - keyword argument :recurse-simple-data. T or NIL to indicate whether to
+;;;   recursively instantiate a recursive-assoc-list in place of data that
+;;;   appears to be a simple assoc-list (i.e. a 2-element list). If NIL, the
+;;;   data of 2-element lists whose second element is a number or a symbol will
+;;;   be ignored, therefore remaining as a list. For example, this data would
+;;;   normally result in a recursive call: (y ((2 23) (7 28) (18 2))). 
+;;;   T = replace assoc-list data with recursive-assoc-lists. Default = T. 
+;;; - keyword argument :full-ref. Nil or a list representing the path to a
+;;;   nested recursive-assoc-list object within the given recursive-assoc-list
+;;;   object, starting from the top level of the given object. When NIL, the
+;;;   given recursive-assoc-list object itself is the top level. 
+;;;   Default = NIL. 
+;;; - keyword argument :tag. A symbol that is another name, description
+;;;   etc. for the given recursive-assoc-list object. The tag may be used for
+;;;   identification but not for searching purposes. Default = NIL.
+;;; - keyword argument :warn-not-found. T or NIL to indicate whether a warning
+;;;   is printed when an index which doesn't exist is used for lookup.
+;;;   Default = T. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a recursive-assoc-list object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a recursive-assoc-list object with default keyword argument values 
+(make-ral 'mixed-bag 
+	  '((jim beam)
+	    (wild turkey)
+	    (four ((roses red)
+		   (violets ((blue velvet)
+			     (red ((dragon den)
+				   (viper nest)
+				   (fox hole)))
+			     (white ribbon)))))))
+
+=> 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 8
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: MIXED-BAG, tag: NIL, 
+data: (
+[...]
+
+;; Use the class's get-all-refs method to show that by default, simple data is
+;; recursed. The sublists in the second list in this example are processed as
+;; nested lists
+(let ((ral (make-ral 'ral-test
+		     '((1 one)
+		       (2 ((3 4) (5 6)))
+		       (3 three)))))
+  (get-all-refs ral))
+
+=> ((1) (2 3) (2 5) (3))
+
+;; Using the same data, but setting the :recurse-simple-data argument to NIL
+;; will cause the method to process simple data as a unit rather than nested
+;; lists 
+(let ((ral (make-ral 'ral-test
+		     '((1 one)
+		       (2 ((3 4) (5 6)))
+		       (3 three))
+		     :recurse-simple-data nil)))
+  (get-all-refs ral))
+
+=> ((1) (2) (3))
 
 |#
 ;;; SYNOPSIS

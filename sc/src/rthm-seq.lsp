@@ -2388,13 +2388,16 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
 ;;; - A time signature.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :tuplet. Can be set to T or NIL. Default = NIL.
-;;; - keyword argument :tag.  Can be set to T or NIL. Default = NIL.
-;;; - keyword argument :auto-beam.  Can be set to T or NIL. Default = NIL. When
-;;;   T, the method will attempt to automatically set beaming indicators among 
-;;;   the resulting rthm-seq-bar objects. This can result in errors if the 
-;;;   resulting rhythms have a duration of more than 1 beat.
-;;; - keyword argument :id. Default = "from-multipliers".
+;;; - keyword argument :tag. A symbol that is another name, description
+;;;   etc. for the given object. The tag may be used for identification but not
+;;;   for searching purposes. Default = NIL.  
+;;; - keyword argument :auto-beam.  T or NIL. When T, the method will attempt
+;;;   to automatically set beaming indicators among the resulting rthm-seq-bar
+;;;   objects. This can result in errors if the resulting rhythms have a
+;;;   duration of more than 1 beat. Default = NIL. 
+;;; - keyword argument :id. A symbol that will be the ID of the given
+;;;   object. Default = "from-multipliers". 
+;;; - keyword argument :tuplet. T or NIL. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns a rthm-seq object.

@@ -130,7 +130,7 @@
 ;;; ARGUMENTS
 ;;; - An assoc-list.
 ;;;
-;;; OPTIONS
+;;; OPTIONAL ARGUMENTS
 ;;; - Optional argument: T or NIL (default T) to indicate whether a warning  
 ;;;   should be printed when the first argument is a recursive assoc-list. 
 ;;;
@@ -272,7 +272,7 @@ data TURKEY
 ;;;   position is sought.
 ;;; - The assoc-list in which it is to be sought.
 ;;;
-;;; OPTIONS
+;;; OPTIONAL ARGUMENTS
 ;;; - Optional argument: An indexing integer. In this case, get-position will 
 ;;;   search for the given object starting part-way into the list, skipping all
 ;;;   objects located at indices lower than the given integer (default = 0). 
@@ -321,6 +321,7 @@ data TURKEY
 
 ;;; 28.11.11 SEAN: Added ROBODoc info
 ;;; 07.12.11 SEAN: modified example
+
 ;;; ****m* assoc-list/get-data-data
 ;;; FUNCTION
 ;;; (Short-cut for (data (get-data ...))
@@ -330,15 +331,16 @@ data TURKEY
 ;;; - The assoc-list key symbol associated with the data list which is sought. 
 ;;; - The assoc-list in which it is to be sought.
 ;;;
-;;; OPTIONS
-;;; - Optional argument: T or NIL to indicate whether to print a warning if no  
-;;;   such named-object can be found within the given assoc-list (default = T).
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether to print a warning if no such named-object
+;;;   can be found within the given assoc-list (default = T). 
 ;;;
 ;;; RETURN VALUE 
 ;;; If the given key is found within the given assoc-list, the data associated
 ;;; with that key is returned.
 ;;; 
 ;;; EXAMPLE
+
 #| 
 (let ((al (make-assoc-list 'test '((jim beam) 
                                    (four roses) 
@@ -366,35 +368,36 @@ WARNING:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Jan 26 21:03:12 GMT 2012: Minor edits to sync with ral doc
 ;;; 28.11.11 SEAN: Added ROBODoc info
 ;;; 07.12.11 SEAN: Moved Michael's comments into the ROBODoc documentation
 ;;; 07.12.11 SEAN: Modified the EXAMPLE block
+
 ;;; ****m* assoc-list/get-data
 ;;; FUNCTION
-;;; Return the named-object (id, tag and data) that is identified by a given
-;;; key within a given assoc-list. 
+;;; Return the named-object (id, tag and data) that is identified by a
+;;; specified key within a given assoc-list. 
 ;;;
-;;; NB This method actually returns the named object, not just the data
-;;; associated with the key (use get-data-data for that) 
+;;; NB: This method returns the named object itself, not just the data
+;;;     associated with the key (use get-data-data for that). 
 ;;; 
 ;;; ARGUMENTS
-;;; - The assoc-list key symbol (named-object id) of the object which is
-;;; sought. 
-;;; - The assoc-list in which it is to be sought.
+;;; - A symbol that is the key (id) of the named-object sought.
+;;; - The assoc-list object in which it is be sought.
 ;;;
-;;; OPTIONS
-;;; - Optional argument: T or NIL to indicate whether to print a warning if no 
-;;;   such named-object can be found within the given assoc-list (default = T). 
-;;;
-;;; Mostly we define whether we want to warn in the instance itself but
-;;; sometimes it would be good to warn or not on a call basis, hence the
-;;; optional argument.
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether a warning is printed if the specified key
+;;;   cannot be found within the given assoc-list. T = print. Default = T.  
+;;;   Mostly we define whether we want to warn in the instance itself, but  
+;;;   sometimes it would be good to warn or not on a call basis, hence the 
+;;;   optional argument. 
 ;;; 
 ;;; RETURN VALUE 
-;;; If the given key is found within the given assoc-list, the full
-;;; named-object (id, tag and data) is returned.
+;;; A named-object is returned if the specified key is found within the given
+;;; assoc-list object. 
 ;;;
-;;; NIL is returned if the given key is not found in the given assoc-list.
+;;; NIL is returned and a warning is printed if the specified key is not found
+;;; in the given assoc-list object. 
 ;;; 
 ;;; EXAMPLE
 #|
@@ -448,27 +451,28 @@ WARNING:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Jan 26 21:28:27 GMT 2012: Edited robodoc to sync with ral
 ;;; 01.12.11 SEAN: Added ROBODoc info
 ;;; 07.12.11 SEAN: Modified example
+
 ;;; ****m* assoc-list/add
 ;;; FUNCTION
-;;; Add a new element to the assoc-list.
+;;; Add a new element to the given assoc-list object.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A key/data pair as a quoted list.
-;;; - The assoc-list to which it is to be added.
+;;; - The assoc-list object to which it is to be added.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - Optional argument: The optional argument will be ignored; it exists only
-;;;   because of its use in the recursive-assoc-list class.
+;;; - (This optional argument will be ignored; it exists only because of its use
+;;;   in the recursive-assoc-list class).
 ;;; 
 ;;; RETURN VALUE 
-;;; Returns T if the given named-object is successfully added to the given
+;;; Returns T if the specified named-object is successfully added to the given
 ;;; assoc-list. 
 ;;;
-;;; Issues error messages if an attempt is made to add NIL to the given
-;;; assoc-list or if the given named-object is already present in the given
-;;; assoc-list. 
+;;; Returns an error if an attempt is made to add NIL to the given assoc-list
+;;; or if the given named-object is already present in the given assoc-list. 
 ;;; 
 ;;; EXAMPLE
 #|
@@ -746,7 +750,7 @@ data: (SNOOPY SPOT ROVER)
 ;;; - The function to be applied.  This must take the data in the assoc-list as
 ;;;   a first argument. 
 ;;;
-;;; OPTIONS
+;;; OPTIONAL ARGUMENTS
 ;;; - Optional argument(s): Further arguments for the function.
 ;;; 
 ;;; RETURN VALUE 
@@ -794,7 +798,7 @@ data: (SNOOPY SPOT ROVER)
 ;; - The name of the assoc-list to be created.
 ;; - The data with which to fill it.
 ;;
-;; OPTIONS
+;; OPTIONAL ARGUMENTS
 ;; - Optional keyword argument :warn-not-found. This argument allows the user
 ;;   to determine whether a warning is issued when an index which doesn't exist  
 ;;   is used for lookup. It can be set to T or NIL and defaults to T.

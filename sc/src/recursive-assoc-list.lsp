@@ -140,21 +140,169 @@
 ;;; Get the previous named-object in the ral (or <how-many previous>), looking
 ;;; into all recursive rals along the way.
 
+;;; SAR Thu Jan 26 14:03:17 GMT 2012: Added robodoc info
+
 ;;; ****m* recursive-assoc-list/get-previous
 ;;; FUNCTION
-;;; 
+;;; Get the previous named-object in the given recursive-assoc-list object by
+;;; specifying the ID of a named-object contained within that given
+;;; recursive-assoc-list object.  
+;;;
+;;; An optional argument allows for the retrieval of a previous named-object
+;;; that is more than one step back in the given recursive-assoc-list object
+;;; (i.e., not the named-object that immediately precedes the specified key).
+;;;
+;;; If the number given for the optional <how-many> argument is greater than
+;;; the number of items in the given recursive-assoc-list object, the value
+;;; returned will be a negative number.
+;;;
+;;; The method proceeds linearly, not hierarchically, when getting previous
+;;; named-objects from further down into nested assoc-lists. In other words,
+;;; the named-object immediately previous to (white ribbon) in this nested list 
+;;; is (fox hole), which is at a deeper level, not (red ...) or (blue velvet),
+;;; which are at the same level: 
+;;; ((blue velvet) 
+;;;  (red ((dragon den) 
+;;;        (viper nest) 
+;;;        (fox hole))) 
+;;;  (white ribbon)
+;;;
+;;; In order to retrieve objects that are nested more deeply, the list that is
+;;; the <keys> argument must consist of the consecutive path of keys leading to
+;;; that object. If only the key of a named object that is deeper in the list
+;;; is given, and not the path of keys to that object, a warning will be
+;;; printed that the given key cannot be found in the list.
+;;;
+;;; NB: When this method is applied to keys that contain further assoc-list
+;;;     objects, the method will drop into the debugger with an error. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A recursive-assoc-list object.
+;;; - A list containing one or more symbols that are either the ID of the
+;;;   specified named object or the path of keys to that object within the
+;;;   given recursive-assoc-list object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An integer indicating how many steps back in the given
+;;;   recursive-assoc-list from the specified named-object to look when
+;;;   retrieving the desired ojbect (e.g. 1 = immediately previous object, 2 =
+;;;   the one before that etc.)
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A linked-named-object.
 ;;; 
 ;;; EXAMPLE
 #|
+
+;; Get the object immediately previous to that with the key WILD returns the
+;; object with key JIM and data BEAM
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-previous ral '(wild)))
+
+=> 
+LINKED-NAMED-OBJECT: previous: NIL, this: (JIM), next: (WILD)
+NAMED-OBJECT: id: JIM, tag: NIL, 
+data: BEAM
+
+;; Attempting to get the previous object from the key FOUR, which contains a
+;; nested list, returns an error unless the first key in the nested list is
+;; also included
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-previous ral '(four)))
+
+=>
+There is no applicable method for the generic function
+  #<STANDARD-GENERIC-FUNCTION PREVIOUS (1)>
+when called with arguments
+  (
+NAMED-OBJECT: id: FOUR, tag: NIL, 
+
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-previous ral '(four roses)))
+
+=> 
+LINKED-NAMED-OBJECT: previous: (JIM), this: (WILD), next: (FOUR ROSES)
+NAMED-OBJECT: id: WILD, tag: NIL, 
+data: TURKEY
+
+;; The method defines the previous object linearly, not hierarchically; i.e.,
+;; the previous object to (white ribbon) here is (fox hole) and not (red ...)
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-previous ral '(four violets white)))
+
+=> 
+LINKED-NAMED-OBJECT: previous: (FOUR VIOLETS RED VIPER), 
+this: (FOUR VIOLETS RED FOX), 
+next: (FOUR VIOLETS WHITE)
+NAMED-OBJECT: id: FOX, tag: NIL, 
+data: HOLE
+
+;; Use the <how-many> argument to retrieve previous objects further back than
+;; the immediate predecessor
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-previous ral '(four violets white) 4))
+
+=> 
+LINKED-NAMED-OBJECT: previous: (FOUR ROSES), 
+this: (FOUR VIOLETS BLUE), 
+next: (FOUR VIOLETS RED DRAGON)
+NAMED-OBJECT: id: BLUE, tag: NIL, 
+data: VELVET
+
+;; Using a <how-many> value greater than the number of items in the given
+;; recursive-assoc-list object returns a negative number
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-previous ral '(four violets white) 14))
+
+=> -7
 
 |#
 ;;; SYNOPSIS
@@ -201,23 +349,50 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Wed Jan 25 11:36:51 GMT 2012: Added robodoc info
+;;; SAR Thu Jan 26 20:50:19 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/relink-named-objects
 ;;; FUNCTION
-;;; 
+;;; This method is essentially the same as the method link-named objects, but
+;;; resets the LINKED slot to NIL and forces the link-named-objects method to
+;;; be applied again.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A recursive-alloc-list object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A recursive-alloc-list object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Usage as presented here; see the documentation for method link-named-objects
+;; for more detail
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (relink-named-objects ral))
+
+=>
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 8
+                      linked: T
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: MIXED-BAG, tag: NIL, 
+data: (
+LINKED-NAMED-OBJECT: previous: NIL, this: (JIM), next: (WILD)
+NAMED-OBJECT: id: JIM, tag: NIL, 
+data: BEAM
+[...]
 
 |#
 ;;; SYNOPSIS
@@ -227,16 +402,99 @@
   (link-named-objects ral))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* recursive-assoc-list/link-named-objects
-;;; FUNCTION
+
+;;; MDE's original comment:
 ;;; From the named objects in the data slots of the rals, create
 ;;; linked-named-objects to hold pointers (actually keys) to the previous and
-;;; next objects in the ral, whether recursive or not.  The previous and next
+;;; next objects in the ral, whether recursive or not. The previous and next
 ;;; args are only for recursive calls (and almost certainly because I'm too
 ;;; tired right now to figure out how to do the recursion properly :)  
+
+;;; SAR Thu Jan 26 16:21:49 GMT 2012: Edited robodoc info
+
+;;; ****m* recursive-assoc-list/link-named-objects
+;;; FUNCTION
+;;; Create linked-named-objects from the named-objects in the data slots of the
+;;; given recursive-assoc-list object. The linked-named-objects created hold
+;;; keys that serve as pointers to the previous and next objects in the given
+;;; recursive-assoc-list object, whether recursive or not. 
+;;;
+;;; The optional <previous> and <higher-next> arguments are only for recursive
+;;; calls. 
 ;;; 
 ;;; ARGUMENTS 
-;;; - the recursive-assoc-list object
+;;; - A recursive-assoc-list object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - <previous>
+;;; - <higher-next>
+;;;
+;;; EXAMPLE
+#|
+
+;;; The recursive-assoc-list may not be linked on creation, evident here
+;;; through the value of the LINKED slot
+(make-ral 'mixed-bag 
+		 '((jim beam)
+		   (wild turkey)
+		   (four ((roses red)
+			  (violets ((blue velvet)
+				    (red ((dragon den)
+					  (viper nest)
+					  (fox hole)))
+				    (white ribbon)))))))
+
+=>
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 8
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: MIXED-BAG, tag: NIL, 
+data: (
+NAMED-OBJECT: id: JIM, tag: NIL, 
+data: BEAM
+       
+NAMED-OBJECT: id: WILD, tag: NIL, 
+data: TURKEY
+[...]
+
+;; The recursive-assoc-list object and the named-objects it contains are linked
+;; after applying the link-named-objects method
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (link-named-objects ral))
+
+=>
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 8
+                      linked: T
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: MIXED-BAG, tag: NIL, 
+data: (
+LINKED-NAMED-OBJECT: previous: NIL, this: (JIM), next: (WILD)
+NAMED-OBJECT: id: JIM, tag: NIL, 
+data: BEAM
+       
+LINKED-NAMED-OBJECT: previous: (JIM), this: (WILD), next: (FOUR ROSES)
+NAMED-OBJECT: id: WILD, tag: NIL, 
+data: TURKEY
+
+|#
 ;;; 
 ;;; RETURN VALUE  
 ;;; the recursive-assoc-list object
@@ -294,21 +552,33 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Jan 26 20:54:14 GMT 2012: Added robodoc info
+
 ;;; ****m* recursive-assoc-list/r-count-elements
 ;;; FUNCTION
-;;; 
+;;; Return the total number of elements recursively (accross all depths) of the
+;;; given recursive-assoc-list object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A recursive-assoc-list object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An integer.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (r-count-elements ral))
+
+=> 8
 
 |#
 ;;; SYNOPSIS
@@ -324,21 +594,106 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Jan 26 20:59:03 GMT 2012: Added robodoc info
+
 ;;; ****m* recursive-assoc-list/get-data
 ;;; FUNCTION
-;;; 
+;;; Return the named-object (or linked-named-object) that is identified by a
+;;; specified key within a given recursive-assoc-list object.
+;;;
+;;; NB: This method returns the named object itself, not jus the data
+;;;     associated with the key (use assoc-list::get-data-data for that). 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A symbol that is the key (id) of the named-object sought, or a list of
+;;;   symbols that are the path to the desired named-object within the given
+;;;   recursive-assoc-list.
+;;; - The recursive-assoc-list object in which it is sought.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether a warning is printed if the specified key
+;;;   cannot be found within the given assoc-list. T = print. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A named-object is returned if the specified key is found within the given
+;;; recursive-assoc-list object. 
+;;;
+;;; NIL is returned and a warning is printed if the specified key is not found
+;;; in the given recursive-assoc-list object. This applies, too, when a nested
+;;; key is specified without including the other keys that are the path to that
+;;; key (see example).
 ;;; 
 ;;; EXAMPLE
 #|
+
+;; Get a named-object from the top-level of the recursive-assoc-list object
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-data 'wild ral))
+
+=> 
+NAMED-OBJECT: id: WILD, tag: NIL, 
+data: TURKEY
+
+;; A list including all keys that are the path to the specified key is required
+;; to get nested named-objects
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-data '(four violets white) ral))
+
+=> 
+NAMED-OBJECT: id: WHITE, tag: NIL, 
+data: RIBBON
+
+;; Searching for a key that is not present in the given recursive-assoc-list
+;; object returns NIL and a warning
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-data 'johnnie ral))
+
+=> NIL
+WARNING:
+   assoc-list::get-data: Could not find data with key JOHNNIE 
+   in assoc-list with id MIXED-BAG
+
+;; Searching for a nested key without specifying the path to that key within a
+;; list also returns a NIL and a warning
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-data 'fox ral))
+
+=> NIL
+WARNING:
+   assoc-list::get-data: Could not find data with key FOX 
+   in assoc-list with id MIXED-BAG
 
 |#
 ;;; SYNOPSIS
@@ -365,21 +720,109 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Jan 26 21:28:54 GMT 2012: Added robodoc info
+
 ;;; ****m* recursive-assoc-list/add
 ;;; FUNCTION
-;;; 
+;;; Add a new element (key/data pair) to the given recursive-assoc-list
+;;; object. 
+;;;
+;;; If no value is specified for the optional argument, the new element is
+;;; added at the end of the top level. The optional argument allows for the
+;;; FULL-REF to be specified, i.e. a recursive path of keys down to the nested
+;;; level where the new element is to be placed.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A key/data pair.
+;;; - A recursive-assoc-list object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list that is the FULL-REF, i.e. a recursive path of keys, down to the
+;;;   nested level where the new element is to be placed. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the specified named-object is successfully added to the given
+;;; recursive-assoc-list. 
+;;;
+;;; Returns an error if an attempt is made to add NIL to the given
+;;; recursive-assoc-list or if the given named-object is already present at the
+;;; same level within the given recursive-assoc-list. 
 ;;; 
 ;;; EXAMPLE
 #|
+
+;; Adding an element while specifiying no optional argument results in the new
+;; element being placed at the end of the top level by default (evident here by
+;; the fact that the ref for (MAKERS) is a single-item list) 
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (add '(makers mark) ral)
+  (get-all-refs ral))
+
+=> ((JIM) (WILD) (FOUR ROSES) (FOUR VIOLETS BLUE) (FOUR VIOLETS RED DRAGON)
+    (FOUR VIOLETS RED VIPER) (FOUR VIOLETS RED FOX) (FOUR VIOLETS WHITE)
+    (MAKERS))
+
+;; A list that is a path of keys (FULL-REF) to the desired recursive level must
+;; be given as the optional argument in order to place the specified element
+;; deeper in the given recursive-assoc-list object
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (add '(yellow sky) ral '(four violets))
+  (get-all-refs ral))
+
+=> ((JIM) (WILD) (FOUR ROSES) (FOUR VIOLETS BLUE) (FOUR VIOLETS RED DRAGON)
+    (FOUR VIOLETS RED VIPER) (FOUR VIOLETS RED FOX) (FOUR VIOLETS WHITE)
+    (FOUR VIOLETS YELLOW))
+
+;; Attempting to add an element that is already present at the given level of
+;; the given recursive-assoc-list object results in an error
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (add '(makers mark) ral)
+  (add '(makers mark) ral))
+
+=>
+assoc-list::add: Can't add MAKERS to assoc-list with id MIXED-BAG
+    because key already exists!
+   [Condition of type SIMPLE-ERROR]
+
+;; Attempting to add NIL also results in an error
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (add '() ral))
+
+=>
+assoc-list::add: named-object is NIL!
+   [Condition of type SIMPLE-ERROR]
 
 |#
 ;;; SYNOPSIS
@@ -733,6 +1176,8 @@
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Wed Jan 25 11:36:51 GMT 2012: Added robodoc info
 
 ;;; ****f* recursive-assoc-list/make-ral
 ;;; FUNCTION

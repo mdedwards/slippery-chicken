@@ -178,17 +178,21 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jan 27 14:43:08 GMT 2012: Edited robodoc info to sync with ral
 ;;; 28.11.11 SEAN: Added info for ROBODoc
 ;;; 07.12.11 SEAN: modified example
+
 ;;; ****m* assoc-list/get-first
 ;;; FUNCTION
-;;; Returns the first named-object in the data list of the given assoc-list. 
+;;; Returns the first named-object in the DATA slot of the given assoc-list
+;;; object.  
 ;;; 
 ;;; ARGUMENTS
-;;; - An assoc-list.
+;;; - An assoc-list object.
 ;;; 
 ;;; RETURN VALUE 
-;;; The first object in the data list of a given assoc-list.
+;;; A named-object that is the first object in the DATA slot of the given
+;;; assoc-list object.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -526,17 +530,21 @@ data: MARK
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jan 27 15:33:35 GMT 2012: Edited robodoc info to sync with ral doc 
 ;;; 01.12.11 SEAN: Added ROBODoc info
 ;;; 07.12.11 SEAN: Modified example
+
 ;;; ****m* assoc-list/set-data
 ;;; FUNCTION
-;;; Replace a given named-object within a given assoc-list. This method
-;;; replaces the whole object, not just the data of that object.
+;;; Replace the named-object associated with a specified key within a given
+;;; assoc-list object. This method replaces the whole named-object, not just
+;;; the data of that object. 
 ;;; 
 ;;; ARGUMENTS
-;;; - A key present within the given assoc-list.
+;;; - A key present within the given assoc-list object.
 ;;; - A key/data pair as a quoted list.
-;;; - The assoc-list in which to find and replace the given object.
+;;; - The assoc-list object in which to find and replace the named-object
+;;;   associated with the specified key.
 ;;; 
 ;;; RETURN VALUE 
 ;;; Returns the new named-object.

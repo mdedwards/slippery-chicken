@@ -858,9 +858,6 @@ assoc-list::add: named-object is NIL!
 ;;; ARGUMENTS
 ;;; 
 ;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
 ;;; RETURN VALUE
 ;;; 
 ;;; 
@@ -894,22 +891,68 @@ assoc-list::add: named-object is NIL!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jan 27 16:41:42 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/parcel-data
+;;; DATE
+;;; 10 Apr 2010
+;;;
 ;;; FUNCTION
-;;; Put all the data into a named-object, i.e. add a level of recursion.  This
-;;; is a means of making a collection of data before perhaps adding more with
-;;; potentially conflicting ids.
+;;; Put all the data of a given recursive-assoc-list object into a new
+;;; named-object at the top level of that recursive-assoc-list object; i.e. add
+;;; a level of recursion.  This is a means of making a collection of data
+;;; before perhaps adding more with potentially conflicting ids. 
 ;;; 
 ;;; ARGUMENTS 
-;;; - the recursive-assoc-list
-;;; - the top-level new id for the current data
+;;; - A recursive-assoc-list object.
+;;; - A symbol that is new the top-level id for the current data
 ;;; 
 ;;; RETURN VALUE  
-;;; the new recursive-assoc-list
+;;; The new recursive-assoc-list object.
 ;;; 
-;;; DATE 10.4.10
-;;; 
+;;; EXAMPLE
+#|
+;; Collect all the data contained within the object 'mixed-bag and store it at
+;; the top-level of 'mixed-bag within a new named-object with the id 'potpourri 
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (parcel-data ral 'potpourri))
+
+=>
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 8
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 1, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: MIXED-BAG, tag: FROM-PARCEL-DATA, 
+data: (
+NAMED-OBJECT: id: POTPOURRI, tag: NIL, 
+data: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 8
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: MIXED-BAG, tag: NIL, 
+data: (
+NAMED-OBJECT: id: JIM, tag: NIL, 
+data: BEAM
+[...]
+
+|#
 ;;; SYNOPSIS
 (defmethod parcel-data ((ral recursive-assoc-list) new-id)
 ;;; ****
@@ -917,23 +960,59 @@ assoc-list::add: named-object is NIL!
             :tag (if (tag ral) (tag ral) 'from-parcel-data)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Fri Jan 27 17:07:27 GMT 2012: Add robodoc info
+
+;;; MDE comment:
 ;;; add an empty level of recursion
-;;; 
+
 ;;; ****m* recursive-assoc-list/add-empty-parcel
 ;;; FUNCTION
-;;; 
+;;; Add an recursive-assoc-list object with NIL data (an empty level of
+;;; recursion) to the end of the top-level of a given recursive-assoc-list
+;;; object. 
+;;;
+;;; NB: Adding an empty parcel to a given recursive-assoc-list object will
+;;;     cause the method get-all-refs to fail on that recursive-assoc-list
+;;;     object. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A recursive-assoc-list object.
+;;; - A symbol that will be the ID of the new, empty recursive-assoc-list
+;;;   object that is to be added.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - <new-class>
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A recursive-assoc-list object with DATA of NIL (the "empty parcel")
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (add-empty-parcel ral 'bricolage))
+
+Mark set
+=> 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 0
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 0, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "sub-ral-of-MIXED-BAG", tag: NIL, 
+data: NIL
+
 
 |#
 ;;; SYNOPSIS
@@ -949,21 +1028,88 @@ assoc-list::add: named-object is NIL!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jan 27 15:33:01 GMT 2012: Added robodoc info
+
 ;;; ****m* recursive-assoc-list/set-data
 ;;; FUNCTION
-;;; 
+;;; Replace the named-object associated with a specified key within a given
+;;; recursive-assoc-list object. This method replaces the whole named-object,
+;;; not just the data of that object. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A key present within the given recursive-assoc-list object. This must be
+;;;   a list that is the FULL-REF (path of keys) if replacing a nested
+;;;   named-object. If replacing a named-object at the top level, the
+;;;   key can be given either as a single-item list or an individual symbol. 
+;;; - A key/data pair as a quoted list.
+;;; - The recursive-assoc-list object in which to find and replace the
+;;;   named-object associated with the specified key.
 ;;; 
 ;;; RETURN VALUE
+;;; Returns the new named-object.
 ;;; 
+;;; Returns NIL when the specified key is not found within the given
+;;; recursive-assoc-list object. 
 ;;; 
 ;;; EXAMPLE
 #|
+
+;;; Replace a named-object at the top level using a single symbol
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (set-data 'wild '(makers mark) ral))
+
+=> 
+NAMED-OBJECT: id: MAKERS, tag: NIL, 
+data: MARK
+
+;; The same can be done stating the top-level key as a single-item list. Apply
+;; the get-all-refs method in this example to see the change
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (set-data '(wild) '(makers mark) ral)
+  (get-all-refs ral))
+
+=> ((JIM) (MAKERS) (FOUR ROSES) (FOUR VIOLETS BLUE) (FOUR VIOLETS RED DRAGON)
+    (FOUR VIOLETS RED VIPER) (FOUR VIOLETS RED FOX) (FOUR VIOLETS WHITE))
+
+;; Replace a nested named-object using a list that is the FULL-REF to that
+;; object. Print the application of the method as well as the results from
+;; applying the get-all-refs method in this example to see the effects
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (print (set-data '(four violets red fox) '(bee hive) ral))
+  (print (get-all-refs ral)))
+
+=>
+NAMED-OBJECT: id: BEE, tag: NIL, 
+data: HIVE
+**************
+ 
+((JIM) (WILD) (FOUR ROSES) (FOUR VIOLETS BLUE) (FOUR VIOLETS RED DRAGON)
+ (FOUR VIOLETS RED VIPER) (FOUR VIOLETS RED BEE) (FOUR VIOLETS WHITE))
+
 
 |#
 ;;; SYNOPSIS
@@ -991,21 +1137,36 @@ assoc-list::add: named-object is NIL!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jan 27 14:42:30 GMT 2012: Added robodoc info
+
 ;;; ****m* recursive-assoc-list/get-first
 ;;; FUNCTION
-;;; 
+;;; Returns the first named-object in the DATA slot of the given
+;;; recursive-assoc-list object. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A recursive-assoc-list object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A named-object that is the first object in the DATA slot of the given
+;;; recursive-assoc-list object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-first ral))
+
+=> 
+NAMED-OBJECT: id: JIM, tag: NIL, 
+data: BEAM
 
 |#
 ;;; SYNOPSIS
@@ -1019,26 +1180,56 @@ assoc-list::add: named-object is NIL!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Get the full reference in to the ral of the first named-object in the
-;;; ral. N.B If the ral argument happens to be part of another ral, i.e. is a
-;;; nested ral, then the result is the reference into the top-level ral, not
-;;; the argument.
+;;; SAR Fri Jan 27 14:53:30 GMT 2012: Deleted MDE's comment here, as it has
+;;; been placed nearly verbatim into the robodoc info below.
+
+;;; SAR Fri Jan 27 14:53:18 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/get-first-ref
 ;;; FUNCTION
-;;; 
+;;; Get the full reference into the given recursive-assoc-list object of the
+;;; first named-object in the given recursive-assoc-list object. 
+;;;
+;;; NB: If the <ral> argument happens to be a recursive-assoc-list object that
+;;;     is contained within another recursive-assoc-list object (i.e. is a
+;;;     nested recursive-assoc-list object), then the result is the reference
+;;;     into the top-level recursive-assoc-list object, not the argument.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A recursive-assoc-list object.
 ;;; 
 ;;; RETURN VALUE
 ;;; 
 ;;; 
 ;;; EXAMPLE
 #|
+;; A simple call returns the first top-level named-object
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-first-ref ral))
+
+=> (JIM)
+
+;; Return the first ref of a nested recursive-assoc-list object
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-first-ref (get-data-data '(four violets) ral)))
+
+=> (FOUR VIOLETS BLUE)
 
 |#
 ;;; SYNOPSIS
@@ -1052,21 +1243,39 @@ assoc-list::add: named-object is NIL!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jan 27 14:59:57 GMT 2012: Added robodoc info
+
 ;;; ****m* recursive-assoc-list/get-last
 ;;; FUNCTION
-;;; 
+;;; Get the last named-object in a given recursive-assoc-list object. 
+;;;
+;;; NB: This method functions linearly, not hierarchically. The last named
+;;;     object is therefore not necessarily the deepest of a nest, but the last
+;;;     listed.  
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A recursive-assoc-list object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A named-object (or linked-named-object).
 ;;; 
 ;;; EXAMPLE
 #|
+;; This returns '(white ribbon), not '(fox hole)
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-last ral))
+
+=> 
+NAMED-OBJECT: id: WHITE, tag: NIL, 
+data: RIBBON
 
 |#
 ;;; SYNOPSIS
@@ -1080,21 +1289,61 @@ assoc-list::add: named-object is NIL!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jan 27 15:05:18 GMT 2012: Added robodoc info
+
 ;;; ****m* recursive-assoc-list/get-all-refs
 ;;; FUNCTION
-;;; 
+;;; Return a list of all the keys (REFS) in a given recursive-assoc-list
+;;; object. Nested keys are given in FULL-REF form, i.e. a list that is the
+;;; path of keys to the specific key.
+;;;
+;;; Keys that are not part of nesting-path are also returned as lists
+;;; (single-item lists) by default. An optional argument allows these to be
+;;; returned as individual symbols rather than lists.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A recursive-assoc-list object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether to return single REFS (non-nested keys) as
+;;;   lists or as individual symbols. T = as list. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+;; By default all keys are returned as lists, even single (non-nested) keys
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-all-refs ral))
+
+=> ((JIM) (WILD) (FOUR ROSES) (FOUR VIOLETS BLUE) (FOUR VIOLETS RED DRAGON)
+    (FOUR VIOLETS RED VIPER) (FOUR VIOLETS RED FOX) (FOUR VIOLETS WHITE))
+
+;; Setting the optional argument to NIL returns non-nested keys as symbols
+;; rather than lists  
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-all-refs ral nil))
+
+=> (JIM WILD (FOUR ROSES) (FOUR VIOLETS BLUE) (FOUR VIOLETS RED DRAGON)
+    (FOUR VIOLETS RED VIPER) (FOUR VIOLETS RED FOX) (FOUR VIOLETS WHITE))
+
 
 |#
 ;;; SYNOPSIS
@@ -1117,21 +1366,48 @@ assoc-list::add: named-object is NIL!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jan 27 15:16:47 GMT 2012: Added robodoc info
+
 ;;; ****m* recursive-assoc-list/get-last-ref
 ;;; FUNCTION
-;;; 
+;;; Get the last REF (path of nested keys) of the given recursive-assoc-list
+;;; object. 
+;;;
+;;; NB: This method functions linearly, not hierarchically. The last-ref may
+;;;     not be the deepest nested.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A recursive-assoc-list object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a list that is the last REF of the given recursive-assoc-list object.
 ;;; 
 ;;; EXAMPLE
 #|
+
+;; Typical usage with nesting
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (get-last-ref ral))
+
+=> (FOUR VIOLETS WHITE)
+
+;; Returns the last-ref as a list even if the given recursive-assoc-list object
+;; contains no nesting
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four roses)))))
+  (get-last-ref ral))
+
+=> (FOUR)
 
 |#
 ;;; SYNOPSIS
@@ -1145,23 +1421,49 @@ assoc-list::add: named-object is NIL!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Check whether the data really is recursive
+;;; SAR Fri Jan 27 17:46:10 GMT 2012: Delete MDE's comment here as it is taken
+;;; nearly verbatim into the robodoc info below
+;;; SAR Fri Jan 27 17:45:55 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/recursivep
 ;;; FUNCTION
-;;; 
+;;; Check whether the data in a recursive-assoc-list object is really
+;;; recursive. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A recursive-assoc-list object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T or NIL to indicate whether or not the tested data is recursive. 
+;;; T = recursive. 
 ;;; 
 ;;; EXAMPLE
 #|
+;; The data in this recursive-assoc-list object is really recursive, and
+;; the method therefore returns T
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue velvet)
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (recursivep ral))
+
+=> T
+
+;; The data in this recursive-assoc-list object is not actually recursive, and
+;; the method therefore returns NIL
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four roses)))))
+  (recursivep ral))
+
+=> NIL
+
 
 |#
 ;;; SYNOPSIS
@@ -1274,21 +1576,51 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jan 27 17:46:50 GMT 2012: Add robodoc info
+
 ;;; ****f* recursive-assoc-list/lisp-assoc-listp
 ;;; FUNCTION
+;;; Determine whether a given list can has the structure of a lisp
+;;; assoc-list. This is assed based on each of the elements being a 2-item
+;;; list, of which the first is a symbol, number or string (qualifies as a
+;;; key). 
 ;;; 
+;;; The optional argument <recurse-simple-data> allows the data portion of
+;;; key/data pairs to be viewed as flat lists rather than as recursive lists. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; T or NIL to indicate whether to consider lists of 2-item lists in the data
+;;; position of a given key/data pair to be a list or a recursive list.
+;;; T = list. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T or NIL. T = the tested list can be considered a Lisp assoc-list.
 ;;; 
 ;;; EXAMPLE
 #|
+;; A list of 2-item lists, each of whose item are all either a symbol, number, 
+;; or string, can be considered a Lisp assoc-list.
+(let ((lal '((roses red) (3 "allegro") (5 flute))))
+  (lisp-assoc-listp lal))
+
+=> T
+
+;; By default, lists of 2-item lists in the DATA portion of a key/data pair
+;; will be considered as a simple list, rather than a recursive list, resulting
+;; in the tested list passing as T.
+(let ((lal '((1 2) (3 ((4 5) (6 7))) (8 9))))
+  (lisp-assoc-listp lal))
+
+=> T
+
+;; Setting the optional argument to NIL will cause the same list to fail with
+(let ((lal '((1 2) (3 ((4 5) (6 7))) (8 9))))
+  (lisp-assoc-listp lal nil))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -1314,24 +1646,38 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Check whether a list contains only atoms which could be used as assoc-list
-;;; ids. 
+;;; SAR Fri Jan 27 18:15:27 GMT 2012: Deleted MDE's comment here as it is taken
+;;; nearly verbatim into the robodoc info
+;;; SAR Fri Jan 27 18:15:04 GMT 2012: Added robodoc info
 
 ;;; ****f* recursive-assoc-list/assoc-list-id-list
 ;;; FUNCTION
-;;; 
+;;; Determine whether a given list contains only atoms which could be used as
+;;; assoc-list IDs. To pass the test, a given atom must be either a symbol, a
+;;; number or a string.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; A list.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T or NIL indicating whether the atoms of the given list are all capable of
+;;; being used as assoc-list IDs. T = all can be used as assoc-list IDs.
 ;;; 
 ;;; EXAMPLE
 #|
+;; All of the elements in this list are either a symbol, a number or a
+;; string. The list therefore returns a T when tested.
+(let ((alil '(jim beam 3 "Allegro" 5 flute)))
+  (assoc-list-id-list alil))
+
+=> T
+
+;; This list fails, as the last element is a list (and therefore not of type
+;; string, number or symbol)
+(let ((alil '(jim beam 3 "Allegro" 5 (flute))))
+  (assoc-list-id-list alil))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -1339,7 +1685,7 @@ data: (
 ;;; ****
   (when (listp id-list)
     (loop for i in id-list unless (assoc-list-id-p i) do (return nil)
-        finally (return t))))
+       finally (return t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

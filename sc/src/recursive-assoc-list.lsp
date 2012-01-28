@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 09:14:30 Thu Jan 12 2012 ICT
+;;; $$ Last modified: 18:41:48 Sat Jan 28 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -88,7 +88,7 @@
    ;;; The reference into a top-level ral to get to this ral.  When this is
    ;;; nil, then the ral is top-level itself.
    (full-ref :accessor full-ref :type list :initarg :full-ref 
-	     :initform nil)
+             :initform nil)
    (num-data :accessor num-data :type integer :initform -1)
    ;; whether or not we've already called link-named-objects (which is a bit of
    ;; an expensive function that we won't always need to call so only do it
@@ -197,14 +197,14 @@
 ;; Get the object immediately previous to that with the key WILD returns the
 ;; object with key JIM and data BEAM
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-previous ral '(wild)))
 
 => 
@@ -216,14 +216,14 @@ data: BEAM
 ;; nested list, returns an error unless the first key in the nested list is
 ;; also included
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-previous ral '(four)))
 
 =>
@@ -234,14 +234,14 @@ when called with arguments
 NAMED-OBJECT: id: FOUR, tag: NIL, 
 
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-previous ral '(four roses)))
 
 => 
@@ -252,14 +252,14 @@ data: TURKEY
 ;; The method defines the previous object linearly, not hierarchically; i.e.,
 ;; the previous object to (white ribbon) here is (fox hole) and not (red ...)
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-previous ral '(four violets white)))
 
 => 
@@ -272,14 +272,14 @@ data: HOLE
 ;; Use the <how-many> argument to retrieve previous objects further back than
 ;; the immediate predecessor
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-previous ral '(four violets white) 4))
 
 => 
@@ -292,14 +292,14 @@ data: VELVET
 ;; Using a <how-many> value greater than the number of items in the given
 ;; recursive-assoc-list object returns a negative number
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-previous ral '(four violets white) 14))
 
 => -7
@@ -368,14 +368,14 @@ data: VELVET
 ;; Usage as presented here; see the documentation for method link-named-objects
 ;; for more detail
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (relink-named-objects ral))
 
 =>
@@ -435,14 +435,14 @@ data: BEAM
 ;;; The recursive-assoc-list may not be linked on creation, evident here
 ;;; through the value of the LINKED slot
 (make-ral 'mixed-bag 
-		 '((jim beam)
-		   (wild turkey)
-		   (four ((roses red)
-			  (violets ((blue velvet)
-				    (red ((dragon den)
-					  (viper nest)
-					  (fox hole)))
-				    (white ribbon)))))))
+                 '((jim beam)
+                   (wild turkey)
+                   (four ((roses red)
+                          (violets ((blue velvet)
+                                    (red ((dragon den)
+                                          (viper nest)
+                                          (fox hole)))
+                                    (white ribbon)))))))
 
 =>
 RECURSIVE-ASSOC-LIST: recurse-simple-data: T
@@ -465,14 +465,14 @@ data: TURKEY
 ;; The recursive-assoc-list object and the named-objects it contains are linked
 ;; after applying the link-named-objects method
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (link-named-objects ral))
 
 =>
@@ -516,7 +516,10 @@ data: TURKEY
            (setf this-ref (econs ral-full-ref (id this))
                  next-in-list (nth (1+ i) data)
                  next-in-list-data (when next-in-list (data next-in-list))
-                 next (cond ((is-ral next-in-list-data)
+                 next (cond ((and (is-ral next-in-list-data)
+                                  ;; MDE Sat Jan 28 18:20:14 2012 -- only if
+                                  ;; there's data in there!
+                                  (data next-in-list-data))
                              (get-first-ref next-in-list-data))
                             (next-in-list 
                              (econs ral-full-ref (id next-in-list)))
@@ -528,7 +531,8 @@ data: TURKEY
                             ;; recursively called with.
                             ((null next-in-list) higher-next))
                  this-data (data this))
-           (if (is-ral this-data)
+           ;; MDE Sat Jan 28 18:20:29 2012 -- only if the ral has data
+           (if (and (is-ral this-data) (data this-data))
                (progn 
                  ;; in case we're relinking
                  (setf (linked this-data) nil)
@@ -568,14 +572,14 @@ data: TURKEY
 ;;; EXAMPLE
 #|
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (r-count-elements ral))
 
 => 8
@@ -628,14 +632,14 @@ data: TURKEY
 
 ;; Get a named-object from the top-level of the recursive-assoc-list object
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-data 'wild ral))
 
 => 
@@ -645,14 +649,14 @@ data: TURKEY
 ;; A list including all keys that are the path to the specified key is required
 ;; to get nested named-objects
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-data '(four violets white) ral))
 
 => 
@@ -662,14 +666,14 @@ data: RIBBON
 ;; Searching for a key that is not present in the given recursive-assoc-list
 ;; object returns NIL and a warning
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-data 'johnnie ral))
 
 => NIL
@@ -680,14 +684,14 @@ WARNING:
 ;; Searching for a nested key without specifying the path to that key within a
 ;; list also returns a NIL and a warning
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-data 'fox ral))
 
 => NIL
@@ -755,14 +759,14 @@ WARNING:
 ;; element being placed at the end of the top level by default (evident here by
 ;; the fact that the ref for (MAKERS) is a single-item list) 
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (add '(makers mark) ral)
   (get-all-refs ral))
 
@@ -774,14 +778,14 @@ WARNING:
 ;; be given as the optional argument in order to place the specified element
 ;; deeper in the given recursive-assoc-list object
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (add '(yellow sky) ral '(four violets))
   (get-all-refs ral))
 
@@ -792,14 +796,14 @@ WARNING:
 ;; Attempting to add an element that is already present at the given level of
 ;; the given recursive-assoc-list object results in an error
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (add '(makers mark) ral)
   (add '(makers mark) ral))
 
@@ -810,14 +814,14 @@ assoc-list::add: Can't add MAKERS to assoc-list with id MIXED-BAG
 
 ;; Attempting to add NIL also results in an error
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (add '() ral))
 
 =>
@@ -915,14 +919,14 @@ assoc-list::add: named-object is NIL!
 ;; Collect all the data contained within the object 'mixed-bag and store it at
 ;; the top-level of 'mixed-bag within a new named-object with the id 'potpourri 
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (parcel-data ral 'potpourri))
 
 =>
@@ -990,14 +994,14 @@ data: BEAM
 ;;; EXAMPLE
 #|
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (add-empty-parcel ral 'bricolage))
 
 Mark set
@@ -1024,6 +1028,8 @@ data: NIL
       (setf sub-ral (clone-with-new-class sub-ral new-class)))
     (add (make-named-object id sub-ral)
          ral)
+    ;; MDE Sat Jan 28 17:05:03 2012 
+    (relink-named-objects ral)
     sub-ral))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1056,14 +1062,14 @@ data: NIL
 
 ;;; Replace a named-object at the top level using a single symbol
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (set-data 'wild '(makers mark) ral))
 
 => 
@@ -1073,14 +1079,14 @@ data: MARK
 ;; The same can be done stating the top-level key as a single-item list. Apply
 ;; the get-all-refs method in this example to see the change
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (set-data '(wild) '(makers mark) ral)
   (get-all-refs ral))
 
@@ -1091,14 +1097,14 @@ data: MARK
 ;; object. Print the application of the method as well as the results from
 ;; applying the get-all-refs method in this example to see the effects
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (print (set-data '(four violets red fox) '(bee hive) ral))
   (print (get-all-refs ral)))
 
@@ -1120,9 +1126,13 @@ data: HIVE
       (call-next-method (if (atom key) key (first key)) new-value ral)
     (let* ((deepest-ref (butlast key))
            (deepest-replace (first (last key)))
-           (deepest-ral (when deepest-ref (data (get-data deepest-ref ral)))))
+           (deepest-ral (when deepest-ref (data (get-data deepest-ref ral))))
+           result)
       (when deepest-ral
-        (call-next-method deepest-replace new-value deepest-ral)))))
+        (setf result (call-next-method deepest-replace new-value deepest-ral)))
+      ;; MDE Sat Jan 28 18:41:45 2012 
+      (relink-named-objects ral)
+      result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1154,14 +1164,14 @@ data: HIVE
 ;;; EXAMPLE
 #|
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-first ral))
 
 => 
@@ -1205,28 +1215,28 @@ data: BEAM
 #|
 ;; A simple call returns the first top-level named-object
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-first-ref ral))
 
 => (JIM)
 
 ;; Return the first ref of a nested recursive-assoc-list object
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-first-ref (get-data-data '(four violets) ral)))
 
 => (FOUR VIOLETS BLUE)
@@ -1235,11 +1245,12 @@ data: BEAM
 ;;; SYNOPSIS
 (defmethod get-first-ref ((ral recursive-assoc-list))
 ;;; ****
-  (let* ((first (first (data ral)))
-         (first-data (data first)))
-    (if (is-ral first-data)
-        (get-first-ref first-data)
-      (econs (full-ref ral) (id first)))))
+  (when (data ral) ; MDE Sat Jan 28 16:50:54 2012 -- only when there's data
+    (let* ((first (first (data ral)))
+           (first-data (data first)))
+      (if (is-ral first-data)
+          (get-first-ref first-data)
+          (econs (full-ref ral) (id first))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1263,14 +1274,14 @@ data: BEAM
 #|
 ;; This returns '(white ribbon), not '(fox hole)
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-last ral))
 
 => 
@@ -1315,14 +1326,14 @@ data: RIBBON
 #|
 ;; By default all keys are returned as lists, even single (non-nested) keys
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-all-refs ral))
 
 => ((JIM) (WILD) (FOUR ROSES) (FOUR VIOLETS BLUE) (FOUR VIOLETS RED DRAGON)
@@ -1331,14 +1342,14 @@ data: RIBBON
 ;; Setting the optional argument to NIL returns non-nested keys as symbols
 ;; rather than lists  
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-all-refs ral nil))
 
 => (JIM WILD (FOUR ROSES) (FOUR VIOLETS BLUE) (FOUR VIOLETS RED DRAGON)
@@ -1354,8 +1365,8 @@ data: RIBBON
   (when (data ral)
     (link-named-objects ral)
     (loop 
-        with ref = (get-first-ref ral) 
-        while ref 
+        with ref = (get-first-ref ral)
+        while ref ;(print ref )
         for current = (get-data ref ral)
         for this = (when current (this current))
         do (when (and (not single-ref-as-list)
@@ -1387,14 +1398,14 @@ data: RIBBON
 
 ;; Typical usage with nesting
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (get-last-ref ral))
 
 => (FOUR VIOLETS WHITE)
@@ -1402,9 +1413,9 @@ data: RIBBON
 ;; Returns the last-ref as a list even if the given recursive-assoc-list object
 ;; contains no nesting
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four roses)))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four roses)))))
   (get-last-ref ral))
 
 => (FOUR)
@@ -1413,11 +1424,13 @@ data: RIBBON
 ;;; SYNOPSIS
 (defmethod get-last-ref ((ral recursive-assoc-list))
 ;;; ****
-  (let* ((last (first (last (data ral))))
-         (last-data (data last)))
-    (if (is-ral last-data)
-        (get-last-ref last-data)
-      (econs (full-ref ral) (id last)))))
+  (when (data ral) ; MDE Sat Jan 28 16:51:33 2012 -- only when there's data
+    (let* ((last (first (last (data ral))))
+           (last-data (data last)))
+      ;; MDE Sat Jan 28 17:10:25 2012 -- only recurse if a sub-ral has data
+      (if (and (is-ral last-data) (data last-data))
+          (get-last-ref last-data)
+          (econs (full-ref ral) (id last))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1442,14 +1455,14 @@ data: RIBBON
 ;; The data in this recursive-assoc-list object is really recursive, and
 ;; the method therefore returns T
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue velvet)
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue velvet)
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (recursivep ral))
 
 => T
@@ -1457,9 +1470,9 @@ data: RIBBON
 ;; The data in this recursive-assoc-list object is not actually recursive, and
 ;; the method therefore returns NIL
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four roses)))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four roses)))))
   (recursivep ral))
 
 => NIL
@@ -1519,14 +1532,14 @@ data: RIBBON
 #|
 ;; Create a recursive-assoc-list object with default keyword argument values 
 (make-ral 'mixed-bag 
-	  '((jim beam)
-	    (wild turkey)
-	    (four ((roses red)
-		   (violets ((blue velvet)
-			     (red ((dragon den)
-				   (viper nest)
-				   (fox hole)))
-			     (white ribbon)))))))
+          '((jim beam)
+            (wild turkey)
+            (four ((roses red)
+                   (violets ((blue velvet)
+                             (red ((dragon den)
+                                   (viper nest)
+                                   (fox hole)))
+                             (white ribbon)))))))
 
 => 
 RECURSIVE-ASSOC-LIST: recurse-simple-data: T
@@ -1545,9 +1558,9 @@ data: (
 ;; recursed. The sublists in the second list in this example are processed as
 ;; nested lists
 (let ((ral (make-ral 'ral-test
-		     '((1 one)
-		       (2 ((3 4) (5 6)))
-		       (3 three)))))
+                     '((1 one)
+                       (2 ((3 4) (5 6)))
+                       (3 three)))))
   (get-all-refs ral))
 
 => ((1) (2 3) (2 5) (3))
@@ -1556,10 +1569,10 @@ data: (
 ;; will cause the method to process simple data as a unit rather than nested
 ;; lists 
 (let ((ral (make-ral 'ral-test
-		     '((1 one)
-		       (2 ((3 4) (5 6)))
-		       (3 three))
-		     :recurse-simple-data nil)))
+                     '((1 one)
+                       (2 ((3 4) (5 6)))
+                       (3 three))
+                     :recurse-simple-data nil)))
   (get-all-refs ral))
 
 => ((1) (2) (3))

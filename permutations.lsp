@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 16:28:44 Sat Jan 28 2012 ICT
+;;; $$ Last modified: 03:57:20 Sun Jan 29 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1056,14 +1056,13 @@ START
                       (copy t)
                       (fix t)
                       (reset t))
-;;; ****
+;;; **** 
   (loop 
      with result = seq
-     ;; repeat num-shuffles 
      for i below num-shuffles
      do
      (setf result (shuffle result :start start :end end :copy copy :fix fix
-                           :reset reset))
+                           :reset (and reset (zerop i))))
      finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

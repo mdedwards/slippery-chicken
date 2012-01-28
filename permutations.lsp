@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 12:14:41 Tue Jan 17 2012 ICT
+;;; $$ Last modified: 16:28:44 Sat Jan 28 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -145,7 +145,7 @@
 |#
 ;;; SYNOPSIS
 (defun inefficiently-permutate (list &key (max nil) (skip 0) (fix t)
-				(sublists nil))
+                                (sublists nil))
 ;;; ****
   (let ((permutations (inefficient-permutations (length list)
                                                 :max max
@@ -153,8 +153,8 @@
                                                 :fix fix)))
     (if sublists
         (loop for l in permutations collect
-	     (loop for e in l collect (nth e list)))
-	(loop for p in (flatten permutations) collect (nth p list)))))
+             (loop for e in l collect (nth e list)))
+        (loop for p in (flatten permutations) collect (nth p list)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -254,11 +254,11 @@
   (let* ((result '())
          (natural-max (loop for i from 2 to level with j = 1 do 
                            (setf j (* j i)) 
-			 finally (return j)))
+                         finally (return j)))
          (num-perms (+ skip
                        (if max 
-			   max
-			   natural-max)))
+                           max
+                           natural-max)))
          (start (loop for i below level collect i))
          (current '())
          (reset fix)
@@ -851,15 +851,15 @@
 ;;; ****f* permutations/shuffle
 ;;; FUNCTION
 ;;; Create a random ordering of a given sequence or a subsequence of a given
-;;; sequence. 
+;;; sequence.  By default we used fixed-seed randomness so we can guarantee the
+;;; same results each time (perhaps counter-intuitively).  So the order of the
+;;; permutations returned will always be the same unless keyword argument :fix
+;;; is set to NIL.  
 ;;;
-;;; NB: The order of the permutations returned will always be the same unless
-;;;     keyword argument :fix is set to NIL.  
-;;;
-;;; NB: This function is modified from Common Music's shuffle funciton.
+;;; NB: This function is a modified form of Common Music's shuffle function.
 ;;;  
 ;;; ARGUMENTS 
-;;; - A sequence.
+;;; - A sequence (list, vector (string)).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :start. A zero-based index integer indicating the first
@@ -868,7 +868,7 @@
 ;;;   element of a subsequence to be shuffled. Default = the length of the
 ;;;   given sequence.
 ;;; - keyword argument :copy. T or NIL to indicate whether the given sequence
-;;;   should be copied before it is modified or shoudl be destructively
+;;;   should be copied before it is modified or should be destructively
 ;;;   shuffled. T = copy. Default = T.
 ;;; - keyword argument :fix. T or NIL to indicate whether the given sequence
 ;;;   should always be shuffled with the same (fixed) random seed (thus always
@@ -905,13 +905,38 @@
 (4 7 2 5 1 6 3) 
 (1 5 3 7 4 2 6)
 
+;; Set the keyword argument :reset to t only at the beginning so we get the
+;; same result that time but different (but repeatable) results thereafter.
+(loop repeat 3 do
+     (print 'start)
+     (loop for i below 4 do (print (shuffle '(1 2 3 4 5 6 7) :reset (zerop
+                                                                     i)))))
+
+=>
+START 
+(5 4 3 6 7 1 2) 
+(4 6 5 2 3 1 7) 
+(3 4 1 6 5 7 2) 
+(3 2 7 4 1 6 5) 
+START 
+(5 4 3 6 7 1 2) 
+(4 6 5 2 3 1 7) 
+(3 4 1 6 5 7 2) 
+(3 2 7 4 1 6 5) 
+START 
+(5 4 3 6 7 1 2) 
+(4 6 5 2 3 1 7) 
+(3 4 1 6 5 7 2) 
+(3 2 7 4 1 6 5) 
+
+
 ;; Set keyword arguments :start and :end to shuffle just a subsequence of the
 ;; given sequence
 (loop repeat 4 
    do (print (shuffle '(1 2 3 4 5 6 7) 
-		      :fix nil
-		      :start 2
-		      :end 5)))
+                      :fix nil
+                      :start 2
+                      :end 5)))
 
 =>
 (1 2 5 4 3 6 7) 
@@ -922,32 +947,32 @@
 |#
 ;;; SYNOPSIS
 (defun shuffle (seq &key 
-		(start 0) 
-		(end (length seq))
-		(copy t)
-		(fix t)
-		(reset t)
-		&aux (width (- end start)))
+                (start 0) 
+                (end (length seq))
+                (copy t)
+                (fix t)
+                (reset t)
+                &aux (width (- end start)))
 ;;; ****
   (if (< width 2)
       seq
       (progn
-	(when (and copy (typep seq 'list))
-	  (setf seq (copy-list seq)))
-	;; call once just to initialize state
-	(when (and fix reset)
-	  (random-rep 10 t))
-	(loop for i from start to (1- end)
-	   for i2 = (+ start 
-		       (if fix 
-			   (random-rep width)
-			   (random width)))
-	   do 
-	     (when (or (< i 0) (< i2 0))
-	       (error "permutations::shuffle: indices < 0!"))
-	     (rotatef (elt seq i) 
-		      (elt seq i2)))
-	seq)))
+        (when (and copy (typep seq 'list))
+          (setf seq (copy-list seq)))
+        ;; call once just to initialize state
+        (when (and fix reset)
+          (random-rep 10 t))
+        (loop for i from start to (1- end)
+           for i2 = (+ start 
+                       (if fix 
+                           (random-rep width)
+                           (random width)))
+           do 
+             (when (or (< i 0) (< i2 0))
+               (error "permutations::shuffle: indices < 0!"))
+             (rotatef (elt seq i) 
+                      (elt seq i2)))
+        seq)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1013,9 +1038,9 @@
 ;; given sequence
 (loop repeat 4 
    do (print (multi-shuffle '(a b c d e f g) 3
-			    :fix nil
-			    :start 2
-			    :end 5)))
+                            :fix nil
+                            :start 2
+                            :end 5)))
 
 =>
 (A B D E C F G) 
@@ -1026,19 +1051,19 @@
 |#
 ;;; SYNOPSIS
 (defun multi-shuffle (seq num-shuffles &key 
-		      (start 0) 
-		      (end (length seq))
-		      (copy t)
-		      (fix t)
-		      (reset t))
+                      (start 0) 
+                      (end (length seq))
+                      (copy t)
+                      (fix t)
+                      (reset t))
 ;;; ****
   (loop 
      with result = seq
      ;; repeat num-shuffles 
      for i below num-shuffles
      do
-       (setf result (shuffle result :start start :end end :copy copy :fix fix
-			     :reset reset))
+     (setf result (shuffle result :start start :end end :copy copy :fix fix
+                           :reset reset))
      finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

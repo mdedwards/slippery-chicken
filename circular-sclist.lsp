@@ -226,9 +226,9 @@
 ;;; argument. 
 ;;;
 ;;; NB: An immediately subsequent get-next call will retrieve the item at the
-;;; index to which the pointer is reset. An immediately subsequent get-last
-;;; call will retrieve the item at the index one-less than the value to which
-;;; the pointer is set.
+;;;     index to which the pointer is reset. An immediately subsequent
+;;;     get-last call will retrieve the item at the index one-less
+;;;     than the value to which the pointer is set.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A circular-sclist object.

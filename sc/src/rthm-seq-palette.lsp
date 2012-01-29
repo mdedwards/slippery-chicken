@@ -82,45 +82,52 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan 28 13:16:35 GMT 2012: Edited robodoc info
+
 ;;; ****m* rthm-seq-palette/create-psps
-;;; FUNCTION
-;;; create-psps:
-;;; 
-;;; Automatically create pitch-seq-palettes for each rthm-seq in the
-;;; rthm-seq-palette.  The selection function given as argument should be able
-;;; to provide a list of numbers (relative notes) for a rthm-seq of any length;
-;;; it takes two arguments only: the number of notes needed and the pitch-seq
-;;; data lists (see below).  
+;;; DATE 
+;;; 30 Mar 2006
 ;;;
-;;; As a psp usually has several options for each rthm-seq, it's best when the
-;;; selection-fun doesn't always return the same thing given the same number of
-;;; notes.  NB This will silently kill any pitch-seq-palettes already supplied
-;;; for any rthm-seqs in the palette
+;;; FUNCTION
+;;; Automatically create pitch-seq-palette objects for each rthm-seq object in
+;;; the given rthm-seq-palette object. 
+;;;
+;;; The selection function given as an optional keyword argument should be able
+;;; to generate a list of numbers (relative note levels) for a rthm-seq of any
+;;; length; it takes two arguments only: the number of notes needed and the
+;;; pitch-seq data lists (see below).  
+;;;
+;;; As a pitch-seq-palette usually has several options for each rthm-seq
+;;; object, it's best when the selection-fun doesn't always return the same 
+;;; thing given the same number of notes. NB: This will silently kill the data
+;;; of any pitch-seq-palette objects already supplied for any rthm-seqs in the
+;;; palette.  
 ;;; 
 ;;; Note that the default selection function will suffice in lots of cases.
 ;;; However, you may just want to use different data lists with the default
-;;; function.  In that case just pass these via :selection-fun-data.
-;;;
-;;; DATE 30/3/06
+;;; function. In that case just pass these via :selection-fun-data.
 ;;;
 ;;; ARGUMENTS 
-;;; - the rth-seq-palette object
-;;; - (key :selection-fun default #'create-psps-default) the selection function
-;;;   object that will return the pitch-seq numbers. Takes two arguments only:
-;;;   the number of notes needed and the pitch-seq data lists.  The function
-;;;   also needs to be able to handle being passed nil nil as arguments; in this
-;;;   case it should reset, if needs be i.e. it's just a call to init and should
-;;;   return nothing. 
-;;; - (key :pitch-seqs-per-rthm-seq) the number of pitch-seqs each rthm-seq
-;;;   should have.  NB The pitch-seqs given in the selection function will
-;;;   simply be cycled through to create the required number.  Default: 3.
-;;; - (key :pitch-seqs-per-rthm-seq) the pitch-seq lists to be passed to the
-;;;   default selection function. 
-;;;   There can be as many pitch-seqs in these lists as desired; the number of
-;;;   notes the pitch-seq will provide is the first item of the list; these
-;;;   need not be in ascending order.  If you pass t here, the selection
-;;;   function will reinitialize its default data and use that.
-;;;   At the moment these look like:
+
+;;; - A rth-seq-palette object.
+;;; - keyword argument :selection-fun. This is a function that will return the
+;;;   pitch-seq numbers. It takes two arguments only: 1) the number of notes
+;;;   needed, and 2) the pitch-seq data lists. The function also needs to be
+;;;   able to handle being passed NIL NIL as arguments. In this case it should
+;;;   reset, if needs be; i.e. it's just a call to init and should return
+;;;   nothing. Default = #'create-psps-default.
+;;; - keyword argument :pitch-seqs-per-rthm-seq. This is an integer that is the
+;;;   number of pitch-seqs each rthm-seq should have. NB: The method will
+;;;   simply cylcle through the pitch-seqs given in the selection function to
+;;;   create the required number.  Default = 3. 
+;;; - keyword argument :selection-fun-data. This contains the pitch-seq lists
+;;;   to be passed to the default selection function. There can be as many
+;;;   pitch-seqs in these lists as desired. The number of notes the pitch-seq
+;;;   will provide is the first item of the list. They need not be in ascending
+;;;   order. When this argument is passed a value of T, the selection function
+;;;   will reinitialize its default data and use that. 
+;;;
+;;;   At the moment, the default data are:
 ;;;             '((1 ((3) (3) (1) (25)))
 ;;;               (2 ((3 4) (5 2) (25 25) (1 25)))
 ;;;               (3 ((3 4 3) (5 9 6) (1 2 4) (5 2 2) (6 2 3)))
@@ -140,7 +147,74 @@
 ;;;                    (2 1 5 1 5 1 6 5 1 5 2 5 1 2 6))))))
 ;;; 
 ;;; RETURN VALUE  
-;;; always t
+;;; Always returns T.
+;;;
+;;; EXAMPLE
+
+#|
+
+;; Create a rthm-seq-palette object that specifies pitch-seq-palettes for each
+;; contained rthm-seq object and print the values of the individual
+;; pitch-seq-palettes. Then apply the create-psps method using its default
+;; values, and print the values of the individual pitch-seq-palettes again to
+;; see the change.  
+(let ((mrsp (make-rsp 'rsp-test 
+		      '((seq1 ((((2 4) q +e. s)
+				((s) e (s) q)
+				(+e. s { 3 (te) te te } ))
+			       :pitch-seq-palette (1 2 3 4 5 6 7)))
+			(seq2 ((((3 4) (e.) s { 3 te te te } +q)
+				({ 3 +te (te) te } e e (q)))
+			       :pitch-seq-palette (2 3 4 5 6 7 8)))
+			(seq3 ((((2 4) e e { 3 te te te })
+				((5 8) (e) e e e s s))
+			       :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2)))))))
+  (print (loop for i in (data mrsp)
+	    collect 
+	      (loop for j in (data (pitch-seq-palette i))
+		 collect (data j))))
+  (create-psps mrsp)
+  (print (loop for i in (data mrsp)
+	    collect 
+	      (loop for j in (data (pitch-seq-palette i))
+		 collect (data j)))))
+
+=>
+(((1 2 3 4 5 6 7)) ((2 3 4 5 6 7 8)) ((3 4 5 6 7 8 9 10 1 2))) 
+
+(((8 8 8 5 9 6 9) (9 3 8 4 7 5 4) (3 4 3 5 3 4 3))
+ ((8 8 8 5 9 6 9) (9 3 8 4 7 5 4) (3 4 3 5 3 4 3))
+ ((9 9 9 3 9 9 3 5 9 5) (8 9 8 9 5 9 9 5 6 6) (9 9 9 3 9 9 3 5 9 5)))
+
+;; Use the :pitch-seqs-per-rthm-seq keyword argument to specify the number of
+;; pitch-seq objects to be created for each rthm-seq. This example creates 5
+;; instead of the default 3.
+(let ((mrsp (make-rsp 'rsp-test 
+		      '((seq1 ((((2 4) q +e. s)
+				((s) e (s) q)
+				(+e. s { 3 (te) te te } ))
+			       :pitch-seq-palette (1 2 3 4 5 6 7)))
+			(seq2 ((((3 4) (e.) s { 3 te te te } +q)
+				({ 3 +te (te) te } e e (q)))
+			       :pitch-seq-palette (2 3 4 5 6 7 8)))
+			(seq3 ((((2 4) e e { 3 te te te })
+				((5 8) (e) e e e s s))
+			       :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2)))))))
+  (create-psps mrsp :pitch-seqs-per-rthm-seq 5)
+  (print (loop for i in (data mrsp)
+	    collect 
+	      (loop for j in (data (pitch-seq-palette i))
+		 collect (data j)))))
+
+=>
+(((8 8 8 5 9 6 9) (9 3 8 4 7 5 4) (3 4 3 5 3 4 3) (8 8 8 5 9 6 9)
+  (9 3 8 4 7 5 4))
+ ((3 4 3 5 3 4 3) (8 8 8 5 9 6 9) (9 3 8 4 7 5 4) (3 4 3 5 3 4 3)
+  (8 8 8 5 9 6 9))
+ ((9 9 9 3 9 9 3 5 9 5) (8 9 8 9 5 9 9 5 6 6) (9 9 9 3 9 9 3 5 9 5)
+  (8 9 8 9 5 9 9 5 6 6) (9 9 9 3 9 9 3 5 9 5)))
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod create-psps ((rsp rthm-seq-palette) 
@@ -155,7 +229,7 @@
   (create-psps-default nil nil)
   (loop with pass-data = t
      for rs in (data rsp) do
-       ;; (print pass-data)
+     ;; (print pass-data)
        (if (rsp-p (data rs))
            (create-psps (data rs) :selection-fun selection-fun 
                         :pitch-seqs-per-rthm-seq pitch-seqs-per-rthm-seq
@@ -171,24 +245,64 @@
                (setf (pitch-seq-palette rs) psp)
                ;; now turn the lists into a real psp
                (init-psp rs))))
-       ;; we only need to pass the pitch-seq data once
+     ;; we only need to pass the pitch-seq data once
        (setf pass-data nil))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Sat Jan 28 15:10:10 GMT 2012: Edited robodoc info
+
 ;;; ****m* rthm-seq-palette/reset-psps
 ;;; FUNCTION
-;;; reset-psps:
-;;;
-;;; Call reset for all the pitch-seq-palettes in the rthm-seq objects in the
-;;; palette.  This ensures that each rthm-seq starts over again at the first
-;;; given pitch-seq.
+;;; Call the reset method (inherited from circular-sclist) for all
+;;; pitch-seq-palette objects of all rthm-seq objects in the given
+;;; rthm-seq-palette object, resetting their pointers to the head of the
+;;; sequence. This ensures that each rthm-seq starts over again at the first
+;;; note of the first given pitch-seq.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the rthm-seq-palette object
+;;; - A rthm-seq-palette object.
 ;;; 
 ;;; RETURN VALUE  
-;;; always t
+;;; Always returns T.
+;;;
+;;; EXAMPLE
+#|
+
+;; Create a rthm-seq-palette object whose first rthm-seq has three pitch-seq
+;; objects in its pitch-seq-palette. Apply the get-next method to the
+;; pitch-seq-palette object of the first rthm-seq object twice, then print the
+;; data of the next pitch-seq object to show where we are. Apply the reset-psps
+;; method and print the data of the next pitch-seq object to show that we've
+;; returned to the beginning of the pitch-seq-palette.
+
+(let ((mrsp
+       (make-rsp 'rsp-test 
+		 '((seq1 ((((2 4) q +e. s)
+			   ((s) e (s) q)
+			   (+e. s { 3 (te) te te } ))
+			  :pitch-seq-palette ((1 2 3 4 5 6 7)
+					      (1 3 5 7 2 4 6)
+					      (1 4 2 6 3 7 5)
+					      (1 5 2 7 3 2 4))))
+		   (seq2 ((((3 4) (e.) s { 3 te te te } +q)
+			   ({ 3 +te (te) te } e e (q)))
+			  :pitch-seq-palette (2 3 4 5 6 7 8)))
+		   (seq3 ((((2 4) e e { 3 te te te })
+			   ((5 8) (e) e e e s s))
+			  :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2)))))))
+  (loop repeat 2
+       do (get-next (pitch-seq-palette (first (data mrsp)))))
+  (print (data (get-next (pitch-seq-palette (first (data mrsp))))))
+  (reset-psps mrsp)
+  (print (data (get-next (pitch-seq-palette (first (data mrsp)))))))
+
+=>
+(1 4 2 6 3 7 5) 
+(1 2 3 4 5 6 7)
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod reset-psps ((rsp rthm-seq-palette))
@@ -208,6 +322,8 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Sat Jan 28 15:42:27 GMT 2012: Added robodoc info
 
 ;;; ****m* rthm-seq-palette/scale
 ;;; FUNCTION
@@ -396,21 +512,80 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Jan 28 11:18:46 GMT 2012: Added robodoc info
+
 ;;; ****f* rthm-seq-palette/make-rsp
 ;;; FUNCTION
-;;; 
+;;; Create a rthm-seq-palette object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A symbol that is to be the ID of the rhtm-seq-palette object created.
+;;; - A list containing rhtm-seq data to be made into rthm-seqs. Each item in
+;;;   this list is a list of data formatted as it would be when passed to the
+;;;   make-rthm-seq function.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; T or NIL to indicate whether to automatically generate and store inversions
+;;; of the pitch-seq-palette passed to the rthm-seq objects in the
+;;; rthm-seq-palette object created. T = generate and store. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A rthm-seq-palette object.
 ;;; 
 ;;; EXAMPLE
 #|
+
+(make-rsp 'rsp-test '((seq1 ((((2 4) q +e. s)
+			      ((s) e (s) q)
+			      (+e. s { 3 (te) te te } ))
+			     :pitch-seq-palette (1 7 3 4 5 2 6)))
+		      (seq2 ((((3 4) (e.) s { 3 te te te } +q)
+			      ({ 3 +te (te) te } e e (q)))
+			     :pitch-seq-palette (3 1 2 5 1 7 6)))
+		      (seq3 ((((2 4) e e { 3 te te te })
+			      ((5 8) (e) e e e s s))
+			     :pitch-seq-palette (4 4 4 5 4 4 4 5 4 3)))))
+
+=> 
+RTHM-SEQ-PALETTE: psp-inversions: NIL
+PALETTE: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 3
+                      linked: T
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: RSP-TEST, tag: NIL, 
+data: (
+RTHM-SEQ: num-bars: 3
+[...]
+
+;; Create two rthm-seq-palette objects, one with :psp-inversions set to NIL and 
+;; one with it set to T, and print the DATA of the pitch-seq-palettes of each 
+(let ((mrsp1 (make-rsp 'rsp-test 
+		       '((seq1 ((((2 4) q +e. s)
+				 ((s) e (s) q)
+				 (+e. s { 3 (te) te te } ))
+				:pitch-seq-palette (1 7 3 4 5 2 6))))
+		       :psp-inversions nil))
+      (mrsp2 (make-rsp 'rsp-test 
+		       '((seq1 ((((2 4) q +e. s)
+				 ((s) e (s) q)
+				 (+e. s { 3 (te) te te } ))
+				:pitch-seq-palette (1 7 3 4 5 2 6))))
+		       :psp-inversions t)))
+  (print 
+   (loop for i in (data (pitch-seq-palette (first (data mrsp1))))
+      collect (data i)))
+  (print 
+   (loop for i in (data (pitch-seq-palette (first (data mrsp2))))
+      collect (data i))))
+
+=>
+((1 7 3 4 5 2 6)) 
+((1 7 3 4 5 2 6) (7 1 5 4 3 6 2))
 
 |#
 ;;; SYNOPSIS

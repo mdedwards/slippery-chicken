@@ -993,6 +993,7 @@ data: BEAM
 ;;; 
 ;;; EXAMPLE
 #|
+;; Add an empty parcel and print the result as well as the new list of REFS
 (let ((ral (make-ral 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
@@ -1002,7 +1003,8 @@ data: BEAM
                                               (viper nest)
                                               (fox hole)))
                                         (white ribbon)))))))))
-  (add-empty-parcel ral 'bricolage))
+  (print (add-empty-parcel ral 'bricolage))
+  (print (get-all-refs ral)))
 
 Mark set
 => 
@@ -1017,6 +1019,9 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: "sub-ral-of-MIXED-BAG", tag: NIL, 
 data: NIL
 
+((JIM) (WILD) (FOUR ROSES) (FOUR VIOLETS BLUE) (FOUR VIOLETS RED DRAGON)
+ (FOUR VIOLETS RED VIPER) (FOUR VIOLETS RED FOX) (FOUR VIOLETS WHITE)
+ (BRICOLAGE))
 
 |#
 ;;; SYNOPSIS
@@ -1272,6 +1277,7 @@ data: BEAM
 ;;; 
 ;;; EXAMPLE
 #|
+
 ;; This returns '(white ribbon), not '(fox hole)
 (let ((ral (make-ral 'mixed-bag 
                      '((jim beam)
@@ -1324,6 +1330,7 @@ data: RIBBON
 ;;; 
 ;;; EXAMPLE
 #|
+
 ;; By default all keys are returned as lists, even single (non-nested) keys
 (let ((ral (make-ral 'mixed-bag 
                      '((jim beam)
@@ -1354,7 +1361,6 @@ data: RIBBON
 
 => (JIM WILD (FOUR ROSES) (FOUR VIOLETS BLUE) (FOUR VIOLETS RED DRAGON)
     (FOUR VIOLETS RED VIPER) (FOUR VIOLETS RED FOX) (FOUR VIOLETS WHITE))
-
 
 |#
 ;;; SYNOPSIS

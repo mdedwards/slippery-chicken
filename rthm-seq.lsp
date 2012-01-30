@@ -1774,16 +1774,20 @@ rthm-seq-bar::get-beats: Can't find an exact beat of rhythms
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Jan 30 20:28:05 GMT 2012: Added NB to FUNCTION blockl; slight edits
 ;;; SAR Wed Dec 28 21:11:57 EST 2011: Added robodoc info
 
 ;;; ****m* rthm-seq/scale
 ;;; FUNCTION
 ;;; Scale the durations of the rhythm objects in a given rthm-seq object by the
-;;; specified factor. 
+;;; specified factor.
+;;;
+;;; NB: As is evident in the examples below, this method does not replace the
+;;;     original data in the rthm-seq object's DATA slot.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq object.
-;;; - A real number.
+;;; - A real number that is the scaling factor.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns a rthm-seq object.

@@ -369,13 +369,24 @@
 ;;; RETURN VALUE  
 ;;; A list of lists that are all possible permutations of the original,
 ;;; specified list.
+;;;
+;;; Interrupts with an error if the method is passed anything but a list. 
 ;;; 
 ;;; EXAMPLE
 #|
+;; Simple usage
 (permutate '(a b c))
 
 => ((A B C) (B A C) (A C B) (C A B) (B C A) (C B A))
 
+;; When the list is more than 8 elements long, the resulting permutations are
+;; written to a file due to the very high number of results
+(permutate '(1 2 3 4 5 6 7 8 9))
+
+=>
+WARNING: permutations::permutations: This call will return 362880 
+results so they are being written to the file 
+'/tmp/permutations.txt'.
 
 |#
 ;;; SYNOPSIS

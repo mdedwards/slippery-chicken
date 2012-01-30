@@ -323,23 +323,98 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Sat Jan 28 15:42:27 GMT 2012: Added robodoc info
+;;; SAR Mon Jan 30 20:19:39 GMT 2012: Added robodoc info
 
 ;;; ****m* rthm-seq-palette/scale
 ;;; FUNCTION
-;;; 
+;;; Scale the durations of the rhythm objects in a given rthm-seq-palette
+;;; object by the specified factor.
+;;;
+;;; NB: As is evident in the examples below, this method does not replace the
+;;;     original data in the rthm-seq-palette object's DATA slot.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A rthm-seq-palette object.
+;;; - A real number that is the scaling factor.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; (- the three IGNORE arguments are for internal purposes only).
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a rthm-seq-palette object.
 ;;; 
 ;;; EXAMPLE
+
 #|
+
+;; Returns a rthm-seq-palette object
+(let ((mrsp
+       (make-rsp 'rsp-test 
+		 '((seq1 ((((2 4) q +e. s)
+			   ((s) e (s) q)
+			   (+e. s { 3 (te) te te } ))
+			  :pitch-seq-palette ((1 2 3 4 5 6 7)
+					      (1 3 5 7 2 4 6)
+					      (1 4 2 6 3 7 5)
+					      (1 5 2 7 3 2 4))))
+		   (seq2 ((((4 4) (e.) s { 3 te te te } +h)
+			   ({ 3 +te (te) te } e e (h)))
+			  :pitch-seq-palette (2 3 4 5 6 7 8)))
+		   (seq3 ((((2 4) e e { 3 te te te })
+			   ((4 4) (e) e e e s s (s) s q))
+			  :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
+   (scale mrsp 2))
+
+=> 
+RTHM-SEQ-PALETTE: psp-inversions: NIL
+PALETTE: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 3
+                      linked: T
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: RSP-TEST, tag: NIL, 
+data: (
+RTHM-SEQ: num-bars: 3
+
+;; Apply the method and loop through the rthm-seq objects in the
+;; rthm-seq-palette object's DATA slot, using the print-simple method to see
+;; the changes
+
+(let ((mrsp
+       (make-rsp 'rsp-test 
+		 '((seq1 ((((2 4) q +e. s)
+			   ((s) e (s) q)
+			   (+e. s { 3 (te) te te } ))
+			  :pitch-seq-palette ((1 2 3 4 5 6 7)
+					      (1 3 5 7 2 4 6)
+					      (1 4 2 6 3 7 5)
+					      (1 5 2 7 3 2 4))))
+		   (seq2 ((((4 4) (e.) s { 3 te te te } +h)
+			   ({ 3 +te (te) te } e e (h)))
+			  :pitch-seq-palette (2 3 4 5 6 7 8)))
+		   (seq3 ((((2 4) e e { 3 te te te })
+			   ((4 4) (e) e e e s s (s) s q))
+			  :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
+   (scale mrsp .5)
+   (loop for i in (data mrsp)
+      do (print-simple i)))
+
+=>
+rthm-seq SEQ1
+(2 8): note E, note S., note 32, 
+(2 8): rest 32, note S, rest 32, note E, 
+(2 8): note S., note 32, rest TS, note TS, note TS, 
+rthm-seq SEQ2
+(4 8): rest S., note 32, note TS, note TS, note TS, note Q, 
+(4 8): note TS, rest TS, note TS, note S, note S, rest Q, 
+rthm-seq SEQ3
+(2 8): note S, note S, note TS, note TS, note TS, 
+(4 8): rest S, note S, note S, note S, note 32, note 32, rest 32, note 32,
+       note E, 
 
 |#
 ;;; SYNOPSIS
@@ -348,16 +423,16 @@
 ;;; ****
   (declare (ignore ignore1) (ignore ignore2) (ignore ignore3))
   (loop 
-      for rs in (data rsp) 
-      for i from 0
-      do
-        (if (rsp-p (data rs))
-            (scale (data rs) scaler)
-          (progn
-            (unless (rthm-seq-p rs)
-              (error "~a~%rthm-seq-palette::scale: not a rthm-seq!"
-                     rs))
-            (setf (nth i (data rsp)) (scale rs scaler)))))
+     for rs in (data rsp) 
+     for i from 0
+     do
+       (if (rsp-p (data rs))
+	   (scale (data rs) scaler)
+	   (progn
+	     (unless (rthm-seq-p rs)
+	       (error "~a~%rthm-seq-palette::scale: not a rthm-seq!"
+		      rs))
+	     (setf (nth i (data rsp)) (scale rs scaler)))))
   rsp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -379,22 +454,71 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Jan 30 21:15:10 GMT 2012: Added robodoc info
+
 #+cmn
 ;;; ****m* rthm-seq-palette/cmn-display
 ;;; FUNCTION
-;;; 
+;;; Generate printable music notation output (.EPS) of the given
+;;; rthm-seq-palette object using the Common Music Notation (CMN)
+;;; interface. The method requires at least the name of the given
+;;; rthm-seq-palette object to set, but has several optional arguments in
+;;; additon to customize output.
+;;;
+;;; NB: Most of the keyword arguments are CMN attributes and share the same
+;;;     name as the CMN feature they affect.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A rthm-seq-palette object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
+;;; - keyword argument :all-output-in-one-file. T or NIL to indicate whether to
+;;;   write the output to a multi-page file or to separate files for each
+;;;   page. T = one multi-page file. Default = T. This is a direct CMN
+;;;   attribute.  
+;;; - keyword argument :file. The file path, including the file name, of the
+;;;   file to be generated.
+;;; - keyword argument :staff-separation. A number to indicate the amount of
+;;;   white space between staves, measured as a factor of the staff
+;;;   height. Default = 3. This is a direct CMN attribute. 
+;;; - keyword argument :line-separation. A number ot indicate the amount of
+;;;   white space between lines of music, as measured as a factor of the staff
+;;;   height. Default = 5. This is a direct CMN attribute.
+;;; - keyword argument :page-nums. T or NIL to indicate whether or not to print
+;;;   page numbers on the pages. T = print page numbers. Default = T.
+;;; - keyword argument :no-accidentals. T or NIL to indicate whether or not to
+;;;   supress printing accidentals for each and every note (rather than once
+;;;   per bar). T = supress printing all accidentals. Default = NIL.
+;;; - keyword argument :seqs-per-system. An integer indicating the number of
+;;;   rthm-seq objects to be printed in one staff system. Default = 1.
+;;; - keyword argument :size. A number to indicate the font size of the CMN
+;;;   output. 
+;;;
 ;;; RETURN VALUE
-;;; 
+;;; slippery-chicken prints a series of status lines in the listener, and
+;;; outputs an EPS file.
 ;;; 
 ;;; EXAMPLE
 #|
+;; A typical example with some specified keyword values for file and size
+(let ((mrsp
+       (make-rsp 'rsp-test 
+		 '((seq1 ((((2 4) q +e. s)
+			   ((s) e (s) q)
+			   (+e. s { 3 (te) te te } ))
+			  :pitch-seq-palette ((1 2 3 4 5 6 7)
+					      (1 3 5 7 2 4 6)
+					      (1 4 2 6 3 7 5)
+					      (1 5 2 7 3 2 4))))
+		   (seq2 ((((4 4) (e.) s { 3 te te te } +h)
+			   ({ 3 +te (te) te } e e (h)))
+			  :pitch-seq-palette (2 3 4 5 6 7 8)))
+		   (seq3 ((((2 4) e e { 3 te te te })
+			   ((4 4) (e) e e e s s (s) s q))
+			  :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
+  (cmn-display mrsp
+	       :file "/tmp/rmsp-output.eps"
+	       :size 10))
 
 |#
 ;;; SYNOPSIS

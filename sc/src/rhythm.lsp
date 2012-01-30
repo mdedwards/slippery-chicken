@@ -289,7 +289,7 @@
 ;;; - A scaling factor.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - clone. This argument determines whether a new rhythm object is made or
+;;; - <clone>. This argument determines whether a new rhythm object is made or
 ;;;   the duration value of the old object is replaced. When set to T, a new 
 ;;;   object is made based on the duration value of the original. When set to 
 ;;;   NIL, the original duration value is replaced (see example). Default = T. 

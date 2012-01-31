@@ -134,21 +134,41 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan 31 17:28:52 GMT 2012: Added robodoc info
+
 ;;; ****m* pitch-seq-palette/add-inversions
 ;;; FUNCTION
-;;; 
+;;; Add inversions of the existing pitch-seq objects in a given
+;;; pitch-seq-palette object to the end of that pitch-seq-palette object. (See
+;;; pitch-seq::invert for more details on slippery-chicken inversions.)
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A pitch-seq-palette object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Always returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a pitch-seq-palette object and print the DATA of the pitch-seq
+;; objects it contains; then apply the add-inversions method and print the same
+;; DATA to see the changes
+(let ((mpsp (make-psp 'mpsp 5 '((2 5 3 1 4)
+				(1 4 2 5 3)
+				(5 1 3 2 4)
+				(2 3 4 5 1)
+				(3 2 4 1 5)))))
+  (print (loop for ps in (data mpsp)
+	    collect (data ps)))
+  (add-inversions mpsp)
+  (print (loop for ps in (data mpsp)
+	    collect (data ps))))
+
+=>
+((2 5 3 1 4) (1 4 2 5 3) (5 1 3 2 4) (2 3 4 5 1) (3 2 4 1 5)) 
+
+((2 5 3 1 4) (1 4 2 5 3) (5 1 3 2 4) (2 3 4 5 1) (3 2 4 1 5) (4 1 3 5 2)
+ (5 2 4 1 3) (1 5 3 4 2) (4 3 2 1 5) (3 4 2 5 1))
 
 |#
 ;;; SYNOPSIS
@@ -160,21 +180,84 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* pitch-seq-palette/combine
-;;; FUNCTION
-;;; 
+;;; SAR Tue Jan 31 17:40:07 GMT 2012: Added robodoc info
+
+;;; ****m* pitch-seq-palette/combine 
+;;; FUNCTION 
+;;; Create a new pitch-seq-palette object by combining the pitch-seq lists from
+;;; one pitch-seq-palette object with those of another.
+;;;
+;;; The method combines the contents of the two given rthm-seq-palette objects
+;;; consecutivelyl; i.e., the first pitch-seq object of the first
+;;; pitch-seq-palette is combined with the first pitch-seq object of the other,
+;;; then the second with the second, the third with the third etc. 
+;;;
+;;; If one pitch-seq-palette object contains more pitch-seq objects than the
+;;; other, the method cycles through the shorter one until all of the members
+;;; of the longer one have been handled. The new pitch-seq-palette object will
+;;; therefore contain the same number of pitch-seq objects as is in the longest
+;;; of the two starting pitch-seq-palette objects.
+;;;
+;;; It is not necessary for the lengths of the pitch-seq objects in the two
+;;; starting pitch-seq-palette objects to be the same.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A first pitch-seq-palette object.
+;;; - A second pitch-seq-palette object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A pitch-seq-palette object.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Combine two pitch-seq-palette objects of the same length, each of whose
+;;; pitch-seqs are the same length
+(let ((mpsp1 (make-psp 'mpsp1 5 '((2 5 3 1 4) (1 4 2 5 3) (5 1 3 2 4))))
+      (mpsp2 (make-psp 'mpsp2 5 '((2 3 4 5 1) (3 2 4 1 5) (3 2 1 5 4)))))
+  (combine mpsp1 mpsp2))
+
+=>
+PITCH-SEQ-PALETTE: num-notes: 10, instruments: NIL
+PALETTE: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 3
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "MPSP1-MPSP2", tag: NIL, 
+data: (
+PITCH-SEQ: notes: NIL
+[...]
+data: (2 5 3 1 4 2 3 4 5 1)
+PITCH-SEQ: notes: NIL
+[...]
+data: (1 4 2 5 3 3 2 4 1 5)
+[...]       
+PITCH-SEQ: notes: NIL
+[...]
+data: (5 1 3 2 4 3 2 1 5 4)
+)
+
+;; When combining pitch-seq-palette objects of different lengths, the method
+;; cyles through the shorter of the two
+(let ((mpsp1 (make-psp 'mpsp1 5 '((2 5 3 1 4) (1 4 2 5 3) (5 1 3 2 4))))
+      (mpsp2 (make-psp 'mpsp2 5 '((2 3 4 5 1) (3 2 4 1 5)))))
+  (loop for ps in (data (combine mpsp1 mpsp2)) 
+       collect (data ps)))
+
+=> ((2 5 3 1 4 2 3 4 5 1) (1 4 2 5 3 3 2 4 1 5) (5 1 3 2 4 2 3 4 5 1))
+
+;; The two starting pitch-seq-palette objects are not required to have
+;; pitch-seq objects of the same length
+(let ((mpsp1 (make-psp 'mpsp1 5 '((2 5 3 1 4) (1 4 2 5 3) (5 1 3 2 4))))
+      (mpsp2 (make-psp 'mpsp2 3 '((2 3 4) (3 2 4)))))
+  (loop for ps in (data (combine mpsp1 mpsp2)) 
+       collect (data ps)))
+
+=> ((2 5 3 1 4 2 3 4) (1 4 2 5 3 3 2 4) (5 1 3 2 4 2 3 4))
 
 |#
 ;;; SYNOPSIS
@@ -383,23 +466,25 @@ Each pitch sequence must have 5 notes (you have 6):
                    (2 1 5 1 5 1 6 5 1 5 2 5 1 2 6)))))
       (seqs-al nil))
 
+  ;; SAR Tue Jan 31 18:09:46 GMT 2012: Edited robodoc info
+
   ;; ****f* rthm-seq-palette/create-psps-default
   ;; FUNCTION
-  ;; create-psps-default
+  ;; Create pitch-sequences for the create-psps method. This is the callback
+  ;; function that is passed by default. If data isn't provided for a sequence
+  ;; of a certain length, a (recursive!) attempt will be made to make one up
+  ;; from two sequences of lesser length.
   ;;
-  ;; Create pitch-sequences for the create-psps method.  This is the callback
-  ;; function that is passed by default.  This (and the above lists) was first
-  ;; used in I Kill by Proxy.  If data isn't provided for a sequence of a
-  ;; certain length, a (recursive!) attempt will be made to make one up from
-  ;; two sequences of lesser length.
+  ;; This (and the above lists) was first used in the piece "I Kill by Proxy".
   ;; 
   ;; ARGUMENTS 
-  ;; - number of notes we need a psp for
+  ;; - An integer that is the number of notes for which a pitch-seq-palette
+  ;;   object is needed.
   ;; - the pitch-seq data (see documentation for create psps method).  Ideally
   ;;   this would only be passed the first time the function is called.
   ;; 
   ;; RETURN VALUE  
-  ;; a list of numbers suitable for use in creating a pitch-seq
+  ;; A list of numbers suitable for use in creating a pitch-seq object.
   ;; 
   ;; SYNOPSIS
   (defun create-psps-default (num-notes data-lists)

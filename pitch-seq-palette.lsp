@@ -274,21 +274,76 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jan 31 14:36:09 GMT 2012: Added robodoc info
+
 ;;; ****f* pitch-seq-palette/make-psp
 ;;; FUNCTION
-;;; 
+;;; Create a pitch-seq-palette object from an ID, a specified number of notes,
+;;; and a list of lists of numbers representing the pitch curve of the intended
+;;; pitch-seq objects.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A symbol that is to be the ID of the pitch-seq-palette to be created. 
+;;; - An integer that is the number of notes there are to be in each pitch-seq
+;;;   object created.
+;;; - A list of lists, each of which contained list is a list of numbers
+;;;   representing the pitch curve of the intended pitch-seq object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A pitch-seq-palette object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns a pitch-seq-palette object
+(make-psp 'mpsp 5 '((2 5 3 1 4)
+		    (1 4 2 5 3)
+		    (5 1 3 2 4)
+		    (2 3 4 5 1)
+		    (3 2 4 1 5)))
+
+=> 
+PITCH-SEQ-PALETTE: num-notes: 5, instruments: NIL
+PALETTE: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 5
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 5, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: MPSP, tag: NIL, 
+data: (
+PITCH-SEQ: notes: NIL
+[...]
+data: (2 5 3 1 4)
+PITCH-SEQ: notes: NIL
+[...]
+data: (1 4 2 5 3)
+PITCH-SEQ: notes: NIL
+[...]
+data: (5 1 3 2 4)
+PITCH-SEQ: notes: NIL
+[...]
+data: (2 3 4 5 1)
+PITCH-SEQ: notes: NIL
+[...]
+data: (3 2 4 1 5)
+)
+
+;; Interrupts with an error if any of the <pitch-seqs> lists is not of the
+;; length specified by <num-notes>
+(make-psp 'mpsp 5 '((1 2 1 1 3)
+		    (1 3 2 1 5)
+		    (1 3 5 6 7 8)))
+
+=>
+pitch-seq-palette::verify-and-store: 
+In pitch-seq MPSP-ps-3 from palette MPSP:
+Each pitch sequence must have 5 notes (you have 6): 
+[...]
+ (1 3 5 6 7 8))
+   [Condition of type SIMPLE-ERROR]
 
 |#
 ;;; SYNOPSIS
@@ -298,9 +353,9 @@
   (loop for i in pitch-seqs unless (listp i)
      ;; todo: I think this is causing an error when we indicate a chord as
      ;; the first note 
-      do (error "pitch-seq-palette::make-psp: ~
+     do (error "pitch-seq-palette::make-psp: ~
                  The argument to make-psp should be a list of lists: ~%~a"
-                pitch-seqs))
+	       pitch-seqs))
   (make-instance 'pitch-seq-palette :id id :data pitch-seqs
                  :num-notes num-notes))
 
@@ -341,7 +396,7 @@
   ;; ARGUMENTS 
   ;; - number of notes we need a psp for
   ;; - the pitch-seq data (see documentation for create psps method).  Ideally
-  ;; this would only be passed the first time the function is called.
+  ;;   this would only be passed the first time the function is called.
   ;; 
   ;; RETURN VALUE  
   ;; a list of numbers suitable for use in creating a pitch-seq

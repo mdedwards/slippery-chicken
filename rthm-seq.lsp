@@ -1457,6 +1457,15 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 ;;;     a quarter note, and a rthm-seq consisting of a 2/4, a 3/4 and a 3/8 bar
 ;;;     would fail at the 3/8 bar with an error.  
 ;;; 
+;;; NB: In order for the resulting rhythms to be parsable by LilyPond and CMN,
+;;;     the value of the <unit> argument must match the rhythms in its tuplet
+;;;     nature. Rhythmic sequences containing triplets (or quintuplets etc.)
+;;;     will result in LilyPond and CMN errors when an attempt is made to chop
+;;;     them with 's or 'e values for the <unit>, and vice versa. If the
+;;;     chopping <unit> is duple, all rhythms in the given sequence must also
+;;;     be duple. This only affects the notation output and has no bearing on
+;;;     the successful production of the MIDI file.
+;;;
 ;;; ARGUMENTS 
 ;;; - A rthm-seq object.
 ;;; 
@@ -1845,21 +1854,43 @@ rthm-seq NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; e.g. (get-multipliers '(e. s q e e) 's) -> (3 1 4 2 2)
+
+;;;|#
+;;; SAR Tue Jan 31 13:13:56 GMT 2012: Added robodoc info
+
 ;;; ****m* rthm-seq/get-multipliers
 ;;; FUNCTION
-;;; 
+;;; Get a list of factors by which a specified rhythmic unit must be multiplied
+;;; in order to create the rhythms of a given rthm-seq object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A rthm-seq object.
+;;; - A rhythm unit, either as a number or a CMN shorthand symbol (i.e. 's) 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether to round the results. T = round. 
+;;;   Default = NIL. NB: Lisp always rounds to even numbers, meaning x.5 may
+;;;   sometimes round up and sometimes round down; thus (round 1.5) => 2, and
+;;;   (round 2.5) => 2.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of numbers.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; By default the method returns the list of multipliers un-rounded
+(let ((rs (make-rthm-seq '(seq1 ((((2 4) q e s s))
+				 :pitch-seq-palette ((1 2 3 4)))))))
+  (get-multipliers rs 'e))
+
+=> (2.0 1.0 0.5 0.5)
+
+;; Setting the optional argument to T rounds the results before returning 
+(let ((rs (make-rthm-seq '(seq1 ((((2 4) q e s s))
+				 :pitch-seq-palette ((1 2 3 4)))))))
+  (get-multipliers rs 'e t))
+
+=> (2 1 0 0)
 
 |#
 ;;; SYNOPSIS

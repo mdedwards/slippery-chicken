@@ -563,28 +563,122 @@ rthm-seq SEQ3
      :staff-separation staff-separation)))
      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 
-;;; Calls chop for each seq in the rsp--see rthm-seq-bar::chop-bar for
-;;; details of these arguments.  Returns a new rthm-seq-palette with the same
-;;; structure as the argument but with a further level of nesting: each
-;;; rthm-seq in the argument is replaced by a list of rthm-seqs that are one
-;;; 'slice' of the original rthm-seq.
+
+;;; SAR Tue Jan 31 13:52:23 GMT 2012: Deleted MDE's comment here as it is taken
+;;; nearly verbatim into the robodoc info
+;;; SAR Tue Jan 31 13:51:57 GMT 2012: Added robodoc info
 
 ;;; ****m* rthm-seq-palette/chop
 ;;; FUNCTION
-;;; 
+;;; Applies the chop method to each rthm-seq object in the given
+;;; rthm-seq-palette object (see rthm-seq-bar::chop for details). Returns a
+;;; new rthm-seq-palette object with the same structure as the argument, but
+;;; with a further level of nesting: Each rthm-seq object in the argument is
+;;; replaced by a list of rthm-seq objects that are each one "slice" of the
+;;; original rthm-seq objects.
+;;;
+;;; The chop method is the basis for slippery-chicken's feature of
+;;; intra-phrasal looping.
+;;;
+;;; NB: Since the chop method functions by comparing each beat of a given
+;;;     rthm-seq-bar object to the specified <chop-points> pattern for
+;;;     segmenting that beat, all rthm-seq-bar objects in the given
+;;;     rthm-seq-palette object must be evenly divisible by the beat for which
+;;;     the pattern is defined. For example, if the <chop-points> argument
+;;;     defines a quarter note, all bars in the given rthm-seq-palette object
+;;;     must be evenly divisible by a quarter note, and a rthm-seq-palette
+;;;     consisting of a rthm-seq object with a 2/4, a 3/4 and a 3/8 bar would
+;;;     fail at the 3/8 bar with an error.
+;;;
+;;; NB: In order for the resulting rhythms to be parsable by LilyPond and CMN,
+;;;     the value of the <unit> argument must match the rhythms in its tuplet
+;;;     nature. Rhythmic sequences containing triplets (or quintuplets etc.)
+;;;     will result in LilyPond and CMN errors when an attempt is made to chop
+;;;     them with 's or 'e values for the <unit>, and vice versa. If the
+;;;     chopping <unit> is duple, all rhythms in the given sequence must also
+;;;     be duple. This only affects the notation output and has no bearing on
+;;;     the successful production of the MIDI file.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A rthm-seq-bar object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - <chop-points>. A list of integer pairs, each of which delineates a
+;;;   segment of the beat of the given rthm-seq-bar objects within the given
+;;;   rthm-seq-palette object, measured in the rhythmic unit specified by the
+;;;   <unit> argument. See the documentation for rthm-seq-bar::chop for more
+;;;   details.
+;;; - <unit>. The rhythmic duration that serves as the unit of measurement for
+;;;   the chop points. Default = 's.
 ;;; 
 ;;; RETURN VALUE
 ;;; 
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Create a rthm-seq-palette object, chop it with user-defined chop-points and
+;;; a <unit> value of 'e, and print-simple the results
+(let* ((rsp-orig (make-rsp
+		  'sl-rsp
+		  '((1 
+		     ((((2 4) (e) e (e) e)) 
+		      :pitch-seq-palette (1 8)))
+		    (2 
+		     ((((2 4) (s) e s e. (s))) 
+		      :pitch-seq-palette (3 5 7)))
+		    (3
+		     ((((3 4) q +s e. +q)) 
+		      :pitch-seq-palette (1 7))))))
+       (rsp-chopped (chop rsp-orig
+			  '((1 1) (1 2) (2 2))
+			  'e)))
+  (loop for i in (data rsp-chopped)
+     do (loop for j in (data (data i))
+	   do (print-simple j))))
+
+=>
+rthm-seq 1
+(1 8): rest 8, 
+rthm-seq 2
+(1 4): rest E, NIL E, 
+rthm-seq 3
+(1 8): NIL E, 
+rthm-seq 4
+(1 8): rest 8, 
+rthm-seq 5
+(1 4): rest E, NIL E, 
+rthm-seq 6
+(1 8): NIL E, 
+rthm-seq 1
+(1 8): rest S, NIL S, 
+rthm-seq 2
+(1 4): rest S, NIL E, NIL S, 
+rthm-seq 3
+(1 8): rest S, NIL S, 
+rthm-seq 4
+(1 8): NIL E, 
+rthm-seq 5
+(1 4): NIL E., rest S, 
+rthm-seq 6
+(1 8): rest 8, 
+rthm-seq 1
+(1 8): NIL E, 
+rthm-seq 2
+(1 4): NIL Q, 
+rthm-seq 3
+(1 8): rest 8, 
+rthm-seq 4
+(1 8): rest S, NIL S, 
+rthm-seq 5
+(1 4): rest S, NIL E., 
+rthm-seq 6
+(1 8): rest 8, 
+rthm-seq 7
+(1 8): rest 8, 
+rthm-seq 8
+(1 4): rest 4, 
+rthm-seq 9
+(1 8): rest 8,
 
 |#
 ;;; SYNOPSIS

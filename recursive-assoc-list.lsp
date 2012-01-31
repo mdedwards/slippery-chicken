@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 18:41:48 Sat Jan 28 2012 ICT
+;;; $$ Last modified: 18:28:31 Tue Jan 31 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1131,13 +1131,15 @@ data: HIVE
       (call-next-method (if (atom key) key (first key)) new-value ral)
     (let* ((deepest-ref (butlast key))
            (deepest-replace (first (last key)))
-           (deepest-ral (when deepest-ref (data (get-data deepest-ref ral))))
-           result)
+           (deepest-ral (when deepest-ref (data (get-data deepest-ref ral)))))
       (when deepest-ral
-        (setf result (call-next-method deepest-replace new-value deepest-ral)))
-      ;; MDE Sat Jan 28 18:41:45 2012 
-      (relink-named-objects ral)
-      result)))
+        (call-next-method deepest-replace new-value deepest-ral)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; MDE Tue Jan 31 11:22:36 2012 
+(defmethod set-data :after (key new-value (ral recursive-assoc-list))
+  (relink-named-objects ral))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

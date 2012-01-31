@@ -539,7 +539,6 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: PSEQ2, tag: NIL, 
 data: (2 1 1 3 1)
 
-
 |#
 ;;; SYNOPSIS
 (defun make-pitch-seq (id-data &optional (id nil))

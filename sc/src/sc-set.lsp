@@ -144,25 +144,119 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Get the microtones rounded to the nearest chromatic note.  As a
-;;; default only get those microtones less than a quarter tone.  Move
-;;; all pitches to <octave> if not nil.
+;;; MDE:
+;;; Move all pitches to <octave> if not nil.
+
+;;; SAR Tue Jan 31 21:21:00 GMT 2012: Delete MDE's original comment here as it
+;;; has been taken into the robodoc below nearly verbatim
+
+;;; SAR Tue Jan 31 21:20:49 GMT 2012: Added robodoc info
 
 ;;; ****m* sc-set/round-inflections
 ;;; FUNCTION
-;;; 
+;;; Get the microtones of a given sc-set object, rounded to the nearest
+;;; chromatic note. 
+;;;
+;;; This method returns only the rounded microtones, and not any of the pitches
+;;; of the original sc-set that are already chromatic.
+;;;
+;;; By default, this method only gets those microtones that are less than a
+;;; quarter-tone. This behavior can be changed by setting the :qtr-tones-also
+;;; argument to T. 
+;;;
+;;; An optional argument allows for all pitches to be moved to a specified
+;;; octave, in which case any duplicate pitches are removed.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+
+;;; - keyword argument :qtr-tones-also. T or NIL to indicate whether
+;;;   quarter-tones are also to be rounded to the nearest chromatic pitch and
+;;;   returned. T = round and return. Default = NIL.
+;;; - keyword argument :octave. An integer that is the octave designator to
+;;;   which all resulting pitches are to be transposed (i.e. the "4" in "C4"
+;;;   etc.) 
+;;; - keyword argument :remove-duplicates. T or NIL to indicate whether
+;;;   any duplicate pitches within an octave that are created by use of the
+;;;   :octave keyword argument are to be removed. T = remove
+;;;   duplicates. Default =  NIL.
+;;; - keyword argument :as-symbols. T or NIL to indicate whether to return the
+;;;   results of the method as a list of note-name symbols rather than a list
+;;;   of pitch objects. T = return as note-name symbols. Default = NIL. 
+;;; - keyword argument :package. The package in which the pitches are to be
+;;;   handled. Default = :sc.  
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of pitch objects.
 ;;; 
 ;;; EXAMPLE
 #|
+;; First set the *scale* environment of CM (which is used by slippery chicken)
+;; to twelfth-tones
+(setf cm::*scale* (cm::find-object 'twelfth-tone))
+
+=> #<tuning "twelfth-tone">
+
+;; By default the method returns a list of pitch objects.
+(let ((mscs (make-sc-set '(c4 cts4 css4 cqs4 cssf4 cstf4 cs4))))
+  (round-inflections mscs))
+
+=>
+(
+PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
+[...]
+data: C4
+PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
+[...]
+data: C4
+[...]
+PITCH: frequency: 277.183, midi-note: 61, midi-channel: 0 
+[...]
+data: CS4
+[...]
+PITCH: frequency: 277.183, midi-note: 61, midi-channel: 0 
+[...]
+data: CS4
+)
+
+;; Setting the :as-symbols argument to T returns a list of note-name symbols
+;; instead 
+(let ((mscs (make-sc-set '(c4 cts4 css4 cqs4 cssf4 cstf4 cs4))))
+  (round-inflections mscs :as-symbols t))
+
+=> (C4 C4 CS4 CS4)
+
+;; Setting the :qtr-tones-also argument to T returns causes quarter-tones to be
+;; rounded and returned as well.
+(let ((mscs (make-sc-set '(c4 cts4 css4 cqs4 cssf4 cstf4 cs4))))  
+  (round-inflections mscs 
+		     :qtr-tones-also T
+		     :as-symbols t))
+
+=> (C4 C4 C4 CS4 CS4)
+
+;; Specifying an octave transposes all returned pitches to that octave,
+;; removing any duplicates by default
+(let ((mscs (make-sc-set '(c2 cts3 css4 cqs5 cssf6 cstf7 cs8))))  
+  (round-inflections mscs 
+		     :qtr-tones-also T
+		     :octave 4
+		     :as-symbols t))
+
+=> (C4 CS4)
+
+;; The removal of the duplicates can be turned off by setting the
+;; :remove-duplicates argument to NIL 
+(let ((mscs (make-sc-set '(c2 cts3 css4 cqs5 cssf6 cstf7 cs8))))  
+  (round-inflections mscs 
+		     :qtr-tones-also T
+		     :octave 4
+		     :remove-duplicates NIL
+		     :as-symbols t))
+
+=> (C4 C4 C4 CS4 CS4)
 
 |#
 ;;; SYNOPSIS
@@ -176,22 +270,22 @@
 ;;; ****
   (let ((result
          (loop for p in (data s) 
-             when (if qtr-tones-also
-                      (micro-tone p)
-                    (and (micro-tone p)
-                         (not (qtr-tone p))))
-             collect (pitch-round p 
-                                  ;; if we're going to transpose to an
-                                  ;; octave get pitch objects and convert to
-                                  ;; symbols later 
-                                  :as-symbol (if octave nil as-symbols)
-                                  :package package))))
+	    when (if qtr-tones-also
+		     (micro-tone p)
+		     (and (micro-tone p)
+			  (not (qtr-tone p))))
+	    collect (pitch-round p 
+				 ;; if we're going to transpose to an
+				 ;; octave get pitch objects and convert to
+				 ;; symbols later 
+				 :as-symbol (if octave nil as-symbols)
+				 :package package))))
     (if octave
         (transpose-pitch-list-to-octave 
          result octave 
          :as-symbols as-symbols :package package 
          :remove-duplicates remove-duplicates)
-      result)))
+	result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -762,21 +856,96 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****f* sc-set/make-sc-set
-;;; FUNCTION
-;;; 
+;;; SAR Tue Jan 31 20:05:39 GMT 2012: Added robodoc info
+
+;;; ****f* sc-set/make-sc-set 
+;;; FUNCTION 
+;;; Create an sc-set object, which holds pitch-set information for harmonic and
+;;; pitch manipulation.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list of note-name symbols that is to be the set (pitch-set) for the
+;;;   given sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :id. A symbol that is to be the ID of the given sc-set
+;;;   object.
+;;; - keyword argument :subsets. An assoc-list of key/data pairs, in which the
+;;;   data is a list of note-name symbols that are a subset of the main
+;;;   set. One use for this keyword argument might be to create subsets that
+;;;   particular instruments can play; these would then be selected in the
+;;;   chord-function passed to the instrument object.
+;;; - keyword argument :related-sets. An assoc-list of key/data pairs, similar
+;;;   to :subsets, only that the pitches given here do not have to be part of
+;;;   the main set. This can be used, for example, for pitches missing from the
+;;;   main set.
+;;; - keyword argument :auto-sort. T or NIL to indicate whether the specified
+;;;   pitches (note-name symbols) are to be automatically  sorted from lowest
+;;;   to highest. T = sort. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An sc-set object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Simplest usage, with no keyword arguments; returns an sc-set object
+(make-sc-set '(d2 cs3 fs3 cs4 e4 c5 af5 ef6))
+
+=> 
+SC-SET: auto-sort: T, used-notes: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 0
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 0, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: USED-NOTES, tag: NIL, 
+data: NIL
+
+N.B. All pitches printed as symbols only, internally they are all 
+pitch-objects.
+
+    subsets: 
+    related-sets: 
+SCLIST: sclist-length: 8, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
+
+;; With keyword arguments
+(make-sc-set '(d2 cs3 fs3 cs4 e4 c5 af5 ef6)
+	     :id 'scs1
+	     :subsets '((violin (e4 c5 af5 ef6))
+			(viola (cs4 e4)))
+	     :related-sets '((missing (ds2 e2 b3 cs6 d6))))
+
+=> 
+SC-SET: auto-sort: T, used-notes: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 0
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 0, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: USED-NOTES, tag: NIL, 
+data: NIL
+
+N.B. All pitches printed as symbols only, internally they are all 
+pitch-objects.
+
+    subsets: 
+VIOLIN: (E4 C5 AF5 EF6)
+VIOLA: (CS4 E4)
+    related-sets: 
+MISSING: (DS2 E2 B3 CS6 D6)
+SCLIST: sclist-length: 8, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: SCS1, tag: NIL, 
+data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 
 |#
 ;;; SYNOPSIS

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 21:33:00 Fri Jan 13 2012 ICT
+;;; $$ Last modified: 21:12:17 Tue Jan 31 2012 ICT
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -159,25 +159,25 @@
 ;; values, and print the values of the individual pitch-seq-palettes again to
 ;; see the change.  
 (let ((mrsp (make-rsp 'rsp-test 
-		      '((seq1 ((((2 4) q +e. s)
-				((s) e (s) q)
-				(+e. s { 3 (te) te te } ))
-			       :pitch-seq-palette (1 2 3 4 5 6 7)))
-			(seq2 ((((3 4) (e.) s { 3 te te te } +q)
-				({ 3 +te (te) te } e e (q)))
-			       :pitch-seq-palette (2 3 4 5 6 7 8)))
-			(seq3 ((((2 4) e e { 3 te te te })
-				((5 8) (e) e e e s s))
-			       :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2)))))))
+                      '((seq1 ((((2 4) q +e. s)
+                                ((s) e (s) q)
+                                (+e. s { 3 (te) te te } ))
+                               :pitch-seq-palette (1 2 3 4 5 6 7)))
+                        (seq2 ((((3 4) (e.) s { 3 te te te } +q)
+                                ({ 3 +te (te) te } e e (q)))
+                               :pitch-seq-palette (2 3 4 5 6 7 8)))
+                        (seq3 ((((2 4) e e { 3 te te te })
+                                ((5 8) (e) e e e s s))
+                               :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2)))))))
   (print (loop for i in (data mrsp)
-	    collect 
-	      (loop for j in (data (pitch-seq-palette i))
-		 collect (data j))))
+            collect 
+              (loop for j in (data (pitch-seq-palette i))
+                 collect (data j))))
   (create-psps mrsp)
   (print (loop for i in (data mrsp)
-	    collect 
-	      (loop for j in (data (pitch-seq-palette i))
-		 collect (data j)))))
+            collect 
+              (loop for j in (data (pitch-seq-palette i))
+                 collect (data j)))))
 
 =>
 (((1 2 3 4 5 6 7)) ((2 3 4 5 6 7 8)) ((3 4 5 6 7 8 9 10 1 2))) 
@@ -190,21 +190,21 @@
 ;; pitch-seq objects to be created for each rthm-seq. This example creates 5
 ;; instead of the default 3.
 (let ((mrsp (make-rsp 'rsp-test 
-		      '((seq1 ((((2 4) q +e. s)
-				((s) e (s) q)
-				(+e. s { 3 (te) te te } ))
-			       :pitch-seq-palette (1 2 3 4 5 6 7)))
-			(seq2 ((((3 4) (e.) s { 3 te te te } +q)
-				({ 3 +te (te) te } e e (q)))
-			       :pitch-seq-palette (2 3 4 5 6 7 8)))
-			(seq3 ((((2 4) e e { 3 te te te })
-				((5 8) (e) e e e s s))
-			       :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2)))))))
+                      '((seq1 ((((2 4) q +e. s)
+                                ((s) e (s) q)
+                                (+e. s { 3 (te) te te } ))
+                               :pitch-seq-palette (1 2 3 4 5 6 7)))
+                        (seq2 ((((3 4) (e.) s { 3 te te te } +q)
+                                ({ 3 +te (te) te } e e (q)))
+                               :pitch-seq-palette (2 3 4 5 6 7 8)))
+                        (seq3 ((((2 4) e e { 3 te te te })
+                                ((5 8) (e) e e e s s))
+                               :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2)))))))
   (create-psps mrsp :pitch-seqs-per-rthm-seq 5)
   (print (loop for i in (data mrsp)
-	    collect 
-	      (loop for j in (data (pitch-seq-palette i))
-		 collect (data j)))))
+            collect 
+              (loop for j in (data (pitch-seq-palette i))
+                 collect (data j)))))
 
 =>
 (((8 8 8 5 9 6 9) (9 3 8 4 7 5 4) (3 4 3 5 3 4 3) (8 8 8 5 9 6 9)
@@ -279,19 +279,19 @@
 
 (let ((mrsp
        (make-rsp 'rsp-test 
-		 '((seq1 ((((2 4) q +e. s)
-			   ((s) e (s) q)
-			   (+e. s { 3 (te) te te } ))
-			  :pitch-seq-palette ((1 2 3 4 5 6 7)
-					      (1 3 5 7 2 4 6)
-					      (1 4 2 6 3 7 5)
-					      (1 5 2 7 3 2 4))))
-		   (seq2 ((((3 4) (e.) s { 3 te te te } +q)
-			   ({ 3 +te (te) te } e e (q)))
-			  :pitch-seq-palette (2 3 4 5 6 7 8)))
-		   (seq3 ((((2 4) e e { 3 te te te })
-			   ((5 8) (e) e e e s s))
-			  :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2)))))))
+                 '((seq1 ((((2 4) q +e. s)
+                           ((s) e (s) q)
+                           (+e. s { 3 (te) te te } ))
+                          :pitch-seq-palette ((1 2 3 4 5 6 7)
+                                              (1 3 5 7 2 4 6)
+                                              (1 4 2 6 3 7 5)
+                                              (1 5 2 7 3 2 4))))
+                   (seq2 ((((3 4) (e.) s { 3 te te te } +q)
+                           ({ 3 +te (te) te } e e (q)))
+                          :pitch-seq-palette (2 3 4 5 6 7 8)))
+                   (seq3 ((((2 4) e e { 3 te te te })
+                           ((5 8) (e) e e e s s))
+                          :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2)))))))
   (loop repeat 2
        do (get-next (pitch-seq-palette (first (data mrsp)))))
   (print (data (get-next (pitch-seq-palette (first (data mrsp))))))
@@ -350,19 +350,19 @@
 ;; Returns a rthm-seq-palette object
 (let ((mrsp
        (make-rsp 'rsp-test 
-		 '((seq1 ((((2 4) q +e. s)
-			   ((s) e (s) q)
-			   (+e. s { 3 (te) te te } ))
-			  :pitch-seq-palette ((1 2 3 4 5 6 7)
-					      (1 3 5 7 2 4 6)
-					      (1 4 2 6 3 7 5)
-					      (1 5 2 7 3 2 4))))
-		   (seq2 ((((4 4) (e.) s { 3 te te te } +h)
-			   ({ 3 +te (te) te } e e (h)))
-			  :pitch-seq-palette (2 3 4 5 6 7 8)))
-		   (seq3 ((((2 4) e e { 3 te te te })
-			   ((4 4) (e) e e e s s (s) s q))
-			  :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
+                 '((seq1 ((((2 4) q +e. s)
+                           ((s) e (s) q)
+                           (+e. s { 3 (te) te te } ))
+                          :pitch-seq-palette ((1 2 3 4 5 6 7)
+                                              (1 3 5 7 2 4 6)
+                                              (1 4 2 6 3 7 5)
+                                              (1 5 2 7 3 2 4))))
+                   (seq2 ((((4 4) (e.) s { 3 te te te } +h)
+                           ({ 3 +te (te) te } e e (h)))
+                          :pitch-seq-palette (2 3 4 5 6 7 8)))
+                   (seq3 ((((2 4) e e { 3 te te te })
+                           ((4 4) (e) e e e s s (s) s q))
+                          :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
    (scale mrsp 2))
 
 => 
@@ -386,19 +386,19 @@ RTHM-SEQ: num-bars: 3
 
 (let ((mrsp
        (make-rsp 'rsp-test 
-		 '((seq1 ((((2 4) q +e. s)
-			   ((s) e (s) q)
-			   (+e. s { 3 (te) te te } ))
-			  :pitch-seq-palette ((1 2 3 4 5 6 7)
-					      (1 3 5 7 2 4 6)
-					      (1 4 2 6 3 7 5)
-					      (1 5 2 7 3 2 4))))
-		   (seq2 ((((4 4) (e.) s { 3 te te te } +h)
-			   ({ 3 +te (te) te } e e (h)))
-			  :pitch-seq-palette (2 3 4 5 6 7 8)))
-		   (seq3 ((((2 4) e e { 3 te te te })
-			   ((4 4) (e) e e e s s (s) s q))
-			  :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
+                 '((seq1 ((((2 4) q +e. s)
+                           ((s) e (s) q)
+                           (+e. s { 3 (te) te te } ))
+                          :pitch-seq-palette ((1 2 3 4 5 6 7)
+                                              (1 3 5 7 2 4 6)
+                                              (1 4 2 6 3 7 5)
+                                              (1 5 2 7 3 2 4))))
+                   (seq2 ((((4 4) (e.) s { 3 te te te } +h)
+                           ({ 3 +te (te) te } e e (h)))
+                          :pitch-seq-palette (2 3 4 5 6 7 8)))
+                   (seq3 ((((2 4) e e { 3 te te te })
+                           ((4 4) (e) e e e s s (s) s q))
+                          :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
    (scale mrsp .5)
    (loop for i in (data mrsp)
       do (print-simple i)))
@@ -427,12 +427,12 @@ rthm-seq SEQ3
      for i from 0
      do
        (if (rsp-p (data rs))
-	   (scale (data rs) scaler)
-	   (progn
-	     (unless (rthm-seq-p rs)
-	       (error "~a~%rthm-seq-palette::scale: not a rthm-seq!"
-		      rs))
-	     (setf (nth i (data rsp)) (scale rs scaler)))))
+           (scale (data rs) scaler)
+           (progn
+             (unless (rthm-seq-p rs)
+               (error "~a~%rthm-seq-palette::scale: not a rthm-seq!"
+                      rs))
+             (setf (nth i (data rsp)) (scale rs scaler)))))
   rsp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -503,22 +503,22 @@ rthm-seq SEQ3
 ;; A typical example with some specified keyword values for file and size
 (let ((mrsp
        (make-rsp 'rsp-test 
-		 '((seq1 ((((2 4) q +e. s)
-			   ((s) e (s) q)
-			   (+e. s { 3 (te) te te } ))
-			  :pitch-seq-palette ((1 2 3 4 5 6 7)
-					      (1 3 5 7 2 4 6)
-					      (1 4 2 6 3 7 5)
-					      (1 5 2 7 3 2 4))))
-		   (seq2 ((((4 4) (e.) s { 3 te te te } +h)
-			   ({ 3 +te (te) te } e e (h)))
-			  :pitch-seq-palette (2 3 4 5 6 7 8)))
-		   (seq3 ((((2 4) e e { 3 te te te })
-			   ((4 4) (e) e e e s s (s) s q))
-			  :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
+                 '((seq1 ((((2 4) q +e. s)
+                           ((s) e (s) q)
+                           (+e. s { 3 (te) te te } ))
+                          :pitch-seq-palette ((1 2 3 4 5 6 7)
+                                              (1 3 5 7 2 4 6)
+                                              (1 4 2 6 3 7 5)
+                                              (1 5 2 7 3 2 4))))
+                   (seq2 ((((4 4) (e.) s { 3 te te te } +h)
+                           ({ 3 +te (te) te } e e (h)))
+                          :pitch-seq-palette (2 3 4 5 6 7 8)))
+                   (seq3 ((((2 4) e e { 3 te te te })
+                           ((4 4) (e) e e e s s (s) s q))
+                          :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
   (cmn-display mrsp
-	       :file "/tmp/rmsp-output.eps"
-	       :size 10))
+               :file "/tmp/rmsp-output.eps"
+               :size 10))
 
 |#
 ;;; SYNOPSIS
@@ -628,6 +628,9 @@ rthm-seq SEQ3
 ;;; SYNOPSIS
 (defmethod get-multipliers ((rsp rthm-seq-palette) rthm &optional id round)
 ;;; ****
+  (unless id
+    (error "rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) ~
+            is required."))
   (get-multipliers (get-data id rsp) rthm round))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -660,15 +663,15 @@ rthm-seq SEQ3
 #|
 
 (make-rsp 'rsp-test '((seq1 ((((2 4) q +e. s)
-			      ((s) e (s) q)
-			      (+e. s { 3 (te) te te } ))
-			     :pitch-seq-palette (1 7 3 4 5 2 6)))
-		      (seq2 ((((3 4) (e.) s { 3 te te te } +q)
-			      ({ 3 +te (te) te } e e (q)))
-			     :pitch-seq-palette (3 1 2 5 1 7 6)))
-		      (seq3 ((((2 4) e e { 3 te te te })
-			      ((5 8) (e) e e e s s))
-			     :pitch-seq-palette (4 4 4 5 4 4 4 5 4 3)))))
+                              ((s) e (s) q)
+                              (+e. s { 3 (te) te te } ))
+                             :pitch-seq-palette (1 7 3 4 5 2 6)))
+                      (seq2 ((((3 4) (e.) s { 3 te te te } +q)
+                              ({ 3 +te (te) te } e e (q)))
+                             :pitch-seq-palette (3 1 2 5 1 7 6)))
+                      (seq3 ((((2 4) e e { 3 te te te })
+                              ((5 8) (e) e e e s s))
+                             :pitch-seq-palette (4 4 4 5 4 4 4 5 4 3)))))
 
 => 
 RTHM-SEQ-PALETTE: psp-inversions: NIL
@@ -689,17 +692,17 @@ RTHM-SEQ: num-bars: 3
 ;; Create two rthm-seq-palette objects, one with :psp-inversions set to NIL and 
 ;; one with it set to T, and print the DATA of the pitch-seq-palettes of each 
 (let ((mrsp1 (make-rsp 'rsp-test 
-		       '((seq1 ((((2 4) q +e. s)
-				 ((s) e (s) q)
-				 (+e. s { 3 (te) te te } ))
-				:pitch-seq-palette (1 7 3 4 5 2 6))))
-		       :psp-inversions nil))
+                       '((seq1 ((((2 4) q +e. s)
+                                 ((s) e (s) q)
+                                 (+e. s { 3 (te) te te } ))
+                                :pitch-seq-palette (1 7 3 4 5 2 6))))
+                       :psp-inversions nil))
       (mrsp2 (make-rsp 'rsp-test 
-		       '((seq1 ((((2 4) q +e. s)
-				 ((s) e (s) q)
-				 (+e. s { 3 (te) te te } ))
-				:pitch-seq-palette (1 7 3 4 5 2 6))))
-		       :psp-inversions t)))
+                       '((seq1 ((((2 4) q +e. s)
+                                 ((s) e (s) q)
+                                 (+e. s { 3 (te) te te } ))
+                                :pitch-seq-palette (1 7 3 4 5 2 6))))
+                       :psp-inversions t)))
   (print 
    (loop for i in (data (pitch-seq-palette (first (data mrsp1))))
       collect (data i)))

@@ -2025,6 +2025,15 @@ data: E
 ;;;
 ;;; The chop method is the basis for slippery-chicken's feature of
 ;;; intra-phrasal looping.
+;;;
+;;; NB: In order for the resulting rhythms to be parsable by LilyPond and CMN,
+;;;     the value of the <unit> argument must match the rhythms in its tuplet
+;;;     nature. Rhythmic sequences containing triplets (or quintuplets etc.)
+;;;     will result in LilyPond and CMN errors when an attempt is made to chop
+;;;     them with 's or 'e values for the <unit>, and vice versa. If the
+;;;     chopping <unit> is duple, all rhythms in the given sequence must also
+;;;     be duple. This only affects the notation output and has no bearing on
+;;;     the successful production of the MIDI file.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-bar object.

@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 23:59:17 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 14:00:25 Wed Feb  1 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -377,15 +377,26 @@
       (if seq
           seq
         (when create-rest-seq
-          (let ((all-players (players p)))
+          (let ((all-players (players p))
+                (cloned-seq nil))
             (unless (member player all-players)
               (error "piece::get-nth-sequenz: Player ~a is ~
                       not a member of the ensemble ~a"
                      player all-players))
             (loop for p in (remove player all-players) do
                   (when (setf seq (get-seq p))
-                    (return (clone-as-rest-sequenz seq t nil player))))))))))
-
+                    ;; MDE Wed Feb  1 13:55:16 2012 -- got to signal an error
+                    ;; if there's no instrument playing at all here 
+                    (setf cloned-seq (clone-as-rest-sequenz seq t nil player))))
+            (if cloned-seq
+                cloned-seq
+                (error "piece::get-nth-sequencz: It appears that no instrument ~
+                            is playing at sequence ~%number ~a in section ~a.  So ~
+                            there's no way of knowing the bar structure ~%here. ~
+                            If you want rests for all instruments, create the ~
+                            rests as a ~%sequence and reference it in the ~
+                            rthm-seq-map."
+                       (1+ seq-num) section))))))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod get-player-section (section player (p piece))
@@ -526,29 +537,29 @@
 
 (defmethod handle-ties ((p piece))
   (loop for player in (players p) do
-        (loop 
-            for bar-num from 1 to (num-bars p)
-            for bar = (get-bar p bar-num player)
-            with last-event 
-            do
-             (unless bar
-               (error "piece::handle-ties: bar is nil (bar-num: ~a, player: ~a"
-                      bar-num player))
-              (loop 
-                  with tie-ok
-                  for event in (rhythms bar) 
-                  for event-num from 1 
-                  do
-                    (unless (event-p event)
-                      (error "piece::handle-ties: event is nil; ~a bar num ~a"
-                             player bar-num))
-                    ;; 10/5/07: just silently kill any incomplete ties
-                    #|
-                    (when (and (= bar-num 1158) 
-                               (eq player 'fl))
-                      (print (is-tied-from last-event))
-                      (print (is-tied-to event)))
-                      |#
+       (loop 
+          for bar-num from 1 to (num-bars p)
+          for bar = (get-bar p bar-num player)
+          with last-event 
+          do
+          (unless bar
+            (error "piece::handle-ties: bar is nil (bar-num: ~a, player: ~a"
+                   bar-num player))
+          (loop 
+             with tie-ok
+             for event in (rhythms bar) 
+             for event-num from 1 
+             do
+             (unless (event-p event)
+               (error "piece::handle-ties: event is nil; ~a bar num ~a"
+                      player bar-num))
+             ;; 10/5/07: just silently kill any incomplete ties
+               #|
+             (when (and (= bar-num 1158) 
+               (eq player 'fl))
+               (print (is-tied-from last-event))
+               (print (is-tied-to event)))
+             |#
                     (when last-event
                       (when (and (is-tied-from last-event)
                                  (not (is-tied-to event)))

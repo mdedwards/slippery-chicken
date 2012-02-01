@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:26:29 Sat Jan 14 2012 ICT
+;;; $$ Last modified: 13:16:01 Wed Feb  1 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1642,11 +1642,11 @@ NIL
 ;;; ****
   (let ((obj (if (and written (written-pitch-or-chord e))
                  (written-pitch-or-chord e)
-               (pitch-or-chord e))))
+                 (pitch-or-chord e))))
     (when obj
       (if (chord-p obj)
           (get-pitch-symbols obj)
-        (id obj)))))
+          (id obj)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

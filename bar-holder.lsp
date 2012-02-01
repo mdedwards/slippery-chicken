@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 22:41:49 Sun Jan 15 2012 ICT
+;;; $$ Last modified: 14:02:42 Wed Feb  1 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -350,12 +350,16 @@
   (unless player
     (error "bar-holder::get-bar: player argument is required!"))
   (loop 
-      for object in (data bh) 
-      for bhl = (get-bar-holder object) do
-        (when (and (>= bar-num (start-bar bhl))
-                   (<= bar-num (end-bar bhl)))
-          ;;(format t "~a ~a" (start-bar bhl) (end-bar bhl))
-          (return (get-bar bhl bar-num player)))))
+     for object in (data bh) 
+     for bhl = (get-bar-holder object nil) do
+     ;; MDE Wed Feb  1 12:41:30 2012 
+     (unless bhl
+       (error "bar-holder::get-bar: couldn't get bar-holder. ~
+                 bar-num = ~a, player = ~a" bar-num player))
+     (when (and (>= bar-num (start-bar bhl))
+                (<= bar-num (end-bar bhl)))
+       ;;(format t "~a ~a" (start-bar bhl) (end-bar bhl))
+       (return (get-bar bhl bar-num player)))))
         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* bar-holder/get-note
@@ -626,10 +630,13 @@
 ;;; named-object whose data is a bar-holder.  Determine which we have and
 ;;; return the bar-holder
 
-(defun get-bar-holder (thing)
+(defun get-bar-holder (thing &optional (error t))
   (cond ((is-bar-holder thing) thing)
-        ((is-bar-holder (data thing)) (data thing))
-        (t (error "bar-holder::get-bar-holder: What is this? ~a" thing))))
+        ((and (named-object-p thing) (data thing) (is-bar-holder (data thing)))
+         (data thing))
+        (t (when error
+             (error "bar-holder::get-bar-holder: Can't get bar-holder from ~a"
+                    thing)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:25:27 Fri Jan 13 2012 ICT
+;;; $$ Last modified: 14:04:52 Wed Feb  1 2012 ICT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -861,7 +861,7 @@
     (add-rest-sequenzes rsm-clone)
     (update-slots rsm-clone (tempo-map sc) 0.0 0.0 1 nil nil warn-ties)
     (handle-ties rsm-clone)
-    ;; well, stupid, but we have to do this again because of the
+    ;; well, not ideal, but we have to do this again because of the
     ;; ties.  First we need to do it to get bar numbers etc. for the
     ;; sequenzes, then we have to do it after the handle-ties to make
     ;; sure the compound-durations take tempo into consideration
@@ -2661,7 +2661,8 @@
      (loop for section in (get-all-section-refs sc) do
           (loop 
              for seq-num from 0
-             for seq = (get-nth-sequenz (piece sc) section player seq-num)
+               ;; MDE Wed Feb  1 14:04:45 2012 -- don't create-rest-seq
+             for seq = (get-nth-sequenz (piece sc) section player seq-num nil)
              for set = (get-nth-from-palette section seq-num (set-map sc))
              for first-bar-num = (when seq
                                    (bar-num (first (bars seq))))

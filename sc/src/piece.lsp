@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 14:17:03 Wed Feb  1 2012 ICT
+;;; $$ Last modified: 16:33:36 Wed Feb  1 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -390,12 +390,12 @@
                     (setf cloned-seq (clone-as-rest-sequenz seq t nil player))))
             (if cloned-seq
                 cloned-seq
-                (error "piece::get-nth-sequencz: It appears that no instrument ~
-                            is playing at sequence ~%number ~a in section ~a. So ~
-                            there's no way of knowing the bar structure ~%here. ~
-                            If you want rests for all instruments, create the ~
-                            rests as a ~%sequence and reference it in the ~
-                            rthm-seq-map."
+                (error "piece::get-nth-sequenz: It appears that no instrument ~
+                        is playing at sequence ~%number ~a in section ~a. So ~
+                        there's no way of knowing the bar structure ~%here. ~
+                        If you want rests for all instruments, create the ~
+                        rests as a ~%sequence and reference it in the ~
+                        rthm-seq-map."
                        (1+ seq-num) section))))))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

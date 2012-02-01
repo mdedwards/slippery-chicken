@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 15:17:10 Sat Jan  7 2012 ICT
+;;; $$ Last modified: 13:20:52 Wed Feb  1 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -224,7 +224,7 @@
 (defmethod print-simple ((r rhythm) &optional written (stream t))
   (format stream "~a ~a, "
           (cond ((is-rest r) "rest")
-                ((event-p r) (get-pitch-symbol r written))
+                ((and (event-p r) (pitch-or-chord r)) (get-pitch-symbol r written))
                 (t "note"))
           (data r)))
 

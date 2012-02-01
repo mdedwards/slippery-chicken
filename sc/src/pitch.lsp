@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 17:02:43 Wed Jan 18 2012 ICT
+;;; $$ Last modified: 13:20:26 Wed Feb  1 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1917,6 +1917,54 @@ pitch::add-mark: mark PIZZ already present but adding again!
              (make-pitch (white-note p2))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Tue Jan  3 16:21:34 EST 2012: Added robodoc info
+
+;;; ****m* pitch/enharmonic
+;;; FUNCTION
+;;; Get the enharmonic equivalent of the given pitch object. Two chromatically
+;;; consecutive "white-note" pitches (e.g. B-sharp/C-natural) are considered
+;;; enharmonically equivalent. If there is no enharmonic equivalent, the
+;;; function just returns the same note.
+;;; 
+;;; ARGUMENTS
+;;; - A pitch object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to print a warning when no enharmonic can be found. Default = T. 
+;;; 
+;;; RETURN VALUE
+;;; A pitch object.
+;;; 
+;;; EXAMPLE
+
+#|
+;; A "black-key" enharmonic equivalent
+(let ((p (make-pitch 'cs4)))
+  (data (enharmonic p)))
+
+=> DF4
+
+;; Two chromatically consecutive "white-keys" are enharmonically equivalent
+(let ((p (make-pitch 'f4)))
+  (data (enharmonic p)))
+
+=> ES4
+
+;; The function returns a pitch object with the same pitch value if there is no
+;; enharmonic equivalent
+(let ((p (make-pitch 'g4)))
+  (data (enharmonic p)))
+
+=> G4
+
+|#
+;;; SYNOPSIS
+(defmethod enharmonic ((p pitch) &key (warn t))
+;;; ****
+  (make-pitch (enharmonic-equivalent (id p) warn)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -2836,54 +2884,6 @@ data: C4
     (if return-symbols
         (pitch-list-to-symbols result)
       result)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Jan  3 16:21:34 EST 2012: Added robodoc info
-
-;;; ****m* pitch/enharmonic
-;;; FUNCTION
-;;; Get the enharmonic equivalent of the given pitch object. Two chromatically
-;;; consecutive "white-note" pitches (e.g. B-sharp/C-natural) are considered
-;;; enharmonically equivalent. If there is no enharmonic equivalent, the
-;;; function just returns the same note.
-;;; 
-;;; ARGUMENTS
-;;; - A pitch object
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; - T or NIL to print a warning when no enharmonic can be found. Default = T. 
-;;; 
-;;; RETURN VALUE
-;;; A pitch object.
-;;; 
-;;; EXAMPLE
-
-#|
-;; A "black-key" enharmonic equivalent
-(let ((p (make-pitch 'cs4)))
-  (data (enharmonic p)))
-
-=> DF4
-
-;; Two chromatically consecutive "white-keys" are enharmonically equivalent
-(let ((p (make-pitch 'f4)))
-  (data (enharmonic p)))
-
-=> ES4
-
-;; The function returns a pitch object with the same pitch value if there is no
-;; enharmonic equivalent
-(let ((p (make-pitch 'g4)))
-  (data (enharmonic p)))
-
-=> G4
-
-|#
-;;; SYNOPSIS
-(defmethod enharmonic ((p pitch) &key (warn t))
-;;; ****
-  (make-pitch (enharmonic-equivalent (id p) warn)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

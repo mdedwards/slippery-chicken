@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 14:00:25 Wed Feb  1 2012 ICT
+;;; $$ Last modified: 14:17:03 Wed Feb  1 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -391,7 +391,7 @@
             (if cloned-seq
                 cloned-seq
                 (error "piece::get-nth-sequencz: It appears that no instrument ~
-                            is playing at sequence ~%number ~a in section ~a.  So ~
+                            is playing at sequence ~%number ~a in section ~a. So ~
                             there's no way of knowing the bar structure ~%here. ~
                             If you want rests for all instruments, create the ~
                             rests as a ~%sequence and reference it in the ~

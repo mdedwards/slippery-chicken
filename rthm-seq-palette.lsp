@@ -585,19 +585,19 @@ rthm-seq SEQ3
 ;;;     segmenting that beat, all rthm-seq-bar objects in the given
 ;;;     rthm-seq-palette object must be evenly divisible by the beat for which
 ;;;     the pattern is defined. For example, if the <chop-points> argument
-;;;     defines a quarter note, all bars in the given rthm-seq-palette object
-;;;     must be evenly divisible by a quarter note, and a rthm-seq-palette
+;;;     defines a quarter-note, all bars in the given rthm-seq-palette object
+;;;     must be evenly divisible by a quarter-note, and a rthm-seq-palette
 ;;;     consisting of a rthm-seq object with a 2/4, a 3/4 and a 3/8 bar would
 ;;;     fail at the 3/8 bar with an error.
 ;;;
-;;; NB: In order for the resulting rhythms to be parsable by LilyPond and CMN,
-;;;     the value of the <unit> argument must match the rhythms in its tuplet
-;;;     nature. Rhythmic sequences containing triplets (or quintuplets etc.)
-;;;     will result in LilyPond and CMN errors when an attempt is made to chop
-;;;     them with 's or 'e values for the <unit>, and vice versa. If the
-;;;     chopping <unit> is duple, all rhythms in the given sequence must also
-;;;     be duple. This only affects the notation output and has no bearing on
-;;;     the successful production of the MIDI file.
+;;; NB: The <unit> argument must be a duplet rhythmic value (i.e. 32, 's, 'e
+;;;     etc.) and cannot be a tuplet value (i.e. 'te 'fe etc.). 
+;;;
+;;; NB: In order for the resulting chopped rhythms to be parsable by LilyPond
+;;;     and CMN, there can be no tuplets (triplets etc.) among the rhythms to
+;;;     be chopped. Such rhythms will result in LilyPond and CMN errors. This
+;;;     has only minimal bearing on any MIDI files produced, however, and these
+;;;     can potentially be imported into notation software.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A rthm-seq-bar object.

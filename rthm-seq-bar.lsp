@@ -1995,6 +1995,13 @@ data: E
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Feb  2 14:11:35 GMT 2012: Added NB about tuplets and chop. Also
+;;; leaving this fragment here for later, and for internal reference:
+
+;;; This is because the chop method determines a new time-signature for each of
+;;; the rthm-seq-bar objects it creates based on the value of the <unit>
+;;; argument, and no time-signature can be created from a tuplet unit value. 
+
 ;;; SAR Tue Jan 17 16:54:39 GMT 2012: Delete MDE's comment here and moved it
 ;;; nearly verbatim to the documentation below.
 
@@ -2014,7 +2021,7 @@ data: E
 ;;;
 ;;; The chop points specified are used to individually process each beat in the
 ;;; given rthm-seq-bar object; thus, chop-points specified for the subdivisions
-;;; of a quarter note will not work if applied to a 5/8 bar.
+;;; of a quarter-note will not work if applied to a 5/8 bar.
 ;;;
 ;;; The method fills each newly created rthm-seq-bar object with one rhythmic
 ;;; duration that is equal to the length of the bar. If the beginning of the
@@ -2026,15 +2033,15 @@ data: E
 ;;; The chop method is the basis for slippery-chicken's feature of
 ;;; intra-phrasal looping.
 ;;;
-;;; NB: In order for the resulting rhythms to be parsable by LilyPond and CMN,
-;;;     the value of the <unit> argument must match the rhythms in its tuplet
-;;;     nature. Rhythmic sequences containing triplets (or quintuplets etc.)
-;;;     will result in LilyPond and CMN errors when an attempt is made to chop
-;;;     them with 's or 'e values for the <unit>, and vice versa. If the
-;;;     chopping <unit> is duple, all rhythms in the given sequence must also
-;;;     be duple. This only affects the notation output and has no bearing on
-;;;     the successful production of the MIDI file.
-;;; 
+;;; NB: The <unit> argument must be a duplet rhythmic value (i.e. 32, 's, 'e
+;;;     etc.) and cannot be a tuplet value (i.e. 'te 'fe etc.). 
+;;;
+;;; NB: In order for the resulting chopped rhythms to be parsable by LilyPond
+;;;     and CMN, there can be no tuplets (triplets etc.) among the rhythms to
+;;;     be chopped. Such rhythms will result in LilyPond and CMN errors. This
+;;;     has only minimal bearing on any MIDI files produced, however, and these
+;;;     can potentially be imported into notation software.
+;;;
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-bar object.
 ;;; 

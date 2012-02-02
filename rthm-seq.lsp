@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 21:55:01 Fri Jan 13 2012 ICT
+;;; $$ Last modified: 23:26:05 Thu Feb  2 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1487,13 +1487,13 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 ;; objects. The rthm-seq numbers printed with this are the IDs of the rthm-seq
 ;; objects, not the bar-nums of the individual rthm-seq-bar objects. 
 (let* ((rs (make-rthm-seq '(seq1 ((((2 4) q e s s)
-				   ((e) q (e))
-				   (s s (e) e. s))
-				  :pitch-seq-palette ((1 2 3 4 5 6 7 8 9)
-						      (9 8 7 6 5 4 3 2 1))))))
+                                   ((e) q (e))
+                                   (s s (e) e. s))
+                                  :pitch-seq-palette ((1 2 3 4 5 6 7 8 9)
+                                                      (9 8 7 6 5 4 3 2 1))))))
        (ch (chop rs
-		 '((1 1) (1 2) (1 3) (1 4) (2 2) (2 3) (2 4) (3 3) (3 4) (4 4))
-		 's)))
+                 '((1 1) (1 2) (1 3) (1 4) (2 2) (2 3) (2 4) (3 3) (3 4) (4 4))
+                 's)))
   (loop for rs-obj in ch do (print-simple rs-obj)))
 
 =>
@@ -1622,13 +1622,13 @@ rthm-seq 60
 ;; have time-signatures that are divisible by the beat defined in the
 ;; <chop-points> argument will result in dropping into the debugger with an error
 (let* ((rs (make-rthm-seq '(seq1 ((((2 4) q e s s)
-				   ((e) q (e))
-				   ((3 8) (e) e. s))
-				  :pitch-seq-palette ((1 2 3 4 5 6 7)
-						      (9 8 7 6 5 4 3))))))
+                                   ((e) q (e))
+                                   ((3 8) (e) e. s))
+                                  :pitch-seq-palette ((1 2 3 4 5 6 7)
+                                                      (9 8 7 6 5 4 3))))))
        (ch (chop rs
-		 '((1 1) (1 2) (1 3) (1 4) (2 2) (2 3) (2 4) (3 3) (3 4) (4 4))
-		 's)))
+                 '((1 1) (1 2) (1 3) (1 4) (2 2) (2 3) (2 4) (3 3) (3 4) (4 4))
+                 's)))
   (loop for rs-obj in ch do (print-simple rs-obj)))
 
 =>
@@ -1880,14 +1880,14 @@ rthm-seq NIL
 #|
 ;;; By default the method returns the list of multipliers un-rounded
 (let ((rs (make-rthm-seq '(seq1 ((((2 4) q e s s))
-				 :pitch-seq-palette ((1 2 3 4)))))))
+                                 :pitch-seq-palette ((1 2 3 4)))))))
   (get-multipliers rs 'e))
 
 => (2.0 1.0 0.5 0.5)
 
 ;; Setting the optional argument to T rounds the results before returning 
 (let ((rs (make-rthm-seq '(seq1 ((((2 4) q e s s))
-				 :pitch-seq-palette ((1 2 3 4)))))))
+                                 :pitch-seq-palette ((1 2 3 4)))))))
   (get-multipliers rs 'e t))
 
 => (2 1 0 0)
@@ -1899,17 +1899,18 @@ rthm-seq NIL
   (declare (ignore ignore))
   (let ((durs (loop for bar in (bars rs) with rest-dur = 0.0 with result = '() 
                  appending
-                   (loop for r in (rhythms bar) 
-                      do
-                        (cond ((needs-new-note r)
-                             (when result
-                               (incf (first result) rest-dur))
-                             (push (compound-duration r) result)
-                             (setf rest-dur 0.0))
-                            ((is-rest r) (incf rest-dur (duration r)))))
+                 (loop for r in (rhythms bar) 
+                    do
+                    (cond ((needs-new-note r)
+                           (when result
+                             (incf (first result) rest-dur))
+                           (push (compound-duration r) result)
+                           (setf rest-dur 0.0))
+                          ((or (is-tied-to r) (is-rest r))
+                           (incf rest-dur (duration r)))))
                  finally 
-                   (incf (first result) rest-dur)
-                   (return (nreverse result))))
+                 (incf (first result) rest-dur)
+                 (return (nreverse result))))
         (rthm-dur (duration (make-rhythm rthm))))
     (loop for d in durs for m = (/ d rthm-dur) collect
          (if round

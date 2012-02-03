@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 23:26:05 Thu Feb  2 2012 ICT
+;;; $$ Last modified: 02:22:59 Sat Feb  4 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1864,17 +1864,17 @@ rthm-seq NIL
 ;;; in order to create the rhythms of a given rthm-seq object.
 ;;;
 ;;; NB: The get-multipliers method determines durations in the source rhythmic
-;;;     material based on attacked notes only, so beginning ties in the source
-;;;     will be ignored and rests following an attack will count the same as if
-;;;     the attacked note were tied to another note with the same duration as
-;;;     the rest. For this reason, the results returned by the method when
-;;;     applied to a rthm-seq object that contains multiple bars may differ
-;;;     from applying the method to the individual rthm-seq-bars contained in
-;;;     that rthm-seq object as separate rthm-seq objects (see example).
+;;;     material based on attacked notes only, so beginning ties will be
+;;;     ignored and rests following an attack will count the same as if the
+;;;     attacked note were tied to another note with the same duration as the
+;;;     rest. For this reason, the results returned by the method when applied
+;;;     to a rthm-seq object that contains multiple bars may differ from
+;;;     applying the method to multiple rthm-seqs with single bars, albeit with
+;;;     the same rhythms when seen as a group (see example below).
 ;;; 
 ;;; ARGUMENTS
 ;;; - A rthm-seq object.
-;;; - A rhythm unit, either as a number or a CMN shorthand symbol (i.e. 's) 
+;;; - A rhythm unit, either as a number or a shorthand symbol (i.e. 's) 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether to round the results. T = round. 
@@ -1907,15 +1907,15 @@ rthm-seq NIL
 ;;; method measures the distances between attacked notes, regardless of ties
 ;;; and rests.
 (let ((rs1 (make-rthm-seq '(seq1 ((((2 4) q +e. s))
-				  :pitch-seq-palette ((1 2))))))
+                                  :pitch-seq-palette ((1 2))))))
       (rs2 (make-rthm-seq '(seq2 ((((2 4) (s) e (s) q))
-				  :pitch-seq-palette ((1 2))))))
+                                  :pitch-seq-palette ((1 2))))))
       (rs3 (make-rthm-seq '(seq3 ((((2 4) +e. s { 3 (te) te te } ))
-				  :pitch-seq-palette ((1 2 3))))))
+                                  :pitch-seq-palette ((1 2 3))))))
       (rs4 (make-rthm-seq '(seq4 ((((2 4) q +e. s)
-				   ((s) e (s) q)
-				   (+e. s { 3 (te) te te } ))
-				  :pitch-seq-palette ((1 2 3 4 5 6 7)))))))
+                                   ((s) e (s) q)
+                                   (+e. s { 3 (te) te te } ))
+                                  :pitch-seq-palette ((1 2 3 4 5 6 7)))))))
   (print (get-multipliers rs1 'e))
   (print (get-multipliers rs2 'e))
   (print (get-multipliers rs3 'e))

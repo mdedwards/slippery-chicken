@@ -1862,6 +1862,15 @@ rthm-seq NIL
 ;;; FUNCTION
 ;;; Get a list of factors by which a specified rhythmic unit must be multiplied
 ;;; in order to create the rhythms of a given rthm-seq object.
+;;;
+;;; NB: The get-multipliers method determines durations in the source rhythmic
+;;;     material based on attacked notes only, so beginning ties in the source
+;;;     will be ignored and rests following an attack will count the same as if
+;;;     the attacked note were tied to another note with the same duration as
+;;;     the rest. For this reason, the results returned by the method when
+;;;     applied to a rthm-seq object that contains multiple bars may differ
+;;;     from applying the method to the individual rthm-seq-bars contained in
+;;;     that rthm-seq object as separate rthm-seq objects (see example).
 ;;; 
 ;;; ARGUMENTS
 ;;; - A rthm-seq object.
@@ -1891,6 +1900,32 @@ rthm-seq NIL
   (get-multipliers rs 'e t))
 
 => (2 1 0 0)
+
+;;; Applying the method to the a multiple-bar rthm-seq object may return
+;;; different results than applying the method to each of the bars contained
+;;; within that rthm-seq object as individual one-bar rthm-seq objects, as the
+;;; method measures the distances between attacked notes, regardless of ties
+;;; and rests.
+(let ((rs1 (make-rthm-seq '(seq1 ((((2 4) q +e. s))
+				  :pitch-seq-palette ((1 2))))))
+      (rs2 (make-rthm-seq '(seq2 ((((2 4) (s) e (s) q))
+				  :pitch-seq-palette ((1 2))))))
+      (rs3 (make-rthm-seq '(seq3 ((((2 4) +e. s { 3 (te) te te } ))
+				  :pitch-seq-palette ((1 2 3))))))
+      (rs4 (make-rthm-seq '(seq4 ((((2 4) q +e. s)
+				   ((s) e (s) q)
+				   (+e. s { 3 (te) te te } ))
+				  :pitch-seq-palette ((1 2 3 4 5 6 7)))))))
+  (print (get-multipliers rs1 'e))
+  (print (get-multipliers rs2 'e))
+  (print (get-multipliers rs3 'e))
+  (print (get-multipliers rs4 'e)))
+
+=>
+(3.5 0.5) 
+(1.5 2.0) 
+(1.1666666666666665 0.6666666666666666 0.6666666666666666) 
+(3.5 1.0 1.5 3.5 1.1666666666666665 0.6666666666666666 0.6666666666666666)
 
 |#
 ;;; SYNOPSIS

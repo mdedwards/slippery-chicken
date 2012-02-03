@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 21:12:17 Tue Jan 31 2012 ICT
+;;; $$ Last modified: 02:22:32 Sat Feb  4 2012 ICT
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -619,22 +619,22 @@ rthm-seq SEQ3
 ;;; Create a rthm-seq-palette object, chop it with user-defined chop-points and
 ;;; a <unit> value of 'e, and print-simple the results
 (let* ((rsp-orig (make-rsp
-		  'sl-rsp
-		  '((1 
-		     ((((2 4) (e) e (e) e)) 
-		      :pitch-seq-palette (1 8)))
-		    (2 
-		     ((((2 4) (s) e s e. (s))) 
-		      :pitch-seq-palette (3 5 7)))
-		    (3
-		     ((((3 4) q +s e. +q)) 
-		      :pitch-seq-palette (1 7))))))
+                  'sl-rsp
+                  '((1 
+                     ((((2 4) (e) e (e) e)) 
+                      :pitch-seq-palette (1 8)))
+                    (2 
+                     ((((2 4) (s) e s e. (s))) 
+                      :pitch-seq-palette (3 5 7)))
+                    (3
+                     ((((3 4) q +s e. +q)) 
+                      :pitch-seq-palette (1 7))))))
        (rsp-chopped (chop rsp-orig
-			  '((1 1) (1 2) (2 2))
-			  'e)))
+                          '((1 1) (1 2) (2 2))
+                          'e)))
   (loop for i in (data rsp-chopped)
      do (loop for j in (data (data i))
-	   do (print-simple j))))
+           do (print-simple j))))
 
 =>
 rthm-seq 1
@@ -710,15 +710,8 @@ rthm-seq 9
 ;;; in order to create the rhythms of a specified rthm-seq object within the
 ;;; given rthm-seq-palette object.
 ;;;
-;;; NB: The get-multipliers method determines durations in the source rhythmic
-;;;     material based on attacked notes only, so beginning ties in the source
-;;;     will be ignored and rests following an attack will count the same as if
-;;;     the attacked note were tied to another note with the same duration as
-;;;     the rest. For this reason, the results returned by the method when
-;;;     applied to a rthm-seq object that contains multiple bars may differ
-;;;     from applying the method to the individual rthm-seq-bars contained in
-;;;     that rthm-seq object as separate rthm-seq objects (see example).
-;;; 
+;;; See also rthm-seq method for more information.
+;;;
 ;;; ARGUMENTS
 ;;; - A rthm-seq object.
 ;;; - A rhythm unit, either as a number of a CMN shorthand symbol (i.e. 'e)
@@ -740,19 +733,19 @@ rthm-seq 9
 ;; Returns a list of numbers, by default not rounded
 (let ((mrsp
        (make-rsp 'rsp-test 
-		 '((seq1 ((((2 4) q +e. s)
-			   ((s) e (s) q)
-			   (+e. s { 3 (te) te te } ))
-			  :pitch-seq-palette ((1 2 3 4 5 6 7)
-					      (1 3 5 7 2 4 6)
-					      (1 4 2 6 3 7 5)
-					      (1 5 2 7 3 2 4))))
-		   (seq2 ((((4 4) (e.) s { 3 te te te } +h)
-			   ({ 3 +te (te) te } e e (h)))
-			  :pitch-seq-palette (2 3 4 5 6 7 8)))
-		   (seq3 ((((2 4) e e { 3 te te te })
-			   ((4 4) (e) e e e s s (s) s q))
-			  :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
+                 '((seq1 ((((2 4) q +e. s)
+                           ((s) e (s) q)
+                           (+e. s { 3 (te) te te } ))
+                          :pitch-seq-palette ((1 2 3 4 5 6 7)
+                                              (1 3 5 7 2 4 6)
+                                              (1 4 2 6 3 7 5)
+                                              (1 5 2 7 3 2 4))))
+                   (seq2 ((((4 4) (e.) s { 3 te te te } +h)
+                           ({ 3 +te (te) te } e e (h)))
+                          :pitch-seq-palette (2 3 4 5 6 7 8)))
+                   (seq3 ((((2 4) e e { 3 te te te })
+                           ((4 4) (e) e e e s s (s) s q))
+                          :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
   (get-multipliers mrsp 'e 'seq1))
 
 => (2.0 1.0 1.5 2.0 1.1666666666666665 0.6666666666666666 0.6666666666666666)
@@ -760,19 +753,19 @@ rthm-seq 9
 ;; Setting the option <round> argument to T returns rounded results
 (let ((mrsp
        (make-rsp 'rsp-test 
-		 '((seq1 ((((2 4) q +e. s)
-			   ((s) e (s) q)
-			   (+e. s { 3 (te) te te } ))
-			  :pitch-seq-palette ((1 2 3 4 5 6 7)
-					      (1 3 5 7 2 4 6)
-					      (1 4 2 6 3 7 5)
-					      (1 5 2 7 3 2 4))))
-		   (seq2 ((((4 4) (e.) s { 3 te te te } +h)
-			   ({ 3 +te (te) te } e e (h)))
-			  :pitch-seq-palette (2 3 4 5 6 7 8)))
-		   (seq3 ((((2 4) e e { 3 te te te })
-			   ((4 4) (e) e e e s s (s) s q))
-			  :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
+                 '((seq1 ((((2 4) q +e. s)
+                           ((s) e (s) q)
+                           (+e. s { 3 (te) te te } ))
+                          :pitch-seq-palette ((1 2 3 4 5 6 7)
+                                              (1 3 5 7 2 4 6)
+                                              (1 4 2 6 3 7 5)
+                                              (1 5 2 7 3 2 4))))
+                   (seq2 ((((4 4) (e.) s { 3 te te te } +h)
+                           ({ 3 +te (te) te } e e (h)))
+                          :pitch-seq-palette (2 3 4 5 6 7 8)))
+                   (seq3 ((((2 4) e e { 3 te te te })
+                           ((4 4) (e) e e e s s (s) s q))
+                          :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
   (get-multipliers mrsp 'e 'seq1 t))
 
 => (2 1 2 2 1 1 1)
@@ -781,19 +774,19 @@ rthm-seq 9
 ;; method interrupts with an error if no ID is supplied
 (let ((mrsp
        (make-rsp 'rsp-test 
-		 '((seq1 ((((2 4) q +e. s)
-			   ((s) e (s) q)
-			   (+e. s { 3 (te) te te } ))
-			  :pitch-seq-palette ((1 2 3 4 5 6 7)
-					      (1 3 5 7 2 4 6)
-					      (1 4 2 6 3 7 5)
-					      (1 5 2 7 3 2 4))))
-		   (seq2 ((((4 4) (e.) s { 3 te te te } +h)
-			   ({ 3 +te (te) te } e e (h)))
-			  :pitch-seq-palette (2 3 4 5 6 7 8)))
-		   (seq3 ((((2 4) e e { 3 te te te })
-			   ((4 4) (e) e e e s s (s) s q))
-			  :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
+                 '((seq1 ((((2 4) q +e. s)
+                           ((s) e (s) q)
+                           (+e. s { 3 (te) te te } ))
+                          :pitch-seq-palette ((1 2 3 4 5 6 7)
+                                              (1 3 5 7 2 4 6)
+                                              (1 4 2 6 3 7 5)
+                                              (1 5 2 7 3 2 4))))
+                   (seq2 ((((4 4) (e.) s { 3 te te te } +h)
+                           ({ 3 +te (te) te } e e (h)))
+                          :pitch-seq-palette (2 3 4 5 6 7 8)))
+                   (seq3 ((((2 4) e e { 3 te te te })
+                           ((4 4) (e) e e e s s (s) s q))
+                          :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
   (get-multipliers mrsp 'e))
 
 =>
@@ -806,15 +799,15 @@ rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) is required.
 ;;; method measures the distances between attacked notes, regardless of ties
 ;;; and rests.
 (let ((rs1 (make-rthm-seq '(seq1 ((((2 4) q +e. s))
-				  :pitch-seq-palette ((1 2))))))
+                                  :pitch-seq-palette ((1 2))))))
       (rs2 (make-rthm-seq '(seq2 ((((2 4) (s) e (s) q))
-				  :pitch-seq-palette ((1 2))))))
+                                  :pitch-seq-palette ((1 2))))))
       (rs3 (make-rthm-seq '(seq3 ((((2 4) +e. s { 3 (te) te te } ))
-				  :pitch-seq-palette ((1 2 3))))))
+                                  :pitch-seq-palette ((1 2 3))))))
       (rs4 (make-rthm-seq '(seq4 ((((2 4) q +e. s)
-				   ((s) e (s) q)
-				   (+e. s { 3 (te) te te } ))
-				  :pitch-seq-palette ((1 2 3 4 5 6 7)))))))
+                                   ((s) e (s) q)
+                                   (+e. s { 3 (te) te te } ))
+                                  :pitch-seq-palette ((1 2 3 4 5 6 7)))))))
   (print (get-multipliers rs1 'e))
   (print (get-multipliers rs2 'e))
   (print (get-multipliers rs3 'e))

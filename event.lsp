@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 08:46:54 Sun Feb  5 2012 ICT
+;;; $$ Last modified: 09:54:04 Sun Feb  5 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -522,6 +522,7 @@
   (unless (and value (numberp value))
     (error "event::(setf amplitude): value is not a number: ~a" value))
   ;; (format t "~&~a ~a" value (bar-num e))
+  (break)
   (unless (is-rest e)
     ;; add-mark :before will remove dynamics 
     ;; no warning if > 1.0 < 0.0
@@ -1596,7 +1597,7 @@ NIL
 ;;; ****
   (if midi
       (round (* (amplitude e) 127))
-    (amplitude e)))
+      (amplitude e)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

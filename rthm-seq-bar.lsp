@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 09:42:21 Sat Jan 14 2012 ICT
+;;; $$ Last modified: 10:10:01 Sun Feb  5 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2076,8 +2076,8 @@ data: E
 
 (let* ((rsb (make-rthm-seq-bar '((2 4) q q)))
        (ch (chop rsb 
-		 '((1 4) (1 3) (1 2) (1 1) (2 4) (2 3) (2 2) (3 4) (3 3) (4 4))   
-		 's))) 
+                 '((1 4) (1 3) (1 2) (1 1) (2 4) (2 3) (2 2) (3 4) (3 3) (4 4))   
+                 's))) 
   (loop for b in ch do (print-simple b)))
 
 =>
@@ -2106,8 +2106,8 @@ data: E
 ;; quarter-note whose durations that are multiple of an 8th-note unit
 (let* ((rsb (make-rthm-seq-bar '((2 4) q q)))
        (choprsb (chop rsb 
-		      '((1 2) (1 1) (2 2))
-		      'e)))
+                      '((1 2) (1 1) (2 2))
+                      'e)))
   (loop for b in choprsb do (print-simple b)))
 
 =>
@@ -2123,10 +2123,10 @@ data: E
 ;; being segmented contains rhythmic durations smaller than the <unit>
 ;; argument. 
 (let* ((rsb (make-rthm-seq-bar '((4 4) - (s) (32) 32 (s) s - - +s+32 (32) (e) -
-				 (q) (s) s (e))))  
+                                 (q) (s) s (e))))  
        (choprsb (chop rsb 
-		      '((1 4) (1 3) (1 2) (1 1) (2 4) (2 3) (2 2) (3 4) (3 3) (4 4))
-		      's)))
+                      '((1 4) (1 3) (1 2) (1 1) (2 4) (2 3) (2 2) (3 4) (3 3) (4 4))
+                      's)))
   (loop for b in choprsb do (print-simple b)))
 
 =>
@@ -2173,10 +2173,10 @@ data: E
 
 ;; The same again with a <unit> of eighths
 (let* ((rsb (make-rthm-seq-bar '((4 4) - (s) (32) 32 (s) s - - +s+32 (32) (e) -
-				 (q) (s) s (e))))  
+                                 (q) (s) s (e))))  
        (choprsb (chop rsb 
-		      '((1 2) (1 1) (2 2))
-		      'e)))
+                      '((1 2) (1 1) (2 2))
+                      'e)))
   (loop for b in choprsb do (print-simple b)))
 
 =>
@@ -2365,7 +2365,10 @@ data: E
                          (bracket new) (bracket e)
                          (marks new) (my-copy-list (marks e))
                          (marks-before new) (marks-before e)
-                         (amplitude new) (amplitude e))
+                         ;; MDE Sun Feb  5 10:08:56 2012 -- if we setf
+                         ;; amplitude directly we will add a mark!  
+                         ;; (amplitude new) (amplitude e))
+                         (slot-value new 'amplitude) (amplitude e))
                    ;; if we can't get a single rthm for the new duration then
                    ;; new will be nil and we should just create a rest
                    (progn

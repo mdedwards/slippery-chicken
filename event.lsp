@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:16:01 Wed Feb  1 2012 ICT
+;;; $$ Last modified: 08:46:54 Sun Feb  5 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -521,9 +521,9 @@
 ;;; ****
   (unless (and value (numberp value))
     (error "event::(setf amplitude): value is not a number: ~a" value))
+  ;; (format t "~&~a ~a" value (bar-num e))
   (unless (is-rest e)
-    ;; delete existing dynamics first
-    ;; (remove-dynamics e)
+    ;; add-mark :before will remove dynamics 
     ;; no warning if > 1.0 < 0.0
     ;; MDE Fri Dec 30 15:36:42 2011 -- add-mark updates amplitude if we give it
     ;; a dynamic but that would limit us to 0.0->1.0 so don't allow this here 

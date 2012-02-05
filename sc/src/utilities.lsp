@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 11:49:53 Mon Jan  2 2012 ICT
+;;; $$ Last modified: 08:28:52 Sun Feb  5 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1392,7 +1392,6 @@
       (cond ((> amp 1.0) (warn-range t) (first (last dynamics)))
             ((< amp 0.0) (warn-range nil) (first dynamics))
             (t (nth (round (* 10 amp)) dynamics))))))
-             
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

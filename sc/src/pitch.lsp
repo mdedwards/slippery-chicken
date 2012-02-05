@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 13:20:26 Wed Feb  1 2012 ICT
+;;; $$ Last modified: 08:57:50 Sun Feb  5 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -557,7 +557,6 @@ data: C5
            new-octave))
   (let ((transp (* 12 (- new-octave (octave p)))))
     (transpose p transp :as-symbol as-symbol :package package)))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2230,16 +2229,16 @@ data: F4
                                        (remove-duplicates t))
 ;;; ****
   (let ((result (loop for p in (init-pitch-list pitch-list t) collect
-                      (transpose-to-octave p octave
-                                           :as-symbol as-symbols
-                                           :package package))))
+                     (transpose-to-octave p octave
+                                          :as-symbol as-symbols
+                                          :package package))))
     ;; of course, this means if we had octaves in the set then they
-    ;; will be removed.  
+    ;; will be removed.
     (if remove-duplicates
         (remove-duplicates result :test (if as-symbols
                                             #'eq
-                                          #'pitch=))
-      result)))
+                                            #'pitch=))
+        result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

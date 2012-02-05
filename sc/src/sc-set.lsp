@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 10:33:52 Sat Jan 14 2012 ICT
+;;; $$ Last modified: 09:03:09 Sun Feb  5 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -232,8 +232,8 @@ data: CS4
 ;; rounded and returned as well.
 (let ((mscs (make-sc-set '(c4 cts4 css4 cqs4 cssf4 cstf4 cs4))))  
   (round-inflections mscs 
-		     :qtr-tones-also T
-		     :as-symbols t))
+                     :qtr-tones-also T
+                     :as-symbols t))
 
 => (C4 C4 C4 CS4 CS4)
 
@@ -241,9 +241,9 @@ data: CS4
 ;; removing any duplicates by default
 (let ((mscs (make-sc-set '(c2 cts3 css4 cqs5 cssf6 cstf7 cs8))))  
   (round-inflections mscs 
-		     :qtr-tones-also T
-		     :octave 4
-		     :as-symbols t))
+                     :qtr-tones-also T
+                     :octave 4
+                     :as-symbols t))
 
 => (C4 CS4)
 
@@ -251,10 +251,10 @@ data: CS4
 ;; :remove-duplicates argument to NIL 
 (let ((mscs (make-sc-set '(c2 cts3 css4 cqs5 cssf6 cstf7 cs8))))  
   (round-inflections mscs 
-		     :qtr-tones-also T
-		     :octave 4
-		     :remove-duplicates NIL
-		     :as-symbols t))
+                     :qtr-tones-also T
+                     :octave 4
+                     :remove-duplicates NIL
+                     :as-symbols t))
 
 => (C4 C4 C4 CS4 CS4)
 
@@ -270,22 +270,22 @@ data: CS4
 ;;; ****
   (let ((result
          (loop for p in (data s) 
-	    when (if qtr-tones-also
-		     (micro-tone p)
-		     (and (micro-tone p)
-			  (not (qtr-tone p))))
-	    collect (pitch-round p 
-				 ;; if we're going to transpose to an
-				 ;; octave get pitch objects and convert to
-				 ;; symbols later 
-				 :as-symbol (if octave nil as-symbols)
-				 :package package))))
+            when (if qtr-tones-also
+                     (micro-tone p)
+                     (and (micro-tone p)
+                          (not (qtr-tone p))))
+            collect (pitch-round p 
+                                 ;; if we're going to transpose to an
+                                 ;; octave get pitch objects and convert to
+                                 ;; symbols later 
+                                 :as-symbol (if octave nil as-symbols)
+                                 :package package))))
     (if octave
         (transpose-pitch-list-to-octave 
          result octave 
          :as-symbols as-symbols :package package 
          :remove-duplicates remove-duplicates)
-	result)))
+        result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -351,13 +351,15 @@ data: CS4
                               (not (micro-tone p))
                               (micro-tone p))
                    collect (clone p))))
-    ;; (print result)
-    (if octave
-        (transpose-pitch-list-to-octave 
-         result octave 
-         :as-symbols as-symbols :package package 
-         :remove-duplicates remove-duplicates)
-        result)))
+    (cond (octave
+           (transpose-pitch-list-to-octave 
+            result octave 
+            :as-symbols as-symbols :package package 
+            :remove-duplicates remove-duplicates))
+          ;; MDE Sun Feb  5 09:03:06 2012 
+          (as-symbols (loop for p in result collect
+                           (rm-package (data p) package)))
+          (t result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -916,10 +918,10 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 
 ;; With keyword arguments
 (make-sc-set '(d2 cs3 fs3 cs4 e4 c5 af5 ef6)
-	     :id 'scs1
-	     :subsets '((violin (e4 c5 af5 ef6))
-			(viola (cs4 e4)))
-	     :related-sets '((missing (ds2 e2 b3 cs6 d6))))
+             :id 'scs1
+             :subsets '((violin (e4 c5 af5 ef6))
+                        (viola (cs4 e4)))
+             :related-sets '((missing (ds2 e2 b3 cs6 d6))))
 
 => 
 SC-SET: auto-sort: T, used-notes: 

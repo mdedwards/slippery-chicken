@@ -293,12 +293,40 @@
 
 ;;; ****f* tl-set/make-tl-set
 ;;; FUNCTION
+;;; Create a tl-set object, which extends the sc-set class by incorporating
+;;; transpostion and limiting to certain pitch ranges. 
 ;;; 
+;;; NB: As of yet, once a set is transposed or limited, it can't be
+;;;     retransposed from its original pitches, only from the current set; i.e
+;;;     these methods are destructive!
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list of note-name symbols that is to be the set (pitch-set) for the
+;;;   given tl-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :id. A symbol that is to be the ID of the given tl-set
+;;;   object.
+;;; - keyword argument :subsets. An assoc-list of key/data pairs, in which the
+;;;   data is a list of note-name symbols that are a subset of the main
+;;;   set. One use for this keyword argument might be to create subsets that
+;;;   particular instruments can play; these would then be selected in the
+;;;   chord-function passed to the instrument object.
+;;; - keyword argument :related-sets. An assoc-list of key/data pairs, similar
+;;;   to :subsets, only that the pitches given here do not have to be part of
+;;;   the main set. This can be used, for example, for pitches missing from the
+;;;   main set.
+
+;;; - keyword argument :limit-upper.
+
+;;; - keyword argument :limit-lower.
+
+;;; - keyword argument :transposition. Default = 0.
+
+;;; - keyword argument :auto-sort. T or NIL to indicate whether the specified
+;;;   pitches (note-name symbols) are to be automatically  sorted from lowest
+;;;   to highest. T = sort. Default = T.
+
 ;;; 
 ;;; 
 ;;; RETURN VALUE

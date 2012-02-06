@@ -107,6 +107,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Feb  6 20:57:07 GMT 2012: Added robodoc entry
+
 ;;; ****m* tl-set/stack
 ;;; FUNCTION
 ;;; 
@@ -157,21 +159,80 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Feb  6 21:01:48 GMT 2012: Added robodoc entry
+
 ;;; ****m* tl-set/transpose
 ;;; FUNCTION
-;;; 
+;;; Transpose the pitches of a given tl-set by a specified number of
+;;; semitones. 
+;;;
+;;; The contents of the SUBSETS slot are automatically transposed as well, but
+;;; the RELATED-SETS slot is left untransposed by default. An optional argument
+;;; allows for RELATED-SETS slot to be transposed as well.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A tl-set object.
+;;; - A positive or negative integer that is the number of semitones by which
+;;;   the pitch content of the given tl-set object is to be transposed.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :do-related-sets. T or NIL to indicate whether to
+;;;   tranpsose any contents of the RELATED-SETS slot as well. T = transpose.
+;;;   Default = NIL.  
+;;; (- additional <ignore> arguments are for internal use only)
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A tl-set object.
 ;;; 
 ;;; EXAMPLE
 #|
+
+;; By default the RELATED-SETS are left untransposed
+(let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+			 :subsets '((fl (df5 f5 af5))
+				    (vla (e3 g3 b3)))
+			 :related-sets '((missing (fs2 b5))))))
+  (transpose mtls 3))
+
+=> 
+TL-SET: transposition: 3
+        limit-upper: NIL
+        limit-lower: NIL
+SC-SET: auto-sort: T, used-notes: 
+[...]
+    subsets: 
+FL: (E5 AF5 B5)
+VLA: (G3 BF3 D4)
+    related-sets: 
+MISSING: (FS2 B5)
+SCLIST: sclist-length: 14, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
+
+;; Set the <do-related-sets> argument to T for the RELATED-SETS contents to be
+;; transposed as well
+(let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+			 :subsets '((fl (df5 f5 af5))
+				    (vla (e3 g3 b3)))
+			 :related-sets '((missing (fs2 b5))))))
+  (transpose mtls 3 :do-related-sets t))
+
+=> 
+TL-SET: transposition: 3
+        limit-upper: NIL
+        limit-lower: NIL
+SC-SET: auto-sort: T, used-notes: 
+[...]
+    subsets: 
+FL: (E5 AF5 B5)
+VLA: (G3 BF3 D4)
+    related-sets: 
+MISSING: (A2 D6)
+SCLIST: sclist-length: 14, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 
 |#
 ;;; SYNOPSIS
@@ -190,26 +251,83 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 
-;;; Remove pitches that are higher and lower than those given.  Those equal in
-;;; frequency will be retained.
-;;; c0 and b10 are the highest and lowest pitches of the quarter-tone scale
-;;; defined in scale.lsp (16.35 and 31608.55 Hz respectively) 
+
+;;; SAR Mon Feb  6 21:23:51 GMT 2012: Added robodoc entry. Deleted MDE's
+;;; comment here as it has been taken into the doc below nearly verbatim. 
 
 ;;; ****m* tl-set/limit
 ;;; FUNCTION
-;;; 
+;;; Remove pitch objects from a given tl-set whose pitch content is higher or
+;;; lower than the pitches specified. Any pitch objects whose pitch content is
+;;; equal to the limit pitches specified will be retained.
+;;;
+;;; NB: C0 and B10 are the highest and lowest powssible pitches of the
+;;;     quarter-tone scale defined in scale.lsp (16.35 and 31608.55 Hz
+;;;     respectively).
+;;;
+;;; NB: The keyword arguments for which the lower and upper limits are to be
+;;;     specified are optional arguments, but are required in order for any
+;;;     effect to be had.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A tl-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword-argument :upper. A note-name symbol that is the upper limit for
+;;;   the limiting process.
+;;; - keyword argument :lower. A note-name symbol that is the lower limit for
+;;;   the limiting process.
+;;; - keyword argument :do-related-sets. T or NIL to indicate whether the
+;;;   RELATED-SETS slot of the given tl-set object is to be transposed as well
+;;;   or left unhandled. T = transpose. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A tl-set object.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; By default the method does not transpose the pitches of the RELATED-SETS
+;;; slot 
+(let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+			 :subsets '((fl (df5 f5 af5))
+				    (vla (e3 g3 b3)))
+			 :related-sets '((missing (fs2 b5))))))
+  (limit mtls :upper 'df5 :lower 'c3))
+
+=> 
+TL-SET: transposition: 0
+        limit-upper: 
+PITCH: frequency: 554.365, midi-note: 73, midi-channel: 0 
+[...]
+    subsets: 
+FL: (DF5)
+VLA: (E3 G3 B3)
+    related-sets: 
+MISSING: (FS2 B5)
+SCLIST: sclist-length: 14, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (C3 E3 G3 B3 D4 GF4 BF4 DF5)
+
+;; Setting the :do-related-sets argument to T results in any RELATED-SETS pitch
+;; content being transposed as well
+(let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+			 :subsets '((fl (df5 f5 af5))
+				    (vla (e3 g3 b3)))
+			 :related-sets '((missing (fs2 b5))))))
+  (limit mtls :upper 'c6 :lower 'c3 :do-related-sets t))
+
+=>
+[...]
+    subsets: 
+FL: (DF5 F5 AF5)
+VLA: (E3 G3 B3)
+    related-sets: 
+MISSING: (B5)
+SCLIST: sclist-length: 14, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 
 |#
 ;;; SYNOPSIS
@@ -291,6 +409,8 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Feb  6 20:29:54 GMT 2012: Added robodoc entry
+
 ;;; ****f* tl-set/make-tl-set
 ;;; FUNCTION
 ;;; Create a tl-set object, which extends the sc-set class by incorporating
@@ -316,24 +436,93 @@
 ;;;   to :subsets, only that the pitches given here do not have to be part of
 ;;;   the main set. This can be used, for example, for pitches missing from the
 ;;;   main set.
-
-;;; - keyword argument :limit-upper.
-
-;;; - keyword argument :limit-lower.
-
-;;; - keyword argument :transposition. Default = 0.
-
+;;; - keyword argument :limit-upper. A note-name symbol or a pitch object to
+;;;   indicate the highest possible pitch in the tl-set object to be created. 
+;;; - keyword argument :limit-lower.  A note-name symbol or a pitch object to
+;;;   indicate the lowest possible pitch in the tl-set object to be created.
+;;; - keyword argument :transposition. A number that is the number of semitones
+;;;   by which the pitches of the new tl-set are to be transposed when the
+;;;   object is created. Default = 0.
 ;;; - keyword argument :auto-sort. T or NIL to indicate whether the specified
 ;;;   pitches (note-name symbols) are to be automatically  sorted from lowest
 ;;;   to highest. T = sort. Default = T.
-
-;;; 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A tl-set object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Simple usage with default values for keyword arguments
+(make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))
+
+=> 
+TL-SET: transposition: 0
+        limit-upper: NIL
+        limit-lower: NIL
+SC-SET: auto-sort: T, used-notes: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 0
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 0, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: USED-NOTES, tag: NIL, 
+data: NIL
+
+N.B. All pitches printed as symbols only, internally they are all 
+pitch-objects.
+
+    subsets: 
+    related-sets: 
+SCLIST: sclist-length: 14, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
+
+;; Adding subsets and related-sets
+(make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+	     :subsets '((fl (df5 f5 af5))
+			(vla (e3 g3 b3)))
+	     :related-sets '((missing (fs2 b5))))
+=> 
+TL-SET: transposition: 0
+[...]
+    subsets: 
+FL: (DF5 F5 AF5)
+VLA: (E3 G3 B3)
+    related-sets: 
+MISSING: (FS2 B5)
+SCLIST: sclist-length: 14, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
+
+;; Limiting the pitch range of the tl-set object, once using a note-name
+;; symbol and once using a pitch object
+(make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+	     :limit-upper 'g5
+	     :limit-lower (make-pitch 'd3))
+
+=> 
+TL-SET: transposition: 0
+        limit-upper: 
+PITCH: frequency: 783.991, midi-note: 79, midi-channel: 0 
+[...]
+        limit-lower: 
+PITCH: frequency: 146.832, midi-note: 50, midi-channel: 0 
+[...]
+data: (E3 G3 B3 D4 GF4 BF4 DF5 F5)
+
+;; Applying a transposition by semitones
+(make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+	     :transposition 3)
+
+=>
+TL-SET: transposition: 3
+[...]
+data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 
 |#
 ;;; SYNOPSIS

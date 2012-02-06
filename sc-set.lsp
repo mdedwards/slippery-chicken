@@ -171,17 +171,15 @@
 ;;; - An sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-
 ;;; - keyword argument :qtr-tones-also. T or NIL to indicate whether
 ;;;   quarter-tones are also to be rounded to the nearest chromatic pitch and
 ;;;   returned. T = round and return. Default = NIL.
-;;; - keyword argument :octave. An integer that is the octave designator to
-;;;   which all resulting pitches are to be transposed (i.e. the "4" in "C4"
-;;;   etc.) 
-;;; - keyword argument :remove-duplicates. T or NIL to indicate whether
-;;;   any duplicate pitches within an octave that are created by use of the
-;;;   :octave keyword argument are to be removed. T = remove
-;;;   duplicates. Default =  NIL.
+;;; - keyword argument :octave. NIL or an integer that is the octave designator
+;;;   to which all resulting pitches are to be transposed (i.e. the "4" in "C4"
+;;;   etc.) Default = NIL.
+;;; - keyword argument :remove-duplicates. T or NIL to indicate whether any
+;;;   duplicate pitches within an octave that are created by use of the :octave
+;;;   keyword argument are to be removed. T = remove duplicates. Default = NIL.
 ;;; - keyword argument :as-symbols. T or NIL to indicate whether to return the
 ;;;   results of the method as a list of note-name symbols rather than a list
 ;;;   of pitch objects. T = return as note-name symbols. Default = NIL. 
@@ -289,22 +287,81 @@ data: CS4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; just change the micro-tone slot of all pitches to <value>
+;;; SAR Mon Feb  6 13:11:48 GMT 2012: Extended robodoc entry
+ 
+;;; SAR Mon Feb  6 11:58:00 GMT 2012: Added robodoc NB
+
+;;; SAR Sat Feb  4 18:23:23 GMT 2012: Deleted MDE comment, as this is taken
+;;; nearly verbatim into the doc below
+
+;;; SAR Sat Feb  4 18:14:25 GMT 2012: Added robodoc entry
+
 ;;; ****m* sc-set/force-micro-tone
 ;;; FUNCTION
-;;; 
+;;; Change the value of the MICRO-TONE slot of all pitch objects in a given
+;;; sc-set object to the specified <value>.
+;;;
+;;; NB: Although the MICRO-TONE slot is generally used as a boolean, this
+;;;     method allows the user to force-set it to any value.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An item of any type that is to be the new value of the MICRO-TONE slot of
+;;;   all pitch objects in the given sc-set object. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Always returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create an sc-set object that contains micro-tones and print the MICRO-TONE
+;; slot of all of the contained pitch objects to see their values:
+(let ((mscs (make-sc-set '(d2 cqs3 fs3 cs4 e4 c5 aqf5 ef6))))
+  (loop for p in (data mscs) do (print (micro-tone p))))
+
+=>
+NIL 
+T 
+NIL 
+NIL 
+NIL 
+NIL 
+T 
+NIL
+
+;; Now apply the force-micro-tone method to the same set using the default
+;; value of NIL and print the results
+
+(let ((mscs (make-sc-set '(d2 cqs3 fs3 cs4 e4 c5 aqf5 ef6))))
+  (force-micro-tone mscs)
+    (loop for p in (data mscs) do (print (micro-tone p))))
+
+=>
+NIL 
+NIL 
+NIL 
+NIL 
+NIL 
+NIL 
+NIL 
+NIL
+
+;; Using the same sc-set, force all the values to T
+(let ((mscs (make-sc-set '(d2 cqs3 fs3 cs4 e4 c5 aqf5 ef6))))
+  (force-micro-tone mscs 't)
+    (loop for p in (data mscs) do (print (micro-tone p))))
+
+=>
+T 
+T 
+T 
+T 
+T 
+T 
+T 
+T
 
 |#
 ;;; SYNOPSIS
@@ -316,24 +373,99 @@ data: CS4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 
-;;; Get the notes from the set that are normal chromatic notes,
-;;; i.e. no microtones.  If octave is given, put them all into that octave
 
-;;; ****m* sc-set/get-chromatic
-;;; FUNCTION
-;;; 
+;;; SAR Mon Feb  6 13:28:29 GMT 2012: Extended robodoc entry
+
+;;; SAR Sat Feb  4 18:27:47 GMT 2012: Deleted MDE's comment here as it has been
+;;; taken into the doc nearly verbatim.
+
+;;; SAR Sat Feb  4 18:24:46 GMT 2012: Added robodoc entry
+
+;;; ****m* sc-set/get-chromatic 
+;;; FUNCTION 
+;;; Return those notes of a given sc-set object that are normal chromatic notes
+;;; (i.e. no microtones). 
+;;;
+;;; If a number is given for the <octave> argument, the method will transpose
+;;; all returned pitches into the specified octave, in which case any duplicate
+;;; pitches are removed.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :octave. NIL or an integer that is the octave designator
+;;;   to which all resulting pitches are to be transposed (i.e. the "4" in "C4"
+;;;   etc.) Default = NIL.
+;;; - keyword argument :remove-duplicates. T or NIL to indicate whether any
+;;;   duplicate pitches within an octave that are created by use of the :octave
+;;;   keyword argument are to be removed. T = remove duplicates. Default = NIL.
+;;; - keyword argument :as-symbols. T or NIL to indicate whether to return the
+;;;   results of the method as a list of note-name symbols rather than a list
+;;;   of pitch objects. T = return as note-name symbols. Default = NIL.
+;;; - keyword argument :package. The package in which the pitches are to be
+;;;   handled. Default = :sc.  
+;;; - keyword argument :invert. Get the micro-tone pitches instead.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a list of pitch objects by default.
+;;;
+;;; When the :as-symbols argument is set to T, a list of note-name symbols is
+;;; returned instead.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Returns a list of pitch objects by default
+(let ((mscs (make-sc-set '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
+  (get-chromatic mscs))
+
+=>
+(
+PITCH: frequency: 73.416, midi-note: 38, midi-channel: 0 
+       pitch-bend: 0.0 
+       degree: 76, data-consistent: T, white-note: D2
+       nearest-chromatic: D2
+       src: 0.28061550855636597, src-ref-pitch: C4, score-note: D2 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 2, c5ths: 0, no-8ve: D, no-8ve-no-acc: D
+       show-accidental: T, white-degree: 15, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: D2, tag: NIL, 
+data: D2
+ 
+PITCH: frequency: 184.997, midi-note: 54, midi-channel: 0 
+[...]
+)
+
+;; Setting the :as-symbols argument to T returns a list of note-name symbols
+;; instead
+(let ((mscs (make-sc-set '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
+  (get-chromatic mscs
+		 :as-symbols t))
+
+=> (D2 FS3 CS4 E4 C5 AF5 D6)
+
+;; Giving an integer as the :octave argument transposes all returned  pitches
+;; to the specified octave, removing any duplicates by default.
+(let ((mscs (make-sc-set '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
+  (get-chromatic mscs
+		 :as-symbols t
+		 :octave 4))
+
+=> (FS4 CS4 E4 C4 AF4 D4)
+
+;; Setting the :invert argument to T returns the non-chromatic elements of the
+;; given sc-set object instead
+(let ((mscs (make-sc-set '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
+  (get-chromatic mscs
+		 :as-symbols t
+		 :invert t))
+
+=> (CQS3 GQF3 FQS4 BQF5)
 
 |#
 ;;; SYNOPSIS
@@ -363,21 +495,79 @@ data: CS4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Feb  6 13:37:14 GMT 2012: Added robodoc entry
+
 ;;; ****m* sc-set/get-non-chromatic
 ;;; FUNCTION
+;;; Return those notes of a given sc-set object that are micr-tones (i.e. no
+;;; "normal" chromatic notes).
 ;;; 
+;;; If a number is given for the <octave> argument, the method will transpose
+;;; all returned pitches into the specified octave, in which case any duplicate
+;;; pitches are removed.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :octave. NIL or an integer that is the octave designator
+;;;   to which all resulting pitches are to be transposed (i.e. the "4" in "C4"
+;;;   etc.) Default = NIL.
+;;; - keyword argument :as-symbols. T or NIL to indicate whether to return the
+;;;   results of the method as a list of note-name symbols rather than a list
+;;;   of pitch objects. T = return as note-name symbols. Default = NIL.
+;;; - keyword argument :package. The package in which the pitches are to be
+;;;   handled. Default = :sc.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a list of pitch objects by default.
+;;;
+;;; When the :as-symbols argument is set to T, a list of note-name symbols is
+;;; returned instead.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns a list of pitch objects by default
+(let ((mscs (make-sc-set '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
+  (get-non-chromatic mscs))
+
+=>
+=> (
+PITCH: frequency: 134.646, midi-note: 48, midi-channel: 0 
+       pitch-bend: 0.5 
+       degree: 97, data-consistent: T, white-note: C3
+       nearest-chromatic: C3
+       src: 0.5146511197090149, src-ref-pitch: C4, score-note: CS3 
+       qtr-sharp: 1, qtr-flat: NIL, qtr-tone: 1,  
+       micro-tone: T, 
+       sharp: NIL, flat: NIL, natural: NIL, 
+       octave: 3, c5ths: 0, no-8ve: CQS, no-8ve-no-acc: C
+       show-accidental: T, white-degree: 21, 
+       accidental: QS, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: CQS3, tag: NIL, 
+data: CQS3
+    
+PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0 
+[...]
+)
+
+;; Setting :as-symbols to T returns a list of note-names instead
+(let ((mscs (make-sc-set '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
+  (get-non-chromatic mscs
+		     :as-symbols t))
+
+=> (CQS3 GQF3 FQS4 BQF5)
+
+;; Giving an integer as the :octave argument transposes all returned  pitches
+;; to the specified octave, removing any duplicates
+(let ((mscs (make-sc-set '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 cqs6 d6))))
+  (get-non-chromatic mscs
+		     :as-symbols t
+		     :octave 4))
+
+=> (GQF4 FQS4 BQF4 CQS4)
 
 |#
 ;;; SYNOPSIS
@@ -416,35 +606,66 @@ data: CS4
 |#
 ;;; SYNOPSIS
 (defmethod get-semitones ((s sc-set) &optional 
-                                (reference-pitch 'c4)
-                                (offset 0))
+			  (reference-pitch 'c4)
+			  (offset 0))
 ;;; ****
   (loop for srt in 
-        (get-srts-aux (data s) reference-pitch offset)
-      collect (srt srt)))
+       (get-srts-aux (data s) reference-pitch offset)
+     collect (srt srt)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Get the sampling-rate conversion factors for the main set.
-;;; offset is number of semitones to add.
-;;; reference-pitch is the apparent pitch of the sample we're going to
-;;; transpose.  
+;;; SAR Mon Feb  6 14:06:58 GMT 2012: Deleted MDE's original comment here as it
+;;; is taken over nearly verbatim into the robodoc entry below.
 
-;;; ****m* sc-set/get-srts
-;;; FUNCTION
-;;; 
-;;; 
+;;; SAR Mon Feb  6 14:06:48 GMT 2012: Added robodoc entry
+
+;;; ****m* sc-set/get-srts 
+;;; FUNCTION 
+;;; Get the sampling-rate conversion factors for the given sc-set object,
+;;; whereby 1.0 = unison, 2.0 = one octave higher and 0.5 = one octave lower
+;;; etc.
+;;;
 ;;; ARGUMENTS
+;;; - An sc-set object.
 ;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; OPTIONAL ARGUMENTS 
+;;; - The optional <reference-pitch> is the basis pitch to which the resulting
+;;;   factors refer. This will generally be the perceived fundamental pitch of
+;;;   the sample (sound file) being modififed ("transposed").
+;;; - The optional <offset> argument is the number of semitones to add to the
+;;;   pitch of the given set prior to determining the sampling-rate conversion
+;;;   factors. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a list of numbers.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns a list of factors that are the sampling-rate conversion factor
+;; compared to a 'C4 by default:
+(let ((mscs (make-sc-set '(d2 fs3 cs4 c5 af5 d6))))
+  (get-srts mscs))
+
+=> (0.28061550855636597 0.7071067690849304 1.0594631433486938 2.0
+    3.17480206489563 4.4898481369018555)
+
+;; Comparing the same set against a higher reference-pitch will return lower
+;; values
+(let ((mscs (make-sc-set '(d2 fs3 cs4 c5 af5 d6))))
+  (get-srts mscs 'd4))
+
+=> (0.25 0.6299605220704482 0.9438743681693953 1.781797458637491
+    2.8284271254540463 4.0)
+
+;; Conversely, comparing the same set against the default reference-pitch but
+;; with a postive offset will return higher values
+
+(let ((mscs (make-sc-set '(d2 fs3 cs4 c5 af5 d6))))
+  (get-srts mscs 'c4 2))
+
+=> (0.3149802585215549 0.7937005124004939 1.1892071699914617 2.244924096618746
+    3.563594828739576 5.039684136344879)
 
 |#
 ;;; SYNOPSIS
@@ -456,27 +677,46 @@ data: CS4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Feb  6 15:29:04 GMT 2012: Addedrobodoc entry
+
 ;;; ****m* sc-set/subset-get-srts
 ;;; FUNCTION
-;;; 
+;;; Get the sampling-rate conversion factors for the specified subset of a
+;;; given sc-set object, whereby 1.0 = unison, 2.0 = one octave higher and 0.5
+;;; = one octave lower etc.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An sc-set object.
+;;; - A symbol that is the key of one of the key/data pairs stored in the
+;;;   SUBSETS slot of the given sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - The optional <reference-pitch> is the basis pitch to which the resulting
+;;;   factors refer. This will generally be the perceived fundamental pitch of
+;;;   the sample (sound file) being modififed ("transposed").
+;;; - The optional <offset> argument is the number of semitones to add to the
+;;;   pitch of the given set prior to determining the sampling-rate conversion
+;;;   factors. 
 ;;; 
 ;;; RETURN VALUE
 ;;; 
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Create an sc-set object with two subsets named 'FL and 'VA, then get the
+;;; sampling-rate conversion factors for the 'FL subset
+(let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+			 :subsets '((fl (df5 f5 af5 c6))
+				    (va (c3 e3 g3 b3 d4 gf4))))))
+  (subset-get-srts mscs 'fl))
+
+=> (2.1189262866973877 2.669679641723633 3.17480206489563 4.0)
 
 |#
 ;;; SYNOPSIS
 (defmethod subset-get-srts  ((s sc-set) subset &optional 
-                                               (reference-pitch 'c4)
-                                               (offset 0))
+			     (reference-pitch 'c4)
+			     (offset 0))
 ;;; ****
   (get-srts-aux (data (get-data subset (subsets s)))
                 reference-pitch offset))
@@ -484,9 +724,11 @@ data: CS4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Get the interval structure of the set from bottom to top note and add
-;;; notes to the top and bottom using the same structure.  Repeat num-stacks
-;;; times.  NB we assume the set is sorted.  See also make-stack in the
+;;; notes to the top and bottom using the same structure. Repeat num-stacks
+;;; times. NB we assume the set is sorted. See also make-stack in the
 ;;; complete-set class to make a stack from a simple list of pitch symbols.
+
+;;; SAR Mon Feb  6 15:42:53 GMT 2012: Edited robodoc entry
 
 ;;; ****m* sc-set/stack
 ;;; FUNCTION
@@ -533,24 +775,29 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Get the degree distances of each note to the bottom note of the set
-;;; (assumes set is sorted).
+;;; SAR Mon Feb  6 16:02:02 GMT 2012: Added robodoc entry and delete MDE
+;;; comment here as it was taken into the robodoc nearly verbatim
 
 ;;; ****m* sc-set/get-interval-structure
 ;;; FUNCTION
-;;; 
+;;; Get the distances between each pitch in a given sc-set object and the
+;;; lowest pitch in that object in DEGREES (which default to quarter-tones in
+;;; slippery chicken). (This method assumes that the given sc-set object is
+;;; sorted from low to high).
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An sc-set object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of integers
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns the distances in degrees (which are set to quarter-tones by default)
+(let ((mscs (make-sc-set '(c4 e4 g4))))
+  (get-interval-structure mscs))
+
+=> (8 14)
 
 |#
 ;;; SYNOPSIS
@@ -562,21 +809,26 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Feb  6 16:07:24 GMT 2012: Added robodoc entry
+
 ;;; ****m* sc-set/set-position
 ;;; FUNCTION
-;;; 
+;;; Get the position (zero-index) of a specified pitch object within a given
+;;; sc-set object. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A pitch object.
+;;; - An sc-set object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An integer.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
+  (set-position (make-pitch 'e3) mscs))
+
+=> 4
 
 |#
 ;;; SYNOPSIS
@@ -586,21 +838,25 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Feb  6 16:13:55 GMT 2012: Added robodoc entry
+
 ;;; ****m* sc-set/get-degrees
 ;;; FUNCTION
-;;; 
+;;; Return the pitches contained in the given sc-set object as a list of
+;;; DEGREES (which default to quarter-tones in slippery chicken).
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An sc-set object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of integers.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
+  (get-degrees mscs))
+
+=> (76 82 90 96 104 110 118 124 132 140 146 154 160 168)
 
 |#
 ;;; SYNOPSIS
@@ -610,45 +866,55 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Feb  6 16:18:45 GMT 2012: Added robodoc entry
+
 ;;; ****m* sc-set/get-freqs
 ;;; FUNCTION
-;;; 
+;;; Return the pitches of a given sc-set object as a list of Hz frequencies
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An sc-set object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of numbers
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
+  (get-freqs mscs))
+
+=> (73.41618871368837 87.30705289160142 109.99999810639679 130.8127784729004
+    164.81377633519514 195.99771591817216 246.94163930037348 293.6647548547535
+    369.99440456398133 466.1637395092839 554.3652698843016 698.4564231328113
+    830.6093584209975 1046.5022277832031)
 
 |#
 ;;; SYNOPSIS
-(defmethod get-freqs  ((s sc-set))
+(defmethod get-freqs ((s sc-set))
 ;;; ****
   (loop for p in (data s) collect (frequency p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* sc-set/get-midi
+;;; SAR Mon Feb  6 16:26:18 GMT 2012: Added robodoc entry
+
+;;; ****m* sc-set/get-midi 
 ;;; FUNCTION
-;;; 
+;;; Return the pitches of a given sc-set object as a list of their equivalent
+;;; MIDI key numbers.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An sc-set object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of numbers
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
+  (get-midi mscs))
+
+=> (38 41 45 48 52 55 59 62 66 70 73 77 80 84)
 
 |#
 ;;; SYNOPSIS
@@ -658,21 +924,51 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Feb  6 16:30:17 GMT 2012: Added robodoc entry
+
 ;;; ****m* sc-set/get-semitones-from-middle-note
 ;;; FUNCTION
-;;; 
+;;; Return a list of numbers that are the distances in semitones of each pitch
+;;; in a given sc-set object from the middle note of that object. 
+;;;
+;;; NB: If the given sc-object contains an even number of pitch objects, the
+;;;     middle note is determined to be the first note of the second half of
+;;;     the set.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
+;;; - A symbol that is the key of one of the key/data pairs contained in the
+;;;   SUBSETS slot of the given sc-set object.
 ;;; RETURN VALUE
-;;; 
+;;; A list of positive and negative numbers.
 ;;; 
 ;;; EXAMPLE
 #|
+;; With an odd number of items in the sc-set object, the method returns the
+;; same number of positive and negative numbers (non-zero)
+(let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5))))
+  (get-semitones-from-middle-note mscs))
+
+=> (-21.0 -18.0 -14.0 -11.0 -7.0 -4.0 0.0 3.0 7.0 11.0 14.0 18.0 21.0)
+
+;; With an even number of items in the sc-set object, the middle note is
+;; considered to be the first note of the second half of the set
+(let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
+  (get-semitones-from-middle-note mscs))
+
+=> (-24.0 -21.0 -17.0 -14.0 -10.0 -7.0 -3.0 0.0 4.0 8.0 11.0 15.0 18.0 22.0)
+
+;; Setting the optional <subset> argument to a symbol that is the key of a
+;; given key/data pair in the sc-object's SUBSETS slot applies the method to
+;; that subset only
+(let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+			 :subsets '((fl (df5 f5 af5 c6))
+				    (va (c3 e3 g3 b3 d4 gf4))))))
+  (get-semitones-from-middle-note mscs 'fl))
+
+=> (-7.0 -3.0 0.0 4.0)
 
 |#
 ;;; SYNOPSIS
@@ -686,24 +982,56 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; A new set is made out of the data of the two arguments.  This
-;;; means of course that subsets etc. get lost.
+;;; SAR Mon Feb  6 16:46:22 GMT 2012: Added robodoc info. Deleted MDE's comment
+;;; here as it is taken nearly verbatim into the doc below.
 
 ;;; ****m* sc-set/add
 ;;; FUNCTION
+;;; Create a new sc-set object from the data of two other specified sc-set
+;;; objects.
 ;;; 
-;;; 
+;;; NB: Any subsets contained in the original sc-set objects are lost in the
+;;;     process. 
+;;;
 ;;; ARGUMENTS
-;;; 
+;;; - A first sc-set object.
+;;; - A second sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; (- optional argument <ignore> is internal only)
 ;;; 
 ;;; RETURN VALUE
 ;;; 
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mscs1 (make-sc-set '(d2 a2 e3 b3 gf4 df5 af5)))
+      (mscs2 (make-sc-set '(f2 c3 g3 d4 bf4 f5 c6))))
+  (add mscs1 mscs2))
+
+=>
+SC-SET: auto-sort: T, used-notes: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 0
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 0, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: USED-NOTES, tag: NIL, 
+data: NIL
+
+**** N.B. All pitches printed as symbols only, internally they are all 
+pitch-objects.
+
+
+    subsets: 
+    related-sets: 
+SCLIST: sclist-length: 14, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 
 |#
 ;;; SYNOPSIS
@@ -722,21 +1050,37 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Feb  6 16:59:16 GMT 2012: Added robodoc info
+
 ;;; ****m* sc-set/contains-pitches
 ;;; FUNCTION
-;;; 
+;;; Check to see if a given sc-set object contains pitch objects for all of the
+;;; specified note-names. The method returns NIL if any one of the specified
+;;; pitches is not found in the given sc-set object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An sc-set object.
+;;; - A list of note-name symbosl. NB: If checking for only one pitch, that
+;;;   pitch must be passed as a single-item list.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T or NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Returns T when all specified pitches are contained in the given sc-set
+;; object 
+(let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
+  (contains-pitches mscs '(d2 e3 gf4 af5)))
+
+=> T
+
+;; Returns NIL if any one of the specififed pitches is not contained in the
+;; given sc-set object.
+(let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
+  (contains-pitches mscs '(d2 e3 gf4 b4 af5)))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -746,21 +1090,33 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Feb  6 17:32:38 GMT 2012: Added robodoc entry
+
 ;;; ****m* sc-set/create-chord
 ;;; FUNCTION
-;;; 
+;;; Create a chord object from the pitches of the given sc-set object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An sc-set object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A chord object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mscs (make-sc-set '(d2 c3 d4 df5 c6))))
+  (create-chord mscs))
+
+=> 
+CHORD: auto-sort: T, marks: NIL, micro-tone: NIL
+SCLIST: sclist-length: 5, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (
+PITCH: frequency: 73.416, midi-note: 38, midi-channel: 0 
+[...]
+)
+
 
 |#
 ;;; SYNOPSIS
@@ -770,21 +1126,62 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Feb  6 17:42:16 GMT 2012: Added robodoc entry
+
 ;;; ****m* sc-set/create-event
 ;;; FUNCTION
-;;; 
+;;; Create an event object (that is a chord) from a given sc-set object,
+;;; specifiying a rhythmic value and a start-time (in seconds).
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An sc-set object.
+;;; - A rhythmic unit, either as a numerical value (32, 16 etc) or a symbol
+;;;   that is an alphabetic shorthand ('e, 's etc).
+;;; - A number that is the start time in seconds. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number that is the start-time in quarter-notes rather than seconds (see
+;;;   event class documentation for more details)
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An event object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create an event from the specified sc-set object that is a quarter-note
+;; chord starting at 0.0 seconds
+(let ((mscs (make-sc-set '(d2 c3 d4 df5 c6))))
+  (create-event mscs 'q 0.0))
+
+=>
+EVENT: start-time: 0.000, end-time: NIL, 
+       duration-in-tempo: 0.000, 
+       compound-duration-in-tempo: 0.000, 
+       amplitude: 0.700 
+       bar-num: -1, marks-before: NIL, 
+       tempo-change: NIL 
+       instrument-change: NIL 
+       display-tempo: NIL, start-time-qtrs: 0.000, 
+       midi-time-sig: NIL, midi-program-changes: NIL, 
+       8va: 0
+       pitch-or-chord: 
+CHORD: auto-sort: T, marks: NIL, micro-tone: NIL
+SCLIST: sclist-length: 5, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (
+PITCH: frequency: 73.416, midi-note: 38, midi-channel: 0 
+[...]
+RHYTHM: value: 4.000, duration: 1.000, rq: 1, is-rest: NIL, 
+        score-rthm: 4.0f0, undotted-value: 4, num-flags: 0, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 1.000, 
+        is-grace-note: NIL, needs-new-note: T, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: NIL, marks-in-part: NIL, 
+        letter-value: 4, tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: Q, tag: NIL, 
+data: Q
+
 
 |#
 ;;; SYNOPSIS
@@ -798,21 +1195,25 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Feb  6 18:02:05 GMT 2012: Added robodoc entry
+
 ;;; ****m* sc-set/pitch-symbols
 ;;; FUNCTION
-;;; 
+;;; Return the pitches of a given sc-set object as a list of note-name
+;;; symbols. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An sc-set object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of note-name symbols.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mscs (make-sc-set '(d2 c3 d4 df5 c6))))
+  (pitch-symbols mscs))
+
+=> (D2 C3 D4 DF5 C6)
 
 |#
 ;;; SYNOPSIS

@@ -583,26 +583,49 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Get the semitone transpositions for the main set.
-;;; offset is number of semitones to add.
-;;; reference-pitch is the apparent pitch of the sample we're going to
-;;; transpose.  
+;;; SAR Tue Feb  7 18:33:53 GMT 2012: Deleted MDE's original comments here. The
+;;; wording has been changed considerably, but the content is the same.
+
+;;; SAR Tue Feb  7 18:27:46 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-set/get-semitones
 ;;; FUNCTION
-;;; 
+;;; Get the distances in semitones of each pitch in a given sc-set
+;;; object to a static reference pitch. 
+;;;
+;;; Though this method can be used in other contexts, it was devised
+;;; as an aid for transposing audio samples (sound files), and the
+;;; reference pitch is therefore generally the percieved fundamental
+;;; pitch of the audio sample to be transposed.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An optional note-name symbol sets the value of the <reference-pitch>,
+;;;   which is the basis pitch to which the resulting number of semitones
+;;;   refer. This will generally be the perceived fundamental pitch of the
+;;;   sample (sound file) being modififed ("transposed").
+;;; - The optional <offset> argument takes a number that is the number of
+;;;   semitones to add to the pitch of the given set prior to determining its
+;;;   distance in semitones from the reference pitch.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of positive and negative numbers.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Chromatic example
+(let ((mscs (make-sc-set '(d2 fs3 cs4 c5 af5 d6))))
+  (get-semitones mscs))
+
+=> (-22.0 -6.0 1.0 12.0 20.0 26.0)
+
+;; Quarter-tone example; results can be decimal fractions of semitone
+(let ((mscs (make-sc-set '(d2 cqs3 fs3 gqf3 cs4 fqs4 c5 af5 bqf5 cqs6 d6))))
+  (get-semitones mscs))
+
+=> (-22.0 -11.5 -6.0 -5.5 1.0 5.5 12.0 20.0 22.5 24.5 26.0)
 
 |#
 ;;; SYNOPSIS
@@ -631,12 +654,13 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;; - An sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS 
-;;; - The optional <reference-pitch> is the basis pitch to which the resulting
-;;;   factors refer. This will generally be the perceived fundamental pitch of
-;;;   the sample (sound file) being modififed ("transposed").
-;;; - The optional <offset> argument is the number of semitones to add to the
-;;;   pitch of the given set prior to determining the sampling-rate conversion
-;;;   factors. 
+;;; - An optional note-name symbol sets the value of the <reference-pitch>,
+;;;   which is the basis pitch to which the resulting factors refer. This will
+;;;   generally be the perceived fundamental pitch of the sample (sound file)
+;;;   being modififed ("transposed").
+;;; - The optional <offset> argument takes a number that is the number of
+;;;   semitones to add to the pitch of the given set prior to determining the
+;;;   sampling-rate conversion factors. 
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns a list of numbers.

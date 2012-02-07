@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 18:58:57 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 23:19:59 Tue Feb  7 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -148,7 +148,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sc-map/get-all-data-from-palette
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-all-data-from-palette ((scm sc-map))
+;;; ****
   (let ((all-refs (get-all-refs scm)))
     (loop 
         for ref in all-refs 
@@ -158,7 +177,26 @@
 
 ;;; See comment at head of class.
 
+;;; ****m* sc-map/get-data-from-palette
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-data-from-palette (ids (scm sc-map) &optional (warn t))
+;;; ****
   (let* ((palette-ref (get-data ids scm warn))
          (palette-ref-data (when palette-ref (data palette-ref))))
     (cond ((not (palette scm))
@@ -174,10 +212,31 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 13.2.11.  start-seq and end-seq are 1-based and inclusive.
+;;; 13.2.11.  this allows us, once we've got a map, to e.g. have several
+;;; players playing in rhythmic unison.  start-seq and end-seq are 1-based and
+;;; inclusive. 
 
+;;; ****m* sc-map/double
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod double ((scm sc-map) section-ref start-seq end-seq master-player
                    doubling-players)
+;;; ****
   (unless (listp doubling-players)
     (setf doubling-players (list doubling-players)))
   (loop for seq-num from (1- start-seq) below end-seq ; still inclusive!
@@ -194,7 +253,26 @@
 ;;; a list of them).  Given the section reference, get the nth (0-based) from
 ;;; the palette.
 
+;;; ****m* sc-map/get-nth-from-palette
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-nth-from-palette (sc-map-ref nth (scm sc-map))
+;;; ****
   (let ((p (palette scm))
         (refs (data (get-data sc-map-ref scm nil))))
     (when p
@@ -202,14 +280,52 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sc-map/get-nth-from-map
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-nth-from-map (map-ref nth (scm sc-map))
+;;; ****
   (nth nth (data (get-data map-ref scm nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 5.2.11
 
+;;; ****m* sc-map/delete-nth-in-map
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-nth-in-map (map-ref nth (scm sc-map))
+;;; ****
   (set-nth-of-data map-ref nth nil scm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -217,6 +333,7 @@
 ;;; 6.12.11, from and to are 0-based
 
 (defmethod delete-from-to-in-map (map-ref from to (scm sc-map))
+;;; ****
   (loop for n from from to to do
        (delete-nth-in-map map-ref n scm)))
 
@@ -258,8 +375,27 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* sc-map/make-sc-map
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-sc-map (id scm &key (palette nil) (warn-not-found t)
                            (recurse-simple-data t) (replacements nil))
+;;; ****
   (make-instance 'sc-map :data scm :id id :warn-not-found warn-not-found
                  :palette palette
                  :replacements replacements

@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 18:59:42 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 23:31:39 Tue Feb  7 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -258,8 +258,27 @@
 
 ;;; simply repeat rthm-seqs without a repeat-every structure.
 ;;; start-seq is 1-based
+;;; ****m* rthm-seq-map/add-repeats-simple
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-repeats-simple ((rsm rthm-seq-map) start-seq repeats &key
                                (section 1) print)
+;;; ****
   (loop for player in (players rsm) do
        (let* ((refs (get-map-refs rsm section player))
               (repeat-seq (nth (1- start-seq) refs))
@@ -281,7 +300,26 @@
 ;;; ral we can query to find rthm-seq refs of all rthm-seqs that share the same
 ;;; bar/time-sig structure, e.g. all those that have a 2/4 bar followed by a
 ;;; 3/4 bar.
+;;; ****m* rthm-seq-map/get-time-sig-ral
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-time-sig-ral ((rsm rthm-seq-map) (rsp rthm-seq-palette))
+;;; ****
        ;; section/player refs e.g. ((1 PERC1) (1 PERC2))
   (let* ((refs (get-all-refs rsm)) 
          (ral (duplicate-structure rsm)))
@@ -323,9 +361,28 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* rthm-seq-map/make-rthm-seq-map
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-rthm-seq-map (id rsm &key (palette nil) (warn-not-found nil)
                                       (replacements nil)
                                       (recurse-simple-data t))
+;;; ****
   (make-instance 'rthm-seq-map :data rsm :id id :warn-not-found warn-not-found
                  :replacements replacements
                  :recurse-simple-data recurse-simple-data
@@ -489,7 +546,26 @@
 ;;; Each instrument in a section must have the same number of references as
 ;;; every other instrument: check this here.
 
+;;; ****f* rthm-seq-map/check-num-sequences
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun check-num-sequences (rsm)
+;;; ****
   (loop for i below (sclist-length rsm) do
         (let* ((section (get-next rsm))
                (players-or-subsections (data (data section))))

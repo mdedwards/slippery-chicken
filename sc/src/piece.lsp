@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 16:33:36 Wed Feb  1 2012 ICT
+;;; $$ Last modified: 23:37:09 Tue Feb  7 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -341,12 +341,31 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* piece/insert-bar
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod insert-bar ((p piece) (rsb rthm-seq-bar) bar-num 
                        ;; these aren't actually optional but we don't
                        ;; need them in the rthm-seq method 
                        &optional section player seq-num ; seq-num is 1-based!
                                  ;; this really is optional
                                  pitch-seq)
+;;; ****
   (let ((seq (get-nth-sequenz p section player (1- seq-num) nil)))
     (insert-bar seq rsb bar-num pitch-seq)))
 
@@ -364,8 +383,27 @@
 ;;; This is the method called when the player is mentioned in the section but
 ;;; sits a sequence out (with nil).  
 
+;;; ****m* piece/get-nth-sequenz
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-nth-sequenz ((p piece) section player seq-num ; 0-based
                             &optional (create-rest-seq t))
+;;; ****
   (flet ((get-seq (spieler) 
            ;; if we don't get a section, it means the player doesn't play in
            ;; this section. If we don't get a seq, then it means it just
@@ -397,6 +435,7 @@
                         rests as a ~%sequence and reference it in the ~
                         rthm-seq-map."
                        (1+ seq-num) section))))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod get-player-section (section player (p piece))
@@ -495,9 +534,28 @@
 ;;; When num-bars is nil, all bars in the piece starting from to-start-bar will
 ;;; be transposed.  
 
+;;; ****m* piece/copy-bars
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod copy-bars ((p piece) from-start-bar to-start-bar 
                       from-player to-player num-bars 
                       &optional (print-bar-nums nil))
+;;; ****
   (let ((from-bar (clone (get-bar p from-start-bar from-player)))
         (to-bar (get-bar p to-start-bar to-player)))
     (unless num-bars
@@ -867,7 +925,26 @@
 ;;; delete the whole sequenz which holds the bar with a given number.  use with
 ;;; caution: we only delete the sequence for the given player so the rest will
 ;;; be out of sync
+;;; ****m* piece/delete-sequenzes
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-sequenzes ((p piece) bar-num player &optional (how-many 1))
+;;; ****
   (let* ((bar (get-bar p bar-num player))
          (section-ref (when bar (butlast (player-section-ref bar))))
          (section (when section-ref (get-player-section section-ref player p))))
@@ -878,7 +955,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* piece/get-sequenz-from-bar-num
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-sequenz-from-bar-num ((p piece) bar-num player)
+;;; ****
   (let* ((bar (get-bar p bar-num player))
          (section-ref (when bar (butlast (player-section-ref bar))))
          (section (when section-ref (get-player-section section-ref player p)))

@@ -462,11 +462,11 @@ rthm-seq SEQ3
 ;;; Generate printable music notation output (.EPS) of the given
 ;;; rthm-seq-palette object using the Common Music Notation (CMN)
 ;;; interface. The method requires at least the name of the given
-;;; rthm-seq-palette object to set, but has several optional arguments in
-;;; additon to customize output.
+;;; rthm-seq-palette object to set, but has several additional optional
+;;; arguments for customizing output.
 ;;;
 ;;; NB: Most of the keyword arguments are CMN attributes and share the same
-;;;     name as the CMN feature they affect.
+;;;     name as the CMN feature they effect.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A rthm-seq-palette object.
@@ -479,11 +479,11 @@ rthm-seq SEQ3
 ;;; - keyword argument :file. The file path, including the file name, of the
 ;;;   file to be generated.
 ;;; - keyword argument :staff-separation. A number to indicate the amount of
-;;;   white space between staves, measured as a factor of the staff
-;;;   height. Default = 3. This is a direct CMN attribute. 
-;;; - keyword argument :line-separation. A number ot indicate the amount of
-;;;   white space between lines of music, as measured as a factor of the staff
-;;;   height. Default = 5. This is a direct CMN attribute.
+;;;   white space between staves belong to the same system, measured as a
+;;;   factor of the staff height. Default = 3. This is a direct CMN attribute.
+;;; - keyword argument :line-separation. A number to indicate the amount of
+;;;   white space between lines of music (systems), measured as a factor of
+;;;   the staff height. Default = 5. This is a direct CMN attribute.
 ;;; - keyword argument :page-nums. T or NIL to indicate whether or not to print
 ;;;   page numbers on the pages. T = print page numbers. Default = T.
 ;;; - keyword argument :no-accidentals. T or NIL to indicate whether or not to

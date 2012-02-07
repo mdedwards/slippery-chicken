@@ -60,3 +60,6 @@ implementing the remix-in algorithm of cheat sheet (see get-loops seqs)
        (staff-name-font-scaler .6)
        (default-font '("Verdana" "Verdana-Italic" "Verdana-Bold" 
                        "Verdana-BoldItalic"))
+
+;;; SAR Tue Feb  7 12:10:55 GMT 2012: from set-palette.lsp/cmn-display:
+;;; todo: there's a bug here that tries to put all sets on one page!

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 09:03:09 Sun Feb  5 2012 ICT
+;;; $$ Last modified: 16:54:21 Tue Feb  7 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -445,7 +445,7 @@ PITCH: frequency: 184.997, midi-note: 54, midi-channel: 0
 ;; instead
 (let ((mscs (make-sc-set '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
   (get-chromatic mscs
-		 :as-symbols t))
+                 :as-symbols t))
 
 => (D2 FS3 CS4 E4 C5 AF5 D6)
 
@@ -453,8 +453,8 @@ PITCH: frequency: 184.997, midi-note: 54, midi-channel: 0
 ;; to the specified octave, removing any duplicates by default.
 (let ((mscs (make-sc-set '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
   (get-chromatic mscs
-		 :as-symbols t
-		 :octave 4))
+                 :as-symbols t
+                 :octave 4))
 
 => (FS4 CS4 E4 C4 AF4 D4)
 
@@ -462,8 +462,8 @@ PITCH: frequency: 184.997, midi-note: 54, midi-channel: 0
 ;; given sc-set object instead
 (let ((mscs (make-sc-set '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
   (get-chromatic mscs
-		 :as-symbols t
-		 :invert t))
+                 :as-symbols t
+                 :invert t))
 
 => (CQS3 GQF3 FQS4 BQF5)
 
@@ -556,7 +556,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;; Setting :as-symbols to T returns a list of note-names instead
 (let ((mscs (make-sc-set '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 d6))))
   (get-non-chromatic mscs
-		     :as-symbols t))
+                     :as-symbols t))
 
 => (CQS3 GQF3 FQS4 BQF5)
 
@@ -564,8 +564,8 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;; to the specified octave, removing any duplicates
 (let ((mscs (make-sc-set '(d2 cqs3 fs3 gqf3 cs4 e4 fqs4 c5 af5 bqf5 cqs6 d6))))
   (get-non-chromatic mscs
-		     :as-symbols t
-		     :octave 4))
+                     :as-symbols t
+                     :octave 4))
 
 => (GQF4 FQS4 BQF4 CQS4)
 
@@ -606,8 +606,8 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 |#
 ;;; SYNOPSIS
 (defmethod get-semitones ((s sc-set) &optional 
-			  (reference-pitch 'c4)
-			  (offset 0))
+                          (reference-pitch 'c4)
+                          (offset 0))
 ;;; ****
   (loop for srt in 
        (get-srts-aux (data s) reference-pitch offset)
@@ -706,8 +706,8 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;; Create an sc-set object with two subsets named 'FL and 'VA, then get the
 ;;; sampling-rate conversion factors for the 'FL subset
 (let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
-			 :subsets '((fl (df5 f5 af5 c6))
-				    (va (c3 e3 g3 b3 d4 gf4))))))
+                         :subsets '((fl (df5 f5 af5 c6))
+                                    (va (c3 e3 g3 b3 d4 gf4))))))
   (subset-get-srts mscs 'fl))
 
 => (2.1189262866973877 2.669679641723633 3.17480206489563 4.0)
@@ -715,8 +715,8 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 |#
 ;;; SYNOPSIS
 (defmethod subset-get-srts  ((s sc-set) subset &optional 
-			     (reference-pitch 'c4)
-			     (offset 0))
+                             (reference-pitch 'c4)
+                             (offset 0))
 ;;; ****
   (get-srts-aux (data (get-data subset (subsets s)))
                 reference-pitch offset))
@@ -964,8 +964,8 @@ data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
 ;; given key/data pair in the sc-object's SUBSETS slot applies the method to
 ;; that subset only
 (let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
-			 :subsets '((fl (df5 f5 af5 c6))
-				    (va (c3 e3 g3 b3 d4 gf4))))))
+                         :subsets '((fl (df5 f5 af5 c6))
+                                    (va (c3 e3 g3 b3 d4 gf4))))))
   (get-semitones-from-middle-note mscs 'fl))
 
 => (-7.0 -3.0 0.0 4.0)
@@ -1238,7 +1238,6 @@ data: Q
           (unless (pitch-p p)
             (setf p (make-pitch p)))
         collect (* offset-srt (/ (frequency p) freq)))))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

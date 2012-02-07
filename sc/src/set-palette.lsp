@@ -118,23 +118,99 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; todo: there's a bug here that tries to put all sets on one page!
+;;; SAR Tue Feb  7 12:12:24 GMT 2012: Added robodoc entry
+
+;;; SAR Tue Feb 7 12:11:34 GMT 2012: 
+;;; Moved MDE's todo comment to sc/src/todo.txt
+
 #+cmn
 ;;; ****m* set-palette/cmn-display
 ;;; FUNCTION
-;;; 
+
+;;; Generate printable music notation output (.EPS) of the given set-palette
+;;; object, including separate notation of the SUBSETS and RELATED-SETS slots,
+;;; using the Common Music Notation (CMN) interface. The method requires at
+;;; least the name of the given set-palette object, but has several additional
+;;; optional arguments for customizing output.
+;;;
+;;; NB: Some of the keyword arguments are CMN attributes and share the same
+;;;     name as the CMN feature they effect.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A set-palette object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :file. The file path, including the file name, of the
+;;;   file to be generated.
+;;; - keyword argument :4stave. T or NIL to indicate whether the note-heads of 
+;;;   the output should be printed on 4 staves (or 2). T = 4. Default = NIL.
+;;; - keyword argument :text-x-offset. Number (positive or negative) to
+;;;   indicate the horizontal offset of any text in the output. A value of 0.0
+;;;   results in all text being lined up left-flush with the note-heads below
+;;;   it. Default = -0.5.
+;;; - keyword argument :text-y-offset. Number (positive or negative) to
+;;;   indicate the vertical offset of any text in the output. 
+;;; - keyword argument :font-size. A number indicating the size of any text
+;;;   font used in the output. This affects text only and not the music (see
+;;;   :size below for changing the size of the music).
+;;; - keyword argument :break-line-each-set. T or NIL to indicate whether each
+;;;   set-palette object should be printed on a separate staff or consecutively
+;;;   on the same staff. T = one staff per set-palette object. Default = T.
+;;; - keyword argument :line-separation. A number to indicate the amount of
+;;;   white space between lines of music (systems), measured as a factor of
+;;;   the staff height. Default = 3. This is a direct CMN attribute.
+;;; - keyword argument :staff-separation. A number to indicate the amount of
+;;;   white space between staves belong to the same system, measured as a
+;;;   factor of the staff height. Default = 3. This is a direct CMN attribute.
+;;; - keyword argument :transposition. Nil or a number (positive or negative)
+;;;   to indicate the number of semitones by which the pitches of the given
+;;;   set-palette object should be transposed before generating the CMN
+;;;   output. Default = NIL (0).
+;;; - keyword argument :size. A number to indicate the size of the music-font
+;;;   in the CMN output. This affects music only, not text.
+
+;;; - keyword argument :use-octave-signs. T or NIL. Default = NIL.
+
+;;; - keyword argument :automatic-octave-signs. T or NIL. Default = NIL.
+
+;;; - keyword argument :include-missing-chromatic. T or NIL to indicate whether
+;;;   to also print any chromatic pitches from the complete-set that are not
+;;;   present in the given set-palette object. T = print. Default = T.
+;;; - keyword argument :include-missing-non-chromatic. T or NIL to indicate
+;;;   whether to also print any non-chromatic pitches from the complete-set
+;;;   that are not present in the given set-palette object. T = print. 
+;;;   Default = T. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; slippery chicken prints a series of status lines in the listener, and
+;;; outputs an EPS file.
 ;;; 
 ;;; EXAMPLE
 #|
+;; A typical example with some specified keyword values for file, font-size,
+;; break-line-each-set, size, include-missing-chromatic and
+;; include-missing-non-chromatic 
+(let ((msp (make-set-palette 
+	    'test
+	    '((1 ((1
+		   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
+		  (2
+		   ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
+		    :subsets
+		    ((tc1 (d2 g3 cs5))
+		     (tc2 (eqs2 f3 bqf3))
+		     (tc3 (b2 bqs3 gqf5)))))))
+	      (2 ((1 ((1 1) :transposition 5))
+		  (2 ((1 2) :transposition 5))))
+	      (3 ((1 ((1 1) :transposition -2))
+		  (2 ((1 2) :transposition -2))))))))
+  (cmn-display msp
+	       :file "/tmp/sp-output.eps"
+	       :font-size 8
+	       :break-line-each-set nil
+	       :size 10
+	       :include-missing-chromatic nil
+	       :include-missing-non-chromatic nil))
 
 |#
 ;;; SYNOPSIS
@@ -240,22 +316,87 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Feb  7 13:49:36 GMT 2012: Slightly modified MDE's comments
+;;; SAR Tue Feb  7 13:47:11 GMT 2012: Added robodoc entry
+
 ;;; ****m* set-palette/find-sets-with-pitches
 ;;; FUNCTION
-;;; find-sets-with-pitches
-;;; return a list of sets from a a set-palette that have specific pitches in
-;;; them.  NB Only those sets which contain all the given pitches will match.
-;;; 
+;;; Return a list of sets (as complete-set objects) from a given set-palette
+;;; object based on whether they contain specified pitches.
+;;;
+;;; NB: Only sets which contain all of the specified pitches will be returned. 
+;;;
 ;;; ARGUMENTS
-;;; - the set-palette
-;;; - a list of pitches (either pitch objects or note symbols)
-;;; - (optional) whether to print set notes as we examine them
+;;; - A set-palette object.
+;;; - A list of pitches, either as pitch objects or note-name symbols.
+;;;
+;;; OPTION ARGUMENTS
+;;; - T or NIL to indicate whether to print the notes of each successful set as
+;;;   they are being examined.
 ;;; 
 ;;; RETURN VALUE
-;;; a list of sets from the set palette
+;;; A list of complete-set objects.
 ;;; 
 ;;; EXAMPLE
-;;; (find-sets-with-pitches (set-palette +cheat-sheet+) '(d3 fs3 a3) t) 
+#|
+;; Find sets that contain a single pitch
+(let ((msp (make-set-palette 
+	    'test
+	    '((1 ((1
+		   ((g3 c4 e4 g4)))
+		  (2
+		   ((c4 d4 e4 g4)))))
+	      (2 ((1 ((1 1) :transposition 5))
+		  (2 ((1 2) :transposition 5))))
+	      (3 ((1 ((1 1) :transposition -2))
+		  (2 ((1 2) :transposition -2))))))))
+  (find-sets-with-pitches msp '(c4)))
+
+=>
+(
+COMPLETE-SET: complete: NIL
+[...]
+data: (BF3 C4 D4 F4)
+[...]
+COMPLETE-SET: complete: NIL
+[...]
+data: (C4 F4 A4 C5)
+[...]
+COMPLETE-SET: complete: NIL
+[...]
+data: (C4 D4 E4 G4)
+[...]
+COMPLETE-SET: complete: NIL
+[...]
+data: (G3 C4 E4 G4)
+)
+
+;; Search for a set of two pitches, printing the successfully matched sets
+(let ((msp (make-set-palette 
+	    'test
+	    '((1 ((1
+		   ((g3 c4 e4 g4)))
+		  (2
+		   ((c4 d4 e4 g4)))))
+	      (2 ((1 ((1 1) :transposition 5))
+		  (2 ((1 2) :transposition 5))))
+	      (3 ((1 ((1 1) :transposition -2))
+		  (2 ((1 2) :transposition -2))))))))
+  (print (find-sets-with-pitches msp '(c4 f4) t)))
+
+=>
+(2 1): (C4 F4 A4 C5)
+(3 2): (BF3 C4 D4 F4)
+(
+COMPLETE-SET: complete: NIL
+[...]
+data: (BF3 C4 D4 F4)
+COMPLETE-SET: complete: NIL
+[...]
+data: (C4 F4 A4 C5)
+)
+
+|#
 ;;;
 ;;; SYNOPSIS
 (defmethod find-sets-with-pitches ((sp set-palette) pitches &optional print)
@@ -274,25 +415,61 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Feb  7 14:22:54 GMT 2012: Saved from MDE's original: If <midi>
+;;; (optional) then midi note numbers will be generated, otherwise it will be frequencies. 
+
+;;; SAR Tue Feb  7 14:19:26 GMT 2012: Edited robodoc entry
+
 ;;; ****m* set-palette/gen-max-coll-file
-;;; FUNCTION
-;;; gen-max-coll-file: write a text file suitable for reading into MaxMSP's
-;;; coll object. The text file has a line for each set in the palette; the coll
-;;; index is the ID of the set; the rest of the line is a list of
-;;; frequency/amplitude pairs (or MIDI note numbers if required).
+;;; DATE
+;;; 26 Dec 2009
 ;;; 
-;;; CREATION DATE
-;;; 26/12/09
+;;; FUNCTION
+;;; Write a text file from a given set-palette object suitable for reading into
+;;; Max/MSP's coll object. The resulting text file has one line for each set in
+;;; the palette, with the coll index being the ID of the set. The rest of the
+;;; line is a list of frequency/amplitude pairs (or MIDI note numbers if
+;;; required).
 ;;; 
 ;;; ARGUMENTS
-;;; - the set-palette
-;;; - the .txt file to write
-;;; - If <midi> (optional) then midi note numbers will be generated, otherwise
-;;;   it will be frequencies.
+;;; - A set-palette object.
+;;; - The name (and path) of the .txt file to write.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether MIDI note numbers or frequencies should be
+;;;   generated. T = MIDI. Default = NIL (frequencies).
 ;;; 
 ;;; RETURN VALUE
 ;;; 
 ;;; EXAMPLE
+#|
+;; Generates frequencies by default
+(let ((msp (make-set-palette 
+	    'test
+	    '((1 ((1
+		   ((g3 c4 e4 g4)))
+		  (2
+		   ((c4 d4 e4 g4)))))
+	      (2 ((1 ((1 1) :transposition 5))
+		  (2 ((1 2) :transposition 5))))
+	      (3 ((1 ((1 1) :transposition -2))
+		  (2 ((1 2) :transposition -2))))))))
+  (gen-max-coll-file msp "/tmp/msp-mcf.txt"))
+
+;; Set the optional argument to T to generate MIDI key numbers instead
+(let ((msp (make-set-palette 
+	    'test
+	    '((1 ((1
+		   ((g3 c4 e4 g4)))
+		  (2
+		   ((c4 d4 e4 g4)))))
+	      (2 ((1 ((1 1) :transposition 5))
+		  (2 ((1 2) :transposition 5))))
+	      (3 ((1 ((1 1) :transposition -2))
+		  (2 ((1 2) :transposition -2))))))))
+  (gen-max-coll-file msp "/tmp/msp-mcf.txt" t))
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod gen-max-coll-file ((sp set-palette) file &optional midi)
@@ -327,18 +504,39 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Feb  7 14:28:07 GMT 2012: Edited robodoc entry
+
 ;;; ****m* set-palette/gen-midi-chord-seq
 ;;; FUNCTION
-;;; gen-midi-chord-seq:
-;;; write a midi file with each chord in the palette played at 1 second
-;;; intervals. 
+;;; Generate a MIDI file in which each set of the given set-palette object is
+;;; played at 1 second intervals.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the set-palette
-;;; - the path for the midi file
+;;; - A set-palette object.
+;;; - The name and path for the MIDI file to be generated.
 ;;; 
 ;;; RETURN VALUE  
-;;; always t
+;;; Always returns T
+;;;
+;;; EXAMPLE
+#|
+(let ((msp (make-set-palette 
+	    'test
+	    '((1 ((1
+		   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
+		  (2
+		   ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
+		    :subsets
+		    ((tc1 (d2 g3 cs5))
+		     (tc2 (eqs2 f3 bqf3))
+		     (tc3 (b2 bqs3 gqf5)))))))
+	      (2 ((1 ((1 1) :transposition 5))
+		  (2 ((1 2) :transposition 5))))
+	      (3 ((1 ((1 1) :transposition -2))
+		  (2 ((1 2) :transposition -2))))))))
+  (gen-midi-chord-seq msp "/tmp/msp-gmchs.mid"))
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod gen-midi-chord-seq ((sp set-palette) midi-file)
@@ -368,17 +566,69 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Feb  7 14:32:56 GMT 2012: Edited robodoc info
+
 ;;; ****m* set-palette/force-micro-tone
 ;;; FUNCTION
-;;; force-micro-tone:
-;;; change the micro-tone slot of all pitches in all the sets to <value>.
+;;; Change the value of the MICRO-TONE slot of all pitch objects in a given
+;;; set-palette object to the specified <value>.
 ;;; 
 ;;; ARGUMENTS 
-;;; - a set-palette 
-;;; - t or nil
+;;; - A set-palette object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - An item of any type that is to be the new value of the MICRO-TONE slot of
+;;;   all pitch objects in the given sc-set object (generally T or
+;;;   NIL). Default = NIL. 
 ;;; 
 ;;; RETURN VALUE  
-;;; always t
+;;; Always returns T.
+;;;
+;;; EXAMPLE
+#|
+
+;; Create a set-palette object whose individual sets contain some micro-tones
+;; and print the contents of all the MICRO-TONE slots to see the values. Then
+;; apply the force-micro-tone method and print the slots again to see the
+;; changes. 
+
+(let ((msp (make-set-palette 
+	    'test
+	    '((1 ((1
+		   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
+		  (2
+		   ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
+		    :subsets
+		    ((tc1 (d2 g3 cs5))
+		     (tc2 (eqs2 f3 bqf3))
+		     (tc3 (b2 bqs3 gqf5)))))))
+	      (2 ((1 ((1 1) :transposition 5))
+		  (2 ((1 2) :transposition 5))))
+	      (3 ((1 ((1 1) :transposition -2))
+		  (2 ((1 2) :transposition -2))))))))
+  (print (loop for i in (data msp) 
+	    collect (loop for j in (data (data i))
+		       collect (loop for p in (data j)
+				  collect (micro-tone p)))))
+  (force-micro-tone msp 't)
+  (print (loop for i in (data msp) 
+	    collect (loop for j in (data (data i))
+		       collect (loop for p in (data j)
+				  collect (micro-tone p))))))
+
+=>
+(((NIL NIL T NIL NIL T T NIL NIL NIL NIL T T NIL NIL)
+  (NIL NIL T T NIL NIL NIL NIL T T NIL NIL NIL NIL T))
+ ((NIL NIL T NIL NIL T T NIL NIL NIL NIL T T NIL NIL)
+  (NIL NIL T T NIL NIL NIL NIL T T NIL NIL NIL NIL T))
+ ((NIL NIL T NIL NIL T T NIL NIL NIL NIL T T NIL NIL)
+  (NIL NIL T T NIL NIL NIL NIL T T NIL NIL NIL NIL T)))
+
+(((T T T T T T T T T T T T T T T) (T T T T T T T T T T T T T T T))
+ ((T T T T T T T T T T T T T T T) (T T T T T T T T T T T T T T T))
+ ((T T T T T T T T T T T T T T T) (T T T T T T T T T T T T T T T)))
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod force-micro-tone ((sp set-palette) &optional value)
@@ -406,102 +656,76 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Feb  7 11:04:13 GMT 2012: Shortened MDE's example
+;;; SAR Tue Feb  7 10:56:35 GMT 2012: Edited robodoc entry
+
 ;;; ****f* set-palette/make-set-palette
 ;;; FUNCTION
-;;; make-set-palette:
-;;; create a set-palette object.
+;;; Create a set-palette object.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the id
-;;; - the data
-;;; - recurse-simple-data: whether to interpret two-element data lists as
-;;;   recursive palettes
-;;; - warn-note-found: whether to print warnings when data is not found with
-;;;   subsequent calls to get-data.
+;;; - A symbol that is to be the ID of the resulting set-palette object.
+;;; - A recursive list of key/data pairs, of which the deepest level of data
+;;;   will be a list of note-name symbols.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :recurse-simple-dat. T or NIL to indicate whether to
+;;;   interpret two-element data lists as recursive palettes. Default = T.
+;;; - keyword argument :warn-note-found. T or NIL to indicate whether to print
+;;;   warnings when specified data is not found with subsequent calls to
+;;;   the get-data method.
 ;;; 
 ;;; RETURN VALUE  
-;;; a set-palette
+;;; A set-palette object.
 ;;; 
 ;;; EXAMPLE
-;;; (make-set-palette 
-;;;        'test
-;;;        '((1 ((1
-;;;               ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)
-;;;                :subsets
-;;;                ((tc1 ((ds2 e3 a4) "a-tag"))
-;;;                 (tc2 (bf1 d4 cqs5))
-;;;                 (tc3 (c3 cs4 gs5))
-;;;                 (tc4 (gqf3 g4 dqf5))
-;;;                 (tc5 (aqf2 gqs3 b5))
-;;;                 (qc1 (aqf2 e3 a4 dqf5 b5))
-;;;                 (qc2 (ef2 gqf3 d4 g4 gs5))
-;;;                 (qc3 (bf1 c3 gqs3 cs4 cqs5)))))
-;;;              (2
-;;;               ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
-;;;                :subsets
-;;;                ((tc1 (d2 g3 cs5))
-;;;                 (tc2 (eqs2 f3 bqf3))
-;;;                 (tc3 (b2 bqs3 gqf5))
-;;;                 (tc4 (fqs2 fs4 gs4))
-;;;                 (tc5 (bf1 c3 a4))
-;;;                 (qc1 (eqs2 c3 f3 fs4 gqf5))
-;;;                 (qc2 (bf1 b2 g3 bqs3 cs5))
-;;;                 (qc3 (d2 fqs2 bqs3 gs4 a4)))))
-;;;              (3
-;;;               ((cqs2 fs2 g2 c3 d3 fqs3 gqf3 cs4 ds4 e4 gs4 dqf5 f5 a5 bqs5)
-;;;                :subsets
-;;;                ((tc1 (cqs2 c3 f5))
-;;;                 (tc2 (fs2 e4 bqs5))
-;;;                 (tc3 (d3 ef4 a5))
-;;;                 (tc4 (gqf3 af4 dqf5))
-;;;                 (tc5 (g2 fqs3 cs4))
-;;;                 (qc1 (c3 gqf3 ds4 gs4 dqf5))
-;;;                 (qc2 (fs2 g2 fqs3 e4 a5))
-;;;                 (qc3 (cqs2 d3 cs4 f5 bqs5)))))
-;;;              (4
-;;;               ((bf1 c2 eqf2 fqf2 b2 cs3 d3 fs3 bqs3 ef4 g4 aqs4 bqf4 e5 f5)
-;;;                :subsets
-;;;                ((tc1 (bf1 bqs3 e5))
-;;;                 (tc2 (eqs2 fs3 aqs4))
-;;;                 (tc3 (c2 d3 bqf4))
-;;;                 (tc4 (b2 ef4 f5))
-;;;                 (tc5 (eqf2 cs3 g4))
-;;;                 (qc1 (eqf2 b2 ef4 aqs4 e5))
-;;;                 (qc2 (c2 eqs2 d3 fs3 bqf4))
-;;;                 (qc3 (bf1 cs3 bqs3 g4 f5)))))
-;;;              (5
-;;;               ((aqs1 e2 fs2 g2 b2 fqf3 af3 c4 dqs4 eqf4 a4 bf4 ef5 f5 aqf5)
-;;;                :subsets
-;;;                ((tc1 (e2 fqf3 a4))
-;;;                 (tc2 (fs2 bf4 aqf5))
-;;;                 (tc3 (g2 af3 ef5))
-;;;                 (tc4 (aqs1 eqf4 f5))
-;;;                 (tc5 (b2 c4 dqs4))
-;;;                 (qc1 (e2 fqf3 dqs4 a4 f5))
-;;;                 (qc2 (fs2 c4 eqf4 bf4 aqf5))
-;;;                 (qc3 (aqs1 g2 b2 af3 ef5)))))))
-;;;          (2 ((1 ((1 1) :transposition 5))
-;;;              (2 ((1 2) :transposition 5))
-;;;              (3 ((1 3) :transposition 5))
-;;;              (4 ((1 4) :transposition 5))
-;;;              (5 ((1 5) :transposition 5))))
-;;;          (3 ((1 ((1 1) :transposition -2))
-;;;              (2 ((1 2) :transposition -2))
-;;;              (3 ((1 3) :transposition -2))
-;;;              (4 ((1 4) :transposition -2))
-;;;              (5 ((1 5) :transposition -2))))
-;;;          (4 ((1 ((1 1) :transposition 3))
-;;;              (2 ((1 2) :transposition 3))
-;;;              (3 ((1 3) :transposition 3))
-;;;              (4 ((1 4) :transposition 3))
-;;;              (5 ((1 5) :transposition 3))))
-;;;          (5 ((1 ((1 1) :transposition -4))
-;;;              (2 ((1 2) :transposition -4))
-;;;              (3 ((1 3) :transposition -4))
-;;;              (4 ((1 4) :transposition -4))
-;;;              (5 ((1 5) :transposition -4))))))
-;;;
+#|
+;;; Create a set-palette object
+(make-set-palette 
+ 'test
+ '((1 ((1
+	((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)
+	 :subsets
+	 ((tc1 ((ds2 e3 a4) "a-tag"))
+	  (tc2 (bf1 d4 cqs5))
+	  (tc3 (c3 cs4 gs5)))))
+       (2
+	((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
+	 :subsets
+	 ((tc1 (d2 g3 cs5))
+	  (tc2 (eqs2 f3 bqf3))
+	  (tc3 (b2 bqs3 gqf5)))))
+       (3
+	((cqs2 fs2 g2 c3 d3 fqs3 gqf3 cs4 ds4 e4 gs4 dqf5 f5 a5 bqs5)
+	 :subsets
+	 ((tc1 (cqs2 c3 f5))
+	  (tc2 (fs2 e4 bqs5))
+	  (tc3 (d3 ef4 a5)))))))
+   (2 ((1 ((1 1) :transposition 5))
+       (2 ((1 2) :transposition 5))
+       (3 ((1 3) :transposition 5))))
+   (3 ((1 ((1 1) :transposition -2))
+       (2 ((1 2) :transposition -2))
+       (3 ((1 3) :transposition -2))))))
+
+=>
+SET-PALETTE: 
+PALETTE: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 9
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: TEST, tag: NIL, 
+data: (
+[...]
+
 ;;; NB A simple list of sets (with unique id slots) can also be passed.
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defun make-set-palette (id palette 
@@ -550,13 +774,36 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Feb  7 14:53:12 GMT 2012: Edited robodoc entry
+
 ;;; ****f* set-palette/set-palette-p
 ;;; FUNCTION
-;;; set-palette-p:
-;;; test whether an object is a set-palette
+;;; Test whether a given object is a set-palette object.
 ;;; 
 ;;; ARGUMENTS 
-;;; a lisp object
+;;; - A lisp object
+;;;
+;;; EXAMPLE
+#|
+(let ((msp (make-set-palette 
+	    'test
+	    '((1 ((1
+		   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
+		  (2
+		   ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
+		    :subsets
+		    ((tc1 (d2 g3 cs5))
+		     (tc2 (eqs2 f3 bqf3))
+		     (tc3 (b2 bqs3 gqf5)))))))
+	      (2 ((1 ((1 1) :transposition 5))
+		  (2 ((1 2) :transposition 5))))
+	      (3 ((1 ((1 1) :transposition -2))
+		  (2 ((1 2) :transposition -2))))))))
+  (set-palette-p msp))
+
+=> T
+
+|#
 ;;; 
 ;;; RETURN VALUE  
 ;;; t or nil
@@ -572,7 +819,6 @@
 ;;; 
 ;;; ****f* set-palette/recursive-set-palette-from-ring-mod
 ;;; FUNCTION
-;;; recursive-set-palette-from-ring-mod:
 ;;; Create a set-palette containing sub palettes based on ring modulation
 ;;; routines applied to the given notes.
 ;;; 
@@ -590,6 +836,7 @@
 ;;; 
 ;;; RETURN VALUE  
 ;;; - the recursive set-palette
+;;;
 ;;; EXAMPLE
 ;;;       (recursive-set-palette-from-ring-mod '(a4 cs5 g5 b5) 
 ;;;       'altogether '(5 6 7 9)))
@@ -706,39 +953,82 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Feb  7 15:48:24 GMT 2012: Edited robodoc entry
+
 ;;; ****f* set-palette/ring-mod
 ;;; FUNCTION
-;;; ring-mod
-;;; ring modulate two frequencies and harmonic partials thereof
+;;; Ring modulate two frequencies and return the resulting pitch and harmonic
+;;; partials thereof. 
 ;;; 
 ;;; ARGUMENTS
-;;; - the first pitch (hertz or note symbol)
-;;; - the second pitch (hertz or note symbol). Needn't be higher than first.
-;;; - (return-notes nil) 
-;;; - (key :pitch1-partials default 3): how many harmonic partials of pitch1 to
-;;; include in the modulation.
-;;; - (key :pitch2-partials default 2): how many harmonic partials of pitch2 to
-;;; include in the modulation.
-;;; - (key :min-freq default 20): the minimum frequency (hertz) that we'll
-;;; return. 
-;;; - (key :max-freq default 20000): the maximum frequency (hertz) that we'll
-;;; return. 
-;;; - (key :round default t): if returning frequencies, round them to the
-;;; nearest hertz? 
-;;; - (key :remove-duplicates default t): don't allow any returned
-;;; frequencies/notes to be repeated.
-;;; - (key :print default nil): print data as we generate it
-;;; - (key :scale default cm::*scale* i.e. the default common music scale,
-;;; usually *chromatic-scale*): which scale to use when converting frequencies
-;;; to notes
-;;; - (key :remove-octaves default nil): if t, octaves will be removed from the
-;;; result; can also be a number or list of numbers: these will be the octaves
-;;; we allow, the rest being allowed (e.g. :remove-octaves '(1 2) will remove
-;;; all octaves except for single and double so '(c1 c2 c3 c4 c5) would return
-;;; '(c1 c2 c3) (c4 and c5 are removed as being octaves of c1)
+;;; - A first pitch, either as a numeric hertz frequencey or a note-name
+;;;   symbol.  
+;;; - A second pitch, either as a numeric hertz frequencey or a note-name
+;;;   symbol. The second value needn't be higher than first.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :return-notes. T or NIL to indicate whether to return
+;;;   the results as note-name symbols or frequency numbers. T = note-name
+;;;   symbols. Default = NIL.
+;;; - keyword argument :pitch1-partials. An integer that indicates how many
+;;;   harmonic partials of the first pitch are to be included in the
+;;;   modulation. Default = 3.
+;;; - keyword argument :pitch2-partials. An integer that indicates how many
+;;;   harmonic partials of the second pitch are to be included in the
+;;;   modulation. Default = 2.
+;;; - keyword argument :min-freq. A number that is the the minimum frequency
+;;;   (hertz) that may be returned. Default = 20.
+;;; - keyword argument :max-freq. A number that is the the maximum frequency
+;;;   (hertz) that may be returned. Default = 20000.
+;;; - keyword argument :round. T or NIL to indicate whether frequency values
+;;;   returned are first rounded to the nearest hertz. T = round. Default = T
+;;; - keyword argument :remove-duplicates. T or NIL to indicate whether any
+;;;   duplicate frequencies are to be removed from the resulting list before
+;;;   returning it. T = remove. Default = T. 
+;;; - keyword argument :print. T or NIL to indicate whether resulting data is
+;;;   to be printed as it is being generated. T = print. Default = NIL.
+;;; - keyword argument :remove-octaves. T or NIL to indicate whether octave
+;;;   repetitions of pitches will be removed from the resulting list before
+;;;   returning it, keeping only the lowest instance of each pitch. This
+;;;   argument can also be set as a number or a list of numbers that indicates
+;;;   which octave repetitions will be allowed, the rest being removed. For
+;;;   example, :remove-octaves '(1 2) will remove all octave repetitions of a
+;;;   given pitch except for those that are 1 octave and 2 octaves above the
+;;;   given pitch; thus '(c1 c2 c3 c4 c5) would return '(c1 c2 c3), removing c4
+;;;   and c5. Default = NIL.
+;;; - keyword argument :scale. A variable that indicates which scale to use
+;;;   when converting frequencies to note-names. Default = cm::*scale* i.e. the
+;;;   value to which the Common Music scale is set, which in slippery chicken
+;;;   is *quarter-tone* by default.
 ;;; 
 ;;; RETURN VALUE
-;;; a list of note symbols or frequencies
+;;; A list of note-name symbols or frequencies.
+;;;
+;;; EXAMPLE
+#|
+;; Apply ring modulation to 'C4 and 'D4, using 5 partials of the first pitch
+;; and 3 partials of the second, removing octave repetitions, and returning the
+;; results as rounded hertz-frequencies
+(ring-mod 'c4 'd4
+	  :pitch1-partials 5
+	  :pitch2-partials 3
+	  :min-freq 60
+	  :max-freq 2000
+	  :remove-octaves t)
+
+=> (64.0 96.0 166.0 198.0 230.0 358.0 427.0 459.0 491.0 555.0 619.0 817.0
+    1079.0 1143.0 1340.0 1372.0 1404.0 1666.0 1895.0 1927.0)
+
+;; Applying ring modulation to two frequencies, returning the results as
+;; note-name symbols within the chromatic scale.
+(ring-mod '261.63 '293.66 
+	  :return-notes t
+	  :remove-duplicates nil
+	  :scale cm::*chromatic-scale*)
+
+=> (C1 C2 G3 BF3 E4 B4 CS5 AF5 AF5 CS6 CS6 F6)
+
+|#
 ;;; SYNOPSIS
 (defun ring-mod (pitch1 pitch2 ;; hertz or notes
                  &key (return-notes nil) (pitch1-partials 3) (pitch2-partials 2)
@@ -793,7 +1083,6 @@
 
 ;;; ****f* set-palette/ring-mod-bass
 ;;; FUNCTION
-;;; ring-mod-bass
 ;;; Invent sensible bass note(s) from a list of frequencies.
 ;;;
 ;;; RETURN VALUE

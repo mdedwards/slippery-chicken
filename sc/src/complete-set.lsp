@@ -13,7 +13,7 @@
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
 ;;; Purpose:          Implementation of the complete-set class which as an
-;;;                   extenion of the tl-set class allows checking for full
+;;;                   extension of the tl-set class allows checking for full
 ;;;                   sets: ones in which every note of *standard-scale* is
 ;;;                   present. 
 ;;;
@@ -321,10 +321,14 @@
 ;;; set can be a set object, whereupon the new set will be cloned from the
 ;;; given, or a list of notes.
 
+;;; SAR Tue Feb  7 10:45:09 GMT 2012: Added robodoc entry
+
 ;;; ****f* complete-set/make-complete-set
 ;;; FUNCTION
-;;; 
-;;; 
+;;; Create a complete-set object, which as an extension of the tl-set class
+;;; allows checking for full sets: ones in which every note of *standard-scale*
+;;; is present.  
+;;;
 ;;; ARGUMENTS
 ;;; 
 ;;; 

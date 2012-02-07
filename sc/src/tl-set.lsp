@@ -350,6 +350,8 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 ;;; 13/1/10: be careful with this: if this function is returning nil, it could
 ;;; be because the set pitches are microtonal, when you're not expecting that.
 
+;;; SAR Tue Feb  7 10:17:56 GMT 2012: Added robodoc entry
+
 ;;; ****m* tl-set/limit-for-instrument
 ;;; FUNCTION
 ;;; 

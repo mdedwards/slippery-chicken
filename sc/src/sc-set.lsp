@@ -309,7 +309,8 @@ data: CS4
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - An item of any type that is to be the new value of the MICRO-TONE slot of
-;;;   all pitch objects in the given sc-set object. Default = NIL.
+;;;   all pitch objects in the given sc-set object (generally T or
+;;;   NIL). Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; Always returns NIL.

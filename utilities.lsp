@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 08:28:52 Sun Feb  5 2012 ICT
+;;; $$ Last modified: 17:02:11 Tue Feb  7 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -439,12 +439,18 @@
 
 (let ((last8vesize 0)
       (log8ve 0.0)) ;; do we don't have to recalculate each time
-  (defun srt (srt &optional (octave-size 2.0) (divisions-per-octave 12))
+  (defun srt (srt &optional (octave-size 2.0) (divisions-per-octave 12)
+              ;; MDE Tue Feb  7 16:59:45 2012 -- round so we don't get tiny
+              ;; fractions of semitones due to float inaccuracies?
+              (round-to 0.0001))
     (unless (= octave-size last8vesize)
       (setf last8vesize octave-size
             log8ve (log octave-size 10.0)))
-    (/ (* divisions-per-octave (log srt 10.0))
-       log8ve)))
+    (let ((result (/ (* divisions-per-octave (log srt 10.0))
+                     log8ve)))
+      (if round-to
+        (/ (round result round-to) (/ round-to))
+        result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

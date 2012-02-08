@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 23:19:59 Tue Feb  7 2012 ICT
+;;; $$ Last modified: 17:28:49 Wed Feb  8 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -168,10 +168,11 @@
 ;;; SYNOPSIS
 (defmethod get-all-data-from-palette ((scm sc-map))
 ;;; ****
-  (let ((all-refs (get-all-refs scm)))
-    (loop 
-        for ref in all-refs 
-        append (get-data-from-palette ref scm))))
+  (when (palette scm)
+    (let ((all-refs (get-all-refs scm)))
+      (loop 
+         for ref in all-refs 
+         append (get-data-from-palette ref scm)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 17:13:24 Wed Jan 18 2012 ICT
+;;; $$ Last modified: 17:38:46 Wed Feb  8 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -96,7 +96,8 @@
 (defmethod initialize-instance :after ((c chord) &rest initargs)
   (declare (ignore initargs))
   (set-micro-tone c)
-  (sort-pitches c))
+  (when (auto-sort c)
+    (sort-pitches c)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified: 08:34:31 Thu Jan 12 2012 ICT
+;;; $$ Last modified: 17:06:58 Wed Feb  8 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -179,9 +179,9 @@
 
 ;; By default the RELATED-SETS are left untransposed
 (let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
-			 :subsets '((fl (df5 f5 af5))
-				    (vla (e3 g3 b3)))
-			 :related-sets '((missing (fs2 b5))))))
+                         :subsets '((fl (df5 f5 af5))
+                                    (vla (e3 g3 b3)))
+                         :related-sets '((missing (fs2 b5))))))
   (transpose mtls 3))
 
 => 
@@ -203,9 +203,9 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 ;; Set the <do-related-sets> argument to T for the RELATED-SETS contents to be
 ;; transposed as well
 (let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
-			 :subsets '((fl (df5 f5 af5))
-				    (vla (e3 g3 b3)))
-			 :related-sets '((missing (fs2 b5))))))
+                         :subsets '((fl (df5 f5 af5))
+                                    (vla (e3 g3 b3)))
+                         :related-sets '((missing (fs2 b5))))))
   (transpose mtls 3 :do-related-sets t))
 
 => 
@@ -279,9 +279,9 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 ;;; By default the method does not transpose the pitches of the RELATED-SETS
 ;;; slot 
 (let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
-			 :subsets '((fl (df5 f5 af5))
-				    (vla (e3 g3 b3)))
-			 :related-sets '((missing (fs2 b5))))))
+                         :subsets '((fl (df5 f5 af5))
+                                    (vla (e3 g3 b3)))
+                         :related-sets '((missing (fs2 b5))))))
   (limit mtls :upper 'df5 :lower 'c3))
 
 => 
@@ -302,9 +302,9 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5)
 ;; Setting the :do-related-sets argument to T results in any RELATED-SETS pitch
 ;; content being transposed as well
 (let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
-			 :subsets '((fl (df5 f5 af5))
-				    (vla (e3 g3 b3)))
-			 :related-sets '((missing (fs2 b5))))))
+                         :subsets '((fl (df5 f5 af5))
+                                    (vla (e3 g3 b3)))
+                         :related-sets '((missing (fs2 b5))))))
   (limit mtls :upper 'c6 :lower 'c3 :do-related-sets t))
 
 =>
@@ -366,6 +366,11 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
   ;; if we have upper and/or lower, find out which is
   ;; highest/lowest: these or the instrument's range; then use this to
   ;; limit the set.
+  ;; MDE Wed Feb  8 17:06:21 2012 -- make sure we have pitch objects
+  (unless (pitch-p upper)
+    (setf upper (make-pitch upper)))
+  (unless (pitch-p lower)
+    (setf lower (make-pitch lower)))
   (let* ((ins-set (limit tls
                          :upper (if upper
                                     (pitch-min 
@@ -475,9 +480,9 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 
 ;; Adding subsets and related-sets
 (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
-	     :subsets '((fl (df5 f5 af5))
-			(vla (e3 g3 b3)))
-	     :related-sets '((missing (fs2 b5))))
+             :subsets '((fl (df5 f5 af5))
+                        (vla (e3 g3 b3)))
+             :related-sets '((missing (fs2 b5))))
 => 
 TL-SET: transposition: 0
 [...]
@@ -494,8 +499,8 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 ;; Limiting the pitch range of the tl-set object, once using a note-name
 ;; symbol and once using a pitch object
 (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
-	     :limit-upper 'g5
-	     :limit-lower (make-pitch 'd3))
+             :limit-upper 'g5
+             :limit-lower (make-pitch 'd3))
 
 => 
 TL-SET: transposition: 0
@@ -509,7 +514,7 @@ data: (E3 G3 B3 D4 GF4 BF4 DF5 F5)
 
 ;; Applying a transposition by semitones
 (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
-	     :transposition 3)
+             :transposition 3)
 
 =>
 TL-SET: transposition: 3

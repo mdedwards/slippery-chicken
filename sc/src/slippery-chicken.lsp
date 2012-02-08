@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:04:52 Wed Feb  1 2012 ICT
+;;; $$ Last modified: 17:22:55 Wed Feb  8 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -464,7 +464,8 @@
                         ;; (default is to change the sounding note spelling).
                         (respell-notes t)
                         (start-bar nil)
-                        ;; if nil will auto-number bars
+                        ;; if nil will auto-number bars every 5 bars (see
+                        ;; cmn.lsp::cmn-bar-line)  
                         (start-bar-numbering nil)
                         (end-bar nil)
                         (file "/tmp/cmn.eps")
@@ -517,8 +518,8 @@
                         ;; this seems to be separate from the bar-number
                         ;; written in every part every 5 bars, but if set to
                         ;; e.g. 1 it will print every bar num at the top of
-                        ;; each system 
-                        (auto-bar-nums :by-line)
+                        ;; each system, or if :by-line, at the start of each line
+                        (auto-bar-nums nil)
                         (page-nums t)
                         ;; display the score in C (but piccolo/double bass keep
                         ;; the usual octave transpositions) or at written

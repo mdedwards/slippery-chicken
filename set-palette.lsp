@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 17:43:47 Wed Feb  8 2012 GMT
+;;; $$ Last modified: 18:07:47 Wed Feb  8 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1191,7 +1191,7 @@ data: (
 ;;;
 ;;; SYNOPSIS
 (defun ring-mod-bass (freqs &key (bass-octave 0) (low 'a0) (high 'g3) (round t)
-                      (warn t) (return-notes nil))
+                      (warn t) (return-notes nil) (scale cm::*scale*))
 ;;; ****
   (unless (numberp low)
     (setf low (note-to-freq low)))
@@ -1220,7 +1220,7 @@ data: (
           (progn
             (setf result (sort result #'<))
             (if return-notes
-                (setf result (loop for f in result collect (freq-to-note f)))
+                (setf result (loop for f in result collect (freq-to-note f scale)))
                 ;; MDE Wed Feb  8 17:42:34 2012 -- added round
                 (when round
                   (setf result (loop for f in result collect (round f)))))

@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 17:28:49 Wed Feb  8 2012 GMT
+;;; $$ Last modified: 17:35:12 Wed Feb  8 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -168,11 +168,13 @@
 ;;; SYNOPSIS
 (defmethod get-all-data-from-palette ((scm sc-map))
 ;;; ****
-  (when (palette scm)
+  (if (palette scm)
     (let ((all-refs (get-all-refs scm)))
       (loop 
          for ref in all-refs 
-         append (get-data-from-palette ref scm)))))
+         append (get-data-from-palette ref scm)))
+    (warn "sc-map::get-all-data-from-palette: palette slot is nil so can't ~
+           return data from it.")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

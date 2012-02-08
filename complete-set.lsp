@@ -5,7 +5,7 @@
 ;;;
 ;;; File:             complete-set.lsp
 ;;;
-;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> set ->
+;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> sc-set ->
 ;;;                   tl-set -> complete-set
 ;;;
 ;;; Version:          1.0
@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 14:02:27 Wed Jan  4 2012 ICT
+;;; $$ Last modified: 17:03:34 Wed Feb  8 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -347,13 +347,13 @@
                                    (transposition 0) (auto-sort t)
                                    limit-upper limit-lower complete)
 ;;; ****
-  (if (typep set 'complete-set)
+  (if (typep set 'sc-set)
       (let ((copy (clone set)))
         (when (or subsets related-sets (not auto-sort) complete)
           (error "complete-set::make-complete-set: When the set argument is a ~
                   complete-set, then the new set will be cloned ~
                   from the given and the arguments id, subsets, ~
-                  related-sets, auto-sort and complete are meaningless"))
+                  related-sets, auto-sort, and complete are meaningless"))
         (unless (zerop transposition)
           (transpose copy transposition))
         (when (or limit-upper limit-lower)

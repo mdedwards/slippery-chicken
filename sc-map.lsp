@@ -90,7 +90,7 @@
    ;; the first element of the list is the reference into the sc-map (the viola
    ;; voice of section 1 subsection 2 in the first e.g.), the second element is
    ;; the nth of the data list for this key to change, and the third is the new
-   ;; ata.
+   ;; data.
    (replacements :accessor replacements :type list :initarg :replacements
                  :initform nil)))
 
@@ -180,21 +180,137 @@
 
 ;;; See comment at head of class.
 
+;;; SAR Wed Feb  8 16:08:21 GMT 2012: Added robodoc entry
+
 ;;; ****m* sc-map/get-data-from-palette
 ;;; FUNCTION
-;;; 
+;;; Get the data associated with a specifed ID (key) within a given sc-map
+;;; object. If getting data from a nested key/data pair, the <id> argument must
+;;; be the path of ids into that key/data pair (see example).
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - The ID (key) or path of nested IDs of the key/data pair for which the
+;;;   data is sought.
+;;; - The sc-map object in which the data is sought.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether to print a warning if the specified key is
+;;;   not found in the given sc-map object. T = print warning. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; The named object associated with the specified key.
+;;;
+;;; If the specified key is not found within the given sc-map object, the
+;;; method returns NIL, and if the optional <warn> argument is set to T, a
+;;; warning is printed in this case.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Get the value of a top-level ID
+(let ((mscm (make-sc-map 'scm-test
+			  '((1
+			     ((vn (1 2 3 4 5))
+			      (va (2 3 4 5 1))
+			      (vc (3 4 5 1 2)))) 
+			    (2
+			     ((vn (6 7 8))
+			      (va (7 8 6))
+			      (vc (8 6 7)))) 
+			    (3
+			     ((vn (9))
+			      (va (9))
+			      (vc (9))))))))
+  (get-data-from-palette '(2) mscm))
+
+=> 
+NAMED-OBJECT: id: 2, tag: NIL, 
+data: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 3
+                      linked: NIL
+                      full-ref: (2)
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "sub-ral-of-SCM-TEST", tag: NIL, 
+data: (
+NAMED-OBJECT: id: VN, tag: NIL, 
+data: (6 7 8)
+**************
+
+       
+NAMED-OBJECT: id: VA, tag: NIL, 
+data: (7 8 6)
+**************
+
+       
+NAMED-OBJECT: id: VC, tag: NIL, 
+data: (8 6 7)
+**************
+)
+
+;; Enter the path of keys to a nested key when getting data stored more deeply
+;; in the given sc-map object
+(let ((mscm (make-sc-map 'scm-test
+			  '((1
+			     ((vn (1 2 3 4 5))
+			      (va (2 3 4 5 1))
+			      (vc (3 4 5 1 2)))) 
+			    (2
+			     ((vn (6 7 8))
+			      (va (7 8 6))
+			      (vc (8 6 7)))) 
+			    (3
+			     ((vn (9))
+			      (va (9))
+			      (vc (9))))))))
+  (get-data-from-palette '(3 va) mscm))
+
+=> 
+NAMED-OBJECT: id: VA, tag: NIL, 
+data: (9)
+
+;; The method prints a warning by default if the specified key is not found in
+;; the given sc-map object
+(let ((mscm (make-sc-map 'scm-test
+			  '((1
+			     ((vn (1 2 3 4 5))
+			      (va (2 3 4 5 1))
+			      (vc (3 4 5 1 2)))) 
+			    (2
+			     ((vn (6 7 8))
+			      (va (7 8 6))
+			      (vc (8 6 7)))) 
+			    (3
+			     ((vn (9))
+			      (va (9))
+			      (vc (9))))))))
+  (get-data-from-palette '(1 tb) mscm))
+
+=> NIL
+
+WARNING:
+   assoc-list::get-data: Could not find data with key TB 
+   in assoc-list with id sub-ral-of-SCM-TEST
+
+;; This warning can be suppressed by setting the optional argument to NIL
+(let ((mscm (make-sc-map 'scm-test
+			  '((1
+			     ((vn (1 2 3 4 5))
+			      (va (2 3 4 5 1))
+			      (vc (3 4 5 1 2)))) 
+			    (2
+			     ((vn (6 7 8))
+			      (va (7 8 6))
+			      (vc (8 6 7)))) 
+			    (3
+			     ((vn (9))
+			      (va (9))
+			      (vc (9))))))))
+  (get-data-from-palette '(1 tb) mscm nil))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -378,26 +494,93 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Feb  8 14:35:30 GMT 2012: Added robodoc entry
+
 ;;; ****f* sc-map/make-sc-map
 ;;; FUNCTION
-;;; 
+;;; Create an sc-map object, which will be used for mapping rhythmic sequences,
+;;; chords etc. to specific parts of a piece. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An element of any data type that will be the ID of the resulting sc-map
+;;;   object. 
+;;; - A list of of data, most likely recursive.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+
+;;; - keyword argument :palette. T or NIL. Default = NIL
+
+;;; - keyword argument :warn-not-found. T or NIL to indicate whether a warning
+;;;   is printed when an index which doesn't exist is used for lookup.
+;;;   T = warn. Default = T.
+;;; - keyword argument :recurse-simple-data. T or NIL to indicate whether to
+;;;   recursively instantiate a recursive-assoc-list in place of data that
+;;;   appears to be a simple assoc-list (i.e. a 2-element list). If NIL, the
+;;;   data of 2-element lists whose second element is a number or a symbol will
+;;;   be ignored, therefore remaining as a list. For example, this data would
+;;;   normally result in a recursive call: (y ((2 23) (7 28) (18 2))). 
+;;;   T = recurse. Default = T.
+;;; - keyword argument :replacements. A list of lists of the type 
+;;;   (((1 2 vla) 3 20b) ((2 3 vln) 4 16a)) that indicate changes to individual
+;;;   elements of lists within the given sc-map object. (Often sc-map data is
+;;;   generated algorithmically but individual elements of the lists need to be
+;;;   changed.) Each such list indicates a change, the first element of the
+;;;   list being the reference into the sc-map (the viola voice of section 1
+;;;   subsection 2 in the first here e.g.), the second element is the nth of
+;;;   the data list for this key to change, and the third is the new data. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An sc-map object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create an sc-map object with contents that could be used as a rthm-seq-map 
+(make-sc-map 'scm-test
+	     '((1
+		((vn (1 2 3 4 5))
+		 (va (2 3 4 5 1))
+		 (vc (3 4 5 1 2)))) 
+	       (2
+		((vn (6 7 8))
+		 (va (7 8 6))
+		 (vc (8 6 7)))) 
+	       (3
+		((vn (9))
+		 (va (9))
+		 (vc (9))))))
+
+=>
+SC-MAP: palette id: NIL
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 9
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: SCM-TEST, tag: NIL, 
+data: (
+NAMED-OBJECT: id: 1, tag: NIL, 
+data: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 3
+                      linked: NIL
+                      full-ref: (1)
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "sub-ral-of-SCM-TEST", tag: NIL, 
+data: (
+NAMED-OBJECT: id: VN, tag: NIL, 
+data: (1 2 3 4 5)
+[...]
 
 |#
 ;;; SYNOPSIS
 (defun make-sc-map (id scm &key (palette nil) (warn-not-found t)
-                           (recurse-simple-data t) (replacements nil))
+		    (recurse-simple-data t) (replacements nil))
 ;;; ****
   (make-instance 'sc-map :data scm :id id :warn-not-found warn-not-found
                  :palette palette

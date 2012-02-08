@@ -842,22 +842,86 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Feb  8 13:24:15 GMT 2012: Added robodoc entry
+
 ;;; ****f* chord/make-chord
 ;;; FUNCTION
-;;;
-;;; 
+;;; Create a chord object from a list of note-name symbols.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A list of note-name symbols.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :id. An element of any type that is to be the ID of the
+;;;   chord object created.
+;;; - keyword argument :auto-sort. T or NIL to indicate whether the method
+;;;   should first sort the individual pitch objects created from low to high
+;;;   before returning the new chord object. T = sort. Default = T.
+;;; - keyword argument :midi-channel. An integer that is to be the MIDI channel
+;;;   value to which all of the chromatic pitch objects in the given chord
+;;;   object are to be set for playback. Default = 0.
+;;; - keyword argument :microtones-midi-channel. An integer that is to be the
+;;;   MIDI channel value to which all of the microtonal pitch objects in the
+;;;   given chord object are to be set for playback. Default = 0.
+;;; - keyword argument :force-midi-channel. T or NIL to indicate whether to
+;;;   force a given value to the MIDI-CHANNEL slot, even if the notes passed to
+;;;   the method are already pitch objects with non-zero MIDI-CHANNEL values. 
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A chord object.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+#|
+;; Simple useage with default values for keyword arguments
+(make-chord '(c4 e4 g4 b4 d5 f5))
+
+=>
+CHORD: auto-sort: T, marks: NIL, micro-tone: NIL
+SCLIST: sclist-length: 6, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (
+PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
+[...]
+data: C4
+PITCH: frequency: 329.628, midi-note: 64, midi-channel: 0 
+[...]
+data: E4
+[...]       
+PITCH: frequency: 391.995, midi-note: 67, midi-channel: 0 
+[...]
+data: G4
+[...]       
+PITCH: frequency: 493.883, midi-note: 71, midi-channel: 0 
+[...]
+data: B4
+[...]       
+PITCH: frequency: 587.330, midi-note: 74, midi-channel: 0 
+[...]
+data: D5
+[...]       
+PITCH: frequency: 698.456, midi-note: 77, midi-channel: 0 
+[...]
+data: F5
+)
+
+;; By default the pitches are first sorted low to high
+(let ((mc (make-chord '(e4 c4 g4 b4 f5 d5))))
+  (loop for p in (data mc) collect (data p)))
+
+=> (C4 E4 G4 B4 D5 F5)
+
+;; Setting the :midi-channel and :microtones-midi-channel arguments results in
+;; the MIDI-CHANNEL slot of each of the contained pitch objects being set
+;; accordingly, depending on whether it is a chromatic or microtonal pitch
+(let ((mc (make-chord '(cqs4 e4 gqf4 b4 dqf5 f5) 
+		      :midi-channel 11
+		      :microtones-midi-channel 12)))
+  (loop for p in (data mc) collect (midi-channel p)))
+
+=> (12 11 12 11 12 11)
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defun make-chord (note-list &key (id nil) (auto-sort t) (midi-channel 0)

@@ -807,9 +807,9 @@ data: (SNOOPY SPOT ROVER)
 ;; - The data with which to fill it.
 ;;
 ;; OPTIONAL ARGUMENTS
-;; - Optional keyword argument :warn-not-found. This argument allows the user
-;;   to determine whether a warning is issued when an index which doesn't exist  
-;;   is used for lookup. It can be set to T or NIL and defaults to T.
+;; - keyword argument :warn-not-found. T or NIL to indicate whether a warning
+;;   is printed when an index which doesn't exist is used for lookup.
+;;   T = warn. Default = T.
 ;;
 ;; RETURN VALUE 
 ;; Returns the assoc-list as a named-object.

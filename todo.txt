@@ -63,3 +63,8 @@ implementing the remix-in algorithm of cheat sheet (see get-loops seqs)
 
 ;;; SAR Tue Feb  7 12:10:55 GMT 2012: from set-palette.lsp/cmn-display:
 ;;; todo: there's a bug here that tries to put all sets on one page!
+
+;;; SAR Wed Feb 8 12:46:15 GMT 2012: moved this here from
+    set-palette.lsp/recursive-set-palette-from-ring-mod:
+;;; todo: make the sp's proper linked-named-objects so we can (get-all-refs)
+;;; with a list of notes

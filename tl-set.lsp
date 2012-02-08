@@ -107,25 +107,15 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Mon Feb  6 20:57:07 GMT 2012: Added robodoc entry
+;;; SAR Wed Feb  8 10:42:33 GMT 2012: Added robodoc entry
 
 ;;; ****m* tl-set/stack
 ;;; FUNCTION
+;;; Extend the pitch content of a given sc-set object by adding new pitch
+;;; objects which have the same interval structure as the original set. 
+;;;
+;;; NB: See documentation for the stack method in the sc-set class for usage. 
 ;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defmethod stack ((tls tl-set) &optional (num-stacks 1) id)
 ;;; ****

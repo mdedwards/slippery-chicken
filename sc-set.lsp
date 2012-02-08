@@ -728,6 +728,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;; 
 ;;; EXAMPLE
 #|
+
 ;;; Create an sc-set object with two subsets named 'FL and 'VA, then get the
 ;;; sampling-rate conversion factors for the 'FL subset
 (let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
@@ -748,38 +749,54 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Get the interval structure of the set from bottom to top note and add
-;;; notes to the top and bottom using the same structure. Repeat num-stacks
-;;; times. NB we assume the set is sorted. See also make-stack in the
-;;; complete-set class to make a stack from a simple list of pitch symbols.
+;;; SAR Wed Feb  8 10:24:35 GMT 2012: Deleted MDE's original comment here, as
+;;; it has been taken into the doc below with minor modification
 
-;;; SAR Mon Feb  6 15:42:53 GMT 2012: Edited robodoc entry
+;;; SAR Wed Feb  8 10:12:39 GMT 2012: Edited robodoc entry
 
 ;;; ****m* sc-set/stack
 ;;; FUNCTION
-;;; 
+;;; Extend the pitch content of a given sc-set object by adding new pitch
+;;; objects which have the same interval structure as the original set. 
+;;;
+;;; The method analyzes the interval structure of the original set from the
+;;; bottom note to the top and adds new sets to the top and bottom of the
+;;; orginal set symmetrically; i.e., with the identical interval structure
+;;; above the original set and inverted interval structure below.
+;;;
+;;; The optional <num-stacks> argument indicates how many new sets are to be
+;;; added to both ends. 
+;;;
+;;;
+;;; NB: The method assumes that the pitch content of the original sc-set object
+;;;     is sorted from low to high. 
+;;;
+;;; See also: the make-stack method in the complete-set class to make a stack
+;;;           from a simple list of note-name symbols.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An integer that is the number of new sets to be added to each end of the
+;;;   original set.
+;;; - A symbol that will be the ID of the new sc-set object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An sc-set object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Extends the original set with new sets that have the identical interval
+;; structure upwards and inverted interval structure downwards. 
 (let ((set (make-sc-set '(c4 e4 g4))))
-  (print (stack set 1))
   (stack set 3))
+
+=>
 SC-SET: auto-sort: T, used-notes: 
-...
-data: (F3 AF3 C4 E4 G4 B4 D5)
-**************
-SC-SET: auto-sort: T, used-notes: 
-...
-data: (EF2 FS2 BF2 CS3 F3 AF3 C4 E4 G4 B4 D5 FS5 A5 CS6 E6)
+[...]
+data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
+
 |#
 ;;; SYNOPSIS
 (defmethod stack ((s sc-set) &optional (num-stacks 1) id)

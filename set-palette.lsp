@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 18:07:47 Wed Feb  8 2012 GMT
+;;; $$ Last modified: 19:05:14 Wed Feb  8 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -610,7 +610,7 @@ data: (C4 F4 A4 C5)
             collect (loop for j in (data (data i))
                        collect (loop for p in (data j)
                                   collect (micro-tone p)))))
-  (force-micro-tone msp 't)
+  (force-micro-tone msp t)
   (print (loop for i in (data msp) 
             collect (loop for j in (data (data i))
                        collect (loop for p in (data j)
@@ -939,15 +939,19 @@ COMPLETE-SET: complete: NIL
 ;;; modulation procedures (difference and sum tones of partials).
 ;;; 
 ;;; ARGUMENTS
-;;; - A note-name symbol that is the starting pitch from which we perform the
-;;;   ring-modulation.
+;;; - A note-name symbol that is the central pitch from which we perform the
+;;;   ring-modulation.  See :partials below.
 ;;; - A symbol that is to be the ID for the new set-palette object.
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :partials. A list of integers that are the partials
-;;;   which the method is to ring modulate, with 1 being either the
-;;;   reference-note or the bass note that would have the reference-note as the
-;;;   highest partial in the given list. Default = '(1 3 5 7).
+;;;   which the method uses to ring modulate.  We create partials ascending
+;;;   from the reference-note but also ascending from a fundamental calculated so
+;;;   that reference-note would be the highest partial in the partials list.
+;;;   E.g. if reference-note were 'a4 (440Hz) and :partials was '(1 2) we'd have
+;;;   partial frequencies of 440 and 880, as these are the ascending partials 1
+;;;   and 2 from 440, but also have 220, as that is the fundamental for which 440
+;;;   would be the highest partial out of (1 2).  Default = '(1 3 5 7).
 ;;; - keyword argument :warn-no-bass. T or NIL to indicate whether to issue a
 ;;;   warning when ring-mod-bass fails to find suitable bass notes for the
 ;;;   generated sets. T = warn. Default = T.

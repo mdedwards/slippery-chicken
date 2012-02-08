@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 09:49:17 Sat Dec 31 2011 ICT
+;;; $$ Last modified: 17:43:47 Wed Feb  8 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -191,26 +191,26 @@
 ;; break-line-each-set, size, include-missing-chromatic and
 ;; include-missing-non-chromatic 
 (let ((msp (make-set-palette 
-	    'test
-	    '((1 ((1
-		   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
-		  (2
-		   ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
-		    :subsets
-		    ((tc1 (d2 g3 cs5))
-		     (tc2 (eqs2 f3 bqf3))
-		     (tc3 (b2 bqs3 gqf5)))))))
-	      (2 ((1 ((1 1) :transposition 5))
-		  (2 ((1 2) :transposition 5))))
-	      (3 ((1 ((1 1) :transposition -2))
-		  (2 ((1 2) :transposition -2))))))))
+            'test
+            '((1 ((1
+                   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
+                  (2
+                   ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
+                    :subsets
+                    ((tc1 (d2 g3 cs5))
+                     (tc2 (eqs2 f3 bqf3))
+                     (tc3 (b2 bqs3 gqf5)))))))
+              (2 ((1 ((1 1) :transposition 5))
+                  (2 ((1 2) :transposition 5))))
+              (3 ((1 ((1 1) :transposition -2))
+                  (2 ((1 2) :transposition -2))))))))
   (cmn-display msp
-	       :file "/tmp/sp-output.eps"
-	       :font-size 8
-	       :break-line-each-set nil
-	       :size 10
-	       :include-missing-chromatic nil
-	       :include-missing-non-chromatic nil))
+               :file "/tmp/sp-output.eps"
+               :font-size 8
+               :break-line-each-set nil
+               :size 10
+               :include-missing-chromatic nil
+               :include-missing-non-chromatic nil))
 
 |#
 ;;; SYNOPSIS
@@ -341,15 +341,15 @@
 #|
 ;; Find sets that contain a single pitch
 (let ((msp (make-set-palette 
-	    'test
-	    '((1 ((1
-		   ((g3 c4 e4 g4)))
-		  (2
-		   ((c4 d4 e4 g4)))))
-	      (2 ((1 ((1 1) :transposition 5))
-		  (2 ((1 2) :transposition 5))))
-	      (3 ((1 ((1 1) :transposition -2))
-		  (2 ((1 2) :transposition -2))))))))
+            'test
+            '((1 ((1
+                   ((g3 c4 e4 g4)))
+                  (2
+                   ((c4 d4 e4 g4)))))
+              (2 ((1 ((1 1) :transposition 5))
+                  (2 ((1 2) :transposition 5))))
+              (3 ((1 ((1 1) :transposition -2))
+                  (2 ((1 2) :transposition -2))))))))
   (find-sets-with-pitches msp '(c4)))
 
 =>
@@ -373,15 +373,15 @@ data: (G3 C4 E4 G4)
 
 ;; Search for a set of two pitches, printing the successfully matched sets
 (let ((msp (make-set-palette 
-	    'test
-	    '((1 ((1
-		   ((g3 c4 e4 g4)))
-		  (2
-		   ((c4 d4 e4 g4)))))
-	      (2 ((1 ((1 1) :transposition 5))
-		  (2 ((1 2) :transposition 5))))
-	      (3 ((1 ((1 1) :transposition -2))
-		  (2 ((1 2) :transposition -2))))))))
+            'test
+            '((1 ((1
+                   ((g3 c4 e4 g4)))
+                  (2
+                   ((c4 d4 e4 g4)))))
+              (2 ((1 ((1 1) :transposition 5))
+                  (2 ((1 2) :transposition 5))))
+              (3 ((1 ((1 1) :transposition -2))
+                  (2 ((1 2) :transposition -2))))))))
   (print (find-sets-with-pitches msp '(c4 f4) t)))
 
 =>
@@ -445,28 +445,28 @@ data: (C4 F4 A4 C5)
 #|
 ;; Generates frequencies by default
 (let ((msp (make-set-palette 
-	    'test
-	    '((1 ((1
-		   ((g3 c4 e4 g4)))
-		  (2
-		   ((c4 d4 e4 g4)))))
-	      (2 ((1 ((1 1) :transposition 5))
-		  (2 ((1 2) :transposition 5))))
-	      (3 ((1 ((1 1) :transposition -2))
-		  (2 ((1 2) :transposition -2))))))))
+            'test
+            '((1 ((1
+                   ((g3 c4 e4 g4)))
+                  (2
+                   ((c4 d4 e4 g4)))))
+              (2 ((1 ((1 1) :transposition 5))
+                  (2 ((1 2) :transposition 5))))
+              (3 ((1 ((1 1) :transposition -2))
+                  (2 ((1 2) :transposition -2))))))))
   (gen-max-coll-file msp "/tmp/msp-mcf.txt"))
 
 ;; Set the optional argument to T to generate MIDI key numbers instead
 (let ((msp (make-set-palette 
-	    'test
-	    '((1 ((1
-		   ((g3 c4 e4 g4)))
-		  (2
-		   ((c4 d4 e4 g4)))))
-	      (2 ((1 ((1 1) :transposition 5))
-		  (2 ((1 2) :transposition 5))))
-	      (3 ((1 ((1 1) :transposition -2))
-		  (2 ((1 2) :transposition -2))))))))
+            'test
+            '((1 ((1
+                   ((g3 c4 e4 g4)))
+                  (2
+                   ((c4 d4 e4 g4)))))
+              (2 ((1 ((1 1) :transposition 5))
+                  (2 ((1 2) :transposition 5))))
+              (3 ((1 ((1 1) :transposition -2))
+                  (2 ((1 2) :transposition -2))))))))
   (gen-max-coll-file msp "/tmp/msp-mcf.txt" t))
 
 |#
@@ -521,19 +521,19 @@ data: (C4 F4 A4 C5)
 ;;; EXAMPLE
 #|
 (let ((msp (make-set-palette 
-	    'test
-	    '((1 ((1
-		   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
-		  (2
-		   ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
-		    :subsets
-		    ((tc1 (d2 g3 cs5))
-		     (tc2 (eqs2 f3 bqf3))
-		     (tc3 (b2 bqs3 gqf5)))))))
-	      (2 ((1 ((1 1) :transposition 5))
-		  (2 ((1 2) :transposition 5))))
-	      (3 ((1 ((1 1) :transposition -2))
-		  (2 ((1 2) :transposition -2))))))))
+            'test
+            '((1 ((1
+                   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
+                  (2
+                   ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
+                    :subsets
+                    ((tc1 (d2 g3 cs5))
+                     (tc2 (eqs2 f3 bqf3))
+                     (tc3 (b2 bqs3 gqf5)))))))
+              (2 ((1 ((1 1) :transposition 5))
+                  (2 ((1 2) :transposition 5))))
+              (3 ((1 ((1 1) :transposition -2))
+                  (2 ((1 2) :transposition -2))))))))
   (gen-midi-chord-seq msp "/tmp/msp-gmchs.mid"))
 
 |#
@@ -593,28 +593,28 @@ data: (C4 F4 A4 C5)
 ;; changes. 
 
 (let ((msp (make-set-palette 
-	    'test
-	    '((1 ((1
-		   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
-		  (2
-		   ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
-		    :subsets
-		    ((tc1 (d2 g3 cs5))
-		     (tc2 (eqs2 f3 bqf3))
-		     (tc3 (b2 bqs3 gqf5)))))))
-	      (2 ((1 ((1 1) :transposition 5))
-		  (2 ((1 2) :transposition 5))))
-	      (3 ((1 ((1 1) :transposition -2))
-		  (2 ((1 2) :transposition -2))))))))
+            'test
+            '((1 ((1
+                   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
+                  (2
+                   ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
+                    :subsets
+                    ((tc1 (d2 g3 cs5))
+                     (tc2 (eqs2 f3 bqf3))
+                     (tc3 (b2 bqs3 gqf5)))))))
+              (2 ((1 ((1 1) :transposition 5))
+                  (2 ((1 2) :transposition 5))))
+              (3 ((1 ((1 1) :transposition -2))
+                  (2 ((1 2) :transposition -2))))))))
   (print (loop for i in (data msp) 
-	    collect (loop for j in (data (data i))
-		       collect (loop for p in (data j)
-				  collect (micro-tone p)))))
+            collect (loop for j in (data (data i))
+                       collect (loop for p in (data j)
+                                  collect (micro-tone p)))))
   (force-micro-tone msp 't)
   (print (loop for i in (data msp) 
-	    collect (loop for j in (data (data i))
-		       collect (loop for p in (data j)
-				  collect (micro-tone p))))))
+            collect (loop for j in (data (data i))
+                       collect (loop for p in (data j)
+                                  collect (micro-tone p))))))
 
 =>
 (((NIL NIL T NIL NIL T T NIL NIL NIL NIL T T NIL NIL)
@@ -684,23 +684,23 @@ data: (C4 F4 A4 C5)
 (make-set-palette 
  'test
  '((1 ((1
-	((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)
-	 :subsets
-	 ((tc1 ((ds2 e3 a4) "a-tag"))
-	  (tc2 (bf1 d4 cqs5))
-	  (tc3 (c3 cs4 gs5)))))
+        ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)
+         :subsets
+         ((tc1 ((ds2 e3 a4) "a-tag"))
+          (tc2 (bf1 d4 cqs5))
+          (tc3 (c3 cs4 gs5)))))
        (2
-	((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
-	 :subsets
-	 ((tc1 (d2 g3 cs5))
-	  (tc2 (eqs2 f3 bqf3))
-	  (tc3 (b2 bqs3 gqf5)))))
+        ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
+         :subsets
+         ((tc1 (d2 g3 cs5))
+          (tc2 (eqs2 f3 bqf3))
+          (tc3 (b2 bqs3 gqf5)))))
        (3
-	((cqs2 fs2 g2 c3 d3 fqs3 gqf3 cs4 ds4 e4 gs4 dqf5 f5 a5 bqs5)
-	 :subsets
-	 ((tc1 (cqs2 c3 f5))
-	  (tc2 (fs2 e4 bqs5))
-	  (tc3 (d3 ef4 a5)))))))
+        ((cqs2 fs2 g2 c3 d3 fqs3 gqf3 cs4 ds4 e4 gs4 dqf5 f5 a5 bqs5)
+         :subsets
+         ((tc1 (cqs2 c3 f5))
+          (tc2 (fs2 e4 bqs5))
+          (tc3 (d3 ef4 a5)))))))
    (2 ((1 ((1 1) :transposition 5))
        (2 ((1 2) :transposition 5))
        (3 ((1 3) :transposition 5))))
@@ -787,19 +787,19 @@ data: (
 
 #|
 (let ((msp (make-set-palette 
-	    'test
-	    '((1 ((1
-		   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
-		  (2
-		   ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
-		    :subsets
-		    ((tc1 (d2 g3 cs5))
-		     (tc2 (eqs2 f3 bqf3))
-		     (tc3 (b2 bqs3 gqf5)))))))
-	      (2 ((1 ((1 1) :transposition 5))
-		  (2 ((1 2) :transposition 5))))
-	      (3 ((1 ((1 1) :transposition -2))
-		  (2 ((1 2) :transposition -2))))))))
+            'test
+            '((1 ((1
+                   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
+                  (2
+                   ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
+                    :subsets
+                    ((tc1 (d2 g3 cs5))
+                     (tc2 (eqs2 f3 bqf3))
+                     (tc3 (b2 bqs3 gqf5)))))))
+              (2 ((1 ((1 1) :transposition 5))
+                  (2 ((1 2) :transposition 5))))
+              (3 ((1 ((1 1) :transposition -2))
+                  (2 ((1 2) :transposition -2))))))))
   (set-palette-p msp))
 
 => T
@@ -1030,26 +1030,26 @@ data: (
        do 
        ;; if we can't get a bass from the pair, try it with the whole freq
        ;; set from the ring-modulation
-	 (when (and do-bass (< (length rm-bass) min-bass-notes))
-	   (let ((rmb (ring-mod-bass 
-		       rm :bass-octave ring-mod-bass-octave :warn warn-no-bass)))
-	     (when (> (length rmb) (length rm-bass))
-	       (setf rm-bass rmb)))
-	   (when (and warn-no-bass
-		      (< (length rm-bass) min-bass-notes))
-	     (warn "set-palette::set-palette-from-ring-mod: can't get bass ~
+         (when (and do-bass (< (length rm-bass) min-bass-notes))
+           (let ((rmb (ring-mod-bass 
+                       rm :bass-octave ring-mod-bass-octave :warn warn-no-bass)))
+             (when (> (length rmb) (length rm-bass))
+               (setf rm-bass rmb)))
+           (when (and warn-no-bass
+                      (< (length rm-bass) min-bass-notes))
+             (warn "set-palette::set-palette-from-ring-mod: can't get bass ~
                   notes even after 2nd attempt with ~a" rm)))
-	 (setf rm-bass (when rm-bass
-			 ;; max three bass notes
-			 (list (first rm-bass)
-			       (nth (floor (length rm-bass) 2) rm-bass)
-			       (first (last rm-bass))))
-	       set (remove-duplicates (append rm rm-bass)))
-	 (add (make-complete-set set :id i :subsets `((rm-bass ,rm-bass))
-				 :tag (combine-into-symbol 
-				       (freq-to-note left) '-ringmod- 
-				       (freq-to-note right)))
-	      sp))
+         (setf rm-bass (when rm-bass
+                         ;; max three bass notes
+                         (list (first rm-bass)
+                               (nth (floor (length rm-bass) 2) rm-bass)
+                               (first (last rm-bass))))
+               set (remove-duplicates (append rm rm-bass)))
+         (add (make-complete-set set :id i :subsets `((rm-bass ,rm-bass))
+                                 :tag (combine-into-symbol 
+                                       (freq-to-note left) '-ringmod- 
+                                       (freq-to-note right)))
+              sp))
     sp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1111,11 +1111,11 @@ data: (
 ;; and 3 partials of the second, removing octave repetitions, and returning the
 ;; results as rounded hertz-frequencies
 (ring-mod 'c4 'd4
-	  :pitch1-partials 5
-	  :pitch2-partials 3
-	  :min-freq 60
-	  :max-freq 2000
-	  :remove-octaves t)
+          :pitch1-partials 5
+          :pitch2-partials 3
+          :min-freq 60
+          :max-freq 2000
+          :remove-octaves t)
 
 => (64.0 96.0 166.0 198.0 230.0 358.0 427.0 459.0 491.0 555.0 619.0 817.0
     1079.0 1143.0 1340.0 1372.0 1404.0 1666.0 1895.0 1927.0)
@@ -1123,9 +1123,9 @@ data: (
 ;; Applying ring modulation to two frequencies, returning the results as
 ;; note-name symbols within the chromatic scale.
 (ring-mod '261.63 '293.66 
-	  :return-notes t
-	  :remove-duplicates nil
-	  :scale cm::*chromatic-scale*)
+          :return-notes t
+          :remove-duplicates nil
+          :scale cm::*chromatic-scale*)
 
 => (C1 C2 G3 BF3 E4 B4 CS5 AF5 AF5 CS6 CS6 F6)
 
@@ -1190,7 +1190,7 @@ data: (
 ;;; a list of frequencies or note symbols
 ;;;
 ;;; SYNOPSIS
-(defun ring-mod-bass (freqs &key (bass-octave 0) (low 'a0) (high 'g3)
+(defun ring-mod-bass (freqs &key (bass-octave 0) (low 'a0) (high 'g3) (round t)
                       (warn t) (return-notes nil))
 ;;; ****
   (unless (numberp low)
@@ -1201,7 +1201,7 @@ data: (
            (loop for f in freqs 
               when (octave-freqs freq f t)
               do
-                (return t))))
+              (return t))))
     (let* ((pairs (get-all-pairs freqs))
            (result 
             (loop for pair in pairs
@@ -1219,8 +1219,11 @@ data: (
       (if result
           (progn
             (setf result (sort result #'<))
-            (when return-notes
-              (setf result (loop for f in result collect (freq-to-note f))))
+            (if return-notes
+                (setf result (loop for f in result collect (freq-to-note f)))
+                ;; MDE Wed Feb  8 17:42:34 2012 -- added round
+                (when round
+                  (setf result (loop for f in result collect (round f)))))
             (remove-duplicates result))
           (when warn
             (warn "set-palette::ring-mod-bass: can't get bass from ~a!"

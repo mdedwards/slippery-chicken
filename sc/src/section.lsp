@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    23rd March 2002
 ;;;
-;;; $$ Last modified: 17:18:05 Wed Jan 18 2012 ICT
+;;; $$ Last modified: 11:35:43 Thu Feb  9 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -257,37 +257,37 @@
 ;;; SYNOPSIS
 (defmethod re-bar ((s section)
                    &key start-bar 
-                        end-bar
-                        min-time-sig
-                        verbose
-                        ;; could also be a beat rhythmic unit
-                        (auto-beam t))
+                   end-bar
+                   min-time-sig
+                   verbose
+                   ;; could also be a beat rhythmic unit
+                   (auto-beam t))
 ;;; ****
   (if (has-subsections s)
       (loop for sub-section in (data s) do
-            (re-bar sub-section :start-bar start-bar :end-bar end-bar
-                    :min-time-sig min-time-sig :verbose verbose))
-    ;; looping for each player means we do a lot of the detection arithmetic
-    ;; not once but once for each player, but it's necessary for the glorious
-    ;; future when we might have different meters for different instruments.
-    (loop 
-        with first-time-sigs
-        with this-time-sigs
-        for player-section in (data s) do
-          (when (and (<= start-bar (end-bar s))
-                     (>= start-bar (start-bar s)))
-            (setf this-time-sigs
-              (re-bar player-section 
-                    :start-bar (max start-bar (start-bar player-section))
-                    :end-bar (min end-bar (end-bar player-section))
-                    :min-time-sig min-time-sig :verbose verbose 
-                    :auto-beam auto-beam))
-            (if first-time-sigs
-                (unless (equal first-time-sigs this-time-sigs)
-                  (warn "section::re-bar: not all time-sigs are the same! ~
+           (re-bar sub-section :start-bar start-bar :end-bar end-bar
+                   :min-time-sig min-time-sig :verbose verbose))
+      ;; looping for each player means we do a lot of the detection arithmetic
+      ;; not once but once for each player, but it's necessary for the glorious
+      ;; future when we might have different meters for different instruments.
+      (loop 
+         with first-time-sigs
+         with this-time-sigs
+         for player-section in (data s) do
+         (when (and (<= start-bar (end-bar s))
+                    (>= end-bar (start-bar s)))
+           (setf this-time-sigs
+                 (re-bar player-section 
+                         :start-bar (max start-bar (start-bar player-section))
+                         :end-bar (min end-bar (end-bar player-section))
+                         :min-time-sig min-time-sig :verbose verbose 
+                         :auto-beam auto-beam))
+           (if first-time-sigs
+               (unless (equal first-time-sigs this-time-sigs)
+                 (warn "section::re-bar: not all time-sigs are the same! ~
                          ~%first: ~a ~%this:  ~a"
-                        first-time-sigs this-time-sigs))
-              (setf first-time-sigs this-time-sigs)))))
+                       first-time-sigs this-time-sigs))
+               (setf first-time-sigs this-time-sigs)))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

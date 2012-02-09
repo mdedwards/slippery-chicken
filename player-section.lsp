@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    18th March 2002
 ;;;
-;;; $$ Last modified: 14:19:26 Wed Dec 14 2011 ICT
+;;; $$ Last modified: 11:28:21 Thu Feb  9 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -143,34 +143,34 @@
 
 (defmethod re-bar ((ps player-section)
                    &key start-bar 
-                        end-bar ;; inclusive
-                        ;; the following is just a list like '(3 8) '(5 8)
-                        min-time-sig
-                        verbose
-                        ;; could also be a beat rhythmic unit
-                        (auto-beam t))
+                   end-bar ;; inclusive
+                   ;; the following is just a list like '(3 8) '(5 8)
+                   min-time-sig
+                   verbose
+                   ;; could also be a beat rhythmic unit
+                   (auto-beam t))
   (let ((best-dur (duration (make-time-sig min-time-sig)))
         (dur 0.0)
         (short-bars '())
         (result '())
         (new-bnum start-bar)
         (before (loop 
-                    for bnum from (start-bar ps) to (1- start-bar)
-                                                    ;; must specify player arg
-                    for bar = (get-bar ps bnum 'blah)
-                    do 
-                      (unless bar
-                        (error "player-section::re-bar: before: no bar ~a"
-                               bnum))
-                    collect (clone bar)))
-        (after (loop 
-                   for bnum from (1+ end-bar) to (end-bar ps)
+                   for bnum from (start-bar ps) to (1- start-bar)
+                   ;; must specify player arg
                    for bar = (get-bar ps bnum 'blah)
                    do 
-                     (unless bar
-                       (error "player-section::re-bar: after: no bar ~a"
-                              bnum))
+                   (unless bar
+                     (error "player-section::re-bar: before: no bar ~a"
+                            bnum))
                    collect (clone bar)))
+        (after (loop 
+                  for bnum from (1+ end-bar) to (end-bar ps)
+                  for bar = (get-bar ps bnum 'blah)
+                  do 
+                  (unless bar
+                    (error "player-section::re-bar: after: no bar ~a"
+                           bnum))
+                  collect (clone bar)))
         ;; return a list of all the time sigs (as lists), whether modified or
         ;; not 
         (time-sigs '())
@@ -195,10 +195,10 @@
                                            (rehearsal-letter (first result))
                                            rl))
                                    nb)
-                               (clone (first short-bars)))
+                                 (clone (first short-bars)))
                      (bar-num new-bar) new-bnum
                      (old-bar-nums new-bar) (loop for b in short-bars collect
-                                                  (bar-num b))
+                                                 (bar-num b))
                      short-bars '()
                      dur 0.0)
                (when new-bar
@@ -215,22 +215,22 @@
       (concatenate-seqs ps)
       ;; there is now only one seq in the data list
       (setf new-bars
-        (loop 
-            for bnum from start-bar to end-bar 
-                                       ;; we have to specify player arg...
-            for bar = (get-bar ps bnum 'blah)
-            while bar
-            do
-              (incf dur (bar-duration bar))
-              (push bar short-bars)
-              (when (>= dur best-dur)
-                (do-rebar))
-            finally (do-rebar)
-                    (return (nreverse result))))
+            (loop 
+               for bnum from start-bar to end-bar 
+               ;; we have to specify player arg...
+               for bar = (get-bar ps bnum 'blah)
+               while bar
+               do
+               (incf dur (bar-duration bar))
+               (push bar short-bars)
+               (when (>= dur best-dur)
+                 (do-rebar))
+               finally (do-rebar)
+               (return (nreverse result))))
       (loop 
-          for bar in after
-          for new-bar-num from (1+ (bar-num (first (last new-bars))))
-          do (setf (bar-num bar) new-bar-num))
+         for bar in after
+         for new-bar-num from (1+ (bar-num (first (last new-bars))))
+         do (setf (bar-num bar) new-bar-num))
       (unless new-bars 
         (error "player-section::re-bar: no new-bars!"))
       (let* ((bars (append before new-bars after))
@@ -364,7 +364,6 @@
       (consolidate-rests first-bar :beat beat)
       (consolidate-notes first-bar nil beat)
       (when auto-beam
-        ;; todo: this doesn't work either...
         (auto-beam first-bar beat nil))
       first-bar)))
 

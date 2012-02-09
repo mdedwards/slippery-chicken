@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:22:55 Wed Feb  8 2012 GMT
+;;; $$ Last modified: 11:36:14 Thu Feb  9 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4033,38 +4033,51 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;;
 ;;; This function will only combine short bars into longer ones, it won't split
 ;;; up bars and recombine. 
-;;; todo: re-beam the bar?
-;;; todo: this makes it impossible to display the sets: fix this.
 
 (defmethod re-bar ((sc slippery-chicken)
                    &key start-bar 
-                        end-bar
-                        ;; the following is just a list like '(3 8) '(5 8)
-                        min-time-sig
-                        verbose
-                        (check-ties t)
-                        ;; could also be a beat rhythmic unit
-                        (auto-beam t))
+                   end-bar
+                   ;; the following is just a list like '(3 8) '(5 8)
+                   min-time-sig
+                   verbose
+                   ;; MDE Thu Feb  9 10:36:02 2012 -- seems if we don't
+                   ;; update-slots then the new bar structure isn't displayed 
+                   (update-slots t)
+                   (check-ties t)
+                   ;; could also be a beat rhythmic unit
+                   (auto-beam t))
   (unless start-bar
     (setf start-bar 1))
   (unless end-bar
     (setf end-bar (num-bars sc)))
+  ;; MDE Thu Feb  9 11:30:39 2012
+  (unless (>= end-bar start-bar)
+    (error "slippery-chicken::re-bar: end-bar (~a) must be >= start-bar (~a)."
+           end-bar start-bar))
+  (when verbose
+    (format t "~&Re-bar from bar ~a to ~a:" start-bar end-bar))
   (object-is-nil? min-time-sig "slippery-chicken::re-bar" 'min-time-sig)
   ;; make double bar at end of piece a normal bar line
   (change-bar-line-type sc (num-bars (piece sc)) 0)
   (loop 
-      for section-no in (data (piece sc)) 
-      for section = (data section-no)
-      do
-        (when (and (<= start-bar (end-bar section))
-                   (>= start-bar (start-bar section)))
-          (re-bar section :start-bar start-bar :end-bar end-bar
-                  :min-time-sig min-time-sig :verbose verbose
-                  :auto-beam auto-beam)))
+     for section-no in (data (piece sc)) 
+     for section = (data section-no)
+     do
+     (when verbose
+       (format t "~%~%***** Section ~a: bar ~a to ~a...." 
+               (id section-no) (start-bar section) (end-bar section)))
+     (if (and (<= start-bar (end-bar section))
+              (>= end-bar (start-bar section)))
+         (progn 
+           (when verbose 
+             (format t "processing."))
+           (re-bar section :start-bar start-bar :end-bar end-bar
+                   :min-time-sig min-time-sig :verbose verbose
+                   :auto-beam auto-beam))
+         (format t "ignoring.")))
   ;; midi-time-sig is taken care of in rthm-seq-bar::get-timings when midi-play
   ;; is called.
   (update-slots sc (tempo-map sc) 0.0 0.0 1 nil nil (warn-ties sc))
@@ -4075,6 +4088,9 @@
     (check-ties sc))
   ;; have to update the bar numbers of where the rehearsal letters are.
   (setf (rehearsal-letters sc) (find-rehearsal-letters sc))
+  ;; MDE Thu Feb  9 10:36:37 2012 
+  (when update-slots
+    (update-slots sc))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

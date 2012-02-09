@@ -68,3 +68,23 @@ implementing the remix-in algorithm of cheat sheet (see get-loops seqs)
     set-palette.lsp/recursive-set-palette-from-ring-mod:
 ;;; todo: make the sp's proper linked-named-objects so we can (get-all-refs)
 ;;; with a list of notes
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; todo: re-beam the bar?
+;;; todo: this makes it impossible to display the sets: fix this.
+(defmethod re-bar ((sc slippery-chicken)
+                   &key start-bar 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+player-section.lsp
+(defun re-bar-aux (bars &optional verbose auto-beam)
+  (when bars
+    (let* ((rehearsal-letter nil)
+...
+      ;; MDE Thu Dec  8 23:57:26 2011 -- changed following call
+      ;; (consolidate-rests first-bar beat)
+      (consolidate-rests first-bar :beat beat)
+      (consolidate-notes first-bar nil beat)
+      (when auto-beam
+        ;; todo: this doesn't work either...
+        (auto-beam first-bar beat nil))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

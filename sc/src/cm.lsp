@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 16:59:02 Tue Feb  7 2012 ICT
+;;; $$ Last modified: 14:32:27 Thu Feb  9 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -56,8 +56,39 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; MDE Thu Feb  9 14:25:34 2012 
+;;; e.g. (in-scale :quarter-tone) (in-scale :chromatic)
+;;; ****f* cm/in-scale
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defun in-scale (scale)
+  (let ((sc (if (eq scale :chromatic)
+                cm::*chromatic-scale*
+                (cm::find-object scale))))
+    (unless sc 
+      (error "cm.lsp::in-scale: Can't find scale ~a." scale))
+    (setf cm::*scale* sc)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun degrees-per-octave ()
   (- (cm::keynum 'cm::c5) (cm::keynum 'cm::c4)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    23rd March 2002
 ;;;
-;;; $$ Last modified: 11:35:43 Thu Feb  9 2012 GMT
+;;; $$ Last modified: 11:44:11 Thu Feb  9 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -274,6 +274,7 @@
          with first-time-sigs
          with this-time-sigs
          for player-section in (data s) do
+         ;; MDE Thu Feb  9 11:43:51 2012 -- fixed the logic here
          (when (and (<= start-bar (end-bar s))
                     (>= end-bar (start-bar s)))
            (setf this-time-sigs

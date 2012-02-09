@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:36:14 Thu Feb  9 2012 GMT
+;;; $$ Last modified: 11:43:56 Thu Feb  9 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4069,6 +4069,7 @@
      (when verbose
        (format t "~%~%***** Section ~a: bar ~a to ~a...." 
                (id section-no) (start-bar section) (end-bar section)))
+       ;; MDE Thu Feb  9 11:43:51 2012 -- fixed the logic here
      (if (and (<= start-bar (end-bar section))
               (>= end-bar (start-bar section)))
          (progn 

@@ -1186,12 +1186,110 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Feb 11 14:15:13 GMT 2012: Edited and extended robodoc entry
+
 ;;; ****f* set-palette/ring-mod-bass
 ;;; FUNCTION
 ;;; Invent sensible bass note(s) from a list of frequencies.
 ;;;
+;;; ARGUMENTS
+;;; - A list of numbers that are hertz frequencies from which the bass note(s)
+;;;   are to be generated.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - keyword argument :bass-octave. An integer that is an octave indicator
+;;;   (e.g. the 4 in 'C4). The method will only return any
+;;;   frequencies/note-names generated that fall in this octave. Default = 0.
+;;; - keyword argument :low. A note-name symbol that is the lowest possible
+;;;   pitch of those returned. This argument further restricts the :bass-octave
+;;;   argument. Thus a :bass-octave value of 1 could be further limted to no
+;;;   pitches below :low 'DS1. Default = 'A0.
+;;; - keyword argument :high. A note-name symbol that is the highest possible
+;;;   pitch of those returned. This argument further restricts the :bass-octave
+;;;   argument. Thus a :bass-octave value of 1 could be further limted to no
+;;;   pitches above :high 'FS1. Default = 'G3.
+;;; - keyword argument :round. T or NIL to indicate whether the frequencies
+;;;   returned are rounded to integer values. T = round. Default = T.
+;;; - keyword argument :warn. T or NIL to print a warning when no bass can be
+;;;   created from the specified frequencies/note-names. T = print
+;;;   warning. Default = T.
+;;; - keyword argument :return-notes. T or NIL to indicate whether the
+;;;   resulting pitches should be returned as note-names instead of
+;;;   frequencies. T = return as note-names. Default = NIL. 
+;;; - keyword argument :scale. A variable pointing to the scale to which any
+;;;   translation of frequencies into note-names symbols should take place. By
+;;;   default this value is set to cm::*scale*, which is automatically set by
+;;;   slippery chicken to 'quarter-tone at initiation. To return pitches
+;;;   rounded to chromatic note-names set this argument to
+;;;   cm::*chromatic-scale*. 
+;;;
 ;;; RETURN VALUE
-;;; a list of frequencies or note symbols
+;;; Returns a list of frequencies by default.
+;;;
+;;; Setting the :return-notes keyword argument to T will cause the method to
+;;; return note-name symbols instead.
+;;;
+;;; EXAMPLE
+#|
+;; Simple useage with default keyword argument values
+(ring-mod-bass '(261.63 293.66 329.63 349.23))
+
+=> (28 29 32)
+
+;; Return as note-names instead, in quarter-tone scale by default
+(ring-mod-bass '(261.63 293.66 329.63 349.23)
+	       :return-notes t)
+
+=> (A0 BF0 BQS0) 
+
+;; Set the :scale argument to cm::*chromatic-scale* to return equal-tempered
+;; note-name symbols instead
+(ring-mod-bass '(261.63 293.66 329.63 349.23)
+	       :return-notes t
+	       :scale cm::*chromatic-scale*)
+
+=> (A0 BF0 C1)
+
+;; Return pitches from bass octave 1 rather than default 0
+(ring-mod-bass '(261.63 293.66 329.63 349.23 392.00)
+	       :return-notes t
+	       :scale cm::*chromatic-scale*
+	       :bass-octave 1)
+
+=> (CS1 D1 F1 G1 A1 B1)
+
+;; Further limit the notes returned by setting :low and :high values
+(ring-mod-bass '(261.63 293.66 329.63 349.23 392.00)
+	       :return-notes t
+	       :scale cm::*chromatic-scale*
+	       :bass-octave 1
+	       :low 'e1
+	       :high 'a1)
+
+=> (F1 G1)
+
+;; Set the :round argument to NIL to return decimal-point frequencies
+(ring-mod-bass '(261.63 293.66 329.63 349.23 392.00)
+	       :bass-octave 1
+	       :low 'e1
+	       :high 'a1
+	       :round NIL)
+
+=> (42.76999999999998 43.45666666666667 43.80000000000001 49.16999999999999)
+
+;; The method prints a warning by default if no bass note can be made
+(ring-mod-bass '(261.63))
+
+=>
+NIL
+WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
+
+;; This warning can be supressed by setting the :warn argument to NIL
+(ring-mod-bass '(261.63) :warn nil)
+
+=> NIL
+
+|#
 ;;;
 ;;; SYNOPSIS
 (defun ring-mod-bass (freqs &key (bass-octave 0) (low 'a0) (high 'g3) (round t)

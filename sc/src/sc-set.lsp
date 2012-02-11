@@ -817,6 +817,8 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Feb 11 12:11:13 GMT 2012: Edited MDE's doc comments.
+
 ;;; SAR Mon Feb  6 16:02:02 GMT 2012: Added robodoc entry and delete MDE
 ;;; comment here as it was taken into the robodoc nearly verbatim
 
@@ -831,7 +833,8 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 ;;; - An sc-set object.
 ;;;
 ;;; OPTIONAL
-;;; - Whether to return values in semitones.  Default nil.
+;;; - T or NIL indicating whether to return values in semitones or default of
+;;;   degrees. T = semitones. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of integers

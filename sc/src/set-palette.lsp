@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 19:05:14 Wed Feb  8 2012 GMT
+;;; $$ Last modified: 15:55:41 Sat Feb 11 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1190,7 +1190,7 @@ data: (
 
 ;;; ****f* set-palette/ring-mod-bass
 ;;; FUNCTION
-;;; Invent sensible bass note(s) from a list of frequencies.
+;;; Invent (sensible) bass note(s) from a list of frequencies.
 ;;;
 ;;; ARGUMENTS
 ;;; - A list of numbers that are hertz frequencies from which the bass note(s)
@@ -1219,9 +1219,8 @@ data: (
 ;;; - keyword argument :scale. A variable pointing to the scale to which any
 ;;;   translation of frequencies into note-names symbols should take place. By
 ;;;   default this value is set to cm::*scale*, which is automatically set by
-;;;   slippery chicken to 'quarter-tone at initiation. To return pitches
-;;;   rounded to chromatic note-names set this argument to
-;;;   cm::*chromatic-scale*. 
+;;;   slippery chicken to 'quarter-tone at initilisation. To return e.g. pitches
+;;;   rounded to chromatic note-names set this argument to cm::*chromatic-scale*. 
 ;;;
 ;;; RETURN VALUE
 ;;; Returns a list of frequencies by default.
@@ -1238,42 +1237,42 @@ data: (
 
 ;; Return as note-names instead, in quarter-tone scale by default
 (ring-mod-bass '(261.63 293.66 329.63 349.23)
-	       :return-notes t)
+               :return-notes t)
 
 => (A0 BF0 BQS0) 
 
 ;; Set the :scale argument to cm::*chromatic-scale* to return equal-tempered
 ;; note-name symbols instead
 (ring-mod-bass '(261.63 293.66 329.63 349.23)
-	       :return-notes t
-	       :scale cm::*chromatic-scale*)
+               :return-notes t
+               :scale cm::*chromatic-scale*)
 
 => (A0 BF0 C1)
 
 ;; Return pitches from bass octave 1 rather than default 0
 (ring-mod-bass '(261.63 293.66 329.63 349.23 392.00)
-	       :return-notes t
-	       :scale cm::*chromatic-scale*
-	       :bass-octave 1)
+               :return-notes t
+               :scale cm::*chromatic-scale*
+               :bass-octave 1)
 
 => (CS1 D1 F1 G1 A1 B1)
 
 ;; Further limit the notes returned by setting :low and :high values
 (ring-mod-bass '(261.63 293.66 329.63 349.23 392.00)
-	       :return-notes t
-	       :scale cm::*chromatic-scale*
-	       :bass-octave 1
-	       :low 'e1
-	       :high 'a1)
+               :return-notes t
+               :scale cm::*chromatic-scale*
+               :bass-octave 1
+               :low 'e1
+               :high 'a1)
 
 => (F1 G1)
 
 ;; Set the :round argument to NIL to return decimal-point frequencies
 (ring-mod-bass '(261.63 293.66 329.63 349.23 392.00)
-	       :bass-octave 1
-	       :low 'e1
-	       :high 'a1
-	       :round NIL)
+               :bass-octave 1
+               :low 'e1
+               :high 'a1
+               :round NIL)
 
 => (42.76999999999998 43.45666666666667 43.80000000000001 49.16999999999999)
 

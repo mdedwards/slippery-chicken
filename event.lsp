@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:56:55 Sun Feb  5 2012 ICT
+;;; $$ Last modified: 15:40:20 Sat Feb 11 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3042,7 +3042,7 @@ W
 ;;; ****f* event/make-punctuation-events
 ;;; FUNCTION
 ;;; Given a list of numbers, a rhythm, and a note name or list of note names,
-;;; create a new list of single rhythms separated by rests. 
+;;; create a new list of single events separated by rests. 
 ;;;
 ;;; The rhythm specified serves as the basis for the new list. The numbers
 ;;; specified represent groupings in the new list that are each made up of one 

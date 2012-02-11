@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 15:55:41 Sat Feb 11 2012 GMT
+;;; $$ Last modified: 15:56:27 Sat Feb 11 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1190,7 +1190,8 @@ data: (
 
 ;;; ****f* set-palette/ring-mod-bass
 ;;; FUNCTION
-;;; Invent (sensible) bass note(s) from a list of frequencies.
+;;; Using ring-modulation techniques, invent (sensible) bass note(s) from a
+;;; list of frequencies.  
 ;;;
 ;;; ARGUMENTS
 ;;; - A list of numbers that are hertz frequencies from which the bass note(s)
@@ -1230,7 +1231,7 @@ data: (
 ;;;
 ;;; EXAMPLE
 #|
-;; Simple useage with default keyword argument values
+;; Simple usage with default keyword argument values
 (ring-mod-bass '(261.63 293.66 329.63 349.23))
 
 => (28 29 32)

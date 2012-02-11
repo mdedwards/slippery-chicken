@@ -14,14 +14,14 @@
 ;;;
 ;;; Purpose:          Implementation of the complete-set class which as an
 ;;;                   extension of the tl-set class allows checking for full
-;;;                   sets: ones in which every note of *standard-scale* is
+;;;                   sets: ones in which every note of the current scale is
 ;;;                   present. 
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 13:08:08 Sat Feb 11 2012 GMT
+;;; $$ Last modified: 13:16:30 Sat Feb 11 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -413,13 +413,13 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 
 ;; A new complete-set object can be created from tl-set and sc-set objects
 (let ((mcs (make-complete-set 
-	    (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5)))))
+            (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5)))))
   (pitch-symbols mcs))
 
 => (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5)
 
 (let ((mcs (make-complete-set 
-	    (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5)))))
+            (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5)))))
   (pitch-symbols mcs))
 
 => (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5)

@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 17:03:34 Wed Feb  8 2012 GMT
+;;; $$ Last modified: 13:08:08 Sat Feb 11 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -427,8 +427,8 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 |#
 ;;; SYNOPSIS
 (defun make-complete-set (set &key id tag subsets related-sets 
-                                   (transposition 0) (auto-sort t)
-                                   limit-upper limit-lower complete)
+                          (transposition 0) (auto-sort t)
+                          limit-upper limit-lower complete)
 ;;; ****
   (if (typep set 'sc-set)
       (let ((copy (clone set)))
@@ -444,11 +444,11 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
         (when id
           (setf (id copy) id))
         copy)
-    (make-instance 'complete-set :id id :tag tag :data set :subsets subsets 
-                   :related-sets related-sets :auto-sort auto-sort
-                   :limit-upper limit-upper :limit-lower limit-lower
-                   :transposition transposition
-                   :complete complete)))
+      (make-instance 'complete-set :id id :tag tag :data set :subsets subsets 
+                     :related-sets related-sets :auto-sort auto-sort
+                     :limit-upper limit-upper :limit-lower limit-lower
+                     :transposition transposition
+                     :complete complete)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified: 17:06:58 Wed Feb  8 2012 GMT
+;;; $$ Last modified: 13:13:04 Sat Feb 11 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -72,11 +72,11 @@
 
 (defmethod initialize-instance :after ((tls tl-set) &rest initargs)
   (declare (ignore initargs))
+  (unless (zerop (transposition tls))
+    (transpose tls (transposition tls)))
   (when (or (limit-upper tls)
             (limit-lower tls))
-    (limit tls :upper (limit-upper tls) :lower (limit-lower tls)))
-  (unless (zerop (transposition tls))
-    (transpose tls (transposition tls))))
+    (limit tls :upper (limit-upper tls) :lower (limit-lower tls))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -392,12 +392,12 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 ;;; Returns a list of pitch objects, limited only by the range of the given
 ;;; instrument object by default
 (let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
-			 :related-sets '((other-notes (b4 e5 fs5 c6)))))
+                         :related-sets '((other-notes (b4 e5 fs5 c6)))))
       (mi (make-instrument 'flute 
-			   :staff-name "Flute" :staff-short-name "Fl."
-			   :lowest-written 'c4 :highest-written 'd7 
-			   :starting-clef 'treble :midi-program 74 :chords nil
-			   :microtones t :missing-notes '(cqs4 dqf4))))
+                           :staff-name "Flute" :staff-short-name "Fl."
+                           :lowest-written 'c4 :highest-written 'd7 
+                           :starting-clef 'treble :midi-program 74 :chords nil
+                           :microtones t :missing-notes '(cqs4 dqf4))))
   (limit-for-instrument mtls mi))
 
 =>
@@ -435,12 +435,12 @@ data: C6
 ;;; :lower keyword arguments and print the new pitch content of the given
 ;;; tl-set object to see the destructive modification
 (let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
-			 :related-sets '((other-notes (b4 e5 fs5 c6)))))
+                         :related-sets '((other-notes (b4 e5 fs5 c6)))))
       (mi (make-instrument 'flute 
-			   :staff-name "Flute" :staff-short-name "Fl."
-			   :lowest-written 'c4 :highest-written 'd7 
-			   :starting-clef 'treble :midi-program 74 :chords nil
-			   :microtones t :missing-notes '(cqs4 dqf4))))
+                           :staff-name "Flute" :staff-short-name "Fl."
+                           :lowest-written 'c4 :highest-written 'd7 
+                           :starting-clef 'treble :midi-program 74 :chords nil
+                           :microtones t :missing-notes '(cqs4 dqf4))))
   (limit-for-instrument mtls mi :upper 'b5 :lower 'c5)
   (pitch-symbols mtls))
 
@@ -448,16 +448,16 @@ data: C6
 
 ;;; By default the RELATED-SETS slot of the given tl-set object is not affected 
 (let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
-			 :related-sets '((other-notes (b4 e5 fs5 c6)))))
+                         :related-sets '((other-notes (b4 e5 fs5 c6)))))
       (mi (make-instrument 'flute 
-			   :staff-name "Flute" :staff-short-name "Fl."
-			   :lowest-written 'c4 :highest-written 'd7 
-			   :starting-clef 'treble :midi-program 74 :chords nil
-			   :microtones t :missing-notes '(cqs4 dqf4))))
+                           :staff-name "Flute" :staff-short-name "Fl."
+                           :lowest-written 'c4 :highest-written 'd7 
+                           :starting-clef 'treble :midi-program 74 :chords nil
+                           :microtones t :missing-notes '(cqs4 dqf4))))
   (limit-for-instrument mtls mi :upper 'b5 :lower 'c5)
   (loop for nobj in (data (related-sets mtls)) 
      collect (loop for p in (data nobj) 
-		collect (data p))))
+                collect (data p))))
 
 => ((B4 E5 FS5 C6))
 
@@ -465,17 +465,17 @@ data: C6
 ;;; Setting the :do-related-sets argument to T will cause the method to be
 ;;; applied to the RELATED-SETS slot as well.
 (let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
-			 :related-sets '((other-notes (b4 e5 fs5 c6)))))
+                         :related-sets '((other-notes (b4 e5 fs5 c6)))))
       (mi (make-instrument 'flute 
-			   :staff-name "Flute" :staff-short-name "Fl."
-			   :lowest-written 'c4 :highest-written 'd7 
-			   :starting-clef 'treble :midi-program 74 :chords nil
-			   :microtones t :missing-notes '(cqs4 dqf4))))
+                           :staff-name "Flute" :staff-short-name "Fl."
+                           :lowest-written 'c4 :highest-written 'd7 
+                           :starting-clef 'treble :midi-program 74 :chords nil
+                           :microtones t :missing-notes '(cqs4 dqf4))))
   (limit-for-instrument mtls mi :upper 'b5 :lower 'c5 :do-related-sets t)
   (print (pitch-symbols mtls))
   (print (loop for nobj in (data (related-sets mtls)) 
-	    collect (loop for p in (data nobj) 
-		       collect (data p)))))
+            collect (loop for p in (data nobj) 
+                       collect (data p)))))
 
 =>
 (DF5 F5 AF5) 
@@ -487,7 +487,7 @@ data: C6
 ;;; +slippery-chicken-standard-instrument-palette+ 
 (let ((mtls (make-tl-set '(dqs2 fqs2 aqf2 gqs3 bqf3 gqf4 bqf4 dqf5 fqs5)))
       (pno (get-data 'piano 
-		     +slippery-chicken-standard-instrument-palette+)))
+                     +slippery-chicken-standard-instrument-palette+)))
   (limit-for-instrument mtls pno :lower 'e5 :upper 'd6))
 
 => NIL

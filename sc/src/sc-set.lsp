@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 16:54:21 Tue Feb  7 2012 ICT
+;;; $$ Last modified: 10:55:32 Sat Feb 11 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -824,30 +824,48 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 ;;; FUNCTION
 ;;; Get the distances between each pitch in a given sc-set object and the
 ;;; lowest pitch in that object in DEGREES (which default to quarter-tones in
-;;; slippery chicken). (This method assumes that the given sc-set object is
-;;; sorted from low to high).
+;;; slippery chicken). This method assumes that the given sc-set object is
+;;; sorted from low to high, which is the default action for sc-set objects.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An sc-set object.
+;;;
+;;; OPTIONAL
+;;; - Whether to return values in semitones.  Default nil.
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of integers
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns the distances in degrees (which are set to quarter-tones by default)
+;;; Returns the distances in degrees (which are quarter-tones by default
+;;; in slippery chicken--use (in-scale :chromatic) at the top of your code to
+;;; set to the chromatic scale):
+
 (let ((mscs (make-sc-set '(c4 e4 g4))))
   (get-interval-structure mscs))
 
 => (8 14)
 
+;;; Return semitones
+(let ((mscs (make-sc-set '(c4 e4 g4))))
+  (get-interval-structure mscs t))
+
+=> (4 7)
+
 |#
 ;;; SYNOPSIS
-(defmethod get-interval-structure ((s sc-set))
+(defmethod get-interval-structure ((s sc-set) &optional in-semitones)
 ;;; ****
-  (let ((lowest-degree (degree (first (data s)))))
-    (loop for i in (rest (data s)) collect
-          (- (degree i) lowest-degree))))
+  (let ((lowest-degree (degree (first (data s))))
+        ;; MDE Sat Feb 11 10:44:46 2012
+        (dps (degrees-per-semitone)))
+    (loop for i in (rest (data s)) 
+       for degrees = (float (- (degree i) lowest-degree))
+       collect
+         (if in-semitones
+             (/ degrees dps)
+             degrees))))
      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

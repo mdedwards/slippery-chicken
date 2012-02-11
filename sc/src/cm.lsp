@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 14:32:27 Thu Feb  9 2012 GMT
+;;; $$ Last modified: 10:43:27 Sat Feb 11 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -205,14 +205,21 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; MDE Sat Feb 11 10:41:11 2012 
+
+(defun degrees-per-semitone (&optional (scale cm::*scale*))
+  (- (note-to-degree 'cs4 scale)
+     (note-to-degree 'c4 scale)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun transpose-note (note semitones &optional (package nil))
   (when (and note semitones)
     (let ((n note))
       (when (listp n) ;; could be (c1 natural)
         (setf n (first n)))
       (setf n (rm-package n :sc))
-      (let* ((degrees-per-semitone (- (note-to-degree 'cs4) 
-                                      (note-to-degree 'c4)))
+      (let* ((degrees-per-semitone (degrees-per-semitone))
              (degrees (floor (* semitones degrees-per-semitone)))
              (degree (note-to-degree n)))
         (unless degree

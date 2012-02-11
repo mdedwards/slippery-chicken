@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    12th February 2001
 ;;;
-;;; $$ Last modified: 13:00:36 Sat Dec 24 2011 ICT
+;;; $$ Last modified: 11:46:27 Sat Feb 11 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -624,11 +624,18 @@ data: (2 4)
                      (get-preferred-time-sig (list num denom))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Use more common time-sigs instead of more arcane.  argument and result is a
+;;; list like '(8 8).  If there's no preferred time-sig the argument will be
+;;; returned. 
 (defun get-preferred-time-sig (given 
                                &optional
-                               ;; these need to be given pairwise
+                               ;; these need to be given pairwise: the
+                               ;; preferred time-sig first, the one it should
+                               ;; substitute second 
                                (preferred '(((1 16) (2 32))
                                             ((2 4) (4 8))
+                                            ;; MDE Sat Feb 11 11:44:53 2012 
+                                            ((4 4) (8 8))
                                             ;; MDE Sat Dec 24 13:00:09 2011
                                             ((1 4) (2 8))
                                             ((1 8) (2 16)))))

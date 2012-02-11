@@ -837,7 +837,7 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 ;;;   degrees. T = semitones. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; A list of integers
+;;; A list of integers.
 ;;; 
 ;;; EXAMPLE
 #|

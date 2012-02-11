@@ -318,8 +318,10 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; set can be a set object, whereupon the new set will be cloned from the
-;;; given, or a list of notes.
+;;; SAR Sat Feb 11 12:33:15 GMT 2012: Removed MDE's original comment here as it
+;;; has now been taken into the doc entry below.
+
+;;; SAR Sat Feb 11 12:33:00 GMT 2012: Extended robodoc entry
 
 ;;; SAR Tue Feb  7 10:45:09 GMT 2012: Added robodoc entry
 
@@ -330,16 +332,97 @@
 ;;; is present.  
 ;;;
 ;;; ARGUMENTS
-;;; 
+;;; - A set of pitches. This can either take the form of a list of note-name
+;;;   symbols or a complete-set, tl-set or sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :id. An number, symbol or string that is to be the ID of
+;;;   the given complete-set object (see doc for sc-set).
+;;; - keyword argument :tag. A number, symbol or string that is secondary name,
+;;;   description, tag etc. for the given complete-set object. The :tag serves
+;;;   for identification but not searching purposes (see doc for
+;;;   named-object). 
+;;; - keyword argument :subsets. An assoc-list of key/data pairs, in which the
+;;;   data is a list of note-name symbols that are a subset of the main
+;;;   set. One use for this keyword argument might be to create subsets that
+;;;   particular instruments can play; these would then be selected in the
+;;;   chord-function passed to the instrument object (see doc for sc-set).
+;;; - keyword argument :related-sets. An assoc-list of key/data pairs, similar
+;;;   to :subsets, only that the pitches given here do not have to be part of
+;;;   the main set. This can be used, for example, for pitches missing from the
+;;;   main set (see doc for sc-set).
+;;; - keyword argument :auto-sort. T or NIL to indicate whether the specified
+;;;   pitches (note-name symbols) are to be automatically sorted from lowest
+;;;   to highest. T = sort. Default = T. (see doc for sc-set)
+;;; - keyword argument :transposition. A number that is the number of semitones
+;;;   by which the pitches of the new complete-set are to be transposed when
+;;;   the object is created. Default = 0.  (see doc for tl-set)
+;;; - keyword argument :limit-upper. A note-name symbol or a pitch object to
+;;;   indicate the highest possible pitch in the given complete-set object to
+;;;   be created. (see doc for tl-set)
+;;; - keyword argument :limit-lower.  A note-name symbol or a pitch object to
+;;;   indicate the lowest possible pitch in the complete-set object to be
+;;;   created. (see doc for tl-set) 
+;;; - keyword argument :complete. T, NIL, or 'CHROMATIC. This argument can be
+;;;   given at init, and if the set is not complete in the sense of T or
+;;;   'CHROMATIC (all chromatic, equally-tempered notes are present in the
+;;;   set), a warning is printed. If the set is neither T nor 'CHROMATIC at
+;;;   init, then no warning will be issued. In both cases the COMPLETE slot of
+;;;   the given complete-set object will be set after checking the set.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A complete-set object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a complete set using a list of note-name symbols and the default
+;; values for the keyword arguments
+(make-complete-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))
+
+=>
+COMPLETE-SET: complete: NIL
+              num-missing-non-chromatic: 12
+              num-missing-chromatic: 1
+              missing-non-chromatic: (BQS BQF AQS AQF GQS GQF FQS EQS EQF DQS
+                                      DQF CQS)
+              missing-chromatic: (EF)
+TL-SET: transposition: 0
+        limit-upper: NIL
+        limit-lower: NIL
+SC-SET: auto-sort: T, used-notes: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 0
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 0, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: USED-NOTES, tag: NIL, 
+data: NIL
+
+N.B. All pitches printed as symbols only, internally they are all 
+pitch-objects.
+
+    subsets: 
+    related-sets: 
+SCLIST: sclist-length: 14, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
+
+;; A new complete-set object can be created from tl-set and sc-set objects
+(let ((mcs (make-complete-set 
+	    (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5)))))
+  (pitch-symbols mcs))
+
+=> (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5)
+
+(let ((mcs (make-complete-set 
+	    (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5)))))
+  (pitch-symbols mcs))
+
+=> (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5)
 
 |#
 ;;; SYNOPSIS

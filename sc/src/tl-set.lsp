@@ -276,6 +276,7 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 ;;; 
 ;;; EXAMPLE
 #|
+
 ;;; By default the method does not transpose the pitches of the RELATED-SETS
 ;;; slot 
 (let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
@@ -334,29 +335,163 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
   tls)
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; In this case upper and lower are further limits that will be compared to
-;;; those of the instrument when limiting the set.  Returns a pitch list
-;;; though, not a set object.
-;;; 13/1/10: be careful with this: if this function is returning nil, it could
-;;; be because the set pitches are microtonal, when you're not expecting that.
 
-;;; SAR Tue Feb  7 10:17:56 GMT 2012: Added robodoc entry
+;;; SAR Sat Feb 11 11:47:54 GMT 2012: Added examples
+
+;;; SAR Sat Feb 11 11:33:22 GMT 2012: Added an NB to incorporate MDE's comment
+;;; about microtonal sets returning NIL. Deleted the corresponding comment as
+;;; it has been incorporated into the doc below.
+
+;;; SAR Fri Feb 10 11:48:35 GMT 2012: Removed MDE's first comment here as it
+;;; has been taken very closely into the doc below.
+
+;;; SAR Fri Feb 10 11:44:14 GMT 2012: Added robodoc entry
 
 ;;; ****m* tl-set/limit-for-instrument
 ;;; FUNCTION
-;;; 
-;;; 
+;;; Remove any pitch objects from the given tl-set object which are outside of
+;;; the range of the specified instrument object. 
+;;;
+;;; The pitch objects returned after that operation can then be reduced again
+;;; by applying further limits specified by the :upper and :lower keyword
+;;; arguments.  
+;;;
+;;; NB: This method returns a list of pitch objects, not a tl-set object,
+;;;     though it does destructively alter the data of the given tl-set object
+;;;     accordingly. 
+;;;
+;;; NB: This method will return NIL if the pitch objects of the given tl-set
+;;;     object are microtonal while the given instrument object is set to be a
+;;;     non-microtonal instrument (see example).
+;;;
 ;;; ARGUMENTS
-;;; 
+;;; - A tl-set object.
+;;; - An instrument object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - keyword argument :upper. A pitch object or note-name symbol that is the
+;;;   uppermost possible pitch (inclusive) of the pitch objects returned, as a
+;;;   further limitation after the range of the instrument object has been
+;;;   applied.  
+;;; - keyword argument :lower. A pitch object or note-name symbol that is the
+;;;   lowermost possible pitch (inclusive) of the pitch objects returned, as a
+;;;   further limitation after the range of the instrument object has been
+;;;   applied.  
+;;; - keyword argument :do-related-sets. T or NIL to indicate whether to apply
+;;;   the specified range restrictions to the RELATED-SETS slot of the given
+;;;   tl-set object as well. NB: These will be modified within the original
+;;;   tl-set object but not returned as part of the resulting list. T = apply
+;;;   to RELATED-SETS as well. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of pitch objects.
 ;;; 
 ;;; EXAMPLE
+
 #|
+;;; Returns a list of pitch objects, limited only by the range of the given
+;;; instrument object by default
+(let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+			 :related-sets '((other-notes (b4 e5 fs5 c6)))))
+      (mi (make-instrument 'flute 
+			   :staff-name "Flute" :staff-short-name "Fl."
+			   :lowest-written 'c4 :highest-written 'd7 
+			   :starting-clef 'treble :midi-program 74 :chords nil
+			   :microtones t :missing-notes '(cqs4 dqf4))))
+  (limit-for-instrument mtls mi))
+
+=>
+(
+PITCH: frequency: 293.665, midi-note: 62, midi-channel: 0
+[...] 
+data: D4
+[...] 
+PITCH: frequency: 369.994, midi-note: 66, midi-channel: 0 
+[...] 
+data: GF4
+[...] 
+PITCH: frequency: 466.164, midi-note: 70, midi-channel: 0 
+[...] 
+data: BF4
+[...] 
+PITCH: frequency: 554.365, midi-note: 73, midi-channel: 0 
+[...] 
+data: DF5
+[...] 
+PITCH: frequency: 698.456, midi-note: 77, midi-channel: 0 
+[...] 
+data: F5
+[...] 
+PITCH: frequency: 830.609, midi-note: 80, midi-channel: 0 
+[...] 
+data: AF5
+[...] 
+PITCH: frequency: 1046.502, midi-note: 84, midi-channel: 0 
+[...] 
+data: C6
+)
+
+;;; Further restrict the pitches returned by setting values for the :upper and
+;;; :lower keyword arguments and print the new pitch content of the given
+;;; tl-set object to see the destructive modification
+(let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+			 :related-sets '((other-notes (b4 e5 fs5 c6)))))
+      (mi (make-instrument 'flute 
+			   :staff-name "Flute" :staff-short-name "Fl."
+			   :lowest-written 'c4 :highest-written 'd7 
+			   :starting-clef 'treble :midi-program 74 :chords nil
+			   :microtones t :missing-notes '(cqs4 dqf4))))
+  (limit-for-instrument mtls mi :upper 'b5 :lower 'c5)
+  (pitch-symbols mtls))
+
+=> (DF5 F5 AF5)
+
+;;; By default the RELATED-SETS slot of the given tl-set object is not affected 
+(let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+			 :related-sets '((other-notes (b4 e5 fs5 c6)))))
+      (mi (make-instrument 'flute 
+			   :staff-name "Flute" :staff-short-name "Fl."
+			   :lowest-written 'c4 :highest-written 'd7 
+			   :starting-clef 'treble :midi-program 74 :chords nil
+			   :microtones t :missing-notes '(cqs4 dqf4))))
+  (limit-for-instrument mtls mi :upper 'b5 :lower 'c5)
+  (loop for nobj in (data (related-sets mtls)) 
+     collect (loop for p in (data nobj) 
+		collect (data p))))
+
+=> ((B4 E5 FS5 C6))
+
+
+;;; Setting the :do-related-sets argument to T will cause the method to be
+;;; applied to the RELATED-SETS slot as well.
+(let ((mtls (make-tl-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6)
+			 :related-sets '((other-notes (b4 e5 fs5 c6)))))
+      (mi (make-instrument 'flute 
+			   :staff-name "Flute" :staff-short-name "Fl."
+			   :lowest-written 'c4 :highest-written 'd7 
+			   :starting-clef 'treble :midi-program 74 :chords nil
+			   :microtones t :missing-notes '(cqs4 dqf4))))
+  (limit-for-instrument mtls mi :upper 'b5 :lower 'c5 :do-related-sets t)
+  (print (pitch-symbols mtls))
+  (print (loop for nobj in (data (related-sets mtls)) 
+	    collect (loop for p in (data nobj) 
+		       collect (data p)))))
+
+=>
+(DF5 F5 AF5) 
+((E5 FS5))
+
+;;; The method will return NIL if a set of only microtonal pitches (which
+;;; e.g. ring-mod might return) is given in combination with an instrument
+;;; object which is not microtone-capable (such as the 'piano object of the
+;;; +slippery-chicken-standard-instrument-palette+ 
+(let ((mtls (make-tl-set '(dqs2 fqs2 aqf2 gqs3 bqf3 gqf4 bqf4 dqf5 fqs5)))
+      (pno (get-data 'piano 
+		     +slippery-chicken-standard-instrument-palette+)))
+  (limit-for-instrument mtls pno :lower 'e5 :upper 'd6))
+
+=> NIL
+
 
 |#
 ;;; SYNOPSIS

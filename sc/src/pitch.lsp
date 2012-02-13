@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 08:57:50 Sun Feb  5 2012 ICT
+;;; $$ Last modified: 15:20:18 Mon Feb 13 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2992,6 +2992,12 @@ data: F4
 ;;; ****
   (let ((p (make-pitch pitch)))
     (= octave (octave p))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; MDE Mon Feb 13 15:19:57 2012 
+(defun pitch-list= (pl1 pl2)
+  (every #'pitch= pl1 pl2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF pitch.lsp

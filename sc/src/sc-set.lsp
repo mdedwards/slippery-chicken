@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 10:55:32 Sat Feb 11 2012 GMT
+;;; $$ Last modified: 15:15:08 Mon Feb 13 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1435,7 +1435,7 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun init-pitch-list (pitches auto-sort)
+(defun init-pitch-list (pitches &optional auto-sort)
   (let ((result (loop for pitch in pitches 
                     do
                       (unless pitch

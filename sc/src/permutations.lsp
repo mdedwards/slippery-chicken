@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 03:57:20 Sun Jan 29 2012 ICT
+;;; $$ Last modified: 13:44:05 Mon Feb 13 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1152,19 +1152,25 @@ START
 
 ;;; ****f* permutations/move-repeats
 ;;; FUNCTION
-;;; Move, when possible, any permutations within a given list that result in
-;;; repeated elements. 
+;;; Move, when possible, any elements within a given list that are repeated
+;;; consecutively.  
 ;;;
-;;; When two consecutive permutations produce a repeated element, such as the c
-;;; in '((a b c) (c b a)), the function moves the offending element to the next
-;;; place in the given list that won't produce a repetition. When no such place
-;;; can be found in the remainder of the list, the offending element is moved
-;;; to the end of the given list and a warning is printed.
+;;; When two consecutive elements repeat, such as the c in '(a b c c b a),
+;;; the function moves the repeated element to the next place in the given
+;;; list that won't produce a repetition. When no such place can be found in
+;;; the remainder of the list, the offending element is moved to the end of the
+;;; given list and a warning is printed.
 ;;;
-;;; This function can be applied to simple lists as well.
+;;; This function can be applied to simple lists and lists with sublists.
+;;; However, due to this function being designed--but not limited--for use with
+;;; the results of permutations, if the list has sublists, then instead of
+;;; repeating sublists being moved, the last element of a sublist is checked
+;;; for repetition with the first element of the next sublist.  See the first
+;;; example below.
 ;;;
-;;; NB: This function only checks for places in the rest of the given list
-;;;     after the offending element, and not prior to it in the list. Thus,
+;;; NB: This function only move elements further along the list; it won't place
+;;; them earlier than their original position.  Thus:
+;;;     
 ;;;     (move-repeats '(3 3 1)) will return (3 1 3), while 
 ;;;     (move-repeats '(1 3 3)) will leave the list untouched and print a
 ;;;     warning. 
@@ -1180,10 +1186,11 @@ START
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Used with a list of lists
-(move-repeats '((a b c) (c a b) (d e f) (a b c) (g h i)))
+;;; Used with a list of lists.  Note that the repeating C, end of sublist 1,
+;;; beginning of sublist 2, is moved, not the whole repeating sublist (c a b).
+(move-repeats '((a b c) (c a b) (c a b) (d e f) (a b c) (g h i)))
 
-=> ((A B C) (D E F) (C A B) (A B C) (G H I))
+=> ((A B C) (D E F) (C A B) (C A B) (A B C) (G H I))
 
 ;;; Works with simple lists too:
 (move-repeats '(1 2 3 3 4 5 6 7 8 8 9 10))
@@ -1214,9 +1221,10 @@ WARNING:
               (push i result)
               (return))
           ;; this only gets triggered when we can't find a place for i.
-            finally (warn "move-repeats: can't find non-repeating place! ~
-                             present element: ~a, elements left: ~a"
-                          i (length rest))
+            finally 
+            (warn "move-repeats: can't find non-repeating place! ~
+                           present element: ~a, elements left: ~a"
+                  i (length rest))
             (setf result (append rest result)
                   rest nil)))
     (nreverse result)))
@@ -1226,10 +1234,10 @@ WARNING:
 (defun get-atom (x &optional last)
   (if (atom x)
       x
-    (get-atom (first (if last
-                         (last x)
-                       x))
-              last)))
+      (get-atom (first (if last
+                           (last x)
+                           x))
+                last)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

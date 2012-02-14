@@ -935,7 +935,7 @@ COMPLETE-SET: complete: NIL
 
 ;;; ****f* set-palette/set-palette-from-ring-mod
 ;;; FUNCTION
-;;; Create a new set-palette object from the pitches returned by applying ring
+;;; Create a new set-palette object from the pitches returned by applying ring 
 ;;; modulation procedures (difference and sum tones of partials).
 ;;; 
 ;;; ARGUMENTS
@@ -946,12 +946,13 @@ COMPLETE-SET: complete: NIL
 ;;; OPTIONAL ARGUMENTS
 ;;; - keyword argument :partials. A list of integers that are the partials
 ;;;   which the method uses to ring modulate.  We create partials ascending
-;;;   from the reference-note but also ascending from a fundamental calculated so
-;;;   that reference-note would be the highest partial in the partials list.
-;;;   E.g. if reference-note were 'a4 (440Hz) and :partials was '(1 2) we'd have
-;;;   partial frequencies of 440 and 880, as these are the ascending partials 1
-;;;   and 2 from 440, but also have 220, as that is the fundamental for which 440
-;;;   would be the highest partial out of (1 2).  Default = '(1 3 5 7).
+;;;   from the reference-note but also ascending from a fundamental calculated
+;;;   so that reference-note would be the highest partial in the partials list.
+;;;   E.g. if reference-note were 'a4 (440Hz) and :partials was '(1 2) we'd
+;;;   have partial frequencies of 440 and 880, as these are the ascending
+;;;   partials 1 and 2 from 440, but also have 220, as that is the fundamental
+;;;   for which 440 would be the highest partial out of (1 2).  
+;;;   Default = '(1 3 5 7).
 ;;; - keyword argument :warn-no-bass. T or NIL to indicate whether to issue a
 ;;;   warning when ring-mod-bass fails to find suitable bass notes for the
 ;;;   generated sets. T = warn. Default = T.

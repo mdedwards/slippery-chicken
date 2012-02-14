@@ -38,13 +38,13 @@ options:
 # 28.11.11 SEAN: Changed the output dir to ../doc/ to suit new dir structure. 
 # 7.12.11 ME: changed to ../doc/robodoc
     --doc ../doc/robodoc/
-#    --html
+    --html
 #    --rtf
-    --latex
+#    --latex
 # 02.12.11 SEAN: commented --sections again to take hierarchy out of TOC
 #      --sections
-#    --multidoc
-    --singledoc
+    --multidoc
+#    --singledoc
     --index
     --tabsize 8
 #    --documenttitle "<a href='http://www.michael-edwards.org/sc>'>slippery

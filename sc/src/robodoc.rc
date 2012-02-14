@@ -55,7 +55,8 @@ options:
 #    --css robodoc-multi-blue.css
 #    --css anthropod.css
 # 09.12.11 SEAN: changed reference to one single stylesheet located in doc/
-    --css ../doc/sc-stylesheet2.css
+# MDE Tue Feb 14 19:32:11 2012 -- changed to sc-stylesheet.css
+    --css ../doc/sc-stylesheet.css
 #     --css randombanana.css
 #    --nopre
 headertypes:

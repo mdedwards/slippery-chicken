@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 15:27:25 Sat Jan  7 2012 ICT
+;;; $$ Last modified: 11:31:11 Wed Feb 15 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -670,14 +670,14 @@ NIL
 ;; Determine if a pitch provided as a note-name symbol falls within the
 ;; sounding range of a transposing instrument, using the optional argument T
 (let ((i2 (make-instrument 'inst1 :lowest-written 'fs3 :highest-written 'c6
-			   :transposition 'BF)))
+                           :transposition 'BF)))
   (in-range i2 'c6 T))
 
 => NIL, 1
 
 ;; A pitch object can be used as the specified pitch
 (let ((i2 (make-instrument 'inst1 :lowest-written 'fs3 :highest-written 'c6
-			   :transposition 'BF)))
+                           :transposition 'BF)))
   (in-range i2 (make-pitch 'd6)))
 
 => NIL, 1
@@ -1074,17 +1074,20 @@ data: NIL
 ;;; index plus that below it, or that above it if no notes are below. Or it
 ;;; just returns a single-note chord if neither of those cases are possible.
 ;;;
+;;; NB The arguments are supplied by slippery chicken when it calls the
+;;; function for you. 
+;;;
 ;;; ARGUMENTS 
-;;; - The current number from the pitch curve.
+;;; - The current number from the pitch curve. Currently ignored by default.
 ;;; - The index that this was translated into by the offset and
 ;;;   scaler (based on trying to get a best fit for the instrument and set).
 ;;;   This can be assumed to be a legal reference into pitch-list as it was
 ;;;   calculated as fitting in pitch-seq::get-notes.
 ;;; - The pitch-list that we created from the set, taking the instrument's range
 ;;;   and other notes already played by other instruments.
-;;; - The current pitch-seq object.                        
-;;; - The current instrument object.
-;;; - The current set object.
+;;; - The current pitch-seq object. Currently ignored by default.
+;;; - The current instrument object. Currently ignored by default.
+;;; - The current set object. Currently ignored by default.
 ;;; 
 ;;; RETURN VALUE  
 ;;; a chord object

@@ -784,7 +784,6 @@ data: (
 ;;; - A lisp object
 ;;;
 ;;; EXAMPLE
-
 #|
 (let ((msp (make-set-palette 
             'test
@@ -805,6 +804,7 @@ data: (
 => T
 
 |#
+
 ;;; 
 ;;; RETURN VALUE  
 ;;; t or nil

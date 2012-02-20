@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 02:22:32 Sat Feb  4 2012 ICT
+;;; $$ Last modified: 18:56:26 Mon Feb 20 2012 GMT
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -441,7 +441,8 @@ rthm-seq SEQ3
 (defmethod get-cmn-data ((rsp rthm-seq-palette) 
                          ;; MDE Fri Jan 13 19:58:53 2012 -- no accidentals!
                          &optional (no-accidentals nil) 
-                         ignore2 ignore3 ignore4 ignore5 ignore6 ignore7 ignore8)
+                         ignore2 ignore3 ignore4 ignore5 ignore6 ignore7
+                         ignore8)
   (declare (ignore ignore2 ignore3 ignore4 ignore5 ignore6 ignore7
                    ignore8))
   (loop 
@@ -701,6 +702,19 @@ rthm-seq 9
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; MDE Mon Feb 20 18:50:26 2012 
+(defmethod print-simple ((rsp rthm-seq-palette) &optional (stream t) ignore)
+  (declare (ignore ignore))
+  (format stream "~&rthm-seq-palette ~a" (id rsp))
+  (loop for object in (data rsp) 
+     for data = (data object)
+     do
+       (if (is-ral data)
+           (print-simple data)
+           (print-simple object))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Thu Feb  2 14:30:02 GMT 2012: Added robodoc entry
  

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:43:56 Thu Feb  9 2012 GMT
+;;; $$ Last modified: 19:52:34 Mon Feb 20 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -518,7 +518,8 @@
                         ;; this seems to be separate from the bar-number
                         ;; written in every part every 5 bars, but if set to
                         ;; e.g. 1 it will print every bar num at the top of
-                        ;; each system, or if :by-line, at the start of each line
+                        ;; each system, or if :by-line, at the start of each
+                        ;; line
                         (auto-bar-nums nil)
                         (page-nums t)
                         ;; display the score in C (but piccolo/double bass keep

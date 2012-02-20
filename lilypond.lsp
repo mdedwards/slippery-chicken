@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 18:41:01 Fri Dec 23 2011 ICT
+;;; $$ Last modified: 20:06:52 Mon Feb 20 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -266,6 +266,9 @@
 
 (defun lp-flat-sign (name) ; string
   (let ((handle-flat (string-replace "flat" "\\flat" name)))
+    ;; MDE Mon Feb 20 20:01:15 2012 -- maybe we've got -flat?
+    (unless handle-flat
+      (setf handle-flat (string-replace "-flat" "\\flat" name)))
     (if handle-flat handle-flat name)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

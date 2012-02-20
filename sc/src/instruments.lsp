@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 13:36:35 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 20:05:38 Mon Feb 20 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -105,14 +105,14 @@
        :staff-short-name "ob" :starting-clef treble :chords nil 
        :midi-program 69))
      (e-flat-clarinet 
-      (:staff-name "Eflat clarinet" :lowest-written e3 :highest-written a6
-       :staff-short-name "Eflat cl"
+      (:staff-name "E-flat clarinet" :lowest-written e3 :highest-written a6
+       :staff-short-name "E-flat cl"
        :chords nil :midi-program 72 :starting-clef treble :microtones t
        :missing-notes (aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3)
        :transposition-semitones 3))
      (b-flat-clarinet 
-      (:staff-name "Bflat clarinet" :lowest-written e3 :highest-written a6
-       :staff-short-name "Bflat cl"
+      (:staff-name "B-flat clarinet" :lowest-written e3 :highest-written a6
+       :staff-short-name "B-flat cl"
        :chords nil :midi-program 72 :starting-clef treble :microtones t
        :missing-notes (aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3)
        :transposition-semitones -2))
@@ -174,9 +174,11 @@
        :chords nil :staff-short-name "c tpt" :midi-program 57
        :starting-clef treble :clefs (treble) :microtones t))
      ;; SAR Fri Jan 20 12:09:41 GMT 2012: Added b-flat-trumpet from Adler
+     ;;; MDE Mon Feb 20 20:02:55 2012 -- modified to keep in line with clarinet
      (b-flat-trumpet
-      (:staff-name "trumpet in b-flat" :lowest-written fs3 :highest-written d6 
-       :chords nil :staff-short-name "bf tpt" :midi-program 57
+      (:staff-name "B-flat trumpet" :lowest-written fs3 :highest-written d6 
+       ;; the -flat should be convereted in CMN and Lilypond to the flat sign
+       :chords nil :staff-short-name "b-flat tpt" :midi-program 57
        :starting-clef treble :transposition-semitones -2))
      ;; SAR Fri Jan 20 12:17:24 GMT 2012: Added tenor trombone from Adler
      (tenor-trombone

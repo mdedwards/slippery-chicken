@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    6th September 2001
 ;;;
-;;; $$ Last modified: 09:52:44 Sun Jan  8 2012 ICT
+;;; $$ Last modified: 19:10:45 Mon Feb 20 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -199,6 +199,33 @@
 (defmethod set-prefers-high ((ip instrument-palette) &optional instrument)
 ;;; ****
   (set-prefers-high (get-data instrument ip)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; MDE Mon Feb 20 19:05:54 2012 -- just a helper method...
+#|
+e.g.
+(loop for i in 
+     '((flute 13)
+       (oboe 7)
+       (b-flat-clarinet 9)
+       (bassoon 7)
+       (french-horn 5)
+       (b-flat-trumpet 7)
+       (tenor-trombone 5))
+     do
+     (set-largest-fast-leap 
+      +slippery-chicken-standard-instrument-palette+
+      (first i)
+      (second i)))
+
+|#
+(defmethod set-largest-fast-leap ((ip instrument-palette) instrument value)
+  (let ((ins (get-data instrument ip)))
+    (unless ins
+      (error "instrument-palette::set-largest-fast-leap: Couldn't get ~
+              ~a from ~a" instrument (id ip)))
+    (setf (largest-fast-leap ins) value)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

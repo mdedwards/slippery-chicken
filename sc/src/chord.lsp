@@ -143,24 +143,48 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Feb 22 17:39:04 GMT 2012: Added robodoc entry
+
 ;;; ****m* chord/set-midi-channel
 ;;; FUNCTION
-;;; set-midi-channel:
+;;; Set the MIDI channel of the pitch objects in a given chord object to the
+;;; specified values. 
 ;;;
-;;; 
-;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A chord object.
+;;; - An integer that is to be the MIDI channel for chromatic pitches in the
+;;;   given chord object.
+;;; - An integer that is to be the MIDI channel for microtonal pitches in the
+;;;   given chord object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Always returns NIL.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
-;;; 
+#|
+;; Returns NIL
+(let ((chrd (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
+			  :midi-channel 11
+			  :microtones-midi-channel 12)))
+  (set-midi-channel chrd 3 4))
+
+=> NIL
+
+;; Print the value of the MIDI slot for each of the pitch objects contained in
+;; the chord object before and after setting
+(let ((chrd (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
+			  :midi-channel 11
+			  :microtones-midi-channel 12)))
+  (print (loop for p in (data chrd) collect (midi-channel p)))
+  (set-midi-channel chrd 3 4)
+  (print (loop for p in (data chrd) collect (midi-channel p))))
+
+=>
+(11 11 12 12 11 11) 
+(3 3 4 4 3 3)
+
+|#
+;;;
 ;;; SYNOPSIS
 (defmethod set-midi-channel ((c chord) midi-channel microtones-midi-channel)
 ;;; ****
@@ -169,22 +193,35 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; beware: just returns the midi-channel of the first pitch in the data list.
+;;; SAR Wed Feb 22 17:52:24 GMT 2012: Deleted MDE's comment here as it is taken
+;;; nearly verbatim into the doc below.
+
+;;; SAR Wed Feb 22 17:52:14 GMT 2012: Added robodoc entry
+
 ;;; ****m* chord/get-midi-channel
 ;;; FUNCTION
+;;; Get the MIDI channel of the first pitch object contained in a given chord
+;;; object. 
 ;;; 
+;;; NB: This method returns only the midi-channel of the first pitch object in
+;;;     the chord object's data list.  
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A chord object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; An integer.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+#|
+(let ((chrd (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
+			:midi-channel 11
+			:microtones-midi-channel 12)))
+  (get-midi-channel chrd))
+
+=> 11
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-midi-channel ((c chord))
@@ -221,23 +258,47 @@
 
 ;; ref is 1-based and counts from the lowest note up.
 
+;;; SAR Wed Feb 22 17:56:55 GMT 2012: Added robodoc info
+
 ;;; ****m* chord/get-pitch
 ;;; FUNCTION
-;;; get-pitch:
-;;;
-;;; 
+;;; Get the pitch object located at the specified index within the given chord
+;;; object. The <ref> argument is 1-based.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A chord object.
+;;; - An integer that is the index of the pitch object sought within the data
+;;;   list of the given chord object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A pitch object.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+#|
+
+(let ((chrd (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
+			:midi-channel 11
+			:microtones-midi-channel 12)))
+  (get-pitch chrd 3))
+
+=> 
+PITCH: frequency: 403.482, midi-note: 67, midi-channel: 12 
+       pitch-bend: 0.5 
+       degree: 135, data-consistent: T, white-note: G4
+       nearest-chromatic: G4
+       src: 1.5422108173370361, src-ref-pitch: C4, score-note: GS4 
+       qtr-sharp: 1, qtr-flat: NIL, qtr-tone: 1,  
+       micro-tone: T, 
+       sharp: NIL, flat: NIL, natural: NIL, 
+       octave: 4, c5ths: 0, no-8ve: GQS, no-8ve-no-acc: G
+       show-accidental: T, white-degree: 32, 
+       accidental: QS, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: GQS4, tag: NIL, 
+data: GQS4
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-pitch ((c chord) ref)
@@ -272,21 +333,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Feb 22 18:05:57 GMT 2012: Added robodoc entry
+
 ;;; ****m* chord/get-pitch-symbols
 ;;; FUNCTION
-;;;
-;;; 
+;;; Return the data of the pitch objects from a given chord object as a list of
+;;; note-name symbols.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A chord object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A list of note-name symbols.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
+#|
+(let ((chrd (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
+			:midi-channel 11
+			:microtones-midi-channel 12)))
+  (get-pitch-symbols chrd))
+
+=> (C4 E4 GQS4 BQF4 D5 F5)
+|#
 ;;; 
 ;;; 
 ;;; SYNOPSIS
@@ -321,23 +389,62 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Feb 22 18:10:21 GMT 2012: Added robodoc entry
+
 ;;; ****m* chord/chord-equal
 ;;; FUNCTION
-;;; chord-equal:
+;;; Test to see if two chords are equal.
 ;;;
-;;; 
+;;; NB: Two unsorted chord objects that contain the exact same pitch objects in
+;;;     a different order will not be considered equal and will return NIL.
+;;;
+;;; NB: Equality is tested on pitch content only, not on, for example, the
+;;;     values of the MIDI slots of those pitch objects etc.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A first chord object.
+;;; - A second chord object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; T or NIL. T if the pitch content of the chords is equal, otherwise NIL.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+#|
+;; Two chords are equal
+(let ((chrd1 (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
+			:midi-channel 11
+			:microtones-midi-channel 12))
+      (chrd2 (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
+			:midi-channel 11
+			:microtones-midi-channel 12)))
+  (chord-equal chrd1 chrd2))
+
+=> T
+
+;; Chord objects with the same pitch objects in a different order are unequal
+(let ((chrd1 (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
+			:midi-channel 11
+			:microtones-midi-channel 12))
+      (chrd2 (make-chord '(e4 c4 gqs4 bqf4 d5 f5)
+			:midi-channel 11
+			:microtones-midi-channel 12
+			:auto-sort nil)))
+  (chord-equal chrd1 chrd2))
+
+=> NIL
+
+;; Only the pitch content is compared. Content of other slots is irrelevant. 
+(let ((chrd1 (make-chord '(e4 c4 gqs4 bqf4 d5 f5)
+			 :midi-channel 11
+			 :microtones-midi-channel 12))
+      (chrd2 (make-chord '(e4 c4 gqs4 bqf4 d5 f5)
+			 :midi-channel 7
+			 :microtones-midi-channel 8)))
+  (chord-equal chrd1 chrd2))
+
+=> T
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod chord-equal ((c1 chord) (c2 chord))
@@ -350,22 +457,47 @@
 ;;; usually a chord is auto-sorted so we can return (first (data c)) but check
 ;;; to make sure. 
 
+;;; SAR Wed Feb 22 18:24:38 GMT 2012: Added robodoc entry
+
 ;;; ****m* chord/lowest
 ;;; FUNCTION
-;;;
-;;; 
+;;; Return the pitch object from the given chord object that has the lowest
+;;; pitch data. The method can handle chord objects whose pitches have not been
+;;; auto-sorted from low to high.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A chord object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A pitch object.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+#|
+;; Returns the pitch object of the lowest pitch despite not being sorted
+(let ((chrd (make-chord '(e4 c4 gqs4 bqf4 d5 f5)
+			:midi-channel 11
+			:microtones-midi-channel 12
+			:auto-sort nil)))
+  (lowest chrd))
+
+=> 
+PITCH: frequency: 261.626, midi-note: 60, midi-channel: 11 
+       pitch-bend: 0.0 
+       degree: 120, data-consistent: T, white-note: C4
+       nearest-chromatic: C4
+       src: 1.0, src-ref-pitch: C4, score-note: C4 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 4, c5ths: 0, no-8ve: C, no-8ve-no-acc: C
+       show-accidental: T, white-degree: 28, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: C4, tag: NIL, 
+data: C4
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod lowest ((c chord))
@@ -381,22 +513,58 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Feb 22 18:30:21 GMT 2012: Added robodoc entry
+
 ;;; ****m* chord/highest
 ;;; FUNCTION
+;;; Return the pitch object from the given chord object that has the highest
+;;; pitch data. 
 ;;;
-;;; 
+;;; NB: As opposed to the "lowest" method, this method cannot handle chord
+;;;     objects whose pitches have not been auto-sorted from low to high.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A chord object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A pitch object
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+#|
+;; Returns the last pitch object of a chord object
+(let ((chrd (make-chord '(e4 c4 gqs4 bqf4 d5 f5)
+			:midi-channel 11
+			:microtones-midi-channel 12)))
+  (highest chrd))
+
+=> 
+PITCH: frequency: 698.456, midi-note: 77, midi-channel: 11 
+       pitch-bend: 0.0 
+       degree: 154, data-consistent: T, white-note: F5
+       nearest-chromatic: F5
+       src: 2.669679641723633, src-ref-pitch: C4, score-note: F5 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 5, c5ths: 0, no-8ve: F, no-8ve-no-acc: F
+       show-accidental: T, white-degree: 38, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: F5, tag: NIL, 
+data: F5
+
+;; Is not capable of returning the highest pitch object from chord objects that
+;; have not been auto-sorted
+(let ((chrd (make-chord '(e4 c4 gqs4 bqf4 f5 d5)
+			:midi-channel 11
+			:microtones-midi-channel 12
+			:auto-sort nil)))
+  (data (highest chrd)))
+
+=> D5
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod highest ((c chord))
@@ -472,22 +640,48 @@
 ;;; usually we auto-sort so this shouldn't need to be called directly; it's
 ;;; called in init
 
+;;; SAR Wed Feb 22 18:43:23 GMT 2012: Added robodoc entry
+
 ;;; ****m* chord/sort-pitches
 ;;; FUNCTION
+;;; Sort the pitch objects contained within a given chord object and return
+;;; them as a list of pitch objects. 
 ;;;
-;;; 
+;;; As an optional argument, 'ascending or 'descending can be given to indicate
+;;; whether to sort from low to high or high to low.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A chord object. 
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - The symbol 'ASCENDING or 'DESCENDING to indicate whether to sort the
+;;;   given pitch objects from low to high or high to low. 
+;;;   Default = 'ASCENDING. 
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns a list of pitch obects.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+#|
+;; Apply the method with no optional argument (defaults to 'ASCENDING) and
+;; collect and print the data of the pitch objects in the resulting list
+(let ((chrd (make-chord '(d5 c4 gqs4 bqf5 f5 e4)
+			:midi-channel 11
+			:microtones-midi-channel 12)))
+  (print (loop for p in (sort-pitches chrd) collect (data p))))
+
+=> (C4 E4 GQS4 D5 F5 BQF5)
+
+;; Sort from high to low
+(let ((chrd (make-chord '(d5 c4 gqs4 bqf5 f5 e4)
+			:midi-channel 11
+			:microtones-midi-channel 12)))
+  (print (loop for p in (sort-pitches chrd 'descending) collect (data p))))
+
+=> (BQF5 F5 D5 GQS4 E4 C4)
+
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod sort-pitches ((c chord) &optional (order 'ascending))
@@ -517,7 +711,6 @@
 
 ;;; ****m* chord/chord-member
 ;;; FUNCTION
-;;;
 ;;; 
 ;;; 
 ;;; ARGUMENTS 
@@ -527,9 +720,6 @@
 ;;; 
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
 ;;; 
 ;;; 
 ;;; SYNOPSIS

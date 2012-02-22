@@ -399,23 +399,68 @@ WARNING:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Feb 22 17:07:42 GMT 2012: Added robodoc entry
+
 ;;; ****m* sc-map/get-nth-from-map
 ;;; FUNCTION
-;;; 
+;;; Get the element located at the nth position within a given sc-map
+;;; object. Both the map-ref (the path of IDs into the list to be searched) and
+;;; the nth must be specified.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list that is the map-ref; i.e., the path of IDs into the list to be
+;;;   searched. 
+;;; - An integer that is the zero-based index of the element to be returned
+;;;   from the specified list.
+;;; - An sc-map object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the element located at the given index.
+;;;
+;;; Returns NIL if the index does not exist.
 ;;; 
 ;;; EXAMPLE
 #|
 
+;; Specify the path of IDs into the desired list ("map-ref") as a list, then
+;; the position to be read from within the list located there.
+(let ((mscm (make-sc-map 'scm-test
+			  '((1
+			     ((vn (1 2 3 4 5))
+			      (va (2 3 4 5 1))
+			      (vc (3 4 5 1 2)))) 
+			    (2
+			     ((vn (6 7 8))
+			      (va (7 8 6))
+			      (vc (8 6 7)))) 
+			    (3
+			     ((vn (9))
+			      (va (9))
+			      (vc (9))))))))
+  (get-nth-from-map '(1 vn) 1 mscm))
+
+=> 2
+
+;; Returns NIL if the specified index does not exist
+(let ((mscm (make-sc-map 'scm-test
+			  '((1
+			     ((vn (1 2 3 4 5))
+			      (va (2 3 4 5 1))
+			      (vc (3 4 5 1 2)))) 
+			    (2
+			     ((vn (6 7 8))
+			      (va (7 8 6))
+			      (vc (8 6 7)))) 
+			    (3
+			     ((vn (9))
+			      (va (9))
+			      (vc (9))))))))
+  (get-nth-from-map '(3 vn) 1 mscm))
+
+=> NIL
+
 |#
+
 ;;; SYNOPSIS
 (defmethod get-nth-from-map (map-ref nth (scm sc-map))
 ;;; ****
@@ -423,23 +468,48 @@ WARNING:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 5.2.11
+;;; SAR Wed Feb 22 17:18:26 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-map/delete-nth-in-map
+;;; DATE
+;;; 05 Feb 2011 
+;;;
 ;;; FUNCTION
-;;; 
+;;; Replace the element at the specified location within the specified list of
+;;; a given sc-map object with NIL.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list that is the map-ref; i.e., the path of IDs into the list to be
+;;;   searched. 
+;;; - An integer that is the zero-based index of the element to be returned
+;;;   from the specified list.
+;;; - An sc-map object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Always returns NIL
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mscm (make-sc-map 'scm-test
+			  '((1
+			     ((vn (1 2 3 4 5))
+			      (va (2 3 4 5 1))
+			      (vc (3 4 5 1 2)))) 
+			    (2
+			     ((vn (6 7 8))
+			      (va (7 8 6))
+			      (vc (8 6 7)))) 
+			    (3
+			     ((vn (9))
+			      (va (9))
+			      (vc (9))))))))
+  (delete-nth-in-map '(1 vn) 1 mscm)
+  (get-data-from-palette '(1 vn) mscm))
+
+=> 
+NAMED-OBJECT: id: VN, tag: NIL, 
+data: (1 NIL 3 4 5)
+
 
 |#
 ;;; SYNOPSIS

@@ -756,8 +756,9 @@ NIL
 
 |#
 ;;; SYNOPSIS
-(defmethod note= ((p1 pitch) (p2 pitch))
+(defmethod note= ((p1 pitch) (p2 pitch) &optional ignore)
 ;;; ****
+  (declare (ignore ignore))
   (equalp (data p1) (data p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1927,7 +1928,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;; function just returns the same note.
 ;;; 
 ;;; ARGUMENTS
-;;; - A pitch object
+;;; - A pitch object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to print a warning when no enharmonic can be found. Default = T. 
@@ -2735,11 +2736,16 @@ data: EF3
 ;;; - T or NIL to indicate whether or not the function should consider
 ;;;   enharmonically equivalent pitches to be equal. T = enharmonics are 
 ;;;   considered equal. Default = T.
+;;; - The second optional argument allows the user to specify the test for
+;;;   comparison, such as note=, pitch-class-eq, or the default pitch=. If the
+;;;   user wants to specify his or her own, the test must take three arguments:
+;;;   p1, p2 and <enharmonics-are-equivalent> (which may of course be ignored).
 ;;; 
-;;; RETURN VALUE
-;;; Returns the tail of the tested list starting with the specified pitch if
-;;; the pitch is indeed a member of that list, otherwise returns NIL. NB: The
-;;; list returned is a list of pitch objects.
+;;; RETURN VALUE 
+;;; Similar to Lisp's "member" function, this method returns the tail of the
+;;; tested list starting with the specified pitch if the pitch is indeed a
+;;; member of that list, otherwise returns NIL. NB: The list returned is a list
+;;; of pitch objects.
 ;;; 
 ;;; EXAMPLE
 

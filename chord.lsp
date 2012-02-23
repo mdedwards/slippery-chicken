@@ -709,18 +709,88 @@ data: F5
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Feb 23 19:16:17 GMT 2012: Added robodoc entry
+
 ;;; ****m* chord/chord-member
 ;;; FUNCTION
-;;; 
+;;; Test whether a specified pitch object is a member of a given chord object. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A chord object. 
+;;; - A pitch object. This must be a pitch object, not just a note-name symbol,
+;;;   but the pitch object can be made with either a note-name symbol or a
+;;;   numerical hertz frequency value.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether or not the function should consider
+;;;   enharmonically equivalent pitches to be equal. T = enharmonics are
+;;;   equal. Default = T.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Similar to Lisp's "member" function, this method returns the tail of the
+;;; data (list of pitch objects) of the tested chord object starting with the
+;;; specified pitch object if that pitch is indeed a member of that list,
+;;; otherwise returns NIL.  
+;;;
+;;; NB: Since the method returns the tail of the given chord (the "rest" of the
+;;;     pitches after the given pitch), the result may be different depending
+;;;     on whether that chord has been auto-sorted or not.
 ;;; 
 ;;; EXAMPLE
-;;; 
+#|
+;; Returns the tail of pitch objects contained starting with the tested pitch
+(let ((chrd (make-chord '(c4 e4 gqs4 a4 d5 f5 bqf5)
+			:midi-channel 11
+			:microtones-midi-channel 12)))
+  (pitch-list-to-symbols (chord-member chrd (make-pitch 'a4))))
+
+=> (A4 D5 F5 BQF5)
+
+;; The chord object's default auto-sort feature might appear to affect outcome
+(let ((chrd (make-chord '(d5 c4 gqs4 a4 bqf5 f5 e4)
+			:midi-channel 11
+			:microtones-midi-channel 12)))
+  (pitch-list-to-symbols (chord-member chrd (make-pitch 'a4))))
+
+=> (A4 D5 F5 BQF5)
+
+;; Returns NIL if the pitch is not present in the tested chord object. This
+;; example uses the "pitch-list-to-symbols" function to simplify the
+;; pitch-object output.
+(let ((chrd (make-chord '(d5 c4 gqs4 a4 bqf5 f5 e4)
+			:midi-channel 11
+			:microtones-midi-channel 12)))
+  (pitch-list-to-symbols (chord-member chrd (make-pitch 'b4))))
+
+=> NIL
+
+;; The optional <enharmonics-are-equal> argument is set to NIL by default
+(let ((chrd (make-chord '(c4 e4 a4 d5 f5))))
+  (pitch-list-to-symbols (chord-member chrd (make-pitch 'ds4))))
+
+=> NIL
+
+;; Setting the optional <enharmonics-are-equal> argument to T
+(let ((chrd (make-chord '(c4 ef4 a4 d5 f5))))
+  (pitch-list-to-symbols (chord-member chrd (make-pitch 'ds4) t)))
+
+=> (EF4 A4 D5 F5)
+
+;; The optional <octaves-are-true> argument is NIL by default
+(let ((chrd (make-chord '(c4 ef4 a4 d5 ef5 f5))))
+  (pitch-list-to-symbols (chord-member chrd (make-pitch 'c5))))
+
+=> NIL
+
+;; If optional <octaves-are-true> argument is set to T, any occurence of the
+;; same pitch class in a different octave will be considered part of the chord
+;; and return a positive result.
+(let ((chrd (make-chord '(c4 ef4 a4 d5 ef5 f5))))
+  (pitch-list-to-symbols (chord-member chrd (make-pitch 'c5) nil t)))
+
+=> (C4 EF4 A4 D5 EF5 F5)
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod chord-member ((c chord) (p pitch) 

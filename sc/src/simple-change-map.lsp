@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    March 31st 2002
 ;;;
-;;; $$ Last modified: 23:52:22 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 09:55:56 Thu Feb 23 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -91,7 +91,26 @@
 ;;; Section may be a simple key reference into the map or a list of references.
 ;;; sequence is 1-based.
 
+;;; ****m* simple-change-map/scm-get-data
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod scm-get-data (ref (scm simple-change-map))
+;;; ****
   (when (data scm)
     (let ((result (get-data ref scm nil)))
       (if result
@@ -104,7 +123,26 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* simple-change-map/make-simple-change-map
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-simple-change-map (id scm)
+;;; ****
   (make-instance 'simple-change-map :data scm :id id 
                  :warn-not-found nil
                  :last-ref-required nil

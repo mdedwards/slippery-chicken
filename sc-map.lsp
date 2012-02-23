@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 17:35:12 Wed Feb  8 2012 GMT
+;;; $$ Last modified: 10:53:47 Thu Feb 23 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -169,11 +169,11 @@
 (defmethod get-all-data-from-palette ((scm sc-map))
 ;;; ****
   (if (palette scm)
-    (let ((all-refs (get-all-refs scm)))
-      (loop 
-         for ref in all-refs 
-         append (get-data-from-palette ref scm)))
-    (warn "sc-map::get-all-data-from-palette: palette slot is nil so can't ~
+      (let ((all-refs (get-all-refs scm)))
+        (loop 
+           for ref in all-refs 
+           append (get-data-from-palette ref scm)))
+      (warn "sc-map::get-all-data-from-palette: palette slot is nil so can't ~
            return data from it.")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -208,18 +208,18 @@
 #|
 ;; Get the value of a top-level ID
 (let ((mscm (make-sc-map 'scm-test
-			  '((1
-			     ((vn (1 2 3 4 5))
-			      (va (2 3 4 5 1))
-			      (vc (3 4 5 1 2)))) 
-			    (2
-			     ((vn (6 7 8))
-			      (va (7 8 6))
-			      (vc (8 6 7)))) 
-			    (3
-			     ((vn (9))
-			      (va (9))
-			      (vc (9))))))))
+                          '((1
+                             ((vn (1 2 3 4 5))
+                              (va (2 3 4 5 1))
+                              (vc (3 4 5 1 2)))) 
+                            (2
+                             ((vn (6 7 8))
+                              (va (7 8 6))
+                              (vc (8 6 7)))) 
+                            (3
+                             ((vn (9))
+                              (va (9))
+                              (vc (9))))))))
   (get-data-from-palette '(2) mscm))
 
 => 
@@ -253,18 +253,18 @@ data: (8 6 7)
 ;; Enter the path of keys to a nested key when getting data stored more deeply
 ;; in the given sc-map object
 (let ((mscm (make-sc-map 'scm-test
-			  '((1
-			     ((vn (1 2 3 4 5))
-			      (va (2 3 4 5 1))
-			      (vc (3 4 5 1 2)))) 
-			    (2
-			     ((vn (6 7 8))
-			      (va (7 8 6))
-			      (vc (8 6 7)))) 
-			    (3
-			     ((vn (9))
-			      (va (9))
-			      (vc (9))))))))
+                          '((1
+                             ((vn (1 2 3 4 5))
+                              (va (2 3 4 5 1))
+                              (vc (3 4 5 1 2)))) 
+                            (2
+                             ((vn (6 7 8))
+                              (va (7 8 6))
+                              (vc (8 6 7)))) 
+                            (3
+                             ((vn (9))
+                              (va (9))
+                              (vc (9))))))))
   (get-data-from-palette '(3 va) mscm))
 
 => 
@@ -274,18 +274,18 @@ data: (9)
 ;; The method prints a warning by default if the specified key is not found in
 ;; the given sc-map object
 (let ((mscm (make-sc-map 'scm-test
-			  '((1
-			     ((vn (1 2 3 4 5))
-			      (va (2 3 4 5 1))
-			      (vc (3 4 5 1 2)))) 
-			    (2
-			     ((vn (6 7 8))
-			      (va (7 8 6))
-			      (vc (8 6 7)))) 
-			    (3
-			     ((vn (9))
-			      (va (9))
-			      (vc (9))))))))
+                          '((1
+                             ((vn (1 2 3 4 5))
+                              (va (2 3 4 5 1))
+                              (vc (3 4 5 1 2)))) 
+                            (2
+                             ((vn (6 7 8))
+                              (va (7 8 6))
+                              (vc (8 6 7)))) 
+                            (3
+                             ((vn (9))
+                              (va (9))
+                              (vc (9))))))))
   (get-data-from-palette '(1 tb) mscm))
 
 => NIL
@@ -296,18 +296,18 @@ WARNING:
 
 ;; This warning can be suppressed by setting the optional argument to NIL
 (let ((mscm (make-sc-map 'scm-test
-			  '((1
-			     ((vn (1 2 3 4 5))
-			      (va (2 3 4 5 1))
-			      (vc (3 4 5 1 2)))) 
-			    (2
-			     ((vn (6 7 8))
-			      (va (7 8 6))
-			      (vc (8 6 7)))) 
-			    (3
-			     ((vn (9))
-			      (va (9))
-			      (vc (9))))))))
+                          '((1
+                             ((vn (1 2 3 4 5))
+                              (va (2 3 4 5 1))
+                              (vc (3 4 5 1 2)))) 
+                            (2
+                             ((vn (6 7 8))
+                              (va (7 8 6))
+                              (vc (8 6 7)))) 
+                            (3
+                             ((vn (9))
+                              (va (9))
+                              (vc (9))))))))
   (get-data-from-palette '(1 tb) mscm nil))
 
 => NIL
@@ -319,7 +319,10 @@ WARNING:
   (let* ((palette-ref (get-data ids scm warn))
          (palette-ref-data (when palette-ref (data palette-ref))))
     (cond ((not (palette scm))
-           palette-ref)
+           ;; MDE Thu Feb 23 10:52:44 2012 -- just return the get-data call if
+           ;; there's no palette, but indicate something in the second returned
+           ;; value to this effect 
+           (values palette-ref 'no-palette))
           ;; often a sc-map has multiple references to a palette stored for any
           ;; given key(s) so palette-ref-data is a list of references; if so,
           ;; give them all back
@@ -425,36 +428,36 @@ WARNING:
 ;; Specify the path of IDs into the desired list ("map-ref") as a list, then
 ;; the position to be read from within the list located there.
 (let ((mscm (make-sc-map 'scm-test
-			  '((1
-			     ((vn (1 2 3 4 5))
-			      (va (2 3 4 5 1))
-			      (vc (3 4 5 1 2)))) 
-			    (2
-			     ((vn (6 7 8))
-			      (va (7 8 6))
-			      (vc (8 6 7)))) 
-			    (3
-			     ((vn (9))
-			      (va (9))
-			      (vc (9))))))))
+                          '((1
+                             ((vn (1 2 3 4 5))
+                              (va (2 3 4 5 1))
+                              (vc (3 4 5 1 2)))) 
+                            (2
+                             ((vn (6 7 8))
+                              (va (7 8 6))
+                              (vc (8 6 7)))) 
+                            (3
+                             ((vn (9))
+                              (va (9))
+                              (vc (9))))))))
   (get-nth-from-map '(1 vn) 1 mscm))
 
 => 2
 
 ;; Returns NIL if the specified index does not exist
 (let ((mscm (make-sc-map 'scm-test
-			  '((1
-			     ((vn (1 2 3 4 5))
-			      (va (2 3 4 5 1))
-			      (vc (3 4 5 1 2)))) 
-			    (2
-			     ((vn (6 7 8))
-			      (va (7 8 6))
-			      (vc (8 6 7)))) 
-			    (3
-			     ((vn (9))
-			      (va (9))
-			      (vc (9))))))))
+                          '((1
+                             ((vn (1 2 3 4 5))
+                              (va (2 3 4 5 1))
+                              (vc (3 4 5 1 2)))) 
+                            (2
+                             ((vn (6 7 8))
+                              (va (7 8 6))
+                              (vc (8 6 7)))) 
+                            (3
+                             ((vn (9))
+                              (va (9))
+                              (vc (9))))))))
   (get-nth-from-map '(3 vn) 1 mscm))
 
 => NIL
@@ -491,18 +494,18 @@ WARNING:
 ;;; EXAMPLE
 #|
 (let ((mscm (make-sc-map 'scm-test
-			  '((1
-			     ((vn (1 2 3 4 5))
-			      (va (2 3 4 5 1))
-			      (vc (3 4 5 1 2)))) 
-			    (2
-			     ((vn (6 7 8))
-			      (va (7 8 6))
-			      (vc (8 6 7)))) 
-			    (3
-			     ((vn (9))
-			      (va (9))
-			      (vc (9))))))))
+                          '((1
+                             ((vn (1 2 3 4 5))
+                              (va (2 3 4 5 1))
+                              (vc (3 4 5 1 2)))) 
+                            (2
+                             ((vn (6 7 8))
+                              (va (7 8 6))
+                              (vc (8 6 7)))) 
+                            (3
+                             ((vn (9))
+                              (va (9))
+                              (vc (9))))))))
   (delete-nth-in-map '(1 vn) 1 mscm)
   (get-data-from-palette '(1 vn) mscm))
 
@@ -606,18 +609,18 @@ data: (1 NIL 3 4 5)
 #|
 ;; Create an sc-map object with contents that could be used as a rthm-seq-map 
 (make-sc-map 'scm-test
-	     '((1
-		((vn (1 2 3 4 5))
-		 (va (2 3 4 5 1))
-		 (vc (3 4 5 1 2)))) 
-	       (2
-		((vn (6 7 8))
-		 (va (7 8 6))
-		 (vc (8 6 7)))) 
-	       (3
-		((vn (9))
-		 (va (9))
-		 (vc (9))))))
+             '((1
+                ((vn (1 2 3 4 5))
+                 (va (2 3 4 5 1))
+                 (vc (3 4 5 1 2)))) 
+               (2
+                ((vn (6 7 8))
+                 (va (7 8 6))
+                 (vc (8 6 7)))) 
+               (3
+                ((vn (9))
+                 (va (9))
+                 (vc (9))))))
 
 =>
 SC-MAP: palette id: NIL
@@ -650,7 +653,7 @@ data: (1 2 3 4 5)
 |#
 ;;; SYNOPSIS
 (defun make-sc-map (id scm &key (palette nil) (warn-not-found t)
-		    (recurse-simple-data t) (replacements nil))
+                    (recurse-simple-data t) (replacements nil))
 ;;; ****
   (make-instance 'sc-map :data scm :id id :warn-not-found warn-not-found
                  :palette palette

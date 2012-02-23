@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:52:34 Mon Feb 20 2012 GMT
+;;; $$ Last modified: 10:39:47 Thu Feb 23 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -596,6 +596,7 @@
 (defmethod convert-bar-refs-to-numbers ((sc slippery-chicken) map)
   ;; replace any bar references with the true bar numbers
   (loop 
+     with bnum
       for pair in map
       for bar = (first pair)
       for i from 0 do
@@ -604,8 +605,13 @@
         ;; reference and replace it before making the
         ;; simple-change-map 
         (when (listp bar)
-          (setf (first (nth i map)) 
-            (get-bar-num-from-ref sc (first bar) (second bar) (third bar)))))
+          ;; MDE Thu Feb 23 10:37:54 2012 -- make sure the ref is legal
+          (setf bnum (get-bar-num-from-ref
+                      sc (first bar) (second bar) (third bar)))
+          (if bnum
+              (setf (first (nth i map)) bnum)
+              (error "slippery-chicken::convert-bar-refs-to-numbers:: 
+                      can't get bar number for reference ~a" bar))))
   map)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

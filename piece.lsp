@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 23:37:09 Tue Feb  7 2012 ICT
+;;; $$ Last modified: 10:37:17 Thu Feb 23 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -484,10 +484,12 @@
 
 (defmethod get-bar-num-from-ref ((p piece) section sequenz-num bar-num)
   ;; just use the first player to get his bar...
-  (bar-num (get-bar-from-ref p section (first (players p)) sequenz-num 
+  (let ((bar (get-bar-from-ref p section (first (players p)) sequenz-num 
                              bar-num)))
+    (when bar
+      (bar-num bar))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; all refs are 1-based.
 

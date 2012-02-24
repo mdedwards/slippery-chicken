@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:39:47 Thu Feb 23 2012 GMT
+;;; $$ Last modified: 10:37:54 Fri Feb 24 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -434,7 +434,7 @@
       (setf (bar-line-type bar) type)))
   t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* slippery-chicken/cmn-display
 ;;; FUNCTION

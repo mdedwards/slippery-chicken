@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:37:54 Fri Feb 24 2012 GMT
+;;; $$ Last modified: 18:20:03 Mon Feb 27 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -170,7 +170,7 @@
    (rehearsal-letters :accessor rehearsal-letters :type list 
                       :initarg :rehearsal-letters :initform nil)
    ;; 1/4/06: this is the number of sections __and__ subsections
-   (num-sections :accessor num-sections :type integer :initform -1)))
+   (num-sequences :accessor num-sequences :type integer :initform -1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -284,7 +284,7 @@
                               (first sfp) 
                               :paths (second sfp)
                               :extensions (third sfp)))))
-        (setf (num-sections sc) (count-section-refs (set-map sc)))
+        (setf (num-sequences sc) (count-sequence-refs (set-map sc)))
         (handle-set-limits sc)
         ;; (print (set-limits-low sc))
         ;; we have a chicken before the egg situation here: we can't
@@ -403,7 +403,7 @@
           (slot-value no 'set-limits-low) (my-copy-list (set-limits-low sc))
           (slot-value no 'rehearsal-letters) 
           (my-copy-list (rehearsal-letters sc))
-          (slot-value no 'num-sections) (num-sections sc))
+          (slot-value no 'num-sequences) (num-sequences sc))
     no))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2505,7 +2505,7 @@
 ;;; get-num-top-level-sections:
 ;;;
 ;;; Return the number of sections in the piece i.e the top-level ones as
-;;; defined e.g. in the set-map.  NB the num-sections slot of slippery-chicken
+;;; defined e.g. in the set-map.  NB the num-sequences slot of slippery-chicken
 ;;; is the number of sections and sub-sections.
 ;;; 
 ;;; ARGUMENTS 
@@ -2593,13 +2593,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod handle-set-limits ((sc slippery-chicken))
-  (flet ((do-limits (set-limits num-sections)
+  (flet ((do-limits (set-limits num-sequences)
            (make-assoc-list 
             nil
             (loop for ins in set-limits collect
                   (list (first ins)
-                        (doctor-set-limits-env (second ins) num-sections))))))
-    (let* ((ns (num-sections sc))
+                        (doctor-set-limits-env (second ins) num-sequences))))))
+    (let* ((ns (num-sequences sc))
            (high (do-limits (set-limits-high sc) ns))
            (low (do-limits (set-limits-low sc) ns)))
       (setf (set-limits-high sc) high
@@ -5597,22 +5597,22 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun count-section-refs (sc)
+(defun count-sequence-refs (thing)
   (let ((count 0))
     (loop 
-        for sec in (data sc) 
-        for data = (data sec)
-        do
-          (incf count
-                (if (is-ral data)
-                    (count-section-refs data)
-                  (length data))))
+       for sec in (data thing) 
+       for data = (data sec)
+       do
+       (incf count
+             (if (is-ral data)
+                 (count-sequence-refs data)
+                 (length data))))
     count))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun doctor-set-limits-env (env num-sections)
-  (let ((stretched (new-lastx env num-sections)))
+(defun doctor-set-limits-env (env num-sequences)
+  (let ((stretched (new-lastx env num-sequences)))
     ;; 14/8/07 first x always needs to be 1
     (setf (first stretched) 1)
     (loop for x in stretched by #'cddr and y in (cdr stretched) by #'cddr

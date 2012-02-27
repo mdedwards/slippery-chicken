@@ -88,3 +88,8 @@ player-section.lsp
         ;; todo: this doesn't work either...
         (auto-beam first-bar beat nil))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+MDE Mon Feb 27 18:13:07 2012 -- this doesn't seem right...use the number of
+set-map refs in each section instead?
+
+(defmethod num-seqs ((sc slippery-chicken) section-ref)

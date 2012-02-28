@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 18:56:26 Mon Feb 20 2012 GMT
+;;; $$ Last modified: 18:12:51 Tue Feb 28 2012 GMT
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -841,6 +841,8 @@ rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) is required.
     (error "rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) ~
             is required."))
   (get-multipliers (get-data id rsp) rthm round))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

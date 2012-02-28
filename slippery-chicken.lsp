@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:20:03 Mon Feb 27 2012 GMT
+;;; $$ Last modified: 18:05:16 Tue Feb 28 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -296,7 +296,8 @@
         (setf (tempo-map sc) '((1 60))
               (piece sc) (sc-make-piece sc (warn-ties sc))
               ;; map might be nil as we have a curve instead so handle this
-              (tempo-map sc) (tempo-curve-to-map given-tempo-map (tempo-curve sc)
+              (tempo-map sc) (tempo-curve-to-map given-tempo-map
+                                                 (tempo-curve sc)
                                                  (num-bars sc))
               ;; this calls the setf method so it's not as useless as it
               ;; looks.  

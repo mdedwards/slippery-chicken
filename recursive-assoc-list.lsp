@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 18:28:31 Tue Jan 31 2012 ICT
+;;; $$ Last modified: 18:15:15 Tue Feb 28 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1495,6 +1495,38 @@ data: RIBBON
       finally (return nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Feb 28 18:03:28 2012 -- get the object for <id> and set its <slot>
+;;; to <value> NB we setf slot-value here rather than calling the setf method
+;;; so if a setf method has been explicitly defined it won't be called.
+;;; ****m* rthm-seq-palette/set-slot
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+(largest-fast-leap
+ (get-data 'oboe +slippery-chicken-standard-instrument-palette+))
+==> 999
+
+(set-slot 'largest-fast-leap 10 'oboe
+          +slippery-chicken-standard-instrument-palette+)
+                                       
+|#
+;;; SYNOPSIS
+(defmethod set-slot (slot value id (ral recursive-assoc-list))
+;;; ****
+  (setf (slot-value (get-data id ral) slot) value))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;

@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 15:56:27 Sat Feb 11 2012 GMT
+;;; $$ Last modified: 18:02:40 Tue Feb 28 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1323,7 +1323,8 @@ WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
           (progn
             (setf result (sort result #'<))
             (if return-notes
-                (setf result (loop for f in result collect (freq-to-note f scale)))
+                (setf result (loop for f in result collect
+                                  (freq-to-note f scale)))
                 ;; MDE Wed Feb  8 17:42:34 2012 -- added round
                 (when round
                   (setf result (loop for f in result collect (round f)))))

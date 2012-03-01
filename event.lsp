@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:41:06 Thu Mar  1 2012 GMT
+;;; $$ Last modified: 20:52:02 Thu Mar  1 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1115,10 +1115,12 @@ data: (3 4)
 ;;; FUNCTION
 ;;; Adds a start-arrow mark to the given event object and stores text that is
 ;;; to be attached to the start and end of the given arrow for LilyPond
-;;; output. 
+;;; output. This is a little more complex than the usual mark adding process,
+;;; hence this separate method and it not being possible to add arrows to
+;;; rthm-seq objects.  Not available for CMN.
 ;;;
 ;;; NB: A separate end-arrow mark should be attached to the note where the end
-;;;     text is to appear.
+;;;     text is to appear.  Use end-arrow for this or (add-mark e 'end-arrow).
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
@@ -1179,8 +1181,19 @@ event::add-arrow: add arrow to rest?
             (and (stringp end-text) (zerop (length end-text))))
     (error "~a~%event::add-arrow: start-text/end-text can't be an empty string!"
            e))
+  ;; MDE Thu Mar  1 20:50:16 2012 
+  (when (or (has-mark e 'start-arrow) (has-mark e 'end-arrow))
+    (error "~a~%event::add-arrow: Lilypond can't have notes with more ~
+             than one arrow"
+           e))
   (add-mark-before e (list 'arrow start-text end-text))
   (add-mark e 'start-arrow))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; MDE Thu Mar  1 20:27:53 2012 
+(defmethod end-arrow ((e event))
+  (add-mark e 'end-arrow))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

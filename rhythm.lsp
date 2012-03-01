@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 13:20:52 Wed Feb  1 2012 ICT
+;;; $$ Last modified: 20:46:29 Thu Mar  1 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -922,9 +922,9 @@ NI
 
 |#
 ;;; SYNOPSIS
-(defmethod has-mark ((r rhythm) mark)
+(defmethod has-mark ((r rhythm) mark &optional (test #'equal))
 ;;; ****
-  (has-mark-aux (marks r) mark))
+  (has-mark-aux (marks r) mark test))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1980,8 +1980,8 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun has-mark-aux (list mark)
-  (member mark list :test #'equal))
+(defun has-mark-aux (list mark test)
+  (member mark list :test test))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF rhythm.lsp

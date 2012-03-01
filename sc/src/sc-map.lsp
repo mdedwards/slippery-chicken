@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 10:53:47 Thu Feb 23 2012 GMT
+;;; $$ Last modified: 20:24:20 Thu Mar  1 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -142,7 +142,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod link ((scm sc-map) (p palette) &optional (nil-ok t))
+(defmethod bind-palette ((scm sc-map) (p palette) &optional (nil-ok t))
   (check-sc-map-refs scm p nil-ok)
   (setf (palette scm) p))
 

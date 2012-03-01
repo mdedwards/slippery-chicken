@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:05:16 Tue Feb 28 2012 GMT
+;;; $$ Last modified: 20:25:08 Thu Mar  1 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -237,7 +237,8 @@
                     Cannot proceed: set map is either nil or not a set map!"
                  (set-map sc)))
         ;; 29/3/10: it's not ok to have nil references in the set-palette
-        (link (set-map sc) (set-palette sc) nil)
+        ;; MDE Thu Mar  1 20:24:39 2012 -- method changed name from (link)
+        (bind-palette (set-map sc) (set-palette sc) nil)
         (link-named-objects (set-palette sc))
         (link-named-objects (set-map sc))
         (check-first-bar-ins-for-doubling-players (ensemble sc)
@@ -262,7 +263,8 @@
                    :replacements 
                    (rthm-seq-map-replacements sc))))
         ;; it's ok to have nil in the rthm-seq-maps of course
-        (link (rthm-seq-map sc) (rthm-seq-palette sc))
+        ;; MDE Thu Mar  1 20:24:39 2012 -- method changed name from (link)
+        (bind-palette (rthm-seq-map sc) (rthm-seq-palette sc))
         (check-instruments sc)
         (check-maps (set-map sc)
                     (rthm-seq-map sc))

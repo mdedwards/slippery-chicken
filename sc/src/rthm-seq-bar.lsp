@@ -1042,7 +1042,13 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; tuplet value to place, this method will automatically add the appropriate
 ;;; tuplet bracket it to the beats of the bar in the printed score output. If
 ;;; the TUPLET argument is set to NIL, the method will proceed on the basis of
-;;; best-guessing rules.   
+;;; best-guessing rules. 
+;;;
+;;; NB: This method may produce results that encapsulte an entire beat when
+;;;     applying brackets to a portion of that beat. Thus bracketing the rhythm
+;;;     (e ts ts ts) will return
+;;;     { 3 e. ts ts ts } rather than 
+;;;     ( e { 3 ts ts ts } )
 ;;; 
 ;;; ARGUMENTS
 ;;; - A rthm-seq-bar object
@@ -1093,6 +1099,15 @@ data: ((2 4) - S S - S - S S S - S S)
   (tuplets rsb))
 
 => ((3 0 2))
+
+;;; The method may bracket the entire beat, returning ((3 1 4)) rather than 
+;;; ((3 2 4))
+(let ((rsb (make-rthm-seq-bar '((2 4) q e ts ts ts))))
+  (auto-put-tuplet-bracket-on-beats rsb 3)
+  (tuplets rsb))
+
+=> ((3 1 4))
+
 |#
 ;;; SYNOPSIS
 (defmethod auto-put-tuplet-bracket-on-beats 
@@ -1734,23 +1749,76 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
         (values result event-count))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; NB Always returns a new rsb
-;;; Just re-creates scaled rhythms with beams etc. where appropriate.
-;;; See time-sig::scale for details on how we create the new meter.
+
+;;; SAR Thu Mar  1 13:26:26 GMT 2012: Deleted MDE's comments here as they've
+;;; been taken nearly verbatim into the doc entry
+
+;;; SAR Thu Mar  1 13:24:41 GMT 2012: Added robodoc entry
 
 ;;; ****m* rthm-seq-bar/scale
-;;; Wed Dec 14 17:52:07 GMT 2011 SAR: Added robodoc info
 ;;; FUNCTION
-;;; 
+;;; Change the values of a rthm-seq-bar objects rhythm durations by a specified
+;;; scaling factor.
+;;;
+;;; This method always returns a new rthm-seq-bar object, recreating scaled
+;;; rhythms with beams etc. where appropriate. See time-sig::scale for details
+;;; on how the new meter is created.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq-bar object.
+;;; - A number that is the scaling factor.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether to preserve the original meter (duple,
+;;;   triple, quadruple etc.)
+;;; - (two ignore arguments for internal use only)
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns a rthm-seq-bar object
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Create a rthm-seq-bar object and scale its durations by a fact of
+;;; 2. Returns a rthm-seq-bar object.
+(let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
+  (scale rsb 2))
+
+=> 
+RTHM-SEQ-BAR: time-sig: 19 (2 2), time-sig-given: T, bar-num: -1, 
+[...]
+RHYTHM: value: 2.000, duration: 2.000, rq: 2, is-rest: NIL, 
+[...]
+data: H
+[...]
+RHYTHM: value: 4.000, duration: 1.000, rq: 1, is-rest: NIL, 
+[...]
+data: Q
+[...]
+RHYTHM: value: 8.000, duration: 0.500, rq: 1/2, is-rest: NIL, 
+[...]
+data: E
+[...]
+RHYTHM: value: 8.000, duration: 0.500, rq: 1/2, is-rest: NIL, 
+[...]
+data: E
+[...]
+
+;;; Use the print-simple method to see formatted results
+(let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
+  (print-simple (scale rsb .5)))
+
+=>
+(2 8): note E, note S, note 32, note 32,
+
+;;; Set the optional <preserve-meter> argument to NIL to allow the method to
+;;; return results in a different metric quality (this returns a quadruple
+;;; meter rather than a duple)
+(let ((rsb (make-rthm-seq-bar '((6 8) q e q s s))))
+  (print-simple (scale rsb 2 nil)))
+
+=>
+(12 8): note H, note Q, note H, note E, note E,
+
 
 |#
 ;;; SYNOPSIS

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 15:20:18 Mon Feb 13 2012 GMT
+;;; $$ Last modified: 20:46:36 Thu Mar  1 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1726,9 +1726,9 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Jan  4 14:20:30 2012 
 
-(defmethod has-mark ((p pitch) mark)
+(defmethod has-mark ((p pitch) mark &optional (test #'equal))
 ;;; ****
-  (has-mark-aux (marks p) mark))
+  (has-mark-aux (marks p) mark test))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

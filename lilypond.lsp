@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 09:59:42 Thu Mar  1 2012 GMT
+;;; $$ Last modified: 14:02:29 Thu Mar  1 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -264,6 +264,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; NB The word flat is automatically replaced to the flat sign in CMN
 (defun lp-flat-sign (name) ; string
   ;; MDE Thu Mar  1 09:59:24 2012 -- look for the hyphen version first
   (let ((handle-flat (string-replace "-flat" "\\flat" name)))

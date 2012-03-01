@@ -1499,6 +1499,7 @@ data: RIBBON
 ;;; to <value> NB we setf slot-value here rather than calling the setf method
 ;;; so if a setf method has been explicitly defined it won't be called.
 ;;; ****m* rthm-seq-palette/set-slot
+
 ;;; FUNCTION
 ;;; 
 ;;; 

@@ -56,23 +56,37 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Mar  1 15:16:40 GMT 2012: Added robodoc entry
+
 ;;; MDE Thu Feb  9 14:25:34 2012 
 ;;; e.g. (in-scale :quarter-tone) (in-scale :chromatic)
+
 ;;; ****f* cm/in-scale
 ;;; FUNCTION
-;;; 
+;;; Set the global scale (tuning) for the current slippery-chicken
+;;; environment. Current options are :chromatic, :quarter-tone or
+;;; :twelfth-tone. See the file cm-load.lsp for specifications and the html
+;;; manual page "More about note-names and scales" for more details on use.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A scale (tuning) designation.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Lisp REPL feedback on the tuning now set.
 ;;; 
 ;;; EXAMPLE
 #|
+(in-scale :chromatic)
+
+=> #<tuning "chromatic-scale">
+
+(in-scale :quarter-tone)
+
+=> #<tuning "quarter-tone">
+
+(in-scale :twelfth-tone)
+
+=> #<tuning "twelfth-tone">
 
 |#
 ;;; SYNOPSIS

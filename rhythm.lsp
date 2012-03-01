@@ -280,9 +280,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Mar  1 13:24:14 GMT 2012: Edited robodoc entry
+
 ;;; ****m* rhythm/scale
 ;;; FUNCTION
-;;; Change the value of a rhythm object's duration value by scaling.
+;;; Change the value of a rhythm object's duration value by a specified
+;;; scaling factor. 
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rhythm object.

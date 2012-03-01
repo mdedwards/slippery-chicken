@@ -1118,7 +1118,7 @@ data: (3 4)
 ;;; output. 
 ;;;
 ;;; NB: A separate end-arrow mark should be attached to the note where the end
-;;; text is to appear.
+;;;     text is to appear.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
@@ -2935,7 +2935,7 @@ T
 ;;; - A rhythm (duration).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :start-time. A number representing the start-time of the
+;;; - keyword argument :start-time. A number that is the start-time of the
 ;;;   event in seconds.
 ;;; - keyword argument :duration. T or NIL. T indicates that the duration given
 ;;;   is a value of absolute seconds rather than a known rhythm

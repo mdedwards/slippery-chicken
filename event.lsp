@@ -1191,7 +1191,47 @@ event::add-arrow: add arrow to rest?
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Mar  2 13:40:07 GMT 2012: Added robodoc entry
+
 ;;; MDE Thu Mar  1 20:27:53 2012 
+
+;;; ****m* event/end-arrow
+;;; FUNCTION
+;;; Adds an end-arrow mark to the given event object.
+;;;
+;;; NB: This method works for LilyPond only. When used with CMN, output will
+;;;     still be generated, but no mark will be added. The method prints a
+;;;     corresponding warning when applied.
+;;; 
+;;; ARGUMENTS
+;;; - An event object.
+;;; 
+;;; RETURN VALUE
+;;; Returns T.
+;;; 
+;;; EXAMPLE
+#|
+;; Returns T
+(let ((e (make-event 'c4 'q)))
+  (end-arrow e))
+
+=> T
+WARNING: 
+rhythm::validate-mark: no CMN mark for END-ARROW (but adding anyway).
+
+;; Create an event object, add end-arrow, and print the MARKS and MARKS-SLOTS
+;; to see the result
+(let ((e (make-event 'c4 'q)))
+  (end-arrow e) 
+  (print (marks-before e))
+  (print (marks e)))
+
+=> 
+NIL 
+(END-ARROW)
+
+|#
+;;; SYNOPSIS
 (defmethod end-arrow ((e event))
   (add-mark e 'end-arrow))
 
@@ -1209,12 +1249,12 @@ event::add-arrow: add arrow to rest?
 ;;; values to the MARKS and MARKS-BEFORE slots of a given event object.
 ;;;
 ;;; NB: The main interface for adding trills by hand is
-;;; slippery-chicken::trill, which is the class-method combination that
-;;; should be accessed for this purpose.
+;;;     slippery-chicken::trill, which is the class-method combination that
+;;;     should be accessed for this purpose.
 ;;;
 ;;; NB: This method will check to see if the specified trill marks are already
-;;; present in the MARKS and MARKS-BEFORE slots. If it is, the method will
-;;; print a warning but will add the specified trill marks anyway. 
+;;;     present in the MARKS and MARKS-BEFORE slots. If it is, the method will
+;;;     print a warning but will add the specified trill marks anyway.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
@@ -1310,6 +1350,7 @@ WARNING:
   (make-pitch trill-note)
   (add-mark-before e 'beg-trill-a)
   (add-mark e (list 'trill-note trill-note)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

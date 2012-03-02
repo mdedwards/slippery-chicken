@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 20:05:38 Mon Feb 20 2012 GMT
+;;; $$ Last modified: 19:28:51 Fri Mar  2 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -196,16 +196,14 @@
        :microtones nil))
      (piano
       (:staff-name "piano" :lowest-written a0 :highest-written c8 :chords t
-       ;;; ****
        :midi-program 1 :starting-clef treble :staff-short-name "pno"
        :clefs (treble bass double-treble double-bass)
        :microtones nil :largest-fast-leap 9 :chord-function piano-chord-fun))
-     ;; this is a bit of a hack but: we generally treat the piano as two
-     ;; instruments (LH, RH), generating lines separately, as if for two
-     ;; instruments.  So this is the same as the piano instrument but has no
-     ;; staff-name and starts with bass clef.  Use set-limits to change the
+     ;; we generally treat the piano as two instruments (LH, RH), generating
+     ;; lines separately.  So this is the same as the piano instrument but has
+     ;; no staff-name and starts with bass clef.  Use set-limits to change the
      ;; range of the two hands, as they're both set to be full piano range
-     ;; here. 
+     ;; here.
      (piano-lh
       (:lowest-written a0 :highest-written c8 :chords t
        :midi-program 1 :starting-clef bass 
@@ -245,7 +243,7 @@
        :clefs (bass tenor treble) :prefers-notes low
        :highest-written g5 :chords nil :midi-program 44
        :transposition-semitones -12 :microtones t :largest-fast-leap 10)))))
-
+       ;;; ****
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; The following chord selection functions were designed for my piece cheat

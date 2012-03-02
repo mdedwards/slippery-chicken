@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 20:52:02 Thu Mar  1 2012 GMT
+;;; $$ Last modified: 19:28:18 Fri Mar  2 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1233,6 +1233,7 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod end-arrow ((e event))
+;;; ****
   (add-mark e 'end-arrow))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1350,7 +1351,6 @@ WARNING:
   (make-pitch trill-note)
   (add-mark-before e 'beg-trill-a)
   (add-mark e (list 'trill-note trill-note)))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

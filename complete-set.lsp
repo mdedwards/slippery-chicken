@@ -424,6 +424,54 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 
 => (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5)
 
+;; Using the other keyword arguments
+(make-complete-set '(d2 f2 a2 e3 g3 b3 d4 gf4 bf4 df5 f5 af5)
+	     :id 'csset
+	     :subsets '((low (d2 f2 a2)) 
+			(mid (b3 d4)))
+	     :related-sets '((not-playable (dqs2 eqf3)))
+	     :transposition 3
+	     :limit-upper 'g5
+	     :limit-lower 'e2)
+
+=> 
+COMPLETE-SET: complete: NIL
+              num-missing-non-chromatic: 12
+              num-missing-chromatic: 3
+              missing-non-chromatic: (BQS BQF AQS AQF GQS GQF FQS EQS EQF DQS
+                                      DQF CQS)
+              missing-chromatic: (B FS EF)
+TL-SET: transposition: 3
+        limit-upper: 
+PITCH: frequency: 783.991, midi-note: 79, midi-channel: 0 
+[...]
+data: G5
+        limit-lower: 
+PITCH: frequency: 82.407, midi-note: 40, midi-channel: 0 
+[...]
+data: E2
+SC-SET: auto-sort: T, used-notes: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+[...]
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 0, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: USED-NOTES, tag: NIL, 
+data: NIL
+
+N.B. All pitches printed as symbols only, internally they are all 
+pitch-objects.
+    subsets: 
+LOW: (F2 AF2 C3)
+MID: (D4 F4)
+    related-sets: 
+NOT-PLAYABLE: (DQS2 EQF3)
+SCLIST: sclist-length: 12, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: CSSET, tag: NIL, 
+data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
+
 |#
 ;;; SYNOPSIS
 (defun make-complete-set (set &key id tag subsets related-sets 

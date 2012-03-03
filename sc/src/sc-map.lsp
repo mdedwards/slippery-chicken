@@ -148,21 +148,84 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat Mar  3 18:37:04 GMT 2012: Added robodoc entry
+
 ;;; ****m* sc-map/get-all-data-from-palette
 ;;; FUNCTION
-;;; 
+;;; Given an sc-map object that has been bound to a palette object of any type,
+;;; return all of the palette data in the given map as it has been allocated to
+;;; the map, in the order in which it appears in the map.
+;;;
+;;; The given sc-map object must be bound to a palette object for this method
+;;; to work. If no palette object has been bound to the given sc-map object,
+;;; the method returns NIL and prints a warning.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An sc-map object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - A list of objects, the type depending on the given palette.
 ;;; 
 ;;; EXAMPLE
 #|
+
+;; Create a set-palette object and an sc-map object, bind them using the
+;; bind-palette method, and print the results of applying the
+;; get-all-data-from-palette method by printing the data of each of the objects
+;; in the list it returns as note-name symbols.
+
+(let ((sp (make-set-palette 'set-pal '((set1 ((c2 b2 a3 g4 f5 e6)))
+				       (set2 ((d2 c3 b3 a4 g5 f6)))
+				       (set3 ((e2 d3 c4 b4 a5 g6))))))
+      (scm (make-sc-map 'sc-m '((sec1
+				 ((vn (set1 set3 set2))
+				  (va (set2 set3 set1))
+				  (vc (set3 set1 set2))))
+				(sec2
+				 ((vn (set1 set2 set1))
+				  (va (set2 set1 set3))
+				  (vc (set1 set3 set3))))
+				(sec3
+				 ((vn (set1 set1 set3))
+				  (va (set1 set3 set2))
+				  (vc (set3 set2 set3))))))))
+  (bind-palette scm sp)
+  (print 
+   (loop for cs in (get-all-data-from-palette scm)
+      collect (pitch-list-to-symbols (data cs)))))
+
+=>
+((C2 B2 A3 G4 F5 E6) (E2 D3 C4 B4 A5 G6) (D2 C3 B3 A4 G5 F6)
+ (D2 C3 B3 A4 G5 F6) (E2 D3 C4 B4 A5 G6) (C2 B2 A3 G4 F5 E6)
+ (E2 D3 C4 B4 A5 G6) (C2 B2 A3 G4 F5 E6) (D2 C3 B3 A4 G5 F6)
+ (C2 B2 A3 G4 F5 E6) (D2 C3 B3 A4 G5 F6) (C2 B2 A3 G4 F5 E6)
+ (D2 C3 B3 A4 G5 F6) (C2 B2 A3 G4 F5 E6) (E2 D3 C4 B4 A5 G6)
+ (C2 B2 A3 G4 F5 E6) (E2 D3 C4 B4 A5 G6) (E2 D3 C4 B4 A5 G6)
+ (C2 B2 A3 G4 F5 E6) (C2 B2 A3 G4 F5 E6) (E2 D3 C4 B4 A5 G6)
+ (C2 B2 A3 G4 F5 E6) (E2 D3 C4 B4 A5 G6) (D2 C3 B3 A4 G5 F6)
+ (E2 D3 C4 B4 A5 G6) (D2 C3 B3 A4 G5 F6) (E2 D3 C4 B4 A5 G6))
+
+;; Applying the method to an sc-map object that is not bound to a palette
+;; object returns NIL
+(let ((scm (make-sc-map 'sc-m '((sec1
+				 ((vn (set1 set3 set2))
+				  (va (set2 set3 set1))
+				  (vc (set3 set1 set2))))
+				(sec2
+				 ((vn (set1 set2 set1))
+				  (va (set2 set1 set3))
+				  (vc (set1 set3 set3))))
+				(sec3
+				 ((vn (set1 set1 set3))
+				  (va (set1 set3 set2))
+				  (vc (set3 set2 set3))))))))
+  (get-all-data-from-palette scm))
+
+=>
+NIL
+WARNING:
+   sc-map::get-all-data-from-palette: 
+   palette slot is nil so can't return data from it. 
 
 |#
 ;;; SYNOPSIS

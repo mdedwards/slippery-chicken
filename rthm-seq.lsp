@@ -565,10 +565,13 @@ data: Q
                             ((3 8) s s e. s))
                            :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
   (set-nth-attack 2 (make-event 'c4 'q) rs)
-  (loop for b in (bars rs) 
-     collect (loop for r in (rhythms b) collect (data r))))
+  (print-simple rs))
 
-=> (("Q" "E" S Q) (E Q E) (S S E. S))
+=>
+rthm-seq NIL
+(2 4): note Q, note E, note S, C4 Q, 
+(2 4): rest E, note Q, rest E, 
+(3 8): note S, note S, note E., note S,
 
 ;; By default, the method drops into the debugger with an error when the
 ;; specified index is greater than the number ofitems in the given rthm-seq
@@ -651,10 +654,13 @@ data: ((2 4) (S) E (S) Q)
                             ((3 8) s s e. s))
                            :pitch-seq-palette ((1 2 3 4 1 1 2 3))))))
   (set-nth-bar 1 (make-rthm-seq-bar '((2 4) (s) e (s) q)) rs)
-  (loop for b in (bars rs)
-     collect (loop for r in (rhythms b) collect (data r))))
+  (print-simple rs))
 
-=> (("Q" "E" S S) (S E S Q) (S S E. S))
+=>
+rthm-seq NIL
+(2 4): note Q, note E, note S, note S, 
+(2 4): rest S, note E, rest S, note Q, 
+(3 8): note S, note S, note E., note S,
 
 |#
 ;;; SYNOPSIS
@@ -812,6 +818,7 @@ data: S
 ;;; 
 ;;; EXAMPLE
 #|
+
 ;; The last event is a rhythm object
 (let ((rs (make-rthm-seq '((((2 4) q+e s s)
                             ((e) q (e))
@@ -848,6 +855,7 @@ NAMED-OBJECT: id: S, tag: NIL,
 data: S
 
 |#
+
 ;;; SYNOPSIS
 (defmethod get-last-event ((rs rthm-seq))
 ;;; ****
@@ -867,9 +875,9 @@ data: S
 ;;; of lists), splice this in at the appropriate location.
 ;;;
 ;;; NB: This method sets the values of the individual slots but leaves the DATA
-;;; slot untouched (for cases in which the user might want to see where the new
-;;; data originated from, or otherwise use the old data somehow, such as in a
-;;; new rthm-seq object).
+;;;     slot untouched (for cases in which the user might want to see where the
+;;;     new data originated from, or otherwise use the old data somehow, such
+;;;     as in a new rthm-seq object).
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq object.
@@ -938,9 +946,9 @@ rthm-seq::insert-bar: only 3 bars in rthm-seq!
                             ((3 8) s s e. s))
                            :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
   (insert-bar rs (make-rthm-seq-bar '((3 4) q. e e s s)) 3 '((1 2 3 4 5)))
-  (loop for ps in (data (pitch-seq-palette rs)) collect (data ps)))
+  (data (get-first (pitch-seq-palette rs))))
 
-=> ((1 2 3 1 1 2 3 4 5 1 2 3 4))
+=> (1 2 3 1 1 2 3 4 5 1 2 3 4)
 
 |#
 ;;; SYNOPSIS
@@ -1235,9 +1243,9 @@ data: (3 8)
 ;;; NB: The MARKS slot is ignored for now (it is as of yet 
 ;;;
 ;;; NB: This method sets the values of the individual slots but leaves the DATA
-;;; slot untouched (for cases in which the user might want to see where the new
-;;; data originated from, or otherwise use the old data somehow, such as in a
-;;; new rthm-seq object).
+;;;     slot untouched (for cases in which the user might want to see where the
+;;;     new data originated from, or otherwise use the old data somehow, such
+;;;     as in a new rthm-seq object).
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A first rthm-seq object.
@@ -1283,22 +1291,27 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 
 ;; With the same combine call, print the collected contents of the BARS slot
 ;; and the PITCH-SEQ-PALETTE slot of the new rthm-seq object
-(let ((rs1 (make-rthm-seq '((((2 4) q+e s s)
-                            ((e) q (e))
-                            ((3 8) s s e. s))
-                           :pitch-seq-palette ((1 2 3 1 1 2 3 4)))))
-      (rs2 (make-rthm-seq '((((4 4) h+e (e) { 3 te te te })
-                            ((5 8) e e+32 s. +q)
-                            ((3 4) (q) q q))
-                           :pitch-seq-palette ((1 2 3 4 1 2 3 1 2))))))
-  (print (loop for b in (bars (combine rs1 rs2)) collect (data b)))
-  (print (loop for ps in (data (pitch-seq-palette (combine rs1 rs2))) 
-            collect (data ps))))
+(let* ((rs1 (make-rthm-seq '((((2 4) q+e s s)
+			      ((e) q (e))
+			      ((3 8) s s e. s))
+			     :pitch-seq-palette ((1 2 3 1 1 2 3 4)))))
+       (rs2 (make-rthm-seq '((((4 4) h+e (e) { 3 te te te })
+			      ((5 8) e e+32 s. +q)
+			      ((3 4) (q) q q))
+			     :pitch-seq-palette ((1 2 3 4 1 2 3 1 2)))))
+       (crs (combine rs1 rs2)))
+  (print-simple crs)
+  (print (data (get-first (pitch-seq-palette crs)))))
 
 =>
-(((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)
- ((4 4) H+E (E) { 3 TE TE TE }) ((5 8) E E+32 S. +Q) ((3 4) (Q) Q Q)) 
-((1 2 3 1 1 2 3 4 1 2 3 4 1 2 3 1 2))
+rthm-seq NIL-NIL
+(2 4): note Q, note E, note S, note S, 
+(2 4): rest E, note Q, rest E, 
+(3 8): note S, note S, note E., note S, 
+(4 4): note H, note E, rest E, note TE, note TE, note TE, 
+(5 8): note E, note E, note 32, note S., note Q, 
+(3 4): rest 4, note Q, note Q, 
+(1 2 3 1 1 2 3 4 1 2 3 4 1 2 3 1 2)
 
 |#
 
@@ -1361,12 +1374,16 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
                             ((3 8) s s e. s))
                            :pitch-seq-palette ((1 2 3 1 1 2 3 4))))))
   (add-bar rs (make-rthm-seq-bar '((5 8) e e+32 s. +q)))
-  (loop for b in (bars rs)
-       collect (loop for r in (rhythms b) collect (data r))))
+  (print-simple rs))
 
-=> (("Q" "E" S S) (E Q E) (S S E. S) (E "E" "32" S. "Q"))
+=>
+rthm-seq NIL
+(2 4): note Q, note E, note S, note S, 
+(2 4): rest E, note Q, rest E, 
+(3 8): note S, note S, note E., note S, 
+(5 8): note E, note E, note 32, note S., note Q,
 
-;; Apply the method and print the DATA slot of the update PITCH-SEQ-PALETTE
+;; Apply the method and print the DATA slot of the updated PITCH-SEQ-PALETTE
 ;; slot to see the new notes that have been automatically added
 (let ((rs (make-rthm-seq '((((2 4) q+e s s)
                             ((e) q (e))

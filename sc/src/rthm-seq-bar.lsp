@@ -888,13 +888,13 @@ data: ((2 4) Q E S S)
 ;;; FUNCTION
 ;;; Remove any beaming indications from the rthm-seq-bar object. 
 ;;;
-;;; NB: This method changes the data for the rthm-seq-bar object's BEAMS slot 
-;;; and the individual BEAM slots of the RHYTHMs contained within the
-;;; rthm-seq-bar's RHYTHMS slot. It does not change the value of the
-;;; rthm-seq-bar's DATA slot.
+;;; NB: This method changes the data for the rthm-seq-bar object's BEAMS slot
+;;;     and the individual BEAM slots of the RHYTHMs contained within the
+;;;     rthm-seq-bar's RHYTHMS slot. It does not change the value of the
+;;;     rthm-seq-bar's DATA slot.
 ;;;
 ;;; NB: Neither the presence nor absence of beams are not reflected in the
-;;; output of the print-simple method.
+;;;     output of the print-simple method.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-bar object.

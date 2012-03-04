@@ -153,8 +153,8 @@
 ;;; ****m* sc-map/get-all-data-from-palette
 ;;; FUNCTION
 ;;; Given an sc-map object that has been bound to a palette object of any type,
-;;; return all of the palette data in the given map as it has been allocated to
-;;; the map, in the order in which it appears in the map.
+;;; return all of the palette data contained in the given sc-map object as it
+;;; has been allocated to the map, in the order in which it appears in the map.
 ;;;
 ;;; The given sc-map object must be bound to a palette object for this method
 ;;; to work. If no palette object has been bound to the given sc-map object,
@@ -170,11 +170,10 @@
 #|
 
 ;; Create a set-palette object and an sc-map object, bind them using the
-;; bind-palette method, and print the results of applying the
-;; get-all-data-from-palette method by printing the data of each of the objects
-;; in the list it returns as note-name symbols.
-
-(let ((sp (make-set-palette 'set-pal '((set1 ((c2 b2 a3 g4 f5 e6)))
+;; <palette> argument of the make-sc-map function, and print the results of
+;; applying the get-all-data-from-palette method by printing the data of each
+;; of the objects in the list it returns as note-name symbols.
+(let* ((sp (make-set-palette 'set-pal '((set1 ((c2 b2 a3 g4 f5 e6)))
 				       (set2 ((d2 c3 b3 a4 g5 f6)))
 				       (set3 ((e2 d3 c4 b4 a5 g6))))))
       (scm (make-sc-map 'sc-m '((sec1
@@ -188,11 +187,10 @@
 				(sec3
 				 ((vn (set1 set1 set3))
 				  (va (set1 set3 set2))
-				  (vc (set3 set2 set3))))))))
-  (bind-palette scm sp)
-  (print 
-   (loop for cs in (get-all-data-from-palette scm)
-      collect (pitch-list-to-symbols (data cs)))))
+				  (vc (set3 set2 set3)))))
+			:palette sp)))
+  (loop for cs in (get-all-data-from-palette scm)
+     collect (pitch-list-to-symbols (data cs))))
 
 =>
 ((C2 B2 A3 G4 F5 E6) (E2 D3 C4 B4 A5 G6) (D2 C3 B3 A4 G5 F6)
@@ -243,137 +241,89 @@ WARNING:
 
 ;;; See comment at head of class.
 
+;;; SAR Sun Mar  4 10:31:07 GMT 2012: Edited robodoc entry
 ;;; SAR Wed Feb  8 16:08:21 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-map/get-data-from-palette
 ;;; FUNCTION
-;;; Get the data associated with a specifed ID (key) within a given sc-map
-;;; object. If getting data from a nested key/data pair, the <id> argument must
-;;; be the path of ids into that key/data pair (see example).
+;;; Given an sc-map object that has been bound to a palette object of any type,
+;;; return the palette data contained allocated to the location within the
+;;; given sc-map object as specified by the <IDs> argument.
 ;;; 
+;;; Deeper levels of the map can be accessed by specifying a path of IDs into
+;;; the given sc-map object.
+;;;
+;;; If no palette object has been bound to the given sc-map object, the method
+;;; returns the contents of the sc-map object at the specified location
+;;; instead. 
+;;;
 ;;; ARGUMENTS
-;;; - The ID (key) or path of nested IDs of the key/data pair for which the
-;;;   data is sought.
+;;; - A symbol or list of symbols that is/are the ID or path of nested IDs
+;;;   within the given sc-map object for which the data is sought.
 ;;; - The sc-map object in which the data is sought.
 ;;; 
-;;; OPTIONAL ARGUMENTS
-;;; - T or NIL to indicate whether to print a warning if the specified key is
+;;; OPTIONAL ARGUMENTS 
+;;; - T or NIL to indicate whether to print a warning if the specified ID is
 ;;;   not found in the given sc-map object. T = print warning. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; The named object associated with the specified key.
+;;; The named object or list of named objects associated with the specified ID
+;;; or path of IDs.
 ;;;
-;;; If the specified key is not found within the given sc-map object, the
-;;; method returns NIL, and if the optional <warn> argument is set to T, a
-;;; warning is printed in this case.
+;;; If the specified ID is not found within the given sc-map object, the method
+;;; returns NIL. If the optional <warn> argument is set to T, a warning is also
+;;; printed in this case.
 ;;; 
 ;;; EXAMPLE
 #|
-;; Get the value of a top-level ID
-(let ((mscm (make-sc-map 'scm-test
-                          '((1
-                             ((vn (1 2 3 4 5))
-                              (va (2 3 4 5 1))
-                              (vc (3 4 5 1 2)))) 
-                            (2
-                             ((vn (6 7 8))
-                              (va (7 8 6))
-                              (vc (8 6 7)))) 
-                            (3
-                             ((vn (9))
-                              (va (9))
-                              (vc (9))))))))
-  (get-data-from-palette '(2) mscm))
+;;; Create a palette object and an sc-map object and bind them using the
+;;; <palette> keyword argument of the make-sc-map function. Then apply the
+;;; get-data-from-palette object to a nested ID in the sc-map object. Loop
+;;; through the data of the named objects in the list returned and return them
+;;; as note-name symbols. 
+(let* ((sp (make-set-palette 'set-pal '((set1 ((c2 b2 a3 g4 f5 e6)))
+				       (set2 ((d2 c3 b3 a4 g5 f6)))
+				       (set3 ((e2 d3 c4 b4 a5 g6))))))
+      (scm (make-sc-map 'sc-m '((sec1
+				 ((vn (set1 set3 set2))
+				  (va (set2 set3 set1))
+				  (vc (set3 set1 set2))))
+				(sec2
+				 ((vn (set1 set2 set1))
+				  (va (set2 set1 set3))
+				  (vc (set1 set3 set3))))
+				(sec3
+				 ((vn (set1 set1 set3))
+				  (va (set1 set3 set2))
+				  (vc (set3 set2 set3)))))
+			:palette sp)))
+  (loop for cs in (get-data-from-palette '(sec1 vn) scm)
+     collect (pitch-list-to-symbols (data cs))))
+
+=> ((C2 B2 A3 G4 F5 E6) (E2 D3 C4 B4 A5 G6) (D2 C3 B3 A4 G5 F6))
+
+;; If applied to an sc-map object that is not bound to a palette, the contents
+;; of the sc-map object at the specified location are returned and a warning is
+;; printed by default 
+(let ((scm (make-sc-map 'sc-m '((sec1
+				 ((vn (set1 set3 set2))
+				  (va (set2 set3 set1))
+				  (vc (set3 set1 set2))))
+				(sec2
+				 ((vn (set1 set2 set1))
+				  (va (set2 set1 set3))
+				  (vc (set1 set3 set3))))
+				(sec3
+				 ((vn (set1 set1 set3))
+				  (va (set1 set3 set2))
+				  (vc (set3 set2 set3))))))))
+   (get-data-from-palette '(sec1 vn) scm))
 
 => 
-NAMED-OBJECT: id: 2, tag: NIL, 
-data: 
-RECURSIVE-ASSOC-LIST: recurse-simple-data: T
-                      num-data: 3
-                      linked: NIL
-                      full-ref: (2)
-ASSOC-LIST: warn-not-found T
-CIRCULAR-SCLIST: current 0
-SCLIST: sclist-length: 3, bounds-alert: T, copy: T
-LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-NAMED-OBJECT: id: "sub-ral-of-SCM-TEST", tag: NIL, 
-data: (
 NAMED-OBJECT: id: VN, tag: NIL, 
-data: (6 7 8)
+data: (SET1 SET3 SET2)
 **************
-
-       
-NAMED-OBJECT: id: VA, tag: NIL, 
-data: (7 8 6)
-**************
-
-       
-NAMED-OBJECT: id: VC, tag: NIL, 
-data: (8 6 7)
-**************
-)
-
-;; Enter the path of keys to a nested key when getting data stored more deeply
-;; in the given sc-map object
-(let ((mscm (make-sc-map 'scm-test
-                          '((1
-                             ((vn (1 2 3 4 5))
-                              (va (2 3 4 5 1))
-                              (vc (3 4 5 1 2)))) 
-                            (2
-                             ((vn (6 7 8))
-                              (va (7 8 6))
-                              (vc (8 6 7)))) 
-                            (3
-                             ((vn (9))
-                              (va (9))
-                              (vc (9))))))))
-  (get-data-from-palette '(3 va) mscm))
-
-=> 
-NAMED-OBJECT: id: VA, tag: NIL, 
-data: (9)
-
-;; The method prints a warning by default if the specified key is not found in
-;; the given sc-map object
-(let ((mscm (make-sc-map 'scm-test
-                          '((1
-                             ((vn (1 2 3 4 5))
-                              (va (2 3 4 5 1))
-                              (vc (3 4 5 1 2)))) 
-                            (2
-                             ((vn (6 7 8))
-                              (va (7 8 6))
-                              (vc (8 6 7)))) 
-                            (3
-                             ((vn (9))
-                              (va (9))
-                              (vc (9))))))))
-  (get-data-from-palette '(1 tb) mscm))
-
-=> NIL
-
-WARNING:
-   assoc-list::get-data: Could not find data with key TB 
-   in assoc-list with id sub-ral-of-SCM-TEST
-
-;; This warning can be suppressed by setting the optional argument to NIL
-(let ((mscm (make-sc-map 'scm-test
-                          '((1
-                             ((vn (1 2 3 4 5))
-                              (va (2 3 4 5 1))
-                              (vc (3 4 5 1 2)))) 
-                            (2
-                             ((vn (6 7 8))
-                              (va (7 8 6))
-                              (vc (8 6 7)))) 
-                            (3
-                             ((vn (9))
-                              (va (9))
-                              (vc (9))))))))
-  (get-data-from-palette '(1 tb) mscm nil))
-
-=> NIL
+, NO-PALETTE
 
 |#
 ;;; SYNOPSIS
@@ -440,19 +390,100 @@ WARNING:
 
 ;;; ****m* sc-map/get-nth-from-palette
 ;;; FUNCTION
+;;; Given an sc-map object that is bound to a palette object of any type,
+;;; return the data of the palette object located at the nth position of the
+;;; list found at the specified ID or path of nested IDs.
+;;;
+;;; If the given sc-map object is not bound to a palette object, NIL is
+;;; returned instead. 
 ;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; ARGUMENTS 
+;;; - An ID or list of IDs that are the path to the list within the given
+;;;   sc-map object from which the specified nth position is to be returned. 
+;;; - A zero-based integer that is the position within the list found at the
+;;;   path specified from which the given element is to be returned.
+;;; - An sc-map object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - An element/object of the type contained within the given palette object
+;;;   of the given sc-map object.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Create a set-palette object and an sc-map object, bind them using the
+;;; <palette> object of the make-sc-map function, and apply the
+;;; get-nth-from-palette method
+(let* ((sp (make-set-palette 'set-pal '((set1 ((c2 b2 a3 g4 f5 e6)))
+				       (set2 ((d2 c3 b3 a4 g5 f6)))
+				       (set3 ((e2 d3 c4 b4 a5 g6))))))
+      (scm (make-sc-map 'sc-m '((sec1
+				 ((vn (set1 set3 set2))
+				  (va (set2 set3 set1))
+				  (vc (set3 set1 set2))))
+				(sec2
+				 ((vn (set1 set2 set1))
+				  (va (set2 set1 set3))
+				  (vc (set1 set3 set3))))
+				(sec3
+				 ((vn (set1 set1 set3))
+				  (va (set1 set3 set2))
+				  (vc (set3 set2 set3)))))
+			:palette sp)))
+  (get-nth-from-palette '(sec1 vn) 0 scm))
+
+=> 
+COMPLETE-SET: complete: NIL
+              num-missing-non-chromatic: 12
+              num-missing-chromatic: 6
+              missing-non-chromatic: (BQS BQF AQS AQF GQS GQF FQS EQS EQF DQS
+                                      DQF CQS)
+              missing-chromatic: (BF AF FS EF D CS)
+TL-SET: transposition: 0
+        limit-upper: NIL
+        limit-lower: NIL
+SC-SET: auto-sort: T, used-notes: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 0
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 0, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: USED-NOTES, tag: NIL, 
+data: NIL
+**************
+
+
+**** N.B. All pitches printed as symbols only, internally they are all 
+pitch-objects.
+
+
+    subsets: 
+    related-sets: 
+SCLIST: sclist-length: 6, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: SET1, tag: NIL, 
+data: (C2 B2 A3 G4 F5 E6)
+**************
+
+;;; Applying the method to an sc-map object that is not bound to a palette
+;;; object returns NIL
+(let ((scm (make-sc-map 'sc-m '((sec1
+				 ((vn (set1 set3 set2))
+				  (va (set2 set3 set1))
+				  (vc (set3 set1 set2))))
+				(sec2
+				 ((vn (set1 set2 set1))
+				  (va (set2 set1 set3))
+				  (vc (set1 set3 set3))))
+				(sec3
+				 ((vn (set1 set1 set3))
+				  (va (set1 set3 set2))
+				  (vc (set3 set2 set3))))))))
+  (get-nth-from-palette '(sec1 vn) 0 scm))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -643,9 +674,6 @@ data: (1 NIL 3 4 5)
 ;;; - A list of of data, most likely recursive.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-
-;;; - keyword argument :palette. T or NIL. Default = NIL
-
 ;;; - keyword argument :warn-not-found. T or NIL to indicate whether a warning
 ;;;   is printed when an index which doesn't exist is used for lookup.
 ;;;   T = warn. Default = T.
@@ -664,6 +692,9 @@ data: (1 NIL 3 4 5)
 ;;;   list being the reference into the sc-map (the viola voice of section 1
 ;;;   subsection 2 in the first here e.g.), the second element is the nth of
 ;;;   the data list for this key to change, and the third is the new data. 
+;;; - keyword argument :palette. A palette object or NIL. If a palette object
+;;;   is specified or defined here, it will be automatically bound to the given
+;;;   sc-map object. Default = NIL
 ;;; 
 ;;; RETURN VALUE
 ;;; An sc-map object.
@@ -712,6 +743,57 @@ data: (
 NAMED-OBJECT: id: VN, tag: NIL, 
 data: (1 2 3 4 5)
 [...]
+
+;;; Create an sc-map object and automatically bind it to a set-palette object
+;;; using the <palette> keyword argument. Then read the PALETTE slot of the
+;;; sc-map created to see its contents.
+(let ((scm 
+       (make-sc-map 
+	'scm-test
+	'((1
+	   ((vn (1 2 3 4 5))
+	    (va (2 3 4 5 1))
+	    (vc (3 4 5 1 2)))) 
+	  (2
+	   ((vn (6 7 8))
+	    (va (7 8 6))
+	    (vc (8 6 7)))) 
+	  (3
+	   ((vn (9))
+	    (va (9))
+	    (vc (9)))))
+	:palette (make-set-palette 'set-pal 
+				   '((set1 ((c2 b2 a3 g4 f5 e6)))
+				     (set2 ((d2 c3 b3 a4 g5 f6)))
+				     (set3 ((e2 d3 c4 b4 a5 g6))))))))
+  (palette scm))
+
+=>
+
+SET-PALETTE: 
+PALETTE: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 3
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: SET-PAL, tag: NIL, 
+data: (
+COMPLETE-SET: complete: NIL
+[...]
+data: (C2 B2 A3 G4 F5 E6)
+[...]
+COMPLETE-SET: complete: NIL
+[...]
+data: (D2 C3 B3 A4 G5 F6)
+[...]
+COMPLETE-SET: complete: NIL
+[...]
+data: (E2 D3 C4 B4 A5 G6)
+)
 
 |#
 ;;; SYNOPSIS

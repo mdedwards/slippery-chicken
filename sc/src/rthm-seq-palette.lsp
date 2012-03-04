@@ -108,7 +108,6 @@
 ;;; function. In that case just pass these via :selection-fun-data.
 ;;;
 ;;; ARGUMENTS 
-
 ;;; - A rth-seq-palette object.
 ;;; - keyword argument :selection-fun. This is a function that will return the
 ;;;   pitch-seq numbers. It takes two arguments only: 1) the number of notes
@@ -169,15 +168,17 @@
                         (seq3 ((((2 4) e e { 3 te te te })
                                 ((5 8) (e) e e e s s))
                                :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2)))))))
-  (print (loop for i in (data mrsp)
-            collect 
-              (loop for j in (data (pitch-seq-palette i))
-                 collect (data j))))
+  (print 
+   (loop for rs in (data mrsp)
+      collect 
+	(loop for ps in (data (pitch-seq-palette rs))
+	   collect (data ps))))
   (create-psps mrsp)
-  (print (loop for i in (data mrsp)
-            collect 
-              (loop for j in (data (pitch-seq-palette i))
-                 collect (data j)))))
+  (print 
+   (loop for rs in (data mrsp)
+      collect 
+	(loop for ps in (data (pitch-seq-palette rs))
+		 collect (data ps)))))
 
 =>
 (((1 2 3 4 5 6 7)) ((2 3 4 5 6 7 8)) ((3 4 5 6 7 8 9 10 1 2))) 
@@ -201,10 +202,10 @@
                                 ((5 8) (e) e e e s s))
                                :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2)))))))
   (create-psps mrsp :pitch-seqs-per-rthm-seq 5)
-  (print (loop for i in (data mrsp)
+  (print (loop for rs in (data mrsp)
             collect 
-              (loop for j in (data (pitch-seq-palette i))
-                 collect (data j)))))
+              (loop for ps in (data (pitch-seq-palette rs))
+                 collect (data ps)))))
 
 =>
 (((8 8 8 5 9 6 9) (9 3 8 4 7 5 4) (3 4 3 5 3 4 3) (8 8 8 5 9 6 9)
@@ -400,10 +401,10 @@ RTHM-SEQ: num-bars: 3
                            ((4 4) (e) e e e s s (s) s q))
                           :pitch-seq-palette (3 4 5 6 7 8 9 10 1 2 3 7)))))))
    (scale mrsp .5)
-   (loop for i in (data mrsp)
-      do (print-simple i)))
+   (print-simple mrsp))
 
 =>
+rthm-seq-palette RSP-TEST
 rthm-seq SEQ1
 (2 8): note E, note S., note 32, 
 (2 8): rest 32, note S, rest 32, note E, 
@@ -413,8 +414,7 @@ rthm-seq SEQ2
 (4 8): note TS, rest TS, note TS, note S, note S, rest Q, 
 rthm-seq SEQ3
 (2 8): note S, note S, note TS, note TS, note TS, 
-(4 8): rest S, note S, note S, note S, note 32, note 32, rest 32, note 32,
-       note E, 
+(4 8): rest S, note S, note S, note S, note 32, note 32, rest 32, note 32, note E,
 
 |#
 ;;; SYNOPSIS
@@ -633,11 +633,11 @@ rthm-seq SEQ3
        (rsp-chopped (chop rsp-orig
                           '((1 1) (1 2) (2 2))
                           'e)))
-  (loop for i in (data rsp-chopped)
-     do (loop for j in (data (data i))
-           do (print-simple j))))
+  (print-simple rsp-chopped))
 
 =>
+rthm-seq-palette SL-RSP
+rthm-seq-palette 1
 rthm-seq 1
 (1 8): rest 8, 
 rthm-seq 2

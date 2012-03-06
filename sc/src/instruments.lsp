@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 19:28:51 Fri Mar  2 2012 GMT
+;;; $$ Last modified: 16:09:36 Tue Mar  6 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -317,15 +317,15 @@
          (at-start (nth start pitch-list))
          (result (list at-start)))
     (loop 
-        for i from (1+ start) to (+ start 3) 
-        for p = (nth i pitch-list)
-        do
-          (when (and p (<= (pitch- p at-start) 12)
-                     (not (member p result :test #'note=)))
-            (push p result)))
+       for i from (1+ start) to (+ start 3) 
+       for p = (nth i pitch-list)
+       do
+       (when (and p (<= (pitch- p at-start) 12)
+                  (not (member p result :test #'note=)))
+         (push p result)))
     (if (> (length result) 1)
         (make-chord result)
-      (first result))))
+        (first result))))
 
 ;; returns the index into the pitch-list of the first note playable on an
 ;; open-string (pitch object) and the fret number of the first playable note

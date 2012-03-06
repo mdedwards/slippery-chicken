@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 11:31:11 Wed Feb 15 2012 GMT
+;;; $$ Last modified: 16:08:11 Tue Mar  6 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1078,8 +1078,8 @@ data: NIL
 ;;; function for you. 
 ;;;
 ;;; ARGUMENTS 
-;;; - The current number from the pitch curve. Currently ignored by default.
-;;; - The index that this was translated into by the offset and
+;;; - The current number from the pitch-seq. Currently ignored by default.
+;;; - The index that the first argument was translated into by the offset and
 ;;;   scaler (based on trying to get a best fit for the instrument and set).
 ;;;   This can be assumed to be a legal reference into pitch-list as it was
 ;;;   calculated as fitting in pitch-seq::get-notes.
@@ -1107,11 +1107,11 @@ data: NIL
           (t (setf p1 at-index
                    p2 nil)))
     ;; don't create diads > 8ve
-    (when (and p2 (> (pitch- p2 p1) 12))  ; assuming pitch-list is sorted
+    (when (and p2 (> (pitch- p2 p1) 12)) ; assuming pitch-list is sorted
       (setf p2 nil))
     (if p2
         (make-chord (list p1 p2))
-      (make-chord (list p1)))))
+        (make-chord (list p1)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

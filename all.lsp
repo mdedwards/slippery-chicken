@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 16:12:18 Thu Dec 15 2011 ICT
+;;; $$ Last modified: 17:00:10 Tue Mar  6 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -245,7 +245,7 @@
 (sc-compile-and-load "cycle-repeats.lsp")
 (sc-compile-and-load "activity-levels.lsp")
 (sc-compile-and-load "recurring-event.lsp")
-(sc-compile-and-load "sc-scale.lsp")
+(sc-compile-and-load "intervals-mapper.lsp")
 (sc-compile-and-load "instruments.lsp")
 (sc-compile-and-load "lilypond.lsp")
 (sc-compile-and-load "popcorn.lsp")

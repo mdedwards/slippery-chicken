@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 19:36:26 Fri Mar 19 2010 GMT
+;;; $$ Last modified: 16:19:20 Wed Mar  7 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -123,7 +123,26 @@
 ;;; Unless file is given as a string, it is a symbol and will be converted to
 ;;; lowercase.  
 
+;;; ****m* sndfile-palette/find-sndfile
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod find-sndfile ((sfp sndfile-palette) sndfile)
+;;; ****
   (let ((files '())
         (full-path "")
         (string (if (stringp sndfile)
@@ -189,7 +208,26 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* sndfile-palette/make-sfp
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-sfp (id sfp &key paths extensions (warn-not-found t))
+;;; ****
   (if extensions
       (make-instance 'sndfile-palette :id id :data sfp :paths paths
                      :extensions extensions :warn-not-found warn-not-found)
@@ -203,6 +241,24 @@
 ;;;
 ;;; marker-file could be a list of marker files; they would be concatenated.
 
+;;; ****f* sndfile-palette/make-sfp-from-wavelab-marker-file
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-sfp-from-wavelab-marker-file (marker-file sndfile 
                                           &key
                                           (snds-per-group 8)
@@ -211,6 +267,7 @@
                                           (sampling-rate 44100)
                                           extensions
                                           warn-not-found)
+;;; ****
   ;; do this just to reset the random number generator
   (random-rep 10 t)
   (let* ((snds (parse-wavelab-marker-files-for-sections marker-file sndfile
@@ -282,6 +339,24 @@
 ;;;
 ;;; marker-file could be a list of marker files; they would be concatenated.
 
+;;; ****f* sndfile-palette/make-sfp-from-groups-in-wavelab-marker-file
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-sfp-from-groups-in-wavelab-marker-file (marker-file sndfile 
                                                     &key
                                                     paths
@@ -289,6 +364,7 @@
                                                     warn-not-found
                                                     (sampling-rate 44100)
                                                     (print t))
+;;; ****
   (let* ((snds (parse-wavelab-marker-files-for-sections marker-file sndfile
                                                        sampling-rate))
          (al (make-assoc-list 'from-group-markers nil)))

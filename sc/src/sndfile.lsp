@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 21:24:31 Thu Dec  8 2011 ICT
+;;; $$ Last modified: 16:20:22 Wed Mar  7 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -141,12 +141,50 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sndfile/stereo
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod stereo ((sf sndfile))
+;;; ****
   (= 2 (channels sf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sndfile/reset-usage
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod reset-usage ((sf sndfile))
+;;; ****
   (setf (will-be-used sf) 0
         (has-been-used sf) 0))
 
@@ -263,8 +301,27 @@
 ;;; list is the full path as found by the sndfile-palette and the second is the
 ;;; list given by the user with the data slots to be used.
 
+;;; ****f* sndfile/make-sndfile
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-sndfile (path &key id data duration end (start 0.0) (frequency 'c4)
                           (amplitude 1.0))
+;;; ****
   (if (listp path)
       (progn
         (let ((sf (make-instance 'sndfile

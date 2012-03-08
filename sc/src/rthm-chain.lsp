@@ -68,7 +68,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 22:06:45 Fri Jan 13 2012 ICT
+;;; $$ Last modified: 12:50:26 Thu Mar  8 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -310,8 +310,27 @@
 ;;; one after the other so it's safe to loop through them pairwise (but check
 ;;; rthm-seq ids are what they're expected to be)
 
+;;; ****m* rthm-chain/split
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod split ((rc rthm-chain) &key
                   (min-beats 2) (max-beats 5) warn (clone t))
+;;; ****
   (flet ((got-stick-rthm (1-beat-rs slower-rs)
            ;; sticking rthms have ids like STICK-RTHMS-AUTO5 and
            ;; STICK-RTHMS-AUTO-SLOW5
@@ -395,7 +414,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* rthm-chain/reset
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod reset ((rc rthm-chain) &optional where)
+;;; ****
   (declare (ignore where))
   (stick-rthms nil nil) ;; reset count
   (reset (sticking-al rc))
@@ -1000,6 +1038,24 @@
 ;;; 26/1/10
 ;;; start with just 3 items/events and successively add new ones until a max of
 ;;; <items>--this can be a list or integer (must be a min of 4)
+;;; ****f* rthm-chain/procession
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun procession (num-results items 
                    &key 
                    ;; what proportion of the way through should we reach the
@@ -1011,6 +1067,7 @@
                    ;; (cyclically). They will then be used when we've gone
                    ;; beyond 3 items by always using the 3 least used items.
                    (orders '((1 2 1 2 3) (1 2 1 1 3) (1 2 1 3))))
+;;; ****
   (let ((num-items 
          (typecase items
            (list (length items))
@@ -1098,7 +1155,26 @@
 ;;; if <auto-inc> we will automatically increment the count of the returned
 ;;; key.
 ;;; <start> and <end> are inclusive.
+;;; ****f* rthm-chain/hash-least-used
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun hash-least-used (hash &key (start 0) end ignore (auto-inc t))
+;;; ****
   (unless end
     (setf end (hash-table-count hash)))
   (let ((count most-positive-fixnum)

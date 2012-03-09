@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 20:25:08 Thu Mar  1 2012 GMT
+;;; $$ Last modified: 20:47:22 Thu Mar  8 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -45,8 +45,6 @@
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 28.12.10 for some reason make-slippery-chicken is crashing with this
-;;; eval-when  
 ;;; (eval-when (compile)
 ;;;    (declaim (optimize (speed 3) (safety 3) (space 0) (debug 0))))
 
@@ -363,8 +361,18 @@
 ;;; a slippery-chicken object
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
+#|
+(let ((min
+       (make-slippery-chicken
+        '+minimum+
+        :instrument-palette +slippery-chicken-standard-instrument-palette+
+        :ensemble '(((fl (flute :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1)))
+        :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -)))))
+        :rthm-seq-map '((1 ((fl (1))))))))
+  (clone min))
+|#
 ;;; SYNOPSIS
 (defmethod clone ((sc slippery-chicken))
 ;;; ****
@@ -411,8 +419,33 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; attacked notes returned i.e. not including ties (or rests)
+;;; ****m* slippery-chicken/num-notes
+;;; FUNCTION
+;;; Returns the number of attacked notes i.e. not including ties or rests.
+;;; 
+;;; ARGUMENTS
+;;; - a slippery-chicken object 
+;;; 
+;;; RETURN VALUE
+;;; An integer
+;;; 
+;;; EXAMPLE
+#|
+(let ((min
+       (make-slippery-chicken
+        '+minimum+
+        :instrument-palette +slippery-chicken-standard-instrument-palette+
+        :ensemble '(((fl (flute :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1)))
+        :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -)))))
+        :rthm-seq-map '((1 ((fl (1))))))))
+  (num-notes min))
+=> 8
+|#
+;;; SYNOPSIS
 (defmethod num-notes ((sc slippery-chicken))
+;;; ****
   (num-notes (piece sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -427,7 +460,28 @@
 ;;; - the bar number at the end of which you want the bar line to change
 ;;; - bar line type: 0 = normal, 1 double bar, 2 final double bar
 ;;; RETURN VALUE  
-;;; always t 
+;;; always T
+;;; 
+;;; EXAMPLE
+#|
+(let ((min
+       (make-slippery-chicken
+        '+minimum+
+        :instrument-palette +slippery-chicken-standard-instrument-palette+
+        :ensemble '(((fl (flute :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1)))
+        :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -)))))
+        :rthm-seq-map '((1 ((fl (1))))))))
+  ;; this piece only has one bar so the barline will be 2 by default
+  (print (bar-line-type (get-bar min 1 'fl)))
+  (change-bar-line-type min 1 1)
+  (bar-line-type (get-bar min 1 'fl)))
+=> 
+...
+2
+1
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod change-bar-line-type ((sc slippery-chicken) bar-num type)
@@ -442,102 +496,121 @@
 ;;; ****m* slippery-chicken/cmn-display
 ;;; FUNCTION
 ;;; cmn-display:
-;;; Write the score as an EPS file using CMN. Caveat: this might fail if you
-;;; generated Lilypond files first; if so, regenerated your slippery-chicken
-;;; and re-call.
+;;; Write the score as an EPS (Encapsulated Postscript) file using CMN. Caveat:
+;;; this might fail if you generated Lilypond files first; if so, regenerate
+;;; your slippery-chicken object and re-call cmn-display.  Several of the key
+;;; arguments are passed directly to CMN and so are named accordingly.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - the slippery-chicken object
-;;; - and lots of &key args: see synopsis
-;;; 
+;;; - &key arguments:
+;;; - :respell default T. T means respell according to slippery chicken's
+;;;    algorithm only.  A list of notes which should be changed to their
+;;;    enharmonics once respelling has been done can also be passed e.g. '((vln
+;;;    (13 2) (14 3)) ...  (cl (14 3 t) ... )).  This refers to the player then
+;;;    as many note references for that player as needed e.g. (13 2) = bar 13
+;;;    note 2 (1-based and counting tied notes but not rests).  The t in the cl
+;;;    refers to changing the written note as the default is to change the
+;;;    sounding note spelling only.  Chords are not respelled by the default
+;;;    algorithm so if these need to be respelled do so in the list e.g. (vln
+;;;    (13 (2 1)))
+;;; - :start-bar default NIL.  What bar to start the score at (default NIL = at
+;;;    the first bar). 
+;;; - :start-bar-numbering default NIL.  The bars will be numbered every
+;;;    five bars starting from this number (or 1 if NIL).
+;;; - :auto-bar-nums default NIL. This is separate from the bar-number written
+;;;    in every part every 5 bars.  If set to e.g. 1 it will print every bar
+;;;    num at the top of each system, or if :by-line, at the start of each line
+;;; - :end-bar default NIL.  What bar to end the score at (default NIL = at the
+;;;    last bar).
+;;; - :file default "/tmp/cmn.eps".  Which EPS file to write.
+;;; - :all-output-in-one-file default t.  Write separate pages (NIL) or all
+;;;    pages to one file (T).
+;;; - :one-line-per-page default NIL.  Write just one line (system) on each
+;;;    page? 
+;;; - staff-separation default 3. The separation between lines within a group,
+;;;    in CMN's units.
+;;; - :line-separation default 5.  The separation between systems (i.e. not
+;;;    groups, but a line of music for the whole ensemble).
+;;; - :empty-staves default NIL. Whether an empty stave should be displayed
+;;;    under each instrument for e.g. manually editing with pencil
+;;; - :write-section-info default T. Write the section number/refs into the
+;;;    score?  NB This might not work before regenerating the slippery-chicken
+;;;    object from scratch.
+;;; - :group-separation default 2. Separation of groups in a system, in CMN's
+;;;    units.  
+;;; - :system-separation default cmn::line-mark.  The gap between systems.  If
+;;;    cmn::page-mark only one system will be written per page.
+;;; - :process-event-fun default NIL. A user-defined function that takes one
+;;;    argument, an event object.  The function will be called for each event
+;;;    in the piece. Could be used e.g. to algorithmically add accents,
+;;;    dynamics, or change the colour of notes, etc.
+;;; - :display-sets default NIL.  Display on a separate treble-bass system the
+;;;    set used for each rthm-seq.
+;;; - :rehearsal-letters-all-players default NIL. By default, rehearsal letters
+;;;    are put over the bar lines of those instruments at the top of each
+;;;    group.  If T, the letters will be put over all instruments (useful when
+;;;    writing parts).
+;;; - :display-marks-in-part default NIL.  The marks-in-part slot of the rhythm
+;;;    class (e.g. text) are added to parts only, i.e. they're not in the main
+;;;    score.  If T, write these to the score also.
+;;; - :tempi-all-players default NIL.  Similar to rehearsal-letters-all-players.
+;;; - :players default NIL.  If NIL, write all players to the score.  If a list
+;;;    of valid players, write only those.
+;;; - :page-height default 29.7.  The page height in centimeters.
+;;; - :page-width default 21.0.   The page width in centimeters.
+;;; - :size default 15.  CMN's overall size scaler.
+;;; - :page-nums default T.  Write the page numbers?
+;;; - :in-c default T.  Display the score in C or if NIL, at written pitch.
+;;;    N.B. Piccolo/double bass keep the usual octave transpositions.
+;;; - :auto-clefs default T.  Automatically insert clefs into those instruments
+;;;    that use more than one clef?
+;;; - :multi-bar-rests NIL.  When writing parts, use multiple bar rests (T) or
+;;;    write each bar with a separate rest (NIL)?
+;;; - :automatic-octave-signs default NIL.  Insert octave signs automatically
+;;;    when notes would otherwise need too many ledger lines?
+;;; - :display-time default NIL.  Write time (mins:secs) on the first event
+;;;    of each bar?
+;;; - :add-postscript default NIL.  Postscript code to be added to the EPS file
+;;;    after it has been written.  See the add-ps-to-file function afor
+;;;    details.
+;;;
 ;;; RETURN VALUE  
-;;; always t
+;;; always T
 ;;; 
 ;;; SYNOPSIS
 #+cmn
 (defmethod cmn-display ((sc slippery-chicken) 
                        &key
-                        ;; could also be a list of notes which should be
-                        ;; changed to their enharmonics e.g.
-                        ;; '((vln (13 2) (14 3) ...
-                        ;;   (cl (14 3 t) ... ))
-                        ;; which refers to the player then e.g. bar 13 note 2
-                        ;; (1-based and counting tied notes but not rests)
-                        ;; the t in the cl refers to changing the written note
-                        ;; (default is to change the sounding note spelling).
                         (respell-notes t)
                         (start-bar nil)
-                        ;; if nil will auto-number bars every 5 bars (see
-                        ;; cmn.lsp::cmn-bar-line)  
                         (start-bar-numbering nil)
                         (end-bar nil)
                         (file "/tmp/cmn.eps")
                         (all-output-in-one-file t)
                         (one-line-per-page nil)
-                        ;; this is the separation between lines within a group
                         (staff-separation 3)
-                        ;; although there's a system-separation parameter for
-                        ;; cmn, this is the one that actually seems to do that
-                        ;; job...this is the separation between what I would
-                        ;; call systems i.e. one line of music and the next.
                         (line-separation 5)
-                        ;; whether an empty stave should be displayed under
-                        ;; each instrument for filling in of notes/edits
-                        ;; manually with pencil (!) 
                         (empty-staves nil)
-                        ;; write the section number/refs into the score?
-                        ;; NB This might not do what you want without
-                        ;; regenerating the slippery-chicken object from
-                        ;; scratch. 
                         (write-section-info t)
-                        ;; separation for groups in a score line
                         (group-separation 2)
-                        ;; more than one system could occur on a page, unless
-                        ;; this is altered to cmn::page-mark 
-                        ;; in CMN this is the gap between groups of instruments
-                        ;; in one line of music.
                         (system-separation cmn::line-mark)
-                        ;; this should be a user-defined function that takes
-                        ;; one argument (an event object) and which will be
-                        ;; called for each event in the piece. Could be used to
-                        ;; algorithmically add accents, dynamics, or something
-                        ;; along those lines. 
                         (process-event-fun nil)
                         (display-sets nil)
-                        ;; by default, rehearsal letters are put over bar lines
-                        ;; of those instruments at the top of each group.  If
-                        ;; this is t, the letters will be put over all
-                        ;; instruments (useful when writing parts).
                         (rehearsal-letters-all-players nil)
-                        ;; some marks (e.g. text) are added to parts only,
-                        ;; i.e. they're not in the main score 
                         (display-marks-in-part nil)
-                        ;; similar to rehearsal-letters-all-players
                         (tempi-all-players nil)
                         (players nil)
                         (page-height 29.7)
                         (page-width 21.0)
                         (size 15)
-                        ;; this seems to be separate from the bar-number
-                        ;; written in every part every 5 bars, but if set to
-                        ;; e.g. 1 it will print every bar num at the top of
-                        ;; each system, or if :by-line, at the start of each
-                        ;; line
                         (auto-bar-nums nil)
                         (page-nums t)
-                        ;; display the score in C (but piccolo/double bass keep
-                        ;; the usual octave transpositions) or at written
-                        ;; pitch? 
                         (in-c t)
                         (auto-clefs t)
                         (multi-bar-rests nil)
                         (automatic-octave-signs nil)
-                        ;; whether to write time (mins:secs) on the first event
-                        ;; of each bar.
                         (display-time nil)
-                        ;; ps code to be added to the cmn-produced file after
-                        ;; t has been written.  See add-ps-to-file below for
-                        ;; details. 
                         (add-postscript nil))
 ;;; ****
   (when respell-notes
@@ -5931,6 +6004,11 @@
 ;;; the third is the curve itself.
 ;;; NB the curve should start at 0 but the map will start at bar 1
 (defun tempo-curve-to-map (tempo-map tempo-curve num-bars)
+  ;; MDE Thu Mar  8 15:25:33 2012 
+  (unless (or tempo-map tempo-curve)
+    (warn "slippery-chicken::tempo-curve-to-map: No tempo-map or tempo-curve ~
+            given. ~%Using default of crotchet/quarter = 60.")
+    (setf tempo-map '((1 (q 60)))))
   (when (and tempo-map tempo-curve)
     (error "slippery-chicken::tempo-curve-to-map: ~
             can't have a tempo-map and a tempo-curve; ~%only one or the other"))
@@ -5946,6 +6024,11 @@
              ;; round to the nearest bar
              (list (round x) (list beat (interpolate x new-curve)))))))
              
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Mar  8 15:42:33 2012 
+(defun slippery-chicken-p (thing)
+  (typep thing 'slippery-chicken))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; EOF slippery-chicken.lsp

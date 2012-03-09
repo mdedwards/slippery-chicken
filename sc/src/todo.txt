@@ -93,3 +93,14 @@ MDE Mon Feb 27 18:13:07 2012 -- this doesn't seem right...use the number of
 set-map refs in each section instead?
 
 (defmethod num-seqs ((sc slippery-chicken) section-ref)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+top of slippery-chicken.lsp
+
+;;; 28.12.10 for some reason make-slippery-chicken is crashing with this
+;;; eval-when  
+;;; (eval-when (compile)
+;;;    (declaim (optimize (speed 3) (safety 3) (space 0) (debug 0))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

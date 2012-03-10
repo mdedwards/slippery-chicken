@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:20:20 Sat Mar 10 2012 GMT
+;;; $$ Last modified: 16:54:13 Sat Mar 10 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4507,6 +4507,8 @@
                                   ;; optimize page breaks for page turns in
                                   ;; parts 
                                   (page-turns nil)
+                                  ;; MDE Sat Mar 10 16:52:31 2012 
+                                  (process-event-fun nil)
                                   ;; minimum rest necessary to do a page turn;
                                   ;; something like a time signature e.g. (2 1)
                                   ;; would mean we need a min. of 2 whole rests
@@ -4697,6 +4699,7 @@
           sc player 
           (concatenate 'string path (format nil "~a-~a.ly" title-hyphens pname))
           :all-bar-nums all-bar-nums
+          :process-event-fun process-event-fun
           :rehearsal-letters-font-size rehearsal-letters-font-size
           :in-c in-c :start-bar start-bar :end-bar end-bar))
       ;; got to write the written (i.e. not sounding) notes for the part
@@ -4724,6 +4727,8 @@
                                      ;; print every bar number unless
                                      ;; multi-bar-rest?
                                      all-bar-nums 
+                                     ;; MDE Sat Mar 10 16:53:16 2012 
+                                     process-event-fun
                                      rehearsal-letters-font-size)
   (unless start-bar
     (setf start-bar 1))
@@ -4750,7 +4755,8 @@
       (loop for bar-num from start-bar to end-bar
          for rsb = (get-bar sc bar-num player)
          for lp-data = (get-lp-data rsb (or in-c (not transposing)) 
-                                    rehearsal-letters-font-size)
+                                    rehearsal-letters-font-size
+                                    process-event-fun)
          do
          (format out "~&% bar ~a~%" bar-num)
          (loop for data in lp-data do

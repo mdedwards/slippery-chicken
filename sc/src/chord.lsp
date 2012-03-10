@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 17:38:46 Wed Feb  8 2012 GMT
+;;; $$ Last modified: 17:00:31 Sat Mar 10 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -164,8 +164,8 @@
 #|
 ;; Returns NIL
 (let ((chrd (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
-			  :midi-channel 11
-			  :microtones-midi-channel 12)))
+                          :midi-channel 11
+                          :microtones-midi-channel 12)))
   (set-midi-channel chrd 3 4))
 
 => NIL
@@ -173,8 +173,8 @@
 ;; Print the value of the MIDI slot for each of the pitch objects contained in
 ;; the chord object before and after setting
 (let ((chrd (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
-			  :midi-channel 11
-			  :microtones-midi-channel 12)))
+                          :midi-channel 11
+                          :microtones-midi-channel 12)))
   (print (loop for p in (data chrd) collect (midi-channel p)))
   (set-midi-channel chrd 3 4)
   (print (loop for p in (data chrd) collect (midi-channel p))))
@@ -215,8 +215,8 @@
 ;;; EXAMPLE
 #|
 (let ((chrd (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
-			:midi-channel 11
-			:microtones-midi-channel 12)))
+                        :midi-channel 11
+                        :microtones-midi-channel 12)))
   (get-midi-channel chrd))
 
 => 11
@@ -277,8 +277,8 @@
 #|
 
 (let ((chrd (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
-			:midi-channel 11
-			:microtones-midi-channel 12)))
+                        :midi-channel 11
+                        :microtones-midi-channel 12)))
   (get-pitch chrd 3))
 
 => 
@@ -349,8 +349,8 @@ data: GQS4
 ;;; EXAMPLE
 #|
 (let ((chrd (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
-			:midi-channel 11
-			:microtones-midi-channel 12)))
+                        :midi-channel 11
+                        :microtones-midi-channel 12)))
   (get-pitch-symbols chrd))
 
 => (C4 E4 GQS4 BQF4 D5 F5)
@@ -412,34 +412,34 @@ data: GQS4
 #|
 ;; Two chords are equal
 (let ((chrd1 (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
-			:midi-channel 11
-			:microtones-midi-channel 12))
+                        :midi-channel 11
+                        :microtones-midi-channel 12))
       (chrd2 (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
-			:midi-channel 11
-			:microtones-midi-channel 12)))
+                        :midi-channel 11
+                        :microtones-midi-channel 12)))
   (chord-equal chrd1 chrd2))
 
 => T
 
 ;; Chord objects with the same pitch objects in a different order are unequal
 (let ((chrd1 (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
-			:midi-channel 11
-			:microtones-midi-channel 12))
+                        :midi-channel 11
+                        :microtones-midi-channel 12))
       (chrd2 (make-chord '(e4 c4 gqs4 bqf4 d5 f5)
-			:midi-channel 11
-			:microtones-midi-channel 12
-			:auto-sort nil)))
+                        :midi-channel 11
+                        :microtones-midi-channel 12
+                        :auto-sort nil)))
   (chord-equal chrd1 chrd2))
 
 => NIL
 
 ;; Only the pitch content is compared. Content of other slots is irrelevant. 
 (let ((chrd1 (make-chord '(e4 c4 gqs4 bqf4 d5 f5)
-			 :midi-channel 11
-			 :microtones-midi-channel 12))
+                         :midi-channel 11
+                         :microtones-midi-channel 12))
       (chrd2 (make-chord '(e4 c4 gqs4 bqf4 d5 f5)
-			 :midi-channel 7
-			 :microtones-midi-channel 8)))
+                         :midi-channel 7
+                         :microtones-midi-channel 8)))
   (chord-equal chrd1 chrd2))
 
 => T
@@ -475,9 +475,9 @@ data: GQS4
 #|
 ;; Returns the pitch object of the lowest pitch despite not being sorted
 (let ((chrd (make-chord '(e4 c4 gqs4 bqf4 d5 f5)
-			:midi-channel 11
-			:microtones-midi-channel 12
-			:auto-sort nil)))
+                        :midi-channel 11
+                        :microtones-midi-channel 12
+                        :auto-sort nil)))
   (lowest chrd))
 
 => 
@@ -533,8 +533,8 @@ data: C4
 #|
 ;; Returns the last pitch object of a chord object
 (let ((chrd (make-chord '(e4 c4 gqs4 bqf4 d5 f5)
-			:midi-channel 11
-			:microtones-midi-channel 12)))
+                        :midi-channel 11
+                        :microtones-midi-channel 12)))
   (highest chrd))
 
 => 
@@ -557,9 +557,9 @@ data: F5
 ;; Is not capable of returning the highest pitch object from chord objects that
 ;; have not been auto-sorted
 (let ((chrd (make-chord '(e4 c4 gqs4 bqf4 f5 d5)
-			:midi-channel 11
-			:microtones-midi-channel 12
-			:auto-sort nil)))
+                        :midi-channel 11
+                        :microtones-midi-channel 12
+                        :auto-sort nil)))
   (data (highest chrd)))
 
 => D5
@@ -619,8 +619,8 @@ data: F5
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod get-lp-data ((c chord) &optional ignore1 ignore2)
-  (declare (ignore ignore1 ignore2))
+(defmethod get-lp-data ((c chord) &optional ignore1 ignore2 ignore3)
+  (declare (ignore ignore1 ignore2 ignore3))
   (let ((result '(>))
         (lpchord (loop for pitch in (data c) collect (get-lp-data pitch))))
     (setf result (cons '< (append lpchord result)))
@@ -666,16 +666,16 @@ data: F5
 ;; Apply the method with no optional argument (defaults to 'ASCENDING) and
 ;; collect and print the data of the pitch objects in the resulting list
 (let ((chrd (make-chord '(d5 c4 gqs4 bqf5 f5 e4)
-			:midi-channel 11
-			:microtones-midi-channel 12)))
+                        :midi-channel 11
+                        :microtones-midi-channel 12)))
   (print (loop for p in (sort-pitches chrd) collect (data p))))
 
 => (C4 E4 GQS4 D5 F5 BQF5)
 
 ;; Sort from high to low
 (let ((chrd (make-chord '(d5 c4 gqs4 bqf5 f5 e4)
-			:midi-channel 11
-			:microtones-midi-channel 12)))
+                        :midi-channel 11
+                        :microtones-midi-channel 12)))
   (print (loop for p in (sort-pitches chrd 'descending) collect (data p))))
 
 => (BQF5 F5 D5 GQS4 E4 C4)
@@ -740,16 +740,16 @@ data: F5
 #|
 ;; Returns the tail of pitch objects contained starting with the tested pitch
 (let ((chrd (make-chord '(c4 e4 gqs4 a4 d5 f5 bqf5)
-			:midi-channel 11
-			:microtones-midi-channel 12)))
+                        :midi-channel 11
+                        :microtones-midi-channel 12)))
   (pitch-list-to-symbols (chord-member chrd (make-pitch 'a4))))
 
 => (A4 D5 F5 BQF5)
 
 ;; The chord object's default auto-sort feature might appear to affect outcome
 (let ((chrd (make-chord '(d5 c4 gqs4 a4 bqf5 f5 e4)
-			:midi-channel 11
-			:microtones-midi-channel 12)))
+                        :midi-channel 11
+                        :microtones-midi-channel 12)))
   (pitch-list-to-symbols (chord-member chrd (make-pitch 'a4))))
 
 => (A4 D5 F5 BQF5)
@@ -758,8 +758,8 @@ data: F5
 ;; example uses the "pitch-list-to-symbols" function to simplify the
 ;; pitch-object output.
 (let ((chrd (make-chord '(d5 c4 gqs4 a4 bqf5 f5 e4)
-			:midi-channel 11
-			:microtones-midi-channel 12)))
+                        :midi-channel 11
+                        :microtones-midi-channel 12)))
   (pitch-list-to-symbols (chord-member chrd (make-pitch 'b4))))
 
 => NIL
@@ -1175,8 +1175,8 @@ data: F5
 ;; the MIDI-CHANNEL slot of each of the contained pitch objects being set
 ;; accordingly, depending on whether it is a chromatic or microtonal pitch
 (let ((mc (make-chord '(cqs4 e4 gqf4 b4 dqf5 f5) 
-		      :midi-channel 11
-		      :microtones-midi-channel 12)))
+                      :midi-channel 11
+                      :microtones-midi-channel 12)))
   (loop for p in (data mc) collect (midi-channel p)))
 
 => (12 11 12 11 12 11)

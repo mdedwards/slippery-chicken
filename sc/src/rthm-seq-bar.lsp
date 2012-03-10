@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 10:10:01 Sun Feb  5 2012 ICT
+;;; $$ Last modified: 17:03:09 Sat Mar 10 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2848,7 +2848,9 @@ data: (2 4)
 
 ;;; 
 (defmethod get-lp-data ((rsb rthm-seq-bar) &optional
-                        in-c (rehearsal-letters-font-size 18))
+                        in-c (rehearsal-letters-font-size 18)
+                        ;; MDE Sat Mar 10 16:55:31 2012 
+                        process-event-fun)
   ;; 25.7.11 (Pula): why consolidate here?
   ;; (consolidate-rests rsb)
   (let ((result '())
@@ -2875,6 +2877,9 @@ data: (2 4)
                  (push lpm result))))
         ;; not a rest bar
         (loop for event in (rhythms rsb) do
+             ;; MDE Sat Mar 10 17:03:07 2012 
+             (when process-event-fun
+               (funcall process-event-fun event))
              (push (get-lp-data event in-c) result)))
     ;; attach the given rehearsal letter
     (when (rehearsal-letter rsb)

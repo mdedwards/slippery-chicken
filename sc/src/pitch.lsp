@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 20:46:36 Thu Mar  1 2012 GMT
+;;; $$ Last modified: 17:00:56 Sat Mar 10 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1751,8 +1751,8 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; lilypond output
-(defmethod get-lp-data ((p pitch) &optional ignore1 ignore2)
-  (declare (ignore ignore1 ignore2))
+(defmethod get-lp-data ((p pitch) &optional ignore1 ignore2 ignore3)
+  (declare (ignore ignore1 ignore2 ignore3))
   (let* ((octave (octave p))
          (lp8ve (cond
                   ((= octave 3) "")

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:28:18 Fri Mar  2 2012 GMT
+;;; $$ Last modified: 17:00:42 Sat Mar 10 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1839,8 +1839,8 @@ NIL
 ;;;  lilypond
 ;;; test nested tuplets, grace notes
 (let ((grace-notes '()))
-  (defmethod get-lp-data ((e event) &optional in-c ignore)
-    (declare (ignore ignore))
+  (defmethod get-lp-data ((e event) &optional in-c ignore1 ignore2)
+    (declare (ignore ignore1 ignore2))
     (when (and (not in-c) (not (is-rest e)) (not (written-pitch-or-chord e)))
       (error "event::get-lp-data: request for non-existent ~
               transposed pitch: ~%~a" e))

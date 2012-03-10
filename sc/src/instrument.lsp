@@ -1067,7 +1067,7 @@ data: NIL
 ;;; ****f* instrument/default-chord-function
 ;;; FUNCTION
 ;;; If an instrument is able to play chords, we need to define a function to
-;;; select notes from a list that it can play as a chord.  This function (as
+;;; select notes from a list that it can play as a chord. This function (as
 ;;; a symbol) is passed as a slot to the instrument instance.
 ;;; 
 ;;; This is the default function; it returns a 2-note chord with the note at
@@ -1095,7 +1095,6 @@ data: NIL
 ;;; SYNOPSIS
 (defun default-chord-function (curve-num index pitch-list pitch-seq instrument
                                set)
-;;; **** 
   (declare (ignore set instrument pitch-seq curve-num))
   (let ((at-index (nth index pitch-list))
         p1 p2)
@@ -1112,7 +1111,7 @@ data: NIL
     (if p2
         (make-chord (list p1 p2))
         (make-chord (list p1)))))
-
+;;; **** 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Jan  7 14:20:45 EST 2012: Added instrument-p function

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 20:47:22 Thu Mar  8 2012 GMT
+;;; $$ Last modified: 16:20:20 Sat Mar 10 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -534,7 +534,7 @@
 ;;;    groups, but a line of music for the whole ensemble).
 ;;; - :empty-staves default NIL. Whether an empty stave should be displayed
 ;;;    under each instrument for e.g. manually editing with pencil
-;;; - :write-section-info default T. Write the section number/refs into the
+;;; - :write-section-info default NIL. Write the section number/refs into the
 ;;;    score?  NB This might not work before regenerating the slippery-chicken
 ;;;    object from scratch.
 ;;; - :group-separation default 2. Separation of groups in a system, in CMN's
@@ -592,7 +592,7 @@
                         (staff-separation 3)
                         (line-separation 5)
                         (empty-staves nil)
-                        (write-section-info t)
+                        (write-section-info nil)
                         (group-separation 2)
                         (system-separation cmn::line-mark)
                         (process-event-fun nil)

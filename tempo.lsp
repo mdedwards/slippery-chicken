@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified: 19:21:37 Fri Dec 30 2011 ICT
+;;; $$ Last modified: 17:01:17 Sat Mar 10 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -168,8 +168,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod get-lp-data ((tpo tempo) &optional ignore1 ignore2)
-  (declare (ignore ignore1 ignore2))
+(defmethod get-lp-data ((tpo tempo) &optional ignore1 ignore2 ignore3)
+  (declare (ignore ignore1 ignore2 ignore3))
   (format nil "\\tempo ~a ~a = ~a "
           (if (description tpo)
               (format nil "\"~a\"" (description tpo))

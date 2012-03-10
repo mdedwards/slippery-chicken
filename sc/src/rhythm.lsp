@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 20:46:29 Thu Mar  1 2012 GMT
+;;; $$ Last modified: 17:46:20 Sat Mar 10 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1238,38 +1238,38 @@ NI
          (first-char nil))
     (if (numberp rthm)
         (setf letter-value rthm)
-      (progn
-        (when (char= #\. (aref string (- (length string) 1)))
-          (let ((dots (dots string)))
-            (setq num-dots (second dots)
-                  dots-scaler (/ (first dots))))
-          ;; backslashes protect the dot in eg 14\.
-          (setq string (string-right-trim "\." string)))
-        (setf tuplet-scaler (case (aref string 0) 
-                              (#\T 3/2)
-                              (#\F 5/4)
-                              (t 1))
-              scaler (* dots-scaler tuplet-scaler)
-              len (progn (unless (= dots-scaler scaler)
-                           (setq string (subseq string 1)))
-                         (length string))
-              first-char (aref string 0)
-              letter-value 
-              (if (> len 0);; i.e. if rthm was a valid argument!
-                  (if (digit-char-p first-char)
-                      (read-from-string string)
-                    ;; string should now only contain one letter
-                    (if (= len 1)  
-                        (case first-char
-                          ;; as a side effect the is-grace-note slot of the
-                          ;; rhythm object is set here and a duration of 0
-                          ;; is given.
-                          (#\G (setf (is-grace-note i) t) 0)
-                          (#\W 1)
-                          (#\H 2)
-                          (#\Q 4)
-                          (#\E 8)
-                          (#\S 16))))))))
+        (progn
+          (when (char= #\. (aref string (- (length string) 1)))
+            (let ((dots (dots string)))
+              (setq num-dots (second dots)
+                    dots-scaler (/ (first dots))))
+            ;; backslashes protect the dot in eg 14\.
+            (setq string (string-right-trim "\." string)))
+          (setf tuplet-scaler (case (aref string 0) 
+                                (#\T 3/2)
+                                (#\F 5/4)
+                                (t 1))
+                scaler (* dots-scaler tuplet-scaler)
+                len (progn (unless (= dots-scaler scaler)
+                             (setq string (subseq string 1)))
+                           (length string))
+                first-char (aref string 0)
+                letter-value 
+                (if (> len 0) ;; i.e. if rthm was a valid argument!
+                    (if (digit-char-p first-char)
+                        (read-from-string string)
+                        ;; string should now only contain one letter
+                        (if (= len 1)  
+                            (case first-char
+                              ;; as a side effect the is-grace-note slot of the
+                              ;; rhythm object is set here and a duration of 0
+                              ;; is given.
+                              (#\G (setf (is-grace-note i) t) 0)
+                              (#\W 1)
+                              (#\H 2)
+                              (#\Q 4)
+                              (#\E 8)
+                              (#\S 16))))))))
     (unless letter-value
       (error "rhythm::parse-rhythm: ~a is not a valid argument."
              rthm))
@@ -1278,15 +1278,15 @@ NI
           ;; get the rq for cmn
           rq (if (is-grace-note i)
                  0
-               (* (/ 4 letter-value) (/ tuplet-scaler)
-                  (/ (rationalize dots-scaler)))))
+                 (* (/ 4 letter-value) (/ tuplet-scaler)
+                    (/ (rationalize dots-scaler)))))
     (setf (rq i) rq ;; (cmn::rq rq)
           value (float (* letter-value scaler))
           (value i) value
           ;; set duration to be the duration in seconds when qtr = 60
           (duration i) (if (zerop value) 
                            0.0 
-                         (/ 4.0 value))
+                           (/ 4.0 value))
           (compound-duration i) (duration i)
           (num-dots i) num-dots
           ;; 30.1.11 next two for lilypond
@@ -1297,6 +1297,14 @@ NI
                                  (float (* letter-value tuplet-scaler))
                                  (make-string num-dots 
                                               :initial-element #\.)))
+    ;; MDE Sat Mar 10 17:37:51 2012 -- for lilypond: if we have a plain 12 as a
+    ;; rhythm, tuplet-scaler would be 1, because there's no F or T in front of
+    ;; a letter value, but we need it to be 3/2 as 12 is a te so try and figure
+    ;; it out mathematically
+    (when (and (= 1 (tuplet-scaler i))
+               (numberp (data i)))
+      (setf (tuplet-scaler i) (rationalize (/ (nearest-power-of-2 (value i))
+                                              (value i)))))
     value))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

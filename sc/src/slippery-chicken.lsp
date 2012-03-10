@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:54:13 Sat Mar 10 2012 GMT
+;;; $$ Last modified: 17:12:03 Sat Mar 10 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4632,6 +4632,8 @@
         (princ "global = {" out) 
         (terpri out)
         (princ "  \\key c \\major" out)
+        (terpri out)
+        (princ "  \\numericTimeSignature" out)
         (terpri out)
         (princ "}" out)
         (terpri out)

@@ -195,10 +195,12 @@
        :midi-program 13 :starting-clef treble :clefs (treble) ; (treble bass)
        :microtones nil))
      (piano
-      (:staff-name "piano" :lowest-written a0 :highest-written c8 :chords t
-       :midi-program 1 :starting-clef treble :staff-short-name "pno"
-       :clefs (treble bass double-treble double-bass)
-       :microtones nil :largest-fast-leap 9 :chord-function piano-chord-fun))
+      (:staff-name "piano" :staff-short-name "pno"
+       :lowest-written a0 :highest-written c8 
+       :clefs (treble bass double-treble double-bass) :starting-clef treble
+       :microtones nil :largest-fast-leap 9
+       :chords t :chord-function piano-chord-fun
+       :midi-program 1))
      ;; we generally treat the piano as two instruments (LH, RH), generating
      ;; lines separately.  So this is the same as the piano instrument but has
      ;; no staff-name and starts with bass clef.  Use set-limits to change the
@@ -310,19 +312,18 @@
     (string-chord-selection-fun curve-num index pitch-list pitch-seq 
                                 instrument set vc-III)))
 
-(defun piano-chord-fun (curve-num index pitch-list pitch-seq instrument
-                        set) 
+(defun piano-chord-fun (curve-num index pitch-list pitch-seq instrument set)
   (declare (ignore set instrument pitch-seq curve-num))
-  (let* ((start (max 0 (- index 3))) ;; try and get 4 notes
+  (let* ((start (max 0 (- index 3))) ;; try to get 4 notes
          (at-start (nth start pitch-list))
          (result (list at-start)))
     (loop 
        for i from (1+ start) to (+ start 3) 
        for p = (nth i pitch-list)
        do
-       (when (and p (<= (pitch- p at-start) 12)
-                  (not (member p result :test #'note=)))
-         (push p result)))
+	 (when (and p (<= (pitch- p at-start) 12)
+		    (not (member p result :test #'note=)))
+	   (push p result)))
     (if (> (length result) 1)
         (make-chord result)
         (first result))))

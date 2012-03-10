@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 18:02:40 Tue Feb 28 2012 GMT
+;;; $$ Last modified: 16:24:00 Sat Mar 10 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -193,7 +193,8 @@
 (let ((msp (make-set-palette 
             'test
             '((1 ((1
-                   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
+                   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5
+                         b5)))
                   (2
                    ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
                     :subsets

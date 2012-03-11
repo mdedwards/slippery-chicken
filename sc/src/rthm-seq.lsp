@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 02:22:59 Sat Feb  4 2012 ICT
+;;; $$ Last modified: 18:48:13 Sun Mar 11 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -116,8 +116,11 @@
       (setf bars (loop for bar in (first data) and i from 1
                       for rsb = (make-rthm-seq-bar 
                                  bar (format nil "~a-bar~a" (id rs) i))
-                      ;; 2.2.11 make sure rest bars are made here 
-                    do (consolidate-rests rsb)
+                    do 
+                    ;; 2.2.11 make sure rest bars are made here 
+                    ;; MDE Sun Mar 11 18:48:06 2012 -- only when all are rests
+                      (when (all-rests? rsb)
+                        (consolidate-rests rsb))
                     collect rsb)
             (bars rs) bars)
       ;; Issue an error when an unnecessary time-sig was given!
@@ -1292,13 +1295,13 @@ data: ((((2 4) Q+E S S) ((E) Q (E)) ((3 8) S S E. S)) PITCH-SEQ-PALETTE
 ;; With the same combine call, print the collected contents of the BARS slot
 ;; and the PITCH-SEQ-PALETTE slot of the new rthm-seq object
 (let* ((rs1 (make-rthm-seq '((((2 4) q+e s s)
-			      ((e) q (e))
-			      ((3 8) s s e. s))
-			     :pitch-seq-palette ((1 2 3 1 1 2 3 4)))))
+                              ((e) q (e))
+                              ((3 8) s s e. s))
+                             :pitch-seq-palette ((1 2 3 1 1 2 3 4)))))
        (rs2 (make-rthm-seq '((((4 4) h+e (e) { 3 te te te })
-			      ((5 8) e e+32 s. +q)
-			      ((3 4) (q) q q))
-			     :pitch-seq-palette ((1 2 3 4 1 2 3 1 2)))))
+                              ((5 8) e e+32 s. +q)
+                              ((3 4) (q) q q))
+                             :pitch-seq-palette ((1 2 3 4 1 2 3 1 2)))))
        (crs (combine rs1 rs2)))
   (print-simple crs)
   (print (data (get-first (pitch-seq-palette crs)))))

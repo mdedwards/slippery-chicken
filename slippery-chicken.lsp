@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:12:03 Sat Mar 10 2012 GMT
+;;; $$ Last modified: 18:22:45 Sat Mar 10 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3278,14 +3278,14 @@
 
 #+cm-2
 (defmethod midi-play ((sc slippery-chicken)
-                      start-section
                       &key 
+                      (start-section 1)
                       ;; these voices are used to get the actual sequence
                       ;; orders i.e. each voice will be appended to <section>
                       ;; when calling get-data.
                       ;; if nil then all voices.
                       (voices nil)
-                      (midi-file "/temp/sc.mid")
+                      (midi-file "/tmp/sc.mid")
                       (time-scaler 1.0)
                       (from-sequence 1)
                       (num-sequences nil)
@@ -4469,8 +4469,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;  lilypond
-(defmethod write-lp-data-for-all ((sc slippery-chicken) base-path
-                                  &key start-bar end-bar (paper "a4") landscape
+(defmethod write-lp-data-for-all ((sc slippery-chicken) 
+                                  &key
+                                  (base-path "/tmp/")
+                                  start-bar end-bar (paper "a4") landscape
                                   ;; if a list, then these are the enharmonic
                                   ;; corrections
                                   (respell-notes t) 

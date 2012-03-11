@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 17:03:09 Sat Mar 10 2012 GMT
+;;; $$ Last modified: 18:44:40 Sun Mar 11 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -509,6 +509,7 @@ data: NIL
 ;;; ****
   ;; (print 'consolidate-rests)
   ;; (print (length (rhythms rsb)))
+  (break)
   (let ((beats (get-beats rsb beat))
         (cbeats '())
         ;; 21.7.11
@@ -783,6 +784,7 @@ data: ((2 4) Q E S S)
 
 ;;; this will only work with simple tuplets i.e. not nested
 (defmethod fix-brackets ((rsb rthm-seq-bar))
+  ;; (print 'fix-brackets)
   (loop with current with dur = 0.0
      for r in (rhythms rsb) 
      for br = (first (bracket r))

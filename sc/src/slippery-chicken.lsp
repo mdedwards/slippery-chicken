@@ -528,7 +528,7 @@
 ;;;    pages to one file (T).
 ;;; - :one-line-per-page default NIL.  Write just one line (system) on each
 ;;;    page? 
-;;; - staff-separation default 3. The separation between lines within a group,
+;;; - :staff-separation default 3. The separation between lines within a group,
 ;;;    in CMN's units.
 ;;; - :line-separation default 5.  The separation between systems (i.e. not
 ;;;    groups, but a line of music for the whole ensemble).

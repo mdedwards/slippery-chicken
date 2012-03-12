@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 18:44:40 Sun Mar 11 2012 GMT
+;;; $$ Last modified: 11:59:33 Mon Mar 12 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -509,7 +509,6 @@ data: NIL
 ;;; ****
   ;; (print 'consolidate-rests)
   ;; (print (length (rhythms rsb)))
-  (break)
   (let ((beats (get-beats rsb beat))
         (cbeats '())
         ;; 21.7.11

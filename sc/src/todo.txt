@@ -104,3 +104,14 @@ top of slippery-chicken.lsp
 ;;;    (declaim (optimize (speed 3) (safety 3) (space 0) (debug 0))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+rthm-seq-bar::consolidate-rests
+21.7.11 (Pula): This method is by no means error-free, especially as it
+;;; was developed for combining lots of short rests into a longer one.  In
+;;; particular we need to develop an algorithm for resolving simple things e,q
+;;; as rests...
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+rthm-seq-bar::consolidate-notes-aux
+;;; todo: this somehow misses (s) s+e (should be (s) e.)  
+;;; 5/4/07 todo: it misses a lot actually; only handles simple cases but this
+;;; suffices for now.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

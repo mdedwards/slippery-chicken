@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 18:48:13 Sun Mar 11 2012 GMT
+;;; $$ Last modified: 09:37:51 Tue Mar 13 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -120,7 +120,7 @@
                     ;; 2.2.11 make sure rest bars are made here 
                     ;; MDE Sun Mar 11 18:48:06 2012 -- only when all are rests
                       (when (all-rests? rsb)
-                        (consolidate-rests rsb))
+                        (force-rest-bar rsb))
                     collect rsb)
             (bars rs) bars)
       ;; Issue an error when an unnecessary time-sig was given!

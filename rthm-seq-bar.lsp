@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 11:59:33 Mon Mar 12 2012 GMT
+;;; $$ Last modified: 11:25:40 Tue Mar 13 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -483,10 +483,7 @@ data: NIL
   (rhythms-all-rests? (rhythms rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  21.7.11 (Pula): This method is by no means error-free, especially as it
-;;; was developed for combining lots of short rests into a longer one.  In
-;;; particular we need to develop an algorithm for resolving simple things e,q
-;;; as rests...
+;;;  
 ;;; ****m* rthm-seq-bar/consolidate-rests
 ;;; FUNCTION
 ;;; 
@@ -516,6 +513,8 @@ data: NIL
         (rest-dur nil)
         (count 1)
         (last-rhythm nil)
+        ;; MDE Tue Mar 13 11:22:18 2012 
+        (first-rhythm nil)
         (current '()))
     (setf min (if min 
                   (duration (make-rhythm min))
@@ -541,19 +540,29 @@ data: NIL
                                 (if (= rest-dur (duration r))
                                     (incf count)
                                     (progn
-                                      (consolidate last-rhythm count)
+                                      ;; MDE Tue Mar 13 11:24:53 2012 -- don't
+                                      ;; use last-rhythm as that won't have a
+                                      ;; bracket, if there is one. same for the
+                                      ;; two other calls below
+                                      (consolidate first-rhythm count)
                                       (setf count 1
                                             rest-dur (duration r))))
-                                (setf rest-dur (duration r)))
+                                ;; MDE Tue Mar 13 11:24:00 2012 -- need the
+                                ;; first rhythm for the bracket, if there is
+                                ;; one
+                                (setf first-rhythm r
+                                      rest-dur (duration r)))
                             (progn ;; not a rest!
                               (when (and last-rhythm (is-rest last-rhythm))
-                                (consolidate last-rhythm count))
+                                ;; MDE Tue Mar 13 11:25:26 2012 
+                                (consolidate first-rhythm count))
                               (setf rest-dur nil
                                     count 1)
                               (push r current)))
                         (setf last-rhythm r)))
                (when (and last-rhythm (is-rest last-rhythm))
-                 (consolidate last-rhythm count))
+                 ;; MDE Tue Mar 13 11:25:32 2012 
+                 (consolidate first-rhythm count))
                (push (reverse current) cbeats)
                (setf current nil
                      last-rhythm nil
@@ -4585,9 +4594,6 @@ show-rest: T
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; if match-rhythm is given (probably a beat), we'll only consolidate those.
-;;; todo: this somehow misses (s) s+e (should be (s) e.)  
-;;; 5/4/07 todo: it misses a lot actually; only handles simple cases but this
-;;; suffices for now.
 
 (defun consolidate-notes-aux (rhythms &optional (bar-num -1) match-rhythm)
   ;; (print 'consolidate-notes-aux-in)
@@ -4647,6 +4653,11 @@ show-rest: T
                bar-num sum-consol sum))
       ;; (print 'consolidate-notes-aux-out)
       ;; (print-rhythms-rqs result)
+      ;; MDE Tue Mar 13 11:02:38 2012 -- still need the bracket?
+      (when (equalp (tuplet-scaler (first rhythms))
+                    (tuplet-scaler (first result)))
+        (setf (bracket (first result))
+              (bracket (first rhythms))))
       result)))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 

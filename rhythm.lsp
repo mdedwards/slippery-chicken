@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 17:58:48 Sun Mar 11 2012 GMT
+;;; $$ Last modified: 11:10:13 Tue Mar 13 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -378,7 +378,10 @@
                   (is-rest try) (is-rest r)
                   (is-tied-to try) (is-tied-to r)
                   (is-tied-from try) (is-tied-from r)
-                  (needs-new-note try) (needs-new-note r)))
+                  (needs-new-note try) (needs-new-note r))
+            ;; MDE Tue Mar 13 11:09:27 2012 
+            (when (= (tuplet-scaler r) (tuplet-scaler try))
+              (setf (bracket try) (bracket r))))
           (if try
               try
               r)))))

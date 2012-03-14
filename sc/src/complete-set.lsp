@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 13:16:30 Sat Feb 11 2012 GMT
+;;; $$ Last modified: 20:28:15 Wed Mar 14 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -249,27 +249,30 @@
                (push-aux note-list text 3 offset-offset))
              (do-subsets (subset)
                (when (data subset)
-                 (loop
-                    for i below (sclist-length subset) 
-                    for ss = (get-nth i subset)
-                    for sstb = (get-cmn-treble-bass (data ss) nil 4stave)
-                    for label = (format nil "~a ~a" 
-                                         (id ss)
-                                         (if (tag ss)
-                                             (if (listp (tag ss))
-                                                 (list-to-string (tag ss))
-                                                 (tag ss))
-                                             ""))
-                    do 
-                      ;; (print sstb)
-                    (push-treble (first sstb) 
-                                 (if 4stave "" label)
-                                 ;;0.4)
-                                 0)
-                    (push-bass (second sstb))
-                    (when 4stave
-                      (push-quad-treble (third sstb) (if 4stave label ""))
-                      (push-quad-bass (fourth sstb)))))))
+                 (let (ss sstb label)
+                   (loop for i below (sclist-length subset) do
+                        (setf ss (get-nth i subset))
+                        (if (is-ral (data ss))
+                            (do-subsets (data ss))
+                            (progn
+                              (setf sstb (get-cmn-treble-bass (data ss) nil
+                                                              4stave)
+                                    label (format
+                                           nil "~a ~a" 
+                                           (id ss)
+                                           (if (tag ss)
+                                               (if (listp (tag ss))
+                                                   (list-to-string (tag ss))
+                                                   (tag ss))
+                                               "")))
+                              (push-treble (first sstb) 
+                                           (if 4stave "" label)
+                                           0)
+                              (push-bass (second sstb))
+                              (when 4stave
+                                (push-quad-treble (third sstb) 
+                                                  (if 4stave label ""))
+                                (push-quad-bass (fourth sstb))))))))))
       (push-treble (first main) (if 4stave "" text) 0.4)
       (push-bass (second main) "" 0.4)
       (when 4stave
@@ -426,13 +429,13 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 
 ;; Using the other keyword arguments
 (make-complete-set '(d2 f2 a2 e3 g3 b3 d4 gf4 bf4 df5 f5 af5)
-	     :id 'csset
-	     :subsets '((low (d2 f2 a2)) 
-			(mid (b3 d4)))
-	     :related-sets '((not-playable (dqs2 eqf3)))
-	     :transposition 3
-	     :limit-upper 'g5
-	     :limit-lower 'e2)
+             :id 'csset
+             :subsets '((low (d2 f2 a2)) 
+                        (mid (b3 d4)))
+             :related-sets '((not-playable (dqs2 eqf3)))
+             :transposition 3
+             :limit-upper 'g5
+             :limit-lower 'e2)
 
 => 
 COMPLETE-SET: complete: NIL

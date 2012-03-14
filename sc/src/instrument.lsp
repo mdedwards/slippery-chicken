@@ -1075,7 +1075,7 @@ data: NIL
 ;;; just returns a single-note chord if neither of those cases are possible.
 ;;;
 ;;; NB The arguments are supplied by slippery chicken when it calls the
-;;; function for you. 
+;;;    function for you. 
 ;;;
 ;;; ARGUMENTS 
 ;;; - The current number from the pitch-seq. Currently ignored by default.

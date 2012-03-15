@@ -126,7 +126,6 @@
 #+cmn
 ;;; ****m* set-palette/cmn-display
 ;;; FUNCTION
-
 ;;; Generate printable music notation output (.EPS) of the given set-palette
 ;;; object, including separate notation of the SUBSETS and RELATED-SETS slots,
 ;;; using the Common Music Notation (CMN) interface. The method requires at
@@ -193,10 +192,9 @@
 (let ((msp (make-set-palette 
             'test
             '((1 ((1
-                   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5
-                         b5)))
+		   ((c3 g3 cs4 e4 fs4 a4 bf4 c5 d5 f5 gf5 af5 ef6)))
                   (2
-                   ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
+                   ((c3 g3 cs4 e4 fs4 a4 bf4 c5 d5 f5 gf5 af5 ef6)
                     :subsets
                     ((tc1 (d2 g3 cs5))
                      (tc2 (eqs2 f3 bqf3))

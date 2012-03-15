@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:22:45 Sat Mar 10 2012 GMT
+;;; $$ Last modified: 16:39:55 Thu Mar 15 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4525,8 +4525,8 @@
          (players (players sc))
          ;; MDE Fri Dec  9 19:33:28 2011 -- replace spaces with hyphens so good
          ;; for file names  
-         (title-hyphens (substitute #\- #\  (title sc)))
-         (def-file (string-downcase (format nil "~a-def.ly" title-hyphens)))
+         (title-hyphens (string-downcase (substitute #\- #\  (title sc))))
+         (def-file (format nil "~a-def.ly" title-hyphens))
          (staff-group (if group-barlines "StaffGroup" "ChoirStaff"))
          (players-strings
           (loop for player in (players sc)
@@ -4673,8 +4673,7 @@
       (with-open-file
           (out 
            (concatenate 'string path
-                        (string-downcase 
-                         (format nil "_~a-score.ly" title-hyphens)))
+                         (format nil "_~a-score.ly" title-hyphens))
            :direction :output :if-does-not-exist :create
            :if-exists :rename-and-delete)
         (format out "~&\\version \"~a\"" lp-version)
@@ -4688,9 +4687,8 @@
          for pname in players-strings do
          (with-open-file 
              (out 
-              (concatenate 'string path (string-downcase 
-                                         (format nil "~a-~a-part.ly" 
-                                                 title-hyphens pname)))
+              (concatenate 'string path (format nil "~a-~a-part.ly" 
+                                                 title-hyphens pname))
               :direction :output :if-does-not-exist :create
               :if-exists :rename-and-delete)
            (if (needs-transposition player)

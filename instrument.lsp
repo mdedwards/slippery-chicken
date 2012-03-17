@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 16:08:11 Tue Mar  6 2012 GMT
+;;; $$ Last modified: 15:51:10 Fri Mar 16 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -148,7 +148,7 @@
    (missing-notes :accessor missing-notes :type list :initarg :missing-notes
                   :initform nil) 
    ;; 5/3/07: no longer needed (never was used...); chord-function obviates
-   ;; this need for this slot.
+   ;; the need for this slot.
    ;; the maximum width in semitones the instrument can play.
    ;; (chord-max :type integer :accessor chord-max :initarg :chord-max 
    ;;            :initform -1)
@@ -808,9 +808,14 @@ NIL
 ;;; - keyword argument :chords. T or NIL. Indicates whether the given
 ;;;   instrument is capable of playing chords (starting with 2-note
 ;;;   simultaneities, but not multiphonics). 
-
-;;; - keyword argument :subset-id. 
-
+;;; - keyword argument :subset-id. Symbol, string, number, or NIL.  Indicates
+;;;   the ID of a specific subset of the current set to which the instrument's
+;;;   pitch selection is limited.  No error will occur if no subset with this
+;;;   ID exists in a given set, i.e. some may include this subset, some may not
+;;;   and everything will function correctly--if the specified subset is not
+;;;   present in the current set the pitch selection routine will select from
+;;;   the whole set.  In every case however, the usual set limiting according
+;;;   to instrument range etc. will also apply.  Default = NIL.
 ;;; - keyword argument :microtones. T or NIL. Indicates whether the instrument
 ;;;   can play microtones.
 ;;; - keyword argument :missing-notes. A list of note-name symbols. This is a

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 11:25:40 Tue Mar 13 2012 GMT
+;;; $$ Last modified: 15:07:15 Fri Mar 16 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3410,7 +3410,7 @@ data: (2 4)
 ;;; EXAMPLE
 #|
 
-    |#
+|#
 ;;; SYNOPSIS
 (defmethod respell-bar ((rsb rthm-seq-bar) sc player 
                         &optional written last-attack-previous-bar)

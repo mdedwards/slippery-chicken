@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:39:55 Thu Mar 15 2012 GMT
+;;; $$ Last modified: 16:06:58 Fri Mar 16 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1504,7 +1504,7 @@
   ;; FUNCTION
   ;; next-event:
   ;;
-  ;; Get the events from the piece on after the other (e.g. in a loop).  This
+  ;; Get the events from the piece one after the other (e.g. in a loop).  This
   ;; needs to be called with a bar number the first time to reset; this will
   ;; return nil, after which calling without a bar number will return the
   ;; events. 

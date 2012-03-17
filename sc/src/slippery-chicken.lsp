@@ -4120,6 +4120,24 @@
 ;;; This function will only combine short bars into longer ones, it won't split
 ;;; up bars and recombine. 
 
+;;; ****m* slippery-chicken/re-bar
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod re-bar ((sc slippery-chicken)
                    &key start-bar 
                    end-bar
@@ -4132,6 +4150,7 @@
                    (check-ties t)
                    ;; could also be a beat rhythmic unit
                    (auto-beam t))
+;;; ****
   (unless start-bar
     (setf start-bar 1))
   (unless end-bar

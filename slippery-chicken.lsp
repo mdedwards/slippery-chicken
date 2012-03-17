@@ -4117,7 +4117,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;;; This function will only combine short bars into longer ones, it won't split
+;;; This method will only combine short bars into longer ones, it won't split
 ;;; up bars and recombine. 
 
 ;;; ****m* slippery-chicken/re-bar

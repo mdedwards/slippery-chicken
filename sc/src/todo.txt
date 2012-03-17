@@ -115,3 +115,9 @@ rthm-seq-bar::consolidate-notes-aux
 ;;; 5/4/07 todo: it misses a lot actually; only handles simple cases but this
 ;;; suffices for now.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+nearest chromatic not correct in 12th tone scale e.g. (make-pitch 'dtf4)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+consider changing microtones-midi-channel to a list of mt channels so we can
+have more than 1 pitch-bend in chords
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+

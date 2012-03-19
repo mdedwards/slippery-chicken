@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 11:10:13 Tue Mar 13 2012 GMT
+;;; $$ Last modified: 17:45:04 Mon Mar 19 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1715,27 +1715,39 @@ data: NIL
 ;;; Always returns a list even if only one rhythm is necessary.
 
 (defun rationalize-if-necessary (dur-secs &key (tempo 60.0) (rest t) 
-                                               (error-on-fail t)
-                                               ;; go for several simple rthms
-                                               ;; rather than a single one as
-                                               ;; e.g. tuplet with dots 
-                                               (keep-it-simple nil))
+                                 (error-on-fail t)
+                                 ;; go for several simple rthms
+                                 ;; rather than a single one as
+                                 ;; e.g. tuplet with dots 
+                                 (keep-it-simple nil))
   (let* ((doddle (get-rhythm-letter-for-duration dur-secs
                                                  :tempo tempo :warn nil))
          (dod-r (if rest
                     (make-rest doddle)
-                  (make-rhythm doddle))))
-    ;; (format t "rationalize-if-necessary dur-secs:~a,dod-r:~a" dur-secs dod-r)
+                    (make-rhythm doddle))))
+    ;;(format t "rationalize-if-necessary dur-secs:~a,dod-r:~a" dur-secs dod-r)
     (if (and dod-r
              (or (not keep-it-simple)
                  (< (num-dots dod-r) 2)))
         (list dod-r)
-      (let ((more (rationalize-for-division dur-secs :rest rest :tempo tempo)))
-        (if more
-            more
-          (when error-on-fail
-            (error "rhythm::rationalize-if-necessary: can't get rhythms for ~a"
-                   dur-secs)))))))
+        (let ((more (rationalize-for-division dur-secs :rest rest
+                                              :tempo tempo)))
+          (if more
+              more
+              ;; MDE Mon Mar 19 17:34:24 2012 -- float errors...
+              (if (setf more
+                        (let ((ric (round-if-close (/ 1.0 dur-secs) 0.0001)))
+                          (when (integerp ric)
+                            (/ 1 ric))))
+                  (list (let ((r (get-rhythm-letter-for-duration more
+                                                 :tempo tempo :warn nil)))
+                          (unless r
+                            (setf r more))
+                          (if rest (make-rest r) (make-rhythm r))))
+                  (when error-on-fail
+                    (error "rhythm::rationalize-if-necessary: ~
+                           can't get rhythms for ~a"
+                           dur-secs))))))))
       
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Sometimes we get a number like .416666... which we can't turn into a single
@@ -1749,17 +1761,20 @@ data: NIL
   (let* ((ratio (rationalize (coerce dur-secs 'short-float)))
          (denom (denominator ratio)))
     ;; (print ratio)
-    (loop ;; try subtracting ratios to see if we get rhythms
-        for i from 1 to 3 ;; '(-1 1 -2 2 -3 3) 
-        for n1 = (/ i denom)
-        for n2 = (- ratio n1)
-        for l1 = (get-rhythm-letter-for-duration n1 :warn nil :tempo tempo)
-        for l2 = (get-rhythm-letter-for-duration n2 :warn nil :tempo tempo)
-        do
-          (when (and l1 l2)
-            (return (if rest
-                        (list (make-rest l2) (make-rest l1))
-                      (list (make-rhythm l2) (make-rhythm l1))))))))
+    (loop                 ;; try subtracting ratios to see if we get rhythms
+       for i from 1 to 3  ;; '(-1 1 -2 2 -3 3) 
+       for n1 = (/ i denom)
+       for n2 = (- ratio n1)
+       for l1 = (get-rhythm-letter-for-duration n1 :warn nil :tempo tempo)
+       ;; MDE Mon Mar 19 17:10:24 2012 
+       ;; for l2 = (get-rhythm-letter-for-duration n2 :warn nil :tempo tempo)
+       for l2 = (unless (zerop n2)
+                  (get-rhythm-letter-for-duration n2 :warn nil :tempo tempo))
+       do
+       (when (and l1 l2)
+         (return (if rest
+                     (list (make-rest l2) (make-rest l1))
+                     (list (make-rhythm l2) (make-rhythm l1))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

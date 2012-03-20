@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 22:45:50 Mon Mar 19 2012 GMT
+;;; $$ Last modified: 10:07:41 Tue Mar 20 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1770,7 +1770,9 @@ data: NIL
   ;; (print 'here)
   ;; converting dur-secs from double-float to short-float irons out some
   ;; rounding errors.
-  (let* ((ratio (rationalize (coerce dur-secs 'short-float)))
+  ;; MDE Tue Mar 20 10:06:58 2012 -- no longer coerce but do round
+  (let* ((ratio (rationalize (decimal-places dur-secs 6)))
+           ;;(coerce dur-secs 'short-float)))
          (denom (denominator ratio)))
     ;; (print ratio)
     (loop                 ;; try subtracting ratios to see if we get rhythms

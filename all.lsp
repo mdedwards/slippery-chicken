@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 17:00:10 Tue Mar  6 2012 GMT
+;;; $$ Last modified: 10:05:07 Tue Mar 20 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -73,7 +73,9 @@
 
 ;;; Make sure any typed-in float constants are high-precision; default is
 ;;; single-float  
-(setf *read-default-float-format* 'double-float)
+;;; MDE Tue Mar 20 10:04:54 2012 -- no longer do this as it conflicts with
+;;; CLM's short-float 
+;;; (setf *read-default-float-format* 'double-float)
 
 (defparameter +sc-dir-separator+
   #+(or windows mswindows win32) #\\

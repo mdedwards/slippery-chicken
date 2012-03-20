@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:02:11 Tue Feb  7 2012 ICT
+;;; $$ Last modified: 19:45:45 Mon Mar 19 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -337,8 +337,14 @@
   ;; different float types to begin with.
   (<= (abs (- a b)) tolerance))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Mar 19 19:39:55 2012 
+
+(defun decimal-places (num places)
+  (let ((pow (float (expt 10 places))))
+    (/ (round num (/ pow)) pow)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun almost-zero (num &optional (tolerance 0.000001))
   (equal-within-tolerance num 0.0 tolerance))
@@ -1323,7 +1329,8 @@
       (power-of-2 (/ freq1 freq2))
       (power-of-2 (/ freq2 freq1))))
 
-;;; MDE Tue Dec 13 12:08:03 2011 -- whether either freq is a partial of the other
+;;; MDE Tue Dec 13 12:08:03 2011 -- whether either freq is a partial of the
+;;; other  
 (defun partial-freqs (freq1 freq2 &optional (unison-also t))
   (or (and unison-also (= freq1 freq2))
       (factor freq1 freq2)

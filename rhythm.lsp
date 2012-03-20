@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 17:45:04 Mon Mar 19 2012 GMT
+;;; $$ Last modified: 22:45:50 Mon Mar 19 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -224,9 +224,12 @@
 (defmethod print-simple ((r rhythm) &optional written (stream t))
   (format stream "~a ~a, "
           (cond ((is-rest r) "rest")
-                ((and (event-p r) (pitch-or-chord r)) (get-pitch-symbol r written))
+                ((and (event-p r) (pitch-or-chord r))
+                 (get-pitch-symbol r written))
                 (t "note"))
-          (data r)))
+          (if (data r)
+              (data r)
+              (duration r))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1578,10 +1581,10 @@ data: NIL
 ;;; SYNOPSIS
 (defun make-rhythm (rthm &key (is-rest nil) (is-tied-to nil) (duration nil)
                     (tempo 60.0))
-;;; ****                                ;
-  ;;  (unless rthm                      ;
-  ;;  (error "event::make-rhythm: <rthm> can't be nil")) ;
-  ;; only if duration t                 ;
+;;; ****                                
+  ;;  (unless rthm                      
+  ;;  (error "event::make-rhythm: <rthm> can't be nil")) 
+  ;; only if duration t                 
   (cond ((rhythm-p rthm) (clone rthm))
         ((and rthm (not duration))
          (make-instance 'rhythm :data rthm :is-rest is-rest 
@@ -1593,8 +1596,16 @@ data: NIL
          (let ((rthm-letter
                 (get-rhythm-letter-for-duration 
                  rthm :tempo tempo :warn nil :error-on-fail nil)))
+           ;; MDE Mon Mar 19 22:14:20 2012 
+           (unless rthm-letter
+             (setf rthm-letter (rationalize-if-necessary rthm
+                                                         :error-on-fail nil)
+                   rthm-letter 
+                   (if (and rthm-letter (= 1 (length rthm-letter)))
+                       (data (first rthm-letter))
+                       nil)))
            (make-instance 'rhythm 
-                          :data (when rthm-letter rthm-letter)
+                          :data rthm-letter ;(when rthm-letter rthm-letter)
                           :duration (if rthm-letter -1 rthm)
                           :is-rest is-rest :is-tied-to is-tied-to)))
         (t nil)))
@@ -1720,6 +1731,7 @@ data: NIL
                                  ;; rather than a single one as
                                  ;; e.g. tuplet with dots 
                                  (keep-it-simple nil))
+  ;; (setf dur-secs (decimal-places dur-secs 7))
   (let* ((doddle (get-rhythm-letter-for-duration dur-secs
                                                  :tempo tempo :warn nil))
          (dod-r (if rest
@@ -1739,8 +1751,8 @@ data: NIL
                         (let ((ric (round-if-close (/ 1.0 dur-secs) 0.0001)))
                           (when (integerp ric)
                             (/ 1 ric))))
-                  (list (let ((r (get-rhythm-letter-for-duration more
-                                                 :tempo tempo :warn nil)))
+                  (list (let ((r (get-rhythm-letter-for-duration
+                                  more :tempo tempo :warn nil)))
                           (unless r
                             (setf r more))
                           (if rest (make-rest r) (make-rhythm r))))
@@ -1803,7 +1815,7 @@ data: NIL
 (defun get-rhythm-letter-for-value (value &optional (warn t))
   ;; some floating-point operations will have degraded our value so that what
   ;; should be an integer is something like 23.999999999999.  
-  (let ((val (round-if-close value))
+  (let ((val (round-if-close value 0.0001))
         (1-dot (* value 1.5))
         (2-dots (* value 1.75))
         (3-dots (* value 1.875))

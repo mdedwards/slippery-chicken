@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 15:07:15 Fri Mar 16 2012 GMT
+;;; $$ Last modified: 22:26:04 Mon Mar 19 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2322,6 +2322,7 @@ data: E
                                     (tempo 60.0)
                                     (midi-channel 0)
                                     (microtones-midi-channel 0))
+  ;; (print start-time) (print end-time)
   (let* ((bar-start (start-time rsb))
          (new-dur (- end-time start-time))
          (start (if time-relative-to-bar-start
@@ -2343,6 +2344,7 @@ data: E
     (multiple-value-bind
           (start-attack end-attack events)
         (get-events rsb-clone start end)
+      ;; (loop for e in events do (print e))
       (setf missing-start (if events
                               (- (start-time (first events))
                                  start)
@@ -2362,6 +2364,7 @@ data: E
                               (rationalize-if-necessary missing-end
                                                         :keep-it-simple t
                                                         :tempo tempo)))))
+      ;; (loop for e in events do (print (data e)))
       (fill-with-rhythms 
        result events 
        :midi-channel midi-channel 
@@ -2389,6 +2392,7 @@ data: E
             (when (and (is-rest r)
                        (marks r))
               (format t "~a~%rest with marks!" r)))
+      ;;(print-simple result)
       result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2434,6 +2438,7 @@ data: E
                                      ;; :is-rest (is-rest e)
                                      :is-tied-to (is-tied-to e)
                                      :duration t)))
+               ;; (print '*****) (print dur)
                ;; MDE Wed Dec 14 17:37:42 2011 
                (setf (is-rest new) (is-rest e))
                (if new

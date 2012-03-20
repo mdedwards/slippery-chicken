@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 16:24:00 Sat Mar 10 2012 GMT
+;;; $$ Last modified: 20:29:17 Mon Mar 19 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -192,7 +192,7 @@
 (let ((msp (make-set-palette 
             'test
             '((1 ((1
-		   ((c3 g3 cs4 e4 fs4 a4 bf4 c5 d5 f5 gf5 af5 ef6)))
+                   ((c3 g3 cs4 e4 fs4 a4 bf4 c5 d5 f5 gf5 af5 ef6)))
                   (2
                    ((c3 g3 cs4 e4 fs4 a4 bf4 c5 d5 f5 gf5 af5 ef6)
                     :subsets
@@ -1036,7 +1036,8 @@ data: (
        ;; set from the ring-modulation
          (when (and do-bass (< (length rm-bass) min-bass-notes))
            (let ((rmb (ring-mod-bass 
-                       rm :bass-octave ring-mod-bass-octave :warn warn-no-bass)))
+                       rm :bass-octave ring-mod-bass-octave
+                       :warn warn-no-bass)))
              (when (> (length rmb) (length rm-bass))
                (setf rm-bass rmb)))
            (when (and warn-no-bass
@@ -1144,6 +1145,11 @@ data: (
     (setf pitch1 (note-to-freq pitch1)))
   (unless (numberp pitch2)
     (setf pitch2 (note-to-freq pitch2)))
+  ;; MDE Mon Mar 19 20:05:29 2012 -- got to make sure our float maths works in
+  ;; different lisps
+  (setf pitch1 (decimal-places pitch1 2)
+        pitch2 (decimal-places pitch2 2))
+  ;; (print pitch1) (print pitch2)
   (let* ((pitch1p (cons pitch1 (loop for i from 2 to pitch1-partials collect 
                                   (* pitch1 i))))
          (pitch2p (cons pitch2 (loop for i from 2 to pitch2-partials collect
@@ -1180,6 +1186,7 @@ data: (
                       :as-symbol t :allow remove-octaves))
           (setf rmod (remove-octaves rmod :as-symbol nil 
                                      :allow remove-octaves))))
+    ;; (print rmod)
     (if return-notes
         notes
         rmod)))
@@ -1295,6 +1302,12 @@ WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
 (defun ring-mod-bass (freqs &key (bass-octave 0) (low 'a0) (high 'g3) (round t)
                       (warn t) (return-notes nil) (scale cm::*scale*))
 ;;; ****
+  ;; MDE Mon Mar 19 19:42:17 2012 -- when we get down low, float errors can
+  ;; cause different notes to be created among different lisps e.g. 
+  ;; (ring-mod-bass '(62.85714177508388 314.2857088754194))
+  ;; today returns 31 in CCL and 28 in SBCL.  So round all freqs to 3 decimal
+  ;; places before processing
+  (setf freqs (loop for f in freqs collect (decimal-places f 3)))
   (unless (numberp low)
     (setf low (note-to-freq low)))
   (unless (numberp high)
@@ -1311,7 +1324,11 @@ WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
                for right = (second pair)
                for diff = (abs (- left right))
                for bass = 
-               (loop for i from 1.0 to 100 for freq = (/ diff i) do
+               (loop for i from 1.0 to 100 
+                  ;; MDE Mon Mar 19 20:27:34 2012 -- round to 2 places here
+                  ;; too! 
+                  for freq = (decimal-places (/ diff i) 2)
+                  do
                     (when (and (not (< freq low))
                                (not (> freq high))
                                (in-octave freq bass-octave)

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 15:51:10 Fri Mar 16 2012 GMT
+;;; $$ Last modified: 16:22:34 Tue Mar 20 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1109,7 +1109,7 @@ data: NIL
 ;;; - The index that the first argument was translated into by the offset and
 ;;;   scaler (based on trying to get a best fit for the instrument and set).
 ;;;   This can be assumed to be a legal reference into pitch-list as it was
-;;;   calculated as fitting in pitch-seq::get-notes.
+;;;   calculated as fitting in pitch-seq::get-notes.  (Zero-based.)
 ;;; - The pitch-list that we created from the set, taking the instrument's range
 ;;;   and other notes already played by other instruments.
 ;;; - The current pitch-seq object. Currently ignored by default.
@@ -1122,6 +1122,7 @@ data: NIL
 ;;; SYNOPSIS
 (defun default-chord-function (curve-num index pitch-list pitch-seq instrument
                                set)
+;;; **** 
   (declare (ignore set instrument pitch-seq curve-num))
   (let ((at-index (nth index pitch-list))
         p1 p2)
@@ -1135,10 +1136,11 @@ data: NIL
     ;; don't create diads > 8ve
     (when (and p2 (> (pitch- p2 p1) 12)) ; assuming pitch-list is sorted
       (setf p2 nil))
-    (if p2
-        (make-chord (list p1 p2))
-        (make-chord (list p1)))))
-;;; **** 
+    (when (or p1 p2) ; MDE Tue Mar 20 16:20:05 2012 
+      (if p2
+          (make-chord (list p1 p2))
+          (make-chord (list p1))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Jan  7 14:20:45 EST 2012: Added instrument-p function

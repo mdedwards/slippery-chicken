@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 17:00:31 Sat Mar 10 2012 GMT
+;;; $$ Last modified: 16:17:35 Tue Mar 20 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -95,6 +95,8 @@
 
 (defmethod initialize-instance :after ((c chord) &rest initargs)
   (declare (ignore initargs))
+  ;; MDE Tue Mar 20 16:11:55 2012 -- remove nils in the pitch list
+  (setf (data c) (remove-if #'(lambda (x) (null x)) (data c)))
   (set-micro-tone c)
   (when (auto-sort c)
     (sort-pitches c)))
@@ -103,7 +105,8 @@
 
 (defmethod set-micro-tone ((c chord))
   (setf (slot-value c 'micro-tone)
-        (loop for p in (data c) do (when (micro-tone p) (return t)))))
+        ;; MDE Tue Mar 20 16:10:09 2012 -- (and p ...
+        (loop for p in (data c) do (when (and p (micro-tone p)) (return t)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -124,7 +127,8 @@
   (let ((data (data c)))
     (when (and data (not (typep (first data) 'pitch)))
       (loop for p in data and i from 0 do
-            (setf (nth i data) (make-pitch p))))))
+           (when p ; MDE Tue Mar 20 16:08:37 2012
+             (setf (nth i data) (make-pitch p)))))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -692,11 +696,11 @@ data: F5
             <order> argument to sort-pitches must be either 'ascending or ~
             'descending: ~a" order))
   (setf (slot-value c 'data)
-    (stable-sort (data c)
-                 #'(lambda (x y)
-                     (if (eq order 'ascending)
-                         (< (frequency x) (frequency y))
-                       (> (frequency x) (frequency y)))))))
+        (stable-sort (data c)
+                     #'(lambda (x y)
+                         (if (eq order 'ascending)
+                             (< (frequency x) (frequency y))
+                             (> (frequency x) (frequency y)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1191,6 +1195,7 @@ data: F5
                               :auto-sort auto-sort)))
     ;; !!NB by default, ignore given midi-channels if our notes are already
     ;; pitch-objects  
+    ;; (print (data chord))
     (when (or force-midi-channel (not (pitch-p (first note-list))))
       (set-midi-channel chord midi-channel microtones-midi-channel))
     chord))

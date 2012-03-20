@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 16:09:36 Tue Mar  6 2012 GMT
+;;; $$ Last modified: 16:49:56 Tue Mar 20 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -248,6 +248,41 @@
        ;;; ****
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; MDE Tue Mar 20 15:55:39 2012 -- add some more default chord functions for
+;;; the user to choose from.
+
+;;; skip every other note, go for three notes, max one octave apart
+(defun chord-fun1 (curve-num index pitch-list pitch-seq instrument set)
+  (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 2 3 12))
+
+;;; every third note, 4 notes, (almost) no limit to span
+(defun chord-fun2 (curve-num index pitch-list pitch-seq instrument set)
+  (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 3 4 999))
+
+;;; remember that the index is the desired top note of the chord
+(defun chord-fun-aux (curve-num index pitch-list pitch-seq instrument set
+                      skip num-notes max-span)
+  (declare (ignore set instrument pitch-seq curve-num))
+  (unless (and (integer>0 skip) (integer>0 num-notes) (integer>0 max-span))
+    (error "slippery-chicken::instruments:: skip, num-notes, and max-span must
+            be integers > 0"))
+  (let* ((start (max 0 (- index (- (* skip num-notes) skip))))
+         (at-start (nth start pitch-list))
+         (result (list at-start)))
+    (loop 
+       repeat num-notes
+       for i from start by skip
+       for p = (nth i pitch-list)
+       do
+         ;; (print (data p))
+         (when (and p (<= (pitch- p at-start) max-span)
+                    (not (member p result :test #'note=)))
+           (push p result)))
+    (if (> (length result) 1)
+        (make-chord result)
+        (first result))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; The following chord selection functions were designed for my piece cheat
 ;;; sheet but they may well be useful elsewhere.
 
@@ -321,9 +356,9 @@
        for i from (1+ start) to (+ start 3) 
        for p = (nth i pitch-list)
        do
-	 (when (and p (<= (pitch- p at-start) 12)
-		    (not (member p result :test #'note=)))
-	   (push p result)))
+         (when (and p (<= (pitch- p at-start) 12)
+                    (not (member p result :test #'note=)))
+           (push p result)))
     (if (> (length result) 1)
         (make-chord result)
         (first result))))

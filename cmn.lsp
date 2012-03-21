@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 23:41:34 Sun Jan 15 2012 ICT
+;;; $$ Last modified: 07:44:35 Wed Mar 21 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -111,7 +111,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun cmn-bar-line (bar-num &optional (write-bar-nums t) type 
-                                       rehearsal-letter)
+                     rehearsal-letter)
   (let ((rhl (when rehearsal-letter 
                ;; (print rehearsal-letter)
                ;; (print write-bar-nums)
@@ -121,12 +121,12 @@
                      (dx -0.2)
                      (dy 1.7))))
         #|
-        ;; it seems we can't add these except at the top of a group of staves!
+        ;; it seems we can't add these except at the top of a group of staves! ;
         (rehearsal-letter rehearsal-letter 
         (dy 0.5)
         (rehearsal-frame-white-space 0.15)
         (frame :box))))
-        |#
+  |#
         ;; 10/3/07: seems to me this first is never used...
         ;; 2/4/07: it is now since changing 2nd arg of rsb::get-cmn-data to T
         (bnum (when (and bar-num 
@@ -134,19 +134,23 @@
                          (not (zerop bar-num))
                          (zerop (mod bar-num 5)))
                 #|
-                ;; same as rehearsal-letters!
-                (measure-number bar-num
-                ;; (dy 1.5)
+                ;; same as rehearsal-letters! ;
+  (measure-number bar-num
+                ;; (dy 1.5)             ;
                 (font-name "Verdana-Bold")
                 (font-size *cmn-bar-num-size-for-sc*)
-                ;; (frame :box)
+                ;; (frame :box)         ;
                 ))))
                 |#
                 (cmn-bar-number bar-num))))
     (case type
       (0 (bar (height 1.0) bnum rhl))
       (1 (interior-double-bar (height 1.0) bnum rhl))
-      (2 (double-bar (height 1.0) bnum rhl)))))
+      (2 (double-bar (height 1.0) bnum rhl))
+      ;; MDE Wed Mar 21 07:44:10 2012 -- added repeat barlines
+      (3 (begin-repeat-bar (height 1.0) bnum rhl))
+      (4 (begin-and-end-repeat-bar (height 1.0) bnum rhl))
+      (5 (end-repeat-bar (height 1.0) bnum rhl)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 22:26:04 Mon Mar 19 2012 GMT
+;;; $$ Last modified: 07:53:16 Wed Mar 21 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -131,6 +131,8 @@
    (all-time-sigs :accessor all-time-sigs :initform nil :allocation :class)
    ;; whether a single (0), double (1), or end-of-piece double (2) bar line
    ;; should be written. 
+   ;; MDE Wed Mar 21 07:44:10 2012 -- added repeat barlines: 3 = begin repeat,
+   ;; 4 = begin and end repeat, 5 = end repeat
    (bar-line-type :accessor bar-line-type :type integer 
                   :initarg :bar-line-type :initform 0)
    ;; Whether the time-sig should be written or not.  Every rthm-seq starts
@@ -1399,7 +1401,7 @@ data: ((2 4) - S S - S - S S S - S S)
           (slot-value sclist 'show-rest) (show-rest rsb)
           (slot-value sclist 'rehearsal-letter) (rehearsal-letter rsb)
           (slot-value sclist 'notes-needed) (notes-needed rsb)
-          ;;(slot-value sclist 'score-tuplets) (my-copy-list (score-tuplets rsb))
+          ;;(slot-value sclist 'score-tuplets)(my-copy-list (score-tuplets rsb))
           (slot-value sclist 'tuplets) (my-copy-list (tuplets rsb))
           (slot-value sclist 'beams) (my-copy-list (beams rsb))
           (slot-value sclist 'bar-num) (bar-num rsb)
@@ -2904,6 +2906,10 @@ data: (2 4)
             (0 " | ")
             (1 " \\bar \"||\" ")
             (2 " \\bar \"|.\" ")
+            ;; MDE Wed Mar 21 07:44:10 2012 -- added repeat barlines
+            (3 " \\bar \"|:\" ") ; begin repeat
+            (4 " \\bar \":|.|:\" ") ; begin & end repeat 
+            (5 " \\bar \":|\" ") ; end repeat
             (t (error "rthm-seq-bar::get-lsp-data: ~
                        unhandled barline at bar ~a: ~a"
                       (bar-num rsb) (bar-line-type rsb))))
@@ -4055,6 +4061,14 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
   (loop for r in (rhythms rsb) do 
        (when (event-p r)
          (no-accidental r))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Mar 21 07:48:49 2012 -- added this method to ensure we only get
+;;; legal bar-line-types 
+(defmethod (setf bar-line-type) :before (value (rsb rthm-seq-bar))
+  (unless (and (integerp value) (>= value 0) (<= value 5))
+    (error "~a~&rthm-seq-bar::(setf bar-line-type): Value (~a) can only be ~
+            an integer between 1 and 5." value)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

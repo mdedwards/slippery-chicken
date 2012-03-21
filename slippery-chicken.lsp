@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:06:58 Fri Mar 16 2012 GMT
+;;; $$ Last modified: 07:46:34 Wed Mar 21 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -453,12 +453,15 @@
 ;;; ****m* slippery-chicken/change-bar-line-type
 ;;; FUNCTION
 ;;; change-bar-line-type:
-;;; change single to double bar lines and vice-versa
+;;; change single to double bar lines and vice-versa.  NB This is a score
+;;; function only, i.e., if you add repeat bar lines these will not (yet) be
+;;; reflected in playback with MIDI or CLM.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - the slippery-chicken object
 ;;; - the bar number at the end of which you want the bar line to change
-;;; - bar line type: 0 = normal, 1 double bar, 2 final double bar
+;;; - bar line type: 0 = normal, 1 = double bar, 2 = final double bar, 3 =
+;;;   begin repeat, 4 = begin and end repeat, 5 = end repeat 
 ;;; RETURN VALUE  
 ;;; always T
 ;;; 

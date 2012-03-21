@@ -120,4 +120,10 @@ nearest chromatic not correct in 12th tone scale e.g. (make-pitch 'dtf4)
 consider changing microtones-midi-channel to a list of mt channels so we can
 have more than 1 pitch-bend in chords
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+top of sc class:
+;;; todo: add bar-lines field to indicate double bar lines etc.  This will
+;;; simply call get-bar (getting all the players!) and change the bar-line-type
+;;; of the bar accordingly. 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 

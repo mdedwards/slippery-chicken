@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 07:53:16 Wed Mar 21 2012 GMT
+;;; $$ Last modified: 08:08:09 Wed Mar 21 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4068,7 +4068,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 (defmethod (setf bar-line-type) :before (value (rsb rthm-seq-bar))
   (unless (and (integerp value) (>= value 0) (<= value 5))
     (error "~a~&rthm-seq-bar::(setf bar-line-type): Value (~a) can only be ~
-            an integer between 1 and 5." value)))
+            an integer ~%between 1 and 5." rsb value)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

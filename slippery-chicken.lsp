@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 07:46:34 Wed Mar 21 2012 GMT
+;;; $$ Last modified: 08:09:19 Wed Mar 21 2012 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -53,10 +53,6 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; todo: add bar-lines field to indicate double bar lines etc.  This will
-;;; simply call get-bar (getting all the players!) and change the bar-line-type
-;;; of the bar accordingly. 
 
 (defclass slippery-chicken (named-object)
   ((rthm-seq-palette :accessor rthm-seq-palette :initarg :rthm-seq-palette

@@ -83,7 +83,7 @@
        :starting-clef treble
        :chords nil 
        :microtones t 
-       :midi-program 73 ))
+       :midi-program 73))
      (flute 
       (:staff-name "flute" :staff-short-name "fl" 
        :lowest-written c4 :highest-written d7 
@@ -280,7 +280,7 @@
        :midi-program 41))
      (viola 
       (:staff-name "viola" :staff-short-name "vla"
-       :lowest-written c :highest-written f6 
+       :lowest-written c3 :highest-written f6 
        :largest-fast-leap 13 
        :clefs (alto treble) :starting-clef alto 
        :chords t :chord-function viola-chord-selection-fun 

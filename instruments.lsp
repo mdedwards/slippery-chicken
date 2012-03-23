@@ -77,129 +77,178 @@
    ;; SAR Fri Jan 20 11:43:32 GMT 2012: Re-ordering these to Adler's "standard"
    ;; score order for easier look-up
    '((piccolo
-      (:staff-name "piccolo" :lowest-written d4 :highest-written c7 :chords nil
-       :staff-short-name "picc"
-       :missing-notes nil :midi-program 73 :starting-clef treble 
-       :transposition-semitones 12 :microtones t))
+      (:staff-name "piccolo" :staff-short-name "picc"
+       :lowest-written d4 :highest-written c7 :transposition-semitones 12 
+       :missing-notes nil 
+       :starting-clef treble
+       :chords nil 
+       :microtones t 
+       :midi-program 73 ))
      (flute 
-      (:staff-name "flute" :lowest-written c4 :highest-written d7 :chords nil 
-       :missing-notes (cqs4 dqf4) :midi-program 74 :starting-clef treble
-       :staff-short-name "fl" :microtones t))
+      (:staff-name "flute" :staff-short-name "fl" 
+       :lowest-written c4 :highest-written d7 
+       :missing-notes (cqs4 dqf4) 
+       :starting-clef treble
+       :chords nil 
+       :microtones t 
+       :midi-program 74))
      (alto-flute 
-      (:staff-name "alto flute" :lowest-written c4 :highest-written c7
-       :staff-short-name "alt fl"
-       :chords nil :missing-notes (cqs4 dqf4) :midi-program 74 
-       :starting-clef treble :microtones t :transposition-semitones -5))
+      (:staff-name "alto flute" :staff-short-name "alt fl"
+       :lowest-written c4 :highest-written c7 :transposition-semitones -5
+       :missing-notes (cqs4 dqf4) 
+       :starting-clef treble
+       :chords nil 
+       :microtones t 
+       :midi-program 74))
      ;; SAR Fri Jan 20 11:46:45 GMT 2012: Modified bass flute range to that
      ;; stated by Adler and deleted MDE's todo comment to "check real range of
      ;; bass flute"
      (bass-flute 
-      (:staff-name "bass flute" :lowest-written c4 :highest-written c7
-       :staff-short-name "bass fl" :clefs-in-c '(treble bass)
-       :chords nil :missing-notes (cqs4 dqf4) :midi-program 74 
-       :starting-clef treble :microtones t :transposition-semitones -12))
+      (:staff-name "bass flute" :staff-short-name "bass fl" 
+       :lowest-written c4 :highest-written c7 :transposition-semitones -12
+       :missing-notes (cqs4 dqf4) 
+       :clefs-in-c '(treble bass) :starting-clef treble 
+       :chords nil 
+       :microtones t 
+       :midi-program 74))
      ;; SAR Fri Jan 20 12:01:37 GMT 2012: Added oboe. Conservative range taken
      ;; from the Adler
      (oboe
-      (:staff-name "oboe" :lowest-written bf3 :highest-written a6
-       :staff-short-name "ob" :starting-clef treble :chords nil 
+      (:staff-name "oboe" :staff-short-name "ob" 
+       :lowest-written bf3 :highest-written a6
+       :starting-clef treble 
+       :chords nil 
        :midi-program 69))
      (e-flat-clarinet 
-      (:staff-name "E-flat clarinet" :lowest-written e3 :highest-written a6
-       :staff-short-name "E-flat cl"
-       :chords nil :midi-program 72 :starting-clef treble :microtones t
+      (:staff-name "E-flat clarinet" :staff-short-name "E-flat cl"
+       :lowest-written e3 :highest-written a6 :transposition-semitones 3
        :missing-notes (aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3)
-       :transposition-semitones 3))
+       :starting-clef treble
+       :chords nil 
+       :microtones t 
+       :midi-program 72))
      (b-flat-clarinet 
-      (:staff-name "B-flat clarinet" :lowest-written e3 :highest-written a6
-       :staff-short-name "B-flat cl"
-       :chords nil :midi-program 72 :starting-clef treble :microtones t
-       :missing-notes (aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3)
-       :transposition-semitones -2))
+      (:staff-name "B-flat clarinet" :staff-short-name "B-flat cl"
+       :lowest-written e3 :highest-written a6 :transposition-semitones -2 
+       :missing-notes (aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3) 
+       :starting-clef treble 
+       :chords nil 
+       :microtones t 
+       :midi-program 72))
      (a-clarinet 
-      (:staff-name "A clarinet" :lowest-written e3 :highest-written a6
-       :staff-short-name "A cl"
-       :chords nil :midi-program 72 :starting-clef treble :microtones t
+      (:staff-name "A clarinet" :staff-short-name "A cl"
+       :lowest-written e3 :highest-written a6 :transposition-semitones -3
        :missing-notes (aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3)
-       :transposition-semitones -3))
+       :starting-clef treble 
+       :chords nil 
+       :microtones t
+       :midi-program 72))
      (bass-clarinet 
-      (:staff-name "bass clarinet" :lowest-written c3 :highest-written g6
-       :staff-short-name "bass cl"
-       :chords nil :midi-program 72 :starting-clef treble :microtones t
-       :prefers-notes low
-       :missing-notes (aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3 eqf3 dqs3 dqf3 
-                            cqs3)
-       :clefs (treble) :clefs-in-c (treble bass) :transposition-semitones -14))
+      (:staff-name "bass clarinet" :staff-short-name "bass cl"
+       :lowest-written c3 :highest-written g6 :transposition-semitones -14
+       :missing-notes (aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3 eqf3 dqs3 dqf3
+                            cqs3) 
+       :prefers-notes low       
+       :clefs (treble) :clefs-in-c (treble bass) :starting-clef treble 
+       :chords nil 
+       :microtones t
+       :midi-program 72))
      (soprano-sax 
-      (:staff-name "soprano saxophone" :lowest-written bf3
-       :staff-short-name "sop sax"
-       :highest-written fs6 :starting-clef treble :chords nil
-       :midi-program 65 :microtones t :missing-notes (gqs4 gqs5)
-       :transposition-semitones -2))
+      (:staff-name "soprano saxophone" :staff-short-name "sop sax"
+       :lowest-written bf3 :highest-written fs6 :transposition-semitones -2
+       :missing-notes (gqs4 gqs5)
+       :starting-clef treble 
+       :chords nil
+       :microtones t 
+       :midi-program 65))
      (alto-sax 
-      (:staff-name "alto saxophone" :lowest-written bf3
-       :staff-short-name "alt sax"
-       :highest-written fs6 ;; altissimo extra....by hand...
-       :starting-clef treble :chords nil :midi-program 66 
-       :microtones t :missing-notes (gqs4 gqs5)
-       :transposition-semitones -9))
+      (:staff-name "alto saxophone" :staff-short-name "alt sax"
+       ;; altissimo extra....by hand...
+       :lowest-written bf3 :highest-written fs6 :transposition-semitones -9
+       :missing-notes (gqs4 gqs5)
+       :starting-clef treble 
+       :chords nil 
+       :microtones t 
+       :midi-program 66))
      (tenor-sax 
-      (:staff-name "tenor sax" :lowest-written bf3
-       :highest-written fs6 :staff-short-name "ten sax"       
-       :starting-clef treble :chords nil :midi-program 67
-       :microtones t :missing-notes (gqs4 gqs5) :clefs-in-c '(treble bass)
-       :transposition-semitones -14))
+      (:staff-name "tenor sax" :staff-short-name "ten sax"
+       :lowest-written bf3 :highest-written fs6 :transposition-semitones -14 
+       :missing-notes (gqs4 gqs5) 
+       :starting-clef treble :clefs-in-c '(treble bass)
+       :chords nil 
+       :microtones t 
+       :midi-program 67))
      (baritone-sax 
-      (:staff-name "baritone sax" :lowest-written bf3 
-       :staff-short-name "bar sax"
-       :highest-written fs6 :starting-clef treble :chords nil
-       :clefs-in-c '(treble bass)
-       :midi-program 68 :microtones t :missing-notes (gqs4 gqs5)
-       :transposition-semitones -21))
+      (:staff-name "baritone sax" :staff-short-name "bar sax"
+       :lowest-written bf3 :highest-written fs6 :transposition-semitones -21 
+       :missing-notes (gqs4 gqs5)
+       :clefs-in-c '(treble bass) :starting-clef treble 
+       :chords nil
+       :microtones t 
+       :midi-program 68))
      (bassoon 
-      (:staff-name "bassoon" :lowest-written bf1 :staff-short-name "bsn"
-       ;; of course it can go higher but best not to algorithmically select 
-       ;; these
-       :highest-written c5 :starting-clef bass :chords nil
-       :largest-fast-leap 13 :clefs (bass tenor) 
+      (:staff-name "bassoon" :staff-short-name "bsn" 
+       ;; of course it can go higher but best not to algorithmically select
+       ;; these   
+       :lowest-written bf1 :highest-written c5 
        ;; Wolfgang Ruediger says all 1/4 tones are OK above low E
        :missing-notes (bqf1 bqs1 cqs2 dqf2 dqs2 eqf2)
-       :midi-program 71 :microtones t))
+       :largest-fast-leap 13 
+       :clefs (bass tenor) :starting-clef bass 
+       :chords nil
+       :microtones t
+       :midi-program 71))
      (french-horn
-      (:staff-name "french horn" :lowest-written c3 :highest-written c6
-       :chords nil :staff-short-name "hn" :midi-program 61 :starting-clef treble
-       :transposition-semitones -7 :clefs (treble bass) :microtones t))
+      (:staff-name "french horn" :staff-short-name "hn" 
+       :lowest-written c3 :highest-written c6 :transposition-semitones -7 
+       :clefs (treble bass) :starting-clef treble
+       :chords nil 
+       :microtones t
+       :midi-program 61))
      (c-trumpet
-      (:staff-name "trumpet in c" :lowest-written fs3 :highest-written c6
-       :chords nil :staff-short-name "c tpt" :midi-program 57
-       :starting-clef treble :clefs (treble) :microtones t))
+      (:staff-name "trumpet in c" :staff-short-name "c tpt" 
+       :lowest-written fs3 :highest-written c6
+       :clefs (treble) :starting-clef treble 
+       :chords nil 
+       :microtones t
+       :midi-program 57))
      ;; SAR Fri Jan 20 12:09:41 GMT 2012: Added b-flat-trumpet from Adler
      ;;; MDE Mon Feb 20 20:02:55 2012 -- modified to keep in line with clarinet
      (b-flat-trumpet
-      (:staff-name "B-flat trumpet" :lowest-written fs3 :highest-written d6 
+      (:staff-name "B-flat trumpet" :staff-short-name "b-flat tpt" 
        ;; the -flat should be convereted in CMN and Lilypond to the flat sign
-       :chords nil :staff-short-name "b-flat tpt" :midi-program 57
-       :starting-clef treble :transposition-semitones -2))
+       :lowest-written fs3 :highest-written d6 :transposition-semitones -2 
+       :starting-clef treble 
+       :chords nil 
+       :midi-program 57))
      ;; SAR Fri Jan 20 12:17:24 GMT 2012: Added tenor trombone from Adler
      (tenor-trombone
-      (:staff-name "trombone" :lowest-written e2 :highest-written bf4
-       :chords nil :staff-short-name "tbn" :midi-program 58
-       :starting-clef bass :clefs (bass tenor)))
-     (vibraphone (:staff-name "vibraphone" :lowest-written f3
-                  :staff-short-name "vib"
-                  :highest-written f6 :chords t :midi-program 12
-                  :starting-clef treble :microtones nil))
+      (:staff-name "trombone" :staff-short-name "tbn" 
+       :lowest-written e2 :highest-written bf4
+       :clefs (bass tenor) :starting-clef bass 
+       :chords nil 
+       :midi-program 58))
+     (vibraphone 
+      (:staff-name "vibraphone" :staff-short-name "vib"
+       :lowest-written f3 :highest-written f6 
+       :starting-clef treble 
+       :chords t 
+       :microtones nil
+       :midi-program 12))
      (marimba 
-      (:staff-name "marimba" :lowest-written c3 :highest-written c7 :chords t
-       :staff-short-name "mba"
-       :midi-program 13 :starting-clef treble :clefs (treble) ; (treble bass)
-       :microtones nil))
+      (:staff-name "marimba" :staff-short-name "mba"
+       :lowest-written c3 :highest-written c7 
+       :starting-clef treble :clefs (treble) ; (treble bass) 
+       :chords t
+       :microtones nil
+       :midi-program 13))
      (piano
       (:staff-name "piano" :staff-short-name "pno"
        :lowest-written a0 :highest-written c8 
+       :largest-fast-leap 9
        :clefs (treble bass double-treble double-bass) :starting-clef treble
-       :microtones nil :largest-fast-leap 9
        :chords t :chord-function piano-chord-fun
+       :microtones nil 
        :midi-program 1))
      ;; we generally treat the piano as two instruments (LH, RH), generating
      ;; lines separately.  So this is the same as the piano instrument but has
@@ -207,44 +256,63 @@
      ;; range of the two hands, as they're both set to be full piano range
      ;; here.
      (piano-lh
-      (:lowest-written a0 :highest-written c8 :chords t
-       :midi-program 1 :starting-clef bass 
-       :clefs (treble bass double-treble double-bass)
-       :microtones nil :largest-fast-leap 9 :chord-function piano-chord-fun))
+      (:lowest-written a0 :highest-written c8 
+       :largest-fast-leap 9 
+       :chords t :chord-function piano-chord-fun
+       :clefs (treble bass double-treble double-bass) :starting-clef bass 
+       :microtones nil 
+       :midi-program 1))
      (guitar 
-      (:staff-name "guitar" :lowest-written e3 :staff-short-name "gtr"
-       :highest-written b6 :chords t :midi-program 28 :starting-clef treble 
-       :transposition-semitones -12 :microtones nil
-       :chord-function guitar-chord-selection-fun :largest-fast-leap 31))
+      (:staff-name "guitar" :staff-short-name "gtr"
+       :lowest-written e3 :highest-written b6 :transposition-semitones -12 
+       :largest-fast-leap 31
+       :starting-clef treble 
+       :chords t :chord-function guitar-chord-selection-fun 
+       :microtones nil
+       :midi-program 28))
      (violin 
-      (:staff-name "violin" :lowest-written g3 :highest-written c7 
-       :staff-short-name "vln"
-       :starting-clef treble :chords t :midi-program 41 :microtones t
-       :chord-function violin-chord-selection-fun :largest-fast-leap 13))
-     (viola (:staff-name "viola" :lowest-written c3 :starting-clef alto 
-             :staff-short-name "vla"
-             :highest-written f6 :chords t :midi-program 42 :microtones t
-             :chord-function viola-chord-selection-fun :largest-fast-leap 13
-             :clefs (alto treble)))
-     (viola-d-amore (:staff-name "viola d'amore" :lowest-written a2
-                     :staff-short-name "vla d'am"
-                     :starting-clef alto :midi-program 41 :microtones t
-                     :chord-function nil :largest-fast-leap 13
-                     :highest-written f7 :chords t :clefs (alto treble)))
+      (:staff-name "violin" :staff-short-name "vln"
+       :lowest-written g3 :highest-written c7 
+       :largest-fast-leap 13
+       :starting-clef treble 
+       :chords t :chord-function violin-chord-selection-fun 
+       :microtones t
+       :midi-program 41))
+     (viola 
+      (:staff-name "viola" :staff-short-name "vla"
+       :lowest-written c :highest-written f6 
+       :largest-fast-leap 13 
+       :clefs (alto treble) :starting-clef alto 
+       :chords t :chord-function viola-chord-selection-fun 
+       :microtones t
+       :midi-program 42))
+     (viola-d-amore 
+      (:staff-name "viola d'amore" :staff-short-name "vla d'am"
+       :lowest-written a2 :highest-written f7 
+       :largest-fast-leap 13
+       :clefs (alto treble) :starting-clef alto 
+       :chords t :chord-function nil 
+       :microtones t
+       :midi-program 41))
      (cello 
-      (:staff-name "cello" :lowest-written c2 :starting-clef bass
-       :staff-short-name "vc"
+      (:staff-name "cello" :staff-short-name "vc"
        ;; of course it can go higher but best not to algorithmically select 
        ;; these
-       :clefs (bass tenor treble) :highest-written a5 :chords t :midi-program 43
-       :microtones t :chord-function cello-chord-selection-fun 
-       :largest-fast-leap 12))
+       :lowest-written c2 :highest-written a5 
+       :largest-fast-leap 12
+       :clefs (bass tenor treble) :starting-clef bass
+       :chords t :chord-function cello-chord-selection-fun 
+       :microtones t 
+       :midi-program 43))
      (double-bass 
-      (:staff-name "double bass" :lowest-written e2 :starting-clef bass
-       :staff-short-name "db"
-       :clefs (bass tenor treble) :prefers-notes low
-       :highest-written g5 :chords nil :midi-program 44
-       :transposition-semitones -12 :microtones t :largest-fast-leap 10)))))
+      (:staff-name "double bass" :staff-short-name "db"
+       :lowest-written e2 :highest-written g5 :transposition-semitones -12 
+       :prefers-notes low
+       :largest-fast-leap 10
+       :clefs (bass tenor treble) :starting-clef bass
+       :chords nil 
+       :microtones t 
+       :midi-program 44)))))
        ;;; ****
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

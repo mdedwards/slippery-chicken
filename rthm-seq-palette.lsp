@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 18:12:51 Tue Feb 28 2012 GMT
+;;; $$ Last modified: 10:15:30 Sat Mar 24 2012 GMT
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -171,14 +171,14 @@
   (print 
    (loop for rs in (data mrsp)
       collect 
-	(loop for ps in (data (pitch-seq-palette rs))
-	   collect (data ps))))
+        (loop for ps in (data (pitch-seq-palette rs))
+           collect (data ps))))
   (create-psps mrsp)
   (print 
    (loop for rs in (data mrsp)
       collect 
-	(loop for ps in (data (pitch-seq-palette rs))
-		 collect (data ps)))))
+        (loop for ps in (data (pitch-seq-palette rs))
+                 collect (data ps)))))
 
 =>
 (((1 2 3 4 5 6 7)) ((2 3 4 5 6 7 8)) ((3 4 5 6 7 8 9 10 1 2))) 
@@ -601,7 +601,7 @@ rthm-seq SEQ3
 ;;;     can potentially be imported into notation software.
 ;;; 
 ;;; ARGUMENTS
-;;; - A rthm-seq-bar object.
+;;; - A rthm-seq-palette object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - <chop-points>. A list of integer pairs, each of which delineates a
@@ -613,7 +613,9 @@ rthm-seq SEQ3
 ;;;   the chop points. Default = 's.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A rthm-seq-palette with the same top-level structure of the first argument,
+;;; but each ID now referencing a sub-rthm-seq-palette with sequentially
+;;; numbered rthm-seqs for each of the chopped results.
 ;;; 
 ;;; EXAMPLE
 #|

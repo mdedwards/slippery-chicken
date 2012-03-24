@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 15:19:50 Fri Mar 16 2012 GMT
+;;; $$ Last modified: 19:06:53 Sat Mar 24 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -201,6 +201,41 @@
 ;;; that are given to the slippery-chicken object to control the pitch curve of
 ;;; an instrument over the duration of the whole piece. They always refer to
 ;;; sounding pitches.  
+;;; 
+;;; The order of operations for selecting pitches are as follows:
+;;; 1) Limit the set object to the instrument's range
+;;; 2) Remove the notes that have already been selected for other instruments.
+;;;    This is where the slippery-chicken slot :instrument-hierarchy plays an
+;;;    important role.  
+;;; 3) If there is an subset with the same ID as the subset-id slot for this
+;;;    instrument, use only those pitches common to that subset and those in
+;;;    step 2.
+;;; 4) If we now have fewer pitches at our disposal than there are different
+;;;    numbers in the pich-seq, we will add notes from those used by other
+;;;    instruments until we have enough, and the lowest number in the pitch-seq
+;;;    will select the lowest pitch in the set that is in the instrument's
+;;;    range.  If however we do have enough pitches without adding pitches
+;;;    already used by other instruments, then where in the available pitches
+;;;    we place our lowest number of the pitch-seq will depend on whether
+;;;    you've set the prefers-notes slot of the instrument to be high or low.
+;;;    If high, then the highest number in the pitch-seq will result in the
+;;;    highest pitch in the available pitches that is in the instrument's
+;;;    range.  If low, then the lowest number in the pitch-seq will result in
+;;;    the lowest pitch in the available pitches that is in the instrument's
+;;;    range.  If you haven't set this slot, then the range of the pitch-seq
+;;;    will correspond to the middle of the available pitches.  There are two
+;;;    caveats here if the instrument's prefers-notes slot is NIL: 1) if the
+;;;    lowest number in the pitch-seq is 5 or higher, this will have the same
+;;;    effect as the prefers-notes slot being high.  Similarly, if the lowest
+;;;    number is 1, it will have the same effect as the prefers-notes slot
+;;;    being low.
+;;; 5) If at this point, there are no available pitches, the function will
+;;;    trigger an error and exit.  This could happen if your set-limits, both
+;;;    high and low, took the available pitches outside of the instrument's
+;;;    range, for instance.
+
+
+
 ;;;
 ;;; ARGUMENTS 
 ;;; - A pitch-seq object.
@@ -231,68 +266,61 @@
   (when (data ps) ;; don't do anything for empty seqs!
     (if (or (not instrument) (not set))
         (setf (notes ps) 
-          (get-relative-notes ps 
-                              (if instrument
-                                  (starting-clef instrument)
-                                'treble)))
-      ;; todo: how are we going to use hint pitch?
-      (let* ((highest (highest ps))
-             (lowest (lowest ps))
-             (do-chords (chords instrument))
-             (need (1+ (- highest lowest)))
-             (set-pitches-rm (limit-for-instrument (clone set) instrument
-                                                   :upper limit-high 
-                                                   :lower limit-low
-                                                   :do-related-sets t))
-             ;; get the notes we've already assigned to other instruments ...
-             (used (loop for p in (get-used-notes set seq-num) 
-                       when (pitch-member p set-pitches-rm)
-                       collect p))
-             ;; ... and remove these from the notes we'll select from (in order
-             ;; to try and use as many notes from the set as possible and avoid
-             ;; repeating notes across instruments)
-             (set-pitches-rm-used (remove-pitches set-pitches-rm used
-                                                  :enharmonics-are-equal t
-                                                  :return-symbols nil))
-             (ins-subset (when (subset-id instrument)
-                           (get-data-data (subset-id instrument) 
-                                          (subsets set))))
-             num-set-pitches offset scaler)
-        ;; If (subset-id instrument) was set (to limit the pitches for that
-        ;; instrument to the subset with this id) then use only pitches in
-        ;; subset; also set used to be only those that are in the subset.
-        (when ins-subset
-          (setf set-pitches-rm-used (pitch-intersection set-pitches-rm-used
-                                                        ins-subset)
-                used (pitch-intersection used ins-subset)))
-        ;; extend pitch-seq to recognise a number in parentheses within the
-        ;; curve as needing a chord: to select this each instrument needs a
-        ;; function object that can select a chord from any given pitches.  In
-        ;; the case of the guitar we also want to write the fingering above the
-        ;; chord: we can set (marks chords) to be this: the fingering is
-        ;; the tag of the set!
-        
-        ;; try to use our pitch curve with only notes not already used but if
-        ;; that would result in too few pitches then add notes from used one by
-        ;; one until we're happy.  NB By not re-using already-used pitches we
-        ;; are effectively deviating from our pitch curve, e.g. p84 of cheat
-        ;; sheet where quick runs that should be close become huge fast leaps
-        (loop with used-cp = (copy-list used) do
-             (setf num-set-pitches (length set-pitches-rm-used)
-                    offset (cond ((>= need num-set-pitches) (- lowest))
-                                 ;; if the lowest given is >= 5 then always use
-                                 ;; the top notes
-                                 ((or (prefers-high instrument)
-                                      (>= lowest 5)) 
-                                  (- num-set-pitches need 
-                                     lowest))
-                                 ;; if the lowest given is 1 always use the
-                                 ;; bottom notes
-                                 ((or (prefers-low instrument)
-                                      (= lowest 1))
-                                  (- lowest))
-                                 ;; go for the middle
-                                 (t (- (1- 
+              (get-relative-notes ps 
+                                  (if instrument
+                                      (starting-clef instrument)
+                                      'treble)))
+        (let* ((highest (highest ps))
+               (lowest (lowest ps))
+               (do-chords (chords instrument))
+               (need (1+ (- highest lowest)))
+               (set-pitches-rm (limit-for-instrument (clone set) instrument
+                                                     :upper limit-high 
+                                                     :lower limit-low
+                                                     :do-related-sets t))
+               ;; get the notes we've already assigned to other instruments ...
+               (used (loop for p in (get-used-notes set seq-num) 
+                        when (pitch-member p set-pitches-rm)
+                        collect p))
+               ;; ... and remove these from the notes we'll select from (in
+               ;; order to try and use as many notes from the set as possible
+               ;; and avoid repeating notes across instruments)
+               (set-pitches-rm-used (remove-pitches set-pitches-rm used
+                                                    :enharmonics-are-equal t
+                                                    :return-symbols nil))
+               (ins-subset (when (subset-id instrument)
+                             (get-data-data (subset-id instrument) 
+                                            (subsets set))))
+               num-set-pitches offset scaler)
+          ;; If (subset-id instrument) was set (to limit the pitches for that
+          ;; instrument to the subset with this id) then use only pitches in
+          ;; subset; also set used to be only those that are in the subset.
+          (when ins-subset
+            (setf set-pitches-rm-used (pitch-intersection set-pitches-rm-used
+                                                          ins-subset)
+                  used (pitch-intersection used ins-subset)))
+          ;; try to use our pitch curve with only notes not already used but if
+          ;; that would result in too few pitches then add notes from used one
+          ;; by one until we're happy.  NB By not re-using already-used pitches
+          ;; we are effectively deviating from our pitch curve, e.g. p84 of
+          ;; cheat sheet where quick runs that should be close become huge fast
+          ;; leaps
+          (loop with used-cp = (copy-list used) do
+               (setf num-set-pitches (length set-pitches-rm-used)
+                     offset (cond ((>= need num-set-pitches) (- lowest))
+                                  ;; if the lowest given is >= 5 then always
+                                  ;; use the top notes
+                                  ((or (prefers-high instrument)
+                                       (>= lowest 5)) 
+                                   (- num-set-pitches need 
+                                      lowest))
+                                  ;; if the lowest given is 1 always use the
+                                  ;; bottom notes
+                                  ((or (prefers-low instrument)
+                                       (= lowest 1))
+                                   (- lowest))
+                                  ;; go for the middle
+                                  (t (- (1- 
                                         (ceiling
                                          (- num-set-pitches need) 
                                          2))

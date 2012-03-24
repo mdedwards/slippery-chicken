@@ -125,5 +125,7 @@ top of sc class:
 ;;; simply call get-bar (getting all the players!) and change the bar-line-type
 ;;; of the bar accordingly. 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+from pitch-seq::get-notes:
+      ;; todo: how are we going to use hint pitch?
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

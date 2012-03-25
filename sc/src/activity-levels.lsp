@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> activity-levels
 ;;;
-;;; Version:          0.91
+;;; Version:          0.92
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

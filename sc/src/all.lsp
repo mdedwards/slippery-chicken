@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 10:05:07 Tue Mar 20 2012 GMT
+;;; $$ Last modified: 10:39:55 Sun Mar 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -59,6 +59,12 @@
 (in-package :cl-user)
 
 (defconstant +slippery-chicken-version+ "1.00")
+;; MDE Sun Mar 25 10:39:07 2012 -- These two constants are used in
+;; pitch-seq::get-notes to indicate which lowest number in a pitch-seq would
+;; indicate that we should select the highest or lowest notes possible for the
+;; instrument/set. 
+(defconstant +pitch-seq-lowest-equals-prefers-high+ 5)
+(defconstant +pitch-seq-lowest-equals-prefers-low+ 1)
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 

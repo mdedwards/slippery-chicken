@@ -11,7 +11,7 @@
 ;;;                   named-object -> linked-named-object -> sclist
 ;;;                   -> player-section
 ;;;
-;;; Version:          1.0
+;;; Version:          0.9
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

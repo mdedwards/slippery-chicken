@@ -5,7 +5,7 @@
 ;;;
 ;;; File:             all.lsp
 ;;;
-;;; Version:          1.0
+;;; Version:          0.9
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 10:43:50 Sun Mar 25 2012 BST
+;;; $$ Last modified: 12:43:19 Sun Mar 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -58,7 +58,8 @@
 
 (in-package :cl-user)
 
-(defconstant +slippery-chicken-version+ "1.00")
+;;; The number is quoted just in case we want version numbers like "1.2beta"
+(defconstant +slippery-chicken-version+ "0.9")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 

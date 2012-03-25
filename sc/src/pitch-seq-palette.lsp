@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   palette -> pitch-seq-palette
 ;;;
-;;; Version:          0.92
+;;; Version:          0.9
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

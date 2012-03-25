@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 10:38:55 Sun Mar 25 2012 BST
+;;; $$ Last modified: 10:45:17 Sun Mar 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -58,6 +58,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
+
+;; MDE Sun Mar 25 10:39:07 2012 -- These two constants are used in
+;; pitch-seq::get-notes to indicate which lowest number in a pitch-seq would
+;; indicate that we should select the highest or lowest notes possible for the
+;; instrument/set. 
+(defconstant +pitch-seq-lowest-equals-prefers-high+ 5)
+(defconstant +pitch-seq-lowest-equals-prefers-low+ 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

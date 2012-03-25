@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> slippery-chicken
 ;;;
-;;; Version:          0.9
+;;; Version:          0.91
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

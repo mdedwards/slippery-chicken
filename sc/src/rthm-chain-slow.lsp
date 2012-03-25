@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> 
 ;;;                   circular-sclist -> rthm-chain-slow
 ;;;
-;;; Version:          0.9
+;;; Version:          0.91
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

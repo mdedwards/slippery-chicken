@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 09:37:51 Tue Mar 13 2012 GMT
+;;; $$ Last modified: 13:15:57 Mon Mar 26 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1158,7 +1158,7 @@ data: (3 8)
     (unless notes
       (when (pitch-seq-palette rs)
         (setf notes (get-notes (get-nth 0 (pitch-seq-palette rs))
-                               nil nil nil nil nil 0 nil))))
+                               nil nil nil nil nil 0 nil 0.5))))
     (format notes-stream "~a" clef)
     ;; Loop through the bars
     (loop for bar in (bars rs) do

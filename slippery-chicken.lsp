@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 08:12:39 Wed Mar 21 2012 GMT
+;;; $$ Last modified: 13:23:41 Mon Mar 26 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -164,7 +164,14 @@
    (rehearsal-letters :accessor rehearsal-letters :type list 
                       :initarg :rehearsal-letters :initform nil)
    ;; 1/4/06: this is the number of sections __and__ subsections
-   (num-sequences :accessor num-sequences :type integer :initform -1)))
+   (num-sequences :accessor num-sequences :type integer :initform -1)
+   ;; MDE Mon Mar 26 13:10:15 2012 -- This one defines the lowest scaler we'll
+   ;; accept before adding notes from those used i.e. if our pitch-seq needs 6
+   ;; notes and only 3 are available, there would be note repetition but as
+   ;; this would create a scaler of 0.5, that would be acceptable
+   (pitch-seq-index-scaler-min :accessor pitch-seq-index-scaler-min
+                               :initarg pitch-seq-index-scaler-min 
+                               :initform 0.5)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -410,6 +417,8 @@
           (slot-value no 'set-limits-low) (my-copy-list (set-limits-low sc))
           (slot-value no 'rehearsal-letters) 
           (my-copy-list (rehearsal-letters sc))
+          (slot-value no 'pitch-seq-index-scaler-min)
+          (pitch-seq-index-scaler-min sc)
           (slot-value no 'num-sequences) (num-sequences sc))
     no))
 
@@ -2509,7 +2518,7 @@
 (defmethod print-object :before ((sc slippery-chicken) stream)
   (format stream "~%SLIPPERY-CHICKEN: ~
                   ~%                      title: ~a ~
-                  ~%                      composer: ~a ~
+                  ~%                   composer: ~a ~
                   ~%                set-palette: ~a ~
                   ~%                    set-map: ~a ~
                   ~%               hint-pitches: ~a ~
@@ -2518,14 +2527,16 @@
                   ~%                  tempo-map: ~a ~
                   ~%                tempo-curve: ~a ~
                   ~%         instrument-palette: ~a ~
-                  ~%                   ensemble: ~a 
-                  ~%      instruments-hierarchy: ~a 
-                  ~%        fast-leap-threshold: ~a "
+                  ~%                   ensemble: ~a ~
+                  ~%      instruments-hierarchy: ~a ~
+                  ~%        fast-leap-threshold: ~a ~
+                  ~% pitch-seq-index-scaler-min: ~a "
           (title sc) (composer sc) (id (set-palette sc)) (id (set-map sc))
           (id (hint-pitches sc)) (id (rthm-seq-map sc))
           (id (rthm-seq-palette sc)) (id (tempo-map sc)) (tempo-curve sc)
           (id (instrument-palette sc)) (id (ensemble sc))
-          (instruments-hierarchy sc) (fast-leap-threshold sc))
+          (instruments-hierarchy sc) (fast-leap-threshold sc) 
+          (pitch-seq-index-scaler-min sc))
   (statistics sc stream))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -5805,7 +5816,11 @@
           (when pitch-seq
             (get-notes pitch-seq instrument set hint-pitch (second set-limits) 
                        (first set-limits) global-seq-num 
-                       last-pitch)))
+                       last-pitch 
+                       ;; MDE Mon Mar 26 13:21:29 2012
+                       (if slippery-chicken
+                           (pitch-seq-index-scaler-min slippery-chicken)
+                           0.5))))
          (notes (my-copy-list notes-from-pitch-seq))
          (iwbns (when slippery-chicken 
                   (member player 

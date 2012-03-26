@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> linked-named-object -> rhythm -> event
 ;;;
-;;; Version:          0.9
+;;; Version:          0.9.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

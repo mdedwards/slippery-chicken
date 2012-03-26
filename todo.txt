@@ -128,4 +128,7 @@ top of sc class:
 from pitch-seq::get-notes:
       ;; todo: how are we going to use hint pitch?
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+pitch-seq.lsp
+(defconstant +pitch-seq-index-scaler-threshold+ 0.5)
+consider putting this as a sc slot
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

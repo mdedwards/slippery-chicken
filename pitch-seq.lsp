@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> 
 ;;;                   pitch-seq
 ;;;
-;;; Version:          0.9
+;;; Version:          0.9.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 10:45:17 Sun Mar 25 2012 BST
+;;; $$ Last modified: 13:03:57 Mon Mar 26 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -59,12 +59,17 @@
 
 (in-package :slippery-chicken)
 
-;; MDE Sun Mar 25 10:39:07 2012 -- These two constants are used in
-;; pitch-seq::get-notes to indicate which lowest number in a pitch-seq would
-;; indicate that we should select the highest or lowest notes possible for the
-;; instrument/set. 
+;;; MDE Sun Mar 25 10:39:07 2012 -- These two constants are used in
+;;; pitch-seq::get-notes to indicate which lowest number in a pitch-seq would
+;;; indicate that we should select the highest or lowest notes possible for the
+;;; instrument/set. 
 (defconstant +pitch-seq-lowest-equals-prefers-high+ 5)
 (defconstant +pitch-seq-lowest-equals-prefers-low+ 1)
+;;; This one defines the lowest scaler we'll accept before adding notes from
+;;; those used i.e. if our pitch-seq needs 6 notes and only 3 are available,
+;;; there would be note repetition but as this would create a scaler of 0.5,
+;;; that would be acceptable
+(defconstant +pitch-seq-index-scaler-threshold+ 0.5)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -210,15 +215,19 @@
 ;;; sounding pitches.  
 ;;; 
 ;;; The order of operations for selecting pitches are as follows:
+;;;
 ;;; 1) Limit the set object to the instrument's range
+;;; 
 ;;; 2) Remove the notes that have already been selected for other instruments.
 ;;;    This is where the slippery-chicken slot :instrument-hierarchy plays an
 ;;;    important role.  
+;;; 
 ;;; 3) If there is an subset with the same ID as the subset-id slot for this
 ;;;    instrument, use only those pitches common to that subset and those in
 ;;;    step 2.
+;;; 
 ;;; 4) If we now have fewer pitches at our disposal than there are different
-;;;    numbers in the pich-seq, we will add notes from those used by other
+;;;    numbers in the pitch-seq, we will add notes from those used by other
 ;;;    instruments until we have enough, and the lowest number in the pitch-seq
 ;;;    will select the lowest pitch in the set that is in the instrument's
 ;;;    range.  If however we do have enough pitches without adding pitches
@@ -232,19 +241,34 @@
 ;;;    range.  If you haven't set this slot, then the range of the pitch-seq
 ;;;    will correspond to the middle of the available pitches.  There are two
 ;;;    caveats here if the instrument's prefers-notes slot is NIL: 1) if the
-;;;    lowest number in the pitch-seq is 5* or higher, this will have the same
+;;;    lowest number in the pitch-seq is 5 or higher, this will have the same
 ;;;    effect as the prefers-notes slot being high.  Similarly, if the lowest
-;;;    number is 1*, it will have the same effect as the prefers-notes slot
-;;;    being low.
+;;;    number is 1, it will have the same effect as the prefers-notes slot
+;;;    being low.  These two numbers (5 and 1) are actually global constants:
+;;;    +pitch-seq-lowest-equals-prefers-high+ and
+;;;    +pitch-seq-lowest-equals-prefers-low+, as defined above.
+;;;
+;;;    The question as to how many pitches are enough pitches before adding
+;;;    used notes is determined by +pitch-seq-index-scaler-threshold+ which is
+;;;    usually 0.5.  As the pitch-seq notes must be offset and scaled before
+;;;    they can be used as indices, there's a minimum scaler that's considered
+;;;    acceptable; anything below this would result in more notes being added.
+;;;    See description of defconstant above.
+;;; 
 ;;; 5) If at this point, there are no available pitches, the function will
 ;;;    trigger an error and exit.  This could happen if your set-limits, both
 ;;;    high and low, took the available pitches outside of the instrument's
 ;;;    range, for instance.
+;;; 
+;;; 6) We're now ready to offset and scale our pitch-seq numbers in order to
+;;;    use them as indices into our pitch list.  If a number is in parentheses
+;;;    then this is where the instrument's chord function would be called.  As
+;;;    notes are selected, the set marks them as used for the next time around.
+;;;    Also, there's an attempt to avoid melodic octaves on adjacent notes,
+;;;    however, if the set is full of octaves this won't be possible; in that
+;;;    case a warning will be issued but the octave will be used.
 ;;;
-;;; * Or whatever the value of +pitch-seq-lowest-equals-prefers-high+ or
-;;; +pitch-seq-lowest-equals-prefers-low+ is, as defined in all.lsp 
-
-
+;;;    
 ;;;
 ;;; ARGUMENTS 
 ;;; - A pitch-seq object.
@@ -298,8 +322,8 @@
                                                     :enharmonics-are-equal t
                                                     :return-symbols nil))
                (ins-subset (when (subset-id instrument)
-                             (get-data-data (subset-id instrument) 
-                                            (subsets set))))
+                             (get-data-data (subset-id subsets) 
+                                            (instrument set))))
                num-set-pitches offset scaler)
           ;; If (subset-id instrument) was set (to limit the pitches for that
           ;; instrument to the subset with this id) then use only pitches in
@@ -343,8 +367,8 @@
              ;; available to fit our pitch curve
                (if (or (not used-cp)
                        (and (> num-set-pitches 1)
-                            ;; might need to play with this number...
-                            (> scaler 0.5)))
+                            ;; might need to play with this constant.
+                            (> scaler +pitch-seq-index-scaler-threshold+)))
                    (return)
                    (setf set-pitches-rm-used
                          (init-pitch-list (cons (pop used-cp)
@@ -353,19 +377,19 @@
           ;; (break)
           (unless (> num-set-pitches 0)
             (error "~&pitch-seq::get-notes: For ~a at sequence number ~a: ~
-                  no pitches in set!  ~%Perhaps your ~
-                  set-limits (high: ~a, low: ~a) are too restrictive?~
-                  ~%set = ~a, set minus used: ~a curve = ~a~%~a" 
+                     no pitches in set!  ~%Perhaps your ~
+                     set-limits (high: ~a, low: ~a) are too restrictive?~
+                     ~%set = ~a, set minus used: ~a curve = ~a~%~a" 
                    (id instrument) seq-num (when limit-high (id limit-high))
                    (when limit-low (id limit-low)) (pitch-symbols set)
                    (get-ids-from-pitch-list set-pitches-rm-used)
                    (data ps) set))
           (setf (notes ps)
                 (loop 
-                   ;; remember: the pitch curve is stored in the data slot but this
-                   ;; has had parentheses removed from all elements; () indicate that
-                   ;; a chord should happen and these are still intact in the
-                   ;; original-data slot.
+                   ;; remember: the pitch curve is stored in the data slot but
+                   ;; this has had parentheses removed from all elements; ()
+                   ;; indicate that a chord should happen and these are still
+                   ;; intact in the original-data slot.
                    for i in (data ps)
                    for j in (original-data ps)
                    ;; 31/3/10: try rounding instead of floor...
@@ -375,29 +399,32 @@
                                        index)
                                    set-pitches-rm-used)
                    with chord-fun = (when (chords instrument)
-                                      (symbol-function (chord-function instrument)))
+                                      (symbol-function
+                                       (chord-function instrument)))
                    with used-notes = (used-notes set)
                    with uns-ref = (list seq-num (id instrument))
                    with last = last-note-previous-seq
                    do
                    (unless note
                      (error "~a~&pitch-seq::get-notes: failed to get a note! ~
-                          ~%index = ~a, lowest = ~a, highest = ~a, ~
-                          num-set-pitches = ~a, offset = ~a, i = ~a, ~
-                          scaler = ~a set = ~a"
+                             ~%index = ~a, lowest = ~a, highest = ~a, ~
+                             num-set-pitches = ~a, offset = ~a, i = ~a, ~
+                             scaler = ~a set = ~a"
                             set-pitches-rm-used index lowest highest 
-                            num-set-pitches offset i scaler (pitch-symbols set)))
+                            num-set-pitches offset i scaler
+                            (pitch-symbols set)))
                    (if (and (listp j) do-chords) ;; should be a chord!
                        (progn
-                         ;; the chord-function defined should take six arguments:
-                         ;; the current number from the curve; the index that this
-                         ;; was translated into by the offset and scaler (based on
-                         ;; trying to get a best fit for the instrument and set);
-                         ;; the pitch-list that we created from the set, taking
-                         ;; the instrument's range and other notes already played
-                         ;; by other instruments; the pitch-seq object; the
-                         ;; instrument object; the set object.  It must return a
-                         ;; chord object.
+                         ;; the chord-function defined should take six
+                         ;; arguments: the current number from the curve; the
+                         ;; index that this was translated into by the offset
+                         ;; and scaler (based on trying to get a best fit for
+                         ;; the instrument and set); the pitch-list that we
+                         ;; created from the set, taking the instrument's range
+                         ;; and other notes already played by other
+                         ;; instruments; the pitch-seq object; the instrument
+                         ;; object; the set object.  It must return a chord
+                         ;; object.
                          (setf note (funcall chord-fun i index 
                                              set-pitches-rm-used ps instrument
                                              set))
@@ -410,25 +437,26 @@
                               (ral-econs (data pitch) uns-ref used-notes)))
                        ;; it's a single pitch so just update used-notes
                        (ral-econs (data note) uns-ref used-notes))
-                   ;; 16/4/07: avoid melodic 8ves where reasonable, i.e. doesn't
-                   ;; recheck to see if we've recreated another octave if the
-                   ;; available pitches are full of octaves 
+                   ;; 16/4/07: avoid melodic 8ves where reasonable,
+                   ;; i.e. doesn't recheck to see if we've recreated another
+                   ;; octave if the available pitches are full of octaves
                    (when (and last
                               (pitch-p last)
                               (pitch-p note)
                               (is-octave note last))
-                     (cond ((> index 0)
-                            (setf note (nth (1- index) set-pitches-rm-used)))
-                           ((< (1+ index) num-set-pitches)
-                            (setf note (nth (1+ index) set-pitches-rm-used)))
-                           (t (warn "pitch-seq::get-notes: can't avoid octave; ~
-                                  seq-num: ~a, instrument: ~a, pitches: ~a ~
-                                  used-pitches: ~a, last: ~a"
-                                    seq-num (id instrument) 
-                                    (pitch-list-to-symbols 
-                                     set-pitches-rm-used)
-                                    (pitch-list-to-symbols used)
-                                    (id last)))))
+                     (cond 
+                       ((> index 0)
+                        (setf note (nth (1- index) set-pitches-rm-used)))
+                       ((< (1+ index) num-set-pitches)
+                        (setf note (nth (1+ index) set-pitches-rm-used)))
+                       (t (warn "pitch-seq::get-notes: can't avoid octave; ~
+                                 seq-num: ~a, instrument: ~a, pitches: ~a ~
+                                 used-pitches: ~a, last: ~a"
+                                seq-num (id instrument) 
+                                (pitch-list-to-symbols 
+                                 set-pitches-rm-used)
+                                (pitch-list-to-symbols used)
+                                (id last)))))
                      #|
                    (format t "~&set id: ~a, note: ~a, ref: ~a :stored ~a" 
                      (id set) (data note) (list seq-num (id instrument))
@@ -474,7 +502,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #|
-;;; No longer necessary, taken care of in get-relative-notes. ;
+;;; No longer necessary, taken care of in get-relative-notes. ; ;
                    (defmethod relative-int-to-note (int (ps pitch-seq))
 (let ((len (relative-notes-length ps)))
 (when (or (> int len) (> (highest ps) len))
@@ -536,10 +564,10 @@ len))
 
 #|
 
-;; The first creation option is using one argument that is a two-item list, ;
-;; whereby the first item is a symbol to be used as the pitch-seq object's ID ;
-;; and the second is a list of numbers representing the general contour of the ;
-;; pitch sequence.                      ;
+;; The first creation option is using one argument that is a two-item list, ; ;
+;; whereby the first item is a symbol to be used as the pitch-seq object's ID ; ;
+;; and the second is a list of numbers representing the general contour of the ; ;
+;; pitch sequence.                      ; ;
                    (make-pitch-seq '(pseq1 (1 2 1 1 3)))
 
                    =>
@@ -556,9 +584,9 @@ len))
                    NAMED-OBJECT: id: PSEQ1, tag: NIL, 
                    data: (1 2 1 1 3)
 
-;; The second creation option uses two arguments, the first of which is a list ;
-;; of numbers representing the general contour of the pitch sequence, the ;
-;; second of which is a symbol which will be used as the pith-seq object's ID. ;
+;; The second creation option uses two arguments, the first of which is a list ; ;
+;; of numbers representing the general contour of the pitch sequence, the ; ;
+;; second of which is a symbol which will be used as the pith-seq object's ID. ; ;
                    (make-pitch-seq '(2 1 1 3 1) 'pseq2)
 
                    => 

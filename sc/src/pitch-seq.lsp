@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 13:03:57 Mon Mar 26 2012 BST
+;;; $$ Last modified: 13:17:36 Mon Mar 26 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -65,11 +65,6 @@
 ;;; instrument/set. 
 (defconstant +pitch-seq-lowest-equals-prefers-high+ 5)
 (defconstant +pitch-seq-lowest-equals-prefers-low+ 1)
-;;; This one defines the lowest scaler we'll accept before adding notes from
-;;; those used i.e. if our pitch-seq needs 6 notes and only 3 are available,
-;;; there would be note repetition but as this would create a scaler of 0.5,
-;;; that would be acceptable
-(defconstant +pitch-seq-index-scaler-threshold+ 0.5)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -249,11 +244,12 @@
 ;;;    +pitch-seq-lowest-equals-prefers-low+, as defined above.
 ;;;
 ;;;    The question as to how many pitches are enough pitches before adding
-;;;    used notes is determined by +pitch-seq-index-scaler-threshold+ which is
-;;;    usually 0.5.  As the pitch-seq notes must be offset and scaled before
-;;;    they can be used as indices, there's a minimum scaler that's considered
-;;;    acceptable; anything below this would result in more notes being added.
-;;;    See description of defconstant above.
+;;;    used notes is determined by the pitch-seq-index-scaler-min argument,
+;;;    which is by default 0.5 (in the slippery-chicken slot that's usually
+;;;    used and passed to this method).  As the pitch-seq notes must be offset
+;;;    and scaled before they can be used as indices, there's a minimum scaler
+;;;    that's considered acceptable; anything below this would result in more
+;;;    notes being added.
 ;;; 
 ;;; 5) If at this point, there are no available pitches, the function will
 ;;;    trigger an error and exit.  This could happen if your set-limits, both
@@ -279,6 +275,10 @@
 ;;; - A pitch-object defining the lowest possible note.
 ;;; - The sequence number (for diagnostics).
 ;;; - The last note of the previous sequence, as a pitch object.
+;;; - the lowest scaler we'll accept before adding notes from those used
+;;;   i.e. if our pitch-seq needs 6 notes and only 3 are available, there would
+;;;   be note repetition but as this would create a scaler of 0.5, that would
+;;;   be acceptable
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns a list of pitch objects.
@@ -289,7 +289,8 @@
 |#
 ;;; SYNOPSIS
 (defmethod get-notes ((ps pitch-seq) instrument set hint-pitch limit-high
-                      limit-low seq-num last-note-previous-seq)
+                      limit-low seq-num last-note-previous-seq
+                      pitch-seq-index-scaler-min)
 ;;; ****
   (declare (ignore hint-pitch))
   ;; (print ps)
@@ -368,7 +369,7 @@
                (if (or (not used-cp)
                        (and (> num-set-pitches 1)
                             ;; might need to play with this constant.
-                            (> scaler +pitch-seq-index-scaler-threshold+)))
+                            (> scaler pitch-seq-index-scaler-min)))
                    (return)
                    (setf set-pitches-rm-used
                          (init-pitch-list (cons (pop used-cp)

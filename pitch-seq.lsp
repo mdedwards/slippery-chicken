@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 13:17:36 Mon Mar 26 2012 BST
+;;; $$ Last modified: 13:28:31 Mon Mar 26 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -323,8 +323,8 @@
                                                     :enharmonics-are-equal t
                                                     :return-symbols nil))
                (ins-subset (when (subset-id instrument)
-                             (get-data-data (subset-id subsets) 
-                                            (instrument set))))
+                             (get-data-data (subset-id instrument) 
+                                            (subsets set))))
                num-set-pitches offset scaler)
           ;; If (subset-id instrument) was set (to limit the pitches for that
           ;; instrument to the subset with this id) then use only pitches in

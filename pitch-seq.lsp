@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 11:02:01 Tue Mar 27 2012 BST
+;;; $$ Last modified: 11:29:35 Tue Mar 27 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -257,13 +257,14 @@
 ;;;    high and low, took the available pitches outside of the instrument's
 ;;;    range, for instance.
 ;;; 
-;;; 6) We're now ready to offset and scale our pitch-seq numbers in order to
-;;;    use them as indices into our pitch list.  If a number is in parentheses
-;;;    then this is where the instrument's chord function would be called.  As
-;;;    notes are selected, the set marks them as used for the next time around.
-;;;    Also, there's an attempt to avoid melodic octaves on adjacent notes,
-;;;    however, if the set is full of octaves this won't be possible; in that
-;;;    case a warning will be issued but the octave will be used.
+;;; 6) We're now ready to offset and scale then round our pitch-seq numbers in
+;;;    order to use them as indices into our pitch list.  If a number is in
+;;;    parentheses then this is where the instrument's chord function would be
+;;;    called.  As notes are selected, the set marks them as used for the next
+;;;    time around.  Also, there's an attempt to avoid melodic octaves on
+;;;    adjacent notes, however, if the set is full of octaves this won't be
+;;;    possible; in that case a warning will be issued but the octave will be
+;;;    used.
 ;;;
 ;;;    
 ;;;

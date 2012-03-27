@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:23:41 Mon Mar 26 2012 BST
+;;; $$ Last modified: 09:46:42 Tue Mar 27 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2249,8 +2249,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; note-num is 1-based and counts tied-to notes as well
-;;; todo: somehow, when we tie into a tq rest, we lose the bracket info :/
-;;; still doesn't handle ties in tuplets well at all 
 ;;; 24.3.11: added end-bar
 (defmethod tie-over-rests ((sc slippery-chicken) bar-num note-num player
                            &key end-bar auto-beam (consolidate-notes t))

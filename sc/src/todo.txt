@@ -132,3 +132,8 @@ pitch-seq.lsp
 (defconstant +pitch-seq-index-scaler-threshold+ 0.5)
 consider putting this as a sc slot
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+slippery-chicken.lsp tie-over-rests
+;;; todo: somehow, when we tie into a tq rest, we lose the bracket info :/
+;;; still doesn't handle ties in tuplets well at all 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+

@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 13:28:31 Mon Mar 26 2012 BST
+;;; $$ Last modified: 11:02:01 Tue Mar 27 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -221,26 +221,27 @@
 ;;;    instrument, use only those pitches common to that subset and those in
 ;;;    step 2.
 ;;; 
-;;; 4) If we now have fewer pitches at our disposal than there are different
-;;;    numbers in the pitch-seq, we will add notes from those used by other
-;;;    instruments until we have enough, and the lowest number in the pitch-seq
-;;;    will select the lowest pitch in the set that is in the instrument's
-;;;    range.  If however we do have enough pitches without adding pitches
-;;;    already used by other instruments, then where in the available pitches
-;;;    we place our lowest number of the pitch-seq will depend on whether
-;;;    you've set the prefers-notes slot of the instrument to be high or low.
-;;;    If high, then the highest number in the pitch-seq will result in the
-;;;    highest pitch in the available pitches that is in the instrument's
-;;;    range.  If low, then the lowest number in the pitch-seq will result in
-;;;    the lowest pitch in the available pitches that is in the instrument's
-;;;    range.  If you haven't set this slot, then the range of the pitch-seq
-;;;    will correspond to the middle of the available pitches.  There are two
-;;;    caveats here if the instrument's prefers-notes slot is NIL: 1) if the
-;;;    lowest number in the pitch-seq is 5 or higher, this will have the same
-;;;    effect as the prefers-notes slot being high.  Similarly, if the lowest
-;;;    number is 1, it will have the same effect as the prefers-notes slot
-;;;    being low.  These two numbers (5 and 1) are actually global constants:
-;;;    +pitch-seq-lowest-equals-prefers-high+ and
+;;; 4) If the ratio between the number of pitches now available and the number
+;;;    of different numbers in the pitch-seq is less than the slippery-chicken
+;;;    slot pitch-seq-index-scaler-min, we will add notes from those used by
+;;;    other instruments until we have enough, and the lowest number in the
+;;;    pitch-seq will select the lowest pitch in the set that is in the
+;;;    instrument's range.  If however we do have enough pitches without adding
+;;;    pitches already used by other instruments, then where in the available
+;;;    pitches we place our lowest number of the pitch-seq will depend on
+;;;    whether you've set the prefers-notes slot of the instrument to be high
+;;;    or low.  If high, then the highest number in the pitch-seq will result
+;;;    in the highest pitch in the available pitches that is in the
+;;;    instrument's range.  If low, then the lowest number in the pitch-seq
+;;;    will result in the lowest pitch in the available pitches that is in the
+;;;    instrument's range.  If you haven't set this slot, then the range of the
+;;;    pitch-seq will correspond to the middle of the available pitches.  There
+;;;    are two caveats here if the instrument's prefers-notes slot is NIL: 1)
+;;;    if the lowest number in the pitch-seq is 5 or higher, this will have the
+;;;    same effect as the prefers-notes slot being high.  Similarly, if the
+;;;    lowest number is 1, it will have the same effect as the prefers-notes
+;;;    slot being low.  These two numbers (5 and 1) are actually global
+;;;    constants: +pitch-seq-lowest-equals-prefers-high+ and
 ;;;    +pitch-seq-lowest-equals-prefers-low+, as defined above.
 ;;;
 ;;;    The question as to how many pitches are enough pitches before adding
@@ -368,7 +369,9 @@
              ;; available to fit our pitch curve
                (if (or (not used-cp)
                        (and (> num-set-pitches 1)
-                            ;; might need to play with this constant.
+                            ;; MDE Tue Mar 27 10:58:36 2012 --
+                            ;; pitch-seq-index-scaler-min now comes from the sc
+                            ;; slot 
                             (> scaler pitch-seq-index-scaler-min)))
                    (return)
                    (setf set-pitches-rm-used

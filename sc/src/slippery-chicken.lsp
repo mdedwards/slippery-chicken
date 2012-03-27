@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:46:42 Tue Mar 27 2012 BST
+;;; $$ Last modified: 10:36:40 Tue Mar 27 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5726,14 +5726,14 @@
     ;; 14/8/07 first x always needs to be 1
     (setf (first stretched) 1)
     (loop for x in stretched by #'cddr and y in (cdr stretched) by #'cddr
-        collect
-          ;; convert notes or MIDI note numbers to degrees so that we can
-          ;; interpolate.  Note degrees are in cm::*scale* so this is not the
-          ;; same as MIDI notes. 
-          x collect
-          (if (numberp y)
-              (midi-to-degree (floor y))
-            (note-to-degree y)))))
+       collect
+       ;; convert notes or MIDI note numbers to degrees so that we can
+       ;; interpolate.  Note degrees are in cm::*scale* so this is not the
+       ;; same as MIDI notes. 
+       x collect
+       (if (numberp y)
+           (midi-to-degree (floor y))
+           (note-to-degree y)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

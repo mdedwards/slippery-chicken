@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 10:37:17 Thu Feb 23 2012 GMT
+;;; $$ Last modified: 13:05:01 Wed Mar 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1029,8 +1029,6 @@
       for set in sets
       and i from 0
       do
-        ;; TODO: by just processing (data set) we only get the main set not
-        ;; the subsets or related sets: fix this.
         (let* ((treble-bass-split (get-cmn-treble-bass (data set)))
                (treble (first treble-bass-split))
                (bass (second treble-bass-split))

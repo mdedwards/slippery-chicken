@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 10:07:41 Tue Mar 20 2012 GMT
+;;; $$ Last modified: 13:07:29 Wed Mar 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -116,10 +116,6 @@
    ;; dynamics, accents etc. exactly the code used by cmn.  Used for note or
    ;; chord as a whole (individual pitches of a chord can also have their own
    ;; marks--see pitch.lsp)  
-   ;; todo: this really needs redesigning, especially in light of new Lilypond
-   ;; functionality.  Need a class with class variables for return strings
-   ;; etc. and a way of indicating whether the mark should be written before or
-   ;; after the pitch data.
    (marks :accessor marks :type list :initarg :marks 
               :initform nil)
    (marks-in-part :accessor marks-in-part :type list 
@@ -134,9 +130,6 @@
 
 (defmethod initialize-instance :after ((i rhythm) &rest initargs)
   (declare (ignore initargs))
-  ;; todo: should really here for a number and try to find the letter, dots for
-  ;; that duration 
-  ;; (print 'rhythm)
   (cond ((data i)
          (parse-rhythm i)
          (unless (id i)
@@ -360,7 +353,7 @@
               (undotted-value r) (/ (undotted-value r) scaler)
               (num-flags r) (rthm-num-flags (undotted-value r)))
         ;; NB score-rthm not handled here!
-        ;; quick hack to handle dots--todo: this needs more thought!!!
+        ;; handle dots:
         (when (zerop (num-dots r))
           (setf (num-dots r)
                 (case scaler

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:00:42 Sat Mar 10 2012 GMT
+;;; $$ Last modified: 13:03:26 Wed Mar 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -110,9 +110,9 @@
                   :initarg :display-tempo :initform nil)
    ;; the bar number this event is in.
    (bar-num :accessor bar-num :type integer :initarg :bar-num :initform -1)
-   ;; clefs etc. that come before a note. todo: 1.3.11 change this to
-   ;; marks-before because we no longer store cmn objects, just symbols;
-   ;; sim for bar-holder add method -- DONE 24.12.11
+   ;; clefs etc. that come before a note.  24.12.11 changed this to
+   ;; marks-before because we no longer store cmn objects, just symbols; sim
+   ;; for bar-holder add method 
    (marks-before :accessor marks-before :type list :initarg :marks-before
                  :initform nil)
    ;(rqq-notes :accessor rqq-notes :type list :initform nil :allocation :class)
@@ -2010,7 +2010,6 @@ NIL
                   (written-pitch-or-chord e)
                   (pitch-or-chord e))))
     ;; (print e)
-    ;; todo: got to add bar num to rqq rhythms
     ;; call the event-processing function finally
     (when process-event-fun
       (funcall process-event-fun e))

@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 20:29:17 Mon Mar 19 2012 GMT
+;;; $$ Last modified: 15:10:41 Wed Mar 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -93,9 +93,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; todo: in general, recursive set palettes shouldn't have
-;;; named-objects whose data are set-palettes, rather just a set
-;;; palette (which has an id anyway). 
 (defclass set-palette (palette)
   ())
 
@@ -119,9 +116,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Tue Feb  7 12:12:24 GMT 2012: Added robodoc entry
-
-;;; SAR Tue Feb 7 12:11:34 GMT 2012: 
-;;; Moved MDE's todo comment to sc/src/todo.txt
 
 #+cmn
 ;;; ****m* set-palette/cmn-display
@@ -315,11 +309,6 @@
                    include-missing-non-chromatic
                    use-octave-signs)
      into result
-     ;; todo: 10.3.10: what's this here? is it or isn't it? I think it's
-     ;; confused by the recursive aspect: could be a sub set-palette in there.
-     ;; This is a mistake correction so not pretty: result will not be a
-     ;; list of lists, each sublist containing a list of treble and a
-     ;; list of bass notes.
      finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -825,9 +814,6 @@ data: (
 ;;;  Ring Modulation routines
 
 ;;; SAR Wed Feb  8 12:48:17 GMT 2012: Edited robodoc entry
-
-;;; SAR Wed Feb  8 12:47:37 GMT 2012: Moved MDE's todo from here to
-;;; sc/src/todo.txt 
 ;;; 
 ;;; ****f* set-palette/recursive-set-palette-from-ring-mod
 ;;; FUNCTION

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 08:08:09 Wed Mar 21 2012 GMT
+;;; $$ Last modified: 15:08:35 Wed Mar 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -82,7 +82,6 @@
    ;; disappears! 
    ;; The rhythms are changed to events in the
    ;; slippery-chicken::sc-make-sequenz method 
-   ;; todo (20.7.11) make into an sclist object instead of a simple list?
    (rhythms :accessor rhythms :type list :initform nil)
    ;; the length of rhythms.
    (num-rhythms :accessor num-rhythms :type integer :initform -1)
@@ -162,8 +161,7 @@
    ;; an integer if it's the first bar of a multi-bar-rest (so get-cmn-data
    ;; needs to create that rest).  BTW, adding a number to a whole bar's rest
    ;; (e.g. (whole-measure-rest 5)) does not increment cmn's measure count
-   ;; accordingly; the var we need is probably *cmn-measure-number* todo: add
-   ;; usual clone and print code
+   ;; accordingly; the var we need is probably *cmn-measure-number* 
    (multi-bar-rest :accessor multi-bar-rest :initform nil)
    ;; when we generate an rsb with chop, we need to keep track of the attack
    ;; number of the start and end note that the new bar was extracted from the
@@ -709,9 +707,7 @@ data: ((2 4) Q E S S)
           ;; 14.2.11 surely it's rthms, not (rhythms rsb) we want to
           ;; process here 
           ;; 14.2.11 don't try and consolidate anything beyond a beat if there
-          ;; are tuplets.  todo: extend this to look at consecutive groups of
-          ;; beats and test for tuplets
-          ;; (print 'here)
+          ;; are tuplets.
           (unless (has-tuplets rthms)
             (setf tmp (consolidate-notes-aux rthms 
                                                (bar-num rsb)
@@ -1018,11 +1014,6 @@ data: ((2 4) - S S - S - S S S - S S)
         (delete-tuplet-bracket r)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; TODO: This case only handles beats which have the same rhythms in
-;;; them, e.g. 7 septuplet 1/16ths.  We need a function to analyse a
-;;; beat for that case, if so use this function, otherwise do the more
-;;; complicated case.
 
 (defmethod figure-out-and-auto-set-tuplets ((rsb rthm-seq-bar) beat)
   (let ((beats (get-beats rsb beat))
@@ -1410,6 +1401,9 @@ data: ((2 4) - S S - S - S S S - S S)
           (slot-value sclist 'write-time-sig) (write-time-sig rsb)
           (slot-value sclist 'bar-line-type) (bar-line-type rsb)
           (slot-value sclist 'player-section-ref) (player-section-ref rsb)
+          (slot-value sclist 'parent-start-end)
+          (copy-list (parent-start-end rsb))
+          (slot-value sclist 'multi-bar-rest) (multi-bar-rest rsb)
           (slot-value sclist 'nth-seq) (nth-seq rsb)
           (slot-value sclist 'nth-bar) (nth-bar rsb))
     sclist))
@@ -2502,27 +2496,16 @@ data: E
         (time-qtrs start-time-qtrs)
         (bar-dur (bar-duration rsb tempo)))
     (loop for event in (rhythms rsb) do   
-          (setf (start-time event) time
-                ;; TODO: this isn't working here; the problem is we need to
-                ;; keep track of a global midi start time just in the same way
-                ;; that we're tracking real-time via the return of bar-dur from
-                ;; this function
-                (start-time-qtrs event) time-qtrs
-                (duration-in-tempo event) (* (duration event) qtr-dur)
-                (compound-duration-in-tempo event) 
-                (* (compound-duration event) qtr-dur)
-                (end-time event) (+ (start-time event) 
-                                    (compound-duration-in-tempo event)))
-          #|
-      (when (midi-program-changes event)
-         (format t "~&rsb::update-time: ~&~a ~a" 
-       time (midi-program-changes event)))
-      |#
-          (incf time-qtrs (duration event))
-          (incf time (duration-in-tempo event)))
+         (setf (start-time event) time
+               (start-time-qtrs event) time-qtrs
+               (duration-in-tempo event) (* (duration event) qtr-dur)
+               (compound-duration-in-tempo event) 
+               (* (compound-duration event) qtr-dur)
+               (end-time event) (+ (start-time event) 
+                                   (compound-duration-in-tempo event)))
+         (incf time-qtrs (duration event))
+         (incf time (duration-in-tempo event)))
     (unless (is-rest-bar rsb)
-      ;; todo: find out why the rhythms don't add up exactly to the bar
-      ;; duration.  
       (unless (equal-within-tolerance bar-dur (- time start-time) .002)
         (error "~a~%rthm-seq-bar::update-time: Duration of rhythms don't ~
                 match that of bar: rhythms ~a secs : bar ~a secs"
@@ -2819,12 +2802,8 @@ data: (2 4)
                 (eq t (time-sig-equal x y)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Check that the bracket info for the bar looks correct (avoids hard-to-trace
 ;;; errors in cmn).
-
-;;; TODO: Fix: This doesn't work when there's two or more brackets
-;;; over the notes!  When fixed uncomment call in get-cmn-data (next method)
 
 (defmethod verify-brackets ((rsb rthm-seq-bar))
   (let ((got-beg nil)
@@ -2950,12 +2929,9 @@ data: (2 4)
                          display-marks-in-part display-time
                          ignore1 ignore2 ignore3 ignore4)
   (declare (ignore ignore1 ignore2 ignore3 ignore4))
-  ;; (print rsb)
   ;; 4/4/06: don't do this here anymore, rather do it in sc::respell-notes so
   ;; that we can respell notes. 
   ;; (auto-accidentals rsb)
-  ;; TODO: uncomment this when verify-brackets can handle multiple tuplets
-  ;; (verify-brackets rsb)
   ;; bar nums are written over the bar line of this bar, so it's actually the
   ;; next bar, if you see what I mean  
   (let* ((e1 (get-nth-event 0 rsb))
@@ -3090,13 +3066,7 @@ data: (2 4)
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Try and work out which notes in the bar need accidentals and which don't.
-;;; todo: handle tied first notes: no accidental, but if the pitch is then
-;;; repeated later in the bar, we need an accidental!
-;;; 
-;;; TODO: add cautionary when leaping from e.g. gs4 to g(n)5
-;;; TODO: add cautionary when note preceded by clef change!
 
 (defmethod auto-accidentals ((rsb rthm-seq-bar) 
                              &optional last-attack-previous-bar 
@@ -3403,10 +3373,6 @@ data: (2 4)
 ;;; Although we're just concentrating on one bar here, we need the parent
 ;;; slippery chicken object and player (symbol) in order to get subsequent ties
 ;;; into the next bar from the present bar.
-;;;
-;;; todo: consider getting to first note with accidental, respelling it and
-;;; seeing if this results in less accidentals in the bar (bar 201 pno-lh of
-;;; cheat sheet for instance. 
 
 ;;; ****m* rthm-seq-bar/respell-bar
 ;;; FUNCTION

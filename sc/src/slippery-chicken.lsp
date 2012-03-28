@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:36:40 Tue Mar 27 2012 BST
+;;; $$ Last modified: 15:20:56 Wed Mar 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1429,10 +1429,7 @@
                        (bad-interval-p last last-but-one))
               (enharmonic last :written written) ;; change it back
               (enharmonic this :written written)))
-           ((and (chord-p last) (is-single-pitch this))
-            ;; todo: we should make sure a single pitch after a chord uses
-            ;; the same spellings as the chord if the pitch was in the chord
-            ))
+           ((and (chord-p last) (is-single-pitch this))))
      ;; we've now got to make sure any notes tied from a respelled last or
      ;; this are spelled the same 
      (when respelled ;; either nil, 1 or 2
@@ -2193,8 +2190,6 @@
               (auto-beam bar auto-beam nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; todo: make sure this works at the end of a piece too.
 ;;; NB end-bar is not when the ties stop, but rather when we last find an event
 ;;; to tie from (so the ties may go beyond end-bar)
 
@@ -2374,7 +2369,7 @@
                       rm-slurs-first
                       (rm-staccatos t)
                       ;; 5.4.11
-                      (over-accents t)  ; make this work
+                      (over-accents t)
                       verbose)
   (unless (listp players)
     (setf players (list players)))
@@ -2409,7 +2404,6 @@
                (setf start-e e)
                (incf count))
               ((and (or (is-rest e) ;; end slur
-                        ;; 5.4.11 todo: make this work!
                         (and (not over-accents) (accented-p e))
                         ;; 2 of the same notes should stop a slur but
                         ;; without checking that count > 2 this code
@@ -2455,8 +2449,6 @@
               ((not (is-tied-to e))
                (incf count))
               ((and rm-staccatos start-e (not last-e))
-               ;; todo: this doesn't work: we haven't yet found those
-               ;; notes in the middle... 
                ;; in the middle of a slur so remove staccatos
                (replace-mark e 'as 'a)
                (rm-marks e 's nil)))
@@ -2574,10 +2566,6 @@
         collect ref
         do 
           (setf player-ref (econs ref last-player)
-                ;; todo: bollocks, this isn't the case.... :::
-                ;; of course, this would fail if <last-player> wasn't
-                ;; actually the last player in the data list of each section
-                ;; but that isn't the case is it?  (Haven't tested this)
                 ref (butlast (next (get-data player-ref (piece sc))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3021,7 +3009,6 @@
 ;;; at the moment, we use bass/treble clefs with 8ve signs on to indicate pitch
 ;;; extremes (assuming an instrument has these clefs), but these can be
 ;;; converted to octave brackets here.  NB no 15ma/mb handled here.
-;;; todo: close bracket before several bars rest and then reopen on next note
 (defmethod octave-clefs-to-brackets ((sc slippery-chicken)
                                      &key players start-bar end-bar)
   (unless (listp players)
@@ -3085,7 +3072,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 26.7.11 (Pula): don't allow an octave sign to extend over too many
-;;; rests, rather end it and restart it.  todo: debug
+;;; rests, rather end it and restart it.
 
 (defmethod split-octave-brackets ((sc slippery-chicken)
                                   &key players start-bar end-bar
@@ -3098,15 +3085,6 @@
     (setf start-bar 1))
   (unless end-bar
     (setf end-bar (num-bars sc)))
-  #|
-  todo: need to remove octavation over empty bars first i.e. where whole
-                                  bracket has no notes
-  ;; first make sure brackets start and end on notes, not rests
-  (start-octave-brackets-notes-only sc :players players :start-bar start-bar
-  :end-bar end-bar)
-  (end-octave-brackets-notes-only sc :players players :start-bar start-bar
-  :end-bar end-bar)
-  |#
   (let (under8v rests last-note rest-count)
     (flet ((reset ()
              (setf rests '()
@@ -3303,10 +3281,10 @@
                       ;; this means durations will carry over rests!
                       (ignore-rests nil))
   (setf voices
-    (cond ((and voices (listp voices)) voices)
-          ((and voices (atom voices)) (list voices))
-          ((not voices) (get-players (ensemble sc)))
-          (t (error "slippery-chicken::midi-play: voices = ~a!?" voices))))
+        (cond ((and voices (listp voices)) voices)
+              ((and voices (atom voices)) (list voices))
+              ((not voices) (get-players (ensemble sc)))
+              (t (error "slippery-chicken::midi-play: voices = ~a!?" voices))))
   ;; (print voices)
   (let* ((voices-events (get-events-start-time-duration 
                          sc start-section voices 
@@ -3322,21 +3300,18 @@
          ;; changes are handled in the event class.
          (midi-setup 
           (loop 
-              for voice in voices
-              for player = (get-player sc voice)
-              for current-ins = (id (get-current-instrument-for-player
-                                     start-section voice from-sequence sc))
-              for ins = (get-data current-ins (instrument-palette sc))
-              collect
-                (list (midi-channel player) (midi-program ins))
-              when (microtonal-chords-p player)
-              collect
-                (list (microtones-midi-channel player)
-                      (midi-program ins)))))
+             for voice in voices
+             for player = (get-player sc voice)
+             for current-ins = (id (get-current-instrument-for-player
+                                    start-section voice from-sequence sc))
+             for ins = (get-data current-ins (instrument-palette sc))
+             collect
+             (list (midi-channel player) (midi-program ins))
+             when (microtonal-chords-p player)
+             collect
+             (list (microtones-midi-channel player)
+                   (midi-program ins)))))
     (cm::process-voices voices-events midi-file (get-tempo sc 1) midi-setup
-                        ;; TODO: will this time offset (in seconds!) work when
-                        ;; starting in the middle of the piece? shouldn't it be
-                        ;; in quarters not secs? 
                         (- (start-time-qtrs
                             (get-nth-sequenz (piece sc) start-section
                                              (first voices) 
@@ -3355,7 +3330,6 @@
 ;;; N.B.  This will fail when an instrument is silent for a section (i.e. has
 ;;; nil in the rthm-seq-map).  All of these clm methods should be re-written to
 ;;; conform with the method structure of cmn-get-data.
-;;; todo: add multichannel output via a new instrument
 
 ;;; N.B. clm's nrev instrument will have to be loaded before calling
 ;;; this function.  
@@ -3516,8 +3490,6 @@
          (this-play-chance-env '())
          (skip-this-event t)
          (total-skipped 0)
-         ;; todo: find a way of not writing the reverb stream unless we need it
-         ;; (reverb (if (zerop rev-amt) nil clm::nrev))
          (file-name
           (string-downcase        
            (if short-file-names
@@ -4074,7 +4046,7 @@
       for bar-num in (rehearsal-letters sc)
                      ;; we have to set the rehearsal letter on the bar
                      ;; line of the previous bar
-      for dc from 10 ; todo: should really miss out letter I....
+      for dc from 10 
       for letter = (format nil "~a" (digit-char dc 36))
       do 
         (when (> dc 35)
@@ -4616,7 +4588,6 @@
                (terpri stream)
                (princ "\\score {" stream)
                (format stream "~&  \\new ~a \\keepWithTag #'~a \\~a"
-                       ;; todo: got to use the written part if transposing
                        staff-group pname score-tag-var)
                (format stream "~%  \\layout { }~%}")))
       (when respell-notes
@@ -4854,8 +4825,7 @@
              (delete-sequenzes (piece sc) start-bar player)
              (delete-bars seq nth-bar :num num-deleted))
          ;; have to call this here to get proper bar numbers and rthm-seq-bar
-         ;; data.  sadly we don't have method to do this only for this
-         ;; player...todo? 
+         ;; data.  
          (update-slots sc)
          ;; don't inc start-bar as bar-nums are adjusted via update-slots
          ;; (incf start-bar num-deleted)
@@ -5089,7 +5059,6 @@
                                       player value &optional written)
   (let ((note (get-note sc bar-num note-num player written)))
     (when note
-      ;; todo: change this if we change bar-holder::get-note
       (when (event-p note)
         (setf note (if written
                        (written-pitch-or-chord note)
@@ -5500,7 +5469,6 @@
                            do
                            (when player-section
                              (setf (nth i result) player-section)
-                             ;; todo: is last-event important here???
                              (unless (zerop (num-bars player-section))
                                ;; last-event is used for ties over to the
                                ;; beginning of bar 1 in a new seq
@@ -5618,9 +5586,6 @@
                 (setf next-non-grace-note (find-next-non-grace-note
                                            voice next-grace-note nil))
                 (unless next-non-grace-note
-                  ;; (print (nth next-grace-note voice))
-                  ;; (print (nth (1+ next-grace-note) voice))
-                  ;; TODO: this doesn't seem to hold..could just be a section
                   (warn "slippery-chicken::handle-grace-notes: ~
                          Grace notes seem to end the section...! ~
                          (index = ~a, num-events = ~a, next-grace-note = ~a)"
@@ -5858,19 +5823,18 @@
                                          last-note-previous-seq))
                                  (warn ;;"rthm-seq:~%~a  ~%last-previous-seq ~a
                                   "~%slippery-chicken::sc-make-sequenz: ~
-                                       last-note-previous-seq error: should ~
-                                       be a note to tie from. (rthm-seq id ~
-                                        = ~a, player ~a)"
+                                     last-note-previous-seq error: should ~
+                                     be a note to tie from. (rthm-seq id ~
+                                     = ~a, player ~a)"
                                   ;; rthm-seq last-note-previous-seq
                                   (id rthm-seq) player)
-                                 ;; TODO: fix this:
-                                 (warn "Cludging to 'b4!")
+                                 (warn "Setting to 'b4!")
                                  (setf last-note-previous-seq
                                        (make-event 'b4 'q)))
                                (clone (pitch-or-chord 
                                        last-note-previous-seq))))))
     #|
-    ;; this checks that there are no ties to the first note in a seq 
+    ;; this checks that there are no ties to the first note in a seq ;
     (when (is-tied-to (get-nth-event 0 (get-bar sequenz 0 t)))
     (error "slippery-chicken::sc-make-sequenz: ~
               Tied first note of sequenz not allowed!"))
@@ -5949,7 +5913,6 @@
 ;;; If we get three notes whose best clef without ledger lines is not the
 ;;; current, change it.  If any note has only a best clef that is different to
 ;;; current, change it
-;;; todo: don't put a clef between beam ends: break the beam first.
 
 (defun auto-clefs-handle-last-3 (last-events last-clefs note-count
                                  current-clef 

@@ -68,7 +68,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 12:50:26 Thu Mar  8 2012 GMT
+;;; $$ Last modified: 14:59:49 Wed Mar 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -104,29 +104,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; todo: don't forget the 1-beat counterpoint info each 1-beat pattern should
-;;;       list its counterpointable associates i.e. those that would be chosen
-;;;       to be played with them: each would be played three times before
-;;;       moving to the next e.g. if 1 could be partnered with 2,3,4 then each
-;;;       time we'd have 1 it would unfold like
-;;;       1:2,1:2,1:2,1:3,1:3,1:3,1:4,1:4,1:4,1:2,1:2,1:2...
-;;; 
-;;;       the pitch-seq-palettes? auto? yes, the rthm-seq-palette has
-;;; the create-psps fun; see kill.lsp for an example of a call (and a
-;;; definition of an example call back function.  
-
-;;; todo: print-object, clone methods
-
-;;; are we somehow reversing the 1-beat and slower players?
-
-;;; DONE avoid long time sigs like 7/4 
-
-;;; 2.1.11 at the moment, at least with nested tuplets, slower-rthms that don't
-;;; express their rthms in single beat units (e.g. tq tq tq) will fail--fix
-;;; this  
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -289,8 +266,7 @@
     (setf (sticking-repeats rc)
           ;; this abuses the procession function a little by repeating elements
           ;; but it gives us what we want (mainly 3s and 5s, some 8s, a couple
-          ;; of 13s and one 21. todo: we might want to provide a first argument
-          ;; to procession here at init
+          ;; of 13s and one 21. 
           (make-cscl
            (procession 55 (sticking-repeats rc)
                        :peak 1 :expt 5))))
@@ -624,11 +600,6 @@
                  ;; if we were given a list of players use those names 
                  (let ((1-beat-id (rthm-chain-seq-name 1-beat-player 
                                                        rs-main-count))
-                       ;; todo: subtle bug: setf'ing data below will call
-                       ;; ral::verify-and-store which will then call
-                       ;; lisp-assoc-listp; the symbolp test will cause the
-                       ;; list not to be recursively processed, whereas a
-                       ;; string would be
                        (slower-id (rthm-chain-seq-name slower-player
                                                        rs-main-count))
                        1-beat-rs slower-rs)
@@ -723,14 +694,6 @@
              (save-1-beat)
              (push slower-beats meters)
              (incf slower-bar-count)
-             ;; if we've got slower-rthm activity here (slower-al) collect the
-             ;; rthms; if we haven't, we need a rest so make sure the last
-             ;; slower-rthm has no ties and set a flag that any following rthms
-             ;; shouldn't be tied-to ACTUALLY NO NEED: can't yet have ties to
-             ;; beg/end.  todo: Might be good to kill individual beats at some
-             ;; point (tricky...) but for now just kill the whole sequence.
-             ;; 23.1.11 do this for each sublist of rhythms (for each slow
-             ;; voice)
              (unless slower-active
                (setf slower-rthms 
                      (loop for beat in slower-rthms collect
@@ -898,7 +861,6 @@
 ;;; this returns the 1-beat and the slower rhythms, both as rthm-seqs
 ;;; rthm is a rhythm object
 ;;; if prefer2 generate 2/2 meters rather than 4/4
-;;; todo: how to decide on slower rthms
 (let ((slow-sticks '((2 ((nil t) (t nil)))
                      ;; so 2,3,4 refer to how many beats per bar, then the
                      ;; following lists indicate whether an event happens on
@@ -1008,7 +970,7 @@
            (setf (bars slow-seq)
                  (append (bars slow-seq) 
                          ;; for now the remainder bar is a rest bar but we might
-                         ;; want to add rthms here (todo)
+                         ;; want to add rthms here
                          (list 
                           (make-rest-bar 
                            (list remainder-numerator remainder-denominator)

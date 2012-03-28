@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 16:49:56 Tue Mar 20 2012 GMT
+;;; $$ Last modified: 13:04:29 Wed Mar 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -70,7 +70,6 @@
 ;;;       (:staff-name "toy piano" ....
 ;;; 
 ;;; SYNOPSIS
-;;; todo: add more/all known instruments
 (defparameter +slippery-chicken-standard-instrument-palette+
   (make-instrument-palette
    'slippery-chicken-standard-instrument-palette
@@ -101,8 +100,7 @@
        :microtones t 
        :midi-program 74))
      ;; SAR Fri Jan 20 11:46:45 GMT 2012: Modified bass flute range to that
-     ;; stated by Adler and deleted MDE's todo comment to "check real range of
-     ;; bass flute"
+     ;; stated by Adler.
      (bass-flute 
       (:staff-name "bass flute" :staff-short-name "bass fl" 
        :lowest-written c4 :highest-written c7 :transposition-semitones -12

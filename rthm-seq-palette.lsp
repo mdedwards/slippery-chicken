@@ -473,27 +473,34 @@ rthm-seq SEQ3
 ;;; - A rthm-seq-palette object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :all-output-in-one-file. T or NIL to indicate whether to
-;;;   write the output to a multi-page file or to separate files for each
-;;;   page. T = one multi-page file. Default = T. This is a direct CMN
-;;;   attribute.  
-;;; - keyword argument :file. The file path, including the file name, of the
-;;;   file to be generated.
-;;; - keyword argument :staff-separation. A number to indicate the amount of
-;;;   white space between staves belong to the same system, measured as a
-;;;   factor of the staff height. Default = 3. This is a direct CMN attribute.
-;;; - keyword argument :line-separation. A number to indicate the amount of
-;;;   white space between lines of music (systems), measured as a factor of
-;;;   the staff height. Default = 5. This is a direct CMN attribute.
-;;; - keyword argument :page-nums. T or NIL to indicate whether or not to print
-;;;   page numbers on the pages. T = print page numbers. Default = T.
-;;; - keyword argument :no-accidentals. T or NIL to indicate whether or not to
-;;;   supress printing accidentals for each and every note (rather than once
-;;;   per bar). T = supress printing all accidentals. Default = NIL.
-;;; - keyword argument :seqs-per-system. An integer indicating the number of
-;;;   rthm-seq objects to be printed in one staff system. Default = 1.
-;;; - keyword argument :size. A number to indicate the font size of the CMN
-;;;   output. 
+;;; keyword arguments:
+
+;;; - :all-output-in-one-file. T or NIL to indicate whether to write the output
+;;;   to a multi-page file or to separate files for each page.  
+;;;   T = one multi-page file. Default = T. This is a direct CMN attribute.
+
+;;; - :file. The file path, including the file name, of the file to be
+;;;   generated.
+
+;;; - :staff-separation. A number to indicate the amount of white space between
+;;;   staves belong to the same system, measured as a factor of the staff
+;;;   height. Default = 3. This is a direct CMN attribute.
+
+;;; - :line-separation. A number to indicate the amount of white space between
+;;;   lines of music (systems), measured as a factor of the staff
+;;;   height. Default = 5. This is a direct CMN attribute.
+
+;;; - :page-nums. T or NIL to indicate whether or not to print page numbers on
+;;;   the pages. T = print page numbers. Default = T.
+
+;;; - :no-accidentals. T or NIL to indicate whether or not to supress printing
+;;;   accidentals for each and every note (rather than once per bar). 
+;;;   T = supress printing all accidentals. Default = NIL.
+
+;;; - :seqs-per-system. An integer indicating the number of rthm-seq objects to
+;;;   be printed in one staff system. Default = 1.
+
+;;; - :size. A number to indicate the font size of the CMN output.
 ;;;
 ;;; RETURN VALUE
 ;;; slippery-chicken prints a series of status lines in the listener, and

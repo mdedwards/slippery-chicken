@@ -139,46 +139,55 @@
 ;;; - A set-palette object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :file. The file path, including the file name, of the
-;;;   file to be generated.
-;;; - keyword argument :4stave. T or NIL to indicate whether the note-heads of 
-;;;   the output should be printed on 4 staves (or 2). T = 4. Default = NIL.
-;;; - keyword argument :text-x-offset. Number (positive or negative) to
-;;;   indicate the horizontal offset of any text in the output. A value of 0.0
-;;;   results in all text being lined up left-flush with the note-heads below
-;;;   it. Default = -0.5.
-;;; - keyword argument :text-y-offset. Number (positive or negative) to
-;;;   indicate the vertical offset of any text in the output. 
-;;; - keyword argument :font-size. A number indicating the size of any text
-;;;   font used in the output. This affects text only and not the music (see
-;;;   :size below for changing the size of the music).
-;;; - keyword argument :break-line-each-set. T or NIL to indicate whether each
-;;;   set-palette object should be printed on a separate staff or consecutively
-;;;   on the same staff. T = one staff per set-palette object. Default = T.
-;;; - keyword argument :line-separation. A number to indicate the amount of
-;;;   white space between lines of music (systems), measured as a factor of
-;;;   the staff height. Default = 3. This is a direct CMN attribute.
-;;; - keyword argument :staff-separation. A number to indicate the amount of
-;;;   white space between staves belong to the same system, measured as a
-;;;   factor of the staff height. Default = 3. This is a direct CMN attribute.
-;;; - keyword argument :transposition. Nil or a number (positive or negative)
-;;;   to indicate the number of semitones by which the pitches of the given
-;;;   set-palette object should be transposed before generating the CMN
-;;;   output. Default = NIL (0).
-;;; - keyword argument :size. A number to indicate the size of the music-font
-;;;   in the CMN output. This affects music only, not text.
+;;; keyword arguments:
 
-;;; - keyword argument :use-octave-signs. T or NIL. Default = NIL.
+;;; - :file. The file path, including the file name, of the file to be
+;;;   generated.
 
-;;; - keyword argument :automatic-octave-signs. T or NIL. Default = NIL.
+;;; - :4stave. T or NIL to indicate whether the note-heads of the output should
+;;;   be printed on 4 staves (or 2). T = 4. Default = NIL.
 
-;;; - keyword argument :include-missing-chromatic. T or NIL to indicate whether
-;;;   to also print any chromatic pitches from the complete-set that are not
-;;;   present in the given set-palette object. T = print. Default = T.
-;;; - keyword argument :include-missing-non-chromatic. T or NIL to indicate
-;;;   whether to also print any non-chromatic pitches from the complete-set
-;;;   that are not present in the given set-palette object. T = print. 
-;;;   Default = T. 
+;;; - :text-x-offset. Number (positive or negative) to indicate the horizontal
+;;;   offset of any text in the output. A value of 0.0 results in all text
+;;;   being lined up left-flush with the note-heads below it. Default = -0.5.
+
+;;; - :text-y-offset. Number (positive or negative) to indicate the vertical
+;;;   offset of any text in the output.
+
+;;; - :font-size. A number indicating the size of any text font used in the
+;;;   output. This affects text only and not the music (see :size below for
+;;;   changing the size of the music).
+
+;;; - :break-line-each-set. T or NIL to indicate whether each set-palette
+;;;   object should be printed on a separate staff or consecutively on the same
+;;;   staff. T = one staff per set-palette object. Default = T.
+
+;;; - :line-separation. A number to indicate the amount of white space between
+;;;   lines of music (systems), measured as a factor of the staff
+;;;   height. Default = 3. This is a direct CMN attribute.
+
+;;; - :staff-separation. A number to indicate the amount of white space between
+;;;   staves belong to the same system, measured as a factor of the staff
+;;;   height. Default = 3. This is a direct CMN attribute.
+
+;;; - :transposition. Nil or a number (positive or negative) to indicate the
+;;;   number of semitones by which the pitches of the given set-palette object
+;;;   should be transposed before generating the CMN output. Default = NIL (0).
+
+;;; - :size. A number to indicate the size of the music-font in the CMN
+;;;   output. This affects music only, not text.
+
+;;; - :use-octave-signs. T or NIL. Default = NIL.
+
+;;; - :automatic-octave-signs. T or NIL. Default = NIL.
+
+;;; - :include-missing-chromatic. T or NIL to indicate whether to also print
+;;;   any chromatic pitches from the complete-set that are not present in the
+;;;   given set-palette object. T = print. Default = T.
+
+;;; - :include-missing-non-chromatic. T or NIL to indicate whether to also
+;;;   print any non-chromatic pitches from the complete-set that are not
+;;;   present in the given set-palette object. T = print.  Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; slippery chicken prints a series of status lines in the listener, and

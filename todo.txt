@@ -136,4 +136,398 @@ slippery-chicken.lsp tie-over-rests
 ;;; todo: somehow, when we tie into a tq rest, we lose the bracket info :/
 ;;; still doesn't handle ties in tuplets well at all 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+slippery-chicken.lsp
+can the double method actually be used without regenerating the whole piece?
+coming uses double but at the rthm-seq-map level
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+event.lsp:: get-cmn-data 
+    ;; todo: got to add bar num to rqq rhythms
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+instruments.lsp 
+;;; todo: add more/all known instruments
+(defparameter +slippery-chicken-standard-instrument-palette+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+piece.lsp splice-sets-into-staves
+after do:
+        ;; TODO: by just processing (data set) we only get the main set not
+        ;; the subsets or related sets: fix this.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+pitch-seq-palette::make-psp
+  (loop for i in pitch-seqs unless (listp i)
+     ;; todo: I think this is causing an error when we indicate a chord as
+     ;; the first note 
+     do (error "pitch-seq-palette::make-psp: ~
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+rhythm.lsp
+   (rqq-info :accessor rqq-info :initarg :rqq-info :initform nil)
+   ;; dynamics, accents etc. exactly the code used by cmn.  Used for note or
+   ;; chord as a whole (individual pitches of a chord can also have their own
+   ;; marks--see pitch.lsp)  
+   ;; todo: this really needs redesigning, especially in light of new Lilypond
+   ;; functionality.  Need a class with class variables for return strings
+   ;; etc. and a way of indicating whether the mark should be written before or
+   ;; after the pitch data.
+   (marks :accessor marks :type list :initarg :marks 
+              :initform nil)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+rhythm.lsp
+(defmethod initialize-instance :after ((i rhythm) &rest initargs)
+  (declare (ignore initargs))
+  ;; todo: should really here for a number and try to find the letter, dots for
+  ;; that duration 
+  ;; (print 'rhythm)
+  (cond ((data i)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+rhythm.lsp
+(defmethod scale ((r rhythm) scaler &optional (clone t) ignore1 ignore2)
+;;; ****
+  (declare (ignore ignore1)
+           (ignore ignore2))
+  (when clone
+    (setf r (clone r)))
+  (if (or (= 1 scaler) (is-grace-note r))
+      r
+      (progn
+        (setf (value r) (/ (value r) scaler)
+              (duration r) (* (duration r) scaler)
+              (compound-duration r) (* (compound-duration r) scaler)
+              (rq r) (rationalize (* (rq r) scaler))
+              (undotted-value r) (/ (undotted-value r) scaler)
+              (num-flags r) (rthm-num-flags (undotted-value r)))
+        ;; NB score-rthm not handled here!
+        ;; quick hack to handle dots--todo: this needs more thought!!!
+        (when (zerop (num-dots r))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+rthm-chain
+general comments at top of file
 
+;;; todo: don't forget the 1-beat counterpoint info each 1-beat pattern should
+;;;       list its counterpointable associates i.e. those that would be chosen
+;;;       to be played with them: each would be played three times before
+;;;       moving to the next e.g. if 1 could be partnered with 2,3,4 then each
+;;;       time we'd have 1 it would unfold like
+;;;       1:2,1:2,1:2,1:3,1:3,1:3,1:4,1:4,1:4,1:2,1:2,1:2...
+;;; 
+;;;       the pitch-seq-palettes? auto? yes, the rthm-seq-palette has
+;;; the create-psps fun; see kill.lsp for an example of a call (and a
+;;; definition of an example call back function.  
+
+;;; todo: print-object, clone methods
+
+;;; are we somehow reversing the 1-beat and slower players?
+
+;;; DONE avoid long time sigs like 7/4 
+
+;;; 2.1.11 at the moment, at least with nested tuplets, slower-rthms that don't
+;;; express their rthms in single beat units (e.g. tq tq tq) will fail--fix
+;;; this  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod initialize-instance :after ((rc rthm-chain) &rest initargs)
+...
+    (setf (sticking-repeats rc)
+          ;; this abuses the procession function a little by repeating elements
+          ;; but it gives us what we want (mainly 3s and 5s, some 8s, a couple
+          ;; of 13s and one 21. todo: we might want to provide a first argument
+          ;; to procession here at init
+          (make-cscl
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod rthm-chain-gen-aux ((rc rthm-chain) use-fibonacci rests stick
+...
+                 (let ((1-beat-id (rthm-chain-seq-name 1-beat-player 
+                                                       rs-main-count))
+                       ;; todo: subtle bug: setf'ing data below will call
+                       ;; ral::verify-and-store which will then call
+                       ;; lisp-assoc-listp; the symbolp test will cause the
+                       ;; list not to be recursively processed, whereas a
+                       ;; string would be
+                       (slower-id (rthm-chain-seq-name slower-player
+                                                       rs-main-count))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod rthm-chain-gen-aux ((rc rthm-chain) use-fibonacci rests stick
+...
+             (incf slower-bar-count)
+             ;; if we've got slower-rthm activity here (slower-al) collect the
+             ;; rthms; if we haven't, we need a rest so make sure the last
+             ;; slower-rthm has no ties and set a flag that any following rthms
+             ;; shouldn't be tied-to ACTUALLY NO NEED: can't yet have ties to
+             ;; beg/end.  todo: Might be good to kill individual beats at some
+             ;; point (tricky...) but for now just kill the whole sequence.
+             ;; 23.1.11 do this for each sublist of rhythms (for each slow
+             ;; voice)
+             (unless slower-active
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+rthm-chain
+;;; this returns the 1-beat and the slower rhythms, both as rthm-seqs
+;;; rthm is a rhythm object
+;;; if prefer2 generate 2/2 meters rather than 4/4
+;;; todo: how to decide on slower rthms
+(let ((slow-sticks '((2 ((nil t) (t nil)))
+                     ;; so 2,3,4 refer to how many beats per bar, then the
+                     ;; following lists indicate whether an event happens on
+                     ;; that beat--these will be circularly cycled
+                     (3 ((nil t t) (nil t nil) (t nil nil) (t nil t) 
+                         (nil nil t)))
+                     (1 ((t)))
+                     (4 ((t nil nil nil) (t nil t nil) (nil t nil t)
+                         (t nil nil t) (nil nil t nil) (nil t t nil)))))
+      ;; this will be incremented and used to create the rthm-seq ids
+      (count 0))
+  (defun stick-rthms (rthm num &optional print prefer2)
+...
+           (setf (bars slow-seq)
+                 (append (bars slow-seq) 
+                         ;; for now the remainder bar is a rest bar but we might
+                         ;; want to add rthms here (todo)
+                         (list 
+                          (make-rest-bar 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defclass rthm-seq-bar (sclist)
+...
+   ;; The rhythms are changed to events in the
+   ;; slippery-chicken::sc-make-sequenz method 
+   ;; todo (20.7.11) make into an sclist object instead of a simple list?
+   (rhythms :accessor rhythms :type list :initform nil)
+...
+   ;; (e.g. (whole-measure-rest 5)) does not increment cmn's measure count
+   ;; accordingly; the var we need is probably *cmn-measure-number* todo: add
+   ;; usual clone and print code
+   (multi-bar-rest :accessor multi-bar-rest :initform nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod consolidate-notes ((rsb rthm-seq-bar) &optional check-dur beat)
+...
+          ;; are tuplets.  todo: extend this to look at consecutive groups of
+          ;; beats and test for tuplets
+          ;; (print 'here)
+          (unless (has-tuplets rthms)
+            (setf tmp (consolidate-notes-aux rthms 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; TODO: This case only handles beats which have the same rhythms in
+;;; them, e.g. 7 septuplet 1/16ths.  We need a function to analyse a
+;;; beat for that case, if so use this function, otherwise do the more
+;;; complicated case.
+
+(defmethod figure-out-and-auto-set-tuplets ((rsb rthm-seq-bar) beat)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod update-time ((rsb rthm-seq-bar) start-time start-time-qtrs tempo)
+...
+          (setf (start-time event) time
+                ;; TODO: this isn't working here; the problem is we need to
+                ;; keep track of a global midi start time just in the same way
+                ;; that we're tracking real-time via the return of bar-dur from
+                ;; this function
+                (start-time-qtrs event) time-qtrs
+                (duration-in-tempo event) (* (duration event) qtr-dur)
+...
+    (unless (is-rest-bar rsb)
+      ;; todo: find out why the rhythms don't add up exactly to the bar
+      ;; duration.  
+      (unless (equal-within-tolerance bar-dur (- time start-time) .002)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; TODO: Fix: This doesn't work when there's two or more brackets
+;;; over the notes!  When fixed uncomment call in get-cmn-data (next method)
+
+(defmethod verify-brackets ((rsb rthm-seq-bar))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod get-cmn-data ((rsb rthm-seq-bar) &optional process-event-fun in-c
+                         display-marks-in-part display-time
+                         ignore1 ignore2 ignore3 ignore4)
+  (declare (ignore ignore1 ignore2 ignore3 ignore4))
+  ;; (print rsb)
+  ;; 4/4/06: don't do this here anymore, rather do it in sc::respell-notes so
+  ;; that we can respell notes. 
+  ;; (auto-accidentals rsb)
+  ;; TODO: uncomment this when verify-brackets can handle multiple tuplets
+  ;; (verify-brackets rsb)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Try and work out which notes in the bar need accidentals and which don't.
+;;; todo: handle tied first notes: no accidental, but if the pitch is then
+;;; repeated later in the bar, we need an accidental!
+;;; 
+;;; TODO: add cautionary when leaping from e.g. gs4 to g(n)5
+;;; TODO: add cautionary when note preceded by clef change!
+
+(defmethod auto-accidentals ((rsb rthm-seq-bar) 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; todo: consider getting to first note with accidental, respelling it and
+;;; seeing if this results in less accidentals in the bar (bar 201 pno-lh of
+;;; cheat sheet for instance. 
+
+;;; ****m* rthm-seq-bar/respell-bar
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; todo: should be able to verify-and-store when adding (add) data to an
+;;;       assoc-list--fails and causes an rsp to have num-data 0 
+;;; 
+;;; SAR Tue Dec 27 16:58:57 EST 2011: Added robodoc info
+
+;;; ****f* rthm-seq/make-rthm-seq-from-unit-multipliers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; todo: in general, recursive set palettes shouldn't have
+;;; named-objects whose data are set-palettes, rather just a set
+;;; palette (which has an id anyway). 
+(defclass set-palette (palette)
+  ())
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod cmn-display-aux ((sp set-palette) 
+...
+     into result
+     ;; todo: 10.3.10: what's this here? is it or isn't it? I think it's
+     ;; confused by the recursive aspect: could be a sub set-palette in there.
+     ;; This is a mistake correction so not pretty: result will not be a
+     ;; list of lists, each sublist containing a list of treble and a
+     ;; list of bass notes.
+     finally (return result)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod respell-notes-for-player ((sc slippery-chicken) player 
+...
+              (enharmonic last :written written) ;; change it back
+              (enharmonic this :written written)))
+           ((and (chord-p last) (is-single-pitch this))
+            ;; todo: we should make sure a single pitch after a chord uses
+            ;; the same spellings as the chord if the pitch was in the chord
+            ))
+     ;; we've now got to make sure any notes tied from a respelled last or
+     ;; this are spelled the same 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; todo: make sure this works at the end of a piece too.
+;;; NB end-bar is not when the ties stop, but rather when we last find an event
+;;; to tie from (so the ties may go beyond end-bar)
+
+(defmethod tie-over-all-rests ((sc slippery-chicken) player
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod auto-slur ((sc slippery-chicken) players
+                      &key start-bar end-bar
+                      rm-slurs-first
+                      (rm-staccatos t)
+                      ;; 5.4.11
+                      (over-accents t)  ; todo: make this work
+                      verbose)
+...
+              ((and (or (is-rest e) ;; end slur
+                        ;; 5.4.11 todo: make this work!
+                        (and (not over-accents) (accented-p e))
+...
+              ((and rm-staccatos start-e (not last-e))
+               ;; todo: this doesn't work: we haven't yet found those
+               ;; notes in the middle... 
+               ;; in the middle of a slur so remove staccatos
+               (replace-mark e 'as 'a)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod get-section-refs ((sc slippery-chicken) start-section num-sections)
+...
+          (setf player-ref (econs ref last-player)
+                ;; todo: bollocks, this isn't the case.... :::
+                ;; of course, this would fail if <last-player> wasn't
+                ;; actually the last player in the data list of each section
+                ;; but that isn't the case is it?  (Haven't tested this)
+                ref (butlast (next (get-data player-ref (piece sc))))))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; todo: close bracket before several bars rest and then reopen on next note
+(defmethod octave-clefs-to-brackets ((sc slippery-chicken)
+                                     &key players start-bar end-bar)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 26.7.11 (Pula): don't allow an octave sign to extend over too many
+;;; rests, rather end it and restart it.  todo: debug
+
+(defmethod split-octave-brackets ((sc slippery-chicken)
+...
+  #|
+  todo: need to remove octavation over empty bars first i.e. where whole
+                                  bracket has no notes
+  ;; first make sure brackets start and end on notes, not rests
+  (start-octave-brackets-notes-only sc :players players :start-bar start-bar
+  :end-bar end-bar)
+  (end-octave-brackets-notes-only sc :players players :start-bar start-bar
+  :end-bar end-bar)
+  |#
+  (let (under8v rests last-note rest-count)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod midi-play ((sc slippery-chicken)
+...
+    (cm::process-voices voices-events midi-file (get-tempo sc 1) midi-setup
+                        ;; TODO: will this time offset (in seconds!) work when
+                        ;; starting in the middle of the piece? shouldn't it be
+                        ;; in quarters not secs? 
+                        (- (start-time-qtrs
+                            (get-nth-sequenz (piece sc) start-section
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; todo: add multichannel output via a new instrument -- MDE Wed Mar 28
+15:16:01 2012 -- surely we have now? 
+
+#+clm
+(defmethod clm-play ((sc slippery-chicken) section voices 
+...
+         (total-skipped 0)
+         ;; todo: find a way of not writing the reverb stream unless we need it
+         ;; (reverb (if (zerop rev-amt) nil clm::nrev))
+         (file-name
+          (string-downcase        
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod set-rehearsal-letters ((sc slippery-chicken) &optional players)
+...
+      for bar-num in (rehearsal-letters sc)
+                     ;; we have to set the rehearsal letter on the bar
+                     ;; line of the previous bar
+      for dc from 10 ; todo: should really miss out letter I....
+      for letter = (format nil "~a" (digit-char dc 36))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod write-lp-data-for-all ((sc slippery-chicken) 
+...
+               (terpri stream)
+               (princ "\\score {" stream)
+               (format stream "~&  \\new ~a \\keepWithTag #'~a \\~a"
+                       ;; todo: got to use the written part if transposing
+                       staff-group pname score-tag-var)
+               (format stream "~%  \\layout { }~%}")))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod delete-bars-aux ((sc slippery-chicken) start-bar num-bars player
+...
+         (if (= seq-num-bars num-deleted) 
+             ;; delete the whole sequenz
+             (delete-sequenzes (piece sc) start-bar player)
+             (delete-bars seq nth-bar :num num-deleted))
+         ;; have to call this here to get proper bar numbers and rthm-seq-bar
+         ;; data.  sadly we don't have method to do this only for this
+         ;; player...todo? 
+         (update-slots sc)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod cautionary-accidental-aux ((sc slippery-chicken) bar-num note-num
+                                      player value &optional written)
+  (let ((note (get-note sc bar-num note-num player written)))
+    (when note
+      ;; todo: change this if we change bar-holder::get-note
+      (when (event-p note)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun rsm-to-piece (rsm sc)
+...
+                           (when player-section
+                             (setf (nth i result) player-section)
+                             ;; todo: is last-event important here???
+                             (unless (zerop (num-bars player-section))
+                               ;; last-event is used for ties over to the
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+sc.lsp (defun handle-grace-notes (voices)
+...
+                (unless next-non-grace-note
+                  ;; (print (nth next-grace-note voice))
+                  ;; (print (nth (1+ next-grace-note) voice))
+                  ;; TODO: this doesn't seem to hold..could just be a section
+                  (warn "slippery-chicken::handle-grace-notes: ~
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun sc-make-sequenz (rthm-seq instrument set pitch-seq hint-pitch 
+...
+                                  ;; rthm-seq last-note-previous-seq
+                                  (id rthm-seq) player)
+                                 ;; TODO: fix this:
+                                 (warn "Setting to 'b4!")
+                                 (setf last-note-previous-seq
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+sc.lsp
+;;; todo: don't put a clef between beam ends: break the beam first.
+
+(defun auto-clefs-handle-last-3 (last-events last-clefs note-count
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

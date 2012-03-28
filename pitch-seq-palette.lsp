@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 19:11:41 Fri Dec 30 2011 ICT
+;;; $$ Last modified: 13:05:29 Wed Mar 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -154,15 +154,15 @@
 ;; objects it contains; then apply the add-inversions method and print the same
 ;; DATA to see the changes
 (let ((mpsp (make-psp 'mpsp 5 '((2 5 3 1 4)
-				(1 4 2 5 3)
-				(5 1 3 2 4)
-				(2 3 4 5 1)
-				(3 2 4 1 5)))))
+                                (1 4 2 5 3)
+                                (5 1 3 2 4)
+                                (2 3 4 5 1)
+                                (3 2 4 1 5)))))
   (print (loop for ps in (data mpsp)
-	    collect (data ps)))
+            collect (data ps)))
   (add-inversions mpsp)
   (print (loop for ps in (data mpsp)
-	    collect (data ps))))
+            collect (data ps))))
 
 =>
 ((2 5 3 1 4) (1 4 2 5 3) (5 1 3 2 4) (2 3 4 5 1) (3 2 4 1 5)) 
@@ -379,10 +379,10 @@ data: (5 1 3 2 4 3 2 1 5 4)
 #|
 ;; Returns a pitch-seq-palette object
 (make-psp 'mpsp 5 '((2 5 3 1 4)
-		    (1 4 2 5 3)
-		    (5 1 3 2 4)
-		    (2 3 4 5 1)
-		    (3 2 4 1 5)))
+                    (1 4 2 5 3)
+                    (5 1 3 2 4)
+                    (2 3 4 5 1)
+                    (3 2 4 1 5)))
 
 => 
 PITCH-SEQ-PALETTE: num-notes: 5, instruments: NIL
@@ -417,8 +417,8 @@ data: (3 2 4 1 5)
 ;; Interrupts with an error if any of the <pitch-seqs> lists is not of the
 ;; length specified by <num-notes>
 (make-psp 'mpsp 5 '((1 2 1 1 3)
-		    (1 3 2 1 5)
-		    (1 3 5 6 7 8)))
+                    (1 3 2 1 5)
+                    (1 3 5 6 7 8)))
 
 =>
 pitch-seq-palette::verify-and-store: 
@@ -434,11 +434,9 @@ Each pitch sequence must have 5 notes (you have 6):
 ;;; ****
   ;; let's try and catch errors here before sclist complains...
   (loop for i in pitch-seqs unless (listp i)
-     ;; todo: I think this is causing an error when we indicate a chord as
-     ;; the first note 
      do (error "pitch-seq-palette::make-psp: ~
                  The argument to make-psp should be a list of lists: ~%~a"
-	       pitch-seqs))
+               pitch-seqs))
   (make-instance 'pitch-seq-palette :id id :data pitch-seqs
                  :num-notes num-notes))
 

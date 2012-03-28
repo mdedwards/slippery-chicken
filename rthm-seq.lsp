@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 13:15:57 Mon Mar 26 2012 BST
+;;; $$ Last modified: 15:09:03 Wed Mar 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2454,9 +2454,6 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
                     (fourth score-strings)))))) ; ties |#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; todo: should be able to verify-and-store when adding (add) data to an
-;;;       assoc-list--fails and causes an rsp to have num-data 0 
-;;; 
 ;;; SAR Tue Dec 27 16:58:57 EST 2011: Added robodoc info
 
 ;;; ****f* rthm-seq/make-rthm-seq-from-unit-multipliers

@@ -453,7 +453,7 @@ data: (C4 F4 A4 C5)
                   (2 ((1 2) :transposition -2))))))))
   (gen-max-coll-file msp "/tmp/msp-mcf.txt"))
 
-;; Set the optional argument to T to generate MIDI key numbers instead
+;; Set the optional argument to T to generate MIDI note numbers instead
 (let ((msp (make-set-palette 
             'test
             '((1 ((1

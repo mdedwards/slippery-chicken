@@ -964,7 +964,7 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 ;;; ****m* sc-set/get-midi 
 ;;; FUNCTION
 ;;; Return the pitches of a given sc-set object as a list of their equivalent
-;;; MIDI key numbers.
+;;; MIDI note numbers.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An sc-set object.

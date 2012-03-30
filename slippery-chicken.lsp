@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:20:56 Wed Mar 28 2012 BST
+;;; $$ Last modified: 15:14:47 Fri Mar 30 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -170,7 +170,7 @@
    ;; notes and only 3 are available, there would be note repetition but as
    ;; this would create a scaler of 0.5, that would be acceptable
    (pitch-seq-index-scaler-min :accessor pitch-seq-index-scaler-min
-                               :initarg pitch-seq-index-scaler-min 
+                               :initarg :pitch-seq-index-scaler-min 
                                :initform 0.5)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4836,15 +4836,6 @@
                    num-deleted (num-bars seq) nth-bar num-bars))))
   t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 13.2.11 have players play the same rthm-seq (rhythmic doubling only, not
-;;; pitch)
-
-(defmethod double ((sc slippery-chicken) section-ref start-seq end-seq
-                   master-player doubling-players)
-  (double (rthm-seq-map sc) section-ref start-seq end-seq master-player
-          doubling-players))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 20.7.11 (Pula)
 ;;; see double-events (below) for details
@@ -5074,47 +5065,48 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun make-slippery-chicken (name &key rthm-seq-palette rthm-seq-map
-                                        set-palette set-map sndfile-palette 
-                                        tempo-map tempo-curve snd-output-dir
-                                        instrument-change-map 
-                                        instruments-write-bar-nums
-                                        bars-per-system-map
-                                        staff-groupings
-                                        rthm-seq-map-replacements
-                                        set-map-replacements
-                                        set-limits-low set-limits-high
-                                        instrument-palette ensemble 
-                                        rehearsal-letters fast-leap-threshold
-                                        instruments-hierarchy title composer
-                                        (warn-ties t))
+                              set-palette set-map sndfile-palette 
+                              tempo-map tempo-curve snd-output-dir
+                              instrument-change-map 
+                              instruments-write-bar-nums
+                              bars-per-system-map
+                              staff-groupings
+                              rthm-seq-map-replacements
+                              set-map-replacements
+                              set-limits-low set-limits-high
+                              instrument-palette ensemble 
+                              rehearsal-letters fast-leap-threshold
+                              instruments-hierarchy title composer
+                              pitch-seq-index-scaler-min (warn-ties t))
   ;; we make the given name a global!!!
   (set name
        (make-instance 'slippery-chicken 
-         :id name
-         :title title
-         :composer composer
-         :rthm-seq-palette rthm-seq-palette
-         :rthm-seq-map rthm-seq-map
-         :rthm-seq-map-replacements rthm-seq-map-replacements
-         :set-palette set-palette 
-         :set-map set-map
-         :set-map-replacements set-map-replacements
-         :instruments-write-bar-nums instruments-write-bar-nums
-         :staff-groupings staff-groupings
-         :rehearsal-letters rehearsal-letters
-         :instrument-change-map instrument-change-map
-         :snd-output-dir snd-output-dir
-         :sndfile-palette sndfile-palette
-         :instrument-palette instrument-palette
-         :tempo-map tempo-map
-         :tempo-curve tempo-curve
-         :bars-per-system-map bars-per-system-map
-         :ensemble ensemble
-         :instruments-hierarchy instruments-hierarchy
-         :set-limits-low set-limits-low 
-         :set-limits-high set-limits-high
-         :fast-leap-threshold fast-leap-threshold
-         :warn-ties warn-ties)))
+                      :id name
+                      :title title
+                      :composer composer
+                      :rthm-seq-palette rthm-seq-palette
+                      :rthm-seq-map rthm-seq-map
+                      :rthm-seq-map-replacements rthm-seq-map-replacements
+                      :set-palette set-palette 
+                      :set-map set-map
+                      :set-map-replacements set-map-replacements
+                      :instruments-write-bar-nums instruments-write-bar-nums
+                      :staff-groupings staff-groupings
+                      :rehearsal-letters rehearsal-letters
+                      :instrument-change-map instrument-change-map
+                      :snd-output-dir snd-output-dir
+                      :sndfile-palette sndfile-palette
+                      :instrument-palette instrument-palette
+                      :tempo-map tempo-map
+                      :tempo-curve tempo-curve
+                      :bars-per-system-map bars-per-system-map
+                      :ensemble ensemble
+                      :instruments-hierarchy instruments-hierarchy
+                      :set-limits-low set-limits-low 
+                      :set-limits-high set-limits-high
+                      :fast-leap-threshold fast-leap-threshold
+                      :pitch-seq-index-scaler-min pitch-seq-index-scaler-min
+                      :warn-ties warn-ties)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -139,6 +139,17 @@ slippery-chicken.lsp tie-over-rests
 slippery-chicken.lsp
 can the double method actually be used without regenerating the whole piece?
 coming uses double but at the rthm-seq-map level
+MDE Fri Mar 30 14:33:34 2012 -- removed double method from slippery-chicken.lsp
+
+;;; 13.2.11 have players play the same rthm-seq (rhythmic doubling only, not
+;;; pitch)
+
+(defmethod double ((sc slippery-chicken) section-ref start-seq end-seq
+                   master-player doubling-players)
+  (double (rthm-seq-map sc) section-ref start-seq end-seq master-player
+          doubling-players))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 event.lsp:: get-cmn-data 
     ;; todo: got to add bar num to rqq rhythms

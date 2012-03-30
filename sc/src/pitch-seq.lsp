@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 11:29:35 Tue Mar 27 2012 BST
+;;; $$ Last modified: 15:23:13 Fri Mar 30 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -63,8 +63,8 @@
 ;;; pitch-seq::get-notes to indicate which lowest number in a pitch-seq would
 ;;; indicate that we should select the highest or lowest notes possible for the
 ;;; instrument/set. 
-(defconstant +pitch-seq-lowest-equals-prefers-high+ 5)
-(defconstant +pitch-seq-lowest-equals-prefers-low+ 1)
+(defparameter +pitch-seq-lowest-equals-prefers-high+ 5)
+(defparameter +pitch-seq-lowest-equals-prefers-low+ 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 15:23:13 Fri Mar 30 2012 BST
+;;; $$ Last modified: 09:44:25 Sat Mar 31 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -299,6 +299,7 @@
   ;; (print instrument)
   ;; (print set)
   ;;   (print hint-pitch)
+  ;; (print pitch-seq-index-scaler-min)
   (when (data ps) ;; don't do anything for empty seqs!
     (if (or (not instrument) (not set))
         (setf (notes ps) 
@@ -373,7 +374,7 @@
                             ;; MDE Tue Mar 27 10:58:36 2012 --
                             ;; pitch-seq-index-scaler-min now comes from the sc
                             ;; slot 
-                            (> scaler pitch-seq-index-scaler-min)))
+                            (>= scaler pitch-seq-index-scaler-min)))
                    (return)
                    (setf set-pitches-rm-used
                          (init-pitch-list (cons (pop used-cp)
@@ -507,7 +508,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #|
-;;; No longer necessary, taken care of in get-relative-notes. ; ;
+;;; No longer necessary, taken care of in get-relative-notes. ; ; ;
                    (defmethod relative-int-to-note (int (ps pitch-seq))
 (let ((len (relative-notes-length ps)))
 (when (or (> int len) (> (highest ps) len))
@@ -569,10 +570,10 @@ len))
 
 #|
 
-;; The first creation option is using one argument that is a two-item list, ; ;
-;; whereby the first item is a symbol to be used as the pitch-seq object's ID ; ;
-;; and the second is a list of numbers representing the general contour of the ; ;
-;; pitch sequence.                      ; ;
+;; The first creation option is using one argument that is a two-item list, ; ; ;
+;; whereby the first item is a symbol to be used as the pitch-seq object's ID ; ; ;
+;; and the second is a list of numbers representing the general contour of the ; ; ;
+;; pitch sequence.                      ; ; ;
                    (make-pitch-seq '(pseq1 (1 2 1 1 3)))
 
                    =>
@@ -589,9 +590,9 @@ len))
                    NAMED-OBJECT: id: PSEQ1, tag: NIL, 
                    data: (1 2 1 1 3)
 
-;; The second creation option uses two arguments, the first of which is a list ; ;
-;; of numbers representing the general contour of the pitch sequence, the ; ;
-;; second of which is a symbol which will be used as the pith-seq object's ID. ; ;
+;; The second creation option uses two arguments, the first of which is a list ; ; ;
+;; of numbers representing the general contour of the pitch sequence, the ; ; ;
+;; second of which is a symbol which will be used as the pith-seq object's ID. ; ; ;
                    (make-pitch-seq '(2 1 1 3 1) 'pseq2)
 
                    => 

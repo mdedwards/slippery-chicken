@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 13:04:29 Wed Mar 28 2012 BST
+;;; $$ Last modified: 09:53:32 Sat Mar 31 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -370,12 +370,14 @@
 
 (defun string-chord-selection-fun (curve-num index pitch-list pitch-seq 
                                    instrument set string-III)
-  (let* ((diad-down (best-string-diad 
+  (let* ((pll (length pitch-list))
+         (diad-down (best-string-diad 
                      ;; have to reverse so that pitch at index is our starting
                      ;; point  
-                     (reverse (subseq pitch-list 0 (1+ index)))))
+                     ;; MDE Sat Mar 31 09:51:32 2012 -- index could be > length 
+                     (reverse (subseq pitch-list 0 (min pll (1+ index))))))
          (diad-up (unless diad-down
-                    (best-string-diad (subseq pitch-list index))))
+                    (best-string-diad (subseq pitch-list (min index pll)))))
          (default (unless (or diad-down diad-up)
                     (default-chord-function curve-num index pitch-list
                                             pitch-seq instrument set)))

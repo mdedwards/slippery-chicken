@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:14:47 Fri Mar 30 2012 BST
+;;; $$ Last modified: 09:59:58 Sat Mar 31 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -119,7 +119,7 @@
    ;; in the case of the sndfile-palette, we put the palette first in a list,
    ;; the paths second and the extensions third
    (snd-output-dir :accessor snd-output-dir
-                   :initarg :snd-output-dir :initform "~/snd/")
+                   :initarg :snd-output-dir :initform "/tmp/")
    (sndfile-palette :accessor sndfile-palette :initarg :sndfile-palette
                     :initform nil)
    (bars-per-system-map :accessor bars-per-system-map 
@@ -178,6 +178,10 @@
 (defmethod initialize-instance :after ((sc slippery-chicken) &rest initargs)
   (declare (ignore initargs)
            (special +slippery-chicken-standard-instrument-palette+))
+  ;; MDE Sat Mar 31 09:27:31 2012 
+  (unless (pitch-seq-index-scaler-min sc)
+    (setf (pitch-seq-index-scaler-min sc) 0.5))
+  (format t "~&psism ~a" (pitch-seq-index-scaler-min sc))
   ;; MDE Thu Jan 12 11:15:13 2012 -- in order to clone we need to be able to
   ;; init the object without slot values then setf them afterwards 
   (when (and (set-map sc) (ensemble sc) (rthm-seq-map sc) (rthm-seq-palette sc)
@@ -203,10 +207,10 @@
                          ;; got to do the apply to make sure we use the key
                          ;; arguments, if any
                          (append
-                                 (cons (make-name 'ensemble)
-                                       (ensemble sc))
-                                 (list :instrument-palette
-                                       (instrument-palette sc)))))
+                          (cons (make-name 'ensemble)
+                                (ensemble sc))
+                          (list :instrument-palette
+                                (instrument-palette sc)))))
               (instrument-change-map sc)
               (if (instrument-change-map-p
                    (instrument-change-map sc))
@@ -5064,9 +5068,13 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; MDE Sat Mar 31 09:56:33 2012 -- If any of the sc slots have defaults it's
+;;; best to make them the default args here too.  But the init method also sets
+;;; a couple of them in case they've been made nil and would thus cause an
+;;; error. 
 (defun make-slippery-chicken (name &key rthm-seq-palette rthm-seq-map
                               set-palette set-map sndfile-palette 
-                              tempo-map tempo-curve snd-output-dir
+                              tempo-map tempo-curve (snd-output-dir "/tmp/")
                               instrument-change-map 
                               instruments-write-bar-nums
                               bars-per-system-map
@@ -5075,9 +5083,10 @@
                               set-map-replacements
                               set-limits-low set-limits-high
                               instrument-palette ensemble 
-                              rehearsal-letters fast-leap-threshold
-                              instruments-hierarchy title composer
-                              pitch-seq-index-scaler-min (warn-ties t))
+                              rehearsal-letters (fast-leap-threshold 0.125)
+                              instruments-hierarchy 
+                              (title "slippery-chicken-piece") composer
+                              (pitch-seq-index-scaler-min 0.5) (warn-ties t))
   ;; we make the given name a global!!!
   (set name
        (make-instance 'slippery-chicken 
@@ -6025,4 +6034,3 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; EOF slippery-chicken.lsp
-

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 14:02:42 Wed Feb  1 2012 ICT
+;;; $$ Last modified: 12:34:12 Mon Apr  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -373,8 +373,12 @@
 ;;; ARGUMENTS 
 ;;; - the bar-holder object (e.g. piece)
 ;;; - the bar number (starting from 1) 
-;;; - the note number (starting from 1) 
+;;; - the note number (starting from 1) (see above).
 ;;; - the player (symbol)
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - (optional default nil) whether, when accessing a pitch in a chord,
+;;;    whether to return the written or sounding pitch.  
 ;;; 
 ;;; RETURN VALUE  
 ;;; An event object, or pitch if accessing a chord.

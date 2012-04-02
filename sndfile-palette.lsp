@@ -231,8 +231,8 @@
   (if extensions
       (make-instance 'sndfile-palette :id id :data sfp :paths paths
                      :extensions extensions :warn-not-found warn-not-found)
-    (make-instance 'sndfile-palette :id id :data sfp :paths paths
-                   :warn-not-found warn-not-found)))
+      (make-instance 'sndfile-palette :id id :data sfp :paths paths
+		     :warn-not-found warn-not-found)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

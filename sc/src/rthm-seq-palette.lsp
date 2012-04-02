@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 10:15:30 Sat Mar 24 2012 GMT
+;;; $$ Last modified: 14:46:20 Mon Apr  2 2012 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -226,8 +226,8 @@
 ;;; ****
   ;; 3.2.11: got to reinitialize our cscls so make this reset call here;
   ;; create-psps-default or the user-supplied selection-fun needs to be able to
-  ;; handle this
-  (create-psps-default nil nil)
+  ;; handle this.  
+  (create-psps-default nil nil) ; see pitch-seq-palette.lsp
   (loop with pass-data = t
      for rs in (data rsp) do
      ;; (print pass-data)

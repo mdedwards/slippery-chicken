@@ -440,6 +440,7 @@ rthm-chain
 ;;; todo: close bracket before several bars rest and then reopen on next note
 (defmethod octave-clefs-to-brackets ((sc slippery-chicken)
                                      &key players start-bar end-bar)
+when done, add robodoc
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 26.7.11 (Pula): don't allow an octave sign to extend over too many
 ;;; rests, rather end it and restart it.  todo: debug
@@ -541,4 +542,31 @@ sc.lsp
 ;;; todo: don't put a clef between beam ends: break the beam first.
 
 (defun auto-clefs-handle-last-3 (last-events last-clefs note-count
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+clm-play: nothing to do here but....
+
+                          (unless (or simulate skip-this-event (not happy)
+                                      (zerop duration))
+                            (clm::samp5 (path snd)
+                                        output-start
+                                        :duration duration
+                                        :start input-start
+                                        :srt srt
+                                        :width src-width
+                                        :amp (amplitude snd)
+                                        :amp-env amp-env
+                                        #| 2/8/05: what was the idea
+  behind this???
+  (print (if (zerop input-start)
+                                        amp-env
+                                        (clm::envelope-concatenate
+                                        (list 0 0 
+                                        (/ (third amp-env)
+                                        30.0)
+                                        (fourth amp-env))
+                                        amp-env)))
+  |#
+                                        :degree
+                                        ;; 2/8/05: put mono and stereo
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

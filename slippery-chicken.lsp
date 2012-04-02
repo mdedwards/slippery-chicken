@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:59:58 Sat Mar 31 2012 BST
+;;; $$ Last modified: 11:27:49 Mon Apr  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -26,8 +26,8 @@
 ;;;
 ;;;                   This file is part of slippery-chicken
 ;;;
-;;;                   slippery-chicken is free software; you can redistribute it
-;;;                   and/or modify it under the terms of the GNU General
+;;;                   slippery-chicken is free software; you can redistribute
+;;;                   it and/or modify it under the terms of the GNU General
 ;;;                   Public License as published by the Free Software
 ;;;                   Foundation; either version 2 of the License, or (at your
 ;;;                   option) any later version.
@@ -120,6 +120,7 @@
    ;; the paths second and the extensions third
    (snd-output-dir :accessor snd-output-dir
                    :initarg :snd-output-dir :initform "/tmp/")
+   ;; see clm-play method for a description of this slot.
    (sndfile-palette :accessor sndfile-palette :initarg :sndfile-palette
                     :initform nil)
    (bars-per-system-map :accessor bars-per-system-map 
@@ -181,7 +182,6 @@
   ;; MDE Sat Mar 31 09:27:31 2012 
   (unless (pitch-seq-index-scaler-min sc)
     (setf (pitch-seq-index-scaler-min sc) 0.5))
-  (format t "~&psism ~a" (pitch-seq-index-scaler-min sc))
   ;; MDE Thu Jan 12 11:15:13 2012 -- in order to clone we need to be able to
   ;; init the object without slot values then setf them afterwards 
   (when (and (set-map sc) (ensemble sc) (rthm-seq-map sc) (rthm-seq-palette sc)
@@ -353,6 +353,32 @@
       ;; 5.4.11
       (cleanup-rest-bars sc)
       (set-rehearsal-letters sc (get-groups-top-ins sc)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod print-object :before ((sc slippery-chicken) stream)
+  (format stream "~%SLIPPERY-CHICKEN: ~
+                  ~%                      title: ~a ~
+                  ~%                   composer: ~a ~
+                  ~%                set-palette: ~a ~
+                  ~%                    set-map: ~a ~
+                  ~%               hint-pitches: ~a ~
+                  ~%               rthm-seq-map: ~a ~
+                  ~%           rthm-seq-palette: ~a ~
+                  ~%                  tempo-map: ~a ~
+                  ~%                tempo-curve: ~a ~
+                  ~%         instrument-palette: ~a ~
+                  ~%                   ensemble: ~a ~
+                  ~%      instruments-hierarchy: ~a ~
+                  ~%        fast-leap-threshold: ~a ~
+                  ~% pitch-seq-index-scaler-min: ~a "
+          (title sc) (composer sc) (id (set-palette sc)) (id (set-map sc))
+          (id (hint-pitches sc)) (id (rthm-seq-map sc))
+          (id (rthm-seq-palette sc)) (id (tempo-map sc)) (tempo-curve sc)
+          (id (instrument-palette sc)) (id (ensemble sc))
+          (instruments-hierarchy sc) (fast-leap-threshold sc) 
+          (pitch-seq-index-scaler-min sc))
+  (statistics sc stream))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -730,14 +756,38 @@
   (setf (replacements (rthm-seq-map sc)) rsmr))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; calls not only the setf method (defined above) but updates events to
+;;; reflect new start times etc.  
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/replace-tempo-map
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod replace-tempo-map ((sc slippery-chicken) tm)
+;;; ****
   (setf (tempo-map sc) tm)
   (update-events-tempo sc)
   (update-slots sc (tempo-map sc))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;  A post-generation editing method
 
 ;;; ****m* slippery-chicken/add-event-to-bar
 ;;; FUNCTION
@@ -766,6 +816,7 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; ****m* slippery-chicken/replace-events
 ;;; FUNCTION
@@ -807,6 +858,7 @@
     (add-tuplet-bracket (get-bar sc bar-num player) tuplet-brackets)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; ****m* slippery-chicken/replace-multi-bar-events
 ;;; FUNCTION
@@ -968,8 +1020,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Called by initialize-instance and others.
+;;; Called by initialize-instance and others.  updates timings etc. of events.
 
+;;; ****m* slippery-chicken/update-slots
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod update-slots ((sc slippery-chicken) 
                          &optional
                          (tempo-map nil)
@@ -979,6 +1049,7 @@
                          (current-section nil)
                          (nth nil)
                          (warn-ties t))
+;;; ****
   (update-slots (piece sc) 
                 (if tempo-map tempo-map (tempo-map sc))
                 start-time start-time-qtrs start-bar current-section nth
@@ -1077,6 +1148,30 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* slippery-chicken/get-player
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod get-player ((sc slippery-chicken) player)
+;;; ****
+  (get-data player (ensemble sc)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; ****m* slippery-chicken/num-bars
 ;;; FUNCTION
 ;;; num-bars:
@@ -1123,8 +1218,27 @@
 
 ;;; sequenz-num and bar-num are 1-based.
 
+;;; ****m* slippery-chicken/get-bar-num-from-ref
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-bar-num-from-ref ((sc slippery-chicken) section
                                  sequenz-num bar-num)
+;;; ****
    (get-bar-num-from-ref (piece sc) section sequenz-num bar-num))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1136,17 +1250,56 @@
 ;;; 15/3/03: change this so that if player is nil, then we get the bar for all
 ;;; players in the ensemble. 
 
+;;; ****m* slippery-chicken/get-bar
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-bar ((sc slippery-chicken) bar-num &optional player)
+;;; ****
   ;; (unless player
   ;; (error "bar-holder::get-bar: player argument is required!"))
   (if player
       (get-bar (piece sc) bar-num player)
-    (let ((players (players (ensemble sc))))
-      (loop for p in players collect (get-bar (piece sc) bar-num p)))))
+      (let ((players (players (ensemble sc))))
+        (loop for p in players collect (get-bar (piece sc) bar-num p)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/auto-accidentals
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod auto-accidentals ((sc slippery-chicken) &optional ignore1 ignore2)
+;;; ****
   (declare (ignore ignore1 ignore2))
   (loop 
       with players = (players sc)
@@ -1171,8 +1324,28 @@
                 (setf (nth i last-notes) last-attack)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/respell-notes
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod respell-notes ((sc slippery-chicken) &optional corrections)
+;;; ****
   (format t "~&Respelling notes...")
   ;; this respells written and sounding notes if transposing instrument
   (respell-notes-aux sc)
@@ -1205,11 +1378,31 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; 11.4.11: start and end can be bar numbers or (bar note) pairs where note is
 ;;; 1-based and counts ties.
+;;; ****m* slippery-chicken/enharmonics
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod enharmonics ((sc slippery-chicken) start end player
                         &optional (written t))
+;;; ****
   (let* ((stlist (listp start))
          (ndlist (listp end))
          (stbar (if stlist (first start) start))
@@ -1236,6 +1429,7 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; e.g. (enharmonic-spellings +coming-rthm-chain+
 ;;;                    '((cello (117 1) (118 2) (135 3) (591 (1 2)) (596 (2 2)))
@@ -1247,7 +1441,26 @@
 ;;; (clarinet (1 2 t)): the t means change the written note, not sounding
 ;;; NB Designed to be called from cmn-display but can be called by user.
 
+;;; ****m* slippery-chicken/enharmonic-spellings
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod enharmonic-spellings ((sc slippery-chicken) corrections)
+;;; ****
   (loop for player in corrections do
        (loop 
           with p = (first player)
@@ -1276,9 +1489,29 @@
   t)
               
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; This does things by looking at enharmonic spellings in a whole bar
+;;; ****m* slippery-chicken/respell-bars
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod respell-bars ((sc slippery-chicken))
+;;; ****
   (loop 
      for player in (players sc) 
       with last-attack
@@ -1347,8 +1580,27 @@
 
 ;;; 9.4.11: note can be a single pitch or a chord (list). start and end bar are
 ;;; inclusive.  
+;;; ****m* slippery-chicken/find-note
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod find-note ((sc slippery-chicken) player note &key (written nil)
                       start-bar end-bar)
+;;; ****
   (unless start-bar
     (setf start-bar 1))
   (unless end-bar
@@ -1367,6 +1619,7 @@
            (format t "~&bar ~a" (bar-num e))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; This is just a very simple attempt to spell notes better by comparing each
 ;;; note to the previous one and making it the same accidental type.  It
@@ -1375,8 +1628,27 @@
 ;;;
 ;;; 8/4/07: keep track of the last two now in order to make better decisions.
 
+;;; ****m* slippery-chicken/respell-notes-for-player
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod respell-notes-for-player ((sc slippery-chicken) player 
                                      &optional written)
+;;; ****
   ;; reset to the first event
   (next-event sc player nil t)
   (loop 
@@ -1500,7 +1772,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* slippery-chicken/players
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod players ((sc slippery-chicken))
+;;; ****
   (players (piece sc)))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1599,12 +1890,49 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* slippery-chicken/get-note
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-note ((sc slippery-chicken) bar-num note-num player 
                      &optional written)
+;;; ****
   (get-note (piece sc) bar-num note-num player written))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* slippery-chicken/get-rest
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-rest ((sc slippery-chicken) bar-num rest-num player)
   (get-rest (piece sc) bar-num rest-num player))
 
@@ -1631,18 +1959,61 @@
 (defmethod get-event ((sc slippery-chicken) bar-num event-num player)
 ;;; ****
   (get-event (piece sc) bar-num event-num player))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; NB The new note is the sounding pitch if a transposing instrument.
+;;; ****m* slippery-chicken/change-note
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod change-note ((sc slippery-chicken) bar-num note-num player new-note)
+;;; ****
   (change-note (piece sc) bar-num note-num player new-note))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
+
 ;;; 30.3.11: turn a rest into a note by supplying a pitch or chord (as objects
 ;;; or symbols)
+
+;;; ****m* slippery-chicken/rest-to-note
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod rest-to-note ((sc slippery-chicken) bar-num rest-num player new-note
                          &rest marks)
+;;; ****
   (let ((event (rest-to-note (piece sc) bar-num rest-num player new-note marks))
         (player (get-player sc player))
         (bar (get-bar sc bar-num player)))
@@ -1655,6 +2026,7 @@
     event))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; ****m* slippery-chicken/change-notes
 ;;; FUNCTION
@@ -1713,29 +2085,113 @@
       (change-notes (piece sc) player start-bar new-notes use-last-octave)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; see rthm-seq-bar (setf time-sig)
+;;; this is a 'brutal' method in that it doesn't check to see if the rhythms in
+;;; the bar add up to a whole bar in the new time-sig
+
+;;; ****m* slippery-chicken/change-time-sig
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod change-time-sig ((sc slippery-chicken) bar-num-or-ref new-time-sig)
+;;; ****
   (change-time-sig (piece sc) bar-num-or-ref new-time-sig))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/add-mark-to-note
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-mark-to-note ((sc slippery-chicken)
                                  bar-num note-num player mark)
+;;; ****
   (add-mark-to-note (piece sc) bar-num note-num player mark))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; 1-based
+;;; ****m* slippery-chicken/add-mark-to-event
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-mark-to-event ((sc slippery-chicken) bar-num event-num player
                                   mark)
+;;; ****
   (add-mark-to-event (piece sc) bar-num event-num player mark))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; 28.2.11  event-num can be an integer (1-based) or a list of event numbers 1
 ;;; for each instrument counting from the top of the score down
+;;; ****m* slippery-chicken/add-mark-all-players
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-mark-all-players ((sc slippery-chicken)
                                      bar-num event-num mark)
+;;; ****
   (if (listp event-num)
       (unless (= (num-players (piece sc)) (length event-num))
         (error "slippery-chicken::add-mark-all-players: event-num list ~
@@ -1746,14 +2202,36 @@
        (add-mark-to-event (piece sc) bar-num enum player mark))
   t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
+;;; for CMN only
+
+;;; ****m* slippery-chicken/note-add-bracket-offset
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod note-add-bracket-offset ((sc slippery-chicken)
                                     bar-num note-num player
                                     &key (dx nil) (dy nil) 
                                     (dx0 nil) (dy0 nil) 
                                     (dx1 nil) (dy1 nil) 
                                     (index 0))
+;;; ****
   (let ((event (get-note (piece sc) bar-num note-num player)))
     (add-bracket-offset event :dx dx :dy dy :dx0 dx0 :dy0 dy0 :dx1 dx1 :dy1 dy1
                         :index index)))
@@ -1764,7 +2242,8 @@
 ;;; function that creates a mark, and call that function to create a
 ;;; separate instance of the cmn mark for each note that it should be applied
 ;;; to. 
-;;; 1.3.11 as marks are now all symbols, this is obsolete
+;;; 1.3.11 as marks are now all symbols, this is obsolete but keep in file for
+;;; legacy purposes.
 #|
 (defmethod add-mark-to-notes ((sc slippery-chicken) mark-function player
                                   notes)
@@ -1779,15 +2258,35 @@
   t)
 |#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; Similar to above but whereas you usually give the notes like '((1 1) (2 2))
 ;;; meaning bar 1 note 1, bar 2 note 2, here you give it in the form 
 ;;; '((1 1 5) (3 2 7)) meaning bar 1, notes 1 to 5 inclusive, bar 3, notes 2 to
 ;;; 7 inclusive. 
 
+;;; ****m* slippery-chicken/add-mark-to-notes-from-to
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-mark-to-notes-from-to ((sc slippery-chicken)
                                           mark-function player
                                           notes)
+;;; ****
   (loop 
       for bar in notes 
       for bar-num-or-ref = (first bar)
@@ -1805,7 +2304,10 @@
                               (funcall mark-function))))
   t)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
+
 ;;; 1.3.11 another method for adding marks to multiple notes, this time we give
 ;;; a start-bar/note and an end-bar/note and the given marks will be added to
 ;;; all inbetween.  start and finish are inclusive and 1-based.  If they're
@@ -1813,8 +2315,27 @@
 ;;; list sets the exact note to start/stop at.  NB noteheads need before to be
 ;;; t in lilypond but bear in mind they're automatically moved over in
 ;;; event::get-lp-data.  players can be a single symbol or list.
+;;; ****m* slippery-chicken/add-marks-to-notes
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-marks-to-notes ((sc slippery-chicken) start end players before
                                    &rest marks)
+;;; ****
   (let* ((stlist (listp start))
          (ndlist (listp end))
          (stbar (if stlist (first start) start))
@@ -1844,7 +2365,9 @@
                  (do-bar bnum 1 nil))))))
   t)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; 27.6.11: Yet another method for adding marks to notes, this one allowing
 ;;; 'shorthand' and a very free specification of what goes where.
@@ -1863,8 +2386,27 @@
 ;;;                         (wt "WT")
 ;;;                         (h harm))
 
+;;; ****m* slippery-chicken/add-marks-sh
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-marks-sh ((sc slippery-chicken) player-data 
                          &key shorthand (warn t) verbose)
+;;; ****
   (loop for player in player-data
      for p = (first player) do
      (loop with bar with note with mark
@@ -1895,9 +2437,29 @@
                 note nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/add-marks-to-note
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-marks-to-note ((sc slippery-chicken) bar-num note-num
                                   player &rest marks)
+;;; ****
   ;; make sure we have a flat list and no sublists as perhaps created by
   ;; cmn::get-marks 
   (setf marks (flatten marks))
@@ -1909,9 +2471,29 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/rm-marks-from-note
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod rm-marks-from-note ((sc slippery-chicken) bar-num note-num
                                    player &rest marks)
+;;; ****
   ;; make sure we have a flat list and no sublists as perhaps created by
   ;; cmn::get-marks 
   (setf marks (flatten marks))
@@ -1922,11 +2504,31 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; 6.4.11: removes only the given marks, not all marks.  if players are nil,
 ;;; then all players will be processed
+;;; ****m* slippery-chicken/rm-marks-from-notes
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod rm-marks-from-notes ((sc slippery-chicken) start end
                                     players &rest marks)
+;;; ****
   (unless players
     (setf players (players sc)))
   (unless (listp players)
@@ -1956,44 +2558,184 @@
   t)
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/rm-slurs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod rm-slurs ((sc slippery-chicken) start end players)
+;;; ****
   (rm-marks-from-notes sc start end players '(beg-sl end-sl)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/add-mark-before-note
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-mark-before-note ((sc slippery-chicken)
                                        bar-num note-num player mark)
+;;; ****
   (add-mark-before-note (piece sc) bar-num note-num player mark))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/sc-delete-marks
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod sc-delete-marks ((sc slippery-chicken) bar-num note-num player)
+;;; ****
   (bh-delete-marks (piece sc) bar-num note-num player))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/sc-delete-marks-from-event
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod sc-delete-marks-from-event ((sc slippery-chicken)
                                            bar-num event-num player)
+;;; ****
   (setf (marks (get-event sc bar-num event-num player)) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/sc-delete-marks-before
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod sc-delete-marks-before ((sc slippery-chicken)
                                          bar-num note-num player)
+;;; ****
   (delete-marks-before (piece sc) bar-num note-num player))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/tie
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod tie ((sc slippery-chicken) bar-num note-num player 
                 &optional curvature)
+;;; ****
   (tie (piece sc) bar-num note-num player curvature))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; event numbers are 1-based 
+;;; ****m* slippery-chicken/trill
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod trill ((sc slippery-chicken) player start-bar start-event trill-note
                   &optional end-event end-bar)
+;;; ****
   (unless end-bar
     (setf end-bar start-bar))
   (unless end-event
@@ -2008,7 +2750,26 @@
     (end-trill end)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/all-rests-to-ties
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod all-rests-to-ties ((sc slippery-chicken)
                               start-bar end-bar players
                               &key
@@ -2020,6 +2781,7 @@
                               (tie-next-attack nil)
                               (last-rhythm nil)
                               (auto-beam nil))
+;;; ****
   (unless (listp players)
     (setf players (list players)))
   (loop for p in players do
@@ -2055,13 +2817,33 @@
                                                  last-rhythm)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/tie-over-rest-bars
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod tie-over-rest-bars ((sc slippery-chicken) bar-num players
                                &key (end-bar 99999) ;; num of empty bars
                                     (tie-next-attack nil)
                                     (to-next-attack t)
                                     (last-rhythm nil)
                                     (auto-beam nil))
+;;; ****
   (unless (listp players)
     (setf players (list players)))
   (loop for p in players do
@@ -2194,9 +2976,29 @@
               (auto-beam bar auto-beam nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
+
 ;;; NB end-bar is not when the ties stop, but rather when we last find an event
 ;;; to tie from (so the ties may go beyond end-bar)
 
+;;; ****m* slippery-chicken/tie-over-all-rests
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod tie-over-all-rests ((sc slippery-chicken) player
                                start-bar end-bar 
                                &key 
@@ -2204,6 +3006,7 @@
                                (end-note 9999999)
                                (auto-beam nil)
                                (consolidate-notes nil))
+;;; ****
   (next-event sc player nil start-bar)
   (let ((refs '()))
     (loop 
@@ -2246,11 +3049,31 @@
                           :consolidate-notes consolidate-notes))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; note-num is 1-based and counts tied-to notes as well
 ;;; 24.3.11: added end-bar
+;;; ****m* slippery-chicken/tie-over-rests
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod tie-over-rests ((sc slippery-chicken) bar-num note-num player
                            &key end-bar auto-beam (consolidate-notes t))
+;;; ****
   (next-event sc player nil bar-num)
   (unless (get-note sc bar-num note-num player)
     (error "tie-over-rests: can't get note ~a, bar ~a, ~a"
@@ -2331,10 +3154,30 @@
            (auto-beam bar auto-beam nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; 1.4.11: note-num counts tied-notes but not rests
 
+;;; ****m* slippery-chicken/delete-slur
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-slur ((sc slippery-chicken) bar-num note-num player)
+;;; ****
   (let ((event (next-event sc player nil bar-num))
         (enum 0) 
         (in-slur nil)
@@ -2363,11 +3206,30 @@
              (setf happy nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; add slurs automatically (to wind instruments usually) to phrases: these are
 ;;; defined as not having any rests in them and not including any repeated
 ;;; notes. 
 
+;;; ****m* slippery-chicken/auto-slur
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod auto-slur ((sc slippery-chicken) players
                       &key start-bar end-bar
                       rm-slurs-first
@@ -2375,6 +3237,7 @@
                       ;; 5.4.11
                       (over-accents t)
                       verbose)
+;;; ****
   (unless (listp players)
     (setf players (list players)))
   (unless start-bar
@@ -2461,7 +3324,6 @@
   (check-slurs sc)
   t)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Section is the current section reference e.g. '(2 1), player the current
@@ -2470,8 +3332,27 @@
 ;;; change-map.  N.B. Instruments cannot be changed mid-sequence and sequence
 ;;; is 1-based so we have to 1+ elsewhere if necessary
 
+;;; ****m* slippery-chicken/get-current-instrument-for-player
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-current-instrument-for-player (section player sequence
                                               (sc slippery-chicken))
+;;; ****
   (unless (listp section)
     (setf section (list section)))
   (let* ((player-obj (get-data player (ensemble sc)))
@@ -2494,7 +3375,26 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 9.2.11 do the above but for a bar number instead
+;;; ****m* slippery-chicken/get-instrument-for-player-at-bar
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-instrument-for-player-at-bar (player bar (sc slippery-chicken))
+;;; ****
   (let* ((bar (if (rthm-seq-bar-p bar) bar (get-bar sc bar player)))
          (section (butlast (player-section-ref bar)))
          (seq-num (1+ (nth-seq bar))))
@@ -2504,40 +3404,52 @@
 
 ;;; 24.3.11: returns the number of semitones the note sounds away from the
 ;;; written pitch e.g. bass clarinet = -14
+;;; ****m* slippery-chicken/get-transposition-at-bar
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-transposition-at-bar (player bar (sc slippery-chicken))
+;;; ****
   (transposition-semitones (get-instrument-for-player-at-bar player bar sc)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defmethod print-object :before ((sc slippery-chicken) stream)
-  (format stream "~%SLIPPERY-CHICKEN: ~
-                  ~%                      title: ~a ~
-                  ~%                   composer: ~a ~
-                  ~%                set-palette: ~a ~
-                  ~%                    set-map: ~a ~
-                  ~%               hint-pitches: ~a ~
-                  ~%               rthm-seq-map: ~a ~
-                  ~%           rthm-seq-palette: ~a ~
-                  ~%                  tempo-map: ~a ~
-                  ~%                tempo-curve: ~a ~
-                  ~%         instrument-palette: ~a ~
-                  ~%                   ensemble: ~a ~
-                  ~%      instruments-hierarchy: ~a ~
-                  ~%        fast-leap-threshold: ~a ~
-                  ~% pitch-seq-index-scaler-min: ~a "
-          (title sc) (composer sc) (id (set-palette sc)) (id (set-map sc))
-          (id (hint-pitches sc)) (id (rthm-seq-map sc))
-          (id (rthm-seq-palette sc)) (id (tempo-map sc)) (tempo-curve sc)
-          (id (instrument-palette sc)) (id (ensemble sc))
-          (instruments-hierarchy sc) (fast-leap-threshold sc) 
-          (pitch-seq-index-scaler-min sc))
-  (statistics sc stream))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Find out the number of sequences in a section.
 
+;;; ****m* slippery-chicken/num-seqs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod num-seqs ((sc slippery-chicken) section-ref)
+;;; ****
   (sclist-length
    (get-data (econs 
               (if (listp section-ref) 
@@ -2557,7 +3469,26 @@
 ;;; be!).  In order to get the references of a number of contiguous sections
 ;;; then, we'll have to use instrument references.
 
+;;; ****m* slippery-chicken/get-section-refs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-section-refs ((sc slippery-chicken) start-section num-sections)
+;;; ****
   (let* ((last-player (first (last (players (ensemble sc)))))
          (section-list (if (listp start-section) 
                            start-section
@@ -2579,7 +3510,7 @@
 ;;; FUNCTION
 ;;; get-num-top-level-sections:
 ;;;
-;;; Return the number of sections in the piece i.e the top-level ones as
+;;; Return the number of sections in the piece i.e. the top-level ones as
 ;;; defined e.g. in the set-map.  NB the num-sequences slot of slippery-chicken
 ;;; is the number of sections and sub-sections.
 ;;; 
@@ -2596,14 +3527,52 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* slippery-chicken/get-all-section-refs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-all-section-refs ((sc slippery-chicken))
+;;; ****
   ;; (get-all-refs (set-palette sc)))
   ;; 20/7/05 don't know why the palette was used, it's the map that's useful!
   (get-all-refs (set-map sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* slippery-chicken/statistics
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod statistics ((sc slippery-chicken) &optional (stream t))
+;;; ****
   (statistics (piece sc) stream))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2613,7 +3582,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* slippery-chicken/get-tempo
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-tempo ((sc slippery-chicken) bar-num)
+;;; ****
   (data (scm-get-data bar-num (tempo-map sc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2621,7 +3609,26 @@
 ;;; bar-num is actually required but optional because of the rthm-seq-bar
 ;;; method of the same name.
 
+;;; ****m* slippery-chicken/get-time-sig
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-time-sig ((sc slippery-chicken) &optional bar-num)
+;;; ****
   (object-is-nil? bar-num "slippery-chicken::get-time-sig" 'bar-num)
   (get-time-sig (get-bar sc bar-num (first (players (ensemble sc))))))
 
@@ -2718,7 +3725,7 @@
 ;;; shorten-large-fast-leaps:
 ;;;
 ;;; Attempt to tame those melodic leaps that are very fast and larger than the
-;;; limit defined in the instrument class.
+;;; limit defined in the instrument class.  Called automatically at init.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - the slippery-chicken object
@@ -2898,12 +3905,32 @@
      finally (return count)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; optional args are actually required but optional because of event class
 ;;; method  
 ;;; event-num is 1-based but counts rests and ties
+;;; ****m* slippery-chicken/delete-clefs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-clefs ((sc slippery-chicken) &optional
                          player bar-num event-num)
+;;; ****
   (let ((e (get-event sc bar-num event-num player)))
     (if e
         (delete-clefs e)
@@ -2914,18 +3941,57 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 11.4.11: event-num is 1-based.  optional args actually required
+;;; ****m* slippery-chicken/get-clef
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-clef ((sc slippery-chicken) &optional bar-num event-num player)
+;;; ****
   (let* ((bar (get-bar sc bar-num player))
          (e (when bar (get-nth-event (1- event-num) bar))))
     (when e 
       (get-clef e))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; optional args are actually required but optional because of event class
 ;;; method  
+;;; ****m* slippery-chicken/add-clef
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod add-clef ((sc slippery-chicken) player &optional
                      bar-num event-num clef)
+;;; ****
   (let ((e (get-event sc bar-num event-num player)))
     (if e
         (add-clef e clef)
@@ -2934,9 +4000,29 @@
               player bar-num event-num))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/move-clef
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod move-clef ((sc slippery-chicken) from-bar from-event
                       to-bar to-event player)
+;;; ****
   (let ((clef (get-clef sc from-bar from-event player)))
     (if clef
         (progn
@@ -2946,15 +4032,36 @@
                player from-bar from-event))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; NB While this routine generally does a good job of putting the right clefs
 ;;; in place, it will get confused if notes jump from very high to low
-;;; (e.g. over complete piano range).  
+;;; (e.g. over complete piano range).  Called automatically by cmn-display
+;;; and write-lp-data-for-all
 
+;;; ****m* slippery-chicken/auto-clefs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod auto-clefs ((sc slippery-chicken) 
                        &key verbose in-c players 
                        (delete-clefs t)
                        (delete-marks-before nil))
+;;; ****
   (loop 
      for player in (if players players (players sc)) 
      do
@@ -3198,8 +4305,8 @@
                 (setf last-note e))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  Called automatically by cmn-display and write-lp-data-for-all
 
-;;; 
 (defmethod multi-bar-rests ((sc slippery-chicken) &optional players)
   (unless (listp players)
     (setf players (list players)))
@@ -3265,6 +4372,24 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* slippery-chicken/midi-play
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 #+cm-2
 (defmethod midi-play ((sc slippery-chicken)
                       &key 
@@ -3284,6 +4409,7 @@
                       (force-velocity nil)
                       ;; this means durations will carry over rests!
                       (ignore-rests nil))
+;;; ****
   (setf voices
         (cond ((and voices (listp voices)) voices)
               ((and voices (atom voices)) (list voices))
@@ -3323,23 +4449,75 @@
                         force-velocity)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defmethod get-player ((sc slippery-chicken) player)
-  (get-data player (ensemble sc)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; See methods above for a description of the arguments
-
-;;; N.B.  This will fail when an instrument is silent for a section (i.e. has
-;;; nil in the rthm-seq-map).  All of these clm methods should be re-written to
-;;; conform with the method structure of cmn-get-data.
-
 ;;; N.B. clm's nrev instrument will have to be loaded before calling
-;;; this function.  
+;;; this method.  
 
+;;; ****m* slippery-chicken/clm-play
+;;; FUNCTION
+
+;;; Using the sound files (samples) defined for the given reference in the
+;;; sndfile-palette slot of slippery-chicken, write a soundfile using the pitch
+;;; and timing information of the slippery-chicken score.  
+;;;
+;;; By grouping sound files in the sndfile-palette slot we can generate a CLM
+;;; sound file of our piece in various 'flavours': perhaps using exclusively
+;;; string sounds, or percussion sounds, or a variety of sounds.  See below for
+;;; an example of a sndfile-palette.
+;;;
+;;; See also sndfile-palette.lsp's make-sfp-from-wavelab-marker-file for a way
+;;; of automatically creating this.
+;;;
+;;; N.B. Event amplitudes are as yet unused in this method.
+;;; 
+;;; ARGUMENTS
+;;; - The slippery chicken object
+;;; - The ID of the starting section
+;;; - Which player(s) to write.  Can be a symbol for a single player, a list of
+;;;   players, or if NIL, all players will be written.
+;;; - The ID of the soundfile group from the sndfile-palette slot of the
+;;;   slippery-chicken object.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; See below for a description of the keyword arguments.
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; EXAMPLE
+#|
+ :sndfile-palette
+ '(((raw (neumann_09.wav  neumann_24.wav 
+                          neumann_10.wav  neumann_25.wav
+                          neumann_11.wav  neumann_26.wav
+                          neumann_01.wav  neumann_16.wav
+                          neumann_28.wav  
+                          neumann_02.wav  neumann_17.wav
+                          neumann_30.wav 
+                          neumann_03.wav  neumann_19.wav
+                          neumann_33.wav 
+                          neumann_06.wav  neumann_21.wav
+                          neumann_08.wav  neumann_22.wav))
+     ;; the above uses complete individual sound files whereas below we use the
+     ;; same file many times but using different start and end points. A
+     ;; 3-element list as a start or end value indicates (minutes seconds
+     ;; milliseconds)   
+    (p-long-continuous1
+     ( ;; bowed bridge
+      (skin-processed-24-48-mono.wav :start 0.341 :end 16.373)
+      ;; spe
+      (skin-processed-24-48-mono.wav :start (2 1 749) :end (2 10 389))
+      ;; click start then bowed bridge
+      (skin-processed-24-48-mono.wav :start (1 20 848) :end (1 37 152))
+      ;; clb spe with battuto attack and spectral development
+  ...))))
+
+
+  (clm-play mini 1 nil 'p-long-continuous :num-sections 3 :play nil
+            :check-overwrite nil))
+|#
+;;; SYNOPSIS
 #+clm
-(defmethod clm-play ((sc slippery-chicken) section voices 
+(defmethod clm-play ((sc slippery-chicken) section players 
                      sound-file-palette-ref 
                      &key 
                      ;; if another ref is given, then we make fibonacci
@@ -3375,7 +4553,7 @@
                      (chords nil)
                      (chord-accessor nil)
                      ;; the nth note of the chord (from bottom) for the lowest
-                     ;; voice  
+                     ;; player
                      (note-number 0)
                      ;; whether clm should play  or not
                      (play t)
@@ -3404,17 +4582,15 @@
                      ;; list at the beginning of each rthm-seq.
                      (reset-snds-each-rs t)
                      ;; when t then we start over at the beginning of the snd
-                     ;; list at the beginning of each voice.
-                     (reset-snds-each-voice t)
+                     ;; list at the beginning of each player.
+                     (reset-snds-each-player t)
                      ;; usually we use a smaller segment of a long sound file
                      ;; as a sndfile instance. Allow an event to go beyond the
                      ;; given end point if the following is t.
                      (duration-run-over nil)
-                     ;; how far to the left (0) or right (90) can a sound be
-                     ;; placed? 
-                     ;; No longer needed.
-                     ;; (min-degree 10)
-                     ;; number of sound output channels
+                     ;; number of sound output channels (unlimited).  Note that
+                     ;; sounds from the palette will be randomly panned between
+                     ;; any two adjacent channels
                      (channels 2)
                      ;; sampling rate of output
                      (srate clm::*clm-srate*)
@@ -3427,16 +4603,24 @@
                      ;; just in case we want to use an external palette instead
                      ;; of the one in the sc object.
                      (sndfile-palette nil))
+;;; ****
+  ;; MDE Mon Apr  2 10:23:21 2012 
+  (unless (fboundp 'clm::nrev)
+    (error "slippery-chicken::clm-play: clm's nrev.ins needs to be ~
+            compiled and loaded for this method to run."))
   (unless num-sequences
     (setf num-sequences (num-seqs sc section)))
-  (unless (listp voices)
-    (setf voices (list voices)))
+  (unless (listp players)
+    (setf players (list players)))
+  ;; MDE Mon Apr  2 09:34:36 2012 
+  (unless players
+    (setf players (players sc)))
   ;; re-initialise our random number generator.
   (random-rep 100 t)
   ;;; 10/1/07 remove the events with a start-time after max-start-time at this
   ;;; stage rather than rejecting them later (otherwise play-chance-env will
   ;;; range over the full event list instead of those below max-start-time)
-  (let* ((events (get-events-with-src sc section voices 
+  (let* ((events (get-events-with-src sc section players 
                                       ;; these have 0 duration so must ignore
                                       ;; them for now 
                                       :ignore-grace-notes t
@@ -3451,14 +4635,14 @@
          (section1-num-seqs (if num-sequences
                                 num-sequences
                               (num-seqs sc section)))
-         (num-voices (length voices))
-         (events-per-voice (ml 0 num-voices))
-         ;; clisp doesn't like (loop for voice in events sum (loop for rs ...
+         (num-players (length players))
+         (events-per-player (ml 0 num-players))
+         ;; clisp doesn't like (loop for player in events sum (loop for rs ...
          (total-events (loop 
                            for i from 0
-                           for voice in events
-                           for len = (loop for rs in voice sum (length rs))
-                           do (setf (nth i events-per-voice) len)
+                           for player in events
+                           for len = (loop for rs in player sum (length rs))
+                           do (setf (nth i events-per-player) len)
                            sum len))
          (snds (make-cscl (get-snds sound-file-palette-ref
                                     (if sndfile-palette
@@ -3470,7 +4654,7 @@
                              (if sndfile-palette
                                  sndfile-palette
                                (sndfile-palette sc))))))
-         (snd-transitions (loop for num-events in events-per-voice collect
+         (snd-transitions (loop for num-events in events-per-player collect
                                 (fibonacci-transition num-events)))
          (snd nil)
          (snd-group nil)
@@ -3487,7 +4671,7 @@
          (latest-possible-start 0.0)
          (available-dur 0.0)
          (event-count 1)
-         (event-count-voice 0)
+         (event-count-player 0)
          (events-this-rs 0)
          (output-start 0.0)
          (output-ok t)
@@ -3519,7 +4703,7 @@
                      output-name-uniquifier
                      (string-trim "+" (id sc))
                      (if (listp section) section (list section))
-                     voices
+                     players
                      (if (listp sound-file-palette-ref) 
                          sound-file-palette-ref
                        (list sound-file-palette-ref))
@@ -3560,9 +4744,9 @@
         (loop for snd in (data snds) do (reset-usage snd))
         (when snds2
           (loop for snd in (data snds2) do (reset-usage snd)))
-        (loop for voice in events and snd-trans in snd-transitions do
+        (loop for player in events and snd-trans in snd-transitions do
               (setf snd-trans (copy-list snd-trans))
-              (loop for rs in voice do
+              (loop for rs in player do
                     (loop 
                         for evts in rs 
                         for snd = (if (and snds2 (= 1 (pop snd-trans)))
@@ -3581,8 +4765,8 @@
           (reset snds)))
       (setf first-event-start 
         (loop
-            for voice in events 
-            for ffv = (first (first voice))
+            for player in events 
+            for ffv = (first (first player))
             if ffv minimize (start-time ffv)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
       (clm::with-sound (:scaled-to normalise 
@@ -3596,48 +4780,48 @@
                                    :header-type clm::*clm-header-type*
                                    :play play :channels channels :statistics t)
         (loop 
-            for voice in events and voice-name in voices 
+            for player in events and player-name in players 
             and snd-trans in snd-transitions
-                             ;; and events-this-voice in events-per-voice
-            and voice-count from 1
-                                 ;; 15/12/06 this while clause causes a voice
+                             ;; and events-this-player in events-per-player
+            and player-count from 1
+                                 ;; 15/12/06 this while clause causes a player
                                  ;; not to process when
                                  ;; the previous overstepped the max-start-time
                                  ;; while happy
             do
               (setf snd-trans (copy-list snd-trans)
-                    event-count-voice 0
-                    ;; 15/12/06 reset happy to the new voice processes
+                    event-count-player 0
+                    ;; 15/12/06 reset happy to the new player processes
                     happy t
                     this-play-chance-env 
                     (new-lastx play-chance-env
                                ;; 10/1/07 we want to use the whole
                                ;; play-chance-env when we use max-start-time:
-                               ;; (1- events-this-voice)))
+                               ;; (1- events-this-player)))
                                ;; got to take time-offset and the start time of
                                ;; the first event into consideration, not just
                                ;; max-start-time...
                                (count-events-before-max-start 
-                                voice
+                                player
                                 (- (+ max-start-time first-event-start)
                                    time-offset))))
-              (format t "~%Processing voice ~a/~a: ~a (resting voices will ~
+              (format t "~%Processing player ~a/~a: ~a (resting players will ~
                           not be processed)~%"
-                      voice-count num-voices (nth (1- voice-count) voices))
+                      player-count num-players (nth (1- player-count) players))
               (when (= 1 num-sections)
                 ;; this code will only work when we're processing 1 section
                 (setf rthm-seqs 
                   (subseq 
                    (get-data-from-palette
-                    (flatten (list section voice-name))
+                    (flatten (list section player-name))
                     (rthm-seq-map sc))
                    (1- from-sequence)
                    (1- (+ from-sequence section1-num-seqs)))))
-              (when reset-snds-each-voice
+              (when reset-snds-each-player
                 (reset snds)
                 (when snds2
                   (reset snds2)))
-              (loop for rs in voice and rs-count from 0 while happy do
+              (loop for rs in player and rs-count from 0 while happy do
                     (setf events-this-rs (length rs))
                     (format t "~%    Processing rthm-seq ~a (~a events)~%"
                             ;; print the rthm-seq id if we're only doing one
@@ -3662,7 +4846,7 @@
                                             (compound-duration-in-tempo event))
                                 skip-this-event (> (random-rep 100.0)
                                                    (interpolate 
-                                                    event-count-voice 
+                                                    event-count-player 
                                                     this-play-chance-env 
                                                     :exp play-chance-env-exp))
                                 srt (if do-src
@@ -3751,17 +4935,6 @@
                                         :width src-width
                                         :amp (amplitude snd)
                                         :amp-env amp-env
-                                        #| 2/8/05: what was the idea
-  behind this???
-  (print (if (zerop input-start)
-                                        amp-env
-                                        (clm::envelope-concatenate
-                                        (list 0 0 
-                                        (/ (third amp-env)
-                                        30.0)
-                                        (fourth amp-env))
-                                        amp-env)))
-  |#
                                         :degree
                                         ;; 2/8/05: put mono and stereo
                                         ;; files in random space
@@ -3771,22 +4944,16 @@
                                         ;; see samp5.lsp for details.
                                         (nth (random 7) '(15 25 35 45 55
                                                           65 75))
-                                        #|
-  (if (stereo snd)
-                                        45
-                                        (+ min-degree 
-                                        (random 
-                                        (1+ (- 90 (* 2 min-degree))))))
-  |#
                                         :rev-amt rev-amt
                                         :printing print-secs))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                          (incf event-count-voice)
+                          (incf event-count-player)
                           (incf event-count))))))
     (unless (zerop total-events)
       (format t "~%~%~d/~d events skipped (~f%)"
               total-skipped total-events 
-              (* 100.0 (/ total-skipped total-events))))))
+              (* 100.0 (/ total-skipped total-events)))))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -4017,12 +5184,32 @@
         (incf nth g)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; This is different from set-rehearsal-letters in that we don't use the
 ;;; rehearsal-letters slot of sc, rather, we use the method argument.
 
+;;; ****m* slippery-chicken/set-rehearsal-letter
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-rehearsal-letter ((sc slippery-chicken) bar-num letter
                                  &optional players)
+;;; ****
   (unless players
     (setf players (get-groups-top-ins sc)))
   (loop 
@@ -4067,9 +5254,29 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/delete-rehearsal-letter
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-rehearsal-letter ((sc slippery-chicken) bar-num
                                     &optional players)
+;;; ****
   (unless players
     (setf players (players sc)))
   (loop 
@@ -4099,13 +5306,14 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
+;;;  A post-generation editing method
+
 ;;; This method will only combine short bars into longer ones, it won't split
 ;;; up bars and recombine. 
 
 ;;; ****m* slippery-chicken/re-bar
 ;;; FUNCTION
-;;; 
+;;; Don't confuse with rebar method.
 ;;; 
 ;;; ARGUMENTS
 ;;; 
@@ -4181,7 +5389,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* slippery-chicken/find-rehearsal-letters
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod find-rehearsal-letters ((sc slippery-chicken))
+;;; ****
   (loop 
       with player = (first (get-groups-top-ins sc))
       for bnum from 1 to (num-bars sc) 
@@ -4190,8 +5417,28 @@
       collect (1+ bnum)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/auto-beam
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod auto-beam ((sc slippery-chicken) &optional (beat nil) (check-dur t))
+;;; ****
   (loop for player in (players sc) do
         (loop 
             for bnum from 1 to (num-bars sc) 
@@ -4202,7 +5449,26 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 9.4.11 NB won't allow notes to be under more than one slur/phrase mark
+;;; ****m* slippery-chicken/check-slurs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod check-slurs ((sc slippery-chicken))
+;;; ****
   (loop for player in (players sc) do
      ;; reset to the first event
        (next-event sc player nil t)
@@ -4227,7 +5493,7 @@
           (when in-slur
             (warn "slippery-chicken::check-slurs (~a): end slur missing at ~
                      end of piece" player)))))
-              
+           
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -4236,7 +5502,26 @@
 ;;; 
 ;;; cf piece::handle-ties
 
+;;; ****m* slippery-chicken/check-ties
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod check-ties ((sc slippery-chicken) &optional same-spellings)
+;;; ****
   (loop for player in (players sc) do
      ;; reset to the first event
        (next-event sc player nil t)
@@ -4270,7 +5555,7 @@
 ;;; FUNCTION
 ;;; rebar:
 ;;;
-;;; See documentation in piece class method.
+;;; See documentation in piece class method. Don't confuse with re-bar method.
 ;;; 
 ;;; RETURN VALUE  
 ;;; always t
@@ -4322,7 +5607,26 @@
 
 ;;; 28/1/11: make sure that every bar in the piece has the same time signature
 ;;; for each instrument in the ensemble
+;;; ****m* slippery-chicken/check-time-sigs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod check-time-sigs ((sc slippery-chicken))
+;;; ****
   (loop for bar-num from 1 to (num-bars sc) 
      for bars = (get-bar sc bar-num) ;; gets bars for all players
      for ts1 = (get-time-sig (first bars))
@@ -4334,8 +5638,28 @@
          
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Apr  2 11:15:19 2012 -- whether a player plays more than one
+;;; instrument 
+;;; ****m* slippery-chicken/player-doubles
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
 
+|#
+;;; SYNOPSIS
 (defmethod player-doubles ((sc slippery-chicken) player)
+;;; ****
   (let ((player-obj (get-data player (ensemble sc))))
     (unless player-obj
       (error "slippery-chicken::player-doubles: can't get player ~a" player))
@@ -4343,7 +5667,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* slippery-chicken/get-starting-ins
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-starting-ins ((sc slippery-chicken) player) ; symbol
+;;; ****
   (let ((player-obj (get-data player (ensemble sc)))
         (ins-ref nil))
     (when (doubles player-obj)
@@ -4359,12 +5702,32 @@
                            ins-ref nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; sort notes in piece--across all instruments--into time-ordered lists and
 ;;; process them with the given function, which must take one argument, an
 ;;; event.
+;;; ****m* slippery-chicken/process-events-by-time
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod process-events-by-time ((sc slippery-chicken) function
                                    &key (start-bar 1) end-bar)
+;;; ****
   (unless end-bar
     (setf end-bar (num-bars sc)))
   (loop for bar-num from start-bar to end-bar 
@@ -4382,21 +5745,61 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
+;;; ****m* slippery-chicken/sc-move-dynamic
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod sc-move-dynamic ((sc slippery-chicken) bar-num player
                             ;; event numbers 1-based but counting rests and ties
                             from to &optional to-bar)
+;;; ****
   (unless to-bar
     (setf to-bar bar-num))
   (let ((dyn (sc-remove-dynamic sc bar-num player from)))
     (add-mark (get-event sc to-bar to player) dyn)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing method
 
 ;;; 1.4.11: remove all dynamics on a single event.  event-num includes ties and
 ;;; rests 
+;;; ****m* slippery-chicken/sc-remove-dynamic
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod sc-remove-dynamic ((sc slippery-chicken) bar-num player
                               &rest event-nums)
+;;; ****
   ;; just in case we call this method from another function with &rest
   ;; event-nums  
   (setf event-nums (flatten event-nums))
@@ -4409,10 +5812,30 @@
      finally (return (first dynamics))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing methdo
 
 ;;; 16.3.11: start end are either bar numbers or (bar-num note-num) pairs.
 ;;; note-nums are 1-based and count ties but not rests.
+;;; ****m* slippery-chicken/sc-remove-dynamics
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod sc-remove-dynamics ((sc slippery-chicken) start end players)
+;;; ****
   (unless (listp players)
     (setf players (list players)))
   (let* ((stlist (listp start))
@@ -4441,11 +5864,30 @@
                     (do-bar bnum 1 nil p))))))
   t)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing methdo
 
 ;;; if two or more notes have the same dynamic, remove all but the first
+;;; ****m* slippery-chicken/remove-extraneous-dynamics
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod remove-extraneous-dynamics ((sc slippery-chicken))
+;;; ****
   (loop for player in (players sc) do
      ;; (print player)
        (loop with last-dynamic with rest-bars = 0
@@ -4471,6 +5913,24 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;  lilypond
+;;; ****m* slippery-chicken/write-lp-data-for-all
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod write-lp-data-for-all ((sc slippery-chicken) 
                                   &key
                                   (base-path "/tmp/")
@@ -4519,6 +5979,7 @@
                                   (min-page-turn '(2 1))
                                   ;; sim to rehearsal letters
                                   (tempi-all-players t))
+;;; ****
   (declare (special cl-user::+slippery-chicken-src-path+))
   (when (and (numberp start-bar) (numberp end-bar) (>= start-bar end-bar))
     (error "slippery-chicken::write-lp-date-for-all: start-bar = ~a, ~
@@ -4769,11 +6230,31 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing methdo
 
 ;;; start/end-note are 1-based but count ties.  if no optional args, deletes
 ;;; all beams in the bar.
+;;; ****m* slippery-chicken/sc-delete-beams
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod sc-delete-beams ((sc slippery-chicken) bar-num player
                             &optional start-note end-note)
+;;; ****
   (let ((bar (get-bar (piece sc) bar-num player)))
     (if (and start-note end-note)
         (progn
@@ -4782,11 +6263,31 @@
         (delete-beams bar))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing methdo
 
 ;;; NB This might delete rehearsal letters, instrument changes (and maybe other
 ;;; things) attached to a bar/event.
+;;; ****m* slippery-chicken/delete-bars
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-bars ((sc slippery-chicken) start-bar
                         &key num-bars end-bar print)
+;;; ****
   (when (or (and (not end-bar) (not num-bars))
             (and end-bar num-bars))
     (error "slippery-chicken::delete-bars: either end-bar (~a) or num-bars ~%~
@@ -4841,11 +6342,32 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing methdo
+
 ;;; 20.7.11 (Pula)
 ;;; see double-events (below) for details
+;;; ****m* slippery-chicken/move-events
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod move-events ((sc slippery-chicken) from-player to-player
                         start-bar start-event end-bar end-event
                         &key transposition (consolidate-rests t))
+;;; ****
   (double-events sc from-player to-player start-bar start-event
                  end-bar end-event :transposition transposition)
   ;; now delete the events in the from-player
@@ -4853,7 +6375,8 @@
                  consolidate-rests))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;               20.7.11 (Pula)
+;;;  A post-generation editing methdo
+;;; 20.7.11 (Pula)
 ;;; start/end-event are 1-based and count rests and ties, not just struck notes
 ;;; if end-event is nil we use all events until end of end-bar
 ;;; if update we update-slots for the whole sc object
@@ -4863,9 +6386,28 @@
 ;;; will be deleted, so this only works for copying notes into completely empty
 ;;; bars, not razor splicing.
 
+;;; ****m* slippery-chicken/double-events
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod double-events ((sc slippery-chicken) master-player doubling-players
                           start-bar start-event end-bar end-event
                           &key transposition (consolidate-rests t) (update t))
+;;; ****
   (setf doubling-players (force-list doubling-players))
   (loop for doubling-player in doubling-players do       
      ;; clone the master players bars
@@ -4931,14 +6473,36 @@
            (update-slots sc))))
   t)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing methdo
+
 ;;; 21.7.11 (Pula)
 ;;; turn notes into rests.
 ;;; start/end-event are 1-based and count rests and ties, not just struck notes
 ;;; if players is nil, process all players
 ;;; if end-event is nil go to the end of the end-bar
+;;; ****m* slippery-chicken/delete-events
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod delete-events ((sc slippery-chicken) start-bar start-event end-bar
                           end-event &optional players (consolidate-rests t))
+;;; ****
   (setf players (if players
                     (force-list players)
                     (players sc)))
@@ -4961,12 +6525,32 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing methdo
 
 ;;; 23.7.11 (Pula) 1-based and counting tied notes but not rests
 ;;; NB in general calling auto-beam is a good idea (esp. if you're deleting
 ;;; notes under a beam) but if might fail if you have notes longer than a beat.
+;;; ****m* slippery-chicken/sc-force-rest
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod sc-force-rest ((sc slippery-chicken) bar-num note-num player
                           &optional (auto-beam nil))
+;;; ****
   (let* ((bar (get-bar sc bar-num player))
          (event (when bar (get-nth-non-rest-rhythm (1- note-num) bar))))
     (if event
@@ -4979,10 +6563,30 @@
                note-num bar-num))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing methdo
 
 ;;; delete any notes in the existing bars
 ;;; start-bar and end-bar are inclusive
+;;; ****m* slippery-chicken/force-rest-bars
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod force-rest-bars ((sc slippery-chicken) start-bar end-bar players)
+;;; ****
   (loop for bar-num from start-bar to end-bar do
        (loop for player in players 
             for bar = (get-bar sc bar-num player)
@@ -4993,9 +6597,31 @@
             (force-rest-bar bar))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing methdo
+
 ;;; 20.8.11: if no end-event we process all events in the last bar
+;;; ****m* slippery-chicken/force-artificial-harmonics
+;;; FUNCTION
+;;; For string scoring purposes only: Transpose the note down two octaves and
+;;; add the harmonic symbol at the perfect fourth.
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod force-artificial-harmonics ((sc slippery-chicken) player start-bar
                                        start-event end-bar &optional end-event)
+;;; ****
   (loop for e in (get-events-from-to sc player start-bar start-event end-bar
                                      end-event)
        do
@@ -5006,8 +6632,27 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 22.7.11 (Pula)
 ;;; all 1-based and inclusive
+;;; ****m* slippery-chicken/get-events-from-to
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-events-from-to ((sc slippery-chicken) player start-bar
                                start-event end-bar &optional end-event)
+;;; ****
   (unless end-event
     (setf end-event (num-rhythms (get-bar sc end-bar player))))
   (let ((result '()))
@@ -5029,26 +6674,92 @@
               (push e result))))
     (nreverse result)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* slippery-chicken/transpose-events
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod transpose-events ((sc slippery-chicken) player start-bar
                              start-event end-bar end-event semitones
                              &key (destructively t))
+;;; ****
   (let ((events (get-events-from-to sc player start-bar start-event end-bar
                                     end-event)))
     (loop for e in events do
          (transpose e semitones :destructively destructively))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing methdo
+
 ;;; 28.9.11: add accidental in ().  note-num (counting ties, and from 1) can be
 ;;; an integer or list e.g. '(1 2). If the latter it would be the first chord,
 ;;; second note up.
 
+;;; ****m* slippery-chicken/set-cautionary-accidental
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-cautionary-accidental ((sc slippery-chicken) bar-num note-num
-                                      player &optional written) 
+                                      player &optional written)
+;;; **** 
   (cautionary-accidental-aux sc bar-num note-num player t written))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  A post-generation editing methdo
+
+;;; ****m* slippery-chicken/unset-cautionary-accidental
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod unset-cautionary-accidental ((sc slippery-chicken) bar-num note-num
-                                        player &optional written) 
+                                        player &optional written)
+;;; **** 
   (cautionary-accidental-aux sc bar-num note-num player nil written))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod cautionary-accidental-aux ((sc slippery-chicken) bar-num note-num
                                       player value &optional written)
@@ -5072,6 +6783,24 @@
 ;;; best to make them the default args here too.  But the init method also sets
 ;;; a couple of them in case they've been made nil and would thus cause an
 ;;; error. 
+;;; ****f* slippery-chicken/make-slippery-chicken
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-slippery-chicken (name &key rthm-seq-palette rthm-seq-map
                               set-palette set-map sndfile-palette 
                               tempo-map tempo-curve (snd-output-dir "/tmp/")
@@ -5087,6 +6816,7 @@
                               instruments-hierarchy 
                               (title "slippery-chicken-piece") composer
                               (pitch-seq-index-scaler-min 0.5) (warn-ties t))
+;;; ****
   ;; we make the given name a global!!!
   (set name
        (make-instance 'slippery-chicken 
@@ -5121,6 +6851,24 @@
 
 ;;; Use this function to randomly generate the <entry-points> to clm-loops
 
+;;; ****f* slippery-chicken/random-loop-points
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 #+clm
 (defun random-loop-points (outfile sndfile 
                            &key 
@@ -5143,6 +6891,7 @@
                            ;; these will be chosen at random when calculating
                            ;; the next loop segment duration
                            (scalers '(1/1 2/1 3/2 5/3 8/5 13/8)))
+;;; ****
   (let* ((snd-dur (clm::sound-duration sndfile))
          (max-scaler (loop for s in scalers maximize s))
          (max-start (- snd-dur (* min-dur (1- max-points) max-scaler)))
@@ -5204,6 +6953,24 @@
 ;;;
 ;;; The transpositions are simply randomly permutated and selected.
 
+;;; ****f* slippery-chicken/clm-loops
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 #+clm
 (defun clm-loops (sndfile entry-points &key
                                        (max-perms 1000)
@@ -5221,6 +6988,7 @@
                                        (num-shuffles 1) 
                                        (suffix "")
                                        (src-width 5))
+;;; ****
   (format t "~&num-shuffles: ~a" num-shuffles)
   (let* ((perms (flatten 
                  ;; inefficient-permutations will always return :max results no
@@ -5327,6 +7095,24 @@
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* slippery-chicken/clm-loops-all
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 #+clm
 (defun clm-loops-all (sndfile entry-points-list 
                       &key 
@@ -5352,6 +7138,7 @@
                       (transpositions '(0))
                       (transposition-offset 0.0)
                       (src-width 5))
+;;; ****
   (let* ((transps-offset (loop for st in transpositions
                              collect (+ transposition-offset st)))
          (transps-shuffled (make-cscl
@@ -6013,7 +7800,8 @@
     (setf tempo-map '((1 (q 60)))))
   (when (and tempo-map tempo-curve)
     (error "slippery-chicken::tempo-curve-to-map: ~
-            can't have a tempo-map and a tempo-curve; ~%only one or the other"))
+            can't have a tempo-map and a tempo-curve; ~%only one ~
+            or the other"))
   (if tempo-map
       tempo-map
       (let ((new-curve (new-lastx (third tempo-curve) num-bars))

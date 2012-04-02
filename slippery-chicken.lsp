@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:27:49 Mon Apr  2 2012 BST
+;;; $$ Last modified: 12:45:24 Mon Apr  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1892,19 +1892,59 @@
 
 ;;; ****m* slippery-chicken/get-note
 ;;; FUNCTION
+;;; Get a numbered event for a player from a bar of a slippery-chicken object. 
 ;;; 
+;;; NB slippery-chicken doesn't have 'note' and 'rest' classes, rather both
+;;; these are events.  So the nomenclature 'note' and 'rest' are used here and
+;;; elsewhere merely for convenience to distinguish between sounding and
+;;; non-sounding events.
+;;;
+;;; See also rthm-seq-bar methods for accessing notes by other means.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - the slippery-chicken object
+;;; - the bar number (integer, counting from 1)
+;;; - the note number, counting tied notes (integer, counting from 1).  This
+;;;   can also be a list if accessing pitches in a chord (see below). 
+;;; - the player (symbol)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - (optional default nil) whether, when accessing a pitch in a chord,
+;;;    whether to return the written or sounding pitch.  
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An event object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :title "mini"
+        :instrument-palette +slippery-chicken-standard-instrument-palette+
+        :snd-output-dir "/tmp"
+        :sndfile-palette
+        '(((audio-1 (phrenos-beg.wav)))
+          ("/snd/"))
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1)))
+        :rthm-seq-palette '((1 ((((2 4) (e) e+e. 32 (32)))
+                                :pitch-seq-palette (((1) 2)))))
+        :rthm-seq-map '((1 ((vn (1))))))))
+  (print (data (get-rest mini 1 2 'vn)))
+  (print (data (get-note mini 1 2 'vn)))
+  (print (data (get-note mini 1 '(2 1) 'vn)))
+  (print (data (get-note mini 1 '(2 2) 'vn)))
+  (is-tied-from (get-note mini 1 1 'vn)))
+
+=>
+32 
+"E." 
+C4 
+D4 
+T
 
 |#
 ;;; SYNOPSIS

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:56:54 Tue Apr  3 2012 BST
+;;; $$ Last modified: 18:07:36 Tue Apr  3 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5737,7 +5737,7 @@ T
   (let ((player-obj (get-data player (ensemble sc)))
         (ins-ref nil))
     (when (doubles player-obj)
-      (setf ins-ref (get-first-for-instrument
+      (setf ins-ref (get-first-for-player
                      (instrument-change-map sc)
                      player))
       (unless ins-ref

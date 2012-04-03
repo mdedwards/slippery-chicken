@@ -577,3 +577,7 @@ bottom of clm-play:
                                          ;; collect rthm-seqs?
                            appending (nth i (nth j all-sections))))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+tempo-curve:
+could we also use  (section-number sequence-number bar-number) references in
+the envelope, converting them to bar nums before interpolation?
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

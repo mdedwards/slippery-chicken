@@ -177,7 +177,8 @@
       #-cmn
       (load-cm-file "cmn-stubs")
       (loop for f in 
-	   '("pkg" "sbcl" "clos" "iter" "level1" "utils" "mop" "objects" "data" 
+	   '("pkg" #+sbcl"sbcl" "clos" "iter" "level1" "utils" "mop" "objects"
+	     "data" 
 	     "scales" "spectral" "patterns" "io" "scheduler" "sco" "clm" "clm2" 
 	     ;; "midishare" "midishare" "loop" "midishare" "player"
 	     "midi1" "midi2" "midi3" "cmn")
@@ -186,8 +187,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+(or win32 win64)(sc-load-cm-essentials)
-#-(or win32 win64)(sc-load-cm-all)
+#+(or windows win32 win64)(sc-load-cm-essentials)
+#-(or windows win32 win64)(sc-load-cm-all)
 ;;; It seems CM doesn't put itself on the features list but sc needs it.
 (pushnew :cm *features*)
 (pushnew :cm-2 *features*)

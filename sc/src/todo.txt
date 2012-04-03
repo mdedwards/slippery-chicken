@@ -570,3 +570,10 @@ clm-play: nothing to do here but....
                                         ;; 2/8/05: put mono and stereo
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+bottom of clm-play:
+         (voices (loop for i below (length voices) collect
+                       (loop for j below num-sections
+                                         ;; why do we append sections but
+                                         ;; collect rthm-seqs?
+                           appending (nth i (nth j all-sections))))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

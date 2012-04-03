@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 12:57:23 Sat Jan  7 2012 ICT
+;;; $$ Last modified: 18:00:37 Tue Apr  3 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -101,7 +101,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* ensemble/get-players
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-players ((e ensemble))
+;;; ****
   (if (players e)
       (players e)
     (progn
@@ -171,22 +190,97 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* ensemble/num-notes
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod num-notes ((e ensemble))
+;;; ****
   (num-notes-aux e))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* ensemble/tessitura
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod tessitura ((e ensemble))
+;;; ****
   (degree-to-note (tessitura-aux e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod num-players ((e ensemble))
-  (num-data e))
+;;; ****m* ensemble/num-players
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
 
+|#
+;;; SYNOPSIS
+(defmethod num-players ((e ensemble))
+;;; ****
+  (num-data e))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* ensemble/players-exist
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod players-exist ((e ensemble) players)
+;;; ****
   (let ((e-players (players e)))
     (loop for player in players do
           (unless (member player e-players)
@@ -204,7 +298,26 @@
 ;;; (fl1 ((piccolo violin) :midi-channel 1)) works but
 ;;; (fl1 ((piccolo violin))) thinks that piccolo is a nested ensemble!!!
 
+;;; ****f* ensemble/make-ensemble
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-ensemble (id ensemble &key bar-line-writers instrument-palette)
+;;; ****
   (make-instance 'ensemble :id id :data ensemble 
                  :bar-line-writers bar-line-writers 
                  :instrument-palette instrument-palette))
@@ -217,7 +330,7 @@
                (total-notes thing))
               ((is-ral (data thing))
                (num-notes-aux (data thing)))
-              (t (error "ensemble::num-notes-aux: what's this doing here?: ~a"
+              (t (error "ensemble::num-notes-aux: unexpected object?: ~a"
                         thing)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    12th April 2002
 ;;;
-;;; $$ Last modified: 19:00:50 Fri Dec  9 2011 ICT
+;;; $$ Last modified: 18:12:52 Tue Apr  3 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -81,12 +81,29 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Return the first data in the whole map for the given instrument
+;;; ****m* instrument-change-map/get-first-for-player
+;;; FUNCTION
+;;; Return the first data in the whole map for the given player
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; A symbol, the ID of an instrument
+;;; 
+;;; EXAMPLE
+#|
 
-(defmethod get-first-for-instrument ((icm instrument-change-map)
-                                     instrument)
+|#
+;;; SYNOPSIS
+(defmethod get-first-for-player ((icm instrument-change-map)
+                                 player)
+;;; ****
   (when (data icm)
-    (get-change-data (get-data instrument (data (first (data icm))))
+    (get-change-data (get-data player (data (first (data icm))))
                      1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -95,7 +112,26 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* instrument-change-map/make-instrument-change-map
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-instrument-change-map (id icm &key (warn-not-found nil))
+;;; ****
   (make-instance 'instrument-change-map :data icm :id id 
                  :last-ref-required t
                  :warn-not-found warn-not-found

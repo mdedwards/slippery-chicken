@@ -1974,6 +1974,7 @@ T
 |#
 ;;; SYNOPSIS
 (defmethod get-rest ((sc slippery-chicken) bar-num rest-num player)
+;;; ****
   (get-rest (piece sc) bar-num rest-num player))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -79,9 +79,10 @@
 ;;; (setf *read-default-float-format* 'double-float)
 
 (defparameter +sc-dir-separator+
-  #+(or windows mswindows win32) #\\
+  ;; sbcl uses /
+  #+(and (not sbcl) (or windows mswindows win32 win64)) #\\
   ;; #+mcl #\: ; back in pre-OSX days
-  #+unix #\/)
+  #+(or sbcl unix) #\/)
 
 (defparameter +sc-fasl-extension+
   #+clisp ".fas"
@@ -114,6 +115,7 @@
 (defun sc-compile-and-load (file &optional (just-load nil) (dir nil))
   (unless dir
     (setq dir (directory-namestring +slippery-chicken-src-path+)))
+  ;; (print dir)
   #+allegro
   (progn
     (cl-user::chdir +slippery-chicken-src-path+)
@@ -162,28 +164,30 @@
   ;; before we call this function
   ;; e.g. (defparameter *slippery-chicken-cm-path*
   ;;                    "/user/michael/cm-2.6.0/src/")
-  (declare (special *slippery-chicken-cm-path*))
-  (unless *slippery-chicken-cm-path*
-    (error "Variable *slippery-chicken-cm-path* must be set!"))
-  (flet ((load-cm-file (file) ;; .lisp extention auto-added
-           (load (format nil "~a~a.lisp" *slippery-chicken-cm-path* file))))
-    (load-cm-file "midishare/midishare-stubs")
-    #-clm
-    (load-cm-file "clm-stubs")
-    #-cmn
-    (load-cm-file "cmn-stubs")
-    (loop for f in 
-         '("pkg" "sbcl" "clos" "iter" "level1" "utils" "mop" "objects" "data" 
-           "scales" "spectral" "patterns" "io" "scheduler" "sco" "clm" "clm2" 
-           ;; "midishare" "midishare" "loop" "midishare" "player"
-           "midi1" "midi2" "midi3" "cmn")
-         do
-         (load-cm-file f))))
+  ;; (declare (special *slippery-chicken-cm-path*))
+  ;; (unless *slippery-chicken-cm-path*
+  ;; (error "Variable *slippery-chicken-cm-path* must be set!"))
+  (let ((slippery-chicken-cm-path
+	 (format nil "~acm-2.6.0/src/" +slippery-chicken-src-path+)))
+    (flet ((load-cm-file (file) ;; .lisp extention auto-added
+	     (load (format nil "~a~a.lisp" slippery-chicken-cm-path file))))
+      (load-cm-file "midishare/midishare-stubs")
+      #-clm
+      (load-cm-file "clm-stubs")
+      #-cmn
+      (load-cm-file "cmn-stubs")
+      (loop for f in 
+	   '("pkg" "sbcl" "clos" "iter" "level1" "utils" "mop" "objects" "data" 
+	     "scales" "spectral" "patterns" "io" "scheduler" "sco" "clm" "clm2" 
+	     ;; "midishare" "midishare" "loop" "midishare" "player"
+	     "midi1" "midi2" "midi3" "cmn")
+	   do
+	   (load-cm-file f)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+windows(sc-load-cm-essentials)
-#-windows(sc-load-cm-all)
+#+(or win32 win64)(sc-load-cm-essentials)
+#-(or win32 win64)(sc-load-cm-all)
 ;;; It seems CM doesn't put itself on the features list but sc needs it.
 (pushnew :cm *features*)
 (pushnew :cm-2 *features*)

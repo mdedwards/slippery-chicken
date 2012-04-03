@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 12:43:19 Sun Mar 25 2012 BST
+;;; $$ Last modified: 20:48:04 Tue Apr  3 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -182,8 +182,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (sc-load-cm-essentials)
-(sc-load-cm-all)
+#+windows(sc-load-cm-essentials)
+#-windows(sc-load-cm-all)
 ;;; It seems CM doesn't put itself on the features list but sc needs it.
 (pushnew :cm *features*)
 (pushnew :cm-2 *features*)

@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    5.12.00
 ;;;
-;;; $$ Last modified: 19:33:55 Fri Mar 19 2010 GMT
+;;; $$ Last modified: 10:00:01 Wed Apr  4 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -52,7 +52,8 @@
 
 (defpackage :slippery-chicken
   (:use :common-lisp)
-  (:nicknames :sc :slimy-poultry))
+  (:nicknames :sc :slimy-poultry)
+  (:import-from :cl-user +slippery-chicken-version+))
 
 (in-package :slippery-chicken)
 

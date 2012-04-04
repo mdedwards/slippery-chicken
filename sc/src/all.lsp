@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 20:48:04 Tue Apr  3 2012 BST
+;;; $$ Last modified: 10:44:06 Wed Apr  4 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -58,7 +58,7 @@
 
 (in-package :cl-user)
 
-;;; The number is quoted just in case we want version numbers like "1.2beta"
+;;; Numbers as strings, just in case we want version numbers like "1.2beta"
 (defconstant +slippery-chicken-version+ "0.9.0")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
@@ -168,22 +168,22 @@
   ;; (unless *slippery-chicken-cm-path*
   ;; (error "Variable *slippery-chicken-cm-path* must be set!"))
   (let ((slippery-chicken-cm-path
-	 (format nil "~acm-2.6.0/src/" +slippery-chicken-src-path+)))
+         (format nil "~acm-2.6.0/src/" +slippery-chicken-src-path+)))
     (flet ((load-cm-file (file) ;; .lisp extention auto-added
-	     (load (format nil "~a~a.lisp" slippery-chicken-cm-path file))))
+             (load (format nil "~a~a.lisp" slippery-chicken-cm-path file))))
       (load-cm-file "midishare/midishare-stubs")
       #-clm
       (load-cm-file "clm-stubs")
       #-cmn
       (load-cm-file "cmn-stubs")
       (loop for f in 
-	   '("pkg" #+sbcl"sbcl" "clos" "iter" "level1" "utils" "mop" "objects"
-	     "data" 
-	     "scales" "spectral" "patterns" "io" "scheduler" "sco" "clm" "clm2" 
-	     ;; "midishare" "midishare" "loop" "midishare" "player"
-	     "midi1" "midi2" "midi3" "cmn")
-	   do
-	   (load-cm-file f)))))
+           '("pkg" #+sbcl"sbcl" "clos" "iter" "level1" "utils" "mop" "objects"
+             "data" 
+             "scales" "spectral" "patterns" "io" "scheduler" "sco" "clm" "clm2" 
+             ;; "midishare" "midishare" "loop" "midishare" "player"
+             "midi1" "midi2" "midi3" "cmn")
+           do
+           (load-cm-file f)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -410,6 +410,7 @@
 ;;; 
 ;;; EXAMPLE
 #|
+
 ;; Returns an instrument object. Needs no optional argument when applied to a
 ;; player object that contains only one instrument object
 (let* ((ip +slippery-chicken-standard-instrument-palette+)

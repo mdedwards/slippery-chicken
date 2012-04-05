@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:20:08 Thu Apr  5 2012 BST
+;;; $$ Last modified: 14:23:32 Thu Apr  5 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4668,6 +4668,8 @@ T
                      ;; output file name (either at the end of the beginning
                      ;; depending on whether short-file-names is T or NIL).
                      (output-name-uniquifier "")
+                     ;; NB the extension does not determine the output sound
+                     ;; file format, rather, :header-type does that.  
                      (sndfile-extension ".wav")
                      ;; just in case we want to use an external palette instead
                      ;; of the one in the sc object.

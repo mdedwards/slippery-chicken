@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:07:36 Tue Apr  3 2012 BST
+;;; $$ Last modified: 14:20:08 Thu Apr  5 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4562,14 +4562,16 @@ T
                      sound-file-palette-ref 
                      &key 
                      ;; if another ref is given, then we make fibonacci
-                     ;; transitions from one group of snds to another!
+                     ;; transitions from one group of snds to another.
                      sound-file-palette-ref2
                      ;; this determines the chance that a note will be played
                      ;; or not; it is a random selection but uses a fixed seed
                      ;; that is re-initialized each time clm-play is called.
                      ;; the following default ensures every note will play.
                      (play-chance-env '(0 100 100 100))
-                     ;; self-explanatory, in seconds
+                     ;; usually we stop when we've got to the end of the
+                     ;; piece/section but if we specify a maximum start time
+                     ;; here (in seconds) events after this will be skipped.
                      (max-start-time 99999999)
                      ;; the exponent the above env is raised to
                      (play-chance-env-exp 0.5)
@@ -4577,68 +4579,94 @@ T
                      ;; effect a tempo scaler)--not to be confused with
                      ;; duration-scaler
                      (time-scaler 1.0)
-                     ;; what the samples should be scaled to
+                     ;; the maximum amplitude in the output file i.e. what the
+                     ;; samples should be scaled to 
                      (normalise .99)
                      ;; if t, then clm won't be called, you'll just see the
                      ;; printouts to the terminal 
                      (simulate nil)
+                     ;; the starting sequence
                      (from-sequence 1)
-                     ;; specifying nil will simply get them all.
+                     ;; how many sequences to play; specifying nil will simply
+                     ;; get them all. 
                      (num-sequences nil)
+                     ;; how many sections to play
                      (num-sections 1)
-                     ;; in contrast to the other methods, rests are ignored
-                     ;; per default.
+                     ;; in contrast to other methods, rests are ignored
+                     ;; per default i.e. the sound files will play over the
+                     ;; duration of rests unless this is set to nil.
                      (ignore-rests t)
+                     ;; what time in seconds to start writing the events into
+                     ;; the output file
                      (time-offset 0.0)
                      ;; (pitch-object-default-src-ref-pitch 'c4)
+                     ;; usually we'll use pitches from the set-map but we could
+                     ;; pass a list of other sets here if preferred.
                      (chords nil)
+                     ;; we can also pass an integer for nth to access notes in
+                     ;; the chords
                      (chord-accessor nil)
                      ;; the nth note of the chord (from bottom) for the lowest
                      ;; player
                      (note-number 0)
-                     ;; whether clm should play  or not
+                     ;; whether clm should play the output file or not
                      (play t)
                      (amp-env '(0 1 60 1 100 0))
                      ;; it's not a great idea to start some longer sounds
                      ;; always at the beginning, because of the repetition
                      ;; created and the fact that we never get to other
-                     ;; interesting parts of the sound.  Set this to t for
-                     ;; start-time incrementing.
+                     ;; interesting parts of the sound file .  Set this to t
+                     ;; for start-time incrementing.
                      (inc-start nil)
+                     ;; the accuracy of the sample-rate conversion
                      (src-width 20)
+                     ;; we can scale the src values by the following
                      (src-scaler 1.0)
                      ;; if this is a number or note symbol, then it will
                      ;; be used as a reference pitch instead of that
                      ;; stored in the sndfile.
                      (do-src t)
+                     ;; the reverberation amount in nrev: 0.1 is a lot.
                      (rev-amt 0.0)
                      ;; this scales duration of events (creates overlaps)--not
                      ;; to be confused with time-scaler!
                      (duration-scaler 1.0)
+                     ;; output file names are automatically created; they're
+                     ;; usually quite long so shorted them if the following is T
                      (short-file-names nil)
                      ;; whether to query the user before overwriting existing
                      ;; sound files.
                      (check-overwrite t)
-                     ;; when t then we start over at the beginning of the snd
+                     ;; when T, then we start over at the beginning of the snd
                      ;; list at the beginning of each rthm-seq.
                      (reset-snds-each-rs t)
-                     ;; when t then we start over at the beginning of the snd
+                     ;; when T, then we start over at the beginning of the snd
                      ;; list at the beginning of each player.
                      (reset-snds-each-player t)
-                     ;; usually we use a smaller segment of a long sound file
+                     ;; we can use a smaller segment of a long sound file
                      ;; as a sndfile instance. Allow an event to go beyond the
-                     ;; given end point if the following is t.
+                     ;; given end point if the following is T.
                      (duration-run-over nil)
                      ;; number of sound output channels (unlimited).  Note that
                      ;; sounds from the palette will be randomly panned between
                      ;; any two adjacent channels
                      (channels 2)
-                     ;; sampling rate of output
+                     ;; the sampling rate of the output file (independently of
+                     ;; the input file).  This and the following two default to
+                     ;; clm package globals. See clm.html for more options.
                      (srate clm::*clm-srate*)
+                     ;; mus-riff would be wave format, mus-aiff would be aiff
+                     (header-type clm::*clm-header-type*)
+                     ;; the data format.  mus-lfloat would be 32bit
+                     ;; little-endian (intel) floating point. mus-l24int would
+                     ;; be little-endian 24bit integer.  
                      (data-format clm::*clm-data-format*)
                      ;; whether clm should print the seconds computed as it
                      ;; works  
                      (print-secs nil)
+                     ;; give a short string here and it will be built into the
+                     ;; output file name (either at the end of the beginning
+                     ;; depending on whether short-file-names is T or NIL).
                      (output-name-uniquifier "")
                      (sndfile-extension ".wav")
                      ;; just in case we want to use an external palette instead
@@ -4658,9 +4686,9 @@ T
     (setf players (players sc)))
   ;; re-initialise our random number generator.
   (random-rep 100 t)
-;;; 10/1/07 remove the events with a start-time after max-start-time at this
-;;; stage rather than rejecting them later (otherwise play-chance-env will
-;;; range over the full event list instead of those below max-start-time)
+  ;; 10/1/07 remove the events with a start-time after max-start-time at this
+  ;; stage rather than rejecting them later (otherwise play-chance-env will
+  ;; range over the full event list instead of those below max-start-time)
   (let* ((events (get-events-with-src sc section players 
                                       ;; these have 0 duration so must ignore
                                       ;; them for now 
@@ -4818,7 +4846,7 @@ T
                          ;; somehow they're not...
                          :srate srate
                          :data-format data-format
-                         :header-type clm::*clm-header-type*
+                         :header-type header-type
                          :play play :channels channels :statistics t)
         (loop 
            for player in events and player-name in players 

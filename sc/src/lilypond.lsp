@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 14:02:29 Thu Mar  1 2012 GMT
+;;; $$ Last modified: 16:19:03 Thu Apr  5 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -163,7 +163,6 @@
            (slash (no-lp-mark 'slash))
            (arrow-up (no-lp-mark 'arrow-up))
            (arrow-down (no-lp-mark 'arrow-down))
-           (arrow-up-down "^\\arrowUpDown ")
            (cresc-beg "\\< ")
            (cresc-end "\\! ")
            (dim-beg "\\> ")
@@ -177,6 +176,9 @@
            (pause "\\fermata ")
            (short-pause
             "^\\markup { \\musicglyph #\"scripts.ushortfermata\" } ")
+           ;; MDE Thu Apr  5 16:17:11 2012 -- these need the graphics files in
+           ;; lilypond-graphics.zip to be in the same directory as the
+           ;; generated lilypond files  
            (aeolian-light "^\\aeolianLight ") 
            (aeolian-dark "^\\aeolianDark ")
            (mphonic "^\\mphonic ")
@@ -188,6 +190,8 @@
            (sing-arr "^\\singArr ")
            ;; this one uses the graphic for close bracket
            (bracket-end "^\\bracketEnd ")
+           (arrow-up-down "^\\arrowUpDown ")
+           ;;; end lilypond-graphics.zip files
            ;; these must have been set up with the event::add-arrow method
            (start-arrow "\\startTextSpan ")
            (end-arrow "\\stopTextSpan ")

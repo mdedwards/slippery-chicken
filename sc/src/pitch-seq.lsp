@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 09:44:25 Sat Mar 31 2012 BST
+;;; $$ Last modified: 20:21:35 Thu Apr  5 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -570,10 +570,10 @@ len))
 
 #|
 
-;; The first creation option is using one argument that is a two-item list, ; ; ;
-;; whereby the first item is a symbol to be used as the pitch-seq object's ID ; ; ;
-;; and the second is a list of numbers representing the general contour of the ; ; ;
-;; pitch sequence.                      ; ; ;
+;; The first creation option is using one argument that is a two-item list, 
+;; whereby the first item is a symbol to be used as the pitch-seq object's ID 
+;; and the second is a list of numbers representing the general contour of the 
+;; pitch sequence.  
                    (make-pitch-seq '(pseq1 (1 2 1 1 3)))
 
                    =>
@@ -590,9 +590,9 @@ len))
                    NAMED-OBJECT: id: PSEQ1, tag: NIL, 
                    data: (1 2 1 1 3)
 
-;; The second creation option uses two arguments, the first of which is a list ; ; ;
-;; of numbers representing the general contour of the pitch sequence, the ; ; ;
-;; second of which is a symbol which will be used as the pith-seq object's ID. ; ; ;
+;; The second creation option uses two arguments, the first of which is a list 
+;; of numbers representing the general contour of the pitch sequence, the 
+;; second of which is a symbol which will be used as the pith-seq object's ID.
                    (make-pitch-seq '(2 1 1 3 1) 'pseq2)
 
                    => 
@@ -615,6 +615,10 @@ len))
 ;;; ****
   (let* ((id-data-given (and (listp id-data) 
                              (= 2 (length id-data))
+                             ;; MDE Thu Apr  5 20:14:36 2012 -- not if there's
+                             ;; an ID i.e. the call comes from verify-and-store
+                             ;; :after ((psp pitch-seq-palette)) 
+                             (not id)
                              (listp (second id-data))))
          (id (cond (id-data-given (first id-data))
                    (id id)

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 13:05:29 Wed Mar 28 2012 BST
+;;; $$ Last modified: 20:20:01 Thu Apr  5 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -435,7 +435,7 @@ Each pitch sequence must have 5 notes (you have 6):
   ;; let's try and catch errors here before sclist complains...
   (loop for i in pitch-seqs unless (listp i)
      do (error "pitch-seq-palette::make-psp: ~
-                 The argument to make-psp should be a list of lists: ~%~a"
+                The argument to make-psp should be a list of lists: ~%~a"
                pitch-seqs))
   (make-instance 'pitch-seq-palette :id id :data pitch-seqs
                  :num-notes num-notes))

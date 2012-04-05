@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:23:32 Thu Apr  5 2012 BST
+;;; $$ Last modified: 21:44:03 Thu Apr  5 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -756,25 +756,41 @@
   (setf (replacements (rthm-seq-map sc)) rsmr))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; calls not only the setf method (defined above) but updates events to
-;;; reflect new start times etc.  
-;;;  A post-generation editing method
-
 ;;; ****m* slippery-chicken/replace-tempo-map
 ;;; FUNCTION
-;;; 
-;;; 
+;;; A post-generation editing method: Calls not only the setf method (which
+;;; converts bar references like (section-number sequence-number bar-number) to
+;;; numbers, and makes a tempo-map object) but updates all events to reflect
+;;; new start times etc.
+;;;
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - a slippery-chicken object
+;;; - the new tempo-map (as a list)
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :title "mini"
+        :instrument-palette +slippery-chicken-standard-instrument-palette+
+        :ensemble '(((pno (piano :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6)))
+                       (2 ((cs4 ds4 fs4 gs4 as4 cs5 ds5 fs5 gs5 as5
+                                cs6))))
+        :set-map (list (list 1 (fibonacci-transition 17 1 2)))
+        :rthm-seq-palette '((1 ((((2 4) q q))
+                                :pitch-seq-palette ((1 (2))))))
+        :rthm-seq-map '((1 ((pno (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+                                    1))))))))
+  (replace-tempo-map mini '((1 (q 60 "Andante")) ((1 3 1) (e 80)))))
+
+=>
+T
 
 |#
 ;;; SYNOPSIS
@@ -786,14 +802,10 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;  A post-generation editing method
-
 ;;; ****m* slippery-chicken/add-event-to-bar
 ;;; FUNCTION
-;;; add-event-to-bar:
-;;;
-;;; Add an event object to a bar either at the end of at the given position.
+;;; A post-generation editing method: Add an event object to a bar either at
+;;; the end of at the given position.  
 ;;; 
 ;;; ARGUMENTS 
 ;;; - the slippery-chicken object
@@ -805,7 +817,7 @@
 ;;; event should be spliced; if nil then it's put at the end.
 ;;; 
 ;;; RETURN VALUE  
-;;; always t
+;;; T
 ;;; 
 ;;; SYNOPSIS
 (defmethod add-event-to-bar ((sc slippery-chicken) event bar-num-or-ref player
@@ -816,14 +828,12 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
-
 ;;; ****m* slippery-chicken/replace-events
 ;;; FUNCTION
 ;;; replace-events:
 ;;; 
-;;; Replace events already in the parts with new events.  All references are
-;;; 1-based.  Works for one bar at a time only.
+;;; A post-generation editing method: Replace events already in the parts with
+;;; new events.  All references are 1-based.  Works for one bar at a time only.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - the slippery-chicken object
@@ -839,7 +849,7 @@
 ;;;   counting rests). 
 ;;; 
 ;;; RETURN VALUE  
-;;; always t (from piece class method)
+;;; T (from piece class method)
 ;;; 
 ;;; SYNOPSIS
 (defmethod replace-events ((sc slippery-chicken) player bar-num start-event
@@ -858,15 +868,11 @@
     (add-tuplet-bracket (get-bar sc bar-num player) tuplet-brackets)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
-
 ;;; ****m* slippery-chicken/replace-multi-bar-events
 ;;; FUNCTION
-;;; replace-multi-bar-events:
-;;;
-;;; Replace events across several bars.  All bars have to be filled, i.e. we
-;;; can't just leave the last bar half-filled expecting the existing events to
-;;; make up the rest.
+;;; A post-generation editing method: Replace events across several bars.  All
+;;; bars have to be filled, i.e. we can't just leave the last bar half-filled
+;;; expecting the existing events to make up the rest.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - the slippery-chicken object
@@ -1019,12 +1025,9 @@
     rsm-clone))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; Called by initialize-instance and others.  updates timings etc. of events.
-
 ;;; ****m* slippery-chicken/update-slots
 ;;; FUNCTION
-;;; 
+;;; Called by initialize-instance and others.  Updates timings etc. of events.
 ;;; 
 ;;; ARGUMENTS
 ;;; 

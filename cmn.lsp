@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 07:44:35 Wed Mar 21 2012 GMT
+;;; $$ Last modified: 13:32:09 Fri Apr  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -645,6 +645,8 @@
                     (automatic-line-breaks nil)
                     (automatic-octave-signs nil)
                     (spacing-hook nil)
+                    ;; MDE Fri Apr  6 13:31:50 2012 
+                    title
                     ;; if nil will auto-number bars
                     (start-bar-numbering nil)
                     ;; separation for groups in a score line
@@ -672,6 +674,7 @@
        (tie-thickness .06)
        (spacing-hook spacing-hook)
        (automatic-beams nil)
+       (title title)
        (automatic-ties nil)
        (automatic-bars nil)
        (redundant-accidentals t)

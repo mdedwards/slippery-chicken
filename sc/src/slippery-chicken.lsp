@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:29:13 Fri Apr  6 2012 BST
+;;; $$ Last modified: 16:55:36 Fri Apr  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4639,7 +4639,11 @@ T
                      ;; interesting parts of the sound file .  Set this to t
                      ;; for start-time incrementing.
                      (inc-start nil)
-                     ;; the accuracy of the sample-rate conversion
+                     ;; the accuracy of the sample-rate
+                     ;; conversion. integer. the higher the value, the more
+                     ;; accurate the transposition, but the slower the
+                     ;; processing.  Values of 100 might be useful for very low
+                     ;; transpositions. 
                      (src-width 20)
                      ;; we can scale the src values by the following
                      (src-scaler 1.0)

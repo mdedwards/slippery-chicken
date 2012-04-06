@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 15:15:08 Mon Feb 13 2012 GMT
+;;; $$ Last modified: 15:35:23 Fri Apr  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -73,7 +73,7 @@
    (related-sets :accessor related-sets :initarg :related-sets :initform nil)
    ;; 26/2/07: when choosing pitches for an instrument it's useful to know
    ;; which pitches have already been selected for other
-   ;; instruments. sc-make-sequenz calles get-notes for the instrument with a
+   ;; instruments. sc-make-sequenz calls get-notes for the instrument with a
    ;; given set, and also knows the 'global sequence number' (i.e. irrespective
    ;; or sections and subsections, the current sequence count), so we can store
    ;; the notes used against that instrument for the current count in a

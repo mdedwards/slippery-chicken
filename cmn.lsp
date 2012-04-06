@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 13:32:09 Fri Apr  6 2012 BST
+;;; $$ Last modified: 22:00:27 Fri Apr  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -263,6 +263,11 @@
              ;; N.B. no text for slurs!
              (beg-sl (list begin-slur))
              (end-sl (list end-slur)) ;; (end-slur *sc-slur-tag*)))
+             ;; MDE Fri Apr  6 21:57:59 2012 -- apparently LP can't have nested
+             ;; slurs but it does have phrase marks, but CMN can have nested
+             ;; slurs and doesn't have a phrase mark, so use slurs instead
+             (beg-phrase (list begin-slur))
+             (end-phrase (list end-slur)) ;; (end-slur *sc-slur-tag*)))
              (airy-head (list (note-head :airy-head)))
              (flag-head (list (note-head :artificial-harmonic)))
              (none (list (note-head :none)))

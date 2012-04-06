@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:46:34 Fri Apr  6 2012 BST
+;;; $$ Last modified: 13:29:13 Fri Apr  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -560,6 +560,9 @@
 ;;;    num at the top of each system, or if :by-line, at the start of each line
 ;;; - :end-bar default NIL.  What bar to end the score at (default NIL = at the
 ;;;    last bar).
+;;; - :title default T. Write the title to the EPS file?  If T, use the title
+;;;    slot of the slippery-chicken object, if a string, use that, otherwise, no
+;;;    title. 
 ;;; - :file default "/tmp/cmn.eps".  Which EPS file to write.
 ;;; - :all-output-in-one-file default t.  Write separate pages (NIL) or all
 ;;;    pages to one file (T).
@@ -623,6 +626,8 @@
                         (start-bar nil)
                         (start-bar-numbering nil)
                         (end-bar nil)
+                        ;; MDE Fri Apr  6 13:27:08 2012 
+                        (title t)
                         (file "/tmp/cmn.eps")
                         (all-output-in-one-file t)
                         (one-line-per-page nil)
@@ -686,6 +691,8 @@
                :instrument-change-map (instrument-change-map sc)
                :system-separation system-separation
                :file file
+               :title (cond ((stringp title) title)
+                            ((eq title T) (title sc)))
                :process-event-fun process-event-fun 
                :set-map (when display-sets (set-map sc))
                :empty-staves empty-staves

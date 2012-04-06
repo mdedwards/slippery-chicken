@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 18:07:25 Tue Apr  3 2012 BST
+;;; $$ Last modified: 13:29:46 Fri Apr  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -111,6 +111,8 @@
                         ;; can be nil, t or 'only
                         (empty-staves nil)
                         (in-c t)
+                        ;; MDE Fri Apr  6 13:29:31 2012
+                        title
                         (auto-bar-nums :by-line)
                         (page-height 29.7)
                         (page-width 21.0)
@@ -249,6 +251,7 @@
                       :page-nums page-nums
                       :start-bar-numbering start-bar-numbering
                       :size size 
+                      :title title
                       :line-separation line-separation
                       :all-output-in-one-file all-output-in-one-file
                       :one-line-per-page one-line-per-page

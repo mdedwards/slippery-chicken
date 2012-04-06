@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:55:25 Fri Apr  6 2012 BST
+;;; $$ Last modified: 12:46:34 Fri Apr  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6079,7 +6079,11 @@ T
          (players (players sc))
          ;; MDE Fri Dec  9 19:33:28 2011 -- replace spaces with hyphens so good
          ;; for file names  
-         (title-hyphens (string-downcase (substitute #\- #\  (title sc))))
+         ;; MDE Fri Apr  6 12:46:27 2012 -- and remove ' too
+         (title-hyphens (string-downcase
+                         (remove
+                          #\'
+                          (substitute #\- #\  (title sc)))))
          (def-file (format nil "~a-def.ly" title-hyphens))
          (staff-group (if group-barlines "StaffGroup" "ChoirStaff"))
          (players-strings

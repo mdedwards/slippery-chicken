@@ -581,3 +581,6 @@ tempo-curve:
 could we also use  (section-number sequence-number bar-number) references in
 the envelope, converting them to bar nums before interpolation?
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+remove warn-ties optional arg in update-slots: bar-holder, sc, sequenz classes?
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+

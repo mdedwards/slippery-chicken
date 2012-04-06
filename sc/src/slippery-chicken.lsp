@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:44:03 Thu Apr  5 2012 BST
+;;; $$ Last modified: 10:55:25 Fri Apr  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1025,23 +1025,34 @@ T
     rsm-clone))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* slippery-chicken/update-slots
+;;;  ****m* slippery-chicken/update-slots
 ;;; FUNCTION
-;;; Called by initialize-instance and others.  Updates timings etc. of events.
+;;; Called by initialize-instance and others.  Updates timings of events and
+;;; statistics.  Not generally called by the user but can be useful if
+;;; post-generation editing has changed something fundamental to the structure.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - a slippery-chicken object
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - a tempo-map object (not just as a list). If not given, then the tempo-map
+;;;   from the slippery-chicken object will be used (default = NIL).
+;;; - the start-time of the first event, in seconds (default = 0.0).
+;;; - the start-time of the first event, in 'quarters' (for MIDI timing)
+;;;   (default = 0.0).
+;;; - the starting bar number (default = 1)
+;;; - the reference of the current section (for internal recursive use in the
+;;;   bar-holder class) (default = NIL).
+;;; - the nth sequence (for internal recursive use in the sequenz class)
+;;;   (default = NIL)
+;;; - whether to warn when ties are used to the beginnin of a sequence.  This
+;;;   argument is now obsolete and ignored, but remains for some backward
+;;;   compatibility (default T).
 ;;; 
 ;;; RETURN VALUE
+;;; The duration in seconds of the object, in this class, the whole generated
+;;; piece. 
 ;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defmethod update-slots ((sc slippery-chicken) 
                          &optional

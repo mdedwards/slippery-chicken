@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified: 10:46:07 Thu Jan 12 2012 ICT
+;;; $$ Last modified: 10:43:18 Fri Apr  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -98,8 +98,6 @@
   (first (last (bars s))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; N.B. Although tempo-map is optional, it is in fact required
 
 (defmethod update-slots ((s sequenz)
                          &optional

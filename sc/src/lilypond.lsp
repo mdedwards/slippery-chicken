@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 16:19:03 Thu Apr  5 2012 BST
+;;; $$ Last modified: 22:10:00 Fri Apr  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -132,6 +132,10 @@
            (IV "^\\markup { \\teeny \"IV\" } ")
            (beg-sl "( ")
            (end-sl  ") ")
+           ;; MDE Fri Apr  6 21:57:59 2012 -- apparently LP can't have nested
+           ;; slurs but it does have phrase marks:  
+           (beg-phrase "\\( ")
+           (end-phrase "\\) ")
            ;; there's no start gliss / end gliss in lilypond
            (beg-gliss "\\glissando ")
            (end-gliss "")

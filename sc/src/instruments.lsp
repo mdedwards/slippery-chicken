@@ -260,6 +260,11 @@
        :clefs (treble bass double-treble double-bass) :starting-clef bass 
        :microtones nil 
        :midi-program 1))
+     (tambourine
+      (:staff-name "tambourine" :staff-short-name "tmb"
+       :lowest-written c4 :highest-written c4
+       :starting-clef percussion
+       :midi-program 1))
      (guitar 
       (:staff-name "guitar" :staff-short-name "gtr"
        :lowest-written e3 :highest-written b6 :transposition-semitones -12 
@@ -268,6 +273,11 @@
        :chords t :chord-function guitar-chord-selection-fun 
        :microtones nil
        :midi-program 28))
+     (soprano
+      (:staff-name "soprano" :staff-short-name "s"
+       :lowest-written c4 :highest-written c6
+       :starting-clef treble
+       :midi-program 54))
      (violin 
       (:staff-name "violin" :staff-short-name "vln"
        :lowest-written g3 :highest-written c7 

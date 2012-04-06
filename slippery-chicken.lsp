@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:55:36 Fri Apr  6 2012 BST
+;;; $$ Last modified: 22:59:57 Fri Apr  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -219,10 +219,33 @@
                    (make-name 'instrument-change-map)
                    (instrument-change-map sc)))
               (set-palette sc)
-              (if (set-palette-p (set-palette sc))
-                  (clone (set-palette sc))
-                  (make-set-palette (make-name 'set-palette)
-                                    (set-palette sc))))
+              (let ((sp (set-palette sc)))
+                (if (set-palette-p sp)
+                    (clone sp)
+                    ;; MDE Fri Apr  6 22:28:52 2012 -- a two-note set would
+                    ;; results in a recursive ral being made (because
+                    ;; recurse-simple-data is T by default) so we can no longer
+                    ;; just call make-set-palette, rather, apply instead, so 
+                    ;; :recurse-simple-data NIL can be part of the list.  But
+                    ;; this is tricky because if we want to pass keyword args to
+                    ;; make-set-palette when creating a set-palette directly in
+                    ;; make-slippery-chicken, then we need an extra level of
+                    ;; listing e.g.
+                    ;; '(((1 ((g2 d3 a3 b3)))
+                    ;;   (2 ((d3 b3)))) 
+                    ;;   :recurse-simple-data nil))
+                    ;; as opposed to what we've always done e.g.
+                    ;;'((1 ((g2 d3 a3 b3)))
+                    ;;  (2 ((d3 b3))))
+                    ;; so in order to make this backward compatible, see if the
+                    ;; second element of the list is a symbol (i.e. keyword) and
+                    ;; if it is, just call
+                    (if (and (second sp) (symbolp (second sp)))
+                        (apply #'make-set-palette
+                               (cons (make-name 'set-palette)
+                                     sp))
+                        (make-set-palette (make-name 'set-palette)
+                                          sp)))))
         ;; don't just make a set-map with nil!!!!
         (when (set-map sc)
           (setf (set-map sc) 

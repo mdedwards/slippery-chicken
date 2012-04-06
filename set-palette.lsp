@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 15:10:41 Wed Mar 28 2012 BST
+;;; $$ Last modified: 22:50:30 Fri Apr  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -666,7 +666,7 @@ data: (C4 F4 A4 C5)
 ;;;   will be a list of note-name symbols.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :recurse-simple-dat. T or NIL to indicate whether to
+;;; - keyword argument :recurse-simple-data. T or NIL to indicate whether to
 ;;;   interpret two-element data lists as recursive palettes. Default = T.
 ;;; - keyword argument :warn-note-found. T or NIL to indicate whether to print
 ;;;   warnings when specified data is not found with subsequent calls to
@@ -741,6 +741,7 @@ data: (
     ;; hence it's called god.
     (unless god
       (setf god ral))
+    ;; (print (data ral))
     (loop for i in (data ral) and j from 0 do
          (if (is-ral (data i))
              (setf (data (nth j (data ral)))

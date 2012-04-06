@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 13:59:12 Fri Apr  6 2012 BST
+;;; $$ Last modified: 14:15:20 Fri Apr  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -59,8 +59,7 @@
 (in-package :cl-user)
 
 ;;; Numbers as strings, just in case we want version numbers like "1.2beta"
-(defconstant +slippery-chicken-version+
-  "0.9.0 (svn-revision-1359-2012-04-06-13:33:50)")
+(defconstant +slippery-chicken-version+ "0.9.0 (svn revision 1359 2012-04-06 13:33:50)")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 
@@ -98,7 +97,7 @@
   (let ((title (format nil "slippery chicken version ~a"
                        +slippery-chicken-version+)))
     (if logo
-        (format t "(\\  }\\   ~%(  \\_('>   ~a~%(__(=_)  ~%   -\"=   ~%" title)
+        (format t "(\\  }\\   ~%(  \\_('> ~a~%(__(=_)  ~%   -\"=   ~%" title)
         (print title)))
   #+sbcl t
   #-sbcl (values))

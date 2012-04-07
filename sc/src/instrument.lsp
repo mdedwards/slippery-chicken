@@ -787,20 +787,24 @@ NIL
 ;;;   key.
 
 ;;; - :starting-clef. Symbol. This value determines the first clef that a given
-;;;   instrument is to use if that instrument can use different clefs.  
+;;;   instrument is to use if that instrument can use different clefs. For a
+;;;   list of available clefs see the :clefs argument below. 
 ;;;   Default = 'treble.
 
 ;;; - :clefs. List of symbols. All clefs that a given instrument may use in the
-;;;   course of a piece. Clefs are to be given in order of preference. Defaults
-;;;   automatically to the value given to :starting-clef if no other clefs are
-;;;   specified. NB: If a separate list is indeed given here, the method will
-;;;   automatically add the value for :starting-clef as well, should it have
-;;;   been omitted. In this case, a warning will also be printed.
+;;;   course of a piece. Clefs available are treble, alto, tenor, bass,
+;;;   percussion, double-treble, and double-bass. Clefs are to be given in
+;;;   order of preference. Defaults automatically to the value given to
+;;;   :starting-clef if no other clefs are specified. NB: If a separate list is
+;;;   indeed given here, the method will automatically add the value for
+;;;   :starting-clef as well, should it have been omitted. In this case, a
+;;;   warning will also be printed.
 
 ;;; - :clefs-in-c. List of symbols. Similar to :clefs, but designates which
 ;;;   clefs an instrument uses in a C-score; for example, bass clarinet may
 ;;;   notated in bass cleff for sounding pitches though it is standardly
-;;;   notated in treble clef for written pitches.
+;;;   notated in treble clef for written pitches. For a list of clefs available
+;;;   see the :clefs argument above.
 
 ;;; - :largest-fast-leap. Number. This value indicates the largest interval, in
 ;;;   semitones, that a player can feasibly perform at a fast tempo on the

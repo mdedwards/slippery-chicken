@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****c* sc/slippery-chicken
+;;; ****h* sc/slippery-chicken-edit
 ;;; NAME 
 ;;; slippery-chicken-edit
 ;;; 
@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 11:47:15 Sat Apr  7 2012 BST
+;;; $$ Last modified: 12:32:18 Sat Apr  7 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -49,7 +49,7 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* slippery-chicken/replace-tempo-map
+;;; ****m* slippery-chicken-edit/replace-tempo-map
 ;;; FUNCTION
 ;;; A post-generation editing method: Calls not only the setf method (which
 ;;; converts bar references like (section-number sequence-number bar-number) to
@@ -95,7 +95,7 @@ T
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* slippery-chicken/add-event-to-bar
+;;; ****m* slippery-chicken-edit/add-event-to-bar
 ;;; FUNCTION
 ;;; A post-generation editing method: Add an event object to a bar either at
 ;;; the end of at the given position.  
@@ -121,7 +121,7 @@ T
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* slippery-chicken/replace-events
+;;; ****m* slippery-chicken-edit/replace-events
 ;;; FUNCTION
 ;;; replace-events:
 ;;; 
@@ -161,7 +161,7 @@ T
     (add-tuplet-bracket (get-bar sc bar-num player) tuplet-brackets)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* slippery-chicken/replace-multi-bar-events
+;;; ****m* slippery-chicken-edit/replace-multi-bar-events
 ;;; FUNCTION
 ;;; A post-generation editing method: Replace events across several bars.  All
 ;;; bars have to be filled, i.e. we can't just leave the last bar half-filled

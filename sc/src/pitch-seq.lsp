@@ -63,8 +63,42 @@
 ;;; pitch-seq::get-notes to indicate which lowest number in a pitch-seq would
 ;;; indicate that we should select the highest or lowest notes possible for the
 ;;; instrument/set. 
+
+;;; ****P* pitch-seq/+pitch-seq-lowest-equals-prefers-high+
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defparameter +pitch-seq-lowest-equals-prefers-high+ 5)
+;;; ****
+
+;;; ****P* pitch-seq/ +pitch-seq-lowest-equals-prefers-low+
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defparameter +pitch-seq-lowest-equals-prefers-low+ 1)
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 14:15:20 Fri Apr  6 2012 BST
+;;; $$ Last modified: 11:47:37 Sat Apr  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -247,6 +247,7 @@
 (sc-compile-and-load "piece.lsp")
 (sc-compile-and-load "section.lsp")
 (sc-compile-and-load "slippery-chicken.lsp")
+(sc-compile-and-load "slippery-chicken-edit.lsp")
 (sc-compile-and-load "permutations.lsp")
 (sc-compile-and-load "rthm-chain.lsp")
 (sc-compile-and-load "rthm-chain-slow.lsp")

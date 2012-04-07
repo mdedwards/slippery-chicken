@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 21:42:00 Thu Apr  5 2012 BST
+;;; $$ Last modified: 11:10:38 Sat Apr  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2738,9 +2738,3 @@ rthm-seq from-multipliers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; EOF rthm-seq.lsp
-
-
-
-
-
-

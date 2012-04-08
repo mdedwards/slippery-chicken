@@ -185,15 +185,15 @@
            ;; generated lilypond files  
            (aeolian-light "^\\aeolianLight ") 
            (aeolian-dark "^\\aeolianDark ")
+           ;; this one uses the graphic for close bracket
+           (bracket-end "^\\bracketEnd ")
            (mphonic "^\\mphonic ")
+	   (mphonic-arr "^\\mphonicArr ")
            (mphonic-cons "^\\mphonicCons ")
            (mphonic-diss "^\\mphonicDiss ")
            (mphonic-cluster "^\\mphonicCluster ")
            (sing "^\\sing ")
-           (mphonic-arr "^\\mphonicArr ")
            (sing-arr "^\\singArr ")
-           ;; this one uses the graphic for close bracket
-           (bracket-end "^\\bracketEnd ")
            (arrow-up-down "^\\arrowUpDown ")
            ;;; end lilypond-graphics.zip files
            ;; these must have been set up with the event::add-arrow method

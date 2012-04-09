@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 19:45:45 Mon Mar 19 2012 GMT
+;;; $$ Last modified: 13:09:42 Mon Apr  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -584,20 +584,26 @@
   
 (defun interp-aux (point env scaler exp)
   (let ((here (loop for i in env by #'cddr and j from 1 do
-                    (if (<= point i) (return (+ j j -2))))))
+                   (if (<= point i) (return (+ j j -2))))))
     ;; rounding in making the new-env with new-lastx can cause the
     ;; very last event to be just a little bigger than the last x
     ;; value in the new-env.  If this is the case, <here> will be nil
     ;; so we better deal with this: 
     (unless here 
-        (setq here (- (length env) 2)))
-    (if (= here 0) (setq here 2))
-    (get-interpd-y point 
-                   (nth (- here 2) env)
-                   (* scaler (nth (- here 1) env))
-                   (nth here env)
-                   (* scaler (nth (+ here 1) env))
-                   exp)))
+      (setq here (- (length env) 2)))
+    (when (zerop here)
+      (setq here 2))
+    ;; MDE Mon Apr  9 13:08:16 2012 -- catch divide by zero error
+    (let ((x1 (nth (- here 2) env))
+          (x2 (nth here env)))
+      (when (= x1 x2)
+        (error "utilities::interp-aux: can't interpolate ~a in ~a." point env))
+      (get-interpd-y point 
+                     x1 
+                     (* scaler (nth (- here 1) env))
+                     x2
+                     (* scaler (nth (+ here 1) env))
+                     exp))))
 
 (defun get-interpd-y (point x1 y1 x2 y2 exp)
   "The arguments are the point we want interpolated,

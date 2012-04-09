@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:50:58 Mon Apr  9 2012 BST
+;;; $$ Last modified: 13:39:35 Mon Apr  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4858,14 +4858,18 @@ T
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun doctor-set-limits-env (env num-sequences)
+  ;; MDE Mon Apr  9 13:11:25 2012 
+  (unless (> num-sequences 1)
+    (error "slippery-chicken::doctor-set-limits-env: Can't apply set ~
+            limits envelopes ~%to a piece with only one sequence."))
   (let ((stretched (new-lastx env num-sequences)))
     ;; 14/8/07 first x always needs to be 1
     (setf (first stretched) 1)
     (loop for x in stretched by #'cddr and y in (cdr stretched) by #'cddr
        collect
        ;; convert notes or MIDI note numbers to degrees so that we can
-       ;; interpolate.  Note degrees are in cm::*scale* so this is not the
-       ;; same as MIDI notes. 
+       ;; interpolate.  Note degrees are in cm::*scale* so this is not the same
+       ;; as MIDI notes.
        x collect
        (if (numberp y)
            (midi-to-degree (floor y))

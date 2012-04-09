@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 12:53:26 Mon Apr  9 2012 BST
+;;; $$ Last modified: 13:16:39 Mon Apr  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2715,15 +2715,13 @@ data: (2 4)
                     ;;     ignore-rests  (is-rest scaled-event) (first result))
                  (when (and ignore-rests result (is-rest scaled-event))
                    (incf (compound-duration-in-tempo (first result))
-                         (print (duration-in-tempo scaled-event))))))
+                         (duration-in-tempo scaled-event)))))
          ;; 25/4/10: had to add this to make sure we get rests when we have a
          ;; bar of rests only (but is-rest-bar is nil...)
            finally (loop for r in (nreverse rests) do (push r result))))
     (setf result (nreverse result))
     (when (and (first result) (write-time-sig rsb))
       (set-midi-time-sig (first result) (get-time-sig rsb)))
-    ;; (print (first result))
-    (print result)
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

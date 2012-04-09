@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:02:34 Mon Apr  9 2012 BST
+;;; $$ Last modified: 12:50:58 Mon Apr  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2678,9 +2678,13 @@ T
                      (num-sequences nil)
                      ;; how many sections to play
                      (num-sections 1)
-                     ;; in contrast to other methods, rests are ignored
-                     ;; per default i.e. the sound files will play over the
-                     ;; duration of rests unless this is set to nil.
+                     ;; in contrast to other methods, rests are ignored per
+                     ;; default i.e. the sound files will play over the
+                     ;; duration of rests unless this is set to nil.  However,
+                     ;; this is only true on a bar-by-bar basis i.e. notes at
+                     ;; the end of one bar will not be continued over into a
+                     ;; rest in the next bar.  This implies that rests at the
+                     ;; start of a bar will not be turned into sounding notes.
                      (ignore-rests t)
                      ;; what time in seconds to start writing the events into
                      ;; the output file
@@ -2975,7 +2979,7 @@ T
              (let ((rss (get-data-from-palette
                          (flatten (list section player-name))
                          (rthm-seq-map sc)
-                         nil))) ; no warning
+                         nil)))         ; no warning
                ;; this code will only work when we're processing 1 section
                (setf rthm-seqs 
                      (when rss
@@ -3028,6 +3032,10 @@ T
                                  1.0))
                    (when (zerop srt)
                      (error "slippery-chicken::clm-play: srt=0!"))
+                     ;; MDE Mon Apr  9 12:31:07 2012
+                     (unless (duration snd)
+                       (error "~a~%slippery-chicken::clm-play: ~
+                               sound duration is NIL!" snd))
                    ;; given the srt, what's the longest output dur
                    ;; this sound can make?  
                    (setf available-dur (/ (duration snd) srt)
@@ -3112,12 +3120,12 @@ T
                                  ;; could be two of any number;
                                  ;; see samp5.lsp for details.
                                  (nth (random 7) '(15 25 35 45 55
-                                                          65 75))
-                                        :rev-amt rev-amt
-                                        :printing print-secs))
+                                                   65 75))
+                                 :rev-amt rev-amt
+                                 :printing print-secs))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                          (incf event-count-player)
-                          (incf event-count))))))
+                   (incf event-count-player)
+                   (incf event-count))))))
     (unless (zerop total-events)
       (format t "~%~%~d/~d events skipped (~f%)"
               total-skipped total-events 

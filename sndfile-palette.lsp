@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 16:19:20 Wed Mar  7 2012 GMT
+;;; $$ Last modified: 12:29:51 Mon Apr  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -147,26 +147,28 @@
         (full-path "")
         (string (if (stringp sndfile)
                     sndfile
-                  (string-downcase (string sndfile)))))
+                    (string-downcase (string sndfile)))))
     (if (search "/" string)
         (when (probe-file string)
           (push string files))
-      (loop for path in (paths sfp) do
-            (if (pathname-type string)
-                (progn
-                  (setf full-path (format nil "~a~a"
-                                          path string))
-                  (when (probe-file full-path)
-                    (push full-path files)))
-              (loop for extension in (extensions sfp) do
-                    (setf full-path (format nil "~a~a.~a"
-                                            path string extension))
-                    (when (probe-file full-path)
-                      (push full-path files))))))
+        (loop for path in (paths sfp) do
+             (if (pathname-type string)
+                 (progn
+                   (setf full-path (format nil "~a~a"
+                                           path string))
+                   (when (probe-file full-path)
+                     (push full-path files)))
+                 (loop for extension in (extensions sfp) do
+                      (setf full-path (format nil "~a~a.~a"
+                                              path string extension))
+                      (when (probe-file full-path)
+                        (push full-path files))))))
     (case (length files)
-      (0 (warn "sndfile-palette::find-sndfile: ~
-                Cannot find sound file '~a'"
-               string))
+      ;; MDE Mon Apr  9 12:29:26 2012 -- changing from warn to error as this is
+      ;; a show-stopper if we call clm-play 
+      (0 (error "sndfile-palette::find-sndfile: ~
+                 Cannot find sound file '~a'"
+                string))
       (1 (first files))
       (t (warn "sndfile-palette::find-sndfile: Sound file '~a' exists in ~
                 ~%more than one folder or with more than one extension.  ~
@@ -232,7 +234,7 @@
       (make-instance 'sndfile-palette :id id :data sfp :paths paths
                      :extensions extensions :warn-not-found warn-not-found)
       (make-instance 'sndfile-palette :id id :data sfp :paths paths
-		     :warn-not-found warn-not-found)))
+                     :warn-not-found warn-not-found)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

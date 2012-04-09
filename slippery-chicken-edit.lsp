@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 15:23:03 Mon Apr  9 2012 BST
+;;; $$ Last modified: 19:10:47 Mon Apr  9 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -625,8 +625,8 @@ T
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  A post-generation editing method
 
-;;; NB The new note is the sounding pitch if a transposing instrument.
-;;; ****m* slippery-chicken-edit/change-note
+;;; NB The new pitch is the sounding pitch if a transposing instrument.
+;;; ****m* slippery-chicken-edit/change-pitch
 ;;; FUNCTION
 ;;; 
 ;;; 
@@ -644,9 +644,10 @@ T
 
 |#
 ;;; SYNOPSIS
-(defmethod change-note ((sc slippery-chicken) bar-num note-num player new-note)
+(defmethod change-pitch ((sc slippery-chicken) bar-num note-num player
+                         new-pitch)
 ;;; ****
-  (change-note (piece sc) bar-num note-num player new-note))
+  (change-pitch (piece sc) bar-num note-num player new-pitch))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  A post-generation editing method

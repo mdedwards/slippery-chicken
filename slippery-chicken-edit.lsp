@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 13:28:45 Sat Apr  7 2012 BST
+;;; $$ Last modified: 15:23:03 Mon Apr  9 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -2816,6 +2816,63 @@ T
                                         player &optional written)
 ;;; **** 
   (cautionary-accidental-aux sc bar-num note-num player nil written))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* slippery-chicken-edit/add-arrow-to-events
+;;; FUNCTION
+;;; Adds an arrow above the notes with a start and ending text.  Used most
+;;; often for transitions from one playing state to another.
+;;;
+;;; See also the add-arrow method in the event class.
+;;; 
+;;; ARGUMENTS
+;;; - a slippery-chicken object
+;;; - a text string for the beginning of the arrow
+;;; - a text string for the end of the arrow
+;;; - the starting event reference (list) of the form (bar-number event-number)
+;;;   where event numbers count from 1 and include rests and tied notes.
+;;; - the end event reference (list) of the form (bar-number event-number)
+;;; - the player this should be attached to
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether or not to print a warning when trying to 
+;;;   attach an arrow and accompanying marks to a rest. Default = NIL. 
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; DATE
+;;; April 9th 2012
+;;; 
+;;; EXAMPLE
+#|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :title "mini"
+        :instrument-palette +slippery-chicken-standard-instrument-palette+
+        :ensemble '(((pno (piano :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6)))
+                       (2 ((cs4 ds4 fs4 gs4 as4 cs5 ds5 fs5 gs5 as5))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q q))
+                                :pitch-seq-palette ((1 (2))))))
+        :rthm-seq-map '((1 ((pno (1 1 1 1 1 1))))))))
+  (add-arrow-to-events mini "here" "there" '(1 1) '(5 1) 'pno)
+  (write-lp-data-for-all mini))
+
+|#
+;;; SYNOPSIS
+(defmethod add-arrow-to-events ((sc slippery-chicken) start-text end-text
+                                event1-ref event2-ref player
+                                &optional warn-rest)
+  ;;         will signal an error if these events don't exist
+  (let ((e1 (get-event sc (first event1-ref) (second event1-ref) player))
+        (e2 (get-event sc (first event2-ref) (second event2-ref) player)))
+    (add-arrow e1 start-text end-text warn-rest)
+    (end-arrow e2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken-edit.lsp

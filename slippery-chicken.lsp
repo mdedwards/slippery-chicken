@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:39:35 Mon Apr  9 2012 BST
+;;; $$ Last modified: 15:26:00 Mon Apr  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3706,7 +3706,7 @@ T
 ;;; 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T
 ;;; 
 ;;; EXAMPLE
 #|

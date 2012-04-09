@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:29:08 Sat Apr  7 2012 BST
+;;; $$ Last modified: 12:02:34 Mon Apr  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2697,7 +2697,7 @@ T
                      (note-number 0)
                      ;; whether clm should play the output file or not
                      (play t)
-                     (amp-env '(0 1 60 1 100 0))
+                     (amp-env '(0 0 5 1 60 1 100 0))
                      ;; it's not a great idea to start some longer sounds
                      ;; always at the beginning, because of the repetition
                      ;; created and the fact that we never get to other

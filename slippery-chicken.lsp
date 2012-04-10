@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 08:31:39 Tue Apr 10 2012 BST
+;;; $$ Last modified: 18:56:22 Tue Apr 10 2012 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -392,7 +392,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((sc slippery-chicken) stream)
-  (format stream "~%SLIPPERY-CHICKEN: ~
+  (format stream "~%SLIPPERY-CHICKEN:~
                   ~%                      title: ~a ~
                   ~%                   composer: ~a ~
                   ~%                set-palette: ~a ~
@@ -405,9 +405,9 @@
                   ~%         instrument-palette: ~a ~
                   ~%                   ensemble: ~a ~
                   ~%      instruments-hierarchy: ~a ~
-                  ~%        fast-leap-threshold: ~a~ 
-                  ~%        avoid-melodic-octaves: ~a ~
-                  ~% pitch-seq-index-scaler-min: ~a "
+                  ~%        fast-leap-threshold: ~a ~
+                  ~%      avoid-melodic-octaves: ~a ~
+                  ~% pitch-seq-index-scaler-min: ~a"
           (title sc) (composer sc) (id (set-palette sc)) (id (set-map sc))
           (id (hint-pitches sc)) (id (rthm-seq-map sc))
           (id (rthm-seq-palette sc)) (id (tempo-map sc)) (tempo-curve sc)
@@ -2585,6 +2585,9 @@ T
 ;;; N.B. clm's nrev instrument will have to be loaded before calling
 ;;; this method.  
 
+;;; This method doesn't use the same events generated for the score, rather, it
+;;; generates its own sequence of events and pitches.
+
 ;;; ****m* slippery-chicken/clm-play
 ;;; FUNCTION
 
@@ -2722,9 +2725,13 @@ T
                      (src-width 20)
                      ;; we can scale the src values by the following
                      (src-scaler 1.0)
-                     ;; if this is a number or note symbol, then it will
-                     ;; be used as a reference pitch instead of that
-                     ;; stored in the sndfile.
+                     ;; If do-src is T, the transposition will be calculated so
+                     ;; that the given perceived frequency of the sound file is
+                     ;; shifted to the pitch of the event. But if do-src is a
+                     ;; number or pitch symbol, then that frequency will be
+                     ;; matched instead.  When converted to a sample rate
+                     ;; conversion factor, this is multiplied by the
+                     ;; src-scaler.
                      (do-src t)
                      ;; the reverberation amount in nrev: 0.1 is a lot.
                      (rev-amt 0.0)
@@ -2792,7 +2799,7 @@ T
   ;; stage rather than rejecting them later (otherwise play-chance-env will
   ;; range over the full event list instead of those below max-start-time)
   (let* ((events (get-events-with-src sc section players 
-                                      ;; these have 0 duration so must ignore
+                                      ;; these have 0 duration so we must ignore
                                       ;; them for now 
                                       :ignore-grace-notes t
                                       :time-scaler time-scaler
@@ -3028,19 +3035,27 @@ T
                                              event-count-player 
                                              this-play-chance-env 
                                              :exp play-chance-env-exp))
+                         ;; MDE Tue Apr 10 13:10:37 2012 -- see note to do-src
+                         ;; keyword above. 
                          srt (if do-src
                                  (* src-scaler
                                     (src-for-sample-freq 
                                      (if srt-freq
                                          srt-freq
                                          (frequency snd))
+                                     ;; MDE Tue Apr 10 13:21:20 2012 -- this
+                                     ;; would of course fail if the event had a
+                                     ;; chord, but as get-events-with-src-aux
+                                     ;; sets this slot always to be a single
+                                     ;; pitch, we're safe.
                                      (pitch-or-chord event))) 
                                  1.0))
-                   (when (zerop srt)
-                     (error "slippery-chicken::clm-play: srt=0!"))
-                     ;; MDE Mon Apr  9 12:31:07 2012
-                     (unless (duration snd)
-                       (error "~a~%slippery-chicken::clm-play: ~
+                   (when (<= srt 0.0)
+                     (error "slippery-chicken::clm-play: illegal sample ~
+                             rate conversion: ~a" srt))
+                   ;; MDE Mon Apr  9 12:31:07 2012
+                   (unless (duration snd)
+                     (error "~a~%slippery-chicken::clm-play: ~
                                sound duration is NIL!" snd))
                    ;; given the srt, what's the longest output dur
                    ;; this sound can make?  
@@ -3314,7 +3329,7 @@ T
                    (1- from-sequence)
                    (1- (+ from-sequence num-sequences)))))
              (loop for ref in chord-refs collect
-                   (data (get-data ref (set-palette sc))))))))
+                  (data (get-data ref (set-palette sc))))))))
     (when chord-accessor
       (setf chds (loop for i in chds collect (nth chord-accessor i))))
     (unless (= num-sequences (length chds))

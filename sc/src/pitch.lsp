@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 08:12:22 Tue Apr 10 2012 BST
+;;; $$ Last modified: 12:56:58 Tue Apr 10 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1902,7 +1902,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
 
 ;;; We want to transpose a sample so that it's frequency is that of the
 ;;; <pitch>.  The sample's main frequency is <freq>, return the necesary src.
-;;; freq can either be a note e.g. c4 or a frequency in hertz
+;;; freq can either be a note e.g. c4 or a frequency in hertz.
 
 (defmethod src-for-sample-freq (freq (p pitch))
   (unless (numberp freq)

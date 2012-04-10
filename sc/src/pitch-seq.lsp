@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 08:34:41 Tue Apr 10 2012 BST
+;;; $$ Last modified: 08:41:05 Tue Apr 10 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -345,9 +345,11 @@
                ;; get the notes we've already assigned to other instruments ...
                ;; MDE Tue Apr 10 07:57:45 2012 -- remember that that the set
                ;; stores all notes used by each instrument for the whole piece
-               ;; using the 'global' sequence number, so there can be no
-               ;; question of the notes used in a previous sequence influencing
-               ;; the choice of notes here.
+               ;; using the 'global' sequence number (i.e. the used-notes slot
+               ;; is a RAL with the top-most IDs being the seq-num, the
+               ;; instrument names and their used notes being the next level
+               ;; down), so there can be no question of the notes used in a
+               ;; previous sequence influencing the choice of notes here.
                (used (loop for p in (get-used-notes set seq-num) 
                         when (pitch-member p set-pitches-rm)
                         collect p))

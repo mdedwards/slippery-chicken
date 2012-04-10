@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 20:21:35 Thu Apr  5 2012 BST
+;;; $$ Last modified: 08:34:41 Tue Apr 10 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -300,8 +300,6 @@
 ;;;    possible; in that case a warning will be issued but the octave will be
 ;;;    used.
 ;;;
-;;;    
-;;;
 ;;; ARGUMENTS 
 ;;; - A pitch-seq object.
 ;;; - An instrument object.
@@ -326,14 +324,9 @@
 ;;; SYNOPSIS
 (defmethod get-notes ((ps pitch-seq) instrument set hint-pitch limit-high
                       limit-low seq-num last-note-previous-seq
-                      pitch-seq-index-scaler-min)
+                      pitch-seq-index-scaler-min avoid-melodic-octaves)
 ;;; ****
   (declare (ignore hint-pitch))
-  ;; (print ps)
-  ;; (print instrument)
-  ;; (print set)
-  ;;   (print hint-pitch)
-  ;; (print pitch-seq-index-scaler-min)
   (when (data ps) ;; don't do anything for empty seqs!
     (if (or (not instrument) (not set))
         (setf (notes ps) 
@@ -350,6 +343,11 @@
                                                      :lower limit-low
                                                      :do-related-sets t))
                ;; get the notes we've already assigned to other instruments ...
+               ;; MDE Tue Apr 10 07:57:45 2012 -- remember that that the set
+               ;; stores all notes used by each instrument for the whole piece
+               ;; using the 'global' sequence number, so there can be no
+               ;; question of the notes used in a previous sequence influencing
+               ;; the choice of notes here.
                (used (loop for p in (get-used-notes set seq-num) 
                         when (pitch-member p set-pitches-rm)
                         collect p))
@@ -401,6 +399,7 @@
                      (if (> need num-set-pitches)
                          (/ num-set-pitches need)
                          1))
+               ;; (format t "~%~a ~a" seq-num scaler)
              ;; add pitches from those used already to try and get more
              ;; available to fit our pitch curve
                (if (or (not used-cp)
@@ -424,6 +423,7 @@
                    (when limit-low (id limit-low)) (pitch-symbols set)
                    (get-ids-from-pitch-list set-pitches-rm-used)
                    (data ps) set))
+          ;; (print-simple-pitch-list set-pitches-rm-used)
           (setf (notes ps)
                 (loop 
                    ;; remember: the pitch curve is stored in the data slot but
@@ -480,7 +480,8 @@
                    ;; 16/4/07: avoid melodic 8ves where reasonable,
                    ;; i.e. doesn't recheck to see if we've recreated another
                    ;; octave if the available pitches are full of octaves
-                   (when (and last
+                   (when (and avoid-melodic-octaves
+                              last
                               (pitch-p last)
                               (pitch-p note)
                               (is-octave note last))

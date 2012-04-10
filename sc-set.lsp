@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 15:35:23 Fri Apr  6 2012 BST
+;;; $$ Last modified: 07:53:41 Tue Apr 10 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -75,7 +75,7 @@
    ;; which pitches have already been selected for other
    ;; instruments. sc-make-sequenz calls get-notes for the instrument with a
    ;; given set, and also knows the 'global sequence number' (i.e. irrespective
-   ;; or sections and subsections, the current sequence count), so we can store
+   ;; of sections and subsections, the current sequence count), so we can store
    ;; the notes used against that instrument for the current count in a
    ;; recursive-assoc-list.
    (used-notes :accessor used-notes :initform nil)))
@@ -134,13 +134,13 @@
   (let* ((uns (used-notes s))
          (ups (when uns (get-data (if instrument 
                                       (list seq-num instrument)
-                                    seq-num)
+                                      seq-num)
                                   uns nil))))
     (when ups
       (if instrument
           (data ups)
-        (remove-duplicates 
-         (loop for ins in (data (data ups)) appending (data ins)))))))
+          (remove-duplicates 
+           (loop for ins in (data (data ups)) appending (data ins)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

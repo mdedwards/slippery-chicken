@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:26:00 Mon Apr  9 2012 BST
+;;; $$ Last modified: 08:31:39 Tue Apr 10 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -166,6 +166,10 @@
                       :initarg :rehearsal-letters :initform nil)
    ;; 1/4/06: this is the number of sections __and__ subsections
    (num-sequences :accessor num-sequences :type integer :initform -1)
+   ;; MDE Tue Apr 10 08:27:24 2012 -- the get-notes function would avoid
+   ;; melodic octaves by default but make this a slot option now 
+   (avoid-melodic-octaves :accessor avoid-melodic-octaves :type boolean
+                          :initarg :avoid-melodic-octaves :initform t)
    ;; MDE Mon Mar 26 13:10:15 2012 -- This one defines the lowest scaler we'll
    ;; accept before adding notes from those used i.e. if our pitch-seq needs 6
    ;; notes and only 3 are available, there would be note repetition but as
@@ -401,14 +405,15 @@
                   ~%         instrument-palette: ~a ~
                   ~%                   ensemble: ~a ~
                   ~%      instruments-hierarchy: ~a ~
-                  ~%        fast-leap-threshold: ~a ~
+                  ~%        fast-leap-threshold: ~a~ 
+                  ~%        avoid-melodic-octaves: ~a ~
                   ~% pitch-seq-index-scaler-min: ~a "
           (title sc) (composer sc) (id (set-palette sc)) (id (set-map sc))
           (id (hint-pitches sc)) (id (rthm-seq-map sc))
           (id (rthm-seq-palette sc)) (id (tempo-map sc)) (tempo-curve sc)
           (id (instrument-palette sc)) (id (ensemble sc))
           (instruments-hierarchy sc) (fast-leap-threshold sc) 
-          (pitch-seq-index-scaler-min sc))
+          (avoid-melodic-octaves sc) (pitch-seq-index-scaler-min sc))
   (statistics sc stream))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -478,6 +483,7 @@
           (slot-value no 'set-limits-low) (my-copy-list (set-limits-low sc))
           (slot-value no 'rehearsal-letters) 
           (my-copy-list (rehearsal-letters sc))
+          (slot-value no 'avoid-melodic-octaves) (avoid-melodic-octaves sc) 
           (slot-value no 'pitch-seq-index-scaler-min)
           (pitch-seq-index-scaler-min sc)
           (slot-value no 'num-sequences) (num-sequences sc))
@@ -4198,6 +4204,7 @@ T
                               rehearsal-letters (fast-leap-threshold 0.125)
                               instruments-hierarchy 
                               (title "slippery-chicken-piece") composer
+                              (avoid-melodic-octaves t)
                               (pitch-seq-index-scaler-min 0.5) (warn-ties t))
 ;;; ****
   ;; we make the given name a global!!!
@@ -4228,6 +4235,7 @@ T
                       :set-limits-high set-limits-high
                       :fast-leap-threshold fast-leap-threshold
                       :pitch-seq-index-scaler-min pitch-seq-index-scaler-min
+                      :avoid-melodic-octaves avoid-melodic-octaves
                       :warn-ties warn-ties)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4958,7 +4966,10 @@ T
                        ;; MDE Mon Mar 26 13:21:29 2012
                        (if slippery-chicken
                            (pitch-seq-index-scaler-min slippery-chicken)
-                           0.5))))
+                           0.5)
+                       (if slippery-chicken
+                           (avoid-melodic-octaves slippery-chicken)
+                           t))))
          (notes (my-copy-list notes-from-pitch-seq))
          (iwbns (when slippery-chicken 
                   (member player 

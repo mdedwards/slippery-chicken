@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 17:00:56 Sat Mar 10 2012 GMT
+;;; $$ Last modified: 08:12:22 Tue Apr 10 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2553,6 +2553,37 @@ data: EF3
 
 (defun get-ids-from-pitch-list (pitch-list)
   (loop for p in pitch-list collect (id p)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Apr 10 08:07:57 2012 
+;;; ****f* pitch/print-simple-pitch-list
+;;; FUNCTION
+;;; Print the data symbols of a list of pitch objects.
+;;; 
+;;; DATE
+;;; April 10th 2012
+;;; 
+;;; ARGUMENTS
+;;; - A simple list of pitch objects.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - The stream to print to (e.g. an open file). Default: the Lisp Terminal
+;;;   (REPL).
+;;; 
+;;; RETURN VALUE
+;;; The list of pitch data symbols.
+;;; 
+;;; EXAMPLE
+#|
+(print-simple-pitch-list (init-pitch-list '(c4 d4 e4)))
+=>
+(C4 D4 E4) 
+(C4 D4 E4)
+|#
+;;; SYNOPSIS
+(defun print-simple-pitch-list (pitch-list &optional stream)
+;;; ****
+  (print (get-ids-from-pitch-list pitch-list) stream))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

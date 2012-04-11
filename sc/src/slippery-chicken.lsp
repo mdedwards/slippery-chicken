@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:56:22 Tue Apr 10 2012 CEST
+;;; $$ Last modified: 12:12:19 Wed Apr 11 2012 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -694,8 +694,11 @@
 ;;; ****
   (when respell-notes
     (respell-notes sc respell-notes))
-  (unless players 
-    (setf players (players (ensemble sc))))
+  ;; MDE Wed Apr 11 12:09:13 2012
+  (setf players
+        (cond ((listp players) players)
+              ((and players (symbolp players)) (list players))
+              (t (players (ensemble sc)))))
   (when rehearsal-letters-all-players 
     (set-rehearsal-letters sc players))
   (when tempi-all-players 

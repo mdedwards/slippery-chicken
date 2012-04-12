@@ -320,7 +320,13 @@
        :clefs (bass tenor treble) :starting-clef bass
        :chords nil 
        :microtones t 
-       :midi-program 44)))))
+       :midi-program 44))
+     ;; SAR Thu Apr 12 18:19:21 BST 2012: Added "computer" part for "silent"
+     ;; parts in case the user would like to create rhythmically independent
+     ;; computer parts.
+     (computer
+      (:staff-name "computer" :staff-short-name "comp"
+       :starting-clef percussion)))))
        ;;; ****
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

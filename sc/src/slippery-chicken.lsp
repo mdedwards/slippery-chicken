@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:12:19 Wed Apr 11 2012 CEST
+;;; $$ Last modified: 21:30:03 Sat Apr 14 2012 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2585,28 +2585,36 @@ T
                         force-velocity)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; N.B. clm's nrev instrument will have to be loaded before calling
-;;; this method.  
-
-;;; This method doesn't use the same events generated for the score, rather, it
-;;; generates its own sequence of events and pitches.
-
 ;;; ****m* slippery-chicken/clm-play
 ;;; FUNCTION
-
 ;;; Using the sound files (samples) defined for the given reference in the
 ;;; sndfile-palette slot of slippery-chicken, write a soundfile using the pitch
 ;;; and timing information of the slippery-chicken score.  
 ;;;
 ;;; By grouping sound files in the sndfile-palette slot we can generate a CLM
-;;; sound file of our piece in various 'flavours': perhaps using exclusively
-;;; string sounds, or percussion sounds, or a variety of sounds.  See below for
-;;; an example of a sndfile-palette.
+;;; sound file of our piece in various 'flavours': perhaps, for example, using
+;;; exclusively string sounds, or percussion sounds, or a variety of sounds, as
+;;; desired.  See below for an example of a sndfile-palette.
+;;; 
+;;; This method doesn't use the same events generated for the score, rather, it
+;;; generates its own sequence of events and pitches.  Instead of using the
+;;; pitches of the score--which might produce extreme sound file transpositions
+;;; both upwards and downwards--it accesses each note of the set (assigned by
+;;; the set-map to each rthm-seq) from the bottom up, one voice after another.
+;;; If do-src is T, transposition will then be calculated so that the frequency
+;;; of the sound file, if given, will be shifted to the pitch of the set note.
+;;; This transposition process itself might still yield extreme transpositions,
+;;; hence the note-number keyword can be changed to specify an index into the
+;;; set notes for the lowest voice--though if the number of voices plus this
+;;; index would then exceed the number of notes in the set, then we would wrap
+;;; around to the lowest note of the set.
 ;;;
 ;;; See also sndfile-palette.lsp's make-sfp-from-wavelab-marker-file for a way
-;;; of automatically creating this.
+;;; of automatically creating a sndfile-palette from markers in a Steinberg
+;;; Wavelab file.
 ;;;
-;;; N.B. Event amplitudes are as yet unused in this method.
+;;; N.B. clm's nrev instrument will have to be loaded before calling this
+;;; method.  Event amplitudes are as yet unused here.
 ;;; 
 ;;; ARGUMENTS
 ;;; - The slippery chicken object
@@ -2688,7 +2696,7 @@ T
                      ;; how many sequences to play; specifying nil will simply
                      ;; get them all. 
                      (num-sequences nil)
-                     ;; how many sections to play
+                     ;; how many sections to play. If nil, do them all.
                      (num-sections 1)
                      ;; in contrast to other methods, rests are ignored per
                      ;; default i.e. the sound files will play over the
@@ -2712,7 +2720,7 @@ T
                      ;; player
                      (note-number 0)
                      ;; whether clm should play the output file or not
-                     (play t)
+                     (play nil)
                      (amp-env '(0 0 5 1 60 1 100 0))
                      ;; it's not a great idea to start some longer sounds
                      ;; always at the beginning, because of the repetition
@@ -3125,7 +3133,6 @@ T
                              (amplitude snd) srt 
                              (frequency (pitch-or-chord event))
                              (frequency snd)))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                    (unless (or simulate skip-this-event (not happy)
                                (zerop duration))
                      (clm::samp5 (path snd)
@@ -3137,17 +3144,13 @@ T
                                  :amp (amplitude snd)
                                  :amp-env amp-env
                                  :degree
-                                 ;; 2/8/05: put mono and stereo
-                                 ;; files in random space
-                                 ;; NB A sound is always put
-                                 ;; between two speakers but it
-                                 ;; could be two of any number;
-                                 ;; see samp5.lsp for details.
-                                 (nth (random 7) '(15 25 35 45 55
-                                                   65 75))
+                                 ;; 2/8/05: place both mono and stereo files in
+                                 ;; space randomly NB A sound is always put
+                                 ;; between two speakers but it could be two of
+                                 ;; any number; see samp5.lsp for details.
+                                 (nth (random 7) '(15 25 35 45 55 65 75))
                                  :rev-amt rev-amt
                                  :printing print-secs))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                    (incf event-count-player)
                    (incf event-count))))))
     (unless (zerop total-events)
@@ -3187,9 +3190,8 @@ T
                        sc section voices 
                        :ignore-grace-notes ignore-grace-notes 
                        :time-scaler time-scaler
-                       ;; of course the next two shouldn't be
-                       ;; necessary when we're doing more than one
-                       ;; section ...
+                       ;; of course the next two shouldn't be necessary when
+                       ;; we're doing more than one section ...
                        :from-sequence from-sequence
                        :num-sequences num-sequences
                        :get-time-sig-changes get-time-sig-changes
@@ -3301,16 +3303,16 @@ T
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod get-events-with-src-aux 
-  ((sc slippery-chicken) section voices
-   &key 
-   (ignore-grace-notes nil)
-   (time-scaler 1.0)
-   (from-sequence 1)
-   (num-sequences nil)
-   (ignore-rests nil)
-   (chords nil)
-   (chord-accessor nil)
-   (note-number 0));; 0-based!!!
+    ((sc slippery-chicken) section voices
+     &key 
+     (ignore-grace-notes nil)
+     (time-scaler 1.0)
+     (from-sequence 1)
+     (num-sequences nil)
+     (ignore-rests nil)
+     (chords nil)
+     (chord-accessor nil)
+     (note-number 0)) ;; 0-based!!!
   (unless num-sequences
     (setf num-sequences (num-seqs sc section)))
   (let ((timings (get-events-start-time-duration-aux
@@ -3322,17 +3324,18 @@ T
                   :ignore-rests ignore-rests))
         (note-numbers (if (listp note-number) 
                           note-number 
-                        (loop for i from 0 repeat (length voices)
-                              collect (+ note-number i))))
+                          (loop for i from 0 repeat (length voices)
+                             collect (+ note-number i))))
         (chds 
-         (if chords chords
-           (let ((chord-refs 
-                  (subseq
-                   (data (get-data section (set-map sc)))
-                   (1- from-sequence)
-                   (1- (+ from-sequence num-sequences)))))
-             (loop for ref in chord-refs collect
-                  (data (get-data ref (set-palette sc))))))))
+         (if chords 
+             chords
+             (let ((chord-refs 
+                    (subseq
+                     (data (get-data section (set-map sc)))
+                     (1- from-sequence)
+                     (1- (+ from-sequence num-sequences)))))
+               (loop for ref in chord-refs collect
+                    (data (get-data ref (set-palette sc))))))))
     (when chord-accessor
       (setf chds (loop for i in chds collect (nth chord-accessor i))))
     (unless (= num-sequences (length chds))
@@ -3343,28 +3346,32 @@ T
       (error "slippery-chicken::get-events-with-src: ~
               When :note-numbers is a list, ~
               then it must be of the same length as :voices"))
+    ;; MDE Wed Apr 11 12:36:13 2012 -- so by default we create pitch data for
+    ;; each voice that simply accesses the notes in the chord from the bottom
+    ;; up, one voice after another.
     (loop for voice in timings and n in note-numbers do
-          (loop for chord in chds 
-                for num-notes = (length chord)
-                for rs in voice 
-                do
-                (unless (simple-listp chord)
-                  (error "slippery-chicken::get-events-with-src: ~
-                          Each chord must be a simple list of notes. ~
-                          ~%Perhaps you forgot the set the :chord-accessor? ~
-                          ~%~a" chord))
-                (loop for event in rs 
-                      ;; just in case there's less notes in the chord than
-                      ;; there are voices... 
-                      for pitch = (nth (mod n num-notes) chord) do
-                      (unless pitch
-                        (error "slippery-chicken::get-events-with-src: ~%~
-                                Pitch is NIL!!!  Probably the reference ~
-                                given in :note-number is out of ~%range for ~
-                                the chosen chord.  ~%Current reference is ~
-                                ~a into the chord ~a"  
-                               n chord))
-                      (setf (pitch-or-chord event) (clone pitch)))))
+         (loop for chord in chds 
+            for num-notes = (length chord)
+            for rs in voice 
+            do
+            (unless (simple-listp chord)
+              (error "slippery-chicken::get-events-with-src: ~
+                      Each chord must be a simple list of notes. ~
+                      ~%Perhaps you forgot the set the :chord-accessor? ~
+                      ~%~a" chord))
+            (loop for event in rs 
+               ;; just in case there's less notes in the chord than
+               ;; there are voices... 
+               for pitch = (nth (mod n num-notes) chord)
+               do
+               (unless pitch
+                 (error "slippery-chicken::get-events-with-src: ~%~
+                         Pitch is NIL!!!  Probably the reference ~
+                         given in :note-number is out of ~%range for ~
+                         the chosen chord.  ~%Current reference is ~
+                         ~a into the chord ~a"  
+                        n chord))
+               (setf (pitch-or-chord event) (clone pitch)))))
     timings))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

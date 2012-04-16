@@ -67,22 +67,32 @@
               :initform nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SAR Mon Apr 16 16:52:53 BST 2012
 
 ;;; ****m* chord/delete-marks
 ;;; FUNCTION
-;;; 
+;;; Delete all marks from the MARKS slot of the given chord object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A chord object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Make a chord object, add two marks, and print the MARKS slot to see them;
+;;; apply delete-marks and print the MARKS slot again to see the change
+(let ((chrd (make-chord '(cs4 e4 fs4 af4 bf4))))
+  (add-mark chrd 'fff)
+  (add-mark chrd 'pizz)
+  (print (marks chrd))
+  (delete-marks chrd)
+  (print (marks chrd)))
+
+=>
+(PIZZ FFF) 
+NIL
 
 |#
 ;;; SYNOPSIS
@@ -218,6 +228,7 @@
 ;;; 
 ;;; EXAMPLE
 #|
+
 (let ((chrd (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
                         :midi-channel 11
                         :microtones-midi-channel 12)))
@@ -235,23 +246,39 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+cm-2
+;;; SAR Mon Apr 16 15:03:15 BST 2012: Added robodoc entry
 ;;; ****m* chord/output-midi-note
 ;;; FUNCTION
-;;; 
+;;; Generate the MIDI-related data for each pitch in a given chord object. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A chord object.
+;;; - A number that is the start time in seconds of the given chord within the
+;;;   output MIDI file.
+;;; - A decimal number between 0.0 and 1.0 that is the amplitude of the given
+;;;   chord in the output MIDI file.
+;;; - A number that is the duration in seconds of the given chord in the output
+;;;   MIDI file.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; The corresponding data in list form.
 ;;; 
 ;;; EXAMPLE
-#|
 
+#|
+;; Generate the MIDI-related data required for a 5-note chord that starts 100
+;; seconds into the output MIDI file, with an amplitude of 0.5 and a duration
+;; of 13.0 seconds.
+(let ((chrd (make-chord '(cs4 e4 fs4 af4 bf4))))
+  (output-midi-note chrd 100.0 0.5 13.0))
+
+=> (#i(midi time 100.0 keynum 61 duration 13.0 amplitude 0.5 channel -1)
+    #i(midi time 100.0 keynum 64 duration 13.0 amplitude 0.5 channel -1)
+    #i(midi time 100.0 keynum 66 duration 13.0 amplitude 0.5 channel -1)
+    #i(midi time 100.0 keynum 68 duration 13.0 amplitude 0.5 channel -1)
+    #i(midi time 100.0 keynum 70 duration 13.0 amplitude 0.5 channel -1))
 |#
+;;;
 ;;; SYNOPSIS
 (defmethod output-midi-note ((c chord) time amplitude duration)
 ;;; ****
@@ -279,7 +306,6 @@
 ;;; 
 ;;; EXAMPLE
 #|
-
 (let ((chrd (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
                         :midi-channel 11
                         :microtones-midi-channel 12)))
@@ -310,24 +336,33 @@ data: GQS4
   (get-nth (1- ref) c))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SAR Mon Apr 16 16:42:48 BST 2012: Added robodoc entry
 
 ;;; ****m* chord/add-mark
 ;;; FUNCTION
-;;; add-mark:
-;;;
-;;; 
+;;; Add the specified mark to the MARKS slot of the given chord object.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A chord object.
+;;; - A mark.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether to print a warning when attempting to add a
+;;;   mark to a rest.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns the full contents of the MARKS slot of the given chord object
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+#|
+;;; Returns the complete contents of the MARKS slot
+(let ((chrd (make-chord '(cs4 e4 fs4 af4 bf4))))
+  (add-mark chrd 'fff)
+  (add-mark chrd 'pizz))
+
+=> (PIZZ FFF)
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod add-mark ((c chord) mark &optional warn-rest)
@@ -352,6 +387,7 @@ data: GQS4
 ;;; 
 ;;; EXAMPLE
 #|
+
 (let ((chrd (make-chord '(c4 e4 gqs4 bqf4 d5 f5)
                         :midi-channel 11
                         :microtones-midi-channel 12)))
@@ -359,6 +395,7 @@ data: GQS4
 
 => (C4 E4 GQS4 BQF4 D5 F5)
 |#
+
 ;;; 
 ;;; 
 ;;; SYNOPSIS
@@ -368,21 +405,37 @@ data: GQS4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Apr 16 14:48:42 BST 2012: Added robodoc entry
+;;; SAR Mon Apr 16 14:49:16 BST 2012: MDE's original comment deleted as it was
+;;; taken over into the entry nearly verbatim.
+
 ;;; ****m* chord/no-accidental
 ;;; FUNCTION
-;;; don't show any accidentals when writing a score; none in parentheses either
+;;; Set the SHOW-ACCIDENTAL slot of all pitch objects within a given chord
+;;; object to NIL. This results in no accidentals for the given chord being printed
+;;; when written to a score, and also excludes the writing of any accidentals
+;;; for that chord in parentheses. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A chord object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Always returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Make a chord, print the SHOW-ACCIDENTAL slots of the pitch objects it
+;;; contains; then call the method and print the same slots again to see the
+;;; change.
+
+(let ((chrd (make-chord '(cs4 e4 fs4 af4 bf4))))
+  (print (loop for p in (data chrd) collect (show-accidental p)))
+  (no-accidental chrd)
+  (print (loop for p in (data chrd) collect (show-accidental p))))
+
+=> 
+(T T T T T) 
+(NIL NIL NIL NIL NIL)
 
 |#
 ;;; SYNOPSIS
@@ -588,22 +641,57 @@ data: F5
 ;;; The ignore field is there because of the transpose method in tl-set
 ;;; Returns a clone of the current chord rather than replacing data
 
+;;; SAR Mon Apr 16 14:39:14 BST 2012: Added robodoc entry
+
 ;;; ****m* chord/transpose
 ;;; FUNCTION
-;;;
-;;; 
+;;; Transpose the pitches of a given chord object by a specified number of
+;;; semitones. The specified number can be positive or negative, and may
+;;; contain a decimal segment for microtonal transposition. If passed a decimal
+;;; number, the resulting note-names will be scaled to the nearest degree of
+;;; the current tuning. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A chord object.  
+;;; - A positive or negative integer or decimal number indicating the number of
+;;;   semitones by which the pitches of the given chord object are to be
+;;;   transposed.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns a chord object.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+#|
+;; Returns a chord obejct 
+(let ((chrd (make-chord '(c4 e4 g4))))
+  (transpose chrd 3))
+
+=>
+CHORD: auto-sort: T, marks: NIL, micro-tone: NIL
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (
+[...]
+)
+
+;; Accepts positive and negative integers and decimal numbers
+(let ((chrd (make-chord '(c4 e4 g4))))
+  (pitch-list-to-symbols (data (transpose chrd 3))))
+
+=> (EF4 G4 BF4)
+
+(let ((chrd (make-chord '(c4 e4 g4))))
+  (pitch-list-to-symbols (data (transpose chrd -3))))
+
+=> (A3 CS4 E4)
+
+(let ((chrd (make-chord '(c4 e4 g4))))
+  (pitch-list-to-symbols (data (transpose chrd -3.17))))
+
+=> (AQF3 CQS4 EQF4)
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod transpose ((c chord) semitones &key ignore1 ignore2 ignore3)
@@ -742,6 +830,7 @@ data: F5
 ;;; 
 ;;; EXAMPLE
 #|
+
 ;; Returns the tail of pitch objects contained starting with the tested pitch
 (let ((chrd (make-chord '(c4 e4 gqs4 a4 d5 f5 bqf5)
                         :midi-channel 11
@@ -781,6 +870,7 @@ data: F5
 => (EF4 A4 D5 F5)
 
 ;; The optional <octaves-are-true> argument is NIL by default
+
 (let ((chrd (make-chord '(c4 ef4 a4 d5 ef5 f5))))
   (pitch-list-to-symbols (chord-member chrd (make-pitch 'c5))))
 
@@ -795,6 +885,7 @@ data: F5
 => (C4 EF4 A4 D5 EF5 F5)
 
 |#
+
 ;;; 
 ;;; SYNOPSIS
 (defmethod chord-member ((c chord) (p pitch) 
@@ -806,24 +897,69 @@ data: F5
            (pitch-member p (data c) enharmonics-are-equal #'is-octave))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; SAR Mon Apr 16 14:08:02 BST 2012: Added robodoc entry
 ;;; ****m* chord/common-notes
 ;;; FUNCTION
-;;;
-;;; 
+;;; Return the integer number of pitches common to two chord objects.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A first chord object.
+;;; - A second chord object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether enharmonically equivalent pitches are to be
+;;;   considered the same pitch. T = enharmonically equivalent pitches are
+;;;   considered the same pitch. Default = T.
+;;; - T or NIL to indicate whether the same pitch class in different octaves is
+;;;   to be considered the same pitch. T = consider the same pitch class from
+;;;   octaves to be the same pitch. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
-;;; integer: the number of notes common to the two chords.
+;;; Returns an integer that is the number of pitches common to the two chords
+;;; objects. 
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
-;;; 
+#|
+;; The following two chord objects have 3 pitches in common
+(let ((chrd-1 (make-chord '(c4 e4 g4 b4 d5 f5)))
+      (chrd-2 (make-chord '(d3 f3 a3 c4 e4 g4))))
+  (common-notes chrd-1 chrd-2))
+
+=> 3
+
+;; By default, enharmonically equivalent pitches are considered to be the same
+;; pitch 
+(let ((chrd-1 (make-chord '(c4 e4 g4 b4 d5 f5)))
+      (chrd-2 (make-chord '(d3 f3 a3 c4 ff4 g4))))
+  (common-notes chrd-1 chrd-2))
+
+=> 3
+
+;; Setting the first optional argument to NIL causes enharmonically equivalent
+;; pitches to be considered separate pitches
+(let ((chrd-1 (make-chord '(c4 e4 g4 b4 d5 f5)))
+      (chrd-2 (make-chord '(d3 f3 a3 c4 ff4 g4))))
+  (common-notes chrd-1 chrd-2 nil))
+
+=> 2
+
+;; By default, the same pitch class in different octaves is considered to be a
+;; separate pitch
+(let ((chrd-1 (make-chord '(c4 e4 g4 b4 d5 f5)))
+      (chrd-2 (make-chord '(d3 f3 a3 ff4 g4 c5))))
+  (common-notes chrd-1 chrd-2 t))
+
+=> 2
+
+;; Setting the second optional argument to T causes all pitches of the same
+;; pitch class to be considered equal regardless of their octave
+(let ((chrd-1 (make-chord '(c4 e4 g4 b4 d5 f5)))
+      (chrd-2 (make-chord '(d3 f3 a3 ff4 g4 c5))))
+  (common-notes chrd-1 chrd-2 t t))
+
+=> 5
+
+|#
 ;;; SYNOPSIS
 (defmethod common-notes ((c1 chord) (c2 chord)
                          &optional (enharmonics-are-equal t)
@@ -884,14 +1020,14 @@ data: F5
 ;;; We only respell notes going up i.e. we don't go back down once we've found
 ;;; something we don't like; rather we reattempt the whole spelling business
 ;;; with the enharmonic of the lowest note and see which ends up with the least
-;;; accidentals.  
+;;; accidentals.
 ;;; 
 ;;; good test: (respell-chord (make-chord '(a3 ds4 f4 fs5 c6))) so we get gf5
 
 ;;; ****m* chord/respell-chord
 ;;; FUNCTION
-;;;
-;;; 
+
+;;; Respell the pitches of a given chord object to 
 ;;; 
 ;;; ARGUMENTS 
 ;;; 
@@ -1054,46 +1190,97 @@ data: F5
       (rm-enharmonics c))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; ****m* chord/has-notes
-;;; FUNCTION
+;;; SAR Mon Apr 16 14:16:13 BST 2012: Added robodoc entry
+;;; MDE: original comment:
 ;;; checks whether there are notes in this chord or not (make-chord
 ;;; nil) is a valid function call and creates a chord object with no notes.
+;;; ****m* chord/has-notes
+;;; DATE 
+;;; 16-Aug-2010
+;;; 
+;;; FUNCTION
+;;; Tests whether a given chord object contains at least one pitch
+;;; object. 
+;;;
+;;; (make-chord nil) is a valid function call and creates a chord object with
+;;; no notes. 
 ;;; 
 ;;; ARGUMENTS 
-;;; - the chord object
+;;; - A chord object. 
 ;;; 
 ;;; RETURN VALUE  
-;;; t if it has notes, nil if it doesn't
+;;; Returns T if the given chord object contains at least one pitch object,
+;;; otherwise returns NIL.
 ;;;
-;;; DATE 16.8.10
-;;; 
+;;; EXAMPLE
+#|
+;; Returns T if the given chord object contains at least one pitch object
+(let ((chrd (make-chord '(c4))))
+  (has-notes chrd))
+
+=> T
+
+(let ((chrd (make-chord '(c4 e4 g4))))
+  (has-notes chrd))
+
+=> T
+
+;; Otherwise returns NIL
+(let ((chrd (make-chord nil)))
+  (has-notes chrd))
+
+=> NIL
+
+|#
 ;;; SYNOPSIS
 (defmethod has-notes ((c chord))
 ;;; ****
   (not (zerop (sclist-length c))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SAR Mon Apr 16 14:25:06 BST 2012: Added robodoc entry
 
-;;; like the pitch class method, to find out the difference in pitch between
-;;; two chords, usually the written and the sounding, to find transposition. 
-;;; NB this takes pitch bend into consideration
+;;; MDE original comment: like the pitch class method, to find out the
+;;; difference in pitch between two chords, usually the written and the
+;;; sounding, to find transposition. NB this takes pitch bend into
+;;; consideration
+
 ;;; ****m* chord/pitch-
 ;;; FUNCTION
+;;; Determine the difference between the lowest pitch of two chords. This
+;;; method can be used, for example, to compare the written and sounding
+;;; versions of a chord to determine transposition. 
 ;;;
-;;; 
+;;; If the lower chord is passed as the first argument, the method will return
+;;; a negative number.
+;;;
+;;; NB: This method takes pitch bend into consideration when calculating. 
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A first chord object.
+;;; - A second chord object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A positive or negative decimal number.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+#|
+;; The method measures the distance between the first (lowest) pitches of the
+;;; chord only.
+(let ((chrd-1 (make-chord '(c4 e4 g4)))
+      (chrd-2 (make-chord '(d4 e4 fs4 a4))))
+  (pitch- chrd-2 chrd-1))
+
+=> 2.0
+
+;;; Passing the lower chord as the first argument produces a negative result
+(let ((chrd-1 (make-chord '(c4 e4 g4)))
+      (chrd-2 (make-chord '(d4 e4 fs4 a4))))
+  (pitch- chrd-1 chrd-2))
+
+=> -2.0
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod pitch- ((c1 chord) (c2 chord))

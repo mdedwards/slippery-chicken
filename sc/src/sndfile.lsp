@@ -297,6 +297,8 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Apr 16 17:10:01 BST 2012: Added robodoc entry
+
 ;;; If path is a list, then it's come from a sndfile-palette.  The first in the
 ;;; list is the full path as found by the sndfile-palette and the second is the
 ;;; list given by the user with the data slots to be used.

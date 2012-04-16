@@ -141,21 +141,31 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Apr 16 18:29:55 BST 2012: Added robodoc entry
+
 ;;; ****m* sndfile/stereo
 ;;; FUNCTION
-;;; 
+;;; Test whether the CHANNELS slot of a given sndfile object is set to 2.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A sndfile object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if the CHANNELS slot is set to 2, otherwise returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method make-sndfile creates a sndfile object with the CHANNELS slot set
+;; to NIL. Make a sndfile object, test to see whether the value of the CHANNELS
+;; slot is 2; set the CHANNELS slot to 2 and test again.
+(let ((sf-1 (make-sndfile "/path/to/sndfile-1.aiff")))
+  (print (stereo sf-1))
+  (setf (channels sf-1) 2)
+  (print (stereo sf-1)))
+
+=>
+NIL 
+T
 
 |#
 ;;; SYNOPSIS
@@ -165,21 +175,42 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon Apr 16 18:38:48 BST 2012: Added robodoc entry
+
 ;;; ****m* sndfile/reset-usage
 ;;; FUNCTION
-;;; 
+;;; Reset the WILL-BE-USED and HAS-BEEN-USED slots of the given sndfile object
+;;; to 0. These slots keep track of how many times a sound will be used and has
+;;; been used, which is useful for purposes such as incrementing
+;;; start-time. These slots are set internally and are not intended to be set by
+;;; the user.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A sndfile object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns 0.
 ;;; 
 ;;; EXAMPLE
 #|
+;; First set the values of the WILL-BE-USED and HAS-BEEN-USED slots, as these
+;; are 0 when a new sndfile object is created using make-sndfile. Set the
+;; values, print them; reset both using reset-usage, and print again to see
+;; the change.
+(let ((sf-1 (make-sndfile "/path/to/sndfile-1.aiff"))))
+  (setf (will-be-used sf-1) 11)
+  (setf (has-been-used sf-1) 13)
+  (print (will-be-used sf-1))
+  (print (has-been-used sf-1))
+  (reset-usage sf-1)
+  (print (will-be-used sf-1))
+  (print (has-been-used sf-1)))
+
+=>
+11 
+13 
+0 
+0
 
 |#
 ;;; SYNOPSIS
@@ -299,25 +330,94 @@
 
 ;;; SAR Mon Apr 16 17:10:01 BST 2012: Added robodoc entry
 
+;;; MDE original comment:
 ;;; If path is a list, then it's come from a sndfile-palette.  The first in the
 ;;; list is the full path as found by the sndfile-palette and the second is the
 ;;; list given by the user with the data slots to be used.
 
 ;;; ****f* sndfile/make-sndfile
 ;;; FUNCTION
-;;; 
+;;; Create a sndfile object to hold data about an existing sound file,
+;;; specifying at least the path and file name of that sound file. Optional
+;;; arguments allow for the specification of segments within the given sound
+;;; file and its perceived fundamental frequency (for src-based
+;;; transposition). 
+;;;
+;;; If the first argument ("path") is a list, then this sndfile object has been
+;;; created from within a sndfile-palette object. In this case, the first item
+;;; in the list will be the full path to the sound file, as defined in the
+;;; sndfile-palette object; the second item in the list is the list given by
+;;; the user containing the data slots to be used, whereby the first item of
+;;; that list must be the ID of the object.
+;;;
+;;; NB: This function creates an object of the class sndfile, which is contains
+;;;     data concerning an existing sound file. It does not create an actual
+;;;     sound file. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A path and file name of an existing sound file; or a list as explained
+;;;   above. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
+;;; keyword arguments:
+;;; - :id. Defaults to the given name of the sound file.
+;;; - :data. The given file name (perhaps minus path and extension).
+;;; - :duration. A number in seconds which is the duration of the segment of
+;;;   the specified sound file which the user would like to use. This should
+;;;   not be specified if :end has been specified.
+;;; - :end. A number in seconds which is the end time within the source sound
+;;;   file for the segment of the file which the user would like to use. This
+;;;   should not be specified if :duration has been specified.
+;;; - :start. A number in seconds which is the start time within the source
+;;;   sound file for the segment of the file which the user would like to
+;;;   use. Defaults to 0.0.
+;;; - :frequency. A number or note-name symbol. This frequency will serve as
+;;;   the reference pitch for any src transpositions of this file. This can be
+;;;   any value, but will most likely be specified if the source sound file has
+;;;   a perceptible fundamental pitch. If given as a number, this number will
+;;;   be handled as a frequency in Hertz. Default = 'C4.
+;;; - :amplitude. An number that is the amplitude which the user would like to
+;;;   designate for this sound file. This number may be of any value, as
+;;;   slippery chicken normalizes all sound file events; however, standard
+;;;   practice would suggest that this should fall between 0.0 and 1.0.
+;;;   Default = 1.0
+;;;
 ;;; RETURN VALUE
-;;; 
+;;; A sndfile object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Example specifying the full path, a start and end time, and a base frequency 
+(make-sndfile "/path/to/sndfile-1.aiff"
+	      :start 0.3
+	      :end 1.1
+	      :frequency 654)
+
+=> 
+
+SNDFILE: path: /path/to/sndfile-1.aiff, 
+         snd-duration: 3.011043, channels: 1, frequency: 654
+         start: 0.3, end: 1.1, amplitude: 1.0, duration 0.8
+         will-be-used: 0, has-been-used: 0
+         data-consistent: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: /path/to/sndfile-1.aiff
+
+;; Example using the sndfile-palette list as the first argument
+(make-sndfile '("/path/to/sndfile-1.aiff" 
+		(nil :start 0.3 :end 1.1)))
+
+=> 
+
+SNDFILE: path: /path/to/sndfile-1.aiff, 
+         snd-duration: 3.011043, channels: 1, frequency: 261.62555
+         start: 0.3, end: 1.1, amplitude: 1.0, duration 0.8
+         will-be-used: 0, has-been-used: 0
+         data-consistent: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "/Volumes/JIMMY/SlipperyChicken/sndfile-2.aiff", tag: NIL, 
+data: /path/to/sndfile-1.aiff
 
 |#
 ;;; SYNOPSIS

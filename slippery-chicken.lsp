@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:30:03 Sat Apr 14 2012 CEST
+;;; $$ Last modified: 22:04:21 Mon Apr 16 2012 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1810,16 +1810,21 @@ T
   (let* ((last-player (first (last (players (ensemble sc)))))
          (section-list (if (listp start-section) 
                            start-section
-                         (list start-section)))
+                           (list start-section)))
          (ref section-list))
     (unless num-sections
       (setf num-sections (get-num-top-level-sections sc)))
-    (loop with player-ref
-        repeat num-sections
-        collect ref
-        do 
-          (setf player-ref (econs ref last-player)
-                ref (butlast (next (get-data player-ref (piece sc))))))))
+    (loop with player-ref with data
+       repeat num-sections
+       ;; MDE Mon Apr 16 21:36:44 2012 -- do this only while we can get a ref
+       ;; because if we start beyond section 1 but don't give num-sections
+       ;; we'll be in trouble otherwise.
+       while ref
+       collect ref
+       do 
+       (setf player-ref (econs ref last-player)
+             data (get-data player-ref (piece sc))
+             ref (when data (butlast (next data)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 24/4/10 this is the number of sections at the top level only
@@ -2625,7 +2630,101 @@ T
 ;;;   slippery-chicken object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; See below for a description of the keyword arguments.
+;;; See below for a description of the keyword arguments:
+;;; 
+;;; - sound-file-palette-ref2 default NIL: if this reference is given, then we
+;;;   invoke fibonacci-transitions to move from one group of sound files to
+;;;   another. 
+;;; - play-chance-env default '(0 100 100 100): this determines the chance that
+;;;   a note will be played or not; it is a random selection but uses a fixed
+;;;   seed that is re-initialized each time clm-play is called.  the following
+;;;   default ensures every note will play.
+;;; - play-chance-env-exp default 0.5: the exponent the above envelope's Y
+;;; - values are raised to.
+;;; - max-start-time default 99999999: usually we stop when we've got to the
+;;;   end of the piece/section but if we specify a maximum start time here (in
+;;;   seconds) events after this will be skipped.
+;;; - time-scaler default 1.0: this scales duration and start-time of events
+;;;   (in effect a tempo scaler)--not to be confused with duration-scaler.
+;;; - normalise default .99: the maximum amplitude in the output file i.e. what
+;;;   the samples should be scaled (normalised) to.
+;;; - simulate default nil: if t, then clm won't be called, rather only the
+;;;   sound file sequencing information will be printed for testing purposes.
+;;; - from-sequence default 1: the starting sequence number.
+;;; - num-sequences default nil: how many sequences to play; specifying nil
+;;;   will simply play them all. 
+;;; - num-sections default 1: how many sections to play. If nil, play them all.
+;;; - ignore-rests default t: in contrast to other methods, rests are ignored
+;;;   per default i.e. the sound files will play over the duration of rests
+;;;   unless this is set to nil.  However, this is only true on a bar-by-bar
+;;;   basis i.e. notes at the end of one bar will not be continued over into a
+;;;   rest in the next bar.  This implies that rests at the start of a bar will
+;;;   not be turned into sounding notes.
+;;; - time-offset default 0.0: what time in seconds to start writing the events
+;;;   into the output file.
+;;; - chords default nil: usually we'll use pitches from the set-map but we
+;;;   could pass a list of other sets here if preferred.
+;;; - chord-accessor default nil: sometimes the chord stored in the palette is
+;;;   not a simple list of data so we need to access the nth of the chord list.
+;;; - note-number default 0: the nth note of the chord (from bottom) for the
+;;;   lowest player.
+;;; - play default nil: whether clm should play the output file or not when the
+;;;   sound file is written.
+;;; - amp-env default '(0 0 5 1 60 1 100 0): the amplitude envelope placed over
+;;;   each segment of sound ('note').  NB If we want the original attack of the
+;;;   input sound file set this to '(0 1 ....) but note that if :inc-start (see
+;;;   below) is T this will probably result in clicks in the output file.
+;;; - inc-start default nil: it's not always desirable to start some longer
+;;;   sounds each time at the beginning, because of the repetition thus created
+;;;   and the fact that we never get to other interesting parts of the sound
+;;;   file .  Set this to t for start-time incrementing.  The algorithm will
+;;;   increment the start time so that we reach the end of the sound file the
+;;;   last time it is 'played'.
+;;; - src-width default 20: the accuracy of the sample-rate conversion. This
+;;;   should be an integer. The higher the value, the more accurate the
+;;;   transposition, but the slower the processing.  Values of 100 might be
+;;;   useful for very low transpositions.
+;;; - src-scaler default 1.0: how much to scale the src values by (to increase
+;;;   or decrease transposition)
+;;; - do-src default t: when T, the transposition will be calculated so that
+;;;   the given perceived frequency of the sound file is shifted to the pitch
+;;;   of the event. But if do-src is a number or pitch symbol, then that
+;;;   frequency will be matched instead.  When converted to a sample rate
+;;;   conversion factor, this is multiplied by the src-scaler.
+;;; - rev-amt default 0.0: the reverberation amount for nrev. NB 0.1 is a lot.
+;;; - duration-scaler default 1.0: this scales the duration of events (creates
+;;;   overlaps).  Not to be confused with :time-scaler.
+;;; - short-file-names default nil: output file names are automatically
+;;;   created.  They're usually quite long but will be shorter if this is T.
+;;; - check-overwrite default t: whether to query the user before overwriting
+;;;   existing sound files.
+;;; - reset-snds-each-rs default t: when T, then we start over at the beginning
+;;;   of the sound file group at the beginning of each rthm-seq.
+;;; - reset-snds-each-player default t: when T, then we start over at the
+;;;   beginning of the sound file group at the beginning of each player's part.
+;;; - duration-run-over default nil: when we use a shorter segment of a sound
+;;;   file as a sndfile instance, do we allow an event to go beyond the given
+;;;   end point?
+;;; - channels default 2: the number of sound output channels (limited only by
+;;;   the sound file format).  Note that both stereo and mono sounds from the
+;;;   palette will be randomly panned between any two adjacent channels.
+;;; - srate default clm::*clm-srate*: the sampling rate of the output file
+;;;   (independently of the input file).  This and the following two arguments
+;;;   default to clm package globals. See clm.html for more options.
+;;; - header-type default clm::*clm-header-type*: output sound file format.
+;;;   E.g. clm::mus-riff is wave, clm::mus-aiff is aiff.
+;;; - data-format default clm::*clm-data-format*: the output sound file sample
+;;;   data format.  E.g. clm::mus-lfloat is 32-bit little-endian (e.g. Intel)
+;;;   floating point. clm::mus-l24int is little-endian 24-bit integer.
+;;; - print-secs default nil: whether clm should print the seconds computed as
+;;;   it works.
+;;; - output-name-uniquifier default "": give a short string here and it will
+;;;   be built into the output file name (either at the end of the beginning
+;;;   depending on whether short-file-names is T or NIL).
+;;; - sndfile-extension default ".wav": NB the extension does not determine the
+;;;   output sound file format, rather, :header-type does that.
+;;; - sndfile-palette default nil: just in case we want to use an external
+;;;   palette instead of the one in the slippery chicken object.
 ;;; 
 ;;; RETURN VALUE
 ;;; T
@@ -2658,7 +2757,6 @@ T
       ;; clb spe with battuto attack and spectral development
   ...))))
 
-
   (clm-play mini 1 nil 'p-long-continuous :num-sections 3 :play nil
             :check-overwrite nil))
 |#
@@ -2667,130 +2765,41 @@ T
 (defmethod clm-play ((sc slippery-chicken) section players 
                      sound-file-palette-ref 
                      &key 
-                     ;; if another ref is given, then we make fibonacci
-                     ;; transitions from one group of snds to another.
                      sound-file-palette-ref2
-                     ;; this determines the chance that a note will be played
-                     ;; or not; it is a random selection but uses a fixed seed
-                     ;; that is re-initialized each time clm-play is called.
-                     ;; the following default ensures every note will play.
                      (play-chance-env '(0 100 100 100))
-                     ;; usually we stop when we've got to the end of the
-                     ;; piece/section but if we specify a maximum start time
-                     ;; here (in seconds) events after this will be skipped.
                      (max-start-time 99999999)
-                     ;; the exponent the above env is raised to
                      (play-chance-env-exp 0.5)
-                     ;; this scales duration and start-time of events (in
-                     ;; effect a tempo scaler)--not to be confused with
-                     ;; duration-scaler
                      (time-scaler 1.0)
-                     ;; the maximum amplitude in the output file i.e. what the
-                     ;; samples should be scaled to 
                      (normalise .99)
-                     ;; if t, then clm won't be called, you'll just see the
-                     ;; printouts to the terminal 
                      (simulate nil)
-                     ;; the starting sequence
                      (from-sequence 1)
-                     ;; how many sequences to play; specifying nil will simply
-                     ;; get them all. 
                      (num-sequences nil)
-                     ;; how many sections to play. If nil, do them all.
                      (num-sections 1)
-                     ;; in contrast to other methods, rests are ignored per
-                     ;; default i.e. the sound files will play over the
-                     ;; duration of rests unless this is set to nil.  However,
-                     ;; this is only true on a bar-by-bar basis i.e. notes at
-                     ;; the end of one bar will not be continued over into a
-                     ;; rest in the next bar.  This implies that rests at the
-                     ;; start of a bar will not be turned into sounding notes.
                      (ignore-rests t)
-                     ;; what time in seconds to start writing the events into
-                     ;; the output file
                      (time-offset 0.0)
-                     ;; (pitch-object-default-src-ref-pitch 'c4)
-                     ;; usually we'll use pitches from the set-map but we could
-                     ;; pass a list of other sets here if preferred.
                      (chords nil)
-                     ;; we can also pass an integer for nth to access notes in
-                     ;; the chords
                      (chord-accessor nil)
-                     ;; the nth note of the chord (from bottom) for the lowest
-                     ;; player
                      (note-number 0)
-                     ;; whether clm should play the output file or not
                      (play nil)
                      (amp-env '(0 0 5 1 60 1 100 0))
-                     ;; it's not a great idea to start some longer sounds
-                     ;; always at the beginning, because of the repetition
-                     ;; created and the fact that we never get to other
-                     ;; interesting parts of the sound file .  Set this to t
-                     ;; for start-time incrementing.
                      (inc-start nil)
-                     ;; the accuracy of the sample-rate
-                     ;; conversion. integer. the higher the value, the more
-                     ;; accurate the transposition, but the slower the
-                     ;; processing.  Values of 100 might be useful for very low
-                     ;; transpositions. 
                      (src-width 20)
-                     ;; we can scale the src values by the following
                      (src-scaler 1.0)
-                     ;; If do-src is T, the transposition will be calculated so
-                     ;; that the given perceived frequency of the sound file is
-                     ;; shifted to the pitch of the event. But if do-src is a
-                     ;; number or pitch symbol, then that frequency will be
-                     ;; matched instead.  When converted to a sample rate
-                     ;; conversion factor, this is multiplied by the
-                     ;; src-scaler.
                      (do-src t)
-                     ;; the reverberation amount in nrev: 0.1 is a lot.
                      (rev-amt 0.0)
-                     ;; this scales duration of events (creates overlaps)--not
-                     ;; to be confused with time-scaler!
                      (duration-scaler 1.0)
-                     ;; output file names are automatically created; they're
-                     ;; usually quite long so shorted them if the following is T
                      (short-file-names nil)
-                     ;; whether to query the user before overwriting existing
-                     ;; sound files.
                      (check-overwrite t)
-                     ;; when T, then we start over at the beginning of the snd
-                     ;; list at the beginning of each rthm-seq.
                      (reset-snds-each-rs t)
-                     ;; when T, then we start over at the beginning of the snd
-                     ;; list at the beginning of each player.
                      (reset-snds-each-player t)
-                     ;; we can use a smaller segment of a long sound file
-                     ;; as a sndfile instance. Allow an event to go beyond the
-                     ;; given end point if the following is T.
                      (duration-run-over nil)
-                     ;; number of sound output channels (unlimited).  Note that
-                     ;; sounds from the palette will be randomly panned between
-                     ;; any two adjacent channels
                      (channels 2)
-                     ;; the sampling rate of the output file (independently of
-                     ;; the input file).  This and the following two default to
-                     ;; clm package globals. See clm.html for more options.
                      (srate clm::*clm-srate*)
-                     ;; mus-riff would be wave format, mus-aiff would be aiff
                      (header-type clm::*clm-header-type*)
-                     ;; the data format.  mus-lfloat would be 32bit
-                     ;; little-endian (intel) floating point. mus-l24int would
-                     ;; be little-endian 24bit integer.  
                      (data-format clm::*clm-data-format*)
-                     ;; whether clm should print the seconds computed as it
-                     ;; works  
                      (print-secs nil)
-                     ;; give a short string here and it will be built into the
-                     ;; output file name (either at the end of the beginning
-                     ;; depending on whether short-file-names is T or NIL).
                      (output-name-uniquifier "")
-                     ;; NB the extension does not determine the output sound
-                     ;; file format, rather, :header-type does that.  
                      (sndfile-extension ".wav")
-                     ;; just in case we want to use an external palette instead
-                     ;; of the one in the sc object.
                      (sndfile-palette nil))
 ;;; ****
   ;; MDE Mon Apr  2 10:23:21 2012 
@@ -2946,7 +2955,7 @@ T
                      (progn evts)
                      (unless snd
                        (error "slippery-chicken::clm-play: ~
-                                    snd is nil (whilst counting)!"))
+                               snd is nil (whilst counting)!"))
                      (incf (will-be-used snd)))))
         ;; here we reset them before starting, this is correct!
         (reset snds)
@@ -2957,7 +2966,7 @@ T
                for player in events 
                for ffv = (first (first player))
                if ffv minimize (start-time ffv)))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
       (clm::with-sound (:scaled-to normalise 
                          :reverb clm::nrev
                          :decay-time 3
@@ -2997,7 +3006,7 @@ T
            (format t "~%Processing player ~a/~a: ~a (resting players will ~
                           not be processed)~%"
                    player-count num-players (nth (1- player-count) players))
-           (when (= 1 num-sections)
+           (when (and (numberp num-sections) (= 1 num-sections))
              ;; MDE Tue Apr 3 09:54:46 2012 -- make sure we don't crash
              ;; if the requested instrument is sitting this section out
              (let ((rss (get-data-from-palette
@@ -3251,7 +3260,6 @@ T
         collect events)))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; returns a list containing each voice: each voice has sublists of rthm-seqs:
 ;;; each rthm-seq contains the events.
 
@@ -3264,8 +3272,7 @@ T
      (num-sequences nil)
      (num-sections 1)
      (ignore-rests nil)
-     ;; (pitch-object-default-src-ref-pitch 'c4) if chords is nil then we
-     ;; use the chords in the set-map
+     ;; if chords is nil then we use the chords in the set-map
      (chords nil)
      ;; sometimes the chord stored in the palette is not a simple list of
      ;; data so we need to access the nth of the chord list
@@ -3276,29 +3283,28 @@ T
      ;; will be this nth, the second this plus 1 etc., or this should be a
      ;; list.
      (note-number 0)) ;; 0-based!!!
+  ;; MDE Mon Apr 16 21:44:19 2012
+  (unless num-sections
+    (setf num-sections (get-num-top-level-sections sc)))
   (let* ((sections (get-section-refs sc from-section num-sections))
          (all-sections
           (loop for section in sections
-              collect (get-events-with-src-aux
-                       sc section voices 
-                       :ignore-grace-notes ignore-grace-notes
-                       :time-scaler time-scaler
-                       :from-sequence from-sequence
-                       :num-sequences num-sequences
-                       :ignore-rests ignore-rests
-                       :chords chords
-                       :chord-accessor chord-accessor
-                       :note-number note-number))))
+             collect (get-events-with-src-aux
+                      sc section voices 
+                      :ignore-grace-notes ignore-grace-notes
+                      :time-scaler time-scaler
+                      :from-sequence from-sequence
+                      :num-sequences num-sequences
+                      :ignore-rests ignore-rests
+                      :chords chords
+                      :chord-accessor chord-accessor
+                      :note-number note-number))))
+    ;; (print 'here)
     (loop for i below (length voices) collect
-          (loop for j below num-sections
-              for data = (nth i (nth j all-sections))
-                         #|
-  unless data do 
-  (error "slippery-chicken::get-events-with-src: ~
-                         no data (i = ~a j = ~a)" i j)
-  |#
-              when data
-              append data))))
+         (loop for j below num-sections
+            for data = (nth i (nth j all-sections))
+            when data
+            append data))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3315,7 +3321,7 @@ T
      (note-number 0)) ;; 0-based!!!
   (unless num-sequences
     (setf num-sequences (num-seqs sc section)))
-  (let ((timings (get-events-start-time-duration-aux
+  (let ((timings (get-events-start-time-duration-aux ; clones the events 
                   sc section voices 
                   :ignore-grace-notes ignore-grace-notes
                   :time-scaler time-scaler
@@ -3346,7 +3352,7 @@ T
       (error "slippery-chicken::get-events-with-src: ~
               When :note-numbers is a list, ~
               then it must be of the same length as :voices"))
-    ;; MDE Wed Apr 11 12:36:13 2012 -- so by default we create pitch data for
+    ;;  MDE Wed Apr 11 12:36:13 2012 -- so by default we create pitch data for
     ;; each voice that simply accesses the notes in the chord from the bottom
     ;; up, one voice after another.
     (loop for voice in timings and n in note-numbers do
@@ -3364,6 +3370,7 @@ T
                ;; there are voices... 
                for pitch = (nth (mod n num-notes) chord)
                do
+                 (print-simple event)
                (unless pitch
                  (error "slippery-chicken::get-events-with-src: ~%~
                          Pitch is NIL!!!  Probably the reference ~
@@ -3371,6 +3378,9 @@ T
                          the chosen chord.  ~%Current reference is ~
                          ~a into the chord ~a"  
                         n chord))
+               ;; MDE Mon Apr 16 22:03:55 2012 -- remember these events have
+               ;; been cloned so we won't be affecting score output by changing
+               ;; the pitch here.
                (setf (pitch-or-chord event) (clone pitch)))))
     timings))
     
@@ -3786,6 +3796,11 @@ T
                                   (page-turns nil)
                                   ;; MDE Sat Mar 10 16:52:31 2012 
                                   (process-event-fun nil)
+                                  ;; MDE Mon Apr 16 16:08:36 2012 -- added so
+                                  ;; that we can write a subset of players
+                                  ;; into the score (e.g. leave out a computer
+                                  ;; part). If nil all players will be written.
+                                  (players nil)
                                   ;; minimum rest necessary to do a page turn;
                                   ;; something like a time signature e.g. (2 1)
                                   ;; would mean we need a min. of 2 whole rests
@@ -3797,8 +3812,28 @@ T
   (when (and (numberp start-bar) (numberp end-bar) (>= start-bar end-bar))
     (error "slippery-chicken::write-lp-date-for-all: start-bar = ~a, ~
             end-bar = ~a???" start-bar end-bar))
+  ;; MDE Mon Apr 16 16:19:47 2012 -- works when players is NIL also
+  (unless (every #'(lambda (p) (member p (players sc))) players)
+    (error "slippery-chicken::write-lp-data-for-all: players argument ~
+            contains ~%player symbol(s) not in the ensemble: ~a" players))
   (let* ((path (trailing-slash base-path))
-         (players (players sc))
+         ;; MDE Mon Apr 16 16:40:41 2012 -- now we have the players argument,
+         ;; we have to put them in the same order as the ensemble and adjust the
+         ;; staff-groupings locally to reflect any missing players
+         (playrs (if players
+                     (remove-if-not #'(lambda (x) (member x (players sc)))
+                                    players)
+                     (players sc)))
+         ;; MDE Mon Apr 16 16:50:20 2012 -- adjust staff-groupings
+         (staff-grping
+          (let* ((grpsa (split-into-sub-groups (players sc)
+                                               (staff-groupings sc)))
+                 (grpsb (loop for sg in grpsa collect
+                             (remove-if-not #'(lambda (x) (member x playrs))
+                                            sg))))
+            (loop for sg in grpsb for sgl = (length sg)
+                 ;; don't try and create groups of zero players
+               unless (zerop sgl) collect sgl)))
          ;; MDE Fri Dec  9 19:33:28 2011 -- replace spaces with hyphens so good
          ;; for file names  
          ;; MDE Fri Apr  6 12:46:27 2012 -- and remove ' too
@@ -3809,7 +3844,7 @@ T
          (def-file (format nil "~a-def.ly" title-hyphens))
          (staff-group (if group-barlines "StaffGroup" "ChoirStaff"))
          (players-strings
-          (loop for player in (players sc)
+          (loop for player in playrs
              ;; lilypond has trouble with variable names containing - or _
              collect (remove #\_ 
                              (remove #\- 
@@ -3876,14 +3911,14 @@ T
         (respell-notes sc respell-notes))
       (when auto-clefs
         (format t "~&Inserting automatic clefs....")
-        (auto-clefs sc :players players :verbose nil :in-c in-c
+        (auto-clefs sc :players playrs :verbose nil :in-c in-c
                     :delete-marks-before nil))
       (when rehearsal-letters-all-players 
         (format t "~&Setting rehearsal letters....")
-        (set-rehearsal-letters sc players))
+        (set-rehearsal-letters sc playrs))
       (when tempi-all-players 
         (format t "~&Updating tempo of events....")
-        (update-events-tempo sc players))
+        (update-events-tempo sc playrs))
       ;; this will set the multi-bar-rest slot of the bars; NB it must come
       ;; after rehearsal letters and tempi
       (multi-bar-rests sc)
@@ -3920,7 +3955,7 @@ T
         (terpri out)
         (terpri out)
         (loop for pname in players-strings
-           for player in (players sc) do
+           for player in playrs do
            (when (needs-transposition player)
              (new-voice (written-pname pname) player out 
                         (concatenate 'string pname "-written")))
@@ -3928,7 +3963,8 @@ T
         (terpri out)
         (format out "~%music = {~%  <<")
         ;; write the music variable, staff groupings etc.
-        (loop with groups = (copy-list (staff-groupings sc))
+        ;; MDE Mon Apr 16 16:52:47 2012 -- use the adjusted staff-groupings
+        (loop with groups = (copy-list staff-grping) ;(staff-groupings sc))
            with gnum = (pop groups)
            with gcount = 1
            for pname in players-strings
@@ -3944,7 +3980,7 @@ T
         ;; create the written parts variable
         (format out "~%written = {~%  <<")
         (loop for pname in players-strings
-           for player in (players sc) do
+           for player in playrs do
            (when (needs-transposition player)
              (score-tag (written-pname pname) out)))
         (format out "~%  >>~%}"))
@@ -3962,7 +3998,7 @@ T
                    \\music")
         (format out "~%  \\layout { }~%}~%"))
       ;; write the parts
-      (loop for player in (players sc)
+      (loop for player in playrs
          for pname in players-strings do
          (with-open-file 
              (out 
@@ -3974,7 +4010,7 @@ T
                (part (written-pname pname) out "written")
                (part pname out))))
       ;; write the notes to individual files
-      (loop for player in (players sc)
+      (loop for player in playrs
          for pname in players-strings do
          (write-lp-data-for-player 
           sc player 
@@ -3987,9 +4023,9 @@ T
       ;; can't do this in the above loop as we have to re-call auto-clefs
       ;; making sure we don't use the in-c clefs for the instrument
       (when auto-clefs
-        (auto-clefs sc :players players :verbose nil :in-c nil
+        (auto-clefs sc :players playrs :verbose nil :in-c nil
                     :delete-marks-before nil))
-      (loop for player in (players sc)
+      (loop for player in playrs
          for pname in players-strings do
          ;; got to write the written (i.e. not sounding) notes for the part
          (when (needs-transposition player)

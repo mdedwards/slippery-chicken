@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 13:16:39 Mon Apr  9 2012 BST
+;;; $$ Last modified: 22:01:11 Mon Apr 16 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2698,6 +2698,7 @@ data: (2 4)
            for event in (rhythms rsb) 
            for scaled-event = (if (is-grace-note event)
                                   event
+                                  ;; clones the event
                                   (scale event time-scaler t t))
            with rests = '()
            do
@@ -2712,12 +2713,12 @@ data: (2 4)
                  (when (and include-rests (is-rest scaled-event))
                    (push scaled-event rests))
                  ;; (format t "~%~a ~a ~a"
-                    ;;     ignore-rests  (is-rest scaled-event) (first result))
+                 ;;     ignore-rests  (is-rest scaled-event) (first result))
                  (when (and ignore-rests result (is-rest scaled-event))
                    (incf (compound-duration-in-tempo (first result))
                          (duration-in-tempo scaled-event)))))
-         ;; 25/4/10: had to add this to make sure we get rests when we have a
-         ;; bar of rests only (but is-rest-bar is nil...)
+           ;; 25/4/10: had to add this to make sure we get rests when we have a
+           ;; bar of rests only (but is-rest-bar is nil...)
            finally (loop for r in (nreverse rests) do (push r result))))
     (setf result (nreverse result))
     (when (and (first result) (write-time-sig rsb))

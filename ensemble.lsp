@@ -300,19 +300,80 @@
 
 ;;; ****f* ensemble/make-ensemble
 ;;; FUNCTION
-;;; 
+;;; Make an ensemble object, specifying the players and associated
+;;; instruments.  
+;;;
+;;; NB: If you have an ensemble with a player doubling two instruments, be sure
+;;;     to indicate some keyword argument or other as 
+;;;     (fl1 ((piccolo violin) :midi-channel 1)) works but 
+;;;     (fl1 ((piccolo violin))) thinks that piccolo is a nested ensemble!!!
+;;;
+;;; NB: The argument :instrument-palette is a required argument although it is
+;;;     a keyword argument.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An ID consisting of a symbol, string or number.
+;;; - A list of 2-element sublists that define the ensemble. See the above
+;;;   comment on adding a keyword argument for doubling players.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :instrument-palette. An instrument palette object. This is a required
+;;;   argument.
+;;; - :bar-line-writers.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An ensemble object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((ens (make-ensemble 
+	      'ens
+	      '((flt ((flute piccolo) :midi-channel 1))
+		(clr (b-flat-clarinet)))
+	      :instrument-palette
+	      +slippery-chicken-standard-instrument-palette+)))
+  (print ens))
+
+=>
+
+ENSEMBLE: bar-line-writers: NIL
+          players: (FLT CLR)
+          (id instrument-palette): SLIPPERY-CHICKEN-STANDARD-INSTRUMENT-PALETTE
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 2
+                      linked: T
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: ENS, tag: NIL, 
+data: (
+PLAYER: (id instrument-palette): SLIPPERY-CHICKEN-STANDARD-INSTRUMENT-PALETTE 
+doubles: T, cmn-staff-args: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: (FLT), next: (CLR)
+NAMED-OBJECT: id: FLT, tag: NIL, 
+data: 
+[...]
+data: (
+INSTRUMENT: lowest-written: 
+[...]
+NAMED-OBJECT: id: FLUTE, tag: NIL, 
+[...]
+INSTRUMENT: lowest-written: 
+[...]
+NAMED-OBJECT: id: PICCOLO, tag: NIL, 
+[...]
+PLAYER: (id instrument-palette): SLIPPERY-CHICKEN-STANDARD-INSTRUMENT-PALETTE 
+doubles: NIL, cmn-staff-args: NIL
+LINKED-NAMED-OBJECT: previous: (FLT), this: (CLR), next: NIL
+NAMED-OBJECT: id: CLR, tag: NIL, 
+data: 
+INSTRUMENT: lowest-written: 
+[...]
+NAMED-OBJECT: id: B-FLAT-CLARINET, tag: NIL, 
+)
 
 |#
 ;;; SYNOPSIS

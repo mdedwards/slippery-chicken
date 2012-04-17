@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 12:56:58 Tue Apr 10 2012 BST
+;;; $$ Last modified: 12:45:07 Tue Apr 17 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -107,6 +107,7 @@
    ;; e.g. from fs4 -> f
    (no-8ve-no-acc :accessor no-8ve-no-acc :type symbol :initform nil)
    (src :accessor src :initarg :src :initform nil)
+   ;; MDE Tue Apr 17 12:44:57 2012 -- not currently used by any method.
    (src-ref-pitch :accessor src-ref-pitch :type symbol :initarg :src-ref-pitch
                   :initform 'c4)
    ;; when frequency is given, we have to update id and vice-versa.  This slot

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:03:26 Wed Mar 28 2012 BST
+;;; $$ Last modified: 12:58:04 Tue Apr 17 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2800,6 +2800,19 @@ T
     (delete-marks (pitch-or-chord e))
     (when (written-pitch-or-chord e)
       (delete-marks (written-pitch-or-chord e)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Apr 17 12:52:22 2012.  Works for chords and single pitches.  Always
+;;; returns a list. 
+
+(defmethod src-for-sample-freq (freq (e event))
+  (unless (numberp freq)
+    (setf freq (note-to-freq freq)))
+  (let ((pitches (if (is-chord e)
+                     (data (pitch-or-chord e))
+                     (list (pitch-or-chord e)))))
+    (loop for p in pitches collect
+         (/ (frequency p) freq))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 16:17:35 Tue Mar 20 2012 GMT
+;;; $$ Last modified: 13:17:01 Tue Apr 17 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1286,6 +1286,14 @@ data: (
 (defmethod pitch- ((c1 chord) (c2 chord))
 ;;; ****
   (- (midi-note-float (first (data c1))) (midi-note-float (first (data c2)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Apr 17 13:15:31 2012 -- mainly for printing in the clm-play method:
+;;; the pitch class has the frequency slot. Mimic this here by returning a list
+;;; of freqs.
+
+(defmethod frequency ((c chord))
+  (loop for p in (data c) collect (frequency p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

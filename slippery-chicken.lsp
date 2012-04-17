@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 22:04:21 Mon Apr 16 2012 CEST
+;;; $$ Last modified: 13:55:43 Tue Apr 17 2012 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2590,6 +2590,8 @@ T
                         force-velocity)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Apr 17 12:16:43 2012 -- added the pitch-synchronous option.
+
 ;;; ****m* slippery-chicken/clm-play
 ;;; FUNCTION
 ;;; Using the sound files (samples) defined for the given reference in the
@@ -2601,18 +2603,22 @@ T
 ;;; exclusively string sounds, or percussion sounds, or a variety of sounds, as
 ;;; desired.  See below for an example of a sndfile-palette.
 ;;; 
-;;; This method doesn't use the same events generated for the score, rather, it
-;;; generates its own sequence of events and pitches.  Instead of using the
-;;; pitches of the score--which might produce extreme sound file transpositions
-;;; both upwards and downwards--it accesses each note of the set (assigned by
-;;; the set-map to each rthm-seq) from the bottom up, one voice after another.
-;;; If do-src is T, transposition will then be calculated so that the frequency
-;;; of the sound file, if given, will be shifted to the pitch of the set note.
-;;; This transposition process itself might still yield extreme transpositions,
-;;; hence the note-number keyword can be changed to specify an index into the
-;;; set notes for the lowest voice--though if the number of voices plus this
-;;; index would then exceed the number of notes in the set, then we would wrap
-;;; around to the lowest note of the set.
+;;; By default this method doesn't use the same events generated for the score,
+;;; rather, it generates its own sequence of events and pitches.  Instead of
+;;; using the pitches of the score--which might produce extreme sound file
+;;; transpositions both upwards and downwards--it accesses each note of the set
+;;; (assigned by the set-map to each rthm-seq) from the bottom up, one voice
+;;; after another.  If do-src is T, transposition will then be calculated so
+;;; that the frequency of the sound file, if given, will be shifted to the
+;;; pitch of the set note.  This transposition process itself might still yield
+;;; extreme transpositions, hence the note-number keyword can be changed to
+;;; specify an index into the set notes for the lowest voice--though if the
+;;; number of voices plus this index would then exceed the number of notes in
+;;; the set, then we would wrap around to the lowest note of the set.
+;;;
+;;; If instead of the above method the sound files should be transposed to the
+;;; pitches of the score events, set :pitch-synchronous to T and leave do-src T
+;;; also.  This will work with chords too.
 ;;;
 ;;; See also sndfile-palette.lsp's make-sfp-from-wavelab-marker-file for a way
 ;;; of automatically creating a sndfile-palette from markers in a Steinberg
@@ -2662,6 +2668,9 @@ T
 ;;;   not be turned into sounding notes.
 ;;; - time-offset default 0.0: what time in seconds to start writing the events
 ;;;   into the output file.
+;;; - pitch-synchronous default nil: if T, transpose the sound files (using
+;;;   their frequency slot) to the pitches of the score events.  See above
+;;;   description for the default behaviour.
 ;;; - chords default nil: usually we'll use pitches from the set-map but we
 ;;;   could pass a list of other sets here if preferred.
 ;;; - chord-accessor default nil: sometimes the chord stored in the palette is
@@ -2686,7 +2695,7 @@ T
 ;;;   useful for very low transpositions.
 ;;; - src-scaler default 1.0: how much to scale the src values by (to increase
 ;;;   or decrease transposition)
-;;; - do-src default t: when T, the transposition will be calculated so that
+;;; - do-src default T: when T, the transposition will be calculated so that
 ;;;   the given perceived frequency of the sound file is shifted to the pitch
 ;;;   of the event. But if do-src is a number or pitch symbol, then that
 ;;;   frequency will be matched instead.  When converted to a sample rate
@@ -2721,8 +2730,10 @@ T
 ;;; - output-name-uniquifier default "": give a short string here and it will
 ;;;   be built into the output file name (either at the end of the beginning
 ;;;   depending on whether short-file-names is T or NIL).
-;;; - sndfile-extension default ".wav": NB the extension does not determine the
-;;;   output sound file format, rather, :header-type does that.
+;;; - sndfile-extension default NIL: The output sound file extension
+;;;   (e.g. ".wav", ".aif").  If NIL we'll try and figure out the best
+;;;   extension based on the header-type.  NB the extension does not determine
+;;;   the output sound file format, rather, :header-type does that.
 ;;; - sndfile-palette default nil: just in case we want to use an external
 ;;;   palette instead of the one in the slippery chicken object.
 ;;; 
@@ -2786,6 +2797,7 @@ T
                      (src-width 20)
                      (src-scaler 1.0)
                      (do-src t)
+                     (pitch-synchronous nil)
                      (rev-amt 0.0)
                      (duration-scaler 1.0)
                      (short-file-names nil)
@@ -2799,9 +2811,19 @@ T
                      (data-format clm::*clm-data-format*)
                      (print-secs nil)
                      (output-name-uniquifier "")
-                     (sndfile-extension ".wav")
+                     (sndfile-extension nil)
                      (sndfile-palette nil))
 ;;; ****
+  ;; MDE Tue Apr 17 13:28:16 2012 -- guess the extension if none given
+  (unless sndfile-extension
+    (setf sndfile-extension
+          (cond                         ; can't use case with clm globals
+            ((or (= header-type clm::mus-aiff)
+                 (= header-type clm::mus-aifc))
+             ".aif")
+            ((= header-type clm::mus-riff) ".wav")
+            ((= header-type clm::mus-next) ".snd")
+            (t (error ".aif")))))
   ;; MDE Mon Apr  2 10:23:21 2012 
   (unless (fboundp 'clm::nrev)
     (error "slippery-chicken::clm-play: clm's nrev.ins needs to be ~
@@ -2828,6 +2850,7 @@ T
                                       :num-sections num-sections
                                       :ignore-rests ignore-rests
                                       :chords chords
+                                      :pitch-synchronous pitch-synchronous
                                       :chord-accessor chord-accessor
                                       :note-number note-number))
          (section1-num-seqs (if num-sequences
@@ -2856,7 +2879,7 @@ T
                                (fibonacci-transition num-events)))
          (snd nil)
          (snd-group nil)
-         (srt 0.0)
+         (srts '())
          (srt-freq (cond ((numberp do-src) do-src)
                          ((and (not (eq do-src t))
                                (symbolp do-src))
@@ -2879,7 +2902,7 @@ T
          (file-name
           (string-downcase        
            (if short-file-names
-               (format nil "~{~a-~}~a~{~a-~}~{~a.~}~a-~a~a~a"
+               (format nil "~{~a-~}~a~{~a-~}~{~a.~}~a-~a~a~a~a"
                        (if (listp sound-file-palette-ref) 
                            sound-file-palette-ref
                            (list sound-file-palette-ref))
@@ -2896,8 +2919,9 @@ T
                        from-sequence 
                        (+ -1 from-sequence section1-num-seqs)
                        output-name-uniquifier
+                       (if pitch-synchronous "-psync" "")
                        sndfile-extension)
-               (format nil "~a~a~{-~a~}~{-~a~}~{-~a~}to-~{-~a~}-seq~a-~a~a"
+               (format nil "~a~a~{-~a~}~{-~a~}~{-~a~}~{-to-~a~}-seq~a-~a~a~a"
                        output-name-uniquifier
                        (string-trim "+" (id sc))
                        (if (listp section) section (list section))
@@ -2911,6 +2935,7 @@ T
                              (list sound-file-palette-ref2)))
                        from-sequence 
                        (+ -1 from-sequence section1-num-seqs)
+                       (if pitch-synchronous "-psync" "")
                        sndfile-extension))))
          (output 
           (progn
@@ -2966,7 +2991,7 @@ T
                for player in events 
                for ffv = (first (first player))
                if ffv minimize (start-time ffv)))
-      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
       (clm::with-sound (:scaled-to normalise 
                          :reverb clm::nrev
                          :decay-time 3
@@ -3057,109 +3082,115 @@ T
                                              :exp play-chance-env-exp))
                          ;; MDE Tue Apr 10 13:10:37 2012 -- see note to do-src
                          ;; keyword above. 
-                         srt (if do-src
-                                 (* src-scaler
-                                    (src-for-sample-freq 
-                                     (if srt-freq
-                                         srt-freq
-                                         (frequency snd))
-                                     ;; MDE Tue Apr 10 13:21:20 2012 -- this
-                                     ;; would of course fail if the event had a
-                                     ;; chord, but as get-events-with-src-aux
-                                     ;; sets this slot always to be a single
-                                     ;; pitch, we're safe.
-                                     (pitch-or-chord event))) 
-                                 1.0))
-                   (when (<= srt 0.0)
-                     (error "slippery-chicken::clm-play: illegal sample ~
+                         srts (if do-src
+                                  ;; MDE Tue Apr 17 12:52:40 2012 -- update:
+                                  ;; we now have the pitch-synchronous
+                                  ;; option so need to handle chords so
+                                  ;; we'll not call the pitch method here
+                                  ;; but the event. This will return a list,
+                                  ;; even for a single pitch, so we'll have
+                                  ;; to loop through them.
+                                  (src-for-sample-freq 
+                                   (if srt-freq
+                                       srt-freq
+                                       (frequency snd))
+                                   ;; MDE Tue Apr 17 12:54:06 2012 -- see
+                                   ;; comment above. this used to be
+                                   ;; (pitch-or-chord event)
+                                   event)
+                                  '(1.0)))
+                   (loop for srt in srts do
+                        (setf srt (* src-scaler srt))
+                        (when (<= srt 0.0)
+                          (error "slippery-chicken::clm-play: illegal sample ~
                              rate conversion: ~a" srt))
-                   ;; MDE Mon Apr  9 12:31:07 2012
-                   (unless (duration snd)
-                     (error "~a~%slippery-chicken::clm-play: ~
+                      ;; MDE Mon Apr  9 12:31:07 2012
+                        (unless (duration snd)
+                          (error "~a~%slippery-chicken::clm-play: ~
                                sound duration is NIL!" snd))
-                   ;; given the srt, what's the longest output dur
-                   ;; this sound can make?  
-                   (setf available-dur (/ (duration snd) srt)
-                         wanted-duration-string ""
-                         input-start (start snd))
-                   (when skip-this-event
-                     (incf total-skipped))
-                   (unless snd
-                     (error "slippery-chicken::clm-play: snd is nil!"))
-                   (when inc-start
-                     (setf latest-possible-start
-                           (- (end snd) (* srt duration)))
-                     (unless (and (< latest-possible-start (start snd))
-                                  (not (zerop (will-be-used snd))))
-                       (incf input-start 
-                             (* (has-been-used snd)
-                                (/ (- latest-possible-start (start snd))
-                                   (will-be-used snd)))))
-                     (incf (has-been-used snd)))
-                   (when (> duration available-dur)
-                     ;;(warn "slippery-chicken::clm-play: ~
-                     ;;     Requested duration ~a > possible ~
-                     ;;   duration ~a~%"
-                     ;; duration available-dur)
-                     (setf wanted-duration duration
-                           wanted-duration-string 
-                           (if duration-run-over
-                               (format nil " (~,3f available but ~
+                      ;; given the srt, what's the longest output dur
+                      ;; this sound can make?  
+                        (setf available-dur (/ (duration snd) srt)
+                              wanted-duration-string ""
+                              input-start (start snd))
+                        (when skip-this-event
+                          (incf total-skipped))
+                        (unless snd
+                          (error "slippery-chicken::clm-play: snd is nil!"))
+                        (when inc-start
+                          (setf latest-possible-start
+                                (- (end snd) (* srt duration)))
+                          (unless (and (< latest-possible-start (start snd))
+                                       (not (zerop (will-be-used snd))))
+                            (incf input-start 
+                                  (* (has-been-used snd)
+                                     (/ (- latest-possible-start (start snd))
+                                        (will-be-used snd)))))
+                          (incf (has-been-used snd)))
+                        (when (> duration available-dur)
+                          (setf wanted-duration duration
+                                wanted-duration-string 
+                                (if duration-run-over
+                                    (format nil " (~,3f available but ~
                                                     duration-run-over is t)"
-                                       available-dur)
-                               (format nil " (wanted ~,3f)"
-                                       wanted-duration)))
-                     (unless duration-run-over
-                       (setf duration available-dur)))
-                   (when (< duration 0)
-                     (warn "slippery-chicken::clm-play: ~
+                                            available-dur)
+                                    (format nil " (wanted ~,3f)"
+                                            wanted-duration)))
+                          (unless duration-run-over
+                            (setf duration available-dur)))
+                        (when (< duration 0)
+                          (warn "slippery-chicken::clm-play: ~
                                   Duration < 0  ?????~%"))
-                   (unless (start-time event)
-                     (error "~a~%slippery-chicken::clm-play: ~
+                        (unless (start-time event)
+                          (error "~a~%slippery-chicken::clm-play: ~
                                    no start time!!!" event))
-                   (setf output-start (+ time-offset
-                                         (- (start-time event)
-                                            first-event-start)))
-                   (when (> output-start max-start-time)
-                     (setf happy nil))
-                   (when happy
-                     (format t "        ~a/~a Events: ~a~
+                        (setf output-start (+ time-offset
+                                              (- (start-time event)
+                                                 first-event-start)))
+                        (when (> output-start max-start-time)
+                          (setf happy nil))
+                        (when happy
+                          (format t "        ~a/~a Events: ~a~
                                  ~%             ~a ~a~
                                  ~%             start-time ~,3f, input-start: ~
                                  ~,3f, ~
                                  ~%             duration ~,3f~a, ~
                                  ~%             amp ~,2f, srt ~,2f ~
                                  (pitch-or-chord ~,3f,sample freq ~,3f)~%"
-                             event-count total-events
-                             (if skip-this-event "Skipped" "Output")
-                             (path snd) 
-                             (if snds2
-                                 (format nil "(snd-group ~a)" 
-                                         (1+ snd-group))
-                                 "")
-                             output-start 
-                             input-start duration wanted-duration-string
-                             (amplitude snd) srt 
-                             (frequency (pitch-or-chord event))
-                             (frequency snd)))
-                   (unless (or simulate skip-this-event (not happy)
-                               (zerop duration))
-                     (clm::samp5 (path snd)
-                                 output-start
-                                 :duration duration
-                                 :start input-start
-                                 :srt srt
-                                 :width src-width
-                                 :amp (amplitude snd)
-                                 :amp-env amp-env
-                                 :degree
-                                 ;; 2/8/05: place both mono and stereo files in
-                                 ;; space randomly NB A sound is always put
-                                 ;; between two speakers but it could be two of
-                                 ;; any number; see samp5.lsp for details.
-                                 (nth (random 7) '(15 25 35 45 55 65 75))
-                                 :rev-amt rev-amt
-                                 :printing print-secs))
+                                  event-count total-events
+                                  (if skip-this-event "Skipped" "Output")
+                                  (path snd) 
+                                  (if snds2
+                                      (format nil "(snd-group ~a)" 
+                                              (1+ snd-group))
+                                      "")
+                                  output-start 
+                                  input-start duration wanted-duration-string
+                                  (amplitude snd) srt 
+                                  ;; MDE Tue Apr 17 13:14:45 2012 -- added
+                                  ;; frequency method to chord so that this
+                                  ;; doesn't fail
+                                  (frequency (pitch-or-chord event))
+                                  (frequency snd)))
+                        (unless (or simulate skip-this-event (not happy)
+                                    (zerop duration))
+                          (clm::samp5 (path snd)
+                                      output-start
+                                      :duration duration
+                                      :start input-start
+                                      :srt srt
+                                      :width src-width
+                                      :amp (amplitude snd)
+                                      :amp-env amp-env
+                                      :degree
+                                      ;; 2/8/05: place both mono and stereo
+                                      ;; files in space randomly NB A sound
+                                      ;; is always put between two speakers
+                                      ;; but it could be two of any number;
+                                      ;; see samp5.lsp for details.
+                                      (nth (random 7) '(15 25 35 45 55 65 75))
+                                      :rev-amt rev-amt
+                                      :printing print-secs)))
                    (incf event-count-player)
                    (incf event-count))))))
     (unless (zerop total-events)
@@ -3274,6 +3305,9 @@ T
      (ignore-rests nil)
      ;; if chords is nil then we use the chords in the set-map
      (chords nil)
+     ;; MDE Tue Apr 17 12:21:07 2012 -- whether to use the pitches of the score
+     ;; events or the old method of player by player set pitch access
+     (pitch-synchronous nil)
      ;; sometimes the chord stored in the palette is not a simple list of
      ;; data so we need to access the nth of the chord list
      (chord-accessor nil)
@@ -3293,6 +3327,7 @@ T
                       sc section voices 
                       :ignore-grace-notes ignore-grace-notes
                       :time-scaler time-scaler
+                      :pitch-synchronous pitch-synchronous
                       :from-sequence from-sequence
                       :num-sequences num-sequences
                       :ignore-rests ignore-rests
@@ -3315,12 +3350,17 @@ T
      (time-scaler 1.0)
      (from-sequence 1)
      (num-sequences nil)
+     (pitch-synchronous nil)
      (ignore-rests nil)
      (chords nil)
      (chord-accessor nil)
      (note-number 0)) ;; 0-based!!!
   (unless num-sequences
     (setf num-sequences (num-seqs sc section)))
+  ;; MDE Tue Apr 17 12:22:55 2012 -- 
+  (when (and pitch-synchronous (or chords chord-accessor))
+    (error "slippery-chicken::get-events-with-src-aux: pitch-synchronous ~
+            cannot be used in conjunction with chords or chord-accessor."))
   (let ((timings (get-events-start-time-duration-aux ; clones the events 
                   sc section voices 
                   :ignore-grace-notes ignore-grace-notes
@@ -3352,36 +3392,38 @@ T
       (error "slippery-chicken::get-events-with-src: ~
               When :note-numbers is a list, ~
               then it must be of the same length as :voices"))
-    ;;  MDE Wed Apr 11 12:36:13 2012 -- so by default we create pitch data for
+    ;; MDE Wed Apr 11 12:36:13 2012 -- so by default we create pitch data for
     ;; each voice that simply accesses the notes in the chord from the bottom
     ;; up, one voice after another.
-    (loop for voice in timings and n in note-numbers do
-         (loop for chord in chds 
-            for num-notes = (length chord)
-            for rs in voice 
-            do
-            (unless (simple-listp chord)
-              (error "slippery-chicken::get-events-with-src: ~
+    ;; MDE Tue Apr 17 12:24:18 2012 -- don't do this if pitch-synchronous
+    (unless pitch-synchronous
+      (loop for voice in timings and n in note-numbers do
+           (loop for chord in chds 
+              for num-notes = (length chord)
+              for rs in voice 
+              do
+              (unless (simple-listp chord)
+                (error "slippery-chicken::get-events-with-src: ~
                       Each chord must be a simple list of notes. ~
                       ~%Perhaps you forgot the set the :chord-accessor? ~
                       ~%~a" chord))
-            (loop for event in rs 
-               ;; just in case there's less notes in the chord than
-               ;; there are voices... 
-               for pitch = (nth (mod n num-notes) chord)
-               do
-                 (print-simple event)
-               (unless pitch
-                 (error "slippery-chicken::get-events-with-src: ~%~
+              (loop for event in rs 
+                 ;; just in case there's less notes in the chord than
+                 ;; there are voices... 
+                 for pitch = (nth (mod n num-notes) chord)
+                 do
+                 ;; (print-simple event)
+                 (unless pitch
+                   (error "slippery-chicken::get-events-with-src: ~%~
                          Pitch is NIL!!!  Probably the reference ~
                          given in :note-number is out of ~%range for ~
                          the chosen chord.  ~%Current reference is ~
                          ~a into the chord ~a"  
-                        n chord))
-               ;; MDE Mon Apr 16 22:03:55 2012 -- remember these events have
-               ;; been cloned so we won't be affecting score output by changing
-               ;; the pitch here.
-               (setf (pitch-or-chord event) (clone pitch)))))
+                          n chord))
+                 ;; MDE Mon Apr 16 22:03:55 2012 -- remember these events have
+                 ;; been cloned so we won't be affecting score output by changing
+                 ;; the pitch here.
+                 (setf (pitch-or-chord event) (clone pitch))))))
     timings))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

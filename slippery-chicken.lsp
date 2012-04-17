@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:55:43 Tue Apr 17 2012 CEST
+;;; $$ Last modified: 19:57:51 Tue Apr 17 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2596,7 +2596,9 @@ T
 ;;; FUNCTION
 ;;; Using the sound files (samples) defined for the given reference in the
 ;;; sndfile-palette slot of slippery-chicken, write a soundfile using the pitch
-;;; and timing information of the slippery-chicken score.  
+;;; and timing information of the slippery-chicken score.  NB The sound file
+;;; will begin with the first sounding event in the section, so if there are
+;;; any leading rests, these will be skipped in the output file.
 ;;;
 ;;; By grouping sound files in the sndfile-palette slot we can generate a CLM
 ;;; sound file of our piece in various 'flavours': perhaps, for example, using
@@ -2986,6 +2988,8 @@ T
         (reset snds)
         (when snds2
           (reset snds)))
+      ;; MDE Tue Apr 17 18:53:36 2012 -- get the lowest start time of all the
+      ;; players. events only includes sounding events here, not rests.
       (setf first-event-start 
             (loop
                for player in events 
@@ -4265,6 +4269,31 @@ T
                                     (funcall mark-function))))
   t)
 |#
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; MDE Tue Apr 17 19:56:03 2012 -- 
+;;; ****m* slippery-chicken/get-section
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod get-section ((sc slippery-chicken) reference)
+;;; ****
+  (get-data-data reference (piece sc)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

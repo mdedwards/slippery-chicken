@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 19:10:47 Mon Apr  9 2012 BST
+;;; $$ Last modified: 20:48:32 Tue Apr 17 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -2869,6 +2869,7 @@ T
 (defmethod add-arrow-to-events ((sc slippery-chicken) start-text end-text
                                 event1-ref event2-ref player
                                 &optional warn-rest)
+;;; ****
   ;;         will signal an error if these events don't exist
   (let ((e1 (get-event sc (first event1-ref) (second event1-ref) player))
         (e2 (get-event sc (first event2-ref) (second event2-ref) player)))

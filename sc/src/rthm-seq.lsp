@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 08:32:17 Tue Apr 10 2012 BST
+;;; $$ Last modified: 15:04:08 Tue Apr 17 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1779,18 +1779,21 @@ rthm-seq-bar::get-beats: Can't find an exact beat of rhythms
     (error "~a~%sequenz::add-marks-aux: ~a notes in seq, but mark on ~a"
            rs (num-score-notes rs) (1+ end-note)))
   ;; cond in case we want to add other special cases later...
-  (cond ((eq mark 'slur)
+  ;; MDE Tue Apr 17 15:01:14 2012 -- add phrase 
+  (cond ((or (eq mark 'slur) (eq mark 'phrase))
          ;; slurs are a special case...
          (unless (> end-note start-note)
            (error "sequenz::add-marks-aux: slurs must be over ~
                    more than one note: (~a ~a)" 
                   start-note end-note))
          (add-mark (get-nth-non-rest-rhythm start-note rs) 
-                   ;; (first (cmn::get-cmn-marks 'begin-slur)))
-                   'beg-sl)
+                   (if (eq mark 'phrase)
+                       'beg-phrase
+                       'beg-sl))
          (add-mark (get-nth-non-rest-rhythm end-note rs) 
-                   ;;(first (cmn::get-cmn-marks 'end-slur))))
-                   'end-sl))
+                   (if (eq mark 'phrase)
+                       'end-phrase
+                       'end-sl)))
         (t
          ;; get-marks returns a list as some single marks need two
          ;; marks (like accent-staccato) 

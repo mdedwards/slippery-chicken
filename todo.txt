@@ -583,4 +583,7 @@ the envelope, converting them to bar nums before interpolation?
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 remove warn-ties optional arg in update-slots: bar-holder, sc, sequenz classes?
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+allow phrase marks to be added like slurs in the rsp:
+https://sourced.ecdf.ed.ac.uk/projects/user/medward2/ticket/170
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

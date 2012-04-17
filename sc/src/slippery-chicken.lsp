@@ -2646,7 +2646,7 @@ T
 ;;;   seed that is re-initialized each time clm-play is called.  the following
 ;;;   default ensures every note will play.
 ;;; - play-chance-env-exp default 0.5: the exponent the above envelope's Y
-;;; - values are raised to.
+;;;   values are raised to.
 ;;; - max-start-time default 99999999: usually we stop when we've got to the
 ;;;   end of the piece/section but if we specify a maximum start time here (in
 ;;;   seconds) events after this will be skipped.

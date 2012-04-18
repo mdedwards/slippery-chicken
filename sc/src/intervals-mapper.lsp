@@ -28,7 +28,7 @@
 ;;;
 ;;; Creation date:    August 3rd 2010 Edinburgh
 ;;;
-;;; $$ Last modified: 16:59:33 Tue Mar  6 2012 GMT
+;;; $$ Last modified: 16:24:38 Wed Apr 18 2012 BST
 ;;;
 ;;;
 ;;; SVN ID: $Id$
@@ -82,7 +82,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* intervals-mapper/get-pitch-symbols
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-pitch-symbols ((im intervals-mapper))
+;;; ****
   (loop for p in (scale-pitches im) collect (data p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -110,10 +129,28 @@
   (get-scale im (tonic im)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; extracts the interval structure of the pitch symbol list passed as data at
 ;;; init. 
+;;; ****m* intervals-mapper/get-steps
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-steps ((im intervals-mapper))
+;;; ****
   (let* ((oct1 (loop for n in (data im) collect
                     (read-from-string (format nil "~a~a" n 1))))
          (steps (loop for n1 in oct1 and n2 in (cdr oct1) 

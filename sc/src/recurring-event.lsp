@@ -50,7 +50,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 17:26:28 Wed Nov  2 2011 GMT
+;;; $$ Last modified: 16:16:27 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -271,11 +271,30 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* recurring-event/make-re
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-re (data &key return-data return-data-cycle id)
   (make-instance 'recurring-event :id id :data data :return-data return-data
                  :return-data-cycle return-data-cycle))
 
 (defun make-al (&optional start-at)
+;;; ****
   (let ((al (make-instance 'activity-levels)))
     (when start-at
       (reset al start-at))

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 10:43:27 Sat Feb 11 2012 GMT
+;;; $$ Last modified: 16:45:21 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -91,6 +91,7 @@
 |#
 ;;; SYNOPSIS
 (defun in-scale (scale)
+;;; ****
   (let ((sc (if (eq scale :chromatic)
                 cm::*chromatic-scale*
                 (cm::find-object scale))))
@@ -100,60 +101,269 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* cm/degrees-per-octave
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun degrees-per-octave ()
-  (- (cm::keynum 'cm::c5) (cm::keynum 'cm::c4)))
 ;;; ****
+  (- (cm::keynum 'cm::c5) (cm::keynum 'cm::c4)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* cm/degree-to-note
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun degree-to-note (degree &optional (scale cm::*scale*))
+;;; ****
   (rm-package (cm::note (round degree) :in scale)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* cm/midi-to-degree
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun midi-to-degree (midi-note)
+;;; ****
   (* midi-note (/ (degrees-per-octave) 12)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* cm/midi-to-note
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun midi-to-note (midi-note)
+;;; ****
   (degree-to-note midi-note cm::*chromatic-scale*))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* cm/midi-to-freq
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun midi-to-freq (midi-note)
+;;; ****
   (cm::hertz midi-note :in cm::*chromatic-scale*))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* cm/note-to-midi
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun note-to-midi (midi-note)
+;;; ****
   (note-to-degree midi-note cm::*chromatic-scale*))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* cm/degrees-to-notes
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun degrees-to-notes (degrees)
+;;; ****
   (loop for d in degrees collect (degree-to-note d)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* cm/freq-to-note
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun freq-to-note (freq &optional (scale cm::*scale*))
+;;; ****
   (rm-package (cm::note freq :hz t :in scale)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* cm/note-to-freq
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun note-to-freq (note)
+;;; ****
   (cm::hertz (rm-package note :cm)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* cm/note-to-degree
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun note-to-degree (note &optional (scale cm::*scale*))
+;;; ****
   (cm::keynum (rm-package note :cm) :in scale))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Defaults to *scale*
 
+;;; ****f* cm/freq-to-degree
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun freq-to-degree (degree &optional (chromatic-scale nil))
+;;; ****
   (declare (special cm::*chromatic-scale*))
   (cm::keynum degree :hz t :in (if chromatic-scale 
                                  cm::*chromatic-scale*
@@ -163,7 +373,26 @@
 
 ;;; MDE Sat Jan  7 18:06:01 2012 -- this will always return >= 0 <= 1.0 so a
 ;;; bend upwards from the nearest chromatic note below our freq 
+;;; ****f* cm/get-pitch-bend
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun get-pitch-bend (freq)
+;;; ****
   (let* ((chromatic-degree (freq-to-degree freq t))
          (rem (rem chromatic-degree 1)))
     ;; float discrepancies result in e.g. c#4 being 60.999996....
@@ -221,7 +450,26 @@
 
 ;;; MDE Sat Feb 11 10:41:11 2012 
 
+;;; ****f* cm/degrees-per-semitone
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun degrees-per-semitone (&optional (scale cm::*scale*))
+;;; ****
   (- (note-to-degree 'cs4 scale)
      (note-to-degree 'c4 scale)))
 
@@ -629,6 +877,7 @@
     (format t "~&~a events total" num-events)
     num-events))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* cm/midi-file-high-low
 ;;; FUNCTION
 ;;; midi-file-high-low:
@@ -661,10 +910,12 @@
             (sc::midi-to-note high) (sc::midi-to-note low))
     (values high low)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun midi-file-to-events-list (file &optional track)
   (let ((midi-stream (parse-midi-file-aux file track)))
     (subobjects midi-stream)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; btw the time slot is cm::object-time, midi note number cm::midi-keynum
 (defun parse-midi-file-aux (file &optional track)
   (let ((midi-stream (import-events file)))
@@ -717,6 +968,5 @@
         (warn "cm::midi-file-one-note::No events matched/written."))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF cm.lsp
 

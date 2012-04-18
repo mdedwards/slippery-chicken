@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 08:56:23 Thu Apr  5 2012 BST
+;;; $$ Last modified: 16:23:27 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -334,16 +334,74 @@
 ;;; the user to choose from.
 
 ;;; skip every other note, go for three notes, max one octave apart
+;;; ****f* instruments/chord-fun1
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun chord-fun1 (curve-num index pitch-list pitch-seq instrument set)
+;;; ****
   (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 2 3 12))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; every third note, 4 notes, (almost) no limit to span
+;;; ****f* instruments/chord-fun2
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun chord-fun2 (curve-num index pitch-list pitch-seq instrument set)
   (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 3 4 999))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; remember that the index is the desired top note of the chord
+;;; ****f* instruments/chord-fun-aux
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun chord-fun-aux (curve-num index pitch-list pitch-seq instrument set
                       skip num-notes max-span)
+;;; ****
   (declare (ignore set instrument pitch-seq curve-num))
   (unless (and (integer>0 skip) (integer>0 num-notes) (integer>0 max-span))
     (error "slippery-chicken::instruments:: skip, num-notes, and max-span must
@@ -384,8 +442,29 @@
     (when possible
       (make-chord (list p1 possible)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****f* instruments/string-chord-selection-fun
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun string-chord-selection-fun (curve-num index pitch-list pitch-seq 
                                    instrument set string-III)
+;;; ****
   (let* ((pll (length pitch-list))
          (diad-down (best-string-diad 
                      ;; have to reverse so that pitch at index is our starting
@@ -413,25 +492,105 @@
             (first (data diad)))
         diad)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* instruments/violin-chord-selection-fun
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (let ((vln-III (make-pitch 'd4)))
   (defun violin-chord-selection-fun (curve-num index pitch-list pitch-seq 
-                                     instrument set) 
+                                     instrument set)
+;;; **** 
     (string-chord-selection-fun curve-num index pitch-list pitch-seq 
                                 instrument set vln-III)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* instruments/viola-chord-selection-fun
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (let ((vla-III (make-pitch 'g3)))
   (defun viola-chord-selection-fun (curve-num index pitch-list pitch-seq 
                                     instrument set) 
+;;; **** 
     (string-chord-selection-fun curve-num index pitch-list pitch-seq 
                                 instrument set vla-III)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* instruments/cello-chord-selection-fun
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (let ((vc-III (make-pitch 'g2)))
   (defun cello-chord-selection-fun (curve-num index pitch-list pitch-seq 
-                                    instrument set) 
+                                    instrument set)
+;;; **** 
     (string-chord-selection-fun curve-num index pitch-list pitch-seq 
                                 instrument set vc-III)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* instruments/piano-chord-fun
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun piano-chord-fun (curve-num index pitch-list pitch-seq instrument set)
+;;; ****
   (declare (ignore set instrument pitch-seq curve-num))
   (let* ((start (max 0 (- index 3))) ;; try to get 4 notes
          (at-start (nth start pitch-list))
@@ -447,12 +606,15 @@
         (make-chord result)
         (first result))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; returns the index into the pitch-list of the first note playable on an
 ;; open-string (pitch object) and the fret number of the first playable note
 (defun guitar-chord-get-first-note (open-string pitch-list)
   (loop for p in pitch-list and i from 0 do
        (when (pitch>= p open-string)
          (return (values i (round (midi- p open-string)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; string is an index (0-based) into tuning-dist (which is a list of semitone
 ;;; distances between lowest and higher strings (lowest is 0)
@@ -504,12 +666,33 @@
              (push temp poss))))
     (nreverse poss)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; NB this assumes the pitch-list contains notes that are already playable as
 ;;; a guitar chord (which was fine in cheat sheet, as that was the premise of
 ;;; our harmony).
+
+;;; ****f* instruments/guitar-chord-selection-fun
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (let ((last-chord '()))
   (defun guitar-chord-selection-fun (curve-num index pitch-list pitch-seq 
-                                     instrument set) 
+                                     instrument set)
+;;; **** 
     (declare (ignore index instrument pitch-list))
     (let* ((subset (get-data 'guitar (subsets set)))
            (subset-pitches (data subset))
@@ -534,16 +717,16 @@
             last-chord (copy-list notes)
             chord (make-chord notes))
       (add-mark chord (when show-fingering
-                            (apply #'cmn::fingering 
-                                   (append
-                                    (reverse 
-                                     (loop 
-                                         for s in strings 
-                                         for f in fingering 
-                                         collect
-                                           (format nil "~3a ~a" s f)))
-                                    ;;'(:direction :up)))))
-                                    ))))
+                        (apply #'cmn::fingering 
+                               (append
+                                (reverse 
+                                 (loop 
+                                    for s in strings 
+                                    for f in fingering 
+                                    collect
+                                    (format nil "~3a ~a" s f)))
+                                ;;'(:direction :up)))))
+                                ))))
       chord)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

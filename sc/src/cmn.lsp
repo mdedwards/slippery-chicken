@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 08:59:15 Wed Apr 18 2012 BST
+;;; $$ Last modified: 16:47:24 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -540,7 +540,7 @@
                   (+ (staff-y0 note) text-y-offset)))
            (font-size font-size)))))
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; This doesn't handle a case where 15ma would be better, just the 8ve
 ;;; Also assumes treble clef!
 (defun chord-needs-8ve-up (note-list)
@@ -556,6 +556,7 @@
         t
       nil)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Assumes bass clef!
 (defun chord-needs-8ve-down (note-list)
   ;; this assumes the chord is sorted from lowest to highest, which is the case
@@ -710,5 +711,4 @@
               (system-engorge (list sys))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF cmn.lsp

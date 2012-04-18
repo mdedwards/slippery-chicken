@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:13:55 Wed Apr 18 2012 BST
+;;; $$ Last modified: 10:26:31 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -107,6 +107,8 @@
    (instrument-palette :accessor instrument-palette
                        :initarg :instrument-palette :initform nil)
    ;; in CMN: which instruments should write bar numbers in the score?  
+   ;; MDE Wed Apr 18 09:46:40 2012 -- if NIL we'll use the instruments at the
+   ;; top of each group 
    (instruments-write-bar-nums :accessor instruments-write-bar-nums
                                :type list :initarg :instruments-write-bar-nums
                                :initform nil)
@@ -788,11 +790,16 @@
     (unless (= (length rsm-players) ensemble-players-len)
       (warn "slippery-chicken::check-instruments: ~%Number of instruments ~
              in the rthm-seq-map is not the same ~%as that in the ensemble!"))
-    (loop for bw in (instruments-write-bar-nums sc)
-       unless (member bw ensemble-players) do
-       (error "slippery-chicken::check-instruments:  ~
-                  instruments-write-bar-nums contains reference to ~
-                  instrument not in ensemble: ~a ~a" bw ensemble-players))
+    (if (instruments-write-bar-nums sc)
+        (loop for bw in (instruments-write-bar-nums sc)
+           unless (member bw ensemble-players) do
+             (error "slippery-chicken::check-instruments:  ~
+                     instruments-write-bar-nums contains reference to ~
+                     instrument not in ensemble: ~a ~a" bw ensemble-players))
+        ;; MDE Wed Apr 18 09:49:30 2012 -- 
+        (when (staff-groupings sc)
+          (setf (instruments-write-bar-nums sc)
+                (get-groups-top-ins sc))))
     (loop for rsmp in rsm-players 
        unless (member rsmp ensemble-players) do
        (error "slippery-chicken::check-instruments: rthm-seq-map player ~a ~
@@ -864,7 +871,7 @@
 ;;;   bar-holder class) (default = NIL).
 ;;; - the nth sequence (for internal recursive use in the sequenz class)
 ;;;   (default = NIL)
-;;; - whether to warn when ties are used to the beginnin of a sequence.  This
+;;; - whether to warn when ties are used to the beginning of a sequence.  This
 ;;;   argument is now obsolete and ignored, but remains for some backward
 ;;;   compatibility (default T).
 ;;; 
@@ -883,10 +890,22 @@
                          (nth nil)
                          (warn-ties t))
 ;;; ****
+  (set-write-bar-num sc)
   (update-slots (piece sc) 
                 (if tempo-map tempo-map (tempo-map sc))
                 start-time start-time-qtrs start-bar current-section nth
                 warn-ties))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Apr 18 10:10:58 2012 -- currently only works for CMN.
+(defmethod set-write-bar-num ((sc slippery-chicken) &optional (every 5))
+  (loop for player in (players sc) do
+       (loop for bar-num from 1 to (num-bars sc) do
+            (setf (write-bar-num (get-bar sc 1 player)) nil)))
+  (loop for player in (instruments-write-bar-nums sc) do
+       (loop for i from (1- every) to (1- (num-bars sc)) by every do
+          (setf (write-bar-num (get-bar sc i player)) t)))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5058,9 +5077,11 @@ T
                            (avoid-melodic-octaves slippery-chicken)
                            t))))
          (notes (my-copy-list notes-from-pitch-seq))
+         #| MDE Wed Apr 18 10:24:10 2012 -- 
          (iwbns (when slippery-chicken 
                   (member player 
                           (instruments-write-bar-nums slippery-chicken))))
+         |#
          (do-prog-changes instrument-change)
          (current-note nil)
          ;; (last-note nil)
@@ -5107,16 +5128,17 @@ T
                                (clone (pitch-or-chord 
                                        last-note-previous-seq))))))
     #|
-    ;; this checks that there are no ties to the first note in a seq ;
+    ;; this checks that there are no ties to the first note in a seq ; ;
     (when (is-tied-to (get-nth-event 0 (get-bar sequenz 0 t)))
     (error "slippery-chicken::sc-make-sequenz: ~
               Tied first note of sequenz not allowed!"))
     |#
     (loop for bar in (bars sequenz) and bar-num from 1 do
-          ;; first of all set all the bars to write--then change in 
-          ;; sequenz::update-slots depending upon real bar num
-          (when iwbns
-            (setf (write-bar-num bar) t))
+       ;; first of all set all the bars to write--then change in 
+       ;; sequenz::update-slots depending upon real bar num
+       ;; MDE Wed Apr 18 10:22:57 2012 -- no longer do this here but in sc
+         ;;(when iwbns
+           ;; (setf (write-bar-num bar) t))
           (setf (player-section-ref bar) player-section-ref
                 (nth-seq bar) seq-num
                 (nth-bar bar) (1- bar-num))

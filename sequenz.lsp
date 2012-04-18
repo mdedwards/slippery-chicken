@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified: 09:02:54 Wed Apr 18 2012 BST
+;;; $$ Last modified: 10:09:50 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -143,10 +143,16 @@
            (update-events-bar-nums rsb (bar-num rsb))
            (incf time bar-dur)
            (incf time-qtrs (bar-qtr-duration rsb))
+             ;; MDE Wed Apr 18 10:09:22 2012 -- move whether to write bar nums
+           ;; into the sc class  
+             #|
            ;; MDE Wed Apr 18 09:02:27 2012 -- (1+ so that the bar num gets
            ;; written at the end of bar 4, 9... 
            (unless (zerop (mod (1+ (bar-num rsb)) 5))
              (setf (write-bar-num rsb) nil))
+           (when (write-bar-num rsb)
+             (format t "~%~a T" (bar-num rsb)))
+             |#
            sum bar-dur)
         (end-time s) (+ start-time (duration s))
         (duration-qtrs s) (loop for rsb in (bars s) sum (bar-qtr-duration rsb))

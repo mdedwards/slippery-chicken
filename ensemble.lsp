@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 18:00:37 Tue Apr  3 2012 BST
+;;; $$ Last modified: 12:28:40 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -67,6 +67,7 @@
   ;; according to this list. Eg '(cello 3 tuba 5 bassoon 6)
   ;; ***** NB when using CMN use the staff-groupings slot of the
   ;; slippery-chicken class instead!.  
+  ;; MDE Wed Apr 18 12:27:47 2012 -- now obsolete
   ((bar-line-writers :accessor bar-line-writers :type list 
                      :initarg :bar-line-writers :initform nil)
    (players :accessor players :type list :initform nil)
@@ -320,7 +321,7 @@
 ;;; keyword arguments:
 ;;; - :instrument-palette. An instrument palette object. This is a required
 ;;;   argument.
-;;; - :bar-line-writers.
+;;; - :bar-line-writers. Obsolete as no longer used.
 ;;; 
 ;;; RETURN VALUE
 ;;; An ensemble object.
@@ -328,11 +329,11 @@
 ;;; EXAMPLE
 #|
 (let ((ens (make-ensemble 
-	      'ens
-	      '((flt ((flute piccolo) :midi-channel 1))
-		(clr (b-flat-clarinet)))
-	      :instrument-palette
-	      +slippery-chicken-standard-instrument-palette+)))
+              'ens
+              '((flt ((flute piccolo) :midi-channel 1))
+                (clr (b-flat-clarinet)))
+              :instrument-palette
+              +slippery-chicken-standard-instrument-palette+)))
   (print ens))
 
 =>

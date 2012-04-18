@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:57:51 Tue Apr 17 2012 BST
+;;; $$ Last modified: 09:13:55 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -106,6 +106,7 @@
    ;; this contains the instrument definitions referenced in the ensemble.
    (instrument-palette :accessor instrument-palette
                        :initarg :instrument-palette :initform nil)
+   ;; in CMN: which instruments should write bar numbers in the score?  
    (instruments-write-bar-nums :accessor instruments-write-bar-nums
                                :type list :initarg :instruments-write-bar-nums
                                :initform nil)
@@ -520,51 +521,6 @@
 ;;; ****
   (num-notes (piece sc)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; ****m* slippery-chicken/change-bar-line-type
-;;; FUNCTION
-;;; Change single to double or repeat bar lines and vice-versa.  NB This is a
-;;; score function only, i.e., if you add repeat bar lines these will not (yet) 
-;;; be reflected in playback with MIDI or CLM.
-;;; 
-;;; ARGUMENTS 
-;;; - the slippery-chicken object
-;;; - the bar number at the end of which you want the bar line to change
-;;; - bar line type: 0 = normal, 1 = double bar, 2 = final double bar, 3 =
-;;;   begin repeat, 4 = begin and end repeat, 5 = end repeat 
-;;; RETURN VALUE  
-;;; always T
-;;; 
-;;; EXAMPLE
-#|
-(let ((min
-       (make-slippery-chicken
-        '+minimum+
-        :instrument-palette +slippery-chicken-standard-instrument-palette+
-        :ensemble '(((fl (flute :midi-channel 1))))
-        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
-        :set-map '((1 (1)))
-        :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -)))))
-        :rthm-seq-map '((1 ((fl (1))))))))
-  ;; this piece only has one bar so the barline will be 2 by default
-  (print (bar-line-type (get-bar min 1 'fl)))
-  (change-bar-line-type min 1 1)
-  (bar-line-type (get-bar min 1 'fl)))
-=> 
-...
-2
-1
-|#
-;;; 
-;;; SYNOPSIS
-(defmethod change-bar-line-type ((sc slippery-chicken) bar-num type)
-;;; ****
-  (let ((players-bars (get-bar sc bar-num)))
-    (loop for bar in players-bars do
-      (setf (bar-line-type bar) type)))
-  t)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* slippery-chicken/cmn-display
@@ -592,9 +548,11 @@
 ;;;    the first bar). 
 ;;; - :start-bar-numbering default NIL.  The bars will be numbered every
 ;;;    five bars starting from this number (or 1 if NIL).
-;;; - :auto-bar-nums default NIL. This is separate from the bar-number written
-;;;    in every part every 5 bars.  If set to e.g. 1 it will print every bar
-;;;    num at the top of each system, or if :by-line, at the start of each line
+;;; - :auto-bar-nums default NIL. This is separate from and in addition to the
+;;;    bar-number written in every part every 5 bars so use with caution.  It
+;;;    corresponds to CMN's automatic-measure-numbers.  If set to e.g. 1 it
+;;;    will print every bar number at the top of each system, or if :by-line, at
+;;;    the start of each line.
 ;;; - :end-bar default NIL.  What bar to end the score at (default NIL = at the
 ;;;    last bar).
 ;;; - :title default T. Write the title to the EPS file?  If T, use the title
@@ -2490,10 +2448,7 @@ T
                 (when (> count 1)
                   ;; we got the bar after a multi-bar rest
                   (setf (multi-bar-rest first-multi) count
-                        (write-bar-num first-multi) nil)
-                  ;;(format t "~&~a at bar ~a"
-                  ;;           count (bar-num first-multi))
-                  )
+                        (write-bar-num first-multi) nil))
                 (setf count 0)
                 (when rest-bar
                   (setf first-multi bar)

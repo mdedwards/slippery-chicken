@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified: 10:43:18 Fri Apr  6 2012 BST
+;;; $$ Last modified: 09:02:54 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -143,7 +143,9 @@
            (update-events-bar-nums rsb (bar-num rsb))
            (incf time bar-dur)
            (incf time-qtrs (bar-qtr-duration rsb))
-           (unless (zerop (mod (bar-num rsb) 5))
+           ;; MDE Wed Apr 18 09:02:27 2012 -- (1+ so that the bar num gets
+           ;; written at the end of bar 4, 9... 
+           (unless (zerop (mod (1+ (bar-num rsb)) 5))
              (setf (write-bar-num rsb) nil))
            sum bar-dur)
         (end-time s) (+ start-time (duration s))

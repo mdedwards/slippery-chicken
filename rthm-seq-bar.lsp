@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 22:01:11 Mon Apr 16 2012 CEST
+;;; $$ Last modified: 09:07:02 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2938,7 +2938,7 @@ data: (2 4)
   ;; bar nums are written over the bar line of this bar, so it's actually the
   ;; next bar, if you see what I mean  
   (let* ((e1 (get-nth-event 0 rsb))
-         (bar-num (1+ (bar-num rsb))) 
+         (bar-num (1+ (bar-num rsb)))
          (mbr (numberp (multi-bar-rest rsb)))
          (result 
           (if (is-rest-bar rsb)
@@ -2972,8 +2972,12 @@ data: (2 4)
                                         (multi-bar-rest rsb))
                                       (unless (show-rest rsb)
                                         cmn::invisible)))))
-                    (cmn::cmn-bar-line bar-num t (bar-line-type rsb)
+                    ;; MDE Wed Apr 18 08:33:02 2012 -- only write bar num if
+                    ;; this instrument is supposed to. 2nd arg was t.
+                    (cmn::cmn-bar-line bar-num (write-bar-num rsb)
+                                       (bar-line-type rsb)
                                        (rehearsal-letter rsb)))
+              ;; not a rest bar
               (econs 
                (loop for event in (rhythms rsb)
                   with first = t
@@ -2985,7 +2989,7 @@ data: (2 4)
                   for bnum = (when (and first
                                         ;; 3/4/07: bar-nums are added to the
                                         ;; bar-line not the event so make sure
-                                        ;; bnum is nil 
+                                        ;; bnum is nil here
                                         nil
                                         (write-bar-num rsb))
                                (bar-num rsb))
@@ -3062,7 +3066,9 @@ data: (2 4)
                ;; change second arg to t if we want real cmn bar
                ;; nums every five bars (and above!)
                (cmn::cmn-bar-line 
-                bar-num t
+                ;; MDE Wed Apr 18 08:33:02 2012 -- only write bar num if
+                ;; this instrument is supposed to. 2nd arg was t.
+                bar-num (write-bar-num rsb)
                 (bar-line-type rsb) (rehearsal-letter rsb))))))
     (when (write-time-sig rsb)
       (push (cmn::meter (get-time-sig-as-list rsb)) result))

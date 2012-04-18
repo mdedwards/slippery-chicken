@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 22:00:27 Fri Apr  6 2012 BST
+;;; $$ Last modified: 08:59:15 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -131,8 +131,8 @@
         ;; 2/4/07: it is now since changing 2nd arg of rsb::get-cmn-data to T
         (bnum (when (and bar-num 
                          write-bar-nums
-                         (not (zerop bar-num))
-                         (zerop (mod bar-num 5)))
+                         (not (zerop bar-num)))
+                ;; (zerop (mod bar-num 5)))
                 #|
                 ;; same as rehearsal-letters! ;
   (measure-number bar-num
@@ -157,6 +157,7 @@
 (defun cmn-bar-number (bar-num)
   ;; rehearsal numbers go haywire when attached to notes or rests so use normal
   ;; text instead... 
+  ;; (print bar-num)
   (when bar-num
     (text (format nil "~D" bar-num)
           (font-name "Verdana-Bold")

@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 20:48:32 Tue Apr 17 2012 BST
+;;; $$ Last modified: 07:57:41 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -2876,5 +2876,51 @@ T
     (add-arrow e1 start-text end-text warn-rest)
     (end-arrow e2)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* slippery-chicken/change-bar-line-type
+;;; FUNCTION
+;;; Change single to double or repeat bar lines and vice-versa.  NB This is a
+;;; score function only, i.e., if you add repeat bar lines these will not (yet) 
+;;; be reflected in playback with MIDI or CLM.
+;;; 
+;;; ARGUMENTS 
+;;; - the slippery-chicken object
+;;; - the bar number at the end of which you want the bar line to change
+;;; - bar line type: 0 = normal, 1 = double bar, 2 = final double bar, 3 =
+;;;   begin repeat, 4 = begin and end repeat, 5 = end repeat 
+;;; RETURN VALUE  
+;;; always T
+;;; 
+;;; EXAMPLE
+#|
+(let ((min
+       (make-slippery-chicken
+        '+minimum+
+        :instrument-palette +slippery-chicken-standard-instrument-palette+
+        :ensemble '(((fl (flute :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1)))
+        :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -)))))
+        :rthm-seq-map '((1 ((fl (1))))))))
+  ;; this piece only has one bar so the barline will be 2 by default
+  (print (bar-line-type (get-bar min 1 'fl)))
+  (change-bar-line-type min 1 1)
+  (bar-line-type (get-bar min 1 'fl)))
+=> 
+...
+2
+1
+|#
+;;; 
+;;; SYNOPSIS
+(defmethod change-bar-line-type ((sc slippery-chicken) bar-num type)
+;;; ****
+  (let ((players-bars (get-bar sc bar-num)))
+    (loop for bar in players-bars do
+      (setf (bar-line-type bar) type)))
+  t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; EOF slippery-chicken-edit.lsp

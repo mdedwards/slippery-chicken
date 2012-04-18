@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    3rd February 2011 (Ko Lanta, Thailand)
 ;;;
-;;; $$ Last modified: 10:56:31 Sat Dec 17 2011 ICT
+;;; $$ Last modified: 16:19:31 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -147,7 +147,26 @@
 
 ;;; this uses the internal slots to calculate the average and stores a new
 ;;; value as well.
+;;; ****m* popcorn/set-mean
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-mean ((pc popcorn) new-kernel)
+;;; ****
   (when new-kernel
     (incf (total pc) new-kernel)
     (incf (numk pc))
@@ -157,7 +176,26 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; this is the main function we'll call
+;;; ****m* popcorn/heat
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod heat ((pc popcorn))
+;;; ****
   (loop for k = (get-kernel pc) while k)
   (setf (kernels pc) (nreverse (kernels pc)))
   pc)
@@ -166,7 +204,26 @@
 
 ;;; our values range between >0 <= 1; put them in a new range
 ;;; NB this doesn't change our internal state except for the kernels slot
+;;; ****m* popcorn/scale
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod scale ((pc popcorn) max &optional (min 0.0) ignore1 ignore2)
+;;; ****
   (declare (ignore ignore1)
            (ignore ignore2))
   (let ((scaler (/ (- max min) (- (maxk pc) (mink pc)))))
@@ -176,15 +233,54 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* popcorn/fit-to-length
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod fit-to-length ((pc popcorn) length)
+;;; ****
   (setf (kernels pc) (force-length (kernels pc) length)
         (numk pc) length))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; get the next kernel and change internal state.  returns nil when kernel >
 ;;; 1.0 
+;;; ****m* popcorn/get-kernel
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-kernel ((pc popcorn))
+;;; ****
   (let ((k (get-kernel-aux pc)))
     (when (<= k 1.0)
       (set-mean pc k)
@@ -217,7 +313,26 @@
 ;;; for the command and data files repectively.  call gnuplot in a terminal
 ;;; with something like "gnuplot popcorn.txt; open popcorn.ps"
 ;;; draw data points connected by lines by default
+;;; ****m* popcorn/plot
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod plot ((pc popcorn) file &optional (lines t))
+;;; ****
   (with-open-file 
       (command (concatenate 'string file ".txt")
                :direction :output :if-does-not-exist :create
@@ -240,8 +355,27 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; starting-values must have at least 2 elements
+;;; ****f* popcorn/make-popcorn
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun make-popcorn (starting-values &key (id nil) (fixed-random t)
                      (max-spike 4.0) (min-spike 2.0))
+;;; ****
   (make-instance 'popcorn :data starting-values :id id 
                  :fixed-random fixed-random :max-spike max-spike
                  :min-spike min-spike))

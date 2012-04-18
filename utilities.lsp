@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 13:09:42 Mon Apr  9 2012 BST
+;;; $$ Last modified: 16:38:32 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -58,7 +58,26 @@
 ;;; same-width t would make sure all those minutes under 10 are written in the
 ;;; format e.g. 00:12.2 
 
+;;; ****f* utilities/secs-to-mins-secs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun secs-to-mins-secs (seconds &key (separator ":") (same-width nil))
+;;; ****
   (unless (and (numberp seconds) (>= seconds 0))
     (error "utilities::secs-to-mins-secs: ~a should be a number > 0." seconds))
   (multiple-value-bind
@@ -77,7 +96,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/mins-secs-to-secs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun mins-secs-to-secs (list)
+;;; ****
   (flet ((secs-msecs (secs msecs)
                      (when (or (> secs 60)
                                (> msecs 1000))
@@ -136,7 +174,26 @@
 
 ;;; replace 'words' in a string
 ;;; e.g. (string-replace "flat" "\\flat" "bflat clarinet") -> "b\\flat clarinet"
-(defun string-replace (what with string) ; all strings
+;;; ****f* utilities/string-replace
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defun string-replace (what with string)
+;;; **** ; all strings
   (let ((pos (search what string))
         (wlen (length what)))
     (when pos 
@@ -157,8 +214,28 @@
 
 ;;; End cons: puts an element at the end of a list.
 
+;;; ****f* utilities/econs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun econs (list new-back)
+;;; ****
   (append list (list new-back)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -179,7 +256,26 @@
 ;;; e.g. (GET-SUBLIST-INDICES '((1 2) (3 4) (5 6 7) (8 9) (10))) ->
 ;;; (0 2 4 7 9)
 
+;;; ****f* utilities/get-sublist-indices
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun get-sublist-indices (list)
+;;; ****
   (loop 
       with index = 0
       for sublist in list collect index
@@ -192,7 +288,26 @@
 ;;; e.g. (GET-SUBLIST-INDICES '((1 2) (3 4) (5 6 7) (8 9) (10))) ->
 ;;; (0 2 4 7 9)
 
+;;; ****f* utilities/get-sublist-lengths
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun get-sublist-lengths (list &optional (remove-zeros nil))
+;;; ****
   (let ((result (loop for sublist in list collect (length sublist))))
     (if remove-zeros
         (remove 0 result)
@@ -236,7 +351,26 @@
 ;;; e.g (split-into-sub-groups '(1 2 3 4 5 6 7 8 9 10) '(2 2 3 2 1)) ->
 ;;; ((1 2) (3 4) (5 6 7) (8 9) (10))
 
+;;; ****f* utilities/split-into-sub-groups
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun split-into-sub-groups (list groups)
+;;; ****
   (when (member 0 groups)
     (error "utilities::split-into-subgroups: 0? ~a" groups))
   (loop 
@@ -255,7 +389,26 @@
 ;;; e.g. (split-into-sub-groups2 '(1 2 3 4 5 6 7 8 9) 4) ->
 ;;; ((1 2 3 4) (5 6 7 8) (9))
 
+;;; ****f* utilities/split-into-sub-groups2
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun split-into-sub-groups2 (list length)
+;;; ****
   (loop for i from 0 by length while list collect
         (loop repeat length while list collect (pop list))))
 
@@ -265,7 +418,26 @@
 ;;; e.g. (split-into-sub-groups3 '(1 2 3 4 5 6 7 8 9) 4) ->
 ;;; ((1 2 3 4) (5 6 7 8 9))
 
+;;; ****f* utilities/split-into-sub-groups3
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun split-into-sub-groups3 (list length)
+;;; ****
   ;; we work in groups of 7 but stick any remainder onto
   ;; the end of the last loop 
   (if (<= (length list) length)
@@ -290,17 +462,55 @@
             (equal-within-tolerance 1.0 test))
         (values (zerop test)
                 float))))
-                 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/power-of-2
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun power-of-2 (float)
+;;; ****
   (whole-num-p (log float 2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; returns the power of 2 <= num
 
+;;; ****f* utilities/nearest-power-of-2
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun nearest-power-of-2 (num)
+;;; ****
   (if (power-of-2 num)
       num
     (loop with p = 1 do
@@ -310,11 +520,31 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/flatten
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun flatten (nested-list)
+;;; ****
   (cond ((null nested-list) nil)
         ((atom nested-list) (list nested-list))
         (t (append (flatten (first nested-list))
                    (flatten (rest nested-list))))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -332,7 +562,26 @@
 ;;;   (coerce 261.63 'double-float) 0.00001) => T
 
 
+;;; ****f* utilities/equal-within-tolerance
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun equal-within-tolerance (a b &optional (tolerance 0.000001d0))
+;;; ****
   ;; BTW coercing a and b to 'double-float doesn't help if they are of
   ;; different float types to begin with.
   (<= (abs (- a b)) tolerance))
@@ -340,13 +589,51 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Mar 19 19:39:55 2012 
 
+;;; ****f* utilities/decimal-places
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun decimal-places (num places)
+;;; ****
   (let ((pow (float (expt 10 places))))
     (/ (round num (/ pow)) pow)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/almost-zero
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun almost-zero (num &optional (tolerance 0.000001))
+;;; ****
   (equal-within-tolerance num 0.0 tolerance))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -356,7 +643,26 @@
 ;;; (round-if-close 23.0001) -> 23.0001
 ;;; (round-if-close 22) -> 22
 
+;;; ****f* utilities/round-if-close
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun round-if-close (num &optional (tolerance 0.000001))
+;;; ****
   (multiple-value-bind
       (int rem)
       (round num)
@@ -381,7 +687,26 @@
 
 ;;; Sort a list of symbols alphabetically but case-insensitive.
 
+;;; ****f* utilities/sort-symbol-list
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun sort-symbol-list (list)
+;;; ****
   (sort list
         #'(lambda (x y) 
             (string-lessp (string x) (string y)))))
@@ -392,7 +717,26 @@
 
 ;;;(format nil "~{~a~a~^~}" separator list))
 
+;;; ****f* utilities/list-to-string
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun list-to-string (list &optional (separator " ") (nil-as-string t))
+;;; ****
   (if list
       (if (listp list)
           (loop for i in list with result = "" do
@@ -433,7 +777,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/semitones
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun semitones (st &optional (octave-size 2.0) (divisions-per-octave 12))
+;;; ****
   "semitones just returns the right src from the given 
    semitone transposition. e.g. (semitones 12) => 2.0"
   (expt octave-size (/ st divisions-per-octave)))
@@ -443,20 +806,40 @@
 ;;; Return the semitone transposition for a given sampling rate
 ;;; conversion factor.
 
+;;; ****f* utilities/srt
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (let ((last8vesize 0)
       (log8ve 0.0)) ;; do we don't have to recalculate each time
   (defun srt (srt &optional (octave-size 2.0) (divisions-per-octave 12)
               ;; MDE Tue Feb  7 16:59:45 2012 -- round so we don't get tiny
               ;; fractions of semitones due to float inaccuracies?
               (round-to 0.0001))
+;;; ****
     (unless (= octave-size last8vesize)
       (setf last8vesize octave-size
             log8ve (log octave-size 10.0)))
+
     (let ((result (/ (* divisions-per-octave (log srt 10.0))
                      log8ve)))
       (if round-to
-        (/ (round result round-to) (/ round-to))
-        result))))
+          (/ (round result round-to) (/ round-to))
+          result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -465,7 +848,26 @@
 ;;; (replace-elements '(0 1 2 3 4 5 6 7 8 9) 3 7 '(dog cat))
 ;;; -> (0 1 2 DOG CAT 8 9)
 
+;;; ****f* utilities/replace-elements
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun replace-elements (list start end new)
+;;; ****
   (unless (listp new)
     (setf new (list new)))
   (when (or (>= start end)
@@ -480,7 +882,26 @@
 
 ;;; (splice '(3 4 5) '(1 2 6 7 8) 2) -> (1 2 3 4 5 6 7 8)
 
+;;; ****f* utilities/splice
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun splice (elements into-list where)
+;;; ****
   (unless (and (listp elements)
                (listp into-list))
     (error "splice: arguments 1 and 2 must be lists!: ~a ~a"
@@ -499,7 +920,26 @@
 ;;; start is 0-based.
 ;;; (remove-elements '(0 1 2 3 4 5 6) 0 2) -> (2 3 4 5 6)
 
+;;; ****f* utilities/remove-elements
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun remove-elements (list start how-many)
+;;; ****
   (unless (listp list)
     (error "remove-elements: argument 1 must be a list!: ~a"
            list))
@@ -514,7 +954,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/setf-last
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun setf-last (list new-last)
+;;; ****
   (unless list
     (error "utilities::setf-last: list is empty!"))
   (setf (nth (1- (length list)) list) new-last))
@@ -522,6 +981,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+cmn
+;;; ****
 (defmacro mk (mark &rest data)
   `(cmn::get-cmn-marks ',mark ,@data))
 
@@ -543,8 +1003,26 @@
 ;;;-> ((1 2 3 3 4 5 5 6 7) (A B C C D E E F G)
 ;;;    (BLAH BLAH BLAH DING DONG DING SING SONG SING))
 
+;;; ****f* utilities/nconc-sublists
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
 
+|#
+;;; SYNOPSIS
 (defun nconc-sublists (lists)
+;;; ****
   (let ((len (length lists)))
     (loop for d in (first lists) and i from 0 collect
           (if (simple-listp d)
@@ -557,7 +1035,26 @@
 ;;; go from low to high in num-steps steps but using an exponential curve 
 ;;; instead of straight interpolation 
 
+;;; ****f* utilities/logarithmic-steps
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun logarithmic-steps (low high num-steps &optional (exponent 2))
+;;; ****
   (loop for i below num-steps 
       with curve = (list 0 low (1- num-steps) high)
       collect
@@ -565,7 +1062,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/interpolate
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun interpolate (point env &key (scaler 1) (exp 1) (warn t))
+;;; ****
   "e.g. (interpolate 50 '(0 0 100 1) :scaler .5 :exp 2)
    => 0.0625
    The :EXP arg is the exponent that the interpolation result should
@@ -581,7 +1097,7 @@
            (error "interpolate: Can't interpolate ~a in ~a" point env))
           (t (interp-aux point env scaler exp)))))
   
-  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun interp-aux (point env scaler exp)
   (let ((here (loop for i in env by #'cddr and j from 1 do
                    (if (<= point i) (return (+ j j -2))))))
@@ -605,6 +1121,7 @@
                      (* scaler (nth (+ here 1) env))
                      exp))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun get-interpd-y (point x1 y1 x2 y2 exp)
   "The arguments are the point we want interpolated,
    the x,y coordinates of the line the point lies within, and an exponent.  
@@ -615,7 +1132,7 @@
                            (- x2 x1)) exp)
                   (- y2 y1)))))
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun lastx (env)
   "lastx returns the last x value in the given envelope.
    e.g. (lastx '(0 0 20 4 30 5 100 0)) => 100"
@@ -624,6 +1141,7 @@
         (error "utilities::lastx: Wrong number of elements in ~a." env))
     (nth (- len 2) env)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun new-lastx (env x)
   "new-lastx will take an envelope and return it
    with scaled x values, the maximum of which is the value of new-lastx's 
@@ -638,17 +1156,56 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/scale-env
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun scale-env (env y-scaler &key x-scaler 
                                     (x-min most-negative-double-float)
                                     (y-min most-negative-double-float)
                                     (x-max most-positive-double-float)
                                     (y-max most-positive-double-float))
+;;; ****
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
       collect (if x-scaler (min x-max (max x-min (* x x-scaler)))
                 x) 
       collect (min y-max (max y-min (* y y-scaler)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/reverse-env
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun reverse-env (env)
+;;; ****
   "reverse-env returns the reverse of the envelope 
    supplied to it.  
    e.g. (reverse-env '(0 0 60 .3 100 1)) => (0 1 40 0.3 100 0)."
@@ -659,8 +1216,27 @@
                 (push (- x-max x) result))
           result))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/repeat-env
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
 
+|#
+;;; SYNOPSIS
 (defun repeat-env (env num-times &optional reflected)
+;;; ****
   "repeat-env will repeat an envelope the number 
    of times specified by its second argument.  
    e.g. (repeat-env '(0 0 100 1) 2) => (0 0 50 1 51 0 100 1).  
@@ -697,13 +1273,55 @@
                        (car result) (+ (car result) offset))))
     result))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****f* utilities/env-plus
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun env-plus (env add)
+;;; ****
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr
       collect x collect (+ y add)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****f* utilities/env-symmetrical
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun env-symmetrical (env &optional (centre .5) 
                         (min most-negative-double-float)
                         (max most-positive-double-float))
+;;; ****
   "Returns an envelope that is symmetrical around the key variable 'centre'.
    e.g. (symmetrical '(0 0 30 .2 70 .95 100 .5)) => 
    (0 1.0 30 0.8 70 0.05 100 0.5)"
@@ -716,7 +1334,27 @@
 ;;; 3.2.11: returns a list of length new-len by adding or removing items at
 ;;; regular intervals.  If adding items and the list contains numbers, linear
 ;;; interpolation will be used.
+
+;;; ****f* utilities/force-length
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun force-length (list new-len)
+;;; ****
   (let* ((len (length list))
          (diff (- new-len len)))
     (when (or (zerop new-len) (>= diff len))
@@ -765,13 +1403,32 @@
 (defstruct wavelab-section
   (sndfile) (description) (start) (end))
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; This handles as many marker files as you want, if they're in a list.  Only
 ;;; caveat is that each file must refer to the same sndfile...but that could be
 ;;; easily altered. 
+;;; ****f* utilities/parse-wavelab-marker-files-for-sections
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun parse-wavelab-marker-files-for-sections 
     (marker-files sndfile
      &optional (sampling-rate 44100) (print nil))
+;;; ****
   (if (listp marker-files)
       (loop for file in marker-files appending
             (parse-wavelab-marker-file-for-sections
@@ -779,10 +1436,30 @@
     (parse-wavelab-marker-file-for-sections
      marker-files sndfile sampling-rate print)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; This handles one marker file.
+;;; ****f* utilities/parse-wavelab-marker-file-for-sections
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun parse-wavelab-marker-file-for-sections
     (marker-file sndfile
      &optional (sampling-rate 44100) (print nil))
+;;; ****
   (with-open-file 
       (mrk marker-file :direction :input :if-does-not-exist :error)
     (loop with name 
@@ -861,29 +1538,41 @@
            (multiple-value-bind
                  (param value)
                (get-parameter line)
-             #|
-             (when (string= param "name")      
-             (setf name (if (string= value "*")
-             nil
-             value))
-             (incf count))
-             |#
-               (when (string= param "pos")
-                 (setf time (float (/ (read-from-string value)
-                                      sampling-rate)))
-                 (format txt "~&~a, ~,6f;" count time))
-               (when eof 
-                 (terpri txt)
-                 (format t "~%~%~a markers read~%" count)
-                 (return t))))))))
+             (when (string= param "pos")
+               (setf time (float (/ (read-from-string value)
+                                    sampling-rate)))
+               (format txt "~&~a, ~,6f;" count time))
+             (when eof 
+               (terpri txt)
+               (format t "~%~%~a markers read~%" count)
+               (return t))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #|
-             (wavelab-to-audacity-marker-file 
-"/music/limine/nuendo/zkm-compressed-reverb-44-24.MRK" 88200)
-             |#
+(wavelab-to-audacity-marker-file 
+ "/music/limine/nuendo/zkm-compressed-reverb-44-24.MRK" 88200)
+|#
 
+;;; ****f* utilities/wavelab-to-audacity-marker-file
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun wavelab-to-audacity-marker-file (file &optional (sampling-rate 44100))
+;;; ****
   (with-open-file 
       (mrk file :direction :input :if-does-not-exist :error)
     (with-open-file
@@ -927,8 +1616,27 @@
 ;;; file.  Max-length is the max distance (secs) between two points: anything
 ;;; greater than this and a warning will be issued.
 
+;;; ****f* utilities/parse-wavelab-marker-file-for-loops
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun parse-wavelab-marker-file-for-loops
     (marker-file &optional (sampling-rate 44100) (max-length 1.0))
+;;; ****
   (let ((loop-points '())
         (in-loop nil)
         (result '()))
@@ -1042,7 +1750,26 @@
 
 ;;; (parse-audacity-label-file-for-loops "loops.txt")
 
+;;; ****f* utilities/parse-audacity-label-file-for-loops
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun parse-audacity-label-file-for-loops (label-file)
+;;; ****
   (let ((loop-points '())
         (result '()))
     (flet ((write-loop-points ()
@@ -1200,7 +1927,26 @@
 
 ;;; (reflect-list '(1 4 3 5 9 6 2 7 8 8 9))
 
+;;; ****f* utilities/reflect-list
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun reflect-list (list)
+;;; ****
   (let ((sorted (sort (copy-list list) #'<))
         (len (length list))
         (pos 0))
@@ -1212,19 +1958,77 @@
           
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/middle
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun middle (lower upper)
+;;; ****
   (+ lower (/ (- upper lower) 2.0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/hz2ms
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun hz2ms (hertz)
+;;; ****
   (/ 1000.0 hertz))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; (split-groups 31 10) -> (10 10 10 1)
 
+;;; ****f* utilities/split-groups
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun split-groups (num divider)
+;;; ****
   (unless (and (> num 0) (> divider 0))
     (error "utilities::split-groups: num (~a) and dividor (~a) should both ~
             be > 0" num divider))
@@ -1240,7 +2044,26 @@
 
 ;;; (remove-more '(1 2 3 4 5 5 5 6 7 7 8) 5 7 2) -> (1 3 4 6 8)
 
+;;; ****f* utilities/remove-more
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun remove-more (list test &rest remove)
+;;; ****
   (loop 
       with result = list
       for r in remove
@@ -1252,14 +2075,52 @@
 
 ;;; convert points (72 per inch) to centimeters.
 
+;;; ****f* utilities/pts2cm
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun pts2cm (points)
+;;; ****
   (* 2.54 (/ points 72.0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; low and high are inclusive except if float given: then we can't quite reach
 ;; high.  
+;;; ****f* utilities/between
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun between (low high &optional fixed-random)
+;;; ****
   (unless (> high low)
     (error "utilities::between: high (~a) should be > low (~a)" high low))
   (if (and (integerp low) (integerp high))
@@ -1272,19 +2133,77 @@
 
 ;;; this randomises a number
 ;;; always returns float
+;;; ****f* utilities/randomise
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun randomise (number &optional (percent 5))
+;;; ****
   (let ((room (* number (/ percent 200.0))))
     (between (- number room) (+ number room))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; this returns a random portion of the number, +/- percent
+;;; ****f* utilities/random-amount
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun random-amount (number &optional (percent 5))
+;;; ****
   (let ((pc (/ percent 100.0)))
     (* number (+ (- (/ pc 2.0))
                  (random (float pc))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun random-from-list (list &optional list-length) ;; for efficiency
+;;; ****f* utilities/random-from-list
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defun random-from-list (list &optional list-length) ; for efficiency
+;;; **** 
   (nth (random (if list-length 
                    list-length 
                  (length list)))
@@ -1292,19 +2211,76 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/read-from-file
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun read-from-file (file)
+;;; ****
   (with-open-file
    (stream file :direction :input :if-does-not-exist :error)
    (read stream)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/wrap-list
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun wrap-list (list start)
+;;; ****
   (append (nthcdr start list) (subseq list 0 start)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/combine-into-symbol
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun combine-into-symbol (&rest params)
+;;; ****
   (read-from-string (format nil "~{~a~^~}" params)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1316,13 +2292,51 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Swap elements of a list e.g. '(1 2 3 4 5 6 7 8) -> '(2 1 4 3 6 5 8 7)
+;;; ****f* utilities/swap-elements
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun swap-elements (list)
+;;; ****
   (loop for a in list by #'cddr and b in (cdr list) by #'cddr 
      collect b collect a))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/factor
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun factor (num fac)
+;;; ****
   (when (zerop fac)
     (error "utilities::factor: 2nd argument cannot be 0: (factor ~a ~a)"
            num fac))
@@ -1330,14 +2344,53 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/octave-freqs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun octave-freqs (freq1 freq2 &optional (unison-also t))
+;;; ****
   (or (and unison-also (= freq1 freq2))
       (power-of-2 (/ freq1 freq2))
       (power-of-2 (/ freq2 freq1))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Dec 13 12:08:03 2011 -- whether either freq is a partial of the
 ;;; other  
+;;; ****f* utilities/partial-freqs
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun partial-freqs (freq1 freq2 &optional (unison-also t))
+;;; ****
   (or (and unison-also (= freq1 freq2))
       (factor freq1 freq2)
       (factor freq2 freq1)))
@@ -1371,8 +2424,27 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/get-harmonics
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun get-harmonics (fundamental &key (start-at 1) (min-freq 20)
                       (max-freq 20000))
+;;; ****
   (loop for h from start-at
      for freq = (* fundamental h)
      while (<= freq max-freq)
@@ -1381,10 +2453,49 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* utilities/db2amp
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmacro db2amp (db)
+;;; ****
   `(expt 10.0 (/ ,db 20)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* utilities/amp2db
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmacro amp2db (amp)
+;;; ****
   `(* 20.0 (log ,amp 10)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1392,14 +2503,52 @@
 ;;; return a list containing onlt those elements that are not in the first
 ;;; argument list
 
+;;; ****f* utilities/remove-all
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun remove-all (rm-list list &optional (test #' eq))
+;;; ****
   (loop for rm in rm-list do
        (setf list (remove rm list :test test)))
   list)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/amplitude-to-dynamic
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun amplitude-to-dynamic (amp &optional (warn t))
+;;; ****
   (let ((dynamics '(niente pppp ppp pp p mp mf f ff fff ffff)))
     (flet ((warn-range (direction)      ; t=too high, nil= too low
              (when warn
@@ -1414,7 +2563,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* utilities/dynamic-to-amplitude
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun dynamic-to-amplitude (dynamic &optional (warn t))
+;;; ****
   (let ((pos (position dynamic '(niente pppp ppp pp p mp mf f ff fff ffff))))
     (if pos
         (/ pos 10.0)
@@ -1425,7 +2593,26 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 2.3.11: if any of the items in <what> are in <from>, they're moved to <to>
+;;; ****f* utilities/move-elements
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun move-elements (what from to &optional (test #'eq))
+;;; ****
   (unless (listp what)
     (setf what (list what)))
   (loop for el in what do
@@ -1440,7 +2627,26 @@
 ;;; new list.  NB if the element exists more than once all occurrences will be
 ;;; removed and only one of them placed at the end. e.g. 
 ;;; (move-to-end 2 '(1 2 2 3 4 5)) -> (1 3 4 5 2)
+;;; ****f* utilities/move-to-end
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun move-to-end (what list &optional (test #'eql))
+;;; ****
   (if (member what list :test test)
       (econs (remove what list :test test) what)
       list))
@@ -1458,7 +2664,26 @@
 ;;; http://en.wikipedia.org/wiki/Collatz_conjecture)
 ;;; (loop for i from 5 to 30 do
 ;;;        (print i) (print (loop for n in (hailstone i) sum n)))
+;;; ****f* utilities/hailstone
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun hailstone (n)
+;;; ****
   (loop collect n while (> n 1) 
      do (setf n (if (oddp n)
                     (1+ (* 3 n))

@@ -1,5 +1,48 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% File:             lilypond.ly
+%%%
+%%% Class Hierarchy:  none (no classes defined)
+%%%
+%%% Project:          slippery chicken (algorithmic composition)
+%%%
+%%% Purpose:          Definition of some markup commands for inclusion in
+%%%                   Lilypond scores. 
+%%%
+%%% Author:           Michael Edwards: m@michael-edwards.org
+%%%
+%%% Creation date:    23rd November 2011
+%%%
+%%% $$ Last modified: 16:51:40 Wed Apr 18 2012 BST
+%%%
+%%% SVN ID: $Id: lilypond.ly 963 2010-04-08 20:58:32Z medward2 $
+%%%
+%%% ****
+%%% Licence:          Copyright (c) 2010 Michael Edwards
+%%%
+%%%                   This file is part of slippery-chicken
+%%%
+%%%                   slippery-chicken is free software% you can redistribute it
+%%%                   and/or modify it under the terms of the GNU General
+%%%                   Public License as published by the Free Software
+%%%                   Foundation% either version 2 of the License, or (at your
+%%%                   option) any later version.
+%%%
+%%%                   slippery-chicken is distributed in the hope that it will
+%%%                   be useful, but WITHOUT ANY WARRANTY% without even the
+%%%                   implied warranty of MERCHANTABILITY or FITNESS FOR A
+%%%                   PARTICULAR PURPOSE.  See the GNU General Public License
+%%%                   for more details.
+%%%
+%%%                   You should have received a copy of the GNU General Public
+%%%                   License along with slippery-chicken% if not, write to the
+%%%                   Free Software Foundation, Inc., 59 Temple Place, Suite
+%%%                   330, Boston, MA 02111-1307 USA
+%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % although this is basically scheme, we're including this file in a lilypond
-% file so the comment char is % not ;
+% file so the comment char is % not %
 % The now standard Bartok pizzicato, somehow not included in lilypond.
 #(define-markup-command (snappizz layout props) () 
  (interpret-markup layout props 
@@ -89,3 +132,5 @@ bracketEnd = \markup \bracketEnd
         (markup #:general-align Y DOWN  #:epsfile X 2 "up-down.eps")))
 arrowUpDown = \markup \arrowUpDown
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% EOF lilypond.ly

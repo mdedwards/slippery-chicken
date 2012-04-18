@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 19:13:44 Mon Apr  9 2012 BST
+;;; $$ Last modified: 10:33:26 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -253,8 +253,9 @@
                          (start-bar 1)
                          (current-section nil)
                          (nth nil)
-                         (warn-ties t))
-  (declare (ignore nth))
+                         (warn-ties t)
+                         (update-write-bar-nums nil))
+  (declare (ignore nth update-write-bar-nums))
   (object-is-nil? tempo-map "bar-holder::update-slots" 'tempo-map)
   (let ((bar start-bar)
         (time start-time)

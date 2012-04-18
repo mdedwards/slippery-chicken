@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:27:53 Wed Apr 18 2012 BST
+;;; $$ Last modified: 10:57:47 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -386,7 +386,7 @@
               (shorten-large-fast-leaps sc :verbose nil))
       ;; make sure tempo changes get registered in midi output
       (update-events-tempo sc)
-      ;; 28.1.11: can't believe we haven't done this before
+      ;; 28.1.11
       (check-time-sigs sc)
       ;; 5.4.11
       (cleanup-rest-bars sc)
@@ -652,6 +652,8 @@
                         (display-time nil)
                         (add-postscript nil))
 ;;; ****
+  ;; MDE Wed Apr 18 10:57:41 2012 -- 
+  (set-write-bar-num sc)
   (when respell-notes
     (respell-notes sc respell-notes))
   ;; MDE Wed Apr 11 12:09:13 2012
@@ -888,21 +890,24 @@
                          (start-bar 1)
                          (current-section nil)
                          (nth nil)
-                         (warn-ties t))
+                         (warn-ties t)
+                         (update-write-bar-nums nil))
 ;;; ****
   (prog1
       (update-slots (piece sc) 
                     (if tempo-map tempo-map (tempo-map sc))
                     start-time start-time-qtrs start-bar current-section nth
                     warn-ties)
-      (set-write-bar-num sc)))
+    (when update-write-bar-nums
+      (set-write-bar-num sc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Apr 18 10:10:58 2012 -- currently only works for CMN.
 (defmethod set-write-bar-num ((sc slippery-chicken) &optional (every 5))
+  (print 'write-bar-num)
   (loop for player in (players sc) do
        (loop for bar-num from 1 to (num-bars sc) do
-            (setf (write-bar-num (get-bar sc 1 player)) nil)))
+            (setf (write-bar-num (get-bar sc bar-num player)) nil)))
   (loop for player in (instruments-write-bar-nums sc) do
        (loop for i from (1- every) to (1- (num-bars sc)) by every do
           (setf (write-bar-num (get-bar sc i player)) t)))

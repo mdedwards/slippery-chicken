@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified: 10:09:50 Wed Apr 18 2012 BST
+;;; $$ Last modified: 10:33:46 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -107,8 +107,9 @@
                          (start-bar 1)
                          (current-section nil)
                          (sequenz-num nil) ; 1-based
-                         (warn-ties t))
-  (declare (ignore current-section warn-ties))
+                         (warn-ties t)
+                         (update-write-bar-nums nil))
+  (declare (ignore current-section warn-ties update-write-bar-nums))
   ;; (print 'sequenz-update-slots)
   (setf (start-bar s) start-bar
         (start-time s) start-time

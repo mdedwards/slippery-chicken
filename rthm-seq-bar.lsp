@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 09:07:02 Wed Apr 18 2012 BST
+;;; $$ Last modified: 11:47:09 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3504,24 +3504,29 @@ data: (2 4)
 ;;; - A rthm-seq-bar object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :written. T or NIL to indicate whether the test is to
-;;;   handle the written or sounding pitch in the event. T = written. Default = 
-;;;   NIL. 
-;;; - keyword argument :force-naturals. T or NIL to indicate whether to force
-;;;   "natural" note names that contain no F or S in their name to convert to 
-;;;   their enharmonic equivalent (ie, B3 = CF4)
+
+;;; - keyword argument :written default NIL. T or NIL to indicate whether the
+;;;   test is to handle the written or sounding pitch in the event. T =
+;;;   written. Default = NIL.
+;;; - keyword argument :force-naturals default NIL. T or NIL to indicate
+;;;   whether to force "natural" note names that contain no F or S in their
+;;;   name to convert to their enharmonic equivalent (e.g. B3 = CF4)
+;;; - keyword argument :pitches default NIL.  All sharp/flat pitches are
+;;;   changed by default but if a list of pitch objects or symbols is given,
+;;;   then only those pitches will be changed.  Note that if written is T, then
+;;;   this pitch list should be the written not sounding pitches.
 ;;; 
 ;;; RETURN VALUE  
-;;; Always returns NIL.
+;;; Always returns T.
 ;;; 
 ;;; EXAMPLE
 #|
-;; The method returns NIL.
+;; The method returns T.
 (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
                                            collect (make-event 'cs4 'e))))))
   (enharmonic rsb))
 
-=> NIL
+=> T
 
 ;; Create a rthm-seq-bar object with events, apply the enharmonic method, and
 ;; print the corresponding slots to see the changes
@@ -3570,10 +3575,24 @@ data: (2 4)
 
   |#
 ;;; SYNOPSIS
-(defmethod enharmonic ((rsb rthm-seq-bar) &key written force-naturals)
+(defmethod enharmonic ((rsb rthm-seq-bar) &key written force-naturals
+                       ;; MDE Wed Apr 18 11:34:01 2012
+                       pitches)
 ;;; ****
+  (setf pitches (init-pitch-list pitches))
   (loop for r in (rhythms rsb) do
-       (enharmonic r :written written :force-naturals force-naturals)))
+       ;; MDE Wed Apr 18 11:35:49 2012 -- 
+       (when (and (event-p r)
+                  (is-single-pitch r)
+                  (or (not pitches)
+                      (pitch-member (if written
+                                        (written-pitch-or-chord r)
+                                        (pitch-or-chord r))
+                                    pitches
+                                    ;; enharmonics not equal!
+                                    nil)))
+         (enharmonic r :written written :force-naturals force-naturals)))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

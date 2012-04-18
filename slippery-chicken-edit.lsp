@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 07:57:41 Wed Apr 18 2012 BST
+;;; $$ Last modified: 12:12:41 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -242,7 +242,7 @@ T
                       
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/auto-accidentals
 ;;; FUNCTION
@@ -288,8 +288,6 @@ T
                 (setf (nth i last-notes) last-attack)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
-
 ;;; ****m* slippery-chicken-edit/respell-notes
 ;;; FUNCTION
 ;;; 
@@ -317,7 +315,7 @@ T
   (respell-notes-aux sc (when (listp corrections) corrections)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+;;; MDE Wed Apr 18 11:57:11 2012 -- added pitches keyword
 
 ;;; 11.4.11: start and end can be bar numbers or (bar note) pairs where note is
 ;;; 1-based and counts ties.
@@ -340,8 +338,9 @@ T
 |#
 ;;; SYNOPSIS
 (defmethod enharmonics ((sc slippery-chicken) start end player
-                        &optional (written t))
+                        &key (written t) pitches)
 ;;; ****
+  (setf pitches (init-pitch-list pitches))
   (let* ((stlist (listp start))
          (ndlist (listp end))
          (stbar (if stlist (first start) start))
@@ -356,7 +355,16 @@ T
                (loop for i from start-note to end-note 
                   for e = (get-nth-non-rest-rhythm (1- i) bar)
                   do
-                  (enharmonic e :written written)))))
+                    ;; MDE Wed Apr 18 12:08:51 2012 
+                  (when (and (event-p e)
+                             (is-single-pitch e)
+                             (or (not pitches)
+                                 (pitch-member (if written
+                                                   (written-pitch-or-chord e)
+                                                   (pitch-or-chord e))
+                                               ;; enharmonics not equal!
+                                               pitches nil)))
+                    (enharmonic e :written written))))))
       (if (= stbar ndbar)
           (do-bar stbar stnote ndnote)
           (progn 
@@ -368,7 +376,7 @@ T
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; e.g. (enharmonic-spellings +coming-rthm-chain+
 ;;;                    '((cello (117 1) (118 2) (135 3) (591 (1 2)) (596 (2 2)))
@@ -428,9 +436,8 @@ T
   t)
               
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
-
 ;;; This does things by looking at enharmonic spellings in a whole bar
+
 ;;; ****m* slippery-chicken-edit/respell-bars
 ;;; FUNCTION
 ;;; 
@@ -471,7 +478,7 @@ T
               (setf last-attack (get-last-attack bar nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; This is just a very simple attempt to spell notes better by comparing each
 ;;; note to the previous one and making it the same accidental type.  It
@@ -553,8 +560,13 @@ T
                        ;; if there's been a bar or more between last notes
                        ;; then we can forget our interval rules between last
                        ;; note and this note.
-                       (= (bar-num last) (bar-num last-but-one))
+                       ;; MDE Wed Apr 18 11:27:47 2012 -- 
+                       ;; (= (bar-num last) (bar-num last-but-one))
+                       (and (= (bar-num last) (bar-num last-but-one))
+                            (> (- (bar-num this) (bar-num last)) 1))
                        (bad-interval-p last last-but-one))
+              ;; (format t "~%changing back ~a bar ~a"
+              ;;     (data (written-pitch-or-chord last)) (bar-num last))
               (enharmonic last :written written) ;; change it back
               (enharmonic this :written written)))
            ((and (chord-p last) (is-single-pitch this))))
@@ -623,7 +635,7 @@ T
              last this))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; NB The new pitch is the sounding pitch if a transposing instrument.
 ;;; ****m* slippery-chicken-edit/change-pitch
@@ -650,7 +662,7 @@ T
   (change-pitch (piece sc) bar-num note-num player new-pitch))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; 30.3.11: turn a rest into a note by supplying a pitch or chord (as objects
 ;;; or symbols)
@@ -688,7 +700,7 @@ T
     event))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/change-notes
 ;;; FUNCTION
@@ -747,7 +759,7 @@ T
       (change-notes (piece sc) player start-bar new-notes use-last-octave)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; see rthm-seq-bar (setf time-sig)
 ;;; this is a 'brutal' method in that it doesn't check to see if the rhythms in
@@ -776,7 +788,7 @@ T
   (change-time-sig (piece sc) bar-num-or-ref new-time-sig))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/add-mark-to-note
 ;;; FUNCTION
@@ -802,7 +814,7 @@ T
   (add-mark-to-note (piece sc) bar-num note-num player mark))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; 1-based
 ;;; ****m* slippery-chicken-edit/add-mark-to-event
@@ -829,7 +841,7 @@ T
   (add-mark-to-event (piece sc) bar-num event-num player mark))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; 28.2.11  event-num can be an integer (1-based) or a list of event numbers 1
 ;;; for each instrument counting from the top of the score down
@@ -866,7 +878,7 @@ T
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 ;;; for CMN only
 
 ;;; ****m* slippery-chicken-edit/note-add-bracket-offset
@@ -899,7 +911,7 @@ T
                         :index index)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; Similar to above but whereas you usually give the notes like '((1 1) (2 2))
 ;;; meaning bar 1 note 1, bar 2 note 2, here you give it in the form 
@@ -947,7 +959,7 @@ T
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; 1.3.11 another method for adding marks to multiple notes, this time we give
 ;;; a start-bar/note and an end-bar/note and the given marks will be added to
@@ -1008,7 +1020,7 @@ T
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; 27.6.11: Yet another method for adding marks to notes, this one allowing
 ;;; 'shorthand' and a very free specification of what goes where.
@@ -1078,7 +1090,7 @@ T
                 note nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/add-marks-to-note
 ;;; FUNCTION
@@ -1112,7 +1124,7 @@ T
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/rm-marks-from-note
 ;;; FUNCTION
@@ -1145,7 +1157,7 @@ T
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; 6.4.11: removes only the given marks, not all marks.  if players are nil,
 ;;; then all players will be processed
@@ -1199,7 +1211,7 @@ T
   t)
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/rm-slurs
 ;;; FUNCTION
@@ -1224,7 +1236,7 @@ T
   (rm-marks-from-notes sc start end players '(beg-sl end-sl)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/add-mark-before-note
 ;;; FUNCTION
@@ -1250,7 +1262,7 @@ T
   (add-mark-before-note (piece sc) bar-num note-num player mark))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/sc-delete-marks
 ;;; FUNCTION
@@ -1275,7 +1287,7 @@ T
   (bh-delete-marks (piece sc) bar-num note-num player))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/sc-delete-marks-from-event
 ;;; FUNCTION
@@ -1301,7 +1313,7 @@ T
   (setf (marks (get-event sc bar-num event-num player)) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/sc-delete-marks-before
 ;;; FUNCTION
@@ -1327,7 +1339,7 @@ T
   (delete-marks-before (piece sc) bar-num note-num player))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/tie
 ;;; FUNCTION
@@ -1353,7 +1365,7 @@ T
   (tie (piece sc) bar-num note-num player curvature))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; event numbers are 1-based 
 ;;; ****m* slippery-chicken-edit/trill
@@ -1391,7 +1403,7 @@ T
     (end-trill end)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/all-rests-to-ties
 ;;; FUNCTION
@@ -1433,7 +1445,7 @@ T
                                :auto-beam auto-beam)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/tie-over-rest-bars
 ;;; FUNCTION
@@ -1471,7 +1483,7 @@ T
                                 :last-rhythm last-rhythm)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; NB end-bar is not when the ties stop, but rather when we last find an event
 ;;; to tie from (so the ties may go beyond end-bar)
@@ -1544,7 +1556,7 @@ T
                           :consolidate-notes consolidate-notes))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; note-num is 1-based and counts tied-to notes as well
 ;;; 24.3.11: added end-bar
@@ -1649,7 +1661,7 @@ T
            (auto-beam bar auto-beam nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; 1.4.11: note-num counts tied-notes but not rests
 
@@ -1701,7 +1713,7 @@ T
              (setf happy nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; add slurs automatically (to wind instruments usually) to phrases: these are
 ;;; defined as not having any rests in them and not including any repeated
@@ -1820,7 +1832,7 @@ T
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; optional args are actually required but optional because of event class
 ;;; method  
@@ -1854,7 +1866,7 @@ T
               player bar-num event-num))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; optional args are actually required but optional because of event class
 ;;; method  
@@ -1887,7 +1899,7 @@ T
               player bar-num event-num))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/move-clef
 ;;; FUNCTION
@@ -1919,7 +1931,7 @@ T
                player from-bar from-event))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; NB While this routine generally does a good job of putting the right clefs
 ;;; in place, it will get confused if notes jump from very high to low
@@ -2002,7 +2014,7 @@ T
                                    current-clef verbose in-c))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; This is different from set-rehearsal-letters in that we don't use the
 ;;; rehearsal-letters slot of sc, rather, we use the method argument.
@@ -2040,7 +2052,7 @@ T
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/delete-rehearsal-letter
 ;;; FUNCTION
@@ -2074,7 +2086,7 @@ T
         (setf (rehearsal-letter bar) nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; This method will only combine short bars into longer ones, it won't split
 ;;; up bars and recombine. 
@@ -2156,7 +2168,7 @@ T
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/auto-beam
 ;;; FUNCTION
@@ -2186,7 +2198,7 @@ T
               (auto-beam bar beat check-dur))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; sort notes in piece--across all instruments--into time-ordered lists and
 ;;; process them with the given function, which must take one argument, an
@@ -2229,7 +2241,7 @@ T
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+
 
 ;;; ****m* slippery-chicken-edit/sc-move-dynamic
 ;;; FUNCTION
@@ -2259,8 +2271,6 @@ T
     (add-mark (get-event sc to-bar to player) dyn)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
-
 ;;; 1.4.11: remove all dynamics on a single event.  event-num includes ties and
 ;;; rests 
 ;;; ****m* slippery-chicken-edit/sc-remove-dynamic

@@ -102,21 +102,32 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Apr 18 16:00:01 BST 2012: Added robodoc entry
+
 ;;; ****m* ensemble/get-players
 ;;; FUNCTION
-;;; 
+;;; Return the IDs of the players from a given ensemble object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An ensemble object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - A list of symbols that are the player IDs of the given ensemble object. 
 ;;; 
 ;;; EXAMPLE
 #|
+
+(let ((ens (make-ensemble 
+	    'ens
+	    '((flt ((flute piccolo) :midi-channel 1))
+	      (clr ((b-flat-clarinet)))
+	      (tpt ((b-flat-trumpet c-trumpet) :midi-channel 2))
+	      (vln ((violin))))
+	    :instrument-palette
+	    +slippery-chicken-standard-instrument-palette+)))
+  (get-players ens))
+
+=> (FLT CLR TPT VLN)
 
 |#
 ;;; SYNOPSIS
@@ -239,22 +250,31 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Apr 18 16:46:58 BST 2012: Added robodoc entry
+
 ;;; ****m* ensemble/num-players
 ;;; FUNCTION
-;;; 
+;;; Get the number of players in a given ensemble object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An ensemble object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - An integer.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((ens (make-ensemble 
+	    'ens
+	    '((flt ((flute piccolo) :midi-channel 1))
+	      (clr ((b-flat-clarinet)))
+	      (tpt ((b-flat-trumpet c-trumpet) :midi-channel 2))
+	      (vln ((violin))))
+	    :instrument-palette
+	    +slippery-chicken-standard-instrument-palette+)))
+  (num-players ens))
 
+=> 4
 |#
 ;;; SYNOPSIS
 (defmethod num-players ((e ensemble))
@@ -262,22 +282,38 @@
   (num-data e))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Apr 18 16:50:46 BST 2012: Added robodoc entry
+
 ;;; ****m* ensemble/players-exist
 ;;; FUNCTION
-;;; 
-;;; 
+;;; Produce an error message and drop into the debugger if the specified
+;;; player IDs are not found within the given ensemble object.
+;;;
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An ensemble object.
+;;; - A list of symbols that are the IDs of the players sought.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; NIL if the specified player ID is present within the given ensemble object,
+;;; otherwise drops into the debugger with an error.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Returns NIL if a player with the specified ID is found in the given
+;;; ensemble object.
+(let ((ens (make-ensemble 
+	    'ens
+	    '((flt ((flute piccolo) :midi-channel 1))
+	      (clr ((b-flat-clarinet)))
+	      (tpt ((b-flat-trumpet c-trumpet) :midi-channel 2))
+	      (vln ((violin))))
+	    :instrument-palette
+	    +slippery-chicken-standard-instrument-palette+)))
+  (players-exist ens '(vln)))
 
+=> NIL
+
+  
 |#
 ;;; SYNOPSIS
 (defmethod players-exist ((e ensemble) players)
@@ -294,10 +330,9 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; N.B. If you have an ensemble with a player doubling two instruments, be
-;;; sure to indicate some key-word argument or other as
-;;; (fl1 ((piccolo violin) :midi-channel 1)) works but
-;;; (fl1 ((piccolo violin))) thinks that piccolo is a nested ensemble!!!
+;;; SAR Wed Apr 18 15:38:32 BST 2012: Added robodoc entry
+;;; SAR Wed Apr 18 15:38:44 BST 2012: Deleted MDE's original comment here as it
+;;; was taken verbatim into the entry below.
 
 ;;; ****f* ensemble/make-ensemble
 ;;; FUNCTION
@@ -331,7 +366,7 @@
 (let ((ens (make-ensemble 
               'ens
               '((flt ((flute piccolo) :midi-channel 1))
-                (clr (b-flat-clarinet)))
+                (clr ((b-flat-clarinet))))
               :instrument-palette
               +slippery-chicken-standard-instrument-palette+)))
   (print ens))

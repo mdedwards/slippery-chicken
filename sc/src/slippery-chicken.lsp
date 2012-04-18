@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:26:31 Wed Apr 18 2012 BST
+;;; $$ Last modified: 10:27:53 Wed Apr 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -890,11 +890,12 @@
                          (nth nil)
                          (warn-ties t))
 ;;; ****
-  (set-write-bar-num sc)
-  (update-slots (piece sc) 
-                (if tempo-map tempo-map (tempo-map sc))
-                start-time start-time-qtrs start-bar current-section nth
-                warn-ties))
+  (prog1
+      (update-slots (piece sc) 
+                    (if tempo-map tempo-map (tempo-map sc))
+                    start-time start-time-qtrs start-bar current-section nth
+                    warn-ties)
+      (set-write-bar-num sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Apr 18 10:10:58 2012 -- currently only works for CMN.

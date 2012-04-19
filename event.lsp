@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:04:31 Wed Apr 18 2012 BST
+;;; $$ Last modified: 12:30:47 Thu Apr 19 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2813,6 +2813,55 @@ T
                      (list (pitch-or-chord e)))))
     (loop for p in pitches collect
          (/ (frequency p) freq))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Apr 19 11:59:19 2012 
+
+;;; ****m* event/get-degree
+;;; FUNCTION
+;;; Get the degree of the event. 
+;;; 
+;;; ARGUMENTS
+;;; - an event object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - keyword written default NIL: whether to use the written (in the case of
+;;;   transposing instruments) or sounding pitches.
+;;; - keyword sum default NIL: return the sum of the degrees instead of a list
+;;;   (see below).
+;;; 
+;;; RETURN VALUE 
+;;; By default this returns a list (even if it's a single pitch), unless :sum T
+;;; whereupon it will return a single value: the sum of the degrees if a chord,
+;;; otherwise just the degree.  A rest would return '(0) or 0.
+;;; 
+;;; EXAMPLE
+#|
+;;; NB This uses the quarter-tone scale so degrees are double what they would
+;;; be in the chromatic-scale.
+(let ((event (make-event '(cs4 d4) 'e))
+      (rest (make-rest 'e)))
+  (print (get-degree event))
+  (print (get-degree rest))
+  (get-degree event :sum t))
+(122 124) 
+(0)
+246
+|#
+;;; SYNOPSIS
+(defmethod get-degree ((e event) &key written sum)
+;;; ****      
+  (let* ((poc (if written
+                  (written-pitch-or-chord e)
+                  (pitch-or-chord e)))
+         (list (cond
+                 ((is-rest e) '(0))
+                 ((is-chord e)
+                  (loop for p in (data poc) collect (degree p)))
+                 (t (list (degree poc))))))
+    (if sum
+        (loop for d in list sum d)
+        list)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

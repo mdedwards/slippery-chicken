@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 11:47:09 Wed Apr 18 2012 BST
+;;; $$ Last modified: 12:49:23 Thu Apr 19 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -83,6 +83,12 @@
    ;; The rhythms are changed to events in the
    ;; slippery-chicken::sc-make-sequenz method 
    (rhythms :accessor rhythms :type list :initform nil)
+   ;; MDE Thu Apr 19 10:23:48 2012 -- for statistics: the duration of the
+   ;; sounding notes, in the tempo. We'll leave this at nil
+   ;; and only update it the first time it's requested.  Note this slot has
+   ;; different reader and writer methods.
+   (sounding-duration :initform nil :reader sounding-duration
+                      :writer set-sounding-duration)
    ;; the length of rhythms.
    (num-rhythms :accessor num-rhythms :type integer :initform -1)
    ;; the number of rests in this bar.
@@ -1276,6 +1282,10 @@ data: ((2 4) - S S - S - S S S - S S)
 
 (defmethod gen-stats ((rsb rthm-seq-bar))
   (let ((rhythms (rhythms rsb)))
+    (set-sounding-duration rsb nil)
+    ;; MDE Thu Apr 19 11:29:25 2012 -- just query the value and it'll be
+    ;; calculated 
+    (sounding-duration rsb)
     (setf (num-rhythms rsb) (length rhythms)
           (is-rest-bar rsb) (if (not rhythms)
                                 t
@@ -1405,8 +1415,29 @@ data: ((2 4) - S S - S - S S S - S S)
           (copy-list (parent-start-end rsb))
           (slot-value sclist 'multi-bar-rest) (multi-bar-rest rsb)
           (slot-value sclist 'nth-seq) (nth-seq rsb)
+          (slot-value sclist 'sounding-duration) (sounding-duration rsb)
           (slot-value sclist 'nth-bar) (nth-bar rsb))
     sclist))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Apr 19 10:30:38 2012 -- redefine the accessor to calculate
+;;; sounding-duration if it's nil or forced
+(defmethod sounding-duration :before ((rsb rthm-seq-bar))
+  (if (slot-value rsb 'sounding-duration)
+      (slot-value rsb 'sounding-duration)
+      (setf (slot-value rsb 'sounding-duration)
+            (loop for e in (rhythms rsb) with dur = 0.0 do
+                 (if (event-p e)
+                     (unless (is-rest e)
+                       (incf dur (duration-in-tempo e)))
+                     ;; we hit a rhythm object so just back out
+                     (return nil))
+                 finally (return dur)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod set-sounding-duration ((rsb rthm-seq-bar) value)
+  (setf (slot-value rsb 'sounding-duration) value))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2064,6 +2095,8 @@ data: E
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod rhythms-to-events ((rsb rthm-seq-bar))
+  ;; MDE Thu Apr 19 11:19:32 2012 -- this calls the setf method which calls
+  ;; gen-stats which updates sounding-duration
   (setf (rhythms rsb) (rhythms-to-events-list (rhythms rsb)))
   rsb)
 
@@ -2762,6 +2795,7 @@ data: (2 4)
                                   nth-bar: ~a, ~
                   ~%              rehearsal-letter: ~a, ~
                                   all-time-sigs: (too long to print) ~
+                  ~%              sounding-duration: ~,3f, ~
                   ~%              rhythms: ~a"
           (time-sig i) (get-time-sig-as-list i) (time-sig-given i) (bar-num i)
           (old-bar-nums i) (write-bar-num i)
@@ -2770,7 +2804,10 @@ data: (2 4)
           (nudge-factor i) (beams i) (current-time-sig i) (write-time-sig i) 
           (num-rests i) (num-rhythms i) (num-score-notes i) (parent-start-end i)
           (missing-duration i) (bar-line-type i) (player-section-ref i)
-          (nth-seq i) (nth-bar i) (rehearsal-letter i) (rhythms i)))
+          (nth-seq i) (nth-bar i) (rehearsal-letter i) 
+          ;; (slot-value i 'sounding-duration)
+          (sounding-duration i)
+          (rhythms i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3618,12 +3655,13 @@ data: (2 4)
     t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+#|
+;;; MDE Thu Apr 19 11:32:37 2012 -- this was defined twice!
 (defmethod rhythms-to-events ((rsb rthm-seq-bar))
   (setf (rhythms rsb)
         (loop for r in (rhythms rsb) collect (clone-with-new-class r 'event)))
   rsb)
-
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod split-longer-rests ((rsb rthm-seq-bar))
@@ -3993,7 +4031,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
        (if (event-p e)
            (reset-8va e)
            (error "~a~&rthm-seq-bar::reset-8va: bar must contain event ~
-                   objects (not rhythms)."))))
+                   objects (not rhythms)." rsb))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

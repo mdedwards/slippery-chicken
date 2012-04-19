@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:57:47 Wed Apr 18 2012 BST
+;;; $$ Last modified: 13:04:17 Thu Apr 19 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -376,6 +376,7 @@
       (change-bar-line-type sc (num-bars (piece sc)) 2)
       ;; have to call this again now that we've got the real tempo-map
       (update-slots sc (tempo-map sc) 0.0 0.0 1 nil nil (warn-ties sc))
+      (update-instruments-total-duration sc)
       ;; (print (get-data 1 (set-palette sc)))
       ;; 25.3.11 the make-slippery-chicken function might set this to nil thus
       ;; overriding the class default 
@@ -902,9 +903,20 @@
       (set-write-bar-num sc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod update-instruments-total-duration ((sc slippery-chicken))
+  (loop for player in (players sc) do
+       (loop for bar-num from 1 to (num-bars sc) 
+          for bar = (get-bar sc bar-num player)
+          for ins = (get-instrument-for-player-at-bar player bar-num sc)
+          do
+            (gen-stats bar)
+            (incf (total-duration ins) (sounding-duration bar)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Apr 18 10:10:58 2012 -- currently only works for CMN.
 (defmethod set-write-bar-num ((sc slippery-chicken) &optional (every 5))
-  (print 'write-bar-num)
+  ;; (print 'write-bar-num)
   (loop for player in (players sc) do
        (loop for bar-num from 1 to (num-bars sc) do
             (setf (write-bar-num (get-bar sc bar-num player)) nil)))
@@ -5085,8 +5097,8 @@ T
          (notes (my-copy-list notes-from-pitch-seq))
          #| MDE Wed Apr 18 10:24:10 2012 -- 
          (iwbns (when slippery-chicken 
-                  (member player 
-                          (instruments-write-bar-nums slippery-chicken))))
+         (member player 
+         (instruments-write-bar-nums slippery-chicken))))
          |#
          (do-prog-changes instrument-change)
          (current-note nil)
@@ -5134,70 +5146,80 @@ T
                                (clone (pitch-or-chord 
                                        last-note-previous-seq))))))
     #|
-    ;; this checks that there are no ties to the first note in a seq ; ;
-    (when (is-tied-to (get-nth-event 0 (get-bar sequenz 0 t)))
+    ;; this checks that there are no ties to the first note in a seq ; ; ;
+         (when (is-tied-to (get-nth-event 0 (get-bar sequenz 0 t)))
     (error "slippery-chicken::sc-make-sequenz: ~
               Tied first note of sequenz not allowed!"))
-    |#
+         |#
     (loop for bar in (bars sequenz) and bar-num from 1 do
        ;; first of all set all the bars to write--then change in 
        ;; sequenz::update-slots depending upon real bar num
        ;; MDE Wed Apr 18 10:22:57 2012 -- no longer do this here but in sc
-         ;;(when iwbns
-           ;; (setf (write-bar-num bar) t))
-          (setf (player-section-ref bar) player-section-ref
-                (nth-seq bar) seq-num
-                (nth-bar bar) (1- bar-num))
-          ;; Here the rhythms in the rthm-seq-bar are upgraded to events
-          (loop for rhythm in (rhythms bar) and rthm-num from 0 do
-                (let ((event (clone-with-new-class rhythm 'event)))
-                  ;; (print event)
-                  ;; 8/3/07: need to change midi programmes if an instrument
-                  ;; change was detected; these are stored in the event.
-                  (when do-prog-changes
-                    ;; (format t "~&ins change! ~a ~a" player seq-num)
-                    ;; add the instrument change unless this is the first seq
-                    ;; (because midi-play handles all the starting program
-                    ;; changes) 
-                    (unless (= 1 global-seq-num)
-                      (push (list midi-channel midi-prog)
-                            (midi-program-changes event))
-                      (when (microtonal-chords-p player-obj)
-                        (push (list microtones-midi-channel midi-prog)
-                              (midi-program-changes event)))
-                      ;; 8/5/07: also make sure new-staff-name is added to the
-                      ;; note (this makes use of new cmn code by me and
-                      ;; hopefully added to main repository by Bill).
-                      ;; (instrument change is registered here)
-                      (setf (instrument-change event)
-                            (if (staff-short-name instrument)
-                                (list (staff-name instrument)
-                                      (staff-short-name instrument))
-                                (list (staff-name instrument)))))
-                    (setf do-prog-changes nil))
-                  (unless (is-rest event)
-                    (setf (pitch-or-chord event) 
-                      (cond ((needs-new-note event)
-                             (setf ;; last-note current-note
-                                 current-note (pop notes))
-                             (unless current-note
-                               (error "~a~a~%slippery-chicken::~
+       ;;(when iwbns
+       ;; (setf (write-bar-num bar) t))
+         (setf (player-section-ref bar) player-section-ref
+               (nth-seq bar) seq-num
+               (nth-bar bar) (1- bar-num))
+       ;; Here the rhythms in the rthm-seq-bar are upgraded to events
+         (loop for rhythm in (rhythms bar) and rthm-num from 0 do
+              (let ((event (clone-with-new-class rhythm 'event)))
+                ;; (print event)
+                ;; 8/3/07: need to change midi programmes if an instrument
+                ;; change was detected; these are stored in the event.
+                (when do-prog-changes
+                  ;; (format t "~&ins change! ~a ~a" player seq-num)
+                  ;; add the instrument change unless this is the first seq
+                  ;; (because midi-play handles all the starting program
+                  ;; changes) 
+                  (unless (= 1 global-seq-num)
+                    (push (list midi-channel midi-prog)
+                          (midi-program-changes event))
+                    (when (microtonal-chords-p player-obj)
+                      (push (list microtones-midi-channel midi-prog)
+                            (midi-program-changes event)))
+                    ;; 8/5/07: also make sure new-staff-name is added to the
+                    ;; note (this makes use of new cmn code by me and
+                    ;; hopefully added to main repository by Bill).
+                    ;; (instrument change is registered here)
+                    (setf (instrument-change event)
+                          (if (staff-short-name instrument)
+                              (list (staff-name instrument)
+                                    (staff-short-name instrument))
+                              (list (staff-name instrument)))))
+                  (setf do-prog-changes nil))
+                (unless (is-rest event)
+                  (setf (pitch-or-chord event) 
+                        (cond ((needs-new-note event)
+                               (setf ;; last-note current-note
+                                current-note (pop notes))
+                               (unless current-note
+                                 (error "~a~a~%slippery-chicken::~
                                        sc-make-sequenz: no current-note (1)!"
-                                      rthm-seq pitch-seq))
-                             (clone current-note))
-                            ((is-tied-to event) 
-                             (unless current-note
-                               (print notes-from-pitch-seq)
-                               (print event)
-                               (error "~a~a~%slippery-chicken::~
+                                        rthm-seq pitch-seq))
+                               (clone current-note))
+                              ((is-tied-to event) 
+                               (unless current-note
+                                 (print notes-from-pitch-seq)
+                                 (print event)
+                                 (error "~a~a~%slippery-chicken::~
                                        sc-make-sequenz: no current-note (1)!"
-                                      rthm-seq pitch-seq))
-                             (clone current-note)))))
-                  (when transpose
-                    (set-written event transpose))
-                  ;; (when (is-single-pitch event)
-                  ;;       (print (midi-channel (pitch-or-chord event))))
-                  (setf (nth rthm-num (rhythms bar)) event))))
+                                        rthm-seq pitch-seq))
+                               (clone current-note)))))
+                (when transpose
+                  (set-written event transpose))
+                ;; MDE Thu Apr 19 12:34:52 2012 -- statistics
+                (incf (total-degrees instrument) (get-degree event :sum t))
+                ;; (when (is-single-pitch event)
+                ;;       (print (midi-channel (pitch-or-chord event))))
+                (setf (nth rthm-num (rhythms bar)) event)))
+       ;; MDE Thu Apr 19 10:21:07 2012 -- statistics
+         (gen-stats bar)
+         (unless (is-rest-bar bar)
+           (incf (total-bars instrument))
+           ;; we can't do total-duration here as we don't have the events'
+           ;; duration-in-tempo until later...
+           ;; (incf (total-duration instrument) (sounding-duration bar))
+           (incf (total-notes instrument) (notes-needed bar))))
     ;; all the notes should have been popped off by now
     (when notes
       (error "~a ~a ~%slippery-chicken::sc-make-sequenz: Didn't use all ~

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 16:22:34 Tue Mar 20 2012 GMT
+;;; $$ Last modified: 12:39:48 Thu Apr 19 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -328,8 +328,8 @@
                                 total-duration: ~a~
                   ~%            total-degrees: ~a, microtones: ~a~
                   ~%            missing-notes: ~a, subset-id: ~a~
-                  ~%            staff-name: ~a, staff-short-name : ~a,
-                  ~%            largest-fast-leap: ~a"
+                  ~%            staff-name: ~a, staff-short-name: ~a,
+                  ~%            largest-fast-leap: ~a, tessitura: ~a"
           (lowest-written ins) (highest-written ins) 
           (lowest-sounding ins) (highest-sounding ins) 
           (starting-clef ins) (clefs ins) (clefs-in-c ins) 
@@ -340,7 +340,8 @@
           (total-notes ins) (total-duration ins)
           (total-degrees ins) (microtones ins) 
           (pitch-list-to-symbols (missing-notes ins)) (subset-id ins)
-          (staff-name ins) (staff-short-name ins) (largest-fast-leap ins)))
+          (staff-name ins) (staff-short-name ins) (largest-fast-leap ins)
+          (tessitura-note ins)))
                            
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -357,7 +358,7 @@
         (tdegrees (total-degrees ins)))
     (if (or (zerop tnotes) (zerop tdegrees))
         0
-      (/ tdegrees tnotes))))
+        (/ tdegrees tnotes))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

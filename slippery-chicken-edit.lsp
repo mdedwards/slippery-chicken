@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 12:12:41 Wed Apr 18 2012 BST
+;;; $$ Last modified: 14:22:54 Thu Apr 19 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -1071,7 +1071,9 @@ T
                                 (progn
                                   (when (and shorthand warn)
                                     (warn "slippery-chicken::add-marks: ~
-                                           using unrecognised mark: ~a" datum))
+                                           using non-shorthand mark ~%on ~
+                                           the assumption that it's a ~
+                                           normal mark: ~a" datum))
                                   datum))
                        bar nil
                        note nil)))

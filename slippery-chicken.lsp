@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:04:17 Thu Apr 19 2012 BST
+;;; $$ Last modified: 14:18:20 Thu Apr 19 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5208,17 +5208,19 @@ T
                 (when transpose
                   (set-written event transpose))
                 ;; MDE Thu Apr 19 12:34:52 2012 -- statistics
-                (incf (total-degrees instrument) (get-degree event :sum t))
+                (when (needs-new-note event)
+                  ;; so this handles chords
+                  (incf (total-degrees instrument) (get-degree event :sum t)))
                 ;; (when (is-single-pitch event)
                 ;;       (print (midi-channel (pitch-or-chord event))))
                 (setf (nth rthm-num (rhythms bar)) event)))
        ;; MDE Thu Apr 19 10:21:07 2012 -- statistics
-         (gen-stats bar)
+       ;; MDE Thu Apr 19 14:16:07 2012 -- shoudn't need this now
+       ;; (gen-stats bar) 
          (unless (is-rest-bar bar)
            (incf (total-bars instrument))
            ;; we can't do total-duration here as we don't have the events'
            ;; duration-in-tempo until later...
-           ;; (incf (total-duration instrument) (sounding-duration bar))
            (incf (total-notes instrument) (notes-needed bar))))
     ;; all the notes should have been popped off by now
     (when notes

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 12:39:48 Thu Apr 19 2012 BST
+;;; $$ Last modified: 14:11:49 Thu Apr 19 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -330,14 +330,14 @@
                   ~%            missing-notes: ~a, subset-id: ~a~
                   ~%            staff-name: ~a, staff-short-name: ~a,
                   ~%            largest-fast-leap: ~a, tessitura: ~a"
-          (lowest-written ins) (highest-written ins) 
-          (lowest-sounding ins) (highest-sounding ins) 
+          (data (lowest-written ins)) (data (highest-written ins))
+          (data (lowest-sounding ins)) (data (highest-sounding ins))
           (starting-clef ins) (clefs ins) (clefs-in-c ins) 
           (prefers-notes ins) (midi-program ins)
           (transposition ins) (transposition-semitones ins) 
           (score-write-in-c ins)  (score-write-bar-line ins)
           (chords ins) (chord-function ins) (total-bars ins) 
-          (total-notes ins) (total-duration ins)
+          (total-notes ins) (secs-to-mins-secs (total-duration ins))
           (total-degrees ins) (microtones ins) 
           (pitch-list-to-symbols (missing-notes ins)) (subset-id ins)
           (staff-name ins) (staff-short-name ins) (largest-fast-leap ins)
@@ -363,7 +363,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod tessitura-note ((ins instrument))
-  (degree-to-note (tessitura-degree ins)))
+  (let ((td (tessitura-degree ins)))
+    ;; MDE Thu Apr 19 14:07:40 2012 -- don't give return a note if none have
+    ;; been played 
+    (unless (zerop td)
+      (degree-to-note td))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

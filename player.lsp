@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 10:08:22 Sun Jan  8 2012 ICT
+;;; $$ Last modified: 14:08:05 Thu Apr 19 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -130,8 +130,13 @@
 (defmethod print-object :before ((p player) stream)
   (let ((ip (instrument-palette p)))
     (format stream "~&PLAYER: (id instrument-palette): ~a ~%doubles: ~a, ~
-                    cmn-staff-args: ~a"
-            (when ip (id ip)) (doubles p) (cmn-staff-args p))))
+                    cmn-staff-args: ~a, total-notes: ~a, total-degrees: ~a, ~
+                    ~%total-duration: ~a, total-bars: ~a, tessitura: ~a"
+            (when ip (id ip)) (doubles p) (cmn-staff-args p)
+            ;; MDE Thu Apr 19 13:31:06 2012 -- 
+            (total-notes p) (total-degrees p)
+            (secs-to-mins-secs (total-duration p))
+            (total-bars p) (tessitura-note p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -316,12 +321,58 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* player/total-degrees
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod total-degrees ((p player))
   (let* ((data (data p)))
     (if (typep data 'assoc-list)
         (loop for ins in (data data) sum
-              (total-degrees ins))
-      (total-degrees data))))
+             (total-degrees ins))
+        (total-degrees data))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* player/total-bars
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod total-bars ((p player))
+;;; ****
+  (let* ((data (data p)))
+    (if (typep data 'assoc-list)
+        (loop for ins in (data data) sum
+             (total-bars ins))
+        (total-bars data))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -351,6 +402,35 @@
                 (tessitura-degree ins))
            (sclist-length data))
         (tessitura-degree data))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Apr 19 13:32:34 2012 
+
+;;; ****m* player/tessitura-note
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod tessitura-note ((p player))
+;;; ****
+  (let ((td (tessitura-degree p)))
+    ;; MDE Thu Apr 19 14:07:40 2012 -- don't give return a note if none have
+    ;; been played 
+    (unless (zerop td)
+      (degree-to-note td))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -101,22 +101,60 @@ T
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SAR Thu Apr 19 11:52:43 BST 2012: Conforming robodoc
+
 ;;; ****m* slippery-chicken-edit/add-event-to-bar
 ;;; FUNCTION
-;;; A post-generation editing method: Add an event object to a bar either at
-;;; the end of at the given position.  
+;;; Add an event object to a specified bar either at the end of that bar or at
+;;; a specified position within that bar.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the slippery-chicken object
-;;; - the new event object
-;;; - the bar number or reference (of the form '(section sequence bar) where
-;;;   sequence and bar are numbers counting from 1)
-;;; - the player (symbol)
-;;; - (key :position default nil): the position in the bar (0-based) where the
-;;; event should be spliced; if nil then it's put at the end.
+;;; - A slippery-chicken object.
+;;; - An event object.
+;;; - An integer that is the bar number or a list that is the reference to the
+;;;   bar in the form '(section sequence bar), where sequence and bar are
+;;;   numbers counting from 1)
+;;; - The ID of the player to whose part the event should be added.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword argument:
+;;; - :position. NIL or an integer indicating the position in the bar (0-based)
+;;;    where the event should be added. If NIL, the new event is place at the
+;;;    end of the bar. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
 ;;; T
+;;;
+;;; EXAMPLE
+#|
+;;; Adding two events to separate bars, once using a bar number with
+;;; :position's default to NIL, and once using a bar number reference list with
+;;; :position specified as 2. Print the bars after adding to see the changes.
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6)))
+                       (2 ((cs4 ds4 fs4 gs4 as4 cs5 ds5 fs5 gs5 as5 cs6))))
+        :set-map '((1 (1 1 1 1 1 1))
+		   (2 (2 2 2 2 2 2)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4))))
+			    (2 ((((2 4) e s s q))
+                                :pitch-seq-palette ((1 2 3 4)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))))
+			(2 ((vn (2 2 2 2 2 2))))))))
+  (add-event-to-bar mini (make-event 'cs4 'e) 2 'vn)
+  (print-simple (first (get-bar mini 2)))
+  (add-event-to-bar mini (make-event 'c4 'q) '(2 2 1) 'vn :position 2)
+  (print-simple (first (get-bar mini '(2 2 1)))))
+
+=> 
+(2 4): C4 Q, D4 E, F4 S, G4 S, CS4 E
+(2 4): CS4 E, DS4 S, C4 Q, FS4 S, GS4 Q
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod add-event-to-bar ((sc slippery-chicken) event bar-num-or-ref player
@@ -789,22 +827,47 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Apr 19 13:35:00 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/add-mark-to-note
 ;;; FUNCTION
-;;; 
+;;; Add the specified mark to the specified note of a given slippery-chicken
+;;; object. 
+;;;
+;;; NB: This method counts notes, not events; i.e., not rests.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the bar number to which to add the mark
+;;; - An integer that is the note number two which to add the mark. This is
+;;;   1-based, and counts notes not events; i.e., not rests.
+;;; - The ID of the player to whose part the mark is to be added.
+;;; - The mark to add.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Add a mark to a note in a bar with a rest. Print the corresponding event
+;;; object to see the result. 
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q (e) s s))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))))))))
+  (add-mark-to-note mini 3 2 'vn 'ppp)
+  (print (marks (get-event mini 3 2 'vn)))
+  (print (marks (get-event mini 3 3 'vn))))
+
+=>
+NIL 
+(PPP)
 
 |#
 ;;; SYNOPSIS
@@ -815,23 +878,43 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Apr 19 13:27:06 BST 2012: Added robodoc entry
 
 ;;; 1-based
 ;;; ****m* slippery-chicken-edit/add-mark-to-event
 ;;; FUNCTION
-;;; 
+;;; Add the specified mark to the MARKS slot of the specified event within the
+;;; given slippery-chicken object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the bar number to which the mark is to be added.
+;;; - An integer that is the event number in the specified bar to which the
+;;;   mark is to be added.
+;;; - The ID of the player to which to add the mark.
+;;; - The mark to add.
+;;;
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Add a mark to an event object then read the value of the MARKS slot of that
+;;; event to see the result
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q (e) s s))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))))))))
+  (add-mark-to-event mini 3 2 'vn 'ppp)
+  (marks (get-event mini 3 2 'vn)))
+
+=> (PPP)
 
 |#
 ;;; SYNOPSIS
@@ -842,24 +925,71 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Apr 19 12:42:20 BST 2012: Added robodoc entry
 
 ;;; 28.2.11  event-num can be an integer (1-based) or a list of event numbers 1
 ;;; for each instrument counting from the top of the score down
+
 ;;; ****m* slippery-chicken-edit/add-mark-all-players
 ;;; FUNCTION
-;;; 
-;;; 
+;;; Add a specified mark to a specified even in the parts of all players. The
+;;; event can either be specified as a 1-based integer, in which case the mark
+;;; will be attached to the same event in all parts, or as a list of integers,
+;;; in which the mark is attached to different events in the same bar for each
+;;; player, passing from the top of the ensemble downwards.
+;;;
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the bar number or a list of integers that is a
+;;;   reference to the bar number in the form (section sequence bar).
+;;; - An integer that is the event to which to attach the specified mark in all
+;;;   parts, or a list of integers that are the individual events to which to
+;;;   attach the mark in the consecutive players.
+;;; - The mark to be added.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Always returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Apply the method twice: Once using an integer to attach the mark to the
+;;; same event in all players, and once using a list to attach the mark to
+;;; different events in the consecutive players. Print the corresponding marks
+;;; slots to see the results.
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (hn (french-horn :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+	:tempo-map '((1 (q 60)))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (hn (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(2 ((cl (1 1 1 1 1))
+			    (hn (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (add-mark-all-players mini 3 1 'ppp)
+  (add-mark-all-players mini '(2 2 1) '(1 2 3) 'fff)
+  (loop for i in '(cl hn vc)
+     do (print (marks (get-event mini 3 1 i))))
+  (loop for i in '(cl hn vc)
+     for e in '(1 2 3)
+     do (print (marks (get-event mini '(2 2 1) e i)))))
+
+=>
+(PPP) 
+(PPP) 
+(PPP) 
+(FFF) 
+(FFF) 
+(FFF)
+
 
 |#
 ;;; SYNOPSIS
@@ -937,23 +1067,23 @@ T
 |#
 ;;; SYNOPSIS
 (defmethod add-mark-to-notes-from-to ((sc slippery-chicken)
-                                          mark-function player
-                                          notes)
+				      mark-function player
+				      notes)
 ;;; ****
   (loop 
-      for bar in notes 
-      for bar-num-or-ref = (first bar)
-      for notes = (rest bar)
-      with expansion
-      do
-      (unless (= (length notes) 2)
-        (error "slippery-chicken::add-mark-to-notes-from-to: ~
+     for bar in notes 
+     for bar-num-or-ref = (first bar)
+     for notes = (rest bar)
+     with expansion
+     do
+       (unless (= (length notes) 2)
+	 (error "slippery-chicken::add-mark-to-notes-from-to: ~
                 Each bar is a 3 note list: bar-num start-note end-note: ~a"
-               bar))
-      (setf expansion (loop for i from (first notes) to (second notes) 
-                        collect i))
-      (loop for n in expansion do
-        (add-mark-to-note sc bar-num-or-ref n player 
+		bar))
+       (setf expansion (loop for i from (first notes) to (second notes) 
+			  collect i))
+       (loop for n in expansion do
+	    (add-mark-to-note sc bar-num-or-ref n player 
                               (funcall mark-function))))
   t)
 
@@ -1020,7 +1150,7 @@ T
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; SAR Thu Apr 19 14:05:30 BST 2012: Added robodoc entry
 
 ;;; 27.6.11: Yet another method for adding marks to notes, this one allowing
 ;;; 'shorthand' and a very free specification of what goes where.
@@ -1040,20 +1170,63 @@ T
 ;;;                         (h harm))
 
 ;;; ****m* slippery-chicken-edit/add-marks-sh
+;;; DATE
+;;; 27-Jun-2011
+;;;
 ;;; FUNCTION
-;;; 
+;;; Add marks in a somewhat more free list form, with the option of
+;;; implementing a user-defined shorthand.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
+;;; - A slippery-chicken object.
+;;; - A list of lists containing the players, bar and note refs, and marks to
+;;;   be added. The first element of each contained list will be the ID of the
+;;;   player to whose part the marks are to be added followed by a pattern of
+;;;   <mark bar-number note-number> triplets, or if a mark is to be added
+;;;   repeatedly then <mark bar note bar note... >. A mark can be a string or a
+;;;   symbol. 
+;;;
 ;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - For marks given as symbols, the user can supply a shorthand table that
+;;;   will expand an abbreviation, such as sp, to the full mark name, such as
+;;;   short-pause. This table takes the form of a simple Lisp association list,
+;;;   e.g.: '((al aeolian-light)
+;;;           (ad aeolian-dark)
+;;;           (wt "WT")
+;;;           (h harm))
+;;; - :warn. T or NIL to indicate whether to print a warning for unrecognized
+;;;   marks. T = print warning. Default = T.
+;;; - :verbose. T or NIL to indicate whether the method is to print verbose
+;;;   feedback about each mark added to the Listener. T = print feedback. 
+;;;   Default = NIL.
 ;;; 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+		     (va (viola :midi-channel 2))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))
+			    (va (1 1 1 1 1 1))))))))
+  (add-marks-sh mini
+		'((vn a 1 1 1 2 3 1 s 2 1 2 2 2 5)
+		  (va pizz 1 3 2 3 sp 3 1))
+		:shorthand '((sp short-pause))
+		:verbose t))
+
+=> NIL
+
 
 |#
 ;;; SYNOPSIS
@@ -1239,22 +1412,47 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Apr 19 13:08:23 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/add-mark-before-note
 ;;; FUNCTION
-;;; 
+;;; Add the specified mark to the MARKS-BEFORE slot of the specified note
+;;; object within the given slippery-chicken object.
+;;;
+;;; NB: This method counts notes, not events; i.e., rests are not counted.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the bar number in which the mark is to be added.
+;;; - An integer that is the NOTE number to which the mark is to be added (not
+;;;   the event number; i.e., rests are not counted).
+;;; - The ID of the player to which the mark is to be added.
+;;; - The mark to be added.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the new value of the MARKS-BEFORE slot of the given event object. 
 ;;; 
 ;;; EXAMPLE
 #|
+;;; The method adds the mark to the specified note, not event. Add the mark to
+;;; note 2, print the MARKS-BEFORE slots of events 2 (which is a rest) and 3.
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q (e) s s))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))))))))
+  (add-mark-before-note mini 3 2 'vn 'ppp)
+  (print (marks-before (get-event mini 3 2 'vn)))
+  (print (marks-before (get-event mini 3 3 'vn))))
+
+=>
+NIL 
+(PPP)
 
 |#
 ;;; SYNOPSIS
@@ -1869,24 +2067,52 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Apr 19 11:31:58 BST 2012: Added robodoc entry
 
+;;; MDE original comment:
 ;;; optional args are actually required but optional because of event class
 ;;; method  
+
 ;;; ****m* slippery-chicken-edit/add-clef
 ;;; FUNCTION
-;;; 
+;;; Attach a specified clef symbol to a specified clef object within a given
+;;; slippery-chicken object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - The ID of the player to whose part the clef symbol is to be added.
+;;;
+;;; NB: The optional arguments are actually required.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An integer that is the bar number in which the clef symbol is to be
+;;;   placed. 
+;;; - An integer that is the event number within the given bar to which the
+;;;   clef symbol is to be attached.
+;;; - A symbol that is the clef type to be attached. See the documentation for
+;;;   the make-instrument function of the instrument class for a list of
+;;;   possible clef types.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the new value of the MARKS-BEFORE slot of the given event object. 
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :title "mini"
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6)))
+                       (2 ((cs4 ds4 fs4 gs4 as4 cs5 ds5 fs5 gs5 as5))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))))))))
+  (add-clef mini 'vn 3 2 'alto))
+
+=> ((CLEF ALTO))
 
 |#
 ;;; SYNOPSIS
@@ -2832,31 +3058,41 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Apr 19 11:14:57 BST 2012: Conforming MDE robodoc entry
+
 ;;; ****m* slippery-chicken-edit/add-arrow-to-events
+;;; DATE
+;;; April 9th 2012
+;;; 
 ;;; FUNCTION
-;;; Adds an arrow above the notes with a start and ending text.  Used most
-;;; often for transitions from one playing state to another.
+;;; Adds an arrow above the specified notes of a slippery-chicken object,
+;;; coupled with text to be printed in the score at the start and end of the
+;;; arrow. Can be used, for example, for transitions from one playing state to
+;;; another.
+;;;
+;;; If no text is desired, this must be indicated by a space in quotes (" ")
+;;; rather than empty quotes ("").
 ;;;
 ;;; See also the add-arrow method in the event class.
 ;;; 
 ;;; ARGUMENTS
-;;; - a slippery-chicken object
-;;; - a text string for the beginning of the arrow
-;;; - a text string for the end of the arrow
-;;; - the starting event reference (list) of the form (bar-number event-number)
-;;;   where event numbers count from 1 and include rests and tied notes.
-;;; - the end event reference (list) of the form (bar-number event-number)
-;;; - the player this should be attached to
+;;; - A slippery-chicken object.
+;;; - A text string for the beginning of the arrow.
+;;; - A text string for the end of the arrow.
+;;; - A list that is the starting event reference, in the form (bar-number
+;;;   event-number). Event numbers count from 1 and include rests and tied
+;;;   notes.
+;;; - A list that is the end event reference, in the form (bar-number
+;;;   event-number).
+;;; - The ID of the player to whose part the arrow should be attached.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether or not to print a warning when trying to 
-;;;   attach an arrow and accompanying marks to a rest. Default = NIL. 
+;;;   attach an arrow and accompanying marks to a rest. 
+;;;   T = print warning. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; T
-;;; 
-;;; DATE
-;;; April 9th 2012
 ;;; 
 ;;; EXAMPLE
 #|
@@ -2864,7 +3100,6 @@ T
        (make-slippery-chicken
         '+mini+
         :title "mini"
-        :instrument-palette +slippery-chicken-standard-instrument-palette+
         :ensemble '(((pno (piano :midi-channel 1))))
         :tempo-map '((1 (q 60)))
         :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6)))

@@ -313,7 +313,22 @@
 
 => NIL
 
-  
+;; Drops into the debugger with an error if no player with the specified ID is
+;; found in the given ensemble object.
+(let ((ens (make-ensemble 
+	    'ens
+	    '((flt ((flute piccolo) :midi-channel 1))
+	      (clr ((b-flat-clarinet)))
+	      (tpt ((b-flat-trumpet c-trumpet) :midi-channel 2))
+	      (vln ((violin))))
+	    :instrument-palette
+	    +slippery-chicken-standard-instrument-palette+)))
+  (players-exist ens '(vla)))
+
+=>
+ensemble::players-exist: VLA is not a member of the ensemble
+   [Condition of type SIMPLE-ERROR]
+
 |#
 ;;; SYNOPSIS
 (defmethod players-exist ((e ensemble) players)

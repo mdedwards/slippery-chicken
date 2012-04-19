@@ -281,7 +281,6 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 ;;; ****m* slippery-chicken-edit/auto-accidentals
 ;;; FUNCTION
 ;;; 
@@ -1090,29 +1089,66 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Apr 19 16:24:43 BST 2012: Added robodoc entry
 
+;;; MDE original comment:
 ;;; 1.3.11 another method for adding marks to multiple notes, this time we give
 ;;; a start-bar/note and an end-bar/note and the given marks will be added to
-;;; all inbetween.  start and finish are inclusive and 1-based.  If they're
+;;; all in between. start and finish are inclusive and 1-based.  If they're
 ;;; integers then all notes in the bars will be marked, otherwise a 2-element
-;;; list sets the exact note to start/stop at.  NB noteheads need before to be
-;;; t in lilypond but bear in mind they're automatically moved over in
-;;; event::get-lp-data.  players can be a single symbol or list.
+;;; list sets the exact note to start/stop at.  
+
+;;; SAR: I haven't incorporated this MDE comment yet.
+;;; NB noteheads need before to be t in lilypond but bear in mind they're
+;;; automatically moved over in event::get-lp-data.  players can be a single
+;;; symbol or list.
+
 ;;; ****m* slippery-chicken-edit/add-marks-to-notes
 ;;; FUNCTION
-;;; 
+;;; Add the specified mark or marks to a consecutive sequence of multiple notes
+;;; within the given slippery-chicken object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer or a list consisting of two numbers to indicate the start
+;;;   bar/note. If this is an integer, all notes in this bar will receive the
+;;;   specified mark or marks. If this is a two-number list, the first number
+;;;   determines the bar, the second the note within that bar.
+;;; - An integer or a list consisting of two numbers to indicate the end
+;;;   bar/note. If this is an integer, all notes in this bar will receive the
+;;;   specified mark or marks. If this is a two-number list, the first number
+;;;   determines the bar, the second the note within that bar.
+;;; - The ID of the player or players to whose parts the mark or marks should
+;;;   be attached. This can be a single symbol or a list.
+;;; - T or NIL to indicate whether the mark should be added to the MARKS slot
+;;;   or the MARKS-BEFORE slot of the given events objects.
+;;; - The mark or marks to be added.
+;;;
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; This example calls the method twice: Once using the single-integer
+;;; indication for full bars, with one instrument and one mark; and once using
+;;; the bar/note reference lists for more specific placement, a list of several
+;;; players that should all receive the marks, and multiple marks to add.
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+		     (va (viola :midi-channel 2))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))
+			    (va (1 1 1 1 1 1))))))))
+  (add-marks-to-notes mini 2 3 'vn nil 'lhp)
+  (add-marks-to-notes mini '(1 3) '(2 2) '(vn va) nil 's 'a))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -1266,22 +1302,47 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Apr 19 16:41:09 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/add-marks-to-note
 ;;; FUNCTION
-;;; 
+;;; Add one or more specified marks to a specified note within a given
+;;; slippery-chicken object.
+;;;
+;;; NB: This method counts notes, not events; i.e., rests are not counted.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the bar number to which the mark or marks should to be
+;;;   added. 
+;;; - An integer that is the note within the specified bar to which the mark or
+;;;   marks should be added.
+;;; - The ID of the player to whose part the mark or marks should be added.
+;;; - The mark or marks to add.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Add several marks to one note, then print the corresponding MARKS slot to
+;;; see the difference.
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+		     (va (viola :midi-channel 2))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e (e) e e (e) e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))
+			    (va (1 1 1 1 1 1))))))))
+  (add-marks-to-note mini 2 3 'va 'a 's 'lhp 'pizz)
+  (print (marks (get-note mini 2 3 'va))))
+
+=> (PIZZ LHP S A)
 
 |#
 ;;; SYNOPSIS
@@ -1630,7 +1691,7 @@ NIL
                               ;; just the rest bars?
                               (to-next-attack t)
                               ;; if the next attack is the same note/chord as
-                              ;; the previous, to to it too?
+                              ;; the previous, tie to it too?
                               (tie-next-attack nil)
                               (last-rhythm nil)
                               (auto-beam nil))

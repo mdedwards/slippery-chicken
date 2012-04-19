@@ -1290,8 +1290,6 @@
       (current-event-num 0))
   ;; ****m* slippery-chicken/next-event
   ;; FUNCTION
-  ;; next-event:
-  ;;
   ;; Get the events from the piece one after the other (e.g. in a loop).  This
   ;; needs to be called with a bar number the first time to reset; this will
   ;; return nil, after which calling without a bar number will return the
@@ -1496,25 +1494,25 @@ T
 (defmethod all-rests-to-ties-aux ((sc slippery-chicken)
                                   start-bar end-bar player
                                   &key (to-next-attack t)
-                                       (tie-next-attack nil)
-                                       ;; what to tie to on end-bar only
-                                       (last-rhythm nil)
-                                       (auto-beam nil))
+				  (tie-next-attack nil)
+				  ;; what to tie to on end-bar only
+				  (last-rhythm nil)
+				  (auto-beam nil))
   (let* ((active-bars (loop
-                          for bnum from start-bar to (1- end-bar)
-                          for bar = (get-bar (piece sc) bnum player)
-                          unless (is-rest-bar bar)
-                          collect bnum))
+			 for bnum from start-bar to (1- end-bar)
+			 for bar = (get-bar (piece sc) bnum player)
+			 unless (is-rest-bar bar)
+			 collect bnum))
          (last (first (last active-bars))))
     ;; (print active-bars)
     (loop for bnum in active-bars do
-          (tie-over-rest-bars-aux sc bnum player 
-                                  :end-bar end-bar
-                                  :tie-next-attack tie-next-attack
-                                  :to-next-attack to-next-attack
-                                  :auto-beam auto-beam
-                                  :last-rhythm (when (= bnum last)
-                                                 last-rhythm)))))
+	 (tie-over-rest-bars-aux sc bnum player 
+				 :end-bar end-bar
+				 :tie-next-attack tie-next-attack
+				 :to-next-attack to-next-attack
+				 :auto-beam auto-beam
+				 :last-rhythm (when (= bnum last)
+						last-rhythm)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -1180,6 +1180,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; 
 ;;; EXAMPLE
 #|
+
 (let ((rsb (make-rthm-seq-bar '((2 4) e e s s s s))))
   (auto-beam rsb))
 

@@ -486,7 +486,7 @@
 ;;; 7, being nil, also won't be changed, but note 3 will be.  NB tied notes are
 ;;; counted here.
 ;;; 
-;;; If use-last octave, then notes can be given like '((a3 b g cs4))
+;;; If use-last-octave, then notes can be given like '((a3 b g cs4))
 ;;; i.e. you only give the octave if it changes. 
 ;;; 
 ;;; ARGUMENTS 

@@ -377,6 +377,7 @@
 |#
 ;;; SYNOPSIS
 (defun chord-fun2 (curve-num index pitch-list pitch-seq instrument set)
+;;; ****
   (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 3 4 999))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

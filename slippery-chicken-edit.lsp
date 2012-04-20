@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 14:27:40 Fri Apr 20 2012 BST
+;;; $$ Last modified: 14:39:02 Fri Apr 20 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -758,21 +758,21 @@ T
 
 ;;; SAR Fri Apr 20 10:47:33 BST 2012: Conformed robodoc entry
 
-;;; ****m* slippery-chicken-edit/change-notes
+;;; ****m* slippery-chicken-edit/change-pitches
 ;;; FUNCTION
-;;; Change the piece's notes for a given player.  See the documentation in the
-;;; bar-holder class method but note that if new-notes is a simple flat list,
+;;; Change the piece's pitches for a given player.  See the documentation in the
+;;; bar-holder class method but note that if new-pitches is a simple flat list,
 ;;; then we'll just change one note after another (with nil indicating no
-;;; change), moving from bar to bar as necessary until the new-notes are used
+;;; change), moving from bar to bar as necessary until the new-pitches are used
 ;;; up; in contrast to the bar-holder method, if a flat list is passed then we
-;;; only give a note for each attack i.e. ties don't count as new notes.
+;;; only give a note for each attack i.e. ties don't count as new pitches.
 ;;;
 ;;; ARGUMENTS 
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; same as bar-holder class but with one extra
-;;; - (optional default nil): a list of marks to be added to the notes: only
-;;; when using the simple flat list; in this case the notes and marks must be
+;;; - (optional default nil): a list of marks to be added to the events: only
+;;; when using the simple flat list; in this case the pitches and marks must be
 ;;; the same length and correspond to each other item by item.  Sublists can be
 ;;; used to add several marks to a single event.  NB marks are list symbols
 ;;; like 'x-head--see cmn.lsp::get-cmn-marks for those recognised.
@@ -781,24 +781,24 @@ T
 ;;; If a flat note list, the bar at which we stopped, otherwise t.
 ;;; 
 ;;; SYNOPSIS
-(defmethod change-notes ((sc slippery-chicken) player start-bar new-notes
-                         &optional (use-last-octave t) marks)
+(defmethod change-pitches ((sc slippery-chicken) player start-bar new-pitches
+                           &optional (use-last-octave t) marks)
 ;;; ****
-  (if (simple-listp new-notes)
+  (if (simple-listp new-pitches)
       (progn
         (when marks
-          (unless (= (length new-notes) (length marks))
-            (error "slippery-chicken::change-notes: marks (~a) ~
-                    and new-notes (~a) must be the same length"
-                   (length marks) (length new-notes))))
-        (loop for note in new-notes 
+          (unless (= (length new-pitches) (length marks))
+            (error "slippery-chicken::change-pitches: marks (~a) ~
+                    and new-pitches (~a) must be the same length"
+                   (length marks) (length new-pitches))))
+        (loop for note in new-pitches 
            for count from 0
            ;; this just resets to start-bar; doesn't get an event
            with e = (next-event sc player t start-bar)
            do
            (setf e (next-event sc player t))
            (unless (event-p e)
-             (error "slippery-chicken::change-notes: couldn't get event ~a!"
+             (error "slippery-chicken::change-pitches: couldn't get event ~a!"
                     (1+ count)))
            (when note
              (when use-last-octave
@@ -812,7 +812,7 @@ T
         ;; this hack gets the current bar number so we return where we left off
         (next-event sc nil))
       ;; the bar-holder method
-      (change-notes (piece sc) player start-bar new-notes use-last-octave)))
+      (change-pitches (piece sc) player start-bar new-pitches use-last-octave)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

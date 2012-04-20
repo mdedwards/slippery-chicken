@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 12:49:23 Thu Apr 19 2012 BST
+;;; $$ Last modified: 14:48:19 Fri Apr 20 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3114,11 +3114,12 @@ data: (2 4)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Try and work out which notes in the bar need accidentals and which don't.
-
+;;; MDE Fri Apr 20 14:43:54 2012 -- made cautionary-distance an optional arg
+;;; instead of a let var 
 (defmethod auto-accidentals ((rsb rthm-seq-bar) 
                              &optional last-attack-previous-bar 
-                                       written)
-  (let* ((cautionary-distance 3)
+                                       written (cautionary-distance 3))
+  (let* (;(cautionary-distance 3)
          (porc nil)
          (scale (ml nil 140))) ;; enough for 20 octaves!
     ;; go through each note in the bar and see whether there was already an

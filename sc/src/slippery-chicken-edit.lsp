@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 14:22:54 Thu Apr 19 2012 BST
+;;; $$ Last modified: 14:27:40 Fri Apr 20 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -138,13 +138,13 @@ T
         :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6)))
                        (2 ((cs4 ds4 fs4 gs4 as4 cs5 ds5 fs5 gs5 as5 cs6))))
         :set-map '((1 (1 1 1 1 1 1))
-		   (2 (2 2 2 2 2 2)))
+                   (2 (2 2 2 2 2 2)))
         :rthm-seq-palette '((1 ((((2 4) q e s s))
                                 :pitch-seq-palette ((1 2 3 4))))
-			    (2 ((((2 4) e s s q))
+                            (2 ((((2 4) e s s q))
                                 :pitch-seq-palette ((1 2 3 4)))))
         :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))))
-			(2 ((vn (2 2 2 2 2 2))))))))
+                        (2 ((vn (2 2 2 2 2 2))))))))
   (add-event-to-bar mini (make-event 'cs4 'e) 2 'vn)
   (print-simple (first (get-bar mini 2)))
   (add-event-to-bar mini (make-event 'c4 'q) '(2 2 1) 'vn :position 2)
@@ -997,22 +997,22 @@ NIL
 ;;; slots to see the results.
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-		     (hn (french-horn :midi-channel 2))
-		     (vc (cello :midi-channel 3))))
-	:tempo-map '((1 (q 60)))
-	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-	:set-map '((1 (1 1 1 1 1))
-		   (2 (1 1 1 1 1)))
-	:rthm-seq-palette '((1 ((((4 4) h q e s s))
-				:pitch-seq-palette ((1 2 3 4 5)))))
-	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
-			    (hn (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))
-			(2 ((cl (1 1 1 1 1))
-			    (hn (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))))))
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (hn (french-horn :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+                            (hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((cl (1 1 1 1 1))
+                            (hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
   (add-mark-all-players mini 3 1 'ppp)
   (add-mark-all-players mini '(2 2 1) '(1 2 3) 'fff)
   (loop for i in '(cl hn vc)
@@ -1106,8 +1106,8 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod add-mark-to-notes-from-to ((sc slippery-chicken)
-				      mark-function player
-				      notes)
+                                      mark-function player
+                                      notes)
 ;;; ****
   (loop 
      for bar in notes 
@@ -1116,13 +1116,13 @@ NIL
      with expansion
      do
        (unless (= (length notes) 2)
-	 (error "slippery-chicken::add-mark-to-notes-from-to: ~
+         (error "slippery-chicken::add-mark-to-notes-from-to: ~
                 Each bar is a 3 note list: bar-num start-note end-note: ~a"
-		bar))
+                bar))
        (setf expansion (loop for i from (first notes) to (second notes) 
-			  collect i))
+                          collect i))
        (loop for n in expansion do
-	    (add-mark-to-note sc bar-num-or-ref n player 
+            (add-mark-to-note sc bar-num-or-ref n player 
                               (funcall mark-function))))
   t)
 
@@ -1177,14 +1177,14 @@ NIL
        (make-slippery-chicken
         '+mini+
         :ensemble '(((vn (violin :midi-channel 1))
-		     (va (viola :midi-channel 2))))
+                     (va (viola :midi-channel 2))))
         :tempo-map '((1 (q 60)))
         :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5))))
         :set-map '((1 (1 1 1 1 1 1)))
         :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
                                 :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
         :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))
-			    (va (1 1 1 1 1 1))))))))
+                            (va (1 1 1 1 1 1))))))))
   (add-marks-to-notes mini 2 3 'vn nil 'lhp)
   (add-marks-to-notes mini '(1 3) '(2 2) '(vn va) nil 's 'a))
 
@@ -1287,19 +1287,19 @@ NIL
        (make-slippery-chicken
         '+mini+
         :ensemble '(((vn (violin :midi-channel 1))
-		     (va (viola :midi-channel 2))))
+                     (va (viola :midi-channel 2))))
         :tempo-map '((1 (q 60)))
         :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5))))
         :set-map '((1 (1 1 1 1 1 1)))
         :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
                                 :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
         :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))
-			    (va (1 1 1 1 1 1))))))))
+                            (va (1 1 1 1 1 1))))))))
   (add-marks-sh mini
-		'((vn a 1 1 1 2 3 1 s 2 1 2 2 2 5)
-		  (va pizz 1 3 2 3 sp 3 1))
-		:shorthand '((sp short-pause))
-		:verbose t))
+                '((vn a 1 1 1 2 3 1 s 2 1 2 2 2 5)
+                  (va pizz 1 3 2 3 sp 3 1))
+                :shorthand '((sp short-pause))
+                :verbose t))
 
 => NIL
 
@@ -1371,14 +1371,14 @@ NIL
        (make-slippery-chicken
         '+mini+
         :ensemble '(((vn (violin :midi-channel 1))
-		     (va (viola :midi-channel 2))))
+                     (va (viola :midi-channel 2))))
         :tempo-map '((1 (q 60)))
         :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5))))
         :set-map '((1 (1 1 1 1 1 1)))
         :rthm-seq-palette '((1 ((((4 4) e (e) e e (e) e e e))
                                 :pitch-seq-palette ((1 2 3 4 5 6)))))
         :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))
-			    (va (1 1 1 1 1 1))))))))
+                            (va (1 1 1 1 1 1))))))))
   (add-marks-to-note mini 2 3 'va 'a 's 'lhp 'pizz)
   (print (marks (get-note mini 2 3 'va))))
 
@@ -2334,14 +2334,14 @@ NIL
        (make-slippery-chicken
         '+mini+
         :ensemble '(((vn (violin :midi-channel 1))
-		     (vc (cello :midi-channel 2))))
+                     (vc (cello :midi-channel 2))))
         :tempo-map '((1 (q 60)))
         :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
         :set-map '((1 (1 1 1 1)))
         :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
                                 :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
         :rthm-seq-map '((1 ((vn (1 1 1 1))
-			    (vc (1 1 1 1))))))))
+                            (vc (1 1 1 1))))))))
   (auto-clefs mini :players '(vc)))
 
 => NIL
@@ -2353,8 +2353,14 @@ NIL
                        (delete-clefs t)
                        (delete-marks-before nil))
 ;;; ****
+  ;; MDE Fri Apr 20 14:27:07 2012 -- 
+  (unless players
+    (setf players (players sc)))
+  ;; MDE Fri Apr 20 14:25:54 2012 
+  (unless (listp players)
+    (setf players (list players)))
   (loop 
-     for player in (if players players (players sc)) 
+     for player in players
      do
      (let ((note-count -1)
            (current-clef nil)
@@ -2469,6 +2475,9 @@ NIL
 ;;; ****
   (unless players
     (setf players (players sc)))
+  ;; MDE Fri Apr 20 14:25:54 2012 
+  (unless (listp players)
+    (setf players (list players)))
   (loop 
       for p in players 
                ;; remember the letter is actually placed on the bar-line of the

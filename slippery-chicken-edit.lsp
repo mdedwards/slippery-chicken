@@ -1967,24 +1967,43 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-;;; 1.4.11: note-num counts tied-notes but not rests
+;;; SAR Fri Apr 20 13:42:14 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/delete-slur
 ;;; FUNCTION
-;;; 
+;;; Delete a slur mark that starts on a specified note within a specified bar
+;;; of a specified player's part by deleting the BEG-SL and END-SL marks from
+;;; the corresponding event objects.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar from which the slur is to be
+;;;   deleted. 
+;;; - An integer that is the number of the note on which the slur to be deleted
+;;;   starts within the given bar. This number counts tied-notes but not
+;;;   rests. 
+;;; - The ID of the player from whose part the slur is to be deleted.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))
+				:marks (slur 1 8))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1 1 1))))))))
+  (delete-slur mini 1 1 'vc)
+  (delete-slur mini 3 1 'vc))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -2455,22 +2474,48 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Apr 20 13:25:17 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/delete-rehearsal-letter
 ;;; FUNCTION
-;;; 
+;;; Delete the rehearsal letter from a specified bar of on or more specified
+;;; players' parts by setting the REHEARSAL-LETTER slot of the corresponding
+;;; rthm-seq-bar object to NIL.
+;;;
+;;; NB: This deletes the given rehearsal letter without resetting and
+;;;     re-ordering the remaining rehearsal letters.
 ;;; 
 ;;; ARGUMENTS
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar from which the rehearsal letter
+;;;   is to be deleted. NB: The rehearsal letter for a given bar is internally
+;;;   actually attached to the previous bar. The number given here is the
+;;;   number from the user's perspective, but the change will be reflected in
+;;;   the bar with the number specified -1.
 ;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; OPTIONAL ARGUMENTS 
+;;; - A list consisting of the IDs of the players from whose parts the
+;;;   rehearsal letter is to be deleted.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1 1 1)))))
+	:rehearsal-letters '(2 4 6))))
+  (delete-rehearsal-letter mini 2 '(vc)))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -2979,32 +3024,83 @@ NIL
                  consolidate-rests))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing methdo
-;;; 20.7.11 (Pula)
-;;; start/end-event are 1-based and count rests and ties, not just struck notes
-;;; if end-event is nil we use all events until end of end-bar
-;;; if update we update-slots for the whole sc object
-;;; 
-;;; a nasty side-effect at the moment is that any existing events in the
-;;; doubling players at the beginning of the start-bar or end of the end-bar
-;;; will be deleted, so this only works for copying notes into completely empty
-;;; bars, not razor splicing.
+;;;  post-gen-editing method
+
+;;; SAR Fri Apr 20 13:58:23 BST 2012: Added robodoc entry
+
+;;; MDE comment:
+;;; if update we update-slots for the whole sc object a nasty side-effect at
+;;; the moment is that any existing events in the doubling players at the
+;;; beginning of the start-bar or end of the end-bar will be deleted, so this
+;;; only works for copying notes into completely empty bars, not razor
+;;; splicing.
 
 ;;; ****m* slippery-chicken-edit/double-events
+;;; DATE
+;;; 20-Jul-2011 (Pula)
+;;;
 ;;; FUNCTION
-;;; 
+;;; Copy the specified events from one player to the corresponding bars of one
+;;; or more other players.
+;;;
+;;; NB: Although partial bars can be copied from the source player, the entire
+;;;     bars of the target players are always overwritten, resulting in rests
+;;;     in those segments of the target players' bars that do not contain the
+;;;     copied material. This method thus best lends itself to copying into
+;;;     target players parts that have rests in the corresponding bars.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - The ID of the player from whose part the events are to be copied.
+;;; - The ID or a list of IDs of the player or players into whose parts the
+;;;   copied events are to be placed.
+;;; - An integer that is the number of the first bar from which the events are
+;;;   to be copied.
+;;; - An integer that is the number of the first event to be copied from the
+;;;   specified start bar. This number is 1-based and counts rests and ties. 
+;;; - An integer that is the number of the last bar from which the events are
+;;;   to be copied.
+;;; - NIL or an integer that is the number of the last event to be copied from
+;;;   the specified end bar. This number is 1-based and counts rests and
+;;;   ties. If NIL, all event from the given bar will be copied.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :transposition. A positive or negative number that is the number of
+;;;   semitones by which the copied material is to be first transposed. This
+;;;   number can be a decimal number, in which case the resulting pitches will
+;;;   be rounded to the nearest microtone (if the current tuning environment is
+;;;   capable of microtones).
+;;; - :consolidate-rests. T or NIL to indicate whether resulting consecutive
+;;;   rests should be consolidated each into one longer rest.
+;;;   T = consolidate. Default = T.
+;;; - :update. T or NIL to indicate whether to update the slots of the given
+;;;   slippery-chicken object after copying. T = update. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((bsn (bassoon :midi-channel 1))
+		     (tbn (tenor-trombone :midi-channel 2))
+		     (vlc (cello :midi-channel 3))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) (w)))))
+			    (2 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((bsn (1 1 1 1 1 1))
+			    (tbn (1 1 1 1 1 1))
+			    (vlc (2 2 2 2 2 2))))))))
+  (double-events mini 'vlc '(bsn tbn) 2 3 4 2)
+  (double-events mini 'vlc 'bsn 5 1 5 nil :transposition 3.5))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -3081,26 +3177,56 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  A post-generation editing methdo
 
-;;; 21.7.11 (Pula)
-;;; turn notes into rests.
-;;; start/end-event are 1-based and count rests and ties, not just struck notes
-;;; if players is nil, process all players
-;;; if end-event is nil go to the end of the end-bar
+;;; SAR Fri Apr 20 12:59:28 BST 2012: Added robodoc entry
+;;; SAR Fri Apr 20 12:59:41 BST 2012: Removed MDE's original comment because
+;;; taken nearly verbatim into robodoc
+
 ;;; ****m* slippery-chicken-edit/delete-events
+;;; DATE
+;;; 21-Jul-2011 (Pula)
+;;;
 ;;; FUNCTION
-;;; 
+;;; Turn notes into rests by setting the IS-REST slots of the specified
+;;; consecutive event objects within the given slippery-chicken object to T.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the first bar for which the notes are to
+;;;   be changed to rests. 
+;;; - An integer that is the index of the first event object within the
+;;;   specified start bar for which the IS-REST slot is to be changed to
+;;;   T. This number is 1-based and counts rests and ties. 
+;;; - An integer that is the number of the last bar for which the notes are to
+;;;   be changed to rests. 
+;;; - An integer that is the index of the last event object within the
+;;;   specified end bar for which the IS-REST slot is to be changed to T. This
+;;;   number is 1-based and counts rests and ties. If NIL, apply the change to
+;;;   all events in the given bar.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list of the IDs of the players whose parts are to be modified. If NIL,
+;;;   apply the method to the parts of all players.
+;;; - T or NIL to indicate whether to consolidate resulting consecutive rests
+;;;   into one longer rest each. T = consolidate. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+  (delete-events mini 2 2 3 nil 'vc))
+
+=> T
 
 |#
 ;;; SYNOPSIS

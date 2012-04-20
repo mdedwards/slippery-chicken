@@ -356,15 +356,18 @@ T
   (respell-notes-aux sc (when (listp corrections) corrections)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; MDE Wed Apr 18 11:57:11 2012 -- added pitches keyword
 
-;;; 11.4.11: start and end can be bar numbers or (bar note) pairs where note is
-;;; 1-based and counts ties.
+;;; SAR Fri Apr 20 16:13:59 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken-edit/enharmonics
 ;;; FUNCTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
+;;; start and end can be bar numbers or (bar note) pairs where note is
+;;; 1-based and counts ties.
 ;;; 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
@@ -396,16 +399,16 @@ T
                (loop for i from start-note to end-note 
                   for e = (get-nth-non-rest-rhythm (1- i) bar)
                   do
-                    ;; MDE Wed Apr 18 12:08:51 2012 
-                  (when (and (event-p e)
-                             (is-single-pitch e)
-                             (or (not pitches)
-                                 (pitch-member (if written
-                                                   (written-pitch-or-chord e)
-                                                   (pitch-or-chord e))
-                                               ;; enharmonics not equal!
-                                               pitches nil)))
-                    (enharmonic e :written written))))))
+		  ;; MDE Wed Apr 18 12:08:51 2012 
+		    (when (and (event-p e)
+			       (is-single-pitch e)
+			       (or (not pitches)
+				   (pitch-member (if written
+						     (written-pitch-or-chord e)
+						     (pitch-or-chord e))
+						 ;; enharmonics not equal!
+						 pitches nil)))
+		      (enharmonic e :written written))))))
       (if (= stbar ndbar)
           (do-bar stbar stnote ndnote)
           (progn 
@@ -418,29 +421,52 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Apr 20 15:45:41 BST 2012: Added robodoc entry
 
-;;; e.g. (enharmonic-spellings +coming-rthm-chain+
-;;;                    '((cello (117 1) (118 2) (135 3) (591 (1 2)) (596 (2 2)))
-;;;                      (violin (539 5))
-;;;                      (clarinet (1 2 t))
-;;;                      (flute (204 1))))
+;;; SAR: some of MDE's original comment taken directly into robodoc
+;;; SAR: Fri Apr 20 16:18:17 BST 2012: I changed "from high to low" to "from
+;;; low to high", since that's the way it appears to work.
+
 ;;; where (596 (1 2)) is accessing the second chord note (counting from high to
-;;;                    low) of the first sounding event of bar 596
-;;; (clarinet (1 2 t)): the t means change the written note, not sounding
+;;; low) of the first sounding event of bar 596
+
+;;; SAR: Fri Apr 20 16:20:35 BST 2012: I don't see this in cmn-display:
 ;;; NB Designed to be called from cmn-display but can be called by user.
 
 ;;; ****m* slippery-chicken-edit/enharmonic-spellings
 ;;; FUNCTION
-;;; 
+;;; Change the pitch of specified event objects to their enharmonic
+;;; equivalents. 
+;;;
+;;; This takes as its second argument a list of lists, each of which consists
+;;; of the ID of the player whose part is to be altered and a series of
+;;; bar-number/event-number pairs, where (2 3) indicates that the pitch of the
+;;; third event of the second bar is to be changed to its enharmonic
+;;; equivalent. 
+;;;
+;;; Pitches within chords are specified by following the bar number with a
+;;; 2-item list consisting of the event number and the number of the pitch
+;;; within the chord, counting from low to high, where (2 (2 4)) indicates that
+;;; the fourth pitch from the bottom of the chord located in the second event
+;;; object of bar 2 should be changed to its enharmonic equivalent.
+;;;
+;;; An optional T can be included to indicate that the written pitch is to be
+;;; changed, but not the sounding pitch, as in (cl (3 4 t)).
+;;;
+;;; NB: In order for this method to work, the :respell-notes option of
+;;;     cmn-display and write-lp-data-for-all must be set to NIL.
 ;;; 
 ;;; ARGUMENTS
+;;; - A slippery-chicken object.
+;;; - The list of changes to be made, in the format '((player changes...)),
+;;;   e.g.: 
 ;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;;   '((cl (3 3 t) (3 4 t))
+;;;     (pn (2 (2 4)))
+;;;     (vc (1 1) (1 3) (1 4) (1 6)))
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -995,6 +1021,7 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
+
 ;;; Apply the method twice: Once using an integer to attach the mark to the
 ;;; same event in all players, and once using a list to attach the mark to
 ;;; different events in the consecutive players. Print the corresponding marks
@@ -1052,23 +1079,73 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; for CMN only
+;;; SAR Fri Apr 20 18:04:20 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/note-add-bracket-offset
 ;;; FUNCTION
-;;; 
+;;; For CMN only: Adjust the position, lengths, and angles of the tuplet
+;;; bracket attached to a specified event object. 
+;;;
+;;; NB: The bracket data is stored in the BRACKET slot of the first event
+;;;     object of a given tuplet figure.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar in which the tuplet bracket is
+;;;   located. 
+;;; - An integer that is the event to which the tuplet bracket is
+;;;   attached. Tuplet brackets are attached to the first event object of a
+;;;   given tuplet figure.
+;;; - The ID of the player in whose part the tuplet bracket is located.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; NB: At least one of these arguments must be set in order to create a
+;;;     change.  
+
+;;; - :dx. A positive or negative decimal number to indicate the horizontal
+;;;   offset of the entire bracket.
+
+;;; - :dy. A positive or negative decimal number to indicate the vertical
+;;;   offset of the entire bracket.
+ 
+;;; - :dx0. A positive or negative decimal number to indicate the horizontal
+;;;   offset of the left corner of the bracket.
+ 
+;;; - :dy0.A positive or negative decimal number to indicate the vertical
+;;;   offset of the left corner of the bracket.
+
+;;; - :dx1. A positive or negative decimal number to indicate the horizontal
+;;;   offset of the right corner of the bracket.
+
+;;; - :dy1.A positive or negative decimal number to indicate the vertical
+;;;   offset of the right corner of the bracket.
+
+;;; - :index. For internal use only.
+
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a list of the bracket start/end indicator and the tuplet value
+;;; followed by the offset values passed to the keyword arguments.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vc (cello :midi-channel 1))))
+	:tempo-map '((1 (q 60)))
+	:set-palette '((1 ((f3 g3 a3 b3))))
+	:set-map '((1 (1)))
+	:rthm-seq-palette '((1 ((((2 4) { 3 te te te } q ))
+				:pitch-seq-palette ((1 2 3 4)))))
+	:rthm-seq-map '((1 ((vc (1))))))))
+  (note-add-bracket-offset mini 1 1 'vc 
+			   :dx -.1 :dy -.3 
+			   :dx0 -.1 :dy0 -.4 
+			   :dx1 .3 :dy1 -.1))
+
+=> (1 3 -0.1 -0.3 -0.1 -0.4 0.3 -0.1)
 
 |#
 ;;; SYNOPSIS
@@ -2270,22 +2347,48 @@ NIL
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Apr 20 17:11:01 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/move-clef
 ;;; FUNCTION
-;;; 
+;;; Move a specified clef from a specified event object to another.
+;;;
+;;; NB: As the :auto-clefs option of cmn-display and write-lp-data-for all
+;;;     first deletes all clefs before automatically placing them, this
+;;;     argument must be set to NIL. The auto-clefs method can be called
+;;;     outside of the cmn-display or write-lp-data-for-all methods instead.  
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar in which the given clef is
+;;;   located.
+;;; - An integer that is the number of the event object in the given bar to
+;;;   which the given clef is attached.
+;;; - An integer that is the number of the bar to which the given clef is
+;;;   to be moved (this can be the same bar).
+;;; - An integer that is the number of the event object in the new bar to
+;;;   which the given clef is to attached.
+;;; - The ID of the player in whose part the clef is to be moved.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the value of the MARKS-BEFORE slot of the event object to which the
+;;; clef is moved.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vc (cello :midi-channel 1))))
+	:tempo-map '((1 (q 60)))
+	:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+	:set-map '((1 (1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+				:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+	:rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+  (auto-clefs mini)
+  (move-clef mini 1 6 1 8 'vc)
+  (cmn-display mini :auto-clefs nil))
 
 |#
 ;;; SYNOPSIS
@@ -2991,25 +3094,66 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing methdo
+;;;  A post-generation editing method
 
-;;; 20.7.11 (Pula)
-;;; see double-events (below) for details
 ;;; ****m* slippery-chicken-edit/move-events
+;;; DATE
+;;; 20-Jul-2011 (Pula)
+;;;
 ;;; FUNCTION
-;;; 
+;;; Move a specified sequence of consecutive event objects from one player to
+;;; another, deleting the events from the source player.
+;;;
+;;; NB: Although partial bars can be moved from the source player, the entire
+;;;     bars of the target players are always overwritten, resulting in rests
+;;;     in those segments of the target players' bars that do not contain the
+;;;     moved material. This method thus best lends itself to moving into
+;;;     target players parts that have rests in the corresponding bars.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - The ID of the source player.
+;;; - The ID of the target player.
+;;; - A number that is the first bar from which events are to be moved.
+;;; - A number that is the first event within the start-bar that is to be
+;;;   moved. 
+;;; - A number that is the last bar from which events are to be moved.
+;;; - A number that is the last event within the end-bar that is to be
+;;;   moved. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :transposition. A positive or negative number that is the number of
+;;;   semitones by which the copied material is to be first transposed. This
+;;;   number can be a decimal number, in which case the resulting pitches will
+;;;   be rounded to the nearest microtone (if the current tuning environment is
+;;;   capable of microtones).
+;;; - :consolidate-rests. T or NIL to indicate whether resulting consecutive
+;;;   rests should be consolidated each into one longer rest.
+;;;   T = consolidate. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((bn (bassoon :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:tempo-map '((1 (q 60)))
+	:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+	:set-map '((1 (1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+				:pitch-seq-palette ((1 2 3 4 5 6 7 8))))
+			    (2 ((((4 4) (w))))))
+	:rthm-seq-map '((1 ((bn (1 1 1 1))
+			    (vc (2 2 2 2))))))))
+  (move-events mini 'bn 'vc 2 3 3 2)
+  (move-events mini 'bn 'vc 4 1 4 2 :transposition 4.5))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -3293,25 +3437,48 @@ NIL
                note-num bar-num))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing methdo
+;;;  A post-generation editing method
 
-;;; delete any notes in the existing bars
-;;; start-bar and end-bar are inclusive
+;;; SAR Fri Apr 20 16:45:57 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken-edit/force-rest-bars
 ;;; FUNCTION
+;;; Delete all notes from the specified bars and replace them with full-bar
+;;; rests. 
 ;;; 
-;;; 
+;;; NB: The start-bar and end-bar index numbers are inclusive
+;;;
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the first bar to change to a full bar of
+;;;   rest. 
+;;; - An integer that is the number of the last bar to change to a full bar of
+;;;   rest. 
+;;; - A list containing the IDs of the players in whose parts the full-bar
+;;;   rests are to be forced.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+		     (va (viola :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 e4 g4 b4 d5 f5 a5 c6))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))))) 
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))
+			    (va (1 1 1 1 1 1))
+			    (vc (1 1 1 1 1 1))))))))
+  (force-rest-bars mini 3 5 '(vn vc)))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS

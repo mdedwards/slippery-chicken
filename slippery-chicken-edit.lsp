@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 14:39:02 Fri Apr 20 2012 BST
+;;; $$ Last modified: 14:48:09 Fri Apr 20 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -299,30 +299,34 @@ T
 
 |#
 ;;; SYNOPSIS
-(defmethod auto-accidentals ((sc slippery-chicken) &optional ignore1 ignore2)
+(defmethod auto-accidentals ((sc slippery-chicken) &optional 
+                             (cautionary-distance 3)
+                             ignore1 ignore2)
 ;;; ****
   (declare (ignore ignore1 ignore2))
   (loop 
-      with players = (players sc)
-      with bar
-      with last-attack
-      with last-notes = (ml nil (length players))
-      for bar-num from 1 to (num-bars (piece sc)) 
-      do
-        (loop 
-            for player in players 
-            for i from 0
-            do 
-              (setf bar (get-bar sc bar-num player))
-              (auto-accidentals bar (nth i last-notes))
-              ;; we can't ignore instruments that only sound octaves +/-
-              ;; written note as that would leave written and sounding notes
-              ;; potentially different, hence nil last argument here.
-              (when (plays-transposing-instrument (get-player sc player) nil)
-                (auto-accidentals bar (nth i last-notes) t))
-              (setf last-attack (get-last-attack bar nil))
-              (when last-attack
-                (setf (nth i last-notes) last-attack)))))
+     with players = (players sc)
+     with bar
+     with last-attack
+     with last-notes = (ml nil (length players))
+     for bar-num from 1 to (num-bars (piece sc)) 
+     do
+     (loop 
+        for player in players 
+        for i from 0
+        do 
+        (setf bar (get-bar sc bar-num player))
+        ;; MDE Fri Apr 20 14:45:31 2012 -- cautionary-distance added
+        (auto-accidentals bar (nth i last-notes) nil cautionary-distance)
+        ;; we can't ignore instruments that only sound octaves +/-
+        ;; written note as that would leave written and sounding notes
+        ;; potentially different, hence nil last argument here.
+        (when (plays-transposing-instrument (get-player sc player) nil)
+          ;; MDE Fri Apr 20 14:45:31 2012 -- cautionary-distance added
+          (auto-accidentals bar (nth i last-notes) t cautionary-distance))
+        (setf last-attack (get-last-attack bar nil))
+        (when last-attack
+          (setf (nth i last-notes) last-attack)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/respell-notes

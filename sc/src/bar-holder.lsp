@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 10:33:26 Wed Apr 18 2012 BST
+;;; $$ Last modified: 14:35:05 Fri Apr 20 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -454,12 +454,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 30.3.11: turn a rest into a note by supplying a pitch or chord (as objects
 ;;; or symbols)
-(defmethod rest-to-note ((bh bar-holder) bar-num rest-num player new-note
+(defmethod rest-to-note ((bh bar-holder) bar-num rest-num player new-pitch
                          &rest marks)
   (setf marks (flatten marks)) ; in case passed as list from sc class
   (let ((rest (get-rest bh bar-num rest-num player)))
     (when rest
-      (setf (pitch-or-chord rest) new-note))
+      (setf (pitch-or-chord rest) new-pitch))
     (loop for m in marks do
          (add-mark rest m))
     rest))
@@ -477,10 +477,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* bar-holder/change-notes
+;;; ****m* bar-holder/change-pitches
 ;;; FUNCTION
 ;;; new-notes is a list of lists, each sublist being the notes for each bar in
-;;; succession.  e.g. (change-notes bh 'vla 5 '((g3 gs4) nil (nil nil aqf5)))
+;;; succession.  e.g. (change-pitches bh 'vla 5 '((g3 gs4) nil (nil nil aqf5)))
 ;;; would change the notes in bars 5 and 7 (for the viola), whereas bar six,
 ;;; indicated by nil, wouldn't be changed; similarly the first two notes of bar
 ;;; 7, being nil, also won't be changed, but note 3 will be.  NB tied notes are
@@ -502,14 +502,14 @@
 ;;; always t
 ;;;
 ;;; EXAMPLE
-;;; (change-notes bh 'vla 5 '((g3 gs4) nil (nil nil aqf5)))
+;;; (change-pitches bh 'vla 5 '((g3 gs4) nil (nil nil aqf5)))
 ;;; 
 ;;; SYNOPSIS
-(defmethod change-notes ((bh bar-holder) player start-bar new-notes 
-                         &optional (use-last-octave t) ignore)
+(defmethod change-pitches ((bh bar-holder) player start-bar new-pitches 
+                           &optional (use-last-octave t) ignore)
 ;;; ****
   (declare (ignore ignore))
-  (loop for bar in new-notes and bar-num from start-bar do
+  (loop for bar in new-pitches and bar-num from start-bar do
        (loop for note in bar and note-num from 1 do
             (when note
               ;; 6.7.11: handle the chord case
@@ -519,7 +519,7 @@
                     (get-note-octave note use-last-octave)
                   (setf note (join-note-octave n o))))
               ;; (format t "~% ~a ~a ~a" bar-num note-num note)
-              (change-note bh bar-num note-num player note))))
+              (change-pitch bh bar-num note-num player note))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

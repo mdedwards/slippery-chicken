@@ -673,24 +673,42 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Apr 20 11:06:00 BST 2012: Added robodoc entry
 
-;;; NB The new pitch is the sounding pitch if a transposing instrument.
+
 ;;; ****m* slippery-chicken-edit/change-pitch
 ;;; FUNCTION
-;;; 
+;;; Change the pitch of a specified event to a new specified pitch. The new
+;;; pitch is not required to be a member of the current set.
+;;;
+;;; NB The new pitch is the sounding pitch if a transposing instrument.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the bar number in which the pitch is to be changed.
+;;; - An integer that is the number of the note in the specified bar whose
+;;;   pitch is to be changed.
+;;; - The ID of the player for whom the pitch is to be changed.
+;;; - A note-name symbol that is the new pitch.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+  (change-pitch mini 1 3 'vc 'fs3))
 
+=> T
 |#
 ;;; SYNOPSIS
 (defmethod change-pitch ((sc slippery-chicken) bar-num note-num player
@@ -738,25 +756,26 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Apr 20 10:47:33 BST 2012: Conformed robodoc entry
 
 ;;; ****m* slippery-chicken-edit/change-notes
 ;;; FUNCTION
-;;; change-notes:
-;;;
-;;; ARGUMENTS 
-;;; same as bar-holder class but with one extra
-;;; - (optional default nil): a list of marks to be added to the notes: only
-;;; when using the simple flat list; in this case the notes and marks must be
-;;; the same length and correspond to each other item by item.  Sublists can be
-;;; used to add several marks to a single event.  NB marks are list symbols
-;;; like 'x-head--see cmn.lsp::get-cmn-marks for those recognised.
-;;; 
 ;;; Change the piece's notes for a given player.  See the documentation in the
 ;;; bar-holder class method but note that if new-notes is a simple flat list,
 ;;; then we'll just change one note after another (with nil indicating no
 ;;; change), moving from bar to bar as necessary until the new-notes are used
 ;;; up; in contrast to the bar-holder method, if a flat list is passed then we
 ;;; only give a note for each attack i.e. ties don't count as new notes.
+;;;
+;;; ARGUMENTS 
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; same as bar-holder class but with one extra
+;;; - (optional default nil): a list of marks to be added to the notes: only
+;;; when using the simple flat list; in this case the notes and marks must be
+;;; the same length and correspond to each other item by item.  Sublists can be
+;;; used to add several marks to a single event.  NB marks are list symbols
+;;; like 'x-head--see cmn.lsp::get-cmn-marks for those recognised.
 ;;; 
 ;;; RETURN VALUE  
 ;;; If a flat note list, the bar at which we stopped, otherwise t.
@@ -797,26 +816,47 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-;;; see rthm-seq-bar (setf time-sig)
-;;; this is a 'brutal' method in that it doesn't check to see if the rhythms in
-;;; the bar add up to a whole bar in the new time-sig
+;;; SAR Fri Apr 20 11:13:46 BST 2012: Added robodoc entry
+;;; SAR Fri Apr 20 11:22:21 BST 2012: Deleted MDE comments here as they have
+;;; been taken into the robodoc in full.
 
 ;;; ****m* slippery-chicken-edit/change-time-sig
 ;;; FUNCTION
+;;; Force a change of the time-sig associated with a specified bar. 
 ;;; 
+;;; NB: This method does not check to see if the rhythms in the bar add up to a 
+;;;     complete bar in the new time-sig.
+;;;
+;;; Also see rthm-seq-bar (setf time-sig).
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar whose time signature should be
+;;;   changed or a list that is a reference to the bar whose time signature is
+;;;   to be changed in the format (section sequence bar).
+;;; - The new signature in the format (number-of-beats beat-unit).
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Changing two time signatures; once using the integer bar reference, the
+;;; second time using the list reference to the bar number.
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+  (change-time-sig mini 2 '(3 8))
+  (change-time-sig mini '(1 1 1) '(5 8)))
+
+=> T 
 
 |#
 ;;; SYNOPSIS
@@ -1975,6 +2015,7 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Apr 20 10:38:49 BST 2012: Added robodoc entry
 
 ;;; add slurs automatically (to wind instruments usually) to phrases: these are
 ;;; defined as not having any rests in them and not including any repeated
@@ -2094,25 +2135,42 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Apr 20 11:52:59 BST 2012: Added robodoc entry
 
-;;; optional args are actually required but optional because of event class
-;;; method  
-;;; event-num is 1-based but counts rests and ties
 ;;; ****m* slippery-chicken-edit/delete-clefs
 ;;; FUNCTION
-;;; 
+;;; Delete the clef symbol held in the MARKS-BEFORE slot of the specified event
+;;; object within the given slippery-chicken object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; NB: The optional arguments are actually required.
+;;; - A slippery-chicken object.
+;;; - The ID of the player from whose part the clef symbol is to be deleted. 
+;;; - An integer that is the number of the bar from which the clef symbol is to
+;;;   be deleted.
+;;; - An integer that is the number of the event object within the specified
+;;;   from whose MARKS-BEFORE slot the clef symbol is to be deleted. This is a
+;;;   1-based index but counts rests and ties.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+  (auto-clefs mini)
+  (delete-clefs mini 'vc 1 3))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -2221,7 +2279,6 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 ;;; NB While this routine generally does a good job of putting the right clefs
 ;;; in place, it will get confused if notes jump from very high to low
 ;;; (e.g. over complete piano range).  Called automatically by cmn-display
@@ -2229,19 +2286,65 @@ NIL
 
 ;;; ****m* slippery-chicken-edit/auto-clefs
 ;;; FUNCTION
-;;; 
+;;; Automatically create clef changes in the specified player's or players'
+;;; part or parts by adding the appropriate clef symbol to the MARKS-BEFORE
+;;; slot of the corresponding event object.
+;;;
+;;; This routine will only place clef symbols that are present in the given
+;;; instrument object's CLEFS slot.
+;;;
+;;; This method is called automatically by cmn-display and
+;;; write-lp-data-for-all, with the delete-clefs option set to T.
+;;;
+;;; NB: While this routine generally does a good job of putting the proper
+;;;     clefs in place, it will get confused if the pitches in a given player's
+;;;     part jump from very high to very low (e.g. over the complete range of
+;;;     the piano).
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+
+;;; - :verbose. T or NIL to indicate whether the method is to print feedback
+;;;   about its operations to the Listener. T = print feedback. Default = NIL. 
+
+;;; - :in-c. T or NIL to indicate whether the pitches processed are to be
+;;;   handled as sounding or written pitches. T = sounding. Default = T.
+
+;;; - :players. A list containing the IDs of the players whose parts are to be
+;;;   to have clefs automatically added.
+
+;;; - :delete-clefs. T or NIL to indicate whether the method should first
+;;;   delete all clef symbols from the MARKS-BEFORE slots of all event objects
+;;;   it is processing before setting the automatic clef changes.
+
+;;; - :delete-marks-before. T or NIL to indicate whether the MARKS-BEFORE slot
+;;;   of all event objects processed should first be set to NIL. 
+;;;   T = set to NIL. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Straightforward usage applied to just the VC player
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1))
+			    (vc (1 1 1 1))))))))
+  (auto-clefs mini :players '(vc)))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -2458,22 +2561,49 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Apr 20 09:12:59 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/auto-beam
 ;;; FUNCTION
-;;; 
+;;; Automatically sets indications for starting beams and ending beams (1 and
+;;; 0) to the BEAMS slot of the corresponding event objects. 
+;;;
+;;; By default, the method places the start and end indications for beams on
+;;; the basis of the beat found in the time signature, but the user can specify
+;;; a different beat basis using the first optional argument.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - NIL, an integer that is a power-of-two rhythmic duration, or the
+;;;   alphabetic representation of such a rhythm to specify the beat basis for
+;;;   setting beams (e.g. 4 or 'h).
+;;; - T or NIL to indicate whether the method is to check whether an exact beat
+;;;   of rhythms can be found for each beat of the bar. If T, a warning will be
+;;;   printed when an exact beat cannot be found for each beat of the bar. 
+;;;   Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Auto-beam the events of the given slippery-chicken object on the basis of a
+;; half note:
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((fs4 gs4 as4))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 2 1 2 3 2)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1))))))))
+    (auto-beam mini 'h))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -2727,25 +2857,54 @@ NIL
         (delete-beams bar))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing methdo
+;;; 
 
-;;; NB This might delete rehearsal letters, instrument changes (and maybe other
-;;; things) attached to a bar/event.
+;;; SAR Fri Apr 20 11:34:43 BST 2012: Added robodoc entry.
+;;; SAR Fri Apr 20 11:34:51 BST 2012: Deleted MDE's original comment as it's
+;;; been incorporated directly into the robodoc.
+
 ;;; ****m* slippery-chicken-edit/delete-bars
 ;;; FUNCTION
-;;; 
+;;; Delete a sequence of consecutive bars from the given slippery-chicken
+;;; object. 
+;;;
+;;; NB This might delete rehearsal letters, instrument changes (and maybe other
+;;; things) attached to a bar/event.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the first bar to delete.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :num-bars. An integer that is the number of consecutive bars, including
+;;;   the start-bar, to delete. This argument cannot be used simultaneously
+;;;   with :end-bar
+;;; - :end-bar. An integer that is the number of the last of the consecutive
+;;;   bars to delete. This argument cannot be used simultaneously with
+;;;   :num-bars. 
+;;; - :print. Print feedback of the process to the Listener, including a
+;;;   print-simple of the bars deleted.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+  (delete-bars mini 2 :end-bar 3)
+  (delete-bars mini 2 :num-bars 1))
+
+=> T
 
 |#
 ;;; SYNOPSIS

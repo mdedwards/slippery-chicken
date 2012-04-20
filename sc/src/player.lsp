@@ -340,6 +340,7 @@
 |#
 ;;; SYNOPSIS
 (defmethod total-degrees ((p player))
+;;; ****
   (let* ((data (data p)))
     (if (typep data 'assoc-list)
         (loop for ins in (data data) sum

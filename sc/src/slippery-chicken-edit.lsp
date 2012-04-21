@@ -1,3 +1,4 @@
+9
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****h* sc/slippery-chicken-edit
 ;;; NAME 
@@ -127,6 +128,7 @@ T
 ;;;
 ;;; EXAMPLE
 #|
+
 ;;; Adding two events to separate bars, once using a bar number with
 ;;; :position's default to NIL, and once using a bar number reference list with
 ;;; :position specified as 2. Print the bars after adding to see the changes.
@@ -165,28 +167,61 @@ T
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SAR Sat Apr 21 14:29:43 BST 2012: Conformed robodoc entry
+
 ;;; ****m* slippery-chicken-edit/replace-events
 ;;; FUNCTION
-;;; replace-events:
-;;; 
-;;; A post-generation editing method: Replace events already in the parts with
-;;; new events.  All references are 1-based.  Works for one bar at a time only.
+;;; Replace on or more consecutive existing event objects with new event
+;;; objects. All references are 1-based. This method can be applied to only one
+;;; bar at a time.
+;;;
+;;; One or more new event objects can be specified as a replacement for one
+;;; single original event object.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the slippery-chicken object
-;;; - the player (symbol)
-;;; - the bar number; can also be a reference like 
-;;;   '(section sequence-no. bar-no.)
-;;; - the event number in the bar to start at
-;;; - the number of events to replace
-;;; - a list of the new events
-;;; - (optional default nil): whether to automatically beam the new events.
-;;; - (optional default nil): tuplet bracket info e.g. '(3 0 5) which means a
-;;;   triplet bracket starting at event  0 and ending at event 5 (inclusive and
-;;;   counting rests). 
+;;; - A slippery-chicken object.
+;;; - The ID of the player whose part is to be modified.
+;;; - An integer that is the number of the bar in which the change is to be
+;;;   made; or a reference to the bar in the format '(section sequence bar).
+;;; - An integer that is the number of the first event object in the given bar
+;;;   to replace. 
+;;; - An integer that is the total number of consecutive original event objects
+;;;   to replace.
+;;; - A list of the new event objects, each in turn specified as a 2-item list
+;;;   in the format (pitch rhythm), e.g. '((c4 e)). Rests are indicated with
+;;;   NIL, e.g. (nil s). Chords are indicated by enclosing the pitches of the
+;;;   chord in a list, e.g. ((c4 e4) e).
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether to automatically re-beam the given bar after
+;;;   replacing the events. T = beam. Default = NIL.
+;;; - A list of integers to indicate tuplet bracket placement, in the format
+;;;  '(tuplet-value start-event end-event). These numbers are 0-based and
+;;;  inclusive and count rests.
 ;;; 
 ;;; RETURN VALUE  
-;;; T (from piece class method)
+;;; Returns T.
+;;;
+;;; EXAMPLE
+#|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))))
+	:tempo-map '((1 (q 60)))
+	:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+	:set-map '((1 (1 1 1 1)))
+	:rthm-seq-palette '((1 ((((2 4) q (e) s s))
+				:pitch-seq-palette ((1 2 3)))))
+	:rthm-seq-map '((1 ((vn (1 1 1 1))))))))
+  (replace-events mini 'vn 1 2 1 '((nil s) ((ds5 fs5) s)) t)
+  (replace-events mini 'vn 2 2 1 '((cs5 e)))
+  (replace-events mini 'vn '(1 3 1) 3 1 '((df4 s)))
+  (replace-events mini 'vn 4 1 1 '((ds4 te) (cs4 te) (b3 te)) t '(3 0 2)))
+
+=> T
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod replace-events ((sc slippery-chicken) player bar-num start-event
@@ -205,36 +240,51 @@ T
     (add-tuplet-bracket (get-bar sc bar-num player) tuplet-brackets)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SAR Sat Apr 21 17:17:33 BST 2012: Conformed robodoc entry
+
 ;;; ****m* slippery-chicken-edit/replace-multi-bar-events
 ;;; FUNCTION
-;;; A post-generation editing method: Replace events across several bars.  All
-;;; bars have to be filled, i.e. we can't just leave the last bar half-filled
+
+;;; Replace specified consecutive event objects across several bars. 
+
+;;; All bars must be filled; i.e., we can't just leave the last bar half-filled
 ;;; expecting the existing events to make up the rest.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the slippery-chicken object
-;;; - the player (symbol)
-;;; - the start bar.  This can be an absolute bar number or a list of the form 
-;;;   '(section sequence bar) (if there a subsections then e.g. '((3 1) 4 2))
-;;; - the number of bars we'll replace events in
-;;; - the list of events
-;;; - (key :interleaved default t) if <new-events> are not already event
-;;;   objects we have two ways of passing the event data.  If this argument is
-;;;   t, we pass a list of 2-element lists (note rhythm) that we can pass to
-;;;   make-events (but this can contain no ties). If nil, then rhythm and pitch
-;;;   data is passed as two separate lists within <new-events> to make-events2
-;;;   where + can be used to indicate ties.  Pitch data is the usual cs4 or
-;;;   (cs4 cd3) for chords, and nil or r indicates a rest.  NB all pitches are
-;;;   sounding pitches, so written pitches will be created for transposing
-;;;   instruments where necessary.
-;;; - (key :consolidate-rests default t): whether shorter rests should
-;;;   automatically be collapsed into a single longer rest.
-;;; - (key :beat default nil): what beat will be used to consolidate rests
-;;;   (rhythm symbol).  If nil, the beat of the meter will be used
-;;;   (e.q. crotchet/quarter in 4/4).
-;;; - (key :auto-beam default t): whether to automatically beam the new events.
-;;; - (key :tuplet-bracket default nil): whether to automatically add tuplet
-;;;   (e.g. triplet) brackets to the new events (integer).
+;;; - A slippery-chicken object.
+;;; - The ID of the player whose part is to be modified.
+;;; - An integer that is the number of the first bar in which event objects are
+;;;   to be replaced. This can be an absolute bar number or a list in the form
+;;;   '(section sequence bar); or with subsections then e.g. '((3 1) 4 2)).  
+;;; - An integer that is the number of bars in which event objects will be
+;;;   replaced.
+;;; - The list of new event objects.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+
+;;; - :interleaved. if <new-events> are not already event objects we have two
+;;;   ways of passing the event data.  If this argument is t, we pass a list of
+;;;   2-element lists (note rhythm) that we can pass to make-events (but this
+;;;   can contain no ties). If nil, then rhythm and pitch data is passed as two
+;;;   separate lists within <new-events> to make-events2 where + can be used to
+;;;   indicate ties.  Pitch data is the usual cs4 or (cs4 cd3) for chords, and
+;;;   nil or r indicates a rest.  NB all pitches are sounding pitches, so
+;;;   written pitches will be created for transposing instruments where
+;;;   necessary. default t
+
+;;; - :consolidate-rests. whether shorter rests should automatically be
+;;;   collapsed into a single longer rest. default t
+
+;;; - :beat. what beat will be used to consolidate rests (rhythm symbol).  If
+;;;   nil, the beat of the meter will be used (e.g. crotchet/quarter in
+;;;   4/4). default nil
+
+;;; - :auto-beam. whether to automatically beam the new events. default t.
+
+;;; - :tuplet-bracket. whether to automatically add tuplet (e.g. triplet)
+;;;   brackets to the new events (integer). default nil
+
 ;;; 
 ;;; RETURN VALUE  
 ;;; The number of new events used to replace the old ones.
@@ -2640,25 +2690,66 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-;;; This method will only combine short bars into longer ones, it won't split
-;;; up bars and recombine. 
+;;; SAR Sat Apr 21 13:47:21 BST 2012: Added robodoc entry.
 
 ;;; ****m* slippery-chicken-edit/re-bar
 ;;; FUNCTION
-;;; Don't confuse with rebar method.
+;;; Arrange the events of specified consecutive bars in a given
+;;; slippery-chicken object into new bars of a different time signature. If the
+;;; number of beats in the specified series of events does not fit evenly into
+;;; full measures of the the specified time signature, the method will do its
+;;; best to create occasional bars of a different time-signature that are as
+;;; close as possible to the desired length.
+;;;
+;;; This method will only combine existing short bars into longer ones; it
+;;; won't split up longer bars and recombine them.
+;;;
+;;; NB: This method should not be confused with the rebar method.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments
+;;; - :start-bar. An integer that is the number of the first bar whose events
+;;;   are to be re-barred.
+;;; - :end-bar. An integer that is the number of the last bar whose events are
+;;;   to be re-barred.
+;;; - :min-time-sig. A time signature in the form of a 2-item list containing
+;;;   the number of beats and the beat unit; e.g. '(3 4). This is a target time
+;;;   signature from which the method may occasionally if the number of events
+;;;   does not fit evenly into full bars of the specified time signature.
+;;; - :verbose. T or NIL to indicate whether to print feedback on the
+;;;   re-barring process to the Listener. T = print feedback. Default = NIL.
+;;; - :check-ties. T or NIL to indicate whether to force the method to ensure
+;;;   that all tied notes have the same enharmonic spellings. T = check. 
+;;;   Default = T.
+;;; - :auto-beam. T, NIL, or an integer. If T, the method will automatically
+;;;   attach beam indications to the corresponding events according to the beat
+;;;   unit of the time signature. If an integer, the method will beam in
+;;;   accordance with a beat unit that is equal to that integer. If NIL, the
+;;;   method will not automatically place beams. Default = T.
+;;; - :update-slots. T or NIL to indicate whether to update the corresponding
+;;;   slots. This is an internal argument and not needed by the user. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))))
+	:tempo-map '((1 (q 60)))
+	:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+	:set-map '((1 (1 1 1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((2 4) q e s s))
+				:pitch-seq-palette ((1 2 3 4)))))
+	:rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
+  (re-bar mini :start-bar 2 :end-bar 5 :min-time-sig '(4 4) :auto-beam 4))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -2939,24 +3030,37 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing methdo
+;;;  A post-generation editing method
 
-;;; if two or more notes have the same dynamic, remove all but the first
+;;; SAR Sat Apr 21 14:20:22 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken-edit/remove-extraneous-dynamics
 ;;; FUNCTION
-;;; 
+;;; If two or more consecutive event objects have the same dynamic, remove that
+;;; dynamic marking from all but the first of these.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))))
+	:tempo-map '((1 (q 60)))
+	:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+	:set-map '((1 (1 1 1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((2 4) q e s s))
+				:pitch-seq-palette ((1 2 3 4))
+				:marks (f 1 f 2 f 3 f 4))))
+	:rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
+  (remove-extraneous-dynamics mini))
+
+=> T
 
 |#
 ;;; SYNOPSIS

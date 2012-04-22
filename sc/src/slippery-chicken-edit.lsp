@@ -1723,22 +1723,56 @@ NIL
 
 ;;; ****m* slippery-chicken-edit/rm-marks-from-notes
 ;;; FUNCTION
-;;; Remove only the specified marks from the MARKS slots of 
-
-;;; removes only the given marks, not all marks.  if players are nil, then all
-;;; players will be processed
+;;; Remove only the specified marks from the MARKS slots of specified events in
+;;; the parts of specified players. If the <players> argument is set to NIL,
+;;; remove the mark or marks from all players.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer or a 2-item list of integers indicating the first bar and note
+;;;   from which to remove marks. If an integer, this is the bar number and the
+;;;   mark will be removed from all notes in the bar. If a 2-item list, this is
+;;;   a reference to the bar number and number of the first note in the bar
+;;;   from which to start removing marks, in the form e.g. '(3 1).
+;;; - An integer or a 2-item list of integers indicating the last bar and note
+;;;   from which to remove marks. If an integer, this is the bar number and the
+;;;   mark will be removed from all notes in the bar. If this is a 2-item list,
+;;;   this is a reference to the bar number and number of the first note in the
+;;;   bar from which to start removing marks, in the form e.g. '(3 1).
+;;; - The ID or a list of IDs of the players from whose parts the marks are to
+;;;   be removed.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; NB: The <marks> argument is a required argument for this method.
+;;; - The mark or a list of the marks to remove. This method will only remove
+;;;   specified marks.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((fl (flute :midi-channel 1))
+		     (hn (french-horn :midi-channel 2))
+		     (vn (violin :midi-channel 3))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((cs4 ds4 fs4))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4))
+				:marks (a 2 s 2 fff 2))))
+        :rthm-seq-map '((1 ((fl (1 1 1 1 1))
+			    (hn (1 1 1 1 1))
+			    (vn (1 1 1 1 1))))))))
+  (rm-marks-from-notes mini 1 2 'fl 'fff)
+  (rm-marks-from-notes mini '(1 2) '(2 1) 'hn '(fff a))
+  (rm-marks-from-notes mini 3 '(4 3) '(hn vn) '(fff s a))
+  (rm-marks-from-notes mini 5 5 nil 'fff))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -1775,22 +1809,55 @@ NIL
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sun Apr 22 15:21:30 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/rm-slurs
 ;;; FUNCTION
-;;; 
+;;; Remove the specified slurs from the MARKS slots of specified events in
+;;; the parts of specified players. If the <players> argument is set to NIL,
+;;; remove the specified slurs from all players.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer or a 2-item list of integers indicating the first bar and note
+;;;   from which to remove slurs. If an integer, this is the bar number and the
+;;;   slurs will be removed from all notes in the bar. If a 2-item list, this is
+;;;   a reference to the bar number and number of the first note in the bar
+;;;   from which to start removing slurs, in the form e.g. '(3 1).
+;;; - An integer or a 2-item list of integers indicating the last bar and note
+;;;   from which to remove slurs. If an integer, this is the bar number and the
+;;;   slurs will be removed from all notes in the bar. If this is a 2-item list,
+;;;   this is a reference to the bar number and number of the first note in the
+;;;   bar from which to start removing slurs, in the form e.g. '(3 1).
+;;; - The ID or a list of IDs of the players from whose parts the marks are to
+;;;   be removed.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((fl (flute :midi-channel 1))
+		     (hn (french-horn :midi-channel 2))
+		     (vn (violin :midi-channel 3))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 e4 fs4 gs4 as4 c5 d5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))
+				:marks (slur 1 2 slur 3 4 slur 5 6 slur 7 8))))
+        :rthm-seq-map '((1 ((fl (1 1 1 1 1))
+			    (hn (1 1 1 1 1))
+			    (vn (1 1 1 1 1))))))))
+  (rm-slurs mini 1 2 'fl)
+  (rm-slurs mini '(1 3) '(2 1) 'hn)
+  (rm-slurs mini 3 '(4 3) '(hn vn))
+  (rm-slurs mini 5 5 nil))
+
+=> T
 
 |#
 ;;; SYNOPSIS

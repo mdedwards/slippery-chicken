@@ -653,29 +653,60 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sun Apr 22 10:57:57 BST 2012: Added robodoc entry
 
-;;; This is just a very simple attempt to spell notes better by comparing each
-;;; note to the previous one and making it the same accidental type.  It
-;;; doesn't look further back or ahead as of yet.  If <written> then look at
-;;; the written notes instead of the sounding notes.
-;;;
-;;; 8/4/07: keep track of the last two now in order to make better decisions.
+;;; SAR Sun Apr 22 10:58:56 BST 2012: Moved MDE's comment into the entry.
+
+;;; MDE 8/4/07: keep track of the last two now in order to make better decisions.
 
 ;;; ****m* slippery-chicken-edit/respell-notes-for-player
 ;;; FUNCTION
-;;; 
-;;; 
+;;; Pass through the pitches of a specified player's part and change some of
+;;; the pitches to their enharmonic equivalents in order to produce more
+;;; sensible spellings of consecutive notes.
+;;;
+;;; This is just a very simple attempt to better spell notes by comparing each
+;;; note to the previous two and making it the same accidental type. It
+;;; doesn't look further back or ahead as of yet. 
+;;;
+;;; If the optional argument is set to T, then look at the written notes
+;;; instead of the sounding notes.
+;;;
+;;; NB: Since both the cmn-display and write-lp-data-for-all methods
+;;;     automatically call respell-notes for all players of an entire
+;;;     sc-object, their :respell-notes argument may need to be set to NIL for
+;;;     this method to produce the desired results.
+;;;
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - The ID of the player whose pitches are to be modified.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether to change written pitches only or sounding
+;;;   pitches only. T = change written pitches only. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (vn (violin :midi-channel 2))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((b3 cs4 b4 cs5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4)))))
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (vn (1 1 1 1 1))))))))
+  (respell-notes-for-player mini 'cl t)
+  (cmn-display mini :respell-notes nil :in-c nil))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -855,25 +886,67 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-;;; 30.3.11: turn a rest into a note by supplying a pitch or chord (as objects
-;;; or symbols)
+;;; SAR Sun Apr 22 11:56:20 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/rest-to-note
 ;;; FUNCTION
-;;; 
+;;; Change a specified event object from a rest into a note by supplying a
+;;; pitch or chord (as objects or symbols). 
+;;;
+;;; Marks to be attached to the new note can be supplied as a symbol or a list
+;;; as an optional argument.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar in which the rest is to be
+;;;   changed to a note.
+;;; - An integer that is the number of the rest in the given bar that is to be
+;;;   changed. This number counts rests only, not sounding notes or events.
+;;; - The ID of the player whose part is to be changed.
+;;; - A note-name symbol that is to be the pitch of the new note, or a list of
+;;;   note-name symbols that will make up a chord.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A mark or list of marks to be attached to the new note.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the new event object created.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((cs4 ds4 fs4))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q (e) s s))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1))))))))
+  (rest-to-note mini 2 1 'vn 'gs5)
+  (rest-to-note mini 3 1 'vn '(gs5 b5))
+  (rest-to-note mini 4 1 'vn '(gs4 b4) 'ppp)
+  (rest-to-note mini 5 1 'vn '(gs4 b4) '(fff pizz)))
+
+=> 
+EVENT: start-time: 9.000, end-time: 9.500, 
+       duration-in-tempo: 0.500, 
+       compound-duration-in-tempo: 0.500, 
+       amplitude: 0.900 
+       bar-num: 5, marks-before: NIL, 
+       tempo-change: NIL 
+       instrument-change: NIL 
+       display-tempo: NIL, start-time-qtrs: 9.000, 
+       midi-time-sig: NIL, midi-program-changes: NIL, 
+       8va: 0
+       pitch-or-chord: 
+CHORD: auto-sort: T, marks: NIL, micro-tone: NIL
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (
+[...]
 
 |#
 ;;; SYNOPSIS
@@ -1589,27 +1662,51 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sun Apr 22 12:16:46 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/rm-marks-from-note
 ;;; FUNCTION
-;;; 
+;;; Remove on or more specific marks or all marks from the MARKS slot of a
+;;; specified event object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar from which the marks are to be
+;;;   removed. 
+;;; - An integer that is the number of the note in that bar from which the
+;;;   marks are to be removed.
+;;; - The ID of the player from whose part the marks are to be removed.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A specific mark or list of specific marks that are to be removed. If this
+;;;   argument is not specified, all marks will be removed.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((cs4 ds4 fs4))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4))
+				:marks (a 2 s 2 fff 2 pizz 2))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1))))))))
+  (rm-marks-from-note mini 2 2 'vn 'pizz)
+  (rm-marks-from-note mini 3 2 'vn '(pizz fff))
+  (rm-marks-from-note mini 3 2 'vn))
+
+=> T
 
 |#
 ;;; SYNOPSIS
 (defmethod rm-marks-from-note ((sc slippery-chicken) bar-num note-num
-                                   player &rest marks)
+			       player &rest marks)
 ;;; ****
   ;; make sure we have a flat list and no sublists as perhaps created by
   ;; cmn::get-marks 
@@ -1622,12 +1719,14 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sun Apr 22 12:28:28 BST 2012: Added robodoc entry
 
-;;; 6.4.11: removes only the given marks, not all marks.  if players are nil,
-;;; then all players will be processed
 ;;; ****m* slippery-chicken-edit/rm-marks-from-notes
 ;;; FUNCTION
-;;; 
+;;; Remove only the specified marks from the MARKS slots of 
+
+;;; removes only the given marks, not all marks.  if players are nil, then all
+;;; players will be processed
 ;;; 
 ;;; ARGUMENTS
 ;;; 

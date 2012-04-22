@@ -56,16 +56,20 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SAR Sun Apr 22 09:08:44 BST 2012: Conformedrobodoc entry
+
 ;;; ****m* slippery-chicken-edit/replace-tempo-map
 ;;; FUNCTION
-;;; A post-generation editing method: Calls not only the setf method (which
-;;; converts bar references like (section-number sequence-number bar-number) to
-;;; numbers, and makes a tempo-map object) but updates all events to reflect
-;;; new start times etc.
+;;; Replace the tempo data for a given slippery-chicken object with new
+;;; specified tempo indications.
+;;;
+;;; Calls not only the setf method - which converts bar references like
+;;; (section-num sequence-num bar-num) to numbers and makes a tempo-map object,
+;;; but also updates all event objects to reflect new start times etc.
 ;;;
 ;;; ARGUMENTS
-;;; - a slippery-chicken object
-;;; - the new tempo-map (as a list)
+;;; - A slippery-chicken object
+;;; - A list that is the new tempo-map.
 ;;; 
 ;;; RETURN VALUE
 ;;; T
@@ -75,22 +79,16 @@
 (let ((mini
        (make-slippery-chicken
         '+mini+
-        :title "mini"
-        :instrument-palette +slippery-chicken-standard-instrument-palette+
         :ensemble '(((pno (piano :midi-channel 1))))
         :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6)))
-                       (2 ((cs4 ds4 fs4 gs4 as4 cs5 ds5 fs5 gs5 as5
-                                cs6))))
-        :set-map (list (list 1 (fibonacci-transition 17 1 2)))
+        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6))))
+        :set-map '((1 (1 1 1 1 1 1 1 1)))
         :rthm-seq-palette '((1 ((((2 4) q q))
                                 :pitch-seq-palette ((1 (2))))))
-        :rthm-seq-map '((1 ((pno (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-                                    1))))))))
+        :rthm-seq-map '((1 ((pno (1 1 1 1 1 1 1 1))))))))
   (replace-tempo-map mini '((1 (q 60 "Andante")) ((1 3 1) (e 80)))))
 
-=>
-T
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -379,21 +377,64 @@ T
           (setf (nth i last-notes) last-attack)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SAR Sun Apr 22 10:03:14 BST 2012: Added robodoc entry.
+
 ;;; ****m* slippery-chicken-edit/respell-notes
 ;;; FUNCTION
-;;; 
+
+;;; Pass through the entire given slippery-chicken object and change some of
+;;; the pitch objects to their enharmonic equivalents to produce more sensible
+;;; spellings of consecutive pitches in the score.
+;;;
+;;; An optional argument takes a list specifying which pitches to change in the
+;;; same format found in the method enharmonic-spellings; i.e.
+;;; '((player (bar note-num))). If this approach is chosen, the method will
+;;; only change the specified pitches.
+;;;
+;;; NB: If a list of corrections is specified, the :respell-notes argument of
+;;;     any subsequent call to cmn-display or write-lp-data-for-all must be set
+;;;     NIL, otherwise the modified pitches may be overwritten.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list of specific notes whose pitches are to be enharmonically flipped,
+;;;   in the format, e.g. '((vn (1 1) (1 4)) (vc (2 3) (3 3)))
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+;; An example using respell-notes for the whole slippery-chicken object.
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((cs4 ds4 df5 ef5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1))))))))
+  (respell-notes mini))
+
+;; An example specifying which pitches are to be enharmonically changed.
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((cs4 ds4 df5 ef5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1))))))))
+  (respell-notes mini '((vn (1 1) (1 4))))
+  (cmn-display mini :respell-notes nil))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -541,35 +582,51 @@ T
                                    note-num)
                                p)
           do
-          (unless note
-            (error "slippery-chicken::enharmonic-spellings: ~
+	    (unless note
+	      (error "slippery-chicken::enharmonic-spellings: ~
                         No note! ~a: bar ~a note ~a" p bar-num note-num))
-          (enharmonic note 
-                      :written written
-                      :force-naturals t
-                      :chord-note-ref (when chord (second note-num))
-                      ;; 22.10.11
-                      :force-naturals t)))
+	    (enharmonic note 
+			:written written
+			:force-naturals t
+			:chord-note-ref (when chord (second note-num))
+			;; 22.10.11
+			:force-naturals t)))
   t)
               
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; This does things by looking at enharmonic spellings in a whole bar
 
+;;; SAR Sun Apr 22 09:46:08 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken-edit/respell-bars
 ;;; FUNCTION
-;;; 
+;;; Look for enharmonically equivalent pitches in the same bar and try to unify
+;;; their spelling. The method applies this process to every bar in the given
+;;; slippery-chicken object.
+;;;
+;;; Also see rthm-seq-bar/respell-bar and slippery-chicken/respell-notes.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((cs4 ds4 df5 ef5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1))))))))
+  (respell-bars mini))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -577,22 +634,22 @@ T
 ;;; ****
   (loop 
      for player in (players sc) 
-      with last-attack
-      do
-        (setf last-attack nil)
-        (loop
-            for bnum from 1 to (num-bars sc) 
-            for bar = (get-bar sc bnum player)
-           ;; 9.2.11: have to find out whether player is playing a transposing
-           ;; instrument on a bar by bar basis
-             for written-too = (transposing-instrument-p 
-                                (get-instrument-for-player-at-bar
-                                 player bar sc))
-           do
-              (respell-bar bar sc player nil last-attack)
-              (when written-too
-                (respell-bar bar sc player t last-attack))
-              (setf last-attack (get-last-attack bar nil)))))
+     with last-attack
+     do
+       (setf last-attack nil)
+       (loop
+	  for bnum from 1 to (num-bars sc) 
+	  for bar = (get-bar sc bnum player)
+	  ;; 9.2.11: have to find out whether player is playing a transposing
+	  ;; instrument on a bar by bar basis
+	  for written-too = (transposing-instrument-p 
+			     (get-instrument-for-player-at-bar
+			      player bar sc))
+	  do
+	    (respell-bar bar sc player nil last-attack)
+	    (when written-too
+	      (respell-bar bar sc player t last-attack))
+	    (setf last-attack (get-last-attack bar nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

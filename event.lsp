@@ -1667,8 +1667,8 @@ NIL
 ;;; - An event object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :written. T or NIL to indicate whether the test is to
-;;;   handle the event's written or sounding pitch. T = written. Default = T. 
+;;; - T or NIL to indicate whether the test is to handle the event's
+;;;   written or sounding pitch. T = written. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; A symbol, if the event object consists of only a single pitch, otherwise a

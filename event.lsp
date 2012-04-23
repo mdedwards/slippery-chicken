@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:20:46 Mon Apr 23 2012 BST
+;;; $$ Last modified: 09:27:13 Mon Apr 23 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2791,12 +2791,16 @@ T
       (warn "~a~%event::force-artificial-harmonic: event is a chord: skipping."
             e))
     ;; MDE Mon Apr 23 09:16:34 2012
-    (unless (and (in-range instrument p1)
-                 (in-range instrument p2))
-      (setf happy nil)
-      (warn "~a~%event::force-artificial-harmonic: creating an artificial ~
-             harmonic for this event would go out of the instrument's range."
-            e))
+    (when instrument
+      (unless (instrument-p instrument)
+        (error "~a~%event::force-artificial-harmonic: argument should be an ~
+                instrument object" instrument))
+      (unless (and (in-range instrument p1)
+                   (in-range instrument p2))
+        (setf happy nil)
+        (warn "~a~%event::force-artificial-harmonic: creating an artificial ~
+               harmonic for this ~%event would go out of the instrument's ~
+               range." e)))
     (when happy
       (add-mark p2 'flag-head)
       (setf (pitch-or-chord e) (make-chord (list p1 p2))))))

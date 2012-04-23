@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 12:52:40 Mon Apr 23 2012 BST
+;;; $$ Last modified: 13:36:36 Mon Apr 23 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -493,16 +493,29 @@
                (loop for i from start-note to end-note 
                   for e = (get-nth-non-rest-rhythm (1- i) bar)
                   do
+                  ;; MDE Mon Apr 23 13:21:16 2012 -- handle chords too
+                  (when (and (event-p e) (is-chord e))
+                    (loop for p in (data (if written
+                                             (written-pitch-or-chord e)
+                                             (pitch-or-chord e)))
+                       and chord-note-ref from 1
+                       do
+                       (when 
+                           (or (not pitches)
+                               ;; enharmonics not equal!
+                               (pitch-member p pitches nil))
+                         (enharmonic e :written written
+                                     :chord-note-ref chord-note-ref))))
                   ;; MDE Wed Apr 18 12:08:51 2012 
-                    (when (and (event-p e)
-                               (is-single-pitch e)
-                               (or (not pitches)
-                                   (pitch-member (if written
-                                                     (written-pitch-or-chord e)
-                                                     (pitch-or-chord e))
-                                                 ;; enharmonics not equal!
-                                                 pitches nil)))
-                      (enharmonic e :written written))))))
+                  (when (and (event-p e)
+                             (is-single-pitch e)
+                             (or (not pitches)
+                                 (pitch-member (if written
+                                                   (written-pitch-or-chord e)
+                                                   (pitch-or-chord e))
+                                               ;; enharmonics not equal!
+                                               pitches nil)))
+                    (enharmonic e :written written))))))
       (if (= stbar ndbar)
           (do-bar stbar stnote ndnote)
           (progn 

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 12:46:46 Mon Apr 23 2012 BST
+;;; $$ Last modified: 13:36:28 Mon Apr 23 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -239,17 +239,24 @@
 ;;; Sum the rhythms and compare the duration against that of the time sig.
 ;;; error can either be t 'warn or nil; if the latter no warning or error will
 ;;; be issued i.e. it will return nil silently.
-(defmethod is-full ((rsb rthm-seq-bar) &optional (error t))
+;;; MDE Mon Apr 23 13:00:59 2012 -- added not-enough arg to by default check
+;;; for underfull bars also
+(defmethod is-full ((rsb rthm-seq-bar) &optional (error t) (not-enough t))
   (let* ((rthms-dur (rhythms-duration rsb))
          (ts-dur (duration (get-time-sig-from-all-time-sigs rsb
                                                             (time-sig rsb))))
          (ok (equal-within-tolerance rthms-dur ts-dur .001)))
     (when (and (not ok)
-               (> rthms-dur ts-dur))
+               ;; MDE Mon Apr 23 12:56:57 2012 -- not enough rhythms should
+               ;; signal an error/warning too! 
+               (or 
+                (> rthms-dur ts-dur)
+                (and not-enough (< rthms-dur ts-dur))))
       (when error
         (funcall (if (eq error 'warn) #'warn #'error)
                  "~a: ~%rthm-seq-bar::isfull:~%~
-                   Duration of rhythms (~a) > duration of time-sig: (~a)"
+                   Duration of rhythms (~a) is not the duration of the ~
+                   time-sig: (~a)"
                  rsb rthms-dur ts-dur)))
     ok))
 
@@ -447,7 +454,9 @@ data: NIL
                       (set-written r (- transposition))))
                 (set-midi-channel r midi-channel microtones-midi-channel))
               (push r (rhythms rsb))
-              (when (is-full rsb is-full-error)
+            ;; MDE Mon Apr 23 13:04:32 2012 -- don't check for underfull now
+            ;; we have that option by default
+              (when (is-full rsb is-full-error nil)
                 (return i)))))
     (when (and warn (not count))
       (warn "rthm-seq-bar::fill-with-rhythms: Couldn't fill bar num ~a!"
@@ -3617,10 +3626,23 @@ data: (2 4)
 (defmethod enharmonic ((rsb rthm-seq-bar) &key written force-naturals
                        ;; MDE Wed Apr 18 11:34:01 2012
                        pitches)
-;;; ****
+;;; ****                                
   (setf pitches (init-pitch-list pitches))
   (loop for r in (rhythms rsb) do
-       ;; MDE Wed Apr 18 11:35:49 2012 -- 
+     ;; MDE Mon Apr 23 13:21:16 2012 -- handle chords too 
+       (when (and (event-p r) (is-chord r))
+         (loop for p in (data (if written
+                                  (written-pitch-or-chord r)
+                                  (pitch-or-chord r)))
+            and chord-note-ref from 1
+            do
+            (when 
+                (or (not pitches)
+                    ;; enharmonics not equal! 
+                    (pitch-member p pitches nil))
+              (enharmonic r :written written
+                          :chord-note-ref chord-note-ref))))
+     ;; MDE Wed Apr 18 11:35:49 2012 -- 
        (when (and (event-p r)
                   (is-single-pitch r)
                   (or (not pitches)
@@ -3628,7 +3650,7 @@ data: (2 4)
                                         (written-pitch-or-chord r)
                                         (pitch-or-chord r))
                                     pitches
-                                    ;; enharmonics not equal!
+                                    ;; enharmonics not equal! 
                                     nil)))
          (enharmonic r :written written :force-naturals force-naturals)))
   t)

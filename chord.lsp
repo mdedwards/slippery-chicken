@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 13:17:01 Tue Apr 17 2012 CEST
+;;; $$ Last modified: 13:14:15 Mon Apr 23 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1294,6 +1294,11 @@ data: (
 
 (defmethod frequency ((c chord))
   (loop for p in (data c) collect (frequency p)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Apr 23 13:13:49 2012 
+(defmethod enharmonic ((c chord) &key (warn t))
+  (loop for p in (data c) collect (enharmonic p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

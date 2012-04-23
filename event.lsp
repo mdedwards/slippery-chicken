@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:27:13 Mon Apr 23 2012 BST
+;;; $$ Last modified: 13:52:26 Mon Apr 23 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3041,6 +3041,9 @@ T
                    (amplitude 0.7)
                    (tempo 60))
 ;;; **** 
+  ;; MDE Mon Apr 23 13:52:07 2012 -- allow r to indicate a rest
+  (when (equalp 'r pitch-or-chord)
+    (setf pitch-or-chord nil))
   ;; MDE Wed Dec 14 17:32:18 2011 
   (when (and pitch-or-chord is-rest)
     (error "event::make-event: an rest can't have pitch data (~a):"

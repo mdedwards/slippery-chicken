@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:30:47 Thu Apr 19 2012 BST
+;;; $$ Last modified: 09:20:46 Mon Apr 23 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2779,12 +2779,27 @@ T
 
 |#
 ;;; SYNOPSIS
-(defmethod force-artificial-harmonic ((e event))
+(defmethod force-artificial-harmonic ((e event) &optional instrument)
 ;;; ****
   (let* ((p1 (transpose (pitch-or-chord e) -24))
-         (p2 (transpose p1 5)))
-    (add-mark p2 'flag-head)
-    (setf (pitch-or-chord e) (make-chord (list p1 p2)))))
+         (p2 (transpose p1 5))
+         ;; MDE Mon Apr 23 09:20:44 2012 -- 
+         (happy t))
+    ;; MDE Mon Apr 23 09:17:24 2012 
+    (unless (is-single-pitch e)
+      (setf happy nil)
+      (warn "~a~%event::force-artificial-harmonic: event is a chord: skipping."
+            e))
+    ;; MDE Mon Apr 23 09:16:34 2012
+    (unless (and (in-range instrument p1)
+                 (in-range instrument p2))
+      (setf happy nil)
+      (warn "~a~%event::force-artificial-harmonic: creating an artificial ~
+             harmonic for this event would go out of the instrument's range."
+            e))
+    (when happy
+      (add-mark p2 'flag-head)
+      (setf (pitch-or-chord e) (make-chord (list p1 p2))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

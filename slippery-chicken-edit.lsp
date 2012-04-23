@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 12:00:34 Mon Apr 23 2012 BST
+;;; $$ Last modified: 12:15:55 Mon Apr 23 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -3810,6 +3810,10 @@ NIL
 ;;; SYNOPSIS
 (defmethod force-rest-bars ((sc slippery-chicken) start-bar end-bar players)
 ;;; ****
+  (unless players
+    (setf players (players sc)))
+  (unless (listp players)
+    (setf players (list players)))
   (loop for bar-num from start-bar to end-bar do
        (loop for player in players 
             for bar = (get-bar sc bar-num player)

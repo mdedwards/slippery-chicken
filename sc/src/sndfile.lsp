@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 10:44:49 Mon Apr  2 2012 BST
+;;; $$ Last modified: 18:49:04 Mon Apr 23 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -66,7 +66,7 @@
    ;; the duration the user wants
    (duration :accessor duration :initarg :duration :initform nil)
    ;; this shouldn't be given as well as duration
-   (end :accessor end :type number :initarg :end :initform nil)
+   (end :accessor end :type number :initarg :end :initform 999999999)
    (channels :accessor channels :initform nil)
    ;; where we want to start in the file (secs).
    (start :accessor start :type number :initarg :start :initform 0.0)
@@ -171,7 +171,8 @@ T
 ;;; SYNOPSIS
 (defmethod stereo ((sf sndfile))
 ;;; ****
-  (= 2 (channels sf)))
+  (when (channels sf) ; MDE Mon Apr 23 18:49:02 2012 -- 
+    (= 2 (channels sf))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -389,9 +390,9 @@ T
 #|
 ;; Example specifying the full path, a start and end time, and a base frequency 
 (make-sndfile "/path/to/sndfile-1.aiff"
-	      :start 0.3
-	      :end 1.1
-	      :frequency 654)
+              :start 0.3
+              :end 1.1
+              :frequency 654)
 
 => 
 
@@ -406,7 +407,7 @@ data: /path/to/sndfile-1.aiff
 
 ;; Example using the sndfile-palette list as the first argument
 (make-sndfile '("/path/to/sndfile-1.aiff" 
-		(nil :start 0.3 :end 1.1)))
+                (nil :start 0.3 :end 1.1)))
 
 => 
 
@@ -421,9 +422,10 @@ data: /path/to/sndfile-1.aiff
 
 |#
 ;;; SYNOPSIS
-(defun make-sndfile (path &key id data duration end (start 0.0) (frequency 'c4)
-                          (amplitude 1.0))
-;;; ****
+(defun make-sndfile (path &key id data duration (end 999999999) (start 0.0)
+                     (frequency 'c4)
+                     (amplitude 1.0))
+;;; **** 
   (if (listp path)
       (progn
         (let ((sf (make-instance 'sndfile
@@ -431,19 +433,19 @@ data: /path/to/sndfile-1.aiff
                                  :id (first (second path))))
               (slots (rest (second path))))
           (loop for slot in slots by #'cddr 
-                and value in (cdr slots) by #'cddr do
+             and value in (cdr slots) by #'cddr do
                 ;; we have to do this here because (setf (slot-value ... ))
                 ;; doesn't call the setf methods...
-                (case slot
-                      (:duration (setf (duration sf) value))
-                      (:end (setf (end sf) value))
-                      (:frequency (setf (frequency sf) value))
-                      (:start (setf (start sf) value))
-                      (t (setf (slot-value sf (rm-package slot)) value))))
+             (case slot
+               (:duration (setf (duration sf) value))
+               (:end (setf (end sf) value))
+               (:frequency (setf (frequency sf) value))
+               (:start (setf (start sf) value))
+               (t (setf (slot-value sf (rm-package slot)) value))))
           sf))
-    (make-instance 'sndfile :id id :data data :path path :duration duration
-                   :frequency frequency :end end :start start
-                   :amplitude amplitude)))
+      (make-instance 'sndfile :id id :data data :path path :duration duration
+                     :frequency frequency :end end :start start
+                     :amplitude amplitude)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

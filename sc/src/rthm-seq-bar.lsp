@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 14:48:19 Fri Apr 20 2012 BST
+;;; $$ Last modified: 12:46:46 Mon Apr 23 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1267,7 +1267,7 @@ data: ((2 4) - S S - S - S S S - S S)
            (when check-dur
              (unless (equal-within-tolerance dur beat-dur .001)
                (error "~a ~%rthm-seq-bar::get-beats: ~
-                        Can't find an exact beat of rhythms ~
+                        Can't find an exact beat of rhythms ~%~
                         (dur: ~a beat-dur: ~a)!" 
                       rsb dur beat-dur)))
            (push (reverse current) beats)

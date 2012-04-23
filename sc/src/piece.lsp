@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 13:29:46 Fri Apr  6 2012 BST
+;;; $$ Last modified: 12:47:31 Mon Apr 23 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -710,17 +710,21 @@
                                      ;; specify it in the slippery-chicken
                                      ;; class.
                                      (tempo-map nil)
-                                     (consolidate-rests t)
+                                     ;; MDE Mon Apr 23 12:36:08 2012 -- changed
+                                     ;; default to nil
+                                     (consolidate-rests nil)
                                      (sc nil)
                                      ;; for consolidate rests
                                      (beat nil)
-                                     (auto-beam t)
+                                     ;; MDE Mon Apr 23 12:36:08 2012 -- changed
+                                     ;; default to nil
+                                     (auto-beam nil)
                                      ;;31.3.11: if this is t, then rthms > a
                                      ;;beat will case an error 
                                      (auto-beam-check-dur t)
                                      (tuplet-bracket nil))
-  (object-is-nil? tempo-map "bar-holder::replace-multi-bar-events" 'tempo-map)
-  (object-is-nil? sc "bar-holder::replace-multi-bar-events" 'sc)
+  (object-is-nil? tempo-map "piece::replace-multi-bar-events" 'tempo-map)
+  (object-is-nil? sc "piece::replace-multi-bar-events" 'sc)
   (when (listp start-bar)
     (unless (= 3 (length start-bar))
       (error "piece::replace-multi-bar-events: ~
@@ -739,13 +743,13 @@
        for transposition = (get-transposition-at-bar player bar-num sc)
        do
        (unless new-events
-         (error "bar-holder::replace-multi-bar-events: ~
+         (error "piece::replace-multi-bar-events: ~
                  no new-events (~a, bar ~a)!" player bar-num))
        (unless bar
-         (error "bar-holder::replace-multi-bar-events: ~
+         (error "piece::replace-multi-bar-events: ~
                  Can't get bar ~a for ~a"
                 bar-num player))
-       ;; (format t "~%bar-holder::replace-multi-bar-events: ~a"
+       ;; (format t "~%piece::replace-multi-bar-events: ~a"
        ;; (length (rhythms bar)))
        (setf ate-rthms (fill-with-rhythms 
                         bar new-events 
@@ -755,7 +759,7 @@
                         (microtones-midi-channel player-obj)))
        ;; (print ate-rthms)
        (unless ate-rthms
-         (error "bar-holder::replace-multi-bar-events: ~
+         (error "piece::replace-multi-bar-events: ~
                  Not enough rhythms to fill all the bars!"))
        (incf total-ate-rthms ate-rthms)
        (setf new-events (nthcdr ate-rthms new-events))
@@ -771,6 +775,11 @@
          ;; combine e.g. two 1/8 rests into a 1/4 rest when given
          ;; beat was 1/8 in a 2/4 bar.  but don't consolidate any
          ;; rthms less than the given beat!
+         ;; MDE Mon Apr 23 12:42:10 2012 -- nip error in the bud
+         (unless (and beat (not (equal beat T)))
+           (setf beat (get-beat-as-rhythm bar)))
+         ;; (error "piece::replace-multi-bar-events: ~
+         ;; Can't consolidate rests without a known beat."))
          (when (> (beat-duration (get-time-sig bar))
                   (duration (make-rhythm beat)))
            ;; 8.12.11 this call is wrong (picked up by CCL)

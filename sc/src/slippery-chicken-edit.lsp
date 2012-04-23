@@ -1,4 +1,3 @@
-9
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****h* sc/slippery-chicken-edit
 ;;; NAME 
@@ -25,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 09:22:24 Mon Apr 23 2012 BST
+;;; $$ Last modified: 12:00:34 Mon Apr 23 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -3821,13 +3820,16 @@ NIL
             (force-rest-bar bar))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing methdo
-
 ;;; 20.8.11: if no end-event we process all events in the last bar
 ;;; ****m* slippery-chicken-edit/force-artificial-harmonics
 ;;; FUNCTION
 ;;; For string scoring purposes only: Transpose the note down two octaves and
-;;; add the harmonic symbol at the perfect fourth.
+;;; add the harmonic symbol at the perfect fourth.  A warning will be issued if
+;;; this would take the note (or even the perfect fourth, though unlikely) out
+;;; of the range of the instrument.  However, nothing will be done in that case
+;;; so if you're happy accepting the warnings (not usually a good idea) you can
+;;; ignore them and the method will only apply to those notes that fit within
+;;; the range of the instrument.
 ;;; 
 ;;; ARGUMENTS
 ;;; 
@@ -3846,12 +3848,16 @@ NIL
 (defmethod force-artificial-harmonics ((sc slippery-chicken) player start-bar
                                        start-event end-bar &optional end-event)
 ;;; ****
-  (loop for e in (get-events-from-to sc player start-bar start-event end-bar
-                                     end-event)
+  ;; MDE Mon Apr 23 09:10:09 2012 -- assumes we don't change player in the
+  ;; midst of making these changes.  Uses instrument to ensure we don't go out
+  ;; of range.  
+  (let ((ins (get-instrument-for-player-at-bar player start-bar sc)))
+    (loop for e in (get-events-from-to sc player start-bar start-event end-bar
+                                       end-event)
        do
        (unless (is-rest e)
-         (force-artificial-harmonic e)))
-  t)
+         (force-artificial-harmonic e ins)))
+    t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  A post-generation editing methdo

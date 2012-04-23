@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 07:53:41 Tue Apr 10 2012 BST
+;;; $$ Last modified: 12:20:36 Mon Apr 23 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -96,7 +96,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod verify-and-store :after ((s sc-set))
-  (setf (slot-value s 'data) (init-pitch-list (data s) (auto-sort s))))
+  (let* ((pl (init-pitch-list (data s) (auto-sort s)))
+         (plrd (remove-duplicates pl :test #'pitch=)))
+    (unless (= (length pl) (length plrd))
+      (warn "sc-set::verify-and-store: found duplicate pitches in ~a"
+            (pitch-list-to-symbols pl)))
+    (setf (slot-value s 'data) plrd)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

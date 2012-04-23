@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 18:49:04 Mon Apr 23 2012 BST
+;;; $$ Last modified: 19:00:12 Mon Apr 23 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -66,10 +66,10 @@
    ;; the duration the user wants
    (duration :accessor duration :initarg :duration :initform nil)
    ;; this shouldn't be given as well as duration
-   (end :accessor end :type number :initarg :end :initform 999999999)
+   (end :accessor end :initarg :end :initform nil)
    (channels :accessor channels :initform nil)
    ;; where we want to start in the file (secs).
-   (start :accessor start :type number :initarg :start :initform 0.0)
+   (start :accessor start :initarg :start :initform 0.0)
    ;; a simple textual description slot useful for identifying sounds
    (description :accessor description :type string :initarg :description 
                 :initform "")
@@ -422,7 +422,7 @@ data: /path/to/sndfile-1.aiff
 
 |#
 ;;; SYNOPSIS
-(defun make-sndfile (path &key id data duration (end 999999999) (start 0.0)
+(defun make-sndfile (path &key id data duration end (start 0.0)
                      (frequency 'c4)
                      (amplitude 1.0))
 ;;; **** 

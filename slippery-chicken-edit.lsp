@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 12:15:55 Mon Apr 23 2012 BST
+;;; $$ Last modified: 12:36:49 Mon Apr 23 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -297,10 +297,14 @@
                                      &key
                                      ;; 24.3.11: see above.
                                      (interleaved t)
-                                     (consolidate-rests t)
+                                     ;; MDE Mon Apr 23 12:36:08 2012 -- changed
+                                     ;; default to nil
+                                     (consolidate-rests nil)
                                      ;; for consolidate rests
                                      (beat nil)
-                                     (auto-beam t)
+                                     ;; MDE Mon Apr 23 12:36:08 2012 -- changed
+                                     ;; default to nil
+                                     (auto-beam nil)
                                      ;; 31.3.11: if this is t, then rthms > a
                                      ;; beat will case an error 
                                      (auto-beam-check-dur t)
@@ -324,7 +328,6 @@
                             :auto-beam auto-beam
                             :auto-beam-check-dur auto-beam-check-dur
                             :tuplet-bracket tuplet-bracket))
-                      
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

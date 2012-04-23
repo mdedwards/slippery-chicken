@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 12:36:49 Mon Apr 23 2012 BST
+;;; $$ Last modified: 12:52:40 Mon Apr 23 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -234,7 +234,8 @@
   (replace-events (piece sc) player bar-num start-event replace-num-events
                   new-events auto-beam)
   (when tuplet-brackets
-    (add-tuplet-bracket (get-bar sc bar-num player) tuplet-brackets)))
+    (add-tuplet-bracket (get-bar sc bar-num player) tuplet-brackets))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Sat Apr 21 17:17:33 BST 2012: Conformed robodoc entry

@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 13:36:36 Mon Apr 23 2012 BST
+;;; $$ Last modified: 17:42:52 Tue Apr 24 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -2076,7 +2076,7 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-;;; ****m* slippery-chicken-edit/all-rests-to-ties
+;;; ****m* slippery-chicken-edit/tie-all-last-notes-over-rests
 ;;; FUNCTION
 ;;; 
 ;;; 
@@ -2094,7 +2094,7 @@ NIL
 
 |#
 ;;; SYNOPSIS
-(defmethod all-rests-to-ties ((sc slippery-chicken)
+(defmethod tie-all-last-notes-over-rests ((sc slippery-chicken)
                               start-bar end-bar players
                               &key
                               ;; use up all rests until next attack or (if nil)
@@ -2109,7 +2109,7 @@ NIL
   (unless (listp players)
     (setf players (list players)))
   (loop for p in players do
-        (all-rests-to-ties-aux sc start-bar end-bar p 
+        (tie-all-last-notes-over-rests-aux sc start-bar end-bar p 
                                :to-next-attack to-next-attack 
                                :tie-next-attack tie-next-attack
                                :last-rhythm last-rhythm

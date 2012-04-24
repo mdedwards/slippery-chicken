@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 17:42:52 Tue Apr 24 2012 BST
+;;; $$ Last modified: 18:04:18 Tue Apr 24 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -487,7 +487,14 @@
          ;; NB this means we'll add marks to tied notes too
          (ndnote (when ndlist (second end)))) ; nil processed in do-bar
     (flet ((do-bar (bar-num start-note end-note)
-             (let ((bar (get-bar sc bar-num player)))
+             (let ((bar (get-bar sc bar-num player))
+                   ;; MDE Tue Apr 24 18:02:25 2012 -- 
+                   (transp (transposition-semitones
+                            (get-instrument-for-player-at-bar
+                             player bar-num sc))))
+               ;; MDE Tue Apr 24 18:02:30 2012 -- 
+               (when (zerop transp)
+                 (setf transp nil))
                (unless end-note
                  (setf end-note (num-score-notes bar)))
                (loop for i from start-note to end-note 
@@ -495,7 +502,12 @@
                   do
                   ;; MDE Mon Apr 23 13:21:16 2012 -- handle chords too
                   (when (and (event-p e) (is-chord e))
-                    (loop for p in (data (if written
+                    (when (and transp written (not (written-pitch-or-chord e)))
+                      (warn "~a~%slippery-chicken-edit::enharmonics: ~
+                             no written-pitch-or-chord (bar ~a, ~a)." 
+                            e bar-num player))
+                    (loop for p in (data (if (and written transp
+                                                  (written-pitch-or-chord e))
                                              (written-pitch-or-chord e)
                                              (pitch-or-chord e)))
                        and chord-note-ref from 1
@@ -504,18 +516,18 @@
                            (or (not pitches)
                                ;; enharmonics not equal!
                                (pitch-member p pitches nil))
-                         (enharmonic e :written written
+                         (enharmonic e :written (and transp written)
                                      :chord-note-ref chord-note-ref))))
                   ;; MDE Wed Apr 18 12:08:51 2012 
                   (when (and (event-p e)
                              (is-single-pitch e)
                              (or (not pitches)
-                                 (pitch-member (if written
+                                 (pitch-member (if (and transp written)
                                                    (written-pitch-or-chord e)
                                                    (pitch-or-chord e))
                                                ;; enharmonics not equal!
                                                pitches nil)))
-                    (enharmonic e :written written))))))
+                    (enharmonic e :written (and transp written)))))))
       (if (= stbar ndbar)
           (do-bar stbar stnote ndnote)
           (progn 

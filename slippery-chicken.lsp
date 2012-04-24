@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:18:20 Thu Apr 19 2012 BST
+;;; $$ Last modified: 17:43:05 Tue Apr 24 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1491,28 +1491,28 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod all-rests-to-ties-aux ((sc slippery-chicken)
+(defmethod tie-all-last-notes-over-rests-aux ((sc slippery-chicken)
                                   start-bar end-bar player
                                   &key (to-next-attack t)
-				  (tie-next-attack nil)
-				  ;; what to tie to on end-bar only
-				  (last-rhythm nil)
-				  (auto-beam nil))
+                                  (tie-next-attack nil)
+                                  ;; what to tie to on end-bar only
+                                  (last-rhythm nil)
+                                  (auto-beam nil))
   (let* ((active-bars (loop
-			 for bnum from start-bar to (1- end-bar)
-			 for bar = (get-bar (piece sc) bnum player)
-			 unless (is-rest-bar bar)
-			 collect bnum))
+                         for bnum from start-bar to (1- end-bar)
+                         for bar = (get-bar (piece sc) bnum player)
+                         unless (is-rest-bar bar)
+                         collect bnum))
          (last (first (last active-bars))))
     ;; (print active-bars)
     (loop for bnum in active-bars do
-	 (tie-over-rest-bars-aux sc bnum player 
-				 :end-bar end-bar
-				 :tie-next-attack tie-next-attack
-				 :to-next-attack to-next-attack
-				 :auto-beam auto-beam
-				 :last-rhythm (when (= bnum last)
-						last-rhythm)))))
+         (tie-over-rest-bars-aux sc bnum player 
+                                 :end-bar end-bar
+                                 :tie-next-attack tie-next-attack
+                                 :to-next-attack to-next-attack
+                                 :auto-beam auto-beam
+                                 :last-rhythm (when (= bnum last)
+                                                last-rhythm)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

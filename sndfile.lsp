@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 19:00:12 Mon Apr 23 2012 BST
+;;; $$ Last modified: 17:38:33 Tue Apr 24 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -60,7 +60,7 @@
 ;;; given file name (perhaps minus path and extension) in <data>.
 
 (defclass sndfile (linked-named-object)
-  ((path :accessor path :type string :initarg :path :initform nil)
+  ((path :accessor path :initarg :path :initform nil)
    ;; the sound's full duration
    (snd-duration :accessor snd-duration :initform nil)
    ;; the duration the user wants
@@ -71,10 +71,9 @@
    ;; where we want to start in the file (secs).
    (start :accessor start :initarg :start :initform 0.0)
    ;; a simple textual description slot useful for identifying sounds
-   (description :accessor description :type string :initarg :description 
-                :initform "")
+   (description :accessor description :initarg :description :initform "")
    ;; this is a scaler that will be used in with-sound calls, if wanted.
-   (amplitude :accessor amplitude :type number :initarg :amplitude 
+   (amplitude :accessor amplitude :initarg :amplitude 
               :initform 1.0)
    ;; some sounds have a prominent fundamental which can be used for
    ;; transposing to specific pitches.  Give this here either in the form of a
@@ -83,11 +82,11 @@
    ;; when duration is given, we have to update end and vice-versa.  This slot
    ;; tells us whether this was done and so avoids endless back-and-forths when
    ;; calling the setf methods.
-   (data-consistent :accessor data-consistent :type boolean :initform nil)
+   (data-consistent :accessor data-consistent :initform nil)
    ;; for some purposes (like incrementing start-time) it's useful to know how
    ;; many times a sound will be used and has been used.
-   (will-be-used :accessor will-be-used :type integer :initform 0)
-   (has-been-used :accessor has-been-used :type integer :initform 0)))
+   (will-be-used :accessor will-be-used :initform 0)
+   (has-been-used :accessor has-been-used :initform 0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

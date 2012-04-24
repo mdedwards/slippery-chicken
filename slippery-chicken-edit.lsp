@@ -129,6 +129,7 @@
 ;;; Adding two events to separate bars, once using a bar number with
 ;;; :position's default to NIL, and once using a bar number reference list with
 ;;; :position specified as 2. Print the bars after adding to see the changes.
+
 (let ((mini
        (make-slippery-chicken
         '+mini+
@@ -168,7 +169,7 @@
 
 ;;; ****m* slippery-chicken-edit/replace-events
 ;;; FUNCTION
-;;; Replace on or more consecutive existing event objects with new event
+;;; Replace one or more consecutive existing event objects with new event
 ;;; objects. All references are 1-based. This method can be applied to only one
 ;;; bar at a time.
 ;;;
@@ -186,8 +187,8 @@
 ;;;   to replace.
 ;;; - A list of the new event objects, each in turn specified as a 2-item list
 ;;;   in the format (pitch rhythm), e.g. '((c4 e)). Rests are indicated with
-;;;   NIL, e.g. (nil s). Chords are indicated by enclosing the pitches of the
-;;;   chord in a list, e.g. ((c4 e4) e).
+;;;   NIL or 'r, e.g. (nil s) (r h). Chords are indicated by enclosing the
+;;;   pitches of the chord in a list, e.g. ((c4 e4) e).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether to automatically re-beam the given bar after
@@ -214,7 +215,7 @@
   (replace-events mini 'vn 1 2 1 '((nil s) ((ds5 fs5) s)) t)
   (replace-events mini 'vn 2 2 1 '((cs5 e)))
   (replace-events mini 'vn '(1 3 1) 3 1 '((df4 s)))
-  (replace-events mini 'vn 4 1 1 '((ds4 te) (cs4 te) (b3 te)) t '(3 0 2)))
+  (replace-events mini 'vn 4 1 1 '((ds4 te) (r te) (b3 te)) t '(3 0 2)))
 
 => T
 
@@ -242,11 +243,11 @@
 
 ;;; ****m* slippery-chicken-edit/replace-multi-bar-events
 ;;; FUNCTION
-
 ;;; Replace specified consecutive event objects across several bars. 
-
-;;; All bars must be filled; i.e., we can't just leave the last bar half-filled
-;;; expecting the existing events to make up the rest.
+;;;
+;;; The new rhythms provided must produce full bars for all bars specified;
+;;; i.e., if only a quarter note is provided as the new event for a 2/4 bar,
+;;; the method will not automatically fill up the remainder of the bar.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A slippery-chicken object.
@@ -256,32 +257,43 @@
 ;;;   '(section sequence bar); or with subsections then e.g. '((3 1) 4 2)).  
 ;;; - An integer that is the number of bars in which event objects will be
 ;;;   replaced.
-;;; - The list of new event objects.
+;;; - The list of new event objects. The new event objects can be passed as
+;;;   complete event objects; as a list of 2-item lists that are
+;;;   note-name/rhythm pairs, e.g: '((c4 q) (d4 e)); or as a list with two
+;;;   sub-lists, the first being just the sequence of rhythms and the second
+;;;   being just the sequence of pitches, e.g: '((q e ) (c4 d4)). For the
+;;;   latter, :interleaved must be set to NIL. (see :interleaved below). Pitch 
+;;;   data is the usual cs4 or (cs4 cd3) for chords, and NIL or 'r indicate a
+;;;   rest. NB: All pitches are sounding pitches; written pitches will be
+;;;   created for transposing instruments where necessary.
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
+;;;
+;;; - :interleaved. T or NIL to indicate whether the new event data is to be
+;;;   processed as a list of note-name/rhythm pairs (or existing event
+;;;   objects), or if it is to be processed as a list with two sub-lists, the
+;;;   first containing the sequence of rhythms and the second containing the
+;;;   sequence of pitches (see above). T = interleaved, i.e. already existing
+;;;   event objects or a list of note-name/rhythm pairs. NIL = separate lists
+;;;   for rhythms and pitches. Default = T.
+;;;
+;;;   If this argument is T, the list of 2-element lists (note-name/rhythm
+;;;   pairs) is passed to make-events, but such a list can contain no ties. If
+;;;   the argument is set to NIL, the rhythm and pitch data is passed as two
+;;;   separate lists to make-events2 where + can be used to indicate ties.
+;;; - :consolidate-rests. T or NIL to indicate whether shorter rests should
+;;;   automatically be consolidated into a single longer rest. 
+;;;   T = consolidate. Default = T.
+;;; - :beat. NIL or an integer (rhythm symbol) that indicates which beat basis
+;;;   will be used when consolidating rests. If NIL, the beat of the time
+;;;   signature will be used (e.g. quarter in 4/4). Default = NIL.
+;;; - :auto-beam. T or NIL to indicate whether to automatically beam the new
+;;;   events. T = automatically beam. Default = T.
 
-;;; - :interleaved. if <new-events> are not already event objects we have two
-;;;   ways of passing the event data.  If this argument is t, we pass a list of
-;;;   2-element lists (note rhythm) that we can pass to make-events (but this
-;;;   can contain no ties). If nil, then rhythm and pitch data is passed as two
-;;;   separate lists within <new-events> to make-events2 where + can be used to
-;;;   indicate ties.  Pitch data is the usual cs4 or (cs4 cd3) for chords, and
-;;;   nil or r indicates a rest.  NB all pitches are sounding pitches, so
-;;;   written pitches will be created for transposing instruments where
-;;;   necessary. default t
-
-;;; - :consolidate-rests. whether shorter rests should automatically be
-;;;   collapsed into a single longer rest. default t
-
-;;; - :beat. what beat will be used to consolidate rests (rhythm symbol).  If
-;;;   nil, the beat of the meter will be used (e.g. crotchet/quarter in
-;;;   4/4). default nil
-
-;;; - :auto-beam. whether to automatically beam the new events. default t.
-
-;;; - :tuplet-bracket. whether to automatically add tuplet (e.g. triplet)
-;;;   brackets to the new events (integer). default nil
+;;; - :tuplet-bracket. T or NIL to indicate whether to automatically add tuplet
+;;;   (e.g. triplet/quintuplet) brackets to the new events where applicable
+;;;   (integer). default nil
 
 ;;; 
 ;;; RETURN VALUE  
@@ -451,27 +463,70 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; MDE Wed Apr 18 11:57:11 2012 -- added pitches keyword
+;;; SAR Tue Apr 24 19:24:12 BST 2012: Added robodoc entry
 
-;;; SAR Fri Apr 20 16:13:59 BST 2012: Added robodoc entry
+;;; MDE Wed Apr 18 11:57:11 2012 -- added pitches keyword
 
 ;;; ****m* slippery-chicken-edit/enharmonics
 ;;; FUNCTION
-;;; 
+;;; Change the sharp/flat pitches of a specified region of a specified player's
+;;; part to their enharmonic equivalent.
+;;;
+;;; NB: This method only affects pitches that already have sharp/flat
+;;;     accidentals. It does not affect "white-key" notes (e.g. C-natural =
+;;;     B-sharp etc.)
+;;;
+;;; NB: As the cmn-display and write-lp-data-for-all methods call
+;;;    :respell-notes by default, this option must be explicitly set to NIL for
+;;;    this method to be effective.
 ;;; 
 ;;; ARGUMENTS
-;;; start and end can be bar numbers or (bar note) pairs where note is
-;;; 1-based and counts ties.
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer or a 2-item list of integers that indicates the first bar in
+;;;   which the enharmonics are to be changed. If an integer, the method will
+;;;   be applied to all sharp/flat pitches in the bar of that number. If a
+;;;   2-item list of integers, these represent '(bar-number note-number). The
+;;;   note number is 1-based and counts ties.
+;;; - An integer or a 2-item list of integers that indicates the last bar in
+;;;   which the enharmonics are to be changed. If an integer, the method will
+;;;   be applied to all sharp/flat pitches in the bar of that number. If a
+;;;   2-item list of integers, these represent '(bar-number note-number). The
+;;;   note number is 1-based and counts ties.
+;;; - The ID of the player whose part is to be changed.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments
+;;; - :written. T or NIL to indicate whether to change written-only pitches or
+;;;   sounding-only pitches. T = written-only. Default = T.
+;;; - :pitches. NIL or a list of note-name symbols. If NIL, all sharp/flat
+;;;   pitches in the specified region will be changed to their enharmonic
+;;;   equivalents. If a list of one or more note-name symbols, only those
+;;;   pitches will be affected.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (pn (piano :midi-channel 2))
+		     (vn (violin :midi-channel 3))))
+        :set-palette '((1 ((cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -))
+				:pitch-seq-palette ((1 (2) 3 4 (5) 6 (7) 8)))))
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (pn (1 1 1 1 1))
+			    (vn (1 1 1 1 1))))))))
+  (enharmonics mini 1 2 'vn)
+  (enharmonics mini 2 3 'pn :pitches '(cs4 ds4))
+  (enharmonics mini 3 4 'cl :written nil))
+
+=> T
+
 
 |#
 ;;; SYNOPSIS
@@ -3853,28 +3908,51 @@ NIL
             (force-rest-bar bar))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 20.8.11: if no end-event we process all events in the last bar
+;;; SAR Tue Apr 24 19:46:02 BST 2012: Conformed robodoc entry
+
 ;;; ****m* slippery-chicken-edit/force-artificial-harmonics
 ;;; FUNCTION
-;;; For string scoring purposes only: Transpose the note down two octaves and
-;;; add the harmonic symbol at the perfect fourth.  A warning will be issued if
-;;; this would take the note (or even the perfect fourth, though unlikely) out
-;;; of the range of the instrument.  However, nothing will be done in that case
-;;; so if you're happy accepting the warnings (not usually a good idea) you can
-;;; ignore them and the method will only apply to those notes that fit within
-;;; the range of the instrument.
+;;; For string scoring purposes only: Transpose the pitch of the given event
+;;; object down two octaves and add the harmonic symbol at the perfect fourth.
+;;;
+;;; If this results in a fingered pitch (or even a touched perfect fourth) that
+;;; is out of the range of the instrument, a warning will be printed to the
+;;; Listener, the pitch will not be transposed, and the harmonic diamond will
+;;; not be added.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - The ID of the player whose part is to be changed.
+;;; - An integer that is the number of the first bar in which artificial
+;;;   harmonics are to be created.  
+;;; - An integer that is the number of the first event in that bar that is to
+;;;   be changed into an artificial harmonic.
+;;; - An integer that is the number of the last bar in which artificial
+;;;   harmonics are to be created.  
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An integer that is the number of the first event in that bar that is to
+;;;   be changed into an artificial harmonic. If no end-event is specified, all
+;;;   event objects in the last bar will be changed to artificial harmonics.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 f4 b4 e5 a5 d6 g7 c8))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))))) 
+        :rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (force-artificial-harmonics mini 'vn 2 3 3 2))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -3891,9 +3969,8 @@ NIL
        (unless (is-rest e)
          (force-artificial-harmonic e ins)))
     t))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing methdo
+;;;  A post-generation editing method
 
 ;;; 28.9.11: add accidental in ().  note-num (counting ties, and from 1) can be
 ;;; an integer or list e.g. '(1 2). If the latter it would be the first chord,

@@ -3552,17 +3552,21 @@ data: (2 4)
 ;;; - A rthm-seq-bar object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
 
-;;; - keyword argument :written default NIL. T or NIL to indicate whether the
-;;;   test is to handle the written or sounding pitch in the event. T =
-;;;   written. Default = NIL.
-;;; - keyword argument :force-naturals default NIL. T or NIL to indicate
-;;;   whether to force "natural" note names that contain no F or S in their
-;;;   name to convert to their enharmonic equivalent (e.g. B3 = CF4)
-;;; - keyword argument :pitches default NIL.  All sharp/flat pitches are
-;;;   changed by default but if a list of pitch objects or symbols is given,
-;;;   then only those pitches will be changed.  Note that if written is T, then
-;;;   this pitch list should be the written not sounding pitches.
+;;; - :written. T or NIL to indicate whether the test is to handle the
+;;;   written or sounding pitch in the event. T = written. 
+;;;   Default = NIL.
+
+;;; - :force-naturals. T or NIL to indicate whether to force "natural"
+;;;   note names that contain no F or S in their name to convert to
+;;;   their enharmonic equivalent (e.g. B3 = CF4). Default = NIL.
+
+;;; - :pitches. All sharp/flat pitches are changed by default but if a
+;;;   list of pitch objects or symbols is given, then only those
+;;;   pitches will be changed.  Note that if written is T, then this
+;;;   pitch list should be the written not sounding pitches.  
+;;;   Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Always returns T.

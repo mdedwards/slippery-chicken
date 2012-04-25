@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:20:31 Wed Apr 25 2012 BST
+;;; $$ Last modified: 14:47:40 Wed Apr 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2820,7 +2820,14 @@ T
   (unless (fboundp 'clm::nrev)
     (error "slippery-chicken::clm-play: clm's nrev.ins needs to be ~
             compiled and loaded for this method to run."))
-  (unless num-sequences
+  ;; MDE Wed Apr 25 14:45:03 2012 -- if we're playing more than one section
+  ;; then we shouldn't specify num-sequences as that might result in gaps in
+  ;; playback (e.g. if section 2 had more seqs than requested)  
+  (when (and num-sequences (> num-sections 1))
+    (error "slippery-chicken::clm-play: num-sequences keyword should only ~
+            be used when num-sections = 1."))
+  ;; (unless num-sequences
+  (when (and (= 1 num-sections) (not num-sequences))
     (setf num-sequences (num-seqs sc section)))
   (unless (listp players)
     (setf players (list players)))

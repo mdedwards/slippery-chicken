@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:04:12 Wed Apr 25 2012 BST
+;;; $$ Last modified: 16:32:45 Wed Apr 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1520,15 +1520,15 @@ T
 ;; rest bar.  
 (defmethod tie-over-rest-bars-aux ((sc slippery-chicken) bar-num player
                                    &key (end-bar 99999) 
-                                        (to-next-attack t)
-                                        (tie-next-attack nil)
-                                        (last-rhythm nil)
-                                        (auto-beam nil))
+                                   (to-next-attack t)
+                                   (tie-next-attack nil)
+                                   (last-rhythm nil)
+                                   (auto-beam nil))
   (let* ((bar (get-bar (piece sc) bar-num player))
          (start-event-pos nil)
          (start-event (when bar 
                         (multiple-value-bind
-                            (start-event pos)
+                              (start-event pos)
                             (get-last-attack bar nil)
                           (setf start-event-pos pos)
                           start-event)))
@@ -1555,10 +1555,10 @@ T
       (replace-mark start-event 'as 'a)
       ;; our last event may have been tied to following events...
       (loop 
-          for i from start-event-pos
-          while (is-tied-from start-event)
-          do
-            (setf start-event (get-nth-event (1+ i) bar)))
+         for i from start-event-pos
+         while (is-tied-from start-event)
+         do
+         (setf start-event (get-nth-event (1+ i) bar)))
       (setf (is-tied-from start-event) t)
       (no-accidental porc)
       (when wporc
@@ -1575,30 +1575,30 @@ T
                      last-event e)))
         ;; first the events in the current bar
         (loop 
-            for i downfrom (1- (num-rhythms bar)) to 0
-            for e = (nth i (rhythms bar))
-            while (is-rest e)
-            do
-              (do-it e))
+           for i downfrom (1- (num-rhythms bar)) to 0
+           for e = (nth i (rhythms bar))
+           while (is-rest e)
+           do
+           (do-it e))
         ;; now the events in the next bars
         (loop 
-            for bnum from (1+ bar-num) 
-            for bar = (get-bar (piece sc) bnum player)
-            while (<= (bar-num bar) end-bar)
-            do
-              (setf last-bar bar)
-              (if (is-rest-bar bar)
-                  (let ((events (events-for-full-bar (get-time-sig bar) 
-                                                     porc wporc)))
-                    (setf last-event (first (last events))
-                          (rhythms bar) events)
-                    (gen-stats bar))
-                (progn
-                  (when to-next-attack
-                    ;; (loop for e in (rhythms bar) while (is-rest e) do
-                    (loop for e in (rhythms bar) do
-                          (if (is-rest e) 
-                              (do-it e)
+           for bnum from (1+ bar-num) 
+           for bar = (get-bar (piece sc) bnum player)
+           while (<= (bar-num bar) end-bar)
+           do
+           (setf last-bar bar)
+           (if (is-rest-bar bar)
+               (let ((events (events-for-full-bar (get-time-sig bar) 
+                                                  porc wporc)))
+                 (setf last-event (first (last events))
+                       (rhythms bar) events)
+                 (gen-stats bar))
+               (progn
+                 (when to-next-attack
+                   ;; (loop for e in (rhythms bar) while (is-rest e) do
+                   (loop for e in (rhythms bar) do
+                        (if (is-rest e) 
+                            (do-it e)
                             (progn
                               (when (and tie-next-attack
                                          (porc-equal e last-event))
@@ -1610,7 +1610,7 @@ T
                                       (is-tied-to e) t)
                                 (decf (notes-needed bar)))
                               (return)))))
-                  (return))))
+                 (return))))
         (when last-event
           (setf (is-tied-from last-event) nil))
         (when last-rhythm
@@ -1623,17 +1623,18 @@ T
           ;; we might have tied over several notes to the next attack so now
           ;; we've got to make them rests
           (loop 
-              for e in (rest (rhythms last-bar)) 
-              while (is-tied-to e)
-              do
-                (force-rest e)))
+             for e in (rest (rhythms last-bar)) 
+             while (is-tied-to e)
+             do
+             (force-rest e)))
         (loop 
-            for bnum from bar-num
-            for bar = (get-bar (piece sc) bnum player)
-            while (<= (bar-num bar) end-bar)
-            do
-              (consolidate-notes bar nil auto-beam)
-              (auto-beam bar auto-beam nil))))))
+           for bnum from bar-num
+           for bar = (get-bar (piece sc) bnum player)
+           while (<= (bar-num bar) end-bar)
+           do
+           (consolidate-notes bar nil auto-beam)
+           (when auto-beam
+             (auto-beam bar auto-beam nil)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

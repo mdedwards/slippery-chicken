@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    23rd March 2002
 ;;;
-;;; $$ Last modified: 11:44:11 Thu Feb  9 2012 GMT
+;;; $$ Last modified: 12:15:40 Wed Apr 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -95,6 +95,31 @@
 (defmethod has-subsections ((s section))
 ;;; ****
   (typep (data (first (data s))) 'section))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* section/get-sequenz
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod get-sequenz ((s section) player seq-num) ; 1-based
+  (let ((player-section (get-data player s))) ; issues warning if none
+    (when player-section 
+        (get-nth (1- seq-num) player-section)))) ; issues warning if none
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

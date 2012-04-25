@@ -1254,8 +1254,8 @@ NIL
 ;;;     should be accessed for this purpose.
 ;;;
 ;;; NB: This method will check to see if the specified trill marks are already
-;;;     present in the MARKS and MARKS-BEFORE slots. If it is, the method will
-;;;     print a warning but will add the specified trill marks anyway.
+;;;     present in the MARKS and MARKS-BEFORE slots. If they are, the method
+;;;     will print a warning but will add the specified trill marks anyway.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.

@@ -269,7 +269,6 @@
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;;
 ;;; - :interleaved. T or NIL to indicate whether the new event data is to be
 ;;;   processed as a list of note-name/rhythm pairs (or existing event
 ;;;   objects), or if it is to be processed as a list with two sub-lists, the
@@ -277,7 +276,6 @@
 ;;;   sequence of pitches (see above). T = interleaved, i.e. already existing
 ;;;   event objects or a list of note-name/rhythm pairs. NIL = separate lists
 ;;;   for rhythms and pitches. Default = T.
-;;;
 ;;;   If this argument is T, the list of 2-element lists (note-name/rhythm
 ;;;   pairs) is passed to make-events, but such a list can contain no ties. If
 ;;;   the argument is set to NIL, the rhythm and pitch data is passed as two
@@ -290,20 +288,41 @@
 ;;;   signature will be used (e.g. quarter in 4/4). Default = NIL.
 ;;; - :auto-beam. T or NIL to indicate whether to automatically beam the new
 ;;;   events. T = automatically beam. Default = T.
-
-;;; - :tuplet-bracket. T or NIL to indicate whether to automatically add tuplet
-;;;   (e.g. triplet/quintuplet) brackets to the new events where applicable
-;;;   (integer). default nil
-
+;;; - :tuplet-bracket. NIL or an integer to indicate whether to automatically
+;;;   add tuplet (e.g. triplet/quintuplet) brackets to the new events where
+;;;   applicable. If this is an integer, all tuplets in the given bar will be
+;;;   given a tuplet bracket with that integer as the tuplet number. NB: This
+;;;   option does not allow for setting tuplets of different numbers for the
+;;;   same bar. To do that, set :tuplet-bracket to NIL and add the
+;;;   tuplet-brackets manually. NIL = place no brackets. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
 ;;; The number of new events used to replace the old ones.
 ;;;
 ;;; EXAMPLE
-;;; (replace-multi-bar-events +coming-rthm-chain+ 'cello 401 1 '((b4 e) e q q))
-;;; (replace-multi-bar-events +coming-rthm-chain+ 'cello 401 1 
-;;;                           '((h.+h.+h+e e q q) (b4 r r r)) :interleaved nil)
-;;; 
+#|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((d4 e4 f4 g4))))
+        :set-map '((1 (1 1 1 1 1 1))
+		   (2 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+				:pitch-seq-palette ((1 2 3 4))))
+			    (2 ((((2 4) e s s q)
+				 (s s e +e e))
+				:pitch-seq-palette ((1 2 3 4 3 2 4 1)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))))
+			(2 ((vn (2 2 2 2 2 2))))))))
+  (replace-multi-bar-events mini 'vn 2 3 '((cs5 h) ((ds5 fs5) h) (nil h)))
+  (replace-multi-bar-events mini 'vn '(2 2 2) '3 
+			    '((h h h) (cs5 (ds5 fs5) nil))
+			    :interleaved nil))
+
+=> 3
+
+|#
 ;;; SYNOPSIS
 (defmethod replace-multi-bar-events ((sc slippery-chicken)
                                      player start-bar num-bars new-events 
@@ -344,21 +363,49 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Apr 25 13:09:27 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken-edit/auto-accidentals
 ;;; FUNCTION
-;;; 
+;;; Automatically determine which notes in each bar need accidentals and which
+;;; don't. 
+;;;
+;;; This method also places cautionary accidentals (in parentheses) based on
+;;; how many notes back the last occurrence of that note/accidental combination
+;;; appeared in the bar. The first optional argument to the method allows the
+;;; user to specify how many notes back to look.
+;;;
+;;; NB: As both cmn-display and write-lp-data-for-all call respell-notes by
+;;;     default, that option must be set to NIL for this method to be
+;;;     effective (see below).
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An integer that is the number of notes back to look when placing
+;;;   cautionary accidentals in parentheses. If the last occurrence of a given
+;;;   repeated note/accidental combination was farther back than this number,
+;;;   the accidental will be placed in the score in parentheses.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((fs4 gs4 as4))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 2 1 2 3 2)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1))))))))
+  (auto-accidentals mini 4)
+  (cmn-display mini :respell-notes nil))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -367,13 +414,8 @@
                              ignore1 ignore2)
 ;;; ****
   (declare (ignore ignore1 ignore2))
-  (loop 
-     with players = (players sc)
-     with bar
-     with last-attack
-     with last-notes = (ml nil (length players))
-     for bar-num from 1 to (num-bars (piece sc)) 
-     do
+  (loop with players = (players sc) with bar with last-attack with last-notes
+     = (ml nil (length players)) for bar-num from 1 to (num-bars (piece sc)) do
      (loop 
         for player in players 
         for i from 0
@@ -1049,29 +1091,75 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Fri Apr 20 10:47:33 BST 2012: Conformed robodoc entry
+;;; SAR Wed Apr 25 13:33:53 BST 2012: Conformed robodoc entry
 
 ;;; ****m* slippery-chicken-edit/change-pitches
 ;;; FUNCTION
-;;; Change the piece's pitches for a given player.  See the documentation in the
-;;; bar-holder class method but note that if new-pitches is a simple flat list,
-;;; then we'll just change one note after another (with nil indicating no
-;;; change), moving from bar to bar as necessary until the new-pitches are used
-;;; up; in contrast to the bar-holder method, if a flat list is passed then we
-;;; only give a note for each attack i.e. ties don't count as new pitches.
+;;; Change the pitches of the specified event objects for a given player to the
+;;; specified new pitches. 
+;;;
+;;; If the new pitches are passed as a simple flat list, the method will just
+;;; change the pitch of each consecutive event object (with NIL indicating no
+;;; change), moving from bar to bar as necessary, until all of the specified
+;;; new pitches are used up. Also, if a flat list is passed, each new pitch
+;;; specified will be applied to each consecutive attacked note; i.e., ties
+;;; don't count as new pitches.
+;;;
+;;; Also see the documentation in the bar-holder class for the method of the
+;;; same name. 
 ;;;
 ;;; ARGUMENTS 
+;;; - A slippery-chicken object.
+;;; - The ID of the player whose part is to be modified.
+;;; - An integer that is the number of the first bar whose pitches are to be
+;;;   modified. 
+
+;;; - A list note-name symbols and NILs, or a list of lists of note-name
+;;;   symbols and NILs, which are the new pitches. If a simple flat list, see
+;;;   the comment in the function description above. If a list of lists, each
+;;;   sub-list will represent a full bar; e.g., (change-pitches bh 'vla 5 '((g3
+;;;   gs4) nil (nil nil aqf5))) will change the pitches in bars 5 and 7 (for
+;;;   the player 'vla), whereas bar six, indicated by nil, wouldn't be changed;
+;;;   similarly the first two notes of bar 7, being nil, will also not be
+;;;   changed, but note 3 will.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; same as bar-holder class but with one extra
-;;; - (optional default nil): a list of marks to be added to the events: only
-;;; when using the simple flat list; in this case the pitches and marks must be
-;;; the same length and correspond to each other item by item.  Sublists can be
-;;; used to add several marks to a single event.  NB marks are list symbols
-;;; like 'x-head--see cmn.lsp::get-cmn-marks for those recognised.
+;;; - T or NIL to indicate whether or not each consecutive new pitch listed
+;;;   will automatically take the most recent octave number specified; 
+;;;   e.g. '((a3 b g cs4)). T = use last octave number. Default = T.
+
+;;; - A list of marks to be added to the events objects. This option can only
+;;;   be used in conjunction with the simple flat list of pitches. In this case
+;;;   the list of pitches and list of marks must be the same length and
+;;;   correspond to each other item by item. Sub-lists can be used to add
+;;;   several marks to a single event. NB: See cmn.lsp::get-cmn-marks for the
+;;;   list of recognised marks. If NIL, no marks will be added. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
-;;; If a flat note list, the bar at which we stopped, otherwise t.
+;;; If a the new pitches are passed as a simple flat list, the method returns
+;;; the number of the bar in which the pitches were changed; 
+;;; otherwise returns T. 
+;;;
+;;; EXAMPLE
+#|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1 1 1))))))))
+  (change-pitches mini 'vc 2 '((fs3 gs3 as3)))
+  (change-pitches mini 'vc 3 '((nil nil fs3 gs as ds fs gs) 
+			       nil
+			       (cs4 ds fs))))
+
+=> T
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod change-pitches ((sc slippery-chicken) player start-bar new-pitches
@@ -2001,6 +2089,7 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Apr 25 14:31:35 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/sc-delete-marks
 ;;; FUNCTION
@@ -2026,22 +2115,40 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Apr 25 15:56:45 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/sc-delete-marks-from-event
 ;;; FUNCTION
-;;; 
+;;; Delete all data from the MARKS slot of the specified event object and
+;;; replace it with NIL.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar from which the marks are to be
+;;;   deleted.
+;;; - An integer that is the number of the event within the given bar from
+;;;   which the marks are to be deleted.
+;;; - The ID of the player from whose part the marks are to be deleted.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4))
+				:marks (a 1 4 lhp 4 s 3 4 slur 1 2))))
+        :rthm-seq-map '((1 ((vc (1 1 1))))))))
+  (sc-delete-marks-from-event mini 2 4 'vc))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -2052,22 +2159,47 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Apr 25 15:24:22 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/sc-delete-marks-before
 ;;; FUNCTION
-;;; 
+;;; Deletes all data from the MARKS-BEFORE slot of a specified event object and
+;;; replaces it with NIL.
+;;;
+;;; NB: In addition to clef symbol data, the MARKS-BEFORE slot also stores part
+;;;     of the required data for trills and arrows. Deleting just the
+;;;     MARKS-BEFORE components of those markings may result in unwanted
+;;;     results. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar in which the event object is to
+;;;   be  modified. 
+;;; - An integer that is the number of the note within the given bar for which
+;;;   the MARKS-BEFORE slot is to be set to NIL.
+;;; - The ID of the player whose part is to be affected.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4)))))
+        :rthm-seq-map '((1 ((vc (1 1 1))))))))
+  (add-mark-before-note mini 2 3 'vc 'fff)
+  (add-mark-before-note mini 2 3 'vc 's)
+  (add-mark-before-note mini 2 3 'vc 'lhp)
+  (sc-delete-marks-before mini 2 3 'vc))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -2142,22 +2274,68 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Apr 25 12:00:31 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/tie-all-last-notes-over-rests
 ;;; FUNCTION
-;;; 
+;;; Extend the duration of the last note of any bar that precedes a bar which
+;;; starts with a rest in the specified region, such that the rest that begins
+;;; the next measure is changed to a note and the last note of the first
+;;; measure is tied to it.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the first bar in which changes are to be made.
+;;; - An integer that is the last bar in which changes are to be made.
+;;; - A player ID or list of player IDs.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+
+;;; - :to-next-attack. T or NIL to indicate whether ties are to extend over
+;;;   only full bars of rest or also over partial bars (until the next attacked
+;;;   note). T = until the next attacked note. Default = T.
+
+;;; - :tie-next-attack. T or NIL to indicate whether the new tied notes created 
+;;;   should also be further extended over the next attacked note if that note
+;;;   has the same pitch as the starting note of the tie. T = also tie next
+;;;   attacked note if same pitch. Default = NIL.
+
+;;; - :last-rhythm. Default = NIL>
+
+;;; - :auto-beam. T or NIL to indicate whether the new events should be
+;;;   automatically beamed after placement. T = automatically beam. 
+;;;   Default = NIL.
+
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+		     (va (viola :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 f4 g4 a4 c5 d5 f5))))
+        :set-map '((1 (1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e (e) e e (e) (e) e e) 
+				 ((w)) 
+				 ((h.) q) 
+				 ((w))
+				 ((w)) 
+				 ((q) h.))
+				:pitch-seq-palette ((1 2 3 4 5 6 7)))))
+        :rthm-seq-map '((1 ((vn (1 1))
+			    (va (1 1))
+			    (vc (1 1))))))))
+  (tie-all-last-notes-over-rests mini 2 6 'vn)
+  (tie-all-last-notes-over-rests mini 3 5 'va :to-next-attack nil)
+  (tie-all-last-notes-over-rests mini 3 6 'vc :tie-next-attack t))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -3223,22 +3401,50 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Apr 25 16:30:06 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/sc-move-dynamic
 ;;; FUNCTION
-;;; 
+;;; Move the dynamic attached to a specified event object to another specified
+;;; event object.
+;;;
+;;; By default the dynamics are moved between events within the same bar. An
+;;; optional argument allows for dynamics to be moved to events in a different
+;;; bar. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar in which to move the dynamic.
+;;; - The ID of the player in whose part the dynamic is located.
+;;; - An integer that is the number of the event object from which the dynamic
+;;;   is to be moved. This number is 1-based and counts both rests and ties.
+;;; - An integer that is the number of the event object to which the dynamic
+;;;   is to be moved. This number is 1-based and counts both rests and ties.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An integer that is the number of the bar to which the dynamic should be
+;;;   moved. If this is not specified, the dynamic will be moved to the
+;;;   specified event within the same bar.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :set-palette '((1 ((a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4))
+				:marks (fff 1))))
+        :rthm-seq-map '((1 ((vc (1 1 1))))))))
+  (sc-move-dynamic mini 1 'vc 1 3)
+  (sc-move-dynamic mini 2 'vc 1 4 3))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -3252,23 +3458,42 @@ NIL
     (add-mark (get-event sc to-bar to player) dyn)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 1.4.11: remove all dynamics on a single event.  event-num includes ties and
-;;; rests 
+
+;;; SAR Wed Apr 25 16:41:35 BST 2012: Added robodoc entry.
+
 ;;; ****m* slippery-chicken-edit/sc-remove-dynamic
 ;;; FUNCTION
-;;; 
+;;; Remove all dynamics from the MARKS slot of one or more specified event
+;;; objects. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar from which the dynamics are to
+;;;   be removed. 
+;;; - The ID of the player from whose part the dynamics are to be removed. 
+;;; - An integer or a list of integers that are the numbers of the events from
+;;;   which the dynamics are to be removed. Event numbers include ties and
+;;;   rests. 
+;;;
 ;;; RETURN VALUE
-;;; 
+;;; Returns the last dynamic removed.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :set-palette '((1 ((a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4))
+				:marks (fff 1 ppp 3))))
+        :rthm-seq-map '((1 ((vc (1 1 1))))))))
+  (sc-remove-dynamic mini 2 'vc 1)
+  (sc-remove-dynamic mini 3 'vc '(1 3)))
+
+=> PPP
 
 |#
 ;;; SYNOPSIS
@@ -3399,10 +3624,13 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing methdo
+;;;  A post-generation editing method
+
+;;; SAR Wed Apr 25 14:06:58 BST 2012: Added robodoc entry
 
 ;;; start/end-note are 1-based but count ties.  if no optional args, deletes
 ;;; all beams in the bar.
+
 ;;; ****m* slippery-chicken-edit/sc-delete-beams
 ;;; FUNCTION
 ;;; 
@@ -3818,26 +4046,66 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing methdo
+;;;  A post-generation editing method
 
-;;; 23.7.11 (Pula) 1-based and counting tied notes but not rests
-;;; NB in general calling auto-beam is a good idea (esp. if you're deleting
-;;; notes under a beam) but if might fail if you have notes longer than a beat.
+;;; SAR Wed Apr 25 16:05:55 BST 2012: Added robodoc entry.
+
 ;;; ****m* slippery-chicken-edit/sc-force-rest
+;;; DATE
+;;; 23-Jul-2011 (Pula)
+;;;
 ;;; FUNCTION
-;;; 
+;;; Change the specified event object to a rest.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
+
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar in which the rest is to be
+;;;   forced.
+;;; - An integer that is the number of the event within that bar which is to be
+;;;   changed into a rest. This number is 1-based and counts tied notes but not
+;;;   rests. 
+;;; - The ID of the player whose part is to be modified.
+;;;
 ;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
+;;; - T or NIL to indicate whether the specified bar should be automatically
+;;;   beamed after the change has been made. NB: In general, calling auto-beam
+;;;   is a good idea (esp. when deleting notes under an existing beam);
+;;;   however, auto-beam may fail when addressing bars that contain notes
+;;;   longer than one beat. T = automatically beam. Default = NIL.
+;;;
 ;;; RETURN VALUE
-;;; 
+;;; The new rthm-seq-bar object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :set-palette '((1 ((a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4)))))
+        :rthm-seq-map '((1 ((vc (1 1 1))))))))
+  (sc-force-rest mini 2 3 'vc)
+  (sc-force-rest mini 3 3 'vc t))
+
+=>
+
+RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3, 
+              old-bar-nums: NIL, write-bar-num: NIL, start-time: 4.000, 
+              start-time-qtrs: 4.0, is-rest-bar: NIL, multi-bar-rest: NIL, 
+              show-rest: T, notes-needed: 3, 
+              tuplets: NIL, nudge-factor: 0.35, beams: ((1 2)), 
+              current-time-sig: 3, write-time-sig: NIL, num-rests: 1, 
+              num-rhythms: 4, num-score-notes: 3, parent-start-end: NIL, 
+              missing-duration: NIL, bar-line-type: 2, 
+              player-section-ref: (1 VC), nth-seq: 2, nth-bar: 0, 
+              rehearsal-letter: NIL, all-time-sigs: (too long to print) 
+              sounding-duration: 1.750, 
+              rhythms: (
+[...]
 
 |#
 ;;; SYNOPSIS

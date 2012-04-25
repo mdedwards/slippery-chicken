@@ -1837,8 +1837,8 @@ NIL
 
 ;;; ****m* slippery-chicken-edit/rm-marks-from-note
 ;;; FUNCTION
-;;; Remove on or more specific marks or all marks from the MARKS slot of a
-;;; specified event object.
+;;; Remove one or more specific marks from the MARKS slot of a specified event
+;;; object.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -1850,7 +1850,7 @@ NIL
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - A specific mark or list of specific marks that are to be removed. If this
-;;;   argument is not specified, all marks will be removed.
+;;;   argument is not specified, no marks will be removed.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns T.
@@ -3077,25 +3077,57 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Apr 25 18:36:03 BST 2012: Added robodoc entry
 
+;;; MDE original comment:
 ;;; This is different from set-rehearsal-letters in that we don't use the
 ;;; rehearsal-letters slot of sc, rather, we use the method argument.
 
 ;;; ****m* slippery-chicken-edit/set-rehearsal-letter
 ;;; FUNCTION
+;;; Add the specified rehearsal letter/number to the specified bar in one or
+;;; more specified players.
 ;;; 
-;;; 
+;;; NB: Since internally this method actually attaches the rehearsal
+;;;     letter/number to the REHEARSAL-LETTER slot of the preceding bar
+;;;     (bar-num - 1), no rehearsal letter/number can be attached to the first
+;;;     bar.
+;;;
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar to which the rehearsal
+;;;   letter/number is to be added.  
+;;; - A symbol that is the rehearsal letter/number to be added (e.g. 'A or '1)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - The player ID or a list of player IDs to whose parts the rehearsal
+;;;   letter/number is to be added. If no value is given here, the rehearsal
+;;;   letter/number will be added to the first (top) instrument in each group
+;;;   of the ensemble, as specified in staff-groupings.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+		     (va (viola :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((ds3 e3 fs3 af3 bf3 c4 ef4 fs4))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1))
+			    (va (1 1 1 1))
+			    (vc (1 1 1 1))))))))
+  (set-rehearsal-letter mini 2 'A)
+  (set-rehearsal-letter mini 3 '2 '(va vc))
+  (set-rehearsal-letter mini 4 'Z3))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -3105,12 +3137,12 @@ NIL
   (unless players
     (setf players (get-groups-top-ins sc)))
   (loop 
-      for p in players 
-               ;; remember the letter is actually placed on the bar-line of the
-               ;; previous bar
-      for bar = (get-bar sc (1- bar-num) p)
-      do
-        (setf (rehearsal-letter bar) letter))
+     for p in players 
+     ;; remember the letter is actually placed on the bar-line of the
+     ;; previous bar
+     for bar = (get-bar sc (1- bar-num) p)
+     do
+       (setf (rehearsal-letter bar) letter))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3512,25 +3544,58 @@ NIL
      finally (return (first dynamics))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing methdo
+;;;  A post-generation editing method
 
-;;; 16.3.11: start end are either bar numbers or (bar-num note-num) pairs.
-;;; note-nums are 1-based and count ties but not rests.
+;;; SAR Wed Apr 25 17:03:04 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken-edit/sc-remove-dynamics
+;;; DATE 
+;;; 16-Mar-2011
+;;;
 ;;; FUNCTION
-;;; 
+;;; Remove all dynamic marks from the MARKS slots of all consecutive event
+;;; objects within a specified region of bars. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer or a list of two integers. If a single integer, this is the
+;;;   number of the first bar from which the dynamics will be removed, and all
+;;;   dynamics will be removed from the full bar. If this is a list of two
+;;;   integers, they are the numbers of the first bar and first note within
+;;;   that bar from which the dynamics will be removed, in the form '(bar-num
+;;;   note-num). Note numbers are 1-based and count ties but not rests.
+;;; - An integer or a list of two integers. If a single integer, this is the
+;;;   number of the last bar from which the dynamics will be removed, and all
+;;;   dynamics will be removed from the full bar. If this is a list of two
+;;;   integers, they are the numbers of the last bar and last note within that
+;;;   bar from which the dynamics will be removed, in the form '(bar-num
+;;;   note-num). Note numbers are 1-based and count ties but not rests.
+;;; - A single ID or a list of IDs of the players from whose parts the dynamics
+;;;   are to be removed.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+		     (va (viola :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4 f4 g4 a4 b4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4))
+				:marks (fff 1 ppp 3))))
+        :rthm-seq-map '((1 ((vn (1 1 1))
+			    (va (1 1 1))
+			    (vc (1 1 1))))))))
+  (sc-remove-dynamics mini '(1 2) '(2 2) 'vn)
+  (sc-remove-dynamics mini 2 3 '(va vc)))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -3552,7 +3617,7 @@ NIL
                 for i from (1- start-note) below end-note 
                 for e = (get-nth-non-rest-rhythm i bar)
                 do
-                (remove-dynamics e))))
+		  (remove-dynamics e))))
       (if (= stbar ndbar)
           (loop for p in players do
                (do-bar stbar stnote ndnote p))
@@ -4249,16 +4314,19 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  A post-generation editing method
 
-;;; 28.9.11: add accidental in ().  note-num (counting ties, and from 1) can be
-;;; an integer or list e.g. '(1 2). If the latter it would be the first chord,
-;;; second note up.
+;;; SAR Wed Apr 25 17:52:13 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/set-cautionary-accidental
+;;; DATE
+;;; 28-Sep-2011
+;;;
 ;;; FUNCTION
-;;; 
+;;; add accidental in (). 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+
+;;;  note-num (counting ties, and from 1) can be an integer or list e.g. '(1
+;;; 2). If the latter it would be the first chord, second note up.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; 

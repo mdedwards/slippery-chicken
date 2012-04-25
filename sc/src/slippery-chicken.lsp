@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:32:45 Wed Apr 25 2012 BST
+;;; $$ Last modified: 16:33:50 Wed Apr 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1633,6 +1633,7 @@ T
            while (<= (bar-num bar) end-bar)
            do
            (consolidate-notes bar nil auto-beam)
+           ;; MDE Wed Apr 25 16:33:29 2012 -- when clause added!
            (when auto-beam
              (auto-beam bar auto-beam nil)))))))
 

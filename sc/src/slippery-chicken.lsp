@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:47:40 Wed Apr 25 2012 BST
+;;; $$ Last modified: 15:04:12 Wed Apr 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2825,7 +2825,7 @@ T
   ;; playback (e.g. if section 2 had more seqs than requested)  
   (when (and num-sequences (> num-sections 1))
     (error "slippery-chicken::clm-play: num-sequences keyword should only ~
-            be used when num-sections = 1."))
+            be used ~%when num-sections = 1."))
   ;; (unless num-sequences
   (when (and (= 1 num-sections) (not num-sequences))
     (setf num-sequences (num-seqs sc section)))

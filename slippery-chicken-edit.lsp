@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 18:04:18 Tue Apr 24 2012 BST
+;;; $$ Last modified: 15:30:39 Wed Apr 25 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -512,15 +512,15 @@
        (make-slippery-chicken
         '+mini+
         :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-		     (pn (piano :midi-channel 2))
-		     (vn (violin :midi-channel 3))))
+                     (pn (piano :midi-channel 2))
+                     (vn (violin :midi-channel 3))))
         :set-palette '((1 ((cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
         :set-map '((1 (1 1 1 1 1)))
         :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -))
-				:pitch-seq-palette ((1 (2) 3 4 (5) 6 (7) 8)))))
+                                :pitch-seq-palette ((1 (2) 3 4 (5) 6 (7) 8)))))
         :rthm-seq-map '((1 ((cl (1 1 1 1 1))
-			    (pn (1 1 1 1 1))
-			    (vn (1 1 1 1 1))))))))
+                            (pn (1 1 1 1 1))
+                            (vn (1 1 1 1 1))))))))
   (enharmonics mini 1 2 'vn)
   (enharmonics mini 2 3 'pn :pitches '(cs4 ds4))
   (enharmonics mini 3 4 'cl :written nil))
@@ -3422,9 +3422,14 @@ NIL
 ;;; ****
   (let ((bar (get-bar (piece sc) bar-num player)))
     (if (and start-note end-note)
-        (progn
-          (delete-beam (get-nth-non-rest-rhythm (1- start-note) bar))
-          (delete-beam (get-nth-non-rest-rhythm (1- end-note) bar)))
+        ;; MDE Wed Apr 25 15:24:43 2012 -- we were just deleting the beam on
+        ;; start-note and end-note but let's instead delete all those inbetween
+        ;; too 
+        (loop for i from (1- start-note) below end-note do
+             (delete-beam (get-nth-non-rest-rhythm i bar)))
+        ;; (progn
+        ;; (delete-beam (get-nth-non-rest-rhythm (1- start-note) bar))
+        ;; (delete-beam (get-nth-non-rest-rhythm (1- end-note) bar)))
         (delete-beams bar))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

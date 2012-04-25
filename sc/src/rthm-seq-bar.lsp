@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 11:14:13 Wed Apr 25 2012 BST
+;;; $$ Last modified: 14:51:14 Wed Apr 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4242,7 +4242,8 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; EXAMPLE
 #|
 (let ((rsb-rb (make-rest-bar '(2 4) nil t)))
-  (format t "~%time-sig: ~a~%is-rest-bar: ~a~%write-time-sig: ~a~%show-rest: ~a~%"
+  (format t "~%time-sig: ~a~%is-rest-bar: ~a~%write-time-sig: ~
+             ~a~%show-rest: ~a~%"
           (data (get-time-sig rsb-rb))
           (is-rest-bar rsb-rb)
           (write-time-sig rsb-rb)

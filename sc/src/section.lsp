@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    23rd March 2002
 ;;;
-;;; $$ Last modified: 12:15:40 Wed Apr 25 2012 BST
+;;; $$ Last modified: 12:30:20 Wed Apr 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -120,6 +120,31 @@
   (let ((player-section (get-data player s))) ; issues warning if none
     (when player-section 
         (get-nth (1- seq-num) player-section)))) ; issues warning if none
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* section/num-sequenzes
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod num-sequenzes ((s section))
+;;; ****
+  ;; the data is a list of player-sections
+  (sclist-length (first (data s))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

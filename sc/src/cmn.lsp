@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 16:47:24 Wed Apr 18 2012 BST
+;;; $$ Last modified: 16:07:23 Wed Apr 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -244,11 +244,6 @@
              (end-8va (list end-octave-up))
              (beg-8vb (list begin-octave-down))
              (end-8vb (list end-octave-down))
-             (0 (list (fingering 0 (dx dx) (dy dy) the-text)))
-             (1 (list (fingering 1 (dx dx) (dy dy) the-text)))
-             (2 (list (fingering 2 (dx dx) (dy dy) the-text)))
-             (3 (list (fingering 3 (dx dx) (dy dy) the-text)))
-             (4 (list (fingering 4 (dx dx) (dy dy) the-text)))
              (I (list (fingering "I" (dx dx) (dy dy) the-text)))
              (II (list (fingering "II" (dx dx) (dy dy) the-text)))
              (III (list (fingering "III" (dx dx) (dy dy) the-text)))
@@ -344,11 +339,18 @@
              (t (unless silent
                   (error "cmn::get-cmn-marks: unrecognised mark: ~a" mark)))))
           (string (list (sc-cmn-text mark)))
+          (number
+           (case mark
+             (0 (list (fingering 0 (dx dx) (dy dy) the-text)))
+             (1 (list (fingering 1 (dx dx) (dy dy) the-text)))
+             (2 (list (fingering 2 (dx dx) (dy dy) the-text)))
+             (3 (list (fingering 3 (dx dx) (dy dy) the-text)))
+             (4 (list (fingering 4 (dx dx) (dy dy) the-text)))))
           ;; if it's a list then it's usually a bunch of arguments to
           ;; sc-cmn-text 
           (list ;; (print (symbolp (print (first mark))))
            (case (sc::rm-package (first mark) :cmn)
-             (arrow (no-cmn-mark 'arrow)) ; ignore lilypond arrow
+             (arrow (no-cmn-mark 'arrow))           ; ignore lilypond arrow
              (trill-note (no-cmn-mark 'trill-note)) ; ignore lilypond trill
              ;; this is also for lilypond markup code so ignore
              (text (no-cmn-mark (format nil "lilypond-markup: ~a" mark)))

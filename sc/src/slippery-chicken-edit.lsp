@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 15:30:39 Wed Apr 25 2012 BST
+;;; $$ Last modified: 16:26:50 Wed Apr 25 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -2175,6 +2175,10 @@ NIL
 ;;; ****
   (unless (listp players)
     (setf players (list players)))
+  ;; MDE Wed Apr 25 16:25:21 2012 -- 
+  (when (= end-bar (num-bars sc))
+    (error "slippery-chicken::tie-all-last-notes-over-rests: ~
+            This method cannot be used ~%on the last bar of the piece."))
   (loop for p in players do
         (tie-all-last-notes-over-rests-aux sc start-bar end-bar p 
                                :to-next-attack to-next-attack 

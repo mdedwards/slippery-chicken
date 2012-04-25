@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:53:51 Tue Apr 24 2012 BST
+;;; $$ Last modified: 12:20:31 Wed Apr 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4283,6 +4283,34 @@ T
 (defmethod get-section ((sc slippery-chicken) reference)
 ;;; ****
   (get-data-data reference (piece sc)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Apr 25 12:18:25 2012 
+
+;;; ****m* slippery-chicken/get-sequenz-from-section
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod get-sequenz-from-section ((sc slippery-chicken)
+                                     section-ref player-ref seq-num) ; 1-based
+;;; ****
+  (let ((section (get-section sc section-ref)))
+    (when section
+      (get-sequenz section player-ref seq-num))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 10:55:21 Wed Apr 25 2012 BST
+;;; $$ Last modified: 11:14:13 Wed Apr 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2533,7 +2533,7 @@ data: ((2 4) - S S - S - S S S - S S)
 (defmethod update-time ((rsb rthm-seq-bar) start-time start-time-qtrs tempo)
   (setf (start-time rsb) start-time
         (start-time-qtrs rsb) start-time-qtrs)
-  (print (start-time rsb))
+  ;; (print (start-time rsb))
   (unless (typep tempo 'tempo)
     (setf tempo (make-tempo tempo)))
   (let ((qtr-dur (qtr-dur tempo))

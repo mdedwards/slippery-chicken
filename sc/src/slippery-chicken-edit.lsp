@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 16:26:50 Wed Apr 25 2012 BST
+;;; $$ Last modified: 16:39:42 Thu Apr 26 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -309,25 +309,25 @@
         :ensemble '(((vn (violin :midi-channel 1))))
         :set-palette '((1 ((d4 e4 f4 g4))))
         :set-map '((1 (1 1 1 1 1 1))
-		   (2 (1 1 1 1 1 1)))
+                   (2 (1 1 1 1 1 1)))
         :rthm-seq-palette '((1 ((((2 4) q e s s))
-				:pitch-seq-palette ((1 2 3 4))))
-			    (2 ((((2 4) e s s q)
-				 (s s e +e e))
-				:pitch-seq-palette ((1 2 3 4 3 2 4 1)))))
+                                :pitch-seq-palette ((1 2 3 4))))
+                            (2 ((((2 4) e s s q)
+                                 (s s e +e e))
+                                :pitch-seq-palette ((1 2 3 4 3 2 4 1)))))
         :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))))
-			(2 ((vn (2 2 2 2 2 2))))))))
+                        (2 ((vn (2 2 2 2 2 2))))))))
   (replace-multi-bar-events mini 'vn 2 3 
-			    '((cs5 h) ((ds5 fs5) h) (nil h)))
+                            '((cs5 h) ((ds5 fs5) h) (nil h)))
   (replace-multi-bar-events mini 'vn '(2 2 2) '3 
-			    '((h h h) (cs5 (ds5 fs5) nil))
-			    :interleaved nil)
+                            '((h h h) (cs5 (ds5 fs5) nil))
+                            :interleaved nil)
   (replace-multi-bar-events mini 'vn 1 1
-			    '((nil e) (nil e) (nil e) (cs4 e))
-			    :consolidate-rests t)
+                            '((nil e) (nil e) (nil e) (cs4 e))
+                            :consolidate-rests t)
   (replace-multi-bar-events mini 'vn 8 1
-  			    '((nil q) (b3 e) (cs4 s) (ds4 s))
-  			    :auto-beam t))
+                            '((nil q) (b3 e) (cs4 s) (ds4 s))
+                            :auto-beam t))
 
 => 4
 
@@ -1163,8 +1163,8 @@ data: (
         :rthm-seq-map '((1 ((vc (1 1 1 1 1 1))))))))
   (change-pitches mini 'vc 2 '((fs3 gs3 as3)))
   (change-pitches mini 'vc 3 '((nil nil fs3 gs as ds fs gs) 
-			       nil
-			       (cs4 ds fs))))
+                               nil
+                               (cs4 ds fs))))
 
 => T
 
@@ -2173,7 +2173,7 @@ NIL
         :set-map '((1 (1 1 1)))
         :rthm-seq-palette '((1 ((((2 4) q e s s))
                                 :pitch-seq-palette ((1 2 3 4))
-				:marks (a 1 4 lhp 4 s 3 4 slur 1 2))))
+                                :marks (a 1 4 lhp 4 s 3 4 slur 1 2))))
         :rthm-seq-map '((1 ((vc (1 1 1))))))))
   (sc-delete-marks-from-event mini 2 4 'vc))
 
@@ -2411,20 +2411,20 @@ NIL
        (make-slippery-chicken
         '+mini+
         :ensemble '(((vn (violin :midi-channel 1))
-		     (va (viola :midi-channel 2))
-		     (vc (cello :midi-channel 3))))
+                     (va (viola :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 f4 g4 a4 c5 d5 f5))))
         :set-map '((1 (1 1)))
         :rthm-seq-palette '((1 ((((4 4) e (e) e e (e) (e) e e) 
-				 ((w)) 
-				 ((h.) q) 
-				 ((w))
-				 ((w)) 
-				 ((q) h.))
-				:pitch-seq-palette ((1 2 3 4 5 6 7)))))
+                                 ((w)) 
+                                 ((h.) q) 
+                                 ((w))
+                                 ((w)) 
+                                 ((q) h.))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7)))))
         :rthm-seq-map '((1 ((vn (1 1))
-			    (va (1 1))
-			    (vc (1 1))))))))
+                            (va (1 1))
+                            (vc (1 1))))))))
   (tie-all-last-notes-over-rests mini 2 6 'vn)
   (tie-all-last-notes-over-rests mini 3 5 'va :to-next-attack nil)
   (tie-all-last-notes-over-rests mini 3 6 'vc :tie-next-attack t))
@@ -2481,7 +2481,7 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod tie-over-rest-bars ((sc slippery-chicken) bar-num players
-                               &key (end-bar 99999) ;; num of empty bars
+                               &key (end-bar nil) ;; num of empty bars
                                     (tie-next-attack nil)
                                     (to-next-attack t)
                                     (last-rhythm nil)
@@ -2569,39 +2569,39 @@ NIL
        for bar = (get-bar sc bnum player)
        ;; always one ahead
        with next-event = (progn 
-			   (next-event sc player)
-			   (next-event sc player))
+                           (next-event sc player)
+                           (next-event sc player))
        with note-num
        with event-num
        do
-	 (setf note-num (if (= bnum start-bar)
-			    (1- start-note)
-			    0))
-	 (setf note-num 0
-	       event-num 0)
-	 (loop 
-	    while (< event-num (num-rhythms bar))
-	    for event = (get-nth-event event-num bar)
-	    do
-	    ;; (format t "~&~a ~a" bnum note-num)
-	      (unless (is-rest event)
-		(incf note-num))
-	      (when (and (not (is-rest event))
-			 (is-rest next-event)
-			 (or (> bnum start-bar)
-			     (>= note-num start-note))
-			 (or (< bnum end-bar)
-			     (<= note-num end-note)))
-		(push (list bnum note-num) refs))
-	      (incf event-num)
-	      (setf next-event (next-event sc player))))
+         (setf note-num (if (= bnum start-bar)
+                            (1- start-note)
+                            0))
+         (setf note-num 0
+               event-num 0)
+         (loop 
+            while (< event-num (num-rhythms bar))
+            for event = (get-nth-event event-num bar)
+            do
+            ;; (format t "~&~a ~a" bnum note-num)
+              (unless (is-rest event)
+                (incf note-num))
+              (when (and (not (is-rest event))
+                         (is-rest next-event)
+                         (or (> bnum start-bar)
+                             (>= note-num start-note))
+                         (or (< bnum end-bar)
+                             (<= note-num end-note)))
+                (push (list bnum note-num) refs))
+              (incf event-num)
+              (setf next-event (next-event sc player))))
     ;; always do this starting with the highest bar num otherwise we the refs
     ;; get screwed up as we add notes
     ;; (print refs)
     (loop for ref in refs do
-	 (tie-over-rests sc (first ref) (second ref) player 
-			 :auto-beam auto-beam
-			 :consolidate-notes consolidate-notes))))
+         (tie-over-rests sc (first ref) (second ref) player 
+                         :auto-beam auto-beam
+                         :consolidate-notes consolidate-notes))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3245,15 +3245,15 @@ NIL
        (make-slippery-chicken
         '+mini+
         :ensemble '(((vn (violin :midi-channel 1))
-		     (va (viola :midi-channel 2))
-		     (vc (cello :midi-channel 3))))
+                     (va (viola :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
         :set-palette '((1 ((ds3 e3 fs3 af3 bf3 c4 ef4 fs4))))
         :set-map '((1 (1 1 1 1)))
         :rthm-seq-palette '((1 ((((2 4) q e s s))
                                 :pitch-seq-palette ((1 2 3 4)))))
         :rthm-seq-map '((1 ((vn (1 1 1 1))
-			    (va (1 1 1 1))
-			    (vc (1 1 1 1))))))))
+                            (va (1 1 1 1))
+                            (vc (1 1 1 1))))))))
   (set-rehearsal-letter mini 2 'A)
   (set-rehearsal-letter mini 3 '2 '(va vc))
   (set-rehearsal-letter mini 4 'Z3))
@@ -3602,7 +3602,7 @@ NIL
         :set-map '((1 (1 1 1)))
         :rthm-seq-palette '((1 ((((2 4) q e s s))
                                 :pitch-seq-palette ((1 2 3 4))
-				:marks (fff 1))))
+                                :marks (fff 1))))
         :rthm-seq-map '((1 ((vc (1 1 1))))))))
   (sc-move-dynamic mini 1 'vc 1 3)
   (sc-move-dynamic mini 2 'vc 1 4 3))
@@ -3651,7 +3651,7 @@ NIL
         :set-map '((1 (1 1 1)))
         :rthm-seq-palette '((1 ((((2 4) q e s s))
                                 :pitch-seq-palette ((1 2 3 4))
-				:marks (fff 1 ppp 3))))
+                                :marks (fff 1 ppp 3))))
         :rthm-seq-map '((1 ((vc (1 1 1))))))))
   (sc-remove-dynamic mini 2 'vc 1)
   (sc-remove-dynamic mini 3 'vc '(1 3)))
@@ -3713,16 +3713,16 @@ NIL
        (make-slippery-chicken
         '+mini+
         :ensemble '(((vn (violin :midi-channel 1))
-		     (va (viola :midi-channel 2))
-		     (vc (cello :midi-channel 3))))
+                     (va (viola :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
         :set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4 f4 g4 a4 b4))))
         :set-map '((1 (1 1 1)))
         :rthm-seq-palette '((1 ((((2 4) q e s s))
                                 :pitch-seq-palette ((1 2 3 4))
-				:marks (fff 1 ppp 3))))
+                                :marks (fff 1 ppp 3))))
         :rthm-seq-map '((1 ((vn (1 1 1))
-			    (va (1 1 1))
-			    (vc (1 1 1))))))))
+                            (va (1 1 1))
+                            (vc (1 1 1))))))))
   (sc-remove-dynamics mini '(1 2) '(2 2) 'vn)
   (sc-remove-dynamics mini 2 3 '(va vc)))
 
@@ -3748,7 +3748,7 @@ NIL
                 for i from (1- start-note) below end-note 
                 for e = (get-nth-non-rest-rhythm i bar)
                 do
-		  (remove-dynamics e))))
+                  (remove-dynamics e))))
       (if (= stbar ndbar)
           (loop for p in players do
                (do-bar stbar stnote ndnote p))
@@ -4513,13 +4513,13 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
        (make-slippery-chicken
         '+mini+
         :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-		     (vn (violin :midi-channel 2))))
+                     (vn (violin :midi-channel 2))))
         :set-palette '((1 ((cs4 ds4 fs4))))
         :set-map '((1 (1 1)))
         :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
                                 :pitch-seq-palette ((1 2 3 2 1 2 3 2)))))
         :rthm-seq-map '((1 ((cl (1 1))
-			    (vn (1 1))))))))
+                            (vn (1 1))))))))
   (respell-notes mini)
   (unset-cautionary-accidental mini 2 5 'vn)
   (unset-cautionary-accidental mini 2 7 'cl t)

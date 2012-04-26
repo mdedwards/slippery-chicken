@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:05:48 Thu Apr 26 2012 BST
+;;; $$ Last modified: 16:40:46 Thu Apr 26 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1519,11 +1519,15 @@ T
 ;; bar-num is the bar that we start the ties from the last note, not the first
 ;; rest bar.  
 (defmethod tie-over-rest-bars-aux ((sc slippery-chicken) bar-num player
-                                   &key (end-bar 99999) 
+                                   &key (end-bar nil) 
                                    (to-next-attack t)
                                    (tie-next-attack nil)
                                    (last-rhythm nil)
                                    (auto-beam nil))
+  ;; MDE Thu Apr 26 16:39:58 2012 -- end-bar default was 99999 which is fine
+  ;; for the loops but not the get-bar call below 
+  (unless end-bar
+    (setf end-bar (num-bars sc)))
   (let* ((bar (get-bar (piece sc) bar-num player))
          (start-event-pos nil)
          (start-event (when bar 

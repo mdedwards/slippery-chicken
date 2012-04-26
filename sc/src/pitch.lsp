@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 12:45:07 Tue Apr 17 2012 CEST
+;;; $$ Last modified: 11:27:05 Thu Apr 26 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1758,12 +1758,12 @@ pitch::add-mark: mark PIZZ already present but adding again!
          (lp8ve (cond
                   ((= octave 3) "")
                   ((> octave 3) (make-string (- octave 3)
-                                              :initial-element #\'))
+                                             :initial-element #\'))
                   ((< octave 3) (make-string (- 3 octave)
                                              :initial-element #\,))))
          ;; 27.8.11 don't forget marks e.g. harmonic heads
          (marks (format nil "~{~a~^~}" (loop for mark in (marks p)
-                                            collect (lp-get-mark mark))))
+                                          collect (lp-get-mark mark))))
          ;; 22.5.11 there is no n for natural in lilypond, rather just the note
          ;; name e.g. c not cn 
          (note (if (eq (accidental p) 'n)

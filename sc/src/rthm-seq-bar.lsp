@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 14:51:14 Wed Apr 25 2012 BST
+;;; $$ Last modified: 16:27:16 Thu Apr 26 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -704,6 +704,11 @@ data: ((2 4) Q E S S)
 ;;; SYNOPSIS
 (defmethod consolidate-notes ((rsb rthm-seq-bar) &optional check-dur beat)
 ;;; ****
+  ;; MDE Thu Apr 26 16:26:05 2012 -- tie-over-rests will pass its auto-beam arg
+  ;; as our beat arg--this may be a rthm symbol or simply T.  the latter is no
+  ;; good to us when used below.
+  (when (eq beat t)
+    (setf beat nil))
   (unless (is-rest-bar rsb)
     ;; 11/4/07 only do this if we've got some tied notes in the bar
     ;; (unless (< (num-notes-tied-from rsb) 2)
@@ -736,7 +741,7 @@ data: ((2 4) Q E S S)
     ;; now try and get dots that go over two beats e.g. q. e in 2/4
     (ties-to-dots rsb check-dur (scale 
                                  (if beat
-                                     (make-rhythm beat) 
+                                     (make-rhythm beat)
                                      (get-beat-as-rhythm rsb))
                                  2))
     (fix-brackets rsb)
@@ -3130,6 +3135,7 @@ data: (2 4)
 (defmethod auto-accidentals ((rsb rthm-seq-bar) 
                              &optional last-attack-previous-bar 
                                        written (cautionary-distance 3))
+  ;; (print 'auto)
   (let* (;(cautionary-distance 3)
          (porc nil)
          (scale (ml nil 140))) ;; enough for 20 octaves!

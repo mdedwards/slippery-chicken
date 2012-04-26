@@ -361,21 +361,122 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Apr 26 17:20:57 BST 2012: Added robodoc entry
+
 ;;; ****f* rthm-seq-map/make-rthm-seq-map
 ;;; FUNCTION
-;;; 
+;;; Make a rthm-seq-map object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - The ID of the rthm-seq-map object to be made.
+;;; - A list of nested lists, generally taking the form 
+;;;   '((section1 ((player1 (rthm-seq ids))
+;;;                (player2 (rthm-seq ids))
+;;;                (etc... (etc...))))
+;;;     (section2 ((player1 (rthm-seq ids))
+;;;                (player2 (rthm-seq ids))
+;;;                (etc...)))
+;;;     (etc...))
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :palette. A palette object or NIL. If a palette object is specified or
+;;;   defined here, it will be automatically bound to the given rthm-seq-map
+;;;   object. Default = NIL.
+
+;;; - :warn-not-found. T or NIL to indicate whether a warning is printed when
+;;;   an index which doesn't exist is used for lookup.  
+;;;   T = warn. Default = NIL.
+
+;;; - :replacements. A list of lists in the format 
+;;;   '(((1 2 vla) 3 20b) ((2 3 vln) 4 16a)) that indicate changes to
+;;;   individual elements of lists within the given rthm-seq-map object. (Often
+;;;   rthm-seq-map data is generated algorithmically but individual elements of
+;;;   the lists need to be changed.)  Each such list indicates a change, the
+;;;   first element of the list being the reference into the rthm-seq-map (the
+;;;   vla player of section 1, subsection 2 in the first example here), the
+;;;   second element is the nth of the data list for this key to change, and
+;;;   the third is the new data. Default = NIL.
+
+;;; - :recurse-simple-data. T or NIL to indicate whether to recursively
+;;;   instantiate a recursive-assoc-list in place of data that appears to be a
+;;;   simple assoc-list (i.e. a 2-element list). If NIL, the data of 2-element
+;;;   lists whose second element is a number or a symbol will be ignored,
+;;;   therefore remaining as a list. For example, this data would normally
+;;;   result in a recursive call: (y ((2 23) (7 28) (18 2))).  
+;;;   T = recurse. Default = T.
+
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A rthm-seq-map object.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Straightforward usage
+(make-rthm-seq-map 'rsm-test
+		    '((1 ((vn (1 2 3 4))
+			  (va (2 3 4 1))
+			  (vc (3 4 1 2))))
+		      (2 ((vn (4 5 6))
+			  (va (5 6 4))
+			  (vc (6 4 5))))
+		      (3 ((vn (7 8 9 1 2))
+			  (va (8 9 1 2 7))
+			  (vc (9 1 2 7 8))))))
+
+=>
+
+RTHM-SEQ-MAP: num-players: 3 
+              players: (VA VC VN)
+SC-MAP: palette id: NIL
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 9
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found NIL
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: RSM-TEST, tag: NIL, 
+data: (
+[...]
+
+;;; An example using the :replacements argument and binding directly to a
+;;; specified rthm-seq-palette object.
+(make-rthm-seq-map 'rsm-test
+		   '((1 ((vn (1 2 3 4))
+			 (va (2 3 4 1))
+			 (vc (3 4 1 2))))
+		     (2 ((vn (4 5 6))
+			 (va (5 6 4))
+			 (vc (6 4 5))))
+		     (3 ((vn (7 8 9 1 2))
+			 (va (8 9 1 2 7))
+			 (vc (9 1 2 7 8)))))
+		   :palette (make-rsp 
+			     'rs-pal
+			     '((rs1 ((((2 4) q e s s))))
+			       (rs2 ((((2 4) e s s q))))
+			       (rs3 ((((2 4) s s q e))))))
+		   :replacements '(((1 vn) 2 7)
+				   ((2 va) 1 1)
+				   ((3 vc) 1 0)))
+
+=>
+RTHM-SEQ-MAP: num-players: 3 
+              players: (VA VC VN)
+SC-MAP: palette id: RS-PAL
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 9
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found NIL
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: RSM-TEST, tag: NIL, 
+data: (
+[...]
 
 |#
 ;;; SYNOPSIS
@@ -591,8 +692,6 @@
 
 ;;; ****f* rthm-seq-map/rsm-count-notes
 ;;; FUNCTION
-;;; rsm-count-notes:
-;;;
 ;;; Returns the number of notes in the rthm-seq-map for the given player and
 ;;; palette. 
 ;;; 

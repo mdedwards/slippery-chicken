@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 16:39:42 Thu Apr 26 2012 BST
+;;; $$ Last modified: 16:52:40 Thu Apr 26 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -3848,7 +3848,15 @@ NIL
 (defmethod sc-delete-beams ((sc slippery-chicken) bar-num player
                             &optional start-note end-note)
 ;;; ****
-  (let ((bar (get-bar (piece sc) bar-num player)))
+  (let* ((bar (get-bar (piece sc) bar-num player))
+         (start (get-nth-non-rest-rhythm (1- start-note) bar))
+         (end (get-nth-non-rest-rhythm (1- end-note) bar)))
+    ;; MDE Thu Apr 26 16:47:22 2012 
+    (unless (and start end (= 1 (beam start)) (zerop (beam end)))
+      (warn "slippery-chicken-edit::sc-delete-beams: ~
+             Beams don't start and end on the ~%indicated notes (~a to ~a, ~
+             bar ~a). Proceeding anyway but you may see errors ~%in output."
+            start-note end-note bar-num))
     (if (and start-note end-note)
         ;; MDE Wed Apr 25 15:24:43 2012 -- we were just deleting the beam on
         ;; start-note and end-note but let's instead delete all those inbetween

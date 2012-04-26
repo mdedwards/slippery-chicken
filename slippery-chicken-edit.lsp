@@ -281,8 +281,10 @@
 ;;;   the argument is set to NIL, the rhythm and pitch data is passed as two
 ;;;   separate lists to make-events2 where + can be used to indicate ties.
 ;;; - :consolidate-rests. T or NIL to indicate whether shorter rests should
-;;;   automatically be consolidated into a single longer rest. 
-;;;   T = consolidate. Default = T.
+;;;   automatically be consolidated into a single longer rest.  
+;;;   T = consolidate. Default = T. 
+;;;   NB: slippery chicken will always consolidate full bars of rest into
+;;;   measure-rests, regardless of the value of this argument.
 ;;; - :beat. NIL or an integer (rhythm symbol) that indicates which beat basis
 ;;;   will be used when consolidating rests. If NIL, the beat of the time
 ;;;   signature will be used (e.g. quarter in 4/4). Default = NIL.
@@ -315,12 +317,19 @@
 				:pitch-seq-palette ((1 2 3 4 3 2 4 1)))))
         :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))))
 			(2 ((vn (2 2 2 2 2 2))))))))
-  (replace-multi-bar-events mini 'vn 2 3 '((cs5 h) ((ds5 fs5) h) (nil h)))
+  (replace-multi-bar-events mini 'vn 2 3 
+			    '((cs5 h) ((ds5 fs5) h) (nil h)))
   (replace-multi-bar-events mini 'vn '(2 2 2) '3 
 			    '((h h h) (cs5 (ds5 fs5) nil))
-			    :interleaved nil))
+			    :interleaved nil)
+  (replace-multi-bar-events mini 'vn 1 1
+			    '((nil e) (nil e) (nil e) (cs4 e))
+			    :consolidate-rests t)
+  (replace-multi-bar-events mini 'vn 8 1
+  			    '((nil q) (b3 e) (cs4 s) (ds4 s))
+  			    :auto-beam t))
 
-=> 3
+=> 4
 
 |#
 ;;; SYNOPSIS
@@ -2060,6 +2069,7 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
+
 ;;; The method adds the mark to the specified note, not event. Add the mark to
 ;;; note 2, print the MARKS-BEFORE slots of events 2 (which is a rest) and 3.
 (let ((mini
@@ -2093,19 +2103,37 @@ NIL
 
 ;;; ****m* slippery-chicken-edit/sc-delete-marks
 ;;; FUNCTION
-;;; 
+;;; Delete all marks from the MARKS slot of a given note event object and
+;;; set the slot to NIL.
+;;;
+;;; NB: This method counts notes, not rests, and is 1-based.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar in which the marks are to be
+;;;   deleted. 
+;;; - An integer that is the number of the note from which the marks are to be
+;;;   deleted.
+;;; - The ID of the player from whose part the marks are to be deleted.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((cs4 ds4 fs4))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q (e) s s))
+                                :pitch-seq-palette ((1 2 3))
+                                :marks (a 2 s 2 fff 2 pizz 2))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1))))))))
+  (sc-delete-marks mini 2 2 'vn))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -2135,6 +2163,7 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
+
 (let ((mini
        (make-slippery-chicken
         '+mini+
@@ -2184,6 +2213,7 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
+
 (let ((mini
        (make-slippery-chicken
         '+mini+
@@ -2210,22 +2240,53 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Apr 26 12:58:49 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/tie
 ;;; FUNCTION
-;;; 
+
+;;; Add a tie to a specified event object. The new tie will be placed starting
+;;; from the specified event object and spanning to the next event object. If
+;;; the next event object does not have the same pitch, its pitch will be
+;;; changed to that of the first event object.
+;;;
+;;; An optional argument allows the user to adjust the steepness of the tie's
+;;; curvature. 
+;;;
+;;; NB: If the next event object is a rest and not a note, an error will be
+;;;     produced.
 ;;; 
 ;;; ARGUMENTS
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar in which the tie is to be
+;;;   placed. 
+;;; - An integer that is the number of the note to which the tie is to be
+;;;   attached. 
+;;; - The ID of the player whose part is to be changed.
 ;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; OPTIONAL ARGUMENTS 
+;;; - A positive or negative decimal number to indicate the steepness of the
+;;;   tie's curvature.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q s s (s) s))
+                                :pitch-seq-palette ((1 1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1))))))))
+  (tie mini 2 1 'vn)
+  (tie mini 3 2 'vn)
+  (tie mini 4 2 'vn -.5))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -2366,6 +2427,7 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Apr 26 13:57:32 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/tie-over-rest-bars
 ;;; FUNCTION
@@ -2404,25 +2466,58 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-;;; NB end-bar is not when the ties stop, but rather when we last find an event
-;;; to tie from (so the ties may go beyond end-bar)
+;;; SAR Thu Apr 26 13:18:26 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/tie-over-all-rests
 ;;; FUNCTION
-;;; 
+;;; Extend the durations of all notes that immediately precede rests in the
+;;; specified region by changing the rests to notes and tying the previous notes
+;;; to them.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
+;;; - A slippery-chicken object.
+;;; - The ID of the player whose part is to be changed.
+;;; - An integer that is the number of the first bar in which notes are to be
+;;;   tied over rests.
+;;; - An integer that is the number of the last bar in which notes are to be
+;;;   tied over rests. NB: This argument does not necessarily indicate the bar
+;;;   in which the ties will stop, but rather the last bar in which a tie will
+;;;   be begun; the ties created may extend into the next bar.
+;;;
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :start-note. An integer that is the number of the first attacked note
+;;;   (not counting rests) in the given start-bar for which ties can be placed.
+;;; - :end-note. An integer that is the number of the last attacked note (not
+;;;   counting rests) in the given end-bar for which ties can be placed. 
+;;;   NB: This argument does not necessarily indicate the note on which the
+;;;   ties will stop, but rather the last not on which a tie can begin; the
+;;;   ties created may extend to the next note.
+;;; - :auto-beam. T or NIL to indicate whether the method should automatically
+;;;   place beams for the notes of the affected measure after the ties over
+;;;   rests have been created. T = automatically beam. Default = NIL.
+;;; - :consolidate-notes. T or NIL to indicate whether the tied note are to be
+;;;   consolidated into single rhythmic units of longer durations after the
+;;;   ties over rests have been created. T = consolidate notes. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4))))
+        :set-map '((1 (1 1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) (q) e (s) s))
+                                :pitch-seq-palette ((1 2)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
+  (tie-over-all-rests mini 'vn 2 3 :start-note 2 :auto-beam t)
+  (tie-over-all-rests mini 'vn 5 6 :end-note 1 :consolidate-notes t))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -2437,49 +2532,52 @@ NIL
   (next-event sc player nil start-bar)
   (let ((refs '()))
     (loop 
-        for bnum from start-bar to end-bar 
-        for bar = (get-bar sc bnum player)
-                  ;; always one ahead
-        with next-event = (progn 
-                            (next-event sc player)
-                            (next-event sc player))
-        with note-num
-        with event-num
-        do
-          (setf note-num (if (= bnum start-bar)
-                             (1- start-note)
-                           0))
-          (setf note-num 0
-                event-num 0)
-          (loop 
-              while (< event-num (num-rhythms bar))
-              for event = (get-nth-event event-num bar)
-              do
-                ;; (format t "~&~a ~a" bnum note-num)
-                (unless (is-rest event)
-                  (incf note-num))
-                (when (and (not (is-rest event))
-                           (is-rest next-event)
-                           (or (> bnum start-bar)
-                               (>= note-num start-note))
-                           (or (< bnum end-bar)
-                               (<= note-num end-note)))
-                  (push (list bnum note-num) refs))
-                (incf event-num)
-                (setf next-event (next-event sc player))))
+       for bnum from start-bar to end-bar 
+       for bar = (get-bar sc bnum player)
+       ;; always one ahead
+       with next-event = (progn 
+			   (next-event sc player)
+			   (next-event sc player))
+       with note-num
+       with event-num
+       do
+	 (setf note-num (if (= bnum start-bar)
+			    (1- start-note)
+			    0))
+	 (setf note-num 0
+	       event-num 0)
+	 (loop 
+	    while (< event-num (num-rhythms bar))
+	    for event = (get-nth-event event-num bar)
+	    do
+	    ;; (format t "~&~a ~a" bnum note-num)
+	      (unless (is-rest event)
+		(incf note-num))
+	      (when (and (not (is-rest event))
+			 (is-rest next-event)
+			 (or (> bnum start-bar)
+			     (>= note-num start-note))
+			 (or (< bnum end-bar)
+			     (<= note-num end-note)))
+		(push (list bnum note-num) refs))
+	      (incf event-num)
+	      (setf next-event (next-event sc player))))
     ;; always do this starting with the highest bar num otherwise we the refs
     ;; get screwed up as we add notes
     ;; (print refs)
     (loop for ref in refs do
-          (tie-over-rests sc (first ref) (second ref) player 
-                          :auto-beam auto-beam
-                          :consolidate-notes consolidate-notes))))
+	 (tie-over-rests sc (first ref) (second ref) player 
+			 :auto-beam auto-beam
+			 :consolidate-notes consolidate-notes))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Apr 26 14:28:32 BST 2012: Added robodoc entry
 
 ;;; note-num is 1-based and counts tied-to notes as well
+
 ;;; 24.3.11: added end-bar
+
 ;;; ****m* slippery-chicken-edit/tie-over-rests
 ;;; FUNCTION
 ;;; 

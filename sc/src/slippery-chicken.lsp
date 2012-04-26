@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:40:46 Thu Apr 26 2012 BST
+;;; $$ Last modified: 17:13:59 Thu Apr 26 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1495,7 +1495,7 @@ T
                                   start-bar end-bar player
                                   &key (to-next-attack t)
                                   (tie-next-attack nil)
-                                  ;; what to tie to on end-bar only
+                                  ;; what rhythm to tie to (on end-bar only)
                                   (last-rhythm nil)
                                   (auto-beam nil))
   (let* ((active-bars (loop
@@ -1504,7 +1504,6 @@ T
                          unless (is-rest-bar bar)
                          collect bnum))
          (last (first (last active-bars))))
-    ;; (print active-bars)
     (loop for bnum in active-bars do
          (tie-over-rest-bars-aux sc bnum player 
                                  :end-bar end-bar
@@ -1588,7 +1587,7 @@ T
         (loop 
            for bnum from (1+ bar-num) 
            for bar = (get-bar (piece sc) bnum player)
-           while (<= (bar-num bar) end-bar)
+           while (and bar (<= (bar-num bar) end-bar))
            do
            (setf last-bar bar)
            (if (is-rest-bar bar)
@@ -1634,7 +1633,7 @@ T
         (loop 
            for bnum from bar-num
            for bar = (get-bar (piece sc) bnum player)
-           while (<= (bar-num bar) end-bar)
+           while (and bar (<= (bar-num bar) end-bar))
            do
            (consolidate-notes bar nil auto-beam)
            ;; MDE Wed Apr 25 16:33:29 2012 -- when clause added!

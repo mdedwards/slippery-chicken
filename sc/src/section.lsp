@@ -117,6 +117,7 @@
 |#
 ;;; SYNOPSIS
 (defmethod get-sequenz ((s section) player seq-num) ; 1-based
+;;; ****
   (let ((player-section (get-data player s))) ; issues warning if none
     (when player-section 
         (get-nth (1- seq-num) player-section)))) ; issues warning if none

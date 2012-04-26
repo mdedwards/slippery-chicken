@@ -2273,6 +2273,7 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
+
 (let ((mini
        (make-slippery-chicken
         '+mini+
@@ -2297,23 +2298,55 @@ NIL
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Apr 26 14:44:56 BST 2012: Added robodoc entry
 
 ;;; event numbers are 1-based 
 ;;; ****m* slippery-chicken-edit/trill
 ;;; FUNCTION
-;;; 
+;;; Attach a trill mark to a specified event object by adding 'BEG-TRILL-A to
+;;; the MARKS-BEFORE slot and TRILL-NOTE with the pitch to the MARKS slot. This
+;;; method requires a specified trill pitch.
+;;;
+;;; By default trills are set to span from the specified note to the next note,
+;;; though the length of the span can be specified using the optional
+;;; arguments.
+;;;
+;;; NB: This is a LilyPond-only method and will not affect CMN output.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - The player to whose part the trill is to be added.
+;;; - An integer that is the number of the bar in which the trill is to start. 
+;;; - An integer that is the number of the event object in that bar on which
+;;;   the trill is to be placed.
+;;; - A note-name symbol that is the pitch of the trill note.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An integer that is the number of the event object on which the trill span
+;;;   is to stop.
+;;; - An integer that is the number of the bar in which the trill span is to
+;;;   stop. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q. s s))
+                                :pitch-seq-palette ((1 3 2)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1))))))))
+  (trill mini 'vn 2 1 'e4)
+  (trill mini 'vn 3 1 'e4 3)
+  (trill mini 'vn 4 1 'e4 3 5))
+
+=> T
+
 
 |#
 ;;; SYNOPSIS
@@ -4443,23 +4476,54 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
   (cautionary-accidental-aux sc bar-num note-num player t written))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing methdo
+;;;  A post-generation editing method
+
+;;; SAR Thu Apr 26 15:05:24 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/unset-cautionary-accidental
 ;;; FUNCTION
-;;; 
+
+;;; Remove the parentheses from a cautionary accidental (leaving the accidental
+;;; itself) by setting the ACCIDENTAL-IN-PARENTHESES slot of the contained
+;;; pitch object to NIL.
+;;;
+;;; NB: Since respell-notes is called by default within cmn-display and
+;;;     write-lp-data-for-all, that option must be explicitly set to NIL for
+;;;     this method to be effective.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar in which the cautionary
+;;;   accidental is to be unset.
+;;; - An integer that is the number of the note in that bar for which the
+;;;   cautionary accidental is to be unset.
+;;; - The ID of the player whose part is to be changed.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether to unset the cautionary accidental for the
+;;;   written part only (for transposing instruments). 
+;;;   T = written only. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (vn (violin :midi-channel 2))))
+        :set-palette '((1 ((cs4 ds4 fs4))))
+        :set-map '((1 (1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 2 1 2 3 2)))))
+        :rthm-seq-map '((1 ((cl (1 1))
+			    (vn (1 1))))))))
+  (respell-notes mini)
+  (unset-cautionary-accidental mini 2 5 'vn)
+  (unset-cautionary-accidental mini 2 7 'cl t)
+  (cmn-display mini :respell-notes nil))
 
 |#
 ;;; SYNOPSIS

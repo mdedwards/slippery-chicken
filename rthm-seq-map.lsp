@@ -133,21 +133,44 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rthm-seq-map/get-map-refs
-;;; FUNCTION
-;;; get-map-refs:
+;;; DATE
+;;; 29-Dec-2010
 ;;;
+;;; FUNCTION
 ;;; Return the list of rthm-seq-palette references for the given player and
 ;;; section.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the rthm-seq-map object
-;;; - the section (list or symbol)
-;;; - the player (symbol)
+;;; - A rthm-seq-map object.
+;;; - The ID of the section in which the references are sought.
+;;; - The ID of the player for whom the references are sought.
 ;;; 
 ;;; RETURN VALUE  
-;;; a list of references, each of which could itself be a list
+;;; A list of references (each of which might also  be a list).
 ;;; 
-;;; DATE 29.12.10
+;;; EXAMPLE
+#|
+(let ((rsmt (make-rthm-seq-map 
+	     'rsm-test-5
+	     '((sec1 ((vn (rs1 rs3 rs2))
+		      (va (rs2 rs3 rs1))
+		      (vc (rs3 rs1 rs2))))
+	       (sec2 ((vn (rs1 rs2 rs1))
+		      (va (rs2 rs1 rs3))
+		      (vc (rs1 rs3 rs3))))
+	       (sec3 ((vn (rs1 rs1 rs3))
+		      (va (rs1 rs3 rs2))
+		      (vc (rs3 rs2 rs3)))))
+	     :palette (make-rsp 
+		       'rs-pal
+		       '((rs1 ((((2 4) q e s s))))
+			 (rs2 ((((2 4) e s s q))))
+			 (rs3 ((((2 4) s s q e)))))))))
+  (get-map-refs rsmt 'sec3 'vc))
+
+=> (RS3 RS2 RS3)
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-map-refs ((rsm rthm-seq-map) section player)
@@ -156,28 +179,50 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Apr 27 13:39:58 BST 2012: Added robodoc entry
+
 ;;; ****m* rthm-seq-map/set-map-refs
-;;; FUNCTION
-;;; set-map-refs:
+;;; DATE
+;;; 30-Dec-2010
 ;;;
-;;; Change the rthm-seq references in the rthm-seq-map.
+;;; FUNCTION
+;;; Change the reference IDs of the specified rthm-seq objects in the given
+;;; rthm-seq-map object.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the rthm-seq-map object
-;;; - the section reference (symbol or list)
-;;; - the player reference (symbol)
-;;; - the list of new reference ids
+;;; - A rthm-seq-map object.
+;;; - The ID of the section in which references are to be set.
+;;; - The ID of the player for whom the references are to be set.
+;;; - A list of the new rthm-seq IDs (references) 
 ;;; 
 ;;; RETURN VALUE  
-;;; - the named object whose id is the player and data is the new list of
-;;; references. 
+;;; Returns the modified named object whose ID is the specified player.
 ;;; 
 ;;; EXAMPLE
-;;; (set-map-refs +coming-rthm-chain-main+ 1 'perc2 '(1 2 3 4)) -->
-;;; NAMED-OBJECT: id: PERC2, tag: NIL, 
-;;; data: (1 2 3 4)
-;;; 
-;;; DATE 30.12.10
+#|
+(let ((rsmt (make-rthm-seq-map 
+	     'rsm-test-5
+	     '((sec1 ((vn (rs1 rs3 rs2))
+		      (va (rs2 rs3 rs1))
+		      (vc (rs3 rs1 rs2))))
+	       (sec2 ((vn (rs1 rs2 rs1))
+		      (va (rs2 rs1 rs3))
+		      (vc (rs1 rs3 rs3))))
+	       (sec3 ((vn (rs1 rs1 rs3))
+		      (va (rs1 rs3 rs2))
+		      (vc (rs3 rs2 rs3)))))
+	     :palette (make-rsp 
+		       'rs-pal
+		       '((rs1 ((((2 4) q e s s))))
+			 (rs2 ((((2 4) e s s q))))
+			 (rs3 ((((2 4) s s q e)))))))))
+  (set-map-refs rsmt 'sec2 'vc '(rs2 rs3 rs2)))
+
+=> 
+NAMED-OBJECT: id: VC, tag: NIL, 
+data: (RS2 RS3 RS2)
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod set-map-refs ((rsm rthm-seq-map) section player new-refs)
@@ -187,15 +232,23 @@
             rsm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* rthm-seq-map/add-repeats
-;;; FUNCTION
-;;; add-repeats:
-;;;
+
+;;; SAR Fri Apr 27 13:49:01 BST 2012: Conformed robodoc entry
+
+;;; MDE original comments
 ;;; Using recurring-event data, generate repeating sequences at given cycle
 ;;; points.  Modifies num-beats.
+
+;;; ****m* rthm-seq-map/add-repeats
+;;; DATE 30-Dec-2010
+;;; 
+;;; FUNCTION
+;;; Generate repeating sequences at given cycle points using recurring-event
+;;; data. This process modifies the number of beats.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the rthm-seq-map instance
+;;; - A rthm-seq-map object.
+
 ;;; - the cycle data (i.e. recurring-event class's data slot--see
 ;;;   rthm-chain.lsp)  
 ;;; - the number of repeats made (or references into :repeats list), also in
@@ -219,8 +272,6 @@
 ;;;                                        ;; when to repeat   how many repeats
 ;;; (add-repeats +coming-rthm-chain-main+ '((3 2) (4 3)) '((3 3) (4 1)))
 ;;;  --> 146
-;;; 
-;;; DATE 30.12.10
 ;;; 
 ;;; SYNOPSIS
 (defmethod add-repeats ((rsm rthm-seq-map) repeat-every repeats &key
@@ -300,6 +351,7 @@
 ;;; ral we can query to find rthm-seq refs of all rthm-seqs that share the same
 ;;; bar/time-sig structure, e.g. all those that have a 2/4 bar followed by a
 ;;; 3/4 bar.
+
 ;;; ****m* rthm-seq-map/get-time-sig-ral
 ;;; FUNCTION
 ;;; 
@@ -643,36 +695,81 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Apr 27 14:11:10 BST 2012: Added robodoc entry
+
+;;; MDE original comment (some taken directly into robodoc)
 ;;; In an rsm, each instrument receives references into the rhythm-seq-palette.
-;;; Each instrument in a section must have the same number of references as
-;;; every other instrument: check this here.
 
 ;;; ****f* rthm-seq-map/check-num-sequences
 ;;; FUNCTION
-;;; 
+;;; Check to ensure that each player in each section of the given rthm-seq-map
+;;; object has the same number of references as every other instrument. If not,
+;;; drop into the debugger with an error.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A rthm-seq-map object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if all players have the same number of references in each
+;;; section, otherwise drops into the debugger with an error.
+;;;
+;;; NB: This function is called automatically every time make-rthm-seq-map is
+;;;     called. 
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Passes the test:
+(let ((rsmt (make-rthm-seq-map 
+	     'rsm-test
+	     '((sec1 ((vn (rs1a rs3a rs2a))
+		      (va (rs1b rs3b rs2b))
+		      (vc (rs1a rs3b rs2a))))
+	       (sec2 ((vn (rs1a rs2a rs1a))
+		      (va (rs1a rs2a rs1b))
+		      (vc (rs1a rs2b rs1a))))
+	       (sec3 ((vn (rs1a rs1a rs3a))
+		      (va (rs1a rs1a rs3b))
+		      (vc (rs1a rs1b rs3a))))
+	       (sec4 ((vn (rs1a rs1a rs1a))
+		      (va (rs1a rs1a rs1b))
+		      (vc (rs1a rs1b rs1a))))))))
+  (check-num-sequences rsmt))
+
+=> T
+
+;;; Doesn't pass the test; drops into debugger with an error.
+(let ((rsmt (make-rthm-seq-map 
+	     'rsm-test
+	     '((sec1 ((vn (rs1a rs3a rs2a))
+		      (va (rs1b rs3b))
+		      (vc (rs1a rs3b rs2a))))
+	       (sec2 ((vn (rs1a))
+		      (va (rs1a rs2a rs1b))
+		      (vc (rs1a rs2b rs1a))))
+	       (sec3 ((vn (rs1a rs3a))
+		      (va (rs1a))
+		      (vc (rs1a rs1b rs3a))))
+	       (sec4 ((vn (rs1a))
+		      (va (rs1a rs1a rs1b))
+		      (vc (rs1a rs1a))))))))
+  (check-num-sequences rsmt))
+
+=>
+rthm-seq-map::check-num-sequences: In rthm-seq-map RSM-TEST-5, instrument VA: 
+Each instrument must have the same number of sequences for any given section: 
+(RS1B RS3B)
+   [Condition of type SIMPLE-ERROR]
 
 |#
 ;;; SYNOPSIS
 (defun check-num-sequences (rsm)
 ;;; ****
   (loop for i below (sclist-length rsm) do
-        (let* ((section (get-next rsm))
-               (players-or-subsections (data (data section))))
-          (if (is-ral (data (first players-or-subsections)))
-              (check-num-sequences (data section))
-            (loop for num-sequences = 
+       (let* ((section (get-next rsm))
+	      (players-or-subsections (data (data section))))
+	 (if (is-ral (data (first players-or-subsections)))
+	     (check-num-sequences (data section))
+	     (loop for num-sequences = 
                   (length (data (first players-or-subsections)))
                 for no in (rest players-or-subsections) do
                   (unless (= num-sequences (length (data no)))

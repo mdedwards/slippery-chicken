@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 17:16:06 Thu Apr 26 2012 BST
+;;; $$ Last modified: 17:12:47 Fri Apr 27 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -3938,8 +3938,19 @@ NIL
                             &optional start-note end-note)
 ;;; ****
   (let* ((bar (get-bar (piece sc) bar-num player))
-         (start (get-nth-non-rest-rhythm (1- start-note) bar))
-         (end (get-nth-non-rest-rhythm (1- end-note) bar)))
+         ;; MDE Fri Apr 27 17:11:28 2012 -- check arguments
+         (start (cond ((integerp start-note)
+                       (get-nth-non-rest-rhythm (1- start-note) bar))
+                      ((not start-note)
+                       (get-nth-non-rest-rhythm 0 bar))
+                      (t (error "slippery-chicken-edit::sc-delete-beams: ~
+                               illegal argument to start-note: ~a"
+                                start-note))))
+         (end (cond ((integerp end-note)
+                     (get-nth-non-rest-rhythm (1- end-note) bar))
+                    ((not end-note) (get-last-event bar))
+                    (t (error "slippery-chicken-edit::sc-delete-beams: ~
+                               illegal argument to end-note: ~a" end-note)))))
     ;; MDE Thu Apr 26 16:47:22 2012 
     (unless (and start end (= 1 (beam start)) (zerop (beam end)))
       (warn "slippery-chicken-edit::sc-delete-beams: ~

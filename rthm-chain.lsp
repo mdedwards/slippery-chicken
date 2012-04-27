@@ -30,25 +30,25 @@
 ;;;                   2x every 8 beats (16)
 ;;; 
 ;;;                   e, q, and q. rests are used by default, in a sequence
-;;;                   determined by a recurring-event instance
+;;;                   determined by a recurring-event instance.
 ;;; 
 ;;;                   In order to make music that 'progresses' we have curves
 ;;;                   with y values from 1-10 indicating how much activity
 ;;;                   there should be: 1 would mean only 1 in 10 beats would
 ;;;                   have notes in/on them, 10 would indicate that all do.  We
-;;;                   use the patterns given in acivity-levels::init-instance
+;;;                   use the patterns given in activity-levels::init-instance
 ;;;                   below, where 1 means 'play', 0 means 'rest'.  There are
 ;;;                   three examples of each level so that if we stick on one
 ;;;                   level of activity for some time we won't always get the
 ;;;                   same pattern: these will instead be cycled through.
 ;;; 
 ;;;                   A slower moving (bass) line is also added that is made up
-;;;                   of 2 or 3 beat groups--if the activity curve indicates a
+;;;                   of 2 or 3 beat groups---if the activity curve indicates a
 ;;;                   rest, then the whole 2-3 beat group is omitted.
 ;;; 
 ;;;                   There are also 'sticking points' where a rhythm will be
-;;;                   repeated a certain number of times (either s,e,e. or q by
-;;;                   default).  Sticking happens after rests.  This can be
+;;;                   repeated a certain number of times (either s,e,e., or q
+;;;                   by default).  Sticking happens after rests.  This can be
 ;;;                   controlled with an activity envelope too, also indicating
 ;;;                   one of the 10 patterns above (but also including 0).  A 0
 ;;;                   or 1 unit here would refer to a certain number of repeats
@@ -445,9 +445,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Apr 27 17:40:57 BST 2012: Conforming robodoc entry
+
 ;;; ****m* rthm-chain/rthm-chain-gen
 ;;; FUNCTION
-;;; rthm-chain-gen:
 ;;;
 ;;; The basic algorithm for 2 parts is: we're given an arbitrary number of
 ;;; 1-beat rthms (e.g. s s (e)) and 2-3 beat slower-moving counterpoints.  We
@@ -456,15 +457,15 @@
 ;;; the 'sticking points': these come after the rests and the activity curves
 ;;; applied to these count inserted rests not seqs or beats.
 ;;; 
-;;; NB rests are put into the rthm-seq mid-sequence so sticking points won't
-;;; come straight after the rests, rather, at the end of the seq.
+;;; NB: Rests are put into the rthm-seq mid-sequence so sticking points won't
+;;;     come straight after the rests, rather, at the end of the seq.
 ;;; 
 ;;; The activity curves that turn notes into rests will be queried every beat
 ;;; so if we change an activity level we don't wait until the end of the
 ;;; previous level's ten beats.
 ;;; 
-;;; NB This method is not generally called by the user (though it can be of
-;;; course), rather it's called by the init function.
+;;; NB: This method is not generally called by the user (though it can be of
+;;;     course), rather it's called by the init function.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - the rthm-chain object
@@ -779,9 +780,9 @@
             (num-rthm-seqs rc) rs-count))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; ****m* rthm-chain/add-voice
 ;;; FUNCTION
-;;; add-voice:
 ;;; 
 ;;; The main rthm-chain algorithm generates only two voices.  Rather than
 ;;; generate further voices in the same fashion, use the already created
@@ -998,8 +999,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 26/1/10
+
 ;;; start with just 3 items/events and successively add new ones until a max of
 ;;; <items>--this can be a list or integer (must be a min of 4)
+
 ;;; ****f* rthm-chain/procession
 ;;; FUNCTION
 ;;; 
@@ -1065,31 +1068,31 @@
          do
          ;; once we've got the first least-used item we need to avoid getting
          ;; it again next time so keep track of this in <ignore>
-         (setf ignore '()
-               ;; now get the three least used items
-               3least
-               ;; as we'll be using each item more than once (see <orders>)
-               ;; don't auto-inc, rather inc each time we use it (below).
-               (loop for least = (hash-least-used hash :end max :ignore ignore
-                                                  :auto-inc nil)
-                  repeat 3
-                  collect least
-                  do
-                  ;; don't use again
-                  (push least ignore))
-               ;; we have to sort from highest to lowest so that the use of
-               ;; <orders> makes sense even when we've gone beyond the first 3
-               3least (sort 3least #'<))
+	   (setf ignore '()
+		 ;; now get the three least used items
+		 3least
+		 ;; as we'll be using each item more than once (see <orders>)
+		 ;; don't auto-inc, rather inc each time we use it (below).
+		 (loop for least = (hash-least-used hash :end max :ignore ignore
+						    :auto-inc nil)
+		    repeat 3
+		    collect least
+		    do
+		    ;; don't use again
+		      (push least ignore))
+		 ;; we have to sort from highest to lowest so that the use of
+		 ;; <orders> makes sense even when we've gone beyond the first 3
+		 3least (sort 3least #'<))
          ;; now map the 3 least used items onto our current <order>
-         (loop for i in order 
-            for itemi = (nth (1- i) 3least)
+	   (loop for i in order 
+	      for itemi = (nth (1- i) 3least)
               ;; 20/4/10: have to do this test here too
-            while (< count num-results)
-            do
-            ;; store our current item, then increment its usage as well as count
-              (push itemi result)
-              (incf (gethash itemi hash))
-              (incf count)))
+	      while (< count num-results)
+	      do
+	      ;; store our current item, then increment its usage as well as count
+		(push itemi result)
+		(incf (gethash itemi hash))
+		(incf count)))
       ;; we want to return a 1-based list (not 0) if <items> was simply a number
       (unless (listp items)
         (setf items (loop for i from 1 to num-items collect i)))
@@ -1117,6 +1120,7 @@
 ;;; if <auto-inc> we will automatically increment the count of the returned
 ;;; key.
 ;;; <start> and <end> are inclusive.
+
 ;;; ****f* rthm-chain/hash-least-used
 ;;; FUNCTION
 ;;; 

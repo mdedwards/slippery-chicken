@@ -2395,11 +2395,11 @@ NIL
 ;;;   has the same pitch as the starting note of the tie. T = also tie next
 ;;;   attacked note if same pitch. Default = NIL.
 
-;;; - :last-rhythm. Default = NIL>
-
 ;;; - :auto-beam. T or NIL to indicate whether the new events should be
 ;;;   automatically beamed after placement. T = automatically beam. 
 ;;;   Default = NIL.
+
+;;; - :last-rhythm. Default = NIL.
 
 ;;; 
 ;;; RETURN VALUE
@@ -2411,23 +2411,24 @@ NIL
        (make-slippery-chicken
         '+mini+
         :ensemble '(((vn (violin :midi-channel 1))
-                     (va (viola :midi-channel 2))
-                     (vc (cello :midi-channel 3))))
+		     (va (viola :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 f4 g4 a4 c5 d5 f5))))
         :set-map '((1 (1 1)))
         :rthm-seq-palette '((1 ((((4 4) e (e) e e (e) (e) e e) 
-                                 ((w)) 
-                                 ((h.) q) 
-                                 ((w))
-                                 ((w)) 
-                                 ((q) h.))
-                                :pitch-seq-palette ((1 2 3 4 5 6 7)))))
+				 ((w)) 
+				 ((h.) q) 
+				 ((w))
+				 ((w)) 
+				 ((e) e h.))
+				:pitch-seq-palette ((1 2 3 4 5 6 7 7)))))
         :rthm-seq-map '((1 ((vn (1 1))
-                            (va (1 1))
-                            (vc (1 1))))))))
+			    (va (1 1))
+			    (vc (1 1))))))))
   (tie-all-last-notes-over-rests mini 2 6 'vn)
-  (tie-all-last-notes-over-rests mini 3 5 'va :to-next-attack nil)
-  (tie-all-last-notes-over-rests mini 3 6 'vc :tie-next-attack t))
+  (tie-all-last-notes-over-rests mini 9 12 'vn :auto-beam t)
+  (tie-all-last-notes-over-rests mini 3 5 '(va vc) :to-next-attack nil)
+  (tie-all-last-notes-over-rests mini 9 12 'vc :tie-next-attack t))
 
 => NIL
 
@@ -2463,23 +2464,74 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Thu Apr 26 13:57:32 BST 2012: Added robodoc entry
+;;; SAR Fri Apr 27 11:46:14 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/tie-over-rest-bars
 ;;; FUNCTION
-;;; 
+;;; Extend the duration of the last note in a specified bar by changing
+;;; immediately subsequent full-rest bars to notes of the same pitch and tying
+;;; them to that note.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar in which the last note is to be
+;;;   tied. 
+;;; - An ID or list of IDs of the players whose parts are to be modified.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+
+;;; - :end-bar. An integer or NIL. If an integer, this is the number of the
+;;;   last bar of full-rests that is to be changed to a note. This can be
+;;;   helpful for tying into passages of multiple bars of full-rest.
+
+;;; - :tie-next-attack. T or NIL to indicate whether the new tied notes created 
+;;;   should also be further extended over the next attacked note if that note
+;;;   has the same pitch as the starting note of the tie. T = also tie next
+;;;   attacked note if same pitch. Default = NIL.
+
+;;; - :to-next-attack. T or NIL to indicate whether ties are to extend over
+;;;   only full bars of rest or also over partial bars (until the next attacked
+;;;   note). T = until the next attacked note. Default = T.
+
+;;; - :auto-beam. T or NIL to indicate whether the method should automatically
+;;;   place beams for the notes of the affected measure after the ties over
+;;;   rests have been created. T = automatically beam. Default = NIL.
+
+;;; - :last-rhythm. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+		     (va (viola :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((c4 d4 e4))))
+        :set-map '((1 (1 1)))
+        :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)
+				 ((h))
+				 ((s) e. e e)
+				 ((h))
+				 ((h))
+				 ((e) q s (s)))
+                                :pitch-seq-palette ((1 2 2 1 3 3 1)))))
+        :rthm-seq-map '((1 ((vn (1 1))
+			    (va (1 1))
+			    (vc (1 1))))))))
+  (tie-over-rest-bars mini 1 'vn :end-bar 2)
+  (tie-over-rest-bars mini 3 'va :end-bar 5)
+  (tie-over-rest-bars mini 3 '(vn vc) :end-bar 6 :tie-next-attack t)
+  (tie-over-rest-bars mini 7 'vc 
+  		      :end-bar 9
+  		      :to-next-attack t
+  		      :auto-beam t))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -2608,27 +2660,61 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Thu Apr 26 14:28:32 BST 2012: Added robodoc entry
+;;; SAR Fri Apr 27 11:23:11 BST 2012: Added robodoc entry
 
-;;; note-num is 1-based and counts tied-to notes as well
-
-;;; 24.3.11: added end-bar
+;;; MDE: 24.3.11: added end-bar
 
 ;;; ****m* slippery-chicken-edit/tie-over-rests
 ;;; FUNCTION
-;;; 
+;;; Extend the duration of a specified note that precedes a rest by changing
+;;; the rest to a note with the same pitch and adding a tie between them.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar in which the note is located. 
+;;; - An integer that is the number of the note within that bar which is to be
+;;;   extended. This number is 1-based and also counts already tied notes.
+;;; - The ID of the player whose part is to be modified.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments
+;;; - :end-bar. An integer that is the number of the last bar into which the
+;;;   tie is to extend. This can be helpful if the user wants to tie into only
+;;;   the first of several consecutive full-rest bars.
+
+;;; - :auto-beam. T or NIL to indicate whether the method should automatically
+;;;   beam the beats of the modified bars after the ties have been added.
+;;;   T = automatically beam. Default = NIL.
+
+;;; - :consolidate-notes. T or NIL to indicate whether the method should
+;;;   consolidate tied notes into single rhythm units of longer duration.
+;;;   T = consolidate. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)
+				 ((h))
+				 ((s) e. (e) e)
+				 ((h))
+				 ((h))
+				 ((e) q s (s)))
+                                :pitch-seq-palette ((1 2 2 3 3 1)))))
+        :rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (tie-over-rests mini 1 2 'vn)
+  (tie-over-rests mini 7 1 'vn)
+  (tie-over-rests mini 9 2 'vn :end-bar 10)
+  (tie-over-rests mini 13 1 'vn :auto-beam t :consolidate-notes nil))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -3825,7 +3911,7 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  A post-generation editing method
 
-;;; SAR Wed Apr 25 14:06:58 BST 2012: Added robodoc entry
+;;; SAR Fri Apr 27 13:17:14 BST 2012: Added robodoc entry
 
 ;;; start/end-note are 1-based but count ties.  if no optional args, deletes
 ;;; all beams in the bar.
@@ -4456,28 +4542,68 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  A post-generation editing method
 
-;;; SAR Wed Apr 25 17:52:13 BST 2012: Added robodoc entry
+;;; SAR Fri Apr 27 12:41:30 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/set-cautionary-accidental
 ;;; DATE
 ;;; 28-Sep-2011
 ;;;
 ;;; FUNCTION
-;;; add accidental in (). 
-;;; 
+;;; Place a cautionary accidental (sharp/flat/natural sign in parentheses)
+;;; before a specified note. 
+;;;
+;;; NB: Adding cautionary accidentals to pitches within chords is currently
+;;;     only possible in LilyPond output. Adding cautionary accidentals to
+;;;     single pitches is possible in both CMN and LilyPond.
+;;;
+;;; NB: Since the cmn-display and write-lp-data-for-all methods call
+;;;     respell-notes by default, that option must be explicitly set to NIL
+;;;     within the calls to those methods in order for this method to be
+;;;     effective. 
+;;;
 ;;; ARGUMENTS
-
-;;;  note-num (counting ties, and from 1) can be an integer or list e.g. '(1
-;;; 2). If the latter it would be the first chord, second note up.
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar in which to add the cautionary
+;;;   accidental. 
+;;; - An integer or a 2-item list of integers that is the number of the note
+;;;   within that bar to which to add the cautionary accidental. This number is
+;;;   1-based and counts ties. If a 2-item list such, this indicates that the
+;;;   pitch is within a chord; e.g., '(1 2) indicates that a cautionary
+;;;   accidental should be added to the 2nd pitch up from the bottom of the
+;;;   chord located at the 1st note position in the bar.
+;;; - The ID of the player to whose part the cautionary accidental is to be
+;;;   added. 
+;;;
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether to add the cautionary accidental to only the
+;;;   written pitch or only the sounding pitch. T = written only.
+;;;   Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (pn (piano :midi-channel 2))))
+        :set-palette '((1 ((ds3 e3 fs3 af3 bf3 c4 ef4 fs4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 (3) 4))
+				:marks (fff 1 ppp 3))))
+        :rthm-seq-map '((1 ((cl (1 1 1))
+			    (pn (1 1 1))))))))
+  (respell-notes mini)
+  (set-cautionary-accidental mini 3 2 'cl t)
+  (set-cautionary-accidental mini 2 1 'pn)
+  (set-cautionary-accidental mini 2 2 'pn)
+  (set-cautionary-accidental mini 3 '(3 3) 'pn)
+  (write-lp-data-for-all mini :respell-notes nil))
+
+=> T
 
 |#
 ;;; SYNOPSIS

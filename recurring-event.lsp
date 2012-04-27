@@ -13,38 +13,50 @@
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
 ;;; Purpose:          class used in rthm-chain
-;;; This class allows for the periodic/cyclic return of given data.  It is
-;;; intended for situations where you want to do/collect something every
-;;; several events, but the cycle period changes.  E.g. (the data slot is)
-;;; something like '((2 3) (3 2) (5 3) (8 2)) which means every two events
-;;; three times, then every 3 events twice, every 5 events thrice etc.
+;;;                   This class allows for the periodic/cyclic return of given
+;;;                   data.  It is intended for situations where you want to
+;;;                   do/collect something every several events, but the cycle
+;;;                   period changes.  E.g. (the data slot is) something like
+;;;                   '((2 3) (3 2) (5 3) (8 2)) which means every two events
+;;;                   three times, then every 3 events twice, every 5 events
+;;;                   thrice etc.
 ;;;
-;;; If you want to return specific data on these cycle points, provide it in
-;;; the the return-data slot, with the indices into this data in the
-;;; return-data-cycle slot.
+;;;                   If you want to return specific data on these cycle
+;;;                   points, provide it in the the return-data slot, with the
+;;;                   indices into this data in the return-data-cycle slot.
 ;;;
-;;; simple example, without return-data
-;;; (let* ((re (make-re '((2 3) (3 2) (5 3) (8 2)) 
-;;;                    :return-data nil :return-data-cycle nil)))
-;;;   (loop repeat 100 collect (on-it re)))
-;;; -> (NIL NIL T NIL T NIL T NIL NIL T NIL NIL T NIL NIL NIL NIL T NIL NIL NIL
-;;; NIL T NIL NIL NIL NIL T NIL NIL NIL NIL NIL NIL NIL T NIL NIL NIL NIL NIL
-;;; NIL NIL T NIL T NIL T NIL T NIL NIL T NIL NIL T NIL NIL NIL NIL T NIL NIL
-;;; NIL NIL T NIL NIL NIL NIL T NIL NIL NIL NIL NIL NIL NIL T NIL NIL NIL NIL
-;;; NIL NIL NIL T NIL T NIL T NIL T NIL NIL T NIL NIL T NIL)
+;;;                   simple example, without return-data
+;;;                   (let* ((re (make-re '((2 3) (3 2) (5 3) (8 2))
+;;;					  :return-data nil 
+;;;					  :return-data-cycle nil)))
+;;;			(loop repeat 100 collect (on-it re)))
+;;;
+;;;                   => (NIL NIL T NIL T NIL T NIL NIL T NIL NIL T NIL NIL NIL
+;;;			  NIL T NIL NIL NIL NIL T NIL NIL NIL NIL T NIL NIL NIL
+;;;			  NIL NIL NIL NIL T NIL NIL NIL NIL NIL NIL NIL T NIL T
+;;;			  NIL T NIL T NIL NIL T NIL NIL T NIL NIL NIL NIL T NIL
+;;;			  NIL NIL NIL T NIL NIL NIL NIL T NIL NIL NIL NIL NIL
+;;;			  NIL NIL T NIL NIL NIL NIL NIL NIL NIL T NIL T NIL T
+;;;			  NIL T NIL NIL T NIL NIL T NIL)
 ;;; 
-;;; (let* ((re (make-re '((2 3) (3 2) (5 3) (8 2)) 
-;;;                     ;; the data about to be collected
-;;;                     :return-data '(a b c d)
-;;;                     ;; the indices into the data; this means we'll return A
-;;;                     ;; (nth 0) thrice, D (nth 3) twice, C once, and b 5x
-;;;                     :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
-;;;   (loop repeat 100 collect (get-it re))))
-;;; -> (NIL NIL A NIL A NIL A NIL NIL D NIL NIL D NIL NIL NIL NIL C NIL NIL NIL
-;;; NIL B NIL NIL NIL NIL B NIL NIL NIL NIL NIL NIL NIL B NIL NIL NIL NIL NIL
-;;; NIL NIL B NIL B NIL A NIL A NIL NIL A NIL NIL D NIL NIL NIL NIL D NIL NIL
-;;; NIL NIL C NIL NIL NIL NIL B NIL NIL NIL NIL NIL NIL NIL B NIL NIL NIL NIL
-;;; NIL NIL NIL B NIL B NIL B NIL A NIL NIL A NIL NIL A NIL)
+;;;                   (let* ((re (make-re '((2 3) (3 2) (5 3) (8 2)) 
+;;;					  ;; the data about to be collected 
+;;;					  :return-data '(a b c d)
+;;;					  ;; the indices into the data; this
+;;;					  ;; means we'll return A (nth 0)
+;;;					  ;; thrice, D (nth 3) twice, C once,
+;;;					  ;; and B 5x
+;;;					  :return-data-cycle 
+;;;					  '((0 3) (3 2) (2 1) (1 5))))) 
+;;;			(loop repeat 100 collect (get-it re)))
+;;;
+;;;                   => (NIL NIL A NIL A NIL A NIL NIL D NIL NIL D NIL NIL NIL
+;;;                       NIL C NIL NIL NIL NIL B NIL NIL NIL NIL B NIL NIL NIL
+;;;                       NIL NIL NIL NIL B NIL NIL NIL NIL NIL NIL NIL B NIL B
+;;;                       NIL A NIL A NIL NIL A NIL NIL D NIL NIL NIL NIL D NIL
+;;;                       NIL NIL NIL C NIL NIL NIL NIL B NIL NIL NIL NIL NIL
+;;;                       NIL NIL B NIL NIL NIL NIL NIL NIL NIL B NIL B NIL B
+;;;                       NIL A NIL NIL A NIL NIL A NIL)
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
@@ -189,39 +201,45 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Apr 27 17:09:56 BST 2012: Conformed robodoc entry
+
 ;;; ****m* recurring-event/get-it
 ;;; FUNCTION
-;;; get-it:
-;;;
-;;; Call this repeatedly in a loop when the return-data and return-data-cycle
-;;; slots of have been set: the return-data-cycle element will be used as
-;;; lookup into return-data.  If no return-data, then the element itself will
-;;; be returned.
+;;; Get the next element from the return-data. This method is most effective
+;;; when called repeatedly (e.g. within a loop) when the return-data and
+;;; return-data-cycle slots have been set. In those cases the return-data-cycle
+;;; element will be used as lookup into return-data. If no return-data has been
+;;; specified, then the element itself will be returned.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the recurring-event object
+;;; - A recurring-event object.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Data from the return-data slot (or the return-data-cycle element) when
-;;; we're on a boundary, otherwise nil 
+;;; we're on a boundary, otherwise NIL. 
 ;;;
 ;;; EXAMPLE
-;;; (let* ((re (make-re '((2 3) (3 2) (5 3) (8 2)) 
-;;;                     :return-data '(a b c d)
-;;;                     :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
-;;;   (loop repeat 50 collect (get-it re)))
-;;; -->
-;;; (NIL NIL A NIL A NIL A NIL NIL D NIL NIL D NIL NIL NIL NIL C NIL NIL NIL
-;;;  NIL B NIL NIL NIL NIL B NIL NIL NIL NIL NIL NIL NIL B NIL NIL NIL NIL NIL
-;;;  NIL NIL B NIL B NIL A NIL A)
-;;; 
-;;; (let* ((re (make-re '((2 3) (3 2) (5 3) (8 2)) 
-;;;                     :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
-;;;   (loop repeat 50 collect (get-it re)))
-;;; -->
-;;; (NIL NIL 0 NIL 0 NIL 0 NIL NIL 3 NIL NIL 3 NIL NIL NIL NIL 2 NIL NIL NIL
-;;;  NIL 1 NIL NIL NIL NIL 1 NIL NIL NIL NIL NIL NIL NIL 1 NIL NIL NIL NIL NIL
-;;;  NIL NIL 1 NIL 1 NIL 0 NIL 0)
+#|
+;;; Used together with return-data
+(let ((re (make-re '((2 3) (3 2) (5 3) (8 2)) 
+		   :return-data '(a b c d)
+		   :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
+  (loop repeat 50 collect (get-it re)))
+
+=> (NIL NIL A NIL A NIL A NIL NIL D NIL NIL D NIL NIL NIL NIL C NIL NIL NIL NIL
+    B NIL NIL NIL NIL B NIL NIL NIL NIL NIL NIL NIL B NIL NIL NIL NIL NIL NIL
+    NIL B NIL B NIL A NIL A)
+
+;;; Used without return-data
+(let ((re (make-re '((2 3) (3 2) (5 3) (8 2)) 
+		   :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
+  (loop repeat 50 collect (get-it re)))
+
+=> (NIL NIL 0 NIL 0 NIL 0 NIL NIL 3 NIL NIL 3 NIL NIL NIL NIL 2 NIL NIL NIL NIL
+    1 NIL NIL NIL NIL 1 NIL NIL NIL NIL NIL NIL NIL 1 NIL NIL NIL NIL NIL NIL
+    NIL 1 NIL 1 NIL 0 NIL 0)
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-it ((re recurring-event))
@@ -240,18 +258,35 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Apr 27 17:22:20 BST 2012: Conformed robodoc entry
+
 ;;; ****m* recurring-event/on-it
 ;;; FUNCTION
-;;; on-it:
-;;; 
-;;; Call this repeatedly in a loop to find out whether we're on a period
-;;; boundary (t) or not (nil).  Object keeps track of its own internal state.
+;;; Test to determine whether the method is currently at a period boundary. The
+;;; object keeps track of its own internal state and position counter. This
+;;; method is most effective when called repeatedly in a loop.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the recurring-event object
+;;; - A recurring-event object.
 ;;; 
 ;;; RETURN VALUE  
-;;; t or nil
+;;; T or NIL.
+;;;
+;;; EXAMPLE
+#|
+;;; Straightforward usage
+(let ((re (make-re '((2 3) (3 2) (5 3) (8 2)) 
+		   :return-data '(a b c d)
+		   :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
+  (loop repeat 50 collect (on-it re)))
+
+=> (NIL NIL T NIL T NIL T NIL NIL T NIL NIL T NIL NIL NIL NIL T NIL NIL NIL NIL
+    T NIL NIL NIL NIL T NIL NIL NIL NIL NIL NIL NIL T NIL NIL NIL NIL NIL NIL
+    NIL T NIL T NIL T NIL T)
+
+
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod on-it ((re recurring-event))
@@ -265,6 +300,7 @@
             (setf (pcount re) 0))
         t)
       nil))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
@@ -273,19 +309,70 @@
 
 ;;; ****f* recurring-event/make-re
 ;;; FUNCTION
-;;; 
+;;; Make an instance of a recurring-event object, which allows for the
+;;; periodic/cyclic return of given data. The recurring-event object is
+;;; intended for situations in which the user would like to perform an action
+;;; or collect data every several events, but with a varying cycle period.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list of two-item lists that indicate the period pattern by which the
+;;;   action or data collection is to be performed. For example, a value such
+;;;   as '((2 3) (3 2) (5 3) (8 2)) will result in the action being performed
+;;;   every 2 events three times, then every 3 events twice, every 5 events
+;;;   thrice etc.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :return-data. If the recurring-event object is to be used to collect
+;;;   data, that data can be specified in this slot, with the indices into this
+;;;   data in the return-data-cycle slot. The return-data and return-data-cycle
+;;;   slots must be used together.
+;;; - :return-data-cycle. If data is specified using :return-data, the indices
+;;;   into that data must be specified here. For example, the value 
+;;;   '((0 3) (3 2) (2 1) (1 5)) will the data item at (nth 0) thrice, that at
+;;;   (nth 3) twice, that at (nth 2) once, and that at (nth 1) five times.
+;;; - :id. An optional ID can also be specified for the recurring-event object
+;;;   created. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A recurring-event object.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Simple usage with no specified data
+(make-re '((2 3) (3 2) (5 3) (8 2)))
+=> 
+RECURRING-EVENT: current-period: 2, current-repeats: 3
+                 pcount: -1, rcount: 0
+                 return-data: NIL, return-data-cycle: NIL
+CIRCULAR-SCLIST: current 1
+SCLIST: sclist-length: 4, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: ((2 3) (3 2) (5 3) (8 2))
+
+;;; Usage with specified :return-data and :return-data-cycle
+(make-re '((2 3) (3 2) (5 3) (8 2))
+	 :return-data '(a b c d)
+	 :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))
+
+=>
+RECURRING-EVENT: current-period: 2, current-repeats: 3
+                 pcount: -1, rcount: 0
+                 return-data: (A B C D), return-data-cycle: 
+CYCLE-REPEATS: folded: ((0 3) (3 2) (2 1) (1 5))
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 11, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (0 0 0 3 3 2 1 1 1 1 1)
+**************
+
+CIRCULAR-SCLIST: current 1
+SCLIST: sclist-length: 4, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: ((2 3) (3 2) (5 3) (8 2))
 
 |#
 ;;; SYNOPSIS

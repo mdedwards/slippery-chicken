@@ -787,27 +787,54 @@ Each instrument must have the same number of sequences for any given section:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Apr 27 16:10:06 BST 2012: Conformed robodoc entry
+
 ;;; ****f* rthm-seq-map/rsm-count-notes
 ;;; FUNCTION
-;;; Returns the number of notes in the rthm-seq-map for the given player and
-;;; palette. 
+;;; Returns the number of notes in the given rthm-seq-map object for the
+;;; specified player and rthm-seq-palette.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the rthm-seq-map object
-;;; - the player (symbol)
-;;; - the palette the references in the map refer to
-;;; - (optional just-attacks default t): whether to count just the number of
-;;; notes that need new events or the number of notes in the score. NB a chord
-;;; counts as one note only.
+;;; - A rthm-seq-map object.
+;;; - The ID of the player whose notes are to be counted.
+;;; - The rthm-seq-palette object whose rthm-seq object IDs are referred to by
+;;;   the given rthm-seq-map object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether to count just the number of notes that need
+;;;   new events (i.e., not counting tied notes; also not counting chords,
+;;;   since chords need only one event) or the total number of notes in that
+;;;   player's part in the score. T = count just attacked notes. Default = T. 
 ;;; 
 ;;; RETURN VALUE  
-;;; the number of notes (integer)
+;;; Returns an integer that is the number of notes counted.
 ;;; 
 ;;; EXAMPLE
-;;; (rsm-count-notes +altogether-rthm-chain-intro+ 
-;;;                  'pno-rh 
-;;;                  (palette +altogether-rthm-chain-intro+))
-;;; -> 1087
+#|
+(let ((rsmt (make-rthm-seq-map 
+	     'rsm-test
+	     '((sec1 ((vn (rs1 rs3 rs2))
+		      (va (rs2 rs3 rs1))
+		      (vc (rs3 rs1 rs2))))
+	       (sec2 ((vn (rs1 rs2 rs1))
+		      (va (rs2 rs1 rs3))
+		      (vc (rs1 rs3 rs3))))
+	       (sec3 ((vn (rs1 rs1 rs3))
+		      (va (rs1 rs3 rs2))
+		      (vc (rs3 rs2 rs3)))))))
+      (rspt (make-rsp 
+	     'rs-pal
+	     '((rs1 ((((2 4) q (e) s s))))
+	       (rs2 ((((2 4) e +s (s) q))))
+	       (rs3 ((((2 4) (s) s +q e))))))))
+  (print (rsm-count-notes rsmt 'vn rspt))
+  (print (rsm-count-notes rsmt 'va rspt nil)))
+
+=> 
+23 
+27
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defun rsm-count-notes (rthm-seq-map player palette &optional (just-attacks t))
@@ -822,13 +849,13 @@ Each instrument must have the same number of sequences for any given section:
                (loop for ref in (get-data-data player (data section))
                   for rs = (get-data ref palette)
                   do
-                  (unless rs
-                    (error "rthm-seq-map::num-notes: no rthm-seq with ~
+		    (unless rs
+		      (error "rthm-seq-map::num-notes: no rthm-seq with ~
                             reference ~a for ~a in palette ~a" 
-                           ref player (id palette)))
-                  (incf num (if just-attacks
-                                (num-notes rs)
-                                (num-score-notes rs)))))))
+			     ref player (id palette)))
+		    (incf num (if just-attacks
+				  (num-notes rs)
+				  (num-score-notes rs)))))))
     num))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

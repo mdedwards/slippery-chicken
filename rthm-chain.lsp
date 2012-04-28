@@ -68,7 +68,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 14:59:49 Wed Mar 28 2012 BST
+;;; $$ Last modified: 16:13:10 Sat Apr 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -243,7 +243,7 @@
         (loop for group in (1-beat-rthms rc) do
              (unless (= (length group) (num-1-beat-rthms rc))
                (error "rthm-chain::init: Each group in 1-beat-rthms must ~
-                       have the same number of beats (here ~a): ~a"
+                       have the same number of beats ~%(here ~a): ~a"
                       (length group) group))
              collect
              (loop for beat in group collect
@@ -280,7 +280,111 @@
              :max-beats (second (split-data rc))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#|
+;;; MDE Sat Apr 28 13:14:08 2012 -- as we can call add-voice this limit of 2
+;;; players is no longer valid
+;;; MDE Sat Apr 28 12:47:20 2012
+(defmethod verify-and-store :after ((rc rthm-chain))
+  ;; allow no players so we can clone
+  (when (players rc)
+    (unless (= 2 (length (players rc)))
+      (error "rthm-chain::verify-and-store: there can only be two players: ~a"
+             (players rc)))))
+|#
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Apr 28 11:49:47 2012 
+(defmethod clone ((rc rthm-chain))
+  (clone-with-new-class rc 'rthm-chain))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Apr 28 11:49:50 2012 
+
+(defmethod clone-with-new-class :around ((rc rthm-chain) new-class)
+  (declare (ignore new-class))
+  (let ((rsm (call-next-method)))
+    (when (rthm-chain-p rsm)
+      (setf (slot-value rsm '1-beat-rthms) (my-copy-list (1-beat-rthms rc))
+            (slot-value rsm '1-beat-fibonacci) (1-beat-fibonacci rc)
+            (slot-value rsm 'slow-fibonacci) (slow-fibonacci rc)
+            (slot-value rsm 'num-1-beat-rthms) (num-1-beat-rthms rc)
+            (slot-value rsm 'num-1-beat-groups) (num-1-beat-groups rc)
+            (slot-value rsm 'sticking-curve) (copy-list (sticking-curve rc))
+            (slot-value rsm 'harmonic-rthm-curve)
+            (copy-list (harmonic-rthm-curve rc))
+            (slot-value rsm 'harmonic-rthm-curve) (harmonic-rthm-curve rc)
+            (slot-value rsm 'beat) (beat rc)
+            (slot-value rsm 'do-sticking) (do-sticking rc)
+            (slot-value rsm 'do-rests) (do-rests rc)
+            (slot-value rsm 'do-sticking-curve)
+            (copy-list (do-sticking-curve rc))
+            (slot-value rsm 'do-rests-curve) (copy-list (do-rests-curve rc))
+            (slot-value rsm 'sticking-al) (clone (sticking-al rc))
+            (slot-value rsm 'sticking-rthms) (clone (sticking-rthms rc))
+            (slot-value rsm 'sticking-repeats) (clone (sticking-repeats rc))
+            (slot-value rsm 'activity-curve) (copy-list (activity-curve rc))
+            (slot-value rsm 'main-al) (clone (main-al rc))
+            (slot-value rsm 'slower-al) (clone (slower-al rc))
+            (slot-value rsm 'slower-rthms) (my-copy-list (slower-rthms rc))
+            (slot-value rsm 'num-slower-bars) (num-slower-bars rc)
+            (slot-value rsm 'rcs) (clone (rcs rc))
+            (slot-value rsm 'rests) (my-copy-list (rests rc))
+            (slot-value rsm 'rest-re) (clone (rest-re rc))
+            (slot-value rsm 'rest-cycle) (copy-list (rest-cycle rc))
+            (slot-value rsm 'num-rthm-seqs) (num-rthm-seqs rc)
+            (slot-value rsm 'section-id) (section-id rc)
+            (slot-value rsm 'split-data) (copy-list (split-data rc))
+            (slot-value rsm 'num-beats) (num-beats rc))
+      (verify-and-store rsm))
+    rsm))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; MDE Sat Apr 28 11:22:19 2012
+(defmethod print-object :before ((rc rthm-chain) stream)
+  (format stream "~&RTHM-CHAIN: 1-beat-rthms: ~a~
+                  ~%            slower-rthms: ~a~
+                  ~%            1-beat-fibonacci: ~a~
+                  ~%            num-beats: ~a~
+                  ~%            slow-fibonacci: ~a~
+                  ~%            num-1-beat-rthms: ~a~
+                  ~%            num-1-beat-groups: ~a~
+                  ~%            sticking-curve: ~a~
+                  ~%            harmonic-rthm-curve: ~a~
+                  ~%            beat: ~a~
+                  ~%            do-sticking: ~a~
+                  ~%            do-rests: ~a~
+                  ~%            do-sticking-curve: ~a~
+                  ~%            do-rests-curve: ~a~
+                  ~%            sticking-al: (not printed for brevity's sake)~
+                  ~%            sticking-rthms: ~a~
+                  ~%            sticking-repeats: ~a~
+                  ~%            activity-curve: ~a~
+                  ~%            main-al: (not printed for brevity's sake)~
+                  ~%            slower-al: (not printed for brevity's sake)~
+                  ~%            num-slower-bars: ~a~
+                  ~%            rcs: (not printed for brevity's sake)~
+                  ~%            rests: ~a~
+                  ~%            rest-re: (not printed for brevity's sake)~
+                  ~%            rest-cycle: ~a~
+                  ~%            num-rthm-seqs: ~a~
+                  ~%            section-id: ~a~
+                  ~%            split-data: ~a"
+          (loop for l in (1-beat-rthms rc) collect
+               (loop for sl in l collect
+                    (rhythms-as-symbols sl)))
+          (slower-rthms rc) (1-beat-fibonacci rc) (num-beats rc)
+          (slow-fibonacci rc) (num-1-beat-rthms rc) (num-1-beat-groups rc)
+          (sticking-curve rc) (harmonic-rthm-curve rc) (beat rc) 
+          (do-sticking rc) (do-rests rc) (do-sticking-curve rc)
+          (do-rests-curve rc) 
+          (loop for r in (data (sticking-rthms rc)) collect (data r))
+          (data (sticking-repeats rc)) (activity-curve rc) 
+          (num-slower-bars rc) (rhythms-as-symbols (rests rc))
+          (rest-cycle rc) (num-rthm-seqs rc) (section-id rc) 
+          (split-data rc)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  29.1.11: split the longer bars into smaller ones where possible.  we
 ;;; know that the slower and faster rthm-seqs are stuffed into the palette
 ;;; one after the other so it's safe to loop through them pairwise (but check
@@ -412,8 +516,11 @@
 ;;; ****
   (declare (ignore where))
   (stick-rthms nil nil) ;; reset count
+  (print 'reset1)
   (reset (sticking-al rc))
+  (print 'reset2)
   (reset (main-al rc))
+  (print 'reset3)
   (reset (slower-al rc))
   ;; the slower-rthms object
   (when (rcs rc)
@@ -858,6 +965,65 @@
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Apr 28 10:05:43 2012 
+
+;;; ****f* rthm-chain/make-rthm-chain
+;;; FUNCTION
+;;; 
+;;; NB slower-rthms must be expressed in single beat units e.g. in 2/4 we can't
+;;; have h, it must be q+q (consolidate-notes can be called afterwards if
+;;; necessary).  
+;;; 
+;;; ARGUMENTS
+;;; keyword arguments:
+;;; - players default '(player1 player2)
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defun make-rthm-chain (id num-beats 1-beat-rthms slower-rthms &key
+                        (beat 4)
+                        (1-beat-fibonacci nil)
+                        (slow-fibonacci nil)
+                        (players '(player1 player2))
+                        (section-id 1)
+                        (rests '(e q q. w))
+                        (do-rests t)
+                        (do-rests-curve nil)
+                        (rest-re '((2 3) (3 2) (2 2) (5 1) (3 3) (8 1)))
+                        (rest-cycle '((0 3) (1 1) (0 2) (2 1) (1 1) (3 1)))
+                        (activity-curve '(0 10 100 10))
+                        (sticking-curve '(0 2 100 2))
+                        (harmonic-rthm-curve '(0 2 100 2))
+                        (do-sticking t)
+                        (do-sticking-curve nil)
+                        (sticking-repeats '(3 5 3 5 8 13 21))
+                        (sticking-rthms '(e e e. q e s))
+                        (split-data '(2 5)))
+;;; ****
+  (make-instance 'rthm-chain
+                 :id id :num-beats num-beats :1-beat-rthms 1-beat-rthms
+                 :slower-rthms slower-rthms :beat beat :1-beat-fibonacci
+                 1-beat-fibonacci :slow-fibonacci slow-fibonacci :players
+                 players :section-id section-id :rests rests :do-rests do-rests
+                 :do-rests-curve do-rests-curve :rest-re rest-re :rest-cycle
+                 rest-cycle :activity-curve activity-curve :sticking-curve
+                 sticking-curve :do-sticking-curve do-sticking-curve
+                 :harmonic-rthm-curve harmonic-rthm-curve :do-sticking
+                 do-sticking :do-sticking-curve do-sticking-curve
+                 :sticking-repeats sticking-repeats :sticking-rthms
+                 sticking-rthms :split-data split-data))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; this returns the 1-beat and the slower rhythms, both as rthm-seqs
 ;;; rthm is a rhythm object
@@ -1068,31 +1234,32 @@
          do
          ;; once we've got the first least-used item we need to avoid getting
          ;; it again next time so keep track of this in <ignore>
-	   (setf ignore '()
-		 ;; now get the three least used items
-		 3least
-		 ;; as we'll be using each item more than once (see <orders>)
-		 ;; don't auto-inc, rather inc each time we use it (below).
-		 (loop for least = (hash-least-used hash :end max :ignore ignore
-						    :auto-inc nil)
-		    repeat 3
-		    collect least
-		    do
-		    ;; don't use again
-		      (push least ignore))
-		 ;; we have to sort from highest to lowest so that the use of
-		 ;; <orders> makes sense even when we've gone beyond the first 3
-		 3least (sort 3least #'<))
+           (setf ignore '()
+                 ;; now get the three least used items
+                 3least
+                 ;; as we'll be using each item more than once (see <orders>)
+                 ;; don't auto-inc, rather inc each time we use it (below).
+                 (loop for least = (hash-least-used hash :end max :ignore ignore
+                                                    :auto-inc nil)
+                    repeat 3
+                    collect least
+                    do
+                    ;; don't use again
+                      (push least ignore))
+                 ;; we have to sort from highest to lowest so that the use of
+                 ;; <orders> makes sense even when we've gone beyond the first 3
+                 3least (sort 3least #'<))
          ;; now map the 3 least used items onto our current <order>
-	   (loop for i in order 
-	      for itemi = (nth (1- i) 3least)
+           (loop for i in order 
+              for itemi = (nth (1- i) 3least)
               ;; 20/4/10: have to do this test here too
-	      while (< count num-results)
-	      do
-	      ;; store our current item, then increment its usage as well as count
-		(push itemi result)
-		(incf (gethash itemi hash))
-		(incf count)))
+              while (< count num-results)
+              do
+              ;; store our current item, then increment its usage as well as
+              ;; count
+                (push itemi result)
+                (incf (gethash itemi hash))
+                (incf count)))
       ;; we want to return a 1-based list (not 0) if <items> was simply a number
       (unless (listp items)
         (setf items (loop for i from 1 to num-items collect i)))
@@ -1172,6 +1339,11 @@
 (defun rthm-chain-seq-name (player rs-count)
   (read-from-string
    (format nil "~a-~d" player rs-count)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun rthm-chain-p (thing)
+  (typep thing 'rthm-chain))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF rthm-chain.lsp

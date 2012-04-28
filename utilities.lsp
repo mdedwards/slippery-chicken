@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 16:38:32 Wed Apr 18 2012 BST
+;;; $$ Last modified: 13:08:22 Sat Apr 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2697,7 +2697,8 @@
 (defun load-from-examples-dir (file)
   (format t "~%~%*******  Loading ~a~%" file)
   (load 
-     (format nil "~aexamples/~a" cl-user::+slippery-chicken-home-dir+ file)))
+     (format nil "~a/doc/examples/~a"
+             cl-user::+slippery-chicken-home-dir+ file)))
 
 (defun load-from-test-suite-dir (file)
   (format t "~%~%*******  Loading ~a~%" file)

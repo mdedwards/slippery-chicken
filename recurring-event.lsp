@@ -27,28 +27,28 @@
 ;;;
 ;;;                   simple example, without return-data
 ;;;                   (let* ((re (make-re '((2 3) (3 2) (5 3) (8 2))
-;;;					  :return-data nil 
-;;;					  :return-data-cycle nil)))
-;;;			(loop repeat 100 collect (on-it re)))
+;;;                                       :return-data nil 
+;;;                                       :return-data-cycle nil)))
+;;;                     (loop repeat 100 collect (on-it re)))
 ;;;
 ;;;                   => (NIL NIL T NIL T NIL T NIL NIL T NIL NIL T NIL NIL NIL
-;;;			  NIL T NIL NIL NIL NIL T NIL NIL NIL NIL T NIL NIL NIL
-;;;			  NIL NIL NIL NIL T NIL NIL NIL NIL NIL NIL NIL T NIL T
-;;;			  NIL T NIL T NIL NIL T NIL NIL T NIL NIL NIL NIL T NIL
-;;;			  NIL NIL NIL T NIL NIL NIL NIL T NIL NIL NIL NIL NIL
-;;;			  NIL NIL T NIL NIL NIL NIL NIL NIL NIL T NIL T NIL T
-;;;			  NIL T NIL NIL T NIL NIL T NIL)
+;;;                       NIL T NIL NIL NIL NIL T NIL NIL NIL NIL T NIL NIL NIL
+;;;                       NIL NIL NIL NIL T NIL NIL NIL NIL NIL NIL NIL T NIL T
+;;;                       NIL T NIL T NIL NIL T NIL NIL T NIL NIL NIL NIL T NIL
+;;;                       NIL NIL NIL T NIL NIL NIL NIL T NIL NIL NIL NIL NIL
+;;;                       NIL NIL T NIL NIL NIL NIL NIL NIL NIL T NIL T NIL T
+;;;                       NIL T NIL NIL T NIL NIL T NIL)
 ;;; 
 ;;;                   (let* ((re (make-re '((2 3) (3 2) (5 3) (8 2)) 
-;;;					  ;; the data about to be collected 
-;;;					  :return-data '(a b c d)
-;;;					  ;; the indices into the data; this
-;;;					  ;; means we'll return A (nth 0)
-;;;					  ;; thrice, D (nth 3) twice, C once,
-;;;					  ;; and B 5x
-;;;					  :return-data-cycle 
-;;;					  '((0 3) (3 2) (2 1) (1 5))))) 
-;;;			(loop repeat 100 collect (get-it re)))
+;;;                                       ;; the data about to be collected 
+;;;                                       :return-data '(a b c d)
+;;;                                       ;; the indices into the data; this
+;;;                                       ;; means we'll return A (nth 0)
+;;;                                       ;; thrice, D (nth 3) twice, C once,
+;;;                                       ;; and B 5x
+;;;                                       :return-data-cycle 
+;;;                                       '((0 3) (3 2) (2 1) (1 5))))) 
+;;;                     (loop repeat 100 collect (get-it re)))
 ;;;
 ;;;                   => (NIL NIL A NIL A NIL A NIL NIL D NIL NIL D NIL NIL NIL
 ;;;                       NIL C NIL NIL NIL NIL B NIL NIL NIL NIL B NIL NIL NIL
@@ -62,7 +62,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 16:16:27 Wed Apr 18 2012 BST
+;;; $$ Last modified: 12:50:46 Sat Apr 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -123,6 +123,26 @@
 
 ;;; don't need this method (yet); will auto-use that of sclist
 ;;; (defmethod initialize-instance :after ((re recurring-event) &rest initargs)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Apr 28 11:49:47 2012 
+(defmethod clone ((re recurring-event))
+  (clone-with-new-class re 'recurring-event))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Apr 28 11:49:50 2012 
+
+(defmethod clone-with-new-class :around ((re recurring-event) new-class)
+  (declare (ignore new-class))
+  (let ((cscl (call-next-method)))
+    (setf (slot-value cscl 'current-period) (current-period re)
+          (slot-value cscl 'current-repeats) (current-repeats re)
+          (slot-value cscl 'pcount) (pcount re)
+          (slot-value cscl 'rcount) (rcount re)
+          (slot-value cscl 'return-data) (my-copy-list (return-data re))
+          (slot-value cscl 'return-data-length) (return-data-length re)
+          (slot-value cscl 'return-data-cycle) (clone (return-data-cycle re)))
+    cscl))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -222,8 +242,8 @@
 #|
 ;;; Used together with return-data
 (let ((re (make-re '((2 3) (3 2) (5 3) (8 2)) 
-		   :return-data '(a b c d)
-		   :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
+                   :return-data '(a b c d)
+                   :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
   (loop repeat 50 collect (get-it re)))
 
 => (NIL NIL A NIL A NIL A NIL NIL D NIL NIL D NIL NIL NIL NIL C NIL NIL NIL NIL
@@ -232,7 +252,7 @@
 
 ;;; Used without return-data
 (let ((re (make-re '((2 3) (3 2) (5 3) (8 2)) 
-		   :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
+                   :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
   (loop repeat 50 collect (get-it re)))
 
 => (NIL NIL 0 NIL 0 NIL 0 NIL NIL 3 NIL NIL 3 NIL NIL NIL NIL 2 NIL NIL NIL NIL
@@ -276,8 +296,8 @@
 #|
 ;;; Straightforward usage
 (let ((re (make-re '((2 3) (3 2) (5 3) (8 2)) 
-		   :return-data '(a b c d)
-		   :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
+                   :return-data '(a b c d)
+                   :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))))
   (loop repeat 50 collect (on-it re)))
 
 => (NIL NIL T NIL T NIL T NIL NIL T NIL NIL T NIL NIL NIL NIL T NIL NIL NIL NIL
@@ -353,8 +373,8 @@ data: ((2 3) (3 2) (5 3) (8 2))
 
 ;;; Usage with specified :return-data and :return-data-cycle
 (make-re '((2 3) (3 2) (5 3) (8 2))
-	 :return-data '(a b c d)
-	 :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))
+         :return-data '(a b c d)
+         :return-data-cycle '((0 3) (3 2) (2 1) (1 5)))
 
 =>
 RECURRING-EVENT: current-period: 2, current-repeats: 3

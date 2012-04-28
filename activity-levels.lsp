@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 07:52:25 Thu Dec 29 2011 ICT
+;;; $$ Last modified: 16:18:00 Sat Apr 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -57,6 +57,16 @@
 
 (defclass activity-levels (named-object)
   ())
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Apr 28 12:17:30 2012 -- clone-with-new-class method not necessary
+;;; as no new slots but the clone method is so that we get an al not a
+;;; named-object. 
+
+(defmethod clone ((al activity-levels))
+  (clone-with-new-class al 'activity-levels))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod initialize-instance :after ((al activity-levels) &rest initargs)
   (declare (ignore initargs))
@@ -111,7 +121,6 @@
 
 (defmethod print-object :before ((al activity-levels) stream)
   (format stream "~%ACTIVITY-LEVELS: "))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

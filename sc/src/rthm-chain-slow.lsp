@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 22:06:28 Fri Jan 13 2012 ICT
+;;; $$ Last modified: 12:40:49 Sat Apr 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -91,6 +91,30 @@
     (setf (data rcs) '(2 3 2 2 3 2 2 3 3 3))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Apr 28 11:49:47 2012 
+(defmethod clone ((rcs rthm-chain-slow))
+  (clone-with-new-class rcs 'rthm-chain-slow))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Apr 28 11:49:50 2012 
+
+(defmethod clone-with-new-class :around ((rcs rthm-chain-slow) new-class)
+  (declare (ignore new-class))
+  (let ((cscl (call-next-method)))
+    (setf (slot-value cscl '2beat) (2beat rcs)
+          (slot-value cscl '3beat) (3beat rcs)
+          (slot-value cscl '2beat-order) (2beat-order rcs)
+          (slot-value cscl '3beat-order) (3beat-order rcs)
+          (slot-value cscl 'transitions) (transitions rcs)
+          (slot-value cscl 'num-groups) (num-groups rcs)
+          (slot-value cscl 'current-beats) (current-beats rcs)
+          (slot-value cscl 'beat) (beat rcs))
+    ;; this won't have been called because 2beat slot was nil so call
+    ;; explicitly now (though it shouldn't really be necessary....)
+    (verify-and-store cscl)
+    cscl))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((rcs rthm-chain-slow) stream)
   (format stream "~%RTHM-CHAIN-SLOW: 2beat: (too long to print)~
@@ -120,31 +144,34 @@
         (3beat-bars (length (first (3beat rcs))))
         (2beat-bars (length (first (2beat rcs))))
         (bars-per-group (length (first (2beat rcs)))))
-    (unless (= num-groups (length (3beat rcs)))
-      (error "rthm-chain-slow::verify-and-store: 2beat (~a) and 3beat (~a) ~
-              slots must be the same length"
-             num-groups (length (3beat rcs))))
-    (unless (>= bars-per-group 4)
-      (error "rthm-chain-slow::verify-and-store: 2beat and 3beat slots need ~
-              at least 4 bars each: ~%~a ~%~a" (2beat rcs) (3beat rcs)))
-    (setf (num-groups rcs) num-groups)
-    (flet ((process-rthms (bars meter)
-             (let ((len (if (= meter 2) 2beat-bars 3beat-bars)))
-               (unless (= (length bars) len)
-                 (error "rthm-chain-slow::verify-and-store: the ~abeat groups ~
-                         must all have ~a bars" meter len))
-               (loop for bar in bars collect 
-                  ;; the t 3rd arg splits into beats so our slots are now
-                  ;; a list of lists of rhythms, one sublist per beat
-                    (make-rhythms bar (list meter (beat rcs)) t)))))
-      ;; unless we've already parsed...
-      (unless (and (listp (caaar (2beat rcs)))
-                   (rhythm-p (caaaar (2beat rcs))))
-        (setf (2beat rcs) (loop for group in (2beat rcs) collect
-                               (process-rthms group 2))
-              (3beat rcs) (loop for group in (3beat rcs) collect 
-                               (process-rthms group 3))))
-      t)))
+    ;; MDE Sat Apr 28 12:36:00 2012 -- so only verify if we have some data,
+    ;; otherwise clone fails 
+    (when (2beat rcs)
+      (unless (= num-groups (length (3beat rcs)))
+        (error "rthm-chain-slow::verify-and-store: 2beat (~a) and 3beat (~a) ~
+              slots must be the ~%same length"
+               num-groups (length (3beat rcs))))
+      (unless (>= bars-per-group 4)
+        (error "rthm-chain-slow::verify-and-store: 2beat and 3beat slots need ~
+              at least ~%4 bars each: ~%~a ~%~a" (2beat rcs) (3beat rcs)))
+      (setf (num-groups rcs) num-groups)
+      (flet ((process-rthms (bars meter)
+               (let ((len (if (= meter 2) 2beat-bars 3beat-bars)))
+                 (unless (= (length bars) len)
+                   (error "rthm-chain-slow::verify-and-store: the ~abeat ~
+                           groups must all have ~a bars" meter len))
+                 (loop for bar in bars collect 
+                    ;; the t 3rd arg splits into beats so our slots are now
+                    ;; a list of lists of rhythms, one sublist per beat
+                      (make-rhythms bar (list meter (beat rcs)) t)))))
+        ;; unless we've already parsed...
+        (unless (and (listp (caaar (2beat rcs)))
+                     (rhythm-p (caaaar (2beat rcs))))
+          (setf (2beat rcs) (loop for group in (2beat rcs) collect
+                                 (process-rthms group 2))
+                (3beat rcs) (loop for group in (3beat rcs) collect 
+                                 (process-rthms group 3))))
+        t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

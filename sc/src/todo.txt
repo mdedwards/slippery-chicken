@@ -223,7 +223,7 @@ general comments at top of file
 ;;; the create-psps fun; see kill.lsp for an example of a call (and a
 ;;; definition of an example call back function.  
 
-;;; todo: print-object, clone methods
+;; DONE print-object, clone methods
 
 ;;; are we somehow reversing the 1-beat and slower players?
 

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 19:28:39 Thu Feb 24 2011 MYT
+;;; $$ Last modified: 12:51:09 Sat Apr 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -64,6 +64,20 @@
   ;; list to the data slot, copy it over to the folded slot, then store the
   ;; unfolded list in data and let the cscl handle that as usual
   ((folded :accessor folded :type list :initform nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Apr 28 11:49:47 2012 
+(defmethod clone ((cr cycle-repeats))
+  (clone-with-new-class cr 'cycle-repeats))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Apr 28 11:49:50 2012 
+
+(defmethod clone-with-new-class :around ((cr cycle-repeats) new-class)
+  (declare (ignore new-class))
+  (let ((cscl (call-next-method)))
+    (setf (slot-value cscl 'folded) (copy-list (folded cscl)))
+    cscl))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

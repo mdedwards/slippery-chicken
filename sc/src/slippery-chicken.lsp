@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:13:59 Thu Apr 26 2012 BST
+;;; $$ Last modified: 16:03:20 Sat Apr 28 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -839,6 +839,7 @@
           ;; the players from the rthm-seq-map might be in a different order
           ;; from those of the ensemble so copy the latter. 
           (players rsm-clone) (players (ensemble sc)))
+    (print rsm-clone)
     (add-rest-player-sections rsm-clone)
     (add-rest-sequenzes rsm-clone)
     (update-slots rsm-clone (tempo-map sc) 0.0 0.0 1 nil nil warn-ties)

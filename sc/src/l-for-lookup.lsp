@@ -269,7 +269,6 @@
 ;;; 
 ;;; EXAMPLE
 #|
-
 ;; Create an l-for-lookup object in which the sequences are defined such that
 ;; the transition takes place over the 3 given lists and from x to y to z, and
 ;; apply the do-lookup method to see the results. Each time one of these lists

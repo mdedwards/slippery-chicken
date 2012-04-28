@@ -3417,18 +3417,33 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
   (typep thing 'event))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Sat Apr 28 22:47:00 BST 2012: Added robodoc entry
+
 ;;; ****f* event/sort-event-list
 ;;; FUNCTION
-;;; 
+;;; Sort a list of event objects by start time from lowest to highest.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list of event objects.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of event objects.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Create a list of event object with non-sequential start-times, sort them,
+;; and return the pitches and start times of the newly ordered list.
+(let ((e-list (loop repeat 8
+		 for nn in '(c4 d4 e4 f4 g4 a4 b4 c5)
+		 for st in '(1.0 3.0 2.0 5.0 8.0 4.0 7.0 6.0)
+		 collect (make-event nn 'e :start-time st))))
+  (sort-event-list e-list)
+  (loop for e in e-list 
+     collect (get-pitch-symbol e)
+     collect (start-time e)))
+
+=> (C4 1.0 E4 2.0 D4 3.0 A4 4.0 F4 5.0 C5 6.0 B4 7.0 G4 8.0)
 
 |#
 ;;; SYNOPSIS
@@ -3442,22 +3457,33 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 
 ;;; ****f* event/wrap-events-list
 ;;; FUNCTION
-;;; Given a list of time-ascending events, wrap the list at a given point so we
-;;; start there, go to the end, and keep going where the last event
-;;; would have ended, using the start times added to this from those we skipped
-;;; at the beginning.  NB If the first event doesn't start at 0, its start time
-;;; will be conserved.
+
+;;; Given a list of time-ascending event objects, rotate their start-times by
+;;; moving the lowest start time to a specified point in the list (determined
+;;; either by time or by nth position), assigning the subsequent start times
+;;; sequentially through the remainder of events in the list, and wrapping
+;;; around to the head of the list again to assign the final remaining start
+;;; times. If the first event doesn't start at 0, its start time will be
+;;; conserved.
 ;;; 
 ;;; ARGUMENTS 
-;;; - flat list of events
-;;; - the event in the list to start at, either a time in seconds or a position
-;;;   for nth
-;;; - (key: time default nil): if nil, the the second argument is interpreted
-;;;   as an index; if t, it's a time in seconds that we skip along to in the
-;;;   events list.
+;;; - A flat list of event objects.
+;;; - An integer that is the number of the event object with which to start
+;;;   (nth position), or a decimal time in seconds.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword argument:
+;;; - :time. T or NIL to indicate whether the second argument is a time in
+;;;   seconds or an nth index. If a time in seconds, the method skips to the
+;;;   closest event object in the list. T = time in seconds. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
-;;; flat list of wrapped and time-adjusted events
+;;; Returns a flat list of event objects with adjust start-times.
+;;;
+;;; EXAMPLE
+#|
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defun wrap-events-list (events start-at &key (time nil))

@@ -64,18 +64,36 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sun Apr 29 18:21:09 BST 2012: Added robodoc entry
+
 ;;; ****m* set-map/gen-midi-chord-seq
 ;;; FUNCTION
-;;; gen-midi-chord-seq:
-;;; write a midi file with each chord in the palette played at 1 second
-;;; intervals. 
+;;; Write a midi file with each set in the set-map played as a chord at 1
+;;; second intervals.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the set-palette
-;;; - the path for the midi file
-;;; 
+;;; - A set-map object.
+;;; - The path+file-name for the midi file to be written.
+;;;
 ;;; RETURN VALUE  
-;;; always t
+;;; Returns T.
+;;;
+;;; EXAMPLE
+#|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))))
+	:set-palette '((1 ((c3 e3 g3 a3 c4 d4 g4 a4 b4 e5))))
+	:set-map '((1 (1 1 1)))
+	:rthm-seq-palette '((1 ((((2 4) q e s s))
+				:pitch-seq-palette ((1 2 3 4)))))
+	:rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (gen-midi-chord-seq (set-map mini) "/tmp/mchsq.mid"))
+
+=> T
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod gen-midi-chord-seq ((sm set-map) midi-file)

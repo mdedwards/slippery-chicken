@@ -171,7 +171,9 @@
 ;;; - A player object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - ignore-octaves.
+;;; - T or NIL to indicate whether instruments that transpose at the octave are
+;;;   to be considered transposing instruments.  T = instruments that transpose
+;;;   at the octave are not considered transposing instruments. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns T if one or more of the instrument objects assigned to the given
@@ -215,6 +217,20 @@
 (let* ((ip +slippery-chicken-standard-instrument-palette+)
        (plr (make-player 'fl ip '(flute alto-sax))))
   (plays-transposing-instrument plr))
+
+=> T
+
+;; Setting the optional argument to NIL causes instruments that transpose at
+;; the octave to return T.
+(let* ((ip +slippery-chicken-standard-instrument-palette+)
+       (plr (make-player 'db ip 'double-bass)))
+  (plays-transposing-instrument plr))
+
+=> NIL
+
+(let* ((ip +slippery-chicken-standard-instrument-palette+)
+       (plr (make-player 'db ip 'double-bass)))
+  (plays-transposing-instrument plr nil))
 
 => T
 
@@ -293,21 +309,37 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sun Apr 29 15:37:13 BST 2012: Added robodoc entry
+
 ;;; ****m* player/total-notes
 ;;; FUNCTION
-;;; 
+;;; Get the total number of notes played by a specified player.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A player object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - An integer that is the number of notes for that player.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))
+		     (va (violin :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+	:set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
+	:set-map '((1 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
+				:pitch-seq-palette ((1 2 3)))))
+	:rthm-seq-map '((1 ((vn (1 1 1 1 1))
+			    (va (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (print (total-notes (get-data 'vc (ensemble mini)))))
+
+=> 15
+
 
 |#
 ;;; SYNOPSIS
@@ -377,21 +409,39 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sun Apr 29 15:48:52 BST 2012: Started robodoc entry
+
 ;;; ****m* player/tessitura-degree
 ;;; FUNCTION
-;;; 
+;;; Return a number that represents the average pitch for a specified
+;;; instrument over the course of a piece. The number returned will be degrees
+;;; in the current scale.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A player object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A number that is the tessitura-degree; i.e., average pitch of the given
+;;; isntrument for the entirety of the given musical data.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))
+		     (va (violin :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+	:set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
+	:set-map '((1 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
+				:pitch-seq-palette ((1 2 3)))))
+	:rthm-seq-map '((1 ((vn (1 1 1 1 1))
+			    (va (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (tessitura-degree (get-data 'vc (ensemble mini))))
+
+=> 136
 
 |#
 ;;; SYNOPSIS
@@ -435,21 +485,44 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sun Apr 29 16:04:48 BST 2012: Added robodoc entry
+
 ;;; ****m* player/total-duration
 ;;; FUNCTION
-;;; 
+;;; Get the total duration of played notes for a given player over the span of
+;;; a piece.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A player object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A number that is the total duration in seconds of played notes.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))
+		     (va (violin :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+	:set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
+	:set-map '((1 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
+				:pitch-seq-palette ((1 2 3))))
+			    (2 ((((2 4) (q) e (s) 32 32))
+				:pitch-seq-palette ((1 2 3)))))
+	:rthm-seq-map '((1 ((vn (1 1 1 1 1))
+			    (va (2 2 2 2 2))
+			    (vc (1 2 1 2 1))))))))
+  (print (total-duration (get-data 'vn (ensemble mini))))
+  (print (total-duration (get-data 'va (ensemble mini))))
+  (print (total-duration (get-data 'vc (ensemble mini)))))
+
+=>
+6.875 
+3.75 
+5.625
 
 |#
 ;;; SYNOPSIS
@@ -587,17 +660,18 @@ the instrument you want.
 ;;;   symbol rather than a list, to avoid errors in the DOUBLES slot.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :cmn-staff-args. A list of pairs that indicate any
-;;;   additional arguments to the call to cmn::staff for this player, such as
-;;;   staff size, number of lines etc. Instead of being real cmn function
-;;;   calls, as they would be in normal cmn, this is a simple list of pairs;
-;;;   e.g. '(staff-size .8 staff-lines 3). Defaults to NIL.
-;;; - keyword argument :microtones-midi-channel. An integer that indicates the
-;;;   MIDI channel on which any microtonal pitch material for this player is to
-;;;   be played back. Default = -1.
-;;; - keyword argument :midi-channel. An integer that indicates the MIDI
-;;;   channel on which any non-microtonal pitch material for this player is to
-;;;   be played back. Default = 1.
+;;; keyword arguments:
+;;; - :cmn-staff-args. A list of pairs that indicate any additional arguments
+;;;   to the call to cmn::staff for this player, such as staff size, number of
+;;;   lines etc. Instead of being real cmn function calls, as they would be in
+;;;   normal cmn, this is a simple list of pairs; e.g. '(staff-size .8
+;;;   staff-lines 3). Defaults = NIL.
+;;; - :microtones-midi-channel. An integer that indicates the MIDI channel on
+;;;   which any microtonal pitch material for this player is to be played
+;;;   back. Default = -1.
+;;; - :midi-channel. An integer that indicates the MIDI channel on which any
+;;;   non-microtonal pitch material for this player is to be played
+;;;   back. Default = 1.
 ;;;
 ;;; RETURN VALUE
 ;;; Returns a player object.
@@ -653,6 +727,33 @@ data: NIL
 (FLUTE PICC) 
 1 
 2
+
+;;; With specified cmn-staff-args
+(let ((ip (make-instrument-palette 
+	   'inst-pal 
+	   '((picc (:transposition-semitones 12 :lowest-written d4
+		    :highest-written c6)) 
+	     (flute (:lowest-written c4 :highest-written d7))  
+	     (clar (:transposition-semitones -2 :lowest-written e3
+		    :highest-written c6))  
+	     (horn (:transposition f :transposition-semitones -7
+		    :lowest-written f2 :highest-written c5))    
+	     (vln (:lowest-written g3 :highest-written c7 :chords t))  
+	     (vla (:lowest-written c3 :highest-written f6 :chords t))))))
+  (make-player 'player-one ip '(flute picc) 
+	       :midi-channel 1
+	       :microtones-midi-channel 2
+	       :cmn-staff-args '(staff-size .8 staff-lines 3)))
+
+=> 
+PLAYER: (id instrument-palette): INST-PAL 
+doubles: T, cmn-staff-args: (#<SELF-ACTING {10097B6E73}>
+                             #<SELF-ACTING {10097B6EE3}>), total-notes: 0, total-degrees: 0, 
+total-duration: 0.000, total-bars: 0, tessitura: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: PLAYER-ONE, tag: NIL, 
+data: 
+[...]
 
 
 |#

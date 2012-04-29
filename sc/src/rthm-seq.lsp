@@ -1496,6 +1496,7 @@ rthm-seq NIL
 ;;;   rthm-seq-bar::chop for more details.
 ;;; - <unit>. The rhythmic duration that serves as the unit of measurement for
 ;;;   the chop points. Default = 's.
+;;; - <number-bars-first>. T or NIL. Default = T.
 ;;; 
 ;;; RETURN VALUE  
 ;;; A list of rthm-seq objects.
@@ -2328,7 +2329,10 @@ rthm-seq NIL
 ;;;     - A list of pitch-seqs attached to the :pitch-seq-palette accessor
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :psp-inversions. 
+;;; keyword argument 
+;;; - :psp-inversions. T or NIL to indicate whether to also automatically
+;;;   generate and add inverted forms of the specified pitch-seq objects.
+;;;   T = generate and add. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns a rthm-seq object.
@@ -2405,6 +2409,45 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: SEQ1, tag: NIL, 
 data: ((((2 4) Q E S S) ((E) Q (E)) ((3 8) S S E. S)))
 
+;;; With :psp-inversions set to T, the inverted forms of the specified
+;;; pitch-seq are automatically generated and added
+(let ((mrs
+       (make-rthm-seq '(seq1 ((((2 4) q e s s))
+			      :pitch-seq-palette ((1 2 3 4))))
+		      :psp-inversions t)))
+  (data (pitch-seq-palette mrs)))
+
+=> (
+PITCH-SEQ: notes: NIL
+           highest: 4
+           lowest: 1
+           original-data: (1 2 3 4)
+           user-id: NIL
+           instruments: NIL
+           relative-notes: (not printed for sake of brevity)
+           relative-notes-length: 25
+SCLIST: sclist-length: 4, bounds-alert: T, copy: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "rthm-seq-SEQ1-pitch-seq-palette-ps-1", tag: NIL, 
+data: (1 2 3 4)
+**************
+
+    
+PITCH-SEQ: notes: NIL
+           highest: 4
+           lowest: 1
+           original-data: (4 3 2 1)
+           user-id: NIL
+           instruments: NIL
+           relative-notes: (not printed for sake of brevity)
+           relative-notes-length: 25
+SCLIST: sclist-length: 4, bounds-alert: T, copy: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "rthm-seq-SEQ1-pitch-seq-palette-ps-1-inverted", tag: NIL, 
+data: (4 3 2 1)
+**************
+)
+
 |#
 ;;; SYNOPSIS
 (defun make-rthm-seq (rs &key (psp-inversions nil))
@@ -2413,19 +2456,19 @@ data: ((((2 4) Q E S S) ((E) Q (E)) ((3 8) S S E. S)))
   ;; second the data.  
   (let ((result
          (cond  
-          ((typep rs 'rthm-seq) rs)
-          ((listp rs) 
-           ;; 4.8.10 if it's just a list of rthms, there's no id, otherwise
-           ;; it's a 2-element list: (id (rthms....))  
-           (if (and (second rs) (listp (second rs)))
-               (make-instance 'rthm-seq :id (first rs) :data (second rs))
-               (make-instance 'rthm-seq :id nil :data rs)))
-          ;; otherwise it's already a named-object with a list as data...
-          ((and (typep rs 'named-object) (listp (data rs)))
-           (make-instance 'rthm-seq :id (id rs) 
-                          :data (copy-list (data rs))))
-          (t (error "rthm-seq::make-rthm-seq: Can't make a rthm-seq from ~a"
-                    rs)))))
+	   ((typep rs 'rthm-seq) rs)
+	   ((listp rs) 
+	    ;; 4.8.10 if it's just a list of rthms, there's no id, otherwise
+	    ;; it's a 2-element list: (id (rthms....))  
+	    (if (and (second rs) (listp (second rs)))
+		(make-instance 'rthm-seq :id (first rs) :data (second rs))
+		(make-instance 'rthm-seq :id nil :data rs)))
+	   ;; otherwise it's already a named-object with a list as data...
+	   ((and (typep rs 'named-object) (listp (data rs)))
+	    (make-instance 'rthm-seq :id (id rs) 
+			   :data (copy-list (data rs))))
+	   (t (error "rthm-seq::make-rthm-seq: Can't make a rthm-seq from ~a"
+		     rs)))))
     (when psp-inversions
       (setf (psp-inversions result) t)
       (add-inversions (pitch-seq-palette result)))
@@ -2470,8 +2513,8 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
 ;;; time signature, i.e. quintuple eighths won't work in 4/4.
 ;;;
 ;;; NB: Setting the auto-beam keyword argument to T can result in errors if
-;;; creating durations longer than 1 beat, as auto-beam will call
-;;; get-beats. :auto-beam is therefore set to NIL by default.
+;;;     creating durations longer than 1 beat, as auto-beam will call
+;;;     get-beats. :auto-beam is therefore set to NIL by default.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rhythmic duration unit.
@@ -2479,16 +2522,25 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
 ;;; - A time signature.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :tag. A symbol that is another name, description
-;;;   etc. for the given object. The tag may be used for identification but not
-;;;   for searching purposes. Default = NIL.  
-;;; - keyword argument :auto-beam.  T or NIL. When T, the method will attempt
-;;;   to automatically set beaming indicators among the resulting rthm-seq-bar
-;;;   objects. This can result in errors if the resulting rhythms have a
-;;;   duration of more than 1 beat. Default = NIL. 
-;;; - keyword argument :id. A symbol that will be the ID of the given
-;;;   object. Default = "from-multipliers". 
-;;; - keyword argument :tuplet. T or NIL. Default = NIL.
+;;; keyword arguments:
+
+;;; - :tag. A symbol that is another name, description etc. for the given
+;;;   object. The tag may be used for identification but not for searching
+;;;   purposes. Default = NIL.
+
+;;; - :auto-beam.  T or NIL. When T, the method will attempt to automatically
+;;;   set beaming indicators among the resulting rthm-seq-bar objects. This can
+;;;   result in errors if the resulting rhythms have a duration of more than 1
+;;;   beat. Default = NIL.
+
+;;; - :id. A symbol that will be the ID of the given object. 
+;;;   Default = "from-multipliers".
+
+;;; - :tuplet. An integer or NIL. If an integer, the method will automatically
+;;;   place tuplet brackets of that value above beats consisting of tuplet
+;;;   rhythms. NB: This method will only place the same value over all tuplets.
+;;;   Default = NIL.
+
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns a rthm-seq object.
@@ -2526,6 +2578,17 @@ rthm-seq from-multipliers
        collect (loop for r in (rhythms b) collect (is-tied-to r))))
 
 => ((NIL T NIL NIL) (NIL NIL T NIL)) 
+
+;;; Using with a tuplet rhythm ('te) and setting the :tuplet option to 3 so
+;;; that triplet brackets are automatically placed.
+(let ((rs (make-rthm-seq-from-unit-multipliers 'te '(7 9 16) '(4 4)
+					       :tuplet 3)))
+  (loop for b in (bars rs)
+     collect (loop for r in (rhythms b) collect (bracket r))))
+
+=> ((NIL NIL ((1 3)) (1) NIL) (NIL ((1 3)) (1) NIL NIL)
+    (NIL NIL ((1 3)) (1) NIL))
+
 |#
 ;;; SYNOPSIS
 (defun make-rthm-seq-from-unit-multipliers (unit multipliers time-sig 
@@ -2554,10 +2617,10 @@ rthm-seq from-multipliers
                             (loop for i below m 
                                for r = (make-rhythm unit)
                                do
-                               (cond ((zerop i) (setf (is-tied-from r) t))
-                                     ((= i (1- m)) (setf (is-tied-to r) t))
-                                     (t (setf (is-tied-to r) t)
-                                        (setf (is-tied-from r) t)))
+				 (cond ((zerop i) (setf (is-tied-from r) t))
+				       ((= i (1- m)) (setf (is-tied-to r) t)) 
+				       (t (setf (is-tied-to r) t)
+					  (setf (is-tied-from r) t)))
                                collect r))
              appending temp))
          (length (length all))
@@ -2571,25 +2634,25 @@ rthm-seq from-multipliers
                   for bar = (make-rest-bar tsig nil)
                   while (< index length)
                   do
-                  (setf (rhythms bar) (subseq all index 
-                                              (min length end)))
-                  (when (>= end length) ;; last bar
-                    (setf (rhythms bar) 
-                          (append (rhythms bar)
-                                  (loop for i below rests-needed
-                                     collect (make-rest unit)))))
-                  (consolidate-notes bar)
-                  (consolidate-rests bar)
-                  (when auto-beam
-                    (auto-beam bar))
-                  (when tuplet
-                    (auto-put-tuplet-bracket-on-beats bar tuplet))
-                  (gen-stats bar)
+		    (setf (rhythms bar) (subseq all index 
+						(min length end)))
+		    (when (>= end length) ;; last bar
+		      (setf (rhythms bar) 
+			    (append (rhythms bar)
+				    (loop for i below rests-needed
+				       collect (make-rest unit)))))
+		    (consolidate-notes bar)
+		    (consolidate-rests bar)
+		    (when auto-beam
+		      (auto-beam bar))
+		    (when tuplet
+		      (auto-put-tuplet-bracket-on-beats bar tuplet))
+		    (gen-stats bar)
                   ;; 2/04
                   ;; 17/5/05: now handled at piece level
                   ;; (update-compound-durations bar)
-                  (incf index units-per-bar)
-                  (incf end units-per-bar)
+		    (incf index units-per-bar)
+		    (incf end units-per-bar)
                   collect bar))
     ;; have to make a 2-element list, the first is the id, the second the bars,
     ;; but the bars have to be in a list themselves....

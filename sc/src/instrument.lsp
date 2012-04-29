@@ -382,7 +382,10 @@
 ;;; - An instrument object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - ignore-octaves. Default = T.
+;;; - ignore-octaves. T or NIL to indicate whether instruments that transpose
+;;;   at the octave are to be considered transposing instruments. 
+;;;   T = instruments that transpose at the octave are not considered
+;;;   transposing instruments. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns T if the given instrument object defines a transposing instrument,
@@ -407,6 +410,18 @@
 ;; :transposition-semitones 
 (let ((i3 (make-instrument 'instrument-two :transposition-semitones -3)))
   (transposing-instrument-p i3))
+
+=> T
+
+;; Setting the optional argument to NIL causes instruments that transpose at
+;; the octave to return T.
+(let ((i3 (make-instrument 'instrument-two :transposition-semitones -12)))
+  (transposing-instrument-p i3))
+
+=> NIL
+
+(let ((i3 (make-instrument 'instrument-two :transposition-semitones -12)))
+  (transposing-instrument-p i3 nil))
 
 => T
 
@@ -1100,33 +1115,37 @@ data: NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sun Apr 29 15:16:44 BST 2012: Editing robodoc entry
+
 ;;; ****f* instrument/default-chord-function
 ;;; FUNCTION
-;;; If an instrument is able to play chords, we need to define a function to
-;;; select notes from a list that it can play as a chord. This function (as
-;;; a symbol) is passed as a slot to the instrument instance.
+
+;;; If an instrument is able to play chords, a function must be defined to
+;;; select pitches from a list that it can play as a chord. This function (as a
+;;; symbol) is passed as a slot to the instrument instance.
 ;;; 
-;;; This is the default function; it returns a 2-note chord with the note at
-;;; index plus that below it, or that above it if no notes are below. Or it
-;;; just returns a single-note chord if neither of those cases are possible.
+;;; This is the default function. It returns a 2-note chord with the pitch at
+;;; index plus that below it, or that above it if there are no lower pitches
+;;; available. Or it just returns a single-pitch chord object if neither of
+;;; those cases are possible.
 ;;;
-;;; NB The arguments are supplied by slippery chicken when it calls the
-;;;    function for you. 
+;;; NB: The arguments are supplied by slippery chicken when it calls the
+;;;     function.
 ;;;
 ;;; ARGUMENTS 
 ;;; - The current number from the pitch-seq. Currently ignored by default.
 ;;; - The index that the first argument was translated into by the offset and
 ;;;   scaler (based on trying to get a best fit for the instrument and set).
 ;;;   This can be assumed to be a legal reference into pitch-list as it was
-;;;   calculated as fitting in pitch-seq::get-notes.  (Zero-based.)
-;;; - The pitch-list that we created from the set, taking the instrument's range
-;;;   and other notes already played by other instruments.
+;;;   calculated as fitting in pitch-seq::get-notes.  (zero-based.)
+;;; - The pitch-list created from the set, taking into account the instrument's
+;;;   range and other notes already played by other instruments.
 ;;; - The current pitch-seq object. Currently ignored by default.
 ;;; - The current instrument object. Currently ignored by default.
 ;;; - The current set object. Currently ignored by default.
 ;;; 
 ;;; RETURN VALUE  
-;;; a chord object
+;;; A chord object.
 ;;; 
 ;;; SYNOPSIS
 (defun default-chord-function (curve-num index pitch-list pitch-seq instrument

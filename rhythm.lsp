@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 13:07:29 Wed Mar 28 2012 BST
+;;; $$ Last modified: 09:15:39 Sun Apr 29 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -815,14 +815,10 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 |#
 
 ;;; SYNOPSIS
-(defmethod replace-mark ((r rhythm) what with &optional before)
+(defmethod replace-mark ((r rhythm) what with &optional ignore)
 ;;; ****
-  (let ((new (substitute with what (if before
-                                       (marks-before r)
-                                       (marks r)))))
-    (if before 
-        (setf (marks-before r) new)
-        (setf (marks r) new))))
+  (declare (ignore ignore))
+  (setf (marks r) (substitute with what (marks r))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

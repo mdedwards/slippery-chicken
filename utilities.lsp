@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 13:08:22 Sat Apr 28 2012 BST
+;;; $$ Last modified: 08:16:47 Sun Apr 29 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1357,9 +1357,10 @@
 ;;; ****
   (let* ((len (length list))
          (diff (- new-len len)))
+    ;; (format t "~%hey ~a ~a ~a" len new-len diff)
     (when (or (zerop new-len) (>= diff len))
       (error "force-length:: new length must be between 1 and 1 less than ~%~
-              the original length: ~a ~%(length: ~a, new-len: ~a)" 
+              double the original length: ~a ~%(length: ~a, new length: ~a)" 
              list len new-len))
     (if (= len new-len)
         list

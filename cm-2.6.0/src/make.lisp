@@ -117,21 +117,24 @@
 (defvar midishare-installed? nil)
 
 (defun make-cm (&key (bin-directory t rdp)
-                     (scheme t )
-                     (save-image nil) ; t, nil, :if-no-compile
-                     (delete-fasls t)
-                     (force nil)
-                     (verbose t)
-                     (extensions nil)
-                     (midishare t)
-                     &aux 
-		     (usr-directory nil)
-                     (src-directory (reldir this-file ))
-                     (build-plotter nil))
+		(scheme t )
+		(save-image nil) ; t, nil, :if-no-compile
+		(delete-fasls t)
+		(force nil)
+		(verbose t)
+		(extensions nil)
+		(midishare t)
+		&aux 
+		(usr-directory nil)
+		(src-directory (reldir this-file ))
+		;; SAR Sun Apr 29 12:49:55 BST 2012: commented out due to CCL
+		;; compatibility 
+		;; (build-plotter nil)
+		)
 
   (if (find-package ':cm)
-    (if (not force)
-      (return-from make-cm nil)))
+      (if (not force)
+	  (return-from make-cm nil)))
 
   (when extensions
     (unless (consp extensions)
@@ -143,16 +146,16 @@
 
   ;; test user specified bin-directory.
   (if bin-directory
-    (if (eql bin-directory t)
-      (setq bin-directory (reldir src-directory -1 "bin"))
-      (let ((dir (is-directory? bin-directory)))
-        (if dir
-          (setq bin-directory dir) ; use filtered dir spec.
-          (error ":bin-directory '~A' is not a directory."
-                 bin-directory))
-	(setq usr-directory t)))
-    ;; user explicitly says no bin-directory.
-    (if rdp (setq writable-p ':no)))
+      (if (eql bin-directory t)
+	  (setq bin-directory (reldir src-directory -1 "bin"))
+	  (let ((dir (is-directory? bin-directory)))
+	    (if dir
+		(setq bin-directory dir) ; use filtered dir spec.
+		(error ":bin-directory '~A' is not a directory."
+		       bin-directory))
+	    (setq usr-directory t)))
+      ;; user explicitly says no bin-directory.
+      (if rdp (setq writable-p ':no)))
   
   ;; *** BEGIN BUILD
   ;; insure features (including :loop) for each implementation
@@ -164,7 +167,7 @@
   (setq .fasl-name (syscmd :fasl))
   (setq binary-dir (if usr-directory
 		       bin-directory
-		     (fasl-directory bin-directory)))
+		       (fasl-directory bin-directory)))
 
   (tell-user "~%; Installation directory: ~S"
              (namestring *cm-root*))
@@ -172,8 +175,8 @@
   ;; not writable if user explicitly says no run dir
   ;; or no privledges in run dir.
   (setq writable-p (if (eql writable-p ':no) 
-                     nil
-                     (syscmd :fw? bin-directory)))
+		       nil
+		       (syscmd :fw? bin-directory)))
   (when writable-p
     ;; cache runtime dir in global
     ;; insure binary subdir if writable
@@ -181,22 +184,24 @@
       (syscmd :mkdir binary-dir)))
 
   ;; a pox on chatty compilers
-;  #+:cmu  (proclaim '(optimize (extensions:inhibit-warnings 3)))
-;  #+:sbcl (proclaim '(sb-ext:muffle-conditions style-warning sb-ext:compiler-note))
+  ;;  #+:cmu  (proclaim '(optimize (extensions:inhibit-warnings 3)))
+  ;;  #+:sbcl (proclaim '(sb-ext:muffle-conditions style-warning sb-ext:compiler-note))
 
+  #| SAR Sun Apr 29 12:46:39 BST 2012: Commented out due to CCL incompatibility 
   ;; test to see if plotter will be built. issue warning if we are on
   ;; a plotform that could potentially run it but for some reason
   ;; cannot. if we can build then cload the GTK interface file before
   ;; the CM package is defined.
   (let ((flg (plotter-can-build?)))
-    (if flg
-      (if (stringp flg)
-        (warn (format nil "Cannot build plotter because ~A." flg))
-        (progn
-          (setq build-plotter t)
-          #+openmcl (cl "gui" "gtkffi-openmcl")
-          #+(or cmu sbcl) (cl "gui" "gtkffi-cmusbcl")
-          ))))
+  (if flg
+  (if (stringp flg)
+  (warn (format nil "Cannot build plotter because ~A." flg))
+  (progn
+  (setq build-plotter t)
+  #+openmcl (cl "gui" "gtkffi-openmcl")
+  #+(or cmu sbcl) (cl "gui" "gtkffi-cmusbcl")
+  ))))
+  |#
 
   ;; allow loading override
   (when (and midishare-installed?         ; nil, t or :ms (if no player)
@@ -259,13 +264,15 @@
     (cl :stocl t "midishare" "midishare")
     (cl :stocl t "midishare" "player")
     (cl :stocl t "cmn")
+    #| SAR Sun Apr 29 12:48:27 BST 2012: Commented out due to CCL incompatibility
     (when build-plotter
-      (cl "gui" "plotter")
-      (cl "gui" "support")
-      (cl "gui" "widgets")
-      (cl "gui" "editing")
-      (cl "gui" "drawing")
-      (cl "gui" "eventio"))
+    (cl "gui" "plotter")
+    (cl "gui" "support")
+    (cl "gui" "widgets")
+    (cl "gui" "editing")
+    (cl "gui" "drawing")
+    (cl "gui" "eventio"))
+    |#
     )
 
   #+:sbcl
@@ -304,19 +311,19 @@
            (or (eql save-image t)
                (and (eql save-image ':if-no-compile)
                     (not compiled-p))))
-    (progn
-      (tell-user "~%; Saving application image.~%; Bye!~%")
-      (force-output)
-      (let ((app (merge-pathnames (syscmd ':image) binary-dir)))
-        (cm-call :save-cm app)
-        (syscmd :bye)))
-    (progn
-      ;; if not saving leave user in cm package with
-      ;; initfile loaded.
-      (cm-call :load-cminit (reldir *cm-root* "etc"))
-      (terpri)
-      (force-output)
-      ))
+      (progn
+	(tell-user "~%; Saving application image.~%; Bye!~%")
+	(force-output)
+	(let ((app (merge-pathnames (syscmd ':image) binary-dir)))
+	  (cm-call :save-cm app)
+	  (syscmd :bye)))
+      (progn
+	;; if not saving leave user in cm package with
+	;; initfile loaded.
+	(cm-call :load-cminit (reldir *cm-root* "etc"))
+	(terpri)
+	(force-output)
+	))
   (values))
 
 (defun cm ()
@@ -497,6 +504,7 @@
         (setq flag t)))
     flag))
 
+#| SAR Sun Apr 29 12:47:10 BST 2012: Commented out due to CCL incompatibility
 (defun plotter-can-build? ()
   #+(and x86 linux sbcl) t
   #+(and x86 linux cmu) t
@@ -510,6 +518,7 @@
         (and x86 linux cmu) 
         (and darwin openmcl))
   nil)
+|#
 
 (defun write-windoze-script (img?)
   (let ((cmd (syscmd :exec))

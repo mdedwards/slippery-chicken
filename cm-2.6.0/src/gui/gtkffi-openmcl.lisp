@@ -23,7 +23,7 @@
     (dolist (l *gtk-libfiles*)
       (open-shared-library (libpath l)))))
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (if (probe-file "ccl:darwin-headers;gtk2" )
+  (if (probe-file "ccl:darwin-headers;gtk2;" )
     (use-interface-dir :gtk2)
     (error "Interface directory ccl:darwin-headers;gtk2; does not exist.")))
 

@@ -68,7 +68,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 16:13:10 Sat Apr 28 2012 BST
+;;; $$ Last modified: 08:07:03 Sun Apr 29 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -516,11 +516,8 @@
 ;;; ****
   (declare (ignore where))
   (stick-rthms nil nil) ;; reset count
-  (print 'reset1)
   (reset (sticking-al rc))
-  (print 'reset2)
   (reset (main-al rc))
-  (print 'reset3)
   (reset (slower-al rc))
   ;; the slower-rthms object
   (when (rcs rc)

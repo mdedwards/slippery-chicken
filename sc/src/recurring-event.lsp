@@ -62,7 +62,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 12:50:46 Sat Apr 28 2012 BST
+;;; $$ Last modified: 08:04:05 Sun Apr 29 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -103,9 +103,9 @@
 
 (defclass recurring-event (circular-sclist)
   ;; every how many events?
-  ((current-period :accessor current-period :type integer)
+  ((current-period :accessor current-period)
    ;; how many times this period will be used
-   (current-repeats :accessor current-repeats :type integer)
+   (current-repeats :accessor current-repeats)
    ;; period count
    (pcount :accessor pcount :type integer :initform 0)
    ;; repeats count

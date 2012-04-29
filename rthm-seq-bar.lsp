@@ -342,25 +342,61 @@ MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not
 ;;;  
 
 ;;; 12.12.11 SAR: Added ROBODoc info
+;;; SAR Sun Apr 29 16:30:23 BST 2012: Expanded robodoc info
 
 ;;; ****m* rthm-seq-bar/fill-with-rhythms
 ;;; FUNCTION
-;;; Any rhythms in the rthm-seq-bar object will be deleted and then rhythm
-;;; objects will be taken one by one from the <rhythms> argument until the bar
-;;; is full. The number of rhythms used is returned. 
+
+;;; Any rhythms (or event objects) in the existing rthm-seq-bar object will be
+;;; deleted, and then rhythm (or event) objects will be taken one by one from
+;;; the <rhythms> argument until the bar is full. 
 ;;;
-;;; NB: This method does not change the DATA of the rthm-seq-bar object itself
-;;; to reflect the new rhythms. Instead, it changes the contents of the RHYTHMS
-;;; slot within that object and changes the DATA of the rthm-seq-bar object to
-;;; NIL. It also assigns the ID of the named-object to
-;;; "rhythms-inserted-by-fill-with-rhythms". 
+;;; If too few rhythm or event objects are given, a warning will be printed
+;;; that there are too few beats in the bar.
+;;;
+;;; If there are too many and the last rhythm or event object to be placed in
+;;; the bar fills out the bar evenly, no warning is printed and the remaining
+;;; rhythm or event objects are discarded. If the last rhythm or event object
+;;; that the method attempts to place in the bar is too long to fit evenly into
+;;; the bar, the method will drop into the debugger with an error.
+;;;
+;;; The :transposition, :midi-channel, and :microtones-midi-channel arguments
+;;; can only be used in conjunction with event objects.
+;;;
+;;; The number of rhythms (or event objects) used is returned.
+;;;
+;;; NB: This method does not change the DATA slot of the rthm-seq-bar object
+;;;     itself to reflect the new rhythms. Instead, it changes the contents of
+;;;     the RHYTHMS slot within that object and changes the DATA of the
+;;;     rthm-seq-bar object to NIL. It also assigns the ID of the named-object
+;;;     to "rhythms-inserted-by-fill-with-rhythms".
 ;;; 
 ;;; ARGUMENTS
 ;;; - A rthm-seq-bar object.
-;;; - A list of rhythms.
+;;; - A list of rhythm objects or event objects.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :transposition. An integer or NIL to indicate the transposition in
+;;;   semitones for written pitches of any event objects passed. If NIL, no
+;;;   written-pitches will be created. Default = NIL.
+;;; - :midi-channel. An integer that will be used to set the MIDI-CHANNEL slot
+;;;   of any event objects passed. Default = 0.
+
+;;; - :microtones-midi-channel. Default = 0.
+
+;;; - :new-id. An optional ID for new rhythm or event objectss added. 
+;;;   Default = "rhythms-inserted-by-fill-with-rhythms". 
+;;; - :warn. T or NIL to indicate whether a warning should be printed if there
+;;;   are not enough rhythms to create a full bar. T = warn. Default = T.
+;;; - :is-full-error. T or NIL to indicate whether the last rhythm or event
+;;;   object that the method attempts to add to the bar is too long to fit
+;;;   evenly into the bar. T = drop into the debugger with an error if this is
+;;;   the case. Default = T.
+
 ;;; 
 ;;; RETURN VALUE
-;;; The number of rhythms used.
+;;; The number of rhythm or event objects used.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -419,6 +455,28 @@ data: E
 [...]
 NAMED-OBJECT: id: "rhythms-inserted-by-fill-with-rhythms", tag: NIL, 
 data: NIL
+
+;;; Using the :transpositions and :midi-channel arguments
+(let ((rsb (make-rthm-seq-bar '((4 4) q q q q))))
+  (fill-with-rhythms rsb (loop for r in '(h q e s s)
+			      for p in '(c4 dqs4 e4 gqf4 a4)
+			    collect (make-event p r))
+		     :transposition -14
+		     :midi-channel 11)
+  (print
+   (loop for e in (rhythms rsb)
+      collect (data (pitch-or-chord e))))
+  (print 
+   (loop for e in (rhythms rsb)
+      collect (data (written-pitch-or-chord e))))
+  (print 
+   (loop for e in (rhythms rsb)
+      collect (midi-channel (pitch-or-chord e)))))
+
+=>
+(C4 DQS4 E4 GQF4 A4) 
+(D5 EQS5 FS5 AQF5 B5) 
+(11 11 11 11 11)
 
 |#
 ;;; SYNOPSIS
@@ -499,12 +557,14 @@ data: NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  
+;;; SAR Sun Apr 29 17:50:31 BST 2012: Added robodoc entry
+
 ;;; ****m* rthm-seq-bar/consolidate-rests
 ;;; FUNCTION
-;;; 
+;;; Consolidate two or more consecutive rests into on longer rhythmic unit. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A rthm-seq-bar object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; 
@@ -557,7 +617,7 @@ data: NIL
                                     (progn
                                       ;; MDE Tue Mar 13 11:24:53 2012 -- don't
                                       ;; use last-rhythm as that won't have a
-                                      ;; bracket, if there is one. same for the
+                                      ;; bracket, if there is one. same for the 
                                       ;; two other calls below
                                       (consolidate first-rhythm count)
                                       (setf count 1
@@ -3436,7 +3496,7 @@ data: (2 4)
 ;;; within a bar and trying to unify the spelling.
 ;;; 
 ;;; Although we're just concentrating on one bar here, we need the parent
-;;; slippery chicken object and player (symbol) in order to get subsequent ties
+;;; slippery chicken object and player (symbol) in order to get subsequent ties 
 ;;; into the next bar from the present bar.
 
 ;;; ****m* rthm-seq-bar/respell-bar
@@ -3458,89 +3518,89 @@ data: (2 4)
                         &optional written last-attack-previous-bar)
 ;;; ****
   (loop 
-      with p
-      ;; with p-enh
-      with tied
-      with next-attack
-      ;; with next-attack-p
-      with last-attack = last-attack-previous-bar
-      with last-attack-p = 
-        (when (and last-attack-previous-bar
-                   (pitch-or-chord last-attack-previous-bar))
-          (if written
-              (written-pitch-or-chord last-attack-previous-bar)
-            (pitch-or-chord last-attack-previous-bar)))
-      with attack-num = -1
-      for event-num from 0
-      for e in (rhythms rsb) 
-      do
-        (unless (event-p e)
-          (error "~a~&rthm-seq-bar::respell-bar: bar must contain events!"
-                 rsb))
-        (when (needs-new-note e)
-          (incf attack-num)
-          ;; don't bother with chords, they've already been spelled as well as
-          ;; they could be
-          (when (is-single-pitch e)
-            (setf p (if written
-                        (written-pitch-or-chord e)
-                      (pitch-or-chord e))
-                  ;; p-enh (enharmonic p nil)
-                  next-attack (get-nth-attack (1+ attack-num) rsb nil)
-                  #|
-    next-attack-p (when next-attack
-                  (if written
-                  (written-pitch-or-chord next-attack)
-                  (pitch-or-chord next-attack)))
-    |#
-                  )
-            ;; 9.2.11
-            (unless p
-              (error "rthm-seq-bar::respell-bar: p is nil in: ~%~a!" rsb))
-            (when (enharmonics-exist rsb p t written)
-              #|
-    (or (or (chord-p last-attack-p)
-              (not (bad-interval p-enh last-attack-p)))
-              (or (chord-p next-attack-p)
-              (not (bad-interval p-enh next-attack-p)))))
-  |#
-              (enharmonic e :written written)
-              ;; don't need p as it was anymore so get the (enharmonic) pitch
-              (setf p (if written
-                          (written-pitch-or-chord e)
-                        (pitch-or-chord e)))
-              (when next-attack
-                ;; make sure we haven't just messed up the spelling of this and
-                ;; the next note; the new spelling (if any) will be picked up
-                ;; in the next loop after we've done this (ie changes to lists
-                ;; that we're looping through are reflected in the loop)
-                (respell e next-attack written t))
-              (when (and (pitch-p last-attack-p)
-                         (bad-interval p last-attack-p))
-                (enharmonic last-attack))
-              ;; now for the part that could go beyond our current bar
-              (when (is-tied-from e)
-                ;; find current bar (this sets vars but doesn't actually get an
-                ;; event!) 
-                (next-event sc player nil (bar-num rsb))
-                ;; loop along to the note after the present one
-                (loop repeat (+ 2 event-num) do
-                      (setf tied (next-event sc player)))
-                (unless (is-tied-to tied)
-                  (error "~a~&rthm-seq-bar::respell-bar: that event should ~
+     with p
+     ;; with p-enh
+     with tied
+     with next-attack
+     ;; with next-attack-p
+     with last-attack = last-attack-previous-bar
+     with last-attack-p = 
+       (when (and last-attack-previous-bar
+		  (pitch-or-chord last-attack-previous-bar))
+	 (if written
+	     (written-pitch-or-chord last-attack-previous-bar)
+	     (pitch-or-chord last-attack-previous-bar)))
+     with attack-num = -1
+     for event-num from 0
+     for e in (rhythms rsb) 
+     do
+       (unless (event-p e)
+	 (error "~a~&rthm-seq-bar::respell-bar: bar must contain events!"
+		rsb))
+       (when (needs-new-note e)
+	 (incf attack-num)
+	 ;; don't bother with chords, they've already been spelled as well as 
+	 ;; they could be
+	 (when (is-single-pitch e)
+	   (setf p (if written
+		       (written-pitch-or-chord e)
+		       (pitch-or-chord e))
+		 ;; p-enh (enharmonic p nil)
+		 next-attack (get-nth-attack (1+ attack-num) rsb nil)
+		 #|
+		 next-attack-p (when next-attack
+		 (if written
+		 (written-pitch-or-chord next-attack)
+		 (pitch-or-chord next-attack)))
+		 |#
+		 )
+	   ;; 9.2.11
+	   (unless p
+	     (error "rthm-seq-bar::respell-bar: p is nil in: ~%~a!" rsb))
+	   (when (enharmonics-exist rsb p t written)
+	     #|
+	     (or (or (chord-p last-attack-p)
+	     (not (bad-interval p-enh last-attack-p)))
+	     (or (chord-p next-attack-p)
+	     (not (bad-interval p-enh next-attack-p)))))
+	     |#
+	     (enharmonic e :written written)
+	     ;; don't need p as it was anymore so get the (enharmonic) pitch
+	     (setf p (if written
+			 (written-pitch-or-chord e)
+			 (pitch-or-chord e)))
+	     (when next-attack
+	       ;; make sure we haven't just messed up the spelling of this and 
+	       ;; the next note; the new spelling (if any) will be picked up
+	       ;; in the next loop after we've done this (ie changes to lists
+	       ;; that we're looping through are reflected in the loop)
+	       (respell e next-attack written t))
+	     (when (and (pitch-p last-attack-p)
+			(bad-interval p last-attack-p))
+	       (enharmonic last-attack))
+	     ;; now for the part that could go beyond our current bar
+	     (when (is-tied-from e)
+	       ;; find current bar (this sets vars but doesn't actually get an 
+	       ;; event!) 
+	       (next-event sc player nil (bar-num rsb))
+	       ;; loop along to the note after the present one
+	       (loop repeat (+ 2 event-num) do
+		    (setf tied (next-event sc player)))
+	       (unless (is-tied-to tied)
+		 (error "~a~&rthm-seq-bar::respell-bar: that event should ~
                           be tied-to!" tied))
-                (loop 
-                    for clone = (clone p)
-                    while (is-tied-to tied) 
-                    do
-                      (if written
-                          (setf (written-pitch-or-chord tied) clone)
+	       (loop 
+		  for clone = (clone p)
+		  while (is-tied-to tied) 
+		  do
+		    (if written
+			(setf (written-pitch-or-chord tied) clone)
                         (setf (pitch-or-chord tied) clone))
-                      (setf tied (next-event sc player))))))
-          (setf last-attack e
-                last-attack-p (if written
-                                  (written-pitch-or-chord e)
-                                (pitch-or-chord e))))))
+		    (setf tied (next-event sc player))))))
+	 (setf last-attack e
+	       last-attack-p (if written
+				 (written-pitch-or-chord e)
+				 (pitch-or-chord e))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -4039,7 +4099,6 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 
 ;;; EXAMPLE
 #|
-
 ;; Create a rthm-seq-bar object consisting of event objects, print the default
 ;; value of the 8VA slots for those events. Set the 8VA slots to 1 and print
 ;; the value of those slots to see the change. Apply the reset-8va method to
@@ -4076,7 +4135,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 
 ;;; ****m* rthm-seq-bar/set-8va
 ;;; DATE
-;;; 23 Sep 2011 
+;;; 23-Sep-2011 
 ;;; 
 ;;; FUNCTION
 ;;; Set the 8VA (ottava) slots of the event objects within a given rthm-seq-bar 

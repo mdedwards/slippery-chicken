@@ -253,17 +253,19 @@ data: (RS2 RS3 RS2)
 ;;;   rthm-chain.lsp)  
 ;;; - the number of repeats made (or references into :repeats list), also in
 ;;;   cycle (i.e. recurring-event class's return-data-cycle slot) 
-;;; - (key :section default 1): the section map reference
-;;; - (key :repeats-indices default nil): a list of the number of repeat bars
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :section. the section map reference. default 1
+;;; - :repeats-indices. a list of the number of repeat bars
 ;;;    returned by the cycle data (i.e. recurring-event class's return-data
 ;;;    slot).  Generally this will remain nil and we'll express the number of
 ;;;    repeats directly in the third argument, but it could be useful to use
 ;;;    references into this list there instead, as the recurring-event class
-;;;    already makes possible.
-;;; - (key :start default 1): what bar/rthm-seq to start at
-;;; - (key :end default nil = don't stop): what bar/rthm-seq to end at
-;;; - (key :print default nil): print the rthm-seq id and number of times
-;;; -  repeated 
+;;;    already makes possible. default nil
+;;; - :start. what bar/rthm-seq to start at. default 1
+;;; - :end. what bar/rthm-seq to end at.  default nil = don't stop.  
+;;; - :print. print the rthm-seq id and number of times repeated. default nil
 ;;; 
 ;;; RETURN VALUE  
 ;;; the number of bars added

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:52:26 Mon Apr 23 2012 BST
+;;; $$ Last modified: 09:14:13 Sun Apr 29 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2883,6 +2883,18 @@ T
         list)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod replace-mark ((e event) what with &optional before)
+;;; ****
+  (let ((new (substitute with what (if before
+                                       (marks-before e)
+                                       (marks e)))))
+    (if before 
+        (setf (marks-before e) new)
+        (setf (marks e) new))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -3435,9 +3447,9 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 ;; Create a list of event object with non-sequential start-times, sort them,
 ;; and return the pitches and start times of the newly ordered list.
 (let ((e-list (loop repeat 8
-		 for nn in '(c4 d4 e4 f4 g4 a4 b4 c5)
-		 for st in '(1.0 3.0 2.0 5.0 8.0 4.0 7.0 6.0)
-		 collect (make-event nn 'e :start-time st))))
+                 for nn in '(c4 d4 e4 f4 g4 a4 b4 c5)
+                 for st in '(1.0 3.0 2.0 5.0 8.0 4.0 7.0 6.0)
+                 collect (make-event nn 'e :start-time st))))
   (sort-event-list e-list)
   (loop for e in e-list 
      collect (get-pitch-symbol e)

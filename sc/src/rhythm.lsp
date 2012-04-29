@@ -712,6 +712,7 @@ rhythm::add-mark: add AT to rest?
 ;;; 
 ;;; EXAMPLE
 #|
+
 ;; The method itself returns NIL
 (let ((r (make-rhythm 'q)))
   (add-mark-once r 'a)
@@ -786,9 +787,6 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 ;;; - The mark to be replaced.
 ;;; - The new mark.
 ;;;
-;;; OPTIONAL ARGUMENTS
-;;; - 
-;;; 
 ;;; RETURN VALUE  
 ;;; Returns the new value of the MARKS slot of the given object.
 ;;; 

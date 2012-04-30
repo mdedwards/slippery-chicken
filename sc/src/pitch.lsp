@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 11:27:05 Thu Apr 26 2012 BST
+;;; $$ Last modified: 20:17:49 Mon Apr 30 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -97,8 +97,7 @@
    (accidental-in-parentheses :accessor accidental-in-parentheses :type boolean
                               :initform nil)
    ;; e.g. for changing the note head of an individual note in a chord.
-   (marks :accessor marks :type list :initarg :marks 
-              :initform nil)
+   (marks :accessor marks :type list :initarg :marks :initform nil)
    ;; in the circle of 5ths, how far advanced is this pitch i.e. a natural is
    ;; 0, fs and bf are 1, cs and ef are 2 ... microtones are 0.
    (c5ths :accessor c5ths :type number :initform 0)

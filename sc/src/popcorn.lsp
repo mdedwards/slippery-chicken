@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    3rd February 2011 (Ko Lanta, Thailand)
 ;;;
-;;; $$ Last modified: 16:27:55 Sat Apr 28 2012 BST
+;;; $$ Last modified: 09:07:19 Mon Apr 30 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -90,8 +90,7 @@
   (declare (ignore initargs))
   ;; reset the random-rep function
   (when (fixed-random pc)
-    (random-rep 1.0 t))
-  (heat pc))
+    (random-rep 1.0 t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -112,7 +111,8 @@
     (setf (kernels pc) (reverse (data pc))
           (mink pc) (loop for k in (data pc) minimize k)
           (maxk pc) (loop for k in (data pc) maximize k))
-    (set-mean pc nil)))
+    (set-mean pc nil)
+    (heat pc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

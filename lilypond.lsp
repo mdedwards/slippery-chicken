@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 22:10:00 Fri Apr  6 2012 BST
+;;; $$ Last modified: 20:47:49 Mon Apr 30 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -154,7 +154,14 @@
            ;; (mensural "\\once \\override NoteHead #'style = #'slash ")
            ;;(flag-head "\\once \\override NoteHead #'style = #'harmonic-mixed
            ;;")  
+           ;; MDE Mon Apr 30 20:46:06 2012 -- see event::get-lp-data for how
+           ;; this is handled 
            (flag-head "\\harmonic ")
+           ;; MDE Mon Apr 30 20:46:31 2012 -- flag-heads by default don't
+           ;; display dots so we need to add-mark-before to get these to
+           ;; display or turn them off again
+           (flag-dots-on "\\set harmonicDots = ##t ")
+           (flag-dots-off "\\set harmonicDots = ##f ")
            (airy-head (no-lp-mark 'airy-head))
            (none (no-lp-mark 'none))
            (trill-f (no-lp-mark 'trill-f))
@@ -188,7 +195,7 @@
            ;; this one uses the graphic for close bracket
            (bracket-end "^\\bracketEnd ")
            (mphonic "^\\mphonic ")
-	   (mphonic-arr "^\\mphonicArr ")
+           (mphonic-arr "^\\mphonicArr ")
            (mphonic-cons "^\\mphonicCons ")
            (mphonic-diss "^\\mphonicDiss ")
            (mphonic-cluster "^\\mphonicCluster ")
@@ -211,6 +218,11 @@
 ;;; ****
            (t (unless silent
                 (error "lilypond::lp-get-mark: unrecognised mark: ~a" mark)))))
+        (integer
+         (when (or (> mark 5) (< mark 0))
+           (warning "lilypond::lp-get-mark: adding fingering ~a, hope your ~
+                     musicians have more than 4 fingers and a thumb!." mark))
+         (format nil "^\\markup{\\finger ~a}" mark))
         ;; 25.6.11 a 2 element list will generate a 'transition arrow' with the
         ;; first element as the starting text and the second as end text.  The
         ;; elements will be converted to lowercase strings unless they're

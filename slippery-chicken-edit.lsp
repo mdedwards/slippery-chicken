@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 17:12:47 Fri Apr 27 2012 BST
+;;; $$ Last modified: 18:32:06 Mon Apr 30 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -237,6 +237,68 @@
   (when tuplet-brackets
     (add-tuplet-bracket (get-bar sc bar-num player) tuplet-brackets))
   t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* slippery-chicken-edit/add-tuplet-bracket-to-bar
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod add-tuplet-bracket-to-bar ((sc slippery-chicken) bar-num player
+                                      bracket-info 
+                                      &optional (delete-all-tuplets-first nil))
+;;; ****
+  (let ((bar (get-bar sc bar-num player)))
+    (if bar
+        (add-tuplet-bracket bar bracket-info delete-all-tuplets-first)
+        (error "slippery-chicken-edit::add-tuplet-bracket-to-bar: no bar ~a ~
+                for ~a." bar-num player))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (add-tuplet-brackets-to-beats +mini+ 'vc '((2 3 0 5) (3 3 0 3) (5 5 0 4)))
+
+;;; ****m* slippery-chicken-edit/add-tuplet-brackets-to-beats
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod add-tuplet-brackets-to-beats 
+    ((sc slippery-chicken) player bracket-info
+     &optional (delete-all-tuplets-first nil))
+;;; ****
+  (loop for bi in bracket-info
+       for bar-num = (first bi) 
+       for bar = (get-bar sc bar-num player)
+       do
+       (add-tuplet-bracket bar (rest bi) delete-all-tuplets-first)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Sat Apr 21 17:17:33 BST 2012: Conformed robodoc entry
@@ -2411,20 +2473,20 @@ NIL
        (make-slippery-chicken
         '+mini+
         :ensemble '(((vn (violin :midi-channel 1))
-		     (va (viola :midi-channel 2))
-		     (vc (cello :midi-channel 3))))
+                     (va (viola :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 f4 g4 a4 c5 d5 f5))))
         :set-map '((1 (1 1)))
         :rthm-seq-palette '((1 ((((4 4) e (e) e e (e) (e) e e) 
-				 ((w)) 
-				 ((h.) q) 
-				 ((w))
-				 ((w)) 
-				 ((e) e h.))
-				:pitch-seq-palette ((1 2 3 4 5 6 7 7)))))
+                                 ((w)) 
+                                 ((h.) q) 
+                                 ((w))
+                                 ((w)) 
+                                 ((e) e h.))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 7)))))
         :rthm-seq-map '((1 ((vn (1 1))
-			    (va (1 1))
-			    (vc (1 1))))))))
+                            (va (1 1))
+                            (vc (1 1))))))))
   (tie-all-last-notes-over-rests mini 2 6 'vn)
   (tie-all-last-notes-over-rests mini 9 12 'vn :auto-beam t)
   (tie-all-last-notes-over-rests mini 3 5 '(va vc) :to-next-attack nil)
@@ -2509,27 +2571,27 @@ NIL
        (make-slippery-chicken
         '+mini+
         :ensemble '(((vn (violin :midi-channel 1))
-		     (va (viola :midi-channel 2))
-		     (vc (cello :midi-channel 3))))
+                     (va (viola :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
         :set-palette '((1 ((c4 d4 e4))))
         :set-map '((1 (1 1)))
         :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)
-				 ((h))
-				 ((s) e. e e)
-				 ((h))
-				 ((h))
-				 ((e) q s (s)))
+                                 ((h))
+                                 ((s) e. e e)
+                                 ((h))
+                                 ((h))
+                                 ((e) q s (s)))
                                 :pitch-seq-palette ((1 2 2 1 3 3 1)))))
         :rthm-seq-map '((1 ((vn (1 1))
-			    (va (1 1))
-			    (vc (1 1))))))))
+                            (va (1 1))
+                            (vc (1 1))))))))
   (tie-over-rest-bars mini 1 'vn :end-bar 2)
   (tie-over-rest-bars mini 3 'va :end-bar 5)
   (tie-over-rest-bars mini 3 '(vn vc) :end-bar 6 :tie-next-attack t)
   (tie-over-rest-bars mini 7 'vc 
-  		      :end-bar 9
-  		      :to-next-attack t
-  		      :auto-beam t))
+                      :end-bar 9
+                      :to-next-attack t
+                      :auto-beam t))
 
 => NIL
 
@@ -2702,11 +2764,11 @@ NIL
         :set-palette '((1 ((c4 d4 e4))))
         :set-map '((1 (1 1 1)))
         :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)
-				 ((h))
-				 ((s) e. (e) e)
-				 ((h))
-				 ((h))
-				 ((e) q s (s)))
+                                 ((h))
+                                 ((s) e. (e) e)
+                                 ((h))
+                                 ((h))
+                                 ((e) q s (s)))
                                 :pitch-seq-palette ((1 2 2 3 3 1)))))
         :rthm-seq-map '((1 ((vn (1 1 1))))))))
   (tie-over-rests mini 1 2 'vn)
@@ -4599,14 +4661,14 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
        (make-slippery-chicken
         '+mini+
         :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-		     (pn (piano :midi-channel 2))))
+                     (pn (piano :midi-channel 2))))
         :set-palette '((1 ((ds3 e3 fs3 af3 bf3 c4 ef4 fs4))))
         :set-map '((1 (1 1 1)))
         :rthm-seq-palette '((1 ((((2 4) q e s s))
                                 :pitch-seq-palette ((1 2 (3) 4))
-				:marks (fff 1 ppp 3))))
+                                :marks (fff 1 ppp 3))))
         :rthm-seq-map '((1 ((cl (1 1 1))
-			    (pn (1 1 1))))))))
+                            (pn (1 1 1))))))))
   (respell-notes mini)
   (set-cautionary-accidental mini 3 2 'cl t)
   (set-cautionary-accidental mini 2 1 'pn)

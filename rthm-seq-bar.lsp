@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 16:27:16 Thu Apr 26 2012 BST
+;;; $$ Last modified: 18:17:16 Mon Apr 30 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -459,10 +459,10 @@ data: NIL
 ;;; Using the :transpositions and :midi-channel arguments
 (let ((rsb (make-rthm-seq-bar '((4 4) q q q q))))
   (fill-with-rhythms rsb (loop for r in '(h q e s s)
-			      for p in '(c4 dqs4 e4 gqf4 a4)
-			    collect (make-event p r))
-		     :transposition -14
-		     :midi-channel 11)
+                              for p in '(c4 dqs4 e4 gqf4 a4)
+                            collect (make-event p r))
+                     :transposition -14
+                     :midi-channel 11)
   (print
    (loop for e in (rhythms rsb)
       collect (data (pitch-or-chord e))))
@@ -3526,81 +3526,81 @@ data: (2 4)
      with last-attack = last-attack-previous-bar
      with last-attack-p = 
        (when (and last-attack-previous-bar
-		  (pitch-or-chord last-attack-previous-bar))
-	 (if written
-	     (written-pitch-or-chord last-attack-previous-bar)
-	     (pitch-or-chord last-attack-previous-bar)))
+                  (pitch-or-chord last-attack-previous-bar))
+         (if written
+             (written-pitch-or-chord last-attack-previous-bar)
+             (pitch-or-chord last-attack-previous-bar)))
      with attack-num = -1
      for event-num from 0
      for e in (rhythms rsb) 
      do
        (unless (event-p e)
-	 (error "~a~&rthm-seq-bar::respell-bar: bar must contain events!"
-		rsb))
+         (error "~a~&rthm-seq-bar::respell-bar: bar must contain events!"
+                rsb))
        (when (needs-new-note e)
-	 (incf attack-num)
-	 ;; don't bother with chords, they've already been spelled as well as 
-	 ;; they could be
-	 (when (is-single-pitch e)
-	   (setf p (if written
-		       (written-pitch-or-chord e)
-		       (pitch-or-chord e))
-		 ;; p-enh (enharmonic p nil)
-		 next-attack (get-nth-attack (1+ attack-num) rsb nil)
-		 #|
-		 next-attack-p (when next-attack
-		 (if written
-		 (written-pitch-or-chord next-attack)
-		 (pitch-or-chord next-attack)))
-		 |#
-		 )
-	   ;; 9.2.11
-	   (unless p
-	     (error "rthm-seq-bar::respell-bar: p is nil in: ~%~a!" rsb))
-	   (when (enharmonics-exist rsb p t written)
-	     #|
-	     (or (or (chord-p last-attack-p)
-	     (not (bad-interval p-enh last-attack-p)))
-	     (or (chord-p next-attack-p)
-	     (not (bad-interval p-enh next-attack-p)))))
-	     |#
-	     (enharmonic e :written written)
-	     ;; don't need p as it was anymore so get the (enharmonic) pitch
-	     (setf p (if written
-			 (written-pitch-or-chord e)
-			 (pitch-or-chord e)))
-	     (when next-attack
-	       ;; make sure we haven't just messed up the spelling of this and 
-	       ;; the next note; the new spelling (if any) will be picked up
-	       ;; in the next loop after we've done this (ie changes to lists
-	       ;; that we're looping through are reflected in the loop)
-	       (respell e next-attack written t))
-	     (when (and (pitch-p last-attack-p)
-			(bad-interval p last-attack-p))
-	       (enharmonic last-attack))
-	     ;; now for the part that could go beyond our current bar
-	     (when (is-tied-from e)
-	       ;; find current bar (this sets vars but doesn't actually get an 
-	       ;; event!) 
-	       (next-event sc player nil (bar-num rsb))
-	       ;; loop along to the note after the present one
-	       (loop repeat (+ 2 event-num) do
-		    (setf tied (next-event sc player)))
-	       (unless (is-tied-to tied)
-		 (error "~a~&rthm-seq-bar::respell-bar: that event should ~
+         (incf attack-num)
+         ;; don't bother with chords, they've already been spelled as well as 
+         ;; they could be
+         (when (is-single-pitch e)
+           (setf p (if written
+                       (written-pitch-or-chord e)
+                       (pitch-or-chord e))
+                 ;; p-enh (enharmonic p nil)
+                 next-attack (get-nth-attack (1+ attack-num) rsb nil)
+                 #|
+                 next-attack-p (when next-attack
+                 (if written
+                 (written-pitch-or-chord next-attack)
+                 (pitch-or-chord next-attack)))
+                 |#
+                 )
+           ;; 9.2.11
+           (unless p
+             (error "rthm-seq-bar::respell-bar: p is nil in: ~%~a!" rsb))
+           (when (enharmonics-exist rsb p t written)
+             #|
+             (or (or (chord-p last-attack-p)
+             (not (bad-interval p-enh last-attack-p)))
+             (or (chord-p next-attack-p)
+             (not (bad-interval p-enh next-attack-p)))))
+             |#
+             (enharmonic e :written written)
+             ;; don't need p as it was anymore so get the (enharmonic) pitch
+             (setf p (if written
+                         (written-pitch-or-chord e)
+                         (pitch-or-chord e)))
+             (when next-attack
+               ;; make sure we haven't just messed up the spelling of this and 
+               ;; the next note; the new spelling (if any) will be picked up
+               ;; in the next loop after we've done this (ie changes to lists
+               ;; that we're looping through are reflected in the loop)
+               (respell e next-attack written t))
+             (when (and (pitch-p last-attack-p)
+                        (bad-interval p last-attack-p))
+               (enharmonic last-attack))
+             ;; now for the part that could go beyond our current bar
+             (when (is-tied-from e)
+               ;; find current bar (this sets vars but doesn't actually get an 
+               ;; event!) 
+               (next-event sc player nil (bar-num rsb))
+               ;; loop along to the note after the present one
+               (loop repeat (+ 2 event-num) do
+                    (setf tied (next-event sc player)))
+               (unless (is-tied-to tied)
+                 (error "~a~&rthm-seq-bar::respell-bar: that event should ~
                           be tied-to!" tied))
-	       (loop 
-		  for clone = (clone p)
-		  while (is-tied-to tied) 
-		  do
-		    (if written
-			(setf (written-pitch-or-chord tied) clone)
+               (loop 
+                  for clone = (clone p)
+                  while (is-tied-to tied) 
+                  do
+                    (if written
+                        (setf (written-pitch-or-chord tied) clone)
                         (setf (pitch-or-chord tied) clone))
-		    (setf tied (next-event sc player))))))
-	 (setf last-attack e
-	       last-attack-p (if written
-				 (written-pitch-or-chord e)
-				 (pitch-or-chord e))))))
+                    (setf tied (next-event sc player))))))
+         (setf last-attack e
+               last-attack-p (if written
+                                 (written-pitch-or-chord e)
+                                 (pitch-or-chord e))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

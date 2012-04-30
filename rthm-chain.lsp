@@ -68,7 +68,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 08:07:03 Sun Apr 29 2012 BST
+;;; $$ Last modified: 19:03:14 Mon Apr 30 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1312,14 +1312,21 @@
 ;;; SYNOPSIS
 (defun procession (num-results items 
                    &key 
-                   ;; what proportion of the way through should we reach the
-                   ;; max number of items?
+                   ;; what proportion of the way through should we aim to reach
+                   ;; the max number of items?  NB This is approximate only:
+                   ;; you may find the first occurrence of the highest element
+                   ;; earlier or later depending on the values of the other
+                   ;; arguments.  In particular, with a low number of item the
+                   ;; highest element will be hit very early on, perhaps
+                   ;; nowhere near the peak argument.
                    (peak 0.7)
                    ;; for an exponential curve going from 3 to num <items>
                    (expt 1.3)
                    ;; these are the orders we'll use at the beginning
                    ;; (cyclically). They will then be used when we've gone
                    ;; beyond 3 items by always using the 3 least used items.
+                   ;; NB This must contain the numbers 1, 2, and 3 only but
+                   ;; there can be 1 or any number of sublists. 
                    (orders '((1 2 1 2 3) (1 2 1 1 3) (1 2 1 3))))
 ;;; ****
   (let ((num-items 

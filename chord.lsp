@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 13:14:15 Mon Apr 23 2012 BST
+;;; $$ Last modified: 20:27:09 Mon Apr 30 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -62,9 +62,9 @@
    ;; 8.2.11 added slot to say whether there are microtones in the chord or not
    (micro-tone :accessor micro-tone :type boolean :initform nil)
    ;; dynamics, accents etc. exactly the code used by cmn.  These will simply
-   ;; be copied over to the event when the chord is bound to an event. 
-   (marks :accessor marks :type list :initarg :marks 
-              :initform nil)))
+   ;; be copied over to the event when the chord is bound to an event.  Not
+   ;; used by get-lp-data!  
+   (marks :accessor marks :type list :initarg :marks :initform nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Mon Apr 16 16:52:53 BST 2012

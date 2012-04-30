@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 16:07:23 Wed Apr 25 2012 BST
+;;; $$ Last modified: 20:48:46 Mon Apr 30 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -266,6 +266,9 @@
              (end-phrase (list end-slur)) ;; (end-slur *sc-slur-tag*)))
              (airy-head (list (note-head :airy-head)))
              (flag-head (list (note-head :artificial-harmonic)))
+             ;; MDE Mon Apr 30 20:48:18 2012 -- 
+             (flag-dots-on (no-cmn-mark 'flag-dots-on))
+             (flag-dots-off (no-cmn-mark 'flag-dots-off))
              (none (list (note-head :none)))
              (circled-x (list (note-head :circled-x)))
              ;; (bartok-pizz (list (bartok-pizzicato)))
@@ -340,12 +343,16 @@
                   (error "cmn::get-cmn-marks: unrecognised mark: ~a" mark)))))
           (string (list (sc-cmn-text mark)))
           (number
+           (when (or (> mark 5) (< mark 0))
+             (warning "cmn::get-cmn-marks: adding fingering ~a, hope your ~
+                       musicians have more than 4 fingers and a thumb!." mark))
            (case mark
              (0 (list (fingering 0 (dx dx) (dy dy) the-text)))
              (1 (list (fingering 1 (dx dx) (dy dy) the-text)))
              (2 (list (fingering 2 (dx dx) (dy dy) the-text)))
              (3 (list (fingering 3 (dx dx) (dy dy) the-text)))
-             (4 (list (fingering 4 (dx dx) (dy dy) the-text)))))
+             (4 (list (fingering 4 (dx dx) (dy dy) the-text)))
+             (5 (list (fingering 5 (dx dx) (dy dy) the-text)))))
           ;; if it's a list then it's usually a bunch of arguments to
           ;; sc-cmn-text 
           (list ;; (print (symbolp (print (first mark))))

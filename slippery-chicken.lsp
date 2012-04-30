@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:43:24 Sat Apr 28 2012 BST
+;;; $$ Last modified: 19:36:56 Mon Apr 30 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2657,7 +2657,8 @@ T
 ;;; - from-sequence default 1: the starting sequence number.
 ;;; - num-sequences default nil: how many sequences to play; specifying nil
 ;;;   will simply play them all. 
-;;; - num-sections default 1: how many sections to play. If nil, play them all.
+;;; - num-sections default nil: how many sections to play. If nil, play them
+;;; - all.
 ;;; - ignore-rests default t: in contrast to other methods, rests are ignored
 ;;;   per default i.e. the sound files will play over the duration of rests
 ;;;   unless this is set to nil.  However, this is only true on a bar-by-bar
@@ -2783,7 +2784,7 @@ T
                      (simulate nil)
                      (from-sequence 1)
                      (num-sequences nil)
-                     (num-sections 1)
+                     (num-sections nil)
                      (ignore-rests t)
                      (time-offset 0.0)
                      (chords nil)
@@ -2829,11 +2830,11 @@ T
   ;; MDE Wed Apr 25 14:45:03 2012 -- if we're playing more than one section
   ;; then we shouldn't specify num-sequences as that might result in gaps in
   ;; playback (e.g. if section 2 had more seqs than requested)  
-  (when (and num-sequences (> num-sections 1))
+  (when (and num-sequences num-sections (> num-sections 1))
     (error "slippery-chicken::clm-play: num-sequences keyword should only ~
             be used ~%when num-sections = 1."))
   ;; (unless num-sequences
-  (when (and (= 1 num-sections) (not num-sequences))
+  (when (and num-sections (= 1 num-sections) (not num-sequences))
     (setf num-sequences (num-seqs sc section)))
   (unless (listp players)
     (setf players (list players)))

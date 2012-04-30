@@ -549,11 +549,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Fri Apr 27 17:40:57 BST 2012: Conforming robodoc entry
+;;; SAR Mon Apr 30 11:29:17 BST 2012: Conforming robodoc entry
 
 ;;; ****m* rthm-chain/rthm-chain-gen
 ;;; FUNCTION
-;;;
+
+;;; Generate a chain of rhythms, also internally making use of the procession
+;;; function. 
+
 ;;; The basic algorithm for 2 parts is: we're given an arbitrary number of
 ;;; 1-beat rthms (e.g. s s (e)) and 2-3 beat slower-moving counterpoints.  We
 ;;; generate a sequence of these using the procession function.  Then we apply
@@ -572,27 +575,30 @@
 ;;;     course), rather it's called by the init function.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the rthm-chain object
-;;; - (key :rests default: t) whether to generate the rests
-;;; - (key :stick default: t)  whether to generate the sticking points
-;;; - (key :num-beats default: nil) how many beats to use for the
+;;; - A rthm-chain object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - (key :rests ) whether to generate the rests default: t
+;;; - (key :stick)  whether to generate the sticking point s
+;;; - (key :num-beats ) how many beats to use for the
 ;;;    algorithm. NB we'll generate considerably more if we have sticking and
 ;;;    rests; this number really just refers to the number of standard 1-beat
 ;;;    rhythms we'll generate.  If nil, then we use the num-beats slot of the
-;;;    rc instance.
-;;; - (key :use-fibonacci default t) whether to use a fibonacci transition to
+;;;    rc instance. default: nil
+;;; - (key :use-fibonacci ) whether to use a fibonacci transition to
 ;;;    move through the 1-beat rhythms (so they'll be repeated) or the
-;;;    procession algorithm (where they'll be alternated).
-;;; - (key :section-id default 1) for the sake of the map, what section we'll
+;;;    procession algorithm (where they'll be alternated). default t
+;;; - (key :section-id ) for the sake of the map, what section we'll
 ;;;    put the references into.  The rthm-seqs themselves will be parcelled up
 ;;;    into an object with this id too, so we can avoid id conflicts if we
-;;;    combine 2+ sections generatd by separate rthm-chain objects.
-;;; - (key :split default '(2 5)): whether to split up longer generated bars
+;;;    combine 2+ sections generatd by separate rthm-chain objects. default 1
+;;; - (key :split ): whether to split up longer generated bars
 ;;;   (e.g. 7/4) into smaller bars.  If this is a two-element list it
 ;;;    represents the min/max number of beats in a bar (where a 6/8 bar is two
-;;;    compound beats)
-;;; - (key :wrap default nil): when we create the 1-beat rythms' and slow
-;;;    rhythms' order, we can choose to start at any point in the list
+;;;    compound beats) default '(2 5)
+;;; - (key :wrap ): when we create the 1-beat rythms' and slow
+;;;    rhythms' order, we can choose to start at any point in the list default nil
 ;;; 
 ;;; RETURN VALUE  
 ;;; the number of rthm-seqs we've generated
@@ -963,21 +969,123 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Apr 28 10:05:43 2012 
+;;; SAR Mon Apr 30 11:20:15 BST 2012: Added robodoc entry
 
 ;;; ****f* rthm-chain/make-rthm-chain
 ;;; FUNCTION
-;;; 
-;;; NB slower-rthms must be expressed in single beat units e.g. in 2/4 we can't
-;;; have h, it must be q+q (consolidate-notes can be called afterwards if
-;;; necessary).  
-;;; 
+;;; Create an instance of a rthm-chain object. The rthm-chain class enables
+;;; the algorithmic generation of a rthm-seq-map and its associated
+;;; rthm-seq-palette, which consists in turn of algorithmically generated
+;;; rthm-seq objects. 
+;;;
+;;; The rhythm-seq objects are made up of both faster material based on 1-beat
+;;; groups and slower-moving counterpoint based on 2- or 3-beat groups.
+;;;
+;;; The rthm-chain class also allows for control of the degree of activity in
+;;; the parts over time through user-specified envelopes.
+;;;
+;;; Rests are automatically inserted at regular but changing intervals.
+;;;
+;;; Specified 'sticking points' cause individual rhythms to be repeated a
+;;; certain number of times. Sticking happens after rests and can also be
+;;; controlled with an activity envelope. 
+;;;
+;;; NB: Because this method uses the procession method internally, each
+;;;     collection of 1-beat-rthms and slower-rthms defined must contain at
+;;;     least four items.
+;;;
+;;; NB: Since this method automatically inserts rests into the chains, the user
+;;;     may like to implement the various tie-over-rests post-generation
+;;;     editing methods. If this is done, the handle-ties method may also be
+;;;     recommended, as the tie-over-rests methods only affect printed output
+;;;     and not MIDI output.
+;;;
 ;;; ARGUMENTS
-;;; keyword arguments:
-;;; - players default '(player1 player2)
-;;; 
+;;; - A number, symbol, or string that is to be the ID of the new rthm-chain
+;;;   object. 
+;;; - An integer that is the number of beats to be generated prior to adding
+;;;   additional material created from sticking points and the automatic
+;;;   addition of rests.
+;;; - A list with sublists of rhythms that are to be the 1-beat rhythms used to
+;;;   construct the faster-moving material of the rthm-seq-palette. Each
+;;;   sublist represents the repertoire of rhythms that will be used by the
+;;;   procession method. Each sublist must contain the same number of rthms but
+;;;   their number and the number of sublists is open. A transition will be
+;;;   made from one group of rhythms to the next over the whole output
+;;;   (i.e. not one unit to another within e.g. the 1-beat rhythms) according
+;;;   to a fibonacci-transition method.
+;;; - A list with sublists of 2-beat and 3-beat full bars of rhythms used to
+;;;   construct the slower-moving counterpoint material of the
+;;;   rthm-seq-palette. This will be turned into a rthm-chain-slow object, and
+;;;   will therefore remain as lists of unparsed rhythms. Each sublist must
+;;;   contain the same number of rthms but their number and the number of
+;;;   sublists is open. A transition will be made from one group of rhythms to
+;;;   the next over the whole output (i.e. not one unit to another within
+;;;   e.g. the 1-beat rhythms) according to a fibonacci-transition method. NB:
+;;;   The rhythm units of slower-rthms must be expressed in single beats; e.g.,
+;;;   a 2/4 bar must consist of q+q rather than h. The consolidate-notes method
+;;;   can be called afterwards if desired.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+
+;;; - :beat. Default - 4.
+
+;;; - :1-beat-fibonacci.
+
+;;; - :slow-fibonacci.
+
+;;; - :players. Default = '(player1 player2).
+
+;;; - :section-id.
+
+;;; - :rests. e, q, q., and w rests are used by default, in a sequence
+;;;                   determined by a recurring-event instance.
+
+;;; - :do-rests.
+
+;;; - :do-rests-curve.
+
+;;; - :rest-re.
+
+;;; - :rest-cycle.
+
+;;; - :activity-curve.  In order to make music that 'progresses' we have curves
+;;;                   with y values from 1-10 indicating how much activity
+;;;                   there should be: 1 would mean only 1 in 10 beats would
+;;;                   have notes in/on them, 10 would indicate that all do.  We
+;;;                   use the patterns given in activity-levels::init-instance
+;;;                   below, where 1 means 'play', 0 means 'rest'.  There are
+;;;                   three examples of each level so that if we stick on one
+;;;                   level of activity for some time we won't always get the
+;;;                   same pattern: these will instead be cycled through.
+
+;;; -if the activity curve indicates a rest for a slower-rhythms group, then
+;;;                   the whole 2-3 beat group is omitted.
+
+;;; - :sticking-curve. ;;; Sticking happens after rests.  This can be
+;;;                   controlled with an activity envelope too, also indicating
+;;;                   one of the 10 patterns above (but also including 0).  A 0
+;;;                   or 1 unit here would refer to a certain number of repeats
+;;;                   (1) or none (0).  How many repeats could be determined by
+;;;                   something like: (procession 34 '(2 3 5 8 13) :peak 1
+;;;                   :expt 3) There's always a slower group to accompany the
+;;;                   sticking points: simply the next in the sequence,
+;;;                   repeated for as long as we stick
+
+
+;;; - :harmonic-rthm-curve.
+
+;;;                   The harmonic-rthm curve specifies how many slower-rthms
+;;;                   will be combined into a rthm-seq (each rthm-seq has a
+;;;                   single harmony).  The default is 2 bars (slower-rthms)
+;;;                   per rthm-seq.
+
+;;; - :do-sticking.
+;;; - :do-sticking-curve.
+;;; - :sticking-repeats.
+;;; - :sticking-rthms.
+;;; - :split-data.
 ;;; 
 ;;; RETURN VALUE
 ;;; 
@@ -1161,23 +1269,41 @@
     (make-cscl result :id id)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 26/1/10
 
+;;; SAR Mon Apr 30 11:33:56 BST 2012: Adding robodoc entry
+
+;;; MDE original comment:
 ;;; start with just 3 items/events and successively add new ones until a max of
 ;;; <items>--this can be a list or integer (must be a min of 4)
 
 ;;; ****f* rthm-chain/procession
+;;; DATE
+;;; 26-Jan-2010
 ;;; FUNCTION
-;;; 
-;;; 
+;;; Generate a list of a specified length consisting of items extrapolated from
+;;; a specified starting list. All elements of the resulting list will be
+;;; members of the original list. 
+;;;
 ;;; ARGUMENTS
-;;; 
+;;; - An integer that is the number of items in the list to be generated.
+;;; - A list of at least 4 starting items or an integer >=4. If an integer is
+;;;   given rather than a list, the method will process a list of consecutive
+;;;   numbers from 1 to the specified integer.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+
+;;; - :peak. A decimal number >0.0 and <=1.0. Default = 0.7.
+
+;;; - :expt. Default = 1.3.
+
+;;; - :orders. Default = '((1 2 1 2 3) (1 2 1 1 3) (1 2 1 3)).
+
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns two values, the first being the new list, with a secondary value
+;;; that is a list of 2-item lists that show how many time each element occurs
+;;; in the new list.
 ;;; 
 ;;; EXAMPLE
 #|

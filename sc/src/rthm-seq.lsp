@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 15:04:08 Tue Apr 17 2012 CEST
+;;; $$ Last modified: 18:52:48 Tue May  1 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2310,6 +2310,30 @@ rthm-seq NIL
 (defmethod no-accidental ((rs rthm-seq))
   (loop for bar in (bars rs) do (no-accidental bar)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue May  1 18:50:21 2012 -- 1-based
+;;; ****m* rthm-seq/get-bar
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod get-bar ((rs rthm-seq) bar-num &optional ignore)
+  (declare (ignore ignore))
+  (nth (1- bar-num) (bars rs)))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
@@ -2413,8 +2437,8 @@ data: ((((2 4) Q E S S) ((E) Q (E)) ((3 8) S S E. S)))
 ;;; pitch-seq are automatically generated and added
 (let ((mrs
        (make-rthm-seq '(seq1 ((((2 4) q e s s))
-			      :pitch-seq-palette ((1 2 3 4))))
-		      :psp-inversions t)))
+                              :pitch-seq-palette ((1 2 3 4))))
+                      :psp-inversions t)))
   (data (pitch-seq-palette mrs)))
 
 => (
@@ -2456,19 +2480,19 @@ data: (4 3 2 1)
   ;; second the data.  
   (let ((result
          (cond  
-	   ((typep rs 'rthm-seq) rs)
-	   ((listp rs) 
-	    ;; 4.8.10 if it's just a list of rthms, there's no id, otherwise
-	    ;; it's a 2-element list: (id (rthms....))  
-	    (if (and (second rs) (listp (second rs)))
-		(make-instance 'rthm-seq :id (first rs) :data (second rs))
-		(make-instance 'rthm-seq :id nil :data rs)))
-	   ;; otherwise it's already a named-object with a list as data...
-	   ((and (typep rs 'named-object) (listp (data rs)))
-	    (make-instance 'rthm-seq :id (id rs) 
-			   :data (copy-list (data rs))))
-	   (t (error "rthm-seq::make-rthm-seq: Can't make a rthm-seq from ~a"
-		     rs)))))
+           ((typep rs 'rthm-seq) rs)
+           ((listp rs) 
+            ;; 4.8.10 if it's just a list of rthms, there's no id, otherwise
+            ;; it's a 2-element list: (id (rthms....))  
+            (if (and (second rs) (listp (second rs)))
+                (make-instance 'rthm-seq :id (first rs) :data (second rs))
+                (make-instance 'rthm-seq :id nil :data rs)))
+           ;; otherwise it's already a named-object with a list as data...
+           ((and (typep rs 'named-object) (listp (data rs)))
+            (make-instance 'rthm-seq :id (id rs) 
+                           :data (copy-list (data rs))))
+           (t (error "rthm-seq::make-rthm-seq: Can't make a rthm-seq from ~a"
+                     rs)))))
     (when psp-inversions
       (setf (psp-inversions result) t)
       (add-inversions (pitch-seq-palette result)))
@@ -2582,7 +2606,7 @@ rthm-seq from-multipliers
 ;;; Using with a tuplet rhythm ('te) and setting the :tuplet option to 3 so
 ;;; that triplet brackets are automatically placed.
 (let ((rs (make-rthm-seq-from-unit-multipliers 'te '(7 9 16) '(4 4)
-					       :tuplet 3)))
+                                               :tuplet 3)))
   (loop for b in (bars rs)
      collect (loop for r in (rhythms b) collect (bracket r))))
 
@@ -2617,10 +2641,10 @@ rthm-seq from-multipliers
                             (loop for i below m 
                                for r = (make-rhythm unit)
                                do
-				 (cond ((zerop i) (setf (is-tied-from r) t))
-				       ((= i (1- m)) (setf (is-tied-to r) t)) 
-				       (t (setf (is-tied-to r) t)
-					  (setf (is-tied-from r) t)))
+                                 (cond ((zerop i) (setf (is-tied-from r) t))
+                                       ((= i (1- m)) (setf (is-tied-to r) t)) 
+                                       (t (setf (is-tied-to r) t)
+                                          (setf (is-tied-from r) t)))
                                collect r))
              appending temp))
          (length (length all))
@@ -2634,25 +2658,25 @@ rthm-seq from-multipliers
                   for bar = (make-rest-bar tsig nil)
                   while (< index length)
                   do
-		    (setf (rhythms bar) (subseq all index 
-						(min length end)))
-		    (when (>= end length) ;; last bar
-		      (setf (rhythms bar) 
-			    (append (rhythms bar)
-				    (loop for i below rests-needed
-				       collect (make-rest unit)))))
-		    (consolidate-notes bar)
-		    (consolidate-rests bar)
-		    (when auto-beam
-		      (auto-beam bar))
-		    (when tuplet
-		      (auto-put-tuplet-bracket-on-beats bar tuplet))
-		    (gen-stats bar)
+                    (setf (rhythms bar) (subseq all index 
+                                                (min length end)))
+                    (when (>= end length) ;; last bar
+                      (setf (rhythms bar) 
+                            (append (rhythms bar)
+                                    (loop for i below rests-needed
+                                       collect (make-rest unit)))))
+                    (consolidate-notes bar)
+                    (consolidate-rests bar)
+                    (when auto-beam
+                      (auto-beam bar))
+                    (when tuplet
+                      (auto-put-tuplet-bracket-on-beats bar tuplet))
+                    (gen-stats bar)
                   ;; 2/04
                   ;; 17/5/05: now handled at piece level
                   ;; (update-compound-durations bar)
-		    (incf index units-per-bar)
-		    (incf end units-per-bar)
+                    (incf index units-per-bar)
+                    (incf end units-per-bar)
                   collect bar))
     ;; have to make a 2-element list, the first is the id, the second the bars,
     ;; but the bars have to be in a list themselves....

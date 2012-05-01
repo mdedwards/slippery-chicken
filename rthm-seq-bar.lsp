@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 18:28:57 Tue May  1 2012 BST
+;;; $$ Last modified: 18:34:26 Tue May  1 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -554,6 +554,16 @@ data: NIL
 (defmethod all-rests? ((rsb rthm-seq-bar))
 ;;; ****
   (rhythms-all-rests? (rhythms rsb)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod consolidate-rests-max ((rsb rthm-seq-bar) &key beat min warn)
+  (loop with old-rthms with new-rthms with done = nil
+     until done do
+       (consolidate-rests rsb :beat beat :min min :warn warn)
+       (setf new-rthms (get-rhythm-symbols rsb))
+       (unless (setf done (equalp old-rthms new-rthms))
+         (setf old-rthms new-rthms))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  

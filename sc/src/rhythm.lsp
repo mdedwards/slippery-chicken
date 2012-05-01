@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 09:15:39 Sun Apr 29 2012 BST
+;;; $$ Last modified: 18:40:50 Tue May  1 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -215,14 +215,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-simple ((r rhythm) &optional written (stream t))
-  (format stream "~a ~a, "
+  (format stream "~a~a ~a~a, "
+          (if (is-tied-to r) "+" "")
           (cond ((is-rest r) "rest")
                 ((and (event-p r) (pitch-or-chord r))
                  (get-pitch-symbol r written))
                 (t "note"))
           (if (data r)
               (data r)
-              (duration r))))
+              (duration r))
+          (if (is-tied-from r) "+" "")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

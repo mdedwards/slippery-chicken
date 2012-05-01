@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 18:23:59 Tue May  1 2012 BST
+;;; $$ Last modified: 18:28:57 Tue May  1 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4205,6 +4205,30 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
   (unless (and (integerp value) (>= value 0) (<= value 5))
     (error "~a~&rthm-seq-bar::(setf bar-line-type): Value (~a) can only be ~
             an integer ~%between 1 and 5." rsb value)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue May  1 18:26:30 2012 -- 
+;;; ****m* rthm-seq-bar/get-rhythm-symbols
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod get-rhythm-symbols ((rsb rthm-seq-bar))
+;;; ****
+  (rhythms-as-symbols (rhythms rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

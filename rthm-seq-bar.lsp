@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 18:34:26 Tue May  1 2012 BST
+;;; $$ Last modified: 19:07:49 Tue May  1 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1344,26 +1344,36 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; If beat is nil, we'll get the beat from the time-sig; if check-dur we'll
 ;;; make sure we get a complete beat of rhythms for each beat of the bar
+;;; MDE Tue May  1 19:05:35 2012 -- check-dur can not be t, nil, #'warn or
+;;; #'error, where t is the same as #'error
 (defmethod get-beats ((rsb rthm-seq-bar) &optional beat check-dur)
   (let ((beat-dur (if (and beat (not (eq beat t)))
                       (duration (make-rhythm beat))
                       (beat-duration (get-time-sig rsb))))
         (current '())
+        (failed nil)
         (beats '())
         (dur 0.0))
+    ;; MDE Tue May  1 19:04:32 2012 -- 
+    (if (eq check-dur t)
+        (setf check-dur #'error))
     (loop for r in (rhythms rsb) do
-       ;; (print r)
          (push r current)
          (incf dur (duration r))
-       ;; (when (>= dur beat-dur)
          (when (or (> dur beat-dur)
                    (equal-within-tolerance dur beat-dur .001))
            (when check-dur
              (unless (equal-within-tolerance dur beat-dur .001)
-               (error "~a ~%rthm-seq-bar::get-beats: ~
-                        Can't find an exact beat of rhythms ~%~
-                        (dur: ~a beat-dur: ~a)!" 
-                      rsb dur beat-dur)))
+               ;; MDE Tue May  1 18:58:14 2012 -- added function argument
+               ;; possibility for check-dur 
+               (when (functionp check-dur)
+                 (funcall check-dur
+                          "~a ~%rthm-seq-bar::get-beats: ~
+                           Can't find an exact beat of rhythms ~%~
+                           (dur: ~a beat-dur: ~a)!" 
+                      rsb dur beat-dur)
+                 (setf failed t)
+                 (return))))
            (push (reverse current) beats)
            (setf dur 0.0
                  current nil)))

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 18:17:16 Mon Apr 30 2012 BST
+;;; $$ Last modified: 18:23:59 Tue May  1 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -584,7 +584,7 @@ data: NIL
   (let ((beats (get-beats rsb beat))
         (cbeats '())
         ;; 21.7.11
-        (rest-beat (make-rest (get-beat-as-rhythm rsb)))
+        (rest-beat (make-rest (if beat beat (get-beat-as-rhythm rsb))))
         (rest-dur nil)
         (count 1)
         (last-rhythm nil)
@@ -610,6 +610,7 @@ data: NIL
                    ;; 21.7.11
                    (setf current (list (clone rest-beat)))
                    (loop for r in beat do
+                      ;; (print (data r))
                         (if (is-rest r)
                             (if rest-dur
                                 (if (= rest-dur (duration r))
@@ -621,6 +622,8 @@ data: NIL
                                       ;; two other calls below
                                       (consolidate first-rhythm count)
                                       (setf count 1
+                                            ;; MDE Tue May  1 18:06:16 2012 !!!
+                                            first-rhythm r
                                             rest-dur (duration r))))
                                 ;; MDE Tue Mar 13 11:24:00 2012 -- need the
                                 ;; first rhythm for the bracket, if there is
@@ -629,6 +632,10 @@ data: NIL
                                       rest-dur (duration r)))
                             (progn ;; not a rest!
                               (when (and last-rhythm (is-rest last-rhythm))
+                                ;;(format t "~&no rest: ~a ~a ~a"
+                                  ;;      (value last-rhythm)
+                                    ;;    (value first-rhythm)
+                                      ;;  count)
                                 ;; MDE Tue Mar 13 11:25:26 2012 
                                 (consolidate first-rhythm count))
                               (setf rest-dur nil
@@ -639,25 +646,27 @@ data: NIL
                  ;; MDE Tue Mar 13 11:25:32 2012 
                  (consolidate first-rhythm count))
                (push (reverse current) cbeats)
+             ;; (print cbeats)
+             ;; (print current)
                (setf current nil
                      last-rhythm nil
                      rest-dur nil
                      count 1))
           (setf cbeats (flatten (reverse cbeats)))
+          ;; (print (loop for r in cbeats collect (data r)))
           (if (equal-within-tolerance (rhythms-duration rsb)
                                       (sum-rhythms-duration cbeats)
                                       .000004)
               ;; 21.7.11 (Pula) don't fail if we can't do it, just do nothing
               (setf (rhythms rsb) cbeats)
-              (progn
-                (when warn
-                  ;; (print rsb)
-                  ;; (print-rhythms-rqs (rhythms rsb))
-                  ;; (print-rhythms-rqs cbeats)
-                  (warn "~a~%rthm-seq-bar::consolidate-rests: ~
-                       Consolidated rthms sum (~a) != previous sum (~a)"
-                        rsb (sum-rhythms-duration cbeats)
-                        (rhythms-duration rsb)))))))))
+              (when warn
+                ;; (print rsb)
+                ;; (print-rhythms-rqs (rhythms rsb))
+                ;; (print-rhythms-rqs cbeats)
+                (warn "~a~%rthm-seq-bar::consolidate-rests: ~
+                         Consolidated rthms sum (~a) != previous sum (~a)"
+                      rsb (sum-rhythms-duration cbeats)
+                      (rhythms-duration rsb))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -4718,8 +4727,10 @@ show-rest: T
                (unless (zerop num)
                  (push (clone rest) result))
                ;; reversing puts longer rests in first!
-               ;; (nreverse result)))
-               result))
+               ;; MDE Tue May  1 18:18:09 2012 -- this was commented out but
+               ;; seems to be more sensible 
+               (nreverse result)))
+           ;; result))
            (number-error (num)
              (error "rthm-seq-bar::consolidate-rests-aux: ~a unhandled!"
                     num)))

@@ -2960,6 +2960,45 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May  2 14:01:53 BST 2012: Added robodoc entry
+
+;;; ****m* event/replace-mark
+;;; FUNCTION
+;;; Replace a specified mark of a given event object with a second specified
+;;; mark. If an event object contains more than one mark, individual marks can
+;;; be changed without modifying the remaining marks.
+;;; 
+;;; ARGUMENTS 
+;;; - An event object.
+;;; - The mark to be replaced.
+;;; - The new mark.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether the mark to be replaced is in the
+;;;   MARKS-BEFORE slot. T = it is in the MARKS-BEFORE slot. Default = NIL. 
+;;;
+;;; RETURN VALUE  
+;;; Returns the new value of the MARKS/MARKS-BEFORE slot of the given object. 
+;;; 
+;;; EXAMPLE
+#|
+;; Add marks to the MARKS slot and replace 'a with 'batt
+(let ((e (make-event 'c4 'q)))
+  (loop for m in '(a s pizz) 
+     do (add-mark e m))
+  (replace-mark e 'a 'batt))
+
+=> (PIZZ S BATT)
+
+;; Add marks to the MARKS-BEFORE slot and replace 'arco with 'at
+(let ((e (make-event 'c4 'q)))
+  (loop for m in '(arco col-legno) 
+     do (add-mark-before e m))
+  (replace-mark e 'arco 'at t))
+
+=> (COL-LEGNO AT)
+
+|#
 (defmethod replace-mark ((e event) what with &optional before)
 ;;; ****
   (let ((new (substitute with what (if before
@@ -3001,31 +3040,39 @@ T
 ;;;   object, it will be cloned.  
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :start-time. The start time of the event in seconds.
-;;;   Default = NIL.
-;;; - keyword argument :is-rest. Set to T or NIL to indicate whether or not the
-;;;   given event is a rest. Default = NIL. NB: The make-rest method is better 
-;;;   suited to making rests; however, if using make-event to do so, the 
-;;;   pitch-or-chord slot must be set to NIL.  
-;;; - keyword argument :is-tied-to. This argument is for score output and
-;;;   playing purposes. Set to T or NIL to indicate whether this event is tied
-;;;   to the previous event (i.e. it won't sound indpendently). Default = NIL.  
-;;; - keyword argument :duration. T or NIL to indicate whether the specified
-;;;   duration of the event has been stated in absolute seconds, not a known 
-;;;   rhythm like 'e. Thus (make-event 'c4 4 :duration nil) indicates a quarter 
-;;;   note with duration 1, but (make-event '(c4 d4) 4 :duration t) indicates a 
-;;;   whole note with an absolute duration of 4 seconds (both assuming a tempo
-;;;   of 60). Default = NIL. 
-;;; - keyword agument :amplitude sets the amplitude of the event. Possible
-;;;   values span from 0.0 (silent) to maximum of 1.0. Default = 0.7. 
-;;; - keyword argument :tempo. A number to indicate the tempo of the event as a
-;;;   normal bpm value. Default = 60. This argument is only used when creating 
-;;;   the rhythm slots (e.g. duration). 
-;;; - keyword argument :midi-channel. A number from 0 to 127 indicating the
-;;;   MIDI channel on which the event should be played back. Default = NIL.  
-;;; - keyword argument :microtones-midi-channel. If the event is microtonal,
-;;;   this argument indicates the MIDI-channel to be used for the playback of
-;;;   the microtonal notes. Default = NIL. 
+;;; keyword arguments:
+
+;;; - :start-time. The start time of the event in seconds. Default = NIL.
+
+;;; - :is-rest. Set to T or NIL to indicate whether or not the given event is a
+;;;   rest. Default = NIL. NB: The make-rest method is better suited to making
+;;;   rests; however, if using make-event to do so, the pitch-or-chord slot
+;;;   must be set to NIL.
+
+;;; - :is-tied-to. This argument is for score output and playing purposes. Set
+;;;   to T or NIL to indicate whether this event is tied to the previous event
+;;;   (i.e. it won't sound indpendently). Default = NIL.
+
+;;; - :duration. T or NIL to indicate whether the specified duration of the
+;;;   event has been stated in absolute seconds, not a known rhythm like
+;;;   'e. Thus (make-event 'c4 4 :duration nil) indicates a quarter note with
+;;;   duration 1, but (make-event '(c4 d4) 4 :duration t) indicates a whole
+;;;   note with an absolute duration of 4 seconds (both assuming a tempo of
+;;;   60). Default = NIL.
+
+;;; - :amplitude sets the amplitude of the event. Possible values span from 0.0
+;;;   (silent) to maximum of 1.0. Default = 0.7.
+
+;;; - :tempo. A number to indicate the tempo of the event as a normal bpm
+;;;   value. Default = 60. This argument is only used when creating the rhythm
+;;;   slots (e.g. duration).
+
+;;; - :midi-channel. A number from 0 to 127 indicating the MIDI channel on
+;;;   which the event should be played back. Default = NIL.
+
+;;; - :microtones-midi-channel. If the event is microtonal, this argument
+;;;   indicates the MIDI-channel to be used for the playback of the microtonal
+;;;   notes. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
 ;;; - An event object.

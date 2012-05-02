@@ -783,6 +783,7 @@ data: (
 ;;;
 ;;; EXAMPLE
 #|
+
 (let ((msp (make-set-palette 
             'test
             '((1 ((1
@@ -833,25 +834,31 @@ data: (
 ;;;   numbers.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :partials. A list of integers that are the partials
-;;;   which the method is to ring modulate, with 1 being either the
-;;;   reference-note or the bass note that would have the reference-note as the
-;;;   highest partial in the given list. Default = '(1 3 5 7).
-;;; - keyword argument :warn-no-bass. T or NIL to indicate whether to issue a
-;;;   warning when ring-mod-bass fails to find suitable bass notes for the
-;;;   generated sets. T = warn. Default = T.
-;;; - keyword argument :do-bass. T or NIL to indicate whether to add notes
-;;;   created by the ring-mod-bass function to the resulting set-palette
-;;;   obect. T = create and add bass notes. Default = T.
-;;; - keyword argument :remove-octaves. T or NIL to indicate whether to remove
-;;;   the upper instances of any octave-equivalent pitches from the resulting
-;;;   set-palette object. T = remove. Default = NIL.
-;;; - keyword argument :min-bass-notes. An integer that is the minimum number
-;;;   of bass notes to be generated and added to the resulting set-palette
-;;;   object. Default = 1.
-;;; - keyword argument :ring-mod-bass-octave. An integer that is the MIDI
-;;;   octave reference number (such as the 4 in 'C4), indicating the octave
-;;;   from which the bass note(s) are to be taken.
+;;; keyword arguments:
+
+;;; - :partials. A list of integers that are the partials which the method is
+;;;   to ring modulate, with 1 being either the reference-note or the bass note
+;;;   that would have the reference-note as the highest partial in the given
+;;;   list. Default = '(1 3 5 7).
+
+;;; - :warn-no-bass. T or NIL to indicate whether to issue a warning when
+;;;   ring-mod-bass fails to find suitable bass notes for the generated sets. T
+;;;   = warn. Default = T.
+
+;;; - :do-bass. T or NIL to indicate whether to add notes created by the
+;;;   ring-mod-bass function to the resulting set-palette obect. T = create and
+;;;   add bass notes. Default = T.
+
+;;; - :remove-octaves. T or NIL to indicate whether to remove the upper
+;;;   instances of any octave-equivalent pitches from the resulting set-palette
+;;;   object. T = remove. Default = NIL.
+
+;;; - :min-bass-notes. An integer that is the minimum number of bass notes to
+;;;   be generated and added to the resulting set-palette object. Default = 1.
+
+;;; - :ring-mod-bass-octave. An integer that is the MIDI octave reference
+;;;   number (such as the 4 in 'C4), indicating the octave from which the bass
+;;;   note(s) are to be taken.
 ;;; 
 ;;; RETURN VALUE  
 ;;; - A set-palette object (recursive)

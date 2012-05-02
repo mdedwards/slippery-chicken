@@ -2312,21 +2312,50 @@ rthm-seq NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue May  1 18:50:21 2012 -- 1-based
+
+;;; SAR Wed May  2 19:25:31 BST 2012: Added robodoc entry
+
 ;;; ****m* rthm-seq/get-bar
 ;;; FUNCTION
-;;; 
+;;; Get a specified rthm-seq-bar object from within a rthm-seq object. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A rthm-seq object.
+;;; - An integer that is the 1-based number of the desired bar to return from
+;;;   within the given rthm-seq object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a rthm-seq-bar object.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Returns a rthm-seq-bar object
+(let ((rs (make-rthm-seq '(seq1 ((((2 4) q e s s)
+				  ((e) q (e))
+				  ((3 8) s s e. s)))))))
+  (get-bar rs 2))
+
+=> 
+RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1, 
+              old-bar-nums: NIL, write-bar-num: NIL, start-time: -1.000, 
+              start-time-qtrs: -1.0, is-rest-bar: NIL, multi-bar-rest: NIL, 
+              show-rest: T, notes-needed: 1, 
+              tuplets: NIL, nudge-factor: 0.35, beams: NIL, 
+              current-time-sig: 6, write-time-sig: NIL, num-rests: 2, 
+              num-rhythms: 3, num-score-notes: 1, parent-start-end: NIL, 
+              missing-duration: NIL, bar-line-type: 0, 
+              player-section-ref: NIL, nth-seq: NIL, nth-bar: NIL, 
+              rehearsal-letter: NIL, all-time-sigs: (too long to print) 
+              sounding-duration: NIL, 
+              rhythms: (
+[...]
+
+(let ((rs (make-rthm-seq '(seq1 ((((2 4) q e s s)
+				  ((e) q (e))
+				  ((3 8) s s e. s)))))))
+  (print-simple (get-bar rs 2)))
+
+=> (2 4): rest E, note Q, rest E,
 
 |#
 ;;; SYNOPSIS

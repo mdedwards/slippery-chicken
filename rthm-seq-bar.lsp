@@ -557,7 +557,54 @@ data: NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May  2 17:56:01 BST 2012: Added robodoc entry
+
+;;; ****m* rthm-seq-bar/consolidate-rests-max
+;;; FUNCTION
+;;; Similar to consolidate-rests, but calls that method repeatedly until no
+;;; more changes can be made to the given rthm-seq-bar object.
+;;; 
+;;; ARGUMENTS
+;;; - A rthm-seq-bar object.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :beat. The beat basis into which rests are to be consolidated. If no
+;;;   value is given for this option, the method will take the beat from the
+;;;   time signature. 
+
+;;; - :min. The minimum duration for consolidated durations. This is a target
+;;;   value only, as depending on the source material the method may not always
+;;;   be able to achieve this. Default = 0.0.
+
+;;; - :warn. T or NIL to indicate whether the method should print a warning to
+;;;   the Lisp listener if it is mathematically unable to consolidate the
+;;;   rests. T = print warning. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; Returns a list of event/rhythm objects.
+;;; 
+;;; EXAMPLE
+#|
+;;; Two examples with the same result; the first calling consolidate-rests
+;;; twice, the second calling consolidate-rests-max
+(let ((rsb (make-rthm-seq-bar '((2 2) (e) (e) (e) (e) (e) (s) (s) (s) e.))))
+  (consolidate-rests rsb)
+  (consolidate-rests rsb)
+  (loop for r in (rhythms rsb) collect (data r)))
+
+=> (2 Q S E.)
+
+(let ((rsb (make-rthm-seq-bar '((2 2) (e) (e) (e) (e) (e) (s) (s) (s) e.))))
+  (consolidate-rests-max rsb)
+  (loop for r in (rhythms rsb) collect (data r)))
+
+=> (2 Q S E.)
+
+|#
+;;; SYNOPSIS
 (defmethod consolidate-rests-max ((rsb rthm-seq-bar) &key beat min warn)
+;;; ****
   (loop with old-rthms with new-rthms with done = nil
      until done do
        (consolidate-rests rsb :beat beat :min min :warn warn)
@@ -567,23 +614,92 @@ data: NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  
-;;; SAR Sun Apr 29 17:50:31 BST 2012: Added robodoc entry
+;;; SAR Wed May  2 17:22:02 BST 2012: Added robodoc entry
 
 ;;; ****m* rthm-seq-bar/consolidate-rests
 ;;; FUNCTION
-;;; Consolidate two or more consecutive rests into on longer rhythmic unit. 
-;;; 
+;;; Consolidate two or more consecutive rests into one longer rhythmic
+;;; unit. This method works on the basis of beats, striving to consolidate into
+;;; beats first.
+;;;
+;;; NB: The user may find it helpful to adjust the :beat and :min values, and
+;;;     even to call the method more than once consecutively. For multiple
+;;;     calls, the method consolidate-rests-max may also be useful.
+;;;
 ;;; ARGUMENTS
 ;;; - A rthm-seq-bar object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments
+
+;;; - :beat. The beat basis into which rests are to be consolidated. If no
+;;;   value is given for this option, the method will take the beat from the
+;;;   time signature. 
+
+;;; - :min. The minimum duration for consolidated durations. This is a target
+;;;   value only, as depending on the source material the method may not always
+;;;   be able to achieve this. Default = 0.0.
+
+;;; - :warn. T or NIL to indicate whether the method should print a warning to
+;;;   the Lisp listener if it is mathematically unable to consolidate the
+;;;   rests. T = print warning. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of rhythm/event objects.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Returns a list of rhythm/event objects 
+(let ((rsb (make-rthm-seq-bar '((4 4) (e) (e) (e) (e) (e) (s) (s) (s) e.))))
+  (consolidate-rests rsb))
+
+=>
+(
+EVENT: start-time: NIL, end-time: NIL, 
+[...]
+data: 4
+[...]
+EVENT: start-time: NIL, end-time: NIL, 
+[...]
+data: 4
+[...]
+EVENT: start-time: NIL, end-time: NIL, 
+[...]
+data: 4
+[...]
+RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: T, 
+[...]
+data: S
+[...]
+RHYTHM: value: 5.333, duration: 0.750, rq: 3/4, is-rest: NIL, 
+[...]
+data: E.
+)
+
+;;; Consolidating on the basis of the time-signature's beat by default
+(let ((rsb (make-rthm-seq-bar '((4 4) (e) (e) (e) (e) (e) (s) (s) (s) e.))))
+  (consolidate-rests rsb)
+  (loop for r in (rhythms rsb) collect (data r)))
+
+=> (4 4 4 S E.)
+
+;; Changing the :beat may effect the outcome
+(let ((rsb (make-rthm-seq-bar '((4 4) (e) (e) (e) (e) (e) (s) (s) (s) e.))))
+  (consolidate-rests rsb :beat 2)
+  (loop for r in (rhythms rsb) collect (data r)))
+
+=> (2 E E S E.)
+
+;; Calling multiple times may further consolidate the results
+(let ((rsb (make-rthm-seq-bar '((2 2) (e) (e) (e) (e) (e) (s) (s) (s) e.))))
+  (consolidate-rests rsb)
+  (print (loop for r in (rhythms rsb) collect (data r)))
+  (consolidate-rests rsb)
+  (print (loop for r in (rhythms rsb) collect (data r))))
+
+=>
+(2 E E S E.) 
+(2 Q S E.)
 
 |#
 ;;; SYNOPSIS
@@ -643,9 +759,9 @@ data: NIL
                             (progn ;; not a rest!
                               (when (and last-rhythm (is-rest last-rhythm))
                                 ;;(format t "~&no rest: ~a ~a ~a"
-                                  ;;      (value last-rhythm)
-                                    ;;    (value first-rhythm)
-                                      ;;  count)
+				;;      (value last-rhythm)
+				;;    (value first-rhythm)
+				;;  count)
                                 ;; MDE Tue Mar 13 11:25:26 2012 
                                 (consolidate first-rhythm count))
                               (setf rest-dur nil
@@ -4228,21 +4344,27 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue May  1 18:26:30 2012 -- 
+
 ;;; ****m* rthm-seq-bar/get-rhythm-symbols
+;;; DATE
+;;; 01-May-2012
+;;;
 ;;; FUNCTION
-;;; 
+;;; Return the rhythms of a given rthm-seq-bar object as a list of rhythm
+;;; symbols. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A rthm-seq-bar object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - A list of rhythm symbols.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((rsb (make-rthm-seq-bar '((4 4) q e s s q. e))))
+  (get-rhythm-symbols rsb))
+
+=> (Q E S S Q. E)
 
 |#
 ;;; SYNOPSIS

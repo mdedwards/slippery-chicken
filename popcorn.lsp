@@ -339,6 +339,9 @@
 ;;; Change the length of the list of kernels contained in a given popcorn
 ;;; object by adding or removing items at regular intervals. If adding items,
 ;;; linear interpolation will be used.
+;;;
+;;; NB: The new length must be between 1 and 1 less than double the original
+;;;     length. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A popcorn object.

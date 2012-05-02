@@ -202,22 +202,38 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May  2 12:28:10 BST 2012: Added robodoc entry
+
 ;;; ****m* ensemble/num-notes
 ;;; FUNCTION
-;;; 
+;;; Get the number of attacked notes in a given slippery-chicken object. This
+;;; method accesses the ensemble object within the given slippery-chicken
+;;; object to perform this task.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An ensemble object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An integer that is the total number of attacked notes in the given
+;;; slippery-chicken object.
 ;;; 
 ;;; EXAMPLE
 #|
 
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) e e e e))
+                                :pitch-seq-palette ((1 2 3 4)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (num-notes (ensemble mini)))
+
+=> 40
 |#
 ;;; SYNOPSIS
 (defmethod num-notes ((e ensemble))
@@ -226,21 +242,48 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May  2 12:40:52 BST 2012: Added robodoc entry
+
 ;;; ****m* ensemble/tessitura
 ;;; FUNCTION
-;;; 
+;;;
+;;; Get the average pitch of a given slippery-chicken object. This method
+;;; accesses the ensemble object within the given slippery-chicken object to
+;;; perform this task.
+;;;
+;;; NB: This method processes data in relationship to degrees of the current
+;;;     tuning system (scale), which is quarter-tone by default. It is
+;;;     therefore possible, when generating a piece using only chromatic
+;;;     pitches but within a non-chromatic tuning to get microctonal results.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An ensemble object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An integer that is the average pitch of the given slippery-chicken object
+;;; in degrees.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Change the tuning to chromatic first to get an accurate result:
+(in-scale :chromatic)
+
+=> #<tuning "chromatic-scale">
+
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) e e e e))
+                                :pitch-seq-palette ((1 2 3 4)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (tessitura (ensemble mini)))
+
+=> C4
 
 |#
 ;;; SYNOPSIS

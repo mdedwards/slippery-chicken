@@ -2303,10 +2303,11 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Thu Apr 26 12:58:49 BST 2012: Added robodoc entry
+;;; SAR Wed May  2 13:39:41 BST 2012: Added comment about handle-ties to the
+;;; robodoc. 
 
 ;;; ****m* slippery-chicken-edit/tie
 ;;; FUNCTION
-
 ;;; Add a tie to a specified event object. The new tie will be placed starting
 ;;; from the specified event object and spanning to the next event object. If
 ;;; the next event object does not have the same pitch, its pitch will be
@@ -2314,6 +2315,9 @@ NIL
 ;;;
 ;;; An optional argument allows the user to adjust the steepness of the tie's
 ;;; curvature. 
+;;;
+;;; NB: This method will not automatically update ties in MIDI output. To make
+;;;     sure that MIDI ties are also updated, use the handle-ties method.
 ;;;
 ;;; NB: If the next event object is a rest and not a note, an error will be
 ;;;     produced.
@@ -2438,6 +2442,9 @@ NIL
 ;;; starts with a rest in the specified region, such that the rest that begins
 ;;; the next measure is changed to a note and the last note of the first
 ;;; measure is tied to it.
+;;;
+;;; NB: This method will not automatically update ties in MIDI output. To make
+;;;     sure that MIDI ties are also updated, use the handle-ties method.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -2533,6 +2540,9 @@ NIL
 ;;; Extend the duration of the last note in a specified bar by changing
 ;;; immediately subsequent full-rest bars to notes of the same pitch and tying
 ;;; them to that note.
+;;;
+;;; NB: This method will not automatically update ties in MIDI output. To make
+;;;     sure that MIDI ties are also updated, use the handle-ties method.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -2623,6 +2633,9 @@ NIL
 ;;; Extend the durations of all notes that immediately precede rests in the
 ;;; specified region by changing the rests to notes and tying the previous notes
 ;;; to them.
+;;;
+;;; NB: This method will not automatically update ties in MIDI output. To make
+;;;     sure that MIDI ties are also updated, use the handle-ties method.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -2730,6 +2743,9 @@ NIL
 ;;; FUNCTION
 ;;; Extend the duration of a specified note that precedes a rest by changing
 ;;; the rest to a note with the same pitch and adding a tie between them.
+;;;
+;;; NB: This method will not automatically update ties in MIDI output. To make
+;;;     sure that MIDI ties are also updated, use the handle-ties method.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -3973,26 +3989,56 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  A post-generation editing method
 
-;;; SAR Fri Apr 27 13:17:14 BST 2012: Added robodoc entry
-
-;;; start/end-note are 1-based but count ties.  if no optional args, deletes
-;;; all beams in the bar.
+;;; SAR Wed May  2 13:11:53 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/sc-delete-beams
 ;;; FUNCTION
-;;; 
+;;; Delete beam indications from specified notes. If only a bar number is
+;;; specified, this method deletes all beams in the bar.
+;;;
+;;; NB: If specifying start and end notes, the start notes specified must be
+;;;     the first note of a beamed group of notes (i.e. the BEAMS slot of the
+;;;     corresponding event object must be 1), and the end note must be the
+;;;     last note of a beamed group of notes (i.e., the BEAMS slot of the
+;;;     corresponding event object must be 0), otherwise errors may
+;;;     occur. Also, if specifying one of these arguments, both must be
+;;;     specified. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar in which the beams are to be
+;;;   deleted.
+;;; - The ID of the player from whose part the beams are to be deleted.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+
+;;; - An integer that is the number of the note that currently holds the
+;;;   start-beam information (i.e., the BEAMS slot is 1). This number is
+;;;   1-based and counts ties.
+
+;;; - An integer that is the number of the note that currently holds the
+;;;   end-beam information (i.e., the BEAMS slot is 0). This number is 1-based
+;;;   and counts ties.
+
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; If deleting all beams in a bar, returns T, otherwise returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) - e e - - e e - - e e - - e e -))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+  (sc-delete-beams mini 2 'vc)
+  (sc-delete-beams mini 3 'vc 3 4))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS

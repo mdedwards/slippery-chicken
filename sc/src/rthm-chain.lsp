@@ -1270,7 +1270,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Mon Apr 30 11:33:56 BST 2012: Adding robodoc entry
+;;; SAR Wed May  2 18:34:04 BST 2012: Editing/adding robodoc entry
 
 ;;; MDE original comment:
 ;;; start with just 3 items/events and successively add new ones until a max of
@@ -1284,6 +1284,10 @@
 ;;; a specified starting list. All elements of the resulting list will be
 ;;; members of the original list. 
 ;;;
+;;; The method generates the new list by starting with the first 3 elements of
+;;; the initial list and successively adding consecutive elements from the
+;;; initial list until all elements have been added.
+;;;
 ;;; ARGUMENTS
 ;;; - An integer that is the number of items in the list to be generated.
 ;;; - A list of at least 4 starting items or an integer >=4. If an integer is
@@ -1293,20 +1297,69 @@
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
 
-;;; - :peak. A decimal number >0.0 and <=1.0. Default = 0.7.
+;;; - :peak. A decimal number >0.0 and <=1.0. This number indicates the target
+;;;   location in the new list at which the last element is to finally occur,
+;;;   whereby e.g. 0.7 = ~70% of the way through the resulting list. This is an
+;;;   approximate value only. The last element may occur earlier or later
+;;;   depending on the values of the other arguments. In particular, initial
+;;;   lists with a low number of items are likely to result in new lists in
+;;;   which the final element occurs quite early on, perhaps even nowhere near
+;;;   the specified peak value. Default = 0.7.
 
-;;; - :expt. Default = 1.3.
+;;; - :expt. A (decimal) number that indicates the "curve" that determines the
+;;;   intervals at which each successive element of the initial list is
+;;;   introduced to the new list. A higher number indicates a steeper
+;;;   exponential curve. Default = 1.3.
 
-;;; - :orders. Default = '((1 2 1 2 3) (1 2 1 1 3) (1 2 1 3)).
+;;; - :orders. The patterns by which the elements are added. The method
+;;;   cyclically applies these orders, the numbers 1, 2, and 3 representing the
+;;;   three least used elements at each pass. These orders must therefore
+;;;   contain all of the numbers 1, 2, and 3, and those numbers only. 
+;;;   Default = '((1 2 1 2 3) (1 2 1 1 3) (1 2 1 3)).
 
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns two values, the first being the new list, with a secondary value
-;;; that is a list of 2-item lists that show how many time each element occurs
+;;; that is a list of 2-item lists that show the distribution of each element
 ;;; in the new list.
 ;;; 
 ;;; EXAMPLE
 #|
+(procession 300 30 :peak 0.1)
+
+=>
+(1 2 1 2 3 4 5 4 4 6 7 8 7 9 10 11 10 11 12 13 14 13 13 15 16 17 16 18 19 20 19
+   20 21 22 23 22 22 24 25 26 25 27 28 29 28 29 30 3 5 3 3 6 8 9 8 12 14 15 14
+   15 17 18 21 18 18 23 24 26 24 27 1 2 1 2 30 5 6 5 5 7 9 10 9 11 12 16 12 16
+   17 19 20 19 19 21 23 25 23 26 27 28 27 28 29 4 6 4 4 30 7 8 7 10 11 13 11 13
+   14 15 17 15 15 20 21 22 21 24 25 26 25 26 29 1 2 1 1 30 3 6 3 8 9 10 9 10 12
+   14 16 14 14 17 18 20 18 22 23 24 23 24 27 28 29 28 28 30 2 5 2 6 7 8 7 8 11
+   12 13 12 12 16 17 19 17 20 21 22 21 22 25 26 27 26 26 29 3 4 3 30 5 6 5 6 9
+   10 11 10 10 13 15 16 15 18 19 20 19 20 23 24 25 24 24 27 1 29 1 30 2 4 2 4 7
+   8 9 8 8 11 13 14 13 16 17 18 17 18 21 22 23 22 22 25 27 28 27 29 3 5 3 5 30
+   6 7 6 6 9 11 12 11 14 15 16 15 16 19 20 21 20 20 23 25 26 25 28 1 29 1 29 30
+   2 4 2 2 7 9 10 9 12 13 14 13 14 17 18), ((2 12) (20 11) (14 11) (13 11) 
+   (9 11) (6 11) (1 11) (29 10) (25 10) (22 10) (18 10) (17 10) (16 10) (15 10)
+   (12 10) (11 10) (10 10) (8 10) (7 10) (5 10) (4 10) (3 10) (30 9) (28 9) 
+   (27 9) (26 9) (24 9) (23 9) (21 9) (19 9))
+
+(procession 300 30 :peak 0.9)
+
+=>
+(1 2 1 2 3 1 3 1 1 4 2 3 2 4 3 4 3 4 5 2 4 2 2 5 1 3 1 5 3 4 3 4 5 1 5 1 1 6 2
+   5 2 6 4 5 4 5 6 3 6 3 3 7 5 6 5 7 2 6 2 6 7 6 7 6 6 8 4 7 4 8 7 8 7 8 9 7 8
+   7 7 9 8 9 8 10 8 9 8 9 10 8 9 8 8 10 9 10 9 11 9 10 9 10 11 10 11 10 10 12
+   10 11 10 12 11 12 11 12 13 11 12 11 11 13 12 13 12 14 12 13 12 13 14 13 14
+   13 13 15 13 14 13 15 11 14 11 14 15 14 15 14 14 16 15 16 15 17 15 16 15 16
+   17 16 17 16 16 18 16 17 16 18 17 18 17 18 19 17 18 17 17 19 18 19 18 20 18
+   19 18 19 20 19 20 19 19 21 15 20 15 21 20 21 20 21 22 20 21 20 20 22 21 22
+   21 23 21 22 21 22 23 22 23 22 22 24 23 24 23 25 23 24 23 24 25 24 25 24 24
+   26 23 25 23 26 25 26 25 26 27 26 27 26 26 28 25 27 25 28 27 28 27 28 29 27
+   28 27 27 29 28 29 28 30 24 29 24 29 30 26 29 26 26 30 28 29 28 30 19 29 19
+   29 30 22 25 22 22 30 12 27 12 30 14 16 14 16 30 17), ((8 12) (22 11)
+   (16 11) (14 11) (12 11) (11 11) (10 11) (4 11) (3 11) (2 11) (26 10) 
+   (19 10) (17 10) (15 10) (13 10) (9 10) (7 10) (6 10) (5 10) (1 10)
+   (29 9) (28 9) (27 9) (25 9) (24 9) (23 9) (21 9) (20 9) (18 9) (30 8))
 
 |#
 ;;; SYNOPSIS
@@ -1316,7 +1369,7 @@
                    ;; the max number of items?  NB This is approximate only:
                    ;; you may find the first occurrence of the highest element
                    ;; earlier or later depending on the values of the other
-                   ;; arguments.  In particular, with a low number of item the
+                   ;; arguments.  In particular, with a low number of items the
                    ;; highest element will be hit very early on, perhaps
                    ;; nowhere near the peak argument.
                    (peak 0.7)

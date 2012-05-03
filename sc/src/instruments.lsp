@@ -55,10 +55,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu May  3 13:55:22 BST 2012: Editing robodoc entry
+
 ;;; ****P* instruments/+slippery-chicken-standard-instrument-palette+
-;;; NAME
-;;; +slippery-chicken-standard-instrument-palette+:
-;;;
+;;; FUNCTION
 ;;; A palette of standard instruments (by no means exhaustive...) for use
 ;;; directly in projects or for combining with user palettes e.g.
 ;;; 
@@ -73,7 +73,7 @@
 (defparameter +slippery-chicken-standard-instrument-palette+
   (make-instrument-palette
    'slippery-chicken-standard-instrument-palette
-   ;; SAR Fri Jan 20 11:43:32 GMT 2012: Re-ordering these to Adler's "standard"
+   ;; SAR Fri Jan 20 11:43:32 GMT 2012: Re-ordering these to Adler's "standard" 
    ;; score order for easier look-up
    '((piccolo
       (:staff-name "piccolo" :staff-short-name "picc"
@@ -211,7 +211,7 @@
        :microtones t
        :midi-program 57))
      ;; SAR Fri Jan 20 12:09:41 GMT 2012: Added b-flat-trumpet from Adler
-     ;;; MDE Mon Feb 20 20:02:55 2012 -- modified to keep in line with clarinet
+     ;; MDE Mon Feb 20 20:02:55 2012 -- modified to keep in line with clarinet
      (b-flat-trumpet
       (:staff-name "B-flat trumpet" :staff-short-name "b-flat tpt" 
        ;; the -flat should be convereted in CMN and Lilypond to the flat sign
@@ -248,9 +248,9 @@
        :chords t :chord-function piano-chord-fun
        :microtones nil 
        :midi-program 1))
-     ;; we generally treat the piano as two instruments (LH, RH), generating
-     ;; lines separately.  So this is the same as the piano instrument but has
-     ;; no staff-name and starts with bass clef.  Use set-limits to change the
+     ;; We generally treat the piano as two instruments (LH, RH), generating
+     ;; lines separately. So this is the same as the piano instrument but has
+     ;; no staff-name and starts with bass clef. Use set-limits to change the
      ;; range of the two hands, as they're both set to be full piano range
      ;; here.
      (piano-lh
@@ -330,51 +330,33 @@
        ;;; ****
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu May  3 14:02:38 BST 2012: Added robodoc entry
+
 ;;; MDE Tue Mar 20 15:55:39 2012 -- add some more default chord functions for
 ;;; the user to choose from.
 
-;;; skip every other note, go for three notes, max one octave apart
 ;;; ****f* instruments/chord-fun1
 ;;; FUNCTION
+;;; Generate three-note chords where possible, using every second pitch from
+;;; the list of pitches currently available to the given instrument from the
+;;; current set, and ensuring that none of the chords it makes span more than
+;;; an octave.
 ;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defun chord-fun1 (curve-num index pitch-list pitch-seq instrument set)
 ;;; ****
   (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 2 3 12))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; every third note, 4 notes, (almost) no limit to span
+
+;;; SAR Thu May  3 14:13:12 BST 2012: Added robodoc entry
+
 ;;; ****f* instruments/chord-fun2
 ;;; FUNCTION
+;;; Generates 4-note chords where possible, using every third pitch from the
+;;; list of pitches currently available to the given instrument from the
+;;; current set, with (almost) no limit on the total span of the chord.
 ;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defun chord-fun2 (curve-num index pitch-list pitch-seq instrument set)
 ;;; ****
@@ -382,21 +364,43 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; remember that the index is the desired top note of the chord
+
+;;; SAR Thu May  3 14:15:16 BST 2012: Added robodoc entry
+
 ;;; ****f* instruments/chord-fun-aux
 ;;; FUNCTION
-;;; 
+;;; An auxiliary function that allows users to create moderately tailored chord
+;;; functions by setting values for the number of notes in the current set to
+;;; skip, the number of desired notes in the resulting chord, and the maximum
+;;; span of the resulting chord in semitones.
+;;;
+;;; This function must be called within a call to the defun macro to create a
+;;; new chord function, as demonstrated below.
 ;;; 
 ;;; ARGUMENTS
+;;; The first six arguments -- curve-num, index, pitch-list, pitch-seq,
+;;; instrument, and set -- are inherited and not required to be directly
+;;; accessed by the user.
 ;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
+;;; - An integer that is the step by which the function skips through the
+;;;   subset of currently available pitches. A value of 2, for example, will
+;;;   instruct the method to build chords from every second pitch in that
+;;;   subset.
+;;; - An integer that is the number of pitches that should be in each resulting
+;;;   chord. If the list of pitches available to an instrument is too short to
+;;;   make a chord with x notes, a chord with fewer pitches may be made
+;;;   instead.
+;;; - An integer that is the largest interval in semitones allowed between the
+;;;   bottom and top notes of the chord. If a chord made with the specified
+;;;   number of notes surpasses this span, a chord with fewer pitches may be
+;;;   made instead.
+;;;
 ;;; EXAMPLE
 #|
+(defun new-chord-function (curve-num index pitch-list pitch-seq instrument set)
+  (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 4 3 14))
+
+=> NEW-CHORD-FUNCTION
 
 |#
 ;;; SYNOPSIS
@@ -415,7 +419,7 @@
        for i from start by skip
        for p = (nth i pitch-list)
        do
-         ;; (print (data p))
+       ;; (print (data p))
          (when (and p (<= (pitch- p at-start) max-span)
                     (not (member p result :test #'note=)))
            (push p result)))
@@ -433,35 +437,33 @@
          ;; (rest-sorted (sort (rest pitch-list) #'pitch<))
          (possible (loop for p in (rest pitch-list) 
                       for diff = (abs (pitch- p p1))
-                        do
+		      do
                       ;; must be above a perfect fifth, and let's avoid
                       ;; microtonal chords for ease of playing
-                      (when (and (not (micro-tone p))
-                                (>  diff 7)
-                                (<= diff 11))
-                        (return p)))))
+			(when (and (not (micro-tone p))
+				   (>  diff 7)
+				   (<= diff 11))
+			  (return p)))))
     (when possible
       (make-chord (list p1 possible)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu May  3 14:52:30 BST 2012: Added robodoc entry
+
 ;;; ****f* instruments/string-chord-selection-fun
 ;;; FUNCTION
+;;; This is the core function for creating instances of double-stop chords for
+;;; strings, ensuring that the highest note of the double-stop is not lower
+;;; than the open III string. The pitch of the open III string is passed as an
+;;; argument in the chord-selection functions for the individual stringed
+;;; instruments. 
+;;;
+;;; This function implements the best-string-diad function. If no double-stops
+;;; instances can be created using best-string-diad, two-note chords will be
+;;; created using the default-chord-function. If neither of these are possible,
+;;; a single pitch will be returned instead.
 ;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defun string-chord-selection-fun (curve-num index pitch-list pitch-seq 
                                    instrument set string-III)
@@ -494,23 +496,14 @@
         diad)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 
+;;; SAR Thu May  3 15:09:43 BST 2012: Added robodoc entry.
+
 ;;; ****f* instruments/violin-chord-selection-fun
 ;;; FUNCTION
+;;; Create a double-stop chord object using the core string-chord-selection-fun
+;;; and a value of 'D4 for the open III string.
 ;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (let ((vln-III (make-pitch 'd4)))
   (defun violin-chord-selection-fun (curve-num index pitch-list pitch-seq 
@@ -520,23 +513,14 @@
                                 instrument set vln-III)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Thu May  3 15:20:55 BST 2012: Added robodoc entry
+
 ;;; ****f* instruments/viola-chord-selection-fun
 ;;; FUNCTION
+;;; Create a double-stop chord object using the core string-chord-selection-fun
+;;; and a value of 'G3 for the open III string.
 ;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (let ((vla-III (make-pitch 'g3)))
   (defun viola-chord-selection-fun (curve-num index pitch-list pitch-seq 
@@ -546,23 +530,14 @@
                                 instrument set vla-III)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Thu May  3 15:25:35 BST 2012: Added robodoc entry
+
 ;;; ****f* instruments/cello-chord-selection-fun
 ;;; FUNCTION
+;;; Create a double-stop chord object using the core string-chord-selection-fun
+;;; and a value of 'G2 for the open III string.
 ;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (let ((vc-III (make-pitch 'g2)))
   (defun cello-chord-selection-fun (curve-num index pitch-list pitch-seq 
@@ -572,23 +547,15 @@
                                 instrument set vc-III)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Thu May  3 14:45:38 BST 2012: Added robodoc entry
+
 ;;; ****f* instruments/piano-chord-fun
 ;;; FUNCTION
+;;; Generate four-note chords, where possible, from consecutive notes in the
+;;; current set, with the number enclosed in parentheses in the pitch-seq being
+;;; the top note of that chord, where possible.
 ;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defun piano-chord-fun (curve-num index pitch-list pitch-seq instrument set)
 ;;; ****
@@ -668,27 +635,25 @@
     (nreverse poss)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Thu May  3 15:31:19 BST 2012: Added robodoc entry
+
+;;; MDE original comment:
 ;;; NB this assumes the pitch-list contains notes that are already playable as
 ;;; a guitar chord (which was fine in cheat sheet, as that was the premise of
 ;;; our harmony).
 
 ;;; ****f* instruments/guitar-chord-selection-fun
 ;;; FUNCTION
+;;; Create chord objects with differing numbers of pitches, drawing the pitches
+;;; from set-palette object subsets with the ID 'guitar.
+;;;
+;;; This function was written for the composition "Cheat Sheet", in which the
+;;; pitch sets were defined explicitly such that all of the pitches available
+;;; to the guitar at any moment were playable as a guitar chord. As such, this
+;;; function always assumes that the pitch-list it is drawing from contains
+;;; pitches that are already playable as a guitar chord. 
 ;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (let ((last-chord '()))
   (defun guitar-chord-selection-fun (curve-num index pitch-list pitch-seq 
@@ -725,7 +690,7 @@
                                     for s in strings 
                                     for f in fingering 
                                     collect
-                                    (format nil "~3a ~a" s f)))
+				      (format nil "~3a ~a" s f)))
                                 ;;'(:direction :up)))))
                                 ))))
       chord)))

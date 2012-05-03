@@ -13,7 +13,7 @@
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
-;;; Purpose:          Implementation of the sndfile-palette class which is a
+;;; Purpose:          Implementation of the sndfile-palette class, which is a
 ;;;                   simple palette that checks that all the sound files given
 ;;;                   in a list for each id exist.  See comments in methods for
 ;;;                   limitations and special features of this class.
@@ -116,28 +116,46 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu May  3 12:51:13 BST 2012: Added/edited robodoc entry
+
+;;; MDE's original comment:
 ;;; find a soundfile in any of the directories given in the paths slot, not
-;;; necessarily including those in the palette itself!!!  Extension optional
-;;; and sndfile can be a string or a symbol.
-;;; eg (find-sndfile sfp "nawlins")
-;;; Unless file is given as a string, it is a symbol and will be converted to
-;;; lowercase.  
+;;; necessarily including those in the palette itself!!!  
 
 ;;; ****m* sndfile-palette/find-sndfile
 ;;; FUNCTION
-;;; 
-;;; 
+;;; Return the full directory path and file name of a specified sound file,
+;;; from within the directories given in the PATHS slot (not necessarily
+;;; including those in the palette itself.) 
+;;;
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
+;;; - A sndfile-palette object.
+;;; - The name of a sound file from within that object. This can be a string or
+;;;   a symbol. Unless it is given as a string, it will be handled as a symbol
+;;;   and will be converted to lowercase. Inclusion of the file extension is
+;;;   optional. 
+;;;
 ;;; RETURN VALUE
-;;; 
+;;; Returns the full directory path and file name of the specified sound file
+;;; as a string.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((msfp (make-sfp 'sfp-test 
+		      '((sndfile-group-1
+			 (test-sndfile-1))
+			(sndfile-group-2
+			 (test-sndfile-2 test-sndfile-3 
+			  (test-sndfile-4 :frequency 261.61)))
+			(sndfile-group-3
+			 ((test-sndfile-5 :start 0.006 :end 0.182) 
+			  test-sndfile-6)))
+		      :paths
+		      '("/path/to/sndfiles-dir-1"
+			"/path/to/sndfiles-dir-2"))))
+ (find-sndfile msfp 'test-sndfile-4))
+
+=> "/path/to/sndfiles-dir-2/test-sndfile-4.aiff"
 
 |#
 ;;; SYNOPSIS
@@ -210,21 +228,58 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu May  3 11:39:21 BST 2012: Added robodoc entry
+
 ;;; ****f* sndfile-palette/make-sfp
 ;;; FUNCTION
-;;; 
+
+;;; Make a sndfile-palette object. This object is a simple palette which checks
+;;; to make sure that all of the sound files in a given list exist for each
+;;; given ID.
+;;;
+;;; Sound files are given as as single names, without the path and without the
+;;; extension. These can be given using the optional keyword arguments <paths>
+;;; and <extensions>.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An ID for the palette.
+
+;;; - A list of lists that contains IDs for the names of one or more groups of
+;;;   sound files, each paired with a list of one or more names of existing
+;;;   sound files. The sound file names themselves can be paired with keywords
+;;;   from the sndfile class, such as :start, :end, and :frequency, to define
+;;;   and describe segments of a given sound file.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+
+;;; - :paths. A list of one or more paths to where the sound files are located.
+
+;;; - :extensions. A list of one or more sound file extensions for the
+;;;   specified sound files. The default initialization for this slot of the
+;;;   sndfile-palette already contains ("wav" "aiff" "aif" "snd"), so this
+;;;   argument can often be left unspecified.
+
+;;; - :warn-not-found. T or NIL to indicate whether a warning should be printed
+;;;   to the Lisp listener if the specified sound file cannot be found. 
+;;;   T = print warning. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((msfp (make-sfp 'sfp-test 
+		      '((sndfile-group-1
+			 (test-sndfile-1))
+			(sndfile-group-2
+			 (test-sndfile-2 test-sndfile-3 
+			  (test-sndfile-4 :frequency 261.61)))
+			(sndfile-group-3
+			 ((test-sndfile-5 :start 0.006 :end 0.182) 
+			  test-sndfile-6)))
+		      :paths '("/path/to/sound-files-dir-1/"
+			       "/path/to/sound-files-dir-2/")))))
 
 |#
 ;;; SYNOPSIS
@@ -445,4 +500,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; EOF sndfile-palette.lsp
+
 

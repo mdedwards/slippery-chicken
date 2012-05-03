@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 10:56:08 Thu May  3 2012 CEST
+;;; $$ Last modified: 23:44:19 Thu May  3 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -321,9 +321,15 @@
   (setf (data cs) (remove-octaves (data cs))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Thu May  3 10:55:37 2012 
-(defmethod rm-duplicates ((cs complete-set))
-  (setf (data cs) (remove-duplicates (data cs) :test #'pitch=)))
+;;; MDE Thu May  3 10:55:37 2012 -- if symbols-only, just compare the pitch
+;;; symbols otherwise use pitch= (equal frequencies etc.) 
+(defmethod rm-duplicates ((cs complete-set) &optional symbols-only)
+  (setf (data cs) 
+        (remove-duplicates
+         (data cs) 
+         :test (if symbols-only 
+                   #'(lambda (p1 p2) (equalp (data p1) (data p2)))
+                   #'pitch=))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -2360,6 +2360,7 @@ RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1,
 |#
 ;;; SYNOPSIS
 (defmethod get-bar ((rs rthm-seq) bar-num &optional ignore)
+;;; ****
   (declare (ignore ignore))
   (nth (1- bar-num) (bars rs)))
   

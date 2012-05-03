@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 20:28:15 Wed Mar 14 2012 GMT
+;;; $$ Last modified: 10:56:08 Thu May  3 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -314,6 +314,16 @@
     ;; (print bass-clef)
     ;; (print treble-clef)
     (list treble-clef bass-clef quad-treble-clef quad-bass-clef)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May  3 10:52:54 2012 
+(defmethod rm-octaves ((cs complete-set))
+  (setf (data cs) (remove-octaves (data cs))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May  3 10:55:37 2012 
+(defmethod rm-duplicates ((cs complete-set))
+  (setf (data cs) (remove-duplicates (data cs) :test #'pitch=)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

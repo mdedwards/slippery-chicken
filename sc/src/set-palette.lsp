@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 10:59:34 Thu May  3 2012 CEST
+;;; $$ Last modified: 23:47:05 Thu May  3 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1062,7 +1062,7 @@ data: (
                                           (freq-to-note left) '-ringmod- 
                                           (freq-to-note right))))
        ;; MDE Thu May  3 10:59:13 2012 
-       (rm-duplicates set)
+       (rm-duplicates set t) ; comparing symbols, not pitch= (freqs etc.)
        (when remove-octaves
          (rm-octaves set))
        (add set  sp))

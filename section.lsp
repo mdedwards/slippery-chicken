@@ -261,6 +261,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu May  3 20:14:43 BST 2012: Added robodoc entry
+
 ;;; ****m* section/get-all-players
 ;;; FUNCTION
 ;;; 

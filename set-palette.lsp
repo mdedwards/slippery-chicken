@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 22:50:30 Fri Apr  6 2012 BST
+;;; $$ Last modified: 10:59:34 Thu May  3 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1037,27 +1037,35 @@ data: (
        do 
        ;; if we can't get a bass from the pair, try it with the whole freq
        ;; set from the ring-modulation
-         (when (and do-bass (< (length rm-bass) min-bass-notes))
-           (let ((rmb (ring-mod-bass 
-                       rm :bass-octave ring-mod-bass-octave
-                       :warn warn-no-bass)))
-             (when (> (length rmb) (length rm-bass))
-               (setf rm-bass rmb)))
-           (when (and warn-no-bass
-                      (< (length rm-bass) min-bass-notes))
-             (warn "set-palette::set-palette-from-ring-mod: can't get bass ~
+       (when (and do-bass (< (length rm-bass) min-bass-notes))
+         (let ((rmb (ring-mod-bass 
+                     rm :bass-octave ring-mod-bass-octave
+                     :warn warn-no-bass)))
+           (when (> (length rmb) (length rm-bass))
+             (setf rm-bass rmb)))
+         (when (and warn-no-bass
+                    (< (length rm-bass) min-bass-notes))
+           (warn "set-palette::set-palette-from-ring-mod: can't get bass ~
                   notes even after 2nd attempt with ~a" rm)))
-         (setf rm-bass (when rm-bass
-                         ;; max three bass notes
-                         (list (first rm-bass)
-                               (nth (floor (length rm-bass) 2) rm-bass)
-                               (first (last rm-bass))))
-               set (remove-duplicates (append rm rm-bass)))
-         (add (make-complete-set set :id i :subsets `((rm-bass ,rm-bass))
-                                 :tag (combine-into-symbol 
-                                       (freq-to-note left) '-ringmod- 
-                                       (freq-to-note right)))
-              sp))
+       (setf rm-bass (when rm-bass
+                       ;; max three bass notes
+                       (list (first rm-bass)
+                             (nth (floor (length rm-bass) 2) rm-bass)
+                             (first (last rm-bass))))
+             set (remove-duplicates (append rm rm-bass))
+             ;; MDE Thu May 3 10:57:21 2012 -- as we removed octaves and
+             ;; duplicates above when looking at freq, when these are resolved
+             ;; to the nearest note, we still might have octaves/duplicates so
+             ;; do this again at the set level
+             set (make-complete-set set :id i :subsets `((rm-bass ,rm-bass))
+                                    :tag (combine-into-symbol 
+                                          (freq-to-note left) '-ringmod- 
+                                          (freq-to-note right))))
+       ;; MDE Thu May  3 10:59:13 2012 
+       (rm-duplicates set)
+       (when remove-octaves
+         (rm-octaves set))
+       (add set  sp))
     sp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

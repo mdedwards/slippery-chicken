@@ -344,12 +344,15 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 13:48:04 BST 2012: Added robodoc entry
+
 ;;; ****m* piece/insert-bar
 ;;; FUNCTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; <bar-num> is the bar-number within the rsb BEFORE which the new bar is to
+;;; be inserted.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; 
@@ -374,6 +377,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 12:40:52 BST 2012: Added robodoc entry
+;;; SAR Fri May  4 12:55:10 BST 2012: Deleted some of MDE's original comment
+;;; here as it's been taken nearly verbatim into the robodoc below.
+
+;;; MDE original comment:
+
 ;;; This is the primary method that should be called to access instrument
 ;;; sequences as it handles the case where an instrument doesn't play in a
 ;;; sequence. 
@@ -384,23 +393,98 @@
 ;;; instruments.
 ;;;
 ;;; This is the method called when the player is mentioned in the section but
-;;; sits a sequence out (with nil).  
+;;; sits a sequence out (with nil). 
 
 ;;; ****m* piece/get-nth-sequenz
 ;;; FUNCTION
-;;; 
-;;; 
+;;; Get the sequenz object from a specified section of a piece object by
+;;; specifying a position index and a player.
+;;;
+;;; This is the primary method that should be called to access player
+;;; sequences, as it handles cases in which a player doesn't play in a sequence.
+;;;
+;;; When the specified player has no note events in the specified sequence and
+;;; the optional argument create-rest-seq is set to T, this method creates a
+;;; rest sequence (one that consists of the correct number of bars with the
+;;; right time signatures, but in which the bars are only rest bars) based on a
+;;; sequence in one of the playing instruments.
+;;;
 ;;; ARGUMENTS
-;;; 
+
+;;; - A piece object.
+
+;;; - The ID of the section in from which the sequenz object is to be
+;;;   returned. 
+
+;;; - The ID of the player from whose part the sequenz object is to be
+;;;   returned. 
+
+;;; - An integer that is the index (position) of the desired sequenz object
+;;;   within the given section. This number is 0-based.
+
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+
+;;; - T or NIL to indicate whether to convert sequenz objects that are NIL (the
+;;;   specified player has no events in the specified sequenz) to sequenz
+;;;   objects consisting of full-bar rests. T = create rest sequences. 
+;;;   Default = T.
+
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns a sequenz object.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Returns a sequenz object
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((hn (french-horn :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((hn (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(2 ((hn (nil nil nil nil nil))
+			    (vc (1 1 1 1 1))))
+			(3 ((hn (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (get-nth-sequenz (piece mini) 3 'hn 2))
+
+=> 
+
+SEQUENZ: pitch-curve: (1 2 3 4 5)
+RTHM-SEQ: num-bars: 1
+          num-rhythms: 5
+          num-notes: 5
+          num-score-notes: 5
+          num-rests: 0
+          duration: 4.0
+          psp-inversions: NIL
+          marks: NIL
+          time-sigs-tag: NIL
+          handled-first-note-tie: NIL
+         (for brevity's sake, slots pitch-seq-palette and bars are not printed)
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: (1), next: NIL
+BAR-HOLDER: 
+            start-bar: 13
+            end-bar: 13
+            num-bars: 1
+            start-time: 48.0
+            end-time: 52.0
+            start-time-qtrs: 48.0
+            end-time-qtrs: 52.0
+            num-notes (attacked notes, not tied): 5
+            num-score-notes (tied notes counted separately): 5 
+            num-rests: 0
+            duration-qtrs: 4.0 
+            duration: 4.0 (4.000)
 
 |#
 ;;; SYNOPSIS
@@ -417,27 +501,27 @@
     (let ((seq (get-seq player)))
       (if seq
           seq
-        (when create-rest-seq
-          (let ((all-players (players p))
-                (cloned-seq nil))
-            (unless (member player all-players)
-              (error "piece::get-nth-sequenz: Player ~a is ~
+	  (when create-rest-seq
+	    (let ((all-players (players p))
+		  (cloned-seq nil))
+	      (unless (member player all-players)
+		(error "piece::get-nth-sequenz: Player ~a is ~
                       not a member of the ensemble ~a"
-                     player all-players))
-            (loop for p in (remove player all-players) do
-                  (when (setf seq (get-seq p))
-                    ;; MDE Wed Feb  1 13:55:16 2012 -- got to signal an error
-                    ;; if there's no instrument playing at all here 
-                    (setf cloned-seq (clone-as-rest-sequenz seq t nil player))))
-            (if cloned-seq
-                cloned-seq
-                (error "piece::get-nth-sequenz: It appears that no instrument ~
+		       player all-players))
+	      (loop for p in (remove player all-players) do
+		   (when (setf seq (get-seq p))
+		     ;; MDE Wed Feb  1 13:55:16 2012 -- got to signal an error
+		     ;; if there's no instrument playing at all here 
+		     (setf cloned-seq (clone-as-rest-sequenz seq t nil player))))
+	      (if cloned-seq
+		  cloned-seq
+		  (error "piece::get-nth-sequenz: It appears that no instrument ~
                         is playing at sequence ~%number ~a in section ~a. So ~
                         there's no way of knowing the bar structure ~%here. ~
                         If you want rests for all instruments, create the ~
                         rests as a ~%sequence and reference it in the ~
                         rthm-seq-map."
-                       (1+ seq-num) section))))))))
+			 (1+ seq-num) section))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -969,21 +1053,72 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 13:37:12 BST 2012: Added robodoc entry
+
 ;;; ****m* piece/get-sequenz-from-bar-num
 ;;; FUNCTION
-;;; 
+;;; Get the specified sequenz object located at a specified bar-number location
+;;; of a specified player's part in a given piece object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A piece object. 
+;;; - An integer that is the number of the bar from which to return the sequenz
+;;;   object. 
+;;; - The ID of the player from whose part the sequenz object is to be
+;;;   returned. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A sequenz object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((hn (french-horn :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((hn (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(2 ((hn (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(3 ((hn (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (get-sequenz-from-bar-num (piece mini) 7 'vc))
+
+=>
+SEQUENZ: pitch-curve: (1 2 3 4 5)
+RTHM-SEQ: num-bars: 1
+          num-rhythms: 5
+          num-notes: 5
+          num-score-notes: 5
+          num-rests: 0
+          duration: 4.0
+          psp-inversions: NIL
+          marks: NIL
+          time-sigs-tag: NIL
+          handled-first-note-tie: NIL
+         (for brevity's sake, slots pitch-seq-palette and bars are not printed)
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: (1), next: NIL
+BAR-HOLDER: 
+            start-bar: 7
+            end-bar: 7
+            num-bars: 1
+            start-time: 24.0
+            end-time: 28.0
+            start-time-qtrs: 24.0
+            end-time-qtrs: 28.0
+            num-notes (attacked notes, not tied): 5
+            num-score-notes (tied notes counted separately): 5 
+            num-rests: 0
+            duration-qtrs: 4.0 
+            duration: 4.0 (4.000)
 
 |#
 ;;; SYNOPSIS

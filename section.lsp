@@ -98,21 +98,75 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 12:20:17 BST 2012: Added robodoc entry
+
 ;;; ****m* section/get-sequenz
 ;;; FUNCTION
-;;; 
+;;; Get the specified sequenz object from a given section object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A section object.
+;;; - The ID of the player from whose part the sequenz object is to be
+;;;   returned. 
+;;; - An integer that is the number of the sequence object to be returned from
+;;;   within the given section object. This number is 1-based.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A sequenz object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5))))
+			    (2 ((((4 4) q e s s h))
+				:pitch-seq-palette ((1 2 3 4 5))))
+			    (3 ((((4 4) e s s h q))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(2 ((cl (2 2 2 2 2))
+			    (vc (2 2 2 2 2))))
+			(3 ((cl (3 3 3 3 3))
+			    (vc (3 3 3 3 3))))))))
+  (get-sequenz (get-section mini 2) 'vc 2))
+
+=>
+SEQUENZ: pitch-curve: (1 2 3 4 5)
+RTHM-SEQ: num-bars: 1
+          num-rhythms: 5
+          num-notes: 5
+          num-score-notes: 5
+          num-rests: 0
+          duration: 4.0
+          psp-inversions: NIL
+          marks: NIL
+          time-sigs-tag: NIL
+          handled-first-note-tie: NIL
+         (for brevity's sake, slots pitch-seq-palette and bars are not printed)
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: (1), this: (2), next: (3)
+BAR-HOLDER: 
+            start-bar: 7
+            end-bar: 7
+            num-bars: 1
+            start-time: 24.0
+            end-time: 28.0
+            start-time-qtrs: 24.0
+            end-time-qtrs: 28.0
+            num-notes (attacked notes, not tied): 5
+            num-score-notes (tied notes counted separately): 5 
+            num-rests: 0
+            duration-qtrs: 4.0 
+            duration: 4.0 (4.000)
 
 |#
 ;;; SYNOPSIS
@@ -124,21 +178,37 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 12:31:29 BST 2012: Added robodoc entry
+
 ;;; ****m* section/num-sequenzes
 ;;; FUNCTION
-;;; 
+;;; Get the number of sequenz objects in a given section object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A section object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An integer that is the number of sequenz objects in the specified section
+;;; object. 
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vc (cello :midi-channel 1))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((vc (1 1 1 1 1))))
+			(2 ((vc (1 1 1 1 1))))
+			(3 ((vc (1 1 1 1 1))))))))
+  (num-sequenzes (get-section mini 2)))
+
+=> 5
 
 |#
 ;;; SYNOPSIS
@@ -290,6 +360,7 @@
 
 ;;; This function will only combine short bars into longer ones, it won't split
 ;;; up bars and recombine. 
+
 ;;; ****m* section/re-bar
 ;;; FUNCTION
 ;;; 

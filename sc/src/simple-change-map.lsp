@@ -88,24 +88,33 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 17:43:47 BST 2012: Added robodoc entry
+
+;;; MDE original comment:
 ;;; Section may be a simple key reference into the map or a list of references.
 ;;; sequence is 1-based.
 
 ;;; ****m* simple-change-map/scm-get-data
 ;;; FUNCTION
-;;; 
+;;; Get the data associated with the specified key within a given
+;;; simple-change-map object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An integer that is an existing key ID within the given simple-change-map
+;;;   object. 
+;;; - A simple-change-map-object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; The data associated with the specified key ID, as a named object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((scm (make-simple-change-map 'bar-map '((1 3) (34 3) (38 4)))))
+  (scm-get-data 34 scm))
+
+=> 
+NAMED-OBJECT: id: 34, tag: NIL, 
+data: 3
 
 |#
 ;;; SYNOPSIS
@@ -115,7 +124,7 @@
     (let ((result (get-data ref scm nil)))
       (if result
           result
-        (get-nearest-by-number scm ref)))))
+	  (get-nearest-by-number scm ref)))))
      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -123,21 +132,55 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 17:35:17 BST 2012: Added robodoc entry
+
 ;;; ****f* simple-change-map/make-simple-change-map
 ;;; FUNCTION
-;;; 
+;;; Create a simple-change-map object, which stores data associated with a
+;;; non-recursive list of number IDs. This object could be good, for example,
+;;; for specifying data which changes at specific bar numbers.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An ID for the simple-change-map object to be created.
+;;; - A list of non-recursive lists consisting of ID/data pairs, of which the
+;;;   first item is a numerical ID.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A simple-change-map object.
 ;;; 
 ;;; EXAMPLE
 #|
+(make-simple-change-map 'bar-map '((1 3) (34 3) (38 4)))
+
+=> 
+SIMPLE-CHANGE-MAP: 
+CHANGE-MAP: last-ref-required: NIL
+SC-MAP: palette id: NIL
+RECURSIVE-ASSOC-LIST: recurse-simple-data: NIL
+                      num-data: 3
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found NIL
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: BAR-MAP, tag: NIL, 
+data: (
+NAMED-OBJECT: id: 1, tag: NIL, 
+data: 3
+**************
+
+       
+NAMED-OBJECT: id: 34, tag: NIL, 
+data: 3
+**************
+
+       
+NAMED-OBJECT: id: 38, tag: NIL, 
+data: 4
+**************
+)
+**************
 
 |#
 ;;; SYNOPSIS

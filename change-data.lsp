@@ -173,33 +173,33 @@
          (gotit nil)
          (changes-here nil)
          (result (loop 
-                     for change in (data cd)
-                     for s = (first change)
-                     for b = (second change) 
-                     for d = (third change) do
-                       ;; (print change)
-                       (cond ((and (= sequence s)
-                                   (= bar b))
-                              (setf changes-here t
-                                    gotit t)
-                              (return d))
-                             
-                             ((or (< sequence s)
-                                  (and (= sequence s)
-                                       (< bar b)))
-                              (setf gotit t)
-                              (return current))
-                             (t (setf current d))))))
+		    for change in (data cd)
+		    for s = (first change)
+		    for b = (second change) 
+		    for d = (third change) do
+		    ;; (print change)
+		      (cond ((and (= sequence s)
+				  (= bar b))
+			     (setf changes-here t
+				   gotit t)
+			     (return d))
+			    
+			    ((or (< sequence s)
+				 (and (= sequence s)
+				      (< bar b)))
+			     (setf gotit t)
+			     (return current))
+			    (t (setf current d))))))
     (unless result
       (setf result
-        (if gotit
-            ;; we asked for data before any was defined....
-            (warn "change-data::get-change-data: ~
+	    (if gotit
+		;; we asked for data before any was defined....
+		(warn "change-data::get-change-data: ~
                        No previous data to return: ~a ~a ~%~a"
-                  sequence bar cd)
-          ;; if we gave a sequence/bar number higher than the changes made,
-          ;; then we just return the last change.
-          (last-data cd))))
+		      sequence bar cd)
+		;; if we gave a sequence/bar number higher than the changes
+		;; made, then we just return the last change.
+		(last-data cd))))
     (values result changes-here)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -255,21 +255,41 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 18:08:00 BST 2012: Added robodoc entry
+
 ;;; ****f* change-data/make-change-data
 ;;; FUNCTION
-;;; 
+;;; Create a change-data object, which holds data for use by a change-map
+;;; object. The data stored in change-data object will be that of parameter
+;;; changes for a whole section, such as tempo values.
+;;;
+;;; The data is passed to the make-change-data function as a list of
+;;; three-element lists, each consisting of the number of the sequence, the
+;;; number of the bar within that sequence, and the new data.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
+;;; - An ID for the change-data object to be created.
+;;; - A list of three-item lists, each consisting of the number of the sequence
+;;;   in which the data is to change, the number of the bar within that
+;;;   sequence in which the data is to change, and the data value itself. The
+;;;   sequence number and bar number are always integers > 0. If no bar-number
+;;;   is given, it will default to 1.
+;;;
 ;;; RETURN VALUE
-;;; 
+;;; A change-data object.
 ;;; 
 ;;; EXAMPLE
 #|
+(make-change-data 'cd-test '((1 1 23) (6 1 28) (18 1 35)))
+
+=> 
+CHANGE-DATA: 
+            previous-data: NIL, 
+            last-data: 35
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: CD-TEST, tag: NIL, 
+data: ((1 1 23) (6 1 28) (18 1 35))
 
 |#
 ;;; SYNOPSIS

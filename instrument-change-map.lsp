@@ -81,21 +81,37 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 15:02:50 BST 2012: Added robodoc entry
+
 ;;; ****m* instrument-change-map/get-first-for-player
 ;;; FUNCTION
-;;; Return the first data in the whole map for the given player
+;;; Return the first instrument object assigned to a given player in cases
+;;; where a player has been assigned more than one instrument.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An instrument-change-map
+;;; - The ID of the player for whom to return the first instrument.
 ;;; 
 ;;; RETURN VALUE
-;;; A symbol, the ID of an instrument
+;;; The ID of the first instrument object assigned to the specified player. 
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
+		     (db (double-bass :midi-channel 2))))
+	:instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax))))))
+	:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+	:set-map '((1 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((sax (1 1 1 1 1))
+			    (db (1 1 1 1 1))))))))
+  (get-first-for-player (instrument-change-map mini) 'sax))
+
+=> ALTO-SAX, T
 
 |#
 ;;; SYNOPSIS
@@ -112,21 +128,131 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 16:55:45 BST 2012: Added robodoc entry
+
 ;;; ****f* instrument-change-map/make-instrument-change-map
 ;;; FUNCTION
-;;; 
+;;; Create an instrument-change-map object. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An ID for the instrument-change-map to be created.
+;;; - A list of lists. The top level of these lists consists of the section IDs
+;;;   for the given slippery-chicken object paired with lists of data for the
+;;;   specified players for each section. Each player list then consists of the
+;;;   ID of the player paired with a list of two-item lists pairing measure
+;;;   numbers with the instrument to which that player is to change, e.g.:
+;;;
+;;;   '((1 ((fl ((1 flute) (3 piccolo) (5 flute)))
+;;;         (cl ((1 b-flat-clarinet) (2 bass-clarinet) (6 b-flat-clarinet)))))
+;;;     (2 ((fl ((2 piccolo) (4 flute)))
+;;;         (cl ((2 bass-clarinet) (3 b-flat-clarinet))))))
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - :warn-not-found. T or NIL to indicate whether a warning is printed when
+;;;   an index which doesn't exist is used for lookup. T = warn. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; 
 ;;; 
 ;;; EXAMPLE
 #|
+(make-instrument-change-map 
+ 'icm-test
+ '((1 ((fl ((1 flute) (3 piccolo) (5 flute)))
+       (cl ((1 b-flat-clarinet) (2 bass-clarinet) (6 b-flat-clarinet))))) 
+   (2 ((fl ((2 piccolo) (4 flute)))
+       (cl ((2 bass-clarinet) (3 b-flat-clarinet)))))))
+
+=>
+
+INSTRUMENT-CHANGE-MAP: 
+CHANGE-MAP: last-ref-required: T
+SC-MAP: palette id: NIL
+RECURSIVE-ASSOC-LIST: recurse-simple-data: NIL
+                      num-data: 4
+                      linked: T
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found NIL
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: ICM-TEST, tag: NIL, 
+data: (
+NAMED-OBJECT: id: 1, tag: NIL, 
+data: 
+CHANGE-MAP: last-ref-required: T
+SC-MAP: palette id: NIL
+RECURSIVE-ASSOC-LIST: recurse-simple-data: NIL
+                      num-data: 2
+                      linked: T
+                      full-ref: (1)
+ASSOC-LIST: warn-not-found NIL
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "sub-ral-of-ICM-TEST", tag: NIL, 
+data: (
+CHANGE-DATA: 
+            previous-data: NIL, 
+            last-data: FLUTE
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: (1 FL), next: (1 CL)
+NAMED-OBJECT: id: FL, tag: NIL, 
+data: ((1 1 FLUTE) (3 1 PICCOLO) (5 1 FLUTE))
+**************
+
+       
+CHANGE-DATA: 
+            previous-data: NIL, 
+            last-data: B-FLAT-CLARINET
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: (1 FL), this: (1 CL), next: (2 FL)
+NAMED-OBJECT: id: CL, tag: NIL, 
+data: ((1 1 B-FLAT-CLARINET) (2 1 BASS-CLARINET) (6 1 B-FLAT-CLARINET))
+**************
+)
+**************
+
+**************
+
+       
+NAMED-OBJECT: id: 2, tag: NIL, 
+data: 
+CHANGE-MAP: last-ref-required: T
+SC-MAP: palette id: NIL
+RECURSIVE-ASSOC-LIST: recurse-simple-data: NIL
+                      num-data: 2
+                      linked: T
+                      full-ref: (2)
+ASSOC-LIST: warn-not-found NIL
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "sub-ral-of-ICM-TEST", tag: NIL, 
+data: (
+CHANGE-DATA: 
+            previous-data: FLUTE, 
+            last-data: FLUTE
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: (1 CL), this: (2 FL), next: (2 CL)
+NAMED-OBJECT: id: FL, tag: NIL, 
+data: ((2 1 PICCOLO) (4 1 FLUTE))
+**************
+
+       
+CHANGE-DATA: 
+            previous-data: B-FLAT-CLARINET, 
+            last-data: B-FLAT-CLARINET
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: (2 FL), this: (2 CL), next: NIL
+NAMED-OBJECT: id: CL, tag: NIL, 
+data: ((2 1 BASS-CLARINET) (3 1 B-FLAT-CLARINET))
+**************
+)
+**************
+
+**************
+)
 
 |#
 ;;; SYNOPSIS

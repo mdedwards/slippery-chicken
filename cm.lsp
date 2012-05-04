@@ -101,21 +101,30 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 18:44:41 BST 2012: Added robodoc entry
+
 ;;; ****f* cm/degrees-per-octave
 ;;; FUNCTION
-;;; 
+;;; Return the number of scale degrees in the span of one octave within the
+;;; current tuning system.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - No arguments.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - An integer that is the number of scale degrees in each octave.
 ;;; 
 ;;; EXAMPLE
 #|
+(in-scale :chromatic)
+(degrees-per-octave)
+
+=> 12
+
+(in-scale :quarter-tone)
+(degrees-per-octave)
+
+=> 24
 
 |#
 ;;; SYNOPSIS
@@ -123,24 +132,45 @@
 ;;; ****
   (- (cm::keynum 'cm::c5) (cm::keynum 'cm::c4)))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Fri May  4 18:49:36 BST 2012: Added robodoc entry
 
 ;;; ****f* cm/degree-to-note
 ;;; FUNCTION
-;;; 
+
+;;; Get the specified scale degree number as a note-name pitch symbol within
+;;; the current scale. An optional argument allows the user to specify that the
+;;; scale degree number should be used to get the note-name pitch from a
+;;; different scale. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; An integer that is a scale degree number.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - The scale from which the note-name pitch symbol associated with the
+;;;   specified scale degree is to be drawn. As this is a cm function, the cm
+;;;   tuning names must be used; i.e., cm::*chromatic-scale*. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A note-name pitch symbol.
 ;;; 
 ;;; EXAMPLE
 #|
+(in-scale :chromatic)
+(degree-to-note 127)
+
+=> G9
+
+(in-scale :twelfth-tone)
+(degree-to-note 127)
+
+=> ATS0
+
+(in-scale :quarter-tone)
+(degree-to-note 127)
+
+=> EQF4
 
 |#
 ;;; SYNOPSIS
@@ -150,21 +180,36 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 19:07:36 BST 2012: Added robodoc entry
+
 ;;; ****f* cm/midi-to-degree
 ;;; FUNCTION
-;;; 
+;;; Convert the specified MIDI note number to the degree number of the current
+;;; scale. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A MIDI note number.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - An integer that is the scale-degree equivalent of the specified MIDI note
+;;;   number in the current scale.
 ;;; 
 ;;; EXAMPLE
 #|
+(in-scale :chromatic)
+(midi-to-degree 64)
+
+=> 64
+
+(in-scale :twelfth-tone)
+(midi-to-degree 64)
+
+=> 384
+
+(in-scale :quarter-tone)
+(midi-to-degree 64)
+
+=> 128
 
 |#
 ;;; SYNOPSIS
@@ -174,21 +219,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 19:12:48 BST 2012: Added robodoc entry
+
 ;;; ****f* cm/midi-to-note
 ;;; FUNCTION
-;;; 
+;;; Get the note-name pitch symbol equivalent of the specified MIDI note
+;;; number.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An integer that is a MIDI note number.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A note-name pitch symbol.
 ;;; 
 ;;; EXAMPLE
 #|
+(midi-to-note 67)
+
+=> G4
 
 |#
 ;;; SYNOPSIS
@@ -198,21 +246,27 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 19:17:30 BST 2012: Added robodoc entry
+
 ;;; ****f* cm/midi-to-freq
 ;;; FUNCTION
-;;; 
+;;; Get the frequency equivalent in Hertz to the specified MIDI note number. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number (can be a decimal) that is a MIDI note number.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A decimal number that is a frequency in Hertz.
 ;;; 
 ;;; EXAMPLE
 #|
+(midi-to-freq 67)
+
+=> 391.99542
+
+(midi-to-freq 67.9)
+
+=> 412.91272
 
 |#
 ;;; SYNOPSIS
@@ -222,21 +276,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 19:22:20 BST 2012: Added robodoc entry
+
 ;;; ****f* cm/note-to-midi
 ;;; FUNCTION
-;;; 
+;;; Get the MIDI note number equivalent for a chromatic note-name pitch
+;;; symbol. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A chromatic note-name pitch symbol.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An integer.
 ;;; 
 ;;; EXAMPLE
 #|
+(note-to-midi 'g4)
+
+=> 67
 
 |#
 ;;; SYNOPSIS
@@ -246,21 +303,39 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 19:25:41 BST 2012: Added robodoc entry
+
 ;;; ****f* cm/degrees-to-notes
 ;;; FUNCTION
 ;;; 
+;;;
+;;; NB: If the specified scale-degree number within the current scale would
+;;;     result in pitch outside of the maximum MIDI pitch range for that tuning
+;;;     (chromatic: C-1 to B10; quarter-tone: C-1 to BQS10; twelfth-tone: C-1
+;;;     to CTF11), the function will return an error.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; An integer that is a scale degree number in the current tuning.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of note-name pitch symbols.
 ;;; 
 ;;; EXAMPLE
 #|
+(in-scale :chromatic)
+(degrees-to-notes '(0 143 116 127 38))
+
+=> (C-1 B10 AF8 G9 D2)
+
+(in-scale :twelfth-tone)
+(degrees-to-notes '(0 144 116 127 38 287 863))
+
+=> (C-1 C1 GSS0 ATS0 FSSS-1 CTF3 CTF11)
+
+(in-scale :quarter-tone)
+(degrees-to-notes '(0 144 116 127 38 287))
+
+=> (C-1 C5 BF3 EQF4 G0 BQS10)
 
 |#
 ;;; SYNOPSIS
@@ -270,21 +345,38 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 19:41:37 BST 2012: Added robodoc entry
+
 ;;; ****f* cm/freq-to-note
 ;;; FUNCTION
-;;; 
+;;; Get the note-name pitch equivalent of the specified frequency, rounded to
+;;; the nearest scale degree of the current scale.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; A number that is a frequency in Hertz.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - The scale in which the note-name pitch equivalent is to be sought.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A note-name pitch symbol.
 ;;; 
 ;;; EXAMPLE
 #|
+(in-scale :chromatic)
+(freq-to-note 423)
+
+=> AF4
+
+(in-scale :twelfth-tone)
+(freq-to-note 423)
+
+=> GSSS4
+
+(in-scale :quarter-tone)
+(freq-to-note 423)
+
+=> AQF4
 
 |#
 ;;; SYNOPSIS
@@ -294,21 +386,34 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 19:49:28 BST 2012: Added robodoc entry
+
 ;;; ****f* cm/note-to-freq
 ;;; FUNCTION
-;;; 
+;;; Get the frequency in Hertz of the specified note-name pitch symbol.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A note-name pitch symbol.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A frequency in Hertz.
 ;;; 
 ;;; EXAMPLE
 #|
+(in-scale :chromatic)
+(note-to-freq 'AF4)
+
+=> 415.3047
+
+(in-scale :twelfth-tone)
+(note-to-freq 'GSSS4)
+
+=> 423.37845
+
+(in-scale :quarter-tone)
+(note-to-freq 'AQF4)
+
+=> 427.47403
 
 |#
 ;;; SYNOPSIS
@@ -318,21 +423,39 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 19:55:06 BST 2012: Added robodoc entry
+
 ;;; ****f* cm/note-to-degree
 ;;; FUNCTION
-;;; 
+
+;;; Get the scale degree number of the specified note-name pitch symbol within
+;;; the current scale. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A note-name pitch symbol.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - The scale in which to find the scale-degree of the specified pitch.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An integer that is a scale degree in the current scale.
 ;;; 
 ;;; EXAMPLE
 #|
+(in-scale :chromatic)
+(note-to-degree 'AF4)
+
+=> 68
+
+(in-scale :twelfth-tone)
+(note-to-degree 'AF4)
+
+=> 408
+
+(in-scale :quarter-tone)
+(note-to-degree 'AF4)
+
+=> 136
 
 |#
 ;;; SYNOPSIS
@@ -342,23 +465,42 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 20:01:30 BST 2012: Added robodoc entry
+
 ;;; Defaults to *scale*
 
 ;;; ****f* cm/freq-to-degree
 ;;; FUNCTION
+;;; Get the scale degree of the specified frequency in Hertz within the current
+;;; scale. 
 ;;; 
+;;; NB: This method will return fractional scale degrees.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; A frequncy in Hertz.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - The scale in which to find the corresponding scale degree.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A scale degree number. This may be a decimal number.
 ;;; 
 ;;; EXAMPLE
 #|
+(in-scale :chromatic)
+(freq-to-degree 423)
+
+=> 68.317856
+
+(in-scale :twelfth-tone)
+(freq-to-degree 423)
+
+=> 409.9071
+
+(in-scale :quarter-tone)
+(freq-to-degree 423)
+
+=> 136.63571
 
 |#
 ;;; SYNOPSIS
@@ -371,23 +513,34 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May  4 20:08:11 BST 2012: Added robodoc entry
+
 ;;; MDE Sat Jan  7 18:06:01 2012 -- this will always return >= 0 <= 1.0 so a
 ;;; bend upwards from the nearest chromatic note below our freq 
+
 ;;; ****f* cm/get-pitch-bend
 ;;; FUNCTION
-;;; 
+;;; Get the MIDI pitch-bend value necessary for application to a MIDI pitch in
+;;; order to achieve the specified frequency.
+;;;
+;;; NB: This will always return a positive value between 0.0 and 1.0, as
+;;;     slippery-chicken always applies pitch-bends upwards from the nearest
+;;;     chromatic note below the specified frequency. 
+;;;
+;;; NB: This value will be the same in all tuning scales.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; A frequency in Hertz.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A two-digit decimal number that is the pitch-bend value required to achieve
+;;; the specified frequency in MIDI.
 ;;; 
 ;;; EXAMPLE
 #|
+(get-pitch-bend 423)
+
+=> 0.32
 
 |#
 ;;; SYNOPSIS

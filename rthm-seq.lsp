@@ -866,7 +866,6 @@ data: S
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 ;;; We assume here that ties are taken care of within the new bar!
 
 ;;; SAR Wed Dec 28 12:08:30 EST 2011: Added robodoc info
@@ -910,11 +909,13 @@ data: S
 
 => T
 
-;; Create a rthm-seq object with three rthm-seq-bars and print contents of the
-;; NUM-BARS slot to confirm that it contains 3 objects. Insert a bar before the
-;; third item and print the value of the NUM-BARS slot again to confirm that
-;; there are now 4 objects. Use print-simple and get-nth-bar to confirm that
-;; the 3rd object (with a zero-based index of 2) is indeed the one inserted.  
+;; Create a rthm-seq object with three rthm-seq-bars and print the contents of
+;; the NUM-BARS slot to confirm that it contains 3 objects. Insert a bar before
+;; the third item and print the value of the NUM-BARS slot again to confirm
+;; that there are now 4 objects. Use print-simple and get-nth-bar to confirm
+;; that the 3rd object (with a zero-based index of 2) is indeed the one
+;; inserted.
+  
 (let ((rs (make-rthm-seq '((((2 4) q+e s s)
                             ((e) q (e))
                             ((3 8) s s e. s))

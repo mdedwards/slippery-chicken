@@ -96,47 +96,50 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat May  5 12:08:59 BST 2012: Added robodc entry
+
 ;;; ****f* utilities/mins-secs-to-secs
 ;;; FUNCTION
-;;; 
+;;; Derive the number of seconds from a minutes-seconds value that is indicated
+;;; as a two-item list in the form '(minutes seconds).
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A two-item list of integers in the form '(minutes seconds).
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A decimal number that is a number in seconds.
 ;;; 
 ;;; EXAMPLE
 #|
+(mins-secs-to-secs '(2 1))
+
+=> 121.0
 
 |#
 ;;; SYNOPSIS
 (defun mins-secs-to-secs (list)
 ;;; ****
   (flet ((secs-msecs (secs msecs)
-                     (when (or (> secs 60)
-                               (> msecs 1000))
-                       (error "utilities::mins-secs-to-secs: secs = ~a ~
+	   (when (or (> secs 60)
+		     (> msecs 1000))
+	     (error "utilities::mins-secs-to-secs: secs = ~a ~
                                millisecs = ~a???" secs msecs))))
-        (cond ((not list) nil)
-              ((numberp list) list)
-              ((= 2 (length list))
-               (let ((mins (first list))
-                     (secs (second list)))
-                 (secs-msecs secs 0)
-                 (+ secs (* 60.0 mins))))
-              ((= 3 (length list))
-               (let ((mins (first list))
-                     (secs (second list))
-                     (msecs (third list)))
-                 (secs-msecs secs msecs)
-                 (+ secs (/ msecs 1000.0) (* 60.0 mins))))
-              (t (error "utilities::mins-secs-to-secs: arg must be a 2- or ~
+    (cond ((not list) nil)
+	  ((numberp list) list)
+	  ((= 2 (length list))
+	   (let ((mins (first list))
+		 (secs (second list)))
+	     (secs-msecs secs 0)
+	     (+ secs (* 60.0 mins))))
+	  ((= 3 (length list))
+	   (let ((mins (first list))
+		 (secs (second list))
+		 (msecs (third list)))
+	     (secs-msecs secs msecs)
+	     (+ secs (/ msecs 1000.0) (* 60.0 mins))))
+	  (t (error "utilities::mins-secs-to-secs: arg must be a 2- or ~
                          3-element list (mins secs [millisecs]): ~a"
-                        list)))))
+		    list)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -172,23 +175,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; replace 'words' in a string
-;;; e.g. (string-replace "flat" "\\flat" "bflat clarinet") -> "b\\flat clarinet"
+;;; SAR Sat May  5 12:15:03 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/string-replace
 ;;; FUNCTION
-;;; 
+;;; Replace specified segments of a string with a new specified string.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A string that is the string segment to be replaced.
+;;; - A string that is the string with which the specified string segment is to
+;;;   be replaced.
+;;; - The string in which the specified segment is to be sought and replaced.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A string.
 ;;; 
 ;;; EXAMPLE
 #|
+(string-replace "flat" "\\flat" "bflat clarinet")
+
+=> "b\\flat clarinet"
 
 |#
 ;;; SYNOPSIS
@@ -212,23 +218,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; End cons: puts an element at the end of a list.
+;;; SAR Sat May  5 12:21:30 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/econs
 ;;; FUNCTION
-;;; 
+;;; Add a specified element to the end of an existing list.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list.
+;;; - An element to add to the end of the list.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A new list.
 ;;; 
 ;;; EXAMPLE
 #|
+(econs '(1 2 3 4) 5)
+
+=>  '(1 2 3 4 5)
 
 |#
 ;;; SYNOPSIS
@@ -258,30 +265,33 @@
 
 ;;; ****f* utilities/get-sublist-indices
 ;;; FUNCTION
-;;; 
+;;; Get the starting position of sublists within a list as though the complete
+;;; set of items were a flat list.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list of lists.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of integers that are the indices of the sublists.
 ;;; 
 ;;; EXAMPLE
 #|
+(get-sublist-indices '((1 2) (3 4 5 6) (7 8 9) (10 11 12 13 14) (15)))
+
+=> (0 2 6 9 14)
 
 |#
 ;;; SYNOPSIS
 (defun get-sublist-indices (list)
 ;;; ****
   (loop 
-      with index = 0
-      for sublist in list collect index
-      do (incf index (length sublist))))
+     with index = 0
+     for sublist in list collect index
+     do (incf index (length sublist))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Sat May  5 12:32:31 BST 2012: Added robodoc entry
 
 ;;; In order to flatten then recreate a list of lists, we need to know
 ;;; the index in the flattened list of the first element of each sublist.
@@ -290,19 +300,30 @@
 
 ;;; ****f* utilities/get-sublist-lengths
 ;;; FUNCTION
-;;; 
+;;; Get the lengths of all sublists in a given list.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list of lists.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether to first remove zeros caused by empty
+;;;   sublists from the result.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of integers.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Straightforward usage allows zeros in the result
+(get-sublist-lengths '((1 2) (3 4 5 6) (7 8 9) (10 11 12 13 14) ()))
+
+=> (2 4 3 5 0)
+
+;; Setting the optional argument to T removes zeros from the result
+
+(get-sublist-lengths '((1 2) (3 4 5 6) (7 8 9) (10 11 12 13 14) ()) t)
+
+=> (2 4 3 5)
 
 |#
 ;;; SYNOPSIS
@@ -311,61 +332,97 @@
   (let ((result (loop for sublist in list collect (length sublist))))
     (if remove-zeros
         (remove 0 result)
-      result)))
+	result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat May  5 12:40:53 BST 2012: Conformed robodoc entry
+
 ;;; ****f* utilities/all-members
 ;;; FUNCTION
-;;; all-members:
-;;; find out whether the members of the list given as the second argument are
-;;; all present in the list that forms the first argument.
+
+;;; Find out whether the members of the list given as the second argument are
+;;; all present in the list given as the first argument.
 ;;; 
 ;;; ARGUMENTS     
-;;; - the list we need to find members of the second argument in
-;;; - the list whose members we need to find in the first list
-;;; - (optional) the test 
+;;; - A list in which the members of the second argument will be sought. 
+;;; - A list whose members will be sought in the first argument.
+;;; 
+;;; OPTIONAL ARGUMENT
+;;; - A comparison function.
 ;;;
 ;;; RETURN VALUE  
-;;; t or nil
+;;; T or NIL.
 ;;; 
 ;;; EXAMPLE
-;;; (all-members '(1 2 3 4 5 6 7) '(1 2 3 7)) -> T
-;;; 
+#|
+(all-members '(1 2 3 4 5 6 7) '(1 2 3 7))
+
+=> T
+
+|#
+;;;
 ;;; SYNOPSIS
 (defun all-members (list test-list &optional (test #'equal))
 ;;; ****
   (loop 
-      with len = (length test-list)
-      with count = 0
-      for el in test-list
-      do
-        (when (member el list :test test)
-          (incf count))
-      finally
-        (when (= count len)
-          (return t))))
+     with len = (length test-list)
+     with count = 0
+     for el in test-list
+     do
+       (when (member el list :test test)
+	 (incf count))
+     finally
+       (when (= count len)
+	 (return t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Sat May  5 12:45:48 BST 2012: Added robodoc entry
 
 ;;; e.g (split-into-sub-groups '(1 2 3 4 5 6 7 8 9 10) '(2 2 3 2 1)) ->
 ;;; ((1 2) (3 4) (5 6 7) (8 9) (10))
 
 ;;; ****f* utilities/split-into-sub-groups
 ;;; FUNCTION
-;;; 
+;;; Create a new list consisting of sublists made from the elements of the
+;;; original flat list, whose lengths are determined by the second argument to
+;;; the function.
+;;;
+;;; NB: The lengths given in the second argument are not required to add up to
+;;;     the length of the original list. If their sum is less than the original
+;;;     list, the resulting list of sublists will only contain a segment of the
+;;;     original elements. If their sum is greater than the length of the
+;;;     original list, the last sublist in the new list will be shorter than
+;;;     the corresponding group value.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A flat list.
+;;; - A list of integers that are the lengths of the consecutive subgroups
+;;;   into which the original list is to be divided. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of lists.
 ;;; 
 ;;; EXAMPLE
 #|
+;; Used with a list of subgroup lengths whose sum is equal to the length of the
+;; original list
+(split-into-sub-groups '(1 2 3 4 5 6 7 8 9 10) '(2 2 3 2 1))
+
+=> ((1 2) (3 4) (5 6 7) (8 9) (10))
+
+;; Used with a list of subgroup lengths whose sum is less than the length of the
+;; original list 
+(split-into-sub-groups '(1 2 3 4 5 6 7 8 9 10) '(2 1))
+
+=> ((1 2) (3))
+
+;; Used with a list of subgroup lengths whose sum is greater than the length of
+;; the original list
+(split-into-sub-groups '(1 2 3 4 5 6 7 8 9 10) '(2 3 17))
+
+=> ((1 2) (3 4 5) (6 7 8 9 10))
 
 |#
 ;;; SYNOPSIS
@@ -374,16 +431,18 @@
   (when (member 0 groups)
     (error "utilities::split-into-subgroups: 0? ~a" groups))
   (loop 
-      for num in groups 
-      with scl = (make-sclist list)
-      with count = 0
-      ;; it could be that one instrument in a group is not being printed so the
-      ;; list length will be less than the subgroup being asked for  
-      collect (sc-subseq scl count (min (sclist-length scl) (+ count num)))
-      do (incf count num)
-      while (< count (sclist-length scl))))
+     for num in groups 
+     with scl = (make-sclist list)
+     with count = 0
+     ;; it could be that one instrument in a group is not being printed so the
+     ;; list length will be less than the subgroup being asked for  
+     collect (sc-subseq scl count (min (sclist-length scl) (+ count num)))
+     do (incf count num)
+     while (< count (sclist-length scl))))
               
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Sat May  5 13:55:49 BST 2012: Added robodoc entry
 
 ;;; Like above but just one length is given and this will be used for sublists
 ;;; e.g. (split-into-sub-groups2 '(1 2 3 4 5 6 7 8 9) 4) ->
@@ -391,19 +450,35 @@
 
 ;;; ****f* utilities/split-into-sub-groups2
 ;;; FUNCTION
-;;; 
+;;; Create a new list of lists by splitting the original flat list into
+;;; sublists of the specified length.
+;;;
+;;; NB: The length given as the second argument is not required to be fit
+;;;     evenly into the length of the original flat list. If the original list
+;;;     is not evenly divisible by the specified length, the resulting list of
+;;;     sublists will contain a final sublist of a different length.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A flat list.
+;;; - An integer that is the length of each of the sublists to be created.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of lists.
 ;;; 
 ;;; EXAMPLE
 #|
+
+;; The second argument fits evenly into the length of the original list. 
+(split-into-sub-groups2 '(1 2 3 4 5 6 7 8 9 10 11 12) 3)
+
+=> ((1 2 3) (4 5 6) (7 8 9) (10 11 12))
+
+;; The second argument does not fit evenly into the length of the original
+;; list. 
+
+(split-into-sub-groups2 '(1 2 3 4 5 6 7 8 9 10 11 12) 5)
+
+=> ((1 2 3 4 5) (6 7 8 9 10) (11 12))
 
 |#
 ;;; SYNOPSIS
@@ -414,25 +489,33 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat May  5 14:04:19 BST 2012: Added robodoc entry
+
 ;;; Same as above but put any left over elements in the penultimate sub-list
 ;;; e.g. (split-into-sub-groups3 '(1 2 3 4 5 6 7 8 9) 4) ->
 ;;; ((1 2 3 4) (5 6 7 8 9))
 
 ;;; ****f* utilities/split-into-sub-groups3
 ;;; FUNCTION
-;;; 
+;;; Split a given flat list into sublists of the specified length, putting any
+;;; remaining elements, if there are any, into the last sublist.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A flat list.
+;;; - An integer that is the length of the new sublists.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of lists.
 ;;; 
 ;;; EXAMPLE
 #|
+(split-into-sub-groups3 '(1 2 3 4 5 6 7 8 9 10 11 12) 3)
+
+=> ((1 2 3) (4 5 6) (7 8 9) (10 11 12))
+
+(split-into-sub-groups3 '(1 2 3 4 5 6 7 8 9 10 11 12) 5)
+
+=> ((1 2 3 4 5) (6 7 8 9 10 11 12))
 
 |#
 ;;; SYNOPSIS
@@ -465,21 +548,32 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat May  5 14:09:30 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/power-of-2
 ;;; FUNCTION
-;;; 
+;;; Test whether the specified number is a power of two and return the
+;;; logarithm of the specified number to base 2.
+;;;
+;;; This method returns two values: T or NIL for the test and a decimal that is
+;;; the logarithm of the specified number to base 2.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Two values: T or NIL for the test and a decimal number that is the
+;;; logarithm of the specified number to base 2.
 ;;; 
 ;;; EXAMPLE
 #|
+(power-of-2 16)
+
+=> T, 4.0
+
+(power-of-2 17.3)
+
+=> NIL, 4.1127
 
 |#
 ;;; SYNOPSIS
@@ -489,23 +583,34 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat May  5 14:16:28 BST 2012: Added robodoc entry
+
 ;; returns the power of 2 <= num
 
 ;;; ****f* utilities/nearest-power-of-2
 ;;; FUNCTION
-;;; 
+;;; Return the closest number to the specified value that is a power of two but
+;;; not greater than the specified value.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An integer that is a power of two.
 ;;; 
 ;;; EXAMPLE
 #|
+(nearest-power-of-2 31)
+
+=> 16
+
+(nearest-power-of-2 32)
+
+=> 32
+
+(nearest-power-of-2 33)
+
+=> 32
 
 |#
 ;;; SYNOPSIS
@@ -520,21 +625,23 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat May  5 14:28:28 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/flatten
 ;;; FUNCTION
-;;; 
+;;; Return a list of nested lists of any depth as a flat list.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list of nested lists.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A flat list.
 ;;; 
 ;;; EXAMPLE
 #|
+(flatten '((1 (2 3 4) (5 (6 7) (8 9 10 (11) 12)) 13) 14 15 (16 17)))
+
+=> (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17)
 
 |#
 ;;; SYNOPSIS
@@ -547,6 +654,8 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Sat May  5 14:31:47 BST 2012: Added robodoc entry
 
 ;;; Sometimes a series of calculations ends up with floating-point errors
 ;;; making your variable a little smaller or larger than you expect.  So use
@@ -561,22 +670,49 @@
 ;;;   (coerce 261.63 'short-float) 
 ;;;   (coerce 261.63 'double-float) 0.00001) => T
 
-
 ;;; ****f* utilities/equal-within-tolerance
 ;;; FUNCTION
-;;; 
+
+;;; Test whether the difference between two decimal numbers falls within a
+;;; specified tolerance.
+;;;
+;;; This test is designed to compensate for calculation discrepancies caused by
+;;; floating-point errors (such as 2.0 vs. 1.9999997), in which the equations
+;;; should yield equal numbers. It is intended to be used in place of = in such
+;;; circumstances.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
+;;; - A first number.
+;;; - A second number.
+;;;
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A decimal value that is the maximum difference allowed between the two
+;;;   numbers that will still return T. Default = 0.000001d0.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T if the two tested numbers are equal within the specified tolerance,
+;;; otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;; An example of floating-point error
+(loop for i from 0.0 below 1.1 by 0.1 collect i)
+
+=> (0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.70000005 0.8000001 0.9000001 1.0000001) 
+
+;; Using =
+(loop for i from 0.0 below 1.1 by 0.1 
+   for j in '(0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0)
+   collect (= i j))
+
+=> (T T T T T T T NIL NIL NIL NIL)
+
+;; Using equal-within-tolerance
+(loop for i from 0.0 below 1.1 by 0.1 
+   for j in '(0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0)
+   collect (equal-within-tolerance i j))
+
+=> (T T T T T T T T T T T)
 
 |#
 ;;; SYNOPSIS
@@ -590,20 +726,25 @@
 ;;; MDE Mon Mar 19 19:39:55 2012 
 
 ;;; ****f* utilities/decimal-places
+;;; DATE
+;;; 19-Mar-2012
+;;;
 ;;; FUNCTION
-;;; 
+;;; Round the given number to the specified number of decimal places.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number.
+;;; - An integer that is the number of decimal places to which to round the
+;;;   given number.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A decimal number.
 ;;; 
 ;;; EXAMPLE
 #|
+(decimal-places 1.1478349092347 2)
+
+=> 1.15
 
 |#
 ;;; SYNOPSIS
@@ -614,21 +755,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat May  5 15:22:55 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/almost-zero
 ;;; FUNCTION
-;;; 
+;;; Return T if a given decimal is within 0.000001 of 0.0.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A number.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number that is a user-specified difference for the comparison test. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T if the number is within the tolerance difference to zero, otherwise NIL. 
 ;;; 
 ;;; EXAMPLE
 #|
+(almost-zero 0.0000007)
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -638,6 +784,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat May  5 15:28:17 BST 2012: Added robodoc entry
+
 ;;; (round-if-close 23.99999) -> 24
 ;;; (round-if-close 23.00000001) -> 23
 ;;; (round-if-close 23.0001) -> 23.0001
@@ -645,30 +793,40 @@
 
 ;;; ****f* utilities/round-if-close
 ;;; FUNCTION
-;;; 
+;;; Round a decimal number if it is within a given tolerance to the next whole
+;;; number. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A decimal number.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - If the given number is this amount or less than the nearest whole number,
+;;;   round the given number to the nearest whole number.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; If the given number is within the tolerance, return the number, otherwise
+;;; return the nearest whole number.
 ;;; 
 ;;; EXAMPLE
 #|
+(round-if-close 1.999998)
+
+=> 1.999998
+
+(round-if-close 1.999999)
+
+=> 2
 
 |#
 ;;; SYNOPSIS
 (defun round-if-close (num &optional (tolerance 0.000001))
 ;;; ****
   (multiple-value-bind
-      (int rem)
+	(int rem)
       (round num)
     (if (< (abs rem) tolerance)
         int
-      num)))
+	num)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -685,23 +843,23 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Sort a list of symbols alphabetically but case-insensitive.
+;;; SAR Sat May  5 15:36:38 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/sort-symbol-list
 ;;; FUNCTION
-;;; 
+;;; Sort a list of symbols alphabetically ascending, case-insensitive. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; A list of symbols.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; The same list of symbols sorted alphabetically ascending, case-insensitive.  
 ;;; 
 ;;; EXAMPLE
 #|
+(sort-symbol-list '(Lorem ipsum dolor sit amet consectetur adipiscing))
+
+=> (ADIPISCING AMET CONSECTETUR DOLOR IPSUM LOREM SIT)
 
 |#
 ;;; SYNOPSIS
@@ -713,25 +871,50 @@
                                         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat May  5 15:41:59 BST 2012: Added robodoc entry
+
 ;;; (1 2 3 4 ".") -> 1.2.3.4
 
 ;;;(format nil "~{~a~a~^~}" separator list))
 
 ;;; ****f* utilities/list-to-string
 ;;; FUNCTION
-;;; 
+;;; Convert a list to a string.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A string that will serve as a separator between the elements. 
+;;;   Default = " ".
+;;; - T or NIL to indicate whether a list value of NIL is to be returned as
+;;;   "NIL" or NIL. T = "NIL" as a string. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; 
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Using defaults
+(list-to-string '(1 2 3 4 5))
+
+=> "1 2 3 4 5"
+
+;;; Specifying a different separator
+(list-to-string '(1 2 3 4 5) "-")
+
+=> "1-2-3-4-5"
+
+;;; A NIL list returns "NIL" as a string by default
+(list-to-string NIL)
+
+=> "nil"
+
+;;; Setting the second optional argument to NIL returns a NIL list as NIL
+;;; rather than as "NIL" as a string
+(list-to-string NIL "" nil)
+
+=> NIL
 
 |#
 ;;; SYNOPSIS
@@ -741,7 +924,7 @@
       (if (listp list)
           (loop for i in list with result = "" do
                (setf result (format nil "~a~a~a" result separator i))
-               finally (return (subseq result (length separator))))
+	     finally (return (subseq result (length separator))))
           list)
       (if nil-as-string
           "nil"
@@ -777,21 +960,51 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat May  5 15:52:17 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/semitones
 ;;; FUNCTION
-;;; 
+;;; Return the sample-rate conversion factor required for transposing an audio
+;;; file by a specific number of semitones. The number of semitones can be
+;;; given as a decimal number, and may be positive or negative.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A number of semitones.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number that is the factor required to transpose by an octave. 
+;;;   Default = 2.0.
+;;; - A number that is the number of semitones per octave. Default = 12. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A number.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Usage with default values
+(semitones 3)
+
+=> 1.1892071
+
+;;; Specifying a different number of semitones per octave
+(semitones 3 2.0 13)
+
+=> 1.1734605
+
+;;; Specifying a different factor for transposing by an octave 
+(semitones 3 4.0)
+
+=> 1.4142135
+
+;;; Fractional semitones are allowed
+(semitones 3.72)
+
+=> 1.2397077
+
+;;; Negative semitones are also allowed
+(semitones -3.72)
+
+=> 0.80664176
 
 |#
 ;;; SYNOPSIS
@@ -803,29 +1016,40 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Return the semitone transposition for a given sampling rate
-;;; conversion factor.
+;;; SAR Sat May  5 16:03:22 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/srt
 ;;; FUNCTION
-;;; 
+;;; Return the semitone transposition for a given sampling rate conversion
+;;; factor.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A number that is a sample-rate conversion factor.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number that is the factor required for transposing one octave. 
+;;; - A number that is the number of scale degrees in an octave.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A number.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Using the defaults
+(srt 1.73)
+
+=> 9.4893
+
+;;; Using a sample-rate conversion factor of 4.0 for the octave and specifying
+;;; 13 divisions of the octave
+(srt 1.73 4.0 13)
+
+=> 5.14
 
 |#
 ;;; SYNOPSIS
 (let ((last8vesize 0)
-      (log8ve 0.0)) ;; do we don't have to recalculate each time
+      (log8ve 0.0)) ;; so we don't have to recalculate each time
   (defun srt (srt &optional (octave-size 2.0) (divisions-per-octave 12)
               ;; MDE Tue Feb  7 16:59:45 2012 -- round so we don't get tiny
               ;; fractions of semitones due to float inaccuracies?
@@ -843,26 +1067,32 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Replace the elements in list between start and end (inclusive) with the new
-;;; list  
-;;; (replace-elements '(0 1 2 3 4 5 6 7 8 9) 3 7 '(dog cat))
-;;; -> (0 1 2 DOG CAT 8 9)
+;;; SAR Sat May  5 16:09:37 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/replace-elements
 ;;; FUNCTION
-;;; 
+;;; Replace the elements in list between start and end (inclusive) with the new
+;;; list.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list.
+;;; - An integer that is first position of the segment of the original list to
+;;;   be replaced.
+;;; - An integer that is the last position of the segment of the original list
+;;;   to be replaced.
+;;; - A list that is to replace the specified segment of the original
+;;;   list. This list can be of a different length than that of the segment
+;;;   of the original specified by the start and end positions.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+
+(replace-elements '(1 2 3 4 5 6 7 8 9) 3 7 '(dog cat goldfish))
+
+=> (1 2 3 DOG CAT GOLDFISH 9)
 
 |#
 ;;; SYNOPSIS
@@ -880,25 +1110,30 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; (splice '(3 4 5) '(1 2 6 7 8) 2) -> (1 2 3 4 5 6 7 8)
+;;; SAR Sat May  5 16:15:26 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/splice
 ;;; FUNCTION
-;;; 
+;;; Insert the elements of a first list into a second list beginning at a
+;;; specified index (0-based).
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list that contains the elements to be inserted into the second list.
+;;; - A list into which the elements of the first argument are to be inserted. 
+;;; - An integer that is the index within the second list where the elements
+;;;   are to be inserted.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - A list.
 ;;; 
 ;;; EXAMPLE
 #|
+(splice '(dog cat goldfish) '(1 2 3 4 5 6 7 8 9) 3)
+
+=> (1 2 3 DOG CAT GOLDFISH 4 5 6 7 8 9)
 
 |#
+;;;
 ;;; SYNOPSIS
 (defun splice (elements into-list where)
 ;;; ****
@@ -917,26 +1152,30 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; start is 0-based.
-;;; (remove-elements '(0 1 2 3 4 5 6) 0 2) -> (2 3 4 5 6)
+;;; SAR Sat May  5 16:21:11 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/remove-elements
 ;;; FUNCTION
-;;; 
+;;; Remove a specified number of elements from a given list starting at a
+;;; specified position (0-based) within the list.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list.
+;;; - An integer that is the 0-based position within that list that will be the
+;;;   first element to be removed.
+;;; - An integer that is the number of elements to remove.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+(remove-elements '(1 2 3 4 5 6 7) 2 4)
+
+=> (1 2 7)
 
 |#
+;;;
 ;;; SYNOPSIS
 (defun remove-elements (list start how-many)
 ;;; ****
@@ -954,21 +1193,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****f* utilities/setf-last
+;;; SAR Sat May  5 16:26:57 BST 2012: Added robodoc entry
+
+;;; ****f* utilities/setf-last 
 ;;; FUNCTION
-;;; 
+;;; Change the last element in a given list to a specified new element.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list.
+;;; - The new last element of that list.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the new last element.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((l '(1 2 3 4 5)))
+  (setf-last l 'dog)
+  l)
+
+=> (1 2 3 4 DOG)
 
 |#
 ;;; SYNOPSIS

@@ -601,23 +601,41 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat May  5 11:31:58 BST 2012: Added robodoc entry
+
 ;;; MDE Sat Feb 11 10:41:11 2012 
 
 ;;; ****f* cm/degrees-per-semitone
 ;;; FUNCTION
-;;; 
+;;; Get the number of scale degrees per equal-tempered semitone in the current
+;;; tuning scale. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - No arguments
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - The scale for which the number of degrees per semitone is to be
+;;;   retrieved. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An integer.
 ;;; 
 ;;; EXAMPLE
 #|
+(in-scale :chromatic)
+(degrees-per-semitone)
+
+=> 1
+
+(in-scale :twelfth-tone)
+(degrees-per-semitone)
+
+=> 6
+
+(in-scale :quarter-tone)
+(degrees-per-semitone)
+
+=> 2
 
 |#
 ;;; SYNOPSIS
@@ -1005,19 +1023,63 @@
 
 ;;; ****f* cm/parse-midi-file
 ;;; FUNCTION
-;;; parse-midi-file:
+;;; Print the MIDI event slots in the specified file to the Lisp listener.
 ;;;
-;;; the MIDI event slots in the file are printed to the Lisp interpreter.
+;;; NB: This is a Common Music function and as such must be called with the
+;;;     package qualifier cm:: if used within slippery chicken.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the path to the MIDI file
-;;; - (optional) if track it's an index to the track list.  NB some
-;;; CM-generated (i.e slippery-chicken generated too) MIDI files write each
-;;; channel in a different track so track would seem synonymous with channel
-;;; here. 
-;;; 
+;;; - The path (including the file name) to the MIDI file.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - An integer or NIL to indicate which track in the specified MIDI file is
+;;;   to be accessed. If NIL, all tracks will be accessed. NB: CM (and
+;;;   therefore slippery-chicken too) generates some MIDI files by writing each
+;;;   channel to a different track, so the "track" would seem synonymous with
+;;;   "channel" here. 
+;;;
 ;;; RETURN VALUE  
-;;; the number of MIDI events
+;;; The CM data for the MIDI events in the specified file.
+;;;
+;;; EXAMPLE
+#|
+(cm::parse-midi-file "/tmp/multi-ps.mid")
+
+=>
+Event #i(midi-tempo-change time 0.0 usecs 1000000)
+Event #i(midi time 0.0 keynum 72 duration 0.5 amplitude 0.6929134 channel 0)
+Event #i(midi time 0.0 keynum 65 duration 0.5 amplitude 0.6929134 channel 1)
+Event #i(midi time 0.0 keynum 60 duration 0.5 amplitude 0.6929134 channel 2)
+Event #i(midi-time-signature time 0.0 numerator 4 denominator 4 clocks 24 32nds 8)
+Event #i(midi-time-signature time 0.0 numerator 4 denominator 4 clocks 24 32nds 8)
+Event #i(midi-time-signature time 0.0 numerator 4 denominator 4 clocks 24 32nds 8)
+Event #i(midi-tempo-change time 0.0 usecs 1000000)
+Event #i(midi-tempo-change time 0.0 usecs 1000000)
+Event #i(midi-tempo-change time 0.0 usecs 1000000)
+Event #i(midi time 0.5 keynum 67 duration 0.5 amplitude 0.6929134 channel 2)
+Event #i(midi time 0.5 keynum 71 duration 0.5 amplitude 0.6929134 channel 0)
+Event #i(midi time 0.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
+Event #i(midi time 1.0 keynum 60 duration 0.5 amplitude 0.6929134 channel 2)
+Event #i(midi time 1.0 keynum 72 duration 0.5 amplitude 0.6929134 channel 0)
+Event #i(midi time 1.0 keynum 62 duration 0.5 amplitude 0.6929134 channel 1)
+Event #i(midi time 1.5 keynum 67 duration 0.5 amplitude 0.6929134 channel 2)
+Event #i(midi time 1.5 keynum 71 duration 0.5 amplitude 0.6929134 channel 0)
+Event #i(midi time 1.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
+Event #i(midi time 2.0 keynum 60 duration 0.5 amplitude 0.6929134 channel 2)
+Event #i(midi time 2.0 keynum 72 duration 0.5 amplitude 0.6929134 channel 0)
+Event #i(midi time 2.0 keynum 65 duration 0.5 amplitude 0.6929134 channel 1)
+Event #i(midi time 2.5 keynum 67 duration 0.5 amplitude 0.6929134 channel 2)
+Event #i(midi time 2.5 keynum 71 duration 0.5 amplitude 0.6929134 channel 0)
+Event #i(midi time 2.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
+Event #i(midi time 3.0 keynum 60 duration 0.5 amplitude 0.6929134 channel 2)
+Event #i(midi time 3.0 keynum 72 duration 0.5 amplitude 0.6929134 channel 0)
+Event #i(midi time 3.0 keynum 62 duration 0.5 amplitude 0.6929134 channel 1)
+Event #i(midi time 3.5 keynum 67 duration 0.5 amplitude 0.6929134 channel 2)
+Event #i(midi time 3.5 keynum 71 duration 0.5 amplitude 0.6929134 channel 0)
+Event #i(midi time 3.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
+31 events total
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defun parse-midi-file (file &optional track)
@@ -1031,20 +1093,41 @@
     num-events))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Sat May  5 11:48:51 BST 2012: Added robodoc entry
+
 ;;; ****f* cm/midi-file-high-low
-;;; FUNCTION
-;;; midi-file-high-low:
+;;; DATE
+;;; 30-Dec-2010
 ;;;
-;;; Print highest and lowest note in a MIDI file
+;;; FUNCTION
+;;; Print the highest and lowest pitch in a specified MIDI file as a MIDI note
+;;; number. 
+;;;
+;;; NB: This is a Common Music function and as such must be called with the
+;;;     package qualifier cm:: if used within slippery chicken.
 ;;; 
 ;;; ARGUMENTS 
-;;; - path to midi file
-;;; - (optional) track: if an integer it's an index to the track list
+;;; - The path (including the name) to the MIDI file.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - An integer or NIL to indicate which track in the specified MIDI file is
+;;;   to be accessed. If NIL, all tracks will be accessed. NB: CM (and
+;;;   therefore slippery-chicken too) generates some MIDI files by writing each
+;;;   channel to a different track, so the "track" would seem synonymous with
+;;;   "channel" here. 
 ;;; 
 ;;; RETURN VALUE  
-;;; highest and lowest note (using values function)
-;;; 
-;;; DATE 30.12.10
+;;; Two integer values (using the values function) that are the highest and
+;;; lowest pitches in the specified MIDI file.
+;;;
+;;; EXAMPLE
+#|
+(cm::midi-file-high-low "/tmp/multi-ps.mid")
+
+=> 72, 60
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defun midi-file-high-low (file &optional track)
@@ -1078,10 +1161,10 @@
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sat May  5 11:59:43 BST 2012: Conformed robodoc entry
+
 ;;; ****f* cm/midi-file-one-note
 ;;; FUNCTION
-;;; midi-file-one-note:
-;;;
 ;; write all midi notes in the file out to a new file using the single note
 ;; <note> and <channel>.
 ;;; 
@@ -1089,8 +1172,11 @@
 ;;; - the file path as a string
 ;;; - the note to write (symbol or midi note number)
 ;;; - the new channel to write note to (counting from 1)
-;;; - (optional) the old channel: if given, only notes on this channel will be
-;;;    written (counting from 1).
+;;;
+;;; OPTIONAL ARGUMENTS 
+
+;;; - the old channel: if given, only notes on this channel will be written
+;;;   (counting from 1).
 ;;; 
 ;;; RETURN VALUE  
 ;;; the path to the new file

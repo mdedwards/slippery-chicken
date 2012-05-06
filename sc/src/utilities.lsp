@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 11:28:09 Fri May  4 2012 CEST
+;;; $$ Last modified: 16:48:06 Sun May  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -120,26 +120,26 @@
 (defun mins-secs-to-secs (list)
 ;;; ****
   (flet ((secs-msecs (secs msecs)
-	   (when (or (> secs 60)
-		     (> msecs 1000))
-	     (error "utilities::mins-secs-to-secs: secs = ~a ~
+           (when (or (> secs 60)
+                     (> msecs 1000))
+             (error "utilities::mins-secs-to-secs: secs = ~a ~
                                millisecs = ~a???" secs msecs))))
     (cond ((not list) nil)
-	  ((numberp list) list)
-	  ((= 2 (length list))
-	   (let ((mins (first list))
-		 (secs (second list)))
-	     (secs-msecs secs 0)
-	     (+ secs (* 60.0 mins))))
-	  ((= 3 (length list))
-	   (let ((mins (first list))
-		 (secs (second list))
-		 (msecs (third list)))
-	     (secs-msecs secs msecs)
-	     (+ secs (/ msecs 1000.0) (* 60.0 mins))))
-	  (t (error "utilities::mins-secs-to-secs: arg must be a 2- or ~
+          ((numberp list) list)
+          ((= 2 (length list))
+           (let ((mins (first list))
+                 (secs (second list)))
+             (secs-msecs secs 0)
+             (+ secs (* 60.0 mins))))
+          ((= 3 (length list))
+           (let ((mins (first list))
+                 (secs (second list))
+                 (msecs (third list)))
+             (secs-msecs secs msecs)
+             (+ secs (/ msecs 1000.0) (* 60.0 mins))))
+          (t (error "utilities::mins-secs-to-secs: arg must be a 2- or ~
                          3-element list (mins secs [millisecs]): ~a"
-		    list)))))
+                    list)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -332,7 +332,7 @@
   (let ((result (loop for sublist in list collect (length sublist))))
     (if remove-zeros
         (remove 0 result)
-	result)))
+        result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -371,10 +371,10 @@
      for el in test-list
      do
        (when (member el list :test test)
-	 (incf count))
+         (incf count))
      finally
        (when (= count len)
-	 (return t))))
+         (return t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -822,11 +822,11 @@
 (defun round-if-close (num &optional (tolerance 0.000001))
 ;;; ****
   (multiple-value-bind
-	(int rem)
+        (int rem)
       (round num)
     (if (< (abs rem) tolerance)
         int
-	num)))
+        num)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -924,7 +924,7 @@
       (if (listp list)
           (loop for i in list with result = "" do
                (setf result (format nil "~a~a~a" result separator i))
-	     finally (return (subseq result (length separator))))
+             finally (return (subseq result (length separator))))
           list)
       (if nil-as-string
           "nil"
@@ -1216,11 +1216,15 @@
 
 |#
 ;;; SYNOPSIS
-(defun setf-last (list new-last)
+(defmacro setf-last (list new-last)
 ;;; ****
-  (unless list
-    (error "utilities::setf-last: list is empty!"))
-  (setf (nth (1- (length list)) list) new-last))
+  `(progn
+     (unless ,list
+       (error "utilities::setf-last: list is empty!"))
+     ;; MDE Sun May  6 16:23:04 2012 -- 
+     (unless (listp ,list)
+       (error "utilities::setf-last: first argument must be a list: ~a" ,list))
+     (setf (nth (1- (length ,list)) ,list) ,new-last)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

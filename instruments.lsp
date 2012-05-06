@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 18:03:25 Tue Apr 24 2012 BST
+;;; $$ Last modified: 11:29:25 Fri May  4 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -437,13 +437,13 @@
          ;; (rest-sorted (sort (rest pitch-list) #'pitch<))
          (possible (loop for p in (rest pitch-list) 
                       for diff = (abs (pitch- p p1))
-		      do
+                      do
                       ;; must be above a perfect fifth, and let's avoid
                       ;; microtonal chords for ease of playing
-			(when (and (not (micro-tone p))
-				   (>  diff 7)
-				   (<= diff 11))
-			  (return p)))))
+                        (when (and (not (micro-tone p))
+                                   (>  diff 7)
+                                   (<= diff 11))
+                          (return p)))))
     (when possible
       (make-chord (list p1 possible)))))
 
@@ -652,7 +652,9 @@
 ;;; pitch sets were defined explicitly such that all of the pitches available
 ;;; to the guitar at any moment were playable as a guitar chord. As such, this
 ;;; function always assumes that the pitch-list it is drawing from contains
-;;; pitches that are already playable as a guitar chord. 
+;;; pitches that are already playable as a guitar chord.  It also adds the
+;;; fingering as mark above each chord when outputting to CMN, which may or may
+;;; not be desirable.
 ;;; 
 ;;; SYNOPSIS
 (let ((last-chord '()))
@@ -675,11 +677,11 @@
             ((< tessitura 0.5) (setf nth1 0 nth2 4))
             ((< tessitura 0.7) (setf nth1 1 nth2 5))
             ((>= tessitura 0.7) (setf nth1 0 nth2 6)))
-      (setf notes (subseq subset-pitches nth1 nth2)
-            fingering (subseq tag nth1 nth2)
-            strings (subseq strings nth1 nth2)
-            show-fingering (not (equal (pitch-list-to-symbols last-chord)
-                                       (pitch-list-to-symbols notes)))
+      (setf notes (safe-subseq subset-pitches nth1 nth2)
+            fingering (safe-subseq tag nth1 nth2)
+            strings (safe-subseq strings nth1 nth2)
+            show-fingering (not (equalp (pitch-list-to-symbols last-chord)
+                                        (pitch-list-to-symbols notes)))
             last-chord (copy-list notes)
             chord (make-chord notes))
       (add-mark chord (when show-fingering
@@ -690,7 +692,7 @@
                                     for s in strings 
                                     for f in fingering 
                                     collect
-				      (format nil "~3a ~a" s f)))
+                                      (format nil "~3a ~a" s f)))
                                 ;;'(:direction :up)))))
                                 ))))
       chord)))

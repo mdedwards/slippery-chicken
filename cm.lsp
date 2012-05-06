@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 14:06:33 Thu Apr 19 2012 BST
+;;; $$ Last modified: 16:52:21 Sun May  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1186,10 +1186,14 @@ Event #i(midi time 3.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
 ;;;         "/Users/medward2/mus/altogether/altogether.mid" 'c4 9)
 ;;; 
 ;;; SYNOPSIS
-(defun midi-file-one-note (file note channel &optional (old-channel))
+(defun midi-file-one-note (file note channel &optional old-channel)
 ;;; ****
-  (decf channel)
-  (decf old-channel)
+  ;; MDE Sun May  6 16:52:09 2012 -- check
+  (when (integerp channel)
+    (decf channel))
+  ;; MDE Sun May  6 16:50:33 2012 -- test for value first
+  (when (integerp old-channel)
+    (decf old-channel))
   (let ((midi-stream (import-events file))
         (degree (if (numberp note) note (keynum note)))
         (new-file (format nil "~a-one-note.mid"

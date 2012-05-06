@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 11:29:25 Fri May  4 2012 CEST
+;;; $$ Last modified: 17:38:01 Sun May  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -105,7 +105,7 @@
       (:staff-name "bass flute" :staff-short-name "bass fl" 
        :lowest-written c4 :highest-written c7 :transposition-semitones -12
        :missing-notes (cqs4 dqf4) 
-       :clefs-in-c '(treble bass) :starting-clef treble 
+       :clefs-in-c (treble bass) :starting-clef treble 
        :chords nil 
        :microtones t 
        :midi-program 74))
@@ -172,7 +172,7 @@
       (:staff-name "tenor sax" :staff-short-name "ten sax"
        :lowest-written bf3 :highest-written fs6 :transposition-semitones -14 
        :missing-notes (gqs4 gqs5) 
-       :starting-clef treble :clefs-in-c '(treble bass)
+       :starting-clef treble :clefs-in-c (treble bass)
        :chords nil 
        :microtones t 
        :midi-program 67))
@@ -180,7 +180,7 @@
       (:staff-name "baritone sax" :staff-short-name "bar sax"
        :lowest-written bf3 :highest-written fs6 :transposition-semitones -21 
        :missing-notes (gqs4 gqs5)
-       :clefs-in-c '(treble bass) :starting-clef treble 
+       :clefs-in-c (treble bass) :starting-clef treble 
        :chords nil
        :microtones t 
        :midi-program 68))

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    23rd March 2002
 ;;;
-;;; $$ Last modified: 10:38:01 Fri May  4 2012 CEST
+;;; $$ Last modified: 21:47:20 Sun May  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -118,25 +118,25 @@
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-		     (vc (cello :midi-channel 2))))
-	:set-palette '((1 ((f3 g3 a3 b3 c4))))
-	:set-map '((1 (1 1 1 1 1))
-		   (2 (1 1 1 1 1))
-		   (3 (1 1 1 1 1)))
-	:rthm-seq-palette '((1 ((((4 4) h q e s s))
-				:pitch-seq-palette ((1 2 3 4 5))))
-			    (2 ((((4 4) q e s s h))
-				:pitch-seq-palette ((1 2 3 4 5))))
-			    (3 ((((4 4) e s s h q))
-				:pitch-seq-palette ((1 2 3 4 5)))))
-	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))
-			(2 ((cl (2 2 2 2 2))
-			    (vc (2 2 2 2 2))))
-			(3 ((cl (3 3 3 3 3))
-			    (vc (3 3 3 3 3))))))))
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5))))
+                            (2 ((((4 4) q e s s h))
+                                :pitch-seq-palette ((1 2 3 4 5))))
+                            (3 ((((4 4) e s s h q))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((cl (2 2 2 2 2))
+                            (vc (2 2 2 2 2))))
+                        (3 ((cl (3 3 3 3 3))
+                            (vc (3 3 3 3 3))))))))
   (get-sequenz (get-section mini 2) 'vc 2))
 
 =>
@@ -195,17 +195,17 @@ BAR-HOLDER:
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((vc (cello :midi-channel 1))))
-	:set-palette '((1 ((f3 g3 a3 b3 c4))))
-	:set-map '((1 (1 1 1 1 1))
-		   (2 (1 1 1 1 1))
-		   (3 (1 1 1 1 1)))
-	:rthm-seq-palette '((1 ((((4 4) h q e s s))
-				:pitch-seq-palette ((1 2 3 4 5)))))
-	:rthm-seq-map '((1 ((vc (1 1 1 1 1))))
-			(2 ((vc (1 1 1 1 1))))
-			(3 ((vc (1 1 1 1 1))))))))
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1 1))))
+                        (2 ((vc (1 1 1 1 1))))
+                        (3 ((vc (1 1 1 1 1))))))))
   (num-sequenzes (get-section mini 2)))
 
 => 5
@@ -382,7 +382,7 @@ BAR-HOLDER:
 (defmethod re-bar ((s section)
                    &key start-bar 
                    end-bar
-                   min-time-sig
+                   (min-time-sig '(2 4))
                    verbose
                    ;; could also be a beat rhythmic unit
                    (auto-beam t))
@@ -394,25 +394,31 @@ BAR-HOLDER:
       ;; looping for each player means we do a lot of the detection arithmetic
       ;; not once but once for each player, but it's necessary for the glorious
       ;; future when we might have different meters for different instruments.
-      (loop 
-         with first-time-sigs
-         with this-time-sigs
-         for player-section in (data s) do
-         ;; MDE Thu Feb  9 11:43:51 2012 -- fixed the logic here
-         (when (and (<= start-bar (end-bar s))
-                    (>= end-bar (start-bar s)))
-           (setf this-time-sigs
-                 (re-bar player-section 
-                         :start-bar (max start-bar (start-bar player-section))
-                         :end-bar (min end-bar (end-bar player-section))
-                         :min-time-sig min-time-sig :verbose verbose 
-                         :auto-beam auto-beam))
-           (if first-time-sigs
-               (unless (equal first-time-sigs this-time-sigs)
-                 (warn "section::re-bar: not all time-sigs are the same! ~
+      (progn 
+        ;; MDE Sun May  6 21:46:38 2012 
+        (unless start-bar
+          (setf start-bar (start-bar s)))
+        (unless end-bar
+          (setf end-bar (end-bar s)))
+        (loop 
+           with first-time-sigs
+           with this-time-sigs
+           for player-section in (data s) do
+           ;; MDE Thu Feb  9 11:43:51 2012 -- fixed the logic here
+           (when (and (<= start-bar (end-bar s))
+                      (>= end-bar (start-bar s)))
+             (setf this-time-sigs
+                   (re-bar player-section 
+                           :start-bar (max start-bar (start-bar player-section))
+                           :end-bar (min end-bar (end-bar player-section))
+                           :min-time-sig min-time-sig :verbose verbose 
+                           :auto-beam auto-beam))
+             (if first-time-sigs
+                 (unless (equal first-time-sigs this-time-sigs)
+                   (warn "section::re-bar: not all time-sigs are the same! ~
                          ~%first: ~a ~%this:  ~a"
-                       first-time-sigs this-time-sigs))
-               (setf first-time-sigs this-time-sigs)))))
+                         first-time-sigs this-time-sigs))
+                 (setf first-time-sigs this-time-sigs))))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

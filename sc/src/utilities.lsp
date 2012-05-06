@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 08:16:47 Sun Apr 29 2012 BST
+;;; $$ Last modified: 11:28:09 Fri May  4 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2949,6 +2949,15 @@
   (format t "~%~%*******  Loading ~a~%" file)
   (load 
      (format nil "~atest-suite/~a" cl-user::+slippery-chicken-home-dir+ file)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri May  4 11:01:14 2012 
+(defun safe-subseq (seq start &optional end)
+  (let* ((len (length seq)))
+    (when (and (integerp end) (> end len))
+      (setf end len))
+    (when (and (integerp start) (< start len))
+      (subseq seq start end))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 18:52:48 Tue May  1 2012 BST
+;;; $$ Last modified: 11:58:55 Fri May  4 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -87,7 +87,7 @@
    ;; the number of notes for the score, whether tied or not N.B. a chord
    ;; counts as one note!  
    (num-score-notes :accessor num-score-notes :type integer :initform 0)
-   (duration :accessor duration :type float :initform 0.0)
+   (duration :accessor duration :type number :initform 0.0)
    ;; whether we've created inversions of the pitch-seqs in pitch-seq-palette
    (psp-inversions :accessor psp-inversions :type boolean :initform nil)
    ;; we don't want to increment first notes of a seq more than once!
@@ -2332,8 +2332,8 @@ rthm-seq NIL
 #|
 ;;; Returns a rthm-seq-bar object
 (let ((rs (make-rthm-seq '(seq1 ((((2 4) q e s s)
-				  ((e) q (e))
-				  ((3 8) s s e. s)))))))
+                                  ((e) q (e))
+                                  ((3 8) s s e. s)))))))
   (get-bar rs 2))
 
 => 
@@ -2352,8 +2352,8 @@ RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1,
 [...]
 
 (let ((rs (make-rthm-seq '(seq1 ((((2 4) q e s s)
-				  ((e) q (e))
-				  ((3 8) s s e. s)))))))
+                                  ((e) q (e))
+                                  ((3 8) s s e. s)))))))
   (print-simple (get-bar rs 2)))
 
 => (2 4): rest E, note Q, rest E,

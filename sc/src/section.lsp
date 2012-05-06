@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    23rd March 2002
 ;;;
-;;; $$ Last modified: 12:30:20 Wed Apr 25 2012 BST
+;;; $$ Last modified: 10:38:01 Fri May  4 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -248,9 +248,9 @@ BAR-HOLDER:
     (error "bar-holder::get-bar: player argument is required!"))
   (if (has-subsections s)
       (call-next-method)
-    (let ((player-section (get-data player s)))
-      (when player-section
-        (get-bar player-section bar-num player)))))
+      (let ((player-section (get-data player s)))
+        (when player-section
+          (get-bar player-section bar-num player)))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:36:56 Mon Apr 30 2012 BST
+;;; $$ Last modified: 19:02:15 Sun May  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4790,7 +4790,8 @@ T
                      (unless (zerop (num-bars section))
                        (get-last-event 
                         (get-last-bar section))))
-               (when (pitch-or-chord last-event)
+               ;; MDE Sun May  6 18:40:07 2012
+               (when (and last-event (pitch-or-chord last-event))
                  (setf last-pitch-seen (pitch-or-chord last-event))))
              (progn 
                ;; MDE Thu Dec  8 21:39:07 2011 -- print section ID

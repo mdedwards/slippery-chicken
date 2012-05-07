@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 16:48:06 Sun May  6 2012 BST
+;;; $$ Last modified: 17:30:46 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -143,8 +143,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun float-int-p (x)
-  (equal-within-tolerance 0.0 (nth-value 1 (round x))))
+(defun float-int-p (x &optional (tolerance 0.000001d0))
+  (equal-within-tolerance 0.0 (nth-value 1 (round x)) tolerance))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1257,8 +1257,8 @@
 ;;; EXAMPLE
 #|
 (nconc-sublists '(((1 2) (a b) (cat dog)) 
-		  ((3 4) (c d) (bird fish)) 
-		  ((5 6) (e f) (pig cow))))
+                  ((3 4) (c d) (bird fish)) 
+                  ((5 6) (e f) (pig cow))))
 
 => ((1 2 3 4 5 6) (A B C D E F) (CAT DOG BIRD FISH PIG COW))
 
@@ -1499,14 +1499,14 @@
 |#
 ;;; SYNOPSIS
 (defun scale-env (env y-scaler &key x-scaler 
-		                    (x-min most-negative-double-float)
-		                    (y-min most-negative-double-float)
-                        	    (x-max most-positive-double-float)
-		                    (y-max most-positive-double-float))
+                                    (x-min most-negative-double-float)
+                                    (y-min most-negative-double-float)
+                                    (x-max most-positive-double-float)
+                                    (y-max most-positive-double-float))
 ;;; ****
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
      collect (if x-scaler (min x-max (max x-min (* x x-scaler)))
-		 x) 
+                 x) 
      collect (min y-max (max y-min (* y y-scaler)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1537,10 +1537,10 @@
    supplied to it.  
    e.g. (reverse-env '(0 0 60 .3 100 1)) => (0 1 40 0.3 100 0)."
   (let ((x-max (lastx env))
-	(result nil))
+        (result nil))
     (loop for x in env by #'cddr and y in (cdr env) by #' cddr do
-	 (push y result)
-	 (push (- x-max x) result))
+         (push y result)
+         (push (- x-max x) result))
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1765,20 +1765,20 @@
                               collect i)))
               (loop with next = (pop points) with last-el
                  for el in list and i from 0 do
-		   (if (and next (= i next))
-		       (progn 
-			 (when (> diff 0)
-			   (if (and (numberp el) (numberp last-el)) ; add items
-			       ;; interpolate to get the new element
-			       (push (+ last-el (/ (- el last-el) 2.0)) 
-				     result)
-			       ;; if not numbers just push in the last element
-			       (push last-el result))
-			   (push el result)) ; get this element too of course
-			 (setf next (pop points)))
-		       ;; not on point so get it
-		       (push el result))
-		   (setf last-el el))
+                   (if (and next (= i next))
+                       (progn 
+                         (when (> diff 0)
+                           (if (and (numberp el) (numberp last-el)) ; add items
+                               ;; interpolate to get the new element
+                               (push (+ last-el (/ (- el last-el) 2.0)) 
+                                     result)
+                               ;; if not numbers just push in the last element
+                               (push last-el result))
+                           (push el result)) ; get this element too of course
+                         (setf next (pop points)))
+                       ;; not on point so get it
+                       (push el result))
+                   (setf last-el el))
               (setf result (nreverse result))
               (unless (= (length result) new-len)
                 (error "force-length:: somehow got the wrong length: ~a"
@@ -2182,29 +2182,29 @@
       (with-open-file 
           (mrk label-file :direction :input :if-does-not-exist :error)
         (loop
-	   with count = 0 
-	   with num-loops = 0 
-	   do
-	     (multiple-value-bind
-		   (line eof)
-		 (read-line mrk nil)
-	       ;; (print line)
-	       (multiple-value-bind
-		     (label time)
-		   (read-audacity-line line)
-		 ;; (format t "~&~a ~a" label time)
-		 (incf count)
-		 (when (string= label "loop")
-		   (incf num-loops)
-		   (write-loop-points))
-		 (setf time (read-from-string time))
-		 (when time
-		   (push time loop-points)))
-	       (when eof 
-		 (write-loop-points)
-		 (format t "~%~%~a markers, ~a loops read~%"
-			 count num-loops)
-		 (return))))))
+           with count = 0 
+           with num-loops = 0 
+           do
+             (multiple-value-bind
+                   (line eof)
+                 (read-line mrk nil)
+               ;; (print line)
+               (multiple-value-bind
+                     (label time)
+                   (read-audacity-line line)
+                 ;; (format t "~&~a ~a" label time)
+                 (incf count)
+                 (when (string= label "loop")
+                   (incf num-loops)
+                   (write-loop-points))
+                 (setf time (read-from-string time))
+                 (when time
+                   (push time loop-points)))
+               (when eof 
+                 (write-loop-points)
+                 (format t "~%~%~a markers, ~a loops read~%"
+                         count num-loops)
+                 (return))))))
     (nreverse result)))
 
 

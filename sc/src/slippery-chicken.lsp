@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:02:15 Sun May  6 2012 BST
+;;; $$ Last modified: 10:45:37 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -167,7 +167,8 @@
    ;; written (automatically)
    (rehearsal-letters :accessor rehearsal-letters :type list 
                       :initarg :rehearsal-letters :initform nil)
-   ;; 1/4/06: this is the number of sections __and__ subsections
+   ;; 1/4/06: this is the number of sequences in all of the sections and
+   ;; subsections combined.
    (num-sequences :accessor num-sequences :type integer :initform -1)
    ;; MDE Tue Apr 10 08:27:24 2012 -- the get-notes function would avoid
    ;; melodic octaves by default but make this a slot option now 
@@ -919,11 +920,16 @@
 (defmethod set-write-bar-num ((sc slippery-chicken) &optional (every 5))
   ;; (print 'write-bar-num)
   (loop for player in (players sc) do
-       (loop for bar-num from 1 to (num-bars sc) do
-            (setf (write-bar-num (get-bar sc bar-num player)) nil)))
+       (loop for bar-num from 1 to (num-bars sc) 
+          for bar = (get-bar sc bar-num player)
+          do
+          (unless bar
+            (error "slippery-chicken::set-write-bar-num: no bar ~a for ~a"
+                   bar-num player))
+          (setf (write-bar-num bar) nil)))
   (loop for player in (instruments-write-bar-nums sc) do
        (loop for i from (1- every) to (1- (num-bars sc)) by every do
-          (setf (write-bar-num (get-bar sc i player)) t)))
+            (setf (write-bar-num (get-bar sc i player)) t)))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1776,15 +1782,9 @@ T
              (piece sc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; The linking of the rthm-seq-map (and hence piece) slot only works at the
-;;; instrument level so we don't get a pointer to the next section, rather,
-;;; only when we ask for instrument data do we get the points.  Eg (get-data 3
-;;; (piece sc)) will have previous, this, and next slots all NIL, whereas
-;;; (get-data '(3 some-instrument) (piece sc)) will return a player-section
-;;; where the previous, this, and next slots are good (this is all as it should
-;;; be!).  In order to get the references of a number of contiguous sections
-;;; then, we'll have to use instrument references.
+;;; MDE Mon May  7 09:32:10 2012 -- NB num-sections refers to the number of
+;;; top-level sections so if any section has subsections they'll all be slurped
+;;; up and only count as 1.
 
 ;;; ****m* slippery-chicken/get-section-refs
 ;;; FUNCTION
@@ -1806,13 +1806,44 @@ T
 ;;; SYNOPSIS
 (defmethod get-section-refs ((sc slippery-chicken) start-section num-sections)
 ;;; ****
+  (unless (and (integerp start-section) (integerp num-sections))
+    (error "slippery-chicken::get-section-refs: start-section (~a) and ~
+            num-sections (~a) must both be integers."
+           start-section num-sections))
+  (labels ((do-subsection (ss)
+             (loop for no in (data ss) 
+                if (is-ral (data no)) append (do-subsection (data no))
+                else collect (this no))))
+    (loop with nd = (+ start-section num-sections)
+       for sn from 1
+       for section in (data (set-map sc))
+       when (and (>= sn start-section) (< sn nd))
+       collect section into sections
+       finally
+       (return
+         (loop for s in sections
+            if (is-ral (data s))
+            append (do-subsection (data s))
+            else collect (this s))))))
+
+#|
+;;; MDE Mon May  7 09:31:17 2012 -- this is the old version
+;;; The linking of the rthm-seq-map (and hence piece) slot only works at the
+;;; instrument level so we don't get a pointer to the next section, rather,
+;;; only when we ask for instrument data do we get the points.  Eg (get-data 3
+;;; (piece sc)) will have previous, this, and next slots all NIL, whereas
+;;; (get-data '(3 some-instrument) (piece sc)) will return a player-section
+;;; where the previous, this, and next slots are good (this is all as it should
+;;; be!).  In order to get the references of a number of contiguous sections
+;;; then, we'll have to use instrument references.
+(defmethod get-section-refs ((sc slippery-chicken) start-section num-sections)
   (let* ((last-player (first (last (players (ensemble sc)))))
          (section-list (if (listp start-section) 
                            start-section
                            (list start-section)))
          (ref section-list))
     (unless num-sections
-      (setf num-sections (get-num-top-level-sections sc)))
+      (setf num-sections (get-num-sections sc)))
     (loop with player-ref with data
        repeat num-sections
        ;; MDE Mon Apr 16 21:36:44 2012 -- do this only while we can get a ref
@@ -1824,17 +1855,15 @@ T
        (setf player-ref (econs ref last-player)
              data (get-data player-ref (piece sc))
              ref (when data (butlast (next data)))))))
+|#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 24/4/10 this is the number of sections at the top level only
-
-;;; ****m* slippery-chicken/get-num-top-level-sections
+;;; ****m* slippery-chicken/get-num-sections
 ;;; FUNCTION
-;;; get-num-top-level-sections:
+;;; get-num-sections:
 ;;;
-;;; Return the number of sections in the piece i.e. the top-level ones as
-;;; defined e.g. in the set-map.  NB the num-sequences slot of slippery-chicken
-;;; is the number of sections and sub-sections.
+;;; Return the number of sections in the piece as defined in e.g. in the
+;;; set-map.  
 ;;; 
 ;;; ARGUMENTS 
 ;;; - the slippery-chicken object
@@ -1843,7 +1872,7 @@ T
 ;;; the number of sections (integer)
 ;;; 
 ;;; SYNOPSIS
-(defmethod get-num-top-level-sections ((sc slippery-chicken))
+(defmethod get-num-sections ((sc slippery-chicken))
 ;;; ****
   (num-data (set-map sc)))
 
@@ -1869,8 +1898,6 @@ T
 ;;; SYNOPSIS
 (defmethod get-all-section-refs ((sc slippery-chicken))
 ;;; ****
-  ;; (get-all-refs (set-palette sc)))
-  ;; 20/7/05 don't know why the palette was used, it's the map that's useful!
   (get-all-refs (set-map sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2530,7 +2557,8 @@ T
 #+cm-2
 (defmethod midi-play ((sc slippery-chicken)
                       &key 
-                      (start-section 1)
+                      ;; no subsection refs: use from-sequence instead
+                      (start-section 1) 
                       ;; these voices are used to get the actual sequence
                       ;; orders i.e. each voice will be appended to <section>
                       ;; when calling get-data.
@@ -2562,6 +2590,12 @@ T
                          :get-time-sig-changes t
                          :ignore-rests ignore-rests 
                          :include-rests t))
+         ;; MDE Mon May  7 10:41:07 2012 -- for pieces with subsections
+         (secobj (get-section sc start-section))
+         (nth-seq-ref
+          (if (has-subsections secobj)
+              (full-ref (data (first (data secobj))))
+              start-section))
          ;; do all the program changes for the beginning irrespective of
          ;; whether the player changes instrument or not.  subsequent program
          ;; changes are handled in the event class.
@@ -2580,7 +2614,7 @@ T
                    (midi-program ins)))))
     (cm::process-voices voices-events midi-file (get-tempo sc 1) midi-setup
                         (- (start-time-qtrs
-                            (get-nth-sequenz (piece sc) start-section
+                            (get-nth-sequenz (piece sc) nth-seq-ref
                                              (first voices) 
                                              (1- from-sequence))))
                         force-velocity)))
@@ -3230,7 +3264,7 @@ T
   ;; end-time slots; this fixed it
   (update-slots sc)
   (unless num-sections
-    (setf num-sections (get-num-top-level-sections sc)))
+    (setf num-sections (get-num-sections sc)))
   (let* ((sections (get-section-refs sc start-section num-sections))
          (all-sections
           (loop for section in sections
@@ -3327,7 +3361,7 @@ T
      (note-number 0)) ;; 0-based!!!
   ;; MDE Mon Apr 16 21:44:19 2012
   (unless num-sections
-    (setf num-sections (get-num-top-level-sections sc)))
+    (setf num-sections (get-num-sections sc)))
   (let* ((sections (get-section-refs sc from-section num-sections))
          (all-sections
           (loop for section in sections

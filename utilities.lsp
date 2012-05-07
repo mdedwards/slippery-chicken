@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 16:48:06 Sun May  6 2012 BST
+;;; $$ Last modified: 13:02:27 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1257,8 +1257,8 @@
 ;;; EXAMPLE
 #|
 (nconc-sublists '(((1 2) (a b) (cat dog)) 
-		  ((3 4) (c d) (bird fish)) 
-		  ((5 6) (e f) (pig cow))))
+                  ((3 4) (c d) (bird fish)) 
+                  ((5 6) (e f) (pig cow))))
 
 => ((1 2 3 4 5 6) (A B C D E F) (CAT DOG BIRD FISH PIG COW))
 
@@ -1499,14 +1499,14 @@
 |#
 ;;; SYNOPSIS
 (defun scale-env (env y-scaler &key x-scaler 
-		                    (x-min most-negative-double-float)
-		                    (y-min most-negative-double-float)
-                        	    (x-max most-positive-double-float)
-		                    (y-max most-positive-double-float))
+                                    (x-min most-negative-double-float)
+                                    (y-min most-negative-double-float)
+                                    (x-max most-positive-double-float)
+                                    (y-max most-positive-double-float))
 ;;; ****
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
      collect (if x-scaler (min x-max (max x-min (* x x-scaler)))
-		 x) 
+                 x) 
      collect (min y-max (max y-min (* y y-scaler)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1537,10 +1537,10 @@
    supplied to it.  
    e.g. (reverse-env '(0 0 60 .3 100 1)) => (0 1 40 0.3 100 0)."
   (let ((x-max (lastx env))
-	(result nil))
+        (result nil))
     (loop for x in env by #'cddr and y in (cdr env) by #' cddr do
-	 (push y result)
-	 (push (- x-max x) result))
+         (push y result)
+         (push (- x-max x) result))
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1687,7 +1687,9 @@
 
 ;;; 3.2.11: returns a list of length new-len by adding or removing items at
 ;;; regular intervals.  If adding items and the list contains numbers, linear
-;;; interpolation will be used.
+;;; interpolation will be used but only between two adjacent items, i.e. not
+;;; with a partial increment.   NB Can't request more than double the length of
+;;; the original list.
 
 ;;; ****f* utilities/force-length
 ;;; FUNCTION
@@ -1718,31 +1720,43 @@
              list len new-len))
     (if (= len new-len)
         list
-        (let* ((adiff (abs diff))
-               (result '())
-               (cycle (unless (zerop diff) (max 1 (1- (floor len adiff)))))
-               (points (loop for i from cycle by cycle repeat adiff collect i)))
-          (loop with next = (pop points) with last-el
-             for el in list and i from 0 do
-             (if (and next (= i next))
-                 (progn 
-                   (when (> diff 0)
-                     (if (and (numberp el) (numberp last-el)) ; add items
-                         ;; interpolate to get the new element
-                         (push (+ last-el (/ (- el last-el) 2.0)) 
-                               result)
-                         ;; if not numbers just push in the last element
-                         (push last-el result))
-                     (push el result))  ; get this element too of course
-                   (setf next (pop points)))
-                 ;; not on point so get it
-                 (push el result))
-             (setf last-el el))
-          (setf result (nreverse result))
-          (unless (= (length result) new-len)
-            (error "force-length:: somehow got the wrong length: ~a"
-                   (length result)))
-          result))))
+        (if (< new-len len)
+            (let* ((skip (/ len (1- new-len)))
+                   (last-el (first (last list)))
+                   (result
+                    (loop for count below new-len with i = 0 collect
+                         (nth (round i) list)
+                       do
+                         (incf i skip))))
+              (unless (equalp last-el (first (last result)))
+                (setf-last result last-el))
+              result)
+            (let* ((adiff (abs diff))
+                   (result '())
+                   (cycle (unless (zerop diff) (max 1 (1- (floor len adiff)))))
+                   (points (loop for i from cycle by cycle repeat adiff
+                              collect i)))
+              (loop with next = (pop points) with last-el
+                 for el in list and i from 0 do
+                 (if (and next (= i next))
+                     (progn 
+                       (when (> diff 0)
+                         (if (and (numberp el) (numberp last-el)) ; add items
+                             ;; interpolate to get the new element
+                             (push (+ last-el (/ (- el last-el) 2.0)) 
+                                   result)
+                             ;; if not numbers just push in the last element
+                             (push last-el result))
+                         (push el result)) ; get this element too of course
+                       (setf next (pop points)))
+                     ;; not on point so get it
+                     (push el result))
+                 (setf last-el el))
+              (setf result (nreverse result))
+              (unless (= (length result) new-len)
+                (error "force-length:: somehow got the wrong length: ~a"
+                       (length result)))
+              result)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

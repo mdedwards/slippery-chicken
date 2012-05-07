@@ -2640,9 +2640,9 @@
 ;;; SYNOPSIS
 (defun random-amount (number &optional (percent 5))
 ;;; ****
-  (let ((pc (/ percent 100.0)))
-    (* number (+ (- (/ pc 2.0))
-                 (random (float pc))))))
+  (let ((pc (float (/ percent 100.0))))
+    (+ number (* number (+ (- (/ pc 2.0))
+                           (random pc))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

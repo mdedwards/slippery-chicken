@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 17:24:25 Mon May  7 2012 BST
+;;; $$ Last modified: 17:39:09 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1280,7 +1280,26 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; didn't have rhythm's tuplet-scaler slot.  Now that's there things should be
 ;;; easier.   This still won't handle all tuplet possibilities, especially
 ;;; nested tuplets, but should still be useful.
+;;; ****m* rthm-seq-bar/auto-tuplets
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod auto-tuplets ((rsb rthm-seq-bar))
+;;; ****
   (delete-tuplets rsb)
   (loop with bag with tuplet with start with dur = 0.0
      for r in (rhythms rsb) 

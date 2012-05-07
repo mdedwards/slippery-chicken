@@ -2497,25 +2497,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Mon May  7 15:50:18 BST 2012: Added robodoc entry
-
-;;; convert points (72 per inch) to centimeters.
+;;; SAR Mon May  7 19:12:20 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/pts2cm
 ;;; FUNCTION
-;;; 
+;;; Convert a specified number of points to a length in centimeters at a
+;;; resolution of 72ppi
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A number.
 ;;; 
 ;;; EXAMPLE
 #|
+(pts2cm 150)
+
+=> 5.2916665
 
 |#
 ;;; SYNOPSIS
@@ -2525,23 +2524,36 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 19:20:07 BST 2012: Added robodoc entry
+
 ;; low and high are inclusive except if float given: then we can't quite reach
 ;; high.  
+
 ;;; ****f* utilities/between
 ;;; FUNCTION
-;;; 
+
+;;; Return a random number between two specified numbers. If the two numbers
+;;; are integers, the random selection is inclusive. If they are decimal
+;;; numbers, the result cannot be absolutely inclusive. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A first, lower, number.
+;;; - A second, higher, number. 
+;;;
+;;; NB: The first number must always be lower than the second.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether the random seed should be fixed.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An integer if both numbers are integers, or a float if one or both are
+;;; decimal numbers.
 ;;; 
 ;;; EXAMPLE
 #|
+(loop repeat 10 collect (between 1 100))
+
+=> (43 63 26 47 28 2 99 93 66 23)
 
 |#
 ;;; SYNOPSIS
@@ -2553,7 +2565,7 @@
       (+ low (funcall (if fixed-random #'random-rep #'random)
                       (1+ (- high low))))
       (+ low (funcall (if fixed-random #'random-rep #'random)
-              (- high low)))))
+		      (- high low)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

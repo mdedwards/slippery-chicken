@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 17:39:09 Mon May  7 2012 BST
+;;; $$ Last modified: 17:46:04 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -792,7 +792,10 @@ data: E.
                 (warn "~a~%rthm-seq-bar::consolidate-rests: ~
                          Consolidated rthms sum (~a) != previous sum (~a)"
                       rsb (sum-rhythms-duration cbeats)
-                      (rhythms-duration rsb))))))))
+                      (rhythms-duration rsb)))))))
+    ;; MDE Mon May  7 17:45:59 2012
+    (unless (check-tuplets rsb)
+      (auto-tuplets rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -940,6 +943,9 @@ data: ((2 4) Q E S S)
                                      (get-beat-as-rhythm rsb))
                                  2))
     (fix-brackets rsb)
+    ;; MDE Mon May  7 17:43:59 2012 -- check and retry if the above fails
+    (unless (check-tuplets rsb)
+      (auto-tuplets rsb))
     (gen-stats rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1433,7 +1439,8 @@ data: ((2 4) - S S - S - S S S - S S)
   (when delete 
     (delete-tuplets rsb))
   (if (not tuplet)
-      (figure-out-and-auto-set-tuplets rsb beat)
+      ;; (figure-out-and-auto-set-tuplets rsb beat)
+      (auto-tuplets rsb)
       (let ((beats (get-beats rsb beat))
             (do-all (eq beat-number t))
             (tuplets '())

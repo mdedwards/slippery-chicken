@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 10:16:49 Sat Apr 28 2012 BST
+;;; $$ Last modified: 08:43:03 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1319,6 +1319,9 @@ data: RIBBON
 ;;; Keys that are not part of nesting-path are also returned as lists
 ;;; (single-item lists) by default. An optional argument allows these to be
 ;;; returned as individual symbols rather than lists.
+;;;
+;;; NB This will only work on the top-level object due to the creation of
+;;; references when linking.  
 ;;; 
 ;;; ARGUMENTS
 ;;; - A recursive-assoc-list object.
@@ -1374,7 +1377,7 @@ data: RIBBON
     (link-named-objects ral)
     (loop 
         with ref = (get-first-ref ral)
-        while ref ;(print ref )
+        while ref
         for current = (get-data ref ral)
         for this = (when current (this current))
         do (when (and (not single-ref-as-list)

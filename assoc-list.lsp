@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 22:40:11 Sun Jan 15 2012 ICT
+;;; $$ Last modified: 08:15:35 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -450,7 +450,7 @@ WARNING:
       (when (or warn 
                 (and warn (warn-not-found al)))
         (warn "assoc-list::get-data: ~
-               Could not find data with key ~a in assoc-list with id ~a"
+               Could not find data with key ~a ~%in assoc-list with id ~a"
               key (id al))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

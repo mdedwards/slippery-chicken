@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 11:01:57 Thu Apr 26 2012 BST
+;;; $$ Last modified: 10:13:49 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -439,21 +439,21 @@
 ;;; Returns a sequenz object
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((hn (french-horn :midi-channel 1))
-		     (vc (cello :midi-channel 2))))
-	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-	:set-map '((1 (1 1 1 1 1))
-		   (2 (1 1 1 1 1))
-		   (3 (1 1 1 1 1)))
-	:rthm-seq-palette '((1 ((((4 4) h q e s s))
-				:pitch-seq-palette ((1 2 3 4 5)))))
-	:rthm-seq-map '((1 ((hn (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))
-			(2 ((hn (nil nil nil nil nil))
-			    (vc (1 1 1 1 1))))
-			(3 ((hn (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))))))
+        '+mini+
+        :ensemble '(((hn (french-horn :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((hn (nil nil nil nil nil))
+                            (vc (1 1 1 1 1))))
+                        (3 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
   (get-nth-sequenz (piece mini) 3 'hn 2))
 
 => 
@@ -490,40 +490,42 @@ BAR-HOLDER:
 ;;; SYNOPSIS
 (defmethod get-nth-sequenz ((p piece) section player seq-num ; 0-based
                             &optional (create-rest-seq t))
-;;; ****
+;;; ****                                
   (flet ((get-seq (spieler) 
-           ;; if we don't get a section, it means the player doesn't play in
-           ;; this section. If we don't get a seq, then it means it just
-           ;; doesn't play this sequence.
+           ;; if we don't get a section, it means the player doesn't play in 
+           ;; this section. If we don't get a seq, then it means it just 
+           ;; doesn't play this sequence. 
            (let* ((section (get-player-section section spieler p))
                   (seq (when section (nth seq-num (data section)))))
              seq)))
     (let ((seq (get-seq player)))
       (if seq
           seq
-	  (when create-rest-seq
-	    (let ((all-players (players p))
-		  (cloned-seq nil))
-	      (unless (member player all-players)
-		(error "piece::get-nth-sequenz: Player ~a is ~
-                      not a member of the ensemble ~a"
-		       player all-players))
-	      (loop for p in (remove player all-players) do
-		   (when (setf seq (get-seq p))
-		     ;; MDE Wed Feb  1 13:55:16 2012 -- got to signal an error
-		     ;; if there's no instrument playing at all here 
-		     (setf cloned-seq (clone-as-rest-sequenz seq t nil player))))
-	      (if cloned-seq
-		  cloned-seq
-		  (error "piece::get-nth-sequenz: It appears that no instrument ~
-                        is playing at sequence ~%number ~a in section ~a. So ~
-                        there's no way of knowing the bar structure ~%here. ~
-                        If you want rests for all instruments, create the ~
-                        rests as a ~%sequence and reference it in the ~
-                        rthm-seq-map."
-			 (1+ seq-num) section))))))))
+          (when create-rest-seq
+            (let ((all-players (players p))
+                  (cloned-seq nil))
+              (unless (member player all-players)
+                (error "piece::get-nth-sequenz: Player ~a is ~
+                        not a member of the ensemble ~a"
+                       player all-players))
+              (loop for p in (remove player all-players) do
+                   (when (setf seq (get-seq p))
+                     ;; MDE Wed Feb  1 13:55:16 2012 -- got to signal an error 
+                     ;; if there's no instrument playing at all here ;
+                     (setf cloned-seq
+                           (clone-as-rest-sequenz seq t nil player))))
+              (if cloned-seq
+                  cloned-seq
+                  (error 
+                   "piece::get-nth-sequenz: It appears that no instrument ~
+                    is playing at sequence ~%number ~a in section ~a. So ~
+                    there's no way of knowing the bar structure ~%here. ~
+                    If you want rests for all instruments, create the ~
+                    rests as a ~%sequence and reference it in the ~
+                    rthm-seq-map."
+                   (1+ seq-num) section))))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod get-player-section (section player (p piece))
   (unless (listp section)
@@ -533,8 +535,8 @@ BAR-HOLDER:
       (if (typep (first (data (data sec)))
                  'bar-holder)
           (get-data player (data sec) nil)
-        (error "piece::get-player-section: Section ~a has subsections!: ~a"
-               section sec)))))
+          (error "piece::get-player-section: Section ~a has subsections!: ~a"
+                 section sec)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1074,21 +1076,21 @@ BAR-HOLDER:
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((hn (french-horn :midi-channel 1))
-		     (vc (cello :midi-channel 2))))
-	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-	:set-map '((1 (1 1 1 1 1))
-		   (2 (1 1 1 1 1))
-		   (3 (1 1 1 1 1)))
-	:rthm-seq-palette '((1 ((((4 4) h q e s s))
-				:pitch-seq-palette ((1 2 3 4 5)))))
-	:rthm-seq-map '((1 ((hn (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))
-			(2 ((hn (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))
-			(3 ((hn (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))))))
+        '+mini+
+        :ensemble '(((hn (french-horn :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (3 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
   (get-sequenz-from-bar-num (piece mini) 7 'vc))
 
 =>

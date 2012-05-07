@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:25:59 Mon May  7 2012 BST
+;;; $$ Last modified: 16:33:13 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3615,7 +3615,26 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* slippery-chicken/check-tuplets
+;;; FUNCTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod check-tuplets ((sc slippery-chicken) &optional (on-fail #'error))
+;;; ****
   (loop for bar-num from 1 to (num-bars sc)
      for bars = (get-bar sc bar-num) do
        (loop for bar in bars do

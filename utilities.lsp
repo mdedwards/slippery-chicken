@@ -1705,7 +1705,7 @@
      collect x collect (max min (min new-y max))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-|#
+
 ;;; SAR Mon May  7 11:28:13 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/force-length

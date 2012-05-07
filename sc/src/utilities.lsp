@@ -1240,32 +1240,27 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Each list in the argument should all be of the same structure, ie have the
-;;; same length and number of sublists etc.
-;;;
-;;; e.g. (nconc-sublists '(((1 2) (a b)) ((3 4) (c d)) ((5 6) (e f))))
-;;; -> ((1 2 3 4 5 6) (A B C D E F))
-;;; (nconc-sublists '(((1 2 3) (a b c) (blah blah blah)) 
-;;;                   ((3 4 5) (c d e) (ding dong ding)) 
-;;;                   ((5 6 7) (e f g) (sing song sing))))
-;;;-> ((1 2 3 3 4 5 5 6 7) (A B C C D E E F G)
-;;;    (BLAH BLAH BLAH DING DONG DING SING SONG SING))
+;;; SAR Mon May  7 09:46:13 BST 2012
 
 ;;; ****f* utilities/nconc-sublists
 ;;; FUNCTION
-;;; 
+
+;;; Concatenate corresponding sublists of a given list. Each sublist in the
+;;; argument should have the same length and number of sublists etc.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; A list of lists.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of lists.
 ;;; 
 ;;; EXAMPLE
 #|
+(nconc-sublists '(((1 2) (a b) (cat dog)) 
+		  ((3 4) (c d) (bird fish)) 
+		  ((5 6) (e f) (pig cow))))
+
+=> ((1 2 3 4 5 6) (A B C D E F) (CAT DOG BIRD FISH PIG COW))
 
 |#
 ;;; SYNOPSIS
@@ -1280,51 +1275,89 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; go from low to high in num-steps steps but using an exponential curve 
-;;; instead of straight interpolation 
+;;; SAR Mon May  7 09:51:05 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/logarithmic-steps
 ;;; FUNCTION
-;;; 
+
+;;; Create a list of progressing from the first specified argument to the
+;;; second specified argument over the specified number of steps using an
+;;; exponential curve rather than linear interpolation.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A number that is the starting value in the resulting list.
+;;; - A number that is the ending value in the resulting list.
+;;; - An integer that will be the length of the resulting list - 1.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number that will be used as the exponent when determining the
+;;;   exponential interpolation between values. Default = 2.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of numbers.
 ;;; 
 ;;; EXAMPLE
 #|
+(logarithmic-steps 1 100 19)
+
+=> (1.0 1.3055556 2.2222223 3.75 5.888889 8.638889 12.0 15.972222 20.555555
+    25.75 31.555555 37.97222 45.0 52.63889 60.88889 69.75 79.22222 89.30556
+    100.0)
 
 |#
 ;;; SYNOPSIS
 (defun logarithmic-steps (low high num-steps &optional (exponent 2))
 ;;; ****
   (loop for i below num-steps 
-      with curve = (list 0 low (1- num-steps) high)
-      collect
-        (interpolate i curve :exp exponent)))
+     with curve = (list 0 low (1- num-steps) high)
+     collect
+       (interpolate i curve :exp exponent)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 09:58:22 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/interpolate
 ;;; FUNCTION
-;;; 
+
+;;; Get the interpolated value at a specified point within an envelope. The
+;;; envelope must be specified in the form of a list of break-point pairs.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A number that is the point within the specified envelope for which to
+;;;   return the interpolated value.
+;;; - A list of break-point pairs.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :scaler. A number that is the factor by which to scale the values of
+;;;   the break-point pairs in the given envelope before retrieving the
+;;;   interpolated value. Default = 1.
+;;; - :exp. A number that is the exponent to which the result should be
+;;;   raised. Default = 1.
+;;; - :warn. T or NIL to indicate whether the method should print a warning if
+;;;   the specified point is outside of the bounds of the x-axis specified in
+;;;   the list of break-point pairs. T = warn. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; 
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Using the defaults
+(interpolate 50 '(0 0 100 1))
+
+=> 0.5
+
+;;; Specifying a different scaler
+(interpolate 50 '(0 0 100 1) :scaler 2)
+
+=> 1.0
+
+;;; Specifying a different exponent by which the result is to be raised
+(interpolate 50 '(0 0 100 1) :exp 2)
+
+=> 0.25
 
 |#
 ;;; SYNOPSIS

@@ -1437,51 +1437,97 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 10:11:28 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/scale-env
 ;;; FUNCTION
-;;; 
+;;; Scale either the x-axis values, the data values, or both of a list of
+;;; break-point pairs by specified factors.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An envelope in the form of a list of break-point pairs.
+;;; - A number that is the factor by which the y values (data segment of the
+;;;   break-point pairs) are to be scaled.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+
+;;; - :y-min. A number that is the minimum value for all y values after
+;;;   scaling.
+
+;;; - :y-max. A number that is the maximum value for all y values after
+;;;   scaling.
+
+;;; - :x-scaler. A number that is the factor by which to scale the x-axis
+;;;   values of the break-point pairs.
+
+;;; - :x-min. A number that is the minimum value for all x values after
+;;;   scaling. NB: This optional argument can only be used if a value has been
+;;;   specified for the :x-scaler. 
+
+;;; - :x-max. A number that is the maximum value for all x values after
+;;;   scaling. NB: This optional argument can only be used if a value has been
+;;;   specified for the :x-scaler.
+
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An envelope in the form of a list of break-point pairs.
 ;;; 
 ;;; EXAMPLE
 #|
+
+;;; Scaling only the y values.
+(scale-env '(0 53 25 189 50 7 75 200 100 3) 0.5)
+
+=> (0 26.5 25 94.5 50 3.5 75 100.0 100 1.5)
+
+;;; Scaling the y values and setting a min and max for those values
+(scale-env '(0 53 25 189 50 7 75 200 100 3) 0.5 :y-min 20 :y-max 100)
+
+=> (0 26.5 25 94.5 50 20 75 100 100 20)
+
+;;; Scaling only the x-axis values
+(scale-env '(0 53 25 189 50 7 75 200 100 3) 1.0 :x-scaler 2)
+
+=> (0 53.0 50 189.0 100 7.0 150 200.0 200 3.0)
+
+;;; Scaling the x values and setting a min and max for those values
+(scale-env '(0 53 25 189 50 7 75 200 100 3) 1.0 :x-scaler 2 :x-min 9 :x-max 90)
+
+=> (9 53.0 50 189.0 90 7.0 90 200.0 90 3.0)
 
 |#
 ;;; SYNOPSIS
 (defun scale-env (env y-scaler &key x-scaler 
-                                    (x-min most-negative-double-float)
-                                    (y-min most-negative-double-float)
-                                    (x-max most-positive-double-float)
-                                    (y-max most-positive-double-float))
+		                    (x-min most-negative-double-float)
+		                    (y-min most-negative-double-float)
+                        	    (x-max most-positive-double-float)
+		                    (y-max most-positive-double-float))
 ;;; ****
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
-      collect (if x-scaler (min x-max (max x-min (* x x-scaler)))
-                x) 
-      collect (min y-max (max y-min (* y y-scaler)))))
+     collect (if x-scaler (min x-max (max x-min (* x x-scaler)))
+		 x) 
+     collect (min y-max (max y-min (* y y-scaler)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Mon May  7 10:32:25 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/reverse-env
 ;;; FUNCTION
-;;; 
+;;; Reverse the order of y values in a list of break-point pairs.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An envelope in the form of a list of break-point pairs.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An envelope in the form of a list of break-point pairs.
 ;;; 
 ;;; EXAMPLE
 #|
+(reverse-env '(0 0 25 11 50 13 75 19 100 23))
+
+=> (0 23 25 19 50 13 75 11 100 0)
 
 |#
 ;;; SYNOPSIS
@@ -1490,29 +1536,51 @@
   "reverse-env returns the reverse of the envelope 
    supplied to it.  
    e.g. (reverse-env '(0 0 60 .3 100 1)) => (0 1 40 0.3 100 0)."
-        (let ((x-max (lastx env))
-              (result nil))
-          (loop for x in env by #'cddr and y in (cdr env) by #' cddr do
-                (push y result)
-                (push (- x-max x) result))
-          result))
+  (let ((x-max (lastx env))
+	(result nil))
+    (loop for x in env by #'cddr and y in (cdr env) by #' cddr do
+	 (push y result)
+	 (push (- x-max x) result))
+    result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Mon May  7 10:36:29 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/repeat-env
 ;;; FUNCTION
-;;; 
+
+;;; Create a new list by repeating the y values of a list of break-point pairs
+;;; a specified number of times over the same total x-axis span of the original
+;;; envelope. A quick ramp is inserted between repeats to ensure that all
+;;; x-axis values are unique and incremental.
+;;;
+;;; If the optional argument is set to T, the method will reverse the order of
+;;; every second repeat.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An envelope in the form of a list of break-point pairs.
+;;; - An integer that is the number of times the elements of the given envelope
+;;;   should be repeated in the new list.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether every second repetition of the original
+;;;   envelope should be returned in reverse order. 
+;;;   T = reverse. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - A new envelope in the form of a list of break-point pairs.
 ;;; 
 ;;; EXAMPLE
 #|
+(repeat-env '(0 1 50 2 100 3) 3)
+
+=> (0.0 1 16.666666 2 33.333332 3 34.333332 1 50.0 2 66.666664 3 67.666664 1
+    83.33333 2 100.0 3)
+
+(repeat-env '(0 1 50 2 100 3) 3 t)
+
+=> (0.0 1 16.666666 2 33.333332 3 50.0 2 66.666664 1 83.33333 2 100.0 3)
 
 |#
 ;;; SYNOPSIS
@@ -1556,28 +1624,33 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 11:01:20 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/env-plus
 ;;; FUNCTION
-;;; 
+;;; Increase all y values of a given list of break-point pairs by a specified
+;;; amount.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An envelope in the form of a list of break-point pairs.
+;;; - A number that is the amount by which all y values of the given envelope
+;;;   are to be increased.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of break-point pairs.
 ;;; 
 ;;; EXAMPLE
 #|
+(env-plus '(0 0 25 11 50 13 75 19 100 23) 7.1)
+
+=> (0 7.1 25 18.1 50 20.1 75 26.1 100 30.1)
 
 |#
 ;;; SYNOPSIS
 (defun env-plus (env add)
 ;;; ****
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr
-      collect x collect (+ y add)))
+     collect x collect (+ y add)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

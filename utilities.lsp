@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 13:02:27 Mon May  7 2012 BST
+;;; $$ Last modified: 15:12:18 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2316,14 +2316,17 @@
 ;;; SYNOPSIS
 (defun reflect-list (list)
 ;;; ****
-  (let ((sorted (sort (copy-list list) #'<))
-        (len (length list))
-        (pos 0))
+  ;; MDE Mon May  7 15:11:49 2012 -- got to remove duplicates
+  (let* ((sorted (sort (remove-duplicates (copy-list list)) #'<))
+         (len (length sorted))
+         (pos 0))
     (loop for i in list 
-        do
-          (setf pos (position i sorted))
-        collect
-          (nth (- len pos 1) list))))
+       do
+       ;; MDE Mon May  7 15:12:04 2012 -- use sorted, not list
+       (setf pos (position i sorted))
+       collect
+       ;; MDE Mon May  7 15:12:04 2012 -- use sorted, not list
+       (nth (- len pos 1) sorted))))
           
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

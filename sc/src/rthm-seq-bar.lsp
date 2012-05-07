@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 16:32:44 Mon May  7 2012 BST
+;;; $$ Last modified: 17:24:25 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1273,6 +1273,34 @@ data: ((2 4) - S S - S - S S S - S S)
                  (damn "got a nil bracket when brackets still open."))))
       result)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; MDE Mon May 7 16:38:23 2012 -- this is a better version of
+;;; figure-out-and-auto-set-tuplets.  Way back when I wrote that method we
+;;; didn't have rhythm's tuplet-scaler slot.  Now that's there things should be
+;;; easier.   This still won't handle all tuplet possibilities, especially
+;;; nested tuplets, but should still be useful.
+(defmethod auto-tuplets ((rsb rthm-seq-bar))
+  (delete-tuplets rsb)
+  (loop with bag with tuplet with start with dur = 0.0
+     for r in (rhythms rsb) 
+     for count from 0
+     do
+       (unless bag
+         (setf start count))
+       (push r bag)
+       (incf dur (duration r))
+       ;; (print dur)
+       (when (or (float-int-p dur 0.00001)
+                 (float-int-p (* 2.0 dur) 0.00001)) ; i.e. 0.5
+         (when (and (/= 1 (tuplet-scaler (first bag)))
+                    (/= 1 (tuplet-scaler (first (last bag)))))
+           (setf tuplet (denominator (tuplet-scaler (first (last bag)))))
+           (add-tuplet-bracket rsb (list tuplet start count))
+           (setf tuplet nil))
+         (setf bag nil)))
+  (check-tuplets rsb))
+         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod figure-out-and-auto-set-tuplets ((rsb rthm-seq-bar) beat)

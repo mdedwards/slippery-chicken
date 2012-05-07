@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:45:37 Mon May  7 2012 BST
+;;; $$ Last modified: 16:25:59 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -392,6 +392,8 @@
       (check-time-sigs sc)
       ;; 5.4.11
       (cleanup-rest-bars sc)
+      ;; MDE Mon May  7 16:25:52 2012 
+      (check-tuplets sc)
       (set-rehearsal-letters sc (get-groups-top-ins sc)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3610,6 +3612,14 @@ T
             (warn "slippery-chicken::check-slurs (~a): end slur missing at ~
                      end of piece" player)))))
            
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod check-tuplets ((sc slippery-chicken) &optional (on-fail #'error))
+  (loop for bar-num from 1 to (num-bars sc)
+     for bars = (get-bar sc bar-num) do
+       (loop for bar in bars do
+            (check-tuplets bar on-fail))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Apr 28 16:42:59 2012 -- just for convenience

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 19:07:49 Tue May  1 2012 BST
+;;; $$ Last modified: 16:22:52 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -759,9 +759,9 @@ data: E.
                             (progn ;; not a rest!
                               (when (and last-rhythm (is-rest last-rhythm))
                                 ;;(format t "~&no rest: ~a ~a ~a"
-				;;      (value last-rhythm)
-				;;    (value first-rhythm)
-				;;  count)
+                                ;;      (value last-rhythm)
+                                ;;    (value first-rhythm)
+                                ;;  count)
                                 ;; MDE Tue Mar 13 11:25:26 2012 
                                 (consolidate first-rhythm count))
                               (setf rest-dur nil
@@ -1229,6 +1229,32 @@ data: ((2 4) - S S - S - S S S - S S)
         (delete-tuplet-bracket r)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon May  7 16:08:29 2012 -- 
+(defmethod check-tuplets ((rsb rthm-seq-bar) &optional (on-fail #'error))
+  (let ((open '())
+        (result t))
+    (flet ((damn (msg)
+             (setf result nil)
+             (when on-fail
+               (funcall on-fail "~a~%rthm-seq-bar::check-tuplets: ~a" 
+                        rsb msg))))
+      (loop for r in (rhythms rsb) do
+           (if (bracket r)
+               (loop for b in (bracket r) do
+                    (cond ((listp b) (push (first b) open))
+                          ((integer>0 b) 
+                           (if (member b open)
+                               (setf open (remove b open))
+                               (damn "Can't close non-existent bracket.")))
+                          ((integer<0 b) 
+                           (unless (member (abs b) open)
+                             (damn "Note under a non-existent bracket.")))
+                          (t (damn "Bad bracket."))))
+               (when open
+                 (damn "got a nil bracket when brackets still open."))))
+      result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod figure-out-and-auto-set-tuplets ((rsb rthm-seq-bar) beat)
   (let ((beats (get-beats rsb beat))
@@ -1258,7 +1284,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; FUNCTION
 ;;; Given a rthm-seq-bar object with tuplet rhythms and an indication of which
 ;;; tuplet value to place, this method will automatically add the appropriate
-;;; tuplet bracket it to the beats of the bar in the printed score output. If
+;;; tuplet bracket to the beats of the bar in the printed score output. If
 ;;; the TUPLET argument is set to NIL, the method will proceed on the basis of
 ;;; best-guessing rules. 
 ;;;
@@ -1335,7 +1361,7 @@ data: ((2 4) - S S - S - S S S - S S)
                                              ;; all
                                              (beat-number t)
                                              ;; delete the tuplets already
-                                             there?  
+                                             ;; there?  
                                              (delete t))
 ;;; **** 
   (when delete 

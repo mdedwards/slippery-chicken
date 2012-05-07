@@ -2511,6 +2511,7 @@
 ;;; A number.
 ;;; 
 ;;; EXAMPLE
+
 #|
 (pts2cm 150)
 
@@ -2683,6 +2684,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 22:38:35 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/read-from-file
 ;;; FUNCTION
 ;;; 
@@ -2704,26 +2707,31 @@
 (defun read-from-file (file)
 ;;; ****
   (with-open-file
-   (stream file :direction :input :if-does-not-exist :error)
-   (read stream)))
+      (stream file :direction :input :if-does-not-exist :error)
+    (read stream)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 22:47:10 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/wrap-list
 ;;; FUNCTION
-;;; 
+;;; Shift the elements of a list to start at a specified position and wrap to
+;;; the beginning of the list to the list's tail.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list.
+;;; - An integer which is the 0-based position in the original list where the
+;;;   new list is to begin.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+(wrap-list '(1 2 3 4 5 6 7 8 9) 4)
+
+=> (5 6 7 8 9 1 2 3 4)
 
 |#
 ;;; SYNOPSIS
@@ -2733,21 +2741,25 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 22:53:23 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/combine-into-symbol
 ;;; FUNCTION
-;;; 
+;;; Combine a sequence of elements of any combination of type string, number,
+;;; or symbol into a symbol.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A sequence of elements.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A symbol as the primary value, with the length of that symbol as a
+;;; secondary value.
 ;;; 
 ;;; EXAMPLE
 #|
+(combine-into-symbol "test" 1 'a)
+
+=> TEST1A, 6
 
 |#
 ;;; SYNOPSIS
@@ -2763,10 +2775,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Swap elements of a list e.g. '(1 2 3 4 5 6 7 8) -> '(2 1 4 3 6 5 8 7)
+;;; SAR Mon May  7 22:58:12 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/swap-elements
 ;;; FUNCTION
-;;; 
+;;; Swap the order of each consecutive pair of elements in a list.
 ;;; 
 ;;; ARGUMENTS
 ;;; 
@@ -2779,6 +2792,7 @@
 ;;; 
 ;;; EXAMPLE
 #|
+ '(1 2 3 4 5 6 7 8) -> '(2 1 4 3 6 5 8 7)
 
 |#
 ;;; SYNOPSIS
@@ -2789,21 +2803,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 23:06:43 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/factor
 ;;; FUNCTION
-;;; 
+;;; Boolean test to check if a specified number is a multiple of a second
+;;; specified number.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number that will be tested to see if it is a multiple of the second
+;;;   number. 
+;;; - A second number that is the base number for the factor test.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T if the first number is a multiple of the second number, otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(factor 14 7)
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -2815,6 +2834,8 @@
   (zerop (mod num fac)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Mon May  7 23:11:35 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/octave-freqs
 ;;; FUNCTION
@@ -2841,20 +2862,26 @@
       (power-of-2 (/ freq2 freq1))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Tue Dec 13 12:08:03 2011 -- whether either freq is a partial of the
-;;; other  
+
+;;; SAR Mon May  7 23:25:30 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/partial-freqs
+;;; DATE
+;;; 13-Dec-2011
+;;;
 ;;; FUNCTION
-;;; 
+;;; A Boolean test to determine whether either of two specified frequencies has
+;;; can be considered a harmonic partial of the other.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A first frequency in Hertz.
+;;; - A second frequency in Hertz.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; 
-;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T if one of the frequencies has the ratio of a harmonic partial to the
+;;; other, otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -2896,21 +2923,37 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 23:32:57 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/get-harmonics
 ;;; FUNCTION
-;;; 
+;;; Return a list of the harmonic partial frequencies in Hertz above a
+;;; specified fundamental frequency.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A number that is the fundamental frequency in Hertz.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments
+;;; - :start-at. An integer that is the number of the first harmonic partial to
+;;;   return. Default = 1.
+;;; - :min-freq. A number that is the lowest frequency in Hertz to
+;;;   return. Default = 20.
+;;; - :max-freq. A number that is the highest frequency in Hertz to
+;;;   return. Default = 20000.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of numbers that are the frequencies in Hertz of harmonic partials
+;;; above the same fundamental frequency.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Get the first 15 harmonic partials above a fundamental pitch of 64 Hertz,
+;;; starting with partial 2, and specifying an upper cut-off of 1010 Hz.
+
+(get-harmonics 63 :start-at 2 :max-freq 1010)
+
+=> (126 189 252 315 378 441 504 567 630 693 756 819 882 945 1008)
 
 |#
 ;;; SYNOPSIS
@@ -2921,25 +2964,28 @@
      for freq = (* fundamental h)
      while (<= freq max-freq)
      if (>= freq min-freq)
-       collect freq))
+     collect freq))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* utilities/db2amp
+;;; SAR Mon May  7 23:42:18 BST 2012: Added robodoc entry
+
+;;; ****m* utilities/db2amp 
 ;;; FUNCTION
-;;; 
+;;; Convert a decibel value to a standard digital amplitude value (>0.0 to 1.0),
+;;; whereby 0dB = 1.0.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number that is a value in decibel.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A decimal number between >0.0 and 1.0.
 ;;; 
 ;;; EXAMPLE
 #|
+(db2amp -3)
+
+=> 0.70794576
 
 |#
 ;;; SYNOPSIS
@@ -2948,21 +2994,25 @@
   `(expt 10.0 (/ ,db 20)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* utilities/amp2db
+
+;;; SAR Mon May  7 23:49:18 BST 2012: Added robodoc entry
+
+;;; ****m* utilities/amp2db 
 ;;; FUNCTION
-;;; 
+;;; Convert a standard digital amplitude value (>0.0 to 1.0) to a corresponding
+;;; decibel value.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A decimal number between >0.0 and 1.0.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A decimal number that is a value in decibel.
 ;;; 
 ;;; EXAMPLE
 #|
+(amp2db 0.3)
+
+=> -10.457575
 
 |#
 ;;; SYNOPSIS
@@ -2972,24 +3022,29 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; return a list containing onlt those elements that are not in the first
-;;; argument list
+;;; SAR Mon May  7 23:53:34 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/remove-all
 ;;; FUNCTION
-;;; 
+;;; Remove all of the specified elements from a list, returning a list
+;;; containing only those elements that are not in the first argument list.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A first list that is the list of items to remove.
+;;; - A second list that is the original list.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A predicate for testing equality between the elements of the two lists. 
+;;;   Default = #'eq.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+(remove-all '(3 5 8 13) '(1 2 3 4 5 6 7 8 9 10 11 12 13))
+
+=> (1 2 4 6 7 9 10 11 12)
 
 |#
 ;;; SYNOPSIS
@@ -3001,21 +3056,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 23:59:45 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/amplitude-to-dynamic
 ;;; FUNCTION
-;;; 
+;;; Convert a specified digital amplitude between 0.0 and 1.0 to a
+;;; corresponding dynamic between niente and ffff.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A decimal number between 0.0 and 1.0.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether to print a warning if the specified
+;;;   amplitude is <0.0 or >1.0. T = warn. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A symbol that is a dynamic level.
 ;;; 
 ;;; EXAMPLE
 #|
+(amplitude-to-dynamic 0.3)
+
+=> PP
 
 |#
 ;;; SYNOPSIS
@@ -3035,21 +3097,29 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue May  8 00:11:23 BST 2012: Added to robodoc entry
+
 ;;; ****f* utilities/dynamic-to-amplitude
 ;;; FUNCTION
-;;; 
+
+;;; Convert a symbol that is a dynamic level between niente and ffff to a
+;;; corresponding digital amplitude value between 0.0 and 1.0.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A symbol that is a dynamic level between niente and fff.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether to print a warning when the symbol specified
+;;;   is not recognized as a dynamic. T = warn. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A decimal number between 0.0 and 1.0.
 ;;; 
 ;;; EXAMPLE
 #|
+(dynamic-to-amplitude 'fff)
+
+=> 0.9
 
 |#
 ;;; SYNOPSIS
@@ -3064,22 +3134,35 @@
           
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 2.3.11: if any of the items in <what> are in <from>, they're moved to <to>
+;;; SAR Tue May  8 00:16:57 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/move-elements
+;;; DATE
+;;; 02-Mar-2011
+;;;
 ;;; FUNCTION
-;;; 
+;;; Move the specified elements from one list (if they are present in that
+;;; list) to another, deleting them from the first.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list of elements that are the elements to be moved.
+;;; - A list from which the specified elements are to be moved and deleted.
+;;; - A list to which the specified elements are to be moved.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A predicate by which to test that the specified elements are equal to
+;;;   elements of the source list. Default = #'eq.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Two values: A first list that is the source list after the items have been
+;;; moved; a second list that is the target list after the items have been
+;;; moved. 
 ;;; 
 ;;; EXAMPLE
 #|
+(move-elements '(3 5 8) '(1 2 3 4 5 6 7 8 9) '(a b c d e))
+
+=> (1 2 4 6 7 9), (8 5 3 A B C D E)
 
 |#
 ;;; SYNOPSIS
@@ -3095,25 +3178,38 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 22.5.11: move an element of a list to the end of the list, returning the
-;;; new list.  NB if the element exists more than once all occurrences will be
-;;; removed and only one of them placed at the end. e.g. 
-;;; (move-to-end 2 '(1 2 2 3 4 5)) -> (1 3 4 5 2)
+;;; SAR Tue May  8 00:26:00 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/move-to-end
-;;; FUNCTION
+;;; DATE
+;;; 22-May-2011
 ;;; 
+;;; FUNCTION
+;;; Move a specified element of a given list to the end of the list, returning
+;;; the new list. 
+;;;
+;;; NB: If the element exists more than once in the given list, all but on of
+;;;     the occurrences will be removed and only one of them will be placed at
+;;;     the end.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An item that is an element of the list that is the second argument.
+;;; - A list.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; All unique items
+(move-to-end 2 '(1 2 3 4 5))
+
+=> (1 3 4 5 2)
+
+;;; Duplicate items
+(move-to-end 2 '(1 2 3 2 4 2 5))
+
+=> (1 3 4 5 2)
 
 |#
 ;;; SYNOPSIS
@@ -3132,25 +3228,30 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Implementation of the Collatz conjecture (see
-;;; http://en.wikipedia.org/wiki/Collatz_conjecture)
-;;; (loop for i from 5 to 30 do
-;;;        (print i) (print (loop for n in (hailstone i) sum n)))
+;;; SAR Tue May  8 00:32:05 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/hailstone
 ;;; FUNCTION
-;;; 
+;;; Implementation of the Collatz conjecture (see
+;;; http://en.wikipedia.org/wiki/Collatz_conjecture)
+;;;
+;;; The Collatz conjecture suggests that by starting with a given number, and
+;;; if it is even dividing it by two or if it is odd multiplying it by three
+;;; and adding one, then repeating with the new result, the process will
+;;; eventually always result in one.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number to start with.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of the results collected from each iteration starting with the
+;;; specified number and ending with one.
 ;;; 
 ;;; EXAMPLE
 #|
+(hailstone 11)
+
+=> (11 34 17 52 26 13 40 20 10 5 16 8 4 2 1)
 
 |#
 ;;; SYNOPSIS

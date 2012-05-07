@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 19:03:05 Mon May  7 2012 BST
+;;; $$ Last modified: 20:47:05 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -958,57 +958,67 @@ data: ((2 4) Q E S S)
   (unless (or (is-rest-bar rsb)
               (< (num-notes-tied-from rsb) 1))
     (setf (rhythms rsb)
-      (loop for beat in (get-beats rsb beat check-dur) appending
-            (if (= 1 (length beat))
-                beat
-              (loop 
-                  with b = '()
-                  with skip = nil
-                  for r1 in beat and r2 in (cdr beat) do
-                    ;; (print 'hello1)
-                    ;; we've just absorbed r1 into a dot while it was r2 in the
-                    ;; previous loop... 
-                    (if skip
-                        (setf skip nil)
-                      (if (and (zerop (num-dots r1))
-                               (zerop (num-dots r2))
-                               (is-tied-from r1)
-                               (is-tied-to r2)
-                               (or 
-                                ;; could be e+s or s+e
-                                (equal-within-tolerance (duration r1)
-                                                        (* 2.0 (duration r2)))
-                                (equal-within-tolerance (duration r2)
-                                                        (* 2.0 
-                                                           (duration r1)))))
-                          (let ((new ;;(if (> (duration r1) (duration r2))
-                                 (clone r1)))
-                            ;; (print 'here)
-                            (incf (rq new) (rq r2))
-                            (incf (duration new) (duration r2))
-                            (incf (compound-duration new) 
-                                  (compound-duration r2))
-                            (incf (num-dots new))
-                            (unless (is-tied-from r2)
-                              (setf (is-tied-from new) nil))
-                            (setf (num-flags new) 
-                              (rthm-num-flags (/ 4 (* (duration new) 2/3))))
-                            ;; beam and marks of r2 will be lost
-                            (when (and (event-p r1)
-                                       (event-p r2))
-                              (setf (end-time new) (end-time r2))
-                              (incf (duration-in-tempo new) 
-                                    (duration-in-tempo r2))
-                              (incf (compound-duration-in-tempo new) 
-                                    (compound-duration-in-tempo r2)))
-                            (push new b)
-                            (setf skip t))
-                        (push r1 b)))
-                  finally 
-                    ;; got to get the last rthm in the bar
-                    (unless skip
-                      (push r2 b))
-                    (return (nreverse b)))))))
+          (loop for beat in (get-beats rsb beat check-dur) appending
+               (if (= 1 (length beat))
+                   beat
+                   (loop 
+                      with b = '()
+                      with skip = nil
+                      for r1 in beat and r2 in (cdr beat) do
+                      ;; (print 'hello1) we've just absorbed r1 into a dot
+                      ;; while it was r2 in the previous loop...
+                      (if skip
+                          (setf skip nil)
+                          (if (and (zerop (num-dots r1))
+                                   (zerop (num-dots r2))
+                                   (is-tied-from r1)
+                                   (is-tied-to r2)
+                                   (or 
+                                    ;; could be e+s or s+e
+                                    (equal-within-tolerance
+                                     (duration r1) (* 2.0 (duration r2)))
+                                    (equal-within-tolerance (duration r2)
+                                                            (* 2.0 
+                                                               (duration r1)))))
+                              (let ((new ;;(if (> (duration r1) (duration r2))
+                                        (clone r1)))
+                                ;; (print 'here)
+                                (incf (rq new) (rq r2))
+                                (incf (duration new) (duration r2))
+                                (incf (compound-duration new) 
+                                      (compound-duration r2))
+                                (incf (num-dots new))
+                                ;; MDE Mon May  7 20:42:52 2012 -- for LP we've
+                                ;; got to have the right undotted value so
+                                ;; update value and data while we're at it 
+                                (let* ((letter (get-rhythm-letter-for-duration
+                                                (duration new)))
+                                       (lr (make-rhythm letter)))
+                                  (setf (undotted-value new) (undotted-value lr)
+                                        (value new) (value lr)
+                                        (data new) letter))
+                                (unless (is-tied-from r2)
+                                  (setf (is-tied-from new) nil))
+                                (setf (num-flags new) 
+                                      (rthm-num-flags
+                                       (/ 4 (* (duration new) 2/3))))
+                                ;; beam and marks of r2 will be lost
+                                (when (and (event-p r1)
+                                           (event-p r2))
+                                  (setf (end-time new) (end-time r2))
+                                  (incf (duration-in-tempo new) 
+                                        (duration-in-tempo r2))
+                                  (incf (compound-duration-in-tempo new) 
+                                        (compound-duration-in-tempo r2)))
+                                (push new b)
+                                (setf skip t))
+                              ;; else....
+                              (push r1 b)))
+                      finally 
+                      ;; got to get the last rthm in the bar
+                      (unless skip
+                        (push r2 b))
+                      (return (nreverse b)))))))
   rsb)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

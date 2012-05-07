@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:30:46 Mon May  7 2012 BST
+;;; $$ Last modified: 20:10:39 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2566,7 +2566,7 @@
       (+ low (funcall (if fixed-random #'random-rep #'random)
                       (1+ (- high low))))
       (+ low (funcall (if fixed-random #'random-rep #'random)
-		      (- high low)))))
+                      (- high low)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

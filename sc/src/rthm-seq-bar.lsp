@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 17:46:04 Mon May  7 2012 BST
+;;; $$ Last modified: 19:03:05 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -794,7 +794,7 @@ data: E.
                       rsb (sum-rhythms-duration cbeats)
                       (rhythms-duration rsb)))))))
     ;; MDE Mon May  7 17:45:59 2012
-    (unless (check-tuplets rsb)
+    (unless (check-tuplets rsb nil)
       (auto-tuplets rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -944,8 +944,12 @@ data: ((2 4) Q E S S)
                                  2))
     (fix-brackets rsb)
     ;; MDE Mon May  7 17:43:59 2012 -- check and retry if the above fails
-    (unless (check-tuplets rsb)
+    (unless (check-tuplets rsb nil)
       (auto-tuplets rsb))
+    ;; MDE Mon May  7 18:06:30 2012 -- beaming info may also be askew...
+    ;; setting 3rd arg to nil means we don't get an error if we have a
+    ;; multi-beat note e.g. h in 4/4 
+    (auto-beam rsb beat nil)
     (gen-stats rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1559,7 +1563,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; If beat is nil, we'll get the beat from the time-sig; if check-dur we'll
 ;;; make sure we get a complete beat of rhythms for each beat of the bar
-;;; MDE Tue May  1 19:05:35 2012 -- check-dur can not be t, nil, #'warn or
+;;; MDE Tue May  1 19:05:35 2012 -- check-dur can now be t, nil, #'warn or
 ;;; #'error, where t is the same as #'error
 (defmethod get-beats ((rsb rthm-seq-bar) &optional beat check-dur)
   (let ((beat-dur (if (and beat (not (eq beat t)))
@@ -1596,7 +1600,8 @@ data: ((2 4) - S S - S - S S S - S S)
     ;; full: get it anyway!  
     (when current
       (push (reverse current) beats))
-    (nreverse beats)))
+    (unless failed
+      (nreverse beats))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -4424,7 +4429,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
        (if (event-p e)
            (setf (8va e) 8va)
            (error "~a~&rthm-seq-bar::set-8va: bar must contain event ~
-                   objects (not rhythms)."))))
+                   objects (not rhythms)." rsb))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

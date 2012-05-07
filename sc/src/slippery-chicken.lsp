@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:38:10 Mon May  7 2012 BST
+;;; $$ Last modified: 21:39:56 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -174,6 +174,11 @@
    ;; melodic octaves by default but make this a slot option now 
    (avoid-melodic-octaves :accessor avoid-melodic-octaves :type boolean
                           :initarg :avoid-melodic-octaves :initform t)
+   ;; MDE Mon May  7 21:29:48 2012 -- if we've called multi-bar-rests method
+   ;; but then call cmn-display with :multi-bar-rests nil we'll get an error
+   ;; (too few bars returned by get-cmn-data), so we have to remember whether
+   ;; we called it or not
+   (multi-bar-rests-called :accessor multi-bar-rests-called :initform nil)
    ;; MDE Mon Mar 26 13:10:15 2012 -- This one defines the lowest scaler we'll
    ;; accept before adding notes from those used i.e. if our pitch-seq needs 6
    ;; notes and only 3 are available, there would be note repetition but as
@@ -414,13 +419,15 @@
                   ~%      instruments-hierarchy: ~a ~
                   ~%        fast-leap-threshold: ~a ~
                   ~%      avoid-melodic-octaves: ~a ~
+                  ~%     multi-bar-rests-called: ~a ~
                   ~% pitch-seq-index-scaler-min: ~a"
           (title sc) (composer sc) (id (set-palette sc)) (id (set-map sc))
           (id (hint-pitches sc)) (id (rthm-seq-map sc))
           (id (rthm-seq-palette sc)) (id (tempo-map sc)) (tempo-curve sc)
           (id (instrument-palette sc)) (id (ensemble sc))
           (instruments-hierarchy sc) (fast-leap-threshold sc) 
-          (avoid-melodic-octaves sc) (pitch-seq-index-scaler-min sc))
+          (avoid-melodic-octaves sc) (multi-bar-rests-called sc) 
+          (pitch-seq-index-scaler-min sc))
   (statistics sc stream))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -493,6 +500,7 @@
           (slot-value no 'avoid-melodic-octaves) (avoid-melodic-octaves sc) 
           (slot-value no 'pitch-seq-index-scaler-min)
           (pitch-seq-index-scaler-min sc)
+          (slot-value no 'multi-bar-rests-called) (multi-bar-rests-called sc)
           (slot-value no 'num-sequences) (num-sequences sc))
     no))
 
@@ -689,7 +697,9 @@
                :page-nums page-nums
                :group-separation group-separation
                :end-bar end-bar
-               :multi-bar-rests multi-bar-rests
+               ;; MDE Mon May  7 21:35:16 2012 -- remember if we've called
+               ;; multi-bar-rests beforehand we need to know about it
+               :multi-bar-rests (or multi-bar-rests (multi-bar-rests-called sc))
                :bars-per-system-map (bars-per-system-map sc)
                :ensemble (ensemble sc)
                :all-output-in-one-file all-output-in-one-file
@@ -2532,7 +2542,8 @@ T
                   (setf (multi-bar-rest bar) t))))
           ;; remember: rehearsal letters are attached to the barline of the
           ;; __previous__ bar.... 
-          (setf got-rehearsal-letter (rehearsal-letter bar)))))
+          (setf got-rehearsal-letter (rehearsal-letter bar))))
+  (setf (multi-bar-rests-called sc) t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

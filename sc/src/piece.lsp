@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 10:13:49 Mon May  7 2012 BST
+;;; $$ Last modified: 21:42:56 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -219,7 +219,7 @@
          do (incf bar-num (if (data bars-per-system-map)
                               (data (scm-get-data (+ 1 start-bar bar-num) 
                                                   bars-per-system-map))
-                              ;; !!!!!!!! default bars per system is 4 !!!!!!!!!!
+                              ;; !!!!!!!! default bars per system is 4 !!!!!!!!!
                               4))
          while (< bar-num num-bars) do (sys-sep bar-num))
       (sys-sep (1- num-bars)))
@@ -329,7 +329,7 @@
     (loop for player in cmn-data and i from 0 do
          (unless (= num-bars (length player))
            (warn "piece::get-cmn-data: Should be ~a bars for each ~
-                   instrument but ~a has only ~a.  Assuming multi-bar-rests."
+                  instrument but ~%~a has only ~a.  Assuming multi-bar-rests."
                  num-bars (nth i players) (length player))))
     ;; if we want empty staves we now have to interleave the staff with the
     ;; notes with the staff with the empty bars.

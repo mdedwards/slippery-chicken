@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 18:32:06 Mon Apr 30 2012 BST
+;;; $$ Last modified: 17:42:25 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -4452,7 +4452,10 @@ NIL
           (when consolidate-rests
             (consolidate-rests bar)
             ;; 25.7.11 (Pula)
-            (auto-put-tuplet-bracket-on-beats bar nil))
+            ;; (auto-put-tuplet-bracket-on-beats bar nil))
+            ;; MDE Mon May  7 17:41:59 2012 -- use auto-tuplets instead of the
+            ;; above  
+            (auto-tuplets bar))
           ;; 26.9.11: this was before consolidate-rests
           (auto-beam bar)))
   t)

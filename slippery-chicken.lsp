@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:33:13 Mon May  7 2012 BST
+;;; $$ Last modified: 18:38:10 Mon May  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3465,8 +3465,8 @@ T
                          ~a into the chord ~a"  
                           n chord))
                  ;; MDE Mon Apr 16 22:03:55 2012 -- remember these events have
-                 ;; been cloned so we won't be affecting score output by changing
-                 ;; the pitch here.
+                 ;; been cloned so we won't be affecting score output by
+                 ;; changing the pitch here.
                  (setf (pitch-or-chord event) (clone pitch))))))
     timings))
     

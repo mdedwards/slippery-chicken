@@ -2544,6 +2544,8 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether the random seed should be fixed.
+;;; - If fixed-random is set to T, a function must be given for <restart> to
+;;;   reset the seed (see below)
 ;;; 
 ;;; RETURN VALUE
 ;;; An integer if both numbers are integers, or a float if one or both are
@@ -2551,17 +2553,27 @@
 ;;; 
 ;;; EXAMPLE
 #|
-
+;;; Using the defaults. This will produce a different result each time.
 (loop repeat 10 collect (between 1 100))
 
 => (43 63 26 47 28 2 99 93 66 23)
 
+;;; Setting fixed-random to T and using zerop to reset the random when i is 0 
+(loop repeat 5 
+   collect (loop for i from 0 to 9 collect (between 1 100 t (zerop i))))
+
+=> ((93 2 38 81 43 19 70 18 44 26) (93 2 38 81 43 19 70 18 44 26)
+    (93 2 38 81 43 19 70 18 44 26) (93 2 38 81 43 19 70 18 44 26)
+    (93 2 38 81 43 19 70 18 44 26))
+
 |#
 ;;; SYNOPSIS
-(defun between (low high &optional fixed-random)
+(defun between (low high &optional fixed-random restart)
 ;;; ****
   (unless (> high low)
     (error "utilities::between: high (~a) should be > low (~a)" high low))
+  (when restart
+    (random-rep 10 t))
   (if (and (integerp low) (integerp high))
       (+ low (funcall (if fixed-random #'random-rep #'random)
                       (1+ (- high low))))

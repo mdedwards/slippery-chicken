@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 15:12:18 Mon May  7 2012 BST
+;;; $$ Last modified: 16:48:06 Sun May  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1257,8 +1257,8 @@
 ;;; EXAMPLE
 #|
 (nconc-sublists '(((1 2) (a b) (cat dog)) 
-                  ((3 4) (c d) (bird fish)) 
-                  ((5 6) (e f) (pig cow))))
+		  ((3 4) (c d) (bird fish)) 
+		  ((5 6) (e f) (pig cow))))
 
 => ((1 2 3 4 5 6) (A B C D E F) (CAT DOG BIRD FISH PIG COW))
 
@@ -1499,14 +1499,14 @@
 |#
 ;;; SYNOPSIS
 (defun scale-env (env y-scaler &key x-scaler 
-                                    (x-min most-negative-double-float)
-                                    (y-min most-negative-double-float)
-                                    (x-max most-positive-double-float)
-                                    (y-max most-positive-double-float))
+		                    (x-min most-negative-double-float)
+		                    (y-min most-negative-double-float)
+                        	    (x-max most-positive-double-float)
+		                    (y-max most-positive-double-float))
 ;;; ****
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
      collect (if x-scaler (min x-max (max x-min (* x x-scaler)))
-                 x) 
+		 x) 
      collect (min y-max (max y-min (* y y-scaler)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1537,10 +1537,10 @@
    supplied to it.  
    e.g. (reverse-env '(0 0 60 .3 100 1)) => (0 1 40 0.3 100 0)."
   (let ((x-max (lastx env))
-        (result nil))
+	(result nil))
     (loop for x in env by #'cddr and y in (cdr env) by #' cddr do
-         (push y result)
-         (push (- x-max x) result))
+	 (push y result)
+	 (push (- x-max x) result))
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1654,21 +1654,42 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 11:17:05 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/env-symmetrical
 ;;; FUNCTION
-;;; 
+;;; Create a new list of break-point pairs that is symmetrical to the original
+;;; around a specified center. If no center is specified, the center value
+;;; defaults to 0.5
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An envelope in the form of a list of break-point pairs.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number that is the center value around which the values of the
+;;;   new list are to be symmetrical.
+;;; - A number that is to be the minimum value for the y values returned.
+;;; - A number that is to be the maximum value for the y values returned.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An envelope in the form of a list of break-point pairs.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Default center is 0.5
+(env-symmetrical '(0 0 25 11 50 13 75 19 100 23))
+
+=> (0 1.0 25 -10.0 50 -12.0 75 -18.0 100 -22.0)
+
+;; Specifying a center of 0
+(env-symmetrical '(0 0 25 11 50 13 75 19 100 23) 0)
+
+=> (0 0.0 25 -11.0 50 -13.0 75 -19.0 100 -23.0)
+
+;;; Specifying minimum and maximum y values for the envelope returned
+(env-symmetrical '(0 0 25 11 50 13 75 19 100 23) 0 -20 -7)
+
+=> (0 -7 25 -11.0 50 -13.0 75 -19.0 100 -20)
 
 |#
 ;;; SYNOPSIS
@@ -1684,22 +1705,28 @@
      collect x collect (max min (min new-y max))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 3.2.11: returns a list of length new-len by adding or removing items at
-;;; regular intervals.  If adding items and the list contains numbers, linear
-;;; interpolation will be used but only between two adjacent items, i.e. not
-;;; with a partial increment.   NB Can't request more than double the length of
-;;; the original list.
+|#
+;;; SAR Mon May  7 11:28:13 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/force-length
+;;; DATE
+;;; 03-FEB-2011
+;;;
 ;;; FUNCTION
-;;; 
+
+;;; Create a new a list of a specified new length by adding or removing items
+;;; at regular intervals from the original list. If adding items and the list
+;;; contains numbers, linear interpolation will be used, but only between two
+;;; adjacent items; i.e. not with a partial increment.
+;;;
+;;; NB: The function can only create new lists that have a length between 1 and
+;;;     1 less than double the length of the original list.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A flat list.
+;;; - A number that is the new length of the new list to be derived from the
+;;;   original list. This number must be a value between 1 and 1 less than
+;;;   double the length of the original list.
 ;;; 
 ;;; RETURN VALUE
 ;;; 
@@ -1738,20 +1765,20 @@
                               collect i)))
               (loop with next = (pop points) with last-el
                  for el in list and i from 0 do
-                 (if (and next (= i next))
-                     (progn 
-                       (when (> diff 0)
-                         (if (and (numberp el) (numberp last-el)) ; add items
-                             ;; interpolate to get the new element
-                             (push (+ last-el (/ (- el last-el) 2.0)) 
-                                   result)
-                             ;; if not numbers just push in the last element
-                             (push last-el result))
-                         (push el result)) ; get this element too of course
-                       (setf next (pop points)))
-                     ;; not on point so get it
-                     (push el result))
-                 (setf last-el el))
+		   (if (and next (= i next))
+		       (progn 
+			 (when (> diff 0)
+			   (if (and (numberp el) (numberp last-el)) ; add items
+			       ;; interpolate to get the new element
+			       (push (+ last-el (/ (- el last-el) 2.0)) 
+				     result)
+			       ;; if not numbers just push in the last element
+			       (push last-el result))
+			   (push el result)) ; get this element too of course
+			 (setf next (pop points)))
+		       ;; not on point so get it
+		       (push el result))
+		   (setf last-el el))
               (setf result (nreverse result))
               (unless (= (length result) new-len)
                 (error "force-length:: somehow got the wrong length: ~a"
@@ -1776,6 +1803,7 @@
 ;;; This handles as many marker files as you want, if they're in a list.  Only
 ;;; caveat is that each file must refer to the same sndfile...but that could be
 ;;; easily altered. 
+
 ;;; ****f* utilities/parse-wavelab-marker-files-for-sections
 ;;; FUNCTION
 ;;; 
@@ -2154,29 +2182,29 @@
       (with-open-file 
           (mrk label-file :direction :input :if-does-not-exist :error)
         (loop
-            with count = 0 
-            with num-loops = 0 
-            do
-              (multiple-value-bind
-                  (line eof)
-                  (read-line mrk nil)
-                ;; (print line)
-                (multiple-value-bind
-                    (label time)
-                    (read-audacity-line line)
-                  ;; (format t "~&~a ~a" label time)
-                  (incf count)
-                  (when (string= label "loop")
-                    (incf num-loops)
-                    (write-loop-points))
-                  (setf time (read-from-string time))
-                  (when time
-                    (push time loop-points)))
-                (when eof 
-                  (write-loop-points)
-                  (format t "~%~%~a markers, ~a loops read~%"
-                          count num-loops)
-                  (return))))))
+	   with count = 0 
+	   with num-loops = 0 
+	   do
+	     (multiple-value-bind
+		   (line eof)
+		 (read-line mrk nil)
+	       ;; (print line)
+	       (multiple-value-bind
+		     (label time)
+		   (read-audacity-line line)
+		 ;; (format t "~&~a ~a" label time)
+		 (incf count)
+		 (when (string= label "loop")
+		   (incf num-loops)
+		   (write-loop-points))
+		 (setf time (read-from-string time))
+		 (when time
+		   (push time loop-points)))
+	       (when eof 
+		 (write-loop-points)
+		 (format t "~%~%~a markers, ~a loops read~%"
+			 count num-loops)
+		 (return))))))
     (nreverse result)))
 
 
@@ -2290,6 +2318,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 12:20:36 BST 2012: Added robodoc entry
+
 ;;; reflect-list will order a list from least to greatest (so has to be
 ;;; numbers) then transpose the list so that if an element is the second
 ;;; lowest, it will be replace by the second highest etc.
@@ -2298,7 +2328,10 @@
 
 ;;; ****f* utilities/reflect-list
 ;;; FUNCTION
-;;; 
+
+;;; order a list of numbers from least to greatest, then transpose the list so
+;;; that if an element is the second lowest, it will be replaced by the second
+;;; highest etc.
 ;;; 
 ;;; ARGUMENTS
 ;;; 
@@ -2330,21 +2363,24 @@
           
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 15:05:44 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/middle
 ;;; FUNCTION
-;;; 
+;;; Get the number value that is middle of two number values.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A first number.
+;;; - A second number.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A number.
 ;;; 
 ;;; EXAMPLE
 #|
+(middle 7 92)
+
+=> 49.5
 
 |#
 ;;; SYNOPSIS
@@ -2354,21 +2390,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 15:08:31 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/hz2ms
 ;;; FUNCTION
-;;; 
+;;; Convert a frequency in Hertz to the equivalent number of milliseconds. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number that is a Hertz frequency.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A number that is the millisecond equivalent of the specified Hertz
+;;; frequency. 
 ;;; 
 ;;; EXAMPLE
 #|
+(hz2ms 261.63)
+
+=> 3.8221915
 
 |#
 ;;; SYNOPSIS
@@ -2379,23 +2418,31 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 15:13:28 BST 2012: Added robodoc entry
+
 ;;; (split-groups 31 10) -> (10 10 10 1)
 
 ;;; ****f* utilities/split-groups
 ;;; FUNCTION
-;;; 
+;;; Create a list consisting of as many repetitions of a specified number as
+;;; will fit into a given greater number, with the last item in the new list
+;;; being the value of any remainder.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number that is to be split into repetitions of a specified smaller
+;;;   number (the second argument).
+;;; - The number that is to be the repeating item in the new list. This number
+;;;   must be smaller than the first number.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list consisting of repetitions of the specified number, with the last
+;;; element being any possible remainder.
 ;;; 
 ;;; EXAMPLE
 #|
+(split-groups 101 17)
+
+=> (17 17 17 17 17 16)
 
 |#
 ;;; SYNOPSIS
@@ -2414,36 +2461,43 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; (remove-more '(1 2 3 4 5 5 5 6 7 7 8) 5 7 2) -> (1 3 4 6 8)
+;;; SAR Mon May  7 15:26:49 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/remove-more
 ;;; FUNCTION
-;;; 
+;;; Remove all instances of a list of specified elements from an original
+;;; list. The predicate used to test the presence of the specified elements in
+;;; the original list must be specified by the user (such as #'eq, #'equalp,
+;;; #'= etc.)
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list.
+;;; - A predicate with which to test the presence of the specified elements.
+;;; - A sequence of elements to be removed from the given list.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
+(remove-more '(1 2 3 4 5 5 5 6 7 7 8) #'= 5 7 2)
+
+=> (1 3 4 6 8)
 
 |#
 ;;; SYNOPSIS
 (defun remove-more (list test &rest remove)
 ;;; ****
   (loop 
-      with result = list
-      for r in remove
-      do
-        (setf result (remove r result :test test))
-      finally (return result)))
+     with result = list
+     for r in remove
+     do
+       (setf result (remove r result :test test))
+     finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Mon May  7 15:50:18 BST 2012: Added robodoc entry
 
 ;;; convert points (72 per inch) to centimeters.
 

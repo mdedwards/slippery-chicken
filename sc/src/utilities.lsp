@@ -2551,6 +2551,7 @@
 ;;; 
 ;;; EXAMPLE
 #|
+
 (loop repeat 10 collect (between 1 100))
 
 => (43 63 26 47 28 2 99 93 66 23)
@@ -2569,23 +2570,30 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; this randomises a number
-;;; always returns float
+;;; SAR Mon May  7 19:37:44 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/randomise
 ;;; FUNCTION
-;;; 
+;;; Return a random decimal number close to the number specified (within a
+;;; certain percentage of that number's value).
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A number.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A number that is a percentage value, such that any random number returned
+;;;   will be within that percentage of the original number's value. 
+;;;   Default = 5.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A decimal number.
 ;;; 
 ;;; EXAMPLE
 #|
+(loop repeat 10 collect (randomise 100))
+
+=> (99.413795 99.15346 98.682014 100.76199 97.74929 99.05693 100.59494 97.96452
+    100.42091 100.01329)
 
 |#
 ;;; SYNOPSIS
@@ -2595,7 +2603,11 @@
     (between (- number room) (+ number room))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Mon May  7 19:48:41 BST 2012: Added robodoc entry
+
 ;;; this returns a random portion of the number, +/- percent
+
 ;;; ****f* utilities/random-amount
 ;;; FUNCTION
 ;;; 
@@ -2622,21 +2634,31 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May  7 20:00:12 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/random-from-list
 ;;; FUNCTION
-;;; 
+;;; Return a random element from a specified list of elements. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An integer can be passed stating the length of the list, for more
+;;;   efficient processing. NB: There is no check to ensure this number is
+;;;   indeed the length of the list. If the number is less than the length of
+;;;   the list, only elements from the first part of the list will be
+;;;   returned. If it is greater than the length of the list, the method may
+;;;   return NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An element from the specified list.
 ;;; 
 ;;; EXAMPLE
 #|
+(random-from-list '(3 5 7 11 13 17 19 23 29))
+
+=> 13
 
 |#
 ;;; SYNOPSIS

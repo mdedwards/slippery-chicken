@@ -970,6 +970,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Apr 28 10:05:43 2012 
 ;;; SAR Mon Apr 30 11:20:15 BST 2012: Added robodoc entry
+;;; SAR Tue May  8 12:21:04 BST 2012: Re-visited robodoc entry
 
 ;;; ****f* rthm-chain/make-rthm-chain
 ;;; FUNCTION
@@ -1021,34 +1022,73 @@
 ;;;   contain the same number of rthms but their number and the number of
 ;;;   sublists is open. A transition will be made from one group of rhythms to
 ;;;   the next over the whole output (i.e. not one unit to another within
-;;;   e.g. the 1-beat rhythms) according to a fibonacci-transition method. NB:
-;;;   The rhythm units of slower-rthms must be expressed in single beats; e.g.,
-;;;   a 2/4 bar must consist of q+q rather than h. The consolidate-notes method
-;;;   can be called afterwards if desired.
+;;;   e.g. the 1-beat rhythms) according to a fibonacci-transition method. 
+;;;   NB: The rhythm units of slower-rthms must be expressed in single beats;
+;;;   e.g., a 2/4 bar must consist of q+q rather than h. The consolidate-notes
+;;;   method can be called afterwards if desired.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
+;;; - :beat. An integer that indicates the rhythmic unit of the primary beat
+;;;   basis of the rhythms specified. Default = 4.
+;;; - :1-beat-fibonacci. T or NIL to indicate whether the sequence of 1-beat
+;;;   rhythms is to be generated using the fibonacci-transitions method or the
+;;;   processions method. T = use fibonacci-transitions method. Default = NIL.
+;;; - :slow-fibonacci. T or NIL to indicate whether the sequence of the slow
+;;;   rhythms will be generated using the fibonacci-transitions method or the
+;;;   processions method. This affects the order in which each 2- or 3-beat
+;;;   unit is used when necessary, not the order in which each 2- or 3-beat
+;;;   unit is selected; the latter is decided by the next element in the DATA
+;;;   slot of the rthm-chain-slow object, which simply cycles through 
+;;;   '(2 3 2 2 3 2 2 3 3 3). T = use fibonacci-transisitions method.
+;;;   Default = NIL.
+;;; - :players. A list of player IDs. When used in conjunction with a
+;;;   slippery-chicken object (which is the standard usage), these must be IDs
+;;;   as they are defined in that object's ENSEMBLE slot. 
+;;;   Default = '(player1 player2).
 
-;;; - :beat. Default - 4.
+;;; - :section-id. 
 
-;;; - :1-beat-fibonacci.
+;; the rthm-seq-map needs an id (section
+;;;   name/number). Default = 1. 
 
-;;; - :slow-fibonacci.
+;;; - :rests. The rhythmic duration unit(s) of the rests that will be used when
+;;;   the method uses the rest-insertion algorithm to automatically insert
+;;;   rests into the resulting objects. The specified rests are used in a
+;;;   sequence determined by a recurring-event object. Default = '(e q q. w).
+;;; - :do-rests. T or NIL to indicate whether to apply the automatic
+;;;   rest-insertion algorithm. T = use. Default = T.
 
-;;; - :players. Default = '(player1 player2).
+;;; - :do-rests-curve. Default = NIL.
 
-;;; - :section-id.
+;;; - :rest-re. A list of 2-item lists that indicate the pattern by which rests
+;;;   will be automatically inserted. The first number of each pair determines
+;;;   how many events occur before inserting a rest, and the second number of
+;;;   each pair determines how many times that interval will be repeated. For
+;;;   example, (2 3) indicates that a rest will be inserted every two events,
+;;;   three times in a row. The list passed here will be treated as data for a
+;;;   recurring-event object that will be repeatedly cycled through. 
+;;;   Default = '((2 3) (3 2) (2 2) (5 1) (3 3) (8 1)).
 
-;;; - :rests. e, q, q., and w rests are used by default, in a sequence
-;;;                   determined by a recurring-event instance.
+;;; - :rest-cycle. A list of 2-item lists that indicate the pattern by which
+;;;   rests of specific rhythmic durations will be selected from the RESTS slot
+;;;   for automatic insertion. The first number of each pair is a 0-based
+;;;   position referring to the list of rests in the RESTS slot, and the second
+;;;   number is the number of times the rest at that particular position should
+;;;   be inserted. (This number does not mean that the selected rest will be
+;;;   inserted that many times at once, but rather that each consecutive time
+;;;   the rest algorithm selects one rest to be inserted, it will insert that
+;;;   specific rest, for the specified number of consecutive times.) For
+;;;   example, (0 3) indicates that for the next three times that the rest
+;;;   algorithm selects one rest to insert, it will select the rest located at
+;;;   position 0 in the list of rests in the RESTS slot (e by default).
+;;;   Default ='((0 3) (1 1) (0 2) (2 1) (1 1) (3 1)).
 
-;;; - :do-rests.
+;; so, we'll alternate e,q,q.,w rests. this slot determines the order these
+   ;; will occur in; first element of the pairs is the index into rests (above)
+   ;; the second element is how many times it will occur.
 
-;;; - :do-rests-curve.
-
-;;; - :rest-re.
-
-;;; - :rest-cycle.
+  ;; rest-cycle determines which rests we'll insert from the rests list.
 
 ;;; - :activity-curve.  In order to make music that 'progresses' we have curves
 ;;;                   with y values from 1-10 indicating how much activity
@@ -1081,11 +1121,23 @@
 ;;;                   single harmony).  The default is 2 bars (slower-rthms)
 ;;;                   per rthm-seq.
 
-;;; - :do-sticking.
-;;; - :do-sticking-curve.
-;;; - :sticking-repeats.
-;;; - :sticking-rthms.
-;;; - :split-data.
+;;; - :do-sticking. ;; whether we apply the sticking algorithm
+
+;;; - :do-sticking-curve.    ;; alternatively, envelopes to control whether we're sticking/resting or not
+   ;; these should range from 0->1 and will be rounded when interpolating
+   ;; they will only be active if do-sticking/do-rests is t
+
+;;; - :sticking-repeats.    ;; when we stick, how many repeats do we have? when we've exhausted this
+   ;; list we just start back at the beginning again.  NB we make a cscl
+   ;; procession out of this at init, unless a cscl is provided.
+
+;;; - :sticking-rthms.    ;; generated at init if not given here NB a procession algorithm is created
+   ;; from this list at init so it would be best to apply something similar (if
+   ;; desired) if not accepting the default--in any case if a cscl is provided
+   ;; it will be used instead of the default procession.
+
+;;; - :split-data.    ;; the mix/max beat duration of bars generated; can be nil, whereupon bars
+   ;; will not be split
 ;;; 
 ;;; RETURN VALUE
 ;;; 

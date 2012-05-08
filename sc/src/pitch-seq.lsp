@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 08:41:05 Tue Apr 10 2012 BST
+;;; $$ Last modified: 11:38:43 Tue May  8 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -331,6 +331,7 @@
                       pitch-seq-index-scaler-min avoid-melodic-octaves)
 ;;; ****
   (declare (ignore hint-pitch))
+  ;; (print (id instrument))
   (when (data ps) ;; don't do anything for empty seqs!
     (if (or (not instrument) (not set))
         (setf (notes ps) 
@@ -347,13 +348,13 @@
                                                      :lower limit-low
                                                      :do-related-sets t))
                ;; get the notes we've already assigned to other instruments ...
-	       ;; MDE Tue Apr 10 07:57:45 2012 -- remember that that the set
-	       ;; stores all notes used by each instrument for the whole piece
-	       ;; using the 'global' sequence number (i.e. the used-notes slot
-	       ;; is a RAL with the top-most IDs being the seq-num, the
-	       ;; instrument names and their used notes being the next level
-	       ;; down), so there can be no question of the notes used in a
-	       ;; previous sequence influencing the choice of notes here.
+               ;; MDE Tue Apr 10 07:57:45 2012 -- remember that that the set
+               ;; stores all notes used by each instrument for the whole piece
+               ;; using the 'global' sequence number (i.e. the used-notes slot
+               ;; is a RAL with the top-most IDs being the seq-num, the
+               ;; instrument names and their used notes being the next level
+               ;; down), so there can be no question of the notes used in a
+               ;; previous sequence influencing the choice of notes here.
                (used (loop for p in (get-used-notes set seq-num) 
                         when (pitch-member p set-pitches-rm)
                         collect p))
@@ -405,7 +406,7 @@
                      (if (> need num-set-pitches)
                          (/ num-set-pitches need)
                          1))
-	     ;; (format t "~%~a ~a" seq-num scaler)
+             ;; (format t "~%~a ~a" seq-num scaler)
              ;; add pitches from those used already to try and get more
              ;; available to fit our pitch curve
                (if (or (not used-cp)
@@ -451,67 +452,68 @@
                    with uns-ref = (list seq-num (id instrument))
                    with last = last-note-previous-seq
                    do
-		     (unless note
-		       (error "~a~&pitch-seq::get-notes: failed to get a note! ~
+                     ;;(print used-notes)
+                     (unless note
+                       (error "~a~&pitch-seq::get-notes: failed to get a note! ~
                              ~%index = ~a, lowest = ~a, highest = ~a, ~
                              num-set-pitches = ~a, offset = ~a, i = ~a, ~
                              scaler = ~a set = ~a"
-			      set-pitches-rm-used index lowest highest 
-			      num-set-pitches offset i scaler
-			      (pitch-symbols set)))
-		     (if (and (listp j) do-chords) ;; should be a chord!
-			 (progn
-			   ;; the chord-function defined should take six
-			   ;; arguments: the current number from the curve; the 
-			   ;; index that this was translated into by the offset 
-			   ;; and scaler (based on trying to get a best fit for 
-			   ;; the instrument and set); the pitch-list that we
-			   ;; created from the set, taking the instrument's
-			   ;; range and other notes already played by other
-			   ;; instruments; the pitch-seq object; the instrument
-			   ;; object; the set object.  It must return a chord
-			   ;; object.
-			   (setf note (funcall chord-fun i index
-					       set-pitches-rm-used ps
-					       instrument set))
-			   ;; store the pitches we've used
-			   (loop for pitch in 
-				(if (chord-p note)
-				    (data note) 
-				    (list note))
+                              set-pitches-rm-used index lowest highest 
+                              num-set-pitches offset i scaler
+                              (pitch-symbols set)))
+                     (if (and (listp j) do-chords) ;; should be a chord!
+                         (progn
+                           ;; the chord-function defined should take six
+                           ;; arguments: the current number from the curve; the 
+                           ;; index that this was translated into by the offset 
+                           ;; and scaler (based on trying to get a best fit for 
+                           ;; the instrument and set); the pitch-list that we
+                           ;; created from the set, taking the instrument's
+                           ;; range and other notes already played by other
+                           ;; instruments; the pitch-seq object; the instrument
+                           ;; object; the set object.  It must return a chord
+                           ;; object.
+                           (setf note (funcall chord-fun i index
+                                               set-pitches-rm-used ps
+                                               instrument set))
+                           ;; store the pitches we've used
+                           (loop for pitch in 
+                                (if (chord-p note)
+                                    (data note) 
+                                    (list note))
                               do
-				(ral-econs (data pitch) uns-ref used-notes))) 
-			 ;; it's a single pitch so just update used-notes
-			 (ral-econs (data note) uns-ref used-notes))
+                                (ral-econs (data pitch) uns-ref used-notes))) 
+                         ;; it's a single pitch so just update used-notes
+                         (ral-econs (data note) uns-ref used-notes))
                    ;; 16/4/07: avoid melodic 8ves where reasonable,
                    ;; i.e. doesn't recheck to see if we've recreated another 
                    ;; octave if the available pitches are full of octaves
-		     (when (and avoid-melodic-octaves
-				last
-				(pitch-p last)
-				(pitch-p note)
-				(is-octave note last))
-		       (cond 
-			 ((> index 0)
-			  (setf note (nth (1- index) set-pitches-rm-used)))
-			 ((< (1+ index) num-set-pitches)
-			  (setf note (nth (1+ index) set-pitches-rm-used)))
-			 (t (warn "pitch-seq::get-notes: can't avoid octave; ~
+                     (when (and avoid-melodic-octaves
+                                last
+                                (pitch-p last)
+                                (pitch-p note)
+                                (is-octave note last))
+                       (cond 
+                         ((> index 0)
+                          (setf note (nth (1- index) set-pitches-rm-used)))
+                         ((< (1+ index) num-set-pitches)
+                          (setf note (nth (1+ index) set-pitches-rm-used)))
+                         (t (warn "pitch-seq::get-notes: can't avoid octave; ~
                                  seq-num: ~a, instrument: ~a, pitches: ~a ~
                                  used-pitches: ~a, last: ~a"
-				  seq-num (id instrument) 
-				  (pitch-list-to-symbols 
-				   set-pitches-rm-used)
-				  (pitch-list-to-symbols used)
-				  (id last)))))
+                                  seq-num (id instrument) 
+                                  (pitch-list-to-symbols 
+                                   set-pitches-rm-used)
+                                  (pitch-list-to-symbols used)
+                                  (id last)))))
                      #|
-		     (format t "~&set id: ~a, note: ~a, ref: ~a :stored ~a" 
+                     (format t "~&set id: ~a, note: ~a, ref: ~a :stored ~a" 
                      (id set) (data note) (list seq-num (id instrument))
                      (get-data (list seq-num (id instrument))
                      (used-notes set)))
-		     |#
-		     (setf last note)
-		   collect note))))))
+                     |#
+                     (setf last note)
+                   collect note))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

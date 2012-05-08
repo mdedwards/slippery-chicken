@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 20:10:39 Mon May  7 2012 BST
+;;; $$ Last modified: 08:40:04 Tue May  8 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2798,8 +2798,11 @@
 ;;; SYNOPSIS
 (defun swap-elements (list)
 ;;; ****
-  (loop for a in list by #'cddr and b in (cdr list) by #'cddr 
-     collect b collect a))
+  (let ((result (loop for a in list by #'cddr and b in (cdr list) by #'cddr 
+                   collect b collect a)))
+    (if (oddp (length list))
+        (append result (last list))
+        result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2857,9 +2860,10 @@
 ;;; SYNOPSIS
 (defun octave-freqs (freq1 freq2 &optional (unison-also t))
 ;;; ****
-  (or (and unison-also (= freq1 freq2))
-      (power-of-2 (/ freq1 freq2))
-      (power-of-2 (/ freq2 freq1))))
+  (values (or (and unison-also (= freq1 freq2))
+              (and (/= freq1 freq2)
+                   (or (power-of-2 (/ freq1 freq2))
+                       (power-of-2 (/ freq2 freq1)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2870,7 +2874,7 @@
 ;;; 13-Dec-2011
 ;;;
 ;;; FUNCTION
-;;; A Boolean test to determine whether either of two specified frequencies has
+;;; A Boolean test to determine whether either of two specified frequencies
 ;;; can be considered a harmonic partial of the other.
 ;;; 
 ;;; ARGUMENTS
@@ -2890,9 +2894,10 @@
 ;;; SYNOPSIS
 (defun partial-freqs (freq1 freq2 &optional (unison-also t))
 ;;; ****
-  (or (and unison-also (= freq1 freq2))
-      (factor freq1 freq2)
-      (factor freq2 freq1)))
+  (values (or (and unison-also (= freq1 freq2))
+              (and (/= freq1 freq2)
+                   (or (factor freq1 freq2)
+                       (factor freq2 freq1))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 17:38:01 Sun May  6 2012 BST
+;;; $$ Last modified: 14:59:08 Tue May  8 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -570,6 +570,7 @@
          (when (and p (<= (pitch- p at-start) 12)
                     (not (member p result :test #'note=)))
            (push p result)))
+    (print (pitch-list-to-symbols result))
     (if (> (length result) 1)
         (make-chord result)
         (first result))))

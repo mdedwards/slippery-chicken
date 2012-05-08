@@ -250,16 +250,16 @@
     ;; some such.  That's why we don't use the latter in the following loop if
     ;; it's there.
     (loop for ref = (pop refs) while ref do
-          (let ((temp (get-data ref nearest nil)))
-            (cond ((and temp (is-ral (data temp)))
-                   (setf nearest (data temp)))
-                  ;; is temp a change-data? if so save it, if not, then leave
-                  ;; at what it was last time through.
-                  (temp (when temp (setf nearest temp))
-                        (return))
-                  ;; didn't get data for this ref, remember it
-                  (t (setf failed-ref ref)
-                     (return)))))
+	 (let ((temp (get-data ref nearest nil)))
+	   (cond ((and temp (is-ral (data temp)))
+		  (setf nearest (data temp)))
+		 ;; is temp a change-data? if so save it, if not, then leave
+		 ;; at what it was last time through.
+		 (temp (when temp (setf nearest temp))
+		       (return))
+		 ;; didn't get data for this ref, remember it
+		 (t (setf failed-ref ref)
+		    (return)))))
     ;; Sometimes, when we give a subsection that doesn't exist, for instance,
     ;; we haven't got a failed-ref as such, but there's still a ref or refs
     ;; left to be gotten so set failed-ref to be this.
@@ -287,14 +287,14 @@
     (cond ((typep nearest 'change-data)
            (if last-ref
                (get-nearest-by-last-ref cm nearest last-ref)
-             nearest))
+	       nearest))
           ((typep nearest 'change-map)
            (cond (last-ref
                   (let ((temp (get-data last-ref nearest nil)))
                     (if temp
                         temp
-                      (get-nearest-by-last-ref cm (get-first nearest)
-                                               last-ref))))
+			(get-nearest-by-last-ref cm (get-first nearest)
+						 last-ref))))
                  ;; we got all the given refs for the section but there's still
                  ;; subsections.  
                  ((null refs) (get-last nearest))

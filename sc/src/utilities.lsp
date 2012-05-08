@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 08:40:04 Tue May  8 2012 BST
+;;; $$ Last modified: 17:56:49 Tue May  8 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2642,8 +2642,8 @@
 (defun random-amount (number &optional (percent 5))
 ;;; ****
   (let ((pc (float (/ percent 100.0))))
-    (+ number (* number (+ (- (/ pc 2.0))
-                           (random pc))))))
+    (* number (+ (- (/ pc 2.0))
+                 (random pc)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

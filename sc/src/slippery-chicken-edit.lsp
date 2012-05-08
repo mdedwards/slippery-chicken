@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 17:42:25 Mon May  7 2012 BST
+;;; $$ Last modified: 19:03:20 Tue May  8 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -1524,27 +1524,21 @@ NIL
 ;;; keyword arguments:
 ;;; NB: At least one of these arguments must be set in order to create a
 ;;;     change.  
-
 ;;; - :dx. A positive or negative decimal number to indicate the horizontal
 ;;;   offset of the entire bracket.
-
 ;;; - :dy. A positive or negative decimal number to indicate the vertical
 ;;;   offset of the entire bracket.
- 
 ;;; - :dx0. A positive or negative decimal number to indicate the horizontal
 ;;;   offset of the left corner of the bracket.
- 
 ;;; - :dy0.A positive or negative decimal number to indicate the vertical
 ;;;   offset of the left corner of the bracket.
-
 ;;; - :dx1. A positive or negative decimal number to indicate the horizontal
 ;;;   offset of the right corner of the bracket.
-
-;;; - :dy1.A positive or negative decimal number to indicate the vertical
+;;; - :dy1. A positive or negative decimal number to indicate the vertical
 ;;;   offset of the right corner of the bracket.
-
-;;; - :index. For internal use only.
-
+;;; - :index. An integer that indicates which bracket of a nested bracket on
+;;;   the same event is to be affected.  0 = outermost bracket, 1 = first nested
+;;;   bracket, etc. Default = 0.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns a list of the bracket start/end indicator and the tuplet value
@@ -1583,35 +1577,16 @@ NIL
                         :index index)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 ;;; Similar to above but whereas you usually give the notes like '((1 1) (2 2))
-;;; meaning bar 1 note 1, bar 2 note 2, here you give it in the form 
-;;; '((1 1 5) (3 2 7)) meaning bar 1, notes 1 to 5 inclusive, bar 3, notes 2 to
-;;; 7 inclusive. 
+;;; meaning bar 1 note 1, bar 2 note 2, here you give it in the form '((1 1 5)
+;;; (3 2 7)) meaning bar 1, notes 1 to 5 inclusive, bar 3, notes 2 to 7
+;;; inclusive.  NB This method was used in the days when cmn marks were added
+;;; explicity by calling cmn mark functions; best use add-marks-to-notes these
+;;; days. 
 
-;;; ****m* slippery-chicken-edit/add-mark-to-notes-from-to
-;;; FUNCTION
-;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
-;;; SYNOPSIS
 (defmethod add-mark-to-notes-from-to ((sc slippery-chicken)
                                       mark-function player
                                       notes)
-;;; ****
   (loop 
      for bar in notes 
      for bar-num-or-ref = (first bar)
@@ -1628,7 +1603,6 @@ NIL
             (add-mark-to-note sc bar-num-or-ref n player 
                               (funcall mark-function))))
   t)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2552,25 +2526,23 @@ NIL
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-
 ;;; - :end-bar. An integer or NIL. If an integer, this is the number of the
 ;;;   last bar of full-rests that is to be changed to a note. This can be
 ;;;   helpful for tying into passages of multiple bars of full-rest.
-
 ;;; - :tie-next-attack. T or NIL to indicate whether the new tied notes created 
 ;;;   should also be further extended over the next attacked note if that note
 ;;;   has the same pitch as the starting note of the tie. T = also tie next
 ;;;   attacked note if same pitch. Default = NIL.
-
 ;;; - :to-next-attack. T or NIL to indicate whether ties are to extend over
 ;;;   only full bars of rest or also over partial bars (until the next attacked
 ;;;   note). T = until the next attacked note. Default = T.
-
 ;;; - :auto-beam. T or NIL to indicate whether the method should automatically
 ;;;   place beams for the notes of the affected measure after the ties over
 ;;;   rests have been created. T = automatically beam. Default = NIL.
-
-;;; - :last-rhythm. Default = NIL.
+;;; - :last-rhythm. NIL or a rhythmic duration.  If the latter, the last
+;;;   duration of the tie will be forced to this length.  Useful, for example,
+;;;   when tieing into a rest bar but not filling that whole bar.  Default =
+;;;   NIL = fill the bar.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns NIL.
@@ -2950,7 +2922,6 @@ NIL
              (setf happy nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Fri Apr 20 10:38:49 BST 2012: Added robodoc entry
 
 ;;; add slurs automatically (to wind instruments usually) to phrases: these are
@@ -3540,7 +3511,7 @@ NIL
 ;;; - :verbose. T or NIL to indicate whether to print feedback on the
 ;;;   re-barring process to the Listener. T = print feedback. Default = NIL.
 ;;; - :check-ties. T or NIL to indicate whether to force the method to ensure
-;;;   that all tied notes have the same enharmonic spellings. T = check. 
+;;;   that all ties have a beginning and ending. T = check. 
 ;;;   Default = T.
 ;;; - :auto-beam. T, NIL, or an integer. If T, the method will automatically
 ;;;   attach beam indications to the corresponding events according to the beat
@@ -3687,9 +3658,7 @@ NIL
               (auto-beam bar beat check-dur))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;; sort notes in piece--across all instruments--into time-ordered lists and
+;;; Sort notes in piece--across all instruments--into time-ordered lists and
 ;;; process them with the given function, which must take one argument, an
 ;;; event.
 ;;; ****m* slippery-chicken-edit/process-events-by-time

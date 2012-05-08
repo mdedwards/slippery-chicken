@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 18:03:17 Thu Mar  1 2012 GMT
+;;; $$ Last modified: 19:10:58 Tue May  8 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -351,19 +351,16 @@
 ;;; - (an optional IGNORE argument for internal use only).
 ;;; 
 ;;; RETURN VALUE  
-;;; Always NIL.
+;;; Always T.
 ;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defmethod reset ((lflu l-for-lookup) &optional ignore)
 ;;; ****
   (declare (ignore ignore))
   (loop for no in (data lflu) do
-        (loop for cscl in (data no) do
-              (reset cscl))))
+       (loop for cscl in (data no) do
+            (reset cscl)))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1169,8 +1166,8 @@ data: (
 ;; Setting the keyword argument <mirror> to T causes the method to reverse back
 ;; through the original list after the end has been reached
 (remix-in (fibonacci-transitions 320 '(1 2 3 4 5)) 
-	  :remix-in-fib-seed 3
-	  :mirror t)
+          :remix-in-fib-seed 3
+          :mirror t)
 
 => (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 2
     1 1 1 1 1 1 1 2 1 1 1 1 2 1 1 2 1 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 2 1 2 2 1

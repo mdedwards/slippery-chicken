@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 19:16:39 Mon Mar 19 2012 GMT
+;;; $$ Last modified: 19:13:04 Tue May  8 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -140,7 +140,6 @@
 (inefficiently-permutate '(a b c) :sublists t)
 
 => ((C A B) (C B A) (A C B) (B A C) (B C A) (A B C))
-
 
 |#
 ;;; SYNOPSIS

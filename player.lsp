@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 14:08:05 Thu Apr 19 2012 BST
+;;; $$ Last modified: 21:55:30 Tue May  8 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -325,17 +325,17 @@
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((vn (violin :midi-channel 1))
-		     (va (violin :midi-channel 2))
-		     (vc (cello :midi-channel 3))))
-	:set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
-	:set-map '((1 (1 1 1 1 1)))
-	:rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
-				:pitch-seq-palette ((1 2 3)))))
-	:rthm-seq-map '((1 ((vn (1 1 1 1 1))
-			    (va (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))))))
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+                     (va (violin :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1))
+                            (va (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
   (print (total-notes (get-data 'vc (ensemble mini)))))
 
 => 15
@@ -428,17 +428,17 @@
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((vn (violin :midi-channel 1))
-		     (va (violin :midi-channel 2))
-		     (vc (cello :midi-channel 3))))
-	:set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
-	:set-map '((1 (1 1 1 1 1)))
-	:rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
-				:pitch-seq-palette ((1 2 3)))))
-	:rthm-seq-map '((1 ((vn (1 1 1 1 1))
-			    (va (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))))))
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+                     (va (violin :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1))
+                            (va (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
   (tessitura-degree (get-data 'vc (ensemble mini))))
 
 => 136
@@ -502,19 +502,19 @@
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((vn (violin :midi-channel 1))
-		     (va (violin :midi-channel 2))
-		     (vc (cello :midi-channel 3))))
-	:set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
-	:set-map '((1 (1 1 1 1 1)))
-	:rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
-				:pitch-seq-palette ((1 2 3))))
-			    (2 ((((2 4) (q) e (s) 32 32))
-				:pitch-seq-palette ((1 2 3)))))
-	:rthm-seq-map '((1 ((vn (1 1 1 1 1))
-			    (va (2 2 2 2 2))
-			    (vc (1 2 1 2 1))))))))
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+                     (va (violin :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
+                                :pitch-seq-palette ((1 2 3))))
+                            (2 ((((2 4) (q) e (s) 32 32))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1))
+                            (va (2 2 2 2 2))
+                            (vc (1 2 1 2 1))))))))
   (print (total-duration (get-data 'vn (ensemble mini))))
   (print (total-duration (get-data 'va (ensemble mini))))
   (print (total-duration (get-data 'vc (ensemble mini)))))
@@ -730,20 +730,20 @@ data: NIL
 
 ;;; With specified cmn-staff-args
 (let ((ip (make-instrument-palette 
-	   'inst-pal 
-	   '((picc (:transposition-semitones 12 :lowest-written d4
-		    :highest-written c6)) 
-	     (flute (:lowest-written c4 :highest-written d7))  
-	     (clar (:transposition-semitones -2 :lowest-written e3
-		    :highest-written c6))  
-	     (horn (:transposition f :transposition-semitones -7
-		    :lowest-written f2 :highest-written c5))    
-	     (vln (:lowest-written g3 :highest-written c7 :chords t))  
-	     (vla (:lowest-written c3 :highest-written f6 :chords t))))))
+           'inst-pal 
+           '((picc (:transposition-semitones 12 :lowest-written d4
+                    :highest-written c6)) 
+             (flute (:lowest-written c4 :highest-written d7))  
+             (clar (:transposition-semitones -2 :lowest-written e3
+                    :highest-written c6))  
+             (horn (:transposition f :transposition-semitones -7
+                    :lowest-written f2 :highest-written c5))    
+             (vln (:lowest-written g3 :highest-written c7 :chords t))  
+             (vla (:lowest-written c3 :highest-written f6 :chords t))))))
   (make-player 'player-one ip '(flute picc) 
-	       :midi-channel 1
-	       :microtones-midi-channel 2
-	       :cmn-staff-args '(staff-size .8 staff-lines 3)))
+               :midi-channel 1
+               :microtones-midi-channel 2
+               :cmn-staff-args '(staff-size .8 staff-lines 3)))
 
 => 
 PLAYER: (id instrument-palette): INST-PAL 

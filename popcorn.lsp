@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    3rd February 2011 (Ko Lanta, Thailand)
 ;;;
-;;; $$ Last modified: 09:07:19 Mon Apr 30 2012 BST
+;;; $$ Last modified: 20:13:30 Tue May  8 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -95,6 +95,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod verify-and-store :after ((pc popcorn))
+  (reinit pc)
+  (when (data pc)
+    (heat pc)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod reinit ((pc popcorn))
   (loop for val in (data pc) do
        (when (or (<= val 0.0) (>= val 1.0))
          (error "popcorn::verify-and-store: starting values should be ~
@@ -112,8 +119,8 @@
           (mink pc) (loop for k in (data pc) minimize k)
           (maxk pc) (loop for k in (data pc) maximize k))
     (set-mean pc nil)
-    (heat pc)))
-
+    t))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod clone ((pc popcorn))
@@ -145,30 +152,10 @@
           (min-spike pc) (max-spike pc) (fixed-random pc) (mean pc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; this uses the internal slots to calculate the average and stores a new
 ;;; value as well.
 
-;;; ****m* popcorn/set-mean
-;;; FUNCTION
-;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
-;;; SYNOPSIS
 (defmethod set-mean ((pc popcorn) new-kernel)
-;;; ****
   (when new-kernel
     (incf (total pc) new-kernel)
     (incf (numk pc))
@@ -176,7 +163,6 @@
   (setf (mean pc) (/ (total pc) (numk pc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Sat Apr 28 14:13:25 BST 2012: Added robodoc entry
 
 ;;; MDE original comment:
@@ -186,6 +172,8 @@
 ;;; FUNCTION
 ;;; Generate a series of values for the KERNELS slot of a popcorn object,
 ;;; ranging between >0.0 and <= 1.0, by (optionally fixed) random selection.
+;;; If calling heat explicitly on a previously heated object, all kernels and
+;;; associated data will be deleted before being regenerated. 
 ;;;
 ;;; Taking the one or more starting values of the popcorn object, the method
 ;;; generates tendentially increasing new values until it reaches 1.0. This is
@@ -201,18 +189,42 @@
 ;;; - An popcorn object.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns a popcorn object with a newly generated list of 'kernel' values. 
+;;; Returns the popcorn object with a newly generated list of 'kernel' values. 
 ;;; 
 ;;; EXAMPLE
 #|
-
+(let ((ppcn (make-popcorn '(0.01 0.02) :min-spike 3.0 :max-spike 5.0)))
+  (print ppcn)
+  (setf (min-spike ppcn) 4.0)
+  (heat ppcn))
+=>
+POPCORN: kernels: (0.01 0.02 0.016648924 0.018915312 0.016573396
+                   0.017766343 0.018711153 0.017729789 0.017080924
+                   0.018266398 0.018132625 0.019022772 0.017662765
+[...]
+POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
+                   0.019892192 0.017849509 0.016623463 0.019682804 0.017869182
+                   0.019521425 0.017451862 0.017689057 0.01758664 0.01863435
+[...]
 |#
 ;;; SYNOPSIS
 (defmethod heat ((pc popcorn))
 ;;; ****
+  (reset-pc pc)
   (loop for k = (get-kernel pc) while k)
   (setf (kernels pc) (nreverse (kernels pc)))
   pc)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue May  8 19:41:53 2012 
+(defmethod reset-pc ((pc popcorn))
+  (setf (kernels pc) nil
+        (total pc) -1.0
+        (numk pc) -1
+        (mean pc) -1.0
+        (mink pc) -1.0
+        (maxk pc) -1.0)
+  (reinit pc))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -384,11 +396,6 @@
 ;;; The next value for the given popcorn object's KERNEL slot. 
 ;;; Returns NIL when the kernel value is > 1.0.
 ;;; 
-;;; EXAMPLE
-#|
-
-
-|#
 ;;; SYNOPSIS
 (defmethod get-kernel ((pc popcorn))
 ;;; ****
@@ -440,7 +447,14 @@
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((ppcn (make-popcorn '(0.01 0.02) :min-spike 3.0 :max-spike 5.0)))
+  (fit-to-length ppcn 100)
+  (plot ppcn "/tmp/ppcn"))
 
+then in a terminal:
+gnuplot ppcn.txt
+
+this will create the postscript file ppcn.ps
 |#
 ;;; SYNOPSIS
 (defmethod plot ((pc popcorn) file &optional (lines t))

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 17:38:33 Tue Apr 24 2012 BST
+;;; $$ Last modified: 22:18:09 Tue May  8 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -360,14 +360,16 @@ T
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :id. Defaults to the given name of the sound file.
-;;; - :data. The given file name (perhaps minus path and extension).
+;;; - :id. An ID for the sndfile. Will be set automatically if created from
+;;;   within a sndfile-palette.  Default nil.
+;;; - :data. The given file name, including path and extension, usually set
+;;;   automatically to be the given path if nil.  Default nil. 
 ;;; - :duration. A number in seconds which is the duration of the segment of
 ;;;   the specified sound file which the user would like to use. This should
-;;;   not be specified if :end has been specified.
+;;;   not be specified if :end has been specified. Default nil.
 ;;; - :end. A number in seconds which is the end time within the source sound
 ;;;   file for the segment of the file which the user would like to use. This
-;;;   should not be specified if :duration has been specified.
+;;;   should not be specified if :duration has been specified. Default nil.
 ;;; - :start. A number in seconds which is the start time within the source
 ;;;   sound file for the segment of the file which the user would like to
 ;;;   use. Defaults to 0.0.

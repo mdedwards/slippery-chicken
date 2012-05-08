@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 20:28:07 Mon Apr 30 2012 BST
+;;; $$ Last modified: 18:37:22 Tue May  8 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1794,7 +1794,6 @@ NIL
           (seventh result) dx1
           (eighth result) dy1
           (nth index (bracket e)) result)))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

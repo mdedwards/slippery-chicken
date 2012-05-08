@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 23:31:39 Tue Feb  7 2012 ICT
+;;; $$ Last modified: 21:51:55 Tue May  8 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -151,21 +151,21 @@
 ;;; EXAMPLE
 #|
 (let ((rsmt (make-rthm-seq-map 
-	     'rsm-test-5
-	     '((sec1 ((vn (rs1 rs3 rs2))
-		      (va (rs2 rs3 rs1))
-		      (vc (rs3 rs1 rs2))))
-	       (sec2 ((vn (rs1 rs2 rs1))
-		      (va (rs2 rs1 rs3))
-		      (vc (rs1 rs3 rs3))))
-	       (sec3 ((vn (rs1 rs1 rs3))
-		      (va (rs1 rs3 rs2))
-		      (vc (rs3 rs2 rs3)))))
-	     :palette (make-rsp 
-		       'rs-pal
-		       '((rs1 ((((2 4) q e s s))))
-			 (rs2 ((((2 4) e s s q))))
-			 (rs3 ((((2 4) s s q e)))))))))
+             'rsm-test-5
+             '((sec1 ((vn (rs1 rs3 rs2))
+                      (va (rs2 rs3 rs1))
+                      (vc (rs3 rs1 rs2))))
+               (sec2 ((vn (rs1 rs2 rs1))
+                      (va (rs2 rs1 rs3))
+                      (vc (rs1 rs3 rs3))))
+               (sec3 ((vn (rs1 rs1 rs3))
+                      (va (rs1 rs3 rs2))
+                      (vc (rs3 rs2 rs3)))))
+             :palette (make-rsp 
+                       'rs-pal
+                       '((rs1 ((((2 4) q e s s))))
+                         (rs2 ((((2 4) e s s q))))
+                         (rs3 ((((2 4) s s q e)))))))))
   (get-map-refs rsmt 'sec3 'vc))
 
 => (RS3 RS2 RS3)
@@ -201,21 +201,21 @@
 ;;; EXAMPLE
 #|
 (let ((rsmt (make-rthm-seq-map 
-	     'rsm-test-5
-	     '((sec1 ((vn (rs1 rs3 rs2))
-		      (va (rs2 rs3 rs1))
-		      (vc (rs3 rs1 rs2))))
-	       (sec2 ((vn (rs1 rs2 rs1))
-		      (va (rs2 rs1 rs3))
-		      (vc (rs1 rs3 rs3))))
-	       (sec3 ((vn (rs1 rs1 rs3))
-		      (va (rs1 rs3 rs2))
-		      (vc (rs3 rs2 rs3)))))
-	     :palette (make-rsp 
-		       'rs-pal
-		       '((rs1 ((((2 4) q e s s))))
-			 (rs2 ((((2 4) e s s q))))
-			 (rs3 ((((2 4) s s q e)))))))))
+             'rsm-test-5
+             '((sec1 ((vn (rs1 rs3 rs2))
+                      (va (rs2 rs3 rs1))
+                      (vc (rs3 rs1 rs2))))
+               (sec2 ((vn (rs1 rs2 rs1))
+                      (va (rs2 rs1 rs3))
+                      (vc (rs1 rs3 rs3))))
+               (sec3 ((vn (rs1 rs1 rs3))
+                      (va (rs1 rs3 rs2))
+                      (vc (rs3 rs2 rs3)))))
+             :palette (make-rsp 
+                       'rs-pal
+                       '((rs1 ((((2 4) q e s s))))
+                         (rs2 ((((2 4) e s s q))))
+                         (rs3 ((((2 4) s s q e)))))))))
   (set-map-refs rsmt 'sec2 'vc '(rs2 rs3 rs2)))
 
 => 
@@ -250,7 +250,7 @@ data: (RS2 RS3 RS2)
 ;;; - A rthm-seq-map object.
 
 ;;; - the cycle data (i.e. recurring-event class's data slot--see
-;;;   rthm-chain.lsp)  
+;;;   recurring-event.lsp)  
 ;;; - the number of repeats made (or references into :repeats list), also in
 ;;;   cycle (i.e. recurring-event class's return-data-cycle slot) 
 ;;;
@@ -303,7 +303,9 @@ data: (RS2 RS3 RS2)
                     (setf repeats 1))
                 (loop repeat repeats do (push ref new-refs)))
            (set-map-refs rsm section player (nreverse new-refs))))
-    (incf (num-rthm-seqs rsm) seqs-added)
+    ;; MDE Tue May  8 21:03:20 2012 -- only inc when it's a rthm-chain
+    (when (rthm-chain-p rsm)
+      (incf (num-rthm-seqs rsm) seqs-added))
     (relink-named-objects rsm)
     seqs-added))
 
@@ -339,7 +341,9 @@ data: (RS2 RS3 RS2)
          (when print 
            (format t "~&~a: repeating ~a:~%~a" player repeat-seq new-refs))
          (set-map-refs rsm section player new-refs)))
-  (incf (num-rthm-seqs rsm) repeats)
+  ;; MDE Tue May  8 21:03:20 2012 -- only inc when it's a rthm-chain
+  (when (rthm-chain-p rsm)
+    (incf (num-rthm-seqs rsm) repeats))
   (relink-named-objects rsm)
   t)
 
@@ -468,15 +472,15 @@ data: (RS2 RS3 RS2)
 #|
 ;;; Straightforward usage
 (make-rthm-seq-map 'rsm-test
-		    '((1 ((vn (1 2 3 4))
-			  (va (2 3 4 1))
-			  (vc (3 4 1 2))))
-		      (2 ((vn (4 5 6))
-			  (va (5 6 4))
-			  (vc (6 4 5))))
-		      (3 ((vn (7 8 9 1 2))
-			  (va (8 9 1 2 7))
-			  (vc (9 1 2 7 8))))))
+                    '((1 ((vn (1 2 3 4))
+                          (va (2 3 4 1))
+                          (vc (3 4 1 2))))
+                      (2 ((vn (4 5 6))
+                          (va (5 6 4))
+                          (vc (6 4 5))))
+                      (3 ((vn (7 8 9 1 2))
+                          (va (8 9 1 2 7))
+                          (vc (9 1 2 7 8))))))
 
 =>
 
@@ -498,23 +502,23 @@ data: (
 ;;; An example using the :replacements argument and binding directly to a
 ;;; specified rthm-seq-palette object.
 (make-rthm-seq-map 'rsm-test
-		   '((1 ((vn (1 2 3 4))
-			 (va (2 3 4 1))
-			 (vc (3 4 1 2))))
-		     (2 ((vn (4 5 6))
-			 (va (5 6 4))
-			 (vc (6 4 5))))
-		     (3 ((vn (7 8 9 1 2))
-			 (va (8 9 1 2 7))
-			 (vc (9 1 2 7 8)))))
-		   :palette (make-rsp 
-			     'rs-pal
-			     '((rs1 ((((2 4) q e s s))))
-			       (rs2 ((((2 4) e s s q))))
-			       (rs3 ((((2 4) s s q e))))))
-		   :replacements '(((1 vn) 2 7)
-				   ((2 va) 1 1)
-				   ((3 vc) 1 0)))
+                   '((1 ((vn (1 2 3 4))
+                         (va (2 3 4 1))
+                         (vc (3 4 1 2))))
+                     (2 ((vn (4 5 6))
+                         (va (5 6 4))
+                         (vc (6 4 5))))
+                     (3 ((vn (7 8 9 1 2))
+                         (va (8 9 1 2 7))
+                         (vc (9 1 2 7 8)))))
+                   :palette (make-rsp 
+                             'rs-pal
+                             '((rs1 ((((2 4) q e s s))))
+                               (rs2 ((((2 4) e s s q))))
+                               (rs3 ((((2 4) s s q e))))))
+                   :replacements '(((1 vn) 2 7)
+                                   ((2 va) 1 1)
+                                   ((3 vc) 1 0)))
 
 =>
 RTHM-SEQ-MAP: num-players: 3 
@@ -707,6 +711,11 @@ data: (
 ;;; Check to ensure that each player in each section of the given rthm-seq-map
 ;;; object has the same number of references as every other instrument. If not,
 ;;; drop into the debugger with an error.
+;;;
+;;; NB: This function is called automatically every time make-rthm-seq-map is
+;;;     called so it shouldn't generally be necessary for the user to call this
+;;;     method.  However, if the rthm-seq-map is changed somehow, it might be a
+;;;     good idea to recheck.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A rthm-seq-map object.
@@ -715,45 +724,42 @@ data: (
 ;;; Returns T if all players have the same number of references in each
 ;;; section, otherwise drops into the debugger with an error.
 ;;;
-;;; NB: This function is called automatically every time make-rthm-seq-map is
-;;;     called. 
-;;; 
 ;;; EXAMPLE
 #|
 ;;; Passes the test:
 (let ((rsmt (make-rthm-seq-map 
-	     'rsm-test
-	     '((sec1 ((vn (rs1a rs3a rs2a))
-		      (va (rs1b rs3b rs2b))
-		      (vc (rs1a rs3b rs2a))))
-	       (sec2 ((vn (rs1a rs2a rs1a))
-		      (va (rs1a rs2a rs1b))
-		      (vc (rs1a rs2b rs1a))))
-	       (sec3 ((vn (rs1a rs1a rs3a))
-		      (va (rs1a rs1a rs3b))
-		      (vc (rs1a rs1b rs3a))))
-	       (sec4 ((vn (rs1a rs1a rs1a))
-		      (va (rs1a rs1a rs1b))
-		      (vc (rs1a rs1b rs1a))))))))
+             'rsm-test
+             '((sec1 ((vn (rs1a rs3a rs2a))
+                      (va (rs1b rs3b rs2b))
+                      (vc (rs1a rs3b rs2a))))
+               (sec2 ((vn (rs1a rs2a rs1a))
+                      (va (rs1a rs2a rs1b))
+                      (vc (rs1a rs2b rs1a))))
+               (sec3 ((vn (rs1a rs1a rs3a))
+                      (va (rs1a rs1a rs3b))
+                      (vc (rs1a rs1b rs3a))))
+               (sec4 ((vn (rs1a rs1a rs1a))
+                      (va (rs1a rs1a rs1b))
+                      (vc (rs1a rs1b rs1a))))))))
   (check-num-sequences rsmt))
 
 => T
 
 ;;; Doesn't pass the test; drops into debugger with an error.
 (let ((rsmt (make-rthm-seq-map 
-	     'rsm-test
-	     '((sec1 ((vn (rs1a rs3a rs2a))
-		      (va (rs1b rs3b))
-		      (vc (rs1a rs3b rs2a))))
-	       (sec2 ((vn (rs1a))
-		      (va (rs1a rs2a rs1b))
-		      (vc (rs1a rs2b rs1a))))
-	       (sec3 ((vn (rs1a rs3a))
-		      (va (rs1a))
-		      (vc (rs1a rs1b rs3a))))
-	       (sec4 ((vn (rs1a))
-		      (va (rs1a rs1a rs1b))
-		      (vc (rs1a rs1a))))))))
+             'rsm-test
+             '((sec1 ((vn (rs1a rs3a rs2a))
+                      (va (rs1b rs3b))
+                      (vc (rs1a rs3b rs2a))))
+               (sec2 ((vn (rs1a))
+                      (va (rs1a rs2a rs1b))
+                      (vc (rs1a rs2b rs1a))))
+               (sec3 ((vn (rs1a rs3a))
+                      (va (rs1a))
+                      (vc (rs1a rs1b rs3a))))
+               (sec4 ((vn (rs1a))
+                      (va (rs1a rs1a rs1b))
+                      (vc (rs1a rs1a))))))))
   (check-num-sequences rsmt))
 
 =>
@@ -765,15 +771,15 @@ Each instrument must have the same number of sequences for any given section:
 |#
 ;;; SYNOPSIS
 (defun check-num-sequences (rsm)
-;;; ****
+;;; **** 
   (loop for i below (sclist-length rsm) do
        (let* ((section (get-next rsm))
-	      (players-or-subsections (data (data section))))
-	 (if (is-ral (data (first players-or-subsections)))
-	     (check-num-sequences (data section))
-	     (loop for num-sequences = 
+              (players-or-subsections (data (data section))))
+         (if (is-ral (data (first players-or-subsections)))
+             (check-num-sequences (data section))
+             (loop for num-sequences = 
                   (length (data (first players-or-subsections)))
-                for no in (rest players-or-subsections) do
+                  for no in (rest players-or-subsections) do
                   (unless (= num-sequences (length (data no)))
                     (error "rthm-seq-map::check-num-sequences: ~
                             In rthm-seq-map ~a, instrument ~a: ~
@@ -814,21 +820,21 @@ Each instrument must have the same number of sequences for any given section:
 ;;; EXAMPLE
 #|
 (let ((rsmt (make-rthm-seq-map 
-	     'rsm-test
-	     '((sec1 ((vn (rs1 rs3 rs2))
-		      (va (rs2 rs3 rs1))
-		      (vc (rs3 rs1 rs2))))
-	       (sec2 ((vn (rs1 rs2 rs1))
-		      (va (rs2 rs1 rs3))
-		      (vc (rs1 rs3 rs3))))
-	       (sec3 ((vn (rs1 rs1 rs3))
-		      (va (rs1 rs3 rs2))
-		      (vc (rs3 rs2 rs3)))))))
+             'rsm-test
+             '((sec1 ((vn (rs1 rs3 rs2))
+                      (va (rs2 rs3 rs1))
+                      (vc (rs3 rs1 rs2))))
+               (sec2 ((vn (rs1 rs2 rs1))
+                      (va (rs2 rs1 rs3))
+                      (vc (rs1 rs3 rs3))))
+               (sec3 ((vn (rs1 rs1 rs3))
+                      (va (rs1 rs3 rs2))
+                      (vc (rs3 rs2 rs3)))))))
       (rspt (make-rsp 
-	     'rs-pal
-	     '((rs1 ((((2 4) q (e) s s))))
-	       (rs2 ((((2 4) e +s (s) q))))
-	       (rs3 ((((2 4) (s) s +q e))))))))
+             'rs-pal
+             '((rs1 ((((2 4) q (e) s s))))
+               (rs2 ((((2 4) e +s (s) q))))
+               (rs3 ((((2 4) (s) s +q e))))))))
   (print (rsm-count-notes rsmt 'vn rspt))
   (print (rsm-count-notes rsmt 'va rspt nil)))
 
@@ -851,13 +857,13 @@ Each instrument must have the same number of sequences for any given section:
                (loop for ref in (get-data-data player (data section))
                   for rs = (get-data ref palette)
                   do
-		    (unless rs
-		      (error "rthm-seq-map::num-notes: no rthm-seq with ~
+                    (unless rs
+                      (error "rthm-seq-map::num-notes: no rthm-seq with ~
                             reference ~a for ~a in palette ~a" 
-			     ref player (id palette)))
-		    (incf num (if just-attacks
-				  (num-notes rs)
-				  (num-score-notes rs)))))))
+                             ref player (id palette)))
+                    (incf num (if just-attacks
+                                  (num-notes rs)
+                                  (num-score-notes rs)))))))
     num))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

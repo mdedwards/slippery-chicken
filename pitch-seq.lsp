@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 11:38:43 Tue May  8 2012 BST
+;;; $$ Last modified: 22:03:14 Tue May  8 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -321,10 +321,6 @@
 ;;; RETURN VALUE  
 ;;; Returns a list of pitch objects.
 ;;;
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defmethod get-notes ((ps pitch-seq) instrument set hint-pitch limit-high
                       limit-low seq-num last-note-previous-seq

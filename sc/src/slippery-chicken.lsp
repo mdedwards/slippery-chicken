@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:39:56 Mon May  7 2012 BST
+;;; $$ Last modified: 15:37:26 Wed May  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -670,13 +670,13 @@
     (respell-notes sc respell-notes))
   ;; MDE Wed Apr 11 12:09:13 2012
   (setf players
-        (cond ((listp players) players)
+        (cond ((and players (listp players)) players)
               ((and players (symbolp players)) (list players))
               (t (players (ensemble sc)))))
   (when rehearsal-letters-all-players 
     (set-rehearsal-letters sc players))
   (when tempi-all-players 
-    (update-events-tempo sc players))
+    (update-events-tempo sc (print players)))
   (when multi-bar-rests
     (multi-bar-rests sc players)
     (when (or start-bar end-bar)
@@ -2009,28 +2009,29 @@ T
       (setf display-players (get-groups-top-ins sc)))
     ;; start tempo gets set in cm::process-voices
     (loop for bar-num from 1 to (num-bars (piece sc)) do
-          (setf current-tempo (get-tempo sc bar-num))
-          (unless (tempo-equal last-tempo current-tempo)
-            ;; (print current-tempo)
-            (loop 
-                for player in players 
-                for bar = (get-bar sc bar-num player)
-                for first-event = (first (rhythms bar))
-                do
-                  (when (is-grace-note first-event)
-                    (loop for e in (rhythms bar) do
-                          (unless (is-grace-note e)
-                            (setf first-event e)
-                            (return))))
-                  ;; of course this assumes you can't change tempo mid-bar
-                  (setf (tempo-change first-event) current-tempo)
-                  (setf (display-tempo first-event) 
+         (setf current-tempo (get-tempo sc bar-num))
+         (unless (tempo-equal last-tempo current-tempo)
+           ;; (print current-tempo)
+           (loop 
+              for player in players 
+              for bar = (get-bar sc bar-num player)
+              for first-event = (first (rhythms bar))
+              do
+              (when (is-grace-note first-event)
+                (loop for e in (rhythms bar) do
+                     (unless (is-grace-note e)
+                       (setf first-event e)
+                       (return))))
+              ;; of course this assumes you can't change tempo mid-bar
+              (setf (tempo-change first-event) current-tempo)
+                ;; (print (member player display-players))
+              (setf (display-tempo first-event) 
                     (when (member player display-players)
                       t))
-                  ;; (format t "~&tempo: ~a player: ~a" 
-                  ;;     (tempo-change first-event) player)
-                  )
-            (setf last-tempo current-tempo)))
+              ;; (format t "~&tempo: ~a player: ~a" 
+              ;;     (tempo-change first-event) player)
+              )
+           (setf last-tempo current-tempo)))
     t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

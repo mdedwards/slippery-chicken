@@ -1181,6 +1181,7 @@
 ;;; A player object.
 ;;; 
 ;;; EXAMPLE
+;;;
 #|
 (let ((mini
        (make-slippery-chicken
@@ -1229,17 +1230,38 @@ data: NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May  9 17:47:23 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken/num-bars
 ;;; FUNCTION
-;;; num-bars:
-;;;
 ;;; Return the number of bars in the piece.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the slippery-chicken object
+;;; - A slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE  
-;;; The number of bars (integer).
+;;; An integer that is the number of bars.
+;;;
+;;; EXAMPLE
+#|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((fl (flute :midi-channel 1))
+		     (tp (b-flat-trumpet :midi-channel 2))
+		     (vn (violin :midi-channel 3))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((fl (1 1 1 1 1))
+			    (tp (1 1 1 1 1))
+			    (vn (1 1 1 1 1))))))))
+  (num-bars mini))
+
+=> 5
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod num-bars ((sc slippery-chicken))
@@ -1248,22 +1270,67 @@ data: NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May  9 17:50:29 BST 2012: Conformed robodoc entry
+
 ;;; ****m* slippery-chicken/get-bar-from-ref
 ;;; FUNCTION
-;;; get-bar-from-ref:
-;;;
-;;; Return a rthm-seq-bar object from the piece.  Sequenz-num and bar-num are
-;;; 1-based. 
+;;; Return a rthm-seq-bar object from the piece by specifying its section,
+;;; sequence number, bar number, and the player. Sequenz-num and bar-num are
+;;; 1-based.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the slippery-chicken object
-;;; - the section reference/id (symbol, number, list)
-;;; - the player (symbol)
-;;; - the sequence number in the section (integer, counting from 1)
-;;; - the bar number in the sequence (integer, counting from 1)
+;;; - A slippery-chicken object.
+;;; - A section ID (number or list).
+;;; - A player ID.
+;;; - An integer that is the number of the sequence in the section from which
+;;;   the bar is to be returned (1-based).
+;;; - An integer that is the number of the bar within the given sequence
+;;;   (1-based). 
 ;;; 
 ;;; RETURN VALUE  
-;;; the rthm-seq-bar object
+;;; A rthm-seq-bar object.
+;;;
+;;; EXAMPLE
+#|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s)
+				 (q e s s h)
+				 (e s s q h))
+				:pitch-seq-palette ((1 2 3 4 5 
+						       1 3 2 4 5 
+						       3 5 2 4 1))))) 
+	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(2 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(3 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (get-bar-from-ref mini 2 'vc 3 2))
+
+=>
+RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 23, 
+              old-bar-nums: NIL, write-bar-num: NIL, start-time: 88.000, 
+              start-time-qtrs: 88.0, is-rest-bar: NIL, multi-bar-rest: NIL, 
+              show-rest: T, notes-needed: 5, 
+              tuplets: NIL, nudge-factor: 0.35, beams: NIL, 
+              current-time-sig: 2, write-time-sig: NIL, num-rests: 0, 
+              num-rhythms: 5, num-score-notes: 5, parent-start-end: NIL, 
+              missing-duration: NIL, bar-line-type: 0, 
+              player-section-ref: (2 VC), nth-seq: 2, nth-bar: 1, 
+              rehearsal-letter: NIL, all-time-sigs: (too long to print) 
+              sounding-duration: 4.000, 
+              rhythms: (
+[...]
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-bar-from-ref ((sc slippery-chicken) section player
@@ -1277,19 +1344,47 @@ data: NIL
 
 ;;; ****m* slippery-chicken/get-bar-num-from-ref
 ;;; FUNCTION
-;;; 
+
+;;; Get the bar number of a given rthm-seq-bar object by specifying the
+;;; section, sequenz, and number of the bar within that sequenz.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - The ID of the section in which the given rthm-seq-bar object is located. 
+;;; - An integer that is the number of the sequence within that section in
+;;;   which the rthm-seq-bar object is located.
+;;; - The number of the bar within the given rthm-seq-bar object for which the
+;;;   overall bar number (within the entire piece) is sought.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An integer.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s)
+				 (q e s s h)
+				 (e s s q h))
+				:pitch-seq-palette ((1 2 3 4 5 
+						       1 3 2 4 5 
+						       3 5 2 4 1))))) 
+	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(2 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(3 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (get-bar-num-from-ref mini 2 4 3))
+
+=> 27
 
 |#
 ;;; SYNOPSIS
@@ -1300,28 +1395,74 @@ data: NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; N.B. although optional, the player argument is required.  It is optional so
-;;; that we can have a sequenz method with the same name which only requires
-;;; the bar-num argument. 
+;;; SAR Wed May  9 18:12:48 BST 2012: Added robodoc entry
+
+;;; MDE original comment: It is optional so that we can have a sequenz method
+;;;   with the same name which only requires the bar-num argument.
 
 ;;; 15/3/03: change this so that if player is nil, then we get the bar for all
 ;;; players in the ensemble. 
 
 ;;; ****m* slippery-chicken/get-bar
 ;;; FUNCTION
-;;; 
+;;; Get the rthm-seq-bar object located at a specified bar number within a
+;;; given player's part.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar within the overall piece for
+;;;   which the rthm-seq-bar object is sought.
+;;; - The ID of the player from whose part the rthm-seq-bar object is
+;;;   sought. If this is passed as NIL, the method will return the rthm-seq-bar
+;;;   objects for all players in the ensemble at the specified bar number. 
+;;;   NB: Although listed as an optional argument, the player ID is actually
+;;;   required. It is listed as optional due to method inheritance.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
+;;; - (see the comment on the <player> argument above.
+;;;
 ;;; RETURN VALUE
-;;; 
+;;; A rthm-seq-bar object (or objects).
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s)
+				 (q e s s h)
+				 (e s s q h))
+				:pitch-seq-palette ((1 2 3 4 5 
+						       1 3 2 4 5 
+						       3 5 2 4 1))))) 
+	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(2 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(3 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (get-bar mini 17 'cl))
+
+=>
+RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 17, 
+              old-bar-nums: NIL, write-bar-num: NIL, start-time: 64.000, 
+              start-time-qtrs: 64.0, is-rest-bar: NIL, multi-bar-rest: NIL, 
+              show-rest: T, notes-needed: 5, 
+              tuplets: NIL, nudge-factor: 0.35, beams: NIL, 
+              current-time-sig: 2, write-time-sig: NIL, num-rests: 0, 
+              num-rhythms: 5, num-score-notes: 5, parent-start-end: NIL, 
+              missing-duration: NIL, bar-line-type: 0, 
+              player-section-ref: (2 CL), nth-seq: 0, nth-bar: 1, 
+              rehearsal-letter: NIL, all-time-sigs: (too long to print) 
+              sounding-duration: 4.000, 
+              rhythms: (
+[...]
 
 |#
 ;;; SYNOPSIS
@@ -1361,28 +1502,106 @@ data: NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May  9 18:25:47 BST 2012: Conformed robodoc entry
+
 ;;; ****m* slippery-chicken/count-notes
 ;;; FUNCTION
-;;; count-notes:
-;;;
-;;; Returns the number of notes between start-bar and end-bar (both inclusive).
+;;; Returns the number of notes between start-bar and end-bar (both
+;;; inclusive). 
 ;;; 
 ;;; ARGUMENTS 
-;;; - the slippery-chicken object
-;;; - start-bar (integer)
-;;; - end-bar (integer)
-;;; - (optional just-attacks default nil): whether to count just the number of
-;;; notes that need new events or the number of notes in the score. NB a chord
-;;; counts as one note only.
-;;; - (optional players default nil): the players whose notes we want to count;
-;;; can be a single symbol or a list of players; if nil all players will be
-;;; counted. 
+;;; - A slippery-chicken object.
+;;; - An integer that is the first bar in which notes will be counted. 
+;;; - An integer that is the last bar in which notes will be counted.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether to count just the number of attacked notes
+;;;   (not including ties) or the number of note events (including ties). 
+;;;   T = just attacked notes. Default = NIL.
+;;;   NB: A chord counts as one note only. 
+;;; - NIL or a list of one or more IDs of the players whose notes should be
+;;;   counted. This can be a single symbol or a list of players. If NIL, the
+;;;   notes in all players' parts will be counted. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
-;;; the number of notes (integer)
+;;; An integer that is the number of notes.
 ;;; 
 ;;; EXAMPLE
-;;; (count-notes +altogether+ 416 417 nil 'pno-rh) -> 10
+#|
+
+;;; Using defaults
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
+				 (q (e) s +s h)
+				 ((e) s (s) (q) h))
+				:pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
+	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(2 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(3 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (count-notes mini 2 11))
+
+=> 62
+
+;;; Counting all notes just for player 'vc
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
+				 (q (e) s +s h)
+				 ((e) s (s) (q) h))
+				:pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
+	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(2 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(3 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (count-notes mini 2 11 nil 'vc))
+
+=> 31
+
+;;; Counting just the attacked notes for player 'vc
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
+				 (q (e) s +s h)
+				 ((e) s (s) (q) h))
+				:pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
+	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(2 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(3 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (count-notes mini 2 11 t 'vc))
+
+=> 27
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod count-notes ((sc slippery-chicken) start-bar end-bar 
@@ -1406,23 +1625,114 @@ data: NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 9.4.11: note can be a single pitch or a chord (list). start and end bar are
-;;; inclusive.  
+;;; SAR Wed May  9 18:43:27 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken/find-note
+;;; DATE
+;;; 09-Apr-2011
+;;;
 ;;; FUNCTION
-;;; 
+;;; Print to the Listener the numbers of all bars in a specified player's part
+;;; of a given slippery-chicken object in which the specified pitch is found. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - A player ID.
+;;; - A note-name pitch symbol or a list of note-name pitch symbols for the
+;;;   pitch to be sought. If a list, this will be handled as a chord.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :written. T or NIL to indicate whether to look for the specified pitch as
+;;;   as a written note only. T = as written only. Default = NIL.
+;;; - :start-bar. An integer that is the first bar in which to search for the
+;;;   given pitch. This number is inclusive. Default = 1.
+;;; - :end-bar. An integer that is the last bar in which to search for the
+;;;   given pitch. This number is inclusive. Default = number of bars in the
+;;;   given slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL. Prints the results directly to the Lisp listener.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Prints the bar number for all occurrences in the entire piece by default
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
+				 (q (e) s +s h)
+				 ((e) s (s) (q) h))
+				:pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
+	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(2 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(3 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (find-note mini 'vc 'f4))
+
+=>
+bar 1
+bar 3
+bar 4
+bar 6
+bar 7
+bar 9
+bar 10
+bar 12
+bar 13
+bar 15
+bar 16
+bar 18
+bar 19
+bar 21
+bar 22
+bar 24
+bar 25
+bar 27
+bar 28
+bar 30
+bar 31
+bar 33
+bar 34
+bar 36
+bar 37
+bar 39
+bar 40
+bar 42
+bar 43
+bar 45
+
+;;; Examples of use specifying the optional arguments
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
+				 (q (e) s +s h)
+				 ((e) s (s) (q) h))
+				:pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
+	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(2 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(3 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (find-note mini 'cl 'f3)
+  (find-note mini 'cl 'f3 :written t)
+  (find-note mini 'vc 'f4 :start-bar 3 :end-bar 17))
 
 |#
 ;;; SYNOPSIS
@@ -1448,21 +1758,36 @@ data: NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May  9 19:04:54 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken/players
 ;;; FUNCTION
-;;; 
+;;; Return a list of all player IDs from the given slippery-chicken object. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of player IDs.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (hn (french-horn :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+				:pitch-seq-palette ((1 2 3)))))
+	:rthm-seq-map '((1 ((cl (1 1 1))
+			    (hn (1 1 1))
+			    (vc (1 1 1))))))))
+  (players mini))
+
+=> (CL HN VC)
 
 |#
 ;;; SYNOPSIS
@@ -1472,33 +1797,67 @@ data: NIL
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May  9 19:10:24 BST 2012: Conformed robodoc entry
+
+;;; Some of MDE's original comments: ; when it's nil when we actually get
+;;; events returned. 
+
 (let ((current-bar nil)
       (current-bar-num 1)
       (current-event-num 0))
-  ;; ****m* slippery-chicken/next-event
-  ;; FUNCTION
-  ;; Get the events from the piece one after the other (e.g. in a loop).  This
-  ;; needs to be called with a bar number the first time to reset; this will
-  ;; return nil, after which calling without a bar number will return the
-  ;; events. 
-  ;; 
-  ;; ARGUMENTS 
-  ;; - the slippery-chicken object
-  ;; - the player (symbol)
-  ;; - (optional default nil): whether to return only notes that need attacks or
-  ;; tied notes too
-  ;; - (optional default nil): the bar to start at (number, see above); this
-  ;; should be nil after the first call to reset; when it's nil when we
-  ;; actually get events returned.
-  ;; - (optional default nil): the end bar (number)
-  ;; 
-  ;; RETURN VALUE  
-  ;; 
-  ;; 
-  ;; EXAMPLE
-  ;; 
-  ;; 
-  ;; SYNOPSIS
+;;; ****m* slippery-chicken/next-event
+;;; FUNCTION
+
+;;; Get the events from a specified player's part within a given
+;;; slippery-chicken object one after the other (e.g. in a loop). This method
+;;; must be called once with a bar number first in order to reset the counter;
+;;; doing this will return NIL. Once the counter has been reset, calling the
+;;; method without a bar number will return the events in sequence.
+;;; 
+;;; ARGUMENTS 
+;;; - A slippery-chicken object.
+;;; - A player ID.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether to return only events that consist of
+;;;   attacked notes (i.e., no ties or rests). T = return only events with
+;;;   attacked notes. Default = NIL.
+;;; - NIL or an integer to indicate the first bar from which events are to be
+;;;   retrieved. If NIL, the counter is reset to the first event of the
+;;;   player's part. This should be NIL after the first resetting call.
+;;;   Default = NIL
+;;; - NIL or an integer to indicate the last bar from which events are to be
+;;;   retrieved. If NIL, all events will be retrieved from the starting point
+;;;   to the last event in the given slippery-chicken object. Default = NIL.
+;;; 
+;;; RETURN VALUE  
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (hn (french-horn :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+				:pitch-seq-palette ((1 2 3)))))
+	:rthm-seq-map '((1 ((cl (1 1 1))
+			    (hn (1 1 1))
+			    (vc (1 1 1))))))))
+  (next-event mini 'vc nil 1)
+  (loop for ne = (next-event mini 'vc)
+     while ne
+     collect (get-pitch-symbol ne)))
+
+=> (E4 NIL F4 NIL G4 E4 NIL F4 NIL G4 E4 NIL F4 NIL G4)
+
+|#
+;;; 
+;;; SYNOPSIS
   (defmethod next-event ((sc slippery-chicken) player 
                          &optional
                          (attacked-notes-only nil)
@@ -1564,27 +1923,32 @@ data: NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* slippery-chicken/get-note
+;;; SAR Wed May  9 21:09:59 BST 2012: Conformed robodoc entry
+
+;;; ****m* slippery-chicken/get-note 
 ;;; FUNCTION
-;;; Get a numbered event for a player from a bar of a slippery-chicken object. 
+;;; Get a numbered event from a specified bar of a given player's part within a
+;;; slippery-chicken object.
 ;;; 
-;;; NB slippery-chicken doesn't have 'note' and 'rest' classes, rather both
-;;; these are events.  So the nomenclature 'note' and 'rest' are used here and
-;;; elsewhere merely for convenience to distinguish between sounding and
-;;; non-sounding events.
+;;; NB: Slippery-chicken doesn't have 'note' and 'rest' classes, rather both of
+;;;     these are events. The nomenclature 'note' and 'rest' are thus used here
+;;;     and elsewhere merely for convenience, to distinguish between sounding
+;;;     and non-sounding events.
 ;;;
 ;;; See also rthm-seq-bar methods for accessing notes by other means.
 ;;; 
 ;;; ARGUMENTS
-;;; - the slippery-chicken object
-;;; - the bar number (integer, counting from 1)
-;;; - the note number, counting tied notes (integer, counting from 1).  This
-;;;   can also be a list if accessing pitches in a chord (see below). 
-;;; - the player (symbol)
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar from which to get the note
+;;;   (counting from 1). 
+;;; - An integer that is the number of the note to get within that bar,
+;;;   counting tied notes (counting from 1). This can also be a list of numbers
+;;;   if accessing pitches in a chord (see below).
+;;; - The ID of the player from whose part the note is to be retrieved.
 ;;; 
-;;; OPTIONAL ARGUMENTS
-;;; - (optional default nil) whether, when accessing a pitch in a chord,
-;;;    whether to return the written or sounding pitch.  
+;;; OPTIONAL ARGUMENTS 
+;;; - T or NIL to indicate whether, when accessing a pitch in a chord, to
+;;;   return the written or sounding pitch. T = written. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; An event object.
@@ -1594,12 +1958,6 @@ data: NIL
 (let ((mini
        (make-slippery-chicken
         '+mini+
-        :title "mini"
-        :instrument-palette +slippery-chicken-standard-instrument-palette+
-        :snd-output-dir "/tmp"
-        :sndfile-palette
-        '(((audio-1 (phrenos-beg.wav)))
-          ("/snd/"))
         :ensemble '(((vn (violin :midi-channel 1))))
         :tempo-map '((1 (q 60)))
         :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
@@ -1611,13 +1969,13 @@ data: NIL
   (print (data (get-note mini 1 2 'vn)))
   (print (data (get-note mini 1 '(2 1) 'vn)))
   (print (data (get-note mini 1 '(2 2) 'vn)))
-  (is-tied-from (get-note mini 1 1 'vn)))
+  (print (is-tied-from (get-note mini 1 1 'vn))))
 
 =>
 32 
 "E." 
 C4 
-D4 
+A4
 T
 
 |#
@@ -1629,21 +1987,62 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May  9 21:21:47 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken/get-rest
 ;;; FUNCTION
-;;; 
+;;; Retrieve the event object that contains the specified rest in a
+;;; slippery-chicken object by giving bar number, rest number and player.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar from which to retrieve the rest
+;;;   event object.
+;;; - An integer that is the number of the rest (not the number of the event)
+;;;   within that bar, counting from 1.
+;;; - The ID of the player from whose part to retrieve the rest object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An event object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) (e) e+e. 32 (32)))
+                                :pitch-seq-palette (((1) 2)))))
+        :rthm-seq-map '((1 ((vn (1 1 1))
+			    (vc (1 1 1))))))))
+  (get-rest mini 2 1 'vc))
+
+=> 
+EVENT: start-time: 2.000, end-time: 2.500, 
+       duration-in-tempo: 0.500, 
+       compound-duration-in-tempo: 0.500, 
+       amplitude: 0.700 
+       bar-num: 2, marks-before: NIL, 
+       tempo-change: NIL 
+       instrument-change: NIL 
+       display-tempo: NIL, start-time-qtrs: 2.000, 
+       midi-time-sig: NIL, midi-program-changes: NIL, 
+       8va: 0
+       pitch-or-chord: NIL
+       written-pitch-or-chord: NIL
+RHYTHM: value: 8.000, duration: 0.500, rq: 1/2, is-rest: T, 
+        score-rthm: 8.0, undotted-value: 8, num-flags: 1, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 0.500, 
+        is-grace-note: NIL, needs-new-note: NIL, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: NIL, marks-in-part: NIL, 
+        letter-value: 8, tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: E, tag: NIL, 
+data: E
 
 |#
 ;;; SYNOPSIS
@@ -1652,19 +2051,88 @@ T
   (get-rest (piece sc) bar-num rest-num player))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Wed May  9 21:28:50 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken/get-event
 ;;; FUNCTION
-;;; get-event:
+
+;;; Retrieve a specified event object from a slippery-chicken object, giving
+;;; bar number, event number, and player.
 ;;;
-;;; 
+;;; NB: This counts returns event objects, regardless of whether they are notes
+;;;     or rests.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A slippery-chicken object.
+
+;;; - An integer that is the number of the bar from which the event object is
+;;;   to be returned.
+
+;;; - An integer that is the number of the event object to be returned from
+;;;   that bar. This number is 1-based and counts all events, including notes,
+;;;   rests, and tied notes.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; An event object.
 ;;; 
 ;;; EXAMPLE
+#|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) (e) e+e. 32 (32)))
+                                :pitch-seq-palette (((1) 2)))))
+        :rthm-seq-map '((1 ((vn (1 1 1))
+			    (vc (1 1 1))))))))
+  (get-event mini 2 4 'vn))
+
+=> 
+EVENT: start-time: 3.750, end-time: 3.875, 
+       duration-in-tempo: 0.125, 
+       compound-duration-in-tempo: 0.125, 
+       amplitude: 0.700 
+       bar-num: 2, marks-before: NIL, 
+       tempo-change: NIL 
+       instrument-change: NIL 
+       display-tempo: NIL, start-time-qtrs: 3.750, 
+       midi-time-sig: NIL, midi-program-changes: NIL, 
+       8va: 0
+       pitch-or-chord: 
+PITCH: frequency: 293.665, midi-note: 62, midi-channel: 1 
+       pitch-bend: 0.0 
+       degree: 124, data-consistent: T, white-note: D4
+       nearest-chromatic: D4
+       src: 1.122462, src-ref-pitch: C4, score-note: D4 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 4, c5ths: 0, no-8ve: D, no-8ve-no-acc: D
+       show-accidental: T, white-degree: 29, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: D4, tag: NIL, 
+data: D4
+**************
+
+       written-pitch-or-chord: NIL
+RHYTHM: value: 32.000, duration: 0.125, rq: 1/8, is-rest: NIL, 
+        score-rthm: 32.0, undotted-value: 32, num-flags: 3, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 0.125, 
+        is-grace-note: NIL, needs-new-note: T, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: NIL, marks-in-part: NIL, 
+        letter-value: 32, tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: 32, tag: NIL, 
+data: 32
+
+|#
 ;;; 
 ;;; 
 ;;; DATE
@@ -1829,27 +2297,66 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Section is the current section reference e.g. '(2 1), player the current
-;;; player e.g. 'vln.  For this section/sequence get the instrument the
-;;; player is currently playing as defined in the instrument-change-map
-;;; change-map.  N.B. Instruments cannot be changed mid-sequence and sequence
-;;; is 1-based so we have to 1+ elsewhere if necessary
+;;; SAR Wed May  9 21:37:48 BST 2012: Added robodoc entry
+
+;;; MDE original comment:
+;;; N.B. Instruments cannot be changed mid-sequence and sequence is 1-based so
+;;; we have to 1+ elsewhere if necessary
 
 ;;; ****m* slippery-chicken/get-current-instrument-for-player
 ;;; FUNCTION
-;;; 
+;;; Get the currently active instrument for a given player in a specified
+;;; sequence of a slippery-chicken object, as defined in the
+;;; instrument-change-map.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
+;;; - The ID of the section from which to retrieve the current instrument for
+;;;   the specified player. This can also be a reference, e.g. in the form 
+;;;   '(2 1).
+;;; - The ID of the player for whom the current instrument is sought. 
+;;; - The number of the sequence from which to retrieve the current
+;;;   instrument. This is a 1-based number.  A slippery-chicken object.
+;;;
 ;;; RETURN VALUE
-;;; 
+;;; An instrument object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+	(make-slippery-chicken
+	 '+mini+
+	 :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
+		      (db (double-bass :midi-channel 2))))
+	 :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+				  (2 ((sax ((2 alto-sax) (5 tenor-sax))))))
+	 :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+	 :set-map '((1 (1 1 1 1 1))
+		    (2 (1 1 1 1 1)))
+	 :rthm-seq-palette '((1 ((((4 4) h q e s s))
+				 :pitch-seq-palette ((1 2 3 4 5)))))
+	 :rthm-seq-map '((1 ((sax (1 1 1 1 1))
+			     (db (1 1 1 1 1))))
+			 (2 ((sax (1 1 1 1 1))
+			     (db (1 1 1 1 1))))))))
+  (get-current-instrument-for-player 2 'sax 3 mini))
+
+=> 
+INSTRUMENT: lowest-written: BF3, highest-written: FS6
+            lowest-sounding: CS3, highest-sounding: A5
+            starting-clef: TREBLE, clefs: (TREBLE), clefs-in-c: (TREBLE)
+            prefers-notes: NIL, midi-program: 66
+            transposition: EF, transposition-semitones: -9
+            score-write-in-c: NIL, score-write-bar-line: NIL
+            chords: NIL, chord-function: NIL, 
+            total-bars: 5 total-notes: 25, total-duration: 20.000
+            total-degrees: 2920, microtones: T
+            missing-notes: (BQF3 BQF4), subset-id: NIL
+            staff-name: alto saxophone, staff-short-name: alt sax,
+                  
+            largest-fast-leap: 999, tessitura: BQF3
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: ALTO-SAX, tag: NIL, 
+data: NIL
 
 |#
 ;;; SYNOPSIS
@@ -1877,22 +2384,64 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May  9 21:49:35 BST 2012: Added robodoc entry
+
 ;;; 9.2.11 do the above but for a bar number instead
+
 ;;; ****m* slippery-chicken/get-instrument-for-player-at-bar
+;;; DATE
+;;; 09-Feb-2011
+;;;
 ;;; FUNCTION
-;;; 
+;;; Get the current instrument for a specified player at a specified bar number
+;;; in a slippery-chicken object, as defined in the instrument-change-map.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - The ID of a player in the slippery-chicken object.
+;;; - An integer that is the number of the bar from which to get the current
+;;;   instrument.
+;;; - A slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An instrument object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let* ((mini
+	(make-slippery-chicken
+	 '+mini+
+	 :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
+		      (db (double-bass :midi-channel 2))))
+	 :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+				  (2 ((sax ((2 alto-sax) (5 tenor-sax))))))
+	 :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+	 :set-map '((1 (1 1 1 1 1))
+		    (2 (1 1 1 1 1)))
+	 :rthm-seq-palette '((1 ((((4 4) h q e s s))
+				 :pitch-seq-palette ((1 2 3 4 5)))))
+	 :rthm-seq-map '((1 ((sax (1 1 1 1 1))
+			     (db (1 1 1 1 1))))
+			 (2 ((sax (1 1 1 1 1))
+			     (db (1 1 1 1 1))))))))
+  (get-instrument-for-player-at-bar 'sax 3 mini))
+
+=> 
+INSTRUMENT: lowest-written: BF3, highest-written: FS6
+            lowest-sounding: AF2, highest-sounding: E5
+            starting-clef: TREBLE, clefs: (TREBLE), clefs-in-c: (BASS TREBLE)
+            prefers-notes: NIL, midi-program: 67
+            transposition: BF, transposition-semitones: -14
+            score-write-in-c: NIL, score-write-bar-line: NIL
+            chords: NIL, chord-function: NIL, 
+            total-bars: 5 total-notes: 25, total-duration: 20.000
+            total-degrees: 2710, microtones: T
+            missing-notes: (FQS3 FQS4), subset-id: NIL
+            staff-name: tenor sax, staff-short-name: ten sax,
+                  
+            largest-fast-leap: 999, tessitura: FS3
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: TENOR-SAX, tag: NIL, 
+data: NIL
 
 |#
 ;;; SYNOPSIS
@@ -1905,23 +2454,40 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 24.3.11: returns the number of semitones the note sounds away from the
-;;; written pitch e.g. bass clarinet = -14
+;;; SAR Wed May  9 21:59:36 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken/get-transposition-at-bar
+;;; DATE
+;;; 24-Mar-2011
+;;;
 ;;; FUNCTION
-;;; 
+;;; Return the number of semitones difference between the sounding pitches and
+;;; written pitches of a given player's part in a specified bar within a
+;;; slippery-chicken object; e.g. bass clarinet = -14.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - The ID of the player for whom the transposition value is sought.
+;;; - An integer which is the number of the bar for which the transposition
+;;;   value is sought.
+;;; - A slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An integer.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((sax (alto-sax :midi-channel 1))))
+	 :set-palette '((1 ((e3 fs3 b3 cs4 fs4 gs4 ds5 f5)))) 
+	 :set-map '((1 (1 1 1)))
+	 :rthm-seq-palette '((1 ((((4 4) h q e s s))
+				 :pitch-seq-palette ((1 2 3 4 5)))))
+	 :rthm-seq-map '((1 ((sax (1 1 1))))))))
+  (get-transposition-at-bar 'sax 2 mini))
+
+=> -9
 
 |#
 ;;; SYNOPSIS
@@ -1931,23 +2497,38 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Find out the number of sequences in a section.
+;;; SAR Wed May  9 22:06:16 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/num-seqs
 ;;; FUNCTION
-;;; 
+;;; Return the number of sequences (which may contain multiple bars) in a
+;;; specified section of a slippery-chicken object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - The ID of the section for which to return the number of sequences.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An integer.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((sax (alto-sax :midi-channel 1))))
+	:set-palette '((1 ((e3 fs3 b3 cs4 fs4 gs4 ds5 f5)))) 
+	:set-map '((1 (1 1 1 1))
+		   (2 (1 1 1))
+		   (3 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((sax (1 1 1 1))))
+			(2 ((sax (1 1 1))))
+			(3 ((sax (1 1 1 1 1))))))))
+  (num-seqs mini 2))
+
+=> 3
 
 |#
 ;;; SYNOPSIS
@@ -1962,25 +2543,68 @@ T
              (piece sc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Wed May  9 22:12:32 BST 2012: Added robodoc entry
+
 ;;; MDE Mon May  7 09:32:10 2012 -- NB num-sections refers to the number of
 ;;; top-level sections so if any section has subsections they'll all be slurped
 ;;; up and only count as 1.
 
+
 ;;; ****m* slippery-chicken/get-section-refs
+;;; DATE
+;;; 07-May-2012
+;;;
 ;;; FUNCTION
-;;; 
+;;; Return the reference IDs for all section and subsections of a given
+;;; slippery-chicken object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the first top-level section for which to return the
+;;;   reference IDs. As this number refers to the number of top-level sections
+;;;   only, any subsections will be contained in these and only count as 1.
+;;; - An integer that is the number of consecutive sections to return section
+;;;   reference IDs.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of lists containing the section reference IDs of the specified
+;;; range in the slippery-chicken object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((sax (alto-sax :midi-channel 1))))
+	:set-palette '((1 ((e3 fs3 b3 cs4 fs4 gs4 ds5 f5)))) 
+	:set-map '((1 (1 1 1))
+		   (2 (1 1 1))
+		   (3 ((a (1 1 1))
+		       (b ((x (1 1 1))
+			   (y (1 1 1))))))
+		   (4 ((a (1 1 1))
+		       (b (1 1 1))
+		       (c (1 1 1 1))))
+		   (5 (1 1 1))
+		   (6 (1 1 1))
+		   (7 (1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((sax (1 1 1))))
+			(2 ((sax (1 1 1))))
+			(3 ((a ((sax (1 1 1))))
+			    (b ((x ((sax (1 1 1))))
+				(y ((sax (1 1 1))))))))
+			(4 ((a ((sax (1 1 1))))
+			    (b ((sax (1 1 1))))
+			    (c ((sax (1 1 1 1))))))
+			(5 ((sax (1 1 1))))
+			(6 ((sax (1 1 1))))
+			(7 ((sax (1 1 1))))))))
+  (get-section-refs mini 2 4))
+
+=> ((2) (3 A) (3 B X) (3 B Y) (4 A) (4 B) (4 C) (5))
 
 |#
 ;;; SYNOPSIS
@@ -2000,11 +2624,11 @@ T
        when (and (>= sn start-section) (< sn nd))
        collect section into sections
        finally
-       (return
-         (loop for s in sections
-            if (is-ral (data s))
-            append (do-subsection (data s))
-            else collect (this s))))))
+	 (return
+	   (loop for s in sections
+	      if (is-ral (data s))
+	      append (do-subsection (data s))
+	      else collect (this s))))))
 
 #|
 ;;; MDE Mon May  7 09:31:17 2012 -- this is the old version
@@ -2038,18 +2662,40 @@ T
 |#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Wed May  9 22:25:55 BST 2012: Conformed robodoc entry
+
 ;;; ****m* slippery-chicken/get-num-sections
 ;;; FUNCTION
-;;; get-num-sections:
-;;;
-;;; Return the number of sections in the piece as defined in e.g. in the
-;;; set-map.  
+;;; Return the number of sections in the given slippery-chicken object, as
+;;; defined in e.g. in the set-map.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the slippery-chicken object
+;;; - A slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE  
-;;; the number of sections (integer)
+;;; An integer that is the number of section.
+;;;
+;;; EXAMPLE
+#|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((sax (alto-sax :midi-channel 1))))
+	:set-palette '((1 ((e3 fs3 b3 cs4 fs4 gs4 ds5 f5)))) 
+	:set-map '((1 (1 1 1 1))
+		   (2 (1 1 1))
+		   (3 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((sax (1 1 1 1))))
+			(2 ((sax (1 1 1))))
+			(3 ((sax (1 1 1 1 1))))))))
+  (get-num-sections mini))
+
+=> 3
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-num-sections ((sc slippery-chicken))

@@ -432,29 +432,33 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May  9 12:08:39 BST 2012: Conformed robodoc entry
+
 ;;; ****m* slippery-chicken/clone
 ;;; FUNCTION
-;;; Copy (clone) the instance and all data associated with the slippery-chicken
-;;; object.  
+
+;;; Copy (clone) the specified instance and all data associated with the
+;;; slippery-chicken object.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the slippery-chicken object you want to copy/clone
+;;; - A slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE  
-;;; a slippery-chicken object
+;;; A slippery-chicken object.
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((min
+(let ((mini
        (make-slippery-chicken
-        '+minimum+
+        '+mini+
         :instrument-palette +slippery-chicken-standard-instrument-palette+
         :ensemble '(((fl (flute :midi-channel 1))))
         :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
         :set-map '((1 (1)))
         :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -)))))
         :rthm-seq-map '((1 ((fl (1))))))))
-  (clone min))
+  (clone mini))
+
 |#
 ;;; SYNOPSIS
 (defmethod clone ((sc slippery-chicken))
@@ -506,29 +510,33 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May  9 13:08:03 BST 2012: Conformed robodoc entry
+
 ;;; ****m* slippery-chicken/num-notes
 ;;; FUNCTION
-;;; Returns the number of attacked notes i.e. not including ties or rests.
+;;; Returns the number of attacked notes in a given slippery-chicken object;
+;;; i.e., not including ties or rests.
 ;;; 
 ;;; ARGUMENTS
-;;; - a slippery-chicken object 
+;;; - A slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE
-;;; An integer
+;;; An integer,
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((min
+(let ((mini
        (make-slippery-chicken
-        '+minimum+
-        :instrument-palette +slippery-chicken-standard-instrument-palette+
+        '+mini+
         :ensemble '(((fl (flute :midi-channel 1))))
         :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
         :set-map '((1 (1)))
         :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -)))))
         :rthm-seq-map '((1 ((fl (1))))))))
-  (num-notes min))
+  (num-notes mini))
+
 => 8
+
 |#
 ;;; SYNOPSIS
 (defmethod num-notes ((sc slippery-chicken))
@@ -537,100 +545,216 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May  9 13:11:31 BST 2012: Conformed robodoc entry
+
 ;;; ****m* slippery-chicken/cmn-display
 ;;; FUNCTION
-;;; cmn-display:
-;;; Write the score as an EPS (Encapsulated Postscript) file using CMN. Caveat:
-;;; this might fail if you generated Lilypond files first; if so, regenerate
-;;; your slippery-chicken object and re-call cmn-display.  Several of the key
-;;; arguments are passed directly to CMN and so are named accordingly.
+;;; Write the data stored in a given slippery-chicken object to disk as an EPS
+;;; (Encapsulated Postscript) file using CMN. 
+;;;
+;;; Several of the keyword arguments for this method are passed directly to CMN
+;;; and therefore have identical names to CMN functions.
+;;;
+;;; NB: This might fail if LilyPond files are generated first. If this happens,
+;;;     re-evaluate the slippery-chicken object and call cmn-display again.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the slippery-chicken object
-;;; - &key arguments:
-;;; - :respell default T. T means respell according to slippery chicken's
-;;;    algorithm only.  A list of notes which should be changed to their
-;;;    enharmonics once respelling has been done can also be passed e.g. '((vln
-;;;    (13 2) (14 3)) ...  (cl (14 3 t) ... )).  This refers to the player then
-;;;    as many note references for that player as needed e.g. (13 2) = bar 13
-;;;    note 2 (1-based and counting tied notes but not rests).  The t in the cl
-;;;    refers to changing the written note as the default is to change the
-;;;    sounding note spelling only.  Chords are not respelled by the default
-;;;    algorithm so if these need to be respelled do so in the list e.g. (vln
-;;;    (13 (2 1)))
-;;; - :start-bar default NIL.  What bar to start the score at (default NIL = at
-;;;    the first bar). 
-;;; - :start-bar-numbering default NIL.  The bars will be numbered every
-;;;    five bars starting from this number (or 1 if NIL).
-;;; - :auto-bar-nums default NIL. This is separate from and in addition to the
-;;;    bar-number written in every part every 5 bars so use with caution.  It
-;;;    corresponds to CMN's automatic-measure-numbers.  If set to e.g. 1 it
-;;;    will print every bar number at the top of each system, or if :by-line, at
-;;;    the start of each line.
-;;; - :end-bar default NIL.  What bar to end the score at (default NIL = at the
-;;;    last bar).
-;;; - :title default T. Write the title to the EPS file?  If T, use the title
-;;;    slot of the slippery-chicken object, if a string, use that, otherwise, no
-;;;    title. 
-;;; - :file default "/tmp/cmn.eps".  Which EPS file to write.
-;;; - :all-output-in-one-file default t.  Write separate pages (NIL) or all
-;;;    pages to one file (T).
-;;; - :one-line-per-page default NIL.  Write just one line (system) on each
-;;;    page? 
-;;; - :staff-separation default 3. The separation between lines within a group,
-;;;    in CMN's units.
-;;; - :line-separation default 5.  The separation between systems (i.e. not
-;;;    groups, but a line of music for the whole ensemble).
-;;; - :empty-staves default NIL. Whether an empty stave should be displayed
-;;;    under each instrument for e.g. manually editing with pencil
-;;; - :write-section-info default NIL. Write the section number/refs into the
-;;;    score?  NB This might not work before regenerating the slippery-chicken
-;;;    object from scratch.
-;;; - :group-separation default 2. Separation of groups in a system, in CMN's
-;;;    units.  
-;;; - :system-separation default cmn::line-mark.  The gap between systems.  If
-;;;    cmn::page-mark only one system will be written per page.
-;;; - :process-event-fun default NIL. A user-defined function that takes one
-;;;    argument, an event object.  The function will be called for each event
-;;;    in the piece. Could be used e.g. to algorithmically add accents,
-;;;    dynamics, or change the colour of notes, etc.
-;;; - :display-sets default NIL.  Display on a separate treble-bass system the
-;;;    set used for each rthm-seq.
-;;; - :rehearsal-letters-all-players default NIL. By default, rehearsal letters
-;;;    are put over the bar lines of those instruments at the top of each
-;;;    group.  If T, the letters will be put over all instruments (useful when
-;;;    writing parts).
-;;; - :display-marks-in-part default NIL.  The marks-in-part slot of the rhythm
-;;;    class (e.g. text) are added to parts only, i.e. they're not in the main
-;;;    score.  If T, write these to the score also.
-;;; - :tempi-all-players default NIL.  Similar to rehearsal-letters-all-players.
-;;; - :players default NIL.  If NIL, write all players to the score.  If a list
-;;;    of valid players, write only those.
-;;; - :page-height default 29.7.  The page height in centimeters.
-;;; - :page-width default 21.0.   The page width in centimeters.
-;;; - :size default 15.  CMN's overall size scaler.
-;;; - :page-nums default T.  Write the page numbers?
-;;; - :in-c default T.  Display the score in C or if NIL, at written pitch.
-;;;    N.B. Piccolo/double bass keep the usual octave transpositions.
-;;; - :auto-clefs default T.  Automatically insert clefs into those instruments
-;;;    that use more than one clef?
-;;; - :multi-bar-rests NIL.  When writing parts, use multiple bar rests (T) or
-;;;    write each bar with a separate rest (NIL)?
-;;; - :automatic-octave-signs default NIL.  Insert octave signs automatically
-;;;    when notes would otherwise need too many ledger lines?
-;;; - :display-time default NIL.  Write time (mins:secs) on the first event
-;;;    of each bar?
-;;; - :add-postscript default NIL.  Postscript code to be added to the EPS file
-;;;    after it has been written.  See the add-ps-to-file function afor
-;;;    details.
+;;; - A slippery-chicken object.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :file. A string that is the directory path with file name and extension
+;;;   for the .eps file to be created. Default = "/tmp/cmn.eps".
+;;; - :players. NIL or a list of player IDs to indicate whether all players'
+;;;   parts should be printed to the score. If NIL, all players' parts will be
+;;;   written to the score. If a list of player IDs, only the parts of those
+;;;   players will be written to the score. Default = NIL.
+;;; - :in-c. T or NIL to indicate whether the output should be printed at
+;;;   sounding pitch (in C) or at written pitch. NB: If in C, piccolo and
+;;;   double bass maintain their usual octave transpositions.
+;;;   T = print at sounding pitch. Default = T.
+;;; - :respell-notes. T, a list of player IDs paired with a sequence of bar and
+;;;   note numbers, or NIL to indicate whether to the cmn-display method should
+;;;   call the respell-notes method to the pitches contained in the
+;;;   slippery-chicken object according to slippery chicken's enharmonics
+;;;   algorithm. If T, the all of the pitches in the object will be considered
+;;;   and slippery chicken will convert a number of the pitches to their
+;;;   enharmonic equivalents to create more sensible linear pitch progression
+;;;   within bars. If a list of player IDs paired with a sequence of bar and
+;;;   event numbers is passed, in the form 
+;;;   '((vln (13 2) (14 3)) (cl (14 3 t))), only the specified pitches are
+;;;   changed; e.g., (13 2) = bar 13 note 2 (1-based and counting tied notes
+;;;   but not rests). If an additional T is included after the bar number and
+;;;   event number (as in the cl example above), only the spelling of the
+;;;   written pitch for that event will be changed (the default is to change
+;;;   the sounding note spelling only). Chords are not respelled by the default
+;;;   algorithm, so if these need to be respelled, this should be indicated by
+;;;   sub-grouping the note number portion of the given bar/note pair into a
+;;;   2-item sublist, in which the first number is the position of the chord in
+;;;   among the attacked notes of that bar and the second number is the
+;;;   position of the desired pitch within the chord, counted from the bottom
+;;;   up, e.g. (vln (13 (2 1))). If NIL, no changes will be made. Default = T.
+;;; - :auto-clefs. T or NIL to indicate whether the cmn-display method should
+;;;   call the auto-clefs method, which automatically insert clef changes into
+;;;   the parts of those instruments that use more than one clef. 
+;;;   T = automatically place clef changes. Default = T.
+;;; - :start-bar. An integer that indicates the first bar of the object to be
+;;;   written to the resulting .eps file. NIL = the first bar. Default = NIL.
+;;; - :end-bar. The last bar to be written to the resulting .eps file. NIL =
+;;;   the last bar of the slippery-chicken object. Default = NIL.
+;;; - :title. T, a string, or NIL to indicate whether to write the title of the
+;;;   given slippery-chicken object to the resulting .eps file. If T, the TITLE
+;;;   slot of the slippery-chicken object will be used. If a string, the
+;;;   specified string will be used instead. If NIL, no title will be included
+;;;   in the output.  Default = T.
+;;; - :size. A number to indicate the overall size of the symbols in the CMN
+;;;   output. Default = 15.
+;;; - :page-nums. T or NIL to indicate whether page numbers are to be written. 
+;;;   T = write page numbers. Default = T.
+;;; - :empty-staves. T or NIL to indicate whether an empty staff should be
+;;;   displayed under each instrument. This can be useful for making editing
+;;;   notes by hand. T = print empty staff. Default = NIL.
+;;; - :display-sets. T or NIL to indicate whether to print the set of pitches
+;;;   used for each rthm-seq on a separate treble-bass grand staff at the
+;;;   bottom of each system in the score. T = print. Default = NIL.
+;;; - :write-section-info. T or NIL to indicate whether to write the section ID
+;;;   into the score. NB: This might not work without first regenerating the
+;;;   slippery-chicken object. T = write section IDs. Default = NIL.
+;;; - :display-time. T or NIL to indicate whether the elapsed time in
+;;;   (mins:secs) should printed above each measure in the resulting score. 
+;;;   T = print time. Default = NIL.
+;;; - :staff-separation. A number that governs the amount of white space to be
+;;;   placed between staves, measured in CMN's units. Default = 3.
+;;; - :line-separation. A number that governs the amount of white space to be
+;;;   placed between systems (i.e. not groups, but a line of music for the
+;;;   whole ensemble), measured in CMN's units. Default = 5.
+;;; - :group-separation. A number that governs the amount of white space placed
+;;;   between groups in a system, measured in CMN's units. Default = 2.
+;;; - :system-separation. An indication for how CMN determines the amount of
+;;;   white space between systems. If cmn::page-mark, only one system will be
+;;;   written per page. Default cmn::line-mark.
+;;; - :page-height. A number to indicate the height of the page in centimeters.
+;;;   Default = 29.7.
+;;; - :page-width. A number to indicate the width of the page in
+;;;   centimeters. Default = 21.0.  
+;;; - :all-output-in-one-file. T or NIL to indicate whether to write a separate
+;;;   file for each page of the resulting score. T = write all pages to the
+;;;   same multi-page file. Default = T.
+;;; - :one-line-per-page. T or NIL to indicate whether to write just one line
+;;;   (system) to each page. T = one line per page. Default = NIL.
+;;; - :start-bar-numbering. An integer that indicates the number to be given as
+;;;   the first bar number in the resulting. The bars will be numbered every
+;;;   five bars starting from this number. NIL = bar 1. Default = NIL.
+;;; - :auto-bar-nums. An integer or NIL to indicate a secondary bar numbering
+;;;   interval. This is separate from and in addition to the bar-number written
+;;;   in every part every 5 bars. It corresponds to CMN's
+;;;   automatic-measure-numbers. If set to e.g. 1, a bar number will be printed
+;;;   for every measure at the top of each system, or if :by-line, a bar number
+;;;   will be printed at the start of each line. NIL = no secondary bar
+;;;   numbering. Default = NIL.
+;;; - :rehearsal-letters-all-players. T or NIL to indicate whether rehearsal
+;;;   letters should be placed above the staves of all instruments in a score
+;;;   (this can be useful when generating parts). If NIL, rehearsal letters are
+;;;   only placed above the staves of the instruments at the top of each
+;;;   group. T = place rehearsal letters above all instruments. Default = NIL.
+;;; - :tempi-all-players. T or NIL to indicate whether to print the tempo above
+;;;   all players' parts in the score. T = print above all players' parts. 
+;;;   Default = NIL.
+;;; - :process-event-fun. A user-defined function that takes one argument,
+;;;   namely an event object. The specified function will then be called for
+;;;   each event in the piece. This could be used, for example, to
+;;;   algorithmically add accents, dynamics, or change the colour of notes,
+;;;   etc. If NIL, no function will be applied. Default = NIL.
+;;; - :automatic-octave-signs. T or NIL to indicate whether ottava signs should
+;;;   be inserted automatically when notes would otherwise need many ledger
+;;;   lines. T = automatically insert. Default = NIL.
+;;; - :multi-bar-rests. T or NIL to indicate whether multiple bars of wrests
+;;;   should be consolidated when writing parts. T = consolidate. NIL = write
+;;;   each consecutive rest bar separately. Default = NIL.
+
+;;; - :display-marks-in-part. T or NIL to indicate whether to print the marks
+;;;   stored in the MARKS-IN-PART slot of each rhythm object in the score. If
+;;;   NIL, the indications stored in the MARKS-IN-PART slot are added to parts
+;;;   only. T = also print to score. Default = NIL.
+
+;;; - :add-postscript. NIL or postscript code to be added to the .eps file
+;;;   after it has been generate. See the add-ps-to-file function for details.
+;;;   Default = NIL.
 ;;;
 ;;; RETURN VALUE  
-;;; always T
+;;; Always T.
+;;;
+;;; EXAMPLE
+#|
+;;; The simplest usage
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:title "mini"
+	:ensemble '(((vn (violin :midi-channel 1))))
+	:tempo-map '((1 (q 60)))
+	:set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1)))
+	:rthm-seq-palette '((1 ((((2 4) (s) (s) e e e))
+				:pitch-seq-palette ((1 2 3)))))
+	:rthm-seq-map '((1 ((vn (1))))))))
+  (cmn-display mini :file "/tmp/mini.eps"))
+
+;;; Used with some of the more frequently implemented keyword arguments
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (hn (french-horn :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+	:tempo-map '((1 (q 60)))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))
+		       (2 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))
+		       (3 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (2 2 2 2 2))
+		   (3 (3 3 3 3 3)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5))))
+			    (2 ((((4 4) q e s s h))
+				:pitch-seq-palette ((1 2 3 4 5))))
+			    (3 ((((4 4) e s s h q))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((cl (1 3 2 1 2))
+			    (hn (3 1 1 2 2))
+			    (vc (1 1 3 2 2))))
+			(2 ((cl (3 1 1 2 2))
+			    (hn (1 3 1 2 2))
+			    (vc (3 2 2 1 1))))
+			(3 ((cl (1 1 3 2 2))
+			    (hn (2 1 1 2 3))
+			    (vc (3 1 1 2 2))))))))
+  (cmn-display mini 
+	       :file "/tmp/cmn.eps"
+	       :players '(cl vc)
+	       :in-c nil
+	       :respell-notes nil
+	       :auto-clefs nil
+	       :start-bar 8
+	       :end-bar 13
+	       :title "CMN Fragment"
+	       :size 13
+	       :page-nums nil
+	       :empty-staves t
+	       :display-sets t
+	       :write-section-info t
+	       :display-time t
+	       :staff-separation 2
+	       :line-separation 3))
+
+=> T
+
+|#
 ;;; 
 ;;; SYNOPSIS
 #+cmn
 (defmethod cmn-display ((sc slippery-chicken) 
-                       &key
+			&key
                         (respell-notes t)
                         (start-bar nil)
                         (start-bar-numbering nil)
@@ -1037,21 +1161,59 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May  9 15:40:56 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken/get-player
 ;;; FUNCTION
-;;; 
+;;; Return the player object for the specified player.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - A player ID.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A player object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((fl (flute :midi-channel 1))
+		     (tp (b-flat-trumpet :midi-channel 2))
+		     (vn (violin :midi-channel 3))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((fl (1 1 1 1 1))
+			    (tp (1 1 1 1 1))
+			    (vn (1 1 1 1 1))))))))
+  (get-player mini 'vn))
+
+=> 
+PLAYER: (id instrument-palette): SLIPPERY-CHICKEN-STANDARD-INSTRUMENT-PALETTE 
+doubles: NIL, cmn-staff-args: NIL, total-notes: 25, total-degrees: 3548, 
+total-duration: 20.000, total-bars: 5, tessitura: B4
+LINKED-NAMED-OBJECT: previous: (TP), this: (VN), next: NIL
+NAMED-OBJECT: id: VN, tag: NIL, 
+data: 
+INSTRUMENT: lowest-written: G3, highest-written: C7
+            lowest-sounding: G3, highest-sounding: C7
+            starting-clef: TREBLE, clefs: (TREBLE), clefs-in-c: (TREBLE)
+            prefers-notes: NIL, midi-program: 41
+            transposition: C, transposition-semitones: 0
+            score-write-in-c: NIL, score-write-bar-line: NIL
+            chords: T, chord-function: VIOLIN-CHORD-SELECTION-FUN, 
+            total-bars: 5 total-notes: 25, total-duration: 20.000
+            total-degrees: 3548, microtones: T
+            missing-notes: NIL, subset-id: NIL
+            staff-name: violin, staff-short-name: vln,
+                  
+            largest-fast-leap: 13, tessitura: B4
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: VIOLIN, tag: NIL, 
+data: NIL
 
 |#
 ;;; SYNOPSIS

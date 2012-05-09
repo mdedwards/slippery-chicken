@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:37:26 Wed May  9 2012 BST
+;;; $$ Last modified: 16:06:09 Wed May  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -789,7 +789,11 @@
                         (add-postscript nil))
 ;;; ****
   ;; MDE Wed Apr 18 10:57:41 2012 -- 
-  (set-write-bar-num sc)
+  ;; MDE Wed May  9 16:01:57 2012 -- don't have SC write bar nums if we're
+  ;; having CMN do it 
+  (if (or start-bar-numbering auto-bar-nums)
+    (set-write-bar-num sc nil) ; just deletes all bar-nums
+    (set-write-bar-num sc)) ; writes them every 5
   (when respell-notes
     (respell-notes sc respell-notes))
   ;; MDE Wed Apr 11 12:09:13 2012
@@ -1063,9 +1067,11 @@
             (error "slippery-chicken::set-write-bar-num: no bar ~a for ~a"
                    bar-num player))
           (setf (write-bar-num bar) nil)))
-  (loop for player in (instruments-write-bar-nums sc) do
-       (loop for i from (1- every) to (1- (num-bars sc)) by every do
-            (setf (write-bar-num (get-bar sc i player)) t)))
+  ;; MDE Wed May  9 16:01:14 2012 
+  (when (integerp every)
+    (loop for player in (instruments-write-bar-nums sc) do
+         (loop for i from (1- every) to (1- (num-bars sc)) by every do
+              (setf (write-bar-num (get-bar sc i player)) t))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

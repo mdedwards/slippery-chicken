@@ -3796,6 +3796,18 @@ seq-num 5, VN, replacing G3 with B6
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
+;;; - :num-sections. An integer or NIL to indicate how many sections should be
+;;;   generated, including the starting section. If NIL, sound file data will
+;;;   be generated for all sections of the piece. Default = NIL.
+
+;;; - :from-sequence. An integer that is the number of the first sequence
+;;;   within the specified starting section to be used to generate the output
+;;;   file. Default = 1.
+
+;;; - :num-sequences. NIL or an integer that indicates how sequences are to be
+;;;   generated, including that specified by :from-sequence. If NIL, all
+;;;   sequences will be played. Default = NIL.
+
 ;;; - :srate. A number that is the sampling rate of the output file
 ;;;   (independent of the input file). This and the following two arguments
 ;;;   default to the CLM package globals. See clm.html for more options.
@@ -3826,6 +3838,9 @@ seq-num 5, VN, replacing G3 with B6
 ;;; - :rev-amt. A number that determines the amount of reverberation for the
 ;;;   resulting sound file, passed to CLM's nrev.  
 ;;;   NB: 0.1 is a lot. Default = 0.0.
+;;; - time-offset. A number that is an offset time in seconds. This produces a
+;;;   lead time of a specified number of seconds of silence prior to the sound
+;;;   output. 
 ;;; - :play. T or NIL to indicate whether CLM should play the output file
 ;;;   automatically immediately after it has been written. 
 ;;;   T = play. Default = NIL.
@@ -3857,106 +3872,147 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   factor, this is multiplied by the src-scaler. T = match set pitches. 
 ;;;   Default = T.
 
-;;; - pitch-synchronous: if T, transpose the sound files (using
-;;;   their frequency slot) to the pitches of the score events.  See above
-;;;   description for the default behaviour.  default nil
+;;; - pitch-synchronous: T or NIL to indicate whether the source sound files
+;;;   are to be transposed to match the pitches of the events in the given
+;;;   players' part. This will only be effective if the given source sound
+;;;   file has a perceptible frequency that has been specified using the
+;;;   sndfile object's :frequency slot in the sndfile-palette. :do-src must
+;;;   also be T for this to work. T = match pitches. Default = NIL.
+;;; - :reset-snds-each-rs. T or NIL to indicate whether to begin with the first
+;;;   source sound file of the specified group at the beginning of each
+;;;   rthm-seq. T = begin with the first sound file. Default = T.
+;;; - :reset-snds-each-player. T or NIL to indicate whether to begin with the
+;;;   first source sound file of the specified group for the beginning of each
+;;;   player's part. T = begin with the first sound file. Default = T. 
+;;; - :play-chance-env. A list of break-point pairs that determines the chance
+;;;   that a given even from the source player's part will be reflected in the
+;;;   new sound file. It is determined by random selection but uses a fixed
+;;;   seed that is re-initialized each time clm-play is called. The following
+;;;   default ensures every note will play. Default = '(0 100 100 100).
+;;; - :play-chance-env-exp. A number that will be applied as the exponent to
+;;;   the play-chance-env's y values to create an exponential interpolation
+;;;   between break-point pairs. Default = 0.5.
+;;; - :max-start-time. A number that is the last time-point in seconds for
+;;;   which events will be processed for the output file. If a maximum start
+;;;   time is specified here (in seconds), events after this will be
+;;;   skipped. The default value of 99999999 seconds (27778 hours) will result
+;;;   in all events being reflected in the sound file.
+;;; - :time-scaler. A number that will be the factor by which all start times
+;;;   are scaled for the output file (in effect a tempo scaler). If
+;;;   :ignore-rests is T, this will also have an indirect effect on
+;;;   durations. This argument should not be confused with
+;;;   :duration-scaler. Default = 1.0.
+;;; - :duration-scaler. A number that is the factor by which the duration of
+;;;   all  events in the output sound file will be scaled. This does not alter
+;;;   start times, and will therefore result in overlapping sounds if greater
+;;;   than 1.0. This is not to be confused with :time-scaler. Default = 1.0. 
+;;; - :normalise. A decimal number that will be the maximum amplitude of the
+;;;   resulting output file; i.e., to which the samples will be scaled. 
+;;;   Default = 0.99
+;;; - :amp-env. A list of break-point pairs that will govern the amplitude
+;;;   envelope applied to all source-sound files as it is being written to the
+;;;   new output file. NB: If the user wants to maintain the original attack of
+;;;   the source sound file and is not employing the :inc-start option, this
+;;;   should be set to '(0 1 ...). If :inc-start is T, the resulting sound file
+;;;   will probably contain clicks from non-zero crossings. 
+;;;   Default = '(0 0 5 1 60 1 100 0).
+;;; - :src-width. An integer that reflects the accuracy of the sample-rate
+;;;   conversion. The higher the value, the more accurate the transposition,
+;;;   but the slower the processing. Values of 100 might be useful for very low
+;;;   transpositions. Default = 20.
+;;; - :src-scaler: A number that is the factor by which all sample-rate
+;;;   conversion values will be scaled (for increasing or decreasing the
+;;;   transposition of the overall resulting sound file). Default = 1.0.
+;;; - :note-number. A number that is an index, representing the the nth pitch
+;;;   of the current set or chord (from the bottom) to be used for the lowest
+;;;   player. Default = 0.
+;;; - :duration-run-over. T or NIL to indicate whether the method will allow a
+;;;   sound file event to extend past the end of specified segment boundaries
+;;;   of a sound file in the sndfile-palette. T = allow. Default = NIL.
+;;; - :short-file-names. T or NIL to indicate whether abbreviated output file
+;;;   names will be automatically created instead of the usually rather long
+;;;   names. T = short. Default = NIL.
+;;; - :output-name-uniquifier. A user-specified string that will be
+;;;   incorporated into the file name, either at the end or the beginning
+;;;   depending on whether short-file-names is T or NIL. Default = "".
+;;; - :check-overwrite. T or NIL to indicate whether to query the user before
+;;;   overwriting existing sound files. T = query. Default = T.
+;;; - :print-secs. T or NIL to indicate whether CLM should print the seconds
+;;;   computed as it works. T = print. Default = NIL.
+;;; - :simulate. T or NIL to indicate whether only the sound file sequencing
+;;;   information should be calculated and printed for testing purposes,
+;;;   without generating a sound file. T = simulate. Default = NIL.
 
-;;; - chords : usually we'll use pitches from the set-map but we
-;;;   could pass a list of other sets here if preferred. default nil
+;;; - :sndfile-palette. NIL or a file name including path and extension that
+;;;   contains an external definition of a sndfile-palette. This will replace
+;;;   any sndfile-palette defined in the slippery-chicken object. If NIL, the
+;;;   one in the slippery-chicken object will be used. Default = NIL.
 
-;;; - chord-accessor : sometimes the chord stored in the palette is
-;;;   not a simple list of data so we need to access the nth of the chord
-;;;   list. default nil
+;;; - :chords. NIL or a list of lists consisting of note-name symbols to be
+;;;   used as the pitches for the resulting sound file in place of the pitches
+;;;   from the set-map. There must be one chord specified for each sequence. If
+;;;   NIL, the pitches from the set-map will be used. Default = NIL.
 
-;;; - reset-snds-each-rs : when T, then we start over at the beginning
-;;;   of the sound file group at the beginning of each rthm-seq. default t
-
-;;; - reset-snds-each-player : when T, then we start over at the
-;;;   beginning of the sound file group at the beginning of each player's
-;;;   part. default t
-
-;;; - play-chance-env : this determines the chance that
-;;;   a note will be played or not; it is a random selection but uses a fixed
-;;;   seed that is re-initialized each time clm-play is called.  the following
-;;;   default ensures every note will play. default '(0 100 100 100)
-
-;;; - play-chance-env-exp default 0.5: the exponent the above envelope's Y
-;;;   values are raised to.
-
-;;; - max-start-time default 99999999: usually we stop when we've got to the
-;;;   end of the piece/section but if we specify a maximum start time here (in
-;;;   seconds) events after this will be skipped.
-
-;;; - time-scaler default 1.0: this scales duration and start-time of events
-;;;   (in effect a tempo scaler)--not to be confused with duration-scaler.
-
-;;; - normalise default .99: the maximum amplitude in the output file i.e. what
-;;;   the samples should be scaled (normalised) to.
-
-;;; - simulate default nil: if t, then clm won't be called, rather only the
-;;;   sound file sequencing information will be printed for testing purposes.
-
-;;; - from-sequence default 1: the starting sequence number.
-
-;;; - num-sequences default nil: how many sequences to play; specifying nil
-;;;   will simply play them all. 
-
-;;; - num-sections default nil: how many sections to play. If nil, play them
-;;;   all.
-
-;;; - time-offset default 0.0: what time in seconds to start writing the events
-;;;   into the output file.
-
-
-
-;;; - note-number default 0: the nth note of the chord (from bottom) for the
-;;;   lowest player.
-
-;;; - amp-env default '(0 0 5 1 60 1 100 0): the amplitude envelope placed over
-;;;   each segment of sound ('note').  NB If we want the original attack of the
-;;;   input sound file set this to '(0 1 ....) but note that if :inc-start (see
-;;;   below) is T this will probably result in clicks in the output file.
-
-;;; - src-width default 20: the accuracy of the sample-rate conversion. This
-;;;   should be an integer. The higher the value, the more accurate the
-;;;   transposition, but the slower the processing.  Values of 100 might be
-;;;   useful for very low transpositions.
-
-;;; - src-scaler default 1.0: how much to scale the src values by (to increase
-;;;   or decrease transposition)
-
-;;; - duration-scaler default 1.0: this scales the duration of events (creates
-;;;   overlaps).  Not to be confused with :time-scaler.
-
-;;; - short-file-names default nil: output file names are automatically
-;;;   created.  They're usually quite long but will be shorter if this is T.
-
-;;; - output-name-uniquifier default "": give a short string here and it will
-;;;   be built into the output file name (either at the end of the beginning
-;;;   depending on whether short-file-names is T or NIL).
-
-;;; - check-overwrite default t: whether to query the user before overwriting
-;;;   existing sound files.
-
-;;; - duration-run-over default nil: when we use a shorter segment of a sound
-;;;   file as a sndfile instance, do we allow an event to go beyond the given
-;;;   end point?
-
-
-
-;;; - print-secs default nil: whether clm should print the seconds computed as
-;;;   it works.
-
-
-
-;;; - sndfile-palette default nil: just in case we want to use an external
-;;;   palette instead of the one in the slippery chicken object.
+;;; - :chord-accessor. Sometimes the chord stored in the palette is not a
+;;;   simple list of data so we need to access the nth of the chord
+;;;   list. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; T
 ;;; 
 ;;; EXAMPLE
 #|
+;;; An example using some of the more frequent arguments
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (hn (french-horn :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1 1 1))
+		   (2 (1 1 1 1 1 1 1))
+		   (3 (1 1 1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+				:pitch-seq-palette ((1 (2) 3))))
+			    (2 ((((4 4) (q) e (s) s h))
+				:pitch-seq-palette ((1 2 (3)))))
+			    (3 ((((4 4) e (s) s h (q)))
+				:pitch-seq-palette ((2 3 3))))
+			    (4 ((((4 4) (s) s h (q) e))
+				:pitch-seq-palette ((3 (1) 2)))))
+	:rthm-seq-map '((1 ((cl (2 3 2 4 1 3 1))
+			    (hn (2 4 1 2 3 1 3))
+			    (vc (1 2 2 3 4 1 3))))
+			(2 ((cl (4 2 1 3 3 1 2))
+			    (hn (2 1 4 3 2 1 3))
+			    (vc (2 3 4 3 1 2 1))))
+			(3 ((cl (3 1 2 4 3 1 2))
+			    (hn (3 4 2 1 3 2 1))
+			    (vc (3 2 3 1 4 2 1)))))
+	:snd-output-dir "/tmp/"
+	:sndfile-palette '(((sndfile-grp-1
+			     ((test-sndfile-1.aiff)
+			      (test-sndfile-2.aiff)
+			      (test-sndfile-3.aiff)))
+			    (sndfile-grp-2
+			     ((test-sndfile-4.aiff :frequency 834)
+			      (test-sndfile-5.aiff)
+			      (test-sndfile-6.aiff))))
+			   ("/path/to/sndfiles-dir-1"
+			    "/path/to/sndfiles-dir-2")))))
+  (clm-play mini 2 '(cl vc) 'sndfile-grp-1
+	    :num-sections 1
+	    :srate 48000
+	    :header-type clm::mus-aiff
+	    :data-format clm::mus-b24int
+	    :rev-amt 0.05
+	    :inc-start t
+	    :ignore-rests nil
+	    :sound-file-palette-ref2 'sndfile-grp-2
+	    :pitch-synchronous t
+	    :reset-snds-each-rs nil
+	    :reset-snds-each-player nil))
 
 |#
 ;;; SYNOPSIS
@@ -4690,21 +4746,35 @@ seq-num 5, VN, replacing G3 with B6
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu May 10 17:34:51 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken/find-rehearsal-letters
 ;;; FUNCTION
-;;; 
+;;; Return in list form the numbers of bars in the given slippery-chicken
+;;; object that have rehearsal letters.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of numbers.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))))
+	:tempo-map '((1 (q 60)))
+	:rehearsal-letters '(2 5 7)
+	:set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((2 4) (s) (s) e e e))
+				:pitch-seq-palette ((1 2 3)))))
+	:rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
+  (find-rehearsal-letters mini))
+
+=> (2 5 7)
 
 |#
 ;;; SYNOPSIS

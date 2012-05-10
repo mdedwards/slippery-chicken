@@ -4789,22 +4789,75 @@ seq-num 5, VN, replacing G3 with B6
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu May 10 17:41:49 BST 2012: Added robodc entry
+
 ;;; 9.4.11 NB won't allow notes to be under more than one slur/phrase mark
 ;;; ****m* slippery-chicken/check-slurs
-;;; FUNCTION
-;;; 
+
+;;; DATE
+;;; 09-Apr-2011
+;;;
+;;; FUNCTION Print warnings to the Lisp listener if the method finds nested
+;;; slurs, beg-sl marks without corresponding end-sl marks, or end-sl marks
+;;; without corresponding beg-sl marks.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Prints warnings to the listener and returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))))
+	:set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+				:pitch-seq-palette ((1 2 3 4 5 6 7 8))
+				:marks (beg-sl 1 end-sl 4 beg-sl 2 end-sl 3
+					       beg-sl 4))))
+	:rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (check-slurs mini)
+  (cmn-display mini))
+
+=>
+WARNING:
+   slippery-chicken::check-slurs (VN): 
+   begin slur at bar 1 but already began slur at bar 1
+WARNING:
+   slippery-chicken::check-slurs (VN): 
+   begin slur at bar 2 but already began slur at bar 1
+WARNING:
+   slippery-chicken::check-slurs (VN): 
+   begin slur at bar 2 but already began slur at bar 1
+WARNING:
+   slippery-chicken::check-slurs (VN): 
+   begin slur at bar 3 but already began slur at bar 2
+WARNING:
+   slippery-chicken::check-slurs (VN): 
+   begin slur at bar 3 but already began slur at bar 2
+WARNING:
+   slippery-chicken::check-slurs (VN): 
+   end slur missing at end of piece
+Respelling notes...
+Inserting automatic clefs....
+Generating VN...
+Inserting line breaks...
+Creating systems...
+Calling CMN...
+begin-slur without matching end-slur:
+    (slur :note (f4 e (onset 3/2)) :name 50 :type :left 
+	  :note (f4 e (onset 3/2)) 
+	  :staff-y0 0 :x0 0 :y0 0 :x1 0 :y1 0 #<SLUR>) 
+    (slur :note (f4 e (onset 11/2)) :name 53 :type :left 
+	  :note (f4 e (onset 11/2)) 
+	  :staff-y0 0 :x0 0 :y0 0 :x1 0 :y1 0 #<SLUR>)
+    (slur :note (f4 e (onset 19/2)) :name 56 :type :left 
+	  :note (f4 e (onset 19/2)) 
+	  :staff-y0 0 :x0 0 :y0 0 :x1 0 :y1 0 #<SLUR>)
 
 |#
 ;;; SYNOPSIS
@@ -4818,27 +4871,29 @@ seq-num 5, VN, replacing G3 with B6
           for e = (next-event sc player)
           while e
           do
-          (cond ((begin-slur-p e)
-                 (if in-slur
-                     (warn "slippery-chicken::check-slurs (~a): begin slur ~
+	    (cond ((begin-slur-p e)
+		   (if in-slur
+		       (warn "slippery-chicken::check-slurs (~a): begin slur ~
                               at bar ~a but already began slur at bar ~a"
-                           player (bar-num e) in-slur)
-                     (setf in-slur (bar-num e))))
-                ((end-slur-p e)
-                 (if in-slur
-                     (setf in-slur nil)
-                     (warn "slippery-chicken::check-slurs (~a): end slur at ~
+			     player (bar-num e) in-slur)
+		       (setf in-slur (bar-num e))))
+		  ((end-slur-p e)
+		   (if in-slur
+		       (setf in-slur nil)
+		       (warn "slippery-chicken::check-slurs (~a): end slur at ~
                               bar ~a but no begin slur"
-                           player (bar-num e)))))
+			     player (bar-num e)))))
           finally
-          (when in-slur
-            (warn "slippery-chicken::check-slurs (~a): end slur missing at ~
+	    (when in-slur
+	      (warn "slippery-chicken::check-slurs (~a): end slur missing at ~
                      end of piece" player)))))
            
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* slippery-chicken/check-tuplets
+;;; SAR Thu May 10 18:00:32 BST 2012: Added robodoc entry
+
+;;; ****m* slippery-chicken/check-tuplets 
 ;;; FUNCTION
 ;;; 
 ;;; 
@@ -4870,6 +4925,8 @@ seq-num 5, VN, replacing G3 with B6
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu May 10 18:06:37 BST 2012: Added robodoc entry
+
 ;;; Just for checking really but if same-spellings all ties will be forced to
 ;;; the same spellings. 
 ;;; 
@@ -4877,13 +4934,17 @@ seq-num 5, VN, replacing G3 with B6
 
 ;;; ****m* slippery-chicken/check-ties
 ;;; FUNCTION
-;;; 
+
+;;; Check that all ties are started and ended properly. If the optional
+;;; argument <same-spellings> is set to T, all tied pitches will be forced to
+;;; have the same enharmonic spellings. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether to force all tied pitches to have the same
+;;;   enharmonic spellings.
 ;;; 
 ;;; RETURN VALUE
 ;;; 
@@ -4903,24 +4964,24 @@ seq-num 5, VN, replacing G3 with B6
           for this = (next-event sc player)
           while this
           do
-          (when (and same-spellings
-                     (is-tied-to this))
-            ;; 24.3.11
-            (unless (pitch-or-chord last)
-              (error "slippery-chicken::check-ties (~a): <this> is tied-to ~
+	    (when (and same-spellings
+		       (is-tied-to this))
+	      ;; 24.3.11
+	      (unless (pitch-or-chord last)
+		(error "slippery-chicken::check-ties (~a): <this> is tied-to ~
                           but <last> has no pitch.~%THIS:~%~a~%LAST:~%~a"
-                     player this last))
-            (setf (pitch-or-chord this) (clone (pitch-or-chord last)))
-            (when (written-pitch-or-chord this)
-              (setf (written-pitch-or-chord this) 
-                    (clone (written-pitch-or-chord last)))))
-          (when (or (and (is-tied-from last)
-                         (not (is-tied-to this)))
-                    (and (is-tied-to this)
-                         (not (is-tied-from last))))
-            (warn "slippery-chicken::check-ties: bad tie, ~a bar ~a" 
-                  player (next-event sc nil)))
-          (setf last this))))
+		       player this last))
+	      (setf (pitch-or-chord this) (clone (pitch-or-chord last)))
+	      (when (written-pitch-or-chord this)
+		(setf (written-pitch-or-chord this) 
+		      (clone (written-pitch-or-chord last)))))
+	    (when (or (and (is-tied-from last)
+			   (not (is-tied-to this)))
+		      (and (is-tied-to this)
+			   (not (is-tied-from last))))
+	      (warn "slippery-chicken::check-ties: bad tie, ~a bar ~a" 
+		    player (next-event sc nil)))
+	    (setf last this))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -4978,17 +5039,19 @@ seq-num 5, VN, replacing G3 with B6
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 28/1/11: make sure that every bar in the piece has the same time signature
-;;; for each instrument in the ensemble
+;;; SAR Thu May 10 18:11:15 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken/check-time-sigs
+;;; DATE
+;;; 28-Jan-2011
+;;;
 ;;; FUNCTION
-;;; 
+
+;;; Make sure for every bar in the piece that all instruments have the same
+;;; time signature.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE
 ;;; 
@@ -5011,23 +5074,45 @@ seq-num 5, VN, replacing G3 with B6
          
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Mon Apr  2 11:15:19 2012 -- whether a player plays more than one
-;;; instrument 
+
+;;; SAR Thu May 10 18:17:14 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken/player-doubles
+;;; DATE
+;;; 02-Apr-2012
+;;
 ;;; FUNCTION
-;;; 
+;;; Boolean test to check whether a specified player plays more than one
+;;; instrument.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - A player ID.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T if the player has more than one instrument, otherwise NIL>
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
+		     (db (double-bass :midi-channel 2))))
+	:instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+				 (2 ((sax ((2 alto-sax) (5 tenor-sax))))))
+	:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((sax (1 1 1 1 1))
+			    (db (1 1 1 1 1))))
+			(2 ((sax (1 1 1 1 1))
+			    (db (1 1 1 1 1))))))))
+  (player-doubles mini 'sax))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -5040,21 +5125,58 @@ seq-num 5, VN, replacing G3 with B6
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu May 10 18:21:26 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken/get-starting-ins
 ;;; FUNCTION
-;;; 
+;;; Return the instrument object that is the first instrument object used by a
+;;; specified player in a given slippery-chicken object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - A player ID.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; An instrument object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
+		     (db (double-bass :midi-channel 2))))
+	:instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+				 (2 ((sax ((2 alto-sax) (5 tenor-sax))))))
+	:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((sax (1 1 1 1 1))
+			    (db (1 1 1 1 1))))
+			(2 ((sax (1 1 1 1 1))
+			    (db (1 1 1 1 1))))))))
+  (get-starting-ins mini 'sax))
+
+=> 
+INSTRUMENT: lowest-written: BF3, highest-written: FS6
+            lowest-sounding: CS3, highest-sounding: A5
+            starting-clef: TREBLE, clefs: (TREBLE), clefs-in-c: (TREBLE)
+            prefers-notes: NIL, midi-program: 66
+            transposition: EF, transposition-semitones: -9
+            score-write-in-c: NIL, score-write-bar-line: NIL
+            chords: NIL, chord-function: NIL, 
+            total-bars: 5 total-notes: 25, total-duration: 20.000
+            total-degrees: 2920, microtones: T
+            missing-notes: (BQF3 BQF4), subset-id: NIL
+            staff-name: alto saxophone, staff-short-name: alt sax,
+                  
+            largest-fast-leap: 999, tessitura: BQF3
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: ALTO-SAX, tag: NIL, 
+data: NIL
+
 
 |#
 ;;; SYNOPSIS
@@ -5456,23 +5578,114 @@ seq-num 5, VN, replacing G3 with B6
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 22.7.11 (Pula)
-;;; all 1-based and inclusive
+
+;;; SAR Thu May 10 18:25:31 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken/get-events-from-to
+;;; DATE
+;;; 22-Jul-2011 (Pula)
+;;;
 ;;; FUNCTION
-;;; 
+;;; Return a list of event objects for a given player, specifying the region by
+;;; bar and event number.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - A player ID.
+;;; - An integer (1-based) that is the first bar from which to return events.
+;;; - An integer (1-based) that is the first event object in the start-bar to
+;;;   return.
+;;; - An integer (1-based) that is the last bar from which to return events. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An integer (1-based) that is the last event within the end-bar to
+;;;   return. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of event objects.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
+		     (db (double-bass :midi-channel 2))))
+	:instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+				 (2 ((sax ((2 alto-sax) (5 tenor-sax))))))
+	:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((sax (1 1 1 1 1))
+			    (db (1 1 1 1 1))))
+			(2 ((sax (1 1 1 1 1))
+			    (db (1 1 1 1 1))))))))
+  (get-events-from-to mini 'sax 3 2 5 3))
+
+=>
+(
+EVENT: start-time: 10.000, end-time: 11.000, 
+       duration-in-tempo: 1.000, 
+       compound-duration-in-tempo: 1.000, 
+       amplitude: 0.700 
+       bar-num: 3, marks-before: NIL, 
+       tempo-change: NIL 
+       instrument-change: NIL 
+       display-tempo: NIL, start-time-qtrs: 10.000, 
+       midi-time-sig: NIL, midi-program-changes: NIL, 
+       8va: 0
+       pitch-or-chord: 
+PITCH: frequency: 164.814, midi-note: 52, midi-channel: 1 
+       pitch-bend: 0.0 
+       degree: 104, data-consistent: T, white-note: E3
+       nearest-chromatic: E3
+       src: 0.62996054, src-ref-pitch: C4, score-note: E3 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 3, c5ths: 0, no-8ve: E, no-8ve-no-acc: E
+       show-accidental: T, white-degree: 23, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: E3, tag: NIL, 
+data: E3
+**************
+
+       written-pitch-or-chord: 
+PITCH: frequency: 369.994, midi-note: 66, midi-channel: 1 
+       pitch-bend: 0.0 
+       degree: 132, data-consistent: T, white-note: F4
+       nearest-chromatic: FS4
+       src: 1.4142135, src-ref-pitch: C4, score-note: FS4 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: T, flat: NIL, natural: NIL, 
+       octave: 4, c5ths: 1, no-8ve: FS, no-8ve-no-acc: F
+       show-accidental: T, white-degree: 31, 
+       accidental: S, 
+       accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: FS4, tag: NIL, 
+data: FS4
+**************
+
+RHYTHM: value: 4.000, duration: 1.000, rq: 1, is-rest: NIL, 
+        score-rthm: 4.0, undotted-value: 4, num-flags: 0, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 1.000, 
+        is-grace-note: NIL, needs-new-note: T, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: NIL, marks-in-part: NIL, 
+        letter-value: 4, tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: Q, tag: NIL, 
+data: Q
+**************
+
+ 
+EVENT: start-time: 11.000, end-time: 11.500, 
+[...]
 
 |#
 ;;; SYNOPSIS
@@ -5502,21 +5715,57 @@ seq-num 5, VN, replacing G3 with B6
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* slippery-chicken/transpose-events
+;;; SAR Thu May 10 18:34:38 BST 2012: Added robodoc entry
+
+;;; ****m* slippery-chicken/transpose-events 
 ;;; FUNCTION
-;;; 
+
+;;; Transpose the pitches of event objects in a specified region and a
+;;; specified player's part.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - A player ID.
+;;; - An integer that is the first bar in which to transpose events.
+;;; - An integer that is the first event in that bar to transpose. 
+;;; - An integer that is the last bar in which to transpose events.
+;;; - An integer that is the last event in that bar to transpose.
+;;; - A positive or negative number that is the number of semitones by which
+;;;   the pitches of the events in the specified region should be transposed. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword argument:
+;;; - :destructively. T or NIL to indicate whether the pitches of the original
+;;;   event objects should be replaced. T = replace. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Print the pitches before and after applying the method
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((sax (alto-sax :midi-channel 1))
+		     (db (double-bass :midi-channel 2))))
+	:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+	:set-map '((1 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((sax (1 1 1 1 1))
+			    (db (1 1 1 1 1))))))))
+  (print 
+   (loop for e in (get-events-from-to mini 'sax 3 2 5 3)
+      collect (get-pitch-symbol e)))
+  (transpose-events mini 'sax 3 2 5 3 11)
+  (print 
+   (loop for e in (get-events-from-to mini 'sax 3 2 5 3)
+      collect (get-pitch-symbol e))))
+
+=>
+(EF4 AF4 BF4 EF5 CS4 EF4 AF4 BF4 EF5 CS4 EF4 AF4) 
+(D5 G5 A5 D6 C5 D5 G5 A5 D6 C5 D5 G5) 
 
 |#
 ;;; SYNOPSIS
@@ -5552,6 +5801,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;; 1.3.11 as marks are now all symbols, this is obsolete but keep in file for
 ;;; legacy purposes.
 #|
+
 (defmethod add-mark-to-notes ((sc slippery-chicken) mark-function player
                                   notes)
   (loop 
@@ -5566,22 +5816,66 @@ seq-num 5, VN, replacing G3 with B6
 |#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu May 10 18:53:13 BST 2012: Added robodoc entry
+
 ;;; MDE Tue Apr 17 19:56:03 2012 -- 
+
+;;; DATE 
+;;; 17-Apr-2012
+;;;
 ;;; ****m* slippery-chicken/get-section
 ;;; FUNCTION
-;;; 
+;;; Return the section object with the specified reference ID.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - A reference ID.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A section object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((sax (alto-sax :midi-channel 1))
+		     (db (double-bass :midi-channel 2))))
+	:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((sax (1 1 1 1 1))
+			    (db (1 1 1 1 1))))
+			(2 ((sax (1 1 1 1 1))
+			    (db (1 1 1 1 1))))))))
+  (get-section mini 2))
+
+=> 
+SECTION: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: NIL
+                      num-data: 2
+                      linked: T
+                      full-ref: (2)
+ASSOC-LIST: warn-not-found NIL
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+BAR-HOLDER: 
+            start-bar: 6
+            end-bar: 10
+            num-bars: 5
+            start-time: 20.0
+            end-time: 40.0
+            start-time-qtrs: 0
+            end-time-qtrs: 40.0
+            num-notes (attacked notes, not tied): 50
+            num-score-notes (tied notes counted separately): 50 
+            num-rests: 0
+            duration-qtrs: 20.0 
+            duration: 20.0 (20.000)
+
 
 |#
 ;;; SYNOPSIS
@@ -5744,23 +6038,23 @@ seq-num 5, VN, replacing G3 with B6
          (num-scalers (length scalers)))
     (with-open-file 
         (out outfile :direction :output :if-does-not-exist :create
-         :if-exists :error)
+	     :if-exists :error)
       (format out "(")
       (loop 
-          repeat num-loop-sets 
-          for num-points = (between min-points max-points)
-          for point = (random max-start)
-          do
-            (format out "~&(")
-            (loop 
-                repeat num-points
-                ;; for scaler = (random-from-list scalers num-scalers)
-                ;; for point = start
-                do
-                  (format out "~,3f " point)
-                  (incf point (* min-dur
-                                 (random-from-list scalers num-scalers))))
-            (format out ")"))
+	 repeat num-loop-sets 
+	 for num-points = (between min-points max-points)
+	 for point = (random max-start)
+	 do
+	   (format out "~&(")
+	   (loop 
+	      repeat num-points
+	      ;; for scaler = (random-from-list scalers num-scalers)
+	      ;; for point = start
+	      do
+		(format out "~,3f " point)
+		(incf point (* min-dur
+			       (random-from-list scalers num-scalers))))
+	   (format out ")"))
       (format out ")"))))
                   
             
@@ -5785,8 +6079,8 @@ seq-num 5, VN, replacing G3 with B6
 ;;; point and proceed to any other point (i.e. skipping intervening points,
 ;;; always forwards however).  There are always two segments in use at any
 ;;; time.  Which ones are used is selected randomly, then a transition (see
-;;; Fibonacci-transitions below) from repeated segment 1 to repeated segment 2
-;;; is made.  Then the next segment is chosen and the process is repeated
+;;; Fibonacci-transitions) from repeated segment 1 to repeated segment 2 is
+;;; made.  Then the next segment is chosen and the process is repeated
 ;;; (i.e. from previous segment 2 to new segment) until we go above
 ;;; max-start-time.
 ;;; 

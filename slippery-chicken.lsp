@@ -5939,22 +5939,33 @@ BAR-HOLDER:
 
 |#
 ;;; SYNOPSIS
-(defun make-slippery-chicken (name &key rthm-seq-palette rthm-seq-map
-                              set-palette set-map sndfile-palette 
-                              tempo-map tempo-curve (snd-output-dir "/tmp/")
+(defun make-slippery-chicken (name &key 
+			      rthm-seq-palette 
+			      rthm-seq-map
+                              set-palette 
+			      set-map 
+			      sndfile-palette 
+                              tempo-map 
+			      tempo-curve 
+			      (snd-output-dir "/tmp/")
                               instrument-change-map 
                               instruments-write-bar-nums
                               bars-per-system-map
                               staff-groupings
                               rthm-seq-map-replacements
                               set-map-replacements
-                              set-limits-low set-limits-high
-                              instrument-palette ensemble 
-                              rehearsal-letters (fast-leap-threshold 0.125)
+                              set-limits-low 
+			      set-limits-high
+                              instrument-palette 
+			      ensemble 
+                              rehearsal-letters 
+			      (fast-leap-threshold 0.125)
                               instruments-hierarchy 
-                              (title "slippery-chicken-piece") composer
+                              (title "slippery-chicken-piece") 
+			      composer
                               (avoid-melodic-octaves t)
-                              (pitch-seq-index-scaler-min 0.5) (warn-ties t))
+                              (pitch-seq-index-scaler-min 0.5) 
+			      (warn-ties t))
 ;;; ****
   ;; we make the given name a global!!!
   (set name
@@ -6059,52 +6070,102 @@ BAR-HOLDER:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
+;;; SAR Thu May 10 21:26:12 BST 2012: Added robodoc entry.
+
+;;; ****f* slippery-chicken/clm-loops
+;;; FUNCTION
+;;; Generate a sound file from an existing specified sound file by shuffling
+;;; and repeating specified segments within the source sound file. 
+;;;
 ;;; This function was first introduced in the composition "breathing Charlie"
-;;; (under the name loops): see charlie-loops.lsp in that project for
-;;; examples. 
+;;; (under the name loops): see charlie-loops.lsp in that project for examples.
 ;;;
-;;; sndfile is the path of the file to be looped (mono) 
+;;; The first required argument to the function is the name of the sound file,
+;;; including path and extension, looped. This must be a mono file.
 ;;;
-;;; entry-points is a list of times, in seconds, where attacks (or something
-;;; significant) happen in the file.  These are used to create loop start/end
-;;; points.
+;;; The second required argument (entry-points) is a list of times, in seconds,
+;;; where attacks (or something significant) happen in the file. These are used
+;;; to create loop start/end points.
 ;;; 
 ;;; Be careful when doing shuffles as if, e.g., the transpositions list is more
 ;;; than 6 elements, shuffling will take a very long time.
 ;;; 
 ;;; The entry-points are used randomly so that any segment may start at any
-;;; point and proceed to any other point (i.e. skipping intervening points,
-;;; always forwards however).  There are always two segments in use at any
-;;; time.  Which ones are used is selected randomly, then a transition (see
-;;; Fibonacci-transitions) from repeated segment 1 to repeated segment 2 is
-;;; made.  Then the next segment is chosen and the process is repeated
-;;; (i.e. from previous segment 2 to new segment) until we go above
-;;; max-start-time.
+;;; point and transition to any other segment (i.e. skipping intervening
+;;; segments, always forwards however). There are always two segments in use at
+;;; any time. The function randomly selects which segments are used, then a
+;;; transition (see fibonacci-transitions) from repeated segment 1 to repeated
+;;; segment 2 is made. Then the next segment is chosen and the process is
+;;; repeated (i.e. from previous segment 2 to new segment) until the
+;;; max-start-time (in seconds) is achieved.
 ;;; 
-;;; Fibonacci-transitions are first shuffled then made into a circular
-;;; list.  Then they are expanded to create the transpositions (each
-;;; number becomes a series of 1s and 0s--length is the number
-;;; itself--with a transition from all 0s to all 1s: 
-;;; e.g. (fibonacci-transition 20) -> (0 0 0 0 1 0 0 1 0 1 0 1 0 1 0 1 0 1 1 1)
-;;; This is then used to select one or the other of the current two segments.
+;;; fibonacci-transitions are first shuffled and then made into a circular
+;;; list. Then they are expanded to create the transpositions (each number
+;;; becomes a series of 1s and 0s--length is the number itself--with a
+;;; transition from all 0s to all 1s: e.g. (fibonacci-transition 20) -> (0 0 0
+;;; 0 1 0 0 1 0 1 0 1 0 1 0 1 0 1 1 1) This is then used to select one or the
+;;; other of the current two segments.
 ;;;
-;;; The transpositions are simply randomly permutated and selected.
-
-;;; ****f* slippery-chicken/clm-loops
-;;; FUNCTION
-;;; 
+;;; The sample-rate transpositions are simply randomly permutated and selected.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - The name of a sound file, including path and extension.
+;;; - A list of numbers that are time in seconds. These serve as the
+;;;   "entry-points", i.e. loop markers within the file, and delineate the
+;;;   beginning and end of segments that will be shuffled and played back at
+;;;   random in the resulting file.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments.
+;;; - :max-perms. A number that is the maximum number of permutations generated
+;;;   for the transitions. Default = 1000.
+;;; - :fibonacci-transitions. A list of numbers that serve as the number of
+;;;   steps in each transition from one segment to the next. These numbers will
+;;;   be used as the first argument to the call to fibonacci-transition.
+;;;   Default = '(34 21 13 8)
+;;; - :max-start-time. A number that is the maximum time in second at which a
+;;;   segment can start in the resulting sound file. Default = 60.0.
+;;; - :output-dir. The directory path for the output file. Default =  "./"
+;;; - :srate. The sampling rate. If specified by the user, this will generally
+;;;   be a number. By default it takes the CLM global sample-rate, i.e.
+;;;   clm::*clm-srate*
+;;; - :data-format. The data format of the resulting file. This must be
+;;;   preceded by the clm package qualifier. See clm.html for types of data
+;;;   formats, such as mus-bshort, mus-l24flot etc. 
+;;;   Default is the whatever the CLM global clm::*clm-data-format* is set to. 
+;;; - :channels. An integer that is the number of channels in the resulting
+;;;   output. If greater than one, the segments will be automatically panned
+;;;   amongst the channels. Default = 1.
+;;; - :transpositions. A list of number that are transpositions in
+;;;   semitones. These will be shuffled and applied randomly to each
+;;;   consecutive segment in the output. Default = '(0).
+;;; - :num-shuffles. An integer that will indicate how many times the lists
+;;;   passed to fibonacci-transitions and entry-points will be shuffled before
+;;;   generating output. Default =  1.
+;;; - :suffix. A string that will be automatically appended to the end of the
+;;;   file name. Default = "".
+;;; - :src-width. A number that represents the accuracy of the sample-rate
+;;;   conversions undertaken for transposition. The higher this number is, the
+;;;   more accurate the transposition will be, but the longer it will take to
+;;;   process the file. Default = 5.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the name of the file generated. 
 ;;; 
 ;;; EXAMPLE
 #|
+;;; A straightforward example with a number of the variables.
+(clm-loops "/path/to/sndfile-3.aiff"
+	   '(0.180 2.164 4.371 7.575 9.4 10.864)
+	   :fibonacci-transitions '(1 2 3 4 5)
+	   :max-perms 7
+	   :output-dir "/tmp/"
+	   :channels 1
+	   :transpositions '(1 12 -12)
+	   :num-shuffles 3
+	   :src-width 20)
+
+=> "/tmp/sndfile-3-loops-from-00m00.180-.wav"
 
 |#
 ;;; SYNOPSIS
@@ -6231,6 +6292,7 @@ BAR-HOLDER:
 		  (incf output-start (* 0.94 duration))))))))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;;; ****f* slippery-chicken/clm-loops-all
 ;;; FUNCTION

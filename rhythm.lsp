@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 18:40:50 Tue May  1 2012 BST
+;;; $$ Last modified: 14:37:24 Fri May 11 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1069,6 +1069,16 @@ NI
 (defmethod end-slur-p ((r rhythm))
 ;;; ****
   (has-mark r 'end-sl))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri May 11 14:29:38 2012 -- corresponding tests for phrase marks
+(defmethod begin-phrase-p ((r rhythm))
+  (has-mark r 'beg-phrase))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod end-phrase-p ((r rhythm))
+  (has-mark r 'end-phrase))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

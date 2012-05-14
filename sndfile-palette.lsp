@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 12:29:51 Mon Apr  9 2012 BST
+;;; $$ Last modified: 16:06:15 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -125,8 +125,7 @@
 ;;; ****m* sndfile-palette/find-sndfile
 ;;; FUNCTION
 ;;; Return the full directory path and file name of a specified sound file,
-;;; from within the directories given in the PATHS slot (not necessarily
-;;; including those in the palette itself.) 
+;;; from within the directories given in the PATHS slot.
 ;;;
 ;;; ARGUMENTS
 ;;; - A sndfile-palette object.
@@ -142,17 +141,17 @@
 ;;; EXAMPLE
 #|
 (let ((msfp (make-sfp 'sfp-test 
-		      '((sndfile-group-1
-			 (test-sndfile-1))
-			(sndfile-group-2
-			 (test-sndfile-2 test-sndfile-3 
-			  (test-sndfile-4 :frequency 261.61)))
-			(sndfile-group-3
-			 ((test-sndfile-5 :start 0.006 :end 0.182) 
-			  test-sndfile-6)))
-		      :paths
-		      '("/path/to/sndfiles-dir-1"
-			"/path/to/sndfiles-dir-2"))))
+                      '((sndfile-group-1
+                         (test-sndfile-1))
+                        (sndfile-group-2
+                         (test-sndfile-2 test-sndfile-3 
+                          (test-sndfile-4 :frequency 261.61)))
+                        (sndfile-group-3
+                         ((test-sndfile-5 :start 0.006 :end 0.182) 
+                          test-sndfile-6)))
+                      :paths
+                      '("/path/to/sndfiles-dir-1"
+                        "/path/to/sndfiles-dir-2"))))
  (find-sndfile msfp 'test-sndfile-4))
 
 => "/path/to/sndfiles-dir-2/test-sndfile-4.aiff"
@@ -160,7 +159,7 @@
 |#
 ;;; SYNOPSIS
 (defmethod find-sndfile ((sfp sndfile-palette) sndfile)
-;;; ****
+;;; ****                                ;
   (let ((files '())
         (full-path "")
         (string (if (stringp sndfile)
@@ -182,8 +181,8 @@
                       (when (probe-file full-path)
                         (push full-path files))))))
     (case (length files)
-      ;; MDE Mon Apr  9 12:29:26 2012 -- changing from warn to error as this is
-      ;; a show-stopper if we call clm-play 
+      ;; MDE Mon Apr 9 12:29:26 2012 -- changing from warn to error as this
+      ;; is a show-stopper if we call clm-play.
       (0 (error "sndfile-palette::find-sndfile: ~
                  Cannot find sound file '~a'"
                 string))
@@ -270,16 +269,16 @@
 ;;; EXAMPLE
 #|
 (let ((msfp (make-sfp 'sfp-test 
-		      '((sndfile-group-1
-			 (test-sndfile-1))
-			(sndfile-group-2
-			 (test-sndfile-2 test-sndfile-3 
-			  (test-sndfile-4 :frequency 261.61)))
-			(sndfile-group-3
-			 ((test-sndfile-5 :start 0.006 :end 0.182) 
-			  test-sndfile-6)))
-		      :paths '("/path/to/sound-files-dir-1/"
-			       "/path/to/sound-files-dir-2/")))))
+                      '((sndfile-group-1
+                         (test-sndfile-1))
+                        (sndfile-group-2
+                         (test-sndfile-2 test-sndfile-3 
+                          (test-sndfile-4 :frequency 261.61)))
+                        (sndfile-group-3
+                         ((test-sndfile-5 :start 0.006 :end 0.182) 
+                          test-sndfile-6)))
+                      :paths '("/path/to/sound-files-dir-1/"
+                               "/path/to/sound-files-dir-2/")))))
 
 |#
 ;;; SYNOPSIS
@@ -293,14 +292,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* sndfile-palette/make-sfp-from-wavelab-marker-file
+;;; FUNCTION
 ;;; This creates an sfp with automatic groups with <snds-per-group> snds in
 ;;; each auto group and random groups every <random-every>.
 ;;;
 ;;; marker-file could be a list of marker files; they would be concatenated.
-
-;;; ****f* sndfile-palette/make-sfp-from-wavelab-marker-file
-;;; FUNCTION
-;;; 
 ;;; 
 ;;; ARGUMENTS
 ;;; 

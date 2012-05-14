@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 20:47:05 Mon May  7 2012 BST
+;;; $$ Last modified: 13:39:53 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -795,7 +795,8 @@ data: E.
                       (rhythms-duration rsb)))))))
     ;; MDE Mon May  7 17:45:59 2012
     (unless (check-tuplets rsb nil)
-      (auto-tuplets rsb)))
+      (auto-tuplets rsb))
+    t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

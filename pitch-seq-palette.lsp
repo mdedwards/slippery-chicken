@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 20:20:01 Thu Apr  5 2012 BST
+;;; $$ Last modified: 15:01:36 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -487,8 +487,6 @@ Each pitch sequence must have 5 notes (you have 6):
   ;; SYNOPSIS
   (defun create-psps-default (num-notes data-lists)
     ;; ****
-    ;; (print data-lists)
-
     ;; 3.2.11 need to reinitialize our cscls the first time we call
     ;; create-psps, otherwise the only way to get the same piece each time is
     ;; to reload all sc source files i.e. restart lisp

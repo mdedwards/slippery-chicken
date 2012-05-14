@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 20:27:09 Mon Apr 30 2012 BST
+;;; $$ Last modified: 15:27:05 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1299,6 +1299,13 @@ data: (
 ;;; MDE Mon Apr 23 13:13:49 2012 
 (defmethod enharmonic ((c chord) &key (warn t))
   (loop for p in (data c) collect (enharmonic p)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon May 14 15:24:07 2012 
+(defmethod print-simple ((c chord) &optional (stream t) ignore)
+  (declare (ignore ignore))
+  (loop for p in (data c) do
+       (format stream "~a " (data p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

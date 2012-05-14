@@ -32,7 +32,7 @@
 ;;;
 ;;; Creation date:    2nd April 2001
 ;;;
-;;; $$ Last modified: 16:40:56 Wed Apr 18 2012 BST
+;;; $$ Last modified: 20:31:51 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -116,27 +116,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* change-data/get-previous
-;;; FUNCTION
-;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
-;;; SYNOPSIS
 (defmethod get-previous ((cd change-data) parent-ral
                          &optional (how-many 1))
-;;; ****
   (get-previous parent-ral (previous cd) (1- how-many)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -173,33 +154,33 @@
          (gotit nil)
          (changes-here nil)
          (result (loop 
-		    for change in (data cd)
-		    for s = (first change)
-		    for b = (second change) 
-		    for d = (third change) do
-		    ;; (print change)
-		      (cond ((and (= sequence s)
-				  (= bar b))
-			     (setf changes-here t
-				   gotit t)
-			     (return d))
-			    
-			    ((or (< sequence s)
-				 (and (= sequence s)
-				      (< bar b)))
-			     (setf gotit t)
-			     (return current))
-			    (t (setf current d))))))
+                    for change in (data cd)
+                    for s = (first change)
+                    for b = (second change) 
+                    for d = (third change) do
+                    ;; (print change)
+                      (cond ((and (= sequence s)
+                                  (= bar b))
+                             (setf changes-here t
+                                   gotit t)
+                             (return d))
+                            
+                            ((or (< sequence s)
+                                 (and (= sequence s)
+                                      (< bar b)))
+                             (setf gotit t)
+                             (return current))
+                            (t (setf current d))))))
     (unless result
       (setf result
-	    (if gotit
-		;; we asked for data before any was defined....
-		(warn "change-data::get-change-data: ~
+            (if gotit
+                ;; we asked for data before any was defined....
+                (warn "change-data::get-change-data: ~
                        No previous data to return: ~a ~a ~%~a"
-		      sequence bar cd)
-		;; if we gave a sequence/bar number higher than the changes
-		;; made, then we just return the last change.
-		(last-data cd))))
+                      sequence bar cd)
+                ;; if we gave a sequence/bar number higher than the changes
+                ;; made, then we just return the last change.
+                (last-data cd))))
     (values result changes-here)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

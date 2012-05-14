@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 16:52:21 Sun May  6 2012 BST
+;;; $$ Last modified: 21:06:48 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -176,6 +176,9 @@
 ;;; SYNOPSIS
 (defun degree-to-note (degree &optional (scale cm::*scale*))
 ;;; ****
+  ;; MDE Mon May 14 21:01:10 2012 -- 
+  (when (and scale (symbolp scale))
+    (setf scale (cm::find-object scale)))
   (rm-package (cm::note (round degree) :in scale)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -382,6 +385,9 @@
 ;;; SYNOPSIS
 (defun freq-to-note (freq &optional (scale cm::*scale*))
 ;;; ****
+  ;; MDE Mon May 14 21:01:10 2012 -- 
+  (when (and scale (symbolp scale))
+    (setf scale (cm::find-object scale)))
   (rm-package (cm::note freq :hz t :in scale)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -461,6 +467,9 @@
 ;;; SYNOPSIS
 (defun note-to-degree (note &optional (scale cm::*scale*))
 ;;; ****
+  ;; MDE Mon May 14 21:01:10 2012 -- 
+  (when (and scale (symbolp scale))
+    (setf scale (cm::find-object scale)))
   (cm::keynum (rm-package note :cm) :in scale))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -641,6 +650,9 @@
 ;;; SYNOPSIS
 (defun degrees-per-semitone (&optional (scale cm::*scale*))
 ;;; ****
+  ;; MDE Mon May 14 21:01:10 2012 -- 
+  (when (and scale (symbolp scale))
+    (setf scale (cm::find-object scale)))
   (- (note-to-degree 'cs4 scale)
      (note-to-degree 'c4 scale)))
 

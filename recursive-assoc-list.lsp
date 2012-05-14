@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 08:43:03 Mon May  7 2012 BST
+;;; $$ Last modified: 19:58:30 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -419,8 +419,8 @@ data: BEAM
 ;;; keys that serve as pointers to the previous and next objects in the given
 ;;; recursive-assoc-list object, whether recursive or not. 
 ;;;
-;;; The optional <previous> and <higher-next> arguments are only for recursive
-;;; calls. 
+;;; The optional <previous> and <higher-next> arguments are only for internal
+;;; recursive calls and so shouldn't be given by the user.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A recursive-assoc-list object.
@@ -852,7 +852,7 @@ assoc-list::add: named-object is NIL!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Allows new rals to be created automatically; however this assumes that if
-;;; you reference a key that exists, then it's data is a list that data will be
+;;; you reference a key that exists, then its data is a list that data will be
 ;;; added to the end of.
 
 ;;; ****m* recursive-assoc-list/ral-econs
@@ -878,15 +878,15 @@ assoc-list::add: named-object is NIL!
         (last (first (last key))))
     (unless (get-data key ral nil)
       (loop 
-          for k in butlast
-          with keys = '()
-          do
-            (unless (get-data (reverse (cons k keys)) ral nil)
-              (add (make-named-object k (make-ral nil nil)) 
-                   (if keys 
-                       (get-data-data (reverse keys) ral)
-                     ral)))
-            (push k keys))
+         for k in butlast
+         with keys = '()
+         do
+         (unless (get-data (reverse (cons k keys)) ral nil)
+           (add (make-named-object k (make-ral nil nil)) 
+                (if keys 
+                    (get-data-data (reverse keys) ral)
+                    ral)))
+         (push k keys))
       (add (make-named-object last nil)
            (get-data-data butlast ral)))
     (set-data key (list last (econs (get-data-data key ral) data))
@@ -986,14 +986,16 @@ data: BEAM
 ;;;   object that is to be added.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - <new-class>
+;;; - <new-class> The name of an existing subclass of recursive-assoc-list that
+;;; the parcel should be promoted to.
 ;;; 
 ;;; RETURN VALUE
 ;;; A recursive-assoc-list object with DATA of NIL (the "empty parcel")
 ;;; 
 ;;; EXAMPLE
 #|
-;; Add an empty parcel and print the result as well as the new list of REFS
+;; Add two new empty parcels (the first a recursive-assoc-list, by default, the
+;; second a rthm-seq-palette) and return the new list of REFS:
 (let ((ral (make-ral 'mixed-bag 
                      '((jim beam)
                        (wild turkey)
@@ -1003,25 +1005,17 @@ data: BEAM
                                               (viper nest)
                                               (fox hole)))
                                         (white ribbon)))))))))
-  (print (add-empty-parcel ral 'bricolage))
-  (print (get-all-refs ral)))
+  (add-empty-parcel ral 'bricolage)
+  (add-empty-parcel ral 'rsp 'rthm-seq-palette)
+  (get-all-refs ral))
 
 Mark set
 => 
-RECURSIVE-ASSOC-LIST: recurse-simple-data: T
-                      num-data: 0
-                      linked: NIL
-                      full-ref: NIL
-ASSOC-LIST: warn-not-found T
-CIRCULAR-SCLIST: current 0
-SCLIST: sclist-length: 0, bounds-alert: T, copy: T
-LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-NAMED-OBJECT: id: "sub-ral-of-MIXED-BAG", tag: NIL, 
-data: NIL
 
 ((JIM) (WILD) (FOUR ROSES) (FOUR VIOLETS BLUE) (FOUR VIOLETS RED DRAGON)
  (FOUR VIOLETS RED VIPER) (FOUR VIOLETS RED FOX) (FOUR VIOLETS WHITE)
- (BRICOLAGE))
+ (BRICOLAGE) (RSP))
+
 
 |#
 ;;; SYNOPSIS

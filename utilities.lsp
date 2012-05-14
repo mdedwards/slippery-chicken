@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 12:26:20 Mon May 14 2012 BST
+;;; $$ Last modified: 21:12:20 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1951,7 +1951,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #|
 (wavelab-to-audacity-marker-file 
- "/music/limine/nuendo/zkm-compressed-reverb-44-24.MRK" 88200)
+ (concatenate 'string
+              cl-user::+slippery-chicken-home-dir+ 
+              "test-suite/24-7.mrk")
+ 44100)
 |#
 
 ;;; ****f* utilities/wavelab-to-audacity-marker-file

@@ -3633,20 +3633,21 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   parts will be included. Default = NIL.
 ;;; - :start-section. An integer that is the number of the first section for
 ;;;   which the MIDI file is to be generated. Default = 1.
+
 ;;; - :num-sections. An integer that is the number of sections to produce MIDI
-;;;   data for in the MIDI file. If NIL, all sections will be written. NB: This
-;;;   argument should only be used when the num-sections = 1 Default = NIL.
+;;;   data for in the MIDI file. If NIL, all sections will be written. 
+;;;   Default = NIL.
+
 ;;; - :from-sequence. An integer that is the number of the sequence within the
-;;;   specified section from which to start generating MIDI data. Default = 1.
+;;;   specified section from which to start generating MIDI data. NB: This
+;;;   argument can only be used when the num-sections = 1. Default = 1.
+
 ;;; - :num-sequences. An integer that is the number of sequences for which MIDI
-;;;   data is to be generated in the resulting MIDI file, including the ;;;
-;;;   sequence specified in from-sequence. If NIL, all sequences will be ;;;
-;;;   written. Default = NIL.
-;;; - :time-scaler. A number that is the factor by which to scale all durations
-;;;   of the resulting MIDI file. This does not change start-times, only
-;;;   durations, such that values less than 1.0 will produce, for example,
-;;;   staccato notes, and values greater than 1.0 will produce notes that
-;;;   overlap. Default = 1.0.
+;;;   data is to be generated in the resulting MIDI file, including the
+;;;   sequence specified in from-sequence. If NIL, all sequences will be
+;;;   written. NB: This argument can only be used when the num-sections = 1.
+;;;   Default = NIL.
+
 ;;; - :force-velocity. An integer between 0 and 127 (inclusive) that is the
 ;;;   MIDI velocity value which will be given to all notes in the resulting
 ;;;   MIDI file. Default = NIL.
@@ -3702,7 +3703,6 @@ seq-num 5, VN, replacing G3 with B6
                       ;; if nil then all voices.
                       (voices nil)
                       (midi-file "/tmp/sc.mid")
-                      (time-scaler 1.0)
                       (from-sequence 1)
                       (num-sequences nil)
                       ;; if nil we'll write all the sections
@@ -3721,9 +3721,12 @@ seq-num 5, VN, replacing G3 with B6
              (= 1 (get-num-sections sc)))
     (setf num-sections 1))
   ;; MDE Fri May 11 13:02:06 2012 -- 
+  ;; MDE Mon May 14 18:46:01 BST 2012 -- we no longer have this keyword
+  #|
   (when (> time-scaler 1.0)
     (error "slippery-chicken::midi-play: scaling durations by more than 1.0 ~
            would ~%interfere with MIDI note-on/note-off combinations."))
+  |#
   (unless (integer>0 from-sequence)
     (error "slippery-chicken::midi-play: ~
             from-sequence must be an integer >= 1."))
@@ -3747,7 +3750,7 @@ seq-num 5, VN, replacing G3 with B6
       (setf num-sequences (- ns (1- from-sequence)))))
   (let* ((voices-events (get-events-start-time-duration 
                          sc start-section voices 
-                         :time-scaler time-scaler
+                         :time-scaler 1.0
                          :from-sequence from-sequence
                          :num-sequences num-sequences
                          :num-sections num-sections
@@ -4895,7 +4898,6 @@ seq-num 5, VN, replacing G3 with B6
 ;;; - A slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE
-;;; Prints warnings to the listener and returns T.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -4967,7 +4969,8 @@ begin-slur without matching end-slur:
 ;;; - A slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE
-;;; Prints warnings to the listener and returns T.
+;;; Prints T if no warnings are made, otherwise prints warnings to the listener
+;;; and returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|

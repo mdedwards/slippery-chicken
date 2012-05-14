@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified: 08:03:16 Sat Jan  7 2012 ICT
+;;; $$ Last modified: 16:17:38 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -135,7 +135,9 @@
 ;;;   the START item to not be returned.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - (fun #'error).
+;;; - (fun #'error).  By default an error will be signalled if the requested
+;;; subseq is out of bounds.  If you prefer, this could be a warning instead by
+;;; passing #'warn, or nothing at all if NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; A list.
@@ -160,21 +162,27 @@
 (let ((scl (make-sclist '(1 2 3 4 5 6 7 8 9))))
   (sc-subseq scl 0 15))
 
-=
+=>
 sclist::sc-subseq: Illegal indices for above list: 0 15 (length = 9)
    [Condition of type SIMPLE-ERROR]
+
+(let ((scl (make-sclist '(1 2 3 4 5 6 7 8 9))))
+  (sc-subseq scl 0 15 NIL))
+=>
+NIL
 
 |#
 ;;; SYNOPSIS
 (defmethod sc-subseq ((scl sclist) start finish &optional (fun #'error))
 ;;; ****
-  (unless (and (>= start 0)
+  (if (and (>= start 0)
                (<= finish (sclist-length scl))
                (< start finish))
-    (funcall fun "~a~%sclist::sc-subseq: Illegal indices for above list: ~
-                  ~a ~a (length = ~a)" 
-             (data scl) start finish (sclist-length scl)))
-  (subseq (data scl) start finish))
+      (subseq (data scl) start finish)
+      (when fun ; MDE Mon May 14 16:08:44 2012
+        (funcall fun "~a~%sclist::sc-subseq: Illegal indices for above list: ~
+                    ~a ~a (length = ~a)" 
+                 (data scl) start finish (sclist-length scl)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -231,6 +239,9 @@ sclist::sc-subseq: Illegal indices for above list: 0 15 (length = 9)
 ;;;
 ;;; NB: This method adds any element specified as a single item. For combining
 ;;; two lists into one see sclist/combine.
+;;;
+;;; NB: Though related to Lisp's cons function, remember that the order of
+;;; arguments here is the other way round i.e. element after list, not before.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An sclist object.

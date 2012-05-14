@@ -644,14 +644,22 @@
 ;;;   (system) to each page. T = one line per page. Default = NIL.
 ;;; - :start-bar-numbering. An integer that indicates the number to be given as
 ;;;   the first bar number in the resulting. The bars will be numbered every
-;;;   five bars starting from this number. NIL = bar 1. Default = NIL.
+;;;   five bars starting from this number. NB: The value of this argument is
+;;;   passed directly to a CMN function. If a value is given for this argument,
+;;;   slippery chicken's own bar-number writing function will be disabled. NB:
+;;;   It is recommended that a value not be passed for this argument if a value
+;;;   is given for :auto-bar-nums. NIL = bar 1. Default = NIL.
 ;;; - :auto-bar-nums. An integer or NIL to indicate a secondary bar numbering
 ;;;   interval. This is separate from and in addition to the bar-number written
 ;;;   in every part every 5 bars. It corresponds to CMN's
 ;;;   automatic-measure-numbers. If set to e.g. 1, a bar number will be printed
 ;;;   for every measure at the top of each system, or if :by-line, a bar number
-;;;   will be printed at the start of each line. NIL = no secondary bar
-;;;   numbering. Default = NIL.
+;;;   will be printed at the start of each line. NB: The value of this argument
+;;;   is passed directly to a CMN function. If a value is given for this
+;;;   argument, slippery chicken's own bar-number writing function will be
+;;;   disabled. NB: It is recommended that a value not be passed for this
+;;;   argument if a value is given for :start-bar-numbering. NIL = no secondary
+;;;   bar numbering. Default = NIL.
 ;;; - :rehearsal-letters-all-players. T or NIL to indicate whether rehearsal
 ;;;   letters should be placed above the staves of all instruments in a score
 ;;;   (this can be useful when generating parts). If NIL, rehearsal letters are
@@ -3289,28 +3297,57 @@ seq-num 5, VN, replacing G3 with B6
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Thu May 10 12:38:07 BST 2012: Added robodoc entry
+;;; SAR Mon May 14 17:10:09 BST 2012: Thu May 10 12:38:07 BST 2012: Added
+;;; robodoc entry
 
-;;; 11.4.11: event-num is 1-based.  optional args actually required
+;;; 11.4.11: event-num is 1-based.  
 
 ;;; ****m* slippery-chicken/get-clef
 ;;; DATE
 ;;; 11-Apr-2011
 ;;;
 ;;; FUNCTION
-;;; 
+;;; Get the clef symbol attached to a specified event. 
+;;;
+;;; NB: The very first clef symbol in the very first measure of a given
+;;;     player's part is determined by the corresponding instrument object and
+;;;     attached to differently; as such, it cannot be retrieved using this
+;;;     method. 
+;;; NB: All clef symbols after the starting clef are added using the auto-clefs
+;;;     method, either directly or by default in the cmn-display or
+;;;     write-lp-data-for-all methods.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - (NB: The optional arguments are actually required.)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; NB: The optional arguments are actually required.
+;;; - An integer that is the number of the bar from which to return the clef
+;;;   symbol.
+;;; - An integer that is the number of the event object within that bar from
+;;;   which to retrieve the clef symbol.
+;;; - The ID of the player from whose part the clef symbol is to be returned. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A clef symbol.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vc (cello :midi-channel 1))))
+	:tempo-map '((1 (q 96)))
+	:set-palette '((1 ((g2 f4 e5))))
+	:set-map '((1 (1 1 1)))
+	:rthm-seq-palette '((1 ((((5 4) e e e e e e e e e e))
+				:pitch-seq-palette ((1 1 2 2 2 2 3 3 3 1))))) 
+	:rthm-seq-map '((1 ((vc (1 1 1))))))))
+  (auto-clefs mini)
+  (get-clef mini 1 3 'vc))
+
+=> TENOR
 
 |#
 ;;; SYNOPSIS
@@ -3581,7 +3618,6 @@ seq-num 5, VN, replacing G3 with B6
 
 ;;; ****m* slippery-chicken/midi-play
 ;;; FUNCTION
-
 ;;; Generate a MIDI file from the data of the specified slippery-chicken
 ;;; object. 
 ;;; 
@@ -3598,8 +3634,8 @@ seq-num 5, VN, replacing G3 with B6
 ;;; - :start-section. An integer that is the number of the first section for
 ;;;   which the MIDI file is to be generated. Default = 1.
 ;;; - :num-sections. An integer that is the number of sections to produce MIDI
-;;;   data for in the MIDI file, including the start-section. If NIL, all
-;;;   sections will be written. Default = NIL.
+;;;   data for in the MIDI file. If NIL, all sections will be written. NB: This
+;;;   argument should only be used when the num-sections = 1 Default = NIL.
 ;;; - :from-sequence. An integer that is the number of the sequence within the
 ;;;   specified section from which to start generating MIDI data. Default = 1.
 ;;; - :num-sequences. An integer that is the number of sequences for which MIDI
@@ -4847,15 +4883,13 @@ seq-num 5, VN, replacing G3 with B6
 
 ;;; SAR Thu May 10 17:41:49 BST 2012: Added robodc entry
 
-;;; 9.4.11 NB won't allow notes to be under more than one slur/phrase mark
-;;; ****m* slippery-chicken/check-slurs
-
 ;;; DATE
 ;;; 09-Apr-2011
 ;;;
-;;; FUNCTION Print warnings to the Lisp listener if the method finds nested
-;;; slurs, beg-sl marks without corresponding end-sl marks, or end-sl marks
-;;; without corresponding beg-sl marks.
+;;; FUNCTION 
+;;; Print warnings to the Lisp listener if the method finds nested slurs,
+;;; beg-sl marks without corresponding end-sl marks, or end-sl marks without
+;;; corresponding beg-sl marks.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -4876,8 +4910,8 @@ seq-num 5, VN, replacing G3 with B6
                                 :marks (beg-sl 1 end-sl 4 beg-sl 2 end-sl 3
                                                beg-sl 4))))
         :rthm-seq-map '((1 ((vn (1 1 1))))))))
-  (check-slurs mini)
-  (cmn-display mini))
+  (check-slurs mini))
+
 
 =>
 WARNING:
@@ -4923,6 +4957,58 @@ begin-slur without matching end-slur:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Mon May 14 17:24:07 BST 2012: Added robodoc entry
+
+;;; FUNCTION 
+;;; Print warnings to the Lisp listener if the method finds nested phrase
+;;; markings, beg-ph marks without corresponding end-ph marks, or end-ph marks
+;;; without corresponding beg-ph marks.
+;;; 
+;;; ARGUMENTS
+;;; - A slippery-chicken object.
+;;; 
+;;; RETURN VALUE
+;;; Prints warnings to the listener and returns T.
+;;; 
+;;; EXAMPLE
+#|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))))
+	:set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+				:pitch-seq-palette ((1 2 3 4 5 6 7 8))
+				:marks (beg-ph 1 end-ph 4 beg-ph 2 end-ph 3
+					       beg-ph 4))))
+	:rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (check-phrases mini))
+
+=>
+WARNING: 
+rhythm::validate-mark: no Lilypond mark for BEG-PH (but adding anyway).
+WARNING: 
+rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
+WARNING: 
+rhythm::validate-mark: no Lilypond mark for END-PH (but adding anyway).
+WARNING: 
+rhythm::validate-mark: no CMN mark for END-PH (but adding anyway).
+WARNING: 
+rhythm::validate-mark: no Lilypond mark for BEG-PH (but adding anyway).
+WARNING: 
+rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
+WARNING: 
+rhythm::validate-mark: no Lilypond mark for END-PH (but adding anyway).
+WARNING: 
+rhythm::validate-mark: no CMN mark for END-PH (but adding anyway).
+WARNING: 
+rhythm::validate-mark: no Lilypond mark for BEG-PH (but adding anyway).
+WARNING: 
+rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
+
+|#
+;;; SYNOPSIS
 (defmethod check-phrases ((sc slippery-chicken))
 ;;; ****
   (check-slurs-aux sc "phrases" #'begin-phrase-p #'end-phrase-p))

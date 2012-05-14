@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:21:07 Fri May 11 2012 BST
+;;; $$ Last modified: 12:12:19 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4980,10 +4980,11 @@ begin-slur without matching end-slur:
 ;;; SYNOPSIS
 (defmethod check-tuplets ((sc slippery-chicken) &optional (on-fail #'error))
 ;;; ****
-  (loop for bar-num from 1 to (num-bars sc)
+  (loop with ok for bar-num from 1 to (num-bars sc)
      for bars = (get-bar sc bar-num) do
-       (loop for bar in bars do
-            (check-tuplets bar on-fail))))
+     (loop for bar in bars do
+          (setf ok (check-tuplets bar on-fail)))
+     finally (return ok)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Apr 28 16:42:59 2012 -- just for convenience
@@ -5021,9 +5022,10 @@ begin-slur without matching end-slur:
 
 |#
 ;;; SYNOPSIS
-(defmethod check-ties ((sc slippery-chicken) &optional same-spellings)
+(defmethod check-ties ((sc slippery-chicken)
+                       &optional same-spellings (on-fail #'error))
 ;;; ****
-  (loop for player in (players sc) do
+  (loop with ok = t for player in (players sc) do
      ;; reset to the first event
        (next-event sc player nil t)
        (loop
@@ -5031,24 +5033,31 @@ begin-slur without matching end-slur:
           for this = (next-event sc player)
           while this
           do
-            (when (and same-spellings
-                       (is-tied-to this))
-              ;; 24.3.11
-              (unless (pitch-or-chord last)
-                (error "slippery-chicken::check-ties (~a): <this> is tied-to ~
+          (when (and same-spellings
+                     (is-tied-to this))
+            ;; 24.3.11
+            (unless (pitch-or-chord last)
+              (setf ok nil)
+              (when on-fail
+                (funcall on-fail
+                         "slippery-chicken::check-ties (~a): <this> is tied-to ~
                           but <last> has no pitch.~%THIS:~%~a~%LAST:~%~a"
-                       player this last))
-              (setf (pitch-or-chord this) (clone (pitch-or-chord last)))
-              (when (written-pitch-or-chord this)
-                (setf (written-pitch-or-chord this) 
-                      (clone (written-pitch-or-chord last)))))
-            (when (or (and (is-tied-from last)
-                           (not (is-tied-to this)))
-                      (and (is-tied-to this)
-                           (not (is-tied-from last))))
-              (warn "slippery-chicken::check-ties: bad tie, ~a bar ~a" 
-                    player (next-event sc nil)))
-            (setf last this))))
+                         player this last)))
+            (setf (pitch-or-chord this) (clone (pitch-or-chord last)))
+            (when (written-pitch-or-chord this)
+              (setf (written-pitch-or-chord this) 
+                    (clone (written-pitch-or-chord last)))))
+          (when (or (and (is-tied-from last)
+                         (not (is-tied-to this)))
+                    (and (is-tied-to this)
+                         (not (is-tied-from last))))
+            (setf ok nil)
+            (when on-fail
+              (funcall on-fail
+                       "slippery-chicken::check-ties: bad tie, ~a bar ~a" 
+                       player (next-event sc nil))))
+          (setf last this))
+     finally (return ok)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5138,7 +5147,6 @@ begin-slur without matching end-slur:
           (unless (time-sig-equal ts1 (get-time-sig pbar))
             (error "slippery-chicken::check-time-sigs: time signatures ~
                     are not the same at bar ~a" bar-num)))))
-         
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5842,7 +5850,7 @@ EVENT: start-time: 11.000, end-time: 11.500,
 ;;; ****
   (let ((events (get-events-from-to sc player start-bar start-event end-bar
                                     end-event)))
-    (loop for e in events do
+    (loop for e in events collect
          (transpose e semitones :destructively destructively))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:56:49 Tue May  8 2012 BST
+;;; $$ Last modified: 12:26:20 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1393,6 +1393,10 @@
     ;; MDE Mon Apr  9 13:08:16 2012 -- catch divide by zero error
     (let ((x1 (nth (- here 2) env))
           (x2 (nth here env)))
+      ;; MDE Mon May 14 12:26:16 2012 
+      (unless (and (numberp x1) (numberp x2))
+        (error "utilities::interp-aux: y values in envelope must be numbers: ~a"
+               env))
       (when (= x1 x2)
         (error "utilities::interp-aux: can't interpolate ~a in ~a." point env))
       (get-interpd-y point 

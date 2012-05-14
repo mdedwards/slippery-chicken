@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 11:58:55 Fri May  4 2012 CEST
+;;; $$ Last modified: 13:08:04 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1497,7 +1497,12 @@ rthm-seq NIL
 ;;;   rthm-seq-bar::chop for more details.
 ;;; - <unit>. The rhythmic duration that serves as the unit of measurement for
 ;;;   the chop points. Default = 's.
-;;; - <number-bars-first>. T or NIL. Default = T.
+;;; - <number-bars-first>. T or NIL. This argument helps in naming (and
+;;;   therefore debugging) the newly-created bars.  If T, the bars in the
+;;;   original rthm-seq will be renumbered, starting from 1, and this will be
+;;;   reflected in the tag of the new bars.  E.g. if T, a new bar's tag may be
+;;;   new-bar-from-rs1-b3-time-range-1.750-to-2.000, if NIL this would be
+;;;   new-bar-from-rs1-time-range-1.750-to-2.000. Default = T.
 ;;; 
 ;;; RETURN VALUE  
 ;;; A list of rthm-seq objects.
@@ -2857,5 +2862,4 @@ rthm-seq from-multipliers
         (rhythms bar))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF rthm-seq.lsp

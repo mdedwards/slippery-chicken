@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:12:19 Mon May 14 2012 BST
+;;; $$ Last modified: 17:57:11 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3336,14 +3336,14 @@ seq-num 5, VN, replacing G3 with B6
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((vc (cello :midi-channel 1))))
-	:tempo-map '((1 (q 96)))
-	:set-palette '((1 ((g2 f4 e5))))
-	:set-map '((1 (1 1 1)))
-	:rthm-seq-palette '((1 ((((5 4) e e e e e e e e e e))
-				:pitch-seq-palette ((1 1 2 2 2 2 3 3 3 1))))) 
-	:rthm-seq-map '((1 ((vc (1 1 1))))))))
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 96)))
+        :set-palette '((1 ((g2 f4 e5))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((5 4) e e e e e e e e e e))
+                                :pitch-seq-palette ((1 1 2 2 2 2 3 3 3 1))))) 
+        :rthm-seq-map '((1 ((vc (1 1 1))))))))
   (auto-clefs mini)
   (get-clef mini 1 3 'vc))
 
@@ -4912,7 +4912,6 @@ seq-num 5, VN, replacing G3 with B6
         :rthm-seq-map '((1 ((vn (1 1 1))))))))
   (check-slurs mini))
 
-
 =>
 WARNING:
    slippery-chicken::check-slurs (VN): 
@@ -4974,15 +4973,15 @@ begin-slur without matching end-slur:
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((vn (violin :midi-channel 1))))
-	:set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
-	:set-map '((1 (1 1 1)))
-	:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-				:pitch-seq-palette ((1 2 3 4 5 6 7 8))
-				:marks (beg-ph 1 end-ph 4 beg-ph 2 end-ph 3
-					       beg-ph 4))))
-	:rthm-seq-map '((1 ((vn (1 1 1))))))))
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))
+                                :marks (beg-ph 1 end-ph 4 beg-ph 2 end-ph 3
+                                               beg-ph 4))))
+        :rthm-seq-map '((1 ((vn (1 1 1))))))))
   (check-phrases mini))
 
 =>
@@ -5016,31 +5015,35 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod check-slurs-aux ((sc slippery-chicken) name test-beg test-end)
-  (loop for player in (players sc) do
-     ;; reset to the first event
+  (loop with ok = t for player in (players sc) do
+       ;; reset to the first event      ;
        (next-event sc player nil t)
        (loop
           with in-slur
           for e = (next-event sc player)
           while e
           do
-            (cond ((funcall test-beg e)
-                   (if in-slur
+          (cond ((funcall test-beg e)
+                 (if in-slur
+                     (progn
+                       (setf ok nil)
                        (warn "slippery-chicken::check-~a (~a): begin slur ~
-                              at bar ~a but already began slur at bar ~a"
-                             name player (bar-num e) in-slur)
-                       (setf in-slur (bar-num e))))
-                  ((funcall test-end e)
-                   (if in-slur
-                       (setf in-slur nil)
+                                at bar ~a but already began slur at bar ~a"
+                             name player (bar-num e) in-slur))
+                     (setf in-slur (bar-num e))))
+                ((funcall test-end e)
+                 (if in-slur
+                     (setf in-slur nil)
+                     (progn
+                       (setf ok nil)
                        (warn "slippery-chicken::check-~a (~a): end slur at ~
-                              bar ~a but no begin slur"
-                             name player (bar-num e)))))
+                                bar ~a but no begin slur"
+                             name player (bar-num e))))))
           finally
-            (when in-slur
-              (warn "slippery-chicken::check-~a (~a): end slur missing at ~
-                     end of piece" name player)))))
-           
+          (when in-slur
+            (warn "slippery-chicken::check-~a (~a): end slur missing at ~
+                     end of piece" name player)))
+       finally (return ok)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

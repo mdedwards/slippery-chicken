@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   sc-map -> rthm-seq-map
 ;;;
-;;; Version:          0.9.0
+;;; Version:          1.0.0-beta
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

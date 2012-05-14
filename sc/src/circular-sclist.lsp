@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    February 19th 2001
 ;;;
-;;; $$ Last modified: 09:53:17 Fri Jan 13 2012 ICT
+;;; $$ Last modified: 21:25:56 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -308,8 +308,10 @@
 ;;;   print a warning if when an attempt is made to access the object using an
 ;;;   out-of-bounds index number (i.e., not enough elements in the list). 
 ;;;   T = print a warning. Default = T. 
-;;; - keywords argument :copy. T or NIL to indicate whether the data list
-;;;   should be copied to a new object or modified in the original. T =
+
+;;; - keyword argument :copy. T or NIL to indicate whether the given data list
+;;;   should be copied (any slippery-chicken class instances will be cloned),
+;;;   with subsequent modifications being applied to the copy. T =
 ;;;   copy. Default = T.
 ;;;
 ;;; RETURN VALUE  

@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    March 31st 2002
 ;;;
-;;; $$ Last modified: 09:55:56 Thu Feb 23 2012 GMT
+;;; $$ Last modified: 20:16:16 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -87,12 +87,7 @@
   (sort (data scm) #'(lambda (x y) (< (id x) (id y)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Fri May  4 17:43:47 BST 2012: Added robodoc entry
-
-;;; MDE original comment:
-;;; Section may be a simple key reference into the map or a list of references.
-;;; sequence is 1-based.
 
 ;;; ****m* simple-change-map/scm-get-data
 ;;; FUNCTION
@@ -124,7 +119,7 @@ data: 3
     (let ((result (get-data ref scm nil)))
       (if result
           result
-	  (get-nearest-by-number scm ref)))))
+          (get-nearest-by-number scm ref)))))
      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

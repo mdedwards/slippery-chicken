@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified: 16:17:38 Mon May 14 2012 BST
+;;; $$ Last modified: 21:26:09 Mon May 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -516,9 +516,10 @@ data: (0 1 2 3 4 5 6 7 8 9)
 ;;;   should be issued when a request is given to set or get an out-of-bounds
 ;;;   element (i.e. not enough elements in list). T = print warning. Default =
 ;;;   NIL.  
-;;; - keyword argument :copy. T or NIL to indicate whether the data list of the
-;;;   given sclist object should be copied, with modifications being applied to
-;;;   the copy, or modified itself (setf'd). T = copy. Default = T.
+;;; - keyword argument :copy. T or NIL to indicate whether the data in the list
+;;;   should be copied (any slippery-chicken class instances will be cloned),
+;;;   with subsequent modifications being applied to the copy. T =
+;;;   copy. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns an sclist object. 
@@ -558,8 +559,8 @@ data: (1 2 3 4 5 6 7)
 (defun my-copy-list (list)
   (if (typep list 'sclist)
       (clone list)
-    (loop for i in list collect 
-          (basic-copy-object i))))
+      (loop for i in list collect 
+           (basic-copy-object i))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

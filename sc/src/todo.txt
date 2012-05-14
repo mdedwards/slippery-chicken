@@ -593,3 +593,11 @@ clm-play: make extension dependent on output format
 sc::check-ties: check to see if tied notes are the same pitch or chord,
 allowing perhaps enharmonic equivalents 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* simple-change-map/scm-get-data
+;;; MDE original comment:
+;;; Section may be a simple key reference into the map or a list of references.
+;;; sequence is 1-based.
+I don't think this is true any longer as simple-change-maps cannot be recursive
+and IDS have to be integers.  Right? 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

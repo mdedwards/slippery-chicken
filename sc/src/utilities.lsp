@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 21:12:20 Mon May 14 2012 BST
+;;; $$ Last modified: 16:55:02 Tue May 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1790,8 +1790,7 @@
               result)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; This function reads a wavelab marker file and prints the list of arguments
+;;; These functions read a wavelab marker file and prints the list of arguments
 ;;; necessary to create a sndfile object for a sndfile-palette.  The marker
 ;;; file defines sections with start/stop marker pairs, the first one of which
 ;;; should be named (the description).
@@ -1799,120 +1798,87 @@
 ;;; marker-file is the path to the file
 ;;; sndfile is the name of the file, not the whole path, rather the name given
 ;;; at the start of a new sndfile in a palette
+;;;
+;;; Used by parse-wavelab-marker-files-for-sections and friends in
+;;; sndfile-palette.lsp  
 
 (defstruct wavelab-section
   (sndfile) (description) (start) (end))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; This handles as many marker files as you want, if they're in a list.  Only
 ;;; caveat is that each file must refer to the same sndfile...but that could be
 ;;; easily altered. 
 
-;;; ****f* utilities/parse-wavelab-marker-files-for-sections
-;;; FUNCTION
-;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
-;;; SYNOPSIS
 (defun parse-wavelab-marker-files-for-sections 
     (marker-files sndfile
-     &optional (sampling-rate 44100) (print nil))
-;;; ****
+     &key (sampling-rate 44100) (print nil))
   (if (listp marker-files)
       (loop for file in marker-files appending
             (parse-wavelab-marker-file-for-sections
-             file sndfile sampling-rate print))
+             file sndfile :sampling-rate sampling-rate :print print))
     (parse-wavelab-marker-file-for-sections
-     marker-files sndfile sampling-rate print)))
+     marker-files sndfile :sampling-rate sampling-rate :print print)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; This handles one marker file.
-;;; ****f* utilities/parse-wavelab-marker-file-for-sections
-;;; FUNCTION
-;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
-;;; SYNOPSIS
 (defun parse-wavelab-marker-file-for-sections
     (marker-file sndfile
-     &optional (sampling-rate 44100) (print nil))
-;;; ****
+     &key (sampling-rate 44100) (print nil))
   (with-open-file 
       (mrk marker-file :direction :input :if-does-not-exist :error)
     (loop with name 
-        with time 
-        with last-time = -1.0
-        with start 
-        with end 
-        with region-name
-        with count = 0 
-        with result = '()
-        do
-          (multiple-value-bind
-              (line eof)
-              (read-line mrk nil)
-            (multiple-value-bind
-                (param value)
-                (get-parameter line)
-              (when (string= param "name")
-                (setf name value)
-                (incf count)
-                ;; only the start markers are given names, we assume
-                (when (oddp count)
-                  (setf region-name name)))
-              (when (string= param "pos")
-                (setf time (float (/ (read-from-string value)
-                                     sampling-rate)))
-                (when (= time last-time)
-                  (error "utilities::parse-wavelab-marker-file-for-sections: ~
+       with time 
+       with last-time = -1.0
+       with start 
+       with end 
+       with region-name
+       with count = 0 
+       with result = '()
+       do
+       (multiple-value-bind
+             (line eof)
+           (read-line mrk nil)
+         (multiple-value-bind
+               (param value)
+             (get-parameter line)
+           (when (or (string= param "name")
+                     ;; MDE Tue May 15 14:23:08 2012 -- wavelab 7 uses Name8
+                     (string= param "name8"))
+             (setf name value)
+             (incf count)
+             ;; only the start markers are given names, we assume
+             (when (oddp count)
+               (setf region-name name)))
+           (when (string= param "pos")
+             (setf time (float (/ (read-from-string value)
+                                  sampling-rate)))
+             (when (= time last-time)
+               (error "utilities::parse-wavelab-marker-file-for-sections: ~
                           Two markers at same point: ~a"
-                         time))
-                (setf last-time time)
-                (if (oddp count)
-                    (setf start time)
-                  (progn 
-                    (unless (string= name "*")
-                      (warn "parse-wavelab-marker-file-for-sections: ~
-                             Got marker with name \"~a\" at ~a; ~
-                             expected no name"
-                            name (secs-to-mins-secs time)))
-                    (setf end time)
-                    (push (make-wavelab-section :sndfile sndfile 
-                                                :description region-name
-                                                :start start
-                                                :end end)
-                          result)
-                    (when print
-                      (format t "~%(~a ~%~t:description \"~a\" ~
+                      time))
+             (setf last-time time)
+             (if (oddp count)
+                 (setf start time)
+                 (progn 
+                   (unless (string= name "*")
+                     (warn "parse-wavelab-marker-file-for-sections: ~
+                            Got marker with name \"~a\" ~%at ~a (pos ~a); ~
+                            expected no name."
+                           name (secs-to-mins-secs time) value))
+                   (setf end time)
+                   (push (make-wavelab-section :sndfile sndfile 
+                                               :description region-name
+                                               :start start
+                                               :end end)
+                         result)
+                   (when print
+                     (format t "~%(~a ~%~t:description \"~a\" ~
                                  ~%~t:start ~,5f :end ~,5f)"
-                              sndfile region-name start end)))))
-              (when eof 
-                (format t "~&~a markers read from ~a" count marker-file)
-                (return (nreverse result))))))))
+                             sndfile region-name start end)))))
+           (when eof 
+             (format t "~&~a markers read from ~a~%" count marker-file)
+             (return (nreverse result))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1957,6 +1923,9 @@
  44100)
 |#
 
+;;; MDE Tue May 15 16:53:24 2012 
+;;; writes a .txt file suitable for import to audacity with the same name and
+;;; in the same directory as the file argument.
 ;;; ****f* utilities/wavelab-to-audacity-marker-file
 ;;; FUNCTION
 ;;; 
@@ -1983,33 +1952,35 @@
         (txt (format nil "~a~a.txt" 
                      (directory-namestring file)
                      (pathname-name file))
-         :direction :output :if-exists :error)
+             :direction :output :if-exists :error)
       (loop 
-          with name 
-          with time 
-          with count = 0 
-          do
-            (multiple-value-bind
-                (line eof)
-                (read-line mrk nil)
-              (multiple-value-bind
-                  (param value)
-                  (get-parameter line)
-                (when (string= param "name")      
-                  (setf name (if (string= value "*")
-                                 nil
-                               value))
-                  (incf count))
-                (when (string= param "pos")
-                  (setf time (float (/ (read-from-string value)
-                                       sampling-rate)))
-                  (if name
-                      (format txt "~&~,6f        ~a" time name)
-                    (format txt "~&~,6f" time)))
-                (when eof 
-                  (terpri txt)
-                  (format t "~%~%~a markers read~%" count)
-                  (return t))))))))
+         with name 
+         with time 
+         with count = 0 
+         do
+         (multiple-value-bind
+               (line eof)
+             (read-line mrk nil)
+           (multiple-value-bind
+                 (param value)
+               (get-parameter line)
+             (when (or (string= param "name")
+                       ;; MDE Tue May 15 14:23:08 2012 -- wavelab 7 uses Name8  
+                       (string= param "name8"))
+               (setf name (if (string= value "*")
+                              nil
+                              value))
+               (incf count))
+             (when (string= param "pos")
+               (setf time (float (/ (read-from-string value)
+                                    sampling-rate)))
+               (if name
+                   (format txt "~&~,6f        ~a" time name)
+                   (format txt "~&~,6f" time)))
+             (when eof 
+               (terpri txt)
+               (format t "~%~%~a markers read~%" count)
+               (return t))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2039,7 +2010,7 @@
 |#
 ;;; SYNOPSIS
 (defun parse-wavelab-marker-file-for-loops
-    (marker-file &optional (sampling-rate 44100) (max-length 1.0))
+    (marker-file &key (sampling-rate 44100) (max-length 1.0))
 ;;; ****
   (let ((loop-points '())
         (in-loop nil)
@@ -2074,7 +2045,10 @@
                     (param value)
                     (get-parameter line)
                   ;; (print value)
-                  (when (string= param "name")
+                  (when (or (string= param "name")
+                            ;; MDE Tue May 15 14:23:08 2012 -- wavelab 7 uses
+                            ;; Name8   
+                            (string= param "name8"))
                     (incf count)
                     (if (string= value "loop")
                         (progn
@@ -2151,6 +2125,10 @@
 
 ;;; If this fails it's probably because there's a tab between time and
 ;;; label instead of spaces: save in emacs to detab.
+
+;;; NB Beware that marker files created on different operating systems from the
+;;; one one which this function is called might trigger errors due to newline
+;;; character mismatches.
 
 ;;; (parse-audacity-label-file-for-loops "loops.txt")
 

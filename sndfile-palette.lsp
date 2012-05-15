@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 16:06:15 Mon May 14 2012 BST
+;;; $$ Last modified: 16:47:33 Tue May 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -294,10 +294,14 @@
 
 ;;; ****f* sndfile-palette/make-sfp-from-wavelab-marker-file
 ;;; FUNCTION
-;;; This creates an sfp with automatic groups with <snds-per-group> snds in
-;;; each auto group and random groups every <random-every>.
+;;; This creates a sndfile-palette with automatic groups with <snds-per-group>
+;;; snds in each auto group and random groups every <random-every>.
 ;;;
 ;;; marker-file could be a list of marker files; they would be concatenated.
+;;;
+;;; NB Beware that marker files created on different operating systems from the
+;;; one one which this function is called might trigger errors due to newline
+;;; character mismatches.
 ;;; 
 ;;; ARGUMENTS
 ;;; 
@@ -324,51 +328,60 @@
 ;;; ****
   ;; do this just to reset the random number generator
   (random-rep 10 t)
-  (let* ((snds (parse-wavelab-marker-files-for-sections marker-file sndfile
-                                                        sampling-rate))
+  (let* ((snds (parse-wavelab-marker-files-for-sections
+                marker-file sndfile :sampling-rate sampling-rate))
+         (sndsc (make-cscl snds))
          (num-snds (length snds))
          (left-over (mod num-snds snds-per-group))
          (sfp
           (loop 
-              for count from 1
-              with i = 0 
-              with sublist
-              with group
-              with group-num = 0
-              with random-group-num = 0
-              with do-random
-              until (= i num-snds)
-              do
-                ;; every so often get a random one!
-                (setf do-random (zerop (mod count random-every))
-                      sublist 
-                      (if do-random
-                          (loop for n in
-                                (loop repeat snds-per-group collect 
-                                      (random-rep num-snds))
-                              collect (nth n snds))
-                        (subseq snds i 
-                                (incf i 
-                                      (if (zerop left-over)
-                                          snds-per-group
-                                        (progn
-                                          (decf left-over)
-                                          (1+ snds-per-group))))))
-                      sublist (loop for snd in sublist collect
-                                    (wavelab-section-to-list snd))
-                      group (list 
-                             (if do-random
-                                 (format nil "random~a" 
-                                         (incf random-group-num))
-                               (format nil "auto~a" (incf group-num)))
-                             sublist))
-                (when (member nil sublist)
-                  (error "sndfile-palette::make-sfp-from-wavelab-~
+             for count from 1
+             with i = 0 
+             with sublist
+             with group
+             with group-num = 0
+             with random-group-num = 0
+             with do-random
+             until (>= i num-snds)
+             do
+             ;; every so often get a random one!
+             (setf do-random (zerop (mod count random-every))
+                   sublist 
+                   (if do-random
+                       (loop for n in
+                            (loop repeat snds-per-group collect 
+                                 (random-rep num-snds))
+                            collect (nth n snds))
+                       ;; MDE Tue May 15 14:36:15 2012 -- this fails when
+                       ;; there's only a few markers so use a cscl instead.
+                       #|
+                       (subseq snds (print i)
+                               (print (incf i 
+                                     (if (zerop left-over)
+                                         snds-per-group
+                                         (progn
+                                           (decf left-over)
+                                           (1+ snds-per-group)))))))
+                       |#
+                       ;; MDE Tue May 15 14:36:15 2012 
+                       (loop repeat snds-per-group 
+                          do (incf i)
+                          collect (get-next sndsc)))
+                   sublist (loop for snd in sublist collect
+                                (wavelab-section-to-list snd))
+                   group (list 
+                          (if do-random
+                              (format nil "random~a" 
+                                      (incf random-group-num))
+                              (format nil "auto~a" (incf group-num)))
+                          sublist))
+             (when (member nil sublist)
+               (error "sndfile-palette::make-sfp-from-wavelab-~
                                marker-file: ~
                                ~% somehow nil got in there as a sound!: ~
                                i =~a (after inc!) ~%~a"
-                         i sublist))
-              collect group)))
+                      i sublist))
+             collect group)))
     (make-sfp 'auto sfp 
               :paths paths 
               :extensions extensions 
@@ -419,8 +432,8 @@
                                                     (sampling-rate 44100)
                                                     (print t))
 ;;; ****
-  (let* ((snds (parse-wavelab-marker-files-for-sections marker-file sndfile
-                                                       sampling-rate))
+  (let* ((snds (parse-wavelab-marker-files-for-sections
+                marker-file sndfile :sampling-rate sampling-rate))
          (al (make-assoc-list 'from-group-markers nil)))
     (loop 
         for snd in snds

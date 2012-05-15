@@ -5,7 +5,7 @@
 ;;;
 ;;; File:             all.lsp
 ;;;
-;;; Version:          1.0.0-beta
+;;; Version:          1.0.0-beta1
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -59,7 +59,7 @@
 (in-package :cl-user)
 
 ;;; Numbers as strings, just in case we want version numbers like "1.2beta"
-(defconstant +slippery-chicken-version+ "1.0.0-beta (svn revision 1634 2012-05-08 08:49:01)")
+(defconstant +slippery-chicken-version+ "1.0.0-beta1 (svn revision 1645 2012-05-15 17:06:31)")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 

@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> time-sig
 ;;;
-;;; Version:          1.0.0-beta
+;;; Version:          1.0.0-beta1
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

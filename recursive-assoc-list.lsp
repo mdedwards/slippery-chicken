@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 19:58:30 Mon May 14 2012 BST
+;;; $$ Last modified: 09:23:48 Wed May 16 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -531,7 +531,7 @@ data: TURKEY
                             ;; recursively called with.
                             ((null next-in-list) higher-next))
                  this-data (data this))
-           ;; MDE Sat Jan 28 18:20:29 2012 -- only if the ral has data
+         ;; MDE Sat Jan 28 18:20:29 2012 -- only if the ral has data
            (if (and (is-ral this-data) (data this-data))
                (progn 
                  ;; in case we're relinking
@@ -1374,9 +1374,11 @@ data: RIBBON
         while ref
         for current = (get-data ref ral)
         for this = (when current (this current))
-        do (when (and (not single-ref-as-list)
-                      (= 1 (length this)))
-             (setf this (first this)))
+        do 
+         (print ref)
+         (when (and (not single-ref-as-list)
+                    (= 1 (length this)))
+           (setf this (first this)))
         collect this
         do (setf ref (when current (next current))))))
 

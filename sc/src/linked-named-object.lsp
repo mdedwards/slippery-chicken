@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 10th 2002
 ;;;
-;;; $$ Last modified: 23:42:59 Mon Dec 12 2011 ICT
+;;; $$ Last modified: 09:18:07 Wed May 16 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -92,6 +92,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun no-to-lno (named-object &optional previous this next)
+  ;; (print 'no-to-lno)
+  ;; (print (id named-object))
   (let ((lno (clone-with-new-class named-object 'linked-named-object)))
     ;; make previous and next slots just named-objects, not the
     ;; linked-named-objects that they may well be

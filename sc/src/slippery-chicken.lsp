@@ -5308,6 +5308,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; 
 ;;; EXAMPLE
 #|
+
 (let ((mini
        (make-slippery-chicken
         '+mini+
@@ -5344,7 +5345,6 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: ALTO-SAX, tag: NIL, 
 data: NIL
 
-
 |#
 ;;; SYNOPSIS
 (defmethod get-starting-ins ((sc slippery-chicken) player) ; symbol
@@ -5365,22 +5365,179 @@ data: NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May 16 11:45:56 EDT 2012: Added robodoc entry
+
 ;;;  lilypond
+
 ;;; ****m* slippery-chicken/write-lp-data-for-all
 ;;; FUNCTION
+
+;;; Generate all of the .ly files required by the LilyPond application for
+;;; printable output from the musical data stored in the given slippery-chicken
+;;; object.
+;;;
+;;; This method produces .ly files for the score as well as the parts for all
+;;; individual players in the ensemble (unless otherwise specified by the
+;;; user). The files are automatically named based on the value passed to the
+;;; TITLE slot of the given slippery-chicken object.
 ;;; 
+;;; NB: This method only produces the .ly files. These must be rendered by the
+;;;     LilyPond application separately for PDF output. See the slippery
+;;;     chicken installation web page and the manual page on Output for more
+;;;     detail.
+;;;
+;;; NB: Many of the arguments for this method pass their values directly to
+;;;     LilyPond parameters. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :base-path. A string that is the directory path only for the resulting
+;;;    files. The method will automatically generate the file names and
+;;;    extensions. Default =  "/tmp/".
+;;; - :start-bar. An integer that is the first bar of the given
+;;;   slippery-chicken object for which output is to be generated. If NIL, the
+;;;   start-bar will be set to 1. Default = NIL.
+;;; - :end-bar. An integer that is the last bar of the given slippery-chicken
+;;;   object for which output is to be generated. If NIL, all bars after the
+;;;   start bar will be generated. Default = NIL.
+;;; - :players. A list of player IDs or NIL to indicate which players' parts
+;;;   are to be generated and included in the resulting score. If NIL, all
+;;;   players' parts will be generated and included in the score. This can be
+;;;   handy, for example, for excluding the computer part of a piece for tape
+;;;   and instruments. Default = NIL.
+;;; - :respell-notes. NIL, T or a list to indicate whether the method should
+;;;   also call the respell-notes method on the given slippery-chicken object
+;;;   before generating the output to undertake enharmonic changes. If a list,
+;;;   then these are the specific enharmonic corrections to be undertaken. If
+;;;   this is T, the method will process all pitches for potential
+;;;   respelling. If NIL, no respelling will be undertaken. See the
+;;;   documentation for the respell-notes method for more. Default = NIL.
+;;; - :auto-clefs. T or NIL to indicate whether the auto-clefs method should be
+;;;   called to automatically place mid-measure clefs in the parts of
+;;;   instruments that use more than one clef. T = automatically place clefs.
+;;;   Default = T
+;;; - :in-c. T or NIL to indicate whether the full score is to contain written
+;;;   pitches or sounding pitches. NB: Some transposing C instruments still
+;;;   transpose at the octave in C scores, such as double-bass and piccolo.
+;;;   NB: Parts will always be transposed. T = sounding pitches. Default = NIL.
+;;; - :page-nums. T or NIL to indicate whether page numbers should
+;;;   automatically be added to each page (not including the start page) of the
+;;;   output. T = add page numbers. Default = T.
+;;; - :rehearsal-letters-font-size. A number that indicates the font size of
+;;;   rehearsal letters in lilypond output. Default = 18.
+;;; - :rehearsal-letters-all-players. T or NIL to indicate whether rehearsal
+;;;   letters are to be placed in all parts generated. T = all parts. 
+;;;   Default = T. NB: This must be set to T when the user would like the
+;;;   rehearsal letters in all individual lilypond parts, but printing with CMN
+;;;   thereafter will result in rehearsal letters in all parts as well.
+;;; - tempi-all-players.  T or NIL to indicate whether tempo marks are to be
+;;;   placed in all parts generated. T = all parts. Default = T.
+;;; - :all-bar-nums. T o NIL to indicate whether the corresponding bar number
+;;;   should be printed above every measure in the score (not including
+;;;   multi-bar rests). T = add a bar number to every measure. Default = NIL. 
+;;; - :paper. A string to indicate the paper size for LilyPond output. Only
+;;;   LilyPond's predefined paper sizes are valid here. According to the
+;;;   LilyPond manual, these include: "a4, letter, legal, and 11x17... Many
+;;;   more paper sizes are supported... For details, see scm/paper.scm, and
+;;;   search for the definition of paper-alist." NB: This argument will only
+;;;   adjust paper size, but not margins or line widths, which are adjusted
+;;;   using the arguments below. Default = "a4"
+;;; - :staff-size. An integer that indicates the size of the notes and staves
+;;;   in the resulting output. Default = 14.
+;;; - :group-barlines. T or NIL to indicate whether bar lines should be drawn
+;;;   through the whole staff group or just one staff. T = through the whole
+;;;   staff group. Default = T.
+;;; - :landscape. T or NIL to indicate whether the paper format should be
+;;;   landscape or portrait. T = landscape. NB: This argument will only adjust
+;;;   paper layout, but not margins or line widths, which are adjusted using
+;;;   the arguments below.  Default = NIL.
+;;; - :barline-thickness. A number that is the relative thickness of the bar
+;;;   lines. Default = 0.5.
+;;; - :top-margin. A number that is the margin at the top of the page in
+;;;   millimeters.  Default = 10.
+;;; - :bottom-margin. A number that is the margin at the bottom of the page in
+;;;   millimeters.  Default = 10.
+;;; - :left-margin. A number that is the margin at the left of the page in
+;;;   millimeters.  Default = 20.
+;;; - :line-width. A number that is the width of each line in centimeters.
+;;;   Default = 17.
+;;; - :page-turns. T or NIL to indicate if LilyPond should attempt to optimize
+;;;   page breaks for page turns in parts. T = optimize page breaks. 
+;;;   Default = NIL.
+;;; - :min-page-turn. A two-item list indicating the minimum rest necessary for
+;;;   the method to automatically place a page turn, in a format similar to
+;;;   that of a time signature; i.e., '(2 1) would mean a minimum of 2 whole
+;;;   rests. Default = '(2 1))
+;;; - :use-custom-markup. T or NIL. Set to T when using a number of marks that
+;;;   are specific to LilyPond, such as 'bartok or any of the marks that use
+;;;   eps graphics files. Default = NIL.
+;;; - :lp-version. A string that will be added to each .ly file generated in
+;;;   conjunction with the LilyPond \version command. Default = "2.14.2"
+;;; - :process-event-fun. NIL or a user-defined function that will be applied
+;;;   to every event object in the given slippery-chicken object. If NIL, no
+;;;   processes will be applied. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; T
 ;;; 
 ;;; EXAMPLE
 #|
+;;; An example with values for the most frequently used arguments
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((fl (flute :midi-channel 1))
+		     (cl (b-flat-clarinet :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+	:staff-groupings '(2 1)
+	:tempo-map '((1 (q 84)) (9 (q 72)))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1 1 1 1))
+		   (2 (1 1 1 1 1 1 1 1))
+		   (3 (1 1 1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+				:pitch-seq-palette ((1 2 3))
+				:marks (bartok 1)))
+			    (2 ((((4 4) (q) e (s) s h))
+				:pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((fl (1 2 1 2 1 2 1 2))
+			    (cl (1 2 1 2 1 2 1 2))
+			    (vc (1 2 1 2 1 2 1 2))))
+			(2 ((fl (1 2 1 2 1 2 1 2))
+			    (cl (1 2 1 2 1 2 1 2))
+			    (vc (1 2 1 2 1 2 1 2))))
+			(3 ((fl (1 2 1 2 1 2 1 2))
+			    (cl (1 2 1 2 1 2 1 2))
+			    (vc (1 2 1 2 1 2 1 2)))))
+	:rehearsal-letters '(3 11 19))))
+  (write-lp-data-for-all mini 
+			 :start-bar 7
+			 :end-bar 23
+			 :paper "letter"
+			 :landscape t
+			 :respell-notes nil
+			 :auto-clefs nil
+			 :staff-size 17
+			 :in-c nil
+			 :barline-thickness 3.7
+			 :top-margin 40
+			 :bottom-margin 60
+			 :left-margin 40
+			 :line-width 22
+			 :page-nums t
+			 :all-bar-nums t
+			 :use-custom-markup t
+			 :rehearsal-letters-font-size 24
+			 :lp-version "2.12.1"
+			 :group-barlines nil
+			 :page-turns t
+			 :players '(fl cl)
+			 :tempi-all-players t))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -5462,7 +5619,7 @@ data: NIL
                              (remove-if-not #'(lambda (x) (member x playrs))
                                             sg))))
             (loop for sg in grpsb for sgl = (length sg)
-                 ;; don't try and create groups of zero players
+	       ;; don't try and create groups of zero players
                unless (zerop sgl) collect sgl)))
          ;; MDE Fri Dec  9 19:33:28 2011 -- replace spaces with hyphens so good
          ;; for file names  
@@ -5586,10 +5743,10 @@ data: NIL
         (terpri out)
         (loop for pname in players-strings
            for player in playrs do
-           (when (needs-transposition player)
-             (new-voice (written-pname pname) player out 
-                        (concatenate 'string pname "-written")))
-           (new-voice pname player out))
+	     (when (needs-transposition player)
+	       (new-voice (written-pname pname) player out 
+			  (concatenate 'string pname "-written")))
+	     (new-voice pname player out))
         (terpri out)
         (format out "~%music = {~%  <<")
         ;; write the music variable, staff groupings etc.
@@ -5601,24 +5758,24 @@ data: NIL
            ;; this must come after 'in players-strings' otherwise we crash
            for end = (= gcount gnum) do
            ;; (format t "~%~a ~a ~a" pname gcount gnum)
-           (score-tag pname out (= 1 gcount) end)
-           (if end
-               (setf gnum (pop groups)
-                     gcount 1)
-               (incf gcount)))
+	     (score-tag pname out (= 1 gcount) end)
+	     (if end
+		 (setf gnum (pop groups)
+		       gcount 1)
+		 (incf gcount)))
         (format out "~%  >>~%}")
         ;; create the written parts variable
         (format out "~%written = {~%  <<")
         (loop for pname in players-strings
            for player in playrs do
-           (when (needs-transposition player)
-             (score-tag (written-pname pname) out)))
+	     (when (needs-transposition player)
+	       (score-tag (written-pname pname) out)))
         (format out "~%  >>~%}"))
       ;; write the main score file
       (with-open-file
           (out 
            (concatenate 'string path
-                         (format nil "_~a-score.ly" title-hyphens))
+			(format nil "_~a-score.ly" title-hyphens))
            :direction :output :if-does-not-exist :create
            :if-exists :rename-and-delete)
         (format out "~&\\version \"~a\"" lp-version)
@@ -5630,25 +5787,25 @@ data: NIL
       ;; write the parts
       (loop for player in playrs
          for pname in players-strings do
-         (with-open-file 
-             (out 
-              (concatenate 'string path (format nil "~a-~a-part.ly" 
-                                                 title-hyphens pname))
-              :direction :output :if-does-not-exist :create
-              :if-exists :rename-and-delete)
-           (if (needs-transposition player)
-               (part (written-pname pname) out "written")
-               (part pname out))))
+	   (with-open-file 
+	       (out 
+		(concatenate 'string path (format nil "~a-~a-part.ly" 
+						  title-hyphens pname))
+		:direction :output :if-does-not-exist :create
+		:if-exists :rename-and-delete)
+	     (if (needs-transposition player)
+		 (part (written-pname pname) out "written")
+		 (part pname out))))
       ;; write the notes to individual files
       (loop for player in playrs
          for pname in players-strings do
-         (write-lp-data-for-player 
-          sc player 
-          (concatenate 'string path (format nil "~a-~a.ly" title-hyphens pname))
-          :all-bar-nums all-bar-nums
-          :process-event-fun process-event-fun
-          :rehearsal-letters-font-size rehearsal-letters-font-size
-          :in-c in-c :start-bar start-bar :end-bar end-bar))
+	   (write-lp-data-for-player 
+	    sc player 
+	    (concatenate 'string path (format nil "~a-~a.ly" title-hyphens pname)) 
+	    :all-bar-nums all-bar-nums
+	    :process-event-fun process-event-fun
+	    :rehearsal-letters-font-size rehearsal-letters-font-size
+	    :in-c in-c :start-bar start-bar :end-bar end-bar))
       ;; got to write the written (i.e. not sounding) notes for the part
       ;; can't do this in the above loop as we have to re-call auto-clefs
       ;; making sure we don't use the in-c clefs for the instrument
@@ -5658,12 +5815,12 @@ data: NIL
       (loop for player in playrs
          for pname in players-strings do
          ;; got to write the written (i.e. not sounding) notes for the part
-         (when (needs-transposition player)
-           (write-lp-data-for-player 
-            sc player 
-            (format nil "~a~a-~a-written.ly" path title-hyphens pname)
-            :all-bar-nums all-bar-nums :in-c nil :start-bar start-bar
-            :end-bar end-bar)))))
+	   (when (needs-transposition player)
+	     (write-lp-data-for-player 
+	      sc player 
+	      (format nil "~a~a-~a-written.ly" path title-hyphens pname)
+	      :all-bar-nums all-bar-nums :in-c nil :start-bar start-bar
+	      :end-bar end-bar)))))
   t)
 
 

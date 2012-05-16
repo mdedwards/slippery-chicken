@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 09:23:48 Wed May 16 2012 BST
+;;; $$ Last modified: 21:52:18 Wed May 16 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -504,6 +504,8 @@ data: TURKEY
                                &optional previous higher-next)
 ;;; ****
   ;; don't do it again!
+  ;; (print previous)
+  ;; (print higher-next)
   (unless (linked ral)
     (let ((next nil)
           (next-in-list nil)
@@ -513,6 +515,7 @@ data: TURKEY
           (this-ref nil)
           (ral-full-ref (full-ref ral)))
       (loop for this in data and i from 0 do
+           ;; (print ral-full-ref)
            (setf this-ref (econs ral-full-ref (id this))
                  next-in-list (nth (1+ i) data)
                  next-in-list-data (when next-in-list (data next-in-list))
@@ -536,6 +539,10 @@ data: TURKEY
                (progn 
                  ;; in case we're relinking
                  (setf (linked this-data) nil)
+                 ;; MDE Wed May 16 20:21:11 2012 -- if we don't do this, we
+                 ;; lose references. Problem shows up e.g. with ral-econs
+                 (setf (full-ref this-data) this-ref)
+                 ;; (print 'recurse)
                  (link-named-objects this-data previous next)
                  ;; previous is the last ref in the this ral!
                  (setf previous (get-last-ref this-data)))
@@ -891,6 +898,8 @@ assoc-list::add: named-object is NIL!
            (get-data-data butlast ral)))
     (set-data key (list last (econs (get-data-data key ral) data))
               ral)
+    ;; MDE Wed May 16 21:52:03 2012 -- 
+    (relink-named-objects ral)
     data))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1375,7 +1384,7 @@ data: RIBBON
         for current = (get-data ref ral)
         for this = (when current (this current))
         do 
-         (print ref)
+         ;; (print ref)
          (when (and (not single-ref-as-list)
                     (= 1 (length this)))
            (setf this (first this)))

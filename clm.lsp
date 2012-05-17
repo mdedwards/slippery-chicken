@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11/5/2012
 ;;;
-;;; $$ Last modified: 17:03:13 Thu May 17 2012 BST
+;;; $$ Last modified: 20:03:40 Thu May 17 2012 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -134,6 +134,9 @@
          (max-scaler (loop for s in scalers maximize s))
          (max-start (- snd-dur (* min-dur (1- max-points) max-scaler)))
          (num-scalers (length scalers)))
+    (when (< max-start 0)
+      (error "clm::random-loop-points: sound duration (~a) is too short for ~
+              a min-dur ~%of ~a and max-points ~a" snd-dur min-dur max-points))
     (with-open-file 
         (out outfile :direction :output :if-does-not-exist :create
              :if-exists if-outfile-exists)
@@ -143,16 +146,16 @@
          for num-points = (between min-points max-points)
          for point = (random max-start)
          do
-           (format out "~&(")
-           (loop 
-              repeat num-points
-              ;; for scaler = (random-from-list scalers num-scalers)
-              ;; for point = start
-              do
-                (format out "~,3f " point)
-                (incf point (* min-dur
-                               (random-from-list scalers num-scalers))))
-           (format out ")"))
+         (format out "~&(")
+         (loop 
+            repeat num-points
+            ;; for scaler = (random-from-list scalers num-scalers)
+            ;; for point = start
+            do
+            (format out "~,3f " point)
+            (incf point (* min-dur
+                           (random-from-list scalers num-scalers))))
+         (format out ")"))
       (format out ")")))
   ;; MDE Thu May 17 17:01:41 2012 -- 
   (read-from-file outfile))
@@ -479,8 +482,8 @@
 
 (clm-loops-all
  (concatenate 'string 
-	      cl-user::+slippery-chicken-home-dir+
-	      "test-suite/test-sndfiles-dir-1/test-sndfile-3.aiff")
+              cl-user::+slippery-chicken-home-dir+
+              "test-suite/test-sndfiles-dir-1/test-sndfile-3.aiff")
  '((0.794 0.961 1.061 1.161 1.318 1.436 1.536)
    (0.787 0.887 0.987 1.153 1.310 1.510)
    (0.749 0.889 1.056 1.213 1.413)
@@ -526,28 +529,28 @@
                       (src-width 5))
 ;;; ****
   (let* ((transps-offset (loop for st in transpositions
-			    collect (+ transposition-offset st)))
+                            collect (+ transposition-offset st)))
          (transps-shuffled (make-cscl
                             (loop repeat 10 collect
-				 (shuffle transps-offset :reset nil)))))
+                                 (shuffle transps-offset :reset nil)))))
     (loop for epl in entry-points-list and i from 1 do
-	 (when (and (> (first epl) start-after)
-		    (<= (first epl) stop-after))
-	   (clm-loops sndfile epl :max-perms max-perms 
-		      :fibonacci-transitions fibonacci-transitions
-		      :num-shuffles (if do-shuffles
-					(mod i 7)
-					0)
-		      :max-start-time max-start-time
-		      :channels channels
-		      :srate srate
-		      :suffix suffix
-		      :data-format data-format
-		      :header-type header-type
-		      :sndfile-extension sndfile-extension
-		      :output-dir output-dir
-		      :transpositions (get-next transps-shuffled)
-		      :src-width src-width)))))
+         (when (and (> (first epl) start-after)
+                    (<= (first epl) stop-after))
+           (clm-loops sndfile epl :max-perms max-perms 
+                      :fibonacci-transitions fibonacci-transitions
+                      :num-shuffles (if do-shuffles
+                                        (mod i 7)
+                                        0)
+                      :max-start-time max-start-time
+                      :channels channels
+                      :srate srate
+                      :suffix suffix
+                      :data-format data-format
+                      :header-type header-type
+                      :sndfile-extension sndfile-extension
+                      :output-dir output-dir
+                      :transpositions (get-next transps-shuffled)
+                      :src-width src-width)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF clm.lsp

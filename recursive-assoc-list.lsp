@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 21:52:18 Wed May 16 2012 BST
+;;; $$ Last modified: 10:27:35 Thu May 17 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -860,7 +860,7 @@ assoc-list::add: named-object is NIL!
 
 ;;; Allows new rals to be created automatically; however this assumes that if
 ;;; you reference a key that exists, then its data is a list that data will be
-;;; added to the end of.
+;;; added to the end of (an error will be signalled if this is not the case).
 
 ;;; ****m* recursive-assoc-list/ral-econs
 ;;; FUNCTION
@@ -879,31 +879,46 @@ assoc-list::add: named-object is NIL!
 ;;; SYNOPSIS
 (defmethod ral-econs (data key (ral recursive-assoc-list))
 ;;; ****
-  (unless (listp key)
-    (setf key (list key)))
-  (let ((butlast (butlast key))
-        (last (first (last key))))
-    (unless (get-data key ral nil)
-      (loop 
-         for k in butlast
-         with keys = '()
-         do
-         (unless (get-data (reverse (cons k keys)) ral nil)
-           (add (make-named-object k (make-ral nil nil)) 
-                (if keys 
-                    (get-data-data (reverse keys) ral)
-                    ral)))
-         (push k keys))
-      (add (make-named-object last nil)
-           (get-data-data butlast ral)))
-    (set-data key (list last (econs (get-data-data key ral) data))
-              ral)
-    ;; MDE Wed May 16 21:52:03 2012 -- 
-    (relink-named-objects ral)
-    data))
+  ;; MDE Thu May 17 10:20:51 2012 -- 
+  (if (and key (atom key))
+      (if (get-data key ral nil)
+          (add-to-list-data data key ral)
+          (add (make-named-object key (if (listp data) data (list data))) ral))
+      (progn
+        (unless (listp key)
+          (setf key (list key)))
+        (let ((butlast (butlast key))
+              (last (first (last key)))
+              data-data)
+          ;; so we can't just add to the list rather we have to create the ral
+          ;; leaves  
+          (unless (get-data key ral nil) 
+            (loop 
+               for k in butlast
+               with keys = '()
+               do
+               ;; if we don't have data at this key ...
+               (unless (get-data (reverse (cons k keys)) ral nil)
+                 ;; ... add it but keep empty for now ...
+                 (add (make-named-object k (make-ral nil nil)) 
+                      (if keys 
+                          ;; ... to the sub-ral if we have keys ...
+                          (get-data-data (reverse keys) ral)
+                          ;; ... or to the top-level ral if not ...
+                          ral)))
+               (push k keys))
+            ;; MDE Thu May 17 10:02:08 2012 
+            (setf data-data (get-data-data butlast ral))
+            (when data-data
+              (add (make-named-object last nil) data-data)))
+          ;; now we put the data in there
+          (set-data key (list last (econs (get-data-data key ral) data))
+                    ral)
+          ;; MDE Wed May 16 21:52:03 2012 -- 
+          (relink-named-objects ral)
+          data))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Fri Jan 27 16:41:42 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/parcel-data

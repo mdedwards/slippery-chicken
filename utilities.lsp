@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 16:55:02 Tue May 15 2012 BST
+;;; $$ Last modified: 09:43:12 Thu May 17 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -241,6 +241,8 @@
 ;;; SYNOPSIS
 (defun econs (list new-back)
 ;;; ****
+  (unless (listp list)
+    (error "utilities::econs: first argument must be a list: ~a" list))
   (append list (list new-back)))
 
 

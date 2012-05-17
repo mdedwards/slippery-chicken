@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified: 17:01:17 Sat Mar 10 2012 GMT
+;;; $$ Last modified: 15:51:44 Thu May 17 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -160,7 +160,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod cmn-tempo ((tpo tempo) &optional (dy 0))
-  (let ((mm (cmn::mm (bpm tpo) (eval (rm-package (beat tpo) :cmn))
+  (let ((mm (cmn::mm (round (bpm tpo)) (eval (rm-package (beat tpo) :cmn))
                      cmn::in-parentheses (cmn::dy dy))))
     (if (description tpo)
         (list mm (cmn::sc-cmn-text (description tpo)))

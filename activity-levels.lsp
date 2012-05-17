@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 16:18:00 Sat Apr 28 2012 BST
+;;; $$ Last modified: 12:24:01 Thu May 17 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -30,7 +30,7 @@
 ;;;                   slippery-chicken is free software; you can redistribute it
 ;;;                   and/or modify it under the terms of the GNU General
 ;;;                   Public License as published by the Free Software
-;;;                   Foundation; either version 2 of the License, or (at your
+;;;                   Foundation; either version 3 of the License, or (at your
 ;;;                   option) any later version.
 ;;;
 ;;;                   slippery-chicken is distributed in the hope that it will

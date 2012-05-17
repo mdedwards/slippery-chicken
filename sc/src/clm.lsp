@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11/5/2012
 ;;;
-;;; $$ Last modified: 11:31:16 Mon May 14 2012 BST
+;;; $$ Last modified: 17:03:13 Thu May 17 2012 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -69,6 +69,10 @@
 #+clm
 (defun random-loop-points (outfile sndfile 
                            &key 
+                           ;; MDE Thu May 17 17:02:15 2012 -- could also be
+                           ;; :error or anything else that with-open-file
+                           ;; accepts 
+                           (if-outfile-exists :overwrite) 
                            ;; the minimum number of time points for an output
                            ;; loop--number of looped sound segments is 1- this
                            (min-points 5)
@@ -95,7 +99,7 @@
          (num-scalers (length scalers)))
     (with-open-file 
         (out outfile :direction :output :if-does-not-exist :create
-             :if-exists :error)
+             :if-exists if-outfile-exists)
       (format out "(")
       (loop 
          repeat num-loop-sets 
@@ -112,7 +116,9 @@
                 (incf point (* min-dur
                                (random-from-list scalers num-scalers))))
            (format out ")"))
-      (format out ")"))))
+      (format out ")")))
+  ;; MDE Thu May 17 17:01:41 2012 -- 
+  (read-from-file outfile))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

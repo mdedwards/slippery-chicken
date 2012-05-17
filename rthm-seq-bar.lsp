@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 13:39:53 Mon May 14 2012 BST
+;;; $$ Last modified: 11:25:33 Thu May 17 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -563,6 +563,10 @@ data: NIL
 ;;; FUNCTION
 ;;; Similar to consolidate-rests, but calls that method repeatedly until no
 ;;; more changes can be made to the given rthm-seq-bar object.
+;;;
+;;; NB This will still only reduce rests down to a maximum of a beat.  If you
+;;; need e.g. two quarter rests reduced to a single half rest in a 4/4 bar,
+;;; specify :beat 2
 ;;; 
 ;;; ARGUMENTS
 ;;; - A rthm-seq-bar object.
@@ -610,7 +614,8 @@ data: NIL
        (consolidate-rests rsb :beat beat :min min :warn warn)
        (setf new-rthms (get-rhythm-symbols rsb))
        (unless (setf done (equalp old-rthms new-rthms))
-         (setf old-rthms new-rthms))))
+         (setf old-rthms new-rthms)))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  
@@ -636,9 +641,10 @@ data: NIL
 ;;;   value is given for this option, the method will take the beat from the
 ;;;   time signature. 
 
-;;; - :min. The minimum duration for consolidated durations. This is a target
-;;;   value only, as depending on the source material the method may not always
-;;;   be able to achieve this. Default = 0.0.
+;;; - :min. A seldom-used argument that will only make a difference when there
+;;;   are a number of rests of the same duration followed by a note.  This is
+;;;   then the minimum duration that such rests may have if they are to be
+;;;   consolidated. Default = NIL.
 
 ;;; - :warn. T or NIL to indicate whether the method should print a warning to
 ;;;   the Lisp listener if it is mathematically unable to consolidate the

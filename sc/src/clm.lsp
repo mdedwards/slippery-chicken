@@ -50,11 +50,16 @@
 
 ;;; Use this function to randomly generate the <entry-points> to clm-loops
 
-;;; ****f* slippery-chicken/random-loop-points
+;;; ****f* clm/random-loop-points
 
 ;;; FUNCTION
-;;; Produce an output text file that contains a list of lists of randomly
-;;; generated entry points (loop markers) for clm-loops-all.
+
+;;; Return a list of lists of randomly generated entry points (loop markers)
+;;; for use with clm-loops-all.
+;;;
+;;; This function also produces an output text file containing the same list of
+;;; lists. This file is in Lisp syntax and can therefore be accessed using
+;;; read-from-file. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A string that is the file name, including directory path and extension,
@@ -84,23 +89,17 @@
 ;;; EXAMPLE
 #|
 
-;;; An example and the results in the output file
 (random-loop-points 
  "/tmp/outfile" 
- "/path/to/test-sndfile-3.aiff")
+ "/path/to/test-sndfile-3.aiff"
  :min-points 3
  :max-points 7
  :min-dur 0.1
  :num-loop-sets 5
  :scalers '(1/1 2/1 3/2 5/3 7/5 11/7 13/11))
 
-=>
-(
-(0.794 0.961 1.061 1.161 1.318 1.436 1.536 )
-(0.787 0.887 0.987 1.153 1.310 1.510 )
-(0.749 0.889 1.056 1.213 1.413 )
-(0.311 0.411 0.611 0.729 )
-(0.744 0.884 1.002 ))
+=> ((0.789 0.929 1.079) (0.028 0.228 0.368 0.487 0.687) (0.014 0.164 0.321)
+    (0.256 0.406 0.524 0.681) (0.069 0.235 0.353 0.472 0.572 0.69))
 
 |#
 ;;; SYNOPSIS
@@ -162,7 +161,7 @@
 ;;;
 ;;; SAR Thu May 10 21:26:12 BST 2012: Added robodoc entry.
 
-;;; ****f* slippery-chicken/clm-loops
+;;; ****f* clm/clm-loops
 ;;; FUNCTION
 ;;; Generate a sound file from an existing specified sound file by shuffling
 ;;; and repeating specified segments within the source sound file. 
@@ -215,14 +214,22 @@
 ;;;   Default = '(34 21 13 8)
 ;;; - :max-start-time. A number that is the maximum time in second at which a
 ;;;   segment can start in the resulting sound file. Default = 60.0.
-;;; - :output-dir. The directory path for the output file. Default =  "/tmp/"
+;;; - :output-dir. The directory path for the output file. Default = "/tmp/".
 ;;; - :srate. The sampling rate. If specified by the user, this will generally
 ;;;   be a number. By default it takes the CLM global sample-rate, i.e.
 ;;;   clm::*clm-srate*
 ;;; - :data-format. The data format of the resulting file. This must be
 ;;;   preceded by the clm package qualifier. See clm.html for types of data
-;;;   formats, such as mus-bshort, mus-l24flot etc. 
+;;;   formats, such as mus-bshort, mus-l24float etc. 
 ;;;   Default is the whatever the CLM global clm::*clm-data-format* is set to. 
+;;; - :header-type. The header type of the resulting file. This must be
+;;;   preceded by the clm package qualifier. See clm.html for possible header
+;;;   types, such as mus-riff, mus-aifc etc. By default it takes the CLM global
+;;;   clm::*clm-header-type*.
+;;; - :sndfile-extension. A string or NIL. If a string, this will be appended
+;;;   to the resulting sound file as a file extension. If NIL, the sound file
+;;;   extension will automatically be selected based on the header type.  NB:
+;;;   This argument does not affect the header type! Default = NIL.
 ;;; - :channels. An integer that is the number of channels in the resulting
 ;;;   output. If greater than one, the segments will be automatically panned
 ;;;   amongst the channels. Default = 1.
@@ -231,7 +238,7 @@
 ;;;   consecutive segment in the output. Default = '(0).
 ;;; - :num-shuffles. An integer that will indicate how many times the lists
 ;;;   passed to fibonacci-transitions and entry-points will be shuffled before
-;;;   generating output. Default =  1.
+;;;   generating output. Default = - 1.
 ;;; - :suffix. A string that will be automatically appended to the end of the
 ;;;   file name. Default = "".
 ;;; - :src-width. A number that represents the accuracy of the sample-rate
@@ -402,9 +409,8 @@
 
 ;;; SAR Thu May 17 12:10:17 EDT 2012: Added robodoc entry
 
-;;; ****f* slippery-chicken/clm-loops-all
+;;; ****f* clm/clm-loops-all
 ;;; FUNCTION
-
 ;;; Similar to clm-loops, but takes a list of lists of entry points (which can
 ;;; also be generated using the random-loop-points function, for example) and
 ;;; produces one output sound file for each list of entry points that list
@@ -413,45 +419,79 @@
 ;;; ARGUMENTS
 ;;; - A string that is the name of the source sound file including directory
 ;;;   path and extension.
-
 ;;; - A list of lists of numbers that are entry points (loop markers) in the
 ;;;   specified source sound file.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; keyword argumentsL
-
-;;; - :max-perms 1000)
-;;; - :fibonacci-transitions '(34 21 13 8))
-;;; - :max-start-time 60.0)
-;;; - :output-dir "/tmp/")
-;;; - :srate clm::*clm-srate*)
-;;; - :data-format clm::*clm-data-format*)
-;;; ;; MDE Fri May 11 15:33:45 2012 
-;;; - :header-type clm::*clm-header-type*)
-;;; ;; MDE Fri May 11 15:34:17 2012 -- 
-;;; - :sndfile-extension nil)
-;;; - :channels 1)
-;;; - :do-shuffles t) ;; see clm-loops
-;;; ;; exclude all those loops who start before this
-;;; ;; number of seconds. 
-;;; - :start-after -1.0)
-;;; - :stop-after 99999999.0)
-;;; - :suffix "")
-;;; ;; semitones
-;;; ;; 6/10/06: using just one list of transpositions passed
-;;; ;; onto clm-loops created the same tone structure for
-;;; ;; every file generated (boring).  This list will now be
-;;; ;; shuffled and 10 versions collected which will then be
-;;; ;; passed (circularly) one after the other to clm-loops.
-;;; - :transpositions '(0))
-;;; - :transposition-offset 0.0)
-;;; - :src-width 5)
+;;; keyword arguments:
+;;; - :max-perms. A number that is the maximum number of permutations generated
+;;;   for the transitions. Default = 1000.
+;;; - :fibonacci-transitions. A list of numbers that serve as the number of
+;;;   steps in each transition from one segment to the next. These numbers will
+;;;   be used as the first argument to the call to fibonacci-transition.
+;;;   Default = '(34 21 13 8).
+;;; - :max-start-time. A number that is the maximum time in seconds at which a
+;;;   segment can start in the resulting sound file. Default = 60.0.
+;;; - :output-dir. The directory path for the output file. Default = "/tmp/".
+;;; - :srate. The sampling rate. If specified by the user, this will generally
+;;;   be a number. By default it takes the CLM global sample-rate, i.e.
+;;;   clm::*clm-srate*
+;;; - :data-format. The data format of the resulting file. This must be
+;;;   preceded by the clm package qualifier. See clm.html for types of data
+;;;   formats, such as mus-bshort, mus-l24float etc. 
+;;;   Default is the whatever the CLM global clm::*clm-data-format* is set to. 
+;;; - :header-type. The header type of the resulting file. This must be
+;;;   preceded by the clm package qualifier. See clm.html for possible header
+;;;   types, such as mus-riff, mus-aifc etc. By default it takes the CLM global
+;;;   clm::*clm-header-type*.
+;;; - :sndfile-extension. A string or NIL. If a string, this will be appended
+;;;   to the resulting sound file as a file extension. If NIL, the sound file
+;;;   extension will automatically be selected based on the header type.  NB:
+;;;   This argument does not affect the header type! Default = NIL.
+;;; - :channels. An integer that is the number of channels in the resulting
+;;;   output. If greater than one, the segments will be automatically panned
+;;;   amongst the channels. Default = 1.
+;;; - :do-shuffles. T or NIL to indicate whether to shuffle the lists passed to
+;;;   fibonacci-transitions and entry-points before generating output. 
+;;;   T = do shuffles. Default = T.
+;;; - :start-after. A number. All loops will be excluded that start before this
+;;;   number of seconds. Default = -1.0.
+;;; - :stop-after. A number. All loops will be excluded that start after this
+;;;   number of seconds. Default =  99999999.0.
+;;; - :suffix. A string that will be automatically appended to the end of the
+;;;   file name. Default = "".
+;;; - :transpositions. A list of number that are transpositions in
+;;;   semitones. These will be shuffled and applied randomly to each
+;;;   consecutive segment in the output. Default = '(0).
+;;; - :transposition-offset. A number that is an additional number of semitones
+;;;   to be added to each transposition value before performing the
+;;;   transposition. Default = 0.0.
+;;; - :src-width. A number that represents the accuracy of the sample-rate
+;;;   conversions undertaken for transposition. The higher this number is, the
+;;;   more accurate the transposition will be, but the longer it will take to
+;;;   process the file. Default = 5.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+
+(clm-loops-all
+ (concatenate 'string 
+	      cl-user::+slippery-chicken-home-dir+
+	      "test-suite/test-sndfiles-dir-1/test-sndfile-3.aiff")
+ '((0.794 0.961 1.061 1.161 1.318 1.436 1.536)
+   (0.787 0.887 0.987 1.153 1.310 1.510)
+   (0.749 0.889 1.056 1.213 1.413)
+   (0.311 0.411 0.611 0.729)
+   (0.744 0.884 1.002))
+ :max-perms 6
+ :fibonacci-transitions '(31 8 21 13)
+ :output-dir "/tmp/"
+ :channels 1
+ :transpositions '(1 12 -12)
+ :src-width 20)
 
 |#
 ;;; SYNOPSIS
@@ -486,28 +526,28 @@
                       (src-width 5))
 ;;; ****
   (let* ((transps-offset (loop for st in transpositions
-                             collect (+ transposition-offset st)))
+			    collect (+ transposition-offset st)))
          (transps-shuffled (make-cscl
                             (loop repeat 10 collect
-                                  (shuffle transps-offset :reset nil)))))
+				 (shuffle transps-offset :reset nil)))))
     (loop for epl in entry-points-list and i from 1 do
-          (when (and (> (first epl) start-after)
-                     (<= (first epl) stop-after))
-            (clm-loops sndfile epl :max-perms max-perms 
-                       :fibonacci-transitions fibonacci-transitions
-                       :num-shuffles (if do-shuffles
-                                         (mod i 7)
-                                       0)
-                       :max-start-time max-start-time
-                       :channels channels
-                       :srate srate
-                       :suffix suffix
-                       :data-format data-format
-                       :header-type header-type
-                       :sndfile-extension sndfile-extension
-                       :output-dir output-dir
-                       :transpositions (get-next transps-shuffled)
-                       :src-width src-width)))))
+	 (when (and (> (first epl) start-after)
+		    (<= (first epl) stop-after))
+	   (clm-loops sndfile epl :max-perms max-perms 
+		      :fibonacci-transitions fibonacci-transitions
+		      :num-shuffles (if do-shuffles
+					(mod i 7)
+					0)
+		      :max-start-time max-start-time
+		      :channels channels
+		      :srate srate
+		      :suffix suffix
+		      :data-format data-format
+		      :header-type header-type
+		      :sndfile-extension sndfile-extension
+		      :output-dir output-dir
+		      :transpositions (get-next transps-shuffled)
+		      :src-width src-width)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF clm.lsp

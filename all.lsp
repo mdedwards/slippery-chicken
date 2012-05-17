@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 15:24:17 Fri May 11 2012 BST
+;;; $$ Last modified: 14:00:53 Thu May 17 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -94,7 +94,7 @@
 
 (defun sc (&optional (logo t))
   (setf *package* (find-package :sc))
-  (let ((title (format nil "slippery chicken version ~a"
+  (let ((title (format nil "slippery chicken ~a"
                        +slippery-chicken-version+)))
     (if logo
         (format t "(\\  }\\   ~%(  \\_('> ~a~%(__(=_)  ~%   -\"=   ~%" title)

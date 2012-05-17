@@ -46,23 +46,61 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu May 17 11:07:24 EDT 2012: Added robodoc entry
+
 ;;; Use this function to randomly generate the <entry-points> to clm-loops
 
 ;;; ****f* slippery-chicken/random-loop-points
+
 ;;; FUNCTION
-;;; 
+;;; Produce an output text file that contains a list of lists of randomly
+;;; generated entry points (loop markers) for clm-loops-all.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A string that is the file name, including directory path and extension,
+;;;   of the output file to produce.
+;;; - A string that is the sound file for which to generate random entry
+;;;   points. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :min-points. An integer that is the least number of entry points to
+;;;   generate for each list. Default = 5.
+;;; - :max-points. An integer that is the greatest number of entry points to
+;;;   generate for each list. Default = 13.
+;;; - :min-dur. A number that is the shortest duration between two entry
+;;;   points. Default = 0.05.
+;;; - :num-loop-sets. An integer that is the number of lists of entry points to
+;;;   generate. Default = 20.
+;;; - :scalers. A list of fractions that are durations relative to the min-dur,
+;;;   such that, for example, a min-dur of 0.05 with a scaler of 13/8 would
+;;;   result in a scaled duration of 0.08125. The fractions in this list will
+;;;   be chosen at random when calculating the duration of the next loop
+;;;   segment. Default = '(1/1 2/1 3/2 5/3 8/5 13/8).
 ;;; 
 ;;; RETURN VALUE
 ;;; 
 ;;; 
 ;;; EXAMPLE
 #|
+
+;;; An example and the results in the output file
+(random-loop-points 
+ "/tmp/outfile" 
+ "/path/to/test-sndfile-3.aiff")
+ :min-points 3
+ :max-points 7
+ :min-dur 0.1
+ :num-loop-sets 5
+ :scalers '(1/1 2/1 3/2 5/3 7/5 11/7 13/11))
+
+=>
+(
+(0.794 0.961 1.061 1.161 1.318 1.436 1.536 )
+(0.787 0.887 0.987 1.153 1.310 1.510 )
+(0.749 0.889 1.056 1.213 1.413 )
+(0.311 0.411 0.611 0.729 )
+(0.744 0.884 1.002 ))
 
 |#
 ;;; SYNOPSIS
@@ -220,6 +258,7 @@
 => "/tmp/sndfile-3-loops-from-00m00.180-.wav"
 
 |#
+
 ;;; SYNOPSIS
 #+clm
 (defun clm-loops (sndfile entry-points &key
@@ -361,16 +400,52 @@
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu May 17 12:10:17 EDT 2012: Added robodoc entry
 
 ;;; ****f* slippery-chicken/clm-loops-all
 ;;; FUNCTION
-;;; 
+
+;;; Similar to clm-loops, but takes a list of lists of entry points (which can
+;;; also be generated using the random-loop-points function, for example) and
+;;; produces one output sound file for each list of entry points that list
+;;; contains. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A string that is the name of the source sound file including directory
+;;;   path and extension.
+
+;;; - A list of lists of numbers that are entry points (loop markers) in the
+;;;   specified source sound file.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword argumentsL
+
+;;; - :max-perms 1000)
+;;; - :fibonacci-transitions '(34 21 13 8))
+;;; - :max-start-time 60.0)
+;;; - :output-dir "/tmp/")
+;;; - :srate clm::*clm-srate*)
+;;; - :data-format clm::*clm-data-format*)
+;;; ;; MDE Fri May 11 15:33:45 2012 
+;;; - :header-type clm::*clm-header-type*)
+;;; ;; MDE Fri May 11 15:34:17 2012 -- 
+;;; - :sndfile-extension nil)
+;;; - :channels 1)
+;;; - :do-shuffles t) ;; see clm-loops
+;;; ;; exclude all those loops who start before this
+;;; ;; number of seconds. 
+;;; - :start-after -1.0)
+;;; - :stop-after 99999999.0)
+;;; - :suffix "")
+;;; ;; semitones
+;;; ;; 6/10/06: using just one list of transpositions passed
+;;; ;; onto clm-loops created the same tone structure for
+;;; ;; every file generated (boring).  This list will now be
+;;; ;; shuffled and 10 versions collected which will then be
+;;; ;; passed (circularly) one after the other to clm-loops.
+;;; - :transpositions '(0))
+;;; - :transposition-offset 0.0)
+;;; - :src-width 5)
 ;;; 
 ;;; RETURN VALUE
 ;;; 

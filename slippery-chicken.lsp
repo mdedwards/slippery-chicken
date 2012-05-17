@@ -1004,33 +1004,65 @@
     rsm-clone))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  ****m* slippery-chicken/update-slots
+
+;;; SAR Thu May 17 13:52:28 EDT 2012: Conformed robodoc entry
+
+;;;  
+;;; ****m* slippery-chicken/update-slots
 ;;; FUNCTION
-;;; Called by initialize-instance and others.  Updates timings of events and
-;;; statistics.  Not generally called by the user but can be useful if
+
+;;; Called by initialize-instance and others. Updates timings of events and
+;;; statistics. Not generally called by the user but can be useful if
 ;;; post-generation editing has changed something fundamental to the structure.
 ;;; 
 ;;; ARGUMENTS
-;;; - a slippery-chicken object
+;;; - A slippery-chicken object
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - a tempo-map object (not just as a list). If not given, then the tempo-map
-;;;   from the slippery-chicken object will be used (default = NIL).
-;;; - the start-time of the first event, in seconds (default = 0.0).
-;;; - the start-time of the first event, in 'quarters' (for MIDI timing)
-;;;   (default = 0.0).
-;;; - the starting bar number (default = 1)
-;;; - the reference of the current section (for internal recursive use in the
-;;;   bar-holder class) (default = NIL).
-;;; - the nth sequence (for internal recursive use in the sequenz class)
-;;;   (default = NIL)
-;;; - whether to warn when ties are used to the beginning of a sequence.  This
-;;;   argument is now obsolete and ignored, but remains for some backward
-;;;   compatibility (default T).
+;;; - A tempo-map object (not just as a list). If not given, then the tempo-map
+;;;   from the slippery-chicken object will be used. Default = NIL.
+;;; - A number that is the start-time of the first event object in
+;;;   seconds. Default = 0.0.
+;;; - A number that is the start-time of the first event, in 'quarters' (for
+;;;   MIDI timing). Default = 0.0.
+;;; - A integer that is the number of the starting bar. Default = 1.
+;;; - The reference of the current section (for internal recursive use in the
+;;;   bar-holder class). Default = NIL.
+;;; - The nth sequence (for internal recursive use in the sequenz class).
+;;;   Default = NIL.
+;;; - T or NIL to indicate whether to print a warning to the Lisp listener when
+;;;   ties are being used at the beginning of a sequence. This argument is now
+;;;   obsolete and ignored, but remains for some backward compatibility.
+;;;   Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; The duration in seconds of the object, in this class, the whole generated
-;;; piece. 
+;;; The duration in seconds of the object; in this class: the whole generated
+;;; piece.
+;;;
+;;; EXAMPLE
+#|
+;;; Create a slippery-chicken object and print the start time of one of its
+;;; events; call update-slots with a start time of 10.0 and print the start
+;;; time of that same event to see the difference
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))))
+	:tempo-map '((1 (q 60)))
+	:set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((2 4) (s) (s) e e e))
+				:pitch-seq-palette ((1 2 3)))))
+	:rthm-seq-map '((1 ((vn (1 1 1 1 1))))))))
+  (print (start-time (get-event mini 4 1 'vn)))
+  (update-slots mini nil 10.0)
+  (print (start-time (get-event mini 4 1 'vn))))
+
+=
+6.0 
+16.0
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod update-slots ((sc slippery-chicken) 
@@ -5153,14 +5185,34 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu May 17 14:28:44 EDT 2012: Added robodoc entry.
+
 ;;; ****m* slippery-chicken/rebar
 ;;; FUNCTION
-;;; rebar:
+;;; Go through the sequences of the given slippery-chicken object and rebar
+;;; according to the first one that has the least number of bars (but following
+;;; the player hierarchy).
+;;; 
+;;; NB: See documentation in piece class method. Don't confuse with re-bar
+;;;     method.
 ;;;
-;;; See documentation in piece class method. Don't confuse with re-bar method.
+;;; ARGUMENTS 
+;;; - A slippery-chicken object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - A list of player IDs from the given slippery-chicken object, ordered in
+;;;   terms of importance i.e. which instrument's bar structure should take
+;;;   precedence.
+;;; 
+;;; NB: The rebar-fun is not yet used.
 ;;; 
 ;;; RETURN VALUE  
-;;; always t
+;;; Always T.
+;;;
+;;; EXAMPLE
+#|
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod rebar ((sc slippery-chicken) 

@@ -935,26 +935,29 @@ BAR-HOLDER:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu May 17 14:26:50 EDT 2012: Conformed robodoc entry
+
 ;;; ****m* piece/rebar
-;;; FUNCTION
-;;; rebar:
+;;; DATE 
+;;; 29-Jan-2010
 ;;;
+;;; FUNCTION
 ;;; Go through the sequences and rebar according to the first one that has the
 ;;; least number of bars (but following the player hierarchy).
 ;;; 
-;;; DATE 29.1.10
-;;;
 ;;; ARGUMENTS 
-;;; - the piece instance (usually provided by calling from the slippery-chicken
-;;; class)  
-;;; - a list of instruments in the piece, ordered in terms of importance
-;;; i.e. which instrument's bar structure should take precedence.
+;;; - A piece object (usually provided by calling from the slippery-chicken
+;;;   class)
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - A list of player IDs from the given piece object, ordered in terms of
+;;;   importance i.e. which instrument's bar structure should take precedence.
 ;;; 
-;;; NB the optional arguments are actually required in this class (not in
-;;; slippery-chicken) but the rebar-fun is not yet used.
+;;; NB: The optional arguments are actually required in this class (not in
+;;;     slippery-chicken) but the rebar-fun is not yet used.
 ;;; 
 ;;; RETURN VALUE  
-;;; always t
+;;; Always T.
 ;;; 
 ;;; SYNOPSIS
 (defmethod rebar ((p piece) &optional instruments-hierarchy rebar-fun)

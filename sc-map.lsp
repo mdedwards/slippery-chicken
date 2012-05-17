@@ -675,10 +675,8 @@ data: (1 NIL 3 4 5)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-
 ;;; - :warn-not-found. T or NIL to indicate whether a warning is printed when
 ;;;   an index which doesn't exist is used for lookup.  T = warn. Default = T.
-
 ;;; - :recurse-simple-data. T or NIL to indicate whether to recursively
 ;;;   instantiate a recursive-assoc-list in place of data that appears to be a
 ;;;   simple assoc-list (i.e. a 2-element list). If NIL, the data of 2-element
@@ -686,7 +684,6 @@ data: (1 NIL 3 4 5)
 ;;;   therefore remaining as a list. For example, this data would normally
 ;;;   result in a recursive call: (y ((2 23) (7 28) (18 2))).  
 ;;;   T = recurse. Default = T.
-
 ;;; - :replacements. A list of lists in the format 
 ;;;   '(((1 2 vla) 3 20b) ((2 3 vln) 4 16a)) that indicate changes to
 ;;;   individual elements of lists within the given sc-map object. (Often
@@ -696,7 +693,6 @@ data: (1 NIL 3 4 5)
 ;;;   of section 1 subsection 2 in the first here e.g.), the second element is
 ;;;   the nth of the data list for this key to change, and the third is the new
 ;;;   data.
-
 ;;; - :palette. A palette object or NIL. If a palette object is specified or
 ;;;   defined here, it will be automatically bound to the given sc-map
 ;;;   object. Default = NIL

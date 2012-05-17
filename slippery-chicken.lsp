@@ -5253,10 +5253,16 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 
 ;;; ****m* slippery-chicken/rebar
 ;;; FUNCTION
-;;; Go through the sequences of the given slippery-chicken object and rebar
-;;; according to the first one that has the least number of bars (but following
-;;; the player hierarchy).
-;;; 
+;;; Go through the vertically simultaneous sequences in all players of the
+;;; given slippery-chicken object and rebar according to the first one that has
+;;; the least number of bars (but following the player hierarchy).
+;;;
+;;; If rthm-seqs or sequenzes are created algorithmically and bundled into the
+;;; slippery-chicken piece slot artificially, bypassing the usual generation
+;;; structure, it might be difficult to end up with each instrument having the
+;;; same meter structure when combined vertically. So this method goes through
+;;; the vertically combined sequences and rebars as described above.
+;;;
 ;;; NB: See documentation in piece class method. Don't confuse with re-bar
 ;;;     method.
 ;;;

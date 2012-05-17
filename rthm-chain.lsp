@@ -968,16 +968,19 @@
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; MDE Sat Apr 28 10:05:43 2012 
 ;;; SAR Mon Apr 30 11:20:15 BST 2012: Added robodoc entry
 ;;; SAR Tue May  8 12:21:04 BST 2012: Re-visited robodoc entry
+;;; SAR Thu May 17 16:11:52 EDT 2012: Re-visited robodoc entry
 
 ;;; ****f* rthm-chain/make-rthm-chain
 ;;; FUNCTION
-;;; Create an instance of a rthm-chain object. The rthm-chain class enables
-;;; the algorithmic generation of a rthm-seq-map and its associated
-;;; rthm-seq-palette, which consists in turn of algorithmically generated
-;;; rthm-seq objects. 
+
+;;; Create an instance of a rthm-chain object. The rthm-chain class enables the
+;;; algorithmic generation of a rthm-seq-map (with just one section) and its
+;;; associated rthm-seq-palette, which consists in turn of algorithmically
+;;; generated rthm-seq objects.
 ;;;
 ;;; The rhythm-seq objects are made up of both faster material based on 1-beat
 ;;; groups and slower-moving counterpoint based on 2- or 3-beat groups.
@@ -1029,11 +1032,14 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
+
 ;;; - :beat. An integer that indicates the rhythmic unit of the primary beat
 ;;;   basis of the rhythms specified. Default = 4.
+
 ;;; - :1-beat-fibonacci. T or NIL to indicate whether the sequence of 1-beat
 ;;;   rhythms is to be generated using the fibonacci-transitions method or the
 ;;;   processions method. T = use fibonacci-transitions method. Default = NIL.
+
 ;;; - :slow-fibonacci. T or NIL to indicate whether the sequence of the slow
 ;;;   rhythms will be generated using the fibonacci-transitions method or the
 ;;;   processions method. This affects the order in which each 2- or 3-beat
@@ -1042,15 +1048,17 @@
 ;;;   slot of the rthm-chain-slow object, which simply cycles through 
 ;;;   '(2 3 2 2 3 2 2 3 3 3). T = use fibonacci-transisitions method.
 ;;;   Default = NIL.
+
 ;;; - :players. A list of player IDs. When used in conjunction with a
 ;;;   slippery-chicken object (which is the standard usage), these must be IDs
 ;;;   as they are defined in that object's ENSEMBLE slot. 
 ;;;   Default = '(player1 player2).
 
-;;; - :section-id. 
-
-;; the rthm-seq-map needs an id (section
-;;;   name/number). Default = 1. 
+;;; - :section-id. An integer that will be used as the ID of the rthm-seq-map
+;;;   created. NB: rthm-chain only creates rthm-seq-maps with one section,
+;;;   making it possible to create several different ones for different
+;;;   sections in the given piece, and requiring that these be manually
+;;;   assigned IDs. Default = 1. 
 
 ;;; - :rests. The rhythmic duration unit(s) of the rests that will be used when
 ;;;   the method uses the rest-insertion algorithm to automatically insert

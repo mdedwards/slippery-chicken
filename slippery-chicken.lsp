@@ -3885,27 +3885,31 @@ seq-num 5, VN, replacing G3 with B6
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
+
 ;;; - :num-sections. An integer or NIL to indicate how many sections should be
 ;;;   generated, including the starting section. If NIL, sound file data will
 ;;;   be generated for all sections of the piece. Default = NIL.
 
 ;;; - :from-sequence. An integer that is the number of the first sequence
 ;;;   within the specified starting section to be used to generate the output
-;;;   file. Default = 1.
+;;;   file. This argument can only be used when num-sections = 1. Default = 1. 
 
-;;; - :num-sequences. NIL or an integer that indicates how sequences are to be
-;;;   generated, including that specified by :from-sequence. If NIL, all
-;;;   sequences will be played. Default = NIL.
+;;; - :num-sequences. NIL or an integer that indicates how many sequences are
+;;;   to be generated, including that specified by :from-sequence. If NIL, all
+;;;   sequences will be played. This argument can only be used when
+;;;   num-sections = 1. Default = NIL.
 
 ;;; - :srate. A number that is the sampling rate of the output file
 ;;;   (independent of the input file). This and the following two arguments
 ;;;   default to the CLM package globals. See clm.html for more options.
 ;;;   Default = clm::*clm-srate*.
+
 ;;; - :header-type: A CLM package header-type specification to designate the
 ;;;   output sound file format. For example, clm::mus-riff will produce .wav
 ;;;   files, clm::mus-aiff will produce .aiff files. The value of this argument
 ;;;   defaults to the CLM package globals. See clm.html for more
 ;;;   options. Default = clm::*clm-header-type*.
+
 ;;; - :data-format. A CLM package data-format specification to designate the
 ;;;   output sound file sample data format. For example, clm::mus-float will
 ;;;   produce a 32-bit little-endian floating-point format; clm::mus-l24int
@@ -3915,30 +3919,37 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   endian formats.  The value of this argument defaults to the CLM package
 ;;;   globals. See clm.html for more options. 
 ;;;   Default = clm::*clm-data-format*.
+
 ;;; - :sndfile-extension. NIL or a string that will be the extension of the
 ;;;   output sound file (e.g. ".wav", ".aif"). If NIL, the method will
 ;;;   determine the extension automatically based on the header-type. NB: The
 ;;;   extension does not determine the output sound file format; that is
 ;;;   determined by :header-type. Default = NIL.
+
 ;;; - :channels. An integer that is the number of channels in the output sound
 ;;;   file, limited only by the sound file format specified. Note that both
 ;;;   stereo and mono sounds from the palette will be randomly panned between
 ;;;   any two adjacent channels. Default = 2.
+
 ;;; - :rev-amt. A number that determines the amount of reverberation for the
 ;;;   resulting sound file, passed to CLM's nrev.  
 ;;;   NB: 0.1 is a lot. Default = 0.0.
+
 ;;; - time-offset. A number that is an offset time in seconds. This produces a
 ;;;   lead time of a specified number of seconds of silence prior to the sound
 ;;;   output. 
+
 ;;; - :play. T or NIL to indicate whether CLM should play the output file
 ;;;   automatically immediately after it has been written. 
 ;;;   T = play. Default = NIL.
+
 ;;; - :inc-start. T or NIL to indicate whether playback of the source sound
 ;;;   files is to begin at incrementally increasing positions in those files or
 ;;;   at their respective 0.0 positions every time. If T, the method will
 ;;;   increment the position in the source sound file from which playback is
 ;;;   begun such that it reaches the end of the source sound file the last time
 ;;;   it is 'played'. T = increment start times. Default = NIL.
+
 ;;; - :ignore-rests. T or NIL to indicate whether silence should be
 ;;;   incorporated into the resulting sound file to correspond with rests in
 ;;;   the player's parts. If T, the sound files will play over the duration of
@@ -3946,13 +3957,14 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   the end of one bar will not be continued over into a rest in the next
 ;;;   bar. This implies that rests at the start of a bar will not be turned
 ;;;   into sounding notes. T = ignore resets. Default = T.
+
 ;;; - :sound-file-palette-ref2. The ID of a sound file group in the given
 ;;;   slippery-chicken object's sndfile-palette slot. If this reference is
 ;;;   given, the method will invoke fibonacci-transitions to transition from
 ;;;   the first specified group of source sound files to this one. If NIL, only
 ;;;   one group of source sound files will be used. Default = NIL.
 
-;;; - :do-src. T, a number or a note-name pitch symbol to indicate whether
+;;; - :do-src. T, a number, or a note-name pitch symbol to indicate whether
 ;;;   transposition of the source sound files for playback will be calculated
 ;;;   such that the perceived fundamental frequencies of those sound files are
 ;;;   shifted to match the pitches of the current set. If do-src is a number
@@ -3961,45 +3973,54 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   to the events' pitches. NB Whichever is used, after being converted to a
 ;;;   sample rate conversion factor, this is always multiplied by the
 ;;;   src-scaler (see below). T = match sound files' frequencies to set
-;;;   pitches.  Default = T.
+;;;   pitches. Default = T.
 
-;;; - pitch-synchronous: T or NIL to indicate whether the source sound files
+;;; - :pitch-synchronous: T or NIL to indicate whether the source sound files
 ;;;   are to be transposed to match the pitches of the events in the given
-;;;   players' part. This will only be effective if the given source sound
-;;;   file has a perceptible frequency that has been specified using the
-;;;   sndfile object's :frequency slot in the sndfile-palette. :do-src must
-;;;   also be T for this to work. T = match pitches. Default = NIL.
+;;;   players' part. This will only be effective if the given source sound file
+;;;   has a perceptible frequency that has been specified using the sndfile
+;;;   object's :frequency slot in the sndfile-palette. :do-src must also be T
+;;;   for this to work. T = match pitches. Default = NIL.
+
 ;;; - :reset-snds-each-rs. T or NIL to indicate whether to begin with the first
 ;;;   source sound file of the specified group at the beginning of each
 ;;;   rthm-seq. T = begin with the first sound file. Default = T.
+
 ;;; - :reset-snds-each-player. T or NIL to indicate whether to begin with the
 ;;;   first source sound file of the specified group for the beginning of each
 ;;;   player's part. T = begin with the first sound file. Default = T. 
+
 ;;; - :play-chance-env. A list of break-point pairs that determines the chance
 ;;;   that a given even from the source player's part will be reflected in the
 ;;;   new sound file. It is determined by random selection but uses a fixed
 ;;;   seed that is re-initialized each time clm-play is called. The following
 ;;;   default ensures every note will play. Default = '(0 100 100 100).
+
 ;;; - :play-chance-env-exp. A number that will be applied as the exponent to
 ;;;   the play-chance-env's y values to create an exponential interpolation
 ;;;   between break-point pairs. Default = 0.5.
+
 ;;; - :max-start-time. A number that is the last time-point in seconds for
 ;;;   which events will be processed for the output file. If a maximum start
 ;;;   time is specified here (in seconds), events after this will be
 ;;;   skipped. The default value of 99999999 seconds (27778 hours) will result
 ;;;   in all events being reflected in the sound file.
+
 ;;; - :time-scaler. A number that will be the factor by which all start times
 ;;;   are scaled for the output file (in effect a tempo scaler). If
 ;;;   :ignore-rests is T, this will also have an indirect effect on
 ;;;   durations. This argument should not be confused with
 ;;;   :duration-scaler. Default = 1.0.
+
 ;;; - :duration-scaler. A number that is the factor by which the duration of
 ;;;   all  events in the output sound file will be scaled. This does not alter
 ;;;   start times, and will therefore result in overlapping sounds if greater
-;;;   than 1.0. This is not to be confused with :time-scaler. Default = 1.0. 
+;;;   than 1.0. This is not to be confused with :time-scaler. Default = 1.0.
+ 
 ;;; - :normalise. A decimal number that will be the maximum amplitude of the
 ;;;   resulting output file; i.e., to which the samples will be scaled. 
 ;;;   Default = 0.99
+
 ;;; - :amp-env. A list of break-point pairs that will govern the amplitude
 ;;;   envelope applied to all source-sound files as it is being written to the
 ;;;   new output file. NB: If the user wants to maintain the original attack of
@@ -4007,29 +4028,38 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   should be set to '(0 1 ...). If :inc-start is T, the resulting sound file
 ;;;   will probably contain clicks from non-zero crossings. 
 ;;;   Default = '(0 0 5 1 60 1 100 0).
+
 ;;; - :src-width. An integer that reflects the accuracy of the sample-rate
 ;;;   conversion. The higher the value, the more accurate the transposition,
 ;;;   but the slower the processing. Values of 100 might be useful for very low
 ;;;   transpositions. Default = 20.
+
 ;;; - :src-scaler: A number that is the factor by which all sample-rate
 ;;;   conversion values will be scaled (for increasing or decreasing the
 ;;;   transposition of the overall resulting sound file). Default = 1.0.
+
 ;;; - :note-number. A number that is an index, representing the the nth pitch
 ;;;   of the current set or chord (from the bottom) to be used for the lowest
 ;;;   player. Default = 0.
+
 ;;; - :duration-run-over. T or NIL to indicate whether the method will allow a
 ;;;   sound file event to extend past the end of specified segment boundaries
 ;;;   of a sound file in the sndfile-palette. T = allow. Default = NIL.
+
 ;;; - :short-file-names. T or NIL to indicate whether abbreviated output file
 ;;;   names will be automatically created instead of the usually rather long
 ;;;   names. T = short. Default = NIL.
+
 ;;; - :output-name-uniquifier. A user-specified string that will be
 ;;;   incorporated into the file name, either at the end or the beginning
 ;;;   depending on whether short-file-names is T or NIL. Default = "".
+
 ;;; - :check-overwrite. T or NIL to indicate whether to query the user before
 ;;;   overwriting existing sound files. T = query. Default = T.
+
 ;;; - :print-secs. T or NIL to indicate whether CLM should print the seconds
 ;;;   computed as it works. T = print. Default = NIL.
+
 ;;; - :simulate. T or NIL to indicate whether only the sound file sequencing
 ;;;   information should be calculated and printed for testing purposes,
 ;;;   without generating a sound file. T = simulate. Default = NIL.
@@ -5082,23 +5112,42 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Thu May 10 18:00:32 BST 2012: Added robodoc entry
+;;; SAR Thu May 17 14:43:33 EDT 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/check-tuplets 
 ;;; FUNCTION
-;;; 
+;;; Check the qualities of the tuplets brackets in a given slippery-chicken
+;;; object to make sure they are all formatted properly (i.e. each starting
+;;; tuplet bracket has a closing tuplet bracket etc.)
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - The function to use if something is not ok with the tuplets. This
+;;;   defaults to #'error, but could also be #'warn for example
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T if all tuplets brackets are ok, otherwise performs the on-fail function
+;;; and returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Create a slippery-chicken object, manually add an error to the tuplet data
+;;; and call check-tuplets with #'warn as the on-fail function.
+(let* ((mini
+	(make-slippery-chicken
+	 '+mini+
+	 :ensemble '(((cl (b-flat-clarinet :midi-channel 1))))
+	 :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	 :set-map '((1 (1)))
+	 :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
+	 :rthm-seq-map '((1 ((cl (1)))))))
+       (e1 (get-event mini 1 1 'cl)))
+  (setf (bracket e1) nil)
+  (check-tuplets mini #'warn))
+
+=> rthm-seq-bar::check-tuplets: Can't close non-existent bracket.
 
 |#
 ;;; SYNOPSIS
@@ -5117,7 +5166,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Thu May 10 18:06:37 BST 2012: Added robodoc entry
+;;; SAR Thu May 17 14:51:33 EDT 2012: Added robodoc entry
 
 ;;; Just for checking really but if same-spellings all ties will be forced to
 ;;; the same spellings. 
@@ -5126,7 +5175,6 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 
 ;;; ****m* slippery-chicken/check-ties
 ;;; FUNCTION
-
 ;;; Check that all ties are started and ended properly. If the optional
 ;;; argument <same-spellings> is set to T, all tied pitches will be forced to
 ;;; have the same enharmonic spellings. 
@@ -5138,11 +5186,27 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; - T or NIL to indicate whether to force all tied pitches to have the same
 ;;;   enharmonic spellings.
 ;;; 
-;;; RETURN VALUE
-;;; 
+;;; RETURN VALUE 
+;;; T if all tie data is ok, otherwise performs the on-fail function and
+;;; returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Create a slippery-chicken object, manually create a problem with the ties,
+;;; and call check-ties with a #'warn as the on-fail function.
+(let* ((mini
+	(make-slippery-chicken
+	 '+mini+
+	 :ensemble '(((cl (b-flat-clarinet :midi-channel 1))))
+	 :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	 :set-map '((1 (1)))
+	 :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
+	 :rthm-seq-map '((1 ((cl (1)))))))
+       (e4 (get-event mini 1 4 'cl)))
+  (setf (is-tied-to e4) nil)
+  (check-ties mini nil #'warn))
+
+=> WARNING: slippery-chicken::check-ties: bad tie, CL bar 1
 
 |#
 ;;; SYNOPSIS
@@ -6095,7 +6159,6 @@ EVENT: start-time: 11.000, end-time: 11.500,
 
 ;;; ****m* slippery-chicken/transpose-events 
 ;;; FUNCTION
-
 ;;; Transpose the pitches of event objects in a specified region and a
 ;;; specified player's part.
 ;;; 
@@ -6115,7 +6178,7 @@ EVENT: start-time: 11.000, end-time: 11.500,
 ;;;   event objects should be replaced. T = replace. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns NIL.
+;;; Returns a list of events.
 ;;; 
 ;;; EXAMPLE
 #|

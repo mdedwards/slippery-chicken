@@ -176,20 +176,21 @@
 ;;; - An sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :qtr-tones-also. T or NIL to indicate whether
-;;;   quarter-tones are also to be rounded to the nearest chromatic pitch and
-;;;   returned. T = round and return. Default = NIL.
-;;; - keyword argument :octave. NIL or an integer that is the octave designator
-;;;   to which all resulting pitches are to be transposed (i.e. the "4" in "C4"
-;;;   etc.) Default = NIL.
-;;; - keyword argument :remove-duplicates. T or NIL to indicate whether any
-;;;   duplicate pitches within an octave that are created by use of the :octave
-;;;   keyword argument are to be removed. T = remove duplicates. Default = NIL.
-;;; - keyword argument :as-symbols. T or NIL to indicate whether to return the
-;;;   results of the method as a list of note-name symbols rather than a list
-;;;   of pitch objects. T = return as note-name symbols. Default = NIL. 
-;;; - keyword argument :package. The package in which the pitches are to be
-;;;   handled. Default = :sc.  
+;;; keyword arguments:
+;;; - :qtr-tones-also. T or NIL to indicate whether quarter-tones are also to
+;;;   be rounded to the nearest chromatic pitch and returned. T = round and
+;;;   return. Default = NIL.
+;;; - :octave. NIL or an integer that is the octave designator to which all
+;;;   resulting pitches are to be transposed (i.e. the "4" in "C4" etc.)
+;;;   Default = NIL.
+;;; - :remove-duplicates. T or NIL to indicate whether any duplicate pitches
+;;;   within an octave that are created by use of the :octave keyword argument
+;;;   are to be removed. T = remove duplicates. Default = NIL.
+;;; - :as-symbols. T or NIL to indicate whether to return the results of the
+;;;   method as a list of note-name symbols rather than a list of pitch
+;;;   objects. T = return as note-name symbols. Default = NIL.
+;;; - :package. The package in which the pitches are to be handled. 
+;;;   Default = :sc.
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of pitch objects.
@@ -400,18 +401,19 @@ T
 ;;; - An sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :octave. NIL or an integer that is the octave designator
-;;;   to which all resulting pitches are to be transposed (i.e. the "4" in "C4"
-;;;   etc.) Default = NIL.
-;;; - keyword argument :remove-duplicates. T or NIL to indicate whether any
-;;;   duplicate pitches within an octave that are created by use of the :octave
-;;;   keyword argument are to be removed. T = remove duplicates. Default = NIL.
-;;; - keyword argument :as-symbols. T or NIL to indicate whether to return the
-;;;   results of the method as a list of note-name symbols rather than a list
-;;;   of pitch objects. T = return as note-name symbols. Default = NIL.
-;;; - keyword argument :package. The package in which the pitches are to be
-;;;   handled. Default = :sc.  
-;;; - keyword argument :invert. Get the micro-tone pitches instead.
+;;; keyword arguments:
+;;; - :octave. NIL or an integer that is the octave designator to which all
+;;;   resulting pitches are to be transposed (i.e. the "4" in "C4" etc.)
+;;;   Default = NIL.
+;;; - :remove-duplicates. T or NIL to indicate whether any duplicate pitches
+;;;   within an octave that are created by use of the :octave keyword argument
+;;;   are to be removed. T = remove duplicates. Default = NIL.
+;;; - :as-symbols. T or NIL to indicate whether to return the results of the
+;;;   method as a list of note-name symbols rather than a list of pitch
+;;;   objects. T = return as note-name symbols. Default = NIL.
+;;; - :package. The package in which the pitches are to be handled. 
+;;;   Default = :sc.
+;;; - :invert. Get the micro-tone pitches instead.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns a list of pitch objects by default.
@@ -516,14 +518,15 @@ PITCH: frequency: 184.997, midi-note: 54, midi-channel: 0
 ;;; - An sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :octave. NIL or an integer that is the octave designator
-;;;   to which all resulting pitches are to be transposed (i.e. the "4" in "C4"
-;;;   etc.) Default = NIL.
-;;; - keyword argument :as-symbols. T or NIL to indicate whether to return the
-;;;   results of the method as a list of note-name symbols rather than a list
-;;;   of pitch objects. T = return as note-name symbols. Default = NIL.
-;;; - keyword argument :package. The package in which the pitches are to be
-;;;   handled. Default = :sc.
+;;; keyword arguments:
+;;; - :octave. NIL or an integer that is the octave designator to which all
+;;;   resulting pitches are to be transposed (i.e. the "4" in "C4" etc.)
+;;;   Default = NIL.
+;;;  :as-symbols. T or NIL to indicate whether to return the results of the
+;;;   method as a list of note-name symbols rather than a list of pitch
+;;;   objects. T = return as note-name symbols. Default = NIL.
+;;; - :package. The package in which the pitches are to be handled. 
+;;;   Default = :sc.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns a list of pitch objects by default.
@@ -1338,20 +1341,19 @@ data: Q
 ;;;   given sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :id. A symbol that is to be the ID of the given sc-set
-;;;   object.
-;;; - keyword argument :subsets. An assoc-list of key/data pairs, in which the
-;;;   data is a list of note-name symbols that are a subset of the main
-;;;   set. One use for this keyword argument might be to create subsets that
-;;;   particular instruments can play; these would then be selected in the
-;;;   chord-function passed to the instrument object.
-;;; - keyword argument :related-sets. An assoc-list of key/data pairs, similar
-;;;   to :subsets, only that the pitches given here do not have to be part of
-;;;   the main set. This can be used, for example, for pitches missing from the
-;;;   main set.
-;;; - keyword argument :auto-sort. T or NIL to indicate whether the specified
-;;;   pitches (note-name symbols) are to be automatically  sorted from lowest
-;;;   to highest. T = sort. Default = T.
+;;; keyword arguments:
+;;; - :id. A symbol that is to be the ID of the given sc-set object.
+;;; - :subsets. An assoc-list of key/data pairs, in which the data is a list of
+;;;   note-name symbols that are a subset of the main set. One use for this
+;;;   keyword argument might be to create subsets that particular instruments
+;;;   can play; these would then be selected in the chord-function passed to
+;;;   the instrument object.
+;;; - :related-sets. An assoc-list of key/data pairs, similar to :subsets, only
+;;;   that the pitches given here do not have to be part of the main set. This
+;;;   can be used, for example, for pitches missing from the main set.
+;;; - :auto-sort. T or NIL to indicate whether the specified pitches (note-name
+;;;   symbols) are to be automatically sorted from lowest to highest. 
+;;;   T = sort. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; An sc-set object.

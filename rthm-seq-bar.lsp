@@ -3758,6 +3758,8 @@ data: (2 4)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri May 18 09:25:40 EDT 2012: Added robodoc entry
+
 ;;; This method is really just looking for enharmonically-re-spelled notes
 ;;; within a bar and trying to unify the spelling.
 ;;; 

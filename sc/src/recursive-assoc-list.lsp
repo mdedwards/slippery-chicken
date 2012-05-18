@@ -1569,25 +1569,23 @@ data: RIBBON
 ;;; - A list of nested lists, or a list.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-
-;;; - keyword argument :recurse-simple-data. T or NIL to indicate whether to
-;;;   recursively instantiate a recursive-assoc-list in place of data that
-;;;   appears to be a simple assoc-list (i.e. a 2-element list). If NIL, the
-;;;   data of 2-element lists whose second element is a number or a symbol will
-;;;   be ignored, therefore remaining as a list. For example, this data would
-;;;   normally result in a recursive call: (y ((2 23) (7 28) (18 2))). 
-;;;   T = replace assoc-list data with recursive-assoc-lists. Default = T. 
-;;; - keyword argument :full-ref. Nil or a list representing the path to a
-;;;   nested recursive-assoc-list object within the given recursive-assoc-list
-;;;   object, starting from the top level of the given object. When NIL, the
-;;;   given recursive-assoc-list object itself is the top level. 
-;;;   Default = NIL. 
-;;; - keyword argument :tag. A symbol that is another name, description
-;;;   etc. for the given recursive-assoc-list object. The tag may be used for
-;;;   identification but not for searching purposes. Default = NIL.
-;;; - keyword argument :warn-not-found. T or NIL to indicate whether a warning
-;;;   is printed when an index which doesn't exist is used for lookup.
-;;;   Default = T. 
+;;; keyword arguments:
+;;; - :recurse-simple-data. T or NIL to indicate whether to recursively
+;;;   instantiate a recursive-assoc-list in place of data that appears to be a
+;;;   simple assoc-list (i.e. a 2-element list). If NIL, the data of 2-element
+;;;   lists whose second element is a number or a symbol will be ignored,
+;;;   therefore remaining as a list. For example, this data would normally
+;;;   result in a recursive call: (y ((2 23) (7 28) (18 2))).  T = replace
+;;;   assoc-list data with recursive-assoc-lists. Default = T.
+;;; - :full-ref. Nil or a list representing the path to a nested
+;;;   recursive-assoc-list object within the given recursive-assoc-list object,
+;;;   starting from the top level of the given object. When NIL, the given
+;;;   recursive-assoc-list object itself is the top level.  Default = NIL.
+;;; - :tag. A symbol that is another name, description etc. for the given
+;;;   recursive-assoc-list object. The tag may be used for identification but
+;;;   not for searching purposes. Default = NIL.
+;;; - :warn-not-found. T or NIL to indicate whether a warning is printed when
+;;;   an index which doesn't exist is used for lookup.  Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns a recursive-assoc-list object.

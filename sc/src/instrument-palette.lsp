@@ -246,9 +246,9 @@ e.g.
 ;;;   make-instrument. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :warn-not-found. T or NIL to indicate whether a warning
-;;;   is printed when an index which doesn't exist is used for lookup.
-;;;   Default = T. 
+;;; keyword arguments:
+;;; - :warn-not-found. T or NIL to indicate whether a warning is printed when
+;;;   an index which doesn't exist is used for lookup. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; An instrument palette.

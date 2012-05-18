@@ -355,39 +355,39 @@
 ;;;   symbols or a complete-set, tl-set or sc-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :id. An number, symbol or string that is to be the ID of
-;;;   the given complete-set object (see doc for sc-set).
-;;; - keyword argument :tag. A number, symbol or string that is secondary name,
-;;;   description, tag etc. for the given complete-set object. The :tag serves
-;;;   for identification but not searching purposes (see doc for
-;;;   named-object). 
-;;; - keyword argument :subsets. An assoc-list of key/data pairs, in which the
-;;;   data is a list of note-name symbols that are a subset of the main
-;;;   set. One use for this keyword argument might be to create subsets that
-;;;   particular instruments can play; these would then be selected in the
-;;;   chord-function passed to the instrument object (see doc for sc-set).
-;;; - keyword argument :related-sets. An assoc-list of key/data pairs, similar
-;;;   to :subsets, only that the pitches given here do not have to be part of
-;;;   the main set. This can be used, for example, for pitches missing from the
-;;;   main set (see doc for sc-set).
-;;; - keyword argument :auto-sort. T or NIL to indicate whether the specified
-;;;   pitches (note-name symbols) are to be automatically sorted from lowest
-;;;   to highest. T = sort. Default = T. (see doc for sc-set)
-;;; - keyword argument :transposition. A number that is the number of semitones
-;;;   by which the pitches of the new complete-set are to be transposed when
-;;;   the object is created. Default = 0.  (see doc for tl-set)
-;;; - keyword argument :limit-upper. A note-name symbol or a pitch object to
-;;;   indicate the highest possible pitch in the given complete-set object to
-;;;   be created. (see doc for tl-set)
-;;; - keyword argument :limit-lower.  A note-name symbol or a pitch object to
-;;;   indicate the lowest possible pitch in the complete-set object to be
-;;;   created. (see doc for tl-set) 
-;;; - keyword argument :complete. T, NIL, or 'CHROMATIC. This argument can be
-;;;   given at init, and if the set is not complete in the sense of T or
-;;;   'CHROMATIC (all chromatic, equally-tempered notes are present in the
-;;;   set), a warning is printed. If the set is neither T nor 'CHROMATIC at
-;;;   init, then no warning will be issued. In both cases the COMPLETE slot of
-;;;   the given complete-set object will be set after checking the set.
+;;; keyword arguments:
+;;; - :id. An number, symbol or string that is to be the ID of the given
+;;;   complete-set object (see doc for sc-set).
+;;; - :tag. A number, symbol or string that is secondary name, description, tag
+;;;   etc. for the given complete-set object. The :tag serves for
+;;;   identification but not searching purposes (see doc for named-object).
+;;; - :subsets. An assoc-list of key/data pairs, in which the data is a list of
+;;;   note-name symbols that are a subset of the main set. One use for this
+;;;   keyword argument might be to create subsets that particular instruments
+;;;   can play; these would then be selected in the chord-function passed to
+;;;   the instrument object (see doc for sc-set).
+;;; - :related-sets. An assoc-list of key/data pairs, similar to :subsets, only
+;;;   that the pitches given here do not have to be part of the main set. This
+;;;   can be used, for example, for pitches missing from the main set (see doc
+;;;   for sc-set).
+;;; - :auto-sort. T or NIL to indicate whether the specified pitches (note-name
+;;;   symbols) are to be automatically sorted from lowest to highest. 
+;;;  T = sort. Default = T. (see doc for sc-set)
+;;; - :transposition. A number that is the number of semitones by which the
+;;;   pitches of the new complete-set are to be transposed when the object is
+;;;   created. Default = 0.  (see doc for tl-set)
+;;; - :limit-upper. A note-name symbol or a pitch object to indicate the
+;;;   highest possible pitch in the given complete-set object to be
+;;;   created. (see doc for tl-set)
+;;; - :limit-lower.  A note-name symbol or a pitch object to indicate the
+;;;   lowest possible pitch in the complete-set object to be created. (see doc
+;;;   for tl-set)
+;;; - :complete. T, NIL, or 'CHROMATIC. This argument can be given at init, and
+;;;   if the set is not complete in the sense of T or 'CHROMATIC (all
+;;;   chromatic, equally-tempered notes are present in the set), a warning is
+;;;   printed. If the set is neither T nor 'CHROMATIC at init, then no warning
+;;;   will be issued. In both cases the COMPLETE slot of the given complete-set
+;;;   object will be set after checking the set.
 ;;; 
 ;;; RETURN VALUE
 ;;; A complete-set object.

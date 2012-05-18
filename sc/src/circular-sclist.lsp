@@ -302,17 +302,16 @@
 ;;; - A list.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :id. A symbol that will be used as the ID for the
-;;;   created circular-sclist object. Default = NIL.
-;;; - keyword argument :bounds-alert. T or NIL to indicate whether or not to
-;;;   print a warning if when an attempt is made to access the object using an
-;;;   out-of-bounds index number (i.e., not enough elements in the list). 
-;;;   T = print a warning. Default = T. 
-
-;;; - keyword argument :copy. T or NIL to indicate whether the given data list
-;;;   should be copied (any slippery-chicken class instances will be cloned),
-;;;   with subsequent modifications being applied to the copy. T =
-;;;   copy. Default = T.
+;;; keyword arguments:
+;;; - :id. A symbol that will be used as the ID for the created circular-sclist
+;;;   object. Default = NIL.
+;;; - :bounds-alert. T or NIL to indicate whether or not to print a warning if
+;;;   when an attempt is made to access the object using an out-of-bounds index
+;;;   number (i.e., not enough elements in the list).  T = print a
+;;;   warning. Default = T.
+;;; - :copy. T or NIL to indicate whether the given data list should be copied
+;;;   (any slippery-chicken class instances will be cloned), with subsequent
+;;;   modifications being applied to the copy. T = copy. Default = T.
 ;;;
 ;;; RETURN VALUE  
 ;;; A circular-sclist object.

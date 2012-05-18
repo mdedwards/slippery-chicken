@@ -2191,17 +2191,17 @@ RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL,
 ;;; - A rthm-seq object.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :min-beats. This argument takes an integer value to
-;;;   indicate the minimum number of beats in any of the new rthm-seq-bar 
-;;;   objects created. This serves as a guideline only and may occasionally be 
-;;;   exceeded in value by the method. Default value = 2.
-;;; - keyword argument :max-beats. This argument takes an integer value to
-;;;   indicate the maximum number of beats in any of the new rthm-seq-bar
-;;;   objects created. This serves as a guideline only and may occasionally be
-;;;   exceeded in value by the method. Default value = 5.
-;;; - keyword argument :warn. Indicates whether to print a warning if the
-;;;   rthm-seq-bar object is unsplittable. Value T = print a warning. Defaults
-;;;   to NIL. 
+;;; keyword arguments
+;;; - :min-beats. This argument takes an integer value to indicate the minimum
+;;;   number of beats in any of the new rthm-seq-bar objects created. This
+;;;   serves as a guideline only and may occasionally be exceeded in value by
+;;;   the method. Default value = 2.
+;;; - :max-beats. This argument takes an integer value to indicate the maximum
+;;;   number of beats in any of the new rthm-seq-bar objects created. This
+;;;   serves as a guideline only and may occasionally be exceeded in value by
+;;;   the method. Default value = 5.
+;;; - :warn. Indicates whether to print a warning if the rthm-seq-bar object is
+;;;   unsplittable. Value T = print a warning. Defaults to NIL.
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rthm-seq object.

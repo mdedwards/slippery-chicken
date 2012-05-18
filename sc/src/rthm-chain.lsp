@@ -1064,19 +1064,9 @@
 ;;;   the method uses the rest-insertion algorithm to automatically insert
 ;;;   rests into the resulting objects. The specified rests are used in a
 ;;;   sequence determined by a recurring-event object. Default = '(e q q. w).
+
 ;;; - :do-rests. T or NIL to indicate whether to apply the automatic
 ;;;   rest-insertion algorithm. T = use. Default = T.
-
-;;; - :do-rests-curve. Default = NIL.
-
-;;; - :rest-re. A list of 2-item lists that indicate the pattern by which rests
-;;;   will be automatically inserted. The first number of each pair determines
-;;;   how many events occur before inserting a rest, and the second number of
-;;;   each pair determines how many times that interval will be repeated. For
-;;;   example, (2 3) indicates that a rest will be inserted every two events,
-;;;   three times in a row. The list passed here will be treated as data for a
-;;;   recurring-event object that will be repeatedly cycled through. 
-;;;   Default = '((2 3) (3 2) (2 2) (5 1) (3 3) (8 1)).
 
 ;;; - :rest-cycle. A list of 2-item lists that indicate the pattern by which
 ;;;   rests of specific rhythmic durations will be selected from the RESTS slot
@@ -1092,66 +1082,169 @@
 ;;;   position 0 in the list of rests in the RESTS slot (e by default).
 ;;;   Default ='((0 3) (1 1) (0 2) (2 1) (1 1) (3 1)).
 
-;; so, we'll alternate e,q,q.,w rests. this slot determines the order these
-   ;; will occur in; first element of the pairs is the index into rests (above)
-   ;; the second element is how many times it will occur.
+;;; - :do-rests-curve. A list of break-point pairs with y values of either 0 or
+;;;   1 indicating whether the do-rests algorithm is active or disabled. This
+;;;   values are interpolated between each pair, with all values 0.5 and higher
+;;;   being round up to 1 and all below 0.5 rounded to 0. Default = NIL.
 
-  ;; rest-cycle determines which rests we'll insert from the rests list.
+;;; - :rest-re. A list of 2-item lists that indicate the pattern by which rests
+;;;   will be automatically inserted. The first number of each pair determines
+;;;   how many events occur before inserting a rest, and the second number of
+;;;   each pair determines how many times that period will be repeated. For
+;;;   example, (2 3) indicates that a rest will be inserted every two events,
+;;;   three times in a row. The list passed here will be treated as data for a
+;;;   recurring-event object that will be repeatedly cycled through.  
+;;;   Default = '((2 3) (3 2) (2 2) (5 1) (3 3) (8 1)).
 
-;;; - :activity-curve.  In order to make music that 'progresses' we have curves
-;;;                   with y values from 1-10 indicating how much activity
-;;;                   there should be: 1 would mean only 1 in 10 beats would
-;;;                   have notes in/on them, 10 would indicate that all do.  We
-;;;                   use the patterns given in activity-levels::init-instance
-;;;                   below, where 1 means 'play', 0 means 'rest'.  There are
-;;;                   three examples of each level so that if we stick on one
-;;;                   level of activity for some time we won't always get the
-;;;                   same pattern: these will instead be cycled through.
+;;; - :activity-curve. A list of break-point pairs with y values from 1 to 10
+;;;   indicating the amount of activity there should be over the course of the
+;;;   piece. A value of 1 indicates that only 1 in 10 beats will have notes
+;;;   in/on them, and a value of 10 indicates that all beats will have
+;;;   notes. This process uses the patterns given in
+;;;   activity-levels::init-instance below, where 1 means 'play' and 0 means
+;;;   'rest'. There are three examples of each level, so that if the curve
+;;;   remains on one level of activity for some time it won't always return the
+;;;   same pattern; these will be rotated instead. If the activity curve
+;;;   indicates a rest for one of the slower-rhythms groups, the whole 2-3 beat
+;;;   group is omitted.
 
-;;; -if the activity curve indicates a rest for a slower-rhythms group, then
-;;;                   the whole 2-3 beat group is omitted.
+;;; - :harmonic-rthm-curve. A list of break-point pairs that indicates how many
+;;;   slower-rthms will be combined into one rthm-seq (each rthm-seq has a
+;;;   single harmony). The default is 2 bars (slower-rthms) per rthm-seq,
+;;;   i.e. '(0 2 100 2).
 
-;;; - :sticking-curve. ;;; Sticking happens after rests.  This can be
-;;;                   controlled with an activity envelope too, also indicating
-;;;                   one of the 10 patterns above (but also including 0).  A 0
-;;;                   or 1 unit here would refer to a certain number of repeats
-;;;                   (1) or none (0).  How many repeats could be determined by
-;;;                   something like: (procession 34 '(2 3 5 8 13) :peak 1
-;;;                   :expt 3) There's always a slower group to accompany the
-;;;                   sticking points: simply the next in the sequence,
-;;;                   repeated for as long as we stick
+;;; - :do-sticking. T or NIL to indicate whether the method should apply the
+;;;   sticking algorithm. T = apply. Default = T.
 
+;;; - :do-sticking-curve. A list of break-point pairs that can be used,
+;;;   alternatively, to control whether the sticking algorithm is being applied
+;;;   or not at any given point over the course of the piece. The y values for
+;;;   this curve should be between 0 and 1, and the decimal fractions achieved
+;;;   from interpolation will be rounded. The 1 values resulting from this
+;;;   curve will only be actively applied to if do-sticking is set to T.
 
-;;; - :harmonic-rthm-curve.
+;;; - :sticking-curve. A list of break-point pairs that acts as an activity
+;;;   envelope to control the sticking, which always occurs after rests. As
+;;;   with the activity curve, this curve can take y values up to 10, but also
+;;;   allows 0. A y value of 0 or 1 here refers to either a specific number of
+;;;   repeats (1) or none (0). The number of repeats may be determined, for
+;;;   example, by use of the procession method, such as 
+;;;   (procession 34 '(2 3 5 8 13) :peak 1 :expt 3). Every sticking point is
+;;;   accompanied by a slower group, which is simply chosen in sequence and
+;;;   repeated for the duration of the sticking period.
 
-;;;                   The harmonic-rthm curve specifies how many slower-rthms
-;;;                   will be combined into a rthm-seq (each rthm-seq has a
-;;;                   single harmony).  The default is 2 bars (slower-rthms)
-;;;                   per rthm-seq.
+;;; - :sticking-repeats. A list of integers to indicate the number of
+;;;   repetitions applied in sticking segments. When the values of this list
+;;;   have been exhausted, the method cycles to the beginning and continues
+;;;   drawing from the head of the list again. NB: This list is made into a
+;;;   circular-sclist object when the given rthm-chain object is initialized
+;;;   unless a circular-sclist object is explicitly provided.
 
-;;; - :do-sticking. ;; whether we apply the sticking algorithm
+;;; - :sticking-rthm. A list of rhythmic units that will serve as the rhythms
+;;;   employed by the sticking algorithm. These are generated at initialization
+;;;   if not specified here. NB: This list is used to create a list using the
+;;;   procession algorithm at initialization, so it is best to apply something
+;;;   similar to the default if not accepting the default (if the user would
+;;;   like to specify a different list). If a circular-sclist object is
+;;;   provided here, it will be used instead of the default procession.
 
-;;; - :do-sticking-curve.    ;; alternatively, envelopes to control whether we're sticking/resting or not
-   ;; these should range from 0->1 and will be rounded when interpolating
-   ;; they will only be active if do-sticking/do-rests is t
-
-;;; - :sticking-repeats.    ;; when we stick, how many repeats do we have? when we've exhausted this
-   ;; list we just start back at the beginning again.  NB we make a cscl
-   ;; procession out of this at init, unless a cscl is provided.
-
-;;; - :sticking-rthms.    ;; generated at init if not given here NB a procession algorithm is created
-   ;; from this list at init so it would be best to apply something similar (if
-   ;; desired) if not accepting the default--in any case if a cscl is provided
-   ;; it will be used instead of the default procession.
-
-;;; - :split-data.    ;; the mix/max beat duration of bars generated; can be nil, whereupon bars
-   ;; will not be split
+;;; - :split-data. NIL or a two-item list of integers that are the minimum and
+;;;   maximum beat duration of bars generated. If NIL, the bars will not be
+;;;   split. Default = '(2 5)
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A rthm-chain object.
 ;;; 
 ;;; EXAMPLE
 #|
+;; An example using a number of the keyword arguments.
+(make-rthm-chain
+ 'test-rch 14
+ '((((e) e) ; 4 in total
+    (- s (s) (s) s -)
+    ({ 3 (te) - te te - })
+    ((e.) s))
+   (({ 3 (te) te (te) }) ; what we transition to
+    ({ 3 - te (te) te - })
+    ({ 3 (te) - te te - })
+    ({ 3 (te) (te) te })))
+ '((((q q) ; the 2/4 bars: 5 total
+     ((q) q)
+     ((q) q)
+     ((q) (s) e.)
+     (- e e - (e) e))
+    (({ 3 te+te te+te te+te }) ; what we transition to
+     (q - s e. -)
+     (q (s) e.)
+     (q (s) - s e -)
+     ({ 3 te+te te+te - te te - })))
+   ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
+     (- e e - (e) e (q))
+     (- e. s - - +e e - (q))
+     (q (e.) s (q)))
+    (({ 3 (te) (te) te+te te+te } (q)) ; what we transition to
+     (- e. s - (q) (s) - s e -)
+     ({ 3 te+te te } (q) q)
+     ({ 3 - te te te - } (e) e { 3 (te) (te) te }))))
+ :players '(fl cl)
+ :slow-fibonacci t
+ :activity-curve '(0 1 100 10)
+ :harmonic-rthm-curve '(0 1 100 3)
+ :do-sticking t
+ :do-sticking-curve '(0 1 25 0 50 1 75 0 100 1)
+ :sticking-curve '(0 0 100 10)
+ :sticking-repeats '(3 5 7 11 2 7 5 3 13)
+ :sticking-rthms '(e s. 32 e.)
+ :split-data '(4 7))
+
+=>
+RTHM-CHAIN: 1-beat-rthms: (((E E) (S S S S) (TE TE TE) (E. S))
+                           ((TE TE TE) (TE TE TE) (TE TE TE) (TE TE TE)))
+            slower-rthms: ((((Q Q) ((Q) Q) ((Q) Q) ((Q) (S) E.)
+                             (- E E - (E) E))
+                            (({ 3 TE+TE TE+TE TE+TE }) (Q - S E. -)
+                             (Q (S) E.) (Q (S) - S E -)
+                             ({ 3 TE+TE TE+TE - TE TE - })))
+                           ((((E.) S (E) E (S) E.) (- E E - (E) E (Q))
+                             (- E. S - - +E E - (Q)) (Q (E.) S (Q)))
+                            (({ 3 (TE) (TE) TE+TE TE+TE } (Q))
+                             (- E. S - (Q) (S) - S E -)
+                             ({ 3 TE+TE TE } (Q) Q)
+                             ({ 3 - TE TE TE - } (E) E { 3 (TE) (TE) TE
+                              }))))
+            1-beat-fibonacci: NIL
+            num-beats: 14
+            slow-fibonacci: NIL
+            num-1-beat-rthms: 4
+            num-1-beat-groups: 2
+            sticking-curve: (0.0 0 13 10)
+            harmonic-rthm-curve: (0.0 1 13 3)
+            beat: 4
+            do-sticking: T
+            do-rests: T
+            do-sticking-curve: (0.0 1 3.25 0 6.5 1 9.75 0 13 1)
+            do-rests-curve: NIL
+            sticking-al: (not printed for brevity's sake)
+            sticking-rthms: (E S. E S. 32 E 32 E E E. S. 32 S. E. S. 32 S.
+                             32 E. E)
+            sticking-repeats: (3 5 3 5 7 3 7 3 3 11 5 7 5 11 5 7 5 7 11 3
+                               7 3 3 11 5 7 5 11 3 7 3 7 11 5 7 5 5 11 3
+                               11 3 2 11 2 11 2 7 2 7 2 2 5 5 3 5)
+            activity-curve: (0.0 1 13 10)
+            main-al: (not printed for brevity's sake)
+            slower-al: (not printed for brevity's sake)
+            num-slower-bars: 11
+            rcs: (not printed for brevity's sake)
+            rests: (E Q Q. W)
+            rest-re: (not printed for brevity's sake)
+            rest-cycle: ((0 3) (1 1) (0 2) (2 1) (1 1) (3 1))
+            num-rthm-seqs: 11
+            section-id: 1
+            split-data: (4 7)
+RTHM-SEQ-MAP: num-players: 2 
+              players: (CL FL)
+SC-MAP: palette id: RTHM-CHAIN-RSP
+[...]
 
 |#
 ;;; SYNOPSIS

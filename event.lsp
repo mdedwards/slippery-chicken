@@ -896,12 +896,12 @@ data: 132
 ;;; - An event object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :written. T or NIL to indicate whether the test is to
-;;;   handle the written or sounding pitch in the event. T = written. Default = 
-;;;   NIL. 
-;;; - keyword argument :force-naturals. T or NIL to indicate whether to force
-;;;   "natural" note names that contain no F or S in their name to convert to 
-;;;   their enharmonic equivalent (ie, B3 = CF4)
+;;; keyword arguments:
+;;; - :written. T or NIL to indicate whether the test is to handle the written
+;;;   or sounding pitch in the event. T = written. Default = NIL.
+;;; - :force-naturals. T or NIL to indicate whether to force "natural" note
+;;;   names that contain no F or S in their name to convert to their enharmonic
+;;;   equivalent (ie, B3 = CF4)
 ;;; 
 ;;; RETURN VALUE
 ;;; An event object.
@@ -2265,11 +2265,12 @@ NIL
 ;;; - A number (can be positive or negative).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :destructively. T or NIL to indicate whether the method
-;;;   is to change (replace) the pitch values of the original event object (T)
-;;;   or return a new event object with the new pitches (NIL). Default = NIL.
-;;; - keyword argument :chord-function
-;;; - keyword argument :pitch-function
+;;; keyword arguments:
+;;; - :destructively. T or NIL to indicate whether the method is to change
+;;;   (replace) the pitch values of the original event object (T) or return a
+;;;   new event object with the new pitches (NIL). Default = NIL.
+;;; - :chord-function. Default = #'transpose.
+;;; - :pitch-function. Default = #'transpose
 ;;; 
 ;;; RETURN VALUE
 ;;; An event object.
@@ -2919,10 +2920,11 @@ T
 ;;; - an event object
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword written default NIL: whether to use the written (in the case of
-;;;   transposing instruments) or sounding pitches.
-;;; - keyword sum default NIL: return the sum of the degrees instead of a list
-;;;   (see below).
+;;; keyword arguments:
+;;; - :written. T or NIL to indicate whether to use the written (in the case of
+;;;   transposing instruments) or sounding pitches. T = written. Default = NIL.
+;;; - :sum. T or NIL to indicate whether to return the sum of the degrees
+;;;   instead of a list (see below). T = degrees. Default = NIL.
 ;;; 
 ;;; RETURN VALUE 
 ;;; By default this returns a list (even if it's a single pitch), unless :sum T
@@ -3206,12 +3208,11 @@ T
 ;;; - A rhythm (duration).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :start-time. A number that is the start-time of the
-;;;   event in seconds.
-;;; - keyword argument :duration. T or NIL. T indicates that the duration given
-;;;   is a value of absolute seconds rather than a known rhythm
-;;;   (e.g. 'e). Default = NIL. 
-;;; - keyword duration :tempo. Beats per minute. Default = 60.
+;;; keyword arguments:
+;;; - :start-time. A number that is the start-time of the event in seconds.
+;;; - :duration. T or NIL. T indicates that the duration given is a value of
+;;;   absolute seconds rather than a known rhythm (e.g. 'e). Default = NIL.
+;;; - :tempo. Beats per minute. Default = 60.
 ;;; 
 ;;; RETURN VALUE
 ;;; - An event object.

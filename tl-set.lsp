@@ -166,9 +166,9 @@
 ;;;   the pitch content of the given tl-set object is to be transposed.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :do-related-sets. T or NIL to indicate whether to
-;;;   tranpsose any contents of the RELATED-SETS slot as well. T = transpose.
-;;;   Default = NIL.  
+;;; keyword arguments:
+;;; - :do-related-sets. T or NIL to indicate whether to transpose any contents
+;;;   of the RELATED-SETS slot as well. T = transpose.  Default = NIL.
 ;;; (- additional <ignore> arguments are for internal use only)
 ;;; 
 ;;; RETURN VALUE
@@ -263,13 +263,14 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 ;;; - A tl-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword-argument :upper. A note-name symbol that is the upper limit for
-;;;   the limiting process.
-;;; - keyword argument :lower. A note-name symbol that is the lower limit for
-;;;   the limiting process.
-;;; - keyword argument :do-related-sets. T or NIL to indicate whether the
-;;;   RELATED-SETS slot of the given tl-set object is to be transposed as well
-;;;   or left unhandled. T = transpose. Default = NIL.
+;;; keyword arguments:
+;;; - :upper. A note-name symbol that is the upper limit for the limiting
+;;;   process.
+;;; - :lower. A note-name symbol that is the lower limit for the limiting
+;;;   process.
+;;; - :do-related-sets. T or NIL to indicate whether the RELATED-SETS slot of
+;;;   the given tl-set object is to be transposed as well or left unhandled. T
+;;;   = transpose. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; A tl-set object.
@@ -369,19 +370,18 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 ;;; - An instrument object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :upper. A pitch object or note-name symbol that is the
-;;;   uppermost possible pitch (inclusive) of the pitch objects returned, as a
-;;;   further limitation after the range of the instrument object has been
-;;;   applied.  
-;;; - keyword argument :lower. A pitch object or note-name symbol that is the
-;;;   lowermost possible pitch (inclusive) of the pitch objects returned, as a
-;;;   further limitation after the range of the instrument object has been
-;;;   applied.  
-;;; - keyword argument :do-related-sets. T or NIL to indicate whether to apply
-;;;   the specified range restrictions to the RELATED-SETS slot of the given
-;;;   tl-set object as well. NB: These will be modified within the original
-;;;   tl-set object but not returned as part of the resulting list. T = apply
-;;;   to RELATED-SETS as well. Default = NIL.
+;;; keyword arguments:
+;;; - :upper. A pitch object or note-name symbol that is the uppermost possible
+;;;   pitch (inclusive) of the pitch objects returned, as a further limitation
+;;;   after the range of the instrument object has been applied.
+;;; - :lower. A pitch object or note-name symbol that is the lowermost possible
+;;;   pitch (inclusive) of the pitch objects returned, as a further limitation
+;;;   after the range of the instrument object has been applied.
+;;; - :do-related-sets. T or NIL to indicate whether to apply the specified
+;;;   range restrictions to the RELATED-SETS slot of the given tl-set object as
+;;;   well. NB: These will be modified within the original tl-set object but
+;;;   not returned as part of the resulting list. T = apply to RELATED-SETS as
+;;;   well. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of pitch objects.
@@ -557,27 +557,26 @@ data: C6
 ;;;   given tl-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :id. A symbol that is to be the ID of the given tl-set
-;;;   object.
-;;; - keyword argument :subsets. An assoc-list of key/data pairs, in which the
-;;;   data is a list of note-name symbols that are a subset of the main
-;;;   set. One use for this keyword argument might be to create subsets that
-;;;   particular instruments can play; these would then be selected in the
-;;;   chord-function passed to the instrument object.
-;;; - keyword argument :related-sets. An assoc-list of key/data pairs, similar
-;;;   to :subsets, only that the pitches given here do not have to be part of
-;;;   the main set. This can be used, for example, for pitches missing from the
-;;;   main set.
-;;; - keyword argument :limit-upper. A note-name symbol or a pitch object to
-;;;   indicate the highest possible pitch in the tl-set object to be created. 
-;;; - keyword argument :limit-lower.  A note-name symbol or a pitch object to
-;;;   indicate the lowest possible pitch in the tl-set object to be created.
-;;; - keyword argument :transposition. A number that is the number of semitones
-;;;   by which the pitches of the new tl-set are to be transposed when the
-;;;   object is created. Default = 0.
-;;; - keyword argument :auto-sort. T or NIL to indicate whether the specified
-;;;   pitches (note-name symbols) are to be automatically  sorted from lowest
-;;;   to highest. T = sort. Default = T.
+;;; keyword arguments:
+;;; - :id. A symbol that is to be the ID of the given tl-set object.
+;;; - :subsets. An assoc-list of key/data pairs, in which the data is a list of
+;;;   note-name symbols that are a subset of the main set. One use for this
+;;;   keyword argument might be to create subsets that particular instruments
+;;;   can play; these would then be selected in the chord-function passed to
+;;;   the instrument object.
+;;; - :related-sets. An assoc-list of key/data pairs, similar to :subsets, only
+;;;   that the pitches given here do not have to be part of the main set. This
+;;;   can be used, for example, for pitches missing from the main set.
+;;; - :limit-upper. A note-name symbol or a pitch object to indicate the
+;;;   highest possible pitch in the tl-set object to be created.
+;;; - :limit-lower.  A note-name symbol or a pitch object to indicate the
+;;;   lowest possible pitch in the tl-set object to be created.
+;;; - :transposition. A number that is the number of semitones by which the
+;;;   pitches of the new tl-set are to be transposed when the object is
+;;;   created. Default = 0.
+;;; - :auto-sort. T or NIL to indicate whether the specified pitches (note-name
+;;;   symbols) are to be automatically sorted from lowest to highest. T =
+;;;   sort. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; A tl-set object.

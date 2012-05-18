@@ -653,11 +653,11 @@ data: (C4 F4 A4 C5)
 ;;;   will be a list of note-name symbols.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :recurse-simple-data. T or NIL to indicate whether to
-;;;   interpret two-element data lists as recursive palettes. Default = T.
-;;; - keyword argument :warn-note-found. T or NIL to indicate whether to print
-;;;   warnings when specified data is not found with subsequent calls to
-;;;   the get-data method.
+;;; keyword arguments:
+;;; - :recurse-simple-data. T or NIL to indicate whether to interpret
+;;;   two-element data lists as recursive palettes. Default = T.
+;;; - :warn-note-found. T or NIL to indicate whether to print warnings when
+;;;   specified data is not found with subsequent calls to the get-data method.
 ;;; 
 ;;; RETURN VALUE  
 ;;; A set-palette object.
@@ -822,27 +822,21 @@ data: (
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-
 ;;; - :partials. A list of integers that are the partials which the method is
 ;;;   to ring modulate, with 1 being either the reference-note or the bass note
 ;;;   that would have the reference-note as the highest partial in the given
 ;;;   list. Default = '(1 3 5 7).
-
 ;;; - :warn-no-bass. T or NIL to indicate whether to issue a warning when
 ;;;   ring-mod-bass fails to find suitable bass notes for the generated sets. T
 ;;;   = warn. Default = T.
-
 ;;; - :do-bass. T or NIL to indicate whether to add notes created by the
 ;;;   ring-mod-bass function to the resulting set-palette obect. T = create and
 ;;;   add bass notes. Default = T.
-
 ;;; - :remove-octaves. T or NIL to indicate whether to remove the upper
 ;;;   instances of any octave-equivalent pitches from the resulting set-palette
 ;;;   object. T = remove. Default = NIL.
-
 ;;; - :min-bass-notes. An integer that is the minimum number of bass notes to
 ;;;   be generated and added to the resulting set-palette object. Default = 1.
-
 ;;; - :ring-mod-bass-octave. An integer that is the MIDI octave reference
 ;;;   number (such as the 4 in 'C4), indicating the octave from which the bass
 ;;;   note(s) are to be taken.
@@ -933,30 +927,29 @@ COMPLETE-SET: complete: NIL
 ;;; - A symbol that is to be the ID for the new set-palette object.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :partials. A list of integers that are the partials
-;;;   which the method uses to ring modulate.  We create partials ascending
-;;;   from the reference-note but also ascending from a fundamental calculated
-;;;   so that reference-note would be the highest partial in the partials list.
-;;;   E.g. if reference-note were 'a4 (440Hz) and :partials was '(1 2) we'd
-;;;   have partial frequencies of 440 and 880, as these are the ascending
-;;;   partials 1 and 2 from 440, but also have 220, as that is the fundamental
-;;;   for which 440 would be the highest partial out of (1 2).  
-;;;   Default = '(1 3 5 7).
-;;; - keyword argument :warn-no-bass. T or NIL to indicate whether to issue a
-;;;   warning when ring-mod-bass fails to find suitable bass notes for the
-;;;   generated sets. T = warn. Default = T.
-;;; - keyword argument :do-bass. T or NIL to indicate whether to add notes
-;;;   created by the ring-mod-bass function to the resulting set-palette
-;;;   obect. T = create and add bass notes. Default = T.
-;;; - keyword argument :remove-octaves. T or NIL to indicate whether to remove
-;;;   the upper instances of any octave-equivalent pitches from the resulting
-;;;   set-palette object. T = remove. Default = NIL.
-;;; - keyword argument :min-bass-notes. An integer that is the minimum number
-;;;   of bass notes to be generated and added to the resulting set-palette
-;;;   object. Default = 1.
-;;; - keyword argument :ring-mod-bass-octave. An integer that is the MIDI
-;;;   octave reference number (such as the 4 in 'C4), indicating the octave
-;;;   from which the bass note(s) are to be taken.
+;;; keyword arguments
+;;; - :partials. A list of integers that are the partials which the method uses
+;;;   to ring modulate.  We create partials ascending from the reference-note
+;;;   but also ascending from a fundamental calculated so that reference-note
+;;;   would be the highest partial in the partials list.  E.g. if
+;;;   reference-note were 'a4 (440Hz) and :partials was '(1 2) we'd have
+;;;   partial frequencies of 440 and 880, as these are the ascending partials 1
+;;;   and 2 from 440, but also have 220, as that is the fundamental for which
+;;;   440 would be the highest partial out of (1 2).  Default = '(1 3 5 7).
+;;; - :warn-no-bass. T or NIL to indicate whether to issue a warning when
+;;;   ring-mod-bass fails to find suitable bass notes for the generated sets. 
+;;;   T = warn. Default = T.
+;;; - :do-bass. T or NIL to indicate whether to add notes created by the
+;;;   ring-mod-bass function to the resulting set-palette obect. T = create and
+;;;   add bass notes. Default = T.
+;;; - :remove-octaves. T or NIL to indicate whether to remove the upper
+;;;   instances of any octave-equivalent pitches from the resulting set-palette
+;;;   object. T = remove. Default = NIL.
+;;; - :min-bass-notes. An integer that is the minimum number of bass notes to
+;;;   be generated and added to the resulting set-palette object. Default = 1.
+;;; - :ring-mod-bass-octave. An integer that is the MIDI octave reference
+;;;   number (such as the 4 in 'C4), indicating the octave from which the bass
+;;;   note(s) are to be taken.
 ;;; 
 ;;; RETURN VALUE
 ;;; A set-palette object.
@@ -1071,39 +1064,38 @@ data: (
 ;;;   symbol. The second value needn't be higher than first.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :return-notes. T or NIL to indicate whether to return
-;;;   the results as note-name symbols or frequency numbers. T = note-name
-;;;   symbols. Default = NIL.
-;;; - keyword argument :pitch1-partials. An integer that indicates how many
-;;;   harmonic partials of the first pitch are to be included in the
-;;;   modulation. Default = 3.
-;;; - keyword argument :pitch2-partials. An integer that indicates how many
-;;;   harmonic partials of the second pitch are to be included in the
-;;;   modulation. Default = 2.
-;;; - keyword argument :min-freq. A number that is the the minimum frequency
-;;;   (hertz) that may be returned. Default = 20.
-;;; - keyword argument :max-freq. A number that is the the maximum frequency
-;;;   (hertz) that may be returned. Default = 20000.
-;;; - keyword argument :round. T or NIL to indicate whether frequency values
-;;;   returned are first rounded to the nearest hertz. T = round. Default = T
-;;; - keyword argument :remove-duplicates. T or NIL to indicate whether any
-;;;   duplicate frequencies are to be removed from the resulting list before
-;;;   returning it. T = remove. Default = T. 
-;;; - keyword argument :print. T or NIL to indicate whether resulting data is
-;;;   to be printed as it is being generated. T = print. Default = NIL.
-;;; - keyword argument :remove-octaves. T or NIL to indicate whether octave
-;;;   repetitions of pitches will be removed from the resulting list before
-;;;   returning it, keeping only the lowest instance of each pitch. This
-;;;   argument can also be set as a number or a list of numbers that indicates
-;;;   which octave repetitions will be allowed, the rest being removed. For
-;;;   example, :remove-octaves '(1 2) will remove all octave repetitions of a
-;;;   given pitch except for those that are 1 octave and 2 octaves above the
-;;;   given pitch; thus '(c1 c2 c3 c4 c5) would return '(c1 c2 c3), removing c4
-;;;   and c5. Default = NIL.
-;;; - keyword argument :scale. A variable that indicates which scale to use
-;;;   when converting frequencies to note-names. Default = cm::*scale* i.e. the
-;;;   value to which the Common Music scale is set, which in slippery chicken
-;;;   is *quarter-tone* by default.
+;;; keyword arguments
+;;; - :return-notes. T or NIL to indicate whether to return the results as
+;;;   note-name symbols or frequency numbers. T = note-name symbols. 
+;;;   Default = NIL.
+;;; - :pitch1-partials. An integer that indicates how many harmonic partials of
+;;;   the first pitch are to be included in the modulation. Default = 3.
+;;; - :pitch2-partials. An integer that indicates how many harmonic partials of
+;;;   the second pitch are to be included in the modulation. Default = 2.
+;;; - :min-freq. A number that is the the minimum frequency (hertz) that may be
+;;;   returned. Default = 20.
+;;; - :max-freq. A number that is the the maximum frequency (hertz) that may be
+;;;   returned. Default = 20000.
+;;; - :round. T or NIL to indicate whether frequency values returned are first
+;;;   rounded to the nearest hertz. T = round. Default = T
+;;; - :remove-duplicates. T or NIL to indicate whether any duplicate
+;;;   frequencies are to be removed from the resulting list before returning
+;;;   it. T = remove. Default = T.
+;;; - :print. T or NIL to indicate whether resulting data is to be printed as
+;;;   it is being generated. T = print. Default = NIL.
+;;; - :remove-octaves. T or NIL to indicate whether octave repetitions of
+;;;   pitches will be removed from the resulting list before returning it,
+;;;   keeping only the lowest instance of each pitch. This argument can also be
+;;;   set as a number or a list of numbers that indicates which octave
+;;;   repetitions will be allowed, the rest being removed. For example,
+;;;   :remove-octaves '(1 2) will remove all octave repetitions of a given
+;;;   pitch except for those that are 1 octave and 2 octaves above the given
+;;;   pitch; thus '(c1 c2 c3 c4 c5) would return '(c1 c2 c3), removing c4 and
+;;;   c5. Default = NIL.
+;;; - :scale. A variable that indicates which scale to use when converting
+;;;   frequencies to note-names. Default = cm::*scale* i.e. the value to which
+;;;   the Common Music scale is set, which in slippery chicken is
+;;;   *quarter-tone* by default.
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of note-name symbols or frequencies.
@@ -1203,30 +1195,30 @@ data: (
 ;;;   are to be generated.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :bass-octave. An integer that is an octave indicator
-;;;   (e.g. the 4 in 'C4). The method will only return any
-;;;   frequencies/note-names generated that fall in this octave. Default = 0.
-;;; - keyword argument :low. A note-name symbol that is the lowest possible
-;;;   pitch of those returned. This argument further restricts the :bass-octave
-;;;   argument. Thus a :bass-octave value of 1 could be further limted to no
-;;;   pitches below :low 'DS1. Default = 'A0.
-;;; - keyword argument :high. A note-name symbol that is the highest possible
-;;;   pitch of those returned. This argument further restricts the :bass-octave
-;;;   argument. Thus a :bass-octave value of 1 could be further limted to no
-;;;   pitches above :high 'FS1. Default = 'G3.
-;;; - keyword argument :round. T or NIL to indicate whether the frequencies
-;;;   returned are rounded to integer values. T = round. Default = T.
-;;; - keyword argument :warn. T or NIL to print a warning when no bass can be
-;;;   created from the specified frequencies/note-names. T = print
-;;;   warning. Default = T.
-;;; - keyword argument :return-notes. T or NIL to indicate whether the
-;;;   resulting pitches should be returned as note-names instead of
-;;;   frequencies. T = return as note-names. Default = NIL. 
-;;; - keyword argument :scale. A variable pointing to the scale to which any
-;;;   translation of frequencies into note-names symbols should take place. By
-;;;   default this value is set to cm::*scale*, which is automatically set by
-;;;   slippery chicken to 'quarter-tone at initilisation. To return e.g. pitches
-;;;   rounded to chromatic note-names set this argument to cm::*chromatic-scale*. 
+;;; keyword arguments
+;;; - :bass-octave. An integer that is an octave indicator (e.g. the 4 in
+;;;   'C4). The method will only return any frequencies/note-names generated
+;;;   that fall in this octave. Default = 0.
+;;; - :low. A note-name symbol that is the lowest possible pitch of those
+;;;   returned. This argument further restricts the :bass-octave argument. Thus
+;;;   a :bass-octave value of 1 could be further limted to no pitches below
+;;;   :low 'DS1. Default = 'A0.
+;;; - :high. A note-name symbol that is the highest possible pitch of those
+;;;   returned. This argument further restricts the :bass-octave argument. Thus
+;;;   a :bass-octave value of 1 could be further limted to no pitches above
+;;;   :high 'FS1. Default = 'G3.
+;;; - :round. T or NIL to indicate whether the frequencies returned are rounded
+;;;   to integer values. T = round. Default = T.
+;;; - :warn. T or NIL to print a warning when no bass can be created from the
+;;;   specified frequencies/note-names. T = print warning. Default = T.
+;;; - :return-notes. T or NIL to indicate whether the resulting pitches should
+;;;   be returned as note-names instead of frequencies. T = return as
+;;;   note-names. Default = NIL.
+;;; - :scale. A variable pointing to the scale to which any translation of
+;;;   frequencies into note-names symbols should take place. By default this
+;;;   value is set to cm::*scale*, which is automatically set by slippery
+;;;   chicken to 'quarter-tone at initilisation. To return e.g. pitches rounded
+;;;   to chromatic note-names set this argument to cm::*chromatic-scale*.
 ;;;
 ;;; RETURN VALUE
 ;;; Returns a list of frequencies by default.

@@ -109,22 +109,25 @@
 ;;;
 ;;; ARGUMENTS 
 ;;; - A rth-seq-palette object.
-;;; - keyword argument :selection-fun. This is a function that will return the
-;;;   pitch-seq numbers. It takes two arguments only: 1) the number of notes
-;;;   needed, and 2) the pitch-seq data lists. The function also needs to be
-;;;   able to handle being passed NIL NIL as arguments. In this case it should
-;;;   reset, if needs be; i.e. it's just a call to init and should return
-;;;   nothing. Default = #'create-psps-default.
-;;; - keyword argument :pitch-seqs-per-rthm-seq. This is an integer that is the
-;;;   number of pitch-seqs each rthm-seq should have. NB: The method will
-;;;   simply cylcle through the pitch-seqs given in the selection function to
-;;;   create the required number.  Default = 3. 
-;;; - keyword argument :selection-fun-data. This contains the pitch-seq lists
-;;;   to be passed to the default selection function. There can be as many
-;;;   pitch-seqs in these lists as desired. The number of notes the pitch-seq
-;;;   will provide is the first item of the list. They need not be in ascending
-;;;   order. When this argument is passed a value of T, the selection function
-;;;   will reinitialize its default data and use that. 
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments
+;;; - :selection-fun. This is a function that will return the pitch-seq
+;;;   numbers. It takes two arguments only: 1) the number of notes needed, and
+;;;   2) the pitch-seq data lists. The function also needs to be able to handle
+;;;   being passed NIL NIL as arguments. In this case it should reset, if needs
+;;;   be; i.e. it's just a call to init and should return nothing. Default =
+;;;   #'create-psps-default.
+;;; - :pitch-seqs-per-rthm-seq. This is an integer that is the number of
+;;;   pitch-seqs each rthm-seq should have. NB: The method will simply cylcle
+;;;   through the pitch-seqs given in the selection function to create the
+;;;   required number.  Default = 3.
+;;; - :selection-fun-data. This contains the pitch-seq lists to be passed to
+;;;   the default selection function. There can be as many pitch-seqs in these
+;;;   lists as desired. The number of notes the pitch-seq will provide is the
+;;;   first item of the list. They need not be in ascending order. When this
+;;;   argument is passed a value of T, the selection function will reinitialize
+;;;   its default data and use that.
 ;;;
 ;;;   At the moment, the default data are:
 ;;;             '((1 ((3) (3) (1) (25)))

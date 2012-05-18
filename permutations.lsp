@@ -85,16 +85,16 @@
 ;;; - A list.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :max. An integer that indicates the maximum number of
-;;;   permutations to be returned.
-;;; - keyword argument :skip. An integer that indicates a number of
-;;;   permutations to skip.
-;;; - keyword argument :fix. T or NIL to indicate whether the given sequence
-;;;   should always be shuffled with the same (fixed) random seed (thus always
-;;;   producing the same result). T = fixed seed. Default = T.
-;;; - keyword argument :sublists. T or NIL to indicate whether the returned
-;;;   result should be flattened into a one-dimensional list or should be left
-;;;   as a list of lists. T = leave as list of lists. Default = NIL.
+;;; keyword arguments:
+;;; - :max. An integer that indicates the maximum number of permutations to be
+;;;   returned.
+;;; - :skip. An integer that indicates a number of permutations to skip.
+;;; - :fix. T or NIL to indicate whether the given sequence should always be
+;;;   shuffled with the same (fixed) random seed (thus always producing the
+;;;   same result). T = fixed seed. Default = T.
+;;; - :sublists. T or NIL to indicate whether the returned result should be
+;;;   flattened into a one-dimensional list or should be left as a list of
+;;;   lists. T = leave as list of lists. Default = NIL.
 ;;;
 ;;; RETURN VALUE  
 ;;; A list.
@@ -200,13 +200,13 @@
 ;;; used for the process. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :max. An integer that indicates the maximum number of
-;;;   permutations to be returned.
-;;; - keyword argument :skip. An integer that indicates a number of
-;;;   permutations to skip.
-;;; - keyword argument :fix. T or NIL to indicate whether the given sequence
-;;;   should always be shuffled with the same (fixed) random seed (thus always
-;;;   producing the same result). T = fixed seed. Default = T.
+;;; keyword arguments:
+;;; - :max. An integer that indicates the maximum number of permutations to be
+;;;   returned.
+;;; - :skip. An integer that indicates a number of permutations to skip.
+;;; - :fix. T or NIL to indicate whether the given sequence should always be
+;;;   shuffled with the same (fixed) random seed (thus always producing the
+;;;   same result). T = fixed seed. Default = T.
 ;;;
 ;;; RETURN VALUE  
 ;;; A list.
@@ -872,20 +872,19 @@ results so they are being written to the file
 ;;; - A sequence (list, vector (string)).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :start. A zero-based index integer indicating the first
-;;;   element of a subsequence to be shuffled. Default = 0.
-;;; - keyword argument :end. A zero-based index integer indicating the last
-;;;   element of a subsequence to be shuffled. Default = the length of the
-;;;   given sequence.
-;;; - keyword argument :copy. T or NIL to indicate whether the given sequence
-;;;   should be copied before it is modified or should be destructively
-;;;   shuffled. T = copy. Default = T.
-;;; - keyword argument :fix. T or NIL to indicate whether the given sequence
-;;;   should always be shuffled with the same (fixed) random seed (thus always
-;;;   producing the same result). T = fixed seed. Default = T.
-;;; - keyword argument :reset. T or NIL to indicate whether the random state
-;;;   should be reset before the function is performed. 
-;;;   T = reset. Default = T. 
+;;; keyword arguments:
+;;; - :start. A zero-based index integer indicating the first element of a
+;;;   subsequence to be shuffled. Default = 0.
+;;; - :end. A zero-based index integer indicating the last element of a
+;;;   subsequence to be shuffled. Default = the length of the given sequence.
+;;; - :copy. T or NIL to indicate whether the given sequence should be copied
+;;;   before it is modified or should be destructively shuffled. 
+;;;   T = copy. Default = T.
+;;; - :fix. T or NIL to indicate whether the given sequence should always be
+;;;   shuffled with the same (fixed) random seed (thus always producing the
+;;;   same result). T = fixed seed. Default = T.
+;;; - :reset. T or NIL to indicate whether the random state should be reset
+;;;   before the function is performed.  T = reset. Default = T.
 ;;;
 ;;; RETURN VALUE  
 ;;; A list.
@@ -1001,20 +1000,19 @@ START
 ;;; - A sequence.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :start. A zero-based index integer indicating the first
-;;;   element of a subsequence to be shuffled. Default = 0.
-;;; - keyword argument :end. A zero-based index integer indicating the last
-;;;   element of a subsequence to be shuffled. Default = the length of the
-;;;   given sequence.
-;;; - keyword argument :copy. T or NIL to indicate whether the given sequence
-;;;   should be copied before it is modified or should be destructively
-;;;   shuffled. T = copy. Default = T.
-;;; - keyword argument :fix. T or NIL to indicate whether the given sequence
-;;;   should always be shuffled with the same (fixed) random seed (thus always
-;;;   producing the same result). T = fixed seed. Default = T.
-;;; - keyword argument :reset. T or NIL to indicate whether the random state
-;;;   should be reset before the function is performed. 
-;;;   T = reset. Default = T. 
+;;; keyword arguments:
+;;; - :start. A zero-based index integer indicating the first element of a
+;;;   subsequence to be shuffled. Default = 0.
+;;; - :end. A zero-based index integer indicating the last element of a
+;;;   subsequence to be shuffled. Default = the length of the given sequence.
+;;; - :copy. T or NIL to indicate whether the given sequence should be copied
+;;;   before it is modified or should be destructively shuffled. 
+;;;   T = copy. Default = T.
+;;; - :fix. T or NIL to indicate whether the given sequence should always be
+;;;   shuffled with the same (fixed) random seed (thus always producing the
+;;;   same result). T = fixed seed. Default = T.
+;;; - :reset. T or NIL to indicate whether the random state should be reset
+;;;   before the function is performed.  T = reset. Default = T.
 ;;;
 ;;; RETURN VALUE  
 ;;; - A sequence.

@@ -3626,12 +3626,13 @@ data: (2 4)
 ;;; - A whole number (positive or negative).
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :destructively. Set to T or NIL to indicate whether the
-;;;   slot values of the original rthm-seq-bar object should be changed or not 
-;;;   (even though the method always returns a clone). T = change the
-;;;   originals. Default = NIL.
-;;; - chord-function
-;;; - pitch-function
+;;; keyword arguments:
+;;; - :destructively. Set to T or NIL to indicate whether the slot values of
+;;;   the original rthm-seq-bar object should be changed or not (even though
+;;;   the method always returns a clone). T = change the originals. 
+;;;   Default = NIL.
+;;; - chord-function. Default = #'transpose.
+;;; - pitch-function. Default = #'transpose.
 ;;; 
 ;;; RETURN VALUE  
 ;;; This method returns a clone of the rthm-seq-bar object whether the keyword
@@ -4081,17 +4082,17 @@ data: (2 4)
 ;;; - A rthm-seq-bar object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :min-beats. This argument takes an integer value to
-;;;   indicate the minimum number of beats in any of the new rthm-seq-bar 
-;;;   objects created. This serves as a guideline only and may occasionally be 
-;;;   exceeded in value by the method. Default value = 2.
-;;; - keyword argument :max-beats. This argument takes an integer value to
-;;;   indicate the maximum number of beats in any of the new rthm-seq-bar
-;;;   objects created. This serves as a guideline only and may occasionally be
-;;;   exceeded in value by the method. Default value = 5.
-;;; - keyword argument :warn. Indicates whether to print a warning if the
-;;;   rthm-seq-bar object is unsplittable. Value T = print a warning. Defaults
-;;;   to NIL. 
+;;; keyword arguments:
+;;; - :min-beats. This argument takes an integer value to indicate the minimum
+;;;   number of beats in any of the new rthm-seq-bar objects created. This
+;;;   serves as a guideline only and may occasionally be exceeded in value by
+;;;   the method. Default value = 2.
+;;; - :max-beats. This argument takes an integer value to indicate the maximum
+;;;   number of beats in any of the new rthm-seq-bar objects created. This
+;;;   serves as a guideline only and may occasionally be exceeded in value by
+;;;   the method. Default value = 5.
+;;; - :warn. Indicates whether to print a warning if the rthm-seq-bar object is
+;;;   unsplittable. Value T = print a warning. Defaults to NIL.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns a list of rthm-seq-bar objects if successful, NIL if not. 

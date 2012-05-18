@@ -607,12 +607,12 @@
 ;;;   individual predecessor items.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :auto-check-redundancy. Default = NIL.
-;;; - keyword argument :scaler. Factor by which to scale the values returned by
+;;; keyword arguments:
+;;; - :auto-check-redundancy. Default = NIL.
+;;; - :scaler. Factor by which to scale the values returned by
 ;;;   do-lookup. Default = 1. Does not modify the original data.
-;;; - keyword argument :offest. Number to be added to values returned by
-;;;   do-lookup (after they are scaled). Default = NIL. Does not modify the
-;;;   original data. 
+;;; - :offest. Number to be added to values returned by do-lookup (after they
+;;;   are scaled). Default = NIL. Does not modify the original data.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns an l-for-lookup object.
@@ -1113,16 +1113,16 @@ data: (
 ;;; - A list.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :remix-in-fib-seed. A number that indicates how
-;;;   frequently an earlier element will be mixed back into the original
-;;;   list. The higher the number, the less often earlier elements are remixed
-;;;   in. Default = 13.
-;;; - keyword argument :mirror. T or NIL to indicate whether the method should
-;;;   pass backwards through the original list once it has reached the end.
-;;;   T = pass backwards. Default = NIL.
-;;; - keyword argument :test. The function used to determine the third element
-;;;   in the list. This function must be able to compare whatever data type is
-;;;   in the list. Default = #'eql.
+;;; keyword arguments:
+;;; - :remix-in-fib-seed. A number that indicates how frequently an earlier
+;;;   element will be mixed back into the original list. The higher the number,
+;;;   the less often earlier elements are remixed in. Default = 13.
+;;; - :mirror. T or NIL to indicate whether the method should pass backwards
+;;;   through the original list once it has reached the end.  T = pass
+;;;   backwards. Default = NIL.
+;;; - :test. The function used to determine the third element in the list. This
+;;;   function must be able to compare whatever data type is in the
+;;;   list. Default = #'eql.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns a new list.

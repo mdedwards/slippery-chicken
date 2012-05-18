@@ -1323,20 +1323,21 @@ data: (
 ;;; - A list of note-name symbols.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - keyword argument :id. An element of any type that is to be the ID of the
-;;;   chord object created.
-;;; - keyword argument :auto-sort. T or NIL to indicate whether the method
-;;;   should first sort the individual pitch objects created from low to high
-;;;   before returning the new chord object. T = sort. Default = T.
-;;; - keyword argument :midi-channel. An integer that is to be the MIDI channel
-;;;   value to which all of the chromatic pitch objects in the given chord
-;;;   object are to be set for playback. Default = 0.
-;;; - keyword argument :microtones-midi-channel. An integer that is to be the
-;;;   MIDI channel value to which all of the microtonal pitch objects in the
-;;;   given chord object are to be set for playback. Default = 0.
-;;; - keyword argument :force-midi-channel. T or NIL to indicate whether to
-;;;   force a given value to the MIDI-CHANNEL slot, even if the notes passed to
-;;;   the method are already pitch objects with non-zero MIDI-CHANNEL values. 
+;;; keyword arguments:
+;;; - :id. An element of any type that is to be the ID of the chord object
+;;;   created.
+;;; - :auto-sort. T or NIL to indicate whether the method should first sort the
+;;;   individual pitch objects created from low to high before returning the
+;;;   new chord object. T = sort. Default = T.
+;;; - :midi-channel. An integer that is to be the MIDI channel value to which
+;;;   all of the chromatic pitch objects in the given chord object are to be
+;;;   set for playback. Default = 0.
+;;; - :microtones-midi-channel. An integer that is to be the MIDI channel value
+;;;   to which all of the microtonal pitch objects in the given chord object
+;;;   are to be set for playback. Default = 0.
+;;; - :force-midi-channel. T or NIL to indicate whether to force a given value
+;;;   to the MIDI-CHANNEL slot, even if the notes passed to the method are
+;;;   already pitch objects with non-zero MIDI-CHANNEL values.
 ;;; 
 ;;; RETURN VALUE  
 ;;; A chord object.

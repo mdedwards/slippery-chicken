@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 11:25:33 Thu May 17 2012 BST
+;;; $$ Last modified: 13:38:12 Fri May 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1325,7 +1325,7 @@ data: ((2 4) - S S - S - S S S - S S)
 
 |#
 ;;; SYNOPSIS
-(defmethod auto-tuplets ((rsb rthm-seq-bar))
+(defmethod auto-tuplets ((rsb rthm-seq-bar) &optional (on-fail #'error))
 ;;; ****
   (delete-tuplets rsb)
   (loop with bag with tuplet with start with dur = 0.0
@@ -1345,7 +1345,7 @@ data: ((2 4) - S S - S - S S S - S S)
            (add-tuplet-bracket rsb (list tuplet start count))
            (setf tuplet nil))
          (setf bag nil)))
-  (check-tuplets rsb))
+  (check-tuplets rsb on-fail))
          
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

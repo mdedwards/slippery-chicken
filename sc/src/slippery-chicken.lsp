@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:57:11 Mon May 14 2012 BST
+;;; $$ Last modified: 13:44:19 Fri May 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1046,14 +1046,14 @@
 ;;; time of that same event to see the difference
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((vn (violin :midi-channel 1))))
-	:tempo-map '((1 (q 60)))
-	:set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
-	:set-map '((1 (1 1 1 1 1)))
-	:rthm-seq-palette '((1 ((((2 4) (s) (s) e e e))
-				:pitch-seq-palette ((1 2 3)))))
-	:rthm-seq-map '((1 ((vn (1 1 1 1 1))))))))
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) (s) (s) e e e))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1))))))))
   (print (start-time (get-event mini 4 1 'vn)))
   (update-slots mini nil 10.0)
   (print (start-time (get-event mini 4 1 'vn))))
@@ -5118,7 +5118,9 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; FUNCTION
 ;;; Check the qualities of the tuplets brackets in a given slippery-chicken
 ;;; object to make sure they are all formatted properly (i.e. each starting
-;;; tuplet bracket has a closing tuplet bracket etc.)
+;;; tuplet bracket has a closing tuplet bracket etc.).  If an error is found,
+;;; the method will try and fix it, then re-check and only issue an error then
+;;; if another is found.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -5136,13 +5138,13 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; Create a slippery-chicken object, manually add an error to the tuplet data
 ;;; and call check-tuplets with #'warn as the on-fail function.
 (let* ((mini
-	(make-slippery-chicken
-	 '+mini+
-	 :ensemble '(((cl (b-flat-clarinet :midi-channel 1))))
-	 :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-	 :set-map '((1 (1)))
-	 :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
-	 :rthm-seq-map '((1 ((cl (1)))))))
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((cl (b-flat-clarinet :midi-channel 1))))
+         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+         :set-map '((1 (1)))
+         :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
+         :rthm-seq-map '((1 ((cl (1)))))))
        (e1 (get-event mini 1 1 'cl)))
   (setf (bracket e1) nil)
   (check-tuplets mini #'warn))
@@ -5152,12 +5154,24 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 |#
 ;;; SYNOPSIS
 (defmethod check-tuplets ((sc slippery-chicken) &optional (on-fail #'error))
-;;; ****
-  (loop with ok for bar-num from 1 to (num-bars sc)
-     for bars = (get-bar sc bar-num) do
-     (loop for bar in bars do
-          (setf ok (check-tuplets bar on-fail)))
-     finally (return ok)))
+;;; ****  
+  (loop with ok for player in (players sc) do
+       (loop for bar-num from 1 to (num-bars sc)
+          for bar = (get-bar sc bar-num player)
+          ;; MDE Fri May 18 13:17:58 2012 -- let's have a go at fixing them 
+          ;; first   
+          for this-ok = (check-tuplets bar nil)
+          do
+          (if this-ok
+              (setf ok this-ok)
+              (progn
+                (when on-fail
+                  (warn "slippery-chicken::check-tuplets: failed for ~a ~
+                         bar ~a. ~%Will delete current tuplets and try to ~
+                         set them automatically." player bar-num))
+                ;; auto-tuplets returns check-tuplets
+                (setf ok (auto-tuplets bar on-fail)))))
+       finally (return ok)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Apr 28 16:42:59 2012 -- just for convenience
@@ -5195,13 +5209,13 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; Create a slippery-chicken object, manually create a problem with the ties,
 ;;; and call check-ties with a #'warn as the on-fail function.
 (let* ((mini
-	(make-slippery-chicken
-	 '+mini+
-	 :ensemble '(((cl (b-flat-clarinet :midi-channel 1))))
-	 :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-	 :set-map '((1 (1)))
-	 :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
-	 :rthm-seq-map '((1 ((cl (1)))))))
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((cl (b-flat-clarinet :midi-channel 1))))
+         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+         :set-map '((1 (1)))
+         :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
+         :rthm-seq-map '((1 ((cl (1)))))))
        (e4 (get-event mini 1 4 'cl)))
   (setf (is-tied-to e4) nil)
   (check-ties mini nil #'warn))
@@ -5612,52 +5626,52 @@ data: NIL
        (make-slippery-chicken
         '+mini+
         :ensemble '(((fl (flute :midi-channel 1))
-		     (cl (b-flat-clarinet :midi-channel 2))
-		     (vc (cello :midi-channel 3))))
-	:staff-groupings '(2 1)
-	:tempo-map '((1 (q 84)) (9 (q 72)))
+                     (cl (b-flat-clarinet :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :staff-groupings '(2 1)
+        :tempo-map '((1 (q 84)) (9 (q 72)))
         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
         :set-map '((1 (1 1 1 1 1 1 1 1))
-		   (2 (1 1 1 1 1 1 1 1))
-		   (3 (1 1 1 1 1 1 1 1)))
+                   (2 (1 1 1 1 1 1 1 1))
+                   (3 (1 1 1 1 1 1 1 1)))
         :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
-				:pitch-seq-palette ((1 2 3))
-				:marks (bartok 1)))
-			    (2 ((((4 4) (q) e (s) s h))
-				:pitch-seq-palette ((1 2 3)))))
+                                :pitch-seq-palette ((1 2 3))
+                                :marks (bartok 1)))
+                            (2 ((((4 4) (q) e (s) s h))
+                                :pitch-seq-palette ((1 2 3)))))
         :rthm-seq-map '((1 ((fl (1 2 1 2 1 2 1 2))
-			    (cl (1 2 1 2 1 2 1 2))
-			    (vc (1 2 1 2 1 2 1 2))))
-			(2 ((fl (1 2 1 2 1 2 1 2))
-			    (cl (1 2 1 2 1 2 1 2))
-			    (vc (1 2 1 2 1 2 1 2))))
-			(3 ((fl (1 2 1 2 1 2 1 2))
-			    (cl (1 2 1 2 1 2 1 2))
-			    (vc (1 2 1 2 1 2 1 2)))))
-	:rehearsal-letters '(3 11 19))))
+                            (cl (1 2 1 2 1 2 1 2))
+                            (vc (1 2 1 2 1 2 1 2))))
+                        (2 ((fl (1 2 1 2 1 2 1 2))
+                            (cl (1 2 1 2 1 2 1 2))
+                            (vc (1 2 1 2 1 2 1 2))))
+                        (3 ((fl (1 2 1 2 1 2 1 2))
+                            (cl (1 2 1 2 1 2 1 2))
+                            (vc (1 2 1 2 1 2 1 2)))))
+        :rehearsal-letters '(3 11 19))))
   (write-lp-data-for-all mini 
-			 :start-bar 7
-			 :end-bar 23
-			 :paper "letter"
-			 :landscape t
-			 :respell-notes nil
-			 :auto-clefs nil
-			 :staff-size 17
-			 :in-c nil
-			 :barline-thickness 3.7
-			 :top-margin 40
-			 :bottom-margin 60
-			 :left-margin 40
-			 :line-width 22
-			 :page-nums t
-			 :all-bar-nums t
-			 :use-custom-markup t
-			 :rehearsal-letters-font-size 24
-			 :lp-version "2.12.1"
-			 :group-barlines nil
-			 :page-turns t
-			 :players '(fl cl)
-			 :tempi-all-players t))
+                         :start-bar 7
+                         :end-bar 23
+                         :paper "letter"
+                         :landscape t
+                         :respell-notes nil
+                         :auto-clefs nil
+                         :staff-size 17
+                         :in-c nil
+                         :barline-thickness 3.7
+                         :top-margin 40
+                         :bottom-margin 60
+                         :left-margin 40
+                         :line-width 22
+                         :page-nums t
+                         :all-bar-nums t
+                         :use-custom-markup t
+                         :rehearsal-letters-font-size 24
+                         :lp-version "2.12.1"
+                         :group-barlines nil
+                         :page-turns t
+                         :players '(fl cl)
+                         :tempi-all-players t))
 
 => T
 
@@ -5741,7 +5755,7 @@ data: NIL
                              (remove-if-not #'(lambda (x) (member x playrs))
                                             sg))))
             (loop for sg in grpsb for sgl = (length sg)
-	       ;; don't try and create groups of zero players
+               ;; don't try and create groups of zero players
                unless (zerop sgl) collect sgl)))
          ;; MDE Fri Dec  9 19:33:28 2011 -- replace spaces with hyphens so good
          ;; for file names  
@@ -5865,10 +5879,10 @@ data: NIL
         (terpri out)
         (loop for pname in players-strings
            for player in playrs do
-	     (when (needs-transposition player)
-	       (new-voice (written-pname pname) player out 
-			  (concatenate 'string pname "-written")))
-	     (new-voice pname player out))
+             (when (needs-transposition player)
+               (new-voice (written-pname pname) player out 
+                          (concatenate 'string pname "-written")))
+             (new-voice pname player out))
         (terpri out)
         (format out "~%music = {~%  <<")
         ;; write the music variable, staff groupings etc.
@@ -5880,24 +5894,24 @@ data: NIL
            ;; this must come after 'in players-strings' otherwise we crash
            for end = (= gcount gnum) do
            ;; (format t "~%~a ~a ~a" pname gcount gnum)
-	     (score-tag pname out (= 1 gcount) end)
-	     (if end
-		 (setf gnum (pop groups)
-		       gcount 1)
-		 (incf gcount)))
+             (score-tag pname out (= 1 gcount) end)
+             (if end
+                 (setf gnum (pop groups)
+                       gcount 1)
+                 (incf gcount)))
         (format out "~%  >>~%}")
         ;; create the written parts variable
         (format out "~%written = {~%  <<")
         (loop for pname in players-strings
            for player in playrs do
-	     (when (needs-transposition player)
-	       (score-tag (written-pname pname) out)))
+             (when (needs-transposition player)
+               (score-tag (written-pname pname) out)))
         (format out "~%  >>~%}"))
       ;; write the main score file
       (with-open-file
           (out 
            (concatenate 'string path
-			(format nil "_~a-score.ly" title-hyphens))
+                        (format nil "_~a-score.ly" title-hyphens))
            :direction :output :if-does-not-exist :create
            :if-exists :rename-and-delete)
         (format out "~&\\version \"~a\"" lp-version)
@@ -5909,25 +5923,25 @@ data: NIL
       ;; write the parts
       (loop for player in playrs
          for pname in players-strings do
-	   (with-open-file 
-	       (out 
-		(concatenate 'string path (format nil "~a-~a-part.ly" 
-						  title-hyphens pname))
-		:direction :output :if-does-not-exist :create
-		:if-exists :rename-and-delete)
-	     (if (needs-transposition player)
-		 (part (written-pname pname) out "written")
-		 (part pname out))))
+           (with-open-file 
+               (out 
+                (concatenate 'string path (format nil "~a-~a-part.ly" 
+                                                  title-hyphens pname))
+                :direction :output :if-does-not-exist :create
+                :if-exists :rename-and-delete)
+             (if (needs-transposition player)
+                 (part (written-pname pname) out "written")
+                 (part pname out))))
       ;; write the notes to individual files
       (loop for player in playrs
          for pname in players-strings do
-	   (write-lp-data-for-player 
-	    sc player 
-	    (concatenate 'string path (format nil "~a-~a.ly" title-hyphens pname)) 
-	    :all-bar-nums all-bar-nums
-	    :process-event-fun process-event-fun
-	    :rehearsal-letters-font-size rehearsal-letters-font-size
-	    :in-c in-c :start-bar start-bar :end-bar end-bar))
+           (write-lp-data-for-player 
+            sc player 
+            (concatenate 'string path (format nil "~a-~a.ly" title-hyphens pname)) 
+            :all-bar-nums all-bar-nums
+            :process-event-fun process-event-fun
+            :rehearsal-letters-font-size rehearsal-letters-font-size
+            :in-c in-c :start-bar start-bar :end-bar end-bar))
       ;; got to write the written (i.e. not sounding) notes for the part
       ;; can't do this in the above loop as we have to re-call auto-clefs
       ;; making sure we don't use the in-c clefs for the instrument
@@ -5937,12 +5951,12 @@ data: NIL
       (loop for player in playrs
          for pname in players-strings do
          ;; got to write the written (i.e. not sounding) notes for the part
-	   (when (needs-transposition player)
-	     (write-lp-data-for-player 
-	      sc player 
-	      (format nil "~a~a-~a-written.ly" path title-hyphens pname)
-	      :all-bar-nums all-bar-nums :in-c nil :start-bar start-bar
-	      :end-bar end-bar)))))
+           (when (needs-transposition player)
+             (write-lp-data-for-player 
+              sc player 
+              (format nil "~a~a-~a-written.ly" path title-hyphens pname)
+              :all-bar-nums all-bar-nums :in-c nil :start-bar start-bar
+              :end-bar end-bar)))))
   t)
 
 
@@ -6574,87 +6588,87 @@ BAR-HOLDER:
 ;;; An example using all slots
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:title "A Little Piece"
-	:composer "Joe Green"
-	:ensemble '(((fl ((flute piccolo) :midi-channel 1))
-		     (cl (b-flat-clarinet :midi-channel 2))
-		     (hn (french-horn :midi-channel 3))
-		     (tp (b-flat-trumpet :midi-channel 4))
-		     (vn (violin :midi-channel 5))
-		     (va (viola :midi-channel 6))
-		     (vc (cello :midi-channel 7))))
-	:set-palette '((1 ((fs2 b2 d4 a4 d5 e5 a5 d6)))
-		       (2 ((b2 fs2 d4 e4 a4 d5 e5 a5 d6)))
-		       (3 ((cs3 fs3 e4 a4 e5 a5 e6))))
-	:set-map '((1 (2 1 2 3 1 3 1))
-		   (2 (1 1 3 2 2 3 1))
-		   (3 (2 3 1 3 1 1 2)))
-	:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
-				:pitch-seq-palette ((1 2 3))))
-			    (2 ((((4 4) (q) e (s) s h))
-				:pitch-seq-palette ((2 1 3))))
-			    (3 ((((4 4) e (s) s h (q)))
-				:pitch-seq-palette ((3 2 1)))))
-	:rthm-seq-map '((1 ((fl (2 3 3 1 1 1 2))
-			    (cl (3 2 1 1 2 1 3))
-			    (hn (1 2 3 1 1 3 2))
-			    (tp (2 1 1 3 3 2 1))
-			    (vn (3 1 3 2 1 1 2))
-			    (va (2 1 1 1 3 2 3))
-			    (vc (1 2 3 1 3 2 1))))
-			(2 ((fl (3 1 3 2 2 1 1))
-			    (cl (1 1 2 3 1 3 2))
-			    (hn (1 3 2 1 3 1 2))
-			    (tp (1 1 1 3 3 2 2))
-			    (vn (2 1 3 1 3 1 2))
-			    (va (2 2 3 1 1 3 1))
-			    (vc (1 3 1 2 2 1 3))))
-			(3 ((fl (1 1 3 2 1 3 2))
-			    (cl (2 1 2 3 3 1 1))
-			    (hn (3 2 1 1 1 3 2))
-			    (tp (3 3 1 1 2 1 2))
-			    (vn (3 1 3 2 1 1 2))
-			    (va (3 2 1 1 3 2 1))
-			    (vc (1 3 2 1 2 3 1)))))
-	:snd-output-dir "/tmp"
-	:sndfile-palette '(((sndfile-grp-1
-			     ((test-sndfile-1.aiff :start 0.021 :end 0.283)
-			      (test-sndfile-2.aiff)
-			      (test-sndfile-3.aiff)))
-			    (sndfile-grp-2
-			     ((test-sndfile-4.aiff :frequency 834)
-			      (test-sndfile-5.aiff)
-			      (test-sndfile-6.aiff))))
-			   ("/path/to/test-sndfiles-dir-1"
-			    "/path/to/test-sndfiles-dir-2"))
-	;; :tempo-map '((1 (q 84)) (9 (q 72)))
-	:tempo-curve '(5 q (0 40 25 60 50 80 75 100 100 120))
-	:staff-groupings '(2 2 3)
-	:instrument-change-map '((1 ((fl ((1 flute) (3 piccolo) (5 flute))))))
-	:set-limits-low '((fl (0 c5 50 g5 100 c5))
-			  (cl (0 c4 50 f4 100 c4))
-			  (hn (0 f3 50 c4 100 f3))
-			  (tp (0 c4 50 f4 100 c4))
-			  (vn (0 e5 50 a5 100 e5))
-			  (va (0 c3 50 f3 100 c3))
-			  (vc (0 c2 50 f3 100 c2)))
-	:set-limits-high '((fl (0 d6 50 a6 100 d6))
-			   (cl (0 c5 50 a5 100 c5))
-			   (hn (0 f4 50 c5 100 f4))
-			   (tp (0 f5 50 c5 100 f5))
-			   (vn (0 c6 50 e6 100 c6))
-			   (va (0 g4 50 d5 100 g4))
-			   (vc (0 c4 50 f4 100 c4)))
-	:fast-leap-threshold 0.5
-	:instruments-hierarchy '(fl vn cl tp va hn vc)
-	:rehearsal-letters '(3 11 19)
-	:avoid-melodic-octaves nil
-	:instruments-write-bar-nums '(fl cl hn tp)
-	:pitch-seq-index-scaler-min 0.1
-	:bars-per-system-map '((1 1) (2 2) (3 3) (7 4) (11 5))
-	:rthm-seq-map-replacements '(((1 va) 3 1) ((2 fl) 4 3))
-	:set-map-replacements '((1 2 2) (3 3 1)))))
+        '+mini+
+        :title "A Little Piece"
+        :composer "Joe Green"
+        :ensemble '(((fl ((flute piccolo) :midi-channel 1))
+                     (cl (b-flat-clarinet :midi-channel 2))
+                     (hn (french-horn :midi-channel 3))
+                     (tp (b-flat-trumpet :midi-channel 4))
+                     (vn (violin :midi-channel 5))
+                     (va (viola :midi-channel 6))
+                     (vc (cello :midi-channel 7))))
+        :set-palette '((1 ((fs2 b2 d4 a4 d5 e5 a5 d6)))
+                       (2 ((b2 fs2 d4 e4 a4 d5 e5 a5 d6)))
+                       (3 ((cs3 fs3 e4 a4 e5 a5 e6))))
+        :set-map '((1 (2 1 2 3 1 3 1))
+                   (2 (1 1 3 2 2 3 1))
+                   (3 (2 3 1 3 1 1 2)))
+        :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+                                :pitch-seq-palette ((1 2 3))))
+                            (2 ((((4 4) (q) e (s) s h))
+                                :pitch-seq-palette ((2 1 3))))
+                            (3 ((((4 4) e (s) s h (q)))
+                                :pitch-seq-palette ((3 2 1)))))
+        :rthm-seq-map '((1 ((fl (2 3 3 1 1 1 2))
+                            (cl (3 2 1 1 2 1 3))
+                            (hn (1 2 3 1 1 3 2))
+                            (tp (2 1 1 3 3 2 1))
+                            (vn (3 1 3 2 1 1 2))
+                            (va (2 1 1 1 3 2 3))
+                            (vc (1 2 3 1 3 2 1))))
+                        (2 ((fl (3 1 3 2 2 1 1))
+                            (cl (1 1 2 3 1 3 2))
+                            (hn (1 3 2 1 3 1 2))
+                            (tp (1 1 1 3 3 2 2))
+                            (vn (2 1 3 1 3 1 2))
+                            (va (2 2 3 1 1 3 1))
+                            (vc (1 3 1 2 2 1 3))))
+                        (3 ((fl (1 1 3 2 1 3 2))
+                            (cl (2 1 2 3 3 1 1))
+                            (hn (3 2 1 1 1 3 2))
+                            (tp (3 3 1 1 2 1 2))
+                            (vn (3 1 3 2 1 1 2))
+                            (va (3 2 1 1 3 2 1))
+                            (vc (1 3 2 1 2 3 1)))))
+        :snd-output-dir "/tmp"
+        :sndfile-palette '(((sndfile-grp-1
+                             ((test-sndfile-1.aiff :start 0.021 :end 0.283)
+                              (test-sndfile-2.aiff)
+                              (test-sndfile-3.aiff)))
+                            (sndfile-grp-2
+                             ((test-sndfile-4.aiff :frequency 834)
+                              (test-sndfile-5.aiff)
+                              (test-sndfile-6.aiff))))
+                           ("/path/to/test-sndfiles-dir-1"
+                            "/path/to/test-sndfiles-dir-2"))
+        ;; :tempo-map '((1 (q 84)) (9 (q 72)))
+        :tempo-curve '(5 q (0 40 25 60 50 80 75 100 100 120))
+        :staff-groupings '(2 2 3)
+        :instrument-change-map '((1 ((fl ((1 flute) (3 piccolo) (5 flute))))))
+        :set-limits-low '((fl (0 c5 50 g5 100 c5))
+                          (cl (0 c4 50 f4 100 c4))
+                          (hn (0 f3 50 c4 100 f3))
+                          (tp (0 c4 50 f4 100 c4))
+                          (vn (0 e5 50 a5 100 e5))
+                          (va (0 c3 50 f3 100 c3))
+                          (vc (0 c2 50 f3 100 c2)))
+        :set-limits-high '((fl (0 d6 50 a6 100 d6))
+                           (cl (0 c5 50 a5 100 c5))
+                           (hn (0 f4 50 c5 100 f4))
+                           (tp (0 f5 50 c5 100 f5))
+                           (vn (0 c6 50 e6 100 c6))
+                           (va (0 g4 50 d5 100 g4))
+                           (vc (0 c4 50 f4 100 c4)))
+        :fast-leap-threshold 0.5
+        :instruments-hierarchy '(fl vn cl tp va hn vc)
+        :rehearsal-letters '(3 11 19)
+        :avoid-melodic-octaves nil
+        :instruments-write-bar-nums '(fl cl hn tp)
+        :pitch-seq-index-scaler-min 0.1
+        :bars-per-system-map '((1 1) (2 2) (3 3) (7 4) (11 5))
+        :rthm-seq-map-replacements '(((1 va) 3 1) ((2 fl) 4 3))
+        :set-map-replacements '((1 2 2) (3 3 1)))))
   (midi-play mini :midi-file "/tmp/mini.mid")
   (cmn-display mini)
   (write-lp-data-for-all mini))

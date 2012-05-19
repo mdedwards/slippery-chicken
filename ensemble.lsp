@@ -105,7 +105,7 @@
 ;;; SAR Wed Apr 18 16:00:01 BST 2012: Added robodoc entry
 
 ;;; ****m* ensemble/get-players
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the IDs of the players from a given ensemble object.
 ;;; 
 ;;; ARGUMENTS
@@ -205,7 +205,7 @@
 ;;; SAR Wed May  2 12:28:10 BST 2012: Added robodoc entry
 
 ;;; ****m* ensemble/num-notes
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the number of attacked notes in a given slippery-chicken object. This
 ;;; method accesses the ensemble object within the given slippery-chicken
 ;;; object to perform this task.
@@ -245,7 +245,7 @@
 ;;; SAR Wed May  2 12:40:52 BST 2012: Added robodoc entry
 
 ;;; ****m* ensemble/tessitura
-;;; FUNCTION
+;;; DESCRIPTION
 ;;;
 ;;; Get the average pitch of a given slippery-chicken object. This method
 ;;; accesses the ensemble object within the given slippery-chicken object to
@@ -296,7 +296,7 @@
 ;;; SAR Wed Apr 18 16:46:58 BST 2012: Added robodoc entry
 
 ;;; ****m* ensemble/num-players
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the number of players in a given ensemble object.
 ;;; 
 ;;; ARGUMENTS
@@ -328,7 +328,7 @@
 ;;; SAR Wed Apr 18 16:50:46 BST 2012: Added robodoc entry
 
 ;;; ****m* ensemble/players-exist
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Produce an error message and drop into the debugger if the specified
 ;;; player IDs are not found within the given ensemble object.
 ;;;
@@ -393,7 +393,7 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;; was taken verbatim into the entry below.
 
 ;;; ****f* ensemble/make-ensemble
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Make an ensemble object, specifying the players and associated
 ;;; instruments.  
 ;;;

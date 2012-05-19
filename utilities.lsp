@@ -59,7 +59,7 @@
 ;;; format e.g. 00:12.2 
 
 ;;; ****f* utilities/secs-to-mins-secs
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -99,7 +99,7 @@
 ;;; SAR Sat May  5 12:08:59 BST 2012: Added robodc entry
 
 ;;; ****f* utilities/mins-secs-to-secs
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Derive the number of seconds from a minutes-seconds value that is indicated
 ;;; as a two-item list in the form '(minutes seconds).
 ;;; 
@@ -178,7 +178,7 @@
 ;;; SAR Sat May  5 12:15:03 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/string-replace
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Replace specified segments of a string with a new specified string.
 ;;; 
 ;;; ARGUMENTS
@@ -221,7 +221,7 @@
 ;;; SAR Sat May  5 12:21:30 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/econs
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add a specified element to the end of an existing list.
 ;;; 
 ;;; ARGUMENTS
@@ -266,7 +266,7 @@
 ;;; (0 2 4 7 9)
 
 ;;; ****f* utilities/get-sublist-indices
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the starting position of sublists within a list as though the complete
 ;;; set of items were a flat list.
 ;;; 
@@ -301,7 +301,7 @@
 ;;; (0 2 4 7 9)
 
 ;;; ****f* utilities/get-sublist-lengths
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the lengths of all sublists in a given list.
 ;;; 
 ;;; ARGUMENTS
@@ -341,7 +341,7 @@
 ;;; SAR Sat May  5 12:40:53 BST 2012: Conformed robodoc entry
 
 ;;; ****f* utilities/all-members
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Find out whether the members of the list given as the second argument are
 ;;; all present in the list given as the first argument.
@@ -386,7 +386,7 @@
 ;;; ((1 2) (3 4) (5 6 7) (8 9) (10))
 
 ;;; ****f* utilities/split-into-sub-groups
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a new list consisting of sublists made from the elements of the
 ;;; original flat list, whose lengths are determined by the second argument to
 ;;; the function.
@@ -451,7 +451,7 @@
 ;;; ((1 2 3 4) (5 6 7 8) (9))
 
 ;;; ****f* utilities/split-into-sub-groups2
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a new list of lists by splitting the original flat list into
 ;;; sublists of the specified length.
 ;;;
@@ -498,7 +498,7 @@
 ;;; ((1 2 3 4) (5 6 7 8 9))
 
 ;;; ****f* utilities/split-into-sub-groups3
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Split a given flat list into sublists of the specified length, putting any
 ;;; remaining elements, if there are any, into the last sublist.
 ;;; 
@@ -553,7 +553,7 @@
 ;;; SAR Sat May  5 14:09:30 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/power-of-2
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Test whether the specified number is a power of two and return the
 ;;; logarithm of the specified number to base 2.
 ;;;
@@ -590,7 +590,7 @@
 ;; returns the power of 2 <= num
 
 ;;; ****f* utilities/nearest-power-of-2
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the closest number to the specified value that is a power of two but
 ;;; not greater than the specified value.
 ;;; 
@@ -630,7 +630,7 @@
 ;;; SAR Sat May  5 14:28:28 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/flatten
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return a list of nested lists of any depth as a flat list.
 ;;; 
 ;;; ARGUMENTS
@@ -673,7 +673,7 @@
 ;;;   (coerce 261.63 'double-float) 0.00001) => T
 
 ;;; ****f* utilities/equal-within-tolerance
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Test whether the difference between two decimal numbers falls within a
 ;;; specified tolerance.
@@ -731,7 +731,7 @@
 ;;; DATE
 ;;; 19-Mar-2012
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Round the given number to the specified number of decimal places.
 ;;; 
 ;;; ARGUMENTS
@@ -760,7 +760,7 @@
 ;;; SAR Sat May  5 15:22:55 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/almost-zero
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return T if a given decimal is within 0.000001 of 0.0.
 ;;; 
 ;;; ARGUMENTS
@@ -794,7 +794,7 @@
 ;;; (round-if-close 22) -> 22
 
 ;;; ****f* utilities/round-if-close
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Round a decimal number if it is within a given tolerance to the next whole
 ;;; number. 
 ;;; 
@@ -848,7 +848,7 @@
 ;;; SAR Sat May  5 15:36:38 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/sort-symbol-list
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Sort a list of symbols alphabetically ascending, case-insensitive. 
 ;;; 
 ;;; ARGUMENTS
@@ -880,7 +880,7 @@
 ;;;(format nil "~{~a~a~^~}" separator list))
 
 ;;; ****f* utilities/list-to-string
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Convert a list to a string.
 ;;; 
 ;;; ARGUMENTS
@@ -965,7 +965,7 @@
 ;;; SAR Sat May  5 15:52:17 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/semitones
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the sample-rate conversion factor required for transposing an audio
 ;;; file by a specific number of semitones. The number of semitones can be
 ;;; given as a decimal number, and may be positive or negative.
@@ -1021,7 +1021,7 @@
 ;;; SAR Sat May  5 16:03:22 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/srt
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the semitone transposition for a given sampling rate conversion
 ;;; factor.
 ;;; 
@@ -1072,7 +1072,7 @@
 ;;; SAR Sat May  5 16:09:37 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/replace-elements
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Replace the elements in list between start and end (inclusive) with the new
 ;;; list.
 ;;; 
@@ -1115,7 +1115,7 @@
 ;;; SAR Sat May  5 16:15:26 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/splice
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Insert the elements of a first list into a second list beginning at a
 ;;; specified index (0-based).
 ;;; 
@@ -1157,7 +1157,7 @@
 ;;; SAR Sat May  5 16:21:11 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/remove-elements
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Remove a specified number of elements from a given list starting at a
 ;;; specified position (0-based) within the list.
 ;;; 
@@ -1198,7 +1198,7 @@
 ;;; SAR Sat May  5 16:26:57 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/setf-last 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Change the last element in a given list to a specified new element.
 ;;; 
 ;;; ARGUMENTS
@@ -1245,7 +1245,7 @@
 ;;; SAR Mon May  7 09:46:13 BST 2012
 
 ;;; ****f* utilities/nconc-sublists
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Concatenate corresponding sublists of a given list. Each sublist in the
 ;;; argument should have the same length and number of sublists etc.
@@ -1280,7 +1280,7 @@
 ;;; SAR Mon May  7 09:51:05 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/logarithmic-steps
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Create a list of progressing from the first specified argument to the
 ;;; second specified argument over the specified number of steps using an
@@ -1320,7 +1320,7 @@
 ;;; SAR Mon May  7 09:58:22 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/interpolate
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Get the interpolated value at a specified point within an envelope. The
 ;;; envelope must be specified in the form of a list of break-point pairs.
@@ -1446,7 +1446,7 @@
 ;;; SAR Mon May  7 10:11:28 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/scale-env
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Scale either the x-axis values, the data values, or both of a list of
 ;;; break-point pairs by specified factors.
 ;;; 
@@ -1520,7 +1520,7 @@
 ;;; SAR Mon May  7 10:32:25 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/reverse-env
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Reverse the order of y values in a list of break-point pairs.
 ;;; 
 ;;; ARGUMENTS
@@ -1554,7 +1554,7 @@
 ;;; SAR Mon May  7 10:36:29 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/repeat-env
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Create a new list by repeating the y values of a list of break-point pairs
 ;;; a specified number of times over the same total x-axis span of the original
@@ -1633,7 +1633,7 @@
 ;;; SAR Mon May  7 11:01:20 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/env-plus
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Increase all y values of a given list of break-point pairs by a specified
 ;;; amount.
 ;;; 
@@ -1663,7 +1663,7 @@
 ;;; SAR Mon May  7 11:17:05 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/env-symmetrical
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a new list of break-point pairs that is symmetrical to the original
 ;;; around a specified center. If no center is specified, the center value
 ;;; defaults to 0.5
@@ -1718,7 +1718,7 @@
 ;;; DATE
 ;;; 03-FEB-2011
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Create a new a list of a specified new length by adding or removing items
 ;;; at regular intervals from the original list. If adding items and the list
@@ -1929,7 +1929,7 @@
 ;;; writes a .txt file suitable for import to audacity with the same name and
 ;;; in the same directory as the file argument.
 ;;; ****f* utilities/wavelab-to-audacity-marker-file
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -1994,7 +1994,7 @@
 ;;; greater than this and a warning will be issued.
 
 ;;; ****f* utilities/parse-wavelab-marker-file-for-loops
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -2135,7 +2135,7 @@
 ;;; (parse-audacity-label-file-for-loops "loops.txt")
 
 ;;; ****f* utilities/parse-audacity-label-file-for-loops
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -2314,7 +2314,7 @@
 ;;; (reflect-list '(1 4 3 5 9 6 2 7 8 8 9))
 
 ;;; ****f* utilities/reflect-list
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; order a list of numbers from least to greatest, then transpose the list so
 ;;; that if an element is the second lowest, it will be replaced by the second
@@ -2353,7 +2353,7 @@
 ;;; SAR Mon May  7 15:05:44 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/middle
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the number value that is middle of two number values.
 ;;; 
 ;;; ARGUMENTS
@@ -2380,7 +2380,7 @@
 ;;; SAR Mon May  7 15:08:31 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/hz2ms
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Convert a frequency in Hertz to the equivalent number of milliseconds. 
 ;;; 
 ;;; ARGUMENTS
@@ -2410,7 +2410,7 @@
 ;;; (split-groups 31 10) -> (10 10 10 1)
 
 ;;; ****f* utilities/split-groups
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a list consisting of as many repetitions of a specified number as
 ;;; will fit into a given greater number, with the last item in the new list
 ;;; being the value of any remainder.
@@ -2451,7 +2451,7 @@
 ;;; SAR Mon May  7 15:26:49 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/remove-more
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Remove all instances of a list of specified elements from an original
 ;;; list. The predicate used to test the presence of the specified elements in
 ;;; the original list must be specified by the user (such as #'eq, #'equalp,
@@ -2487,7 +2487,7 @@
 ;;; SAR Mon May  7 19:12:20 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/pts2cm
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Convert a specified number of points to a length in centimeters at a
 ;;; resolution of 72ppi
 ;;; 
@@ -2518,7 +2518,7 @@
 ;; high.  
 
 ;;; ****f* utilities/between
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Return a random number between two specified numbers. If the two numbers
 ;;; are integers, the random selection is inclusive. If they are decimal
@@ -2573,7 +2573,7 @@
 ;;; SAR Mon May  7 19:37:44 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/randomise
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return a random decimal number close to the number specified (within a
 ;;; certain percentage of that number's value).
 ;;; 
@@ -2609,7 +2609,7 @@
 ;;; this returns a random portion of the number, +/- percent
 
 ;;; ****f* utilities/random-amount
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -2637,7 +2637,7 @@
 ;;; SAR Mon May  7 20:00:12 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/random-from-list
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return a random element from a specified list of elements. 
 ;;; 
 ;;; ARGUMENTS
@@ -2674,7 +2674,7 @@
 ;;; SAR Mon May  7 22:38:35 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/read-from-file
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -2702,7 +2702,7 @@
 ;;; SAR Mon May  7 22:47:10 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/wrap-list
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Shift the elements of a list to start at a specified position and wrap to
 ;;; the beginning of the list to the list's tail.
 ;;; 
@@ -2731,7 +2731,7 @@
 ;;; SAR Mon May  7 22:53:23 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/combine-into-symbol
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Combine a sequence of elements of any combination of type string, number,
 ;;; or symbol into a symbol.
 ;;; 
@@ -2765,7 +2765,7 @@
 ;;; SAR Mon May  7 22:58:12 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/swap-elements
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Swap the order of each consecutive pair of elements in a list.
 ;;; 
 ;;; ARGUMENTS
@@ -2796,7 +2796,7 @@
 ;;; SAR Mon May  7 23:06:43 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/factor
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Boolean test to check if a specified number is a multiple of a second
 ;;; specified number.
 ;;; 
@@ -2828,7 +2828,7 @@
 ;;; SAR Mon May  7 23:11:35 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/octave-freqs
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -2860,7 +2860,7 @@
 ;;; DATE
 ;;; 13-Dec-2011
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; A Boolean test to determine whether either of two specified frequencies
 ;;; can be considered a harmonic partial of the other.
 ;;; 
@@ -2918,7 +2918,7 @@
 ;;; SAR Mon May  7 23:32:57 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/get-harmonics
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return a list of the harmonic partial frequencies in Hertz above a
 ;;; specified fundamental frequency.
 ;;; 
@@ -2963,7 +2963,7 @@
 ;;; SAR Mon May  7 23:42:18 BST 2012: Added robodoc entry
 
 ;;; ****m* utilities/db2amp 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Convert a decibel value to a standard digital amplitude value (>0.0 to 1.0),
 ;;; whereby 0dB = 1.0.
 ;;; 
@@ -2990,7 +2990,7 @@
 ;;; SAR Mon May  7 23:49:18 BST 2012: Added robodoc entry
 
 ;;; ****m* utilities/amp2db 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Convert a standard digital amplitude value (>0.0 to 1.0) to a corresponding
 ;;; decibel value.
 ;;; 
@@ -3017,7 +3017,7 @@
 ;;; SAR Mon May  7 23:53:34 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/remove-all
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Remove all of the specified elements from a list, returning a list
 ;;; containing only those elements that are not in the first argument list.
 ;;; 
@@ -3051,7 +3051,7 @@
 ;;; SAR Mon May  7 23:59:45 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/amplitude-to-dynamic
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Convert a specified digital amplitude between 0.0 and 1.0 to a
 ;;; corresponding dynamic between niente and ffff.
 ;;; 
@@ -3092,7 +3092,7 @@
 ;;; SAR Tue May  8 00:11:23 BST 2012: Added to robodoc entry
 
 ;;; ****f* utilities/dynamic-to-amplitude
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Convert a symbol that is a dynamic level between niente and ffff to a
 ;;; corresponding digital amplitude value between 0.0 and 1.0.
@@ -3132,7 +3132,7 @@
 ;;; DATE
 ;;; 02-Mar-2011
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Move the specified elements from one list (if they are present in that
 ;;; list) to another, deleting them from the first.
 ;;; 
@@ -3176,7 +3176,7 @@
 ;;; DATE
 ;;; 22-May-2011
 ;;; 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Move a specified element of a given list to the end of the list, returning
 ;;; the new list. 
 ;;;
@@ -3223,7 +3223,7 @@
 ;;; SAR Tue May  8 00:32:05 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/hailstone
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Implementation of the Collatz conjecture (see
 ;;; http://en.wikipedia.org/wiki/Collatz_conjecture )
 ;;;

@@ -143,7 +143,7 @@
 ;;; SAR Mon Apr 16 18:29:55 BST 2012: Added robodoc entry
 
 ;;; ****m* sndfile/stereo
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Test whether the CHANNELS slot of a given sndfile object is set to 2.
 ;;; 
 ;;; ARGUMENTS
@@ -178,7 +178,7 @@ T
 ;;; SAR Mon Apr 16 18:38:48 BST 2012: Added robodoc entry
 
 ;;; ****m* sndfile/reset-usage
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Reset the WILL-BE-USED and HAS-BEEN-USED slots of the given sndfile object
 ;;; to 0. These slots keep track of how many times a sound will be used and has
 ;;; been used, which is useful for purposes such as incrementing
@@ -336,7 +336,7 @@ T
 ;;; list given by the user with the data slots to be used.
 
 ;;; ****f* sndfile/make-sndfile
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a sndfile object to hold data about an existing sound file,
 ;;; specifying at least the path and file name of that sound file. Optional
 ;;; arguments allow for the specification of segments within the given sound

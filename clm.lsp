@@ -52,7 +52,7 @@
 
 ;;; ****f* clm/random-loop-points
 
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Return a list of lists of randomly generated entry points (loop markers)
 ;;; for use with clm-loops-all.
@@ -165,7 +165,7 @@
 ;;; SAR Thu May 10 21:26:12 BST 2012: Added robodoc entry.
 
 ;;; ****f* clm/clm-loops
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Generate a sound file from an existing specified sound file by shuffling
 ;;; and repeating specified segments within the source sound file. 
 ;;;
@@ -413,7 +413,7 @@
 ;;; SAR Thu May 17 12:10:17 EDT 2012: Added robodoc entry
 
 ;;; ****f* clm/clm-loops-all
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Similar to clm-loops, but takes a list of lists of entry points (which can
 ;;; also be generated using the random-loop-points function, for example) and
 ;;; produces one output sound file for each list of entry points that list

@@ -62,7 +62,7 @@
 ;;; e.g. (in-scale :quarter-tone) (in-scale :chromatic)
 
 ;;; ****f* cm/in-scale
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Set the global scale (tuning) for the current slippery-chicken
 ;;; environment. Current options are :chromatic, :quarter-tone or
 ;;; :twelfth-tone. See the file cm-load.lsp for specifications and the html
@@ -104,7 +104,7 @@
 ;;; SAR Fri May  4 18:44:41 BST 2012: Added robodoc entry
 
 ;;; ****f* cm/degrees-per-octave
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the number of scale degrees in the span of one octave within the
 ;;; current tuning system.
 ;;; 
@@ -137,7 +137,7 @@
 ;;; SAR Fri May  4 18:49:36 BST 2012: Added robodoc entry
 
 ;;; ****f* cm/degree-to-note
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Get the specified scale degree number as a note-name pitch symbol within
 ;;; the current scale. An optional argument allows the user to specify that the
@@ -186,7 +186,7 @@
 ;;; SAR Fri May  4 19:07:36 BST 2012: Added robodoc entry
 
 ;;; ****f* cm/midi-to-degree
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Convert the specified MIDI note number to the degree number of the current
 ;;; scale. 
 ;;; 
@@ -225,7 +225,7 @@
 ;;; SAR Fri May  4 19:12:48 BST 2012: Added robodoc entry
 
 ;;; ****f* cm/midi-to-note
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the note-name pitch symbol equivalent of the specified MIDI note
 ;;; number.
 ;;; 
@@ -252,7 +252,7 @@
 ;;; SAR Fri May  4 19:17:30 BST 2012: Added robodoc entry
 
 ;;; ****f* cm/midi-to-freq
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the frequency equivalent in Hertz to the specified MIDI note number. 
 ;;; 
 ;;; ARGUMENTS
@@ -282,7 +282,7 @@
 ;;; SAR Fri May  4 19:22:20 BST 2012: Added robodoc entry
 
 ;;; ****f* cm/note-to-midi
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the MIDI note number equivalent for a chromatic note-name pitch
 ;;; symbol. 
 ;;; 
@@ -309,7 +309,7 @@
 ;;; SAR Fri May  4 19:25:41 BST 2012: Added robodoc entry
 
 ;;; ****f* cm/degrees-to-notes
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;;
 ;;; NB: If the specified scale-degree number within the current scale would
@@ -351,7 +351,7 @@
 ;;; SAR Fri May  4 19:41:37 BST 2012: Added robodoc entry
 
 ;;; ****f* cm/freq-to-note
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the note-name pitch equivalent of the specified frequency, rounded to
 ;;; the nearest scale degree of the current scale.
 ;;; 
@@ -395,7 +395,7 @@
 ;;; SAR Fri May  4 19:49:28 BST 2012: Added robodoc entry
 
 ;;; ****f* cm/note-to-freq
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the frequency in Hertz of the specified note-name pitch symbol.
 ;;; 
 ;;; ARGUMENTS
@@ -432,7 +432,7 @@
 ;;; SAR Fri May  4 19:55:06 BST 2012: Added robodoc entry
 
 ;;; ****f* cm/note-to-degree
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Get the scale degree number of the specified note-name pitch symbol within
 ;;; the current scale. 
@@ -479,7 +479,7 @@
 ;;; Defaults to *scale*
 
 ;;; ****f* cm/freq-to-degree
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the scale degree of the specified frequency in Hertz within the current
 ;;; scale. 
 ;;; 
@@ -528,7 +528,7 @@
 ;;; bend upwards from the nearest chromatic note below our freq 
 
 ;;; ****f* cm/get-pitch-bend
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the MIDI pitch-bend value necessary for application to a MIDI pitch in
 ;;; order to achieve the specified frequency.
 ;;;
@@ -615,7 +615,7 @@
 ;;; MDE Sat Feb 11 10:41:11 2012 
 
 ;;; ****f* cm/degrees-per-semitone
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the number of scale degrees per equal-tempered semitone in the current
 ;;; tuning scale. 
 ;;; 
@@ -1034,7 +1034,7 @@
 ;;; (cm::parse-midi-file "/Users/medward2/mus/altogether/score/altogether.mid")
 
 ;;; ****f* cm/parse-midi-file
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Print the MIDI event slots in the specified file to the Lisp listener.
 ;;;
 ;;; NB: This is a Common Music function and as such must be called with the
@@ -1112,7 +1112,7 @@ Event #i(midi time 3.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
 ;;; DATE
 ;;; 30-Dec-2010
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Print the highest and lowest pitch in a specified MIDI file as a MIDI note
 ;;; number. 
 ;;;
@@ -1176,7 +1176,7 @@ Event #i(midi time 3.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
 ;;; SAR Sat May  5 11:59:43 BST 2012: Conformed robodoc entry
 
 ;;; ****f* cm/midi-file-one-note
-;;; FUNCTION
+;;; DESCRIPTION
 ;; write all midi notes in the file out to a new file using the single note
 ;; <note> and <channel>.
 ;;; 

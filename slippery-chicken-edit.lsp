@@ -58,7 +58,7 @@
 ;;; SAR Sun Apr 22 09:08:44 BST 2012: Conformedrobodoc entry
 
 ;;; ****m* slippery-chicken-edit/replace-tempo-map
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Replace the tempo data for a given slippery-chicken object with new
 ;;; specified tempo indications.
 ;;;
@@ -102,7 +102,7 @@
 ;;; SAR Thu Apr 19 11:52:43 BST 2012: Conforming robodoc
 
 ;;; ****m* slippery-chicken-edit/add-event-to-bar
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add an event object to a specified bar either at the end of that bar or at
 ;;; a specified position within that bar.
 ;;; 
@@ -168,7 +168,7 @@
 ;;; SAR Sat Apr 21 14:29:43 BST 2012: Conformed robodoc entry
 
 ;;; ****m* slippery-chicken-edit/replace-events
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Replace one or more consecutive existing event objects with new event
 ;;; objects. All references are 1-based. This method can be applied to only one
 ;;; bar at a time.
@@ -241,7 +241,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* slippery-chicken-edit/add-tuplet-bracket-to-bar
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -273,7 +273,7 @@
 ;; (add-tuplet-brackets-to-beats +mini+ 'vc '((2 3 0 5) (3 3 0 3) (5 5 0 4)))
 
 ;;; ****m* slippery-chicken-edit/add-tuplet-brackets-to-beats
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -304,7 +304,7 @@
 ;;; SAR Sat Apr 21 17:17:33 BST 2012: Conformed robodoc entry
 
 ;;; ****m* slippery-chicken-edit/replace-multi-bar-events
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Replace specified consecutive event objects across several bars. 
 ;;;
 ;;; The new rhythms provided must produce full bars for all bars specified;
@@ -437,7 +437,7 @@
 ;;; SAR Wed Apr 25 13:09:27 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/auto-accidentals
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Automatically determine which notes in each bar need accidentals and which
 ;;; don't. 
 ;;;
@@ -508,7 +508,7 @@
 ;;; SAR Sun Apr 22 10:03:14 BST 2012: Added robodoc entry.
 
 ;;; ****m* slippery-chicken-edit/respell-notes
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Pass through the entire given slippery-chicken object and change some of
 ;;; the pitch objects to their enharmonic equivalents to produce more sensible
@@ -581,7 +581,7 @@
 ;;; MDE Wed Apr 18 11:57:11 2012 -- added pitches keyword
 
 ;;; ****m* slippery-chicken-edit/enharmonics
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Change the sharp/flat pitches of a specified region of a specified player's
 ;;; part to their enharmonic equivalent.
 ;;;
@@ -721,7 +721,7 @@
 ;;; NB Designed to be called from cmn-display but can be called by user.
 
 ;;; ****m* slippery-chicken-edit/enharmonic-spellings
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Change the pitch of specified event objects to their enharmonic
 ;;; equivalents. 
 ;;;
@@ -795,7 +795,7 @@
 ;;; SAR Sun Apr 22 09:46:08 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/respell-bars
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Look for enharmonically equivalent pitches in the same bar and try to unify
 ;;; their spelling. The method applies this process to every bar in the given
 ;;; slippery-chicken object.
@@ -856,7 +856,7 @@
 ;;; MDE 8/4/07: keep track of the last two now in order to make better decisions.
 
 ;;; ****m* slippery-chicken-edit/respell-notes-for-player
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Pass through the pitches of a specified player's part and change some of
 ;;; the pitches to their enharmonic equivalents in order to produce more
 ;;; sensible spellings of consecutive notes.
@@ -1041,7 +1041,7 @@
 
 
 ;;; ****m* slippery-chicken-edit/change-pitch
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Change the pitch of a specified event to a new specified pitch. The new
 ;;; pitch is not required to be a member of the current set.
 ;;;
@@ -1085,7 +1085,7 @@
 ;;; SAR Sun Apr 22 11:56:20 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/rest-to-note
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Change a specified event object from a rest into a note by supplying a
 ;;; pitch or chord (as objects or symbols). 
 ;;;
@@ -1165,7 +1165,7 @@ data: (
 ;;; SAR Wed Apr 25 13:33:53 BST 2012: Conformed robodoc entry
 
 ;;; ****m* slippery-chicken-edit/change-pitches
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Change the pitches of the specified event objects for a given player to the
 ;;; specified new pitches. 
 ;;;
@@ -1273,7 +1273,7 @@ data: (
 ;;; been taken into the robodoc in full.
 
 ;;; ****m* slippery-chicken-edit/change-time-sig
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Force a change of the time-sig associated with a specified bar. 
 ;;; 
 ;;; NB: This method does not check to see if the rhythms in the bar add up to a 
@@ -1321,7 +1321,7 @@ data: (
 ;;; SAR Thu Apr 19 13:35:00 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/add-mark-to-note
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add the specified mark to the specified note of a given slippery-chicken
 ;;; object. 
 ;;;
@@ -1373,7 +1373,7 @@ NIL
 
 ;;; 1-based
 ;;; ****m* slippery-chicken-edit/add-mark-to-event
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add the specified mark to the MARKS slot of the specified event within the
 ;;; given slippery-chicken object.
 ;;; 
@@ -1422,7 +1422,7 @@ NIL
 ;;; for each instrument counting from the top of the score down
 
 ;;; ****m* slippery-chicken-edit/add-mark-all-players
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add a specified mark to a specified even in the parts of all players. The
 ;;; event can either be specified as a 1-based integer, in which case the mark
 ;;; will be attached to the same event in all parts, or as a list of integers,
@@ -1504,7 +1504,7 @@ NIL
 ;;; SAR Fri Apr 20 18:04:20 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/note-add-bracket-offset
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; For CMN only: Adjust the position, lengths, and angles of the tuplet
 ;;; bracket attached to a specified event object. 
 ;;;
@@ -1621,7 +1621,7 @@ NIL
 ;;; symbol or list.
 
 ;;; ****m* slippery-chicken-edit/add-marks-to-notes
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add the specified mark or marks to a consecutive sequence of multiple notes
 ;;; within the given slippery-chicken object.
 ;;; 
@@ -1726,7 +1726,7 @@ NIL
 ;;; DATE
 ;;; 27-Jun-2011
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add marks in a somewhat more free list form, with the option of
 ;;; implementing a user-defined shorthand.
 ;;; 
@@ -1822,7 +1822,7 @@ NIL
 ;;; SAR Thu Apr 19 16:41:09 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/add-marks-to-note
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add one or more specified marks to a specified note within a given
 ;;; slippery-chicken object.
 ;;;
@@ -1881,7 +1881,7 @@ NIL
 ;;; SAR Sun Apr 22 12:16:46 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/rm-marks-from-note
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Remove one or more specific marks from the MARKS slot of a specified event
 ;;; object.
 ;;; 
@@ -1938,7 +1938,7 @@ NIL
 ;;; SAR Sun Apr 22 12:28:28 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/rm-marks-from-notes
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Remove only the specified marks from the MARKS slots of specified events in
 ;;; the parts of specified players. If the <players> argument is set to NIL,
 ;;; remove the mark or marks from all players.
@@ -2028,7 +2028,7 @@ NIL
 ;;; SAR Sun Apr 22 15:21:30 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/rm-slurs
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Remove the specified slurs from the MARKS slots of specified events in
 ;;; the parts of specified players. If the <players> argument is set to NIL,
 ;;; remove the specified slurs from all players.
@@ -2086,7 +2086,7 @@ NIL
 ;;; SAR Thu Apr 19 13:08:23 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/add-mark-before-note
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add the specified mark to the MARKS-BEFORE slot of the specified note
 ;;; object within the given slippery-chicken object.
 ;;;
@@ -2138,7 +2138,7 @@ NIL
 ;;; SAR Wed Apr 25 14:31:35 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/sc-delete-marks
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Delete all marks from the MARKS slot of a given note event object and
 ;;; set the slot to NIL.
 ;;;
@@ -2182,7 +2182,7 @@ NIL
 ;;; SAR Wed Apr 25 15:56:45 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/sc-delete-marks-from-event
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Delete all data from the MARKS slot of the specified event object and
 ;;; replace it with NIL.
 ;;; 
@@ -2227,7 +2227,7 @@ NIL
 ;;; SAR Wed Apr 25 15:24:22 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/sc-delete-marks-before
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Deletes all data from the MARKS-BEFORE slot of a specified event object and
 ;;; replaces it with NIL.
 ;;;
@@ -2281,7 +2281,7 @@ NIL
 ;;; robodoc. 
 
 ;;; ****m* slippery-chicken-edit/tie
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add a tie to a specified event object. The new tie will be placed starting
 ;;; from the specified event object and spanning to the next event object. If
 ;;; the next event object does not have the same pitch, its pitch will be
@@ -2342,7 +2342,7 @@ NIL
 
 ;;; event numbers are 1-based 
 ;;; ****m* slippery-chicken-edit/trill
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Attach a trill mark to a specified event object by adding 'BEG-TRILL-A to
 ;;; the MARKS-BEFORE slot and TRILL-NOTE with the pitch to the MARKS slot. This
 ;;; method requires a specified trill pitch.
@@ -2411,7 +2411,7 @@ NIL
 ;;; SAR Wed Apr 25 12:00:31 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/tie-all-last-notes-over-rests
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Extend the duration of the last note of any bar that precedes a bar which
 ;;; starts with a rest in the specified region, such that the rest that begins
 ;;; the next measure is changed to a note and the last note of the first
@@ -2510,7 +2510,7 @@ NIL
 ;;; SAR Fri Apr 27 11:46:14 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/tie-over-rest-bars
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Extend the duration of the last note in a specified bar by changing
 ;;; immediately subsequent full-rest bars to notes of the same pitch and tying
 ;;; them to that note.
@@ -2601,7 +2601,7 @@ NIL
 ;;; SAR Thu Apr 26 13:18:26 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/tie-over-all-rests
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Extend the durations of all notes that immediately precede rests in the
 ;;; specified region by changing the rests to notes and tying the previous notes
 ;;; to them.
@@ -2712,7 +2712,7 @@ NIL
 ;;; MDE: 24.3.11: added end-bar
 
 ;;; ****m* slippery-chicken-edit/tie-over-rests
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Extend the duration of a specified note that precedes a rest by changing
 ;;; the rest to a note with the same pitch and adding a tie between them.
 ;;;
@@ -2855,7 +2855,7 @@ NIL
 ;;; SAR Fri Apr 20 13:42:14 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/delete-slur
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Delete a slur mark that starts on a specified note within a specified bar
 ;;; of a specified player's part by deleting the BEG-SL and END-SL marks from
 ;;; the corresponding event objects.
@@ -2929,7 +2929,7 @@ NIL
 ;;; notes. 
 
 ;;; ****m* slippery-chicken-edit/auto-slur
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -3045,7 +3045,7 @@ NIL
 ;;; SAR Fri Apr 20 11:52:59 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/delete-clefs
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Delete the clef symbol held in the MARKS-BEFORE slot of the specified event
 ;;; object within the given slippery-chicken object.
 ;;; 
@@ -3100,7 +3100,7 @@ NIL
 ;;; method  
 
 ;;; ****m* slippery-chicken-edit/add-clef
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Attach a specified clef symbol to a specified clef object within a given
 ;;; slippery-chicken object.
 ;;; 
@@ -3157,7 +3157,7 @@ NIL
 ;;; SAR Fri Apr 20 17:11:01 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/move-clef
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Move a specified clef from a specified event object to another.
 ;;;
 ;;; NB: As the :auto-clefs option of cmn-display and write-lp-data-for all
@@ -3218,7 +3218,7 @@ NIL
 ;;; and write-lp-data-for-all
 
 ;;; ****m* slippery-chicken-edit/auto-clefs
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Automatically create clef changes in the specified player's or players'
 ;;; part or parts by adding the appropriate clef symbol to the MARKS-BEFORE
 ;;; slot of the corresponding event object.
@@ -3353,7 +3353,7 @@ NIL
 ;;; rehearsal-letters slot of sc, rather, we use the method argument.
 
 ;;; ****m* slippery-chicken-edit/set-rehearsal-letter
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add the specified rehearsal letter/number to the specified bar in one or
 ;;; more specified players.
 ;;; 
@@ -3419,7 +3419,7 @@ NIL
 ;;; SAR Fri Apr 20 13:25:17 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/delete-rehearsal-letter
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Delete the rehearsal letter from a specified bar of on or more specified
 ;;; players' parts by setting the REHEARSAL-LETTER slot of the corresponding
 ;;; rthm-seq-bar object to NIL.
@@ -3482,7 +3482,7 @@ NIL
 ;;; SAR Sat Apr 21 13:47:21 BST 2012: Added robodoc entry.
 
 ;;; ****m* slippery-chicken-edit/re-bar
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Arrange the events of specified consecutive bars in a given
 ;;; slippery-chicken object into new bars of a different time signature. If the
 ;;; number of beats in the specified series of events does not fit evenly into
@@ -3605,7 +3605,7 @@ NIL
 ;;; SAR Fri Apr 20 09:12:59 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/auto-beam
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Automatically sets indications for starting beams and ending beams (1 and
 ;;; 0) to the BEAMS slot of the corresponding event objects. 
 ;;;
@@ -3662,7 +3662,7 @@ NIL
 ;;; process them with the given function, which must take one argument, an
 ;;; event.
 ;;; ****m* slippery-chicken-edit/process-events-by-time
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -3703,7 +3703,7 @@ NIL
 ;;; SAR Wed Apr 25 16:30:06 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/sc-move-dynamic
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Move the dynamic attached to a specified event object to another specified
 ;;; event object.
 ;;;
@@ -3761,7 +3761,7 @@ NIL
 ;;; SAR Wed Apr 25 16:41:35 BST 2012: Added robodoc entry.
 
 ;;; ****m* slippery-chicken-edit/sc-remove-dynamic
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Remove all dynamics from the MARKS slot of one or more specified event
 ;;; objects. 
 ;;; 
@@ -3819,7 +3819,7 @@ NIL
 ;;; DATE 
 ;;; 16-Mar-2011
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Remove all dynamic marks from the MARKS slots of all consecutive event
 ;;; objects within a specified region of bars. 
 ;;; 
@@ -3902,7 +3902,7 @@ NIL
 ;;; SAR Sat Apr 21 14:20:22 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/remove-extraneous-dynamics
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; If two or more consecutive event objects have the same dynamic, remove that
 ;;; dynamic marking from all but the first of these.
 ;;; 
@@ -3961,7 +3961,7 @@ NIL
 ;;; SAR Wed May  2 13:11:53 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/sc-delete-beams
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Delete beam indications from specified notes. If only a bar number is
 ;;; specified, this method deletes all beams in the bar.
 ;;;
@@ -4053,7 +4053,7 @@ NIL
 ;;; been incorporated directly into the robodoc.
 
 ;;; ****m* slippery-chicken-edit/delete-bars
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Delete a sequence of consecutive bars from the given slippery-chicken
 ;;; object. 
 ;;;
@@ -4128,7 +4128,7 @@ NIL
 ;;; DATE
 ;;; 20-Jul-2011 (Pula)
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Move a specified sequence of consecutive event objects from one player to
 ;;; another, deleting the events from the source player.
 ;;;
@@ -4211,7 +4211,7 @@ NIL
 ;;; DATE
 ;;; 20-Jul-2011 (Pula)
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Copy the specified events from one player to the corresponding bars of one
 ;;; or more other players.
 ;;;
@@ -4357,7 +4357,7 @@ NIL
 ;;; DATE
 ;;; 21-Jul-2011 (Pula)
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Turn notes into rests by setting the IS-REST slots of the specified
 ;;; consecutive event objects within the given slippery-chicken object to T.
 ;;; 
@@ -4438,7 +4438,7 @@ NIL
 ;;; DATE
 ;;; 23-Jul-2011 (Pula)
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Change the specified event object to a rest.
 ;;; 
 ;;; ARGUMENTS
@@ -4513,7 +4513,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; SAR Fri Apr 20 16:45:57 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/force-rest-bars
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Delete all notes from the specified bars and replace them with full-bar
 ;;; rests. 
 ;;; 
@@ -4572,7 +4572,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; SAR Tue Apr 24 19:46:02 BST 2012: Conformed robodoc entry
 
 ;;; ****m* slippery-chicken-edit/force-artificial-harmonics
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; For string scoring purposes only: Transpose the pitch of the given event
 ;;; object down two octaves and add the harmonic symbol at the perfect fourth.
 ;;;
@@ -4639,7 +4639,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; DATE
 ;;; 28-Sep-2011
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Place a cautionary accidental (sharp/flat/natural sign in parentheses)
 ;;; before a specified note. 
 ;;;
@@ -4709,7 +4709,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; SAR Thu Apr 26 15:05:24 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/unset-cautionary-accidental
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Remove the parentheses from a cautionary accidental (leaving the accidental
 ;;; itself) by setting the ACCIDENTAL-IN-PARENTHESES slot of the contained
@@ -4768,7 +4768,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; DATE
 ;;; April 9th 2012
 ;;; 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Adds an arrow above the specified notes of a slippery-chicken object,
 ;;; coupled with text to be printed in the score at the start and end of the
 ;;; arrow. Can be used, for example, for transitions from one playing state to
@@ -4830,7 +4830,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* slippery-chicken/change-bar-line-type
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Change single to double or repeat bar lines and vice-versa.  NB This is a
 ;;; score function only, i.e., if you add repeat bar lines these will not (yet) 
 ;;; be reflected in playback with MIDI or CLM.

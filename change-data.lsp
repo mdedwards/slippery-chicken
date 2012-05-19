@@ -125,7 +125,7 @@
 ;;; Sequence here is 1-based, not 0-based.
 
 ;;; ****m* change-data/get-change-data
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -239,7 +239,7 @@
 ;;; SAR Fri May  4 18:08:00 BST 2012: Added robodoc entry
 
 ;;; ****f* change-data/make-change-data
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a change-data object, which holds data for use by a change-map
 ;;; object. The data stored in change-data object will be that of parameter
 ;;; changes for a whole section, such as tempo values.

@@ -391,7 +391,7 @@
 ;;; rthm-seq ids are what they're expected to be)
 
 ;;; ****m* rthm-chain/split
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -495,7 +495,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rthm-chain/reset
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -552,7 +552,7 @@
 ;;; SAR Mon Apr 30 11:29:17 BST 2012: Conforming robodoc entry
 
 ;;; ****m* rthm-chain/rthm-chain-gen
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Generate a chain of rhythms, also internally making use of the procession
 ;;; function. 
@@ -892,7 +892,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rthm-chain/add-voice
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; The main rthm-chain algorithm generates only two voices.  Rather than
 ;;; generate further voices in the same fashion, use the already created
@@ -975,7 +975,7 @@
 ;;; SAR Thu May 17 16:11:52 EDT 2012: Re-visited robodoc entry
 
 ;;; ****f* rthm-chain/make-rthm-chain
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Create an instance of a rthm-chain object. The rthm-chain class enables the
 ;;; algorithmic generation of a rthm-seq-map (with just one section) and its
@@ -1432,7 +1432,7 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;; ****f* rthm-chain/procession
 ;;; DATE
 ;;; 26-Jan-2010
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Generate a list of a specified length consisting of items extrapolated from
 ;;; a specified starting list. All elements of the resulting list will be
 ;;; members of the original list. 
@@ -1625,7 +1625,7 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;; <start> and <end> are inclusive.
 
 ;;; ****f* rthm-chain/hash-least-used
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS

@@ -123,7 +123,7 @@
 ;;; necessarily including those in the palette itself!!!  
 
 ;;; ****m* sndfile-palette/find-sndfile
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the full directory path and file name of a specified sound file,
 ;;; from within the directories given in the PATHS slot.
 ;;;
@@ -230,7 +230,7 @@
 ;;; SAR Thu May  3 11:39:21 BST 2012: Added robodoc entry
 
 ;;; ****f* sndfile-palette/make-sfp
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Make a sndfile-palette object. This object is a simple palette which checks
 ;;; to make sure that all of the sound files in a given list exist for each
@@ -293,7 +293,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****f* sndfile-palette/make-sfp-from-wavelab-marker-file
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; This creates a sndfile-palette with automatic groups with <snds-per-group>
 ;;; snds in each auto group and random groups every <random-every>.
 ;;;
@@ -407,7 +407,7 @@
 ;;; marker-file could be a list of marker files; they would be concatenated.
 
 ;;; ****f* sndfile-palette/make-sfp-from-groups-in-wavelab-marker-file
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS

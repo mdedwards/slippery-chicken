@@ -143,7 +143,7 @@
 ;;; SAR Thu Jan 26 14:03:17 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/get-previous
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the previous named-object in the given recursive-assoc-list object by
 ;;; specifying the ID of a named-object contained within that given
 ;;; recursive-assoc-list object.  
@@ -352,7 +352,7 @@ data: VELVET
 ;;; SAR Thu Jan 26 20:50:19 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/relink-named-objects
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; This method is essentially the same as the method link-named objects, but
 ;;; resets the LINKED slot to NIL and forces the link-named-objects method to
 ;;; be applied again.
@@ -413,7 +413,7 @@ data: BEAM
 ;;; SAR Thu Jan 26 16:21:49 GMT 2012: Edited robodoc info
 
 ;;; ****m* recursive-assoc-list/link-named-objects
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create linked-named-objects from the named-objects in the data slots of the
 ;;; given recursive-assoc-list object. The linked-named-objects created hold
 ;;; keys that serve as pointers to the previous and next objects in the given
@@ -566,7 +566,7 @@ data: TURKEY
 ;;; SAR Thu Jan 26 20:54:14 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/r-count-elements
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the total number of elements recursively (accross all depths) of the
 ;;; given recursive-assoc-list object.
 ;;; 
@@ -608,7 +608,7 @@ data: TURKEY
 ;;; SAR Thu Jan 26 20:59:03 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/get-data
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the named-object (or linked-named-object) that is identified by a
 ;;; specified key within a given recursive-assoc-list object.
 ;;;
@@ -734,7 +734,7 @@ WARNING:
 ;;; SAR Thu Jan 26 21:28:54 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/add
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add a new element (key/data pair) to the given recursive-assoc-list
 ;;; object. 
 ;;;
@@ -863,7 +863,7 @@ assoc-list::add: named-object is NIL!
 ;;; added to the end of (an error will be signalled if this is not the case).
 
 ;;; ****m* recursive-assoc-list/ral-econs
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -925,7 +925,7 @@ assoc-list::add: named-object is NIL!
 ;;; DATE
 ;;; 10 Apr 2010
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Put all the data of a given recursive-assoc-list object into a new
 ;;; named-object at the top level of that recursive-assoc-list object; i.e. add
 ;;; a level of recursion.  This is a means of making a collection of data
@@ -995,7 +995,7 @@ data: BEAM
 ;;; add an empty level of recursion
 
 ;;; ****m* recursive-assoc-list/add-empty-parcel
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add an recursive-assoc-list object with NIL data (an empty level of
 ;;; recursion) to the end of the top-level of a given recursive-assoc-list
 ;;; object. 
@@ -1060,7 +1060,7 @@ Mark set
 ;;; SAR Fri Jan 27 15:33:01 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/set-data
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Replace the named-object associated with a specified key within a given
 ;;; recursive-assoc-list object. This method replaces the whole named-object,
 ;;; not just the data of that object. 
@@ -1175,7 +1175,7 @@ data: HIVE
 ;;; SAR Fri Jan 27 14:42:30 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/get-first
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Returns the first named-object in the DATA slot of the given
 ;;; recursive-assoc-list object. 
 ;;; 
@@ -1221,7 +1221,7 @@ data: BEAM
 ;;; SAR Fri Jan 27 14:53:18 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/get-first-ref
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the full reference into the given recursive-assoc-list object of the
 ;;; first named-object in the given recursive-assoc-list object. 
 ;;;
@@ -1282,7 +1282,7 @@ data: BEAM
 ;;; SAR Fri Jan 27 14:59:57 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/get-last
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the last named-object in a given recursive-assoc-list object. 
 ;;;
 ;;; NB: This method functions linearly, not hierarchically. The last named
@@ -1329,7 +1329,7 @@ data: RIBBON
 ;;; SAR Fri Jan 27 15:05:18 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/get-all-refs
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return a list of all the keys (REFS) in a given recursive-assoc-list
 ;;; object. Nested keys are given in FULL-REF form, i.e. a list that is the
 ;;; path of keys to the specific key.
@@ -1411,7 +1411,7 @@ data: RIBBON
 ;;; SAR Fri Jan 27 15:16:47 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/get-last-ref
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the last REF (path of nested keys) of the given recursive-assoc-list
 ;;; object. 
 ;;;
@@ -1470,7 +1470,7 @@ data: RIBBON
 ;;; SAR Fri Jan 27 17:45:55 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/recursivep
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Check whether the data in a recursive-assoc-list object is really
 ;;; recursive. 
 ;;; 
@@ -1523,7 +1523,7 @@ data: RIBBON
 ;;; so if a setf method has been explicitly defined it won't be called.
 ;;; ****m* rthm-seq-palette/set-slot
 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -1559,7 +1559,7 @@ data: RIBBON
 ;;; SAR Wed Jan 25 11:36:51 GMT 2012: Added robodoc info
 
 ;;; ****f* recursive-assoc-list/make-ral
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a recursive-assoc-list object, whic allows and automatically
 ;;; instantiates association lists inside of association lists to any level of
 ;;; nesting. 
@@ -1654,7 +1654,7 @@ data: (
 ;;; SAR Fri Jan 27 17:46:50 GMT 2012: Add robodoc info
 
 ;;; ****f* recursive-assoc-list/lisp-assoc-listp
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determine whether a given list can has the structure of a lisp
 ;;; assoc-list. This is assed based on each of the elements being a 2-item
 ;;; list, of which the first is a symbol, number or string (qualifies as a
@@ -1726,7 +1726,7 @@ data: (
 ;;; SAR Fri Jan 27 18:15:04 GMT 2012: Added robodoc info
 
 ;;; ****f* recursive-assoc-list/assoc-list-id-list
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determine whether a given list contains only atoms which could be used as
 ;;; assoc-list IDs. To pass the test, a given atom must be either a symbol, a
 ;;; number or a string.

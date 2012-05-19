@@ -60,7 +60,7 @@
 ;;; SAR Mon Jan 16 17:11:38 GMT 2012: Added robodoc info
 
 ;;; ****f* permutations/inefficiently-permutate
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return a shuffled, non-systematically ordered list of all possible
 ;;; permutations of an original sequence of elements of any type. An
 ;;; optional keyword argument <max> allows the user to specify the maximum
@@ -170,7 +170,7 @@
 ;;; SAR Sun Jan 15 21:34:41 GMT 2012: Added robodoc info
 
 ;;; ****f* permutations/inefficient-permutations
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return a shuffled, non-systematic list of all possible permutations of a  
 ;;; set of consecutive integers beginning with zero. 
 ;;;
@@ -286,7 +286,7 @@
 ;;; SAR Sat Jan 14 22:26:30 GMT 2012: Added robodoc info
 
 ;;; ****f* permutations/permutations
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Systematically produce a list of all possible permutations of a set of
 ;;; consecutive integers beginning with zero. The function's only argument,
 ;;; <level>, is an integer that determines how many consecutive integers from 0
@@ -354,7 +354,7 @@
 ;;; SAR Sat Jan 14 22:25:23 GMT 2012: Added robodoc info
 
 ;;; ****f* permutations/permutate
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Systematically produce a list of all possible permutations of an original
 ;;; list of elements of any type.
 ;;;
@@ -859,7 +859,7 @@ results so they are being written to the file
 ;;; SAR Sun Jan 15 17:01:34 GMT 2012: Added robodoc info
 
 ;;; ****f* permutations/shuffle
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a random ordering of a given sequence or a subsequence of a given
 ;;; sequence.  By default we used fixed-seed randomness so we can guarantee the
 ;;; same results each time (perhaps counter-intuitively).  So the order of the
@@ -988,7 +988,7 @@ START
 ;;; SAR Sun Jan 15 21:13:57 GMT 2012: Added robodoc info
 
 ;;; ****f* permutations/multi-shuffle
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Applies the shuffle function a specified number of times to a specified
 ;;; list.  
 ;;; 
@@ -1078,7 +1078,7 @@ START
 ;;; SAR Tue Jan 17 11:33:14 GMT 2012: Added robodoc info
 
 ;;; ****f* permutations/multi-shuffle-with-perms
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Returns a shuffled (random and unordered) list of permutations of
 ;;; the specified list after a specified number of shuffles. Similar
 ;;; to the "multi-shuffle" function, but uses the function
@@ -1148,7 +1148,7 @@ START
 ;;; SAR Tue Jan 17 13:35:32 GMT 2012: Added robodoc info
 
 ;;; ****f* permutations/move-repeats
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Move, when possible, any elements within a given list that are repeated
 ;;; consecutively.  
 ;;;

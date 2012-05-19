@@ -67,7 +67,7 @@
 ;;; SAR Sun Apr 29 18:21:09 BST 2012: Added robodoc entry
 
 ;;; ****m* set-map/gen-midi-chord-seq
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Write a midi file with each set in the set-map played as a chord at 1
 ;;; second intervals.
 ;;; 

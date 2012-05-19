@@ -65,7 +65,7 @@
 ;;; instrument/set. 
 
 ;;; ****P* pitch-seq/+pitch-seq-lowest-equals-prefers-high+
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -83,7 +83,7 @@
 ;;; ****
 
 ;;; ****P* pitch-seq/ +pitch-seq-lowest-equals-prefers-low+
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -185,7 +185,7 @@
 ;;; SAR Tue Jan  3 19:27:45 EST 2012: Added robodoc info
 
 ;;; ****m* pitch-seq/invert
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Invert the pitch sequence contour attached to a given pitch-seq object. The
 ;;; inversion uses only the same numbers from the original pitch contour list. 
 ;;; 
@@ -233,7 +233,7 @@
 ;;; SAR Sun Apr 29 16:19:03 BST 2012: Edited robodoc info
 
 ;;; ****m* pitch-seq/get-notes
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; This gets notes from the sets, limiting the notes used to the range of the
 ;;; instrument and any other ranges defined in the slippery-chicken class. If
 ;;; either the instrument or set are missing it just gets the relative pitches
@@ -582,7 +582,7 @@ len))
 ;;; SAR Tue Jan  3 17:56:59 EST 2012: Added robodoc info
 
 ;;; ****f* pitch-seq/make-pitch-seq
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a pitch-seq object.
 ;;;
 ;;; This function can be either called with one argument, consisting of a

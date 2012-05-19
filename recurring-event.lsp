@@ -224,7 +224,7 @@
 ;;; SAR Fri Apr 27 17:09:56 BST 2012: Conformed robodoc entry
 
 ;;; ****m* recurring-event/get-it
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the next element from the return-data. This method is most effective
 ;;; when called repeatedly (e.g. within a loop) when the return-data and
 ;;; return-data-cycle slots have been set. In those cases the return-data-cycle
@@ -281,7 +281,7 @@
 ;;; SAR Fri Apr 27 17:22:20 BST 2012: Conformed robodoc entry
 
 ;;; ****m* recurring-event/on-it
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Test to determine whether the method is currently at a period boundary. The
 ;;; object keeps track of its own internal state and position counter. This
 ;;; method is most effective when called repeatedly in a loop.
@@ -328,7 +328,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****f* recurring-event/make-re
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Make an instance of a recurring-event object, which allows for the
 ;;; periodic/cyclic return of given data. The recurring-event object is
 ;;; intended for situations in which the user would like to perform an action

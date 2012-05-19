@@ -158,7 +158,7 @@
 ;;; SAR Tue Jan 31 21:20:49 GMT 2012: Added robodoc info
 
 ;;; ****m* sc-set/round-inflections
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the microtones of a given sc-set object, rounded to the nearest
 ;;; chromatic note. 
 ;;;
@@ -303,7 +303,7 @@ data: CS4
 ;;; SAR Sat Feb  4 18:14:25 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-set/force-micro-tone
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Change the value of the MICRO-TONE slot of all pitch objects in a given
 ;;; sc-set object to the specified <value>.
 ;;;
@@ -389,7 +389,7 @@ T
 ;;; SAR Sat Feb  4 18:24:46 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-set/get-chromatic 
-;;; FUNCTION 
+;;; DESCRIPTION
 ;;; Return those notes of a given sc-set object that are normal chromatic notes
 ;;; (i.e. no microtones). 
 ;;;
@@ -506,7 +506,7 @@ PITCH: frequency: 184.997, midi-note: 54, midi-channel: 0
 ;;; SAR Mon Feb  6 13:37:14 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-set/get-non-chromatic
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return those notes of a given sc-set object that are micr-tones (i.e. no
 ;;; "normal" chromatic notes).
 ;;; 
@@ -597,7 +597,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;; SAR Tue Feb  7 18:27:46 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-set/get-semitones
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the distances in semitones of each pitch in a given sc-set
 ;;; object to a static reference pitch. 
 ;;;
@@ -653,7 +653,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;; SAR Mon Feb  6 14:06:48 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-set/get-srts 
-;;; FUNCTION 
+;;; DESCRIPTION
 ;;; Get the sampling-rate conversion factors for the given sc-set object,
 ;;; whereby 1.0 = unison, 2.0 = one octave higher and 0.5 = one octave lower
 ;;; etc.
@@ -713,7 +713,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;; SAR Mon Feb  6 15:29:04 GMT 2012: Addedrobodoc entry
 
 ;;; ****m* sc-set/subset-get-srts
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the sampling-rate conversion factors for the specified subset of a
 ;;; given sc-set object, whereby 1.0 = unison, 2.0 = one octave higher and 0.5
 ;;; = one octave lower etc.
@@ -763,7 +763,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;; SAR Wed Feb  8 10:12:39 GMT 2012: Edited robodoc entry
 
 ;;; ****m* sc-set/stack
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Extend the pitch content of a given sc-set object by adding new pitch
 ;;; objects which have the same interval structure as the original set. 
 ;;;
@@ -831,7 +831,7 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 ;;; comment here as it was taken into the robodoc nearly verbatim
 
 ;;; ****m* sc-set/get-interval-structure
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the distances between each pitch in a given sc-set object and the
 ;;; lowest pitch in that object in DEGREES (which default to quarter-tones in
 ;;; slippery chicken). This method assumes that the given sc-set object is
@@ -883,7 +883,7 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 ;;; SAR Mon Feb  6 16:07:24 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-set/set-position
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the position (zero-index) of a specified pitch object within a given
 ;;; sc-set object. 
 ;;; 
@@ -912,7 +912,7 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 ;;; SAR Mon Feb  6 16:13:55 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-set/get-degrees
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the pitches contained in the given sc-set object as a list of
 ;;; DEGREES (which default to quarter-tones in slippery chicken).
 ;;; 
@@ -940,7 +940,7 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 ;;; SAR Mon Feb  6 16:18:45 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-set/get-freqs
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the pitches of a given sc-set object as a list of Hz frequencies
 ;;; 
 ;;; ARGUMENTS
@@ -970,7 +970,7 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 ;;; SAR Mon Feb  6 16:26:18 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-set/get-midi 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the pitches of a given sc-set object as a list of their equivalent
 ;;; MIDI note numbers.
 ;;; 
@@ -998,7 +998,7 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 ;;; SAR Mon Feb  6 16:30:17 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-set/get-semitones-from-middle-note
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return a list of numbers that are the distances in semitones of each pitch
 ;;; in a given sc-set object from the middle note of that object. 
 ;;;
@@ -1057,7 +1057,7 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 ;;; here as it is taken nearly verbatim into the doc below.
 
 ;;; ****m* sc-set/add
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a new sc-set object from the data of two other specified sc-set
 ;;; objects.
 ;;; 
@@ -1124,7 +1124,7 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 ;;; SAR Mon Feb  6 16:59:16 GMT 2012: Added robodoc info
 
 ;;; ****m* sc-set/contains-pitches
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Check to see if a given sc-set object contains pitch objects for all of the
 ;;; specified note-names. The method returns NIL if any one of the specified
 ;;; pitches is not found in the given sc-set object.
@@ -1164,7 +1164,7 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 ;;; SAR Mon Feb  6 17:32:38 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-set/create-chord
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a chord object from the pitches of the given sc-set object.
 ;;; 
 ;;; ARGUMENTS
@@ -1200,7 +1200,7 @@ PITCH: frequency: 73.416, midi-note: 38, midi-channel: 0
 ;;; SAR Mon Feb  6 17:42:16 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-set/create-event
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create an event object (that is a chord) from a given sc-set object,
 ;;; specifiying a rhythmic value and a start-time (in seconds).
 ;;; 
@@ -1269,7 +1269,7 @@ data: Q
 ;;; SAR Mon Feb  6 18:02:05 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-set/pitch-symbols
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the pitches of a given sc-set object as a list of note-name
 ;;; symbols. 
 ;;; 
@@ -1332,7 +1332,7 @@ data: Q
 ;;; SAR Tue Jan 31 20:05:39 GMT 2012: Added robodoc info
 
 ;;; ****f* sc-set/make-sc-set 
-;;; FUNCTION 
+;;; DESCRIPTION
 ;;; Create an sc-set object, which holds pitch-set information for harmonic and
 ;;; pitch manipulation.
 ;;; 

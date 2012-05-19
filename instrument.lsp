@@ -374,7 +374,7 @@
 ;;; SAR Sat Jan  7 11:32:53 EST 2012: Added robodoc info
 
 ;;; ****m* instrument/transposing-instrument-p
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determine whether a given instrument object defines a transposing
 ;;; instrument. 
 ;;; 
@@ -458,7 +458,7 @@
 ;;; DATE
 ;;; 05 Feb 2011
 ;;; 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Sets the PREFERS-NOTES slot of the given instrument object to 'LOW.
 ;;; 
 ;;; ARGUMENTS
@@ -515,7 +515,7 @@ LOW
 ;;; DATE
 ;;; 05 Feb 2011
 ;;; 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Sets the PREFERS-NOTES slot of the given instrument object to 'HIGH.
 ;;; 
 ;;; ARGUMENTS
@@ -570,7 +570,7 @@ HIGH
 ;;; SAR Sat Jan  7 12:08:12 EST 2012: Added robodoc info
 
 ;;; ****m* instrument/prefers-low
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determine whether the PREFERS-NOTES slot of a given instrument object is
 ;;; set to 'LOW. 
 ;;; 
@@ -612,7 +612,7 @@ NIL
 ;;; SAR Sat Jan  7 12:15:24 EST 2012: Added robodoc info
 
 ;;; ****m* instrument/prefers-high
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determine whether the PREFERS-NOTES slot of a given instrument object is
 ;;; set to 'HIGH. 
 ;;; 
@@ -654,7 +654,7 @@ NIL
 ;;; SAR Sat Jan  7 12:20:15 EST 2012: Added robodoc info
 
 ;;; ****m* instrument/in-range
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Checks whether a specified pitch falls within the defined range of a given
 ;;; instrument object or not.
 ;;; 
@@ -734,7 +734,7 @@ NIL
 ;;; SAR Fri Jan  6 19:06:39 EST 2012: Added robodoc info
 
 ;;; ****f* instrument/make-instrument
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create an instrument object, specifying the values for a number of
 ;;; parameters for describing characteristics of a given instrument, such as
 ;;; lowest and highest pitch, transposition, clefs used by the instrument etc. 
@@ -1118,7 +1118,7 @@ data: NIL
 ;;; SAR Sun Apr 29 15:16:44 BST 2012: Editing robodoc entry
 
 ;;; ****f* instrument/default-chord-function
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; If an instrument is able to play chords, a function must be defined to
 ;;; select pitches from a list that it can play as a chord. This function (as a

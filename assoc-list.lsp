@@ -124,7 +124,7 @@
 ;;; 28.11.11 SEAN: Added info for robodoc
 
 ;;; ****m* assoc-list/get-keys
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get a simple list of the keys in a given association list.
 ;;;
 ;;; ARGUMENTS
@@ -183,7 +183,7 @@
 ;;; 07.12.11 SEAN: modified example
 
 ;;; ****m* assoc-list/get-first
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Returns the first named-object in the DATA slot of the given assoc-list
 ;;; object.  
 ;;; 
@@ -216,7 +216,7 @@ data BEAM
 ;;; 28.11.11 SEAN: Added info for ROBODoc
 ;;; 07.12.11 SEAN: modified example
 ;;; ****m* assoc-list/get-last
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Returns the last named-object in the data list of a given assoc-list.
 ;;; 
 ;;; ARGUMENTS
@@ -267,7 +267,7 @@ data TURKEY
 ;;; 28.11.11 SEAN: Added info for ROBODoc
 ;;; 07.12.11 SEAN: modified example
 ;;; ****m* assoc-list/get-position
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Returns the index position (zero-based) of a named-object within a given 
 ;;; assoc-list. 
 ;;; 
@@ -327,7 +327,7 @@ data TURKEY
 ;;; 07.12.11 SEAN: modified example
 
 ;;; ****m* assoc-list/get-data-data
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; (Short-cut for (data (get-data ...))
 ;;; Get the data associated with the given key of the given assoc-list. 
 ;;; 
@@ -378,7 +378,7 @@ WARNING:
 ;;; 07.12.11 SEAN: Modified the EXAMPLE block
 
 ;;; ****m* assoc-list/get-data
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the named-object (id, tag and data) that is identified by a
 ;;; specified key within a given assoc-list. 
 ;;;
@@ -460,7 +460,7 @@ WARNING:
 ;;; 07.12.11 SEAN: Modified example
 
 ;;; ****m* assoc-list/add
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add a new element to the given assoc-list object.
 ;;; 
 ;;; ARGUMENTS
@@ -535,7 +535,7 @@ data: MARK
 ;;; 07.12.11 SEAN: Modified example
 
 ;;; ****m* assoc-list/set-data
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Replace the named-object associated with a specified key within a given
 ;;; assoc-list object. This method replaces the whole named-object, not just
 ;;; the data of that object. 
@@ -598,7 +598,7 @@ data: WILBUR
 ;;; 01.12.11 SEAN: Added ROBODoc info
 ;;; 07.12.11 SEAN: Modified example
 ;;; ****m* assoc-list/add-to-list-data
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add an element of any type to the end of the data (list) associated with a
 ;;; given key of a given assoc-list.
 ;;;
@@ -643,7 +643,7 @@ data: (FIDO SPOT ROVER)
 ;;; 01.12.11 SEAN: Added ROBODoc info
 ;;; 07.12.11 SEAN: Modified example
 ;;; ****m* assoc-list/add-to-list-data-force
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Similar to add-to-list-data, but if the given key doesn't already exist in
 ;;; the given assoc-list, it is first added, then the given new element is
 ;;; added to that as a 1-element list. 
@@ -694,7 +694,7 @@ data: (FIDO SPOT ROVER)
 ;;; 01.12.11 SEAN: Added ROBODoc info
 ;;; 08.12.11 SEAN: Modified example
 ;;; ****m* assoc-list/set-nth-of-data
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Replace a given member of a given data list within a given assoc-list.
 ;;; 
 ;;; ARGUMENTS
@@ -750,7 +750,7 @@ data: (SNOOPY SPOT ROVER)
 ;;; 01.12.11 SEAN: Added ROBODoc info
 ;;; 08.12.11 SEAN: Modified example
 ;;; ****m* assoc-list/map-data
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Map a function over the data in the assoc-list.
 ;;; 
 ;;; ARGUMENTS

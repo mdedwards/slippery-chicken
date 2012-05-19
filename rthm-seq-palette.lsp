@@ -88,7 +88,7 @@
 ;;; DATE 
 ;;; 30 Mar 2006
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Automatically create pitch-seq-palette objects for each rthm-seq object in
 ;;; the given rthm-seq-palette object. 
 ;;;
@@ -283,7 +283,7 @@
 ;;; SAR Sat Jan 28 15:10:10 GMT 2012: Edited robodoc info
 
 ;;; ****m* rthm-seq-palette/reset-psps
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Call the reset method (inherited from circular-sclist) for all
 ;;; pitch-seq-palette objects of all rthm-seq objects in the given
 ;;; rthm-seq-palette object, resetting their pointers to the head of the
@@ -355,7 +355,7 @@
 ;;; SAR Mon Jan 30 20:19:39 GMT 2012: Added robodoc info
 
 ;;; ****m* rthm-seq-palette/scale
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Scale the durations of the rhythm objects in a given rthm-seq-palette
 ;;; object by the specified factor.
 ;;;
@@ -487,7 +487,7 @@ rthm-seq SEQ3
 
 #+cmn
 ;;; ****m* rthm-seq-palette/cmn-display
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Generate printable music notation output (.EPS) of the given
 ;;; rthm-seq-palette object using the Common Music Notation (CMN)
 ;;; interface. The method requires at least the name of the given
@@ -605,7 +605,7 @@ rthm-seq SEQ3
 ;;; SAR Tue Jan 31 13:51:57 GMT 2012: Added robodoc info
 
 ;;; ****m* rthm-seq-palette/chop
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Applies the chop method to each rthm-seq object in the given
 ;;; rthm-seq-palette object (see rthm-seq-bar::chop for details). Returns a
 ;;; new rthm-seq-palette object with the same structure as the argument, but
@@ -756,7 +756,7 @@ rthm-seq 9
 ;;; SAR Thu Feb  2 14:30:02 GMT 2012: Added robodoc entry
  
 ;;; ****m* rthm-seq-palette/get-multipliers
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get a list of factors by which a specified rhythmic unit must be multiplied
 ;;; in order to create the rhythms of a specified rthm-seq object within the
 ;;; given rthm-seq-palette object.
@@ -890,7 +890,7 @@ rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) is required.
 ;;; SAR Sat Jan 28 11:18:46 GMT 2012: Added robodoc info
 
 ;;; ****f* rthm-seq-palette/make-rsp
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a rthm-seq-palette object.
 ;;; 
 ;;; ARGUMENTS

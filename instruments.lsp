@@ -58,7 +58,7 @@
 ;;; SAR Thu May  3 13:55:22 BST 2012: Editing robodoc entry
 
 ;;; ****P* instruments/+slippery-chicken-standard-instrument-palette+
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; A palette of standard instruments (by no means exhaustive...) for use
 ;;; directly in projects or for combining with user palettes e.g.
 ;;; 
@@ -336,7 +336,7 @@
 ;;; the user to choose from.
 
 ;;; ****f* instruments/chord-fun1
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Generate three-note chords where possible, using every second pitch from
 ;;; the list of pitches currently available to the given instrument from the
 ;;; current set, and ensuring that none of the chords it makes span more than
@@ -352,7 +352,7 @@
 ;;; SAR Thu May  3 14:13:12 BST 2012: Added robodoc entry
 
 ;;; ****f* instruments/chord-fun2
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Generates 4-note chords where possible, using every third pitch from the
 ;;; list of pitches currently available to the given instrument from the
 ;;; current set, with (almost) no limit on the total span of the chord.
@@ -368,7 +368,7 @@
 ;;; SAR Thu May  3 14:15:16 BST 2012: Added robodoc entry
 
 ;;; ****f* instruments/chord-fun-aux
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; An auxiliary function that allows users to create moderately tailored chord
 ;;; functions by setting values for the number of notes in the current set to
 ;;; skip, the number of desired notes in the resulting chord, and the maximum
@@ -452,7 +452,7 @@
 ;;; SAR Thu May  3 14:52:30 BST 2012: Added robodoc entry
 
 ;;; ****f* instruments/string-chord-selection-fun
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; This is the core function for creating instances of double-stop chords for
 ;;; strings, ensuring that the highest note of the double-stop is not lower
 ;;; than the open III string. The pitch of the open III string is passed as an
@@ -500,7 +500,7 @@
 ;;; SAR Thu May  3 15:09:43 BST 2012: Added robodoc entry.
 
 ;;; ****f* instruments/violin-chord-selection-fun
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a double-stop chord object using the core string-chord-selection-fun
 ;;; and a value of 'D4 for the open III string.
 ;;; 
@@ -517,7 +517,7 @@
 ;;; SAR Thu May  3 15:20:55 BST 2012: Added robodoc entry
 
 ;;; ****f* instruments/viola-chord-selection-fun
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a double-stop chord object using the core string-chord-selection-fun
 ;;; and a value of 'G3 for the open III string.
 ;;; 
@@ -534,7 +534,7 @@
 ;;; SAR Thu May  3 15:25:35 BST 2012: Added robodoc entry
 
 ;;; ****f* instruments/cello-chord-selection-fun
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a double-stop chord object using the core string-chord-selection-fun
 ;;; and a value of 'G2 for the open III string.
 ;;; 
@@ -551,7 +551,7 @@
 ;;; SAR Thu May  3 14:45:38 BST 2012: Added robodoc entry
 
 ;;; ****f* instruments/piano-chord-fun
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Generate four-note chords, where possible, from consecutive notes in the
 ;;; current set, with the number enclosed in parentheses in the pitch-seq being
 ;;; the top note of that chord, where possible.
@@ -645,7 +645,7 @@
 ;;; our harmony).
 
 ;;; ****f* instruments/guitar-chord-selection-fun
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create chord objects with differing numbers of pitches, drawing the pitches
 ;;; from set-palette object subsets with the ID 'guitar.
 ;;;

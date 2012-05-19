@@ -79,7 +79,7 @@
 ;;; SAR Fri Jan 13 12:36:30 GMT 2012: Added robodoc info
 
 ;;; ****m* circular-sclist/get-next
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the next item in a given circular-sclist object. The class
 ;;; automatically keeps track of the last item retrieved. If the final item of
 ;;; the given circular-sclist object was the last item retrieved, the method
@@ -132,7 +132,7 @@
 ;;; SAR Fri Jan 13 12:48:06 GMT 2012: Added robodoc info
 
 ;;; ****m* circular-sclist/get-last
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the the most recent item retrieved in a circular-sclist object.
 ;;; 
 ;;; ARGUMENTS 
@@ -172,7 +172,7 @@
 ;;; SAR Fri Jan 13 12:53:41 GMT 2012: Added robodoc info
 
 ;;; ****m* circular-sclist/at-start
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determines whether the pointer for the given circular-sclist object is at
 ;;; the head of its list.
 ;;; 
@@ -220,7 +220,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* circular-sclist/reset
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Reset the pointer of a given circular-sclist object. The pointer is reset
 ;;; to 0 by default, but the desired index may be specified using the optional
 ;;; argument. 
@@ -294,7 +294,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****f* circular-sclist/make-cscl
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a circular-sclist object from a specified list of items. The items
 ;;; themselves may also be lists. 
 ;;; 

@@ -145,7 +145,7 @@
 
 ;;; ****m* time-sig/beat-duration
 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the duration in seconds of one beat of the given time-signature at a
 ;;; tempo of quarter=60.
 ;;; 
@@ -183,7 +183,7 @@
 ;;; SAR 30.12.11 Added robodoc info
 
 ;;; ****m* time-sig/get-beat-as-rhythm
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the beat unit of a given time-sig object and return it as a rhythm.
 ;;; 
 ;;; ARGUMENTS
@@ -259,7 +259,7 @@ data: 4
 ;;; SAR Fri Dec 30 17:37:55 EST 2011: Added robodoc info
 
 ;;; ****m* time-sig/scale
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Scale the value of the given time-sig object by a specified factor.
 ;;; 
 ;;; ARGUMENTS
@@ -340,7 +340,7 @@ data: (6 4)
 ;;; SAR Fri Dec 30 17:57:59 EST 2011: Added robodoc info
 
 ;;; ****m* time-sig/is-compound
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determine whether the value of a given time-sig object is a compound time
 ;;; signature. 
 ;;; 
@@ -380,7 +380,7 @@ data: (6 4)
 ;;; SAR Fri Dec 30 18:04:00 EST 2011: Added robodoc info
 
 ;;; ****m* time-sig/time-sig-equal
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determine whether the values of two given time-sig objects are the same. If
 ;;; they are identical in signature, return T; if they are different signatures
 ;;; but have the same duration (e.g. 2/4, 4/8, 8/16 etc.) return
@@ -433,7 +433,7 @@ data: (6 4)
 ;;; SAR Fri Dec 30 18:14:43 EST 2011: Added robodoc info
 
 ;;; ****m* time-sig/get-whole-bar-rest
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create an event object consisting of a rest equal in duration to one full
 ;;; bar of the given time-sig object.
 ;;; 
@@ -554,7 +554,7 @@ T
 ;;; SAR Thu Dec 29 20:21:17 EST 2011
 
 ;;; ****f* time-sig/make-time-sig
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a time-sig object. In addition to the numerator and denominator
 ;;; values, the object also stores other automatically calculated information,
 ;;; such as whether the signature is simple or compound, the duration of one

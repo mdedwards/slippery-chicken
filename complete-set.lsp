@@ -345,7 +345,7 @@
 ;;; SAR Tue Feb  7 10:45:09 GMT 2012: Added robodoc entry
 
 ;;; ****f* complete-set/make-complete-set
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a complete-set object, which as an extension of the tl-set class
 ;;; allows checking for full sets: ones in which every note of *standard-scale*
 ;;; is present.  

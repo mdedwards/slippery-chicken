@@ -182,7 +182,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rhythm/force-rest
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Force the given rhythm object to be a rest.
 ;;; 
 ;;; ARGUMENTS 
@@ -281,7 +281,7 @@
 ;;; SAR Thu Mar  1 13:24:14 GMT 2012: Edited robodoc entry
 
 ;;; ****m* rhythm/scale
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Change the value of a rhythm object's duration value by a specified
 ;;; scaling factor. 
 ;;; 
@@ -392,7 +392,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rhythm/rhythm-equal
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Compares the values of two rhythm objects to determine if they are equal. 
 ;;;
 ;;; NB rhythm-equal compares the values only, so rhythms with the same values
@@ -441,7 +441,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* rhythm/rhythm/
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determines the ratio of one rhythm object's duration to that of a second
 ;;; rhythm object by use of division. 
 ;;; 
@@ -477,7 +477,7 @@
 ;;; 18.12.11 SAR Added robodoc info
 
 ;;; ****m* rhythm/is-multiple
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determines if the value of one rhythm object is a multiple of the value of
 ;;; a second rhythm object. This is established by dividing the one by the
 ;;; other and checking to see if the quotient is a whole number.
@@ -514,7 +514,7 @@
 ;;; 18.12.11 SAR: Added robodoc info
 
 ;;; ****m* rhythm/add-mark
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add an articulation, dynamic, slur or any other mark to a rhythm (also
 ;;; useful in the event subclass for changing note heads etc.) Multiple marks
 ;;; can be added separately and consecutively to the same rhythm object. 
@@ -615,7 +615,7 @@ rhythm::add-mark: add AT to rest?
 ;;; DATE
 ;;; 26 Jul 2011 (Pula)
 ;;; 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Apply the given mark to the given rhythm object, but do so only if the
 ;;; given rhythm object does not yet have the mark.
 ;;; 
@@ -693,7 +693,7 @@ rhythm::add-mark: add AT to rest?
 ;;; 19.12.11 SAR: Added robodoc info
 
 ;;; ****m* rhythm/rm-marks
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Remove a specified mark (or a list of specified marks) from the MARKS slot
 ;;; of a given rhythm object. If the mark specified is not present in the given
 ;;; rhythm object's MARKS slot, a warning is printed. If some marks of a list
@@ -779,7 +779,7 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 ;;; 19.12.11 SAR: Added robodoc info
 
 ;;; ****m* rhythm/replace-mark
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Replace a specified mark of a given rhythm object with a second specified
 ;;; mark. If a rhythm object contains more than one mark, individual marks can
 ;;; be changed without modifying the remaining marks.
@@ -825,7 +825,7 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 ;;; SAR Mon Dec 26 20:59:50 EST 2011 Added robodoc info
 
 ;;; ****m* rhythm/delete-marks
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Delete any marks in the MARKS slot of an event object created within a
 ;;; rhythm object, replacing the entire list of the MARKS slot with NIL.
 ;;; 
@@ -887,7 +887,7 @@ NI
 ;;; 19.12.11 SAR: Added robodoc info
 
 ;;; ****m* rhythm/has-mark
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Check to see if a given rhythm object posseses a specified mark.
 ;;; 
 ;;; ARGUMENTS 
@@ -930,7 +930,7 @@ NI
 ;;; DATE
 ;;; 05 Apr 2011
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Check the MARKS slot of a given rhythm object to determine if it possesses
 ;;; an accent mark. The rhythm object may also possess other marks as well. 
 ;;; 
@@ -979,7 +979,7 @@ NI
 ;;; 22.12.11 SAR: Added robodoc info
 
 ;;; ****m* rhythm/begin-slur-p
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Check to see if the MARKS slot of a given rhythm object contains a mark for
 ;;; the beginning of a slur ('beg-sl). The rhythm object may also possess other
 ;;; marks as well. 
@@ -1027,7 +1027,7 @@ NI
 ;;; 22.12.11 SAR: Added robodoc info
 
 ;;; ****m* rhythm/end-slur-p
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Check to see if the MARKS slot of a given rhythm object contains a mark for
 ;;; the ending of a slur ('end-sl). The rhythm object may also possess other
 ;;; marks as well.  
@@ -1092,7 +1092,7 @@ NI
 ;;; 22.12.11 SAR: Added robodoc info
 
 ;;; ****m* rhythm/delete-beam
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Removes indication for the start (1) or end (0) of a beam from the BEAM
 ;;; slot of a given rhythm object, replacing them with NIL.
 ;;; 
@@ -1149,7 +1149,7 @@ NI
 ;;; 22.12.11 SAR: Added robodoc info
 
 ;;; ****m* rhythm/duration-secs
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determine the absolute duration in seconds of a given rhythm object at a
 ;;; given quarter-note tempo. If no tempo is specified, a tempo of 60 is
 ;;; assumed.  
@@ -1327,7 +1327,7 @@ NI
 ;;; 22.12.11 SAR: Added robodoc info
 
 ;;; ****m* rhythm/add
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a new rhythm object with a duration that is equal to the sum of the
 ;;; duration of two other given rhythm objects. 
 ;;;
@@ -1401,7 +1401,7 @@ NIL
 ;;; 22.12.11 SAR: Added robodoc info
 
 ;;; ****m* rhythm/subtract 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a new rhythm object with a duration that is equal to the difference
 ;;; between the duration of two other given rhythm objects.   
 ;;;
@@ -1510,7 +1510,7 @@ NIL
 ;;; 13.12.11 SAR: Added ROBODoc info
 
 ;;; ****f* rhythm/make-rhythm
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Make a rhythm object.
 ;;; 
 ;;; ARGUMENTS 
@@ -1896,7 +1896,7 @@ data: NIL
 ;;; 22.12.11 SAR: Added robodoc info
 
 ;;; ****f* rhythm/rhythm-list
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a list of rhythms from symbols, possibly involving ties and not
 ;;; needing meters etc. (i.e. not as strict as rthm-seq). 
 ;;;

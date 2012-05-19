@@ -163,7 +163,7 @@
 ;;; SAR Sat Jan  7 18:29:17 EST 2012: Added robodoc info
 
 ;;; ****m* player/plays-transposing-instrument
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determine whether a given player object has one or more transposing
 ;;; instrument objects assigned to it.
 ;;; 
@@ -250,7 +250,7 @@
 ;;; SAR Sat Jan  7 18:46:02 EST 2012: Added robodoc info
 
 ;;; ****m* player/microtonal-chords-p
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determines whether the MICROTONES-MIDI-CHANNEL slot of the given player
 ;;; object is set to a value greater than 0, indicating that the player and its
 ;;; instrument are capable of performing microtonal chords.
@@ -312,7 +312,7 @@
 ;;; SAR Sun Apr 29 15:37:13 BST 2012: Added robodoc entry
 
 ;;; ****m* player/total-notes
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the total number of notes played by a specified player.
 ;;; 
 ;;; ARGUMENTS
@@ -354,7 +354,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* player/total-degrees
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -382,7 +382,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* player/total-bars
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -412,7 +412,7 @@
 ;;; SAR Sun Apr 29 15:48:52 BST 2012: Started robodoc entry
 
 ;;; ****m* player/tessitura-degree
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return a number that represents the average pitch for a specified
 ;;; instrument over the course of a piece. The number returned will be degrees
 ;;; in the current scale.
@@ -458,7 +458,7 @@
 ;;; MDE Thu Apr 19 13:32:34 2012 
 
 ;;; ****m* player/tessitura-note
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -488,7 +488,7 @@
 ;;; SAR Sun Apr 29 16:04:48 BST 2012: Added robodoc entry
 
 ;;; ****m* player/total-duration
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the total duration of played notes for a given player over the span of
 ;;; a piece.
 ;;; 
@@ -539,7 +539,7 @@
 ;;; SAR Thu Jan 12 18:36:07 GMT 2012: Added robodoc info
 
 ;;; ****m* player/player-get-instrument
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the instrument object assigned to a single-instrument player object or
 ;;; get the specified instrument object assigned to a multiple-instrument
 ;;; player object.  
@@ -642,7 +642,7 @@ the instrument you want.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****f* player/make-player
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a player object from a specified instrument-palette object and a
 ;;; specified instrument or list of instruments which that player plays. 
 ;;;

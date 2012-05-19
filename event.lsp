@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:37:22 Tue May  8 2012 BST
+;;; $$ Last modified: 20:43:21 Sat May 19 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -214,9 +214,13 @@
 ;;; ****
   (let ((noc (pitch-or-chord e)))
     (when noc
+      #|
       (if (is-chord e)
           (set-midi-channel noc midi-channel microtonal-midi-channel)
-        (setf (midi-channel noc) midi-channel)))))
+          (setf (midi-channel noc) midi-channel)))))
+      |#
+      ;; MDE Sat May 19 20:42:51 2012
+      (set-midi-channel noc midi-channel microtonal-midi-channel))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

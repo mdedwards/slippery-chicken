@@ -137,7 +137,7 @@
 ;;; SAR Tue Jan 31 17:28:52 GMT 2012: Added robodoc info
 
 ;;; ****m* pitch-seq-palette/add-inversions
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add inversions of the existing pitch-seq objects in a given
 ;;; pitch-seq-palette object to the end of that pitch-seq-palette object. (See
 ;;; pitch-seq::invert for more details on slippery-chicken inversions.)
@@ -183,7 +183,7 @@
 ;;; SAR Tue Jan 31 17:40:07 GMT 2012: Added robodoc info
 
 ;;; ****m* pitch-seq-palette/combine 
-;;; FUNCTION 
+;;; DESCRIPTION
 ;;; Create a new pitch-seq-palette object by combining the pitch-seq lists from
 ;;; one pitch-seq-palette object with those of another.
 ;;;
@@ -360,7 +360,7 @@ data: (5 1 3 2 4 3 2 1 5 4)
 ;;; SAR Tue Jan 31 14:36:09 GMT 2012: Added robodoc info
 
 ;;; ****f* pitch-seq-palette/make-psp
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a pitch-seq-palette object from an ID, a specified number of notes,
 ;;; and a list of lists of numbers representing the pitch curve of the intended
 ;;; pitch-seq objects.

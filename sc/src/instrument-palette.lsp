@@ -91,7 +91,7 @@
 ;;; DATE
 ;;; 05 Feb 2011
 ;;; 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Set the PREFERS-NOTES slot of a specified instrument object within a given
 ;;; instrument-palette object to 'LOW. The instrument object is specified
 ;;; using the ID symbol assigned to it within the instrument-palette object
@@ -149,7 +149,7 @@
 ;;; DATE 
 ;;; 05 Feb 2011
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Set the PREFERS-NOTES slot of a specified instrument object within a given
 ;;; instrument-palette object to 'HIGH. The instrument object is specified
 ;;; using the ID symbol assigned to it within the instrument-palette object
@@ -236,7 +236,7 @@ e.g.
 ;;; SAR Sat Jan  7 13:43:00 EST 2012: Added robodoc info
 
 ;;; ****f* instrument-palette/make-instrument-palette
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create an instrument-palette object from a list of instrument descriptions
 ;;; based on the keyword arguments of make-instrument.
 ;;; 

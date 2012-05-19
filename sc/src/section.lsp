@@ -75,7 +75,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* section/has-subsections
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -101,7 +101,7 @@
 ;;; SAR Fri May  4 12:20:17 BST 2012: Added robodoc entry
 
 ;;; ****m* section/get-sequenz
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the specified sequenz object from a given section object.
 ;;; 
 ;;; ARGUMENTS
@@ -181,7 +181,7 @@ BAR-HOLDER:
 ;;; SAR Fri May  4 12:31:29 BST 2012: Added robodoc entry
 
 ;;; ****m* section/num-sequenzes
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the number of sequenz objects in a given section object.
 ;;; 
 ;;; ARGUMENTS
@@ -225,7 +225,7 @@ BAR-HOLDER:
 ;;; the bar-num argument. 
 
 ;;; ****m* section/get-bar
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -334,7 +334,7 @@ BAR-HOLDER:
 ;;; SAR Thu May  3 20:14:43 BST 2012: Added robodoc entry
 
 ;;; ****m* section/get-all-players
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -362,7 +362,7 @@ BAR-HOLDER:
 ;;; up bars and recombine. 
 
 ;;; ****m* section/re-bar
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS

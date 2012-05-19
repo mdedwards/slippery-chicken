@@ -169,7 +169,7 @@
 ;;; this is the main function we'll call
 
 ;;; ****m* popcorn/heat
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Generate a series of values for the KERNELS slot of a popcorn object,
 ;;; ranging between >0.0 and <= 1.0, by (optionally fixed) random selection.
 ;;; If calling heat explicitly on a previously heated object, all kernels and
@@ -231,7 +231,7 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
 ;;; SAR Sat Apr 28 19:18:56 BST 2012: Added robodoc entry
 
 ;;; ****m* popcorn/scale
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Scale the list of number values in the KERNEL slot of a given popcorn
 ;;; object to a new range using specified maximum value and optional minimum
 ;;; value.
@@ -347,7 +347,7 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
 ;;; SAR Sat Apr 28 18:56:46 BST 2012: Added robodoc entry
 
 ;;; ****m* popcorn/fit-to-length
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Change the length of the list of kernels contained in a given popcorn
 ;;; object by adding or removing items at regular intervals. If adding items,
 ;;; linear interpolation will be used.
@@ -383,7 +383,7 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
 ;;; SAR Sat Apr 28 20:09:29 BST 2012: Added robodoc entry
 
 ;;; ****m* popcorn/get-kernel
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Generate the next value for the KERNELS slot of a given popcorn object and
 ;;; change the internal state, with the help of the get-kernel-aux method.
 ;;;
@@ -433,7 +433,7 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
 ;;; connected by lines by default
 
 ;;; ****m* popcorn/plot
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -483,7 +483,7 @@ this will create the postscript file ppcn.ps
 ;;; SAR Sat Apr 28 11:35:43 BST 2012: Added robodoc entry
 
 ;;; ****f* popcorn/make-popcorn
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Make a popcorn object. This method uses the heat method internally to
 ;;; generate a series of decimal values ('kernels'), ranging between >0.0 and
 ;;; <= 1.0, by (optionally fixed) random selection.

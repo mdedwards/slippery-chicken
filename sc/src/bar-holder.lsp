@@ -299,7 +299,7 @@
 
 ;;; 02.12.11 SEAN: Added ROBODoc info
 ;;; ****m* bar-holder/transpose-bars
-;;; FUNCTION
+;;; DESCRIPTION
 ;;;
 ;;; 
 ;;; ARGUMENTS 
@@ -364,7 +364,7 @@
         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* bar-holder/get-note
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return an event from a bar.  bar-num and note-num are 1-based.  note-num
 ;;; can access the note of a chord like '(2 1) where 2 is the second "note" or
 ;;; non-rhythm event in the bar, and 1 is the first note in the chord counting
@@ -478,7 +478,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* bar-holder/change-pitches
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; new-notes is a list of lists, each sublist being the notes for each bar in
 ;;; succession.  e.g. (change-pitches bh 'vla 5 '((g3 gs4) nil (nil nil aqf5)))
 ;;; would change the notes in bars 5 and 7 (for the viola), whereas bar six,
@@ -549,7 +549,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* bar-holder/delete-all-marks
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; delete-all-marks:
 ;;;
 ;;; 

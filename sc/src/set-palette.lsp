@@ -119,7 +119,7 @@
 
 #+cmn
 ;;; ****m* set-palette/cmn-display
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Generate printable music notation output (.EPS) of the given set-palette
 ;;; object, including separate notation of the SUBSETS and RELATED-SETS slots,
 ;;; using the Common Music Notation (CMN) interface. The method requires at
@@ -304,7 +304,7 @@
 ;;; SAR Tue Feb  7 13:47:11 GMT 2012: Added robodoc entry
 
 ;;; ****m* set-palette/find-sets-with-pitches
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return a list of sets (as complete-set objects) from a given set-palette
 ;;; object based on whether they contain specified pitches.
 ;;;
@@ -408,7 +408,7 @@ data: (C4 F4 A4 C5)
 ;;; DATE
 ;;; 26 Dec 2009
 ;;; 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Write a text file from a given set-palette object suitable for reading into
 ;;; Max/MSP's coll object. The resulting text file has one line for each set in
 ;;; the palette, with the coll index being the ID of the set. The rest of the
@@ -491,7 +491,7 @@ data: (C4 F4 A4 C5)
 ;;; SAR Tue Feb  7 14:28:07 GMT 2012: Edited robodoc entry
 
 ;;; ****m* set-palette/gen-midi-chord-seq
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Generate a MIDI file in which each set of the given set-palette object is
 ;;; played at 1 second intervals.
 ;;; 
@@ -553,7 +553,7 @@ data: (C4 F4 A4 C5)
 ;;; SAR Tue Feb  7 14:32:56 GMT 2012: Edited robodoc info
 
 ;;; ****m* set-palette/force-micro-tone
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Change the value of the MICRO-TONE slot of all pitch objects in a given
 ;;; set-palette object to the specified <value>.
 ;;; 
@@ -644,7 +644,7 @@ data: (C4 F4 A4 C5)
 ;;; SAR Tue Feb  7 10:56:35 GMT 2012: Edited robodoc entry
 
 ;;; ****f* set-palette/make-set-palette
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a set-palette object.
 ;;; 
 ;;; ARGUMENTS 
@@ -762,7 +762,7 @@ data: (
 ;;; SAR Tue Feb  7 14:53:12 GMT 2012: Edited robodoc entry
 
 ;;; ****f* set-palette/set-palette-p
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Test whether a given object is a set-palette object.
 ;;; 
 ;;; ARGUMENTS 
@@ -805,7 +805,7 @@ data: (
 ;;; SAR Wed Feb  8 12:48:17 GMT 2012: Edited robodoc entry
 ;;; 
 ;;; ****f* set-palette/recursive-set-palette-from-ring-mod
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a set-palette object consisting of sub palette-objects whose pitch
 ;;; content is generated based on ring modulation routines applied to the
 ;;; specified pitches.
@@ -917,7 +917,7 @@ COMPLETE-SET: complete: NIL
 ;;; SAR Wed Feb  8 11:14:35 GMT 2012: Edited robodoc entry
 
 ;;; ****f* set-palette/set-palette-from-ring-mod
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a new set-palette object from the pitches returned by applying ring 
 ;;; modulation procedures (difference and sum tones of partials).
 ;;; 
@@ -1053,7 +1053,7 @@ data: (
 ;;; SAR Tue Feb  7 15:48:24 GMT 2012: Edited robodoc entry
 
 ;;; ****f* set-palette/ring-mod
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Ring modulate two frequencies and return the resulting pitch and harmonic
 ;;; partials thereof. 
 ;;; 
@@ -1186,7 +1186,7 @@ data: (
 ;;; SAR Sat Feb 11 14:15:13 GMT 2012: Edited and extended robodoc entry
 
 ;;; ****f* set-palette/ring-mod-bass
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Using ring-modulation techniques, invent (sensible) bass note(s) from a
 ;;; list of frequencies.  
 ;;;

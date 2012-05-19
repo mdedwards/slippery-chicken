@@ -90,7 +90,7 @@
 ;;; SAR Fri May  4 17:43:47 BST 2012: Added robodoc entry
 
 ;;; ****m* simple-change-map/scm-get-data
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the data associated with the specified key within a given
 ;;; simple-change-map object.
 ;;; 
@@ -130,7 +130,7 @@ data: 3
 ;;; SAR Fri May  4 17:35:17 BST 2012: Added robodoc entry
 
 ;;; ****f* simple-change-map/make-simple-change-map
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a simple-change-map object, which stores data associated with a
 ;;; non-recursive list of number IDs. This object could be good, for example,
 ;;; for specifying data which changes at specific bar numbers.

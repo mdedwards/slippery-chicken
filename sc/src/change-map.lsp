@@ -180,7 +180,7 @@
 ;;; sequence is 1-based.
 
 ;;; ****m* change-map/cm-get-data
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; cm-get-data:
 ;;;
 ;;; 
@@ -218,7 +218,7 @@
 ;;; Returns a change-data instance.
 
 ;;; ****m* change-map/find-nearest
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; find-nearest:
 ;;;
 ;;; 

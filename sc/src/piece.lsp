@@ -347,7 +347,7 @@
 ;;; SAR Fri May  4 13:48:04 BST 2012: Added robodoc entry
 
 ;;; ****m* piece/insert-bar
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -396,7 +396,7 @@
 ;;; sits a sequence out (with nil). 
 
 ;;; ****m* piece/get-nth-sequenz
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the sequenz object from a specified section of a piece object by
 ;;; specifying a position index and a player.
 ;;;
@@ -626,7 +626,7 @@ BAR-HOLDER:
 ;;; be transposed.  
 
 ;;; ****m* piece/copy-bars
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -941,7 +941,7 @@ BAR-HOLDER:
 ;;; DATE 
 ;;; 29-Jan-2010
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Go through the sequences and rebar according to the first one that has the
 ;;; least number of bars (but following the player hierarchy).
 ;;; 
@@ -1029,7 +1029,7 @@ BAR-HOLDER:
 ;;; caution: we only delete the sequence for the given player so the rest will
 ;;; be out of sync
 ;;; ****m* piece/delete-sequenzes
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -1061,7 +1061,7 @@ BAR-HOLDER:
 ;;; SAR Fri May  4 13:37:12 BST 2012: Added robodoc entry
 
 ;;; ****m* piece/get-sequenz-from-bar-num
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the specified sequenz object located at a specified bar-number location
 ;;; of a specified player's part in a given piece object.
 ;;; 

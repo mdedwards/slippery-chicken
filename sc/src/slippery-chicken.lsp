@@ -435,7 +435,7 @@
 ;;; SAR Wed May  9 12:08:39 BST 2012: Conformed robodoc entry
 
 ;;; ****m* slippery-chicken/clone
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Copy (clone) the specified instance and all data associated with the
 ;;; slippery-chicken object.
@@ -513,7 +513,7 @@
 ;;; SAR Wed May  9 13:08:03 BST 2012: Conformed robodoc entry
 
 ;;; ****m* slippery-chicken/num-notes
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Returns the number of attacked notes in a given slippery-chicken object;
 ;;; i.e., not including ties or rests.
 ;;; 
@@ -548,7 +548,7 @@
 ;;; SAR Wed May  9 13:11:31 BST 2012: Conformed robodoc entry
 
 ;;; ****m* slippery-chicken/cmn-display
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Write the data stored in a given slippery-chicken object to disk as an EPS
 ;;; (Encapsulated Postscript) file using CMN. 
 ;;;
@@ -1009,7 +1009,7 @@
 
 ;;;  
 ;;; ****m* slippery-chicken/update-slots
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Called by initialize-instance and others. Updates timings of events and
 ;;; statistics. Not generally called by the user but can be useful if
@@ -1210,7 +1210,7 @@
 ;;; SAR Wed May  9 15:40:56 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/get-player
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the player object for the specified player.
 ;;; 
 ;;; ARGUMENTS
@@ -1273,7 +1273,7 @@ data: NIL
 ;;; SAR Wed May  9 17:47:23 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/num-bars
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the number of bars in the piece.
 ;;; 
 ;;; ARGUMENTS 
@@ -1313,7 +1313,7 @@ data: NIL
 ;;; SAR Wed May  9 17:50:29 BST 2012: Conformed robodoc entry
 
 ;;; ****m* slippery-chicken/get-bar-from-ref
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return a rthm-seq-bar object from the piece by specifying its section,
 ;;; sequence number, bar number, and the player. Sequenz-num and bar-num are
 ;;; 1-based.
@@ -1383,7 +1383,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 23,
 ;;; sequenz-num and bar-num are 1-based.
 
 ;;; ****m* slippery-chicken/get-bar-num-from-ref
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Get the bar number of a given rthm-seq-bar object by specifying the
 ;;; section, sequenz, and number of the bar within that sequenz.
@@ -1444,7 +1444,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 23,
 ;;; players in the ensemble. 
 
 ;;; ****m* slippery-chicken/get-bar
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the rthm-seq-bar object located at a specified bar number within a
 ;;; given player's part.
 ;;; 
@@ -1545,7 +1545,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 17,
 ;;; SAR Wed May  9 18:25:47 BST 2012: Conformed robodoc entry
 
 ;;; ****m* slippery-chicken/count-notes
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Returns the number of notes between start-bar and end-bar (both
 ;;; inclusive). 
 ;;; 
@@ -1671,7 +1671,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 17,
 ;;; DATE
 ;;; 09-Apr-2011
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Print to the Listener the numbers of all bars in a specified player's part
 ;;; of a given slippery-chicken object in which the specified pitch is found. 
 ;;; 
@@ -1804,7 +1804,7 @@ bar 45
 ;;; SAR Wed May  9 19:04:54 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/players
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return a list of all player IDs from the given slippery-chicken object. 
 ;;; 
 ;;; ARGUMENTS
@@ -1849,7 +1849,7 @@ bar 45
       (current-bar-num 1)
       (current-event-num 0))
 ;;; ****m* slippery-chicken/next-event
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Get the events from a specified player's part within a given
 ;;; slippery-chicken object one after the other (e.g. in a loop). This method
@@ -1969,7 +1969,7 @@ bar 45
 ;;; SAR Wed May  9 21:09:59 BST 2012: Conformed robodoc entry
 
 ;;; ****m* slippery-chicken/get-note 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get a numbered event from a specified bar of a given player's part within a
 ;;; slippery-chicken object.
 ;;; 
@@ -2033,7 +2033,7 @@ T
 ;;; SAR Wed May  9 21:21:47 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/get-rest
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Retrieve the event object that contains the specified rest in a
 ;;; slippery-chicken object by giving bar number, rest number and player.
 ;;; 
@@ -2098,7 +2098,7 @@ data: E
 ;;; SAR Wed May  9 21:28:50 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/get-event
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Retrieve a specified event object from a slippery-chicken object, giving
 ;;; bar number, event number, and player.
@@ -2347,7 +2347,7 @@ data: 32
 ;;; we have to 1+ elsewhere if necessary
 
 ;;; ****m* slippery-chicken/get-current-instrument-for-player
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the currently active instrument for a given player in a specified
 ;;; sequence of a slippery-chicken object, as defined in the
 ;;; instrument-change-map.
@@ -2435,7 +2435,7 @@ data: NIL
 ;;; DATE
 ;;; 09-Feb-2011
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the current instrument for a specified player at a specified bar number
 ;;; in a slippery-chicken object, as defined in the instrument-change-map.
 ;;; 
@@ -2503,7 +2503,7 @@ data: NIL
 ;;; DATE
 ;;; 24-Mar-2011
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the number of semitones difference between the sounding pitches and
 ;;; written pitches of a given player's part in a specified bar within a
 ;;; slippery-chicken object; e.g. bass clarinet = -14.
@@ -2543,7 +2543,7 @@ data: NIL
 ;;; SAR Wed May  9 22:06:16 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/num-seqs
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the number of sequences (which may contain multiple bars) in a
 ;;; specified section of a slippery-chicken object.
 ;;; 
@@ -2599,7 +2599,7 @@ data: NIL
 ;;; DATE
 ;;; 07-May-2012
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the reference IDs for all section and subsections of a given
 ;;; slippery-chicken object.
 ;;; 
@@ -2713,7 +2713,7 @@ data: NIL
 ;;; SAR Wed May  9 22:25:55 BST 2012: Conformed robodoc entry
 
 ;;; ****m* slippery-chicken/get-num-sections
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the number of sections in the given slippery-chicken object, as
 ;;; defined in e.g. in the set-map.
 ;;; 
@@ -2754,7 +2754,7 @@ data: NIL
 ;;; SAR Thu May 10 11:31:08 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/get-all-section-refs
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return all section IDs as a list of lists. Subsection IDs will be contained 
 ;;; in the same sublists as their enclosing sections.
 ;;; 
@@ -2810,7 +2810,7 @@ data: NIL
 ;;; SAR Thu May 10 11:40:44 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/statistics
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Print various information about the given slippery-chicken object to the
 ;;; Lisp listener or other specified stream.
@@ -2873,7 +2873,7 @@ data: NIL
 ;;; SAR Thu May 10 11:49:59 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/get-tempo
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Return the tempo object in effect for a specified bar of a given
 ;;; slippery-chicken object.
@@ -2922,7 +2922,7 @@ data: 72
 ;;; method of the same name.
 
 ;;; ****m* slippery-chicken/get-time-sig
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Get the time-sig object associate with a specified bar number in a given
 ;;; slippery-chicken object.
@@ -3062,7 +3062,7 @@ data: (5 8)
 
 
 ;;; ****m* slippery-chicken/shorten-large-fast-leaps
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Modify the pitches of each part in a slippery-chicken object to avoid large
 ;;; melodic leaps at fast speeds, based on the largest-fast-leap slot of the
@@ -3338,7 +3338,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;; DATE
 ;;; 11-Apr-2011
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the clef symbol attached to a specified event. 
 ;;;
 ;;; NB: The very first clef symbol in the very first measure of a given
@@ -3649,7 +3649,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;; SAR Thu May 10 12:55:50 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/midi-play
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Generate a MIDI file from the data of the specified slippery-chicken
 ;;; object. 
 ;;; 
@@ -3825,7 +3825,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;; MDE Tue Apr 17 12:16:43 2012 -- added the pitch-synchronous option.
 
 ;;; ****m* slippery-chicken/clm-play
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Using the sound files (samples) defined for the given reference (group ID)
 ;;; in the sndfile-palette slot of the slippery-chicken object, use CLM to
 ;;; generate a new sound file using the pitch and timing information of one or
@@ -4906,7 +4906,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;; SAR Thu May 10 17:34:51 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/find-rehearsal-letters
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return in list form the numbers of bars in the given slippery-chicken
 ;;; object that have rehearsal letters.
 ;;; 
@@ -4951,7 +4951,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;; DATE
 ;;; 09-Apr-2011
 ;;;
-;;; FUNCTION 
+;;; DESCRIPTION
 ;;; Print warnings to the Lisp listener if the method finds nested slurs,
 ;;; beg-sl marks without corresponding end-sl marks, or end-sl marks without
 ;;; corresponding beg-sl marks.
@@ -5022,7 +5022,7 @@ begin-slur without matching end-slur:
 
 ;;; SAR Mon May 14 17:24:07 BST 2012: Added robodoc entry
 
-;;; FUNCTION 
+;;; DESCRIPTION
 ;;; Print warnings to the Lisp listener if the method finds nested phrase
 ;;; markings, beg-ph marks without corresponding end-ph marks, or end-ph marks
 ;;; without corresponding beg-ph marks.
@@ -5115,7 +5115,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; SAR Thu May 17 14:43:33 EDT 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/check-tuplets 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Check the qualities of the tuplets brackets in a given slippery-chicken
 ;;; object to make sure they are all formatted properly (i.e. each starting
 ;;; tuplet bracket has a closing tuplet bracket etc.).  If an error is found,
@@ -5188,7 +5188,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; cf piece::handle-ties
 
 ;;; ****m* slippery-chicken/check-ties
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Check that all ties are started and ended properly. If the optional
 ;;; argument <same-spellings> is set to T, all tied pitches will be forced to
 ;;; have the same enharmonic spellings. 
@@ -5266,7 +5266,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; SAR Thu May 17 14:28:44 EDT 2012: Added robodoc entry.
 
 ;;; ****m* slippery-chicken/rebar
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Go through the vertically simultaneous sequences in all players of the
 ;;; given slippery-chicken object and rebar according to the first one that has
 ;;; the least number of bars (but following the player hierarchy).
@@ -5349,7 +5349,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; DATE
 ;;; 28-Jan-2011
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Make sure for every bar in the piece that all instruments have the same
 ;;; time signature.
@@ -5384,7 +5384,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; DATE
 ;;; 02-Apr-2012
 ;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Boolean test to check whether a specified player plays more than one
 ;;; instrument.
 ;;; 
@@ -5431,7 +5431,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; SAR Thu May 10 18:21:26 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/get-starting-ins
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the instrument object that is the first instrument object used by a
 ;;; specified player in a given slippery-chicken object.
 ;;; 
@@ -5506,7 +5506,7 @@ data: NIL
 ;;;  lilypond
 
 ;;; ****m* slippery-chicken/write-lp-data-for-all
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Generate all of the .ly files required by the LilyPond application for
 ;;; printable output from the musical data stored in the given slippery-chicken
@@ -6045,7 +6045,7 @@ data: NIL
 ;;; DATE
 ;;; 22-Jul-2011 (Pula)
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return a list of event objects for a given player, specifying the region by
 ;;; bar and event number.
 ;;; 
@@ -6178,7 +6178,7 @@ EVENT: start-time: 11.000, end-time: 11.500,
 ;;; SAR Thu May 10 18:34:38 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken/transpose-events 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Transpose the pitches of event objects in a specified region and a
 ;;; specified player's part.
 ;;; 
@@ -6283,7 +6283,7 @@ EVENT: start-time: 11.000, end-time: 11.500,
 ;;; 17-Apr-2012
 ;;;
 ;;; ****m* slippery-chicken/get-section
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the section object with the specified reference ID.
 ;;; 
 ;;; ARGUMENTS
@@ -6346,7 +6346,7 @@ BAR-HOLDER:
 ;;; MDE Wed Apr 25 12:18:25 2012 
 
 ;;; ****m* slippery-chicken/get-sequenz-from-section
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -6384,7 +6384,7 @@ BAR-HOLDER:
 ;;; error.
 
 ;;; ****f* slippery-chicken/make-slippery-chicken
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Make a slippery-chicken object using the specified data. This is the
 ;;; function that will be used most often to "put it all together", and many of
 ;;; its slots require full objects of other classes rather than just straight

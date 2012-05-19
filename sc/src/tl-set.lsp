@@ -110,7 +110,7 @@
 ;;; SAR Wed Feb  8 10:42:33 GMT 2012: Added robodoc entry
 
 ;;; ****m* tl-set/stack
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Extend the pitch content of a given sc-set object by adding new pitch
 ;;; objects which have the same interval structure as the original set. 
 ;;;
@@ -152,7 +152,7 @@
 ;;; SAR Mon Feb  6 21:01:48 GMT 2012: Added robodoc entry
 
 ;;; ****m* tl-set/transpose
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Transpose the pitches of a given tl-set by a specified number of
 ;;; semitones. 
 ;;;
@@ -246,7 +246,7 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 ;;; comment here as it has been taken into the doc below nearly verbatim. 
 
 ;;; ****m* tl-set/limit
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Remove pitch objects from a given tl-set whose pitch content is higher or
 ;;; lower than the pitches specified. Any pitch objects whose pitch content is
 ;;; equal to the limit pitches specified will be retained.
@@ -349,7 +349,7 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 ;;; SAR Fri Feb 10 11:44:14 GMT 2012: Added robodoc entry
 
 ;;; ****m* tl-set/limit-for-instrument
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Remove any pitch objects from the given tl-set object which are outside of
 ;;; the range of the specified instrument object. 
 ;;;
@@ -544,7 +544,7 @@ data: C6
 ;;; SAR Mon Feb  6 20:29:54 GMT 2012: Added robodoc entry
 
 ;;; ****f* tl-set/make-tl-set
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a tl-set object, which extends the sc-set class by incorporating
 ;;; transpostion and limiting to certain pitch ranges. 
 ;;; 

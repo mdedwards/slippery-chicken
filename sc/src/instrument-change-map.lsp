@@ -84,7 +84,7 @@
 ;;; SAR Fri May  4 15:02:50 BST 2012: Added robodoc entry
 
 ;;; ****m* instrument-change-map/get-first-for-player
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the first instrument object assigned to a given player in cases
 ;;; where a player has been assigned more than one instrument.
 ;;; 
@@ -131,7 +131,7 @@
 ;;; SAR Fri May  4 16:55:45 BST 2012: Added robodoc entry
 
 ;;; ****f* instrument-change-map/make-instrument-change-map
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create an instrument-change-map object. 
 ;;; 
 ;;; ARGUMENTS

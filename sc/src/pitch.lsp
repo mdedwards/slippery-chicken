@@ -225,7 +225,7 @@
 ;;; SAR Mon Jan  2 11:59:06 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/delete-marks
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Delete all marks stored in the MARKS slot of the given pitch object and
 ;;; reset the slot to NIL.
 ;;; 
@@ -272,7 +272,7 @@ NIL
 ;;; SAR Mon Jan  2 12:52:40 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/transpose
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Transpose the pitch information (frequency, note-name, midi-note etc.) of a
 ;;; given pitch object by a specified number of semitones. The number of
 ;;; semitones specified can be fractional; however, all fractional values will
@@ -397,7 +397,7 @@ D4
 ;;; SAR Mon Jan  2 13:44:14 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/pitch-round
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Rounds the value of a specified pitch object to the nearest chromatic
 ;;; semitone (non-microtonal MIDI) pitch.
 ;;; 
@@ -465,7 +465,7 @@ C4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* pitch/no-accidental
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; don't show any accidentals when writing a score; none in parentheses either
 ;;; 
 ;;; ARGUMENTS
@@ -492,7 +492,7 @@ C4
 ;;; SAR Mon Jan  2 14:03:51 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/transpose-to-octave
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Transpose the values of a given pitch object to a specified octave.
 ;;;
 ;;; NB: This method creates a new pitch object rather than replacing the values
@@ -566,7 +566,7 @@ data: C5
 ;;; SAR Mon Jan  2 14:14:56 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/pitch=
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determines if the note-name and chromatic semtione MIDI values of two
 ;;; specified pitch objects are the same (or very close to each other in the
 ;;; case of frequency and src slot comparison).  
@@ -655,7 +655,7 @@ NIL
 ;;; DATE 
 ;;; 14 Aug 2010
 ;;; 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Test whether the values of two pitch objects are of the same pitch class,
 ;;; i.e. both Cs, or F#s,irrespective of octave. 
 ;;; 
@@ -719,7 +719,7 @@ NIL
 ;;; SAR Mon Jan  2 18:23:01 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/note=
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Tests to see the note-name symbols (values in the DATA slots) of two given
 ;;; pitch objects are equal. 
 ;;;
@@ -769,7 +769,7 @@ NIL
 ;;; SAR Mon Jan  2 18:33:30 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/pitch<
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Test to see if the frequency value of one specified pitch object is less
 ;;; than that of a second.
 ;;;
@@ -841,7 +841,7 @@ NIL
 ;;; SAR Mon Jan  2 20:21:17 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/pitch>
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Test to see if the frequency value of one specified pitch object is greater
 ;;; than that of a second.
 ;;;
@@ -914,7 +914,7 @@ NIL
 ;;; SAR Mon Jan  2 20:30:57 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/pitch<=
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Test to see if the frequency value of one specified pitch object is less
 ;;; than or equal to than that of a second.
 ;;;
@@ -986,7 +986,7 @@ NIL
 ;;; SAR Mon Jan  2 20:41:48 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/pitch>=
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Test to see if the frequency value of one specified pitch object is greater
 ;;; than or equal to than that of a second.
 ;;;
@@ -1059,7 +1059,7 @@ NIL
 ;;; SAR Mon Jan  2 20:48:13 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/pitch-in-range
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determine whether the frequency of a given pitch object falls between the
 ;;; frequencies of two other given pitch objects.
 ;;; 
@@ -1124,7 +1124,7 @@ NIL
 ;;; SAR Tue Jan  3 08:34:55 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/pitch-min
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determine which of two specified pitch objects has the lower frequency
 ;;; value and return that pitch object.
 ;;;
@@ -1183,7 +1183,7 @@ data: C4
 ;;; SAR Tue Jan  3 09:05:50 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/pitch-max
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determine which of two specified pitch objects has the greater frequency 
 ;;; value and return that pitch object.
 ;;;
@@ -1243,7 +1243,7 @@ data: D4
 ;;; SAR Tue Jan  3 09:20:52 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/midi-
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determine the difference in number of semitones between the values of the
 ;;; MIDI values of two given pitch objects. 
 ;;;
@@ -1286,7 +1286,7 @@ data: D4
 ;;; SAR Tue Jan  3 09:32:33 EST 2012: Added robodoc info
  
 ;;; ****m* pitch/degree-
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determine the difference between the quarter-tone degree of one pitch
 ;;; object and that of a second. 
 ;;;
@@ -1332,7 +1332,7 @@ data: D4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* pitch/pitch-
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the distance in semitones between the values of two pitch objects. This
 ;;; method also takes fractional values into consideration. The
 ;;; 
@@ -1379,7 +1379,7 @@ data: D4
 ;;; SAR Fri Jan  6 14:37:59 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/pitch-inc
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Increment the value of a given pitch object by one degree (default) or by a
 ;;; specified number of degrees (optional argument).
 ;;;
@@ -1555,7 +1555,7 @@ data: CQS4
 ;;; SAR Tue Jan  3 10:22:16 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/set-midi-channel
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Set the MIDI-CHANNEL slot of the given pitch object. 
 ;;;
 ;;; The method takes two mandatory arguments in addition to the given pitch
@@ -1670,7 +1670,7 @@ data: CQS4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* pitch/add-mark
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add a specified mark to the MARKS slot of the given pitch object.
 ;;;
 ;;; NB: The add-mark method does not check first to see whether the mark being
@@ -1928,7 +1928,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;; SAR Tue Jan  3 16:21:34 EST 2012: Added robodoc info
 
 ;;; ****m* pitch/enharmonic
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the enharmonic equivalent of the given pitch object. Two chromatically
 ;;; consecutive "white-note" pitches (e.g. B-sharp/C-natural) are considered
 ;;; enharmonically equivalent. If there is no enharmonic equivalent, the
@@ -1980,7 +1980,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;; SAR Sat Dec 31 12:19:46 EST 2011: Added robodoc info
 
 ;;; ****f* pitch/make-pitch
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a pitch object, specifying a note as either a symbol or a
 ;;; number. When the note is specified as a symbol, it is treated as a
 ;;; note-name; when it is specified as a number, it is treated as a frequency
@@ -2072,7 +2072,7 @@ C4
 ;;; SAR Tue Jan  3 10:51:55 EST 2012: Added robodoc info
 
 ;;; ****f* pitch/transpose-pitch-list
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Transpose the values of a list of pitch objects by a specified number of
 ;;; semitones. 
 ;;; 
@@ -2152,7 +2152,7 @@ PITCH: frequency: 554.365, midi-note: 73, midi-channel: 0
 ;;; SAR Tue Jan  3 11:19:09 EST 2012: Added to robodoc info
 
 ;;; ****f* pitch/transpose-pitch-list-to-octave
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Transpose the pitch values of a list of pitch objects into a specififed
 ;;; octave. The individual initial pitch objects can have initial pitch values
 ;;; of different octaves.  
@@ -2255,7 +2255,7 @@ data: F4
 ;;; SAR Tue Jan  3 11:54:57 EST 2012: Added robodoc info
 
 ;;; ****f* pitch/pitch-list-to-symbols
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return as a list the note-name values from a given list of pitch objects.
 ;;; 
 ;;; ARGUMENTS
@@ -2292,7 +2292,7 @@ data: F4
 ;;; SAR Tue Jan  3 12:26:26 EST 2012: Added robodoc info
 
 ;;; ****f* pitch/sort-pitch-list
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Sort a list of pitch objects from low to high based on their frequency
 ;;; value.
 ;;; 
@@ -2370,7 +2370,7 @@ data: E4
 ;;; SAR Tue Jan  3 12:40:02 EST 2012: Edited MDE robodoc info
 
 ;;; ****f* pitch/remove-octaves
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Removes all but one of any pitch items in a given list that have the same
 ;;; pitch-class but different octaves, keeping the lowest instance only.
 ;;;
@@ -2481,7 +2481,7 @@ data: G3
 ;;; SAR Tue Jan  3 13:58:09 EST 2012: Added robodoc info
 
 ;;; ****f* pitch/invert-pitch-list
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Using the lowest note in the list as the reference point, invert the rest
 ;;; of a given list of pitch items according to their distance from it. 
 ;;;
@@ -2566,7 +2566,7 @@ data: EF3
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Apr 10 08:07:57 2012 
 ;;; ****f* pitch/print-simple-pitch-list
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Print the data symbols of a list of pitch objects.
 ;;; 
 ;;; DATE
@@ -2760,7 +2760,7 @@ data: EF3
 ;;; SAR Tue Jan  3 14:37:17 EST 2012: Added robodoc info
 
 ;;; ****f* pitch/pitch-member
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Test whether a specified pitch is a member of a given list of pitches.
 ;;;
 ;;; This function can take pitch objects, note-name symbols or numerical
@@ -2834,7 +2834,7 @@ data: EF3
 ;;; SAR Tue Jan  3 15:30:17 EST 2012: Added robodoc info
 
 ;;; ****f* pitch/remove-pitches
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Remove a list of specified pitch items from a given list of pitch
 ;;; items. Even if only one pitch item is to be removed it should be stated as
 ;;; a list. 
@@ -2938,7 +2938,7 @@ data: C4
 ;;; SAR Tue Jan  3 16:57:15 EST 2012: Added robodoc info
 
 ;;; ****f* pitch/pitch-intersection
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return pitch objects whose values consist of pitches common to two given
 ;;; lists of pitch items. The given lists of pitch items can consist of pitch
 ;;; objects or note-name symbols, or one list of one type and the second of the
@@ -2989,7 +2989,7 @@ data: F4
 ;;; pitch can be a pitch object, frequency, or note symbol
 
 ;;; ****f* pitch/in-octave
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Test to see if a specified pitch item falls within a specified octave. The
 ;;; pitch item can be a pitch object, a numerical frequency value, or a
 ;;; note-name symbol. 

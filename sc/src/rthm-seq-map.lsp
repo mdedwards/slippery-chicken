@@ -136,7 +136,7 @@
 ;;; DATE
 ;;; 29-Dec-2010
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the list of rthm-seq-palette references for the given player and
 ;;; section.
 ;;; 
@@ -185,7 +185,7 @@
 ;;; DATE
 ;;; 30-Dec-2010
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Change the reference IDs of the specified rthm-seq objects in the given
 ;;; rthm-seq-map object.
 ;;; 
@@ -242,7 +242,7 @@ data: (RS2 RS3 RS2)
 ;;; ****m* rthm-seq-map/add-repeats
 ;;; DATE 30-Dec-2010
 ;;; 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Generate repeating sequences at given cycle points using recurring-event
 ;;; data. This process modifies the number of beats.
 ;;; 
@@ -314,7 +314,7 @@ data: (RS2 RS3 RS2)
 ;;; simply repeat rthm-seqs without a repeat-every structure.
 ;;; start-seq is 1-based
 ;;; ****m* rthm-seq-map/add-repeats-simple
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -359,7 +359,7 @@ data: (RS2 RS3 RS2)
 ;;; 3/4 bar.
 
 ;;; ****m* rthm-seq-map/get-time-sig-ral
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -422,7 +422,7 @@ data: (RS2 RS3 RS2)
 ;;; SAR Thu Apr 26 17:20:57 BST 2012: Added robodoc entry
 
 ;;; ****f* rthm-seq-map/make-rthm-seq-map
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Make a rthm-seq-map object.
 ;;; 
 ;;; ARGUMENTS
@@ -707,7 +707,7 @@ data: (
 ;;; In an rsm, each instrument receives references into the rhythm-seq-palette.
 
 ;;; ****f* rthm-seq-map/check-num-sequences
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Check to ensure that each player in each section of the given rthm-seq-map
 ;;; object has the same number of references as every other instrument. If not,
 ;;; drop into the debugger with an error.
@@ -798,7 +798,7 @@ Each instrument must have the same number of sequences for any given section:
 ;;; SAR Fri Apr 27 16:10:06 BST 2012: Conformed robodoc entry
 
 ;;; ****f* rthm-seq-map/rsm-count-notes
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Returns the number of notes in the given rthm-seq-map object for the
 ;;; specified player and rthm-seq-palette.
 ;;; 

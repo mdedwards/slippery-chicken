@@ -121,7 +121,7 @@
 ;;; SAR Thu Dec 29 19:18:02 EST 2011: Added robodoc info
 
 ;;; ****m* tempo/tempo-equal
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Test to determine whether the values of two tempo objects are equal.
 ;;; 
 ;;; ARGUMENTS
@@ -186,7 +186,7 @@
 ;;; SAR Thu Dec 29 19:21:44 EST 2011: Added robodoc info
 
 ;;; ****f* tempo/make-tempo
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Make a tempo object.
 ;;; 
 ;;; ARGUMENTS

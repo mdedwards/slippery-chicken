@@ -61,7 +61,7 @@
 ;;; lp) 
 
 ;;; ****f* lilypond/lp-get-mark
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; lp-get-mark:
 ;;; Translation function for Lilypond marks (dynamics, accents, etc.).  Not
 ;;; generally called by the user but the list of symbols that can be used will

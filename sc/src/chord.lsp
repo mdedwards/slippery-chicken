@@ -70,7 +70,7 @@
 ;;; SAR Mon Apr 16 16:52:53 BST 2012
 
 ;;; ****m* chord/delete-marks
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Delete all marks from the MARKS slot of the given chord object.
 ;;; 
 ;;; ARGUMENTS
@@ -160,7 +160,7 @@ NIL
 ;;; SAR Wed Feb 22 17:39:04 GMT 2012: Added robodoc entry
 
 ;;; ****m* chord/set-midi-channel
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Set the MIDI channel of the pitch objects in a given chord object to the
 ;;; specified values. 
 ;;;
@@ -213,7 +213,7 @@ NIL
 ;;; SAR Wed Feb 22 17:52:14 GMT 2012: Added robodoc entry
 
 ;;; ****m* chord/get-midi-channel
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the MIDI channel of the first pitch object contained in a given chord
 ;;; object. 
 ;;; 
@@ -248,7 +248,7 @@ NIL
 #+cm-2
 ;;; SAR Mon Apr 16 15:03:15 BST 2012: Added robodoc entry
 ;;; ****m* chord/output-midi-note
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Generate the MIDI-related data for each pitch in a given chord object. 
 ;;; 
 ;;; ARGUMENTS
@@ -292,7 +292,7 @@ NIL
 ;;; SAR Wed Feb 22 17:56:55 GMT 2012: Added robodoc info
 
 ;;; ****m* chord/get-pitch
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the pitch object located at the specified index within the given chord
 ;;; object. The <ref> argument is 1-based.
 ;;; 
@@ -339,7 +339,7 @@ data: GQS4
 ;;; SAR Mon Apr 16 16:42:48 BST 2012: Added robodoc entry
 
 ;;; ****m* chord/add-mark
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add the specified mark to the MARKS slot of the given chord object.
 ;;; 
 ;;; ARGUMENTS 
@@ -375,7 +375,7 @@ data: GQS4
 ;;; SAR Wed Feb 22 18:05:57 GMT 2012: Added robodoc entry
 
 ;;; ****m* chord/get-pitch-symbols
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the data of the pitch objects from a given chord object as a list of
 ;;; note-name symbols.
 ;;; 
@@ -410,7 +410,7 @@ data: GQS4
 ;;; taken over into the entry nearly verbatim.
 
 ;;; ****m* chord/no-accidental
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Set the SHOW-ACCIDENTAL slot of all pitch objects within a given chord
 ;;; object to NIL. This results in no accidentals for the given chord being printed
 ;;; when written to a score, and also excludes the writing of any accidentals
@@ -449,7 +449,7 @@ data: GQS4
 ;;; SAR Wed Feb 22 18:10:21 GMT 2012: Added robodoc entry
 
 ;;; ****m* chord/chord-equal
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Test to see if two chords are equal.
 ;;;
 ;;; NB: Two unsorted chord objects that contain the exact same pitch objects in
@@ -517,7 +517,7 @@ data: GQS4
 ;;; SAR Wed Feb 22 18:24:38 GMT 2012: Added robodoc entry
 
 ;;; ****m* chord/lowest
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the pitch object from the given chord object that has the lowest
 ;;; pitch data. The method can handle chord objects whose pitches have not been
 ;;; auto-sorted from low to high.
@@ -573,7 +573,7 @@ data: C4
 ;;; SAR Wed Feb 22 18:30:21 GMT 2012: Added robodoc entry
 
 ;;; ****m* chord/highest
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the pitch object from the given chord object that has the highest
 ;;; pitch data. 
 ;;;
@@ -644,7 +644,7 @@ data: F5
 ;;; SAR Mon Apr 16 14:39:14 BST 2012: Added robodoc entry
 
 ;;; ****m* chord/transpose
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Transpose the pitches of a given chord object by a specified number of
 ;;; semitones. The specified number can be positive or negative, and may
 ;;; contain a decimal segment for microtonal transposition. If passed a decimal
@@ -735,7 +735,7 @@ data: (
 ;;; SAR Wed Feb 22 18:43:23 GMT 2012: Added robodoc entry
 
 ;;; ****m* chord/sort-pitches
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Sort the pitch objects contained within a given chord object and return
 ;;; them as a list of pitch objects. 
 ;;;
@@ -804,7 +804,7 @@ data: (
 ;;; SAR Thu Feb 23 19:16:17 GMT 2012: Added robodoc entry
 
 ;;; ****m* chord/chord-member
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Test whether a specified pitch object is a member of a given chord object. 
 ;;; 
 ;;; ARGUMENTS 
@@ -899,7 +899,7 @@ data: (
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Mon Apr 16 14:08:02 BST 2012: Added robodoc entry
 ;;; ****m* chord/common-notes
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return the integer number of pitches common to two chord objects.
 ;;; 
 ;;; ARGUMENTS 
@@ -1025,7 +1025,7 @@ data: (
 ;;; good test: (respell-chord (make-chord '(a3 ds4 f4 fs5 c6))) so we get gf5
 
 ;;; ****m* chord/respell-chord
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Respell the pitches of a given chord object to 
 ;;; 
@@ -1198,7 +1198,7 @@ data: (
 ;;; DATE 
 ;;; 16-Aug-2010
 ;;; 
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Tests whether a given chord object contains at least one pitch
 ;;; object. 
 ;;;
@@ -1246,7 +1246,7 @@ data: (
 ;;; consideration
 
 ;;; ****m* chord/pitch-
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Determine the difference between the lowest pitch of two chords. This
 ;;; method can be used, for example, to compare the written and sounding
 ;;; versions of a chord to determine transposition. 
@@ -1316,7 +1316,7 @@ data: (
 ;;; SAR Wed Feb  8 13:24:15 GMT 2012: Added robodoc entry
 
 ;;; ****f* chord/make-chord
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create a chord object from a list of note-name symbols.
 ;;; 
 ;;; ARGUMENTS 

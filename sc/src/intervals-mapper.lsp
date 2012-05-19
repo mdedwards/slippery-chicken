@@ -85,7 +85,7 @@
 ;;; SAR Thu May  3 18:15:56 BST 2012: Added robodoc entry
 
 ;;; ****m* intervals-mapper/get-pitch-symbols
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the pitches contained in a given intervals-mapper object returned as a
 ;;; list of note-name symbols.
 ;;; 
@@ -139,7 +139,7 @@
 ;;; SAR Thu May  3 18:21:13 BST 2012: Added robodoc entry
 
 ;;; ****m* intervals-mapper/get-steps
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Extract the interval structure of the list of note-name pitch symbols
 ;;; passed as the data to the instance of the intervals-mapper object upon
 ;;; initialization. The interval structure is returned as a list of semitone
@@ -175,7 +175,7 @@
 ;;; SAR Thu May  3 18:27:43 BST 2012: Conforming robodoc entry
 
 ;;; ****m* intervals-mapper/get-scale
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Create a scale (sequence of pitches) beginning with the specified starting
 ;;; note and extending up to MIDI note 127 by cycling through the interval
@@ -224,7 +224,7 @@
 ;;; SAR Thu May  3 18:48:38 BST 2012: Conformed robodoc entry
 
 ;;; ****m* intervals-mapper/intervals-mapper-note
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the pitch object that constitutes the specified scale degree of the
 ;;; specified octave within an intervals-mapper object; or, if keyword argument
 ;;; <nth> is set to T, get the position of this pitch object within the full
@@ -328,7 +328,7 @@ data: E4
 ;;; DATE
 ;;; 14-Aug-2010
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 
 ;;; Return the scale degree number of a specified pitch class in relation to a
 ;;; specified octave within the given intervals-mapper object.
@@ -420,7 +420,7 @@ data: E4
 ;;; SAR Thu May  3 17:24:55 BST 2012: Added robodoc entry
 
 ;;; ****f* intervals-mapper/make-intervals-mapper
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Returns an intervals-mapper object starting with the specified pitch
 ;;; ('tonic') and using the interval structure of the specified list of
 ;;; pitches, creating a complete pitch list from the interval structure of list

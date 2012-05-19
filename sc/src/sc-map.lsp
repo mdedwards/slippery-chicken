@@ -151,7 +151,7 @@
 ;;; SAR Sat Mar  3 18:37:04 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-map/get-all-data-from-palette
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Given an sc-map object that has been bound to a palette object of any type,
 ;;; return all of the palette data contained in the given sc-map object as it
 ;;; has been allocated to the map, in the order in which it appears in the map.
@@ -245,7 +245,7 @@ WARNING:
 ;;; SAR Wed Feb  8 16:08:21 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-map/get-data-from-palette
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Given an sc-map object that has been bound to a palette object of any type,
 ;;; return the palette data contained allocated to the location within the
 ;;; given sc-map object as specified by the <IDs> argument.
@@ -352,7 +352,7 @@ data: (SET1 SET3 SET2)
 ;;; inclusive. 
 
 ;;; ****m* sc-map/double
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; 
 ;;; 
 ;;; ARGUMENTS
@@ -389,7 +389,7 @@ data: (SET1 SET3 SET2)
 ;;; the palette.
 
 ;;; ****m* sc-map/get-nth-from-palette
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Given an sc-map object that is bound to a palette object of any type,
 ;;; return the data of the palette object located at the nth position of the
 ;;; list found at the specified ID or path of nested IDs.
@@ -499,7 +499,7 @@ data: (C2 B2 A3 G4 F5 E6)
 ;;; SAR Wed Feb 22 17:07:42 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-map/get-nth-from-map
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the element located at the nth position within a given sc-map
 ;;; object. Both the map-ref (the path of IDs into the list to be searched) and
 ;;; the nth must be specified.
@@ -571,7 +571,7 @@ data: (C2 B2 A3 G4 F5 E6)
 ;;; DATE
 ;;; 05 Feb 2011 
 ;;;
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Replace the element at the specified location within the specified list of
 ;;; a given sc-map object with NIL.
 ;;; 
@@ -664,7 +664,7 @@ data: (1 NIL 3 4 5)
 ;;; SAR Wed Feb  8 14:35:30 GMT 2012: Added robodoc entry
 
 ;;; ****f* sc-map/make-sc-map
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create an sc-map object, which will be used for mapping rhythmic sequences,
 ;;; chords etc. to specific parts of a piece. 
 ;;; 

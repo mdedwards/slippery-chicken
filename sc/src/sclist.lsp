@@ -118,7 +118,7 @@
 ;;; Safe version of subseq that checks start and end points.
 
 ;;; ****m* sclist/sc-subseq
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Return a subsequence from a given sclist based on starting and finishing
 ;;; indices. 
 ;;;
@@ -189,7 +189,7 @@ NIL
 ;;; SAR Thu Jan 12 21:11:34 GMT 2012: Added robodoc info
 
 ;;; ****m* sclist/sc-nthcdr
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the tail (rest) of a given sclist object beginning with and including
 ;;; the specified zero-based index number.
 ;;;
@@ -232,7 +232,7 @@ NIL
 ;;; SAR Thu Jan 12 21:34:40 GMT 2012: Added robodoc info
 
 ;;; ****m* sclist/sclist-econs
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Add a single item to the end of a given sclist object.
 ;;;
 ;;; NB: This method destructively modifies the list.
@@ -269,7 +269,7 @@ NIL
 ;;; SAR Thu Jan 12 22:27:11 GMT 2012: Added robodoc info
 
 ;;; ****m* sclist/get-nth
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Get the nth element (zero-based) of data in a given sclist object.
 ;;; 
 ;;; ARGUMENTS
@@ -313,7 +313,7 @@ WARNING: sclist::sclist-check-bounds: Illegal list reference: 31
 ;;; SAR Thu Jan 12 22:35:56 GMT 2012: Added robodoc info
 
 ;;; ****m* sclist/set-nth
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Set the nth element (zero-based) of a given sclist object.
 ;;;
 ;;; NB: This doesn't auto-grow the list.  
@@ -378,7 +378,7 @@ WARNING: sclist::sclist-check-bounds: Illegal list reference: 31
 ;;; SAR Thu Jan 12 22:49:24 GMT 2012: Added robodoc info
 
 ;;; ****m* sclist/sclist-remove-elements
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Remove a specified number of consecutive items from a given sclist object. 
 ;;;
 ;;; NB: This is a destructive method and replaces the data of the given sclist
@@ -433,7 +433,7 @@ remove-elements: arguments 2 and 3 must be integers < the length of argument 1:
 ;;; SAR Thu Jan 12 23:01:18 GMT 2012: Added robodoc info
 
 ;;; ****m* sclist/combine
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Combine the contents of two given sclist objects into one list.
 ;;; 
 ;;; ARGUMENTS
@@ -503,7 +503,7 @@ data: (0 1 2 3 4 5 6 7 8 9)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****f* sclist/make-sclist
-;;; FUNCTION
+;;; DESCRIPTION
 ;;; Create an sclist object with the specified list.
 ;;; 
 ;;; ARGUMENTS

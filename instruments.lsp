@@ -638,6 +638,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Thu May  3 15:31:19 BST 2012: Added robodoc entry
+;;; SAR Sat May 19 15:14:45 EDT 2012: Revisited robodoc entry
 
 ;;; MDE original comment:
 ;;; NB this assumes the pitch-list contains notes that are already playable as

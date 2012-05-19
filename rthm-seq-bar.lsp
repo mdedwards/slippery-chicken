@@ -382,9 +382,10 @@ MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not
 ;;;   written-pitches will be created. Default = NIL.
 ;;; - :midi-channel. An integer that will be used to set the MIDI-CHANNEL slot
 ;;;   of any event objects passed. Default = 0.
-
-;;; - :microtones-midi-channel. Default = 0.
-
+;;; - :microtones-midi-channel. An integer that is the MIDI channel that will
+;;;   be assigned to event objects for microtonal MIDI pitches. NB: This value
+;;;   is only set when attached to event objects within a slippery-chicken
+;;;   object. Default = 0.
 ;;; - :new-id. An optional ID for new rhythm or event objectss added. 
 ;;;   Default = "rhythms-inserted-by-fill-with-rhythms". 
 ;;; - :warn. T or NIL to indicate whether a warning should be printed if there
@@ -393,7 +394,6 @@ MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not
 ;;;   object that the method attempts to add to the bar is too long to fit
 ;;;   evenly into the bar. T = drop into the debugger with an error if this is
 ;;;   the case. Default = T.
-
 ;;; 
 ;;; RETURN VALUE
 ;;; The number of rhythm or event objects used.
@@ -636,16 +636,13 @@ data: NIL
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments
-
 ;;; - :beat. The beat basis into which rests are to be consolidated. If no
 ;;;   value is given for this option, the method will take the beat from the
 ;;;   time signature. 
-
 ;;; - :min. A seldom-used argument that will only make a difference when there
 ;;;   are a number of rests of the same duration followed by a note.  This is
 ;;;   then the minimum duration that such rests may have if they are to be
 ;;;   consolidated. Default = NIL.
-
 ;;; - :warn. T or NIL to indicate whether the method should print a warning to
 ;;;   the Lisp listener if it is mathematically unable to consolidate the
 ;;;   rests. T = print warning. Default = NIL.
@@ -885,25 +882,60 @@ data: ((2 4) Q E S S)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 
+
+;;; SAR Sat May 19 14:17:40 EDT 2012: Added robodoc entry
+
 ;;; When a bunch of short notes are tied to each other, make one (or a few)
 ;;; notes of them.  If check-dur, make sure we get an exact beat's worth of
 ;;; rhythms.
 
 ;;; ****m* rthm-seq-bar/consolidate-notes
 ;;; DESCRIPTION
-;;; 
+
+;;; Combine consecutive tied notes into one (or a few) notes of a longer
+;;; rhythmic duration. 
+;;;
+;;; NB: This method is the core method that is called for rthm-seq objects or
+;;;     slippery-chicken objects, at which point it takes ties (and perhaps
+;;;     another couple of things) into consideration, after the tie slots
+;;;     etc. have been updated. As such, though it will
+;;;     work to a certain degree when called directly on a rthm-seq-bar object,
+;;;     it should primarily be used when getting a rthm-seq-bar from within a 
+;;;     rthm-seq object or slippery-chicken object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A rthm-seq-bar object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether the method sure make sure that an exact
+;;;   beat's worth of rhythms is handled. T = check durations. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A rthm-seq-bar object.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Create a slippery-chicken object, print-simple a bar from that object,
+;;; apply the consolidate-notes method to that bar, and print-simple that bar
+;;; again to see the changes.
+
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))))
+	:set-palette '((1 ((gs4 af4 bf4))))
+	:set-map '((1 (1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) e +e +e +e e +s +s +s e.))
+				:pitch-seq-palette ((1 2 3)))))
+	:rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (print-simple (get-bar mini 2 'vn))
+  (consolidate-notes (get-bar mini 2 'vn))
+  (print-simple (get-bar mini 2 'vn)))
+
+=>
+(4 4): GS4 E+, +GS4 E+, +GS4 E+, +GS4 E, AF4 E+, +AF4 S+, +AF4 S+, +AF4 S, BF4 E., 
+(4 4): GS4 H, AF4 Q+, +AF4 S, BF4 E.,
+
 
 |#
 ;;; SYNOPSIS

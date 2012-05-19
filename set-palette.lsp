@@ -940,7 +940,7 @@ COMPLETE-SET: complete: NIL
 ;;;   ring-mod-bass fails to find suitable bass notes for the generated sets. 
 ;;;   T = warn. Default = T.
 ;;; - :do-bass. T or NIL to indicate whether to add notes created by the
-;;;   ring-mod-bass function to the resulting set-palette obect. T = create and
+;;;   ring-mod-bass function to the resulting set-palette object. T = create and
 ;;;   add bass notes. Default = T.
 ;;; - :remove-octaves. T or NIL to indicate whether to remove the upper
 ;;;   instances of any octave-equivalent pitches from the resulting set-palette
@@ -973,6 +973,46 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: SPFRM-TEST, tag: NIL, 
 data: (
 [...]
+
+;;; Use with the :partials argument
+(let ((spfrm2 (set-palette-from-ring-mod 'a4 'spfrm-test
+                                           :partials '(2 4 6 8))))
+  (loop for cs in (data spfrm2) collect (pitch-symbols cs)))
+
+=> ((BQS0 CS5 E5 GQF5 B5 CS6 DQS6 FQS6 GQF6 AF6 BF6 B6 C7)
+    (BQF0 B0 A2 A3 E4 A4 CS5 E5 GQF5)
+    (BQS0 FQS6 GQF6 AF6 BF6 B6 C7 GQS7 AF7 AQF7 AQS7 BF7 BQF7)
+    (B0 A2 A3 E4 A4 CS5 E5 GQF5 A5 B5) (BQS0 DQF7 DQS7 EQF7 EQS7 FQS7 FS7)
+    (BQF0 A2 A3 E4 CS5 E5 GQF5 B5 CS6 DQS6)
+    (AQS0 BQF0 B0 GQS7 AF7 AQF7 AQS7 BF7 BQF7)
+    (B0 A4 E5 CS6 E6 GQF6 B6 CS7 DQS7 FQS7 GQF7) (B0 A5 A6 E7 A7)
+    (B0 A3 CS5 CS6 DQS6 FQS6 GQF6 B6 C7 DQF7 DQS7 FS7 AF7) (BQS0 A5 A6 E7 A7)
+    (B0 A4 A5 E6 A6 CS7 E7 GQF7 A7) (BQS0 A5 A6 E7)
+    (BQS0 CS6 E6 GQF6 B6 CS7 DQS7 FQS7 GQF7 AF7 BF7 B7 C8)
+    (BQF0 B0 BQS0 A2 A3 E4 A4 CS5 GQF5 A5 B5 CS6 E6)
+    (BQS0 B6 CS7 DQS7 FQS7 GQF7 AF7) (B0 A3 A4 E5 A5 CS6 E6 GQF6)
+    (B0 BQS0 FQS7 GQF7 AF7 BF7 B7 C8) (BQS0 CS6 FQS6 C7 DQS7 FQS7 GQS7 BQF7 C8)
+    (B0 A5 A6 E7 A7) (BQS0 A5 E6 CS7 E7 GQF7 B7) (BQS0 A6 A7)
+    (BQS0 AF6 B6 DQF7 FS7 AF7 AQS7)
+    (BQF0 B0 BQS0 A2 A3 CS5 GQF5 CS6 DQS6 FQS6 GQF6 BF6)
+    (BQS0 EQF7 FQS7 GQS7 BQF7 C8) (BQS0 A6 CS7 GQF7 A7) (B0 A5 A6)
+    (BQS0 CS7 E7 GQF7 B7))
+
+;;; Use with the :do-bass and :remove-octaves arguments
+(let ((spfrm3 (set-palette-from-ring-mod 'a4 'spfrm-test
+					 :do-bass nil
+					 :remove-octaves t)))
+  (loop for cs in (data spfrm3) collect (pitch-symbols cs)))
+=> ((BQS1 GQF3 EF4 A4 DQF5) (DQF6 DQS6 EF6 F6 FQS6 GQF6 EQF7 EQS7)
+    (BQS2 GQF3 A4 DQF5 F5 GQS5) (BQS6 C7 CQS7 DQF7 D7 DQS7)
+    (BQS3 EF4 GQF4 DQF5 F5 GQS5 BF5 CQS6) (FQS7 FS7 GQF7 G7 GQS7)
+    (GQF5 BF5 DQF6 AQF6 C7 DQS7 F7 GQS7) (BQS1 A4 F5 GQS5 DQS6)
+    (GQS6 AQS6 BQS6 DQS7 EQF7 F7 BQF7) (BQS1 EF4 F5 GQS5 CQS6 FQS6)
+    (EF7 EQS7 FQS7 GQS7 AQF7 AQS7) (F5 BQS5 GQS6 B6 D7 FS7 AF7 AQS7) (A4 GQF7)
+    (A4 CS7 GQF7) (A4 CS7) (EF6 G6 BF6 F7 AQF7 BQS7)
+    (BQS1 GQF3 DQF5 CQS6 DQS6 F6 AQS6) (CQS7 DQS7 F7 AQF7 BF7 BQS7)
+    (E6 A6 GQF7 B7) (A4 E6 B7) (A6 CS7 E7 B7))
+
 
 |#
 ;;; SYNOPSIS

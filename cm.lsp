@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 21:06:48 Mon May 14 2012 BST
+;;; $$ Last modified: 20:59:39 Sat May 19 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1207,7 +1207,10 @@ Event #i(midi time 3.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
   (when (integerp old-channel)
     (decf old-channel))
   (let ((midi-stream (import-events file))
-        (degree (if (numberp note) note (keynum note)))
+        ;; MDE Sat May 19 20:58:00 2012 -- (keynum) would appear to be degree
+        ;; in whatever scale we're in, rather than the MIDI note number 
+        ;; (degree (if (numberp note) note (keynum note)))
+        (degree (if (numberp note) note (sc::note-to-midi note)))
         (new-file (format nil "~a-one-note.mid"
                           (sc::path-minus-extension file)))
         (new '()))

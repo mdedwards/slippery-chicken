@@ -220,6 +220,7 @@ BAR-HOLDER:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; bar-num is 1-based!
+
 ;;; N.B. although optional, the player argument is required.  It is optional so
 ;;; that we can have a sequenz method with the same name which only requires
 ;;; the bar-num argument. 
@@ -331,23 +332,50 @@ BAR-HOLDER:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Thu May  3 20:14:43 BST 2012: Added robodoc entry
+;;; SAR Sat May 19 15:31:53 EDT 2012: Added robodoc entry
 
 ;;; ****m* section/get-all-players
 ;;; DESCRIPTION
-;;; 
+;;; Return a list of the IDs from all players in a section object. NB: When
+;;; retrieving from a section within a slippery-chicken object, all players in
+;;; the ensemble will be returned, as the slippery-chicken object will generate
+;;; rest bars for players even when they're not active in a given section.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A section object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - A list of player IDs (symbols).
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (hn (french-horn :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (hn (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(2 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(3 ((hn (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (print (get-all-players (get-section mini 1)))
+  (print (get-all-players (get-section mini 2)))
+  (print (get-all-players (get-section mini 3))))
+
+=>
+(CL HN VC) 
+(CL HN VC) 
+(CL HN VC) 
 
 |#
 ;;; SYNOPSIS

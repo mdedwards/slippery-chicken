@@ -5116,10 +5116,11 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 
 ;;; ****m* slippery-chicken/check-tuplets 
 ;;; DESCRIPTION
+
 ;;; Check the qualities of the tuplets brackets in a given slippery-chicken
 ;;; object to make sure they are all formatted properly (i.e. each starting
 ;;; tuplet bracket has a closing tuplet bracket etc.).  If an error is found,
-;;; the method will try and fix it, then re-check and only issue an error then
+;;; the method will try to fix it, then re-check, and only issue an error then
 ;;; if another is found.
 ;;; 
 ;;; ARGUMENTS

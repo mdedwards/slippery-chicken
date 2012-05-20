@@ -1288,22 +1288,37 @@ data: ((2 4) - S S - S - S S S - S S)
         (delete-tuplet-bracket r)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Sun May 20 15:51:44 EDT 2012: Added robodoc entry
+
 ;;; MDE Mon May  7 16:08:29 2012 -- 
 ;;; ****m* rthm-seq-bar/check-tuplets
+
 ;;; DESCRIPTION
-;;; 
+;;; Check the qualities of the tuplets brackets in a given rthm-seq-bar
+;;; object to make sure they are all formatted properly (i.e. each starting
+;;; tuplet bracket has a closing tuplet bracket etc.). If an error is found,
+;;; the method will try to fix it, then re-check, and only issue an error then
+;;; if another is found.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A rthm-seq-bar object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - The function to use if something is not ok with the tuplets. This
+;;;   defaults to #'error, but could also be #'warn for example
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T if all tuplets brackets are ok, otherwise performs the on-fail function
+;;; and returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((rsb (make-rthm-seq-bar '((4 4) { 3 te te te } q q q))))
+  (setf (bracket (get-nth-event 2 rsb)) nil)
+  (check-tuplets rsb #'warn))
+
+=> rthm-seq-bar::check-tuplets: got a nil bracket when brackets still open.
 
 |#
 ;;; SYNOPSIS

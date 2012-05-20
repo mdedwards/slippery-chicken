@@ -1349,26 +1349,43 @@ data: ((2 4) - S S - S - S S S - S S)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Sun May 20 16:26:24 EDT 2012: Added robodoc entry.
+
+
 ;;; MDE Mon May 7 16:38:23 2012 -- this is a better version of
-;;; figure-out-and-auto-set-tuplets.  Way back when I wrote that method we
-;;; didn't have rhythm's tuplet-scaler slot.  Now that's there things should be
-;;; easier.   This still won't handle all tuplet possibilities, especially
-;;; nested tuplets, but should still be useful.
+;;; figure-out-and-auto-set-tuplets. Way back when I wrote that method we
+;;; didn't have rhythm's tuplet-scaler slot. Now that's there things should be
+;;; easier. This still won't handle all tuplet possibilities, especially nested
+;;; tuplets, but should still be useful.
+
 ;;; ****m* rthm-seq-bar/auto-tuplets
 ;;; DESCRIPTION
-;;; 
+
+;;; Automatically place the data necessary for tuplet brackets in rhtm-seq-bar
+;;; objects that contain tuplet rhythms.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A rthm-seq-bar object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A function to be performed on fail. Default = #'error.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T if successful. 
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Make a rthm-seq-bar object and print the values of the BRACKET slots for
+;;; the rhythm objects it contains. Then apply auto-brackets and print the same
+;;; again to see the change.
+(let ((rsb (make-rthm-seq-bar '((4 4) tq tq tq +q fs fs fs fs fs))))
+  (print (loop for r in (rhythms rsb) collect (bracket r)))
+  (auto-tuplets rsb)
+  (print (loop for r in (rhythms rsb) collect (bracket r))))
+
+=>
+(NIL NIL NIL NIL NIL NIL NIL NIL NIL) 
+(((1 3)) (-1) (1) NIL ((2 5)) (-2) (-2) (-2) (2)) 
 
 |#
 ;;; SYNOPSIS

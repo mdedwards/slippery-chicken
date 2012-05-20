@@ -2629,19 +2629,34 @@
 
 ;;; ****f* utilities/random-amount
 ;;; DESCRIPTION
-;;; 
+
+;;; Return a random number from within a total range of <percent> of the given number, 
+;;; centering around zero. Thus, if the <number> is 100, and the <percent> is 5, the 
+;;; results will be a random number between -2.5 and +2.5.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; A number.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; A number that will be a percent of the given number.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A random positive or negative number.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Using the default will return numbers within a 5% span of the given number, 
+;;; centering around zero. With 100 that means between -2.5 and +2.5.
+(loop repeat 10 collect (random-amount 100))
+
+=> (0.7424975 -1.4954442 -1.7126495 1.5918689 -0.43478793 -1.7916341 -1.9115914
+    0.8541988 0.057197176 2.0713913)
+
+;;; Specifying 10% of 80 will return random numbers between -4.0 and +4.0
+(loop repeat 10 collect (random-amount 80 10))
+
+=> (-0.66686153 3.0387697 3.4737322 -2.3753185 -0.8495751 -0.47580242
+    -0.25743783 -1.1395472 1.3560238 -0.5958566)
 
 |#
 ;;; SYNOPSIS

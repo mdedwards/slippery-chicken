@@ -68,7 +68,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 12:57:53 Mon May 21 2012 BST
+;;; $$ Last modified: 13:31:46 Mon May 21 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -146,9 +146,10 @@
    ;; how many slower-rthm bars to combine into a rthm-seq for one harmonic set
    (harmonic-rthm-curve :accessor harmonic-rthm-curve :type list
                         :initarg :harmonic-rthm-curve :initform '(0 2 100 2))
-   ;; what beat are we working in: qs, es?
-   (beat :accessor beat :type integer :initarg :beat 
-         :initform 4)
+   ;; what beat are we working in: quarters, eighths?  
+   ;; MDE Mon May 21 13:30:23 2012 -- this is now calculated automatically from
+   ;; the duration of the first of the 1-beat-rthms 
+   (beat :accessor beat :type integer :initform 4)
    ;; whether we apply the sticking algorithm
    (do-sticking :accessor do-sticking :type boolean :initarg :do-sticking 
                 :initform t)
@@ -239,6 +240,7 @@
                               :return-data-cycle (rest-cycle rc))
         (num-1-beat-rthms rc) (length (first (1-beat-rthms rc)))
         (num-1-beat-groups rc) (length (1-beat-rthms rc))
+        (beat rc) (get-duration-as-beat (first (first (1-beat-rthms rc))))
         (1-beat-rthms rc) 
         (loop for group in (1-beat-rthms rc) do
              (unless (= (length group) (num-1-beat-rthms rc))
@@ -1258,7 +1260,6 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 |#
 ;;; SYNOPSIS
 (defun make-rthm-chain (id num-beats 1-beat-rthms slower-rthms &key
-                        (beat 4)
                         (1-beat-fibonacci nil)
                         (slow-fibonacci nil)
                         (players '(player1 player2))
@@ -1279,7 +1280,7 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;; ****
   (make-instance 'rthm-chain
                  :id id :num-beats num-beats :1-beat-rthms 1-beat-rthms
-                 :slower-rthms slower-rthms :beat beat :1-beat-fibonacci
+                 :slower-rthms slower-rthms :1-beat-fibonacci
                  1-beat-fibonacci :slow-fibonacci slow-fibonacci :players
                  players :section-id section-id :rests rests :do-rests do-rests
                  :do-rests-curve do-rests-curve :rest-re rest-re :rest-cycle
@@ -1689,6 +1690,21 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 
 (defun rthm-chain-p (thing)
   (typep thing 'rthm-chain))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; MDE Mon May 21 13:10:53 2012 -- auto-calculate the beat
+(defun get-duration-as-beat (rhythms &optional (on-fail #'error))
+  ;; make rhythm objects if they're not already
+  (setf rhythms (rhythm-list rhythms))
+  (let ((dur (loop for r in rhythms sum (duration r))))
+    (unless (zerop dur)
+      (if (whole-num-p dur)
+          (values (round (/ 4 dur)))
+          (when on-fail
+            (funcall on-fail "rthm-chain::get-duration-as-beat: sum of rhythms ~
+                            should be a ~%whole number: ~a: ~%~a"
+                     dur rhythms))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF rthm-chain.lsp

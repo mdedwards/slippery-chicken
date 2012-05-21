@@ -2859,23 +2859,42 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Mon May  7 23:11:35 BST 2012: Added robodoc entry
+;;; SAR Mon May 21 09:55:17 EDT 2012: Added robodoc entry
 
 ;;; ****f* utilities/octave-freqs
 ;;; DESCRIPTION
-;;; 
+;;; A boolean test to determine whether two specified frequencies are octave
+;;; transpositions of the same pitch class. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A first number that is a frequency in Hertz.
+;;; - A second number that is a frequency in Hertz.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether identical frequencies ("unison") are also
+;;;   to be considered octave transpositions of the same pitch class. 
+;;;   T = unisons are also octaves. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T or NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(octave-freqs 261.63 2093.04)
+
+=> T
+
+(octave-freqs 261.63 3000.00)
+
+=> NIL
+
+(octave-freqs 261.63 261.63)
+
+=> T
+
+(octave-freqs 261.63 261.63 nil)
+
+=> NIL
 
 |#
 ;;; SYNOPSIS

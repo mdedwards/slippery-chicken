@@ -68,7 +68,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 19:03:14 Mon Apr 30 2012 BST
+;;; $$ Last modified: 12:57:53 Mon May 21 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -680,10 +680,19 @@
         (slower-map '())
         (harmonic-rthm 0))
     (labels ((process-meter (meter)
-               (let ((m2 (* 2 meter)))
+               (let ((m2 (* 2 meter))
+                     ;; MDE Mon May 21 12:52:45 2012 -- allow x/16 meters when
+                     ;; beat is 4 i.e. so we can :rests that include s or e.
+                     (m4 (* 4 meter)))
                  (cond ((whole-num-p meter) (list (floor meter) (beat rc)))
                        ((whole-num-p m2) (list (floor m2) (* 2 (beat rc))))
-                       (t (error "rthm-chain::rthm-chain-gen: bad meter: ~a"
+                       ((whole-num-p m4) (list (floor m4) (* 4 (beat rc))))
+                       (t (error "rthm-chain::rthm-chain-gen: bad meter: ~a. ~
+                                  ~%This is most probably caused by having ~
+                                  rhythmic values in the rests slot that ~
+                                  ~%resolve to < a quarter of the beat ~
+                                  (e.g. 32nds or s. when the beat is a ~
+                                  ~%quarter note)."
                                  meter)))))
              (process-bars (bars meters id)
                (make-instance 'rthm-seq :id id :data

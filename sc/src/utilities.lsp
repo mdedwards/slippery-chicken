@@ -2705,23 +2705,34 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Mon May  7 22:38:35 BST 2012: Added robodoc entry
+;;; SAR Mon May 21 10:13:35 EDT 2012: Added robodoc entry
 
 ;;; ****f* utilities/read-from-file
 ;;; DESCRIPTION
-;;; 
+;;; Read a Lisp expression from a file. This is determined by the Lisp
+;;; parenthetical syntax.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A string that is a file name including directory path and extension. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; The Lisp expression contained in the file.
 ;;; 
 ;;; EXAMPLE
 #|
+(read-from-file "/path/to/lisp-lorem-ipsum.txt")
+
+=> (LOREM IPSUM DOLOR SIT AMET CONSECTETUR ADIPISCING ELIT CRAS CONSEQUAT
+    CONVALLIS JUSTO VITAE CONSECTETUR MAURIS IN NIBH VEL EST TEMPUS LOBORTIS
+    SUSPENDISSE POTENTI SED MAURIS MASSA ADIPISCING VITAE DIGNISSIM CONDIMENTUM
+    VOLUTPAT VEL FELIS FUSCE AUGUE DUI PULVINAR ULTRICIES IMPERDIET SED
+    PHARETRA EU QUAM INTEGER IN VULPUTATE VELIT ALIQUAM ERAT VOLUTPAT VIVAMUS
+    SIT AMET ORCI EGET EROS CONSEQUAT TINCIDUNT NUNC ELEMENTUM ADIPISCING
+    LOBORTIS MORBI AT LOREM EST EGET MATTIS ERAT DONEC AC RISUS A DUI MALESUADA
+    LOBORTIS AC AT EST INTEGER AT INTERDUM TORTOR VIVAMUS HENDRERIT CONSEQUAT
+    AUGUE QUISQUE ALIQUAM TELLUS NEC VESTIBULUM LOBORTIS RISUS TURPIS LUCTUS
+    LIGULA IN BIBENDUM FELIS SEM PULVINAR DOLOR VIVAMUS RHONCUS NISI GRAVIDA
+    PORTA VULPUTATE IPSUM LACUS PORTA RISUS A VULPUTATE MAGNA JUSTO A EST)
 
 |#
 ;;; SYNOPSIS
@@ -2797,23 +2808,27 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Mon May  7 22:58:12 BST 2012: Added robodoc entry
+;;; SAR Mon May 21 10:05:22 EDT 2012: Completed robodoc entry
 
 ;;; ****f* utilities/swap-elements
 ;;; DESCRIPTION
 ;;; Swap the order of each consecutive pair of elements in a list.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A list.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list.
 ;;; 
 ;;; EXAMPLE
 #|
- '(1 2 3 4 5 6 7 8) -> '(2 1 4 3 6 5 8 7)
+(swap-elements '(1 2 3 4 5 6 7 8 9 10))
+
+=> (2 1 4 3 6 5 8 7 10 9)
+
+(swap-elements '(1 2 3 4 5 6 7 8 9))
+
+=> (2 1 4 3 6 5 8 7 9)
 
 |#
 ;;; SYNOPSIS

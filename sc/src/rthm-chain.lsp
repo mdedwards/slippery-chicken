@@ -68,7 +68,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 13:31:46 Mon May 21 2012 BST
+;;; $$ Last modified: 15:11:21 Mon May 21 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -233,6 +233,10 @@
 
 (defmethod initialize-instance :after ((rc rthm-chain) &rest initargs)
   (declare (ignore initargs))
+  ;; MDE Mon May 21 15:10:43 2012 -- set beat automatically now
+  (let ((beat (get-duration-as-beat (first (first (1-beat-rthms rc))))))
+    (when beat
+      (setf (beat rc) beat)))
   ;; otherwise we can't use references like '(1 pno-rh1)
   (setf (recurse-simple-data rc) nil 
         (rests rc) (loop for r in (rests rc) collect (make-rest r))
@@ -240,7 +244,6 @@
                               :return-data-cycle (rest-cycle rc))
         (num-1-beat-rthms rc) (length (first (1-beat-rthms rc)))
         (num-1-beat-groups rc) (length (1-beat-rthms rc))
-        (beat rc) (get-duration-as-beat (first (first (1-beat-rthms rc))))
         (1-beat-rthms rc) 
         (loop for group in (1-beat-rthms rc) do
              (unless (= (length group) (num-1-beat-rthms rc))

@@ -2889,6 +2889,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Mon May  7 23:25:30 BST 2012: Added robodoc entry
+;;; SAR Mon May 21 09:19:54 EDT 2012: Added to robodoc entry
 
 ;;; ****f* utilities/partial-freqs
 ;;; DATE
@@ -2903,6 +2904,9 @@
 ;;; - A second frequency in Hertz.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether identical frequencies ("unison") are also to
+;;;   be considered partials of each other. T = unison are partials. 
+;;;   Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; T if one of the frequencies has the ratio of a harmonic partial to the
@@ -2910,6 +2914,21 @@
 ;;; 
 ;;; EXAMPLE
 #|
+(partial-freqs 300 900)
+
+=> T
+
+(partial-freqs 300 700)
+
+=> NIL
+
+(partial-freqs 300 300)
+
+=> T
+
+(partial-freqs 300 300 nil)
+
+=> NIL
 
 |#
 ;;; SYNOPSIS

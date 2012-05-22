@@ -183,22 +183,20 @@
 
 ;;; ****m* change-map/cm-get-data
 ;;; DESCRIPTION
-
 ;;; Return the data for a specified section and player of a given change-map
 ;;; object. 
 ;;;
-;;; NB: The <section> argument may require the ID of the player as well.
+;;; NB: The <section> argument may require the ID of the player as well if
+;;;     used, for example, with the instrument-change-map subclass of this
+;;;     class .
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A change-map object.
-
 ;;; - A simple key reference into the given change-map object or a list of
-;;;   references. NB: This reference may require the player ID.
-
+;;;   references. NB: This reference may require a player ID if, for example,
+;;;   used with an instrument-change-map subclass of this class. 
 ;;; OPTIONAL ARGUMENTS
-
 ;;; - The ID of the sequence from which to return the change-map data.
-
 ;;; - An integer that is the bar number for which to return the change-map
 ;;;   data. 
 ;;; 
@@ -250,25 +248,54 @@
      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Returns a change-data instance.
+;;; SAR Tue May 22 10:44:50 EDT 2012: Added robodoc entry
+
 
 ;;; ****m* change-map/find-nearest
 ;;; DESCRIPTION
-;;; find-nearest:
-;;;
-;;; 
+;;; Return the nearest change-data object to the specified section within the
+;;; given change-map. NB: The section may require a player ID if used, for
+;;; example, with an instrument-change-map subclass of change-map.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+
+;;; - A section indication, either as a single reference ID or a list of
+;;;   reference IDs into the given change-map.
+;;; - A change-map object.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns a change-data object.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+#|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
+        :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+				 (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
+				 (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
+        :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
+        :set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
+			(2 ((sax (1 1 1 1 1))))
+			(3 ((sax (1 1 1 1 1))))))))
+  (find-nearest '(4 sax) (instrument-change-map mini)))
+
+=> 
+CHANGE-DATA: 
+            previous-data: TENOR-SAX, 
+            last-data: TENOR-SAX
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: (2 SAX), this: (3 SAX), next: NIL
+NAMED-OBJECT: id: SAX, tag: NIL, 
+data: ((3 1 ALTO-SAX) (4 1 TENOR-SAX))
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod find-nearest (section (cm change-map))

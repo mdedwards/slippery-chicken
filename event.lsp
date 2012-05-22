@@ -3596,7 +3596,6 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 
 ;;; ****f* event/wrap-events-list
 ;;; DESCRIPTION
-
 ;;; Given a list of time-ascending event objects, rotate their start-times by
 ;;; moving the lowest start time to a specified point in the list (determined
 ;;; either by time or by nth position), assigning the subsequent start times
@@ -3621,6 +3620,25 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 ;;;
 ;;; EXAMPLE
 #|
+;;; Create a list of events of eighth-note durations, specifying start-times at
+;;; 0.5-second intervals and print the pitches and start-times. Then apply the
+;;; function and print the pitches and start-times again to see the change.
+(let ((e-list (loop for st from 1.0 by 0.5
+		 for nn in '(c4 d4 e4 f4 g4 a4 b4 c5)
+		 collect (make-event nn 'e :start-time st))))
+  (print
+   (loop for e in e-list
+      collect (get-pitch-symbol e)
+      collect (start-time e)))
+  (wrap-events-list e-list 3)
+  (print
+   (loop for e in e-list
+      collect (get-pitch-symbol e)
+      collect (start-time e))))
+
+=>
+(C4 1.0 D4 1.5 E4 2.0 F4 2.5 G4 3.0 A4 3.5 B4 4.0 C5 4.5) 
+(C4 3.5 D4 4.0 E4 4.5 F4 1.0 G4 1.5 A4 2.0 B4 2.5 C5 3.0)
 
 |#
 ;;; 

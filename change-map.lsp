@@ -176,26 +176,61 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue May 22 10:21:02 EDT 2012: Added robodoc entry
+
 ;;; Section may be a simple key reference into the map or a list of references.
 ;;; sequence is 1-based.
 
 ;;; ****m* change-map/cm-get-data
 ;;; DESCRIPTION
-;;; cm-get-data:
+
+;;; Return the data for a specified section and player of a given change-map
+;;; object. 
 ;;;
-;;; 
+;;; NB: The <section> argument may require the ID of the player as well.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A change-map object.
+
+;;; - A simple key reference into the given change-map object or a list of
+;;;   references. NB: This reference may require the player ID.
+
+;;; OPTIONAL ARGUMENTS
+
+;;; - The ID of the sequence from which to return the change-map data.
+
+;;; - An integer that is the bar number for which to return the change-map
+;;;   data. 
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; The change-map data stored at the specified location within the given
+;;; change-map. 
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+#|
+;;; An example using the instrument-change-map subclass of change-map
+
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
+        :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+				 (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
+				 (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
+        :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
+        :set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
+			(2 ((sax (1 1 1 1 1))))
+			(3 ((sax (1 1 1 1 1))))))))
+  (cm-get-data (instrument-change-map mini) '(2 sax) 4))
+
+=> ALTO-SAX
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod cm-get-data ((cm change-map) section 

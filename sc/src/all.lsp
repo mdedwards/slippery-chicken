@@ -59,7 +59,7 @@
 (in-package :cl-user)
 
 ;;; Numbers as strings, just in case we want version numbers like "1.2beta"
-(defconstant +slippery-chicken-version+ "1.0.0-beta2 (svn revision 2009 2012-05-24 16:44:34)")
+(defconstant +slippery-chicken-version+ "1.0.0-beta2 (svn revision 2044 2012-05-24 17:10:06)")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 

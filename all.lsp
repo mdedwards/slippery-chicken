@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 14:00:53 Thu May 17 2012 BST
+;;; $$ Last modified: 13:34:45 Fri May 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -58,7 +58,6 @@
 
 (in-package :cl-user)
 
-;;; Numbers as strings, just in case we want version numbers like "1.2beta"
 (defconstant +slippery-chicken-version+ "1.0.0-beta2 (svn revision 2044 2012-05-24 17:10:06)")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 13:38:12 Fri May 18 2012 BST
+;;; $$ Last modified: 14:42:37 Fri May 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -921,13 +921,13 @@ data: ((2 4) Q E S S)
 
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((vn (violin :midi-channel 1))))
-	:set-palette '((1 ((gs4 af4 bf4))))
-	:set-map '((1 (1 1 1)))
-	:rthm-seq-palette '((1 ((((4 4) e +e +e +e e +s +s +s e.))
-				:pitch-seq-palette ((1 2 3)))))
-	:rthm-seq-map '((1 ((vn (1 1 1))))))))
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((gs4 af4 bf4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e +e +e +e e +s +s +s e.))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 1 1))))))))
   (print-simple (get-bar mini 2 'vn))
   (consolidate-notes (get-bar mini 2 'vn))
   (print-simple (get-bar mini 2 'vn)))
@@ -4585,9 +4585,9 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; make-rthm-seq-bar requires a time signature. If no time signature is
 ;;; provided, the most recently defined time signature will be used. If one is
 ;;; provided, it must be included as the first element of the data list. The
-;;; time signature is formulated as an unquoted list containing two integers,
-;;; the first being the number of beats in the bar and the second being the
-;;; beat unit for the bar. 
+;;; time signature is formulated as a list containing two integers, the first
+;;; being the number of beats in the bar and the second being the beat unit for
+;;; the bar.
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - A name (symbol) for the object ID.

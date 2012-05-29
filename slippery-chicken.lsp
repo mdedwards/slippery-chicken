@@ -1692,7 +1692,8 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 17,
 ;;;   given slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns NIL. Prints the results directly to the Lisp listener.
+;;; Returns a list of all corresponding event objects found. Prints the bar
+;;; numbers of the results directly to the Lisp listener.
 ;;; 
 ;;; EXAMPLE
 #|

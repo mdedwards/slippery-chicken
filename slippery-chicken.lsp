@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:44:19 Fri May 18 2012 BST
+;;; $$ Last modified: 21:51:00 Tue May 29 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -643,12 +643,13 @@
 ;;; - :one-line-per-page. T or NIL to indicate whether to write just one line
 ;;;   (system) to each page. T = one line per page. Default = NIL.
 ;;; - :start-bar-numbering. An integer that indicates the number to be given as
-;;;   the first bar number in the resulting. The bars will be numbered every
-;;;   five bars starting from this number. NB: The value of this argument is
-;;;   passed directly to a CMN function. If a value is given for this argument,
-;;;   slippery chicken's own bar-number writing function will be disabled. NB:
-;;;   It is recommended that a value not be passed for this argument if a value
-;;;   is given for :auto-bar-nums. NIL = bar 1. Default = NIL.
+;;;   the first bar number in the resulting EPS file. The bars will be numbered
+;;;   every five bars starting from this number. NB: The value of this argument
+;;;   is passed directly to a CMN function. If a value is given for this
+;;;   argument, slippery chicken's own bar-number writing function will be
+;;;   disabled. NB: It is recommended that a value not be passed for this
+;;;   argument if a value is given for :auto-bar-nums. NIL = bar 1. Default =
+;;;   NIL.
 ;;; - :auto-bar-nums. An integer or NIL to indicate a secondary bar numbering
 ;;;   interval. This is separate from and in addition to the bar-number written
 ;;;   in every part every 5 bars. It corresponds to CMN's
@@ -5541,6 +5542,9 @@ data: NIL
 ;;; - :end-bar. An integer that is the last bar of the given slippery-chicken
 ;;;   object for which output is to be generated. If NIL, all bars after the
 ;;;   start bar will be generated. Default = NIL.
+;;; - :start-bar-numbering: For bar counting in the score only: the bar number
+;;;   that the :start-bar will be counted as (integer). NIL = :start-bar. 
+;;;   Default =  NIL. 
 ;;; - :players. A list of player IDs or NIL to indicate which players' parts
 ;;;   are to be generated and included in the resulting score. If NIL, all
 ;;;   players' parts will be generated and included in the score. This can be
@@ -5683,6 +5687,8 @@ data: NIL
                                   &key
                                   (base-path "/tmp/")
                                   start-bar end-bar (paper "a4") landscape
+                                  ;; MDE Tue May 29 21:34:53 2012 
+                                  start-bar-numbering
                                   ;; if a list, then these are the enharmonic
                                   ;; corrections
                                   (respell-notes t) 
@@ -5881,10 +5887,10 @@ data: NIL
         (terpri out)
         (loop for pname in players-strings
            for player in playrs do
-             (when (needs-transposition player)
-               (new-voice (written-pname pname) player out 
-                          (concatenate 'string pname "-written")))
-             (new-voice pname player out))
+           (when (needs-transposition player)
+             (new-voice (written-pname pname) player out 
+                        (concatenate 'string pname "-written")))
+           (new-voice pname player out))
         (terpri out)
         (format out "~%music = {~%  <<")
         ;; write the music variable, staff groupings etc.
@@ -5896,18 +5902,18 @@ data: NIL
            ;; this must come after 'in players-strings' otherwise we crash
            for end = (= gcount gnum) do
            ;; (format t "~%~a ~a ~a" pname gcount gnum)
-             (score-tag pname out (= 1 gcount) end)
-             (if end
-                 (setf gnum (pop groups)
-                       gcount 1)
-                 (incf gcount)))
+           (score-tag pname out (= 1 gcount) end)
+           (if end
+               (setf gnum (pop groups)
+                     gcount 1)
+               (incf gcount)))
         (format out "~%  >>~%}")
         ;; create the written parts variable
         (format out "~%written = {~%  <<")
         (loop for pname in players-strings
            for player in playrs do
-             (when (needs-transposition player)
-               (score-tag (written-pname pname) out)))
+           (when (needs-transposition player)
+             (score-tag (written-pname pname) out)))
         (format out "~%  >>~%}"))
       ;; write the main score file
       (with-open-file
@@ -5925,25 +5931,26 @@ data: NIL
       ;; write the parts
       (loop for player in playrs
          for pname in players-strings do
-           (with-open-file 
-               (out 
-                (concatenate 'string path (format nil "~a-~a-part.ly" 
-                                                  title-hyphens pname))
-                :direction :output :if-does-not-exist :create
-                :if-exists :rename-and-delete)
-             (if (needs-transposition player)
-                 (part (written-pname pname) out "written")
-                 (part pname out))))
+         (with-open-file 
+             (out 
+              (concatenate 'string path (format nil "~a-~a-part.ly" 
+                                                title-hyphens pname))
+              :direction :output :if-does-not-exist :create
+              :if-exists :rename-and-delete)
+           (if (needs-transposition player)
+               (part (written-pname pname) out "written")
+               (part pname out))))
       ;; write the notes to individual files
       (loop for player in playrs
          for pname in players-strings do
-           (write-lp-data-for-player 
-            sc player 
-            (concatenate 'string path (format nil "~a-~a.ly" title-hyphens pname)) 
-            :all-bar-nums all-bar-nums
-            :process-event-fun process-event-fun
-            :rehearsal-letters-font-size rehearsal-letters-font-size
-            :in-c in-c :start-bar start-bar :end-bar end-bar))
+         (write-lp-data-for-player 
+          sc player 
+          (concatenate 'string path (format nil "~a-~a.ly" title-hyphens pname))
+          :all-bar-nums all-bar-nums
+          :process-event-fun process-event-fun
+          :rehearsal-letters-font-size rehearsal-letters-font-size
+          :start-bar-numbering start-bar-numbering
+          :in-c in-c :start-bar start-bar :end-bar end-bar))
       ;; got to write the written (i.e. not sounding) notes for the part
       ;; can't do this in the above loop as we have to re-call auto-clefs
       ;; making sure we don't use the in-c clefs for the instrument
@@ -5953,12 +5960,13 @@ data: NIL
       (loop for player in playrs
          for pname in players-strings do
          ;; got to write the written (i.e. not sounding) notes for the part
-           (when (needs-transposition player)
-             (write-lp-data-for-player 
-              sc player 
-              (format nil "~a~a-~a-written.ly" path title-hyphens pname)
-              :all-bar-nums all-bar-nums :in-c nil :start-bar start-bar
-              :end-bar end-bar)))))
+         (when (needs-transposition player)
+           (write-lp-data-for-player 
+            sc player 
+            (format nil "~a~a-~a-written.ly" path title-hyphens pname)
+            :all-bar-nums all-bar-nums :in-c nil :start-bar start-bar
+            :start-bar-numbering start-bar-numbering
+            :end-bar end-bar)))))
   t)
 
 
@@ -5969,6 +5977,8 @@ data: NIL
                                      ;; print every bar number unless
                                      ;; multi-bar-rest?
                                      all-bar-nums 
+                                     ;; MDE Tue May 29 21:34:53 2012 
+                                     start-bar-numbering
                                      ;; MDE Sat Mar 10 16:53:16 2012 
                                      process-event-fun
                                      rehearsal-letters-font-size)
@@ -5976,6 +5986,9 @@ data: NIL
     (setf start-bar 1))
   (unless end-bar
     (setf end-bar (num-bars sc)))
+  ;; MDE Tue May 29 21:37:50 2012 
+  (unless start-bar-numbering
+    (setf start-bar-numbering start-bar))
   (with-open-file
       (out path :direction :output :if-does-not-exist :create
            :if-exists :rename-and-delete)
@@ -5983,6 +5996,8 @@ data: NIL
            (transposing (plays-transposing-instrument player-obj))
            (ins-obj (get-starting-ins sc player))
            (clef (starting-clef ins-obj)))
+      ;; MDE Tue May 29 21:41:59 2012 
+      (format out "~&\\set Score.currentBarNumber = #~a" start-bar-numbering)
       (when all-bar-nums
         (format out "~&\\override Score.BarNumber ~
                      #'break-visibility = #'#(#t #t #t)")

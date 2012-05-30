@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:51:00 Tue May 29 2012 BST
+;;; $$ Last modified: 23:01:13 Tue May 29 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5621,6 +5621,10 @@ data: NIL
 ;;; - :process-event-fun. NIL or a user-defined function that will be applied
 ;;;   to every event object in the given slippery-chicken object. If NIL, no
 ;;;   processes will be applied. Default = NIL.
+;;; - :stemlet-length. If you want Lilypond to beam over rests you need only
+;;;   start/end a beam over a rest with the '-' notation exactly as you would
+;;;   with a note.  If additionally you'd like stems to reach down to those
+;;;   rests, indicate a value < 1.0 here: 0.75 looks fine.  Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; T
@@ -5736,6 +5740,8 @@ data: NIL
                                   ;; something like a time signature e.g. (2 1)
                                   ;; would mean we need a min. of 2 whole rests
                                   (min-page-turn '(2 1))
+                                  ;; MDE Tue May 29 22:58:25 2012 
+                                  (stemlet-length nil)
                                   ;; sim to rehearsal letters
                                   (tempi-all-players t))
 ;;; ****
@@ -5804,6 +5810,17 @@ data: NIL
                  (when (staff-short-name ins)
                    (format stream "~%  ~a ~%"
                            (lp-set-instrument (staff-short-name ins) t)))
+                 ;; MDE Tue May 29 22:53:58 2012 -- little stems to rests?
+                 (when stemlet-length
+                   (unless (and (numberp stemlet-length) 
+                                (> stemlet-length 0.0)
+                                (< stemlet-length 1.0))
+                     (error "slippery-chicken::write-lp-data-for-all: ~
+                             :stemlet-length should be between 0 and 1.0: ~a"
+                            stemlet-length))
+                   (format stream 
+                           "~&  \\override Staff.Stem #'stemlet-length = #~a~%"
+                           stemlet-length))
                  (princ "  \\compressFullBarRests" stream)
                  ;; change the thickness of the barlines globally
                  (format stream "~&  \\override Score.BarLine ~

@@ -990,7 +990,6 @@
 
 ;;; ****f* rthm-chain/make-rthm-chain
 ;;; DESCRIPTION
-
 ;;; Create an instance of a rthm-chain object. The rthm-chain class enables the
 ;;; algorithmic generation of a rthm-seq-map (with just one section) and its
 ;;; associated rthm-seq-palette, which consists in turn of algorithmically

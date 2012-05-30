@@ -3832,26 +3832,59 @@ data: (2 4)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri May 18 09:25:40 EDT 2012: Added robodoc entry
-
-;;; This method is really just looking for enharmonically-re-spelled notes
-;;; within a bar and trying to unify the spelling.
-;;; 
-;;; Although we're just concentrating on one bar here, we need the parent
-;;; slippery chicken object and player (symbol) in order to get subsequent ties 
-;;; into the next bar from the present bar.
+;;; SAR Wed May 30 21:15:47 BST 2012: Expanded robodoc entry
 
 ;;; ****m* rthm-seq-bar/respell-bar
 ;;; DESCRIPTION
+;;; Scan the specified rthm-seq-bar object for enharmonically equivalent
+;;; pitches and unify their spelling.
 ;;; 
+;;; NB: Although this method focuses on just one rthm-seq-bar object, the
+;;;     parent slippery-chicken object and player ID are needed in order to
+;;;     determine ties that may exist into the next bar from the present bar. 
+;;;
+;;; NB: The slippery-chicken class version of the method of this name uses
+;;;     pitches from previous bars as well when respelling a given rthm-seq-bar
+;;;     object, so different results are normal. Users should generally call
+;;;     the slippery-chicken method rather than calling this one directly on
+;;;     individual bars.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A rthm-seq-bar object.
+;;; - A slippery-chicken object.
+;;; - A player ID (symbol).
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether to process only written or only sounding
+;;;   pitches. T = only written. Default = NIL. 
+;;; - <last-attack-previous-bar>. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Create a slippery-chicken object using pitches GS4 and AF4, print the
+;;; pitches of a specified bar within that object. Apply respell-bar and print
+;;; the same pitches again to see the difference.
+
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))))
+	:set-palette '((1 ((gs4 af4 bf4))))
+	:set-map '((1 (1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+				:pitch-seq-palette ((1 2 1 1 1 1 1 1)))))
+	:rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (print (loop for r in (rhythms (get-bar mini 2 'vn))
+	    collect (get-pitch-symbol r)))
+  (respell-bar (get-bar mini 2 'vn) mini 'vn)
+  (print (loop for r in (rhythms (get-bar mini 2 'vn))
+	    collect (get-pitch-symbol r))))
+
+(GS4 AF4 GS4 GS4 GS4 GS4 GS4 GS4) 
+(GS4 GS4 GS4 GS4 GS4 GS4 GS4 GS4)
 
 |#
 ;;; SYNOPSIS

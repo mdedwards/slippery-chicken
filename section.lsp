@@ -219,6 +219,8 @@ BAR-HOLDER:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed May 30 21:34:53 BST 2012: Added robodoc entry
+
 ;;; bar-num is 1-based!
 
 ;;; N.B. although optional, the player argument is required.  It is optional so

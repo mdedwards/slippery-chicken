@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 14:42:37 Fri May 25 2012 BST
+;;; $$ Last modified: 23:14:49 Tue May 29 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1629,8 +1629,10 @@ data: ((2 4) - S S - S - S S S - S S)
                   (setf start note-num))
                 (when flags
                   (setf end note-num))
-                (when is-note
-                  (incf note-num)))
+              ;; MDE Tue May 29 23:14:16 2012 -- we can now have beams on
+              ;; rests so no longer count notes but all events
+              ;; (when is-note
+                (incf note-num))
            (when (and start end (/= start end))
              (push (list start end) result)))
       (setf (beams rsb) (reverse result))
@@ -1730,8 +1732,11 @@ data: ((2 4) - S S - S - S S S - S S)
     ;; the beams slot contains 2-element sublists the elements being 0-based
     ;; indices of the notes that start and end a beam.
     (loop for data in beams do
-          (start-beam (get-nth-non-rest-rhythm (first data) rsb))
-          (end-beam (get-nth-non-rest-rhythm (second data) rsb)))))
+         ;; MDE Tue May 29 22:40:31 2012 -- we now allow beams on rests
+         ;; (start-beam (get-nth-non-rest-rhythm (first data) rsb))
+         (start-beam (get-nth-event (first data) rsb))
+         ;; (end-beam (get-nth-non-rest-rhythm (second data) rsb))
+         (end-beam (get-nth-event (second data) rsb)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2305,7 +2310,10 @@ data: ((2 4) - S S - S - S S S - S S)
                     with bm = '()
                     with start with end
                     for i from st to nd
-                    for r = (get-nth-non-rest-rhythm i result)
+                     ;; MDE Tue May 29 23:05:27 2012 -- we can now have beams
+                   ;; on rests!
+                   ;; for r = (get-nth-non-rest-rhythm i result)
+                   for r = (get-nth-event i result)
                     do 
                       (unless r
                         (error "~&rthm-seq-bar::scale: can't get notes ~
@@ -4815,10 +4823,16 @@ show-rest: T
                                          tuplet-positions)))
                ((eq interned '-) (if start-beam 
                                      (progn 
-                                       (push (list start-beam (1- num-notes))
+                                       ;; MDE Tue May 29 22:39:29 2012 -- we
+                                       ;; now allow rests to have beams so
+                                       ;; don't use num-notes but num-rthms 
+                                       ;; (push (list start-beam (1- num-notes))
+                                       (push (list start-beam (1- num-rthms))
                                              beam-positions)
                                        (setq start-beam nil))
-                                   (setq start-beam num-notes)))
+                                     ;; MDE Tue May 29 22:40:07 2012 -- sim.
+                                     ;; (setq start-beam num-notes)))
+                                     (setq start-beam num-rthms)))
                ((eq interned 'x) (setq get-repeater t))
                (get-repeater (unless (integerp i)
                                (error "rthm-seq-bar::parse-rhythms:~%~

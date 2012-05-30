@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 23:01:13 Tue May 29 2012 BST
+;;; $$ Last modified: 10:07:48 Wed May 30 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5623,8 +5623,10 @@ data: NIL
 ;;;   processes will be applied. Default = NIL.
 ;;; - :stemlet-length. If you want Lilypond to beam over rests you need only
 ;;;   start/end a beam over a rest with the '-' notation exactly as you would
-;;;   with a note.  If additionally you'd like stems to reach down to those
-;;;   rests, indicate a value < 1.0 here: 0.75 looks fine.  Default = NIL.
+;;;   with a note (but note that starting/ending a beam on a rest and then
+;;;   trying to generate a score with CMN will fail).  If additionally you'd
+;;;   like stems to reach down to those rests, indicate a value < 1.0 here:
+;;;   0.75 looks fine.  Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; T

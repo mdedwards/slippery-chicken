@@ -79,6 +79,7 @@
       (:staff-name "piccolo" :staff-short-name "picc"
        :lowest-written d4 :highest-written c7 :transposition-semitones 12 
        :missing-notes nil 
+       :largest-fast-leap 19
        :starting-clef treble
        :chords nil 
        :microtones t 
@@ -87,6 +88,7 @@
       (:staff-name "flute" :staff-short-name "fl" 
        :lowest-written c4 :highest-written d7 
        :missing-notes (cqs4 dqf4) 
+       :largest-fast-leap 19
        :starting-clef treble
        :chords nil 
        :microtones t 
@@ -95,6 +97,7 @@
       (:staff-name "alto flute" :staff-short-name "alt fl"
        :lowest-written c4 :highest-written c7 :transposition-semitones -5
        :missing-notes (cqs4 dqf4) 
+       :largest-fast-leap 17
        :starting-clef treble
        :chords nil 
        :microtones t 
@@ -105,6 +108,7 @@
       (:staff-name "bass flute" :staff-short-name "bass fl" 
        :lowest-written c4 :highest-written c7 :transposition-semitones -12
        :missing-notes (cqs4 dqf4) 
+       :largest-fast-leap 15
        :clefs-in-c (treble bass) :starting-clef treble 
        :chords nil 
        :microtones t 
@@ -114,6 +118,7 @@
      (oboe
       (:staff-name "oboe" :staff-short-name "ob" 
        :lowest-written bf3 :highest-written a6
+       :largest-fast-leap 19
        :starting-clef treble 
        :chords nil 
        :midi-program 69))
@@ -121,6 +126,7 @@
       (:staff-name "E-flat clarinet" :staff-short-name "E-flat cl"
        :lowest-written e3 :highest-written a6 :transposition-semitones 3
        :missing-notes (aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3)
+       :largest-fast-leap 15
        :starting-clef treble
        :chords nil 
        :microtones t 
@@ -129,6 +135,7 @@
       (:staff-name "B-flat clarinet" :staff-short-name "B-flat cl"
        :lowest-written e3 :highest-written a6 :transposition-semitones -2 
        :missing-notes (aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3) 
+       :largest-fast-leap 15
        :starting-clef treble 
        :chords nil 
        :microtones t 
@@ -137,6 +144,7 @@
       (:staff-name "A clarinet" :staff-short-name "A cl"
        :lowest-written e3 :highest-written a6 :transposition-semitones -3
        :missing-notes (aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3)
+       :largest-fast-leap 15
        :starting-clef treble 
        :chords nil 
        :microtones t
@@ -146,6 +154,7 @@
        :lowest-written c3 :highest-written g6 :transposition-semitones -14
        :missing-notes (aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3 eqf3 dqs3 dqf3
                             cqs3) 
+       :largest-fast-leap 13
        :prefers-notes low       
        :clefs (treble) :clefs-in-c (treble bass) :starting-clef treble 
        :chords nil 
@@ -155,6 +164,7 @@
       (:staff-name "soprano saxophone" :staff-short-name "sop sax"
        :lowest-written bf3 :highest-written fs6 :transposition-semitones -2
        :missing-notes (gqs4 gqs5)
+       :largest-fast-leap 15
        :starting-clef treble 
        :chords nil
        :microtones t 
@@ -164,6 +174,7 @@
        ;; altissimo extra....by hand...
        :lowest-written bf3 :highest-written fs6 :transposition-semitones -9
        :missing-notes (gqs4 gqs5)
+       :largest-fast-leap 15
        :starting-clef treble 
        :chords nil 
        :microtones t 
@@ -172,6 +183,7 @@
       (:staff-name "tenor sax" :staff-short-name "ten sax"
        :lowest-written bf3 :highest-written fs6 :transposition-semitones -14 
        :missing-notes (gqs4 gqs5) 
+       :largest-fast-leap 13
        :starting-clef treble :clefs-in-c (treble bass)
        :chords nil 
        :microtones t 
@@ -180,6 +192,7 @@
       (:staff-name "baritone sax" :staff-short-name "bar sax"
        :lowest-written bf3 :highest-written fs6 :transposition-semitones -21 
        :missing-notes (gqs4 gqs5)
+       :largest-fast-leap 11
        :clefs-in-c (treble bass) :starting-clef treble 
        :chords nil
        :microtones t 
@@ -199,6 +212,7 @@
      (french-horn
       (:staff-name "french horn" :staff-short-name "hn" 
        :lowest-written c3 :highest-written c6 :transposition-semitones -7 
+       :largest-fast-leap 9
        :clefs (treble bass) :starting-clef treble
        :chords nil 
        :microtones t
@@ -206,6 +220,7 @@
      (c-trumpet
       (:staff-name "trumpet in c" :staff-short-name "c tpt" 
        :lowest-written fs3 :highest-written c6
+       :largest-fast-leap 9
        :clefs (treble) :starting-clef treble 
        :chords nil 
        :microtones t
@@ -216,6 +231,7 @@
       (:staff-name "B-flat trumpet" :staff-short-name "b-flat tpt" 
        ;; the -flat should be convereted in CMN and Lilypond to the flat sign
        :lowest-written fs3 :highest-written d6 :transposition-semitones -2 
+       :largest-fast-leap 9
        :starting-clef treble 
        :chords nil 
        :midi-program 57))
@@ -223,16 +239,10 @@
      (tenor-trombone
       (:staff-name "trombone" :staff-short-name "tbn" 
        :lowest-written e2 :highest-written bf4
+       :largest-fast-leap 7
        :clefs (bass tenor) :starting-clef bass 
        :chords nil 
        :midi-program 58))
-     (vibraphone 
-      (:staff-name "vibraphone" :staff-short-name "vib"
-       :lowest-written f3 :highest-written f6 
-       :starting-clef treble 
-       :chords t 
-       :microtones nil
-       :midi-program 12))
      (marimba 
       (:staff-name "marimba" :staff-short-name "mba"
        :lowest-written c3 :highest-written c7 
@@ -240,6 +250,13 @@
        :chords t
        :microtones nil
        :midi-program 13))
+     (vibraphone 
+      (:staff-name "vibraphone" :staff-short-name "vib"
+       :lowest-written f3 :highest-written f6 
+       :starting-clef treble 
+       :chords t 
+       :microtones nil
+       :midi-program 12))
      (piano
       (:staff-name "piano" :staff-short-name "pno"
        :lowest-written a0 :highest-written c8 

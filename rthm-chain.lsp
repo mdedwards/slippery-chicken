@@ -1046,10 +1046,6 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-
-;;; - :beat. An integer that indicates the rhythmic unit of the primary beat
-;;;   basis of the rhythms specified. Default = 4.
-
 ;;; - :1-beat-fibonacci. T or NIL to indicate whether the sequence of 1-beat
 ;;;   rhythms is to be generated using the fibonacci-transitions method or the
 ;;;   processions method. T = use fibonacci-transitions method. Default = NIL.
@@ -1070,9 +1066,9 @@
 
 ;;; - :section-id. An integer that will be used as the ID of the rthm-seq-map
 ;;;   created. NB: rthm-chain only creates rthm-seq-maps with one section,
-;;;   making it possible to create several different ones for different
-;;;   sections in the given piece, and requiring that these be manually
-;;;   assigned IDs. Default = 1. 
+;;;   making it possible to create several different rthm-seq-map objects for
+;;;   different sections in the given piece, and requiring that these be
+;;;   manually assigned IDs. Default = 1.
 
 ;;; - :rests. The rhythmic duration unit(s) of the rests that will be used when
 ;;;   the method uses the rest-insertion algorithm to automatically insert
@@ -1097,7 +1093,7 @@
 ;;;   Default ='((0 3) (1 1) (0 2) (2 1) (1 1) (3 1)).
 
 ;;; - :do-rests-curve. A list of break-point pairs with y values of either 0 or
-;;;   1 indicating whether the do-rests algorithm is active or disabled. This
+;;;   1 indicating whether the do-rests algorithm is active or disabled. These
 ;;;   values are interpolated between each pair, with all values 0.5 and higher
 ;;;   being round up to 1 and all below 0.5 rounded to 0. Default = NIL.
 

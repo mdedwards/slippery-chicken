@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 20:43:21 Sat May 19 2012 BST
+;;; $$ Last modified: 19:10:39 Thu May 31 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3048,36 +3048,32 @@ T
 ;;; keyword arguments:
 
 ;;; - :start-time. The start time of the event in seconds. Default = NIL.
-
 ;;; - :is-rest. Set to T or NIL to indicate whether or not the given event is a
 ;;;   rest. Default = NIL. NB: The make-rest method is better suited to making
 ;;;   rests; however, if using make-event to do so, the pitch-or-chord slot
 ;;;   must be set to NIL.
-
 ;;; - :is-tied-to. This argument is for score output and playing purposes. Set
 ;;;   to T or NIL to indicate whether this event is tied to the previous event
 ;;;   (i.e. it won't sound indpendently). Default = NIL.
-
 ;;; - :duration. T or NIL to indicate whether the specified duration of the
 ;;;   event has been stated in absolute seconds, not a known rhythm like
 ;;;   'e. Thus (make-event 'c4 4 :duration nil) indicates a quarter note with
 ;;;   duration 1, but (make-event '(c4 d4) 4 :duration t) indicates a whole
 ;;;   note with an absolute duration of 4 seconds (both assuming a tempo of
 ;;;   60). Default = NIL.
-
 ;;; - :amplitude sets the amplitude of the event. Possible values span from 0.0
 ;;;   (silent) to maximum of 1.0. Default = 0.7.
-
 ;;; - :tempo. A number to indicate the tempo of the event as a normal bpm
 ;;;   value. Default = 60. This argument is only used when creating the rhythm
 ;;;   slots (e.g. duration).
-
 ;;; - :midi-channel. A number from 0 to 127 indicating the MIDI channel on
 ;;;   which the event should be played back. Default = NIL.
-
 ;;; - :microtones-midi-channel. If the event is microtonal, this argument
 ;;;   indicates the MIDI-channel to be used for the playback of the microtonal
 ;;;   notes. Default = NIL.
+;;; - :transposition. A number in semitones that indicates the transposition of
+;;;   the instrument that this event is being created for.  E.g. -2 would be
+;;;   for a Bflat clarinet.
 ;;; 
 ;;; RETURN VALUE  
 ;;; - An event object.
@@ -3178,6 +3174,9 @@ T
                    duration
                    midi-channel
                    microtones-midi-channel
+                   ;; MDE Thu May 31 19:03:59 2012 -- allow us to auto-set the
+                   ;; written-pitch-or-chord slot   
+                   transposition
                    (amplitude 0.7)
                    (tempo 60))
 ;;; **** 
@@ -3198,6 +3197,9 @@ T
             (slot-value e 'amplitude) amplitude)
       (when midi-channel
         (set-midi-channel e midi-channel microtones-midi-channel))
+      ;; MDE Thu May 31 19:05:25 2012 
+      (when (numberp transposition)
+        (set-written e (- transposition)))
       e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3624,8 +3626,8 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 ;;; 0.5-second intervals and print the pitches and start-times. Then apply the
 ;;; function and print the pitches and start-times again to see the change.
 (let ((e-list (loop for st from 1.0 by 0.5
-		 for nn in '(c4 d4 e4 f4 g4 a4 b4 c5)
-		 collect (make-event nn 'e :start-time st))))
+                 for nn in '(c4 d4 e4 f4 g4 a4 b4 c5)
+                 collect (make-event nn 'e :start-time st))))
   (print
    (loop for e in e-list
       collect (get-pitch-symbol e)

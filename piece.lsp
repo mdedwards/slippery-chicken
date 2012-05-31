@@ -344,24 +344,95 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Fri May  4 13:48:04 BST 2012: Added robodoc entry
+;;; SAR Thu May 31 18:00:30 BST 2012: Added robodoc entry
 
 ;;; ****m* piece/insert-bar
 ;;; DESCRIPTION
-;;; 
+;;; Insert a rthm-seq-bar object into an existing piece object.
+;;;
+;;; NB: As this is a post-generation editing method when used with this class,
+;;;     the rthm-seq-bar object must consist of event objects (with pitches),
+;;;     not just rhythm objects. If used to insert a bar into an isolated
+;;;     rthm-seq object (not a sequenz object), the inserted rthm-seq-bar could
+;;;     then consist of rhythm objects rather than events.
+;;;
+;;; NB: Slippery chicken does not check to ensure that a new bar is inserted
+;;;     for each player at a given point; this is up to the user. Also, the
+;;;     user must call the update-slots method to ensure that changes to the
+;;;     NUM-BARS slot etc are reflected in the given slippery-chicken object. 
 ;;; 
 ;;; ARGUMENTS
-;;; <bar-num> is the bar-number within the rsb BEFORE which the new bar is to
-;;; be inserted.
+;;; - A piece object.
+;;; - A rthm-seq-bar object.
+;;; - An integer that is the bar-number within the rthm-seq-bar object before
+;;;   which the new bar is to be inserted.
+;;; - NB: The optional arguments are actually required for use with this class.  
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; NB: The optional arguments are actually required for use with this class.  
+;;; - An integer that is the section of in which the bar is to be inserted. 
+;;; - The ID of the player into whose part the new bar is to be added.
+;;; - An integer that is the number of the sequenz object into which the bar is
+;;;   to be inserted. This is one-based. 
+;;; - A list of integers that are the curve for a pitch-seq object to be
+;;;   applied to the bar that is to be inserted.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((hn (french-horn :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (1 1 1 1 1))
+		   (3 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5))))
+			    (2 ((((4 4) h h))
+				:pitch-seq-palette ((1 2)))))
+	:rthm-seq-map '((1 ((hn (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(2 ((hn (1 1 1 1 1))
+			    (vc (1 2 1 1 1))))
+			(3 ((hn (1 1 1 1 1))
+			    (vc (1 1 1 1 1)))))))
+      (new-bar (make-rthm-seq-bar '((4 4) (w)))))
+  
+  (fill-with-rhythms new-bar (loop for r in '(h q. e) 
+				for p in '(c4 e4 g4)
+				collect (make-event p r)))
+  ;; slippery-chicken object has 15 bars
+  (print (num-bars mini))
+  ;; print the number of bars in the sequenz in piece=mini, section=2,
+  ;; seq=2 (0=based), player='hn.
+  ;; has 1 bar
+  (print (num-bars (get-nth-sequenz (piece mini) 2 'hn 2)))
+  ;; insert an rsb in piece=mini, section=2, seq=3 (1-based), player='hn,
+  ;; before rsb=1 of the existing seq
+  (insert-bar (piece mini) new-bar 1 2 'hn 3 '(1 2 3))
+  ;; insert an rsb in piece=mini, section=2, seq=3 (1-based), player='vc,
+  ;; before rsb=1 of the existing seq
+  (insert-bar (piece mini) new-bar 1 2 'vc 3 '(1 2 3))
+  ;; print the number of bars in the sequenz in piece=mini, section=2,
+  ;; seq=2 (0=based), player='hn.
+  ;; now has 2 bars.
+  (print (num-bars (get-nth-sequenz (piece mini) 2 'hn 2)))
+  ;; update slots of the sc object.
+  (update-slots mini)
+  ;; print the number of bars of the slippery-chicken object.
+  ;; now 16.
+  (print (num-bars mini)))
+
+=>
+15 
+1 
+2 
+16
 
 |#
 ;;; SYNOPSIS
@@ -382,7 +453,6 @@
 ;;; here as it's been taken nearly verbatim into the robodoc below.
 
 ;;; MDE original comment:
-
 ;;; This is the primary method that should be called to access instrument
 ;;; sequences as it handles the case where an instrument doesn't play in a
 ;;; sequence. 
@@ -400,36 +470,32 @@
 ;;; Get the sequenz object from a specified section of a piece object by
 ;;; specifying a position index and a player.
 ;;;
-;;; This is the primary method that should be called to access player
-;;; sequences, as it handles cases in which a player doesn't play in a sequence.
+;;; NB: This is the primary method for accessing player sequences, as it
+;;;     handles cases in which a player doesn't play in a sequence, and it is
+;;;     called automatically by slippery-chicken. 
 ;;;
-;;; When the specified player has no note events in the specified sequence and
-;;; the optional argument create-rest-seq is set to T, this method creates a
-;;; rest sequence (one that consists of the correct number of bars with the
-;;; right time signatures, but in which the bars are only rest bars) based on a
-;;; sequence in one of the playing instruments.
+;;;     When the specified player has no note events in the specified sequence
+;;;     and the optional argument <create-rest-seq> is set to T, this method
+;;;     creates a rest sequence (one that consists of the correct number of
+;;;     bars with the right time signatures, but in which the bars are only
+;;;     rest bars) based on a sequence in one of the playing instruments.
 ;;;
 ;;; ARGUMENTS
-
 ;;; - A piece object.
-
 ;;; - The ID of the section in from which the sequenz object is to be
 ;;;   returned. 
-
 ;;; - The ID of the player from whose part the sequenz object is to be
 ;;;   returned. 
-
 ;;; - An integer that is the index (position) of the desired sequenz object
 ;;;   within the given section. This number is 0-based.
-
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-
-;;; - T or NIL to indicate whether to convert sequenz objects that are NIL (the
-;;;   specified player has no events in the specified sequenz) to sequenz
-;;;   objects consisting of full-bar rests. T = create rest sequences. 
-;;;   Default = T.
-
+;;; - T or NIL to indicate whether to convert sequenz objects that are NIL
+;;;   (i.e., the specified player has no events in the specified sequenz) to
+;;;   sequenz objects consisting of full-bar rests. T = create rest sequences.
+;;;   Default = T. NB: This argument is already called by slippery-chicken with
+;;;   a value of T, so has no effect when used as a post-generation editing
+;;;   method and can be thus considered for internal use only.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns a sequenz object.

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 23:14:49 Tue May 29 2012 BST
+;;; $$ Last modified: 18:55:52 Thu May 31 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3870,18 +3870,18 @@ data: (2 4)
 
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((vn (violin :midi-channel 1))))
-	:set-palette '((1 ((gs4 af4 bf4))))
-	:set-map '((1 (1 1 1)))
-	:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-				:pitch-seq-palette ((1 2 1 1 1 1 1 1)))))
-	:rthm-seq-map '((1 ((vn (1 1 1))))))))
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((gs4 af4 bf4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 1 1 1 1 1 1)))))
+        :rthm-seq-map '((1 ((vn (1 1 1))))))))
   (print (loop for r in (rhythms (get-bar mini 2 'vn))
-	    collect (get-pitch-symbol r)))
+            collect (get-pitch-symbol r)))
   (respell-bar (get-bar mini 2 'vn) mini 'vn)
   (print (loop for r in (rhythms (get-bar mini 2 'vn))
-	    collect (get-pitch-symbol r))))
+            collect (get-pitch-symbol r))))
 
 (GS4 AF4 GS4 GS4 GS4 GS4 GS4 GS4) 
 (GS4 GS4 GS4 GS4 GS4 GS4 GS4 GS4)
@@ -3930,7 +3930,11 @@ data: (2 4)
                  )
            ;; 9.2.11
            (unless p
-             (error "rthm-seq-bar::respell-bar: p is nil in: ~%~a!" rsb))
+             (error "rthm-seq-bar::respell-bar: expected a pitch this ~
+                     bar's events but one of them ~%was nil--it could be ~
+                     that you've created your own events and forgotten to ~&~
+                     assign both written and sounding pitches for notes ~
+                     played on a transposing ~%instrument: ~%~a!" rsb))
            (when (enharmonics-exist rsb p t written)
              #|
              (or (or (chord-p last-attack-p)

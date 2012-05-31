@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 13:08:04 Mon May 14 2012 BST
+;;; $$ Last modified: 19:32:55 Thu May 31 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -126,7 +126,10 @@
       ;; Issue an error when an unnecessary time-sig was given!
       (loop for b1 in bars and b2 in (cdr bars) do
             (when 
-                (and (time-sig-equal (get-time-sig b1) (get-time-sig b2))
+                ;; MDE Thu May 31 19:31:25 2012 -- remember time-sig-equal will
+                ;; return 'time-sig-equal-duration for e.g. 3/4 and 6/8 
+                (and (equalp t (time-sig-equal
+                                (get-time-sig b1) (get-time-sig b2)))
                      (write-time-sig b2))
               (error "rthm-seq::initialize-instance: ~
                   An unnecessary time signature was given: ~%~a" 

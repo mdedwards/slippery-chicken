@@ -388,21 +388,46 @@ BAR-HOLDER:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; This function will only combine short bars into longer ones, it won't split
-;;; up bars and recombine. 
+;;; SAR Thu May 31 18:46:06 BST 2012: Added robodoc entry
 
 ;;; ****m* section/re-bar
 ;;; DESCRIPTION
-;;; 
+;;; Regroup the consecutive note and rest events of a given section object into
+;;; new bars of the specified time signature. 
+;;;
+;;; This method will only combine short bars into longer ones; it will not
+;;; split up longer bars and recombine them. 
+;;;
+;;; The method will also use the specified (or default) time signature as a
+;;; target, and may be forced to create a number of bars that are not of the
+;;; specified time signature if the number of beats in the given section object
+;;; do not correspond.
+;;;
+;;; NB: The user must call the update-slots method after using this method as a
+;;;     post-generation editing method.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A section object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
+;;; keyword arguments:
+;;; - :start-bar. An integer that is the first bar within the specified section
+;;;   that is to be re-barred. Default = First bar of the given section.
+;;; - :end-bar. An integer that is the last bar within the specified section
+;;;   that is to be re-barred. Default = Last bar of the given section.
+;;; - :min-time-sig. The target time signature for all new bars. NB: Depending
+;;;   on the number of beats in the given section, the method may have to
+;;;   deviate from this target time signature. Default = '(2 4).
+;;; - :verbose. T or NIL to indicate whether to print feedback on the
+;;;   re-barring process to the Lisp listener. Default = NIL.
+;;; - :auto-beam.  T, NIL, or an integer. If T, the method will automatically
+;;;   attach beam indications to the corresponding events according to the beat
+;;;   unit of the time signature. If an integer, the method will beam in
+;;;   accordance with a beat unit that is equal to that integer. If NIL, the
+;;;   method will not automatically place beams. Default = T.
+;;;
 ;;; RETURN VALUE
-;;; 
+;;; T.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -422,7 +447,7 @@ BAR-HOLDER:
            (re-bar sub-section :start-bar start-bar :end-bar end-bar
                    :min-time-sig min-time-sig :verbose verbose))
       ;; looping for each player means we do a lot of the detection arithmetic
-      ;; not once but once for each player, but it's necessary for the glorious
+      ;; not once but once for each player, but it's necessary for the glorious 
       ;; future when we might have different meters for different instruments.
       (progn 
         ;; MDE Sun May  6 21:46:38 2012 
@@ -435,20 +460,21 @@ BAR-HOLDER:
            with this-time-sigs
            for player-section in (data s) do
            ;; MDE Thu Feb  9 11:43:51 2012 -- fixed the logic here
-           (when (and (<= start-bar (end-bar s))
-                      (>= end-bar (start-bar s)))
-             (setf this-time-sigs
-                   (re-bar player-section 
-                           :start-bar (max start-bar (start-bar player-section))
-                           :end-bar (min end-bar (end-bar player-section))
-                           :min-time-sig min-time-sig :verbose verbose 
-                           :auto-beam auto-beam))
-             (if first-time-sigs
-                 (unless (equal first-time-sigs this-time-sigs)
-                   (warn "section::re-bar: not all time-sigs are the same! ~
+	     (when (and (<= start-bar (end-bar s))
+			(>= end-bar (start-bar s)))
+	       (setf this-time-sigs
+		     (re-bar player-section 
+			     :start-bar (max start-bar (start-bar
+							player-section)) 
+			     :end-bar (min end-bar (end-bar player-section)) 
+			     :min-time-sig min-time-sig :verbose verbose 
+			     :auto-beam auto-beam))
+	       (if first-time-sigs
+		   (unless (equal first-time-sigs this-time-sigs)
+		     (warn "section::re-bar: not all time-sigs are the same! ~ 
                          ~%first: ~a ~%this:  ~a"
-                         first-time-sigs this-time-sigs))
-                 (setf first-time-sigs this-time-sigs))))))
+			   first-time-sigs this-time-sigs))
+		   (setf first-time-sigs this-time-sigs))))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

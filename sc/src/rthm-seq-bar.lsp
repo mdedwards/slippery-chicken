@@ -461,6 +461,7 @@ data: NIL
   (fill-with-rhythms rsb (loop for r in '(h q e s s)
                               for p in '(c4 dqs4 e4 gqf4 a4)
                             collect (make-event p r))
+		     :microtones-midi-channel 12
                      :transposition -14
                      :midi-channel 11)
   (print
@@ -476,7 +477,7 @@ data: NIL
 =>
 (C4 DQS4 E4 GQF4 A4) 
 (D5 EQS5 FS5 AQF5 B5) 
-(11 11 11 11 11)
+(11 12 11 12 11)
 
 |#
 ;;; SYNOPSIS

@@ -242,7 +242,6 @@
 ;;; 
 ;;; ARGUMENTS
 ;;; - An ID for the palette.
-
 ;;; - A list of lists that contains IDs for the names of one or more groups of
 ;;;   sound files, each paired with a list of one or more names of existing
 ;;;   sound files. The sound file names themselves can be paired with keywords
@@ -251,14 +250,11 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-
 ;;; - :paths. A list of one or more paths to where the sound files are located.
-
 ;;; - :extensions. A list of one or more sound file extensions for the
 ;;;   specified sound files. The default initialization for this slot of the
 ;;;   sndfile-palette already contains ("wav" "aiff" "aif" "snd"), so this
 ;;;   argument can often be left unspecified.
-
 ;;; - :warn-not-found. T or NIL to indicate whether a warning should be printed
 ;;;   to the Lisp listener if the specified sound file cannot be found. 
 ;;;   T = print warning. Default = T.

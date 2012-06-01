@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:47:02 Thu May 17 2012 BST
+;;; $$ Last modified: 14:30:43 Fri Jun  1 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3347,15 +3347,23 @@
 ;;; SAR Thu Dec 15 11:45:12 GMT 2011: added carriage returns to formatted text
 
 (defun load-from-examples-dir (file)
+  (declare (special cl-user::+slippery-chicken-home-dir+))
   (format t "~%~%*******  Loading ~a~%" file)
   (load 
      (format nil "~a/doc/examples/~a"
              cl-user::+slippery-chicken-home-dir+ file)))
 
 (defun load-from-test-suite-dir (file)
+  (declare (special cl-user::+slippery-chicken-home-dir+))
   (format t "~%~%*******  Loading ~a~%" file)
   (load 
      (format nil "~atest-suite/~a" cl-user::+slippery-chicken-home-dir+ file)))
+
+;;; e.g. (FILE-FROM-SC-DIR "test-suite/blah.lsp") 
+;;; -> "/Users/medward2/lisp/sc/test-suite/blah.lsp"
+(defun file-from-sc-dir (file)
+  (declare (special cl-user::+slippery-chicken-home-dir+))
+  (concatenate 'string cl-user::+slippery-chicken-home-dir+ file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri May  4 11:01:14 2012 

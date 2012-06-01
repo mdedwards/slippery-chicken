@@ -74,21 +74,61 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jun  1 12:20:03 BST 2012: Added robodoc entry
+
 ;;; ****m* section/has-subsections
 ;;; DESCRIPTION
-;;; 
+
+;;; Boolean test to determine whether a specified section of a slippery-chicken
+;;; object has subsections.  
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A section object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T if the specified section has subsections, otherwise NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1
+		    ((a (1 1 1))
+		     (b (1 1 1))))
+		   (2 (1 1 1 1))
+		   (3
+		    ((a (1 1 1))
+		     (b
+		      ((x (1 1 1))
+		       (y (1 1 1))))))
+		   (4
+		    ((a (1 1 1))
+		     (b (1 1 1))
+		     (c (1 1 1 1)))))
+	:rthm-seq-palette '((1 ((((2 4) (q) e (s) s))
+				:pitch-seq-palette ((1 2)))))
+	:rthm-seq-map '((1
+			 ((a ((vn (1 1 1))))
+			  (b ((vn (1 1 1))))))
+			(2 ((vn (1 1 1 1))))
+			(3
+			 ((a ((vn (1 1 1))))
+			  (b
+			   ((x ((vn (1 1 1))))
+                            (y ((vn (1 1 1))))))))
+			(4
+			 ((a ((vn (1 1 1))))
+			  (b ((vn (1 1 1))))
+			  (c ((vn (1 1 1 1))))))))))
+  (print (has-subsections (get-section mini 1)))
+  (print (has-subsections (get-section mini 2))))
+
+=>
+T 
+NIL
 
 |#
 ;;; SYNOPSIS
@@ -219,9 +259,7 @@ BAR-HOLDER:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Wed May 30 21:34:53 BST 2012: Added robodoc entry
-
-;;; bar-num is 1-based!
+;;; SAR Fri Jun  1 12:25:38 BST 2012: Added robodoc entry
 
 ;;; N.B. although optional, the player argument is required.  It is optional so
 ;;; that we can have a sequenz method with the same name which only requires
@@ -229,19 +267,78 @@ BAR-HOLDER:
 
 ;;; ****m* section/get-bar
 ;;; DESCRIPTION
-;;; 
+;;; Return the rthm-seq-bar object at the specified bar number within the given
+;;; section.  
+;;;
+;;; NB: The bar number is counted from the beginning of the entire piece, not
+;;;     the beginning of the section.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A section object.
+;;; - An integer that is the bar number for which to return the rthm-seq-bar
+;;;   object. This number is 1-based and counts from the beginning of the
+;;;   piece, not the beginning of the section.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; NB: The <player> argument is actually required, but is listed as optional
+;;;     for reasons of class inheritance.
+;;;
+;;; - The ID of the player for whose part the rthm-seq-bar object is to be
+;;;   returned. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A rthm-seq-bar object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (hn (french-horn :midi-channel 2))
+		     (vc (cello :midi-channel 3))))
+	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))
+		       (2 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))
+		       (3 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1))
+		   (2 (2 2 2 2 2))
+		   (3 (3 3 3 3 3)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 2 3 4 5))))
+			    (2 ((((4 4) q e s s h))
+				:pitch-seq-palette ((1 2 3 4 5))))
+			    (3 ((((4 4) e s s h q))
+				:pitch-seq-palette ((1 2 3 4 5)))))
+	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (hn (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))
+			(2 ((cl (2 2 2 2 2))
+			    (hn (2 2 2 2 2))
+			    (vc (2 2 2 2 2))))
+			(3 ((cl (3 3 3 3 3))
+			    (hn (3 3 3 3 3))
+			    (vc (3 3 3 3 3))))))))
+  (get-bar (get-section mini 3) 11 'hn))
+
+=>
+RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 11, 
+              old-bar-nums: NIL, write-bar-num: NIL, start-time: 40.000, 
+              start-time-qtrs: 40.0, is-rest-bar: NIL, multi-bar-rest: NIL, 
+              show-rest: T, notes-needed: 5, 
+              tuplets: NIL, nudge-factor: 0.35, beams: NIL, 
+              current-time-sig: 2, write-time-sig: NIL, num-rests: 0, 
+              num-rhythms: 5, num-score-notes: 5, parent-start-end: NIL, 
+              missing-duration: NIL, bar-line-type: 0, 
+              player-section-ref: (3 HN), nth-seq: 0, nth-bar: 0, 
+              rehearsal-letter: NIL, all-time-sigs: (too long to print) 
+              sounding-duration: 4.000, 
+              rhythms: (
+[...]
+)
+SCLIST: sclist-length: 6, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "3-bar1", tag: NIL, 
+data: ((4 4) E S S H Q)
 
 |#
 ;;; SYNOPSIS

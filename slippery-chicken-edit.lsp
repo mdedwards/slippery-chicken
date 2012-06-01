@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 19:03:20 Tue May  8 2012 BST
+;;; $$ Last modified: 15:43:01 Fri Jun  1 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -822,7 +822,7 @@
         :rthm-seq-map '((1 ((vn (1 1 1 1 1))))))))
   (respell-bars mini))
 
-=> NIL
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -845,7 +845,8 @@
             (respell-bar bar sc player nil last-attack)
             (when written-too
               (respell-bar bar sc player t last-attack))
-            (setf last-attack (get-last-attack bar nil)))))
+            (setf last-attack (get-last-attack bar nil))))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -853,7 +854,8 @@
 
 ;;; SAR Sun Apr 22 10:58:56 BST 2012: Moved MDE's comment into the entry.
 
-;;; MDE 8/4/07: keep track of the last two now in order to make better decisions.
+;;; MDE 8/4/07: keep track of the last two now in order to make better
+;;; decisions.
 
 ;;; ****m* slippery-chicken-edit/respell-notes-for-player
 ;;; DESCRIPTION

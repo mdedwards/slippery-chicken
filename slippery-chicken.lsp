@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:07:48 Wed May 30 2012 BST
+;;; $$ Last modified: 13:19:28 Fri Jun  1 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4197,7 +4197,7 @@ seq-num 5, VN, replacing G3 with B6
             compiled and loaded for this method to run."))
   ;; MDE Fri May 11 15:13:18 2012 -- if there's only one section....
   (when (and (not num-sections)
-             (= start-section 1)
+             (= section 1)
              (= 1 (get-num-sections sc)))
     (setf num-sections 1))
   ;; MDE Wed Apr 25 14:45:03 2012 -- if we're playing more than one section

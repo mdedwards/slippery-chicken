@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 13:34:45 Fri May 25 2012 BST
+;;; $$ Last modified: 11:42:47 Fri Jun  1 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -81,12 +81,13 @@
   ;; sbcl uses /
   #+(and (not sbcl) (or windows mswindows win32 win64)) #\\
   ;; #+mcl #\: ; back in pre-OSX days
-  #+(or sbcl unix) #\/)
+  #+(or sbcl ecl unix) #\/)
 
 (defparameter +sc-fasl-extension+
   #+clisp ".fas"
   #+openmcl ".dfsl"
   #+sbcl ".fasl"
+  #+ecl ".fasl"
   #+allegro ".fasl")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -186,8 +187,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+(or windows win32 win64)(sc-load-cm-essentials)
-#-(or windows win32 win64)(sc-load-cm-all)
+#+(or windows win32 win64 ecl)(sc-load-cm-essentials)
+#-(or windows win32 win64 ecl)(sc-load-cm-all)
 ;;; It seems CM doesn't put itself on the features list but sc needs it.
 (pushnew :cm *features*)
 (pushnew :cm-2 *features*)

@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 10:27:35 Thu May 17 2012 BST
+;;; $$ Last modified: 14:59:31 Sat Jun  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -913,10 +913,10 @@ assoc-list::add: named-object is NIL!
               (add (make-named-object last nil) data-data)))
           ;; now we put the data in there
           (set-data key (list last (econs (get-data-data key ral) data))
-                    ral)
-          ;; MDE Wed May 16 21:52:03 2012 -- 
-          (relink-named-objects ral)
-          data))))
+                    ral))))
+  ;; MDE Wed May 16 21:52:03 2012 -- 
+  (relink-named-objects ral)
+  data)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Fri Jan 27 16:41:42 GMT 2012: Added robodoc info

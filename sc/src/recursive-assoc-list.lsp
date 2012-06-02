@@ -1521,28 +1521,32 @@ data: RIBBON
 ;;; MDE Tue Feb 28 18:03:28 2012 -- get the object for <id> and set its <slot>
 ;;; to <value> NB we setf slot-value here rather than calling the setf method
 ;;; so if a setf method has been explicitly defined it won't be called.
+
+;;; SAR Sat Jun  2 14:17:05 BST 2012: Added robodoc entry
+
 ;;; ****m* rthm-seq-palette/set-slot
 
 ;;; DESCRIPTION
-;;; 
-;;; 
+;;; Set the specified slot of an object with a recursive-assoc-list structure
+;;; to the specified value. This is particularly useful for changing the
+;;; parameters of instrument objects within an instrument palette, for example.
+;;;
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - The name of the slot whose value is to be set.
+;;; - The value to which that slot is to be set.
+;;; - The key within the given recursive-assoc-list object for which the slot
+;;;   is to be set.
+;;; - The recursive-assoc-list object in which the slot is to be changed.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; The value to which the slot has been set.
 ;;; 
 ;;; EXAMPLE
 #|
-(largest-fast-leap
- (get-data 'oboe +slippery-chicken-standard-instrument-palette+))
-==> 999
-
 (set-slot 'largest-fast-leap 10 'oboe
           +slippery-chicken-standard-instrument-palette+)
+
+=> 10
                                        
 |#
 ;;; SYNOPSIS

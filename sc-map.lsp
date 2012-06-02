@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 11:28:00 Sat Jun  2 2012 BST
+;;; $$ Last modified: 13:43:59 Sat Jun  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -331,7 +331,6 @@ data: (SET1 SET3 SET2)
 ;;; ****
   (let* ((palette-ref (get-data ids scm warn))
          (palette-ref-data (when palette-ref (data palette-ref))))
-    (print palette-ref)
     (cond ((not (palette scm))
            ;; MDE Thu Feb 23 10:52:44 2012 -- just return the get-data call if
            ;; there's no palette, but indicate something in the second returned

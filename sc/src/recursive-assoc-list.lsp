@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 14:59:31 Sat Jun  2 2012 BST
+;;; $$ Last modified: 15:07:17 Sat Jun  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -914,7 +914,9 @@ assoc-list::add: named-object is NIL!
           ;; now we put the data in there
           (set-data key (list last (econs (get-data-data key ral) data))
                     ral))))
-  ;; MDE Wed May 16 21:52:03 2012 -- 
+  ;; MDE Wed May 16 21:52:03 2012 
+  ;; MDE Sat Jun  2 15:07:00 2012 -- moving this out of the above progn so that
+  ;; relinking is always done  
   (relink-named-objects ral)
   data)
 

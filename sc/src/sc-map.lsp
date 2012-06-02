@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 20:24:20 Thu Mar  1 2012 GMT
+;;; $$ Last modified: 11:28:00 Sat Jun  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -174,21 +174,21 @@
 ;; applying the get-all-data-from-palette method by printing the data of each
 ;; of the objects in the list it returns as note-name symbols.
 (let* ((sp (make-set-palette 'set-pal '((set1 ((c2 b2 a3 g4 f5 e6)))
-				       (set2 ((d2 c3 b3 a4 g5 f6)))
-				       (set3 ((e2 d3 c4 b4 a5 g6))))))
+                                       (set2 ((d2 c3 b3 a4 g5 f6)))
+                                       (set3 ((e2 d3 c4 b4 a5 g6))))))
       (scm (make-sc-map 'sc-m '((sec1
-				 ((vn (set1 set3 set2))
-				  (va (set2 set3 set1))
-				  (vc (set3 set1 set2))))
-				(sec2
-				 ((vn (set1 set2 set1))
-				  (va (set2 set1 set3))
-				  (vc (set1 set3 set3))))
-				(sec3
-				 ((vn (set1 set1 set3))
-				  (va (set1 set3 set2))
-				  (vc (set3 set2 set3)))))
-			:palette sp)))
+                                 ((vn (set1 set3 set2))
+                                  (va (set2 set3 set1))
+                                  (vc (set3 set1 set2))))
+                                (sec2
+                                 ((vn (set1 set2 set1))
+                                  (va (set2 set1 set3))
+                                  (vc (set1 set3 set3))))
+                                (sec3
+                                 ((vn (set1 set1 set3))
+                                  (va (set1 set3 set2))
+                                  (vc (set3 set2 set3)))))
+                        :palette sp)))
   (loop for cs in (get-all-data-from-palette scm)
      collect (pitch-list-to-symbols (data cs))))
 
@@ -206,17 +206,17 @@
 ;; Applying the method to an sc-map object that is not bound to a palette
 ;; object returns NIL
 (let ((scm (make-sc-map 'sc-m '((sec1
-				 ((vn (set1 set3 set2))
-				  (va (set2 set3 set1))
-				  (vc (set3 set1 set2))))
-				(sec2
-				 ((vn (set1 set2 set1))
-				  (va (set2 set1 set3))
-				  (vc (set1 set3 set3))))
-				(sec3
-				 ((vn (set1 set1 set3))
-				  (va (set1 set3 set2))
-				  (vc (set3 set2 set3))))))))
+                                 ((vn (set1 set3 set2))
+                                  (va (set2 set3 set1))
+                                  (vc (set3 set1 set2))))
+                                (sec2
+                                 ((vn (set1 set2 set1))
+                                  (va (set2 set1 set3))
+                                  (vc (set1 set3 set3))))
+                                (sec3
+                                 ((vn (set1 set1 set3))
+                                  (va (set1 set3 set2))
+                                  (vc (set3 set2 set3))))))))
   (get-all-data-from-palette scm))
 
 =>
@@ -282,21 +282,21 @@ WARNING:
 ;;; through the data of the named objects in the list returned and return them
 ;;; as note-name symbols. 
 (let* ((sp (make-set-palette 'set-pal '((set1 ((c2 b2 a3 g4 f5 e6)))
-				       (set2 ((d2 c3 b3 a4 g5 f6)))
-				       (set3 ((e2 d3 c4 b4 a5 g6))))))
+                                       (set2 ((d2 c3 b3 a4 g5 f6)))
+                                       (set3 ((e2 d3 c4 b4 a5 g6))))))
       (scm (make-sc-map 'sc-m '((sec1
-				 ((vn (set1 set3 set2))
-				  (va (set2 set3 set1))
-				  (vc (set3 set1 set2))))
-				(sec2
-				 ((vn (set1 set2 set1))
-				  (va (set2 set1 set3))
-				  (vc (set1 set3 set3))))
-				(sec3
-				 ((vn (set1 set1 set3))
-				  (va (set1 set3 set2))
-				  (vc (set3 set2 set3)))))
-			:palette sp)))
+                                 ((vn (set1 set3 set2))
+                                  (va (set2 set3 set1))
+                                  (vc (set3 set1 set2))))
+                                (sec2
+                                 ((vn (set1 set2 set1))
+                                  (va (set2 set1 set3))
+                                  (vc (set1 set3 set3))))
+                                (sec3
+                                 ((vn (set1 set1 set3))
+                                  (va (set1 set3 set2))
+                                  (vc (set3 set2 set3)))))
+                        :palette sp)))
   (loop for cs in (get-data-from-palette '(sec1 vn) scm)
      collect (pitch-list-to-symbols (data cs))))
 
@@ -306,17 +306,17 @@ WARNING:
 ;; of the sc-map object at the specified location are returned and a warning is
 ;; printed by default 
 (let ((scm (make-sc-map 'sc-m '((sec1
-				 ((vn (set1 set3 set2))
-				  (va (set2 set3 set1))
-				  (vc (set3 set1 set2))))
-				(sec2
-				 ((vn (set1 set2 set1))
-				  (va (set2 set1 set3))
-				  (vc (set1 set3 set3))))
-				(sec3
-				 ((vn (set1 set1 set3))
-				  (va (set1 set3 set2))
-				  (vc (set3 set2 set3))))))))
+                                 ((vn (set1 set3 set2))
+                                  (va (set2 set3 set1))
+                                  (vc (set3 set1 set2))))
+                                (sec2
+                                 ((vn (set1 set2 set1))
+                                  (va (set2 set1 set3))
+                                  (vc (set1 set3 set3))))
+                                (sec3
+                                 ((vn (set1 set1 set3))
+                                  (va (set1 set3 set2))
+                                  (vc (set3 set2 set3))))))))
    (get-data-from-palette '(sec1 vn) scm))
 
 => 
@@ -331,12 +331,13 @@ data: (SET1 SET3 SET2)
 ;;; ****
   (let* ((palette-ref (get-data ids scm warn))
          (palette-ref-data (when palette-ref (data palette-ref))))
+    (print palette-ref)
     (cond ((not (palette scm))
            ;; MDE Thu Feb 23 10:52:44 2012 -- just return the get-data call if
            ;; there's no palette, but indicate something in the second returned
            ;; value to this effect 
            (values palette-ref 'no-palette))
-          ;; often a sc-map has multiple references to a palette stored for any
+          ;; often an sc-map has multiple references to a palette stored for any
           ;; given key(s) so palette-ref-data is a list of references; if so,
           ;; give them all back
           ((list-of-refs-p palette-ref-data)
@@ -414,21 +415,21 @@ data: (SET1 SET3 SET2)
 ;;; <palette> object of the make-sc-map function, and apply the
 ;;; get-nth-from-palette method
 (let* ((sp (make-set-palette 'set-pal '((set1 ((c2 b2 a3 g4 f5 e6)))
-				       (set2 ((d2 c3 b3 a4 g5 f6)))
-				       (set3 ((e2 d3 c4 b4 a5 g6))))))
+                                       (set2 ((d2 c3 b3 a4 g5 f6)))
+                                       (set3 ((e2 d3 c4 b4 a5 g6))))))
       (scm (make-sc-map 'sc-m '((sec1
-				 ((vn (set1 set3 set2))
-				  (va (set2 set3 set1))
-				  (vc (set3 set1 set2))))
-				(sec2
-				 ((vn (set1 set2 set1))
-				  (va (set2 set1 set3))
-				  (vc (set1 set3 set3))))
-				(sec3
-				 ((vn (set1 set1 set3))
-				  (va (set1 set3 set2))
-				  (vc (set3 set2 set3)))))
-			:palette sp)))
+                                 ((vn (set1 set3 set2))
+                                  (va (set2 set3 set1))
+                                  (vc (set3 set1 set2))))
+                                (sec2
+                                 ((vn (set1 set2 set1))
+                                  (va (set2 set1 set3))
+                                  (vc (set1 set3 set3))))
+                                (sec3
+                                 ((vn (set1 set1 set3))
+                                  (va (set1 set3 set2))
+                                  (vc (set3 set2 set3)))))
+                        :palette sp)))
   (get-nth-from-palette '(sec1 vn) 0 scm))
 
 => 
@@ -470,17 +471,17 @@ data: (C2 B2 A3 G4 F5 E6)
 ;;; Applying the method to an sc-map object that is not bound to a palette
 ;;; object returns NIL
 (let ((scm (make-sc-map 'sc-m '((sec1
-				 ((vn (set1 set3 set2))
-				  (va (set2 set3 set1))
-				  (vc (set3 set1 set2))))
-				(sec2
-				 ((vn (set1 set2 set1))
-				  (va (set2 set1 set3))
-				  (vc (set1 set3 set3))))
-				(sec3
-				 ((vn (set1 set1 set3))
-				  (va (set1 set3 set2))
-				  (vc (set3 set2 set3))))))))
+                                 ((vn (set1 set3 set2))
+                                  (va (set2 set3 set1))
+                                  (vc (set3 set1 set2))))
+                                (sec2
+                                 ((vn (set1 set2 set1))
+                                  (va (set2 set1 set3))
+                                  (vc (set1 set3 set3))))
+                                (sec3
+                                 ((vn (set1 set1 set3))
+                                  (va (set1 set3 set2))
+                                  (vc (set3 set2 set3))))))))
   (get-nth-from-palette '(sec1 vn) 0 scm))
 
 => NIL
@@ -750,23 +751,23 @@ data: (1 2 3 4 5)
 ;;; sc-map created to see its contents.
 (let ((scm 
        (make-sc-map 
-	'scm-test
-	'((1
-	   ((vn (1 2 3 4 5))
-	    (va (2 3 4 5 1))
-	    (vc (3 4 5 1 2)))) 
-	  (2
-	   ((vn (6 7 8))
-	    (va (7 8 6))
-	    (vc (8 6 7)))) 
-	  (3
-	   ((vn (9))
-	    (va (9))
-	    (vc (9)))))
-	:palette (make-set-palette 'set-pal 
-				   '((set1 ((c2 b2 a3 g4 f5 e6)))
-				     (set2 ((d2 c3 b3 a4 g5 f6)))
-				     (set3 ((e2 d3 c4 b4 a5 g6))))))))
+        'scm-test
+        '((1
+           ((vn (1 2 3 4 5))
+            (va (2 3 4 5 1))
+            (vc (3 4 5 1 2)))) 
+          (2
+           ((vn (6 7 8))
+            (va (7 8 6))
+            (vc (8 6 7)))) 
+          (3
+           ((vn (9))
+            (va (9))
+            (vc (9)))))
+        :palette (make-set-palette 'set-pal 
+                                   '((set1 ((c2 b2 a3 g4 f5 e6)))
+                                     (set2 ((d2 c3 b3 a4 g5 f6)))
+                                     (set3 ((e2 d3 c4 b4 a5 g6))))))))
   (palette scm))
 
 =>

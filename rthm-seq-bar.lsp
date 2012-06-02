@@ -2427,6 +2427,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 12.12.11 SAR: Added ROBODoc info
+
 ;;; ****m* rthm-seq-bar/get-last-attack
 ;;; DESCRIPTION
 ;;; Gets the rhythm object for the last note that needs an attack (i.e. not a
@@ -2451,21 +2452,21 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((rsb (make-rthm-seq-bar '((3 4) q+e (e) s (s) e))))
-(get-last-attack rsb))
+(let ((rsb (make-rthm-seq-bar '((3 4) q+e (e) s (s) e))))
+  (get-last-attack rsb))
 
-  =>
-  RHYTHM: value: 8.0, duration: 0.5, rq: 1/2, is-rest: NIL, score-rthm: 8.0, 
-  undotted-value: 8, num-flags: 1, num-dots: 0, is-tied-to: NIL, 
-  is-tied-from: NIL, compound-duration: 0.5, is-grace-note: NIL, 
-  needs-new-note: T, beam: NIL, bracket: NIL, rqq-note: NIL, 
-  rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 8, 
-  tuplet-scaler: 1, grace-note-duration: 0.05,
-  LINKED-NAMED-OBJECT: previous: NIL
-  this: NIL
-  next: NIL
-  NAMED-OBJECT: id: E, tag: NIL, 
-  data: E
+=>
+RHYTHM: value: 8.0, duration: 0.5, rq: 1/2, is-rest: NIL, score-rthm: 8.0, 
+undotted-value: 8, num-flags: 1, num-dots: 0, is-tied-to: NIL, 
+is-tied-from: NIL, compound-duration: 0.5, is-grace-note: NIL, 
+needs-new-note: T, beam: NIL, bracket: NIL, rqq-note: NIL, 
+rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 8, 
+tuplet-scaler: 1, grace-note-duration: 0.05,
+LINKED-NAMED-OBJECT: previous: NIL
+this: NIL
+next: NIL
+NAMED-OBJECT: id: E, tag: NIL, 
+data: E
 
   |#
 ;;; SYNOPSIS

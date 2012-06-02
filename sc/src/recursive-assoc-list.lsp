@@ -858,22 +858,62 @@ assoc-list::add: named-object is NIL!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Allows new rals to be created automatically; however this assumes that if
-;;; you reference a key that exists, then its data is a list that data will be
-;;; added to the end of (an error will be signalled if this is not the case).
+;;; SAR Sat Jun  2 15:22:27 BST 2012: Added robodoc entry
 
 ;;; ****m* recursive-assoc-list/ral-econs
 ;;; DESCRIPTION
-;;; 
+;;; Automatically create new recursive-assoc-list objects. 
+;;;
+;;; This method assumes that any existing key that may be referenced will be
+;;; associated with data that is already a list, to the end of which the new
+;;; data will be added (an error will be signalled if this is not the case.)
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - The data which is to be added.
+;;; - The key to which the data is to be added (see above note for cases where
+;;;   this key already exists).
+;;; - The recursive-assoc-list object to which this data is to be added.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; The new data added.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Make an empty recursive-assoc-list object and add key/data pairs to the top
+;;; level. 
+(let ((ral (make-ral nil nil)))
+  (print (get-all-refs ral))
+  (ral-econs 'beam 'jim ral)
+  (ral-econs 'turkey 'wild ral)
+  (ral-econs 'roses 'four ral)
+  (print (get-all-refs ral))
+  (print (get-data-data 'wild ral)))
+
+=>
+NIL 
+((JIM) (WILD) (FOUR)) 
+(TURKEY)
+
+;;; Add data to existing keys within a given recursive-assoc-list object
+;;; Note that the data VELVET must be a list for this to succeed
+
+(let ((ral (make-ral 'mixed-bag 
+		     '((jim beam)
+		       (wild turkey)
+		       (four ((roses red)
+			      (violets ((blue (velvet))
+					(red ((dragon den)
+					      (viper nest)
+					      (fox hole)))
+					(white ribbon)))))))))
+  (print (get-all-refs ral))
+  (ral-econs 'underground '(four violets blue) ral)
+  (print (get-data-data '(four violets blue) ral)))
+
+=>
+((JIM) (WILD) (FOUR ROSES) (FOUR VIOLETS BLUE) (FOUR VIOLETS RED DRAGON)
+ (FOUR VIOLETS RED VIPER) (FOUR VIOLETS RED FOX) (FOUR VIOLETS WHITE)) 
+(VELVET UNDERGROUND)
 
 |#
 ;;; SYNOPSIS

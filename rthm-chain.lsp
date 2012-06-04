@@ -1073,6 +1073,9 @@
 ;;;   the method uses the rest-insertion algorithm to automatically insert
 ;;;   rests into the resulting objects. The specified rests are used in a
 ;;;   sequence determined by a recurring-event object. Default = '(e q q. w).
+;;;   NB: The values must not be less than one-quarter of the beat basis, as
+;;;   this could result in an attempt to create meters from fractional
+;;;   beats. An error message will be printed in such cases.
 
 ;;; - :do-rests. T or NIL to indicate whether to apply the automatic
 ;;;   rest-insertion algorithm. T = use. Default = T.

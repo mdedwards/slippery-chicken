@@ -1174,28 +1174,31 @@ Event #i(midi time 3.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat May  5 11:59:43 BST 2012: Conformed robodoc entry
+;;; SAR Mon Jun  4 18:45:06 BST 2012: More conforming
 
 ;;; ****f* cm/midi-file-one-note
 ;;; DESCRIPTION
-;; write all midi notes in the file out to a new file using the single note
-;; <note> and <channel>.
+;; Write all midi notes in the file out to a new one-channel file using the
+;; single pitch <note> and channel number <channel>.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the file path as a string
-;;; - the note to write (symbol or midi note number)
-;;; - the new channel to write note to (counting from 1)
+;;; - A string that is the file path, including file-name and extension.
+;;; - A note-name symbol or MIDI-note integer that is the pitch to write.
+;;; - An integer that is the channel to which the output should be written (1-based)
 ;;;
 ;;; OPTIONAL ARGUMENTS 
 
-;;; - the old channel: if given, only notes on this channel will be written
-;;;   (counting from 1).
+;;; - An integer that is the an existing MIDI channel in the original file. If
+;;;   this argument is given, only notes on this channel of the original file
+;;;   will be written (1-based).
 ;;; 
 ;;; RETURN VALUE  
-;;; the path to the new file
+;;; The path to the new file.
 ;;; 
 ;;; EXAMPLE
-;;; (cm::midi-file-one-note 
-;;;         "/Users/medward2/mus/altogether/altogether.mid" 'c4 9)
+#|
+(cm::midi-file-one-note "/tmp/multi-ps.mid" 'c4 1)
+|#
 ;;; 
 ;;; SYNOPSIS
 (defun midi-file-one-note (file note channel &optional old-channel)

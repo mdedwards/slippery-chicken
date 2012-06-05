@@ -1464,7 +1464,8 @@ data: RIBBON
 ;;; - A recursive-assoc-list object.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns a list that is the last REF of the given recursive-assoc-list object.
+;;; Returns a list that is the last REF of the given recursive-assoc-list 
+;;; object.
 ;;; 
 ;;; EXAMPLE
 #|

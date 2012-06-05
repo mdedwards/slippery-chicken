@@ -2630,9 +2630,9 @@
 ;;; ****f* utilities/random-amount
 ;;; DESCRIPTION
 
-;;; Return a random number from within a total range of <percent> of the given number, 
-;;; centering around zero. Thus, if the <number> is 100, and the <percent> is 5, the 
-;;; results will be a random number between -2.5 and +2.5.
+;;; Return a random number from within a total range of <percent> of the given
+;;; number, centering around zero. Thus, if the <number> is 100, and the
+;;; <percent> is 5, the results will be a random number between -2.5 and +2.5.
 ;;; 
 ;;; ARGUMENTS
 ;;; A number.

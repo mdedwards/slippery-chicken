@@ -5435,7 +5435,6 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; 
 ;;; EXAMPLE
 #|
-
 (let ((mini
        (make-slippery-chicken
 	'+mini+
@@ -5498,7 +5497,6 @@ data: NIL
 
 ;;; ****m* slippery-chicken/write-lp-data-for-all
 ;;; DESCRIPTION
-
 ;;; Generate all of the .ly files required by the LilyPond application for
 ;;; printable output from the musical data stored in the given slippery-chicken
 ;;; object.
@@ -5522,8 +5520,8 @@ data: NIL
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
 ;;; - :base-path. A string that is the directory path only for the resulting
-;;;    files. The method will automatically generate the file names and
-;;;    extensions. Default =  "/tmp/".
+;;;   files. The method will automatically generate the file names and
+;;;   extensions. Default =  "/tmp/".
 ;;; - :start-bar. An integer that is the first bar of the given
 ;;;   slippery-chicken object for which output is to be generated. If NIL, the
 ;;;   start-bar will be set to 1. Default = NIL.
@@ -5563,7 +5561,7 @@ data: NIL
 ;;;   Default = T. NB: This must be set to T when the user would like the
 ;;;   rehearsal letters in all individual lilypond parts, but printing with CMN
 ;;;   thereafter will result in rehearsal letters in all parts as well.
-;;; - tempi-all-players.  T or NIL to indicate whether tempo marks are to be
+;;; - :tempi-all-players.  T or NIL to indicate whether tempo marks are to be
 ;;;   placed in all parts generated. T = all parts. Default = T.
 ;;; - :all-bar-nums. T o NIL to indicate whether the corresponding bar number
 ;;;   should be printed above every measure in the score (not including

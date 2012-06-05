@@ -1650,7 +1650,8 @@ rthm-seq 60
 
 ;; Attempting to apply the method to a rthm-seq object in which not all bars
 ;; have time-signatures that are divisible by the beat defined in the
-;; <chop-points> argument will result in dropping into the debugger with an error
+;; <chop-points> argument will result in dropping into the debugger with an
+;; error 
 (let* ((rs (make-rthm-seq '(seq1 ((((2 4) q e s s)
                                    ((e) q (e))
                                    ((3 8) (e) e. s))

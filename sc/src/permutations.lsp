@@ -394,7 +394,8 @@ results so they are being written to the file
   (unless (listp list)
     (error "permutations::permutate: argument (~a) must be a list." list))
   (let ((ps (permutations (length list))))
-    (when (listp ps) ; otherwise there were too many and they're written to a file
+    (when (listp ps) ; otherwise there were too many and they're written to a
+		     ; file 
       (loop for p in ps collect
            (loop for e in p collect (nth e list))))))
 

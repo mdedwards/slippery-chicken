@@ -400,7 +400,8 @@ data: (C4 F4 A4 C5)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Tue Feb  7 14:22:54 GMT 2012: Saved from MDE's original: If <midi>
-;;; (optional) then midi note numbers will be generated, otherwise it will be frequencies. 
+;;; (optional) then midi note numbers will be generated, otherwise it will be
+;;; frequencies.  
 
 ;;; SAR Tue Feb  7 14:19:26 GMT 2012: Edited robodoc entry
 
@@ -507,7 +508,8 @@ data: (C4 F4 A4 C5)
 (let ((msp (make-set-palette 
             'test
             '((1 ((1
-                   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
+                   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5
+			 b5))) 
                   (2
                    ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
                     :subsets
@@ -579,7 +581,8 @@ data: (C4 F4 A4 C5)
 (let ((msp (make-set-palette 
             'test
             '((1 ((1
-                   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
+                   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 
+			 b5)))
                   (2
                    ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
                     :subsets
@@ -774,7 +777,8 @@ data: (
 (let ((msp (make-set-palette 
             'test
             '((1 ((1
-                   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 b5)))
+                   ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 
+			 b5)))
                   (2
                    ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
                     :subsets

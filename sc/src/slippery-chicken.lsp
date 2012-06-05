@@ -5435,6 +5435,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; 
 ;;; EXAMPLE
 #|
+
 (let ((mini
        (make-slippery-chicken
 	'+mini+
@@ -5492,6 +5493,7 @@ data: NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed May 16 11:45:56 EDT 2012: Added robodoc entry
+;;; SAR Tue Jun  5 12:17:53 BST 2012: A bit of conforming
 
 ;;;  lilypond
 
@@ -5607,12 +5609,14 @@ data: NIL
 ;;; - :process-event-fun. NIL or a user-defined function that will be applied
 ;;;   to every event object in the given slippery-chicken object. If NIL, no
 ;;;   processes will be applied. Default = NIL.
-;;; - :stemlet-length. If you want Lilypond to beam over rests you need only
-;;;   start/end a beam over a rest with the '-' notation exactly as you would
-;;;   with a note (but note that starting/ending a beam on a rest and then
-;;;   trying to generate a score with CMN will fail).  If additionally you'd
-;;;   like stems to reach down to those rests, indicate a value < 1.0 here:
-;;;   0.75 looks fine.  Default = NIL.
+;;; - :stemlet-length. NIL or a decimal number < 1.0 that indicates the scaled
+;;;   length of stems over rests in LilyPond output, should this feature be
+;;;   desired. 0.75 is a recommended value for this. NIL = no stems over
+;;;   rests. Default = NIL. NB: LilyPond can be instructed to extend beams over
+;;;   rests (without stemlets) simply by using the '-' in the definition of the
+;;;   rthm-seq-bar object, as is done with any other note; however,
+;;;   starting/ending a beam on a rest and then trying to generate a score with
+;;;   CMN will fail.)
 ;;; 
 ;;; RETURN VALUE
 ;;; T

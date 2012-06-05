@@ -603,7 +603,8 @@
 ;;;    represents the min/max number of beats in a bar (where a 6/8 bar is two
 ;;;    compound beats) default '(2 5)
 ;;; - (key :wrap ): when we create the 1-beat rythms' and slow
-;;;    rhythms' order, we can choose to start at any point in the list default nil
+;;;    rhythms' order, we can choose to start at any point in the list default
+;;;    nil 
 ;;; 
 ;;; RETURN VALUE  
 ;;; the number of rthm-seqs we've generated

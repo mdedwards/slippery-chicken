@@ -502,7 +502,9 @@
 ;;; always t
 ;;;
 ;;; EXAMPLE
-;;; (change-pitches bh 'vla 5 '((g3 gs4) nil (nil nil aqf5)))
+#|
+(change-pitches bh 'vla 5 '((g3 gs4) nil (nil nil aqf5)))
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod change-pitches ((bh bar-holder) player start-bar new-pitches 

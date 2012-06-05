@@ -4635,7 +4635,9 @@ collect (make-event 'cs4 'e))))))
 ;;; ARGUMENTS 
 ;;; - A list of rhythmic durations, which may include ties and dots. Durations
 ;;;   may be written as numeric (integer) values or may use the CM/CMN/SCORE 
-;;;   alphabetic shorthand s=16, e=8, q=4, h=2, w=1. 
+;;;   alphabetic shorthand s=16, e=8, q=4, h=2, w=1. NB: Repeating rhythms can
+;;;   be indicated using a shorthand notation consisting of a multiplication
+;;;   symbol ('x'), e.g.: (make-rthm-seq-bar '((4 4) s x 16)).
 ;;;
 ;;; make-rthm-seq-bar requires a time signature. If no time signature is
 ;;; provided, the most recently defined time signature will be used. If one is

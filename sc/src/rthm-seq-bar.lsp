@@ -4631,6 +4631,11 @@ collect (make-event 'cs4 'e))))))
 ;;; This class is responsible for parsing lists containing rhythms and time
 ;;; signatures, but not for parsing these things themselves--that is done by
 ;;; separate classes.  
+;;;
+;;; A { followed by a number means that all the notes from now to the } will be
+;;; enclosed in a bracket with the number inside.  This may be nested.  A -
+;;; indicates beaming: the first - indicates the start of a beam, the second
+;;; the end of that beam.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A list of rhythmic durations, which may include ties and dots. Durations
@@ -4776,10 +4781,10 @@ rsb-rb)
 ;;; notation as well as expand repeated rhythms like 'e x 5' which means 5
 ;;; eighth notes.
 ;;;
-;;; A { following by a number means that all the notes from now to the } will
-;;; be enclosed in a bracket with the number inside.  This may be nested.  A -
-;;; indicates beaming: the first - indicates start a beam, the second end the
-;;; beam. 
+;;; A { followed by a number means that all the notes from now to the } will be
+;;; enclosed in a bracket with the number inside.  This may be nested.  A -
+;;; indicates beaming: the first - indicates the start of a beam, the second
+;;; the end of that beam.
 ;;;
 ;;; e.g. (parse-rhythms '(q. { 3 te - s x 5 - te q q { 5 e x 5 } s }
 ;;;                       s+ts. 4\.))

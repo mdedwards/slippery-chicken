@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 15:44:13 Fri Jun  1 2012 BST
+;;; $$ Last modified: 10:13:28 Wed Jun  6 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5464,5 +5464,4 @@ rsb-rb)
                   triangle-up open))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF rthm-seq-bar.lsp

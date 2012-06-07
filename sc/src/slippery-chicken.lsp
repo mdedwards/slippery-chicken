@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:18:10 Wed Jun  6 2012 BST
+;;; $$ Last modified: 15:23:54 Thu Jun  7 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5365,7 +5365,8 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
      (loop for pbar in (rest bars) do
           (unless (time-sig-equal ts1 (get-time-sig pbar))
             (error "slippery-chicken::check-time-sigs: time signatures ~
-                    are not the same at bar ~a" bar-num)))))
+                    are not the same at bar ~a" bar-num))))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

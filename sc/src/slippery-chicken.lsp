@@ -5270,6 +5270,8 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; NB: See documentation in piece class method. Don't confuse this method with
 ;;;     the re-bar method.
 ;;;
+;;; NB: This method is used internally and not recommended for direct use. 
+;;;
 ;;; ARGUMENTS 
 ;;; - A slippery-chicken object.
 ;;;
@@ -5282,11 +5284,6 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; RETURN VALUE  
 ;;; Always T.
 ;;;
-;;; EXAMPLE
-#|
-
-|#
-;;; 
 ;;; SYNOPSIS
 (defmethod rebar ((sc slippery-chicken) 
                   &optional instruments-hierarchy rebar-fun)

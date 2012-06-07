@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 17:43:55 Thu Jun  7 2012 BST
+;;; $$ Last modified: 18:34:41 Thu Jun  7 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -2941,7 +2941,9 @@ NIL
 ;;; rest, the final sequence of attacked notes in that bar will not be
 ;;; slurred. 
 ;;;
-;;; NB: Slurs will automatically stop at repeated pitches.
+;;; NB: Slurs will automatically stop at repeated pitches.  Staccato marks will
+;;; not stop the auto-slurring process but staccatos can be removed (see
+;;; below). 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -2959,8 +2961,8 @@ NIL
 ;;;   unwanted results caused by orphaned beg-slur or end-slur marks. 
 ;;;   T = remove existing slurs first. Default = T.
 ;;; - :rm-staccatos. T or NIL to indicate whether to first remove existing
-;;;   staccato marks from the specified region. T = remove staccatos.
-;;;   Default = NIL.
+;;;   staccato, tenuto, and accented staccato marks from the specified
+;;;   region. T = remove staccatos. Default = NIL.
 
 ;;; - :over-accents. T or NIL. Default = T.
 
@@ -3037,7 +3039,8 @@ NIL
                         ;; without checking that count > 2 this code
                         ;; might actually put a slur over two of the same
                         ;; notes  
-                        (and (> count 2)
+                        ;; MDE Thu Jun  7 18:14:45 2012 -- changed > from 2 to 1
+                        (and (> count 1)
                              (porc-equal e last-e)))
                     start-e
                     last-e
@@ -3065,22 +3068,29 @@ NIL
                  (setf start-e e))
                (setf start-e nil
                      count 0))
-              ;; got start of phrase but second note is same as first
+              ;; got start of 'phrase' but second note is same as first
               ((and start-e 
                     (= count 1)
                     (needs-new-note e)
                     (porc-equal start-e e))
                (setf start-e e))
-              ((or (is-rest e) ; MDE Thu Jun  7 17:42:10 2012 -- or case added
+              ((or (is-rest e)  ; MDE Thu Jun  7 17:42:10 2012 -- or case added
+                   ;; (porc-equal e last-e)
                    (and (not over-accents) (accented-p e)))
                (setf start-e nil
                      count 0))
               ((not (is-tied-to e))
-               (incf count))
-              ((and rm-staccatos start-e (not last-e))
-               ;; in the middle of a slur so remove staccatos
-               (replace-mark e 'as 'a)
-               (rm-marks e 's nil)))
+               (incf count)))
+          ;; MDE Thu Jun  7 18:34:28 2012 -- took this out of the cond
+        (when (and rm-staccatos start-e) ; (not last-e))
+          ;; in the middle of a slur so remove staccatos etc.
+          (when verbose
+            (format t " (in slur)"))
+          (if over-accents
+              (replace-mark e 'as 'a)
+              (rm-marks e 'a nil))
+          (rm-marks e 'te nil)
+          (rm-marks e 's nil))
         (setf last-e e)))
   ;; 9.4.11
   (check-slurs sc)

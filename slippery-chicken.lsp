@@ -685,7 +685,6 @@
 ;;;   stored in the MARKS-IN-PART slot of each rhythm object in the score. If
 ;;;   NIL, the indications stored in the MARKS-IN-PART slot are added to parts
 ;;;   only. T = also print to score. Default = NIL.
-
 ;;; - :add-postscript. NIL or postscript code to be added to the .eps file
 ;;;   after it has been generated. See the add-ps-to-file function for details.
 ;;;   Default = NIL.

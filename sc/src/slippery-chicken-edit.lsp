@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 16:01:56 Thu Jun  7 2012 BST
+;;; $$ Last modified: 17:43:55 Thu Jun  7 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -2974,20 +2974,20 @@ NIL
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((vn (violin :midi-channel 1))))
-	:tempo-map '((1 (q 60)))
-	:set-palette '((1 ((c3 d3 e3 f3 g4 a3 b3
-			    c4 d4 e4 f4 g4 a4 b4 c5))))
-	:set-map '((1 (1 1 1)))
-	:rthm-seq-palette '((1 ((((4 4) - e e - (s) e.  
-				  - s s e - - s (s) s s -))
-				:pitch-seq-palette ((1 2 3 4 5 6 7 8 9))
-				:marks (a 4))))
-	:rthm-seq-map '((1 ((vn (1 1 1))))))))
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c3 d3 e3 f3 g4 a3 b3
+                            c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) - e e - (s) e.  
+                                  - s s e - - s (s) s s -))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8 9))
+                                :marks (a 4))))
+        :rthm-seq-map '((1 ((vn (1 1 1))))))))
   (auto-slur mini 'vn
-	     :start-bar 1
-	     :end-bar 2))
+             :start-bar 1
+             :end-bar 2))
 
 |#
 ;;; SYNOPSIS
@@ -3043,7 +3043,7 @@ NIL
                     last-e
                     (not (is-rest start-e))
                     (not (is-rest last-e))
-                    (> count 1)) ; MDE Thu Jun  7 16:01:33 2012 -- was 1
+                    (> count 1)) 
                ;; don't add slurs if they're already there
                (unless (or (begin-slur-p start-e)
                            (end-slur-p last-e))
@@ -3071,7 +3071,8 @@ NIL
                     (needs-new-note e)
                     (porc-equal start-e e))
                (setf start-e e))
-              ((is-rest e)
+              ((or (is-rest e) ; MDE Thu Jun  7 17:42:10 2012 -- or case added
+                   (and (not over-accents) (accented-p e)))
                (setf start-e nil
                      count 0))
               ((not (is-tied-to e))

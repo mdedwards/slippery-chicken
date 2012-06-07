@@ -687,7 +687,7 @@
 ;;;   only. T = also print to score. Default = NIL.
 
 ;;; - :add-postscript. NIL or postscript code to be added to the .eps file
-;;;   after it has been generate. See the add-ps-to-file function for details.
+;;;   after it has been generated. See the add-ps-to-file function for details.
 ;;;   Default = NIL.
 ;;;
 ;;; RETURN VALUE  
@@ -4060,7 +4060,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   list. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; total events generated (integer)
+;;; Total events generated (integer).
 ;;; 
 ;;; EXAMPLE
 #|
@@ -5265,11 +5265,11 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; If rthm-seqs or sequenzes are created algorithmically and bundled into the
 ;;; slippery-chicken piece slot artificially, bypassing the usual generation
 ;;; structure, it might be difficult to end up with each instrument having the
-;;; same meter structure when combined vertically. So this method goes through
+;;; same metric structure when combined vertically. This method goes through
 ;;; the vertically combined sequences and rebars as described above.
 ;;;
-;;; NB: See documentation in piece class method. Don't confuse with re-bar
-;;;     method.
+;;; NB: See documentation in piece class method. Don't confuse this method with
+;;;     the re-bar method.
 ;;;
 ;;; ARGUMENTS 
 ;;; - A slippery-chicken object.
@@ -5278,8 +5278,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; - A list of player IDs from the given slippery-chicken object, ordered in
 ;;;   terms of importance i.e. which instrument's bar structure should take
 ;;;   precedence.
-;;; 
-;;; NB: The rebar-fun is not yet used.
+;;; - NB: The rebar-fun is not yet used.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Always T.
@@ -5335,6 +5334,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Thu May 10 18:11:15 BST 2012: Added robodoc entry
+;;; SAR Thu Jun  7 12:26:44 BST 2012: Expanded robodoc entry
 
 ;;; ****m* slippery-chicken/check-time-sigs
 ;;; DATE

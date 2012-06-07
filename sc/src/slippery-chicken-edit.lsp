@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 15:43:01 Fri Jun  1 2012 BST
+;;; $$ Last modified: 16:01:56 Thu Jun  7 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -3043,7 +3043,7 @@ NIL
                     last-e
                     (not (is-rest start-e))
                     (not (is-rest last-e))
-                    (> count 1))
+                    (> count 1)) ; MDE Thu Jun  7 16:01:33 2012 -- was 1
                ;; don't add slurs if they're already there
                (unless (or (begin-slur-p start-e)
                            (end-slur-p last-e))

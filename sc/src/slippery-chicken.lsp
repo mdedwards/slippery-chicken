@@ -5340,20 +5340,56 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; 28-Jan-2011
 ;;;
 ;;; DESCRIPTION
-
-;;; Make sure for every bar in the piece that all instruments have the same
-;;; time signature.
+;;; Check every bar in the given slippery-chicken object to see if all players
+;;; have the same time signature. Drops into the debugger with an error if not.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T if all players have the same time signature at the same time, otherwise
+;;; drops into the debugger with an error.
 ;;; 
 ;;; EXAMPLE
 #|
+;; A successful test
+(let* ((mini
+	(make-slippery-chicken
+	 '+mini+
+	 :ensemble '(((vn (violin :midi-channel 1))
+		      (va (viola :midi-channel 2))
+		      (vc (cello :midi-channel 3))))
+	 :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	 :set-map '((1 (1 1 1)))
+	 :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
+	 :rthm-seq-map '((1 ((vn (1 1 1))
+			     (va (1 1 1))
+			     (vc (1 1 1))))))))
+  (check-time-sigs mini))
 
-  |#
+=> T
+
+;; A failing test
+(let* ((mini
+	(make-slippery-chicken
+	 '+mini+
+	 :ensemble '(((vn (violin :midi-channel 1))
+		      (va (viola :midi-channel 2))
+		      (vc (cello :midi-channel 3))))
+	 :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+	 :set-map '((1 (1 1 1)))
+	 :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
+	 :rthm-seq-map '((1 ((vn (1 1 1))
+			     (va (1 1 1))
+			     (vc (1 1 1))))))))
+  (setf (time-sig (get-bar mini 1 'vn)) '(3 4))
+  (check-time-sigs mini))
+
+=>
+slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
+   [Condition of type SIMPLE-ERROR]
+
+|#
 ;;; SYNOPSIS
 (defmethod check-time-sigs ((sc slippery-chicken))
 ;;; ****

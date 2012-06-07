@@ -2924,7 +2924,8 @@ NIL
              (setf happy nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Fri Apr 20 10:38:49 BST 2012: Added robodoc entry
+
+;;;  SAR Thu Jun  7 14:06:13 BST 2012: Added robooc entry
 
 ;;; add slurs automatically (to wind instruments usually) to phrases: these are
 ;;; defined as not having any rests in them and not including any repeated
@@ -2932,19 +2933,61 @@ NIL
 
 ;;; ****m* slippery-chicken-edit/auto-slur
 ;;; DESCRIPTION
-;;; 
+;;; Automatically add slurs to note groups in the specified measure range of a
+;;; given player's part. 
+;;;
+;;; This method places slurs above all consecutive notes between rests. If a
+;;; value is specified for :end-bar and the last event in the end bar is not a
+;;; rest, the final sequence of attacked notes in that bar will not be
+;;; slurred. 
+;;;
+;;; NB: Slurs will automatically stop at repeated pitches.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - A player ID or list of player IDs for the parts in which the slurs are to
+;;;   be placed.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :start-bar. An integer that is the first bar in which to automatically
+;;;   place slurs.  
+;;; - :end-bar. An integer that is the last bar in which to automatically place
+;;;   slurs. 
+;;; - :rm-slurs-first. T or NIL to indicate whether to first remove existing
+;;;   slurs from the specified region. NB: Setting this to NIL can produce
+;;;   unwanted results caused by orphaned beg-slur or end-slur marks. 
+;;;   T = remove existing slurs first. Default = T.
+;;; - :rm-staccatos. T or NIL to indicate whether to first remove existing
+;;;   staccato marks from the specified region. T = remove staccatos.
+;;;   Default = NIL.
+
+;;; - :over-accents. T or NIL. Default = T.
+
+;;; - :verbose. T or NIL to indicate whether to print feedback from the process
+;;;   to the Lisp listener. T = print. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))))
+	:tempo-map '((1 (q 60)))
+	:set-palette '((1 ((c3 d3 e3 f3 g4 a3 b3
+			    c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) - e e - (s) e.  
+				  - s s e - - s (s) s s -))
+				:pitch-seq-palette ((1 2 3 4 5 6 7 8 9))
+				:marks (a 4))))
+	:rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (auto-slur mini 'vn
+	     :start-bar 1
+	     :end-bar 2))
 
 |#
 ;;; SYNOPSIS

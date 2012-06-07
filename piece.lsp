@@ -619,7 +619,7 @@ BAR-HOLDER:
         (get-bar-from-ref p (first bar-num-or-ref) player 
                           (second bar-num-or-ref) 
                           (third bar-num-or-ref)))
-    (call-next-method)))
+      (call-next-method)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -68,7 +68,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 15:26:55 Fri Jun  8 2012 BST
+;;; $$ Last modified: 15:31:19 Fri Jun  8 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1437,7 +1437,7 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
              (procession howmany items))))
     (when wrap
       (setf result (wrap-list result wrap)))
-    (print result)
+    ;; (print result)
     (make-cscl result :id id)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

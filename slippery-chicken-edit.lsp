@@ -2411,6 +2411,7 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Apr 25 12:00:31 BST 2012: Added robodoc entry
+;;; SAR Fri Jun  8 12:28:37 BST 2012: Expanded robodoc entry
 
 ;;; ****m* slippery-chicken-edit/tie-all-last-notes-over-rests
 ;;; DESCRIPTION
@@ -2430,22 +2431,20 @@ NIL
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-
 ;;; - :to-next-attack. T or NIL to indicate whether ties are to extend over
 ;;;   only full bars of rest or also over partial bars (until the next attacked
 ;;;   note). T = until the next attacked note. Default = T.
-
 ;;; - :tie-next-attack. T or NIL to indicate whether the new tied notes created 
 ;;;   should also be further extended over the next attacked note if that note
 ;;;   has the same pitch as the starting note of the tie. T = also tie next
 ;;;   attacked note if same pitch. Default = NIL.
-
 ;;; - :auto-beam. T or NIL to indicate whether the new events should be
 ;;;   automatically beamed after placement. T = automatically beam. 
 ;;;   Default = NIL.
-
-;;; - :last-rhythm. Default = NIL.
-
+;;; - :last-rhythm. NIL or a rhythmic duration. If a rhythmic duration, the
+;;;   last duration of the tie will be forced to this length. Useful, for
+;;;   example, when tieing into a rest bar without filling that whole
+;;;   bar. NIL = fill the bar with a tied note. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns NIL.
@@ -2459,7 +2458,7 @@ NIL
                      (va (viola :midi-channel 2))
                      (vc (cello :midi-channel 3))))
         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 f4 g4 a4 c5 d5 f5))))
-        :set-map '((1 (1 1)))
+        :set-map '((1 (1 1 1)))
         :rthm-seq-palette '((1 ((((4 4) e (e) e e (e) (e) e e) 
                                  ((w)) 
                                  ((h.) q) 
@@ -2467,13 +2466,15 @@ NIL
                                  ((w)) 
                                  ((e) e h.))
                                 :pitch-seq-palette ((1 2 3 4 5 6 7 7)))))
-        :rthm-seq-map '((1 ((vn (1 1))
-                            (va (1 1))
-                            (vc (1 1))))))))
+        :rthm-seq-map '((1 ((vn (1 1 1))
+                            (va (1 1 1))
+                            (vc (1 1 1))))))))
   (tie-all-last-notes-over-rests mini 2 6 'vn)
   (tie-all-last-notes-over-rests mini 9 12 'vn :auto-beam t)
   (tie-all-last-notes-over-rests mini 3 5 '(va vc) :to-next-attack nil)
-  (tie-all-last-notes-over-rests mini 9 12 'vc :tie-next-attack t))
+  (tie-all-last-notes-over-rests mini 9 12 'vc :tie-next-attack t)
+  (tie-all-last-notes-over-rests mini 13 15 'vn :last-rhythm 'e))
+
 
 => NIL
 
@@ -2510,6 +2511,7 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Apr 27 11:46:14 BST 2012: Added robodoc entry
+;;; SAR Fri Jun  8 12:30:22 BST 2012: Expanded robodoc entry
 
 ;;; ****m* slippery-chicken-edit/tie-over-rest-bars
 ;;; DESCRIPTION
@@ -2541,10 +2543,10 @@ NIL
 ;;; - :auto-beam. T or NIL to indicate whether the method should automatically
 ;;;   place beams for the notes of the affected measure after the ties over
 ;;;   rests have been created. T = automatically beam. Default = NIL.
-;;; - :last-rhythm. NIL or a rhythmic duration.  If the latter, the last
-;;;   duration of the tie will be forced to this length.  Useful, for example,
-;;;   when tieing into a rest bar but not filling that whole bar.  Default =
-;;;   NIL = fill the bar.
+;;; - :last-rhythm. NIL or a rhythmic duration. If a rhythmic duration, the
+;;;   last duration of the tie will be forced to this length. Useful, for
+;;;   example, when tieing into a rest bar without filling that whole
+;;;   bar. NIL = fill the bar with a tied note. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns NIL.
@@ -2575,7 +2577,8 @@ NIL
   (tie-over-rest-bars mini 7 'vc 
                       :end-bar 9
                       :to-next-attack t
-                      :auto-beam t))
+                      :auto-beam t)
+  (tie-over-rest-bars mini 9 'vn :end-bar 11 :last-rhythm 'e))
 
 => NIL
 

@@ -68,7 +68,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 15:11:21 Mon May 21 2012 BST
+;;; $$ Last modified: 15:26:55 Fri Jun  8 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -416,6 +416,7 @@
 (defmethod split ((rc rthm-chain) &key
                   (min-beats 2) (max-beats 5) warn (clone t))
 ;;; ****
+  ;; (print 'split)   (print (players rc))
   (flet ((got-stick-rthm (1-beat-rs slower-rs)
            ;; sticking rthms have ids like STICK-RTHMS-AUTO5 and
            ;; STICK-RTHMS-AUTO-SLOW5
@@ -561,7 +562,7 @@
 
 ;;; Generate a chain of rhythms, also internally making use of the procession
 ;;; function. 
-
+;;; 
 ;;; The basic algorithm for 2 parts is: we're given an arbitrary number of
 ;;; 1-beat rthms (e.g. s s (e)) and 2-3 beat slower-moving counterpoints.  We
 ;;; generate a sequence of these using the procession function.  Then we apply
@@ -648,43 +649,44 @@
   (reset rc)
   ;; get the procession (as a cscl) we'll need for the 1-beat rthms using
   ;; num-beats as arg 
-  (let ((1beatp (rthm-chain-get-order 
-                 num-beats (length (first (1-beat-rthms rc)))
-                 '1beatp use-fibonacci wrap))
-        ;; now get the transition from 1 group of 1-beat rthms to the other(s)
-        (rthms-transition (make-cscl (fibonacci-transitions 
-                                      num-beats (length (1-beat-rthms rc)))
-                                     :id 'rthms-transition))
-        (1-beat-rest (make-rest (beat rc)))
-        (rs-count 0)
-        ;; we have to count in rs-count the total number of rthm-seqs but to
-        ;; count the main (rthm-chain) seqs we need a separate counter so as
-        ;; not to skip numbers when naming them and we hit a sticking point
-        (rs-main-count 0)
-        (slower-bars '())
-        (beat-count 0)
-        (slower-bar-count 0)
-        (1-beat-bar '())
-        (1-beat-bars '())
-        (meters '())
-        (slower-beats 0)
-        slower-rthms
-        (1-beat-player (if (players rc)
-                           (first (players rc))
-                           '1beat))
-        (slower-player (if (players rc)
-                           (second (players rc))
-                           'slower))
-        activity-level
-        (do-sticking-curve-val t)
-        (do-rests-curve-val t)
-        1-beat-active 
-        slower-active
-        rest
-        stick-fast-id stick-slow-id
-        (1-beat-map '())
-        (slower-map '())
-        (harmonic-rthm 0))
+  (let* ((1beatp (rthm-chain-get-order 
+                  num-beats (length (first (1-beat-rthms rc)))
+                  '1beatp use-fibonacci wrap))
+         ;; now get the transition from 1 group of 1-beat rthms to the other(s)
+         (rthms-transition (make-cscl (fibonacci-transitions 
+                                       num-beats (length (1-beat-rthms rc)))
+                                      :id 'rthms-transition))
+         (1-beat-rest (make-rest (beat rc)))
+         (rs-count 0)
+         ;; we have to count in rs-count the total number of rthm-seqs but to
+         ;; count the main (rthm-chain) seqs we need a separate counter so as
+         ;; not to skip numbers when naming them and we hit a sticking point
+         (rs-main-count 0)
+         (slower-bars '())
+         (beat-count 0)
+         (slower-bar-count 0)
+         (1-beat-bar '())
+         (1-beat-bars '())
+         (meters '())
+         (slower-beats 0)
+         (players (players rc))
+         slower-rthms
+         (1-beat-player (if (players rc)
+                            (first players)
+                            '1beat))
+         (slower-player (if (players rc)
+                            (second players)
+                            'slower))
+         activity-level
+         (do-sticking-curve-val t)
+         (do-rests-curve-val t)
+         1-beat-active 
+         slower-active
+         rest
+         stick-fast-id stick-slow-id
+         (1-beat-map '())
+         (slower-map '())
+         (harmonic-rthm 0))
     (labels ((process-meter (meter)
                (let ((m2 (* 2 meter))
                      ;; MDE Mon May 21 12:52:45 2012 -- allow x/16 meters when
@@ -901,6 +903,9 @@
             ;; NB this doesn't work unless we've had sticking
             (data rc) `((,section-id ((,1-beat-player ,1-beat-map)
                                       (,slower-player ,slower-map))))
+            ;; MDE Fri Jun  8 15:25:24 2012 -- put the players back the way
+            ;; they were!  
+            (players rc) players
             (num-slower-bars rc) slower-bar-count
             (num-rthm-seqs rc) rs-count))))
 
@@ -1059,10 +1064,11 @@
 ;;;   '(2 3 2 2 3 2 2 3 3 3). T = use fibonacci-transisitions method.
 ;;;   Default = NIL.
 
-;;; - :players. A list of player IDs. When used in conjunction with a
+;;; - :players. A list of two player IDs. When used in conjunction with a
 ;;;   slippery-chicken object (which is the standard usage), these must be IDs
-;;;   as they are defined in that object's ENSEMBLE slot. 
-;;;   Default = '(player1 player2).
+;;;   as they are defined in that object's ENSEMBLE slot.  Default = '(player1
+;;;   player2).  The first player will play the 1-beat rhythms, the second the
+;;;   slower rhythms.
 
 ;;; - :section-id. An integer that will be used as the ID of the rthm-seq-map
 ;;;   created. NB: rthm-chain only creates rthm-seq-maps with one section,
@@ -1431,6 +1437,7 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
              (procession howmany items))))
     (when wrap
       (setf result (wrap-list result wrap)))
+    (print result)
     (make-cscl result :id id)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

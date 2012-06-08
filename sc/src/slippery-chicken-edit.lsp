@@ -3577,8 +3577,9 @@ NIL
 ;;;   unit of the time signature. If an integer, the method will beam in
 ;;;   accordance with a beat unit that is equal to that integer. If NIL, the
 ;;;   method will not automatically place beams. Default = T.
-;;; - :update-slots. T or NIL to indicate whether to update the corresponding
-;;;   slots. This is an internal argument and not needed by the user. 
+;;; - :update-slots. T or NIL to indicate whether to update all slots of the
+;;;   given slippery-chicken object after applying the method. This is an
+;;;   internal argument and will generally not be needed by the user.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns T.
@@ -3720,21 +3721,57 @@ NIL
 ;;; Sort notes in piece--across all instruments--into time-ordered lists and
 ;;; process them with the given function, which must take one argument, an
 ;;; event.
+
+;;; SAR Fri Jun  8 12:56:44 BST 2012: Added robodoc entry
+
+
 ;;; ****m* slippery-chicken-edit/process-events-by-time
 ;;; DESCRIPTION
-;;; 
+;;; Apply the specified function to all event objects within the given measure
+;;; range in order of their chronological occurrence. This method lends itself
+;;; to user-defined functions.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - A function (or variable to which a function has been assigned).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :start-bar. An integer that is the first bar in which the function is to
+;;;   be applied to event objects. Default = 1.
+;;; - :end-bar. NIL or an integer that is the last bar in which the function is
+;;;   to be applied to event objects. If NIL, the function will be applied to
+;;;   all event objects of all bars in the given slippery-chicken object. 
+;;;   Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((marks (make-cscl '(a s as te ts at))))
+  (defun add-random-marks (event)
+    (unless (is-rest event) 
+      (setf (marks event) (list (get-next marks))))))
+
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+                     (va (viola :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((3 4) s (e.)  (s) s (e) (e) s (s)))
+				 :pitch-seq-palette ((1 2 3))))
+			    (2 ((((3 4) (s) s (e) (e) s (s) s (e.)))
+				 :pitch-seq-palette ((1 2 3))))
+			    (3 ((((3 4) (e) s (s) s (e.)  (s) s (e)))
+				 :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 2 3))
+                            (va (2 3 1))
+                            (vc (3 1 2))))))))
+  (process-events-by-time mini #'add-random-marks))
 
 |#
 ;;; SYNOPSIS

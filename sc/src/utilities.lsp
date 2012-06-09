@@ -673,7 +673,6 @@
 
 ;;; ****f* utilities/equal-within-tolerance
 ;;; DESCRIPTION
-
 ;;; Test whether the difference between two decimal numbers falls within a
 ;;; specified tolerance.
 ;;;
@@ -1245,7 +1244,6 @@
 
 ;;; ****f* utilities/nconc-sublists
 ;;; DESCRIPTION
-
 ;;; Concatenate corresponding sublists of a given list. Each sublist in the
 ;;; argument should have the same length and number of sublists etc.
 ;;; 
@@ -1280,7 +1278,6 @@
 
 ;;; ****f* utilities/logarithmic-steps
 ;;; DESCRIPTION
-
 ;;; Create a list of progressing from the first specified argument to the
 ;;; second specified argument over the specified number of steps using an
 ;;; exponential curve rather than linear interpolation.
@@ -1320,7 +1317,6 @@
 
 ;;; ****f* utilities/interpolate
 ;;; DESCRIPTION
-
 ;;; Get the interpolated value at a specified point within an envelope. The
 ;;; envelope must be specified in the form of a list of break-point pairs.
 ;;; 
@@ -1456,24 +1452,18 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-
 ;;; - :y-min. A number that is the minimum value for all y values after
 ;;;   scaling.
-
 ;;; - :y-max. A number that is the maximum value for all y values after
 ;;;   scaling.
-
 ;;; - :x-scaler. A number that is the factor by which to scale the x-axis
 ;;;   values of the break-point pairs.
-
 ;;; - :x-min. A number that is the minimum value for all x values after
 ;;;   scaling. NB: This optional argument can only be used if a value has been
 ;;;   specified for the :x-scaler. 
-
 ;;; - :x-max. A number that is the maximum value for all x values after
 ;;;   scaling. NB: This optional argument can only be used if a value has been
 ;;;   specified for the :x-scaler.
-
 ;;; 
 ;;; RETURN VALUE
 ;;; An envelope in the form of a list of break-point pairs.
@@ -1554,7 +1544,6 @@
 
 ;;; ****f* utilities/repeat-env
 ;;; DESCRIPTION
-
 ;;; Create a new list by repeating the y values of a list of break-point pairs
 ;;; a specified number of times over the same total x-axis span of the original
 ;;; envelope. A quick ramp is inserted between repeats to ensure that all
@@ -1718,7 +1707,6 @@
 ;;; 03-FEB-2011
 ;;;
 ;;; DESCRIPTION
-
 ;;; Create a new a list of a specified new length by adding or removing items
 ;;; at regular intervals from the original list. If adding items and the list
 ;;; contains numbers, linear interpolation will be used, but only between two
@@ -2627,7 +2615,6 @@
 
 ;;; ****f* utilities/random-amount
 ;;; DESCRIPTION
-
 ;;; Return a random number from within a total range of <percent> of the given
 ;;; number, centering around zero. Thus, if the <number> is 100, and the
 ;;; <percent> is 5, the results will be a random number between -2.5 and +2.5.
@@ -3178,7 +3165,6 @@
 
 ;;; ****f* utilities/dynamic-to-amplitude
 ;;; DESCRIPTION
-
 ;;; Convert a symbol that is a dynamic level between niente and ffff to a
 ;;; corresponding digital amplitude value between 0.0 and 1.0.
 ;;; 

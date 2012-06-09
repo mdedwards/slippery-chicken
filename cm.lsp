@@ -138,7 +138,6 @@
 
 ;;; ****f* cm/degree-to-note
 ;;; DESCRIPTION
-
 ;;; Get the specified scale degree number as a note-name pitch symbol within
 ;;; the current scale. An optional argument allows the user to specify that the
 ;;; scale degree number should be used to get the note-name pitch from a
@@ -433,7 +432,6 @@
 
 ;;; ****f* cm/note-to-degree
 ;;; DESCRIPTION
-
 ;;; Get the scale degree number of the specified note-name pitch symbol within
 ;;; the current scale. 
 ;;; 
@@ -1187,7 +1185,6 @@ Event #i(midi time 3.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
 ;;; - An integer that is the channel to which the output should be written (1-based)
 ;;;
 ;;; OPTIONAL ARGUMENTS 
-
 ;;; - An integer that is the an existing MIDI channel in the original file. If
 ;;;   this argument is given, only notes on this channel of the original file
 ;;;   will be written (1-based).

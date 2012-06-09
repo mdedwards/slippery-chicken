@@ -51,9 +51,7 @@
 ;;; Use this function to randomly generate the <entry-points> to clm-loops
 
 ;;; ****f* clm/random-loop-points
-
 ;;; DESCRIPTION
-
 ;;; Return a list of lists of randomly generated entry points (loop markers)
 ;;; for use with clm-loops-all.
 ;;;

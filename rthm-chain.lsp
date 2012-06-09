@@ -563,11 +563,11 @@
 ;;; Generate a chain of rhythms, also internally making use of the procession
 ;;; function. 
 ;;; 
-;;; The basic algorithm for 2 parts is: we're given an arbitrary number of
-;;; 1-beat rthms (e.g. s s (e)) and 2-3 beat slower-moving counterpoints.  We
-;;; generate a sequence of these using the procession function.  Then we apply
-;;; the activity curve, and after that the insertion of 8th rests.  Then come
-;;; the 'sticking points': these come after the rests and the activity curves
+;;; The basic algorithm for 2 parts is: We're given an arbitrary number of
+;;; 1-beat rthms (e.g. s s (e)) and 2-3 beat slower-moving counterpoints. We
+;;; generate a sequence of these using the procession function. Then we apply
+;;; the activity curve, and after that the insertion of 8th rests. Then come
+;;; the 'sticking points': These come after the rests and the activity curves
 ;;; applied to these count inserted rests not seqs or beats.
 ;;; 
 ;;; NB: Rests are put into the rthm-seq mid-sequence so sticking points won't
@@ -585,27 +585,31 @@
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - (key :rests ) whether to generate the rests default: t
-;;; - (key :stick)  whether to generate the sticking point s
-;;; - (key :num-beats ) how many beats to use for the
-;;;    algorithm. NB we'll generate considerably more if we have sticking and
-;;;    rests; this number really just refers to the number of standard 1-beat
-;;;    rhythms we'll generate.  If nil, then we use the num-beats slot of the
-;;;    rc instance. default: nil
-;;; - (key :use-fibonacci ) whether to use a fibonacci transition to
-;;;    move through the 1-beat rhythms (so they'll be repeated) or the
-;;;    procession algorithm (where they'll be alternated). default t
-;;; - (key :section-id ) for the sake of the map, what section we'll
-;;;    put the references into.  The rthm-seqs themselves will be parcelled up
-;;;    into an object with this id too, so we can avoid id conflicts if we
-;;;    combine 2+ sections generatd by separate rthm-chain objects. default 1
-;;; - (key :split ): whether to split up longer generated bars
-;;;   (e.g. 7/4) into smaller bars.  If this is a two-element list it
-;;;    represents the min/max number of beats in a bar (where a 6/8 bar is two
-;;;    compound beats) default '(2 5)
-;;; - (key :wrap ): when we create the 1-beat rythms' and slow
-;;;    rhythms' order, we can choose to start at any point in the list default
-;;;    nil 
+
+;;; - :rests. whether to generate the rests default: t
+
+;;; - :stick.  whether to generate the sticking point s
+
+;;; - :num-beats. how many beats to use for the algorithm. NB we'll generate
+;;;   considerably more if we have sticking and rests; this number really just
+;;;   refers to the number of standard 1-beat rhythms we'll generate.  If nil,
+;;;   then we use the num-beats slot of the rc instance. default: nil
+
+;;; - :use-fibonacci.  whether to use a fibonacci transition to move through
+;;;   the 1-beat rhythms (so they'll be repeated) or the procession algorithm
+;;;   (where they'll be alternated). default t
+
+;;; - :section-id. for the sake of the map, what section we'll put the
+;;;   references into.  The rthm-seqs themselves will be parcelled up into an
+;;;   object with this id too, so we can avoid id conflicts if we combine 2+
+;;;   sections generatd by separate rthm-chain objects. default 1
+
+;;; - :split. whether to split up longer generated bars (e.g. 7/4) into smaller
+;;;   bars.  If this is a two-element list it represents the min/max number of
+;;;   beats in a bar (where a 6/8 bar is two compound beats) default '(2 5)
+
+;;; - :wrap. when we create the 1-beat rythms' and slow rhythms' order, we can
+;;;   choose to start at any point in the list default nil
 ;;; 
 ;;; RETURN VALUE  
 ;;; the number of rthm-seqs we've generated
@@ -1051,6 +1055,25 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
+;;; - :players. A list of player IDs. When used in conjunction with a
+;;;   slippery-chicken object, these must be IDs as they are defined in that
+;;;   object's ENSEMBLE slot.  Default = '(player1 player2).
+;;; - :section-id. An integer that will be used as the ID of the rthm-seq-map
+;;;   created. NB: rthm-chain only creates rthm-seq-maps with one section,
+;;;   making it possible to create several different rthm-seq-map objects for
+;;;   different sections in the given piece, and requiring that these be
+;;;   manually assigned IDs. Additionally, any ID given here must match an
+;;;   existing ID within the other maps. Default = 1.
+;;; - :rests. A list of rhythmic duration units from which the durations will
+;;;   be drawn when using the automatic rest-insertion algorithm. The specified
+;;;   rests are used in a sequence determined by a recurring-event
+;;;   object. Default = '(e q q. w). NB: Each of these values must not resolve
+;;;   to less than one-quarter of the beat basis, either alone or in
+;;;   combination, as this could result in an attempt to create meters from
+;;;   fractional beats (e.g. 3.25). An error message will be printed in such
+;;;   cases.
+
+
 ;;; - :1-beat-fibonacci. T or NIL to indicate whether the sequence of 1-beat
 ;;;   rhythms is to be generated using the fibonacci-transitions method or the
 ;;;   processions method. T = use fibonacci-transitions method. Default = NIL.
@@ -1070,19 +1093,8 @@
 ;;;   player2).  The first player will play the 1-beat rhythms, the second the
 ;;;   slower rhythms.
 
-;;; - :section-id. An integer that will be used as the ID of the rthm-seq-map
-;;;   created. NB: rthm-chain only creates rthm-seq-maps with one section,
-;;;   making it possible to create several different rthm-seq-map objects for
-;;;   different sections in the given piece, and requiring that these be
-;;;   manually assigned IDs. Default = 1.
 
-;;; - :rests. The rhythmic duration unit(s) of the rests that will be used when
-;;;   the method uses the rest-insertion algorithm to automatically insert
-;;;   rests into the resulting objects. The specified rests are used in a
-;;;   sequence determined by a recurring-event object. Default = '(e q q. w).
-;;;   NB: The values must not be less than one-quarter of the beat basis, as
-;;;   this could result in an attempt to create meters from fractional
-;;;   beats. An error message will be printed in such cases.
+
 
 ;;; - :do-rests. T or NIL to indicate whether to apply the automatic
 ;;;   rest-insertion algorithm. T = use. Default = T.

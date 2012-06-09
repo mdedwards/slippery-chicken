@@ -749,42 +749,35 @@ NIL
 ;;; - A symbol that is the instrument ID.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; &key arguments:
-
+;;; keyword arguments:
 ;;; - :staff-name. String. This is the unabbreviated instrument name that will
 ;;;   be used for the first page of printed scores.
-
 ;;; - :staff-short-name. String. This is the abbreviated instrument name that
 ;;;   will be used for subsequent pages of printed scores.
-
 ;;; - :lowest-written. Note-name symbol. This is the lowest written pitch
 ;;;   available on the given instrument. Defaults to NIL. A user may only
 ;;;   define either the lowest-written value or the lowest-sounding value. If a
 ;;;   lowest-written value is given, the method automatically determines the
 ;;;   lowest-sounding value based on the lowest-written value and the
 ;;;   transposition value.
-
 ;;; - :highest-written. Note-name symbol. This is the highest written pitch
 ;;;   available on the given instrument. Defaults to NIL. A user may only
 ;;;   define either the highest-written value or the highest-sounding value. If
 ;;;   a highest-written value is given, the method automatically determines the
 ;;;   highest-sounding value based on the highest-written value and the
 ;;;   transposition value.
-
 ;;; - :lowest-sounding. Note-name symbol. This is the lowest sounding pitch
 ;;;   available on the given instrument. Defaults to NIL. A user may only
 ;;;   define either the lowest-sounding value or the lowest-written value. If a
 ;;;   lowest-sounding value is given, the method automatically determines the
 ;;;   lowest-written value based on the lowest-sounding value and the
 ;;;   transposition value.
-
 ;;; - :highest-sounding. Note-name symbol. This is the highest sounding pitch
 ;;;   available on the given instrument. Defaults to NIL. A user may only
 ;;;   define either the highest-sounding value or the highest-written value. If
 ;;;   a highest-sounding value is given, the method automatically determines
 ;;;   the highest-written value based on the highest-sounding value and the
 ;;;   transposition value.
-
 ;;; - :transposition. Note-name symbol. This is the key of the given instrument
 ;;;   (such as the "B-flat" of the "B-flat clarinet"), given as a note-name
 ;;;   symbol (such as 'BF for B-flat). If a value is only given for the
@@ -795,7 +788,6 @@ NIL
 ;;;   :transposition rather than :transposition-semitones, sc will have a
 ;;;   warning printed by cm with indications as to which direction the
 ;;;   transposition has been undertaken.
-
 ;;; - :transposition-semitones. Integer (positive or negative). The number of
 ;;;   semitones lower that a given instrument sounds than written, e.g. -2 for
 ;;;   B-flat Clarinet. If a value is only given for the
@@ -805,12 +797,10 @@ NIL
 ;;;   error if a key is given for the :transposition argument and the number
 ;;;   specified for the :transposition-semitones does not correspond with that
 ;;;   key.
-
 ;;; - :starting-clef. Symbol. This value determines the first clef that a given
 ;;;   instrument is to use if that instrument can use different clefs. For a
 ;;;   list of available clefs see the :clefs argument below. 
 ;;;   Default = 'treble.
-
 ;;; - :clefs. List of symbols. All clefs that a given instrument may use in the
 ;;;   course of a piece. Clefs available are treble, alto, tenor, bass,
 ;;;   percussion, double-treble, and double-bass. Clefs are to be given in
@@ -819,34 +809,27 @@ NIL
 ;;;   indeed given here, the method will automatically add the value for
 ;;;   :starting-clef as well, should it have been omitted. In this case, a
 ;;;   warning will also be printed.
-
 ;;; - :clefs-in-c. List of symbols. Similar to :clefs, but designates which
 ;;;   clefs an instrument uses in a C-score; for example, bass clarinet may
 ;;;   notated in bass cleff for sounding pitches though it is standardly
 ;;;   notated in treble clef for written pitches. For a list of clefs available
 ;;;   see the :clefs argument above.
-
 ;;; - :largest-fast-leap. Number. This value indicates the largest interval, in
 ;;;   semitones, that a player can feasibly perform at a fast tempo on the
 ;;;   given instrument. Default = 999. "Fast" here is determined for the whole
 ;;;   piece by the slippery-chicken class's fast-leap-threshold slot.
-
 ;;; - :score-write-in-c. T or NIL. Determines whether the musical material for
 ;;;   the given instrument should be printed in C.  T = print in C. 
 ;;;   Default = NIL.
-
 ;;; - :score-write-bar-line. Integer. This argument is used for indicating
 ;;;   system-grouping in the printed score. The given integer specifies how
 ;;;   many instruments above this one should be grouped together with an
 ;;;   unbroken bar-line. Default = 1.
-
 ;;; - :midi-program. Integer. The number of the MIDI program to be used for
 ;;;   playing back this instrument. Default = 1.
-
 ;;; - :chords. T or NIL. Indicates whether the given instrument is capable of
 ;;;   playing chords (starting with 2-note simultaneities, but not
 ;;;   multiphonics).
-
 ;;; - :subset-id. Symbol, string, number, or NIL.  Indicates the ID of a
 ;;;   specific subset of the current set to which the instrument's pitch
 ;;;   selection is limited.  No error will occur if no subset with this ID
@@ -855,29 +838,24 @@ NIL
 ;;;   present in the current set the pitch selection routine will select from
 ;;;   the whole set.  In every case however, the usual set limiting according
 ;;;   to instrument range etc. will also apply.  Default = NIL.
-
 ;;; - :microtones. T or NIL. Indicates whether the instrument can play
 ;;;   microtones. T = can play microtones. Default = NIL. NB: If this value is
 ;;;   set to T, a separate :microtones-midi-channel must be specified; this can
 ;;;   be done for the given instrument object in the :ensemble block of the
 ;;;   make-slippery-chicken function.
-
 ;;; - :missing-notes. A list of note-name symbols. This is a list of any notes
 ;;;   which the given instrument can't play, for example certain
 ;;;   quarter-tones. These are to be given by the user as written-pitch
 ;;;   note-name symbols, but are always stored by the method as sounding
 ;;;   pitches.
-
 ;;; - :prefers-notes. Symbol. 'high, 'low or NIL. This value indicates whether
 ;;;   to give preference, when choosing notes for the given instrument, to
 ;;;   pitches from the upper or lower end of the instrument's range. When NIL,
 ;;;   preference is given to notes from its middle register. Default = NIL.
-
 ;;; - :chord-function. If the given instrument can play chords then it will
 ;;;   need a reference to a function that can select chords for it. NB This
 ;;;   should be a symbol not a function object; thus, 'my-fun not
 ;;;   #'my-fun. Default = NIL.
-
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns an instrument object.
@@ -1119,7 +1097,6 @@ data: NIL
 
 ;;; ****f* instrument/default-chord-function
 ;;; DESCRIPTION
-
 ;;; If an instrument is able to play chords, a function must be defined to
 ;;; select pitches from a list that it can play as a chord. This function (as a
 ;;; symbol) is passed as a slot to the instrument instance.

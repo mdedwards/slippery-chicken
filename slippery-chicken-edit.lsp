@@ -1186,21 +1186,19 @@ data: (
 ;;; - The ID of the player whose part is to be modified.
 ;;; - An integer that is the number of the first bar whose pitches are to be
 ;;;   modified. 
-
 ;;; - A list note-name symbols and NILs, or a list of lists of note-name
 ;;;   symbols and NILs, which are the new pitches. If a simple flat list, see
-;;;   the comment in the function description above. If a list of lists, each
-;;;   sub-list will represent a full bar; e.g., (change-pitches bh 'vla 5 '((g3
-;;;   gs4) nil (nil nil aqf5))) will change the pitches in bars 5 and 7 (for
-;;;   the player 'vla), whereas bar six, indicated by nil, wouldn't be changed;
-;;;   similarly the first two notes of bar 7, being nil, will also not be
-;;;   changed, but note 3 will.
+;;;   the comment in the description above. If a list of lists, each sub-list
+;;;   will represent a full bar; e.g., (change-pitches bh 'vla 5 '((g3 gs4) nil
+;;;   (nil nil aqf5))) will change the pitches in bars 5 and 7 (for the player
+;;;   'vla), whereas bar six, indicated by nil, wouldn't be changed; similarly
+;;;   the first two notes of bar 7, being nil, will also not be changed, but
+;;;   note 3 will.
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether or not each consecutive new pitch listed
 ;;;   will automatically take the most recent octave number specified; 
 ;;;   e.g. '((a3 b g cs4)). T = use last octave number. Default = T.
-
 ;;; - A list of marks to be added to the events objects. This option can only
 ;;;   be used in conjunction with the simple flat list of pitches. In this case
 ;;;   the list of pitches and list of marks must be the same length and

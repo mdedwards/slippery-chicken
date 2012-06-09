@@ -342,7 +342,6 @@
 
 ;;; ****f* utilities/all-members
 ;;; DESCRIPTION
-
 ;;; Find out whether the members of the list given as the second argument are
 ;;; all present in the list given as the first argument.
 ;;; 
@@ -2538,7 +2537,6 @@
 
 ;;; ****f* utilities/between
 ;;; DESCRIPTION
-
 ;;; Return a random number between two specified numbers. If the two numbers
 ;;; are integers, the random selection is inclusive. If they are decimal
 ;;; numbers, the result cannot be absolutely inclusive. 

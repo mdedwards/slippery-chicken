@@ -231,7 +231,6 @@
 
 ;;; ****f* sndfile-palette/make-sfp
 ;;; DESCRIPTION
-
 ;;; Make a sndfile-palette object. This object is a simple palette which checks
 ;;; to make sure that all of the sound files in a given list exist for each
 ;;; given ID.

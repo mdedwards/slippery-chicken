@@ -798,7 +798,7 @@ data: (SNOOPY SPOT ROVER)
 
 ;;; 01.12.11 SEAN: Added ROBODoc info
 ;; ****f* assoc-list/make-assoc-list
-;; FUNCTION
+;; DESCRIPTION
 ;; A function that provides a shortcut to creating an assoc-list, filling it
 ;; with data, and assigning a name to it.
 ;;

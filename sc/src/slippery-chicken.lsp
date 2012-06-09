@@ -680,7 +680,6 @@
 ;;; - :multi-bar-rests. T or NIL to indicate whether multiple bars of wrests
 ;;;   should be consolidated when writing parts. T = consolidate. NIL = write
 ;;;   each consecutive rest bar separately. Default = NIL.
-
 ;;; - :display-marks-in-part. T or NIL to indicate whether to print the marks
 ;;;   stored in the MARKS-IN-PART slot of each rhythm object in the score. If
 ;;;   NIL, the indications stored in the MARKS-IN-PART slot are added to parts

@@ -1384,15 +1384,15 @@ data: D4
 ;;; specified number of degrees (optional argument).
 ;;;
 ;;; NB: The slippery-chicken package uses a quarter-tone degree system by
-;;; default, so any function or method involving a degree argument will be
-;;; measured in quarter-tones, not semitones. Thus, while the MIDI note value
-;;; for 'C4 is 60 (chromatic semitones), (note-to-degree 'C4) will return
-;;; 120. Thus, this method will increment by one quarter-tone by default, and
-;;; any value the chooser uses for the optional argument is also number of
-;;; quarter-tones. 
+;;;     default, so any function or method involving a degree argument will be
+;;;     measured in quarter-tones, not semitones. Thus, while the MIDI note
+;;;     value for 'C4 is 60 (chromatic semitones), (note-to-degree 'C4) will
+;;;     return 120. Thus, this method will increment by one quarter-tone by
+;;;     default, and any value the chooser uses for the optional argument is
+;;;     also number of quarter-tones.
 ;;;
 ;;; NB: This method returns a new pitch object rather than modifying the values
-;;; of the original. 
+;;;     of the original.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A pitch object.
@@ -1932,7 +1932,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;; Get the enharmonic equivalent of the given pitch object. Two chromatically
 ;;; consecutive "white-note" pitches (e.g. B-sharp/C-natural) are considered
 ;;; enharmonically equivalent. If there is no enharmonic equivalent, the
-;;; function just returns the same note.
+;;; method just returns the same note.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A pitch object.
@@ -1958,7 +1958,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
 
 => ES4
 
-;; The function returns a pitch object with the same pitch value if there is no
+;; The method returns a pitch object with the same pitch value if there is no
 ;; enharmonic equivalent
 (let ((p (make-pitch 'g4)))
   (data (enharmonic p)))

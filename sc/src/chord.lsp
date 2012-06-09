@@ -814,7 +814,8 @@ data: (
 ;;;   numerical hertz frequency value.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL to indicate whether or not the function should consider
+
+;;; - T or NIL to indicate whether or not the method should consider
 ;;;   enharmonically equivalent pitches to be equal. T = enharmonics are
 ;;;   equal. Default = T.
 ;;; 
@@ -1194,6 +1195,7 @@ data: (
 ;;; MDE: original comment:
 ;;; checks whether there are notes in this chord or not (make-chord
 ;;; nil) is a valid function call and creates a chord object with no notes.
+
 ;;; ****m* chord/has-notes
 ;;; DATE 
 ;;; 16-Aug-2010

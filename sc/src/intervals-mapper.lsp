@@ -176,7 +176,6 @@
 
 ;;; ****m* intervals-mapper/get-scale
 ;;; DESCRIPTION
-
 ;;; Create a scale (sequence of pitches) beginning with the specified starting
 ;;; note and extending up to MIDI note 127 by cycling through the interval
 ;;; structure of the STEPS slot.
@@ -329,7 +328,6 @@ data: E4
 ;;; 14-Aug-2010
 ;;;
 ;;; DESCRIPTION
-
 ;;; Return the scale degree number of a specified pitch class in relation to a
 ;;; specified octave within the given intervals-mapper object.
 ;;;

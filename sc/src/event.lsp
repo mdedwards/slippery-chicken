@@ -1049,7 +1049,6 @@ EVENT: start-time: NIL, end-time: NIL,
 
 ;;; ****m* event/inc-duration
 ;;; DESCRIPTION
-
 ;;; Increase the duration of a given event object by a specified time in
 ;;; seconds. This will result in new values for the end-time,
 ;;; duration-in-tempo, and compound-duration-in-tempo slots. 
@@ -3047,7 +3046,6 @@ T
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-
 ;;; - :start-time. The start time of the event in seconds. Default = NIL.
 ;;; - :is-rest. Set to T or NIL to indicate whether or not the given event is a
 ;;;   rest. Default = NIL. NB: The make-rest method is better suited to making

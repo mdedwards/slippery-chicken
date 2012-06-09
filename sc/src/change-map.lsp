@@ -258,7 +258,6 @@
 ;;; example, with an instrument-change-map subclass of change-map.
 ;;; 
 ;;; ARGUMENTS 
-
 ;;; - A section indication, either as a single reference ID or a list of
 ;;;   reference IDs into the given change-map.
 ;;; - A change-map object.

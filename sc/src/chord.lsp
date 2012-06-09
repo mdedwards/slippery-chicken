@@ -814,7 +814,6 @@ data: (
 ;;;   numerical hertz frequency value.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-
 ;;; - T or NIL to indicate whether or not the method should consider
 ;;;   enharmonically equivalent pitches to be equal. T = enharmonics are
 ;;;   equal. Default = T.

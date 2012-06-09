@@ -1090,7 +1090,7 @@ START
 ;;;
 ;;; NB: This function always uses a fixed random seed and has no
 ;;;     optional arguments to allow the user to alter that setting.
-
+;;;
 ;;; ARGUMENTS 
 ;;; - A list.
 ;;; - An integer that is the number of permutations to be returned.

@@ -436,7 +436,6 @@
 
 ;;; ****m* slippery-chicken/clone
 ;;; DESCRIPTION
-
 ;;; Copy (clone) the specified instance and all data associated with the
 ;;; slippery-chicken object.
 ;;; 
@@ -1383,7 +1382,6 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 23,
 
 ;;; ****m* slippery-chicken/get-bar-num-from-ref
 ;;; DESCRIPTION
-
 ;;; Get the bar number of a given rthm-seq-bar object by specifying the
 ;;; section, sequenz, and number of the bar within that sequenz.
 ;;; 
@@ -1850,7 +1848,6 @@ bar 45
       (current-event-num 0))
 ;;; ****m* slippery-chicken/next-event
 ;;; DESCRIPTION
-
 ;;; Get the events from a specified player's part within a given
 ;;; slippery-chicken object one after the other (e.g. in a loop). This method
 ;;; must be called once with a bar number first in order to reset the counter;
@@ -2099,7 +2096,6 @@ data: E
 
 ;;; ****m* slippery-chicken/get-event
 ;;; DESCRIPTION
-
 ;;; Retrieve a specified event object from a slippery-chicken object, giving
 ;;; bar number, event number, and player.
 ;;;
@@ -2108,10 +2104,8 @@ data: E
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A slippery-chicken object.
-
 ;;; - An integer that is the number of the bar from which the event object is
 ;;;   to be returned.
-
 ;;; - An integer that is the number of the event object to be returned from
 ;;;   that bar. This number is 1-based and counts all events, including notes,
 ;;;   rests, and tied notes.
@@ -2823,7 +2817,6 @@ data: NIL
 
 ;;; ****m* slippery-chicken/statistics
 ;;; DESCRIPTION
-
 ;;; Print various information about the given slippery-chicken object to the
 ;;; Lisp listener or other specified stream.
 ;;; 
@@ -2886,7 +2879,6 @@ data: NIL
 
 ;;; ****m* slippery-chicken/get-tempo
 ;;; DESCRIPTION
-
 ;;; Return the tempo object in effect for a specified bar of a given
 ;;; slippery-chicken object.
 ;;; 
@@ -2935,7 +2927,6 @@ data: 72
 
 ;;; ****m* slippery-chicken/get-time-sig
 ;;; DESCRIPTION
-
 ;;; Get the time-sig object associate with a specified bar number in a given
 ;;; slippery-chicken object.
 ;;; 
@@ -3075,7 +3066,6 @@ data: (5 8)
 
 ;;; ****m* slippery-chicken/shorten-large-fast-leaps
 ;;; DESCRIPTION
-
 ;;; Modify the pitches of each part in a slippery-chicken object to avoid large
 ;;; melodic leaps at fast speeds, based on the largest-fast-leap slot of the
 ;;; given instrument object and the fast-leap-threshold slot of the
@@ -3677,21 +3667,17 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   parts will be included. Default = NIL.
 ;;; - :start-section. An integer that is the number of the first section for
 ;;;   which the MIDI file is to be generated. Default = 1.
-
 ;;; - :num-sections. An integer that is the number of sections to produce MIDI
 ;;;   data for in the MIDI file. If NIL, all sections will be written. 
 ;;;   Default = NIL.
-
 ;;; - :from-sequence. An integer that is the number of the sequence within the
 ;;;   specified section from which to start generating MIDI data. NB: This
 ;;;   argument can only be used when the num-sections = 1. Default = 1.
-
 ;;; - :num-sequences. An integer that is the number of sequences for which MIDI
 ;;;   data is to be generated in the resulting MIDI file, including the
 ;;;   sequence specified in from-sequence. If NIL, all sequences will be
 ;;;   written. NB: This argument can only be used when the num-sections = 1.
 ;;;   Default = NIL.
-
 ;;; - :force-velocity. An integer between 0 and 127 (inclusive) that is the
 ;;;   MIDI velocity value which will be given to all notes in the resulting
 ;;;   MIDI file. Default = NIL.
@@ -5104,7 +5090,6 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 
 ;;; ****m* slippery-chicken/check-tuplets 
 ;;; DESCRIPTION
-
 ;;; Check the qualities of the tuplets brackets in a given slippery-chicken
 ;;; object to make sure they are all formatted properly (i.e. each starting
 ;;; tuplet bracket has a closing tuplet bracket etc.).  If an error is found,

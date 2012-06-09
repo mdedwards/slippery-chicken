@@ -248,7 +248,6 @@ data: (RS2 RS3 RS2)
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-map object.
-
 ;;; - the cycle data (i.e. recurring-event class's data slot--see
 ;;;   recurring-event.lsp)  
 ;;; - the number of repeats made (or references into :repeats list), also in
@@ -441,11 +440,9 @@ data: (RS2 RS3 RS2)
 ;;; - :palette. A palette object or NIL. If a palette object is specified or
 ;;;   defined here, it will be automatically bound to the given rthm-seq-map
 ;;;   object. Default = NIL.
-
 ;;; - :warn-not-found. T or NIL to indicate whether a warning is printed when
 ;;;   an index which doesn't exist is used for lookup.  
 ;;;   T = warn. Default = NIL.
-
 ;;; - :replacements. A list of lists in the format 
 ;;;   '(((1 2 vla) 3 20b) ((2 3 vln) 4 16a)) that indicate changes to
 ;;;   individual elements of lists within the given rthm-seq-map object. (Often
@@ -455,7 +452,6 @@ data: (RS2 RS3 RS2)
 ;;;   vla player of section 1, subsection 2 in the first example here), the
 ;;;   second element is the nth of the data list for this key to change, and
 ;;;   the third is the new data. Default = NIL.
-
 ;;; - :recurse-simple-data. T or NIL to indicate whether to recursively
 ;;;   instantiate a recursive-assoc-list in place of data that appears to be a
 ;;;   simple assoc-list (i.e. a 2-element list). If NIL, the data of 2-element
@@ -463,7 +459,6 @@ data: (RS2 RS3 RS2)
 ;;;   therefore remaining as a list. For example, this data would normally
 ;;;   result in a recursive call: (y ((2 23) (7 28) (18 2))).  
 ;;;   T = recurse. Default = T.
-
 ;;; 
 ;;; RETURN VALUE
 ;;; A rthm-seq-map object.

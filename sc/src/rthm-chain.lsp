@@ -36,18 +36,19 @@
 ;;;                   with y values from 1-10 indicating how much activity
 ;;;                   there should be: 1 would mean only 1 in 10 beats would
 ;;;                   have notes in/on them, 10 would indicate that all do.  We
-;;;                   use the patterns given in activity-levels::init-instance
-;;;                   below, where 1 means 'play', 0 means 'rest'.  There are
-;;;                   three examples of each level so that if we stick on one
-;;;                   level of activity for some time we won't always get the
-;;;                   same pattern: these will instead be cycled through.
+;;;                   use the patterns given in
+;;;                   activity-levels::initialize-instance, where 1 means
+;;;                   'play', 0 means 'rest'.  There are three examples of each
+;;;                   level so that if we stick on one level of activity for
+;;;                   some time we won't always get the same pattern: these
+;;;                   will instead be cycled through.
 ;;; 
 ;;;                   A slower moving (bass) line is also added that is made up
 ;;;                   of 2 or 3 beat groups---if the activity curve indicates a
 ;;;                   rest, then the whole 2-3 beat group is omitted.
 ;;; 
 ;;;                   There are also 'sticking points' where a rhythm will be
-;;;                   repeated a certain number of times (either s,e,e., or q
+;;;                   repeated a certain number of times (either s, e, e., or q
 ;;;                   by default).  Sticking happens after rests.  This can be
 ;;;                   controlled with an activity envelope too, also indicating
 ;;;                   one of the 10 patterns above (but also including 0).  A 0
@@ -68,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 15:31:19 Fri Jun  8 2012 BST
+;;; $$ Last modified: 17:13:18 Sat Jun  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -168,7 +169,7 @@
    (sticking-al :accessor sticking-al :initform (make-al))
    ;; generated at init if not given here NB a procession algorithm is created
    ;; from this list at init so it would be best to apply something similar (if
-   ;; desired) if not accepting the default--in any case if a cscl is provided
+   ;; desired) if not accepting the default--in any case a cscl is provided
    ;; it will be used instead of the default procession.
    (sticking-rthms :accessor sticking-rthms :initarg :sticking-rthms
                    :initform '(e e e. q e s))
@@ -220,7 +221,7 @@
    (num-rthm-seqs :accessor num-rthm-seqs :type integer :initform 0)
    ;; the rthm-seq-map needs an id (section name/number)
    (section-id :accessor section-id :initarg :section-id :initform 1)
-   ;; the mix/max beat duration of bars generated; can be nil, whereupon bars
+   ;; the min/max beat duration of bars generated; can be nil, whereupon bars
    ;; will not be split
    (split-data :accessor split-data :type list :initarg :split-data
                :initform '(2 5))
@@ -247,7 +248,8 @@
         (1-beat-rthms rc) 
         (loop for group in (1-beat-rthms rc) do
              (unless (= (length group) (num-1-beat-rthms rc))
-               (error "rthm-chain::init: Each group in 1-beat-rthms must ~
+               (error "rthm-chain::initialize-instance: Each group in ~
+                       1-beat-rthms must ~
                        have the same number of beats ~%(here ~a): ~a"
                       (length group) group))
              collect
@@ -416,7 +418,6 @@
 (defmethod split ((rc rthm-chain) &key
                   (min-beats 2) (max-beats 5) warn (clone t))
 ;;; ****
-  ;; (print 'split)   (print (players rc))
   (flet ((got-stick-rthm (1-beat-rs slower-rs)
            ;; sticking rthms have ids like STICK-RTHMS-AUTO5 and
            ;; STICK-RTHMS-AUTO-SLOW5
@@ -479,6 +480,8 @@
                ;;(format t "~&after split")
                ;; (print-simple 1-beat-rs)
                ;; (print-simple slower-rs)
+               (check-beams 1-beat-rs :on-fail nil :auto-beam t)
+               (check-beams slower-rs :on-fail nil :auto-beam t)
                collect 1-beat-rs
                collect slower-rs)))
       (setf (data (get-data-data (section-id rc) (palette rc))) new-rss)
@@ -565,7 +568,7 @@
 ;;; The basic algorithm for 2 parts is: We're given an arbitrary number of
 ;;; 1-beat rthms (e.g. s s (e)) and 2-3 beat slower-moving counterpoints. We
 ;;; generate a sequence of these using the procession function. Then we apply
-;;; the activity curve, and after that the insertion of 8th rests. Then come
+;;; the activity curve, and after that the insertion of rests. Then come
 ;;; the 'sticking points': These come after the rests and the activity curves
 ;;; applied to these count inserted rests not seqs or beats.
 ;;; 
@@ -748,6 +751,9 @@
                          1-beat-bars '()
                          meters '()
                          slower-bars '())
+                   ;; MDE Sat Jun  9 16:28:49 2012 
+                   (check-beams 1-beat-rs :on-fail #'warn :auto-beam t)
+                   (check-beams slower-rs :on-fail #'warn :auto-beam t)
                    ;; NB if the order or anything else is changed here we'll
                    ;; have to change the split method too.
                    (add 1-beat-rs (palette rc) section-id)
@@ -883,6 +889,9 @@
                        (multiple-value-bind 
                              (sfast sslow)
                            (stick-rthms rthm repeats)
+                         ;; MDE Sat Jun  9 16:33:25 2012 
+                         (check-beams sfast :on-fail #'warn :auto-beam t)
+                         (check-beams sslow :on-fail #'warn :auto-beam t)
                          (add sfast (palette rc) section-id)
                          (add sslow (palette rc) section-id)
                          ;; can't push them into the maps here otherwise the
@@ -970,7 +979,7 @@
 
 (defmethod (setf slower-rthms) :after (rthms (rc rthm-chain))
   (unless (= 2 (length rthms))
-    (error "rthm-chain::init: slower rthms must be a ~
+    (error "rthm-chain::(setf slower-rthms): slower rthms must be a ~
             2-element list of rhythms (2 beats then 3 beats): ~%~a"
            rthms))
   (setf (rcs rc)
@@ -1112,7 +1121,7 @@
 ;;;   piece. A value of 1 indicates that only 1 in 10 beats will have notes
 ;;;   in/on them, and a value of 10 indicates that all beats will have
 ;;;   notes. This process uses the patterns given in
-;;;   activity-levels::init-instance below, where 1 means 'play' and 0 means
+;;;   activity-levels::initialize-instance, where 1 means 'play' and 0 means
 ;;;   'rest'. There are three examples of each level, so that if the curve
 ;;;   remains on one level of activity for some time it won't always return the
 ;;;   same pattern; these will be rotated instead. If the activity curve
@@ -1298,22 +1307,25 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
                      (1 ((t)))
                      (4 ((t nil nil nil) (t nil t nil) (nil t nil t)
                          (t nil nil t) (nil nil t nil) (nil t t nil)))))
+      (slow-sticks-al nil)
       ;; this will be incremented and used to create the rthm-seq ids
       (count 0))
   (defun stick-rthms (rthm num &optional print prefer2)
     (if 
      (and (not rthm) (not num))
-     (setf count 0)
+     (setf count 0
+           ;; MDE Sat Jun  9 12:27:00 2012 -- must reset the cscls too!
+           slow-sticks-al nil)
      (progn
        (unless (rhythm-p rthm)
          (setf rthm (make-rhythm rthm)))
        (when (> (num-dots rthm) 1)
          (error "stick-rthms: can't handle rhythms with more than 1 dot: ~a"
                 rthm))
-       (when (listp slow-sticks)
-         (setf slow-sticks (loop for meter in slow-sticks collect
+       (unless slow-sticks-al
+         (setf slow-sticks-al (loop for meter in slow-sticks collect
                                 (list (first meter) (make-cscl (second meter))))
-               slow-sticks (make-assoc-list 'slow-sticks slow-sticks)))
+               slow-sticks-al (make-assoc-list 'slow-sticks-al slow-sticks-al)))
        (incf count)
        (let* ((rthms-per-bar (cond ((factor num 3) 3)
                                    ((factor num 4) 4)
@@ -1383,7 +1395,8 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
                ;; always have gen-beat-as-rhythm handle a compound ts rather do
                ;; so only if our compound var is t
                beat-rthm (get-beat-as-rhythm (first (bars fast-seq)) compound)
-               slow-rthms (get-next (get-data-data beats-per-bar slow-sticks))
+               slow-rthms (get-next
+                           (get-data-data beats-per-bar slow-sticks-al))
                slow-bars (loop repeat num-full-bars collect
                               (loop for beat in slow-rthms collect
                                    (if beat 
@@ -1408,6 +1421,9 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
            (error 
             "rthm-chain::stick-rthms: ~a ~a: slow-seq dur ~a fast-seq dur ~a"
             (data rthm) num (duration slow-seq) (duration fast-seq)))
+         ;; MDE Sat Jun  9 12:42:11 2012 -- added auto-beam
+         (auto-beam fast-seq)
+         (auto-beam slow-seq)
          (values fast-seq slow-seq))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1599,7 +1615,7 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
       ;; we want to return a 1-based list (not 0) if <items> was simply a number
       (unless (listp items)
         (setf items (loop for i from 1 to num-items collect i)))
-      ;; just for statistics: get the usasge data out of the hash
+      ;; just for statistics: get the usage data out of the hash
       (maphash #'(lambda (key val) 
                    (let ((skey (nth key items)))
                      (push (list skey val) spread)))

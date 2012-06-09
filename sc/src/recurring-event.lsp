@@ -62,7 +62,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 08:04:05 Sun Apr 29 2012 BST
+;;; $$ Last modified: 10:27:13 Sat Jun  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -399,14 +399,6 @@ data: ((2 3) (3 2) (5 3) (8 2))
 (defun make-re (data &key return-data return-data-cycle id)
   (make-instance 'recurring-event :id id :data data :return-data return-data
                  :return-data-cycle return-data-cycle))
-
-(defun make-al (&optional start-at)
-;;; ****
-  (let ((al (make-instance 'activity-levels)))
-    (when start-at
-      (reset al start-at))
-    al))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF recurring-event.lsp

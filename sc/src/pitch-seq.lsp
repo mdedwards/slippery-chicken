@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 22:03:14 Tue May  8 2012 BST
+;;; $$ Last modified: 10:28:19 Sat Jun  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -122,7 +122,7 @@
                    :initform '(d3 e3 f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5 d5 e5
                                f5 g5 a5 b5 c6 d6 e6 f6 g6))
    (relative-notes-length :accessor relative-notes-length :type integer 
-                           :allocation :class :initform nil)))
+                           :allocation :class :initform -1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -144,7 +144,7 @@
 (defmethod initialize-instance :after ((ps pitch-seq) &rest initargs)
   (declare (ignore initargs))
   ;; only do this once.
-  (unless (relative-notes-length ps)
+  (unless (> (relative-notes-length ps) 0)
     (setf (relative-notes ps)
       (loop for n in (relative-notes ps) collect (make-pitch n))
       (relative-notes-length ps) (length (relative-notes ps))))

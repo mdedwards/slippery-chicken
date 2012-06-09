@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 19:32:55 Thu May 31 2012 BST
+;;; $$ Last modified: 17:10:24 Sat Jun  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2315,6 +2315,19 @@ rthm-seq NIL
     (update-write-time-sig ret)
     ret))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Jun  9 16:27:56 2012 -- 
+(defmethod check-beams ((rs rthm-seq) &key auto-beam print
+                        (on-fail #'warn))
+  (loop with result = t
+     for bar in (bars rs) 
+     for temp = (check-beams bar :auto-beam auto-beam
+                             :print print :on-fail on-fail)
+     do
+     (unless temp
+       (setf result nil))
+     finally (return result)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod no-accidental ((rs rthm-seq))
@@ -2373,7 +2386,12 @@ RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1,
 ;;; ****
   (declare (ignore ignore))
   (nth (1- bar-num) (bars rs)))
-  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod auto-beam ((rs rthm-seq) &optional (beat nil) (check-dur t))
+  (loop for bar in (bars rs) do (auto-beam bar beat check-dur)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
@@ -2590,16 +2608,16 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
 ;;; - :tag. A symbol that is another name, description etc. for the given
 ;;;   object. The tag may be used for identification but not for searching
 ;;;   purposes. Default = NIL.
-;;; - :auto-beam.  T or NIL. When T, the method will attempt to automatically
+;;; - :auto-beam.  T or NIL. When T, the function will attempt to automatically
 ;;;   set beaming indicators among the resulting rthm-seq-bar objects. This can
 ;;;   result in errors if the resulting rhythms have a duration of more than 1
 ;;;   beat. Default = NIL.
 ;;; - :id. A symbol that will be the ID of the given object. 
 ;;;   Default = "from-multipliers".
-;;; - :tuplet. An integer or NIL. If an integer, the method will automatically
-;;;   place tuplet brackets of that value above beats consisting of tuplet
-;;;   rhythms. NB: This method will only place the same value over all tuplets.
-;;;   Default = NIL.
+;;; - :tuplet. An integer or NIL. If an integer, the function will
+;;;   automatically place tuplet brackets of that value above beats consisting
+;;;   of tuplet rhythms. NB: This function will only place the same value over
+;;;   all tuplets.  Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns a rthm-seq object.

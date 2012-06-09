@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 10:13:28 Wed Jun  6 2012 BST
+;;; $$ Last modified: 17:15:57 Sat Jun  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1086,6 +1086,42 @@ data: ((2 4) Q E S S)
             (setf (bracket r) nil)))))
        
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Jun  9 13:45:31 2012 -- will only auto-beam if T and beams are
+;;; wrong.  Returns t if all ok otherwise nil.  Second returned value is the
+;;; problem as a symbol
+(defmethod check-beams ((rsb rthm-seq-bar) &key auto-beam print
+                        (on-fail #'warn))
+  (let ((bad nil))
+    (loop with last-seen = -1 with open
+       for r in (rhythms rsb) 
+       for current = (beam r)
+       do
+       (when (and current (= 1 current))
+         (setf open t))
+       (when (and current (= 1 last-seen) (= 1 current))
+         (setf bad 'two-ones))
+       (when (and current (zerop current) (not open))
+         (setf bad 'not-open))
+       (when bad
+         (return bad))
+       (when (and current (zerop current))
+         (setf open nil))
+       (when current 
+         (setf last-seen current))
+       finally (when open
+                 (setf bad 'not-closed)))
+    (when (and bad auto-beam)
+      ;; auto-beam valls check-beams too, via update-rhythms-beam-info
+      (setf bad (not (auto-beam rsb nil nil))))
+    (when print
+      (print bad))
+    (when (and on-fail bad)
+      (apply on-fail
+             (list "rthm-seq-bar::check-beams failed with error ~a" bad)))
+    ;; (print-simple rsb)
+    (values (not bad) bad)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod consolidated-rthms-to-events ((rsb rthm-seq-bar) rthms)
   (loop 
@@ -1566,7 +1602,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;;   (default = T). 
 ;;; 
 ;;; RETURN VALUE  
-;;; Returns NIL.
+;;; Returns the rthm-seq-bar-object
 ;;; 
 ;;; EXAMPLE
 #|
@@ -1732,7 +1768,11 @@ data: ((2 4) - S S - S - S S S - S S)
          ;; (start-beam (get-nth-non-rest-rhythm (first data) rsb))
          (start-beam (get-nth-event (first data) rsb))
          ;; (end-beam (get-nth-non-rest-rhythm (second data) rsb))
-         (end-beam (get-nth-event (second data) rsb)))))
+         (end-beam (get-nth-event (second data) rsb))))
+  ;; MDE Sat Jun  9 15:22:05 2012
+  (check-beams rsb :on-fail #'error)
+  ;; MDE Sat Jun  9 11:28:30 2012 -- return the bar object instead of nil
+  rsb)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3173,7 +3213,7 @@ data: (2 4)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-simple ((rsb rthm-seq-bar) &optional written (stream t))
-  (format stream "~&~a: " (get-time-sig-as-list rsb))
+  (format stream "~&bar ~a: ~a: " (bar-num rsb) (get-time-sig-as-list rsb))
   (loop for r in (rhythms rsb) do
        (print-simple r written stream)))
 
@@ -4279,7 +4319,7 @@ rsb)
     (when (and new-bars (= 1 (/ num num-mult)))
       ;; MDE Wed Dec 14 18:31:25 2011 -- we could warn if the extra beat will
       ;; make a bar > max-beats, but not now.
-      (let* ((last-bar (first new-bars)) ; we're pushing ;
+      (let* ((last-bar (first new-bars)) ; we're pushing
              (last-bar-ts (get-time-sig last-bar)))
         (setf (rhythms last-bar) (append (rhythms last-bar) rthms)
               (time-sig last-bar) (list (+ num-mult (num last-bar-ts))
@@ -4287,7 +4327,10 @@ rsb)
         (decf num num-mult)))
     (if (zerop num)                     ; success
         (progn
-          (loop for bar in new-bars do (gen-stats bar))
+          (loop for bar in new-bars do 
+             ;; MDE Sat Jun  9 15:40:35 2012 
+               (check-beams bar :on-fail nil :auto-beam t)
+               (gen-stats bar))
           (nreverse new-bars))
         (progn
           (when warn
@@ -5203,7 +5246,7 @@ rsb-rb)
                                        consolidate-notes-aux: ~
                                        bar num ~a: Should have got a letter ~
                                        (sum = ~a)"
-                                      bar-num rhythms sum)))
+                                      rhythms bar-num sum)))
                          (error "~a~%rthm-seq-bar::consolidate-notes-aux: ~
                                bar-num: ~a: sum is 0!" bar-num rhythms))))
           (when (and letter (whole-num-p (value letter)))

@@ -509,7 +509,6 @@
 
 ;;; ****m* slippery-chicken-edit/respell-notes
 ;;; DESCRIPTION
-
 ;;; Pass through the entire given slippery-chicken object and change some of
 ;;; the pitch objects to their enharmonic equivalents to produce more sensible
 ;;; spellings of consecutive pitches in the score.
@@ -2734,11 +2733,9 @@ NIL
 ;;; - :end-bar. An integer that is the number of the last bar into which the
 ;;;   tie is to extend. This can be helpful if the user wants to tie into only
 ;;;   the first of several consecutive full-rest bars.
-
 ;;; - :auto-beam. T or NIL to indicate whether the method should automatically
 ;;;   beam the beats of the modified bars after the ties have been added.
 ;;;   T = automatically beam. Default = NIL.
-
 ;;; - :consolidate-notes. T or NIL to indicate whether the method should
 ;;;   consolidate tied notes into single rhythm units of longer duration.
 ;;;   T = consolidate. Default = T.
@@ -2964,9 +2961,7 @@ NIL
 ;;; - :rm-staccatos. T or NIL to indicate whether to first remove existing
 ;;;   staccato, tenuto, and accented staccato marks from the specified
 ;;;   region. T = remove staccatos. Default = NIL.
-
 ;;; - :over-accents. T or NIL. Default = T.
-
 ;;; - :verbose. T or NIL to indicate whether to print feedback from the process
 ;;;   to the Lisp listener. T = print. Default = NIL.
 ;;; 
@@ -3296,20 +3291,15 @@ NIL
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-
 ;;; - :verbose. T or NIL to indicate whether the method is to print feedback
 ;;;   about its operations to the Listener. T = print feedback. Default = NIL. 
-
 ;;; - :in-c. T or NIL to indicate whether the pitches processed are to be
 ;;;   handled as sounding or written pitches. T = sounding. Default = T.
-
 ;;; - :players. A list containing the IDs of the players whose parts are to be
 ;;;   to have clefs automatically added.
-
 ;;; - :delete-clefs. T or NIL to indicate whether the method should first
 ;;;   delete all clef symbols from the MARKS-BEFORE slots of all event objects
 ;;;   it is processing before setting the automatic clef changes.
-
 ;;; - :delete-marks-before. T or NIL to indicate whether the MARKS-BEFORE slot
 ;;;   of all event objects processed should first be set to NIL. 
 ;;;   T = set to NIL. Default = NIL.
@@ -4074,15 +4064,12 @@ NIL
 ;;; - The ID of the player from whose part the beams are to be deleted.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-
 ;;; - An integer that is the number of the note that currently holds the
 ;;;   start-beam information (i.e., the BEAMS slot is 1). This number is
 ;;;   1-based and counts ties.
-
 ;;; - An integer that is the number of the note that currently holds the
 ;;;   end-beam information (i.e., the BEAMS slot is 0). This number is 1-based
 ;;;   and counts ties.
-
 ;;; 
 ;;; RETURN VALUE
 ;;; If deleting all beams in a bar, returns T, otherwise returns NIL.
@@ -4536,7 +4523,6 @@ NIL
 ;;; Change the specified event object to a rest.
 ;;; 
 ;;; ARGUMENTS
-
 ;;; - A slippery-chicken object.
 ;;; - An integer that is the number of the bar in which the rest is to be
 ;;;   forced.
@@ -4804,7 +4790,6 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 
 ;;; ****m* slippery-chicken-edit/unset-cautionary-accidental
 ;;; DESCRIPTION
-
 ;;; Remove the parentheses from a cautionary accidental (leaving the accidental
 ;;; itself) by setting the ACCIDENTAL-IN-PARENTHESES slot of the contained
 ;;; pitch object to NIL.

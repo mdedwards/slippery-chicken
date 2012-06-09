@@ -1521,18 +1521,14 @@ NIL
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-
 ;;; - :is-rest. T or NIL to denote whether the given duration is a rest or
 ;;;   not. T = rest. Default = NIL.
-
 ;;; - :is-tied-to. T or NIL to denote whether the given duration is tied later
 ;;;   to the next duration in a given rthm-seq-bar/rthm-seq object. T =
 ;;;   tied. Default = NIL.
-
 ;;; - :duration. Indicates whether the duration argument has been given as a
 ;;;   duration in seconds, not a known rhythm like 'e or 8. T indicates that
 ;;;   the duration is a duration in seconds. Default = NIL.
-
 ;;; - :tempo. Indicates the tempo for the given rhythm. This is not related to
 ;;;   any tempi applied, rather one that is reflected in the duration-in-tempo
 ;;;   slot of event.

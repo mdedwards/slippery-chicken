@@ -346,7 +346,6 @@ MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not
 
 ;;; ****m* rthm-seq-bar/fill-with-rhythms
 ;;; DESCRIPTION
-
 ;;; Any rhythms (or event objects) in the existing rthm-seq-bar object will be
 ;;; deleted, and then rhythm (or event) objects will be taken one by one from
 ;;; the <rhythms> argument until the bar is full. 
@@ -577,11 +576,9 @@ data: NIL
 ;;; - :beat. The beat basis into which rests are to be consolidated. If no
 ;;;   value is given for this option, the method will take the beat from the
 ;;;   time signature. 
-
 ;;; - :min. The minimum duration for consolidated durations. This is a target
 ;;;   value only, as depending on the source material the method may not always
 ;;;   be able to achieve this. Default = 0.0.
-
 ;;; - :warn. T or NIL to indicate whether the method should print a warning to
 ;;;   the Lisp listener if it is mathematically unable to consolidate the
 ;;;   rests. T = print warning. Default = NIL.
@@ -892,7 +889,6 @@ data: ((2 4) Q E S S)
 
 ;;; ****m* rthm-seq-bar/consolidate-notes
 ;;; DESCRIPTION
-
 ;;; Combine consecutive tied notes into one (or a few) notes of a longer
 ;;; rhythmic duration. 
 ;;;
@@ -1361,7 +1357,6 @@ data: ((2 4) - S S - S - S S S - S S)
 
 ;;; ****m* rthm-seq-bar/auto-tuplets
 ;;; DESCRIPTION
-
 ;;; Automatically place the data necessary for tuplet brackets in rhtm-seq-bar
 ;;; objects that contain tuplet rhythms.
 ;;; 
@@ -4009,15 +4004,12 @@ data: (2 4)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-
 ;;; - :written. T or NIL to indicate whether the test is to handle the
 ;;;   written or sounding pitch in the event. T = written. 
 ;;;   Default = NIL.
-
 ;;; - :force-naturals. T or NIL to indicate whether to force "natural"
 ;;;   note names that contain no F or S in their name to convert to
 ;;;   their enharmonic equivalent (e.g. B3 = CF4). Default = NIL.
-
 ;;; - :pitches. All sharp/flat pitches are changed by default but if a
 ;;;   list of pitch objects or symbols is given, then only those
 ;;;   pitches will be changed.  Note that if written is T, then this

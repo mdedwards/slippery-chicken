@@ -559,7 +559,6 @@
 
 ;;; ****m* rthm-chain/rthm-chain-gen
 ;;; DESCRIPTION
-
 ;;; Generate a chain of rhythms, also internally making use of the procession
 ;;; function. 
 ;;; 
@@ -585,29 +584,22 @@
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-
 ;;; - :rests. whether to generate the rests default: t
-
 ;;; - :stick.  whether to generate the sticking point s
-
 ;;; - :num-beats. how many beats to use for the algorithm. NB we'll generate
 ;;;   considerably more if we have sticking and rests; this number really just
 ;;;   refers to the number of standard 1-beat rhythms we'll generate.  If nil,
 ;;;   then we use the num-beats slot of the rc instance. default: nil
-
 ;;; - :use-fibonacci.  whether to use a fibonacci transition to move through
 ;;;   the 1-beat rhythms (so they'll be repeated) or the procession algorithm
 ;;;   (where they'll be alternated). default t
-
 ;;; - :section-id. for the sake of the map, what section we'll put the
 ;;;   references into.  The rthm-seqs themselves will be parcelled up into an
 ;;;   object with this id too, so we can avoid id conflicts if we combine 2+
 ;;;   sections generatd by separate rthm-chain objects. default 1
-
 ;;; - :split. whether to split up longer generated bars (e.g. 7/4) into smaller
 ;;;   bars.  If this is a two-element list it represents the min/max number of
 ;;;   beats in a bar (where a 6/8 bar is two compound beats) default '(2 5)
-
 ;;; - :wrap. when we create the 1-beat rythms' and slow rhythms' order, we can
 ;;;   choose to start at any point in the list default nil
 ;;; 
@@ -1072,12 +1064,9 @@
 ;;;   combination, as this could result in an attempt to create meters from
 ;;;   fractional beats (e.g. 3.25). An error message will be printed in such
 ;;;   cases.
-
-
 ;;; - :1-beat-fibonacci. T or NIL to indicate whether the sequence of 1-beat
 ;;;   rhythms is to be generated using the fibonacci-transitions method or the
 ;;;   processions method. T = use fibonacci-transitions method. Default = NIL.
-
 ;;; - :slow-fibonacci. T or NIL to indicate whether the sequence of the slow
 ;;;   rhythms will be generated using the fibonacci-transitions method or the
 ;;;   processions method. This affects the order in which each 2- or 3-beat
@@ -1086,19 +1075,13 @@
 ;;;   slot of the rthm-chain-slow object, which simply cycles through 
 ;;;   '(2 3 2 2 3 2 2 3 3 3). T = use fibonacci-transisitions method.
 ;;;   Default = NIL.
-
 ;;; - :players. A list of two player IDs. When used in conjunction with a
 ;;;   slippery-chicken object (which is the standard usage), these must be IDs
 ;;;   as they are defined in that object's ENSEMBLE slot.  Default = '(player1
 ;;;   player2).  The first player will play the 1-beat rhythms, the second the
 ;;;   slower rhythms.
-
-
-
-
 ;;; - :do-rests. T or NIL to indicate whether to apply the automatic
 ;;;   rest-insertion algorithm. T = use. Default = T.
-
 ;;; - :rest-cycle. A list of 2-item lists that indicate the pattern by which
 ;;;   rests of specific rhythmic durations will be selected from the RESTS slot
 ;;;   for automatic insertion. The first number of each pair is a 0-based
@@ -1112,12 +1095,10 @@
 ;;;   algorithm selects one rest to insert, it will select the rest located at
 ;;;   position 0 in the list of rests in the RESTS slot (e by default).
 ;;;   Default ='((0 3) (1 1) (0 2) (2 1) (1 1) (3 1)).
-
 ;;; - :do-rests-curve. A list of break-point pairs with y values of either 0 or
 ;;;   1 indicating whether the do-rests algorithm is active or disabled. These
 ;;;   values are interpolated between each pair, with all values 0.5 and higher
 ;;;   being round up to 1 and all below 0.5 rounded to 0. Default = NIL.
-
 ;;; - :rest-re. A list of 2-item lists that indicate the pattern by which rests
 ;;;   will be automatically inserted. The first number of each pair determines
 ;;;   how many events occur before inserting a rest, and the second number of
@@ -1126,7 +1107,6 @@
 ;;;   three times in a row. The list passed here will be treated as data for a
 ;;;   recurring-event object that will be repeatedly cycled through.  
 ;;;   Default = '((2 3) (3 2) (2 2) (5 1) (3 3) (8 1)).
-
 ;;; - :activity-curve. A list of break-point pairs with y values from 1 to 10
 ;;;   indicating the amount of activity there should be over the course of the
 ;;;   piece. A value of 1 indicates that only 1 in 10 beats will have notes
@@ -1138,22 +1118,18 @@
 ;;;   same pattern; these will be rotated instead. If the activity curve
 ;;;   indicates a rest for one of the slower-rhythms groups, the whole 2-3 beat
 ;;;   group is omitted.
-
 ;;; - :harmonic-rthm-curve. A list of break-point pairs that indicates how many
 ;;;   slower-rthms will be combined into one rthm-seq (each rthm-seq has a
 ;;;   single harmony). The default is 2 bars (slower-rthms) per rthm-seq,
 ;;;   i.e. '(0 2 100 2).
-
 ;;; - :do-sticking. T or NIL to indicate whether the method should apply the
 ;;;   sticking algorithm. T = apply. Default = T.
-
 ;;; - :do-sticking-curve. A list of break-point pairs that can be used,
 ;;;   alternatively, to control whether the sticking algorithm is being applied
 ;;;   or not at any given point over the course of the piece. The y values for
 ;;;   this curve should be between 0 and 1, and the decimal fractions achieved
 ;;;   from interpolation will be rounded. The 1 values resulting from this
 ;;;   curve will only be actively applied to if do-sticking is set to T.
-
 ;;; - :sticking-curve. A list of break-point pairs that acts as an activity
 ;;;   envelope to control the sticking, which always occurs after rests. As
 ;;;   with the activity curve, this curve can take y values up to 10, but also
@@ -1163,14 +1139,12 @@
 ;;;   (procession 34 '(2 3 5 8 13) :peak 1 :expt 3). Every sticking point is
 ;;;   accompanied by a slower group, which is simply chosen in sequence and
 ;;;   repeated for the duration of the sticking period.
-
 ;;; - :sticking-repeats. A list of integers to indicate the number of
 ;;;   repetitions applied in sticking segments. When the values of this list
 ;;;   have been exhausted, the method cycles to the beginning and continues
 ;;;   drawing from the head of the list again. NB: This list is made into a
 ;;;   circular-sclist object when the given rthm-chain object is initialized
 ;;;   unless a circular-sclist object is explicitly provided.
-
 ;;; - :sticking-rthm. A list of rhythmic units that will serve as the rhythms
 ;;;   employed by the sticking algorithm. These are generated at initialization
 ;;;   if not specified here. NB: This list is used to create a list using the
@@ -1178,7 +1152,6 @@
 ;;;   similar to the default if not accepting the default (if the user would
 ;;;   like to specify a different list). If a circular-sclist object is
 ;;;   provided here, it will be used instead of the default procession.
-
 ;;; - :split-data. NIL or a two-item list of integers that are the minimum and
 ;;;   maximum beat duration of bars generated. If NIL, the bars will not be
 ;;;   split. Default = '(2 5)
@@ -1480,7 +1453,6 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-
 ;;; - :peak. A decimal number >0.0 and <=1.0. This number indicates the target
 ;;;   location in the new list at which the last element is to finally occur,
 ;;;   whereby e.g. 0.7 = ~70% of the way through the resulting list. This is an
@@ -1489,18 +1461,15 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;;   lists with a low number of items are likely to result in new lists in
 ;;;   which the final element occurs quite early on, perhaps even nowhere near
 ;;;   the specified peak value. Default = 0.7.
-
 ;;; - :expt. A (decimal) number that indicates the "curve" that determines the
 ;;;   intervals at which each successive element of the initial list is
 ;;;   introduced to the new list. A higher number indicates a steeper
 ;;;   exponential curve. Default = 1.3.
-
 ;;; - :orders. The patterns by which the elements are added. The method
 ;;;   cyclically applies these orders, the numbers 1, 2, and 3 representing the
 ;;;   three least used elements at each pass. These orders must therefore
 ;;;   contain all of the numbers 1, 2, and 3, and those numbers only. 
 ;;;   Default = '((1 2 1 2 3) (1 2 1 1 3) (1 2 1 3)).
-
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns two values, the first being the new list, with a secondary value

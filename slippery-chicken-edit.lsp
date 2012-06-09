@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 18:34:41 Thu Jun  7 2012 BST
+;;; $$ Last modified: 16:01:33 Sat Jun  9 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -2503,7 +2503,10 @@ NIL
                                :to-next-attack to-next-attack 
                                :tie-next-attack tie-next-attack
                                :last-rhythm last-rhythm
-                               :auto-beam auto-beam)))
+                               :auto-beam auto-beam))
+  ;; MDE Fri Jun  8 16:08:15 2012 -- just make sure we get a useful error
+  ;; message if there's a problem 
+  (check-ties sc nil #'warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3751,11 +3754,11 @@ NIL
         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4))))
         :set-map '((1 (1 1 1)))
         :rthm-seq-palette '((1 ((((3 4) s (e.)  (s) s (e) (e) s (s)))
-				 :pitch-seq-palette ((1 2 3))))
-			    (2 ((((3 4) (s) s (e) (e) s (s) s (e.)))
-				 :pitch-seq-palette ((1 2 3))))
-			    (3 ((((3 4) (e) s (s) s (e.)  (s) s (e)))
-				 :pitch-seq-palette ((1 2 3)))))
+                                 :pitch-seq-palette ((1 2 3))))
+                            (2 ((((3 4) (s) s (e) (e) s (s) s (e.)))
+                                 :pitch-seq-palette ((1 2 3))))
+                            (3 ((((3 4) (e) s (s) s (e.)  (s) s (e)))
+                                 :pitch-seq-palette ((1 2 3)))))
         :rthm-seq-map '((1 ((vn (1 2 3))
                             (va (2 3 1))
                             (vc (3 1 2))))))))

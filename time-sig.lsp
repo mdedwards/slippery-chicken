@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    12th February 2001
 ;;;
-;;; $$ Last modified: 11:46:27 Sat Feb 11 2012 GMT
+;;; $$ Last modified: 15:29:07 Sat Jun  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -231,7 +231,7 @@ data: 4
 
 |#
 ;;; SYNOPSIS
-(defmethod get-beat-as-rhythm ((ts time-sig) &optional (handle-compound))
+(defmethod get-beat-as-rhythm ((ts time-sig) &optional handle-compound)
 ;;; ****
   (let ((result (make-rhythm (denom ts))))
     (if (and handle-compound

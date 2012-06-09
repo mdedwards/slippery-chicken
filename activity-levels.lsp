@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 12:24:01 Thu May 17 2012 BST
+;;; $$ Last modified: 18:23:01 Fri Jun  8 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -173,4 +173,12 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun make-al (&optional start-at)
+;;; ****
+  (let ((al (make-instance 'activity-levels)))
+    (when start-at
+      (reset al start-at))
+    al))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF activity-levels.lsp

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:36:50 Thu Jun  7 2012 BST
+;;; $$ Last modified: 16:03:46 Sat Jun  9 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2329,8 +2329,12 @@ data: 32
            do
            (consolidate-notes bar nil auto-beam)
            ;; MDE Wed Apr 25 16:33:29 2012 -- when clause added!
-           (when auto-beam
-             (auto-beam bar auto-beam nil)))))))
+           ;; MDE Sat Jun  9 16:02:47 2012 -- when changed to if so we can at
+           ;; least check the beams (and call auto-beam no matter what if
+           ;; there's a problem) 
+           (if auto-beam
+             (auto-beam bar auto-beam nil)
+             (check-beams bar :auto-beam t)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5335,34 +5339,34 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 #|
 ;; A successful test
 (let* ((mini
-	(make-slippery-chicken
-	 '+mini+
-	 :ensemble '(((vn (violin :midi-channel 1))
-		      (va (viola :midi-channel 2))
-		      (vc (cello :midi-channel 3))))
-	 :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-	 :set-map '((1 (1 1 1)))
-	 :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
-	 :rthm-seq-map '((1 ((vn (1 1 1))
-			     (va (1 1 1))
-			     (vc (1 1 1))))))))
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((vn (violin :midi-channel 1))
+                      (va (viola :midi-channel 2))
+                      (vc (cello :midi-channel 3))))
+         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+         :set-map '((1 (1 1 1)))
+         :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
+         :rthm-seq-map '((1 ((vn (1 1 1))
+                             (va (1 1 1))
+                             (vc (1 1 1))))))))
   (check-time-sigs mini))
 
 => T
 
 ;; A failing test
 (let* ((mini
-	(make-slippery-chicken
-	 '+mini+
-	 :ensemble '(((vn (violin :midi-channel 1))
-		      (va (viola :midi-channel 2))
-		      (vc (cello :midi-channel 3))))
-	 :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-	 :set-map '((1 (1 1 1)))
-	 :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
-	 :rthm-seq-map '((1 ((vn (1 1 1))
-			     (va (1 1 1))
-			     (vc (1 1 1))))))))
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((vn (violin :midi-channel 1))
+                      (va (viola :midi-channel 2))
+                      (vc (cello :midi-channel 3))))
+         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+         :set-map '((1 (1 1 1)))
+         :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
+         :rthm-seq-map '((1 ((vn (1 1 1))
+                             (va (1 1 1))
+                             (vc (1 1 1))))))))
   (setf (time-sig (get-bar mini 1 'vn)) '(3 4))
   (check-time-sigs mini))
 

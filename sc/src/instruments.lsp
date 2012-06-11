@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 14:59:08 Tue May  8 2012 BST
+;;; $$ Last modified: 18:19:18 Mon Jun 11 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -457,11 +457,13 @@
                       do
                       ;; must be above a perfect fifth, and let's avoid
                       ;; microtonal chords for ease of playing
-                        (when (and (not (micro-tone p))
-                                   (>  diff 7)
-                                   (<= diff 11))
-                          (return p)))))
-    (when possible
+                      (when (and (not (micro-tone p))
+                                 (>  diff 7)
+                                 (<= diff 11))
+                        (return p)))))
+    (when possible 
+      ;; so we might return nil, which should be useful for decision making
+      ;; lower down
       (make-chord (list p1 possible)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -476,15 +478,18 @@
 ;;; argument in the chord-selection functions for the individual stringed
 ;;; instruments. 
 ;;;
-;;; This function implements the best-string-diad function. If no double-stops
+;;; This function uses the best-string-diad function. If no double-stops
 ;;; instances can be created using best-string-diad, two-note chords will be
 ;;; created using the default-chord-function. If neither of these are possible,
-;;; a single pitch will be returned instead.
+;;; a chord of a single pitch will be returned instead.
 ;;; 
 ;;; SYNOPSIS
 (defun string-chord-selection-fun (curve-num index pitch-list pitch-seq 
                                    instrument set string-III)
 ;;; ****
+  ;; MDE Mon Jun 11 17:41:32 2012 
+  (unless (pitch-p string-III)
+    (setf string-III (make-pitch string-III)))
   (let* ((pll (length pitch-list))
          (diad-down (best-string-diad 
                      ;; have to reverse so that pitch at index is our starting
@@ -501,15 +506,17 @@
                      (t default)))
          (high (when (> (sclist-length diad) 1)
                  (second (data diad)))))
-    (if (or (micro-tone diad)           ; default could be microtonal
+    (if (or (micro-tone diad) ; default could be microtonal
             (and high
                  ;; can't have any 2-note chords where highest note is < open
                  ;; III 
                  (pitch< high string-III)))
-        (if high
-            ;; just return the highest note
-            high
-            (first (data diad)))
+        ;; MDE Mon Jun 11 17:50:06 2012 -- 
+        (make-chord
+         (if high
+             ;; just return the highest note
+             high
+             (first (data diad))))
         diad)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -527,7 +534,12 @@
                                      instrument set)
 ;;; **** 
     (string-chord-selection-fun curve-num index pitch-list pitch-seq 
-                                instrument set vln-III)))
+                                instrument set
+                                ;; MDE Mon Jun 11 17:19:18 2012
+                                ;; SBCL seems to have a bug where the vln-III
+                                ;; variable gets corrupted after a lot of heavy
+                                ;; operations...hmmm...
+                                vln-III)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -544,7 +556,8 @@
                                     instrument set) 
 ;;; **** 
     (string-chord-selection-fun curve-num index pitch-list pitch-seq 
-                                instrument set vla-III)))
+                                instrument set 
+                                vla-III)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -561,7 +574,8 @@
                                     instrument set)
 ;;; **** 
     (string-chord-selection-fun curve-num index pitch-list pitch-seq 
-                                instrument set vc-III)))
+                                instrument set
+                                vc-III)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -587,7 +601,7 @@
          (when (and p (<= (pitch- p at-start) 12)
                     (not (member p result :test #'note=)))
            (push p result)))
-    (print (pitch-list-to-symbols result))
+    ;; (print (pitch-list-to-symbols result))
     (if (> (length result) 1)
         (make-chord result)
         (first result))))

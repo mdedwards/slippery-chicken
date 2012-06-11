@@ -62,7 +62,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 10:27:13 Sat Jun  9 2012 BST
+;;; $$ Last modified: 14:26:03 Mon Jun 11 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -397,6 +397,7 @@ data: ((2 3) (3 2) (5 3) (8 2))
 |#
 ;;; SYNOPSIS
 (defun make-re (data &key return-data return-data-cycle id)
+;;; ****
   (make-instance 'recurring-event :id id :data data :return-data return-data
                  :return-data-cycle return-data-cycle))
 

@@ -1112,7 +1112,7 @@ Mark set
 ;;;   a list that is the FULL-REF (path of keys) if replacing a nested
 ;;;   named-object. If replacing a named-object at the top level, the
 ;;;   key can be given either as a single-item list or an individual symbol. 
-;;; - A key/data pair as a quoted list.
+;;; - A key/data pair as a list.
 ;;; - The recursive-assoc-list object in which to find and replace the
 ;;;   named-object associated with the specified key.
 ;;; 

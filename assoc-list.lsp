@@ -464,7 +464,7 @@ WARNING:
 ;;; Add a new element to the given assoc-list object.
 ;;; 
 ;;; ARGUMENTS
-;;; - A key/data pair as a quoted list.
+;;; - A key/data pair as a list.
 ;;; - The assoc-list object to which it is to be added.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
@@ -542,7 +542,7 @@ data: MARK
 ;;; 
 ;;; ARGUMENTS
 ;;; - A key present within the given assoc-list object.
-;;; - A key/data pair as a quoted list.
+;;; - A key/data pair as a list.
 ;;; - The assoc-list object in which to find and replace the named-object
 ;;;   associated with the specified key.
 ;;; 

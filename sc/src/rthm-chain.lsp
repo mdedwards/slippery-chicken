@@ -1056,15 +1056,19 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :players. A list of player IDs. When used in conjunction with a
-;;;   slippery-chicken object, these must be IDs as they are defined in that
-;;;   object's ENSEMBLE slot.  Default = '(player1 player2).
+;;; - :players. A list of two player IDs. When used in conjunction with a
+;;;   slippery-chicken object (which is the standard usage), these must be IDs
+;;;   as they are defined in that object's ENSEMBLE slot. The first player will
+;;;   play the 1-beat rhythms, the second the slower rhythms.  
+;;;   Default = '(player1 player2).
 ;;; - :section-id. An integer that will be used as the ID of the rthm-seq-map
 ;;;   created. NB: rthm-chain only creates rthm-seq-maps with one section,
 ;;;   making it possible to create several different rthm-seq-map objects for
 ;;;   different sections in the given piece, and requiring that these be
 ;;;   manually assigned IDs. Additionally, any ID given here must match an
 ;;;   existing ID within the other maps. Default = 1.
+;;; - :do-rests. T or NIL to indicate whether to apply the automatic
+;;;   rest-insertion algorithm. T = use. Default = T.
 ;;; - :rests. A list of rhythmic duration units from which the durations will
 ;;;   be drawn when using the automatic rest-insertion algorithm. The specified
 ;;;   rests are used in a sequence determined by a recurring-event
@@ -1073,24 +1077,6 @@
 ;;;   combination, as this could result in an attempt to create meters from
 ;;;   fractional beats (e.g. 3.25). An error message will be printed in such
 ;;;   cases.
-;;; - :1-beat-fibonacci. T or NIL to indicate whether the sequence of 1-beat
-;;;   rhythms is to be generated using the fibonacci-transitions method or the
-;;;   processions method. T = use fibonacci-transitions method. Default = NIL.
-;;; - :slow-fibonacci. T or NIL to indicate whether the sequence of the slow
-;;;   rhythms will be generated using the fibonacci-transitions method or the
-;;;   processions method. This affects the order in which each 2- or 3-beat
-;;;   unit is used when necessary, not the order in which each 2- or 3-beat
-;;;   unit is selected; the latter is decided by the next element in the DATA
-;;;   slot of the rthm-chain-slow object, which simply cycles through 
-;;;   '(2 3 2 2 3 2 2 3 3 3). T = use fibonacci-transisitions method.
-;;;   Default = NIL.
-;;; - :players. A list of two player IDs. When used in conjunction with a
-;;;   slippery-chicken object (which is the standard usage), these must be IDs
-;;;   as they are defined in that object's ENSEMBLE slot.  Default = '(player1
-;;;   player2).  The first player will play the 1-beat rhythms, the second the
-;;;   slower rhythms.
-;;; - :do-rests. T or NIL to indicate whether to apply the automatic
-;;;   rest-insertion algorithm. T = use. Default = T.
 ;;; - :rest-cycle. A list of 2-item lists that indicate the pattern by which
 ;;;   rests of specific rhythmic durations will be selected from the RESTS slot
 ;;;   for automatic insertion. The first number of each pair is a 0-based
@@ -1104,10 +1090,6 @@
 ;;;   algorithm selects one rest to insert, it will select the rest located at
 ;;;   position 0 in the list of rests in the RESTS slot (e by default).
 ;;;   Default ='((0 3) (1 1) (0 2) (2 1) (1 1) (3 1)).
-;;; - :do-rests-curve. A list of break-point pairs with y values of either 0 or
-;;;   1 indicating whether the do-rests algorithm is active or disabled. These
-;;;   values are interpolated between each pair, with all values 0.5 and higher
-;;;   being round up to 1 and all below 0.5 rounded to 0. Default = NIL.
 ;;; - :rest-re. A list of 2-item lists that indicate the pattern by which rests
 ;;;   will be automatically inserted. The first number of each pair determines
 ;;;   how many events occur before inserting a rest, and the second number of
@@ -1116,29 +1098,26 @@
 ;;;   three times in a row. The list passed here will be treated as data for a
 ;;;   recurring-event object that will be repeatedly cycled through.  
 ;;;   Default = '((2 3) (3 2) (2 2) (5 1) (3 3) (8 1)).
-;;; - :activity-curve. A list of break-point pairs with y values from 1 to 10
-;;;   indicating the amount of activity there should be over the course of the
-;;;   piece. A value of 1 indicates that only 1 in 10 beats will have notes
-;;;   in/on them, and a value of 10 indicates that all beats will have
-;;;   notes. This process uses the patterns given in
-;;;   activity-levels::initialize-instance, where 1 means 'play' and 0 means
-;;;   'rest'. There are three examples of each level, so that if the curve
-;;;   remains on one level of activity for some time it won't always return the
-;;;   same pattern; these will be rotated instead. If the activity curve
-;;;   indicates a rest for one of the slower-rhythms groups, the whole 2-3 beat
-;;;   group is omitted.
-;;; - :harmonic-rthm-curve. A list of break-point pairs that indicates how many
-;;;   slower-rthms will be combined into one rthm-seq (each rthm-seq has a
-;;;   single harmony). The default is 2 bars (slower-rthms) per rthm-seq,
-;;;   i.e. '(0 2 100 2).
+;;; - :do-rests-curve. A list of break-point pairs with y values of either 0 or
+;;;   1 indicating whether the do-rests algorithm is active or disabled. These
+;;;   values are interpolated between each pair, with all values 0.5 and higher
+;;;   being rounded up to 1 and all below 0.5 rounded to 0. Default = NIL.
 ;;; - :do-sticking. T or NIL to indicate whether the method should apply the
 ;;;   sticking algorithm. T = apply. Default = T.
-;;; - :do-sticking-curve. A list of break-point pairs that can be used,
-;;;   alternatively, to control whether the sticking algorithm is being applied
-;;;   or not at any given point over the course of the piece. The y values for
-;;;   this curve should be between 0 and 1, and the decimal fractions achieved
-;;;   from interpolation will be rounded. The 1 values resulting from this
-;;;   curve will only be actively applied to if do-sticking is set to T.
+;;; - :sticking-rthms. A list of rhythmic units that will serve as the rhythms
+;;;   employed by the sticking algorithm. These are generated at initialization
+;;;   if not specified here. NB: This list is used to create a list using the
+;;;   procession algorithm at initialization, so it is best to apply something
+;;;   similar to the default if not accepting the default. If a circular-sclist
+;;;   object is provided here, it will be used instead of the default
+;;;   procession. Default = '(e e e. q e s).
+;;; - :sticking-repeats. A list of integers to indicate the number of
+;;;   repetitions applied in sticking segments. When the values of this list
+;;;   have been exhausted, the method cycles to the beginning and continues
+;;;   drawing from the head of the list again. NB: This list is made into a
+;;;   circular-sclist object when the given rthm-chain object is initialized
+;;;   unless a circular-sclist object is explicitly provided.
+;;;   Default = '(3 5 3 5 8 13 21).
 ;;; - :sticking-curve. A list of break-point pairs that acts as an activity
 ;;;   envelope to control the sticking, which always occurs after rests. As
 ;;;   with the activity curve, this curve can take y values up to 10, but also
@@ -1148,19 +1127,39 @@
 ;;;   (procession 34 '(2 3 5 8 13) :peak 1 :expt 3). Every sticking point is
 ;;;   accompanied by a slower group, which is simply chosen in sequence and
 ;;;   repeated for the duration of the sticking period.
-;;; - :sticking-repeats. A list of integers to indicate the number of
-;;;   repetitions applied in sticking segments. When the values of this list
-;;;   have been exhausted, the method cycles to the beginning and continues
-;;;   drawing from the head of the list again. NB: This list is made into a
-;;;   circular-sclist object when the given rthm-chain object is initialized
-;;;   unless a circular-sclist object is explicitly provided.
-;;; - :sticking-rthm. A list of rhythmic units that will serve as the rhythms
-;;;   employed by the sticking algorithm. These are generated at initialization
-;;;   if not specified here. NB: This list is used to create a list using the
-;;;   procession algorithm at initialization, so it is best to apply something
-;;;   similar to the default if not accepting the default (if the user would
-;;;   like to specify a different list). If a circular-sclist object is
-;;;   provided here, it will be used instead of the default procession.
+;;;   Default = '(0 2 100 2).
+;;; - :do-sticking-curve. A list of break-point pairs that can be used,
+;;;   alternatively, to control whether the sticking algorithm is being applied
+;;;   or not at any given point over the course of the piece. The y values for
+;;;   this curve should be between 0 and 1, and the decimal fractions achieved
+;;;   from interpolation will be rounded. The 1 values resulting from this
+;;;   curve will only be actively applied to if do-sticking is set to T.
+;;; - :1-beat-fibonacci. T or NIL to indicate whether the sequence of 1-beat
+;;;   rhythms is to be generated using the fibonacci-transitions method or the
+;;;   processions method. T = use fibonacci-transitions method. Default = NIL.
+;;; - :slow-fibonacci. T or NIL to indicate whether the sequence of the slow
+;;;   rhythms will be generated using the fibonacci-transitions method or the
+;;;   processions method. This affects the order in which each 2- or 3-beat
+;;;   unit is used when necessary, not the order in which each 2- or 3-beat
+;;;   unit is selected; the latter is decided by the next element in the DATA
+;;;   slot of the rthm-chain-slow object, which simply cycles through 
+;;;   '(2 3 2 2 3 2 2 3 3 3). T = use fibonacci-transisitions method.
+;;;   Default = NIL.
+;;; - :activity-curve. A list of break-point pairs with y values from 1 to 10
+;;;   indicating the amount of activity there should be over the course of the
+;;;   piece. A value of 1 indicates that only 1 in 10 beats will have notes
+;;;   in/on them, and a value of 10 indicates that all beats will have
+;;;   notes. This process uses the patterns given in
+;;;   activity-levels::initialize-instance, where 1 means 'play' and 0 means
+;;;   'rest'. There are three templates for each level, so that if the curve
+;;;   remains on one level of activity for some time it won't always return the
+;;;   same pattern; these will be rotated instead. If the activity curve
+;;;   indicates a rest for one of the slower-rhythms groups, the whole 2-3 beat
+;;;   group is omitted.
+;;; - :harmonic-rthm-curve. A list of break-point pairs that indicates how many
+;;;   slower-rthms will be combined into one rthm-seq (each rthm-seq has a
+;;;   single harmony). The default is 2 bars (slower-rthms) per rthm-seq,
+;;;   i.e. '(0 2 100 2).
 ;;; - :split-data. NIL or a two-item list of integers that are the minimum and
 ;;;   maximum beat duration of bars generated. If NIL, the bars will not be
 ;;;   split. Default = '(2 5)

@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 16:45:43 Mon Jun 11 2012 BST
+;;; $$ Last modified: 17:52:47 Mon Jun 11 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1372,7 +1372,7 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
                     (= 4 numerator-used))
            (setf denominator-used 2
                  numerator-used 2))
-         (format t "~&~a/~a" numerator-used denominator-used)
+         ;; (format t "~&~a/~a" numerator-used denominator-used)
 #|
          ;; MDE Mon Jun 11 16:13:59 2012 -- don't allow x/1 time-sigs
          (when (= 1 denominator-used)

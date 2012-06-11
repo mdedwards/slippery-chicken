@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 15:27:05 Mon May 14 2012 BST
+;;; $$ Last modified: 17:59:27 Mon Jun 11 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1400,6 +1400,9 @@ data: F5
 (defun make-chord (note-list &key (id nil) (auto-sort t) (midi-channel 0)
                    (microtones-midi-channel 0) (force-midi-channel nil))
 ;;; ****
+  ;; MDE Mon Jun 11 17:59:07 2012 
+  (unless (listp note-list)
+    (setf note-list (list note-list)))
   (let ((chord (make-instance 'chord :id id :data note-list 
                               :auto-sort auto-sort)))
     ;; !!NB by default, ignore given midi-channels if our notes are already

@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 15:35:24 Mon Jun 11 2012 BST
+;;; $$ Last modified: 18:24:15 Mon Jun 11 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -4954,6 +4954,17 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
     (loop for bar in players-bars do
       (setf (bar-line-type bar) type)))
   t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jun 11 18:22:24 2012 
+
+(defmethod map-over-bars ((sc slippery-chicken) function &rest further-args)
+    (loop for player in (players sc) do
+       (loop
+          for bnum from 1 to (num-bars sc) 
+          for bar = (get-bar sc bnum player)
+          do
+            (apply function (cons function further-args)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

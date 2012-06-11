@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 17:13:18 Sat Jun  9 2012 BST
+;;; $$ Last modified: 16:45:43 Mon Jun 11 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1323,7 +1323,8 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
                 rthm))
        (unless slow-sticks-al
          (setf slow-sticks-al (loop for meter in slow-sticks collect
-                                (list (first meter) (make-cscl (second meter))))
+                                   (list (first meter)
+                                         (make-cscl (second meter))))
                slow-sticks-al (make-assoc-list 'slow-sticks-al slow-sticks-al)))
        (incf count)
        (let* ((rthms-per-bar (cond ((factor num 3) 3)
@@ -1333,6 +1334,9 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
               (compound (not (zerop (num-dots rthm))))
               (numerator rthms-per-bar)
               (denominator (undotted-value rthm))
+              ;; MDE Mon Jun 11 16:23:48 2012 
+              (numerator-used numerator)
+              (denominator-used denominator)
               (remainder-denominator denominator)
               (num-full-bars (floor num rthms-per-bar))
               (remainder (mod num rthms-per-bar))
@@ -1340,44 +1344,54 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
               remainder-fast-bar beat-rthm slow-rthms slow-bars beats-per-bar
               fast-seq slow-seq full-fast-bars)
          (if compound
-             (setf numerator (* 3 rthms-per-bar)
+             (setf numerator-used (* 3 rthms-per-bar)
                    remainder-numerator (* 3 remainder)
-                   denominator (* 2 denominator)
-                   remainder-denominator denominator)
+                   denominator-used (* 2 denominator-used)
+                   remainder-denominator denominator-used)
              ;; only if simple meters
              (when (= 1 remainder)
-               (setf remainder-numerator (1+ numerator)
+               (setf remainder-numerator (1+ numerator-used)
                      remainder remainder-numerator)
                (decf num-full-bars)))
          (setf full-fast-bars (loop repeat num-full-bars collect
                                    (loop repeat rthms-per-bar collect
                                         (clone rthm))))
-         (when (and (= 4 numerator)
-                    (< 4 denominator))
-           (setf numerator 2
-                 denominator (/ denominator 2)))
+         (when (and (= 4 numerator-used)
+                    (< 4 denominator-used))
+           (setf numerator-used 2
+                 denominator-used (/ denominator-used 2)))
          (when (and (not compound)
                     (>= num-full-bars 2)
-                    (= numerator 2)
-                    (> denominator 4))
-           (setf denominator (/ denominator 2)
-                 numerator num-full-bars
+                    (= numerator-used 2)
+                    (> denominator-used 4))
+           (setf denominator-used (/ denominator-used 2)
+                 numerator-used num-full-bars
                  num-full-bars 1))
          (when (and prefer2
-                    (= 4 denominator)
-                    (= 4 numerator))
-           (setf denominator 2
-                 numerator 2))
+                    (= 4 denominator-used)
+                    (= 4 numerator-used))
+           (setf denominator-used 2
+                 numerator-used 2))
+         (format t "~&~a/~a" numerator-used denominator-used)
+#|
+         ;; MDE Mon Jun 11 16:13:59 2012 -- don't allow x/1 time-sigs
+         (when (= 1 denominator-used)
+           (if prefer2
+               (setf denominator-used 2
+                     numerator-used (* numerator-used 2))
+               (setf denominator-used 4
+                     numerator-used (* numerator-used 4))))
+|#
          (unless (zerop remainder)
            (setf remainder-fast-bar (loop repeat remainder collect 
                                          (clone rthm)))
            (push (list remainder-numerator remainder-denominator)
                  remainder-fast-bar))
-         (push (list numerator denominator) (first full-fast-bars))
+         (push (list numerator-used denominator-used) (first full-fast-bars))
          (when print
            (format t "~&~a ~a: ~a bar(s) of ~a/~a plus ~a/~a" (data rthm) num
-                   num-full-bars numerator denominator remainder-numerator
-                   remainder-denominator)) 
+                   num-full-bars numerator-used denominator-used
+                   remainder-numerator remainder-denominator)) 
          (setf fast-seq (make-instance
                          'rthm-seq 
                          :id (combine-into-symbol 'stick-rthms-auto count)
@@ -1387,8 +1401,8 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
                                             (list remainder-fast-bar))
                                     full-fast-bars)))
                beats-per-bar (if compound
-                                 (/ numerator 3)
-                                 numerator)
+                                 (/ numerator-used 3)
+                                 numerator-used)
                ;; we might have 3xE which would generate a 3/8 bar and is
                ;; compound but not according to our compound variable so don't
                ;; always have gen-beat-as-rhythm handle a compound ts rather do
@@ -1401,7 +1415,7 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
                                    (if beat 
                                        (clone beat-rthm)
                                        (force-rest (clone beat-rthm))))))
-         (push (list numerator denominator) (first slow-bars))
+         (push (list numerator-used denominator-used) (first slow-bars))
          (setf slow-seq (make-instance
                          'rthm-seq
                          :id (combine-into-symbol 'stick-rthms-auto-slow count)

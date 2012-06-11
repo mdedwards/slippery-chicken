@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    18th March 2002
 ;;;
-;;; $$ Last modified: 11:28:21 Thu Feb  9 2012 GMT
+;;; $$ Last modified: 16:56:14 Mon Jun 11 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -329,15 +329,20 @@
       ;; when we saw an e.g. 3/8 rest bar then the single rhythm in that bar
       ;; didn't have a dot but rather data was 8/3, duration 1.5 etc.   Need 
       ;; to correct that by adding the dot.
-      (loop 
-          for bar in bars 
-          for first = (first (rhythms bar))
-          do
-            (when (and (is-rest-bar bar)
-                       (numberp (data first)))
-              (setf (rhythms bar)
-                (list (make-rest (get-rhythm-letter-for-value 
-                                  (data first)))))))
+      (loop with rest
+         for bar in bars 
+         for first = (first (rhythms bar))
+         do
+         (when (and (is-rest-bar bar)
+                    (numberp (data first)))
+           ;; MDE Mon Jun 11 16:55:12 2012 -- don't just stuff NIL in the
+           ;; rhythms slot if get-rhythm-letter-for-value fails 
+           (setf rest (make-rest (get-rhythm-letter-for-value 
+                                  (data first))))
+           (unless rest
+             (setf rest (make-rest (data first))))
+           (setf (rhythms bar)
+                 (list rest))))
       (setf (time-sig first-bar) ts
             (rhythms first-bar) (loop for bar in bars
                                     appending (my-copy-list (rhythms bar)))

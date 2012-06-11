@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 16:01:33 Sat Jun  9 2012 BST
+;;; $$ Last modified: 15:35:24 Mon Jun 11 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -2958,9 +2958,10 @@ NIL
 ;;; - :end-bar. An integer that is the last bar in which to automatically place
 ;;;   slurs. 
 ;;; - :rm-slurs-first. T or NIL to indicate whether to first remove existing
-;;;   slurs from the specified region. NB: Setting this to NIL can produce
-;;;   unwanted results caused by orphaned beg-slur or end-slur marks. 
-;;;   T = remove existing slurs first. Default = T.
+;;;   slurs from the specified region. NB: If you already have slur marks
+;;;   attached to events, setting this to NIL can produce unwanted results
+;;;   caused by orphaned beg-slur or end-slur marks.  T = remove existing slurs
+;;;   first. Default = T.
 ;;; - :rm-staccatos. T or NIL to indicate whether to first remove existing
 ;;;   staccato, tenuto, and accented staccato marks from the specified
 ;;;   region. T = remove staccatos. Default = NIL.
@@ -2994,7 +2995,7 @@ NIL
 ;;; SYNOPSIS
 (defmethod auto-slur ((sc slippery-chicken) players
                       &key start-bar end-bar
-                      rm-slurs-first
+                      (rm-slurs-first t)
                       (rm-staccatos t)
                       ;; 5.4.11
                       (over-accents t)

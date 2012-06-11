@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 17:15:57 Sat Jun  9 2012 BST
+;;; $$ Last modified: 18:32:31 Mon Jun 11 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -885,7 +885,8 @@ data: ((2 4) Q E S S)
 
 ;;; When a bunch of short notes are tied to each other, make one (or a few)
 ;;; notes of them.  If check-dur, make sure we get an exact beat's worth of
-;;; rhythms.
+;;; rhythms (this will fail if we have a rhythm longer than a beat so use NIL
+;;; in that case).  
 
 ;;; ****m* rthm-seq-bar/consolidate-notes
 ;;; DESCRIPTION

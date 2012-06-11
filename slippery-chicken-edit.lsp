@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 18:24:15 Mon Jun 11 2012 BST
+;;; $$ Last modified: 18:38:34 Mon Jun 11 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -4956,15 +4956,25 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Mon Jun 11 18:22:24 2012 
-
+;;; MDE Mon Jun 11 18:22:24 2012 -- returns a flat list of the results of
+;;; calling the function on all of the bars for each instrument.
 (defmethod map-over-bars ((sc slippery-chicken) function &rest further-args)
-    (loop for player in (players sc) do
+    (loop for player in (players sc) appending
        (loop
           for bnum from 1 to (num-bars sc) 
           for bar = (get-bar sc bnum player)
-          do
-            (apply function (cons function further-args)))))
+            collect
+            (apply function (cons bar further-args)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jun 11 18:36:51 2012 
+(defmethod consolidate-all-notes ((sc slippery-chicken))
+  (map-over-bars sc #'consolidate-notes nil 'q))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jun 11 18:36:51 2012 
+(defmethod consolidate-all-rests ((sc slippery-chicken) &optional warn)
+  (map-over-bars sc #'consolidate-rests :warn warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

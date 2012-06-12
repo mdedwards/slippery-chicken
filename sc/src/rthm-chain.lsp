@@ -1777,24 +1777,24 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; return the least used key in a hashtable.
-;;; <hash> must be a lisp hash-table object whose keys are all integers and
-;;; values are numbers (in our usual case a count of how many times the keys
-;;; have been used somewhere e.g. as indices). 
-;;; <ignore> is a list of keys to ignore when processing.
-;;; if <auto-inc> we will automatically increment the count of the returned
-;;; key.
-;;; <start> and <end> are inclusive.
+;;; SAR Tue Jun 12 22:50:17 BST 2012: Started robodoc entry; moved MDE's
+;;; original comments down into the doc.
 
 ;;; ****f* rthm-chain/hash-least-used
 ;;; DESCRIPTION
-;;; 
+
+;;;  return the least used key in a hashtable.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; <hash> must be a lisp hash-table object whose keys are all integers and
+;;; values are numbers (in our usual case a count of how many times the keys
+;;; have been used somewhere e.g. as indices). 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; <ignore> is a list of keys to ignore when processing.
+;;; if <auto-inc> we will automatically increment the count of the returned
+;;; key.
+;;; <start> and <end> are inclusive.;;; 
 ;;; 
 ;;; RETURN VALUE
 ;;; 

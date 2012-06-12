@@ -1067,6 +1067,17 @@
 ;;;   different sections in the given piece, and requiring that these be
 ;;;   manually assigned IDs. Additionally, any ID given here must match an
 ;;;   existing ID within the other maps. Default = 1.
+;;; - :activity-curve. A list of break-point pairs with y values from 1 to 10
+;;;   indicating the amount of activity there should be over the course of the
+;;;   piece. A value of 1 indicates that only 1 in 10 beats will have notes
+;;;   in/on them, and a value of 10 indicates that all beats will have
+;;;   notes. This process uses the patterns given in
+;;;   activity-levels::initialize-instance, where 1 means 'play' and 0 means
+;;;   'rest'. There are three templates for each level, so that if the curve
+;;;   remains on one level of activity for some time it won't always return the
+;;;   same pattern; these will be rotated instead. If the activity curve
+;;;   indicates a rest for one of the slower-rhythms groups, the whole 2-3 beat
+;;;   group is omitted. Default = '(0 10 100 10).
 ;;; - :do-rests. T or NIL to indicate whether to apply the automatic
 ;;;   rest-insertion algorithm. T = use. Default = T.
 ;;; - :rests. A list of rhythmic duration units from which the durations will
@@ -1134,6 +1145,16 @@
 ;;;   this curve should be between 0 and 1, and the decimal fractions achieved
 ;;;   from interpolation will be rounded. The 1 values resulting from this
 ;;;   curve will only be actively applied to if do-sticking is set to T.
+;;;   Default = NIL.
+;;; - :harmonic-rthm-curve. A list of break-point pairs that indicates how many
+;;;   slower-rthms will be combined into one rthm-seq (each rthm-seq has a
+;;;   single harmony). The default is 2 bars (slower-rthms) per rthm-seq,
+;;;   i.e. '(0 2 100 2).
+;;; - :split-data. NIL or a two-item list of integers that are the minimum and
+;;;   maximum beat duration of bars generated. If NIL, the bars will not be
+;;;   split. These values are targets only; the method may create bars of
+;;;   different lengths if the data generated cannot be otherwise split. 
+;;;   Default = '(2 5)
 ;;; - :1-beat-fibonacci. T or NIL to indicate whether the sequence of 1-beat
 ;;;   rhythms is to be generated using the fibonacci-transitions method or the
 ;;;   processions method. T = use fibonacci-transitions method. Default = NIL.
@@ -1145,24 +1166,6 @@
 ;;;   slot of the rthm-chain-slow object, which simply cycles through 
 ;;;   '(2 3 2 2 3 2 2 3 3 3). T = use fibonacci-transisitions method.
 ;;;   Default = NIL.
-;;; - :activity-curve. A list of break-point pairs with y values from 1 to 10
-;;;   indicating the amount of activity there should be over the course of the
-;;;   piece. A value of 1 indicates that only 1 in 10 beats will have notes
-;;;   in/on them, and a value of 10 indicates that all beats will have
-;;;   notes. This process uses the patterns given in
-;;;   activity-levels::initialize-instance, where 1 means 'play' and 0 means
-;;;   'rest'. There are three templates for each level, so that if the curve
-;;;   remains on one level of activity for some time it won't always return the
-;;;   same pattern; these will be rotated instead. If the activity curve
-;;;   indicates a rest for one of the slower-rhythms groups, the whole 2-3 beat
-;;;   group is omitted.
-;;; - :harmonic-rthm-curve. A list of break-point pairs that indicates how many
-;;;   slower-rthms will be combined into one rthm-seq (each rthm-seq has a
-;;;   single harmony). The default is 2 bars (slower-rthms) per rthm-seq,
-;;;   i.e. '(0 2 100 2).
-;;; - :split-data. NIL or a two-item list of integers that are the minimum and
-;;;   maximum beat duration of bars generated. If NIL, the bars will not be
-;;;   split. Default = '(2 5)
 ;;; 
 ;;; RETURN VALUE
 ;;; A rthm-chain object.

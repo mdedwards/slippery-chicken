@@ -1151,7 +1151,13 @@
 ;;; - :split-data. NIL or a two-item list of integers that are the minimum and
 ;;;   maximum beat duration of bars generated. If NIL, the bars will not be
 ;;;   split. These values are targets only; the method may create bars of
-;;;   different lengths if the data generated cannot be otherwise split. 
+;;;   different lengths if the data generated cannot be otherwise split.
+;;;   NB: The values given here will apply to a different beat basis depending
+;;;   on time signature of each individual bar, rather than on a consistent
+;;;   beat basis, such as quarters or eighths. Since this method produces bars
+;;;   of different lengths with time signatures of differing beat bases
+;;;   (e.g. 16, 8, 4 etc.) before it applies the split algorithm, a minimum
+;;;   value of 4, for example, can result in bars of 4/16, 4/8, 4/4 etc.
 ;;;   Default = '(2 5)
 ;;; - :1-beat-fibonacci. T or NIL to indicate whether the sequence of 1-beat
 ;;;   rhythms is to be generated using the fibonacci-transitions method or the

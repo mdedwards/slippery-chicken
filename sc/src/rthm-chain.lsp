@@ -392,26 +392,93 @@
           (split-data rc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 29.1.11: split the longer bars into smaller ones where possible.  we
+;;; 29.1.11: split the longer bars into smaller ones where possible. we
 ;;; know that the slower and faster rthm-seqs are stuffed into the palette
 ;;; one after the other so it's safe to loop through them pairwise (but check
 ;;; rthm-seq ids are what they're expected to be)
 
+;;; SAR Tue Jun 12 18:11:25 BST 2012: Added robodoc entry
+
 ;;; ****m* rthm-chain/split
+;;; DATE
+;;; 29-Jan-2011
+;;;
 ;;; DESCRIPTION
-;;; 
+;;; Split the longer generated bars into smaller ones where possible.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A rthm-chain object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :min-beats. An integer that is the minimum number of beats in the
+;;;   resulting bars. This is a target-length only, and may not be adhered to
+;;;   strictly if durations do not allow. Default = 2.
+;;; - :max-beats. An integer that is the maximum number of beats in the
+;;;   resulting bars. This is a target-length only, and may not be adhered to
+;;;   strictly if durations do not allow. Default = 5.
+;;; - :warn. T or NIL to indicate whether to print a warning to the listener if
+;;;   the current bar cannot be split. T = print. Default = NIL.
+;;; - :clone. T or NIL to indicate whether the rthm-seq of the given rthm-chain
+;;;   object should be changed in place or changes should be made to a copy of
+;;;   that object. T = create a copy to be changed. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Make a rthm-chain object using make-rthm-chain with the :split-data
+;;; argument set to NIL and print the number of bars in each resulting rthm-seq
+;;; object. Apply the split method and print the number of bars again to see
+;;; the change.
+
+(let* ((rch
+	(make-rthm-chain
+	 'test-rch 150
+	 '((((e) e) ; 4 in total
+            (- s (s) (s) s -)
+            ({ 3 (te) - te te - })
+            ((e.) s))
+	   (({ 3 (te) te (te) }) ; what we transition to
+            ({ 3 - te (te) te - })
+            ({ 3 (te) - te te - })
+            ({ 3 (te) (te) te })))
+	 '((((q q) ; the 2/4 bars: 5 total
+	     ((q) q)
+	     ((q) q)
+	     ((q) (s) e.)
+	     (- e e - (e) e))
+	    (({ 3 te+te te+te te+te }) ; what we transition to
+	     (q - s e. -)
+	     (q (s) e.)
+	     (q (s) - s e -)
+	     ({ 3 te+te te+te - te te - })))
+	   ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
+	     (- e e - (e) e (q))
+	     (- e. s - - +e e - (q))
+	     (q (e.) s (q)))
+	    (({ 3 (te) (te) te+te te+te } (q)) ; what we transition to
+	     (- e. s - (q) (s) - s e -)
+	     ({ 3 te+te te } (q) q)
+	     ({ 3 - te te te - } (e) e { 3 (te) (te) te }))))
+	 :split-data nil)))
+  (print 
+   (loop for rs in (data (get-data-data 1 (palette rch)))
+      collect (num-bars rs)))
+  (split rch :min-beats 1 :max-beats 3 :clone nil)
+  (print 
+   (loop for rs in (data (get-data-data 1 (palette rch)))
+      collect (num-bars rs))))
+
+=>
+(1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2
+ 2 2 2 2 2 2 2 1 1 2 2 1 1 2 2 2 2 1 1 2 2 2 2 2 2 2 2 1 1 2 2 2 2 2 2 2 2
+ 2 2) 
+(1 1 4 4 2 7 4 4 3 3 4 4 2 9 7 7 2 5 5 5 2 6 1 1 2 13 3 3 4 4 5 5 2 7 5 5
+ 7 7 9 9 2 7 2 9 3 3 2 9 1 1 5 5 9 9 3 3 2 7 5 5 4 4 2 11 1 1 2 10 2 9 2 6
+ 7 7 7 7)
+
 
 |#
 ;;; SYNOPSIS
@@ -441,45 +508,45 @@
                                                       rs-main-count)
                do
                ;; NB it's important this setf comes first so it's run every time
-               (unless (or (setf got-stick (got-stick-rthm 1-beat-rs slower-rs))
-                           (and (eq 1-beat-name (id 1-beat-rs))
-                                (eq slower-name (id slower-rs))))
-                 (error "rthm-chain::split: unexpected rthm-seq names.~
+		 (unless (or (setf got-stick (got-stick-rthm 1-beat-rs slower-rs))
+			     (and (eq 1-beat-name (id 1-beat-rs))
+				  (eq slower-name (id slower-rs))))
+		   (error "rthm-chain::split: unexpected rthm-seq names.~
                         ~%Expected ~a and ~a but got ~a and ~a"
-                        1-beat-name slower-name (id 1-beat-rs) (id slower-rs)))
-               (unless got-stick
-                 (incf rs-main-count))
+			  1-beat-name slower-name (id 1-beat-rs) (id slower-rs)))
+		 (unless got-stick
+		   (incf rs-main-count))
                ;; (format t "~&before split")
                ;; (print-simple 1-beat-rs)
                ;; (print-simple slower-rs)
                ;; 28.1.11 split the slower-rs (potentially harder to split)
                ;; then use its new metrical structure with the 1-beat-rs
-               (let* ((rs-split (split slower-rs :min-beats min-beats
-                                       :max-beats max-beats :warn warn
-                                       :clone clone))
-                      ;; if we can't split, we return the unaltered
-                      ;; rthm-seq, but if adopt-meters fails, it returns
-                      ;; nil 
-                      (rs-adopt (adopt-meters 1-beat-rs rs-split
-                                              :is-full-error nil)))
-                 (if rs-adopt
-                     (progn
-                       (setf slower-rs rs-split
-                             1-beat-rs rs-adopt))
-                     ;; if that didn't work, try it the other way around
-                     (progn 
-                       (setf rs-split (split 1-beat-rs :min-beats min-beats
-                                             :max-beats max-beats)
-                             rs-adopt (adopt-meters slower-rs rs-split
-                                                    :is-full-error nil))
-                       (when rs-adopt
-                         (setf slower-rs rs-adopt
-                               1-beat-rs rs-split)))))
+		 (let* ((rs-split (split slower-rs :min-beats min-beats
+					 :max-beats max-beats :warn warn
+					 :clone clone))
+			;; if we can't split, we return the unaltered
+			;; rthm-seq, but if adopt-meters fails, it returns
+			;; nil 
+			(rs-adopt (adopt-meters 1-beat-rs rs-split
+						:is-full-error nil)))
+		   (if rs-adopt
+		       (progn
+			 (setf slower-rs rs-split
+			       1-beat-rs rs-adopt))
+		       ;; if that didn't work, try it the other way around
+		       (progn 
+			 (setf rs-split (split 1-beat-rs :min-beats min-beats
+					       :max-beats max-beats)
+			       rs-adopt (adopt-meters slower-rs rs-split
+						      :is-full-error nil))
+			 (when rs-adopt
+			   (setf slower-rs rs-adopt
+				 1-beat-rs rs-split)))))
                ;; (format t "~&after split")
                ;; (print-simple 1-beat-rs)
                ;; (print-simple slower-rs)
-               (check-beams 1-beat-rs :on-fail nil :auto-beam t)
-               (check-beams slower-rs :on-fail nil :auto-beam t)
+		 (check-beams 1-beat-rs :on-fail nil :auto-beam t)
+		 (check-beams slower-rs :on-fail nil :auto-beam t)
                collect 1-beat-rs
                collect slower-rs)))
       (setf (data (get-data-data (section-id rc) (palette rc))) new-rss)

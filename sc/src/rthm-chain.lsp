@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 17:52:47 Mon Jun 11 2012 BST
+;;; $$ Last modified: 14:36:07 Tue Jun 12 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -392,7 +392,7 @@
           (split-data rc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  29.1.11: split the longer bars into smaller ones where possible.  we
+;;; 29.1.11: split the longer bars into smaller ones where possible.  we
 ;;; know that the slower and faster rthm-seqs are stuffed into the palette
 ;;; one after the other so it's safe to loop through them pairwise (but check
 ;;; rthm-seq ids are what they're expected to be)
@@ -464,7 +464,6 @@
                                               :is-full-error nil)))
                  (if rs-adopt
                      (progn
-                       ;; (print 'bingo1)
                        (setf slower-rs rs-split
                              1-beat-rs rs-adopt))
                      ;; if that didn't work, try it the other way around
@@ -474,10 +473,9 @@
                              rs-adopt (adopt-meters slower-rs rs-split
                                                     :is-full-error nil))
                        (when rs-adopt
-                         ;; (print 'bingo2)
                          (setf slower-rs rs-adopt
                                1-beat-rs rs-split)))))
-               ;;(format t "~&after split")
+               ;; (format t "~&after split")
                ;; (print-simple 1-beat-rs)
                ;; (print-simple slower-rs)
                (check-beams 1-beat-rs :on-fail nil :auto-beam t)

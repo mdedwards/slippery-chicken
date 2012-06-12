@@ -14,7 +14,7 @@ Prerequisites:
 Emacs (either /Applications/Emacs.app or /Applications/Aquamacs.app) 
 The GNU C compiler (gcc), which comes with Apple's developer tools
 
-If there are any problems, please post error messages to
+If there are any problems, please post the error messages to
 http://groups.google.com/group/slippery-chicken 
 
 Michael Edwards

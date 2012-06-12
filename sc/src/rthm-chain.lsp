@@ -568,18 +568,22 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jun 12 21:34:13 BST 2012: Added robodoc entry
+
 ;;; ****m* rthm-chain/reset
 ;;; DESCRIPTION
-;;; 
+;;; Reset the various circular-sclist objects within the given rthm-chain
+;;; object to their initial state.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A rthm-chain object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; (- :where. This argument is ignored by the method as it is only present due
+;;;    to inheritance.)
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -993,33 +997,76 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Tue Jun 12 22:20:52 BST 2012: Conformed robodoc entry
+
 ;;; ****m* rthm-chain/add-voice
 ;;; DESCRIPTION
-;;; 
-;;; The main rthm-chain algorithm generates only two voices.  Rather than
-;;; generate further voices in the same fashion, use the already created
-;;; rthm-seqs to create other voices.  The challenge here is that each rthm-seq
-;;; has potentially its own time signature structure: there could be a 2/4 bar
-;;; followed by 5/4 then 3/16; or any other combination of any meter.  So first
-;;; of all, we analyse the time-signature structure of the existing rthm-seqs
-;;; and save those with the same bar/meter structure together in the order in
-;;; which they occurred.  When creating the extra voice then, we actually start
-;;; ahead of the main voice, by choosing <offset> similar rthm-seqs in advance
+;;; Add a new voice to an existing rthm-chain object based on the rhythmic
+;;; material and slot values already contained in that object.
+;;;
+;;; The main rthm-chain algorithm generates only two voices. Rather than
+;;; generate further voices in the same fashion by which the first two were
+;;; created, this method uses the already created rthm-seqs in the given
+;;; rthm-chain object to create a new voice. 
+;;;
+;;; The challenge here is that each rthm-seq potentially has its own time
+;;; signature structure: There could be a 2/4 bar followed by 5/4 then 3/16,
+;;; for example, or any other combination of any meter. So the method first
+;;; analyses the time-signature structure of the existing rthm-seqs and saves
+;;; those with the same bar/meter structure together in the order in which they
+;;; occur. When creating the extra voice then, the method actually starts ahead
+;;; of the main voice by choosing <offset> number of similar rthm-seqs in
+;;; advance.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the rthm-chain instance
-;;; - the parent voice i.e. a reference into the create rthm-seq-map (e.g. '(1
-;;; perc1) 
-;;; - the id of the new player (symbol)
-;;; - (optional: offset default 1): which similar rthm-seq to start at (so
-;;; generated voice will be ahead of main voice)
+;;; - A rthm-chain object.
+;;; - The reference (key path) of the player within the given rthm-chain object
+;;;   whose rthm-seq-map is to serve as the 'parent voice', e.g. '(1 cl).
+;;; - A symbol that will be the ID of the new player.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - An integer that indicates an offset into the group of similar rthm-seq
+;;;   objects from which the new voice is to begin. (The generated voice will
+;;;   thus be ahead of the main voice). Default = 1.
 ;;; 
 ;;; RETURN VALUE  
-;;; t
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; DATE
+#|
+(let ((rch
+       (make-rthm-chain
+	'test-rch 150
+	'((((e) e) ; 4 in total
+	   (- s (s) (s) s -)
+	   ({ 3 (te) - te te - })
+	   ((e.) s))
+	  (({ 3 (te) te (te) }) ; what we transition to
+	   ({ 3 - te (te) te - })
+	   ({ 3 (te) - te te - })
+	   ({ 3 (te) (te) te })))
+	'((((q q) ; the 2/4 bars: 5 total
+	    ((q) q)
+	    ((q) q)
+	    ((q) (s) e.)
+	    (- e e - (e) e))
+	   (({ 3 te+te te+te te+te }) ; what we transition to
+	    (q - s e. -)
+	    (q (s) e.)
+	    (q (s) - s e -)
+	    ({ 3 te+te te+te - te te - })))
+	  ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
+	    (- e e - (e) e (q))
+	    (- e. s - - +e e - (q))
+	    (q (e.) s (q)))
+	   (({ 3 (te) (te) te+te te+te } (q)) ; what we transition to
+	    (- e. s - (q) (s) - s e -)
+	    ({ 3 te+te te } (q) q)
+	    ({ 3 - te te te - } (e) e { 3 (te) (te) te }))))
+	:players '(fl cl))))
+  (add-voice rch '(1 cl) 'ob))
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod add-voice ((rc rthm-chain) parent new-player &optional (offset 1))

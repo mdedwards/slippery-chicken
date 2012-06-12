@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 11:42:47 Fri Jun  1 2012 BST
+;;; $$ Last modified: 22:26:05 Mon Jun 11 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -58,7 +58,7 @@
 
 (in-package :cl-user)
 
-(defconstant +slippery-chicken-version+ "1.0.0-beta2 (svn revision 2044 2012-05-24 17:10:06)")
+(defparameter +slippery-chicken-version+ "1.0.0-beta2 (svn revision 2044 2012-05-24 17:10:06)")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 

@@ -252,7 +252,7 @@
                        1-beat-rthms must ~
                        have the same number of beats ~%(here ~a): ~a"
                       (length group) group))
-             collect
+	   collect
              (loop for beat in group collect
                   (make-rhythms beat (list 1 (beat rc))))))
   (when (slower-rthms rc)
@@ -557,52 +557,64 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Mon Apr 30 11:29:17 BST 2012: Conforming robodoc entry
+;;; SAR Tue Jun 12 17:34:40 BST 2012: Expanding the robodoc entry
 
 ;;; ****m* rthm-chain/rthm-chain-gen
 ;;; DESCRIPTION
-;;; Generate a chain of rhythms, also internally making use of the procession
-;;; function. 
+;;; Generate a chain of rhythms using the procession function (internally). 
 ;;; 
-;;; The basic algorithm for 2 parts is: We're given an arbitrary number of
-;;; 1-beat rthms (e.g. s s (e)) and 2-3 beat slower-moving counterpoints. We
-;;; generate a sequence of these using the procession function. Then we apply
-;;; the activity curve, and after that the insertion of rests. Then come
-;;; the 'sticking points': These come after the rests and the activity curves
-;;; applied to these count inserted rests not seqs or beats.
+;;; The basic algorithm for generating a rthm-chain object of two parts is as
+;;; follows: The user provides an arbitrary number of 1-beat rthms (e.g. s s
+;;; (e)) and 2-3 beat slower-moving counterpoints. The method generates a
+;;; sequence from these using the procession function. Next the activity curve
+;;; is applied to this, and after that the insertion of rests. Then the
+;;; 'sticking points' are generated: These come after the rests, and the
+;;; activity curves applied to these count inserted rests not seqs or beats.
 ;;; 
-;;; NB: Rests are put into the rthm-seq mid-sequence so sticking points won't
-;;;     come straight after the rests, rather, at the end of the seq.
+;;; NB: Rests are put into the given rthm-seq object mid-sequence, so sticking
+;;;     points won't come directly after the rests, rather, at the end of the
+;;;     seq.
 ;;; 
-;;; The activity curves that turn notes into rests will be queried every beat
-;;; so if we change an activity level we don't wait until the end of the
-;;; previous level's ten beats.
+;;; The activity curves that turn notes into rests will be queried every beat,
+;;; so if an activity level is changed, the method won't wait until the end of
+;;; the previous level's ten beats.
 ;;; 
 ;;; NB: This method is not generally called by the user (though it can be of
-;;;     course), rather it's called by the init function.
+;;;     course); rather, it's called by the init function.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-chain object.
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :rests. whether to generate the rests default: t
-;;; - :stick.  whether to generate the sticking point s
-;;; - :num-beats. how many beats to use for the algorithm. NB we'll generate
-;;;   considerably more if we have sticking and rests; this number really just
-;;;   refers to the number of standard 1-beat rhythms we'll generate.  If nil,
-;;;   then we use the num-beats slot of the rc instance. default: nil
-;;; - :use-fibonacci.  whether to use a fibonacci transition to move through
-;;;   the 1-beat rhythms (so they'll be repeated) or the procession algorithm
-;;;   (where they'll be alternated). default t
-;;; - :section-id. for the sake of the map, what section we'll put the
-;;;   references into.  The rthm-seqs themselves will be parcelled up into an
-;;;   object with this id too, so we can avoid id conflicts if we combine 2+
-;;;   sections generatd by separate rthm-chain objects. default 1
-;;; - :split. whether to split up longer generated bars (e.g. 7/4) into smaller
-;;;   bars.  If this is a two-element list it represents the min/max number of
-;;;   beats in a bar (where a 6/8 bar is two compound beats) default '(2 5)
-;;; - :wrap. when we create the 1-beat rythms' and slow rhythms' order, we can
-;;;   choose to start at any point in the list default nil
+;;; - :rests. T or NIL to indicate whether rests are to be automatically
+;;;   inserted. T = automatically insert. Default = T.
+;;; - :stick. T or NIL to indicate whether to generate the sticking points. T =
+;;;   generate sticking points. Default = T.
+;;; - :num-beats. NIL or an integer to indicate how many beats are to be used
+;;;   for the algorithm. NB: The method will generate considerably more beats
+;;;   if also generating sticking points and inserting rests; this number
+;;;   merely refers to the number of standard 1-beat rhythms to be generated.
+;;;   If NIL, the method will obtain the number of beats from the NUM-BEATS
+;;;   slot of the rthm-chain instance. Default = NIL.
+;;; - :use-fibonacci. T or NIL to indicate whether to use the
+;;;   fibonacci-transitions method when generating the sequence from the 1-beat
+;;;   rhythms (in which case these will be repeated) or the procession
+;;;   algorithm (in which case they'll be alternated). T = use the
+;;;   fibonacci-transitions method. Default = T.
+;;; - :section-id. An integer that is the section ID of the rthm-chain object
+;;;   to be generated. This will determine the section of the rthm-seq-map into
+;;;   which the references will be placed. The rthm-seq objects themselves will
+;;;   also be parcelled up into an object with this ID, so ID conflicts can be
+;;;   avoided if combining two or more sections generated by separate
+;;;   rthm-chain objects. Default = 1.
+;;; - :wrap. An integer or NIL to determine the position within the list of
+;;;   1-beat rhythms and slow rhythms from which the generated rhythm chain
+;;;   will begin. NIL = begin at the beginning. Default = NIL.
+;;; - :split. T or NIL to indicate whether to split up longer generated bars
+;;;   (e.g. 7/4) into smaller bars. If this is a two-element list it represents
+;;;   the min/max number of beats in a bar (where a 6/8 bar is two compound
+;;;   beats). Default = '(2 5).
 ;;; 
 ;;; RETURN VALUE  
 ;;; the number of rthm-seqs we've generated

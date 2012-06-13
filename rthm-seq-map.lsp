@@ -365,24 +365,49 @@ data: (RS2 RS3 RS2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; simply repeat rthm-seqs without a repeat-every structure.
-;;; start-seq is 1-based
+;;; SAR Wed Jun 13 13:36:53 BST 2012: Added robodoc entry
 
 ;;; ****m* rthm-seq-map/add-repeats-simple
 ;;; DESCRIPTION
-;;; 
+;;; Add repeats of a specified rthm-seq within the given rthm-seq-map object a
+;;; specified number of times. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A rthm-seq-map object.
+;;; - An integer that is the number of the rthm-seq (position within the
+;;;   rthm-seq-map) to be repeated.
+;;; - An integer that is the number of times that rthm-seq is to be repeated.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :section. An integer that is the ID of the section in which the repeat
+;;;   operation is to be performed.
+;;; - :print. T or NIL to indicate whether to print the rthm-seq ID and the
+;;;   number repetitions to the listener. T = print. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Always returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Print the DATA of the given rthm-seq-map, apply the method, and print again
+;;; to see the difference.
+(let ((mrsm
+       (make-rthm-seq-map 
+	'rsm-test
+	'((1 ((vn (1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1)))))
+	:palette (make-rsp 
+		  'rs-pal
+		  '((1 ((((2 4) q e s s))))
+		    (2 ((((2 4) e s s q))))
+		    (3 ((((2 4) s s q e)))))))))
+  (print (get-data-data '(1 vn) mrsm))
+  (add-repeats-simple mrsm 3 13)
+  (print (get-data-data '(1 vn) mrsm)))
+
+=>
+(1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1) 
+(1 2 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1) 
 
 |#
 ;;; SYNOPSIS

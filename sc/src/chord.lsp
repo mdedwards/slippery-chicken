@@ -1017,29 +1017,42 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; We only respell notes going up i.e. we don't go back down once we've found
-;;; something we don't like; rather we reattempt the whole spelling business
-;;; with the enharmonic of the lowest note and see which ends up with the least
-;;; accidentals.
-;;; 
-;;; good test: (respell-chord (make-chord '(a3 ds4 f4 fs5 c6))) so we get gf5
+;;; SAR Wed Jun 13 15:26:33 BST 2012: Added robodoc entry
 
 ;;; ****m* chord/respell-chord
 ;;; DESCRIPTION
-
-;;; Respell the pitches of a given chord object to 
+;;; Respell the pitches of a given chord object to improve interval structure;
+;;; i.e., removing augmented intervals etc.
+;;;
+;;; This method respells pitches from the bottom of the chord upwards. It does
+;;; not process the pitches downwards again once pitches has been
+;;; changed. Instead, it reattempts the whole respelling with the enharmonic of
+;;; the lowest pitch to determine which spelling produces the fewest
+;;; accidentals.
+;;;
+;;; NB: Respelling pitches in a chord is a rather complex process and is by no
+;;;     means fool-proof. The process employed here is based on avoiding double
+;;;     accidentals; thus, since both FS4 and BS4 have single sharps, the BS4
+;;;     won't be changed to C5.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A chord object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether to print feedback from the process to the
+;;;   listener. T = print. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A chord object. 
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+#|
+(let ((chrd (make-chord '(a3 ds4 f4 fs5 c6))))
+  (pitch-list-to-symbols (data (respell-chord chrd t))))
+
+=> (A3 EF4 F4 GF5 C6)
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod respell-chord ((c chord) &optional verbose)

@@ -587,6 +587,54 @@
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Print the results of applying get-next to the STICKING-RTHMS slot of the
+;;; given rthm-chain object, repeat, reset, and print again to see that the
+;;; get-next now begins at the beginning of the slot again.
+
+(let ((rch
+       (make-rthm-chain
+	'test-rch 150
+	'((((e) e) ; 4 in total
+	   (- s (s) (s) s -)
+	   ({ 3 (te) - te te - })
+	   ((e.) s))
+	  (({ 3 (te) te (te) }) ; what we transition to
+	   ({ 3 - te (te) te - })
+	   ({ 3 (te) - te te - })
+	   ({ 3 (te) (te) te })))
+	'((((q q) ; the 2/4 bars: 5 total
+	    ((q) q)
+	    ((q) q)
+	    ((q) (s) e.)
+	    (- e e - (e) e))
+	   (({ 3 te+te te+te te+te }) ; what we transition to
+	    (q - s e. -)
+	    (q (s) e.)
+	    (q (s) - s e -)
+	    ({ 3 te+te te+te - te te - })))
+	  ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
+	    (- e e - (e) e (q))
+	    (- e. s - - +e e - (q))
+	    (q (e.) s (q)))
+	   (({ 3 (te) (te) te+te te+te } (q)) ; what we transition to
+	    (- e. s - (q) (s) - s e -)
+	    ({ 3 te+te te } (q) q)
+	    ({ 3 - te te te - } (e) e { 3 (te) (te) te })))))))
+  (print 
+   (loop repeat 19
+      collect (data (get-next (sticking-rthms rch)))))
+  (print 
+   (loop repeat 19
+      collect (data (get-next (sticking-rthms rch)))))
+  (reset rch)
+  (print 
+   (loop repeat 19
+      collect (data (get-next (sticking-rthms rch))))))
+
+=>
+(E E E E E. E E. E E Q E E. E Q E. Q E. Q E) 
+(E E E E E E. E E. E E Q E E. E Q E. Q E. Q) 
+(E E E E E. E E. E E Q E E. E Q E. Q E. Q E)
 
 |#
 ;;; SYNOPSIS

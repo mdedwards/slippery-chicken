@@ -399,15 +399,13 @@ data: (C4 F4 A4 C5)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Tue Feb  7 14:22:54 GMT 2012: Saved from MDE's original: If <midi>
-;;; (optional) then midi note numbers will be generated, otherwise it will be
-;;; frequencies.  
+;;; SAR Tue Feb  7 14:22:54 GMT 2012: Added robodoc entry
 
 ;;; SAR Tue Feb  7 14:19:26 GMT 2012: Edited robodoc entry
 
 ;;; ****m* set-palette/gen-max-coll-file
 ;;; DATE
-;;; 26 Dec 2009
+;;; 26-Dec-2009
 ;;; 
 ;;; DESCRIPTION
 ;;; Write a text file from a given set-palette object suitable for reading into

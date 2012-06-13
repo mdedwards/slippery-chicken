@@ -576,9 +576,10 @@ data: NIL
 ;;; - :beat. The beat basis into which rests are to be consolidated. If no
 ;;;   value is given for this option, the method will take the beat from the
 ;;;   time signature. 
-;;; - :min. The minimum duration for consolidated durations. This is a target
-;;;   value only, as depending on the source material the method may not always
-;;;   be able to achieve this. Default = 0.0.
+;;; - :min. A seldom-used argument that will only make a difference when there
+;;;   are a number of rests of the same duration followed by a note.  This is
+;;;   then the minimum duration that such rests may have if they are to be
+;;;   consolidated. Default = NIL.
 ;;; - :warn. T or NIL to indicate whether the method should print a warning to
 ;;;   the Lisp listener if it is mathematically unable to consolidate the
 ;;;   rests. T = print warning. Default = NIL.
@@ -3741,8 +3742,10 @@ data: (2 4)
 ;;;   the original rthm-seq-bar object should be changed or not (even though
 ;;;   the method always returns a clone). T = change the originals. 
 ;;;   Default = NIL.
-;;; - chord-function. Default = #'transpose.
-;;; - pitch-function. Default = #'transpose.
+;;; - :chord-function. A function to be used for the transposition of
+;;;   chords. Default = #'transpose.
+;;; - :pitch-function. A function to be used for the transposition of
+;;;   pitches. Default = #'transpose.
 ;;; 
 ;;; RETURN VALUE  
 ;;; This method returns a clone of the rthm-seq-bar object whether the keyword

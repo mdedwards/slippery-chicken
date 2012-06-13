@@ -279,7 +279,7 @@ NIL
 ;;; be rounded to the nearest quarter-tone frequency.
 ;;;
 ;;; NB: This method returns a new pitch object rather than altering the values
-;;; of the current pitch object.
+;;;     of the current pitch object.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A pitch object.

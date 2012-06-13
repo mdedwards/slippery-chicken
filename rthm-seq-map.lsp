@@ -234,13 +234,11 @@ data: (RS2 RS3 RS2)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Apr 27 13:49:01 BST 2012: Conformed robodoc entry
-
-;;; MDE original comments
-;;; Using recurring-event data, generate repeating sequences at given cycle
-;;; points.  Modifies num-beats.
+;;; SAR Wed Jun 13 12:22:11 BST 2012: Revisited robodoc entry
 
 ;;; ****m* rthm-seq-map/add-repeats
-;;; DATE 30-Dec-2010
+;;; DATE 
+;;; 30-Dec-2010
 ;;; 
 ;;; DESCRIPTION
 ;;; Generate repeating sequences at given cycle points using recurring-event
@@ -248,32 +246,89 @@ data: (RS2 RS3 RS2)
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-map object.
-;;; - the cycle data (i.e. recurring-event class's data slot--see
-;;;   recurring-event.lsp)  
-;;; - the number of repeats made (or references into :repeats list), also in
-;;;   cycle (i.e. recurring-event class's return-data-cycle slot) 
+;;; - A list of two-item lists of integers that determine the cycle
+;;;   pattern. This list will have the format of the recurring-event class's
+;;;   DATA slot (see recurring-event.lsp).
+;;; - A list of two-item lists of integers that determine the number of repeats
+;;;   made (or references into the :repeats list). This list is also processed
+;;;   cyclically (i.e. the recurring-event class's RETURN-DATA-CYCLE slot).
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :section. the section map reference. default 1
-;;; - :repeats-indices. a list of the number of repeat bars
-;;;    returned by the cycle data (i.e. recurring-event class's return-data
-;;;    slot).  Generally this will remain nil and we'll express the number of
-;;;    repeats directly in the third argument, but it could be useful to use
-;;;    references into this list there instead, as the recurring-event class
-;;;    already makes possible. default nil
-;;; - :start. what bar/rthm-seq to start at. default 1
-;;; - :end. what bar/rthm-seq to end at.  default nil = don't stop.  
-;;; - :print. print the rthm-seq id and number of times repeated. default nil
+;;; - :section. The section map reference. Default = 1.
+;;; - :repeats-indices. A list of the number of repeat bars returned by the
+;;;    cycle data (i.e. recurring-event class's RETURN-DATA slot). Generally
+;;;    this will remain NIL and the number of repeats will be expressed
+;;;    directly in the third argument, but it could be useful to use references
+;;;    into this list there instead, since the recurring-event class already
+;;;    makes this possible. Default = NIL.
+;;; - :start. An integer that is the number of the bar/rthm-seq where the
+;;;   process is to begin. Default = 1.
+;;; - :end. An integer that is the number of the bar/rthm-seq where the process
+;;;   is to end. NIL = process all bars/rthm-seqs. Default = NIL.
+;;; - :print. T or NIL to indicate whether to print the rthm-seq ID and the
+;;;   number repetitions to the listener. T = print. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
-;;; the number of bars added
+;;; An integer that is the number of bars added.
 ;;; 
 ;;; EXAMPLE
-;;;                                        ;; when to repeat   how many repeats
-;;; (add-repeats +coming-rthm-chain-main+ '((3 2) (4 3)) '((3 3) (4 1)))
-;;;  --> 146
-;;; 
+#|
+;;; Straightforward usage, additionally printing the DATA slot before and after
+;;; applying the method
+(let ((mrsm
+       (make-rthm-seq-map 
+	'rsm-test
+	'((1 ((vn (1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1)))))
+	:palette (make-rsp 
+		  'rs-pal
+		  '((1 ((((2 4) q e s s))))
+		    (2 ((((2 4) e s s q))))
+		    (3 ((((2 4) s s q e)))))))))
+  (print (get-data-data '(1 vn) mrsm))
+  (add-repeats mrsm '((1 6) (2 6)) '((11 6) (23 3)))
+  (print (get-data-data '(1 vn) mrsm)))
+
+=>
+(1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1) 
+(1 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 3 3 2 2 2 2 2 2 2 2 2 2 2 1 1 1
+ 1 1 1 1 1 1 1 1 3 3 3 3 3 3 3 3 3 3 3 1 1 1 1 1 1 1 1 1 1 1 3 2 2 2 2 2 2
+ 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 1 1 1 1
+ 1 1 1 3 2 2 2 2 2 2 2 2 2 2 2 1)
+
+;;; Using the :start, :end, and :print arguments
+(let ((mrsm
+       (make-rthm-seq-map 
+	'rsm-test
+	'((1 ((vn (1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1)))))
+	:palette (make-rsp 
+		  'rs-pal
+		  '((1 ((((2 4) q e s s))))
+		    (2 ((((2 4) e s s q))))
+		    (3 ((((2 4) s s q e)))))))))
+  (print (get-data-data '(1 vn) mrsm))
+  (add-repeats mrsm '((1 6) (2 6)) '((11 6) (23 3))
+	       :start 3
+	       :end 11
+	       :print t)
+  (print (get-data-data '(1 vn) mrsm)))
+
+=>
+(1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1) 
+2 x 11
+1 x 11
+3 x 11
+1 x 11
+3 x 11
+2 x 11
+1 x 23
+(1 2 3 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 1 3 3 3 3 3 3 3 3 3 3 3 1
+ 1 1 1 1 1 1 1 1 1 1 3 3 3 3 3 3 3 3 3 3 3 2 2 2 2 2 2 2 2 2 2 2 3 1 1 1 1
+ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 3 1 3 2 1) 
+
+|#
+;;;
 ;;; SYNOPSIS
 (defmethod add-repeats ((rsm rthm-seq-map) repeat-every repeats &key
                         (section 1) repeats-indices (start 1) end print)

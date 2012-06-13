@@ -2248,21 +2248,23 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 
-;;; If functions are given, they will be used for the note or chord in the
-;;; event, whereby semitones may or may not be nil in that case (transposition
-;;; could be dependent on the note or chord and not a fixed shift). 
 
-;;; SAR Sat Dec 24 15:46:23 EST 2011 Added robodoc info
+;;; SAR Sat Dec 24 15:46:23 EST 2011: Added robodoc info
+;;; SAR Wed Jun 13 12:16:02 BST 2012: Expanded robodoc
 
 ;;; ****m* event/transpose
 ;;; DESCRIPTION
 ;;; Transpose the pitch content of a given event object by a specified number
 ;;; of semitones. This method can be applied to chords or single-pitches.
 ;;;
+;;; If functions are given, these will be used for the note or chord in the
+;;; event, whereby semitones may or may not be NIL in that case (transposition
+;;; could be dependent on the note or chord rather than being a fixed shift).
+;;;
 ;;; NB: By default this method returns a modified clone of the original rather
-;;; than changing the values of the original itself. The user can choose to
-;;; replace the values of the original by setting the keyword argument
-;;; :destructively to T.
+;;;     than changing the values of the original itself. The user can choose to
+;;;     replace the values of the original by setting the keyword argument
+;;;     :destructively to T.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
@@ -2270,11 +2272,13 @@ NIL
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :destructively. T or NIL to indicate whether the method is to change
-;;;   (replace) the pitch values of the original event object (T) or return a
-;;;   new event object with the new pitches (NIL). Default = NIL.
-;;; - :chord-function. Default = #'transpose.
-;;; - :pitch-function. Default = #'transpose
+;;; - :destructively. T or NIL to indicate whether the method is to replace the
+;;;   pitch values of the original event object (T) or return a new event
+;;;   object with the new pitches (NIL). Default = NIL.  
+;;; - :chord-function. A function to be used for the transposition of
+;;;   chords. Default = #'transpose.
+;;; - :pitch-function. A function to be used for the transposition of
+;;;   pitches. Default = #'transpose.
 ;;; 
 ;;; RETURN VALUE
 ;;; An event object.
@@ -2330,6 +2334,7 @@ C4
 => (A3 CS4 E4)
 
 |#
+;;; 
 ;;; SYNOPSIS
 (defmethod transpose ((e event) semitones
                       &key

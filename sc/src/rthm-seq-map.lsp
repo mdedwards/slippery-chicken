@@ -367,6 +367,7 @@ data: (RS2 RS3 RS2)
 
 ;;; simply repeat rthm-seqs without a repeat-every structure.
 ;;; start-seq is 1-based
+
 ;;; ****m* rthm-seq-map/add-repeats-simple
 ;;; DESCRIPTION
 ;;; 
@@ -403,30 +404,87 @@ data: (RS2 RS3 RS2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; create a recursive association list that mirrors the structure of the map,
-;;; but instead of having the list of rthm-seq references for each
-;;; section/instrument we have an assoc-list, the keys of which are the
-;;; time-sig tags, with the corresponding data being a circular-sclist of
-;;; rthm-seq ids.  So what we end up with, for each instrument/section, is a
-;;; ral we can query to find rthm-seq refs of all rthm-seqs that share the same
-;;; bar/time-sig structure, e.g. all those that have a 2/4 bar followed by a
-;;; 3/4 bar.
+;;; SAR Wed Jun 13 13:21:50 BST 2012: Added robodoc entry
 
 ;;; ****m* rthm-seq-map/get-time-sig-ral
 ;;; DESCRIPTION
-;;; 
+;;; Collate the IDs of all rthm-seq objects in a given rthm-seq-map into groups
+;;; based on identical time signatures and return this as a
+;;; recursive-assoc-list object that has the same structure of the map. 
+;;;
+;;; Instead of having the list of rthm-seq references for each
+;;; section/instrument, the method returns an assoc-list whose keys are the
+;;; time-sig tags, with the corresponding data being circular-sclists of
+;;; rthm-seq IDs.  
+;;;
+;;; The result is a recursive-assoc-list for each instrument/section that can
+;;; be queried to find the rthm-seq refs of all rthm-seqs that share the same
+;;; bar/time-sig structure; e.g., all those that have a 2/4 bar followed by a
+;;; 3/4 bar etc.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A rthm-seq-map object.
+;;; - A rthm-seq-palette object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A recursive-assoc-list object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let* ((mini
+	(make-slippery-chicken
+	 '+mini+
+	 :ensemble '(((sax (alto-sax :midi-channel 1))))
+	 :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+	 :set-map '((1 (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1)))
+	 :rthm-seq-palette '((1 ((((4 4) h q e s s) ((2 4) h))))
+			     (2 ((((4 4) h q e s s))))
+			     (3 ((((4 4) h q e s s))))
+			     (4 ((((4 4) h q q) ((2 4) q q))))
+			     (5 ((((4 4) h q e s s))))
+			     (6 ((((4 4) h q q) ((2 4) q q)))))
+	 :rthm-seq-map '((1 ((sax (1 2 3 5 2 4 6 2 3 1 3 2 3 2 1 3 2)))))))
+       (tsral (get-time-sig-ral (rthm-seq-map mini) (rthm-seq-palette mini))))
+  (get-data-data 1 tsral))
+
+=> 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 1
+                      linked: T
+                      full-ref: (1)
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 1, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "sub-ral-of-+MINI+-RTHM-SEQ-MAP", tag: NIL, 
+data: (
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: (1 SAX), next: NIL
+NAMED-OBJECT: id: SAX, tag: NIL, 
+data: (
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "0404-0204", tag: NIL, 
+data: (4 6 1)
+**************
+
+       
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "0404", tag: NIL, 
+data: (5 3 2)
+**************
+)
+**************
+)
+**************
+
+
+
 
 |#
 ;;; SYNOPSIS

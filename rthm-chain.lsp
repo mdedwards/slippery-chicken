@@ -1779,22 +1779,27 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 
 ;;; SAR Tue Jun 12 22:50:17 BST 2012: Started robodoc entry; moved MDE's
 ;;; original comments down into the doc.
+;;; SAR Wed Jun 13 11:50:11 BST 2012: Slight mods to the robodoc entry
 
 ;;; ****f* rthm-chain/hash-least-used
 ;;; DESCRIPTION
-
-;;;  return the least used key in a hashtable.
+;;; Return the least used key in a hash table. This may be used to retrieve the
+;;; number of times the keys have been used as indices, for example.
 ;;; 
 ;;; ARGUMENTS
-;;; <hash> must be a lisp hash-table object whose keys are all integers and
-;;; values are numbers (in our usual case a count of how many times the keys
-;;; have been used somewhere e.g. as indices). 
+;;; - A hash table. This must be a lisp hash table object whose keys are all
+;;;   integers and whose values are all numbers.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; <ignore> is a list of keys to ignore when processing.
-;;; if <auto-inc> we will automatically increment the count of the returned
-;;; key.
-;;; <start> and <end> are inclusive.;;; 
+;;; keyword arguments:
+;;; - :start. An integer. Zero-based, inclusive. Default = 0.
+;;; - :end. An integer. Zero-based, inclusive. Default = last item in the given
+;;;   hash table.
+;;; - :ignore. A list of keys to ignore when processing. NIL = process all
+;;;   keys. Default = NIL. 
+;;; - :auto-inc. T or NIL to determine whether the function will automatically
+;;;   increment the count of the returned key. T = automatically increment. 
+;;;   Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; 

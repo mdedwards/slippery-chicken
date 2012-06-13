@@ -426,24 +426,31 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; create text and data files suitable for plotting with gnuplot. file should
-;;; be without extension as we'll create a .txt and a .data file, for the
-;;; command and data files repectively.  call gnuplot in a terminal with
-;;; something like "gnuplot popcorn.txt; open popcorn.ps"; draw data points
-;;; connected by lines by default
+;;; SAR Wed Jun 13 12:00:35 BST 2012: Added robodoc entry
 
 ;;; ****m* popcorn/plot
 ;;; DESCRIPTION
-;;; 
+;;; Create text and data files suitable for plotting with gnuplot. The file
+;;; name should be given without extension, as the method will create a .txt
+;;; and a .data file, for the command and data files respectively. 
+;;;
+;;; The user must then call gnuplot in a terminal, in a manner such as "gnuplot
+;;; popcorn.txt; open popcorn.ps". 
+;;;
+;;; The method will create files that draw data points connected by lines by
+;;; default.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A popcorn object.
+;;; - A string that is the directory path and base file name (without
+;;;   extension) of the files to create.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether to connect points by lines. T = draw
+;;;   lines. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|

@@ -2740,33 +2740,63 @@ rthm-seq from-multipliers
               
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; <fragments> is a list of rhythms with ids
+;;; SAR Wed Jun 13 14:06:31 BST 2012: Added robodoc entry
 
-;;; <references> is a list of ids into fragments: these will be collated to
-;;; create the rthm-seq.  Each element is a sublist: this will make up a whole
-;;; bar according to the <meters> scheme.
-
-;;; NB No pitch-seqs can be passed as yet.
-
-;;; <meters> is a list of the meters (either single numerators: default-beat
-;;; will then be the denominator) or num/denum lists
-
-;;; SAR Tue Dec 27 18:54:58 EST 2011
 ;;; ****f* rthm-seq/make-rthm-seq-from-fragments
 ;;; DATE
-;;; Jan 2010
+;;; Jan-2010
 ;;; 
 ;;; DESCRIPTION
-;;; 
+;;; Make a rthm-seq object from a predefined list of rhythm fragments.
+;;;
+;;; NB: No pitch-seqs can be passed as yet.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - The ID of the rthm-seq object to be made.
+;;; - A list of rhythm lists (fragments) paired with key IDs. The rhythm lists
+;;;   take the form of rthm-seq-bar definitions without the time signatures.
+;;; - A list of lists containing any combination of the key IDs from the list
+;;;   of fragments. These will be collated to create the resulting rthm-seq
+;;;   object. Each element will make up one whole bar.
+;;; - A list of meters. These can be given either as single numerators, whereby
+;;;  the optional <default-beat> argument will then be the denominator) or
+;;;  two-item lists consisting of (num denom). There must be one meter for each
+;;;  item in the list of references, and the meters must correspond to the
+;;;  number of beats in the corresponding item from the list of references. 
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; A rthm-seq object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((frags '((1 (- s s - (e))) 
+	       (2 (s (s) (s) s)) 
+	       (3 ((s) - s e -))
+	       (4 (- s s (s) s -)) 
+	       (5 ((e) - s s -)) 
+	       (6 ((q))))))
+  (make-rthm-seq-from-fragments 
+   'test-rs frags
+   '((1 2 3) (1 4) (6 1) (5 6)) 
+   '((3 4) (2 4) (2 4) (2 4))))
+
+=> 
+RTHM-SEQ: num-bars: 4
+          num-rhythms: 25
+          num-notes: 15
+          num-score-notes: 15
+          num-rests: 10
+          duration: 9.0
+          psp-inversions: NIL
+          marks: NIL
+          time-sigs-tag: NIL
+          handled-first-note-tie: NIL
+         (for brevity's sake, slots pitch-seq-palette and bars are not printed)
+SCLIST: sclist-length: 1, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: TEST-RS, tag: NIL, 
+data: ((((3 4) - S S - (E) S (S) (S) S (S) - S E -)
+        ((2 4) - S S - (E) - S S (S) S -) ((Q) - S S - (E)) ((E) - S S - (Q))))
 
 |#
 ;;; SYNOPSIS

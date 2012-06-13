@@ -287,28 +287,101 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Jun 13 17:35:43 BST 2012: Added robodoc entry
+
 ;;; ****f* sndfile-palette/make-sfp-from-wavelab-marker-file
 ;;; DESCRIPTION
-;;; This creates a sndfile-palette with automatic groups with <snds-per-group>
-;;; snds in each auto group and random groups every <random-every>.
+
+;;; Automatically create a sndfile-palette object from the specified wavelab
+;;; marker file and the specified sound file (from which the marker file must
+;;; have been generated).
 ;;;
-;;; marker-file could be a list of marker files; they would be concatenated.
+;;; The function will produce a sndfile-palette object with multiple groups,
+;;; each of which consists of the number of sound file segments specified using
+;;; the :snds-per-group argument (defaults to 8). By default the segments will
+;;; be collected into the groups in chronological order. If the optional
+;;; :random-every argument is given a value, every nth group will consist of
+;;; random segments instead.
 ;;;
-;;; NB Beware that marker files created on different operating systems from the
-;;; one one which this function is called might trigger errors due to newline
-;;; character mismatches.
+;;; The sound file segments of each group will correspond to the time points
+;;; stored in the marker file. 
+;;;
+;;; The <marker-file> argument can consist of a list of marker files, in which
+;;; case these would first be concatenated. 
+;;;
+;;; NB: Be aware that marker files created on operating systems differing from
+;;;     the one on which this function is called might trigger errors due to
+;;;     newline character mismatches.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A string that is the name of the marker file, including the directory
+;;;   path and extension.
+;;; - A string that is the name of the sound file. This can either be a full
+;;;   directory path, file name, and extension, or just a base file name. If
+;;;   the latter, values for the optional arguments :paths and :extensions must
+;;;   also be specified.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :snds-per-group. An integer that is the number of sound file segments to
+;;;   include in each group. Default = 8.
+;;; - :random-every. An integer to indicate that every nth group is to consist
+;;;   of random (rather than chronologically consecutive) sound file segments.
+;;;   Default = 999999 (i.e. essentially never) 
+;;; - :paths. NIL or a list of strings that are the directory paths to the
+;;;   specified sound files. If the sound file is passed with the directory
+;;;   path, this must be set to NIL. NB: The paths given here apply only to the
+;;;   sound files, not to the marker files. Default = NIL.
+;;; - :sampling-rate. An integer that is the sampling rate of the specified
+;;;   sound file. Changing this value will alter the start-times determined for
+;;;   each sound segment. Default = 44100.
+;;; - :extensions. A list of strings that are the extensions to the given sound
+;;;   files. If the sound files are passed with their extensions, this must be
+;;;   set to NIL. Default = NIL.
+;;; - :warn-not-found. T or NIL to indicate whether to print a warning to the
+;;;   listener if the specified sound file is not found. T = print a
+;;;   warning. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A sndfile-palette object.
 ;;; 
 ;;; EXAMPLE
 #|
+(make-sfp-from-wavelab-marker-file 
+  "/path/to/24-7.mrk"
+ "24-7"
+ :snds-per-group 2
+ :random-every 3
+ :paths '("/path/to/sound-file/directory/")
+ :sampling-rate 44100
+ :extensions '("wav"))
+
+=>
+SNDFILE-PALETTE: paths: (/Volumes/JIMMY/SlipperyChicken/sc/test-suite/)
+                 extensions: (wav)
+PALETTE: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 8
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found NIL
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 8, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: AUTO, tag: NIL, 
+data: (
+NAMED-OBJECT: id: "auto1", tag: NIL, 
+data: (
+
+SNDFILE: path: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav, 
+         snd-duration: 29.652811, channels: 2, frequency: 261.62555
+         start: 0.09142857, end: 1.0361905, amplitude: 1.0, duration 0.94476193
+         will-be-used: 0, has-been-used: 0
+         data-consistent: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "24-7", tag: NIL, 
+data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
+[...]
 
 |#
 ;;; SYNOPSIS

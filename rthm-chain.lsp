@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 14:36:07 Tue Jun 12 2012 BST
+;;; $$ Last modified: 13:18:21 Wed Jun 13 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -252,7 +252,7 @@
                        1-beat-rthms must ~
                        have the same number of beats ~%(here ~a): ~a"
                       (length group) group))
-	   collect
+           collect
              (loop for beat in group collect
                   (make-rhythms beat (list 1 (beat rc))))))
   (when (slower-rthms rc)
@@ -434,35 +434,35 @@
 ;;; the change.
 
 (let* ((rch
-	(make-rthm-chain
-	 'test-rch 150
-	 '((((e) e) ; 4 in total
+        (make-rthm-chain
+         'test-rch 150
+         '((((e) e) ; 4 in total
             (- s (s) (s) s -)
             ({ 3 (te) - te te - })
             ((e.) s))
-	   (({ 3 (te) te (te) }) ; what we transition to
+           (({ 3 (te) te (te) }) ; what we transition to
             ({ 3 - te (te) te - })
             ({ 3 (te) - te te - })
             ({ 3 (te) (te) te })))
-	 '((((q q) ; the 2/4 bars: 5 total
-	     ((q) q)
-	     ((q) q)
-	     ((q) (s) e.)
-	     (- e e - (e) e))
-	    (({ 3 te+te te+te te+te }) ; what we transition to
-	     (q - s e. -)
-	     (q (s) e.)
-	     (q (s) - s e -)
-	     ({ 3 te+te te+te - te te - })))
-	   ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
-	     (- e e - (e) e (q))
-	     (- e. s - - +e e - (q))
-	     (q (e.) s (q)))
-	    (({ 3 (te) (te) te+te te+te } (q)) ; what we transition to
-	     (- e. s - (q) (s) - s e -)
-	     ({ 3 te+te te } (q) q)
-	     ({ 3 - te te te - } (e) e { 3 (te) (te) te }))))
-	 :split-data nil)))
+         '((((q q) ; the 2/4 bars: 5 total
+             ((q) q)
+             ((q) q)
+             ((q) (s) e.)
+             (- e e - (e) e))
+            (({ 3 te+te te+te te+te }) ; what we transition to
+             (q - s e. -)
+             (q (s) e.)
+             (q (s) - s e -)
+             ({ 3 te+te te+te - te te - })))
+           ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
+             (- e e - (e) e (q))
+             (- e. s - - +e e - (q))
+             (q (e.) s (q)))
+            (({ 3 (te) (te) te+te te+te } (q)) ; what we transition to
+             (- e. s - (q) (s) - s e -)
+             ({ 3 te+te te } (q) q)
+             ({ 3 - te te te - } (e) e { 3 (te) (te) te }))))
+         :split-data nil)))
   (print 
    (loop for rs in (data (get-data-data 1 (palette rch)))
       collect (num-bars rs)))
@@ -508,45 +508,45 @@
                                                       rs-main-count)
                do
                ;; NB it's important this setf comes first so it's run every time
-		 (unless (or (setf got-stick (got-stick-rthm 1-beat-rs slower-rs))
-			     (and (eq 1-beat-name (id 1-beat-rs))
-				  (eq slower-name (id slower-rs))))
-		   (error "rthm-chain::split: unexpected rthm-seq names.~
+                 (unless (or (setf got-stick (got-stick-rthm 1-beat-rs slower-rs))
+                             (and (eq 1-beat-name (id 1-beat-rs))
+                                  (eq slower-name (id slower-rs))))
+                   (error "rthm-chain::split: unexpected rthm-seq names.~
                         ~%Expected ~a and ~a but got ~a and ~a"
-			  1-beat-name slower-name (id 1-beat-rs) (id slower-rs)))
-		 (unless got-stick
-		   (incf rs-main-count))
+                          1-beat-name slower-name (id 1-beat-rs) (id slower-rs)))
+                 (unless got-stick
+                   (incf rs-main-count))
                ;; (format t "~&before split")
                ;; (print-simple 1-beat-rs)
                ;; (print-simple slower-rs)
                ;; 28.1.11 split the slower-rs (potentially harder to split)
                ;; then use its new metrical structure with the 1-beat-rs
-		 (let* ((rs-split (split slower-rs :min-beats min-beats
-					 :max-beats max-beats :warn warn
-					 :clone clone))
-			;; if we can't split, we return the unaltered
-			;; rthm-seq, but if adopt-meters fails, it returns
-			;; nil 
-			(rs-adopt (adopt-meters 1-beat-rs rs-split
-						:is-full-error nil)))
-		   (if rs-adopt
-		       (progn
-			 (setf slower-rs rs-split
-			       1-beat-rs rs-adopt))
-		       ;; if that didn't work, try it the other way around
-		       (progn 
-			 (setf rs-split (split 1-beat-rs :min-beats min-beats
-					       :max-beats max-beats)
-			       rs-adopt (adopt-meters slower-rs rs-split
-						      :is-full-error nil))
-			 (when rs-adopt
-			   (setf slower-rs rs-adopt
-				 1-beat-rs rs-split)))))
+                 (let* ((rs-split (split slower-rs :min-beats min-beats
+                                         :max-beats max-beats :warn warn
+                                         :clone clone))
+                        ;; if we can't split, we return the unaltered
+                        ;; rthm-seq, but if adopt-meters fails, it returns
+                        ;; nil 
+                        (rs-adopt (adopt-meters 1-beat-rs rs-split
+                                                :is-full-error nil)))
+                   (if rs-adopt
+                       (progn
+                         (setf slower-rs rs-split
+                               1-beat-rs rs-adopt))
+                       ;; if that didn't work, try it the other way around
+                       (progn 
+                         (setf rs-split (split 1-beat-rs :min-beats min-beats
+                                               :max-beats max-beats)
+                               rs-adopt (adopt-meters slower-rs rs-split
+                                                      :is-full-error nil))
+                         (when rs-adopt
+                           (setf slower-rs rs-adopt
+                                 1-beat-rs rs-split)))))
                ;; (format t "~&after split")
                ;; (print-simple 1-beat-rs)
                ;; (print-simple slower-rs)
-		 (check-beams 1-beat-rs :on-fail nil :auto-beam t)
-		 (check-beams slower-rs :on-fail nil :auto-beam t)
+                 (check-beams 1-beat-rs :on-fail nil :auto-beam t)
+                 (check-beams slower-rs :on-fail nil :auto-beam t)
                collect 1-beat-rs
                collect slower-rs)))
       (setf (data (get-data-data (section-id rc) (palette rc))) new-rss)
@@ -597,6 +597,8 @@
   (reset (sticking-al rc))
   (reset (main-al rc))
   (reset (slower-al rc))
+  ;; MDE Wed Jun 13 13:14:07 2012 -- 
+  (reset (rest-re rc))
   ;; the slower-rthms object
   (when (rcs rc)
     (reset (rcs rc)))
@@ -1036,34 +1038,34 @@
 #|
 (let ((rch
        (make-rthm-chain
-	'test-rch 150
-	'((((e) e) ; 4 in total
-	   (- s (s) (s) s -)
-	   ({ 3 (te) - te te - })
-	   ((e.) s))
-	  (({ 3 (te) te (te) }) ; what we transition to
-	   ({ 3 - te (te) te - })
-	   ({ 3 (te) - te te - })
-	   ({ 3 (te) (te) te })))
-	'((((q q) ; the 2/4 bars: 5 total
-	    ((q) q)
-	    ((q) q)
-	    ((q) (s) e.)
-	    (- e e - (e) e))
-	   (({ 3 te+te te+te te+te }) ; what we transition to
-	    (q - s e. -)
-	    (q (s) e.)
-	    (q (s) - s e -)
-	    ({ 3 te+te te+te - te te - })))
-	  ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
-	    (- e e - (e) e (q))
-	    (- e. s - - +e e - (q))
-	    (q (e.) s (q)))
-	   (({ 3 (te) (te) te+te te+te } (q)) ; what we transition to
-	    (- e. s - (q) (s) - s e -)
-	    ({ 3 te+te te } (q) q)
-	    ({ 3 - te te te - } (e) e { 3 (te) (te) te }))))
-	:players '(fl cl))))
+        'test-rch 150
+        '((((e) e) ; 4 in total
+           (- s (s) (s) s -)
+           ({ 3 (te) - te te - })
+           ((e.) s))
+          (({ 3 (te) te (te) }) ; what we transition to
+           ({ 3 - te (te) te - })
+           ({ 3 (te) - te te - })
+           ({ 3 (te) (te) te })))
+        '((((q q) ; the 2/4 bars: 5 total
+            ((q) q)
+            ((q) q)
+            ((q) (s) e.)
+            (- e e - (e) e))
+           (({ 3 te+te te+te te+te }) ; what we transition to
+            (q - s e. -)
+            (q (s) e.)
+            (q (s) - s e -)
+            ({ 3 te+te te+te - te te - })))
+          ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
+            (- e e - (e) e (q))
+            (- e. s - - +e e - (q))
+            (q (e.) s (q)))
+           (({ 3 (te) (te) te+te te+te } (q)) ; what we transition to
+            (- e. s - (q) (s) - s e -)
+            ({ 3 te+te te } (q) q)
+            ({ 3 - te te te - } (e) e { 3 (te) (te) te }))))
+        :players '(fl cl))))
   (add-voice rch '(1 cl) 'ob))
 
 |#

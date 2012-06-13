@@ -638,6 +638,12 @@ rthm-seq SEQ3
 ;;;   details.
 ;;; - <unit>. The rhythmic duration that serves as the unit of measurement for
 ;;;   the chop points. Default = 's.
+;;; - <number-bars-first>. T or NIL. This argument helps in naming (and
+;;;   therefore debugging) the newly-created bars.  If T, the bars in the
+;;;   original rthm-seq will be renumbered, starting from 1, and this will be
+;;;   reflected in the tag of the new bars.  E.g. if T, a new bar's tag may be
+;;;   new-bar-from-rs1-b3-time-range-1.750-to-2.000, if NIL this would be
+;;;   new-bar-from-rs1-time-range-1.750-to-2.000. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; A rthm-seq-palette with the same top-level structure of the first argument,

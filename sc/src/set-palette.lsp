@@ -161,8 +161,16 @@
 ;;;   should be transposed before generating the CMN output. Default = NIL (0).
 ;;; - :size. A number to indicate the size of the music-font in the CMN
 ;;;   output. This affects music only, not text.
-;;; - :use-octave-signs. T or NIL. Default = NIL.
-;;; - :automatic-octave-signs. T or NIL. Default = NIL.
+;;; - :use-octave-signs. T or NIL to indicate whether to automatically insert
+;;;   ottava spanners. Automatic placement depends on the overall pitch
+;;;   content. This is a slippery-chicken process and may produce different
+;;;   results than :automatic-octave-signs, which is a direct CMN process. 
+;;;   T = insert octave signs. Default = NIL.
+;;; - :automatic-octave-signs. T or NIL to indicate whether to automatically
+;;;   insert ottava spanners. Automatic placement depends on the overall pitch
+;;;   content. This is a direct CMN process and may produce different results
+;;;   than :use-octave-signs, which is a slippery-chicken process. T = insert
+;;;   octave signs. Default = NIL.
 ;;; - :include-missing-chromatic. T or NIL to indicate whether to also print
 ;;;   any chromatic pitches from the complete-set that are not present in the
 ;;;   given set-palette object. T = print. Default = T.

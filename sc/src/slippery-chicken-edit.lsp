@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 16:43:13 Wed Jun 13 2012 BST
+;;; $$ Last modified: 11:07:03 Thu Jun 14 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -3309,7 +3309,7 @@ NIL
 ;;;   T = set to NIL. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns NIL
+;;; Returns T
 ;;; 
 ;;; EXAMPLE
 #|
@@ -3328,7 +3328,7 @@ NIL
                             (vc (1 1 1 1))))))))
   (auto-clefs mini :players '(vc)))
 
-=> NIL
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -3393,7 +3393,8 @@ NIL
                                    ;; for some reason lisp isn't passing
                                    ;; last-clefs, rather last-events twice...
                                    last-events last-clefs note-count
-                                   current-clef verbose in-c))))))))
+                                   current-clef verbose in-c)))))))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

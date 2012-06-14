@@ -685,7 +685,7 @@
 ;;; pitch sets were defined explicitly such that all of the pitches available
 ;;; to the guitar at any moment were playable as a guitar chord. As such, this
 ;;; function always assumes that the pitch-list it is drawing from contains
-;;; pitches that are already playable as a guitar chord.  It also adds the
+;;; pitches that are already playable as a guitar chord. It also adds the
 ;;; fingering as mark above each chord when outputting to CMN, which may or may
 ;;; not be desirable.
 ;;; 

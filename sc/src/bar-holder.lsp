@@ -363,26 +363,54 @@
        (return (get-bar bhl bar-num player)))))
         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Thu Jun 14 14:14:25 BST 2012: Added robodoc entry
+
 ;;; ****m* bar-holder/get-note
 ;;; DESCRIPTION
-;;; Return an event from a bar.  bar-num and note-num are 1-based.  note-num
-;;; can access the note of a chord like '(2 1) where 2 is the second "note" or
-;;; non-rhythm event in the bar, and 1 is the first note in the chord counting
-;;; from the bottom.  NB note-num counts tied notes i.e. it's not the attack
-;;; number 
+;;; Return the event object (or pitch object, if accessing a note within a
+;;; chord) from a specified bar and note within a given bar-holder object.
 ;;;
 ;;; ARGUMENTS 
-;;; - the bar-holder object (e.g. piece)
-;;; - the bar number (starting from 1) 
-;;; - the note number (starting from 1) (see above).
-;;; - the player (symbol)
+;;; - A bar-holder object (e.g. PIECE slot of a slippery-chicken object). 
+;;; - An integer that is the 1-based number of the bar from which the note is
+;;;   to be retrieved.
+;;; - An integer or two-item list of integers that is the 1-based number of the
+;;;   note to retrieve within the specified bar. If an integer, the entire
+;;;   event object is retrieved. A two-item list of integers is used to
+;;;   retrieve a specific note from within a chord, in the form '(2 1), where 2
+;;;   is the second note (or non-rhythm event) in the bar, and 1 is the first
+;;;   note in the chord counting from the bottom. NB: This argument also counts
+;;;   tied notes, not just attacked notes.
+;;; - The ID of the player from whose part the note is to be retrieved.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - (optional default nil) whether, when accessing a pitch in a chord,
-;;;    whether to return the written or sounding pitch.  
+;;; - T or NIL to indicate whether, when accessing a pitch in a chord, to
+;;;   return the written or sounding pitch. T = written. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
-;;; An event object, or pitch if accessing a chord.
+;;; An event object, or single pitch object if accessing a note within a
+;;; chord. 
+;;;
+;;; EXAMPLE
+#|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((c2 d2 e2 f2 g2 a2 b2 
+			       c3 d3 e3 f3 g3 a3 b3 
+			       c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s))
+				:pitch-seq-palette ((1 (2) 3 4 5)))))
+	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (print (get-note (piece mini) 3 '(2 1) 'vc)) ; single pitch within a chord
+  (print (get-note (piece mini) 3 2 'vc)) ; entire chord event
+  (print (get-note (piece mini) 5 3 'cl)))
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-note ((bh bar-holder) bar-num note-num player &optional written)
@@ -477,8 +505,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Jun 14 14:37:08 BST 2012: Added robodoc entry
+
 ;;; ****m* bar-holder/change-pitches
+
 ;;; DESCRIPTION
+
 ;;; new-notes is a list of lists, each sublist being the notes for each bar in
 ;;; succession.  e.g. (change-pitches bh 'vla 5 '((g3 gs4) nil (nil nil aqf5)))
 ;;; would change the notes in bars 5 and 7 (for the viola), whereas bar six,

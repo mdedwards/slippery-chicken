@@ -608,23 +608,50 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Thu Jun 14 15:15:54 BST 2012: Added robodoc entry
+
 ;;; ****m* bar-holder/delete-all-marks
 ;;; DESCRIPTION
-;;; delete-all-marks:
+;;; Delete all marks from the MARKS slots of all events in the specified
+;;; measure range of a given bar-holder object and set the slot to NIL.
 ;;;
-;;; 
+;;; This method always applies to full bars.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+;;; - A bar-holder object.
+
+;;; - An integer that is the number of the first bar from which all marks are
+;;;   to be deleted.
+
+;;; - An integer that is the number of consecutive bars including the first
+;;;   bar from which all marks are to be deleted.
+
+;;; - The ID of the player from whose part the marks are to be deleted. 
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Always returns T.
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+#|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((c2 d2 e2 f2 g2 a2 b2 
+			       c3 d3 e3 f3 g3 a3 b3 
+			       c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e (s) s))
+				:pitch-seq-palette ((1 (2) 3 4))
+				:marks (a 1 s 2 te 3 as 4))))
+	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (delete-all-marks (piece mini) 2 2 'vc))
+
+=> T
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod delete-all-marks ((bh bar-holder) start-bar num-bars player)

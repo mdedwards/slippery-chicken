@@ -347,25 +347,70 @@ data: (SET1 SET3 SET2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 13.2.11.  this allows us, once we've got a map, to e.g. have several
-;;; players playing in rhythmic unison.  start-seq and end-seq are 1-based and
-;;; inclusive. 
+;;; SAR Thu Jun 14 18:00:16 BST 2012: Added robodoc entry
 
 ;;; ****m* sc-map/double
+;;; DATE
+;;; 13-Feb-2011
+;;;
 ;;; DESCRIPTION
-;;; 
+
+#|
+
+;;; Change the specified sequences of one or more specified players within an
+;;; existing sc-map object to double the rhythms of the corresponding sequences
+;;; of another specified player.
+;;;
+;;; This allows an existing map, for example, to have several players playing
+;;; in rhythmic unison.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An sc-map object.
+;;; - A section reference (i.e. section ID or list of section-subsection IDs). 
+;;; - An integer that is the 1-based number of the first sequence within the
+;;;   given section to be changed.
+;;; - An integer that is the 1-based number of the last sequence within the
+;;;   given section to be changed.
+;;; - The ID of the player whose part is to serve as the source for the
+;;;   doubling. 
+;;; - An ID or list of IDs of the player(s) whose parts are to be changed. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Create an sc-map with parts for players 'fl and 'cl containing only NILs
+;;; and print the corresponding data. Double the second and third sequence of
+;;; the 'vn part of that section into the 'fl and 'cl parts and print the same
+;;; data again to see the change.
+(let ((scm (make-sc-map 'sc-m 
+			'((1
+			   ((fl (nil nil nil))
+			    (cl (nil nil nil))
+			    (vn (set1 set3 set2))
+			    (va (set2 set3 set1))
+			    (vc (set3 set1 set2))))
+			  (2
+			   ((vn (set1 set2 set1))
+			    (va (set2 set1 set3))
+			    (vc (set1 set3 set3))))
+			  (3
+			   ((vn (set1 set1 set3))
+			    (va (set1 set3 set2))
+			    (vc (set3 set2 set3)))))
+			:replacements '(((1 va) 2 set2)))))
+  (print (get-data-data '(1 fl) scm))
+  (print (get-data-data '(1 cl) scm))
+  (double scm 1 2 3 'vn '(fl cl))
+  (print (get-data-data '(1 fl) scm))
+  (print (get-data-data '(1 cl) scm)))
+
+=>
+(NIL NIL NIL) 
+(NIL NIL NIL) 
+(NIL SET3 SET2) 
+(NIL SET3 SET2)
 
 |#
 ;;; SYNOPSIS
@@ -378,8 +423,8 @@ data: (SET1 SET3 SET2)
      for master-seq = (get-nth-from-map (list section-ref master-player)
                                         seq-num scm)
      do
-     (loop for dp in doubling-players do
-          (set-nth-of-data (list section-ref dp) seq-num master-seq scm))))
+       (loop for dp in doubling-players do
+	    (set-nth-of-data (list section-ref dp) seq-num master-seq scm))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -669,9 +714,8 @@ data: (1 NIL 3 4 5)
 ;;; chords etc. to specific parts of a piece. 
 ;;; 
 ;;; ARGUMENTS
-;;; - An element of any data type that will be the ID of the resulting sc-map
-;;;   object. 
-;;; - A list of of data, most likely recursive.
+;;; - The ID of the resulting sc-map object. 
+;;; - A list of data, most likely recursive.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
@@ -684,15 +728,16 @@ data: (1 NIL 3 4 5)
 ;;;   therefore remaining as a list. For example, this data would normally
 ;;;   result in a recursive call: (y ((2 23) (7 28) (18 2))).  
 ;;;   T = recurse. Default = T.
-;;; - :replacements. A list of lists in the format 
-;;;   '(((1 2 vla) 3 20b) ((2 3 vln) 4 16a)) that indicate changes to
-;;;   individual elements of lists within the given sc-map object. (Often
-;;;   sc-map data is generated algorithmically but individual elements of the
-;;;   lists need to be changed.) Each such list indicates a change, the first
-;;;   element of the list being the reference into the sc-map (the viola voice
-;;;   of section 1 subsection 2 in the first here e.g.), the second element is
-;;;   the nth of the data list for this key to change, and the third is the new
-;;;   data.
+
+;;; - :replacements. A list of lists in the format '(((1 2 vla) 3 20b) ((2 3
+;;;   vln) 4 16a)) that indicate changes to individual elements of lists within
+;;;   the given sc-map object. (Often sc-map data is generated algorithmically,
+;;;   but individual elements of the lists need to be changed.) Each such list
+;;;   indicates a change, the first element of the list being the reference
+;;;   into the sc-map (the viola voice of section 1 subsection 2 in the first
+;;;   element here, for example), the second element being the nth of the data
+;;;   list to change for this key, and the third being the new data.
+
 ;;; - :palette. A palette object or NIL. If a palette object is specified or
 ;;;   defined here, it will be automatically bound to the given sc-map
 ;;;   object. Default = NIL
@@ -795,6 +840,64 @@ COMPLETE-SET: complete: NIL
 [...]
 data: (E2 D3 C4 B4 A5 G6)
 )
+
+;;; An example using replacements
+(make-sc-map 'sc-m 
+	     '((1
+		((vn (set1 set3 set2))
+		 (va (set2 set3 set1))
+		 (vc (set3 set1 set2))))
+	       (2
+		((vn (set1 set2 set1))
+		 (va (set2 set1 set3))
+		 (vc (set1 set3 set3))))
+	       (3
+		((vn (set1 set1 set3))
+		 (va (set1 set3 set2))
+		 (vc (set3 set2 set3)))))
+	     :replacements '(((1 va) 2 set2)))
+
+=>
+
+SC-MAP: palette id: NIL
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 9
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: SC-M, tag: NIL, 
+data: (
+NAMED-OBJECT: id: 1, tag: NIL, 
+data: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 3
+                      linked: NIL
+                      full-ref: (1)
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "sub-ral-of-SC-M", tag: NIL, 
+data: (
+NAMED-OBJECT: id: VN, tag: NIL, 
+data: (SET1 SET3 SET2)
+**************
+
+       
+NAMED-OBJECT: id: VA, tag: NIL, 
+data: (SET2 SET2 SET1)
+**************
+
+       
+NAMED-OBJECT: id: VC, tag: NIL, 
+data: (SET3 SET1 SET2)
+**************
+)
+
+[...]
 
 |#
 ;;; SYNOPSIS

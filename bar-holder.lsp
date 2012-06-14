@@ -295,24 +295,71 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; When num-bars is nil, all bars in the bh from start-bar will be transposed.
+;;; When num-bars is nil, all bars in the bh from start-bar will be transposed
 
-;;; 02.12.11 SEAN: Added ROBODoc info
+;;; SAR Thu Jun 14 15:26:23 BST 2012: Added robodoc entry
+
 ;;; ****m* bar-holder/transpose-bars
 ;;; DESCRIPTION
-;;;
+;;; Transpose the pitches of the specified bars in a given player's part by a
+;;; specified number of semitones.
 ;;; 
 ;;; ARGUMENTS 
-;;; 
+
+;;; - A bar-holder object (such as the PIECE slot of a slippery-chicken
+;;;   object). 
+
+;;; - A positive or negative integer that is the number of semitones by which
+;;;   the pitches of the specified bars are to be transposed. 
+
+;;; - An integer that is the number of the first bar in which the pitches are
+;;;   to be transposed. 
+
+;;; - An integer that is the number of consecutive bars, including the
+;;;   start-bar, in which the pitches are to be transposed.
+
+;;; - The ID of the player whose part is to be changed.
+
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+
+;;; - :destructively. T or NIL to indicate whether the transposed pitches are
+;;;   to replace the existing pitches of the given bar-holder object. This must
+;;;   be set to T if the pitches of the original object are to be transposed
+;;;   before, for example, generating output. If NIL, the original object will
+;;;   first be cloned, the pitches of the original object will be left
+;;;   untouched and the changes will be made to the copy. Default = NIL.
+;;; - :print-bar-nums. T or NIL to indicate whether the method should print
+;;;   feedback about which bars have been transposed to the listener. 
+;;;   T = print feedback. Default = NIL.
+;;; - :chord-function. The function that is to be used for transposition of
+;;;   chords objects. Default = #'transpose (of the chord class).
+;;; - :chord-function. The function that is to be used for transposition of
+;;;   pitch objects. Default = #'transpose (of the pitch class).
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; Returns a list of the rthm-seq-bar objects that have been transposed. 
 ;;; 
 ;;; EXAMPLE
-;;; 
-;;; 
-;;; DATE
-;;; 
+#|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((c2 d2 e2 f2 g2 a2 b2 
+			       c3 d3 e3 f3 g3 a3 b3 
+			       c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e (s) s))
+				:pitch-seq-palette ((1 (2) 3 4)))))
+	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (transpose-bars (piece mini) 11 2 2 'cl
+		  :destructively t
+		  :print-bar-nums t))
+
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod transpose-bars ((bh bar-holder) semitones start-bar num-bars player
@@ -329,14 +376,14 @@
                       (bar-num (get-bar bh start-bar player))
                       -1)))
   (loop for bar-num from start-bar repeat num-bars do 
-        (when print-bar-nums
-          (format t "~&Transposing bar ~d" bar-num))
-      collect
-        (transpose (get-bar bh bar-num player)
-                   semitones 
-                   :destructively destructively
-                   :chord-function chord-function
-                   :pitch-function pitch-function)))
+       (when print-bar-nums
+	 (format t "~&Transposing bar ~d" bar-num))
+     collect
+       (transpose (get-bar bh bar-num player)
+		  semitones 
+		  :destructively destructively
+		  :chord-function chord-function
+		  :pitch-function pitch-function)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 14:11:49 Thu Apr 19 2012 BST
+;;; $$ Last modified: 11:31:20 Thu Jun 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -982,10 +982,10 @@ data: NIL
                (double-bass (c0 cs2 e1 c3))
                (double-treble (f6 g9 c5 a6))))))
   (loop for clef in (data clex) do 
-        (setf (data clef) (loop for note in (data clef)
-                              collect (make-pitch note))))
+       (setf (data clef) (loop for note in (data clef)
+                            collect (make-pitch note))))
   (defun best-clef-aux (ins pitch-or-chord in-c current-clef 
-                            verbose)
+                        verbose)
     (flet ((in-clef-range (chord-highest chord-lowest clef)
              (let* ((clx (get-data clef clex))
                     (clo (first (data clx)))
@@ -1009,87 +1009,82 @@ data: NIL
       (let* ((chord (chord-p pitch-or-chord))
              (hi (if chord
                      (highest pitch-or-chord)
-                   pitch-or-chord))
+                     pitch-or-chord))
              (low (if chord
                       (lowest pitch-or-chord)
-                    pitch-or-chord))
+                      pitch-or-chord))
              result)
         ;; if we don't pass an ins argument just return whether we're in the
         ;; clef's range or not 
         (if (not ins)
             (in-clef-range hi low current-clef)
-          (progn
-            (setf result
-              (loop 
-                  with best
-                  with alternative
-                  with ledgers
+            (progn
+              (setf result
+                    (loop 
+                       with best
+                       with alternative
+                       with ledgers
                        ;; clefs preference order has already been reversed in
                        ;; init; this ensures we will set the clefs in the
                        ;; instrument's preferred order 
-                  for clef in (if in-c
-                                  (clefs-in-c ins)
-                                (clefs ins))
-                  do
-                    (when (in-clef-range hi low clef)
-                      (setf ledgers (needs-ledgers hi low clef))
-                      (cond ((and ledgers
-                                  (or (not alternative)
-                                      (< ledgers (second alternative))))
-                             ;; (unless best
-                               ;; (setf best clef))
-                             (setf alternative (list clef ledgers)))
-                            ;; alternative would be better but this is the
-                            ;; current clef and we're in range 
-                            ((and ledgers alternative
-                                  (not best)
-                                      ;; (equal best (first alternative)))
-                                  (>= ledgers (second alternative))
-                                  ;; (equal clef current-clef)
-                                  )
-                             (setf best (first alternative)
-                                   alternative (list clef ledgers)))
-                            ((and (not ledgers)
-                                  (equal best current-clef)
-                                  (not alternative))
-                             (setf alternative (list clef 0)))
-                            ;; we've already got a best and perhaps an
-                            ;; alternative but this is the current clef and
-                            ;; there's no need for ledgers 
-                            ((and (not ledgers)
-                                  (equal clef current-clef)
-                                  best)
-                             (setf alternative (list best 0)
-                                   best clef))
-                            ((and (not ledgers) 
-                                  (not (equal best current-clef)))
-                             (setf best clef))
-                            ((and (not ledgers)
-                                  (equal best current-clef))
-                             (setf alternative (list clef 0)))))
-                    (when verbose
-                      (format t "~&clef ~a ledgers ~a best ~a alt ~a"
-                              clef ledgers best alternative))
-                  finally (return 
-                            ;; b5 with a choice of treble and bass gives you
-                            ;; treble as alternative and nil and best.... 
-                            (if best
-                                (list best (first alternative))
-                              (list (first alternative) nil)))))
-            (unless result
-              (error "~&instrument::best-clef: didn't work for ~a, ~a: ~
+                       for clef in (if in-c
+                                       (clefs-in-c ins)
+                                       (clefs ins))
+                       do
+                       (when (in-clef-range hi low clef)
+                         (setf ledgers (needs-ledgers hi low clef))
+                         (cond ((and ledgers
+                                     (or (not alternative)
+                                         (< ledgers (second alternative))))
+                                (setf alternative (list clef ledgers)))
+                               ;; alternative would be better but this is the
+                               ;; current clef and we're in range 
+                               ((and ledgers alternative
+                                     (not best)
+                                     (>= ledgers (second alternative)))
+                                (setf best (first alternative)
+                                      alternative (list clef ledgers)))
+                               ((and (not ledgers)
+                                     (equal best current-clef)
+                                     (not alternative))
+                                (setf alternative (list clef 0)))
+                               ;; we've already got a best and perhaps an
+                               ;; alternative but this is the current clef and
+                               ;; there's no need for ledgers 
+                               ((and (not ledgers)
+                                     (equal clef current-clef)
+                                     best)
+                                (setf alternative (list best 0)
+                                      best clef))
+                               ((and (not ledgers) 
+                                     (not (equal best current-clef)))
+                                (setf best clef))
+                               ((and (not ledgers)
+                                     (equal best current-clef))
+                                (setf alternative (list clef 0)))))
+                       (when verbose
+                         (format t "~&clef ~a ledgers ~a best ~a alt ~a"
+                                 clef ledgers best alternative))
+                       finally (return 
+                                 ;; b5 with a choice of treble and bass gives you
+                                 ;; treble as alternative and nil and best.... 
+                                 (if best
+                                     (list best (first alternative))
+                                     (list (first alternative) nil)))))
+              (unless result
+                (error "~&instrument::best-clef: didn't work for ~a, ~a: ~
                        clefs: ~a"
-                     (if chord 
-                         (get-pitch-symbols pitch-or-chord)
-                       (id pitch-or-chord))
-                     (id ins) (clefs ins)))
-            (when verbose 
-              (format t "~&best-clef for ~a on ~a with current of ~a: ~a"
-                      (if chord
-                          (get-pitch-symbols pitch-or-chord)
-                        (id pitch-or-chord))
-                      (id ins) current-clef result))
-            result))))))
+                       (if chord 
+                           (get-pitch-symbols pitch-or-chord)
+                           (id pitch-or-chord))
+                       (id ins) (clefs ins)))
+              (when verbose 
+                (format t "~&best-clef for ~a on ~a with current of ~a: ~a"
+                        (if chord
+                            (get-pitch-symbols pitch-or-chord)
+                            (id pitch-or-chord))
+                        (id ins) current-clef result))
+              result))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

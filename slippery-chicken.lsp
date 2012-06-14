@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:03:46 Sat Jun  9 2012 BST
+;;; $$ Last modified: 11:33:45 Thu Jun 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7372,7 +7372,6 @@ duration: 20.0 (20.000)
                 )
           (when (and c1
                      (not (equal new-current-clef c1))
-                     ;; (equal new-current-clef c2)
                      ;; we need all three to do the change!
                      (or (not change)
                          (equal c1 change)))

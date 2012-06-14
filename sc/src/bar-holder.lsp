@@ -510,32 +510,58 @@
 ;;; ****m* bar-holder/change-pitches
 
 ;;; DESCRIPTION
-
-;;; new-notes is a list of lists, each sublist being the notes for each bar in
-;;; succession.  e.g. (change-pitches bh 'vla 5 '((g3 gs4) nil (nil nil aqf5)))
-;;; would change the notes in bars 5 and 7 (for the viola), whereas bar six,
-;;; indicated by nil, wouldn't be changed; similarly the first two notes of bar
-;;; 7, being nil, also won't be changed, but note 3 will be.  NB tied notes are
-;;; counted here.
-;;; 
-;;; If use-last-octave, then notes can be given like '((a3 b g cs4))
-;;; i.e. you only give the octave if it changes. 
+;;; Change the pitches in the specified bars to the specified new pitches. 
+;;;
+;;; NB: This method requires that full bars be given, even if not all pitches
+;;;     are being changed.
 ;;; 
 ;;; ARGUMENTS 
-;;; - the bar-holder object (e.g. piece)
-;;; - the sc player (symbol)
-;;; - which bar to start at (integer)
-;;; - a list of notes in bars (see above)
-;;; - (optional default t): whether the last note's octave will
-;;;    be used if any notes are specificed without an octave (doesn't work with
-;;;    chords).  
+;;; - A bar-holder object (such as the PIECE slot within a slippery-chicken
+;;;  object).
+;;; - The ID of the player whose part is to be changed.
+;;; - An integer that is the number of the first bar in which pitches are to be
+;;;   changed. 
+;;; - A list of lists of note-name symbols, each sublist representing a
+;;;   consecutive bar and containing the same number of note-name symbols as
+;;;   there are rhythms in that bar. A NIL in these lists means no change is to
+;;;   be made to the corresponding rhythm or bar (see example below). NB: This
+;;;   method counts tied notes rather than just attacked notes.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether the method is to require that each note-name
+;;;   symbols in the <new-pitches> list has an octave indicator. If this
+;;;   argument is set to NIL, each note-name symbol must have an octave
+;;;   indicator (e.g., the 4 in c4). If this argument is set to T, only the
+;;;   first note-name symbol in the bar is required to have an octave
+;;;   indicator, and all subsequent note-name symbols without octave indicators
+;;;   will use the last octave indicated; e.g. '((a3 b g cs4)). NB: This
+;;;   feature does not work with chords. Default = T.
 ;;; 
 ;;; RETURN VALUE  
-;;; always t
+;;; Always returns T.
 ;;;
 ;;; EXAMPLE
 #|
-(change-pitches bh 'vla 5 '((g3 gs4) nil (nil nil aqf5)))
+;;; NIL indicates that no change is to be made; this applies to single rhythms
+;;; as well as entire bars.
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+	:set-palette '((1 ((c2 d2 e2 f2 g2 a2 b2 
+			       c3 d3 e3 f3 g3 a3 b3 
+			       c4 d4 e4 f4 g4 a4 b4 c5))))
+	:set-map '((1 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e (s) s))
+				:pitch-seq-palette ((1 (2) 3 4)))))
+	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
+			    (vc (1 1 1 1 1))))))))
+  (change-pitches (piece mini) 'cl 2 '((c4 d4 e4 f4)))
+  (change-pitches (piece mini) 'vc 3 '((c3 d e f) nil (g3 nil b c4))))
+
+=> T
+
 |#
 ;;; 
 ;;; SYNOPSIS

@@ -291,7 +291,6 @@
 
 ;;; ****f* sndfile-palette/make-sfp-from-wavelab-marker-file
 ;;; DESCRIPTION
-
 ;;; Automatically create a sndfile-palette object from the specified wavelab
 ;;; marker file and the specified sound file (from which the marker file must
 ;;; have been generated).
@@ -467,28 +466,67 @@ data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; This creates sfp groups according to the grouping defined in the marker
-;;; file. 
-;;;
+;;; SAR Thu Jun 14 13:23:14 BST 2012: Added robodoc entry
+
+;;; MDE original comment:
 ;;; See get-groups below for description of format string in markers.
-;;;
-;;; marker-file could be a list of marker files; they would be concatenated.
 
 ;;; ****f* sndfile-palette/make-sfp-from-groups-in-wavelab-marker-file
 ;;; DESCRIPTION
-;;; 
+;;; Automatically generate a sndfile-palette object using the specified sound
+;;; file from grouping defined in the specified wavelab marker file.
+;;;
+;;; The <marker-file> argument can be passed as a list of marker files, in
+;;; which case these will first be concatenated.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A string that is the name of the marker file, including the directory
+;;;   path and extension.
+;;; - A string that is the name of the sound file. This can either be a full
+;;;   directory path, file name, and extension, or just a base file name. If
+;;;   the latter, values for the optional arguments :paths and :extensions must
+;;;   also be specified.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - :paths. NIL or a list of strings that are the directory paths to the
+;;;   specified sound files. If the sound file is passed with the directory
+;;;   path, this must be set to NIL. NB: The paths given here apply only to the
+;;;   sound files, not to the marker files. Default = NIL.
+;;; - :extensions. A list of strings that are the extensions to the given sound
+;;;   files. If the sound files are passed with their extensions, this must be
+;;;   set to NIL. Default = NIL.
+;;; - :warn-not-found. T or NIL to indicate whether to print a warning to the
+;;;   listener if the specified sound file is not found. T = print a
+;;;   warning. Default = NIL.
+;;; - :sampling-rate. An integer that is the sampling rate of the specified
+;;;   sound file. Changing this value will alter the start-times determined for
+;;;   each sound segment. Default = 44100.
+;;; - :print. T or NIL to indicate whether feedback about the groups found and
+;;;   created should be printed to the listener. T = print. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(make-sfp-from-groups-in-wavelab-marker-file 
+ "/path/to/24-7.mrk"
+ "24-7"
+ :paths '("/path/to/sndfile/directory/")
+ :sampling-rate 44100
+ :extensions '("wav"))
+
+=>
+24 markers read from /path/to/24-7.mrk
+Adding tapping: 2.753 -> 4.827
+Adding tapping: 5.097 -> 6.581
+Adding tapping: 6.763 -> 8.538
+Adding splinter: 13.878 -> 15.993
+Adding tapping: 16.338 -> 18.261
+Adding splinter: 19.403 -> 25.655
+
+tapping: 4 sounds
+splinter: 2 sounds
 
 |#
 ;;; SYNOPSIS

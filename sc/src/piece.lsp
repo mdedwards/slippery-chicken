@@ -357,9 +357,11 @@
 ;;;     then consist of rhythm objects rather than events.
 ;;;
 ;;; NB: Slippery chicken does not check to ensure that a new bar is inserted
-;;;     for each player at a given point; this is up to the user. Also, the
-;;;     user must call the update-slots method to ensure that changes to the
-;;;     NUM-BARS slot etc are reflected in the given slippery-chicken object. 
+;;;     for each player at a given point; this is up to the user. 
+;;;
+;;; NB: The user must call the update-slots method to ensure that changes to
+;;;     the NUM-BARS slot etc. are reflected in the given slippery-chicken
+;;;     object.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A piece object.
@@ -1091,24 +1093,77 @@ BAR-HOLDER:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; delete the whole sequenz which holds the bar with a given number.  use with
-;;; caution: we only delete the sequence for the given player so the rest will
-;;; be out of sync
+;;; SAR Thu Jun 14 18:53:53 BST 2012: Added robodoc entry
+
 ;;; ****m* piece/delete-sequenzes
 ;;; DESCRIPTION
-;;; 
+;;; Delete one or more consecutive sequenz objects from a given piece object by
+;;; specifying any bar number within the first sequenz object to be deleted. 
+;;;
+;;; This method deletes the whole sequenz object which contains the bar with a
+;;; given number.  
+;;;
+;;; NB: This method only deletes the sequenz object for the specified player,
+;;;     so the remaining players will have a different structure, making MIDI
+;;;     or printable output impossible. The user must be sure that each section
+;;;     has the same number of sequenzes of identical time-signature structure
+;;;     in each section.
+;;;
+;;; NB: The user must call the update-slots method to ensure that changes to
+;;;     the NUM-BARS slot etc. are reflected in the given slippery-chicken
+;;;     object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A piece object.
+;;; - An integer that is the number of the bar for which the containing sequenz
+;;;   is to be deleted. 
+;;; - The ID of the player from whose part the sequenz is to be deleted.  
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An integer that is the number of consecutive sequenz objects to delete,
+;;;   including the first sequenz indicated by the <bar-num> argument. 
+;;;   Default = 1.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Print the number of sequenz objects contained in section 2 of each player's
+;;; part, delete two sequenz objects from each part in that section, and print
+;;; the number of sequenz objects again to see the difference. Update the slots
+;;; and call cmn-display for printable output.
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((hn (french-horn :midi-channel 1))
+		     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5))))
+                            (2 ((((4 4) h h))
+                                :pitch-seq-palette ((1 2)))))
+        :rthm-seq-map '((1 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((hn (2 2 2 2 2))
+                            (vc (2 2 2 2 2))))
+                        (3 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1)))))))
+      (new-bar (make-rthm-seq-bar '((4 4) (w)))))
+  (fill-with-rhythms new-bar (loop for r in '(h q. e) 
+                                for p in '(c4 e4 g4)
+                                collect (make-event p r :transposition -7)))
+  (print (length (get-data-data 'hn (get-section mini 2))))
+  (print (length (get-data-data 'vc (get-section mini 2))))
+  (delete-sequenzes (piece mini) 8 'hn 2)
+  (delete-sequenzes (piece mini) 8 'vc 2)
+  (print (length (get-data-data 'hn (get-section mini 2))))
+  (print (length (get-data-data 'vc (get-section mini 2))))
+  (update-slots mini)
+  (cmn-display mini))
 
 |#
 ;;; SYNOPSIS

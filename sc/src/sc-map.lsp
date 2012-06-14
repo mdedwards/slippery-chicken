@@ -354,9 +354,6 @@ data: (SET1 SET3 SET2)
 ;;; 13-Feb-2011
 ;;;
 ;;; DESCRIPTION
-
-#|
-
 ;;; Change the specified sequences of one or more specified players within an
 ;;; existing sc-map object to double the rhythms of the corresponding sequences
 ;;; of another specified player.

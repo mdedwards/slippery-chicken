@@ -78,7 +78,6 @@
 
 ;;; ****m* section/has-subsections
 ;;; DESCRIPTION
-
 ;;; Boolean test to determine whether a specified section of a slippery-chicken
 ;;; object has subsections.  
 ;;; 

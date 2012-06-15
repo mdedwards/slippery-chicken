@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:33:45 Thu Jun 14 2012 BST
+;;; $$ Last modified: 08:33:59 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -399,6 +399,8 @@
       (cleanup-rest-bars sc)
       ;; MDE Mon May  7 16:25:52 2012 
       (check-tuplets sc)
+      ;; MDE Fri Jun 15 08:33:30 2012
+      (check-beams sc)
       (set-rehearsal-letters sc (get-groups-top-ins sc)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6416,6 +6418,13 @@ duration: 20.0 (20.000)
   (let ((section (get-section sc section-ref)))
     (when section
       (get-sequenz section player-ref seq-num))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Jun 15 08:32:00 2012
+(defmethod check-beams ((sc slippery-chicken) &key start-bar end-bar players
+                        auto-beam print (on-fail #'warn))
+  (map-over-bars sc start-bar end-bar players #'check-beams
+                 :auto-beam auto-beam :print print :on-fail on-fail))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

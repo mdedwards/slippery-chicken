@@ -155,7 +155,7 @@
 ;;; 
 ;;; EXAMPLE
 #|
-(degree-to-note 127 'chromatic)
+(degree-to-note 127 'chromatic-scale)
 
 => G9
 
@@ -361,7 +361,7 @@
 ;;; 
 ;;; EXAMPLE
 #|
-(freq-to-note 423 'chromatic)
+(freq-to-note 423 'chromatic-scale)
 
 => AF4
 
@@ -439,7 +439,7 @@
 ;;; 
 ;;; EXAMPLE
 #|
-(note-to-degree 'AF4 'chromatic)
+(note-to-degree 'AF4 'chromatic-scale)
 
 => 68
 

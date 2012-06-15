@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 17:02:41 Fri Jun 15 2012 BST
+;;; $$ Last modified: 21:31:20 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -549,7 +549,7 @@
 ;;; SYNOPSIS
 (defun get-pitch-bend (freq)
 ;;; ****
-  (let* ((chromatic-degree (freq-to-degree freq t))
+  (let* ((chromatic-degree (freq-to-degree freq 'chromatic-scale))
          (rem (rem chromatic-degree 1)))
     ;; float discrepancies result in e.g. c#4 being 60.999996....
     (if (or (equal-within-tolerance 1 rem .005) ; used to be .0001

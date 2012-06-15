@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 22:26:05 Mon Jun 11 2012 BST
+;;; $$ Last modified: 21:31:30 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -259,7 +259,6 @@
 (sc-compile-and-load "instruments.lsp")
 (sc-compile-and-load "lilypond.lsp")
 (sc-compile-and-load "popcorn.lsp")
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; EOF all.lsp

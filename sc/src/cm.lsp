@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 15:04:54 Fri Jun 15 2012 BST
+;;; $$ Last modified: 17:02:41 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -59,7 +59,7 @@
 ;;; SAR Thu Mar  1 15:16:40 GMT 2012: Added robodoc entry
 
 ;;; MDE Thu Feb  9 14:25:34 2012 
-;;; e.g. (in-scale:quarter-tone) (in-scale :chromatic)
+;;; e.g. (in-scale :quarter-tone) (in-scale :chromatic)
 
 ;;; ****f* cm/in-scale
 ;;; DESCRIPTION
@@ -645,10 +645,10 @@
 (defun degrees-per-semitone (&optional (scale cm::*scale*))
 ;;; ****                                
   (let ((scale-obj scale))
-  ;; MDE Mon May 14 21:01:10 2012 --    
+    ;; MDE Mon May 14 21:01:10 2012 --    
     (when (and scale (symbolp scale))
       (setf scale-obj (find-scale scale))
-    ;; MDE Fri Jun 15 14:46:57 2012 --  
+      ;; MDE Fri Jun 15 14:46:57 2012 --  
       (unless scale-obj
         (warn "cm::degrees-per-semitone: can't find scale ~a" scale)))
     (- (note-to-degree 'cs4 scale-obj)

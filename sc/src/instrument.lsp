@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 11:31:20 Thu Jun 14 2012 BST
+;;; $$ Last modified: 16:47:17 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1066,8 +1066,9 @@ data: NIL
                          (format t "~&clef ~a ledgers ~a best ~a alt ~a"
                                  clef ledgers best alternative))
                        finally (return 
-                                 ;; b5 with a choice of treble and bass gives you
-                                 ;; treble as alternative and nil and best.... 
+                                 ;; b5 with a choice of treble and bass gives
+                                 ;; you treble as alternative and nil and
+                                 ;; best....
                                  (if best
                                      (list best (first alternative))
                                      (list (first alternative) nil)))))

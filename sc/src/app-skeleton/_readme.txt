@@ -14,6 +14,8 @@ compile everything but from then on it should be much faster.
 
 Prerequisites: 
 * Emacs (either /Applications/Emacs.app or /Applications/Aquamacs.app)
+  I think Aquamacs behaves most like a native OSX text editor, so if 
+  you've never used Emacs before start with this. 
 * The GNU C compiler (gcc), which comes with Apple's developer tools 
 
 Known issues: 

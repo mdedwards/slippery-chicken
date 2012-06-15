@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 15:17:33 Fri Jun 15 2012 BST
+;;; $$ Last modified: 17:26:10 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3127,22 +3127,23 @@ data: (2 4)
 
 #| 17/7/05: obsolete code as ties are handled now at the piece level
 
-;;; Usually only struck (non-tied and non-rest) notes will have their ;
-;;; compound-duration set to include any following tied notes, but when the ;
-;;; first note of the bar is tied, this has to be the one to get the updated ;
-;;; compound duration.  Tied first notes of the bar are handled separately with ;
-;;; handle-first-note-ties in the rthm-seq class ;
+;;; Usually only struck (non-tied and non-rest) notes will have their
+;;; compound-duration set to include any following tied notes, but when the
+;;; first note of the bar is tied, this has to be the one to get the updated
+;;; compound duration.  Tied first notes of the bar are handled separately with
+;;; handle-first-note-ties in the rthm-seq class
 
-    (defmethod update-compound-durations ((rsb rthm-seq-bar))
-  ;; (print 'update-compound-durations) ;
-  ;; 0 will ensure that if the first note is a tie, this will nevertheless be ;
-  ;; updated                            ;
-(let ((last-struck 0))
-(loop for r in (rest (rhythms rsb)) and i from 1 do
-(when (needs-new-note r)
-(setq last-struck i))
-(when (is-tied-to r)
-(inc-nth-rthm rsb last-struck (compound-duration r))))))
+(defmethod update-compound-durations ((rsb rthm-seq-bar))
+  ;; (print 'update-compound-durations) 
+  ;; 0 will ensure that if the first note is a tie, this will nevertheless be 
+  ;; updated                            
+  (let ((last-struck 0))
+    (loop for r in (rest (rhythms rsb)) and i from 1 do
+         (when (needs-new-note r)
+           (setq last-struck i))
+         (when (is-tied-to r)
+           (inc-nth-rthm rsb last-struck (compound-duration r))))))
+
     |#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3275,11 +3276,11 @@ data: (2 4)
   (let ((tsp (time-sig-pos rsb time-sig)))
     (if tsp
         tsp
-      (progn
-        (setf (all-time-sigs rsb) (econs (all-time-sigs rsb) time-sig))
-        ;; we just put the new time-sig at the end so it's position will be 1-
-        ;; length--return this.
-        (1- (length (all-time-sigs rsb)))))))
+        (progn
+          (setf (all-time-sigs rsb) (econs (all-time-sigs rsb) time-sig))
+          ;; we just put the new time-sig at the end so it's position will be 1-
+          ;; length--return this.
+          (1- (length (all-time-sigs rsb)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3307,26 +3308,26 @@ data: (2 4)
         (br nil)
         (fbr nil))
     (loop for r in (rhythms rsb) do
-          (setf br (bracket r)
-                fbr (first br))
-          (if br
-              (progn
-                (unless (listp br)
-                  (setf error t))
-                (setf was-bracket t))
-            (when got-beg
-              (setf error t)))
-          (when fbr
-            (if (listp fbr)
-                (if got-beg
-                    (setf error t)
-                  (setf got-beg t
-                        got-end nil))
-              (if (> fbr 0)
-                  (setf got-end t
-                        got-beg nil)
-                (unless got-beg
-                  (setf error t))))))
+         (setf br (bracket r)
+               fbr (first br))
+         (if br
+             (progn
+               (unless (listp br)
+                 (setf error t))
+               (setf was-bracket t))
+             (when got-beg
+               (setf error t)))
+         (when fbr
+           (if (listp fbr)
+               (if got-beg
+                   (setf error t)
+                   (setf got-beg t
+                         got-end nil))
+               (if (> fbr 0)
+                   (setf got-end t
+                         got-beg nil)
+                   (unless got-beg
+                     (setf error t))))))
     (when (and was-bracket
                (or error (not got-end)))
       (error "~a~%rthm-seq-bar::verify-brackets: ~
@@ -3359,15 +3360,15 @@ data: (2 4)
           (push (lp-rest-bar rsb ts) result)
           (when (marks e1)
             (loop for m in (marks e1)
-                 ;; lilypond has a special fermata markup for rest bars...
-                 for lpm = (if (eq m 'pause)
-                               "^\\fermataMarkup"
-                               (lp-get-mark m))
+               ;; lilypond has a special fermata markup for rest bars...
+               for lpm = (if (eq m 'pause)
+                             "^\\fermataMarkup"
+                             (lp-get-mark m))
                do
-                 (push lpm result))))
+               (push lpm result))))
         ;; not a rest bar
         (loop for event in (rhythms rsb) do
-             ;; MDE Sat Mar 10 17:03:07 2012 
+           ;; MDE Sat Mar 10 17:03:07 2012 
              (when process-event-fun
                (funcall process-event-fun event))
              (push (get-lp-data event in-c) result)))
@@ -3380,9 +3381,9 @@ data: (2 4)
             (1 " \\bar \"||\" ")
             (2 " \\bar \"|.\" ")
             ;; MDE Wed Mar 21 07:44:10 2012 -- added repeat barlines
-            (3 " \\bar \"|:\" ") ; begin repeat
-            (4 " \\bar \":|.|:\" ") ; begin & end repeat 
-            (5 " \\bar \":|\" ") ; end repeat
+            (3 " \\bar \"|:\" ")        ; begin repeat
+            (4 " \\bar \":|.|:\" ")     ; begin & end repeat 
+            (5 " \\bar \":|\" ")        ; end repeat
             (t (error "rthm-seq-bar::get-lsp-data: ~
                        unhandled barline at bar ~a: ~a"
                       (bar-num rsb) (bar-line-type rsb))))
@@ -4363,17 +4364,18 @@ rsb)
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-bar-object
-;;; - A whole number (positive or negative) indicating the transposition by
-;;;   semitones.
+;;; - A number (positive or negative) indicating the transposition by
+;;;   semitones.  See this method in the event class for more information and
+;;;   examples.  
 ;;; 
 ;;; RETURN VALUE  
-;;; Always returns NIL.
+;;; Always returns T.
 ;;; 
 ;;; EXAMPLE
 #|
 ;; The method returns NIL 
-(let ((rsb (make-rthm-seq-bar  `((3 8) ,@(loop repeat 3 
-                                            collect (make-event 'cs4 'e))))))
+(let ((rsb (make-rthm-seq-bar  (list '(3 8) (loop repeat 3 
+                                               collect (make-event 'cs4 'e))))))
   (set-written rsb -2))
 
          => NIL
@@ -4381,15 +4383,15 @@ rsb)
 ;; Set the written pitch transposition to 2 semitones lower, then check the
 ;; data of the WRITTEN-PITCH-OR-CHORD slot of each event to see the
 ;; corresponding pitches  
-(let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-                                           collect (make-event 'cs4 'e))))))
+(let ((rsb (make-rthm-seq-bar (list '(3 8) (loop repeat 3 
+                                              collect (make-event 'cs4 'e))))))
   (set-written rsb -2)
   (loop for p in (rhythms rsb)
      collect (get-pitch-symbol p)))
 
          => (B3 B3 B3)
 
-         |#
+|#
 ;;; SYNOPSIS
 (defmethod set-written ((rsb rthm-seq-bar) transposition)
 ;;; ****
@@ -4456,7 +4458,7 @@ collect (written-pitch-or-chord p))))
       (error "rthm-seq-bar::make-rests: illegal start/end event (~a/~a) in ~%~a"
              start-event end-event rsb))
     (loop for e in (subseq rthms (1- start-event) end-event) do
-         ;; (print (data e))
+       ;; (print (data e))
          (force-rest e)))
   (gen-stats rsb)
   t)
@@ -4503,7 +4505,7 @@ collect (midi-channel (pitch-or-chord p))))
 
          => (13 13 13)
 
-         |#
+|#
 ;;; SYNOPSIS
 (defmethod set-midi-channel ((rsb rthm-seq-bar) midi-channel
                              microtonal-midi-channel)
@@ -4585,26 +4587,25 @@ collect (make-event 'cs4 'e))))))
 ;;; 
 ;;; EXAMPLE
 #|
+;; The method returns NIL 
 
-;; The method returns NIL               ;
-
-         (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-collect (make-event 'cs4 'e))))))
-(set-8va rsb 1))
+(let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
+                                           collect (make-event 'cs4 'e))))))
+  (set-8va rsb 1))
 
          => NIL
 
-;; Create a rthm-seq-bar object with event objects, set the 8va slot to 1, and ;
-;; access and print it to see it's new value. ;
+;; Create a rthm-seq-bar object with event objects, set the 8va slot to 1, and 
+;; access and print it to see it's new value.
 
-         (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-collect (make-event 'cs4 'e))))))
-(set-8va rsb 1)
-(loop for e in (rhythms rsb) collect (8va e)))
+(let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
+                                           collect (make-event 'cs4 'e))))))
+  (set-8va rsb 1)
+  (loop for e in (rhythms rsb) collect (8va e)))
 
          => (1 1 1)
 
-         |#
+|#
 ;;; SYNOPSIS
 (defmethod set-8va ((rsb rthm-seq-bar) 8va)
 ;;; ****

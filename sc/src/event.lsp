@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:23:28 Fri Jun 15 2012 BST
+;;; $$ Last modified: 17:24:00 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2381,16 +2381,17 @@ C4
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
-;;; - A whole number indicating the number of semitones (positive or negative)
-;;;   by which the sounding pitch is to be tranposed to create the written 
-;;;   pitch. 
+;;; - A number indicating the difference in semitones (positive or
+;;;   negative) between the written and sounding pitches.  E.g. to set the
+;;;   written-note for a B-flat Clarinet, this would be 2, for an E-flat
+;;;   Clarinet, it would be -3.
 ;;; 
 ;;; RETURN VALUE
 ;;; A pitch object.
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns a pitch object (here for example for a B-flat Trumpet or Clarinet) 
+;; Returns a pitch object (here for example for a D Trumpet or Clarinet) 
 (let ((e (make-event 'c4 'q)))
   (set-written e -2))
 

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:54:53 Fri Jun 15 2012 BST
+;;; $$ Last modified: 14:39:58 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6427,7 +6427,9 @@ duration: 20.0 (20.000)
                  :auto-beam auto-beam :print print :on-fail on-fail))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Fri Jun 15 13:11:52 2012 
+;;; MDE Fri Jun 15 13:11:52 2012 -- will set the written pitch/chord for all
+;;; events where the player plays a transposing instrument (which can change of
+;;; course--handled here as we get instrument on a bar-by-bar basis.
 (defmethod auto-set-written ((sc slippery-chicken) &key start-bar end-bar
                              players)
   (unless players
@@ -6444,7 +6446,8 @@ duration: 20.0 (20.000)
             for ins = (get-instrument-for-player-at-bar player bar-num sc)
             for transp = (transposition-semitones ins)
             do
-            (set-written bar (- transp))))
+            (unless (zerop transp)
+              (set-written bar (- transp)))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -59,7 +59,7 @@
 ;;; SAR Thu Mar  1 15:16:40 GMT 2012: Added robodoc entry
 
 ;;; MDE Thu Feb  9 14:25:34 2012 
-;;; e.g. (in-scale :quarter-tone) (in-scale :chromatic)
+;;; e.g. (in-scale:quarter-tone) (in-scale :chromatic)
 
 ;;; ****f* cm/in-scale
 ;;; DESCRIPTION
@@ -493,7 +493,7 @@
 ;;; 
 ;;; EXAMPLE
 #|
-(in-scale :chromatic)
+(in-scale :chromatic-scale)
 (freq-to-degree 423)
 
 => 68.317856

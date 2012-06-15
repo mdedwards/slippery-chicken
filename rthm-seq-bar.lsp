@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 13:09:00 Fri Jun 15 2012 BST
+;;; $$ Last modified: 15:17:33 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4067,8 +4067,8 @@ data: (2 4)
 #|
 ;; The method returns T.                
 (let ((rsb (make-rthm-seq-bar `((3 8) 
-				,@(loop repeat 3 
-				     collect (make-event 'cs4 'e))))))
+                                ,@(loop repeat 3 
+                                     collect (make-event 'cs4 'e))))))
   (enharmonic rsb))
 
 => T
@@ -4076,8 +4076,8 @@ data: (2 4)
 ;; Create a rthm-seq-bar object with events, apply the enharmonic method, and 
 ;; print the corresponding slots to see the changes ;
 (let ((rsb (make-rthm-seq-bar `((3 8) 
-				,@(loop repeat 3 
-				     collect (make-event 'cs4 'e)))))) 
+                                ,@(loop repeat 3 
+                                     collect (make-event 'cs4 'e)))))) 
   (enharmonic rsb)
   (loop for p in (rhythms rsb)
      collect (get-pitch-symbol p)))
@@ -4086,8 +4086,8 @@ data: (2 4)
 
 ;; By default, the method will not change white-key pitches 
 (let ((rsb (make-rthm-seq-bar `((3 8) 
-				,@(loop repeat 3 
-				     collect (make-event 'c4 'e))))))
+                                ,@(loop repeat 3 
+                                     collect (make-event 'c4 'e))))))
   (enharmonic rsb)
   (loop for p in (rhythms rsb)
      collect (get-pitch-symbol p)))
@@ -4096,8 +4096,8 @@ data: (2 4)
 
 ;; This can be forced by setting the :force-naturals argument to T 
 (let ((rsb (make-rthm-seq-bar `((3 8) 
-				,@(loop repeat 3 
-				     collect (make-event 'c4 'e))))))
+                                ,@(loop repeat 3 
+                                     collect (make-event 'c4 'e))))))
   (enharmonic rsb :force-naturals t)
   (loop for p in (rhythms rsb)
      collect (get-pitch-symbol p)))
@@ -4109,14 +4109,14 @@ data: (2 4)
 ;; set to T, then print the pitch data of the same slot again to see the 
 ;; change.                              
 (let ((rsb (make-rthm-seq-bar `((3 8) 
-				,@(loop repeat 3 
-				     collect (make-event 'cs4 'e))))))
+                                ,@(loop repeat 3 
+                                     collect (make-event 'cs4 'e))))))
   (set-written rsb -3)
   (print (loop for p in (rhythms rsb)
-	    collect (get-pitch-symbol p)))
+            collect (get-pitch-symbol p)))
   (enharmonic rsb :written t)
   (print (loop for p in (rhythms rsb)
-	    collect (get-pitch-symbol p))))
+            collect (get-pitch-symbol p))))
 
 =>
 (BF3 BF3 BF3) 
@@ -4372,20 +4372,20 @@ rsb)
 ;;; EXAMPLE
 #|
 ;; The method returns NIL 
-         (let ((rsb (make-rthm-seq-bar  `((3 8) ,@(loop repeat 3 
-collect (make-event 'cs4 'e))))))
-(set-written rsb -2))
+(let ((rsb (make-rthm-seq-bar  `((3 8) ,@(loop repeat 3 
+                                            collect (make-event 'cs4 'e))))))
+  (set-written rsb -2))
 
          => NIL
 
 ;; Set the written pitch transposition to 2 semitones lower, then check the
 ;; data of the WRITTEN-PITCH-OR-CHORD slot of each event to see the
 ;; corresponding pitches  
-         (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-collect (make-event 'cs4 'e))))))
-(set-written rsb -2)
-(loop for p in (rhythms rsb)
-collect (get-pitch-symbol p)))
+(let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
+                                           collect (make-event 'cs4 'e))))))
+  (set-written rsb -2)
+  (loop for p in (rhythms rsb)
+     collect (get-pitch-symbol p)))
 
          => (B3 B3 B3)
 

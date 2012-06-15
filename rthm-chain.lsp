@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 13:18:21 Wed Jun 13 2012 BST
+;;; $$ Last modified: 21:51:44 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -593,33 +593,33 @@
 
 (let ((rch
        (make-rthm-chain
-	'test-rch 150
-	'((((e) e) ; 4 in total
-	   (- s (s) (s) s -)
-	   ({ 3 (te) - te te - })
-	   ((e.) s))
-	  (({ 3 (te) te (te) }) ; what we transition to
-	   ({ 3 - te (te) te - })
-	   ({ 3 (te) - te te - })
-	   ({ 3 (te) (te) te })))
-	'((((q q) ; the 2/4 bars: 5 total
-	    ((q) q)
-	    ((q) q)
-	    ((q) (s) e.)
-	    (- e e - (e) e))
-	   (({ 3 te+te te+te te+te }) ; what we transition to
-	    (q - s e. -)
-	    (q (s) e.)
-	    (q (s) - s e -)
-	    ({ 3 te+te te+te - te te - })))
-	  ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
-	    (- e e - (e) e (q))
-	    (- e. s - - +e e - (q))
-	    (q (e.) s (q)))
-	   (({ 3 (te) (te) te+te te+te } (q)) ; what we transition to
-	    (- e. s - (q) (s) - s e -)
-	    ({ 3 te+te te } (q) q)
-	    ({ 3 - te te te - } (e) e { 3 (te) (te) te })))))))
+        'test-rch 150
+        '((((e) e) ; 4 in total
+           (- s (s) (s) s -)
+           ({ 3 (te) - te te - })
+           ((e.) s))
+          (({ 3 (te) te (te) }) ; what we transition to
+           ({ 3 - te (te) te - })
+           ({ 3 (te) - te te - })
+           ({ 3 (te) (te) te })))
+        '((((q q) ; the 2/4 bars: 5 total
+            ((q) q)
+            ((q) q)
+            ((q) (s) e.)
+            (- e e - (e) e))
+           (({ 3 te+te te+te te+te }) ; what we transition to
+            (q - s e. -)
+            (q (s) e.)
+            (q (s) - s e -)
+            ({ 3 te+te te+te - te te - })))
+          ((((e.) s (e) e (s) e.) ; the 3/4 bars: 4 total
+            (- e e - (e) e (q))
+            (- e. s - - +e e - (q))
+            (q (e.) s (q)))
+           (({ 3 (te) (te) te+te te+te } (q)) ; what we transition to
+            (- e. s - (q) (s) - s e -)
+            ({ 3 te+te te } (q) q)
+            ({ 3 - te te te - } (e) e { 3 (te) (te) te })))))))
   (print 
    (loop repeat 19
       collect (data (get-next (sticking-rthms rch)))))
@@ -1842,8 +1842,8 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :start. An integer. Zero-based, inclusive. Default = 0.
-;;; - :end. An integer. Zero-based, inclusive. Default = last item in the given
+;;; - :start. The lowest key value we'll test. Default = 0.
+;;; - :end. The highest key value we'll test. Default = number of items in the
 ;;;   hash table.
 ;;; - :ignore. A list of keys to ignore when processing. NIL = process all
 ;;;   keys. Default = NIL. 

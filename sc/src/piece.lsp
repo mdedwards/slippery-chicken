@@ -687,18 +687,19 @@ BAR-HOLDER:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jun 15 11:22:45 BST 2012: Added robodoc entry
+
+;;; ****m* piece/copy-bars
+;;; DESCRIPTION
+;;;
+;;; 
+;;; ARGUMENTS
+;;;
 ;;; As always, the bar numbers can be integers or references (section,
 ;;; sequence-num, bar-num -- 1-based)
 ;;;
 ;;; When num-bars is nil, all bars in the piece starting from to-start-bar will
-;;; be transposed.  
-
-;;; ****m* piece/copy-bars
-;;; DESCRIPTION
-;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
+;;; be transposed.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; 
@@ -720,34 +721,34 @@ BAR-HOLDER:
     (unless num-bars
       (setf num-bars (- (num-bars p) (bar-num to-bar) -1)))
     (loop for fbnum from (bar-num from-bar)
-          for tbnum from (bar-num to-bar)
-          with first-time = t
-          with player-section
-          with sequenz
-          repeat num-bars do
-          (unless first-time
-            (setf from-bar (clone (get-bar p fbnum from-player))
-                  to-bar (get-bar p tbnum to-player)))
-          (setf first-time nil)
-          (when print-bar-nums
-            (format t "~&Copying bar ~a to bar ~a" fbnum tbnum))
-          (unless (eq t (time-sig-equal (get-time-sig from-bar)
-                                        (get-time-sig to-bar)))
-            (error "piece::copy-bars: Can't replace bars with different time ~
+       for tbnum from (bar-num to-bar)
+       with first-time = t
+       with player-section
+       with sequenz
+       repeat num-bars do
+	 (unless first-time
+	   (setf from-bar (clone (get-bar p fbnum from-player))
+		 to-bar (get-bar p tbnum to-player)))
+	 (setf first-time nil)
+	 (when print-bar-nums
+	   (format t "~&Copying bar ~a to bar ~a" fbnum tbnum))
+	 (unless (eq t (time-sig-equal (get-time-sig from-bar)
+				       (get-time-sig to-bar)))
+	   (error "piece::copy-bars: Can't replace bars with different time ~
                 signatures: ~a ~a to ~a ~a"
-                   from-player fbnum to-player tbnum))
-          ;; copy data that should remain the same into the bar we're going to
-          ;; replace with 
-          (setf (write-bar-num from-bar) (write-bar-num to-bar)
-                (start-time from-bar) (start-time to-bar)
-                (bar-line-type from-bar) (bar-line-type to-bar)
-                (write-time-sig from-bar) (write-time-sig to-bar)
-                (player-section-ref from-bar) (player-section-ref to-bar)
-                (nth-seq from-bar) (nth-seq to-bar)
-                (nth-bar from-bar) (nth-bar to-bar))
-          (setf player-section (get-data (player-section-ref to-bar) p)
-                sequenz (get-nth (nth-seq to-bar) player-section))
-          (set-nth-bar (nth-bar to-bar) from-bar sequenz)))
+		  from-player fbnum to-player tbnum))
+       ;; copy data that should remain the same into the bar we're going to
+       ;; replace with 
+	 (setf (write-bar-num from-bar) (write-bar-num to-bar)
+	       (start-time from-bar) (start-time to-bar)
+	       (bar-line-type from-bar) (bar-line-type to-bar)
+	       (write-time-sig from-bar) (write-time-sig to-bar)
+	       (player-section-ref from-bar) (player-section-ref to-bar)
+	       (nth-seq from-bar) (nth-seq to-bar)
+	       (nth-bar from-bar) (nth-bar to-bar))
+	 (setf player-section (get-data (player-section-ref to-bar) p)
+	       sequenz (get-nth (nth-seq to-bar) player-section))
+	 (set-nth-bar (nth-bar to-bar) from-bar sequenz)))
   t)
             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1151,11 +1152,7 @@ BAR-HOLDER:
                         (2 ((hn (2 2 2 2 2))
                             (vc (2 2 2 2 2))))
                         (3 ((hn (1 1 1 1 1))
-                            (vc (1 1 1 1 1)))))))
-      (new-bar (make-rthm-seq-bar '((4 4) (w)))))
-  (fill-with-rhythms new-bar (loop for r in '(h q. e) 
-                                for p in '(c4 e4 g4)
-                                collect (make-event p r :transposition -7)))
+                            (vc (1 1 1 1 1))))))))
   (print (length (get-data-data 'hn (get-section mini 2))))
   (print (length (get-data-data 'vc (get-section mini 2))))
   (delete-sequenzes (piece mini) 8 'hn 2)

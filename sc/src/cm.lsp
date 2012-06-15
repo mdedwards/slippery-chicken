@@ -148,26 +148,22 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - The scale from which the note-name pitch symbol associated with the
-;;;   specified scale degree is to be drawn. As this is a cm function, the cm
-;;;   tuning names must be used; i.e., cm::*chromatic-scale*. 
+;;;   specified scale degree is to be drawn.
 ;;; 
 ;;; RETURN VALUE
 ;;; A note-name pitch symbol.
 ;;; 
 ;;; EXAMPLE
 #|
-(in-scale :chromatic)
-(degree-to-note 127)
+(degree-to-note 127 'chromatic)
 
 => G9
 
-(in-scale :twelfth-tone)
-(degree-to-note 127)
+(degree-to-note 127 'twelfth-tone)
 
 => ATS0
 
-(in-scale :quarter-tone)
-(degree-to-note 127)
+(degree-to-note 127 'quarter-tone)
 
 => EQF4
 
@@ -365,18 +361,15 @@
 ;;; 
 ;;; EXAMPLE
 #|
-(in-scale :chromatic)
-(freq-to-note 423)
+(freq-to-note 423 'chromatic)
 
 => AF4
 
-(in-scale :twelfth-tone)
-(freq-to-note 423)
+(freq-to-note 423 'twelfth-tone)
 
 => GSSS4
 
-(in-scale :quarter-tone)
-(freq-to-note 423)
+(freq-to-note 423 'quarter-tone)
 
 => AQF4
 
@@ -446,18 +439,15 @@
 ;;; 
 ;;; EXAMPLE
 #|
-(in-scale :chromatic)
-(note-to-degree 'AF4)
+(note-to-degree 'AF4 'chromatic)
 
 => 68
 
-(in-scale :twelfth-tone)
-(note-to-degree 'AF4)
+(note-to-degree 'AF4 'twelfth-tone)
 
 => 408
 
-(in-scale :quarter-tone)
-(note-to-degree 'AF4)
+(note-to-degree 'AF4 'quarter-tone)
 
 => 136
 
@@ -622,7 +612,7 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - The scale for which the number of degrees per semitone is to be
-;;;   retrieved. 
+;;;   retrieved.
 ;;; 
 ;;; RETURN VALUE
 ;;; An integer.

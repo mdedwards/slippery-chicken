@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 18:32:31 Mon Jun 11 2012 BST
+;;; $$ Last modified: 11:43:08 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3978,7 +3978,7 @@ data: (2 4)
                  )
            ;; 9.2.11
            (unless p
-             (error "rthm-seq-bar::respell-bar: expected a pitch this ~
+             (error "rthm-seq-bar::respell-bar: expected a pitch in this ~
                      bar's events but one of them ~%was nil--it could be ~
                      that you've created your own events and forgotten to ~&~
                      assign both written and sounding pitches for notes ~

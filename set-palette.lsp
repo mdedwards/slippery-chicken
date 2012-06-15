@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 14:51:09 Mon May 14 2012 BST
+;;; $$ Last modified: 16:44:54 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -515,7 +515,7 @@ data: (C4 F4 A4 C5)
             'test
             '((1 ((1
                    ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5
-			 b5))) 
+                         b5))) 
                   (2
                    ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
                     :subsets
@@ -588,7 +588,7 @@ data: (C4 F4 A4 C5)
             'test
             '((1 ((1
                    ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 
-			 b5)))
+                         b5)))
                   (2
                    ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
                     :subsets
@@ -784,7 +784,7 @@ data: (
             'test
             '((1 ((1
                    ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5 dqf5 gs5 
-			 b5)))
+                         b5)))
                   (2
                    ((bf1 d2 fqf2 fqs2 b2 c3 f3 g3 bqf3 bqs3 fs4 gs4 a4 cs5 gqf5)
                     :subsets
@@ -1010,8 +1010,8 @@ data: (
 
 ;;; Use with the :do-bass and :remove-octaves arguments
 (let ((spfrm3 (set-palette-from-ring-mod 'a4 'spfrm-test
-					 :do-bass nil
-					 :remove-octaves t)))
+                                         :do-bass nil
+                                         :remove-octaves t)))
   (loop for cs in (data spfrm3) collect (pitch-symbols cs)))
 => ((BQS1 GQF3 EF4 A4 DQF5) (DQF6 DQS6 EF6 F6 FQS6 GQF6 EQF7 EQS7)
     (BQS2 GQF3 A4 DQF5 F5 GQS5) (BQS6 C7 CQS7 DQF7 D7 DQS7)
@@ -1208,7 +1208,8 @@ data: (
                    for note = (freq-to-note f scale)
                    do
                      (when print
-                       (format t "~&~a: ~a ~a" f note (freq-to-degree f t)))
+                       (format t "~&~a: ~a ~a"
+                               f note (freq-to-degree f 'chromatic-scale)))
                    collect note))
     (when (and return-notes remove-duplicates)
       (setf notes (remove-duplicates notes)))

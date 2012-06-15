@@ -122,23 +122,46 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Fri Jun 15 11:44:36 BST 2012: Added robodoc entry
+
 ;;; Sequence here is 1-based, not 0-based.
 
 ;;; ****m* change-data/get-change-data
 ;;; DESCRIPTION
-;;; 
+;;; Get the change data (for example, from an instrument-change-map object) for
+;;; a specified sequence.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A change-data object.
+;;; - An integer that is the number of the sequence within the given
+;;;   change-data object for which to retrieve the data.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An integer that is the number of the bar within the specified sequence
+;;;   for which to return the change data.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; The change data of the specified sequence (and bar).
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
+		     (db (double-bass :midi-channel 2))))
+	:instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax))))))
+	:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))  
+	:set-map '((1 (1 1 1 1 1)))
+	:rthm-seq-palette '((1 ((((4 4) h q e s s)
+				 (w))
+				:pitch-seq-palette ((1 2 3 4 5 6)))))
+	:rthm-seq-map '((1 ((sax (1 1 1 1 1))
+			    (db (1 1 1 1 1))))))))
+   (get-change-data 
+    (get-data '(1 sax) (instrument-change-map mini)) 2 2))
+
+=> ALTO-SAX, NIL
 
 |#
 ;;; SYNOPSIS

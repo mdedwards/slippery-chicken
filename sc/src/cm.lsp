@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 20:59:39 Sat May 19 2012 BST
+;;; $$ Last modified: 14:50:10 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -637,12 +637,16 @@
 |#
 ;;; SYNOPSIS
 (defun degrees-per-semitone (&optional (scale cm::*scale*))
-;;; ****
-  ;; MDE Mon May 14 21:01:10 2012 -- 
-  (when (and scale (symbolp scale))
-    (setf scale (cm::find-object scale)))
-  (- (note-to-degree 'cs4 scale)
-     (note-to-degree 'c4 scale)))
+;;; ****                                
+  (let ((scale-obj scale))
+  ;; MDE Mon May 14 21:01:10 2012 --    
+    (when (and scale (symbolp scale))
+      (setf scale-obj (cm::find-object scale))
+    ;; MDE Fri Jun 15 14:46:57 2012 --  
+      (unless scale-obj
+        (warn "cm::degrees-per-semitone: can't find scale ~a" scale)))
+    (- (note-to-degree 'cs4 scale-obj)
+       (note-to-degree 'c4 scale-obj))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

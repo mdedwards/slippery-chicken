@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:24:00 Fri Jun 15 2012 BST
+;;; $$ Last modified: 21:38:52 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2387,7 +2387,7 @@ C4
 ;;;   Clarinet, it would be -3.
 ;;; 
 ;;; RETURN VALUE
-;;; A pitch object.
+;;; The 'written' pitch object.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -2428,10 +2428,8 @@ BF3
 (defmethod set-written ((e event) transposition)
 ;;; ****
   (when (pitch-or-chord e)
-    (print 'here)
     (setf (written-pitch-or-chord e) 
-      (transpose (clone (pitch-or-chord e)) transposition)))
-  t)
+      (transpose (clone (pitch-or-chord e)) transposition))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

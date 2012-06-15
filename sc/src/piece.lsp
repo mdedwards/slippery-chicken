@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 21:42:56 Mon May  7 2012 BST
+;;; $$ Last modified: 13:37:45 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -386,28 +386,28 @@
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((hn (french-horn :midi-channel 1))
-		     (vc (cello :midi-channel 2))))
-	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-	:set-map '((1 (1 1 1 1 1))
-		   (2 (1 1 1 1 1))
-		   (3 (1 1 1 1 1)))
-	:rthm-seq-palette '((1 ((((4 4) h q e s s))
-				:pitch-seq-palette ((1 2 3 4 5))))
-			    (2 ((((4 4) h h))
-				:pitch-seq-palette ((1 2)))))
-	:rthm-seq-map '((1 ((hn (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))
-			(2 ((hn (1 1 1 1 1))
-			    (vc (1 2 1 1 1))))
-			(3 ((hn (1 1 1 1 1))
-			    (vc (1 1 1 1 1)))))))
+        '+mini+
+        :ensemble '(((hn (french-horn :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5))))
+                            (2 ((((4 4) h h))
+                                :pitch-seq-palette ((1 2)))))
+        :rthm-seq-map '((1 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((hn (1 1 1 1 1))
+                            (vc (1 2 1 1 1))))
+                        (3 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1)))))))
       (new-bar (make-rthm-seq-bar '((4 4) (w)))))
   
   (fill-with-rhythms new-bar (loop for r in '(h q. e) 
-				for p in '(c4 e4 g4)
-				collect (make-event p r)))
+                                for p in '(c4 e4 g4)
+                                collect (make-event p r)))
   ;; slippery-chicken object has 15 bars
   (print (num-bars mini))
   ;; print the number of bars in the sequenz in piece=mini, section=2,
@@ -685,72 +685,6 @@ BAR-HOLDER:
     (is-full bar))
   t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Jun 15 11:22:45 BST 2012: Added robodoc entry
-
-;;; ****m* piece/copy-bars
-;;; DESCRIPTION
-;;;
-;;; 
-;;; ARGUMENTS
-;;;
-;;; As always, the bar numbers can be integers or references (section,
-;;; sequence-num, bar-num -- 1-based)
-;;;
-;;; When num-bars is nil, all bars in the piece starting from to-start-bar will
-;;; be transposed.
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
-;;; SYNOPSIS
-(defmethod copy-bars ((p piece) from-start-bar to-start-bar 
-                      from-player to-player num-bars 
-                      &optional (print-bar-nums nil))
-;;; ****
-  (let ((from-bar (clone (get-bar p from-start-bar from-player)))
-        (to-bar (get-bar p to-start-bar to-player)))
-    (unless num-bars
-      (setf num-bars (- (num-bars p) (bar-num to-bar) -1)))
-    (loop for fbnum from (bar-num from-bar)
-       for tbnum from (bar-num to-bar)
-       with first-time = t
-       with player-section
-       with sequenz
-       repeat num-bars do
-	 (unless first-time
-	   (setf from-bar (clone (get-bar p fbnum from-player))
-		 to-bar (get-bar p tbnum to-player)))
-	 (setf first-time nil)
-	 (when print-bar-nums
-	   (format t "~&Copying bar ~a to bar ~a" fbnum tbnum))
-	 (unless (eq t (time-sig-equal (get-time-sig from-bar)
-				       (get-time-sig to-bar)))
-	   (error "piece::copy-bars: Can't replace bars with different time ~
-                signatures: ~a ~a to ~a ~a"
-		  from-player fbnum to-player tbnum))
-       ;; copy data that should remain the same into the bar we're going to
-       ;; replace with 
-	 (setf (write-bar-num from-bar) (write-bar-num to-bar)
-	       (start-time from-bar) (start-time to-bar)
-	       (bar-line-type from-bar) (bar-line-type to-bar)
-	       (write-time-sig from-bar) (write-time-sig to-bar)
-	       (player-section-ref from-bar) (player-section-ref to-bar)
-	       (nth-seq from-bar) (nth-seq to-bar)
-	       (nth-bar from-bar) (nth-bar to-bar))
-	 (setf player-section (get-data (player-section-ref to-bar) p)
-	       sequenz (get-nth (nth-seq to-bar) player-section))
-	 (set-nth-bar (nth-bar to-bar) from-bar sequenz)))
-  t)
-            
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod handle-ties ((p piece))
@@ -1138,7 +1072,7 @@ BAR-HOLDER:
        (make-slippery-chicken
         '+mini+
         :ensemble '(((hn (french-horn :midi-channel 1))
-		     (vc (cello :midi-channel 2))))
+                     (vc (cello :midi-channel 2))))
         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
         :set-map '((1 (1 1 1 1 1))
                    (2 (1 1 1 1 1))

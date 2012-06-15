@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:21:16 Thu Jun  7 2012 BST
+;;; $$ Last modified: 14:23:28 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2427,8 +2427,10 @@ BF3
 (defmethod set-written ((e event) transposition)
 ;;; ****
   (when (pitch-or-chord e)
+    (print 'here)
     (setf (written-pitch-or-chord e) 
-      (transpose (clone (pitch-or-chord e)) transposition))))
+      (transpose (clone (pitch-or-chord e)) transposition)))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 14:50:10 Fri Jun 15 2012 BST
+;;; $$ Last modified: 15:04:54 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -94,10 +94,19 @@
 ;;; ****
   (let ((sc (if (eq scale :chromatic)
                 cm::*chromatic-scale*
-                (cm::find-object scale))))
-    (unless sc 
-      (error "cm.lsp::in-scale: Can't find scale ~a." scale))
-    (setf cm::*scale* sc)))
+                (find-scale scale))))
+    (when sc
+      (setf cm::*scale* sc))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Jun 15 14:55:25 2012 
+(defun find-scale (scale)
+  (if (typep scale 'cm::tuning)
+      scale
+      (let ((sc (cm::find-object scale)))
+        (unless sc 
+          (warn "cm.lsp::find-scale: Can't find scale ~a." scale))
+        sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -173,7 +182,7 @@
 ;;; ****
   ;; MDE Mon May 14 21:01:10 2012 -- 
   (when (and scale (symbolp scale))
-    (setf scale (cm::find-object scale)))
+    (setf scale (find-scale scale)))
   (rm-package (cm::note (round degree) :in scale)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -379,7 +388,7 @@
 ;;; ****
   ;; MDE Mon May 14 21:01:10 2012 -- 
   (when (and scale (symbolp scale))
-    (setf scale (cm::find-object scale)))
+    (setf scale (find-scale scale)))
   (rm-package (cm::note freq :hz t :in scale)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -457,7 +466,7 @@
 ;;; ****
   ;; MDE Mon May 14 21:01:10 2012 -- 
   (when (and scale (symbolp scale))
-    (setf scale (cm::find-object scale)))
+    (setf scale (find-scale scale)))
   (cm::keynum (rm-package note :cm) :in scale))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -501,12 +510,9 @@
 
 |#
 ;;; SYNOPSIS
-(defun freq-to-degree (degree &optional (chromatic-scale nil))
+(defun freq-to-degree (degree &optional (scale cm::*scale*))
 ;;; ****
-  (declare (special cm::*chromatic-scale*))
-  (cm::keynum degree :hz t :in (if chromatic-scale 
-                                 cm::*chromatic-scale*
-                               cm::*scale*)))
+  (cm::keynum degree :hz t :in (find-scale scale)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -641,7 +647,7 @@
   (let ((scale-obj scale))
   ;; MDE Mon May 14 21:01:10 2012 --    
     (when (and scale (symbolp scale))
-      (setf scale-obj (cm::find-object scale))
+      (setf scale-obj (find-scale scale))
     ;; MDE Fri Jun 15 14:46:57 2012 --  
       (unless scale-obj
         (warn "cm::degrees-per-semitone: can't find scale ~a" scale)))

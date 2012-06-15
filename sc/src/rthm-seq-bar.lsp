@@ -4065,59 +4065,64 @@ data: (2 4)
 ;;; 
 ;;; EXAMPLE
 #|
-;; The method returns T.                ;
-         (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-collect (make-event 'cs4 'e))))))
-(enharmonic rsb))
+;; The method returns T.                
+(let ((rsb (make-rthm-seq-bar `((3 8) 
+				,@(loop repeat 3 
+				     collect (make-event 'cs4 'e))))))
+  (enharmonic rsb))
 
-         => T
+=> T
 
-;; Create a rthm-seq-bar object with events, apply the enharmonic method, and ;
+;; Create a rthm-seq-bar object with events, apply the enharmonic method, and 
 ;; print the corresponding slots to see the changes ;
-         (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-collect (make-event 'cs4 'e)))))) 
-(enharmonic rsb)
-(loop for p in (rhythms rsb)
-collect (get-pitch-symbol p)))
+(let ((rsb (make-rthm-seq-bar `((3 8) 
+				,@(loop repeat 3 
+				     collect (make-event 'cs4 'e)))))) 
+  (enharmonic rsb)
+  (loop for p in (rhythms rsb)
+     collect (get-pitch-symbol p)))
 
-         => (DF4 DF4 DF4)
+=> (DF4 DF4 DF4)
 
-;; By default, the method will not change white-key pitches ;
-         (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-collect (make-event 'c4 'e))))))
-(enharmonic rsb)
-(loop for p in (rhythms rsb)
-collect (get-pitch-symbol p)))
+;; By default, the method will not change white-key pitches 
+(let ((rsb (make-rthm-seq-bar `((3 8) 
+				,@(loop repeat 3 
+				     collect (make-event 'c4 'e))))))
+  (enharmonic rsb)
+  (loop for p in (rhythms rsb)
+     collect (get-pitch-symbol p)))
 
-         => (C4 C4 C4)
+=> (C4 C4 C4)
 
-;; This can be forced by setting the :force-naturals argument to T ;
-         (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-collect (make-event 'c4 'e))))))
-(enharmonic rsb :force-naturals t)
-(loop for p in (rhythms rsb)
-collect (get-pitch-symbol p)))
+;; This can be forced by setting the :force-naturals argument to T 
+(let ((rsb (make-rthm-seq-bar `((3 8) 
+				,@(loop repeat 3 
+				     collect (make-event 'c4 'e))))))
+  (enharmonic rsb :force-naturals t)
+  (loop for p in (rhythms rsb)
+     collect (get-pitch-symbol p)))
 
-         => (BS3 BS3 BS3)
+=> (BS3 BS3 BS3)
 
-;; Apply the set-written method to fill the WRITTEN-PITCH-OR-CHORD slot, print ;
-;; its contents, apply the enharmonic method with the :written keyword argument ;
-;; set to T, then print the pitch data of the same slot again to see the ;
-;; change.                              ;
-         (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
-collect (make-event 'cs4 'e))))))
-(set-written rsb -3)
-(print (loop for p in (rhythms rsb)
-collect (get-pitch-symbol p)))
-(enharmonic rsb :written t)
-(print (loop for p in (rhythms rsb)
-collect (get-pitch-symbol p))))
+;; Apply the set-written method to fill the WRITTEN-PITCH-OR-CHORD slot, print 
+;; its contents, apply the enharmonic method with the :written keyword argument 
+;; set to T, then print the pitch data of the same slot again to see the 
+;; change.                              
+(let ((rsb (make-rthm-seq-bar `((3 8) 
+				,@(loop repeat 3 
+				     collect (make-event 'cs4 'e))))))
+  (set-written rsb -3)
+  (print (loop for p in (rhythms rsb)
+	    collect (get-pitch-symbol p)))
+  (enharmonic rsb :written t)
+  (print (loop for p in (rhythms rsb)
+	    collect (get-pitch-symbol p))))
 
-         =>
-         (BF3 BF3 BF3) 
-         (AS3 AS3 AS3)
+=>
+(BF3 BF3 BF3) 
+(AS3 AS3 AS3)
 
-         |#
+|#
 ;;; SYNOPSIS
 (defmethod enharmonic ((rsb rthm-seq-bar) &key written force-naturals
                        ;; MDE Wed Apr 18 11:34:01 2012

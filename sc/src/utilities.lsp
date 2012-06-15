@@ -1923,32 +1923,31 @@
                (return t))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#|
-(wavelab-to-audacity-marker-file 
- (concatenate 'string
-              cl-user::+slippery-chicken-home-dir+ 
-              "test-suite/24-7.mrk")
- 44100)
-|#
 
-;;; MDE Tue May 15 16:53:24 2012 
-;;; writes a .txt file suitable for import to audacity with the same name and
-;;; in the same directory as the file argument.
+;;; SAR Fri Jun 15 13:11:04 BST 2012: Added robodoc entry
+
 ;;; ****f* utilities/wavelab-to-audacity-marker-file
 ;;; DESCRIPTION
-;;; 
+;;; Write a .txt file suitable for import to audacity with the same name and in
+;;; the same directory as the file argument.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A string that is the name of a wavelab marker file, including directory
+;;;   path and extension.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An integer that is the sampling rate of the sound file to which the
+;;;   wavelab marker file refers. This value will affect the times of the
+;;;   output. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns T and prints the number of markers read to the listener. 
 ;;; 
 ;;; EXAMPLE
 #|
+(wavelab-to-audacity-marker-file "/path/to/24-7.mrk"  44100)
+
+=> 51 markers read
 
 |#
 ;;; SYNOPSIS

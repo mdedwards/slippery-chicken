@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 11:43:08 Fri Jun 15 2012 BST
+;;; $$ Last modified: 13:09:00 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4366,16 +4366,16 @@ rsb)
 ;;; 
 ;;; EXAMPLE
 #|
-;; The method returns NIL               ;
+;; The method returns NIL 
          (let ((rsb (make-rthm-seq-bar  `((3 8) ,@(loop repeat 3 
 collect (make-event 'cs4 'e))))))
 (set-written rsb -2))
 
          => NIL
 
-;; Set the written pitch transposition to 2 semitones lower, then check the ;
-;; data of the WRITTEN-PITCH-OR-CHORD slot of each event to see the ;
-;; corresponding pitches                ;
+;; Set the written pitch transposition to 2 semitones lower, then check the
+;; data of the WRITTEN-PITCH-OR-CHORD slot of each event to see the
+;; corresponding pitches  
          (let ((rsb (make-rthm-seq-bar `((3 8) ,@(loop repeat 3 
 collect (make-event 'cs4 'e))))))
 (set-written rsb -2)
@@ -4389,7 +4389,8 @@ collect (get-pitch-symbol p)))
 (defmethod set-written ((rsb rthm-seq-bar) transposition)
 ;;; ****
   (loop for event in (rhythms rsb) do
-       (set-written event transposition)))
+       (set-written event transposition))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

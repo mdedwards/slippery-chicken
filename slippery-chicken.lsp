@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 08:33:59 Fri Jun 15 2012 BST
+;;; $$ Last modified: 13:54:53 Fri Jun 15 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6425,6 +6425,34 @@ duration: 20.0 (20.000)
                         auto-beam print (on-fail #'warn))
   (map-over-bars sc start-bar end-bar players #'check-beams
                  :auto-beam auto-beam :print print :on-fail on-fail))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Jun 15 13:11:52 2012 
+(defmethod auto-set-written ((sc slippery-chicken) &key start-bar end-bar
+                             players)
+  (unless players
+    (setf players (players sc)))
+  (unless (listp players)
+    (setf players (list players)))
+  (unless start-bar
+    (setf start-bar 1))
+  (unless end-bar
+    (setf end-bar (num-bars sc)))
+  (loop for player in players do
+       (loop for bar-num from start-bar to end-bar
+            for bar = (get-bar sc bar-num player)
+            for ins = (get-instrument-for-player-at-bar player bar-num sc)
+            for transp = (transposition-semitones ins)
+            do
+            (set-written bar (- transp))))
+  t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Jun 15 13:51:07 2012 
+;;; player optional arg is actually required
+(defmethod plays-transposing-instrument ((sc slippery-chicken) 
+                                         &optional player (ignore-octaves t))
+  (plays-transposing-instrument (get-player sc player)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

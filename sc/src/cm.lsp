@@ -493,18 +493,15 @@
 ;;; 
 ;;; EXAMPLE
 #|
-(in-scale :chromatic-scale)
-(freq-to-degree 423)
+(freq-to-degree 423 'chromatic-scale)
 
 => 68.317856
 
-(in-scale :twelfth-tone)
-(freq-to-degree 423)
+(freq-to-degree 423 'twelfth-tone)
 
 => 409.9071
 
-(in-scale :quarter-tone)
-(freq-to-degree 423)
+(freq-to-degree 423 'quarter-tone)
 
 => 136.63571
 
@@ -625,18 +622,15 @@
 ;;; 
 ;;; EXAMPLE
 #|
-(in-scale :chromatic)
-(degrees-per-semitone)
+(degrees-per-semitone 'chromatic-scale)
 
 => 1
 
-(in-scale :twelfth-tone)
-(degrees-per-semitone)
+(degrees-per-semitone 'twelfth-tone)
 
 => 6
 
-(in-scale :quarter-tone)
-(degrees-per-semitone)
+(degrees-per-semitone 'quarter-tone)
 
 => 2
 

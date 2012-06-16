@@ -1830,6 +1830,7 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;; SAR Tue Jun 12 22:50:17 BST 2012: Started robodoc entry; moved MDE's
 ;;; original comments down into the doc.
 ;;; SAR Wed Jun 13 11:50:11 BST 2012: Slight mods to the robodoc entry
+;;; SAR Sat Jun 16 22:41:16 BST 2012: Added example from ut
 
 ;;; ****f* rthm-chain/hash-least-used
 ;;; DESCRIPTION
@@ -1852,10 +1853,35 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;;   Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; The hash least used.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((h (make-hash-table)))
+  (loop for i below 100 do
+       (setf (gethash i h) 10000))
+  (setf (gethash 10 h) 5
+	(gethash 11 h) 4
+	(gethash 12 h) 3
+	(gethash 13 h) 2)
+  (print (hash-least-used h :auto-inc nil))
+  (print (hash-least-used h :auto-inc t))
+  (print (hash-least-used h :auto-inc t))
+  (print (hash-least-used h :auto-inc nil :start 12))
+  (setf (gethash 2 h) 0)
+  (print (hash-least-used h :auto-inc nil :start 3 :end 11))
+  (print (hash-least-used h :auto-inc nil :end 11))
+  (print (hash-least-used h :auto-inc nil :ignore '(2))))
+
+=>
+13 
+13 
+12 
+13 
+11 
+2 
+13
+
 
 |#
 ;;; SYNOPSIS

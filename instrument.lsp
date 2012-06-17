@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 16:47:17 Fri Jun 15 2012 BST
+;;; $$ Last modified: 15:42:28 Sun Jun 17 2012 +0100
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -330,8 +330,10 @@
                   ~%            missing-notes: ~a, subset-id: ~a~
                   ~%            staff-name: ~a, staff-short-name: ~a,
                   ~%            largest-fast-leap: ~a, tessitura: ~a"
-          (data (lowest-written ins)) (data (highest-written ins))
-          (data (lowest-sounding ins)) (data (highest-sounding ins))
+          (when (lowest-written ins) (data (lowest-written ins)))
+          (when (highest-written ins) (data (highest-written ins)))
+          (when (lowest-sounding ins) (data (lowest-sounding ins)))
+          (when (highest-sounding ins) (data (highest-sounding ins)))
           (starting-clef ins) (clefs ins) (clefs-in-c ins) 
           (prefers-notes ins) (midi-program ins)
           (transposition ins) (transposition-semitones ins) 

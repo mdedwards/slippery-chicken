@@ -6430,8 +6430,71 @@ duration: 20.0 (20.000)
 ;;; MDE Fri Jun 15 13:11:52 2012 -- will set the written pitch/chord for all
 ;;; events where the player plays a transposing instrument (which can change of
 ;;; course--handled here as we get instrument on a bar-by-bar basis.
+
+;;; SAR Mon Jun 18 13:07:50 BST 2012: Added robodoc entry
+
+;;; ****m* slippery-chicken/auto-set-written
+;;; DESCRIPTION
+;;; Automatically set the WRITTEN-PITCH-OR-CHORD slot for all events where the
+;;; player plays a transposing instrument (which can change of course).
+;;;
+;;; ARGUMENTS
+;;; - A slippery-chicken object. 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :start-bar. NIL or an integer that is the first bar for which the written
+;;;   pitch/chord data is to be set. If NIL, start from bar 1. Default = NIL.
+;;; - :end-bar. NIL or an integer that is the last bar for which the written
+;;;   pitch/chord data is to be set. If NIL, do all bars. Default = NIL.
+;;; - :players. NIL, the ID or a list of IDs for the player(s) whose part(s)
+;;;   are to be affected. If NIL, all players' parts will be affected. 
+;;;   Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; EXAMPLE
+#|
+;;; Create a slippery-chicken object, set all the written-pitch-or-chord
+;;; slots to NIL and print the results. Apply the method and print the results
+;;; again to see the difference.
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((hn (french-horn :midi-channel 1))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((hn (1 1 1 1 1))))))))
+  (next-event mini 'hn nil 1)
+  (loop for ne = (next-event mini 'hn)
+     while ne
+     do (setf (written-pitch-or-chord ne) nil))
+  (next-event mini 'hn nil 1)
+  (print
+   (loop for ne = (next-event mini 'hn)
+      while ne
+      collect (written-pitch-or-chord ne)))
+  (auto-set-written mini)
+  (next-event mini 'hn nil 1)
+  (print
+   (loop for ne = (next-event mini 'hn)
+      while ne
+      collect (data (written-pitch-or-chord ne)))))
+
+=>
+(NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL
+ NIL NIL NIL NIL NIL NIL NIL) 
+(C4 D4 E4 FS4 G4 C4 D4 E4 FS4 G4 C4 D4 E4 FS4 G4 C4 D4 E4 FS4 G4 C4 D4 E4
+ FS4 G4)
+
+|#
+;;; SYNOPSIS
 (defmethod auto-set-written ((sc slippery-chicken) &key start-bar end-bar
                              players)
+;;; ****
   (unless players
     (setf players (players sc)))
   (unless (listp players)

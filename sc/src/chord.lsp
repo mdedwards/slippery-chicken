@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 17:59:27 Mon Jun 11 2012 BST
+;;; $$ Last modified: 16:46:47 Mon Jun 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -399,8 +399,9 @@ data: GQS4
 ;;; 
 ;;; 
 ;;; SYNOPSIS
-(defmethod get-pitch-symbols ((c chord))
+(defmethod get-pitch-symbols ((c chord) &optional ignore)
 ;;; ****
+  (declare (ignore ignore))
   (loop for p in (data c) collect (id p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 13:53:13 Fri Jun 15 2012 BST
+;;; $$ Last modified: 17:01:38 Mon Jun 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -238,13 +238,13 @@
 ;;; SYNOPSIS
 (defmethod plays-transposing-instrument ((p player) 
                                          &optional (ignore-octaves t) ignore)
-;;; ****
+;;; ****                                
   (declare (ignore ignore))
   (if (doubles p)
       (loop for ins in (data (data p)) do
-            (when (transposing-instrument-p ins ignore-octaves)
-              (return t)))
-    (transposing-instrument-p (data p) ignore-octaves)))
+           (when (transposing-instrument-p ins ignore-octaves)
+             (return t)))
+      (transposing-instrument-p (data p) ignore-octaves)))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

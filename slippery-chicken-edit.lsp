@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 14:25:10 Fri Jun 15 2012 BST
+;;; $$ Last modified: 17:24:22 Mon Jun 18 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -4996,7 +4996,8 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; ****m* slippery-chicken/copy-bars
 ;;; DESCRIPTION
 ;;; Copy the rhythmic contents (rthm-seq-bar objects) from the specified bars
-;;; of one specified player's part to another.
+;;; of one specified player's part to another.  NB No check is performed to
+;;; ensure that the copied notes are within the new instrument's range. 
 ;;;
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -5049,58 +5050,75 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 (defmethod copy-bars ((sc slippery-chicken) from-start-bar to-start-bar 
                       from-player to-player num-bars 
                       &optional (print-bar-nums nil))
-;;; ****
-  (let* ((from-bar (clone (get-bar sc from-start-bar from-player)))
-         (to-bar (get-bar sc to-start-bar to-player))
-         (from-plays-transp (plays-transposing-instrument sc from-player nil))
-         (to-plays-transp (plays-transposing-instrument sc to-player nil))
-         to-transp)
-    (format t "~%from ~a to ~a" from-plays-transp to-plays-transp)
-    (unless num-bars
-      (setf num-bars (- (num-bars sc) (bar-num to-bar) -1)))
-    (loop for fbnum from (bar-num from-bar)
-       for tbnum from (bar-num to-bar)
-       with first-time = t
-       with player-section
-       with sequenz
-       repeat num-bars 
-       do
-       ;; MDE Fri Jun 15 13:59:37 2012 
-       (when to-plays-transp
-         (setf to-transp (get-transposition-at-bar to-player tbnum sc)))
-       (unless first-time
-         (setf from-bar (clone (get-bar sc fbnum from-player))
-               to-bar (get-bar sc tbnum to-player)))
-       ;; MDE Fri Jun 15 14:05:04 2012 -- in case we're copying from a
-       ;; transposing to a non-transposing ins
-       (when (and from-plays-transp (not to-transp))
-         (delete-written from-bar))
-       (format t "~%from ~a to ~a to-transp ~a" from-plays-transp
-               to-plays-transp to-transp)
-       ;; MDE Fri Jun 15 13:19:27 2012 -- in case we're copying from a
-       ;; non-transposing to a transposing instrument.
-       (when to-transp
-         (set-written from-bar (- to-transp)))
-       (setf first-time nil)
-       (when print-bar-nums
-         (format t "~&Copying bar ~a to bar ~a" fbnum tbnum))
-       (unless (eq t (time-sig-equal (get-time-sig from-bar)
-                                     (get-time-sig to-bar)))
-         (error "piece::copy-bars: Can't replace bars with different time ~
+;;; ****                                ;
+  (flet ((no-bar (bar-num player)
+           (error "slippery-chicken-edit::copy-bars: Can't get bar number ~a ~
+                   for ~a." bar-num player)))
+    (let* ((from-bar (get-bar sc from-start-bar from-player))
+           (to-bar (get-bar sc to-start-bar to-player))
+           from-plays-transp
+           to-plays-transp
+           to-transp)
+      (unless from-bar
+        (no-bar from-start-bar from-player))
+      (unless to-bar
+        (no-bar to-start-bar to-player))
+      (setf from-plays-transp (plays-transposing-instrument sc from-player nil)
+            to-plays-transp (plays-transposing-instrument sc to-player nil)
+            from-bar (clone from-bar))
+      (when print-bar-nums
+        (format t "~%from ~a to ~a" from-plays-transp to-plays-transp))
+      (unless num-bars
+        (setf num-bars (- (num-bars sc) (bar-num to-bar) -1)))
+      (loop for fbnum from (bar-num from-bar)
+         for tbnum from (bar-num to-bar)
+         with first-time = t
+         with player-section
+         with sequenz
+         repeat num-bars 
+         do
+       ;; MDE Fri Jun 15 13:59:37 2012  ; ;
+         (when to-plays-transp
+           (setf to-transp (get-transposition-at-bar to-player tbnum sc)))
+         (unless first-time
+           (setf from-bar (get-bar sc fbnum from-player)
+                 to-bar (get-bar sc tbnum to-player)))
+         (unless from-bar
+           (no-bar fbnum from-player))
+         (unless to-bar
+           (no-bar fbnum to-player))
+         (setf from-bar (clone from-bar))
+       ;; MDE Fri Jun 15 14:05:04 2012 -- in case we're copying from a ; ;
+       ;; transposing to a non-transposing ins ; ; ;
+         (when (and from-plays-transp (not to-transp))
+           (delete-written from-bar))
+         (when print-bar-nums
+           (format t "~%from ~a to ~a to-transp ~a" from-plays-transp
+                   to-plays-transp to-transp))
+         ;; MDE Fri Jun 15 13:19:27 2012 -- in case we're copying from a ;
+         ;; non-transposing to a transposing instrument. ;
+         (when to-transp
+           (set-written from-bar (- to-transp)))
+         (setf first-time nil)
+         (when print-bar-nums
+           (format t "~&Copying bar ~a to bar ~a" fbnum tbnum))
+         (unless (eq t (time-sig-equal (get-time-sig from-bar)
+                                       (get-time-sig to-bar)))
+           (error "piece::copy-bars: Can't replace bars with different time ~
                 signatures: ~a ~a to ~a ~a"
-                from-player fbnum to-player tbnum))
-       ;; copy data that should remain the same into the bar we're going to
-       ;; replace with 
-       (setf (write-bar-num from-bar) (write-bar-num to-bar)
-             (start-time from-bar) (start-time to-bar)
-             (bar-line-type from-bar) (bar-line-type to-bar)
-             (write-time-sig from-bar) (write-time-sig to-bar)
-             (player-section-ref from-bar) (player-section-ref to-bar)
-             (nth-seq from-bar) (nth-seq to-bar)
-             (nth-bar from-bar) (nth-bar to-bar))
-       (setf player-section (get-data (player-section-ref to-bar) (piece sc))
-             sequenz (get-nth (nth-seq to-bar) player-section))
-       (set-nth-bar (nth-bar to-bar) from-bar sequenz)))
+                  from-player fbnum to-player tbnum))
+         ;; copy data that should remain the same into the bar we're going to 
+         ;; replace with                  
+         (setf (write-bar-num from-bar) (write-bar-num to-bar)
+               (start-time from-bar) (start-time to-bar)
+               (bar-line-type from-bar) (bar-line-type to-bar)
+               (write-time-sig from-bar) (write-time-sig to-bar)
+               (player-section-ref from-bar) (player-section-ref to-bar)
+               (nth-seq from-bar) (nth-seq to-bar)
+               (nth-bar from-bar) (nth-bar to-bar))
+         (setf player-section (get-data (player-section-ref to-bar) (piece sc))
+               sequenz (get-nth (nth-seq to-bar) player-section))
+         (set-nth-bar (nth-bar to-bar) from-bar sequenz))))
   t)
             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:22:41 Mon Jun 18 2012 BST
+;;; $$ Last modified: 17:05:00 Mon Jun 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6518,7 +6518,12 @@ duration: 20.0 (20.000)
 ;;; player optional arg is actually required
 (defmethod plays-transposing-instrument ((sc slippery-chicken) 
                                          &optional player (ignore-octaves t))
-  (plays-transposing-instrument (get-player sc player)))
+  (let ((plyer (get-player sc player)))
+    ;; MDE Mon Jun 18 17:02:24 2012 -- 
+    (unless plyer
+      (error "slippery-chicken::plays-transposing-instrument: ~
+              Can't get player ~a" player))
+    (plays-transposing-instrument plyer ignore-octaves)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

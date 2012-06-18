@@ -28,7 +28,7 @@
 ;;;
 ;;; Creation date:    August 3rd 2010 Edinburgh
 ;;;
-;;; $$ Last modified: 16:24:38 Wed Apr 18 2012 BST
+;;; $$ Last modified: 16:49:52 Mon Jun 18 2012 BST
 ;;;
 ;;;
 ;;; SVN ID: $Id$
@@ -106,8 +106,9 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod get-pitch-symbols ((im intervals-mapper))
+(defmethod get-pitch-symbols ((im intervals-mapper) &optional ignore)
 ;;; ****
+  (declare (ignore ignore))
   (loop for p in (scale-pitches im) collect (data p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -405,9 +406,9 @@ data: E4
      do
      ;; (print (data this-pitch))
        (when (pitch-class-eq pitch this-pitch t)
-	 ;; (print (data this-pitch))
-	 ;; (print (data (nth start (scale-pitches im))))
-	 (return (if return-nth start degree)))))
+         ;; (print (data this-pitch))
+         ;; (print (data (nth start (scale-pitches im))))
+         (return (if return-nth start degree)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

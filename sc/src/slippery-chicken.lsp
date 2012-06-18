@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:39:58 Fri Jun 15 2012 BST
+;;; $$ Last modified: 15:22:41 Mon Jun 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -573,7 +573,7 @@
 ;;; - :in-c. T or NIL to indicate whether the output should be printed at
 ;;;   sounding pitch (in C) or at written pitch. NB: If in C, piccolo and
 ;;;   double bass maintain their usual octave transpositions.
-;;;   T = print at sounding pitch. Default = T.
+;;;   T = print at sounding pitch. Default = NIL.
 ;;; - :respell-notes. T, a list of player IDs paired with a sequence of bar and
 ;;;   note numbers, or NIL to indicate whether to the cmn-display method should
 ;;;   call the respell-notes method to the pitches contained in the
@@ -789,7 +789,7 @@
                         (size 15)
                         (auto-bar-nums nil)
                         (page-nums t)
-                        (in-c t)
+                        (in-c nil)
                         (auto-clefs t)
                         (multi-bar-rests nil)
                         (automatic-octave-signs nil)

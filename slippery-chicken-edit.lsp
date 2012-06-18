@@ -4991,27 +4991,58 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 
 ;;; SAR Fri Jun 15 11:22:45 BST 2012: Added robodoc entry
 ;;; MDE Fri Jun 15 13:38:02 2012 -- move over from piece class
+;;; SAR Mon Jun 18 12:02:18 BST 2012: Expand robodoc entry
 
 ;;; ****m* slippery-chicken/copy-bars
 ;;; DESCRIPTION
+;;; Copy the rhythmic contents (rthm-seq-bar objects) from the specified bars
+;;; of one specified player's part to another.
 ;;;
-;;; 
 ;;; ARGUMENTS
+;;; - A slippery-chicken object.
+;;; - A 1-based integer or assoc-list reference (section seq-num bar-num) that
+;;;   is the number of the first bar in the source player's part whose rhythmic
+;;;   contents are to be copied.
+;;; - A 1-based integer or assoc-list reference (section seq-num bar-num) that
+;;;   is the number of the first bar in the target player's part to which the
+;;;   rhythmic contents are to be copied.
+;;; - The ID of the source player's part.
+;;; - The ID of the target player's part.
+;;; - NIL or an integer that is the number of bars to copy, including the
+;;;   start-bar. When NIL, all bars in the piece starting from <to-start-bar>
+;;;   will be copied.
 ;;;
-;;; As always, the bar numbers can be integers or references (section,
-;;; sequence-num, bar-num -- 1-based)
-;;;
-;;; When num-bars is nil, all bars in the piece starting from to-start-bar will
-;;; be transposed.
-;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - T or NIL to indicate whether to print feedback to the listener about the
+;;;   copying process. T = print. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((hn (french-horn :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5))))
+                            (2 ((((4 4) h h))
+                                :pitch-seq-palette ((1 2)))))
+        :rthm-seq-map '((1 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((hn (2 2 2 2 2))
+                            (vc (2 2 2 2 2))))
+                        (3 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
+  (copy-bars mini 7 2 'vc 'hn 2 t))
+
+=> T
 
 |#
 ;;; SYNOPSIS

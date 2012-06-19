@@ -1589,23 +1589,23 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; 12.12.11 SAR: Added ROBODoc info
 ;;; ****m* rthm-seq-bar/auto-beam
 ;;; DESCRIPTION
-;;; Automatically add beaming indications to RHYTHMs of the given rthm-seq-bar
-;;; object.
+;;; Automatically add beaming indications to the rhythm objects of the given
+;;; rthm-seq-bar object.
 ;;;
 ;;; NB: This method does not modify the DATA slot of the rthm-seq-bar object
-;;; itself. Instead, it modifies the BEAM value for the individual RHYTHMs.
+;;;     itself. Instead, it modifies the BEAM value for the individual RHYTHMs.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-bar object.
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - The beat basis for the given rthm-seq-bar. This will affect which notes
-;;;   get beamed together. This value can be either numeric (4, 8 16 etc.) or  
-;;;   CMN/CM-shorthand (q, e, s etc). If no beat is given, the method defaults 
-;;;   this value to NIL and takes the beat from the current time signature.  
+;;;   get beamed together. This value can be either numeric (4, 8 16 etc.) or
+;;;   alphabetic (q, e, s etc). If no beat is given, the method defaults this
+;;;   value to NIL and takes the beat from the current time signature.
 ;;; - Check-dur. This argument can be set to T or NIL. If T, the method will
-;;;   make sure there is a complete beat of rhythms for each beat of the bar 
-;;;   (default = T). 
+;;;   make sure there is a complete beat of rhythms for each beat of the bar. 
+;;;   Default = T.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns the rthm-seq-bar-object

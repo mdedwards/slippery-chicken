@@ -3659,12 +3659,12 @@ NIL
 
 ;;; ****m* slippery-chicken-edit/auto-beam
 ;;; DESCRIPTION
-;;; Automatically sets indications for starting beams and ending beams (1 and
-;;; 0) to the BEAMS slot of the corresponding event objects. 
+;;; Automatically places indications for beam start- and end-points (1 and 0)
+;;; in the BEAMS slot of the corresponding event objects.
 ;;;
-;;; By default, the method places the start and end indications for beams on
-;;; the basis of the beat found in the time signature, but the user can specify
-;;; a different beat basis using the first optional argument.
+;;; By default, this method determines the start and end indications for beams
+;;; on the basis of the beat found in the time signature, but the user can
+;;; specify a different beat basis using the first optional argument.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -4959,11 +4959,35 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 11 18:22:24 2012 -- returns a flat list of the results of
 ;;; calling the function on all of the bars for each instrument.
+
 ;;; MDE Wed Jun 13 16:40:47 2012 -- updated so we can specify a bar range and
 ;;; players.  If end-bar is nil, we'll go to the last bar; if players is nil,
 ;;; we'll process all players
+
+;;; SAR Mon Jun 18 17:04:15 BST 2012: Added robodoc entry
+
+;;; ****m* slippery-chicken-edit/map-over-bars
+;;; DESCRIPTION
+;;; Apply the specified method/function to all bars (all rthm-seq-bar objects)
+;;; of one or more players' parts in the given slippery-chicken object. 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod map-over-bars ((sc slippery-chicken) start-bar end-bar players
                           function &rest further-args)
+;;; ****
   (unless end-bar
     (setf end-bar (num-bars sc)))
   (unless players
@@ -4973,7 +4997,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
           for bnum from 1 to end-bar
           for bar = (get-bar sc bnum player)
           collect
-          (apply function (cons bar further-args)))))
+	    (apply function (cons bar further-args)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 11 18:36:51 2012 

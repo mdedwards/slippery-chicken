@@ -651,10 +651,15 @@ data: (C4 F4 A4 C5)
 
 ;;; SAR Tue Feb  7 11:04:13 GMT 2012: Shortened MDE's example
 ;;; SAR Tue Feb  7 10:56:35 GMT 2012: Edited robodoc entry
+;;; SAR Tue Jun 19 18:32:19 BST 2012: Added info on init one set from another
+;;; by referencing it and issuing a transposition.
 
 ;;; ****f* set-palette/make-set-palette
 ;;; DESCRIPTION
 ;;; Create a set-palette object.
+;;;
+;;; Note that the sets in this palette may refer to previously defined sets in
+;;; order to avoid retyping note lists (see example below).
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A symbol that is to be the ID of the resulting set-palette object.
@@ -717,6 +722,78 @@ data: (
 [...]
 
 ;;; NB A simple list of sets (with unique id slots) can also be passed.
+
+;;; Create a set-palette object by referencing a set-palette-object already
+;;; defined (sp1) and transposing a clone of that object.
+(make-set-palette 
+ 'test
+ '((sp1
+    ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5
+	  dqf5 gs5 b5) 
+     :subsets
+     ((tc1 (ds2 e3 a4))
+      (tc2 (bf1 d4 cqs5))
+      (qc1 (aqf2 e3 a4 dqf5 b5))
+      (qc2 (bf1 c3 gqs3 cs4 cqs5)))
+     :related-sets
+     ((missing (bqs0 eqs1 f5 aqs5 eqf6 fqs6 
+		     bqf6 dqs7 fs7)))))
+   (sp2
+    (sp1 :transposition 13))))
+
+=>
+SET-PALETTE: 
+PALETTE: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 2
+                      linked: NIL
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: TEST, tag: NIL, 
+data: (
+COMPLETE-SET: complete: NIL
+              num-missing-non-chromatic: 7
+              num-missing-chromatic: 2
+              missing-non-chromatic: (BQS BQF AQS FQS EQS EQF DQS)
+              missing-chromatic: (FS F)
+[...]
+    subsets: 
+TC1: (DS2 E3 A4)
+TC2: (BF1 D4 CQS5)
+QC1: (AQF2 E3 A4 DQF5 B5)
+QC2: (BF1 C3 GQS3 CS4 CQS5)
+    related-sets: 
+MISSING: (BQS0 EQS1 F5 AQS5 EQF6 FQS6 BQF6 DQS7 FS7)
+SCLIST: sclist-length: 15, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: SP1, tag: NIL, 
+data: (BF1 EF2 AQF2 C3 E3 GQF3 GQS3 CS4 D4 G4 A4 CQS5 DQF5 GS5 B5)
+[...]
+COMPLETE-SET: complete: NIL
+              num-missing-non-chromatic: 7
+              num-missing-chromatic: 2
+              missing-non-chromatic: (BQS BQF AQS FQS EQS EQF DQS)
+              missing-chromatic: (FS F)
+TL-SET: transposition: 13
+        limit-upper: NIL
+        limit-lower: NIL
+[...]
+    subsets: 
+TC1: (E3 F4 BF5)
+TC2: (B2 EF5 DQF6)
+QC1: (AQS3 F4 BF5 DQS6 C7)
+QC2: (B2 CS4 AQF4 D5 DQF6)
+    related-sets: 
+MISSING: (BQS0 EQS1 F5 AQS5 EQF6 FQS6 BQF6 DQS7 FS7)
+SCLIST: sclist-length: 15, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: SP2, tag: NIL, 
+data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
+**************
+)
 
 |#
 ;;; 

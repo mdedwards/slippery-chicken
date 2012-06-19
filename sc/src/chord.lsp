@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 16:46:47 Mon Jun 18 2012 BST
+;;; $$ Last modified: 12:45:00 Tue Jun 19 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -120,8 +120,8 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod (setf micro-tone) (value (c chord))
-  (declare (ignore value))
+(defmethod (setf micro-tone) :before (value (c chord))
+  (declare (ignore value c))
   (error "chord::(setf micro-tone): micro-tone slot cannot be setf'd; ~
           it is handled automatically according to pitches in chord"))
 
@@ -1313,7 +1313,7 @@ data: (
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Apr 23 13:13:49 2012 
 (defmethod enharmonic ((c chord) &key (warn t))
-  (loop for p in (data c) collect (enharmonic p)))
+  (loop for p in (data c) collect (enharmonic p :warn warn)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon May 14 15:24:07 2012 

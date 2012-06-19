@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 16:47:33 Tue May 15 2012 BST
+;;; $$ Last modified: 12:48:48 Tue Jun 19 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -399,7 +399,8 @@ data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
                 marker-file sndfile :sampling-rate sampling-rate))
          (sndsc (make-cscl snds))
          (num-snds (length snds))
-         (left-over (mod num-snds snds-per-group))
+         ;; MDE Tue Jun 19 12:48:44 2012 -- no longer need this var
+         ;; (left-over (mod num-snds snds-per-group))
          (sfp
           (loop 
              for count from 1

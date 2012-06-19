@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 17:24:22 Mon Jun 18 2012 BST
+;;; $$ Last modified: 12:51:29 Tue Jun 19 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -4990,14 +4990,16 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; ****
   (unless end-bar
     (setf end-bar (num-bars sc)))
+  (unless start-bar
+    (setf start-bar 1))
   (unless players
     (setf players (players sc)))
   (loop for player in players appending
        (loop
-          for bnum from 1 to end-bar
+          for bnum from start-bar to end-bar
           for bar = (get-bar sc bnum player)
           collect
-	    (apply function (cons bar further-args)))))
+            (apply function (cons bar further-args)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 11 18:36:51 2012 

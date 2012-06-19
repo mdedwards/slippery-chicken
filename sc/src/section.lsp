@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    23rd March 2002
 ;;;
-;;; $$ Last modified: 21:47:20 Sun May  6 2012 BST
+;;; $$ Last modified: 12:49:34 Tue Jun 19 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -95,33 +95,33 @@
         :ensemble '(((vn (violin :midi-channel 1))))
         :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
         :set-map '((1
-		    ((a (1 1 1))
-		     (b (1 1 1))))
-		   (2 (1 1 1 1))
-		   (3
-		    ((a (1 1 1))
-		     (b
-		      ((x (1 1 1))
-		       (y (1 1 1))))))
-		   (4
-		    ((a (1 1 1))
-		     (b (1 1 1))
-		     (c (1 1 1 1)))))
-	:rthm-seq-palette '((1 ((((2 4) (q) e (s) s))
-				:pitch-seq-palette ((1 2)))))
-	:rthm-seq-map '((1
-			 ((a ((vn (1 1 1))))
-			  (b ((vn (1 1 1))))))
-			(2 ((vn (1 1 1 1))))
-			(3
-			 ((a ((vn (1 1 1))))
-			  (b
-			   ((x ((vn (1 1 1))))
+                    ((a (1 1 1))
+                     (b (1 1 1))))
+                   (2 (1 1 1 1))
+                   (3
+                    ((a (1 1 1))
+                     (b
+                      ((x (1 1 1))
+                       (y (1 1 1))))))
+                   (4
+                    ((a (1 1 1))
+                     (b (1 1 1))
+                     (c (1 1 1 1)))))
+        :rthm-seq-palette '((1 ((((2 4) (q) e (s) s))
+                                :pitch-seq-palette ((1 2)))))
+        :rthm-seq-map '((1
+                         ((a ((vn (1 1 1))))
+                          (b ((vn (1 1 1))))))
+                        (2 ((vn (1 1 1 1))))
+                        (3
+                         ((a ((vn (1 1 1))))
+                          (b
+                           ((x ((vn (1 1 1))))
                             (y ((vn (1 1 1))))))))
-			(4
-			 ((a ((vn (1 1 1))))
-			  (b ((vn (1 1 1))))
-			  (c ((vn (1 1 1 1))))))))))
+                        (4
+                         ((a ((vn (1 1 1))))
+                          (b ((vn (1 1 1))))
+                          (c ((vn (1 1 1 1))))))))))
   (print (has-subsections (get-section mini 1)))
   (print (has-subsections (get-section mini 2))))
 
@@ -292,31 +292,31 @@ BAR-HOLDER:
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-		     (hn (french-horn :midi-channel 2))
-		     (vc (cello :midi-channel 3))))
-	:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))
-		       (2 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))
-		       (3 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-	:set-map '((1 (1 1 1 1 1))
-		   (2 (2 2 2 2 2))
-		   (3 (3 3 3 3 3)))
-	:rthm-seq-palette '((1 ((((4 4) h q e s s))
-				:pitch-seq-palette ((1 2 3 4 5))))
-			    (2 ((((4 4) q e s s h))
-				:pitch-seq-palette ((1 2 3 4 5))))
-			    (3 ((((4 4) e s s h q))
-				:pitch-seq-palette ((1 2 3 4 5)))))
-	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
-			    (hn (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))
-			(2 ((cl (2 2 2 2 2))
-			    (hn (2 2 2 2 2))
-			    (vc (2 2 2 2 2))))
-			(3 ((cl (3 3 3 3 3))
-			    (hn (3 3 3 3 3))
-			    (vc (3 3 3 3 3))))))))
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (hn (french-horn :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))
+                       (2 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5)))
+                       (3 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (2 2 2 2 2))
+                   (3 (3 3 3 3 3)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5))))
+                            (2 ((((4 4) q e s s h))
+                                :pitch-seq-palette ((1 2 3 4 5))))
+                            (3 ((((4 4) e s s h q))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+                            (hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((cl (2 2 2 2 2))
+                            (hn (2 2 2 2 2))
+                            (vc (2 2 2 2 2))))
+                        (3 ((cl (3 3 3 3 3))
+                            (hn (3 3 3 3 3))
+                            (vc (3 3 3 3 3))))))))
   (get-bar (get-section mini 3) 11 'hn))
 
 =>
@@ -451,21 +451,21 @@ data: ((4 4) E S S H Q)
        (make-slippery-chicken
         '+mini+
         :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-		     (hn (french-horn :midi-channel 2))
-		     (vc (cello :midi-channel 3))))
+                     (hn (french-horn :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
         :set-map '((1 (1 1 1 1 1))
-		   (2 (1 1 1 1 1))
-		   (3 (1 1 1 1 1)))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
         :rthm-seq-palette '((1 ((((4 4) h q e s s))
-				:pitch-seq-palette ((1 2 3 4 5)))))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
         :rthm-seq-map '((1 ((cl (1 1 1 1 1))
-			    (hn (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))
-			(2 ((cl (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))
-			(3 ((hn (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))))))
+                            (hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (3 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
   (print (get-all-players (get-section mini 1)))
   (print (get-all-players (get-section mini 2)))
   (print (get-all-players (get-section mini 3))))
@@ -556,21 +556,21 @@ data: ((4 4) E S S H Q)
            with this-time-sigs
            for player-section in (data s) do
            ;; MDE Thu Feb  9 11:43:51 2012 -- fixed the logic here
-	     (when (and (<= start-bar (end-bar s))
-			(>= end-bar (start-bar s)))
-	       (setf this-time-sigs
-		     (re-bar player-section 
-			     :start-bar (max start-bar (start-bar
-							player-section)) 
-			     :end-bar (min end-bar (end-bar player-section)) 
-			     :min-time-sig min-time-sig :verbose verbose 
-			     :auto-beam auto-beam))
-	       (if first-time-sigs
-		   (unless (equal first-time-sigs this-time-sigs)
-		     (warn "section::re-bar: not all time-sigs are the same! ~ 
+             (when (and (<= start-bar (end-bar s))
+                        (>= end-bar (start-bar s)))
+               (setf this-time-sigs
+                     (re-bar player-section 
+                             :start-bar (max start-bar (start-bar
+                                                        player-section)) 
+                             :end-bar (min end-bar (end-bar player-section)) 
+                             :min-time-sig min-time-sig :verbose verbose 
+                             :auto-beam auto-beam))
+               (if first-time-sigs
+                   (unless (equal first-time-sigs this-time-sigs)
+                     (warn "section::re-bar: not all time-sigs are the same! ~
                          ~%first: ~a ~%this:  ~a"
-			   first-time-sigs this-time-sigs))
-		   (setf first-time-sigs this-time-sigs))))))
+                           first-time-sigs this-time-sigs))
+                   (setf first-time-sigs this-time-sigs))))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

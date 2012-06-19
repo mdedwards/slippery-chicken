@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 15:07:17 Sat Jun  2 2012 BST
+;;; $$ Last modified: 12:41:58 Tue Jun 19 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -898,14 +898,14 @@ NIL
 ;;; Note that the data VELVET must be a list for this to succeed
 
 (let ((ral (make-ral 'mixed-bag 
-		     '((jim beam)
-		       (wild turkey)
-		       (four ((roses red)
-			      (violets ((blue (velvet))
-					(red ((dragon den)
-					      (viper nest)
-					      (fox hole)))
-					(white ribbon)))))))))
+                     '((jim beam)
+                       (wild turkey)
+                       (four ((roses red)
+                              (violets ((blue (velvet))
+                                        (red ((dragon den)
+                                              (viper nest)
+                                              (fox hole)))
+                                        (white ribbon)))))))))
   (print (get-all-refs ral))
   (ral-econs 'underground '(four violets blue) ral)
   (print (get-data-data '(four violets blue) ral)))
@@ -1199,6 +1199,7 @@ data: HIVE
 
 ;; MDE Tue Jan 31 11:22:36 2012 
 (defmethod set-data :after (key new-value (ral recursive-assoc-list))
+  (declare (ignore key new-value))
   (relink-named-objects ral))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

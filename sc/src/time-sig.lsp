@@ -638,7 +638,10 @@ data: (2 4)
                                             ((4 4) (8 8))
                                             ;; MDE Sat Dec 24 13:00:09 2011
                                             ((1 4) (2 8))
-                                            ((1 8) (2 16)))))
+                                            ((1 8) (2 16))
+					    ;; SAR Fri Jun 22 13:15:16 BST 2012
+					    ((3 8) (6 16))
+					    ((5 4) (10 16)))))
   (let ((result (loop
                    for pair in preferred 
                    for yes = (first pair)

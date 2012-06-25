@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 15:23:58 Mon May 14 2012 BST
+;;; $$ Last modified: 12:29:59 Mon Jun 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1998,6 +1998,7 @@ data: (
       (warn "~&rhythm::validate-mark: no Lilypond mark for ~a (but ~
            adding anyway)."
             mark))
+    #+cmn
     (unless (cmn::get-cmn-marks mark :silent t)
       (warn "~&rhythm::validate-mark: no CMN mark for ~a (but adding anyway)."
             mark))))
@@ -2013,6 +2014,7 @@ data: (
 ;;; MDE Fri Dec 23 22:53:26 2011 
 
 (defun cmn-mark-p (thing)
+  #+cmn 
   (or (typep thing 'cmn::sundry)
       (typep thing 'cmn::dynamics)
       (typep thing 'cmn::self-acting)

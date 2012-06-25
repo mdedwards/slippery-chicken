@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 20:42:24 Sat May 19 2012 BST
+;;; $$ Last modified: 17:07:19 Mon Jun 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1760,6 +1760,10 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;; lilypond output
 (defmethod get-lp-data ((p pitch) &optional ignore1 ignore2 ignore3)
   (declare (ignore ignore1 ignore2 ignore3))
+  ;; MDE Mon Jun 25 17:05:24 2012 
+  (when (micro-but-not-quarter-tone-p p)
+    (error "pitch::get-lp-data: Lilypond can only handle quarter tones: ~a"
+           p))
   (let* ((octave (octave p))
          (lp8ve (cond
                   ((= octave 3) "")
@@ -1779,6 +1783,13 @@ pitch::add-mark: mark PIZZ already present but adding again!
                              note lp8ve 
                              (if (accidental-in-parentheses p) "?" "")
                              marks))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; MDE Mon Jun 25 17:02:12 2012 -- test whether a pitch is a microtone but not
+;;; a quarter-tone (e.g. 6th or 12th tone) 
+(defmethod micro-but-not-quarter-tone-p ((p pitch))
+  (and (micro-tone p) (not (qtr-tone p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

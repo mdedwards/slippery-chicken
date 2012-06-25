@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified: 15:51:44 Thu May 17 2012 BST
+;;; $$ Last modified: 17:33:53 Mon Jun 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -170,12 +170,24 @@
 
 (defmethod get-lp-data ((tpo tempo) &optional ignore1 ignore2 ignore3)
   (declare (ignore ignore1 ignore2 ignore3))
-  (format nil "\\tempo ~a ~a = ~a "
-          (if (description tpo)
-              (format nil "\"~a\"" (description tpo))
-              "")
-          (round (beat-value tpo)) 
-          (round (bpm tpo))))
+  ;; MDE Mon Jun 25 17:29:58 2012 -- 
+  (let ((bv (round (beat-value tpo))))
+    (unless (power-of-2 bv)
+      (setf bv
+            (case (beat tpo)
+              (s. "16.")
+              (e. "8.")
+              (q. "4.")
+              (h. "2.")
+              (w. "1.")
+              (t (error "tempo::get-lp-data: Can't get Lilypond tempo for ~
+                         beat ~a: ~a" (beat tpo) tpo)))))
+    (format nil "\\tempo ~a ~a = ~a "
+            (if (description tpo)
+                (format nil "\"~a\"" (description tpo))
+                "")
+            bv
+            (round (bpm tpo)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

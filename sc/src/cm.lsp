@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 12:20:16 Tue Jun 26 2012 BST
+;;; $$ Last modified: 17:24:40 Tue Jun 26 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -926,9 +926,9 @@
 (defun set-pitch-bend (time channel bend)
   ;; (declare (special midimsg msg))
   ;; (output (new midimsg time time msg 
-  (format t "~&set-pitch-bend: time ~a channel ~a bend ~a" time channel bend)
+  ;; (format t "~&set-pitch-bend: time ~a channel ~a bend ~a" time channel bend)
   (new midi-pitch-bend :time time :channel channel
-       :bend (if (zerop bend) 0 (print (rescale bend -2 2 -8192 8191)))))
+       :bend (if (zerop bend) 0 (rescale bend -2 2 -8192 8191))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

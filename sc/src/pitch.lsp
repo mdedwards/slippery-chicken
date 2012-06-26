@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 17:07:19 Mon Jun 25 2012 BST
+;;; $$ Last modified: 12:33:44 Tue Jun 26 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -202,6 +202,14 @@
   (unless (midi-channel p)
     (error "pitch::output-midi-note: midi-channel nil: ~%~a:" p))
   (cm::output-midi-note (midi-note p) 
+                        ;; MDE Tue Jun 26 12:30:09 2012 -- the pitch bend is
+                        ;; set for every output MIDI note, just to be sure.
+                        ;; This means we can have e.g. 1/8th and 1/4 tones on
+                        ;; one channel.  NB When creating events, we put
+                        ;; microtones on one channel and chromatic tones on
+                        ;; another so we can have microtonal chords.  But we
+                        ;; can only have one type of microtone in a chord doing
+                        ;; it this way (better than nothing).
                         (pitch-bend p)
                         time
                         amplitude

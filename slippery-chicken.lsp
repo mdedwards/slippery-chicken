@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:05:00 Mon Jun 18 2012 BST
+;;; $$ Last modified: 15:53:10 Wed Jun 27 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2579,24 +2579,29 @@ data: NIL
 ;;; SYNOPSIS
 (defmethod num-seqs ((sc slippery-chicken) section-ref)
 ;;; ****
-  ;; MDE Sat Jun  2 12:13:01 2012 -- if there are subsections tot them up
-  (if (has-subsections (get-section sc section-ref))
-      (loop for ref in (get-section-refs sc section-ref 1)
-         for nums = (num-seqs sc ref)
-         do
-         (unless nums
-           (error "slippery-chicken::num-seqs: error getting number of ~
+  ;; MDE Wed Jun 27 15:51:14 2012 
+  (let ((section (get-section sc section-ref)))
+    (unless section
+      (error "slippery-chicken::num-seqs: Section with ID ~a doesn't exist."
+             section-ref))
+    ;; MDE Sat Jun  2 12:13:01 2012 -- if there are subsections tot them up
+    (if (has-subsections section)
+        (loop for ref in (get-section-refs sc section-ref 1)
+           for nums = (num-seqs sc ref)
+           do
+           (unless nums
+             (error "slippery-chicken::num-seqs: error getting number of ~
                      sequences for reference ~a" ref))
-         sum nums)
-      (let ((sec (get-data (econs 
-                            (if (listp section-ref) 
-                                section-ref 
-                                (list section-ref)) 
-                            (first (players (piece sc))))
-                           (piece sc) 
-                           nil)))
-        (when sec
-          (sclist-length sec)))))
+           sum nums)
+        (let ((sec (get-data (econs 
+                              (if (listp section-ref) 
+                                  section-ref 
+                                  (list section-ref)) 
+                              (first (players (piece sc))))
+                             (piece sc) 
+                             nil)))
+          (when sec
+            (sclist-length sec))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

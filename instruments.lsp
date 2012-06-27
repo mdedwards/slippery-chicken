@@ -343,6 +343,7 @@
      ;; computer parts.
      (computer
       (:staff-name "computer" :staff-short-name "comp"
+       :lowest-sounding C-1 :highest-sounding G9
        :starting-clef percussion)))))
        ;;; ****
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

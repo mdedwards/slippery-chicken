@@ -62,9 +62,9 @@
 ;;; ****f* permutations/inefficiently-permutate
 ;;; DESCRIPTION
 ;;; Return a shuffled, non-systematically ordered list of all possible
-;;; permutations of an original sequence of elements of any type. An
-;;; optional keyword argument <max> allows the user to specify the maximum
-;;; number of permutations to return. 
+;;; permutations of an original list of elements of any type. An optional
+;;; keyword argument <max> allows the user to specify the maximum number of
+;;; permutations to return.
 ;;;
 ;;; As opposed to the function "permutate", inefficiently-permutate returns the
 ;;; elements of the specified <list> as a flat list, unless the keyword
@@ -73,13 +73,10 @@
 ;;;
 ;;; The function is inefficient in so far as it simply shuffles the numbers and
 ;;; so always has to check whether the new list already contains the shuffled
-;;; before storing it.
+;;; sublist before storing it.
 ;;; 
 ;;; The order of the permutations returned will always be the same unless <fix>
 ;;; is set to NIL. 
-;;;
-;;; Keyword argument <skip> allows the user to skip a number of permutations,
-;;; which is only sensible if :fix is set to T. 
 ;;;
 ;;; ARGUMENTS 
 ;;; - A list.
@@ -799,8 +796,8 @@ results so they are being written to the file
   ;; SAR Tue Jan 17 12:25:56 GMT 2012: Added robodoc info
 
   ;; ****f* permutations/random-rep
-  ;; FUNCTION
-  ;; Return a non-negative random number that is less than the specified
+  ;; DESCRIPTION
+  ;; Return a random non-negative number that is less than the specified
   ;; value. An optional argument allows for the random state to be reset.
   ;; 
   ;; ARGUMENTS 
@@ -919,8 +916,8 @@ results so they are being written to the file
 ;; same result that time but different (but repeatable) results thereafter.
 (loop repeat 3 do
      (print 'start)
-     (loop for i below 4 do (print (shuffle '(1 2 3 4 5 6 7) :reset (zerop
-                                                                     i)))))
+     (loop for i below 4 
+        do (print (shuffle '(1 2 3 4 5 6 7) :reset (zerop i)))))
 
 =>
 START 
@@ -1080,27 +1077,30 @@ START
 
 ;;; ****f* permutations/multi-shuffle-with-perms
 ;;; DESCRIPTION
-;;; Returns a shuffled (random and unordered) list of permutations of
-;;; the specified list after a specified number of shuffles. Similar
-;;; to the "multi-shuffle" function, but uses the function
+
+;;; Return one permutation from a shuffled list of permutations of the
+;;; specified list. The second argument determines how many shuffled
+;;; permutations will be in the list from which the resulting permutation is
+;;; selected. Similar to the "multi-shuffle" function, but uses the function
 ;;; "inefficient-permutations" as part of the process.
 ;;;
-;;; The <num-shuffles> argument allows the user to always return the
-;;; same specific permutation.
+;;; The <num-shuffles> argument allows the user to always return the same
+;;; specific permutation.
 ;;;
-;;; NB: This function always uses a fixed random seed and has no
-;;;     optional arguments to allow the user to alter that setting.
+;;; NB: This function always uses a fixed random seed and has no optional
+;;;     arguments to allow the user to alter that setting.
 ;;;
 ;;; ARGUMENTS 
 ;;; - A list.
-;;; - An integer that is the number of permutations to be returned.
+;;; - An integer that is the number of consecutive shuffles to be collected in
+;;;   the list from which the resulting permutation is selected.
 ;;; 
 ;;; RETURN VALUE  
 ;;; - A list that is a single permutation of the specified list.
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns a random and unordered permutation of the specified list
+;; Returns a permutation of a shuffled version of the specified list
 (let ((l '(0 1 2 3 4)))
   (multi-shuffle-with-perms l 7))
 
@@ -1160,18 +1160,22 @@ START
 ;;; given list and a warning is printed.
 ;;;
 ;;; This function can be applied to simple lists and lists with sublists.
-;;; However, due to this function being designed--but not limited--for use with
-;;; the results of permutations, if the list has sublists, then instead of
+;;; However, due to this function being designed for--but not limited to--use
+;;; with the results of permutations, if the list has sublists, then instead of
 ;;; repeating sublists being moved, the last element of a sublist is checked
-;;; for repetition with the first element of the next sublist.  See the first
+;;; for repetition with the first element of the next sublist. See the first
 ;;; example below.
 ;;;
 ;;; NB: This function only move elements further along the list; it won't place
-;;; them earlier than their original position.  Thus:
+;;;     them earlier than their original position.  Thus:
 ;;;     
-;;;     (move-repeats '(3 3 1)) will return (3 1 3), while 
-;;;     (move-repeats '(1 3 3)) will leave the list untouched and print a
-;;;     warning. 
+;;;     (move-repeats '(3 3 1)) 
+;;;
+;;;     will return (3 1 3), while 
+;;;
+;;;     (move-repeats '(1 3 3)) 
+;;;
+;;;     will leave the list untouched and print a warning. 
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A list.

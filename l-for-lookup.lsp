@@ -595,8 +595,8 @@
 ;;; original, shorter sequences.
 ;;;
 ;;; NB: This method just stores the data concerning sequences and rules. To
-;;; manipulate the data and create new sequences, see do-lookup or
-;;; get-l-sequence etc.
+;;;     manipulate the data and create new sequences, see do-lookup or
+;;;     get-l-sequence etc.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A symbol that will be the object's ID.
@@ -847,7 +847,7 @@ data: (
 ;;; until it completely dominates. 
 ;;;
 ;;; NB: The similar but separate function fibonacci-transition-aux1 gradually
-;;; decreases state 1 and increases state 2.
+;;;     decreases state 1 and increases state 2.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - An integer that is the desired number of elements in the resulting list

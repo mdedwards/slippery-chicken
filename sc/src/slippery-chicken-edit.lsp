@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 12:51:29 Tue Jun 19 2012 BST
+;;; $$ Last modified: 12:04:53 Sat Jun 30 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -1485,7 +1485,7 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod add-mark-all-players ((sc slippery-chicken)
-                                     bar-num event-num mark)
+                                 bar-num event-num mark)
 ;;; ****
   (if (listp event-num)
       (unless (= (num-players (piece sc)) (length event-num))

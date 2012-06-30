@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 20:48:46 Mon Apr 30 2012 BST
+;;; $$ Last modified: 14:04:41 Sat Jun 30 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -361,6 +361,19 @@
              (trill-note (no-cmn-mark 'trill-note)) ; ignore lilypond trill
              ;; this is also for lilypond markup code so ignore
              (text (no-cmn-mark (format nil "lilypond-markup: ~a" mark)))
+             ;; MDE Sat Jun 30 12:06:08 2012 -- key signatures
+             (key (no-cmn-mark 'key))
+             #|
+              ;; proved impossible for now to get around cmn's use of globals
+             ;; here 
+              (list 
+                    (sc::rm-package
+                     (eval (read-from-string
+                            (print (concatenate 'string
+                                         "CMN::"
+                                         (sc::list-to-string (cdr mark) "-")))))
+                     :cmn)))
+             |#
              (t (list (apply #'sc-cmn-text mark)))))
           ;; otherwise it might be a cmn-mark (e.g. text) already
           (t (list mark)))))))

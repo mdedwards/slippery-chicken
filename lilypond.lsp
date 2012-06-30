@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 20:47:49 Mon Apr 30 2012 BST
+;;; $$ Last modified: 14:56:37 Sat Jun 30 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -249,11 +249,16 @@
             \\override TextSpanner #'(bound-details left ~
                 stencil-align-dir-y) = #CENTER~%" current target)))
            (trill-note
-            (format nil "\\startTrillSpan ~a"
+            (format nil "\\startTrillSpan ~a "
                     (get-lp-data (make-pitch (second mark)))))
            ;; 3/11/11 sometimes we just want to insert text as given, e.g. with
            ;; funny markup code
            (text (second mark))
+           ;; MDE Sat Jun 30 12:06:08 2012 -- key signatures 
+           ;; e.g. '(key fs major), but note that they will appear _after_ the
+           ;; note they're attached to.
+           (key (string-downcase
+                 (format nil "\\key ~a \\~a " (second mark) (third mark))))
            (t (unless silent
                 (error "lilypond::lp-get-mark: unrecognised mark as list: ~a"
                        mark)))))

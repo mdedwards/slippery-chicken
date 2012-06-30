@@ -272,7 +272,7 @@
 ;; Create an l-for-lookup object in which the sequences are defined such that
 ;; the transition takes place over the 3 given lists and from x to y to z, and
 ;; apply the do-lookup method to see the results. Each time one of these lists
-;; is accessed, it will circularly return the next value. 
+;; is accessed, it will cyclically return the next value. 
 (let ((lfl (make-l-for-lookup 
             'lfl-test
             '((1 ((ax1 ax2 ax3) (ay1 ay2 ay3 ay4) (az1 az2 az3 az4 az5)))
@@ -324,8 +324,8 @@
              for seq-index = (get-next (nth i (group-indices lflu)))
              for this = (get-next (nth seq-index group))
              collect (if (numberp this)
-                       (+ offset (* scaler this))
-                       this)))
+                         (+ offset (* scaler this))
+                         this)))
          (elements (remove-duplicates result))
          (lld (make-list (length elements))))
     (when (list-of-numbers-p elements)
@@ -411,7 +411,7 @@
 ;;; The method first returns the first element in the list whose ID matches the 
 ;;; SEED argument, then that element is used as the ID for the next
 ;;; lookup. Each time a sequence is accessed, the next element in the sequence 
-;;; is returned (if there is more than one), circling to the head of the list
+;;; is returned (if there is more than one), cycling to the head of the list
 ;;; once its end is reached.  
 ;;;
 ;;; In order for this method to function properly, no rules can have been
@@ -454,12 +454,12 @@
   (when reset
     (reset lflu))
   (loop 
-      with current = seed 
-      repeat stop-length
-      collect current
-      do
-        ;; the circular lists are in a list of the data
-        (setf current (get-next (first (data (get-data current lflu)))))))
+     with current = seed 
+     repeat stop-length
+     collect current
+     do
+     ;; the circular lists are in a list of the data
+       (setf current (get-next (first (data (get-data current lflu)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

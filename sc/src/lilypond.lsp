@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 16:10:33 Mon Jul  2 2012 BST
+;;; $$ Last modified: 18:49:19 Mon Jul  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -78,7 +78,7 @@
         (symbol
          (case mark
 ;;; SYNOPSIS
-           (a "-> ") ; accent
+           (a "-> ")                    ; accent
            (lhp "-+ ")
            ;; see p229 of lilypond.pdf: need to define this command in file
            (bartok "^\\snapPizzicato ") 
@@ -202,7 +202,7 @@
            (sing "^\\sing ")
            (sing-arr "^\\singArr ")
            (arrow-up-down "^\\arrowUpDown ")
-           ;;; end lilypond-graphics.zip files
+;;; end lilypond-graphics.zip files
            ;; these must have been set up with the event::add-arrow method
            (start-arrow "\\startTextSpan ")
            (end-arrow "\\stopTextSpan ")

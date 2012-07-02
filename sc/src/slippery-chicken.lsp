@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:17:25 Mon Jul  2 2012 BST
+;;; $$ Last modified: 19:48:51 Mon Jul  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -857,6 +857,8 @@
                :line-separation line-separation
                :players players
                :in-c in-c
+               ;; MDE Mon Jul  2 19:48:37 2012 
+               :key-sig (key-sig sc)
                :page-height page-height
                :page-width page-width
                :automatic-octave-signs automatic-octave-signs

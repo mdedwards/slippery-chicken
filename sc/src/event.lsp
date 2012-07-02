@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:38:52 Fri Jun 15 2012 BST
+;;; $$ Last modified: 19:28:19 Mon Jul  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2069,8 +2069,8 @@ NIL
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; cmn should understand the (duration ...) function but seems to fail with
-;;; this, so use its rq function instead.
+;;; I think cmn should understand the (duration ...) function but seems to fail
+;;; with this, so use its rq function instead.
 
 #+cmn
 (defmethod get-cmn-data ((e event) &optional bar-num from-pitch-info-only

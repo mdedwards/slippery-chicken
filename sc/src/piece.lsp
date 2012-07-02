@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 13:37:45 Fri Jun 15 2012 BST
+;;; $$ Last modified: 19:52:13 Mon Jul  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -119,6 +119,8 @@
                         (automatic-octave-signs nil)
                         (display-marks-in-part nil)
                         (display-time nil)
+                        ;; MDE Mon Jul  2 19:45:09 2012 -- 
+                        (key-sig '(c major))
                         (size 15))
   (object-is-nil? ensemble "piece::cmn-display" 'ensemble)
   (object-is-nil? bars-per-system-map "piece::cmn-display"
@@ -134,7 +136,6 @@
                                  display-marks-in-part display-time))
          (cmn-data-num-bars (length (first cmn-data)))
          (num-bars (num-bars p))
-         ;; (first-ins (first cmn-data))
          (starting-ins-objs
           (loop for player in players collect 
                (let ((player-obj (get-data player ensemble))
@@ -239,7 +240,7 @@
                      for st-args in cmn-staff-args
                      for clefs in starting-clefs
                      collect
-                     (cmn::cmn-system group st-name clefs st-args)))
+                     (cmn::cmn-system group st-name key-sig clefs st-args)))
     (format t "~&Calling CMN...")
     (cmn::cmn-display systems 
                       :page-height page-height

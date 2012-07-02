@@ -1095,8 +1095,82 @@ data: ((2 4) Q E S S)
 ;;; MDE Sat Jun  9 13:45:31 2012 -- will only auto-beam if T and beams are
 ;;; wrong.  Returns t if all ok otherwise nil.  Second returned value is the
 ;;; problem as a symbol
+
+;;; SAR Mon Jul  2 16:30:47 BST 2012: Added robodoc entry
+
+;;; ****m* rthm-seq-bar/check-beams
+;;; DESCRIPTION
+;;; Check the BEAM slots of the event objects within a specified rthm-seq-bar
+;;; object to ensure that every beginning beam indication (slot value of 1) is
+;;; coupled with a corresponding closing beam indication (slot value of 0), and
+;;; print a warning and return NIL if this is not the case.
+;;; 
+;;; ARGUMENTS
+;;; - A rthm-seq-bar object.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :auto-beam. T or NIL to indicate the method should apply the auto-beam
+;;;   algorithm to the given bar after the check. T = auto-beam. Default =
+;;;   NIL. 
+;;; - :print. T or NIL to indicate whether the method should print feedback of
+;;;   the checking process to the Lisp listener. T = print feedback. Default =
+;;;   NIL. 
+;;; - :on-fail. The function that should be applied when the check does not
+;;;   pass. Default = #'warn.
+;;; 
+;;; RETURN VALUE
+;;; T if the check passes, otherwise NIL.
+;;; 
+;;; EXAMPLE
+#|
+
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
+        :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+                                 (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
+                                 (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
+        :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h e (s) (s) e+s+s))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
+                        (2 ((sax (1 1 1 1 1))))
+                        (3 ((sax (1 1 1 1 1))))))))
+  (check-beams (get-bar mini 1 'sax)))
+
+=> T
+
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
+        :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+                                 (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
+                                 (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
+        :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h e (s) (s) e+s+s))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
+                        (2 ((sax (1 1 1 1 1))))
+                        (3 ((sax (1 1 1 1 1))))))))
+  (setf (beam (nth 1 (rhythms (get-bar mini 1 'sax)))) 1)
+  (check-beams (get-bar mini 1 'sax)))
+
+=> NIL
+
+|#
+;;; SYNOPSIS
 (defmethod check-beams ((rsb rthm-seq-bar) &key auto-beam print
                         (on-fail #'warn))
+;;; ****
   (let ((bad nil))
     (loop with last-seen = -1 with open
        for r in (rhythms rsb) 

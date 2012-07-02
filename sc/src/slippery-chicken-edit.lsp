@@ -4965,6 +4965,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; we'll process all players
 
 ;;; SAR Mon Jun 18 17:04:15 BST 2012: Added robodoc entry
+;;; SAR Mon Jul  2 16:21:03 BST 2012: Expanded robodoc entry
 
 ;;; ****m* slippery-chicken-edit/map-over-bars
 ;;; DESCRIPTION
@@ -4972,16 +4973,53 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; of one or more players' parts in the given slippery-chicken object. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - A number that is the first bar to which the function should be applied. 
+;;; - A number that is the last bar to which the function should be applied.
+;;; - A list of the IDs of the players to whose parts the function should be
+;;;   applied. 
+;;; - The method or function itself. This can be a user-defined function or the
+;;;   name of an existing method or function.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - Any additional argument values the specified method/function may
+;;;   take or require.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - A list of the rthm-seq-bar objects that were modified.
 ;;; 
 ;;; EXAMPLE
 #|
+
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
+        :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+                                 (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
+                                 (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
+        :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h e (s) (s) e+s+s))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
+                        (2 ((sax (1 1 1 1 1))))
+                        (3 ((sax (1 1 1 1 1))))))))
+  (print (map-over-bars mini 1 nil nil #'consolidate-notes nil 'q)))
+
+=>
+(
+RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 1, 
+[...]
+RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 2, 
+[...]
+RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 3, 
+[...]
+RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4, 
+[...]
+)
 
 |#
 ;;; SYNOPSIS

@@ -388,7 +388,8 @@ MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not
 ;;; - :microtones-midi-channel. An integer that is the MIDI channel that will
 ;;;   be assigned to event objects for microtonal MIDI pitches. NB: This value
 ;;;   is only set when attached to event objects within a slippery-chicken
-;;;   object. Default = 0.
+;;;   object. Default = 0. NB: See player.lsp/make-player for details on
+;;;   microtones in MIDI output.  
 ;;; - :new-id. An optional ID for new rhythm or event objectss added. 
 ;;;   Default = "rhythms-inserted-by-fill-with-rhythms". 
 ;;; - :warn. T or NIL to indicate whether a warning should be printed if there

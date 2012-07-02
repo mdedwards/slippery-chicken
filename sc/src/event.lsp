@@ -3075,7 +3075,8 @@ T
 ;;;   which the event should be played back. Default = NIL.
 ;;; - :microtones-midi-channel. If the event is microtonal, this argument
 ;;;   indicates the MIDI-channel to be used for the playback of the microtonal
-;;;   notes. Default = NIL.
+;;;   notes. Default = NIL. NB: See player.lsp/make-player for details on
+;;;   microtones in MIDI output. 
 ;;; - :transposition. A number in semitones that indicates the transposition of
 ;;;   the instrument that this event is being created for.  E.g. -2 would be
 ;;;   for a Bflat clarinet.
@@ -3396,7 +3397,8 @@ rest Q, rest Q, rest Q, rest Q, rest Q, rest Q, rest Q,
 ;;; - A whole number indicating the MIDI channel on which the event is to be
 ;;;   played. 
 ;;; - A whole number indicating the MIDI channel on which microtonal pitches of
-;;;   the event are to be played.
+;;;   the event are to be played. NB: See player.lsp/make-player for details on
+;;;   microtones in MIDI output. 
 ;;; 
 ;;; RETURN VALUE
 ;;; A list.
@@ -3468,7 +3470,8 @@ G4 Q, rest E, rest S, (D4 FS4 A4) S,
 ;;; - A whole number value to indicate the MIDI channel on which to play back
 ;;;   the event.
 ;;; - A whole number value to indicate the MIDI channel on which to play back
-;;;   microtonal pitch material for the event.
+;;;   microtonal pitch material for the event. NB: See player.lsp/make-player
+;;;   for details on microtones in MIDI output. 
 ;;; 
 ;;; RETURN VALUE
 ;;; A list.

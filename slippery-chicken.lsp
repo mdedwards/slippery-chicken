@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:11:24 Mon Jul  2 2012 BST
+;;; $$ Last modified: 17:17:25 Mon Jul  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -179,7 +179,8 @@
    ;; (too few bars returned by get-cmn-data), so we have to remember whether
    ;; we called it or not
    (multi-bar-rests-called :accessor multi-bar-rests-called :initform nil)
-   ;; MDE Mon Jul  2 16:16:19 2012 
+   ;; MDE Mon Jul  2 16:16:19 2012 -- NB Working in Lilypond but not yet
+   ;; implemented in CMN  
    (key-sig :accessor key-sig :type list :initarg :key-sig :initform '(c major))
    ;; MDE Mon Mar 26 13:10:15 2012 -- This one defines the lowest scaler we'll
    ;; accept before adding notes from those used i.e. if our pitch-seq needs 6

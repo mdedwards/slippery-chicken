@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 17:09:48 Mon Jul  2 2012 BST
+;;; $$ Last modified: 19:55:15 Mon Jul  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -366,17 +366,21 @@
               ;;#|
               ;; proved impossible for now to get around cmn's use of globals
               ;; here 
-              (list 
-              (sc::rm-package
-                (eval (read-from-string
-                       (concatenate 'string
-                                    "CMN::"
-                                    (sc::list-to-string (cdr mark) "-"))))
-                :cmn)))
+              (list (cmn-get-key-sig (cdr mark))))
              ;; |#
              (t (list (apply #'sc-cmn-text mark)))))
           ;; otherwise it might be a cmn-mark (e.g. text) already
           (t (list mark)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun cmn-get-key-sig (key-sig) ; e.g. '(c major)
+  (funcall
+   (symbol-function
+    (sc::rm-package 
+     (read-from-string
+      (sc::list-to-string key-sig "-"))
+     :cmn))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -594,7 +598,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun cmn-system (staves staff-names starting-clefs other-staff-args)
+(defun cmn-system (staves staff-names key-sig starting-clefs other-staff-args)
   (declare (special bracket bar treble bass))
   (system bracket 
           (engorge
@@ -610,6 +614,7 @@
                                other-args)
                          (list bar
                                (cmn-get-clef clef)
+                               (cmn-get-key-sig key-sig)
                                (engorge stave))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

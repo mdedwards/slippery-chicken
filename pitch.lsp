@@ -1580,7 +1580,8 @@ data: CQS4
 ;;; - A number indicating the MIDI channel which is to be used to play back
 ;;;   non-microtonal pitches.
 ;;; - A number indicating the MIDI channel which is to be used to play back
-;;;   microtonal pitches.
+;;;   microtonal pitches. NB: See player.lsp/make-player for details on
+;;;   microtones in MIDI output. 
 ;;; 
 ;;; RETURN VALUE
 ;;; A number indicating which value has been set to the given pitch object's

@@ -169,7 +169,8 @@ NIL
 ;;; - An integer that is to be the MIDI channel for chromatic pitches in the
 ;;;   given chord object.
 ;;; - An integer that is to be the MIDI channel for microtonal pitches in the
-;;;   given chord object.
+;;;   given chord object. NB: See player.lsp/make-player for details on
+;;;   microtones in MIDI output.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Always returns NIL.
@@ -1349,7 +1350,8 @@ data: (
 ;;;   set for playback. Default = 0.
 ;;; - :microtones-midi-channel. An integer that is to be the MIDI channel value
 ;;;   to which all of the microtonal pitch objects in the given chord object
-;;;   are to be set for playback. Default = 0.
+;;;   are to be set for playback. Default = 0. NB: See
+;;;   player.lsp/make-player for details on microtones in MIDI output.  
 ;;; - :force-midi-channel. T or NIL to indicate whether to force a given value
 ;;;   to the MIDI-CHANNEL slot, even if the notes passed to the method are
 ;;;   already pitch objects with non-zero MIDI-CHANNEL values.

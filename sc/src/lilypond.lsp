@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 13:28:08 Mon Jul  2 2012 BST
+;;; $$ Last modified: 16:10:33 Mon Jul  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -257,8 +257,7 @@
            ;; MDE Sat Jun 30 12:06:08 2012 -- key signatures 
            ;; e.g. '(key fs major), but note that they will appear _after_ the
            ;; note they're attached to.
-           (key (string-downcase
-                 (format nil "\\key ~a \\~a " (second mark) (third mark))))
+           (key (get-lp-key-sig (second mark) (third mark)))
            (t (unless silent
                 (error "lilypond::lp-get-mark: unrecognised mark as list: ~a"
                        mark)))))
@@ -278,6 +277,12 @@
         ;; ignore cmn stuff but warn
         (t (unless silent
              (warn "lilypond::get-lp-mark: unknown mark: ~a" mark)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun get-lp-key-sig (ton art)
+  (string-downcase
+   (format nil "\\key ~a \\~a " ton art)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:53:10 Wed Jun 27 2012 BST
+;;; $$ Last modified: 17:11:24 Mon Jul  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -179,6 +179,8 @@
    ;; (too few bars returned by get-cmn-data), so we have to remember whether
    ;; we called it or not
    (multi-bar-rests-called :accessor multi-bar-rests-called :initform nil)
+   ;; MDE Mon Jul  2 16:16:19 2012 
+   (key-sig :accessor key-sig :type list :initarg :key-sig :initform '(c major))
    ;; MDE Mon Mar 26 13:10:15 2012 -- This one defines the lowest scaler we'll
    ;; accept before adding notes from those used i.e. if our pitch-seq needs 6
    ;; notes and only 3 are available, there would be note repetition but as
@@ -5915,7 +5917,9 @@ data: NIL
                   cl-user::+slippery-chicken-src-path+))
         (princ "global = {" out) 
         (terpri out)
-        (princ "  \\key c \\major" out)
+        ;; MDE Mon Jul  2 16:20:20 2012
+        ;; (princ "  \\key c \\major" out)
+        (princ (get-lp-key-sig (first (key-sig sc)) (second (key-sig sc))) out)
         (terpri out)
         (princ "  \\numericTimeSignature" out)
         (terpri out)
@@ -6736,6 +6740,11 @@ duration: 20.0 (20.000)
 ;;;   the nth of the data list for to change, and the third being the new
 ;;;   data. If NIL, no changes will be made. See the robodoc entries for sc-map
 ;;;   for more detail. Default = NIL.
+;;; - :key-sig. A two-element list indicating starting key signature for the
+;;;   piece, e.g. '(ef minor).  Usual note name symbols apply (e.g. ds = d
+;;;   sharp, bf - b flat). Implies nothing beyond the signature, i.e. no
+;;;   conformity to tonality expected. Default '(c major) i.e. no key
+;;;   signature.
 ;;; (- :warn-ties. This slot is now obsolete, but is left here for backwards
 ;;;    compatibility with pieces composed with earlier versions of
 ;;;    slippery-chicken. Default = T.)
@@ -6861,6 +6870,8 @@ duration: 20.0 (20.000)
                               composer
                               (avoid-melodic-octaves t)
                               (pitch-seq-index-scaler-min 0.5) 
+                              ;; MDE Mon Jul  2 16:08:42 2012 
+                              (key-sig '(c major))
                               (warn-ties t))
 ;;; ****
   ;; we make the given name a global!!!
@@ -6892,6 +6903,7 @@ duration: 20.0 (20.000)
                       :fast-leap-threshold fast-leap-threshold
                       :pitch-seq-index-scaler-min pitch-seq-index-scaler-min
                       :avoid-melodic-octaves avoid-melodic-octaves
+                      :key-sig key-sig
                       :warn-ties warn-ties)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -6433,8 +6433,16 @@ duration: 20.0 (20.000)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Jun 15 08:32:00 2012
+;;; SAR Mon Jul  2 20:17:41 BST 2012: Added ref to robodc in rthm-seq-bar
+
+;;; ****m* slippery-chicken/check-beams
+;;; DESCRIPTION
+;;; See the description, with example, for check-beams in rthm-seq-bar.lsp.
+;;;
+;;; SYNOPSIS
 (defmethod check-beams ((sc slippery-chicken) &key start-bar end-bar players
                         auto-beam print (on-fail #'warn))
+;;; ****
   (map-over-bars sc start-bar end-bar players #'check-beams
                  :auto-beam auto-beam :print print :on-fail on-fail))
 

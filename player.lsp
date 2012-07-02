@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 11:26:55 Mon Jul  2 2012 BST
+;;; $$ Last modified: 17:53:16 Mon Jul  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -672,12 +672,11 @@ the instrument you want.
 ;;;   back. Default = 1.
 ;;; - :microtones-midi-channel. An integer that indicates the MIDI channel on
 ;;;   which any microtonal pitch material for this player is to be played
-;;;   back. NB: Due to a glitch in CM, which slippery chicken uses to generate
-;;;   MIDI files, using this argument will produce MIDI files with separate
-;;;   channels for the microtonal material, but these tracks will currently
-;;;   contain no pitch-bend data. A work-around for this is to simply open the
-;;;   MIDI file in a sequencer and shift the entire channel by the desired
-;;;   pitch-bend value. Default = -1.  
+;;;   back. slippery chicken uses this channel to add MIDI pitch-bends via CM
+;;;   so that microtonal chords are possible, but due to a current glitch these
+;;;   tracks contain no pitch-bend data. A work-around for this is to simply
+;;;   open the MIDI file in a sequencer and shift the entire channel by the
+;;;   desired pitch-bend value. Default = -1.
 ;;;
 ;;; RETURN VALUE
 ;;; Returns a player object.

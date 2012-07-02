@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 17:01:38 Mon Jun 18 2012 BST
+;;; $$ Last modified: 11:26:55 Mon Jul  2 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -70,8 +70,8 @@
    ;; which midi-channel this player is on
    (midi-channel :accessor midi-channel :type integer :initarg :midi-channel
                  :initform 1)  
-   ;; when an instrument can play microtonal chords we need an extra channel
-   ;; for the microtones  
+   ;; when an instrument can play microtonal chords we generally need an extra
+   ;; channel for the microtones, so that chords can be played.  
    (microtones-midi-channel :accessor microtones-midi-channel :type integer
                             :initarg :microtones-midi-channel :initform -1)
    ;; whether the player plays more than one instrument or not
@@ -667,12 +667,12 @@ the instrument you want.
 ;;;   lines etc. Instead of being real cmn function calls, as they would be in
 ;;;   normal cmn, this is a simple list of pairs; e.g. '(staff-size .8
 ;;;   staff-lines 3). Defaults = NIL.
-;;; - :microtones-midi-channel. An integer that indicates the MIDI channel on
-;;;   which any microtonal pitch material for this player is to be played
-;;;   back. Default = -1.
 ;;; - :midi-channel. An integer that indicates the MIDI channel on which any
 ;;;   non-microtonal pitch material for this player is to be played
 ;;;   back. Default = 1.
+;;; - :microtones-midi-channel. An integer that indicates the MIDI channel on
+;;;   which any microtonal pitch material for this player is to be played
+;;;   back. Default = -1.
 ;;;
 ;;; RETURN VALUE
 ;;; Returns a player object.

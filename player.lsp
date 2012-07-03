@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 17:53:16 Mon Jul  2 2012 BST
+;;; $$ Last modified: 16:26:58 Tue Jul  3 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -94,6 +94,7 @@
                (data p) ip)))
     ;; when cmn-staff-args are given, call the functions in the cmn package and
     ;; re-store the results.
+    #+cmn
     (when staff-args 
       (unless (evenp (length staff-args))
         (error "player::initialize-instance: ~

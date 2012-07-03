@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 13:15:03 Fri Jun 15 2012 BST
+;;; $$ Last modified: 16:22:21 Tue Jul  3 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -718,6 +718,7 @@
                                         (pitch-list-to-symbols notes)))
             last-chord (copy-list notes)
             chord (make-chord notes))
+      #+cmn 
       (add-mark chord (when show-fingering
                         (apply #'cmn::fingering 
                                (append
@@ -726,7 +727,7 @@
                                     for s in strings 
                                     for f in fingering 
                                     collect
-                                      (format nil "~3a ~a" s f)))
+                                    (format nil "~3a ~a" s f)))
                                 ;;'(:direction :up)))))
                                 ))))
       chord)))

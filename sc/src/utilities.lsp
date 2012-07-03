@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 14:30:43 Fri Jun  1 2012 BST
+;;; $$ Last modified: 19:23:50 Tue Jul  3 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -76,7 +76,11 @@
 
 |#
 ;;; SYNOPSIS
-(defun secs-to-mins-secs (seconds &key (separator ":") (same-width nil))
+(defun secs-to-mins-secs (seconds &key
+                          (mins-separator ":")
+                          (secs-separator ".")
+                          (msecs-separator "")
+                          (same-width nil))
 ;;; ****
   (unless (and (numberp seconds) (>= seconds 0))
     (error "utilities::secs-to-mins-secs: ~a should be a number > 0." seconds))
@@ -88,11 +92,18 @@
     (when (> seconds 59.999)
       (setf seconds 0.0)
       (incf minutes))
-    (if same-width
-        (format nil "~2,'0d~a~3,2$" minutes separator seconds)
-        (if (> minutes 0)
-            (format nil "~d~a~3,2$" minutes separator seconds)
-            (format nil "~,3f" seconds)))))
+    ;; MDE Tue Jul  3 18:57:44 2012 -- updating to avoid decimal point as that
+    ;; confuses CCL in file names 
+    (let* ((secs (floor seconds))
+           (ms (floor (* 1000 (decimal-places (- seconds secs) 3)))))
+      (if same-width
+          (format nil "~2,'0d~a~2,'0d~a~3,'0d~a"
+                  minutes mins-separator secs secs-separator ms msecs-separator)
+          (if (> minutes 0)
+              (format nil "~d~a~2,'0d~a~3,'0d~a" minutes mins-separator secs
+                      secs-separator ms msecs-separator)
+              (format nil "~d~a~3,'0d~a" secs secs-separator ms
+                      msecs-separator))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -13,11 +13,13 @@ all the packages.  The first time it runs it might take some time to
 compile everything but from then on it should be much faster.
 
 Prerequisites: 
-* Emacs: either /Applications/Emacs.app (http://www.gnu.org/software/emacs/) 
+* Emacs: either /Applications/Emacs.app
+  (http://www.gnu.org/software/emacs/) 
   or /Applications/Aquamacs.app (http://aquamacs.org/)  
   I think Aquamacs behaves most like a native OSX text editor, so if 
   you've never used Emacs before start with this. 
-* The GNU C compiler (gcc), which comes free with Apple's developer tools 
+* The GNU C compiler (gcc), which comes free with Apple's developer
+  tools 
 
 Known issues: 
 

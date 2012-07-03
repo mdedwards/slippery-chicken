@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11/5/2012
 ;;;
-;;; $$ Last modified: 20:03:40 Thu May 17 2012 BST
+;;; $$ Last modified: 19:26:25 Tue Jul  3 2012 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -320,7 +320,9 @@
                               output-dir (pathname-name sndfile) 
                               (secs-to-mins-secs (first entry-points) 
                                                  :same-width t
-                                                 :separator "m")
+                                                 :mins-separator "m"
+                                                 :secs-separator "s"
+                                                 :msecs-separator "ms")
                               (if (zerop (length suffix)) "" "-")
                               suffix sndfile-extension))
          (start 0.0)

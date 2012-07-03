@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 12:04:53 Sat Jun 30 2012 BST
+;;; $$ Last modified: 20:03:42 Mon Jul  2 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -4986,7 +4986,9 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;;   take or require.
 ;;; 
 ;;; RETURN VALUE
-;;; - A list of the rthm-seq-bar objects that were modified.
+;;; - A list of the rthm-seq-bar objects that were modified.  NB This might be
+;;;   a long list, and, depending on your Lisp implementation, formatting of the
+;;;   bars might cause Lisp to appear to 'hang'.
 ;;; 
 ;;; EXAMPLE
 #|

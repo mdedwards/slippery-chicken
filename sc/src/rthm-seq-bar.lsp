@@ -4824,6 +4824,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 |#
 ;;; SYNOPSIS
 (defmethod get-pitch-symbols ((rsb rthm-seq-bar) &optional written)
+;;; ****
   (loop for e in (rhythms rsb) collect (get-pitch-symbol e written)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4905,7 +4906,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
   (if (rthm-seq-bar-p rhythms)
       rhythms
     (make-instance 'rthm-seq-bar :data rhythms :id name)))
-;;; ****
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

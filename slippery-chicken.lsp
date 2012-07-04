@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:48:51 Mon Jul  2 2012 BST
+;;; $$ Last modified: 15:15:56 Wed Jul  4 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -158,9 +158,10 @@
                     :initform nil)  
    (set-limits-low :accessor set-limits-low :initarg :set-limits-low 
                    :initform nil)  
-   ;; 31.1.11: this title will be used in lilypond file names so it's perhaps
-   ;; best to avoid spaces etc.
-   (title :accessor title :initarg :title :initform "slippery-chicken-piece")
+   ;; 31.1.11: this title will be used in lilypond file names. Any spaces will
+   ;; be turned into hyphens when creating file names (but not the title in the
+   ;; score of course).
+   (title :accessor title :initarg :title :initform "slippery chicken piece")
    ;; MDE Fri Dec  9 19:43:58 2011 -- for lilypond
    (composer :accessor composer :initarg :composer :initform nil)
    ;; 10/3/07: simply a list of bar numbers where a rehearsal letter should be
@@ -6877,7 +6878,7 @@ duration: 20.0 (20.000)
                               rehearsal-letters 
                               (fast-leap-threshold 0.125)
                               instruments-hierarchy 
-                              (title "slippery-chicken-piece") 
+                              (title "slippery chicken piece") 
                               composer
                               (avoid-melodic-octaves t)
                               (pitch-seq-index-scaler-min 0.5) 

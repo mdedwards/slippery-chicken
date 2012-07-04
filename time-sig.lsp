@@ -633,15 +633,20 @@ data: (2 4)
                                ;; preferred time-sig first, the one it should
                                ;; substitute second 
                                (preferred '(((1 16) (2 32))
-                                            ((2 4) (4 8))
-                                            ;; MDE Sat Feb 11 11:44:53 2012 
-                                            ((4 4) (8 8))
+ 					    ;; SAR Fri Jun 22 13:15:16 BST 2012
+                                            ((1 8) (2 16))
+                                            ((2 8) (4 16))
+                                            ((3 8) (6 16))
+                                            ((5 8) (10 16))
+                                            ((7 8) (14 16))
+                                            ((4 4) (16 16))
                                             ;; MDE Sat Dec 24 13:00:09 2011
                                             ((1 4) (2 8))
-                                            ((1 8) (2 16))
-					    ;; SAR Fri Jun 22 13:15:16 BST 2012
-					    ((3 8) (6 16))
-					    ((5 4) (10 16)))))
+                                            ((2 4) (4 8))
+                                            ((4 4) (8 8))
+					    ((5 4) (10 8))
+                                            ;; MDE Sat Feb 11 11:44:53 2012 
+                                            ((7 4) (14 8)))))
   (let ((result (loop
                    for pair in preferred 
                    for yes = (first pair)

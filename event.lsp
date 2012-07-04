@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:28:19 Mon Jul  2 2012 BST
+;;; $$ Last modified: 13:14:55 Wed Jul  4 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2059,7 +2059,7 @@ NIL
              do
              (when lp-mark
                (push lp-mark result))))
-        (loop repeat close-tuplets do (push " \}" result))
+        (loop repeat close-tuplets do (push " \} " result))
         ;; (print result)
         (setf result
               (move-to-end ">> "

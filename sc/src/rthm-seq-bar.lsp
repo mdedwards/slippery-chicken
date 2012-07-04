@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 16:48:03 Mon Jun 18 2012 BST
+;;; $$ Last modified: 13:42:53 Wed Jul  4 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1459,6 +1459,9 @@ data: ((2 4) - S S - S - S S S - S S)
                           (t (damn "Bad bracket."))))
                (when open
                  (damn "got a nil bracket when brackets still open."))))
+      ;; MDE Wed Jul  4 13:42:51 2012
+      (when open
+        (damn "bracket still open at end of bar."))
       result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

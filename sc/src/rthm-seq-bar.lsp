@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 13:42:53 Wed Jul  4 2012 BST
+;;; $$ Last modified: 14:51:21 Wed Jul  4 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5397,14 +5397,14 @@ rsb-rb)
   (when (contains-ties rhythms)
     ;; (loop for r in rhythms do (format t "~a " (rq r)))
     (loop for r in rhythms and i from 0 do 
-          (when (and (is-grace-note r)
-                     (or (is-tied-to r)
-                         (is-tied-from r)))
-            (error "~a~%rthm-seq-bar::consolidate-notes-aux: bar num ~a ~
+         (when (and (is-grace-note r)
+                    (or (is-tied-to r)
+                        (is-tied-from r)))
+           (error "~a~%rthm-seq-bar::consolidate-notes-aux: bar num ~a ~
                     Element ~a is a grace note and shouldn't be tied to or ~
                     from." bar-num rhythms i))
-          (unless (rhythm-p r)
-            (error "~a~%rthm-seq-bar::consolidate-notes-aux: bar num ~a ~
+         (unless (rhythm-p r)
+           (error "~a~%rthm-seq-bar::consolidate-notes-aux: bar num ~a ~
                     Element ~a is not a rhythm: ~a" rhythms bar-num rhythms i)))
     (let ((result nil)
           (tied-to (is-tied-to (first rhythms)))
@@ -5423,12 +5423,12 @@ rsb-rb)
                                          (/ 4 sum) nil)))
                              (if temp
                                  (make-rhythm temp)
-                               (error "~a~%rthm-seq-bar::~
-                                       consolidate-notes-aux: ~
-                                       bar num ~a: Should have got a letter ~
-                                       (sum = ~a)"
-                                      rhythms bar-num sum)))
-                         (error "~a~%rthm-seq-bar::consolidate-notes-aux: ~
+                                 (warn "~%rthm-seq-bar::~
+                                         consolidate-notes-aux: ~
+                                         bar num ~a: Was hoping for a letter. ~
+                                         ~%(sum = ~a); backing out."
+                                       bar-num sum)))
+                           (error "~a~%rthm-seq-bar::consolidate-notes-aux: ~
                                bar-num: ~a: sum is 0!" bar-num rhythms))))
           (when (and letter (whole-num-p (value letter)))
             (setf result (list letter)))))

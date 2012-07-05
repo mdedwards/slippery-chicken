@@ -573,23 +573,6 @@ data: C5
 
 ;;; SAR Mon Jan  2 14:14:56 EST 2012: Added robodoc info
 
-;;; ****m* pitch/transpose-to-octave
-;;; SYNOPSIS
-(defmethod transpose-to-octave ((p pitch) new-octave 
-                                &key
-                                (as-symbol nil)
-                                (package :sc))
-;;; ****
-  (unless (integer>=0 new-octave)
-    (error "pitch::transpose-to-octave: octave must be an integer >= 0: ~a"
-           new-octave))
-  (let ((transp (* 12 (- new-octave (octave p)))))
-    (transpose p transp :as-symbol as-symbol :package package)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Jan  2 14:14:56 EST 2012: Added robodoc info
-
 ;;; ****m* pitch/pitch=
 ;;; DESCRIPTION
 ;;; Determines if the note-name and chromatic semitone MIDI values of two

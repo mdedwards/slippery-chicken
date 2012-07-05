@@ -251,7 +251,7 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 ;;; lower than the pitches specified. Any pitch objects whose pitch content is
 ;;; equal to the limit pitches specified will be retained.
 ;;;
-;;; NB: C0 and B10 are the highest and lowest powssible pitches of the
+;;; NB: C0 and B10 are the highest and lowest possible pitches of the
 ;;;     quarter-tone scale defined in scale.lsp (16.35 and 31608.55 Hz
 ;;;     respectively).
 ;;;
@@ -546,10 +546,10 @@ data: C6
 ;;; ****f* tl-set/make-tl-set
 ;;; DESCRIPTION
 ;;; Create a tl-set object, which extends the sc-set class by incorporating
-;;; transpostion and limiting to certain pitch ranges. 
+;;; transposition and limiting to certain pitch ranges. 
 ;;; 
 ;;; NB: As of yet, once a set is transposed or limited, it can't be
-;;;     retransposed from its original pitches, only from the current set; i.e
+;;;     re-transposed from its original pitches, only from the current set; i.e
 ;;;     these methods are destructive!
 ;;; 
 ;;; ARGUMENTS

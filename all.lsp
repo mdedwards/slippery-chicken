@@ -58,7 +58,7 @@
 
 (in-package :cl-user)
 
-(defparameter +slippery-chicken-version+ "1.0.0-beta2 (svn revision 2044 2012-05-24 17:10:06)")
+(defparameter +slippery-chicken-version+ "1.0.0-beta3 (svn revision 2751 2012-07-05 16:22:12)")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 

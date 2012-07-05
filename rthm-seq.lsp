@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> rthm-seq
 ;;;
-;;; Version:          
+;;; Version:          1.0.0-beta3
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

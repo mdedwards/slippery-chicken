@@ -132,7 +132,7 @@
    ;; the score.  i.e. (3 2 7) means the first three instruments are grouped,
    ;; then the next 2, then the next 7.  This is checked at initialization to
    ;; add up to the number of players in the ensemble.
-   ;; *** N.B. This overides the bar-line-writers slot of the ensemble!
+   ;; *** N.B. This overrides the bar-line-writers slot of the ensemble!
    (staff-groupings :accessor staff-groupings :type list 
                     :initarg :staff-groupings :initform nil)
    (piece :accessor piece :initform nil)
@@ -371,7 +371,7 @@
                               staff-groupings should be a list of ~
                               integers: ~a"
                                 sg))
-                             sum i)))
+                           sum i)))
               (error "slippery-chicken::initialize-instance: ~%~
                   staff-groupings should be a list of integers summing ~
                   to the number ~%of instruments in the ensemble:  ~a"
@@ -1126,11 +1126,11 @@
 
 ;;; Loop through each rthm-seq reference, get the rthm-seq, pull out the
 ;;; associated pitch-seq from the pitch-seq-map (using the 'this' ref of the
-;;; instrument as lookup into the psm).  Get the harmony for this seq, the
+;;; instrument as look-up into the psm).  Get the harmony for this seq, the
 ;;; hint-pitch, and for each rthm-seq call sc-make-sequenz
 
 ;;; In order to be able to limit sets, we have to keep count of the number of
-;;; sequences as we proces them.  This has to be done on an instrument by
+;;; sequences as we process them.  This has to be done on an instrument by
 ;;; instrument basis however, as the piece is not generated seq by seq (all
 ;;; instruments in one go).  So seq-count becomes an assoc-list with each
 ;;; player as keys and the data being the count of sequences.
@@ -2179,10 +2179,6 @@ data: 32
 
 |#
 ;;; 
-;;; 
-;;; DATE
-;;; 
-;;; 
 ;;; SYNOPSIS
 (defmethod get-event ((sc slippery-chicken) bar-num event-num player)
 ;;; ****
@@ -2703,7 +2699,7 @@ data: NIL
 ;;; MDE Mon May  7 09:31:17 2012 -- this is the old version
 ;;; The linking of the rthm-seq-map (and hence piece) slot only works at the
 ;;; instrument level so we don't get a pointer to the next section, rather,
-;;; only when we ask for instrument data do we get the points.  Eg (get-data 3
+;;; only when we ask for instrument data do we get the points. E.g. (get-data 3
 ;;; (piece sc)) will have previous, this, and next slots all NIL, whereas
 ;;; (get-data '(3 some-instrument) (piece sc)) will return a player-section
 ;;; where the previous, this, and next slots are good (this is all as it should
@@ -4200,7 +4196,7 @@ seq-num 5, VN, replacing G3 with B6
     (error "slippery-chicken::clm-play: from-sequence keyword should only ~
             be used ~%when num-sections = 1."))
   #|
-  ;; MDE Sat Jun  2 12:51:03 2012 -- actually, we don't need to do this, and it ;
+  ;; MDE Sat Jun  2 12:51:03 2012 -- actually, we don't need to do this, and it
   ;; just causes problems now we've updated num-seqs to handle sub-sections ;
   (when (and num-sections (= 1 num-sections) (not num-sequences))
   (let ((ns (num-seqs sc section)))
@@ -5591,11 +5587,11 @@ data: NIL
 ;;;   automatically be added to each page (not including the start page) of the
 ;;;   output. T = add page numbers. Default = T.
 ;;; - :rehearsal-letters-font-size. A number that indicates the font size of
-;;;   rehearsal letters in lilypond output. Default = 18.
+;;;   rehearsal letters in LilyPond output. Default = 18.
 ;;; - :rehearsal-letters-all-players. T or NIL to indicate whether rehearsal
 ;;;   letters are to be placed in all parts generated. T = all parts. 
 ;;;   Default = T. NB: This must be set to T when the user would like the
-;;;   rehearsal letters in all individual lilypond parts, but printing with CMN
+;;;   rehearsal letters in all individual LilyPond parts, but printing with CMN
 ;;;   thereafter will result in rehearsal letters in all parts as well.
 ;;; - :tempi-all-players.  T or NIL to indicate whether tempo marks are to be
 ;;;   placed in all parts generated. T = all parts. Default = T.
@@ -5744,7 +5740,7 @@ data: NIL
                                   ;; thereafter 
                                   (rehearsal-letters-all-players t)
                                   ;; set to t if using bartok pizz and
-                                  ;; othersigns  
+                                  ;; other signs  
                                   (use-custom-markup nil)
                                   (rehearsal-letters-font-size 18)
                                   (lp-version "2.14.2") ;"2.12.3")

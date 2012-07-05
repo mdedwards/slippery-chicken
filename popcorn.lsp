@@ -236,7 +236,7 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
 ;;; object to a new range using specified maximum value and optional minimum
 ;;; value.
 ;;;
-;;; NB: This method does not change the the internal state of the given popcorn
+;;; NB: This method does not change the internal state of the given popcorn
 ;;;     object except for the KERNELS slot.
 ;;; 
 ;;; ARGUMENTS

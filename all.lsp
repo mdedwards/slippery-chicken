@@ -169,7 +169,7 @@
   ;; (error "Variable *slippery-chicken-cm-path* must be set!"))
   (let ((slippery-chicken-cm-path
          (format nil "~acm-2.6.0/src/" +slippery-chicken-src-path+)))
-    (flet ((load-cm-file (file) ;; .lisp extention auto-added
+    (flet ((load-cm-file (file) ;; .lisp extension auto-added
              (load (format nil "~a~a.lisp" slippery-chicken-cm-path file))))
       (load-cm-file "midishare/midishare-stubs")
       #-clm

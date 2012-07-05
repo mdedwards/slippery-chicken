@@ -115,7 +115,7 @@
 ;;; always done with the fibonacci method.
 
 (defclass rthm-chain (rthm-seq-map) 
-  ;; the 1-beat rthms: these are just a list with sublists of of rthms: we
+  ;; the 1-beat rthms: these are just a list with sublists of rthms: we
   ;; don't need ids for these.  Each sublist represents the repertoire of rthms
   ;; we'll use in the procession and a transition will be made over the course
   ;; of the generated piece to move through the sublists according to a
@@ -182,13 +182,13 @@
    ;; rest
    (activity-curve :accessor activity-curve :type list 
                    :initarg :activity-curve :initform '(0 10 100 10))
-   ;; the acivity-levels instance that will decide whether we use a 1-beat rthm
-   ;; or not.
+   ;; the activity-levels instance that will decide whether we use a 1-beat
+   ;; rthm or not.
    (main-al :accessor main-al :initform (make-al))
-   ;; the acivity-levels instance that will decide whether we use a slower rthm
-   ;; or not.  NB although this shares the same activity curve as main-al it
-   ;; starts with a different list (at the same level) so we'll not have both
-   ;; voices resting/playing at the same time.
+   ;; the activity-levels instance that will decide whether we use a slower
+   ;; rthm or not.  NB although this shares the same activity curve as main-al
+   ;; it starts with a different list (at the same level) so we'll not have
+   ;; both voices resting/playing at the same time.
    (slower-al :accessor slower-al :initform (make-al 2))
    ;; a list of 2-beat and 3-beat bars; will be turned into a
    ;; rthm-chain-slow instance so NB that this will remain as lists of unparsed
@@ -508,9 +508,10 @@
                                                       rs-main-count)
                do
                ;; NB it's important this setf comes first so it's run every time
-                 (unless (or (setf got-stick (got-stick-rthm 1-beat-rs slower-rs))
-                             (and (eq 1-beat-name (id 1-beat-rs))
-                                  (eq slower-name (id slower-rs))))
+                 (unless 
+                     (or (setf got-stick (got-stick-rthm 1-beat-rs slower-rs))
+                         (and (eq 1-beat-name (id 1-beat-rs))
+                              (eq slower-name (id slower-rs))))
                    (error "rthm-chain::split: unexpected rthm-seq names.~
                         ~%Expected ~a and ~a but got ~a and ~a"
                           1-beat-name slower-name (id 1-beat-rs) (id slower-rs)))
@@ -852,7 +853,7 @@
                ;; of which is a list of beats containing rhythms
                (when slower-bars        ; we'll always have 1-beat-bars too
                  ;; gen the rthm-seqs (slow and 1-beat), put 'em in the rsp,
-                 ;; and put the refs in the mpa
+                 ;; and put the refs in the map
                  (incf rs-count)
                  (incf rs-main-count)
                  ;; if we were given a list of players use those names 
@@ -1344,7 +1345,7 @@
 ;;;   unit is used when necessary, not the order in which each 2- or 3-beat
 ;;;   unit is selected; the latter is decided by the next element in the DATA
 ;;;   slot of the rthm-chain-slow object, which simply cycles through 
-;;;   '(2 3 2 2 3 2 2 3 3 3). T = use fibonacci-transisitions method.
+;;;   '(2 3 2 2 3 2 2 3 3 3). T = use fibonacci-transitions method.
 ;;;   Default = NIL.
 ;;; 
 ;;; RETURN VALUE

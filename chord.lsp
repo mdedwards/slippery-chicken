@@ -395,9 +395,8 @@ data: GQS4
   (get-pitch-symbols chrd))
 
 => (C4 E4 GQS4 BQF4 D5 F5)
-|#
 
-;;; 
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-pitch-symbols ((c chord) &optional ignore)
@@ -664,7 +663,7 @@ data: F5
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns a chord obejct 
+;; Returns a chord object 
 (let ((chrd (make-chord '(c4 e4 g4))))
   (transpose chrd 3))
 
@@ -753,7 +752,7 @@ data: (
 ;;;   Default = 'ASCENDING. 
 ;;; 
 ;;; RETURN VALUE  
-;;; Returns a list of pitch obects.
+;;; Returns a list of pitch objects.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -878,7 +877,7 @@ data: (
 
 => NIL
 
-;; If optional <octaves-are-true> argument is set to T, any occurence of the
+;; If optional <octaves-are-true> argument is set to T, any occurrence of the
 ;; same pitch class in a different octave will be considered part of the chord
 ;; and return a positive result.
 (let ((chrd (make-chord '(c4 ef4 a4 d5 ef5 f5))))
@@ -1170,7 +1169,7 @@ data: (
                                  (format t "after ~a ~a"
                                          (id (pitch-or-chord pe1))
                                          (id (pitch-or-chord pe2))))
-                               ;; bit counterintuitive this but works...
+                               ;; bit counter-intuitive this but works...
                              do (setf p1 (pitch-or-chord pe2))
                              collect p1)))
                  (setf result (make-chord
@@ -1361,7 +1360,7 @@ data: (
 ;;; 
 ;;; EXAMPLE
 #|
-;; Simple useage with default values for keyword arguments
+;; Simple usage with default values for keyword arguments
 (make-chord '(c4 e4 g4 b4 d5 f5))
 
 =>

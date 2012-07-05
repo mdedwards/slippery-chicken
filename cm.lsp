@@ -483,7 +483,7 @@
 ;;; NB: This method will return fractional scale degrees.
 ;;; 
 ;;; ARGUMENTS
-;;; A frequncy in Hertz.
+;;; A frequency in Hertz.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - The scale in which to find the corresponding scale degree.
@@ -789,7 +789,7 @@
 
 ;;; get all the time signatures from a midi file--all bars, not just changes.
 ;;; NB This only works if tempi are at the beginnings of bars so if you see
-;;; errors and your MIDI file was exported from e.g. sibelius, it could be that
+;;; errors and your MIDI file was exported from e.g. Sibelius, it could be that
 ;;; your tempo change was attached mid-bar.  It also misses the last bars from
 ;;; the last time-sig or tempo change.
 (defun midi-time-sigs-all-bars (file &optional (end 99999999) (track 0))
@@ -813,7 +813,7 @@
        ;; don't count bars; sim for tempo: last-tempo will be -1 so just
        ;; store in last-tempo and new-tempo.  From then on, if we see a new
        ;; time-sig or tempo, store in new-ts or new-tempo, and set calc to t
-       ;; so that we calculate how many bars have passed.  The calcuation
+       ;; so that we calculate how many bars have passed.  The calculation
        ;; processes uses last-ts and last-tempo, then sets calc to nil and
        ;; last-ts to new-ts, last-tempo to new-tempo--always both are set.
        ;; This means that unless we get e.g. a new tempo, then last-tempo
@@ -1176,7 +1176,8 @@ Event #i(midi time 3.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
 ;;; ARGUMENTS 
 ;;; - A string that is the file path, including file-name and extension.
 ;;; - A note-name symbol or MIDI-note integer that is the pitch to write.
-;;; - An integer that is the channel to which the output should be written (1-based)
+;;; - An integer that is the channel to which the output should be written
+;;;   (1-based) 
 ;;;
 ;;; OPTIONAL ARGUMENTS 
 ;;; - An integer that is the an existing MIDI channel in the original file. If

@@ -579,7 +579,7 @@ data: (5 3 2)
 ;;;   defined here, it will be automatically bound to the given rthm-seq-map
 ;;;   object. Default = NIL.
 ;;; - :warn-not-found. T or NIL to indicate whether a warning is printed when
-;;;   an index which doesn't exist is used for lookup.  
+;;;   an index which doesn't exist is used for look-up.  
 ;;;   T = warn. Default = NIL.
 ;;; - :replacements. A list of lists in the format 
 ;;;   '(((1 2 vla) 3 20b) ((2 3 vln) 4 16a)) that indicate changes to
@@ -689,8 +689,8 @@ data: (
 
 ;;; The result of a get-data call is a named-object with the id the given id
 ;;; for the section.  The data slot is a recursive-assoc-list (ral).  When
-;;; there are no subsecions, the data slot of this ral is a list of
-;;; named-obects, id the instrument, data the list of rthm-seq-palette
+;;; there are no subsections, the data slot of this ral is a list of
+;;; named-objects, id the instrument, data the list of rthm-seq-palette
 ;;; references.  When the section contains subsections, then the data slot of
 ;;; the ral is also a list of named-objects but each of whose data slots are
 ;;; further rals whose data slots are the named-objects for each instrument.

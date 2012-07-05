@@ -369,7 +369,7 @@
 ;;; - A rthm-seq-bar object.
 ;;; - An integer that is the bar-number within the rthm-seq-bar object before
 ;;;   which the new bar is to be inserted.
-;;; - NB: The optional arguments are actually required for use with this class.  
+;;; - NB: The optional arguments are actually required for use with this class. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; NB: The optional arguments are actually required for use with this class.  
@@ -659,7 +659,7 @@ BAR-HOLDER:
          (rthms nil)
          (nth (1- start-event)))
     ;; those events that were previously start or end points for brackets may
-    ;; be replaced here leaving the events inbetween with references to now
+    ;; be replaced here leaving the events in between with references to now
     ;; deleted brackets (they have bracket slots with negative numbers which
     ;; indicate which bracket they are under when abs'ed).  Delete all tuplets
     ;; and beams here to avoid errors in cmn
@@ -788,7 +788,7 @@ BAR-HOLDER:
 
 ;;; start-bar can be an absolute bar number or a list of the form 
 ;;; '(section sequence bar) (if there a subsections then e.g. '((3 1) 4 2) )
-;;; you have to fill the number of bars, i.e. you can't just leave the last har
+;;; you have to fill the number of bars, i.e. you can't just leave the last bar
 ;;; half-filled expecting the existing events to make up the rest.
 
 (defmethod replace-multi-bar-events ((p piece) 
@@ -989,7 +989,7 @@ BAR-HOLDER:
                                 ids are numbers: ~a ~a"
                                xsec ysec))
                       ;; got to sort so that each section comes one after the
-                      ;; other but each ins according to hierarcy within a
+                      ;; other but each ins according to hierarchy within a
                       ;; section, so make section worth 1000 (there'll never be
                       ;; 1000 instruments will there?
                       (< (+ xpos (* 1000 xsec))

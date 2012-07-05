@@ -523,7 +523,7 @@ rthm-seq::get-nth-attack: Couldn't get attack with index 11
 ;;; needs an attack; i.e., not a rest and not a tied note.
 ;;;
 ;;; NB: This method does not check to ensure that the resulting rthm-seq bars
-;;; contain the right number of beats.
+;;;     contain the right number of beats.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A zero-based index number for the attacked note to change.
@@ -580,7 +580,7 @@ rthm-seq NIL
 (3 8): note S, note S, note E., note S,
 
 ;; By default, the method drops into the debugger with an error when the
-;; specified index is greater than the number ofitems in the given rthm-seq
+;; specified index is greater than the number of items in the given rthm-seq
 ;; object. 
 (let ((rs (make-rthm-seq '((((2 4) q+e s s)
                             ((e) q (e))
@@ -1350,8 +1350,8 @@ rthm-seq NIL-NIL
 ;;; Add a rthm-seq-bar object to the end of a given rthm-seq object.
 ;;;
 ;;; NB: If the rthm-seq-bar object is added without specifying a
-;;; pitch-seq-palette, the method automatically adds data to the existing
-;;; pitch-seq-palette. 
+;;;     pitch-seq-palette, the method automatically adds data to the existing
+;;;     pitch-seq-palette. 
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rhtm-seq object.
@@ -1413,11 +1413,12 @@ rthm-seq NIL
                psp (notes-needed rsb)))
       ;; if no psp make one from the default data lists in
       ;; pitch-seq-palette::create-psps-default 
-      (setf psp (make-psp 'add-bar-tmp (notes-needed rsb)
-                          (get-psps-as-list (notes-needed rsb)
-                                            ;; get as many pitch-seqs as there
-                                            ;; are in the rthm-seq currently
-                                            (num-data (pitch-seq-palette rs))))))
+      (setf psp 
+            (make-psp 'add-bar-tmp (notes-needed rsb)
+                      (get-psps-as-list (notes-needed rsb)
+                                        ;; get as many pitch-seqs as there
+                                        ;; are in the rthm-seq currently
+                                        (num-data (pitch-seq-palette rs))))))
   (setf (pitch-seq-palette rs) (combine (pitch-seq-palette rs) psp)
         (bars rs) (econs (bars rs) rsb))
   ;; MDE Fri Dec 30 18:22:54 2011 -- no need for this as the setf bars method
@@ -2445,7 +2446,7 @@ data: ((((2 4) Q E S S)) PITCH-SEQ-PALETTE (1 2 3 4))
 
 ;; A rthm-seq object with two bars of rhythms and two pitch-seqs in the
 ;; pitch-seq-palette. There must be as many items in each pitch-seq list as
-;; there are rythms in each rthm-seq-bar.
+;; there are rhythms in each rthm-seq-bar.
 (make-rthm-seq '(seq1 ((((2 4) q e s s)
                         ((e) q (e)))
                        :pitch-seq-palette ((1 2 3 4 5)
@@ -2846,7 +2847,7 @@ data: ((((3 4) - S S - (E) S (S) (S) S (S) - S E -)
 ;;; - The time signature of that bar as a list (e.g (2 4))
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL to indiate whether to divide the resulting list into sublists,
+;;; - T or NIL to indicate whether to divide the resulting list into sublists,
 ;;;   each of which are the equivalent of one beat long. Default = NIL. 
 ;;;
 ;;; RETURN VALUE  

@@ -185,7 +185,7 @@
 ;;; OPTIONAL ARGUMENTS
 ;;; - An integer indicating how many steps back in the given
 ;;;   recursive-assoc-list from the specified named-object to look when
-;;;   retrieving the desired ojbect (e.g. 1 = immediately previous object, 2 =
+;;;   retrieving the desired object (e.g. 1 = immediately previous object, 2 =
 ;;;   the one before that etc.)
 ;;; 
 ;;; RETURN VALUE
@@ -567,7 +567,7 @@ data: TURKEY
 
 ;;; ****m* recursive-assoc-list/r-count-elements
 ;;; DESCRIPTION
-;;; Return the total number of elements recursively (accross all depths) of the
+;;; Return the total number of elements recursively (across all depths) of the
 ;;; given recursive-assoc-list object.
 ;;; 
 ;;; ARGUMENTS
@@ -612,7 +612,7 @@ data: TURKEY
 ;;; Return the named-object (or linked-named-object) that is identified by a
 ;;; specified key within a given recursive-assoc-list object.
 ;;;
-;;; NB: This method returns the named object itself, not jus the data
+;;; NB: This method returns the named object itself, not just the data
 ;;;     associated with the key (use assoc-list::get-data-data for that). 
 ;;; 
 ;;; ARGUMENTS
@@ -762,7 +762,7 @@ WARNING:
 ;;; EXAMPLE
 #|
 
-;; Adding an element while specifiying no optional argument results in the new
+;; Adding an element while specifying no optional argument results in the new
 ;; element being placed at the end of the top level by default (evident here by
 ;; the fact that the ref for (MAKERS) is a single-item list) 
 (let ((ral (make-ral 'mixed-bag 
@@ -1382,7 +1382,7 @@ data: RIBBON
 ;;; returned as individual symbols rather than lists.
 ;;;
 ;;; NB This will only work on the top-level object due to the creation of
-;;; references when linking.  
+;;;    references when linking.  
 ;;; 
 ;;; ARGUMENTS
 ;;; - A recursive-assoc-list object.
@@ -1608,7 +1608,7 @@ data: RIBBON
 
 ;;; ****f* recursive-assoc-list/make-ral
 ;;; DESCRIPTION
-;;; Create a recursive-assoc-list object, whic allows and automatically
+;;; Create a recursive-assoc-list object, which allows and automatically
 ;;; instantiates association lists inside of association lists to any level of
 ;;; nesting. 
 ;;; 
@@ -1633,7 +1633,7 @@ data: RIBBON
 ;;;   recursive-assoc-list object. The tag may be used for identification but
 ;;;   not for searching purposes. Default = NIL.
 ;;; - :warn-not-found. T or NIL to indicate whether a warning is printed when
-;;;   an index which doesn't exist is used for lookup.  Default = T.
+;;;   an index which doesn't exist is used for look-up.  Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns a recursive-assoc-list object.
@@ -1704,7 +1704,7 @@ data: (
 ;;; ****f* recursive-assoc-list/lisp-assoc-listp
 ;;; DESCRIPTION
 ;;; Determine whether a given list can has the structure of a lisp
-;;; assoc-list. This is assed based on each of the elements being a 2-item
+;;; assoc-list. This is assessed based on each of the elements being a 2-item
 ;;; list, of which the first is a symbol, number or string (qualifies as a
 ;;; key). 
 ;;; 

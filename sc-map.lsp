@@ -716,7 +716,7 @@ data: (1 NIL 3 4 5)
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
 ;;; - :warn-not-found. T or NIL to indicate whether a warning is printed when
-;;;   an index which doesn't exist is used for lookup.  T = warn. Default = T.
+;;;   an index which doesn't exist is used for look-up.  T = warn. Default = T.
 ;;; - :recurse-simple-data. T or NIL to indicate whether to recursively
 ;;;   instantiate a recursive-assoc-list in place of data that appears to be a
 ;;;   simple assoc-list (i.e. a 2-element list). If NIL, the data of 2-element
@@ -963,7 +963,7 @@ data: (SET3 SET1 SET2)
                             ;; when successful, do-combination combines the
                             ;; objects referenced into a new object and
                             ;; returns it; we should now store it in the
-                            ;; palette and replace the list of referencesin
+                            ;; palette and replace the list of references in
                             ;; the sc-map with the new reference of the
                             ;; created object 
                             (progn

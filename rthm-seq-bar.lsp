@@ -153,7 +153,7 @@
    ;; which player within the whole piece
    (player-section-ref :accessor player-section-ref :type list :initform nil)
    ;; attach a rehearsal letter to the bar line?
-   ;; 31.1.11 NB in lilypond this will be attached to the last note in the bar
+   ;; 31.1.11 NB in LilyPond this will be attached to the last note in the bar
    ;; and actually goes on the bar line at the end of this bar.
    (rehearsal-letter :accessor rehearsal-letter :initform nil)
    ;; which sequenz number of the section is this?  definitely 0-based
@@ -390,7 +390,7 @@ MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not
 ;;;   is only set when attached to event objects within a slippery-chicken
 ;;;   object. Default = 0. NB: See player.lsp/make-player for details on
 ;;;   microtones in MIDI output.  
-;;; - :new-id. An optional ID for new rhythm or event objectss added. 
+;;; - :new-id. An optional ID for new rhythm or event objects added. 
 ;;;   Default = "rhythms-inserted-by-fill-with-rhythms". 
 ;;; - :warn. T or NIL to indicate whether a warning should be printed if there
 ;;;   are not enough rhythms to create a full bar. T = warn. Default = T.
@@ -570,8 +570,8 @@ data: NIL
 ;;; more changes can be made to the given rthm-seq-bar object.
 ;;;
 ;;; NB This will still only reduce rests down to a maximum of a beat.  If you
-;;; need e.g. two quarter rests reduced to a single half rest in a 4/4 bar,
-;;; specify :beat 2
+;;;    need e.g. two quarter rests reduced to a single half rest in a 4/4 bar,
+;;;    specify :beat 2
 ;;; 
 ;;; ARGUMENTS
 ;;; - A rthm-seq-bar object.
@@ -813,7 +813,7 @@ data: E.
 ;;; Force all rhythms of a rthm-seq-bar object to be replaced by rest.
 ;;; 
 ;;; NB: This method changes the value of the RHYTHMS slot of the rthm-seq-bar
-;;; but not the value of the rthm-seq-bar DATA slot.
+;;;     but not the value of the rthm-seq-bar DATA slot.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-bar object.
@@ -1477,7 +1477,7 @@ data: ((2 4) - S S - S - S S S - S S)
 
 ;;; ****m* rthm-seq-bar/auto-tuplets
 ;;; DESCRIPTION
-;;; Automatically place the data necessary for tuplet brackets in rhtm-seq-bar
+;;; Automatically place the data necessary for tuplet brackets in rthm-seq-bar
 ;;; objects that contain tuplet rhythms.
 ;;; 
 ;;; ARGUMENTS
@@ -1561,7 +1561,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; the TUPLET argument is set to NIL, the method will proceed on the basis of
 ;;; best-guessing rules. 
 ;;;
-;;; NB: This method may produce results that encapsulte an entire beat when
+;;; NB: This method may produce results that encapsulate an entire beat when
 ;;;     applying brackets to a portion of that beat. Thus bracketing the rhythm
 ;;;     (e ts ts ts) will return
 ;;;     { 3 e. ts ts ts } rather than 
@@ -1827,8 +1827,8 @@ data: ((2 4) - S S - S - S S S - S S)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; We don't want to store the duration symbol (eg. e.) rather it's duration in
-;;; qtr notes.
+;;; We don't want to store the duration symbol (e.g. e.) rather it's duration
+;;; in qtr notes.
 
 (defmethod update-missing-duration ((rsb rthm-seq-bar))
   (let* ((md (missing-duration rsb))
@@ -1860,8 +1860,8 @@ data: ((2 4) - S S - S - S S S - S S)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Call this when the the tuplets slot of the rsb has been altered: it will
-;;; update the tuplets info of the rhythms accordingly.
+;;; Call this when the tuplets slot of the rsb has been altered: it will update
+;;; the tuplets info of the rhythms accordingly.
 
 (defmethod update-rhythms-bracket-info ((rsb rthm-seq-bar))
   ;; (print (tuplets rsb))
@@ -1900,7 +1900,7 @@ data: ((2 4) - S S - S - S S S - S S)
             ;; list of brackets created by cmn (i) and the second number is the
             ;; tuplet number itself.
             (add-tuplet-bracket (nth-rthm start) (list i tuplet))
-            ;; set the rhythms inbetween start and end to be under the current
+            ;; set the rhythms in-between start and end to be under the current
             ;; bracket (negative index which is recognised in
             ;; cmn-tuplet-brackets (cmn.lsp) and turned positive again.
             (loop for j from (1+ start) below end do
@@ -2718,7 +2718,10 @@ data: E
 
 (let* ((rsb (make-rthm-seq-bar '((2 4) q q)))
        (ch (chop rsb 
-                 '((1 4) (1 3) (1 2) (1 1) (2 4) (2 3) (2 2) (3 4) (3 3) (4 4))   
+                 '((1 4) (1 3) (1 2) (1 1) 
+                   (2 4) (2 3) (2 2) 
+                   (3 4) (3 3) 
+                   (4 4))   
                  's))) 
   (loop for b in ch do (print-simple b)))
 
@@ -2767,7 +2770,10 @@ data: E
 (let* ((rsb (make-rthm-seq-bar '((4 4) - (s) (32) 32 (s) s - - +s+32 (32) (e) -
                                  (q) (s) s (e))))  
        (choprsb (chop rsb 
-                      '((1 4) (1 3) (1 2) (1 1) (2 4) (2 3) (2 2) (3 4) (3 3) (4 4))
+                      '((1 4) (1 3) (1 2) (1 1) 
+                        (2 4) (2 3) (2 2) 
+                        (3 4) (3 3) 
+                        (4 4))
                       's)))
   (loop for b in choprsb do (print-simple b)))
 
@@ -4268,7 +4274,7 @@ data: (2 4)
 ;;; rests. 
 ;;;
 ;;; NB this doesn't update time slots etc. so need to call update-slots
-;;; elsewhere. 
+;;;    elsewhere. 
 
 (defmethod replace-first-event ((rsb rthm-seq-bar) event)
   (let* ((first-rest (first (rhythms rsb)))
@@ -4647,7 +4653,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 22 Sep 2011 
 ;;; 
 ;;; DESCRIPTION
-;;; Reset the 8VA slots of all event ojbects within a given rthm-seq-object to
+;;; Reset the 8VA slots of all event objects within a given rthm-seq-object to
 ;;; 0 (no ottava/ottava bassa transposition).
 ;;; 
 ;;; ARGUMENTS 
@@ -4703,7 +4709,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; DESCRIPTION
 ;;; Set the 8VA (ottava) slots of the event objects within a given rthm-seq-bar 
 ;;; object. This number can be positive or negative. Only the values 1, 0 and
-;;; -1 are valid for the number of octaves to be tranposed.
+;;; -1 are valid for the number of octaves to be transposed.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-bar object.
@@ -4874,35 +4880,35 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 
 ;;; EXAMPLE
 #|
-         (make-rthm-seq-bar '((2 4) q e s s))
+(make-rthm-seq-bar '((2 4) q e s s))
 
-         => 
-         RTHM-SEQ-BAR:
-         [...]
-         NAMED-OBJECT: id: NIL, tag: NIL, 
-         data: ((2 4) Q E S S)
+=> 
+RTHM-SEQ-BAR:
+[...]
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: ((2 4) Q E S S)
 
-         (make-rthm-seq-bar '((2 4) q e s s) 'test)
-         => 
-         RTHM-SEQ-BAR:
-         [...]
-         NAMED-OBJECT: id: TEST, tag: NIL, 
-         data: ((2 4) Q E S S)
+(make-rthm-seq-bar '((2 4) q e s s) 'test)
+=> 
+RTHM-SEQ-BAR:
+[...]
+NAMED-OBJECT: id: TEST, tag: NIL, 
+data: ((2 4) Q E S S)
 
-         (make-rthm-seq-bar '((2 4) q \+16\.+32 e))
-         => 
-         RTHM-SEQ-BAR:
-         [...]
-         NAMED-OBJECT: id: NIL, tag: NIL, 
-         data: ((2 4) Q +16.+32 E)
+(make-rthm-seq-bar '((2 4) q \+16\.+32 e))
+=> 
+RTHM-SEQ-BAR:
+[...]
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: ((2 4) Q +16.+32 E)
 
-         (make-rthm-seq-bar '((2 4) { 3 te te te } q)) 
-         => 
-         RTHM-SEQ-BAR:
-         [...]
-         NAMED-OBJECT: id: NIL, tag: NIL, 
-         data: ((2 4) { 3 TE TE TE } Q)
-         |#
+(make-rthm-seq-bar '((2 4) { 3 te te te } q)) 
+=> 
+RTHM-SEQ-BAR:
+[...]
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: ((2 4) { 3 TE TE TE } Q)
+|#
 ;;; SYNOPSIS
 (defun make-rthm-seq-bar (rhythms &optional name)
 ;;; ****
@@ -4947,27 +4953,27 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 
 ;;; EXAMPLE
 #|
-         (let ((rsb-rb (make-rest-bar '(2 4) nil t)))
-(format t "~%time-sig: ~a~%is-rest-bar: ~a~%write-time-sig: ~
+(let ((rsb-rb (make-rest-bar '(2 4) nil t)))
+  (format t "~%time-sig: ~a~%is-rest-bar: ~a~%write-time-sig: ~
              ~a~%show-rest: ~a~%"
-(data (get-time-sig rsb-rb))
-(is-rest-bar rsb-rb)
-(write-time-sig rsb-rb)
-(show-rest rsb-rb))
-(print-simple rsb-rb)
-rsb-rb)
+          (data (get-time-sig rsb-rb))
+          (is-rest-bar rsb-rb)
+          (write-time-sig rsb-rb)
+          (show-rest rsb-rb))
+  (print-simple rsb-rb)
+  rsb-rb)
 
-         =>
-         RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: T, bar-num: -1, 
-         [...]
+=>
+RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: T, bar-num: -1, 
+[...]
 
-         time-sig: (2 4)
-         is-rest-bar: T
-         write-time-sig: NIL
-         show-rest: T
-         (2 4): rest 2,
+time-sig: (2 4)
+is-rest-bar: T
+write-time-sig: NIL
+show-rest: T
+(2 4): rest 2,
 
-         |#
+|#
 ;;; SYNOPSIS
 (defun make-rest-bar (time-sig write-time-sig &optional 
                                               (show-rest t)
@@ -5295,7 +5301,7 @@ rsb-rb)
                                   (first r))
                               r)))
          ;; the rqq list to be passed to cmn i.e. without grace notes and
-         ;; bracketted numbers indicating rests.
+         ;; bracketed numbers indicating rests.
          (stripped (loop for i in rthms 
                        unless (is-grace-note i)
                        collect (id i))))

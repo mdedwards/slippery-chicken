@@ -371,9 +371,9 @@
 ;;; are disregarded and only the dynamic marks are returned.  
 ;;;
 ;;; NB: This method is similar to the event::get-dynamic, but is intended for
-;;; use should multiple dynamics have somehow become attached to the same
-;;; event. The method event::get-dynamic is the method that should generally be
-;;; used.
+;;;     use should multiple dynamics have somehow become attached to the same
+;;;     event. The method event::get-dynamic is the method that should
+;;;     generally be used.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
@@ -1162,13 +1162,13 @@ data: (3 4)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 25.6.11: for transitions from one playing state to another.
 
-;;; In Lilypond, arrows with start and end text are made with
+;;; In LilyPond, arrows with start and end text are made with
 ;;; TextSpanners. These have to be defined before the note on which the arrow
 ;;; will start and we have to know the start and end text in advance. So we'll
 ;;; add a CMN mark before which instead of being the usual symbol or string etc
 ;;; will be a list, the first element of which will be arrow, as an identifier,
 ;;; followed by the starting text and end text. This will be processed when we
-;;; are writing the lilypond file to create the TextSpanner. We will also add
+;;; are writing the LilyPond file to create the TextSpanner. We will also add
 ;;; here start-arrow as a CMN mark and this will be attached to the note. An
 ;;; end-arrow mark should be attached to the note where the end text should
 ;;; appear.
@@ -1630,7 +1630,7 @@ WARNING:
 WARNING: event::delete-clefs: no clef to delete:
 [...]
 
-;; Setting the optional WARN argument to T suprresses the warning when no clefs
+;; Setting the optional WARN argument to T suppresses the warning when no clefs
 ;; are found.
 (let ((e (make-event 'c4 'q)))
   (delete-clefs e nil))
@@ -1866,7 +1866,7 @@ NIL
 ;;; that there is only one dynamic and returns that dynamic as a single symbol
 ;;; rather than a list. If the user suspects that multiple dynamics may have
 ;;; somehow have been added to the MARKS slot of the event class, use
-;;; get-dynamics to obtain a list of all dynamics in that slot; otherise, this
+;;; get-dynamics to obtain a list of all dynamics in that slot; otherwise, this 
 ;;; is the method that should be generally used.
 ;;; 
 ;;; ARGUMENTS
@@ -2048,7 +2048,7 @@ NIL
         (when (marks e)
           ;; 22.5.11: getting a little tricky this but: in cmn we attach ottava
           ;; begin and end marks to the same note and everything's fine; in
-          ;; lilypond, the begin or end must alwyays come before the note.  we
+          ;; lilypond, the begin or end must always come before the note.  we
           ;; can't move the end to the next note's marks-before because
           ;; that wouldn't work in cmn, so just move it to the end of the
           ;; marks 
@@ -2586,7 +2586,7 @@ data: C4
 ;;; Get the distance (interval) in semitones between the pitch level of one
 ;;; event object and a second. Negative numbers indicate direction interval
 ;;; directionality. An optional argument allows distances to be always printed
-;;; as absloute values (positive).
+;;; as absolute values (positive).
 ;;;
 ;;; Event-distance can also be determined between chords, in which case the
 ;;; distance is measured between the highest pitch of one event object and the
@@ -2597,7 +2597,7 @@ data: C4
 ;;; - A second event object.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL for whether the the value should be returned as an absolute
+;;; - T or NIL for whether the value should be returned as an absolute
 ;;;   value (i.e., always positive). Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
@@ -2944,7 +2944,7 @@ T
 ;;; EXAMPLE
 #|
 ;;; NB This uses the quarter-tone scale so degrees are double what they would
-;;; be in the chromatic-scale.
+;;;    be in the chromatic-scale.
 (let ((event (make-event '(cs4 d4) 'e))
       (rest (make-rest 'e)))
   (print (get-degree event))
@@ -3059,7 +3059,7 @@ T
 ;;;   must be set to NIL.
 ;;; - :is-tied-to. This argument is for score output and playing purposes. Set
 ;;;   to T or NIL to indicate whether this event is tied to the previous event
-;;;   (i.e. it won't sound indpendently). Default = NIL.
+;;;   (i.e. it won't sound independently). Default = NIL.
 ;;; - :duration. T or NIL to indicate whether the specified duration of the
 ;;;   event has been stated in absolute seconds, not a known rhythm like
 ;;;   'e. Thus (make-event 'c4 4 :duration nil) indicates a quarter note with
@@ -3079,7 +3079,7 @@ T
 ;;;   microtones in MIDI output. 
 ;;; - :transposition. A number in semitones that indicates the transposition of
 ;;;   the instrument that this event is being created for.  E.g. -2 would be
-;;;   for a Bflat clarinet.
+;;;   for a B-flat clarinet.
 ;;; 
 ;;; RETURN VALUE  
 ;;; - An event object.
@@ -3679,7 +3679,7 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
                           ;; we have to use the duration of the last note to
                           ;; set the next start-time (i.e. when to wrap to the
                           ;; beginning) despite the fact that duration could be
-                          ;; longer than the the intended rhythm
+                          ;; longer than the intended rhythm
                           (setf end-start (- (+ last-start last-duration)
                                              first-start)))
                         (- (+ end-start event-start) first-start))
@@ -3705,7 +3705,7 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 ;;; - A symbol.
 ;;; 
 ;;; RETURN VALUE
-;;; NIL if the specified mark is not found on the predifined list of possible
+;;; NIL if the specified mark is not found on the predefined list of possible
 ;;; dynamic marks, otherwise the tail of the list of possible dynamics starting
 ;;; with the given dynamic.
 ;;; 

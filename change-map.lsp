@@ -18,13 +18,12 @@
 ;;;                   data sporadically when the parameter changes, for
 ;;;                   instance tempo.
 ;;;
-;;;                   It is assumed that maps will be typed in in the order in
+;;;                   It is assumed that maps will be typed in the order in
 ;;;                   which sections occur so that previous-data slots can be
 ;;;                   kept up-to-date; also, unless all data will be given,
-;;;                   that the sections (but not instrument ids)
-;;;                   will be in integer sequential order so that nearest
-;;;                   sections can be returned when given a non-existent
-;;;                   section reference.
+;;;                   that the sections (but not instrument ids) will be in
+;;;                   integer sequential order so that nearest sections can be
+;;;                   returned when given a non-existent section reference.
 ;;;                    
 ;;;                   For example, the following change-map indicates tempo 
 ;;;                   (though tempo-maps have their own class now).
@@ -64,7 +63,7 @@
 ;;;                          (2 ((1 22) (5 34) (10 5 27))))))))
 ;;;
 ;;;                   You have to be careful with change-maps however as the
-;;;                   nesting is flexible and therefore ambigous.  For
+;;;                   nesting is flexible and therefore ambiguous.  For
 ;;;                   instance, in the following the bcl, tape1 etc. ids are
 ;;;                   not subsections of section 1, rather these are the hint
 ;;;                   pitches assigned to the instruments in section 1 (which

@@ -424,7 +424,7 @@
 ;;; 
 ;;; RETURN VALUE
 ;;; A number that is the tessitura-degree; i.e., average pitch of the given
-;;; isntrument for the entirety of the given musical data.
+;;; instrument for the entirety of the given musical data.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -547,9 +547,9 @@
 ;;; player object.  
 ;;;
 ;;; NB: This method will drop into the debugger with an error if no optional
-;;; argument is supplied when applying the method to a multiple-instrument
-;;; player obect. It will also print a warning when supplying an optional
-;;; argument to a player object that contains only one instrument object.  
+;;;     argument is supplied when applying the method to a multiple-instrument
+;;;     player object. It will also print a warning when supplying an optional
+;;;     argument to a player object that contains only one instrument object.  
 ;;; 
 ;;; ARGUMENTS
 ;;; - A player object.
@@ -602,7 +602,7 @@ WARNING:
 argument PIANO is being ignored 
 
 ;; The ID desired instrument object must be specified when applying the method
-;; to a mutliple-instrument player object
+;; to a multiple-instrument player object
 (let* ((ip +slippery-chicken-standard-instrument-palette+)
        (plr (make-player 'percussion ip '(marimba vibraphone))))
   (id (player-get-instrument plr 'marimba)))
@@ -648,14 +648,14 @@ the instrument you want.
 ;;; Create a player object from a specified instrument-palette object and a
 ;;; specified instrument or list of instruments which that player plays. 
 ;;;
-;;; The player obect is separte from the instrument object as on player in an
+;;; The player object is separate from the instrument object as on player in an
 ;;; ensemble may perform more than one instrument ("double"), such as flute and
 ;;; piccolo, clarinet and bass clarinet, or sax, flute and clarinet.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A symbol which will be the ID of the resulting player object.
 ;;; - An instrument-palette object.
-;;; - A symbol or a list of symbols that are the the instruments from the
+;;; - A symbol or a list of symbols that are the instruments from the
 ;;;   specified instrument-palette object that the given player will play, as
 ;;;   spelled and defined within the instrument-palette object. NB: If only one
 ;;;   instrument is to be assigned to the given player, it should be stated as

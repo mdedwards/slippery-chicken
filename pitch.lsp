@@ -12,7 +12,7 @@
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
 ;;; Purpose:          Implementation of the pitch class for holding pitch
-;;;                   information: sybmolic representation (eg c4), MIDI note
+;;;                   information: symbolic representation (eg c4), MIDI note
 ;;;                   number, frequency, sampling-rate conversion etc.
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
@@ -299,9 +299,9 @@ NIL
 ;;; - :as-symbol. T or NIL to indicate whether the method is to return an
 ;;;   entire pitch object or just a note-name symbol of the new pitch. NIL = a
 ;;;   new pitch object. Default = NIL.
-;;; - :package. Used to identify a separate Lisp package in which to itern
-;;;   result. This is really only applicable is combination with :as-symbol set
-;;;   to T. Default = :sc.
+;;; - :package. Used to identify a separate Lisp package in which to process
+;;;   the result. This is really only applicable is combination with :as-symbol
+;;;   set to T. Default = :sc.
 ;;; 
 ;;; RETURN VALUE
 ;;; A pitch object by default.
@@ -417,7 +417,7 @@ D4
 ;;; - :as-symbol. T or NIL to indicate whether the method is to return an
 ;;;   entire pitch object or just a note-name symbol of the new pitch. NIL = a
 ;;;   new pitch object. Default = NIL.
-;;; - :package. Used to identify a separate Lisp package in which to itern
+;;; - :package. Used to identify a separate Lisp package in which to process
 ;;;   result. This is really only applicable is combination with :as-symbol set
 ;;;   to T. Default = :sc.
 ;;; 
@@ -515,9 +515,9 @@ C4
 ;;; - :as-symbol. T or NIL to indicate whether the method is to return an
 ;;;   entire pitch object or just a note-name symbol of the new pitch. NIL = a
 ;;;   new pitch object. Default = NIL.
-;;; - :package. Used to identify a separate Lisp package in which to itern
-;;;   result. This is really only applicable is combination with :as-symbol set
-;;;   to T. Default = :sc.
+;;; - :package. Used to identify a separate Lisp package in which to process
+;;;   the result. This is really only applicable is combination with :as-symbol
+;;;   set to T. Default = :sc.
 ;;;
 ;;; RETURN VALUE
 ;;; A pitch object by default.
@@ -575,7 +575,26 @@ data: C5
 
 ;;; ****m* pitch/pitch=
 ;;; DESCRIPTION
-;;; Determines if the note-name and chromatic semtione MIDI values of two
+;;; Determines if the note-name and chromatic semt|#
+;;; SYNOPSIS
+(defmethod transpose-to-octave ((p pitch) new-octave 
+                                &key
+                                (as-symbol nil)
+                                (package :sc))
+;;; ****
+  (unless (integer>=0 new-octave)
+    (error "pitch::transpose-to-octave: octave must be an integer >= 0: ~a"
+           new-octave))
+  (let ((transp (* 12 (- new-octave (octave p)))))
+    (transpose p transp :as-symbol as-symbol :package package)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Mon Jan  2 14:14:56 EST 2012: Added robodoc info
+
+;;; ****m* pitch/pitch=
+;;; DESCRIPTION
+;;; Determines if the note-name and chromatic semitone MIDI values of two
 ;;; specified pitch objects are the same (or very close to each other in the
 ;;; case of frequency and src slot comparison).  
 ;;;
@@ -584,11 +603,11 @@ data: C5
 ;;; which enharmonic pitches are considered equal.
 ;;;
 ;;; NB: This method may return NIL when comparing pitch objects created using
-;;; frequencies with those created using note-names. The method
-;;; pitch::note= may be more useful in this case.
+;;;     frequencies with those created using note-names. The method
+;;;     pitch::note= may be more useful in this case.
 ;;; 
 ;;; NB: Pitch objects created using frequencies are only considered equal if
-;;; their frequency values are within 0.01Hz of each other.
+;;;     their frequency values are within 0.01Hz of each other.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A first pitch object.
@@ -732,7 +751,7 @@ NIL
 ;;; pitch objects are equal. 
 ;;;
 ;;; NB: This method allows for the comparison of pitch objects created using
-;;; frequency numbers and those created using note-name symbols.
+;;;     frequency numbers and those created using note-name symbols.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A first pitch object.
@@ -782,10 +801,10 @@ NIL
 ;;; than that of a second.
 ;;;
 ;;; NB: Due to the fact that a given note-name may encompass several
-;;; fractionally different frequencies (e.g. both 261.626 and 261.627 are both
-;;; considered to be C4), this method is not suitable for comparing pitch
-;;; objects of which one was created using a frequency and the other was
-;;; created using a note-name symbol.
+;;;     fractionally different frequencies (e.g. both 261.626 and 261.627 are
+;;;     both considered to be C4), this method is not suitable for comparing
+;;;     pitch objects of which one was created using a frequency and the other
+;;;     was created using a note-name symbol.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A pitch object.
@@ -927,10 +946,10 @@ NIL
 ;;; than or equal to than that of a second.
 ;;;
 ;;; NB: Due to the fact that a given note-name may encompass several
-;;; fractionally different frequencies (e.g. both 261.626 and 261.627 are both
-;;; considered to be C4), this method is not suitable for comparing pitch
-;;; objects of which one was created using a frequency and the other was
-;;; created using a note-name symbol.
+;;;     fractionally different frequencies (e.g. both 261.626 and 261.627 are
+;;;     both considered to be C4), this method is not suitable for comparing
+;;;     pitch objects of which one was created using a frequency and the other
+;;;     was created using a note-name symbol.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A pitch object.
@@ -999,10 +1018,10 @@ NIL
 ;;; than or equal to than that of a second.
 ;;;
 ;;; NB: Due to the fact that a given note-name may encompass several
-;;; fractionally different frequencies (e.g. both 261.626 and 261.627 are both
-;;; considered to be C4), this method is not suitable for comparing pitch
-;;; objects of which one was created using a frequency and the other was
-;;; created using a note-name symbol.
+;;;     fractionally different frequencies (e.g. both 261.626 and 261.627 are
+;;;     both considered to be C4), this method is not suitable for comparing
+;;;     pitch objects of which one was created using a frequency and the other
+;;;     was created using a note-name symbol.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A pitch object.
@@ -1137,7 +1156,7 @@ NIL
 ;;; value and return that pitch object.
 ;;;
 ;;; NB: If the two frequency values are equal, the method returns a pitch
-;;; object equivalent to both.
+;;;     object equivalent to both.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A first pitch object.
@@ -1196,7 +1215,7 @@ data: C4
 ;;; value and return that pitch object.
 ;;;
 ;;; NB: If the two frequency values are equal, the method returns a pitch
-;;; object equivalent to both.
+;;;     object equivalent to both.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A first pitch object.
@@ -1208,7 +1227,7 @@ data: C4
 ;;; EXAMPLE
 #|
 ;; Compare two pitch objects and return the one with the greater frequency
-;;; value 
+;; value 
 (let ((p1 (make-pitch 'c4))
       (p2 (make-pitch 'd4)))
   (pitch-max p1 p2))
@@ -1256,8 +1275,8 @@ data: D4
 ;;; MIDI values of two given pitch objects. 
 ;;;
 ;;; NB: This method does not return absolute difference; instead, it may return
-;;; positive or negative results depending on the order in which the pitch
-;;; objects are given. (This will aid in revealing directionality.)
+;;;     positive or negative results depending on the order in which the pitch
+;;;     objects are given. (This will aid in revealing directionality.)
 ;;; 
 ;;; ARGUMENTS
 ;;; - A first pitch object.
@@ -1299,12 +1318,12 @@ data: D4
 ;;; object and that of a second. 
 ;;;
 ;;; NB: This method does not return absolute difference; instead, it may return
-;;; positive or negative results depending on the order in which the pitch
-;;; objects are given. (This will aid in revealing directionality.)
+;;;     positive or negative results depending on the order in which the pitch
+;;;     objects are given. (This will aid in revealing directionality.)
 ;;; 
 ;;; NB: The DEGREE slot is measured in quarter-tones, not semitones. Thus,
-;;; middle-C is degree 120, not 60, and the difference between two consecutive
-;;; semitones is 2, not 1.
+;;;     middle-C is degree 120, not 60, and the difference between two
+;;;     consecutive semitones is 2, not 1.
 ;;;
 ;;; ARGUMENTS
 ;;; - A first pitch object.
@@ -1571,9 +1590,9 @@ data: CQS4
 ;;; objects, the second that used for microtonal pitch objects. 
 ;;; 
 ;;; NB: The pitch object only has one MIDI-CHANNEL slot, and determines whether
-;;; that slot is set to the specfied non-microtonal or microtonal midi-channel
-;;; argument based on whether or not the pitch of the given pitch object is
-;;; determined to be a microtone or not.
+;;;     that slot is set to the specified non-microtonal or microtonal
+;;;     midi-channel argument based on whether or not the pitch of the given
+;;;     pitch object is determined to be a microtone or not.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A pitch object.
@@ -1683,9 +1702,9 @@ data: CQS4
 ;;; Add a specified mark to the MARKS slot of the given pitch object.
 ;;;
 ;;; NB: The add-mark method does not check first to see whether the mark being
-;;; added is a legitimate mark. It does print a warning, however, when the
-;;; specified mark is already present in the MARKS slot, though it adds it
-;;; anyway. 
+;;;     added is a legitimate mark. It does print a warning, however, when the
+;;;     specified mark is already present in the MARKS slot, though it adds it
+;;;     anyway.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A pitch object.
@@ -1928,7 +1947,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; We want to transpose a sample so that it's frequency is that of the
-;;; <pitch>.  The sample's main frequency is <freq>, return the necesary src.
+;;; <pitch>.  The sample's main frequency is <freq>, return the necessary src.
 ;;; freq can either be a note e.g. c4 or a frequency in hertz.
 
 (defmethod src-for-sample-freq (freq (p pitch))
@@ -2006,11 +2025,11 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;; note-name; when it is specified as a number, it is treated as a frequency
 ;;; in hertz.
 ;;; 
-;;; NB if a pitch object is created from a frequency (rather than note symbol)
-;;; then the given frequency is stored and the note/midi-note etc. nearest to
-;;; it will be stored also.  So the frequency might not be the exact frequency
-;;; of the reflected note.  This is by design, so that unusual temperaments can
-;;; retain exact frequencies and show nearest notes etc.
+;;; NB If a pitch object is created from a frequency (rather than note symbol)
+;;;    then the given frequency is stored and the note/midi-note etc. nearest
+;;;    to it will be stored also.  So the frequency might not be the exact
+;;;    frequency of the reflected note.  This is by design, so that unusual
+;;;    temperaments can retain exact frequencies and show nearest notes etc.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A note, either as a alphanumeric note name or a numeric hertz frequency.  
@@ -2105,7 +2124,7 @@ C4
 ;;; - T or NIL indicating whether the method is to return a list of pitch
 ;;;   objects or a list of note-name symbols for those pitch objects. T = 
 ;;;   note-name symbols. Default = NIL.
-;;; - The name of the package to perform the tranpositions. Default = :sc. 
+;;; - The name of the package to perform the transpositions. Default = :sc. 
 ;;; 
 ;;; RETURN VALUE
 ;;; By default, the method returns a list of pitch objects. When the first
@@ -2173,7 +2192,7 @@ PITCH: frequency: 554.365, midi-note: 73, midi-channel: 0
 
 ;;; ****f* pitch/transpose-pitch-list-to-octave
 ;;; DESCRIPTION
-;;; Transpose the pitch values of a list of pitch objects into a specififed
+;;; Transpose the pitch values of a list of pitch objects into a specified
 ;;; octave. The individual initial pitch objects can have initial pitch values
 ;;; of different octaves.  
 ;;; 
@@ -2509,11 +2528,11 @@ data: G3
 ;;; objects or frequency numbers.
 ;;;
 ;;; NB: This function adheres to a concept of inversion more related to
-;;; interval set theory than to the traditional inversion of a melodic
-;;; contour. The given list of pitch items is first sorted from low to high
-;;; before the internal semitone intervals are assessed. The resulting list
-;;; will therefore always be in chromatic order, rather than having the
-;;; inverted melodic contour of the orginal.
+;;;     interval set theory than to the traditional inversion of a melodic
+;;;     contour. The given list of pitch items is first sorted from low to high
+;;;     before the internal semitone intervals are assessed. The resulting list
+;;;     will therefore always be in chromatic order, rather than having the
+;;;     inverted melodic contour of the original.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A list of pitch items. This may consist of pitch objects, note-name
@@ -2784,7 +2803,7 @@ data: EF3
 ;;; Test whether a specified pitch is a member of a given list of pitches.
 ;;;
 ;;; This function can take pitch objects, note-name symbols or numerical
-;;; frequency values (or lists thereor) as its arguments.
+;;; frequency values (or lists thereof) as its arguments.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A pitch item. This may be a pitch object, a note-name symbol or a
@@ -2875,7 +2894,7 @@ data: EF3
 ;;; keyword arguments:
 ;;; - :enharmonics-are-equal. Set to T or NIL to indicate whether or not
 ;;;   enharmonically equivalent pitches are to be considered the same pitch. T
-;;;   = enharmonically equaivalent pitches are equal.  Default = T.
+;;;   = enharmonically equivalent pitches are equal.  Default = T.
 ;;; - :return-symbols. Set to T or NIL to indicate whether the function is to
 ;;;   return a list of pitch objects or note-name symbols. T = note-name
 ;;;   symbols. Default = NIL.

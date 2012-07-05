@@ -188,7 +188,7 @@
 ;;; one pitch-seq-palette object with those of another.
 ;;;
 ;;; The method combines the contents of the two given rthm-seq-palette objects
-;;; consecutivelyl; i.e., the first pitch-seq object of the first
+;;; consecutively; i.e., the first pitch-seq object of the first
 ;;; pitch-seq-palette is combined with the first pitch-seq object of the other,
 ;;; then the second with the second, the third with the third etc. 
 ;;;

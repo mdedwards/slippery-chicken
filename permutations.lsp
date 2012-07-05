@@ -234,7 +234,7 @@
 ((2 0 1) (2 1 0) (0 2 1) (1 0 2) (1 2 0)) 
 ((2 0 1) (2 1 0) (0 2 1) (1 0 2) (1 2 0))
 
-;; Setting the :fix argument to NIL will result in differnt returns
+;; Setting the :fix argument to NIL will result in different returns
 (loop repeat 4 do (print (inefficient-permutations 3 :max 5 :fix nil)))
 
 =>
@@ -405,8 +405,8 @@ results so they are being written to the file
 ;;; to get a random state evaluate (make-random-state t)
 ;;;
 ;;; 10/4/07: seems to me that this is only true for random integers: calling
-;;; this at startup with floats produces different results to when later called
-;;; on the command line!
+;;; this at start-up with floats produces different results to when later
+;;; called on the command line!
 
 (let* ((state 
         #+allegro
@@ -1267,7 +1267,7 @@ WARNING:
 ;; usually is in a state where (cdr conc) is the last cons
 ;; cell of the list.   in the case of lazy-lconc and lazy-tconc
 ;; (cdr conc) is just some cons cell but will be advanced to the
-;; end on demand whenevery anything needs to be added.
+;; end on demand whenever anything needs to be added.
 (defun lazy-lconc (conc list)
   (let ((ptr (cdr conc)))
     (if ptr
@@ -1280,7 +1280,7 @@ WARNING:
         (setf (car conc) list)
         (setf (cdr conc) list)))))
 
-;; Efficiently append a single item descructively to the end
+;; Efficiently append a single item destructively to the end
 ;; of a conc-list.
 (defun lazy-tconc (conc item)
   (lazy-lconc conc (list item)))

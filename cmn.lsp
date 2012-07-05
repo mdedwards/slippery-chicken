@@ -147,7 +147,7 @@
       (0 (bar (height 1.0) bnum rhl))
       (1 (interior-double-bar (height 1.0) bnum rhl))
       (2 (double-bar (height 1.0) bnum rhl))
-      ;; MDE Wed Mar 21 07:44:10 2012 -- added repeat barlines
+      ;; MDE Wed Mar 21 07:44:10 2012 -- added repeat bar lines
       (3 (begin-repeat-bar (height 1.0) bnum rhl))
       (4 (begin-and-end-repeat-bar (height 1.0) bnum rhl))
       (5 (end-repeat-bar (height 1.0) bnum rhl)))))

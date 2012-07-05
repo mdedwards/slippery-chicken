@@ -573,9 +573,7 @@ data: C5
 
 ;;; SAR Mon Jan  2 14:14:56 EST 2012: Added robodoc info
 
-;;; ****m* pitch/pitch=
-;;; DESCRIPTION
-;;; Determines if the note-name and chromatic semt|#
+;;; ****m* pitch/transpose-to-octave
 ;;; SYNOPSIS
 (defmethod transpose-to-octave ((p pitch) new-octave 
                                 &key

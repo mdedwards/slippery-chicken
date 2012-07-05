@@ -107,7 +107,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Sat May  5 12:08:59 BST 2012: Added robodc entry
+;;; SAR Sat May  5 12:08:59 BST 2012: Added robodoc entry
 
 ;;; ****f* utilities/mins-secs-to-secs
 ;;; DESCRIPTION
@@ -864,7 +864,7 @@
 ;;; A list of symbols.
 ;;; 
 ;;; RETURN VALUE
-;;; The same list of symbols sorted alphabetically ascending, case-insensitive.  
+;;; The same list of symbols sorted alphabetically ascending, case-insensitive.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -2647,7 +2647,7 @@ WARNING:
 ;;; ****f* utilities/pts2cm
 ;;; DESCRIPTION
 ;;; Convert a specified number of points to a length in centimeters at a
-;;; resolution of 72ppi
+;;; resolution of 72ppi.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A number.

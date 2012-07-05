@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 14:51:21 Wed Jul  4 2012 BST
+;;; $$ Last modified: 19:13:38 Thu Jul  5 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4835,6 +4835,22 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 (defmethod get-pitch-symbols ((rsb rthm-seq-bar) &optional written)
 ;;; ****
   (loop for e in (rhythms rsb) collect (get-pitch-symbol e written)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jul  5 19:07:56 2012 
+
+(defmethod set-amplitudes ((rsb rthm-seq-bar) amp)
+  (loop for r in (rhythms rsb) do
+       (setf (amplitude r) amp))
+  amp)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jul  5 19:12:54 2012 
+
+(defmethod set-dynamics ((rsb rthm-seq-bar) dynamic)
+  (loop for r in (rhythms rsb) do
+       (add-mark r dynamic))
+  dynamic)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -5,8 +5,8 @@
 (load "sc/src/all.lsp")
 
 (in-package :clm)
-(compile-file "clm-4/nrev.ins")
-(load "clm-4/nrev.fasl")
+(unless (probe-file "clm-4/nrev.fasl")
+  (compile-file "clm-4/nrev.ins"))
 (load "clm-4/nrev.fasl")
 (setf *clm-srate* 44100
       *clm-channels* 2

@@ -119,7 +119,7 @@
 ;;; SAR Thu May  3 12:51:13 BST 2012: Added/edited robodoc entry
 
 ;;; MDE's original comment:
-;;; find a soundfile in any of the directories given in the paths slot, not
+;;; find a sound file in any of the directories given in the paths slot, not
 ;;; necessarily including those in the palette itself!!!  
 
 ;;; ****m* sndfile-palette/find-sndfile

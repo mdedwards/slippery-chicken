@@ -63,7 +63,7 @@
 ;;; ****f* lilypond/lp-get-mark
 ;;; DESCRIPTION
 ;;; lp-get-mark:
-;;; Translation function for Lilypond marks (dynamics, accents, etc.).  Not
+;;; Translation function for LilyPond marks (dynamics, accents, etc.).  Not
 ;;; generally called by the user but the list of symbols that can be used will
 ;;; be useful.  If <silent> then non-existing marks will not produce
 ;;; warnings/errors (but we'll return nil). 

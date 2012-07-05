@@ -833,7 +833,7 @@ data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
                                   ;; we allow the initialization of a set from
                                   ;; a previous one just given in this palette!
                                   ;; In order to allow this, we have to now do
-                                  ;; a lookup of the set-id in the assoc-list
+                                  ;; a look-up of the set-id in the assoc-list
                                   ;; (palette) we're currently processing!
                                   (append (list set-object :id id)
                                           (rest data)))
@@ -917,7 +917,7 @@ data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
 ;;;   ring-mod-bass fails to find suitable bass notes for the generated sets. T
 ;;;   = warn. Default = T.
 ;;; - :do-bass. T or NIL to indicate whether to add notes created by the
-;;;   ring-mod-bass function to the resulting set-palette obect. T = create and
+;;;   ring-mod-bass function to the resulting set-palette object. T = create and
 ;;;   add bass notes. Default = T.
 ;;; - :remove-octaves. T or NIL to indicate whether to remove the upper
 ;;;   instances of any octave-equivalent pitches from the resulting set-palette
@@ -1329,7 +1329,7 @@ data: (
 ;;;   that fall in this octave. Default = 0.
 ;;; - :low. A note-name symbol that is the lowest possible pitch of those
 ;;;   returned. This argument further restricts the :bass-octave argument. Thus
-;;;   a :bass-octave value of 1 could be further limted to no pitches below
+;;;   a :bass-octave value of 1 could be further limited to no pitches below
 ;;;   :low 'DS1. Default = 'A0.
 ;;; - :high. A note-name symbol that is the highest possible pitch of those
 ;;;   returned. This argument further restricts the :bass-octave argument. Thus
@@ -1345,7 +1345,7 @@ data: (
 ;;; - :scale. A variable pointing to the scale to which any translation of
 ;;;   frequencies into note-names symbols should take place. By default this
 ;;;   value is set to cm::*scale*, which is automatically set by slippery
-;;;   chicken to 'quarter-tone at initilisation. To return e.g. pitches rounded
+;;;   chicken to 'quarter-tone at initialisation. To return e.g. pitches rounded
 ;;;   to chromatic note-names set this argument to cm::*chromatic-scale*.
 ;;;
 ;;; RETURN VALUE
@@ -1409,7 +1409,7 @@ data: (
 NIL
 WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
 
-;; This warning can be supressed by setting the :warn argument to NIL
+;; This warning can be suppressed by setting the :warn argument to NIL
 (ring-mod-bass '(261.63) :warn nil)
 
 => NIL

@@ -22,7 +22,7 @@
 ;;;                   thrice etc.
 ;;;
 ;;;                   If you want to return specific data on these cycle
-;;;                   points, provide it in the the return-data slot, with the
+;;;                   points, provide it in the return-data slot, with the
 ;;;                   indices into this data in the return-data-cycle slot.
 ;;;
 ;;;                   simple example, without return-data
@@ -228,8 +228,8 @@
 ;;; Get the next element from the return-data. This method is most effective
 ;;; when called repeatedly (e.g. within a loop) when the return-data and
 ;;; return-data-cycle slots have been set. In those cases the return-data-cycle
-;;; element will be used as lookup into return-data. If no return-data has been
-;;; specified, then the element itself will be returned.
+;;; element will be used as look-up into return-data. If no return-data has
+;;; been specified, then the element itself will be returned.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A recurring-event object.

@@ -662,10 +662,10 @@ NIL
 ;;; 
 ;;; ARGUMENTS 
 ;;; - An instrument object.
-;;; - A pitch item (pitch object or note-naem symbol).
+;;; - A pitch item (pitch object or note-name symbol).
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL to indicate whether the pitch specified ist to be compared with
+;;; - T or NIL to indicate whether the pitch specified is to be compared with
 ;;;   the given pitch object's sounding or written range. T = Sounding. 
 ;;;   Default = NIL. If T, a secondary NIL is also returned to indicate that
 ;;;   the specified pitch is neither too high nor too low.
@@ -676,7 +676,7 @@ NIL
 ;;; pitches of the given pitch object.
 ;;;
 ;;; If the specified pitch is outside of the range, an additional value of 0 or
-;;; 1 is also returned to indicate whether the specified pithc is too high (1)
+;;; 1 is also returned to indicate whether the specified pitch is too high (1)
 ;;; or too low (0).
 ;;;
 ;;; EXAMPLE
@@ -813,7 +813,7 @@ NIL
 ;;;   warning will also be printed.
 ;;; - :clefs-in-c. List of symbols. Similar to :clefs, but designates which
 ;;;   clefs an instrument uses in a C-score; for example, bass clarinet may
-;;;   notated in bass cleff for sounding pitches though it is standardly
+;;;   notated in bass clef for sounding pitches though it is standardly
 ;;;   notated in treble clef for written pitches. For a list of clefs available
 ;;;   see the :clefs argument above.
 ;;; - :largest-fast-leap. Number. This value indicates the largest interval, in

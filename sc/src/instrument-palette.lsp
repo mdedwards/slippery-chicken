@@ -98,7 +98,7 @@
 ;;; definition. 
 ;;; 
 ;;; NB: The optional argument is actually required, but is listed as optional
-;;; because of the attributes of the instrument class method.
+;;;     because of the attributes of the instrument class method.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An instrument-palette object.
@@ -248,7 +248,7 @@ e.g.
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
 ;;; - :warn-not-found. T or NIL to indicate whether a warning is printed when
-;;;   an index which doesn't exist is used for lookup. Default = T.
+;;;   an index which doesn't exist is used for look-up. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; An instrument palette.

@@ -11,7 +11,7 @@
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
-;;; Purpose:          This class is meant to be subclassed by piece, section
+;;; Purpose:          This class is meant to be sub-classed by piece, section
 ;;;                   and sequence, all of which hold each other or, ultimately
 ;;;                   a list of bars with relevant rhythms, timings, pitches
 ;;;                   etc.   
@@ -666,13 +666,10 @@
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A bar-holder object.
-
 ;;; - An integer that is the number of the first bar from which all marks are
 ;;;   to be deleted.
-
 ;;; - An integer that is the number of consecutive bars including the first
 ;;;   bar from which all marks are to be deleted.
-
 ;;; - The ID of the player from whose part the marks are to be deleted. 
 ;;; 
 ;;; RETURN VALUE  

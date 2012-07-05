@@ -249,7 +249,7 @@
                      change))))))
     ;; NB verify-and-store calls this method, and sclists (of which change-data
     ;; is a subclass) call verify-and-store when (setf data) is called, which
-    ;; would cause an endless loop if we were to call that now, so be sneeky:
+    ;; would cause an endless loop if we were to call that now, so be sneaky:
     ;; set the slot-value 'data instead.
     (setf (slot-value cd 'data) new)))
 

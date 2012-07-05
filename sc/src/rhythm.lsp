@@ -104,7 +104,7 @@
    ;; element is the tuplet number; if the element(s) is a number, then this is
    ;; the reference to the current cmn bracket that should be closed.  This is
    ;; all a little dirty on my part here, but cmn also requires a
-   ;; -beat-dubdivision- to set which notes are under the bracket as well, so
+   ;; -beat-subdivision- to set which notes are under the bracket as well, so
    ;; add an element which is a negative number which when made positive is an
    ;; index into the current cmn brackets.  This means we never store 0 as the
    ;; index into the cmn list, rather we start at 1.
@@ -396,8 +396,8 @@
 ;;; Compares the values of two rhythm objects to determine if they are equal. 
 ;;;
 ;;; NB rhythm-equal compares the values only, so rhythms with the same values
-;;; will still be considered equal even if their other attributes (such as
-;;; :is-rest and :is-tied-to etc.) are different.
+;;;    will still be considered equal even if their other attributes (such as
+;;;    :is-rest and :is-tied-to etc.) are different.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A first rhythm object.
@@ -523,8 +523,8 @@
 ;;; more than once. 
 ;;;
 ;;; NB: This method checks to see if the mark added is a valid mark and will
-;;; warn if it doesn't exist (but it will still add it, in case you have your
-;;; own processing logic for it).
+;;;     warn if it doesn't exist (but it will still add it, in case you have 
+;;;     your own processing logic for it).
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rhythm object.
@@ -628,7 +628,7 @@ rhythm::add-mark: add AT to rest?
 ;;;   apply a mark to a rest.
 ;;; 
 ;;; RETURN VALUE  
-;;; Returns T if the mark is succssfully applied (if the rhythm object did not
+;;; Returns T if the mark is successfully applied (if the rhythm object did not
 ;;; already possess the mark), otherwise NIL if the mark was not applied
 ;;; because the rhythm object already had it.
 ;;; 
@@ -888,7 +888,7 @@ NI
 
 ;;; ****m* rhythm/has-mark
 ;;; DESCRIPTION
-;;; Check to see if a given rhythm object posseses a specified mark.
+;;; Check to see if a given rhythm object possesses a specified mark.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rhythm object.
@@ -1332,7 +1332,7 @@ NI
 ;;; duration of two other given rhythm objects. 
 ;;;
 ;;; NB: This method only returns a single rhythm rather than a list with
-;;; ties. Thus q+s, for example, returns TQ... 
+;;;     ties. Thus q+s, for example, returns TQ... 
 ;;;
 ;;; If the resulting duration cannot be presented as a single, notatable
 ;;; rhythm, the DATA slot of the resulting rhythm object is set to NIL, though
@@ -1406,7 +1406,7 @@ NIL
 ;;; between the duration of two other given rhythm objects.   
 ;;;
 ;;; NB: This method only returns a single rhythm rather than a list with
-;;; ties. Thus h - e., for example, returns TQ... 
+;;;     ties. Thus h - e., for example, returns TQ... 
 ;;;
 ;;; If the resulting duration cannot be presented as a single rhythm, the DATA
 ;;; slot of the resulting rhythm object is set to NIL, though the VALUE and
@@ -1721,7 +1721,7 @@ data: NIL
   (* dur-secs (/ tempo 60.0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Try and get a single rythm for a duration but if necessary call
+;;; Try and get a single rhythm for a duration but if necessary call
 ;;; rationalize-for-events.
 ;;; Always returns a list even if only one rhythm is necessary.
 
@@ -1995,7 +1995,7 @@ data: (
   ;; i.e. not by lp-get-mark and get-cmn-marks  
   (unless (or (cmn-mark-p mark) (clef-list-p mark))
     (unless (lp-get-mark mark :silent t)
-      (warn "~&rhythm::validate-mark: no Lilypond mark for ~a (but ~
+      (warn "~&rhythm::validate-mark: no LilyPond mark for ~a (but ~
            adding anyway)."
             mark))
     #+cmn

@@ -67,7 +67,7 @@
    ;; instruments can play; these would then be selected in the chord-function
    ;; passed to the instrument object.
    (subsets :accessor subsets :initarg :subsets :initform nil)
-   ;; this is similiar to subsets only that the pitches given here don't have
+   ;; this is similar to subsets only that the pitches given here don't have
    ;; to be part of the main set.  Can be used, for example, for pitches
    ;; missing from the main set....
    (related-sets :accessor related-sets :initarg :related-sets :initform nil)
@@ -507,7 +507,7 @@ PITCH: frequency: 184.997, midi-note: 54, midi-channel: 0
 
 ;;; ****m* sc-set/get-non-chromatic
 ;;; DESCRIPTION
-;;; Return those notes of a given sc-set object that are micr-tones (i.e. no
+;;; Return those notes of a given sc-set object that are microtones (i.e. no
 ;;; "normal" chromatic notes).
 ;;; 
 ;;; If a number is given for the <octave> argument, the method will transpose
@@ -603,7 +603,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;;
 ;;; Though this method can be used in other contexts, it was devised
 ;;; as an aid for transposing audio samples (sound files), and the
-;;; reference pitch is therefore generally the percieved fundamental
+;;; reference pitch is therefore generally the perceived fundamental
 ;;; pitch of the audio sample to be transposed.
 ;;; 
 ;;; ARGUMENTS
@@ -613,7 +613,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;; - An optional note-name symbol sets the value of the <reference-pitch>,
 ;;;   which is the basis pitch to which the resulting number of semitones
 ;;;   refer. This will generally be the perceived fundamental pitch of the
-;;;   sample (sound file) being modififed ("transposed").
+;;;   sample (sound file) being modified ("transposed").
 ;;; - The optional <offset> argument takes a number that is the number of
 ;;;   semitones to add to the pitch of the given set prior to determining its
 ;;;   distance in semitones from the reference pitch.
@@ -665,7 +665,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;; - An optional note-name symbol sets the value of the <reference-pitch>,
 ;;;   which is the basis pitch to which the resulting factors refer. This will
 ;;;   generally be the perceived fundamental pitch of the sample (sound file)
-;;;   being modififed ("transposed").
+;;;   being modified ("transposed").
 ;;; - The optional <offset> argument takes a number that is the number of
 ;;;   semitones to add to the pitch of the given set prior to determining the
 ;;;   sampling-rate conversion factors. 
@@ -692,7 +692,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
     2.8284271254540463 4.0)
 
 ;; Conversely, comparing the same set against the default reference-pitch but
-;; with a postive offset will return higher values
+;; with a positive offset will return higher values
 
 (let ((mscs (make-sc-set '(d2 fs3 cs4 c5 af5 d6))))
   (get-srts mscs 'c4 2))
@@ -710,7 +710,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Mon Feb  6 15:29:04 GMT 2012: Addedrobodoc entry
+;;; SAR Mon Feb  6 15:29:04 GMT 2012: Added robodoc entry
 
 ;;; ****m* sc-set/subset-get-srts
 ;;; DESCRIPTION
@@ -726,7 +726,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;; OPTIONAL ARGUMENTS
 ;;; - The optional <reference-pitch> is the basis pitch to which the resulting
 ;;;   factors refer. This will generally be the perceived fundamental pitch of
-;;;   the sample (sound file) being modififed ("transposed").
+;;;   the sample (sound file) being modified ("transposed").
 ;;; - The optional <offset> argument is the number of semitones to add to the
 ;;;   pitch of the given set prior to determining the sampling-rate conversion
 ;;;   factors. 
@@ -769,7 +769,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;;
 ;;; The method analyzes the interval structure of the original set from the
 ;;; bottom note to the top and adds new sets to the top and bottom of the
-;;; orginal set symmetrically; i.e., with the identical interval structure
+;;; original set symmetrically; i.e., with the identical interval structure
 ;;; above the original set and inverted interval structure below.
 ;;;
 ;;; The optional <num-stacks> argument indicates how many new sets are to be
@@ -1131,7 +1131,7 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 ;;; 
 ;;; ARGUMENTS
 ;;; - An sc-set object.
-;;; - A list of note-name symbosl. NB: If checking for only one pitch, that
+;;; - A list of note-name symbols. NB: If checking for only one pitch, that
 ;;;   pitch must be passed as a single-item list.
 ;;; 
 ;;; RETURN VALUE
@@ -1146,7 +1146,7 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 
 => T
 
-;; Returns NIL if any one of the specififed pitches is not contained in the
+;; Returns NIL if any one of the specified pitches is not contained in the
 ;; given sc-set object.
 (let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
   (contains-pitches mscs '(d2 e3 gf4 b4 af5)))
@@ -1202,7 +1202,7 @@ PITCH: frequency: 73.416, midi-note: 38, midi-channel: 0
 ;;; ****m* sc-set/create-event
 ;;; DESCRIPTION
 ;;; Create an event object (that is a chord) from a given sc-set object,
-;;; specifiying a rhythmic value and a start-time (in seconds).
+;;; specifying a rhythmic value and a start-time (in seconds).
 ;;; 
 ;;; ARGUMENTS
 ;;; - An sc-set object.

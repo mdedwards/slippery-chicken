@@ -124,7 +124,7 @@
 ;;;
 ;;; NB: This method uses Common Lisp's subseq function and thus inherits its
 ;;; attributes, whereby the START argument indicates the zero-based index of
-;;; the first list item to be returned and teh FINISH argument indicates the
+;;; the first list item to be returned and the FINISH argument indicates the
 ;;; zero-based index of the first list item after that NOT to be returned.
 ;;; 
 ;;; ARGUMENTS
@@ -238,10 +238,11 @@ NIL
 ;;; NB: This method destructively modifies the list.
 ;;;
 ;;; NB: This method adds any element specified as a single item. For combining
-;;; two lists into one see sclist/combine.
+;;;     two lists into one see sclist/combine.
 ;;;
 ;;; NB: Though related to Lisp's cons function, remember that the order of
-;;; arguments here is the other way round i.e. element after list, not before.
+;;;    arguments here is the other way round i.e. element after list, not 
+;;;    before.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An sclist object.
@@ -438,7 +439,7 @@ remove-elements: arguments 2 and 3 must be integers < the length of argument 1:
 ;;; 
 ;;; ARGUMENTS
 ;;; - A first sclist object.
-;;; - A second sclist ojbect.
+;;; - A second sclist object.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns an sclist object.

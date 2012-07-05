@@ -229,7 +229,7 @@
      ;; MDE Mon Feb 20 20:02:55 2012 -- modified to keep in line with clarinet
      (b-flat-trumpet
       (:staff-name "B-flat trumpet" :staff-short-name "b-flat tpt" 
-       ;; the -flat should be convereted in CMN and Lilypond to the flat sign
+       ;; the -flat should be converted in CMN and LilyPond to the flat sign
        :lowest-written fs3 :highest-written d6 :transposition-semitones -2 
        :largest-fast-leap 9
        :starting-clef treble 

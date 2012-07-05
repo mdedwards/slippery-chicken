@@ -119,7 +119,7 @@
 ;;;   be; i.e. it's just a call to init and should return nothing. Default =
 ;;;   #'create-psps-default.
 ;;; - :pitch-seqs-per-rthm-seq. This is an integer that is the number of
-;;;   pitch-seqs each rthm-seq should have. NB: The method will simply cylcle
+;;;   pitch-seqs each rthm-seq should have. NB: The method will simply cycle
 ;;;   through the pitch-seqs given in the selection function to create the
 ;;;   required number.  Default = 3.
 ;;; - :selection-fun-data. This contains the pitch-seq lists to be passed to
@@ -160,7 +160,7 @@
 ;; pitch-seq-palettes. Then apply the create-psps method using its default
 ;; values, and print the values of the individual pitch-seq-palettes again to
 ;; see the change.  NB You wouldn't normally specify pitch-seq-palettes in your
-;; rthmn-seq-palette as the whole point of this method is to have them created
+;; rthm-seq-palette as the whole point of this method is to have them created
 ;; algorithmically, but they are given here for purposes of comparison.
 (let ((mrsp (make-rsp 'rsp-test 
                       '((seq1 ((((2 4) q +e. s)
@@ -474,12 +474,12 @@ rthm-seq SEQ3
   (declare (ignore ignore2 ignore3 ignore4 ignore5 ignore6 ignore7
                    ignore8))
   (loop 
-      for rs in (data rsp) 
-      if (is-ral (data rs))
+     for rs in (data rsp) 
+     if (is-ral (data rs))
      ;; MDE Fri Jan 13 20:01:07 2012 -- no-accidentals!
-      append (get-cmn-data (data rs) no-accidentals)
-      else collect (econs (get-cmn-data rs no-accidentals) 
-                          (cmn::line-mark))))
+     append (get-cmn-data (data rs) no-accidentals)
+     else collect (econs (get-cmn-data rs no-accidentals) 
+                         (cmn::line-mark))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

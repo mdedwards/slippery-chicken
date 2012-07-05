@@ -149,7 +149,7 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - :warn-not-found. T or NIL to indicate whether a warning is printed when
-;;;   an index which doesn't exist is used for lookup. T = warn. Default = T.
+;;;   an index which doesn't exist is used for look-up. T = warn. Default = T. 
 ;;; 
 ;;; RETURN VALUE
 ;;; 

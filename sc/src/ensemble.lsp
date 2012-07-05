@@ -64,7 +64,7 @@
   ;; simple list of instrument names / num instrument pairs that is then used
   ;; to set the score-write-bar-line slot of each instrument in the ensemble.
   ;; All the score-write-bar-line slots are first set to nil, then updated
-  ;; according to this list. Eg '(cello 3 tuba 5 bassoon 6)
+  ;; according to this list. E.g. '(cello 3 tuba 5 bassoon 6)
   ;; ***** NB when using CMN use the staff-groupings slot of the
   ;; slippery-chicken class instead!.  
   ;; MDE Wed Apr 18 12:27:47 2012 -- now obsolete
@@ -72,8 +72,8 @@
                      :initarg :bar-line-writers :initform nil)
    (players :accessor players :type list :initform nil)
    ;; an instrument-palette that contains the instrument objects to be
-   ;; cloned. The instruments list contains a simple symbol (id for lookup into
-   ;; the instrument-palette) instead of a new instrument
+   ;; cloned. The instruments list contains a simple symbol (id for look-up
+   ;; into the instrument-palette) instead of a new instrument
    ;; definition/instantiation.
    (instrument-palette :accessor instrument-palette
                        :initarg :instrument-palette :initform nil))) 
@@ -254,7 +254,7 @@
 ;;; NB: This method processes data in relationship to degrees of the current
 ;;;     tuning system (scale), which is quarter-tone by default. It is
 ;;;     therefore possible, when generating a piece using only chromatic
-;;;     pitches but within a non-chromatic tuning to get microctonal results.
+;;;     pitches but within a non-chromatic tuning to get microtonal results.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An ensemble object.

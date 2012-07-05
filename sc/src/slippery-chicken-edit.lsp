@@ -55,7 +55,7 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Sun Apr 22 09:08:44 BST 2012: Conformedrobodoc entry
+;;; SAR Sun Apr 22 09:08:44 BST 2012: Conformed robodoc entry
 
 ;;; ****m* slippery-chicken-edit/replace-tempo-map
 ;;; DESCRIPTION
@@ -771,7 +771,7 @@
           for written = (third correct)
           for note = (get-note sc bar-num 
                                ;; this makes sure we get the chord object
-                               ;; istead of a single pitch. 
+                               ;; instead of a single pitch. 
                                (if chord 
                                    (first note-num)
                                    note-num)
@@ -1039,7 +1039,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Apr 20 11:06:00 BST 2012: Added robodoc entry
-
 
 ;;; ****m* slippery-chicken-edit/change-pitch
 ;;; DESCRIPTION
@@ -1613,11 +1612,10 @@ NIL
 ;;; all in between. start and finish are inclusive and 1-based.  If they're
 ;;; integers then all notes in the bars will be marked, otherwise a 2-element
 ;;; list sets the exact note to start/stop at.  
-
-;;; SAR: I haven't incorporated this MDE comment yet.
-;;; NB noteheads need before to be t in lilypond but bear in mind they're
-;;; automatically moved over in event::get-lp-data.  players can be a single
-;;; symbol or list.
+;;;
+;;; NB note-heads need before to be t in LilyPond but bear in mind they're
+;;;    automatically moved over in event::get-lp-data.  players can be a single
+;;;    symbol or list.
 
 ;;; ****m* slippery-chicken-edit/add-marks-to-notes
 ;;; DESCRIPTION
@@ -2440,7 +2438,7 @@ NIL
 ;;;   Default = NIL.
 ;;; - :last-rhythm. NIL or a rhythmic duration. If a rhythmic duration, the
 ;;;   last duration of the tie will be forced to this length. Useful, for
-;;;   example, when tieing into a rest bar without filling that whole
+;;;   example, when tying into a rest bar without filling that whole
 ;;;   bar. NIL = fill the bar with a tied note. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
@@ -2545,7 +2543,7 @@ NIL
 ;;;   rests have been created. T = automatically beam. Default = NIL.
 ;;; - :last-rhythm. NIL or a rhythmic duration. If a rhythmic duration, the
 ;;;   last duration of the tie will be forced to this length. Useful, for
-;;;   example, when tieing into a rest bar without filling that whole
+;;;   example, when tying into a rest bar without filling that whole
 ;;;   bar. NIL = fill the bar with a tied note. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
@@ -4433,7 +4431,7 @@ NIL
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing methdo
+;;;  A post-generation editing method
 
 ;;; SAR Fri Apr 20 12:59:28 BST 2012: Added robodoc entry
 ;;; SAR Fri Apr 20 12:59:41 BST 2012: Removed MDE's original comment because
@@ -4938,7 +4936,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
         :set-map '((1 (1)))
         :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -)))))
         :rthm-seq-map '((1 ((fl (1))))))))
-  ;; this piece only has one bar so the barline will be 2 by default
+  ;; this piece only has one bar so the bar line will be 2 by default
   (print (bar-line-type (get-bar min 1 'fl)))
   (change-bar-line-type min 1 1)
   (bar-line-type (get-bar min 1 'fl)))

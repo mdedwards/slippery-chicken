@@ -14,7 +14,7 @@
 ;;;
 ;;; Purpose:          Implementation of a scale object that can initialize its
 ;;;                   complete pitch list from the interval structure of a
-;;;                   given list of notes.  Given the scale, it's a synch to
+;;;                   given list of notes.  Given the scale, it's a cinch to
 ;;;                   generate note sequences based on note offset patterns
 ;;;                   e.g.
 ;;;                   (let ((s (make-intervals-mapper 'c0 '(d e gs as d ef g a 

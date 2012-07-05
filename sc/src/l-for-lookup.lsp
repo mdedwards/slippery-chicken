@@ -183,7 +183,7 @@
 
 ;;; ****m* l-for-lookup/do-simple-lookup
 ;;; DESCRIPTION
-;;; Performs a simple lookup procedure whereby a given reference key always
+;;; Performs a simple look-up procedure whereby a given reference key always
 ;;; returns a specific and single piece of data. This is different from
 ;;; do-lookup, which performs a transitioning between lists and returns items
 ;;; from those lists in a circular manner. do-simple-lookup always returns the
@@ -241,7 +241,7 @@
 ;;; ****m* l-for-lookup/do-lookup
 ;;; DESCRIPTION
 ;;; Generate an L-sequence from the rules of the specified l-for-lookup object
-;;; and use it to perform the Fibonacci-based transitioning lookup of values in
+;;; and use it to perform the Fibonacci-based transitioning look-up of values in
 ;;; the specified sequences. 
 ;;; 
 ;;; ARGUMENTS 
@@ -264,7 +264,7 @@
 ;;; RETURN VALUE
 ;;; This method returns three lists:
 ;;; - The resulting sequence.
-;;; - The distribution of the values returned by the lookup.
+;;; - The distribution of the values returned by the look-up.
 ;;; - The L-sequence of the key-IDs.
 ;;; 
 ;;; EXAMPLE
@@ -410,7 +410,7 @@
 ;;;
 ;;; The method first returns the first element in the list whose ID matches the 
 ;;; SEED argument, then that element is used as the ID for the next
-;;; lookup. Each time a sequence is accessed, the next element in the sequence 
+;;; look-up. Each time a sequence is accessed, the next element in the sequence 
 ;;; is returned (if there is more than one), cycling to the head of the list
 ;;; once its end is reached.  
 ;;;
@@ -603,7 +603,7 @@
 ;;; - A sequence (list) or list of sequences, that serve(s) as the initial
 ;;;   material, from which the new sequence is to be produced.
 ;;; - A production rule or list of production rules, each consisting of a
-;;;   predecessor and a sucessor, defining how to expand and replace the
+;;;   predecessor and a successor, defining how to expand and replace the
 ;;;   individual predecessor items.
 ;;;
 ;;; OPTIONAL ARGUMENTS
@@ -611,7 +611,7 @@
 ;;; - :auto-check-redundancy. Default = NIL.
 ;;; - :scaler. Factor by which to scale the values returned by
 ;;;   do-lookup. Default = 1. Does not modify the original data.
-;;; - :offest. Number to be added to values returned by do-lookup (after they
+;;; - :offset. Number to be added to values returned by do-lookup (after they
 ;;;   are scaled). Default = NIL. Does not modify the original data.
 ;;; 
 ;;; RETURN VALUE  

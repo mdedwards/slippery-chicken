@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:15:56 Wed Jul  4 2012 BST
+;;; $$ Last modified: 17:09:54 Thu Jul  5 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -328,7 +328,7 @@
               (hint-pitches sc)
               (if (change-map-p (hint-pitches sc))
                   (clone (hint-pitches sc))
-                  (make-change-map (make-name 'hint-piches) 
+                  (make-change-map (make-name 'hint-pitches) 
                                    t
                                    (hint-pitches sc))))
         (let ((sfp (sndfile-palette sc)))
@@ -7310,8 +7310,9 @@ duration: 20.0 (20.000)
                            1))
          (microtones-midi-channel (when player
                                     (microtones-midi-channel player-obj)))
-         (midi-prog (when instrument
-                      (midi-program instrument)))
+         ;; MDE Thu Jul  5 17:00:45 2012 
+         (got-ins (instrument-p instrument))
+         (midi-prog (when got-ins (midi-program instrument)))
          (get-set-limits (and slippery-chicken player global-seq-num))
          ;; if any extra range limiting has been given for this instrument
          ;; get it here and pass it to get-notes.
@@ -7345,7 +7346,7 @@ duration: 20.0 (20.000)
          ;; transposition specifies how many semitones the instrument sound
          ;; above/below written pitch so we have to invert the sign of this
          ;; to get the transposition we need to write sounding pitches.
-         (transpose (when instrument
+         (transpose (when got-ins
                       (- (transposition-semitones instrument)))))
     (when (and transpose (zerop transpose))
       (setf transpose nil))
@@ -7420,11 +7421,12 @@ duration: 20.0 (20.000)
                     ;; note (this makes use of new cmn code by me and
                     ;; hopefully added to main repository by Bill).
                     ;; (instrument change is registered here)
-                    (setf (instrument-change event)
-                          (if (staff-short-name instrument)
-                              (list (staff-name instrument)
-                                    (staff-short-name instrument))
-                              (list (staff-name instrument)))))
+                    (when got-ins ;; MDE Thu Jul  5 17:02:03 2012 -- 
+                      (setf (instrument-change event)
+                            (if (staff-short-name instrument)
+                                (list (staff-name instrument)
+                                      (staff-short-name instrument))
+                                (list (staff-name instrument))))))
                   (setf do-prog-changes nil))
                 (unless (is-rest event)
                   (setf (pitch-or-chord event) 
@@ -7447,7 +7449,8 @@ duration: 20.0 (20.000)
                 (when transpose
                   (set-written event transpose))
                 ;; MDE Thu Apr 19 12:34:52 2012 -- statistics
-                (when (needs-new-note event)
+                ;; MDE Thu Jul  5 17:02:33 2012 -- only when got-ins
+                (when (and got-ins (needs-new-note event))
                   ;; so this handles chords
                   (incf (total-degrees instrument) (get-degree event :sum t)))
                 ;; (when (is-single-pitch event)
@@ -7457,10 +7460,11 @@ duration: 20.0 (20.000)
        ;; MDE Thu Apr 19 14:16:07 2012 -- shoudn't need this now
        ;; (gen-stats bar) 
          (unless (is-rest-bar bar)
-           (incf (total-bars instrument))
-           ;; we can't do total-duration here as we don't have the events'
-           ;; duration-in-tempo until later...
-           (incf (total-notes instrument) (notes-needed bar))))
+           (when got-ins                ; MDE Thu Jul  5 17:02:52 2012 
+             (incf (total-bars instrument))
+             ;; we can't do total-duration here as we don't have the events'
+             ;; duration-in-tempo until later...
+             (incf (total-notes instrument) (notes-needed bar)))))
     ;; all the notes should have been popped off by now
     (when notes
       (error "~a ~a ~%slippery-chicken::sc-make-sequenz: Didn't use all ~

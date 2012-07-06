@@ -663,11 +663,6 @@ the instrument you want.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :cmn-staff-args. A list of pairs that indicate any additional arguments
-;;;   to the call to cmn::staff for this player, such as staff size, number of
-;;;   lines etc. Instead of being real cmn function calls, as they would be in
-;;;   normal cmn, this is a simple list of pairs; e.g. '(staff-size .8
-;;;   staff-lines 3). Defaults = NIL.
 ;;; - :midi-channel. An integer that indicates the MIDI channel on which any
 ;;;   non-microtonal pitch material for this player is to be played
 ;;;   back. Default = 1.
@@ -678,6 +673,11 @@ the instrument you want.
 ;;;   tracks contain no pitch-bend data. A work-around for this is to simply
 ;;;   open the MIDI file in a sequencer and shift the entire channel by the
 ;;;   desired pitch-bend value. Default = -1.
+;;; - :cmn-staff-args. A list of pairs that indicate any additional arguments
+;;;   to the call to cmn::staff for this player, such as staff size, number of
+;;;   lines etc. Instead of being real cmn function calls, as they would be in
+;;;   normal cmn, this is a simple list of pairs; e.g. '(staff-size .8
+;;;   staff-lines 3). Defaults = NIL.
 ;;;
 ;;; RETURN VALUE
 ;;; Returns a player object.

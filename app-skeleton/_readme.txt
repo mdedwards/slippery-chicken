@@ -25,7 +25,7 @@ Known issues:
 
 * If the app is in a folder whose name (or parents' names) has spaces
   it might just hang forever.
-* SBCL spits out loads or (really unhelpful) warnings--just ignore
+* SBCL spits out loads of (really unhelpful) warnings--just ignore
   them.
 * If you're already an Emacs+slime user and have code in your .emacs
   file which loads slime or defines an *inferior-lisp* image, or a

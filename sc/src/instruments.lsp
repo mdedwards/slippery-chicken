@@ -243,6 +243,14 @@
        :clefs (bass tenor) :starting-clef bass 
        :chords nil 
        :midi-program 58))
+     ;;; SAR Fri Jul 13 12:35:35 BST 2012
+     (tuba
+      (:staff-name "tuba" :staff-short-name "tba"
+       :lowest-written d1 :highest-written g4
+       :largest-fast-leap 5
+       :clefs (bass) :starting-clef bass
+       :chords nil
+       :midi-program 59))
      (marimba 
       (:staff-name "marimba" :staff-short-name "mba"
        :lowest-written c3 :highest-written c7 

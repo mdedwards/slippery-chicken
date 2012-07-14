@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 15:01:36 Mon May 14 2012 BST
+;;; $$ Last modified: 17:22:31 Sat Jul 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -491,7 +491,9 @@ Each pitch sequence must have 5 notes (you have 6):
     ;; create-psps, otherwise the only way to get the same piece each time is
     ;; to reload all sc source files i.e. restart lisp
     (unless (or num-notes data-lists)
+      ;; (print 'resetting)
       (setf seqs-al nil))
+    ;; (print data-lists)
     (when (or data-lists (not seqs-al))
       (let ((dl (if (and data-lists (listp data-lists))
                     data-lists

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 15:11:44 Mon May 14 2012 BST
+;;; $$ Last modified: 17:22:23 Sat Jul 14 2012 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -128,6 +128,7 @@
 ;;;   first item of the list. They need not be in ascending order. When this
 ;;;   argument is passed a value of T, the selection function will reinitialize
 ;;;   its default data and use that.
+;;; - :reinit. Used internally.  Do not change.
 ;;;
 ;;;   At the moment, the default data are:
 ;;;             '((1 ((3) (3) (1) (25)))
@@ -250,18 +251,24 @@
                         &key
                         (selection-fun #'create-psps-default)
                         (selection-fun-data nil)
+                        ;; MDE Sat Jul 14 17:20:27 2012 -- 
+                        (reinit t)
                         (pitch-seqs-per-rthm-seq 3))
 ;;; ****
   ;; 3.2.11: got to reinitialize our cscls so make this reset call here;
   ;; create-psps-default or the user-supplied selection-fun needs to be able to
   ;; handle this.  
-  (create-psps-default nil nil) ; see pitch-seq-palette.lsp
+  ;; MDE Sat Jul 14 17:19:51 2012 -- only reinit once, i.e. not on recursive
+  ;; calls.   
+  ;; (format t "~&create-psps ~a" (id rsp))
+  (when reinit
+    (create-psps-default nil nil)) ; see pitch-seq-palette.lsp
   (loop with pass-data = t
      for rs in (data rsp) do
-     ;; (print pass-data)
        (if (rsp-p (data rs))
            (create-psps (data rs) :selection-fun selection-fun 
                         :pitch-seqs-per-rthm-seq pitch-seqs-per-rthm-seq
+                        :reinit nil
                         :selection-fun-data 
                         (when pass-data
                           selection-fun-data))

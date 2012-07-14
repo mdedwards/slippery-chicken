@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 18:27:34 Sat Jul 14 2012 BST
+;;; $$ Last modified: 18:45:25 Sat Jul 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -250,7 +250,8 @@
 ;;; 
 ;;; 2) Remove the notes that have already been selected for other instruments.
 ;;;    This is where the slippery-chicken slot :instrument-hierarchy plays an
-;;;    important role.  
+;;;    important role.  This can be skipped if the <avoid-used-notes> argument
+;;;    is nil.
 ;;; 
 ;;; 3) If there is an subset with the same ID as the subset-id slot for this
 ;;;    instrument, use only those pitches common to that subset and those in
@@ -317,6 +318,10 @@
 ;;;   used; i.e., if the pitch-seq needs 6 notes and only 3 are available,
 ;;;   there would be note repetition, but as this would create a scaler of 0.5,
 ;;;   that would be acceptable
+;;; - Whether to avoid lines jumping an octave in either direction (passed by
+;;;   the slippery chicken slot). 
+;;; - Whether to remove notes already chosen for other instruments before
+;;;   selecting notes for this one.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns a list of pitch objects.
@@ -324,7 +329,9 @@
 ;;; SYNOPSIS
 (defmethod get-notes ((ps pitch-seq) instrument set hint-pitch limit-high
                       limit-low seq-num last-note-previous-seq
-                      pitch-seq-index-scaler-min avoid-melodic-octaves)
+                      pitch-seq-index-scaler-min avoid-melodic-octaves
+                      ;; MDE Sat Jul 14 18:29:51 2012
+                      avoid-used-notes)
 ;;; ****
   (declare (ignore hint-pitch))
   ;; (print (id instrument))
@@ -351,9 +358,11 @@
                ;; names and their used notes being the next level down), so
                ;; there can be no question of the notes used in a previous
                ;; sequence influencing the choice of notes here.
-               (used (loop for p in (get-used-notes set seq-num) 
-                        when (pitch-member p set-pitches-rm)
-                        collect p))
+               ;; MDE Sat Jul 14 18:43:20 2012 -- only when we want to!
+               (used (when avoid-used-notes
+                       (loop for p in (get-used-notes set seq-num) 
+                          when (pitch-member p set-pitches-rm)
+                          collect p)))
                ;; ... and remove these from the notes we'll select from (in
                ;; order to try and use as many notes from the set as possible
                ;; and avoid repeating notes across instruments)

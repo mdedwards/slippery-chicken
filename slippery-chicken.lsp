@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:09:54 Thu Jul  5 2012 BST
+;;; $$ Last modified: 18:36:35 Sat Jul 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -175,6 +175,11 @@
    ;; melodic octaves by default but make this a slot option now 
    (avoid-melodic-octaves :accessor avoid-melodic-octaves :type boolean
                           :initarg :avoid-melodic-octaves :initform t)
+   ;; MDE Sat Jul 14 18:33:47 2012 -- the get-notes function removes notes
+   ;; played by prior instruments when choosing notes for each rthm-seq; this
+   ;; can be turned off here 
+   (avoid-used-notes :accessor avoid-used-notes :type boolean :initarg
+                     :avoid-used-notes :initform t)
    ;; MDE Mon May  7 21:29:48 2012 -- if we've called multi-bar-rests method
    ;; but then call cmn-display with :multi-bar-rests nil we'll get an error
    ;; (too few bars returned by get-cmn-data), so we have to remember whether
@@ -425,6 +430,7 @@
                   ~%      instruments-hierarchy: ~a ~
                   ~%        fast-leap-threshold: ~a ~
                   ~%      avoid-melodic-octaves: ~a ~
+                  ~%      avoid-used-notes: ~a ~
                   ~%     multi-bar-rests-called: ~a ~
                   ~% pitch-seq-index-scaler-min: ~a"
           (title sc) (composer sc) (id (set-palette sc)) (id (set-map sc))
@@ -432,7 +438,8 @@
           (id (rthm-seq-palette sc)) (id (tempo-map sc)) (tempo-curve sc)
           (id (instrument-palette sc)) (id (ensemble sc))
           (instruments-hierarchy sc) (fast-leap-threshold sc) 
-          (avoid-melodic-octaves sc) (multi-bar-rests-called sc) 
+          (avoid-melodic-octaves sc) (avoid-used-notes sc) 
+          (multi-bar-rests-called sc) 
           (pitch-seq-index-scaler-min sc))
   (statistics sc stream))
 
@@ -507,6 +514,7 @@
           (slot-value no 'rehearsal-letters) 
           (my-copy-list (rehearsal-letters sc))
           (slot-value no 'avoid-melodic-octaves) (avoid-melodic-octaves sc) 
+          (slot-value no 'avoid-used-notes) (avoid-used-notes sc) 
           (slot-value no 'pitch-seq-index-scaler-min)
           (pitch-seq-index-scaler-min sc)
           (slot-value no 'multi-bar-rests-called) (multi-bar-rests-called sc)
@@ -6877,6 +6885,7 @@ duration: 20.0 (20.000)
                               (title "slippery chicken piece") 
                               composer
                               (avoid-melodic-octaves t)
+                              (avoid-used-notes t)
                               (pitch-seq-index-scaler-min 0.5) 
                               ;; MDE Mon Jul  2 16:08:42 2012 
                               (key-sig '(c major))
@@ -6911,6 +6920,7 @@ duration: 20.0 (20.000)
                       :fast-leap-threshold fast-leap-threshold
                       :pitch-seq-index-scaler-min pitch-seq-index-scaler-min
                       :avoid-melodic-octaves avoid-melodic-octaves
+                      :avoid-used-notes avoid-used-notes
                       :key-sig key-sig
                       :warn-ties warn-ties)))
 
@@ -7333,6 +7343,9 @@ duration: 20.0 (20.000)
                            0.5)
                        (if slippery-chicken
                            (avoid-melodic-octaves slippery-chicken)
+                           t)
+                       (if slippery-chicken
+                           (avoid-used-notes slippery-chicken)
                            t))))
          (notes (my-copy-list notes-from-pitch-seq))
          #| MDE Wed Apr 18 10:24:10 2012 -- 

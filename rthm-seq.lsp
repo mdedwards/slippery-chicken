@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 17:10:24 Sat Jun  9 2012 BST
+;;; $$ Last modified: 18:33:05 Sat Jul 14 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1162,7 +1162,7 @@ data: (3 8)
     (unless notes
       (when (pitch-seq-palette rs)
         (setf notes (get-notes (get-nth 0 (pitch-seq-palette rs))
-                               nil nil nil nil nil 0 nil 0.5 t))))
+                               nil nil nil nil nil 0 nil 0.5 t t))))
     (format notes-stream "~a" clef)
     ;; Loop through the bars
     (loop for bar in (bars rs) do
@@ -2771,11 +2771,11 @@ rthm-seq from-multipliers
 ;;; EXAMPLE
 #|
 (let ((frags '((1 (- s s - (e))) 
-	       (2 (s (s) (s) s)) 
-	       (3 ((s) - s e -))
-	       (4 (- s s (s) s -)) 
-	       (5 ((e) - s s -)) 
-	       (6 ((q))))))
+               (2 (s (s) (s) s)) 
+               (3 ((s) - s e -))
+               (4 (- s s (s) s -)) 
+               (5 ((e) - s s -)) 
+               (6 ((q))))))
   (make-rthm-seq-from-fragments 
    'test-rs frags
    '((1 2 3) (1 4) (6 1) (5 6)) 

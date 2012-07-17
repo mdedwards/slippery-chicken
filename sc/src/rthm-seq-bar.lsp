@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 19:13:38 Thu Jul  5 2012 BST
+;;; $$ Last modified: 17:55:24 Mon Jul 16 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1205,53 +1205,55 @@ data: ((2 4) Q E S S)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod consolidated-rthms-to-events ((rsb rthm-seq-bar) rthms)
-  (loop 
-     with i = 0
-     with new-e
-     with current-e = (get-nth-non-rest-rhythm 0 rsb)
-     ;; with ceb
-     with saw-note = nil
-     for r in rthms 
-     do
-     (when (needs-new-note r)
-       (setf current-e (get-nth-attack i rsb)
-             saw-note t)
-       (incf i))
-     ;; (print (bracket current-e))
-     ;; (print (bracket r))
-     (unless current-e
-       (error "rthm-seq-bar::consolidated-rthms-to-events: ~
-                  current-e is nil"))
-     (setf new-e (clone-with-new-class r 'event)
-           ;; ceb (bracket current-e)
-           )
-     ;; 5.3.11 this is definitely wrong in some cases
-     ;; (bracket new-e) (bracket current-e))
-     (when (and saw-note (not (bracket r))
-                ;; don't copy the bracket over unless we're at the start or in
-                ;; the middle of a bracket  
-                ;;(or (and ceb (listp ceb))
-                ;;  (and (numberp ceb) (< ceb 0))))
-                (/= (tuplet-scaler r) 1))
-       (setf (bracket new-e) (bracket current-e)))
-     (unless (is-rest r)
-       ;; MDE Sat Dec 24 16:22:06 2011 -- 
-       (when (event-p current-e)
-         ;; some slots, e.g. compound-duration will still be wrong but
-         ;; update-slots will take care of that later 
-         (copy-event-slots current-e new-e))
-       ;; 6/6/07 don't need marks when this is tied to!
-       (when (is-tied-to new-e)
-         (delete-marks new-e)))
-     (when (and (needs-new-note new-e)
-                ;; MDE Sat Dec 24 16:25:02 2011 -- otherwise we can't
-                ;; consolidate a rthm-seq from a palette
-                (event-p current-e)
-                (not (start-time new-e)))
-       (error "rthm-seq-bar::consolidated-rthms-to-events: ~
+  ;; MDE Mon Jul 16 17:27:16 2012 -- added this unless clause
+  (unless (zerop (notes-needed rsb))
+    (loop 
+       with i = 0
+       with new-e
+       with current-e = (get-nth-non-rest-rhythm 0 rsb)
+       ;; with ceb
+       with saw-note = nil
+       for r in rthms 
+       do
+       (when (needs-new-note r)
+         (setf current-e (get-nth-attack i rsb)
+               saw-note t)
+         (incf i))
+       ;; (print (bracket current-e))
+       ;; (print (bracket r))
+       (unless current-e
+         (error "rthm-seq-bar::consolidated-rthms-to-events: ~
+                  current-e is nil (with i = ~a) in ~a" i rsb))
+       (setf new-e (clone-with-new-class r 'event)
+             ;; ceb (bracket current-e)
+             )
+       ;; 5.3.11 this is definitely wrong in some cases
+       ;; (bracket new-e) (bracket current-e))
+       (when (and saw-note (not (bracket r))
+                  ;; don't copy the bracket over unless we're at the start or in
+                  ;; the middle of a bracket  
+                  ;;(or (and ceb (listp ceb))
+                  ;;  (and (numberp ceb) (< ceb 0))))
+                  (/= (tuplet-scaler r) 1))
+         (setf (bracket new-e) (bracket current-e)))
+       (unless (is-rest r)
+         ;; MDE Sat Dec 24 16:22:06 2011 -- 
+         (when (event-p current-e)
+           ;; some slots, e.g. compound-duration will still be wrong but
+           ;; update-slots will take care of that later 
+           (copy-event-slots current-e new-e))
+         ;; 6/6/07 don't need marks when this is tied to!
+         (when (is-tied-to new-e)
+           (delete-marks new-e)))
+       (when (and (needs-new-note new-e)
+                  ;; MDE Sat Dec 24 16:25:02 2011 -- otherwise we can't
+                  ;; consolidate a rthm-seq from a palette
+                  (event-p current-e)
+                  (not (start-time new-e)))
+         (error "rthm-seq-bar::consolidated-rthms-to-events: ~
                   bar ~a no start-time! ~&current-e: ~&~a ~&new-e: ~&~a"
-              (bar-num rsb) current-e new-e))
-     collect new-e))
+                (bar-num rsb) current-e new-e))
+       collect new-e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

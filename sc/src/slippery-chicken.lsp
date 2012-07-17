@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:36:35 Sat Jul 14 2012 BST
+;;; $$ Last modified: 14:55:04 Mon Jul 16 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6549,6 +6549,12 @@ duration: 20.0 (20.000)
       (error "slippery-chicken::plays-transposing-instrument: ~
               Can't get player ~a" player))
     (plays-transposing-instrument plyer ignore-octaves)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jul 16 14:54:48 2012 
+
+(defmethod duration ((sc slippery-chicken))
+  (duration (piece sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 15:30:17 Sat Jul 14 2012 BST
+;;; $$ Last modified: 12:55:06 Tue Jul 17 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -351,7 +351,8 @@
      ;; computer parts.
      (computer
       (:staff-name "computer" :staff-short-name "comp"
-       :lowest-sounding C-1 :highest-sounding G9 :clefs (treble bass)
+       :lowest-sounding C-1 :highest-sounding G9
+       :clefs (treble bass double-treble double-bass)
        :starting-clef treble)))))
        ;;; ****
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

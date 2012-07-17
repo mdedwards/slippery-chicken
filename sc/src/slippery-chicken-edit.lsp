@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 19:06:33 Thu Jul  5 2012 BST
+;;; $$ Last modified: 18:14:08 Mon Jul 16 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -2772,84 +2772,90 @@ NIL
 (defmethod tie-over-rests ((sc slippery-chicken) bar-num note-num player
                            &key end-bar auto-beam (consolidate-notes t))
 ;;; ****
-  (next-event sc player nil bar-num)
-  (unless (get-note sc bar-num note-num player)
-    (error "tie-over-rests: can't get note ~a, bar ~a, ~a"
-           note-num bar-num player))
-  (let* ((start-event (loop 
-                         for e = (next-event sc player)
-                         with nn = 0
-                         do
-                         (unless (is-rest e)
-                           (incf nn))
-                         (when (= nn note-num)
-                           (return e))))
-         (porc (when (and start-event
-                          (not (is-rest start-event)))
-                 (clone (pitch-or-chord start-event))))
-         (wporc (when (and start-event
-                           (written-pitch-or-chord start-event))
-                  (clone (written-pitch-or-chord start-event))))
-         (last-event start-event)
-         (new-ties 0)
-         (bar-nums (list bar-num)))
-    ;; (print start-event)
-    ;; just check we're not already tied here and exit if we are because we get
-    ;; some strange errors when we enter the wrong data when calling this fun
-    (when (is-tied-from start-event)
-      (warn "slippery-chicken::tie-over-rests: already tied from! Bar ~a, ~
+  ;; MDE Mon Jul 16 18:10:02 2012 -- 
+  (unless (zerop (num-rests (get-bar sc bar-num player)))
+    (next-event sc player nil bar-num)
+    (if (not (get-note sc bar-num note-num player))
+        ;; MDE Mon Jul 16 17:36:24 2012 -- error now warn
+        (warn "tie-over-rests: can't get note ~a, bar ~a, ~a. Could be this bar ~
+           is a rest bar."
+              note-num bar-num player)
+        (let* ((start-event (loop 
+                               for e = (next-event sc player)
+                               with nn = 0
+                               do
+                               (unless (is-rest e)
+                                 (incf nn))
+                               (when (= nn note-num)
+                                 (return e))))
+               (porc (when (and start-event
+                                (not (is-rest start-event)))
+                       (clone (pitch-or-chord start-event))))
+               (wporc (when (and start-event
+                                 (written-pitch-or-chord start-event))
+                        (clone (written-pitch-or-chord start-event))))
+               (last-event start-event)
+               (new-ties 0)
+               (bar-nums (list bar-num)))
+          ;; (print start-event) ; 
+          ;; just check we're not already tied here and exit if we are because we
+          ;; get ; some strange errors when we enter the wrong data when calling
+          ;; this fun ;
+          (when (is-tied-from start-event)
+            (warn "slippery-chicken::tie-over-rests: already tied from! Bar ~a, ~
               note ~a, ~a" bar-num note-num player))
-    (setf (is-tied-from start-event) t)
-    ;; remove any staccato or tenuto marks from this event
-    (rm-marks start-event '(s as t) nil)
-    (when porc
-      (delete-marks porc))
-    (when wporc
-      (delete-marks wporc))
-    (loop 
-       for e = (next-event sc player)
-       for bnum = (next-event sc nil)
-       for bar = (get-bar sc bnum player)
-       while (and (if end-bar (<= bnum end-bar) t)
-                  e (is-rest e))
-       do
-       ;; (print (data e))
-       ;; keep track of the bars we've changed
-       (pushnew bnum bar-nums)
-       (if (is-rest-bar bar)
-           (let ((events (events-for-full-bar (get-time-sig bar) 
-                                              porc wporc)))
-             ;;(print (data porc))
-             (incf new-ties (length events))
-             (setf last-event (first (last events))
-                   (rhythms bar) events))
-           (progn
-             (incf new-ties)
-             (setf (pitch-or-chord e) (clone porc)
-                   (written-pitch-or-chord e) (when wporc 
-                                                (clone wporc))
-                   (is-rest e) nil
-                   (needs-new-note e) nil
-                   (is-tied-to e) t
-                   (is-tied-from e) t
-                   last-event e)))
-       (gen-stats bar))
-    ;; 3.3.11 if we just test for last-event we might screw up ties despite the
-    ;; fact that we've done nothing. 
-    (when (zerop new-ties)
-      (error "slippery-chicken::tie-over-rests: no ties to make! Bar ~a, ~
-              note ~a, ~a" bar-num note-num player))      
-    (when (> new-ties 0)
-      (setf (is-tied-from last-event) nil))
-    (when (or auto-beam consolidate-notes)
-      (loop 
-         for bnum in bar-nums 
-         for bar = (get-bar sc bnum player)
-         do
-         (when consolidate-notes
-           (consolidate-notes bar nil auto-beam))
-         (when auto-beam
-           (auto-beam bar auto-beam nil))))))
+          (setf (is-tied-from start-event) t)
+          ;; remove any staccato or tenuto marks from this event ;
+          (rm-marks start-event '(s as t) nil)
+          (when porc
+            (delete-marks porc))
+          (when wporc
+            (delete-marks wporc))
+          (loop 
+             for e = (next-event sc player)
+             for bnum = (next-event sc nil)
+             for bar = (get-bar sc bnum player)
+             while (and (if end-bar (<= bnum end-bar) t)
+                        e (is-rest e))
+             do
+             ;; (print (data e)) 
+             ;; keep track of the bars we've changed
+             (pushnew bnum bar-nums)
+             (if (is-rest-bar bar)
+                 (let ((events (events-for-full-bar (get-time-sig bar) 
+                                                    porc wporc)))
+                   ;;(print (data porc)) 
+                   (incf new-ties (length events))
+                   (setf last-event (first (last events))
+                         (rhythms bar) events))
+                 (progn
+                   (incf new-ties)
+                   (setf (pitch-or-chord e) (clone porc)
+                         (written-pitch-or-chord e) (when wporc 
+                                                      (clone wporc))
+                         (is-rest e) nil
+                         (needs-new-note e) nil
+                         (is-tied-to e) t
+                         (is-tied-from e) t
+                         last-event e)))
+             (gen-stats bar))
+          ;; 3.3.11 if we just test for last-event we might screw up ties despite
+          ;; the fact that we've done nothing.   
+          ;; MDE Mon Jul 16 17:17:02 2012 -- changed error to warn 
+          (when (zerop new-ties)
+            (warn "slippery-chicken::tie-over-rests: no ties to make! Bar ~a, ~
+             note ~a, ~a" bar-num note-num player))      
+          (when (> new-ties 0)
+            (setf (is-tied-from last-event) nil))
+          (when (and (> new-ties 0) (or auto-beam consolidate-notes))
+            (loop 
+               for bnum in bar-nums 
+               for bar = (get-bar sc bnum player)
+               do
+               (when consolidate-notes
+                 (consolidate-notes bar nil auto-beam))
+               (when auto-beam
+                 (auto-beam bar auto-beam nil))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3718,9 +3724,10 @@ NIL
 
 ;;; ****m* slippery-chicken-edit/process-events-by-time
 ;;; DESCRIPTION
-;;; Apply the specified function to all event objects within the given measure
-;;; range in order of their chronological occurrence. This method lends itself
-;;; to user-defined functions.
+;;; Apply the given function to all event objects within the given measure
+;;; range in order of their chronological occurrence.  NB If the time of the
+;;; event is needed it can be accessed in the given function via the event's
+;;; start-time slot. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.

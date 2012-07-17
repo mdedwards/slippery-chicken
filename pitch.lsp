@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 12:33:44 Tue Jun 26 2012 BST
+;;; $$ Last modified: 12:58:27 Tue Jul 17 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1627,8 +1627,9 @@ data: CQS4
       (note octave)
       (get-note-octave (id p)) 
     ;; MDE Mon May 14 14:32:17 2012 
-    (unless (integer>=0 octave)
-      (warn "~a~%pitch::set-white-note: octave is less than zero.  ~%~
+    (unless (and (integerp octave) (>= octave -1))
+      (warn "~a~%pitch::set-white-note: octave is either not an integer ~
+             or less than -1.  ~%~
              Pitch probably won't display or play correctly." p))
     (let* ((str (string note))
            (note-letter (read-from-string (subseq str 0 1)))

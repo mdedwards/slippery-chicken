@@ -11,14 +11,14 @@
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
-;;; Purpose:          class used in rthm-chain.
+;;; Purpose:          Class used in rthm-chain.
 ;;;                   No public interface envisaged (so no robodoc entries).
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 18:23:01 Fri Jun  8 2012 BST
+;;; $$ Last modified: 14:51:45 Mon Jul 16 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -142,7 +142,9 @@
 ;;; remembers where we were last time--this means if we change level before
 ;;; getting to the end of a ten-list, we'll pick up where we left off next time
 ;;; we return to that level.
-;;; <level> can be a floating point number: it will be rounded.
+;;; <level> can be a floating point number: it will be rounded. Must be between
+;;; 0 and 10 though where 0 is always inactive, 10 is always active and
+;;; anything inbetween will use the data lists circularly.
 (defmethod active ((al activity-levels) level)
   (let ((max (1+ (length (data al))))) ; the 0 and 10 cases are implicit
     (flet ((active-error ()

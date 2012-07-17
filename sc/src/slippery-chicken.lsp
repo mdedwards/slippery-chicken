@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:55:04 Mon Jul 16 2012 BST
+;;; $$ Last modified: 20:57:16 Tue Jul 17 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2339,7 +2339,7 @@ data: 32
            for bar = (get-bar (piece sc) bnum player)
            while (and bar (<= (bar-num bar) end-bar))
            do
-           (consolidate-notes bar nil auto-beam)
+             (consolidate-notes bar nil auto-beam)
            ;; MDE Wed Apr 25 16:33:29 2012 -- when clause added!
            ;; MDE Sat Jun  9 16:02:47 2012 -- when changed to if so we can at
            ;; least check the beams (and call auto-beam no matter what if

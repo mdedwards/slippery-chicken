@@ -4839,7 +4839,26 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jul  5 19:07:56 2012 
 
+;;; ****m* rthm-seq-bar/set-amplitudes
+;;; DESCRIPTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-amplitudes ((rsb rthm-seq-bar) amp)
+;;; ****
   (loop for r in (rhythms rsb) do
        (setf (amplitude r) amp))
   amp)
@@ -4847,6 +4866,24 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jul  5 19:12:54 2012 
 
+;;; ****m* rthm-seq-bar/set-dynamics
+;;; DESCRIPTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod set-dynamics ((rsb rthm-seq-bar) dynamic)
   (loop for r in (rhythms rsb) do
        (add-mark r dynamic))
@@ -4931,6 +4968,7 @@ data: ((2 4) { 3 TE TE TE } Q)
   (if (rthm-seq-bar-p rhythms)
       rhythms
     (make-instance 'rthm-seq-bar :data rhythms :id name)))
+;;; ****
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

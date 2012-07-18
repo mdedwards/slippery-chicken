@@ -2682,13 +2682,20 @@ NIL
          (setf note-num (if (= bnum start-bar)
                             (1- start-note)
                             0))
-         (setf note-num 0
-               event-num 0)
+         (setf ;;; SAR Wed Jul 11 14:12:28 BST 2012: commented this out:
+          ;; note-num 0
+          event-num 0)
          (loop 
             while (< event-num (num-rhythms bar))
             for event = (get-nth-event event-num bar)
             do
             ;; (format t "~&~a ~a" bnum note-num)
+            ;; SAR Wed Jul 18 12:50:55 BST 2012: Added this safety clause to
+            ;; allow users to specify ties into the last bar but not past the
+            ;; penultimate event.
+              (if (and (= bnum (num-bars sc))
+                       (= event-num (1- (num-rhythms bar))))
+                  (return))
               (unless (is-rest event)
                 (incf note-num))
               (when (and (not (is-rest event))

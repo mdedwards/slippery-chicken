@@ -4839,21 +4839,33 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jul  5 19:07:56 2012 
 
+;;; SAR Wed Jul 18 13:28:46 BST 2012: Added robodoc entry
+
 ;;; ****m* rthm-seq-bar/set-amplitudes
 ;;; DESCRIPTION
-;;; 
+;;; Add a specified amplitude (between 0.0 and 1.0) to all non-rest event
+;;; objects in a specified rthm-seq-bar object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A rthm-seq-bar object.
+;;; - A number that is an amplitude value between 0.0 and 1.0.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the amplitude value set.
 ;;; 
 ;;; EXAMPLE
 #|
+(let* ((mini
+        (make-slippery-chicken
+         '+sc-object+
+         :ensemble '(((va (viola :midi-channel 2))))
+         :set-palette '((1 ((c3 d3 e3 f3 g3 a3 b3 c4))))
+         :set-map '((1 (1 1 1)))
+         :rthm-seq-palette '((1 ((((4 4) e (e) e (e) (e) e e e))
+                                 :pitch-seq-palette ((1 2 3 4 5)))))
+         :rthm-seq-map '((1 ((va (1 1 1))))))))
+  (set-amplitudes (get-bar mini 2 'va) 0.9)
+  (cmn-display mini))
 
 |#
 ;;; SYNOPSIS
@@ -4866,21 +4878,33 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jul  5 19:12:54 2012 
 
+;;; SAR Wed Jul 18 13:35:12 BST 2012: Added robodoc entry
+
 ;;; ****m* rthm-seq-bar/set-dynamics
 ;;; DESCRIPTION
-;;; 
+;;; Add a specified dynamic mark to all non-rest event objects in a specified
+;;; rthm-seq-bar-object. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A rthm-seq-bar object.
+;;; - A dynamic mark.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; The specified dynamic mark
 ;;; 
 ;;; EXAMPLE
 #|
+(let* ((mini
+        (make-slippery-chicken
+         '+sc-object+
+         :ensemble '(((va (viola :midi-channel 2))))
+         :set-palette '((1 ((c3 d3 e3 f3 g3 a3 b3 c4))))
+         :set-map '((1 (1 1 1)))
+         :rthm-seq-palette '((1 ((((4 4) e (e) e (e) (e) e e e))
+                                 :pitch-seq-palette ((1 2 3 4 5)))))
+         :rthm-seq-map '((1 ((va (1 1 1))))))))
+  (set-dynamics (get-bar mini 2 'va) 'ppp)
+  (cmn-display mini))
 
 |#
 ;;; SYNOPSIS

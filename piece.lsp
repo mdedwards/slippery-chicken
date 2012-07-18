@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 19:52:13 Mon Jul  2 2012 BST
+;;; $$ Last modified: 13:45:48 Wed Jul 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -757,18 +757,21 @@ BAR-HOLDER:
 (defmethod get-tied-durations ((p piece) bar-num start-event player)
   ;; (print 'get-tied-durations)
   (loop 
-      with result = 0.0
-      with result-in-tempo = 0.0
-      with happy = t
-      for bnum from bar-num
-      for bar = (get-bar p bnum player) 
-      for start = (if (= bnum bar-num)
-                            start-event
-                          0)
-      do
-        (unless bar
-          (error "get-tied-durations: ran out of bars at bar-num ~a!" 
-                 bnum))
+     with result = 0.0
+     with result-in-tempo = 0.0
+     with happy = t
+     for bnum from bar-num
+     for bar = (get-bar p bnum player) 
+     for start = (if (= bnum bar-num)
+                     start-event
+                     0)
+     do
+       #|
+     (unless bar
+       (error "get-tied-durations: ran out of bars at bar-num ~a!" 
+     bnum))
+     |#
+       (if bar
         (loop 
             for event-num from start below (num-rhythms bar)
             for event = (get-nth-event event-num bar)
@@ -781,6 +784,7 @@ BAR-HOLDER:
                 (progn
                   (setf happy nil)
                   (return))))
+        (setf happy nil))
         (unless happy
           (return (values result result-in-tempo)))))
 
@@ -1065,39 +1069,39 @@ BAR-HOLDER:
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Print the number of sequenz objects contained in section 2 of each player's
-;;; part, delete two sequenz objects from each part in that section, and print
-;;; the number of sequenz objects again to see the difference. Update the slots
-;;; and call cmn-display for printable output.
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((hn (french-horn :midi-channel 1))
-                     (vc (cello :midi-channel 2))))
-        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-        :set-map '((1 (1 1 1 1 1))
-                   (2 (1 1 1 1 1))
-                   (3 (1 1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) h q e s s))
-                                :pitch-seq-palette ((1 2 3 4 5))))
-                            (2 ((((4 4) h h))
-                                :pitch-seq-palette ((1 2)))))
-        :rthm-seq-map '((1 ((hn (1 1 1 1 1))
-                            (vc (1 1 1 1 1))))
-                        (2 ((hn (2 2 2 2 2))
-                            (vc (2 2 2 2 2))))
-                        (3 ((hn (1 1 1 1 1))
-                            (vc (1 1 1 1 1))))))))
-  (print (length (get-data-data 'hn (get-section mini 2))))
-  (print (length (get-data-data 'vc (get-section mini 2))))
-  (delete-sequenzes (piece mini) 8 'hn 2)
-  (delete-sequenzes (piece mini) 8 'vc 2)
-  (print (length (get-data-data 'hn (get-section mini 2))))
-  (print (length (get-data-data 'vc (get-section mini 2))))
-  (update-slots mini)
-  (cmn-display mini))
+;;; Print the number of sequenz objects contained in section 2 of each player's ;
+;;; part, delete two sequenz objects from each part in that section, and print ;
+;;; the number of sequenz objects again to see the difference. Update the slots ;
+;;; and call cmn-display for printable output. ;
+     (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((hn (french-horn :midi-channel 1))
+(vc (cello :midi-channel 2))))
+:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+:set-map '((1 (1 1 1 1 1))
+(2 (1 1 1 1 1))
+(3 (1 1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) h q e s s))
+:pitch-seq-palette ((1 2 3 4 5))))
+(2 ((((4 4) h h))
+:pitch-seq-palette ((1 2)))))
+:rthm-seq-map '((1 ((hn (1 1 1 1 1))
+(vc (1 1 1 1 1))))
+(2 ((hn (2 2 2 2 2))
+(vc (2 2 2 2 2))))
+(3 ((hn (1 1 1 1 1))
+(vc (1 1 1 1 1))))))))
+(print (length (get-data-data 'hn (get-section mini 2))))
+(print (length (get-data-data 'vc (get-section mini 2))))
+(delete-sequenzes (piece mini) 8 'hn 2)
+(delete-sequenzes (piece mini) 8 'vc 2)
+(print (length (get-data-data 'hn (get-section mini 2))))
+(print (length (get-data-data 'vc (get-section mini 2))))
+(update-slots mini)
+(cmn-display mini))
 
-|#
+     |#
 ;;; SYNOPSIS
 (defmethod delete-sequenzes ((p piece) bar-num player &optional (how-many 1))
 ;;; ****
@@ -1130,55 +1134,55 @@ BAR-HOLDER:
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((hn (french-horn :midi-channel 1))
-                     (vc (cello :midi-channel 2))))
-        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-        :set-map '((1 (1 1 1 1 1))
-                   (2 (1 1 1 1 1))
-                   (3 (1 1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) h q e s s))
-                                :pitch-seq-palette ((1 2 3 4 5)))))
-        :rthm-seq-map '((1 ((hn (1 1 1 1 1))
-                            (vc (1 1 1 1 1))))
-                        (2 ((hn (1 1 1 1 1))
-                            (vc (1 1 1 1 1))))
-                        (3 ((hn (1 1 1 1 1))
-                            (vc (1 1 1 1 1))))))))
-  (get-sequenz-from-bar-num (piece mini) 7 'vc))
+     (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((hn (french-horn :midi-channel 1))
+(vc (cello :midi-channel 2))))
+:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+:set-map '((1 (1 1 1 1 1))
+(2 (1 1 1 1 1))
+(3 (1 1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) h q e s s))
+:pitch-seq-palette ((1 2 3 4 5)))))
+:rthm-seq-map '((1 ((hn (1 1 1 1 1))
+(vc (1 1 1 1 1))))
+(2 ((hn (1 1 1 1 1))
+(vc (1 1 1 1 1))))
+(3 ((hn (1 1 1 1 1))
+(vc (1 1 1 1 1))))))))
+(get-sequenz-from-bar-num (piece mini) 7 'vc))
 
-=>
-SEQUENZ: pitch-curve: (1 2 3 4 5)
-RTHM-SEQ: num-bars: 1
-          num-rhythms: 5
-          num-notes: 5
-          num-score-notes: 5
-          num-rests: 0
-          duration: 4.0
-          psp-inversions: NIL
-          marks: NIL
-          time-sigs-tag: NIL
-          handled-first-note-tie: NIL
-         (for brevity's sake, slots pitch-seq-palette and bars are not printed)
-SCLIST: sclist-length: 3, bounds-alert: T, copy: T
-LINKED-NAMED-OBJECT: previous: NIL, this: (1), next: NIL
-BAR-HOLDER: 
-            start-bar: 7
-            end-bar: 7
-            num-bars: 1
-            start-time: 24.0
-            end-time: 28.0
-            start-time-qtrs: 24.0
-            end-time-qtrs: 28.0
-            num-notes (attacked notes, not tied): 5
-            num-score-notes (tied notes counted separately): 5 
-            num-rests: 0
-            duration-qtrs: 4.0 
-            duration: 4.0 (4.000)
+     =>
+     SEQUENZ: pitch-curve: (1 2 3 4 5)
+     RTHM-SEQ: num-bars: 1
+     num-rhythms: 5
+     num-notes: 5
+     num-score-notes: 5
+     num-rests: 0
+     duration: 4.0
+     psp-inversions: NIL
+     marks: NIL
+     time-sigs-tag: NIL
+     handled-first-note-tie: NIL
+     (for brevity's sake, slots pitch-seq-palette and bars are not printed)
+     SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+     LINKED-NAMED-OBJECT: previous: NIL, this: (1), next: NIL
+     BAR-HOLDER: 
+     start-bar: 7
+     end-bar: 7
+     num-bars: 1
+     start-time: 24.0
+     end-time: 28.0
+     start-time-qtrs: 24.0
+     end-time-qtrs: 28.0
+     num-notes (attacked notes, not tied): 5
+     num-score-notes (tied notes counted separately): 5 
+     num-rests: 0
+     duration-qtrs: 4.0 
+     duration: 4.0 (4.000)
 
-|#
+     |#
 ;;; SYNOPSIS
 (defmethod get-sequenz-from-bar-num ((p piece) bar-num player)
 ;;; ****

@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 18:14:08 Mon Jul 16 2012 BST
+;;; $$ Last modified: 13:58:03 Wed Jul 18 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -2693,7 +2693,7 @@ NIL
             ;; SAR Wed Jul 18 12:50:55 BST 2012: Added this safety clause to
             ;; allow users to specify ties into the last bar but not past the
             ;; penultimate event.
-              (if (and (= bnum (num-bars sc))
+              (when (and (= bnum (num-bars sc))
                        (= event-num (1- (num-rhythms bar))))
                   (return))
               (unless (is-rest event)

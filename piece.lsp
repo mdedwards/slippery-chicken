@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 13:45:48 Wed Jul 18 2012 BST
+;;; $$ Last modified: 14:01:42 Wed Jul 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -766,27 +766,25 @@ BAR-HOLDER:
                      start-event
                      0)
      do
-       #|
      (unless bar
        (error "get-tied-durations: ran out of bars at bar-num ~a!" 
-     bnum))
-     |#
-       (if bar
-        (loop 
-            for event-num from start below (num-rhythms bar)
-            for event = (get-nth-event event-num bar)
-            do
-              (when (is-tied-to event)
-                (incf result (duration event))
-                (when (event-p event)
-                  (incf result-in-tempo (duration-in-tempo event))))
-              (unless (is-tied-from event)
-                (progn
-                  (setf happy nil)
-                  (return))))
-        (setf happy nil))
-        (unless happy
-          (return (values result result-in-tempo)))))
+              bnum))
+     ;; (if bar
+     (loop 
+        for event-num from start below (num-rhythms bar)
+        for event = (get-nth-event event-num bar)
+        do
+        (when (is-tied-to event)
+          (incf result (duration event))
+          (when (event-p event)
+            (incf result-in-tempo (duration-in-tempo event))))
+        (unless (is-tied-from event)
+          (progn
+            (setf happy nil)
+            (return))))
+     ;; (setf happy nil))
+     (unless happy
+       (return (values result result-in-tempo)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

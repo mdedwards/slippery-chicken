@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 12:55:06 Tue Jul 17 2012 BST
+;;; $$ Last modified: 22:28:17 Wed Jul 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -348,7 +348,8 @@
        :midi-program 44))
      ;; SAR Thu Apr 12 18:19:21 BST 2012: Added "computer" part for "silent"
      ;; parts in case the user would like to create rhythmically independent
-     ;; computer parts.
+     ;; computer parts.  
+     ;; MDE Jul 2012 -- changed to reflect more clefs (and removed percussion)
      (computer
       (:staff-name "computer" :staff-short-name "comp"
        :lowest-sounding C-1 :highest-sounding G9

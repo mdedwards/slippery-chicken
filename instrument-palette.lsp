@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    6th September 2001
 ;;;
-;;; $$ Last modified: 19:10:45 Mon Feb 20 2012 GMT
+;;; $$ Last modified: 21:57:31 Wed Jul 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -70,13 +70,16 @@
 
 (defmethod verify-and-store :after ((ip instrument-palette))
   (loop for i in (data ip) and j from 0 do
-       (if (typep (data i) 'recursive-assoc-list)
-           (error "instrument-palette::verify-and-store: ~
+     ;; MDE Wed Jul 18 21:57:06 2012 -- if we already have instruments don't
+     ;; init them here 
+       (unless (instrument-p i)
+         (if (typep (data i) 'recursive-assoc-list)
+             (error "instrument-palette::verify-and-store: ~
                     In order to allow nested ensembles, nested ~
                     instrument palettes have to be avoided: ~a"
-                  (id ip))
-           (setf (nth j (data ip)) (apply #'make-instrument
-                                          (cons (id i) (data i)))))))
+                    (id ip))
+             (setf (nth j (data ip)) (apply #'make-instrument
+                                            (cons (id i) (data i))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

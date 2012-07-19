@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 20:57:16 Tue Jul 17 2012 BST
+;;; $$ Last modified: 10:43:40 Thu Jul 19 2012 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6687,7 +6687,7 @@ duration: 20.0 (20.000)
 ;;;   players in the ensemble that play multiple instruments will change
 ;;;   instruments. The format will be a list of section IDs coupled with a list
 ;;;   of player IDs, each of which in turn is coupled with a list of 2-item
-;;;   lists consisting of a measure number paired with the ID (name) of one of
+;;;   lists consisting of a sequence number paired with the ID (name) of one of
 ;;;   the instrument objects assigned to that player in the ensemble
 ;;;   object. See the user's manual and the robodoc entries for
 ;;;   instrument-change-map for more detail.
@@ -7315,6 +7315,7 @@ duration: 20.0 (20.000)
                         ;; played, no matter how long ago
                         last-pitch)
   ;; (print "entering sc-make-sequenz")
+  ;; (print instrument-change)
   (object-is-nil? rthm-seq "slippery-chicken::sc-make-sequenz" 'rthm-seq)
   ;; (object-is-nil? pitch-seq "slippery-chicken::sc-make-sequenz" 'pitch-seq)
   ;; (print instrument-change)
@@ -7440,7 +7441,8 @@ duration: 20.0 (20.000)
                     ;; note (this makes use of new cmn code by me and
                     ;; hopefully added to main repository by Bill).
                     ;; (instrument change is registered here)
-                    (when got-ins ;; MDE Thu Jul  5 17:02:03 2012 -- 
+                    (when got-ins ;; MDE Thu Jul  5 17:02:03 2012
+                      ;; (print (staff-short-name instrument))
                       (setf (instrument-change event)
                             (if (staff-short-name instrument)
                                 (list (staff-name instrument)

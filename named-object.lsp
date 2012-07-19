@@ -31,7 +31,7 @@
 ;;;
 ;;; Creation date:    4th December 2000
 ;;;
-;;; $$ Last modified: 12:17:00 Sat Apr 28 2012 BST
+;;; $$ Last modified: 18:06:17 Wed Jul 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -222,6 +222,4 @@
             (t object)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF named-object.lsp
-

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 18:33:05 Sat Jul 14 2012 BST
+;;; $$ Last modified: 17:53:45 Wed Jul 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1672,22 +1672,22 @@ rthm-seq-bar::get-beats: Can't find an exact beat of rhythms
 ;;; SYNOPSIS
 (defmethod chop ((rs rthm-seq) &optional chop-points (unit 's)
                  (number-bars-first t))
-;;; ****
+;;; ****                                
   (when number-bars-first
     (set-bar-nums rs))
   (loop 
-     ;; the rthm-seq-bar needs to know where we are in the pitch-seq so it can
-     ;; skip that many notes when pulling out the correct ones for itself.
+     ;; the rthm-seq-bar needs to know where we are in the pitch-seq so it can ;
+     ;; skip that many notes when pulling out the correct ones for itself. ;
      with attacks = 0
      with count = 1
      with psp = (pitch-seq-palette rs)
      with result = '()
      for bar in (bars rs) 
-     ;; we stored the positions of the start and end notes of the old bar
-     ;; that's cannibalised in rthm-seq-bar::new-bar-from-time-range. We use
-     ;; these numbers ___plus___ the number of attacked notes in the bars
-     ;; previous to the current in order to get a sub-sequence out of the
-     ;; pitch-seq-palette and apply it to the new rthm-seq.
+     ;; we stored the positions of the start and end notes of the old bar ;
+     ;; that's cannibalised in rthm-seq-bar::new-bar-from-time-range. We use ;
+     ;; these numbers ___plus___ the number of attacked notes in the bars ;
+     ;; previous to the current in order to get a sub-sequence out of the ;
+     ;; pitch-seq-palette and apply it to the new rthm-seq. ;
      for new-bars = (chop bar chop-points unit (list-to-string (this rs) "-"))
      do
      (loop 
@@ -1708,6 +1708,12 @@ rthm-seq-bar::get-beats: Can't find an exact beat of rhythms
                       notes, but psp has ~a"
                      rs (print-simple rs) (pitch-seq-palette rs) (num-notes rs)
                      (num-notes psp-new)))))
+        ;; MDE Wed Jul 18 17:51:33 2012 -- delete ties at beginning and end of
+        ;; rthm-seq  
+        (let ((first (get-first rs))
+              (last (get-last rs)))
+          (setf (is-tied-to first) nil
+                (is-tied-from last) nil))
         (push rs result)
         (incf count))
      (incf attacks (notes-needed bar))
@@ -2392,6 +2398,20 @@ RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1,
 
 (defmethod auto-beam ((rs rthm-seq) &optional (beat nil) (check-dur t))
   (loop for bar in (bars rs) do (auto-beam bar beat check-dur)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Jul 18 17:41:29 2012 -- get the first rhythm/event in a rthm-seq
+(defmethod get-first ((rs rthm-seq))
+  (let ((bar1 (first (bars rs))))
+    (when bar1
+      (first (rhythms bar1)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Jul 18 17:41:29 2012 -- get the last rhythm/event in a rthm-seq
+(defmethod get-last ((rs rthm-seq))
+  (let ((barn (first (last (bars rs)))))
+    (when barn
+      (first (last (rhythms barn))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

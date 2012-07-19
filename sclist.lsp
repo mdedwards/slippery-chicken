@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified: 21:26:09 Mon May 14 2012 BST
+;;; $$ Last modified: 21:53:33 Wed Jul 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -435,7 +435,10 @@ remove-elements: arguments 2 and 3 must be integers < the length of argument 1:
 
 ;;; ****m* sclist/combine
 ;;; DESCRIPTION
-;;; Combine the contents of two given sclist objects into one list.
+;;; Combine the contents of two given sclist objects into one list.  NB This
+;;; changes the data list of a clone of the first argument by appending a
+;;; copy of the data list of the second argument i.e. it creates a wholly new
+;;; sclist object which it then returns.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A first sclist object.
@@ -463,6 +466,7 @@ data: (0 1 2 3 4 5 6 7 8 9)
 ;;; ****
   (let ((result (clone scl1)))
     (setf (data result) (append (data scl1) (my-copy-list (data scl2))))
+    ;; (print result)
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

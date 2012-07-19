@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 15:42:28 Sun Jun 17 2012 +0100
+;;; $$ Last modified: 23:08:23 Wed Jul 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -328,7 +328,7 @@
                                 total-duration: ~a~
                   ~%            total-degrees: ~a, microtones: ~a~
                   ~%            missing-notes: ~a, subset-id: ~a~
-                  ~%            staff-name: ~a, staff-short-name: ~a,
+                  ~%            staff-name: ~a, staff-short-name: ~a,~
                   ~%            largest-fast-leap: ~a, tessitura: ~a"
           (when (lowest-written ins) (data (lowest-written ins)))
           (when (highest-written ins) (data (highest-written ins)))
@@ -978,6 +978,10 @@ data: NIL
              ;; lowest highest ledgers-below-begin ledgers-above-begin
              '((bass (ef1 b4 e2 c4))
                (treble (ef3 d7 cs4 af5))
+               ;; MDE Wed Jul 18 22:23:38 2012 -- treat the percussion like
+               ;; treble (even though there's a difference between cmn and
+               ;; lilypond on where middle c occurs in percussion clef) 
+               (percussion (ef3 d7 cs4 af5))
                (alto (bf2 fs5 ds3 bf4))
                (tenor (bf2 cs5 b2 gf4))
                ;; these are the clefs with 8ve signs under/over them
@@ -990,8 +994,13 @@ data: NIL
                         verbose)
     (flet ((in-clef-range (chord-highest chord-lowest clef)
              (let* ((clx (get-data clef clex))
-                    (clo (first (data clx)))
-                    (chi (second (data clx))))
+                    clo chi)
+               ;; MDE Wed Jul 18 22:25:34 2012 
+               (unless clx
+                 (error "instrument::best-clef-aux: clef ~a not yet ~
+                         implemented here." clef))
+               (setf clo (first (data clx))
+                     chi (second (data clx)))
                (and (pitch-in-range chord-highest clo chi)
                     (pitch-in-range chord-lowest clo chi))))
            (needs-ledgers (chord-highest chord-lowest clef)

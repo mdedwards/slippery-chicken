@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 14:01:42 Wed Jul 18 2012 BST
+;;; $$ Last modified: 10:54:34 Thu Jul 19 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -570,6 +570,8 @@ BAR-HOLDER:
     (let ((seq (get-seq player)))
       (if seq
           seq
+          ;; here we clone an existing sequence simultaneous in another player
+          ;; and set it to be resting in each bar.
           (when create-rest-seq
             (let ((all-players (players p))
                   (cloned-seq nil))
@@ -767,7 +769,8 @@ BAR-HOLDER:
                      0)
      do
      (unless bar
-       (error "get-tied-durations: ran out of bars at bar-num ~a!" 
+       (error "get-tied-durations: ran out of bars at bar-num ~a! ~
+               (Is there perhaps a tie at the end of one of the last bars?)" 
               bnum))
      ;; (if bar
      (loop 
@@ -897,16 +900,27 @@ BAR-HOLDER:
         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod add-rest-sequenzes ((p piece))
+(defmethod add-rest-sequenzes ((p piece) (sc slippery-chicken))
   (let ((player-section (get-first p)))
     (loop while player-section do
-      (let ((player (id player-section))
-            (section (butlast (this player-section))))
-        (loop for seq in (data player-section) and i from 0 do
-          (unless seq
-            (setf (nth i (data player-section)) 
-                  (get-nth-sequenz p section player i))))
-        (setf player-section (get-data (next player-section) p nil))))))
+         (let ((player (id player-section))
+               (section (butlast (this player-section))))
+           (loop for seq in (data player-section) and i from 0 do
+              ;; (format t "~%section ~a player ~a seq ~a" section player i)
+                (unless seq
+                  ;; MDE Thu Jul 19 10:52:56 2012 -- if we add an instrument
+                  ;; change to an empty sequence, it will be missed in
+                  ;; make-section-for-player so we need to add it here
+                  (multiple-value-bind
+                        ;; have to get the second values result here so we
+                        ;; know whether to trigger a program-change or not
+                        (instrument instrument-change)
+                      (get-current-instrument-for-player 
+                       section player (1+ i) sc)
+                    )
+                  (setf (nth i (data player-section)) 
+                        (get-nth-sequenz p section player i))))
+           (setf player-section (get-data (next player-section) p nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

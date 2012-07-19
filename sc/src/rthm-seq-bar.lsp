@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 21:05:32 Tue Jul 17 2012 BST
+;;; $$ Last modified: 22:59:08 Wed Jul 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1813,14 +1813,14 @@ data: ((2 4) - S S - S - S S S - S S)
     (setf (num-rhythms rsb) (length rhythms)
           (is-rest-bar rsb) (if (not rhythms)
                                 t
-                              (when (and (= 1 (num-rhythms rsb))
-                                         (is-rest (first rhythms)))
-                                (setf (is-whole-bar-rest (first (rhythms rsb)))
-                                  t)))
+                                (when (and (= 1 (num-rhythms rsb))
+                                           (is-rest (first rhythms)))
+                                  (setf (is-whole-bar-rest (first (rhythms rsb)))
+                                        t)))
           ;; Store the number of notes that will be need for this bar,
           ;; i.e. how many were not rests or ties
           (notes-needed rsb) (loop for r in rhythms count
-                                   (needs-new-note r))
+                                  (needs-new-note r))
           (num-rests rsb) (loop for r in rhythms count (is-rest r))
           (num-score-notes rsb) (- (num-rhythms rsb) (num-rests rsb))))
   rsb)
@@ -4882,8 +4882,13 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 
 ;;; ****m* rthm-seq-bar/set-dynamics
 ;;; DESCRIPTION
-;;; Add a specified dynamic mark to all non-rest event objects in a specified
-;;; rthm-seq-bar-object. 
+;;; Add a specified dynamic mark to all attacked event objects (i.e. not rests
+;;; and not notes that are tied to) in a specified rthm-seq-bar-object. This
+;;; method was created mainly to make it easy to set amplitudes for a range of
+;;; notes (e.g. with map-over-bars), so that they are, for example, reflected
+;;; in MIDI velocities.  If used over many notes the score will probably then be
+;;; littered with extraneous dynamic marks.  These can then be removed, if so
+;;; desired, with the slippery-chicken class remove-extraneous-dynamics method.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A rthm-seq-bar object.
@@ -4910,7 +4915,9 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; SYNOPSIS
 (defmethod set-dynamics ((rsb rthm-seq-bar) dynamic)
   (loop for r in (rhythms rsb) do
-       (add-mark r dynamic))
+       ;; MDE Wed Jul 18 22:08:26 2012 -- only add dynamics to struck notes
+       (when (needs-new-note r)
+         (add-mark r dynamic)))
   dynamic)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

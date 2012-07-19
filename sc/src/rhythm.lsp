@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 12:29:59 Mon Jun 25 2012 BST
+;;; $$ Last modified: 22:57:26 Wed Jul 18 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -233,6 +233,7 @@
                             duration: ~,3f, ~
                             rq: ~a, ~
                             is-rest: ~a, ~
+                            is-whole-bar-rest: ~a, ~
                   ~%        score-rthm: ~,3f, ~
                             undotted-value: ~a, ~
                             num-flags: ~a, ~
@@ -251,8 +252,8 @@
                   ~%        letter-value: ~a, ~
                             tuplet-scaler: ~a, ~
                             grace-note-duration: ~a"
-          (value i) (duration i) (rq i) (is-rest i) (score-rthm i)
-          (undotted-value i) 
+          (value i) (duration i) (rq i) (is-rest i) (is-whole-bar-rest i)
+          (score-rthm i) (undotted-value i) 
           (num-flags i) (num-dots i) (is-tied-to i) (is-tied-from i)
           (compound-duration i) (is-grace-note i) (needs-new-note i)
           (beam i) (bracket i) (rqq-note i) (rqq-info i) (marks i)

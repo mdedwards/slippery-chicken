@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:43:40 Thu Jul 19 2012 CEST
+;;; $$ Last modified: 11:58:36 Thu Jul 19 2012 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1004,7 +1004,7 @@
           (players rsm-clone) (players (ensemble sc)))
     ;; (print rsm-clone)
     (add-rest-player-sections rsm-clone)
-    (add-rest-sequenzes rsm-clone)
+    (add-rest-sequenzes rsm-clone sc)
     (update-slots rsm-clone (tempo-map sc) 0.0 0.0 1 nil nil warn-ties)
     (handle-ties rsm-clone)
     ;; well, not ideal, but we have to do this again because of the

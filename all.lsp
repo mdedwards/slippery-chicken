@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 17:11:52 Tue Jun 26 2012 BST
+;;; $$ Last modified: 11:58:52 Thu Jul 19 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -244,9 +244,9 @@
 (sc-compile-and-load "ensemble.lsp")
 (sc-compile-and-load "l-for-lookup.lsp")
 (sc-compile-and-load "player-section.lsp")
-(sc-compile-and-load "piece.lsp")
 (sc-compile-and-load "section.lsp")
 (sc-compile-and-load "slippery-chicken.lsp")
+(sc-compile-and-load "piece.lsp")
 (sc-compile-and-load "slippery-chicken-edit.lsp")
 (sc-compile-and-load "clm.lsp")
 (sc-compile-and-load "permutations.lsp")

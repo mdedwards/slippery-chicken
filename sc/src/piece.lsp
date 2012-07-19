@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 10:54:34 Thu Jul 19 2012 CEST
+;;; $$ Last modified: 12:00:05 Thu Jul 19 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -905,7 +905,9 @@ BAR-HOLDER:
     (loop while player-section do
          (let ((player (id player-section))
                (section (butlast (this player-section))))
-           (loop for seq in (data player-section) and i from 0 do
+           (loop with cloned-seq 
+              for seq in (data player-section) 
+              for i from 0 do
               ;; (format t "~%section ~a player ~a seq ~a" section player i)
                 (unless seq
                   ;; MDE Thu Jul 19 10:52:56 2012 -- if we add an instrument
@@ -917,9 +919,10 @@ BAR-HOLDER:
                         (instrument instrument-change)
                       (get-current-instrument-for-player 
                        section player (1+ i) sc)
-                    )
+                    ;; here's where we add the instrument-change, if it exists,
+                    ;; to the first event of the cloned seq
                   (setf (nth i (data player-section)) 
-                        (get-nth-sequenz p section player i))))
+                        (get-nth-sequenz p section player i)))))
            (setf player-section (get-data (next player-section) p nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

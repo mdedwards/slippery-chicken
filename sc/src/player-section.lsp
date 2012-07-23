@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    18th March 2002
 ;;;
-;;; $$ Last modified: 16:56:14 Mon Jun 11 2012 BST
+;;; $$ Last modified: 23:29:06 Thu Jul 19 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -60,8 +60,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; German word for sequence because the latter is already a lisp type.
-
 (defclass player-section (bar-holder sclist)
   ())
 
@@ -96,12 +94,12 @@
                                          (missing-duration nil))
   (let ((clone (clone ps)))
     (setf (data clone) (loop for seq in (data ps) collect
-                         (clone-as-rest-sequenz seq show-rests
-                                                (unless
-                                                    (eq t
-                                                        missing-duration)
-                                                  missing-duration)
-                                                player-id)))
+                            (clone-as-rest-sequenz seq show-rests
+                                                   (unless
+                                                       (eq t
+                                                           missing-duration)
+                                                     missing-duration)
+                                                   player-id)))
     (when player-id
       (setf (id clone) player-id))
     clone))

@@ -70,7 +70,7 @@
 (global-set-key "\C-c\C-y" 'tags-search)
 (global-set-key "\M-," 'tags-loop-continue)
 (global-unset-key "\C-x\C-s")
-(global-set-key "\C-x\C-s" 'detab)
+;; (global-set-key "\C-x\C-s" 'detab)
 (global-set-key "\C-x\C-t" 'pdflatex)
 (global-set-key "\C-c\c" 'compile)
 (global-set-key "\C-x\t" 'latex2html)

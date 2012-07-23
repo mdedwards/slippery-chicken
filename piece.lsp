@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 12:00:05 Thu Jul 19 2012 CEST
+;;; $$ Last modified: 00:00:09 Fri Jul 20 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -481,7 +481,8 @@
 ;;;     and the optional argument <create-rest-seq> is set to T, this method
 ;;;     creates a rest sequence (one that consists of the correct number of
 ;;;     bars with the right time signatures, but in which the bars are only
-;;;     rest bars) based on a sequence in one of the playing instruments.
+;;;     rest bars) based on a simultaneous sequence in one of the playing
+;;;     instruments.  
 ;;;
 ;;; ARGUMENTS
 ;;; - A piece object.
@@ -905,24 +906,37 @@ BAR-HOLDER:
     (loop while player-section do
          (let ((player (id player-section))
                (section (butlast (this player-section))))
-           (loop with cloned-seq 
+           (loop with cloned-seq with first-event
               for seq in (data player-section) 
               for i from 0 do
               ;; (format t "~%section ~a player ~a seq ~a" section player i)
-                (unless seq
-                  ;; MDE Thu Jul 19 10:52:56 2012 -- if we add an instrument
-                  ;; change to an empty sequence, it will be missed in
-                  ;; make-section-for-player so we need to add it here
-                  (multiple-value-bind
-                        ;; have to get the second values result here so we
-                        ;; know whether to trigger a program-change or not
-                        (instrument instrument-change)
-                      (get-current-instrument-for-player 
-                       section player (1+ i) sc)
-                    ;; here's where we add the instrument-change, if it exists,
-                    ;; to the first event of the cloned seq
-                  (setf (nth i (data player-section)) 
-                        (get-nth-sequenz p section player i)))))
+              (unless seq
+                ;; MDE Thu Jul 19 10:52:56 2012 -- if we add an instrument
+                ;; change to an empty sequence, it will be missed in
+                ;; make-section-for-player so we need to add it here
+                (multiple-value-bind
+                      ;; have to get the second values result here so we
+                      ;; know whether to trigger a program-change or not
+                      (instrument instrument-change)
+                    (get-current-instrument-for-player 
+                     section player (1+ i) sc)
+                  ;; MDE Thu Jul 19 22:46:06 2012 here's where we add the
+                  ;; instrument-change, if it exists, to the first event of
+                  ;; the cloned seq
+                  (setf cloned-seq (get-nth-sequenz p section player i))
+                  (when instrument-change
+                    (setf first-event (get-first cloned-seq))
+                    (unless first-event
+                      (error "piece::add-rest-sequenzes: couldn't get first ~
+                              event from cloned rest sequence: ~a" cloned-seq))
+                    ;; (print first-event)
+                    (setf (instrument-change first-event)
+                          (if (staff-short-name instrument)
+                              (list (staff-name instrument)
+                                    (staff-short-name instrument))
+                              (list (staff-name instrument)))))
+                  ;; (print (bars cloned-seq))
+                  (setf (nth i (data player-section)) cloned-seq))))
            (setf player-section (get-data (next player-section) p nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified: 16:22:31 Mon Jul 16 2012 BST
+;;; $$ Last modified: 23:28:38 Thu Jul 19 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -62,7 +62,6 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; German word for sequence because the latter is already a lisp type.
 
 (defclass sequenz (rthm-seq bar-holder)

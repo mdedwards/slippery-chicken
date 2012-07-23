@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 00:00:09 Fri Jul 20 2012 CEST
+;;; $$ Last modified: 20:20:19 Mon Jul 23 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -901,6 +901,38 @@ BAR-HOLDER:
         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; MDE Mon Jul 23 20:20:10 2012 -- from ticket #386 re. getting instrument
+;;; changes on rest sequenzes: the problem is that sc-make-sequence sets the
+;;; instrument-change slot of an event but if a player sits out a seq we'll
+;;; have to set it in get-nth-sequenz when cloning empty.  Remember that
+;;; instrument-changes are specified in the change map as occuring at the start
+;;; of a sequence (bar numbers are not given in the map) and instruments can't
+;;; be changed mid-sequence.
+
+;;; we should be able to set an instrument-change at the beginning of sequence
+;;; by passing the change to piece::get-nth-sequenz as it's called from
+;;; piece::add-rest-sequenzes.  In order to do that though we'll need to call
+;;; get-current-instrument-for-player, which will need the sc object; do this
+;;; from piece::add-rest-sequenzes
+
+;;; having done the above, the instrument-change is being set in the first
+;;; event but this is not getting transferred over to the actual event, rather
+;;; the data of the event, almost certainly because sclist::(setf data) is
+;;; calling verify-and-store and thus cloning the events or something.
+
+;;; after setting in add-rest-sequenzes, the instrument-change shows up in the
+;;; first event of the first bar, as well as in the data list of the bar (from
+;;; the sclist) but is then deleted by the time the sc structure is finally
+;;; created, so is it being deleted after the call to add-rest-sequenzes in
+;;; sc-make-piece, eg. in update-slots? no, turns out init was calling
+;;; cleanup-rest-bars which was re-creating rest-bars in rest-seqs; added a
+;;; test there to make sure it doesn't force-rest-bar when we already have one,
+;;; but also in force-rest-bar made sure any instrument-change slot in the
+;;; first event is being copied over when creating the new rest bar.  this
+;;; meant the ins-change was being set but still not used: had to edit
+;;; rsb::get-cmn-data to add this.
+
+
 (defmethod add-rest-sequenzes ((p piece) (sc slippery-chicken))
   (let ((player-section (get-first p)))
     (loop while player-section do
@@ -935,6 +967,7 @@ BAR-HOLDER:
                               (list (staff-name instrument)
                                     (staff-short-name instrument))
                               (list (staff-name instrument)))))
+                  ;; (print first-event)
                   ;; (print (bars cloned-seq))
                   (setf (nth i (data player-section)) cloned-seq))))
            (setf player-section (get-data (next player-section) p nil))))))

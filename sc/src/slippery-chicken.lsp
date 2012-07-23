@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:58:36 Thu Jul 19 2012 CEST
+;;; $$ Last modified: 13:14:10 Mon Jul 23 2012 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5327,7 +5327,11 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
        (loop for bar-num from start-bar to end-bar 
           for bar = (get-bar sc bar-num player)
           do
-          (when (all-rests? bar)
+            ;; MDE Mon Jul 23 13:09:10 2012 -- and test added
+          (when (and (not (is-rest-bar bar))
+                     ;; MDE Mon Jul 23 13:10:17 2012 -- this was all we were
+                     ;; testing before  
+                     (all-rests? bar))
             (force-rest-bar bar))))
   t)
             

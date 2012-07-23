@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:07:34 Thu Jul  5 2012 BST
+;;; $$ Last modified: 14:02:09 Mon Jul 23 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1901,6 +1901,21 @@ NIL
        (when (member m '(niente pppp ppp pp p mp mf f ff fff ffff))
              (return m))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jul 23 13:50:04 2012 -- 
+
+(defmethod lp-get-ins-change ((e event))
+  (let ((result '()))
+    (when (instrument-change e)
+      (let ((long (first (instrument-change e)))
+            (short (second (instrument-change e))))
+        (push (format nil "~a~%" (lp-set-instrument long)) result)
+        (when short
+          (push (format nil "~a~%" (lp-set-instrument short t)) result))
+        (push (format nil "s1*0\^\\markup { ~a }~%" (lp-flat-sign long))
+              result)))
+    (nreverse result)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;  lilypond
@@ -1954,14 +1969,8 @@ NIL
            ;; other than that, just use the nearest power of 2 to the value.
            ;; in all cases don't forget to add the dots.
            (close-tuplets 0))
-      (when (instrument-change e)
-        (let ((long (first (instrument-change e)))
-              (short (second (instrument-change e))))
-          (push (format nil "~a~%" (lp-set-instrument long)) result)
-          (when short
-            (push (format nil "~a~%" (lp-set-instrument short t)) result))
-          (push (format nil "s1*0\^\\markup { ~a }~%" (lp-flat-sign long))
-                result)))
+      ;; MDE Mon Jul 23 13:52:40 2012 -- split out into above method
+      (loop for s in (lp-get-ins-change e) do (push s result))
       (when (marks-before e)
         (loop for thing in (marks-before e) do
            ;; handle clefs here rather than in lp-get-mark

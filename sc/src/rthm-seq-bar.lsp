@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 22:59:08 Wed Jul 18 2012 BST
+;;; $$ Last modified: 14:03:10 Mon Jul 23 2012 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -867,7 +867,9 @@ data: ((2 4) Q E S S)
             (slot-value new 'tempo-change) (tempo-change first)
             (display-tempo new) (display-tempo first)
             (bar-num new) (bar-num first)
-            (marks-before new) (marks-before first)))
+            (marks-before new) (marks-before first)
+            ;; MDE Mon Jul 23 13:13:11 2012 
+            (instrument-change new) (instrument-change first)))
     ;; 26.7.11 (Pula): don't copy over 8ve marks: could screw things up but
     ;; then the caller should be aware of this when deleting bars etc.
     (rm-marks new '(beg-8va beg-8vb end-8va end-8vb) nil)
@@ -3445,6 +3447,8 @@ data: (2 4)
               (error "rthm-seq-bar::get-lp-data: display tempo but no ~
                       tempo-change: ~a" rsb))
             (push (get-lp-data (tempo-change e1)) result))
+          ;; MDE Mon Jul 23 14:01:44 2012 -- 
+          (loop for s in (lp-get-ins-change e1) do (push s result))
           (push (lp-rest-bar rsb ts) result)
           (when (marks e1)
             (loop for m in (marks e1)
@@ -3520,6 +3524,7 @@ data: (2 4)
   (let* ((e1 (get-nth-event 0 rsb))
          (bar-num (1+ (bar-num rsb)))
          (mbr (numberp (multi-bar-rest rsb)))
+         (e1ic (first (instrument-change e1)))
          (result 
           (if (is-rest-bar rsb)
               (list (if (missing-duration rsb)
@@ -3529,6 +3534,10 @@ data: (2 4)
                                 ;; marks. can use e1 instead of
                                 ;; (get-nth-event 0 rsb))
                                 (cmn::get-all-cmn-marks (marks e1))
+                                ;; MDE Mon Jul 23 13:33:36 2012 -- 
+                                (when e1ic
+                                  (list (cmn::new-staff-name e1ic)
+                                        (cmn::sc-cmn-text e1ic)))
                                 (list 
                                  (cmn::rq
                                   (- (rationalize
@@ -3544,6 +3553,10 @@ data: (2 4)
                                 (when (display-tempo e1)
                                   ;; this is now a list
                                   (cmn-tempo (tempo-change e1)))
+                                ;; MDE Mon Jul 23 13:33:36 2012 -- 
+                                (when e1ic
+                                  (list (cmn::new-staff-name e1ic)
+                                        (cmn::sc-cmn-text e1ic)))
                                 (list (cmn::dots 0)
                                       ;; 3/4/07 not here anymore
                                       ;; (when (write-bar-num rsb)

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 17:24:40 Tue Jun 26 2012 BST
+;;; $$ Last modified: 19:49:04 Tue Jul 24 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -595,9 +595,12 @@
 ;;; N.B. won't work with bracketed accidentals of the form cbn3!
 
 (defun is-natural (note)
-  (let ((2nd-char (elt (string note) 1)))
-    (or (numberp (digit-char-p 2nd-char))
-        (equal 2nd-char #\N))))
+  (let* ((string (string note))
+         2nd-char)
+    (when (> (length string) 1)
+      (setf 2nd-char (elt string 1))
+      (or (numberp (digit-char-p 2nd-char))
+          (equal 2nd-char #\N)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

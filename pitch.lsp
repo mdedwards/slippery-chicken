@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 12:58:27 Tue Jul 17 2012 BST
+;;; $$ Last modified: 19:53:43 Tue Jul 24 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1506,13 +1506,13 @@ data: CQS4
           (let ((note (freq-to-note freq)))
             (unless note
               (error "pitch::update-pitch: ~
-                    Couldn't get the note for frequency ~a!!!" freq))
+                      Couldn't get the note for frequency ~a!!!" freq))
             (setf (id p) note)))
         (when (and id (not freq))
           (let ((cm-freq (note-to-freq id)))
             (unless cm-freq
               (error "pitch::update-pitch: ~
-                    Couldn't get the frequency for pitch ~a!!!" id))
+                      Couldn't get the frequency for pitch ~a!!!" id))
             (setf (frequency p) cm-freq)))
         (unless (frequency p)
           (error "pitch::update-pitch: ~
@@ -1626,6 +1626,9 @@ data: CQS4
   (multiple-value-bind
       (note octave)
       (get-note-octave (id p)) 
+    ;; MDE Tue Jul 24 19:51:41 2012 
+    (unless octave
+      (error "~%pitch::set-white-note: no octave given for pitch ~a." (id p)))
     ;; MDE Mon May 14 14:32:17 2012 
     (unless (and (integerp octave) (>= octave -1))
       (warn "~a~%pitch::set-white-note: octave is either not an integer ~
@@ -2619,8 +2622,11 @@ data: EF3
 
 (defun remove-accidental-in-parentheses-indicator (pitch-symbol)
   (let* ((string (string pitch-symbol))
-         (2nd-char (elt string 1)))
+         2nd-char)
     (when (> (length string) 1)
+      ;; MDE Tue Jul 24 19:25:21 2012 -- moved setting 2nd-char here so we get
+      ;; a sensible error message if we don't pass an 8ve 
+      (setf 2nd-char (elt string 1))
       (when (equal 2nd-char #\B)
         (values (read-from-string (remove #\B string :start 1 :end 2)))))))
        

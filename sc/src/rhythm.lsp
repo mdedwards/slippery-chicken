@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 22:57:26 Wed Jul 18 2012 BST
+;;; $$ Last modified: 20:57:29 Tue Jul 24 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1245,7 +1245,7 @@ NI
     (if (numberp rthm)
         (setf letter-value rthm)
         (progn
-          (when (char= #\. (aref string (- (length string) 1)))
+          (when (char= #\. (aref string (1- (length string))))
             (let ((dots (dots string)))
               (setq num-dots (second dots)
                     dots-scaler (/ (first dots))))
@@ -1256,7 +1256,9 @@ NI
                                 (#\F 5/4)
                                 (t 1))
                 scaler (* dots-scaler tuplet-scaler)
-                len (progn (unless (= dots-scaler scaler)
+                len (progn (when (and (/= dots-scaler scaler)
+                                      ;; MDE Tue Jul 24 20:57:00 2012 
+                                      (> (length string) 1))
                              (setq string (subseq string 1)))
                            (length string))
                 first-char (aref string 0)

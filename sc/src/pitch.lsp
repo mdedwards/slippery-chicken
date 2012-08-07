@@ -472,21 +472,37 @@ C4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* pitch/no-accidental
+;;; SAR Tue Aug  7 17:23:44 BST 2012: Added robodoc entry
+
+;;; ****M* pitch/no-accidental
 ;;; DESCRIPTION
-;;; don't show any accidentals when writing a score; none in parentheses either
+;;; Set the SHOW-ACCIDENTAL and ACCIDENTAL-IN-PARENTHESES slots of a specified
+;;; pitch object to NIL, preventing any accidentals or accidentals in
+;;; parentheses from being shown for that event in the printed score.
+;;; 
+;;; NB: This will only be effective if the :respell-notes option for
+;;;     cmn-display and write-lp-data-for-all is set to NIL.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A pitch object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Always NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+	'+mini+
+	:ensemble '(((vn (violin :midi-channel 1))))
+	:set-palette '((1 ((c4 cs4 fs4))))
+	:set-map '((1 (1)))
+	:rthm-seq-palette '((1 ((((2 4) - s s s s - - s s s s -))
+				:pitch-seq-palette ((1 2 3 2 1 2 3 2)))))
+	:rthm-seq-map '((1 ((vn (1))))))))
+  (no-accidental (pitch-or-chord (get-note mini 1 7 'vn)))
+  (cmn-display mini :respell-notes nil)
+  (write-lp-data-for-all mini :respell-notes nil))
 
 |#
 ;;; SYNOPSIS

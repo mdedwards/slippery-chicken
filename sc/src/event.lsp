@@ -1470,21 +1470,35 @@ WARNING:
   (push mark (marks-before e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SAR Tue Aug  7 16:19:26 BST 2012: Added robodoc entry
 ;;; ****m* event/has-mark-before
 ;;; DESCRIPTION
-;;; 
+;;; Determine whether a specifed event object has a specified mark in its
+;;; MARKS-BEFORE slot.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - An event object.
+;;; - A mark.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the specified mark if the mark exists in the MARKS-BEFORE slot,
+;;; otherwise returns NIL
 ;;; 
 ;;; EXAMPLE
 #|
+;;; Returns the specified mark if that mark is present
+(let ((e (make-event 'c4 4)))
+  (add-mark-before e 'ppp)
+  (has-mark-before e 'ppp))
+
+=> (PPP)
+
+;;; Returns NIL if the specified mark is not present
+(let ((e (make-event 'c4 4)))
+  (add-mark-before e 'ppp)
+  (has-mark-before e 'fff))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS

@@ -64,36 +64,54 @@
 ;;; indicate that we should select the highest or lowest notes possible for the
 ;;; instrument/set. 
 
+;;; SAR Tue Aug  7 17:13:41 BST 2012: Added robodoc entry
+
 ;;; ****P* pitch-seq/+pitch-seq-lowest-equals-prefers-high+
 ;;; DESCRIPTION
-;;; 
+;;; A slippery-chicken constant variable used to indicate the lowest number in
+;;; a pitch-seq that would indicate that the get-notes algorithm should select
+;;; the highest notes possible for the instrument/set. If not otherwise
+;;; specified, this value defaults to 5.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An integer that is the lowest number in a pitch-seq that would indicate
+;;;   that the given instrument prefers high notes for that sequence.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the integer specified when the variable is set.
 ;;; 
 ;;; EXAMPLE
 #|
+(setf +pitch-seq-lowest-equals-prefers-high+ 5)
+
+=> 5
 
 |#
 ;;; SYNOPSIS
 (defparameter +pitch-seq-lowest-equals-prefers-high+ 5)
 ;;; ****
 
+;;; SAR Tue Aug  7 17:19:23 BST 2012: Added robodoc entry
+
 ;;; ****P* pitch-seq/ +pitch-seq-lowest-equals-prefers-low+
 ;;; DESCRIPTION
-;;; 
+;;; A slippery-chicken constant variable used to indicate the lowest number in
+;;; a pitch-seq that would indicate that the get-notes algorithm should select
+;;; the lowest notes possible for the instrument/set. If not otherwise
+;;; specified, this value defaults to 1.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - An integer that is the lowest number in a pitch-seq that would indicate
+;;;   that the given instrument prefers high notes for that sequence.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; Returns the integer specified when the variable is set.
 ;;; 
 ;;; EXAMPLE
 #|
+(setf +pitch-seq-lowest-equals-prefers-low+ 3)
+
+=> 3
 
 |#
 ;;; SYNOPSIS

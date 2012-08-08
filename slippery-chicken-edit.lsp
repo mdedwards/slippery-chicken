@@ -202,6 +202,7 @@
 ;;;
 ;;; EXAMPLE
 #|
+
 (let ((mini
        (make-slippery-chicken
         '+mini+
@@ -240,21 +241,52 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Aug  8 12:17:43 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken-edit/add-tuplet-bracket-to-bar
 ;;; DESCRIPTION
-;;; 
+
+;;; Add a tuplet bracket (with number) to a specified bar in a slippery-chicken
+;;; object. This method adds only one tuplet bracket of one tuplet type
+;;; (triplet, quintuplet etc.) at a time. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - An integer that is the number of the bar to which the tuplet bracket is
+;;;   to be added.
+;;; - The ID of the player to whose part the tuplet bracket is to be added.
+
+;;; - The bracket info defining the tuplet bracket to be added. This takes the
+;;;   form of a three-element list specifying tuplet value, number of the event
+;;;   (zero-based) on which the bracket is to begin, and number of the event on
+;;;   which the bracket is to end, e.g. '(3 0 2).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; T or NIL to indicate whether all existing tuplet brackets in the given bar
+;;; are to be deleted first. T = delete. Default = NIL>
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; T
 ;;; 
 ;;; EXAMPLE
 #|
+
+(let ((mini
+       (make-slippery-chicken
+        '+sc-object+
+        :ensemble '(((va (viola :midi-channel 2))))
+        :set-palette '((1 ((c3 d3 e3 f3 g3 a3 b3 c4 d4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((3 4) (te) - te te - { 3 te ts+ts te } 
+                                  - fs fs fs fs fs -))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8 9 8)))))
+        :rthm-seq-map '((1 ((va (1 1 1))))))))
+  (add-tuplet-bracket-to-bar mini 1 'va '(3 0 2))
+  (add-tuplet-bracket-to-bar mini 2 'va '(5 7 11))
+  (add-tuplet-bracket-to-bar mini 3 'va '(3 3 4) t)
+  (add-tuplet-bracket-to-bar mini 3 'va '(3 5 6)))
+
+=> T
 
 |#
 ;;; SYNOPSIS
@@ -272,21 +304,46 @@
 
 ;; (add-tuplet-brackets-to-beats +mini+ 'vc '((2 3 0 5) (3 3 0 3) (5 5 0 4)))
 
+;;; SAR Wed Aug  8 12:59:51 BST 2012: Added robodoc entry
+
 ;;; ****m* slippery-chicken-edit/add-tuplet-brackets-to-beats
 ;;; DESCRIPTION
-;;; 
+;;; Add the specified tuplet brackets (and numbers) to the specified event
+;;; objects in the specified bars within the given slippery-chicken object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A slippery-chicken object.
+;;; - The ID of the player to whose part the tuplet brackets are to be added.
+;;; - A list of 4-element sublists that is the bracket info. Each sublist must
+;;;   consist of: the number of the bar to which the bracket is to be added;
+;;;   the number that is the tuplet type (3 = triplet, 5 = quintuplet etc.);
+;;;   the zero-based number of the event where the bracket is to begin; the
+;;;   zero-based number that is the number of the event where the bracket is to
+;;;   end; e.g. '((2 3 0 5) (3 3 0 3) (5 5 0 4))
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; T or NIL to indicate whether all existing tuplet bracket info in the given
+;;; bars is to first be deleted. T = delete. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; NIL.
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+sc-object+
+        :ensemble '(((va (viola :midi-channel 2))))
+        :set-palette '((1 ((c3 e3 g3 c4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((3 4) - te te te - - fs fs fs fs fs -
+                                  - 28 28 28 28 28 28 28 -))
+                                :pitch-seq-palette ((1 2 3 4 1 2 3 4 1 2 3 4 1
+                                                       2 3)))))
+        :rthm-seq-map '((1 ((va (1 1 1))))))))
+  (add-tuplet-brackets-to-beats mini 'va '((1 3 0 2) (2 5 3 7) (3 7 8 14))))
+
+=> NIL
 
 |#
 ;;; SYNOPSIS

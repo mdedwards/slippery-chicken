@@ -374,6 +374,7 @@
 ;;; 
 ;;; EXAMPLE
 #|
+
 (in-scale :chromatic)
 
 (let ((mini
@@ -405,21 +406,37 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Aug  8 11:14:10 BST 2012: Added robodoc entry
+
 ;;; ****m* player/total-bars
 ;;; DESCRIPTION
-;;; 
+;;; Return the number of bars in a specified player object.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A player object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - An integer.
 ;;; 
 ;;; EXAMPLE
 #|
+
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+                     (va (violin :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1))
+                            (va (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
+  (total-bars (first (data (ensemble mini)))))
+
+=> 5
 
 |#
 ;;; SYNOPSIS
@@ -450,6 +467,7 @@
 ;;; 
 ;;; EXAMPLE
 #|
+
 (let ((mini
        (make-slippery-chicken
         '+mini+
@@ -481,21 +499,39 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Apr 19 13:32:34 2012 
 
+;;; SAR Wed Aug  8 11:18:08 BST 2012: Added robodoc entry
+
 ;;; ****m* player/tessitura-note
 ;;; DESCRIPTION
-;;; 
+;;; Return the value of the TESSITURA-DEGREE slot of a specified player object
+;;; as a note-name symbol.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A player object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - A note-name symbol.
 ;;; 
 ;;; EXAMPLE
 #|
+(in-scale :chromatic)
+
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+                     (va (violin :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1))
+                            (va (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
+  (tessitura-note (first (data (ensemble mini)))))
+
+=> BF3
 
 |#
 ;;; SYNOPSIS

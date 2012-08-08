@@ -325,6 +325,7 @@
 ;;; 
 ;;; EXAMPLE
 #|
+
 (let ((mini
        (make-slippery-chicken
         '+mini+
@@ -342,8 +343,8 @@
 
 => 15
 
-
 |#
+
 ;;; SYNOPSIS
 (defmethod total-notes ((p player))
 ;;; ****
@@ -355,21 +356,42 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Aug  8 10:47:10 BST 2012: Added robodoc entry
+
 ;;; ****m* player/total-degrees
 ;;; DESCRIPTION
-;;; 
+;;; Return a number that reflects the mean note (tessitura) of a player's
+;;; part. This is calculated by incrementing the TOTAL-DEGREES slot of the
+;;; corresponding instrument object for each attacked note in the player's part
+;;; by the degree of that note (in the scale of the piece), and then dividing
+;;; the sum by the total number of notes in the player's part.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A player object.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; - An integer.
 ;;; 
 ;;; EXAMPLE
 #|
+(in-scale :chromatic)
+
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+                     (va (violin :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1))
+                            (va (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
+  (total-degrees (first (data (ensemble mini)))))
+
+=> 865
 
 |#
 ;;; SYNOPSIS

@@ -1727,21 +1727,31 @@ rthm-seq-bar::get-beats: Can't find an exact beat of rhythms
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; SAR Wed Aug  8 11:24:39 BST 2012: Added robodoc entry
+
 ;;; ****m* rthm-seq/delete-marks
 ;;; DESCRIPTION
-;;; 
+;;; Delete all marks from the MARKS slot of the specified rthm-seq object and
+;;; replace them with NIL.
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - A rthm-seq object
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; NIL
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mrs (make-rthm-seq '(seq1 ((((2 4) q e (s) s))
+                                  :pitch-seq-palette ((1 2 3))
+                                  :marks (ff 1 a 1 pizz 1 ppp 2 s 2))))))
+  (print (marks mrs))
+  (delete-marks mrs)
+  (print (marks mrs)))
+
+=>
+((FF 1) (A 1) (PIZZ 1) (PPP 2) (S 2)) 
+NIL
 
 |#
 ;;; SYNOPSIS
@@ -2401,13 +2411,82 @@ RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Jul 18 17:41:29 2012 -- get the first rhythm/event in a rthm-seq
+
+;;; SAR Wed Aug  8 11:37:46 BST 2012: Added robodoc entry
+
+;;; ****m* rthm-seq/get-first
+;;; DESCRIPTION
+;;; Return the first rhythm/event object in the specified rthm-seq object.
+;;; 
+;;; ARGUMENTS
+;;; - A rthm-seq object.
+;;; 
+;;; RETURN VALUE
+;;; A rhythm/event object.
+;;; 
+;;; EXAMPLE
+#|
+
+(let ((mrs (make-rthm-seq '(seq1 ((((2 4) q e (s) s))
+                                  :pitch-seq-palette ((1 2 3))
+                                  :marks (ff 1 a 1 pizz 1 ppp 2 s 2))))))
+  (get-first mrs))
+
+=> 
+RHYTHM: value: 4.000, duration: 1.000, rq: 1, is-rest: NIL, 
+        is-whole-bar-rest: NIL, 
+        score-rthm: 4.0, undotted-value: 4, num-flags: 0, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 1.000, 
+        is-grace-note: NIL, needs-new-note: T, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: (PIZZ A FF), marks-in-part: NIL, 
+        letter-value: 4, tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: Q, tag: NIL, 
+data: Q
+
+|#
+;;; SYNOPSIS
 (defmethod get-first ((rs rthm-seq))
+;;; ****
   (let ((bar1 (first (bars rs))))
     (when bar1
       (first (rhythms bar1)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Jul 18 17:41:29 2012 -- get the last rhythm/event in a rthm-seq
+
+;;; SAR Wed Aug  8 11:42:11 BST 2012: Added robodoc entry
+
+;;; ****m* rthm-seq/get-last
+;;; DESCRIPTION
+;;; Return the last rhythm/event object in the specified rthm-seq object.
+;;; 
+;;; ARGUMENTS
+;;; - A rthm-seq object.
+;;; 
+;;; RETURN VALUE
+;;; A rhythm/event object.
+;;; 
+;;; EXAMPLE
+#|
+(let ((mrs (make-rthm-seq '(seq1 ((((2 4) q e (s) s))
+                                  :pitch-seq-palette ((1 2 3))
+                                  :marks (ff 1 a 1 pizz 1 ppp 2 s 2))))))
+  (get-last mrs))
+
+=> 
+RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL, 
+        is-whole-bar-rest: NIL, 
+        score-rthm: 16.0, undotted-value: 16, num-flags: 2, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 0.250, 
+        is-grace-note: NIL, needs-new-note: T, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: NIL, marks-in-part: NIL, 
+        letter-value: 16, tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: S, tag: NIL, 
+data: S
+|#
+;;; SYNOPSIS
 (defmethod get-last ((rs rthm-seq))
   (let ((barn (first (last (bars rs)))))
     (when barn
@@ -2576,6 +2655,7 @@ data: (4 3 2 1)
       (setf (psp-inversions result) t)
       (add-inversions (pitch-seq-palette result)))
     result))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

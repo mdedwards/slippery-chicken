@@ -4921,8 +4921,9 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
          :rthm-seq-palette '((1 ((((4 4) e (e) e (e) (e) e e e))
                                  :pitch-seq-palette ((1 2 3 4 5)))))
          :rthm-seq-map '((1 ((va (1 1 1))))))))
-  (set-dynamics (get-bar mini 2 'va) 'ppp)
-  (cmn-display mini))
+  (set-dynamics (get-bar mini 2 'va) 'ppp))
+
+=> PPP
 
 |#
 ;;; SYNOPSIS

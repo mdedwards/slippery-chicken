@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 13:58:03 Wed Jul 18 2012 BST
+;;; $$ Last modified: 18:28:13 Fri Aug 10 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -5257,6 +5257,32 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
          (set-nth-bar (nth-bar to-bar) from-bar sequenz))))
   t)
             
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Aug 10 17:22:54 2012 -- works with sounding pitches (written
+;;; pitches will be updated if appropriate)  
+(defmethod add-pitches-to-chord ((sc slippery-chicken) player bar-num note-num 
+                                 &rest pitches)
+  (multiple-value-bind
+        (chord event)
+      (sc-get-chord sc bar-num note-num player)
+    (add-pitches chord pitches)
+    ;; do this just to make sure we set the written chord if present
+    (setf (pitch-or-chord event) chord)
+    chord))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Aug 10 17:22:54 2012 -- works with sounding pitches (written
+;;; pitches will be updated if appropriate)  
+(defmethod rm-pitches-from-chord ((sc slippery-chicken) player bar-num note-num 
+                                  &rest pitches)
+  (multiple-value-bind
+        (chord event)
+      (sc-get-chord sc bar-num note-num player)
+    (rm-pitches chord pitches)
+    ;; do this just to make sure we set the written chord if present
+    (setf (pitch-or-chord event) chord)
+    chord))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; EOF slippery-chicken-edit.lsp

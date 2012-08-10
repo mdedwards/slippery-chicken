@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 12:45:00 Tue Jun 19 2012 BST
+;;; $$ Last modified: 18:26:18 Fri Aug 10 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -638,7 +638,6 @@ data: F5
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 
 ;;; The ignore field is there because of the transpose method in tl-set
 ;;; Returns a clone of the current chord rather than replacing data
 
@@ -1321,6 +1320,36 @@ data: (
   (declare (ignore ignore))
   (loop for p in (data c) do
        (format stream "~a " (data p))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  MDE Fri Aug 10 16:17:59 2012 -- pitches can be pitch objects or any data
+;;; that can be passed to make-pitch, or indeed lists of these, as they will be
+;;; flattened. 
+;;; e.g.
+;;; (add-pitches (make-chord '(c4 e4 g4)) '(bf3 dqf5))
+;;; (add-pitches (make-chord '(c4 e4 g4)) 'bf4 'd5)
+
+(defmethod add-pitches ((c chord) &rest pitches)
+  (setf (data c) 
+        (remove-duplicates 
+         (append (data c) (init-pitch-list (flatten pitches)))
+         :test #'pitch=))
+  (initialize-instance c)
+  c)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Aug 10 16:32:32 2012 -- remove pitches; same criteria apply to
+;;; <pitches> as in add-pitches.  No warning/error will be signalled if the
+;;; pitches to be removed are not actually in the chord.
+;;; e.g.
+;;; (print-simple (rm-pitches (make-chord '(c4 e4 g4 bf4 d5)) '(bf4 dqf5)))
+;;; (print-simple (rm-pitches (make-chord '(c4 e4 g4 bf4 d5)) '(bf4 e4)))
+
+(defmethod rm-pitches ((c chord) &rest pitches)
+  (setf (data c) (set-difference (data c) (init-pitch-list (flatten pitches))
+                                 :test #'pitch=))
+  (initialize-instance c)
+  c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:14:10 Mon Jul 23 2012 CEST
+;;; $$ Last modified: 17:56:47 Fri Aug 10 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6559,6 +6559,19 @@ duration: 20.0 (20.000)
 
 (defmethod duration ((sc slippery-chicken))
   (duration (piece sc)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Aug 10 17:22:54 2012 -- works on the sounding pitches (written
+;;; pitches will be updated if appropriate)  
+(defmethod sc-get-chord ((sc slippery-chicken) bar-num note-num player 
+                         &optional (on-fail #'error))
+  (let* ((event (get-note sc bar-num note-num player))
+         (chord (pitch-or-chord event)))
+    (if (chord-p chord)
+        (values chord event)
+        (when on-fail
+          (funcall on-fail "slippery-chicken::get-chord: no chord at bar ~a, ~
+                            note ~a for ~a" bar-num note-num player)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

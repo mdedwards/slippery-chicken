@@ -13,7 +13,7 @@
 %%%
 %%% Creation date:    23rd November 2011
 %%%
-%%% $$ Last modified: 16:51:40 Wed Apr 18 2012 BST
+%%% $$ Last modified: 16:18:43 Sat Aug 11 2012 BST
 %%%
 %%% SVN ID: $Id: lilypond.ly 963 2010-04-08 20:58:32Z medward2 $
 %%%
@@ -131,6 +131,39 @@ bracketEnd = \markup \bracketEnd
  (interpret-markup layout props 
         (markup #:general-align Y DOWN  #:epsfile X 2 "up-down.eps")))
 arrowUpDown = \markup \arrowUpDown
+
+% dynamics in parentheses
+parenFFFF = #(make-dynamic-script (markup #:line (#:normal-text #:italic
+           #:fontsize 2 "(" #:hspace -0.8 #:dynamic "ffff" #:normal-text
+           #:italic #:fontsize 2 ")")))
+parenFFF = #(make-dynamic-script (markup #:line (#:normal-text #:italic
+           #:fontsize 2 "(" #:hspace -0.8 #:dynamic "fff" #:normal-text
+           #:italic #:fontsize 2 ")")))
+parenFF = #(make-dynamic-script (markup #:line (#:normal-text #:italic
+           #:fontsize 2 "(" #:hspace -0.8 #:dynamic "ff" #:normal-text
+           #:italic #:fontsize 2 ")")))
+parenF = #(make-dynamic-script (markup #:line (#:normal-text #:italic
+           #:fontsize 2 "(" #:hspace -0.8 #:dynamic "f" #:normal-text
+           #:italic #:fontsize 2 ")")))
+parenMF = #(make-dynamic-script (markup #:line (#:normal-text #:italic
+           #:fontsize 2 "(" #:hspace -0.8 #:dynamic "mf" #:normal-text
+           #:italic #:fontsize 2 ")")))
+parenMP = #(make-dynamic-script (markup #:line (#:normal-text #:italic
+           #:fontsize 2 "(" #:hspace -0.8 #:dynamic "mp" #:normal-text
+           #:italic #:fontsize 2 ")")))
+parenP = #(make-dynamic-script (markup #:line (#:normal-text #:italic
+           #:fontsize 2 "(" #:hspace -0.8 #:dynamic "p" #:normal-text
+           #:italic #:fontsize 2 ")")))
+parenPP = #(make-dynamic-script (markup #:line (#:normal-text #:italic
+           #:fontsize 2 "(" #:hspace -0.8 #:dynamic "pp" #:normal-text
+           #:italic #:fontsize 2 ")")))
+parenPPP = #(make-dynamic-script (markup #:line (#:normal-text #:italic
+           #:fontsize 2 "(" #:hspace -0.8 #:dynamic "ppp" #:normal-text
+           #:italic #:fontsize 2 ")")))
+parenPPPP = #(make-dynamic-script (markup #:line (#:normal-text #:italic
+           #:fontsize 2 "(" #:hspace -0.8 #:dynamic "pppp" #:normal-text
+           #:italic #:fontsize 2 ")")))
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% EOF lilypond.ly

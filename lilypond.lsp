@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 13:50:59 Mon Jul 23 2012 CEST
+;;; $$ Last modified: 14:37:24 Mon Aug 13 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -81,6 +81,8 @@
            (a "-> ")                    ; accent
            (lhp "-+ ")
            ;; see p229 of lilypond.pdf: need to define this command in file
+           ;; this is done for us in lilypond.ly, which will be included if we
+           ;; call write-lp-data-for-all with :use-custom-markup T 
            (bartok "^\\snapPizzicato ") 
            (pizz "^\"pizz.\" ")
            (ord "^\"ord.\" ")
@@ -117,6 +119,17 @@
            (ff "\\ff ")
            (fff "\\fff ")
            (ffff "\\ffff ")
+           ;; MDE Sat Aug 11 15:51:16 2012 -- dynamics in parentheses
+           (ffff-p "\\parenFFFF ")
+           (fff-p "\\parenFFF ")
+           (ff-p "\\parenFF ")
+           (f-p "\\parenF ")
+           (mf-p "\\parenMF ")
+           (mp-p "\\parenMP ")
+           (p-p "\\parenP ")
+           (pp-p "\\parenPP ")
+           (ppp-p "\\parenPPP ")
+           (pppp-p "\\parenPPPP ")
            (sfz "\\sfz ")
            (downbow "\\downbow ")
            (upbow "\\upbow ")

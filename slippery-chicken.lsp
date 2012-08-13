@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:56:47 Fri Aug 10 2012 BST
+;;; $$ Last modified: 14:33:47 Mon Aug 13 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5557,6 +5557,8 @@ data: NIL
 ;;;
 ;;; NB: Many of the arguments for this method pass their values directly to
 ;;;     LilyPond parameters. 
+;;;
+;;; NB: Clefs added to grace-note events will not be rendered in Lilypond.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -5872,7 +5874,7 @@ data: NIL
                (format stream "~%    \\tag #'score \\tag #'~a \\new Staff"
                        pname)
                (format stream "~%    { << \\global #(set-accidental-style ~
-                      'modern-cautionary) \\~a >> }" pname)
+                      'modern) \\~a >> }" pname)
                (when end-staff-group
                  (format stream "~%  >>")))
              (needs-transposition (player) ; symbol
@@ -6566,7 +6568,7 @@ duration: 20.0 (20.000)
 (defmethod sc-get-chord ((sc slippery-chicken) bar-num note-num player 
                          &optional (on-fail #'error))
   (let* ((event (get-note sc bar-num note-num player))
-         (chord (pitch-or-chord event)))
+         (chord (when event (pitch-or-chord event))))
     (if (chord-p chord)
         (values chord event)
         (when on-fail

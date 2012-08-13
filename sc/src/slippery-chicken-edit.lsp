@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 18:28:13 Fri Aug 10 2012 BST
+;;; $$ Last modified: 14:24:09 Sun Aug 12 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -577,7 +577,10 @@
 ;;;
 ;;; NB: If a list of corrections is specified, the :respell-notes argument of
 ;;;     any subsequent call to cmn-display or write-lp-data-for-all must be set
-;;;     NIL, otherwise the modified pitches may be overwritten.
+;;;     NIL, otherwise the modified pitches may be overwritten.  Also, although
+;;;     this algorithm corrects tied notes when respelling, notes referenced in
+;;;     the corrections list will not be followed through to any subsequent
+;;;     ties.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -1103,6 +1106,8 @@
 ;;; pitch is not required to be a member of the current set.
 ;;;
 ;;; NB The new pitch is the sounding pitch if a transposing instrument.
+;;;
+;;; NB This doesn't update following tied-to notes.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -3969,7 +3974,7 @@ NIL
      finally (return (first dynamics))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+;;; A post-generation editing method
 
 ;;; SAR Wed Apr 25 17:03:04 BST 2012: Added robodoc entry
 
@@ -4055,7 +4060,7 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+;;; A post-generation editing method
 
 ;;; SAR Sat Apr 21 14:20:22 BST 2012: Added robodoc entry
 
@@ -4114,7 +4119,7 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+;;; A post-generation editing method
 
 ;;; SAR Wed May  2 13:11:53 BST 2012: Added robodoc entry
 
@@ -4277,7 +4282,7 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+;;; A post-generation editing method
 
 ;;; ****m* slippery-chicken-edit/move-events
 ;;; DATE
@@ -4351,7 +4356,7 @@ NIL
                  consolidate-rests))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  post-gen-editing method
+;;; post-gen-editing method
 
 ;;; SAR Fri Apr 20 13:58:23 BST 2012: Added robodoc entry
 
@@ -4502,7 +4507,7 @@ NIL
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+;;; A post-generation editing method
 
 ;;; SAR Fri Apr 20 12:59:28 BST 2012: Added robodoc entry
 ;;; SAR Fri Apr 20 12:59:41 BST 2012: Removed MDE's original comment because
@@ -4585,7 +4590,7 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+;;; A post-generation editing method
 
 ;;; SAR Wed Apr 25 16:05:55 BST 2012: Added robodoc entry.
 
@@ -4662,7 +4667,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
                note-num bar-num))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+;;; A post-generation editing method
 
 ;;; SAR Fri Apr 20 16:45:57 BST 2012: Added robodoc entry
 
@@ -4785,7 +4790,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
          (force-artificial-harmonic e ins)))
     t))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+;;; A post-generation editing method
 
 ;;; SAR Fri Apr 27 12:41:30 BST 2012: Added robodoc entry
 
@@ -4858,7 +4863,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
   (cautionary-accidental-aux sc bar-num note-num player t written))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  A post-generation editing method
+;;; A post-generation editing method
 
 ;;; SAR Thu Apr 26 15:05:24 BST 2012: Added robodoc entry
 

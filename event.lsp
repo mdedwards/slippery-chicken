@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:02:09 Mon Jul 23 2012 CEST
+;;; $$ Last modified: 17:21:25 Fri Aug 17 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2821,6 +2821,8 @@ T
 ;;; SYNOPSIS
 (defmethod force-rest :after ((e event))
 ;;; **** 
+  ;; MDE Fri Aug 17 17:20:43 2012 
+  (delete-beam e)
   (setf (pitch-or-chord e) nil
         (written-pitch-or-chord e) nil
         ;; 23.7.11 (Pula) remove marks that can only be used on a note

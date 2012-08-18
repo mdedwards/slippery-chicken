@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 14:24:09 Sun Aug 12 2012 BST
+;;; $$ Last modified: 15:06:18 Fri Aug 17 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -2795,7 +2795,8 @@ NIL
 ;;; - A slippery-chicken object.
 ;;; - An integer that is the number of the bar in which the note is located. 
 ;;; - An integer that is the number of the note within that bar which is to be
-;;;   extended. This number is 1-based and also counts already tied notes.
+;;;   extended. This number is 1-based and also counts already tied notes.  If
+;;;   NIL, then the last note in the bar will be used.
 ;;; - The ID of the player whose part is to be modified.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
@@ -2840,14 +2841,20 @@ NIL
 ;;; SYNOPSIS
 (defmethod tie-over-rests ((sc slippery-chicken) bar-num note-num player
                            &key end-bar auto-beam (consolidate-notes t))
-;;; ****
-  ;; MDE Mon Jul 16 18:10:02 2012 -- 
-  (unless (zerop (num-rests (get-bar sc bar-num player)))
+;;; **** 
+  (let ((rsb (get-bar sc bar-num player)))
+    ;; MDE Fri Aug 17 15:04:54 2012 -- this would mean we can't tie 
+    ;; from the last note in a bar of all notes into the next bar of rests :/ 
+    ;; MDE Mon Jul 16 18:10:02 2012 --  
+    ;; (unless (zerop (num-rests rsb))
+    ;; MDE Thu Aug 16 18:03:39 2012 -- auto-get last note if note-num is nil 
+    (unless note-num 
+      (setf note-num (num-score-notes rsb)))
     (next-event sc player nil bar-num)
     (if (not (get-note sc bar-num note-num player))
-        ;; MDE Mon Jul 16 17:36:24 2012 -- error now warn
-        (warn "tie-over-rests: can't get note ~a, bar ~a, ~a. Could be this bar ~
-           is a rest bar."
+          ;; MDE Mon Jul 16 17:36:24 2012 -- error now warn ;
+        (warn "tie-over-rests: can't get note ~a, bar ~a, ~a. Could be this ~
+                 bar is a rest bar."
               note-num bar-num player)
         (let* ((start-event (loop 
                                for e = (next-event sc player)
@@ -2866,15 +2873,15 @@ NIL
                (last-event start-event)
                (new-ties 0)
                (bar-nums (list bar-num)))
-          ;; (print start-event) ; 
-          ;; just check we're not already tied here and exit if we are because we
-          ;; get ; some strange errors when we enter the wrong data when calling
-          ;; this fun ;
+            ;; (print start-event) ;    ;
+            ;; just check we're not already tied here and exit if we are ;
+            ;; because we get ; some strange errors when we enter the wrong ;
+            ;; data when calling this fun ; ;
           (when (is-tied-from start-event)
-            (warn "slippery-chicken::tie-over-rests: already tied from! Bar ~a, ~
-              note ~a, ~a" bar-num note-num player))
+            (warn "slippery-chicken::tie-over-rests: already tied from! ~
+                     Bar ~a, note ~a, ~a" bar-num note-num player))
           (setf (is-tied-from start-event) t)
-          ;; remove any staccato or tenuto marks from this event ;
+            ;; remove any staccato or tenuto marks from this event ; ;
           (rm-marks start-event '(s as t) nil)
           (when porc
             (delete-marks porc))
@@ -2887,13 +2894,13 @@ NIL
              while (and (if end-bar (<= bnum end-bar) t)
                         e (is-rest e))
              do
-             ;; (print (data e)) 
-             ;; keep track of the bars we've changed
+               ;; (print (data e))      ;
+               ;; keep track of the bars we've changed ;
              (pushnew bnum bar-nums)
              (if (is-rest-bar bar)
                  (let ((events (events-for-full-bar (get-time-sig bar) 
                                                     porc wporc)))
-                   ;;(print (data porc)) 
+                     ;;(print (data porc)) ;
                    (incf new-ties (length events))
                    (setf last-event (first (last events))
                          (rhythms bar) events))
@@ -2908,12 +2915,12 @@ NIL
                          (is-tied-from e) t
                          last-event e)))
              (gen-stats bar))
-          ;; 3.3.11 if we just test for last-event we might screw up ties despite
-          ;; the fact that we've done nothing.   
-          ;; MDE Mon Jul 16 17:17:02 2012 -- changed error to warn 
+            ;; 3.3.11 if we just test for last-event we might screw up ties ;
+            ;; despite the fact that we've done nothing.  MDE Mon Jul 16 ;
+            ;; 17:17:02 2012 -- changed error to warn ;
           (when (zerop new-ties)
             (warn "slippery-chicken::tie-over-rests: no ties to make! Bar ~a, ~
-             note ~a, ~a" bar-num note-num player))      
+                     note ~a, ~a" bar-num note-num player))      
           (when (> new-ties 0)
             (setf (is-tied-from last-event) nil))
           (when (and (> new-ties 0) (or auto-beam consolidate-notes))

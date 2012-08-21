@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 16:51:28 Sat Jul 21 2012 CEST
+;;; $$ Last modified: 17:47:25 Tue Aug 21 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -280,6 +280,8 @@
      ;; here.
      (piano-lh
       (:lowest-written a0 :highest-written c8 
+       ;; MDE Tue Aug 21 17:47:07 2012 -- to avoid the NIL ins name in CMN
+       :staff-name "" :staff-short-name ""
        :largest-fast-leap 9 
        :chords t :chord-function piano-chord-fun
        :clefs (treble bass double-treble double-bass) :starting-clef bass 

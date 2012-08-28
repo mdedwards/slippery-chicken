@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 15:06:18 Fri Aug 17 2012 BST
+;;; $$ Last modified: 12:07:38 Tue Aug 28 2012 BST
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -4368,11 +4368,11 @@ NIL
 ;;; SAR Fri Apr 20 13:58:23 BST 2012: Added robodoc entry
 
 ;;; MDE comment:
-;;; if update we update-slots for the whole sc object a nasty side-effect at
-;;; the moment is that any existing events in the doubling players at the
-;;; beginning of the start-bar or end of the end-bar will be deleted, so this
-;;; only works for copying notes into completely empty bars, not razor
-;;; splicing.
+;;; if update we update-slots for the whole sc object. 
+;;; A nasty side-effect of this method is that at the moment is that any
+;;; existing events in the doubling players at the beginning of the start-bar
+;;; or end of the end-bar will be deleted, so this only works for copying notes
+;;; into completely empty bars, not razor splicing.
 
 ;;; ****m* slippery-chicken-edit/double-events
 ;;; DATE

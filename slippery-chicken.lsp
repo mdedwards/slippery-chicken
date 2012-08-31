@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:33:47 Mon Aug 13 2012 BST
+;;; $$ Last modified: 12:54:38 Fri Aug 31 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -580,8 +580,8 @@
 ;;;   for the .eps file to be created. Default = "/tmp/cmn.eps".
 ;;; - :players. NIL or a list of player IDs to indicate whether all players'
 ;;;   parts should be printed to the score. If NIL, all players' parts will be
-;;;   written to the score. If a list of player IDs, only the parts of those
-;;;   players will be written to the score. Default = NIL.
+;;;   written to the score. If a single symbol or a list of player IDs, only
+;;;   the parts of those players will be written to the score. Default = NIL.
 ;;; - :in-c. T or NIL to indicate whether the output should be printed at
 ;;;   sounding pitch (in C) or at written pitch. NB: If in C, piccolo and
 ;;;   double bass maintain their usual octave transpositions.

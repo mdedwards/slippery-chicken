@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 14:03:10 Mon Jul 23 2012 CEST
+;;; $$ Last modified: 16:27:23 Sat Sep 22 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3449,6 +3449,12 @@ data: (2 4)
             (push (get-lp-data (tempo-change e1)) result))
           ;; MDE Mon Jul 23 14:01:44 2012 -- 
           (loop for s in (lp-get-ins-change e1) do (push s result))
+          ;; MDE Sat Sep 22 16:01:03 2012 -- e.g. key sigs on rest bars
+          (when (marks-before e1)
+            (loop for m in (marks-before e1)
+               for lpm = (lp-get-mark m)
+               do
+                 (push lpm result)))
           (push (lp-rest-bar rsb ts) result)
           (when (marks e1)
             (loop for m in (marks e1)
@@ -3516,156 +3522,163 @@ data: (2 4)
                          display-marks-in-part display-time
                          ignore1 ignore2 ignore3 ignore4)
   (declare (ignore ignore1 ignore2 ignore3 ignore4))
-  ;; 4/4/06: don't do this here anymore, rather do it in sc::respell-notes so
-  ;; that we can respell notes. 
-  ;; (auto-accidentals rsb)
-  ;; bar nums are written over the bar line of this bar, so it's actually the
-  ;; next bar, if you see what I mean  
-  (let* ((e1 (get-nth-event 0 rsb))
-         (bar-num (1+ (bar-num rsb)))
-         (mbr (numberp (multi-bar-rest rsb)))
-         (e1ic (first (instrument-change e1)))
-         (result 
-          (if (is-rest-bar rsb)
-              (list (if (missing-duration rsb)
-                        (apply #'cmn::rest 
-                               (append 
-                                ;; 1.3.11 got to turn the mark symbols into cmn
-                                ;; marks. can use e1 instead of
-                                ;; (get-nth-event 0 rsb))
-                                (cmn::get-all-cmn-marks (marks e1))
-                                ;; MDE Mon Jul 23 13:33:36 2012 -- 
-                                (when e1ic
-                                  (list (cmn::new-staff-name e1ic)
-                                        (cmn::sc-cmn-text e1ic)))
-                                (list 
-                                 (cmn::rq
-                                  (- (rationalize
-                                      (bar-qtr-duration rsb))
-                                     (missing-duration rsb))))
-                                (list cmn::invisible)))
-                        ;; if it's under a multi-bar-rest it's skipped in the
-                        ;; sequenz class
-                        (apply (if mbr #'cmn::measure-rest
-                                   #'cmn::whole-measure-rest)
-                               (append 
-                                (cmn::get-all-cmn-marks (marks e1))
-                                (when (display-tempo e1)
-                                  ;; this is now a list
-                                  (cmn-tempo (tempo-change e1)))
-                                ;; MDE Mon Jul 23 13:33:36 2012 -- 
-                                (when e1ic
-                                  (list (cmn::new-staff-name e1ic)
-                                        (cmn::sc-cmn-text e1ic)))
-                                (list (cmn::dots 0)
-                                      ;; 3/4/07 not here anymore
-                                      ;; (when (write-bar-num rsb)
-                                      ;; (cmn::cmn-bar-number (bar-num rsb)))
-                                      (when mbr
-                                        (multi-bar-rest rsb))
-                                      (unless (show-rest rsb)
-                                        cmn::invisible)))))
-                    ;; MDE Wed Apr 18 08:33:02 2012 -- only write bar num if
-                    ;; this instrument is supposed to. 2nd arg was t.
-                    (cmn::cmn-bar-line bar-num (write-bar-num rsb)
-                                       (bar-line-type rsb)
-                                       (rehearsal-letter rsb)))
-              ;; not a rest bar
-              (econs 
-               (loop for event in (rhythms rsb)
-                  with first = t
-                  with result
-                  with rqq
-                  with pitches
-                  with rqqn
-                  with rqq-get-events
-                  for bnum = (when (and first
-                                        ;; 3/4/07: bar-nums are added to the
-                                        ;; bar-line not the event so make sure
-                                        ;; bnum is nil here
-                                        nil
-                                        (write-bar-num rsb))
-                               (bar-num rsb))
-                  do
-                  (when (marks-before event)
-                    (loop for o in (marks-before event) 
-                       ;; a clef change appears as a 2-element
-                       ;; list e.g. (clef treble)
-                       for cmn-o = (if (and (listp o)
-                                            (equal (first o) 'clef))
-                                       (cmn::cmn-get-clef (second o))
-                                       (cmn::get-cmn-marks o))
-                       do
-                       (if (listp cmn-o)
-                           (loop for co in cmn-o do (push co result))
-                           (push cmn-o result))))
-                  (setf rqqn (rqq-info event))
-                  ;; catch grace note pitches that come just before an rqq.
-                  (when (and rqq-get-events
-                             (zerop rqq-get-events))
-                    (setf result
-                          (append
-                           (handle-rqq rqq (reverse pitches) bnum 
-                                       (rhythms rsb) process-event-fun in-c)
-                           result))
-                    (setf pitches nil
-                          rqq-get-events nil
-                          rqq nil))
-                  (when (and (not rqq) 
-                             (is-grace-note event))
-                    (push (pitch-or-chord event) pitches))
-                  ;; at the first sight of a normal note, get rid of any grace
-                  ;; notes we saw.
-                  (when (and (not rqqn) 
-                             (not (is-grace-note event))
-                             (not (is-rest event)))
-                    (setf pitches nil))
-                  ;; here's the start of an rqq
-                  (when (and rqqn (listp rqqn))
-                    (setf rqq rqqn
-                          rqq-get-events (nth-value 2 (do-rqq rqq)))
-                    (unless (numberp rqq-get-events)
-                      (error "rthm-seq-bar::get-cmn-data: ~
+  ;; MDE Sat Sep 22 16:27:21 2012 
+  (flet ((process-marks-before (event result-list)
+           (loop for o in (marks-before event)
+              ;; a clef change appears as a 2-element list e.g. (clef treble)
+              for cmn-o = (if (and (listp o)
+                                   (equal (first o) 'clef))
+                              (cmn::cmn-get-clef (second o))
+                              (cmn::get-cmn-marks o))
+              do 
+              (if (listp cmn-o) 
+                  (loop for co in cmn-o do (push co result-list))
+                  (push cmn-o result-list)))
+           result-list))
+    ;; 4/4/06: don't do this here anymore, rather do it in sc::respell-notes so
+    ;; that we can respell notes. 
+    ;; (auto-accidentals rsb)
+    ;; bar nums are written over the bar line of this bar, so it's actually the
+    ;; next bar, if you see what I mean  
+    (let* ((e1 (get-nth-event 0 rsb))
+           (bar-num (1+ (bar-num rsb)))
+           (mbr (numberp (multi-bar-rest rsb)))
+           (e1ic (first (instrument-change e1)))
+           (result 
+            (if (is-rest-bar rsb)
+                (list 
+                 (if (missing-duration rsb)
+                     (apply #'cmn::rest 
+                            (append 
+                             ;; 1.3.11 got to turn the mark symbols into cmn
+                             ;; marks. can use e1 instead of
+                             ;; (get-nth-event 0 rsb))
+                             (cmn::get-all-cmn-marks (marks e1))
+                             ;; MDE Mon Jul 23 13:33:36 2012 -- 
+                             (when e1ic
+                               (list (cmn::new-staff-name e1ic)
+                                     (cmn::sc-cmn-text e1ic)))
+                             (list 
+                              (cmn::rq
+                               (- (rationalize
+                                   (bar-qtr-duration rsb))
+                                  (missing-duration rsb))))
+                             (list cmn::invisible)))
+                     ;; if it's under a multi-bar-rest it's skipped in the
+                     ;; sequenz class
+                     (apply (if mbr #'cmn::measure-rest
+                                #'cmn::whole-measure-rest)
+                            (append 
+                             (cmn::get-all-cmn-marks (marks e1))
+                             (when (display-tempo e1)
+                               ;; this is now a list
+                               (cmn-tempo (tempo-change e1)))
+                             ;; MDE Mon Jul 23 13:33:36 2012 -- 
+                             (when e1ic
+                               (list (cmn::new-staff-name e1ic)
+                                     (cmn::sc-cmn-text e1ic)))
+                             (list (cmn::dots 0)
+                                   ;; 3/4/07 not here anymore
+                                   ;; (when (write-bar-num rsb)
+                                   ;; (cmn::cmn-bar-number (bar-num rsb)))
+                                   (when mbr
+                                     (multi-bar-rest rsb))
+                                   (unless (show-rest rsb)
+                                     cmn::invisible)))))
+                 ;; MDE Wed Apr 18 08:33:02 2012 -- only write bar num if
+                 ;; this instrument is supposed to. 2nd arg was t.
+                 (cmn::cmn-bar-line bar-num (write-bar-num rsb)
+                                    (bar-line-type rsb)
+                                    (rehearsal-letter rsb)))
+                ;; not a rest bar
+                (econs 
+                 (loop for event in (rhythms rsb)
+                    with first = t
+                    with result
+                    with rqq
+                    with pitches
+                    with rqqn
+                    with rqq-get-events
+                    for bnum = (when (and first
+                                          ;; 3/4/07: bar-nums are added to the
+                                          ;; bar-line not the event so make
+                                          ;; sure bnum is nil here
+                                          nil
+                                          (write-bar-num rsb))
+                                 (bar-num rsb))
+                    do
+                    (when (marks-before event)
+                      (setf result (process-marks-before event result)))
+                    (setf rqqn (rqq-info event))
+                    ;; catch grace note pitches that come just before an rqq.
+                    (when (and rqq-get-events
+                               (zerop rqq-get-events))
+                      (setf result
+                            (append
+                             (handle-rqq rqq (reverse pitches) bnum 
+                                         (rhythms rsb) process-event-fun in-c)
+                             result))
+                      (setf pitches nil
+                            rqq-get-events nil
+                            rqq nil))
+                    (when (and (not rqq) 
+                               (is-grace-note event))
+                      (push (pitch-or-chord event) pitches))
+                    ;; at the first sight of a normal note, get rid of any
+                    ;; grace notes we saw.
+                    (when (and (not rqqn) 
+                               (not (is-grace-note event))
+                               (not (is-rest event)))
+                      (setf pitches nil))
+                    ;; here's the start of an rqq
+                    (when (and rqqn (listp rqqn))
+                      (setf rqq rqqn
+                            rqq-get-events (nth-value 2 (do-rqq rqq)))
+                      (unless (numberp rqq-get-events)
+                        (error "rthm-seq-bar::get-cmn-data: ~
                                             rqq-get-events = ~a"
-                             rqq-get-events))
-                    ;; minus the number of grace notes
-                    (decf rqq-get-events (length pitches)))
-                  (when (and rqq-get-events
-                             (> rqq-get-events 0))
-                    (decf rqq-get-events)
-                    (unless (is-rest event)
-                      (push (pitch-or-chord event) pitches)))
-                  ;; these are notes not created by rqq!!!!!!!!
-                  (unless rqq
-                    (if (is-grace-note event) 
-                        ;; 21/4/10 display time on grace note or note
-                        (get-cmn-data event bnum nil process-event-fun in-c
-                                      display-marks-in-part 
-                                      (and first display-time))
-                        ;; here we put the bar num in as text
-                        (push (get-cmn-data event bnum nil process-event-fun
-                                            in-c display-marks-in-part 
-                                            (and first display-time))
-                              result)))
-                  (setf first nil)
-                  finally 
-                  (when rqq
-                    (setf result
-                          (append (handle-rqq
-                                   rqq (reverse pitches) bnum (rhythms rsb)
-                                   process-event-fun in-c)
-                                  result)))
-                  (return (nreverse result)))
-               ;; change second arg to t if we want real cmn bar
-               ;; nums every five bars (and above!)
-               (cmn::cmn-bar-line 
-                ;; MDE Wed Apr 18 08:33:02 2012 -- only write bar num if
-                ;; this instrument is supposed to. 2nd arg was t.
-                bar-num (write-bar-num rsb)
-                (bar-line-type rsb) (rehearsal-letter rsb))))))
-    (when (write-time-sig rsb)
-      (push (cmn::meter (get-time-sig-as-list rsb)) result))
-    result))
+                               rqq-get-events))
+                      ;; minus the number of grace notes
+                      (decf rqq-get-events (length pitches)))
+                    (when (and rqq-get-events
+                               (> rqq-get-events 0))
+                      (decf rqq-get-events)
+                      (unless (is-rest event)
+                        (push (pitch-or-chord event) pitches)))
+                    ;; these are notes not created by rqq!!!!!!!!
+                    (unless rqq
+                      (if (is-grace-note event) 
+                          ;; 21/4/10 display time on grace note or note
+                          (get-cmn-data event bnum nil process-event-fun in-c
+                                        display-marks-in-part 
+                                        (and first display-time))
+                          ;; here we put the bar num in as text
+                          (push (get-cmn-data event bnum nil process-event-fun
+                                              in-c display-marks-in-part 
+                                              (and first display-time))
+                                result)))
+                    (setf first nil)
+                    finally 
+                    (when rqq
+                      (setf result
+                            (append (handle-rqq
+                                     rqq (reverse pitches) bnum (rhythms rsb)
+                                     process-event-fun in-c)
+                                    result)))
+                    (return (nreverse result)))
+                 ;; change second arg to t if we want real cmn bar
+                 ;; nums every five bars (and above!)
+                 (cmn::cmn-bar-line 
+                  ;; MDE Wed Apr 18 08:33:02 2012 -- only write bar num if
+                  ;; this instrument is supposed to. 2nd arg was t.
+                  bar-num (write-bar-num rsb)
+                  (bar-line-type rsb) (rehearsal-letter rsb))))))
+      ;; MDE Sat Sep 22 16:17:47 2012 -- e.g. key sigs on a rest bar
+      (when (and (is-rest-bar rsb) (marks-before e1))
+        (setf result (process-marks-before e1 result)))
+      (when (write-time-sig rsb)
+        (push (cmn::meter (get-time-sig-as-list rsb)) result))
+      result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Try and work out which notes in the bar need accidentals and which don't.

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:54:38 Fri Aug 31 2012 BST
+;;; $$ Last modified: 22:16:43 Mon Sep 24 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -336,15 +336,9 @@
                   (make-change-map (make-name 'hint-pitches) 
                                    t
                                    (hint-pitches sc))))
-        (let ((sfp (sndfile-palette sc)))
-          (setf (sndfile-palette sc)
-                (if (sndfile-palette-p sfp)
-                    (clone sfp)
-                    (make-sfp (make-name 'sound-file-palette)
-                              (first sfp) 
-                              :paths (second sfp)
-                              :extensions (third sfp)))))
-        (setf (num-sequences sc) (count-sequence-refs (set-map sc)))
+        ;; MDE Mon Sep 24 22:16:25 2012 --  calls the setf method
+        (setf (sndfile-palette sc) (sndfile-palette sc)
+              (num-sequences sc) (count-sequence-refs (set-map sc)))
         (handle-set-limits sc)
         ;; (print (set-limits-low sc))
         ;; we have a chicken before the egg situation here: we can't
@@ -918,6 +912,18 @@
         (make-tempo-map (format nil "~a-~a" (id sc) 'tempo-map)
                         tm)))
   
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Sep 24 22:06:50 2012 
+
+(defmethod (setf sndfile-palette) (sfp (sc slippery-chicken))
+  (setf (slot-value sc 'sndfile-palette)
+        (if (sndfile-palette-p sfp)
+            (clone sfp)
+            (make-sfp (format nil "~a-~a" (id sc) 'sound-file-palette)
+                      (first sfp) 
+                      :paths (second sfp)
+                      :extensions (third sfp)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf set-map-replacements) :after (smr (sc slippery-chicken))

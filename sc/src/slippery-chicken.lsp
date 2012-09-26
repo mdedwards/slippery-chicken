@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 22:16:43 Mon Sep 24 2012 BST
+;;; $$ Last modified: 17:10:41 Tue Sep 25 2012 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4023,7 +4023,8 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   start times, and will therefore result in overlapping sounds if greater
 ;;;   than 1.0. This is not to be confused with :time-scaler. Default = 1.0.
 ;;; - :normalise. A decimal number that will be the maximum amplitude of the
-;;;   resulting output file; i.e., to which the samples will be scaled. 
+;;;   resulting output file; i.e., to which the samples will be scaled. Can
+;;;   also be NIL, whereupon no normalisation will be performed. 
 ;;;   Default = 0.99
 ;;; - :amp-env. A list of break-point pairs that will govern the amplitude
 ;;;   envelope applied to all source-sound files as it is being written to the

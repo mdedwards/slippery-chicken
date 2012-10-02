@@ -13,7 +13,7 @@
 %%%
 %%% Creation date:    23rd November 2011
 %%%
-%%% $$ Last modified: 16:18:43 Sat Aug 11 2012 BST
+%%% $$ Last modified: 19:39:31 Tue Oct  2 2012 BST
 %%%
 %%% SVN ID: $Id: lilypond.ly 963 2010-04-08 20:58:32Z medward2 $
 %%%
@@ -131,6 +131,19 @@ bracketEnd = \markup \bracketEnd
  (interpret-markup layout props 
         (markup #:general-align Y DOWN  #:epsfile X 2 "up-down.eps")))
 arrowUpDown = \markup \arrowUpDown
+
+% a blue arrow pointing down
+#(define-markup-command (blueArrowDown layout props) () 
+ (interpret-markup layout props 
+        (markup #:general-align Y DOWN  #:epsfile X 2 "blue-arrow-down.eps")))
+blueArrowDown = \markup \blueArrowDown
+
+% a blue arrow pointing up
+#(define-markup-command (blueArrowUp layout props) () 
+ (interpret-markup layout props 
+        (markup #:general-align Y DOWN  #:epsfile X 2 "blue-arrow-up.eps")))
+blueArrowUp = \markup \blueArrowUp
+
 
 % dynamics in parentheses
 parenFFFF = #(make-dynamic-script (markup #:line (#:normal-text #:italic

@@ -1329,7 +1329,43 @@ data: (
 ;;; (add-pitches (make-chord '(c4 e4 g4)) '(bf3 dqf5))
 ;;; (add-pitches (make-chord '(c4 e4 g4)) 'bf4 'd5)
 
+;;; SAR Thu Oct  4 14:06:35 BST 2012: Added robodoc entry
+
+;;; ****m* chord/add-pitches
+;;; DESCRIPTION
+;;; Add the specified pitches to the given chord object. 
+;;; 
+;;; ARGUMENTS
+;;; - A chord object.
+;;; - The pitches to add to that object. These can be pitch objects or any data
+;;;   that can be passed to make-pitch, or indeed lists of these, as they will
+;;;   be flattened.
+;;; 
+;;; RETURN VALUE
+;;; - A chord object.
+;;; 
+;;; EXAMPLE
+#|
+(let ((ch (make-chord '(c4 e4 g4))))
+  (print (get-pitch-symbols ch))
+  (add-pitches ch 'bf3)
+  (print (get-pitch-symbols ch))
+  (add-pitches ch 'af3 'a4 'b4)
+  (print (get-pitch-symbols ch))
+  (add-pitches ch '(cs5 ds5 fs5))
+  (print (get-pitch-symbols ch)))
+
+=>
+(C4 E4 G4) 
+(BF3 C4 E4 G4) 
+(AF3 BF3 C4 E4 G4 A4 B4) 
+(AF3 BF3 C4 E4 G4 A4 B4 CS5 DS5 FS5) 
+
+
+|#
+;;; SYNOPSIS
 (defmethod add-pitches ((c chord) &rest pitches)
+;;; ****
   (setf (data c) 
         (remove-duplicates 
          (append (data c) (init-pitch-list (flatten pitches)))
@@ -1345,7 +1381,43 @@ data: (
 ;;; (print-simple (rm-pitches (make-chord '(c4 e4 g4 bf4 d5)) '(bf4 dqf5)))
 ;;; (print-simple (rm-pitches (make-chord '(c4 e4 g4 bf4 d5)) '(bf4 e4)))
 
+;;; SAR Thu Oct  4 16:42:21 BST 2012: Added robodoc entry
+
+;;; ****m* chord/rm-pitches
+;;; DESCRIPTION
+;;; Remove the specified pitches from an existing chord object.
+;;; 
+;;; ARGUMENTS
+;;; - A chord object.
+;;; - The pitches to remove from that object. These can be pitch objects or any
+;;;   data that can be passed to make-pitch, or indeed lists of these, as they
+;;;   will be flattened. NB: No warning/error will be signalled if the pitches
+;;;   to be removed are not actually in the chord.
+;;; 
+;;; RETURN VALUE
+;;; - A chord object.
+;;; 
+;;; EXAMPLE
+#|
+(let ((ch (make-chord '(af3 bf3 c4 e4 g4 a4 b4 cs5 ds5 fs5))))
+  (print (get-pitch-symbols ch))
+  (rm-pitches ch 'bf3)
+  (print (get-pitch-symbols ch))
+  (rm-pitches ch 'af3 'a4 'b4)
+  (print (get-pitch-symbols ch))
+  (rm-pitches ch '(cs5 ds5 fs5))
+  (print (get-pitch-symbols ch)))
+
+=>
+(AF3 BF3 C4 E4 G4 A4 B4 CS5 DS5 FS5) 
+(AF3 C4 E4 G4 A4 B4 CS5 DS5 FS5) 
+(C4 E4 G4 CS5 DS5 FS5) 
+(C4 E4 G4) 
+
+|#
+;;; SYNOPSIS
 (defmethod rm-pitches ((c chord) &rest pitches)
+;;; ****
   (setf (data c) (set-difference (data c) (init-pitch-list (flatten pitches))
                                  :test #'pitch=))
   (initialize-instance c)

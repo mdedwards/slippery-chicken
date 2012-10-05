@@ -5291,7 +5291,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;;   flattened.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; The chord object that has been changed.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -5335,8 +5335,58 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Aug 10 17:22:54 2012 -- works with sounding pitches (written
 ;;; pitches will be updated if appropriate)  
+
+;;; SAR Fri Oct  5 13:44:09 BST 2012. Added robodoc entry.
+
+;;; ****m* slippery-chicken-edit/rm-pitches-from-chord
+;;; DESCRIPTION
+;;; Remove the specified pitches from an existing chord object.
+;;; 
+;;; ARGUMENTS
+;;; - The slippery-chicken object which contains the given chord object.
+;;; - The ID of the player whose part is to be affected.
+;;; - An integer that is the number of the bar that contains the chord object
+;;;   that is to be modified.
+;;; - An integer that is the number of the note that is the chord object to be
+;;;   modified. 
+;;; - The pitches to be removed. These can be pitch objects or any data that
+;;;   can be passed to make-pitch, or indeed lists of these, as they will be
+;;;   flattened.
+;;; 
+;;; RETURN VALUE
+;;; The chord object that has been changed.
+;;; 
+;;; EXAMPLE
+#|
+(let* ((ip-clone (clone +slippery-chicken-standard-instrument-palette+)))
+  (set-slot 'chord-function 'chord-fun2 'guitar ip-clone)
+  (let* ((mini
+          (make-slippery-chicken
+           '+mini+
+           :instrument-palette ip-clone
+           :ensemble '(((gtr (guitar :midi-channel 1))))
+           :set-palette '((1 ((e3 f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5 d5 e5 f5
+                                  g5 a5 b5 c6 d6 e6))))
+           :set-map '((1 (1)))
+           :rthm-seq-palette 
+           '((1 ((((4 4) e e e e e e e e))
+                 :pitch-seq-palette ((1 (2) 3 (4) 5 (6) 7 (8))))))
+           :rthm-seq-map '((1 ((gtr (1))))))))
+    (print (get-pitch-symbols 
+            (pitch-or-chord (get-event mini 1 2 'gtr))))
+    (rm-pitches-from-chord mini 'gtr 1 2 'a3 'd4)
+    (print (get-pitch-symbols 
+            (pitch-or-chord (get-event mini 1 2 'gtr))))))
+
+=>
+(E3 A3 D4 G4) 
+(E3 G4)
+
+|#
+;;; SYNOPSIS
 (defmethod rm-pitches-from-chord ((sc slippery-chicken) player bar-num note-num 
                                   &rest pitches)
+;;; ****
   (multiple-value-bind
         (chord event)
       (sc-get-chord sc bar-num note-num player)

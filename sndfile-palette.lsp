@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 12:48:48 Tue Jun 19 2012 BST
+;;; $$ Last modified: 14:04:58 Fri Oct  5 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -97,22 +97,26 @@
 #+clm
 (defmethod verify-and-store :after ((sfp sndfile-palette))
   (setf (paths sfp) (loop for path in (paths sfp) 
-                          collect (trailing-slash path)))
+                       collect (trailing-slash path)))
   (loop for sflist in (data sfp) and i from 0 do
-        (loop for snd in (data sflist) and j from 0 do 
-              (setf (nth j (data (nth i (data sfp))))
+       (loop for snd in (data sflist) and j from 0 do 
+            (setf (nth j (data (nth i (data sfp))))
+                  ;; MDE Fri Oct  5 13:57:51 2012 -- if it's already a sndfile
+                  ;; (as when combining palettes) then don't try to re-parse it 
+                  (typecase snd
+                    (sndfile snd)
                     ;; if a list was given then the first in the list is the
                     ;; sound file (name only or full path) plus any other slots
                     ;; which need to be initialised for this sound.  We still
                     ;; need to find the sound though, hence the funny list arg
                     ;; passed to make-sndfile.
-                    (if (listp snd)
-                        (make-sndfile (list (find-sndfile sfp (first snd))
-                                            snd))
-                      ;; if it wasn't a list, just find the sound and pass this
-                      ;; and the given name which also acts as the id per
-                      ;; default. 
-                      (make-sndfile (find-sndfile sfp snd) :id snd))))))
+                    (list
+                     (make-sndfile (list (find-sndfile sfp (first snd))
+                                         snd)))
+                    ;; if it wasn't a list, just find the sound and pass this
+                    ;; and the given name which also acts as the id per
+                    ;; default. 
+                    (t (make-sndfile (find-sndfile sfp snd) :id snd)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -340,6 +344,9 @@
 ;;; - :warn-not-found. T or NIL to indicate whether to print a warning to the
 ;;;   listener if the specified sound file is not found. T = print a
 ;;;   warning. Default = NIL.
+;;; - :name. The name for the overall sndfile-palette and the base name for
+;;;    each group within (these will have a suffix that is an auto-incrementing
+;;;    number e.g. 'auto would become 'auto1 'auto2 etc.).  Default = 'auto.
 ;;; 
 ;;; RETURN VALUE
 ;;; A sndfile-palette object.
@@ -391,6 +398,8 @@ data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
                                           paths
                                           (sampling-rate 44100)
                                           extensions
+                                          ;; MDE Fri Oct  5 14:04:08 2012 
+                                          (name 'auto)
                                           warn-not-found)
 ;;; ****
   ;; do this just to reset the random number generator
@@ -441,7 +450,7 @@ data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
                           (if do-random
                               (format nil "random~a" 
                                       (incf random-group-num))
-                              (format nil "auto~a" (incf group-num)))
+                              (format nil "~a~a" name (incf group-num)))
                           sublist))
              (when (member nil sublist)
                (error "sndfile-palette::make-sfp-from-wavelab-~
@@ -450,7 +459,7 @@ data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
                                i =~a (after inc!) ~%~a"
                       i sublist))
              collect group)))
-    (make-sfp 'auto sfp 
+    (make-sfp name sfp 
               :paths paths 
               :extensions extensions 
               :warn-not-found warn-not-found)))

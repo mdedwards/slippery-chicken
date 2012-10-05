@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 22:18:09 Tue May  8 2012 BST
+;;; $$ Last modified: 13:51:58 Fri Oct  5 2012 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -447,6 +447,11 @@ data: /path/to/sndfile-1.aiff
       (make-instance 'sndfile :id id :data data :path path :duration duration
                      :frequency frequency :end end :start start
                      :amplitude amplitude)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun sndfile-p (candidate)
+  (typep candidate 'sndfile))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

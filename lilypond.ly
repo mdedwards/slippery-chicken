@@ -13,7 +13,7 @@
 %%%
 %%% Creation date:    23rd November 2011
 %%%
-%%% $$ Last modified: 20:42:33 Tue Oct  2 2012 BST
+%%% $$ Last modified: 12:07:46 Sun Oct 14 2012 BST
 %%%
 %%% SVN ID: $Id: lilypond.ly 963 2010-04-08 20:58:32Z medward2 $
 %%%
@@ -135,7 +135,7 @@ arrowUpDown = \markup \arrowUpDown
 % a blue arrow pointing down
 #(define-markup-command (blueArrowDown layout props) () 
  (interpret-markup layout props 
-        (markup #:general-align Y DOWN #:epsfile X 3 "blue-arrow-down.eps")))
+        (markup #:general-align Y DOWN #:epsfile X 2 "blue-arrow-down.eps")))
 blueArrowDown = \markup \blueArrowDown
 
 % a blue arrow pointing up

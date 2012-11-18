@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 20:20:19 Mon Jul 23 2012 CEST
+;;; $$ Last modified: 18:32:31 Sun Nov 18 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -709,51 +709,51 @@ BAR-HOLDER:
              (unless (event-p event)
                (error "piece::handle-ties: event is nil; ~a bar num ~a"
                       player bar-num))
-             ;; 10/5/07: just silently kill any incomplete ties
-               #|
-             (when (and (= bar-num 1158) 
-               (eq player 'fl))
-               (print (is-tied-from last-event))
-               (print (is-tied-to event)))
-             |#
-                    (when last-event
-                      (when (and (is-tied-from last-event)
-                                 (not (is-tied-to event)))
-                        ;; (print bar-num)
-                        (setf (is-tied-from last-event) nil))
-                      (when (and (not (is-tied-from last-event))
-                                 (is-tied-to event))
-                        (setf (is-tied-to event) nil)))
-                    ;; 28/3/07 make sure we're tying to the same note/chord
-                    (when (and last-event
-                               (is-tied-to event))
-                      (setf tie-ok
-                        (if (is-single-pitch event)
-                            (pitch= (pitch-or-chord event)
-                                    (pitch-or-chord last-event)
-                                    t)
-                          (chord-equal (pitch-or-chord event)
-                                       (pitch-or-chord last-event))))
-                      (unless tie-ok
-                        (error "~a~&piece::handle-ties: in bar ~a, ~a, tied ~
+             (when last-event
+               (when (and (is-tied-from last-event)
+                          (not (is-tied-to event)))
+                 ;; (print bar-num)
+                 (setf (is-tied-from last-event) nil))
+               (when (and (not (is-tied-from last-event))
+                          (is-tied-to event))
+                 (setf (is-tied-to event) nil)))
+             ;; 28/3/07 make sure we're tying to the same note/chord
+             (when (and last-event
+                        (is-tied-to event))
+               ;; MDE Sun Nov 18 18:26:40 2012 -- 
+               (unless (and (pitch-or-chord event)
+                            (pitch-or-chord last-event))
+                 (error "~a~&piece::handle-ties: in bar ~a, ~a,~
+                         there's a tie from/to a rest. ~
+                         ~%current event: ~a~%last event: ~a"
+                        bar bar-num player event last-event))
+               (setf tie-ok
+                     (if (is-single-pitch event)
+                         (pitch= (pitch-or-chord event)
+                                 (pitch-or-chord last-event)
+                                 t)
+                         (chord-equal (pitch-or-chord event)
+                                      (pitch-or-chord last-event))))
+               (unless tie-ok
+                 (error "~a~&piece::handle-ties: in bar ~a, ~a, tied ~
                                 notes/chords not the same: ~a ~a!"
-                               bar bar-num player (get-pitch-symbol last-event)
-                               (get-pitch-symbol event))))
-                    (setf last-event event)
-                    (when (and (not (is-tied-to event))
-                               (is-tied-from event))
-                      ;; (print bar-num)
-                      (multiple-value-bind
-                          (dur dur-tmpo)
-                          (get-tied-durations p bar-num event-num
-                                              player)
-                        (setf (compound-duration event) (+ (duration event) 
-                                                           dur)
-                              (compound-duration-in-tempo event) 
-                              (+ (duration-in-tempo event) dur-tmpo)
-                              (end-time event) 
-                              (+ (start-time event)
-                                 (compound-duration-in-tempo event)))))))))
+                        bar bar-num player (get-pitch-symbol last-event)
+                        (get-pitch-symbol event))))
+             (setf last-event event)
+             (when (and (not (is-tied-to event))
+                        (is-tied-from event))
+               ;; (print bar-num)
+               (multiple-value-bind
+                     (dur dur-tmpo)
+                   (get-tied-durations p bar-num event-num
+                                       player)
+                 (setf (compound-duration event) (+ (duration event) 
+                                                    dur)
+                       (compound-duration-in-tempo event) 
+                       (+ (duration-in-tempo event) dur-tmpo)
+                       (end-time event) 
+                       (+ (start-time event)
+                          (compound-duration-in-tempo event)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1131,11 +1131,11 @@ BAR-HOLDER:
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Print the number of sequenz objects contained in section 2 of each player's ;
-;;; part, delete two sequenz objects from each part in that section, and print ;
-;;; the number of sequenz objects again to see the difference. Update the slots ;
-;;; and call cmn-display for printable output. ;
-     (let ((mini
+;;; Print the number of sequenz objects contained in section 2 of each player's ; ; ;
+;;; part, delete two sequenz objects from each part in that section, and print ; ; ;
+;;; the number of sequenz objects again to see the difference. Update the slots ; ; ;
+;;; and call cmn-display for printable output. ; ; ;
+             (let ((mini
 (make-slippery-chicken
 '+mini+
 :ensemble '(((hn (french-horn :midi-channel 1))
@@ -1163,7 +1163,7 @@ BAR-HOLDER:
 (update-slots mini)
 (cmn-display mini))
 
-     |#
+             |#
 ;;; SYNOPSIS
 (defmethod delete-sequenzes ((p piece) bar-num player &optional (how-many 1))
 ;;; ****
@@ -1196,7 +1196,7 @@ BAR-HOLDER:
 ;;; 
 ;;; EXAMPLE
 #|
-     (let ((mini
+             (let ((mini
 (make-slippery-chicken
 '+mini+
 :ensemble '(((hn (french-horn :midi-channel 1))
@@ -1215,36 +1215,36 @@ BAR-HOLDER:
 (vc (1 1 1 1 1))))))))
 (get-sequenz-from-bar-num (piece mini) 7 'vc))
 
-     =>
-     SEQUENZ: pitch-curve: (1 2 3 4 5)
-     RTHM-SEQ: num-bars: 1
-     num-rhythms: 5
-     num-notes: 5
-     num-score-notes: 5
-     num-rests: 0
-     duration: 4.0
-     psp-inversions: NIL
-     marks: NIL
-     time-sigs-tag: NIL
-     handled-first-note-tie: NIL
-     (for brevity's sake, slots pitch-seq-palette and bars are not printed)
-     SCLIST: sclist-length: 3, bounds-alert: T, copy: T
-     LINKED-NAMED-OBJECT: previous: NIL, this: (1), next: NIL
-     BAR-HOLDER: 
-     start-bar: 7
-     end-bar: 7
-     num-bars: 1
-     start-time: 24.0
-     end-time: 28.0
-     start-time-qtrs: 24.0
-     end-time-qtrs: 28.0
-     num-notes (attacked notes, not tied): 5
-     num-score-notes (tied notes counted separately): 5 
-     num-rests: 0
-     duration-qtrs: 4.0 
-     duration: 4.0 (4.000)
+             =>
+             SEQUENZ: pitch-curve: (1 2 3 4 5)
+             RTHM-SEQ: num-bars: 1
+             num-rhythms: 5
+             num-notes: 5
+             num-score-notes: 5
+             num-rests: 0
+             duration: 4.0
+             psp-inversions: NIL
+             marks: NIL
+             time-sigs-tag: NIL
+             handled-first-note-tie: NIL
+             (for brevity's sake, slots pitch-seq-palette and bars are not printed)
+             SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+             LINKED-NAMED-OBJECT: previous: NIL, this: (1), next: NIL
+             BAR-HOLDER: 
+             start-bar: 7
+             end-bar: 7
+             num-bars: 1
+             start-time: 24.0
+             end-time: 28.0
+             start-time-qtrs: 24.0
+             end-time-qtrs: 28.0
+             num-notes (attacked notes, not tied): 5
+             num-score-notes (tied notes counted separately): 5 
+             num-rests: 0
+             duration-qtrs: 4.0 
+             duration: 4.0 (4.000)
 
-     |#
+             |#
 ;;; SYNOPSIS
 (defmethod get-sequenz-from-bar-num ((p piece) bar-num player)
 ;;; ****

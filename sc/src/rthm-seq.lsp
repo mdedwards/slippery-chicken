@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 23:13:10 Thu Jul 19 2012 CEST
+;;; $$ Last modified: 19:37:44 Sun Nov 18 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2491,6 +2491,24 @@ data: S
   (let ((barn (first (last (bars rs)))))
     (when barn
       (first (last (rhythms barn))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; MDE Sun Nov 18 19:28:12 2012 -- mainly used by rthm-chain: make sure we
+;;; don't have any ties from rests 
+
+(defmethod tidy-ties ((rs rthm-seq))
+  (loop with last-r for bar in (bars rs) do
+       (loop for r in (rhythms bar) do
+            (when (is-rest r)
+              (setf (is-tied-to r) nil
+                    (is-tied-from r) nil)
+              (when (and last-r (not (is-rest last-r)))
+                (setf (is-tied-from last-r) nil)))
+            (when (and last-r (not (is-rest r)) (is-rest last-r))
+              (setf (is-tied-to r) nil))
+            (setf last-r r)))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

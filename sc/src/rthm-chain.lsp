@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 21:51:44 Fri Jun 15 2012 BST
+;;; $$ Last modified: 19:39:53 Sun Nov 18 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -886,6 +886,9 @@
                    ;; MDE Sat Jun  9 16:28:49 2012 
                    (check-beams 1-beat-rs :on-fail #'warn :auto-beam t)
                    (check-beams slower-rs :on-fail #'warn :auto-beam t)
+                   ;; MDE Sun Nov 18 19:39:34 2012 
+                   (tidy-ties 1-beat-rs)
+                   (tidy-ties slower-rs)
                    ;; NB if the order or anything else is changed here we'll
                    ;; have to change the split method too.
                    (add 1-beat-rs (palette rc) section-id)
@@ -1862,9 +1865,9 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
   (loop for i below 100 do
        (setf (gethash i h) 10000))
   (setf (gethash 10 h) 5
-	(gethash 11 h) 4
-	(gethash 12 h) 3
-	(gethash 13 h) 2)
+        (gethash 11 h) 4
+        (gethash 12 h) 3
+        (gethash 13 h) 2)
   (print (hash-least-used h :auto-inc nil))
   (print (hash-least-used h :auto-inc t))
   (print (hash-least-used h :auto-inc t))

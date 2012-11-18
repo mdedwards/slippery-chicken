@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 20:57:29 Tue Jul 24 2012 BST
+;;; $$ Last modified: 19:37:05 Sun Nov 18 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1220,8 +1220,19 @@ NI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf is-tied-to) :after (value (i rhythm))
-  (declare (ignore value))
+  ;; MDE Sun Nov 18 18:42:54 2012 
+  (when (and value (is-rest i))
+    (warn "rhythm::(setf is-tied-to): this rhythm is a rest so shouldn't ~
+           be tied to: ~%~a" i))
   (update-needs-new-note i))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod (setf is-tied-from) :after (value (i rhythm))
+  ;; MDE Sun Nov 18 18:42:54 2012 
+  (when (and value (is-rest i))
+    (warn "rhythm::(setf is-tied-from): this rhythm is a rest so shouldn't ~
+           be tied from: ~%~a" i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

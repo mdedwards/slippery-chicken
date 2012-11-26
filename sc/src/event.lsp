@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:21:25 Fri Aug 17 2012 BST
+;;; $$ Last modified: 17:43:02 Mon Nov 26 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1983,6 +1983,9 @@ NIL
            ;; other than that, just use the nearest power of 2 to the value.
            ;; in all cases don't forget to add the dots.
            (close-tuplets 0))
+      ;; MDE Mon Nov 26 17:42:14 2012 
+      (when (zerop rthm)
+        (error "event::get-lp-data: can't get nearest-power-of-2 for ~a" e))
       ;; MDE Mon Jul 23 13:52:40 2012 -- split out into above method
       (loop for s in (lp-get-ins-change e) do (push s result))
       (when (marks-before e)
@@ -2088,6 +2091,7 @@ NIL
               (move-to-end ">> "
                            (move-to-end "} " (reverse result) #'string=)
                            #'string=))
+        ;; (print result)
         (list-to-string result "")))))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

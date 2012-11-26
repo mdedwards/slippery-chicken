@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:01:52 Tue Sep 25 2012 BST
+;;; $$ Last modified: 18:16:13 Mon Nov 26 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -626,14 +626,16 @@
 
 |#
 ;;; SYNOPSIS
+
 (defun nearest-power-of-2 (num)
 ;;; ****
   (if (power-of-2 num)
       num
-    (loop with p = 1 do
-          (if (> p num)
-              (return (/ p 2))
-            (setf p (* p 2))))))                 
+      (loop with p = 1 do
+           (if (> p num)
+               ;; MDE Mon Nov 26 18:15:59 2012 -- don't return 1/2...
+               (return (max 1 (/ p 2)))
+               (setf p (* p 2))))))                 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

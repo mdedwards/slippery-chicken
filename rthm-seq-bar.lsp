@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 16:27:23 Sat Sep 22 2012 BST
+;;; $$ Last modified: 20:18:31 Mon Nov 26 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -714,7 +714,9 @@ data: E.
 ;;; ****
   ;; (print 'consolidate-rests)
   ;; (print (length (rhythms rsb)))
-  (let ((beats (get-beats rsb beat))
+  ;; MDE Mon Nov 26 20:18:12 2012 -- added 'silent to make sure we don't get
+  ;; more than a beat's worth of rthms 
+  (let ((beats (get-beats rsb beat 'silent))
         (cbeats '())
         ;; 21.7.11
         (rest-beat (make-rest (if beat beat (get-beat-as-rhythm rsb))))
@@ -731,6 +733,8 @@ data: E.
     (if (all-rests? rsb)
         (force-rest-bar rsb)
         (flet ((consolidate (rthm count)
+                 ;; (print rthm)
+                 ;; (print count)
                  (if (< (duration rthm) min)
                      (push (loop repeat count collect (clone rthm))
                            current)
@@ -1763,9 +1767,11 @@ data: ((2 4) - S S - S - S S S - S S)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; If beat is nil, we'll get the beat from the time-sig; if check-dur we'll
-;;; make sure we get a complete beat of rhythms for each beat of the bar
-;;; MDE Tue May  1 19:05:35 2012 -- check-dur can now be t, nil, #'warn or
-;;; #'error, where t is the same as #'error
+;;; make sure we get a complete beat of rhythms for each beat of the bar MDE
+;;; Tue May 1 19:05:35 2012 -- check-dur can now be t, nil, #'warn or #'error,
+;;; where t is the same as #'error, or if you pass a symbol like 'silent the
+;;; duration will be checked and NIL returned if we can't get an exact beat's
+;;; worth of rthms.
 (defmethod get-beats ((rsb rthm-seq-bar) &optional beat check-dur)
   (let ((beat-dur (if (and beat (not (eq beat t)))
                       (duration (make-rhythm beat))
@@ -1791,9 +1797,11 @@ data: ((2 4) - S S - S - S S S - S S)
                           "~a ~%rthm-seq-bar::get-beats: ~
                            Can't find an exact beat of rhythms ~%~
                            (dur: ~a beat-dur: ~a)!" 
-                      rsb dur beat-dur)
-                 (setf failed t)
-                 (return))))
+                      rsb dur beat-dur))
+               ;; MDE Mon Nov 26 20:14:29 2012 -- these were under the above
+               ;; when 
+               (setf failed t)
+               (return)))
            (push (reverse current) beats)
            (setf dur 0.0
                  current nil)))

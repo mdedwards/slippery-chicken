@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 20:18:31 Mon Nov 26 2012 GMT
+;;; $$ Last modified: 20:47:19 Tue Nov 27 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -729,6 +729,7 @@ data: E.
     (setf min (if min 
                   (duration (make-rhythm min))
                   0.0))
+    ;; (print beats)
     ;; (format t "~%bar ~a ~a" (bar-num rsb) (length (first beats)))
     (if (all-rests? rsb)
         (force-rest-bar rsb)
@@ -791,17 +792,20 @@ data: E.
                      count 1))
           (setf cbeats (flatten (reverse cbeats)))
           ;; (print (loop for r in cbeats collect (data r)))
+          ;; (format t "~%cbeats dur ~a " (sum-rhythms-duration cbeats))
           (if (equal-within-tolerance (rhythms-duration rsb)
                                       (sum-rhythms-duration cbeats)
                                       .000004)
               ;; 21.7.11 (Pula) don't fail if we can't do it, just do nothing
               (setf (rhythms rsb) cbeats)
-              (when warn
+              ;; MDE Tue Nov 27 17:34:14 2012 -- only warn when we could split
+              ;; into beats 
+              (when (and cbeats warn)
                 ;; (print rsb)
                 ;; (print-rhythms-rqs (rhythms rsb))
                 ;; (print-rhythms-rqs cbeats)
                 (warn "~a~%rthm-seq-bar::consolidate-rests: ~
-                         Consolidated rthms sum (~a) != previous sum (~a)"
+                       Consolidated rthms sum (~a) != previous sum (~a)"
                       rsb (sum-rhythms-duration cbeats)
                       (rhythms-duration rsb)))))))
     ;; MDE Mon May  7 17:45:59 2012
@@ -943,9 +947,9 @@ data: ((2 4) Q E S S)
   (print-simple (get-bar mini 2 'vn)))
 
 =>
-(4 4): GS4 E+, +GS4 E+, +GS4 E+, +GS4 E, AF4 E+, +AF4 S+, +AF4 S+, +AF4 S, BF4 E., 
+(4 4): GS4 E+, +GS4 E+, +GS4 E+, +GS4 E, AF4 E+, +AF4 S+, +AF4 S+, +AF4 S,
+BF4 E.,
 (4 4): GS4 H, AF4 Q+, +AF4 S, BF4 E.,
-
 
 |#
 ;;; SYNOPSIS
@@ -1788,8 +1792,14 @@ data: ((2 4) - S S - S - S S S - S S)
          (incf dur (duration r))
          (when (or (> dur beat-dur)
                    (equal-within-tolerance dur beat-dur .001))
+           ;; (format t "~% dur ~a beat-dur ~a" dur beat-dur)
            (when check-dur
-             (unless (equal-within-tolerance dur beat-dur .001)
+             (unless 
+                 ;; MDE Tue Nov 27 17:44:10 2012 -- allow more than one beat
+                 ;; to be collected
+                 (or 
+                  (equal-within-tolerance dur beat-dur .001)
+                  (equal-within-tolerance (rem dur beat-dur) 0.0 .001))
                ;; MDE Tue May  1 18:58:14 2012 -- added function argument
                ;; possibility for check-dur 
                (when (functionp check-dur)
@@ -1797,7 +1807,7 @@ data: ((2 4) - S S - S - S S S - S S)
                           "~a ~%rthm-seq-bar::get-beats: ~
                            Can't find an exact beat of rhythms ~%~
                            (dur: ~a beat-dur: ~a)!" 
-                      rsb dur beat-dur))
+                          rsb dur beat-dur))
                ;; MDE Mon Nov 26 20:14:29 2012 -- these were under the above
                ;; when 
                (setf failed t)

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 11:41:05 Wed Nov 28 2012 GMT
+;;; $$ Last modified: 17:04:38 Wed Nov 28 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -957,9 +957,9 @@ BF4 E.,
                               ;; MDE Wed Nov 28 11:40:59 2012 -- added auto-beam
                               &optional check-dur beat (auto-beam t))
 ;;; ****
-  ;; MDE Thu Apr 26 16:26:05 2012 -- tie-over-rests will pass its auto-beam arg
-  ;; as our beat arg--this may be a rthm symbol or simply T.  the latter is no
-  ;; good to us when used below.
+  ;;  MDE Thu Apr 26 16:26:05 2012 -- tie-over-rests will pass its auto-beam
+  ;; arg as our beat arg--this may be a rthm symbol or simply T.  the latter is
+  ;; no good to us when used below.
   (when (eq beat t)
     (setf beat nil))
   (unless (is-rest-bar rsb)
@@ -986,10 +986,13 @@ BF4 E.,
                                                (bar-num rsb)
                                                (get-beat-as-rhythm rsb)))
             (when tmp (setf rthms tmp)))
-          (setf (rhythms rsb) 
-                (if (event-p (first (rhythms rsb)))
-                    (consolidated-rthms-to-events rsb rthms)
-                    rthms)))))
+          ;; MDE Wed Nov 28 16:46:12 2012 -- only if we've done
+          ;; some consolidation 
+          (unless (= (length rthms) (num-rhythms rsb))
+            (setf (rhythms rsb) 
+                  (if (and (event-p (first (rhythms rsb))))
+                      (consolidated-rthms-to-events rsb rthms)
+                      rthms))))))
     (ties-to-dots rsb check-dur beat)
     ;; now try and get dots that go over two beats e.g. q. e in 2/4
     (ties-to-dots rsb check-dur (scale 
@@ -1012,6 +1015,7 @@ BF4 E.,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod ties-to-dots ((rsb rthm-seq-bar) &optional check-dur beat)
+  ;; (print 'ttd)
   (unless (or (is-rest-bar rsb)
               (< (num-notes-tied-from rsb) 1))
     (setf (rhythms rsb)
@@ -1030,6 +1034,9 @@ BF4 E.,
                                    (zerop (num-dots r2))
                                    (is-tied-from r1)
                                    (is-tied-to r2)
+                                   ;; MDE Wed Nov 28 15:56:23 2012 -- don't
+                                   ;; slurp up a note if it has a mark on it
+                                   (not (marks r2))
                                    (or 
                                     ;; could be e+s or s+e
                                     (equal-within-tolerance
@@ -1252,11 +1259,14 @@ BF4 E.,
        ;; MDE Sat Dec 24 16:22:06 2011 -- 
        (when (event-p current-e)
          ;; some slots, e.g. compound-duration will still be wrong but
-         ;; update-slots will take care of that later 
+         ;; update-slots will take care of that later 
          (copy-event-slots current-e new-e))
        ;; 6/6/07 don't need marks when this is tied to!
-       (when (is-tied-to new-e)
-         (delete-marks new-e)))
+       ;; MDE Wed Nov 28 14:18:35 2012 -- note true! could be cresc end or
+       ;; something 
+       ;;(when (is-tied-to new-e)
+        ;; (delete-marks new-e))
+       )
      (when (and (needs-new-note new-e)
                 ;; MDE Sat Dec 24 16:25:02 2011 -- otherwise we can't
                 ;; consolidate a rthm-seq from a palette
@@ -5695,6 +5705,7 @@ show-rest: T
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 
 (defun get-tied-rthms (rhythms)
+  ;; (print 'gtr)
   (let ((result '())
         (temp '()))
     (flet ((do-temp ()
@@ -5702,19 +5713,22 @@ show-rest: T
                (push (nreverse temp) result)
                (setf temp nil))))
       (loop 
-          for r in rhythms do
-            (cond ((and (is-tied-from r)
-                        (not (is-tied-to r)))
-                   (do-temp)
-                   (push r temp))
-                  ((is-tied-to r)
-                   (push r temp))
-                  (t (do-temp)
-                     ;; just push the non-tied rhythms in as 1-element lists
-                     (push (list r) result)))
-          finally
-            (do-temp)
-            (return (nreverse result))))))
+         for r in rhythms do
+         ;;  MDE Wed Nov 28 14:00:05 2012 -- marks need to stop ties being
+         ;; consolidated  
+         (cond ((or (and (is-tied-from r)
+                         (not (is-tied-to r)))
+                    (and (is-tied-to r) (marks r)))
+                (do-temp)
+                (push r temp))
+               ((is-tied-to r)
+                (push r temp))
+               (t (do-temp)
+                  ;; just push the non-tied rhythms in as 1-element lists
+                  (push (list r) result)))
+         finally
+         (do-temp)
+         (return (nreverse result))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

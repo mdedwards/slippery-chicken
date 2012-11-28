@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 14:35:05 Fri Apr 20 2012 BST
+;;; $$ Last modified: 17:11:31 Wed Nov 28 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -344,20 +344,20 @@
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-		     (vc (cello :midi-channel 2))))
-	:set-palette '((1 ((c2 d2 e2 f2 g2 a2 b2 
-			       c3 d3 e3 f3 g3 a3 b3 
-			       c4 d4 e4 f4 g4 a4 b4 c5))))
-	:set-map '((1 (1 1 1 1 1)))
-	:rthm-seq-palette '((1 ((((4 4) h q e (s) s))
-				:pitch-seq-palette ((1 (2) 3 4)))))
-	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))))))
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((c2 d2 e2 f2 g2 a2 b2 
+                               c3 d3 e3 f3 g3 a3 b3 
+                               c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e (s) s))
+                                :pitch-seq-palette ((1 (2) 3 4)))))
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
   (transpose-bars (piece mini) 11 2 2 'cl
-		  :destructively t
-		  :print-bar-nums t))
+                  :destructively t
+                  :print-bar-nums t))
 
 |#
 ;;; 
@@ -377,13 +377,13 @@
                       -1)))
   (loop for bar-num from start-bar repeat num-bars do 
        (when print-bar-nums
-	 (format t "~&Transposing bar ~d" bar-num))
+         (format t "~&Transposing bar ~d" bar-num))
      collect
        (transpose (get-bar bh bar-num player)
-		  semitones 
-		  :destructively destructively
-		  :chord-function chord-function
-		  :pitch-function pitch-function)))
+                  semitones 
+                  :destructively destructively
+                  :chord-function chord-function
+                  :pitch-function pitch-function)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -443,17 +443,17 @@
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-		     (vc (cello :midi-channel 2))))
-	:set-palette '((1 ((c2 d2 e2 f2 g2 a2 b2 
-			       c3 d3 e3 f3 g3 a3 b3 
-			       c4 d4 e4 f4 g4 a4 b4 c5))))
-	:set-map '((1 (1 1 1 1 1)))
-	:rthm-seq-palette '((1 ((((4 4) h q e s s))
-				:pitch-seq-palette ((1 (2) 3 4 5)))))
-	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))))))
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((c2 d2 e2 f2 g2 a2 b2 
+                               c3 d3 e3 f3 g3 a3 b3 
+                               c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 (2) 3 4 5)))))
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
   (print (get-note (piece mini) 3 '(2 1) 'vc)) ; single pitch within a chord
   (print (get-note (piece mini) 3 2 'vc)) ; entire chord event
   (print (get-note (piece mini) 5 3 'cl)))
@@ -483,7 +483,7 @@
           (progn
             (unless is-chord
               (error "bar-holder::get-note: requested bar num ~a note num ~a ~
-                    for player ~a but that note is not a chord!"
+                    for player ~a ~%but that note is not a chord!"
                      bar-num note-num player))
             (unless (= 2 (length note-num))
               (error "bar-holder::get-note: when accessing a chord, note-num ~
@@ -593,17 +593,17 @@
 ;;; as well as entire bars.
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-		     (vc (cello :midi-channel 2))))
-	:set-palette '((1 ((c2 d2 e2 f2 g2 a2 b2 
-			       c3 d3 e3 f3 g3 a3 b3 
-			       c4 d4 e4 f4 g4 a4 b4 c5))))
-	:set-map '((1 (1 1 1 1 1)))
-	:rthm-seq-palette '((1 ((((4 4) h q e (s) s))
-				:pitch-seq-palette ((1 (2) 3 4)))))
-	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))))))
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((c2 d2 e2 f2 g2 a2 b2 
+                               c3 d3 e3 f3 g3 a3 b3 
+                               c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e (s) s))
+                                :pitch-seq-palette ((1 (2) 3 4)))))
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
   (change-pitches (piece mini) 'cl 2 '((c4 d4 e4 f4)))
   (change-pitches (piece mini) 'vc 3 '((c3 d e f) nil (g3 nil b c4))))
 
@@ -679,18 +679,18 @@
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-		     (vc (cello :midi-channel 2))))
-	:set-palette '((1 ((c2 d2 e2 f2 g2 a2 b2 
-			       c3 d3 e3 f3 g3 a3 b3 
-			       c4 d4 e4 f4 g4 a4 b4 c5))))
-	:set-map '((1 (1 1 1 1 1)))
-	:rthm-seq-palette '((1 ((((4 4) h q e (s) s))
-				:pitch-seq-palette ((1 (2) 3 4))
-				:marks (a 1 s 2 te 3 as 4))))
-	:rthm-seq-map '((1 ((cl (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))))))
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((c2 d2 e2 f2 g2 a2 b2 
+                               c3 d3 e3 f3 g3 a3 b3 
+                               c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e (s) s))
+                                :pitch-seq-palette ((1 (2) 3 4))
+                                :marks (a 1 s 2 te 3 as 4))))
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
   (delete-all-marks (piece mini) 2 2 'vc))
 
 => T

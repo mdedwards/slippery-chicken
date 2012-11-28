@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 20:47:19 Tue Nov 27 2012 GMT
+;;; $$ Last modified: 11:41:05 Wed Nov 28 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -953,7 +953,9 @@ BF4 E.,
 
 |#
 ;;; SYNOPSIS
-(defmethod consolidate-notes ((rsb rthm-seq-bar) &optional check-dur beat)
+(defmethod consolidate-notes ((rsb rthm-seq-bar)
+                              ;; MDE Wed Nov 28 11:40:59 2012 -- added auto-beam
+                              &optional check-dur beat (auto-beam t))
 ;;; ****
   ;; MDE Thu Apr 26 16:26:05 2012 -- tie-over-rests will pass its auto-beam arg
   ;; as our beat arg--this may be a rthm symbol or simply T.  the latter is no
@@ -1002,7 +1004,9 @@ BF4 E.,
     ;; MDE Mon May  7 18:06:30 2012 -- beaming info may also be askew...
     ;; setting 3rd arg to nil means we don't get an error if we have a
     ;; multi-beat note e.g. h in 4/4 
-    (auto-beam rsb beat nil)
+    ;; MDE Wed Nov 28 11:38:18 2012 -- only if requested
+    (when auto-beam
+      (auto-beam rsb beat nil))
     (gen-stats rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

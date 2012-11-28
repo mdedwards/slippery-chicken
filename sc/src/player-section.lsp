@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    18th March 2002
 ;;;
-;;; $$ Last modified: 23:29:06 Thu Jul 19 2012 CEST
+;;; $$ Last modified: 11:41:26 Wed Nov 28 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -279,8 +279,8 @@
     (let* ((rehearsal-letter nil)
            (beat (if (eq auto-beam t) 
                      nil
-                   ;; it's a rhythmic value for the beat
-                   auto-beam))
+                     ;; it's a rhythmic value for the beat
+                     auto-beam))
            (ts (loop 
                    with denom = 1 with num = 0 
                    for bar in bars 
@@ -336,7 +336,7 @@
            ;; MDE Mon Jun 11 16:55:12 2012 -- don't just stuff NIL in the
            ;; rhythms slot if get-rhythm-letter-for-value fails 
            (setf rest (make-rest (get-rhythm-letter-for-value 
-                                  (data first))))
+                                  (data first) nil)))
            (unless rest
              (setf rest (make-rest (data first))))
            (setf (rhythms bar)
@@ -365,7 +365,8 @@
       ;; MDE Thu Dec  8 23:57:26 2011 -- changed following call
       ;; (consolidate-rests first-bar beat)
       (consolidate-rests first-bar :beat beat)
-      (consolidate-notes first-bar nil beat)
+      ;; MDE Wed Nov 28 11:41:21 2012 -- pass auto-beam too
+      (consolidate-notes first-bar nil beat auto-beam)
       (when auto-beam
         (auto-beam first-bar beat nil))
       first-bar)))

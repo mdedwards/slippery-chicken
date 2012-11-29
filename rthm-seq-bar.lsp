@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 17:04:38 Wed Nov 28 2012 GMT
+;;; $$ Last modified: 20:44:27 Thu Nov 29 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1219,7 +1219,8 @@ BF4 E.,
       (print bad))
     (when (and on-fail bad)
       (apply on-fail
-             (list "rthm-seq-bar::check-beams failed with error ~a" bad)))
+             (list "rthm-seq-bar::check-beams failed with error ~a~%~a"
+                   bad rsb)))
     ;; (print-simple rsb)
     (values (not bad) bad)))
 
@@ -1692,7 +1693,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; ****m* rthm-seq-bar/auto-beam
 ;;; DESCRIPTION
 ;;; Automatically add beaming indications to the rhythm objects of the given
-;;; rthm-seq-bar object.
+;;; rthm-seq-bar object.  This will only set one beam group per beat.
 ;;;
 ;;; NB: This method does not modify the DATA slot of the rthm-seq-bar object
 ;;;     itself. Instead, it modifies the BEAM value for the individual RHYTHMs.
@@ -1755,20 +1756,35 @@ data: ((2 4) - S S - S - S S S - S S)
           (result '())
           (flags nil)
           (is-note nil)
+          (ok t)
           (note-num 0))
+      ;; 5/4/07: first of all delete any prior beams
+      ;; MDE Thu Nov 29 19:25:00 2012 -- now called here rather than in the loop
+      (delete-beams rsb)
       (loop for b in beats do
            (setf start nil
-                 end nil)
+                 end nil
+                 ok t)
+           ;; (print 'beat)
            (loop for r in b do
-              ;; 5/4/07: first of all delete any prior beams
-                (setf (beam r) nil
-                      is-note (not (is-rest r))
+                (setf is-note (not (is-rest r))
                       flags (and is-note
                                  (> (num-flags r) 0)))
-                (when (and flags (not start))
+                (when (and ok flags (not start))
                   (setf start note-num))
-                (when flags
+                (when (and ok start 
+                           (or
+                            ;; MDE Thu Nov 29 20:42:11 2012 -- no q rests under
+                            ;; beam for LP 
+                            (and (is-rest r) (zerop (num-flags r)))
+                            (and is-note (not flags))))
+                  (setf start nil
+                        end nil
+                        ok nil))
+                (when (and ok flags)
                   (setf end note-num))
+                ;; (format t "~%~a: ~a ~a ~a flags ~a"
+                ;;          (data r) start end ok flags)
               ;; MDE Tue May 29 23:14:16 2012 -- we can now have beams on
               ;; rests so no longer count notes but all events
               ;; (when is-note

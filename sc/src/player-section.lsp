@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    18th March 2002
 ;;;
-;;; $$ Last modified: 11:41:26 Wed Nov 28 2012 GMT
+;;; $$ Last modified: 18:16:17 Thu Nov 29 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -338,9 +338,17 @@
            (setf rest (make-rest (get-rhythm-letter-for-value 
                                   (data first) nil)))
            (unless rest
-             (setf rest (make-rest (data first))))
+             ;; MDE Thu Nov 29 17:34:48 2012 -- we might have something like a
+             ;; 13/16 rest bar, which when we then try to combine with another
+             ;; bar might need several rests rather than just one.
+             ;; (setf rest (make-rest (data first)))
+             (let ((fraction (rationalize
+                               (decimal-places (float (/ (data first))) 4))))
+               (setf rest 
+                     (consolidate-rests-aux (make-rest (denominator fraction)) 
+                                            (numerator fraction)))))
            (setf (rhythms bar)
-                 (list rest))))
+                 (if (listp rest) rest (list rest)))))
       (setf (time-sig first-bar) ts
             (rhythms first-bar) (loop for bar in bars
                                     appending (my-copy-list (rhythms bar)))

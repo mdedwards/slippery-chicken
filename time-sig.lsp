@@ -626,7 +626,7 @@ data: (2 4)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Use more common time-sigs instead of more arcane.  argument and result is a
 ;;; list like '(8 8).  If there's no preferred time-sig the argument will be
-;;; returned. 
+;;; returned.
 (defun get-preferred-time-sig (given 
                                &optional
                                ;; these need to be given pairwise: the

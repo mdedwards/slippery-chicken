@@ -543,7 +543,7 @@ data: ((4 4) E S S H Q)
            (re-bar sub-section :start-bar start-bar :end-bar end-bar
                    :min-time-sig min-time-sig :verbose verbose))
       ;; looping for each player means we do a lot of the detection arithmetic
-      ;; not once but once for each player, but it's necessary for the glorious 
+      ;; not once but once for each player, but it's necessary for the glorious
       ;; future when we might have different meters for different instruments.
       (progn 
         ;; MDE Sun May  6 21:46:38 2012 

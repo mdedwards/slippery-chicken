@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> 
 ;;;                   circular-sclist -> assoc-list -> l-for-lookup
 ;;;
-;;; Version:          1.0.0-beta3
+;;; Version:          1.0.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

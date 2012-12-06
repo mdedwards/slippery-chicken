@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   sc-map -> change-map -> instrument-change-map
 ;;;
-;;; Version:          1.0.0-beta3
+;;; Version:          1.0.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

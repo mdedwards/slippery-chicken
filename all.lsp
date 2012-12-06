@@ -5,7 +5,7 @@
 ;;;
 ;;; File:             all.lsp
 ;;;
-;;; Version:          1.0.0-beta3
+;;; Version:          1.0.0
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -58,7 +58,7 @@
 
 (in-package :cl-user)
 
-(defparameter +slippery-chicken-version+ "1.0.0-beta3 (svn revision 2751 2012-07-05 16:22:12)")
+(defparameter +slippery-chicken-version+ "1.0.0 (svn revision 3153 2012-12-06 01:34:25)")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 

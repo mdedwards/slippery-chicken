@@ -19,7 +19,7 @@ Prerequisites:
   I think Aquamacs behaves most like a native OSX text editor, so if 
   you've never used Emacs before start with this. 
 * The GNU C compiler (gcc), which comes free with Apple's developer
-  tools 
+  tools (https://developer.apple.com/technologies/tools/)
 
 Known issues: 
 

@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 12:07:38 Tue Aug 28 2012 BST
+;;; $$ Last modified: 12:52:06 Thu Dec  6 2012 GMT
 ;;;
 ;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
 ;;;
@@ -5058,7 +5058,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; - A number that is the first bar to which the function should be applied. 
 ;;; - A number that is the last bar to which the function should be applied.
 ;;; - A list of the IDs of the players to whose parts the function should be
-;;;   applied. 
+;;;   applied.   Can also be a single symbol.
 ;;; - The method or function itself. This can be a user-defined function or the
 ;;;   name of an existing method or function.  It should take at least one
 ;;;   argument, a rthm-seq-bar, and any other arguments as supplied. 
@@ -5116,6 +5116,9 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
     (setf start-bar 1))
   (unless players
     (setf players (players sc)))
+  ;; MDE Thu Dec  6 12:51:51 2012 -- 
+  (unless (listp players)
+    (setf players (list players)))
   (loop for player in players appending
        (loop
           for bnum from start-bar to end-bar

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 19:37:44 Sun Nov 18 2012 GMT
+;;; $$ Last modified: 16:21:33 Thu Dec  6 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2488,6 +2488,7 @@ data: S
 |#
 ;;; SYNOPSIS
 (defmethod get-last ((rs rthm-seq))
+;;; ****
   (let ((barn (first (last (bars rs)))))
     (when barn
       (first (last (rhythms barn))))))

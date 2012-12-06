@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 20:44:27 Thu Nov 29 2012 GMT
+;;; $$ Last modified: 16:22:11 Thu Dec  6 2012 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4989,6 +4989,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 |#
 ;;; SYNOPSIS
 (defmethod set-dynamics ((rsb rthm-seq-bar) dynamic)
+;;; ****
   (loop for r in (rhythms rsb) do
        ;; MDE Wed Jul 18 22:08:26 2012 -- only add dynamics to struck notes
        (when (needs-new-note r)

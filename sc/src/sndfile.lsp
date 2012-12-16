@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 09:21:39 Sun Dec 16 2012 ICT
+;;; $$ Last modified: 17:59:32 Sun Dec 16 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -110,12 +110,14 @@
           (slot-value named-object 'data-consistent ) (data-consistent sf)     
           (slot-value named-object 'will-be-used ) (will-be-used sf)
           (slot-value named-object 'has-been-used ) (has-been-used sf))
+    ;; (print 'sndfile-clone-wnc) (print (data sf))
     named-object))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod initialize-instance :after ((sf sndfile) &rest initargs)
   (declare (ignore initargs))
+  ;; (print 'init-sndfile)
   ;; just in case any of these slots were given as lists of mins, secs, ms
   (setf (slot-value sf 'start) (mins-secs-to-secs (start sf))
         (slot-value sf 'end) (mins-secs-to-secs (end sf))
@@ -267,6 +269,7 @@ T
   ;; an id will generally only be given when two instances of the same file are
   ;; in the same list in a sndfile-palette, so in the usual case where it's not
   ;; specified set id to simply the given sound file name.
+  ;; (print 'update-sf) (print (path sf))
   (unless (id sf)
     (setf (id sf) (data sf)))
   (let ((given-freq (frequency sf)))
@@ -275,7 +278,10 @@ T
         (unless freq
           (error "sndfile::update: Couldn't get the frequency for note ~a!!!"
                  given-freq))
-        (setf (frequency sf) freq))))
+        ;; MDE Sun Dec 16 14:37:13 2012 -- set slot value so update isn't
+        ;; called again  
+        ;; (setf (frequency sf) freq))))
+        (setf (slot-value sf 'frequency) freq))))
   (let ((path (path sf)))
     (when path
       (unless (and path (probe-file path))
@@ -283,7 +289,10 @@ T
                 Data slot of sndfile must be set to an existing sound file: ~a"
                path))
       (unless (data sf)
-        (setf (data sf) path))
+        ;; MDE Sun Dec 16 14:37:13 2012 -- set slot value so update isn't
+        ;; called again  
+        ;; (setf (data sf) path))
+        (setf (slot-value sf 'data) path))
       #+clm
       (setf (snd-duration sf) #+clm(clm::sound-duration path)
             (channels sf) #+clm(clm::sound-chans path))
@@ -292,7 +301,8 @@ T
             ((and (not (duration sf)) (end sf)) 
              (set-dur sf))
             ((and (not (end sf)) (not (duration sf)) (snd-duration sf))
-             (setf (end sf) (snd-duration sf))
+             ;; MDE Sun Dec 16 15:02:34 2012 -- slot-value!
+             (setf (slot-value sf 'end) (snd-duration sf))
              (set-dur sf)))
       (let ((st (start sf))
             (end (end sf)))
@@ -312,7 +322,8 @@ T
   (let ((end (end sf))
         (start (start sf)))
     (when (and start end)
-      (setf (duration sf) (- end start)))))
+      ;; MDE Sun Dec 16 15:00:27 2012 -- use slot-value
+      (setf (slot-value sf 'duration) (- end start)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -320,7 +331,8 @@ T
   (let ((dur (duration sf))
         (start (start sf)))
     (when (and start dur)
-      (setf (end sf) (+ start dur)))))
+      ;; MDE Sun Dec 16 15:00:27 2012 -- use slot-value
+      (setf (slot-value sf 'end) (+ start dur)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -435,8 +447,8 @@ data: /path/to/sndfile-1.aiff
               (slots (rest (second path))))
           (loop for slot in slots by #'cddr 
              and value in (cdr slots) by #'cddr do
-                ;; we have to do this here because (setf (slot-value ... ))
-                ;; doesn't call the setf methods...
+             ;; we have to do this here because (setf (slot-value ... ))
+             ;; doesn't call the setf methods...
              (case slot
                (:duration (setf (duration sf) value))
                (:end (setf (end sf) value))

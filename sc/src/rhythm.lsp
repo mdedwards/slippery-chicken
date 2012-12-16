@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 15:09:20 Wed Nov 28 2012 GMT
+;;; $$ Last modified: 18:30:00 Sun Dec 16 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -124,7 +124,7 @@
    (letter-value :accessor letter-value :initform -1)
    (tuplet-scaler :accessor tuplet-scaler :type rational :initform 1)
    (grace-note-duration :accessor grace-note-duration :initform 0.05
-                        :allocation :class )))
+                        :allocation :class)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

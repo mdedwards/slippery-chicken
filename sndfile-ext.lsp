@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 18:44:56 Sun Dec 16 2012 ICT
+;;; $$ Last modified: 18:55:39 Sun Dec 16 2012 ICT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -63,6 +63,25 @@
   ;; this should be set for each sound before starting a piece so we can
   ;; include/exclude some sounds from a particular piece/performance.
   ((use :accessor use :type boolean :initarg :use :initform t)
+   (loop-it :accessor loop-it :type boolean :initarg :loop-it :initform nil)
+   ;; the bit rate of the sound (16, 24...)
+   (bitrate :accessor bitrate :type integer :initarg :bitrate :initform -1)
+   ;; the sampling rate of the sound file (44100, 48000...)
+   (srate :accessor srate :type integer :initarg :srate :initform -1)
+   ;; the number of sample frames (one 16 bit sample if mono, two
+   ;; if stereo)
+   (num-frames :accessor num-frames :type integer :initarg :num-frames
+               :initform -1)
+   ;; the number of bytes the sound file occupies (including the header)
+   (bytes :accessor bytes :type integer :initarg :bytes :initform -1)
+   ;; references to the sndfile-ext objects that may follow the current.  This
+   ;; should be a list of references into the containing sndfile-palette.  It
+   ;; will be turned into a circular-sclist upon init.
+   (followers :accessor followers :initarg :followers :initform nil)
+   ;; For the following 'characteristics' slots, each of which has an integer
+   ;; value, see the textual descriptions for each value in the class slot
+   ;; 'characteristics' below.
+   ;; 
    ;; the general pitch (tessitura) height of the sound (0=lowest)
    ;; this number represents the octave number (American system,
    ;; octave 4 starts with middle c).  See also frequency slot of sndfile.
@@ -84,7 +103,7 @@
                :initform -1)
    (continuity-curve :accessor continuity-curve :type integer :initarg
                      :continuity-curve :initform -1)
-       ;; the 'weight' of the sound. cf weight-lookup table
+   ;; the 'weight' of the sound. cf weight-lookup table
    (weight :accessor weight :type integer :initarg :weight :initform -1)
    (weight-curve :accessor weight-curve :type integer :initarg :weight-curve
                  :initform -1)
@@ -104,33 +123,18 @@
    (volume :accessor volume :type integer :initarg :volume :initform -1)
    (volume-curve :accessor volume-curve :type integer :initarg :volume-curve
                  :initform -1)
-   (loop-it :accessor loop-it :type boolean :initarg :loop-it :initform nil)
-   ;; the bit rate of the sound (16, 24...)
-   (bitrate :accessor bitrate :type integer :initarg :bitrate :initform -1)
-   ;; the sampling rate of the sound file (44100, 48000...)
-   (srate :accessor srate :type integer :initarg :srate :initform -1)
-   ;; the number of sample frames (one 16 bit sample if mono, two
-   ;; if stereo)
-   (num-frames :accessor num-frames :type integer :initarg :num-frames
-              :initform -1)
-   ;; the number of bytes the sound file occupies (including the header)
-   (bytes :accessor bytes :type integer :initarg :bytes :initform -1)
-   ;; references to the sndfile-ext objects that may follow the current.  This
-   ;; should be a list of references into the containing sndfile-palette.  It
-   ;; will be turned into a circular-sclist upon init.
-   (followers :accessor followers :initarg :followers :initform nil)
-
+   ;; textual descriptions of the slots above, including their respective curves
    (characteristics 
     :allocation :class :accessor characteristics :initform
     (make-ral
      'sndfile-ext-characeristics
      '((curve
-       ((0 "curve: 0: falling")
-        (1 "curve: 1: steady")
-        (2 "curve: 2: rising")
-        (3 "curve: 3: rising then falling")
-        (4 "curve: 4: falling then rising")
-        (5 "curve: 5: complex")))
+        ((0 "curve: 0: falling")
+         (1 "curve: 1: steady")
+         (2 "curve: 2: rising")
+         (3 "curve: 3: rising then falling")
+         (4 "curve: 4: falling then rising")
+         (5 "curve: 5: complex")))
        (continuity
         ((0 "continuity: 0: extremely few events, almost all silence")
          (1 "continuity: 1: very few events, much silence")
@@ -155,7 +159,6 @@
         (8 "energy: 8: high energy")
         (9 "energy: 9: very high energy")
         (10 "energy: 10: maximum energy"))
-
        (weight
         ((0 "weight 0: minimum")
          (1 "weight: 1: extremely light")
@@ -167,10 +170,47 @@
          (7 "weight: 7: heavy")
          (8 "weight: 8: very heavy")
          (9 "weight: 9: extremely heavy")
-         (10 "weight: 10: maximum")
-
-         )))
-))
+         (10 "weight: 10: maximum")))
+       (harmonicity
+        ((0 "harmonicity: 0: white noise")
+         (1 "harmonicity: 1: extremely noisy, a little pitch discernible, ~
+             e.g. some tam-tam strokes, lightly filtered white noise")
+         (2 "harmonicity: 2: very, very noisy, almost all noise but also ~
+             a clearly audible pitch content")
+         (3 "harmonicity: 3: very noisy, more noise than pitch, ~
+             e.g. violin sul pont estremo")
+         (4 "harmonicity: 4: more noisy, a little bit more noise than pitch")
+         (5 "harmonicity: 5: mixed, pitch and noise mix equally balanced")
+         (6 "harmonicity: 6: noisy, a little bit more pitch than noise")
+         (7 "harmonicity: 7: quite noisy, more pitch than noise, ~
+             e.g. sax flutter tongue or violin poco sul pont")
+         (8 "harmonicity: 8: pure note(s), e.g. normal violin tone(s)")
+         (9 "harmonicity: 9: very pure note(s), e.g. clarinet, low flute")
+         (10 "harmonicity: 10: sine wave(s)")))
+       (volume
+        ((1 "volume: 1: pppp")
+         (2 "volume: 2: ppp")
+         (3 "volume: 3: pp")
+         (4 "volume: 4: p")
+         (5 "volume: 5: mp")
+         (6 "volume: 6: mf")
+         (7 "volume: 7: f")
+         (8 "volume: 8: ff")
+         (9 "volume: 9: fff")
+         (10 "volume: 10: ffff")))
+       (bandwidth
+        ((0 "bandwidth: 0: single frequency, e.g. sine wave")
+         (1 "bandwidth: 1: single pure note, e.g. clarinet, low flute")
+         (2 "bandwidth: 2: single normal note, e.g. violin tone")
+         (3 "bandwidth: 3: > single note but extremely narrow range ~
+             (< Minor 3rd)")
+         (4 "bandwidth: 4: > single note but very narrow range (< Perfect 5th)")
+         (5 "bandwidth: 5: > single note but narrow range (< 1 octave)")
+         (6 "bandwidth: 6: medium range (< 2 octaves)")
+         (7 "bandwidth: 7: wide range (2 - 4 octaves)")
+         (8 "bandwidth: 8: very wide range (4 - 6 octaves)")
+         (9 "bandwidth: 9: extemely wide range (> 6 octaves)")
+         (10 "bandwidth: 10: white noise (all frequencies)"))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

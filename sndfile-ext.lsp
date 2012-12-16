@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 18:55:39 Sun Dec 16 2012 ICT
+;;; $$ Last modified: 19:35:02 Sun Dec 16 2012 ICT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -148,17 +148,17 @@
          (9 "continuity: 9: extremely dense, thick cloud of events")
          (10 "continuity: 10: saturated/held sound")))
        (energy
-        (0 "energy: 0: minimum energy")
-        (1 "energy: 1: very low energy")
-        (2 "energy: 2: low energy")
-        (3 "energy: 3: low tending medium energy")
-        (4 "energy: 4: medium tending low energy")
-        (5 "energy: 5: medium energy")
-        (6 "energy: 6: medium tending high energy")
-        (7 "energy: 7: high tending medium energy")
-        (8 "energy: 8: high energy")
-        (9 "energy: 9: very high energy")
-        (10 "energy: 10: maximum energy"))
+        ((0 "energy: 0: minimum energy")
+         (1 "energy: 1: very low energy")
+         (2 "energy: 2: low energy")
+         (3 "energy: 3: low tending medium energy")
+         (4 "energy: 4: medium tending low energy")
+         (5 "energy: 5: medium energy")
+         (6 "energy: 6: medium tending high energy")
+         (7 "energy: 7: high tending medium energy")
+         (8 "energy: 8: high energy")
+         (9 "energy: 9: very high energy")
+         (10 "energy: 10: maximum energy")))
        (weight
         ((0 "weight 0: minimum")
          (1 "weight: 1: extremely light")
@@ -304,6 +304,29 @@
 
 (defmethod reset ((sfe sndfile-ext) &optional where)
   (reset (followers sfe) where))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod score ((sfe1 sndfile-ext) (sfe2 sndfile-ext))
+)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod set-characteristic ((sfe sndfile-ext) characteristic value 
+                               &optional (on-fail #'error))
+  (let* ((is-curve (search "CURVE" (string characteristic)))
+         ;; any of the curve slots hold values from the generic 'curve'
+         ;; characteristic 
+         (val (get-data (list (if is-curve 'curve characteristic) value)
+                        (characteristics sfe) nil)))
+    (if val
+        (setf (slot-value sfe characteristic) value)
+        (when on-fail
+          (funcall 
+           on-fail
+           "sndfile-ext::set-characteristic: No such characteristic: ~a ~a"
+           characteristic value)
+          nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

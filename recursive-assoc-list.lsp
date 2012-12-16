@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 12:41:58 Tue Jun 19 2012 BST
+;;; $$ Last modified: 19:21:15 Sun Dec 16 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -724,7 +724,7 @@ WARNING:
           (progn 
             (when (and warn (warn-not-found ral))
               (warn "recursive-assoc-list::get-data: ~
-                     Couldn't find data with key(s) ~a in ~
+                     Couldn't find data with key(s) ~%~a ~%in ~
                      recursive-assoc-list with id ~a"
                     ids (id ral)))
             nil))))))

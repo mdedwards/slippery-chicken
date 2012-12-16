@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 14:04:58 Fri Oct  5 2012 BST
+;;; $$ Last modified: 20:19:50 Sun Dec 16 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -111,12 +111,14 @@
                     ;; need to find the sound though, hence the funny list arg
                     ;; passed to make-sndfile.
                     (list
-                     (make-sndfile (list (find-sndfile sfp (first snd))
+                     ;; MDE Sun Dec 16 20:19:30 2012 -- was make-sndfile
+                     (make-sndfile-ext (list (find-sndfile sfp (first snd))
                                          snd)))
                     ;; if it wasn't a list, just find the sound and pass this
                     ;; and the given name which also acts as the id per
                     ;; default. 
-                    (t (make-sndfile (find-sndfile sfp snd) :id snd)))))))
+                    ;; MDE Sun Dec 16 20:19:30 2012 -- was make-sndfile
+                    (t (make-sndfile-ext (find-sndfile sfp snd) :id snd)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

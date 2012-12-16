@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 20:01:05 Sun Dec 16 2012 ICT
+;;; $$ Last modified: 20:16:50 Sun Dec 16 2012 ICT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -261,7 +261,7 @@
           (slot-value sf 'num-frames) (num-frames sfe)
           (slot-value sf 'bytes) (bytes sfe)
           (slot-value sf 'followers) (followers sfe))
-    (print 'sndfile-ext-clone-wnc) (print (data sf))
+    ;; (print 'sndfile-ext-clone-wnc) (print (data sf))
     sf))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -418,5 +418,4 @@
     sf))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF sndfile-ext.lsp

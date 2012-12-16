@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sndfile
 ;;;
-;;; Version:          1.0.0
+;;; Version:          1.0.1
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 13:51:58 Fri Oct  5 2012 BST
+;;; $$ Last modified: 09:21:39 Sun Dec 16 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;

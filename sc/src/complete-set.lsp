@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> sc-set ->
 ;;;                   tl-set -> complete-set
 ;;;
-;;; Version:          1.0.0
+;;; Version:          1.0.1
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

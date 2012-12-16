@@ -5,7 +5,7 @@
 ;;;
 ;;; File:             all.lsp
 ;;;
-;;; Version:          1.0.0
+;;; Version:          1.0.1
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 11:58:52 Thu Jul 19 2012 CEST
+;;; $$ Last modified: 11:05:52 Thu Dec 13 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -58,7 +58,7 @@
 
 (in-package :cl-user)
 
-(defparameter +slippery-chicken-version+ "1.0.0 (svn revision 3280 2012-12-06 19:12:54)")
+(defparameter +slippery-chicken-version+ "1.0.1 (svn revision 3357 2012-12-07 02:20:13)")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 
@@ -194,14 +194,10 @@
 (pushnew :cm-2 *features*)
 
 (sc-compile-and-load "package.lsp")
-#+cmn
-(sc-compile-and-load "cmn.lsp")
-#+cmn
-(sc-compile-and-load "cmn-glyphs.lsp")
-#+cm
-(sc-compile-and-load "cm.lsp")
-#+clm
-(sc-compile-and-load "samp5.lsp")
+#+cmn (sc-compile-and-load "cmn.lsp")
+#+cmn (sc-compile-and-load "cmn-glyphs.lsp")
+#+cm (sc-compile-and-load "cm.lsp")
+#+clm (sc-compile-and-load "samp5.lsp")
 (sc-compile-and-load "cm-load.lsp" t)
 (sc-compile-and-load "utilities.lsp")
 (sc-compile-and-load "named-object.lsp")
@@ -259,6 +255,8 @@
 (sc-compile-and-load "instruments.lsp")
 (sc-compile-and-load "lilypond.lsp")
 (sc-compile-and-load "popcorn.lsp")
+#+sbcl (sc-compile-and-load "osc.lsp")
+#+sbcl (sc-compile-and-load "osc-sc.lsp")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; EOF all.lsp

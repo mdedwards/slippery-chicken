@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 19:35:02 Sun Dec 16 2012 ICT
+;;; $$ Last modified: 20:01:05 Sun Dec 16 2012 ICT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -307,8 +307,29 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod score ((sfe1 sndfile-ext) (sfe2 sndfile-ext))
-)
+(defmethod proximity ((sfe1 sndfile-ext) (sfe2 sndfile-ext))
+  (let* ((cslots '(pitch pitch-curve bandwidth bandwidth-curve continuity
+                   continuity-curve weight weight-curve energy energy-curve
+                   harmonicity harmonicity-curve volume volume-curve))
+         (slots-compared 0)
+         (prox 0.0)
+         (num-cslots (length cslots)))
+    (loop for c in cslots
+       for s1 = (slot-value sfe1 c)
+       for s2 = (slot-value sfe2 c)
+       do
+       ;; only score when the characteristic is present in both sndfiles,
+       ;; i.e. no penalty for one not being present
+       (when (and (>= s1 0) (>= s2 0))
+         (incf prox (abs (- s1 s2)))
+         (incf slots-compared)))
+    ;; (print prox)
+    (setf prox (/ prox slots-compared))
+    (if (zerop slots-compared)
+        most-positive-short-float
+        ;; make sure that when more slots were compared we get a closer
+        ;; proximity 
+        (* (/ (- num-cslots slots-compared) num-cslots) prox))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -389,8 +410,8 @@
           (srate sf) srate
           (num-frames sf) num-frames
           (bytes sf) bytes
-          (followers sf) (make-cscl followers :id (format nil "~a-followers"
-                                                          (id sf))
+          (followers sf) (make-cscl followers
+                                    :id (format nil "~a-followers" (id sf))
                                     :copy nil))
     ;; have to call this here because clone init'ed with all slots NIL
     (update sf)

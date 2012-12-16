@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    February 19th 2001
 ;;;
-;;; $$ Last modified: 21:25:56 Mon May 14 2012 BST
+;;; $$ Last modified: 18:19:20 Sun Dec 16 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -277,8 +277,8 @@
     (when where
       (if (< where (sclist-length cscl))
           (setf index where)
-        (error "circular-sclist::reset: id: ~a, <where>:~a >= list length: ~a"
-               (id cscl) where (sclist-length cscl))))
+          (error "circular-sclist::reset: id: ~a, <where>:~a >= list length: ~a"
+                 (id cscl) where (sclist-length cscl))))
     (setf (current cscl) index)
     t))
 

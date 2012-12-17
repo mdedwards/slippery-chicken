@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 14:51:45 Mon Jul 16 2012 BST
+;;; $$ Last modified: 11:18:59 Mon Dec 17 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -126,7 +126,8 @@
 
 ;;; <start-at> should be between 1 and 3; it indicates which of the 10-lists
 ;;; we're going to start with.
-(defmethod reset ((al activity-levels) &optional (start-at 1))
+(defmethod reset ((al activity-levels) &optional (start-at 1) ignore)
+  (declare (ignore ignore))
   (unless (and (>= start-at 1) 
                (<= start-at 3))
     (error "activity-levels::reset: <start-at> should be between 1 and 3: ~a"

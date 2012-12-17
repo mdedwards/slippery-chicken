@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    February 19th 2001
 ;;;
-;;; $$ Last modified: 18:19:20 Sun Dec 16 2012 ICT
+;;; $$ Last modified: 11:29:27 Mon Dec 17 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -270,15 +270,24 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod reset ((cscl circular-sclist) &optional where)
+(defmethod reset ((cscl circular-sclist) &optional where (warn t))
 ;;; ****
   ;; (print 'cscl-reset)
   (let ((index 0))
     (when where
-      (if (< where (sclist-length cscl))
-          (setf index where)
-          (error "circular-sclist::reset: id: ~a, <where>:~a >= list length: ~a"
-                 (id cscl) where (sclist-length cscl))))
+      (setf index
+            (if (< where (sclist-length cscl))
+                where
+                ;; MDE Mon Dec 17 11:22:13 2012 -- added warn optional arg (to
+                ;; other classes too of course) and take mod of where if it's
+                ;; too high   
+                (progn 
+                  (when warn
+                    (let ((i (mod where (sclist-length cscl))))
+                      (warn "circular-sclist::reset: id: ~a, <where>:~a >= ~
+                             list length: ~a. Will wrap to ~a."
+                            (id cscl) where (sclist-length cscl) i)
+                      i))))))
     (setf (current cscl) index)
     t))
 

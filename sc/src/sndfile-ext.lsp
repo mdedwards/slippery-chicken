@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 11:21:23 Mon Dec 17 2012 ICT
+;;; $$ Last modified: 16:54:15 Mon Dec 17 2012 ICT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -324,23 +324,62 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; The position (index) to reset to (will default to 0 i.e. the beginning of
-;;; the list).
+;;; the list).  NB This position may be higher than the number of followers
+;;; attached to any given sndfile-ext object as it will wrap around.
 ;;; 
 ;;; RETURN VALUE
 ;;; T
 ;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
-(defmethod reset ((sfe sndfile-ext) &optional where warn)
+(defmethod reset ((sfe sndfile-ext) &optional where (warn t))
 ;;; ****
   (reset (followers sfe) where warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sndfile-ext/proximity
+;;; DESCRIPTION
+;;; In terms of the characteristics expressed in the various class slots,
+;;; evaluate the proximity of one sndfile-ext object to another.  The closer
+;;; they are in character, the closer to 0 the returned value will be.  The
+;;; order of the two sndfile-ext objects passed to the method is unimportant as
+;;; the return value is always >= 0.0.  The more slots match, the lower
+;;; (closer) the result will be, i.e., slots are only compared if they have a
+;;; value >= 0 (they default to -1), so it could be that in one comparison 5/6
+;;; slots match exactly, and in another 2/3 match; in both cases the
+;;; non-matching slots is off by 1; in that case the first comparison will
+;;; return a lower value: 0.067 vs 0.233.
+;;; 
+;;; ARGUMENTS
+;;; - first sndile-ext object
+;;; - second sndile-ext object
+;;; 
+;;; RETURN VALUE
+;;; A floating point number >= 0.0 where 0.0 indicates an exact match.
+;;; 
+;;; EXAMPLE
+#|
+
+(let ((sf3 (make-sndfile-ext 
+            nil :pitch 3 :pitch-curve 4 :bandwidth 10 :energy 2
+            :harmonicity-curve 0))
+      (sf4 (make-sndfile-ext 
+            nil :pitch 3 :pitch-curve 4 :bandwidth 10 :energy 2
+            :harmonicity-curve 1)))
+  ;; harmonicity-curve is slightly different so we get a result > 0
+  (print (proximity sf3 sf4))
+  (set-characteristic sf4 'harmonicity-curve 0)
+  ;; now they're the same so we get 0.0
+  (proximity sf3 sf4))
+
+=> 
+0.12857144
+0.0
+
+|#
+;;; SYNOPSIS
 (defmethod proximity ((sfe1 sndfile-ext) (sfe2 sndfile-ext))
+;;; ****
   (let* ((cslots '(pitch pitch-curve bandwidth bandwidth-curve continuity
                    continuity-curve weight weight-curve energy energy-curve
                    harmonicity harmonicity-curve volume volume-curve))
@@ -366,8 +405,50 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sndfile-ext/set-characteristic
+;;; DESCRIPTION
+;;; Set the chracteristic of a sndfile-ext object to a given value.  The value
+;;; for the slot is first checked to correspond to an accepted range; if not an
+;;; error (default) or warning (or nothing) will be issued.
+;;; 
+;;; ARGUMENTS
+;;; - a sndfile-ext object.
+;;; - the characteristic, i.e. one of the class slot names, as a symbol.
+;;; - the new value, as an accepted integer (see characteristics slot for
+;;;   accepted range).
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the function to call if the given value is out of range. Default =
+;;; #'error but could also be #'warn, or NIL (if no error message should be
+;;; issued). 
+;;; 
+;;; RETURN VALUE
+;;; NIL on fail otherwise <value>
+;;; 
+;;; EXAMPLE
+#|
+(let ((sf4 (make-sndfile-ext 
+            nil :pitch 3 :pitch-curve 4 :bandwidth 10 :energy 2
+            :harmonicity-curve 1)))
+  ;; out of range but no error/warning
+  (print (set-characteristic sf4 'harmonicity-curve 15 nil))
+  ;; out of range and warn
+  (print (set-characteristic sf4 'harmonicity-curve -1 #'warn))
+  ;; in range
+  (set-characteristic sf4 'harmonicity-curve 0))
+
+=>
+NIL 
+WARNING:
+   sndfile-ext::set-characteristic: No such characteristic: HARMONICITY-CURVE -1
+NIL 
+0
+
+|#
+;;; SYNOPSIS
 (defmethod set-characteristic ((sfe sndfile-ext) characteristic value 
                                &optional (on-fail #'error))
+;;; ****
   (let* ((is-curve (search "CURVE" (string characteristic)))
          ;; any of the curve slots hold values from the generic 'curve'
          ;; characteristic 

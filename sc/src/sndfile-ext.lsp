@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 16:54:15 Mon Dec 17 2012 ICT
+;;; $$ Last modified: 17:05:53 Mon Dec 17 2012 ICT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -462,6 +462,13 @@ NIL
            "sndfile-ext::set-characteristic: No such characteristic: ~a ~a"
            characteristic value)
           nil))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; cue-num channels loop speed fade-dur fade-out time
+;; fade-dur could be 0 (= no fade)
+(defmethod max-play ((sfe sndfile-ext) fade-dur
+                     
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

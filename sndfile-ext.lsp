@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 20:16:50 Sun Dec 16 2012 ICT
+;;; $$ Last modified: 11:21:23 Mon Dec 17 2012 ICT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -297,13 +297,46 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sndfile-ext/get-next
+;;; DESCRIPTION
+;;; Get the next sound file from the <followers> slot.
+;;; 
+;;; ARGUMENTS
+;;; - A sndfile-ext object.
+;;; 
+;;; RETURN VALUE
+;;; A sndfile-ext object.
+;;;
+;;; SYNOPSIS
 (defmethod get-next ((sfe sndfile-ext))
+;;; ****
   (get-next (followers sfe)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod reset ((sfe sndfile-ext) &optional where)
-  (reset (followers sfe) where))
+;;; ****m* sndfile-ext/reset
+;;; DESCRIPTION
+;;; Reset the <followers> circular list to the first or any other following
+;;; sound file. 
+;;; 
+;;; ARGUMENTS
+;;; A sndfile-ext object.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; The position (index) to reset to (will default to 0 i.e. the beginning of
+;;; the list).
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod reset ((sfe sndfile-ext) &optional where warn)
+;;; ****
+  (reset (followers sfe) where warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

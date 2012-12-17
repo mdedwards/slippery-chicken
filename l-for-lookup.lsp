@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 19:10:58 Tue May  8 2012 BST
+;;; $$ Last modified: 11:19:20 Mon Dec 17 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -354,9 +354,9 @@
 ;;; Always T.
 ;;; 
 ;;; SYNOPSIS
-(defmethod reset ((lflu l-for-lookup) &optional ignore)
+(defmethod reset ((lflu l-for-lookup) &optional ignore1 ignore2)
 ;;; ****
-  (declare (ignore ignore))
+  (declare (ignore ignore1 ignore2))
   (loop for no in (data lflu) do
        (loop for cscl in (data no) do
             (reset cscl)))

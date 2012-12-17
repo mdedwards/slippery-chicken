@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 19:39:53 Sun Nov 18 2012 GMT
+;;; $$ Last modified: 11:20:38 Mon Dec 17 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -639,9 +639,9 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod reset ((rc rthm-chain) &optional where)
+(defmethod reset ((rc rthm-chain) &optional ignore1 ignore2)
 ;;; ****
-  (declare (ignore where))
+  (declare (ignore ignore1 ignore2))
   (stick-rthms nil nil) ;; reset count
   (reset (sticking-al rc))
   (reset (main-al rc))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 12:40:49 Sat Apr 28 2012 BST
+;;; $$ Last modified: 11:20:15 Mon Dec 17 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -175,7 +175,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod reset :after ((rcs rthm-chain-slow) &optional where)
+(defmethod reset :after ((rcs rthm-chain-slow) &optional where ignore)
+  (declare (ignore ignore))
   (setf (current-beats rcs) 0)
   (when (transitions rcs)
     (reset (transitions rcs) where))

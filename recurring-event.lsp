@@ -62,7 +62,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 14:26:03 Mon Jun 11 2012 BST
+;;; $$ Last modified: 11:19:54 Mon Dec 17 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -182,8 +182,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod reset :after ((re recurring-event) &optional where)
-  (declare (ignore where))
+(defmethod reset :after ((re recurring-event) &optional ignore1 ignore2)
+  (declare (ignore ignore1 ignore2))
   ;; (print 're-reset)
   (when (return-data-cycle re)
     (reset (return-data-cycle re)))

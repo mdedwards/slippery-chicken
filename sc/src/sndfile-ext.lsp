@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 17:05:53 Mon Dec 17 2012 ICT
+;;; $$ Last modified: 17:57:30 Tue Dec 18 2012 ICT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -63,6 +63,7 @@
   ;; this should be set for each sound before starting a piece so we can
   ;; include/exclude some sounds from a particular piece/performance.
   ((use :accessor use :type boolean :initarg :use :initform t)
+   (cue-num :accessor cue-num :type int :initarg :cue-num :initform -1)
    (loop-it :accessor loop-it :type boolean :initarg :loop-it :initform nil)
    ;; the bit rate of the sound (16, 24...)
    (bitrate :accessor bitrate :type integer :initarg :bitrate :initform -1)
@@ -241,6 +242,7 @@
   (declare (ignore new-class))
   (let ((sf (call-next-method)))
     (setf (slot-value sf 'use) (use sfe)
+          (slot-value sf 'cue-num) (cue-num sfe)
           (slot-value sf 'pitch) (pitch sfe)
           (slot-value sf 'pitch-curve) (pitch-curve sfe)
           (slot-value sf 'bandwidth) (bandwidth sfe)
@@ -268,6 +270,7 @@
 
 (defmethod print-object :before ((sfe sndfile-ext) stream)
   (format stream "~%~%SNDFILE-EXT: use: ~a, ~
+                    ~%             cue-num: ~a, ~
                     ~%             pitch: ~a, ~
                     ~%             pitch-curve: ~a, ~
                     ~%             bandwidth: ~a, ~
@@ -288,7 +291,7 @@
                     ~%             num-frames: ~a, ~
                     ~%             bytes: ~a, ~
                     ~%             followers: ~a"
-          (use sfe) (pitch sfe) (pitch-curve sfe) (bandwidth sfe)
+          (use sfe) (cue-num sfe) (pitch sfe) (pitch-curve sfe) (bandwidth sfe)
           (bandwidth-curve sfe) (continuity sfe) (continuity-curve sfe)
           (weight sfe) (weight-curve sfe) (energy sfe) (energy-curve sfe)
           (harmonicity sfe) (harmonicity-curve sfe) (volume sfe)
@@ -465,10 +468,68 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; cue-num channels loop speed fade-dur fade-out time
-;; fade-dur could be 0 (= no fade)
-(defmethod max-play ((sfe sndfile-ext) fade-dur
-                     
+;;; ****m* sndfile-ext/max-play
+;;; DESCRIPTION
+;;; cue-num channels loop speed fade-dur fade-out-time
+;;; fade-dur could be 0 (= no fade)
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod max-play ((sfe sndfile-ext) fade-dur)
+;;; ****
+  ;; remember snd-duration is the full duration of the sndfile but duration is
+  ;; that which takes start and end into consideration
+  (let* ((dur (duration sfe))
+         ;; fade is 40% duration if sndfile not long enough
+         (min-ramp (* .4 dur))
+         (fits (>= dur (* 2.0 fade-dur)))
+         (fd (if fits fade-dur min-ramp))
+         (fade-out (- dur fd)))
+  ;; for now speed is just 1.0
+  (list (cue-num sfe) (channels sfe) (if (loop-it sfe) 1 0) 1.0 fd fade-out)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* sndfile-ext/max-cue
+;;; DESCRIPTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod max-cue ((sfe sndfile-ext) &optional (on-fail #'error))
+;;; ****
+  (if (and (integerp (cue-num sfe))
+           (> (cue-num sfe) 1))
+      (list "preload" (cue-num sfe) (path sfe) (* 1000.0 (start sfe))
+            (* 1000.0 (end sfe)))
+      (when on-fail
+        (funcall on-fail
+                 "sndfile-ext::max-cue: cue-num slot must be an integer > 1: ~a"
+                 sfe))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -493,7 +554,7 @@ NIL
 ;;; 
 ;;; SYNOPSIS
 (defun make-sndfile-ext (path &key id data duration end (start 0.0)
-                         (frequency 'c4) (amplitude 1.0)
+                         (frequency 'c4) (amplitude 1.0) (cue-num -1)
                          (use t) (pitch -1) (pitch-curve -1) (bandwidth -1)
                          (bandwidth-curve -1) (continuity -1)
                          (continuity-curve -1) (weight -1) (weight-curve -1)
@@ -511,6 +572,7 @@ NIL
     (setf sf (clone-with-new-class sf 'sndfile-ext))
     ;; (print 'make-sndfile-ext2) (print (path sf))
     (setf (use sf) use 
+          (cue-num sf) cue-num
           (pitch sf) pitch
           (pitch-curve sf) pitch-curve
           (bandwidth sf) bandwidth

@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified: 15:56:51 Fri Dec 14 2012 ICT
+;;; $$ Last modified: 20:07:20 Mon Dec 17 2012 ICT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -99,7 +99,10 @@
             out :input t :output t 
             :element-type '(unsigned-byte 8) :buffering :full)))
       (unwind-protect 
+           (format t "~&All good. Awaiting osc messages.~%")
            (loop with happy = t while happy do 
+              ;; need this otherwise messages only get printed when we quit
+                (finish-output t)
                 (socket-receive in buffer nil)
                 (let* ((oscuff (osc:decode-bundle buffer))
                        ;; here: check if there's an opening (
@@ -108,7 +111,6 @@
                             'lisp
                             (read-from-string (first oscuff)))))
                   (format t "~&osc-->message: ~a" oscuff)
-                  ;; need this otherwise messages only get printed when we quit
                   (finish-output t)
                   (case (sc::rm-package soscuff :sb-bsd-sockets)
                     ;; test

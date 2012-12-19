@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 17:57:30 Tue Dec 18 2012 ICT
+;;; $$ Last modified: 15:21:18 Wed Dec 19 2012 ICT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -269,28 +269,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((sfe sndfile-ext) stream)
-  (format stream "~%~%SNDFILE-EXT: use: ~a, ~
-                    ~%             cue-num: ~a, ~
-                    ~%             pitch: ~a, ~
-                    ~%             pitch-curve: ~a, ~
-                    ~%             bandwidth: ~a, ~
-                    ~%             bandwidth-curve: ~a, ~
-                    ~%             continuity: ~a, ~
-                    ~%             continuity-curve: ~a, ~
-                    ~%             weight: ~a, ~
-                    ~%             weight-curve: ~a, ~
-                    ~%             energy: ~a, ~
-                    ~%             energy-curve: ~a, ~
-                    ~%             harmonicity: ~a, ~
-                    ~%             harmonicity-curve: ~a, ~
-                    ~%             volume: ~a, ~
-                    ~%             volume-curve: ~a, ~
-                    ~%             loop-it: ~a, ~
-                    ~%             bitrate: ~a, ~
-                    ~%             srate: ~a, ~
-                    ~%             num-frames: ~a, ~
-                    ~%             bytes: ~a, ~
-                    ~%             followers: ~a"
+  (format stream "~%~%SNDFILE-EXT: use: ~a, cue-num: ~a, pitch: ~a, ~
+                    pitch-curve: ~a, bandwidth: ~a, ~
+                    ~%             bandwidth-curve: ~a, continuity: ~a, ~
+                    continuity-curve: ~a, ~
+                    ~%             weight: ~a, weight-curve: ~a, energy: ~a, ~
+                    energy-curve: ~a, ~
+                    ~%             harmonicity: ~a, harmonicity-curve: ~a, ~
+                    volume: ~a, ~
+                    ~%             volume-curve: ~a, loop-it: ~a, ~
+                    bitrate: ~a, srate: ~a, ~
+                    ~%             num-frames: ~a, bytes: ~a, followers: ~a"
           (use sfe) (cue-num sfe) (pitch sfe) (pitch-curve sfe) (bandwidth sfe)
           (bandwidth-curve sfe) (continuity sfe) (continuity-curve sfe)
           (weight sfe) (weight-curve sfe) (energy sfe) (energy-curve sfe)
@@ -470,20 +459,30 @@ NIL
 
 ;;; ****m* sndfile-ext/max-play
 ;;; DESCRIPTION
-;;; cue-num channels loop speed fade-dur fade-out-time
-;;; fade-dur could be 0 (= no fade)
+;;; Generate the data necessary for MaxMSP to play the sndfile using the
+;;; sflist~ and sfplay~.
+;;; 
+;;; NB fade-dur could be 0 (= no fade)
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - The sndfile-ext object.
+;;; - The fade (in/out) duration in seconds.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of values to be passed via OSC to sndfilenet-aux.maxpath:
+;;; cue-number number-of-channels loop speed fade-dururation fade-out-start-time
 ;;; 
 ;;; EXAMPLE
 #|
+(let* ((sf1 (make-sndfile-ext 
+             (concatenate 'string
+                          cl-user::+slippery-chicken-home-dir+ 
+                          "test-suite/sndfile-1.aiff")
+             :start 0.3 :end 1.1 :frequency 653)))
+  (max-play sf1 20))
+
+=>
+(-1 1 0 1.0 0.32000002 0.48)
 
 |#
 ;;; SYNOPSIS
@@ -504,19 +503,30 @@ NIL
 
 ;;; ****m* sndfile-ext/max-cue
 ;;; DESCRIPTION
-;;; 
+;;; Generate the data necessary to preload the sound file in a MaxMSP sflist~
+;;; object. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - The sndfile-ext object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - Whether to issue an error if the cue-num slot has not been set to a value
+;;;   above 1.  Default = #'error.  Could also be #'warn and NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of data suitable to be passed via OSC to the sflist~ object.
 ;;; 
 ;;; EXAMPLE
 #|
+(let* ((sf1 (make-sndfile-ext 
+             (concatenate 'string
+                          cl-user::+slippery-chicken-home-dir+ 
+                          "test-suite/sndfile-1.aiff")
+             :cue-num 2 :start 0.3 :end 1.1 :frequency 653)))
+  (max-cue sf1))
+
+=>
+("preload" 2 "/Users/medward2/lisp/sc/test-suite/sndfile-1.aiff" 300.0 1100.0)
 
 |#
 ;;; SYNOPSIS

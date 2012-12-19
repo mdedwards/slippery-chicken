@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 20:19:50 Sun Dec 16 2012 ICT
+;;; $$ Last modified: 17:32:54 Wed Dec 19 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -60,6 +60,8 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; NB Although this class is a palette and therefore a subclass of
+;;; recursive-assoc-list, the sound lists in this case cannot be nested.
 
 (defclass sndfile-palette (palette)
   ;; snds are given as single names, without the path and without the extension
@@ -226,6 +228,45 @@
             id snd-id sfp))
     result))
     
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Dec 19 14:29:35 2012 -- for MaxMSP/OSC interface
+
+;;; ****m* sndfile-palette/auto-cue-nums
+;;; DESCRIPTION
+;;; Set the cue-num slot of every sndfile-ext object in the palette to be an
+;;; ascending integer starting at 2.
+;;; 
+;;; ARGUMENTS
+;;; - a sndfile-palette object.
+;;; 
+;;; RETURN VALUE
+;;; The cue number of the last sndfile-ext object.
+;;; 
+;;; SYNOPSIS
+(defmethod auto-cue-nums ((sfp sndfile-palette))
+  ;; to be sure: don't assume we'll always have non-nested data.
+  (let ((refs (get-all-refs sfp)) 
+        (cue-num 1))
+    (loop for ref in refs 
+         for snds = (get-data-data ref sfp)
+         do
+         (loop for snd in snds do
+              (setf (cue-num snd) (incf cue-num))))
+    cue-num))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod osc-send-cue-nums ((sfp sndfile-palette))
+  ;; to be sure: don't assume we'll always have non-nested data.
+  (let ((refs (get-all-refs sfp)) 
+        (cue-nums 0))
+    (loop for ref in refs 
+         for snds = (get-data-data ref sfp)
+         do
+         (loop for snd in snds do
+              (osc-send-list (max-cue snd) nil) ; no warning 
+              (incf cue-nums)))
+    cue-nums))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -244,6 +285,10 @@
 ;;; Sound files are given as as single names, without the path and without the
 ;;; extension. These can be given using the optional keyword arguments <paths>
 ;;; and <extensions>.
+;;;
+;;; NB Although this class is a palette and therefore a subclass of
+;;; recursive-assoc-list, the sound lists in this case cannot be nested beyond
+;;; a depth of two (as in example below).  
 ;;; 
 ;;; ARGUMENTS
 ;;; - An ID for the palette.
@@ -290,6 +335,7 @@
                      :extensions extensions :warn-not-found warn-not-found)
       (make-instance 'sndfile-palette :id id :data sfp :paths paths
                      :warn-not-found warn-not-found)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

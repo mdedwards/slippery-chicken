@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified: 20:07:20 Mon Dec 17 2012 ICT
+;;; $$ Last modified: 17:40:25 Wed Dec 19 2012 ICT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -52,17 +52,22 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* osc-sc/osc-call
 ;;; DESCRIPTION
-;;; Allow OSC (over UDP) messages to be sent for processing.  Lisp code can be
-;;; sent (e.g. in MaxMSP via a message, including opening/closing parentheses
-;;; and nested calls; symbols should be quoted as per usual).  The return value
-;;; of the Lisp call will be returned to the given IP address on the given
-;;; port.  It is up to the receiver to then parse the result (e.g. in MaxMSP
-;;; via [udpreceive][fromsymbol][route list int float symbol]).  The function
+;;; Allow OSC (over UDP) messages to be sent for processing.  The function
 ;;; waits for input and processes in an endless loop; send 'quit' to stop the
 ;;; function and return to the interpreter.  Messages the function doesn't
-;;; understand will be ignored.
+;;; understand will be ignored after a warning being printed.
+;;; 
+;;; Lisp code can be sent, e.g. in MaxMSP via a message, including
+;;; opening/closing parentheses and nested calls; symbols should be quoted as
+;;; per usual.  The return value of the Lisp call will be returned to the
+;;; given IP address on the given port.  It is up to the receiver to then parse
+;;; the result (e.g. in MaxMSP via [udpreceive][fromsymbol][route list int
+;;; float symbol]).  
 ;;; 
 ;;; NB: Currently only works in SBCL.
+;;;     Some lists (e.g. those including strings/symbols) might not be
+;;;     recognised as lists by MaxMPS's [route], so process them directly after
+;;;     [fromsymbol]. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - The UDP port to listen to for messages.
@@ -82,47 +87,78 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* osc-sc/osc-send-list
+;;; DESCRIPTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defun osc-send-list (list &optional (warn t))
+;;; ****
+  (sb-bsd-sockets::osc-send-list list sb-bsd-sockets::+osc-sc-output-stream+
+                                 warn))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (in-package :sb-bsd-sockets)
 
+;;; Output stream as global so we can send OSC messages from other
+;;; methods/functions once we're in the osc-call loop. 
+(defparameter +osc-sc-output-stream+ nil)
+
 ;;; The main function we call to process lisp code and other messages sent via
-;;; OSC 
+;;; OSC .  Listens on a given port and sends out on another.  NB ip#s need to
+;;; be in the format #(127 0 0 1) for now.
+
 (defun osc-call (listen-port send-ip send-port) 
-  "listens on a given port and sends out on another
-   note ip#s need to be in the format #(127 0 0 1) for now.. ."
   (let ((in (make-udp-socket))
         (out (make-udp-socket))
         (buffer (make-sequence '(vector (unsigned-byte 8)) 512)))
     (socket-bind in #(0 0 0 0) listen-port)
     (socket-connect out send-ip send-port)
-    (let ((stream 
-           (socket-make-stream
-            out :input t :output t 
-            :element-type '(unsigned-byte 8) :buffering :full)))
-      (unwind-protect 
-           (format t "~&All good. Awaiting osc messages.~%")
-           (loop with happy = t while happy do 
-              ;; need this otherwise messages only get printed when we quit
-                (finish-output t)
-                (socket-receive in buffer nil)
-                (let* ((oscuff (osc:decode-bundle buffer))
-                       ;; here: check if there's an opening (
-                       (soscuff 
-                        (if (char= #\( (elt (first oscuff) 0))
-                            'lisp
-                            (read-from-string (first oscuff)))))
-                  (format t "~&osc-->message: ~a" oscuff)
-                  (finish-output t)
-                  (case (sc::rm-package soscuff :sb-bsd-sockets)
-                    ;; test
-                    (int (handle-number stream (second oscuff)))
-                    (quit (setf happy nil))
-                    ;; save opening ( so evaluate lisp code
-                    (lisp (osc-eval stream oscuff))
-                    (t (warn "osc-sc::osc-call: don't understand ~a. Ignoring."
-                             soscuff)
-                       (finish-output)))))
-        (when in (socket-close in)) 
-        (when out (socket-close out)))))
+    ;; (let ((stream 
+    (setf +osc-sc-output-stream+
+          (socket-make-stream
+           out :input t :output t 
+           :element-type '(unsigned-byte 8) :buffering :full))
+    (unwind-protect 
+         (format t "~&All good. Awaiting osc messages.~%")
+      (loop with happy = t while happy do 
+         ;; need this otherwise messages only get printed when we quit
+           (finish-output t)
+           (socket-receive in buffer nil)
+           (let* ((oscuff (osc:decode-bundle buffer))
+                  ;; here: check if there's an opening (
+                  (soscuff 
+                   (if (char= #\( (elt (first oscuff) 0))
+                       'lisp
+                       (read-from-string (first oscuff)))))
+             (format t "~&osc-->message: ~a" oscuff)
+             (finish-output t)
+             (case (sc::rm-package soscuff :sb-bsd-sockets)
+               ;; test
+               (int (handle-number +osc-sc-output-stream+ (second oscuff)))
+               (quit (setf happy nil))
+               ;; save opening ( so evaluate lisp code
+               (lisp (osc-eval +osc-sc-output-stream+ oscuff))
+               (t (warn "osc-sc::osc-call: Don't understand ~a. Ignoring."
+                        soscuff)
+                  (finish-output)))))
+      (when in (socket-close in)) 
+      (when out (socket-close out)))
+    (setf +osc-sc-output-stream+ nil))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -136,13 +172,26 @@
 (defun osc-eval (stream expr)
   ;; (format t "~&osc-eval: ~a ~a" expr (stringp (first expr)))
   ;; (finish-output t)
+  (unless stream
+    (error "sc-sc::osc-eval: stream not open."))
   (let ((result (sc::list-to-string expr)))
     (setf result (eval (read-from-string result)))
-    (unless (listp result)
-      (setf result (list result)))
-    (write-sequence (osc:encode-message (sc::list-to-string result))
-                    stream)
-    (finish-output stream)))
+    ;; MDE Wed Dec 19 17:38:01 2012 -- don't send T or NIL, rather 1 or 0
+    (unless (or (not result) (equal result T))
+      (unless (listp result)
+        (setf result (list result)))
+      (osc-send-list result stream))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun osc-send-list (list stream &optional (warn t))
+  (if stream
+      (progn 
+        (write-sequence (osc:encode-message (sc::list-to-string list))
+                        stream)
+        (finish-output stream))
+      (when warn
+        (warn "sc-sc::osc-send-list: stream not open."))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -164,6 +213,5 @@
   (finish-output stream))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF osc-sc.lsp
 

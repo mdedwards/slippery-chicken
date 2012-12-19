@@ -44,9 +44,9 @@
   (:use :cl)
   (:documentation "OSC aka the 'open sound control' protocol")
   (:export :encode-message
-	   :encode-bundle
-	   :decode-message
-	   :decode-bundle))
+           :encode-bundle
+           :decode-message
+           :decode-bundle))
 
 (in-package :osc)
  
@@ -62,13 +62,13 @@
   "will encode an osc message, or list of messages as a bundle
    with an optional timetag (symbol or 64bit int).
    doesnt handle nested bundles"
-  (cat '(35 98 117 110 100 108 101 0)	; #bundle
+  (cat '(35 98 117 110 100 108 101 0)   ; #bundle
        (if timetag
            (encode-timetag timetag)
            (encode-timetag :now))
        (if (listp (car data))
-	   (apply #'cat (mapcar #'encode-bundle-elt data))
-	 (encode-bundle-elt data))))
+           (apply #'cat (mapcar #'encode-bundle-elt data))
+         (encode-bundle-elt data))))
 
 (defun encode-bundle-elt (data)
   (let ((message (apply #'encode-message data)))
@@ -77,9 +77,9 @@
 (defun encode-message (address &rest data)
   "encodes an osc message with the given address and data."
   (concatenate '(vector (unsigned-byte 8))
-	       (encode-address address)
-	       (encode-typetags data)
-	       (encode-data data)))
+               (encode-address address)
+               (encode-typetags data)
+               (encode-data data)))
 
 (defun encode-address (address)
   (cat (map 'vector #'char-code address) 
@@ -99,7 +99,7 @@
   and considers non int/float/string data to be a blob." 
 
   (let ((lump (make-array 0 :adjustable t 
-			  :fill-pointer t)))
+                          :fill-pointer t)))
     (macrolet ((write-to-vector (char)
                  `(vector-push-extend
                    (char-code ,char) lump)))
@@ -109,10 +109,10 @@
           (integer (write-to-vector #\i))
           (float (write-to-vector #\f))
           (simple-string (write-to-vector #\s))
-	  (t (write-to-vector #\b)))))
+          (t (write-to-vector #\b)))))
     (cat lump
          (pad (padding-length (length lump))))))     
-		  
+                  
 (defun encode-data (data)
   "encodes data in a format suitable for an OSC message"
   (let ((lump (make-array 0 :adjustable t :fill-pointer t)))
@@ -123,7 +123,7 @@
           (integer (enc encode-int32)) 
           (float (enc encode-float32)) 
           (simple-string (enc encode-string))
-	  (t (enc encode-blob))))
+          (t (enc encode-blob))))
       lump)))
 
                 
@@ -137,22 +137,22 @@
   "decodes an osc bundle into a list of decoded-messages, which has
    an osc-timetagas its first element"
   (let ((contents '()))
-    (if (equalp 35 (elt data 0))	; a bundle begins with '#'
-	(let ((timetag (subseq data 8 16)) 
-	      (i 16)
-	      (bundle-length (length data)))
-	  (loop while (< i bundle-length)
-	     do (let ((mark (+ i 4))
-		      (size (decode-int32
-			     (subseq data i (+ i 4)))))
-		  (if (eq size 0)
-		      (setf bundle-length 0)
-		      (push (decode-bundle
-			     (subseq data mark (+ mark size)))
-			    contents))
-		  (incf i (+ 4 size))))
-	  (push timetag contents))
-	(decode-message data))))
+    (if (equalp 35 (elt data 0))        ; a bundle begins with '#'
+        (let ((timetag (subseq data 8 16)) 
+              (i 16)
+              (bundle-length (length data)))
+          (loop while (< i bundle-length)
+             do (let ((mark (+ i 4))
+                      (size (decode-int32
+                             (subseq data i (+ i 4)))))
+                  (if (eq size 0)
+                      (setf bundle-length 0)
+                      (push (decode-bundle
+                             (subseq data mark (+ mark size)))
+                            contents))
+                  (incf i (+ 4 size))))
+          (push timetag contents))
+        (decode-message data))))
      
 (defun decode-message (message)
   "reduces an osc message to an (address . data) pair. .." 
@@ -160,13 +160,13 @@
   (let ((x (position (char-code #\,) message)))
     (if (eq x NIL)
         (format t "message contains no data.. ")
-	(cons (decode-address (subseq message 0 x))
-	      (decode-taged-data (subseq message x))))))
+        (cons (decode-address (subseq message 0 x))
+              (decode-taged-data (subseq message x))))))
  
 (defun decode-address (address)
   (coerce (map 'vector #'code-char 
-	       (delete 0 address))
-	  'string))
+               (delete 0 address))
+          'string))
 
 (defun decode-taged-data (data)
   "decodes data encoded with typetags...
@@ -178,38 +178,38 @@
 
   (let ((div (position 0 data)))
     (let ((tags (subseq data 1 div)) 
-	  (acc (subseq data (padded-length div)))
-	  (result '()))
+          (acc (subseq data (padded-length div)))
+          (result '()))
       (map 'vector
-	   #'(lambda (x)
-	       (cond
-		((eq x (char-code #\i)) 
-		 (push (decode-int32 (subseq acc 0 4)) 
-		       result)
-		 (setf acc (subseq acc 4)))
-		((eq x (char-code #\f))
-		 (push (decode-float32 (subseq acc 0 4)) 
-		       result)
-		 (setf acc (subseq acc 4)))
-		((eq x (char-code #\s))
-		 (let ((pointer (padded-length (position 0 acc))))
-		   (push (decode-string 
-			  (subseq acc 0 pointer))
-			 result)
-		   (setf acc (subseq acc pointer))))
-		((eq x (char-code #\b)) 
-		 (let* ((size (decode-int32 (subseq acc 0 4)))
+           #'(lambda (x)
+               (cond
+                ((eq x (char-code #\i)) 
+                 (push (decode-int32 (subseq acc 0 4)) 
+                       result)
+                 (setf acc (subseq acc 4)))
+                ((eq x (char-code #\f))
+                 (push (decode-float32 (subseq acc 0 4)) 
+                       result)
+                 (setf acc (subseq acc 4)))
+                ((eq x (char-code #\s))
+                 (let ((pointer (padded-length (position 0 acc))))
+                   (push (decode-string 
+                          (subseq acc 0 pointer))
+                         result)
+                   (setf acc (subseq acc pointer))))
+                ((eq x (char-code #\b)) 
+                 (let* ((size (decode-int32 (subseq acc 0 4)))
                         (end (padded-length (+ 4 size))))
                    (push (decode-blob (subseq acc 0 end)) 
                          result)
                    (setf acc (subseq acc end))))
-		(t (error "unrecognised typetag"))))
-	   tags)
+                (t (error "unrecognised typetag"))))
+           tags)
       (nreverse result))))
 
 
 ;;;;;; ;; ;; ; ; ;  ;  ; ;;     ;
-;;	
+;;      
 ;; timetags
 ;;
 ;; - timetags can be encoded using a value, or the :now and :time keywords. the
@@ -271,7 +271,7 @@
   #+cmucl (encode-int32 (kernel:single-float-bits f))
   #+openmcl (encode-int32 (CCL::SINGLE-FLOAT-BITS f))
   #+allegro (encode-int32 (multiple-value-bind (x y) (excl:single-float-to-shorts f)
-			    (+ (ash x 16) y)))
+                            (+ (ash x 16) y)))
   #-(or sbcl cmucl openmcl allegro) (error "cant encode floats using this implementation"))
 
 (defun decode-float32 (s)
@@ -280,35 +280,35 @@
   #+cmucl (kernel:make-single-float (decode-int32 s))
   #+openmcl (CCL::HOST-SINGLE-FLOAT-FROM-UNSIGNED-BYTE-32 (decode-uint32 s))
   #+allegro (excl:shorts-to-single-float (ldb (byte 16 16) (decode-int32 s))
-				    (ldb (byte 16 0) (decode-int32 s)))
+                                    (ldb (byte 16 0) (decode-int32 s)))
   #-(or sbcl cmucl openmcl allegro) (error "cant decode floats using this implementation"))
 
 (defun decode-int32 (s)
   "4 byte -> 32 bit int -> two's compliment (in network byte order)"
   (let ((i (+ (ash (elt s 0) 24)
-	      (ash (elt s 1) 16)
-	      (ash (elt s 2) 8)
-	      (elt s 3))))
+              (ash (elt s 1) 16)
+              (ash (elt s 2) 8)
+              (elt s 3))))
     (if (>= i #x7fffffff)
         (- 0 (- #x100000000 i))
-	i)))
+        i)))
 
 (defun decode-uint32 (s)
   "4 byte -> 32 bit unsigned int"
   (let ((i (+ (ash (elt s 0) 24)
-	      (ash (elt s 1) 16)
-	      (ash (elt s 2) 8)
-	      (elt s 3))))
+              (ash (elt s 1) 16)
+              (ash (elt s 2) 8)
+              (elt s 3))))
     i))
 
 (defun encode-int32 (i)
   "convert an integer into a sequence of 4 bytes in network byte order."
   (declare (type integer i))
   (let ((buf (make-sequence 
-	      '(vector (unsigned-byte 8)) 4)))
+              '(vector (unsigned-byte 8)) 4)))
     (macrolet ((set-byte (n)
-		 `(setf (elt buf ,n)
-			(logand #xff (ash i ,(* 8 (- n 3)))))))
+                 `(setf (elt buf ,n)
+                        (logand #xff (ash i ,(* 8 (- n 3)))))))
       (set-byte 0)
       (set-byte 1)
       (set-byte 2)
@@ -332,14 +332,14 @@
 (defun decode-blob (blob)
   "decode a blob as a vector of unsigned bytes."
   (let ((size (decode-int32
-	       (subseq blob 0 4))))
+               (subseq blob 0 4))))
     (subseq blob 4 (+ 4 size)))) 
 
 (defun encode-blob (blob)
   "encodes a blob from a given vector"
   (let ((bl (length blob)))
     (cat (encode-int32 bl) blob
-	 (pad (padding-length bl)))))      
+         (pad (padding-length bl)))))      
 
 
 ;; utility functions for osc-string/padding slonking

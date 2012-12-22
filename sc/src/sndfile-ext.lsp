@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 15:21:18 Wed Dec 19 2012 ICT
+;;; $$ Last modified: 13:06:39 Fri Dec 21 2012 ICT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -79,6 +79,9 @@
    ;; should be a list of references into the containing sndfile-palette.  It
    ;; will be turned into a circular-sclist upon init.
    (followers :accessor followers :initarg :followers :initform nil)
+   ;; followers references may omit the sndfile group if a follower is in the
+   ;; same group as the current
+   (group-id :accessor group-id :initarg :group-id :initform nil)
    ;; For the following 'characteristics' slots, each of which has an integer
    ;; value, see the textual descriptions for each value in the class slot
    ;; 'characteristics' below.
@@ -242,6 +245,7 @@
   (declare (ignore new-class))
   (let ((sf (call-next-method)))
     (setf (slot-value sf 'use) (use sfe)
+          (slot-value sf 'group-id) (group-id sfe)
           (slot-value sf 'cue-num) (cue-num sfe)
           (slot-value sf 'pitch) (pitch sfe)
           (slot-value sf 'pitch-curve) (pitch-curve sfe)
@@ -279,13 +283,14 @@
                     volume: ~a, ~
                     ~%             volume-curve: ~a, loop-it: ~a, ~
                     bitrate: ~a, srate: ~a, ~
-                    ~%             num-frames: ~a, bytes: ~a, followers: ~a"
+                    ~%             num-frames: ~a, bytes: ~a, group-id: ~a~
+                    ~%             followers: ~a"
           (use sfe) (cue-num sfe) (pitch sfe) (pitch-curve sfe) (bandwidth sfe)
           (bandwidth-curve sfe) (continuity sfe) (continuity-curve sfe)
           (weight sfe) (weight-curve sfe) (energy sfe) (energy-curve sfe)
           (harmonicity sfe) (harmonicity-curve sfe) (volume sfe)
           (volume-curve sfe) (loop-it sfe) (bitrate sfe) (srate sfe)
-          (num-frames sfe) (bytes sfe) (followers sfe)))
+          (num-frames sfe) (bytes sfe) (group-id sfe) (followers sfe)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -467,10 +472,14 @@ NIL
 ;;; ARGUMENTS
 ;;; - The sndfile-ext object.
 ;;; - The fade (in/out) duration in seconds.
+;;; - The maximum loop duration in seconds.
+;;; - The time to trigger the next file, as a percentage of the current
+;;;   sndfile-ext's duration.
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of values to be passed via OSC to sndfilenet-aux.maxpath:
-;;; cue-number number-of-channels loop speed fade-dururation fade-out-start-time
+;;; cue-number number-of-channels loop speed fade-dururation
+;;; fade-out-start-time delay-to-next-snfile-start
 ;;; 
 ;;; EXAMPLE
 #|
@@ -486,18 +495,24 @@ NIL
 
 |#
 ;;; SYNOPSIS
-(defmethod max-play ((sfe sndfile-ext) fade-dur)
+(defmethod max-play ((sfe sndfile-ext) fade-dur max-loop start-next)
 ;;; ****
-  ;; remember snd-duration is the full duration of the sndfile but duration is
-  ;; that which takes start and end into consideration
-  (let* ((dur (duration sfe))
+  ;; remember snd-duration slot is the full duration of the sndfile but
+  ;; duration is that which takes start and end into consideration. Also, if
+  ;; we're going to loop a file, the duration doesn't play a role, rather the
+  ;; max-loop arg does.
+  (let* ((dur (if (loop-it sfe) max-loop (duration sfe)))
          ;; fade is 40% duration if sndfile not long enough
          (min-ramp (* .4 dur))
          (fits (>= dur (* 2.0 fade-dur)))
          (fd (if fits fade-dur min-ramp))
+         ;; * 10 because start-next is in %, dur is in secs, but we need a
+         ;; delay time in millisecs
+         (sn = (* dur start-next 10.0)) 
          (fade-out (- dur fd)))
   ;; for now speed is just 1.0
-  (list (cue-num sfe) (channels sfe) (if (loop-it sfe) 1 0) 1.0 fd fade-out)))
+  (list (cue-num sfe) (channels sfe) (if (loop-it sfe) 1 0) 1.0 fd fade-out
+        sn)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -571,7 +586,7 @@ NIL
                          (energy -1) (energy-curve -1) (harmonicity -1)
                          (harmonicity-curve -1) (volume -1) (volume-curve -1)
                          (loop-it nil) (bitrate -1) (srate -1) (num-frames -1)
-                         (bytes -1) followers)
+                         (bytes -1) followers group-id)
 ;;; ****
   (let ((sf (make-sndfile path :id id :data data :duration duration :end end
                           :start start :frequency frequency :amplitude
@@ -603,6 +618,7 @@ NIL
           (srate sf) srate
           (num-frames sf) num-frames
           (bytes sf) bytes
+          (group-id sf) group-id
           (followers sf) (make-cscl followers
                                     :id (format nil "~a-followers" (id sf))
                                     :copy nil))

@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    February 19th 2001
 ;;;
-;;; $$ Last modified: 11:29:27 Mon Dec 17 2012 ICT
+;;; $$ Last modified: 13:28:40 Fri Dec 21 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -282,12 +282,13 @@
                 ;; other classes too of course) and take mod of where if it's
                 ;; too high   
                 (progn 
-                  (when warn
-                    (let ((i (mod where (sclist-length cscl))))
-                      (warn "circular-sclist::reset: id: ~a, <where>:~a >= ~
+                  (let ((i (if (zerop (sclist-length cscl)) 0
+                               (mod where (sclist-length cscl)))))
+                    (when warn
+                      (warn "circular-sclist::reset: id: ~a:~%<where>:~a >= ~
                              list length: ~a. Will wrap to ~a."
-                            (id cscl) where (sclist-length cscl) i)
-                      i))))))
+                            (id cscl) where (sclist-length cscl) i))
+                    i)))))
     (setf (current cscl) index)
     t))
 

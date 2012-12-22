@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 17:32:54 Wed Dec 19 2012 ICT
+;;; $$ Last modified: 13:35:28 Fri Dec 21 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -67,6 +67,9 @@
   ;; snds are given as single names, without the path and without the extension
   ;; so give the paths here and the extensions below (when necessary).
   ((paths :accessor paths :type list :initarg :paths :initform nil)
+   ;; the next sndfile-ext object for the purposes of the OSC sndfilenet
+   ;; functionality 
+   (next :accessor next :initarg :next :initform nil)
    (extensions :accessor extensions :type list :initarg :extensions 
                :initform '("wav" "aiff" "aif" "snd"))))
 
@@ -81,6 +84,8 @@
   (declare (ignore new-class))
   (let ((palette (call-next-method)))
     (setf (slot-value palette 'paths) (paths sfp)
+          (slot-value palette 'next) (when (next sfp)
+                                          (clone (next sfp)))
           (slot-value palette 'extensions) (extensions sfp))
     palette))
 
@@ -88,8 +93,9 @@
 
 (defmethod print-object :before ((sfp sndfile-palette) stream)
   (format stream "~%SNDFILE-PALETTE: paths: ~a~
-                  ~%                 extensions: ~a"
-          (paths sfp) (extensions sfp)))
+                  ~%                 extensions: ~a~
+                  ~%                 next: ~a"
+          (paths sfp) (extensions sfp) (next sfp)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -267,6 +273,50 @@
               (osc-send-list (max-cue snd) nil) ; no warning 
               (incf cue-nums)))
     cue-nums))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Dec 21 09:38:46 2012 
+
+(defmethod reset ((sfp sndfile-palette) &optional where (warn t))
+  (let ((refs (get-all-refs sfp)))
+    (loop for ref in refs 
+       for snds = (get-data-data ref sfp)
+       do
+         (loop for snd in snds do
+              (setf (group-id snd) ref)
+              (reset snd where warn)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Dec 21 09:38:52 2012
+
+(defmethod get-snd-with-cue-num ((sfp sndfile-palette) cue-num)
+  (let ((refs (get-all-refs sfp))
+        (result nil))
+    (loop for ref in refs 
+       for snds = (get-data-data ref sfp)
+       do
+         (loop for snd in snds do
+              (when (= (cue-num snd) cue-num)
+                (setf result snd)
+                (return))))
+    result))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod max-play ((sfp sndfile-palette) fade-dur max-loop start-next)
+  (if (next sfp)
+    (let* ((current (next sfp))
+           (next (get-next current))
+           (snd-id nil)
+           (next-group nil))
+      (max-play (next sfp) fade-dur max-loop start-next)
+      (if (and (listp next) (= 1 (length next)))
+          (setf snd-id (first next)
+                next-group (group current))
+          (setf snd-id (second next)
+                next-group (first next)))
+      (setf (next sfp) (get-snd group-id snd-id sfp)))
+    (warn "sndfile-palette::max-play: no next!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

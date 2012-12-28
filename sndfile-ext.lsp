@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 13:06:39 Fri Dec 21 2012 ICT
+;;; $$ Last modified: 13:04:51 Fri Dec 28 2012 ICT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -218,15 +218,20 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod initialize-instance :after ((sfe sndfile-ext) &rest initargs)
-  (declare (ignore initargs))
-  ;; (print 'init-sndfile-ext)
-  )
+(defmethod (setf followers) :after (value (sfe sndfile-ext))
+  (declare (ignore value))
+  (when (and (followers sfe) (listp (followers sfe)))
+    (setf (followers sfe) 
+          (make-cscl (followers sfe)
+                     :id (format nil "~a-followers"
+                                 (id sfe))
+                     :copy nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod update :after ((sfe sndfile-ext))
-  ;; (print 'update-sfe) (print (path sfe))
+  ;; just to call the setf method and update to a cscl
+  (setf (followers sfe) (followers sfe))
   #+clm 
   (when (path sfe)
     (setf (bitrate sfe) (* 8 (clm::sound-datum-size (path sfe)))
@@ -290,7 +295,12 @@
           (weight sfe) (weight-curve sfe) (energy sfe) (energy-curve sfe)
           (harmonicity sfe) (harmonicity-curve sfe) (volume sfe)
           (volume-curve sfe) (loop-it sfe) (bitrate sfe) (srate sfe)
-          (num-frames sfe) (bytes sfe) (group-id sfe) (followers sfe)))
+          (num-frames sfe) (bytes sfe) (group-id sfe)
+          (when (followers sfe)
+            (loop for sf in (data (followers sfe)) collect 
+               (if (named-object-p sf)
+                   (id sf)
+                   sf)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -330,7 +340,8 @@
 ;;; SYNOPSIS
 (defmethod reset ((sfe sndfile-ext) &optional where (warn t))
 ;;; ****
-  (reset (followers sfe) where warn))
+  (when (followers sfe)
+    (reset (followers sfe) where warn)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -392,13 +403,12 @@
        (when (and (>= s1 0) (>= s2 0))
          (incf prox (abs (- s1 s2)))
          (incf slots-compared)))
-    ;; (print prox)
-    (setf prox (/ prox slots-compared))
     (if (zerop slots-compared)
         most-positive-short-float
         ;; make sure that when more slots were compared we get a closer
         ;; proximity 
-        (* (/ (- num-cslots slots-compared) num-cslots) prox))))
+        (* (/ (- num-cslots slots-compared) num-cslots)
+           (/ prox slots-compared)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -495,8 +505,10 @@ NIL
 
 |#
 ;;; SYNOPSIS
-(defmethod max-play ((sfe sndfile-ext) fade-dur max-loop start-next)
+(defmethod max-play ((sfe sndfile-ext) fade-dur max-loop start-next
+                     &optional ignore)
 ;;; ****
+  (declare (ignore ignore))
   ;; remember snd-duration slot is the full duration of the sndfile but
   ;; duration is that which takes start and end into consideration. Also, if
   ;; we're going to loop a file, the duration doesn't play a role, rather the
@@ -508,11 +520,12 @@ NIL
          (fd (if fits fade-dur min-ramp))
          ;; * 10 because start-next is in %, dur is in secs, but we need a
          ;; delay time in millisecs
-         (sn = (* dur start-next 10.0)) 
+         (sn (* dur start-next 10.0))
          (fade-out (- dur fd)))
-  ;; for now speed is just 1.0
-  (list (cue-num sfe) (channels sfe) (if (loop-it sfe) 1 0) 1.0 fd fade-out
-        sn)))
+    ;; for now speed is just 1.0
+    ;; sn is in ms but fs and fade-out are in secs
+  (list (cue-num sfe) (channels sfe) (if (loop-it sfe) 1 0) 1.0
+        (* 1000.0 fd) (* 1000.0 fade-out) sn)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -588,40 +601,42 @@ NIL
                          (loop-it nil) (bitrate -1) (srate -1) (num-frames -1)
                          (bytes -1) followers group-id)
 ;;; ****
-  (let ((sf (make-sndfile path :id id :data data :duration duration :end end
-                          :start start :frequency frequency :amplitude
-                          amplitude)))
-    ;; (print 'make-sndfile-ext) (print (path sf))
-    ;; remember that this goes back to named-object which calls make-instance
-    ;; 'sndfile-ext with all slots NIL, so we'll have to call update below.
-    (setf sf (clone-with-new-class sf 'sndfile-ext))
-    ;; (print 'make-sndfile-ext2) (print (path sf))
-    (setf (use sf) use 
-          (cue-num sf) cue-num
-          (pitch sf) pitch
-          (pitch-curve sf) pitch-curve
-          (bandwidth sf) bandwidth
-          (bandwidth-curve sf) bandwidth-curve
-          (continuity sf) continuity
-          (continuity-curve sf) continuity-curve
-          (weight sf) weight
-          (weight-curve sf) weight-curve
-          (energy sf) energy
-          (energy-curve sf) energy-curve
-          (harmonicity sf) harmonicity 
-          (harmonicity-curve sf) harmonicity-curve
-          (volume sf) volume
-          (volume-curve sf) volume-curve
-          (loop-it sf) loop-it
-          ;; bear in mind that these data will be changed by the update method
-          (bitrate sf) bitrate
-          (srate sf) srate
-          (num-frames sf) num-frames
-          (bytes sf) bytes
-          (group-id sf) group-id
-          (followers sf) (make-cscl followers
-                                    :id (format nil "~a-followers" (id sf))
-                                    :copy nil))
+  (let (sf)
+    (if (and path (listp path))         ; all slots will be in the list
+        (setf sf (make-sndfile (cons 'sndfile-ext path)))
+        (progn 
+          (setf sf (make-sndfile path :id id :data data :duration duration
+                                 :end end :start start :frequency frequency
+                                 :amplitude amplitude))
+          ;; remember that this goes back to named-object which calls
+          ;; make-instance 'sndfile-ext with all slots NIL, so we'll have to
+          ;; call update below.
+          (setf sf (clone-with-new-class sf 'sndfile-ext))
+          (setf (use sf) use 
+                (cue-num sf) cue-num
+                (pitch sf) pitch
+                (pitch-curve sf) pitch-curve
+                (bandwidth sf) bandwidth
+                (bandwidth-curve sf) bandwidth-curve
+                (continuity sf) continuity
+                (continuity-curve sf) continuity-curve
+                (weight sf) weight
+                (weight-curve sf) weight-curve
+                (energy sf) energy
+                (energy-curve sf) energy-curve
+                (harmonicity sf) harmonicity 
+                (harmonicity-curve sf) harmonicity-curve
+                (volume sf) volume
+                (volume-curve sf) volume-curve
+                (loop-it sf) loop-it
+                ;; bear in mind that these data will be changed by the update
+                ;; method  
+                (bitrate sf) bitrate
+                (srate sf) srate
+                (num-frames sf) num-frames
+                (bytes sf) bytes
+                (group-id sf) group-id
+                (followers sf) followers)))
     ;; have to call this here because clone init'ed with all slots NIL
     (update sf)
     sf))

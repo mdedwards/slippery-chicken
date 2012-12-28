@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 18:16:13 Mon Nov 26 2012 GMT
+;;; $$ Last modified: 09:57:42 Fri Dec 28 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3104,7 +3104,7 @@ WARNING:
 
 ;;; SAR Mon May  7 23:42:18 BST 2012: Added robodoc entry
 
-;;; ****m* utilities/db2amp 
+;;; ****f* utilities/db2amp 
 ;;; DESCRIPTION
 ;;; Convert a decibel value to a standard digital amplitude value (>0.0 to 1.0),
 ;;; whereby 0dB = 1.0.

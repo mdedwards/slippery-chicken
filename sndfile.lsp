@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 17:59:32 Sun Dec 16 2012 ICT
+;;; $$ Last modified: 18:59:06 Wed Dec 26 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -439,12 +439,16 @@ data: /path/to/sndfile-1.aiff
                      (frequency 'c4)
                      (amplitude 1.0))
 ;;; **** 
-  (if (listp path)
+  (if (and path (listp path))
       (progn
-        (let ((sf (make-instance 'sndfile
-                                 :path (first path)
-                                 :id (first (second path))))
-              (slots (rest (second path))))
+        (let ((sf (make-instance (first path)
+                                 ;; MDE Wed Dec 26 11:16:53 2012 -- :class must
+                                 ;; come first
+                                 ;; :path (first path)
+                                 :path (second path)
+                                 ;; :id (first (second path))))
+                                 :id (first (third path))))
+              (slots (rest (third path))))
           (loop for slot in slots by #'cddr 
              and value in (cdr slots) by #'cddr do
              ;; we have to do this here because (setf (slot-value ... ))
@@ -454,7 +458,12 @@ data: /path/to/sndfile-1.aiff
                (:end (setf (end sf) value))
                (:frequency (setf (frequency sf) value))
                (:start (setf (start sf) value))
-               (t (setf (slot-value sf (rm-package slot)) value))))
+               ;; MDE Wed Dec 26 10:47:45 2012 -- only try and set a slot value
+               ;; here if it exists in this class (as opposed to the sndfile-ext
+               ;; class) 
+               (t (let ((s (rm-package slot)))
+                    (when (slot-exists-p sf s)
+                      (setf (slot-value sf s) value))))))
           sf))
       (make-instance 'sndfile :id id :data data :path path :duration duration
                      :frequency frequency :end end :start start

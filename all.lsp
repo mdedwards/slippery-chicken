@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 14:25:32 Sun Dec 16 2012 ICT
+;;; $$ Last modified: 21:00:38 Sat Dec 22 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -229,6 +229,7 @@
 (sc-compile-and-load "set-palette.lsp")
 (sc-compile-and-load "pitch-seq.lsp")
 (sc-compile-and-load "sndfile.lsp")
+(sc-compile-and-load "sndfile-ext.lsp")
 (sc-compile-and-load "sndfile-palette.lsp")
 (sc-compile-and-load "rthm-seq.lsp")
 (sc-compile-and-load "rthm-seq-palette.lsp")
@@ -257,7 +258,6 @@
 (sc-compile-and-load "popcorn.lsp")
 #+sbcl (sc-compile-and-load "osc.lsp")
 #+sbcl (sc-compile-and-load "osc-sc.lsp")
-(sc-compile-and-load "sndfile-ext.lsp")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; EOF all.lsp

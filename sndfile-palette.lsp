@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 13:35:28 Fri Dec 21 2012 ICT
+;;; $$ Last modified: 13:21:08 Fri Dec 28 2012 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -70,6 +70,11 @@
    ;; the next sndfile-ext object for the purposes of the OSC sndfilenet
    ;; functionality 
    (next :accessor next :initarg :next :initform nil)
+   ;; whether we'll have the followers slots for the sndfiles i.e. whether
+   ;; we're going to call max-play (and hence process-followers) for this
+   ;; palette.  Leave at nil if you don't want to use with max-play.
+   (with-followers :accessor with-followers :type boolean
+                   :initarg :with-followers :initform nil)
    (extensions :accessor extensions :type list :initarg :extensions 
                :initform '("wav" "aiff" "aif" "snd"))))
 
@@ -84,8 +89,9 @@
   (declare (ignore new-class))
   (let ((palette (call-next-method)))
     (setf (slot-value palette 'paths) (paths sfp)
+          (slot-value palette 'with-followers) (with-followers sfp)
           (slot-value palette 'next) (when (next sfp)
-                                          (clone (next sfp)))
+                                       (clone (next sfp)))
           (slot-value palette 'extensions) (extensions sfp))
     palette))
 
@@ -94,8 +100,9 @@
 (defmethod print-object :before ((sfp sndfile-palette) stream)
   (format stream "~%SNDFILE-PALETTE: paths: ~a~
                   ~%                 extensions: ~a~
+                  ~%                 with-followers: ~a~
                   ~%                 next: ~a"
-          (paths sfp) (extensions sfp) (next sfp)))
+          (paths sfp) (extensions sfp) (with-followers sfp) (next sfp)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -121,12 +128,17 @@
                     (list
                      ;; MDE Sun Dec 16 20:19:30 2012 -- was make-sndfile
                      (make-sndfile-ext (list (find-sndfile sfp (first snd))
-                                         snd)))
+                                             snd)))
                     ;; if it wasn't a list, just find the sound and pass this
                     ;; and the given name which also acts as the id per
                     ;; default. 
                     ;; MDE Sun Dec 16 20:19:30 2012 -- was make-sndfile
-                    (t (make-sndfile-ext (find-sndfile sfp snd) :id snd)))))))
+                    (t (make-sndfile-ext (find-sndfile sfp snd) :id snd))))))
+  (auto-cue-nums sfp)
+  (reset sfp)
+  ;; MDE Sat Dec 22 20:59:44 2012 
+  (when (with-followers sfp)
+    (process-followers sfp)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -173,7 +185,7 @@
 |#
 ;;; SYNOPSIS
 (defmethod find-sndfile ((sfp sndfile-palette) sndfile)
-;;; ****                                ;
+;;; ****
   (let ((files '())
         (full-path "")
         (string (if (stringp sndfile)
@@ -230,7 +242,7 @@
                        do (return i))))
     (when (and (warn-not-found sfp) (not result))
       (warn "sndfile-palette::get-snd: ~
-             Couldn't find data with id ~a snd-id ~a in sndfile-palette ~%~a"
+             Couldn't find data with id ~a, snd-id ~%~a in sndfile-palette ~%~a"
             id snd-id sfp))
     result))
     
@@ -250,6 +262,7 @@
 ;;; 
 ;;; SYNOPSIS
 (defmethod auto-cue-nums ((sfp sndfile-palette))
+;;; ****
   ;; to be sure: don't assume we'll always have non-nested data.
   (let ((refs (get-all-refs sfp)) 
         (cue-num 1))
@@ -257,7 +270,8 @@
          for snds = (get-data-data ref sfp)
          do
          (loop for snd in snds do
-              (setf (cue-num snd) (incf cue-num))))
+              (when (use snd)
+                (setf (cue-num snd) (incf cue-num)))))
     cue-num))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -270,8 +284,9 @@
          for snds = (get-data-data ref sfp)
          do
          (loop for snd in snds do
-              (osc-send-list (max-cue snd) nil) ; no warning 
-              (incf cue-nums)))
+              (when (use snd)
+                (osc-send-list (max-cue snd) nil) ; no warning 
+                (incf cue-nums))))
     cue-nums))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -282,9 +297,9 @@
     (loop for ref in refs 
        for snds = (get-data-data ref sfp)
        do
-         (loop for snd in snds do
-              (setf (group-id snd) ref)
-              (reset snd where warn)))))
+       (loop for snd in snds do
+            (setf (group-id snd) ref)
+            (reset snd where warn)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Dec 21 09:38:52 2012
@@ -295,28 +310,80 @@
     (loop for ref in refs 
        for snds = (get-data-data ref sfp)
        do
-         (loop for snd in snds do
-              (when (= (cue-num snd) cue-num)
-                (setf result snd)
-                (return))))
+       (loop for snd in snds do
+            (when (= (cue-num snd) cue-num)
+              (setf result snd)
+              (return))))
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod max-play ((sfp sndfile-palette) fade-dur max-loop start-next)
+(defmethod max-play ((sfp sndfile-palette) fade-dur max-loop start-next
+                     &optional print)
   (if (next sfp)
     (let* ((current (next sfp))
-           (next (get-next current))
-           (snd-id nil)
-           (next-group nil))
-      (max-play (next sfp) fade-dur max-loop start-next)
-      (if (and (listp next) (= 1 (length next)))
-          (setf snd-id (first next)
-                next-group (group current))
-          (setf snd-id (second next)
-                next-group (first next)))
-      (setf (next sfp) (get-snd group-id snd-id sfp)))
+           (next (get-next current)))
+      (setf (next sfp) next)
+      (when print
+        (format t "~&cue ~a (~a): ~a --> ~a"
+                (cue-num current) (id current) (start current) (end current)))
+      (max-play current fade-dur max-loop start-next))
     (warn "sndfile-palette::max-play: no next!")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Dec 22 20:42:32 2012 -- if we don't fully reference the group we
+;;; assume it's in  the same as the current.
+(defmethod get-snd-short ((sfp sndfile-palette) ref (current sndfile-ext))
+  (let* ((snd-id ref)
+         (next-group (group-id current)))
+    (when (listp ref)
+      (if (= 1 (length ref))
+          (setf snd-id (first ref))
+          (setf snd-id (second ref)
+                next-group (first ref))))
+    (get-snd next-group snd-id sfp)))
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; check that follower references refer to other sndfiles in the palette, then
+;;; replace the references with the sndfile object themselves, but only when
+;;; their <use> slot is T.  This is perhaps memory intensive but it'll save
+;;; some CPU cycles by processing here rather than when max asks for the next
+;;; sndfile.
+
+(defmethod process-followers ((sfp sndfile-palette) &optional (on-fail #'error))
+  (let ((refs (get-all-refs sfp))
+        (result t))
+    (loop for ref in refs 
+       for snds = (get-data-data ref sfp)
+       do
+       (loop for snd in snds with follower with fsnd do
+            (if (followers snd)
+                (setf (followers snd)
+                      (loop for i below (sclist-length (followers snd)) do
+                           (setf fsnd nil)
+                           (loop for j from i
+                              below (sclist-length (followers snd))
+                              do
+                              (setf follower (get-nth j (followers snd))
+                                    fsnd (get-snd-short sfp follower snd))
+                              ;; MDE Sat Dec 22 20:36:14 2012 -- got to make
+                              ;; sure the user actually wants to use this sound
+                              ;; in this piece
+                              (when (and fsnd (use fsnd))
+                                (return fsnd)))
+                           (when (and follower (not fsnd))
+                             (setf result nil)
+                             (when on-fail
+                               (funcall 
+                                on-fail "sndfile-palette::process-followers: ~
+                                         No such sound file: ~a"
+                                follower)))
+                           when (and fsnd (use fsnd)) collect fsnd))
+                (warn "sndfile-palette::process-followers: ~a has no followers ~
+                       so if triggered will cause max-play to stop."
+                      (id snd)))))
+    (reset sfp)
+    result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -378,13 +445,12 @@
 
 |#
 ;;; SYNOPSIS
-(defun make-sfp (id sfp &key paths extensions (warn-not-found t))
+(defun make-sfp (id sfp &key paths (extensions '("wav" "aiff" "aif" "snd"))
+                 with-followers (warn-not-found t))
 ;;; ****
-  (if extensions
-      (make-instance 'sndfile-palette :id id :data sfp :paths paths
-                     :extensions extensions :warn-not-found warn-not-found)
-      (make-instance 'sndfile-palette :id id :data sfp :paths paths
-                     :warn-not-found warn-not-found)))
+  (make-instance 'sndfile-palette :id id :data sfp :paths paths
+                 :with-followers with-followers :extensions extensions
+                 :warn-not-found warn-not-found))
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

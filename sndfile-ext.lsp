@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 13:04:51 Fri Dec 28 2012 ICT
+;;; $$ Last modified: 16:39:21 Thu Jan  3 2013 GMT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -317,7 +317,8 @@
 ;;; SYNOPSIS
 (defmethod get-next ((sfe sndfile-ext))
 ;;; ****
-  (get-next (followers sfe)))
+  (when (followers sfe)
+    (get-next (followers sfe))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -489,7 +490,7 @@ NIL
 ;;; RETURN VALUE
 ;;; A list of values to be passed via OSC to sndfilenet-aux.maxpath:
 ;;; cue-number number-of-channels loop speed fade-dururation
-;;; fade-out-start-time delay-to-next-snfile-start
+;;; fade-out-start-time delay-to-next-snfile-start amplitude
 ;;; 
 ;;; EXAMPLE
 #|
@@ -525,7 +526,7 @@ NIL
     ;; for now speed is just 1.0
     ;; sn is in ms but fs and fade-out are in secs
   (list (cue-num sfe) (channels sfe) (if (loop-it sfe) 1 0) 1.0
-        (* 1000.0 fd) (* 1000.0 fade-out) sn)))
+        (* 1000.0 fd) (* 1000.0 fade-out) sn (amplitude sfe))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -568,6 +569,17 @@ NIL
         (funcall on-fail
                  "sndfile-ext::max-cue: cue-num slot must be an integer > 1: ~a"
                  sfe))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod analyse-followers ((sfe sndfile-ext) &optional (depth 1000))
+  (let ((sfes (loop with sf = sfe
+                 repeat depth 
+                 while sf
+                 collect (id sf)
+                 do
+                 (setf sf (get-next sf)))))
+    (count-elements sfes)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

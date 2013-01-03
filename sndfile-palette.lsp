@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 13:21:08 Fri Dec 28 2012 ICT
+;;; $$ Last modified: 17:37:03 Thu Jan  3 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -385,6 +385,37 @@
     (reset sfp)
     result))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod analyse-followers ((sfp sndfile-palette) &optional (depth 1000))
+  (loop with ok = t
+     with refs = (get-all-refs sfp)
+     ;; an equal spread of all sndfiles in the palette would be ideal but let's
+     ;; not worry until one of those is played twice as many times as that 
+     with threshold = (round (* 2.0 (/ depth (count-snds sfp))))
+     for ref in refs
+     for snds = (get-data-data ref sfp)
+     do
+     (loop for snd in snds
+        for sndaf = (analyse-followers snd depth)
+        for max = (second (first sndaf))
+        for this-ok = (<= max threshold)
+        do
+        (unless this-ok
+          (warn "sndfile-palette::analyse-followers: (~a ~a) ~%generates ~
+                 unbalanced results, e.g. ~a ~%occurs more than ~a times: ~&~a"
+                ref (id snd) (first (first sndaf)) threshold sndaf)
+          (setf ok nil)))
+     finally (return ok)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jan  3 17:32:32 2013 
+(defmethod count-snds ((sfp sndfile-palette))
+  (loop with result = 0
+     for ref in (get-all-refs sfp)
+     do (incf result (length (get-data-data ref sfp)))
+     finally (return result)))
+              
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

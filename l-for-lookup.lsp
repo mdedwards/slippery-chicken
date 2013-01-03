@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 11:19:20 Mon Dec 17 2012 ICT
+;;; $$ Last modified: 16:42:17 Thu Jan  3 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1251,9 +1251,10 @@ data: (
 ;;;   EQL). 
 ;;; 
 ;;; RETURN VALUE  
-;;; Returns a sorted list of two-element lists, each consisting of one list
+;;; Returns a list of two-element lists, each consisting of one list
 ;;; element from the specified list and the number of times that element occurs
-;;; in the list.   
+;;; in the list. If the elements are numbers, these will be sorted from low to
+;;; high, otherwise symbols will be returned from most populous to least.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -1265,11 +1266,21 @@ data: (
 ;;; SYNOPSIS
 (defun count-elements (list)
 ;;; ****
-  (loop with result = '() with found = '() for e in list do
-        (unless (member e found)
-          (push e found)
-          (push (list e (count e list)) result))
-      finally (return (sort result #'(lambda (x y) (< (first x) (first y)))))))
+  (loop with all-numbers = t
+     with result = '()
+     with found = '()
+     for e in list do
+     (unless (member e found)
+       ;; MDE Thu Jan  3 16:16:30 2013 
+       (setf all-numbers (numberp e))
+       (push e found)
+       (push (list e (count e list)) result))
+     finally (return
+               (if all-numbers
+                   ;; sort by element
+                   (sort result #'(lambda (x y) (< (first x) (first y))))
+                   ;; sort by number of elements
+                   (sort result #'(lambda (x y) (> (second x) (second y))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

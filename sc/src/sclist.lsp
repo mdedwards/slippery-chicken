@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified: 23:21:49 Thu Jul 19 2012 CEST
+;;; $$ Last modified: 10:26:17 Fri Jan  4 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -468,7 +468,6 @@ data: (0 1 2 3 4 5 6 7 8 9)
 ;;; ****
   (let ((result (clone scl1)))
     (setf (data result) (append (data scl1) (my-copy-list (data scl2))))
-    ;; (print result)
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

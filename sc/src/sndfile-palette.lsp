@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 17:37:03 Thu Jan  3 2013 GMT
+;;; $$ Last modified: 12:43:11 Fri Jan  4 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -67,6 +67,10 @@
   ;; snds are given as single names, without the path and without the extension
   ;; so give the paths here and the extensions below (when necessary).
   ((paths :accessor paths :type list :initarg :paths :initform nil)
+   ;; MDE Fri Jan 4 10:09:06 2013 -- remember: the num-data slot counts the
+   ;; number of named objects in the ral but each of these may be a list of
+   ;; several sndfiles so num-data and num-snds are not necessarily the same.
+   (num-snds :accessor num-snds :type integer :initform -1)
    ;; the next sndfile-ext object for the purposes of the OSC sndfilenet
    ;; functionality 
    (next :accessor next :initarg :next :initform nil)
@@ -89,6 +93,7 @@
   (declare (ignore new-class))
   (let ((palette (call-next-method)))
     (setf (slot-value palette 'paths) (paths sfp)
+          (slot-value palette 'num-snds) (num-snds sfp)
           (slot-value palette 'with-followers) (with-followers sfp)
           (slot-value palette 'next) (when (next sfp)
                                        (clone (next sfp)))
@@ -100,9 +105,11 @@
 (defmethod print-object :before ((sfp sndfile-palette) stream)
   (format stream "~%SNDFILE-PALETTE: paths: ~a~
                   ~%                 extensions: ~a~
+                  ~%                 num-snds: ~a~
                   ~%                 with-followers: ~a~
                   ~%                 next: ~a"
-          (paths sfp) (extensions sfp) (with-followers sfp) (next sfp)))
+          (paths sfp) (extensions sfp) (num-snds sfp) (with-followers sfp)
+          (next sfp)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -138,7 +145,22 @@
   (reset sfp)
   ;; MDE Sat Dec 22 20:59:44 2012 
   (when (with-followers sfp)
-    (process-followers sfp)))
+    (process-followers sfp))
+  ;; MDE Fri Jan  4 10:10:22 2013 
+  ;; (print 'num-snds)
+  (setf (num-snds sfp) (count-snds sfp)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Jan  4 10:49:46 2013 -- must explicitly update the num-snds slot
+;;; when combining as verify-and-store (which also updates this) will be called
+;;; before relinking. 
+
+(defmethod combine :around ((sfp1 sndfile-palette) (sfp2 sndfile-palette))
+  (declare (ignore sfp1 sfp2))
+  ;; (print 'sfp-combine)
+  (let ((result (call-next-method)))
+    (setf (num-snds result) (count-snds result))
+    result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -252,7 +274,8 @@
 ;;; ****m* sndfile-palette/auto-cue-nums
 ;;; DESCRIPTION
 ;;; Set the cue-num slot of every sndfile-ext object in the palette to be an
-;;; ascending integer starting at 2.
+;;; ascending integer starting at 2. NB If a sndfile has it's :use slot set to
+;;; NIL it won't be given a cue number.
 ;;; 
 ;;; ARGUMENTS
 ;;; - a sndfile-palette object.
@@ -276,7 +299,21 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sndfile-palette/osc-send-cue-nums
+;;; DESCRIPTION
+;;; Send via OSC the cue number of each sound file in a form that a Max sflist~
+;;; can process and store.
+;;; 
+;;; ARGUMENTS
+;;; - the sndfile-palette object.
+;;; 
+;;; RETURN VALUE
+;;; The number of cue numbers sent.  NB This is not the same as the last cue
+;;; number as cues start from 2.
+;;; 
+;;; SYNOPSIS
 (defmethod osc-send-cue-nums ((sfp sndfile-palette))
+;;; ****
   ;; to be sure: don't assume we'll always have non-nested data.
   (let ((refs (get-all-refs sfp)) 
         (cue-nums 0))
@@ -292,19 +329,54 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Dec 21 09:38:46 2012 
 
+;;; ****m* sndfile-palette/reset
+;;; DESCRIPTION
+;;; Reset the followers' slot circular list to the beginning or to <where>
+;;; 
+;;; ARGUMENTS
+;;; - the sndfile-palette object.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - an integer to set the point at which to restart.  This can be higher than
+;;;   the number of followers as it will wrap.  Default = nil (which equates to
+;;;   0 lower down in the class hierarchy).
+;;; - whether to issue a warning if <where> is greater than the number of
+;;;   followers (i.e. that wrapping will occur).  Default = T.
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; SYNOPSIS
 (defmethod reset ((sfp sndfile-palette) &optional where (warn t))
+;;; ****
   (let ((refs (get-all-refs sfp)))
     (loop for ref in refs 
        for snds = (get-data-data ref sfp)
        do
        (loop for snd in snds do
             (setf (group-id snd) ref)
-            (reset snd where warn)))))
+            (reset snd where warn))))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Dec 21 09:38:52 2012
 
+;;; ****m* sndfile-palette/get-snd-with-cue-num
+;;; DESCRIPTION
+;;; Return the (first, but generally unique) sndfile object which has the
+;;; given cue-num slot.
+;;; 
+;;; ARGUMENTS
+;;; - the sndfile-palette object.
+;;; - the cue number (integer).
+;;; 
+;;; RETURN VALUE
+;;; The sndfile/sndfile-ext object with the given cue number or NIL if it can't
+;;; be found.
+;;; 
+;;; SYNOPSIS
 (defmethod get-snd-with-cue-num ((sfp sndfile-palette) cue-num)
+;;; ****
   (let ((refs (get-all-refs sfp))
         (result nil))
     (loop for ref in refs 
@@ -318,8 +390,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sndfile-palette/max-play
+;;; DESCRIPTION
+;;; This generates the data necessary to play the next sound in the current
+;;; sound's followers list.  See the sndfile-ext method for details.
+;;; 
+;;; ARGUMENTS
+;;; - The sndfile-palette object.
+;;; - The fade (in/out) duration in seconds.
+;;; - The maximum loop duration in seconds.
+;;; - The time to trigger the next file, as a percentage of the current
+;;;   sndfile-ext's duration.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - whether to print data to the listener as it is generated. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; A list of values returned by the sndfile-ext method.
+;;;
+;;; SYNOPSIS
 (defmethod max-play ((sfp sndfile-palette) fade-dur max-loop start-next
                      &optional print)
+;;; ****
   (if (next sfp)
     (let* ((current (next sfp))
            (next (get-next current)))
@@ -387,12 +479,34 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* sndfile-palette/analyse-followers
+;;; DESCRIPTION
+
+;;; Using the followers slots of each sndfile in the palette, go through each
+;;; sndfile in the palette and generate a large number of following sounds,
+;;; i.e. emulate the max-play.  The results of the follow-on process are then
+;;; analysed and a warning will be issued if any sndfile seems to dominate
+;;; (defined as being present at least twice as many times as its 'fair share',
+;;; where 'fair share' would mean an even spread for all the sound files in the
+;;; palette).
+;;; 
+;;; ARGUMENTS
+;;; - The sndfile-palette object.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; How many times to repeat the generation process.  Default = 1000.
+;;; 
+;;; RETURN VALUE
+;;; T or NIL depending on whether the analysis detects an even spread or not.
+;;; 
+;;; SYNOPSIS
 (defmethod analyse-followers ((sfp sndfile-palette) &optional (depth 1000))
+;;; ****
   (loop with ok = t
      with refs = (get-all-refs sfp)
      ;; an equal spread of all sndfiles in the palette would be ideal but let's
      ;; not worry until one of those is played twice as many times as that 
-     with threshold = (round (* 2.0 (/ depth (count-snds sfp))))
+     with threshold = (round (* 2.0 (/ depth (num-snds sfp))))
      for ref in refs
      for snds = (get-data-data ref sfp)
      do
@@ -409,7 +523,11 @@
      finally (return ok)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Thu Jan  3 17:32:32 2013 
+;;; MDE Thu Jan  3 17:32:32 2013 -- generally used transparently by
+;;; e.g. verify-and-store to set the num-snds slot, but can of course be called
+;;; by the user if deemed necessary.  However, the combine and other
+;;; destructive methods should call this implicitly to set the num-snds slot so
+;;; it shouldn't be necessary to call explicitly.
 (defmethod count-snds ((sfp sndfile-palette))
   (loop with result = 0
      for ref in (get-all-refs sfp)

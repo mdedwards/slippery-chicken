@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 16:39:21 Thu Jan  3 2013 GMT
+;;; $$ Last modified: 12:27:59 Fri Jan  4 2013 GMT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;

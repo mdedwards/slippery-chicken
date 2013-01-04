@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 17:23:37 Thu Jan  3 2013 GMT
+;;; $$ Last modified: 10:48:53 Fri Jan  4 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -404,9 +404,10 @@ data: BEAM
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jan  3 17:20:53 2013 
 (defmethod combine :around ((ral1 recursive-assoc-list)
-                           (ral2 recursive-assoc-list))
-  ;; (declare (ignore ral1 ral2))
+                            (ral2 recursive-assoc-list))
+  (declare (ignore ral1 ral2))
   (let ((result (call-next-method)))
+    ;; (print 'relinking)
     (relink-named-objects result)
     result))
 

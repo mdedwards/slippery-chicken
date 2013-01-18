@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:17:16 Wed Nov 28 2012 GMT
+;;; $$ Last modified: 21:18:33 Mon Jan 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -319,7 +319,7 @@
 ;;; ****
   ;; 14.3.11: can't output events that haven't got time etc.
   (unless (start-time e)
-    (error "event::output-midi: start-time nil! Call update slots perhaps:~%~a"
+    (error "event::output-midi: start-time nil! Call update-slots perhaps:~%~a"
            e))
   (let ((noc (pitch-or-chord e))
         ;; 4.8.10 if start-time-qtrs hasn't been set, use start-time instead
@@ -3098,7 +3098,7 @@ T
 ;;;   (silent) to maximum of 1.0. Default = 0.7.
 ;;; - :tempo. A number to indicate the tempo of the event as a normal bpm
 ;;;   value. Default = 60. This argument is only used when creating the rhythm
-;;;   slots (e.g. duration).
+;;;   slots (e.g. duration) not for setting duration-in-tempo.
 ;;; - :midi-channel. A number from 0 to 127 indicating the MIDI channel on
 ;;;   which the event should be played back. Default = NIL.
 ;;; - :microtones-midi-channel. If the event is microtonal, this argument

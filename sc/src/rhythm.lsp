@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 18:30:00 Sun Dec 16 2012 ICT
+;;; $$ Last modified: 21:15:31 Mon Jan 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1543,9 +1543,10 @@ NIL
 ;;; - :duration. Indicates whether the duration argument has been given as a
 ;;;   duration in seconds, not a known rhythm like 'e or 8. T indicates that
 ;;;   the duration is a duration in seconds. Default = NIL.
-;;; - :tempo. Indicates the tempo for the given rhythm. This is not related to
-;;;   any tempi applied, rather one that is reflected in the duration-in-tempo
-;;;   slot of event.
+;;; - :tempo. Indicates the tempo for the given rhythm and is used only when
+;;;    :duration is set to figure out the rhythm type (1/8, 1/4 etc.) from the
+;;;    two values. So this is not related to any tempi applied, rather one that
+;;;    is reflected in the duration-in-tempo slot of event.
 ;;; 
 ;;; RETURN VALUE  
 ;;; A rhythm object.

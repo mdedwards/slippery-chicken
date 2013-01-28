@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:18:33 Mon Jan 14 2013 GMT
+;;; $$ Last modified: 16:55:46 Fri Jan 25 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3626,7 +3626,13 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 ;;; SYNOPSIS
 (defun sort-event-list (event-list)
 ;;; ****
-  (sort event-list #'(lambda (x y) (< (start-time x) (start-time y)))))
+  (sort event-list
+        #'(lambda (x y) 
+                       ;; MDE Fri Jan 25 16:54:57 2013 ;
+            (unless (and (start-time x) (start-time y))
+              (error "event::sort-event-list: missing start time: ~a ~a"
+                     x y))
+            (< (start-time x) (start-time y)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

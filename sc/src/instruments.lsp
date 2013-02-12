@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 17:47:25 Tue Aug 21 2012 BST
+;;; $$ Last modified: 17:13:02 Thu Jan 31 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -348,6 +348,15 @@
        :chords nil 
        :microtones t 
        :midi-program 44))
+     (bass-guitar
+      (:staff-name "bass guitar" :staff-short-name "b. gtr"
+       :lowest-written e2 :highest-written g4 :transposition-semitones -12 
+       :prefers-notes low
+       :largest-fast-leap 10
+       :clefs (bass treble) :starting-clef bass
+       :chords t
+       :microtones nil
+       :midi-program 33))
      ;; SAR Thu Apr 12 18:19:21 BST 2012: Added "computer" part for "silent"
      ;; parts in case the user would like to create rhythmically independent
      ;; computer parts.  

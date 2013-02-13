@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 19:53:43 Tue Jul 24 2012 BST
+;;; $$ Last modified: 11:56:16 Wed Feb 13 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -493,13 +493,13 @@ C4
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((vn (violin :midi-channel 1))))
-	:set-palette '((1 ((c4 cs4 fs4))))
-	:set-map '((1 (1)))
-	:rthm-seq-palette '((1 ((((2 4) - s s s s - - s s s s -))
-				:pitch-seq-palette ((1 2 3 2 1 2 3 2)))))
-	:rthm-seq-map '((1 ((vn (1))))))))
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((c4 cs4 fs4))))
+        :set-map '((1 (1)))
+        :rthm-seq-palette '((1 ((((2 4) - s s s s - - s s s s -))
+                                :pitch-seq-palette ((1 2 3 2 1 2 3 2)))))
+        :rthm-seq-map '((1 ((vn (1))))))))
   (no-accidental (pitch-or-chord (get-note mini 1 7 'vn)))
   (cmn-display mini :respell-notes nil)
   (write-lp-data-for-all mini :respell-notes nil))
@@ -1504,7 +1504,7 @@ data: CQS4
            (f (frequency p))
            (no-brackets (remove-accidental-in-parentheses-indicator id))
            (freq (when f (coerce f 'double-float))))
-      (when (and freq
+      (when (and (numberp freq)
                  (<= freq 0.0))
         (error "~a~%pitch::update-pitch: weird frequency (~a)"
                p freq))
@@ -1515,7 +1515,10 @@ data: CQS4
         (setf (id p) no-brackets
               id no-brackets
               (accidental-in-parentheses p) t))
-      (when (or freq (midi-note p) (data p) id (not (= (degree p))))
+      ;; MDE Wed Feb 13 11:30:58 2013 -- the (= (degree p)) seems to be a typo
+      ;; and I can no longer remember what we wanted to test here.  (= [any
+      ;; number]) will always return T so just remove it for now.
+      (when (or freq (midi-note p) (data p) id) ; (not (= (degree p))))
         (when freq
           (setf (frequency p) freq))
         (when (and freq (not id))
@@ -1540,7 +1543,7 @@ data: CQS4
         ;; MDE Sat Jan 7 17:00:35 2012 -- freq-to-note will get the nearest
         ;; note; if the freq of that is > our given freq, we'll end up with the
         ;; note above our freq _and_ a high pitch-bend (get-pitch-bend always
-        ;; return > 0)--clearly wrong.
+        ;; returns > 0)--clearly wrong.
         (let ((pb (get-pitch-bend (frequency p))))
           ;; (format t "~&~a ~a ~a" (frequency p) (note-to-freq (id p)) pb)
           (when (and (not (zerop pb))
@@ -1569,8 +1572,16 @@ data: CQS4
                              (if (micro-tone p)
                                  (nearest-chromatic p)
                                  (id p)))
-              (c5ths p) (cond ((flat p) (1+ (position (no-8ve-no-acc p) c5f)))
-                              ((sharp p) (1+ (position (no-8ve-no-acc p) c5s)))
+              (c5ths p) (cond ((flat p) 
+                               ;; MDE Wed Feb 13 11:55:47 2013 -- must call
+                               ;; rm-package as this method might be called
+                               ;; from another package so symbol won't be found
+                               ;; in the cf5 and c5s
+                               (1+ (position (rm-package (no-8ve-no-acc p))
+                                             c5f)))
+                              ((sharp p)
+                               (1+ (position (rm-package (no-8ve-no-acc p))
+                                             c5s)))
                               (t 0))
               (data-consistent p) t)))))
 
@@ -1659,7 +1670,7 @@ data: CQS4
                         (if (> (length str) 1)
                             (subseq str 1)
                           "N")))
-           (nacc (case accidental
+           (nacc (case (rm-package accidental)
                    (s 's)
                    (f 'f)
                    (n nil)

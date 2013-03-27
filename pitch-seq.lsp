@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 18:45:25 Sat Jul 14 2012 BST
+;;; $$ Last modified: 19:48:03 Wed Mar 27 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -607,6 +607,8 @@ len))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Tue Jan  3 17:56:59 EST 2012: Added robodoc info
+;;; MDE Wed Mar 27 19:47:38 2013 -- see also get-next-for-ins method for more
+;;; details on named instruments in pitch-seqs.
 
 ;;; ****f* pitch-seq/make-pitch-seq
 ;;; DESCRIPTION
@@ -618,14 +620,18 @@ len))
 ;;; sequence; or it can be created with two arguments, the first of which being
 ;;; the list of numbers representing the pitch curve and the second being the
 ;;; pitch-seq's ID.
+;;;
+;;; NB We can assign a pitch-seq exclusively to particular instruments in the
+;;; ensemble simply by passing their names as symbols along with the curve
+;;; data.  See below for an example.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A two-item list, of which the first item is a symbol to be used as the
-;;;   object's ID, and the second is a list of integers representing the general 
+;;;   object's ID, and the second is a list of integers representing the general
 ;;;   contour of the pitch sequence.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - If the optional argument format is used, the first argument is to be only
+;;; - If the optional argument format is used, the first argument is to be 
 ;;;   a list of numbers representing the general contour of the pitch sequence, 
 ;;;   and the second is to be a symbol for the pitch-seq object's ID. 
 ;;; 
@@ -675,7 +681,10 @@ len))
                    NAMED-OBJECT: id: PSEQ2, tag: NIL, 
                    data: (2 1 1 3 1)
 
-                   |#
+;; An example assigning a pitch-seq only to specific instruments:
+(make-pitch-seq '((1 2 1 1 3) violin flute) 'ps1))
+
+|#
 ;;; SYNOPSIS
 (defun make-pitch-seq (id-data &optional (id nil))
 ;;; ****

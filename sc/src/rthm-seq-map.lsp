@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 21:51:55 Tue May  8 2012 BST
+;;; $$ Last modified: 19:14:19 Wed Mar 27 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -278,13 +278,13 @@ data: (RS2 RS3 RS2)
 ;;; applying the method
 (let ((mrsm
        (make-rthm-seq-map 
-	'rsm-test
-	'((1 ((vn (1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1)))))
-	:palette (make-rsp 
-		  'rs-pal
-		  '((1 ((((2 4) q e s s))))
-		    (2 ((((2 4) e s s q))))
-		    (3 ((((2 4) s s q e)))))))))
+        'rsm-test
+        '((1 ((vn (1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1)))))
+        :palette (make-rsp 
+                  'rs-pal
+                  '((1 ((((2 4) q e s s))))
+                    (2 ((((2 4) e s s q))))
+                    (3 ((((2 4) s s q e)))))))))
   (print (get-data-data '(1 vn) mrsm))
   (add-repeats mrsm '((1 6) (2 6)) '((11 6) (23 3)))
   (print (get-data-data '(1 vn) mrsm)))
@@ -300,18 +300,18 @@ data: (RS2 RS3 RS2)
 ;;; Using the :start, :end, and :print arguments
 (let ((mrsm
        (make-rthm-seq-map 
-	'rsm-test
-	'((1 ((vn (1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1)))))
-	:palette (make-rsp 
-		  'rs-pal
-		  '((1 ((((2 4) q e s s))))
-		    (2 ((((2 4) e s s q))))
-		    (3 ((((2 4) s s q e)))))))))
+        'rsm-test
+        '((1 ((vn (1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1)))))
+        :palette (make-rsp 
+                  'rs-pal
+                  '((1 ((((2 4) q e s s))))
+                    (2 ((((2 4) e s s q))))
+                    (3 ((((2 4) s s q e)))))))))
   (print (get-data-data '(1 vn) mrsm))
   (add-repeats mrsm '((1 6) (2 6)) '((11 6) (23 3))
-	       :start 3
-	       :end 11
-	       :print t)
+               :start 3
+               :end 11
+               :print t)
   (print (get-data-data '(1 vn) mrsm)))
 
 =>
@@ -394,13 +394,13 @@ data: (RS2 RS3 RS2)
 ;;; to see the difference.
 (let ((mrsm
        (make-rthm-seq-map 
-	'rsm-test
-	'((1 ((vn (1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1)))))
-	:palette (make-rsp 
-		  'rs-pal
-		  '((1 ((((2 4) q e s s))))
-		    (2 ((((2 4) e s s q))))
-		    (3 ((((2 4) s s q e)))))))))
+        'rsm-test
+        '((1 ((vn (1 2 3 2 1 3 1 3 2 3 1 2 1 3 1 3 2 1)))))
+        :palette (make-rsp 
+                  'rs-pal
+                  '((1 ((((2 4) q e s s))))
+                    (2 ((((2 4) e s s q))))
+                    (3 ((((2 4) s s q e)))))))))
   (print (get-data-data '(1 vn) mrsm))
   (add-repeats-simple mrsm 3 13)
   (print (get-data-data '(1 vn) mrsm)))
@@ -457,18 +457,18 @@ data: (RS2 RS3 RS2)
 ;;; EXAMPLE
 #|
 (let* ((mini
-	(make-slippery-chicken
-	 '+mini+
-	 :ensemble '(((sax (alto-sax :midi-channel 1))))
-	 :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
-	 :set-map '((1 (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1)))
-	 :rthm-seq-palette '((1 ((((4 4) h q e s s) ((2 4) h))))
-			     (2 ((((4 4) h q e s s))))
-			     (3 ((((4 4) h q e s s))))
-			     (4 ((((4 4) h q q) ((2 4) q q))))
-			     (5 ((((4 4) h q e s s))))
-			     (6 ((((4 4) h q q) ((2 4) q q)))))
-	 :rthm-seq-map '((1 ((sax (1 2 3 5 2 4 6 2 3 1 3 2 3 2 1 3 2)))))))
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((sax (alto-sax :midi-channel 1))))
+         :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+         :set-map '((1 (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1)))
+         :rthm-seq-palette '((1 ((((4 4) h q e s s) ((2 4) h))))
+                             (2 ((((4 4) h q e s s))))
+                             (3 ((((4 4) h q e s s))))
+                             (4 ((((4 4) h q q) ((2 4) q q))))
+                             (5 ((((4 4) h q e s s))))
+                             (6 ((((4 4) h q q) ((2 4) q q)))))
+         :rthm-seq-map '((1 ((sax (1 2 3 5 2 4 6 2 3 1 3 2 3 2 1 3 2)))))))
        (tsral (get-time-sig-ral (rthm-seq-map mini) (rthm-seq-palette mini))))
   (get-data-data 1 tsral))
 
@@ -790,47 +790,47 @@ data: (
   (reset-psps palette)
   (let (section players-or-subsections alist ref)
     (loop for section-num below (sclist-length rsm) do
-          (setf section (get-next rsm)
-                players-or-subsections (data (data section)))
-        if (is-ral (data (first players-or-subsections)))
-        collect (list (id section)
-                      (generate-pitch-sequence-map-aux (data section) palette
-                                                       sc))
-        else 
-        do 
-        (let* ((num-sequences (length 
-                               (data
-                                (first players-or-subsections))))
-               (num-ins (length players-or-subsections))
-               (psp nil))
-          (setf alist (make-list num-ins))
-          (loop for i below num-sequences do
+         (setf section (get-next rsm)
+               players-or-subsections (data (data section)))
+         if (is-ral (data (first players-or-subsections)))
+         collect (list (id section)
+                       (generate-pitch-sequence-map-aux (data section) palette
+                                                        sc))
+         else 
+         do 
+         (let* ((num-sequences (length 
+                                (data
+                                 (first players-or-subsections))))
+                (num-ins (length players-or-subsections))
+                (psp nil))
+           (setf alist (make-list num-ins))
+           (loop for i below num-sequences do
                 (loop 
-                    with ins
-                    for player in players-or-subsections
-                    for j from 0 do
-                      ;; make the empty assoc-lists storing the player id
-                      (setf ins (get-current-instrument-for-player
-                                 (full-ref (data section)) (id player)
-                                 (1+ i) sc))
-                      ;; (format t "~&player=~a ins=~a" (id player) (id ins))
-                      (when (zerop i)
-                        (setf (nth j alist)
-                          (list (id player) (make-list num-sequences))))
-                      (setf ref (nth i (data player))
-                            psp (when ref
-                                  (let ((psp (pitch-seq-palette
-                                              (get-data ref palette))))
-                                    (when psp 
-                                      ;; 19/3/07: we now see if any ps's were
-                                      ;; given from specific instruments--just
-                                      ;; using the instrument's id as the 
-                                      ;; beginning of an id for a ps is enough
-                                      ;; to trigger
-                                      (get-next-for-ins psp (id ins)))))
-                            (nth i (second (nth j alist))) (when psp
-                                                             (clone psp))))))
-        and collect (list (id section) alist))))
+                   with ins
+                   for player in players-or-subsections
+                   for j from 0 do
+                   ;; make the empty assoc-lists storing the player id
+                   (setf ins (get-current-instrument-for-player
+                              (full-ref (data section)) (id player)
+                              (1+ i) sc))
+                   ;; (format t "~&player=~a ins=~a" (id player) (id ins))
+                   (when (zerop i)
+                     (setf (nth j alist)
+                           (list (id player) (make-list num-sequences))))
+                   (setf ref (nth i (data player))
+                         psp (when ref
+                               (let ((psp (pitch-seq-palette
+                                           (get-data ref palette))))
+                                 (when psp 
+                                   ;; 19/3/07: we now see if any ps's were
+                                   ;; given from specific instruments--just
+                                   ;; using the instrument's id as the 
+                                   ;; beginning of an id for a ps is enough
+                                   ;; to trigger
+                                   (get-next-for-ins psp (id ins)))))
+                         (nth i (second (nth j alist))) (when psp
+                                                          (clone psp))))))
+         and collect (list (id section) alist))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 17:22:31 Sat Jul 14 2012 BST
+;;; $$ Last modified: 19:47:12 Wed Mar 27 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -107,29 +107,29 @@
     ;; method.  If this data is recursive, the error will be picked up
     ;; elsewhere.
     (loop for i in (data psp) and j from 0
-          for ps = 
-          (progn
-            (when (and (listp i)
-                       (or (lisp-assoc-listp i) 
-                           (lisp-assoc-listp (second i))))
-              (error "pitch-seq-palette::verify-and-store: ~
-                      Recursive pitch-seq-palettes are not allowed: ~a"
-                     i))
-            (make-pitch-seq i (format nil "~a-ps-~a" 
-                                      (id psp) (1+ j))))
-          unless (= (num-notes psp) (sclist-length ps))
-          do (error "pitch-seq-palette::verify-and-store: ~%~
+       for ps = 
+       (progn
+         (when (and (listp i)
+                    (or (lisp-assoc-listp i) 
+                        (lisp-assoc-listp (second i))))
+           (error "pitch-seq-palette::verify-and-store: ~
+                   Recursive pitch-seq-palettes are not allowed: ~a"
+                  i))
+         (make-pitch-seq i (format nil "~a-ps-~a" 
+                                   (id psp) (1+ j))))
+       unless (= (num-notes psp) (sclist-length ps))
+       do (error "pitch-seq-palette::verify-and-store: ~%~
                      In pitch-seq ~a from palette ~a:~%~
                      Each pitch sequence must have ~a notes (you have ~a): ~%~a"
-                    (id ps) (id psp) (num-notes psp) (sclist-length ps)
-                    (data psp))
-          do (setf (nth j (data psp)) ps))
+                 (id ps) (id psp) (num-notes psp) (sclist-length ps)
+                 (data psp))
+       do (setf (nth j (data psp)) ps))
     ;; we call this now explicitly from the assoc-list-class because it was
     ;; avoided there. 
     (all-ids-unique psp))
   (setf (instruments psp) 
-    (remove-duplicates
-     (loop for ps in (data psp) appending (instruments ps))))
+        (remove-duplicates
+         (loop for ps in (data psp) appending (instruments ps))))
   (setf (num-data psp) (r-count-elements psp)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -297,13 +297,13 @@ data: (5 1 3 2 4 3 2 1 5 4)
 (defmethod get-next-for-ins ((psp pitch-seq-palette) ins)
   (if (member ins (instruments psp))
       (loop for ps = (get-next psp) do
-            (when (member ins (instruments ps))
-              ;; (format t "~&~a (member): ~a" ins (id ps))
-              (return ps)))
-    (loop for ps = (get-next psp) do
-          (unless (instruments ps)
-            ;; (format t "~&~a: ~a" ins (id ps))
-            (return ps)))))
+           (when (member ins (instruments ps))
+             ;; (format t "~&~a (member): ~a" ins (id ps))
+             (return ps)))
+      (loop for ps = (get-next psp) do
+           (unless (instruments ps)
+             ;; (format t "~&~a: ~a" ins (id ps))
+             (return ps)))))
 
 #|    
 (defmethod get-next-for-ins ((psp pitch-seq-palette) ins)
@@ -427,6 +427,12 @@ Each pitch sequence must have 5 notes (you have 6):
 [...]
  (1 3 5 6 7 8))
    [Condition of type SIMPLE-ERROR]
+
+;; We can also assign instruments to specific pitch-seqs by passing their names
+;; (not player names, but instrument names) e.g.
+(make-psp 'mpsp 5 '((1 2 1 1 3)
+                    ((1 3 2 1 5) violin flute)
+                    (1 3 5 6 7)))
 
 |#
 ;;; SYNOPSIS

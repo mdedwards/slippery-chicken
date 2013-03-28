@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    5.12.00
 ;;;
-;;; $$ Last modified: 14:28:53 Thu Mar 28 2013 GMT
+;;; $$ Last modified: 14:35:24 Thu Mar 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -267,11 +267,12 @@
 
    write-lp-data-for-all))
 
-;;; we defined these functions in the cm package so import them into sc
-;;; can't import cm::output-midi-note as it's also a method name
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; we defined these functions in the cm package so import them into sc.
+;;; can't import cm::output-midi-note as it's also an SC method name
 (import '(cm::parse-midi-file cm::midi-file-high-low cm::midi-file-one-note))
 
-;;; these shadows make sure that sc external symbols of the same name will use
+;;; these shadows make sure that sc external symbols with these names will use
 ;;; the other package's symbols when we're in those packages (so sc's will be
 ;;; overridden in there; to use them do e.g. sc::transpose).
 (in-package :cm)

@@ -26,7 +26,7 @@
 ;;;
 ;;; $$ Last modified: 12:52:06 Thu Dec  6 2012 GMT
 ;;;
-;;; SVN ID: $Id: slippery-chicken-edit.lsp 1367 2012-04-06 22:15:32Z medward2 $ 
+;;; SVN ID: $Id$ 
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards

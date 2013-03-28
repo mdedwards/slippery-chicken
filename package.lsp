@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    5.12.00
 ;;;
-;;; $$ Last modified: 12:16:07 Thu Mar 28 2013 GMT
+;;; $$ Last modified: 13:02:11 Thu Mar 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -64,9 +64,6 @@
 
 (in-package :slippery-chicken)
 
-;;; The CLM package conflicts with add-mark srt statistics scale interpolate so
-;;; don't export these.  If the user wants to use them outside the sc package
-;;; then they must explicitly give the package e.g. sc::add-mark
 (export 
  '( 
    ;; globals
@@ -97,8 +94,8 @@
 
    hailstone hash-least-used hz2ms
 
-   in-octave in-scale inefficient-permutations inefficiently-permutate
-   invert-pitch-list is-dynamic
+   interpolate in-octave in-scale inefficient-permutations
+   inefficiently-permutate invert-pitch-list is-dynamic
 
    lisp-assoc-listp list-to-string logarithmic-steps lp-get-mark
 
@@ -114,7 +111,10 @@
    make-sfp-from-groups-in-wavelab-marker-file
    make-sfp-from-wavelab-marker-file make-simple-change-map
    make-slippery-chicken make-sndfile make-sndfile-ext make-tempo make-time-sig
-   make-tl-set middle midi-file-high-low midi-file-one-note midi-to-degree
+   make-tl-set middle
+   ;; these are in the cm package so don't export as sc package symbols
+   ;; midi-file-high-low midi-file-one-note
+   midi-to-degree
    midi-to-freq midi-to-note mins-secs-to-secs move-elements move-repeats
    move-to-end multi-shuffle multi-shuffle-with-perms
 
@@ -122,7 +122,9 @@
 
    octave-freqs osc-call osc-send-list
 
-   parse-audacity-label-file-for-loops parse-midi-file
+   parse-audacity-label-file-for-loops 
+   ;; in the cm package; see above
+   ;; parse-midi-file
    parse-wavelab-marker-file-for-loops partial-freqs permutate permutations
    piano-chord-fun pitch-intersection pitch-list-to-symbols pitch-member
    power-of-2 print-simple-pitch-list procession pts2cm
@@ -136,7 +138,7 @@
    scale-env secs-to-mins-secs semitones set-palette-from-ring-mod
    set-palette-p setf-last shuffle sort-event-list sort-pitch-list
    sort-symbol-list splice split-groups split-into-sub-groups
-   split-into-sub-groups2 split-into-sub-groups3 string-chord-selection-fun
+   split-into-sub-groups2 split-into-sub-groups3 srt string-chord-selection-fun
    string-replace swap-elements
 
    transpose-pitch-list transpose-pitch-list-to-octave
@@ -147,9 +149,9 @@
 
    ;; methods (copy/pasted from robo_methods.html) 
    
-   accented-p active add add add add
+   accented-p active add 
    add-arrow add-arrow-to-events add-bar add-clef add-clef add-empty-parcel
-   add-event-to-bar add-inversions 
+   add-event-to-bar add-inversions add-mark
    add-mark-all-players add-mark-before-note add-mark-once add-mark-to-event
    add-mark-to-note add-marks-sh add-marks-to-note add-marks-to-notes
    add-pitches add-pitches-to-chord add-repeats add-repeats-simple
@@ -221,7 +223,9 @@
    natural-p next-event no-accidental no-accidental note-add-bracket-offset
    note= num-bars num-notes num-notes num-players num-seqs num-sequenzes
 
-   on-it osc-send-cue-nums output-midi output-midi-note
+   on-it osc-send-cue-nums output-midi 
+   ;; defined in cm package; see above
+   ;; output-midi-note
 
    parcel-data pitch- pitch- pitch- pitch-class-eq pitch-in-range pitch-inc
    pitch-max pitch-min pitch-round pitch-symbols pitch< pitch<= pitch= pitch>
@@ -238,7 +242,7 @@
    rm-marks-from-note rm-marks-from-notes rm-pitches rm-pitches-from-chord
    rm-slurs round-inflections rthm-chain-gen
 
-   sc-delete-beams sc-delete-marks sc-delete-marks-before
+   scale sc-delete-beams sc-delete-marks sc-delete-marks-before
    sc-delete-marks-from-event sc-force-rest sc-move-dynamic sc-nthcdr
    sc-remove-dynamic sc-remove-dynamics sc-subseq sclist-econs
    sclist-remove-elements scm-get-data set-8va set-amplitudes
@@ -248,7 +252,7 @@
    set-nth-bar set-nth-of-data set-position set-prefers-high set-prefers-high
    set-prefers-low set-prefers-low set-rehearsal-letter set-slot set-written
    set-written sharp-p shorten-large-fast-leaps sort-pitches split split split
-   stack stack stereo subset-get-srts subtract
+   stack stack statistics stereo subset-get-srts subtract
 
    tempo-equal tessitura tessitura-degree tessitura-note tie
    tie-all-last-notes-over-rests tie-over-all-rests tie-over-rest-bars
@@ -260,6 +264,24 @@
    unset-cautionary-accidental update-slots
 
    write-lp-data-for-all))
+
+;;; we defined these functions in the cm package so import them into sc
+(import '(cm::parse-midi-file cm::midi-file-high-low cm::midi-file-one-note
+          cm::output-midi-note))
+
+;;; these shadows make sure that sc external symbols of the same will use the
+;;; other package's symbols when we're in those packages (so sc's will be
+;;; overridden in there).
+(in-package :cm)
+(shadow '(transpose shuffle lowest between invert and add scale))
+
+(in-package :clm)
+(shadow '(add-mark srt statistics scale interpolate))
+
+(in-package :cmn)
+(shadow '(add-bar beat-duration transpose end-arrow flatten add-clef stack
+          double cmn-display get-rest tie count-notes scale trill lowest
+          highest))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF package.lsp

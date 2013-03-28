@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 10:55:32 Thu Mar 28 2013 GMT
+;;; $$ Last modified: 12:16:55 Thu Mar 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -258,7 +258,6 @@
 (sc-compile-and-load "popcorn.lsp")
 #+sbcl (sc-compile-and-load "osc.lsp")
 #+sbcl (sc-compile-and-load "osc-sc.lsp")
-(sc-compile-and-load "export.lsp")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; EOF all.lsp

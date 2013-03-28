@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    5.12.00
 ;;;
-;;; $$ Last modified: 13:02:11 Thu Mar 28 2013 GMT
+;;; $$ Last modified: 14:00:37 Thu Mar 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -64,6 +64,7 @@
 
 (in-package :slippery-chicken)
 
+;;; MDE Thu Mar 28 14:00:35 2013
 (export 
  '( 
    ;; globals
@@ -271,7 +272,7 @@
 
 ;;; these shadows make sure that sc external symbols of the same will use the
 ;;; other package's symbols when we're in those packages (so sc's will be
-;;; overridden in there).
+;;; overridden in there; to use them do e.g. sc::transpose).
 (in-package :cm)
 (shadow '(transpose shuffle lowest between invert and add scale))
 

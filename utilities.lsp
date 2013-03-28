@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 09:57:42 Fri Dec 28 2012 ICT
+;;; $$ Last modified: 14:21:38 Thu Mar 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1280,10 +1280,10 @@
 ;;; ****
   (let ((len (length lists)))
     (loop for d in (first lists) and i from 0 collect
-          (if (simple-listp d)
-              (loop for j below len nconc (nth i (nth j lists)))
-            (nconc-sublists (loop for j below len 
-                                  collect (nth i (nth j lists))))))))
+         (if (simple-listp d)
+             (loop for j below len nconc (nth i (nth j lists)))
+             (nconc-sublists (loop for j below len 
+                                collect (nth i (nth j lists))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

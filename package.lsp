@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    5.12.00
 ;;;
-;;; $$ Last modified: 14:00:37 Thu Mar 28 2013 GMT
+;;; $$ Last modified: 14:28:53 Thu Mar 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -225,7 +225,8 @@
    note= num-bars num-notes num-notes num-players num-seqs num-sequenzes
 
    on-it osc-send-cue-nums output-midi 
-   ;; defined in cm package; see above
+   ;; defined in cm package; see above. Also defined as an SC method so can't
+   ;; import it 
    ;; output-midi-note
 
    parcel-data pitch- pitch- pitch- pitch-class-eq pitch-in-range pitch-inc
@@ -267,11 +268,11 @@
    write-lp-data-for-all))
 
 ;;; we defined these functions in the cm package so import them into sc
-(import '(cm::parse-midi-file cm::midi-file-high-low cm::midi-file-one-note
-          cm::output-midi-note))
+;;; can't import cm::output-midi-note as it's also a method name
+(import '(cm::parse-midi-file cm::midi-file-high-low cm::midi-file-one-note))
 
-;;; these shadows make sure that sc external symbols of the same will use the
-;;; other package's symbols when we're in those packages (so sc's will be
+;;; these shadows make sure that sc external symbols of the same name will use
+;;; the other package's symbols when we're in those packages (so sc's will be
 ;;; overridden in there; to use them do e.g. sc::transpose).
 (in-package :cm)
 (shadow '(transpose shuffle lowest between invert and add scale))

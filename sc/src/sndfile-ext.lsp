@@ -24,7 +24,7 @@
 ;;;
 ;;; $$ Last modified: 12:27:59 Fri Jan  4 2013 GMT
 ;;;
-;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
+;;; SVN ID: $Id$
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards

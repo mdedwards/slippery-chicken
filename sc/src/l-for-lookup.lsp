@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 10:41:58 Fri Mar 29 2013 GMT
+;;; $$ Last modified: 15:51:35 Fri Mar 29 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -90,7 +90,9 @@
    ;; be problematic so do a check if requested.
    (auto-check-redundancy :accessor auto-check-redundancy :type boolean
                           :initarg :auto-check-redundancy :initform nil)
-   ;; what get-l-sequence returns
+   ;; MDE Fri Mar 29 15:38:19 2013 -- we can now do lookup with the
+   ;; linear-sequence too 
+   ;; what get-l-sequence or get-linear-sequence returns
    (l-sequence :accessor l-sequence :type list :initform nil)
    ;; a list with the number of repetitions of each rule key in l-sequence
    (l-distribution :accessor l-distribution :type list :initform nil)
@@ -237,6 +239,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Jan 14 13:29:20 GMT 2012: Edited robodoc info
+;;; MDE Fri Mar 29 15:40:03 2013 -- split this out into an auxiliary function
+;;; so we can share functionality with do-lookup-linear
 
 ;;; ****m* l-for-lookup/do-lookup
 ;;; DESCRIPTION
@@ -310,8 +314,77 @@
 ;;; SYNOPSIS
 (defmethod do-lookup ((lflu l-for-lookup) seed stop &optional scaler)
 ;;; ****
+  (do-lookup-aux lflu seed stop scaler nil nil))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* l-for-lookup/do-lookup-linear
+;;; DESCRIPTION
+;;; Similar to do-lookup but here we generate a linear sequence (with
+;;; get-linear-sequence) instead of an L-System.
+;;; 
+;;; ARGUMENTS
+;;; - An l-for-lookup object.
+;;; - The start seed, or axiom, that is the initial state of the linear
+;;;   system. This must be the key-id of one of the sequences.
+;;; - An integer that is the length of the sequence to be returned.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :scaler. A number which is the factor by which returned numerical values
+;;;   are to be scaled. If NIL, the method will use the value in the given
+;;;   l-for-lookup object's SCALER slot instead. Default = NIL. NB: The value
+;;;   of the given l-for-lookup object's OFFSET slot is additionally used to
+;;;   increase numerical values before they are returned.  Default = NIL.
+;;; - :reset. T or NIL to indicate whether to reset the pointers of the given
+;;;   circular lists before proceeding. T = reset. Default = T. 
+;;; 
+;;; RETURN VALUE
+;;; This method returns three lists:
+;;; - The resulting sequence.
+;;; - The distribution of the values returned by the look-up.
+;;; - The L-sequence of the key-IDs.
+;;; 
+;;; EXAMPLE
+#|
+;; This will return the result of lookup, the number of repetitions of each
+;; rule key in the result of lookup, and the linear-sequence itself.
+(let* ((tune (make-l-for-lookup
+              'tune
+              '((1 ((2 1 8)))
+                (2 ((3 4)))
+                (3 ((4 5)))
+                (4 ((5 1 6)))
+                (5 ((6 5 7 4)))
+                (6 ((4 5)))
+                (7 ((4 5 1)))
+                (8 ((1))))
+              '((1 (1 2)) (2 (1 3 2)) (3 (1 4 3)) (4 (1 2 1)) (5 (5 3 1))
+                (6 (2 5 6)) (7 (5 6 4)) (8 (3 2))))))
+  (do-lookup-linear tune 1 100))
+=>
+(1 3 4 1 4 4 6 8 2 1 1 4 5 5 6 5 1 1 7 6 8 2 1 1 3 5 4 4 5 5 6 5 4 7 1 4 4 6 8
+ 2 1 1 4 5 5 6 5 5 8 2 1 1 3 4 1 7 6 8 2 1 1 4 5 4 1 4 5 6 5 1 6 8 2 1 1 3 5 7
+ 5 4 1 4 5 6 5 4 7 6 8 2 1 1 4 5 4 1 4 5 6 5)
+((1 24) (2 7) (3 4) (4 20) (5 21) (6 12) (7 5) (8 7))
+(1 2 3 4 5 6 4 1 1 8 1 2 4 6 5 5 7 4 5 4 1 1 8 1 2 3 5 6 4 6 5 5 7 5 4 5 6 4 1
+ 1 8 1 2 4 6 5 5 7 1 1 8 1 2 3 4 5 4 1 1 8 1 2 4 6 4 5 6 5 5 7 4 1 1 8 1 2 3 5
+ 4 6 4 5 6 5 5 7 5 4 1 1 8 1 2 4 6 4 5 6 5 5)
+|#
+;;; SYNOPSIS
+(defmethod do-lookup-linear ((lflu l-for-lookup) seed stop
+                             &key scaler (reset t))
+;;; ****
+  (do-lookup-aux lflu seed stop scaler t reset))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod do-lookup-aux ((lflu l-for-lookup) seed stop scaler linear reset)
+;;; ****
   (reset lflu)
-  (get-l-sequence lflu seed stop)
+  (if linear
+      (get-linear-sequence-and-store lflu seed stop reset)
+      (get-l-sequence lflu seed stop))
   (get-group-indices lflu)
   (let* ((result
           (loop with scaler = (if scaler scaler (scaler lflu))
@@ -463,6 +536,25 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defmethod get-linear-sequence-and-store
+    ((lflu l-for-lookup) seed stop-length &optional (reset t))
+  (let ((ls (get-linear-sequence lflu seed stop-length reset)))
+    (unless ls
+      (error "l-for-lookup::get-linear-sequence-and-store: no sequence!"))
+    (store-sequence-and-distribution lflu ls)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod store-sequence-and-distribution ((lflu l-for-lookup) sequence)
+  (let ((keys (get-keys (rules lflu))))
+    (when keys
+      (setf (l-distribution lflu) (loop for k in keys collect
+                                       (count k sequence))
+            (l-sequence lflu) sequence)
+      t)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; SAR Sat Jan 14 12:10:43 GMT 2012: Edited robodoc info
 
 ;;; ****m* l-for-lookup/get-l-sequence
@@ -525,7 +617,6 @@
 (defmethod get-l-sequence ((lflu l-for-lookup) seed stop-length)
 ;;; ****
   (let* ((rules (rules lflu))
-         (keys (get-keys rules))
          (result '()))
     (unless (numberp stop-length)
       (error "l-for-lookup::get-l-sequence: stop-length (~a) should be an ~
@@ -551,9 +642,7 @@
       (error "l-for-lookup::get-l-sequence: ~a ~
               Recursion too deep!  Please check your rules: ~a"
              (id lflu) rules))
-    (when keys
-      (setf (l-distribution lflu) (loop for k in keys collect (count k result))
-            (l-sequence lflu) result))
+    (store-sequence-and-distribution lflu result)
     (values result (l-distribution lflu))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 16:42:17 Thu Jan  3 2013 GMT
+;;; $$ Last modified: 10:41:58 Fri Mar 29 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -677,9 +677,9 @@ data: (
         (t (get-l-sequence-aux rules stop-length max-recurse 
                                (1+ current-recurse) 
                                (loop 
-                                   for i in l-values 
-                                   for tr = (data (get-data i rules))
-                                   if (listp tr) append tr
+                                  for i in l-values 
+                                  for tr = (data (get-data i rules))
+                                  if (listp tr) append tr
                                   else collect tr)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

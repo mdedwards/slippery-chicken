@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 15:51:35 Fri Mar 29 2013 GMT
+;;; $$ Last modified: 17:28:47 Wed Apr  3 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -521,18 +521,29 @@
 ;;; SYNOPSIS
 (defmethod get-linear-sequence ((lflu l-for-lookup) seed stop-length
                                 &optional (reset t))
-;;; ****
-  ;; 14/8/07: reset lists so that get-next starts at beginning and we generate
-  ;; the same results each time method called with same data  
+;;; ****                                
+  ;; 14/8/07: reset lists so that get-next starts at beginning and we generate 
+  ;; the same results each time method called with same data 
   (when reset
     (reset lflu))
-  (loop 
-     with current = seed 
-     repeat stop-length
-     collect current
-     do
-     ;; the circular lists are in a list of the data
-       (setf current (get-next (first (data (get-data current lflu)))))))
+  ;; MDE Wed Apr 3 17:22:24 2013 -- unlike the data slot each rule is not a
+  ;; cscl rather it's a simple named-object, so we'll need to convert these for
+  ;; the sake of this method
+  (let ((crules (clone (rules lflu)))
+        (current seed))
+    (setf (data crules)
+          (loop for r in (data crules) collect 
+               (make-cscl (data r) :id (id r))))
+    (loop 
+       repeat stop-length
+       collect current
+       do
+       ;; the circular lists are in a list of the data 
+       ;; MDE Wed Apr 3 16:31:51 2013 -- we use the rules now, not the data, so
+       ;; that we can still do the transitioning with linear rather than l-sys
+       ;; data (setf current (get-next (first (data (get-data current
+       ;; lflu)))))))
+       (setf current (get-next (get-data current crules))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 11:56:16 Wed Feb 13 2013 GMT
+;;; $$ Last modified: 21:19:49 Wed Apr  3 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3098,6 +3098,38 @@ data: F4
 ;;; MDE Mon Feb 13 15:19:57 2012 
 (defun pitch-list= (pl1 pl2)
   (every #'pitch= pl1 pl2))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Apr  3 20:53:55 2013 -- 
+;;; ****f* pitch/cmn-display-pitch-list
+;;; DESCRIPTION
+;;; Use CMN to display a list of pitch objects.
+;;; 
+;;; ARGUMENTS
+;;; The list of pitch objects
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :staff. The CMN staff object to display with.  Default = cmn::treble.
+;;; - :size.  The CMN size for the staff.  Default = 20.
+;;; - :file.  The path of the file to (over)write.  Default = "/tmp/pitches.eps"
+;;; 
+;;; RETURN VALUE
+;;; A CMN score object.
+;;; 
+;;; SYNOPSIS
+(defun cmn-display-pitch-list (pitches &key (staff cmn::treble) (size 20)
+                               (file "/tmp/pitches.eps"))
+;;; **** 
+  (if (and pitches (every #'pitch-p pitches))
+      (cmn::cmn (cmn::output-file file) (cmn::size size)
+                cmn::staff staff
+                (cmn::engorge
+                 (loop for p in pitches collect 
+                      (eval (econs (get-cmn-data p) cmn::q)))))
+      (error "pitch::cmn-display-pitch-list: argument 1 must be a list of ~
+          pitch objects: ~a" pitches)))
+  
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF pitch.lsp

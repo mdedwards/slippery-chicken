@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 21:19:49 Wed Apr  3 2013 BST
+;;; $$ Last modified: 13:59:03 Thu Apr 18 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1540,28 +1540,28 @@ data: CQS4
         (unless (src p)
           (setf (src p) (/ (frequency p)
                            (note-to-freq (src-ref-pitch p)))))
+        (setf (qtr-sharp p) (is-qtr-sharp (id p))
+              (sharp p) (is-sharp (id p))
+              (qtr-flat p) (is-qtr-flat (id p))
+              (natural p) (is-natural (id p))
+              (flat p) (is-flat (id p))
+              (qtr-tone p) (or (qtr-sharp p) (qtr-flat p)))
+        (set-score-note p)
+        (set-white-note p)
         ;; MDE Sat Jan 7 17:00:35 2012 -- freq-to-note will get the nearest
         ;; note; if the freq of that is > our given freq, we'll end up with the
         ;; note above our freq _and_ a high pitch-bend (get-pitch-bend always
         ;; returns > 0)--clearly wrong.
         (let ((pb (get-pitch-bend (frequency p))))
-          ;; (format t "~&~a ~a ~a" (frequency p) (note-to-freq (id p)) pb)
           (when (and (not (zerop pb))
-                     (< (frequency p) (note-to-freq (id p))))
+                     ;; MDE Thu Apr 18 11:57:55 2013 -- 
+                     ;; (< (frequency p) (note-to-freq (id p))))
+                     (< (frequency p) (note-to-freq (nearest-chromatic p))))
             (setf pb (- pb 1.0)))
           (unless (and (> pb -1.0) (< pb 1.0))
             (error "pitch::update-pitch: pitch-bend is ~a!" pb))
-          (setf (qtr-sharp p) (is-qtr-sharp (id p))
-                (sharp p) (is-sharp (id p))
-                (qtr-flat p) (is-qtr-flat (id p))
-                (natural p) (is-natural (id p))
-                (flat p) (is-flat (id p))
-                (pitch-bend p) pb
-                (micro-tone p) (not (zerop (pitch-bend p)))
-                (qtr-tone p) (or (qtr-sharp p) (qtr-flat p))))
-        (set-score-note p)
-        ;; (set-natural p)
-        (set-white-note p)
+          (setf (pitch-bend p) pb
+                (micro-tone p) (not (zerop pb))))
         (setf (data p) (id p)
               ;; MDE Sun Jan  1 13:02:37 2012 -- otherwise it's single float so
               ;; causes comparison errors
@@ -1646,58 +1646,60 @@ data: CQS4
             midi-channel)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; also sets accidental, nearest chromatic, and white-degree as a side effect.
 
 (defmethod set-white-note ((p pitch))
-  (multiple-value-bind
-      (note octave)
-      (get-note-octave (id p)) 
-    ;; MDE Tue Jul 24 19:51:41 2012 
-    (unless octave
-      (error "~%pitch::set-white-note: no octave given for pitch ~a." (id p)))
-    ;; MDE Mon May 14 14:32:17 2012 
-    (unless (and (integerp octave) (>= octave -1))
-      (warn "~a~%pitch::set-white-note: octave is either not an integer ~
+  ;; MDE Thu Apr 18 13:56:19 2013 -- only when we've got some data!
+  (when (id p)
+    (multiple-value-bind
+          (note octave)
+        (get-note-octave (id p)) 
+      ;; MDE Tue Jul 24 19:51:41 2012 
+      (unless octave
+        (error "~%pitch::set-white-note: no octave given for pitch ~a." (id p)))
+      ;; MDE Mon May 14 14:32:17 2012 
+      (unless (and (integerp octave) (>= octave -1))
+        (warn "~a~%pitch::set-white-note: octave is either not an integer ~
              or less than -1.  ~%~
              Pitch probably won't display or play correctly." p))
-    (let* ((str (string note))
-           (note-letter (read-from-string (subseq str 0 1)))
-           (white (read-from-string 
-                   (format nil "~a~a"
-                           note-letter octave)))
-           (accidental (read-from-string
-                        (if (> (length str) 1)
-                            (subseq str 1)
-                          "N")))
-           (nacc (case (rm-package accidental)
-                   (s 's)
-                   (f 'f)
-                   (n nil)
-                   ;; in the case of microtones, the nearest chromatic is
-                   ;; always lower
-                   (qs nil)
-                   (qf 'f)
-                   ;; twelfth-tone scale
-                   (ts nil) (ss nil) (ssf nil) (stf nil) (sts 's) (fts 'f)
-                   (sss 's) (fss 'f) (sf 'f) (tf 'f)
-                   (t (error "pitch::set-white-note: unrecognised accidental ~a"
-                             accidental))))
-           (note-pos (position (rm-package note-letter) '(c d e f g a b))))
-      (unless note-pos
-        (error "pitch::set-white-note: ~
+      (let* ((str (string note))
+             (note-letter (read-from-string (subseq str 0 1)))
+             (white (read-from-string 
+                     (format nil "~a~a"
+                             note-letter octave)))
+             (accidental (read-from-string
+                          (if (> (length str) 1)
+                              (subseq str 1)
+                              "N")))
+             (nacc (case (rm-package accidental)
+                     (s 's)
+                     (f 'f)
+                     (n nil)
+                     ;; in the case of microtones, the nearest chromatic is
+                     ;; always lower
+                     (qs nil)
+                     (qf 'f)
+                     ;; twelfth-tone scale
+                     (ts nil) (ss nil) (ssf nil) (stf nil) (sts 's) (fts 'f)
+                     (sss 's) (fss 'f) (sf 'f) (tf 'f)
+                     (t (error "pitch::set-white-note: unrecognised ~
+                                accidental ~a"
+                               accidental))))
+             (note-pos (position (rm-package note-letter) '(c d e f g a b))))
+        (unless note-pos
+          (error "pitch::set-white-note: ~
                 Couldn't get note position for ~a (~a)" 
-               (id p) note-letter))
-      ;; 22.10.11
-      (setf (white-note p) white
-            (nearest-chromatic p)
-            (read-from-string (format nil "~a~a~a"
-                                      note-letter (if nacc nacc "") octave))
-            (accidental p) accidental
-            (octave p) octave
-            (no-8ve p) note
-            (no-8ve-no-acc p) note-letter
-            (white-degree p) (+ note-pos (* octave 7))))))
+                 (id p) note-letter))
+        ;; 22.10.11
+        (setf (white-note p) white
+              (nearest-chromatic p)
+              (read-from-string (format nil "~a~a~a"
+                                        note-letter (if nacc nacc "") octave))
+              (accidental p) accidental
+              (octave p) octave
+              (no-8ve p) note
+              (no-8ve-no-acc p) note-letter
+              (white-degree p) (+ note-pos (* octave 7)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

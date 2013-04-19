@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 16:21:33 Thu Dec  6 2012 GMT
+;;; $$ Last modified: 09:05:25 Fri Apr 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1439,6 +1439,8 @@ rthm-seq NIL
                          ignore2 ignore3 ignore4 ignore5 
                          ignore6 ignore7 ignore8)
   (declare (ignore ignore2 ignore3 ignore4 ignore5 ignore6 ignore7 ignore8))
+  ;; MDE Fri Apr 19 09:04:07 2013 -- check for errant beams
+  (beams-on-rests? rs)
   ;; call the method from the slippery-chicken class to convert the rthm-seq to
   ;; a sequenz so that we can then call the get-cmn-data method of that class. 
   (let ((sequenz (sc-make-sequenz
@@ -2333,7 +2335,7 @@ rthm-seq NIL
     ret))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Sat Jun  9 16:27:56 2012 -- 
+;;; MDE Sat Jun  9 16:27:56 2012
 (defmethod check-beams ((rs rthm-seq) &key auto-beam print
                         (on-fail #'warn))
   (loop with result = t
@@ -2346,6 +2348,14 @@ rthm-seq NIL
      finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Apr 19 08:59:50 2013 -- see rthm-seq-bar method
+(defmethod beams-on-rests? ((rs rthm-seq))
+  (loop for bar in (bars rs) and bar-num from 1 do 
+       (when (beams-on-rests? bar)
+         (warn "In bar ~a of rthm-seq ~a, there are beams beginning or ending ~
+                on rests: ~&~a" bar-num (id rs) (data rs)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod no-accidental ((rs rthm-seq))
   (loop for bar in (bars rs) do (no-accidental bar)))

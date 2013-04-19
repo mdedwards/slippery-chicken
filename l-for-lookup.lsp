@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 17:28:47 Wed Apr  3 2013 BST
+;;; $$ Last modified: 08:04:43 Fri Apr 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1198,13 +1198,20 @@ data: (
 ;;; into itself), starting at the beginning of the original list, and inserted
 ;;; at automatically selected positions within the original list.
 ;;;
+;;; This process results in a longer list than the original, as earlier
+;;; elements are spliced in, without removing the original elements and their
+;;; order.  If however the :replace keyword is set to T, then at the selected
+;;; positions those original elements will be replaced by the earlier
+;;; elements.  This could of course disturb the appearance of particular
+;;; results and patterns.
+;;;
 ;;; The :remix-in-fib-seed argument determines how often an earlier element is
 ;;; re-inserted into the original list. The lower the number, the more often an
 ;;; earlier element is mixed back in. A value of 1 or 2 will result in each
 ;;; earlier element being inserted after every element of the original (once
 ;;; the third element of the original has been reached).
 ;;;
-;;; NB: This affects of this method are less evident on short lists.
+;;; NB: The affects of this method are less evident on short lists.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A list.
@@ -1220,6 +1227,8 @@ data: (
 ;;; - :test. The function used to determine the third element in the list. This
 ;;;   function must be able to compare whatever data type is in the
 ;;;   list. Default = #'eql.
+;;; - :replace. If T, retain the original length of the list by replacing items
+;;;   rather than splicing them in (see above).  Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns a new list.
@@ -1296,20 +1305,28 @@ data: (
 
 |#
 ;;; SYNOPSIS
-(defun remix-in (list &key (remix-in-fib-seed 13) (mirror nil) (test #'eql))
+(defun remix-in (list &key (remix-in-fib-seed 13) (mirror nil) (test #'eql)
+                 (replace nil))
   ;; ****
   (let* ((fib-tran (make-cscl (fibonacci-transition remix-in-fib-seed)))
          (lst (if mirror (append list (reverse (butlast list))) list))
          ;; the third unique element in the list
          (third (third (remove-duplicates list :test test)))
          (first-third (position third lst))
-         (copy (copy-list lst)))
+         (copy (copy-list lst))
+         (result '()))
+    ;; MDE Fri Apr 19 08:00:48 2013 -- rejigged loop to add logic for 'replace'
     (loop for i from 1
        for p1 in lst
-       if (and (> i first-third)
-               (= 1 (get-next fib-tran)))
-       collect p1 and collect (pop copy)
-       else collect p1)))
+       for on-it = (and (> i first-third)
+                        (not (zerop (get-next fib-tran))))
+       do
+       (when (or (and on-it (not replace))
+                 (not on-it))
+         (push p1 result))
+       (when on-it
+         (push (pop copy) result)))
+    (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

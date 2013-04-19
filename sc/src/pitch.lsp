@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 13:59:03 Thu Apr 18 2013 BST
+;;; $$ Last modified: 22:11:06 Thu Apr 18 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3125,6 +3125,7 @@ data: F4
 ;;; **** 
   (if (and pitches (every #'pitch-p pitches))
       (cmn::cmn (cmn::output-file file) (cmn::size size)
+                (cmn::all-output-in-one-file t)
                 cmn::staff staff
                 (cmn::engorge
                  (loop for p in pitches collect 

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 09:05:25 Fri Apr 19 2013 BST
+;;; $$ Last modified: 14:48:54 Fri Apr 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2668,6 +2668,11 @@ data: (4 3 2 1)
   (let ((result
          (cond  
            ((typep rs 'rthm-seq) rs)
+           ;; MDE Fri Apr 19 14:32:29 2013 -- list of rthm-seq-bars?
+           ((and (listp rs) (rthm-seq-bar-p (first rs)))
+            (let ((tmp (make-rthm-seq nil)))
+              (setf (bars tmp) rs)
+              tmp))
            ((listp rs) 
             ;; 4.8.10 if it's just a list of rthms, there's no id, otherwise
             ;; it's a 2-element list: (id (rthms....))  

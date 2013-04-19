@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 08:59:30 Fri Apr 19 2013 BST
+;;; $$ Last modified: 14:47:34 Fri Apr 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5085,8 +5085,6 @@ data: ((2 4) { 3 TE TE TE } Q)
   (if (rthm-seq-bar-p rhythms)
       rhythms
     (make-instance 'rthm-seq-bar :data rhythms :id name)))
-;;; ****
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

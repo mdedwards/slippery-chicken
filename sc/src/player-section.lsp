@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    18th March 2002
 ;;;
-;;; $$ Last modified: 18:16:17 Thu Nov 29 2012 GMT
+;;; $$ Last modified: 15:18:15 Fri Apr 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -59,7 +59,7 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; The sequenzes are in the data slot.
 (defclass player-section (bar-holder sclist)
   ())
 
@@ -272,6 +272,11 @@
 ;;;
 ;;; Related functions.
 ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Apr 19 15:16:16 2013 
+(defun make-player-section (sequenzes player)
+  (make-instance 'player-section :data sequenzes :id player))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun re-bar-aux (bars &optional verbose auto-beam)

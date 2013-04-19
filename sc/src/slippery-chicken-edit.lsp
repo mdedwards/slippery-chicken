@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 12:52:06 Thu Dec  6 2012 GMT
+;;; $$ Last modified: 15:54:01 Fri Apr 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5397,6 +5397,80 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
     ;; do this just to make sure we set the written chord if present
     (setf (pitch-or-chord event) chord)
     chord))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; The structure of a slippery-chicken object is as follows:
+;;; slippery-chicken -> piece -> section (plus subsections where appropriate) ->
+;;; player-section ->  sequenz -> rthm-seq-bar -> event
+;;; e.g. (get-bar (get-nth 0 (get-data 'vn (get-data-data 1 (piece +mini+)))) 1)
+;;; (Remember that the the data slot of the piece object is a list of
+;;; named-objects the data of which are the sections.)
+;;; So we can create an sc object on-the-fly by stuffing a single section
+;;; containing a single player-section containing a single sequenz with all the
+;;; given bars.
+
+;;; ****f* slippery-chicken-edit/bars-to-sc
+;;; DESCRIPTION
+;;; Take a list of rthm-seq-bars and add them to a new or existing
+;;; slippery-chicken object.  
+;;; 
+;;; NB Adding to existing sc objects planned but not yet supported.
+;;;
+;;; ARGUMENTS
+;;; - A list of rthm-seq-bars
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :sc. Either an existing slippery-chicken object or nil if one should be
+;;;   created automatically.  If nil, the following three arguments must be
+;;;   specified, otherwise they will be ignore.  Default = NIL.
+;;; - :sc-name.  The name (symbol) for the slippery-chicken object to be
+;;;   created.  This will become a global variable. Default = NIL.
+;;; - :player.  The name (symbol) of the player to create. Default = 'flute.
+;;; - :instrument.  The id (symbol) of an instrument in the
+;;;   +slippery-chicken-standard-instrument-palette+.   Default = 'player1.
+;;; - :update. Whether to call update-slots on the new slippery-chicken
+;;;   object.  Default = t.
+;;; - :section-id.  The section id.  Default = 1.
+;;; 
+;;; RETURN VALUE
+;;; A slippery-chicken object.
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defun bars-to-sc (bars &key sc sc-name (player 'player1) (instrument 'flute)
+                   (section-id 1) (update t))
+;;; ****
+  (unless (and bars (listp bars) (rthm-seq-bar-p (first bars)))
+    (error "slippery-chicken-edit::bars-to-sc: first argument should be a ~
+            list of rthm-seq-bar objects: ~&~a" bars))
+  (let* ((seq (clone-with-new-class (make-rthm-seq bars) 'sequenz))
+         (ps (make-player-section (list seq) player))
+         (section (make-section (list ps) section-id))
+         (piece (make-piece
+                 (list (make-named-object section-id section))
+                 sc-name)))
+    (unless sc 
+      (unless sc-name
+        (error "slippery-chicken-edit::bars-to-sc: sc-name cannot be NIL"))
+      (setf sc (make-minimal-sc sc-name player instrument)))
+    (setf (piece sc) piece)
+    (when update
+      (update-slots sc))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Apr 19 15:03:05 2013 -- make a dummy (pretty empty) sc structure
+(defun make-minimal-sc (sc-name player instrument)
+  (make-slippery-chicken
+   sc-name
+   :ensemble `(((,player (,instrument :midi-channel 1))))
+   :set-palette '((1 ((c4))))
+   :set-map '((1 (1)))
+   :rthm-seq-palette '((1 ((((4 4) w)))))
+   :rthm-seq-map `((1 ((,player (1)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    23rd March 2002
 ;;;
-;;; $$ Last modified: 12:49:34 Tue Jun 19 2012 BST
+;;; $$ Last modified: 15:24:14 Fri Apr 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -59,6 +59,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; The player sections are in the data slot.
 (defclass section (bar-holder recursive-assoc-list)
   ())
 
@@ -578,9 +579,11 @@ data: ((4 4) E S S H Q)
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
+;;; MDE Fri Apr 19 15:23:20 2013 
+(defun make-section (player-sections id)
+  (unless (numberp id)
+    (error "section::make-section: id should be a number: ~a" id))
+  (make-instance 'section :data player-sections :id id))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

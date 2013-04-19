@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 18:32:31 Sun Nov 18 2012 GMT
+;;; $$ Last modified: 15:22:02 Fri Apr 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1259,6 +1259,11 @@ BAR-HOLDER:
 ;;;
 ;;; Related functions.
 ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Apr 19 15:20:23 2013 
+(defun make-piece (sections &optional id)
+  (make-instance 'piece :data sections :id id))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun add-rest-player-sections-aux (ral players)

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 16:22:11 Thu Dec  6 2012 GMT
+;;; $$ Last modified: 08:59:30 Fri Apr 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1223,6 +1223,16 @@ BF4 E.,
                    bad rsb)))
     ;; (print-simple rsb)
     (values (not bad) bad)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Apr 19 08:56:49 2013 -- cmn can't handle beams starting/ending on
+;;; rests (but Lilypond can). 
+(defmethod beams-on-rests? ((rsb rthm-seq-bar))
+  (loop for r in (rhythms rsb) do
+       (when (and (is-rest r)
+                  (beam r))
+         (return t))
+       finally (return nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

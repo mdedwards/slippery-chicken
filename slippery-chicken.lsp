@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:10:41 Tue Sep 25 2012 BST
+;;; $$ Last modified: 22:03:07 Thu Apr 18 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5667,7 +5667,7 @@ data: NIL
 ;;;   rests (without stemlets) simply by using the '-' in the definition of the
 ;;;   rthm-seq-bar object, as is done with any other note; however,
 ;;;   starting/ending a beam on a rest and then trying to generate a score with
-;;;   CMN will fail.)
+;;;   CMN will fail.
 ;;; 
 ;;; RETURN VALUE
 ;;; T

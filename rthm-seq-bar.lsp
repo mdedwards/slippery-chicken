@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 14:47:34 Fri Apr 19 2013 BST
+;;; $$ Last modified: 16:24:07 Fri Apr 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5084,7 +5084,7 @@ data: ((2 4) { 3 TE TE TE } Q)
 ;;; ****
   (if (rthm-seq-bar-p rhythms)
       rhythms
-    (make-instance 'rthm-seq-bar :data rhythms :id name)))
+      (make-instance 'rthm-seq-bar :data rhythms :id name)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5189,79 +5189,82 @@ show-rest: T
 ;;; Now accepts cmn rqq type definition of rhythms.  See cmn.html for details.
 
 (defun parse-rhythms (rhythms nudge-factor)
-  (flet ((num-tied-rthms (rthm)
-           ;; rests are given in parentheses...
-           (when (listp rthm) 
-             (setf rthm (first rthm)))
-           (let* ((rthm-string (format nil "~a" rthm))
-                  ;; some rthms start with + to indicate that they are tied to
-                  ;; previous notes (e.g. in previous bar).
-                  (start-pos (if (char= #\+ (aref rthm-string 0))
-                                 1
-                                 0)))
-             (1+ (count #\+ rthm-string :start start-pos)))))
-    (when rhythms
-      ;; the position at which which we got a '{'; zero-based and with e.g. 'e
-      ;; x 5' expanded, i.e. this isn't just the element position in the given
-      ;; list.  Also, this has to be a list for the case when we have complex
-      ;; rhythms with more than one bracket.
-      (let ((score-left-bracket-positions '()) 
-            ;; sim but for CMN i.e. including rests
-            (left-bracket-positions '())
-            (got-left-brackets 0)
-            ;; did we see a beam?  if so at which position?
-            (start-beam nil)
-            ;; storage for the beams
-            (expect-right-brackets 0)
-            (beam-positions '())
-            ;; when we hit an 'x' then the next element will be a rhythm
-            ;; repeater e.g. e x 5 which means 5 eighth notes
-            (get-repeater nil)
-            ;; when we hit a '{' then the next element will be the number that
-            ;; goes in the bracket over the rhythms
-            (get-tuplet nil)
-            ;; For SCORE: we store the bracket info as a 3-element list: the
-            ;; number for the bracket, the left rhythm index and the right
-            ;; rhythm  index of the bracket
-            (score-tuplet-positions '())
-            ;; For CMN: sim to above but indices include rests
-            (tuplet-positions '())
-            ;; this will be the numbers for the brackets we have seen so far.
-            ;; This also has to be a list so that we can have multiple
-            ;; simultaneously open brackets.
-            (tuplets '())
-            ;; count the number of notes (not rests!) we've seen so far
-            (num-notes 0)
-            ;; number of notes or rests we've seen so far
-            (num-rthms 0)
-            ;; when we use the 'e x 4' syntax then we have to know what the
-            ;; last rhythm was so that we can repeat it.
-            (last-rthm nil)
-            (interned nil)
-            ;; list to store the rhythms in
-            (rthms '()))
-        (loop for i in rhythms do
-             (setf interned (if (symbolp i) (rm-package i) i))
-             (cond
-               ((eq interned '{) (setq get-tuplet t)
-                (incf got-left-brackets))
-               ((eq interned '}) (unless (> expect-right-brackets 0)
-                                   (error "rthm-seq-bar::parse-rhythms:~%~
+#|  (if (and (listp (print rhythms))
+           (every #'rhythm-p rhythms)) ;; MDE Fri Apr 19 16:04:55 2013 
+      rhythms|#
+      (flet ((num-tied-rthms (rthm)
+               ;; rests are given in parentheses...
+               (when (listp rthm) 
+                 (setf rthm (first rthm)))
+               (let* ((rthm-string (format nil "~a" rthm))
+                      ;; some rthms start with + to indicate that they are tied
+                      ;; to previous notes (e.g. in previous bar).
+                      (start-pos (if (char= #\+ (aref rthm-string 0))
+                                     1
+                                     0)))
+                 (1+ (count #\+ rthm-string :start start-pos)))))
+        (when rhythms
+          ;; the position at which which we got a '{'; zero-based and with
+          ;; e.g. 'e x 5' expanded, i.e. this isn't just the element position
+          ;; in the given list.  Also, this has to be a list for the case when
+          ;; we have complex rhythms with more than one bracket.
+          (let ((score-left-bracket-positions '()) 
+                ;; sim but for CMN i.e. including rests
+                (left-bracket-positions '())
+                (got-left-brackets 0)
+                ;; did we see a beam?  if so at which position?
+                (start-beam nil)
+                ;; storage for the beams
+                (expect-right-brackets 0)
+                (beam-positions '())
+                ;; when we hit an 'x' then the next element will be a rhythm
+                ;; repeater e.g. e x 5 which means 5 eighth notes
+                (get-repeater nil)
+                ;; when we hit a '{' then the next element will be the number
+                ;; that goes in the bracket over the rhythms
+                (get-tuplet nil)
+                ;; For SCORE: we store the bracket info as a 3-element list: the
+                ;; number for the bracket, the left rhythm index and the right
+                ;; rhythm  index of the bracket
+                (score-tuplet-positions '())
+                ;; For CMN: sim to above but indices include rests
+                (tuplet-positions '())
+                ;; this will be the numbers for the brackets we have seen so far.
+                ;; This also has to be a list so that we can have multiple
+                ;; simultaneously open brackets.
+                (tuplets '())
+                ;; count the number of notes (not rests!) we've seen so far
+                (num-notes 0)
+                ;; number of notes or rests we've seen so far
+                (num-rthms 0)
+                ;; when we use the 'e x 4' syntax then we have to know what the
+                ;; last rhythm was so that we can repeat it.
+                (last-rthm nil)
+                (interned nil)
+                ;; list to store the rhythms in
+                (rthms '()))
+            (loop for i in rhythms do
+                 (setf interned (if (symbolp i) (rm-package i) i))
+                 (cond
+                   ((eq interned '{) (setq get-tuplet t)
+                    (incf got-left-brackets))
+                   ((eq interned '}) (unless (> expect-right-brackets 0)
+                                       (error "rthm-seq-bar::parse-rhythms:~%~
                                            Read } without seeing { beforehand:~
                                            ~%~a"
-                                          rhythms))
-                (decf expect-right-brackets)
-                (let ((tuplet-num (pop tuplets)))
-                  #| MDE Wed Dec 14 14:21:27 2011 -- obsolete
-         (push (list tuplet-num
-                  (pop 
-                  score-left-bracket-positions) 
-                  (+ num-notes -1 
-                  (if (atom last-rthm)
-                  0
-                  nudge-factor))) 
-                  score-tuplet-positions)
-         |#
+                                              rhythms))
+                    (decf expect-right-brackets)
+                    (let ((tuplet-num (pop tuplets)))
+                      #| MDE Wed Dec 14 14:21:27 2011 -- obsolete
+                      (push (list tuplet-num
+                      (pop 
+                      score-left-bracket-positions) 
+                      (+ num-notes -1 
+                      (if (atom last-rthm)
+                      0
+                      nudge-factor))) 
+                      score-tuplet-positions)
+                      |#
                                    (push (list tuplet-num 
                                                (pop left-bracket-positions)
                                                (1- num-rthms))

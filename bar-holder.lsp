@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 17:11:31 Wed Nov 28 2012 GMT
+;;; $$ Last modified: 11:20:57 Sat Apr 20 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -207,24 +207,24 @@
 ;;; This should only be called for the piece object.  It will produce an error
 ;;; if called with a player-section or sequenz. Needs to be part of the
 ;;; bar-holder class though because of the recursive calls with sections etc.
-
+;;; MDE Sat Apr 20 11:20:13 2013 -- NB only looks at first bar of each sequenz!
+;;; Use update-write-time-sig2 if you need to check every bar.
 (defmethod update-write-time-sig ((bh bar-holder) 
                                   &optional 
                                   (force nil) ;; to force first bar to t
                                   ;; these two for recursive calls only
                                   (last-bar nil)
                                   (players nil))
-  ;; (print 'update-write-time-sig)
   (unless players
     (setf players (players bh)))
   (let ((lb last-bar))
     (loop for thing in (data bh) and i from 0 do
-          (setf thing (get-bar-holder thing)
-                lb (if (is-section-without-subsections thing)
-                       (update-write-time-sig-aux thing (and force (zerop i))
-                                                  lb players)
-                     (update-write-time-sig thing (and force (zerop i))
-                                            lb players))))
+         (setf thing (get-bar-holder thing)
+               lb (if (is-section-without-subsections thing)
+                      (update-write-time-sig-aux thing (and force (zerop i))
+                                                 lb players)
+                      (update-write-time-sig thing (and force (zerop i))
+                                             lb players))))
     lb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

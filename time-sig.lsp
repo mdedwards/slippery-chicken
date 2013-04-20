@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    12th February 2001
 ;;;
-;;; $$ Last modified: 15:29:07 Sat Jun  9 2012 BST
+;;; $$ Last modified: 11:27:41 Sat Apr 20 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -633,7 +633,7 @@ data: (2 4)
                                ;; preferred time-sig first, the one it should
                                ;; substitute second 
                                (preferred '(((1 16) (2 32))
- 					    ;; SAR Fri Jun 22 13:15:16 BST 2012
+                                            ;; SAR Fri Jun 22 13:15:16 BST 2012
                                             ((1 8) (2 16))
                                             ;; SAR Tue Oct  9 13:55:17 BST 2012
                                             ;; ((2 8) (4 16))
@@ -648,7 +648,7 @@ data: (2 4)
                                             ((1 4) (2 8))
                                             ((2 4) (4 8))
                                             ((4 4) (8 8))
-					    ((5 4) (10 8))
+                                            ((5 4) (10 8))
                                             ;; MDE Sat Feb 11 11:44:53 2012 
                                             ((7 4) (14 8)))))
   (let ((result (loop

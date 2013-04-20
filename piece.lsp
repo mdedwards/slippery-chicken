@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 15:22:02 Fri Apr 19 2013 BST
+;;; $$ Last modified: 11:28:02 Sat Apr 20 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -612,8 +612,6 @@ BAR-HOLDER:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 
-
 (defmethod get-bar ((p piece) bar-num-or-ref &optional player)
   (if (listp bar-num-or-ref)
       (progn
@@ -995,12 +993,27 @@ BAR-HOLDER:
         (this-bar nil))
     (loop for player in (players p) do
          (setf last-bar (get-bar p 1 player))
+       ;; MDE Sat Apr 20 10:52:16 2013 
+         (unless last-bar
+           (error "piece::update-write-time-sig2: couldn't get last bar!"))
        ;; 1/2/10: make sure the first bar has a time-sig written!
          (setf (write-time-sig last-bar) t)
          (loop for i from 2 to (num-bars p) do
               (setf this-bar (get-bar p i player))
-              (unless (eq t (time-sig-equal last-bar this-bar))
-                (setf (write-time-sig this-bar) t))
+            ;; MDE Sat Apr 20 10:52:16 2013 
+              (unless this-bar
+                (error "piece::update-write-time-sig2: couldn't get this bar!"))
+            ;; MDE Sat Apr 20 11:26:17 2013 -- this code was assuming that
+            ;; write-time-sig was NIL by default so we only changed to T if
+            ;; necessary 
+            ;; (unless (eq t (time-sig-equal last-bar this-bar))
+            ;;   (setf (write-time-sig this-bar) t))
+              (setf (write-time-sig this-bar)
+                    ;; this sets to T or NIL according to whether we really
+                    ;; should display the time-sig, and makes sure we don't
+                    ;; ignore a change from 3/4 to 6/8 (which would be
+                    ;; 'time-sig-equal-duration 
+                    (not (eq t (time-sig-equal last-bar this-bar))))
               (setf last-bar this-bar)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

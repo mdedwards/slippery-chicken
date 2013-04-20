@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 15:54:01 Fri Apr 19 2013 BST
+;;; $$ Last modified: 11:30:24 Sat Apr 20 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4277,7 +4277,9 @@ NIL
   (loop for player in (players sc) do
        (delete-bars-aux sc start-bar num-bars player print))
   (update-write-time-sig (piece sc))
-  (update-write-time-sig2 (piece sc) t)
+  ;; MDE Sat Apr 20 11:29:05 2013 -- t is ignored!
+  ;; (update-write-time-sig2 (piece sc) t)
+  (update-write-time-sig2 (piece sc))
   (incf-ids (tempo-map sc) (- num-bars) :start start-bar)
   ;; 27.5.11 have to update rehearsal-letters
   (setf (rehearsal-letters sc)
@@ -5423,9 +5425,9 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; keyword arguments:
 ;;; - :sc. Either an existing slippery-chicken object or nil if one should be
 ;;;   created automatically.  If nil, the following three arguments must be
-;;;   specified, otherwise they will be ignore.  Default = NIL.
+;;;   specified, otherwise they will be ignored.  Default = NIL.
 ;;; - :sc-name.  The name (symbol) for the slippery-chicken object to be
-;;;   created.  This will become a global variable. Default = NIL.
+;;;   created.  This will become a global variable. Default = '*auto*.
 ;;; - :player.  The name (symbol) of the player to create. Default = 'flute.
 ;;; - :instrument.  The id (symbol) of an instrument in the
 ;;;   +slippery-chicken-standard-instrument-palette+.   Default = 'player1.
@@ -5441,8 +5443,8 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 
 |#
 ;;; SYNOPSIS
-(defun bars-to-sc (bars &key sc sc-name (player 'player1) (instrument 'flute)
-                   (section-id 1) (update t))
+(defun bars-to-sc (bars &key sc (sc-name '*auto*) (player 'player1)
+                   (instrument 'flute) (section-id 1) (update t))
 ;;; ****
   (unless (and bars (listp bars) (rthm-seq-bar-p (first bars)))
     (error "slippery-chicken-edit::bars-to-sc: first argument should be a ~
@@ -5459,7 +5461,14 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
       (setf sc (make-minimal-sc sc-name player instrument)))
     (setf (piece sc) piece)
     (when update
-      (update-slots sc))))
+      (update-slots sc nil 0 0 1 nil nil t t)
+      (update-write-time-sig2 (piece sc)))
+    (update-instruments-total-duration sc)
+    (check-time-sigs sc)
+    (cleanup-rest-bars sc)
+    (check-tuplets sc)
+    (check-beams sc)
+    sc))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Apr 19 15:03:05 2013 -- make a dummy (pretty empty) sc structure

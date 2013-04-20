@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 12:28:40 Wed Apr 18 2012 BST
+;;; $$ Last modified: 12:37:41 Sat Apr 20 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -70,6 +70,7 @@
   ;; MDE Wed Apr 18 12:27:47 2012 -- now obsolete
   ((bar-line-writers :accessor bar-line-writers :type list 
                      :initarg :bar-line-writers :initform nil)
+   ;; a simple list of the player IDs
    (players :accessor players :type list :initform nil)
    ;; an instrument-palette that contains the instrument objects to be
    ;; cloned. The instruments list contains a simple symbol (id for look-up
@@ -101,6 +102,23 @@
   (get-players e))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Apr 20 12:34:54 2013 
+;;; ****m* ensemble/get-player
+;;; DESCRIPTION
+;;; Return a player object from an ensemble, if it exists.
+;;; 
+;;; ARGUMENTS
+;;; - An ensemble object.
+;;; - The ID of a player.
+;;; RETURN VALUE
+;;; The player object or NIL if there's no such player.
+;;; 
+;;; SYNOPSIS
+(defmethod get-player ((e ensemble) player)
+;;; ****
+  (get-data player e nil)) ; no warning
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Apr 18 16:00:01 BST 2012: Added robodoc entry
 
@@ -118,13 +136,13 @@
 #|
 
 (let ((ens (make-ensemble 
-	    'ens
-	    '((flt ((flute piccolo) :midi-channel 1))
-	      (clr ((b-flat-clarinet)))
-	      (tpt ((b-flat-trumpet c-trumpet) :midi-channel 2))
-	      (vln ((violin))))
-	    :instrument-palette
-	    +slippery-chicken-standard-instrument-palette+)))
+            'ens
+            '((flt ((flute piccolo) :midi-channel 1))
+              (clr ((b-flat-clarinet)))
+              (tpt ((b-flat-trumpet c-trumpet) :midi-channel 2))
+              (vln ((violin))))
+            :instrument-palette
+            +slippery-chicken-standard-instrument-palette+)))
   (get-players ens))
 
 => (FLT CLR TPT VLN)
@@ -224,13 +242,13 @@
        (make-slippery-chicken
         '+mini+
         :ensemble '(((vn (violin :midi-channel 1))
-		     (vc (cello :midi-channel 2))))
+                     (vc (cello :midi-channel 2))))
         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4))))
         :set-map '((1 (1 1 1 1 1)))
         :rthm-seq-palette '((1 ((((2 4) e e e e))
                                 :pitch-seq-palette ((1 2 3 4)))))
         :rthm-seq-map '((1 ((vn (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))))))
+                            (vc (1 1 1 1 1))))))))
   (num-notes (ensemble mini)))
 
 => 40
@@ -274,13 +292,13 @@
        (make-slippery-chicken
         '+mini+
         :ensemble '(((vn (violin :midi-channel 1))
-		     (vc (cello :midi-channel 2))))
+                     (vc (cello :midi-channel 2))))
         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4))))
         :set-map '((1 (1 1 1 1 1)))
         :rthm-seq-palette '((1 ((((2 4) e e e e))
                                 :pitch-seq-palette ((1 2 3 4)))))
         :rthm-seq-map '((1 ((vn (1 1 1 1 1))
-			    (vc (1 1 1 1 1))))))))
+                            (vc (1 1 1 1 1))))))))
   (tessitura (ensemble mini)))
 
 => C4
@@ -308,13 +326,13 @@
 ;;; EXAMPLE
 #|
 (let ((ens (make-ensemble 
-	    'ens
-	    '((flt ((flute piccolo) :midi-channel 1))
-	      (clr ((b-flat-clarinet)))
-	      (tpt ((b-flat-trumpet c-trumpet) :midi-channel 2))
-	      (vln ((violin))))
-	    :instrument-palette
-	    +slippery-chicken-standard-instrument-palette+)))
+            'ens
+            '((flt ((flute piccolo) :midi-channel 1))
+              (clr ((b-flat-clarinet)))
+              (tpt ((b-flat-trumpet c-trumpet) :midi-channel 2))
+              (vln ((violin))))
+            :instrument-palette
+            +slippery-chicken-standard-instrument-palette+)))
   (num-players ens))
 
 => 4
@@ -345,13 +363,13 @@
 ;;; Returns NIL if a player with the specified ID is found in the given
 ;;; ensemble object.
 (let ((ens (make-ensemble 
-	    'ens
-	    '((flt ((flute piccolo) :midi-channel 1))
-	      (clr ((b-flat-clarinet)))
-	      (tpt ((b-flat-trumpet c-trumpet) :midi-channel 2))
-	      (vln ((violin))))
-	    :instrument-palette
-	    +slippery-chicken-standard-instrument-palette+)))
+            'ens
+            '((flt ((flute piccolo) :midi-channel 1))
+              (clr ((b-flat-clarinet)))
+              (tpt ((b-flat-trumpet c-trumpet) :midi-channel 2))
+              (vln ((violin))))
+            :instrument-palette
+            +slippery-chicken-standard-instrument-palette+)))
   (players-exist ens '(vln)))
 
 => NIL
@@ -359,13 +377,13 @@
 ;; Drops into the debugger with an error if no player with the specified ID is
 ;; found in the given ensemble object.
 (let ((ens (make-ensemble 
-	    'ens
-	    '((flt ((flute piccolo) :midi-channel 1))
-	      (clr ((b-flat-clarinet)))
-	      (tpt ((b-flat-trumpet c-trumpet) :midi-channel 2))
-	      (vln ((violin))))
-	    :instrument-palette
-	    +slippery-chicken-standard-instrument-palette+)))
+            'ens
+            '((flt ((flute piccolo) :midi-channel 1))
+              (clr ((b-flat-clarinet)))
+              (tpt ((b-flat-trumpet c-trumpet) :midi-channel 2))
+              (vln ((violin))))
+            :instrument-palette
+            +slippery-chicken-standard-instrument-palette+)))
   (players-exist ens '(vla)))
 
 =>
@@ -381,6 +399,41 @@ ensemble::players-exist: VLA is not a member of the ensemble
           (unless (member player e-players)
             (error "ensemble::players-exist: ~a is not a member of the ~
                     ensemble" player)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Apr 20 12:16:58 2013 
+;;; ****m* ensemble/add-player
+;;; DESCRIPTION
+;;; Add a player to an existing ensemble.  It will be added at the end of the
+;;; list. 
+;;; 
+;;; ARGUMENTS
+;;; - The ensemble object.
+;;; - The new player, either as a player object or symbol.  If the latter this
+;;;   becomes the id of the player we'll create. 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - The id of the instrument in the already existing instrument-palette.
+;;;   This is required if the player argument is a symbol.  Default NIL.
+;;; - An instrument-palette object.  Default =
+;;;   +slippery-chicken-standard-instrument-palette+.
+;;;
+;;; RETURN VALUE
+;;; The player object added.
+;;; 
+;;; SYNOPSIS
+(defmethod add-player ((e ensemble) player 
+                       &optional
+                       instrument-id
+                       (instrument-palette
+                        +slippery-chicken-standard-instrument-palette+))
+;;; ****
+  (let ((player (if (player-p player)
+                    player
+                    (make-player player instrument-palette instrument-id))))
+    (add player e)
+    (setf (players e) (econs (players e) (id player)))
+    player))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -412,8 +465,8 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :instrument-palette. An instrument palette object. This is a required
-;;;   argument.
+;;; - :instrument-palette. An instrument palette object. Default = 
+;;;    +slippery-chicken-standard-instrument-palette+
 ;;; - :bar-line-writers. Obsolete as no longer used.
 ;;; 
 ;;; RETURN VALUE
@@ -471,7 +524,9 @@ NAMED-OBJECT: id: B-FLAT-CLARINET, tag: NIL,
 
 |#
 ;;; SYNOPSIS
-(defun make-ensemble (id ensemble &key bar-line-writers instrument-palette)
+(defun make-ensemble (id ensemble &key bar-line-writers
+                      (instrument-palette 
+                       +slippery-chicken-standard-instrument-palette+))
 ;;; ****
   (make-instance 'ensemble :id id :data ensemble 
                  :bar-line-writers bar-line-writers 
@@ -519,23 +574,23 @@ NAMED-OBJECT: id: B-FLAT-CLARINET, tag: NIL,
   (when (and ral (data ral))
     (let ((num-players 0))
       (loop for i in (data ral) and j from 0 do
-            (let ((data (data i)))
-              (if (is-ral data)
-                  (multiple-value-bind
-                      (ensemble nplayers)
-                      (ral-to-ensemble data ins-palette)
-                    (incf num-players nplayers)
-                    (setf (data (nth j (data ral)))
-                      ensemble))
-                (progn
-                  (incf num-players)
-                  (setf (nth j (data ral))
-                    (apply #'make-player (append
-                                          (list (id i) 
-                                                ins-palette)
-                                          (if (listp data)
-                                              data
-                                            (list data)))))))))
+           (let ((data (data i)))
+             (if (is-ral data)
+                 (multiple-value-bind
+                       (ensemble nplayers)
+                     (ral-to-ensemble data ins-palette)
+                   (incf num-players nplayers)
+                   (setf (data (nth j (data ral)))
+                         ensemble))
+                 (progn
+                   (incf num-players)
+                   (setf (nth j (data ral))
+                         (apply #'make-player (append
+                                               (list (id i) 
+                                                     ins-palette)
+                                               (if (listp data)
+                                                   data
+                                                   (list data)))))))))
       (values (sc-change-class ral 'ensemble)
               num-players))))
 

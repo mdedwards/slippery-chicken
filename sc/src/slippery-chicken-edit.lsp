@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 11:30:24 Sat Apr 20 2013 BST
+;;; $$ Last modified: 13:48:32 Sat Apr 20 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5406,7 +5406,8 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; player-section ->  sequenz -> rthm-seq-bar -> event
 ;;; e.g. (get-bar (get-nth 0 (get-data 'vn (get-data-data 1 (piece +mini+)))) 1)
 ;;; (Remember that the the data slot of the piece object is a list of
-;;; named-objects the data of which are the sections.)
+;;; named-objects the data of which are the sections. The data slot of a
+;;; section is simply a list of player-sections.)
 ;;; So we can create an sc object on-the-fly by stuffing a single section
 ;;; containing a single player-section containing a single sequenz with all the
 ;;; given bars.
@@ -5414,10 +5415,17 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; ****f* slippery-chicken-edit/bars-to-sc
 ;;; DESCRIPTION
 ;;; Take a list of rthm-seq-bars and add them to a new or existing
-;;; slippery-chicken object.  
-;;; 
-;;; NB Adding to existing sc objects planned but not yet supported.
+;;; slippery-chicken object.  If already existing, we assume it's one you're
+;;; creating part by part with this function, as it's not currently possible to
+;;; add a part like this in the middle of the score--the new part will be added
+;;; to the end of the last group of the ensemble (bottom of score) so make sure
+;;; to add parts in the order you want them.
 ;;;
+;;; NB Bear in mind that if you want to use midi-play, then the events in the
+;;;    bars will need to have their midi-channel set (e.g. via make-event).
+;;;    It's the callers responsibility that any parts added have the same
+;;;    time-signature structure as any existing part.
+;;; 
 ;;; ARGUMENTS
 ;;; - A list of rthm-seq-bars
 ;;; 
@@ -5428,9 +5436,11 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;;   specified, otherwise they will be ignored.  Default = NIL.
 ;;; - :sc-name.  The name (symbol) for the slippery-chicken object to be
 ;;;   created.  This will become a global variable. Default = '*auto*.
-;;; - :player.  The name (symbol) of the player to create. Default = 'flute.
-;;; - :instrument.  The id (symbol) of an instrument in the
-;;;   +slippery-chicken-standard-instrument-palette+.   Default = 'player1.
+;;; - :player.  The name (symbol) of the player to create. Default =
+;;;   'player-one. (Remember that Lilypond has problems with player names
+;;;    with numbers in them :/ )
+;;; - :instrument.  The id (symbol) of an already existing instrument in the
+;;;    instrument-palette. Default = 'flute.
 ;;; - :update. Whether to call update-slots on the new slippery-chicken
 ;;;   object.  Default = t.
 ;;; - :section-id.  The section id.  Default = 1.
@@ -5443,7 +5453,9 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 
 |#
 ;;; SYNOPSIS
-(defun bars-to-sc (bars &key sc (sc-name '*auto*) (player 'player1)
+(defun bars-to-sc (bars &key sc (sc-name '*auto*) (player 'player-one)
+                   (instrument-palette 
+                    +slippery-chicken-standard-instrument-palette+)
                    (instrument 'flute) (section-id 1) (update t))
 ;;; ****
   (unless (and bars (listp bars) (rthm-seq-bar-p (first bars)))
@@ -5451,15 +5463,30 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
             list of rthm-seq-bar objects: ~&~a" bars))
   (let* ((seq (clone-with-new-class (make-rthm-seq bars) 'sequenz))
          (ps (make-player-section (list seq) player))
-         (section (make-section (list ps) section-id))
-         (piece (make-piece
-                 (list (make-named-object section-id section))
-                 sc-name)))
-    (unless sc 
-      (unless sc-name
-        (error "slippery-chicken-edit::bars-to-sc: sc-name cannot be NIL"))
-      (setf sc (make-minimal-sc sc-name player instrument)))
-    (setf (piece sc) piece)
+         (section (if sc
+                      (let ((s (get-section sc section-id)))
+                        (unless s 
+                          (error "slippery-chicken-edit::bars-to-sc: ~
+                                  Can't get section ~a" section-id))
+                        (push ps (data s)))
+                      (make-section (list ps) section-id)))
+         (piece (if sc
+                    (piece sc)
+                    (make-piece
+                     (list (make-named-object section-id section))
+                     sc-name))))
+    (if sc 
+        (progn
+          (add-player (ensemble sc) player instrument instrument-palette)
+          (setf (players piece) (econs (players piece) player))
+          ;; we add to the last staff group by default
+          (incf (first (last (staff-groupings sc))))
+          (incf (num-players piece)))
+        (progn
+          (unless sc-name
+            (error "slippery-chicken-edit::bars-to-sc: sc-name cannot be NIL"))
+          (setf sc (make-minimal-sc sc-name player instrument instrument-palette)
+                (piece sc) piece)))
     (when update
       (update-slots sc nil 0 0 1 nil nil t t)
       (update-write-time-sig2 (piece sc)))
@@ -5472,9 +5499,12 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Apr 19 15:03:05 2013 -- make a dummy (pretty empty) sc structure
-(defun make-minimal-sc (sc-name player instrument)
+(defun make-minimal-sc (sc-name player instrument &optional
+                        (instrument-palette
+                         +slippery-chicken-standard-instrument-palette+))
   (make-slippery-chicken
    sc-name
+   :instrument-palette instrument-palette
    :ensemble `(((,player (,instrument :midi-channel 1))))
    :set-palette '((1 ((c4))))
    :set-map '((1 (1)))

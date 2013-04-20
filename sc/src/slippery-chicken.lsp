@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:28:10 Fri Apr 19 2013 BST
+;;; $$ Last modified: 11:29:10 Sat Apr 20 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1020,7 +1020,9 @@
     (update-slots rsm-clone (tempo-map sc) 0.0 0.0 1 nil nil warn-ties)
     (update-write-time-sig rsm-clone t)
     ;; 28.1.11 use -sig2 also to make sure each bar is really checked.
-    (update-write-time-sig2 rsm-clone t)
+    ;; MDE Sat Apr 20 11:29:05 2013 -- t is ignored!
+    ;; (update-write-time-sig2 rsm-clone t)
+    (update-write-time-sig2 rsm-clone)
     rsm-clone))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

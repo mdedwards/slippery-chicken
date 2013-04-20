@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:55:46 Fri Jan 25 2013 GMT
+;;; $$ Last modified: 15:42:08 Sat Apr 20 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -631,6 +631,7 @@ data: 132
   (let* ((wporc (written-pitch-or-chord e))
          (porc (pitch-or-chord e))
          (diff (when wporc (pitch- wporc porc))))
+    (setf (slot-value e 'pitch-or-chord) (set-pitch-aux pitch-or-chord))
     (typecase value
       (pitch (setf (slot-value e 'pitch-or-chord) (clone value)))
       (chord (setf (slot-value e 'pitch-or-chord) (clone value))
@@ -3108,6 +3109,9 @@ T
 ;;; - :transposition. A number in semitones that indicates the transposition of
 ;;;   the instrument that this event is being created for.  E.g. -2 would be
 ;;;   for a B-flat clarinet.
+;;; - :written.  The given pitch or chord is the written value.  In this case
+;;;   the sounding value will be set according to the (required) transposition
+;;;   argument.  Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
 ;;; - An event object.
@@ -3211,6 +3215,9 @@ T
                    ;; MDE Thu May 31 19:03:59 2012 -- allow us to auto-set the
                    ;; written-pitch-or-chord slot   
                    transposition
+                   ;; MDE Sat Apr 20 15:13:41 2013 -- allow us to create
+                   ;; written pitch events and auto-set sounding
+                   written
                    (amplitude 0.7)
                    (tempo 60))
 ;;; **** 
@@ -3229,11 +3236,18 @@ T
             (pitch-or-chord e) pitch-or-chord
             ;; 24.3.11 if we directly setf amp then we add a mark
             (slot-value e 'amplitude) amplitude)
-      (when midi-channel
-        (set-midi-channel e midi-channel microtones-midi-channel))
+      ;; MDE Sat Apr 20 15:16:22 2013
+      (when (and written (not transposition))
+        (error "~a~&event::make-event: need a :transposition when :written T."
+               e))
       ;; MDE Thu May 31 19:05:25 2012 
       (when (numberp transposition)
+        (when written
+          (setf (slot-value e 'pitch-or-chord)
+                (transpose (pitch-or-chord e) transposition)))
         (set-written e (- transposition)))
+      (when midi-channel
+        (set-midi-channel e midi-channel microtones-midi-channel))
       e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

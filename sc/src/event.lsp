@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:42:08 Sat Apr 20 2013 BST
+;;; $$ Last modified: 09:50:48 Mon Apr 29 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -631,7 +631,7 @@ data: 132
   (let* ((wporc (written-pitch-or-chord e))
          (porc (pitch-or-chord e))
          (diff (when wporc (pitch- wporc porc))))
-    (setf (slot-value e 'pitch-or-chord) (set-pitch-aux pitch-or-chord))
+    ;; (setf (slot-value e 'pitch-or-chord) (set-pitch-aux pitch-or-chord))
     (typecase value
       (pitch (setf (slot-value e 'pitch-or-chord) (clone value)))
       (chord (setf (slot-value e 'pitch-or-chord) (clone value))

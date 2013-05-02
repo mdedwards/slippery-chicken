@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    5.12.00
 ;;;
-;;; $$ Last modified: 16:01:39 Fri Apr  5 2013 BST
+;;; $$ Last modified: 17:01:17 Thu May  2 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -161,7 +161,7 @@
    at-start auto-accidentals auto-beam auto-beam auto-clefs auto-cue-nums
    auto-put-tuplet-bracket-on-beats auto-set-written auto-slur auto-tuplets
 
-   beat-duration begin-slur-p
+   bars-to-sc beat-duration begin-slur-p
 
    change-bar-line-type change-pitch change-pitches change-pitches
    change-time-sig check-beams check-beams check-ties check-time-sigs

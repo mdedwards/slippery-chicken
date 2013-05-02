@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 13:48:32 Sat Apr 20 2013 BST
+;;; $$ Last modified: 17:07:44 Thu May  2 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5400,7 +5400,12 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
     (setf (pitch-or-chord event) chord)
     chord))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Related functions.
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; The structure of a slippery-chicken object is as follows:
 ;;; slippery-chicken -> piece -> section (plus subsections where appropriate) ->
 ;;; player-section ->  sequenz -> rthm-seq-bar -> event
@@ -5423,7 +5428,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;;
 ;;; NB Bear in mind that if you want to use midi-play, then the events in the
 ;;;    bars will need to have their midi-channel set (e.g. via make-event).
-;;;    It's the callers responsibility that any parts added have the same
+;;;    It's the caller's responsibility that any parts added have the same
 ;;;    time-signature structure as any existing part.
 ;;; 
 ;;; ARGUMENTS

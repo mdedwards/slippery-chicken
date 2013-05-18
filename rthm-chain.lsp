@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 11:20:38 Mon Dec 17 2012 ICT
+;;; $$ Last modified: 11:06:13 Thu May  9 2013 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1677,9 +1677,9 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;;   lists with a low number of items are likely to result in new lists in
 ;;;   which the final element occurs quite early on, perhaps even nowhere near
 ;;;   the specified peak value. Default = 0.7.
-;;; - :expt. A (decimal) number that indicates the "curve" that determines the
-;;;   intervals at which each successive element of the initial list is
-;;;   introduced to the new list. A higher number indicates a steeper
+;;; - :expt. An exponent (floating point number) to indicate the "curve" that
+;;;   determines the intervals at which each successive element of the initial
+;;;   list is introduced to the new list. A higher number indicates a steeper
 ;;;   exponential curve. Default = 1.3.
 ;;; - :orders. The patterns by which the elements are added. The method
 ;;;   cyclically applies these orders, the numbers 1, 2, and 3 representing the
@@ -1751,6 +1751,12 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
                    ;; there can be 1 or any number of sublists. 
                    (orders '((1 2 1 2 3) (1 2 1 1 3) (1 2 1 3))))
 ;;; ****
+  ;; MDE Thu May  9 11:05:05 2013 -- check orders for wrong numbers
+  (loop for o in orders do
+       (unless
+           (every #'(lambda (i) (and (integerp i) (> i 0) (< i 4))) '(1 2 3 2 ))
+         (error "rthm-chain::procession: :orders should only contain lists of ~
+                 1, 2, and 3: ~a" orders)))
   (let ((num-items 
          (typecase items
            (list (length items))

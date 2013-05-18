@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 21:56:55 Thu Apr 18 2013 BST
+;;; $$ Last modified: 19:28:57 Fri May 17 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -529,12 +529,12 @@
 ;;; Returns a list no matter whether it's a single chord or not.
 
 (defun cmn-stemless-chord (note-list &key
-                                     (chord-text "") 
-                                     (text-x-offset 2.0)
-                                     (text-y-offset -0.5)
-                                     (font-size 10.0)
-                                     (rq 4)
-                                     (use-octave-signs t))
+                           (chord-text "") 
+                           (text-x-offset 2.0)
+                           (text-y-offset -0.5)
+                           (font-size 10.0)
+                           (rq 4)
+                           (use-octave-signs t))
   (declare (special invisible))
   (when (numberp rq)
     (setf rq (rq rq)))
@@ -555,8 +555,8 @@
      (if note-list
          (engorge 
           (loop for n in note-list collect
-                (note (eval n) rq (head-quarters 1) (dots 0))))
-       (note (c4 invisible) rq))
+               (note (eval n) rq (head-quarters 1) (dots 0))))
+         (note (c4 invisible) rq))
      no-stem (flags 0)
      end-octave-sign
      (text chord-text 
@@ -570,31 +570,47 @@
 ;;; This doesn't handle a case where 15ma would be better, just the 8ve
 ;;; Also assumes treble clef!
 (defun chord-needs-8ve-up (note-list)
-  ;; this assumes the chord is sorted from lowest to highest, which is the case
-  ;; if it came from an sc-set 
-  ;; remember the pitch is something like (d4 natural)
-  (let ((lowest (sc::make-pitch (first (first note-list))))
-        (highest (sc::make-pitch (first (first (last note-list)))))
-        (low (sc::make-pitch 'g4))
-        (high (sc::make-pitch 'c7))) 
-    (if (and (sc::pitch> highest high)
-             (sc::pitch> lowest low))
-        t
-      nil)))
+  (let ((low (sc::make-pitch 'g4))
+        (high (sc::make-pitch 'c7)))
+    (multiple-value-bind
+          (lowest highest)
+        (chord-needs-8ve-aux note-list)
+      (if (and (sc::pitch> highest high)
+               (sc::pitch> lowest low))
+          t
+          nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Assumes bass clef!
 (defun chord-needs-8ve-down (note-list)
   ;; this assumes the chord is sorted from lowest to highest, which is the case
   ;; if it came from an sc-set 
-  (let ((lowest (sc::make-pitch (first (first note-list))))
-        (highest (sc::make-pitch (first (first (last note-list)))))
-        (low (sc::make-pitch 'f1))
-        (high (sc::make-pitch 'g3))) 
-    (if (and (sc::pitch< lowest low)
-             (sc::pitch< highest high))
-        t
-      nil)))
+  (let ((low (sc::make-pitch 'f1))
+        (high (sc::make-pitch 'g3)))
+    (multiple-value-bind
+          (lowest highest)
+        (chord-needs-8ve-aux note-list)
+      (if (and (sc::pitch< lowest low)
+               (sc::pitch< highest high))
+          t
+          nil))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri May 17 19:27:26 2013 
+(defun chord-needs-8ve-aux (note-list)
+  ;; this assumes the chord is sorted from lowest to highest, which is the case
+  ;; if it came from an sc-set 
+  ;; remember the pitch is something like (d4 natural) 
+  ;; MDE Fri May 17 19:19:35 2013 -- but pitch could just be 'd4
+  (let ((lowest (first note-list))
+        (highest (first (last note-list))))
+    ;; MDE Fri May 17 19:19:51 2013 -- 
+    (when (listp lowest)
+      (setf lowest (first lowest)))
+    (when (listp highest)
+      (setf highest (first highest)))
+    (values (sc::make-pitch lowest) (sc::make-pitch highest))))
+  
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

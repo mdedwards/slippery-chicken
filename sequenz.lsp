@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified: 23:28:38 Thu Jul 19 2012 CEST
+;;; $$ Last modified: 21:54:21 Fri May 17 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -299,6 +299,22 @@
   ;; we assume num does not exceed the number of bars
   (setf (bars s) (remove-elements (bars s) start num))
   t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri May 17 21:40:16 2013 -- make sure that any dynamic marks that were
+;;; added via the :marks slot during the creation of the rthm-seq-palette are
+;;; reflected in the amplitudes of the events.
+(defmethod dynamics-to-amplitudes ((s sequenz))
+  (loop with dynamic for bar in (bars s) do
+       (loop for e in (rhythms bar) do
+            (loop for m in (marks e) do
+               ;; make sure that once we've had a dynamic that we set the
+               ;; amplitude of all following notes until we see another dynamic
+                 (when (is-dynamic m)
+                   (setf dynamic m)))
+            (when dynamic
+              (setf (slot-value e 'amplitude)
+                    (dynamic-to-amplitude dynamic))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

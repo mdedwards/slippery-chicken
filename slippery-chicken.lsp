@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:29:10 Sat Apr 20 2013 BST
+;;; $$ Last modified: 00:08:17 Sat May 18 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4549,7 +4549,7 @@ seq-num 5, VN, replacing G3 with B6
                                  ~,3f, ~
                                  ~%             duration ~,3f~a, ~
                                  ~%             amp ~,2f, srt ~,2f ~
-                                 (pitch-or-chord ~,3f,sample freq ~,3f)~%"
+                                 (pitch-or-chord ~,3f, sample freq ~,3f)~%"
                                   event-count total-events
                                   (if skip-this-event "Skipped" "Output")
                                   (path snd) 
@@ -7519,6 +7519,8 @@ duration: 20.0 (20.000)
       (error "~a ~a ~%slippery-chicken::sc-make-sequenz: Didn't use all ~
               the notes!  Still have ~a left."
              rthm-seq pitch-seq (length notes)))
+    ;; MDE Fri May 17 21:45:26 2013
+    (dynamics-to-amplitudes sequenz)
     ;; the marks given in the rthm-seq were not interpreted in that class,
     ;; first here when all the rhythms have been converted to events.
     ;; 19/2/07: move this method over to the rthm-seq class and call it there

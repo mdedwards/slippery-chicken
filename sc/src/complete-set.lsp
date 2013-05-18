@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 23:44:19 Thu May  3 2012 CEST
+;;; $$ Last modified: 19:40:19 Fri May 17 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -58,6 +58,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; N.B. The main pitch objects are in the data slot.
 (defclass complete-set (tl-set)
   ;; this can be given at init (t or 'chromatic) and if the set is not complete
   ;; in either of those senses, a warning is issued.  If this is neither t nor
@@ -545,7 +546,7 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
                                              ;; numbers 
                                              (eq char #\-))
                                     return i)))
-          (read-from-string note-octave :start 0 :end first-digit-pos))))
+          (read-from-string note-octave t nil :start 0 :end first-digit-pos))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

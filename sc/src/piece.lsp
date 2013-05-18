@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 12:54:36 Sat Apr 20 2013 BST
+;;; $$ Last modified: 19:13:51 Fri May 17 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1311,39 +1311,39 @@ BAR-HOLDER:
 #+cmn
 (defun splice-sets-into-staves (sets staves)
   (loop 
-      with treble-list = (first staves)
-      with bass-list = (second staves)
-      for treble-seq in treble-list
-      for bass-seq in bass-list
-      for set in sets
-      and i from 0
-      do
-        (let* ((treble-bass-split (get-cmn-treble-bass (data set)))
-               (treble (first treble-bass-split))
-               (bass (second treble-bass-split))
-               (cmn-treble (cmn::cmn-stemless-chord
-                            treble
-                            :rq  4/64
-                            :chord-text (format nil "~a ~a"
-                                                (list-to-string (this set) 
-                                                                "." nil)
-                                                (if (tag set)
-                                                    (tag set)
-                                                  ""))))
-               (cmn-bass (cmn::cmn-stemless-chord 
-                          bass
-                          :rq 4/64))
-               (treble-seq-bar1 (first treble-seq))
-               (bass-seq-bar1 (first bass-seq))
-               ;; should be the same for both clefs
-               (items-in-bar (length bass-seq-bar1))
-               (iib-2 (- items-in-bar 2)))
-          ;; first is the first bar of the sequenz
-          (setf (first treble-seq) (append
-                                    ;; maybe there's a meter, maybe not...
-                                    ;; the last two things in the bar are the
-                                    ;; wrest and the bar line
-                                    (butlast treble-seq-bar1 2)
+     with treble-list = (first staves)
+     with bass-list = (second staves)
+     for treble-seq in treble-list
+     for bass-seq in bass-list
+     for set in sets
+     and i from 0
+     do
+     (let* ((treble-bass-split (get-cmn-treble-bass (data set)))
+            (treble (first treble-bass-split))
+            (bass (second treble-bass-split))
+            (cmn-treble (cmn::cmn-stemless-chord
+                         treble
+                         :rq  4/64
+                         :chord-text (format nil "~a ~a"
+                                             (list-to-string (this set) 
+                                                             "." nil)
+                                             (if (tag set)
+                                                 (tag set)
+                                                 ""))))
+            (cmn-bass (cmn::cmn-stemless-chord 
+                       bass
+                       :rq 4/64))
+            (treble-seq-bar1 (first treble-seq))
+            (bass-seq-bar1 (first bass-seq))
+            ;; should be the same for both clefs
+            (items-in-bar (length bass-seq-bar1))
+            (iib-2 (- items-in-bar 2)))
+       ;; first is the first bar of the sequenz
+       (setf (first treble-seq) (append
+                                 ;; maybe there's a meter, maybe not...
+                                 ;; the last two things in the bar are the
+                                 ;; wrest and the bar line
+                                 (butlast treble-seq-bar1 2)
                                     (cons cmn-treble 
                                           (subseq treble-seq-bar1 iib-2)))
                 ;; same again for the bass...

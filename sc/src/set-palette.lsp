@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 16:44:54 Fri Jun 15 2012 BST
+;;; $$ Last modified: 19:00:23 Fri May 17 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -729,7 +729,7 @@ data: (
  'test
  '((sp1
     ((bf1 ef2 aqf2 c3 e3 gqf3 gqs3 cs4 d4 g4 a4 cqs5
-	  dqf5 gs5 b5) 
+          dqf5 gs5 b5) 
      :subsets
      ((tc1 (ds2 e3 a4))
       (tc2 (bf1 d4 cqs5))
@@ -737,7 +737,7 @@ data: (
       (qc2 (bf1 c3 gqs3 cs4 cqs5)))
      :related-sets
      ((missing (bqs0 eqs1 f5 aqs5 eqf6 fqs6 
-		     bqf6 dqs7 fs7)))))
+                     bqf6 dqs7 fs7)))))
    (sp2
     (sp1 :transposition 13))))
 
@@ -819,28 +819,37 @@ data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
          (if (is-ral (data i))
              (setf (data (nth j (data ral)))
                    (ral-to-set-palette (data i) god))
-             (unless (sc-set-p i)
-               (let* ((id (id i))
-                      (data (data i))
-                      (set (first data))
-                      (set-object (and (or (assoc-list-id-p set)
-                                           (assoc-list-id-list set))
-                                       (get-data set god nil))))
-                 (setf (nth j (data ral))
-                       ;; a reference to a previously defined set was given
-                       (if set-object
-                           (apply #'make-complete-set 
-                                  ;; we allow the initialization of a set from
-                                  ;; a previous one just given in this palette!
-                                  ;; In order to allow this, we have to now do
-                                  ;; a look-up of the set-id in the assoc-list
-                                  ;; (palette) we're currently processing!
-                                  (append (list set-object :id id)
-                                          (rest data)))
-                           ;; this is a new set with a list of notes.
-                           (apply #'make-complete-set 
-                                  (append (list set :id id)
-                                          (rest data)))))))))
+             ;; MDE Fri May 17 18:37:33 2013 -- if we have a set object already
+             ;; it'll be in the data slot of this named object 
+             ;; (unless (sc-set-p i)
+             (if (and (named-object-p i) (sc-set-p (data i)))
+                 (progn
+                   ;; we've probably made a set without an id so copy it over
+                   (setf (id (data i)) (id i)
+                         (nth j (data ral)) (data i)))
+                 ;; (print i)
+                 (let* ((id (id i))
+                        (data (data i))
+                        (set (first data))
+                        (set-object (and (or (assoc-list-id-p set)
+                                             (assoc-list-id-list set))
+                                         (get-data set god nil))))
+                   (setf (nth j (data ral))
+                         ;; a reference to a previously defined set was given
+                         (if set-object
+                             (apply #'make-complete-set 
+                                    ;; we allow the initialization of a set
+                                    ;; from a previous one just given in this
+                                    ;; palette!  In order to allow this, we
+                                    ;; have to now do a look-up of the set-id
+                                    ;; in the assoc-list (palette) we're
+                                    ;; currently processing!
+                                    (append (list set-object :id id)
+                                            (rest data)))
+                             ;; this is a new set with a list of notes.
+                             (apply #'make-complete-set 
+                                    (append (list set :id id)
+                                            (rest data)))))))))
     (sc-change-class ral 'set-palette)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

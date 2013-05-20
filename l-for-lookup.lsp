@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 08:04:43 Fri Apr 19 2013 BST
+;;; $$ Last modified: 15:16:48 Mon May 20 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -133,7 +133,26 @@
           (setf (data (nth i (data lflu)))
             (loop for group in (data no) and j from 1
                 collect (make-cscl group :id (format nil "~a-~a" (id no) j)))))
-    (setf (rules lflu) al)))
+    (setf (rules lflu) al)
+    ;; MDE Mon May 20 15:16:34 2013 
+    (check-all-rules-exist lflu)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon May 20 14:58:24 2013 -- Check that each element of a
+;;; substitution list has a corresponding rule.  
+(defmethod check-all-rules-exist ((lflu l-for-lookup))
+  (let* ((keys (get-keys (rules lflu)))
+         (missing '())
+         (all-results (remove-duplicates
+                       (loop for k in keys appending
+                            (get-data-data k (rules lflu))))))
+    (loop for r in all-results do
+         (unless (member r keys)
+           (push r missing)))
+    (when missing
+      (error "l-for-lookup::check-all-rules-exist: ~%the following rules ~
+              still need to be defined: ~&~{~A~^ ~} ~&~a" missing lflu)))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

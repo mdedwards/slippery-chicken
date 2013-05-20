@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 19:00:23 Fri May 17 2013 BST
+;;; $$ Last modified: 14:21:03 Mon May 20 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1052,7 +1052,7 @@ COMPLETE-SET: complete: NIL
 ;;;
 ;;; EXAMPLE
 #|
-;; Simple useage with default keyword argument values
+;; Simple usage with default keyword argument values
 (set-palette-from-ring-mod 'a4 'spfrm-test)
 
 =>
@@ -1168,17 +1168,22 @@ data: (
                        (list (first rm-bass)
                              (nth (floor (length rm-bass) 2) rm-bass)
                              (first (last rm-bass))))
+             ;; here there's numbers instead of symbols so we can still get
+             ;; duplicates when making the set :/ 
              set (remove-duplicates (append rm rm-bass))
              ;; MDE Thu May 3 10:57:21 2012 -- as we removed octaves and
              ;; duplicates above when looking at freq, when these are resolved
              ;; to the nearest note, we still might have octaves/duplicates so
-             ;; do this again at the set level
+             ;; do this again at the set level, below
              set (make-complete-set set :id i :subsets `((rm-bass ,rm-bass))
+                                    ;; MDE Mon May 20 12:56:47 2013 -- don't
+                                    ;; worry about duplicate pitches
+                                    :warn-dups nil
                                     :tag (combine-into-symbol 
                                           (freq-to-note left) '-ringmod- 
                                           (freq-to-note right))))
        ;; MDE Thu May  3 10:59:13 2012 
-       (rm-duplicates set t) ; comparing symbols, not pitch= (freqs etc.)
+       (rm-duplicates set t)       ; comparing symbols, not pitch= (freqs etc.)
        (when remove-octaves
          (rm-octaves set))
        (add set  sp))

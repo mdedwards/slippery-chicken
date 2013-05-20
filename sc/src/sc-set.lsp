@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 12:20:36 Mon Apr 23 2012 BST
+;;; $$ Last modified: 13:07:10 Mon May 20 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -78,7 +78,11 @@
    ;; of sections and subsections, the current sequence count), so we can store
    ;; the notes used against that instrument for the current count in a
    ;; recursive-assoc-list.
-   (used-notes :accessor used-notes :initform nil)))
+   (used-notes :accessor used-notes :initform nil)
+   ;; MDE Mon May 20 12:50:42 2013 -- warn when removing duplicate pitches?
+   (warn-dups :accessor warn-dups :type boolean :initarg :warn-dups :initform t)
+   ;; MDE Mon May 20 12:51:51 2013 -- auto-remove duplicate pitches?
+   (rm-dups :accessor rm-dups :type boolean :initarg :rm-dups :initform t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -97,10 +101,15 @@
 
 (defmethod verify-and-store :after ((s sc-set))
   (let* ((pl (init-pitch-list (data s) (auto-sort s)))
-         (plrd (remove-duplicates pl :test #'pitch=)))
+         ;; MDE Mon May 20 12:52:55 2013 -- 
+         (plrd (if (rm-dups s)
+                   (remove-duplicates pl :test #'pitch=)
+                   pl)))
     (unless (= (length pl) (length plrd))
-      (warn "sc-set::verify-and-store: found duplicate pitches in ~a"
-            (pitch-list-to-symbols pl)))
+      (when (warn-dups s)
+        (warn "sc-set::verify-and-store: found and removed duplicate ~
+               pitches in ~&~a"
+              (pitch-list-to-symbols pl))))
     (setf (slot-value s 'data) plrd)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -124,10 +133,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((s sc-set) stream)
-  (format stream "~&SC-SET: auto-sort: ~a, used-notes: ~a~
+  (format stream "~&SC-SET: auto-sort: ~a, rm-dups: ~a, warn-dups: ~a ~
+                  used-notes: ~a, ~
                   ~%~%**** N.B. All pitches printed as symbols only, ~
                   internally they are all ~%pitch-objects.~%~%"
-          (auto-sort s) (used-notes s))
+          (auto-sort s) (rm-dups s) (warn-dups s) (used-notes s))
   (format stream "~%    subsets: ")
   (print-ral-of-pitch-lists (subsets s) stream)
   (format stream "~%    related-sets: ")

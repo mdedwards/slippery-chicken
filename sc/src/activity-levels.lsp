@@ -11,14 +11,15 @@
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
-;;; Purpose:          Class used in rthm-chain.
-;;;                   No public interface envisaged (so no robodoc entries).
+;;; Purpose:          Class used in rthm-chain.  Used on a call-by-call basis
+;;;                   to determine (deterministically) whether a process is
+;;;                   active or not (boolean).
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 11:18:59 Mon Dec 17 2012 ICT
+;;; $$ Last modified: 10:19:37 Tue May 21 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -67,7 +68,8 @@
   (clone-with-new-class al 'activity-levels))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; At the moment there's no way for the user to use their own activity lists
+;;; but this can easily be provided upon request.
 (defmethod initialize-instance :after ((al activity-levels) &rest initargs)
   (declare (ignore initargs))
   (setf (data al)
@@ -110,7 +112,7 @@
                ((1 1 0 1 1 1 1 1 1 1)
                 (1 1 1 1 0 1 1 1 1 1)
                 (1 1 1 1 1 1 1 1 0 1)))
-           collect
+             collect
              (make-cscl (loop for ten in level 
                            collect (make-cscl ten)))))
   ;; got to do this so get-last returns the first ... doh!
@@ -124,9 +126,23 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; <start-at> should be between 1 and 3; it indicates which of the 10-lists
-;;; we're going to start with.
+;;; ****m* activity-levels/reset
+;;; DESCRIPTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; The activity-levels object. 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; start-at: should be between 1 and 3; it indicates which of the 10-lists
+;;; we're going to start with.  Default = 1.
+;;; 
+;;; RETURN VALUE
+;;; T
+;;;
+;;; SYNOPSIS
 (defmethod reset ((al activity-levels) &optional (start-at 1) ignore)
+;;; ****
   (declare (ignore ignore))
   (unless (and (>= start-at 1) 
                (<= start-at 3))
@@ -134,19 +150,46 @@
            start-at))
   (loop for l in (data al) do 
        (loop for 10-list in (data l) do (reset 10-list))
-       (reset l start-at)))
+       (reset l start-at))
+  t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* activity-levels/active
+;;; DESCRIPTION
+;;; Returns t or nil depending on whether we're active at this point.  The
+;;; object remembers where we were last time; this means if we change level
+;;; before getting to the end of a ten-list, we'll pick up where we left off
+;;; next time we return to that level.  <level> can be a floating point number:
+;;; in this case it will be rounded. But <level> must be between 0 and 10,
+;;; where 0 is always inactive, 10 is always active, and anything inbetween
+;;; will use the data lists circularly.
+;;; 
+;;; ARGUMENTS
+;;; - the activity-levels object
+;;; - the activity-level number we want to test
+;;; RETURN VALUE
+;;; T or NIL
+;;; 
+;;; EXAMPLE
+#|
+(let ((al (make-al)))
+  (print (loop for i below 15 collect (active al 0)))
+  (print (loop for i below 15 collect (active al 5)))
+  (print (loop for i below 15 collect (active al 1)))
+  (print (loop for i below 15 collect (active al 9)))
+  (loop for i below 15 collect (active al 10)))
 
-;;; returns t or nil depending on whether we're active at this point (instance
-;;; remembers where we were last time--this means if we change level before
-;;; getting to the end of a ten-list, we'll pick up where we left off next time
-;;; we return to that level.
-;;; <level> can be a floating point number: it will be rounded. Must be between
-;;; 0 and 10 though where 0 is always inactive, 10 is always active and
-;;; anything inbetween will use the data lists circularly.
+=>
+(NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL) 
+(T T NIL NIL T NIL T T NIL NIL NIL T NIL T NIL) 
+(T NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL T NIL) 
+(T T NIL T T T T T T T T T T T NIL) 
+(T T T T T T T T T T T T T T T)
+|#
+;;; SYNOPSIS
 (defmethod active ((al activity-levels) level)
+;;; ****
   (let ((max (1+ (length (data al))))) ; the 0 and 10 cases are implicit
     (flet ((active-error ()
              (error "activity-levels::active: level must be >=0 and <=~a: ~a"
@@ -176,6 +219,28 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****f* activity-levels/make-al
+;;; DESCRIPTION
+
+;;; Make an activities-level object for determining (deterministically) on a
+;;; call-by-call basis whether a process is active or not (boolean).  This is
+;;; determined by 9x3x10-element lists of hand-coded 1s and 0s, each list
+;;; representing an 'activity-level' (how active the process should be).  The
+;;; first three 10-element lists have only one 1 in them, the rest being zeroz.
+;;; The second three have two 1s, etc. Activity-levels of 0 and 10 would return
+;;; never active and always active respectively.
+;;; 
+;;; ARGUMENTS
+;;; None required.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; start-at (default NIL): which of the three 10-element lists to start with
+;;; (reset to).  Should be 1, 2, or 3 though if NIL will default to 1.
+;;; 
+;;; RETURN VALUE
+;;; The activities-level object.
+;;;
+;;; SYNOPSIS
 (defun make-al (&optional start-at)
 ;;; ****
   (let ((al (make-instance 'activity-levels)))

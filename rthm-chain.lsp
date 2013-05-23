@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 11:06:13 Thu May  9 2013 CEST
+;;; $$ Last modified: 11:14:37 Thu May 23 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1358,7 +1358,7 @@
 #|
 ;; An example using a number of the keyword arguments.
 (make-rthm-chain
- 'test-rch 14
+ 'test-rch 23
  '((((e) e) ; 4 in total
     (- s (s) (s) s -)
     ({ 3 (te) - te te - })
@@ -1401,47 +1401,44 @@ RTHM-CHAIN: 1-beat-rthms: (((E E) (S S S S) (TE TE TE) (E. S))
                            ((TE TE TE) (TE TE TE) (TE TE TE) (TE TE TE)))
             slower-rthms: ((((Q Q) ((Q) Q) ((Q) Q) ((Q) (S) E.)
                              (- E E - (E) E))
-                            (({ 3 TE+TE TE+TE TE+TE }) (Q - S E. -)
-                             (Q (S) E.) (Q (S) - S E -)
-                             ({ 3 TE+TE TE+TE - TE TE - })))
+                            (({ 3 TE+TE TE+TE TE+TE }) (Q - S E. -) (Q (S) E.)
+                             (Q (S) - S E -) ({ 3 TE+TE TE+TE - TE TE - })))
                            ((((E.) S (E) E (S) E.) (- E E - (E) E (Q))
                              (- E. S - - +E E - (Q)) (Q (E.) S (Q)))
                             (({ 3 (TE) (TE) TE+TE TE+TE } (Q))
-                             (- E. S - (Q) (S) - S E -)
-                             ({ 3 TE+TE TE } (Q) Q)
-                             ({ 3 - TE TE TE - } (E) E { 3 (TE) (TE) TE
-                              }))))
+                             (- E. S - (Q) (S) - S E -) ({ 3 TE+TE TE } (Q) Q)
+                             ({ 3 - TE TE TE - } (E) E { 3 (TE) (TE) TE }))))
             1-beat-fibonacci: NIL
-            num-beats: 14
-            slow-fibonacci: NIL
+            num-beats: 23
+            slow-fibonacci: T
             num-1-beat-rthms: 4
             num-1-beat-groups: 2
-            sticking-curve: (0.0 0 13 10)
-            harmonic-rthm-curve: (0.0 1 13 3)
+            sticking-curve: (0.0 0 22 10)
+            harmonic-rthm-curve: (0.0 1 22 3)
             beat: 4
             do-sticking: T
             do-rests: T
-            do-sticking-curve: (0.0 1 3.25 0 6.5 1 9.75 0 13 1)
+            do-sticking-curve: (0.0 1 5.5 0 11.0 1 16.5 0 22 1)
             do-rests-curve: NIL
             sticking-al: (not printed for brevity's sake)
-            sticking-rthms: (E S. E S. 32 E 32 E E E. S. 32 S. E. S. 32 S.
-                             32 E. E)
-            sticking-repeats: (3 5 3 5 7 3 7 3 3 11 5 7 5 11 5 7 5 7 11 3
-                               7 3 3 11 5 7 5 11 3 7 3 7 11 5 7 5 5 11 3
-                               11 3 2 11 2 11 2 7 2 7 2 2 5 5 3 5)
-            activity-curve: (0.0 1 13 10)
+            sticking-rthms: (E S. E S. 32 E 32 E E E. S. 32 S. E. S. 32 S. 32
+                             E. E)
+            sticking-repeats: (3 5 3 5 7 3 7 3 3 11 5 7 5 11 5 7 5 7 11 3 7 3 3
+                               11 5 7 5 11 3 7 3 7 11 5 7 5 5 11 3 11 3 2 11 2
+                               11 2 7 2 7 2 2 5 5 3 5)
+            activity-curve: (0.0 1 22 10)
             main-al: (not printed for brevity's sake)
             slower-al: (not printed for brevity's sake)
-            num-slower-bars: 11
+            num-slower-bars: 22
             rcs: (not printed for brevity's sake)
             rests: (E Q Q. W)
             rest-re: (not printed for brevity's sake)
             rest-cycle: ((0 3) (1 1) (0 2) (2 1) (1 1) (3 1))
-            num-rthm-seqs: 11
+            num-rthm-seqs: 19
             section-id: 1
             split-data: (4 7)
 RTHM-SEQ-MAP: num-players: 2 
-              players: (CL FL)
+              players: (FL CL)
 SC-MAP: palette id: RTHM-CHAIN-RSP
 [...]
 

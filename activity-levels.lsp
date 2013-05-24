@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 10:19:37 Tue May 21 2013 BST
+;;; $$ Last modified: 14:29:38 Fri May 24 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -224,11 +224,12 @@
 
 ;;; Make an activities-level object for determining (deterministically) on a
 ;;; call-by-call basis whether a process is active or not (boolean).  This is
-;;; determined by 9x3x10-element lists of hand-coded 1s and 0s, each list
-;;; representing an 'activity-level' (how active the process should be).  The
-;;; first three 10-element lists have only one 1 in them, the rest being zeroz.
-;;; The second three have two 1s, etc. Activity-levels of 0 and 10 would return
-;;; never active and always active respectively.
+;;; determined by nine 10-element lists (actually three versions of each) of
+;;; hand-coded 1s and 0s, each list representing an 'activity-level' (how
+;;; active the process should be).  The first three 10-element lists have only
+;;; one 1 in them, the rest being zeros.  The second three have two 1s,
+;;; etc. Activity-levels of 0 and 10 would return never active and always
+;;; active respectively.
 ;;; 
 ;;; ARGUMENTS
 ;;; None required.

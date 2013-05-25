@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 00:08:17 Sat May 18 2013 BST
+;;; $$ Last modified: 11:53:30 Wed May 22 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5658,7 +5658,7 @@ data: NIL
 ;;;   are specific to LilyPond, such as 'bartok or any of the marks that use
 ;;;   eps graphics files. Default = NIL.
 ;;; - :lp-version. A string that will be added to each .ly file generated in
-;;;   conjunction with the LilyPond \version command. Default = "2.14.2"
+;;;   conjunction with the LilyPond \version command. Default = "2.16.2"
 ;;; - :process-event-fun. NIL or a user-defined function that will be applied
 ;;;   to every event object in the given slippery-chicken object. If NIL, no
 ;;;   processes will be applied. Default = NIL.
@@ -5766,7 +5766,7 @@ data: NIL
                                   ;; other signs  
                                   (use-custom-markup nil)
                                   (rehearsal-letters-font-size 18)
-                                  (lp-version "2.14.2") ;"2.12.3")
+                                  (lp-version "2.16.2") ;"2.14.2") ;"2.12.3")
                                   ;; 24.7.11 (Pula) barlines through whole
                                   ;; staff group or just a stave
                                   (group-barlines t)

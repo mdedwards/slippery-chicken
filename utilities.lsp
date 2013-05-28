@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 14:21:38 Thu Mar 28 2013 GMT
+;;; $$ Last modified: 20:53:45 Tue May 28 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3058,23 +3058,29 @@ WARNING:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Mon May  7 23:32:57 BST 2012: Added robodoc entry
+;;; MDE Tue May 28 20:32:36 2013 -- added start-freq-is-partial keyword arg
 
 ;;; ****f* utilities/get-harmonics
 ;;; DESCRIPTION
-;;; Return a list of the harmonic partial frequencies in Hertz above a
-;;; specified fundamental frequency.
+;;; Return a list of the harmonic partial frequencies in Hertz from a
+;;; specified (usually fundamental) frequency.
 ;;; 
 ;;; ARGUMENTS
-;;; - A number that is the fundamental frequency in Hertz.
+;;; - A number that is the fundamental or starting frequency in Hertz.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments
-;;; - :start-at. An integer that is the number of the first harmonic partial to
-;;;   return. Default = 1.
+;;; - :start-partial. An integer that is the number of the first harmonic
+;;;    partial to return. Default = 1.
 ;;; - :min-freq. A number that is the lowest frequency in Hertz to
 ;;;   return. Default = 20.
 ;;; - :max-freq. A number that is the highest frequency in Hertz to
 ;;;   return. Default = 20000.
+;;; - :start-freq-is-partial.  Rather than treating the first argument as the
+;;;   fundamental, treat it as the partial number indicated by this argument.
+;;;   Default = 1.
+;;; - :max-results.  The maximum number of harmonics to return.  Default =
+;;;    most-positive-fixnum  
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of numbers that are the frequencies in Hertz of harmonic partials
@@ -3091,12 +3097,15 @@ WARNING:
 
 |#
 ;;; SYNOPSIS
-(defun get-harmonics (fundamental &key (start-at 1) (min-freq 20)
-                      (max-freq 20000))
+(defun get-harmonics (start-freq &key (start-partial 1) (min-freq 20)
+                      (start-freq-is-partial 1)
+                      (max-freq 20000) (max-results most-positive-fixnum))
 ;;; ****
-  (loop for h from start-at
+  (loop with fundamental = (float (/ start-freq start-freq-is-partial))
+     for h from start-partial
      for freq = (* fundamental h)
      while (<= freq max-freq)
+     repeat max-results
      if (>= freq min-freq)
      collect freq))
 

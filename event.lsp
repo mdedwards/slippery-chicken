@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:50:48 Mon Apr 29 2013 BST
+;;; $$ Last modified: 11:06:43 Tue May 28 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -906,7 +906,8 @@ data: 132
 ;;;   or sounding pitch in the event. T = written. Default = NIL.
 ;;; - :force-naturals. T or NIL to indicate whether to force "natural" note
 ;;;   names that contain no F or S in their name to convert to their enharmonic
-;;;   equivalent (ie, B3 = CF4)
+;;;   equivalent (ie, B3 = CF4). NB double-flats/sharps are not implemented so
+;;;   this will only work on F/E  B/C. 
 ;;; 
 ;;; RETURN VALUE
 ;;; An event object.

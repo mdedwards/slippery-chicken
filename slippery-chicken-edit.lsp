@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 17:07:44 Thu May  2 2013 BST
+;;; $$ Last modified: 11:06:45 Tue May 28 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -674,6 +674,10 @@
 ;;;   pitches in the specified region will be changed to their enharmonic
 ;;;   equivalents. If a list of one or more note-name symbols, only those
 ;;;   pitches will be affected.
+;;; - :force-naturals. T or NIL to indicate whether to force "natural" note
+;;;   names that contain no F or S in their name to convert to their enharmonic
+;;;   equivalent (ie, B3 = CF4).  NB double-flats/sharps are not implemented so
+;;;   this will only work on F/E  B/C. 
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns T.
@@ -703,7 +707,7 @@
 |#
 ;;; SYNOPSIS
 (defmethod enharmonics ((sc slippery-chicken) start end player
-                        &key (written t) pitches)
+                        &key (written t) pitches force-naturals)
 ;;; ****
   (setf pitches (init-pitch-list pitches))
   (let* ((stlist (listp start))
@@ -744,6 +748,9 @@
                                ;; enharmonics not equal!
                                (pitch-member p pitches nil))
                          (enharmonic e :written (and transp written)
+                                     ;; MDE Tue May 28 11:04:42 2013 --
+                                     ;; :force-naturals added
+                                     :force-naturals force-naturals
                                      :chord-note-ref chord-note-ref))))
                   ;; MDE Wed Apr 18 12:08:51 2012 
                   (when (and (event-p e)
@@ -754,7 +761,9 @@
                                                    (pitch-or-chord e))
                                                ;; enharmonics not equal!
                                                pitches nil)))
-                    (enharmonic e :written (and transp written)))))))
+                    ;; MDE Tue May 28 11:04:42 2013 -- :force-naturals
+                    (enharmonic e :force-naturals force-naturals
+                                :written (and transp written)))))))
       (if (= stbar ndbar)
           (do-bar stbar stnote ndnote)
           (progn 

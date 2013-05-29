@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 09:01:23 Wed May 29 2013 BST
+;;; $$ Last modified: 14:55:31 Wed May 29 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3437,5 +3437,23 @@ WARNING:
     (when (and (integerp start) (< start len))
       (subseq seq start end))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed May 29 14:40:43 2013 -- 
+(defun shell (command &rest arguments)
+  #+sbcl
+  (cl-user::run-program command arguments)
+  #-sbcl
+  (warning "utilities::shell: Can't execute ~a on your system. Sorry."
+           command))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed May 29 14:54:14 2013 
+(defun system-open-file (file)
+  #+mac-osx 
+  (shell "/usr/bin/open" file)
+  #-mac-osx
+  (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
+           file))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

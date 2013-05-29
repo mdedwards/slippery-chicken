@@ -1903,10 +1903,10 @@ cm-load.lsp,0
 
 ../doc/examples/cavatina.lsp,0
 
-../workshops/mini-examples-all.lsp,92
+../workshops/mini-examples-all.lsp,95
 (defun get-set-pitches 90,3000
-(defun get-harmonics 170,6079
-(defun make-rhythm 184,6556
+(defun my-get-harmonics 170,6079
+(defun make-rhythm 184,6562
 
 ../workshops/workshop-exercises.lsp,0
 

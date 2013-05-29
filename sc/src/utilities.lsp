@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 20:53:45 Tue May 28 2013 BST
+;;; $$ Last modified: 09:01:23 Wed May 29 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3098,8 +3098,8 @@ WARNING:
 |#
 ;;; SYNOPSIS
 (defun get-harmonics (start-freq &key (start-partial 1) (min-freq 20)
-                      (start-freq-is-partial 1)
-                      (max-freq 20000) (max-results most-positive-fixnum))
+                      (start-freq-is-partial 1) (max-freq 20000)
+                      (max-results most-positive-fixnum))
 ;;; ****
   (loop with fundamental = (float (/ start-freq start-freq-is-partial))
      for h from start-partial

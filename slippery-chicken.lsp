@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:53:30 Wed May 22 2013 BST
+;;; $$ Last modified: 16:19:42 Thu May 30 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -800,6 +800,7 @@
                         (multi-bar-rests nil)
                         (automatic-octave-signs nil)
                         (display-time nil)
+                        (auto-open +cmn-display-auto-open+)
                         (add-postscript nil))
 ;;; ****
   ;; MDE Wed Apr 18 10:57:41 2012 -- 
@@ -869,6 +870,8 @@
                :size size)
   (when add-postscript
     (add-ps-to-file file add-postscript))
+  (when auto-open
+    (system-open-file file))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

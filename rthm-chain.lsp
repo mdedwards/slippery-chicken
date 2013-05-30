@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 11:14:37 Thu May 23 2013 BST
+;;; $$ Last modified: 13:37:26 Thu May 30 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1219,7 +1219,10 @@
 ;;;   their number and the number of sublists is open. A transition will be
 ;;;   made from one group of rhythms to the next over the whole output
 ;;;   (i.e. not one unit to another within e.g. the 1-beat rhythms) according
-;;;   to a fibonacci-transition method.
+;;;   to a fibonacci-transition method.  NB Here and below, at least two lists
+;;;   are required: what we start with, and what we transition to.  If no
+;;;   transition is required you could of course just duplicate the rhythms via
+;;;   a let variable: (list rhythms rhythms).
 ;;; - A list with sublists of 2-beat and 3-beat full bars of rhythms used to
 ;;;   construct the slower-moving counterpoint material of the
 ;;;   rthm-seq-palette. This will be turned into a rthm-chain-slow object, and

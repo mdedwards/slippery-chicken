@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 14:54:53 Wed May 29 2013 BST
+;;; $$ Last modified: 16:15:30 Thu May 30 2013 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -528,7 +528,8 @@ rthm-seq SEQ3
 ;;; - :seqs-per-system. An integer indicating the number of rthm-seq objects to
 ;;;   be printed in one staff system. Default = 1.
 ;;; - :size. A number to indicate the font size of the CMN output.
-;;; - :auto-open. Automatically open the EPS file?.  Default = T for SBCL.
+;;; - :auto-open. Automatically open the EPS file?.  
+;;;    Default = +cmn-display-auto-open+ (global)  
 ;;;
 ;;; RETURN VALUE
 ;;; T
@@ -566,7 +567,7 @@ rthm-seq SEQ3
                         (page-nums t)
                         (no-accidentals t)
                         (seqs-per-system 1)
-                        (auto-open #+sbcl T)
+                        (auto-open +cmn-display-auto-open+)
                         (size 15))
 ;;; ****
   (format t "~&Generating rthm-seqs...")

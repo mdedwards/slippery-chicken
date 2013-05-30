@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 14:21:03 Mon May 20 2013 BST
+;;; $$ Last modified: 16:20:21 Thu May 30 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -179,8 +179,7 @@
 ;;;   present in the given set-palette object. T = print.  Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; slippery chicken prints a series of status lines in the listener, and
-;;; outputs an EPS file.
+;;; T
 ;;; 
 ;;; EXAMPLE
 #|
@@ -227,6 +226,7 @@
                         (use-octave-signs nil)
                         (automatic-octave-signs nil)
                         (include-missing-chromatic t)
+                        (auto-open +cmn-display-auto-open+)
                         (include-missing-non-chromatic t))
 ;;; ****
   ;; some defaults above are good for 2-staff display but not 4...
@@ -254,7 +254,10 @@
      :file file :size size :line-separation line-separation
      :staff-separation staff-separation
      :automatic-octave-signs automatic-octave-signs
-     :automatic-line-breaks (not break-line-each-set))))
+     :automatic-line-breaks (not break-line-each-set))
+    (when auto-open
+      (system-open-file file))
+    t))
    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

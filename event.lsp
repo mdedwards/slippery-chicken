@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:55:52 Thu May 30 2013 BST
+;;; $$ Last modified: 21:09:58 Thu May 30 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -643,6 +643,7 @@ data: 132
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May 30 18:49:56 2013 -- auto-sets the pitch-or-chord slot
 (defmethod set-written-pitch-or-chord ((e event) value)
+  ;; (print (data value))
   (let* ((wporc (written-pitch-or-chord e))
          (porc (pitch-or-chord e))
          (diff (when wporc (pitch- wporc porc))))

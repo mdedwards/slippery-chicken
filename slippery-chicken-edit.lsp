@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 19:56:57 Thu May 30 2013 BST
+;;; $$ Last modified: 21:35:25 Thu May 30 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1336,7 +1336,10 @@ data: (
                        (n o)
                      (get-note-octave note t)
                    (setf note (join-note-octave n o)))))
-             (setf (pitch-or-chord e) note))
+             ;; (print note)
+             (if written
+               (set-written-pitch-or-chord e note)
+               (setf (pitch-or-chord e) note)))
            ;; NB note might be nil but mark not hence this isn't in the when
            (rhythm-add-marks e (nth count marks)))
         ;; this hack gets the current bar number so we return where we left off

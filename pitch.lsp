@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 22:11:06 Thu Apr 18 2013 BST
+;;; $$ Last modified: 20:39:02 Thu May 30 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1583,7 +1583,12 @@ data: CQS4
                                (1+ (position (rm-package (no-8ve-no-acc p))
                                              c5s)))
                               (t 0))
-              (data-consistent p) t)))))
+              (data-consistent p) t)
+        ;; MDE Thu May 30 20:12:17 2013 
+        (when (> (midi-note p) 119)
+          (warn "pitch::update-pitch: midi-note is > 119: ~
+                 probably won't be able ~%to display in score format: ~a" 
+                p))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

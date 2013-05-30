@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 19:46:09 Thu May 30 2013 BST
+;;; $$ Last modified: 19:57:12 Thu May 30 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -542,12 +542,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; bar-num & note-num are one-based; can't handle chords
-(defmethod change-pitch ((bh bar-holder) bar-num note-num player new-pitch)
+(defmethod change-pitch ((bh bar-holder) bar-num note-num player new-pitch
+                         &optional written)
   (let ((event (get-note bh bar-num note-num player)))
     (when event
       ;; remember the event class setf method will handle different types for
       ;; new-note 
-      (setf (pitch-or-chord event) new-pitch)))
+      (if written
+          (set-written-pitch-or-chord event new-pitch)
+          (setf (pitch-or-chord event) new-pitch))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -575,14 +578,17 @@
 ;;;   method counts tied notes rather than just attacked notes.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL to indicate whether the method is to require that each note-name
-;;;   symbols in the <new-pitches> list has an octave indicator. If this
-;;;   argument is set to NIL, each note-name symbol must have an octave
-;;;   indicator (e.g., the 4 in c4). If this argument is set to T, only the
-;;;   first note-name symbol in the bar is required to have an octave
-;;;   indicator, and all subsequent note-name symbols without octave indicators
-;;;   will use the last octave indicated; e.g. '((a3 b g cs4)). NB: This
-;;;   feature does not work with chords. Default = T.
+;;; keyword arguments:
+;;; - :use-last-octave.  T or NIL to indicate whether the method is to require
+;;;   that each note-name symbols in the <new-pitches> list has an octave
+;;;   indicator. If this argument is set to NIL, each note-name symbol must
+;;;   have an octave indicator (e.g., the 4 in c4). If this argument is set to
+;;;   T, only the first note-name symbol in the bar is required to have an
+;;;   octave indicator, and all subsequent note-name symbols without octave
+;;;   indicators will use the last octave indicated; e.g. '((a3 b g cs4)). NB:
+;;;   This feature does not work with chords. Default = T.
+;;; - :written.  T or NIL to indicate whether these are the written or sounding
+;;;   notes for a transposing instrument. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE  
 ;;; Always returns T.
@@ -613,9 +619,8 @@
 ;;; 
 ;;; SYNOPSIS
 (defmethod change-pitches ((bh bar-holder) player start-bar new-pitches 
-                           &key (use-last-octave t) ignore)
+                           &key (use-last-octave t) written)
 ;;; ****
-  (declare (ignore ignore))
   (loop for bar in new-pitches and bar-num from start-bar do
        (loop for note in bar and note-num from 1 do
             (when note
@@ -626,7 +631,7 @@
                     (get-note-octave note use-last-octave)
                   (setf note (join-note-octave n o))))
               ;; (format t "~% ~a ~a ~a" bar-num note-num note)
-              (change-pitch bh bar-num note-num player note))))
+              (change-pitch bh bar-num note-num player note written))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

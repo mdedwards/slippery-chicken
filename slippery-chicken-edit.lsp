@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 18:17:36 Thu May 30 2013 BST
+;;; $$ Last modified: 19:56:57 Thu May 30 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1125,6 +1125,10 @@
 ;;;   pitch is to be changed.
 ;;; - The ID of the player for whom the pitch is to be changed.
 ;;; - A note-name symbol that is the new pitch.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; T or NIL to indicate whether the written or sounding pitch should be
+;;; changed.  Default = NIL (sounding).
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns T.
@@ -1147,9 +1151,9 @@
 |#
 ;;; SYNOPSIS
 (defmethod change-pitch ((sc slippery-chicken) bar-num note-num player
-                         new-pitch)
+                         new-pitch &optional written)
 ;;; ****
-  (change-pitch (piece sc) bar-num note-num player new-pitch))
+  (change-pitch (piece sc) bar-num note-num player new-pitch written))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1265,15 +1269,18 @@ data: (
 ;;;   note 3 will.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL to indicate whether or not each consecutive new pitch listed
-;;;   will automatically take the most recent octave number specified; 
-;;;   e.g. '((a3 b g cs4)). T = use last octave number. Default = T.
-;;; - A list of marks to be added to the events objects. This option can only
-;;;   be used in conjunction with the simple flat list of pitches. In this case
-;;;   the list of pitches and list of marks must be the same length and
-;;;   correspond to each other item by item. Sub-lists can be used to add
+;;; keyword arguments:
+;;; - :use-last-octave. T or NIL to indicate whether or not each consecutive
+;;;   new pitch listed will automatically take the most recent octave number
+;;;   specified; e.g. '((a3 b g cs4)). T = use last octave number. Default = T.
+;;; - :marks. A list of marks to be added to the events objects. This option
+;;;   can only be used in conjunction with the simple flat list of pitches. In
+;;;   this case the list of pitches and list of marks must be the same length
+;;;   and correspond to each other item by item. Sub-lists can be used to add
 ;;;   several marks to a single event. NB: See cmn.lsp::get-cmn-marks for the
 ;;;   list of recognised marks. If NIL, no marks will be added. Default = NIL.
+;;; - :written.  T or NIL to indicate whether these are the written or sounding
+;;;   notes for a transposing instrument. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE  
 ;;; If a the new pitches are passed as a simple flat list, the method returns
@@ -1303,7 +1310,7 @@ data: (
 ;;; 
 ;;; SYNOPSIS
 (defmethod change-pitches ((sc slippery-chicken) player start-bar new-pitches
-                           &optional (use-last-octave t) marks)
+                           &key (use-last-octave t) marks written)
 ;;; ****
   (if (simple-listp new-pitches)
       (progn
@@ -1335,7 +1342,8 @@ data: (
         ;; this hack gets the current bar number so we return where we left off
         (next-event sc nil))
       ;; the bar-holder method
-      (change-pitches (piece sc) player start-bar new-pitches use-last-octave)))
+      (change-pitches (piece sc) player start-bar new-pitches 
+                      :use-last-octave use-last-octave :written written)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

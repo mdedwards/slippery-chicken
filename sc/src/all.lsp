@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 12:16:55 Thu Mar 28 2013 GMT
+;;; $$ Last modified: 16:18:36 Thu May 30 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -194,6 +194,7 @@
 (pushnew :cm-2 *features*)
 
 (sc-compile-and-load "package.lsp")
+(sc-compile-and-load "globals.lsp")
 #+cmn (sc-compile-and-load "cmn.lsp")
 #+cmn (sc-compile-and-load "cmn-glyphs.lsp")
 #+cm (sc-compile-and-load "cm.lsp")

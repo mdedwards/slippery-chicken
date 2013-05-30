@@ -15,7 +15,7 @@
 ;;;
 ;;; Creation date:    5.12.00
 ;;;
-;;; $$ Last modified: 17:01:17 Thu May  2 2013 BST
+;;; $$ Last modified: 16:15:20 Thu May 30 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -71,6 +71,7 @@
    +pitch-seq-lowest-equals-prefers-low+
    +pitch-seq-lowest-equals-prefers-high+
    +slippery-chicken-standard-instrument-palette+
+   +cmn-display-auto-open+
 
    ;; functions (copy/pasted from robo_functions.html) 
    all-members almost-zero amplitude-to-dynamic assoc-list-id-list

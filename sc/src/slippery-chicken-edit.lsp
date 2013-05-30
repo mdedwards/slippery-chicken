@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 11:06:45 Tue May 28 2013 BST
+;;; $$ Last modified: 18:17:36 Thu May 30 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1322,11 +1322,13 @@ data: (
              (error "slippery-chicken::change-pitches: couldn't get event ~a!"
                     (1+ count)))
            (when note
-             (when use-last-octave
-               (multiple-value-bind
-                     (n o)
-                   (get-note-octave note t)
-                 (setf note (join-note-octave n o))))
+             ;; MDE Thu May 30 18:17:24 2013 -- 
+             (unless (pitch-p note)
+               (when use-last-octave
+                 (multiple-value-bind
+                       (n o)
+                     (get-note-octave note t)
+                   (setf note (join-note-octave n o)))))
              (setf (pitch-or-chord e) note))
            ;; NB note might be nil but mark not hence this isn't in the when
            (rhythm-add-marks e (nth count marks)))

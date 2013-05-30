@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:06:43 Tue May 28 2013 BST
+;;; $$ Last modified: 18:55:52 Thu May 30 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -631,25 +631,7 @@ data: 132
   (let* ((wporc (written-pitch-or-chord e))
          (porc (pitch-or-chord e))
          (diff (when wporc (pitch- wporc porc))))
-    ;; (setf (slot-value e 'pitch-or-chord) (set-pitch-aux pitch-or-chord))
-    (typecase value
-      (pitch (setf (slot-value e 'pitch-or-chord) (clone value)))
-      (chord (setf (slot-value e 'pitch-or-chord) (clone value))
-             ;; the cmn-data for a chord should be added to the event (whereas
-             ;; the cmn-data for a pitch is only added to that pitch, probably
-             ;; just a note-head change) 
-             (loop for m in (marks value) do
-                  (add-mark e m)))
-      ;; 26/3/07: nil shouldn't result in making a chord!
-      (list (setf (slot-value e 'pitch-or-chord)
-                  (if value
-                      (make-chord value :midi-channel (get-midi-channel e))
-                      ;; 23.3.11 nil needs to set is-rest slot too!
-                      (progn 
-                        (setf (is-rest e) t)
-                        nil))))
-      (symbol (setf (slot-value e 'pitch-or-chord) 
-                    (make-pitch value :midi-channel (get-midi-channel e)))))
+    (setf-pitch-aux e value 'pitch-or-chord)
     (when (pitch-or-chord e)
       (setf (is-rest e) nil))
     (when wporc
@@ -659,6 +641,40 @@ data: 132
                 nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May 30 18:49:56 2013 -- auto-sets the pitch-or-chord slot
+(defmethod set-written-pitch-or-chord ((e event) value)
+  (let* ((wporc (written-pitch-or-chord e))
+         (porc (pitch-or-chord e))
+         (diff (when wporc (pitch- wporc porc))))
+    (setf-pitch-aux e value 'written-pitch-or-chord)
+    (when (written-pitch-or-chord e)
+      (setf (is-rest e) nil
+            (slot-value e 'pitch-or-chord)
+            (transpose (written-pitch-or-chord e) (- diff))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod setf-pitch-aux ((e event) value slot)
+  (typecase value
+    (pitch (setf (slot-value e slot) (clone value)))
+    (chord (setf (slot-value e slot) (clone value))
+             ;; the cmn-data for a chord should be added to the event (whereas ;
+             ;; the cmn-data for a pitch is only added to that pitch, probably ;
+             ;; just a note-head change) ;
+           (loop for m in (marks value) do
+                (add-mark e m)))
+      ;; 26/3/07: nil shouldn't result in making a chord! ;
+    (list (setf (slot-value e slot)
+                (if value
+                    (make-chord value :midi-channel (get-midi-channel e))
+                      ;; 23.3.11 nil needs to set is-rest slot too! ;
+                    (progn 
+                      (setf (is-rest e) t)
+                      nil))))
+    (symbol (setf (slot-value e slot) 
+                  (make-pitch value :midi-channel (get-midi-channel e))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((i event) stream)
   (format stream "~%EVENT: start-time: ~,3f, end-time: ~,3f, ~

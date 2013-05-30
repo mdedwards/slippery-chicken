@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 11:20:57 Sat Apr 20 2013 BST
+;;; $$ Last modified: 19:46:09 Thu May 30 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -613,7 +613,7 @@
 ;;; 
 ;;; SYNOPSIS
 (defmethod change-pitches ((bh bar-holder) player start-bar new-pitches 
-                           &optional (use-last-octave t) ignore)
+                           &key (use-last-octave t) ignore)
 ;;; ****
   (declare (ignore ignore))
   (loop for bar in new-pitches and bar-num from start-bar do

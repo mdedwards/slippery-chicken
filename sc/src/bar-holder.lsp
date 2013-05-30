@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 19:57:12 Thu May 30 2013 BST
+;;; $$ Last modified: 21:07:34 Thu May 30 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -544,6 +544,7 @@
 ;;; bar-num & note-num are one-based; can't handle chords
 (defmethod change-pitch ((bh bar-holder) bar-num note-num player new-pitch
                          &optional written)
+  (print written)
   (let ((event (get-note bh bar-num note-num player)))
     (when event
       ;; remember the event class setf method will handle different types for

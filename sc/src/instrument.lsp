@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 23:08:23 Wed Jul 18 2012 BST
+;;; $$ Last modified: 20:40:21 Thu May 30 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -986,7 +986,8 @@ data: NIL
                (tenor (bf2 cs5 b2 gf4))
                ;; these are the clefs with 8ve signs under/over them
                (double-bass (c0 cs2 e1 c3))
-               (double-treble (f6 g9 c5 a6))))))
+               ;; MDE Thu May 30 20:40:00 2013 -- changed 2nd el from g9 to b8
+               (double-treble (f6 b8 c5 a6))))))
   (loop for clef in (data clex) do 
        (setf (data clef) (loop for note in (data clef)
                             collect (make-pitch note))))

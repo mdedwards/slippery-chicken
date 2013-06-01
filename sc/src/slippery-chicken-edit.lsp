@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 10:55:05 Sat Jun  1 2013 BST
+;;; $$ Last modified: 14:24:26 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5073,7 +5073,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 
 ;;; ****m* slippery-chicken-edit/map-over-bars
 ;;; DESCRIPTION
-;;; Apply the specified method/function to all bars (all rthm-seq-bar objects)
+;;; Apply the specified method/function to the bars (all rthm-seq-bar objects)
 ;;; of one or more players' parts in the given slippery-chicken object. 
 ;;; 
 ;;; ARGUMENTS

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 11:13:16 Sat Jun  1 2013 BST
+;;; $$ Last modified: 15:23:11 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -115,4 +115,20 @@
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****P* globals/+lilypond-command+ 
+;;; DESCRIPTION
+;;; The full path to the lilypond command.  We need to set this if we'll call
+;;; lp-display, i.e. if we want to automatically call Lilypond and open the
+;;; resultant PDF directly from Lisp.  The default should work if you have the
+;;; Lilypond app in your Applications folder on OSX.
+;;;
+;;; ARGUMENTS
+;;; T or NIL
+;;; 
+;;; SYNOPSIS
+(defparameter +lilypond-command+ 
+  "/Applications/LilyPond.app/Contents/Resources/bin/lilypond")
+;;; ****
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF globals.lsp

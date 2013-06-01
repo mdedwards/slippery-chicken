@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:29:11 Sat Jun  1 2013 BST
+;;; $$ Last modified: 15:28:33 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5682,11 +5682,11 @@ data: NIL
 ;;;   CMN will fail.
 ;;; 
 ;;; RETURN VALUE
-;;; T
+;;; The path of the main score file generated.
 ;;; 
 ;;; EXAMPLE
 #|
-;;; An example with values for the most frequently used arguments ;
+;;; An example with values for the most frequently used arguments
 (let ((mini
        (make-slippery-chicken
         '+mini+
@@ -5830,6 +5830,9 @@ data: NIL
          ;; for file names  
          ;; MDE Fri Apr  6 12:46:27 2012 -- and remove ' too
          (title-hyphens (filename-from-title (title sc)))
+         (main-score-file
+          (concatenate 'string path
+                       (format nil "_~a-score.ly" title-hyphens)))
          (def-file (format nil "~a-def.ly" title-hyphens))
          (staff-group (if group-barlines "StaffGroup" "ChoirStaff"))
          (players-strings
@@ -5988,10 +5991,7 @@ data: NIL
         (format out "~%  >>~%}"))
       ;; write the main score file
       (with-open-file
-          (out 
-           (concatenate 'string path
-                        (format nil "_~a-score.ly" title-hyphens))
-           :direction :output :if-does-not-exist :create
+          (out main-score-file :direction :output :if-does-not-exist :create
            :if-exists :rename-and-delete)
         (format out "~&\\version \"~a\"" lp-version)
         (format out "~%\\include \"~a\"" def-file)
@@ -6037,8 +6037,8 @@ data: NIL
             (format nil "~a~a-~a-written.ly" path title-hyphens pname)
             :all-bar-nums all-bar-nums :in-c nil :start-bar start-bar
             :start-bar-numbering start-bar-numbering
-            :end-bar end-bar)))))
-  t)
+            :end-bar end-bar))))
+    main-score-file))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -7655,6 +7655,44 @@ duration: 20.0 (20.000)
 ;;; MDE Thu Mar  8 15:42:33 2012 
 (defun slippery-chicken-p (thing)
   (typep thing 'slippery-chicken))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* slippery-chicken/lp-display
+;;; DESCRIPTION
+;;; This macro has exactly the same arguments as write-lp-data-for all and only
+;;; differs from that method in that after writing all the Lilypond text files
+;;; for the score, it calls Lilypond to render the PDF, which is then opened
+;;; automatically from within Lisp.
+;;; 
+;;; In order to work properly, you'll need to make sure the +lilypond-command+
+;;; global variable is set to the full path of your Lilypond command (not the
+;;; app: it's usually /path/to/Lilypond.app/Contents/Resources/bin/lilypond on
+;;; OSX).   
+;;; 
+;;; NB with SBCL on OSX the output from Lilypond is only printed once the
+;;; process has exited, so it may take a while until you see anything.
+;;; 
+;;; ARGUMENTS
+;;; See write-lp-data-for-all
+;;; 
+;;; RETURN VALUE
+;;; An integer: the shell's exit code for the PDF open command, usually 0 for
+;;; success.
+;;; 
+;;; SYNOPSIS
+(defmacro lp-display (&rest args)
+;;; ****
+  #+sbcl
+  `(let* ((lp-file (write-lp-data-for-all ,@args))
+          (no-ext (path-minus-extension lp-file))
+          (success (shell +lilypond-command+ "-o" no-ext lp-file)))
+     (print lp-file)
+     (if (zerop success)
+         (system-open-file
+          (concatenate 'string no-ext ".pdf"))
+         (error "slippery-chicken::lp-display: Call to Lilypond failed.")))
+  #-sbcl
+  (warn "slippery-chicken::lp-display: sorry, but this only works in SBCL"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 15:23:11 Sat Jun  1 2013 BST
+;;; $$ Last modified: 17:46:35 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -105,7 +105,9 @@
 ;;; ****P* globals/+sc-default-dir+
 ;;; DESCRIPTION
 ;;; The default directory for output of sound files, EPS files, and Lilypond
-;;; files. Don't forget the trailing slash (i.e. "/tmp/" not "/tmp")
+;;; files. Don't forget the trailing slash (i.e. "/tmp/" not "/tmp").  Bear in
+;;; mind that on OSX the /tmp directory is emptied upon reboot so you shouldn't
+;;; store any files you'd like to keep in there.
 ;;;
 ;;; ARGUMENTS
 ;;; T or NIL

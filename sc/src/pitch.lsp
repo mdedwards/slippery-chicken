@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 20:39:02 Thu May 30 2013 BST
+;;; $$ Last modified: 11:10:51 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3119,14 +3119,16 @@ data: F4
 ;;; keyword arguments:
 ;;; - :staff. The CMN staff object to display with.  Default = cmn::treble.
 ;;; - :size.  The CMN size for the staff.  Default = 20.
-;;; - :file.  The path of the file to (over)write.  Default = "/tmp/pitches.eps"
+;;; - :file.  The path of the file to (over)write.  
+;;;    Default = "pitches.eps" in the directory +sc-default-dir+ (default /tmp)
 ;;; 
 ;;; RETURN VALUE
 ;;; A CMN score object.
 ;;; 
 ;;; SYNOPSIS
-(defun cmn-display-pitch-list (pitches &key (staff cmn::treble) (size 20)
-                               (file "/tmp/pitches.eps"))
+(defun cmn-display-pitch-list 
+    (pitches &key (staff cmn::treble) (size 20)
+     (file (concatenate 'string +sc-default-dir+ "pitches.eps")))
 ;;; **** 
   (if (and pitches (every #'pitch-p pitches))
       (cmn::cmn (cmn::output-file file) (cmn::size size)

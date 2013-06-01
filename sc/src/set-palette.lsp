@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 16:20:21 Thu May 30 2013 BST
+;;; $$ Last modified: 12:19:48 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -214,7 +214,10 @@
                         &key
                         ;; 10.3.10: display on 4 staves (treble+15 bass-15)?
                         (4stave nil)
-                        (file "/tmp/cmn.eps")
+                        (file 
+                         (format nil "~a~a.eps" 
+                                 +sc-default-dir+ 
+                                 (string-downcase (id sp))))
                         (text-x-offset -0.5)
                         (text-y-offset nil)
                         (font-size 10.0)

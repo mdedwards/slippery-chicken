@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 14:55:31 Wed May 29 2013 BST
+;;; $$ Last modified: 11:22:24 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3455,5 +3455,14 @@ WARNING:
   (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
            file))
   
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Jun  1 11:21:10 2013 -- get a file name from a piece title by
+;;; replacing spaces with hyphens etc. 
+(defun filename-from-title (title)
+  (string-downcase
+   (remove
+    #\'
+    (substitute #\- #\  title))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

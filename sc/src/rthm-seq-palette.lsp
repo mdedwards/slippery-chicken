@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 16:15:30 Thu May 30 2013 BST
+;;; $$ Last modified: 11:50:02 Sat Jun  1 2013 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -561,7 +561,10 @@ rthm-seq SEQ3
 (defmethod cmn-display ((rsp rthm-seq-palette)
                         &key
                         (all-output-in-one-file t)
-                        (file "/tmp/cmn.eps")
+                        (file 
+                         (format nil "~a~a.eps" 
+                                 +sc-default-dir+ 
+                                 (string-downcase (id rsp))))
                         (staff-separation 3)
                         (line-separation 5)
                         (page-nums t)

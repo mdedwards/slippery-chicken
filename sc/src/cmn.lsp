@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 19:28:57 Fri May 17 2013 BST
+;;; $$ Last modified: 11:07:41 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -683,7 +683,7 @@
 
 (defun cmn-display (system-list 
                     &key
-                    (file "/tmp/cmn.eps")
+                    (file (concatenate 'string +sc-default-dir+ "cmn.eps"))
                     (page-height 29.7)
                     (page-width 21.0)
                     (size 20)

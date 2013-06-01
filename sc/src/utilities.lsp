@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 15:47:06 Sat Jun  1 2013 BST
+;;; $$ Last modified: 16:34:20 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3467,8 +3467,74 @@ WARNING:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun update-app-src (path-to-app)
-  
+;;; ****f* utilities/update-app-src
+;;; DESCRIPTION
+;;; For users of the slippery chicken app, this macro will update the source
+;;; code of the app to the latest in the online subversion (svn) repository.
+;;; An internet connection is therefore necessary.  
+;;;
+;;; The first time it is run it will delete the current source code and
+;;; download all the new source code, so make sure to back up if you've
+;;; modified the source code yourself.  When it is run from then on, it will
+;;; only update the source code that is no longer up to date.
+;;; 
+;;; Users without the app can always download the latest source code in a
+;;; terminal by issuing the following command.
+;;; svn co https://svn.ecdf.ed.ac.uk/repo/user/medward2/sc-tags/sc-latest/src
+;;;
+;;; NB Only works in SBCL on UNIX systems currently
+;;; 
+;;; ARGUMENTS
+;;; The full path to the slippery-chicken application, minus the last slash.
+;;; Remember that this can't include any spaces in file/folder names 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; :rm.  The path to the shell 'rm' command.  Default = "/bin/rm"
+;;; :svn.  The path to the shell 'svn' command.  Default = "/usr/bin/svn"
+;;; 
+;;; RETURN VALUE
+;;; The shell return value of the call to SVN, usually 0 on success.
+;;; 
+;;; EXAMPLE
+#|
+Running for the first time:
+(UPDATE-APP-SRC "/tmp/sc-app/slippery-chicken.app")
+A    /tmp/sc-app/slippery-chicken.app/Contents/Resources/sc/src/sndfile.lsp
+A    /tmp/sc-app/slippery-chicken.app/Contents/Resources/sc/src/osc.lsp
+A    /tmp/sc-app/slippery-chicken.app/Contents/Resources/sc/src/osc-sc.lsp
+[...]
+Checked out revision 3608.
+0
+
+or after successfully updating a previously updated version:
+...
+At revision 3608.
+0
+|#
+;;; SYNOPSIS
+(defmacro update-app-src (path-to-app &key (rm "/bin/rm") (svn "/usr/bin/svn"))
+;;; ****
+  #+(and sbcl unix)
+  (let* ((sc (concatenate 'string path-to-app "/Contents/Resources/sc/"))
+         (src (concatenate 'string sc "src/"))
+         (svn-command
+          (if (probe-file (concatenate 'string src ".svn/entries"))
+              ;; we've already used svn
+              (list "update" src)
+              ;; need to check out for the first time
+              (progn
+                (shell rm "-r" "-f" src)
+                (list 
+                 "co" 
+                 (concatenate 'string
+                              "https://svn.ecdf.ed.ac.uk/repo/user/medward2/"
+                              "sc-tags/sc-latest/src")
+                 src)))))
+    `(shell ,svn ,@svn-command))
+  #-(and sbcl unix)
+  (warn "utilities::update-app-src: Sorry but this currently only runs ~
+         with SBCL on Mac OSX"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

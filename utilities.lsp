@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 16:34:20 Sat Jun  1 2013 BST
+;;; $$ Last modified: 17:00:49 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3499,7 +3499,7 @@ WARNING:
 ;;; EXAMPLE
 #|
 Running for the first time:
-(UPDATE-APP-SRC "/tmp/sc-app/slippery-chicken.app")
+(update-app-src "/tmp/sc-app/slippery-chicken.app")
 A    /tmp/sc-app/slippery-chicken.app/Contents/Resources/sc/src/sndfile.lsp
 A    /tmp/sc-app/slippery-chicken.app/Contents/Resources/sc/src/osc.lsp
 A    /tmp/sc-app/slippery-chicken.app/Contents/Resources/sc/src/osc-sc.lsp

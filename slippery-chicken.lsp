@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:28:33 Sat Jun  1 2013 BST
+;;; $$ Last modified: 16:48:57 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5572,7 +5572,8 @@ data: NIL
 ;;; NB: This method only produces the .ly files. These must be rendered by the
 ;;;     LilyPond application separately for PDF output. See the slippery
 ;;;     chicken installation web page and the manual page on Output for more
-;;;     detail.
+;;;     detail.  Bear in mind that SBCL users on OSX can use the lp-display
+;;;     macro to call Lilypond and display the resultant PDF automatically.
 ;;;
 ;;; NB: Many of the arguments for this method pass their values directly to
 ;;;     LilyPond parameters. 

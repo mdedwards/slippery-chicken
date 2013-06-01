@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 14:59:21 Sat Jun  1 2013 BST
+;;; $$ Last modified: 15:47:06 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3464,6 +3464,11 @@ WARNING:
    (remove
     #\'
     (substitute #\- #\  title))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun update-app-src (path-to-app)
+  
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

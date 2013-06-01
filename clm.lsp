@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11/5/2012
 ;;;
-;;; $$ Last modified: 19:26:25 Tue Jul  3 2012 BST
+;;; $$ Last modified: 11:04:45 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -215,7 +215,8 @@
 ;;;   Default = '(34 21 13 8)
 ;;; - :max-start-time. A number that is the maximum time in second at which a
 ;;;   segment can start in the resulting sound file. Default = 60.0.
-;;; - :output-dir. The directory path for the output file. Default = "/tmp/".
+;;; - :output-dir. The directory path for the output file. 
+;;;   Default = +sc-default-dir+. 
 ;;; - :srate. The sampling rate. If specified by the user, this will generally
 ;;;   be a number. By default it takes the CLM global sample-rate, i.e.
 ;;;   clm::*clm-srate*
@@ -273,7 +274,7 @@
                   (max-perms 1000)
                   (fibonacci-transitions '(34 21 13 8))
                   (max-start-time 60.0)
-                  (output-dir "/tmp/")
+                  (output-dir +sc-default-dir+)
                   (srate clm::*clm-srate*)
                   (data-format clm::*clm-data-format*)
                   ;; MDE Fri May 11 15:33:45 2012 
@@ -435,7 +436,7 @@
 ;;;   Default = '(34 21 13 8).
 ;;; - :max-start-time. A number that is the maximum time in seconds at which a
 ;;;   segment can start in the resulting sound file. Default = 60.0.
-;;; - :output-dir. The directory path for the output file. Default = "/tmp/".
+;;; - :output-dir. The directory path for the output file. Default = +sc-default-dir+.
 ;;; - :srate. The sampling rate. If specified by the user, this will generally
 ;;;   be a number. By default it takes the CLM global sample-rate, i.e.
 ;;;   clm::*clm-srate*
@@ -504,7 +505,7 @@
                       (max-perms 1000)
                       (fibonacci-transitions '(34 21 13 8))
                       (max-start-time 60.0)
-                      (output-dir "/tmp/")
+                      (output-dir +sc-default-dir+)
                       (srate clm::*clm-srate*)
                       (data-format clm::*clm-data-format*)
                       ;; MDE Fri May 11 15:33:45 2012 

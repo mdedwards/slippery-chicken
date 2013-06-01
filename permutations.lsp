@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 19:13:04 Tue May  8 2012 BST
+;;; $$ Last modified: 11:09:14 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -318,15 +318,17 @@
 (defun permutations (level)
 ;;; ****
   (if (> level 8)
-      (let ((stream (open "/tmp/permutations.txt"
-                          :direction :output :if-exists :overwrite
-                          :if-does-not-exist :create)))
+      (let* ((file (concatenate 'string +sc-default-dir+ "permutations.txt"))
+             (stream (open file
+                           :direction :output :if-exists :overwrite
+                           :if-does-not-exist :create)))
         (warn "permutations::permutations: This call will return ~a ~%~
                results so they are being written to the file ~%~
-               '/tmp/permutations.txt'." 
+               '~a'." 
               (loop for i from 2 to level with j = 1 do 
                    (setf j (* j i)) 
-                   finally (return j)))
+                   finally (return j))
+              file)
         (permutations-aux level stream)
         (close stream))
       (permutations-aux level)))
@@ -392,7 +394,7 @@ results so they are being written to the file
     (error "permutations::permutate: argument (~a) must be a list." list))
   (let ((ps (permutations (length list))))
     (when (listp ps) ; otherwise there were too many and they're written to a
-		     ; file 
+                     ; file 
       (loop for p in ps collect
            (loop for e in p collect (nth e list))))))
 

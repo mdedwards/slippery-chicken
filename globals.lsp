@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 17:27:15 Thu May 30 2013 BST
+;;; $$ Last modified: 11:13:16 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -101,6 +101,18 @@
 (defparameter +cmn-display-auto-open+ #+sbcl T #-sbcl nil)
 ;;; ****
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****P* globals/+sc-default-dir+
+;;; DESCRIPTION
+;;; The default directory for output of sound files, EPS files, and Lilypond
+;;; files. Don't forget the trailing slash (i.e. "/tmp/" not "/tmp")
+;;;
+;;; ARGUMENTS
+;;; T or NIL
+;;; 
+;;; SYNOPSIS
+(defparameter +sc-default-dir+ "/tmp/")
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF globals.lsp

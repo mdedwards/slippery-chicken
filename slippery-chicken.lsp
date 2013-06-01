@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:19:42 Thu May 30 2013 BST
+;;; $$ Last modified: 12:29:11 Sat Jun  1 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -122,7 +122,7 @@
    ;; in the case of the sndfile-palette, we put the palette first in a list,
    ;; the paths second and the extensions third
    (snd-output-dir :accessor snd-output-dir
-                   :initarg :snd-output-dir :initform "/tmp/")
+                   :initarg :snd-output-dir :initform +sc-default-dir+)
    ;; see clm-play method for a description of this slot.
    (sndfile-palette :accessor sndfile-palette :initarg :sndfile-palette
                     :initform nil)
@@ -161,7 +161,7 @@
    ;; 31.1.11: this title will be used in lilypond file names. Any spaces will
    ;; be turned into hyphens when creating file names (but not the title in the
    ;; score of course).
-   (title :accessor title :initarg :title :initform "slippery chicken piece")
+   (title :accessor title :initarg :title :initform "slippery chicken")
    ;; MDE Fri Dec  9 19:43:58 2011 -- for lilypond
    (composer :accessor composer :initarg :composer :initform nil)
    ;; 10/3/07: simply a list of bar numbers where a rehearsal letter should be
@@ -571,7 +571,8 @@
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
 ;;; - :file. A string that is the directory path with file name and extension
-;;;   for the .eps file to be created. Default = "/tmp/cmn.eps".
+;;;   for the .eps file to be created. Default = "cmn.eps" in the directory
+;;;   +sc-default-dir+ (default "/tmp/") 
 ;;; - :players. NIL or a list of player IDs to indicate whether all players'
 ;;;   parts should be printed to the score. If NIL, all players' parts will be
 ;;;   written to the score. If a single symbol or a list of player IDs, only
@@ -775,7 +776,9 @@
                         (end-bar nil)
                         ;; MDE Fri Apr  6 13:27:08 2012 
                         (title t)
-                        (file "/tmp/cmn.eps")
+                        (file (format nil "~a~a.eps"
+                                      +sc-default-dir+ 
+                                      (filename-from-title (title sc))))
                         (all-output-in-one-file t)
                         (one-line-per-page nil)
                         (staff-separation 3)
@@ -3693,7 +3696,8 @@ seq-num 5, VN, replacing G3 with B6
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
 ;;; - :midi-file. The name of the MIDI file to produce, including directory
-;;;   path and extension. Default = "/tmp/sc.mid".
+;;;   path and extension. Default is a filename extracted from the title of the
+;;;   sc piece, placed in the +sc-default-dir+ directory (default /tmp).
 ;;; - :voices. NIL or a list of player IDs indicating which of the players'
 ;;;   parts are to be included in the resulting MIDI file. If NIL, all players'
 ;;;   parts will be included. Default = NIL.
@@ -3764,7 +3768,10 @@ seq-num 5, VN, replacing G3 with B6
                       ;; when calling get-data.
                       ;; if nil then all voices.
                       (voices nil)
-                      (midi-file "/tmp/sc.mid")
+                      (midi-file
+                       (format nil "~a~a.mid"
+                               +sc-default-dir+ 
+                               (filename-from-title (title sc))))
                       (from-sequence 1)
                       (num-sequences nil)
                       ;; if nil we'll write all the sections
@@ -4109,7 +4116,7 @@ seq-num 5, VN, replacing G3 with B6
                         (3 ((cl (3 1 2 4 3 1 2))
                             (hn (3 4 2 1 3 2 1))
                             (vc (3 2 3 1 4 2 1)))))
-        :snd-output-dir "/tmp/"
+        :snd-output-dir +sc-default-dir+
         :sndfile-palette '(((sndfile-grp-1
                              ((test-sndfile-1.aiff)
                               (test-sndfile-2.aiff)
@@ -5579,7 +5586,7 @@ data: NIL
 ;;; keyword arguments:
 ;;; - :base-path. A string that is the directory path only for the resulting
 ;;;   files. The method will automatically generate the file names and
-;;;   extensions. Default =  "/tmp/".
+;;;   extensions. Default =  +sc-default-dir+.
 ;;; - :start-bar. An integer that is the first bar of the given
 ;;;   slippery-chicken object for which output is to be generated. If NIL, the
 ;;;   start-bar will be set to 1. Default = NIL.
@@ -5737,7 +5744,7 @@ data: NIL
 ;;; SYNOPSIS
 (defmethod write-lp-data-for-all ((sc slippery-chicken) 
                                   &key
-                                  (base-path "/tmp/")
+                                  (base-path +sc-default-dir+)
                                   start-bar end-bar (paper "a4") landscape
                                   ;; MDE Tue May 29 21:34:53 2012 
                                   start-bar-numbering
@@ -5822,10 +5829,7 @@ data: NIL
          ;; MDE Fri Dec  9 19:33:28 2011 -- replace spaces with hyphens so good
          ;; for file names  
          ;; MDE Fri Apr  6 12:46:27 2012 -- and remove ' too
-         (title-hyphens (string-downcase
-                         (remove
-                          #\'
-                          (substitute #\- #\  (title sc)))))
+         (title-hyphens (filename-from-title (title sc)))
          (def-file (format nil "~a-def.ly" title-hyphens))
          (staff-group (if group-barlines "StaffGroup" "ChoirStaff"))
          (players-strings
@@ -6675,7 +6679,7 @@ duration: 20.0 (20.000)
 ;;;   manual and robodoc entries for rthm-seq-map and sc-map for more details.
 ;;; - :snd-output-dir. A string that will be used as the directory path for any
 ;;;   output generated by clm-play in conjunction with sound files listed in
-;;;   the sndfile-palette (see below). Default = "/tmp/".
+;;;   the sndfile-palette (see below). Default = +sc-default-dir+.
 ;;; - :sndfile-palette. A recursive association list that will be used as the
 ;;;   data to create a sndfile-palette object within the slippery-chicken
 ;;;   object. This is where the list is defined that contains all possible
@@ -6905,7 +6909,7 @@ duration: 20.0 (20.000)
                               sndfile-palette 
                               tempo-map 
                               tempo-curve 
-                              (snd-output-dir "/tmp/")
+                              (snd-output-dir +sc-default-dir+)
                               instrument-change-map 
                               instruments-write-bar-nums
                               bars-per-system-map

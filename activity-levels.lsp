@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 14:29:38 Fri May 24 2013 BST
+;;; $$ Last modified: 14:31:33 Fri May 24 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -128,7 +128,8 @@
 
 ;;; ****m* activity-levels/reset
 ;;; DESCRIPTION
-;;; 
+;;; Reset the activity-levels object to restart at the first element of the 1st
+;;; (or user-specificed) 10-element list. 
 ;;; 
 ;;; ARGUMENTS
 ;;; The activity-levels object. 

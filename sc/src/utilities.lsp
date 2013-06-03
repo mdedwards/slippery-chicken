@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:00:49 Sat Jun  1 2013 BST
+;;; $$ Last modified: 11:43:52 Mon Jun  3 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3468,6 +3468,9 @@ WARNING:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****f* utilities/update-app-src
+;;; DATE
+;;; June 1st 2013
+;;;
 ;;; DESCRIPTION
 ;;; For users of the slippery chicken app, this macro will update the source
 ;;; code of the app to the latest in the online subversion (svn) repository.
@@ -3476,13 +3479,16 @@ WARNING:
 ;;; The first time it is run it will delete the current source code and
 ;;; download all the new source code, so make sure to back up if you've
 ;;; modified the source code yourself.  When it is run from then on, it will
-;;; only update the source code that is no longer up to date.
+;;; only update the source code that is out of date.
+;;;
+;;; Once the source code is updated, you'll need to restart the app or just
+;;; Lisp for the changes to be recompiled. 
 ;;; 
 ;;; Users without the app can always download the latest source code in a
 ;;; terminal by issuing the following command.
 ;;; svn co https://svn.ecdf.ed.ac.uk/repo/user/medward2/sc-tags/sc-latest/src
 ;;;
-;;; NB Only works in SBCL on UNIX systems currently
+;;; NB This function currently works in SBCL on UNIX systems only.
 ;;; 
 ;;; ARGUMENTS
 ;;; The full path to the slippery-chicken application, minus the last slash.

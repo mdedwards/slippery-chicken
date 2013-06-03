@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 16:18:36 Thu May 30 2013 BST
+;;; $$ Last modified: 16:35:54 Mon Jun  3 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -260,6 +260,4 @@
 #+sbcl (sc-compile-and-load "osc.lsp")
 #+sbcl (sc-compile-and-load "osc-sc.lsp")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF all.lsp
-

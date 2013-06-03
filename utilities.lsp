@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 11:43:52 Mon Jun  3 2013 BST
+;;; $$ Last modified: 14:14:01 Mon Jun  3 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3472,7 +3472,7 @@ WARNING:
 ;;; June 1st 2013
 ;;;
 ;;; DESCRIPTION
-;;; For users of the slippery chicken app, this macro will update the source
+;;; For users of the slippery chicken app, this function will update the source
 ;;; code of the app to the latest in the online subversion (svn) repository.
 ;;; An internet connection is therefore necessary.  
 ;;;
@@ -3519,7 +3519,7 @@ At revision 3608.
 0
 |#
 ;;; SYNOPSIS
-(defmacro update-app-src (path-to-app &key (rm "/bin/rm") (svn "/usr/bin/svn"))
+(defun update-app-src (path-to-app &key (rm "/bin/rm") (svn "/usr/bin/svn"))
 ;;; ****
   #+(and sbcl unix)
   (let* ((sc (concatenate 'string path-to-app "/Contents/Resources/sc/"))
@@ -3537,7 +3537,7 @@ At revision 3608.
                               "https://svn.ecdf.ed.ac.uk/repo/user/medward2/"
                               "sc-tags/sc-latest/src")
                  src)))))
-    `(shell ,svn ,@svn-command))
+    (apply #'shell (cons svn svn-command)))
   #-(and sbcl unix)
   (warn "utilities::update-app-src: Sorry but this currently only runs ~
          with SBCL on Mac OSX"))

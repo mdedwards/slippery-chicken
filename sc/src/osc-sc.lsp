@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified: 12:08:53 Tue Jun  4 2013 BST
+;;; $$ Last modified: 21:58:33 Tue Jun  4 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -68,6 +68,9 @@
 ;;; given IP address on the given port.  It is up to the receiver to then parse
 ;;; the result (e.g. in MaxMSP via [udpreceive][fromsymbol][route list int
 ;;; float symbol]).  
+;;;
+;;; For an example max/msp patch, see osc-test.maxpat in the examples folder of
+;;; the documentation (http://michael-edwards.org/sc/examples/osc-test.maxpat)
 ;;; 
 ;;; NB: Currently only works in SBCL.
 ;;;     Some lists (e.g. those including strings/symbols) might not be

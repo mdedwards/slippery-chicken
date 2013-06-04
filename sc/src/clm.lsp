@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11/5/2012
 ;;;
-;;; $$ Last modified: 11:04:45 Sat Jun  1 2013 BST
+;;; $$ Last modified: 17:18:58 Tue Jun  4 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -392,7 +392,7 @@
                             start start2
                             end end2))
                   (setf duration (/ (- end start) src))
-                  (format t "~%   ~a: src: ~a, dur: ~a, ~a -> ~a" 
+                  (format t "~&   ~a: src: ~a, dur: ~a, ~a -> ~a~%" 
                           output-start src duration start end)
                   (clm::samp5 sndfile output-start
                               :printing nil

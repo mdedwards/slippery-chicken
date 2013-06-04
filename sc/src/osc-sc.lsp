@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified: 17:40:25 Wed Dec 19 2012 ICT
+;;; $$ Last modified: 12:08:53 Tue Jun  4 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -56,6 +56,11 @@
 ;;; waits for input and processes in an endless loop; send 'quit' to stop the
 ;;; function and return to the interpreter.  Messages the function doesn't
 ;;; understand will be ignored after a warning being printed.
+;;;
+;;; As this function only terminates when a 'quit' message is sent via OSC, the
+;;; only way to quit from within Lisp is to send the Interrupt Command (usually
+;;; Control-C, twice).  In that case, the open sockets will remain open, and
+;;; only closed before reopening the next time this function is called.
 ;;; 
 ;;; Lisp code can be sent, e.g. in MaxMSP via a message, including
 ;;; opening/closing parentheses and nested calls; symbols should be quoted as
@@ -70,15 +75,17 @@
 ;;;     [fromsymbol]. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - The UDP port to listen to for messages.
-;;; - The IP address to send UDP messages back out on.
-;;; - The UDP port to send messages back out on.
+;;; keyword arguments:
+;;; - :listen-port. The UDP port to listen to for messages. Default = 8000.
+;;; - :send-ip.  The IP address to send UDP messages back out on. 
+;;;    Default = #(127 0 0 1))
+;;; - :send-port. The UDP port to send messages back out on. Default = 8001.
 ;;; 
 ;;; RETURN VALUE
 ;;; T
 ;;; 
 ;;; SYNOPSIS
-(defun osc-call (&optional 
+(defun osc-call (&key
                  (listen-port 8000)
                  (send-ip #(127 0 0 1))
                  (send-port 8001))
@@ -117,28 +124,44 @@
 ;;; Output stream as global so we can send OSC messages from other
 ;;; methods/functions once we're in the osc-call loop. 
 (defparameter +osc-sc-output-stream+ nil)
+(defparameter +osc-sc-in-socket+ nil)
+(defparameter +osc-sc-out-socket+ nil)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun osc-cleanup-sockets ()
+  (when +osc-sc-in-socket+ (socket-close +osc-sc-in-socket+))
+  (when +osc-sc-out-socket+ (socket-close +osc-sc-out-socket+))
+  (setf +osc-sc-output-stream+ nil
+        +osc-sc-in-socket+ nil
+        +osc-sc-out-socket+ nil))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; The main function we call to process lisp code and other messages sent via
 ;;; OSC .  Listens on a given port and sends out on another.  NB ip#s need to
 ;;; be in the format #(127 0 0 1) for now.
 
 (defun osc-call (listen-port send-ip send-port) 
-  (let ((in (make-udp-socket))
-        (out (make-udp-socket))
+  (let (;(in (make-udp-socket))
+        ;(out (make-udp-socket))
         (buffer (make-sequence '(vector (unsigned-byte 8)) 512)))
-    (socket-bind in #(0 0 0 0) listen-port)
-    (socket-connect out send-ip send-port)
+    ;; in case we exited abnormally last time
+    (osc-cleanup-sockets)
+    (setf +osc-sc-in-socket+ (make-udp-socket)
+          +osc-sc-out-socket+ (make-udp-socket))
+    (socket-bind +osc-sc-in-socket+ #(0 0 0 0) listen-port)
+    (socket-connect +osc-sc-out-socket+ send-ip send-port)
     ;; (let ((stream 
     (setf +osc-sc-output-stream+
           (socket-make-stream
-           out :input t :output t 
+           +osc-sc-out-socket+ :input t :output t 
            :element-type '(unsigned-byte 8) :buffering :full))
     (unwind-protect 
          (format t "~&All good. Awaiting osc messages.~%")
       (loop with happy = t while happy do 
          ;; need this otherwise messages only get printed when we quit
            (finish-output t)
-           (socket-receive in buffer nil)
+           (socket-receive +osc-sc-in-socket+ buffer nil)
            (let* ((oscuff (osc:decode-bundle buffer))
                   ;; here: check if there's an opening (
                   (soscuff 
@@ -155,10 +178,8 @@
                (lisp (osc-eval +osc-sc-output-stream+ oscuff))
                (t (warn "osc-sc::osc-call: Don't understand ~a. Ignoring."
                         soscuff)
-                  (finish-output)))))
-      (when in (socket-close in)) 
-      (when out (socket-close out)))
-    (setf +osc-sc-output-stream+ nil))
+                  (finish-output)))))))
+  (osc-cleanup-sockets)
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 17:46:35 Sat Jun  1 2013 BST
+;;; $$ Last modified: 20:07:35 Tue Jun  4 2013 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -99,6 +99,32 @@
 ;;; 
 ;;; SYNOPSIS
 (defparameter +cmn-display-auto-open+ #+sbcl T #-sbcl nil)
+;;; ****
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****P* globals/+lp-display-auto-open+
+;;; DESCRIPTION
+;;; Whether to automatically open PDF files generated with via lp-display.
+;;; Currently only works with SBCL on Mac OSX.
+;;; 
+;;; ARGUMENTS
+;;; T or NIL
+;;; 
+;;; SYNOPSIS
+(defparameter +lp-display-auto-open+ #+sbcl T #-sbcl nil)
+;;; ****
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****P* globals/+midi-play-auto-open+
+;;; DESCRIPTION
+;;; Whether to automatically open MIDI files generated with via midi-play.
+;;; Currently only works with SBCL on Mac OSX.
+;;; 
+;;; ARGUMENTS
+;;; T or NIL
+;;; 
+;;; SYNOPSIS
+(defparameter +midi-play-auto-open+ #+sbcl T #-sbcl nil)
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

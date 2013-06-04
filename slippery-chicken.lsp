@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:48:57 Sat Jun  1 2013 BST
+;;; $$ Last modified: 20:08:27 Tue Jun  4 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -695,6 +695,10 @@
 ;;; - :add-postscript. NIL or postscript code to be added to the .eps file
 ;;;   after it has been generated. See the add-ps-to-file function for details.
 ;;;   Default = NIL.
+;;; - :auto-open.  Whether to open the .EPS file once written. Currently only
+;;;    available on OSX with SBCL.  Uses the default app for .EPS files, as if
+;;;    opened with 'open' in the terminal.  Default = Value of global
+;;;    +cmn-display-auto-open+.  
 ;;;
 ;;; RETURN VALUE  
 ;;; Always T.
@@ -3717,9 +3721,13 @@ seq-num 5, VN, replacing G3 with B6
 ;;; - :force-velocity. An integer between 0 and 127 (inclusive) that is the
 ;;;   MIDI velocity value which will be given to all notes in the resulting
 ;;;   MIDI file. Default = NIL.
+;;; - :auto-open.  Whether to open the MIDI file once written. Currently only
+;;;    available on OSX with SBCL.  Uses the default app for MIDI files, as if
+;;;    opened with 'open' in the terminal.  Default = Value of global
+;;;    +midi-play-auto-open+.  
 ;;; 
 ;;; RETURN VALUE
-;;; Returns T.
+;;; Returns the path of the file written, as a string.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -3776,6 +3784,8 @@ seq-num 5, VN, replacing G3 with B6
                       (num-sequences nil)
                       ;; if nil we'll write all the sections
                       (num-sections nil)
+                      ;; MDE Tue Jun  4 19:06:11 2013 -- 
+                      (auto-open +midi-play-auto-open+)
                       ;; if this is a 7-bit number we'll use this for all notes
                       (force-velocity nil))
 ;;; ****
@@ -3853,7 +3863,10 @@ seq-num 5, VN, replacing G3 with B6
                             (get-nth-sequenz (piece sc) nth-seq-ref
                                              (first voices) 
                                              (1- from-sequence))))
-                        force-velocity)))
+                        force-velocity)
+    (when auto-open
+      (system-open-file midi-file))
+    midi-file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -7660,10 +7673,12 @@ duration: 20.0 (20.000)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* slippery-chicken/lp-display
 ;;; DESCRIPTION
-;;; This macro has exactly the same arguments as write-lp-data-for all and only
-;;; differs from that method in that after writing all the Lilypond text files
-;;; for the score, it calls Lilypond to render the PDF, which is then opened
-;;; automatically from within Lisp.
+
+;;; This function has exactly the same arguments as write-lp-data-for all and
+;;; only differs from that method in that after writing all the Lilypond text
+;;; files for the score, it calls Lilypond to render the PDF, which is then
+;;; opened automatically from within Lisp (if the value of the global
+;;; +lp-display-auto-open+ is T).
 ;;; 
 ;;; In order to work properly, you'll need to make sure the +lilypond-command+
 ;;; global variable is set to the full path of your Lilypond command (not the
@@ -7681,17 +7696,18 @@ duration: 20.0 (20.000)
 ;;; success.
 ;;; 
 ;;; SYNOPSIS
-(defmacro lp-display (&rest args)
+(defun lp-display (&rest args)
 ;;; ****
   #+sbcl
-  `(let* ((lp-file (write-lp-data-for-all ,@args))
-          (no-ext (path-minus-extension lp-file))
-          (success (shell +lilypond-command+ "-o" no-ext lp-file)))
-     (print lp-file)
-     (if (zerop success)
-         (system-open-file
-          (concatenate 'string no-ext ".pdf"))
-         (error "slippery-chicken::lp-display: Call to Lilypond failed.")))
+  (let* ((lp-file (apply #'write-lp-data-for-all args))
+         (no-ext (path-minus-extension lp-file))
+         (success (shell +lilypond-command+ "-o" no-ext lp-file)))
+    (print lp-file)
+    (if (zerop success)
+        (when +lp-display-auto-open+
+          (system-open-file
+           (concatenate 'string no-ext ".pdf")))
+        (error "slippery-chicken::lp-display: Call to Lilypond failed.")))
   #-sbcl
   (warn "slippery-chicken::lp-display: sorry, but this only works in SBCL"))
 

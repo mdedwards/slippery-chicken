@@ -2,6 +2,7 @@
 (load "clm-4/all.lisp")
 (load "sbcl/lib/sbcl/asdf/asdf.fasl")
 (load "sbcl/lib/sbcl/sb-posix/sb-posix.fasl")
+(load "sbcl/lib/sbcl/sb-bsd-sockets/sb-bsd-sockets.fasl")
 (load "sc/src/all.lsp")
 
 (in-package :clm)

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 21:15:31 Mon Jan 14 2013 GMT
+;;; $$ Last modified: 18:57:06 Sat Jun  8 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1241,90 +1241,7 @@ NI
 ;;; lisp as a simple 14: \+14 or 14\. avoids this.
 
 (defmethod parse-rhythm ((i rhythm))
-  (let* ((rthm (data i))
-         (num-dots 0)
-         (undotted-value 0.0)
-         (tuplet-scaler 1)
-         (scaler 1.0)
-         (value 0.0)
-         (letter-value nil)
-         (len 0)
-         (string (format nil "~a" (rm-package rthm)))
-         (dots-scaler 1)
-         (rq nil)
-         (first-char nil))
-    (if (numberp rthm)
-        (setf letter-value rthm)
-        (progn
-          (when (char= #\. (aref string (1- (length string))))
-            (let ((dots (dots string)))
-              (setq num-dots (second dots)
-                    dots-scaler (/ (first dots))))
-            ;; backslashes protect the dot in eg 14\.
-            (setq string (string-right-trim "\." string)))
-          (setf tuplet-scaler (case (aref string 0) 
-                                (#\T 3/2)
-                                (#\F 5/4)
-                                (t 1))
-                scaler (* dots-scaler tuplet-scaler)
-                len (progn (when (and (/= dots-scaler scaler)
-                                      ;; MDE Tue Jul 24 20:57:00 2012 
-                                      (> (length string) 1))
-                             (setq string (subseq string 1)))
-                           (length string))
-                first-char (aref string 0)
-                letter-value 
-                (if (> len 0) ;; i.e. if rthm was a valid argument!
-                    (if (digit-char-p first-char)
-                        (read-from-string string)
-                        ;; string should now only contain one letter
-                        (if (= len 1)  
-                            (case first-char
-                              ;; as a side effect the is-grace-note slot of the
-                              ;; rhythm object is set here and a duration of 0
-                              ;; is given.
-                              (#\G (setf (is-grace-note i) t) 0)
-                              (#\W 1)
-                              (#\H 2)
-                              (#\Q 4)
-                              (#\E 8)
-                              (#\S 16))))))))
-    (unless letter-value
-      (error "rhythm::parse-rhythm: ~a is not a valid argument."
-             rthm))
-    (setf undotted-value (* letter-value tuplet-scaler)
-          (undotted-value i) undotted-value
-          ;; get the rq for cmn
-          rq (if (is-grace-note i)
-                 0
-                 (* (/ 4 letter-value) (/ tuplet-scaler)
-                    (/ (rationalize dots-scaler)))))
-    (setf (rq i) rq ;; (cmn::rq rq)
-          value (float (* letter-value scaler))
-          (value i) value
-          ;; set duration to be the duration in seconds when qtr = 60
-          (duration i) (if (zerop value) 
-                           0.0 
-                           (/ 4.0 value))
-          (compound-duration i) (duration i)
-          (num-dots i) num-dots
-          ;; 30.1.11 next two for lilypond
-          (letter-value i) letter-value
-          (tuplet-scaler i) (/ tuplet-scaler) ; invert it now
-          (num-flags i) (rthm-num-flags undotted-value)
-          (score-rthm i) (format nil "~a~a" 
-                                 (float (* letter-value tuplet-scaler))
-                                 (make-string num-dots 
-                                              :initial-element #\.)))
-    ;; MDE Sat Mar 10 17:37:51 2012 -- for lilypond: if we have a plain 12 as a
-    ;; rhythm, tuplet-scaler would be 1, because there's no F or T in front of
-    ;; a letter value, but we need it to be 3/2 as 12 is a te so try and figure
-    ;; it out mathematically
-    (when (and (= 1 (tuplet-scaler i))
-               (numberp (data i)))
-      (setf (tuplet-scaler i) (rationalize (/ (nearest-power-of-2 (value i))
-                                              (value i)))))
-    value))
+  (parse-rhythm-symbol (data i) :rhythm-object i))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1663,7 +1580,7 @@ data: NIL
           (error "rhythm::parse-possibly-compound-rhythm:~
                 Rests cannot be tied: ~a"
                  rhythm))
-        (if ties 
+        (if ties
             (loop for r in ties collect
                  (make-rhythm r :is-rest is-rest :is-tied-to t)
                  into rthms
@@ -1972,23 +1889,25 @@ data: (
 ;;; 
 ;;; SYNOPSIS
 (defun rhythm-list (rthms &optional circular)
-;;; ****
-  (let ((result
-         (loop for r in rthms 
-            ;; make sure we get compound-duration to reflect ties
-            for rhythm = (parse-possibly-compound-rhythm r t)
-              #|
-            collect 
-            ;; if we had something like h+e we can throw away the e as we've got
-            ;; its compound-duration in the h 
-            ;; 23.3.11: Hmm the above seems to be BS so collect everything 
-            (if (listp rhythm)
-              (first rhythm)
-              rhythm))))
-              |# 
-            if (listp rhythm)
+;;; ****                                ;
+  ;; MDE Sat Jun  8 18:51:09 2013 -- need to remove things like { ;
+  (let* ((rs (first (parse-rhythms rthms 0)))
+         (result
+          (loop for r in rs 
+            ;; make sure we get compound-duration to reflect ties ;
+             for rhythm = (parse-possibly-compound-rhythm r t)
+             #|                         ;
+             collect 
+             ;; if we had something like h+e we can throw away the e as we've
+             ;; got its compound-duration in the h 23.3.11: Hmm the above seems
+             ;; to be BS so collect everything
+             (if (listp rhythm)
+               (first rhythm)
+               rhythm))))
+               |# 
+            if (and rhythm (listp rhythm))
               append rhythm
-            else collect rhythm)))
+            else if rhythm collect rhythm)))
     ;; 23.3.11 now update is-tied-from to reflect ties....
     (loop for r1 in result and r2 in (cdr result) do
          (when (is-tied-to r2)
@@ -2039,6 +1958,108 @@ data: (
 
 (defun has-mark-aux (list mark test)
   (member mark list :test test))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; MDE Sat Jun  8 18:23:28 2013 -- (error t) is there so we can test if things
+;;; are parseable as rhythms.  This was originally the parse-rhythm method but
+;;; I've split things out now.
+
+(defun parse-rhythm-symbol (rthm &key rhythm-object (error t))
+  (let* ((num-dots 0)
+         (undotted-value 0.0)
+         (tuplet-scaler 1)
+         (scaler 1.0)
+         (value 0.0)
+         (letter-value nil)
+         (len 0)
+         (string (format nil "~a" (rm-package rthm)))
+         (dots-scaler 1)
+         (rq nil)
+         (first-char nil))
+    (if (numberp rthm)
+        (setf letter-value rthm)
+        (progn
+          (when (char= #\. (aref string (1- (length string))))
+            (let ((dots (dots string)))
+              (setq num-dots (second dots)
+                    dots-scaler (/ (first dots))))
+            ;; backslashes protect the dot in eg 14\.
+            (setq string (string-right-trim "\." string)))
+          (setf tuplet-scaler (case (aref string 0) 
+                                (#\T 3/2)
+                                (#\F 5/4)
+                                (t 1))
+                scaler (* dots-scaler tuplet-scaler)
+                len (progn (when (and (/= dots-scaler scaler)
+                                      ;; MDE Tue Jul 24 20:57:00 2012 
+                                      (> (length string) 1))
+                             (setq string (subseq string 1)))
+                           (length string))
+                first-char (aref string 0)
+                letter-value 
+                (if (> len 0) ;; i.e. if rthm was a valid argument!
+                    (if (digit-char-p first-char)
+                        (read-from-string string)
+                        ;; string should now only contain one letter
+                        (if (= len 1)  
+                            (case first-char
+                              ;; as a side effect the is-grace-note slot of the
+                              ;; rhythm object is set here and a duration of 0
+                              ;; is given.
+                              (#\G (when rhythm-object
+                                     (setf (is-grace-note rhythm-object) t))
+                                   0)
+                              (#\W 1)
+                              (#\H 2)
+                              (#\Q 4)
+                              (#\E 8)
+                              (#\S 16))))))))
+    ;; MDE Sat Jun  8 18:20:53 2013 -- only signal an error if we really want
+    ;; one  
+    (if letter-value
+        (progn
+          (setf value (float (* letter-value scaler))
+                undotted-value (* letter-value tuplet-scaler))
+          (when rhythm-object
+            (setf (undotted-value rhythm-object) undotted-value
+                  ;; get the rq for cmn
+                  rq (if (is-grace-note rhythm-object)
+                         0
+                         (* (/ 4 letter-value) (/ tuplet-scaler)
+                            (/ (rationalize dots-scaler))))
+                  (rq rhythm-object) rq ;; (cmn::rq rq)
+                  (value rhythm-object) value
+                  ;; set duration to be the duration in seconds when qtr = 60
+                  (duration rhythm-object) (if (zerop value) 
+                                               0.0 
+                                               (/ 4.0 value))
+                  (compound-duration rhythm-object) (duration rhythm-object)
+                  (num-dots rhythm-object) num-dots
+                  ;; 30.1.11 next two for lilypond
+                  (letter-value rhythm-object) letter-value
+                  ;; invert it now
+                  (tuplet-scaler rhythm-object) (/ tuplet-scaler) 
+                  (num-flags rhythm-object) (rthm-num-flags undotted-value)
+                  (score-rthm rhythm-object) 
+                  (format nil "~a~a" 
+                          (float (* letter-value tuplet-scaler))
+                          (make-string num-dots 
+                                       :initial-element #\.)))
+            ;; MDE Sat Mar 10 17:37:51 2012 -- for lilypond: if we have a plain
+            ;; 12 as a rhythm, tuplet-scaler would be 1, because there's no F or
+            ;; T in front of a letter value, but we need it to be 3/2 as 12 is a
+            ;; te so try and figure it out mathematically
+            (when (and (= 1 (tuplet-scaler rhythm-object))
+                       (numberp (data rhythm-object)))
+              (setf (tuplet-scaler rhythm-object) (rationalize
+                                                   (/ (nearest-power-of-2
+                                                       (value rhythm-object))
+                                                      (value rhythm-object))))))
+          value)
+        (when error
+          (error "rhythm::parse-rhythm: ~a is not a valid argument."
+                 rthm)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF rhythm.lsp

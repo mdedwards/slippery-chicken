@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 16:35:54 Mon Jun  3 2013 BST
+;;; $$ Last modified: 20:49:04 Sun Jun 09 2013 +0100
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -257,7 +257,7 @@
 (sc-compile-and-load "instruments.lsp")
 (sc-compile-and-load "lilypond.lsp")
 (sc-compile-and-load "popcorn.lsp")
-#+sbcl (sc-compile-and-load "osc.lsp")
-#+sbcl (sc-compile-and-load "osc-sc.lsp")
+#+(and osx sbcl) (sc-compile-and-load "osc.lsp")
+#+(and osx sbcl) (sc-compile-and-load "osc-sc.lsp")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF all.lsp

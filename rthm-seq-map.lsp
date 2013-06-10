@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 19:10:30 Mon Jun 10 2013 BST
+;;; $$ Last modified: 22:36:28 Mon Jun 10 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -268,6 +268,11 @@ data: (RS2 RS3 RS2)
 ;;;   is to end. NIL = process all bars/rthm-seqs. Default = NIL.
 ;;; - :print. T or NIL to indicate whether to print the rthm-seq ID and the
 ;;;   number repetitions to the listener. T = print. Default = NIL.
+;;; - :repeat-rest-seqs.  T or NIL to indicate whether sequences consisting of
+;;;   just rests should be repeated also.  This will need the :palette in order
+;;;   to work.  Default = T. 
+;;; - :palette.  The rthm-seq-palette to check that sequences are not
+;;;   rest sequences, if about to repeat them and repeat-rest-seqs is NIL.
 ;;; 
 ;;; RETURN VALUE  
 ;;; An integer that is the number of sequences added.
@@ -331,9 +336,15 @@ data: (RS2 RS3 RS2)
 ;;;
 ;;; SYNOPSIS
 (defmethod add-repeats ((rsm rthm-seq-map) repeat-every repeats &key
+                        (repeat-rest-seqs t) palette
                         (section 1) repeats-indices (start 1) end print)
 ;;; ****
-  (let ((seqs-added 0))
+  ;; MDE Mon Jun 10 19:35:56 2013 
+  (when (and (not repeat-rest-seqs) (not palette))
+    (error "rthm-seq-map::add-repeats: palette must be passed when ~
+            :repeat-rest-seqs is NIL"))
+  (let ((seqs-added 0)
+        (temp '()))
     (loop for player in (players rsm) do
          (setf seqs-added 0)
          (let* ((re (make-re repeat-every :return-data-cycle repeats
@@ -347,16 +358,40 @@ data: (RS2 RS3 RS2)
                 (when (and (>= i start) (<= i nd))
                   (setf repeats (get-it re)))
                 (if repeats
-                    ;; 1- because we've already got the ref once and we won't
-                    ;; repeat it <repeats> times rather have it <repeats> times
-                    ;; total
                     (progn
+                      ;; MDE Mon Jun 10 19:38:49 2013  -- don't repeat rest seqs
+                      (unless repeat-rest-seqs
+                        (when (is-rest-seq (get-data ref palette))
+                          (let ((do-it t))
+                            ;;  will need to make sure the other instruments
+                            ;; are on rest-seqs too before we can do this!
+                            (loop for p in (remove player (players rsm)) 
+                               ;; for pref = (econs (butlast ref) p)
+                               for pref = (nth (1- i)
+                                               (get-map-refs rsm section p))
+                               for pseq = (get-data pref palette)
+                               ;; (get-nth-from-palette pref (1- i) rsm)
+                               while do-it
+                               do
+                               (unless (is-rest-seq pseq)
+                                 (setf do-it nil)))                      
+                            (when do-it
+                              (when print
+                                (format t "~&not repeating rest seq ~a" ref))
+                              (setf repeats 1)))))
                       (when print
                         (format t "~&~a x ~a" ref repeats))
+                      ;; 1- because we've already got the ref once and we won't
+                      ;; repeat it <repeats> times rather have it <repeats>
+                      ;; times total
                       (incf seqs-added (1- repeats)))
                     (setf repeats 1))
                 (loop repeat repeats do (push ref new-refs)))
-           (set-map-refs rsm section player (nreverse new-refs))))
+           (push (nreverse new-refs) temp)))
+    (loop for player in (reverse (players rsm))
+       for nrs in temp
+       do
+       (set-map-refs rsm section player nrs))
     ;; MDE Tue May  8 21:03:20 2012 -- only inc when it's a rthm-chain
     (when (rthm-chain-p rsm)
       (incf (num-rthm-seqs rsm) seqs-added))

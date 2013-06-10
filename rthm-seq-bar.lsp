@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 10:40:51 Sat Apr 20 2013 BST
+;;; $$ Last modified: 19:51:16 Mon Jun 10 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1871,12 +1871,13 @@ data: ((2 4) - S S - S - S S S - S S)
     ;; calculated 
     (sounding-duration rsb)
     (setf (num-rhythms rsb) (length rhythms)
-          (is-rest-bar rsb) (if (not rhythms)
-                                t
-                                (when (and (= 1 (num-rhythms rsb))
-                                           (is-rest (first rhythms)))
-                                  (setf (is-whole-bar-rest (first (rhythms rsb)))
-                                        t)))
+          (is-rest-bar rsb)
+          (if (not rhythms)
+              t
+              (when (and (= 1 (num-rhythms rsb))
+                         (is-rest (first rhythms)))
+                (setf (is-whole-bar-rest (first (rhythms rsb)))
+                      t)))
           ;; Store the number of notes that will be need for this bar,
           ;; i.e. how many were not rests or ties
           (notes-needed rsb) (loop for r in rhythms count

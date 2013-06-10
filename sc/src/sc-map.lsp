@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 13:43:59 Sat Jun  2 2012 BST
+;;; $$ Last modified: 21:52:23 Mon Jun 10 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -382,20 +382,20 @@ data: (SET1 SET3 SET2)
 ;;; the 'vn part of that section into the 'fl and 'cl parts and print the same
 ;;; data again to see the change.
 (let ((scm (make-sc-map 'sc-m 
-			'((1
-			   ((fl (nil nil nil))
-			    (cl (nil nil nil))
-			    (vn (set1 set3 set2))
-			    (va (set2 set3 set1))
-			    (vc (set3 set1 set2))))
-			  (2
-			   ((vn (set1 set2 set1))
-			    (va (set2 set1 set3))
-			    (vc (set1 set3 set3))))
-			  (3
-			   ((vn (set1 set1 set3))
-			    (va (set1 set3 set2))
-			    (vc (set3 set2 set3))))))))
+                        '((1
+                           ((fl (nil nil nil))
+                            (cl (nil nil nil))
+                            (vn (set1 set3 set2))
+                            (va (set2 set3 set1))
+                            (vc (set3 set1 set2))))
+                          (2
+                           ((vn (set1 set2 set1))
+                            (va (set2 set1 set3))
+                            (vc (set1 set3 set3))))
+                          (3
+                           ((vn (set1 set1 set3))
+                            (va (set1 set3 set2))
+                            (vc (set3 set2 set3))))))))
   (print (get-data-data '(1 fl) scm))
   (print (get-data-data '(1 cl) scm))
   (double scm 1 2 3 'vn '(fl cl))
@@ -420,7 +420,7 @@ data: (SET1 SET3 SET2)
                                         seq-num scm)
      do
        (loop for dp in doubling-players do
-	    (set-nth-of-data (list section-ref dp) seq-num master-seq scm))))
+            (set-nth-of-data (list section-ref dp) seq-num master-seq scm))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -531,9 +531,13 @@ data: (C2 B2 A3 G4 F5 E6)
 (defmethod get-nth-from-palette (sc-map-ref nth (scm sc-map))
 ;;; ****
   (let ((p (palette scm))
-        (refs (data (get-data sc-map-ref scm nil))))
+        (refs (get-data sc-map-ref scm nil)))
+    ;; MDE Mon Jun 10 21:46:42 2013 
+    (unless (and refs (named-object-p refs))
+      (error "sc-map::get-nth-from-palette: can't get data for ~a from ~a"
+             sc-map-ref (id scm)))
     (when p
-      (get-data (nth nth refs) p nil))))
+      (get-data (nth nth (data refs)) p nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -839,19 +843,19 @@ data: (E2 D3 C4 B4 A5 G6)
 
 ;;; An example using replacements
 (make-sc-map 'sc-m 
-	     '((1
-		((vn (set1 set3 set2))
-		 (va (set2 set3 set1))
-		 (vc (set3 set1 set2))))
-	       (2
-		((vn (set1 set2 set1))
-		 (va (set2 set1 set3))
-		 (vc (set1 set3 set3))))
-	       (3
-		((vn (set1 set1 set3))
-		 (va (set1 set3 set2))
-		 (vc (set3 set2 set3)))))
-	     :replacements '(((1 va) 2 set2)))
+             '((1
+                ((vn (set1 set3 set2))
+                 (va (set2 set3 set1))
+                 (vc (set3 set1 set2))))
+               (2
+                ((vn (set1 set2 set1))
+                 (va (set2 set1 set3))
+                 (vc (set1 set3 set3))))
+               (3
+                ((vn (set1 set1 set3))
+                 (va (set1 set3 set2))
+                 (vc (set3 set2 set3)))))
+             :replacements '(((1 va) 2 set2)))
 
 =>
 

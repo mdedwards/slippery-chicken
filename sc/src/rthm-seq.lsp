@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 11:19:37 Sat Apr 20 2013 BST
+;;; $$ Last modified: 19:53:25 Mon Jun 10 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2520,6 +2520,18 @@ data: S
               (setf (is-tied-to r) nil))
             (setf last-r r)))
   t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jun 10 19:24:53 2013 
+(defmethod is-rest-seq ((rs rthm-seq))
+  (zerop (num-score-notes rs)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jun 10 19:30:15 2013 
+(defmethod force-rest-seq ((rs rthm-seq))
+  (loop for bar in (bars rs) do
+       (force-rest-bar bar))
+  (gen-stats rs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

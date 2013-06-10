@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:33:47 Sat Jun  8 2013 BST
+;;; $$ Last modified: 14:05:58 Mon Jun 10 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7701,14 +7701,14 @@ duration: 20.0 (20.000)
   #+sbcl
   (let* ((lp-file (apply #'write-lp-data-for-all args))
          (no-ext (path-minus-extension lp-file))
+         (pdf-file (concatenate 'string no-ext ".pdf"))
          (success (shell +lilypond-command+ "-o" no-ext lp-file)))
     (print lp-file)
     (if (zerop success)
         (values 
          (when +lp-display-auto-open+
-           (system-open-file
-            (concatenate 'string no-ext ".pdf")))
-         lp-file)
+           (system-open-file pdf-file))
+         pdf-file)
         (error "slippery-chicken::lp-display: Call to Lilypond failed.")))
   #-sbcl
   (warn "slippery-chicken::lp-display: sorry, but this only works in SBCL"))

@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 15:51:50 Fri Apr 19 2013 BST
+;;; $$ Last modified: 19:10:30 Mon Jun 10 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -270,7 +270,7 @@ data: (RS2 RS3 RS2)
 ;;;   number repetitions to the listener. T = print. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
-;;; An integer that is the number of bars added.
+;;; An integer that is the number of sequences added.
 ;;; 
 ;;; EXAMPLE
 #|

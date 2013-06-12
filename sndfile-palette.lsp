@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 12:43:11 Fri Jan  4 2013 GMT
+;;; $$ Last modified: 13:57:04 Wed Jun 12 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -119,7 +119,9 @@
 #+clm
 (defmethod verify-and-store :after ((sfp sndfile-palette))
   (setf (paths sfp) (loop for path in (paths sfp) 
-                       collect (trailing-slash path)))
+                       collect (trailing-slash path))
+        ;; MDE Wed Jun 12 13:49:33 2013 -- to avoid duplicate path errors
+        (paths sfp) (remove-duplicates (paths sfp) :test #'string=))
   (loop for sflist in (data sfp) and i from 0 do
        (loop for snd in (data sflist) and j from 0 do 
             (setf (nth j (data (nth i (data sfp))))
@@ -237,7 +239,7 @@
       (1 (first files))
       (t (warn "sndfile-palette::find-sndfile: Sound file '~a' exists in ~
                 ~%more than one folder or with more than one extension.  ~
-                ~%Please give the full path in your sndfile-palette: ~a" 
+                ~%Please give the full path in your sndfile-palette: ~&~a" 
                string files)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

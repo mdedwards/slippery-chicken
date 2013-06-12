@@ -48,7 +48,7 @@ cd ${TOP}
 
 if [ -x "$EDITOR" ] ; then
 #     "$EDITOR" --eval "(setq inhibit-startup-message t)" --directory "${TOP}/slime" -l "${TOP}/cm/etc/xemacs/cm.el" -l "${TOP}/sal/sal-mode.el" --eval "(progn (enable-cm-commands) (cm \"${SC_ROOT_DIR}/bin/cm.sh -l ${SC_RUNTIME} -s sal\"))"
-    "$EDITOR" --eval "(setq inhibit-startup-message t)" --directory "${TOP}/slime" --directory "${TOP}/sbcl/bin" --directory "${TOP}/sbcl/lib/sbcl" --directory "${TOP}" -l "${TOP}/sc.el" --eval "(slime)"
+    "$EDITOR" --eval "(setq inhibit-startup-message t)" --directory "${TOP}/slime" --directory "${TOP}/sbcl/bin" --directory "${TOP}/sbcl/lib/sbcl" --directory "${TOP}" -q -l "${TOP}/sc.el" --eval "(slime)"
 else
     open -a Terminal "${CWD}/noemacs.sh"
 fi

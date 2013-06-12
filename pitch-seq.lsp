@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 16:12:02 Thu May 30 2013 BST
+;;; $$ Last modified: 10:38:47 Wed Jun 12 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -190,6 +190,7 @@
 
 ;;; SAR Tue Jan  3 19:35:29 EST 2012: Edited robodoc info
 ;;; SAR Sun Apr 29 16:19:03 BST 2012: Edited robodoc info
+;;; MDE Sat Jul 14 18:29:51 2012: avoid-used-notes added
 
 ;;; ****m* pitch-seq/get-notes
 ;;; DESCRIPTION
@@ -212,16 +213,16 @@
 ;;;    important role.  This can be skipped if the <avoid-used-notes> argument
 ;;;    is nil.
 ;;; 
-;;; 3) If there is an subset with the same ID as the subset-id slot for this
+;;; 3) If there is a subset with the same ID as the subset-id slot for this
 ;;;    instrument, use only those pitches common to that subset and those in
 ;;;    step 2.
 ;;; 
 ;;; 4) If the ratio between the number of pitches now available and the number
 ;;;    of different numbers in the pitch-seq is less than the slippery-chicken
-;;;    slot pitch-seq-index-scaler-min, add notes from those used by other
-;;;    instruments until there are enough, and the lowest number in the
-;;;    pitch-seq will select the lowest pitch in the set that is in the
-;;;    instrument's range.  
+;;;    slot pitch-seq-index-scaler-min*, add notes from those used by other
+;;;    instruments until there are enough; the lowest number in the pitch-seq
+;;;    will now select the lowest pitch in the set that is in the instrument's
+;;;    range.
 ;;;
 ;;;    If however there are enough pitches without adding pitches already used
 ;;;    by other instruments, then where in the available pitches the lowest
@@ -242,7 +243,7 @@
 ;;;    global constants: +pitch-seq-lowest-equals-prefers-high+ and
 ;;;    +pitch-seq-lowest-equals-prefers-low+, as defined above.
 ;;;
-;;;    The question as to how many pitches are enough pitches before adding
+;;;    * The question as to how many pitches are enough pitches before adding
 ;;;    used notes is determined by the pitch-seq-index-scaler-min argument,
 ;;;    which is by default 0.5 (in the slippery-chicken slot that's usually
 ;;;    used and passed to this method). As the pitch-seq notes must be offset
@@ -261,7 +262,7 @@
 ;;;    called. As notes are selected, the set marks them as used for the next
 ;;;    time around. Also, there's an attempt to avoid melodic octaves on
 ;;;    adjacent notes; however, if the set is full of octaves this won't be
-;;;    possible; in that case a warning will be issued but the octave will be
+;;;    possible; in that case a warning will be issued and the octave will be
 ;;;    used.
 ;;;
 ;;; ARGUMENTS 
@@ -289,7 +290,6 @@
 (defmethod get-notes ((ps pitch-seq) instrument set hint-pitch limit-high
                       limit-low seq-num last-note-previous-seq
                       pitch-seq-index-scaler-min avoid-melodic-octaves
-                      ;; MDE Sat Jul 14 18:29:51 2012
                       avoid-used-notes)
 ;;; ****
   (declare (ignore hint-pitch))

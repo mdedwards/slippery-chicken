@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 21:02:44 Wed Jun 12 2013 BST
+;;; $$ Last modified: 21:24:25 Wed Jun 12 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3537,7 +3537,9 @@ At revision 3608.
                               "https://svn.ecdf.ed.ac.uk/repo/user/medward2/"
                               "sc-tags/sc-latest/src")
                  src)))))
-    (apply #'shell (cons svn svn-command)))
+    (prog1
+        (apply #'shell (cons svn svn-command))
+      (format t "Please restart slippery chicken for changes to take effect.")))
   #-(and sbcl unix)
   (warn "utilities::update-app-src: Sorry but this currently only runs ~
          with SBCL on Mac OSX"))

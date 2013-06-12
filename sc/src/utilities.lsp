@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 14:14:01 Mon Jun  3 2013 BST
+;;; $$ Last modified: 21:02:44 Wed Jun 12 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3541,6 +3541,13 @@ At revision 3608.
   #-(and sbcl unix)
   (warn "utilities::update-app-src: Sorry but this currently only runs ~
          with SBCL on Mac OSX"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun get-date-string ()
+  (multiple-value-bind
+        (sec min hour day month year)
+      (get-decoded-time)
+    (format nil "~d-~2,'0d-~2,'0d-~2,'0d.~2,'0d" year month day hour min)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

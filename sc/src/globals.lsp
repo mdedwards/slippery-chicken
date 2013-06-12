@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 20:07:35 Tue Jun  4 2013 BST
+;;; $$ Last modified: 19:01:38 Wed Jun 12 2013 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -156,6 +156,19 @@
 ;;; SYNOPSIS
 (defparameter +lilypond-command+ 
   "/Applications/LilyPond.app/Contents/Resources/bin/lilypond")
+;;; ****
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****P* globals/+lilypond-command+ 
+;;; DESCRIPTION
+;;; The default amplitude for all events that don't have amplitude/dynamic set
+;;; via some means such as marks. 
+;;;
+;;; ARGUMENTS
+;;; A floating point number > 0.0 and <= 1.0
+;;; 
+;;; SYNOPSIS
+(defparameter +sc-default-amplitude+ 0.7)
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

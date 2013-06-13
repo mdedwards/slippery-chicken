@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 19:01:38 Wed Jun 12 2013 BST
+;;; $$ Last modified: 08:24:48 Thu Jun 13 2013 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -170,6 +170,20 @@
 ;;; SYNOPSIS
 (defparameter +sc-default-amplitude+ 0.7)
 ;;; ****
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#|
+;;; replace all globals above with entries here and create set and get funs
+;;; will need to think about which file this is in -- assoc-list itself?
+(defparameter +sc-global-parameters+
+  (make-assoc-list
+   'sc-global-parameters
+   '((default-amplitude 0.7)
+     (lilypond-command
+      "/Applications/LilyPond.app/Contents/Resources/bin/lilypond")
+     )))
+|#   
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF globals.lsp

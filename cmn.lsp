@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 11:07:41 Sat Jun  1 2013 BST
+;;; $$ Last modified: 07:58:27 Thu Jun 13 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -45,8 +45,6 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 02.12.11 SEAN: Changed robodoc header
 
 (eval-when (compile)
   (declaim (optimize (speed 3) (safety 1) (space 0) (debug 0))))

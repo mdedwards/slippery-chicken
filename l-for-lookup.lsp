@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 15:16:48 Mon May 20 2013 BST
+;;; $$ Last modified: 12:23:28 Thu Jun 13 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -400,7 +400,8 @@
 
 (defmethod do-lookup-aux ((lflu l-for-lookup) seed stop scaler linear reset)
 ;;; ****
-  (reset lflu)
+  ;; MDE Thu Jun 13 12:23:12 2013 -- don't always reset!
+  ;; (reset lflu)
   (if linear
       (get-linear-sequence-and-store lflu seed stop reset)
       (get-l-sequence lflu seed stop))

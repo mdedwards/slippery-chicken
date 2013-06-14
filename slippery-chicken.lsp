@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:05:58 Mon Jun 10 2013 BST
+;;; $$ Last modified: 10:40:16 Fri Jun 14 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3725,6 +3725,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;    available on OSX with SBCL.  Uses the default app for MIDI files, as if
 ;;;    opened with 'open' in the terminal.  Default = Value of global
 ;;;    +midi-play-auto-open+.  
+;;; - :suffix.  Add some text to the filename just before .mid?.  Default = ""
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns the path of the file written, as a string.
@@ -3776,10 +3777,13 @@ seq-num 5, VN, replacing G3 with B6
                       ;; when calling get-data.
                       ;; if nil then all voices.
                       (voices nil)
+                      ;; add something to the filename just before .mid?
+                      (suffix "")
                       (midi-file
-                       (format nil "~a~a.mid"
+                       (format nil "~a~a~a.mid"
                                +sc-default-dir+ 
-                               (filename-from-title (title sc))))
+                               (filename-from-title (title sc))
+                               suffix))
                       (from-sequence 1)
                       (num-sequences nil)
                       ;; if nil we'll write all the sections
@@ -5193,6 +5197,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
               (setf ok this-ok)
               (progn
                 (when on-fail
+                  ;; (print bar)
                   (warn "slippery-chicken::check-tuplets: failed for ~a ~
                          bar ~a. ~%Will delete current tuplets and try to ~
                          set them automatically." player bar-num))

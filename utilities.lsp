@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 21:24:25 Wed Jun 12 2013 BST
+;;; $$ Last modified: 09:57:35 Fri Jun 14 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3472,6 +3472,8 @@ WARNING:
 ;;; June 1st 2013
 ;;;
 ;;; DESCRIPTION
+;;; NB This function currently works in SBCL on UNIX systems only.
+;;; 
 ;;; For users of the slippery chicken app, this function will update the source
 ;;; code of the app to the latest in the online subversion (svn) repository.
 ;;; An internet connection is therefore necessary.  
@@ -3487,8 +3489,17 @@ WARNING:
 ;;; Users without the app can always download the latest source code in a
 ;;; terminal by issuing the following command.
 ;;; svn co https://svn.ecdf.ed.ac.uk/repo/user/medward2/sc-tags/sc-latest/src
-;;;
-;;; NB This function currently works in SBCL on UNIX systems only.
+;;; 
+;;; The first time you call this function, you might get a certificate error.
+;;; In order to accept the certificate, start the terminal application and type
+;;; the following:
+;;; 
+;;; cd /tmp/
+;;; svn co https://svn.ecdf.ed.ac.uk/repo/user/medward2/sc-tags/sc-latest/src
+;;; 
+;;; That should give you a prompt in the terminal from which you can accept the
+;;; certificate.  Then the next time you try it from Lisp the certificate
+;;; should not cause a problem.
 ;;; 
 ;;; ARGUMENTS
 ;;; The full path to the slippery-chicken application, minus the last slash.

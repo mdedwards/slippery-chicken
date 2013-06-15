@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified: 21:58:33 Tue Jun  4 2013 BST
+;;; $$ Last modified: 13:28:19 Sat Jun 15 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -50,6 +50,11 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Old note: The return value of the Lisp call will be returned to the given
+;;; IP address on the given port.  It is up to the receiver to then parse the
+;;; result (e.g. in MaxMSP via [udpreceive][fromsymbol][route list int float
+;;; symbol] ).  
+
 ;;; ****f* osc-sc/osc-call
 ;;; DESCRIPTION
 ;;; Allow OSC (over UDP) messages to be sent for processing.  The function
@@ -64,13 +69,19 @@
 ;;; 
 ;;; Lisp code can be sent, e.g. in MaxMSP via a message, including
 ;;; opening/closing parentheses and nested calls; symbols should be quoted as
-;;; per usual.  The return value of the Lisp call will be returned to the
-;;; given IP address on the given port.  It is up to the receiver to then parse
-;;; the result (e.g. in MaxMSP via [udpreceive][fromsymbol][route list int
-;;; float symbol]).  
+;;; per usual.  
+;;;
+;;; The first two tokens in the list must be /osc-sc and a (usually unique)
+;;; identifer e.g. ((/osc-sc 1060-osc-sc-eval (print 'dog) )) Both of these
+;;; tokens will be sent back over OSC in a list.  If you're using MaxMSP I
+;;; would recommend using osc-sc-eval.maxpat (see below) to evaluate your Lisp
+;;; code as this will package it up with the right tokens and send the
+;;; evaluated result out of its outlet once without causing conflicts with
+;;; other instances of itself.
 ;;;
 ;;; For an example max/msp patch, see osc-test.maxpat in the examples folder of
-;;; the documentation (http://michael-edwards.org/sc/examples/osc-test.maxpat)
+;;; the documentation (http://michael-edwards.org/sc/examples/osc-test.maxpat).
+;;; You'll also need http://michael-edwards.org/sc/examples/osc-sc-eval.maxpat
 ;;; 
 ;;; NB: Currently only works in SBCL.
 ;;;     Some lists (e.g. those including strings/symbols) might not be
@@ -145,16 +156,13 @@
 ;;; be in the format #(127 0 0 1) for now.
 
 (defun osc-call (listen-port send-ip send-port) 
-  (let (;(in (make-udp-socket))
-        ;(out (make-udp-socket))
-        (buffer (make-sequence '(vector (unsigned-byte 8)) 512)))
+  (let ((buffer (make-sequence '(vector (unsigned-byte 8)) 512)))
     ;; in case we exited abnormally last time
     (osc-cleanup-sockets)
     (setf +osc-sc-in-socket+ (make-udp-socket)
           +osc-sc-out-socket+ (make-udp-socket))
     (socket-bind +osc-sc-in-socket+ #(0 0 0 0) listen-port)
     (socket-connect +osc-sc-out-socket+ send-ip send-port)
-    ;; (let ((stream 
     (setf +osc-sc-output-stream+
           (socket-make-stream
            +osc-sc-out-socket+ :input t :output t 
@@ -168,9 +176,9 @@
            (let* ((oscuff (osc:decode-bundle buffer))
                   ;; here: check if there's an opening (
                   (soscuff 
-                   (if (char= #\( (elt (first oscuff) 0))
+                   (if (char= #\( (elt (third oscuff) 0))
                        'lisp
-                       (read-from-string (first oscuff)))))
+                       (read-from-string (third oscuff)))))
              (format t "~&osc-->message: ~a" oscuff)
              (finish-output t)
              (case (sc::rm-package soscuff :sb-bsd-sockets)
@@ -198,13 +206,20 @@
   ;; (finish-output t)
   (unless stream
     (error "sc-sc::osc-eval: stream not open."))
-  (let ((result (sc::list-to-string expr)))
-    (setf result (eval (read-from-string result)))
+  (let* ((result (read-from-string (sc::list-to-string expr)))
+         (id (second result)))
+    ;; MDE Sat Jun 15 12:23:57 2013 -- make sure we've got legal input and an
+    ;; ID to send back 
+    (unless (string= (first result) "/OSC-SC")
+      (error "osc-sc::osc-eval: expected /osc-sc as first token but got ~a"
+             (first result)))
+    (setf result (eval (third result)))
     ;; MDE Wed Dec 19 17:38:01 2012 -- don't send T or NIL, rather 1 or 0
     (unless (or (not result) (equal result T))
       (unless (listp result)
         (setf result (list result)))
-      (osc-send-list result stream))))
+      ;; stuff our id back into the list and send back
+      (osc-send-list (append (list '/osc-sc id) result) stream))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

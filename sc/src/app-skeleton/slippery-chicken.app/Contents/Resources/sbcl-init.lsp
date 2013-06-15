@@ -19,7 +19,7 @@
       ;;*clm-header-type* mus-aiff
       *clm-data-format* mus-lfloat
       ;; we might want to delete this automatically at logout...
-      *clm-file-name* "~/Desktop/clm.wav"
+      *clm-file-name* (format nil "~aDesktop/clm.wav" (user-homedir-pathname))
       ;; constant power panning
       *clm-locsig-type* mus-interp-sinusoidal
       *clm-reverb-channels* 2

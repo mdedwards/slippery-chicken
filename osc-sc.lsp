@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified: 13:28:19 Sat Jun 15 2013 BST
+;;; $$ Last modified: 15:23:47 Sat Jun 15 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -176,9 +176,12 @@
            (let* ((oscuff (osc:decode-bundle buffer))
                   ;; here: check if there's an opening (
                   (soscuff 
-                   (if (char= #\( (elt (third oscuff) 0))
-                       'lisp
-                       (read-from-string (third oscuff)))))
+                   (progn
+                     (unless (third oscuff)
+                       (error "osc-sc::osc-call: Couldn't decode buffer: ~a" buffer))
+                     (if (char= #\( (elt (third oscuff) 0))
+                         'lisp
+                         (read-from-string (third oscuff))))))
              (format t "~&osc-->message: ~a" oscuff)
              (finish-output t)
              (case (sc::rm-package soscuff :sb-bsd-sockets)

@@ -18,6 +18,7 @@
       ;; sc-test-full.lsp fails 
       ;;*clm-header-type* mus-aiff
       *clm-data-format* mus-lfloat
+      *clm-play* nil
       ;; we might want to delete this automatically at logout...
       *clm-file-name* (format nil "~aDesktop/clm.wav" (user-homedir-pathname))
       ;; constant power panning

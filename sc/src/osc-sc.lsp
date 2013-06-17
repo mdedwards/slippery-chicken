@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified: 15:23:47 Sat Jun 15 2013 BST
+;;; $$ Last modified: 17:37:00 Sat Jun 15 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -73,13 +73,13 @@
 ;;;
 ;;; The first two tokens in the list must be /osc-sc and a (usually unique)
 ;;; identifer e.g. ((/osc-sc 1060-osc-sc-eval (print 'dog) )) Both of these
-;;; tokens will be sent back over OSC in a list.  If you're using MaxMSP I
-;;; would recommend using osc-sc-eval.maxpat (see below) to evaluate your Lisp
-;;; code as this will package it up with the right tokens and send the
-;;; evaluated result out of its outlet once without causing conflicts with
-;;; other instances of itself.
+;;; tokens will be sent back over OSC in a list, along with the result of the
+;;; Lisp call.  If you're using MaxMSP I would recommend using
+;;; osc-sc-eval.maxpat (see below) to evaluate your Lisp code as this will
+;;; package it up with the right tokens and send the evaluated result out of
+;;; its outlet without causing conflicts with other instances of itself.
 ;;;
-;;; For an example max/msp patch, see osc-test.maxpat in the examples folder of
+;;; For an example MaxMSP patch, see osc-test.maxpat in the examples folder of
 ;;; the documentation (http://michael-edwards.org/sc/examples/osc-test.maxpat).
 ;;; You'll also need http://michael-edwards.org/sc/examples/osc-sc-eval.maxpat
 ;;; 
@@ -108,26 +108,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****f* osc-sc/osc-send-list
-;;; DESCRIPTION
-;;; 
-;;; 
-;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
-;;; SYNOPSIS
 (defun osc-send-list (list &optional (warn t))
-;;; ****
   (sb-bsd-sockets::osc-send-list list sb-bsd-sockets::+osc-sc-output-stream+
                                  warn))
 

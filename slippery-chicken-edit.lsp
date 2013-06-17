@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 14:11:03 Fri Jun  7 2013 BST
+;;; $$ Last modified: 11:16:11 Mon Jun 17 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1329,6 +1329,7 @@ data: (
              (error "slippery-chicken::change-pitches: couldn't get event ~a!"
                     (1+ count)))
            (when note
+             ;; (print note)
              ;; MDE Thu May 30 18:17:24 2013
              (unless (pitch-p note)
                (when use-last-octave

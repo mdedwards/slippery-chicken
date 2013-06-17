@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 19:58:44 Mon Jun 17 2013 BST
+;;; $$ Last modified: 21:34:31 Mon Jun 17 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -54,9 +54,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+sbcl (unlock-package "COMMON-LISP")
-
 (in-package :cl-user)
+
+#+sbcl (unlock-package "COMMON-LISP")
 
 (defparameter +slippery-chicken-version+ "1.0.2 (svn revision 3672 2013-05-29 11:21:22)")
 
@@ -177,8 +177,9 @@
       #-cmn
       (load-cm-file "cmn-stubs")
       (loop for f in 
-           '("pkg" #+sbcl "sbcl" "clos" "iter" "level1" "utils" "mop" "objects"
-             "data" 
+           '("pkg" #+sbcl "sbcl" #+clisp "clisp" #+cmu "cmu" #+acl "acl"
+             "clos" "iter" "level1" "utils"
+             "mop" "objects" "data" 
              "scales" "spectral" "patterns" "io" "scheduler" "sco" "clm" "clm2" 
              "midi1" "midi2" "midi3" "cmn")
            do

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 12:58:13 Thu Apr 18 2013 BST
+;;; $$ Last modified: 11:48:24 Mon Jun 17 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -758,7 +758,7 @@
                                         (digit-char-p current))
                                return i))
            (just-note (when first-digit-pos
-                        (read-from-string string :start 0 
+                        (read-from-string string t nil :start 0 
                                           :end first-digit-pos)))
            (octave (when first-digit-pos
                      (parse-integer string :start first-digit-pos))))
@@ -1046,45 +1046,24 @@
 ;;;   "channel" here. 
 ;;;
 ;;; RETURN VALUE  
-;;; The CM data for the MIDI events in the specified file.
+;;; The CM data for the MIDI events in the specified file, and the number of events.
 ;;;
 ;;; EXAMPLE
 #|
 (cm::parse-midi-file "/tmp/multi-ps.mid")
 
 =>
-Event #i(midi-tempo-change time 0.0 usecs 1000000)
-Event #i(midi time 0.0 keynum 72 duration 0.5 amplitude 0.6929134 channel 0)
-Event #i(midi time 0.0 keynum 65 duration 0.5 amplitude 0.6929134 channel 1)
-Event #i(midi time 0.0 keynum 60 duration 0.5 amplitude 0.6929134 channel 2)
-Event #i(midi-time-signature time 0.0 numerator 4 denominator 4 clocks 24 32nds 8)
-Event #i(midi-time-signature time 0.0 numerator 4 denominator 4 clocks 24 32nds 8)
-Event #i(midi-time-signature time 0.0 numerator 4 denominator 4 clocks 24 32nds 8)
-Event #i(midi-tempo-change time 0.0 usecs 1000000)
-Event #i(midi-tempo-change time 0.0 usecs 1000000)
-Event #i(midi-tempo-change time 0.0 usecs 1000000)
-Event #i(midi time 0.5 keynum 67 duration 0.5 amplitude 0.6929134 channel 2)
-Event #i(midi time 0.5 keynum 71 duration 0.5 amplitude 0.6929134 channel 0)
-Event #i(midi time 0.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
-Event #i(midi time 1.0 keynum 60 duration 0.5 amplitude 0.6929134 channel 2)
-Event #i(midi time 1.0 keynum 72 duration 0.5 amplitude 0.6929134 channel 0)
-Event #i(midi time 1.0 keynum 62 duration 0.5 amplitude 0.6929134 channel 1)
-Event #i(midi time 1.5 keynum 67 duration 0.5 amplitude 0.6929134 channel 2)
-Event #i(midi time 1.5 keynum 71 duration 0.5 amplitude 0.6929134 channel 0)
-Event #i(midi time 1.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
-Event #i(midi time 2.0 keynum 60 duration 0.5 amplitude 0.6929134 channel 2)
-Event #i(midi time 2.0 keynum 72 duration 0.5 amplitude 0.6929134 channel 0)
-Event #i(midi time 2.0 keynum 65 duration 0.5 amplitude 0.6929134 channel 1)
-Event #i(midi time 2.5 keynum 67 duration 0.5 amplitude 0.6929134 channel 2)
-Event #i(midi time 2.5 keynum 71 duration 0.5 amplitude 0.6929134 channel 0)
-Event #i(midi time 2.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
-Event #i(midi time 3.0 keynum 60 duration 0.5 amplitude 0.6929134 channel 2)
-Event #i(midi time 3.0 keynum 72 duration 0.5 amplitude 0.6929134 channel 0)
-Event #i(midi time 3.0 keynum 62 duration 0.5 amplitude 0.6929134 channel 1)
-Event #i(midi time 3.5 keynum 67 duration 0.5 amplitude 0.6929134 channel 2)
-Event #i(midi time 3.5 keynum 71 duration 0.5 amplitude 0.6929134 channel 0)
-Event #i(midi time 3.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
-31 events total
+(#i(midi-tempo-change time 0.0 usecs 357142)
+ #i(midi-time-signature time 0.0 numerator 2 denominator 4 clocks 24 32nds 8)
+ #i(midi time 0.0 keynum 36 duration 0.357142 amplitude 0.09448819 channel 15)
+ #i(midi-tempo-change time 0.0 usecs 357142)
+ #i(midi-time-signature time 0.0 numerator 2 denominator 4 clocks 24 32nds 8)
+ #i(midi-tempo-change time 0.0 usecs 357142)
+ #i(midi time 0.178571 keynum 66 duration 0.178571 amplitude 0.09448819 channel 15)
+ #i(midi time 0.357142 keynum 68 duration 0.0892855 amplitude 0.09448819 channel 15)
+ #i(midi time 0.357142 keynum 40 duration 0.357142 amplitude 0.09448819 channel 15)
+ #i(midi time 0.6249985 keynum 66 duration 0.0892855 amplitude 0.09448819 channel 15)
+ #i(midi-time-signature time 0.714284 numerator 3 denominator 4 clocks 24 32nds 8)
 
 |#
 ;;; 
@@ -1094,10 +1073,14 @@ Event #i(midi time 3.5 keynum 64 duration 0.5 amplitude 0.6929134 channel 1)
   (let ((midi-stream (parse-midi-file-aux file track))
         (num-events 0))
     (setf num-events (length (subobjects midi-stream)))
+    ;; MDE Mon Jun 17 11:47:47 2013 -- not much point printing them when the
+    ;; list is printed in pretty much the same way. 
+    #|
     (map-subobjects (lambda (n) (format t "~&Event ~A" n)) 
                     midi-stream)
     (format t "~&~a events total" num-events)
-    num-events))
+    |#
+    (values (subobjects midi-stream) num-events)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

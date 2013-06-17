@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 09:32:31 Mon Jun 17 2013 BST
+;;; $$ Last modified: 19:58:44 Mon Jun 17 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -177,10 +177,9 @@
       #-cmn
       (load-cm-file "cmn-stubs")
       (loop for f in 
-           '("pkg" #+sbcl"sbcl" "clos" "iter" "level1" "utils" "mop" "objects"
+           '("pkg" #+sbcl "sbcl" "clos" "iter" "level1" "utils" "mop" "objects"
              "data" 
              "scales" "spectral" "patterns" "io" "scheduler" "sco" "clm" "clm2" 
-             ;; "midishare" "midishare" "loop" "midishare" "player"
              "midi1" "midi2" "midi3" "cmn")
            do
            (load-cm-file f)))))

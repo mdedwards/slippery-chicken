@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 21:34:31 Mon Jun 17 2013 BST
+;;; $$ Last modified: 11:27:55 Tue Jun 18 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -177,7 +177,7 @@
       #-cmn
       (load-cm-file "cmn-stubs")
       (loop for f in 
-           '("pkg" #+sbcl "sbcl" #+clisp "clisp" #+cmu "cmu" #+acl "acl"
+           '("pkg" #+sbcl "sbcl" #+clisp "clisp" #+(or cmu ccl) "cmu" #+acl "acl"
              "clos" "iter" "level1" "utils"
              "mop" "objects" "data" 
              "scales" "spectral" "patterns" "io" "scheduler" "sco" "clm" "clm2" 
@@ -192,6 +192,7 @@
 ;;; It seems CM doesn't put itself on the features list but sc needs it.
 (pushnew :cm *features*)
 (pushnew :cm-2 *features*)
+(pushnew :slippery-chicken *features*)
 
 (sc-compile-and-load "package.lsp")
 (sc-compile-and-load "globals.lsp")

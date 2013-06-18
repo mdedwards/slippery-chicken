@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 13:05:55 Tue Jun 18 2013 BST
+;;; $$ Last modified: 13:41:39 Tue Jun 18 2013 +0100
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -78,10 +78,10 @@
 ;;; (setf *read-default-float-format* 'double-float)
 
 (defparameter +sc-dir-separator+
-  ;; sbcl uses /
-  #+(and (not sbcl) (or windows mswindows win32 win64)) #\\
+  ;; sbcl and ccl uses /
+  #+(and (not sbcl) (not ccl) (or windows mswindows win32 win64)) #\\
   ;; #+mcl #\: ; back in pre-OSX days
-  #+(or sbcl ecl unix) #\/)
+  #+(or sbcl ccl ecl unix) #\/)
 
 (defparameter +sc-fasl-extension+
   #+clisp ".fas"

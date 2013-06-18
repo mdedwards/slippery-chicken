@@ -41,6 +41,18 @@
   ;(pcl::finalize-inheritance class)
   )
 
+(defun class-slots (class)
+  (ccl::class-slots class))
+
+(defun slot-definition-name (slot)
+  (ccl::slot-definition-name slot))
+
+(defun slot-definition-initargs (slot)
+  (ccl::slot-definition-initargs slot))
+
+(defun class-direct-subclasses (x)
+  (ccl::class-direct-subclasses x))
+
 (defmethod validate-class ((class t) (superclass t))
   ;; this is a no-op except in OpenMCL 014
   t)

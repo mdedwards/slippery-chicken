@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 11:27:55 Tue Jun 18 2013 BST
+;;; $$ Last modified: 11:57:44 Tue Jun 18 2013 +0100
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -177,7 +177,8 @@
       #-cmn
       (load-cm-file "cmn-stubs")
       (loop for f in 
-           '("pkg" #+sbcl "sbcl" #+clisp "clisp" #+(or cmu ccl) "cmu" #+acl "acl"
+           '("pkg" #+sbcl "sbcl" #+clisp "clisp" #+cmu "cmu" #+acl "acl"
+             #+ccl "ccl"
              "clos" "iter" "level1" "utils"
              "mop" "objects" "data" 
              "scales" "spectral" "patterns" "io" "scheduler" "sco" "clm" "clm2" 

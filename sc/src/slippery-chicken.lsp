@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:23:12 Wed Jun 19 2013 BST
+;;; $$ Last modified: 17:37:51 Wed Jun 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7683,7 +7683,7 @@ duration: 20.0 (20.000)
 ;;; only differs from that method in that after writing all the Lilypond text
 ;;; files for the score, it calls Lilypond to render the PDF, which is then
 ;;; opened automatically from within Lisp (if the value of 
-;;; (sc-get-config 'lp-display-auto-open) is T).
+;;; (get-sc-config 'lp-display-auto-open) is T).
 ;;; 
 ;;; In order to work properly, you'll need to make sure the value of
 ;;; (get-sc-config 'lilypond-command) is set (set-sc-config ...) to the full
@@ -7711,7 +7711,7 @@ duration: 20.0 (20.000)
     (print lp-file)
     (if (zerop success)
         (values 
-         (when (sc-get-config 'lp-display-auto-open)
+         (when (get-sc-config 'lp-display-auto-open)
            (system-open-file pdf-file))
          pdf-file)
         (error "slippery-chicken::lp-display: Call to Lilypond failed.")))

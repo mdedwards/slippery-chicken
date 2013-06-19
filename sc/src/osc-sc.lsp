@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified: 17:37:00 Sat Jun 15 2013 BST
+;;; $$ Last modified: 13:33:42 Wed Jun 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -109,6 +109,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun osc-send-list (list &optional (warn t))
+  (declare (special sb-bsd-sockets::+osc-sc-output-stream+))
   (sb-bsd-sockets::osc-send-list list sb-bsd-sockets::+osc-sc-output-stream+
                                  warn))
 

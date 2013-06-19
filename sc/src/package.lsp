@@ -8,14 +8,13 @@
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
-;;; Purpose:          definition of the slippery-chicken package and export of
-;;;                   its symbols 
+;;; Purpose:          definition of the slippery-chicken package.
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    5.12.00
 ;;;
-;;; $$ Last modified: 16:15:20 Thu May 30 2013 BST
+;;; $$ Last modified: 15:33:03 Wed Jun 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -55,23 +54,18 @@
   (:nicknames :sc :slimy-poultry)
   (:import-from :cl-user +slippery-chicken-version+))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (in-package :slippery-chicken)
 
 (eval-when (compile load #+allegro-cl-lite eval)
   (export '()))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(in-package :slippery-chicken)
-
 ;;; MDE Thu Mar 28 14:00:35 2013
 (export 
  '( 
    ;; globals
-   +pitch-seq-lowest-equals-prefers-low+
-   +pitch-seq-lowest-equals-prefers-high+
-   +slippery-chicken-standard-instrument-palette+
-   +cmn-display-auto-open+
+   +slippery-chicken-config-data+
 
    ;; functions (copy/pasted from robo_functions.html) 
    all-members almost-zero amplitude-to-dynamic assoc-list-id-list

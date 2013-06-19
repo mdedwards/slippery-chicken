@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 08:15:35 Mon May  7 2012 BST
+;;; $$ Last modified: 13:35:54 Wed Jun 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -595,6 +595,27 @@ data: WILBUR
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; ****m* assoc-list/replace-data
+;;; DATE 19th June 2013
+;;; 
+;;; DESCRIPTION
+;;; A convenience method that's essentially the same as set-data but without
+;;; having to pass the new ID in a list along with the new value. 
+;;; 
+;;; ARGUMENTS
+;;; - The key (number, symbol, string) to the existing data.
+;;; - The new value to be associated with this key (any data).
+;;; - The assoc-list object
+;;; 
+;;; RETURN VALUE
+;;; The named-object for the datum.
+;;; 
+;;; SYNOPSIS
+(defmethod replace-data (key new-value (al assoc-list))
+;;; ****
+  (set-data key (list key new-value) al))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 01.12.11 SEAN: Added ROBODoc info
 ;;; 07.12.11 SEAN: Modified example
 ;;; ****m* assoc-list/add-to-list-data
@@ -865,7 +886,7 @@ data: PIG)
       (unless (and (listp thing)
                    (= 2 (length thing)))
         (error "assoc-list::check-or-force-named-object: Expected a ~
-                named-object or at least a 2-element list that can be ~
+                named-object or at least ~%a 2-element list that can be ~
                 turned into one.....~%~a"
                thing))
       (make-named-object (first thing) 

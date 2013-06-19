@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 12:19:48 Sat Jun  1 2013 BST
+;;; $$ Last modified: 13:18:57 Wed Jun 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -216,7 +216,7 @@
                         (4stave nil)
                         (file 
                          (format nil "~a~a.eps" 
-                                 +sc-default-dir+ 
+                                 (get-sc-config 'default-dir) 
                                  (string-downcase (id sp))))
                         (text-x-offset -0.5)
                         (text-y-offset nil)
@@ -229,7 +229,7 @@
                         (use-octave-signs nil)
                         (automatic-octave-signs nil)
                         (include-missing-chromatic t)
-                        (auto-open +cmn-display-auto-open+)
+                        (auto-open (get-sc-config 'cmn-display-auto-open+))
                         (include-missing-non-chromatic t))
 ;;; ****
   ;; some defaults above are good for 2-staff display but not 4...

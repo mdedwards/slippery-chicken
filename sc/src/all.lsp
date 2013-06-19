@@ -10,13 +10,14 @@
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
 ;;; Purpose:          Load all the lisp files associated with slippery-chicken
+;;;                   export of  its symbols.
 ;;;                   No public interface envisaged (so no robodoc entries).
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 13:41:39 Tue Jun 18 2013 +0100
+;;; $$ Last modified: 15:30:02 Wed Jun 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -196,7 +197,7 @@
 (pushnew :slippery-chicken *features*)
 
 (sc-compile-and-load "package.lsp")
-(sc-compile-and-load "globals.lsp")
+;; (sc-compile-and-load "globals.lsp")
 #+cmn (sc-compile-and-load "cmn.lsp")
 #+cmn (sc-compile-and-load "cmn-glyphs.lsp")
 #+cm (sc-compile-and-load "cm.lsp")
@@ -210,11 +211,14 @@
 (sc-compile-and-load "assoc-list.lsp")
 (sc-compile-and-load "recursive-assoc-list.lsp")
 (sc-compile-and-load "palette.lsp")
+(sc-compile-and-load "pitch-seq-palette.lsp")
+(sc-compile-and-load "globals.lsp")
 (sc-compile-and-load "sc-map.lsp")
 (sc-compile-and-load "set-map.lsp")
 (sc-compile-and-load "tempo.lsp")
 (sc-compile-and-load "rhythm.lsp")
 (sc-compile-and-load "pitch.lsp")
+(sc-compile-and-load "instrument.lsp")
 (sc-compile-and-load "chord.lsp")
 (sc-compile-and-load "event.lsp")
 (sc-compile-and-load "time-sig.lsp")
@@ -224,8 +228,6 @@
 (sc-compile-and-load "instrument-change-map.lsp")
 (sc-compile-and-load "simple-change-map.lsp")
 (sc-compile-and-load "tempo-map.lsp")
-(sc-compile-and-load "pitch-seq-palette.lsp")
-(sc-compile-and-load "instrument.lsp")
 (sc-compile-and-load "sc-set.lsp")
 (sc-compile-and-load "tl-set.lsp")
 (sc-compile-and-load "complete-set.lsp")
@@ -261,5 +263,6 @@
 (sc-compile-and-load "popcorn.lsp")
 #+(and mac-osx sbcl) (sc-compile-and-load "osc.lsp")
 #+(and mac-osx sbcl) (sc-compile-and-load "osc-sc.lsp")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF all.lsp

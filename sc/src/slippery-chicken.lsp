@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:40:16 Fri Jun 14 2013 BST
+;;; $$ Last modified: 13:23:12 Wed Jun 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -122,7 +122,7 @@
    ;; in the case of the sndfile-palette, we put the palette first in a list,
    ;; the paths second and the extensions third
    (snd-output-dir :accessor snd-output-dir
-                   :initarg :snd-output-dir :initform +sc-default-dir+)
+                   :initarg :snd-output-dir :initform (get-sc-config 'default-dir))
    ;; see clm-play method for a description of this slot.
    (sndfile-palette :accessor sndfile-palette :initarg :sndfile-palette
                     :initform nil)
@@ -572,7 +572,7 @@
 ;;; keyword arguments:
 ;;; - :file. A string that is the directory path with file name and extension
 ;;;   for the .eps file to be created. Default = "cmn.eps" in the directory
-;;;   +sc-default-dir+ (default "/tmp/") 
+;;;   (get-sc-config 'default-dir) (default "/tmp/") 
 ;;; - :players. NIL or a list of player IDs to indicate whether all players'
 ;;;   parts should be printed to the score. If NIL, all players' parts will be
 ;;;   written to the score. If a single symbol or a list of player IDs, only
@@ -697,8 +697,8 @@
 ;;;   Default = NIL.
 ;;; - :auto-open.  Whether to open the .EPS file once written. Currently only
 ;;;    available on OSX with SBCL.  Uses the default app for .EPS files, as if
-;;;    opened with 'open' in the terminal.  Default = Value of global
-;;;    +cmn-display-auto-open+.  
+;;;    opened with 'open' in the terminal.  Default = Value of 
+;;;    (get-sc-config cmn-display-auto-open).  
 ;;;
 ;;; RETURN VALUE  
 ;;; Always T.
@@ -781,7 +781,7 @@
                         ;; MDE Fri Apr  6 13:27:08 2012 
                         (title t)
                         (file (format nil "~a~a.eps"
-                                      +sc-default-dir+ 
+                                      (get-sc-config 'default-dir)
                                       (filename-from-title (title sc))))
                         (all-output-in-one-file t)
                         (one-line-per-page nil)
@@ -807,7 +807,7 @@
                         (multi-bar-rests nil)
                         (automatic-octave-signs nil)
                         (display-time nil)
-                        (auto-open +cmn-display-auto-open+)
+                        (auto-open (get-sc-config 'cmn-display-auto-open+))
                         (add-postscript nil))
 ;;; ****
   ;; MDE Wed Apr 18 10:57:41 2012 -- 
@@ -3701,7 +3701,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;; keyword arguments:
 ;;; - :midi-file. The name of the MIDI file to produce, including directory
 ;;;   path and extension. Default is a filename extracted from the title of the
-;;;   sc piece, placed in the +sc-default-dir+ directory (default /tmp).
+;;;   sc piece, placed in the (get-sc-config 'default-dir) directory (default /tmp).
 ;;; - :voices. NIL or a list of player IDs indicating which of the players'
 ;;;   parts are to be included in the resulting MIDI file. If NIL, all players'
 ;;;   parts will be included. Default = NIL.
@@ -3723,8 +3723,8 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   MIDI file. Default = NIL.
 ;;; - :auto-open.  Whether to open the MIDI file once written. Currently only
 ;;;    available on OSX with SBCL.  Uses the default app for MIDI files, as if
-;;;    opened with 'open' in the terminal.  Default = Value of global
-;;;    +midi-play-auto-open+.  
+;;;    opened with 'open' in the terminal.  Default = Value of 
+;;;    (get-sc-config 'midi-play-auto-open).  
 ;;; - :suffix.  Add some text to the filename just before .mid?.  Default = ""
 ;;; 
 ;;; RETURN VALUE
@@ -3781,7 +3781,7 @@ seq-num 5, VN, replacing G3 with B6
                       (suffix "")
                       (midi-file
                        (format nil "~a~a~a.mid"
-                               +sc-default-dir+ 
+                               (get-sc-config 'default-dir)
                                (filename-from-title (title sc))
                                suffix))
                       (from-sequence 1)
@@ -3789,7 +3789,7 @@ seq-num 5, VN, replacing G3 with B6
                       ;; if nil we'll write all the sections
                       (num-sections nil)
                       ;; MDE Tue Jun  4 19:06:11 2013 -- 
-                      (auto-open +midi-play-auto-open+)
+                      (auto-open (get-sc-config 'midi-play-auto-open))
                       ;; if this is a 7-bit number we'll use this for all notes
                       (force-velocity nil))
 ;;; ****
@@ -4133,7 +4133,7 @@ seq-num 5, VN, replacing G3 with B6
                         (3 ((cl (3 1 2 4 3 1 2))
                             (hn (3 4 2 1 3 2 1))
                             (vc (3 2 3 1 4 2 1)))))
-        :snd-output-dir +sc-default-dir+
+        :snd-output-dir (get-sc-config 'default-dir)
         :sndfile-palette '(((sndfile-grp-1
                              ((test-sndfile-1.aiff)
                               (test-sndfile-2.aiff)
@@ -5605,7 +5605,7 @@ data: NIL
 ;;; keyword arguments:
 ;;; - :base-path. A string that is the directory path only for the resulting
 ;;;   files. The method will automatically generate the file names and
-;;;   extensions. Default =  +sc-default-dir+.
+;;;   extensions. Default =  (get-sc-config 'default-dir).
 ;;; - :start-bar. An integer that is the first bar of the given
 ;;;   slippery-chicken object for which output is to be generated. If NIL, the
 ;;;   start-bar will be set to 1. Default = NIL.
@@ -5763,7 +5763,7 @@ data: NIL
 ;;; SYNOPSIS
 (defmethod write-lp-data-for-all ((sc slippery-chicken) 
                                   &key
-                                  (base-path +sc-default-dir+)
+                                  (base-path (get-sc-config 'default-dir))
                                   start-bar end-bar (paper "a4") landscape
                                   ;; MDE Tue May 29 21:34:53 2012 
                                   start-bar-numbering
@@ -6698,7 +6698,7 @@ duration: 20.0 (20.000)
 ;;;   manual and robodoc entries for rthm-seq-map and sc-map for more details.
 ;;; - :snd-output-dir. A string that will be used as the directory path for any
 ;;;   output generated by clm-play in conjunction with sound files listed in
-;;;   the sndfile-palette (see below). Default = +sc-default-dir+.
+;;;   the sndfile-palette (see below). Default = (get-sc-config 'default-dir).
 ;;; - :sndfile-palette. A recursive association list that will be used as the
 ;;;   data to create a sndfile-palette object within the slippery-chicken
 ;;;   object. This is where the list is defined that contains all possible
@@ -6928,7 +6928,7 @@ duration: 20.0 (20.000)
                               sndfile-palette 
                               tempo-map 
                               tempo-curve 
-                              (snd-output-dir +sc-default-dir+)
+                              (snd-output-dir (get-sc-config 'default-dir))
                               instrument-change-map 
                               instruments-write-bar-nums
                               bars-per-system-map
@@ -7682,13 +7682,13 @@ duration: 20.0 (20.000)
 ;;; This function has exactly the same arguments as write-lp-data-for all and
 ;;; only differs from that method in that after writing all the Lilypond text
 ;;; files for the score, it calls Lilypond to render the PDF, which is then
-;;; opened automatically from within Lisp (if the value of the global
-;;; +lp-display-auto-open+ is T).
+;;; opened automatically from within Lisp (if the value of 
+;;; (sc-get-config 'lp-display-auto-open) is T).
 ;;; 
-;;; In order to work properly, you'll need to make sure the +lilypond-command+
-;;; global variable is set to the full path of your Lilypond command (not the
-;;; app: it's usually /path/to/Lilypond.app/Contents/Resources/bin/lilypond on
-;;; OSX).   
+;;; In order to work properly, you'll need to make sure the value of
+;;; (get-sc-config 'lilypond-command) is set (set-sc-config ...) to the full
+;;; path of your Lilypond command (not the app: it's usually
+;;; /path/to/Lilypond.app/Contents/Resources/bin/lilypond on OSX).
 ;;; 
 ;;; NB with SBCL on OSX the output from Lilypond is only printed once the
 ;;; process has exited, so it may take a while until you see anything.
@@ -7707,11 +7707,11 @@ duration: 20.0 (20.000)
   (let* ((lp-file (apply #'write-lp-data-for-all args))
          (no-ext (path-minus-extension lp-file))
          (pdf-file (concatenate 'string no-ext ".pdf"))
-         (success (shell +lilypond-command+ "-o" no-ext lp-file)))
+         (success (shell (get-sc-config 'lilypond-command) "-o" no-ext lp-file)))
     (print lp-file)
     (if (zerop success)
         (values 
-         (when +lp-display-auto-open+
+         (when (sc-get-config 'lp-display-auto-open)
            (system-open-file pdf-file))
          pdf-file)
         (error "slippery-chicken::lp-display: Call to Lilypond failed.")))

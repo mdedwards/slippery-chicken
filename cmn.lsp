@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 07:58:27 Thu Jun 13 2013 BST
+;;; $$ Last modified: 15:52:17 Wed Jun 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -49,23 +49,7 @@
 (eval-when (compile)
   (declaim (optimize (speed 3) (safety 1) (space 0) (debug 0))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (in-package :cmn)
-
-(declaim (special *cmn-units*))
-(setf *cmn-units* :cm)
-
-;;; We're not going to have more than 20 nested brackets applied to a single
-;;; note are we? :=) 
-(defparameter *cmn-open-brackets-for-sc* (make-list 20))
-
-(defparameter *cmn-grace-notes-for-sc* nil)
-
-(defparameter *cmn-bar-num-dx-for-sc* -0.2)
-(defparameter *cmn-bar-num-dy-for-sc* 1.2)
-(defparameter *cmn-bar-num-size-for-sc* 6)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -159,10 +143,9 @@
   (when bar-num
     (text (format nil "~D" bar-num)
           (font-name "Verdana-Bold")
-          (font-size *cmn-bar-num-size-for-sc*)
-          (dx *cmn-bar-num-dx-for-sc*)
-          (dy *cmn-bar-num-dy-for-sc*) ;; (frame :box)
-          )))
+          (font-size (sc::get-sc-config 'cmn-bar-num-size-for-sc))
+          (dx (sc::get-sc-config 'cmn-bar-num-dx-for-sc))
+          (dy (sc::get-sc-config 'cmn-bar-num-dy-for-sc)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -385,16 +368,17 @@
 ;;; Marks should not consist of slurs!  Actually, cmn has a problem
 ;;; with dynamics for grace notes too! 
 (defun cmn-grace-note (note marks)
+  (declare (special +cmn-grace-notes-for-sc+))
   ;; (print 'clm-grace-note)
   ;; (print note)
   ;; (when marks (print 'marks))
-  (push note *cmn-grace-notes-for-sc*)
+  (push note +cmn-grace-notes-for-sc+)
   (loop for m in marks do
         (loop for cmn-mark in (get-cmn-marks m) do
-              (push cmn-mark *cmn-grace-notes-for-sc*)))
+              (push cmn-mark +cmn-grace-notes-for-sc+)))
   ;; the 1/8th note rhythm makes sure only 1 beam is placed over multiple grace
   ;; notes.
-  ;; (push e *cmn-grace-notes-for-sc*)
+  ;; (push e +cmn-grace-notes-for-sc+)
   nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -408,6 +392,7 @@
 ;;; 16.3.11 ins-change is nil or a string
 (defun cmn-note (note rq dots flags beam brackets tied-to tied-from bar-num
                  marks time tempo ins-change)
+  (declare (special +cmn-grace-notes-for-sc+))
   ;; (format t "~%~a ~a ~a ~a ~a ~a ~a ~a ~a ~a "
   ;;     note rq dots flags beam brackets tied-to tied-from bar-num marks)
   (let ((note-symbol (symbolp note))
@@ -463,13 +448,13 @@
                   (list (new-staff-name ins-change)
                         (sc-cmn-text ins-change)))
                 (cmn-tuplet-brackets brackets)
-                (list (when *cmn-grace-notes-for-sc*
-                        ;; (print *cmn-grace-notes-for-sc*)
+                (list (when +cmn-grace-notes-for-sc+
+                        ;; (print +cmn-grace-notes-for-sc+)
                         (apply #'grace-note 
-                               (reverse *cmn-grace-notes-for-sc*))
+                               (reverse +cmn-grace-notes-for-sc+))
                         ;; (print 'didit)
                         ))))
-      (setf *cmn-grace-notes-for-sc* nil))))
+      (setf +cmn-grace-notes-for-sc+ nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -482,12 +467,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun cmn-tuplet-brackets (brackets)
-  (declare (special *cmn-open-brackets-for-sc*))
+  (declare (special +cmn-open-brackets-for-sc+))
   (when brackets
     (loop for bracket in brackets with dy = -0.3 collect
           (cond ((listp bracket)      
                  ;; open bracket
-                 (setf (nth (first bracket) *cmn-open-brackets-for-sc*)
+                 (setf (nth (first bracket) +cmn-open-brackets-for-sc+)
                    (beat-subdivision- (subdivision (second bracket)) 
                                       ;; (bracketed :up)
                                       (when (third bracket)
@@ -512,10 +497,10 @@
                 ((sc::integer<0 bracket)
                  ;; under bracket
                  (-beat-subdivision- (nth (abs bracket) 
-                                          *cmn-open-brackets-for-sc*)))
+                                          +cmn-open-brackets-for-sc+)))
                 ((sc::integer>=0 bracket)
                  ;; close bracket
-                 (-beat-subdivision (nth bracket *cmn-open-brackets-for-sc*)))
+                 (-beat-subdivision (nth bracket +cmn-open-brackets-for-sc+)))
                 (t (error "cmn::cmn-tuplet-brackets: what's this? : ~a"
                           bracket))))))
 
@@ -681,7 +666,8 @@
 
 (defun cmn-display (system-list 
                     &key
-                    (file (concatenate 'string +sc-default-dir+ "cmn.eps"))
+                    (file (concatenate 'string (sc::get-sc-config 'default-dir)
+                                       "cmn.eps"))
                     (page-height 29.7)
                     (page-width 21.0)
                     (size 20)

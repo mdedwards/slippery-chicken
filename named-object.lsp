@@ -31,7 +31,7 @@
 ;;;
 ;;; Creation date:    4th December 2000
 ;;;
-;;; $$ Last modified: 18:06:17 Wed Jul 18 2012 BST
+;;; $$ Last modified: 14:43:12 Wed Jun 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -173,7 +173,8 @@
 
 (defmethod cmn-display :before ((no named-object) &key ignore1 ignore2 ignore3
                                                        ignore4 ignore5)
-  (declare (ignore ignore1 ignore2 ignore3 ignore4 ignore5))
+  (declare (special cmn::*cmn-grace-notes-for-sc*)
+           (ignore ignore1 ignore2 ignore3 ignore4 ignore5))
   ;; (format t "~&Resetting grace notes...")
   (setf cmn::*cmn-grace-notes-for-sc* nil))
   

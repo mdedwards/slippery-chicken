@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 11:50:02 Sat Jun  1 2013 BST
+;;; $$ Last modified: 13:19:20 Wed Jun 19 2013 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -529,7 +529,7 @@ rthm-seq SEQ3
 ;;;   be printed in one staff system. Default = 1.
 ;;; - :size. A number to indicate the font size of the CMN output.
 ;;; - :auto-open. Automatically open the EPS file?.  
-;;;    Default = +cmn-display-auto-open+ (global)  
+;;;    Default = (get-sc-config cmn-display-auto-open)
 ;;;
 ;;; RETURN VALUE
 ;;; T
@@ -563,14 +563,14 @@ rthm-seq SEQ3
                         (all-output-in-one-file t)
                         (file 
                          (format nil "~a~a.eps" 
-                                 +sc-default-dir+ 
+                                 (get-sc-config 'default-dir)
                                  (string-downcase (id rsp))))
                         (staff-separation 3)
                         (line-separation 5)
                         (page-nums t)
                         (no-accidentals t)
                         (seqs-per-system 1)
-                        (auto-open +cmn-display-auto-open+)
+                        (auto-open (get-sc-config 'cmn-display-auto-open))
                         (size 15))
 ;;; ****
   (format t "~&Generating rthm-seqs...")

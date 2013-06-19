@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 11:09:14 Sat Jun  1 2013 BST
+;;; $$ Last modified: 13:19:56 Wed Jun 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -318,7 +318,8 @@
 (defun permutations (level)
 ;;; ****
   (if (> level 8)
-      (let* ((file (concatenate 'string +sc-default-dir+ "permutations.txt"))
+      (let* ((file (concatenate 'string (get-sc-config 'default-dir)
+                                "permutations.txt"))
              (stream (open file
                            :direction :output :if-exists :overwrite
                            :if-does-not-exist :create)))

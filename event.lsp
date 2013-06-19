@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:05:24 Wed Jun 12 2013 BST
+;;; $$ Last modified: 13:44:06 Wed Jun 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -117,7 +117,7 @@
                  :initform nil)
    ;(rqq-notes :accessor rqq-notes :type list :initform nil :allocation :class)
    (amplitude :accessor amplitude :type float :initarg :amplitude 
-              :initform +sc-default-amplitude+)))
+              :initform (get-sc-config 'default-amplitude))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3114,7 +3114,7 @@ T
 ;;;   note with an absolute duration of 4 seconds (both assuming a tempo of
 ;;;   60). Default = NIL.
 ;;; - :amplitude sets the amplitude of the event. Possible values span from 0.0
-;;;   (silent) to maximum of 1.0. Default = +sc-default-amplitude+.
+;;;   (silent) to maximum of 1.0. Default = (get-sc-config 'default-amplitude).
 ;;; - :tempo. A number to indicate the tempo of the event as a normal bpm
 ;;;   value. Default = 60. This argument is only used when creating the rhythm
 ;;;   slots (e.g. duration) not for setting duration-in-tempo.
@@ -3236,7 +3236,7 @@ T
                    ;; MDE Sat Apr 20 15:13:41 2013 -- allow us to create
                    ;; written pitch events and auto-set sounding
                    written
-                   (amplitude +sc-default-amplitude+)
+                   (amplitude (get-sc-config 'default-amplitude))
                    (tempo 60))
 ;;; **** 
   ;; MDE Mon Apr 23 13:52:07 2012 -- allow r to indicate a rest

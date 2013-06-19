@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 10:38:47 Wed Jun 12 2013 BST
+;;; $$ Last modified: 13:42:23 Wed Jun 19 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -240,8 +240,10 @@
 ;;;    have the same effect as the prefers-notes slot being high. Similarly, if
 ;;;    the lowest number is 1, it will have the same effect as the
 ;;;    prefers-notes slot being low. These two numbers (5 and 1) are actually
-;;;    global constants: +pitch-seq-lowest-equals-prefers-high+ and
-;;;    +pitch-seq-lowest-equals-prefers-low+, as defined above.
+;;;    global slippery chicken configuration data: (get-sc-config
+;;;    pitch-seq-lowest-equals-prefers-high) and (get-sc-config
+;;;    pitch-seq-lowest-equals-prefers-low) so can be set using the
+;;;    set-sc-config function.  
 ;;;
 ;;;    * The question as to how many pitches are enough pitches before adding
 ;;;    used notes is determined by the pitch-seq-index-scaler-min argument,
@@ -354,14 +356,15 @@
                        ;; use the top notes
                        ((or (prefers-high instrument)
                             (>= lowest 
-                                +pitch-seq-lowest-equals-prefers-high+))
+                                (get-sc-config 
+                                 'pitch-seq-lowest-equals-prefers-high)))
                         (- num-set-pitches need 
                            lowest))
                        ;; if the lowest given is 1 always use the
                        ;; bottom notes
                        ((or (prefers-low instrument)
                             (= lowest
-                               +pitch-seq-lowest-equals-prefers-low+))
+                               (get-sc-config 'pitch-seq-lowest-equals-prefers-low)))
                         (- lowest))
                        ;; go for the middle
                        (t (- (1- (ceiling (- num-set-pitches need) 2))

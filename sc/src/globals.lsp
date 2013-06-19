@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 08:24:48 Thu Jun 13 2013 BST
+;;; $$ Last modified: 11:05:24 Wed Jun 19 2013 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -159,7 +159,7 @@
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****P* globals/+lilypond-command+ 
+;;; ****P* globals/+sc-default-amplitude+ 
 ;;; DESCRIPTION
 ;;; The default amplitude for all events that don't have amplitude/dynamic set
 ;;; via some means such as marks. 

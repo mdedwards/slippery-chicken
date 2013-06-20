@@ -1,4 +1,7 @@
 ;;; **********************************************************************
+;;; This file created 18/6/13 by Michael Edwards (m@michael-edwards.org) based
+;;; on cmu.lisp to reflect the architecture of Clozure Common Lisp.
+;;;
 ;;; Copyright (C) 2002 Heinrich Taube (taube@uiuc.edu) 
 ;;; This program is free software; you can redistribute it and/or
 ;;; modify it under the terms of the GNU General Public License

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 09:57:35 Fri Jun 14 2013 BST
+;;; $$ Last modified: 10:30:09 Fri Jun 21 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3442,7 +3442,8 @@ WARNING:
 (defun shell (command &rest arguments)
   #+sbcl
   (cl-user::process-exit-code
-   (cl-user::run-program command arguments :output *standard-output*))
+   (cl-user::run-program command arguments :output *standard-output*
+                         :wait t :input nil))
   #-sbcl
   (warning "utilities::shell: Can't execute ~a on your system. Sorry."
            command))

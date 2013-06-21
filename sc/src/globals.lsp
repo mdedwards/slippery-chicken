@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 16:11:50 Wed Jun 19 2013 BST
+;;; $$ Last modified: 18:11:51 Fri Jun 21 2013 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -74,14 +74,14 @@
      ;; instrument/set.
      (pitch-seq-lowest-equals-prefers-low 1)
      ;; Whether to automatically open EPS files generated with CMN via
-     ;; cmn-display.  Currently only works with SBCL on Mac OSX.
-     (cmn-display-auto-open #+sbcl T #-sbcl nil)
+     ;; cmn-display.  Currently only works with SBCL and CCL on Mac OSX.
+     (cmn-display-auto-open #+sc-auto-open T #-sc-auto-open nil)
      ;; Whether to automatically open PDF files generated with via lp-display.
-     ;; Currently only works with SBCL on Mac OSX.
-     (lp-display-auto-open #+sbcl T #-sbcl nil)
+     ;; Currently only works with SBCL and CCL on Mac OSX.
+     (lp-display-auto-open #+sc-auto-open T #-sc-auto-open nil)
      ;; Whether to automatically open MIDI files generated with via midi-play.
-     ;; Currently only works with SBCL on Mac OSX.
-     (midi-play-auto-open #+sbcl T #-sbcl nil)
+     ;; Currently only works with SBCL and CCL on Mac OSX.
+     (midi-play-auto-open #+sc-auto-open T #-sc-auto-open nil)
      ;; The default directory for output of sound files, EPS files, and
      ;; Lilypond files. Don't forget the trailing slash (i.e. "/tmp/" not
      ;; "/tmp").  Bear in mind that on OSX the /tmp directory is emptied upon

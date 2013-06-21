@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 14:45:16 Fri Jun 21 2013 BST
+;;; $$ Last modified: 18:14:45 Fri Jun 21 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3445,8 +3445,10 @@ WARNING:
    (cl-user::run-program command arguments :output *standard-output*
                          :wait t :input nil))
   #+ccl
-  (run-program command)
-  #-sbcl
+  (nth-value 1
+             (cl-user::external-process-status
+              (cl-user::run-program command arguments :output t)))
+  #-(or sbcl ccl)
   (warning "utilities::shell: Can't execute ~a on your system. Sorry."
            command))
 
@@ -3475,7 +3477,7 @@ WARNING:
 ;;; June 1st 2013
 ;;;
 ;;; DESCRIPTION
-;;; NB This function currently works in SBCL on UNIX systems only.
+;;; NB This function currently works in SBCL and CCL on UNIX systems only.
 ;;; 
 ;;; For users of the slippery chicken app, this function will update the source
 ;;; code of the app to the latest in the online subversion (svn) repository.
@@ -3535,7 +3537,7 @@ At revision 3608.
 ;;; SYNOPSIS
 (defun update-app-src (path-to-app &key (rm "/bin/rm") (svn "/usr/bin/svn"))
 ;;; ****
-  #+(and sbcl unix)
+  #+(and (or ccl sbcl) unix)
   (let* ((sc (concatenate 'string path-to-app "/Contents/Resources/sc/"))
          (src (concatenate 'string sc "src/"))
          (svn-command
@@ -3554,9 +3556,9 @@ At revision 3608.
     (prog1
         (apply #'shell (cons svn svn-command))
       (format t "Please restart slippery chicken for changes to take effect.")))
-  #-(and sbcl unix)
+  #-(and (or ccl sbcl) unix)
   (warn "utilities::update-app-src: Sorry but this currently only runs ~
-         with SBCL on Mac OSX"))
+         with SBCL or CCL on Mac OSX"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun get-date-string ()

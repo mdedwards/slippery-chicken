@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 10:30:09 Fri Jun 21 2013 BST
+;;; $$ Last modified: 14:45:16 Fri Jun 21 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3444,6 +3444,8 @@ WARNING:
   (cl-user::process-exit-code
    (cl-user::run-program command arguments :output *standard-output*
                          :wait t :input nil))
+  #+ccl
+  (run-program command)
   #-sbcl
   (warning "utilities::shell: Can't execute ~a on your system. Sorry."
            command))

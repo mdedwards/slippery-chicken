@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:37:51 Wed Jun 19 2013 BST
+;;; $$ Last modified: 18:13:35 Fri Jun 21 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -696,9 +696,9 @@
 ;;;   after it has been generated. See the add-ps-to-file function for details.
 ;;;   Default = NIL.
 ;;; - :auto-open.  Whether to open the .EPS file once written. Currently only
-;;;    available on OSX with SBCL.  Uses the default app for .EPS files, as if
-;;;    opened with 'open' in the terminal.  Default = Value of 
-;;;    (get-sc-config cmn-display-auto-open).  
+;;;    available on OSX with SBCL and CCL.  Uses the default app for .EPS
+;;;    files, as if opened with 'open' in the terminal.  Default = Value of
+;;;    (get-sc-config cmn-display-auto-open).
 ;;;
 ;;; RETURN VALUE  
 ;;; Always T.
@@ -807,7 +807,7 @@
                         (multi-bar-rests nil)
                         (automatic-octave-signs nil)
                         (display-time nil)
-                        (auto-open (get-sc-config 'cmn-display-auto-open+))
+                        (auto-open (get-sc-config 'cmn-display-auto-open))
                         (add-postscript nil))
 ;;; ****
   ;; MDE Wed Apr 18 10:57:41 2012 -- 
@@ -3722,9 +3722,9 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   MIDI velocity value which will be given to all notes in the resulting
 ;;;   MIDI file. Default = NIL.
 ;;; - :auto-open.  Whether to open the MIDI file once written. Currently only
-;;;    available on OSX with SBCL.  Uses the default app for MIDI files, as if
-;;;    opened with 'open' in the terminal.  Default = Value of 
-;;;    (get-sc-config 'midi-play-auto-open).  
+;;;    available on OSX with SBCL or CCL.  Uses the default app for MIDI files,
+;;;    as if opened with 'open' in the terminal.  Default = Value of
+;;;    (get-sc-config 'midi-play-auto-open).
 ;;; - :suffix.  Add some text to the filename just before .mid?.  Default = ""
 ;;; 
 ;;; RETURN VALUE
@@ -5590,8 +5590,9 @@ data: NIL
 ;;; NB: This method only produces the .ly files. These must be rendered by the
 ;;;     LilyPond application separately for PDF output. See the slippery
 ;;;     chicken installation web page and the manual page on Output for more
-;;;     detail.  Bear in mind that SBCL users on OSX can use the lp-display
-;;;     macro to call Lilypond and display the resultant PDF automatically.
+;;;     detail.  Bear in mind that SBCL and CCL users on OSX can use the
+;;;     lp-display macro to call Lilypond and display the resultant PDF
+;;;     automatically.
 ;;;
 ;;; NB: Many of the arguments for this method pass their values directly to
 ;;;     LilyPond parameters. 
@@ -7703,7 +7704,6 @@ duration: 20.0 (20.000)
 ;;; SYNOPSIS
 (defun lp-display (&rest args)
 ;;; ****
-  #+sbcl
   (let* ((lp-file (apply #'write-lp-data-for-all args))
          (no-ext (path-minus-extension lp-file))
          (pdf-file (concatenate 'string no-ext ".pdf"))
@@ -7714,9 +7714,7 @@ duration: 20.0 (20.000)
          (when (get-sc-config 'lp-display-auto-open)
            (system-open-file pdf-file))
          pdf-file)
-        (error "slippery-chicken::lp-display: Call to Lilypond failed.")))
-  #-sbcl
-  (warn "slippery-chicken::lp-display: sorry, but this only works in SBCL"))
+        (error "slippery-chicken::lp-display: Call to Lilypond failed."))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

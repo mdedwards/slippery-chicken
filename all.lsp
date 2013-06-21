@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 15:30:02 Wed Jun 19 2013 BST
+;;; $$ Last modified: 17:09:52 Fri Jun 21 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -90,6 +90,11 @@
   #+sbcl ".fasl"
   #+ecl ".fasl"
   #+allegro ".fasl")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Jun 21 17:08:42 2013 
+#+(and (or sbcl ccl) mac-osx)
+(pushnew :sc-auto-open *features*)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

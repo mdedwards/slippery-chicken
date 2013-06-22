@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified: 13:33:42 Wed Jun 19 2013 BST
+;;; $$ Last modified: 21:33:14 Sat Jun 22 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -160,7 +160,8 @@
                   (soscuff 
                    (progn
                      (unless (third oscuff)
-                       (error "osc-sc::osc-call: Couldn't decode buffer: ~a" buffer))
+                       (error "osc-sc::osc-call: Couldn't decode buffer: ~a"
+                              buffer))
                      (if (char= #\( (elt (third oscuff) 0))
                          'lisp
                          (read-from-string (third oscuff))))))

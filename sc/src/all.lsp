@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 17:09:52 Fri Jun 21 2013 BST
+;;; $$ Last modified: 10:57:43 Sat Jun 22 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -93,7 +93,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Jun 21 17:08:42 2013 
-#+(and (or sbcl ccl) mac-osx)
+#+(and (or sbcl ccl) darwin)
 (pushnew :sc-auto-open *features*)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -266,8 +266,8 @@
 (sc-compile-and-load "instruments.lsp")
 (sc-compile-and-load "lilypond.lsp")
 (sc-compile-and-load "popcorn.lsp")
-#+(and mac-osx sbcl) (sc-compile-and-load "osc.lsp")
-#+(and mac-osx sbcl) (sc-compile-and-load "osc-sc.lsp")
+#+(and darwin sbcl) (sc-compile-and-load "osc.lsp")
+#+(and darwin sbcl) (sc-compile-and-load "osc-sc.lsp")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF all.lsp

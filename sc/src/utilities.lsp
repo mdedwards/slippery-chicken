@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 18:14:45 Fri Jun 21 2013 BST
+;;; $$ Last modified: 10:57:19 Sat Jun 22 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3455,9 +3455,9 @@ WARNING:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed May 29 14:54:14 2013 
 (defun system-open-file (file)
-  #+mac-osx 
+  #+darwin
   (shell "/usr/bin/open" file)
-  #-mac-osx
+  #-darwin
   (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
            file))
   

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 12:59:52 Sat Jun 22 2013 BST
+;;; $$ Last modified: 21:40:20 Sat Jun 22 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3091,7 +3091,7 @@ WARNING:
 ;;; Get the first 15 harmonic partials above a fundamental pitch of 64 Hertz,
 ;;; starting with partial 2, and specifying an upper cut-off of 1010 Hz.
 
-(get-harmonics 63 :start-at 2 :max-freq 1010)
+(get-harmonics 63 :start-partial 2 :max-freq 1010)
 
 => (126 189 252 315 378 441 504 567 630 693 756 819 882 945 1008)
 

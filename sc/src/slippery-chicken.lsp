@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:13:35 Fri Jun 21 2013 BST
+;;; $$ Last modified: 16:53:18 Tue Jun 25 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7686,13 +7686,14 @@ duration: 20.0 (20.000)
 ;;; opened automatically from within Lisp (if the value of 
 ;;; (get-sc-config 'lp-display-auto-open) is T).
 ;;; 
-;;; In order to work properly, you'll need to make sure the value of
-;;; (get-sc-config 'lilypond-command) is set (set-sc-config ...) to the full
-;;; path of your Lilypond command (not the app: it's usually
+;;; In order to work properly, you'll need to make sure the value of the
+;;; 'lilypond-command configuration parameter is set via (set-sc-config ...) to
+;;; the full path of your Lilypond command (not the app: it's usually
 ;;; /path/to/Lilypond.app/Contents/Resources/bin/lilypond on OSX).
 ;;; 
-;;; NB with SBCL on OSX the output from Lilypond is only printed once the
-;;; process has exited, so it may take a while until you see anything.
+;;; NB Only available with CCL and SBCL on OSX. With SBCL on OSX the output
+;;; from Lilypond is only printed once the process has exited, so it may take a
+;;; while until you see anything.
 ;;; 
 ;;; ARGUMENTS
 ;;; See write-lp-data-for-all

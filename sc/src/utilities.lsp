@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 21:40:20 Sat Jun 22 2013 BST
+;;; $$ Last modified: 11:03:51 Tue Jun 25 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2596,8 +2596,9 @@ WARNING:
 ;;; ****f* utilities/between
 ;;; DESCRIPTION
 ;;; Return a random number between two specified numbers. If the two numbers
-;;; are integers, the random selection is inclusive. If they are decimal
-;;; numbers, the result cannot be absolutely inclusive. 
+;;; are integers, the random selection is inclusive. If either are floating-point
+;;; (decimal) numbers, the result will be a float between the first (inclusive)
+;;; and just less than the second (i.e. exclusive).
 ;;; 
 ;;; ARGUMENTS
 ;;; - A first, lower, number.
@@ -2607,8 +2608,10 @@ WARNING:
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether the random seed should be fixed.
-;;; - If fixed-random is set to T, a function must be given for <restart> to
-;;;   reset the seed (see below)
+;;; - T or NIL to indicate whether, when fixed-random is set to T, we should
+;;;   reset the random number generator (to guarantee the same random
+;;;   sequences). This would generally only be called once, perhaps at the
+;;;   start of a generation procedure.
 ;;; 
 ;;; RETURN VALUE
 ;;; An integer if both numbers are integers, or a float if one or both are

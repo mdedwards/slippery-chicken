@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 11:03:51 Tue Jun 25 2013 BST
+;;; $$ Last modified: 16:27:25 Wed Jul  3 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3569,6 +3569,78 @@ At revision 3608.
         (sec min hour day month year)
       (get-decoded-time)
     (format nil "~d-~2,'0d-~2,'0d-~2,'0d.~2,'0d" year month day hour min)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun kontakt-to-coll (nki &key write-file (converter "/Users/medward2/bin/nki"))
+  (flet ((get-value (line)
+           (let ((pos (search "value=" line)))
+             (unless pos
+               (error "utilities::kontakt-to-coll: can't find 'value' in ~%~a"
+                      line))
+             (read-from-string (subseq line (+ pos 7))))))
+    (let ((xml (if (search ".xml" nki)
+                   nki
+                   (progn
+                     (shell converter nki)
+                     (concatenate 'string nki ".xml"))))
+          (result '())
+          (txt (concatenate 'string nki ".txt"))
+          (count 0))
+      (with-open-file 
+          (input xml :direction :input :if-does-not-exist :error)
+        (loop
+           with key with sample
+           do
+           (multiple-value-bind
+                 (line eof)
+               (read-line input nil)
+             (cond 
+               ((search "rootKey" line)
+                (setf key (get-value line)))
+               ((search "file_ex2" line)
+                ;; files are the paths with some strange directory
+                ;; delimiter but they all seem to start the actual file
+                ;; name with F-00010 
+                (let ((pos1 (search "F-00010" line))
+                      (pos2 (search "\"/>" line)))
+                  (unless (and pos1 pos2)
+                    (error "utilities::kontakt-to-coll: can't find file in ~%~a"
+                           line))
+                  (setf sample (subseq line (+ pos1 12) pos2))
+                  (incf count)
+                  (push (list key sample) result))))
+             (when eof 
+               (return)))))
+      (setf result (sort (nreverse result)
+                         #'(lambda (x y) (< (first x) (first y)))))
+      (when write-file
+        (with-open-file 
+            (output txt :direction :output :if-exists :overwrite)
+          ;; if the key skips a few write the previous file in the gaps, with
+          ;; semitone offsets
+          (flet ((write-coll-line (index sample num-times)
+                   ;; remember a line looks something like
+                   ;; 20, Baritone_Marimba62 .wav 0;
+                   ;; with the extension separately
+                   (loop for i below num-times
+                      with name = (pathname-name sample)
+                      with type = (concatenate 'string "." (pathname-type sample))
+                      do
+                      (format output "~&~a, ~a ~a ~a;" (+ i index) name type i))))
+            (loop with offset = (first (first result))
+               with last-key with last-sample
+               for pair in result
+               for key = (first pair)
+               for sample = (second pair)
+               do
+               (when last-key
+                 (write-coll-line (- last-key offset) last-sample (- key last-key)))
+               (setf last-key key
+                     last-sample sample)
+               finally 
+               (write-coll-line (- key offset) (print sample) 1)))))
+      result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

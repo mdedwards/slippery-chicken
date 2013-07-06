@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 16:27:25 Wed Jul  3 2013 BST
+;;; $$ Last modified: 17:43:18 Wed Jul  3 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3572,21 +3572,24 @@ At revision 3608.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; http://www.linuxsampler.org/nkitool/
 (defun kontakt-to-coll (nki &key write-file (converter "/Users/medward2/bin/nki"))
-  (flet ((get-value (line)
-           (let ((pos (search "value=" line)))
+  (flet ((get-value (line &optional (read t))
+           (let* ((pos (search "value=" line))
+                  (val (subseq line (+ pos 7))))
              (unless pos
                (error "utilities::kontakt-to-coll: can't find 'value' in ~%~a"
                       line))
-             (read-from-string (subseq line (+ pos 7))))))
+             (if read
+                 (read-from-string val)
+                 val))))
     (let ((xml (if (search ".xml" nki)
                    nki
                    (progn
                      (shell converter nki)
                      (concatenate 'string nki ".xml"))))
           (result '())
-          (txt (concatenate 'string nki ".txt"))
-          (count 0))
+          (txt (concatenate 'string nki ".txt")))
       (with-open-file 
           (input xml :direction :input :if-does-not-exist :error)
         (loop
@@ -3599,16 +3602,19 @@ At revision 3608.
                ((search "rootKey" line)
                 (setf key (get-value line)))
                ((search "file_ex2" line)
-                ;; files are the paths with some strange directory
-                ;; delimiter but they all seem to start the actual file
-                ;; name with F-00010 
-                (let ((pos1 (search "F-00010" line))
-                      (pos2 (search "\"/>" line)))
+                ;; files are the paths with some strange directory delimiter
+                ;; but they all seem to start the actual file name with a
+                ;; 12-char string like F-00010 or F000--this will of course
+                ;; break if the sample file names being with either of these
+                ;; strings
+                (let* ((val (get-value line nil))
+                       (pos1 (or (search "F-00010" val)
+                                 (search "F000" val)))
+                       (pos2 (search "\"/>" val)))
                   (unless (and pos1 pos2)
                     (error "utilities::kontakt-to-coll: can't find file in ~%~a"
                            line))
-                  (setf sample (subseq line (+ pos1 12) pos2))
-                  (incf count)
+                  (setf sample (subseq val (+ pos1 12) pos2))
                   (push (list key sample) result))))
              (when eof 
                (return)))))
@@ -3616,7 +3622,8 @@ At revision 3608.
                          #'(lambda (x y) (< (first x) (first y)))))
       (when write-file
         (with-open-file 
-            (output txt :direction :output :if-exists :overwrite)
+            (output txt :direction :output :if-exists :overwrite
+                    :if-does-not-exist :create)
           ;; if the key skips a few write the previous file in the gaps, with
           ;; semitone offsets
           (flet ((write-coll-line (index sample num-times)
@@ -3639,8 +3646,8 @@ At revision 3608.
                (setf last-key key
                      last-sample sample)
                finally 
-               (write-coll-line (- key offset) (print sample) 1)))))
-      result)))
+               (write-coll-line (- key offset) sample 1)))))
+      (values result (length result)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

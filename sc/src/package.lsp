@@ -4,7 +4,7 @@
 ;;;
 ;;; File:             package.lsp
 ;;;
-;;; Version:          1.0.3
+;;; Version:          1.0.4
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

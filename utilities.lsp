@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  none: no classes defined
 ;;;
-;;; Version:          1.0.5
+;;; Version:          1.0.4
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

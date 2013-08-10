@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 13:19:42 Wed Jun 19 2013 BST
+;;; $$ Last modified: 19:05:19 Tue Aug  6 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3141,6 +3141,19 @@ data: F4
       (error "pitch::cmn-display-pitch-list: argument 1 must be a list of ~
           pitch objects: ~a" pitches)))
   
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 6.8.13
+(defun rm-bad-intervals (pitch-list bad-intervals)
+  (loop 
+     with last = (first pitch-list)
+     with result = (list last)
+     for this in (rest pitch-list) 
+     for diff = (abs (pitch- last this))
+     do
+     (unless (member diff bad-intervals :test #'=) ; so 2.0 = 2
+       (setf last this)
+       (push this result))
+     finally (return (nreverse result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF pitch.lsp

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 13:19:56 Wed Jun 19 2013 BST
+;;; $$ Last modified: 18:13:14 Sat Aug 10 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1228,7 +1228,7 @@ WARNING:
           ;; this only gets triggered when we can't find a place for i.
             finally 
             (warn "move-repeats: can't find non-repeating place! ~
-                           present element: ~a, elements left: ~a"
+                   Present element: ~a, elements left: ~a"
                   i (length rest))
             (setf result (append rest result)
                   rest nil)))

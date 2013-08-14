@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 19:14:16 Tue Aug 13 2013 BST
+;;; $$ Last modified: 10:18:53 Wed Aug 14 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3156,7 +3156,7 @@ data: F4
      finally (return (nreverse result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; 13.8.13
 (defun pitch-list-high-low (pitches) 
   (let (hi low)
     (loop for p in pitches do

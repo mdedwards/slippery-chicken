@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 19:05:19 Tue Aug  6 2013 BST
+;;; $$ Last modified: 19:14:16 Tue Aug 13 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3154,6 +3154,17 @@ data: F4
        (setf last this)
        (push this result))
      finally (return (nreverse result))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun pitch-list-high-low (pitches) 
+  (let (hi low)
+    (loop for p in pitches do
+         (if (or (not hi) (pitch> p hi))
+             (setf hi p))
+         (if (or (not low) (pitch< p low))
+             (setf low p)))
+    (values hi low (id hi) (id low))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF pitch.lsp

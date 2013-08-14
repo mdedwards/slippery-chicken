@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 13:19:20 Wed Jun 19 2013 BST
+;;; $$ Last modified: 21:51:43 Wed Aug 14 2013 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -894,6 +894,37 @@ rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) is required.
   (get-multipliers (get-data id rsp) rthm round))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 14.8.13
+(defmethod rsm-from-chopped-rsp ((rsp rthm-seq-palette) num-output-seqs players
+                             &key (start 1) stop 
+                             (remix-in t) 
+                             ;; remix-in args: ;
+                             (remix-in-fib-seed 13) (mirror nil) (test #'eql)
+                             (replace nil))
+  (let* ((rsm-keys (get-keys rsp nil))  ; no warning about top-level keys only ;
+         (num-chops (sclist-length (data (first (data rsp)))))
+         (fts (fibonacci-transitions num-output-seqs
+                                     (loop for i from start to 
+                                          (if (integerp stop) stop num-chops)
+                                          collect i)))
+         (map '()))
+    ;; make sure we've got enough chopped sequences for the number of players ;
+    (unless (<= (length players) (length rsm-keys))
+      (error "Not enough original sequences (~a) to match the number ~
+              of players (~a)" (length rsm-keys) (length players)))
+    (when remix-in
+      (setf fts (remix-in fts :remix-in-fib-seed remix-in-fib-seed :mirror mirror
+                          :test test :replace replace)))
+    (setf map
+          (list 
+           (list 1
+                 (loop for p in players 
+                    for k in rsm-keys
+                    collect
+                    (list p (loop for rs in fts collect (list k rs)))))))
+    (make-rthm-seq-map 
+     (concatenate 'string "from-" (string (id rsp)))
+     map :recurse-simple-data nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

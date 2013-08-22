@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 18:42:50 Thu Aug 22 2013 BST
+;;; $$ Last modified: 22:00:03 Thu Aug 22 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4709,7 +4709,8 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; NB As it is foreseen that this method may be called many times iteratively,
 ;;; there is no call to check-ties, auto-beam, or consolidate-rests; it is
 ;;; advised that these methods are called once the last call to this method has
-;;; been made.
+;;; been made.  gen-stats is however called for each affected bar, so the
+;;; number of rests vs. notes should be consistent with the new data. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object
@@ -4722,7 +4723,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;;  #'warn, #'print or simply NIL for no error)
 ;;; 
 ;;; RETURN VALUE
-;;; The number of events turned into rests, or NIL if none were.
+;;; The number of events turned into rests.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -4743,7 +4744,9 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 (defmethod sc-force-rest2 ((sc slippery-chicken) bar-num event-num player
                            &optional (on-error #'error))
   ;;                                                        nil = no error
-  (let ((start-event (get-event sc bar-num event-num player nil)))
+  (let ((start-event (get-event sc bar-num event-num player nil))
+        (bars-affected '())
+        (count 0))
     (flet ((init-error (text)
              (when (functionp on-error)
                (funcall 
@@ -4761,13 +4764,14 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
              (init-error "Event is already a rest."))
             ((is-tied-to start-event)
              (init-error "Event is tied to: ~
-                          call this method with an attacked note only.")))))
+                          call this method with an attacked note only."))))
   (when player                          ; hack to make sure we return nil
     (loop with bn = bar-num 
        with en = (1- event-num)
        with bar = (get-bar sc bar-num player) 
-       with count = 0
+       ;; with count = 0
        with tied
+       ;; with bars-affected = '()
        with e
        do
        (when (>= en (num-rhythms bar))
@@ -4776,14 +4780,17 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
                bar (get-bar sc bn player)))
        (setf e (get-nth-event en bar))
        (if (is-rest e)
-           (return count)
+           (return)
            (progn
              (incf count)
              (setf tied (is-tied-from e))
+             (pushnew bn bars-affected)
              (force-rest e)
              (if tied
                  (incf en)
-                 (return count)))))))
+                 (return))))))
+  (loop for ba in bars-affected do (gen-stats (get-bar sc ba player)))
+  count))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; A post-generation editing method

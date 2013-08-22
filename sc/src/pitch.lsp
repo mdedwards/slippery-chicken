@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 10:18:53 Wed Aug 14 2013 BST
+;;; $$ Last modified: 10:56:45 Thu Aug 22 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3122,6 +3122,10 @@ data: F4
 ;;; - :file.  The path of the file to (over)write.  
 ;;;    Default = "pitches.eps" in the directory (get-sc-config 'default-dir)
 ;;;   (default /tmp)
+;;; - :auto-open.  Whether to open the .EPS file once written. Currently only
+;;;    available on OSX with SBCL and CCL.  Uses the default app for .EPS
+;;;    files, as if opened with 'open' in the terminal.  Default = Value of
+;;;    (get-sc-config cmn-display-auto-open).
 ;;; 
 ;;; RETURN VALUE
 ;;; A CMN score object.
@@ -3129,15 +3133,20 @@ data: F4
 ;;; SYNOPSIS
 (defun cmn-display-pitch-list 
     (pitches &key (staff cmn::treble) (size 20)
+     (auto-open (get-sc-config 'cmn-display-auto-open))
      (file (concatenate 'string (get-sc-config 'default-dir) "pitches.eps")))
-;;; **** 
+;;; ****
   (if (and pitches (every #'pitch-p pitches))
-      (cmn::cmn (cmn::output-file file) (cmn::size size)
-                (cmn::all-output-in-one-file t)
-                cmn::staff staff
-                (cmn::engorge
-                 (loop for p in pitches collect 
-                      (eval (econs (get-cmn-data p) cmn::q)))))
+      (prog1 
+          (cmn::cmn (cmn::output-file file) (cmn::size size)
+                    (cmn::all-output-in-one-file t)
+                    cmn::staff staff
+                    (cmn::engorge
+                     (loop for p in pitches collect 
+                          (eval (econs (get-cmn-data p) cmn::q)))))
+        ;; MDE Thu Aug 22 10:56:44 2013
+        (when auto-open
+          (system-open-file file)))
       (error "pitch::cmn-display-pitch-list: argument 1 must be a list of ~
           pitch objects: ~a" pitches)))
   

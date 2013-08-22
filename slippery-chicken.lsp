@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:53:18 Tue Jun 25 2013 BST
+;;; $$ Last modified: 19:37:01 Thu Aug 22 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2143,6 +2143,11 @@ data: E
 ;;; - An integer that is the number of the event object to be returned from
 ;;;   that bar. This number is 1-based and counts all events, including notes,
 ;;;   rests, and tied notes.
+;;; - A symbol name for the player.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether an error should be signalled if the event
+;;;   doesn't exist. 
 ;;; 
 ;;; RETURN VALUE  
 ;;; An event object.
@@ -2206,9 +2211,10 @@ data: 32
 |#
 ;;; 
 ;;; SYNOPSIS
-(defmethod get-event ((sc slippery-chicken) bar-num event-num player)
+(defmethod get-event ((sc slippery-chicken) bar-num event-num player
+                      &optional (error t))
 ;;; ****
-  (get-event (piece sc) bar-num event-num player))
+  (get-event (piece sc) bar-num event-num player error))
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6170,7 +6176,7 @@ data: NIL
 ;;;   return. 
 ;;; 
 ;;; RETURN VALUE
-;;; A list of event objects.
+;;; A flat list of event objects.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -6282,6 +6288,25 @@ data: NIL
     (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/get-all-events
+;;; DATE
+;;; August 22nd 2013 (Edinburgh)
+;;; DESCRIPTION
+;;; Return a flat list containing all the events of a slippery-chicken object
+;;; fo the given player.
+;;; 
+;;; ARGUMENTS
+;;; - The slippery-chicken object
+;;; - The player (symbol)
+;;;
+;;; RETURN VALUE
+;;; A list of event objects
+;;; 
+;;; SYNOPSIS
+(defmethod get-all-events ((sc slippery-chicken) player)
+  (get-events-from-to sc player 1 1 (num-bars sc)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Thu May 10 18:34:38 BST 2012: Added robodoc entry
 
@@ -6344,6 +6369,7 @@ data: NIL
                                     end-event)))
     (loop for e in events collect
          (transpose e semitones :destructively destructively))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -6484,7 +6510,9 @@ duration: 20.0 (20.000)
 
 ;;; ****m* slippery-chicken/check-beams
 ;;; DESCRIPTION
-;;; See the description, with example, for check-beams in rthm-seq-bar.lsp.
+;;; See the description, with example, for check-beams in rthm-seq-bar.lsp. 
+;;; Players can either be a single symbol, a list of symbols, or nil (whereby
+;;; all players will be checked).
 ;;;
 ;;; SYNOPSIS
 (defmethod check-beams ((sc slippery-chicken) &key start-bar end-bar players
@@ -7478,6 +7506,8 @@ duration: 20.0 (20.000)
        ;; Here the rhythms in the rthm-seq-bar are upgraded to events
          (loop for rhythm in (rhythms bar) and rthm-num from 0 do
               (let ((event (clone-with-new-class rhythm 'event)))
+                ;; MDE Thu Aug 22 19:30:33 2013 
+                (setf (player event) player)
                 ;; (print event)
                 ;; 8/3/07: need to change midi programmes if an instrument
                 ;; change was detected; these are stored in the event.

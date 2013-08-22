@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:44:06 Wed Jun 19 2013 BST
+;;; $$ Last modified: 19:29:34 Thu Aug 22 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -97,7 +97,7 @@
    ;; plays microtonal chords (i.e. plays on two midi channels).
    (midi-program-changes :accessor midi-program-changes :type list 
                          :initarg :midi-program-changes :initform nil)
-   ;; 16.3.11 30,000ft over turkmenistan :) instead of writing an instrument
+   ;; 16.3.11 30,000ft over Turkmenistan :) instead of writing an instrument
    ;; change as cmn text, indicate it here as plain strings--1 if there's just
    ;; the long name for the instrument, otherwise 2 if there's a short name
    ;; too. 
@@ -115,6 +115,8 @@
    ;; for bar-holder add method 
    (marks-before :accessor marks-before :type list :initarg :marks-before
                  :initform nil)
+   ;; MDE Thu Aug 22 19:26:11 2013 -- the player whose part this event is in
+   (player :accessor player :initform nil)
    ;(rqq-notes :accessor rqq-notes :type list :initform nil :allocation :class)
    (amplitude :accessor amplitude :type float :initarg :amplitude 
               :initform (get-sc-config 'default-amplitude))))
@@ -158,6 +160,8 @@
           (slot-value rthm 'bar-num) (bar-num e)
           (slot-value rthm 'midi-time-sig) (midi-time-sig e)
           (slot-value rthm 'start-time-qtrs) (start-time-qtrs e)
+          ;; MDE Thu Aug 22 19:27:43 2013 
+          (slot-value rthm 'player) (player e)
           (slot-value rthm 'instrument-change) (copy-list
                                                 (instrument-change e))
           (slot-value rthm 'tempo-change) (when (tempo-change e)
@@ -687,7 +691,7 @@ data: 132
                   ~%       instrument-change: ~a ~
                   ~%       display-tempo: ~a, start-time-qtrs: ~,3f, ~
                   ~%       midi-time-sig: ~a, midi-program-changes: ~a, ~
-                  ~%       8va: ~a~
+                  ~%       8va: ~a, player: ~a~
                   ~%       pitch-or-chord: ~a~
                   ~%       written-pitch-or-chord: ~a"
           (start-time i) (end-time i) (duration-in-tempo i) 
@@ -696,7 +700,7 @@ data: 132
           (instrument-change i) (display-tempo i) (start-time-qtrs i) 
           (when (midi-time-sig i)
             (data (midi-time-sig i)))
-          (midi-program-changes i) (8va i) (pitch-or-chord i)
+          (midi-program-changes i) (8va i) (player i) (pitch-or-chord i)
           (written-pitch-or-chord i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -741,6 +745,8 @@ data: 132
         (slot-value to 'start-time-qtrs) (start-time-qtrs from)
         (slot-value to 'midi-program-changes) (my-copy-list
                                                (midi-program-changes from))
+        ;; MDE Thu Aug 22 19:28:27 2013 
+        (slot-value to 'player) (player from)
         (slot-value to 'midi-time-sig) (when (midi-time-sig from)
                                          (clone (midi-time-sig from))))
   to)

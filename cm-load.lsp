@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    7th February 2003
 ;;;
-;;; $$ Last modified: 18:12:03 Wed Jan  4 2012 ICT
+;;; $$ Last modified: 21:11:47 Thu Aug 22 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -150,7 +150,8 @@
               (100/6 (etf :accidental tf))
               
               (100/6 e
-                     (en :accidental  n))
+               (en :accidental  n)
+               (ff :accidental f))
               (100/6 (ets :accidental ts))
               (100/6 (ess :accidental ss))
               (100/6 (eqs :accidental qs)
@@ -223,7 +224,8 @@
               (100/6 (btf :accidental tf))
 
               (100/6 b
-                     (bn :accidental  n))
+               (bn :accidental  n)
+               (cf :accidental  f :octave +1))
               (100/6 (bts :accidental ts))
               (100/6 (bss :accidental ss))
               (100/6 (bqs :accidental qs)

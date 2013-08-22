@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 21:07:34 Thu May 30 2013 BST
+;;; $$ Last modified: 17:34:54 Thu Aug 22 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -305,24 +305,19 @@
 ;;; specified number of semitones.
 ;;; 
 ;;; ARGUMENTS 
-
+;;;
 ;;; - A bar-holder object (such as the PIECE slot of a slippery-chicken
 ;;;   object). 
-
 ;;; - A positive or negative integer that is the number of semitones by which
 ;;;   the pitches of the specified bars are to be transposed. 
-
 ;;; - An integer that is the number of the first bar in which the pitches are
 ;;;   to be transposed. 
-
 ;;; - An integer that is the number of consecutive bars, including the
 ;;;   start-bar, in which the pitches are to be transposed.
-
 ;;; - The ID of the player whose part is to be changed.
-
+;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-
 ;;; - :destructively. T or NIL to indicate whether the transposed pitches are
 ;;;   to replace the existing pitches of the given bar-holder object. This must
 ;;;   be set to T if the pitches of the original object are to be transposed
@@ -518,13 +513,13 @@
 
 ;; bar-num and note-num are 1-based
 
-(defmethod get-event ((bh bar-holder) bar-num event-num player)
+(defmethod get-event ((bh bar-holder) bar-num event-num player &optional (error t))
   (let ((bar (get-bar bh bar-num player)))
     (unless bar
       (warn "bar-holder::get-event: couldn't get bar number ~a ~
              for player ~a"
             bar-num player))
-    (get-nth-event (1- event-num) bar)))
+    (get-nth-event (1- event-num) bar error)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 30.3.11: turn a rest into a note by supplying a pitch or chord (as objects

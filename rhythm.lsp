@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 14:29:15 Wed Jun 19 2013 BST
+;;; $$ Last modified: 19:04:24 Thu Aug 22 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -120,6 +120,9 @@
               :initform nil)
    (marks-in-part :accessor marks-in-part :type list 
                       :initarg :marks-in-part :initform nil)
+   ;; MDE Thu Aug 22 18:12:55 2013 -- what's the nth position of this r in the
+   ;; bar? 
+   (bar-pos :accessor bar-pos :type integer :initform -1)
    ;; 30.1.11 add another couple of slots for lilypond
    (letter-value :accessor letter-value :initform -1)
    (tuplet-scaler :accessor tuplet-scaler :type rational :initform 1)
@@ -176,6 +179,7 @@
           (slot-value named-object 'bracket) (copy-list (bracket i))
           (slot-value named-object 'letter-value) (letter-value i)
           (slot-value named-object 'tuplet-scaler) (tuplet-scaler i)
+          (slot-value named-object 'bar-pos) (bar-pos i)
           (slot-value named-object 'needs-new-note) (needs-new-note i))
     named-object))
 
@@ -202,6 +206,9 @@
 ;;; SYNOPSIS
 (defmethod force-rest ((r rhythm))
 ;;; ****
+  ;; MDE Thu Aug 22 19:03:09 2013 
+  (when (is-grace-note r)
+    (error "~a~%rhythm::force-rest: Can't force a grace note to a rest." r))
   (setf (needs-new-note r) nil
         (is-tied-to r) nil
         ;; 24.2.11 need to kill the beam too
@@ -233,7 +240,7 @@
                             duration: ~,3f, ~
                             rq: ~a, ~
                             is-rest: ~a, ~
-                            is-whole-bar-rest: ~a, ~
+                  ~%        is-whole-bar-rest: ~a, ~
                   ~%        score-rthm: ~,3f, ~
                             undotted-value: ~a, ~
                             num-flags: ~a, ~
@@ -251,13 +258,14 @@
                             marks-in-part: ~a, ~
                   ~%        letter-value: ~a, ~
                             tuplet-scaler: ~a, ~
+                            bar-pos: ~a, ~
                             grace-note-duration: ~a"
           (value i) (duration i) (rq i) (is-rest i) (is-whole-bar-rest i)
           (score-rthm i) (undotted-value i) 
           (num-flags i) (num-dots i) (is-tied-to i) (is-tied-from i)
           (compound-duration i) (is-grace-note i) (needs-new-note i)
           (beam i) (bracket i) (rqq-note i) (rqq-info i) (marks i)
-          (marks-in-part i) (letter-value i) (tuplet-scaler i)
+          (marks-in-part i) (letter-value i) (tuplet-scaler i) (bar-pos i)
           (grace-note-duration i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

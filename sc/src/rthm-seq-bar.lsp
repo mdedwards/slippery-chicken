@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 19:51:16 Mon Jun 10 2013 BST
+;;; $$ Last modified: 18:16:31 Thu Aug 22 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1880,8 +1880,13 @@ data: ((2 4) - S S - S - S S S - S S)
                       t)))
           ;; Store the number of notes that will be need for this bar,
           ;; i.e. how many were not rests or ties
-          (notes-needed rsb) (loop for r in rhythms count
-                                  (needs-new-note r))
+          ;; MDE Thu Aug 22 18:15:37 2013 -- also as side-effect store the
+          ;; rhythm number  
+          (notes-needed rsb) (loop for r in rhythms and i from 0
+                                ;; MDE Thu Aug 22 18:16:22 2013 
+                                do (setf (bar-pos r) i)
+                                count
+                                (needs-new-note r))
           (num-rests rsb) (loop for r in rhythms count (is-rest r))
           (num-score-notes rsb) (- (num-rhythms rsb) (num-rests rsb))))
   rsb)
@@ -2104,8 +2109,8 @@ rthm-seq-bar::get-nth-non-rest-rhythm: Couldn't get non-rest rhythm with index
                  (return r)))))
     (when error
       (unless result
-        (error "~a rthm-seq-bar::get-nth-non-rest-rhythm: Couldn't get ~
-                non-rest rhythm with index ~a for bar number ~a"
+        (error "~a~%rthm-seq-bar::get-nth-non-rest-rhythm: Couldn't get ~
+                non-rest rhythm with index ~%~a for bar number ~a"
                (rhythms rsb) index (bar-num rsb))))
     result))
 

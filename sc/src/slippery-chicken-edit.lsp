@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 11:16:11 Mon Jun 17 2013 BST
+;;; $$ Last modified: 18:42:50 Thu Aug 22 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3823,9 +3823,10 @@ NIL
 ;;; ****m* slippery-chicken-edit/process-events-by-time
 ;;; DESCRIPTION
 ;;; Apply the given function to all event objects within the given measure
-;;; range in order of their chronological occurrence.  NB If the time of the
-;;; event is needed it can be accessed in the given function via the event's
-;;; start-time slot. 
+;;; range in order of their chronological occurrence.  The function can take
+;;; one argument only: the current event object.  NB If the time of the event
+;;; is needed it can be accessed in the given function via the event's
+;;; start-time slot.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -4630,7 +4631,9 @@ NIL
 ;;; 23-Jul-2011 (Pula)
 ;;;
 ;;; DESCRIPTION
-;;; Change the specified event object to a rest.
+;;; Change the specified event object to a rest.  If events tied from this
+;;; event should automatically be  forced to rests also, use the sc-force-rest2
+;;; method instead.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -4698,6 +4701,91 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
                note-num bar-num))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 22.8.13
+
+;;; ****m* slippery-chicken-edit/sc-force-rest2
+;;; DESCRIPTION
+;;; Turn events into rests, doing the same with any following tied events.
+;;; NB As it is foreseen that this method may be called many times iteratively,
+;;; there is no call to check-ties, auto-beam, or consolidate-rests; it is
+;;; advised that these methods are called once the last call to this method has
+;;; been made.
+;;; 
+;;; ARGUMENTS
+;;; - A slippery-chicken object
+;;; - The bar number (integer)
+;;; - The event number in the bar (integer, counting from 1)
+;;; - The player name (symbol)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - A function object to be called on error (could be #'error (default),
+;;;  #'warn, #'print or simply NIL for no error)
+;;; 
+;;; RETURN VALUE
+;;; The number of events turned into rests, or NIL if none were.
+;;; 
+;;; EXAMPLE
+#|
+(let ((mini
+         (make-slippery-chicken
+          '+mini+
+          :ensemble '(((vc (cello :midi-channel 1))))
+          :set-palette '((1 ((a3 b3 c4 e4))))
+          :set-map '((1 (1 1 1)))
+          :rthm-seq-palette 
+          '((1 ((((4 4) - e.. 32 - h.) (+w) (+w) ((w)) ((h) (e) q e)
+                 (+q - +s e. - +h) (+w) (+w) ((w))))))
+          :rthm-seq-map '((1 ((vc (1 1 1))))))))
+  (sc-force-rest2 mini 1 3 'vc))
+=> 3
+|#
+;;; SYNOPSIS
+(defmethod sc-force-rest2 ((sc slippery-chicken) bar-num event-num player
+                           &optional (on-error #'error))
+  ;;                                                        nil = no error
+  (let ((start-event (get-event sc bar-num event-num player nil)))
+    (flet ((init-error (text)
+             (when (functionp on-error)
+               (funcall 
+                on-error "~&slippery-chicken-edit::sc-force-rest2: ~%~
+                          for bar number ~a, event number ~a, player: ~
+                          ~a~%~a" 
+                        bar-num event-num player text))
+             ;; hack to make sure we return nil if on-error is something other
+             ;; than #'error
+             (setf player nil) 
+             nil))
+      (cond ((not start-event) 
+             (init-error "No such event."))
+            ((is-rest start-event)
+             (init-error "Event is already a rest."))
+            ((is-tied-to start-event)
+             (init-error "Event is tied to: ~
+                          call this method with an attacked note only.")))))
+  (when player                          ; hack to make sure we return nil
+    (loop with bn = bar-num 
+       with en = (1- event-num)
+       with bar = (get-bar sc bar-num player) 
+       with count = 0
+       with tied
+       with e
+       do
+       (when (>= en (num-rhythms bar))
+         (incf bn)
+         (setf en 0
+               bar (get-bar sc bn player)))
+       (setf e (get-nth-event en bar))
+       (if (is-rest e)
+           (return count)
+           (progn
+             (incf count)
+             (setf tied (is-tied-from e))
+             (force-rest e)
+             (if tied
+                 (incf en)
+                 (return count)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; A post-generation editing method
 
 ;;; SAR Fri Apr 20 16:45:57 BST 2012: Added robodoc entry
@@ -4757,6 +4845,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
               (error "slippery-chicken::force-rest-bars: no bar ~a for ~a"
                      bar-num player))
             (force-rest-bar bar))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Tue Apr 24 19:46:02 BST 2012: Conformed robodoc entry
@@ -5225,7 +5314,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 (defmethod copy-bars ((sc slippery-chicken) from-start-bar to-start-bar 
                       from-player to-player num-bars 
                       &optional (print-bar-nums nil))
-;;; ****                                ;
+;;; **** 
   (flet ((no-bar (bar-num player)
            (error "slippery-chicken-edit::copy-bars: Can't get bar number ~a ~
                    for ~a." bar-num player)))
@@ -5252,7 +5341,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
          with sequenz
          repeat num-bars 
          do
-       ;; MDE Fri Jun 15 13:59:37 2012  ; ;
+       ;; MDE Fri Jun 15 13:59:37 2012 
          (when to-plays-transp
            (setf to-transp (get-transposition-at-bar to-player tbnum sc)))
          (unless first-time
@@ -5263,15 +5352,15 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
          (unless to-bar
            (no-bar fbnum to-player))
          (setf from-bar (clone from-bar))
-       ;; MDE Fri Jun 15 14:05:04 2012 -- in case we're copying from a ; ;
-       ;; transposing to a non-transposing ins ; ; ;
+       ;; MDE Fri Jun 15 14:05:04 2012 -- in case we're copying from a 
+       ;; transposing to a non-transposing ins 
          (when (and from-plays-transp (not to-transp))
            (delete-written from-bar))
          (when print-bar-nums
            (format t "~%from ~a to ~a to-transp ~a" from-plays-transp
                    to-plays-transp to-transp))
-         ;; MDE Fri Jun 15 13:19:27 2012 -- in case we're copying from a ;
-         ;; non-transposing to a transposing instrument. ;
+         ;; MDE Fri Jun 15 13:19:27 2012 -- in case we're copying from a 
+         ;; non-transposing to a transposing instrument. 
          (when to-transp
            (set-written from-bar (- to-transp)))
          (setf first-time nil)

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 16:03:14 Tue Jun 25 2013 BST
+;;; $$ Last modified: 12:39:39 Sun Aug 25 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -363,7 +363,7 @@
      ;; MDE Jul 2012 -- changed to reflect more clefs (and removed percussion)
      (computer
       (:staff-name "computer" :staff-short-name "comp"
-       :lowest-sounding C-1 :highest-sounding G9
+       :lowest-sounding C-1 :highest-sounding bf8
        :clefs (treble bass double-treble double-bass)
        :starting-clef treble)))))
        ;;; ****

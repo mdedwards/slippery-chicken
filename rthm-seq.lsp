@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 19:53:25 Mon Jun 10 2013 BST
+;;; $$ Last modified: 09:58:44 Fri Aug 23 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -239,10 +239,8 @@
 (defmethod print-simple ((rs rthm-seq) &optional written (stream t))
   (format stream "~&rthm-seq ~a" (id rs))
   (loop for bar in (bars rs) do
-       (print-simple bar written stream)))
-;;       (format t "~&~a: ~a" 
-  ;;             (get-time-sig-as-list bar)
-    ;;           (rhythms-as-symbols (rhythms bar)))))
+       (print-simple bar written stream))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

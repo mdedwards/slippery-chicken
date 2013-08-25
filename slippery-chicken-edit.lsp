@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 22:00:03 Thu Aug 22 2013 BST
+;;; $$ Last modified: 12:32:44 Sun Aug 25 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1281,6 +1281,9 @@ data: (
 ;;;   list of recognised marks. If NIL, no marks will be added. Default = NIL.
 ;;; - :written.  T or NIL to indicate whether these are the written or sounding
 ;;;   notes for a transposing instrument. Default = NIL. 
+;;; - :warn.  If there are more pitches in the given list than there are events
+;;;   in the slippery-chicken structure, issue a warning, unless NIL.  
+;;;   Default = T.  
 ;;; 
 ;;; RETURN VALUE  
 ;;; If a the new pitches are passed as a simple flat list, the method returns
@@ -1310,7 +1313,8 @@ data: (
 ;;; 
 ;;; SYNOPSIS
 (defmethod change-pitches ((sc slippery-chicken) player start-bar new-pitches
-                           &key (use-last-octave t) marks written)
+                           &key (use-last-octave t) marks written
+                           (warn t))
 ;;; ****
   (if (simple-listp new-pitches)
       (progn
@@ -1323,25 +1327,30 @@ data: (
            for count from 0
            ;; this just resets to start-bar; doesn't get an event
            with e = (next-event sc player t start-bar)
+           with last
            do
            (setf e (next-event sc player t))
            (unless (event-p e)
-             (error "slippery-chicken::change-pitches: couldn't get event ~a!"
-                    (1+ count)))
+             (when warn
+               (warn "slippery-chicken::change-pitches: couldn't get event no ~
+                      ~a (ran out of bars?).  ~%Last event was ~&~a."
+                     (1+ count) last))
+             (return))
            (when note
-             ;; (print note)
-             ;; MDE Thu May 30 18:17:24 2013
-             (unless (pitch-p note)
+             ;; (print note)  
+             ;; MDE Thu May 30 18:17:24 2013 
+             (unless (or (chord-p note) (pitch-p note))
                (when use-last-octave
                  (multiple-value-bind
                        (n o)
                      (get-note-octave note t)
                    (setf note (join-note-octave n o)))))
              (if written
-               (set-written-pitch-or-chord e note)
-               (setf (pitch-or-chord e) note)))
-           ;; NB note might be nil but mark not hence this isn't in the when
-           (rhythm-add-marks e (nth count marks)))
+                 (set-written-pitch-or-chord e note)
+                 (setf (pitch-or-chord e) note)))
+           ;; NB note might be nil but mark not hence this isn't in the when 
+           (rhythm-add-marks e (nth count marks))
+           (setf last e))
         ;; this hack gets the current bar number so we return where we left off
         (next-event sc nil))
       ;; the bar-holder method
@@ -4705,12 +4714,14 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 
 ;;; ****m* slippery-chicken-edit/sc-force-rest2
 ;;; DESCRIPTION
-;;; Turn events into rests, doing the same with any following tied events.
+
+;;; Turn events into rests, doing the same with any following tied events.  
 ;;; NB As it is foreseen that this method may be called many times iteratively,
-;;; there is no call to check-ties, auto-beam, or consolidate-rests; it is
-;;; advised that these methods are called once the last call to this method has
-;;; been made.  gen-stats is however called for each affected bar, so the
-;;; number of rests vs. notes should be consistent with the new data. 
+;;; there is no call to check-ties, auto-beam, consolidate-rests, or
+;;; update-instrument-slots (for statistics)--it is advised that these methods
+;;; are called once the last call to this method has been made.  gen-stats is
+;;; however called for each affected bar, so the number of rests vs. notes
+;;; should be consistent with the new data.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object
@@ -4743,8 +4754,8 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; SYNOPSIS
 (defmethod sc-force-rest2 ((sc slippery-chicken) bar-num event-num player
                            &optional (on-error #'error))
-  ;;                                                        nil = no error
   (let ((start-event (get-event sc bar-num event-num player nil))
+  ;;                                                         ^ nil = no error
         (bars-affected '())
         (count 0))
     (flet ((init-error (text)

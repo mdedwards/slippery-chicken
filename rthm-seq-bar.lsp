@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 18:16:31 Thu Aug 22 2013 BST
+;;; $$ Last modified: 09:58:08 Fri Aug 23 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3372,7 +3372,8 @@ data: (2 4)
 (defmethod print-simple ((rsb rthm-seq-bar) &optional written (stream t))
   (format stream "~&bar ~a: ~a: " (bar-num rsb) (get-time-sig-as-list rsb))
   (loop for r in (rhythms rsb) do
-       (print-simple r written stream)))
+       (print-simple r written stream))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5011,6 +5012,11 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
        (when (needs-new-note r)
          (add-mark r dynamic)))
   dynamic)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Aug 23 09:53:51 2013 
+(defmethod total-degrees ((rsb rthm-seq-bar))
+  (loop for e in (rhythms rsb) when (event-p e) sum (get-degree e :sum t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 21:51:43 Wed Aug 14 2013 BST
+;;; $$ Last modified: 09:58:25 Fri Aug 23 2013 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -763,7 +763,8 @@ rthm-seq 9
      do
        (if (is-ral data)
            (print-simple data)
-           (print-simple object))))
+           (print-simple object)))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 20:40:21 Thu May 30 2013 BST
+;;; $$ Last modified: 12:51:02 Sun Aug 25 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -345,6 +345,16 @@
           (staff-name ins) (staff-short-name ins) (largest-fast-leap ins)
           (tessitura-note ins)))
                            
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Aug 23 09:36:02 2013 
+(defmethod reset-stats ((ins instrument) &optional just-total-duration)
+  (setf (total-duration ins) 0.0)
+  (unless just-total-duration
+    (setf (total-bars ins) 0
+          (total-notes ins) 0
+          (total-degrees ins) 0))
+  t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod check-starting-clef ((ins instrument))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 18:26:18 Fri Aug 10 2012 BST
+;;; $$ Last modified: 09:58:58 Fri Aug 23 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1319,7 +1319,8 @@ data: (
 (defmethod print-simple ((c chord) &optional (stream t) ignore)
   (declare (ignore ignore))
   (loop for p in (data c) do
-       (format stream "~a " (data p))))
+       (format stream "~a " (data p)))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  MDE Fri Aug 10 16:17:59 2012 -- pitches can be pitch objects or any data

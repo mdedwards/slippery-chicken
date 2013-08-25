@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:37:01 Thu Aug 22 2013 BST
+;;; $$ Last modified: 12:29:34 Sun Aug 25 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1117,14 +1117,45 @@
       (set-write-bar-num sc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/update-instrument-slots
+;;; DATE
+;;; 23rd August 2013
+;;; 
+;;; DESCRIPTION
+;;; This will go through the generated slippery-chicken object's bar structure
+;;; and update each players' instruments' total-bars, total-notes,
+;;; total-duration, and total-degrees slots, for statistical purposes only.
+;;; This might be called by the user after performing one of the editing
+;;; routines that deletes or changes notes, etc.
+;;; 
+;;; ARGUMENTS
+;;; - The slippery-chicken object.
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; SYNOPSIS
+(defmethod update-instrument-slots ((sc slippery-chicken))
+;;; ****
+  (update-instruments-total-duration sc t))
 
-(defmethod update-instruments-total-duration ((sc slippery-chicken))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod update-instruments-total-duration ((sc slippery-chicken)
+                                              &optional and-other-slots)
   (loop for player in (players sc) do
+       ;; just update total-duration or all stats?
+       (reset-instrument-stats (get-player sc player) (not and-other-slots))
        (loop for bar-num from 1 to (num-bars sc) 
           for bar = (get-bar sc bar-num player)
           for ins = (get-instrument-for-player-at-bar player bar-num sc)
           do
             (gen-stats bar)
+            (when and-other-slots
+              (unless (is-rest-bar bar)
+                (incf (total-bars ins))
+                (incf (total-notes ins) (notes-needed bar))
+                (incf (total-degrees ins) (total-degrees bar))))
             (incf (total-duration ins) (sounding-duration bar)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

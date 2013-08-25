@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 16:26:58 Tue Jul  3 2012 BST
+;;; $$ Last modified: 13:10:35 Sun Aug 25 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -447,6 +447,36 @@
         (loop for ins in (data data) sum
              (total-bars ins))
         (total-bars data))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* player/reset-instrument-stats
+;;; DATE
+;;; 23rd August 2013
+;;;
+;;; DESCRIPTION
+;;; Reset the statistics slots for each instrument the player plays.
+;;; 
+;;; ARGUMENTS
+;;; - The player object
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - just-total-duration. If NIL update all statistics slots, otherwise just
+;;;   the total-duration slot of each instrument 
+;;; 
+;;; RETURN VALUE
+;;; T if the player has instruments, NIL if not.
+;;; 
+;;; SYNOPSIS
+(defmethod reset-instrument-stats ((p player) &optional just-total-duration)
+;;; ****
+  (let* ((data (data p)))
+    (when data
+      (if (typep data 'assoc-list)
+          (loop for ins in (data data) do
+               (reset-stats ins just-total-duration)
+               finally (return t))
+          (reset-stats data just-total-duration)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

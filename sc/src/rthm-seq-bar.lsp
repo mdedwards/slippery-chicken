@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 09:58:08 Fri Aug 23 2013 BST
+;;; $$ Last modified: 18:14:03 Mon Aug 26 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -729,8 +729,13 @@ data: E.
     (setf min (if min 
                   (duration (make-rhythm min))
                   0.0))
-    ;; (print beats)
     ;; (format t "~%bar ~a ~a" (bar-num rsb) (length (first beats)))
+    ;; MDE Mon Aug 26 17:57:30 2013 -- if we can't split the bar into beats, we
+    ;; might be able to split into durations of twice the beat 
+    (unless beats
+      (setf beat (scale (get-beat-as-rhythm rsb) 2)
+            rest-beat (make-rest (clone beat))
+            beats (get-beats rsb beat)))
     (if (all-rests? rsb)
         (force-rest-bar rsb)
         (flet ((consolidate (rthm count)
@@ -797,6 +802,7 @@ data: E.
                                       (sum-rhythms-duration cbeats)
                                       .000004)
               ;; 21.7.11 (Pula) don't fail if we can't do it, just do nothing
+              ;; (print (setf (rhythms rsb) cbeats))
               (setf (rhythms rsb) cbeats)
               ;; MDE Tue Nov 27 17:34:14 2012 -- only warn when we could split
               ;; into beats 
@@ -804,14 +810,16 @@ data: E.
                 ;; (print rsb)
                 ;; (print-rhythms-rqs (rhythms rsb))
                 ;; (print-rhythms-rqs cbeats)
-                (warn "~a~%rthm-seq-bar::consolidate-rests: ~
-                       Consolidated rthms sum (~a) != previous sum (~a)"
-                      rsb (sum-rhythms-duration cbeats)
-                      (rhythms-duration rsb)))))))
-    ;; MDE Mon May  7 17:45:59 2012
-    (unless (check-tuplets rsb nil)
-      (auto-tuplets rsb))
-    t)
+                (warn "~a~%rthm-seq-bar::consolidate-rests: bar ~a~%~
+                       Consolidated rthms sum (~a) != previous sum (~a)~
+                       ~%cbeats = ~a"
+                      (print-simple rsb) (bar-num rsb)
+                      (sum-rhythms-duration cbeats)
+                      (rhythms-duration rsb) cbeats))))))
+  ;; MDE Mon May  7 17:45:59 2012
+  (unless (check-tuplets rsb nil)
+    (auto-tuplets rsb))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1824,7 +1832,7 @@ data: ((2 4) - S S - S - S S S - S S)
         (failed nil)
         (beats '())
         (dur 0.0))
-    ;; MDE Tue May  1 19:04:32 2012 -- 
+    ;; MDE Tue May  1 19:04:32 2012
     (if (eq check-dur t)
         (setf check-dur #'error))
     (loop for r in (rhythms rsb) do

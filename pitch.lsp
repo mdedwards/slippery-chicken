@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 10:56:45 Thu Aug 22 2013 BST
+;;; $$ Last modified: 14:23:21 Tue Aug 27 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1808,9 +1808,12 @@ pitch::add-mark: mark PIZZ already present but adding again!
 (defmethod get-lp-data ((p pitch) &optional ignore1 ignore2 ignore3)
   (declare (ignore ignore1 ignore2 ignore3))
   ;; MDE Mon Jun 25 17:05:24 2012 
+  ;; MDE Tue Aug 27 14:23:09 2013 issue a warning instead of an error.
   (when (micro-but-not-quarter-tone-p p)
-    (error "pitch::get-lp-data: Lilypond can only handle quarter tones: ~a"
-           p))
+    (warn "pitch::get-lp-data: Lilypond cannot display ~a. ~
+           Resolving to the nearest quarter tone."
+          (data p))
+    (setf p (make-pitch (freq-to-note (frequency p) 'quarter-tone))))
   (let* ((octave (octave p))
          (lp8ve (cond
                   ((= octave 3) "")

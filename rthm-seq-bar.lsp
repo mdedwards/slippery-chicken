@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 18:14:03 Mon Aug 26 2013 BST
+;;; $$ Last modified: 17:36:35 Tue Aug 27 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1141,13 +1141,14 @@ BF4 E.,
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
 ;;; - :auto-beam. T or NIL to indicate the method should apply the auto-beam
-;;;   algorithm to the given bar after the check. T = auto-beam. Default =
-;;;   NIL. 
+;;;   algorithm to the given bar after the check has determined that the 
+;;;   beaming is wrong (and :on-fail is not NIL). T = auto-beam. Default = NIL. 
 ;;; - :print. T or NIL to indicate whether the method should print feedback of
 ;;;   the checking process to the Lisp listener. T = print feedback. Default =
 ;;;   NIL. 
 ;;; - :on-fail. The function that should be applied when the check does not
-;;;   pass. Default = #'warn.
+;;;   pass. May be NIL for no warning/error or #'error if processing should
+;;;   stop. Default = #'warn.  
 ;;; 
 ;;; RETURN VALUE
 ;;; T if the check passes, otherwise NIL.
@@ -1212,6 +1213,9 @@ BF4 E.,
          (setf bad 'two-ones))
        (when (and current (zerop current) (not open))
          (setf bad 'not-open))
+       ;; MDE Tue Aug 27 15:22:47 2013 -- don't beam over e.g. 1/4 rests
+       (when (and open (zerop (num-flags r)) (not (is-grace-note r)))
+         (setf bad 'beam-over-non-beamed-rhythms))
        (when bad
          (return bad))
        (when (and current (zerop current))
@@ -1221,7 +1225,7 @@ BF4 E.,
        finally (when open
                  (setf bad 'not-closed)))
     (when (and bad auto-beam)
-      ;; auto-beam valls check-beams too, via update-rhythms-beam-info
+      ;; auto-beam calls check-beams too, via update-rhythms-beam-info
       (setf bad (not (auto-beam rsb nil nil))))
     (when print
       (print bad))
@@ -1229,7 +1233,6 @@ BF4 E.,
       (apply on-fail
              (list "rthm-seq-bar::check-beams failed with error ~a~%~a"
                    bad rsb)))
-    ;; (print-simple rsb)
     (values (not bad) bad)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

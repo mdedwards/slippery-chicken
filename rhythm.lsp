@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 09:59:19 Fri Aug 23 2013 BST
+;;; $$ Last modified: 09:59:41 Tue Aug 27 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -260,7 +260,7 @@
                   ~%        letter-value: ~a, ~
                             tuplet-scaler: ~a, ~
                             bar-pos: ~a, ~
-                            grace-note-duration: ~a"
+                  ~%        grace-note-duration: ~a"
           (value i) (duration i) (rq i) (is-rest i) (is-whole-bar-rest i)
           (score-rthm i) (undotted-value i) 
           (num-flags i) (num-dots i) (is-tied-to i) (is-tied-from i)

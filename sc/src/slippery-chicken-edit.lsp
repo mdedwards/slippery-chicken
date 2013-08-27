@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 12:32:44 Sun Aug 25 2013 BST
+;;; $$ Last modified: 15:44:34 Tue Aug 27 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4780,9 +4780,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
     (loop with bn = bar-num 
        with en = (1- event-num)
        with bar = (get-bar sc bar-num player) 
-       ;; with count = 0
        with tied
-       ;; with bars-affected = '()
        with e
        do
        (when (>= en (num-rhythms bar))
@@ -5267,7 +5265,8 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; MDE Mon Jun 11 18:36:51 2012 
 (defmethod consolidate-all-rests ((sc slippery-chicken) start-bar end-bar
                                   players &optional warn)
-  (map-over-bars sc start-bar end-bar players #'consolidate-rests :warn warn))
+  (map-over-bars sc start-bar end-bar players #'consolidate-rests-max
+                 :warn warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

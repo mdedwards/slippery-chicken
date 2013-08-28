@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:29:34 Sun Aug 25 2013 BST
+;;; $$ Last modified: 14:16:29 Wed Aug 28 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6335,6 +6335,7 @@ data: NIL
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-all-events ((sc slippery-chicken) player)
+;;; ****
   (get-events-from-to sc player 1 1 (num-bars sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6400,7 +6401,6 @@ data: NIL
                                     end-event)))
     (loop for e in events collect
          (transpose e semitones :destructively destructively))))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

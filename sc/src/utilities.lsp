@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:43:18 Wed Jul  3 2013 BST
+;;; $$ Last modified: 13:12:06 Wed Aug 28 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3515,8 +3515,8 @@ WARNING:
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; :rm.  The path to the shell 'rm' command.  Default = "/bin/rm"
-;;; :svn.  The path to the shell 'svn' command.  Default = "/usr/bin/svn"
+;;; - :rm.  The path to the shell 'rm' command.  Default = "/bin/rm"
+;;; - :svn.  The path to the shell 'svn' command.  Default = "/usr/bin/svn"
 ;;; 
 ;;; RETURN VALUE
 ;;; The shell return value of the call to SVN, usually 0 on success.
@@ -3573,7 +3573,8 @@ At revision 3608.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; http://www.linuxsampler.org/nkitool/
-(defun kontakt-to-coll (nki &key write-file (converter "/Users/medward2/bin/nki"))
+(defun kontakt-to-coll (nki &key write-file
+                        (converter "/Users/medward2/bin/nki"))
   (flet ((get-value (line &optional (read t))
            (let* ((pos (search "value=" line))
                   (val (subseq line (+ pos 7))))
@@ -3632,9 +3633,11 @@ At revision 3608.
                    ;; with the extension separately
                    (loop for i below num-times
                       with name = (pathname-name sample)
-                      with type = (concatenate 'string "." (pathname-type sample))
+                      with type = (concatenate 'string "."
+                                               (pathname-type sample))
                       do
-                      (format output "~&~a, ~a ~a ~a;" (+ i index) name type i))))
+                      (format output "~&~a, ~a ~a ~a;"
+                              (+ i index) name type i))))
             (loop with offset = (first (first result))
                with last-key with last-sample
                for pair in result
@@ -3642,12 +3645,155 @@ At revision 3608.
                for sample = (second pair)
                do
                (when last-key
-                 (write-coll-line (- last-key offset) last-sample (- key last-key)))
+                 (write-coll-line (- last-key offset) last-sample
+                                  (- key last-key)))
                (setf last-key key
                      last-sample sample)
                finally 
                (write-coll-line (- key offset) sample 1)))))
       (values result (length result)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****f* utilities/proportions
+;;; DESCRIPTION
+;;; Creates a list of proportional times.  We start with a proportion as a
+;;; ratio (e.g. 3/2) and divide the given duration into two parts according to
+;;; that ratio.  Then those two parts will be divided into the same ratios.
+;;; This will iterate the number of times indicated by the second argument.
+;;;
+;;; The following are some classical proportions:
+;;;         Latin        (Greek)
+;;; (3 : 2) Sesquialtera (Diapente)
+;;; (4 : 3) Sesquitertia (Diatessaron)
+;;; (5 : 4) Sesquiquarta (Diatonus Semitonus)
+;;; (8 : 3) Duplasuperbipartiens (Diapson Diatesseron)
+;;; (9 : 8) Sesquioctava (Tonus)
+;;; 
+;;; ARGUMENTS
+;;; - an integer or ratio (in Lisp terms, a rational) e.g. 3/2
+;;; - an integer >=1 specifying the number of times to iterate the process of
+;;;   dividing the duration into proportions.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :duration. The overall duration to apply the proportional divisions to.
+;;;   Units are arbitrary of course as this is just a number. Default 1.0.
+;;; - :print. If T, print each level of division as we proceed. Default NIL.
+;;; - :reverse. If T reverse the proportion (so 3/2 becomes 2/3). Default NIL.
+;;; - :alternate. If T, reverse the proportion every other division (not
+;;;   iteration) so that if we have a proportion of 3/2 on the second iteration
+;;;   we divide into 3/2 then 2/3.  Default NIL.
+;;; - :increment. If T, then each time we divide we increment the proportion,
+;;;   so 3:2 becomes 4:3 which becomes 5:4 etc.  Default NIL.
+;;; - :halves. This will only make a difference if :increment is T: As results
+;;;   tend overall towards increasing (numerator < denominator e.g. 2/3) or
+;;;   decreasing (numerator > denominator e.g. 3/2) numbers, we can mix things
+;;;   up by dividing the resultant list up into two halves and splicing their
+;;;   elements one after the other.  Default NIL.
+;;; - :shuffle. Mix things up by shuffling the resultant list.  As this uses
+;;;   the shuffle algorithm we have fixed-seed randomness so results will be
+;;;   the same upon each call within the same Lisp implementation/version.
+;;;   Default NIL. 
+;;; 
+;;; RETURN VALUE
+;;; Two values: the list of ascending timings from the generated proportions,
+;;; and the durations of each part.
+;;; 
+;;; EXAMPLE
+#|
+
+Notice here that each generation prints the proportions along with the
+durations these correspond to and the start time of each (cumulative durations).
+
+(proportions 3/2 4 :duration 35 :print t)
+
+PRINTS:
+Generation 1: 3 (21.00=21.00), 2 (14.00=35.00), 
+
+Generation 2: 3 (12.60=12.60), 2 (8.40=21.00), 3 (8.40=29.40), 2 (5.60=35.00), 
+
+Generation 3: 3 (7.56=7.56), 2 (5.04=12.60), 3 (5.04=17.64), 2 (3.36=21.00), 3 (5.04=26.04), 2 (3.36=29.40), 3 (3.36=32.76), 2 (2.24=35.00), 
+
+Generation 4: 3 (4.54=4.54), 2 (3.02=7.56), 3 (3.02=10.58), 2 (2.02=12.60), 3 (3.02=15.62), 2 (2.02=17.64), 3 (2.02=19.66), 2 (1.34=21.00), 3 (3.02=24.02), 2 (2.02=26.04), 3 (2.02=28.06), 2 (1.34=29.40), 3 (2.02=31.42), 2 (1.34=32.76), 3 (1.34=34.10), 2 (0.90=35.00), 
+
+RETURNS: 
+(0.0 4.5360003 7.5600004 10.584001 12.6 15.624001 17.640001 19.656002 21.000002
+ 24.024002 26.040003 28.056004 29.400003 31.416004 32.760006 34.104008
+ 35.000008)
+(4.5360003 3.0240002 3.0240004 2.0160003 3.0240004 2.0160003 2.0160003
+ 1.3440002 3.0240004 2.0160003 2.0160003 1.3440002 2.0160003 1.3440001
+ 1.3440001 0.896)
+
+
+
+(proportions 3/2 4 :duration 35 :print t :increment t :halves t)
+
+PRINTS:
+Generation 1: 3 (21.00=21.00), 2 (14.00=35.00), 
+
+Generation 2: 4 (12.00=12.00), 3 (9.00=21.00), 5 (7.78=28.78), 4 (6.22=35.00), 
+
+Generation 3: 6 (6.55=6.55), 5 (5.45=12.00), 7 (4.85=16.85), 6 (4.15=21.00), 8 (4.15=25.15), 7 (3.63=28.78), 9 (3.29=32.07), 8 (2.93=35.00), 
+
+Generation 4: 10 (3.44=3.44), 9 (3.10=6.55), 11 (2.86=9.40), 10 (2.60=12.00), 12 (2.53=14.53), 11 (2.32=16.85), 13 (2.16=19.01), 12 (1.99=21.00), 14 (2.15=23.15), 13 (2.00=25.15), 15 (1.88=27.03), 14 (1.75=28.78), 16 (1.70=30.48), 15 (1.59=32.07), 17 (1.51=33.58), 16 (1.42=35.00), 
+
+RETURNS:
+(0.0 3.4449766 5.595868 8.696347 10.6936035 13.550747 15.428142 18.025545
+ 19.77778 22.30621 24.0064 26.324125 27.918053 30.078053 31.58647 33.580315
+ 35.0)
+(3.4449766 2.1508918 3.100479 1.9972568 2.8571434 1.8773947 2.5974028 1.752235
+ 2.5284283 1.7001898 2.317726 1.593928 2.16 1.5084175 1.9938462 1.4196872)
+
+|#
+;;; SYNOPSIS
+(defun proportions (start levels &key (duration 1.0) print reverse alternate
+                    halves shuffle increment)
+;;; ****
+  (setf duration (float duration))
+  (let ((result '())
+        (resultd '())
+        (num (numerator start))
+        (den (denominator start))
+        this thisd)
+    (unless (rationalp start)
+      (error "proportions: start (~a) should be a rational number ~
+             (integer or ratio e.g. 3/2)" start))
+    (unless (and (integerp levels) (>= levels 1))
+      (error "proportions: levels (~a) should be an integer >= 1." levels))
+    (loop with n = num with d = den for i from 0 repeat levels do
+         (setf this (loop with l for i below (expt 2 i)
+                       do
+                       (setf l (list n d))
+                       (when reverse
+                         (setf l (reverse l)))
+                       (when (and alternate (oddp i))
+                         (setf l (reverse l)))
+                       collect l
+                       do (when increment (incf d) (incf n)))
+               thisd (loop for ps in this
+                        for dur in (if resultd (first resultd) (list duration))
+                        for sum = (+ (first ps) (second ps))
+                        collect (* dur (/ (first ps) sum))
+                        collect (* dur (/ (second ps) sum))))
+         (push this result)
+         (push thisd resultd)
+         (when print 
+           (terpri) 
+           (terpri)
+           (format t "Generation ~a: " (1+ i))
+           (loop with time = 0.0 for p in (flatten this) for d in thisd do
+                (format t "~d (~,2f=~,2f), " p d (incf time d)))))
+    (setf resultd (first resultd))
+    (when halves
+      (let ((half (expt 2 (1- levels))))
+        (setf resultd (loop for i in resultd for j in (nthcdr half resultd)
+                         collect i collect j))))
+    (when shuffle
+      (setf resultd (shuffle resultd)))
+    (values 
+     (cons 0.0 (loop with time = 0.0 for d in resultd collect (incf time d)))
+     resultd)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

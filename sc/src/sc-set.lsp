@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 13:07:10 Mon May 20 2013 BST
+;;; $$ Last modified: 20:32:34 Tue Aug 27 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -852,7 +852,9 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 ;;;
 ;;; OPTIONAL
 ;;; - T or NIL indicating whether to return values in semitones or default of
-;;;   degrees. T = semitones. Default = NIL.
+;;;   degrees. Special case: if this argument is 'frequencies, then the
+;;;   interval structure will be returned as frequency differences. T =
+;;;   semitones. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of integers.
@@ -878,15 +880,19 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 ;;; SYNOPSIS
 (defmethod get-interval-structure ((s sc-set) &optional in-semitones)
 ;;; ****
-  (let ((lowest-degree (degree (first (data s))))
+  (let* ((freqs (eq in-semitones 'frequencies))
+         (lowest (if freqs 
+                     (frequency (first (data s)))
+                     (degree (first (data s)))))
         ;; MDE Sat Feb 11 10:44:46 2012
         (dps (degrees-per-semitone)))
     (loop for i in (rest (data s)) 
-       for degrees = (float (- (degree i) lowest-degree))
+       for diff = (float (- (if freqs (frequency i) (degree i))
+                            lowest))
        collect
-         (if in-semitones
-             (/ degrees dps)
-             degrees))))
+         (if (eq in-semitones t)
+             (/ diff dps)
+             diff))))
      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

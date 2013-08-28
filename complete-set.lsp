@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 12:58:11 Mon May 20 2013 BST
+;;; $$ Last modified: 19:46:07 Tue Aug 27 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -498,27 +498,31 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
                           (transposition 0) (auto-sort t) (warn-dups t)
                           (rm-dups t) limit-upper limit-lower complete)
 ;;; ****
-  (if (typep set 'sc-set)
-      (let ((copy (clone set)))
-        (when (or subsets related-sets (not auto-sort) complete)
-          (error "complete-set::make-complete-set: When the set argument is a ~
-                  complete-set, then the new set will be cloned ~
-                  from the given and the arguments id, subsets, ~
-                  related-sets, auto-sort, and complete are meaningless"))
-        (unless (zerop transposition)
-          (transpose copy transposition))
-        (when (or limit-upper limit-lower)
-          (limit copy :upper limit-upper :lower limit-lower))
-        (when id
-          (setf (id copy) id))
-        copy)
-      (make-instance 'complete-set :id id :tag tag :data set :subsets subsets 
-                     :related-sets related-sets :auto-sort auto-sort
-                     :limit-upper limit-upper :limit-lower limit-lower
-                     :transposition transposition
-                     ;; MDE Mon May 20 12:57:54 2013 
-                     :warn-dups warn-dups :rm-dups rm-dups
-                     :complete complete)))
+  (typecase set
+    (sc-set
+     (let ((copy (clone set)))
+       (when (or subsets related-sets (not auto-sort) complete)
+         (error "complete-set::make-complete-set: When the set argument is a ~
+                 complete-set, then the new set will be cloned ~
+                 from the given and the arguments id, subsets, ~
+                 related-sets, auto-sort, and complete are meaningless"))
+       (unless (zerop transposition)
+         (transpose copy transposition))
+       (when (or limit-upper limit-lower)
+         (limit copy :upper limit-upper :lower limit-lower))
+       (when id
+         (setf (id copy) id))
+       copy))
+    ;; MDE Tue Aug 27 19:46:05 2013 
+    (chord (make-complete-set (data set)))
+    (t
+     (make-instance 'complete-set :id id :tag tag :data set :subsets subsets 
+                    :related-sets related-sets :auto-sort auto-sort
+                    :limit-upper limit-upper :limit-lower limit-lower
+                    :transposition transposition
+                    ;; MDE Mon May 20 12:57:54 2013 
+                    :warn-dups warn-dups :rm-dups rm-dups
+                    :complete complete))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

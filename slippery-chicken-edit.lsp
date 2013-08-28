@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 15:44:34 Tue Aug 27 2013 BST
+;;; $$ Last modified: 14:16:45 Wed Aug 28 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4754,6 +4754,7 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; SYNOPSIS
 (defmethod sc-force-rest2 ((sc slippery-chicken) bar-num event-num player
                            &optional (on-error #'error))
+;;; ****
   (let ((start-event (get-event sc bar-num event-num player nil))
   ;;                                                         ^ nil = no error
         (bars-affected '())
@@ -4861,7 +4862,6 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
               (error "slippery-chicken::force-rest-bars: no bar ~a for ~a"
                      bar-num player))
             (force-rest-bar bar))))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Tue Apr 24 19:46:02 BST 2012: Conformed robodoc entry

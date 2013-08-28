@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 13:12:06 Wed Aug 28 2013 BST
+;;; $$ Last modified: 14:23:02 Wed Aug 28 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3684,12 +3684,12 @@ At revision 3608.
 ;;; - :alternate. If T, reverse the proportion every other division (not
 ;;;   iteration) so that if we have a proportion of 3/2 on the second iteration
 ;;;   we divide into 3/2 then 2/3.  Default NIL.
-;;; - :increment. If T, then each time we divide we increment the proportion,
-;;;   so 3:2 becomes 4:3 which becomes 5:4 etc.  Default NIL.
+;;; - :increment. If T, then each time we divide we increment both sides of the
+;;;   proportion,  so 3:2 becomes 4:3 which becomes 5:4 etc.  Default NIL.
 ;;; - :halves. This will only make a difference if :increment is T: As results
-;;;   tend overall towards increasing (numerator < denominator e.g. 2/3) or
+;;;   tend overall towards increasing (when numerator < denominator e.g. 2/3) or
 ;;;   decreasing (numerator > denominator e.g. 3/2) numbers, we can mix things
-;;;   up by dividing the resultant list up into two halves and splicing their
+;;;   up by dividing the resultant list into two halves and splicing their
 ;;;   elements one after the other.  Default NIL.
 ;;; - :shuffle. Mix things up by shuffling the resultant list.  As this uses
 ;;;   the shuffle algorithm we have fixed-seed randomness so results will be
@@ -3713,9 +3713,13 @@ Generation 1: 3 (21.00=21.00), 2 (14.00=35.00),
 
 Generation 2: 3 (12.60=12.60), 2 (8.40=21.00), 3 (8.40=29.40), 2 (5.60=35.00), 
 
-Generation 3: 3 (7.56=7.56), 2 (5.04=12.60), 3 (5.04=17.64), 2 (3.36=21.00), 3 (5.04=26.04), 2 (3.36=29.40), 3 (3.36=32.76), 2 (2.24=35.00), 
+Generation 3: 3 (7.56=7.56), 2 (5.04=12.60), 3 (5.04=17.64), 2 (3.36=21.00), 
+3 (5.04=26.04), 2 (3.36=29.40), 3 (3.36=32.76), 2 (2.24=35.00), 
 
-Generation 4: 3 (4.54=4.54), 2 (3.02=7.56), 3 (3.02=10.58), 2 (2.02=12.60), 3 (3.02=15.62), 2 (2.02=17.64), 3 (2.02=19.66), 2 (1.34=21.00), 3 (3.02=24.02), 2 (2.02=26.04), 3 (2.02=28.06), 2 (1.34=29.40), 3 (2.02=31.42), 2 (1.34=32.76), 3 (1.34=34.10), 2 (0.90=35.00), 
+Generation 4: 3 (4.54=4.54), 2 (3.02=7.56), 3 (3.02=10.58), 2 (2.02=12.60), 
+3 (3.02=15.62), 2 (2.02=17.64), 3 (2.02=19.66), 2 (1.34=21.00), 3 (3.02=24.02),
+2 (2.02=26.04), 3 (2.02=28.06), 2 (1.34=29.40), 3 (2.02=31.42), 2 (1.34=32.76),
+3 (1.34=34.10), 2 (0.90=35.00), 
 
 RETURNS: 
 (0.0 4.5360003 7.5600004 10.584001 12.6 15.624001 17.640001 19.656002 21.000002
@@ -3734,9 +3738,13 @@ Generation 1: 3 (21.00=21.00), 2 (14.00=35.00),
 
 Generation 2: 4 (12.00=12.00), 3 (9.00=21.00), 5 (7.78=28.78), 4 (6.22=35.00), 
 
-Generation 3: 6 (6.55=6.55), 5 (5.45=12.00), 7 (4.85=16.85), 6 (4.15=21.00), 8 (4.15=25.15), 7 (3.63=28.78), 9 (3.29=32.07), 8 (2.93=35.00), 
+Generation 3: 6 (6.55=6.55), 5 (5.45=12.00), 7 (4.85=16.85), 6 (4.15=21.00), 
+8 (4.15=25.15), 7 (3.63=28.78), 9 (3.29=32.07), 8 (2.93=35.00), 
 
-Generation 4: 10 (3.44=3.44), 9 (3.10=6.55), 11 (2.86=9.40), 10 (2.60=12.00), 12 (2.53=14.53), 11 (2.32=16.85), 13 (2.16=19.01), 12 (1.99=21.00), 14 (2.15=23.15), 13 (2.00=25.15), 15 (1.88=27.03), 14 (1.75=28.78), 16 (1.70=30.48), 15 (1.59=32.07), 17 (1.51=33.58), 16 (1.42=35.00), 
+Generation 4: 10 (3.44=3.44), 9 (3.10=6.55), 11 (2.86=9.40), 10 (2.60=12.00), 
+12 (2.53=14.53), 11 (2.32=16.85), 13 (2.16=19.01), 12 (1.99=21.00), 
+14 (2.15=23.15), 13 (2.00=25.15), 15 (1.88=27.03), 14 (1.75=28.78), 
+16 (1.70=30.48), 15 (1.59=32.07), 17 (1.51=33.58), 16 (1.42=35.00), 
 
 RETURNS:
 (0.0 3.4449766 5.595868 8.696347 10.6936035 13.550747 15.428142 18.025545

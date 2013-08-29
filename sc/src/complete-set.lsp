@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 19:46:07 Tue Aug 27 2013 BST
+;;; $$ Last modified: 19:24:06 Wed Aug 28 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -168,7 +168,7 @@
          
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod stack ((cs complete-set) &optional (num-stacks 1) id)
+(defmethod stack ((cs complete-set) num-stacks &key id by-freq)
   (declare (ignore num-stacks id))
   (let ((set (call-next-method)))
     (setf set (clone-with-new-class set 'complete-set))
@@ -527,9 +527,9 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; notes is a simple list of pitch symbols
-(defun make-stack (id notes &optional (num-stacks 1))
+(defun make-stack (id notes num-stacks &key by-freq)
   (let ((set (make-complete-set notes :id id)))
-    (stack set num-stacks)))
+    (stack set num-stacks :by-freq by-freq)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; The missing-chromatic and -non-chromatic are lists of simple note names

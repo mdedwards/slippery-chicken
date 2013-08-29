@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified: 13:13:04 Sat Feb 11 2012 GMT
+;;; $$ Last modified: 17:40:29 Wed Aug 28 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -117,7 +117,7 @@
 ;;; NB: See documentation for the stack method in the sc-set class for usage. 
 ;;; 
 ;;; SYNOPSIS
-(defmethod stack ((tls tl-set) &optional (num-stacks 1) id)
+(defmethod stack ((tls tl-set) num-stacks &key id by-freq)
 ;;; ****
   (declare (ignore num-stacks id))
   (let ((sc-set (call-next-method)))

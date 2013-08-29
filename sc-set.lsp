@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 20:32:34 Tue Aug 27 2013 BST
+;;; $$ Last modified: 10:39:25 Thu Aug 29 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -816,22 +816,26 @@ SC-SET: auto-sort: T, used-notes:
 data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 
 |#
+
 ;;; SYNOPSIS
-(defmethod stack ((s sc-set) &optional (num-stacks 1) id)
+(defmethod stack ((s sc-set) num-stacks &key id by-freq)
 ;;; ****
-  (let* ((distances (get-interval-structure s))
-         (degrees (get-degrees s))
-         (result degrees)
+  (let* ((distances (get-interval-structure s (when by-freq 'frequencies)))
+         (notes (if by-freq (get-freqs s) (get-degrees s)))
+         (result notes)
          chord)
     (loop repeat num-stacks do
-          (setf result (stack-aux result distances)))
-    (setf result (degrees-to-notes result))
-    ;; MDE Sat Jan 14 10:25:25 2012 -- try and get better spellings
-    (setf chord (make-chord result :midi-channel 1 :microtones-midi-channel 2))
-    (respell-chord chord)
+         (setf result (stack-aux result distances by-freq)))
+    (unless by-freq
+      (setf result (degrees-to-notes result))
+      ;; MDE Sat Jan 14 10:25:25 2012 -- try and get better spellings
+      (setf chord (make-chord result :midi-channel 1 :microtones-midi-channel 2))
+      ;; if by-freq we want to retain the original freqs, whereas respelling
+      ;; would replace these with the freqs of the tempered notes 
+      (respell-chord chord))
     ;; return a new set, using the given id or if not given, the same id as the
     ;; original set 
-    (make-sc-set (data chord) :id (if id id (id s)))))
+    (make-sc-set (if by-freq result (data chord)) :id (if id id (id s)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1327,12 +1331,12 @@ data: Q
         collect (* offset-srt (/ (frequency p) freq)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun stack-aux (degrees distances)
-  (let ((lowest (first degrees)) ;; assumes degrees are sorted!
-        (highest (first (last degrees)))
-        (max (note-to-degree 'b10))
-        (result (copy-list degrees)))
+;;; MDE Wed Aug 28 17:52:52 2013 -- notes are eithe degrees (default) or freqs
+(defun stack-aux (notes distances &optional freqs)
+  (let ((lowest (first notes)) ;; assumes notes are sorted!
+        (highest (first (last notes)))
+        (max (if freqs (note-to-freq 'b10) (note-to-degree 'b10)))
+        (result (copy-list notes)))
     (loop for d in distances 
        for low = (- lowest d)
        for high = (+ highest d)

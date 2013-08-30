@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 14:23:02 Wed Aug 28 2013 BST
+;;; $$ Last modified: 17:32:49 Thu Aug 29 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1466,7 +1466,8 @@
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
 ;;; - :y-min. A number that is the minimum value for all y values after
-;;;   scaling.
+;;;   scaling.  NB The -min/-max arguments are hard-limits only; they do not
+;;;   factor into the arithmetic.
 ;;; - :y-max. A number that is the maximum value for all y values after
 ;;;   scaling.
 ;;; - :x-scaler. A number that is the factor by which to scale the x-axis
@@ -1516,6 +1517,69 @@
      collect (if x-scaler (min x-max (max x-min (* x x-scaler)))
                  x) 
      collect (min y-max (max y-min (* y y-scaler)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****f* utilities/auto-scale-env
+;;; DATE
+;;; August 29th 2013
+;;;
+;;; DESCRIPTION
+;;; Automatically scale both the x and y values of an envelope to fit within
+;;; the given ranges.  
+;;; 
+;;; ARGUMENTS
+;;; - The envelope: a list of x y pairs
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :x-min: The new minimum (starting) x value
+;;; - :x-max: The new maximum (last) x value
+;;; - :y-min: The new minimum (not necessarily starting!) y value
+;;; - :y-max: The new maximum (not necessarily starting!) y value
+;;; 
+;;; RETURN VALUE
+;;; The new envelope (list).
+;;; 
+;;; EXAMPLE
+#|
+
+(AUTO-SCALE-ENV '(0 0 10 1))
+=>
+(0.0 0.0 100.0 10.0)
+
+(AUTO-SCALE-ENV '(-1 0 .3 -3 1 1) :y-min 5 :y-max 6 :x-min 2)
+=>
+(2.0 5.75 65.7 5.0 100.0 6.0))
+
+(AUTO-SCALE-ENV '(0 1 5 1.5 7 0 10 1) :y-min -15 :y-max -4)
+=>
+(0.0 -7.6666665 50.0 -4.0 70.0 -15.0 100.0 -7.6666665))
+
+|#
+;;; SYNOPSIS
+(defun auto-scale-env (env &key
+                       (x-min 0.0) (x-max 100.0)
+                       (y-min 0.0) (y-max 10.0))
+;;; ****
+  (unless (and (> x-max x-min) (> y-max y-min))
+    (error "utilities::auto-scale-env: x-max must be > x-min and sim. for y's"))
+  (let* ((env-x-min (first env))
+         (env-x-max (lastx env))
+         (env-x-range (abs (- env-x-max env-x-min)))
+         (env-y-min (loop for y in (cdr env) by #'cddr minimize y))
+         (env-y-max (loop for y in (cdr env) by #'cddr maximize y))
+         (env-y-range (abs (- env-y-max env-y-min)))
+         (new-env-x-range (abs (- x-max x-min)))
+         (new-env-y-range (abs (- y-max y-min)))
+         (x-scaler (/ new-env-x-range env-x-range))
+         (y-scaler (/ new-env-y-range env-y-range))
+                                        ; (x-diff (- x-min env-x-min))
+                                        ; (y-diff (- y-min env-y-min))
+         )
+    (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
+       collect (float (+ x-min (* (- x env-x-min) x-scaler)))
+       collect (float (+ y-min (* (- y env-y-min) y-scaler))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3697,8 +3761,10 @@ At revision 3608.
 ;;;   Default NIL. 
 ;;; 
 ;;; RETURN VALUE
-;;; Two values: the list of ascending timings from the generated proportions,
-;;; and the durations of each part.
+;;; Three values: the list of ascending timings from the last generation of the
+;;; calculated proportions; the durations of each part for the last generation;
+;;; the list of ascending timings for _each_ generation of the calculated
+;;; proportions (a list of lists).
 ;;; 
 ;;; EXAMPLE
 #|
@@ -3728,7 +3794,12 @@ RETURNS:
 (4.5360003 3.0240002 3.0240004 2.0160003 3.0240004 2.0160003 2.0160003
  1.3440002 3.0240004 2.0160003 2.0160003 1.3440002 2.0160003 1.3440001
  1.3440001 0.896)
-
+((0.0 4.5360003 7.5600004 10.584001 12.6 15.624001 17.640001 19.656002
+  21.000002 24.024002 26.040003 28.056004 29.400003 31.416004 32.760006
+  34.104008 35.000008)
+ (0.0 7.5600004 12.6 17.640001 21.000002 26.040003 29.400003 32.760002
+  35.000004)
+ (0.0 12.6 21.0 29.400002 35.0) (0.0 21.0 35.0))
 
 
 (proportions 3/2 4 :duration 35 :print t :increment t :halves t)
@@ -3752,6 +3823,12 @@ RETURNS:
  35.0)
 (3.4449766 2.1508918 3.100479 1.9972568 2.8571434 1.8773947 2.5974028 1.752235
  2.5284283 1.7001898 2.317726 1.593928 2.16 1.5084175 1.9938462 1.4196872)
+((0.0 3.4449766 6.5454555 9.402599 12.000002 14.52843 16.846155 19.006155
+  21.000002 23.150894 25.148151 27.025547 28.777782 30.477972 32.0719 33.58032
+  35.000004)
+ (0.0 6.5454555 12.000002 16.846157 21.000004 25.148151 28.77778 32.0719
+  35.000004)
+ (0.0 12.000001 21.0 28.777779 35.0) (0.0 21.0 35.0))
 
 |#
 ;;; SYNOPSIS
@@ -3761,6 +3838,7 @@ RETURNS:
   (setf duration (float duration))
   (let ((result '())
         (resultd '())
+        (resultd-first '())
         (num (numerator start))
         (den (denominator start))
         this thisd)
@@ -3792,16 +3870,21 @@ RETURNS:
            (format t "Generation ~a: " (1+ i))
            (loop with time = 0.0 for p in (flatten this) for d in thisd do
                 (format t "~d (~,2f=~,2f), " p d (incf time d)))))
-    (setf resultd (first resultd))
+    (setf resultd-first (first resultd))
     (when halves
       (let ((half (expt 2 (1- levels))))
-        (setf resultd (loop for i in resultd for j in (nthcdr half resultd)
-                         collect i collect j))))
+        (setf resultd-first (loop for i in resultd-first
+                               for j in (nthcdr half resultd-first)
+                               collect i collect j))))
     (when shuffle
-      (setf resultd (shuffle resultd)))
-    (values 
-     (cons 0.0 (loop with time = 0.0 for d in resultd collect (incf time d)))
-     resultd)))
+      (setf resultd-first (shuffle resultd-first)))
+    (flet ((cumulative (list)
+             (cons 0.0 (loop with time = 0.0 for d in list
+                          collect (incf time d)))))
+      (values 
+       (cumulative resultd-first)
+       resultd-first
+       (loop for l in resultd collect (cumulative l))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

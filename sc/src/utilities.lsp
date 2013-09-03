@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:32:49 Thu Aug 29 2013 BST
+;;; $$ Last modified: 10:22:26 Tue Sep  3 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3719,12 +3719,14 @@ At revision 3608.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****f* utilities/proportions
+;;; ****f* utilities/pdivide
 ;;; DESCRIPTION
-;;; Creates a list of proportional times.  We start with a proportion as a
-;;; ratio (e.g. 3/2) and divide the given duration into two parts according to
-;;; that ratio.  Then those two parts will be divided into the same ratios.
-;;; This will iterate the number of times indicated by the second argument.
+;;; Creates a list of proportional times, dividing a starting duration into a
+;;; number of smaller durations a specified number of times.  We start with a
+;;; proportion as a ratio (e.g. 3/2) and divide the given duration into two
+;;; parts according to that ratio.  Then those two parts will be divided into
+;;; the same ratios.  This will iterate the number of times indicated by the
+;;; second argument.
 ;;;
 ;;; The following are some classical proportions:
 ;;;         Latin        (Greek)
@@ -3772,7 +3774,7 @@ At revision 3608.
 Notice here that each generation prints the proportions along with the
 durations these correspond to and the start time of each (cumulative durations).
 
-(proportions 3/2 4 :duration 35 :print t)
+(pdivide 3/2 4 :duration 35 :print t)
 
 PRINTS:
 Generation 1: 3 (21.00=21.00), 2 (14.00=35.00), 
@@ -3802,7 +3804,7 @@ RETURNS:
  (0.0 12.6 21.0 29.400002 35.0) (0.0 21.0 35.0))
 
 
-(proportions 3/2 4 :duration 35 :print t :increment t :halves t)
+(pdivide 3/2 4 :duration 35 :print t :increment t :halves t)
 
 PRINTS:
 Generation 1: 3 (21.00=21.00), 2 (14.00=35.00), 
@@ -3832,7 +3834,7 @@ RETURNS:
 
 |#
 ;;; SYNOPSIS
-(defun proportions (start levels &key (duration 1.0) print reverse alternate
+(defun pdivide (start levels &key (duration 1.0) print reverse alternate
                     halves shuffle increment)
 ;;; ****
   (setf duration (float duration))
@@ -3843,10 +3845,11 @@ RETURNS:
         (den (denominator start))
         this thisd)
     (unless (rationalp start)
-      (error "proportions: start (~a) should be a rational number ~
+      (error "utilities::pdivide: start (~a) should be a rational number ~
              (integer or ratio e.g. 3/2)" start))
     (unless (and (integerp levels) (>= levels 1))
-      (error "proportions: levels (~a) should be an integer >= 1." levels))
+      (error "utilities::pdivide: levels (~a) should be an integer >= 1."
+             levels))
     (loop with n = num with d = den for i from 0 repeat levels do
          (setf this (loop with l for i below (expt 2 i)
                        do

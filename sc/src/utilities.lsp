@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 14:28:43 Tue Sep  3 2013 BST
+;;; $$ Last modified: 14:47:43 Tue Sep  3 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4030,6 +4030,8 @@ RETURNS:
      (progn
        (setf (first result) (second (first result)))
        result)
+     ;; the number we produce will be the sum of the proportions ^ (1+
+     ;; generations) 
      (first result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

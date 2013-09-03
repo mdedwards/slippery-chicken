@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 09:58:25 Fri Aug 23 2013 BST
+;;; $$ Last modified: 21:37:06 Tue Sep  3 2013 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -909,12 +909,13 @@ rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) is required.
                                           (if (integerp stop) stop num-chops)
                                           collect i)))
          (map '()))
-    ;; make sure we've got enough chopped sequences for the number of players ;
+    ;; make sure we've got enough chopped sequences for the number of players
     (unless (<= (length players) (length rsm-keys))
       (error "Not enough original sequences (~a) to match the number ~
               of players (~a)" (length rsm-keys) (length players)))
     (when remix-in
-      (setf fts (remix-in fts :remix-in-fib-seed remix-in-fib-seed :mirror mirror
+      (setf fts (remix-in fts :remix-in-fib-seed remix-in-fib-seed
+                          :mirror mirror
                           :test test :replace replace)))
     (setf map
           (list 
@@ -926,6 +927,36 @@ rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) is required.
     (make-rthm-seq-map 
      (concatenate 'string "from-" (string (id rsp)))
      map :recurse-simple-data nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rthm-seq-palette/split-into-single-bars
+;;; DESCRIPTION
+;;; Split every rthm-seq in a palette into as many single-bar rthm-seqs as
+;;; there are bars.  This creates an extra level of recursion so that whereas a
+;;; rthm-seq that was referenced by e.g. '(long 1 a) beforehand, afterwards
+;;; each bar will be reference by '(long 1 a 1), '(long 1 a 2) etc. This is
+;;; true even for sequences that only contained one bar before processing.  The
+;;; pitch-seq-palettes of the original rthm-seqs will be used to set the
+;;; pitch-seqs of the new rthm-seqs.
+;;; 
+;;; ARGUMENTS
+;;; - the rthm-seq-palette object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - whether to clone the palette before processing (T or NIL).  Default = T.
+;;; 
+;;; RETURN VALUE
+;;; A rthm-seq-palette object with extra layers of recursion.
+;;; 
+;;; SYNOPSIS
+(defmethod split-into-single-bars ((rsp rthm-seq-palette) &optional (clone t))
+;;; ****
+  (when clone
+    (setf rsp (clone rsp)))
+  (let ((refs (get-all-refs rsp)))
+    (loop for ref in refs for rs = (get-data ref rsp) do
+         (set-data ref (make-rsp (id rs) (split-into-single-bars rs)) rsp)))
+  rsp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 09:58:44 Fri Aug 23 2013 BST
+;;; $$ Last modified: 12:51:29 Tue Sep  3 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -957,7 +957,6 @@ rthm-seq::insert-bar: only 3 bars in rthm-seq!
 
 |#
 ;;; SYNOPSIS
-
 (defmethod insert-bar ((rs rthm-seq) (rsb rthm-seq-bar) bar-num
                        &optional pitch-seq ignore1 ignore2 ignore3)
 ;;; ****
@@ -2175,8 +2174,6 @@ RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL,
         (setf (time-sigs-tag rs) (list-to-string tss "-")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;   
 ;;; SAR Wed Dec 28 19:24:23 EST 2011: Added robodoc info
 ;;; SAR Sat Dec 31 09:26:36 EST 2011: Put date in DATE block
 
@@ -2532,6 +2529,13 @@ data: S
   (gen-stats rs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Sep  3 12:28:15 2013 
+
+(defmethod split-into-single-bars ((rs rthm-seq))
+  (loop for b in (bars rs) collect (make-
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -2682,6 +2686,15 @@ data: (4 3 2 1)
            ((and (listp rs) (rthm-seq-bar-p (first rs)))
             (let ((tmp (make-rthm-seq nil)))
               (setf (bars tmp) rs)
+              tmp))
+           ;; MDE Tue Sep  3 12:37:50 2013 a list containing an id and any
+           ;; number of rthm-seq-bar objects 
+           ((and (listp rs)
+                 (assoc-list-id-p (first rs))
+                 (every #'rthm-seq-bar-p (rest rs)))
+            (let ((tmp (make-rthm-seq nil)))
+              (setf (bars tmp) (rest rs)
+                    (id tmp) (first rs))
               tmp))
            ((listp rs) 
             ;; 4.8.10 if it's just a list of rthms, there's no id, otherwise

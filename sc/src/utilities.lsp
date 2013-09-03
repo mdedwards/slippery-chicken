@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 10:41:27 Tue Sep  3 2013 BST
+;;; $$ Last modified: 14:28:43 Tue Sep  3 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3718,7 +3718,6 @@ At revision 3608.
       (values result (length result)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****f* utilities/pdivide
 ;;; DESCRIPTION
 ;;; Creates a list of proportional times, dividing a starting duration into a
@@ -3890,7 +3889,6 @@ RETURNS:
        (loop for l in resultd collect (cumulative l))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****f* utilities/pexpand
 ;;; DESCRIPTION
 ;;; Instead of dividing an overall duration (pdivide) we start with a
@@ -4027,12 +4025,46 @@ RETURNS:
                            (ml result p))))
     (setf result (pexpand-aux result nil))
     (values
-     (pexpand-count result (loop for n in proportions sum n))
+     (pexpand-count result (loop for n in proportions sum n)
+                    (1- (* generations 4)))
      (progn
        (setf (first result) (second (first result)))
        result)
      (first result))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/pexpand-find
+;;; DESCRIPTION
+;;; Find the cumulative number of where a label occurs in a list returned by
+;;; pexpand.
+;;; 
+;;; ARGUMENTS
+;;; - the label we're looking for
+;;; - a list of the type returned by pexpand (first returned value).
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - a function to be called when the label cannot be found.  Default =
+;;; #'error but could also be #'warn or NIL.
+;;; 
+;;; RETURN VALUE
+;;; An integer.
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defun pexpand-find (label list &optional (on-error #'error))
+;;; ****
+  (let ((pos (position label list)))
+    (if pos
+        (nth (1- pos) list)
+        (when on-error
+          (funcall on-error 
+                   "utilities::pexpand-find: ~a: no such label in list." 
+                   label)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun pexpand-aux (list id)
   (let* ((outer (flatten list))
          (sum (loop for el in outer sum el))
@@ -4048,21 +4080,26 @@ RETURNS:
                      (format nil "~a~a"
                              (if id (format nil "~a." id) "")
                              letter))))))))
-  
-(defun pexpand-count (list unit-size &optional (start 1))
-  (loop with result = '() with count = start with sym
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun pexpand-count (list unit-size inner-label-length &optional (start 1))
+  (loop with result = '() with count = start with sym with last
      for el in (flatten list) do
      (cond ((and (not sym) (symbolp el))
             ;; so we cache the first we saw, not the last
             (setf sym el))
-           ((and (numberp el) (= el unit-size))
+           ;; we look for the label length of the smallest units.  This will
+           ;; have as many letters as twice the number of generations plus the
+           ;; same again (minus 1) of dots.
+           ((and (numberp el) (= el unit-size)
+                 (= inner-label-length (length (string last))))
             (push count result)
             (push sym result)
             (incf count unit-size)
             (setf sym nil)))
+     (setf last el)
      finally
      (return (nreverse result))))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 12:51:29 Tue Sep  3 2013 BST
+;;; $$ Last modified: 21:36:27 Tue Sep  3 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2531,9 +2531,32 @@ data: S
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Sep  3 12:28:15 2013 
 
-(defmethod split-into-single-bars ((rs rthm-seq))
-  (loop for b in (bars rs) collect (make-
-
+;;; ****m* rthm-seq/split-into-single-bars
+;;; DESCRIPTION
+;;; Split a rthm-seq into single bar rthm-seqs.  The pitch-seq-palette will be
+;;; used to set the pitch-seqs of the new rthm-seqs.
+;;; 
+;;; ARGUMENTS
+;;; - a rthm-seq object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - whether to clone each bar or just the original.  Default = T = clone.
+;;; 
+;;; RETURN VALUE
+;;; a list of rthm-seq objects
+;;; 
+;;; SYNOPSIS
+(defmethod split-into-single-bars ((rs rthm-seq) &optional (clone t))
+;;; ****
+  (loop with pspi = 0
+     for b in (bars rs) 
+     for bn from 1 
+     for rsnew = (make-rthm-seq (list bn (if clone (clone b) b)))
+       do
+       (setf (pitch-seq-palette rsnew)
+             (psp-subseq (pitch-seq-palette rs) pspi (+ pspi (notes-needed b))))
+       (incf pspi (notes-needed b))
+     collect rsnew))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

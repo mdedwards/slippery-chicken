@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 13:20:51 Wed Sep  4 2013 BST
+;;; $$ Last modified: 14:01:52 Wed Sep  4 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -184,6 +184,8 @@
 (defmethod gen-stats ((rs rthm-seq))
   ;; (print 'rthm-seq-gen-stats)
   (let ((bars (bars rs)))
+    ;; MDE Wed Sep  4 13:34:37 2013 
+    (loop for b in bars do (gen-stats b))
     (setf (num-bars rs) (length bars)
           (num-rhythms rs) (loop for bar in bars sum (num-rhythms bar))
           (num-notes rs) (loop for bar in bars sum (notes-needed bar))
@@ -2550,7 +2552,6 @@ data: S
 ;;; SYNOPSIS
 (defmethod split-into-single-bars ((rs rthm-seq) &optional (clone t))
 ;;; ****
-  ;; todo: no ties from last rthm, no ties to first (force it to rest)
   (loop with pspi = 0
      for b in (bars rs) 
      for bn from 1 
@@ -2559,12 +2560,28 @@ data: S
        (setf (pitch-seq-palette rsnew)
              (psp-subseq (pitch-seq-palette rs) pspi (+ pspi (notes-needed b))))
        (incf pspi (notes-needed b))
+       (clear-ties-beg-end rsnew)
      collect rsnew))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Sep  4 12:45:10 2013 -- force tied notes at beginning to rests and
 ;;; kill ties at very end. 
+;;; ****m* rthm-seq/clear-ties-beg-end
+;;; DESCRIPTION
+;;; Deletes ties to the first rhythm(s) of a rthm-seq, making them rests
+;;; instead of tied notes.  Also makes sure the last rhythm is not tied from
+;;; (into another sequence). Useful if you're making rthm-seqs from other
+;;; (larger) rthm-seqs or algorithmically.
+;;; 
+;;; ARGUMENTS
+;;; - the rthm-seq object
+;;; 
+;;; RETURN VALUE
+;;; T if any ties were cleared, NIL otherwise.
+;;; 
+;;; SYNOPSIS
 (defmethod clear-ties-beg-end ((rs rthm-seq))
+;;; ****
   (let ((first-bar (first (bars rs)))
         (last-rthm (first (last (rhythms (first (last (bars rs)))))))
         (changed nil))
@@ -2574,6 +2591,7 @@ data: S
     (when (is-tied-from last-rthm)
       (setf changed t
             (is-tied-from last-rthm) nil))
+    (gen-stats rs)
     changed))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

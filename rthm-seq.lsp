@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 21:36:27 Tue Sep  3 2013 BST
+;;; $$ Last modified: 13:20:51 Wed Sep  4 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -406,7 +406,9 @@ data: E
          (result
           (loop 
              for bar in (bars rs) 
-             for nsn = (num-score-notes bar)
+             ;; MDE Wed Sep  4 13:20:26 2013 -- bug!
+             ;; for nsn = (num-score-notes bar)
+             for nsn = (num-rhythms bar)
              do
              (if (< i nsn)
                  (return (get-nth-event i bar error))
@@ -2548,6 +2550,7 @@ data: S
 ;;; SYNOPSIS
 (defmethod split-into-single-bars ((rs rthm-seq) &optional (clone t))
 ;;; ****
+  ;; todo: no ties from last rthm, no ties to first (force it to rest)
   (loop with pspi = 0
      for b in (bars rs) 
      for bn from 1 
@@ -2557,6 +2560,21 @@ data: S
              (psp-subseq (pitch-seq-palette rs) pspi (+ pspi (notes-needed b))))
        (incf pspi (notes-needed b))
      collect rsnew))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Sep  4 12:45:10 2013 -- force tied notes at beginning to rests and
+;;; kill ties at very end. 
+(defmethod clear-ties-beg-end ((rs rthm-seq))
+  (let ((first-bar (first (bars rs)))
+        (last-rthm (first (last (rhythms (first (last (bars rs)))))))
+        (changed nil))
+    (loop for r in (rhythms first-bar) while (is-tied-to r) do 
+         (setf changed t)
+         (force-rest r))
+    (when (is-tied-from last-rthm)
+      (setf changed t
+            (is-tied-from last-rthm) nil))
+    changed))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

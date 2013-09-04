@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 14:47:43 Tue Sep  3 2013 BST
+;;; $$ Last modified: 18:22:10 Wed Sep  4 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -666,6 +666,36 @@
         (t (append (flatten (first nested-list))
                    (flatten (rest nested-list))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/almost-flatten
+;;; DATE
+;;; September 4th 2013
+;;; 
+;;; DESCRIPTION
+;;; Similar to flatten but allows one level of nesting
+;;; 
+;;; ARGUMENTS
+;;; A list with an arbitrary level of nesting.
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; A list with a maximum of one level of nesting
+;;; 
+;;; EXAMPLE
+#|
+
+(almost-flatten '((1 (2 3 4) (5 (6 7) (8 9 10 (11) 12)) 13) 14 15 (16 17)))
+
+|#
+;;; SYNOPSIS
+(defun almost-flatten (nested-list)
+;;; ****
+;;; ****
+  (cond ((null nested-list) nil)
+        ((or (simple-listp nested-list) (atom nested-list)) (list nested-list))
+        (t (append (almost-flatten (first nested-list))
+                   (almost-flatten (rest nested-list))))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -944,9 +974,7 @@
           nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Returns whether all the elements in the list are atoms (i.e. no sublists)
-
 (defun simple-listp (list)
   (when (listp list)
     (loop for i in list unless (atom i) do (return nil) finally (return t))))
@@ -4026,7 +4054,8 @@ RETURNS:
     (setf result (pexpand-aux result nil))
     (values
      (pexpand-count result (loop for n in proportions sum n)
-                    (1- (* generations 4)))
+                    ;; (1- (* generations 4)))
+                    (* generations 2))
      (progn
        (setf (first result) (second (first result)))
        result)
@@ -4058,7 +4087,9 @@ RETURNS:
 ;;; SYNOPSIS
 (defun pexpand-find (label list &optional (on-error #'error))
 ;;; ****
-  (let ((pos (position label list)))
+  (when (symbolp label)
+    (setf label (list label)))
+  (let ((pos (position label list :test #'equal)))
     (if pos
         (nth (1- pos) list)
         (when on-error
@@ -4067,6 +4098,20 @@ RETURNS:
                    label)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun pexpand-aux (list id)
+  (let* ((outer (flatten list))
+         (sum (loop for el in outer sum el))
+         (letters '(a b c d e f g h i j k l m)))
+    (if (atom (first list))
+        ;; these are the lowest-level sections
+        (list id sum)
+        (cons (list id sum)
+              (loop for l in list and letter in letters collect
+                   (pexpand-aux 
+                    l 
+                    (econs id letter)))))))
+#|
+;;; version that creates single symbol labels--best to do that later if needed
 (defun pexpand-aux (list id)
   (let* ((outer (flatten list))
          (sum (loop for el in outer sum el))
@@ -4082,8 +4127,28 @@ RETURNS:
                      (format nil "~a~a"
                              (if id (format nil "~a." id) "")
                              letter))))))))
-
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun pexpand-count (list unit-size inner-label-length &optional (start 1))
+  (loop with result = '() with count = start with label with last
+     for el in (almost-flatten list) do
+     (cond ((and (not label) (first el) (symbolp (first el)))
+            ;; so we cache the first we saw, not the last
+            (setf label el))
+           ;; we're looking for twice the generations
+           ((and (numberp (first el)) (= (first el) unit-size)
+                 (= inner-label-length (length last)))
+            (push count result)
+            (push label result)
+            (incf count unit-size)
+            (setf label nil)))
+     (setf last el)
+     finally
+     (return (nreverse result))))
+
+#|
+;;; version that used single symbol labels
 (defun pexpand-count (list unit-size inner-label-length &optional (start 1))
   (loop with result = '() with count = start with sym with last
      for el in (flatten list) do
@@ -4102,6 +4167,6 @@ RETURNS:
      (setf last el)
      finally
      (return (nreverse result))))
-
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

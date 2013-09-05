@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 18:13:10 Sat Jun  8 2013 BST
+;;; $$ Last modified: 11:55:22 Thu Sep  5 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1211,7 +1211,9 @@
 ;;;   object. 
 ;;; - An integer that is the number of beats to be generated prior to adding
 ;;;   additional material created from sticking points and the automatic
-;;;   addition of rests.
+;;;   addition of rests.  For generating a whole piece this will generally be
+;;;   in the hundreds, not dozens.  Lower numbers might create very limited
+;;;   results or make the use of the add-voice method next to useless.
 ;;; - A list with sublists of rhythms that are to be the 1-beat rhythms used to
 ;;;   construct the faster-moving material of the rthm-seq-palette. Each
 ;;;   sublist represents the repertoire of rhythms that will be used by the

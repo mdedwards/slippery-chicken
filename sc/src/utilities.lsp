@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 18:22:10 Wed Sep  4 2013 BST
+;;; $$ Last modified: 10:00:09 Fri Sep  6 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1595,8 +1595,8 @@
   (let* ((env-x-min (first env))
          (env-x-max (lastx env))
          (env-x-range (abs (- env-x-max env-x-min)))
-         (env-y-min (loop for y in (cdr env) by #'cddr minimize y))
-         (env-y-max (loop for y in (cdr env) by #'cddr maximize y))
+         (env-y-min (env-y-min env))
+         (env-y-max (env-y-max env))
          (env-y-range (abs (- env-y-max env-y-min)))
          (new-env-x-range (abs (- x-max x-min)))
          (new-env-y-range (abs (- y-max y-min)))
@@ -1608,6 +1608,94 @@
     (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
        collect (float (+ x-min (* (- x env-x-min) x-scaler)))
        collect (float (+ y-min (* (- y env-y-min) y-scaler))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun env-y-min (env)
+  (loop for y in (cdr env) by #'cddr minimize y))
+
+(defun env-y-max (env)
+  (loop for y in (cdr env) by #'cddr maximize y))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Sep  5 19:02:18 2013
+;;; ****f* utilities/decimate-env
+;;; DESCRIPTION
+
+;;; Reduce the number of x,y pairs in an envelope.  In
+;;; all three, the envelope is first stretched along the x-axis to fit the new
+;;; number of points required.  Then we proceed by one of three methods:
+;;; 1) average: for every new output x value, interpolate 100 times from -0.5
+;;; to +0.5 around the point, then average the y value.  This will catch
+;;; clustering but round out spikes caused by them
+;;; 2) points: also an averaging method but only using the existing points in
+;;; the original envelope (unless none is present for a new x value, whereupon
+;;; interpolation is used): Take an average of the (several) points nearest the
+;;; new output point. This might not recreate the extremes of the original
+;;; envelope but clustering is captured, albeit averaged.
+;;; 3) interpolate: for each new output point, interpolate the new y value from
+;;; the original envelope.  This will leave out details in the case of
+;;; clustering, but accurately catch peaks if there are enough output points.
+;;; In each case we create an even spread of x values, rather than clustering
+;;; where clusters exist in the original.
+;;; 
+;;; ARGUMENTS
+;;; - the original envelope (list of x,y values on any scales).
+;;; - the number of points required in the output list.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the method to be applied (symbol): 'points, 'average, 'interpolate.
+;;;   Default = 'points.
+;;; 
+;;; RETURN VALUE
+;;; A list representing the x,y values of the new envelope
+;;; 
+;;; EXAMPLE
+#|
+
+(decimate-env '(0 0 4 4 5 5 5.1 5.1 5.3 1 5.6 5.6 6 6 10 10) 6)
+=>
+(0.0 0.0 1 2.0 2 4.5 3 4.425 5.0 10.0)
+
+|#
+;;; SYNOPSIS
+(defun decimate-env (env num-points &optional (method 'points))
+;;; ****
+  (let* ((e (auto-scale-env env :x-max (1- num-points) :y-min (env-y-min env)
+                            :y-max (env-y-max env)))
+         (length (length env))
+         (first (subseq e 0 2))
+         (last (subseq e (- length 2) length))
+         (sums (ml 0.0 num-points))
+         (nums (ml 0 num-points)))
+    (case method
+      (average
+       (loop for x from 1 to (- num-points 2) do
+            (loop for xf from (- x 0.5) by 0.01 repeat 100 do
+                 (incf (nth x sums) (interpolate xf e))))
+       (append first
+               (loop for s in (butlast (cdr sums))
+                  for x from 1 collect x collect (/ s 100.0))
+               last))
+      (points
+       (loop for x in (cddr e) by #'cddr 
+          for xi = (round x)
+          for y in (cdddr e) by #'cddr do
+          (incf (nth xi sums) y)
+          (incf (nth xi nums)))
+       (append first
+               (loop for s in (cdr (butlast sums 2))
+                  for n in (cdr nums)
+                  for i from 1
+                  collect i collect
+                  (if (zerop n)
+                      (interpolate i e)
+                      (/ s n)))
+               last))
+      (interpolate
+       (loop for x from 0 below num-points collect x  
+          collect (interpolate x e)))
+      (t (error "utilities::decimate-env: unknown method: ~a" method)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

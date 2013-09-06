@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 11:55:22 Thu Sep  5 2013 BST
+;;; $$ Last modified: 17:41:16 Thu Sep  5 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1070,7 +1070,10 @@
 ;;; those with the same bar/meter structure together in the order in which they
 ;;; occur. When creating the extra voice then, the method actually starts ahead
 ;;; of the main voice by choosing <offset> number of similar rthm-seqs in
-;;; advance.
+;;; advance.  NB Your data might well produce only one rthm-seq with a
+;;; particular metric structure, which might mean that calling this method
+;;; produces rhythmic doubling instead of an independent part.  In that case
+;;; you might try adding more rhythmic fragments and regenerating your piece.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-chain object.

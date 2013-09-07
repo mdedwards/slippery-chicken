@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 14:01:52 Wed Sep  4 2013 BST
+;;; $$ Last modified: 09:46:22 Sat Sep  7 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -877,9 +877,9 @@ data: S
 
 ;;; ****m* rthm-seq/insert-bar
 ;;; DESCRIPTION
-;;; Insert a rthm-seq-bar object into the given rthm-seq object and re-init
-;;; it. If there's a pitch-seq/pitch-seq-palette given (list of numbers, or list
-;;; of lists), splice this in at the appropriate location.
+;;; Insert a rthm-seq-bar object into the given rthm-seq object and
+;;; re-initialize it. If there's a pitch-seq/pitch-seq-palette given (list of
+;;; numbers, or list of lists), splice this in at the appropriate location.
 ;;;
 ;;; NB: This method sets the values of the individual slots but leaves the DATA
 ;;;     slot untouched (for cases in which the user might want to see where the
@@ -1142,6 +1142,7 @@ data: (3 8)
 |#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#|
 ;;; 7.12.11: now obsolete as we no longer use SCORE (sadly...no DOS)
 (defmethod get-score-strings ((rs rthm-seq) &key 
                               (notes nil) 
@@ -1216,7 +1217,7 @@ data: (3 8)
           (minus-last-slash (get-output-stream-string rthms))
           (minus-last-slash (get-output-stream-string beams))
           (minus-last-slash (get-output-stream-string ties)))))
-
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; When ignore-rests is t, the rest duration will be added to the duration of

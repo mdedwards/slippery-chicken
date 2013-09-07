@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 19:13:51 Fri May 17 2013 BST
+;;; $$ Last modified: 17:15:24 Sat Sep  7 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -361,7 +361,7 @@
 ;;;     for each player at a given point; this is up to the user. 
 ;;;
 ;;; NB: The user must call the update-slots method to ensure that changes to
-;;;     the NUM-BARS slot etc. are reflected in the given slippery-chicken
+;;;     the num-bars slot etc. are reflected in the given slippery-chicken
 ;;;     object.
 ;;; 
 ;;; ARGUMENTS
@@ -1360,4 +1360,8 @@ BAR-HOLDER:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun piece-p (thing)
+  (typep thing 'piece))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF piece.lsp

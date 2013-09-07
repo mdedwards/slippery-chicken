@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 18:11:51 Fri Jun 21 2013 BST
+;;; $$ Last modified: 09:19:12 Sat Sep  7 2013 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -110,7 +110,7 @@
 
 (defun set-sc-config (key value)
   (declare (special +slippery-chicken-config-data+))
-  (replace-data key value +slippery-chicken-config-data+))
+  (data (replace-data key value +slippery-chicken-config-data+)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; cmn.lsp

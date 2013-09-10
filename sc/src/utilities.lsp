@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 10:00:09 Fri Sep  6 2013 BST
+;;; $$ Last modified: 19:36:28 Tue Sep 10 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1655,7 +1655,7 @@
 
 (decimate-env '(0 0 4 4 5 5 5.1 5.1 5.3 1 5.6 5.6 6 6 10 10) 6)
 =>
-(0.0 0.0 1 2.0 2 4.5 3 4.425 5.0 10.0)
+(0.0 0.0 1 2.0 2 4.5 3 4.425 4 8.0 5.0 10.0)
 
 |#
 ;;; SYNOPSIS
@@ -1684,7 +1684,7 @@
           (incf (nth xi sums) y)
           (incf (nth xi nums)))
        (append first
-               (loop for s in (cdr (butlast sums 2))
+               (loop for s in (cdr (butlast sums))
                   for n in (cdr nums)
                   for i from 1
                   collect i collect

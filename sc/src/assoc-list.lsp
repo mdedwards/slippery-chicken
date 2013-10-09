@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 13:35:54 Wed Jun 19 2013 BST
+;;; $$ Last modified: 10:55:08 Tue Oct  1 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -464,7 +464,7 @@ WARNING:
 ;;; Add a new element to the given assoc-list object.
 ;;; 
 ;;; ARGUMENTS
-;;; - A key/data pair as a list.
+;;; - A key/data pair as a list, or a named-object.
 ;;; - The assoc-list object to which it is to be added.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
@@ -520,8 +520,8 @@ data: MARK
     (error "assoc-list::add: named-object is NIL!"))
   (setf named-object (check-or-force-named-object named-object))
   (when (get-position (id named-object) al)
-    (error "assoc-list::add: Can't add ~a to assoc-list with id ~a ~
-            because key already exists!"
+    (error "assoc-list::add: Can't add ~a to assoc-list with id ~%~a ~
+            ~%because key already exists!"
            (id named-object) (id al)))
   (setf (slot-value al 'data) (econs (data al) (clone named-object)))
   (incf (sclist-length al))

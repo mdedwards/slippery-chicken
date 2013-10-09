@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 19:47:12 Wed Mar 27 2013 GMT
+;;; $$ Last modified: 09:57:56 Tue Oct  1 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -200,6 +200,8 @@
 ;;;
 ;;; It is not necessary for the lengths of the pitch-seq objects in the two
 ;;; starting pitch-seq-palette objects to be the same.
+;;;
+;;; NB Both pitch-seq-palettes are reset by this method.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A first pitch-seq-palette object.
@@ -274,6 +276,10 @@ data: (5 1 3 2 4 3 2 1 5 4)
              (make-pitch-seq (append (data (clone ps1)) 
                                      (data (clone ps2)))
                              (id ps1))))
+    ;; MDE Tue Oct  1 09:56:46 2013 
+    (reset result)
+    (reset psp1)
+    (reset psp2)
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -543,6 +549,10 @@ Each pitch sequence must have 5 notes (you have 6):
   ;; reset our lists
   (create-psps-default nil nil)
   (loop repeat num-pss collect (create-psps-default num-notes nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun pitch-seq-palette-p (thing)
+  (typep thing 'pitch-seq-palette))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

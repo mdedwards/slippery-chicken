@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 14:16:45 Wed Aug 28 2013 BST
+;;; $$ Last modified: 13:51:34 Mon Oct  7 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1333,8 +1333,9 @@ data: (
            (unless (event-p e)
              (when warn
                (warn "slippery-chicken::change-pitches: couldn't get event no ~
-                      ~a (ran out of bars?).  ~%Last event was ~&~a."
-                     (1+ count) last))
+                      ~a ~%(ran out of bars with ~a new pitches?). ~
+                      ~%Last event was ~&~a."
+                     (1+ count) (length new-pitches) last))
              (return))
            (when note
              ;; (print note)  

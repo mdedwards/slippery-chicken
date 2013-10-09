@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 12:51:02 Sun Aug 25 2013 BST
+;;; $$ Last modified: 13:57:52 Wed Oct  9 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -726,7 +726,63 @@ NIL
          (too-low (pitch< p low))
          (out (not (or too-high too-low))))
     (values out (cond (too-high 1) (too-low 0)))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* instrument/force-in-range
+;;; DATE
+;;; October 9th 2013
+;;; 
+;;; DESCRIPTION
+;;; Forces a pitch to be within an instrument's range by transposing up or down
+;;; the required number of octaves. 
+;;; 
+;;; ARGUMENTS
+;;; - the instrument object
+;;; - the piece object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - whether the pitch should be considered a sounding pitch.  Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; A pitch object within the instrument's range.
+;;; 
+;;; EXAMPLE
+#|
+(let ((cl (get-data 'b-flat-clarinet
+                    +slippery-chicken-standard-instrument-palette+)))
+
+  ;; needs to go down 1 octave
+  (print (data (force-in-range cl (make-pitch 'e7))))
+  ;; needs to go up 2 octaves
+  (print (data (force-in-range cl (make-pitch 'g1))))
+  ;; the t indicates we're dealing with sounding pitches so here there's no
+  ;; transposition...  
+  (print (data (force-in-range cl (make-pitch 'd3) t)))
+  ;; ... but here there is
+  (print (data (force-in-range cl (make-pitch 'd3)))))
+=>
+E6 
+G3 
+D3 
+D4 
+
+
+|#
+;;; SYNOPSIS
+(defmethod force-in-range ((ins instrument) pitch &optional sounding)
 ;;; ****
+  (multiple-value-bind (in direction)
+      (in-range ins pitch sounding)
+    (if in
+        pitch
+        (loop with too-low = (zerop direction)
+           with inc = (if too-low 12 -12)
+           with transp = inc
+           for p = (transpose pitch transp)
+           do
+           (if (in-range ins p sounding)
+               (return p)
+               (incf transp inc))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 09:46:22 Sat Sep  7 2013 BST
+;;; $$ Last modified: 12:56:01 Mon Oct  7 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -206,16 +206,20 @@
     ;; pitch-seq-palette object
     ;; make-psp expects a list of lists but for the sake of convenience
     ;; let's allow a single pitch-seq to be passed
-    (when (atom (first psp))
-      (setf psp (list psp)))
-    (setf (pitch-seq-palette rs) 
-      (make-psp (format nil "rthm-seq-~a-pitch-seq-palette"
-                        (id rs))
-                (num-notes rs) 
-                psp)))
-  ;; this is now only called once we have tempo information
-  ;; (handle-first-note-ties rs)
-  (update-is-tied-from rs))
+    ;; MDE Mon Sep 30 18:28:48 2013 -- if it's already a psp obj, just check it
+    (if (pitch-seq-palette-p psp)
+        (psp-ok? rs)
+        (progn
+          (when (atom (first psp))
+            (setf psp (list psp)))
+          (setf (slot-value rs 'pitch-seq-palette) 
+                (make-psp (format nil "rthm-seq-~a-pitch-seq-palette"
+                                  (id rs))
+                          (num-notes rs) 
+                          psp))))
+    ;; this is now only called once we have tempo information
+    ;; (handle-first-note-ties rs)
+    (update-is-tied-from rs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1421,15 +1425,18 @@ rthm-seq NIL
                                         ;; get as many pitch-seqs as there
                                         ;; are in the rthm-seq currently
                                         (num-data (pitch-seq-palette rs))))))
-  (setf (pitch-seq-palette rs) (combine (pitch-seq-palette rs) psp)
-        (bars rs) (econs (bars rs) rsb))
+  (setf (bars rs) (econs (bars rs) rsb))
   ;; MDE Fri Dec 30 18:22:54 2011 -- no need for this as the setf bars method
   ;; calls gen-stats  
   ;; (incf (num-bars rs))
-  (incf (num-rhythms rs) (num-rhythms rsb))
-  (incf (num-rests rs) (num-rests rsb))
-  (incf (num-notes rs) (notes-needed rsb))
-  (incf (num-score-notes rs) (num-score-notes rsb))
+  ;; MDE Tue Oct  1 10:27:59 2013 -- these also not needed!
+  ;; (incf (num-rhythms rs) (num-rhythms rsb))
+  ;; (incf (num-rests rs) (num-rests rsb))
+  ;; (incf (num-notes rs) (notes-needed rsb))
+  ;; (incf (num-score-notes rs) (num-score-notes rsb))
+  ;; MDE Tue Oct  1 09:48:20 2013 -- have to do this here now otherwise psp-ok?
+  ;; will trigger an error.
+  (setf (pitch-seq-palette rs) (combine (pitch-seq-palette rs) psp))
   (incf (duration rs) (bar-duration rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2565,6 +2572,81 @@ data: S
      collect rsnew))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; NB other -subseq methods are more like Lisp's subseq but as this is for the
+;;; end user it's a little different in the use of its indices.
+
+;;; ****m* rthm-seq/rs-subseq
+;;; DATE
+;;; 30th September 2013
+;;;
+;;; DESCRIPTION
+;;; Extract a new rthm-seq object from the bars of an existing rthm-seq.
+;;; 
+;;; ARGUMENTS
+;;; - the original rthm-seq object
+;;; - the start bar (1-based)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the end bar (1-based and (unlike Lisp's subseq function) inclusive).  If
+;;;   NIL, we'll use the original end bar. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; A new rthm-seq object.
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod rs-subseq ((rs rthm-seq) start &optional end)
+;;;  ****
+  (unless end
+    (setf end (num-bars rs)))
+  (let* ((num-notes 0)
+         (bars (loop for bar in (subseq (bars rs) (1- start) end)
+                  do (incf num-notes (notes-needed bar))
+                  collect (clone bar)))
+         (start-note (if (= 1 start)
+                         0
+                         (loop for bar in (bars rs) repeat (1- start)
+                            sum (notes-needed bar))))
+         (result
+          (make-rthm-seq (cons 
+                          (read-from-string
+                           (format nil "~a-bar-~a-to-~a" (id rs) start end))
+                          bars))))
+    ;; (print num-notes)
+    (setf (pitch-seq-palette result)
+          (psp-subseq (pitch-seq-palette rs) start-note
+                      (+ start-note num-notes)))
+    ;; with a psp object the setf method checks won't be called
+    (psp-ok? result) 
+    (clear-ties-beg-end result)
+    result))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  MDE Mon Sep 30 17:29:49 2013 -- check whether all pitch-seqs in the psp
+;;; have the same number of notes as the rthm-seq.
+(defmethod psp-ok? ((rs rthm-seq) &optional (on-error #'error))
+  (loop with ok = t with nn = (num-notes rs)
+     for ps in (data (pitch-seq-palette rs)) do
+       (setf ok (= nn (sclist-length ps)))
+       (when (and (not ok) on-error (functionp on-error))
+         (funcall on-error "~a~%rthm-seq::psp-ok?: number of notes in ~
+                            rthm-seq (~a) not matched in parts ~%of the ~
+                            pitch-seq-palette: ~%~a." 
+                  rs (num-notes rs) (pitch-seq-palette rs)))
+     finally (return ok)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Sep 30 17:20:25 2013
+(defmethod (setf pitch-seq-palette) :after (value (rs rthm-seq))
+  (declare (ignore value))
+  (if (listp (pitch-seq-palette rs))
+    (init-psp rs)
+    (psp-ok? rs)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Sep  4 12:45:10 2013 -- force tied notes at beginning to rests and
 ;;; kill ties at very end. 
 ;;; ****m* rthm-seq/clear-ties-beg-end
@@ -2584,11 +2666,27 @@ data: S
 (defmethod clear-ties-beg-end ((rs rthm-seq))
 ;;; ****
   (let ((first-bar (first (bars rs)))
+        (first-count 0)
         (last-rthm (first (last (rhythms (first (last (bars rs)))))))
         (changed nil))
     (loop for r in (rhythms first-bar) while (is-tied-to r) do 
+         (incf first-count)
          (setf changed t)
          (force-rest r))
+    ;; MDE Sat Oct 5 16:39:41 2013 -- if we've cleared ties then we really have
+    ;; to kill a subsequent end beam as we might have made a start beam note
+    ;; into a rest which means we'd fail check-beams with 'not-open
+    (when (and changed (not (check-beams first-bar :on-fail nil)))
+      (loop for i from first-count 
+           for r = (nth i (rhythms first-bar))
+           while r
+         do
+           (when (beam r)
+             (if (= 1 (beam r))
+                 (return)
+                 (setf (beam r) nil)))))
+        ;; (check-beams first-bar :on-fail #'error))
+      
     (when (is-tied-from last-rthm)
       (setf changed t
             (is-tied-from last-rthm) nil))
@@ -3042,7 +3140,6 @@ data: ((((3 4) - S S - (E) S (S) (S) S (S) - S E -)
     (make-instance 'rthm-seq :id id :data (list rs))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun rthm-seq-p (thing)
   (typep thing 'rthm-seq))
 

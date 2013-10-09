@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 12:39:39 Sun Aug 25 2013 BST
+;;; $$ Last modified: 12:22:02 Wed Oct  9 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -299,7 +299,18 @@
        :starting-clef treble 
        :chords t :chord-function guitar-chord-selection-fun 
        :microtones nil
-       :midi-program 28))
+       :midi-program 25))
+     ;; MDE Wed Oct  9 12:21:22 2013 
+     (mandolin 
+      (:staff-name "mandolin" :staff-short-name "mln"
+       :lowest-written g3 :highest-written c6
+       :largest-fast-leap 25
+       :starting-clef treble 
+       ;; mandolin has same tuning as the violin
+       :chords t :chord-function violin-chord-selection-fun 
+       ;; there is no GM programme for mandolin so use either steel string
+       ;; guitar (26) or banjo 106 perhaps 
+       :microtones nil :midi-program 26))
      (soprano
       (:staff-name "soprano" :staff-short-name "s"
        :lowest-written c4 :highest-written c6

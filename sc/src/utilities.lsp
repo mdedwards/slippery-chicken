@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 19:36:28 Tue Sep 10 2013 BST
+;;; $$ Last modified: 19:14:46 Fri Oct 11 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4010,13 +4010,14 @@ RETURNS:
 ;;; Instead of dividing an overall duration (pdivide) we start with a
 ;;; proportion and expand outwards from there, keeping each newly created part
 ;;; in the same proportion.  This is repeated the number of times specified in
-;;; the first argument.
+;;; the first argument.  Useful for generating maps (section structure).
 ;;; 
 ;;; ARGUMENTS
 ;;; The number of times to expand proportionally.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; As many integer proportions as required.
+;;; As many integer proportions as required.  If the last argument here is t,
+;;; then instead of using letters to denote sections we use numbers instead. 
 ;;; 
 ;;; RETURN VALUE
 
@@ -4037,119 +4038,111 @@ RETURNS:
 #|
 ;;; 2 generations:
 (pexpand 2 3 2) =>
-(1 A 6 A.A.A.B 11 A.A.A.C 16 A.A.B 21 A.A.B.B 26 A.B 31 A.B.A.B 36 A.B.A.C 41
- A.B.B 46 A.B.B.B 51 A.C 56 A.C.A.B 61 A.C.A.C 66 A.C.B 71 A.C.B.B 76 B 81
- B.A.A.B 86 B.A.A.C 91 B.A.B 96 B.A.B.B 101 B.B 106 B.B.A.B 111 B.B.A.C 116
- B.B.B 121 B.B.B.B)
+(1 (A) 6 (A A A B) 11 (A A A C) 16 (A A B) 21 (A A B B) 26 (A B) 31 (A B A B)
+ 36 (A B A C) 41 (A B B) 46 (A B B B) 51 (A C) 56 (A C A B) 61 (A C A C) 66
+ (A C B) 71 (A C B B) 76 (B) 81 (B A A B) 86 (B A A C) 91 (B A B) 96 (B A B B)
+ 101 (B B) 106 (B B A B) 111 (B B A C) 116 (B B B) 121 (B B B B))
 (125
- ((A 75)
-  ((A.A 25) ((A.A.A 15) (A.A.A.A 5) (A.A.A.B 5) (A.A.A.C 5))
-   ((A.A.B 10) (A.A.B.A 5) (A.A.B.B 5)))
-  ((A.B 25) ((A.B.A 15) (A.B.A.A 5) (A.B.A.B 5) (A.B.A.C 5))
-   ((A.B.B 10) (A.B.B.A 5) (A.B.B.B 5)))
-  ((A.C 25) ((A.C.A 15) (A.C.A.A 5) (A.C.A.B 5) (A.C.A.C 5))
-   ((A.C.B 10) (A.C.B.A 5) (A.C.B.B 5))))
- ((B 50)
-  ((B.A 25) ((B.A.A 15) (B.A.A.A 5) (B.A.A.B 5) (B.A.A.C 5))
-   ((B.A.B 10) (B.A.B.A 5) (B.A.B.B 5)))
-  ((B.B 25) ((B.B.A 15) (B.B.A.A 5) (B.B.A.B 5) (B.B.A.C 5))
-   ((B.B.B 10) (B.B.B.A 5) (B.B.B.B 5)))))
+ (((A) 75)
+  (((A A) 25) (((A A A) 15) ((A A A A) 5) ((A A A B) 5) ((A A A C) 5))
+   (((A A B) 10) ((A A B A) 5) ((A A B B) 5)))
+  (((A B) 25) (((A B A) 15) ((A B A A) 5) ((A B A B) 5) ((A B A C) 5))
+   (((A B B) 10) ((A B B A) 5) ((A B B B) 5)))
+  (((A C) 25) (((A C A) 15) ((A C A A) 5) ((A C A B) 5) ((A C A C) 5))
+   (((A C B) 10) ((A C B A) 5) ((A C B B) 5))))
+ (((B) 50)
+  (((B A) 25) (((B A A) 15) ((B A A A) 5) ((B A A B) 5) ((B A A C) 5))
+   (((B A B) 10) ((B A B A) 5) ((B A B B) 5)))
+  (((B B) 25) (((B B A) 15) ((B B A A) 5) ((B B A B) 5) ((B B A C) 5))
+   (((B B B) 10) ((B B B A) 5) ((B B B B) 5)))))
 125
 
 ;;; 3 generations:
 (pexpand 3 3 2) =>
-(1 A 6 A.A.A.A.A.B 11 A.A.A.A.A.C 16 A.A.A.A.B 21 A.A.A.A.B.B 26 A.A.A.B 31
-... A.C.B.B.A.C 366 A.C.B.B.B 371 A.C.B.B.B.B 376 B 381 B.A.A.A.A.B 386
- B.A.A.A.A.C 391 B.A.A.A.B 396 B.A.A.A.B.B 401 B.A.A.B 406 B.A.A.B.A.B 411
-... B.B.B.A.A.C 591 B.B.B.A.B 596 B.B.B.A.B.B 601 B.B.B.B 606 B.B.B.B.A.B 611
- B.B.B.B.A.C 616 B.B.B.B.B 621 B.B.B.B.B.B)
+(1 (A) 6 (A A A A A B) 11 (A A A A A C) 16 (A A A A B) 21 (A A A A B B) 26
+ (A A A B) 31 (A A A B A B) 36 (A A A B A C) 41 (A A A B B) 46 (A A A B B B) 51
+ (A A A C) 56 (A A A C A B) 61 (A A A C A C) 66 (A A A C B) 71 (A A A C B B) 76
+...
+ 581 (B B B A A B) 586 (B B B A A C) 591 (B B B A B) 596 (B B B A B B) 601
+ (B B B B) 606 (B B B B A B) 611 (B B B B A C) 616 (B B B B B) 621
+ (B B B B B B))
 (625
- ((A 375)
-  ((A.A 125)
-   ((A.A.A 75)
-    ((A.A.A.A 25)
-     ((A.A.A.A.A 15) (A.A.A.A.A.A 5) (A.A.A.A.A.B 5) (A.A.A.A.A.C 5))
-     ((A.A.A.A.B 10) (A.A.A.A.B.A 5) (A.A.A.A.B.B 5)))
+ (((A) 375)
+  (((A A) 125)
+   (((A A A) 75)
+    (((A A A A) 25)
+     (((A A A A A) 15) ((A A A A A A) 5) ((A A A A A B) 5) ((A A A A A C) 5))
+     (((A A A A B) 10) ((A A A A B A) 5) ((A A A A B B) 5)))
 ...
-    ((A.C.B.B 25)
-     ((A.C.B.B.A 15) (A.C.B.B.A.A 5) (A.C.B.B.A.B 5) (A.C.B.B.A.C 5))
-     ((A.C.B.B.B 10) (A.C.B.B.B.A 5) (A.C.B.B.B.B 5))))))
- ((B 250)
-  ((B.A 125)
-   ((B.A.A 75)
-    ((B.A.A.A 25)
-     ((B.A.A.A.A 15) (B.A.A.A.A.A 5) (B.A.A.A.A.B 5) (B.A.A.A.A.C 5))
-     ((B.A.A.A.B 10) (B.A.A.A.B.A 5) (B.A.A.A.B.B 5)))
-    ((B.A.A.B 25)
-...
-     ((B.B.B.A.A 15) (B.B.B.A.A.A 5) (B.B.B.A.A.B 5) (B.B.B.A.A.C 5))
-     ((B.B.B.A.B 10) (B.B.B.A.B.A 5) (B.B.B.A.B.B 5)))
-    ((B.B.B.B 25)
-     ((B.B.B.B.A 15) (B.B.B.B.A.A 5) (B.B.B.B.A.B 5) (B.B.B.B.A.C 5))
-     ((B.B.B.B.B 10) (B.B.B.B.B.A 5) (B.B.B.B.B.B 5)))))))
+   (((B B B) 50)
+    (((B B B A) 25)
+     (((B B B A A) 15) ((B B B A A A) 5) ((B B B A A B) 5) ((B B B A A C) 5))
+     (((B B B A B) 10) ((B B B A B A) 5) ((B B B A B B) 5)))
+    (((B B B B) 25)
+     (((B B B B A) 15) ((B B B B A A) 5) ((B B B B A B) 5) ((B B B B A C) 5))
+     (((B B B B B) 10) ((B B B B B A) 5) ((B B B B B B) 5)))))))
 625
 
-;;; 2 generations of 3 proportional values
-(pexpand 2 3 2 4) =>
-(1 A 10 A.A.A.B 19 A.A.A.C 28 A.A.B 37 A.A.B.B 46 A.A.C 55 A.A.C.B 64 A.A.C.C
-... A.C.B.B 208 A.C.C 217 A.C.C.B 226 A.C.C.C 235 A.C.C.D 244 B 253 B.A.A.B 262
-.. 388 B.B.C.C 397 B.B.C.D 406 C 415 C.A.A.B 424 C.A.A.C 433 C.A.B 442 C.A.B.B
- 451 C.A.C 460 C.A.C.B 469 C.A.C.C 478 C.A.C.D 487 C.B 496 C.B.A.B 505 C.B.A.C
-... C.D.C 703 C.D.C.B 712 C.D.C.C 721 C.D.C.D)
-(729
- ((A 243)
-  ((A.A 81) ((A.A.A 27) (A.A.A.A 9) (A.A.A.B 9) (A.A.A.C 9))
-   ((A.A.B 18) (A.A.B.A 9) (A.A.B.B 9))
-   ((A.A.C 36) (A.A.C.A 9) (A.A.C.B 9) (A.A.C.C 9) (A.A.C.D 9)))
-  ((A.B 81) ((A.B.A 27) (A.B.A.A 9) (A.B.A.B 9) (A.B.A.C 9))
-   ((A.B.B 18) (A.B.B.A 9) (A.B.B.B 9))
-   ((A.B.C 36) (A.B.C.A 9) (A.B.C.B 9) (A.B.C.C 9) (A.B.C.D 9)))
-  ((A.C 81) ((A.C.A 27) (A.C.A.A 9) (A.C.A.B 9) (A.C.A.C 9))
-   ((A.C.B 18) (A.C.B.A 9) (A.C.B.B 9))
-   ((A.C.C 36) (A.C.C.A 9) (A.C.C.B 9) (A.C.C.C 9) (A.C.C.D 9))))
- ((B 162)
-  ((B.A 81) ((B.A.A 27) (B.A.A.A 9) (B.A.A.B 9) (B.A.A.C 9))
-   ((B.A.B 18) (B.A.B.A 9) (B.A.B.B 9))
-   ((B.A.C 36) (B.A.C.A 9) (B.A.C.B 9) (B.A.C.C 9) (B.A.C.D 9)))
-  ((B.B 81) ((B.B.A 27) (B.B.A.A 9) (B.B.A.B 9) (B.B.A.C 9))
-   ((B.B.B 18) (B.B.B.A 9) (B.B.B.B 9))
-   ((B.B.C 36) (B.B.C.A 9) (B.B.C.B 9) (B.B.C.C 9) (B.B.C.D 9))))
- ((C 324)
-  ((C.A 81) ((C.A.A 27) (C.A.A.A 9) (C.A.A.B 9) (C.A.A.C 9))
-   ((C.A.B 18) (C.A.B.A 9) (C.A.B.B 9))
-   ((C.A.C 36) (C.A.C.A 9) (C.A.C.B 9) (C.A.C.C 9) (C.A.C.D 9)))
-  ((C.B 81) ((C.B.A 27) (C.B.A.A 9) (C.B.A.B 9) (C.B.A.C 9))
-   ((C.B.B 18) (C.B.B.A 9) (C.B.B.B 9))
-   ((C.B.C 36) (C.B.C.A 9) (C.B.C.B 9) (C.B.C.C 9) (C.B.C.D 9)))
-  ((C.C 81) ((C.C.A 27) (C.C.A.A 9) (C.C.A.B 9) (C.C.A.C 9))
-   ((C.C.B 18) (C.C.B.A 9) (C.C.B.B 9))
-   ((C.C.C 36) (C.C.C.A 9) (C.C.C.B 9) (C.C.C.C 9) (C.C.C.D 9)))
-  ((C.D 81) ((C.D.A 27) (C.D.A.A 9) (C.D.A.B 9) (C.D.A.C 9))
-   ((C.D.B 18) (C.D.B.A 9) (C.D.B.B 9))
-   ((C.D.C 36) (C.D.C.A 9) (C.D.C.B 9) (C.D.C.C 9) (C.D.C.D 9)))))
-729
+;;; 2 generations of 3 proportional values, returning numbers for labels
+(pexpand 2 3 2 4 t) =>
+(1 (1) 10 (1 1 1 2) 19 (1 1 1 3) 28 (1 1 2) 37 (1 1 2 2) 46 (1 1 3) 55
+ (1 1 3 2) 64 (1 1 3 3) 73 (1 1 3 4) 82 (1 2) 91 (1 2 1 2) 100 (1 2 1 3) 109
+ (1 2 2) 118 (1 2 2 2) 127 (1 2 3) 136 (1 2 3 2) 145 (1 2 3 3) 154 (1 2 3 4)
+... (3 4 2 2) 694 (3 4 3) 703 (3 4 3 2) 712 (3 4 3 3) 721 (3 4 3 4))
 
+(729
+ (((1) 243)
+  (((1 1) 81) (((1 1 1) 27) ((1 1 1 1) 9) ((1 1 1 2) 9) ((1 1 1 3) 9))
+   (((1 1 2) 18) ((1 1 2 1) 9) ((1 1 2 2) 9))
+   (((1 1 3) 36) ((1 1 3 1) 9) ((1 1 3 2) 9) ((1 1 3 3) 9) ((1 1 3 4) 9)))
+...
+   (((3 2 2) 18) ((3 2 2 1) 9) ((3 2 2 2) 9))
+   (((3 2 3) 36) ((3 2 3 1) 9) ((3 2 3 2) 9) ((3 2 3 3) 9) ((3 2 3 4) 9)))
+  (((3 3) 81) (((3 3 1) 27) ((3 3 1 1) 9) ((3 3 1 2) 9) ((3 3 1 3) 9))
+   (((3 3 2) 18) ((3 3 2 1) 9) ((3 3 2 2) 9))
+   (((3 3 3) 36) ((3 3 3 1) 9) ((3 3 3 2) 9) ((3 3 3 3) 9) ((3 3 3 4) 9)))
+  (((3 4) 81) (((3 4 1) 27) ((3 4 1 1) 9) ((3 4 1 2) 9) ((3 4 1 3) 9))
+   (((3 4 2) 18) ((3 4 2 1) 9) ((3 4 2 2) 9))
+   (((3 4 3) 36) ((3 4 3 1) 9) ((3 4 3 2) 9) ((3 4 3 3) 9) ((3 4 3 4) 9)))))
+729
 |#
 ;;; SYNOPSIS
 (defun pexpand (generations &rest proportions)
 ;;; ****
-  (unless (every #'integerp proportions)
-    (error "utilities::pexpand: proportions must be integers."))
-  (let* ((result proportions))
-    (loop repeat generations do
-         (setf result (loop for p in proportions collect
-                           (ml result p))))
-    (setf result (pexpand-aux result nil))
-    (values
-     (pexpand-count result (loop for n in proportions sum n)
-                    ;; (1- (* generations 4)))
-                    (* generations 2))
-     (progn
-       (setf (first result) (second (first result)))
-       result)
-     ;; the number we produce will be the sum of the proportions ^ (1+
-     ;; generations) 
-     (first result))))
+  ;; MDE Fri Oct 11 18:53:42 2013 
+  (let ((numbers (eq t (first (last proportions)))))
+    (when numbers
+      (setf proportions (butlast proportions)))
+    (unless (every #'integerp proportions)
+      (error "utilities::pexpand: proportions must be integers."))
+    (let* ((result proportions)
+           (rehearsal-letters nil))
+      (loop repeat generations do
+           (setf result (loop for p in proportions collect
+                             (ml result p))))
+      (setf result (pexpand-aux result nil))
+      (values
+       (progn
+         (setf rehearsal-letters
+               (pexpand-count result (loop for n in proportions sum n)
+                              (* generations 2)))
+         (if numbers
+             (pexpand-letters-to-numbers rehearsal-letters)
+             rehearsal-letters))
+       (progn
+         (setf (first result) (second (first result)))
+         (if numbers
+             (pexpand-letters-to-numbers result)
+             result))
+       ;; the number we produce will be the sum of the proportions ^ (1+ 
+       ;; generations)                    
+       (first result)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun pexpand-letters-to-numbers (list)
+  (loop for l in '(a b c d e f g h i j k l m) and i from 1 do
+       (setf list (subst i l list)))
+  list)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/pexpand-find
@@ -4168,10 +4161,6 @@ RETURNS:
 ;;; RETURN VALUE
 ;;; An integer.
 ;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defun pexpand-find (label list &optional (on-error #'error))
 ;;; ****
@@ -4190,32 +4179,14 @@ RETURNS:
   (let* ((outer (flatten list))
          (sum (loop for el in outer sum el))
          (letters '(a b c d e f g h i j k l m)))
+         ;; (letters (loop for i from 1 to 13 collect i)))
     (if (atom (first list))
         ;; these are the lowest-level sections
         (list id sum)
         (cons (list id sum)
               (loop for l in list and letter in letters collect
-                   (pexpand-aux 
-                    l 
-                    (econs id letter)))))))
-#|
-;;; version that creates single symbol labels--best to do that later if needed
-(defun pexpand-aux (list id)
-  (let* ((outer (flatten list))
-         (sum (loop for el in outer sum el))
-         (letters '(a b c d e f g h i j k l m)))
-    (if (atom (first list))
-        ;; these are the lowest-level sections
-        (list (read-from-string (format nil "~a'" id)) sum)
-        (cons (list id sum)
-              (loop for l in list and letter in letters collect
-                   (pexpand-aux 
-                    l 
-                    (read-from-string
-                     (format nil "~a~a"
-                             (if id (format nil "~a." id) "")
-                             letter))))))))
-|#
+                   (pexpand-aux l (econs id letter)))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun pexpand-count (list unit-size inner-label-length &optional (start 1))
@@ -4235,26 +4206,5 @@ RETURNS:
      finally
      (return (nreverse result))))
 
-#|
-;;; version that used single symbol labels
-(defun pexpand-count (list unit-size inner-label-length &optional (start 1))
-  (loop with result = '() with count = start with sym with last
-     for el in (flatten list) do
-     (cond ((and (not sym) (symbolp el))
-            ;; so we cache the first we saw, not the last
-            (setf sym el))
-           ;; we look for the label length of the smallest units.  This will
-           ;; have as many letters as twice the number of generations plus the
-           ;; same again (minus 1) of dots.
-           ((and (numberp el) (= el unit-size)
-                 (= inner-label-length (length (string last))))
-            (push count result)
-            (push sym result)
-            (incf count unit-size)
-            (setf sym nil)))
-     (setf last el)
-     finally
-     (return (nreverse result))))
-|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

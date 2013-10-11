@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:33:11 Sat Sep  7 2013 BST
+;;; $$ Last modified: 18:12:12 Fri Oct 11 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -965,10 +965,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf tempo-map) (tm (sc slippery-chicken))
-  (setf tm (convert-bar-refs-to-numbers sc tm)
-        (slot-value sc 'tempo-map)
-        (make-tempo-map (format nil "~a-~a" (id sc) 'tempo-map)
-                        tm)))
+  (if (tempo-map-p tm)
+      (setf (slot-value sc 'tempo-map) tm)
+      (setf tm (convert-bar-refs-to-numbers sc tm)
+            (slot-value sc 'tempo-map)
+            (make-tempo-map (format nil "~a-~a" (id sc) 'tempo-map)
+                            tm))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Sep 24 22:06:50 2012 
@@ -4977,6 +4979,8 @@ seq-num 5, VN, replacing G3 with B6
 ;;; automatically create letters.  Set the rehearsal-letter slot of the correct
 ;;; bars for the given player(s).
 ;;; e.g. (set-rehearsal-letters sc (get-groups-top-ins sc))))
+;;; MDE Fri Oct 11 17:10:46 2013 -- allow a list of (bar-num letter/id) pairs
+;;; so that we can hand-set them. 
 
 (defmethod set-rehearsal-letters ((sc slippery-chicken) &optional players)
   (unless players
@@ -4984,23 +4988,28 @@ seq-num 5, VN, replacing G3 with B6
   (unless (listp players)
     (setf players (list players)))
   (loop 
-      for bar-num in (rehearsal-letters sc)
-                     ;; we have to set the rehearsal letter on the bar
-                     ;; line of the previous bar
-      for dc from 10 
-      for letter = (format nil "~a" (digit-char dc 36))
-      do 
-        (when (> dc 35)
-          (error "slippery-chicken::set-rehearsal-letters: ~
-                  Can only make rehearsal letters from A-Z"))
-        (loop 
-            for player in players 
-            for bar = (get-bar sc (1- bar-num) player)
-            do
-              (unless bar
-                (error "slippery-chicken::set-rehearsal-letters: couldn't get ~
+     for bar-num in (rehearsal-letters sc)
+     ;; we have to set the rehearsal letter on the bar
+     ;; line of the previous bar
+     for dc from 10 
+     for letter = (format nil "~a" (digit-char dc 36))
+     do 
+     ;; MDE Fri Oct 11 17:11:56 2013 
+     (if (listp bar-num)
+         (setf letter (second bar-num)
+               bar-num (first bar-num))
+         (when (> dc 35)
+           (error "slippery-chicken::set-rehearsal-letters: ~
+                  Can only make rehearsal letters ~%from A-Z: ~a" 
+                  (rehearsal-letters sc))))
+     (loop 
+        for player in players 
+        for bar = (get-bar sc (1- bar-num) player)
+        do
+        (unless bar
+          (error "slippery-chicken::set-rehearsal-letters: couldn't get ~
                         bar ~a for ~a." bar-num player))
-              (setf (rehearsal-letter bar) letter)))
+        (setf (rehearsal-letter bar) letter)))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

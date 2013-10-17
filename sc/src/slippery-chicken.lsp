@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:12:12 Fri Oct 11 2013 BST
+;;; $$ Last modified: 19:27:40 Thu Oct 17 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3933,10 +3933,14 @@ seq-num 5, VN, replacing G3 with B6
                          :include-rests t))
          ;; MDE Mon May  7 10:41:07 2012 -- for pieces with subsections
          (secobj (get-section sc start-section))
-         (nth-seq-ref
+         (nth-seq-ref (full-ref (get-first-section secobj)))
+         ;; MDE Thu Oct 17 19:10:27 2013 -- the following doesn't work if there
+         ;; are sub-sub-sections!  
+          #|
           (if (has-subsections secobj)
-              (full-ref (data (first (data secobj))))
+              (full-ref (print (data (first (data secobj)))))
               start-section))
+          |#
          ;; do all the program changes for the beginning irrespective of
          ;; whether the player changes instrument or not.  subsequent program
          ;; changes are handled in the event class.

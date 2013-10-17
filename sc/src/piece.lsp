@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 17:15:24 Sat Sep  7 2013 BST
+;;; $$ Last modified: 19:22:17 Thu Oct 17 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -568,6 +568,7 @@ BAR-HOLDER:
            (let* ((section (get-player-section section spieler p))
                   (seq (when section (nth seq-num (data section)))))
              seq)))
+    ;; (print section)
     (let ((seq (get-seq player)))
       (if seq
           seq

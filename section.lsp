@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    23rd March 2002
 ;;;
-;;; $$ Last modified: 15:24:14 Fri Apr 19 2013 BST
+;;; $$ Last modified: 19:08:02 Thu Oct 17 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -573,6 +573,14 @@ data: ((4 4) E S S H Q)
                            first-time-sigs this-time-sigs))
                    (setf first-time-sigs this-time-sigs))))))
   t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Oct 17 19:05:44 2013 -- if there are no subsections just return the
+;;; section object, otherwise return the first one in the nested subsection(s).
+(defmethod get-first-section ((s section))
+  (if (has-subsections s)
+      (get-first-section (data (first (data s))))
+      s))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

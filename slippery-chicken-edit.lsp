@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 13:51:34 Mon Oct  7 2013 BST
+;;; $$ Last modified: 19:33:06 Thu Oct 17 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5619,6 +5619,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
         (progn
           (unless sc-name
             (error "slippery-chicken-edit::bars-to-sc: sc-name cannot be NIL"))
+          (link-named-objects piece)
           (setf sc (make-minimal-sc sc-name player instrument instrument-palette)
                 (piece sc) piece)))
     (when update

@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 19:33:06 Thu Oct 17 2013 BST
+;;; $$ Last modified: 16:34:38 Wed Oct 23 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -53,6 +53,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
+
+(proclaim '(special +slippery-chicken-standard-instrument-palette+))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Sun Apr 22 09:08:44 BST 2012: Conformed robodoc entry
@@ -5620,7 +5622,8 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
           (unless sc-name
             (error "slippery-chicken-edit::bars-to-sc: sc-name cannot be NIL"))
           (link-named-objects piece)
-          (setf sc (make-minimal-sc sc-name player instrument instrument-palette)
+          (setf sc (make-minimal-sc sc-name player instrument
+                                    instrument-palette)
                 (piece sc) piece)))
     (when update
       (update-slots sc nil 0 0 1 nil nil t t)

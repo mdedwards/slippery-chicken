@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 13:57:04 Wed Jun 12 2013 BST
+;;; $$ Last modified: 16:19:56 Wed Oct 23 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -314,6 +314,7 @@
 ;;; number as cues start from 2.
 ;;; 
 ;;; SYNOPSIS
+#+(and darwin sbcl)
 (defmethod osc-send-cue-nums ((sfp sndfile-palette))
 ;;; ****
   ;; to be sure: don't assume we'll always have non-nested data.
@@ -324,7 +325,7 @@
          do
          (loop for snd in snds do
               (when (use snd)
-                (osc-send-list (max-cue snd) nil) ; no warning 
+                (sb-bsd-sockets::osc-send-list (max-cue snd) nil) ; no warning 
                 (incf cue-nums))))
     cue-nums))
 

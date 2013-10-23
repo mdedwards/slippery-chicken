@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 17:41:16 Thu Sep  5 2013 BST
+;;; $$ Last modified: 16:17:43 Wed Oct 23 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1759,9 +1759,9 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
   ;; MDE Thu May  9 11:05:05 2013 -- check orders for wrong numbers
   (loop for o in orders do
        (unless
-           (every #'(lambda (i) (and (integerp i) (> i 0) (< i 4))) '(1 2 3 2 ))
+           (every #'(lambda (i) (and (integerp i) (> i 0) (< i 4))) o)
          (error "rthm-chain::procession: :orders should only contain lists of ~
-                 1, 2, and 3: ~a" orders)))
+                 ~%1, 2, and 3: ~a" orders)))
   (let ((num-items 
          (typecase items
            (list (length items))

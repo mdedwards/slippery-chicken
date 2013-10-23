@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 19:14:46 Fri Oct 11 2013 BST
+;;; $$ Last modified: 16:05:40 Wed Oct 23 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3748,6 +3748,7 @@ At revision 3608.
   (multiple-value-bind
         (sec min hour day month year)
       (get-decoded-time)
+    (declare (ignore sec))
     (format nil "~d-~2,'0d-~2,'0d-~2,'0d.~2,'0d" year month day hour min)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

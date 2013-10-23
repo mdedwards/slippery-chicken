@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 19:24:06 Wed Aug 28 2013 BST
+;;; $$ Last modified: 16:10:11 Wed Oct 23 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -169,7 +169,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod stack ((cs complete-set) num-stacks &key id by-freq)
-  (declare (ignore num-stacks id))
+  (declare (ignore num-stacks id by-freq))
   (let ((set (call-next-method)))
     (setf set (clone-with-new-class set 'complete-set))
     (check-complete set)

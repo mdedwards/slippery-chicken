@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 12:56:01 Mon Oct  7 2013 BST
+;;; $$ Last modified: 17:40:32 Wed Oct 23 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2572,15 +2572,15 @@ data: S
      collect rsnew))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; NB other -subseq methods are more like Lisp's subseq but as this is for the
-;;; end user it's a little different in the use of its indices.
-
 ;;; ****m* rthm-seq/rs-subseq
 ;;; DATE
 ;;; 30th September 2013
 ;;;
 ;;; DESCRIPTION
 ;;; Extract a new rthm-seq object from the bars of an existing rthm-seq.
+;;; 
+;;; NB other -subseq methods are more like Lisp's subseq but as this is for the
+;;; end user it's a little different in the use of its indices.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the original rthm-seq object
@@ -2600,8 +2600,11 @@ data: S
 ;;; SYNOPSIS
 (defmethod rs-subseq ((rs rthm-seq) start &optional end)
 ;;;  ****
-  (unless end
-    (setf end (num-bars rs)))
+  (if end
+      (when (> end (num-bars rs))
+        (error "rthm-seq::rs-subseq: Can't get subseq ~a to ~a as rthm-seq ~%~
+                only has ~a bars: ~a" start end (num-bars rs) rs))
+      (setf end (num-bars rs)))
   (let* ((num-notes 0)
          (bars (loop for bar in (subseq (bars rs) (1- start) end)
                   do (incf num-notes (notes-needed bar))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 10:39:25 Thu Aug 29 2013 BST
+;;; $$ Last modified: 20:18:01 Wed Oct 23 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -794,12 +794,17 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;; 
 ;;; ARGUMENTS
 ;;; - An sc-set object.
-;;; 
-;;; OPTIONAL ARGUMENTS
 ;;; - An integer that is the number of new sets to be added to each end of the
 ;;;   original set.
-;;; - A symbol that will be the ID of the new sc-set object.
 ;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :id. A symbol that will be the ID of the new sc-set object. Default NIL.
+;;; - :by-freq. If T then use frequencies when calculating the interval
+;;;    structure instead of degrees (semitones if default scale is chromatic).
+;;;    In this case the frequencies of pitches will be retained but their
+;;;    symbolic value will be rounded to the nearest note in the current scale
+;;;    (and pitch bends will be set accordingly). Default NIL. 
 ;;; RETURN VALUE
 ;;; An sc-set object.
 ;;; 
@@ -809,14 +814,19 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;; structure upwards and inverted interval structure downwards. 
 (let ((set (make-sc-set '(c4 e4 g4))))
   (stack set 3))
-
 =>
 SC-SET: auto-sort: T, used-notes: 
 [...]
 data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
 
+;;; or by calling the make-stack function, which returns a complete-set object
+;;; (subclass of tl-set and sc-set).  Called with (in-scale :chromatic):
+(make-stack 'test '(430 441 889 270) 1 :by-freq t)
+=>
+COMPLETE-SET: complete: NIL
+[...]
+data: (G2 A2 CS4 A4 A4 A5 C6 C6 FS6)
 |#
-
 ;;; SYNOPSIS
 (defmethod stack ((s sc-set) num-stacks &key id by-freq)
 ;;; ****
@@ -829,7 +839,8 @@ data: (EF2 GF2 BF2 DF3 F3 AF3 C4 E4 G4 B4 D5 GF5 A5 DF6 E6)
     (unless by-freq
       (setf result (degrees-to-notes result))
       ;; MDE Sat Jan 14 10:25:25 2012 -- try and get better spellings
-      (setf chord (make-chord result :midi-channel 1 :microtones-midi-channel 2))
+      (setf chord (make-chord result :midi-channel 1
+                              :microtones-midi-channel 2))
       ;; if by-freq we want to retain the original freqs, whereas respelling
       ;; would replace these with the freqs of the tempered notes 
       (respell-chord chord))

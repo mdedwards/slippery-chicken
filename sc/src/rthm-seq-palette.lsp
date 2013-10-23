@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 21:37:06 Tue Sep  3 2013 BST
+;;; $$ Last modified: 17:24:54 Wed Oct 23 2013 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -765,6 +765,48 @@ rthm-seq 9
            (print-simple data)
            (print-simple object)))
   t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rthm-seq-palette/rsp-subseq
+;;; DATE
+;;; 23rd October 2013
+;;; 
+;;; DESCRIPTION
+;;; (Recursively) change all the rthm-seq objects in the palette to be a
+;;; subsequence of the existing rthm-seqs.
+;;; 
+;;; ARGUMENTS
+;;; - the original rthm-seq-palette object
+;;; - the start bar (1-based)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the end bar (1-based and (unlike Lisp's subseq function) inclusive).  If
+;;;   NIL, we'll use the original end bar of each rthm-seq. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; The original rthm-seq-palette but with the new rthm-seqs
+;;;
+;;; SYNOPSIS
+(defmethod rsp-subseq ((rsp rthm-seq-palette) start &optional end)
+;;; ****
+  ;; to avoid the parsing in ral-to-rsp when using the setf method
+  (setf (slot-value rsp 'data) 
+        (loop for object in (data rsp)
+           for data = (data object)
+           collect 
+           (cond ((is-ral data)
+                  (setf (slot-value object 'data) (rsp-subseq data start end))
+                  object)
+                 ((rthm-seq-p object) 
+                  (let ((id (id object))
+                        (rs (rs-subseq object start end)))
+                    ;; remember: the id of the rthm-seq is changed to reflect
+                    ;; the bars it was extracted from, so rename to original
+                    (setf (id rs) id)
+                    rs))
+                 (t (error "rthm-seq-palette::rs-subseq: unexpected object: ~a"
+                           object)))))
+  rsp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

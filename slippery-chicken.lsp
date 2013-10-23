@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:27:40 Thu Oct 17 2013 BST
+;;; $$ Last modified: 21:10:40 Wed Oct 23 2013 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6734,6 +6734,61 @@ duration: 20.0 (20.000)
         (when on-fail
           (funcall on-fail "slippery-chicken::get-chord: no chord at bar ~a, ~
                             note ~a for ~a" bar-num note-num player)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/get-nearest-event
+;;; DESCRIPTION
+;;; Find the nearest event to <reference-event> in the <search-player>
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the reference event object that we want to find the nearest event to in
+;;; another player 
+;;; - the player we want to find the nearest event in (symbol).
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - if T only return sounding events (pitches/chords) otherwise return the
+;;;   nearest rest or sounding event.
+;;; - if T only return struck events i.e. ignore those that are tied to
+;;; 
+;;; RETURN VALUE
+;;; An event object.
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod get-nearest-event ((sc slippery-chicken) reference-event
+                              search-player &optional 
+                              (ignore-rests t)
+                              (ignore-tied t))
+;;; ****
+  (unless (and (numberp (start-time reference-event))
+               (integer>0 (bar-num reference-event)))
+    (error "slippery-chicken::get-nearest-event: reference-event must have ~
+            ~%had its start-time and bar-num slots set: ~a" reference-event))
+  (let* ((events '())
+         (start-bar (bar-num reference-event))
+         (end-bar start-bar)
+         (time (start-time reference-event)))
+    (loop until events do
+       ;; if we don't get sounding events the first time round we've got to
+       ;; look earlier and later
+         (decf start-bar 3)
+         (incf end-bar 3)
+         (setf events
+               (loop for bar-num from start-bar to end-bar
+                  for bar = (get-bar sc bar-num search-player)
+                  appending (rhythms bar)))
+         (when ignore-rests
+           (setf events (remove-if #'(lambda (x) (is-rest x)) events)))
+         (when ignore-tied
+           (setf events (remove-if #'(lambda (x) (is-tied-to x)) events))))
+    (setf events
+          (sort events #'(lambda (x y) (< (abs (- time (start-time x)))
+                                          (abs (- time (start-time y)))))))
+    (first events)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

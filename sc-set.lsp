@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 20:18:01 Wed Oct 23 2013 BST
+;;; $$ Last modified: 12:03:29 Sat Oct 26 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -64,8 +64,11 @@
    ;; sometimes it's useful to divide sc-sets into subsets.  These can be given
    ;; here in the form of an assoc-list of pitches which must be part of the
    ;; main set (data slot).  One use might be to create subsets that particular
-   ;; instruments can play; these would then be selected in the chord-function
-   ;; passed to the instrument object.
+   ;; instruments can play; these could for instance be selected in the
+   ;; chord-function passed to the instrument object.  In any case, if the
+   ;; instrument has a subset-id slot, and the current set contains a subset
+   ;; with that ID, the pitches the instrument may play are limited to that
+   ;; subset.
    (subsets :accessor subsets :initarg :subsets :initform nil)
    ;; this is similar to subsets only that the pitches given here don't have
    ;; to be part of the main set.  Can be used, for example, for pitches
@@ -88,14 +91,10 @@
 
 (defmethod initialize-instance :after ((s sc-set) &rest initargs)
   (declare (ignore initargs))
-  (setf (subsets s) (make-ral (format nil "sc-set-~a-subsets" (id s))
-                              (subsets s)))
-  (make-ral-pitch-lists (subsets s) (auto-sort s))
-  (setf (related-sets s) (make-ral (format nil "sc-set-~a-related-sets" (id s))
-                                   (related-sets s)))
-  (check-subsets (subsets s) s)
-  (setf (used-notes s) (make-ral 'used-notes nil))
-  (make-ral-pitch-lists (related-sets s) (auto-sort s)))
+  ;; MDE Sat Oct 26 11:35:23 2013 -- just to trigger the setf method
+  (setf (subsets s) (subsets s)
+        (related-sets s) (related-sets s)
+        (used-notes s) (make-ral 'used-notes nil)))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -143,6 +142,27 @@
   (format stream "~%    related-sets: ")
   (print-ral-of-pitch-lists (related-sets s) stream))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod (setf subsets) :after (value (s sc-set))
+  (declare (ignore value))
+  (setf (slot-value s 'subsets) 
+        (make-ral (format nil "sc-set-~a-subsets" (id s))
+                  (subsets s)))
+  (make-ral-pitch-lists (subsets s) (auto-sort s))
+  (check-subsets (subsets s) s)
+  (subsets s))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod (setf related-sets) :after (value (s sc-set))
+  (declare (ignore value))
+  (setf (slot-value s 'related-sets)
+        (make-ral (format nil "sc-set-~a-related-sets" (id s))
+                  (related-sets s)))
+  (make-ral-pitch-lists (related-sets s) (auto-sort s))
+  (related-sets s))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod get-used-notes ((s sc-set) seq-num &optional instrument)
@@ -1127,7 +1147,6 @@ data: NIL
 **** N.B. All pitches printed as symbols only, internally they are all 
 pitch-objects.
 
-
     subsets: 
     related-sets: 
 SCLIST: sclist-length: 14, bounds-alert: T, copy: T
@@ -1377,8 +1396,10 @@ data: Q
 ;;; - :subsets. An assoc-list of key/data pairs, in which the data is a list of
 ;;;   note-name symbols that are a subset of the main set. One use for this
 ;;;   keyword argument might be to create subsets that particular instruments
-;;;   can play; these would then be selected in the chord-function passed to
-;;;   the instrument object.
+;;;   can play; these could for instance be selected in the chord-function
+;;;   passed to the instrument object.  In any case, if the instrument has a
+;;;   subset-id slot, and the current set contains a subset with that ID, the
+;;;   pitches the instrument may play are limited to that subset.
 ;;; - :related-sets. An assoc-list of key/data pairs, similar to :subsets, only
 ;;;   that the pitches given here do not have to be part of the main set. This
 ;;;   can be used, for example, for pitches missing from the main set.
@@ -1509,16 +1530,16 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 
 (defun check-subsets (subsets sc-set)
   (loop 
-      for ss in (data subsets) 
-      for pitches = (data ss)
-      for i from 0 do
-        (if (is-ral pitches)
-            (check-subsets pitches sc-set)
-          (loop for pitch in (data ss) do
-                (unless (pitch-member pitch (data sc-set))
-                  (error "sc-set::check-subsets: Note ~a given in subset ~a ~
+     for ss in (data subsets) 
+     for pitches = (data ss)
+     for i from 0 do
+     (if (is-ral pitches)
+         (check-subsets pitches sc-set)
+         (loop for pitch in (data ss) do
+              (unless (pitch-member pitch (data sc-set))
+                (error "sc-set::check-subsets: Note ~a given in subset ~a ~
                             of set ~a is not part of the main set."
-                         (id pitch) (id ss) (id sc-set)))))))
+                       (id pitch) (id ss) (id sc-set)))))))
         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

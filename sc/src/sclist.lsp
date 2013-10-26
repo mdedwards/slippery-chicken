@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified: 10:26:17 Fri Jan  4 2013 GMT
+;;; $$ Last modified: 12:48:00 Sat Oct 26 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -105,7 +105,7 @@
   (let ((data (data i)))
     (unless (listp data)
       (error "sclist::verify-and-store: ~
-              The data slot of the sclist class (or subclasses) must ~
+              The data slot of the sclist class (or subclasses) ~%must ~
               be a list: ~a" data))
     (setf (sclist-length i) (length data))))
 

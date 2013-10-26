@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 14:23:21 Tue Aug 27 2013 BST
+;;; $$ Last modified: 14:21:03 Sat Oct 26 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -665,6 +665,7 @@ NIL
 (defmethod pitch= ((p1 pitch) (p2 pitch) &optional enharmonics-are-equal
                    (frequency-tolerance 0.01) (src-tolerance 0.0001))
 ;;; ****
+  ;; (print p1) (print p2)
   (and (equal-within-tolerance (frequency p1) (frequency p2)
                                frequency-tolerance)
        (or enharmonics-are-equal (eq (data p1) (data p2)))

@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 16:10:11 Wed Oct 23 2013 BST
+;;; $$ Last modified: 16:22:16 Sat Oct 26 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -319,18 +319,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May  3 10:52:54 2012 
 (defmethod rm-octaves ((cs complete-set))
-  (setf (data cs) (remove-octaves (data cs))))
+  (setf (slot-value cs 'data) (remove-octaves (data cs))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May  3 10:55:37 2012 -- if symbols-only, just compare the pitch
 ;;; symbols otherwise use pitch= (equal frequencies etc.) 
 (defmethod rm-duplicates ((cs complete-set) &optional symbols-only)
-  (setf (data cs) 
-        (remove-duplicates
-         (data cs) 
-         :test (if symbols-only 
-                   #'(lambda (p1 p2) (equalp (data p1) (data p2)))
-                   #'pitch=))))
+  (setf (slot-value cs 'data) (rm-pitch-duplicates (data cs) symbols-only)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -498,6 +493,10 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
                           (transposition 0) (auto-sort t) (warn-dups t)
                           (rm-dups t) limit-upper limit-lower complete)
 ;;; ****
+  ;; (print 'make-complete-set----------------------------------------------)
+  ;; (print set)
+  ;; (print '-----subsets)
+  ;; (print subsets)
   (typecase set
     (sc-set
      (let ((copy (clone set)))
@@ -586,6 +585,14 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
          ;; 26/12/09: don't have duplicated pitches
          finally (return (list (remove-duplicates treble :test #'equal)
                                (remove-duplicates bass :test #'equal))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Oct 26 15:47:55 2013 
+(defun rm-pitch-duplicates (pitch-list &optional symbols-only)
+  (remove-duplicates pitch-list
+                     :test (if symbols-only 
+                               #'(lambda (p1 p2) (equalp (data p1) (data p2)))
+                               #'pitch=)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

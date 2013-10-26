@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 12:03:29 Sat Oct 26 2013 BST
+;;; $$ Last modified: 16:45:33 Sat Oct 26 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -97,6 +97,12 @@
         (used-notes s) (make-ral 'used-notes nil)))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Oct 26 12:49:41 2013 
+(defmethod verify-and-store :before ((s sc-set))
+  (when (chord-p (data s))
+    (setf (data s) (data (data s)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod verify-and-store :after ((s sc-set))
   (let* ((pl (init-pitch-list (data s) (auto-sort s)))
@@ -109,7 +115,9 @@
         (warn "sc-set::verify-and-store: found and removed duplicate ~
                pitches in ~&~a"
               (pitch-list-to-symbols pl))))
-    (setf (slot-value s 'data) plrd)))
+    (setf (slot-value s 'data) plrd)
+    ;;(check-subsets (subsets s) s)
+    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -163,6 +171,57 @@
   (make-ral-pitch-lists (related-sets s) (auto-sort s))
   (related-sets s))
   
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod (setf data) :after (value (s sc-set))
+  (declare (ignore value))
+  ;; (break)
+  (check-subsets (subsets s) s))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* sc-set/add-harmonics
+;;; DESCRIPTION
+;;; Adds pitches to the set which are harmonically related to the existing
+;;; pitches.  The keywords are the same as for the get-harmonics function.
+;;; 
+;;; ARGUMENTS
+;;; - an sc-set object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;;  see get-harmonics function
+;;; 
+;;; RETURN VALUE
+;;; the same set object as the first argument but with new pitches added.
+;;; 
+;;; EXAMPLE
+#|
+;;; treat the existing pitches as fundamentals
+(let ((s (make-sc-set '(c4 e4) :id 'test)))
+  (add-harmonics s :start-partial 3 :max-results 3))
+=>
+SC-SET: auto-sort: T, rm-dups: T, warn-dups: T used-notes: 
+[...]
+data: (C4 E4 G5 B5 C6 E6 E6 AF6)
+
+;;; treat the existing pitches as partials and add the fundamentals and
+;;; harmonics
+(let ((s (make-sc-set '(c4 e4) :id 'test)))
+  (add-harmonics s :start-freq-is-partial 3 :max-results 3))
+SC-SET: auto-sort: T, rm-dups: T, warn-dups: T used-notes: 
+[...]
+data: (F2 A2 F3 A3 C4 E4)
+
+|#
+;;; SYNOPSIS
+(defmethod add-harmonics ((s sc-set) &rest keywords)
+;;; ****
+  (let ((harms (loop for pitch in (data s) appending
+                    (apply #'get-harmonics (cons (frequency pitch) keywords)))))
+    (setf (data s) (union (data s) (init-pitch-list harms) :test #'pitch=))
+    s))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod get-used-notes ((s sc-set) seq-num &optional instrument)
@@ -856,6 +915,7 @@ data: (G2 A2 CS4 A4 A4 A5 C6 C6 FS6)
          chord)
     (loop repeat num-stacks do
          (setf result (stack-aux result distances by-freq)))
+    ;; (print result)
     (unless by-freq
       (setf result (degrees-to-notes result))
       ;; MDE Sat Jan 14 10:25:25 2012 -- try and get better spellings
@@ -1343,6 +1403,12 @@ data: Q
   (get-ids-from-pitch-list (data s)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Oct 26 13:08:28 2013 
+(defmethod print-simple ((s sc-set) &optional ignore (stream t))
+  (declare (ignore ignore))
+  (print-simple-pitch-list (data s) stream))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -1361,7 +1427,7 @@ data: Q
         collect (* offset-srt (/ (frequency p) freq)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Wed Aug 28 17:52:52 2013 -- notes are eithe degrees (default) or freqs
+;;; MDE Wed Aug 28 17:52:52 2013 -- notes are either degrees (default) or freqs
 (defun stack-aux (notes distances &optional freqs)
   (let ((lowest (first notes)) ;; assumes notes are sorted!
         (highest (first (last notes)))
@@ -1495,16 +1561,15 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun init-pitch-list (pitches &optional auto-sort)
-  (let ((result (loop for pitch in pitches 
-                    do
-                      (unless pitch
-                        (error "~a~&sc-set::init-pitch-list: pitch is nil!"
-                               pitches))
-                    collect (make-pitch pitch))))
+  (let ((result (loop for pitch in pitches do
+                   (unless pitch
+                     (error "~a~&sc-set::init-pitch-list: pitch is nil!"
+                            pitches))
+                   collect (make-pitch pitch))))
     (if auto-sort
         (sort (copy-list result)
               #'(lambda (x y) (< (frequency x) (frequency y))))
-      result)))
+        result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1529,17 +1594,23 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun check-subsets (subsets sc-set)
-  (loop 
-     for ss in (data subsets) 
-     for pitches = (data ss)
-     for i from 0 do
-     (if (is-ral pitches)
-         (check-subsets pitches sc-set)
-         (loop for pitch in (data ss) do
-              (unless (pitch-member pitch (data sc-set))
-                (error "sc-set::check-subsets: Note ~a given in subset ~a ~
-                            of set ~a is not part of the main set."
-                       (id pitch) (id ss) (id sc-set)))))))
+  ;; (print 'check-subsets------------------------)
+  ;; (print (data sc-set))
+  ;; (print 'subsets----------)
+  ;; (print subsets)
+  (when (and subsets (is-ral subsets))
+    (loop 
+       for ss in (data subsets) 
+       for pitches = (data ss)
+       for i from 0 do
+       (if (is-ral pitches)
+           (check-subsets pitches sc-set)
+           (loop for pitch in (data ss) do
+                ;; (print pitch)
+                (unless (pitch-member pitch (data sc-set))
+                  (error "sc-set::check-subsets: Note ~a given in subset ~a ~
+                          ~%of set ~a is not part of the main set: ~a"
+                         (id pitch) (id ss) (id sc-set) sc-set)))))))
         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

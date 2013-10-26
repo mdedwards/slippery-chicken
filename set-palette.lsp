@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 13:18:57 Wed Jun 19 2013 BST
+;;; $$ Last modified: 16:13:57 Sat Oct 26 2013 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1183,8 +1183,9 @@ data: (
              ;; do this again at the set level, below
              set (make-complete-set set :id i :subsets `((rm-bass ,rm-bass))
                                     ;; MDE Mon May 20 12:56:47 2013 -- don't
-                                    ;; worry about duplicate pitches
-                                    :warn-dups nil
+                                    ;; warn about duplicate pitches but do
+                                    ;; remove them
+                                    :warn-dups nil :rm-dups t
                                     :tag (combine-into-symbol 
                                           (freq-to-note left) '-ringmod- 
                                           (freq-to-note right))))
@@ -1192,7 +1193,7 @@ data: (
        (rm-duplicates set t)       ; comparing symbols, not pitch= (freqs etc.)
        (when remove-octaves
          (rm-octaves set))
-       (add set  sp))
+       (add set sp))
     sp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

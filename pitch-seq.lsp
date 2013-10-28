@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 17:52:33 Mon Oct 28 2013 GMT
+;;; $$ Last modified: 20:03:41 Mon Oct 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -87,6 +87,7 @@
 ;;; MDE Mon Oct 28 17:52:31 2013 
 (defmethod reset ((ps pitch-seq) &optional ignore1 ignore2)
   (declare (ignore ignore1 ignore2))
+  ;; (print 'ps-reset)
   (setf (notes ps) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -492,6 +493,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod get-relative-notes ((ps pitch-seq) clef)
+  ;; (print 'get-relative-notes)
   (let* ((high (loop for rel in (data ps) maximize rel))
          (low (loop for rel in (data ps) minimize rel))
          (range (- high low))
@@ -671,6 +673,11 @@ len))
                    ;; user or not
                    :user-id id-data-given
                    :instruments instruments)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun pitch-seq-p (thing)
+  (typep thing 'pitch-seq))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

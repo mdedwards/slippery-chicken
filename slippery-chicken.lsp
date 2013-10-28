@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:21:16 Mon Oct 28 2013 GMT
+;;; $$ Last modified: 20:16:33 Mon Oct 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -213,6 +213,14 @@
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
+;;;
+;;; OPTIONAL ARUGMENTS
+;;; keyword arguments:
+;;; - :regenerate-pitch-seq-map: the pitch-seq-map is generated here for each
+;;; instrument using the pitch-seqs in the rthm-seq-palette.  By setting this
+;;; to T we can force regeneration (e.g. if the rthm-seq-palette has changed
+;;; and we want to re-init the sc with different data).
+;;; Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; the now fully initialized slippery-chicken object
@@ -233,7 +241,7 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod sc-init ((sc slippery-chicken))
+(defmethod sc-init ((sc slippery-chicken) &key regenerate-pitch-seq-map)
 ;;; ****
   (let ((given-tempo-map (tempo-map sc)))
     (flet ((make-name (name) (format nil "~a-~a" (id sc) name)))
@@ -354,7 +362,9 @@
       (check-maps (set-map sc)
                   (rthm-seq-map sc))
       (setf (pitch-seq-map sc)
-            (if (sc-map-p (pitch-seq-map sc))
+            ;; MDE Mon Oct 28 20:09:11 2013
+            (if (and (not regenerate-pitch-seq-map) 
+                     (sc-map-p (pitch-seq-map sc)))
                 (clone (pitch-seq-map sc))
                 (generate-pitch-sequence-map (rthm-seq-map sc) sc))
             (hint-pitches sc)
@@ -363,6 +373,8 @@
                 (make-change-map (make-name 'hint-pitches) 
                                  t
                                  (hint-pitches sc))))
+      ;; MDE Mon Oct 28 20:01:10 2013 
+      (reset-pitch-seq-map sc)
       ;; MDE Mon Sep 24 22:16:25 2012 --  calls the setf method
       (setf (sndfile-palette sc) (sndfile-palette sc)
             (num-sequences sc) (count-sequence-refs (set-map sc)))
@@ -433,6 +445,14 @@
     (check-beams sc)
     (set-rehearsal-letters sc (get-groups-top-ins sc)))
   sc)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Oct 28 20:00:09 2013 
+(defmethod reset-pitch-seq-map ((sc slippery-chicken))
+  ;; once we get down to the data, they're named objects, the data of which is
+  ;; a list of pitch-seqs
+  (rmap (pitch-seq-map sc) #'(lambda (no) (loop for pitch-seq in (data no) do
+                                               (reset pitch-seq)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod initialize-instance :after ((sc slippery-chicken) &rest initargs)
@@ -875,7 +895,7 @@
   (when rehearsal-letters-all-players 
     (set-rehearsal-letters sc players))
   (when tempi-all-players 
-    (update-events-tempo sc (print players)))
+    (update-events-tempo sc players))
   (when multi-bar-rests
     (multi-bar-rests sc players)
     (when (or start-bar end-bar)
@@ -1064,6 +1084,7 @@
   ;; MDE Mon Oct 28 17:24:54 2013 -- to delete the used-notes slot of each set
   ;; in the palette 
   (reset (set-palette sc))
+  (reset (pitch-seq-map sc))
   (reset (rthm-seq-palette sc))
   (let* ((rsm-clone (link-named-objects (clone (rthm-seq-map sc)))))
     (setf rsm-clone (sc-change-class rsm-clone 'piece))
@@ -7555,6 +7576,7 @@ duration: 20.0 (20.000)
                         last-pitch)
   ;; (print "entering sc-make-sequenz")
   ;; (print instrument-change)
+  ;; (print pitch-seq)
   (object-is-nil? rthm-seq "slippery-chicken::sc-make-sequenz" 'rthm-seq)
   ;; (object-is-nil? pitch-seq "slippery-chicken::sc-make-sequenz" 'pitch-seq)
   ;; (print instrument-change)

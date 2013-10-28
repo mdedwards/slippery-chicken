@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 21:52:23 Mon Jun 10 2013 BST
+;;; $$ Last modified: 19:58:51 Mon Oct 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -139,6 +139,13 @@
   (let ((ral (call-next-method)))
     (setf (slot-value ral 'palette) (palette scm))
     ral))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod reset ((scm sc-map) &optional ignore1 ignore2)
+  (declare (ignore ignore1 ignore2))
+  (rmap scm #'reset) ; (lambda (no) (reset (data no))))
+  (when (palette-p (palette scm))
+    (reset (palette scm))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

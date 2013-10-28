@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 20:16:33 Mon Oct 28 2013 GMT
+;;; $$ Last modified: 20:35:57 Mon Oct 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -452,7 +452,8 @@
   ;; once we get down to the data, they're named objects, the data of which is
   ;; a list of pitch-seqs
   (rmap (pitch-seq-map sc) #'(lambda (no) (loop for pitch-seq in (data no) do
-                                               (reset pitch-seq)))))
+                                               (when pitch-seq
+                                                 (reset pitch-seq))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod initialize-instance :after ((sc slippery-chicken) &rest initargs)

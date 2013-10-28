@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    February 19th 2001
 ;;;
-;;; $$ Last modified: 13:28:40 Fri Dec 21 2012 ICT
+;;; $$ Last modified: 18:14:29 Mon Oct 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -272,7 +272,6 @@
 ;;; SYNOPSIS
 (defmethod reset ((cscl circular-sclist) &optional where (warn t))
 ;;; ****
-  ;; (print 'cscl-reset)
   (let ((index 0))
     (when where
       (setf index

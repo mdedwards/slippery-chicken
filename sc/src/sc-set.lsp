@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 16:45:33 Sat Oct 26 2013 BST
+;;; $$ Last modified: 17:10:57 Mon Oct 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -93,8 +93,8 @@
   (declare (ignore initargs))
   ;; MDE Sat Oct 26 11:35:23 2013 -- just to trigger the setf method
   (setf (subsets s) (subsets s)
-        (related-sets s) (related-sets s)
-        (used-notes s) (make-ral 'used-notes nil)))
+        (related-sets s) (related-sets s))
+  (reset s))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Oct 26 12:49:41 2013 
@@ -178,8 +178,12 @@
   ;; (break)
   (check-subsets (subsets s) s))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod reset ((s sc-set) &optional ignore1 ignore2)
+  (declare (ignore ignore1 ignore2))
+  (setf (used-notes s) (make-ral 'used-notes nil)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* sc-set/add-harmonics
 ;;; DESCRIPTION
 ;;; Adds pitches to the set which are harmonically related to the existing

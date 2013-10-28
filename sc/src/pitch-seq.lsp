@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 13:42:23 Wed Jun 19 2013 BST
+;;; $$ Last modified: 17:52:33 Mon Oct 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -82,6 +82,12 @@
                                f5 g5 a5 b5 c6 d6 e6 f6 g6))
    (relative-notes-length :accessor relative-notes-length :type integer 
                            :allocation :class :initform -1)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Oct 28 17:52:31 2013 
+(defmethod reset ((ps pitch-seq) &optional ignore1 ignore2)
+  (declare (ignore ignore1 ignore2))
+  (setf (notes ps) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -364,7 +370,8 @@
                        ;; bottom notes
                        ((or (prefers-low instrument)
                             (= lowest
-                               (get-sc-config 'pitch-seq-lowest-equals-prefers-low)))
+                               (get-sc-config
+                                'pitch-seq-lowest-equals-prefers-low)))
                         (- lowest))
                        ;; go for the middle
                        (t (- (1- (ceiling (- num-set-pitches need) 2))

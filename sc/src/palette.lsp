@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 18:06:48 Tue Feb 28 2012 GMT
+;;; $$ Last modified: 18:12:57 Mon Oct 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -72,6 +72,11 @@
 
 (defmethod clone ((p palette))
   (clone-with-new-class p 'palette))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod reset :after ((p palette) &optional ignore1 ignore2)
+  (declare (ignore ignore1 ignore2))
+  (rmap p #'reset))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

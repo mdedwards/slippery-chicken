@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:10:40 Wed Oct 23 2013 BST
+;;; $$ Last modified: 18:21:16 Mon Oct 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1061,6 +1061,10 @@
 ;;; (only when the event has need-new-note).
 
 (defmethod sc-make-piece ((sc slippery-chicken) &optional (warn-ties t))
+  ;; MDE Mon Oct 28 17:24:54 2013 -- to delete the used-notes slot of each set
+  ;; in the palette 
+  (reset (set-palette sc))
+  (reset (rthm-seq-palette sc))
   (let* ((rsm-clone (link-named-objects (clone (rthm-seq-map sc)))))
     (setf rsm-clone (sc-change-class rsm-clone 'piece))
     (rsm-to-piece rsm-clone sc)
@@ -7603,6 +7607,7 @@ duration: 20.0 (20.000)
          ;; to get the transposition we need to write sounding pitches.
          (transpose (when got-ins
                       (- (transposition-semitones instrument)))))
+    ;; (print (length notes))
     (when (and transpose (zerop transpose))
       (setf transpose nil))
     ;; 31/3/10: copy over the pitch curve for info

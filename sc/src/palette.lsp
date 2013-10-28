@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 18:12:57 Mon Oct 28 2013 GMT
+;;; $$ Last modified: 19:45:19 Mon Oct 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -86,6 +86,11 @@
 
 (defun make-palette (id p &key (warn-not-found t))
   (make-instance 'palette :data p :id id :warn-not-found warn-not-found))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun palette-p (thing)
+  (typep thing 'palette))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

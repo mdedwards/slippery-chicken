@@ -31,7 +31,7 @@
 ;;;
 ;;; Creation date:    4th December 2000
 ;;;
-;;; $$ Last modified: 12:55:37 Sat Oct 26 2013 BST
+;;; $$ Last modified: 19:12:55 Mon Oct 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -177,6 +177,12 @@
            (ignore ignore1 ignore2 ignore3 ignore4 ignore5))
   ;; (format t "~&Resetting grace notes...")
   (setf cmn::*cmn-grace-notes-for-sc* nil))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Oct 28 19:12:26 2013 -- so we can call reset on any object but only
+;;; define it for some. 
+(defmethod reset ((no named-object) &optional ignore1 ignore2)
+  (declare (ignore no ignore1 ignore2)))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

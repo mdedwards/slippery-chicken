@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 17:24:54 Wed Oct 23 2013 BST
+;;; $$ Last modified: 19:32:09 Mon Oct 28 2013 GMT
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -296,6 +296,11 @@
 ;;; rthm-seq-palette object, resetting their pointers to the head of the
 ;;; sequence. This ensures that each rthm-seq starts over again at the first
 ;;; note of the first given pitch-seq.
+;;;
+;;; NB Since 28/10/13 there's also a reset method for the palette class which
+;;; will mean we call the reset method of all pitch-seqs here.  So this method
+;;; is now partially obsolete (but still perhaps useful in that in only resets
+;;; the psps, not the whole palette).
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-palette object.

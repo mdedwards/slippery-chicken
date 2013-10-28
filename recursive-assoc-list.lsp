@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 10:48:53 Fri Jan  4 2013 GMT
+;;; $$ Last modified: 17:24:28 Mon Oct 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -612,6 +612,76 @@ data: TURKEY
             (decf len)
             (incf len (r-count-elements (data thing)))))
     len))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* recursive-assoc-list/rmap
+;;; DESCRIPTION
+
+;;; Recurse over the objects in a recursive-assoc-list and call the given
+;;; function for each each named-object.
+;;; 
+;;; ARGUMENTS
+;;; - the recursive-assoc-list object
+;;; - the function to call (function object)
+;;; OPTIONAL ARGUMENTS
+;;; - &rest further arguments to be passed to the function after the
+;;;   named-object from the recursive-assoc-list.
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; EXAMPLE
+#|
+(let ((ral (make-ral 'mixed-bag 
+                      '((jim beam)
+                        (wild turkey)
+                        (four ((roses red)
+                               (violets ((blue velvet)
+                                         (red ((dragon den)
+                                               (viper nest)
+                                               (fox hole)))
+                                         (white ribbon)))))))))
+  (rmap ral #'print))
+=>
+NAMED-OBJECT: id: JIM, tag: NIL, 
+data: BEAM
+**************
+NAMED-OBJECT: id: WILD, tag: NIL, 
+data: TURKEY
+**************
+NAMED-OBJECT: id: ROSES, tag: NIL, 
+data: RED
+**************
+NAMED-OBJECT: id: BLUE, tag: NIL, 
+data: VELVET
+**************
+NAMED-OBJECT: id: DRAGON, tag: NIL, 
+data: DEN
+**************
+NAMED-OBJECT: id: VIPER, tag: NIL, 
+data: NEST
+**************
+NAMED-OBJECT: id: FOX, tag: NIL, 
+data: HOLE
+**************
+NAMED-OBJECT: id: WHITE, tag: NIL, 
+data: RIBBON
+**************
+T
+|#
+;;; SYNOPSIS
+(defmethod rmap ((ral recursive-assoc-list) function &rest arguments)
+;;; ****
+  (loop for thing in (data ral) do
+       (if (is-ral (data thing))
+           (if arguments
+               (rmap (data thing) function arguments)
+               (rmap (data thing) function))
+           (apply function (if arguments
+                               (cons thing arguments)
+                               (list thing)))))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

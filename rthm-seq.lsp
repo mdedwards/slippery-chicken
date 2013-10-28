@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 17:40:32 Wed Oct 23 2013 BST
+;;; $$ Last modified: 17:58:04 Mon Oct 28 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -220,6 +220,12 @@
     ;; this is now only called once we have tempo information
     ;; (handle-first-note-ties rs)
     (update-is-tied-from rs)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Oct 28 17:55:35 2013 
+(defmethod reset ((rs rthm-seq) &optional ignore1 ignore2)
+  (declare (ignore ignore1 ignore2))
+  (reset (pitch-seq-palette rs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

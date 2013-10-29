@@ -50,8 +50,8 @@
 
 ;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
 
-(eval-when (compile)
-  (declaim (optimize (speed 3) (safety 1) (space 0) (debug 0))))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

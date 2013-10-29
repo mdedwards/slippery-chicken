@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 14:37:24 Mon Aug 13 2012 BST
+;;; $$ Last modified: 10:53:58 Tue Oct 29 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -134,11 +134,6 @@
            (downbow "\\downbow ")
            (upbow "\\upbow ")
            (open "\\open ")
-           (0 "\\open ")
-           (1 "-1 ")
-           (2 "-2 ")
-           (3 "-3 ")
-           (4 "-4 ")
            (I "^\\markup { \\teeny \"I\" } ")
            (II "^\\markup { \\teeny \"II\" } ")
            (III "^\\markup { \\teeny \"III\" } ")
@@ -232,10 +227,16 @@
            (t (unless silent
                 (error "lilypond::lp-get-mark: unrecognised mark: ~a" mark)))))
         (integer
-         (when (or (> mark 5) (< mark 0))
-           (warning "lilypond::lp-get-mark: adding fingering ~a, hope your ~
-                     musicians have more than 4 fingers and a thumb!." mark))
-         (format nil "^\\markup{\\finger ~a}" mark))
+         (case mark
+           (0 "\\open ")
+           (1 "-1 ")
+           (2 "-2 ")
+           (3 "-3 ")
+           (4 "-4 ")
+           (t (warning "lilypond::lp-get-mark: adding fingering ~a, hope your ~
+                        musicians have more than 4 fingers and a thumb!."
+                       mark)
+              (format nil "^\\markup{\\finger ~a}" mark))))
         ;; 25.6.11 a 2 element list will generate a 'transition arrow' with the
         ;; first element as the starting text and the second as end text.  The
         ;; elements will be converted to lowercase strings unless they're

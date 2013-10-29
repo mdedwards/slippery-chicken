@@ -54,8 +54,8 @@
 ;;; 02.12.11 SEAN: Changed ROBODoc header to reflect class hierarchy (assigned
 ;;; it to bar-holder rather than rthm-seq)
 
-(eval-when (compile)
-  (declaim (optimize (speed 3) (safety 1) (space 0) (debug 0))))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

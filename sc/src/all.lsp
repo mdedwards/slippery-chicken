@@ -50,8 +50,8 @@
 ;;; 28.11.11 SEAN: changed item to "all.lsp" so that robodoc will not highlight
 ;;; the word "all" in every instance as though it were a class with a doc page.
 
-(eval-when (compile)
-  (declaim (optimize (speed 3) (safety 1) (space 0) (debug 0))))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

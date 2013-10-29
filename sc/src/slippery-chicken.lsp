@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 20:35:57 Mon Oct 28 2013 GMT
+;;; $$ Last modified: 08:55:42 Tue Oct 29 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -219,8 +219,7 @@
 ;;; - :regenerate-pitch-seq-map: the pitch-seq-map is generated here for each
 ;;; instrument using the pitch-seqs in the rthm-seq-palette.  By setting this
 ;;; to T we can force regeneration (e.g. if the rthm-seq-palette has changed
-;;; and we want to re-init the sc with different data).
-;;; Default = NIL.
+;;; and we want to re-init the sc with different data). Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; the now fully initialized slippery-chicken object
@@ -241,7 +240,7 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod sc-init ((sc slippery-chicken) &key regenerate-pitch-seq-map)
+(defmethod sc-init ((sc slippery-chicken) &key (regenerate-pitch-seq-map t))
 ;;; ****
   (let ((given-tempo-map (tempo-map sc)))
     (flet ((make-name (name) (format nil "~a-~a" (id sc) name)))

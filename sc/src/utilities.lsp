@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 16:05:40 Wed Oct 23 2013 BST
+;;; $$ Last modified: 19:48:40 Tue Oct 29 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3291,6 +3291,17 @@ WARNING:
      repeat max-results
      if (>= freq min-freq)
      collect freq))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; keywords same as get-harmonics (above)
+(defun get-pitch-list-harmonics (pitch-list &rest keywords)
+  (setf pitch-list (init-pitch-list pitch-list)) ; in case they're symbols
+  (let ((harms (loop for pitch in pitch-list appending
+                    (apply #'get-harmonics (cons (frequency pitch) keywords)))))
+    (sort
+     (remove-duplicates (append pitch-list (init-pitch-list harms))
+                        :test #'pitch=)
+     #'pitch<)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

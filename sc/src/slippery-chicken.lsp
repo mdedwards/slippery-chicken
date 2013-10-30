@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 08:55:42 Tue Oct 29 2013 GMT
+;;; $$ Last modified: 20:19:42 Tue Oct 29 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6796,12 +6796,17 @@ duration: 20.0 (20.000)
   (let* ((events '())
          (start-bar (bar-num reference-event))
          (end-bar start-bar)
+         (max (- (num-bars sc) 3))
          (time (start-time reference-event)))
     (loop until events do
        ;; if we don't get sounding events the first time round we've got to
        ;; look earlier and later
-         (decf start-bar 3)
-         (incf end-bar 3)
+         (if (> start-bar 3)
+             (decf start-bar 3)
+             (setf start-bar 1))
+         (if (< end-bar max)
+             (incf end-bar 3)
+             (setf end-bar (num-bars sc)))
          (setf events
                (loop for bar-num from start-bar to end-bar
                   for bar = (get-bar sc bar-num search-player)

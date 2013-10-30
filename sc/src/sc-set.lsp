@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 17:10:57 Mon Oct 28 2013 GMT
+;;; $$ Last modified: 19:49:46 Tue Oct 29 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -187,7 +187,9 @@
 ;;; ****m* sc-set/add-harmonics
 ;;; DESCRIPTION
 ;;; Adds pitches to the set which are harmonically related to the existing
-;;; pitches.  The keywords are the same as for the get-harmonics function.
+;;; pitches.  The keywords are the same as for the get-harmonics function.  NB
+;;; This will automatically sort all pitches from high to low (irrespective of
+;;; the auto-sort slot).
 ;;; 
 ;;; ARGUMENTS
 ;;; - an sc-set object
@@ -221,10 +223,8 @@ data: (F2 A2 F3 A3 C4 E4)
 ;;; SYNOPSIS
 (defmethod add-harmonics ((s sc-set) &rest keywords)
 ;;; ****
-  (let ((harms (loop for pitch in (data s) appending
-                    (apply #'get-harmonics (cons (frequency pitch) keywords)))))
-    (setf (data s) (union (data s) (init-pitch-list harms) :test #'pitch=))
-    s))
+  (setf (data s) (apply #'get-pitch-list-harmonics (cons (data s) keywords)))
+  s)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

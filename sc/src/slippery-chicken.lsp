@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:27:05 Wed Oct 30 2013 GMT
+;;; $$ Last modified: 19:48:43 Wed Oct 30 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1221,17 +1221,20 @@
   (loop for player in (players sc) do
        ;; just update total-duration or all stats?
        (reset-instrument-stats (get-player sc player) (not and-other-slots))
+       ;; (print player)
        (loop for bar-num from 1 to (num-bars sc) 
           for bar = (get-bar sc bar-num player)
           for ins = (get-instrument-for-player-at-bar player bar-num sc)
           do
             (gen-stats bar)
+            ;; (print (total-degrees ins))
             (when and-other-slots
               (unless (is-rest-bar bar)
                 (incf (total-bars ins))
                 (incf (total-notes ins) (notes-needed bar))
                 (incf (total-degrees ins) (total-degrees bar))))
-            (incf (total-duration ins) (sounding-duration bar)))))
+            (incf (total-duration ins) (sounding-duration bar))))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Apr 18 10:10:58 2012 -- currently only works for CMN.

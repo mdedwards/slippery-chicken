@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 20:19:42 Tue Oct 29 2013 GMT
+;;; $$ Last modified: 10:27:05 Wed Oct 30 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2084,9 +2084,12 @@ bar 45
            (unless current-bar
              (setf current-bar (get-bar sc current-bar-num player)
                    current-event-num 0))
+           ;; (print (bar-num current-bar))
            (unless current-bar
              (error "slippery-chicken::next-event: no bar number ~a!" 
                     current-bar-num))
+           ;; (format t "~&bar ~a cen ~a nr ~a"
+           ;; (bar-num current-bar) current-event-num (num-rhythms current-bar))
            (if (< current-event-num (num-rhythms current-bar))
                (progn
                  (let ((result (nth current-event-num (rhythms current-bar))))
@@ -6789,6 +6792,9 @@ duration: 20.0 (20.000)
                               (ignore-rests t)
                               (ignore-tied t))
 ;;; ****
+  (unless (event-p reference-event)
+    (error "slippery-chicken::get-nearest-event: reference-event must be an ~
+            ~&event object: ~a" reference-event))
   (unless (and (numberp (start-time reference-event))
                (integer>0 (bar-num reference-event)))
     (error "slippery-chicken::get-nearest-event: reference-event must have ~

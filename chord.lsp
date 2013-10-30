@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 09:58:58 Fri Aug 23 2013 BST
+;;; $$ Last modified: 19:50:01 Tue Oct 29 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -154,6 +154,29 @@ NIL
           (slot-value sclist 'micro-tone) (micro-tone c)
           (slot-value sclist 'marks) (my-copy-list (marks c)))
     sclist))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/add-harmonics
+;;; DESCRIPTION
+;;; Adds pitches to the set which are harmonically related to the existing
+;;; pitches.  The keywords are the same as for the get-harmonics function.  See
+;;; also sc-set method of the same name and get-pitch-list-harmonics.
+;;; NB This will automatically sort all pitches from high to low.
+;;; 
+;;; ARGUMENTS
+;;; - a chord object
+;;; 
+;;; keyword arguments:
+;;;  see get-harmonics function
+;;; 
+;;; RETURN VALUE
+;;; the same set object as the first argument but with new pitches added.
+;;; 
+;;; SYNOPSIS
+(defmethod add-harmonics ((c chord) &rest keywords)
+;;; ****
+  (setf (data c) (apply #'get-pitch-list-harmonics (cons (data c) keywords)))
+  c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1518,14 +1541,22 @@ data: F5
                    (microtones-midi-channel 0) (force-midi-channel nil))
 ;;; ****
   ;; MDE Mon Jun 11 17:59:07 2012 
-  (unless (listp note-list)
-    (setf note-list (list note-list)))
-  (let ((chord (make-instance 'chord :id id :data note-list 
-                              :auto-sort auto-sort)))
+  ;; (unless (listp note-list)
+  ;;    (setf note-list (list note-list)))
+  ;; MDE Tue Oct 29 19:13:09 2013 -- remove the above unless and do more
+  ;; flexible processing with typecase.
+  (let* ((nl (typecase note-list
+               ((or pitch symbol) (list note-list))
+               ((or sc-set chord) (data note-list))
+               (t (if (simple-listp note-list)
+                      note-list
+                      (error "chord::make-chord: can't make chord from ~a"
+                             note-list)))))
+         (chord (make-instance 'chord :id id :data nl :auto-sort auto-sort)))
     ;; !!NB by default, ignore given midi-channels if our notes are already
     ;; pitch-objects  
     ;; (print (data chord))
-    (when (or force-midi-channel (not (pitch-p (first note-list))))
+    (when (or force-midi-channel (not (pitch-p (first nl))))
       (set-midi-channel chord midi-channel microtones-midi-channel))
     chord))
 

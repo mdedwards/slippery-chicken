@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 13:10:00 Sat Oct 26 2013 BST
+;;; $$ Last modified: 19:50:06 Wed Oct 30 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5027,7 +5027,12 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Aug 23 09:53:51 2013 
 (defmethod total-degrees ((rsb rthm-seq-bar))
-  (loop for e in (rhythms rsb) when (event-p e) sum (get-degree e :sum t)))
+  (loop for e in (rhythms rsb) 
+     ;; MDE Wed Oct 30 19:49:10 2013 -- fixed but here that was summing tied
+     ;; notes so averaging for tessitura wasn't working when
+     ;; sc::update-instruments-total-duration was called.
+     when (and (needs-new-note e) (event-p e))
+     sum (get-degree e :average t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

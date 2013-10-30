@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:29:34 Thu Aug 22 2013 BST
+;;; $$ Last modified: 19:30:10 Wed Oct 30 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2988,6 +2988,8 @@ T
 ;;;   transposing instruments) or sounding pitches. T = written. Default = NIL.
 ;;; - :sum. T or NIL to indicate whether to return the sum of the degrees
 ;;;   instead of a list (see below). T = degrees. Default = NIL.
+;;; - :average: sim. to sum but T or NIL to indicate whether to return the
+;;;    average instead of sum.
 ;;; 
 ;;; RETURN VALUE 
 ;;; By default this returns a list (even if it's a single pitch), unless :sum T
@@ -3002,13 +3004,15 @@ T
       (rest (make-rest 'e)))
   (print (get-degree event))
   (print (get-degree rest))
+  (print (get-degree event :average t))
   (get-degree event :sum t))
 (122 124) 
 (0)
+123.0
 246
 |#
 ;;; SYNOPSIS
-(defmethod get-degree ((e event) &key written sum)
+(defmethod get-degree ((e event) &key written sum average)
 ;;; ****      
   (let* ((poc (if written
                   (written-pitch-or-chord e)
@@ -3017,10 +3021,13 @@ T
                  ((is-rest e) '(0))
                  ((is-chord e)
                   (loop for p in (data poc) collect (degree p)))
-                 (t (list (degree poc))))))
-    (if sum
-        (loop for d in list sum d)
-        list)))
+                 (t (list (degree poc)))))
+         (summed (when (or sum average) (loop for d in list sum d))))
+    (when (and sum average)
+      (error "event::get-degree: either :sum or :average but not both."))
+    (cond (sum summed)
+          (average (float (/ summed (length list))))
+          (t list))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

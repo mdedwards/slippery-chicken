@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 13:57:52 Wed Oct  9 2013 BST
+;;; $$ Last modified: 19:52:54 Wed Oct 30 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -168,7 +168,7 @@
    ;;; Each time a note is played, this slot will be incremented by the degree
    ;;; of the note (in the scale for the piece).  Then, at the end, we can
    ;;; divide this by total-notes and have the mean note (tessitura).
-   (total-degrees :accessor total-degrees :type integer :initform 0)))
+   (total-degrees :accessor total-degrees :type number :initform 0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

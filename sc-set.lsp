@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 19:49:46 Tue Oct 29 2013 GMT
+;;; $$ Last modified: 20:09:17 Wed Oct 30 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -223,7 +223,9 @@ data: (F2 A2 F3 A3 C4 E4)
 ;;; SYNOPSIS
 (defmethod add-harmonics ((s sc-set) &rest keywords)
 ;;; ****
-  (setf (data s) (apply #'get-pitch-list-harmonics (cons (data s) keywords)))
+  (setf (data s)
+        (append (data s) 
+                (apply #'get-pitch-list-harmonics (cons (data s) keywords))))
   s)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

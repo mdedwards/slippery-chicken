@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 19:50:01 Tue Oct 29 2013 GMT
+;;; $$ Last modified: 20:09:23 Wed Oct 30 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -175,7 +175,9 @@ NIL
 ;;; SYNOPSIS
 (defmethod add-harmonics ((c chord) &rest keywords)
 ;;; ****
-  (setf (data c) (apply #'get-pitch-list-harmonics (cons (data c) keywords)))
+  (setf (data c) 
+        (append (data c) 
+                (apply #'get-pitch-list-harmonics (cons (data c) keywords))))
   c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

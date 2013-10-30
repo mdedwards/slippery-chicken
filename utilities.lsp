@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 19:48:40 Tue Oct 29 2013 GMT
+;;; $$ Last modified: 20:09:59 Wed Oct 30 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3299,8 +3299,7 @@ WARNING:
   (let ((harms (loop for pitch in pitch-list appending
                     (apply #'get-harmonics (cons (frequency pitch) keywords)))))
     (sort
-     (remove-duplicates (append pitch-list (init-pitch-list harms))
-                        :test #'pitch=)
+     (remove-duplicates (init-pitch-list harms) :test #'pitch=)
      #'pitch<)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

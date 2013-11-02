@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 20:09:59 Wed Oct 30 2013 GMT
+;;; $$ Last modified: 15:20:07 Sat Nov  2 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3264,6 +3264,9 @@ WARNING:
 ;;;   Default = 1.
 ;;; - :max-results.  The maximum number of harmonics to return.  Default =
 ;;;    most-positive-fixnum  
+;;; - :skip. The increment for the harmonics.  If 1, then we ascend the
+;;;    harmonics series one partial at a time; 2 would mean skipping every other
+;;;    Default = 1. 
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of numbers that are the frequencies in Hertz of harmonic partials
@@ -3281,11 +3284,11 @@ WARNING:
 |#
 ;;; SYNOPSIS
 (defun get-harmonics (start-freq &key (start-partial 1) (min-freq 20)
-                      (start-freq-is-partial 1) (max-freq 20000)
+                      (start-freq-is-partial 1) (max-freq 20000) (skip 1)
                       (max-results most-positive-fixnum))
 ;;; ****
   (loop with fundamental = (float (/ start-freq start-freq-is-partial))
-     for h from start-partial
+     for h from start-partial by skip
      for freq = (* fundamental h)
      while (<= freq max-freq)
      repeat max-results

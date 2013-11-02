@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 20:09:23 Wed Oct 30 2013 GMT
+;;; $$ Last modified: 15:09:32 Sat Nov  2 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1448,6 +1448,17 @@ data: (
                                  :test #'pitch=))
   (initialize-instance c)
   c)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Nov  2 15:08:33 2013 -- if symbols-only, just compare the pitch
+;;; symbols otherwise use pitch= (equal frequencies etc.) 
+(defmethod rm-duplicates ((c chord) &optional symbols-only)
+  (setf (slot-value c 'data) (rm-pitch-duplicates (data c) symbols-only)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May  3 10:52:54 2012 
+(defmethod rm-octaves ((c chord))
+  (setf (slot-value c 'data) (remove-octaves (data c))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

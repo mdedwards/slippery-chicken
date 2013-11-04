@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 10:57:43 Sat Jun 22 2013 BST
+;;; $$ Last modified: 12:38:46 Mon Nov  4 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -207,6 +207,7 @@
 #+cmn (sc-compile-and-load "cmn-glyphs.lsp")
 #+cm (sc-compile-and-load "cm.lsp")
 #+clm (sc-compile-and-load "samp5.lsp")
+#+clm (sc-compile-and-load "sine.lsp")
 (sc-compile-and-load "cm-load.lsp" t)
 (sc-compile-and-load "utilities.lsp")
 (sc-compile-and-load "named-object.lsp")

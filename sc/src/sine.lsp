@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified: 13:03:02 Mon Nov  4 2013 GMT
+;;; $$ Last modified: 17:57:29 Mon Nov  4 2013 GMT
 ;;;
 ;;; SVN ID: $Id: samp5.lsp 4223 2013-10-29 10:57:09Z medward2 $
 ;;;
@@ -51,30 +51,55 @@
 (in-package :clm)
 
 ;;; The instrument defines all the parameters that will be used in clm-play but
-;;; ignores a lot of them as they're not relevant to sinewave playback.
+;;; ignores some of them as they're not relevant to sinewave playback.
 (definstrument sine
     (ignore time &key       
             duration
             start
-            srt
-            width
+            srt                         ; ignored
+            width                       ; ignored
             (amp .6)
             printing
             frequency
             (amp-env '(0 0 5 1 95 1 100 0))
+            (amp-env-base 2)
+            (amp-env-scaler 1.0) ; in addition to amp, which is set by clm-play  
+            a-weighting
             (degree 45)
             (distance 0.0)
-            unused-arg-for-testing
+            unused-arg-for-testing      ; ignored
             (rev-amt 0.0))
   (let* ((beg (floor (* time *srate*)))
          (end (+ beg (floor (* duration *srate*))))
          (sinewave (make-oscil :frequency frequency))
-         (envelope (make-env :envelope amp-env :scaler amp
+         (amps (* amp amp-env-scaler))
+         (ampw (if a-weighting 
+                   (* amps (sc::db2amp (- (a-weighting frequency))))
+                   amps))
+         (envelope (make-env :envelope amp-env :scaler ampw :base amp-env-base
                              :duration duration))
          (loc (make-locsig :degree degree :distance distance 
                            :reverb rev-amt)))
     (run (loop for i from beg to end do
+              (clm-print i)
               (locsig loc i (* (env envelope) (oscil sinewave)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; EOF sine.ins
+
+;;; Implementation of A-weighting loudness compensation.  Taken from
+;;; http://en.wikipedia.org/wiki/A-weighting.  This doesn't take 1000Hz
+;;; loudness into account, rather it implements the 40-phon Fletcher-Munson
+;;; curve only.
+(defun a-weighting (f)
+  (+ 2.0 (* 20.0 (log (a-weighting-aux f) 10))))
+
+(defun a-weighting-aux (f)
+  (let ((f2 (* f f))
+        (c1 (* 12200.0 12200.0)))
+    (/ (* c1 f2 f2)
+       (* (+ (* 20.6 20.6) f2) (sqrt (* (+ f2 (* 107.7 107.7))
+                                        (+ f2 (* 737.9 737.9))))
+          (+ f2 c1)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; EOF sine.lsp

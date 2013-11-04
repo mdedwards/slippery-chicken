@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified: 13:20:54 Sat Mar 20 2010 GMT
+;;; $$ Last modified: 11:32:09 Mon Nov  4 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -60,7 +60,6 @@
 (setf *read-default-float-format* 'single-float)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
 ;;; Places a sound in stereo space no matter whether input is stereo or mono.
 ;;; if degree = 0 and input is stereo, then both channels will be put in the
 ;;; left output channel only vice-versa when degree = 90.  Check out 
@@ -68,7 +67,6 @@
 ;;; Mono input files are handled as per usual.
 ;;; If more than two channels are used then the two channels the sound
 ;;; is placed between will be randomly chosen.
-
 
 ;;; Get the channel scaler values for placing a stereo signal in
 ;;; a different stereo space.
@@ -99,29 +97,23 @@
             b-b (/ b-b max)))
     (values a-a a-b b-a b-b)))
             
-
-;;; (get-stereo-scalers .3)
-    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(definstrument 
-    #+allegro
-    (samp5 :c-file "../bin/samp5.c")
-  #-allegro 
-  samp5
-  (file time &key
-        (duration 0)
-        (start 0)
-        (end 0)
-        (srt 1.0)
-        (width 5)
-        (srt-env '(0 0 100 0))
-        (srt-scaler 1.0)
-        (amp 1.0)
-        (amp-env '(0 1 100 1))
-        (degree 45)
-        (rev-amt 0)
-        (printing t)) 
+(definstrument samp5 (file time &key
+                           (duration 0)
+                           (start 0)
+                           (end 0)
+                           (srt 1.0)
+                           (width 5)
+                           (srt-env '(0 0 100 0))
+                           (srt-scaler 1.0)
+                           (amp 1.0)
+                           (amp-env '(0 1 100 1))
+                           (degree 45)
+                           ;; MDE Mon Nov  4 10:08:45 2013 -- just for
+                           ;; compatibility with clm-play i.e. not used
+                           frequency 
+                           (rev-amt 0)
+                           (printing t))
   (unless (zerop amp)
     (let* ((st (floor (* time *srate*)))
            (stereo-input (= 2 (mus-channels file)))

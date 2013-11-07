@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 17:24:28 Mon Oct 28 2013 GMT
+;;; $$ Last modified: 15:47:14 Tue Oct 29 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -617,9 +617,10 @@ data: TURKEY
 
 ;;; ****m* recursive-assoc-list/rmap
 ;;; DESCRIPTION
-
 ;;; Recurse over the objects in a recursive-assoc-list and call the given
-;;; function for each each named-object.
+;;; function for each each named-object. See also assoc-list's map-data method
+;;; which does pretty much the same but acting on each named-object's data
+;;; rather than the named-object itself.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the recursive-assoc-list object

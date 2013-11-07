@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 15:49:03 Mon Oct 28 2013 GMT
+;;; $$ Last modified: 15:46:29 Tue Oct 29 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -772,7 +772,10 @@ data: (SNOOPY SPOT ROVER)
 ;;; 08.12.11 SEAN: Modified example
 ;;; ****m* assoc-list/map-data
 ;;; DESCRIPTION
-;;; Map a function over the data in the assoc-list.
+;;; Map a function over the data in the assoc-list.  See also
+;;; recursive-assoc-list's rmap method which does pretty much the same but
+;;; acting recursively on each named-object (unless it is itself recursive),
+;;; rather than the named-object's data.
 ;;; 
 ;;; ARGUMENTS
 ;;; - The assoc-list to which the function is to be applied.

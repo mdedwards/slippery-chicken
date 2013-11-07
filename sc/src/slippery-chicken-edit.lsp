@@ -12,19 +12,13 @@
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
 ;;; Purpose:          Post-generation editing methods for the slippery-chicken
-;;;                   class.  NB only include methods here that the user should
-;;;                   access (i.e. no -aux methods) as all of these will be
-;;;                   automatically listed and linked on a manual page. Also,
-;;;                   in order for these links to work we need
-;;;                   ****m* slippery-chicken-edit/replace-tempo-map
-;;                    not
-;;;                   ****m* slippery-chicken/replace-tempo-map
+;;;                   class.  
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 16:34:38 Wed Oct 23 2013 BST
+;;; $$ Last modified: 15:56:26 Tue Oct 29 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -51,6 +45,12 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; NB only include methods here that the user should access (i.e. no -aux
+;;; methods) as all of these will be automatically listed and linked on a
+;;; manual page. Also, in order for these links to work we need 
+;;; ****m* slippery-chicken-edit/replace-tempo-map 
+;;; not ****m* slippery-chicken/replace-tempo-map
 
 (in-package :slippery-chicken)
 
@@ -5248,7 +5248,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
     (setf start-bar 1))
   (unless players
     (setf players (players sc)))
-  ;; MDE Thu Dec  6 12:51:51 2012 -- 
+  ;; MDE Thu Dec  6 12:51:51 2012
   (unless (listp players)
     (setf players (list players)))
   (loop for player in players appending

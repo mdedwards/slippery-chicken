@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 09:37:36 Fri Nov  8 2013 GMT
+;;; $$ Last modified: 10:01:21 Fri Nov  8 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4221,7 +4221,6 @@ RETURNS:
      (return (nreverse result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Implementation of A-weighting loudness compensation.  Taken from
 ;;; http://en.wikipedia.org/wiki/A-weighting.  This doesn't take 1000Hz
 ;;; loudness into account, rather it implements the 40-phon Fletcher-Munson

@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 19:22:17 Thu Oct 17 2013 BST
+;;; $$ Last modified: 11:44:23 Fri Nov  8 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -930,7 +930,6 @@ BAR-HOLDER:
 ;;; first event is being copied over when creating the new rest bar.  this
 ;;; meant the ins-change was being set but still not used: had to edit
 ;;; rsb::get-cmn-data to add this.
-
 
 (defmethod add-rest-sequenzes ((p piece) (sc slippery-chicken))
   (let ((player-section (get-first p)))

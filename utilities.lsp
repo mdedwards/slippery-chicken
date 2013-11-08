@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 15:20:07 Sat Nov  2 2013 GMT
+;;; $$ Last modified: 09:37:36 Fri Nov  8 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4219,6 +4219,23 @@ RETURNS:
      (setf last el)
      finally
      (return (nreverse result))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Implementation of A-weighting loudness compensation.  Taken from
+;;; http://en.wikipedia.org/wiki/A-weighting.  This doesn't take 1000Hz
+;;; loudness into account, rather it implements the 40-phon Fletcher-Munson
+;;; curve only.
+(defun a-weighting (f)
+  (+ 2.0 (* 20.0 (log (a-weighting-aux f) 10))))
+
+(defun a-weighting-aux (f)
+  (let ((f2 (* f f))
+        (c1 (* 12200.0 12200.0)))
+    (/ (* c1 f2 f2)
+       (* (+ (* 20.6 20.6) f2) (sqrt (* (+ f2 (* 107.7 107.7))
+                                        (+ f2 (* 737.9 737.9))))
+          (+ f2 c1)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

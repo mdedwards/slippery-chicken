@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 17:58:04 Mon Oct 28 2013 GMT
+;;; $$ Last modified: 13:52:34 Sat Nov  9 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1708,13 +1708,15 @@ rthm-seq-bar::get-beats: Can't find an exact beat of rhythms
      for new-bars = (chop bar chop-points unit (list-to-string (this rs) "-"))
      do
      (loop 
-        for bar in new-bars 
-        for pse = (parent-start-end bar)
+        for nbar in new-bars 
+        for pse = (parent-start-end nbar)
         with rs 
         do
-        (setf rs (make-rthm-seq (list count (list (list bar))))
-              (tag rs) (id bar))
-        (unless (is-rest-bar bar)
+        (setf rs (make-rthm-seq (list count (list (list nbar))))
+              (tag rs) (id nbar))
+          ;; (print nbar)
+        (unless (is-rest-bar nbar)
+          ;; (print nbar)
           (let* ((start (+ attacks (first pse)))
                  (end (+ attacks (second pse)))
                  (psp-new (psp-subseq psp start end)))

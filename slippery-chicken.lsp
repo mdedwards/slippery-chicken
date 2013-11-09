@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:13:40 Mon Nov  4 2013 GMT
+;;; $$ Last modified: 15:34:27 Sat Nov  9 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4461,6 +4461,7 @@ seq-num 5, VN, replacing G3 with B6
          (output-start 0.0)
          (output-ok t)
          (this-play-chance-env '())
+         (events-before-max-start 0)
          (skip-this-event t)
          (total-skipped 0)
          (file-name
@@ -4582,6 +4583,9 @@ seq-num 5, VN, replacing G3 with B6
                  event-count-player 0
                  ;; 15/12/06 reset happy to the new player processes
                  happy t
+                 events-before-max-start
+                 (count-events-before-max-start 
+                  player (- (+ max-start-time first-event-start) time-offset))
                  this-play-chance-env 
                  (new-lastx play-chance-env
                             ;; 10/1/07 we want to use the whole
@@ -4590,10 +4594,7 @@ seq-num 5, VN, replacing G3 with B6
                             ;; got to take time-offset and the start time of
                             ;; the first event into consideration, not just
                             ;; max-start-time...
-                            (count-events-before-max-start 
-                             player
-                             (- (+ max-start-time first-event-start)
-                                time-offset))))
+                            events-before-max-start))
            (format t "~%Processing player ~a/~a: ~a (resting players will ~
                           not be processed)~%"
                    player-count num-players (nth (1- player-count) players))
@@ -4629,7 +4630,6 @@ seq-num 5, VN, replacing G3 with B6
                 (when reset-snds-each-rs
                   (when snds (reset snds))
                   (when snds2 (reset snds2)))
-              ;; (print (length rs))
                 (loop for event in rs and rs-event-count from 0 while happy
                    do
                    ;; (print 'here)
@@ -4640,11 +4640,13 @@ seq-num 5, VN, replacing G3 with B6
                                    (get-next snds)))
                          duration (* duration-scaler
                                      (compound-duration-in-tempo event))
-                         skip-this-event (> (random-rep 100.0)
-                                            (interpolate 
-                                             event-count-player 
-                                             this-play-chance-env 
-                                             :exp play-chance-env-exp))
+                         skip-this-event 
+                         ;; MDE Sat Nov  9 15:20:11 2013 -- only when we've got
+                         ;; events to output 
+                         (unless (zerop events-before-max-start)
+                           (> (random-rep 100.0)
+                              (interpolate event-count-player this-play-chance-env
+                                           :exp play-chance-env-exp)))
                          ;; MDE Mon Nov  4 11:11:07 2013 
                          freqs (let ((f (frequency (pitch-or-chord event))))
                                  (if (listp f) f (list f)))

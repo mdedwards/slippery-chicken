@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 10:53:58 Tue Oct 29 2013 GMT
+;;; $$ Last modified: 19:42:21 Sat Nov  9 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -170,7 +170,8 @@
            ;; display or turn them off again
            (flag-dots-on "\\set harmonicDots = ##t ")
            (flag-dots-off "\\set harmonicDots = ##f ")
-           (airy-head (no-lp-mark 'airy-head))
+           ;; circle head but stem extends through it like a vertical slash
+           (airy-head (no-lp-mark 'airy-head)) 
            (none (no-lp-mark 'none))
            (trill-f (no-lp-mark 'trill-f))
            (trill-n (no-lp-mark 'trill-n))
@@ -178,7 +179,7 @@
            (beg-trill-a "\\pitchedTrill ") ; must be before note
            ;; we'll also need e.g. (trill-note g5) to give the note in ()
            (end-trill-a "\\stopTrillSpan ") ; after note
-           (square (no-lp-mark 'square))
+           (square ("\\once \\override NoteHead #'style = #'la ") ; (no-lp-mark 'square))
            (slash (no-lp-mark 'slash))
            (arrow-up (no-lp-mark 'arrow-up))
            (arrow-down (no-lp-mark 'arrow-down))

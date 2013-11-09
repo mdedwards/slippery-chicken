@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 14:06:31 Sat Nov  9 2013 GMT
+;;; $$ Last modified: 15:41:39 Sat Nov  9 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3029,11 +3029,11 @@ data: E
       ;; use the beat of the parent rsb to set the beams for this extract.
       (auto-beam result beat)
       (setf (time-sig-given result) t)
-      ;; #|
+      #|
     (format t "~%get-events: ~a->~a: num-notes: ~a, ~a"
       start-time end-time (notes-needed result)
       (parent-start-end result))
-    ;; |#
+      |#
       (loop for r in (rhythms result) do
             (when (and (is-rest r)
                        (marks r))

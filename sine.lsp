@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified: 15:02:43 Sat Nov  9 2013 GMT
+;;; $$ Last modified: 15:11:33 Sat Nov  9 2013 GMT
 ;;;
 ;;; SVN ID: $Id: samp5.lsp 4223 2013-10-29 10:57:09Z medward2 $
 ;;;
@@ -76,7 +76,7 @@
          (sinewave (make-oscil :frequency frequency))
          (amps (* amp amp-env-scaler))
          (ampw (if a-weighting 
-                   (* amps (sc::db2amp (- (sc::a-weighting frequency))))
+                   (* amps (db->linear (- (sc::a-weighting frequency))))
                    amps))
          (envelope (make-env :envelope amp-env :scaler ampw :base amp-env-base
                              :duration duration))

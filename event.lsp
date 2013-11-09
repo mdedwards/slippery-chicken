@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:30:10 Wed Oct 30 2013 GMT
+;;; $$ Last modified: 14:26:01 Sat Nov  9 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -660,21 +660,26 @@ data: 132
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod setf-pitch-aux ((e event) value slot)
+  ;; (print '***setf-pitch-aux)  (print e) (print value) (print slot)
   (typecase value
     (pitch (setf (slot-value e slot) (clone value)))
     (chord (setf (slot-value e slot) (clone value))
-             ;; the cmn-data for a chord should be added to the event (whereas ;
-             ;; the cmn-data for a pitch is only added to that pitch, probably ;
-             ;; just a note-head change) ;
+           ;; the cmn-data for a chord should be added to the event (whereas ;
+           ;; the cmn-data for a pitch is only added to that pitch, probably ;
+           ;; just a note-head change) ;
            (loop for m in (marks value) do
                 (add-mark e m)))
-      ;; 26/3/07: nil shouldn't result in making a chord! ;
+    ;; 26/3/07: nil shouldn't result in making a chord! ;
     (list (setf (slot-value e slot)
                 (if value
                     (make-chord value :midi-channel (get-midi-channel e))
-                      ;; 23.3.11 nil needs to set is-rest slot too! ;
+                    ;; 23.3.11 nil needs to set is-rest slot too! ;
                     (progn 
                       (setf (is-rest e) t)
+                      ;; MDE Sat Nov  9 10:52:57 2013 -- and the tied-* slots?
+                      ;; breaks the chop routine :/ 
+                      ;; (setf (is-tied-to e) nil
+                      ;;       (is-tied-from e) nil)
                       nil))))
     (symbol (setf (slot-value e slot) 
                   (make-pitch value :midi-channel (get-midi-channel e))))))

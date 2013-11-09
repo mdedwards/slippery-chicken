@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 20:03:41 Mon Oct 28 2013 GMT
+;;; $$ Last modified: 11:22:06 Sat Nov  9 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -525,21 +525,20 @@
                 clef)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 #|
 ;;; No longer necessary, taken care of in get-relative-notes. ; ; ;
-                   (defmethod relative-int-to-note (int (ps pitch-seq))
-(let ((len (relative-notes-length ps)))
-(when (or (> int len) (> (highest ps) len))
-(error "pitch-seq::relative-int-to-note: ~
+(defmethod relative-int-to-note (int (ps pitch-seq))
+  (let ((len (relative-notes-length ps)))
+    (when (or (> int len) (> (highest ps) len))
+      (error "pitch-seq::relative-int-to-note: ~
               Can only handle relative notes up to ~a at the moment." 
-len))
-(let* ((ground-zero (floor (- len (highest ps)) 2))
-(nth (+ ground-zero (1- int))))
-(unless (>= nth 0)
-(error "~a~%~%pitch-seq::relative-int-to-note: nth = ~a!" ps nth))
-(nth nth (relative-notes ps)))))
-                   |#
+             len))
+    (let* ((ground-zero (floor (- len (highest ps)) 2))
+           (nth (+ ground-zero (1- int))))
+      (unless (>= nth 0)
+        (error "~a~%~%pitch-seq::relative-int-to-note: nth = ~a!" ps nth))
+      (nth nth (relative-notes ps)))))
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod ps-subseq ((ps pitch-seq) start end)

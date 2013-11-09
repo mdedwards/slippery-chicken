@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 19:42:21 Sat Nov  9 2013 GMT
+;;; $$ Last modified: 20:23:07 Sat Nov  9 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -172,6 +172,9 @@
            (flag-dots-off "\\set harmonicDots = ##f ")
            ;; circle head but stem extends through it like a vertical slash
            (airy-head (no-lp-mark 'airy-head)) 
+           ;; MDE Sat Nov  9 20:21:19 2013 -- in CMN it's :breath-in: a
+           ;; triangle on its side (pointing left)
+           (wedge ("\\once \\override NoteHead #'style = #'fa ") 
            (none (no-lp-mark 'none))
            (trill-f (no-lp-mark 'trill-f))
            (trill-n (no-lp-mark 'trill-n))
@@ -179,7 +182,8 @@
            (beg-trill-a "\\pitchedTrill ") ; must be before note
            ;; we'll also need e.g. (trill-note g5) to give the note in ()
            (end-trill-a "\\stopTrillSpan ") ; after note
-           (square ("\\once \\override NoteHead #'style = #'la ") ; (no-lp-mark 'square))
+           (square ("\\once \\override NoteHead #'style = #'la ") 
+                   ;; (no-lp-mark 'square))
            (slash (no-lp-mark 'slash))
            (arrow-up (no-lp-mark 'arrow-up))
            (arrow-down (no-lp-mark 'arrow-down))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 15:52:17 Wed Jun 19 2013 BST
+;;; $$ Last modified: 20:23:21 Sat Nov  9 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -246,6 +246,8 @@
              (beg-phrase (list begin-slur))
              (end-phrase (list end-slur)) ;; (end-slur *sc-slur-tag*)))
              (airy-head (list (note-head :airy-head)))
+             ;; triangle on its side (pointing left)
+             (wedge (list (note-head :breath-in)))
              (flag-head (list (note-head :artificial-harmonic)))
              ;; MDE Mon Apr 30 20:48:18 2012 -- 
              (flag-dots-on (no-cmn-mark 'flag-dots-on))

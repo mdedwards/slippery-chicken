@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 14:21:03 Sat Oct 26 2013 BST
+;;; $$ Last modified: 11:06:50 Mon Nov 11 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -45,11 +45,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -2031,7 +2026,11 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;; SYNOPSIS
 (defmethod enharmonic ((p pitch) &key (warn t))
 ;;; ****
-  (make-pitch (enharmonic-equivalent (id p) warn)))
+  (let ((pn (make-pitch (enharmonic-equivalent (id p) warn))))
+    ;; MDE Mon Nov 11 11:01:14 2013 
+    (when pn
+      (setf (marks pn) (marks p)))
+    pn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

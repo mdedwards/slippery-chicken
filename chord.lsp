@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 15:09:32 Sat Nov  2 2013 GMT
+;;; $$ Last modified: 10:56:37 Mon Nov 11 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -156,6 +156,30 @@ NIL
     sclist))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/chord=
+;;; DATE
+;;; November 11th 2013
+;;;
+;;; DESCRIPTION
+;;; Test whether the pitch objects of the two chords are pitch=.  Assumes both
+;;; chords are sorted by pitch height.  See pitch= in the pitch class for
+;;; details of comparing pitches.
+;;; 
+;;; RETURN VALUE
+;;; T or NIL
+;;; 
+;;; SYNOPSIS
+(defmethod chord= ((c1 chord) (c2 chord) &optional enharmonics-are-equal
+                   (frequency-tolerance 0.01) (src-tolerance 0.0001))
+;;; ****
+  (loop with happy = t 
+       for p1 in (data c1) for p2 in (data c2) do
+       (setf happy (pitch= p1 p2 enharmonics-are-equal frequency-tolerance
+                           src-tolerance))
+       while happy
+       finally (return happy)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/add-harmonics
 ;;; DESCRIPTION
 ;;; Adds pitches to the set which are harmonically related to the existing
@@ -1155,7 +1179,8 @@ data: (
                                                    (reverse data))))))
                (when verbose
                  (format t "~&rm-enharmonics: up: ~a down: ~a"
-                         (get-pitch-symbols up) (get-pitch-symbols down)))
+                         (when up (get-pitch-symbols up))
+                         (when down (get-pitch-symbols down))))
                (setf (data chord) (data (choose-chord up down)))
                chord))
            (attempt (pitch-list)
@@ -1202,7 +1227,8 @@ data: (
                                  first2)))
                  (when verbose
                    (format t "~&attempt: result: ~a"
-                           (get-pitch-symbols result)))
+                           (when result
+                             (get-pitch-symbols result))))
                  result))))
     (let* ((try1 (attempt (data c)))
            (try1first (when try1 
@@ -1222,9 +1248,9 @@ data: (
       (when result
         (setf (data c) (data result)))
       (when verbose
-        (format t "~&try1: ~a" (get-pitch-symbols try1))
-        (format t "~&try2: ~a" (get-pitch-symbols try2))
-        (format t "~&result: ~a"(get-pitch-symbols c)))
+        (format t "~&try1: ~a" (when try1 (get-pitch-symbols try1)))
+        (format t "~&try2: ~a" (when try2 (get-pitch-symbols try2)))
+        (format t "~&result: ~a" (when c (get-pitch-symbols c))))
       (rm-enharmonics c))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

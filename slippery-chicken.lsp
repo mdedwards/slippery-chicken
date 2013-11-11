@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:34:27 Sat Nov  9 2013 GMT
+;;; $$ Last modified: 12:13:36 Mon Nov 11 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3823,7 +3823,8 @@ seq-num 5, VN, replacing G3 with B6
 ;;; keyword arguments:
 ;;; - :midi-file. The name of the MIDI file to produce, including directory
 ;;;   path and extension. Default is a filename extracted from the title of the
-;;;   sc piece, placed in the (get-sc-config 'default-dir) directory (default /tmp).
+;;;   sc piece, placed in the (get-sc-config 'default-dir) directory (default
+;;;   /tmp). 
 ;;; - :voices. NIL or a list of player IDs indicating which of the players'
 ;;;   parts are to be included in the resulting MIDI file. If NIL, all players'
 ;;;   parts will be included. Default = NIL.
@@ -5866,7 +5867,8 @@ beg-ph 4))))
 ;;;   rests. Default = '(2 1))
 ;;; - :use-custom-markup. T or NIL. Set to T when using a number of marks that
 ;;;   are specific to LilyPond, such as 'bartok or any of the marks that use
-;;;   eps graphics files. Default = NIL.
+;;;   eps graphics files (whereupon those graphics files would need to be in
+;;;   the same folder as your lilypond files).  Default = T.
 ;;; - :lp-version. A string that will be added to each .ly file generated in
 ;;;   conjunction with the LilyPond \version command. Default = "2.16.2"
 ;;; - :process-event-fun. NIL or a user-defined function that will be applied
@@ -5886,57 +5888,57 @@ beg-ph 4))))
 ;;; 
 ;;; EXAMPLE
 #|
-;;; An example with values for the most frequently used arguments ; ; ;
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((fl (flute :midi-channel 1))
-(cl (b-flat-clarinet :midi-channel 2))
-(vc (cello :midi-channel 3))))
-:staff-groupings '(2 1)
-:tempo-map '((1 (q 84)) (9 (q 72)))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1 1 1 1 1 1))
-(2 (1 1 1 1 1 1 1 1))
-(3 (1 1 1 1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
-:pitch-seq-palette ((1 2 3))
-:marks (bartok 1)))
-(2 ((((4 4) (q) e (s) s h))
-:pitch-seq-palette ((1 2 3)))))
-:rthm-seq-map '((1 ((fl (1 2 1 2 1 2 1 2))
-(cl (1 2 1 2 1 2 1 2))
-(vc (1 2 1 2 1 2 1 2))))
-(2 ((fl (1 2 1 2 1 2 1 2))
-(cl (1 2 1 2 1 2 1 2))
-(vc (1 2 1 2 1 2 1 2))))
-(3 ((fl (1 2 1 2 1 2 1 2))
-(cl (1 2 1 2 1 2 1 2))
-(vc (1 2 1 2 1 2 1 2)))))
-:rehearsal-letters '(3 11 19))))
-(write-lp-data-for-all mini 
-:start-bar 7
-:end-bar 23
-:paper "letter"
-:landscape t
-:respell-notes nil
-:auto-clefs nil
-:staff-size 17
-:in-c nil
-:barline-thickness 3.7
-:top-margin 40
-:bottom-margin 60
-:left-margin 40
-:line-width 22
-:page-nums t
-:all-bar-nums t
-:use-custom-markup t
-:rehearsal-letters-font-size 24
-:lp-version "2.12.1"
-:group-barlines nil
-:page-turns t
-:players '(fl cl)
-:tempi-all-players t))
+;;; An example with values for the most frequently used arguments 
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((fl (flute :midi-channel 1))
+                     (cl (b-flat-clarinet :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :staff-groupings '(2 1)
+        :tempo-map '((1 (q 84)) (9 (q 72)))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1 1 1 1))
+                   (2 (1 1 1 1 1 1 1 1))
+                   (3 (1 1 1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+                                :pitch-seq-palette ((1 2 3))
+                                :marks (bartok 1)))
+                            (2 ((((4 4) (q) e (s) s h))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((fl (1 2 1 2 1 2 1 2))
+                            (cl (1 2 1 2 1 2 1 2))
+                            (vc (1 2 1 2 1 2 1 2))))
+                        (2 ((fl (1 2 1 2 1 2 1 2))
+                            (cl (1 2 1 2 1 2 1 2))
+                            (vc (1 2 1 2 1 2 1 2))))
+                        (3 ((fl (1 2 1 2 1 2 1 2))
+                            (cl (1 2 1 2 1 2 1 2))
+                            (vc (1 2 1 2 1 2 1 2)))))
+        :rehearsal-letters '(3 11 19))))
+  (write-lp-data-for-all mini 
+                         :start-bar 7
+                         :end-bar 23
+                         :paper "letter"
+                         :landscape t
+                         :respell-notes nil
+                         :auto-clefs nil
+                         :staff-size 17
+                         :in-c nil
+                         :barline-thickness 3.7
+                         :top-margin 40
+                         :bottom-margin 60
+                         :left-margin 40
+                         :line-width 22
+                         :page-nums t
+                         :all-bar-nums t
+                         :use-custom-markup t
+                         :rehearsal-letters-font-size 24
+                         :lp-version "2.12.1"
+                         :group-barlines nil
+                         :page-turns t
+                         :players '(fl cl)
+                         :tempi-all-players t))
 
   => T
 
@@ -5974,7 +5976,7 @@ beg-ph 4))))
                                   (rehearsal-letters-all-players t)
                                   ;; set to t if using bartok pizz and
                                   ;; other signs  
-                                  (use-custom-markup nil)
+                                  (use-custom-markup t)
                                   (rehearsal-letters-font-size 18)
                                   (lp-version "2.16.2") ;"2.14.2") ;"2.12.3")
                                   ;; 24.7.11 (Pula) barlines through whole
@@ -7096,93 +7098,93 @@ FS4 G4)
 ;;; 
 ;;; EXAMPLE
 #|
-;;; An example using all slots          ; ; ;
+;;; An example using all slots     
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:title "A Little Piece"
-:composer "Joe Green"
-:ensemble '(((fl ((flute piccolo) :midi-channel 1))
-(cl (b-flat-clarinet :midi-channel 2))
-(hn (french-horn :midi-channel 3))
-(tp (b-flat-trumpet :midi-channel 4))
-(vn (violin :midi-channel 5))
-(va (viola :midi-channel 6))
-(vc (cello :midi-channel 7))))
-:set-palette '((1 ((fs2 b2 d4 a4 d5 e5 a5 d6)))
-(2 ((b2 fs2 d4 e4 a4 d5 e5 a5 d6)))
-(3 ((cs3 fs3 e4 a4 e5 a5 e6))))
-:set-map '((1 (2 1 2 3 1 3 1))
-(2 (1 1 3 2 2 3 1))
-(3 (2 3 1 3 1 1 2)))
-:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
-:pitch-seq-palette ((1 2 3))))
-(2 ((((4 4) (q) e (s) s h))
-:pitch-seq-palette ((2 1 3))))
-(3 ((((4 4) e (s) s h (q)))
-:pitch-seq-palette ((3 2 1)))))
-:rthm-seq-map '((1 ((fl (2 3 3 1 1 1 2))
-(cl (3 2 1 1 2 1 3))
-(hn (1 2 3 1 1 3 2))
-(tp (2 1 1 3 3 2 1))
-(vn (3 1 3 2 1 1 2))
-(va (2 1 1 1 3 2 3))
-(vc (1 2 3 1 3 2 1))))
-(2 ((fl (3 1 3 2 2 1 1))
-(cl (1 1 2 3 1 3 2))
-(hn (1 3 2 1 3 1 2))
-(tp (1 1 1 3 3 2 2))
-(vn (2 1 3 1 3 1 2))
-(va (2 2 3 1 1 3 1))
-(vc (1 3 1 2 2 1 3))))
-(3 ((fl (1 1 3 2 1 3 2))
-(cl (2 1 2 3 3 1 1))
-(hn (3 2 1 1 1 3 2))
-(tp (3 3 1 1 2 1 2))
-(vn (3 1 3 2 1 1 2))
-(va (3 2 1 1 3 2 1))
-(vc (1 3 2 1 2 3 1)))))
-:snd-output-dir "/tmp"
-:sndfile-palette '(((sndfile-grp-1
-((test-sndfile-1.aiff :start 0.021 :end 0.283)
-(test-sndfile-2.aiff)
-(test-sndfile-3.aiff)))
-(sndfile-grp-2
-((test-sndfile-4.aiff :frequency 834)
-(test-sndfile-5.aiff)
-(test-sndfile-6.aiff))))
-("/path/to/test-sndfiles-dir-1"
-"/path/to/test-sndfiles-dir-2"))
-        ;; :tempo-map '((1 (q 84)) (9 (q 72))) ; ; ; ;
-:tempo-curve '(5 q (0 40 25 60 50 80 75 100 100 120))
-:staff-groupings '(2 2 3)
-:instrument-change-map '((1 ((fl ((1 flute) (3 piccolo) (5 flute))))))
-:set-limits-low '((fl (0 c5 50 g5 100 c5))
-(cl (0 c4 50 f4 100 c4))
-(hn (0 f3 50 c4 100 f3))
-(tp (0 c4 50 f4 100 c4))
-(vn (0 e5 50 a5 100 e5))
-(va (0 c3 50 f3 100 c3))
-(vc (0 c2 50 f3 100 c2)))
-:set-limits-high '((fl (0 d6 50 a6 100 d6))
-(cl (0 c5 50 a5 100 c5))
-(hn (0 f4 50 c5 100 f4))
-(tp (0 f5 50 c5 100 f5))
-(vn (0 c6 50 e6 100 c6))
-(va (0 g4 50 d5 100 g4))
-(vc (0 c4 50 f4 100 c4)))
-:fast-leap-threshold 0.5
-:instruments-hierarchy '(fl vn cl tp va hn vc)
-:rehearsal-letters '(3 11 19)
-:avoid-melodic-octaves nil
-:instruments-write-bar-nums '(fl cl hn tp)
-:pitch-seq-index-scaler-min 0.1
-:bars-per-system-map '((1 1) (2 2) (3 3) (7 4) (11 5))
-:rthm-seq-map-replacements '(((1 va) 3 1) ((2 fl) 4 3))
-:set-map-replacements '((1 2 2) (3 3 1)))))
-(midi-play mini :midi-file "/tmp/mini.mid")
-(cmn-display mini)
-(write-lp-data-for-all mini))
+       (make-slippery-chicken
+        '+mini+
+        :title "A Little Piece"
+        :composer "Joe Green"
+        :ensemble '(((fl ((flute piccolo) :midi-channel 1))
+                     (cl (b-flat-clarinet :midi-channel 2))
+                     (hn (french-horn :midi-channel 3))
+                     (tp (b-flat-trumpet :midi-channel 4))
+                     (vn (violin :midi-channel 5))
+                     (va (viola :midi-channel 6))
+                     (vc (cello :midi-channel 7))))
+        :set-palette '((1 ((fs2 b2 d4 a4 d5 e5 a5 d6)))
+                       (2 ((b2 fs2 d4 e4 a4 d5 e5 a5 d6)))
+                       (3 ((cs3 fs3 e4 a4 e5 a5 e6))))
+        :set-map '((1 (2 1 2 3 1 3 1))
+                   (2 (1 1 3 2 2 3 1))
+                   (3 (2 3 1 3 1 1 2)))
+        :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+                                :pitch-seq-palette ((1 2 3))))
+                            (2 ((((4 4) (q) e (s) s h))
+                                :pitch-seq-palette ((2 1 3))))
+                            (3 ((((4 4) e (s) s h (q)))
+                                :pitch-seq-palette ((3 2 1)))))
+        :rthm-seq-map '((1 ((fl (2 3 3 1 1 1 2))
+                            (cl (3 2 1 1 2 1 3))
+                            (hn (1 2 3 1 1 3 2))
+                            (tp (2 1 1 3 3 2 1))
+                            (vn (3 1 3 2 1 1 2))
+                            (va (2 1 1 1 3 2 3))
+                            (vc (1 2 3 1 3 2 1))))
+                        (2 ((fl (3 1 3 2 2 1 1))
+                            (cl (1 1 2 3 1 3 2))
+                            (hn (1 3 2 1 3 1 2))
+                            (tp (1 1 1 3 3 2 2))
+                            (vn (2 1 3 1 3 1 2))
+                            (va (2 2 3 1 1 3 1))
+                            (vc (1 3 1 2 2 1 3))))
+                        (3 ((fl (1 1 3 2 1 3 2))
+                            (cl (2 1 2 3 3 1 1))
+                            (hn (3 2 1 1 1 3 2))
+                            (tp (3 3 1 1 2 1 2))
+                            (vn (3 1 3 2 1 1 2))
+                            (va (3 2 1 1 3 2 1))
+                            (vc (1 3 2 1 2 3 1)))))
+        :snd-output-dir "/tmp"
+        :sndfile-palette '(((sndfile-grp-1
+                             ((test-sndfile-1.aiff :start 0.021 :end 0.283)
+                              (test-sndfile-2.aiff)
+                              (test-sndfile-3.aiff)))
+                            (sndfile-grp-2
+                             ((test-sndfile-4.aiff :frequency 834)
+                              (test-sndfile-5.aiff)
+                              (test-sndfile-6.aiff))))
+                           ("/path/to/test-sndfiles-dir-1"
+                            "/path/to/test-sndfiles-dir-2"))
+        ;; :tempo-map '((1 (q 84)) (9 (q 72))) ; ; ; ; ;
+        :tempo-curve '(5 q (0 40 25 60 50 80 75 100 100 120))
+        :staff-groupings '(2 2 3)
+        :instrument-change-map '((1 ((fl ((1 flute) (3 piccolo) (5 flute))))))
+        :set-limits-low '((fl (0 c5 50 g5 100 c5))
+                          (cl (0 c4 50 f4 100 c4))
+                          (hn (0 f3 50 c4 100 f3))
+                          (tp (0 c4 50 f4 100 c4))
+                          (vn (0 e5 50 a5 100 e5))
+                          (va (0 c3 50 f3 100 c3))
+                          (vc (0 c2 50 f3 100 c2)))
+        :set-limits-high '((fl (0 d6 50 a6 100 d6))
+                           (cl (0 c5 50 a5 100 c5))
+                           (hn (0 f4 50 c5 100 f4))
+                           (tp (0 f5 50 c5 100 f5))
+                           (vn (0 c6 50 e6 100 c6))
+                           (va (0 g4 50 d5 100 g4))
+                           (vc (0 c4 50 f4 100 c4)))
+        :fast-leap-threshold 0.5
+        :instruments-hierarchy '(fl vn cl tp va hn vc)
+        :rehearsal-letters '(3 11 19)
+        :avoid-melodic-octaves nil
+        :instruments-write-bar-nums '(fl cl hn tp)
+        :pitch-seq-index-scaler-min 0.1
+        :bars-per-system-map '((1 1) (2 2) (3 3) (7 4) (11 5))
+        :rthm-seq-map-replacements '(((1 va) 3 1) ((2 fl) 4 3))
+        :set-map-replacements '((1 2 2) (3 3 1)))))
+  (midi-play mini :midi-file "/tmp/mini.mid")
+  (cmn-display mini)
+  (write-lp-data-for-all mini))
 
 |#
 ;;; SYNOPSIS

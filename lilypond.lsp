@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 20:23:07 Sat Nov  9 2013 GMT
+;;; $$ Last modified: 13:03:15 Mon Nov 11 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -172,9 +172,13 @@
            (flag-dots-off "\\set harmonicDots = ##f ")
            ;; circle head but stem extends through it like a vertical slash
            (airy-head (no-lp-mark 'airy-head)) 
+           ;; this has to be added to the event _before_ the one which needs to
+           ;; start with these noteheads.
+           (improvOn "\\improvisationOn ")
+           (improvOff "\\improvisationOff ")
            ;; MDE Sat Nov  9 20:21:19 2013 -- in CMN it's :breath-in: a
            ;; triangle on its side (pointing left)
-           (wedge ("\\once \\override NoteHead #'style = #'fa ") 
+           (wedge "\\once \\override NoteHead #'style = #'fa ")
            (none (no-lp-mark 'none))
            (trill-f (no-lp-mark 'trill-f))
            (trill-n (no-lp-mark 'trill-n))
@@ -182,8 +186,8 @@
            (beg-trill-a "\\pitchedTrill ") ; must be before note
            ;; we'll also need e.g. (trill-note g5) to give the note in ()
            (end-trill-a "\\stopTrillSpan ") ; after note
-           (square ("\\once \\override NoteHead #'style = #'la ") 
-                   ;; (no-lp-mark 'square))
+           (square "\\once \\override NoteHead #'style = #'la ") 
+           ;; (no-lp-mark 'square))
            (slash (no-lp-mark 'slash))
            (arrow-up (no-lp-mark 'arrow-up))
            (arrow-down (no-lp-mark 'arrow-down))
@@ -273,6 +277,16 @@
            ;; 3/11/11 sometimes we just want to insert text as given, e.g. with
            ;; funny markup code
            (text (second mark))
+           (rgb 
+            (let* ((rgb (second mark))
+                   (r (first rgb))
+                   (g (second rgb))
+                   (b (third rgb)))
+              (format 
+                 nil
+                 "\\once \\override NoteHead #'color = #(rgb-color ~a ~a ~a) ~
+                  \\once \\override Stem #'color = #(rgb-color ~a ~a ~a)"
+                 r g b r g b)))
            ;; MDE Sat Jun 30 12:06:08 2012 -- key signatures 
            ;; e.g. '(key fs major), but note that they will appear _after_ the
            ;; note they're attached to.

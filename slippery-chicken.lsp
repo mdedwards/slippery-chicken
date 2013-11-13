@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:13:36 Mon Nov 11 2013 GMT
+;;; $$ Last modified: 18:44:48 Wed Nov 13 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5419,19 +5419,19 @@ beg-ph 4))))
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Create a slippery-chicken object, manually create a problem with the ties, ; ; ; ;
-;;; and call check-ties with a #'warn as the on-fail function. ; ; ; ;
-  (let* ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((cl (b-flat-clarinet :midi-channel 1))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1)))
-:rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
-:rthm-seq-map '((1 ((cl (1)))))))
-(e4 (get-event mini 1 4 'cl)))
-(setf (is-tied-to e4) nil)
-(check-ties mini nil #'warn))
+;;; Create a slippery-chicken object, manually create a problem with the ties, 
+;;; and call check-ties with a #'warn as the on-fail function. 
+(let* ((mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((cl (b-flat-clarinet :midi-channel 1))))
+         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+         :set-map '((1 (1)))
+         :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
+         :rthm-seq-map '((1 ((cl (1)))))))
+       (e4 (get-event mini 1 4 'cl)))
+  (setf (is-tied-to e4) nil)
+  (check-ties mini nil #'warn))
 
   => WARNING: slippery-chicken::check-ties: bad tie, CL bar 1
 

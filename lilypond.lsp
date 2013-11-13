@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 13:03:15 Mon Nov 11 2013 GMT
+;;; $$ Last modified: 19:01:46 Wed Nov 13 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -179,6 +179,7 @@
            ;; MDE Sat Nov  9 20:21:19 2013 -- in CMN it's :breath-in: a
            ;; triangle on its side (pointing left)
            (wedge "\\once \\override NoteHead #'style = #'fa ")
+           (square "\\once \\override NoteHead #'style = #'la ") 
            (none (no-lp-mark 'none))
            (trill-f (no-lp-mark 'trill-f))
            (trill-n (no-lp-mark 'trill-n))
@@ -186,7 +187,6 @@
            (beg-trill-a "\\pitchedTrill ") ; must be before note
            ;; we'll also need e.g. (trill-note g5) to give the note in ()
            (end-trill-a "\\stopTrillSpan ") ; after note
-           (square "\\once \\override NoteHead #'style = #'la ") 
            ;; (no-lp-mark 'square))
            (slash (no-lp-mark 'slash))
            (arrow-up (no-lp-mark 'arrow-up))

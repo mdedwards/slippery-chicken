@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:26:01 Sat Nov  9 2013 GMT
+;;; $$ Last modified: 19:04:51 Wed Nov 13 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -627,6 +627,41 @@ data: 132
     (number (setf (slot-value e 'tempo-change) (make-tempo value)))
     (t (error "event::(setf temp-change): argument should be a number ~
                or tempo object: ~a" value))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* event/add-pitches
+;;; DESCRIPTION
+;;; Add pitches to a non-rest event.  This works whether the event is a single
+;;; pitch or a chord.  NB This adds to the sounding pitches, not written
+;;; pitches of transposing instruments.
+;;; 
+;;; ARGUMENTS
+;;; - The event object
+;;; - &rest: an arbitrary number of pitches: either pitch objects or symbols.
+;;; 
+;;; RETURN VALUE
+;;; The same event but with the new pitches added.
+;;; 
+;;; EXAMPLE
+#|
+(let ((e1 (make-event 'c4 'q))
+      (e2 (make-event '(c4 e4 g4) 'e)))
+  (add-pitches e1 'cs3 'd5)
+  (add-pitches e2 'cs2)))
+|#
+;;; SYNOPSIS
+(defmethod add-pitches ((e event) &rest pitches)
+;;; ****
+  (setf pitches (init-pitch-list pitches))
+  (cond ((is-chord e) (setf (pitch-or-chord e)
+                            (add-pitches (pitch-or-chord e) pitches)))
+        ((is-single-pitch e) (setf (pitch-or-chord e)
+                                   (make-chord
+                                    (cons (pitch-or-chord e) pitches))))
+        (t (error "event::add-pitches: Can't add pitches to this event: ~a"
+                  e)))
+  e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2722,7 +2757,7 @@ data: C4
 (defmethod get-porc ((e event) &optional written)
   (if written
       (written-pitch-or-chord e)
-    (pitch-or-chord e)))
+      (pitch-or-chord e)))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

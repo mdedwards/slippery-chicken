@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:04:51 Wed Nov 13 2013 GMT
+;;; $$ Last modified: 14:34:32 Thu Nov 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1567,9 +1567,10 @@ WARNING:
 
 |#
 ;;; SYNOPSIS
-(defmethod has-mark-before ((e event) mark)
+(defmethod has-mark-before ((e event) mark &optional (test #'equal))
 ;;; ****
-  (member mark (marks-before e) :test #'equal))
+  (has-mark-aux (marks e) mark test))
+  ;; (member mark (marks-before e) :test tes))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2011,9 +2012,15 @@ NIL
           (from to)
         ;; 13.4.11 the start of 8va marks need to be before the note, but the
         ;; end comes after the note in order to include it under the bracket 
-        (move-elements '(circled-x x-head triangle beg-8va beg-8vb
-                         hairpin0 beg-trill-a triangle-up mensural <<)
-                       (marks e) (marks-before e))
+        (move-elements '(circled-x x-head triangle beg-8va beg-8vb wedge square
+                         hairpin0 beg-trill-a triangle-up mensural << rgb)
+                       (marks e) (marks-before e)
+                       ;; MDE Thu Nov 14 11:52:26 2013 -- got to be able to
+                       ;; handle marks as lists so #'eq not a sufficient member
+                       ;; test 
+                       #'(lambda (x y) (if (listp y)
+                                           (eq x (first y))
+                                           (eq x y))))
       (setf (marks e) from
             (marks-before e) to))
     (let* ((poc (if (and in-c (not (from-8ve-transposing-ins e)))

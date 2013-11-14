@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 18:45:42 Wed Nov 13 2013 GMT
+;;; $$ Last modified: 14:44:13 Thu Nov 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -752,7 +752,8 @@ data: (
           for pitch in (data c)
           for new = (transpose pitch semitones)
                     ;; copy over the cmn marks (like special note heads etc.)
-          do (setf (marks new) (my-copy-list (marks pitch)))
+          do (setf (marks new) (my-copy-list (marks pitch))
+                   (marks-before new) (my-copy-list (marks-before pitch)))
           collect new))
     ;; 8.2. 11: got to this here too now
     (set-micro-tone result)

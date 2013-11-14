@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 11:06:50 Mon Nov 11 2013 GMT
+;;; $$ Last modified: 14:52:21 Thu Nov 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -93,6 +93,11 @@
                               :initform nil)
    ;; e.g. for changing the note head of an individual note in a chord.
    (marks :accessor marks :type list :initarg :marks :initform nil)
+   ;; MDE Thu Nov 14 14:22:33 2013 -- as with the event class, some marks need
+   ;; to come before and if this pitch is in a chord, we can't do it via the
+   ;; event  
+   (marks-before :accessor marks-before :type list :initarg :marks-before
+                 :initform nil)
    ;; in the circle of 5ths, how far advanced is this pitch i.e. a natural is
    ;; 0, fs and bf are 1, cs and ef are 2 ... microtones are 0.
    (c5ths :accessor c5ths :type number :initform 0)
@@ -101,6 +106,11 @@
    ;; e.g. from fs4 -> f
    (no-8ve-no-acc :accessor no-8ve-no-acc :type symbol :initform nil)
    (src :accessor src :initarg :src :initform nil)
+   ;; MDE Thu Nov 14 11:32:18 2013 -- we don't want to issue too many warnings
+   ;; about resolving to nearest 1/4 tone when running Lilypond so limit
+   ;; warnings via this slot but keep track of how many we resolved.
+   (lp-resolutions :accessor lp-resolutions :type integer :initform 0
+                :allocation :class)
    ;; MDE Tue Apr 17 12:44:57 2012 -- not currently used by any method.
    (src-ref-pitch :accessor src-ref-pitch :type symbol :initarg :src-ref-pitch
                   :initform 'c4)
@@ -124,7 +134,8 @@
                            no-8ve-no-acc: ~a~
                   ~%       show-accidental: ~a, white-degree: ~a, ~
                   ~%       accidental: ~a, ~
-                  ~%       accidental-in-parentheses: ~a, marks: ~a"
+                  ~%       accidental-in-parentheses: ~a, marks: ~a, ~
+                  ~%       marks-before: ~a"
           (frequency i) (midi-note i) (midi-channel i) 
           (pitch-bend i)
           (degree i) (data-consistent i) (white-note i)
@@ -136,7 +147,7 @@
           (octave i) (c5ths i) (no-8ve i) (no-8ve-no-acc i)
           (show-accidental i) (white-degree i) 
           (accidental i)
-          (accidental-in-parentheses i) (marks i)))
+          (accidental-in-parentheses i) (marks i) (marks-before i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -157,6 +168,7 @@
                                                     from)  
         (slot-value to 'show-accidental) (show-accidental from)
         (slot-value to 'marks) (my-copy-list (marks from))
+        (slot-value to 'marks-before) (my-copy-list (marks-before from))
         (slot-value to 'src-ref-pitch) (src-ref-pitch from)
         (slot-value to 'data-consistent) (data-consistent from)))
 
@@ -1774,11 +1786,25 @@ pitch::add-mark: mark PIZZ already present but adding again!
   (push mark (marks p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod add-mark-before ((p pitch) mark)
+;;; ****
+  (when (has-mark-before p mark)
+    (warn "~a~&pitch::add-mark-before: pitch has ~a already but adding again!"
+          p mark))
+  (validate-mark mark)
+  (push mark (marks-before p)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Jan  4 14:20:30 2012 
 
 (defmethod has-mark ((p pitch) mark &optional (test #'equal))
 ;;; ****
   (has-mark-aux (marks p) mark test))
+
+;;; MDE Thu Nov 14 14:26:35 2013 
+(defmethod has-mark-before ((p pitch) mark &optional (test #'equal))
+;;; ****
+  (has-mark-aux (marks-before p) mark test))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1806,9 +1832,12 @@ pitch::add-mark: mark PIZZ already present but adding again!
   ;; MDE Mon Jun 25 17:05:24 2012 
   ;; MDE Tue Aug 27 14:23:09 2013 issue a warning instead of an error.
   (when (micro-but-not-quarter-tone-p p)
-    (warn "pitch::get-lp-data: Lilypond cannot display ~a. ~
-           Resolving to the nearest quarter tone."
-          (data p))
+    (when (zerop (lp-resolutions p))
+      (warn "pitch::get-lp-data: Lilypond cannot display ~a. ~
+             Resolving to the nearest ~%quarter tone. (Warning issued only once;~
+             other pitches may resolve~%automatically.)"  
+            (data p)))
+    (incf (lp-resolutions p))
     (setf p (make-pitch (freq-to-note (frequency p) 'quarter-tone))))
   (let* ((octave (octave p))
          (lp8ve (cond
@@ -1820,13 +1849,16 @@ pitch::add-mark: mark PIZZ already present but adding again!
          ;; 27.8.11 don't forget marks e.g. harmonic heads
          (marks (format nil "~{~a~^~}" (loop for mark in (marks p)
                                           collect (lp-get-mark mark))))
+         (marks-before (format nil "~{~a~^~}"
+                               (loop for mark in (marks-before p)
+                                  collect (lp-get-mark mark))))
          ;; 22.5.11 there is no n for natural in lilypond, rather just the note
          ;; name e.g. c not cn 
          (note (if (eq (accidental p) 'n)
                    (no-8ve-no-acc p)
                    (no-8ve p))))
-    (string-downcase (format nil "~a~a~a~a"
-                             note lp8ve 
+    (string-downcase (format nil "~a~a~a~a~a"
+                             marks-before note lp8ve 
                              (if (accidental-in-parentheses p) "?" "")
                              marks))))
 
@@ -2027,9 +2059,11 @@ pitch::add-mark: mark PIZZ already present but adding again!
 (defmethod enharmonic ((p pitch) &key (warn t))
 ;;; ****
   (let ((pn (make-pitch (enharmonic-equivalent (id p) warn))))
-    ;; MDE Mon Nov 11 11:01:14 2013 
+    ;; MDE Mon Nov 11 11:01:14 2013 -- we'll lose marks (e.g. in octaves)
+    ;; unless we do this.
     (when pn
-      (setf (marks pn) (marks p)))
+      (setf (marks pn) (marks p)
+            (marks-before pn) (marks-before p)))
     pn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

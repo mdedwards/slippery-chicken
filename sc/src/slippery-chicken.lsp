@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:44:48 Wed Nov 13 2013 GMT
+;;; $$ Last modified: 11:16:44 Thu Nov 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1993,9 +1993,10 @@ bar 45
 ;;; DESCRIPTION
 ;;; Get the events from a specified player's part within a given
 ;;; slippery-chicken object one after the other (e.g. in a loop). This method
-;;; must be called once with a bar number first in order to reset the counter;
-;;; doing this will return NIL. Once the counter has been reset, calling the
-;;; method without a bar number will return the events in sequence.
+;;; must be called once with a bar number (or any other non-NIL value,
+;;; whereupon we start at bar 1) first in order to reset the counter; doing
+;;; this will return NIL. Once the counter has been reset, calling the method
+;;; without a bar number will return the events in sequence.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A slippery-chicken object.

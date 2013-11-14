@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:34:32 Thu Nov 14 2013 GMT
+;;; $$ Last modified: 15:03:51 Thu Nov 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1569,7 +1569,7 @@ WARNING:
 ;;; SYNOPSIS
 (defmethod has-mark-before ((e event) mark &optional (test #'equal))
 ;;; ****
-  (has-mark-aux (marks e) mark test))
+  (has-mark-aux (marks-before e) mark test))
   ;; (member mark (marks-before e) :test tes))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

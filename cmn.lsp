@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 12:52:54 Mon Nov 11 2013 GMT
+;;; $$ Last modified: 17:38:32 Thu Nov 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -303,6 +303,8 @@
              (aeolian-light (list (natural-harmonic)))
              (aeolian-dark (list (thumb)))
              (sing (no-cmn-mark 'sing))
+             (high-sine (no-cmn-mark 'high-sine))
+             (noise (no-cmn-mark 'noise))
              (mphonic (no-cmn-mark 'mphonic))
              (mphonic-cons (no-cmn-mark 'mphonic-cons))
              (mphonic-diss (no-cmn-mark 'mphonic-diss))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 13:08:28 Thu Nov 14 2013 GMT
+;;; $$ Last modified: 17:38:21 Thu Nov 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -218,6 +218,8 @@
            (mphonic-diss "^\\mphonicDiss ")
            (mphonic-cluster "^\\mphonicCluster ")
            (sing "^\\sing ")
+           (high-sine "^\\high-sine ")
+           (noise "^\\noise ")
            (sing-arr "^\\singArr ")
            (arrow-up-down "^\\arrowUpDown ")
 ;;; end lilypond-graphics.zip files

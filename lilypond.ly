@@ -13,7 +13,7 @@
 %%%
 %%% Creation date:    23rd November 2011
 %%%
-%%% $$ Last modified: 12:07:46 Sun Oct 14 2012 BST
+%%% $$ Last modified: 17:54:05 Thu Nov 14 2013 GMT
 %%%
 %%% SVN ID: $Id: lilypond.ly 963 2010-04-08 20:58:32Z medward2 $
 %%%
@@ -81,6 +81,18 @@ aeolianDark = \markup \aeolianDark
  (interpret-markup layout props 
         (markup #:general-align Y DOWN  #:epsfile X 5 "sing.eps")))
 sing = \markup \sing
+
+% an sine curve with an arrow below it
+#(define-markup-command (high-sine layout props) () 
+ (interpret-markup layout props 
+        (markup #:general-align Y DOWN  #:epsfile X 7 "high-sine.eps")))
+high-sine = \markup \high-sine
+
+% ragged line
+#(define-markup-command (noise layout props) () 
+ (interpret-markup layout props 
+        (markup #:general-align Y DOWN  #:epsfile X 6 "noise.eps")))
+noise = \markup \noise
 
 % same as above but with an arrow pointing east
 #(define-markup-command (singArr layout props) () 

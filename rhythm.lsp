@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 14:32:16 Thu Nov 14 2013 GMT
+;;; $$ Last modified: 16:05:44 Thu Nov 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1937,12 +1937,13 @@ data: (
   ;; MDE Sat Dec 24 12:32:42 2011 -- remember clefs are handled differently
   ;; i.e. not by lp-get-mark and get-cmn-marks  
   (unless (or (cmn-mark-p mark) (clef-list-p mark))
-    (unless (lp-get-mark mark :silent t)
+    (when (and (get-sc-config 'warn-no-lp-mark)
+               (not (lp-get-mark mark :silent t)))
       (warn "~&rhythm::validate-mark: no LilyPond mark for ~a (but ~
-           adding anyway)."
-            mark))
+             adding anyway)." mark))
     #+cmn
-    (unless (cmn::get-cmn-marks mark :silent t)
+    (when (and (get-sc-config 'warn-no-cmn-mark)
+               (not (cmn::get-cmn-marks mark :silent t)))
       (warn "~&rhythm::validate-mark: no CMN mark for ~a (but adding anyway)."
             mark))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

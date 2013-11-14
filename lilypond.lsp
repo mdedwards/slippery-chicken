@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 19:01:46 Wed Nov 13 2013 GMT
+;;; $$ Last modified: 13:08:28 Thu Nov 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -156,7 +156,8 @@
            ;; adding new, add the mark symbol to the move-elements call in
            ;; event::get-lp-data 
            (circled-x "\\once \\override NoteHead #'style = #'xcircle ")
-           (x-head "\\once \\override NoteHead #'style = #'cross ")
+           ;; (x-head "\\once \\override NoteHead #'style = #'cross ")
+           (x-head " \\xNote ")
            (triangle "\\once \\override NoteHead #'style = #'triangle ")
            (triangle-up "\\once \\override NoteHead #'style = #'do ")
            ;; (mensural "\\once \\override NoteHead #'style = #'slash ")
@@ -285,8 +286,11 @@
               (format 
                  nil
                  "\\once \\override NoteHead #'color = #(rgb-color ~a ~a ~a) ~
-                  \\once \\override Stem #'color = #(rgb-color ~a ~a ~a)"
-                 r g b r g b)))
+                  \\once \\override Beam #'color = #(rgb-color ~a ~a ~a) ~
+                  \\once \\override Accidental #'color = #(rgb-color ~a ~a ~a) ~
+                  \\once \\override Flag #'color = #(rgb-color ~a ~a ~a) ~
+                  \\once \\override Stem #'color = #(rgb-color ~a ~a ~a) "
+                 r g b r g b r g b r g b r g b)))
            ;; MDE Sat Jun 30 12:06:08 2012 -- key signatures 
            ;; e.g. '(key fs major), but note that they will appear _after_ the
            ;; note they're attached to.

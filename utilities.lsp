@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 10:01:21 Fri Nov  8 2013 GMT
+;;; $$ Last modified: 12:04:47 Thu Nov 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3508,10 +3508,15 @@ WARNING:
 ;;; ****
   (unless (listp what)
     (setf what (list what)))
-  (loop for el in what do
-       (when (member el from :test test)
-         (setf from (remove el from))
-         (push el to)))
+  (loop for el in what 
+     for m = (first (member el from :test test))
+       do
+       ;; (print el)
+     (when m
+       (setf from (remove m from :test #'equalp))
+       (push m to)))
+  ;; (print from)
+  ;; (print to)
   (values from to))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

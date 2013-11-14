@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:16:44 Thu Nov 14 2013 GMT
+;;; $$ Last modified: 13:04:38 Thu Nov 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5871,7 +5871,7 @@ beg-ph 4))))
 ;;;   eps graphics files (whereupon those graphics files would need to be in
 ;;;   the same folder as your lilypond files).  Default = T.
 ;;; - :lp-version. A string that will be added to each .ly file generated in
-;;;   conjunction with the LilyPond \version command. Default = "2.16.2"
+;;;   conjunction with the LilyPond \version command. Default = "2.17.95"
 ;;; - :process-event-fun. NIL or a user-defined function that will be applied
 ;;;   to every event object in the given slippery-chicken object. If NIL, no
 ;;;   processes will be applied. Default = NIL.
@@ -5979,7 +5979,8 @@ beg-ph 4))))
                                   ;; other signs  
                                   (use-custom-markup t)
                                   (rehearsal-letters-font-size 18)
-                                  (lp-version "2.16.2") ;"2.14.2") ;"2.12.3")
+                                  ;; "2.16.2") "2.14.2") ;"2.12.3")
+                                  (lp-version "2.17.95") 
                                   ;; 24.7.11 (Pula) barlines through whole
                                   ;; staff group or just a stave
                                   (group-barlines t)

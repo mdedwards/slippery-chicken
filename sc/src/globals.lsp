@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 09:19:12 Sat Sep  7 2013 BST
+;;; $$ Last modified: 16:04:44 Thu Nov 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -96,6 +96,10 @@
      ;; The default amplitude for all events that don't have amplitude/dynamic
      ;; set via some means such as marks.
      (default-amplitude 0.7)
+     ;; whether to warn when there's no CMN mark for a given Lilypond mark
+     (warn-no-cmn-mark t)
+     ;; sim for Lilypond
+     (warn-no-lp-mark t)
      ;; Bar number offsets for CMN
      (cmn-bar-num-dx-for-sc -0.2)
      (cmn-bar-num-dy-for-sc 1.2)

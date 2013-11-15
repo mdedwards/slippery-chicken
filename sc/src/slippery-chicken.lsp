@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:04:38 Thu Nov 14 2013 GMT
+;;; $$ Last modified: 18:51:25 Thu Nov 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1792,16 +1792,16 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 17,
   (unless (listp players)
     (setf players (list players)))
   (loop 
-      with count = 0
-      for bnum from start-bar to end-bar do
-        (loop 
-            for player in players 
-            for bar = (get-bar sc bnum player)
-            do
-              (incf count (if just-attacks 
-                              (notes-needed bar)
-                            (num-score-notes bar))))
-      finally (return count)))
+     with count = 0
+     for bnum from start-bar to end-bar do
+     (loop 
+        for player in players 
+        for bar = (get-bar sc bnum player)
+        do
+        (incf count (if just-attacks 
+                        (notes-needed bar)
+                        (num-score-notes bar))))
+     finally (return count)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

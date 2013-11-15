@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 17:38:21 Thu Nov 14 2013 GMT
+;;; $$ Last modified: 18:18:46 Thu Nov 14 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -160,6 +160,15 @@
            (x-head " \\xNote ")
            (triangle "\\once \\override NoteHead #'style = #'triangle ")
            (triangle-up "\\once \\override NoteHead #'style = #'do ")
+           (airy-head (no-lp-mark 'airy-head)) 
+           ;; this has to be added to the event _before_ the one which needs to
+           ;; start with these noteheads.
+           (improvOn "\\improvisationOn ")
+           (improvOff "\\improvisationOff ")
+           ;; MDE Sat Nov  9 20:21:19 2013 -- in CMN it's :breath-in: a
+           ;; triangle on its side (pointing left)
+           (wedge "\\once \\override NoteHead #'style = #'fa ")
+           (square "\\once \\override NoteHead #'style = #'la ") 
            ;; (mensural "\\once \\override NoteHead #'style = #'slash ")
            ;;(flag-head "\\once \\override NoteHead #'style = #'harmonic-mixed
            ;;")  
@@ -172,15 +181,6 @@
            (flag-dots-on "\\set harmonicDots = ##t ")
            (flag-dots-off "\\set harmonicDots = ##f ")
            ;; circle head but stem extends through it like a vertical slash
-           (airy-head (no-lp-mark 'airy-head)) 
-           ;; this has to be added to the event _before_ the one which needs to
-           ;; start with these noteheads.
-           (improvOn "\\improvisationOn ")
-           (improvOff "\\improvisationOff ")
-           ;; MDE Sat Nov  9 20:21:19 2013 -- in CMN it's :breath-in: a
-           ;; triangle on its side (pointing left)
-           (wedge "\\once \\override NoteHead #'style = #'fa ")
-           (square "\\once \\override NoteHead #'style = #'la ") 
            (none (no-lp-mark 'none))
            (trill-f (no-lp-mark 'trill-f))
            (trill-n (no-lp-mark 'trill-n))

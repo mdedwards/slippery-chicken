@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 18:13:14 Sat Aug 10 2013 BST
+;;; $$ Last modified: 12:15:10 Sat Nov 16 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -92,6 +92,14 @@
 ;;; - :sublists. T or NIL to indicate whether the returned result should be
 ;;;   flattened into a one-dimensional list or should be left as a list of
 ;;;   lists. T = leave as list of lists. Default = NIL.
+;;; - :clone. T or NIL to indicate whether objects in the list should be cloned
+;;;   as they are permutated (so that they are unique objects rather than
+;;;   shared data space).  Useful perhaps if e.g. you're cloning chords which
+;;;   will then have their own marks. etc.  If T then the list must contain
+;;;   slippery-chicken named-objects or types subclassed from them (as is every
+;;;   slippery-chicken class).
+;;; - :if-not-enough. A function object (or NIL) to call when :max was
+;;;   requested but we can't return that many results.  Default = #'error. 
 ;;;
 ;;; RETURN VALUE  
 ;;; A list.
@@ -141,16 +149,24 @@
 |#
 ;;; SYNOPSIS
 (defun inefficiently-permutate (list &key (max nil) (skip 0) (fix t)
-                                (sublists nil))
+                                clone (sublists nil) (if-not-enough #'error))
 ;;; ****
+  (when clone
+    (unless (every #'named-object-p list)
+      (error "permutations::inefficiently-permutate: can only clone if all ~
+              items of the list are named-objects or subclasses thereof: ~%~a"
+             list)))
   (let ((permutations (inefficient-permutations (length list)
                                                 :max max
+                                                :if-not-enough if-not-enough
                                                 :skip skip
                                                 :fix fix)))
     (if sublists
         (loop for l in permutations collect
-             (loop for e in l collect (nth e list)))
-        (loop for p in (flatten permutations) collect (nth p list)))))
+             (loop for e in l for el = (nth e list) collect 
+                  (if clone (clone el) el)))
+        (loop for p in (flatten permutations) for el = (nth p list) collect 
+             (if clone (clone el) el)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -204,6 +220,8 @@
 ;;; - :fix. T or NIL to indicate whether the given sequence should always be
 ;;;   shuffled with the same (fixed) random seed (thus always producing the
 ;;;   same result). T = fixed seed. Default = T.
+;;; - :if-not-enough. A function object (or NIL) to call when :max was
+;;;   requested but we can't return that many results.  Default = #'error. 
 ;;;
 ;;; RETURN VALUE  
 ;;; A list.
@@ -245,7 +263,8 @@
 
 |#
 ;;; SYNOPSIS
-(defun inefficient-permutations (level &key (max nil) (skip 0) (fix t))
+(defun inefficient-permutations (level &key (max nil) (skip 0) (fix t)
+                                 (if-not-enough #'error))
 ;;; ****
   (let* ((result '())
          (natural-max (loop for i from 2 to level with j = 1 do 
@@ -259,11 +278,18 @@
          (current '())
          (reset fix)
          (count 0))
+    ;; MDE Sat Nov 16 12:08:31 2013
+    (when (and if-not-enough (not (functionp if-not-enough)))
+      (error "inefficient-permutations: <if-not-enough> must be NIL or a ~
+              function object like #'error: ~a" if-not-enough))
     (when (and max (> max natural-max))
-      (error "inefficient-permutations: the number of possible ~
-               permutations with <level> = ~a is ~a so can't return ~
-               you the amount you requested (~a)"
-             level natural-max max))
+      (if if-not-enough
+        (funcall if-not-enough
+                 "inefficient-permutations: the number of possible ~
+                  permutations with <level> = ~a is ~a so can't return ~
+                  you the amount you requested (~a)"
+                  level natural-max max)
+        (setf max natural-max)))
     (unless max
       (setf max num-perms))
     (loop while (<= count max) do

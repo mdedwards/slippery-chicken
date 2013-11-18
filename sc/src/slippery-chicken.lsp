@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:51:25 Thu Nov 14 2013 GMT
+;;; $$ Last modified: 15:13:05 Mon Nov 18 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6879,6 +6879,64 @@ FS4 G4)
           (sort events #'(lambda (x y) (< (abs (- time (start-time x)))
                                           (abs (- time (start-time y)))))))
     (first events)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/get-phrases
+;;; DESCRIPTION
+;;; This returns lists of events that make up phrases.  Its notion of phrases
+;;; is very simplistic but hopefully useful all the same: it's any sequence of
+;;; sounding notes surrounded by rests.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - a single symbol or list of symbols representing the players from the
+;;; ensemble. 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :start-bar.  An integer bar number where the process should start.  If
+;;; NIL we'll default to 1.  Default = NIL. 
+;;; - :end-bar.  An integer bar number where the process should end.  If
+;;; NIL we'll default to the last bar.  Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; A list of sublists, one for each requested player.  Each player sublist
+;;; contains sublists also, with all the events in each phrase.
+;;; 
+;;; SYNOPSIS
+(defmethod get-phrases ((sc slippery-chicken) players
+                        &key start-bar end-bar)
+;;; ****
+  (unless (listp players)
+    (setf players (list players)))
+  (unless start-bar
+    (setf start-bar 1))
+  (unless end-bar
+    (setf end-bar (num-bars sc)))
+  (loop      
+     for player in players do
+     (next-event sc player nil start-bar)
+     collect 
+     (loop 
+        with tmp = '()
+        with result = '()
+        with start-e 
+        for e = (next-event sc player nil nil end-bar) 
+        while e
+        do
+          (if (is-rest e)
+              (progn
+                (when (and tmp start-e)
+                  (push (nreverse tmp) result))
+                (setf tmp '()))
+              (progn
+                (unless start-e
+                  (setf start-e e))
+                (push e tmp)))
+          finally 
+          (when (and tmp start-e)
+            (push (nreverse tmp) result))
+          (return (nreverse result)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 14:44:13 Thu Nov 14 2013 GMT
+;;; $$ Last modified: 13:25:41 Mon Nov 18 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1485,7 +1485,8 @@ data: (
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May  3 10:52:54 2012 
 (defmethod rm-octaves ((c chord))
-  (setf (slot-value c 'data) (remove-octaves (data c))))
+  (setf (slot-value c 'data) (remove-octaves (data c)))
+  c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

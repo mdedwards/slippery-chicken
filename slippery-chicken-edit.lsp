@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 12:34:51 Mon Nov 18 2013 GMT
+;;; $$ Last modified: 14:32:11 Mon Nov 18 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3085,7 +3085,8 @@ NIL
 ;;;   to the Lisp listener. T = print. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; T.
+;;; A list of sublists, each of which contains the start and end event, plus
+;;; the number of notes under the slur, for each slur added. 
 ;;; 
 ;;; EXAMPLE
 #|
@@ -3122,94 +3123,97 @@ NIL
     (setf start-bar 1))
   (unless end-bar
     (setf end-bar (num-bars sc)))
-  (loop 
-     with start-e 
-     with count
-     with last-e
-     for player in players do
-     (next-event sc player nil start-bar)
-     (setf start-e nil
-           last-e nil
-           count 0)
-     (loop 
-        for e = (next-event sc player nil nil end-bar) 
-        while e
-        do
-        (when verbose
-          (format t "~&e: ~a, count ~a, start-e ~a"
-                  (when e
-                    (get-pitch-symbol e nil))
-                  count
-                  (when start-e
-                    (get-pitch-symbol start-e nil))))
-        (when rm-slurs-first
-          (rm-marks e '(beg-sl end-sl) nil))
-        (cond ((and (needs-new-note e) ;; start slur
-                    (not start-e))
-               (setf start-e e)
-               (incf count))
-              ((and (or (is-rest e) ;; end slur
-                        (and (not over-accents) (accented-p e))
-                        ;; 2 of the same notes should stop a slur but
-                        ;; without checking that count > 2 this code
-                        ;; might actually put a slur over two of the same
-                        ;; notes  
-                        ;; MDE Thu Jun  7 18:14:45 2012 -- changed > from 2 to 1
-                        (and (> count 1)
-                             (porc-equal e last-e)))
-                    start-e
-                    last-e
-                    (not (is-rest start-e))
-                    (not (is-rest last-e))
-                    (> count 1)) 
-               ;; don't add slurs if they're already there
-               (unless (or (begin-slur-p start-e)
-                           (end-slur-p last-e))
-                 (when rm-staccatos
-                   (replace-mark start-e 'as 'a)
-                   (replace-mark last-e 'as 'a)
-                   (rm-marks start-e 'te nil)
-                   (rm-marks last-e 'te nil)
-                   (rm-marks start-e 's nil)
-                   (rm-marks last-e 's nil))
-                 (add-mark start-e 'beg-sl)
-                 (add-mark last-e 'end-sl))
-               (when verbose
-                 (format t "~&~a -> ~a" 
-                         (get-pitch-symbol start-e nil)
-                         (get-pitch-symbol last-e nil)))
-               (when (and (needs-new-note e)
-                          (porc-equal e last-e))
-                 (setf start-e e))
-               (setf start-e nil
-                     count 0))
-              ;; got start of 'phrase' but second note is same as first
-              ((and start-e 
-                    (= count 1)
-                    (needs-new-note e)
-                    (porc-equal start-e e))
-               (setf start-e e))
-              ((or (is-rest e)  ; MDE Thu Jun  7 17:42:10 2012 -- or case added
-                   ;; (porc-equal e last-e)
-                   (and (not over-accents) (accented-p e)))
-               (setf start-e nil
-                     count 0))
-              ((not (is-tied-to e))
-               (incf count)))
-          ;; MDE Thu Jun  7 18:34:28 2012 -- took this out of the cond
-        (when (and rm-staccatos start-e) ; (not last-e))
-          ;; in the middle of a slur so remove staccatos etc.
+  (let ((result '()))
+    (loop 
+       with start-e 
+       with count
+       with last-e
+       for player in players do
+       (next-event sc player nil start-bar)
+       (setf start-e nil
+             last-e nil
+             count 0)
+       (loop 
+          for e = (next-event sc player nil nil end-bar) 
+          while e
+          do
           (when verbose
-            (format t " (in slur)"))
-          (if over-accents
-              (replace-mark e 'as 'a)
-              (rm-marks e 'a nil))
-          (rm-marks e 'te nil)
-          (rm-marks e 's nil))
-        (setf last-e e)))
-  ;; 9.4.11
-  (check-slurs sc)
-  t)
+            (format t "~&e: ~a, count ~a, start-e ~a"
+                    (when e
+                      (get-pitch-symbol e nil))
+                    count
+                    (when start-e
+                      (get-pitch-symbol start-e nil))))
+          (when rm-slurs-first
+            (rm-marks e '(beg-sl end-sl) nil))
+          (cond ((and (needs-new-note e) ;; start slur
+                      (not start-e))
+                 (setf start-e e)
+                 (incf count))
+                ((and (or (is-rest e) ;; end slur
+                          (and (not over-accents) (accented-p e))
+                          ;; 2 of the same notes should stop a slur but
+                          ;; without checking that count > 2 this code
+                          ;; might actually put a slur over two of the same
+                          ;; notes  
+                          ;; MDE Thu Jun  7 18:14:45 2012 -- changed > from 2 to 1
+                          (and (> count 1)
+                               (porc-equal e last-e)))
+                      start-e
+                      last-e
+                      (not (is-rest start-e))
+                      (not (is-rest last-e))
+                      (> count 1)) 
+                 ;; don't add slurs if they're already there
+                 (unless (or (begin-slur-p start-e)
+                             (end-slur-p last-e))
+                   (when rm-staccatos
+                     (replace-mark start-e 'as 'a)
+                     (replace-mark last-e 'as 'a)
+                     (rm-marks start-e 'te nil)
+                     (rm-marks last-e 'te nil)
+                     (rm-marks start-e 's nil)
+                     (rm-marks last-e 's nil))
+                   ;; MDE Mon Nov 18 14:31:59 2013 
+                   (push (list start-e last-e count) result)
+                   (add-mark start-e 'beg-sl)
+                   (add-mark last-e 'end-sl))
+                 (when verbose
+                   (format t "~&~a -> ~a" 
+                           (get-pitch-symbol start-e nil)
+                           (get-pitch-symbol last-e nil)))
+                 (when (and (needs-new-note e)
+                            (porc-equal e last-e))
+                   (setf start-e e))
+                 (setf start-e nil
+                       count 0))
+                ;; got start of 'phrase' but second note is same as first
+                ((and start-e 
+                      (= count 1)
+                      (needs-new-note e)
+                      (porc-equal start-e e))
+                 (setf start-e e))
+                ((or (is-rest e) ; MDE Thu Jun  7 17:42:10 2012 -- or case added
+                     ;; (porc-equal e last-e)
+                     (and (not over-accents) (accented-p e)))
+                 (setf start-e nil
+                       count 0))
+                ((not (is-tied-to e))
+                 (incf count)))
+          ;; MDE Thu Jun  7 18:34:28 2012 -- took this out of the cond
+          (when (and rm-staccatos start-e) ; (not last-e))
+            ;; in the middle of a slur so remove staccatos etc.
+            (when verbose
+              (format t " (in slur)"))
+            (if over-accents
+                (replace-mark e 'as 'a)
+                (rm-marks e 'a nil))
+            (rm-marks e 'te nil)
+            (rm-marks e 's nil))
+          (setf last-e e)))
+    ;; 9.4.11
+    (check-slurs sc)
+    (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 10:43:36 Mon Nov 11 2013 GMT
+;;; $$ Last modified: 12:34:51 Mon Nov 18 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -49,8 +49,8 @@
 ;;; NB only include methods here that the user should access (i.e. no -aux
 ;;; methods) as all of these will be automatically listed and linked on a
 ;;; manual page. Also, in order for these links to work we need 
-;;; ****m* slippery-chicken-edit/replace-tempo-map 
-;;; not ****m* slippery-chicken/replace-tempo-map
+;;; slippery-chicken-edit/replace-tempo-map 
+;;; not slippery-chicken/replace-tempo-map
 
 (in-package :slippery-chicken)
 
@@ -92,6 +92,7 @@
 => T
 
 |#
+;;; 
 ;;; SYNOPSIS
 (defmethod replace-tempo-map ((sc slippery-chicken) tm)
 ;;; ****

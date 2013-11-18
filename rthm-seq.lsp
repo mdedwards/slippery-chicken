@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 13:52:34 Sat Nov  9 2013 GMT
+;;; $$ Last modified: 12:33:08 Mon Nov 18 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2605,9 +2605,10 @@ data: S
 #|
 
 |#
+;;; 
 ;;; SYNOPSIS
 (defmethod rs-subseq ((rs rthm-seq) start &optional end)
-;;;  ****
+;;; ****
   (if end
       (when (> end (num-bars rs))
         (error "rthm-seq::rs-subseq: Can't get subseq ~a to ~a as rthm-seq ~%~

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 13:25:41 Mon Nov 18 2013 GMT
+;;; $$ Last modified: 17:40:28 Mon Dec  2 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1480,12 +1480,18 @@ data: (
 ;;; MDE Sat Nov  2 15:08:33 2013 -- if symbols-only, just compare the pitch
 ;;; symbols otherwise use pitch= (equal frequencies etc.) 
 (defmethod rm-duplicates ((c chord) &optional symbols-only)
-  (setf (slot-value c 'data) (rm-pitch-duplicates (data c) symbols-only)))
+  ;; MDE Mon Dec  2 17:40:08 2013 -- sim to rm-octaves below
+  ;; (setf (slot-value c 'data) (rm-pitch-duplicates (data c) symbols-only)))
+  (setf (data c) (rm-pitch-duplicates (data c) symbols-only)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May  3 10:52:54 2012 
 (defmethod rm-octaves ((c chord))
-  (setf (slot-value c 'data) (remove-octaves (data c)))
+  ;; MDE Mon Dec  2 17:37:36 2013 -- can't remember why we changed slot-value
+  ;; instead of data directly but need to do the latter so we update the number of
+  ;; pitches 
+  ;; (setf (slot-value c 'data) (remove-octaves (data c)))
+  (setf (data c) (remove-octaves (data c)))
   c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

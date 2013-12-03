@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 12:04:47 Thu Nov 14 2013 GMT
+;;; $$ Last modified: 11:21:40 Tue Dec  3 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4226,12 +4226,90 @@ RETURNS:
      (return (nreverse result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Implementation of A-weighting loudness compensation.  Taken from
+;;; ****f* utilities/a-weighting
+;;; DESCRIPTION
+;;; Implementation of A-weighting loudness compensation.  Formula taken from
 ;;; http://en.wikipedia.org/wiki/A-weighting.  This doesn't take 1000Hz
 ;;; loudness into account, rather it implements the 40-phon Fletcher-Munson
-;;; curve only.
-(defun a-weighting (f)
-  (+ 2.0 (* 20.0 (log (a-weighting-aux f) 10))))
+;;; curve only.  Note that 
+;;; 
+;;; ARGUMENTS
+;;; The frequency in Hertz to find the amplitude value for.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword aguments:
+;;; - :expt. A power (exponent) to raise the result to in order to
+;;;    tame/exaggerate the curve (make the db weightings less/more
+;;;    extreme). This only really makes sense if :linear t (though will work
+;;;    with db values also of course).  Values < 1 result in linear values
+;;;    closer to 1 (less extreme).  Values > 1 are further from 1.Default = NIL
+;;;    (no exponential function).
+;;; - :linear.  Return amplitude values as linear scalers rather than
+;;;    logarithmic decibel values.  NB If this is NIL then returned values are
+;;;    linkely to be negative (db) values.  Default = t.  
+;;; - :invert.  As the weighting routine tells us what loudness we'll perceive
+;;;    given constant amplitudes, lower frequencies will return negative values
+;;;    as we perceive them Xdb less then e.g. 1000Hz.  If :invert t, just flip
+;;;    this negative to a positive so you get a scaler to make lower/higher
+;;;    frequences equally loud as e.g. 1000Hz.
+;;;
+;;; RETURN VALUE
+;;; The linear or db weighting value for the given frequency.
+;;; 
+;;; EXAMPLE
+#|
+
+;;; Decibels:
+(a-weighting 50 :invert nil :linear nil) => -30.274979
+(a-weighting 50 :invert t :linear nil) => 30.274979
+;;; Linear amplitude scalers:
+(a-weighting 50) => 32.639904
+(a-weighting 50 :invert nil) => 0.030637344
+;;; Exaggeration:
+(a-weighting 50 :expt 1.1) => 46.251286
+;;; Smoothing:
+(a-weighting 50 :expt .5) => 5.7131343
+
+;;; Looping through the MIDI note range by tritones returning decibel values:
+(loop for midi from 0 to 127 by 6
+     for freq = (midi-to-freq midi)
+     collect (list (midi-to-note midi) (a-weighting freq :linear nil)))
+=>
+((C-1 76.85258) (FS-1 65.94491) (C0 55.819363) (FS0 46.71565) (C1 38.714867)
+ (FS1 31.724197) (C2 25.598646) (FS2 20.247103) (C3 15.622625) (FS3 11.657975)
+ (C4 8.258142) (FS4 5.358156) (C5 2.9644737) (FS5 1.1277018) (C6 -0.13445985)
+ (FS6 -0.8842882) (C7 -1.226917) (FS7 -1.2351798) (C8 -0.89729404)
+ (FS8 -0.09495151) (C9 1.3861179) (FS9 3.7814288))
+
+;;; Similar but returning linear amplitude scalers:
+(loop for midi from 0 to 127 by 6
+     for freq = (midi-to-freq midi)
+     collect (list (midi-to-note midi) (a-weighting freq)))
+=>
+((C-1 6960.316) (FS-1 1982.6475) (C0 617.9711) (FS0 216.6619) (C1 86.246864)
+ (FS1 38.56647) (C2 19.051636) (FS2 10.288571) (C3 6.041312) (FS3 3.827355)
+ (C4 2.5876594) (FS4 1.8531382) (C5 1.4067719) (FS5 1.1386365) (C6 0.9846389)
+ (FS6 0.9032034) (C7 0.8682687) (FS7 0.86744314) (C8 0.9018521) (FS8 0.9891278)
+ (C9 1.1730213) (FS9 1.5455086))
+
+(loop for midi from 0 to 127 by 6
+     for freq = (midi-to-freq midi)
+     collect (list (midi-to-note midi) (a-weighting freq :linear t)))
+
+|#
+;;; SYNOPSIS
+(defun a-weighting (f &key expt (linear t) (invert t))
+;;; ****
+  (let* ((result (+ 2.0 (* 20.0 (log (a-weighting-aux f) 10)))))
+    (when invert
+      (setf result (- result)))
+    (when linear
+      (setf result (db2amp result)))
+    (when expt
+      (setf result (if (< result 0.0)
+                   (expt (- result) expt)
+                   (expt result expt))))
+    result))
 
 (defun a-weighting-aux (f)
   (let ((f2 (* f f))

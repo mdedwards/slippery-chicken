@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified: 10:27:04 Tue Dec  3 2013 GMT
+;;; $$ Last modified: 11:23:12 Tue Dec  3 2013 GMT
 ;;;
 ;;; SVN ID: $Id: samp5.lsp 4223 2013-10-29 10:57:09Z medward2 $
 ;;;
@@ -63,9 +63,10 @@
             printing
             (amp-env '(0 0 5 1 95 1 100 0))
             (amp-env-base 2)
-            (amp-env-scaler 1.0) ; in addition to amp, which is set by clm-play  
+            ;; in addition to amp, which is set by clm-play:
+            (amp-env-scaler 1.0) 
             ;; scale amplitude of frequency according to a-weighting loudness
-            ;; compensation? (needs routines from utilities.lsp)
+            ;; compensation? (needs routines from utilities.lsp):
             a-weighting
             (degree 45)
             (distance 0.0)
@@ -76,8 +77,8 @@
          (sinewave (make-oscil :frequency frequency))
          (amps (* amp amp-env-scaler))
          (ampw (if a-weighting 
-                   ;; MDE Tue Dec  3 10:26:43 2013 -- a-weighting return linear
-                   ;; (not db) by default. 
+                   ;; MDE Tue Dec 3 10:26:43 2013 -- a-weighting now returns
+                   ;; linear (not db) scalers by default.
                    (* amps (sc::a-weighting frequency))
                    amps))
          (envelope (make-env :envelope amp-env :scaler ampw :base amp-env-base

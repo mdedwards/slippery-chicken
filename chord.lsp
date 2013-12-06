@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 17:40:28 Mon Dec  2 2013 GMT
+;;; $$ Last modified: 10:44:16 Fri Dec  6 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1145,9 +1145,13 @@ data: (
                ;; there's as few nasty intervals in there as possible too.
                (when (and c1 c2)
                  (let ((c1oct (make-chord (transpose-pitch-list-to-octave
-                                           (my-copy-list (data c1)) 4)))
+                                           (my-copy-list (data c1)) 4)
+                                          ;; MDE Fri Dec  6 10:40:23 2013 
+                                          :force-midi-channel nil))
                        (c2oct (make-chord (transpose-pitch-list-to-octave
-                                           (my-copy-list (data c2)) 4))))
+                                           (my-copy-list (data c2)) 4)
+                                          ;; MDE Fri Dec  6 10:40:37 2013 
+                                          :force-midi-channel nil)))
                    (setf c1acc (bad-adjacent-intervals c1oct)
                          c2acc (bad-adjacent-intervals c2oct))
                    (when verbose
@@ -1175,9 +1179,13 @@ data: (
                     ;; if there are enharmonics then we want to respell first
                     ;; the higher, then the lower and see which looks best
                     ;; if there are 3 of the buggers we're screwed (up to now).
-                    (up (make-chord (rm-enh-aux (my-copy-list data))))
+                    (up (make-chord (rm-enh-aux (my-copy-list data))
+                                    ;; MDE Fri Dec  6 10:40:58 2013
+                                    :force-midi-channel nil))
                     (down (make-chord (rm-enh-aux (my-copy-list
-                                                   (reverse data))))))
+                                                   (reverse data)))
+                                      ;; MDE Fri Dec  6 10:41:06 2013 -- 
+                                      :force-midi-channel nil)))
                (when verbose
                  (format t "~&rm-enharmonics: up: ~a down: ~a"
                          (when up (get-pitch-symbols up))
@@ -1225,7 +1233,9 @@ data: (
                  (setf result (make-chord
                                (if others
                                    (append first2 others)
-                                 first2)))
+                                 first2)
+                               ;; MDE Fri Dec  6 10:41:27 2013
+                               :force-midi-channel nil))
                  (when verbose
                    (format t "~&attempt: result: ~a"
                            (when result
@@ -1501,6 +1511,7 @@ data: (
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Feb  8 13:24:15 GMT 2012: Added robodoc entry
+;;; MDE Fri Dec  6 09:35:37 2013 -- changed to (force-midi-channel t) from NIL.
 
 ;;; ****f* chord/make-chord
 ;;; DESCRIPTION
@@ -1585,7 +1596,7 @@ data: F5
 ;;; 
 ;;; SYNOPSIS
 (defun make-chord (note-list &key (id nil) (auto-sort t) (midi-channel 0)
-                   (microtones-midi-channel 0) (force-midi-channel nil))
+                   (microtones-midi-channel 0) (force-midi-channel t))
 ;;; ****
   ;; MDE Mon Jun 11 17:59:07 2012 
   ;; (unless (listp note-list)

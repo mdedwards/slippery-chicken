@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:13:05 Mon Nov 18 2013 GMT
+;;; $$ Last modified: 11:36:35 Wed Dec  4 2013 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4339,39 +4339,39 @@ seq-num 5, VN, replacing G3 with B6
                      (output-name-uniquifier "")
                      (sndfile-extension nil)
                      (sndfile-palette nil)
-                     ;; MDE Mon Nov  4 10:10:35 2013 -- the following were ; ;
-                     ;; added so we could use instruments other than samp5 ; ;
+                     ;; MDE Mon Nov  4 10:10:35 2013 -- the following were 
+                     ;; added so we could use instruments other than samp5
                      (clm-ins #'clm::samp5)
-                     ;; either a list or a function (see above) ; ;
+                     ;; either a list or a function (see above)
                      clm-ins-args)
-;;; ****                                ; ;
-  ;; MDE Tue Apr 17 13:28:16 2012 -- guess the extension if none given ; ;
+;;; ****                               
+  ;; MDE Tue Apr 17 13:28:16 2012 -- guess the extension if none given
   (unless sndfile-extension
     (setf sndfile-extension
-          (cond                         ; can't use case with clm globals ; ;
+          (cond                         ; can't use case with clm globals
             ((or (= header-type clm::mus-aiff)
                  (= header-type clm::mus-aifc))
              ".aif")
             ((= header-type clm::mus-riff) ".wav")
             ((= header-type clm::mus-next) ".snd")
             (t (error ".aif")))))
-  ;; MDE Mon Apr  2 10:23:21 2012       ; ;
+  ;; MDE Mon Apr  2 10:23:21 2012      
   (unless (fboundp 'clm::nrev)
     (error "slippery-chicken::clm-play: clm's nrev.ins needs to be ~
             compiled and loaded for this method to run."))
-  ;; MDE Sat Jun  2 11:41:47 2012 --    ; ;
+  ;; MDE Sat Jun  2 11:41:47 2012 --   
   (when (and (numberp num-sequences)
              (has-subsections (get-section sc section)))
     (error "slippery-chicken::clm-play: :num-sequences (~a) should only be ~
             specified ~%for a section (~a) with no subsections."
            num-sequences section))
-  ;; MDE Fri May 11 15:13:18 2012 -- if there's only one section.... ; ;
+  ;; MDE Fri May 11 15:13:18 2012 -- if there's only one section....
   (when (and (not num-sections)
              (= section 1)
              (= 1 (get-num-sections sc)))
     (setf num-sections 1))
-  ;; MDE Wed Apr 25 14:45:03 2012 -- if we're playing more than one section ; ;
-  ;; then we shouldn't specify num-sequences as that might result in gaps in ; ;
+  ;; MDE Wed Apr 25 14:45:03 2012 -- if we're playing more than one section
+  ;; then we shouldn't specify num-sequences as that might result in gaps in
   ;; playback (e.g. if section 2 had more seqs than requested) ;
   (when (and num-sequences 
              (or (not num-sections)     ; MDE Fri May 11 11:56:13 2012 -- ;
@@ -4385,8 +4385,8 @@ seq-num 5, VN, replacing G3 with B6
             be used ~%when num-sections = 1."))
   #|                                    ;
   ;; MDE Sat Jun 2 12:51:03 2012 -- actually, we don't need to do this, and it
-  ;; ; ; just causes problems now we've updated num-seqs to handle sub-sections
-  ;; ; ; ;
+  ;; just causes problems now we've updated num-seqs to handle sub-sections
+  ;; ;
   (when (and num-sections (= 1 num-sections) (not num-sequences))
   (let ((ns (num-seqs sc section)))
   (unless ns 
@@ -5348,8 +5348,8 @@ beg-ph 4))))
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Create a slippery-chicken object, manually add an error to the tuplet data ; ; ; ;
-;;; and call check-tuplets with #'warn as the on-fail function. ; ; ; ;
+;;; Create a slippery-chicken object, manually add an error to the tuplet data
+;;; and call check-tuplets with #'warn as the on-fail function.
   (let* ((mini
 (make-slippery-chicken
 '+mini+
@@ -5577,7 +5577,7 @@ beg-ph 4))))
 ;;; 
 ;;; EXAMPLE
 #|
-;; A successful test                    ; ; ;
+;; A successful test                    ;
   (let* ((mini
 (make-slippery-chicken
 '+mini+
@@ -5594,7 +5594,7 @@ beg-ph 4))))
 
   => T
 
-;; A failing test                       ; ; ;
+;; A failing test                       ;
   (let* ((mini
 (make-slippery-chicken
 '+mini+
@@ -6514,7 +6514,7 @@ EVENT: start-time: 11.000, end-time: 11.500,
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Print the pitches before and after applying the method ; ; ; ;
+;;; Print the pitches before and after applying the method
 (let ((mini
 (make-slippery-chicken
 '+mini+
@@ -6729,9 +6729,9 @@ duration: 20.0 (20.000)
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Create a slippery-chicken object, set all the written-pitch-or-chord ; ; ;
-;;; slots to NIL and print the results. Apply the method and print the results ; ; ;
-;;; again to see the difference.        ; ; ;
+;;; Create a slippery-chicken object, set all the written-pitch-or-chord ;
+;;; slots to NIL and print the results. Apply the method and print the results ;
+;;; again to see the difference.        ;
 (let ((mini
 (make-slippery-chicken
 '+mini+
@@ -7215,7 +7215,7 @@ FS4 G4)
                               (test-sndfile-6.aiff))))
                            ("/path/to/test-sndfiles-dir-1"
                             "/path/to/test-sndfiles-dir-2"))
-        ;; :tempo-map '((1 (q 84)) (9 (q 72))) ; ; ; ; ;
+        ;; :tempo-map '((1 (q 84)) (9 (q 72))) ;
         :tempo-curve '(5 q (0 40 25 60 50 80 75 100 100 120))
         :staff-groupings '(2 2 3)
         :instrument-change-map '((1 ((fl ((1 flute) (3 piccolo) (5 flute))))))
@@ -7791,7 +7791,7 @@ FS4 G4)
                                (clone (pitch-or-chord 
                                        last-note-previous-seq))))))
     #|
-;; this checks that there are no ties to the first note in a seq ; ; ; ;
+;; this checks that there are no ties to the first note in a seq
 (when (is-tied-to (get-nth-event 0 (get-bar sequenz 0 t)))
     (error "slippery-chicken::sc-make-sequenz: ~
     Tied first note of sequenz not allowed!"))

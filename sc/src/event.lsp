@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:06:38 Thu Nov 14 2013 GMT
+;;; $$ Last modified: 15:56:04 Thu Dec  5 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -560,7 +560,8 @@
     ;; no warning if > 1.0 < 0.0
     ;; MDE Fri Dec 30 15:36:42 2011 -- add-mark updates amplitude if we give it
     ;; a dynamic but that would limit us to 0.0->1.0 so don't allow this here 
-    (add-mark e (amplitude-to-dynamic value nil) nil)))
+    (add-mark e (amplitude-to-dynamic value nil) nil))
+  value)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -626,7 +627,8 @@ data: 132
     (tempo (setf (slot-value e 'tempo-change) (clone value)))
     (number (setf (slot-value e 'tempo-change) (make-tempo value)))
     (t (error "event::(setf temp-change): argument should be a number ~
-               or tempo object: ~a" value))))
+               or tempo object: ~a" value)))
+  value)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -677,7 +679,8 @@ data: 132
       (setf (slot-value e 'written-pitch-or-chord)
             (if (pitch-or-chord e)
                 (transpose (pitch-or-chord e) diff)
-                nil)))))
+                nil))))
+  value)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May 30 18:49:56 2013 -- auto-sets the pitch-or-chord slot
@@ -2937,7 +2940,7 @@ T
 ;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; Always returns NIL.
+;;; The chord object which creates the harmonic.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -2995,7 +2998,8 @@ T
 
 (defmethod (setf 8va) :before (value (e event))
   (unless (or (= value 0) (= value -1) (= value 1))
-    (error "event::(setf 8va): 8va slot can only be -1, 0, or 1")))
+    (error "event::(setf 8va): 8va slot can only be -1, 0, or 1"))
+  value)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

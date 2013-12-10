@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 20:49:36 Sun Dec  1 2013 GMT
+;;; $$ Last modified: 15:03:30 Tue Dec  3 2013 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -80,24 +80,32 @@
   (let ((data (data al)))
     (when data
       (loop for pair in data and i from 0 do
-            (unless (or (typep pair 'named-object)
-                        ;; pitch-seq-palettes don't have to give a key/id as
-                        ;; that can be provided automatically in
-                        ;; make-pitch-seq, so handle them in that class itself
-                        (typep al 'pitch-seq-palette))
-              (unless (and (listp pair) (= 2 (length pair)))
-                (error "~a~%assoc-list::verify-and-store: ~
+           (if (or (typep pair 'named-object)
+                   ;; pitch-seq-palettes don't have to give a key/id as
+                   ;; that can be provided automatically in
+                   ;; make-pitch-seq, so handle them in that class itself
+                   (typep al 'pitch-seq-palette))
+               ;; MDE Tue Dec 3 15:02:57 2013 -- can't have NIL IDs in an
+               ;; assoc-list!
+               (when (and (not (pitch-seq-palette-p al)) (not (id pair)))
+                 (error "~a~%assoc-list::verify-and-store: ~
+                         assoc list with id ~a: ~%~
+                         all objects in an assoc-list need an ID (NIL)."
+                        pair (id al)))
+               (progn
+                 (unless (and (listp pair) (= 2 (length pair)))
+                   (error "~a~%assoc-list::verify-and-store: ~
                         assoc list with id ~a: ~%~
                         The data slot of assoc-list must be a list containing ~
                         2-element sublists." pair (id al)))
-              (unless (assoc-list-id-p (first pair))
-                (error "assoc-list::verify-and-store: ~
+                 (unless (assoc-list-id-p (first pair))
+                   (error "assoc-list::verify-and-store: ~
                         assoc-list ids may only be symbols, strings or ~
                         numbers: ~a"
-                       (first pair)))
-              (setf (nth i data) (make-instance 'named-object 
-                                   :id (first pair)
-                                   :data (second pair)))))))
+                          (first pair)))
+                 (setf (nth i data) (make-instance 'named-object 
+                                                   :id (first pair)
+                                                   :data (second pair))))))))
   (unless 
       (typep al 'pitch-seq-palette)
     (all-ids-unique al)))

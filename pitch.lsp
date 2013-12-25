@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 18:46:57 Tue Dec 24 2013 WIT
+;;; $$ Last modified: 12:38:51 Wed Dec 25 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -621,7 +621,6 @@ data: C5
 ;;; - T or NIL to indicate whether or not enharmonic pitches are considered 
 ;;;   equal. T = enharmonic pitches are considered equal. Default = NIL. 
 ;;; - a number to indicate the frequency deviation allowed before returning NIL.
-;;; - similar for src.
 ;;; 
 ;;; RETURN VALUE
 ;;; T if the values of the two specified pitch objects are equal, otherwise
@@ -672,14 +671,16 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod pitch= ((p1 pitch) (p2 pitch) &optional enharmonics-are-equal
-                   (frequency-tolerance 0.01) (src-tolerance 0.0001))
+                   (frequency-tolerance 0.01)) ; (src-tolerance 0.0001))
 ;;; ****
   ;; (print p1) (print p2)
   (and (equal-within-tolerance (frequency p1) (frequency p2)
                                frequency-tolerance)
        (or enharmonics-are-equal (eq (data p1) (data p2)))
-       (= (midi-note p1) (midi-note p2))
-       (equal-within-tolerance (src p1) (src p2) src-tolerance)))
+       (= (midi-note p1) (midi-note p2))))
+       ;; MDE Wed Dec 25 12:30:26 2013 -- src slots are not necessary/useful
+       ;; for pitch comparison (used to be in the above 'and' clause)
+       ;; (equal-within-tolerance (src p1) (src p2) src-tolerance)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3250,6 +3251,62 @@ data: F4
          (if (or (not low) (pitch< p low))
              (setf low p)))
     (values hi low (id hi) (id low))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* instruments/natural-harmonic
+;;; DATE
+;;; December 24th 2013
+;;;
+;;; DESCRIPTION
+;;; Determine whether a pitch can be played as a natural harmonic on a string
+;;; instrument.  
+;;; 
+;;; ARGUMENTS
+;;; - the pitch (symbol or pitch object)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :tuning. a list of the fundamentals of the open strings, as pitch objects
+;;;   or symbols.  These should descend from the highest string.  Default:
+;;;   guitar tuning.  
+;;; - :highest-partial.  Integer. What we consider the highest harmonic possible
+;;;   (counting the fundamental as 1).
+;;; - :tolerance.  The deviation in cents that we can accept for the frequency
+;;;   comparison.  Default = 10.
+;;; 
+;;; RETURN VALUE
+;;; The string number and partial number as a list if possible as a harmonic,
+;;; or NIL if not.
+;;; 
+;;; EXAMPLE
+#|
+(NATURAL-HARMONIC 'b5) ; octave harmonic of B string
+=> (2 2)
+SC> (NATURAL-HARMONIC 'b6) ; octave + 5th of high E string
+=> (1 3)
+|#
+;;; SYNOPSIS
+(defun natural-harmonic (pitch &key (tuning '(e5 b4 g4 d4 a3 e3))
+                         (highest-partial 6) (tolerance 15))
+;;; ****
+  (setf pitch (make-pitch pitch)
+        tuning (loop for p in tuning collect (make-pitch p)))
+  ;; in the case of a note being a harmonic of more than one string, starting
+  ;; with the highest string first guarantees that we'll return the harmonic
+  ;; with the lowest partial number
+  (loop with hertz = (abs (cents-hertz pitch tolerance))
+     ;; with srt = (abs (- (semitones (* tolerance .01)) 1.0))
+     with result = nil
+     for string in tuning and string-num from 1 
+     while (not result)
+     do
+     (loop for partial from 2 to highest-partial 
+        for harmonic = (make-pitch (* partial (frequency string)))
+        do
+        (when (pitch= pitch harmonic t hertz)
+          (setf result (list string-num partial))
+          (return)))
+     finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF pitch.lsp

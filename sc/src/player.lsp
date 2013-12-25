@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 13:10:35 Sun Aug 25 2013 BST
+;;; $$ Last modified: 10:35:29 Thu Dec 19 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -45,11 +45,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -315,7 +310,10 @@
 
 ;;; ****m* player/total-notes
 ;;; DESCRIPTION
-;;; Get the total number of notes played by a specified player.
+
+;;; Get the total number of notes (actually events) played by a specified
+;;; player (not rests or tied notes, but midi-notes) in the piece which this
+;;; instrument plays.  A chord counts as 1 note/event.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A player object.

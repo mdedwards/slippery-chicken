@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 15:47:14 Tue Oct 29 2013 GMT
+;;; $$ Last modified: 18:37:51 Mon Dec 23 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -61,11 +61,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -1678,6 +1673,18 @@ data: RIBBON
 (defmethod set-slot (slot value id (ral recursive-assoc-list))
 ;;; ****
   (setf (slot-value (get-data id ral) slot) value))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod print-simple ((ral recursive-assoc-list) &optional (stream t) ignore)
+  (declare (ignore ignore))
+  (print
+   (loop for object in (data ral) 
+      for data = (data object)
+      collect
+      (if (is-ral data)
+          (cons (id object) (print-simple data stream))
+          (list (id object) (data object))))
+   stream))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

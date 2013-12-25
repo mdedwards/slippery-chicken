@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 14:52:21 Thu Nov 14 2013 GMT
+;;; $$ Last modified: 18:46:57 Tue Dec 24 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -620,6 +620,8 @@ data: C5
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether or not enharmonic pitches are considered 
 ;;;   equal. T = enharmonic pitches are considered equal. Default = NIL. 
+;;; - a number to indicate the frequency deviation allowed before returning NIL.
+;;; - similar for src.
 ;;; 
 ;;; RETURN VALUE
 ;;; T if the values of the two specified pitch objects are equal, otherwise
@@ -678,6 +680,43 @@ NIL
        (or enharmonics-are-equal (eq (data p1) (data p2)))
        (= (midi-note p1) (midi-note p2))
        (equal-within-tolerance (src p1) (src p2) src-tolerance)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* pitch/cents-hertz
+;;; DATE
+;;; December 24th 2013
+;;; 
+;;; DESCRIPTION
+;;; Convert an offset in cents into the frequency deviation of a pitch.
+;;; 
+;;; ARGUMENTS
+;;; - a pitch object
+;;; - the number of cents to offset the pitch and return the frequency
+;;;   deviation for  
+;;; 
+;;; RETURN VALUE
+;;; The frequency deviation in Hertz of the offset pitch.
+;;; 
+;;; EXAMPLE
+#|
+;;; taking as a given the usual floating point round errors:
+(cents-hertz (make-pitch 'a4) 1200) 
+=> 439.9999694824219d0 ; i.e. going up an octave from a4 would be 440 Hz higher
+(cents-hertz (make-pitch 'a4) -1200)
+=> -219.99998474121094d0
+(cents-hertz (make-pitch 'a4) 3)
+=> 0.7631253666877456d0
+(cents-hertz (make-pitch 'a4) 10)
+=> 2.5489090105293144d0
+(cents-hertz (make-pitch 'a3) 10)
+=> 1.2744545052646572d0
+|#
+;;; SYNOPSIS
+(defmethod cents-hertz ((p pitch) cents)
+;;; ****
+  (- (* (frequency p) (semitones (* .01 cents)))
+     (frequency p) ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

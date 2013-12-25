@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:36:35 Wed Dec  4 2013 GMT
+;;; $$ Last modified: 18:52:16 Mon Dec 23 2013 WIT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2694,7 +2694,7 @@ data: NIL
 ;;; Return the number of sequences (which may contain multiple bars) in a
 ;;; specified section of a slippery-chicken object.  
 ;;;
-;;; NB This will return NIL if the section has sub-sections.
+;;; NB This will return the total number of seqs if there are sub-sections.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.

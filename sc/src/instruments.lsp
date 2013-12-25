@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 12:22:02 Wed Oct  9 2013 BST
+;;; $$ Last modified: 12:17:47 Wed Dec 25 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -698,6 +698,64 @@
            (when (>= (length temp) 2)
              (push temp poss))))
     (nreverse poss)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****f* instruments/natural-harmonic
+;;; DATE
+;;; December 24th 2013
+;;;
+;;; DESCRIPTION
+;;; Determine whether a pitch can be played as a natural harmonic on a string
+;;; instrument.  
+;;; 
+;;; ARGUMENTS
+;;; - the pitch (symbol or pitch object)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :tuning. a list of the fundamentals of the open strings, as pitch objects
+;;;   or symbols.  These should descend from the highest string.  Default:
+;;;   guitar tuning.  
+;;; - :highest-partial.  Integer. What we consider the highest harmonic possible
+;;;   (counting the fundamental as 1).
+;;; - :tolerance.  The deviation in cents that we can accept for the frequency
+;;;   comparison.  Default = 10.
+;;; 
+;;; RETURN VALUE
+;;; The string number and partial number as a list if possible as a harmonic,
+;;; or NIL if not.
+;;; 
+;;; EXAMPLE
+#|
+(NATURAL-HARMONIC 'b5) ; octave harmonic of B string
+=> (2 2)
+SC> (NATURAL-HARMONIC 'b6) ; octave + 5th of high E string
+=> (1 3)
+|#
+;;; SYNOPSIS
+(defun natural-harmonic (pitch &key (tuning '(e5 b4 g4 d4 a3 e3))
+                         (highest-partial 6) (tolerance 15))
+;;; ****
+  (setf pitch (make-pitch pitch)
+        tuning (loop for p in tuning collect (make-pitch p)))
+  ;; in the case of a note being a harmonic of more than one string, starting
+  ;; with the highest string first guarantees that we'll return the harmonic
+  ;; with the lowest partial number
+  (loop with hertz = (abs (cents-hertz pitch tolerance))
+     with srt = (abs (- (semitones (* tolerance .01)) 1.0))
+     with result = nil
+     for string in tuning and string-num from 1 
+     while (not result)
+     do
+     (loop for partial from 2 to highest-partial 
+        for harmonic = (make-pitch (* partial (frequency string)))
+        do
+        ;; (print (id harmonic))
+        (when (pitch= pitch harmonic t hertz srt)
+          (setf result (list string-num partial))
+          (return)))
+     finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

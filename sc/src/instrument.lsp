@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 19:52:54 Wed Oct 30 2013 GMT
+;;; $$ Last modified: 10:34:52 Thu Dec 19 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -159,15 +159,16 @@
 
    ;;; The total number of bars in the piece in which this instrument plays.
    (total-bars :accessor total-bars :type integer :initform 0)
-   ;;; The total number of notes (not rests or tied notes, therefore
-   ;;; midi-notes) in the piece which this instrument plays. 
+   ;;; The total number of notes (actually events, not rests or tied notes,
+   ;;; therefore midi-notes) in the piece which this instrument plays.
    (total-notes :accessor total-notes :type integer :initform 0)
    ;;; The total-duration in seconds that the instrument plays for in the
    ;;; piece. 
    (total-duration :accessor total-duration :type float :initform 0.0)
-   ;;; Each time a note is played, this slot will be incremented by the degree
-   ;;; of the note (in the scale for the piece).  Then, at the end, we can
-   ;;; divide this by total-notes and have the mean note (tessitura).
+   ;;; Each time an event is played, this slot will be incremented by the
+   ;;; degree of the note (in the scale for the piece).  Then, at the end, we
+   ;;; can divide this by total-notes and have the mean note (tessitura).  In
+   ;;; the case of chords, the average is used.
    (total-degrees :accessor total-degrees :type number :initform 0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

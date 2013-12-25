@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:56:04 Thu Dec  5 2013 GMT
+;;; $$ Last modified: 10:31:06 Thu Dec 19 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3027,7 +3027,7 @@ T
 
 ;;; ****m* event/get-degree
 ;;; DESCRIPTION
-;;; Get the degree of the event. 
+;;; Get the degree of the event, summing or averaging for chords.
 ;;; 
 ;;; ARGUMENTS
 ;;; - an event object
@@ -3044,7 +3044,8 @@ T
 ;;; RETURN VALUE 
 ;;; By default this returns a list (even if it's a single pitch), unless :sum T
 ;;; whereupon it will return a single value: the sum of the degrees if a chord,
-;;; otherwise just the degree.  A rest would return '(0) or 0.
+;;; otherwise just the degree. :average T will return the average of the sum.
+;;; A rest would return '(0) or 0.
 ;;; 
 ;;; EXAMPLE
 #|

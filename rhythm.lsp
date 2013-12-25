@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 16:05:44 Thu Nov 14 2013 GMT
+;;; $$ Last modified: 10:45:55 Thu Dec 19 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -231,8 +231,7 @@
           (if (data r)
               (data r)
               (duration r))
-          (if (is-tied-from r) "+" ""))
-  t)
+          (if (is-tied-from r) "+" "")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

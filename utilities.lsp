@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 13:29:53 Tue Dec  3 2013 GMT
+;;; $$ Last modified: 17:14:50 Tue Dec 24 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1696,148 +1696,6 @@
        (loop for x from 0 below num-points collect x  
           collect (interpolate x e)))
       (t (error "utilities::decimate-env: unknown method: ~a" method)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 10:32:25 BST 2012: Added robodoc entry
-
-;;; ****f* utilities/reverse-env
-;;; DESCRIPTION
-;;; Reverse the order of y values in a list of break-point pairs.
-;;; 
-;;; ARGUMENTS
-;;; - An envelope in the form of a list of break-point pairs.
-;;; 
-;;; RETURN VALUE
-;;; An envelope in the form of a list of break-point pairs.
-;;; 
-;;; EXAMPLE
-#|
-(reverse-env '(0 0 25 11 50 13 75 19 100 23))
-
-=> (0 23 25 19 50 13 75 11 100 0)
-
-|#
-;;; SYNOPSIS
-(defun reverse-env (env)
-;;; ****
-  "reverse-env returns the reverse of the envelope 
-   supplied to it.  
-   e.g. (reverse-env '(0 0 60 .3 100 1)) => (0 1 40 0.3 100 0)."
-  (let ((x-max (lastx env))
-        (result nil))
-    (loop for x in env by #'cddr and y in (cdr env) by #' cddr do
-         (push y result)
-         (push (- x-max x) result))
-    result))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 10:36:29 BST 2012: Added robodoc entry
-
-;;; ****f* utilities/repeat-env
-;;; DESCRIPTION
-;;; Create a new list by repeating the y values of a list of break-point pairs
-;;; a specified number of times over the same total x-axis span of the original
-;;; envelope. A quick ramp is inserted between repeats to ensure that all
-;;; x-axis values are unique and incremental.
-;;;
-;;; If the optional argument is set to T, the method will reverse the order of
-;;; every second repeat.
-;;; 
-;;; ARGUMENTS
-;;; - An envelope in the form of a list of break-point pairs.
-;;; - An integer that is the number of times the elements of the given envelope
-;;;   should be repeated in the new list.
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; - T or NIL to indicate whether every second repetition of the original
-;;;   envelope should be returned in reverse order. 
-;;;   T = reverse. Default = NIL.
-;;; 
-;;; RETURN VALUE
-;;; - A new envelope in the form of a list of break-point pairs.
-;;; 
-;;; EXAMPLE
-#|
-(repeat-env '(0 1 50 2 100 3) 3)
-
-=> (0.0 1 16.666666 2 33.333332 3 34.333332 1 50.0 2 66.666664 3 67.666664 1
-    83.33333 2 100.0 3)
-
-(repeat-env '(0 1 50 2 100 3) 3 t)
-
-=> (0.0 1 16.666666 2 33.333332 3 50.0 2 66.666664 1 83.33333 2 100.0 3)
-
-|#
-;;; SYNOPSIS
-(defun repeat-env (env num-times &optional reflected)
-;;; ****
-  "repeat-env will repeat an envelope the number 
-   of times specified by its second argument.  
-   e.g. (repeat-env '(0 0 100 1) 2) => (0 0 50 1 51 0 100 1).  
-   Because the final y value was different to the first y value, 
-   a quick ramp was inserted between repeats.  
-   Every other repeat can be a reflection of the given envelope 
-   by setting the optional variable to t.
-   e.g. (repeat-env '(0 0 100 1) 2 t) => (0 0 50 1 100 0)."
-  (let* ((result nil)
-         (x-inc 0.0)
-         (x-max (lastx env))
-         (base (/ x-max num-times))
-         (starting (if (and reflected (evenp num-times)) 
-                       (reverse-env env) env))
-         (copy (reverse starting))
-         (first-y-is-last-y (when (numberp (cadr env))
-                              (= (cadr env) (car (last env)))))
-         (offset (/ x-max 100)))
-    (dotimes (count num-times)
-             (setq x-inc (* base (- num-times count 1.0)))
-             (loop for y in copy by #'cddr and x in (cdr copy) by #'cddr do
-                   (push y result)
-                   (push (+ x-inc (/ x num-times)) result))
-             (setf copy (cond ((and (not reflected) (not first-y-is-last-y)) 
-                               copy)
-                              ((and reflected (evenp count))
-                               (cddr (reverse (reverse-env starting))))
-                              ((or (and reflected (oddp count)) 
-                                   first-y-is-last-y)
-                               (cddr (reverse starting))))
-                   (car result)
-                   (if (or (= count (- num-times 1)) reflected 
-                           first-y-is-last-y)
-                       (car result) (+ (car result) offset))))
-    result))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 11:01:20 BST 2012: Added robodoc entry
-
-;;; ****f* utilities/env-plus
-;;; DESCRIPTION
-;;; Increase all y values of a given list of break-point pairs by a specified
-;;; amount.
-;;; 
-;;; ARGUMENTS
-;;; - An envelope in the form of a list of break-point pairs.
-;;; - A number that is the amount by which all y values of the given envelope
-;;;   are to be increased.
-;;; 
-;;; RETURN VALUE
-;;; A list of break-point pairs.
-;;; 
-;;; EXAMPLE
-#|
-(env-plus '(0 0 25 11 50 13 75 19 100 23) 7.1)
-
-=> (0 7.1 25 18.1 50 20.1 75 26.1 100 30.1)
-
-|#
-;;; SYNOPSIS
-(defun env-plus (env add)
-;;; ****
-  (loop for x in env by #'cddr and y in (cdr env) by #'cddr
-     collect x collect (+ y add)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -4317,6 +4175,35 @@ RETURNS:
        (* (+ (* 20.6 20.6) f2) (sqrt (* (+ f2 (* 107.7 107.7))
                                         (+ f2 (* 737.9 737.9))))
           (+ f2 c1)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/env2gnuplot
+;;; DATE
+;;; 24th December 2013
+;;;
+;;; DESCRIPTION
+;;; Write a data file of x,y envelope values for use with gnuplit.  Once called
+;;; start gnuplot and issue a command such as gnuplot> plot '/tmp/env.txt' with
+;;; lines.
+;;; 
+;;; ARGUMENTS
+;;; - The envelope as the usual list of x y pairs
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - The pathname of the data file to write.  Default = "/tmp/env.txt".
+;;; 
+;;; RETURN VALUE
+;;; Always T
+;;; 
+;;; SYNOPSIS
+(defun env2gnuplot (env &optional (file "/tmp/env.txt"))
+;;; ****
+  (with-open-file
+      (stream file :direction :output :if-exists :supersede
+              :if-does-not-exist :create)
+    (loop for x in env by #'cddr and y in (rest env) by #'cddr do
+         (format stream "~&~a ~a" x y)))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 15:41:39 Sat Nov  9 2013 GMT
+;;; $$ Last modified: 10:30:35 Thu Dec 19 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5024,6 +5024,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Aug 23 09:53:51 2013 
+;;; for chords this will return the average degree.
 (defmethod total-degrees ((rsb rthm-seq-bar))
   (loop for e in (rhythms rsb) 
      ;; MDE Wed Oct 30 19:49:10 2013 -- fixed but here that was summing tied

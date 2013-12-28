@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 12:38:51 Wed Dec 25 2013 WIT
+;;; $$ Last modified: 15:12:51 Thu Dec 26 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -681,6 +681,34 @@ NIL
        ;; MDE Wed Dec 25 12:30:26 2013 -- src slots are not necessary/useful
        ;; for pitch comparison (used to be in the above 'and' clause)
        ;; (equal-within-tolerance (src p1) (src p2) src-tolerance)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* pitch/enharmonic-equivalents
+;;; DATE
+;;; 25th December 2013
+;;;
+;;; DESCRIPTION
+;;; Test whether two pitches are enharmonically equivalent.
+;;; 
+;;; ARGUMENTS
+;;; - pitch object 1 
+;;; - pitch object 2
+;;; 
+;;; RETURN VALUE
+;;; T or NIL
+;;; 
+;;; EXAMPLE
+#|
+(enharmonic-equivalents (make-pitch 'gs4) (make-pitch 'af4))
+=> T
+(enharmonic-equivalents (make-pitch 'gs4) (make-pitch 'gs4))
+=> NIL
+|#
+;;; SYNOPSIS
+(defmethod enharmonic-equivalents ((p1 pitch) (p2 pitch))
+;;; ****
+  (pitch= p1 (enharmonic p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2106,6 +2134,10 @@ pitch::add-mark: mark PIZZ already present but adding again!
             (marks-before pn) (marks-before p)))
     pn))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod rm-marks ((p pitch) marks &optional (warn t))
+  (rm-marks-aux p marks warn))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
@@ -3259,7 +3291,7 @@ data: F4
 ;;;
 ;;; DESCRIPTION
 ;;; Determine whether a pitch can be played as a natural harmonic on a string
-;;; instrument.  
+;;; instrument (with the guitar as default).  
 ;;; 
 ;;; ARGUMENTS
 ;;; - the pitch (symbol or pitch object)
@@ -3273,6 +3305,7 @@ data: F4
 ;;;   (counting the fundamental as 1).
 ;;; - :tolerance.  The deviation in cents that we can accept for the frequency
 ;;;   comparison.  Default = 10.
+;;; - :debug. Print data for debugging/testing purposes.  Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; The string number and partial number as a list if possible as a harmonic,
@@ -3287,7 +3320,7 @@ SC> (NATURAL-HARMONIC 'b6) ; octave + 5th of high E string
 |#
 ;;; SYNOPSIS
 (defun natural-harmonic (pitch &key (tuning '(e5 b4 g4 d4 a3 e3))
-                         (highest-partial 6) (tolerance 15))
+                         (highest-partial 6) (tolerance 15) debug)
 ;;; ****
   (setf pitch (make-pitch pitch)
         tuning (loop for p in tuning collect (make-pitch p)))
@@ -3300,10 +3333,21 @@ SC> (NATURAL-HARMONIC 'b6) ; octave + 5th of high E string
      for string in tuning and string-num from 1 
      while (not result)
      do
+     (when debug
+       (format t "~&String ~a: ~a" string-num (id string)))
      (loop for partial from 2 to highest-partial 
         for harmonic = (make-pitch (* partial (frequency string)))
         do
-        (when (pitch= pitch harmonic t hertz)
+        (when debug
+          (format t "~&seeking: ~,3f: partial ~a: ~,3f, max deviation: ~
+                       ~,3fHz, abs diff: ~,3f" 
+                  (frequency pitch) partial (frequency harmonic) hertz
+                  (- (frequency pitch) (frequency harmonic))))
+        ;; don't use pitch= as this might fail because of nearest note
+        ;; spellings whereas the frequencies are close enough 
+        (when (<= (abs (- (frequency pitch) (frequency harmonic)))
+                  hertz)
+            ; (pitch= pitch harmonic t hertz)
           (setf result (list string-num partial))
           (return)))
      finally (return result)))

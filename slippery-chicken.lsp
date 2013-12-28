@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:52:16 Mon Dec 23 2013 WIT
+;;; $$ Last modified: 17:11:02 Fri Dec 27 2013 WIT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5883,6 +5883,9 @@ beg-ph 4))))
 ;;;   rthm-seq-bar object, as is done with any other note; however,
 ;;;   starting/ending a beam on a rest and then trying to generate a score with
 ;;;   CMN will fail.
+;;; - :footer. A string to add to the footer of every score page. Default = NIL.
+;;; - :subtitle. The subtitle, as a string, to add below the title (taken from
+;;;   the sc object).  Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; The path of the main score file generated.
@@ -5995,6 +5998,9 @@ beg-ph 4))))
                                   ;; into the score (e.g. leave out a computer
                                   ;; part). If nil all players will be written.
                                   (players nil)
+                                  ;; MDE Fri Dec 27 16:56:51 2013 
+                                  (subtitle nil)
+                                  (footer nil)
                                   ;; minimum rest necessary to do a page turn;
                                   ;; something like a time signature e.g. (2 1)
                                   ;; would mean we need a min. of 2 whole rests
@@ -6048,9 +6054,10 @@ beg-ph 4))))
          (def-file-path (concatenate 'string path def-file)))
     (labels ((no-header-footer (stream)
                (format stream 
-                       "~%\\header {~%  title =\"~a\" ~%  tagline = ##f~%  ~
-                         composer = ~a~%}"
+                       "~%\\header {~%  title = \"~a\" ~%  subtitle = ~a~
+                        ~%  tagline = ##f~%  composer = ~a~%}"
                        (title sc)
+                       (if subtitle (format nil "\"~a\"" subtitle) "##f")
                        (if (composer sc) 
                            (format nil "\"~a\"" (composer sc))
                            "##f")))
@@ -6147,6 +6154,9 @@ beg-ph 4))))
         (format out "~%  bottom-margin = ~a\\mm" bottom-margin)
         (format out "~%  left-margin = ~a\\mm" left-margin)
         (format out "~%  line-width = ~a\\cm" line-width)
+        (when footer
+          (format out "~%  oddFooterMarkup = \\markup \\tiny \\fill-line ~
+                       { \"~a\" }" footer))
         ;; paper } closed here
         (format out "~%}~%~%#(set-global-staff-size ~a)~%~%" staff-size)
         (when use-custom-markup

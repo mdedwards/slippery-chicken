@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:31:06 Thu Dec 19 2013 WIT
+;;; $$ Last modified: 16:15:38 Thu Dec 26 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -51,11 +51,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -2019,154 +2014,162 @@ NIL
                        (marks e) (marks-before e)
                        ;; MDE Thu Nov 14 11:52:26 2013 -- got to be able to
                        ;; handle marks as lists so #'eq not a sufficient member
-                       ;; test 
+                       ;; test
                        #'(lambda (x y) (if (listp y)
                                            (eq x (first y))
                                            (eq x y))))
       (setf (marks e) from
             (marks-before e) to))
-    (let* ((poc (if (and in-c (not (from-8ve-transposing-ins e)))
-                    (pitch-or-chord e)
-                    (written-pitch-or-chord e)))
-           (note 
-            (progn
-              ;; MDE Mon Apr 30 20:03:35 2012 -- harmonic note heads must be a
-              ;; chord in LP!!!!
-              (when (has-mark e 'flag-head)
-                (if (is-single-pitch e)
-                    (add-mark poc 'flag-head)
-                    (loop for p in (data poc) do (add-mark p 'flag-head)))
-                (rm-marks e 'flag-head)
-                (when (is-single-pitch e)
-                  (setf poc (make-chord (list poc)))))
-              (cond ((is-rest e) "r")
-                    ;; we handle these with the next normal notes
-                    ((is-grace-note e) 
-                     (push poc grace-notes))
-                    ;; it's a note or chord
-                    (t (get-lp-data poc)))))
-           (result '())
-           (rthm (unless (is-grace-note e)
-                   (round (nearest-power-of-2 (undotted-value e)))))
-           ;; so, if the bracket slot is set, and the first element is a list,
-           ;; we've got tuplet brackets so loop for each sublist and set the
-           ;; e.g. \times 2/3 { to be the second element of the sublist.  if
-           ;; it's just a positive integer, that's the end of the tuplet so
-           ;; close with }.  otherwise, unless tuplet-scaler is 1, we've got
-           ;; tuplets without brackets so use the e.g. 4*2/3 (tq) notation.
-           ;; other than that, just use the nearest power of 2 to the value.
-           ;; in all cases don't forget to add the dots.
-           (close-tuplets 0))
-      ;; MDE Mon Nov 26 17:42:14 2012 
-      (when (zerop rthm)
-        (error "event::get-lp-data: can't get nearest-power-of-2 for ~a" e))
-      ;; MDE Mon Jul 23 13:52:40 2012 -- split out into above method
-      (loop for s in (lp-get-ins-change e) do (push s result))
-      (when (marks-before e)
-        (loop for thing in (marks-before e) do
-           ;; handle clefs here rather than in lp-get-mark
-             (if (and (listp thing) (eq (first thing) 'clef))
-                 (push 
-                  (if (eq 'percussion (second thing))
-                      (format nil "~%~a~%" (lp-percussion-clef))
-                      (format nil "~%\\clef ~a " 
-                              (string-downcase (case (second thing)
-                                                 (treble 'treble)
-                                                 (bass 'bass)
-                                                 (alto 'alto)
-                                                 (tenor 'tenor)
-                                                 ;; (percussion 'percussion)
-                                                 (double-treble "\"treble^8\"")
-                                                 (double-bass "\"bass_8\"")
-                                                 (t (error "event::get-lp-data:~
-                                                           unknown clef: ~a"
-                                                           (second thing)))))))
-                  result)
-                 (push (lp-get-mark thing) result))))
-      (when (and (tempo-change e) (display-tempo e))
-        (push (get-lp-data (tempo-change e)) result))
-      (unless (is-grace-note e)
-        (when (bracket e)
-          (loop for b in (bracket e) do
-               (if (listp b)
-                   (push 
-                    (format nil "\\times ~a { " 
-                            (case (second b)
-                              (2 "3/2")
-                              (3 "2/3")
-                              (4 "3/4")
-                              (5 "4/5")
-                              (6 "4/6")
-                              (7 "4/7")
-                              (9 "8/9")
-                              (t (error "event::get-lp-data: ~
+    (flet ((get-poc ()
+             (if (and in-c (not (from-8ve-transposing-ins e)))
+                 (pitch-or-chord e)
+                 (written-pitch-or-chord e))))
+      (let* ((poc nil)
+             (note 
+              (progn
+                ;; MDE Mon Apr 30 20:03:35 2012 -- harmonic note heads must be
+                ;; a chord in LP!!!!
+                ;; MDE Thu Dec 26 14:34:01 2013 -- guitar string numbers have
+                ;; to handled similarly: as a chord with the e.g. \1 within the
+                ;; chord
+                (loop for m in '(flag-head c1 c2 c3 c4 c5 c6) do
+                     (when (has-mark e m)
+                       (force-chord e)
+                       (unless poc
+                         (setf poc (get-poc)))
+                       (loop for p in (data poc) do (add-mark p m))
+                       (rm-marks e m)))
+                (unless poc (setf poc (get-poc)))
+                (cond ((is-rest e) "r")
+                      ;; we handle these with the next normal notes
+                      ((is-grace-note e) 
+                       (push poc grace-notes))
+                      ;; it's a note or chord
+                      (t (get-lp-data poc)))))
+             (result '())
+             (rthm (unless (is-grace-note e)
+                     (round (nearest-power-of-2 (undotted-value e)))))
+             ;; so, if the bracket slot is set, and the first element is a
+             ;; list, we've got tuplet brackets so loop for each sublist and
+             ;; set the e.g. \times 2/3 { to be the second element of the
+             ;; sublist.  if it's just a positive integer, that's the end of
+             ;; the tuplet so close with }.  otherwise, unless tuplet-scaler is
+             ;; 1, we've got tuplets without brackets so use the e.g. 4*2/3
+             ;; (tq) notation.  other than that, just use the nearest power of
+             ;; 2 to the value.  in all cases don't forget to add the dots.
+             (close-tuplets 0))
+        ;; MDE Mon Nov 26 17:42:14 2012 
+        (when (zerop rthm)
+          (error "event::get-lp-data: can't get nearest-power-of-2 for ~a" e))
+        ;; MDE Mon Jul 23 13:52:40 2012 -- split out into above method
+        (loop for s in (lp-get-ins-change e) do (push s result))
+        (when (and (tempo-change e) (display-tempo e))
+          (push (get-lp-data (tempo-change e)) result))
+        (unless (is-grace-note e)
+          (when (bracket e)
+            (loop for b in (bracket e) do
+                 (if (listp b)
+                     (push 
+                      (format nil "\\times ~a { " 
+                              (case (second b)
+                                (2 "3/2")
+                                (3 "2/3")
+                                (4 "3/4")
+                                (5 "4/5")
+                                (6 "4/6")
+                                (7 "4/7")
+                                (9 "8/9")
+                                (t (error "event::get-lp-data: ~
                                          unhandled tuplet: ~a"
-                                        (second b)))))
-                    result)
-                   (when (integer>0 b)
-                     (incf close-tuplets)))))
-        ;; hack-alert: if we're under two tuplet brackets our rhythm would be
-        ;; twice as fast as it should be notated
-        (when (> (length (bracket e)) 1)
-          (setf rthm (/ rthm 2)))
-        (when (and grace-notes (not (is-grace-note e)))
-          (setf grace-notes (nreverse grace-notes))
-          (case (length grace-notes)
-            (1 (push (format nil "\\acciaccatura ~a8 " 
-                             (get-lp-data (first grace-notes)))
-                     result))
-            (2 (push (format nil "\\acciaccatura \{ ~a8\[ ~a\] } " 
-                             (get-lp-data (first grace-notes))
-                             (get-lp-data (second grace-notes)))
-                     result))
-            (t (push (format nil "\\acciaccatura \{ ~a8\[ " 
-                             (get-lp-data (first grace-notes)))
-                     result)
-               (loop for n in (rest (butlast grace-notes)) do
-                    (push (format nil "~a " (get-lp-data n)) result))
-               (push (format nil "~a\] } " 
-                             (get-lp-data (first (last grace-notes))))
-                     result)))
-          ;; so it should always be nil at the end of a piece, right?
-          (setf grace-notes nil))
-        (push note result)
-        (push (format nil "~a" rthm) result)
-        (push (make-string (num-dots e) :initial-element #\.) result)
-        (when (and (not (bracket e))    ; tuplets without brackets
-                   (/= (tuplet-scaler e) 1))
-          (push (format nil "*~a" (tuplet-scaler e)) result))
-        (when (is-tied-from e)
-          (push "~~" result))
-        (when (beam e)
-          (when (< rthm 8)
-            (warn "event::get-lp-data: beam on rhythm (~a) < 1/8th duration: ~a"
-                  rthm e))
-          (if (zerop (beam e))
-              (push "\]" result)
-              (push "\[" result)))
-        (push " " result)
-        (when (marks e)
-          ;; 22.5.11: getting a little tricky this but: in cmn we attach ottava
-          ;; begin and end marks to the same note and everything's fine; in
-          ;; lilypond, the begin or end must always come before the note.  we
-          ;; can't move the end to the next note's marks-before because
-          ;; that wouldn't work in cmn, so just move it to the end of the
-          ;; marks 
-          (loop for mark in (move-to-end
-                             'end-8va 
-                             (move-to-end 'end-8vb (marks e)))
-             for lp-mark = (lp-get-mark mark :num-flags (num-flags e))
-             do
-             (when lp-mark
-               (push lp-mark result))))
-        (loop repeat close-tuplets do (push " \} " result))
-        ;; (print result)
-        (setf result
-              (move-to-end ">> "
-                           (move-to-end "} " (reverse result) #'string=)
-                           #'string=))
-        ;; (print result)
-        (list-to-string result "")))))
+                                          (second b)))))
+                      result)
+                     (when (integer>0 b)
+                       (incf close-tuplets)))))
+          ;; hack-alert: if we're under two tuplet brackets our rhythm would be
+          ;; twice as fast as it should be notated
+          (when (> (length (bracket e)) 1)
+            (setf rthm (/ rthm 2)))
+          (when (and grace-notes (not (is-grace-note e)))
+            (setf grace-notes (nreverse grace-notes))
+            (case (length grace-notes)
+              (1 (push (format nil "\\acciaccatura ~a8 " 
+                               (get-lp-data (first grace-notes)))
+                       result))
+              (2 (push (format nil "\\acciaccatura \{ ~a8\[ ~a\] } " 
+                               (get-lp-data (first grace-notes))
+                               (get-lp-data (second grace-notes)))
+                       result))
+              (t (push (format nil "\\acciaccatura \{ ~a8\[ " 
+                               (get-lp-data (first grace-notes)))
+                       result)
+                 (loop for n in (rest (butlast grace-notes)) do
+                      (push (format nil "~a " (get-lp-data n)) result))
+                 (push (format nil "~a\] } " 
+                               (get-lp-data (first (last grace-notes))))
+                       result)))
+            ;; so it should always be nil at the end of a piece, right?
+            (setf grace-notes nil))
+          (when (marks-before e)
+            (loop for thing in (marks-before e) do
+               ;; handle clefs here rather than in lp-get-mark
+                 (if (and (listp thing) (eq (first thing) 'clef))
+                     (push 
+                      (if (eq 'percussion (second thing))
+                          (format nil "~%~a~%" (lp-percussion-clef))
+                          (format nil "~%\\clef ~a " 
+                                  (string-downcase 
+                                   (case (second thing)
+                                     (treble 'treble)
+                                     (bass 'bass)
+                                     (alto 'alto)
+                                     (tenor 'tenor)
+                                     ;; (percussion 'percussion)
+                                     (double-treble "\"treble^8\"")
+                                     (double-bass "\"bass_8\"")
+                                     (t (error "event::get-lp-data: ~ 
+                                              unknown clef: ~a"
+                                               (second thing)))))))
+                      result)
+                     (push (lp-get-mark thing) result))))
+          (push note result)
+          (push (format nil "~a" rthm) result)
+          (push (make-string (num-dots e) :initial-element #\.) result)
+          (when (and (not (bracket e))  ; tuplets without brackets
+                     (/= (tuplet-scaler e) 1))
+            (push (format nil "*~a" (tuplet-scaler e)) result))
+          (when (is-tied-from e)
+            (push "~~" result))
+          (when (beam e)
+            (when (< rthm 8)
+              (warn "event::get-lp-data: beam on rhythm (~a) < 1/8th ~
+                     duration: ~a"
+                    rthm e))
+            (if (zerop (beam e))
+                (push "\]" result)
+                (push "\[" result)))
+          (push " " result)
+          (when (marks e)
+            ;; 22.5.11: getting a little tricky this but: in cmn we attach
+            ;; ottava begin and end marks to the same note and everything's
+            ;; fine; in lilypond, the begin or end must always come before the
+            ;; note.  we can't move the end to the next note's marks-before
+            ;; because that wouldn't work in cmn, so just move it to the end of
+            ;; the marks
+            (loop for mark in (move-to-end
+                               'end-8va 
+                               (move-to-end 'end-8vb (marks e)))
+               for lp-mark = (lp-get-mark mark :num-flags (num-flags e))
+               do
+               (when lp-mark
+                 (push lp-mark result))))
+          (loop repeat close-tuplets do (push " \} " result))
+          ;; (print result)
+          (setf result
+                (move-to-end ">> "
+                             (move-to-end "} " (reverse result) #'string=)
+                             #'string=))
+          ;; (print result)
+          (list-to-string result ""))))))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3130,6 +3133,15 @@ T
         (setf (marks-before e) new)
         (setf (marks e) new))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Dec 26 14:12:55 2013
+(defmethod force-chord ((e event))
+  (when (is-single-pitch e)
+    (setf (slot-value e 'pitch-or-chord) (make-chord (pitch-or-chord e)))
+    (when (written-pitch-or-chord e)
+      (setf (slot-value e 'written-pitch-or-chord)
+            (make-chord (written-pitch-or-chord e)))))
+  e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

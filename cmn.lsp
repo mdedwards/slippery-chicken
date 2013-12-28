@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 17:38:32 Thu Nov 14 2013 GMT
+;;; $$ Last modified: 11:39:48 Sat Dec 28 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -234,6 +234,13 @@
                                         the-text)))
              (II-III (list (fingering "II" "III" (dx dx) (dy dy) the-text)))
              (III-IV (list (fingering "III" "IV" (dx dx) (dy dy) the-text)))
+             ;; MDE Thu Dec 26 14:14:34 2013 -- guitar string numbers
+             (c1 (no-cmn-mark 'guitar-string-1))
+             (c2 (no-cmn-mark 'guitar-string-2))
+             (c3 (no-cmn-mark 'guitar-string-3))
+             (c4 (no-cmn-mark 'guitar-string-4))
+             (c5 (no-cmn-mark 'guitar-string-5))
+             (c6 (no-cmn-mark 'guitar-string-6))
              ;; in case of our slurs overlapping cmn auto-slurs (grace
              ;; notes) try the setf form.
              ;; (setf *sc-slur-tag* (begin-slur))))
@@ -258,6 +265,8 @@
              (trill-f (list (trill (ornament-sign flat))))
              (trill-n (list (trill (ornament-sign natural))))
              (trill-s (list (trill (ornament-sign sharp))))
+             ;; MDE Sat Dec 28 11:39:41 2013 
+             (arp (no-cmn-mark 'arp))
              ;; 23.9.11 trill with aux note in ()
              (beg-trill-a (no-cmn-mark 'beg-trill-a))
              (end-trill-a (no-cmn-mark 'end-trill-a))

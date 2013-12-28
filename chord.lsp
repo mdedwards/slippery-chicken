@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 10:44:16 Fri Dec  6 2013 GMT
+;;; $$ Last modified: 15:16:08 Thu Dec 26 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -170,12 +170,12 @@ NIL
 ;;; 
 ;;; SYNOPSIS
 (defmethod chord= ((c1 chord) (c2 chord) &optional enharmonics-are-equal
-                   (frequency-tolerance 0.01) (src-tolerance 0.0001))
+                   (frequency-tolerance 0.01)) ; (src-tolerance 0.0001))
 ;;; ****
   (loop with happy = t 
        for p1 in (data c1) for p2 in (data c2) do
-       (setf happy (pitch= p1 p2 enharmonics-are-equal frequency-tolerance
-                           src-tolerance))
+       (setf happy (pitch= p1 p2 enharmonics-are-equal frequency-tolerance))
+                                        ; src-tolerance))
        while happy
        finally (return happy)))
 
@@ -1503,6 +1503,10 @@ data: (
   ;; (setf (slot-value c 'data) (remove-octaves (data c)))
   (setf (data c) (remove-octaves (data c)))
   c)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod rm-marks ((c chord) marks &optional (warn t))
+  (rm-marks-aux c marks warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

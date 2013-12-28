@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 10:45:55 Thu Dec 19 2013 WIT
+;;; $$ Last modified: 15:12:15 Thu Dec 26 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -770,19 +770,10 @@ WARNING: rhythm::rm-marks: no mark ZIPPY in (X-HEAD COL-LEGNO PIZZ S A)
 ;;; SYNOPSIS
 (defmethod rm-marks ((r rhythm) marks &optional (warn t))
 ;;; ****
-  (unless (listp marks)
-    (setf marks (list marks)))
-  (loop for m in marks do
-       (if (member m (marks r))
-           ;; #'equal so that sub-lists can be removed too
-           (setf (marks r) (remove m (marks r) :test #'equal))
-           (when warn
-             (warn "rhythm::rm-marks: no mark ~a in ~a ~a"
-                   m (marks r)
-                   (if (event-p r)
-                       (format nil " (bar ~a)" (bar-num r))
-                       ""))))))
-  
+  ;; MDE Thu Dec 26 15:11:24 2013 -- moved this into aux method so we can call
+  ;; for pitch also 
+  (rm-marks-aux r marks warn))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 19.12.11 SAR: Added robodoc info
@@ -2069,6 +2060,22 @@ data: (
         (when error
           (error "rhythm::parse-rhythm: ~a is not a valid argument."
                  rthm)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun rm-marks-aux (object marks warn)
+    (unless (listp marks)
+    (setf marks (list marks)))
+  (loop for m in marks do
+       (if (member m (marks object))
+           ;; #'equal so that sub-lists can be removed too
+           (setf (marks object) (remove m (marks object) :test #'equal))
+           (when warn
+             (warn "rhythm::rm-marks: no mark ~a in ~a ~a"
+                   m (marks object)
+                   (if (event-p object)
+                       (format nil " (bar ~a)" (bar-num object))
+                       ""))))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF rhythm.lsp

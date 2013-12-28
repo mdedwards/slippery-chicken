@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 10:34:52 Thu Dec 19 2013 WIT
+;;; $$ Last modified: 18:26:19 Fri Dec 27 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -766,7 +766,6 @@ E6
 G3 
 D3 
 D4 
-
 
 |#
 ;;; SYNOPSIS

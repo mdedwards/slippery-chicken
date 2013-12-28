@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 12:38:09 Wed Dec 25 2013 WIT
+;;; $$ Last modified: 18:27:02 Fri Dec 27 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -303,7 +303,7 @@
      ;; MDE Wed Oct  9 12:21:22 2013 
      (mandolin 
       (:staff-name "mandolin" :staff-short-name "mln"
-       :lowest-written g3 :highest-written c6
+       :lowest-written g3 :highest-written c7
        :largest-fast-leap 25
        :starting-clef treble 
        ;; mandolin has same tuning as the violin

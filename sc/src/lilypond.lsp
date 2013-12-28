@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 18:18:46 Thu Nov 14 2013 GMT
+;;; $$ Last modified: 11:39:22 Sat Dec 28 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -138,6 +138,13 @@
            (II "^\\markup { \\teeny \"II\" } ")
            (III "^\\markup { \\teeny \"III\" } ")
            (IV "^\\markup { \\teeny \"IV\" } ")
+           ;; MDE Thu Dec 26 14:14:34 2013 -- guitar string numbers
+           (c1 "\\1 ")
+           (c2 "\\2 ")
+           (c3 "\\3 ")
+           (c4 "\\4 ")
+           (c5 "\\5 ")
+           (c6 "\\6 ")
            (beg-sl "( ")
            (end-sl  ") ")
            ;; MDE Fri Apr  6 21:57:59 2012 -- apparently LP can't have nested
@@ -190,6 +197,10 @@
            (end-trill-a "\\stopTrillSpan ") ; after note
            ;; (no-lp-mark 'square))
            (slash (no-lp-mark 'slash))
+           ;; MDE Sat Dec 28 11:37:22 2013 -- up and down arrows on arpeggio
+           ;; lines will need more complex treatment (need a note-before mark
+           ;; :/ ) 
+           (arp "\\arpeggio ")
            (arrow-up (no-lp-mark 'arrow-up))
            (arrow-down (no-lp-mark 'arrow-down))
            (cresc-beg "\\< ")

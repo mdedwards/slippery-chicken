@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 14:32:11 Mon Nov 18 2013 GMT
+;;; $$ Last modified: 17:22:07 Sat Dec 28 2013 WIT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -575,8 +575,8 @@
 ;;;
 ;;; An optional argument takes a list specifying which pitches to change in the
 ;;; same format found in the method enharmonic-spellings; i.e.
-;;; '((player (bar note-num))). If this approach is chosen, the method will
-;;; only change the specified pitches.
+;;; '((player (bar note-num))). These notes are changed after the respelling
+;;; routine has run.  
 ;;;
 ;;; NB: If a list of corrections is specified, the :respell-notes argument of
 ;;;     any subsequent call to cmn-display or write-lp-data-for-all must be set
@@ -1458,7 +1458,7 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod add-mark-to-note ((sc slippery-chicken)
-                                 bar-num note-num player mark)
+                             bar-num note-num player mark)
 ;;; ****
   (add-mark-to-note (piece sc) bar-num note-num player mark))
 
@@ -1505,7 +1505,7 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod add-mark-to-event ((sc slippery-chicken) bar-num event-num player
-                                  mark)
+                              mark)
 ;;; ****
   (add-mark-to-event (piece sc) bar-num event-num player mark))
 

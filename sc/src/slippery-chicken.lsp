@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:11:02 Fri Dec 27 2013 WIT
+;;; $$ Last modified: 13:49:26 Sun Dec 29 2013 CIT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1661,7 +1661,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 17,
 
 (defmethod respell-notes-aux ((sc slippery-chicken) &optional corrections)
   (loop for player in (players sc) do
-        ;; (print player)
+       ;; (print player)
         (respell-notes-for-player sc player)
         ;; we can't ignore instruments that only sound octaves +/- written note
         ;; as that would leave written and sounding notes potentially

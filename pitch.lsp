@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 15:12:51 Thu Dec 26 2013 WIT
+;;; $$ Last modified: 14:32:30 Sun Dec 29 2013 CIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -66,7 +66,7 @@
    ;; the given id minus the accidental e.g. cs4 = c4, dqf2 = d2
    (white-note :accessor white-note :type symbol :initform nil)
    ;; the number of the note in a white-note octave, i.e. c = 0, d = 1, e = 2
-   ;; (in octave 0) .... gs4 = 4 + (4 x 7) = 32
+   ;; (in octave -1) .... gs4 = 4 + ((1+ 4) x 7) = 39
    (white-degree :accessor white-degree :initform nil)
    (nearest-chromatic :accessor nearest-chromatic :type symbol :initform nil)
    ;; just the accidental part of the note e.g. s, f or qf etc.
@@ -1780,7 +1780,10 @@ data: CQS4
               (octave p) octave
               (no-8ve p) note
               (no-8ve-no-acc p) note-letter
-              (white-degree p) (+ note-pos (* octave 7)))))))
+              ;;  MDE Sun Dec 29 13:59:09 2013 -- 1+ octave because the
+              ;; lowest octave of the midi scale is -1.  Bear in mind that CMN
+              ;; can't display pitches in the lowest octave.
+              (white-degree p) (+ note-pos (* (1+ octave) 7)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

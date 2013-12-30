@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 10:30:35 Thu Dec 19 2013 WIT
+;;; $$ Last modified: 13:50:57 Sun Dec 29 2013 CIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3766,7 +3766,7 @@ data: E
          (porc nil)
          (scale (ml nil 140))) ;; enough for 20 octaves!
     ;; go through each note in the bar and see whether there was already an
-    ;; accidental for this white-degree, if not, we need the accidental so do
+    ;; accidental for this white-degree; if not, we need the accidental so do
     ;; nothing unless it's a natural (show-accidental slot is t per default);
     ;; if so, and it's the same accidental as this one, then don't show the
     ;; accidental, or if it's more than cautionary-distance notes back, show

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 11:48:24 Mon Jun 17 2013 BST
+;;; $$ Last modified: 14:22:20 Sun Dec 29 2013 CIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -565,6 +565,11 @@
 |#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun integer-as-string (string start) ; 0-based
+  (when (> (length string) start)
+    (integerp (read-from-string (subseq string start)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun is-qtr-flat (note)
  (search "QF" (string (cm::note (rm-package note :cm)))))
@@ -579,7 +584,10 @@
 (defun is-sharp (note)
   (let ((str (string (cm::note (rm-package note :cm)))))
     (when (and (equal #\S (elt str 1))
-               (digit-char-p (elt str 2)))
+               ;; (digit-char-p (elt str 2)))
+               ;; MDE Sun Dec 29 14:19:55 2013 -- got to take octave -1 into
+               ;; account!  
+               (integer-as-string str 2))
       t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -587,7 +595,10 @@
 (defun is-flat (note)
   (let ((str (string (cm::note (rm-package note :cm)))))
     (when (and (equal #\F (elt str 1))
-               (digit-char-p (elt str 2)))
+               ;; (digit-char-p (elt str 2)))
+               ;; MDE Sun Dec 29 14:19:55 2013 -- got to take octave -1 into
+               ;; account!  
+               (integer-as-string str 2))
       t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -599,8 +610,13 @@
          2nd-char)
     (when (> (length string) 1)
       (setf 2nd-char (elt string 1))
-      (or (numberp (digit-char-p 2nd-char))
-          (equal 2nd-char #\N)))))
+      ;; MDE Sun Dec 29 14:19:55 2013 -- got to take octave -1 into
+      ;; account!  
+      ;; (or (numberp (digit-char-p 2nd-char))
+      ;;    (equal 2nd-char #\N)))))
+      (or (integer-as-string string 1)
+          (and (equal 2nd-char #\N)
+               (integer-as-string string 2))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

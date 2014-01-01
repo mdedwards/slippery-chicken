@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:15:38 Thu Dec 26 2013 WIT
+;;; $$ Last modified: 16:26:59 Tue Dec 31 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -621,7 +621,7 @@ data: 132
   (typecase value
     (tempo (setf (slot-value e 'tempo-change) (clone value)))
     (number (setf (slot-value e 'tempo-change) (make-tempo value)))
-    (t (error "event::(setf temp-change): argument should be a number ~
+    (t (error "event::(setf tempo-change): argument should be a number ~
                or tempo object: ~a" value)))
   value)
 
@@ -2080,7 +2080,7 @@ NIL
                                 (7 "4/7")
                                 (9 "8/9")
                                 (t (error "event::get-lp-data: ~
-                                         unhandled tuplet: ~a"
+                                           unhandled tuplet: ~a"
                                           (second b)))))
                       result)
                      (when (integer>0 b)
@@ -2126,8 +2126,8 @@ NIL
                                      ;; (percussion 'percussion)
                                      (double-treble "\"treble^8\"")
                                      (double-bass "\"bass_8\"")
-                                     (t (error "event::get-lp-data: ~ 
-                                              unknown clef: ~a"
+                                     (t (error "event::get-lp-data: ~
+                                                unknown clef: ~a"
                                                (second thing)))))))
                       result)
                      (push (lp-get-mark thing) result))))

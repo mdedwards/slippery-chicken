@@ -31,7 +31,7 @@
 ;;;
 ;;; Creation date:    4th December 2000
 ;;;
-;;; $$ Last modified: 19:12:55 Mon Oct 28 2013 GMT
+;;; $$ Last modified: 09:12:22 Tue Dec 31 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -160,7 +160,8 @@
                 (string (when (stringp test) (string= id test)))
                 (symbol (when (symbolp test)
                           (eq (rm-package id) (rm-package test))))
-                ;; NB 1 != 1.0 
+                ;; NB 1 is not eql to 1.0 whereas it is =  We don't want floats
+                ;; matching integers here 
                 (number (eql id test))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

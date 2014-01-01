@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 16:22:16 Sat Oct 26 2013 BST
+;;; $$ Last modified: 11:30:10 Tue Dec 31 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -524,11 +524,32 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
                     :complete complete))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; notes is a simple list of pitch symbols
-(defun make-stack (id notes num-stacks &key by-freq)
+;;; ****f* complete-set/make-stack
+;;; DESCRIPTION
+;;; Make a complete-set containing stacks based on the given notes.  See
+;;; documentation for the stack method in the sc-set class for details of
+;;; what this algorithm does.
+;;; 
+;;; ARGUMENTS
+;;; - an ID for the set to be created (symbol, string, number)
+;;; - a list of notes as either symbols or pitch objects
+;;; - the number of stacks to create
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :by-freq. Use the frequencies of the pitches to create the stack instead of
+;;;    the interval structure. Default = NIL.
+;;; - :up. Apply the process upwards in pitch space. Default = T.
+;;; - :down. Apply the process downwards in pitch space. Default = T.
+;;; 
+;;; RETURN VALUE
+;;; a complete-set object
+;;;
+;;; SYNOPSIS
+(defun make-stack (id notes num-stacks &key by-freq (up t) (down t))
+;;; ****
   (let ((set (make-complete-set notes :id id)))
-    (stack set num-stacks :by-freq by-freq)))
+    (stack set num-stacks :by-freq by-freq :up up :down down)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; The missing-chromatic and -non-chromatic are lists of simple note names

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 20:09:17 Wed Oct 30 2013 GMT
+;;; $$ Last modified: 11:29:15 Tue Dec 31 2013 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -890,6 +890,9 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;;    In this case the frequencies of pitches will be retained but their
 ;;;    symbolic value will be rounded to the nearest note in the current scale
 ;;;    (and pitch bends will be set accordingly). Default NIL. 
+;;; - :up. Apply the process upwards in pitch space. Default = T.
+;;; - :down. Apply the process downwards in pitch space. Default = T.
+;;; 
 ;;; RETURN VALUE
 ;;; An sc-set object.
 ;;; 
@@ -913,14 +916,14 @@ COMPLETE-SET: complete: NIL
 data: (G2 A2 CS4 A4 A4 A5 C6 C6 FS6)
 |#
 ;;; SYNOPSIS
-(defmethod stack ((s sc-set) num-stacks &key id by-freq)
+(defmethod stack ((s sc-set) num-stacks &key id by-freq (up t) (down t))
 ;;; ****
   (let* ((distances (get-interval-structure s (when by-freq 'frequencies)))
          (notes (if by-freq (get-freqs s) (get-degrees s)))
          (result notes)
          chord)
     (loop repeat num-stacks do
-         (setf result (stack-aux result distances by-freq)))
+         (setf result (stack-aux result distances by-freq up down)))
     ;; (print result)
     (unless by-freq
       (setf result (degrees-to-notes result))
@@ -1434,7 +1437,7 @@ data: Q
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Aug 28 17:52:52 2013 -- notes are either degrees (default) or freqs
-(defun stack-aux (notes distances &optional freqs)
+(defun stack-aux (notes distances &optional freqs up down)
   (let ((lowest (first notes)) ;; assumes notes are sorted!
         (highest (first (last notes)))
         (max (if freqs (note-to-freq 'b10) (note-to-degree 'b10)))
@@ -1443,9 +1446,9 @@ data: Q
        for low = (- lowest d)
        for high = (+ highest d)
        do 
-       (when (<= high max)
+       (when (and up (<= high max))
          (push high result))
-       (when (> low 0 )
+       (when (and down (> low 0 ))
          (push low result)))
     (sort result #'<)))
 

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:26:59 Tue Dec 31 2013 WIT
+;;; $$ Last modified: 12:24:39 Wed Jan  1 2014 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -631,7 +631,8 @@ data: 132
 ;;; DESCRIPTION
 ;;; Add pitches to a non-rest event.  This works whether the event is a single
 ;;; pitch or a chord.  NB This adds to the sounding pitches, not written
-;;; pitches of transposing instruments.
+;;; pitches of transposing instruments.  The midi-channel of the pitch is
+;;; presumed to be correct before this method is called. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - The event object

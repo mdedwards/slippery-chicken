@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 14:32:30 Sun Dec 29 2013 CIT
+;;; $$ Last modified: 16:17:56 Wed Jan  1 2014 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2140,6 +2140,12 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod rm-marks ((p pitch) marks &optional (warn t))
   (rm-marks-aux p marks warn))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon May 14 15:24:07 2012 
+(defmethod print-simple ((p pitch) &optional (stream t) ignore)
+  (declare (ignore ignore))
+  (format stream "~a" (data p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 17:22:07 Sat Dec 28 2013 WIT
+;;; $$ Last modified: 14:44:43 Mon Jan  6 2014 WIT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4107,14 +4107,13 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; A post-generation editing method
-
 ;;; SAR Sat Apr 21 14:20:22 BST 2012: Added robodoc entry
 
 ;;; ****m* slippery-chicken-edit/remove-extraneous-dynamics
 ;;; DESCRIPTION
-;;; If two or more consecutive event objects have the same dynamic, remove that
-;;; dynamic marking from all but the first of these.
+;;; A post-generation editing method: If two or more consecutive event objects
+;;; have the same dynamic, remove that dynamic marking from all but the first
+;;; of these.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.

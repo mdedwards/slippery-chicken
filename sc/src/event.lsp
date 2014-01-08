@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:24:39 Wed Jan  1 2014 WIT
+;;; $$ Last modified: 10:33:37 Tue Jan  7 2014 WIT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2001,6 +2001,14 @@ NIL
 (let ((grace-notes '()))
   (defmethod get-lp-data ((e event) &optional in-c ignore1 ignore2)
     (declare (ignore ignore1 ignore2))
+    ;; MDE Tue Jan 7 10:30:17 2014 -- hairpin0 has to come before \< (cresc) or
+    ;; \> (dim) not at end \!
+    (when (and (has-mark e 'hairpin0)
+               (or (has-mark e 'cresc-end)
+                   (has-mark e 'dim-end)))
+      (error "event::get-lp-data: the mark 'hairpin0 should be attached to ~
+             the event ~%with the cresc-beg or dim-beg mark, not at the end of ~
+             the hairpin: ~a" e))
     (when (and (not in-c) (not (is-rest e)) (not (written-pitch-or-chord e)))
       (error "event::get-lp-data: request for non-existent ~
               transposed pitch: ~%~a" e))

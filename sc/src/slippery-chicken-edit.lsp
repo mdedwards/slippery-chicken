@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 14:44:43 Mon Jan  6 2014 WIT
+;;; $$ Last modified: 09:07:23 Thu Jan  9 2014 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4143,8 +4143,8 @@ NIL
 (defmethod remove-extraneous-dynamics ((sc slippery-chicken))
 ;;; ****
   (loop for player in (players sc) do
-     ;; (print player)
-       (loop with last-dynamic with rest-bars = 0
+     ;; (print player) 
+       (loop with last-dynamic with last-note with rest-bars = 0
           for bar-num from 1 to (num-bars sc) 
           for bar = (get-bar sc bar-num player)
           do
@@ -4152,16 +4152,21 @@ NIL
              for this-dynamic = (get-dynamic event)
              do
              (if (and (eq this-dynamic last-dynamic)
-                      ;; 5.4.11 do repeat the dynamic if we've had several
-                      ;; rest bars 
-                      (< rest-bars 2))
+                      ;; 5.4.11 do repeat the dynamic if we've had several 
+                      ;; rest bars  
+                      (< rest-bars 2)
+                      ;; MDE Thu Jan  9 08:38:35 2014 -- don't remove if we've 
+                      ;; got hairpins
+                      (not (or (and last-note (has-hairpin last-note))
+                               (has-hairpin event))))
                  (remove-dynamics event)
                  (when this-dynamic
                    (setf last-dynamic this-dynamic)))
-             (setf rest-bars 0))
-          (when (is-rest-bar bar)
-            ;; (print bar-num)
-            (incf rest-bars))))
+             (unless (is-rest event)
+               (setf last-note event)))
+          (if (is-rest-bar bar)
+            (incf rest-bars)
+            (setf rest-bars 0))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

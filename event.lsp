@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:33:37 Tue Jan  7 2014 WIT
+;;; $$ Last modified: 08:52:18 Thu Jan  9 2014 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1978,6 +1978,27 @@ NIL
   (loop for m in (marks e) do
        (when (member m '(niente pppp ppp pp p mp mf f ff fff ffff))
              (return m))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jan  9 08:41:00 2014 
+;;; ****m* event/has-hairpin
+;;; DESCRIPTION
+;;; Return T or NIL depending on whether the event has a beginning or ending
+;;; hairpin (cresc. or dim. line). 
+;;; 
+;;; ARGUMENTS
+;;; - an event object
+;;; 
+;;; RETURN VALUE
+;;; The hairpin mark the event has, as a list, or NIL if it has none.
+;;;
+;;; SYNOPSIS
+(defmethod has-hairpin ((e event))
+;;; ****
+  (or (has-mark e 'cresc-beg)
+      (has-mark e 'dim-beg)
+      (has-mark e 'cresc-end)
+      (has-mark e 'dim-end)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jul 23 13:50:04 2012 -- 

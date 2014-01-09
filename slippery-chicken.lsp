@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:49:26 Sun Dec 29 2013 CIT
+;;; $$ Last modified: 09:24:35 Thu Jan  9 2014 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5875,6 +5875,8 @@ beg-ph 4))))
 ;;; - :process-event-fun. NIL or a user-defined function that will be applied
 ;;;   to every event object in the given slippery-chicken object. If NIL, no
 ;;;   processes will be applied. Default = NIL.
+;;; - :extend-hairpins.  If you want hairpin (cresc/dim) to extend beyond the
+;;;    previous barline (or beyond the note) set to T.  Default = NIL.
 ;;; - :stemlet-length. NIL or a decimal number < 1.0 that indicates the scaled
 ;;;   length of stems over rests in LilyPond output, should this feature be
 ;;;   desired. 0.75 is a recommended value for this. NIL = no stems over
@@ -6007,6 +6009,10 @@ beg-ph 4))))
                                   (min-page-turn '(2 1))
                                   ;; MDE Tue May 29 22:58:25 2012 
                                   (stemlet-length nil)
+                                  ;; MDE Thu Jan  9 09:20:33 2014 -- if you
+                                  ;; want hairpin (cresc/dim) to extend beyond
+                                  ;; the note set to T
+                                  (extend-hairpins nil)
                                   ;; sim to rehearsal letters
                                   (tempi-all-players t))
 ;;; ****
@@ -6232,6 +6238,7 @@ beg-ph 4))))
           sc player 
           (concatenate 'string path (format nil "~a-~a.ly" title-hyphens pname))
           :all-bar-nums all-bar-nums
+          :extend-hairpins extend-hairpins
           :process-event-fun process-event-fun
           :rehearsal-letters-font-size rehearsal-letters-font-size
           :start-bar-numbering start-bar-numbering
@@ -6250,7 +6257,8 @@ beg-ph 4))))
             sc player 
             (format nil "~a~a-~a-written.ly" path title-hyphens pname)
             :all-bar-nums all-bar-nums :in-c nil :start-bar start-bar
-            :start-bar-numbering start-bar-numbering
+            :start-bar-numbering start-bar-numbering 
+            :extend-hairpins extend-hairpins
             :end-bar end-bar))))
     main-score-file))
 
@@ -6266,6 +6274,7 @@ beg-ph 4))))
                                      start-bar-numbering
                                      ;; MDE Sat Mar 10 16:53:16 2012 
                                      process-event-fun
+                                     extend-hairpins
                                      rehearsal-letters-font-size)
   (unless start-bar
     (setf start-bar 1))
@@ -6288,6 +6297,8 @@ beg-ph 4))))
                      #'break-visibility = #'#(#t #t #t)")
         ;; bar numbers centered over barline
         (format out "~&\\override Score.BarNumber #'self-alignment-X = #0"))
+      (when extend-hairpins
+        (format out "~&\\override Hairpin #'to-barline = ##f"))
       ;; just write this in all parts, whether there's pedalling or not--does
       ;; no harm  
       (format out "~&\\set Staff.pedalSustainStyle=#'mixed")

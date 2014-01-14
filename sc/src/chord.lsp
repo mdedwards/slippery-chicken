@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 09:59:50 Thu Jan  9 2014 GMT
+;;; $$ Last modified: 09:00:22 Tue Jan 14 2014 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1540,10 +1540,10 @@ data: (
 ;;;   new chord object. T = sort. Default = T.
 ;;; - :midi-channel. An integer that is to be the MIDI channel value to which
 ;;;   all of the chromatic pitch objects in the given chord object are to be
-;;;   set for playback. Default = 0.
+;;;   set for playback. Default = 1.
 ;;; - :microtones-midi-channel. An integer that is to be the MIDI channel value
 ;;;   to which all of the microtonal pitch objects in the given chord object
-;;;   are to be set for playback. Default = 0. NB: See
+;;;   are to be set for playback. Default = 1. NB: See
 ;;;   player.lsp/make-player for details on microtones in MIDI output.  
 ;;; - :force-midi-channel. T or NIL to indicate whether to force a given value
 ;;;   to the MIDI-CHANNEL slot, even if the notes passed to the method are
@@ -1606,8 +1606,8 @@ data: F5
 |#
 ;;; 
 ;;; SYNOPSIS
-(defun make-chord (note-list &key (id nil) (auto-sort t) (midi-channel 0)
-                   (microtones-midi-channel 0) (force-midi-channel t))
+(defun make-chord (note-list &key (id nil) (auto-sort t) (midi-channel 1)
+                   (microtones-midi-channel 1) (force-midi-channel t))
 ;;; ****
   ;; MDE Mon Jun 11 17:59:07 2012 
   ;; (unless (listp note-list)

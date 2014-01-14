@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 16:17:56 Wed Jan  1 2014 WIT
+;;; $$ Last modified: 08:59:26 Tue Jan 14 2014 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1721,7 +1721,7 @@ data: CQS4
             (progn
               (unless (integer>0 microtones-midi-channel)
                 (error "~a~&pitch::set-midi-channel: need ~
-                         microtones-midi-channel!"
+                         microtones-midi-channel (not 0)!"
                        p))
               microtones-midi-channel)
             midi-channel)))

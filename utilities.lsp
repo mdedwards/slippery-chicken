@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 12:23:38 Sun Dec 29 2013 CIT
+;;; $$ Last modified: 09:05:33 Tue Jan 14 2014 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1748,6 +1748,36 @@
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
      for new-y = (- (* 2.0 centre) y)
      collect x collect (max min (min new-y max))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Mon May  7 11:01:20 BST 2012: Added robodoc entry
+
+;;; ****f* utilities/env-plus
+;;; DESCRIPTION
+;;; Increase all y values of a given list of break-point pairs by a specified
+;;; amount.
+;;; 
+;;; ARGUMENTS
+;;; - An envelope in the form of a list of break-point pairs.
+;;; - A number that is the amount by which all y values of the given envelope
+;;;   are to be increased.
+;;; 
+;;; RETURN VALUE
+;;; A list of break-point pairs.
+;;; 
+;;; EXAMPLE
+#|
+(env-plus '(0 0 25 11 50 13 75 19 100 23) 7.1)
+
+=> (0 7.1 25 18.1 50 20.1 75 26.1 100 30.1)
+
+|#
+;;; SYNOPSIS
+(defun env-plus (env add)
+;;; ****
+  (loop for x in env by #'cddr and y in (cdr env) by #'cddr
+     collect x collect (+ y add)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 16:18:42 Wed Jan  1 2014 WIT
+;;; $$ Last modified: 09:59:50 Thu Jan  9 2014 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1508,6 +1508,12 @@ data: (
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod rm-marks ((c chord) marks &optional (warn t))
   (rm-marks-aux c marks warn))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jan  9 09:59:43 2014 -- for convenience.
+(defmethod get-interval-structure ((c chord) &optional in-semitones)
+  ;; just promote to an sc-set and call the method there.
+  (get-interval-structure (make-sc-set c) in-semitones))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

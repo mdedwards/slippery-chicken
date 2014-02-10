@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 09:07:23 Thu Jan  9 2014 GMT
+;;; $$ Last modified: 21:45:27 Mon Feb 10 2014 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1518,7 +1518,7 @@ NIL
 
 ;;; ****m* slippery-chicken-edit/add-mark-all-players
 ;;; DESCRIPTION
-;;; Add a specified mark to a specified even in the parts of all players. The
+;;; Add a specified mark to a specified event in the parts of all players. The
 ;;; event can either be specified as a 1-based integer, in which case the mark
 ;;; will be attached to the same event in all parts, or as a list of integers,
 ;;; in which the mark is attached to different events in the same bar for each

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:24:35 Thu Jan  9 2014 GMT
+;;; $$ Last modified: 09:52:11 Tue Feb 25 2014 IST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4158,7 +4158,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   first source sound file of the specified group for the beginning of each
 ;;;   player's part. T = begin with the first sound file. Default = T. 
 ;;; - :play-chance-env. A list of break-point pairs that determines the chance
-;;;   that a given even from the source player's part will be reflected in the
+;;;   that a given event from the source player's part will be reflected in the
 ;;;   new sound file. It is determined by random selection but uses a fixed
 ;;;   seed that is re-initialized each time clm-play is called. The following
 ;;;   default ensures every note will play. Default = '(0 100 100 100).

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 21:45:27 Mon Feb 10 2014 GMT
+;;; $$ Last modified: 21:22:21 Mon Mar 17 2014 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5269,14 +5269,55 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 11 18:36:51 2012 
+;;; ****m* slippery-chicken-edit/consolidate-all-notes
+;;; DESCRIPTION
+;;; A convenience method which just calls the consolidate-notes method from the
+;;; rthm-seq-bar class for all the bars specified in the arguments.  
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the first bar number in which consolidation should take place
+;;; - the last bar number in which consolidation should take place (inclusive)
+;;; - A list of the IDs of the players to whose parts the consolidation should 
+;;;   be applied.   Can also be a single symbol.
+;;; 
+;;; RETURN VALUE
+;;; - A list of the rthm-seq-bar objects that were modified.  See map-over-bars
+;;; for more details. 
+;;; 
+;;; SYNOPSIS
 (defmethod consolidate-all-notes ((sc slippery-chicken) start-bar end-bar
                                   players)
+;;; ****
   (map-over-bars sc start-bar end-bar players #'consolidate-notes nil 'q))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 11 18:36:51 2012 
+;;; ****m* slippery-chicken-edit/consolidate-all-rests
+;;; DESCRIPTION
+;;; A convenience method which just calls the consolidate-rests method from the
+;;; rthm-seq-bar class for all the bars specified in the arguments.  
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the first bar number in which consolidation should take place
+;;; - the last bar number in which consolidation should take place (inclusive)
+;;; - A list of the IDs of the players to whose parts the consolidation should 
+;;;   be applied.   Can also be a single symbol.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; T or NIL to indicate whether the method should print a warning to the Lisp
+;;; listener if it is mathematically unable to consolidate the rests. T = print
+;;; warning. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; - A list of the rthm-seq-bar objects that were modified.  See map-over-bars
+;;; for more details. 
+;;; 
+;;; SYNOPSIS
 (defmethod consolidate-all-rests ((sc slippery-chicken) start-bar end-bar
                                   players &optional warn)
+;;; ****
   (map-over-bars sc start-bar end-bar players #'consolidate-rests-max
                  :warn warn))
 

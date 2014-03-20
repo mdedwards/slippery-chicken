@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:52:11 Tue Feb 25 2014 IST
+;;; $$ Last modified: 13:01:22 Thu Mar 20 2014 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2879,7 +2879,8 @@ data: NIL
 ;;; ****m* slippery-chicken/get-num-sections
 ;;; DESCRIPTION
 ;;; Return the number of sections in the given slippery-chicken object, as
-;;; defined in e.g. in the set-map.
+;;; defined in e.g. in the set-map.  N.B. If the object has subsections these
+;;; are counted also.  
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A slippery-chicken object.
@@ -2894,17 +2895,19 @@ data: NIL
         '+mini+
         :ensemble '(((sax (alto-sax :midi-channel 1))))
         :set-palette '((1 ((e3 fs3 b3 cs4 fs4 gs4 ds5 f5)))) 
-        :set-map '((1 (1 1 1 1))
+        :set-map '((1 ((a (1 1 1 1))
+                       (b (1 1 1 1))))
                    (2 (1 1 1))
                    (3 (1 1 1 1 1)))
         :rthm-seq-palette '((1 ((((4 4) h q e s s))
                                 :pitch-seq-palette ((1 2 3 4 5)))))
-        :rthm-seq-map '((1 ((sax (1 1 1 1))))
+        :rthm-seq-map '((1 ((a ((sax (1 1 1 1))))
+                            (b ((sax (1 1 1 1))))))
                         (2 ((sax (1 1 1))))
                         (3 ((sax (1 1 1 1 1))))))))
   (get-num-sections mini))
 
-=> 3
+=> 4
 
 |#
 ;;; 

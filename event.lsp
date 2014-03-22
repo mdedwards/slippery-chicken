@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 08:52:18 Thu Jan  9 2014 GMT
+;;; $$ Last modified: 15:56:34 Thu Mar 20 2014 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -670,7 +670,10 @@ data: 132
          (diff (when wporc (pitch- wporc porc))))
     (setf-pitch-aux e value 'pitch-or-chord)
     (when (pitch-or-chord e)
-      (setf (is-rest e) nil))
+      (setf (is-rest e) nil
+            ;; MDE Thu Mar 20 15:55:52 2014 -- can't believe it's taken this
+            ;; long!  
+            (is-whole-bar-rest e) nil))
     (when wporc
       (setf (slot-value e 'written-pitch-or-chord)
             (if (pitch-or-chord e)
@@ -688,6 +691,9 @@ data: 132
     (setf-pitch-aux e value 'written-pitch-or-chord)
     (when (written-pitch-or-chord e)
       (setf (is-rest e) nil
+            ;; MDE Thu Mar 20 15:55:52 2014 -- can't believe it's taken this
+            ;; long!  
+            (is-whole-bar-rest e) nil
             (slot-value e 'pitch-or-chord)
             (transpose (written-pitch-or-chord e) (- diff))))))
 

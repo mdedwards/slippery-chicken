@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 16:25:01 Thu Mar 20 2014 GMT
+;;; $$ Last modified: 20:21:50 Mon Mar 24 2014 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -260,6 +260,29 @@
        :chords t 
        :microtones nil
        :midi-program 12))
+     ;; MDE Mon Mar 24 20:21:08 2014 -- following three added from data given
+     ;; by Zach Howell (thanks).  
+     (glockenspiel
+      (:staff-name "glockenspiel" :staff-short-name "glk"
+                  :lowest-written f3 :highest-written c6
+                  :transposition-semitones +24
+                  :starting-clef treble
+                  :chords nil :microtones nil :missing-notes nil
+                  :midi-program 10))
+     (xylophone
+      (:staff-name "xylophone" :staff-short-name "xyl"
+                  :lowest-written f3 :highest-written c7
+                  :transposition-semitones +12
+                  :starting-clef treble
+                  :chords nil :microtones nil :missing-notes nil
+                  :midi-program 14))
+     (celesta
+      (:staff-name "celesta" :staff-short-name "cel"
+                  :lowest-written c3 :highest-written c7
+                  :transposition-semitones +12
+                  :starting-clef treble
+                  :chords t :microtones nil :missing-notes nil
+                  :midi-program 9))
      (piano
       (:staff-name "piano" :staff-short-name "pno"
        :lowest-written a0 :highest-written c8 

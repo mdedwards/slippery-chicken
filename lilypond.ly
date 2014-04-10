@@ -13,7 +13,7 @@
 %%%
 %%% Creation date:    23rd November 2011
 %%%
-%%% $$ Last modified: 17:54:05 Thu Nov 14 2013 GMT
+%%% $$ Last modified: 12:45:09 Sat Apr  5 2014 BST
 %%%
 %%% SVN ID: $Id: lilypond.ly 963 2010-04-08 20:58:32Z medward2 $
 %%%
@@ -85,13 +85,13 @@ sing = \markup \sing
 % an sine curve with an arrow below it
 #(define-markup-command (high-sine layout props) () 
  (interpret-markup layout props 
-        (markup #:general-align Y DOWN  #:epsfile X 7 "high-sine.eps")))
+        (markup #:general-align Y DOWN  #:epsfile X 4 "high-sine.eps")))
 high-sine = \markup \high-sine
 
 % ragged line
 #(define-markup-command (noise layout props) () 
  (interpret-markup layout props 
-        (markup #:general-align Y DOWN  #:epsfile X 6 "noise.eps")))
+        (markup #:general-align Y DOWN  #:epsfile X 3 "noise.eps")))
 noise = \markup \noise
 
 % same as above but with an arrow pointing east

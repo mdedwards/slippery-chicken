@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 09:05:33 Tue Jan 14 2014 GMT
+;;; $$ Last modified: 18:56:49 Mon Apr 21 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3574,19 +3574,15 @@ WARNING:
 ;;;
 ;;; The first time it is run it will delete the current source code and
 ;;; download all the new source code, so make sure to back up if you've
-;;; modified the source code yourself.  When it is run from then on, it will
-;;; only update the source code that is out of date.
+;;; modified the source code yourself (not recommended).  When it is run from
+;;; then on, it will only update the source code that is out of date.
 ;;;
 ;;; Once the source code is updated, you'll need to restart the app or just
 ;;; Lisp for the changes to be recompiled. 
 ;;; 
-;;; Users without the app can always download the latest source code in a
-;;; terminal by issuing the following command.
-;;; svn co https://svn.ecdf.ed.ac.uk/repo/user/medward2/sc-tags/sc-latest/src
-;;; 
-;;; The first time you call this function, you might get a certificate error.
-;;; In order to accept the certificate, start the terminal application and type
-;;; the following:
+;;; **NB** The first time you call this function, you might get a "certificate
+;;; error".  In order to accept the certificate, start the terminal application
+;;; and type the following:
 ;;; 
 ;;; cd /tmp/
 ;;; svn co https://svn.ecdf.ed.ac.uk/repo/user/medward2/sc-tags/sc-latest/src
@@ -3594,6 +3590,10 @@ WARNING:
 ;;; That should give you a prompt in the terminal from which you can accept the
 ;;; certificate.  Then the next time you try it from Lisp the certificate
 ;;; should not cause a problem.
+;;; 
+;;; Users without the app can always download the latest source code in a
+;;; terminal by issuing the following command.
+;;; svn co https://svn.ecdf.ed.ac.uk/repo/user/medward2/sc-tags/sc-latest/src
 ;;; 
 ;;; ARGUMENTS
 ;;; The full path to the slippery-chicken application, minus the last slash.

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:01:22 Thu Mar 20 2014 GMT
+;;; $$ Last modified: 18:41:43 Mon Apr 21 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4901,7 +4901,12 @@ seq-num 5, VN, replacing G3 with B6
             collect (get-timings sqc time-scaler ignore-rests
                                  get-time-sig-changes include-rests 
                                  ignore-grace-notes))
-       when (first events)
+         ;; MDE Mon Apr 21 18:32:16 2014 -- we were checking for (first events)
+       ;; but that meant a rest sequence at the beginning of a section would
+       ;; result in no events being returned for the whole section! Now we just
+       ;; make sure we've got a list with an event in it instead of a list of
+       ;; nils. 
+       when (not (every #'not events))
        collect events)))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 18:56:49 Mon Apr 21 2014 BST
+;;; $$ Last modified: 20:36:03 Mon Apr 21 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -43,11 +43,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -1319,8 +1314,8 @@
 
 ;;; ****f* utilities/logarithmic-steps
 ;;; DESCRIPTION
-;;; Create a list of progressing from the first specified argument to the
-;;; second specified argument over the specified number of steps using an
+;;; Create a list of numbers progressing from the first specified argument to
+;;; the second specified argument over the specified number of steps using an
 ;;; exponential curve rather than linear interpolation.
 ;;; 
 ;;; ARGUMENTS
@@ -4236,4 +4231,39 @@ RETURNS:
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****f* utilities/interleave
+;;; DESCRIPTION
+;;; Interleave the elements of an aribitrary number of lists. Should the lists
+;;; not be of the same length, this function will only use up as many elements
+;;; as in the shortest list.
+;;; 
+;;; ARGUMENTS
+;;; As many lists as need to be interleaved.
+;;; 
+;;; RETURN VALUE
+;;; A new list of interleaved elements.
+;;; 
+;;; EXAMPLE
+#|
+(INTERLEAVE '(1 2 3 4 5) '(a b c d) '(x y z))
+--> (1 A X 2 B Y 3 C Z)
+
+(INTERLEAVE '(1 2 3 4 5) '(a b c d e) '(v w x y z))
+--> (1 A V 2 B W 3 C X 4 D Y 5 E Z)
+|#
+;;; SYNOPSIS
+(defun interleave (&rest lists)
+  (loop with result = '()
+       with len = (length lists)
+     ;; with rl = (reverse lists)
+     repeat (loop for l in lists minimize (length l))
+     do
+     (loop for i below len do
+          (push (pop (nth i lists)) result))
+     finally (return (nreverse result))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp
+
+;;; ****

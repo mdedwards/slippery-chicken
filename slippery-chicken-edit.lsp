@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 21:22:21 Mon Mar 17 2014 GMT
+;;; $$ Last modified: 12:16:27 Wed Apr 23 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -120,7 +120,7 @@
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword argument:
 ;;; - :position. NIL or an integer indicating the position in the bar (0-based)
-;;;    where the event should be added. If NIL, the new event is place at the
+;;;    where the event should be added. If NIL, the new event is placed at the
 ;;;    end of the bar. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
@@ -3677,8 +3677,9 @@ NIL
 ;;;   to be re-barred.
 ;;; - :min-time-sig. A time signature in the form of a 2-item list containing
 ;;;   the number of beats and the beat unit; e.g. '(3 4). This is a target time
-;;;   signature from which the method may occasionally if the number of events
-;;;   does not fit evenly into full bars of the specified time signature.
+;;;   signature from which the method may occasionally deviate if the number of
+;;;   events does not fit evenly into full bars of the specified time
+;;;   signature.
 ;;; - :verbose. T or NIL to indicate whether to print feedback on the
 ;;;   re-barring process to the Listener. T = print feedback. Default = NIL.
 ;;; - :check-ties. T or NIL to indicate whether to force the method to ensure

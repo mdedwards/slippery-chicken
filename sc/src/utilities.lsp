@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 20:36:03 Mon Apr 21 2014 BST
+;;; $$ Last modified: 11:17:40 Mon Apr 28 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4254,6 +4254,7 @@ RETURNS:
 |#
 ;;; SYNOPSIS
 (defun interleave (&rest lists)
+;;; ****
   (loop with result = '()
        with len = (length lists)
      ;; with rl = (reverse lists)
@@ -4264,6 +4265,50 @@ RETURNS:
      finally (return (nreverse result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; EOF utilities.lsp
 
+;;; ****f* utilities/envelope-boundaries
+;;; DESCRIPTION
+;;; Find sharp changes in envelope values. These are defined as when a y value
+;;; rises or falls over 30% (by default) of it's overall range within 5%
+;;; (again, by default) of its overall x axis range.
+;;; 
+;;; ARGUMENTS
+;;; The envelope (a list of x y pairs).
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - jump-threshold: the minimum percentage change in y value that is deemed a
+;;;   sharp change. 
+;;; - steepness-min: the maximum percentage of the overall x axis that
+;;;   constitutes a 'quick' change.
+;;; 
+;;; RETURN VALUE
+;;; A list of x values at which boundaries are deemed to lie.
+;;; 
+;;; EXAMPLE
+#|
+(ENVELOPE-BOUNDARIES '(0 10 20 10 21 3 25 4 26 9 50 7 51 1 55 2 56 7 70 10
+                     100 10))
+--> (21 26 51 56)
+|#
+;;; SYNOPSIS
+(defun envelope-boundaries (envelope &optional (jump-threshold 30)
+                            (steepness-min 5))
 ;;; ****
+  (loop 
+     with last-x = (first envelope) ; i.e. first x val first time around
+     with last-y = (second envelope) ; i.e. first y val first time around
+     with ymin = (env-y-min envelope)
+     with ymax = (env-y-max envelope)
+     with xmin = last-x
+     with xmax = (first (last (butlast envelope)))
+     with ythresh = (* .01 jump-threshold (- ymax ymin))
+     with xthresh = (* .01 steepness-min (- xmax xmin))
+     for x in envelope by #'cddr and y in (rest envelope) by #'cddr 
+     for ydiff = (abs (- last-y y))
+     for xdiff = (- x last-x)
+     when (and (<= xdiff xthresh) (>= ydiff ythresh)) collect x
+     do (setf last-y y
+              last-x x)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; EOF utilities.lsp

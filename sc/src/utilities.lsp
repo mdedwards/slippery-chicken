@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 11:17:40 Mon Apr 28 2014 BST
+;;; $$ Last modified: 21:59:29 Tue Apr 29 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4295,8 +4295,8 @@ RETURNS:
                             (steepness-min 5))
 ;;; ****
   (loop 
-     with last-x = (first envelope) ; i.e. first x val first time around
-     with last-y = (second envelope) ; i.e. first y val first time around
+     with last-x = (first envelope)     ; i.e. first x val first time around
+     with last-y = (second envelope)    ; i.e. first y val first time around
      with ymin = (env-y-min envelope)
      with ymax = (env-y-max envelope)
      with xmin = last-x
@@ -4309,6 +4309,13 @@ RETURNS:
      when (and (<= xdiff xthresh) (>= ydiff ythresh)) collect x
      do (setf last-y y
               last-x x)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun mean (list)
+  (unless (every #'numberp list)
+    (error "utilities::mean: can't find the mean of non-numbers: ~a" list))
+  (/ (loop for el in list sum el) (float (length list))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

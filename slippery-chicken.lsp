@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:41:43 Mon Apr 21 2014 BST
+;;; $$ Last modified: 17:08:40 Wed Apr 30 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6967,6 +6967,52 @@ FS4 G4)
             (push (nreverse tmp) result))
           (return (nreverse result)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/find-boundaries
+;;; DESCRIPTION
+;;; This methods tries to find structural boundaries (i.e section starts) in a
+;;; complete piece. It does so by looking purely at event densities across bars
+;;; and groups of bars; when these change sharply, a section change is noted.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object to analyse
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - when looking at groups of bars, how many bars at a time? Default = 3
+;;; - when looking at the sharpness of the envelope, what percentage change in
+;;;   number of events per bar (based in the min/max in the overall envelope)
+;;;   is considered a steep enough change. Default = 50 (%)
+;;; 
+;;; RETURN VALUE
+;;; A list of bar numbers
+;;;
+;;; SYNOPSIS
+(defmethod find-boundaries ((sc slippery-chicken) &optional
+                            (sum-bars 3) (jump-threshold 50))
+;;; ****
+  ;; NB We test this function in sc-test-full.lsp, on slippery when wet
+  (labels ((sum-from (envelope nth how-many)
+             (loop for i from nth for n = (nth i envelope)
+                repeat how-many while n sum n))
+           (get-sums (envelope skip &optional (multiples-of 1))
+             (loop for i below (length envelope) by skip
+                collect (1+ i) 
+                collect (sum-from envelope i multiples-of))))
+    (let* ((nns (loop for bn from 1 to (num-bars sc)
+                   for bars = (get-bar sc bn)
+                   ;; for each bar number create a list of the number of
+                   ;; events across all instruments
+                   collect (loop for bar in bars sum (notes-needed bar))))
+           ;; this does nothing more than splice in the bar number...
+           (sf (get-sums nns 1))
+           ;; ... but this sums on a bar-by-bar basis across the next several
+           ;; bars i.e. bar 1-3, 2-4, 3-5...
+           (sfm (get-sums nns 1 sum-bars))
+           ;; now found boundaries: sharp changes in envelope curve
+           (eb (envelope-boundaries sf jump-threshold)))
+      ;; (print sfm)
+      (decide-boundaries (get-clusters eb) sfm))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
@@ -8078,6 +8124,36 @@ FS4 G4)
            (system-open-file pdf-file))
          pdf-file)
         (error "slippery-chicken::lp-display: Call to Lilypond failed."))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; used in decide-boundaries (called from find-boundaries method).
+;;; counts is a list of ascending bar number - note-count pairs
+(defun decide-boundaries-aux (contenders counts &optional print)
+  ;; get the bar before the first contender also, for context
+  ;; (loop for c in (cons (1- (first contenders)) contenders)
+  (let* ((counts (loop for c in contenders
+                    for count = (nth (1- (* 2 c)) counts)
+                    collect count))
+         (mean (list-mean counts))
+         ;; we're going to decide on the bar number with the number of notes
+         ;; which is furthest away from all other contenders
+         (deltas (loop for c in counts collect (abs (- c mean))))
+         (result 0))
+    (when print
+      (format t "~%contenders: ~a ~%counts: ~a deltas: ~a mean: ~a" 
+              contenders counts deltas mean))
+    (loop with highest = 0 for d in deltas for i from 0 do
+         (when (> d highest)
+           (setf highest d
+                 result i)))
+    (nth result contenders)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; used in find-boundaries method.
+(defun decide-boundaries (contenders counts)
+  (loop for cs in contenders 
+     if (listp cs) collect (decide-boundaries-aux cs counts)
+     else collect cs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

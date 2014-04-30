@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 10:36:17 Wed Apr 30 2014 BST
+;;; $$ Last modified: 16:38:38 Wed Apr 30 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4344,9 +4344,13 @@ RETURNS:
 
 (get-clusters '(0 .1 .3 .7 1.5 1.55 2 4.3 6.3 6.4) 1)
 --> ((0 0.1 0.3 0.7 1.5 1.55 2) 4.3 (6.3 6.4))
+
+(get-clusters '(0 .1 .3 .7 1.5 1.55 2 4.3 6.3 6.4) 0.5)
+--> ((0 0.1 0.3 0.7) (1.5 1.55 2) 4.3 (6.3 6.4))
 |#
 ;;; SYNOPSIS
 (defun get-clusters (list &optional (threshold 5))
+;;; ****
   (unless (every #'numberp list)
     (error "utilities::mean: can't find the mean of non-numbers: ~a" list))
   (loop with last = (first list)
@@ -4366,5 +4370,3 @@ RETURNS:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp
-
-;;; ****

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 21:59:29 Tue Apr 29 2014 BST
+;;; $$ Last modified: 10:36:17 Wed Apr 30 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4312,10 +4312,59 @@ RETURNS:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun mean (list)
+(defun list-mean (list)
   (unless (every #'numberp list)
     (error "utilities::mean: can't find the mean of non-numbers: ~a" list))
   (/ (loop for el in list sum el) (float (length list))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/get-clusters
+;;; DESCRIPTION
+;;; Takes a list with (ascending) numbers and creates sublists of those numbers
+;;; within <threshold> of each other. 
+;;; 
+;;; ARGUMENTS
+;;; A list of (ascending) numbers. NB Though the numbers don't have to be in
+;;; ascending order, the design application of the function makes most sense if
+;;; they are.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; The maximum distance between two numbers in order for them to be considered
+;;; as part of the same cluster.
+;;; 
+;;; RETURN VALUE
+;;; A list with clusters in sublists.
+;;; 
+;;; EXAMPLE
+#|
+(get-clusters '(24 55 58 59 60 81 97 102 106 116 118 119 145 149 151 200 210
+                211 214 217 226 233 235 236 237 238 239 383 411 415 419))
+--> (24 (55 58 59 60) 81 (97 102 106) (116 118 119) (145 149 151) 200
+        (210 211 214 217) 226 (233 235 236 237 238 239) 383 (411 415 419))
+
+(get-clusters '(0 .1 .3 .7 1.5 1.55 2 4.3 6.3 6.4) 1)
+--> ((0 0.1 0.3 0.7 1.5 1.55 2) 4.3 (6.3 6.4))
+|#
+;;; SYNOPSIS
+(defun get-clusters (list &optional (threshold 5))
+  (unless (every #'numberp list)
+    (error "utilities::mean: can't find the mean of non-numbers: ~a" list))
+  (loop with last = (first list)
+     with tmp = (list last)
+     with result = '()
+     for el in (rest list)
+     do
+     (if (<= (- el last) threshold) 
+         (push el tmp)
+         (progn (push (if (> (length tmp) 1) (reverse tmp) (first tmp))
+                      result)
+                (setf tmp (list el))))
+     (setf last el)
+     finally
+     (when tmp (push (reverse tmp) result))
+     (return (nreverse result))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp
+
+;;; ****

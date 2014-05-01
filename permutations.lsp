@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 12:15:10 Sat Nov 16 2013 GMT
+;;; $$ Last modified: 14:56:58 Tue Mar 25 2014 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1106,7 +1106,6 @@ START
 
 ;;; ****f* permutations/multi-shuffle-with-perms
 ;;; DESCRIPTION
-
 ;;; Return one permutation from a shuffled list of permutations of the
 ;;; specified list. The second argument determines how many shuffled
 ;;; permutations will be in the list from which the resulting permutation is

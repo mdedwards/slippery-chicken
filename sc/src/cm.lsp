@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 16:22:04 Thu May  1 2014 BST
+;;; $$ Last modified: 16:47:22 Thu May  1 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1033,13 +1033,17 @@
 
 ;;; ****f* cm/event-list-to-midi-file
 ;;; DESCRIPTION
-;;; 
+;;; Write the events in a list to a mid-file.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - A list of events objects
+;;; - the path to the midi-file
+;;; - the starting tempo (integer: BPM)
+;;; - a time-offset for the events (seconds)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - whether to overwrite events' amplitude slots and use a single
+;;; velocity/amplitude value given here (0-1.0 (float) or 0-127 (integer) 
 ;;; 
 ;;; RETURN VALUE
 ;;; 

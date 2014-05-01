@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 14:22:20 Sun Dec 29 2013 CIT
+;;; $$ Last modified: 16:22:04 Thu May  1 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1030,8 +1030,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; start-tempo is a bpm
+
+;;; ****f* cm/event-list-to-midi-file
+;;; DESCRIPTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun event-list-to-midi-file (event-list midi-file start-tempo time-offset
                                 &optional force-velocity)
+;;; ****
   (events
    (new seq :name (gensym) :time 0.0 :subobjects
         (loop for event in (sc::sort-event-list event-list)

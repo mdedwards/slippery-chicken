@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 16:38:38 Wed Apr 30 2014 BST
+;;; $$ Last modified: 21:13:03 Mon May  5 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4367,6 +4367,35 @@ RETURNS:
      finally
      (when tmp (push (reverse tmp) result))
      (return (nreverse result))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun get-time ()
+  "Returns a string similar to:
+   21:51:24 on Thursday the 19th of January 1995"
+  (flet ((day-name (day) 
+           (nth day '("Monday" "Tuesday" "Wednesday"
+                      "Thursday" "Friday"  
+                      "Saturday" "Sunday")))
+         (month-name (month)
+           (nth (- month 1) '("January" "February" "March"
+                              "April" "May" "June" "July"
+                              "August" "September" "October"
+                              "November" "December")))
+         (suffix (date) (case date
+                          (1 "st")
+                          (21 "st")
+                          (31 "st")
+                          (2 "nd")
+                          (22 "nd")
+                          (3 "rd")
+                          (23 "rd")
+                          (t "th"))))
+    (multiple-value-bind 
+          (seconds minutes hours date month year day)
+        (get-decoded-time)
+      (format nil "~2,'0D:~2,'0D:~2,'0D on ~a the ~a~a of ~a ~a" hours 
+              minutes seconds (day-name day) date (suffix date) 
+              (month-name month) year))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

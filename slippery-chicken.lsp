@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 22:09:03 Mon May  5 2014 BST
+;;; $$ Last modified: 22:28:26 Mon May  5 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7144,7 +7144,8 @@ FS4 G4)
         (top-player (first (players sc)))
         ;; this should force a new BPM to be written as this tempo will never
         ;; be used (famous last words) 
-        (tempo (make-tempo -1 :beat 'w))        
+        (tempo (make-tempo -1 :beat 'w))
+        (write-tempo nil)
         (bar-num 0)
         ;; the group number for this bar
         (groupi 0)
@@ -7192,8 +7193,11 @@ FS4 G4)
            do
            (when (and (tempo-change e)
                       (not (tempo-equal tempo (tempo-change e))))
-             (setf tempo (tempo-change e))
-             (format out "~&    BPM ~a" (bpm tempo)))
+             (setf tempo (tempo-change e)
+                   write-tempo t))
+           (when (and (not in-group) write-tempo)
+             (format out "~&    BPM ~a" (bpm tempo))
+             (setf write-tempo nil))
            (unless (= (bar-num e) bar-num)
              (unless (zerop bar-num)
                ;; remember rehearsal-letters are attached to the previous bar
@@ -7223,7 +7227,8 @@ FS4 G4)
                      ;; or CHORD 
                      pitch duration (if rehearsal-letter
                                         (prog1
-                                            rehearsal-letter
+                                            (format nil "letter-~a" 
+                                                    rehearsal-letter)
                                           (setf rehearsal-letter nil))
                                         "")))
            ;; the other players ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

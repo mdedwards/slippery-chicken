@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 11:44:23 Fri Nov  8 2013 GMT
+;;; $$ Last modified: 20:37:12 Mon May  5 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -953,9 +953,10 @@ BAR-HOLDER:
                   ;; MDE Thu Jul 19 22:46:06 2012 here's where we add the
                   ;; instrument-change, if it exists, to the first event of
                   ;; the cloned seq
-                  (setf cloned-seq (get-nth-sequenz p section player i))
+                  (setf cloned-seq (get-nth-sequenz p section player i)
+                        first-event (get-first cloned-seq))
+                  ;; (print (player first-event))
                   (when instrument-change
-                    (setf first-event (get-first cloned-seq))
                     (unless first-event
                       (error "piece::add-rest-sequenzes: couldn't get first ~
                               event from cloned rest sequence: ~a" cloned-seq))

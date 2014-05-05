@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 13:50:57 Sun Dec 29 2013 CIT
+;;; $$ Last modified: 18:20:21 Mon May  5 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -884,6 +884,8 @@ data: ((2 4) Q E S S)
             (display-tempo new) (display-tempo first)
             (bar-num new) (bar-num first)
             (marks-before new) (marks-before first)
+            ;; MDE Mon May  5 18:20:19 2014
+            (player new) (player first)
             ;; MDE Mon Jul 23 13:13:11 2012 
             (instrument-change new) (instrument-change first)))
     ;; 26.7.11 (Pula): don't copy over 8ve marks: could screw things up but

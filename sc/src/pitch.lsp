@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 08:59:26 Tue Jan 14 2014 GMT
+;;; $$ Last modified: 16:30:16 Mon May  5 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -232,8 +232,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod midi-note-float ((p pitch))
-  (float (+ (midi-note p) (pitch-bend p))))
+(defmethod midi-note-float ((p pitch) &optional in-cents)
+  (let ((mnf (float (+ (midi-note p) (pitch-bend p)))))
+    (if in-cents (* 100.0 mnf) mnf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

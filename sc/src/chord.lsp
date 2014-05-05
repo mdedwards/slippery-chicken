@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 09:00:22 Tue Jan 14 2014 GMT
+;;; $$ Last modified: 16:31:28 Mon May  5 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1362,6 +1362,11 @@ data: (
 (defmethod pitch- ((c1 chord) (c2 chord))
 ;;; ****
   (- (midi-note-float (first (data c1))) (midi-note-float (first (data c2)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon May  5 16:31:06 2014 
+(defmethod midi-note-float ((c chord) &optional in-cents)
+  (loop for p in (data c) collect (midi-note-float p in-cents)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Apr 17 13:15:31 2012 -- mainly for printing in the clm-play method:

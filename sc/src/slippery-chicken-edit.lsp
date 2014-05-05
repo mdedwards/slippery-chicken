@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 12:16:27 Wed Apr 23 2014 BST
+;;; $$ Last modified: 16:11:13 Mon May  5 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3855,9 +3855,8 @@ NIL
 ;;; - :start-bar. An integer that is the first bar in which the function is to
 ;;;   be applied to event objects. Default = 1.
 ;;; - :end-bar. NIL or an integer that is the last bar in which the function is
-;;;   to be applied to event objects. If NIL, the function will be applied to
-;;;   all event objects of all bars in the given slippery-chicken object. 
-;;;   Default = NIL.
+;;;   to be applied to event objects. If NIL, the last bar of the
+;;;   slippery-chicken object is used. Default = NIL.  
 ;;; 
 ;;; RETURN VALUE
 ;;; T
@@ -3893,20 +3892,9 @@ NIL
 (defmethod process-events-by-time ((sc slippery-chicken) function
                                    &key (start-bar 1) end-bar)
 ;;; ****
-  (unless end-bar
-    (setf end-bar (num-bars sc)))
-  (loop for bar-num from start-bar to end-bar 
-     for bars = (get-bar sc bar-num)    ; gets for all players
-     for events =
-     ;; this will collect rests too of course so need to filter them out in
-     ;; the supplied function if that's what's needed
-     (loop for player-bar in bars appending (rhythms player-bar))
-     do
-     (setf events (sort events
-                        #'(lambda (e1 e2)
-                            (< (start-time e1) (start-time e2)))))
-     (loop for e in events do
-          (funcall function e)))
+  (loop for e in
+       (get-events-sorted-by-time sc :start-bar start-bar :end-bar end-bar) 
+     do (funcall function e))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

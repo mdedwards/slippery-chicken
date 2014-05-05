@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:14:28 Mon May  5 2014 BST
+;;; $$ Last modified: 21:49:07 Mon May  5 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7083,12 +7083,20 @@ FS4 G4)
 
 ;;; ****m* slippery-chicken/write-antescofo
 ;;; DESCRIPTION
+
 ;;; Write an antescofo~ (Arshia Cont's/IRCAM's score follower MaxMSP external)
-;;; score file. Bear in mind that if you want to write antescofo~ files without
-;;; having to work within the usual slippery chicken workflow, you could
-;;; generate events by any method, then put them into rtm-seq-bar objects
-;;; before then calling bars-to-sc in order to create a slippery-chicken object
-;;; by brute force, as it were.
+;;; score file. This allows you to specify a single player to follow (for now:
+;;; no polyphonic following) and which players' events you'd like to be
+;;; triggered along with this, in the form of midi notes (sent via antescofo's
+;;; group action commands). Of course this doesn't imply that you have to use
+;;; MIDI with antescofo, rather, that you have something that picks up midi
+;;; notes and uses them somehow or other.
+
+;;; Bear in mind that if you want to write antescofo~ files without having to
+;;; work within the usual slippery chicken workflow, you could generate events
+;;; by any method, then put them into rtm-seq-bar objects before then calling
+;;; bars-to-sc in order to create a slippery-chicken object by brute force, as
+;;; it were.
 ;;; 
 ;;; ARGUMENTS
 ;;; - The slippery-chicken object
@@ -7096,10 +7104,15 @@ FS4 G4)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :group-players (list of symbols). The players for whom midi-note
-;;;   events will be written in the antescofo file as part of a "group"
-;;;   action. If NIL, then we'll write all players' events except for the
-;;;   player we're following. Default = NIL. 
+;;; - :group-players (list of symbols). The players for whom midi-note events
+;;;   will be written in the antescofo file as part of a "group" action. If
+;;;   NIL, then we'll write all players' events except for the player we're
+;;;   following. NB There's no reason why we couldn't include the player we're
+;;;   following in these group commands (for unison playing between live and
+;;;   digital instruments perhaps). The easist way to write group events for
+;;;   all players is to write something like 
+;;;   :group-players (players +your-sc-object+)
+;;;   Default = NIL.
 ;;; - :bar-num-receiver. a MaxMSP receiver name to which bar numbers will be
 ;;;   sent. Default = "antescofo-bar-num"
 ;;; - :file. The name of the file to write. If NIL, then the file name will be

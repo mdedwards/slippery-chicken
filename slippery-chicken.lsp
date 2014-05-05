@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:49:07 Mon May  5 2014 BST
+;;; $$ Last modified: 21:51:08 Mon May  5 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7083,7 +7083,6 @@ FS4 G4)
 
 ;;; ****m* slippery-chicken/write-antescofo
 ;;; DESCRIPTION
-
 ;;; Write an antescofo~ (Arshia Cont's/IRCAM's score follower MaxMSP external)
 ;;; score file. This allows you to specify a single player to follow (for now:
 ;;; no polyphonic following) and which players' events you'd like to be
@@ -7091,12 +7090,12 @@ FS4 G4)
 ;;; group action commands). Of course this doesn't imply that you have to use
 ;;; MIDI with antescofo, rather, that you have something that picks up midi
 ;;; notes and uses them somehow or other.
-
+;;; 
 ;;; Bear in mind that if you want to write antescofo~ files without having to
 ;;; work within the usual slippery chicken workflow, you could generate events
 ;;; by any method, then put them into rtm-seq-bar objects before then calling
-;;; bars-to-sc in order to create a slippery-chicken object by brute force, as
-;;; it were.
+;;; bars-to-sc in order to create a slippery-chicken object by brute force (as
+;;; it were).
 ;;; 
 ;;; ARGUMENTS
 ;;; - The slippery-chicken object
@@ -7120,7 +7119,7 @@ FS4 G4)
 ;;;   'default-dir). Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
-;;; The number of NOTE and group events we've written. We also print to the
+;;; The number of NOTE plus group events we've written. We also print to the
 ;;; terminal the number of events and actions, which should correspond to what
 ;;; Antescofo~ prints when it loads the score in MaxMSP
 ;;; 

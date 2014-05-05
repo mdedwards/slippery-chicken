@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:08:40 Wed Apr 30 2014 BST
+;;; $$ Last modified: 18:58:08 Mon May  5 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7012,6 +7012,209 @@ FS4 G4)
            (eb (envelope-boundaries sf jump-threshold)))
       ;; (print sfm)
       (decide-boundaries (get-clusters eb) sfm))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* slippery-chicken/get-events-sorted-by-time
+;;; DESCRIPTION
+;;; Get all the events of all players between the given bars and then order
+;;; them by ascending time.
+;;; 
+;;; ARGUMENTS
+;;; - A slippery-chicken object.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :start-bar. An integer that is the first bar in which the function is to
+;;;   be applied to event objects. Default = 1.
+;;; - :end-bar. NIL or an integer that is the last bar for which the event
+;;;   objects should be returned. If NIL, the last bar of the  
+;;;   slippery-chicken object is used. Default = NIL.  
+;;; 
+;;; RETURN VALUE
+;;; A list of event objects.
+;;; 
+;;; SYNOPSIS
+(defmethod get-events-sorted-by-time ((sc slippery-chicken) &key
+                                      (start-bar 1) end-bar)
+;;; ****
+  (unless end-bar
+    (setf end-bar (num-bars sc)))
+  (loop for bar-num from start-bar to end-bar 
+     for bars = (get-bar sc bar-num)    ; gets for all players
+     for events =
+     ;; this will collect rests too of course so need to filter them out in
+     ;; the supplied function if that's what's needed
+     (loop for player-bar in bars appending (rhythms player-bar))
+     do
+     (setf events
+           (sort events
+                 #'(lambda (e1 e2)
+                     ;; MDE Mon May  5 16:49:01 2014 -- if we've got two events
+                     ;; that start at the same time, place the event from the
+                     ;; player higher in the hierarchy/ensemble first
+                     (if (equal-within-tolerance
+                          (start-time e1) (start-time e2))
+                         (let ((pos1 (position (player e1) 
+                                               (instruments-hierarchy sc)))
+                               (pos2 (position (player e2) 
+                                               (instruments-hierarchy sc))))
+                           (< pos1 pos2))
+                         (< (start-time e1) (start-time e2))))))
+     appending events))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; e.g.:
+;;; NOTE 6000                6.0                 Bar2    
+;;;    group a-unique-name
+;;;    {   ; delay midi-pitch (we'll use cents) velocity chan dur
+;;;            mnote 79        100             4n
+;;;            1.0     mnote 72        100     8n
+;;;            0.5     mnote 84        100     4n
+;;;            1.0 mnote 79    100     8n
+;;;            0.5 mnote 82    100     4nd
+;;;            1.5 mnote 80    100     4n
+;;;            1.0 mnote 79    100     8n
+;;;    }
+
+;;; ****m* slippery-chicken/write-antescofo
+;;; DESCRIPTION
+;;; Write an antescofo (Arshia Cont's/IRCAM's score follower MaxMSP external)
+;;; score file.
+;;; 
+;;; ARGUMENTS
+;;; - The slippery-chicken object
+;;; - the player who we'll follow (single player for now; symbol)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :group-players (list of symbols). The players for whom midi-note
+;;;   events will be written in the antescofo file as part of a "group"
+;;;   action. If NIL, then we'll write all players' events except for the
+;;;   player we're following. Default = NIL. 
+;;; - :bar-num-receiver. a MaxMSP receiver name to which bar numbers will be
+;;;   sent. Default = "antescofo-bar-num"
+;;; - :file. The name of the file to write. If NIL, then the file name will be
+;;;   created from the slippery-chicken title and placed in (get-sc-config
+;;;   'default-dir). Default = NIL. 
+;;; 
+;;; RETURN VALUE
+;;; The number of NOTE and group events we've written. We also print to the
+;;; terminal the number of events and actions, which should correspond to what
+;;; Antescofo~ prints when it loads the score in MaxMSP
+;;; 
+;;; SYNOPSIS
+(defmethod write-antescofo ((sc slippery-chicken) follow-player
+                            &key group-players file
+                            (bar-num-receiver "antescofo-bar-num"))
+;;;  ****
+  (unless (and follow-player (member follow-player (players sc)))
+    (error "slippery-chicken::write-antescofo: 2nd argument must be a player ~
+            in the ensemble: ~a" follow-player))
+  (unless group-players
+    (setf group-players (remove follow-player (players sc))))
+  (unless file
+    (setf file (format nil "~a~a.asco.txt"
+                       (get-sc-config 'default-dir)
+                       (filename-from-title (title sc)))))
+  (let ((last-time 0.0)
+        (event-count 0) ; the events for the player we're following
+        (action-count 0) ; each event in a group and each receiver we send
+                         ; something to
+        (top-player (first (players sc)))
+        (tempo (get-tempo sc 1))        ; tempo-object!
+        (bar-num 0)
+        ;; the group number for this bar
+        (groupi 0)
+        ;; we'll have to write the } next time we see an event for the
+        ;; follow-player
+        in-group 
+        rehearsal-letter pitch duration delay)
+    (flet ((asco-data (event)
+             ;; write midi-notes in cents. this will be a list if it's a chord
+             (setf pitch 
+                   (if (is-rest event)
+                       ;; rests don't count in the midi-notes we generate, but
+                       ;; they do count for the followed player
+                       0
+                       (floor (midi-note-float (pitch-or-chord event) t)))
+                   ;; Durations are expressed as fractions/multiples of a beat.
+                   ;; There’s no concept of meter, as such, in antescofo.  In
+                   ;; e.g. in 6/8 time the BPM would be entered as e.g. 120 or
+                   ;; something (where we’d mean dotted quarter = 120, though
+                   ;; antescofo doesn’t need to know our beat type), and then
+                   ;; each 1/8 note would be an antescofo duration of 0.33,
+                   ;; just as if it were a triplet in 2/4 time. So the duration
+                   ;; is the event's compound-duration * (tempo's beat-value /
+                   ;; 4)
+                   duration (* (compound-duration event)
+                               (/ (beat-value tempo) 4.0))
+                   ;; only used in the group events, as rests are written in
+                   ;; the player we're following
+                   delay (/ (- (start-time event) last-time)
+                            (beat-dur tempo)))))
+      (with-open-file (out file :direction :output :if-does-not-exist :create
+                           :if-exists :rename-and-delete)
+        (format out "~&; antescofo score generated by slippery chicken ~a"
+                +slippery-chicken-version+)
+        (format out "~&    BPM ~a" (bpm tempo))
+        ;; get all the events in the piece, ordered by time
+        (loop for e in (get-events-sorted-by-time sc)
+           do
+           (unless (= (bar-num e) bar-num)
+             (unless (zerop bar-num)
+               ;; remember rehearsal-letters are attached to the previous bar
+               (setf rehearsal-letter (rehearsal-letter
+                                       (get-bar sc bar-num top-player))))
+             (setf bar-num (bar-num e)
+                   groupi 0)
+             (format out "~&~a ~a" bar-num-receiver bar-num)
+             (incf action-count))
+           (when (tempo-change e)
+             (setf tempo (tempo-change e)))
+           ;; following player ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+           (when (and (equalp (player e) follow-player)
+                      ;; remember not to include tied notes, as these are
+                      ;; handled by compound duration when the note is struck
+                      (not (is-tied-to e)))
+             (asco-data e)
+             (unless (zerop pitch)
+               (incf event-count))
+             (when in-group
+               (format out "~&      }")
+               ;; (incf action-count)
+               (setf in-group nil))
+             ;; todo: add antescofo slot to event and write this here
+             (format out "~&~a ~a ~a ~a" 
+                     (if (listp pitch) "CHORD" "NOTE")
+                     ;; write any labels (e.g. rehearsal letter) after the NOTE
+                     ;; or CHORD 
+                     pitch duration (if rehearsal-letter
+                                        (prog1
+                                            rehearsal-letter
+                                          (setf rehearsal-letter nil))
+                                        "")))
+           ;; other players ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+           ;; we could include the follow-player in the group-players in order
+           ;; to double the live player with something electronic, hence the
+           ;; two whens here rather than an if . e.g.  midi-note-in-cents
+           ;; duration-in-beats label
+           (when (and (member (player e) group-players)
+                      (needs-new-note e))
+             (unless in-group
+               (setf in-group t)
+               (format out "~&      group bar~a.~a {" bar-num (incf groupi)))
+             (asco-data e)
+             (incf action-count)
+             (format out "~&          ~a mnote ~a ~a ~a ~a" delay pitch 
+                     (min 127 (floor (* 127.0 (amplitude e))))
+                     (midi-channel (get-player sc (player e)))
+                     duration)))))
+    ;; this statement corresponds to what antescofo~ prints to the max window
+    ;; when it's loaded a score
+    (format t "~&Score written successfully with ~a events and ~a actions."
+            event-count action-count)
+    (+ event-count action-count)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

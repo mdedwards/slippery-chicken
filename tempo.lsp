@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified: 17:33:53 Mon Jun 25 2012 BST
+;;; $$ Last modified: 17:30:08 Mon May  5 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -47,11 +47,6 @@
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -69,6 +64,8 @@
    (qtr-bpm :accessor qtr-bpm :type number :initform -1)
    ;; the number of microseconds (usecs) per MIDI quarter note
    (usecs :accessor usecs :type integer :initform -1)
+   ;; MDE Mon May  5 17:21:12 2014 -- the duration in seconds of the beat
+   (beat-dur :accessor beat-dur :type number)
    ;; the duration in seconds of a quarter note at this tempo
    (qtr-dur :accessor qtr-dur :type number)))
 
@@ -88,6 +85,7 @@
           (slot-value named-object 'description) (description tpo)
           (slot-value named-object 'qtr-bpm) (qtr-bpm tpo)
           (slot-value named-object 'usecs) (usecs tpo)
+          (slot-value named-object 'beat-dur) (beat-dur tpo)
           (slot-value named-object 'qtr-dur) (qtr-dur tpo))
     named-object))
 
@@ -96,7 +94,8 @@
 (defmethod initialize-instance :after ((i tempo) &rest initargs)
   (declare (ignore initargs))
   (setf (beat-value i) (value (make-rhythm (beat i)))
-        (qtr-dur i) (* (/ 60.0 (bpm i)) (/ (beat-value i) 4.0))
+        (beat-dur i) (/ 60.0 (bpm i))
+        (qtr-dur i) (* (beat-dur i) (/ (beat-value i) 4.0))
         (qtr-bpm i) (* (bpm i) (/ 4 (beat-value i)))
         (usecs i) (floor (* 1000000 (qtr-dur i)))
         ;; just for the hell set the data slot of the named-object parent to
@@ -106,15 +105,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf bpm) :after (value (i tempo))
-  (setf (data i) value))
+  ;; MDE Mon May  5 17:29:59 2014 -- re-init the values
+  ;; (setf (data i) value))
+  (initialize-instance i))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((i tempo) stream)
-  (format stream "~%TEMPO: bpm: ~a, beat: ~a, beat-value: ~a, qtr-dur: ~a ~
+  (format stream "~%TEMPO: bpm: ~a, beat: ~a, beat-value: ~a, beat-dur: ~a, ~
+                           qtr-dur: ~a ~
                   ~%       qtr-bpm: ~a, usecs: ~a, description: ~a"
-          (bpm i) (beat i) (beat-value i) (qtr-dur i) (qtr-bpm i) (usecs i)
-          (description i)))
+          (bpm i) (beat i) (beat-value i) (beat-dur i) (qtr-dur i) (qtr-bpm i)
+          (usecs i) (description i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

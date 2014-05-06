@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:08:44 Tue May  6 2014 BST
+;;; $$ Last modified: 21:40:01 Tue May  6 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7188,6 +7188,11 @@ FS4 G4)
                    delay (decimal-places (/ (- (start-time event) last-time)
                                             (beat-dur tempo))
                                          3)))
+           (write-msgs (event stream group?)
+             (loop for msg in (asco-msgs event) do
+                  (format stream "~&~a~a" 
+                          (if group? "          " "      ")
+                          msg)))
            (write-group-note (p event midi-channel stream) 
              ;; p = current pitch (of chord or note)
              (format stream "~&          ~a ~a ~a ~a ~a ~a" delay
@@ -7233,16 +7238,23 @@ FS4 G4)
                ;; (incf action-count)
                (setf in-group nil))
              ;; todo: add antescofo slot to event and write this here
+             (when (and rehearsal-letter (asco-label e))
+               (error "~&slippery-chicken::write-antescofo:  ~
+                         An event can't have a label and a rehearsal letter ~
+                         attached: ~a" e))
              (format out "~&~a ~a ~a ~a" 
                      (if (listp pitch) "CHORD" "NOTE")
                      ;; write any labels (e.g. rehearsal letter) after the NOTE
                      ;; or CHORD 
-                     pitch duration (if rehearsal-letter
-                                        (prog1
-                                            (format nil "letter-~a" 
-                                                    rehearsal-letter)
-                                          (setf rehearsal-letter nil))
-                                        "")))
+                     pitch duration (cond (rehearsal-letter
+                                           (prog1
+                                               (format nil "letter-~a" 
+                                                       rehearsal-letter)
+                                             (setf rehearsal-letter nil)))
+                                          ((asco-label e) (asco-label e))
+                                          (t "")))
+             (when (asco-msgs e)
+               (write-msgs e out nil)))
            ;; the other players ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
            ;; we could include the follow-player in the group-players in order
            ;; to double the live player with something electronic, hence the
@@ -7260,7 +7272,9 @@ FS4 G4)
                  (progn
                    (incf action-count)
                    (write-group-note pitch e (midi-channel (pitch-or-chord e))
-                                     out))))
+                                     out)))
+             (when (asco-msgs e)
+               (write-msgs e out t)))
            (setf last-time (start-time e)))
         (when in-group (format out "~&      }"))
         (format out "~&; End of file~%")))

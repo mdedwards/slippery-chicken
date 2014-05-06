@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:48:53 Fri Apr  4 2014 BST
+;;; $$ Last modified: 21:08:17 Tue May  6 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -110,6 +110,17 @@
    ;; for bar-holder add method 
    (marks-before :accessor marks-before :type list :initarg :marks-before
                  :initform nil)
+   ;; MDE Tue May 6 20:38:47 2014 -- an antescofo~ label, suitable for jumping
+   ;; to during reharsal. This appears at the end of a NOTE line. Should
+   ;; generally be a string.
+   (asco-label :accessor asco-label :initarg :asco-label :initform nil)
+   ;; a list of messages we want antescofo~ to send. This basically anything we
+   ;; want on a separate line, after the event details. It'll need to be a
+   ;; receiver name and a value, as a string e.g. '("granular on"). A delay in
+   ;; beats could be added first e.g.  "0.5 granular on". NB you can push
+   ;; messages in this list; they'll be reversed before writing out so that
+   ;; they occur in the order in which you added them.
+   (asco-msgs :accessor asco-msgs :initarg :asco-msgs :type list :initform nil)
    ;; MDE Thu Aug 22 19:26:11 2013 -- the player whose part this event is in
    (player :accessor player :initform nil)
    ;(rqq-notes :accessor rqq-notes :type list :initform nil :allocation :class)
@@ -157,6 +168,9 @@
           (slot-value rthm 'start-time-qtrs) (start-time-qtrs e)
           ;; MDE Thu Aug 22 19:27:43 2013 
           (slot-value rthm 'player) (player e)
+          ;; MDE Tue May  6 20:42:15 2014 
+          (slot-value rthm 'asco-label) (asco-label e)
+          (slot-value rthm 'asco-msgs) (asco-msgs e)
           (slot-value rthm 'instrument-change) (copy-list
                                                 (instrument-change e))
           (slot-value rthm 'tempo-change) (when (tempo-change e)
@@ -737,6 +751,7 @@ data: 132
                   ~%       display-tempo: ~a, start-time-qtrs: ~,3f, ~
                   ~%       midi-time-sig: ~a, midi-program-changes: ~a, ~
                   ~%       8va: ~a, player: ~a~
+                  ~%       asco-label: ~a, asco-msgs: ~a~
                   ~%       pitch-or-chord: ~a~
                   ~%       written-pitch-or-chord: ~a"
           (start-time i) (end-time i) (duration-in-tempo i) 
@@ -745,7 +760,8 @@ data: 132
           (instrument-change i) (display-tempo i) (start-time-qtrs i) 
           (when (midi-time-sig i)
             (data (midi-time-sig i)))
-          (midi-program-changes i) (8va i) (player i) (pitch-or-chord i)
+          (midi-program-changes i) (8va i) (player i) 
+          (asco-label i) (asco-msgs i) (pitch-or-chord i)
           (written-pitch-or-chord i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -792,6 +808,9 @@ data: 132
                                                (midi-program-changes from))
         ;; MDE Thu Aug 22 19:28:27 2013 
         (slot-value to 'player) (player from)
+        ;; MDE Tue May  6 20:43:30 2014 
+        (slot-value to 'asco-label) (asco-label from)
+        (slot-value to 'asco-msgs) (asco-msgs from)
         (slot-value to 'midi-time-sig) (when (midi-time-sig from)
                                          (clone (midi-time-sig from))))
   to)

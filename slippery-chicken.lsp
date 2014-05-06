@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 22:28:26 Mon May  5 2014 BST
+;;; $$ Last modified: 09:08:44 Tue May  6 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7068,10 +7068,13 @@ FS4 G4)
      appending events))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  e.g.:
+;;; An example of a note to follow, followed by actions arising from it. NB
+;;; mnote is not an antescofo command, it's just a send name so can be changed
+;;; to anything:
+;;;      C4 (in midi-cents)  duration in beats   label
 ;;; NOTE 6000                6.0                 Bar2    
 ;;;    group a-unique-name
-;;;    {   ; delay midi-pitch (we'll use cents) velocity chan dur
+;;;    {   ; delay(beats) midi-pitch (we'll use cents) velocity chan dur
 ;;;            mnote 79        100             4n
 ;;;            1.0     mnote 72        100     8n
 ;;;            0.5     mnote 84        100     4n
@@ -7086,10 +7089,14 @@ FS4 G4)
 ;;; Write an antescofo~ (Arshia Cont's/IRCAM's score follower MaxMSP external)
 ;;; score file. This allows you to specify a single player to follow (for now:
 ;;; no polyphonic following) and which players' events you'd like to be
-;;; triggered along with this, in the form of midi notes (sent via antescofo's
+;;; triggered along with this, in the form of MIDI notes (sent via antescofo's
 ;;; group action commands). Of course this doesn't imply that you have to use
 ;;; MIDI with antescofo, rather, that you have something that picks up midi
-;;; notes and uses them somehow or other.
+;;; notes and uses them somehow or other. In any case, the MIDI notes sent
+;;; consist of four messages: the MIDI note (in midi cents e.g. middle C
+;;; = 6000), the velocity (taken as usual from the amplitude slot of the
+;;; event), the channel, and the duration in beats; each may be precede by a
+;;; delay, which will be relative to the previous NOTE or group MIDI note.
 ;;; 
 ;;; Bear in mind that if you want to write antescofo~ files without having to
 ;;; work within the usual slippery chicken workflow, you could generate events
@@ -7112,8 +7119,11 @@ FS4 G4)
 ;;;   all players is to write something like 
 ;;;   :group-players (players +your-sc-object+)
 ;;;   Default = NIL.
-;;; - :bar-num-receiver. a MaxMSP receiver name to which bar numbers will be
+;;; - :bar-num-receiver. The MaxMSP receiver name to which bar numbers will be
 ;;;   sent. Default = "antescofo-bar-num"
+;;; - :midi-note-receiver. The MaxMSP receiver name to which midi notes will be
+;;;   sent. Default = "midi-note", so a typical group output event could be 
+;;;   0.0 midi-note 6500 12 4 0.6666667
 ;;; - :file. The name of the file to write. If NIL, then the file name will be
 ;;;   created from the slippery-chicken title and placed in (get-sc-config
 ;;;   'default-dir). Default = NIL. 
@@ -7126,6 +7136,7 @@ FS4 G4)
 ;;; SYNOPSIS
 (defmethod write-antescofo ((sc slippery-chicken) follow-player
                             &key group-players file
+                            (midi-note-receiver "midi-note")
                             (bar-num-receiver "antescofo-bar-num"))
 ;;; ****
   (unless (and follow-player (member follow-player (players sc)))
@@ -7179,7 +7190,8 @@ FS4 G4)
                                          3)))
            (write-group-note (p event midi-channel stream) 
              ;; p = current pitch (of chord or note)
-             (format stream "~&          ~a mnote ~a ~a ~a ~a" delay p
+             (format stream "~&          ~a ~a ~a ~a ~a ~a" delay
+                     midi-note-receiver p
                      (min 127 (floor (* 127.0 (amplitude event))))
                      midi-channel
                      duration)))

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:10:54 Thu May  8 2014 BST
+;;; $$ Last modified: 12:58:46 Thu May  8 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7083,7 +7083,7 @@ FS4 G4)
 ;;; note data and uses them (or ignores them) somehow or other. In any case,
 ;;; the MIDI notes sent consist of four messages: the MIDI note (in midi cents
 ;;; e.g. middle C = 6000), the velocity (taken as usual from the amplitude slot
-;;; of the event), the channel, and the duration in beats; each may be preceded
+;;; of the event), the channel, and the duration in beats. Each may be preceded
 ;;; by a delay, which will be relative to the previous NOTE or group MIDI note.
 ;;;
 ;;; Rehearsal letters already in the slippery-chicken piece will automatically
@@ -7095,13 +7095,14 @@ FS4 G4)
 ;;; Action messages can also be added to events and thus written into the
 ;;; antescofo~ file. You can push as many messages as you want into this list;
 ;;; they'll be reversed before writing out so that they occur in the order in
-;;; which you added them. NB For the part we're following, we can add messages
+;;; which you added them. If you prefer you can call the event method
+;;; add-antescofo-message. NB For the part we're following, we can add messages
 ;;; to rests but if it turns out we added messages to rests in other players'
 ;;; (i.e. group event parts) these won't be written to the antescofo~ file.
 ;;; 
 ;;; Bear in mind that if you want to write antescofo~ files without having to
 ;;; work within the usual slippery chicken workflow, you could generate events
-;;; by any method, then put them into rtm-seq-bar objects before then calling
+;;; by any method, then put them into rthm-seq-bar objects before then calling
 ;;; bars-to-sc in order to create a slippery-chicken object by brute force (as
 ;;; it were).
 ;;;
@@ -7131,8 +7132,8 @@ FS4 G4)
 ;;; 
 ;;; RETURN VALUE
 ;;; The number of NOTE plus action events we've written. We also print to the
-;;; terminal the number of events and actions, which should correspond to what
-;;; Antescofo~ prints when it loads the score in MaxMSP
+;;; terminal the number of events and actions separately, which should
+;;; then correspond to what Antescofo~ prints when it loads the score in MaxMSP.
 ;;; 
 ;;; EXAMPLE
 #|

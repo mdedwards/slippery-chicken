@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:53:16 Thu May  8 2014 BST
+;;; $$ Last modified: 12:58:06 Thu May  8 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3211,6 +3211,11 @@ do (add-mark-before e m))
       (setf (slot-value e 'written-pitch-or-chord)
             (make-chord (written-pitch-or-chord e)))))
   e)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May  8 12:58:04 2014 
+(defmethod add-antescofo-message ((e event) receiver message)
+  (push (format nil "~a ~a" receiver message) (asco-msgs e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

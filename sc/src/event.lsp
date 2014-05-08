@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:08:17 Tue May  6 2014 BST
+;;; $$ Last modified: 11:10:08 Thu May  8 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -112,14 +112,17 @@
                  :initform nil)
    ;; MDE Tue May 6 20:38:47 2014 -- an antescofo~ label, suitable for jumping
    ;; to during reharsal. This appears at the end of a NOTE line. Should
-   ;; generally be a string.
+   ;; generally be a string but numbers seem to work fine too.
    (asco-label :accessor asco-label :initarg :asco-label :initform nil)
    ;; a list of messages we want antescofo~ to send. This basically anything we
    ;; want on a separate line, after the event details. It'll need to be a
    ;; receiver name and a value, as a string e.g. '("granular on"). A delay in
-   ;; beats could be added first e.g.  "0.5 granular on". NB you can push
-   ;; messages in this list; they'll be reversed before writing out so that
-   ;; they occur in the order in which you added them.
+   ;; beats could be added first e.g.  "0.5 granular on". NB you can push as
+   ;; many messages as you want into this list; they'll be reversed before
+   ;; writing out so that they occur in the order in which you added them. For
+   ;; the part we're following, we can add messages to rests but this won't be
+   ;; written to the antescofo file if it turns out we added messages to rests
+   ;; in other players' (i.e. group event parts. 
    (asco-msgs :accessor asco-msgs :initarg :asco-msgs :type list :initform nil)
    ;; MDE Thu Aug 22 19:26:11 2013 -- the player whose part this event is in
    (player :accessor player :initform nil)
@@ -573,6 +576,14 @@
   value)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May  8 11:02:36 2014 
+(defmethod (setf asco-msgs) :after (value (e event))
+  (when (is-rest e)
+    (warn "~aevent::(setf asco-msgs): Adding antescofo messages to a rest. ~
+           ~%If this event is not part of the voice you want to follow, then ~
+           ~%they will not be written into the antescofo score." e)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Dec 23 18:07:41 EST 2011 Added robodoc info
 

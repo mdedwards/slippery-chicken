@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:58:46 Thu May  8 2014 BST
+;;; $$ Last modified: 15:09:08 Thu May  8 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1710,6 +1710,9 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 17,
 ;;; RETURN VALUE  
 ;;; An integer that is the number of notes.
 ;;; 
+;;; 
+;;; EXAMPLE
+#|
 ;;; Using defaults
 (let ((mini
        (make-slippery-chicken
@@ -2165,7 +2168,6 @@ bar 45
 C4 
 A4
 T
-
 |#
 ;;; SYNOPSIS
 (defmethod get-note ((sc slippery-chicken) bar-num note-num player 
@@ -7253,10 +7255,10 @@ NOTE 6200 0.6666667
                        0
                        (midi-note-float (pitch-or-chord event) t))
                    ;; Durations are expressed as fractions/multiples of a beat.
-                   ;; There’s no concept of meter, as such, in antescofo.  In
+                   ;; There's no concept of meter, as such, in antescofo.  In
                    ;; e.g. in 6/8 time the BPM would be entered as e.g. 120 or
-                   ;; something (where we’d mean dotted quarter = 120, though
-                   ;; antescofo doesn’t need to know our beat type), and then
+                   ;; something (where we'd mean dotted quarter = 120, though
+                   ;; antescofo doesn't need to know our beat type), and then
                    ;; each 1/8 note would be an antescofo duration of 0.33,
                    ;; just as if it were a triplet in 2/4 time. So the duration
                    ;; is the event's compound-duration * (tempo's beat-value /

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:10:08 Thu May  8 2014 BST
+;;; $$ Last modified: 11:53:16 Thu May  8 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -122,7 +122,7 @@
    ;; writing out so that they occur in the order in which you added them. For
    ;; the part we're following, we can add messages to rests but this won't be
    ;; written to the antescofo file if it turns out we added messages to rests
-   ;; in other players' (i.e. group event parts. 
+   ;; in other players' (i.e. group event parts). 
    (asco-msgs :accessor asco-msgs :initarg :asco-msgs :type list :initform nil)
    ;; MDE Thu Aug 22 19:26:11 2013 -- the player whose part this event is in
    (player :accessor player :initform nil)

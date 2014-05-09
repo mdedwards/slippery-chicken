@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 21:13:03 Mon May  5 2014 BST
+;;; $$ Last modified: 11:13:55 Fri May  9 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4396,6 +4396,25 @@ RETURNS:
       (format nil "~2,'0D:~2,'0D:~2,'0D on ~a the ~a~a of ~a ~a" hours 
               minutes seconds (day-name day) date (suffix date) 
               (month-name month) year))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun rationalize-if-simple (number &optional (decimal-places 6))
+  (let* ((n (if decimal-places (decimal-places number decimal-places) number))
+         (r (rationalize n))
+         (numerator (numerator r)))
+    (if (< numerator 20) 
+        r 
+        ;; try a different method
+        (loop with result = n
+           for num from 1 to 4 do
+             (loop for denom from 3 to 11 
+                for fraction = (/ num denom)
+                do
+                (when (equal-within-tolerance number fraction)
+                  (setf result fraction)
+                  (return)))
+           finally (return result)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

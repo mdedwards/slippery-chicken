@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:27:20 Fri May  9 2014 BST
+;;; $$ Last modified: 13:21:12 Fri May  9 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7272,12 +7272,15 @@ NOTE 6200 0.6666667
                    ;; fraction if reasonable
                    duration (rationalize-if-simple
                              (* (compound-duration event)
-                                (/ (beat-value tempo) 4.0)))
+                                (/ (beat-value tempo) 4.0))
+                             3)
                    ;; only used in the group events, as rests are written in
                    ;; the player we're following
-                   delay (rationalize-if-simple
-                          (/ (- (start-time event) last-time)
-                             (beat-dur tempo)))))
+                   delay (max 0.0
+                              (rationalize-if-simple
+                               (/ (- (start-time event) last-time)
+                                  (beat-dur tempo))
+                               3))))
            (write-msgs (event stream group?)
              (loop for msg in (reverse (asco-msgs event)) do
                   (incf action-count)
@@ -7291,10 +7294,13 @@ NOTE 6200 0.6666667
                      midi-note-receiver p
                      (min 127 (floor (* 127.0 (amplitude event))))
                      midi-channel
-                     (if group-duration-in-millisecs
-                         (format nil "@beat2ms(~a)" duration)
-                         ;; can't have fractions here :/
-                         (float duration))
+                     (cond (group-duration-in-millisecs
+                            (format nil "@beat2ms(~a)" duration))
+                           ;; can't have simple fractions here rather they have
+                           ;; to be evaluated e.g. (2/3) 
+                           ((rationalp duration)
+                            (format nil "(~a)" duration))
+                           (t (float duration)))
                      (if (asco-label event) 
                          (progn
                            (warn "slippery-chicken::write-antescofo: ~

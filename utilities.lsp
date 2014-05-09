@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 11:13:55 Fri May  9 2014 BST
+;;; $$ Last modified: 13:26:43 Fri May  9 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4399,19 +4399,20 @@ RETURNS:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun rationalize-if-simple (number &optional (decimal-places 6))
+(defun rationalize-if-simple (number &optional
+                              (decimal-places 6) (max-fraction 24))
   (let* ((n (if decimal-places (decimal-places number decimal-places) number))
-         (r (rationalize n))
-         (numerator (numerator r)))
-    (if (< numerator 20) 
+         (r (rationalize n)))
+    (if (and (<= (denominator r) max-fraction) (<= (numerator r) max-fraction))
         r 
         ;; try a different method
         (loop with result = n
-           for num from 1 to 4 do
-             (loop for denom from 3 to 11 
+           for num from 1 to max-fraction do
+             (loop for denom from 3 to max-fraction 
                 for fraction = (/ num denom)
                 do
-                (when (equal-within-tolerance number fraction)
+                (when (equal-within-tolerance number fraction
+                                              (expt 10 (- decimal-places)))
                   (setf result fraction)
                   (return)))
            finally (return result)))))

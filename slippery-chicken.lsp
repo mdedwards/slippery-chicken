@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:21:12 Fri May  9 2014 BST
+;;; $$ Last modified: 11:50:44 Sat May 10 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7101,6 +7101,10 @@ FS4 G4)
 ;;; add-antescofo-message. NB For the part we're following, we can add messages
 ;;; to rests but if it turns out we added messages to rests in other players'
 ;;; (i.e. group event parts) these won't be written to the antescofo~ file.
+;;;
+;;; Do remember to set the instruments-hierarchy slot of the slippery-chicken
+;;; object so that the player you're going to follow is top of the list,
+;;; otherwise some strange event ordering might occur in the antescofo~ file.
 ;;; 
 ;;; Bear in mind that if you want to write antescofo~ files without having to
 ;;; work within the usual slippery chicken workflow, you could generate events

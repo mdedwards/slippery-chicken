@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:50:44 Sat May 10 2014 BST
+;;; $$ Last modified: 12:41:32 Sat May 10 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7139,6 +7139,10 @@ FS4 G4)
 ;;;    we generate) as fractions of a beat (NIL) or have antescofo~ convert
 ;;;    this to millisec duration according to the current tempo (T)? Default =
 ;;;    NIL.
+;;; - :warn. Issue a warning when we write labels on group (rather than NOTE)
+;;;    events?  (Because labels attached to group event notes can be written
+;;;    and read, but they won't show up in MaxMSP as cues which you can jump
+;;;    to.)  Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; The number of NOTE plus action events we've written. We also print to the
@@ -7225,7 +7229,7 @@ NOTE 6200 0.6666667
 |#
 ;;; SYNOPSIS
 (defmethod write-antescofo ((sc slippery-chicken) follow-player
-                            &key group-players file
+                            &key group-players file (warn t)
                             (group-duration-in-millisecs nil)
                             (midi-note-receiver "midi-note")
                             (bar-num-receiver "antescofo-bar-num"))
@@ -7307,12 +7311,13 @@ NOTE 6200 0.6666667
                            (t (float duration)))
                      (if (asco-label event) 
                          (progn
-                           (warn "slippery-chicken::write-antescofo: ~
-                                  Labels attached to group event notes ~
-                                  ~%can be written and read, but they will ~
-                                  not show up in MaxMSP as cues ~
-                                  ~%which you can jump to: ~a"
-                                 event)
+                           (when warn
+                             (warn "slippery-chicken::write-antescofo: ~
+                                    Labels attached to group event notes ~
+                                    ~%can be written and read, but they will ~
+                                    not show up in MaxMSP as cues ~
+                                    ~%which you can jump to: ~a"
+                                   event))
                            (asco-label event))
                          ""))))
       (with-open-file (out file :direction :output :if-does-not-exist :create

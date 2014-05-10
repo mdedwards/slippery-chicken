@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:58:06 Thu May  8 2014 BST
+;;; $$ Last modified: 12:52:33 Sat May 10 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -578,7 +578,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May  8 11:02:36 2014 
 (defmethod (setf asco-msgs) :after (value (e event))
-  (when (is-rest e)
+  (when (and (is-rest e) (get-sc-config 'asco-msg-rest-warning))
     (warn "~aevent::(setf asco-msgs): Adding antescofo messages to a rest. ~
            ~%If this event is not part of the voice you want to follow, then ~
            ~%they will not be written into the antescofo score." e)))
@@ -3213,7 +3213,8 @@ do (add-mark-before e m))
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Thu May  8 12:58:04 2014 
+;;; MDE Thu May 8 12:58:04 2014 -- do (set-sc-config 'asco-msg-rest-warning
+;;; nil) if you're getting unnecessary warnings
 (defmethod add-antescofo-message ((e event) receiver message)
   (push (format nil "~a ~a" receiver message) (asco-msgs e)))
 

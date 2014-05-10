@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 16:04:44 Thu Nov 14 2013 GMT
+;;; $$ Last modified: 12:48:39 Sat May 10 2014 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -103,6 +103,11 @@
      ;; Bar number offsets for CMN
      (cmn-bar-num-dx-for-sc -0.2)
      (cmn-bar-num-dy-for-sc 1.2)
+     ;; MDE Sat May 10 12:47:25 2014 -- whether to issue warning when we set
+     ;; the asco-msgs slot of a rest event (because they will only be written
+     ;; to an antescofo~ file if this happens to be a rest in the part we're
+     ;; following and we can't know this in advance).
+     (asco-msg-rest-warning t)
      ;; font size for CMN bar numbers
      (cmn-bar-num-size-for-sc 6))))
 ;;; ****

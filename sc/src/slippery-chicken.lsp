@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:41:32 Sat May 10 2014 BST
+;;; $$ Last modified: 15:58:00 Mon May 12 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7269,14 +7269,13 @@ NOTE 6200 0.6666667
                        (midi-note-float (pitch-or-chord event) t))
                    ;; Durations are expressed as fractions/multiples of a beat.
                    ;; There's no concept of meter, as such, in antescofo.  In
-                   ;; e.g. in 6/8 time the BPM would be entered as e.g. 120 or
+                   ;; e.g. 6/8 time the BPM would be entered as e.g. 120 or
                    ;; something (where we'd mean dotted quarter = 120, though
                    ;; antescofo doesn't need to know our beat type), and then
                    ;; each 1/8 note would be an antescofo duration of 0.33,
                    ;; just as if it were a triplet in 2/4 time. So the duration
                    ;; is the event's compound-duration * (tempo's beat-value /
-                   ;; 4)
-                   ;; MDE Fri May 9 10:40:17 2014 -- express duration as a
+                   ;; 4) MDE Fri May 9 10:40:17 2014 -- express duration as a
                    ;; fraction if reasonable
                    duration (rationalize-if-simple
                              (* (compound-duration event)

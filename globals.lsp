@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 12:48:39 Sat May 10 2014 BST
+;;; $$ Last modified: 10:08:03 Tue May 13 2014 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -108,6 +108,10 @@
      ;; to an antescofo~ file if this happens to be a rest in the part we're
      ;; following and we can't know this in advance).
      (asco-msg-rest-warning t)
+     ;; if we've added, say, an antescofo~ label to an event with a rehearal
+     ;; letter, we'll get a warning as we can only have one antescofo label per
+     ;; NOTE (though it's not an error to have two, the 2nd will be ignored).
+     (asco-two-labels-warning t)
      ;; font size for CMN bar numbers
      (cmn-bar-num-size-for-sc 6))))
 ;;; ****

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:52:33 Sat May 10 2014 BST
+;;; $$ Last modified: 09:36:47 Tue May 13 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3217,6 +3217,30 @@ do (add-mark-before e m))
 ;;; nil) if you're getting unnecessary warnings
 (defmethod add-antescofo-message ((e event) receiver message)
   (push (format nil "~a ~a" receiver message) (asco-msgs e)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue May 13 09:30:58 2014 -- 
+(defmethod event-equal ((e1 event) (e2 event))
+  (and (rhythm-equal e1 e2)
+       (equal-within-tolerance (start-time e1) (start-time e2))
+       (equal-within-tolerance (end-time e1) (end-time e2))
+       (= (bar-num e1) (bar-num e2))
+       (equalp (marks-before e1) (marks-before e2))
+       (equalp (player e1) (player e2))
+       (= (amplitude e1) (amplitude e2))
+       (or (and (not (pitch-or-chord e1)) (not (pitch-or-chord e2)))
+           (pitch= (pitch-or-chord e1) (pitch-or-chord e2)))
+       (or (and (not (written-pitch-or-chord e1))
+                (not (written-pitch-or-chord e2)))
+           (pitch= (written-pitch-or-chord e1) (written-pitch-or-chord e2)))
+       (= (8va e1) (8va e2))
+       (equal-within-tolerance (duration-in-tempo e1) (duration-in-tempo e2))
+       (equal-within-tolerance (compound-duration-in-tempo e1) 
+                               (compound-duration-in-tempo e2))
+       (equalp (midi-time-sig e1) (midi-time-sig e2))
+       (equalp (midi-program-changes e1) (midi-program-changes e2))
+       (or (and (not (tempo-change e1)) (not (tempo-change e2)))
+           (tempo-equal (tempo-change e1) (tempo-change e2)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

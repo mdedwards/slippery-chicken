@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 20:04:16 Wed May 14 2014 BST
+;;; $$ Last modified: 20:23:02 Wed May 14 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7111,6 +7111,17 @@ FS4 G4)
 ;;; by any method, then put them into rthm-seq-bar objects before then calling
 ;;; bars-to-sc in order to create a slippery-chicken object by brute force (as
 ;;; it were).
+;;; 
+;;; A note about grace notes: For the voice we're following, antescofo~
+;;; considers that grace notes are 'out of time' so have a duration of 0. But
+;;; for group notes, which we're triggering, they have to have a duration; this
+;;; defaults to the grace-note-duration of the event class (0.05 seconds by
+;;; default). Now this means our grace notes are not 'stealing' time from the
+;;; previous note as they do in performed music. This is not ideal, but if
+;;; we've got a long group of grace notes, doing that might mean we end up with
+;;; a negative duration for the previous note, so we simply make the short
+;;; grace notes and allow/hope that the score follower catches up for us on
+;;; the next recognised note.
 ;;;
 ;;; ARGUMENTS
 ;;; - The slippery-chicken object
@@ -7278,20 +7289,11 @@ NOTE 6200 0.6666667
                    ;; 4) MDE Fri May 9 10:40:17 2014 -- express duration as a
                    ;; fraction if reasonable
                    duration (if (is-grace-note event)
-                                ;; MDE Wed May 14 18:07:08 2014 -- for the
-                                ;; voice we're following, grace notes are 'out
-                                ;; of time' so have a duration of 0, but for
-                                ;; group notes which we're triggering, they
-                                ;; have to have a duration. Now this means our
-                                ;; grace notes are not 'stealing' time from the
-                                ;; previous note, which is not ideal, but if
-                                ;; we've got a long group of grace notes, doing
-                                ;; that might mean we end up with a negative
-                                ;; duration for the previous, so let's just
-                                ;; make short notes and allow the score
-                                ;; follower to catch up for us on the next
-                                ;; recognised note.
-                                (if follower? 0.0 (grace-note-duration event))
+                                ;; MDE Wed May 14 18:07:08 2014 -- see note in
+                                ;; documentation above re. grace notes.  
+                                (if follower? 0.0 
+                                    (/ (grace-note-duration event)
+                                       (beat-dur tempo)))
                                 (rationalize-if-simple
                                  (* (compound-duration event)
                                     (/ (beat-value tempo) 4.0))

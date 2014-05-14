@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 20:23:02 Wed May 14 2014 BST
+;;; $$ Last modified: 20:28:47 Wed May 14 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7114,14 +7114,15 @@ FS4 G4)
 ;;; 
 ;;; A note about grace notes: For the voice we're following, antescofo~
 ;;; considers that grace notes are 'out of time' so have a duration of 0. But
-;;; for group notes, which we're triggering, they have to have a duration; this
-;;; defaults to the grace-note-duration of the event class (0.05 seconds by
-;;; default). Now this means our grace notes are not 'stealing' time from the
-;;; previous note as they do in performed music. This is not ideal, but if
-;;; we've got a long group of grace notes, doing that might mean we end up with
-;;; a negative duration for the previous note, so we simply make the short
-;;; grace notes and allow/hope that the score follower catches up for us on
-;;; the next recognised note.
+;;; for group notes, which we're triggering, they have to have some duration;
+;;; we default to the grace-note-duration of the event class (0.05 seconds by
+;;; default, which will be written as a fraction of the beat at the current
+;;; tempo, of course). Now this means our grace notes are not 'stealing' time
+;;; from the previous note, as they do in performed music. This is not ideal,
+;;; but if we've got a long group of grace notes, doing that might mean we end
+;;; up with a negative duration for the previous note. So we simply make the
+;;; grace notes short and allow/hope that the score follower catches up for us
+;;; on the next recognised note.
 ;;;
 ;;; ARGUMENTS
 ;;; - The slippery-chicken object

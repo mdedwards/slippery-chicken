@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:13:45 Tue May 13 2014 BST
+;;; $$ Last modified: 20:04:16 Wed May 14 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7259,7 +7259,7 @@ NOTE 6200 0.6666667
         ;; follow-player
         in-group 
         rehearsal-letter pitch duration delay)
-    (flet ((asco-data (event)
+    (flet ((asco-data (event follower?)
              ;; write midi-notes in cents. this will be a list if it's a chord
              (setf pitch 
                    (if (is-rest event)
@@ -7277,10 +7277,25 @@ NOTE 6200 0.6666667
                    ;; is the event's compound-duration * (tempo's beat-value /
                    ;; 4) MDE Fri May 9 10:40:17 2014 -- express duration as a
                    ;; fraction if reasonable
-                   duration (rationalize-if-simple
-                             (* (compound-duration event)
-                                (/ (beat-value tempo) 4.0))
-                             3)
+                   duration (if (is-grace-note event)
+                                ;; MDE Wed May 14 18:07:08 2014 -- for the
+                                ;; voice we're following, grace notes are 'out
+                                ;; of time' so have a duration of 0, but for
+                                ;; group notes which we're triggering, they
+                                ;; have to have a duration. Now this means our
+                                ;; grace notes are not 'stealing' time from the
+                                ;; previous note, which is not ideal, but if
+                                ;; we've got a long group of grace notes, doing
+                                ;; that might mean we end up with a negative
+                                ;; duration for the previous, so let's just
+                                ;; make short notes and allow the score
+                                ;; follower to catch up for us on the next
+                                ;; recognised note.
+                                (if follower? 0.0 (grace-note-duration event))
+                                (rationalize-if-simple
+                                 (* (compound-duration event)
+                                    (/ (beat-value tempo) 4.0))
+                                 3))
                    ;; only used in the group events, as rests are written in
                    ;; the player we're following
                    delay (max 0.0
@@ -7349,14 +7364,12 @@ NOTE 6200 0.6666667
                      bar-num-receiver bar-num)
              (incf action-count))
            ;; the following player ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-           ;; todo: when writing following player in group we get delays
-           ;; lasting the rthm of the following player's note :/
            (when (and (equalp (player e) follow-player)
                       ;; remember not to include tied notes, as these are
                       ;; handled by compound duration when the note is struck
                       (not (is-tied-to e)))
              (setf follow t)
-             (asco-data e)
+             (asco-data e t)
              (unless (and (numberp pitch) (zerop pitch))
                (incf event-count))
              (when in-group
@@ -7375,13 +7388,14 @@ NOTE 6200 0.6666667
                      (if (listp pitch) "CHORD" "NOTE")
                      ;; write any labels (e.g. rehearsal letter) after the NOTE
                      ;; or CHORD 
-                     pitch duration (cond (rehearsal-letter
-                                           (prog1
-                                               (format nil "letter-~a" 
-                                                       rehearsal-letter)
-                                             (setf rehearsal-letter nil)))
-                                          ((asco-label e) (asco-label e))
-                                          (t "")))
+                     pitch duration 
+                     (cond (rehearsal-letter
+                            (prog1
+                                (format nil "letter-~a" 
+                                        rehearsal-letter)
+                              (setf rehearsal-letter nil)))
+                           ((asco-label e) (asco-label e))
+                           (t "")))
              (when (asco-msgs e)
                (write-msgs e out nil)))
            ;; the other players ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -7396,7 +7410,7 @@ NOTE 6200 0.6666667
              (if follow
                  (setf delay 0)
                ;; we're not writing group events for the player we're following
-               (asco-data e))
+               (asco-data e nil))
              (if (listp pitch)
                  (loop for p in pitch and pobj in (data (pitch-or-chord e)) do
                       (incf action-count)

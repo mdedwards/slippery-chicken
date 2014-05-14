@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:36:47 Tue May 13 2014 BST
+;;; $$ Last modified: 19:24:06 Wed May 14 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2052,9 +2052,9 @@ NIL
     (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;;  lilypond
-;;; test nested tuplets, grace notes
+;;; test nested tuplets
+;;; grace notes work fine.
 (let ((grace-notes '()))
   (defmethod get-lp-data ((e event) &optional in-c ignore1 ignore2)
     (declare (ignore ignore1 ignore2))
@@ -2122,10 +2122,12 @@ NIL
              ;; the tuplet so close with }.  otherwise, unless tuplet-scaler is
              ;; 1, we've got tuplets without brackets so use the e.g. 4*2/3
              ;; (tq) notation.  other than that, just use the nearest power of
-             ;; 2 to the value.  in all cases don't forget to add the dots.
+             ;; 2 to the value. In all cases don't forget to add the dots.
              (close-tuplets 0))
         ;; MDE Mon Nov 26 17:42:14 2012 
-        (when (zerop rthm)
+        ;; MDE Wed May 14 18:53:16 2014 -- make sure it's not nil also as rthm
+        ;; will be nil if we've got a grace note
+        (when (and (numberp rthm) (zerop rthm))
           (error "event::get-lp-data: can't get nearest-power-of-2 for ~a" e))
         ;; MDE Mon Jul 23 13:52:40 2012 -- split out into above method
         (loop for s in (lp-get-ins-change e) do (push s result))
@@ -3988,5 +3990,4 @@ collect (start-time e))))
       t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF event.lsp

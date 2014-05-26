@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified: 21:33:14 Sat Jun 22 2013 BST
+;;; $$ Last modified: 10:39:50 Mon May 26 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -94,6 +94,7 @@
 ;;; - :send-ip.  The IP address to send UDP messages back out on. 
 ;;;    Default = #(127 0 0 1))
 ;;; - :send-port. The UDP port to send messages back out on. Default = 8001.
+;;; - :print. Print messages as they arrive. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; T
@@ -102,9 +103,10 @@
 (defun osc-call (&key
                  (listen-port 8000)
                  (send-ip #(127 0 0 1))
+                 (print t)
                  (send-port 8001))
 ;;; ****
-  (sb-bsd-sockets::osc-call listen-port send-ip send-port))
+  (sb-bsd-sockets::osc-call listen-port send-ip send-port print))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -137,7 +139,7 @@
 ;;; OSC .  Listens on a given port and sends out on another.  NB ip#s need to
 ;;; be in the format #(127 0 0 1) for now.
 
-(defun osc-call (listen-port send-ip send-port) 
+(defun osc-call (listen-port send-ip send-port print) 
   (let ((buffer (make-sequence '(vector (unsigned-byte 8)) 512)))
     ;; in case we exited abnormally last time
     (osc-cleanup-sockets)
@@ -165,7 +167,8 @@
                      (if (char= #\( (elt (third oscuff) 0))
                          'lisp
                          (read-from-string (third oscuff))))))
-             (format t "~&osc-->message: ~a" oscuff)
+             (when print ; MDE Mon May 26 10:39:48 2014
+               (format t "~&osc-->message: ~a" oscuff))
              (finish-output t)
              (case (sc::rm-package soscuff :sb-bsd-sockets)
                ;; test

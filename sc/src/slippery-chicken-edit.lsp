@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 17:45:44 Tue May 27 2014 BST
+;;; $$ Last modified: 17:55:11 Tue May 27 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3649,7 +3649,8 @@ NIL
         (setf (rehearsal-letter bar) nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Tue May 27 17:38:24 2014 
+;;; MDE Tue May 27 17:38:24 2014 -- called by (setf rehearsal-letters) :after
+;;; method.
 (defmethod delete-all-rehearsal-letters ((sc slippery-chicken)
                                          ;; start at 2 because the letter is
                                          ;; always on the previous bar 

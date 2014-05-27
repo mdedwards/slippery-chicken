@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 20:28:47 Wed May 14 2014 BST
+;;; $$ Last modified: 17:41:43 Tue May 27 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -325,7 +325,7 @@
                                 :recurse-simple-data nil))
                'set-map)))
       (unless (sc-map-p (set-map sc))
-        (error "~a~%slippery-chicken::initialize-instance:~%~
+        (error "~a~%slippery-chicken::sc-init:~%~
                     Cannot proceed: set map is either nil or not a set map!"
                (set-map sc)))
       ;; 29/3/10: it's not ok to have nil references in the set-palette
@@ -404,12 +404,12 @@
                       (loop for i in sg do 
                            (unless (integer>0 i)
                              (error 
-                              "slippery-chicken::initialize-instance:~
+                              "slippery-chicken::sc-init:~
                               staff-groupings should be a list of ~
                               integers: ~a"
                               sg))
                            sum i)))
-            (error "slippery-chicken::initialize-instance: ~%~
+            (error "slippery-chicken::sc-init: ~%~
                   staff-groupings should be a list of integers summing ~
                   to the number ~%of instruments in the ensemble:  ~a"
                    sg))
@@ -1017,6 +1017,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon May  5 19:20:39 2014 
 (defmethod (setf rehearsal-letters) :after (list (sc slippery-chicken))
+  ;; MDE Tue May 27 17:41:18 2014 -- must delete existing rehearsal letters on
+  ;; bar objects first 
+  (delete-all-rehearsal-letters sc)
   (set-rehearsal-letters sc (get-groups-top-ins sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -5070,12 +5073,13 @@ seq-num 5, VN, replacing G3 with B6
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 10/3/07: the rehearsal-letters slot lists the bar numbers where cmn should
-;;; automatically create letters.  Set the rehearsal-letter slot of the correct
-;;; bars for the given player(s).
-;;; e.g. (set-rehearsal-letters sc (get-groups-top-ins sc))))
+;;; 10/3/07: the rehearsal-letters slot lists the bar numbers where
+;;; cmn/lilypond should automatically create letters.  Set the rehearsal-letter
+;;; slot of the correct bars for the given player(s).
+;;; e.g. (set-rehearsal-letters sc (get-groups-top-ins sc)))) 
+;;;
 ;;; MDE Fri Oct 11 17:10:46 2013 -- allow a list of (bar-num letter/id) pairs
-;;; so that we can hand-set them. 
+;;; so that we can hand-set them.
 
 (defmethod set-rehearsal-letters ((sc slippery-chicken) &optional players)
   (unless players

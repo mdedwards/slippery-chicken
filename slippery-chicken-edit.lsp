@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 19:17:05 Mon May  5 2014 BST
+;;; $$ Last modified: 17:45:44 Tue May 27 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3647,6 +3647,17 @@ NIL
       for bar = (get-bar sc (1- bar-num) p)
       do 
         (setf (rehearsal-letter bar) nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue May 27 17:38:24 2014 
+(defmethod delete-all-rehearsal-letters ((sc slippery-chicken)
+                                         ;; start at 2 because the letter is
+                                         ;; always on the previous bar 
+                                         &key (start 2) end)
+  (unless end
+    (setf end (num-bars sc)))
+  (loop for i from start to end do
+       (delete-rehearsal-letter sc i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

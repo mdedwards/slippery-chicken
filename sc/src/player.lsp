@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 10:35:29 Thu Dec 19 2013 WIT
+;;; $$ Last modified: 17:00:49 Wed May 28 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -51,6 +51,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; MDE Wed May 28 16:29:16 2014 -- the data slot is either an instrument or an
+;;; assoc-list, if the player doubles instruments. 
 (defclass player (linked-named-object)
   ;; an instrument-palette that contains the instrument objects to be
   ;; cloned and stored in the data list
@@ -64,7 +66,14 @@
                    :initform nil)
    ;; which midi-channel this player is on
    (midi-channel :accessor midi-channel :type integer :initarg :midi-channel
-                 :initform 1)  
+                 :initform 1)
+   ;; MDE Wed May 28 16:32:25 2014 -- so we can init the sc object with names
+   ;; like violin 2. As the instruments are cloned from the palette it's safe
+   ;; to change these in the player's instruments. If these remain nil, then
+   ;; we'll use the instrument's default staff names
+   (staff-names :accessor staff-names :initarg :staff-names :initform nil)
+   (staff-short-names :accessor staff-short-names :initarg :staff-short-names
+                      :initform nil)
    ;; when an instrument can play microtonal chords we generally need an extra
    ;; channel for the microtones, so that chords can be played.  
    (microtones-midi-channel :accessor microtones-midi-channel :type integer
@@ -87,6 +96,11 @@
                 simple references as instruments must be accompanied ~
                 by instrument-palettes!: data: ~a, instrument-palette: ~a"
                (data p) ip)))
+    ;; MDE Wed May 28 16:43:01 2014 
+    (unless (listp (staff-names p))
+      (setf (staff-names p) (list (staff-names p))))
+    (unless (listp (staff-short-names p))
+      (setf (staff-short-names p) (list (staff-short-names p))))
     ;; when cmn-staff-args are given, call the functions in the cmn package and
     ;; re-store the results.
     #+cmn
@@ -116,7 +130,34 @@
                              (error "player::init: can't find instrument in ~
                                    instrument-palette:~%instrument: ~a~
                                    ~%palette:~%~a" data ip))
-                           (clone ins)))))))
+                           (clone ins)))))
+    ;; MDE Wed May 28 16:49:33 2014 
+    (handle-staff-names p)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed May 28 16:45:13 2014 
+(defmethod handle-staff-names ((p player))
+  ;; data slot is either an instrument or assoc-list of instruments (if
+  ;; doubling) 
+  (if (doubles p)
+      (loop with sns = (copy-list (staff-names p))
+         with ssns = (copy-list (staff-short-names p))
+         for ins in (data (data p))
+         for sn = (pop sns)
+         for ssn = (pop ssns)
+         do
+           (when sn
+             (setf (staff-name ins) sn))
+           (when ssn
+             (setf (staff-short-name ins) ssn)))
+      (let ((ins (data p))
+            (sn (first (staff-names p)))
+            (sns (first (staff-short-names p))))
+        (when ins
+          (when sn
+            (setf (staff-name ins) sn))
+          (when sns
+            (setf (staff-short-name ins) sns))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -127,12 +168,14 @@
   (let ((ip (instrument-palette p)))
     (format stream "~&PLAYER: (id instrument-palette): ~a ~%doubles: ~a, ~
                     cmn-staff-args: ~a, total-notes: ~a, total-degrees: ~a, ~
-                    ~%total-duration: ~a, total-bars: ~a, tessitura: ~a"
+                    ~%total-duration: ~a, total-bars: ~a, tessitura: ~a ~
+                    ~%staff-names: ~a, staff-short-names: ~a"
             (when ip (id ip)) (doubles p) (cmn-staff-args p)
             ;; MDE Thu Apr 19 13:31:06 2012 -- 
             (total-notes p) (total-degrees p)
             (secs-to-mins-secs (total-duration p))
-            (total-bars p) (tessitura-note p))))
+            (total-bars p) (tessitura-note p) (staff-names p)
+            (staff-short-names p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -151,6 +194,9 @@
           (slot-value named-object 'midi-channel) (midi-channel p)
           (slot-value named-object 'microtones-midi-channel)
           (microtones-midi-channel p)
+          (slot-value named-object 'staff-names) (my-copy-list (staff-names p))
+          (slot-value named-object 'staff-short-names)
+          (my-copy-list (staff-short-names p))
           (slot-value named-object 'cmn-staff-args) (cmn-staff-args p))
     named-object))
 
@@ -764,6 +810,12 @@ the instrument you want.
 ;;;   lines etc. Instead of being real cmn function calls, as they would be in
 ;;;   normal cmn, this is a simple list of pairs; e.g. '(staff-size .8
 ;;;   staff-lines 3). Defaults = NIL.
+;;; - :staff-names. A symbol, string or list of staff names, generally strings,
+;;;   for each instrument the player will play. E.g. '("violin II"). If not
+;;;   given, then the instrument's name as defined in the instrument palette
+;;;   will be used. Default = NIL.
+;;; - :staff-short-names. A symbol, string or list of short staff
+;;;   names. E.g. '("vln2"). Default = NIL
 ;;;
 ;;; RETURN VALUE
 ;;; Returns a player object.
@@ -851,11 +903,12 @@ data:
 |#
 ;;; SYNOPSIS
 (defun make-player (id instrument-palette instruments
-                    &key (cmn-staff-args nil)
+                    &key (cmn-staff-args nil) staff-names staff-short-names
                          (microtones-midi-channel -1) (midi-channel 1))
 ;;; ****
   (make-instance 'player :id id :data instruments 
                  :midi-channel midi-channel
+                 :staff-names staff-names :staff-short-names staff-short-names
                  :microtones-midi-channel microtones-midi-channel
                  :cmn-staff-args cmn-staff-args
                  :instrument-palette instrument-palette))

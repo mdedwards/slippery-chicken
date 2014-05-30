@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 17:51:50 Fri Dec 27 2013 WIT
+;;; $$ Last modified: 19:01:08 Fri May 30 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -46,13 +46,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 02.12.11 SEAN: Changed ROBODoc header to reflect class hierarchy
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -758,7 +751,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun is-bar-holder (thing)
+(defun bar-holder-p (thing)
   (typep thing 'bar-holder))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -768,8 +761,8 @@
 ;;; return the bar-holder
 
 (defun get-bar-holder (thing &optional (error t))
-  (cond ((is-bar-holder thing) thing)
-        ((and (named-object-p thing) (data thing) (is-bar-holder (data thing)))
+  (cond ((bar-holder-p thing) thing)
+        ((and (named-object-p thing) (data thing) (bar-holder-p (data thing)))
          (data thing))
         (t (when error
              (error "bar-holder::get-bar-holder: Can't get bar-holder from ~a"

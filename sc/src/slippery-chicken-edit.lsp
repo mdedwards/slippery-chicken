@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 17:55:11 Tue May 27 2014 BST
+;;; $$ Last modified: 19:02:23 Fri May 30 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3655,10 +3655,11 @@ NIL
                                          ;; start at 2 because the letter is
                                          ;; always on the previous bar 
                                          &key (start 2) end)
-  (unless end
-    (setf end (num-bars sc)))
-  (loop for i from start to end do
-       (delete-rehearsal-letter sc i)))
+  (when (initialized sc)
+    (unless end
+      (setf end (num-bars sc)))
+    (loop for i from start to end do
+         (delete-rehearsal-letter sc i))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

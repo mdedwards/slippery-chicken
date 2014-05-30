@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified: 10:39:50 Mon May 26 2014 BST
+;;; $$ Last modified: 12:44:56 Fri May 30 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -94,7 +94,7 @@
 ;;; - :send-ip.  The IP address to send UDP messages back out on. 
 ;;;    Default = #(127 0 0 1))
 ;;; - :send-port. The UDP port to send messages back out on. Default = 8001.
-;;; - :print. Print messages as they arrive. Default = T.
+;;; - :print. Print messages as they arrive. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; T
@@ -103,7 +103,7 @@
 (defun osc-call (&key
                  (listen-port 8000)
                  (send-ip #(127 0 0 1))
-                 (print t)
+                 (print nil)
                  (send-port 8001))
 ;;; ****
   (sb-bsd-sockets::osc-call listen-port send-ip send-port print))

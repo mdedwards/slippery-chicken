@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 13:26:43 Fri May  9 2014 BST
+;;; $$ Last modified: 18:38:17 Fri May 30 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -55,30 +55,52 @@
 
 ;;; ****f* utilities/secs-to-mins-secs
 ;;; DESCRIPTION
-;;; 
+;;; Convert a number of seconds into a string of the form "24:41.723" where
+;;; seconds are always rounded to three decimal places (i.e. milliseconds).
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - the number of seconds
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :mins-separator. The string used to separate minutes and seconds. Default
+;;;   ":"
+;;; - :secs-separator. The string used to separate seconds and
+;;;   milliseconds. Default "." 
+;;; - :same-width. Ensure minutes values are always two characters wide, like
+;;;   seconds, i.e with a leading 0.
+;;; - :round. Round to the nearest second and don't print milliseconds. Default
+;;;   NIL. 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A string
 ;;; 
 ;;; EXAMPLE
 #|
-
+(secs-to-mins-secs 77.1232145)
+"1:17.123"
+(secs-to-mins-secs 67.1)
+"1:07.100"
+(secs-to-mins-secs 67.1 :same-width t)
+"01:07.100"
+(secs-to-mins-secs 67.1 :same-width t :secs-separator "ms")
+"01:07ms100"
+(secs-to-mins-secs 67.1 :same-width t :secs-separator "ms" :mins-separator "m")
+"01m07ms100"
+(secs-to-mins-secs 67.7 :same-width t :round t)
+"01:08"
 |#
 ;;; SYNOPSIS
 (defun secs-to-mins-secs (seconds &key
-                          (mins-separator ":")
-                          (secs-separator ".")
-                          (msecs-separator "")
-                          (same-width nil))
+                                    round
+                                    (mins-separator ":")
+                                    (secs-separator ".")
+                                    (same-width nil))
 ;;; ****
   (unless (and (numberp seconds) (>= seconds 0))
     (error "utilities::secs-to-mins-secs: ~a should be a number > 0." seconds))
+  (when round
+    (setf seconds (round seconds)))
   (multiple-value-bind
         (minutes seconds)
       (floor seconds 60)
@@ -90,17 +112,20 @@
     ;; MDE Tue Jul  3 18:57:44 2012 -- updating to avoid decimal point as that
     ;; confuses CCL in file names 
     (let* ((secs (floor seconds))
-           (ms (floor (* 1000 (decimal-places (- seconds secs) 3)))))
-      (if same-width
-          (format nil "~2,'0d~a~2,'0d~a~3,'0d~a"
-                  minutes mins-separator secs secs-separator ms msecs-separator)
-          (if (> minutes 0)
-              (format nil "~d~a~2,'0d~a~3,'0d~a" minutes mins-separator secs
-                      secs-separator ms msecs-separator)
-              (format nil "~d~a~3,'0d~a" secs secs-separator ms
-                      msecs-separator))))))
+           (ms (floor (* 1000 (decimal-places (- seconds secs) 3))))
+           (result
+            (if same-width
+                (format nil "~2,'0d~a~2,'0d~a~3,'0d"
+                        minutes mins-separator secs secs-separator ms)
+                (if (> minutes 0)
+                    (format nil "~d~a~2,'0d~a~3,'0d" minutes mins-separator secs
+                            secs-separator ms)
+                    (format nil "~d~a~3,'0d" secs secs-separator ms)))))
+      (if round 
+          (subseq result 0 (- (length result) 3 (length secs-separator)))
+          result))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat May  5 12:08:59 BST 2012: Added robodoc entry
 

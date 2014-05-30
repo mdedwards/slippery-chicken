@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:41:43 Tue May 27 2014 BST
+;;; $$ Last modified: 19:05:11 Fri May 30 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -444,6 +444,11 @@
     (check-beams sc)
     (set-rehearsal-letters sc (get-groups-top-ins sc)))
   sc)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri May 30 18:59:28 2014 
+(defmethod initialized ((sc slippery-chicken))
+  (bar-holder-p (piece sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Oct 28 20:00:09 2013 
@@ -1020,7 +1025,8 @@
   ;; MDE Tue May 27 17:41:18 2014 -- must delete existing rehearsal letters on
   ;; bar objects first 
   (delete-all-rehearsal-letters sc)
-  (set-rehearsal-letters sc (get-groups-top-ins sc)))
+  (when (and (initialized sc) list)
+    (set-rehearsal-letters sc (get-groups-top-ins sc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Called by initialize-instance

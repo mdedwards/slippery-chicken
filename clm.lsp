@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11/5/2012
 ;;;
-;;; $$ Last modified: 14:33:58 Wed Jun 19 2013 BST
+;;; $$ Last modified: 10:52:10 Sat May 31 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -321,9 +321,9 @@
                               output-dir (pathname-name sndfile) 
                               (secs-to-mins-secs (first entry-points) 
                                                  :same-width t
-                                                 :mins-separator "m"
-                                                 :secs-separator "s"
-                                                 :msecs-separator "ms")
+                                                 :post-mins "m"
+                                                 :post-secs "s"
+                                                 :post-msecs "ms")
                               (if (zerop (length suffix)) "" "-")
                               suffix sndfile-extension))
          (start 0.0)

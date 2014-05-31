@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 18:38:17 Fri May 30 2014 BST
+;;; $$ Last modified: 10:49:00 Sat May 31 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -63,10 +63,10 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :mins-separator. The string used to separate minutes and seconds. Default
-;;;   ":"
-;;; - :secs-separator. The string used to separate seconds and
-;;;   milliseconds. Default "." 
+;;; - :post-mins. The string used to separate minutes and seconds. Default ":"
+;;; - :post-secs. The string used to separate seconds and milliseconds.
+;;;    Default "." 
+;;; - :post-msecs. The string used to follow milliseconds. Default "" 
 ;;; - :same-width. Ensure minutes values are always two characters wide, like
 ;;;   seconds, i.e with a leading 0.
 ;;; - :round. Round to the nearest second and don't print milliseconds. Default
@@ -83,18 +83,19 @@
 "1:07.100"
 (secs-to-mins-secs 67.1 :same-width t)
 "01:07.100"
-(secs-to-mins-secs 67.1 :same-width t :secs-separator "ms")
-"01:07ms100"
-(secs-to-mins-secs 67.1 :same-width t :secs-separator "ms" :mins-separator "m")
-"01m07ms100"
+(secs-to-mins-secs 67.1 :same-width t :post-secs "s")
+"01:07s100"
+(secs-to-mins-secs 67.1 :post-secs "secs" :post-mins "min" :post-msecs "msecs")
+"1min07secs100msecs"
 (secs-to-mins-secs 67.7 :same-width t :round t)
 "01:08"
 |#
 ;;; SYNOPSIS
 (defun secs-to-mins-secs (seconds &key
                                     round
-                                    (mins-separator ":")
-                                    (secs-separator ".")
+                                    (post-mins ":")
+                                    (post-secs ".")
+                                    (post-msecs "")
                                     (same-width nil))
 ;;; ****
   (unless (and (numberp seconds) (>= seconds 0))
@@ -115,14 +116,15 @@
            (ms (floor (* 1000 (decimal-places (- seconds secs) 3))))
            (result
             (if same-width
-                (format nil "~2,'0d~a~2,'0d~a~3,'0d"
-                        minutes mins-separator secs secs-separator ms)
+                (format nil "~2,'0d~a~2,'0d~a~3,'0d~a"
+                        minutes post-mins secs post-secs ms post-msecs)
                 (if (> minutes 0)
-                    (format nil "~d~a~2,'0d~a~3,'0d" minutes mins-separator secs
-                            secs-separator ms)
-                    (format nil "~d~a~3,'0d" secs secs-separator ms)))))
+                    (format nil "~d~a~2,'0d~a~3,'0d~a" minutes post-mins secs
+                            post-secs ms post-msecs)
+                    (format nil "~d~a~3,'0d~a" secs post-secs ms post-msecs)))))
       (if round 
-          (subseq result 0 (- (length result) 3 (length secs-separator)))
+          (subseq result 0 (- (length result) 3 (length post-secs)
+                              (length post-msecs)))
           result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

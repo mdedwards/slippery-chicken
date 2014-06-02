@@ -6,6 +6,7 @@ APP=`defaults read -app sc emacs 2>/dev/null`
 EDITOR=
 PROCESSOR=`uname -p`
 
+export SC_RESOURCES_DIR="${TOP}"
 export SC_ROOT_DIR="${TOP}/sc"
 export SBCL_HOME="${TOP}/sbcl"
 export SC_OS="darwin"

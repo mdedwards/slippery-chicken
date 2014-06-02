@@ -1,3 +1,5 @@
+(setf *default-pathname-defaults*
+      (truename (sb-unix::posix-getenv "SC_RESOURCES_DIR")))
 (load "cmn/cmn-all.lisp")
 (load "clm-4/all.lisp")
 (load "sbcl/lib/sbcl/asdf/asdf.fasl")

@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 16:17:43 Wed Oct 23 2013 BST
+;;; $$ Last modified: 15:26:38 Sat Jun  7 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1839,6 +1839,37 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
        (loop for i in result collect (nth i items))
        ;; statistics as a 2nd value (for info only)
        spread))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****f* rthm-chain/procession-mirror
+;;; DESCRIPTION
+;;; Perform the same operation as the procession function, but instead of just
+;;; progressing upwards, go backwards to return to the beginning also. 
+;;; 
+;;; ARGUMENTS
+;;; The same as for procession.
+;;; 
+;;; RETURN VALUE
+;;; A list of the procession. Note that at the mirror point there is no
+;;; repetition, and we don't include the first element at the end. Note also
+;;; that we don't return statistics as we do with procession.
+;;; 
+;;; EXAMPLE
+#|
+(procession-mirror 33 '(1 2 3 4 5 6 7))
+--> (1 2 1 2 3 3 4 3 3 5 4 6 4 7 5 6 5 6 6 5 7 4 6 4 5 3 3 4 3 3 2 1 2)
+|#
+;;; SYNOPSIS
+(defun procession-mirror (&rest args)
+;;; ****
+  (let* ((len (first args))
+         (p (apply #'procession (cons (1+ (ceiling len 2)) (rest args))))
+         (result (append p (butlast (nthcdr (if (oddp len) 2 1) (reverse p))))))
+    (unless (= len (length result))
+      (error "rthm-chain::procession-mirror: Got ~a results instead of ~a: ~%~a"
+             (length result) len result))
+    result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

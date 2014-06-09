@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:05:11 Fri May 30 2014 BST
+;;; $$ Last modified: 13:38:50 Mon Jun  9 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5969,7 +5969,7 @@ seq-num 5, VN, replacing G3 with B6
 
   => T
 
-  |#
+|#
 ;;; SYNOPSIS
 (defmethod write-lp-data-for-all ((sc slippery-chicken) 
                                   &key
@@ -5992,6 +5992,8 @@ seq-num 5, VN, replacing G3 with B6
                                   (bottom-margin 10) ; mm
                                   (left-margin 20)   ;mm
                                   (line-width 17)    ;cm
+                                    ;; if not nil, then in cm
+                                    between-system-space 
                                   (page-nums t)
                                   ;; print every bar number unless
                                   ;; multi-bar-rest?
@@ -6181,6 +6183,9 @@ seq-num 5, VN, replacing G3 with B6
         (format out "~%  bottom-margin = ~a\\mm" bottom-margin)
         (format out "~%  left-margin = ~a\\mm" left-margin)
         (format out "~%  line-width = ~a\\cm" line-width)
+        (when between-system-space 
+          (format out "~%  system-system-spacing #'basic-distance  = ~a\\cm"
+                  between-system-space))
         (when footer
           (format out "~%  oddFooterMarkup = \\markup \\tiny \\fill-line ~
                        { \"~a\" }" footer))

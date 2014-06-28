@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 18:20:21 Mon May  5 2014 BST
+;;; $$ Last modified: 15:39:47 Sat Jun 28 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -49,11 +49,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -716,16 +711,19 @@ data: E.
   ;; (print (length (rhythms rsb)))
   ;; MDE Mon Nov 26 20:18:12 2012 -- added 'silent to make sure we don't get
   ;; more than a beat's worth of rthms 
-  (let ((beats (get-beats rsb beat 'silent))
-        (cbeats '())
-        ;; 21.7.11
-        (rest-beat (make-rest (if beat beat (get-beat-as-rhythm rsb))))
-        (rest-dur nil)
-        (count 1)
-        (last-rhythm nil)
-        ;; MDE Tue Mar 13 11:22:18 2012 
-        (first-rhythm nil)
-        (current '()))
+  (let* ((beats (get-beats rsb beat 'silent))
+         (cbeats '())
+         ;; 21.7.11
+         (rest-beat (make-rest (if beat beat (get-beat-as-rhythm rsb))))
+         (rest-dur nil)
+         (count 1)
+         (last-rhythm nil)
+         ;; MDE Sat Jun 28 14:36:29 2014 
+         (e1 (get-nth-event 0 rsb))
+         (player (when (event-p e1) (player e1)))
+         ;; MDE Tue Mar 13 11:22:18 2012 
+         (first-rhythm nil)
+         (current '()))
     (setf min (if min 
                   (duration (make-rhythm min))
                   0.0))
@@ -815,11 +813,13 @@ data: E.
                        ~%cbeats = ~a"
                       (print-simple rsb) (bar-num rsb)
                       (sum-rhythms-duration cbeats)
-                      (rhythms-duration rsb) cbeats))))))
-  ;; MDE Mon May  7 17:45:59 2012
-  (unless (check-tuplets rsb nil)
-    (auto-tuplets rsb))
-  t)
+                      (rhythms-duration rsb) cbeats)))))
+    ;; MDE Mon May  7 17:45:59 2012
+    (unless (check-tuplets rsb nil)
+      (auto-tuplets rsb))
+    ;; MDE Sat Jun 28 14:36:43 2014
+    (update-events-player rsb player)
+    t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -972,55 +972,59 @@ BF4 E.,
   ;; no good to us when used below.
   (when (eq beat t)
     (setf beat nil))
-  (unless (is-rest-bar rsb)
-    ;; 11/4/07 only do this if we've got some tied notes in the bar
-    ;; (unless (< (num-notes-tied-from rsb) 2)
-    (unless (zerop (num-notes-tied-from rsb))
-      (let ((beats (get-beats rsb beat check-dur))
-            tmp rthms)
-        (when beats
-          ;; (error "~a~%rthm-seq-bar::consolidate-notes: no rhythms!" rsb))
-          (setf rthms (loop for beat in beats
-                         ;; aux will return nil if there are no ties so
-                         ;; append the unprocessed beat in that case
-                         for cns = (consolidate-notes-aux beat (bar-num rsb))
-                         ;; 14.2.11
-                         appending (if cns cns beat)))
-          ;; now consolidate beats
-          ;; 14.2.11 surely it's rthms, not (rhythms rsb) we want to
-          ;; process here 
-          ;; 14.2.11 don't try and consolidate anything beyond a beat if there
-          ;; are tuplets.
-          (unless (has-tuplets rthms)
-            (setf tmp (consolidate-notes-aux rthms 
+  (let* ((e1 (get-nth-event 0 rsb))
+         (player (when (event-p e1) (player e1))))
+    (unless (is-rest-bar rsb)
+      ;; 11/4/07 only do this if we've got some tied notes in the bar
+      ;; (unless (< (num-notes-tied-from rsb) 2)
+      (unless (zerop (num-notes-tied-from rsb))
+        (let ((beats (get-beats rsb beat check-dur))
+              tmp rthms)
+          (when beats
+            ;; (error "~a~%rthm-seq-bar::consolidate-notes: no rhythms!" rsb))
+            (setf rthms (loop for beat in beats
+                           ;; aux will return nil if there are no ties so
+                           ;; append the unprocessed beat in that case
+                           for cns = (consolidate-notes-aux beat (bar-num rsb))
+                           ;; 14.2.11
+                           appending (if cns cns beat)))
+            ;; now consolidate beats
+            ;; 14.2.11 surely it's rthms, not (rhythms rsb) we want to
+            ;; process here 
+            ;; 14.2.11 don't try and consolidate anything beyond a beat if there
+            ;; are tuplets.
+            (unless (has-tuplets rthms)
+              (setf tmp (consolidate-notes-aux rthms 
                                                (bar-num rsb)
                                                (get-beat-as-rhythm rsb)))
-            (when tmp (setf rthms tmp)))
-          ;; MDE Wed Nov 28 16:46:12 2012 -- only if we've done
-          ;; some consolidation 
-          (unless (= (length rthms) (num-rhythms rsb))
-            (setf (rhythms rsb) 
-                  (if (and (event-p (first (rhythms rsb))))
-                      (consolidated-rthms-to-events rsb rthms)
-                      rthms))))))
-    (ties-to-dots rsb check-dur beat)
-    ;; now try and get dots that go over two beats e.g. q. e in 2/4
-    (ties-to-dots rsb check-dur (scale 
-                                 (if beat
-                                     (make-rhythm beat)
-                                     (get-beat-as-rhythm rsb))
-                                 2))
-    (fix-brackets rsb)
-    ;; MDE Mon May  7 17:43:59 2012 -- check and retry if the above fails
-    (unless (check-tuplets rsb nil)
-      (auto-tuplets rsb))
-    ;; MDE Mon May  7 18:06:30 2012 -- beaming info may also be askew...
-    ;; setting 3rd arg to nil means we don't get an error if we have a
-    ;; multi-beat note e.g. h in 4/4 
-    ;; MDE Wed Nov 28 11:38:18 2012 -- only if requested
-    (when auto-beam
-      (auto-beam rsb beat nil))
-    (gen-stats rsb)))
+              (when tmp (setf rthms tmp)))
+            ;; MDE Wed Nov 28 16:46:12 2012 -- only if we've done
+            ;; some consolidation 
+            (unless (= (length rthms) (num-rhythms rsb))
+              (setf (rhythms rsb) 
+                    (if (and (event-p (first (rhythms rsb))))
+                        (consolidated-rthms-to-events rsb rthms)
+                        rthms))))))
+      (ties-to-dots rsb check-dur beat)
+      ;; now try and get dots that go over two beats e.g. q. e in 2/4
+      (ties-to-dots rsb check-dur (scale 
+                                   (if beat
+                                       (make-rhythm beat)
+                                       (get-beat-as-rhythm rsb))
+                                   2))
+      (fix-brackets rsb)
+      ;; MDE Mon May  7 17:43:59 2012 -- check and retry if the above fails
+      (unless (check-tuplets rsb nil)
+        (auto-tuplets rsb))
+      ;; MDE Mon May  7 18:06:30 2012 -- beaming info may also be askew...
+      ;; setting 3rd arg to nil means we don't get an error if we have a
+      ;; multi-beat note e.g. h in 4/4 
+      ;; MDE Wed Nov 28 11:38:18 2012 -- only if requested
+      (when auto-beam
+        (auto-beam rsb beat nil))
+      ;; MDE Sat Jun 28 14:23:37 2014 
+      (update-events-player rsb player)
+      (gen-stats rsb))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5036,6 +5040,15 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
      sum (get-degree e :average t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Jun 28 14:21:50 2014 -- called by consolidate-notes
+(defmethod update-events-player ((rsb rthm-seq-bar) player)
+  (loop for e in (rhythms rsb) do
+       (when (event-p e)
+         ;; (unless (player e)
+           ;; (format t "~%~a to ~a" (player e) player))
+         (setf (player e) player))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -5598,6 +5611,7 @@ show-rest: T
 (defun consolidate-notes-aux (rhythms &optional (bar-num -1) match-rhythm)
   ;; (print 'consolidate-notes-aux-in)
   ;; (print-rhythms-rqs rhythms)
+  ;; (print rhythms)
   (when (contains-ties rhythms)
     ;; (loop for r in rhythms do (format t "~a " (rq r)))
     (loop for r in rhythms and i from 0 do 

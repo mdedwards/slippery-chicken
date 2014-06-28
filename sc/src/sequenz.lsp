@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified: 20:38:52 Mon May  5 2014 BST
+;;; $$ Last modified: 15:33:14 Sat Jun 28 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -49,14 +49,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 02.12.11 SEAN: Changed ROBODoc header to reflect class hierarchy (assigned
-;;; it to bar-holder rather than rthm-seq)
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -100,14 +92,14 @@
 
 (defmethod update-slots ((s sequenz)
                          &optional
-                         tempo-map
-                         (start-time 0.0) 
-                         (start-time-qtrs 0.0)
-                         (start-bar 1)
-                         (current-section nil)
-                         (sequenz-num nil) ; 1-based
-                         (warn-ties t)
-                         (update-write-bar-nums nil))
+                           tempo-map
+                           (start-time 0.0) 
+                           (start-time-qtrs 0.0)
+                           (start-bar 1)
+                           (current-section nil)
+                           (sequenz-num nil) ; 1-based
+                           (warn-ties t)
+                           (update-write-bar-nums nil))
   (declare (ignore current-section warn-ties update-write-bar-nums))
   ;; (print 'sequenz-update-slots)
   (setf (start-bar s) start-bar
@@ -115,6 +107,11 @@
         (start-time-qtrs s) start-time-qtrs
         (num-bars s) (length (bars s))
         (end-bar s) (+ start-bar (num-bars s) -1)
+        ;; MDE Sat Jun 28 15:27:17 2014 -- got to reset and recount these slots
+        (num-bars s) 0
+        (num-notes s) 0
+        (num-score-notes s) 0
+        (num-rests s) 0
         (duration s) 
         (loop 
            for rsb in (bars s) 
@@ -124,37 +121,42 @@
            with tempo
            with bar-dur
            do 
-           (setf (bar-num rsb) (+ start-bar bar-count -1)
-                 ;; 9.2.11
-                 (nth-bar rsb) (1- bar-count)
-                 (nth-seq rsb) (1- sequenz-num)
-                 tempo (let ((tpo (if tempo-map
-                                      (scm-get-data (bar-num rsb)
-                                                    tempo-map)
-                                      (make-tempo 60.0))))
-                         (unless tpo
-                           (error "sequenz::update-slots: bar ~a: no tempo!"
-                                  (bar-num rsb)))
-                         (data tpo))
-                 bar-dur (update-time rsb time time-qtrs 
-                                      tempo))
+             (setf (bar-num rsb) (+ start-bar bar-count -1)
+                   ;; 9.2.11
+                   (nth-bar rsb) (1- bar-count)
+                   (nth-seq rsb) (1- sequenz-num)
+                   tempo (let ((tpo (if tempo-map
+                                        (scm-get-data (bar-num rsb)
+                                                      tempo-map)
+                                        (make-tempo 60.0))))
+                           (unless tpo
+                             (error "sequenz::update-slots: bar ~a: no tempo!"
+                                    (bar-num rsb)))
+                           (data tpo))
+                   bar-dur (update-time rsb time time-qtrs 
+                                        tempo))
            ;; (format t "~%sequenz::update-slots: ~a rhythms"
            ;;      (length (rhythms rsb)))
-           (update-events-bar-nums rsb (bar-num rsb))
-           (incf time bar-dur)
-           (incf time-qtrs (bar-qtr-duration rsb))
+             (update-events-bar-nums rsb (bar-num rsb))
+             (incf time bar-dur)
+             (incf time-qtrs (bar-qtr-duration rsb))
            ;; MDE Wed Apr 18 10:09:22 2012 -- move whether to write bar nums
            ;; into the sc class  
              #|
-           ;; MDE Wed Apr 18 09:02:27 2012 -- (1+ so that the bar num gets
-           ;; written at the end of bar 4, 9... 
-           (unless (zerop (mod (1+ (bar-num rsb)) 5))
+           ;; MDE Wed Apr 18 09:02:27 2012 -- (1+ so that the bar num gets ;
+           ;; written at the end of bar 4, 9... ;
+             (unless (zerop (mod (1+ (bar-num rsb)) 5))
              (setf (write-bar-num rsb) nil))
-           (when (write-bar-num rsb)
+             (when (write-bar-num rsb)
              (format t "~%~a T" (bar-num rsb)))
              |#
            ;; MDE Mon Jul 16 16:22:27 2012 
              (gen-stats rsb)
+             ;; MDE Sat Jun 28 15:28:34 2014 --  recalculate stats
+             (incf (num-bars s))
+             (incf (num-notes s) (notes-needed rsb))
+             (incf (num-score-notes s) (num-score-notes rsb))
+             (incf (num-rests s) (num-rests rsb))
            sum bar-dur)
         (end-time s) (+ start-time (duration s))
         (duration-qtrs s) (loop for rsb in (bars s) sum (bar-qtr-duration rsb))

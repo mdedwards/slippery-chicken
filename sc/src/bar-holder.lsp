@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 19:01:08 Fri May 30 2014 BST
+;;; $$ Last modified: 15:22:20 Sat Jun 28 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -240,14 +240,14 @@
 ;;; N.B. Although tempo-map is optional, it is in fact required
 (defmethod update-slots ((bh bar-holder)
                          &optional
-                         tempo-map
-                         (start-time 0.0)
-                         (start-time-qtrs 0.0)
-                         (start-bar 1)
-                         (current-section nil)
-                         (nth nil)
-                         (warn-ties t)
-                         (update-write-bar-nums nil))
+                           tempo-map
+                           (start-time 0.0)
+                           (start-time-qtrs 0.0)
+                           (start-bar 1)
+                           (current-section nil)
+                           (nth nil)
+                           (warn-ties t)
+                           (update-write-bar-nums nil))
   (declare (ignore nth update-write-bar-nums))
   (object-is-nil? tempo-map "bar-holder::update-slots" 'tempo-map)
   (let ((bar start-bar)
@@ -262,23 +262,23 @@
           (num-rests bh) 0
           (num-score-notes bh) 0)
     (loop for thing in (data bh) and i from 1 do ;; sequenzes are 1-based
-          (when thing
-            (setf thing (get-bar-holder thing))
-            (update-slots thing tempo-map time time-qtrs bar current-section i
+         (when thing
+           (setf thing (get-bar-holder thing))
+           (update-slots thing tempo-map time time-qtrs bar current-section i
                          warn-ties) 
-            (incf (num-notes bh) (num-notes thing))
-            (incf (num-score-notes bh) (num-score-notes thing))
-            (incf (num-rests bh) (num-rests thing))
-            ;; only sections, subsections and sequenzes should update bar and
-            ;; start-time, the player-sections all have the same start-time and
-            ;; bar. 
-            (when loop-update
-              (setf bar (1+ (end-bar thing))
-                    time-qtrs (end-time-qtrs thing)
-                    time (end-time thing))))))
+           (incf (num-notes bh) (num-notes thing))
+           (incf (num-score-notes bh) (num-score-notes thing))
+           (incf (num-rests bh) (num-rests thing))
+           ;; only sections, subsections and sequenzes should update bar and
+           ;; start-time, the player-sections all have the same start-time and
+           ;; bar. 
+           (when loop-update
+             (setf bar (1+ (end-bar thing))
+                   time-qtrs (end-time-qtrs thing)
+                   time (end-time thing))))))
   (let ((last (if (is-ral bh)
                   (get-last bh)
-                (first (last (data bh))))))
+                  (first (last (data bh))))))
     (setf (num-bars bh) (- (end-bar last) (1- start-bar))
           (end-bar bh) (end-bar last)
           (end-time bh) (end-time last)

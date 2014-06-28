@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 19:02:23 Fri May 30 2014 BST
+;;; $$ Last modified: 14:53:17 Sat Jun 28 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2537,6 +2537,10 @@ NIL
 ;;;   last duration of the tie will be forced to this length. Useful, for
 ;;;   example, when tying into a rest bar without filling that whole
 ;;;   bar. NIL = fill the bar with a tied note. Default = NIL.
+;;; - :update. T or NIL to indicate whether all slots for all events in the
+;;;   piece should be updated. This is an expensive operation so set to NIL if
+;;;   you plan on calling other similar methds, and call (update-slots sc)
+;;;   explicitly at the end. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns NIL.
@@ -2572,33 +2576,38 @@ NIL
 
 |#
 ;;; SYNOPSIS
-(defmethod tie-all-last-notes-over-rests ((sc slippery-chicken)
-                              start-bar end-bar players
-                              &key
-                              ;; use up all rests until next attack or (if nil)
-                              ;; just the rest bars?
-                              (to-next-attack t)
-                              ;; if the next attack is the same note/chord as
-                              ;; the previous, tie to it too?
-                              (tie-next-attack nil)
-                              (last-rhythm nil)
-                              (auto-beam nil))
-;;; ****
+(defmethod tie-all-last-notes-over-rests
+    ((sc slippery-chicken)
+     start-bar end-bar players
+     &key
+       ;; use up all rests until next attack or (if nil) 
+       ;; just the rest bars? 
+       (to-next-attack t)
+       ;; if the next attack is the same note/chord as
+       ;; the previous, tie to it too? 
+       (tie-next-attack nil)
+       (last-rhythm nil)
+       (update t)
+       (auto-beam nil))
+;;; ****               
   (unless (listp players)
     (setf players (list players)))
-#| MDE Thu Apr 26 17:15:29 2012 -- update: allow this so we can tie _into_ the
+  #| MDE Thu Apr 26 17:15:29 2012 -- update: allow this so we can tie _into_ the ;
   last bar but don't try and tie from it in tie-over-rest-bars-aux 
   ;; MDE Wed Apr 25 16:25:21 2012 -- 
   (when (= end-bar (num-bars sc))
-    (error "slippery-chicken::tie-all-last-notes-over-rests: ~
+  (error "slippery-chicken::tie-all-last-notes-over-rests: ~
             This method cannot be used ~%on the last bar of the piece."))
-|#
+  |#
   (loop for p in players do
         (tie-all-last-notes-over-rests-aux sc start-bar end-bar p 
                                :to-next-attack to-next-attack 
                                :tie-next-attack tie-next-attack
                                :last-rhythm last-rhythm
                                :auto-beam auto-beam))
+  ;; MDE Sat Jun 28 14:44:23 2014 
+  (when update
+    (update-slots sc))
   ;; MDE Fri Jun  8 16:08:15 2012 -- just make sure we get a useful error
   ;; message if there's a problem 
   (check-ties sc nil #'warn))
@@ -2642,6 +2651,10 @@ NIL
 ;;;   last duration of the tie will be forced to this length. Useful, for
 ;;;   example, when tying into a rest bar without filling that whole
 ;;;   bar. NIL = fill the bar with a tied note. Default = NIL.
+;;; - :update. T or NIL to indicate whether all slots for all events in the
+;;;   piece should be updated. This is an expensive operation so set to NIL if
+;;;   you plan on calling other similar methds, and call (update-slots sc)
+;;;   explicitly at the end. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns NIL.
@@ -2675,26 +2688,29 @@ NIL
                       :auto-beam t)
   (tie-over-rest-bars mini 9 'vn :end-bar 11 :last-rhythm 'e))
 
-=> NIL
+  => NIL
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod tie-over-rest-bars ((sc slippery-chicken) bar-num players
                                &key (end-bar nil) ;; num of empty bars
-                                    (tie-next-attack nil)
-                                    (to-next-attack t)
-                                    (last-rhythm nil)
-                                    (auto-beam nil))
+                                 (tie-next-attack nil)
+                                 (to-next-attack t)
+                                 (last-rhythm nil)
+                                 (update t)
+                                 (auto-beam nil))
 ;;; ****
   (unless (listp players)
     (setf players (list players)))
   (loop for p in players do
-        (tie-over-rest-bars-aux sc bar-num p 
-                                :end-bar end-bar
-                                :tie-next-attack tie-next-attack
-                                :auto-beam auto-beam
-                                :to-next-attack to-next-attack
-                                :last-rhythm last-rhythm)))
+       (tie-over-rest-bars-aux sc bar-num p 
+                               :end-bar end-bar
+                               :tie-next-attack tie-next-attack
+                               :auto-beam auto-beam
+                               :to-next-attack to-next-attack
+                               :last-rhythm last-rhythm))
+  (when update
+    (update-slots sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2734,35 +2750,40 @@ NIL
 ;;; - :consolidate-notes. T or NIL to indicate whether the tied note are to be
 ;;;   consolidated into single rhythmic units of longer durations after the
 ;;;   ties over rests have been created. T = consolidate notes. Default = NIL. 
+;;; - :update. T or NIL to indicate whether all slots for all events in the
+;;;   piece should be updated. This is an expensive operation so set to NIL if
+;;;   you plan on calling other similar methds, and call (update-slots sc)
+;;;   explicitly at the end. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vn (violin :midi-channel 1))))
-        :set-palette '((1 ((c4 d4 e4))))
-        :set-map '((1 (1 1 1 1 1 1 1)))
-        :rthm-seq-palette '((1 ((((2 4) (q) e (s) s))
-                                :pitch-seq-palette ((1 2)))))
-        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
-  (tie-over-all-rests mini 'vn 2 3 :start-note 2 :auto-beam t)
-  (tie-over-all-rests mini 'vn 5 6 :end-note 1 :consolidate-notes t))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vn (violin :midi-channel 1))))
+:set-palette '((1 ((c4 d4 e4))))
+:set-map '((1 (1 1 1 1 1 1 1)))
+:rthm-seq-palette '((1 ((((2 4) (q) e (s) s))
+:pitch-seq-palette ((1 2)))))
+:rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
+(tie-over-all-rests mini 'vn 2 3 :start-note 2 :auto-beam t)
+(tie-over-all-rests mini 'vn 5 6 :end-note 1 :consolidate-notes t))
 
-=> NIL
+  => NIL
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod tie-over-all-rests ((sc slippery-chicken) player
                                start-bar end-bar 
                                &key 
-                               (start-note 1)
-                               (end-note 9999999)
-                               (auto-beam nil)
-                               (consolidate-notes nil))
+                                 (start-note 1)
+                                 (end-note 9999999)
+                                 (auto-beam nil)
+                                 (update t)
+                                 (consolidate-notes nil))
 ;;; ****
   (next-event sc player nil start-bar)
   (let ((refs '()))
@@ -2791,8 +2812,8 @@ NIL
             ;; allow users to specify ties into the last bar but not past the
             ;; penultimate event.
               (when (and (= bnum (num-bars sc))
-                       (= event-num (1- (num-rhythms bar))))
-                  (return))
+                         (= event-num (1- (num-rhythms bar))))
+                (return))
               (unless (is-rest event)
                 (incf note-num))
               (when (and (not (is-rest event))
@@ -2810,7 +2831,9 @@ NIL
     (loop for ref in refs do
          (tie-over-rests sc (first ref) (second ref) player 
                          :auto-beam auto-beam
-                         :consolidate-notes consolidate-notes))))
+                         :consolidate-notes consolidate-notes)))
+  (when update
+    (update-slots sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2845,37 +2868,42 @@ NIL
 ;;; - :consolidate-notes. T or NIL to indicate whether the method should
 ;;;   consolidate tied notes into single rhythm units of longer duration.
 ;;;   T = consolidate. Default = T.
+;;; - :update. T or NIL to indicate whether all slots for all events in the
+;;;   piece should be updated. This is an expensive operation so set to NIL if
+;;;   you plan on calling other similar methds, and call (update-slots sc)
+;;;   explicitly at the end. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vn (violin :midi-channel 1))))
-        :set-palette '((1 ((c4 d4 e4))))
-        :set-map '((1 (1 1 1)))
-        :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)
-                                 ((h))
-                                 ((s) e. (e) e)
-                                 ((h))
-                                 ((h))
-                                 ((e) q s (s)))
-                                :pitch-seq-palette ((1 2 2 3 3 1)))))
-        :rthm-seq-map '((1 ((vn (1 1 1))))))))
-  (tie-over-rests mini 1 2 'vn)
-  (tie-over-rests mini 7 1 'vn)
-  (tie-over-rests mini 9 2 'vn :end-bar 10)
-  (tie-over-rests mini 13 1 'vn :auto-beam t :consolidate-notes nil))
+  (let ((mini
+(make-slippery-chicken
+ '+mini+
+ :ensemble '(((vn (violin :midi-channel 1))))
+ :set-palette '((1 ((c4 d4 e4))))
+ :set-map '((1 (1 1 1)))
+ :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)
+                          ((h))
+                          ((s) e. (e) e)
+                          ((h))
+                          ((h))
+                          ((e) q s (s)))
+                         :pitch-seq-palette ((1 2 2 3 3 1)))))
+ :rthm-seq-map '((1 ((vn (1 1 1))))))))
+(tie-over-rests mini 1 2 'vn)
+(tie-over-rests mini 7 1 'vn)
+(tie-over-rests mini 9 2 'vn :end-bar 10)
+(tie-over-rests mini 13 1 'vn :auto-beam t :consolidate-notes nil))
 
-=> NIL
+  => NIL
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod tie-over-rests ((sc slippery-chicken) bar-num note-num player
-                           &key end-bar auto-beam (consolidate-notes t))
+                           &key end-bar auto-beam (consolidate-notes t) 
+                             (update t))
 ;;; **** 
   (let ((rsb (get-bar sc bar-num player)))
     ;; MDE Fri Aug 17 15:04:54 2012 -- this would mean we can't tie 
@@ -2887,7 +2915,7 @@ NIL
       (setf note-num (num-score-notes rsb)))
     (next-event sc player nil bar-num)
     (if (not (get-note sc bar-num note-num player))
-          ;; MDE Mon Jul 16 17:36:24 2012 -- error now warn ;
+        ;; MDE Mon Jul 16 17:36:24 2012 -- error now warn ;
         (warn "tie-over-rests: can't get note ~a, bar ~a, ~a. Could be this ~
                  bar is a rest bar."
               note-num bar-num player)
@@ -2895,10 +2923,10 @@ NIL
                                for e = (next-event sc player)
                                with nn = 0
                                do
-                               (unless (is-rest e)
-                                 (incf nn))
-                               (when (= nn note-num)
-                                 (return e))))
+                                 (unless (is-rest e)
+                                   (incf nn))
+                                 (when (= nn note-num)
+                                   (return e))))
                (porc (when (and start-event
                                 (not (is-rest start-event)))
                        (clone (pitch-or-chord start-event))))
@@ -2908,15 +2936,15 @@ NIL
                (last-event start-event)
                (new-ties 0)
                (bar-nums (list bar-num)))
-            ;; (print start-event) ;    ;
-            ;; just check we're not already tied here and exit if we are ;
-            ;; because we get ; some strange errors when we enter the wrong ;
-            ;; data when calling this fun ; ;
+          ;; (print start-event) ;    ;
+          ;; just check we're not already tied here and exit if we are ;
+          ;; because we get ; some strange errors when we enter the wrong ;
+          ;; data when calling this fun ; ;
           (when (is-tied-from start-event)
             (warn "slippery-chicken::tie-over-rests: already tied from! ~
                      Bar ~a, note ~a, ~a" bar-num note-num player))
           (setf (is-tied-from start-event) t)
-            ;; remove any staccato or tenuto marks from this event ; ;
+          ;; remove any staccato or tenuto marks from this event ; ;
           (rm-marks start-event '(s as t) nil)
           (when porc
             (delete-marks porc))
@@ -2929,30 +2957,30 @@ NIL
              while (and (if end-bar (<= bnum end-bar) t)
                         e (is-rest e))
              do
-               ;; (print (data e))      ;
-               ;; keep track of the bars we've changed ;
-             (pushnew bnum bar-nums)
-             (if (is-rest-bar bar)
-                 (let ((events (events-for-full-bar (get-time-sig bar) 
-                                                    porc wporc)))
+             ;; (print (data e))      ;
+             ;; keep track of the bars we've changed ;
+               (pushnew bnum bar-nums)
+               (if (is-rest-bar bar)
+                   (let ((events (events-for-full-bar (get-time-sig bar) 
+                                                      porc wporc)))
                      ;;(print (data porc)) ;
-                   (incf new-ties (length events))
-                   (setf last-event (first (last events))
-                         (rhythms bar) events))
-                 (progn
-                   (incf new-ties)
-                   (setf (pitch-or-chord e) (clone porc)
-                         (written-pitch-or-chord e) (when wporc 
-                                                      (clone wporc))
-                         (is-rest e) nil
-                         (needs-new-note e) nil
-                         (is-tied-to e) t
-                         (is-tied-from e) t
-                         last-event e)))
-             (gen-stats bar))
-            ;; 3.3.11 if we just test for last-event we might screw up ties ;
-            ;; despite the fact that we've done nothing.  MDE Mon Jul 16 ;
-            ;; 17:17:02 2012 -- changed error to warn ;
+                     (incf new-ties (length events))
+                     (setf last-event (first (last events))
+                           (rhythms bar) events))
+                   (progn
+                     (incf new-ties)
+                     (setf (pitch-or-chord e) (clone porc)
+                           (written-pitch-or-chord e) (when wporc 
+                                                        (clone wporc))
+                           (is-rest e) nil
+                           (needs-new-note e) nil
+                           (is-tied-to e) t
+                           (is-tied-from e) t
+                           last-event e)))
+               (gen-stats bar))
+          ;; 3.3.11 if we just test for last-event we might screw up ties ;
+          ;; despite the fact that we've done nothing.  MDE Mon Jul 16 ;
+          ;; 17:17:02 2012 -- changed error to warn ;
           (when (zerop new-ties)
             (warn "slippery-chicken::tie-over-rests: no ties to make! Bar ~a, ~
                      note ~a, ~a" bar-num note-num player))      
@@ -2963,10 +2991,12 @@ NIL
                for bnum in bar-nums 
                for bar = (get-bar sc bnum player)
                do
-               (when consolidate-notes
-                 (consolidate-notes bar nil auto-beam))
-               (when auto-beam
-                 (auto-beam bar auto-beam nil))))))))
+                 (when consolidate-notes
+                   (consolidate-notes bar nil auto-beam))
+                 (when auto-beam
+                   (auto-beam bar auto-beam nil))))
+          (when update
+            (update-slots sc))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2992,23 +3022,23 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vc (cello :midi-channel 1))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-        :set-map '((1 (1 1 1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))
-                                :marks (slur 1 8))))
-        :rthm-seq-map '((1 ((vc (1 1 1 1 1 1))))))))
-  (delete-slur mini 1 1 'vc)
-  (delete-slur mini 3 1 'vc))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vc (cello :midi-channel 1))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+:set-map '((1 (1 1 1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 2 3 4 5 6 7 8))
+:marks (slur 1 8))))
+:rthm-seq-map '((1 ((vc (1 1 1 1 1 1))))))))
+(delete-slur mini 1 1 'vc)
+(delete-slur mini 3 1 'vc))
 
-=> NIL
+  => NIL
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod delete-slur ((sc slippery-chicken) bar-num note-num player)
 ;;; ****
@@ -3090,24 +3120,24 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vn (violin :midi-channel 1))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c3 d3 e3 f3 g4 a3 b3
-                            c4 d4 e4 f4 g4 a4 b4 c5))))
-        :set-map '((1 (1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) - e e - (s) e.  
-                                  - s s e - - s (s) s s -))
-                                :pitch-seq-palette ((1 2 3 4 5 6 7 8 9))
-                                :marks (a 4))))
-        :rthm-seq-map '((1 ((vn (1 1 1))))))))
-  (auto-slur mini 'vn
-             :start-bar 1
-             :end-bar 2))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vn (violin :midi-channel 1))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((c3 d3 e3 f3 g4 a3 b3
+c4 d4 e4 f4 g4 a4 b4 c5))))
+:set-map '((1 (1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) - e e - (s) e.  
+- s s e - - s (s) s s -))
+:pitch-seq-palette ((1 2 3 4 5 6 7 8 9))
+:marks (a 4))))
+:rthm-seq-map '((1 ((vn (1 1 1))))))))
+(auto-slur mini 'vn
+:start-bar 1
+:end-bar 2))
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod auto-slur ((sc slippery-chicken) players
                       &key start-bar end-bar
@@ -3239,22 +3269,22 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vc (cello :midi-channel 1))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-        :set-map '((1 (1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
-  (auto-clefs mini)
-  (delete-clefs mini 'vc 1 3))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vc (cello :midi-channel 1))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+:set-map '((1 (1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+:rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+(auto-clefs mini)
+(delete-clefs mini 'vc 1 3))
 
-=> NIL
+  => NIL
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod delete-clefs ((sc slippery-chicken) &optional
                          player bar-num event-num)
@@ -3299,23 +3329,23 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :title "mini"
-        :ensemble '(((vn (violin :midi-channel 1))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6)))
-                       (2 ((cs4 ds4 fs4 gs4 as4 cs5 ds5 fs5 gs5 as5))))
-        :set-map '((1 (1 1 1 1 1 1)))
-        :rthm-seq-palette '((1 ((((2 4) q e s s))
-                                :pitch-seq-palette ((1 2 3 4)))))
-        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))))))))
-  (add-clef mini 'vn 3 2 'alto))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:title "mini"
+:ensemble '(((vn (violin :midi-channel 1))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6)))
+(2 ((cs4 ds4 fs4 gs4 as4 cs5 ds5 fs5 gs5 as5))))
+:set-map '((1 (1 1 1 1 1 1)))
+:rthm-seq-palette '((1 ((((2 4) q e s s))
+:pitch-seq-palette ((1 2 3 4)))))
+:rthm-seq-map '((1 ((vn (1 1 1 1 1 1))))))))
+(add-clef mini 'vn 3 2 'alto))
 
-=> ((CLEF ALTO))
+  => ((CLEF ALTO))
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod add-clef ((sc slippery-chicken) player &optional
                      bar-num event-num clef)
@@ -3358,21 +3388,21 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vc (cello :midi-channel 1))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-        :set-map '((1 (1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
-  (auto-clefs mini)
-  (move-clef mini 1 6 1 8 'vc)
-  (cmn-display mini :auto-clefs nil))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vc (cello :midi-channel 1))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+:set-map '((1 (1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+:rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+(auto-clefs mini)
+(move-clef mini 1 6 1 8 'vc)
+(cmn-display mini :auto-clefs nil))
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod move-clef ((sc slippery-chicken) from-bar from-event
                       to-bar to-event player)
@@ -3432,24 +3462,24 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Straightforward usage applied to just the VC player
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vn (violin :midi-channel 1))
-                     (vc (cello :midi-channel 2))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-        :set-map '((1 (1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-        :rthm-seq-map '((1 ((vn (1 1 1 1))
-                            (vc (1 1 1 1))))))))
-  (auto-clefs mini :players '(vc)))
+;;; Straightforward usage applied to just the VC player ;
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vn (violin :midi-channel 1))
+(vc (cello :midi-channel 2))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+:set-map '((1 (1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+:rthm-seq-map '((1 ((vn (1 1 1 1))
+(vc (1 1 1 1))))))))
+(auto-clefs mini :players '(vc)))
 
-=> T
+  => T
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod auto-clefs ((sc slippery-chicken) 
                        &key verbose in-c players 
@@ -3550,26 +3580,26 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vn (violin :midi-channel 1))
-                     (va (viola :midi-channel 2))
-                     (vc (cello :midi-channel 3))))
-        :set-palette '((1 ((ds3 e3 fs3 af3 bf3 c4 ef4 fs4))))
-        :set-map '((1 (1 1 1 1)))
-        :rthm-seq-palette '((1 ((((2 4) q e s s))
-                                :pitch-seq-palette ((1 2 3 4)))))
-        :rthm-seq-map '((1 ((vn (1 1 1 1))
-                            (va (1 1 1 1))
-                            (vc (1 1 1 1))))))))
-  (set-rehearsal-letter mini 2 'A)
-  (set-rehearsal-letter mini 3 '2 '(va vc))
-  (set-rehearsal-letter mini 4 'Z3))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vn (violin :midi-channel 1))
+(va (viola :midi-channel 2))
+(vc (cello :midi-channel 3))))
+:set-palette '((1 ((ds3 e3 fs3 af3 bf3 c4 ef4 fs4))))
+:set-map '((1 (1 1 1 1)))
+:rthm-seq-palette '((1 ((((2 4) q e s s))
+:pitch-seq-palette ((1 2 3 4)))))
+:rthm-seq-map '((1 ((vn (1 1 1 1))
+(va (1 1 1 1))
+(vc (1 1 1 1))))))))
+(set-rehearsal-letter mini 2 'A)
+(set-rehearsal-letter mini 3 '2 '(va vc))
+(set-rehearsal-letter mini 4 'Z3))
 
-=> T
+  => T
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod set-rehearsal-letter ((sc slippery-chicken) bar-num letter
                                  &optional players)
@@ -3615,22 +3645,22 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vc (cello :midi-channel 1))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-        :set-map '((1 (1 1 1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-        :rthm-seq-map '((1 ((vc (1 1 1 1 1 1)))))
-        :rehearsal-letters '(2 4 6))))
-  (delete-rehearsal-letter mini 2 '(vc)))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vc (cello :midi-channel 1))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+:set-map '((1 (1 1 1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+:rthm-seq-map '((1 ((vc (1 1 1 1 1 1)))))
+:rehearsal-letters '(2 4 6))))
+(delete-rehearsal-letter mini 2 '(vc)))
 
-=> NIL
+  => NIL
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod delete-rehearsal-letter ((sc slippery-chicken) bar-num
                                     &optional players)
@@ -3712,21 +3742,21 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vn (violin :midi-channel 1))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-        :set-map '((1 (1 1 1 1 1 1 1)))
-        :rthm-seq-palette '((1 ((((2 4) q e s s))
-                                :pitch-seq-palette ((1 2 3 4)))))
-        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
-  (re-bar mini :start-bar 2 :end-bar 5 :min-time-sig '(4 4) :auto-beam 4))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vn (violin :midi-channel 1))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+:set-map '((1 (1 1 1 1 1 1 1)))
+:rthm-seq-palette '((1 ((((2 4) q e s s))
+:pitch-seq-palette ((1 2 3 4)))))
+:rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
+(re-bar mini :start-bar 2 :end-bar 5 :min-time-sig '(4 4) :auto-beam 4))
 
-=> T
+  => T
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod re-bar ((sc slippery-chicken)
                    &key start-bar 
@@ -3816,23 +3846,23 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-;; Auto-beam the events of the given slippery-chicken object on the basis of a
-;; half note:
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vn (violin :midi-channel 1))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((fs4 gs4 as4))))
-        :set-map '((1 (1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-                                :pitch-seq-palette ((1 2 3 2 1 2 3 2)))))
-        :rthm-seq-map '((1 ((vn (1 1 1 1))))))))
-    (auto-beam mini 'h))
+;; Auto-beam the events of the given slippery-chicken object on the basis of a ;
+;; half note:                           ;
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vn (violin :midi-channel 1))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((fs4 gs4 as4))))
+:set-map '((1 (1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 2 3 2 1 2 3 2)))))
+:rthm-seq-map '((1 ((vn (1 1 1 1))))))))
+(auto-beam mini 'h))
 
-=> NIL
+  => NIL
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod auto-beam ((sc slippery-chicken) &optional (beat nil) (check-dur t))
 ;;; ****
@@ -3876,31 +3906,31 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((marks (make-cscl '(a s as te ts at))))
-  (defun add-random-marks (event)
-    (unless (is-rest event) 
-      (setf (marks event) (list (get-next marks))))))
+  (let ((marks (make-cscl '(a s as te ts at))))
+(defun add-random-marks (event)
+(unless (is-rest event) 
+(setf (marks event) (list (get-next marks))))))
 
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vn (violin :midi-channel 1))
-                     (va (viola :midi-channel 2))
-                     (vc (cello :midi-channel 3))))
-        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4))))
-        :set-map '((1 (1 1 1)))
-        :rthm-seq-palette '((1 ((((3 4) s (e.)  (s) s (e) (e) s (s)))
-                                 :pitch-seq-palette ((1 2 3))))
-                            (2 ((((3 4) (s) s (e) (e) s (s) s (e.)))
-                                 :pitch-seq-palette ((1 2 3))))
-                            (3 ((((3 4) (e) s (s) s (e.)  (s) s (e)))
-                                 :pitch-seq-palette ((1 2 3)))))
-        :rthm-seq-map '((1 ((vn (1 2 3))
-                            (va (2 3 1))
-                            (vc (3 1 2))))))))
-  (process-events-by-time mini #'add-random-marks))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vn (violin :midi-channel 1))
+(va (viola :midi-channel 2))
+(vc (cello :midi-channel 3))))
+:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4))))
+:set-map '((1 (1 1 1)))
+:rthm-seq-palette '((1 ((((3 4) s (e.)  (s) s (e) (e) s (s)))
+:pitch-seq-palette ((1 2 3))))
+(2 ((((3 4) (s) s (e) (e) s (s) s (e.)))
+:pitch-seq-palette ((1 2 3))))
+(3 ((((3 4) (e) s (s) s (e.)  (s) s (e)))
+:pitch-seq-palette ((1 2 3)))))
+:rthm-seq-map '((1 ((vn (1 2 3))
+(va (2 3 1))
+(vc (3 1 2))))))))
+(process-events-by-time mini #'add-random-marks))
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod process-events-by-time ((sc slippery-chicken) function
                                    &key (start-bar 1) end-bar)
@@ -3942,22 +3972,22 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vc (cello :midi-channel 1))))
-        :set-palette '((1 ((a3 b3 c4 e4))))
-        :set-map '((1 (1 1 1)))
-        :rthm-seq-palette '((1 ((((2 4) q e s s))
-                                :pitch-seq-palette ((1 2 3 4))
-                                :marks (fff 1))))
-        :rthm-seq-map '((1 ((vc (1 1 1))))))))
-  (sc-move-dynamic mini 1 'vc 1 3)
-  (sc-move-dynamic mini 2 'vc 1 4 3))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vc (cello :midi-channel 1))))
+:set-palette '((1 ((a3 b3 c4 e4))))
+:set-map '((1 (1 1 1)))
+:rthm-seq-palette '((1 ((((2 4) q e s s))
+:pitch-seq-palette ((1 2 3 4))
+:marks (fff 1))))
+:rthm-seq-map '((1 ((vc (1 1 1))))))))
+(sc-move-dynamic mini 1 'vc 1 3)
+(sc-move-dynamic mini 2 'vc 1 4 3))
 
-=> T
+  => T
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod sc-move-dynamic ((sc slippery-chicken) bar-num player
                             ;; event numbers 1-based but counting rests and ties
@@ -3991,22 +4021,22 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vc (cello :midi-channel 1))))
-        :set-palette '((1 ((a3 b3 c4 e4))))
-        :set-map '((1 (1 1 1)))
-        :rthm-seq-palette '((1 ((((2 4) q e s s))
-                                :pitch-seq-palette ((1 2 3 4))
-                                :marks (fff 1 ppp 3))))
-        :rthm-seq-map '((1 ((vc (1 1 1))))))))
-  (sc-remove-dynamic mini 2 'vc 1)
-  (sc-remove-dynamic mini 3 'vc '(1 3)))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vc (cello :midi-channel 1))))
+:set-palette '((1 ((a3 b3 c4 e4))))
+:set-map '((1 (1 1 1)))
+:rthm-seq-palette '((1 ((((2 4) q e s s))
+:pitch-seq-palette ((1 2 3 4))
+:marks (fff 1 ppp 3))))
+:rthm-seq-map '((1 ((vc (1 1 1))))))))
+(sc-remove-dynamic mini 2 'vc 1)
+(sc-remove-dynamic mini 3 'vc '(1 3)))
 
-=> PPP
+  => PPP
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod sc-remove-dynamic ((sc slippery-chicken) bar-num player
                               &rest event-nums)
@@ -4057,26 +4087,26 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vn (violin :midi-channel 1))
-                     (va (viola :midi-channel 2))
-                     (vc (cello :midi-channel 3))))
-        :set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4 f4 g4 a4 b4))))
-        :set-map '((1 (1 1 1)))
-        :rthm-seq-palette '((1 ((((2 4) q e s s))
-                                :pitch-seq-palette ((1 2 3 4))
-                                :marks (fff 1 ppp 3))))
-        :rthm-seq-map '((1 ((vn (1 1 1))
-                            (va (1 1 1))
-                            (vc (1 1 1))))))))
-  (sc-remove-dynamics mini '(1 2) '(2 2) 'vn)
-  (sc-remove-dynamics mini 2 3 '(va vc)))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vn (violin :midi-channel 1))
+(va (viola :midi-channel 2))
+(vc (cello :midi-channel 3))))
+:set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4 f4 g4 a4 b4))))
+:set-map '((1 (1 1 1)))
+:rthm-seq-palette '((1 ((((2 4) q e s s))
+:pitch-seq-palette ((1 2 3 4))
+:marks (fff 1 ppp 3))))
+:rthm-seq-map '((1 ((vn (1 1 1))
+(va (1 1 1))
+(vc (1 1 1))))))))
+(sc-remove-dynamics mini '(1 2) '(2 2) 'vn)
+(sc-remove-dynamics mini 2 3 '(va vc)))
 
-=> T
+  => T
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod sc-remove-dynamics ((sc slippery-chicken) start end players)
 ;;; ****
@@ -4125,22 +4155,22 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vn (violin :midi-channel 1))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-        :set-map '((1 (1 1 1 1 1 1 1)))
-        :rthm-seq-palette '((1 ((((2 4) q e s s))
-                                :pitch-seq-palette ((1 2 3 4))
-                                :marks (f 1 f 2 f 3 f 4))))
-        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
-  (remove-extraneous-dynamics mini))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vn (violin :midi-channel 1))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+:set-map '((1 (1 1 1 1 1 1 1)))
+:rthm-seq-palette '((1 ((((2 4) q e s s))
+:pitch-seq-palette ((1 2 3 4))
+:marks (f 1 f 2 f 3 f 4))))
+:rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
+(remove-extraneous-dynamics mini))
 
-=> T
+  => T
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod remove-extraneous-dynamics ((sc slippery-chicken))
 ;;; ****
@@ -4208,21 +4238,21 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vc (cello :midi-channel 1))))
-        :set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4))))
-        :set-map '((1 (1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) - e e - - e e - - e e - - e e -))
-                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
-  (sc-delete-beams mini 2 'vc)
-  (sc-delete-beams mini 3 'vc 3 4))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vc (cello :midi-channel 1))))
+:set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4))))
+:set-map '((1 (1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) - e e - - e e - - e e - - e e -))
+:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+:rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+(sc-delete-beams mini 2 'vc)
+(sc-delete-beams mini 3 'vc 3 4))
 
-=> NIL
+  => NIL
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod sc-delete-beams ((sc slippery-chicken) bar-num player
                             &optional start-note end-note)
@@ -4293,22 +4323,22 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vc (cello :midi-channel 1))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4))))
-        :set-map '((1 (1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
-  (delete-bars mini 2 :end-bar 3)
-  (delete-bars mini 2 :num-bars 1))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vc (cello :midi-channel 1))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4))))
+:set-map '((1 (1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+:rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+(delete-bars mini 2 :end-bar 3)
+(delete-bars mini 2 :num-bars 1))
 
-=> T
+  => T
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod delete-bars ((sc slippery-chicken) start-bar
                         &key num-bars end-bar print)
@@ -4380,25 +4410,25 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((bn (bassoon :midi-channel 1))
-                     (vc (cello :midi-channel 2))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-        :set-map '((1 (1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))))
-                            (2 ((((4 4) (w))))))
-        :rthm-seq-map '((1 ((bn (1 1 1 1))
-                            (vc (2 2 2 2))))))))
-  (move-events mini 'bn 'vc 2 3 3 2)
-  (move-events mini 'bn 'vc 4 1 4 2 :transposition 4.5))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((bn (bassoon :midi-channel 1))
+(vc (cello :midi-channel 2))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+:set-map '((1 (1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 2 3 4 5 6 7 8))))
+(2 ((((4 4) (w))))))
+:rthm-seq-map '((1 ((bn (1 1 1 1))
+(vc (2 2 2 2))))))))
+(move-events mini 'bn 'vc 2 3 3 2)
+(move-events mini 'bn 'vc 4 1 4 2 :transposition 4.5))
 
-=> T
+  => T
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod move-events ((sc slippery-chicken) from-player to-player
                         start-bar start-event end-bar end-event
@@ -4469,27 +4499,27 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((bsn (bassoon :midi-channel 1))
-                     (tbn (tenor-trombone :midi-channel 2))
-                     (vlc (cello :midi-channel 3))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-        :set-map '((1 (1 1 1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) (w)))))
-                            (2 ((((4 4) e e e e e e e e))
-                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-        :rthm-seq-map '((1 ((bsn (1 1 1 1 1 1))
-                            (tbn (1 1 1 1 1 1))
-                            (vlc (2 2 2 2 2 2))))))))
-  (double-events mini 'vlc '(bsn tbn) 2 3 4 2)
-  (double-events mini 'vlc 'bsn 5 1 5 nil :transposition 3.5))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((bsn (bassoon :midi-channel 1))
+(tbn (tenor-trombone :midi-channel 2))
+(vlc (cello :midi-channel 3))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+:set-map '((1 (1 1 1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) (w)))))
+(2 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+:rthm-seq-map '((1 ((bsn (1 1 1 1 1 1))
+(tbn (1 1 1 1 1 1))
+(vlc (2 2 2 2 2 2))))))))
+(double-events mini 'vlc '(bsn tbn) 2 3 4 2)
+(double-events mini 'vlc 'bsn 5 1 5 nil :transposition 3.5))
 
-=> T
+  => T
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod double-events ((sc slippery-chicken) master-player doubling-players
                           start-bar start-event end-bar end-event
@@ -4601,21 +4631,21 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vc (cello :midi-channel 1))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-        :set-map '((1 (1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
-  (delete-events mini 2 2 3 nil 'vc))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vc (cello :midi-channel 1))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+:set-map '((1 (1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+:rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+(delete-events mini 2 2 3 nil 'vc))
 
-=> T
+  => T
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod delete-events ((sc slippery-chicken) start-bar start-event end-bar
                           end-event &optional players (consolidate-rests t))
@@ -4679,32 +4709,32 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vc (cello :midi-channel 1))))
-        :set-palette '((1 ((a3 b3 c4 e4))))
-        :set-map '((1 (1 1 1)))
-        :rthm-seq-palette '((1 ((((2 4) q e s s))
-                                :pitch-seq-palette ((1 2 3 4)))))
-        :rthm-seq-map '((1 ((vc (1 1 1))))))))
-  (sc-force-rest mini 2 3 'vc)
-  (sc-force-rest mini 3 3 'vc t))
+  (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vc (cello :midi-channel 1))))
+:set-palette '((1 ((a3 b3 c4 e4))))
+:set-map '((1 (1 1 1)))
+:rthm-seq-palette '((1 ((((2 4) q e s s))
+:pitch-seq-palette ((1 2 3 4)))))
+:rthm-seq-map '((1 ((vc (1 1 1))))))))
+(sc-force-rest mini 2 3 'vc)
+(sc-force-rest mini 3 3 'vc t))
 
-=>
+  =>
 
-RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3, 
-              old-bar-nums: NIL, write-bar-num: NIL, start-time: 4.000, 
-              start-time-qtrs: 4.0, is-rest-bar: NIL, multi-bar-rest: NIL, 
-              show-rest: T, notes-needed: 3, 
-              tuplets: NIL, nudge-factor: 0.35, beams: ((1 2)), 
-              current-time-sig: 3, write-time-sig: NIL, num-rests: 1, 
-              num-rhythms: 4, num-score-notes: 3, parent-start-end: NIL, 
-              missing-duration: NIL, bar-line-type: 2, 
-              player-section-ref: (1 VC), nth-seq: 2, nth-bar: 0, 
-              rehearsal-letter: NIL, all-time-sigs: (too long to print) 
-              sounding-duration: 1.750, 
-              rhythms: (
+  RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3, 
+  old-bar-nums: NIL, write-bar-num: NIL, start-time: 4.000, 
+  start-time-qtrs: 4.0, is-rest-bar: NIL, multi-bar-rest: NIL, 
+  show-rest: T, notes-needed: 3, 
+  tuplets: NIL, nudge-factor: 0.35, beams: ((1 2)), 
+  current-time-sig: 3, write-time-sig: NIL, num-rests: 1, 
+  num-rhythms: 4, num-score-notes: 3, parent-start-end: NIL, 
+  missing-duration: NIL, bar-line-type: 2, 
+  player-section-ref: (1 VC), nth-seq: 2, nth-bar: 0, 
+  rehearsal-letter: NIL, all-time-sigs: (too long to print) 
+  sounding-duration: 1.750, 
+  rhythms: (
 [...]
 
 |#
@@ -4753,16 +4783,16 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; EXAMPLE
 #|
 (let ((mini
-         (make-slippery-chicken
-          '+mini+
-          :ensemble '(((vc (cello :midi-channel 1))))
-          :set-palette '((1 ((a3 b3 c4 e4))))
-          :set-map '((1 (1 1 1)))
-          :rthm-seq-palette 
-          '((1 ((((4 4) - e.. 32 - h.) (+w) (+w) ((w)) ((h) (e) q e)
-                 (+q - +s e. - +h) (+w) (+w) ((w))))))
-          :rthm-seq-map '((1 ((vc (1 1 1))))))))
-  (sc-force-rest2 mini 1 3 'vc))
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vc (cello :midi-channel 1))))
+:set-palette '((1 ((a3 b3 c4 e4))))
+:set-map '((1 (1 1 1)))
+:rthm-seq-palette 
+'((1 ((((4 4) - e.. 32 - h.) (+w) (+w) ((w)) ((h) (e) q e)
+(+q - +s e. - +h) (+w) (+w) ((w))))))
+:rthm-seq-map '((1 ((vc (1 1 1))))))))
+(sc-force-rest2 mini 1 3 'vc))
 => 3
 |#
 ;;; SYNOPSIS
@@ -4843,20 +4873,20 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; EXAMPLE
 #|
 (let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vn (violin :midi-channel 1))
-                     (va (viola :midi-channel 2))
-                     (vc (cello :midi-channel 3))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c4 e4 g4 b4 d5 f5 a5 c6))))
-        :set-map '((1 (1 1 1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))))) 
-        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))
-                            (va (1 1 1 1 1 1))
-                            (vc (1 1 1 1 1 1))))))))
-  (force-rest-bars mini 3 5 '(vn vc)))
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vn (violin :midi-channel 1))
+(va (viola :midi-channel 2))
+(vc (cello :midi-channel 3))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((c4 e4 g4 b4 d5 f5 a5 c6))))
+:set-map '((1 (1 1 1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 2 3 4 5 6 7 8))))) 
+:rthm-seq-map '((1 ((vn (1 1 1 1 1 1))
+(va (1 1 1 1 1 1))
+(vc (1 1 1 1 1 1))))))))
+(force-rest-bars mini 3 5 '(vn vc)))
 
 => NIL
 
@@ -4911,16 +4941,16 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; EXAMPLE
 #|
 (let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vn (violin :midi-channel 1))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c4 f4 b4 e5 a5 d6 g7 c8))))
-        :set-map '((1 (1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))))) 
-        :rthm-seq-map '((1 ((vn (1 1 1))))))))
-  (force-artificial-harmonics mini 'vn 2 3 3 2))
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vn (violin :midi-channel 1))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((c4 f4 b4 e5 a5 d6 g7 c8))))
+:set-map '((1 (1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 2 3 4 5 6 7 8))))) 
+:rthm-seq-map '((1 ((vn (1 1 1))))))))
+(force-artificial-harmonics mini 'vn 2 3 3 2))
 
 => T
 
@@ -4985,23 +5015,23 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; EXAMPLE
 #|
 (let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-                     (pn (piano :midi-channel 2))))
-        :set-palette '((1 ((ds3 e3 fs3 af3 bf3 c4 ef4 fs4))))
-        :set-map '((1 (1 1 1)))
-        :rthm-seq-palette '((1 ((((2 4) q e s s))
-                                :pitch-seq-palette ((1 2 (3) 4))
-                                :marks (fff 1 ppp 3))))
-        :rthm-seq-map '((1 ((cl (1 1 1))
-                            (pn (1 1 1))))))))
-  (respell-notes mini)
-  (set-cautionary-accidental mini 3 2 'cl t)
-  (set-cautionary-accidental mini 2 1 'pn)
-  (set-cautionary-accidental mini 2 2 'pn)
-  (set-cautionary-accidental mini 3 '(3 3) 'pn)
-  (write-lp-data-for-all mini :respell-notes nil))
+(make-slippery-chicken
+'+mini+
+:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+(pn (piano :midi-channel 2))))
+:set-palette '((1 ((ds3 e3 fs3 af3 bf3 c4 ef4 fs4))))
+:set-map '((1 (1 1 1)))
+:rthm-seq-palette '((1 ((((2 4) q e s s))
+:pitch-seq-palette ((1 2 (3) 4))
+:marks (fff 1 ppp 3))))
+:rthm-seq-map '((1 ((cl (1 1 1))
+(pn (1 1 1))))))))
+(respell-notes mini)
+(set-cautionary-accidental mini 3 2 'cl t)
+(set-cautionary-accidental mini 2 1 'pn)
+(set-cautionary-accidental mini 2 2 'pn)
+(set-cautionary-accidental mini 3 '(3 3) 'pn)
+(write-lp-data-for-all mini :respell-notes nil))
 
 => T
 
@@ -5046,20 +5076,20 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; EXAMPLE
 #|
 (let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-                     (vn (violin :midi-channel 2))))
-        :set-palette '((1 ((cs4 ds4 fs4))))
-        :set-map '((1 (1 1)))
-        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-                                :pitch-seq-palette ((1 2 3 2 1 2 3 2)))))
-        :rthm-seq-map '((1 ((cl (1 1))
-                            (vn (1 1))))))))
-  (respell-notes mini)
-  (unset-cautionary-accidental mini 2 5 'vn)
-  (unset-cautionary-accidental mini 2 7 'cl t)
-  (cmn-display mini :respell-notes nil))
+(make-slippery-chicken
+'+mini+
+:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+(vn (violin :midi-channel 2))))
+:set-palette '((1 ((cs4 ds4 fs4))))
+:set-map '((1 (1 1)))
+:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 2 3 2 1 2 3 2)))))
+:rthm-seq-map '((1 ((cl (1 1))
+(vn (1 1))))))))
+(respell-notes mini)
+(unset-cautionary-accidental mini 2 5 'vn)
+(unset-cautionary-accidental mini 2 7 'cl t)
+(cmn-display mini :respell-notes nil))
 
 |#
 ;;; SYNOPSIS
@@ -5109,19 +5139,19 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; EXAMPLE
 #|
 (let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :title "mini"
-        :ensemble '(((pno (piano :midi-channel 1))))
-        :tempo-map '((1 (q 60)))
-        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6)))
-                       (2 ((cs4 ds4 fs4 gs4 as4 cs5 ds5 fs5 gs5 as5))))
-        :set-map '((1 (1 1 1 1 1 1)))
-        :rthm-seq-palette '((1 ((((2 4) q q))
-                                :pitch-seq-palette ((1 (2))))))
-        :rthm-seq-map '((1 ((pno (1 1 1 1 1 1))))))))
-  (add-arrow-to-events mini "here" "there" '(1 1) '(5 1) 'pno)
-  (write-lp-data-for-all mini))
+(make-slippery-chicken
+'+mini+
+:title "mini"
+:ensemble '(((pno (piano :midi-channel 1))))
+:tempo-map '((1 (q 60)))
+:set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6)))
+(2 ((cs4 ds4 fs4 gs4 as4 cs5 ds5 fs5 gs5 as5))))
+:set-map '((1 (1 1 1 1 1 1)))
+:rthm-seq-palette '((1 ((((2 4) q q))
+:pitch-seq-palette ((1 (2))))))
+:rthm-seq-map '((1 ((pno (1 1 1 1 1 1))))))))
+(add-arrow-to-events mini "here" "there" '(1 1) '(5 1) 'pno)
+(write-lp-data-for-all mini))
 
 |#
 ;;; SYNOPSIS
@@ -5154,18 +5184,18 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 ;;; EXAMPLE
 #|
 (let ((min
-       (make-slippery-chicken
-        '+minimum+
-        :instrument-palette +slippery-chicken-standard-instrument-palette+
-        :ensemble '(((fl (flute :midi-channel 1))))
-        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
-        :set-map '((1 (1)))
-        :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -)))))
-        :rthm-seq-map '((1 ((fl (1))))))))
-  ;; this piece only has one bar so the bar line will be 2 by default
-  (print (bar-line-type (get-bar min 1 'fl)))
-  (change-bar-line-type min 1 1)
-  (bar-line-type (get-bar min 1 'fl)))
+(make-slippery-chicken
+'+minimum+
+:instrument-palette +slippery-chicken-standard-instrument-palette+
+:ensemble '(((fl (flute :midi-channel 1))))
+:set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+:set-map '((1 (1)))
+:rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -)))))
+:rthm-seq-map '((1 ((fl (1))))))))
+;; this piece only has one bar so the bar line will be 2 by default
+(print (bar-line-type (get-bar min 1 'fl)))
+(change-bar-line-type min 1 1)
+(bar-line-type (get-bar min 1 'fl)))
 => 
 ...
 2
@@ -5219,22 +5249,22 @@ RTHM-SEQ-BAR: time-sig: 3 (2 4), time-sig-given: T, bar-num: 3,
 #|
 
 (let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
-        :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
-                                 (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
-                                 (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
-        :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
-        :set-map '((1 (1 1 1 1 1))
-                   (2 (1 1 1 1 1))
-                   (3 (1 1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) h e (s) (s) e+s+s))
-                                :pitch-seq-palette ((1 2 3)))))
-        :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
-                        (2 ((sax (1 1 1 1 1))))
-                        (3 ((sax (1 1 1 1 1))))))))
-  (print (map-over-bars mini 1 nil nil #'consolidate-notes nil 'q)))
+(make-slippery-chicken
+'+mini+
+:ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
+:instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+(2 ((sax ((2 alto-sax) (5 tenor-sax)))))
+(3 ((sax ((3 alto-sax) (4 tenor-sax))))))
+:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
+:set-map '((1 (1 1 1 1 1))
+(2 (1 1 1 1 1))
+(3 (1 1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) h e (s) (s) e+s+s))
+:pitch-seq-palette ((1 2 3)))))
+:rthm-seq-map '((1 ((sax (1 1 1 1 1))))
+(2 ((sax (1 1 1 1 1))))
+(3 ((sax (1 1 1 1 1))))))))
+(print (map-over-bars mini 1 nil nil #'consolidate-notes nil 'q)))
 
 =>
 (
@@ -5359,25 +5389,25 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; EXAMPLE
 #|
 (let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((hn (french-horn :midi-channel 1))
-                     (vc (cello :midi-channel 2))))
-        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-        :set-map '((1 (1 1 1 1 1))
-                   (2 (1 1 1 1 1))
-                   (3 (1 1 1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) h q e s s))
-                                :pitch-seq-palette ((1 2 3 4 5))))
-                            (2 ((((4 4) h h))
-                                :pitch-seq-palette ((1 2)))))
-        :rthm-seq-map '((1 ((hn (1 1 1 1 1))
-                            (vc (1 1 1 1 1))))
-                        (2 ((hn (2 2 2 2 2))
-                            (vc (2 2 2 2 2))))
-                        (3 ((hn (1 1 1 1 1))
-                            (vc (1 1 1 1 1))))))))
-  (copy-bars mini 7 2 'vc 'hn 2 t))
+(make-slippery-chicken
+'+mini+
+:ensemble '(((hn (french-horn :midi-channel 1))
+(vc (cello :midi-channel 2))))
+:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+:set-map '((1 (1 1 1 1 1))
+(2 (1 1 1 1 1))
+(3 (1 1 1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) h q e s s))
+:pitch-seq-palette ((1 2 3 4 5))))
+(2 ((((4 4) h h))
+:pitch-seq-palette ((1 2)))))
+:rthm-seq-map '((1 ((hn (1 1 1 1 1))
+(vc (1 1 1 1 1))))
+(2 ((hn (2 2 2 2 2))
+(vc (2 2 2 2 2))))
+(3 ((hn (1 1 1 1 1))
+(vc (1 1 1 1 1))))))))
+(copy-bars mini 7 2 'vc 'hn 2 t))
 
 => T
 
@@ -5484,24 +5514,24 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; EXAMPLE
 #|
 (let* ((ip-clone (clone +slippery-chicken-standard-instrument-palette+)))
-  (set-slot 'chord-function 'chord-fun1 'guitar ip-clone)
-  (let* ((mini
-          (make-slippery-chicken
-           '+mini+
-           :instrument-palette ip-clone
-           :ensemble '(((gtr (guitar :midi-channel 1))))
-           :set-palette '((1 ((e3 f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5 d5 e5 f5
-                                  g5 a5 b5 c6 d6 e6))))
-           :set-map '((1 (1)))
-           :rthm-seq-palette 
-           '((1 ((((4 4) e e e e e e e e))
-                 :pitch-seq-palette ((1 (2) 3 (4) 5 (6) 7 (8))))))
-           :rthm-seq-map '((1 ((gtr (1))))))))
-    (print (get-pitch-symbols 
-            (pitch-or-chord (get-event mini 1 2 'gtr))))
-    (add-pitches-to-chord mini 'gtr 1 2 'cs4 'ds4)
-    (print (get-pitch-symbols 
-            (pitch-or-chord (get-event mini 1 2 'gtr))))))
+(set-slot 'chord-function 'chord-fun1 'guitar ip-clone)
+(let* ((mini
+(make-slippery-chicken
+'+mini+
+:instrument-palette ip-clone
+:ensemble '(((gtr (guitar :midi-channel 1))))
+:set-palette '((1 ((e3 f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5 d5 e5 f5
+g5 a5 b5 c6 d6 e6))))
+:set-map '((1 (1)))
+:rthm-seq-palette 
+'((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 (2) 3 (4) 5 (6) 7 (8))))))
+:rthm-seq-map '((1 ((gtr (1))))))))
+(print (get-pitch-symbols 
+(pitch-or-chord (get-event mini 1 2 'gtr))))
+(add-pitches-to-chord mini 'gtr 1 2 'cs4 'ds4)
+(print (get-pitch-symbols 
+(pitch-or-chord (get-event mini 1 2 'gtr))))))
 
 =>
 (E3 G3 B3) 
@@ -5547,24 +5577,24 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; EXAMPLE
 #|
 (let* ((ip-clone (clone +slippery-chicken-standard-instrument-palette+)))
-  (set-slot 'chord-function 'chord-fun2 'guitar ip-clone)
-  (let* ((mini
-          (make-slippery-chicken
-           '+mini+
-           :instrument-palette ip-clone
-           :ensemble '(((gtr (guitar :midi-channel 1))))
-           :set-palette '((1 ((e3 f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5 d5 e5 f5
-                                  g5 a5 b5 c6 d6 e6))))
-           :set-map '((1 (1)))
-           :rthm-seq-palette 
-           '((1 ((((4 4) e e e e e e e e))
-                 :pitch-seq-palette ((1 (2) 3 (4) 5 (6) 7 (8))))))
-           :rthm-seq-map '((1 ((gtr (1))))))))
-    (print (get-pitch-symbols 
-            (pitch-or-chord (get-event mini 1 2 'gtr))))
-    (rm-pitches-from-chord mini 'gtr 1 2 'a3 'd4)
-    (print (get-pitch-symbols 
-            (pitch-or-chord (get-event mini 1 2 'gtr))))))
+(set-slot 'chord-function 'chord-fun2 'guitar ip-clone)
+(let* ((mini
+(make-slippery-chicken
+'+mini+
+:instrument-palette ip-clone
+:ensemble '(((gtr (guitar :midi-channel 1))))
+:set-palette '((1 ((e3 f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5 d5 e5 f5
+g5 a5 b5 c6 d6 e6))))
+:set-map '((1 (1)))
+:rthm-seq-palette 
+'((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 (2) 3 (4) 5 (6) 7 (8))))))
+:rthm-seq-map '((1 ((gtr (1))))))))
+(print (get-pitch-symbols 
+(pitch-or-chord (get-event mini 1 2 'gtr))))
+(rm-pitches-from-chord mini 'gtr 1 2 'a3 'd4)
+(print (get-pitch-symbols 
+(pitch-or-chord (get-event mini 1 2 'gtr))))))
 
 =>
 (E3 A3 D4 G4) 

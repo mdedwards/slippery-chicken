@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:46:36 Sun Jun 15 2014 CEST
+;;; $$ Last modified: 15:00:07 Sat Jun 28 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2371,17 +2371,16 @@ data: 32
                                                 last-rhythm)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; bar-num is the bar that we start the ties from the last note, not the first
 ;; rest bar.  
 (defmethod tie-over-rest-bars-aux ((sc slippery-chicken) bar-num player
                                    &key (end-bar nil) 
-                                   (to-next-attack t)
-                                   (tie-next-attack nil)
-                                   (last-rhythm nil)
-                                   (auto-beam nil))
-  ;; MDE Thu Apr 26 16:39:58 2012 -- end-bar default was 99999 which is fine
-  ;; for the loops but not the get-bar call below 
+                                     (to-next-attack t)
+                                     (tie-next-attack nil)
+                                     (last-rhythm nil)
+                                     (auto-beam nil))
+  ;; MDE Thu Apr 26 16:39:58 2012 -- end-bar default was 99999 which is fine ;
+  ;; for the loops but not the get-bar call below ;
   (unless end-bar
     (setf end-bar (num-bars sc)))
   (let* ((bar (get-bar (piece sc) bar-num player))
@@ -2400,30 +2399,30 @@ data: 32
                   (clone (written-pitch-or-chord start-event))))
          (last-event start-event)
          last-bar)
-    ;; (print porc)
+    ;; (print porc)                     ;
     (unless (zerop (notes-needed bar))
       (unless porc
         (error "slippery-chicken::tie-over-rest-bars-aux: can't tie from last ~
               event of bar ~a" bar-num))
-      ;; remove any staccato or tenuto marks from this event
+      ;; remove any staccato or tenuto marks from this event ;
       (rm-marks start-event '(s t as) nil)
       (when porc
         (delete-marks porc))
       (when wporc
         (delete-marks wporc))
-      ;; replace accent-staccato with just accent
+      ;; replace accent-staccato with just accent ;
       (replace-mark start-event 'as 'a)
-      ;; our last event may have been tied to following events...
+      ;; our last event may have been tied to following events... ;
       (loop 
          for i from start-event-pos
          while (is-tied-from start-event)
          do
-         (setf start-event (get-nth-event (1+ i) bar)))
+           (setf start-event (get-nth-event (1+ i) bar)))
       (setf (is-tied-from start-event) t)
       (no-accidental porc)
       (when wporc
         (no-accidental wporc))
-      ;; (format t "~&acc: ~a" (show-accidental porc)) ;;(first (data porc))))
+      ;; (format t "~&acc: ~a" (show-accidental porc)) ;;(first (data porc)))) ;
       (flet ((do-it (e)
                (setf (pitch-or-chord e) (clone porc)
                      (written-pitch-or-chord e) (when wporc 
@@ -2433,44 +2432,44 @@ data: 32
                      (is-tied-to e) t
                      (is-tied-from e) t
                      last-event e)))
-        ;; first the events in the current bar
+        ;; first the events in the current bar ;
         (loop 
            for i downfrom (1- (num-rhythms bar)) to 0
            for e = (nth i (rhythms bar))
            while (is-rest e)
            do
-           (do-it e))
-        ;; now the events in the next bars
+             (do-it e))
+        ;; now the events in the next bars ;
         (loop 
            for bnum from (1+ bar-num) 
            for bar = (get-bar (piece sc) bnum player)
            while (and bar (<= (bar-num bar) end-bar))
            do
-           (setf last-bar bar)
-           (if (is-rest-bar bar)
-               (let ((events (events-for-full-bar (get-time-sig bar) 
-                                                  porc wporc)))
-                 (setf last-event (first (last events))
-                       (rhythms bar) events)
-                 (gen-stats bar))
-               (progn
-                 (when to-next-attack
-                   ;; (loop for e in (rhythms bar) while (is-rest e) do
-                   (loop for e in (rhythms bar) do
-                        (if (is-rest e) 
-                            (do-it e)
-                            (progn
-                              (when (and tie-next-attack
-                                         (porc-equal e last-event))
-                                ;; we've hit the next attack after the ties
-                                ;; we created but if it's the same
-                                ;; pitch/chord, tie to this too
-                                (setf last-event nil
-                                      ;; so we don't kill the tie
-                                      (is-tied-to e) t)
-                                (decf (notes-needed bar)))
-                              (return)))))
-                 (return))))
+             (setf last-bar bar)
+             (if (is-rest-bar bar)
+                 (let ((events (events-for-full-bar (get-time-sig bar) 
+                                                    porc wporc)))
+                   (setf last-event (first (last events))
+                         (rhythms bar) events)
+                   (gen-stats bar))
+                 (progn
+                   (when to-next-attack
+                   ;; (loop for e in (rhythms bar) while (is-rest e) do ;
+                     (loop for e in (rhythms bar) do
+                          (if (is-rest e) 
+                              (do-it e)
+                              (progn
+                                (when (and tie-next-attack
+                                           (porc-equal e last-event))
+                                ;; we've hit the next attack after the ties ;
+                                ;; we created but if it's the same ;
+                                ;; pitch/chord, tie to this too ;
+                                  (setf last-event nil
+                                      ;; so we don't kill the tie ;
+                                        (is-tied-to e) t)
+                                  (decf (notes-needed bar)))
+                                (return)))))
+                   (return))))
         (when last-event
           (setf (is-tied-from last-event) nil))
         (when last-rhythm
@@ -2480,26 +2479,29 @@ data: 32
                                (change-rhythm
                                 (clone (first (rhythms last-bar)))
                                 last-rhythm))
-          ;; we might have tied over several notes to the next attack so now
-          ;; we've got to make them rests
+          ;; we might have tied over several notes to the next attack so now ;
+          ;; we've got to make them rests ;
           (loop 
              for e in (rest (rhythms last-bar)) 
              while (is-tied-to e)
              do
-             (force-rest e)))
+               (force-rest e)))
         (loop 
            for bnum from bar-num
            for bar = (get-bar (piece sc) bnum player)
            while (and bar (<= (bar-num bar) end-bar))
            do
              (consolidate-notes bar nil auto-beam)
-           ;; MDE Wed Apr 25 16:33:29 2012 -- when clause added!
-           ;; MDE Sat Jun  9 16:02:47 2012 -- when changed to if so we can at
-           ;; least check the beams (and call auto-beam no matter what if
-           ;; there's a problem) 
-           (if auto-beam
-             (auto-beam bar auto-beam nil)
-             (check-beams bar :auto-beam t)))))))
+           ;; MDE Sat Jun 28 14:59:24 2014 -- we might have events without ;
+           ;; player slots              ;
+             (update-events-player bar player)
+           ;; MDE Wed Apr 25 16:33:29 2012 -- when clause added! ;
+           ;; MDE Sat Jun  9 16:02:47 2012 -- when changed to if so we can at ;
+           ;; least check the beams (and call auto-beam no matter what if ;
+           ;; there's a problem)        ;
+             (if auto-beam
+                 (auto-beam bar auto-beam nil)
+                 (check-beams bar :auto-beam t)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -7046,8 +7048,8 @@ FS4 G4)
 ;;; A list of event objects.
 ;;; 
 ;;; SYNOPSIS
-(defmethod get-events-sorted-by-time ((sc slippery-chicken) &key
-                                      (start-bar 1) end-bar)
+(defmethod get-events-sorted-by-time ((sc slippery-chicken)
+                                      &key (start-bar 1) end-bar)
 ;;; ****
   (unless end-bar
     (setf end-bar (num-bars sc)))
@@ -7056,22 +7058,31 @@ FS4 G4)
      for events =
      ;; this will collect rests too of course so need to filter them out in
      ;; the supplied function if that's what's needed
-     (loop for player-bar in bars appending (rhythms player-bar))
+       (loop for player-bar in bars appending (rhythms player-bar))
      do
-     (setf events
-           (sort events
-                 #'(lambda (e1 e2)
-                     ;; MDE Mon May  5 16:49:01 2014 -- if we've got two events
-                     ;; that start at the same time, place the event from the
-                     ;; player higher in the hierarchy/ensemble first
-                     (if (equal-within-tolerance
-                          (start-time e1) (start-time e2))
-                         (let ((pos1 (position (player e1) 
-                                               (instruments-hierarchy sc)))
-                               (pos2 (position (player e2) 
-                                               (instruments-hierarchy sc))))
-                           (< pos1 pos2))
-                         (< (start-time e1) (start-time e2))))))
+       (setf
+        events
+        (sort
+         events
+         #'(lambda (e1 e2)
+             ;; MDE Mon May  5 16:49:01 2014 -- if we've got two events
+             ;; that start at the same time, place the event from the
+             ;; player higher in the hierarchy/ensemble first
+             (unless (and (start-time e1) (start-time e2))
+               (error "slippery-chicken::get-events-sorted-by-time: ~
+                       event's start-time is NIL. ~%Perhaps you need to call ~
+                       update-slots."))
+             (if (equal-within-tolerance
+                  (start-time e1) (start-time e2))
+                 (let ((pos1 (position (player e1) 
+                                       (instruments-hierarchy sc)))
+                       (pos2 (position (player e2) 
+                                       (instruments-hierarchy sc))))
+                   (unless (and pos1 pos2)
+                     (error "slippery-chicken::get-events-sorted-by-time: ~
+                                     event must be lacking a player slot."))
+                   (< pos1 pos2))
+                 (< (start-time e1) (start-time e2))))))
      appending events))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 14:53:17 Sat Jun 28 2014 BST
+;;; $$ Last modified: 16:02:15 Sat Jun 28 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2657,7 +2657,7 @@ NIL
 ;;;   explicitly at the end. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns NIL.
+;;; Returns t.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -2688,7 +2688,7 @@ NIL
                       :auto-beam t)
   (tie-over-rest-bars mini 9 'vn :end-bar 11 :last-rhythm 'e))
 
-  => NIL
+  => t
 
   |#
 ;;; SYNOPSIS
@@ -2710,7 +2710,8 @@ NIL
                                :to-next-attack to-next-attack
                                :last-rhythm last-rhythm))
   (when update
-    (update-slots sc)))
+    (update-slots sc))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2756,23 +2757,23 @@ NIL
 ;;;   explicitly at the end. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns NIL.
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))))
-:set-palette '((1 ((c4 d4 e4))))
-:set-map '((1 (1 1 1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((2 4) (q) e (s) s))
-:pitch-seq-palette ((1 2)))))
-:rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
-(tie-over-all-rests mini 'vn 2 3 :start-note 2 :auto-beam t)
-(tie-over-all-rests mini 'vn 5 6 :end-note 1 :consolidate-notes t))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4))))
+        :set-map '((1 (1 1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) (q) e (s) s))
+                                :pitch-seq-palette ((1 2)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
+  (tie-over-all-rests mini 'vn 2 3 :start-note 2 :auto-beam t)
+  (tie-over-all-rests mini 'vn 5 6 :end-note 1 :consolidate-notes t))
 
-  => NIL
+  => T
 
   |#
 ;;; SYNOPSIS
@@ -2833,7 +2834,8 @@ NIL
                          :auto-beam auto-beam
                          :consolidate-notes consolidate-notes)))
   (when update
-    (update-slots sc)))
+    (update-slots sc))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2874,7 +2876,7 @@ NIL
 ;;;   explicitly at the end. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns NIL.
+;;; Returns T.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -2897,7 +2899,7 @@ NIL
 (tie-over-rests mini 9 2 'vn :end-bar 10)
 (tie-over-rests mini 13 1 'vn :auto-beam t :consolidate-notes nil))
 
-  => NIL
+  => T
 
   |#
 ;;; SYNOPSIS
@@ -2996,7 +2998,8 @@ NIL
                  (when auto-beam
                    (auto-beam bar auto-beam nil))))
           (when update
-            (update-slots sc))))))
+            (update-slots sc)))))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

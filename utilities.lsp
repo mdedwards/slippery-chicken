@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 10:49:00 Sat May 31 2014 BST
+;;; $$ Last modified: 18:18:34 Tue Jul  1 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3132,6 +3132,11 @@ WARNING:
            (directory-namestring path)
            (pathname-name path))
    (pathname-type path)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Jul  1 18:16:53 2014 
+(defun parent-dir (path)
+  (subseq path 0 (position #\/ path :from-end t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

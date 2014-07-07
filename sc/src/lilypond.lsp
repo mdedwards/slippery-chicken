@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 11:39:22 Sat Dec 28 2013 WIT
+;;; $$ Last modified: 16:22:24 Mon Jul  7 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -233,7 +233,7 @@
            (noise "^\\noise ")
            (sing-arr "^\\singArr ")
            (arrow-up-down "^\\arrowUpDown ")
-;;; end lilypond-graphics.zip files
+           ;; end lilypond-graphics.zip files
            ;; these must have been set up with the event::add-arrow method
            (start-arrow "\\startTextSpan ")
            (end-arrow "\\stopTextSpan ")

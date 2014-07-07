@@ -13,7 +13,7 @@
 %%%
 %%% Creation date:    23rd November 2011
 %%%
-%%% $$ Last modified: 12:45:09 Sat Apr  5 2014 BST
+%%% $$ Last modified: 16:24:07 Mon Jul  7 2014 BST
 %%%
 %%% SVN ID: $Id: lilypond.ly 963 2010-04-08 20:58:32Z medward2 $
 %%%
@@ -155,7 +155,6 @@ blueArrowDown = \markup \blueArrowDown
  (interpret-markup layout props 
         (markup #:general-align Y DOWN #:epsfile X 3 "blue-arrow-up.eps")))
 blueArrowUp = \markup \blueArrowUp
-
 
 % dynamics in parentheses
 parenFFFF = #(make-dynamic-script (markup #:line (#:normal-text #:italic

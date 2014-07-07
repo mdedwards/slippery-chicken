@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:54:51 Sat Jun 28 2014 BST
+;;; $$ Last modified: 16:19:27 Mon Jul  7 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6002,8 +6002,8 @@ seq-num 5, VN, replacing G3 with B6
                                   ;; will have all parts all letters too
                                   ;; thereafter 
                                   (rehearsal-letters-all-players t)
-                                  ;; set to t if using bartok pizz and
-                                  ;; other signs  
+                                  ;; set to t if using bartok pizz and other
+                                  ;; signs
                                   (use-custom-markup t)
                                   (rehearsal-letters-font-size 18)
                                   ;; "2.16.2") "2.14.2") ;"2.12.3")

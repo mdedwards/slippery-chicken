@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 16:31:28 Mon May  5 2014 BST
+;;; $$ Last modified: 14:35:25 Sat Jul 12 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -44,11 +44,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -1516,9 +1511,9 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jan  9 09:59:43 2014 -- for convenience.
-(defmethod get-interval-structure ((c chord) &optional in-semitones)
+(defmethod get-interval-structure ((c chord) &optional in-semitones (rm-dups t))
   ;; just promote to an sc-set and call the method there.
-  (get-interval-structure (make-sc-set c) in-semitones))
+  (get-interval-structure (make-sc-set c :rm-dups rm-dups) in-semitones))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

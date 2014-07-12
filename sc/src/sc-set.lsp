@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 09:57:56 Thu Jan  9 2014 GMT
+;;; $$ Last modified: 14:35:06 Sat Jul 12 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -44,11 +44,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -982,21 +977,24 @@ data: (G2 A2 CS4 A4 A4 A5 C6 C6 FS6)
 
 |#
 ;;; SYNOPSIS
-(defmethod get-interval-structure ((s sc-set) &optional in-semitones)
+(defmethod get-interval-structure ((s sc-set) &optional in-semitones ignore)
 ;;; ****
-  (let* ((freqs (eq in-semitones 'frequencies))
-         (lowest (if freqs 
-                     (frequency (first (data s)))
-                     (degree (first (data s)))))
-        ;; MDE Sat Feb 11 10:44:46 2012
-        (dps (degrees-per-semitone)))
-    (loop for i in (rest (data s)) 
-       for diff = (float (- (if freqs (frequency i) (degree i))
-                            lowest))
-       collect
-         (if (eq in-semitones t)
-             (/ diff dps)
-             diff))))
+  (declare (ignore ignore))
+  (if (zerop (sclist-length s)) ; in case we have a nil chord
+      '(0.0)
+      (let* ((freqs (eq in-semitones 'frequencies))
+             (lowest (if freqs 
+                         (frequency (first (data s)))
+                         (degree (first (data s)))))
+             ;; MDE Sat Feb 11 10:44:46 2012
+             (dps (degrees-per-semitone)))
+        (loop for i in (rest (data s)) 
+           for diff = (float (- (if freqs (frequency i) (degree i))
+                                lowest))
+           collect
+             (if (eq in-semitones t)
+                 (/ diff dps)
+                 diff)))))
      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1548,9 +1546,9 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 
 |#
 ;;; SYNOPSIS
-(defun make-sc-set (sc-set &key id subsets related-sets (auto-sort t))
+(defun make-sc-set (sc-set &key id subsets related-sets (auto-sort t) (rm-dups t))
 ;;; ****
-  (make-instance 'sc-set :id id :data sc-set :subsets subsets 
+  (make-instance 'sc-set :id id :data sc-set :subsets subsets :rm-dups rm-dups
                  :related-sets related-sets :auto-sort auto-sort))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

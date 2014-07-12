@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 16:22:24 Mon Jul  7 2014 BST
+;;; $$ Last modified: 17:24:41 Sat Jul 12 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -289,7 +289,10 @@
             (format nil "\\startTrillSpan ~a "
                     (get-lp-data (make-pitch (second mark)))))
            ;; 3/11/11 sometimes we just want to insert text as given, e.g. with
-           ;; funny markup code
+           ;; funny markup code. For instance, we can make a notehead small and
+           ;; in parentheses with (add-mark-before <pitch> '(text
+           ;; "\\parenthesize \\tweak font-size -2"))))
+           
            (text (second mark))
            (rgb 
             (let* ((rgb (second mark))

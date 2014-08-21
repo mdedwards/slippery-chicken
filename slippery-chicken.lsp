@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:19:27 Mon Jul  7 2014 BST
+;;; $$ Last modified: 14:01:20 Thu Aug 21 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5970,71 +5970,63 @@ seq-num 5, VN, replacing G3 with B6
 
 |#
 ;;; SYNOPSIS
-(defmethod write-lp-data-for-all ((sc slippery-chicken) 
-                                  &key
-                                  (base-path (get-sc-config 'default-dir))
-                                  start-bar end-bar (paper "a4") landscape
-                                  ;; MDE Tue May 29 21:34:53 2012 
-                                  start-bar-numbering
-                                  ;; if a list, then these are the enharmonic
-                                  ;; corrections
-                                  (respell-notes t) 
-                                  ;; automatically add clefs to instruments who
-                                  ;; read more than one? 
-                                  (auto-clefs t)
-                                  (staff-size 14)
-                                  ;; parts will always be transposed but score
-                                  ;; can be in in C or not
-                                  (in-c nil)
-                                  (barline-thickness 0.5)
-                                  (top-margin 10)    ; mm
-                                  (bottom-margin 10) ; mm
-                                  (left-margin 20)   ;mm
-                                  (line-width 17)    ;cm
-                                    ;; if not nil, then in cm
-                                    between-system-space 
-                                  (page-nums t)
-                                  ;; print every bar number unless
-                                  ;; multi-bar-rest?
-                                  (all-bar-nums nil)
-                                  ;; this has to be T if we're going to get
-                                  ;; letters in the parts--but CMN printing
-                                  ;; will have all parts all letters too
-                                  ;; thereafter 
-                                  (rehearsal-letters-all-players t)
-                                  ;; set to t if using bartok pizz and other
-                                  ;; signs
-                                  (use-custom-markup t)
-                                  (rehearsal-letters-font-size 18)
-                                  ;; "2.16.2") "2.14.2") ;"2.12.3")
-                                  (lp-version "2.17.95") 
-                                  ;; 24.7.11 (Pula) barlines through whole
-                                  ;; staff group or just a stave
-                                  (group-barlines t)
-                                  ;; 5.11.11 set to t if you want lilypond to
-                                  ;; optimize page breaks for page turns in
-                                  ;; parts 
-                                  (page-turns nil)
-                                  ;; MDE Sat Mar 10 16:52:31 2012 
-                                  (process-event-fun nil)
-                                  ;; MDE Mon Apr 16 16:08:36 2012 -- added so
-                                  ;; that we can write a subset of players
-                                  ;; into the score (e.g. leave out a computer
-                                  ;; part). If nil all players will be written.
-                                  (players nil)
-                                  (footer nil)
-                                  ;; minimum rest necessary to do a page turn;
-                                  ;; something like a time signature e.g. (2 1)
-                                  ;; would mean we need a min. of 2 whole rests
-                                  (min-page-turn '(2 1))
-                                  ;; MDE Tue May 29 22:58:25 2012 
-                                  (stemlet-length nil)
-                                  ;; MDE Thu Jan  9 09:20:33 2014 -- if you
-                                  ;; want hairpin (cresc/dim) to extend beyond
-                                  ;; the note set to T
-                                  (extend-hairpins nil)
-                                  ;; sim to rehearsal letters
-                                  (tempi-all-players t))
+(defmethod write-lp-data-for-all
+    ((sc slippery-chicken) 
+     &key
+       (base-path (get-sc-config 'default-dir))
+       start-bar end-bar (paper "a4") landscape
+       ;; MDE Tue May 29 21:34:53 2012 
+       start-bar-numbering
+       ;; if a list, then these are the enharmonic corrections
+       (respell-notes t) 
+       ;; automatically add clefs to instruments who read more than one?
+       (auto-clefs t)
+       (staff-size 14)
+       ;; parts will always be transposed but score can be in in C or not
+       (in-c nil)
+       (barline-thickness 0.5)
+       (top-margin 10)                                 ; mm
+       (bottom-margin 10)                              ; mm
+       (left-margin 20)                                ;mm
+       (line-width 17)                                 ;cm
+       ;; if not nil, then in cm
+       between-system-space 
+       (page-nums t)
+       ;; print every bar number unless
+       ;; multi-bar-rest?
+       (all-bar-nums nil)
+       ;; this has to be T if we're going to get letters in the parts--but CMN
+       ;; printing will have all parts all letters too thereafter
+       (rehearsal-letters-all-players t)
+       ;; set to t if using bartok pizz and other
+       ;; signs
+       (use-custom-markup t)
+       (rehearsal-letters-font-size 18)
+       ;; "2.16.2") "2.14.2") ;"2.12.3")
+       (lp-version "2.17.95") 
+       ;; 24.7.11 (Pula) barlines through whole staff group or just a stave
+       (group-barlines t)
+       ;; 5.11.11 set to t if you want lilypond to optimize page breaks for
+       ;; page turns in parts
+       (page-turns nil)
+       ;; MDE Sat Mar 10 16:52:31 2012 
+       (process-event-fun nil)
+       ;; MDE Mon Apr 16 16:08:36 2012 -- added so that we can write a subset
+       ;; of players into the score (e.g. leave out a computer part). If nil
+       ;; all players will be written. NB the order of these will determine
+       ;; the order in the score (overriding the ensemble order).
+       (players nil)
+       (footer nil)
+       ;; minimum rest necessary to do a page turn; something like a time
+       ;; signature e.g. (2 1) would mean we need a min. of 2 whole rests
+       (min-page-turn '(2 1))
+       ;; MDE Tue May 29 22:58:25 2012 
+       (stemlet-length nil)
+       ;; MDE Thu Jan 9 09:20:33 2014 -- if you want hairpin (cresc/dim) to
+       ;; extend beyond the note set to T
+       (extend-hairpins nil)
+       ;; sim to rehearsal letters
+       (tempi-all-players t))
 ;;; ****
   (declare (special cl-user::+slippery-chicken-src-path+))
   (when (and (numberp start-bar) (numberp end-bar) (>= start-bar end-bar))
@@ -6206,10 +6198,10 @@ seq-num 5, VN, replacing G3 with B6
         (terpri out)
         (loop for pname in players-strings
            for player in playrs do
-           (when (needs-transposition player)
-             (new-voice (written-pname pname) player out 
-                        (concatenate 'string pname "-written")))
-           (new-voice pname player out))
+             (when (needs-transposition player)
+               (new-voice (written-pname pname) player out 
+                          (concatenate 'string pname "-written")))
+             (new-voice pname player out))
         (terpri out)
         (format out "~%music = {~%  <<")
         ;; write the music variable, staff groupings etc.
@@ -6221,23 +6213,23 @@ seq-num 5, VN, replacing G3 with B6
            ;; this must come after 'in players-strings' otherwise we crash
            for end = (= gcount gnum) do
            ;; (format t "~%~a ~a ~a" pname gcount gnum)
-           (score-tag pname out (= 1 gcount) end)
-           (if end
-               (setf gnum (pop groups)
-                     gcount 1)
-               (incf gcount)))
+             (score-tag pname out (= 1 gcount) end)
+             (if end
+                 (setf gnum (pop groups)
+                       gcount 1)
+                 (incf gcount)))
         (format out "~%  >>~%}")
         ;; create the written parts variable
         (format out "~%written = {~%  <<")
         (loop for pname in players-strings
            for player in playrs do
-           (when (needs-transposition player)
-             (score-tag (written-pname pname) out)))
+             (when (needs-transposition player)
+               (score-tag (written-pname pname) out)))
         (format out "~%  >>~%}"))
       ;; write the main score file
       (with-open-file
           (out main-score-file :direction :output :if-does-not-exist :create
-           :if-exists :rename-and-delete)
+               :if-exists :rename-and-delete)
         (format out "~&\\version \"~a\"" lp-version)
         (format out "~%\\include \"~a\"" def-file)
         (no-header-footer out)
@@ -6247,27 +6239,27 @@ seq-num 5, VN, replacing G3 with B6
       ;; write the parts
       (loop for player in playrs
          for pname in players-strings do
-         (with-open-file 
-             (out 
-              (concatenate 'string path (format nil "~a-~a-part.ly" 
-                                                title-hyphens pname))
-              :direction :output :if-does-not-exist :create
-              :if-exists :rename-and-delete)
-           (if (needs-transposition player)
-               (part (written-pname pname) out "written")
-               (part pname out))))
+           (with-open-file 
+               (out 
+                (concatenate 'string path (format nil "~a-~a-part.ly" 
+                                                  title-hyphens pname))
+                :direction :output :if-does-not-exist :create
+                :if-exists :rename-and-delete)
+             (if (needs-transposition player)
+                 (part (written-pname pname) out "written")
+                 (part pname out))))
       ;; write the notes to individual files
       (loop for player in playrs
          for pname in players-strings do
-         (write-lp-data-for-player 
-          sc player 
-          (concatenate 'string path (format nil "~a-~a.ly" title-hyphens pname))
-          :all-bar-nums all-bar-nums
-          :extend-hairpins extend-hairpins
-          :process-event-fun process-event-fun
-          :rehearsal-letters-font-size rehearsal-letters-font-size
-          :start-bar-numbering start-bar-numbering
-          :in-c in-c :start-bar start-bar :end-bar end-bar))
+           (write-lp-data-for-player 
+            sc player 
+            (concatenate 'string path (format nil "~a-~a.ly" title-hyphens pname))
+            :all-bar-nums all-bar-nums
+            :extend-hairpins extend-hairpins
+            :process-event-fun process-event-fun
+            :rehearsal-letters-font-size rehearsal-letters-font-size
+            :start-bar-numbering start-bar-numbering
+            :in-c in-c :start-bar start-bar :end-bar end-bar))
       ;; got to write the written (i.e. not sounding) notes for the part
       ;; can't do this in the above loop as we have to re-call auto-clefs
       ;; making sure we don't use the in-c clefs for the instrument
@@ -6277,14 +6269,14 @@ seq-num 5, VN, replacing G3 with B6
       (loop for player in playrs
          for pname in players-strings do
          ;; got to write the written (i.e. not sounding) notes for the part
-         (when (needs-transposition player)
-           (write-lp-data-for-player 
-            sc player 
-            (format nil "~a~a-~a-written.ly" path title-hyphens pname)
-            :all-bar-nums all-bar-nums :in-c nil :start-bar start-bar
-            :start-bar-numbering start-bar-numbering 
-            :extend-hairpins extend-hairpins
-            :end-bar end-bar))))
+           (when (needs-transposition player)
+             (write-lp-data-for-player 
+              sc player 
+              (format nil "~a~a-~a-written.ly" path title-hyphens pname)
+              :all-bar-nums all-bar-nums :in-c nil :start-bar start-bar
+              :start-bar-numbering start-bar-numbering 
+              :extend-hairpins extend-hairpins
+              :end-bar end-bar))))
     main-score-file))
 
 

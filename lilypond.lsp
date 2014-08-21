@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 17:24:41 Sat Jul 12 2014 BST
+;;; $$ Last modified: 14:27:54 Thu Aug 21 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -346,7 +346,6 @@
             name)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; NB The word flat is automatically replaced to the flat sign in CMN
 (defun lp-flat-sign (name) ; string
   ;; MDE Thu Mar  1 09:59:24 2012 -- look for the hyphen version first

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 14:27:54 Thu Aug 21 2014 BST
+;;; $$ Last modified: 11:38:22 Tue Aug 26 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -231,6 +231,8 @@
            (sing "^\\sing ")
            (high-sine "^\\high-sine ")
            (noise "^\\noise ")
+           (focus "^\\focus ")
+           (alternate "^\\alternate ")
            (sing-arr "^\\singArr ")
            (arrow-up-down "^\\arrowUpDown ")
            ;; end lilypond-graphics.zip files

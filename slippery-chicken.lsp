@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:01:20 Thu Aug 21 2014 BST
+;;; $$ Last modified: 15:27:33 Tue Aug 26 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5863,7 +5863,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   adjust paper size, but not margins or line widths, which are adjusted
 ;;;   using the arguments below. Default = "a4"
 ;;; - :staff-size. An integer that indicates the size of the notes and staves
-;;;   in the resulting output. Default = 14.
+;;;   in the resulting output. Standard for parts is 20. Default = 14.
 ;;; - :group-barlines. T or NIL to indicate whether bar lines should be drawn
 ;;;   through the whole staff group or just one staff. T = through the whole
 ;;;   staff group. Default = T.

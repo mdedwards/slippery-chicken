@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 16:02:15 Sat Jun 28 2014 BST
+;;; $$ Last modified: 22:16:55 Tue Aug 26 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2880,24 +2880,24 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
- '+mini+
- :ensemble '(((vn (violin :midi-channel 1))))
- :set-palette '((1 ((c4 d4 e4))))
- :set-map '((1 (1 1 1)))
- :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)
-                          ((h))
-                          ((s) e. (e) e)
-                          ((h))
-                          ((h))
-                          ((e) q s (s)))
-                         :pitch-seq-palette ((1 2 2 3 3 1)))))
- :rthm-seq-map '((1 ((vn (1 1 1))))))))
-(tie-over-rests mini 1 2 'vn)
-(tie-over-rests mini 7 1 'vn)
-(tie-over-rests mini 9 2 'vn :end-bar 10)
-(tie-over-rests mini 13 1 'vn :auto-beam t :consolidate-notes nil))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) (q) e (s) s)
+                                 ((h))
+                                 ((s) e. (e) e)
+                                 ((h))
+                                 ((h))
+                                 ((e) q s (s)))
+                                :pitch-seq-palette ((1 2 2 3 3 1)))))
+        :rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (tie-over-rests mini 1 2 'vn)
+  (tie-over-rests mini 7 1 'vn)
+  (tie-over-rests mini 9 2 'vn :end-bar 10)
+  (tie-over-rests mini 13 1 'vn :auto-beam t :consolidate-notes nil))
 
   => T
 
@@ -3025,19 +3025,19 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vc (cello :midi-channel 1))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-:set-map '((1 (1 1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 3 4 5 6 7 8))
-:marks (slur 1 8))))
-:rthm-seq-map '((1 ((vc (1 1 1 1 1 1))))))))
-(delete-slur mini 1 1 'vc)
-(delete-slur mini 3 1 'vc))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))
+                                :marks (slur 1 8))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1 1 1))))))))
+  (delete-slur mini 1 1 'vc)
+  (delete-slur mini 3 1 'vc))
 
   => NIL
 
@@ -3123,22 +3123,22 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c3 d3 e3 f3 g4 a3 b3
-c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) - e e - (s) e.  
-- s s e - - s (s) s s -))
-:pitch-seq-palette ((1 2 3 4 5 6 7 8 9))
-:marks (a 4))))
-:rthm-seq-map '((1 ((vn (1 1 1))))))))
-(auto-slur mini 'vn
-:start-bar 1
-:end-bar 2))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c3 d3 e3 f3 g4 a3 b3
+                               c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) - e e - (s) e.  
+                                  - s s e - - s (s) s s -))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8 9))
+                                :marks (a 4))))
+        :rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (auto-slur mini 'vn
+             :start-bar 1
+             :end-bar 2))
 
   |#
 ;;; SYNOPSIS
@@ -3272,18 +3272,18 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vc (cello :midi-channel 1))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-:set-map '((1 (1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-:rthm-seq-map '((1 ((vc (1 1 1 1))))))))
-(auto-clefs mini)
-(delete-clefs mini 'vc 1 3))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+  (auto-clefs mini)
+  (delete-clefs mini 'vc 1 3))
 
   => NIL
 
@@ -3332,19 +3332,19 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:title "mini"
-:ensemble '(((vn (violin :midi-channel 1))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6)))
-(2 ((cs4 ds4 fs4 gs4 as4 cs5 ds5 fs5 gs5 as5))))
-:set-map '((1 (1 1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((2 4) q e s s))
-:pitch-seq-palette ((1 2 3 4)))))
-:rthm-seq-map '((1 ((vn (1 1 1 1 1 1))))))))
-(add-clef mini 'vn 3 2 'alto))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :title "mini"
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6)))
+                       (2 ((cs4 ds4 fs4 gs4 as4 cs5 ds5 fs5 gs5 as5))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))))))))
+  (add-clef mini 'vn 3 2 'alto))
 
   => ((CLEF ALTO))
 
@@ -3391,19 +3391,19 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vc (cello :midi-channel 1))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-:set-map '((1 (1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-:rthm-seq-map '((1 ((vc (1 1 1 1))))))))
-(auto-clefs mini)
-(move-clef mini 1 6 1 8 'vc)
-(cmn-display mini :auto-clefs nil))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+  (auto-clefs mini)
+  (move-clef mini 1 6 1 8 'vc)
+  (cmn-display mini :auto-clefs nil))
 
   |#
 ;;; SYNOPSIS
@@ -3466,19 +3466,19 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; EXAMPLE
 #|
 ;;; Straightforward usage applied to just the VC player ;
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))
-(vc (cello :midi-channel 2))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-:set-map '((1 (1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-:rthm-seq-map '((1 ((vn (1 1 1 1))
-(vc (1 1 1 1))))))))
-(auto-clefs mini :players '(vc)))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1))
+                            (vc (1 1 1 1))))))))
+  (auto-clefs mini :players '(vc)))
 
   => T
 
@@ -3583,22 +3583,22 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))
-(va (viola :midi-channel 2))
-(vc (cello :midi-channel 3))))
-:set-palette '((1 ((ds3 e3 fs3 af3 bf3 c4 ef4 fs4))))
-:set-map '((1 (1 1 1 1)))
-:rthm-seq-palette '((1 ((((2 4) q e s s))
-:pitch-seq-palette ((1 2 3 4)))))
-:rthm-seq-map '((1 ((vn (1 1 1 1))
-(va (1 1 1 1))
-(vc (1 1 1 1))))))))
-(set-rehearsal-letter mini 2 'A)
-(set-rehearsal-letter mini 3 '2 '(va vc))
-(set-rehearsal-letter mini 4 'Z3))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+                     (va (viola :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((ds3 e3 fs3 af3 bf3 c4 ef4 fs4))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1))
+                            (va (1 1 1 1))
+                            (vc (1 1 1 1))))))))
+  (set-rehearsal-letter mini 2 'A)
+  (set-rehearsal-letter mini 3 '2 '(va vc))
+  (set-rehearsal-letter mini 4 'Z3))
 
   => T
 
@@ -3648,18 +3648,18 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vc (cello :midi-channel 1))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-:set-map '((1 (1 1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-:rthm-seq-map '((1 ((vc (1 1 1 1 1 1)))))
-:rehearsal-letters '(2 4 6))))
-(delete-rehearsal-letter mini 2 '(vc)))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1 1 1)))))
+        :rehearsal-letters '(2 4 6))))
+  (delete-rehearsal-letter mini 2 '(vc)))
 
   => NIL
 
@@ -3745,17 +3745,17 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-:set-map '((1 (1 1 1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((2 4) q e s s))
-:pitch-seq-palette ((1 2 3 4)))))
-:rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
-(re-bar mini :start-bar 2 :end-bar 5 :min-time-sig '(4 4) :auto-beam 4))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
+  (re-bar mini :start-bar 2 :end-bar 5 :min-time-sig '(4 4) :auto-beam 4))
 
   => T
 
@@ -3851,17 +3851,17 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 #|
 ;; Auto-beam the events of the given slippery-chicken object on the basis of a ;
 ;; half note:                           ;
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((fs4 gs4 as4))))
-:set-map '((1 (1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 3 2 1 2 3 2)))))
-:rthm-seq-map '((1 ((vn (1 1 1 1))))))))
-(auto-beam mini 'h))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((fs4 gs4 as4))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 2 1 2 3 2)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1))))))))
+  (auto-beam mini 'h))
 
   => NIL
 
@@ -3909,29 +3909,29 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((marks (make-cscl '(a s as te ts at))))
-(defun add-random-marks (event)
-(unless (is-rest event) 
-(setf (marks event) (list (get-next marks))))))
+(let ((marks (make-cscl '(a s as te ts at))))
+  (defun add-random-marks (event)
+    (unless (is-rest event) 
+      (setf (marks event) (list (get-next marks))))))
 
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))
-(va (viola :midi-channel 2))
-(vc (cello :midi-channel 3))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((3 4) s (e.)  (s) s (e) (e) s (s)))
-:pitch-seq-palette ((1 2 3))))
-(2 ((((3 4) (s) s (e) (e) s (s) s (e.)))
-:pitch-seq-palette ((1 2 3))))
-(3 ((((3 4) (e) s (s) s (e.)  (s) s (e)))
-:pitch-seq-palette ((1 2 3)))))
-:rthm-seq-map '((1 ((vn (1 2 3))
-(va (2 3 1))
-(vc (3 1 2))))))))
-(process-events-by-time mini #'add-random-marks))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+                     (va (viola :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((3 4) s (e.)  (s) s (e) (e) s (s)))
+                                :pitch-seq-palette ((1 2 3))))
+                            (2 ((((3 4) (s) s (e) (e) s (s) s (e.)))
+                                :pitch-seq-palette ((1 2 3))))
+                            (3 ((((3 4) (e) s (s) s (e.)  (s) s (e)))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 2 3))
+                            (va (2 3 1))
+                            (vc (3 1 2))))))))
+  (process-events-by-time mini #'add-random-marks))
 
   |#
 ;;; SYNOPSIS
@@ -3975,18 +3975,18 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vc (cello :midi-channel 1))))
-:set-palette '((1 ((a3 b3 c4 e4))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((2 4) q e s s))
-:pitch-seq-palette ((1 2 3 4))
-:marks (fff 1))))
-:rthm-seq-map '((1 ((vc (1 1 1))))))))
-(sc-move-dynamic mini 1 'vc 1 3)
-(sc-move-dynamic mini 2 'vc 1 4 3))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :set-palette '((1 ((a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4))
+                                :marks (fff 1))))
+        :rthm-seq-map '((1 ((vc (1 1 1))))))))
+  (sc-move-dynamic mini 1 'vc 1 3)
+  (sc-move-dynamic mini 2 'vc 1 4 3))
 
   => T
 
@@ -4024,18 +4024,18 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vc (cello :midi-channel 1))))
-:set-palette '((1 ((a3 b3 c4 e4))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((2 4) q e s s))
-:pitch-seq-palette ((1 2 3 4))
-:marks (fff 1 ppp 3))))
-:rthm-seq-map '((1 ((vc (1 1 1))))))))
-(sc-remove-dynamic mini 2 'vc 1)
-(sc-remove-dynamic mini 3 'vc '(1 3)))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :set-palette '((1 ((a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4))
+                                :marks (fff 1 ppp 3))))
+        :rthm-seq-map '((1 ((vc (1 1 1))))))))
+  (sc-remove-dynamic mini 2 'vc 1)
+  (sc-remove-dynamic mini 3 'vc '(1 3)))
 
   => PPP
 
@@ -4090,22 +4090,22 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))
-(va (viola :midi-channel 2))
-(vc (cello :midi-channel 3))))
-:set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4 f4 g4 a4 b4))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((2 4) q e s s))
-:pitch-seq-palette ((1 2 3 4))
-:marks (fff 1 ppp 3))))
-:rthm-seq-map '((1 ((vn (1 1 1))
-(va (1 1 1))
-(vc (1 1 1))))))))
-(sc-remove-dynamics mini '(1 2) '(2 2) 'vn)
-(sc-remove-dynamics mini 2 3 '(va vc)))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+                     (va (viola :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4 f4 g4 a4 b4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4))
+                                :marks (fff 1 ppp 3))))
+        :rthm-seq-map '((1 ((vn (1 1 1))
+                            (va (1 1 1))
+                            (vc (1 1 1))))))))
+  (sc-remove-dynamics mini '(1 2) '(2 2) 'vn)
+  (sc-remove-dynamics mini 2 3 '(va vc)))
 
   => T
 
@@ -4158,18 +4158,18 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-:set-map '((1 (1 1 1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((2 4) q e s s))
-:pitch-seq-palette ((1 2 3 4))
-:marks (f 1 f 2 f 3 f 4))))
-:rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
-(remove-extraneous-dynamics mini))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4))
+                                :marks (f 1 f 2 f 3 f 4))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
+  (remove-extraneous-dynamics mini))
 
   => T
 
@@ -4241,17 +4241,17 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vc (cello :midi-channel 1))))
-:set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4))))
-:set-map '((1 (1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) - e e - - e e - - e e - - e e -))
-:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-:rthm-seq-map '((1 ((vc (1 1 1 1))))))))
-(sc-delete-beams mini 2 'vc)
-(sc-delete-beams mini 3 'vc 3 4))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) - e e - - e e - - e e - - e e -))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+  (sc-delete-beams mini 2 'vc)
+  (sc-delete-beams mini 3 'vc 3 4))
 
   => NIL
 
@@ -4326,18 +4326,18 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vc (cello :midi-channel 1))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4))))
-:set-map '((1 (1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-:rthm-seq-map '((1 ((vc (1 1 1 1))))))))
-(delete-bars mini 2 :end-bar 3)
-(delete-bars mini 2 :num-bars 1))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((d3 e3 f3 g3 a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+  (delete-bars mini 2 :end-bar 3)
+  (delete-bars mini 2 :num-bars 1))
 
   => T
 
@@ -4413,21 +4413,21 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((bn (bassoon :midi-channel 1))
-(vc (cello :midi-channel 2))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-:set-map '((1 (1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 3 4 5 6 7 8))))
-(2 ((((4 4) (w))))))
-:rthm-seq-map '((1 ((bn (1 1 1 1))
-(vc (2 2 2 2))))))))
-(move-events mini 'bn 'vc 2 3 3 2)
-(move-events mini 'bn 'vc 4 1 4 2 :transposition 4.5))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((bn (bassoon :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))))
+                            (2 ((((4 4) (w))))))
+        :rthm-seq-map '((1 ((bn (1 1 1 1))
+                            (vc (2 2 2 2))))))))
+  (move-events mini 'bn 'vc 2 3 3 2)
+  (move-events mini 'bn 'vc 4 1 4 2 :transposition 4.5))
 
   => T
 
@@ -4502,23 +4502,23 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((bsn (bassoon :midi-channel 1))
-(tbn (tenor-trombone :midi-channel 2))
-(vlc (cello :midi-channel 3))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-:set-map '((1 (1 1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) (w)))))
-(2 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-:rthm-seq-map '((1 ((bsn (1 1 1 1 1 1))
-(tbn (1 1 1 1 1 1))
-(vlc (2 2 2 2 2 2))))))))
-(double-events mini 'vlc '(bsn tbn) 2 3 4 2)
-(double-events mini 'vlc 'bsn 5 1 5 nil :transposition 3.5))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((bsn (bassoon :midi-channel 1))
+                     (tbn (tenor-trombone :midi-channel 2))
+                     (vlc (cello :midi-channel 3))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) (w)))))
+                            (2 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((bsn (1 1 1 1 1 1))
+                            (tbn (1 1 1 1 1 1))
+                            (vlc (2 2 2 2 2 2))))))))
+  (double-events mini 'vlc '(bsn tbn) 2 3 4 2)
+  (double-events mini 'vlc 'bsn 5 1 5 nil :transposition 3.5))
 
   => T
 
@@ -4634,17 +4634,17 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vc (cello :midi-channel 1))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
-:set-map '((1 (1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
-:rthm-seq-map '((1 ((vc (1 1 1 1))))))))
-(delete-events mini 2 2 3 nil 'vc))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c2 e2 d4 e4 f4 g4 a4 f5))))
+        :set-map '((1 (1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8)))))
+        :rthm-seq-map '((1 ((vc (1 1 1 1))))))))
+  (delete-events mini 2 2 3 nil 'vc))
 
   => T
 
@@ -4712,17 +4712,17 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vc (cello :midi-channel 1))))
-:set-palette '((1 ((a3 b3 c4 e4))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((2 4) q e s s))
-:pitch-seq-palette ((1 2 3 4)))))
-:rthm-seq-map '((1 ((vc (1 1 1))))))))
-(sc-force-rest mini 2 3 'vc)
-(sc-force-rest mini 3 3 'vc t))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :set-palette '((1 ((a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 3 4)))))
+        :rthm-seq-map '((1 ((vc (1 1 1))))))))
+  (sc-force-rest mini 2 3 'vc)
+  (sc-force-rest mini 3 3 'vc t))
 
   =>
 
@@ -4786,16 +4786,16 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vc (cello :midi-channel 1))))
-:set-palette '((1 ((a3 b3 c4 e4))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette 
-'((1 ((((4 4) - e.. 32 - h.) (+w) (+w) ((w)) ((h) (e) q e)
-(+q - +s e. - +h) (+w) (+w) ((w))))))
-:rthm-seq-map '((1 ((vc (1 1 1))))))))
-(sc-force-rest2 mini 1 3 'vc))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vc (cello :midi-channel 1))))
+        :set-palette '((1 ((a3 b3 c4 e4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette 
+        '((1 ((((4 4) - e.. 32 - h.) (+w) (+w) ((w)) ((h) (e) q e)
+               (+q - +s e. - +h) (+w) (+w) ((w))))))
+        :rthm-seq-map '((1 ((vc (1 1 1))))))))
+  (sc-force-rest2 mini 1 3 'vc))
 => 3
 |#
 ;;; SYNOPSIS
@@ -4876,20 +4876,20 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))
-(va (viola :midi-channel 2))
-(vc (cello :midi-channel 3))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c4 e4 g4 b4 d5 f5 a5 c6))))
-:set-map '((1 (1 1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 3 4 5 6 7 8))))) 
-:rthm-seq-map '((1 ((vn (1 1 1 1 1 1))
-(va (1 1 1 1 1 1))
-(vc (1 1 1 1 1 1))))))))
-(force-rest-bars mini 3 5 '(vn vc)))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))
+                     (va (viola :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 e4 g4 b4 d5 f5 a5 c6))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))))) 
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))
+                            (va (1 1 1 1 1 1))
+                            (vc (1 1 1 1 1 1))))))))
+  (force-rest-bars mini 3 5 '(vn vc)))
 
 => NIL
 
@@ -4944,16 +4944,16 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c4 f4 b4 e5 a5 d6 g7 c8))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 3 4 5 6 7 8))))) 
-:rthm-seq-map '((1 ((vn (1 1 1))))))))
-(force-artificial-harmonics mini 'vn 2 3 3 2))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 f4 b4 e5 a5 d6 g7 c8))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))))) 
+        :rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (force-artificial-harmonics mini 'vn 2 3 3 2))
 
 => T
 
@@ -5018,23 +5018,23 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-(pn (piano :midi-channel 2))))
-:set-palette '((1 ((ds3 e3 fs3 af3 bf3 c4 ef4 fs4))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((2 4) q e s s))
-:pitch-seq-palette ((1 2 (3) 4))
-:marks (fff 1 ppp 3))))
-:rthm-seq-map '((1 ((cl (1 1 1))
-(pn (1 1 1))))))))
-(respell-notes mini)
-(set-cautionary-accidental mini 3 2 'cl t)
-(set-cautionary-accidental mini 2 1 'pn)
-(set-cautionary-accidental mini 2 2 'pn)
-(set-cautionary-accidental mini 3 '(3 3) 'pn)
-(write-lp-data-for-all mini :respell-notes nil))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (pn (piano :midi-channel 2))))
+        :set-palette '((1 ((ds3 e3 fs3 af3 bf3 c4 ef4 fs4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q e s s))
+                                :pitch-seq-palette ((1 2 (3) 4))
+                                :marks (fff 1 ppp 3))))
+        :rthm-seq-map '((1 ((cl (1 1 1))
+                            (pn (1 1 1))))))))
+  (respell-notes mini)
+  (set-cautionary-accidental mini 3 2 'cl t)
+  (set-cautionary-accidental mini 2 1 'pn)
+  (set-cautionary-accidental mini 2 2 'pn)
+  (set-cautionary-accidental mini 3 '(3 3) 'pn)
+  (write-lp-data-for-all mini :respell-notes nil))
 
 => T
 
@@ -5079,20 +5079,20 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-(vn (violin :midi-channel 2))))
-:set-palette '((1 ((cs4 ds4 fs4))))
-:set-map '((1 (1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 3 2 1 2 3 2)))))
-:rthm-seq-map '((1 ((cl (1 1))
-(vn (1 1))))))))
-(respell-notes mini)
-(unset-cautionary-accidental mini 2 5 'vn)
-(unset-cautionary-accidental mini 2 7 'cl t)
-(cmn-display mini :respell-notes nil))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (vn (violin :midi-channel 2))))
+        :set-palette '((1 ((cs4 ds4 fs4))))
+        :set-map '((1 (1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 2 1 2 3 2)))))
+        :rthm-seq-map '((1 ((cl (1 1))
+                            (vn (1 1))))))))
+  (respell-notes mini)
+  (unset-cautionary-accidental mini 2 5 'vn)
+  (unset-cautionary-accidental mini 2 7 'cl t)
+  (cmn-display mini :respell-notes nil))
 
 |#
 ;;; SYNOPSIS
@@ -5142,19 +5142,19 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:title "mini"
-:ensemble '(((pno (piano :midi-channel 1))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6)))
-(2 ((cs4 ds4 fs4 gs4 as4 cs5 ds5 fs5 gs5 as5))))
-:set-map '((1 (1 1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((2 4) q q))
-:pitch-seq-palette ((1 (2))))))
-:rthm-seq-map '((1 ((pno (1 1 1 1 1 1))))))))
-(add-arrow-to-events mini "here" "there" '(1 1) '(5 1) 'pno)
-(write-lp-data-for-all mini))
+       (make-slippery-chicken
+        '+mini+
+        :title "mini"
+        :ensemble '(((pno (piano :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6)))
+                       (2 ((cs4 ds4 fs4 gs4 as4 cs5 ds5 fs5 gs5 as5))))
+        :set-map '((1 (1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q q))
+                                :pitch-seq-palette ((1 (2))))))
+        :rthm-seq-map '((1 ((pno (1 1 1 1 1 1))))))))
+  (add-arrow-to-events mini "here" "there" '(1 1) '(5 1) 'pno)
+  (write-lp-data-for-all mini))
 
 |#
 ;;; SYNOPSIS
@@ -5187,18 +5187,18 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 ;;; EXAMPLE
 #|
 (let ((min
-(make-slippery-chicken
-'+minimum+
-:instrument-palette +slippery-chicken-standard-instrument-palette+
-:ensemble '(((fl (flute :midi-channel 1))))
-:set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1)))
-:rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -)))))
-:rthm-seq-map '((1 ((fl (1))))))))
-;; this piece only has one bar so the bar line will be 2 by default
-(print (bar-line-type (get-bar min 1 'fl)))
-(change-bar-line-type min 1 1)
-(bar-line-type (get-bar min 1 'fl)))
+       (make-slippery-chicken
+        '+minimum+
+        :instrument-palette +slippery-chicken-standard-instrument-palette+
+        :ensemble '(((fl (flute :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1)))
+        :rthm-seq-palette '((1 ((((4 4) - e e e e - - e e e e -)))))
+        :rthm-seq-map '((1 ((fl (1))))))))
+;; this piece only has one bar so the bar line will be 2 by default ;
+  (print (bar-line-type (get-bar min 1 'fl)))
+  (change-bar-line-type min 1 1)
+  (bar-line-type (get-bar min 1 'fl)))
 => 
 ...
 2
@@ -5252,22 +5252,22 @@ c4 d4 e4 f4 g4 a4 b4 c5))))
 #|
 
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
-:instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
-(2 ((sax ((2 alto-sax) (5 tenor-sax)))))
-(3 ((sax ((3 alto-sax) (4 tenor-sax))))))
-:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1))
-(3 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h e (s) (s) e+s+s))
-:pitch-seq-palette ((1 2 3)))))
-:rthm-seq-map '((1 ((sax (1 1 1 1 1))))
-(2 ((sax (1 1 1 1 1))))
-(3 ((sax (1 1 1 1 1))))))))
-(print (map-over-bars mini 1 nil nil #'consolidate-notes nil 'q)))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
+        :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+                                 (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
+                                 (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
+        :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h e (s) (s) e+s+s))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
+                        (2 ((sax (1 1 1 1 1))))
+                        (3 ((sax (1 1 1 1 1))))))))
+  (print (map-over-bars mini 1 nil nil #'consolidate-notes nil 'q)))
 
 =>
 (
@@ -5392,25 +5392,25 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((hn (french-horn :midi-channel 1))
-(vc (cello :midi-channel 2))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1))
-(3 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5))))
-(2 ((((4 4) h h))
-:pitch-seq-palette ((1 2)))))
-:rthm-seq-map '((1 ((hn (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(2 ((hn (2 2 2 2 2))
-(vc (2 2 2 2 2))))
-(3 ((hn (1 1 1 1 1))
-(vc (1 1 1 1 1))))))))
-(copy-bars mini 7 2 'vc 'hn 2 t))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((hn (french-horn :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5))))
+                            (2 ((((4 4) h h))
+                                :pitch-seq-palette ((1 2)))))
+        :rthm-seq-map '((1 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((hn (2 2 2 2 2))
+                            (vc (2 2 2 2 2))))
+                        (3 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
+  (copy-bars mini 7 2 'vc 'hn 2 t))
 
 => T
 

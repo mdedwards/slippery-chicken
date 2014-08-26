@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 14:35:25 Sat Jul 12 2014 BST
+;;; $$ Last modified: 18:29:04 Mon Aug 25 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1104,13 +1104,13 @@ data: (
 ;;; ****
   (labels ((rm-enh-aux (pitches)
              (loop 
-                 for p in pitches
-                 for p-enh = (enharmonic p :warn nil)
-                 for i from 0 
-                 do
-                   (when (and p-enh
-                              (pitch-member p-enh pitches nil #'is-octave))
-                     (setf (nth i pitches) p-enh)))
+                for p in pitches
+                for p-enh = (enharmonic p :warn nil)
+                for i from 0 
+                do
+                  (when (and p-enh
+                             (pitch-member p-enh pitches nil #'is-octave))
+                    (setf (nth i pitches) p-enh)))
              pitches)
            (choose-chord (c1 c2)
              (let* ((c1acc (when c1
@@ -1132,10 +1132,10 @@ data: (
                            c1acc c2acc)))
                (when c1
                  (setf result
-                   (if (or (not c2)
-                           (<= c1acc c2acc))
-                       c1
-                     c2)))
+                       (if (or (not c2)
+                               (<= c1acc c2acc))
+                           c1
+                           c2)))
                ;; OK we got the best by accidentals but let's just make sure
                ;; there's as few nasty intervals in there as possible too.
                (when (and c1 c2)
@@ -1165,9 +1165,9 @@ data: (
                               (or (not (zerop c1acc))
                                   (not (zerop c2acc))))
                      (setf result
-                       (if (< c1acc c2acc)
-                           c1
-                         c2)))))
+                           (if (< c1acc c2acc)
+                               c1
+                               c2)))))
                result))
            (rm-enharmonics (chord)
              (let* ((data (data chord))
@@ -1208,27 +1208,27 @@ data: (
                        others 
                        (when (> len 2)
                          (loop 
-                             with p1 = (second pitch-list)
-                             for p2 in (cddr pitch-list)
-                             for pe1 = (make-event p1 4)
-                             for pe2 = (make-event p2 4)
-                             do
-                               (when verbose
-                                 (format t "~&attempt: before ~a ~a -- "
-                                         (id (pitch-or-chord pe1))
-                                         (id (pitch-or-chord pe2))))
-                               (respell pe1 pe2 nil t)
-                               (when verbose
-                                 (format t "after ~a ~a"
-                                         (id (pitch-or-chord pe1))
-                                         (id (pitch-or-chord pe2))))
-                               ;; bit counter-intuitive this but works...
-                             do (setf p1 (pitch-or-chord pe2))
-                             collect p1)))
+                            with p1 = (second pitch-list)
+                            for p2 in (cddr pitch-list)
+                            for pe1 = (make-event p1 4)
+                            for pe2 = (make-event p2 4)
+                            do
+                              (when verbose
+                                (format t "~&attempt: before ~a ~a -- "
+                                        (id (pitch-or-chord pe1))
+                                        (id (pitch-or-chord pe2))))
+                              (respell pe1 pe2 nil t)
+                              (when verbose
+                                (format t "after ~a ~a"
+                                        (id (pitch-or-chord pe1))
+                                        (id (pitch-or-chord pe2))))
+                            ;; bit counter-intuitive this but works...
+                            do (setf p1 (pitch-or-chord pe2))
+                            collect p1)))
                  (setf result (make-chord
                                (if others
                                    (append first2 others)
-                                 first2)
+                                   first2)
                                ;; MDE Fri Dec  6 10:41:27 2013
                                :force-midi-channel nil))
                  (when verbose
@@ -1236,28 +1236,32 @@ data: (
                            (when result
                              (get-pitch-symbols result))))
                  result))))
-    (let* ((try1 (attempt (data c)))
-           (try1first (when try1 
-                        (loop for p in (data try1) and i from 0 do
-                              (when (or (sharp p)
-                                        (flat p))
-                                (return i)))))
-           (try2 (when try1first
-                   (let ((copy (my-copy-list (data try1))))
-                     (setf (nth try1first copy) (enharmonic
-                                                 (nth try1first copy)))
-                     (attempt copy))))
-           (result (if try2
-                       (choose-chord try1 try2)
-                     try1)))
-      ;; we can't just return try1/2 as we'd lose data in the other slots then
-      (when result
-        (setf (data c) (data result)))
-      (when verbose
-        (format t "~&try1: ~a" (when try1 (get-pitch-symbols try1)))
-        (format t "~&try2: ~a" (when try2 (get-pitch-symbols try2)))
-        (format t "~&result: ~a" (when c (get-pitch-symbols c))))
-      (rm-enharmonics c))))
+    ;; don't try to respell 1/12th tone chords
+    (if (micro-but-not-quarter-tone-p c)
+        c
+        (let* ((try1 (attempt (data c)))
+               (try1first (when try1 
+                            (loop for p in (data try1) and i from 0 do
+                                 (when (or (sharp p)
+                                           (flat p))
+                                   (return i)))))
+               (try2 (when try1first
+                       (let ((copy (my-copy-list (data try1))))
+                         (setf (nth try1first copy) (enharmonic
+                                                     (nth try1first copy)))
+                         (attempt copy))))
+               (result (if try2
+                           (choose-chord try1 try2)
+                           try1)))
+          ;; we can't just return try1/2 as we'd lose data in the other slots
+          ;; then  
+          (when result
+            (setf (data c) (data result)))
+          (when verbose
+            (format t "~&try1: ~a" (when try1 (get-pitch-symbols try1)))
+            (format t "~&try2: ~a" (when try2 (get-pitch-symbols try2)))
+            (format t "~&result: ~a" (when c (get-pitch-symbols c))))
+          (rm-enharmonics c)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Mon Apr 16 14:16:13 BST 2012: Added robodoc entry
@@ -1498,10 +1502,9 @@ data: (
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May  3 10:52:54 2012 
 (defmethod rm-octaves ((c chord))
-  ;; MDE Mon Dec  2 17:37:36 2013 -- can't remember why we changed slot-value
-  ;; instead of data directly but need to do the latter so we update the number of
-  ;; pitches 
-  ;; (setf (slot-value c 'data) (remove-octaves (data c)))
+  ;; MDE Mon Dec 2 17:37:36 2013 -- can't remember why we changed slot-value
+  ;; instead of data directly but need to do the latter so we update the number
+  ;; of pitches (setf (slot-value c 'data) (remove-octaves (data c)))
   (setf (data c) (remove-octaves (data c)))
   c)
 
@@ -1514,6 +1517,12 @@ data: (
 (defmethod get-interval-structure ((c chord) &optional in-semitones (rm-dups t))
   ;; just promote to an sc-set and call the method there.
   (get-interval-structure (make-sc-set c :rm-dups rm-dups) in-semitones))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Aug 25 18:24:41 2014 
+(defmethod micro-but-not-quarter-tone-p ((c chord))
+  (some #'(lambda (x) (micro-but-not-quarter-tone-p x))
+        (data c)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

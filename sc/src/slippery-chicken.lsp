@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:27:33 Tue Aug 26 2014 BST
+;;; $$ Last modified: 10:32:14 Wed Aug 27 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -35,7 +35,7 @@
 ;;;                   slippery-chicken is distributed in the hope that it will
 ;;;                   be useful, but WITHOUT ANY WARRANTY; without even the
 ;;;                   implied warranty of MERCHANTABILITY or FITNESS FOR A
-;;;                   PARTICULAR PURPOSE.  See the GNU General Public License
+;;;                   PARTICULAR PURPOSE. See the GNU General Public License
 ;;;                   for more details.
 ;;;
 ;;;                   You should have received a copy of the GNU General Public
@@ -85,16 +85,16 @@
                           :instrument-change-map :initform nil)
    ;; this can contain bar references or bar numbers and looks something like
    ;; '((1 (q 160)) ((2 2 2) 96)) (200 (q 120 "meno mosso")))
-   ;; where 1 is the bar, q is the beat and 160 is the bpm.  The (2 2 2) is a
+   ;; where 1 is the bar, q is the beat and 160 is the bpm. The (2 2 2) is a
    ;; reference to a bar of the form (section-number sequence-number
-   ;; bar-number).  References are converted to bar numbers before being stored
+   ;; bar-number). References are converted to bar numbers before being stored
    ;; in the map.
    (tempo-map :accessor tempo-map :initarg :tempo-map :initform nil)
    ;; 24.1.11 we can also specify a tempo curve and this will generate the
-   ;; tempo-map for us.  The x scale will be fitted to the number of bars and a
+   ;; tempo-map for us. The x scale will be fitted to the number of bars and a
    ;; new tempo will be written every X bars, as indicated in the first
    ;; argument in the list (10 in the following example); the second element is
-   ;; the beat rhythm e.g.  '(10 q (0 60 100 120)) NB the curve should start at
+   ;; the beat rhythm e.g. '(10 q (0 60 100 120)) NB the curve should start at
    ;; 0 but the map will start at 1
    (tempo-curve :accessor tempo-curve :type list :initarg :tempo-curve 
                 :initform nil)
@@ -108,7 +108,7 @@
                                :type list :initarg :instruments-write-bar-nums
                                :initform nil)
    ;; when choosing notes for instruments we take into account notes that other
-   ;; instruments are already playing--this limits the available notes.  So the
+   ;; instruments are already playing--this limits the available notes. So the
    ;; order in which the instruments are allocated notes is important: specify
    ;; the order you want in this slot; the default is simply the list of
    ;; players in (players (ensemble sc))
@@ -125,8 +125,8 @@
    (bars-per-system-map :accessor bars-per-system-map 
                         :initarg :bars-per-system-map :initform nil)
    ;; where the braces and bar lines should be drawn, starting from the top of
-   ;; the score.  i.e. (3 2 7) means the first three instruments are grouped,
-   ;; then the next 2, then the next 7.  This is checked at initialization to
+   ;; the score. i.e. (3 2 7) means the first three instruments are grouped,
+   ;; then the next 2, then the next 7. This is checked at initialization to
    ;; add up to the number of players in the ensemble.
    ;; *** N.B. This overrides the bar-line-writers slot of the ensemble!
    (staff-groupings :accessor staff-groupings :type list 
@@ -139,11 +139,11 @@
    (warn-ties :accessor warn-ties :type boolean :initarg :warn-ties
               :initform t)
    ;; the following two slots allow for defining ranges for players across
-   ;; the whole piece.  E.g. :set-limits-high '((vibes (0 g4 100 f6))) will
+   ;; the whole piece. E.g. :set-limits-high '((vibes (0 g4 100 f6))) will
    ;; limit the notes selected from the sets to those below g4 at the beginning
-   ;; but up to f6 by the end.  Inbetween there is interpolation.  The x-axis
-   ;; can be any arbitrary range.  Y values can be note names or midi note
-   ;; numbers.  These always refer to sounding pitches.
+   ;; but up to f6 by the end. Inbetween there is interpolation. The x-axis
+   ;; can be any arbitrary range. Y values can be note names or midi note
+   ;; numbers. These always refer to sounding pitches.
    ;; NB if a curve is given with the id 'all', then this will act as a global
    ;; curve and be applied to all instruments, overriding their individual
    ;; curves. Also, though the X axes of these curves can have arbitrary
@@ -201,11 +201,11 @@
 
 ;;; ****m* slippery-chicken/sc-init
 ;;; DESCRIPTION
-;;; Explicitly initialize the slippery-chicken object.  This is usually called
+;;; Explicitly initialize the slippery-chicken object. This is usually called
 ;;; implicitly by initialize-instance (i.e. when you call
 ;;; make-slippery-chicken) but there could be circumstances (e.g. in subclasses
 ;;; of slippery-chicken) where you'd like to defer initialization and call this
-;;; method explicitly instead.  In that case set :defer to t when making the
+;;; method explicitly instead. In that case set :defer to t when making the
 ;;; slippery-chicken object.
 ;;; 
 ;;; ARGUMENTS
@@ -214,7 +214,7 @@
 ;;; OPTIONAL ARUGMENTS
 ;;; keyword arguments:
 ;;; - :regenerate-pitch-seq-map: the pitch-seq-map is generated here for each
-;;; instrument using the pitch-seqs in the rthm-seq-palette.  By setting this
+;;; instrument using the pitch-seqs in the rthm-seq-palette. By setting this
 ;;; to T we can force regeneration (e.g. if the rthm-seq-palette has changed
 ;;; and we want to re-init the sc with different data). Default = T.
 ;;; 
@@ -280,7 +280,7 @@
                   ;; recurse-simple-data is T by default) so we can't just
                   ;; call make-set-palette, rather, apply instead, so that
                   ;; :recurse-simple-data NIL can be part of the list that is
-                  ;; applied to make-set-palette.  But this is tricky because
+                  ;; applied to make-set-palette. But this is tricky because
                   ;; if we want to pass keyword args to make-set-palette when
                   ;; creating a set-palette directly in
                   ;; make-slippery-chicken, then we need an extra level of
@@ -380,7 +380,7 @@
       ;; create a tempo-map without a piece because we need
       ;; reference to the bar numbers, but we can't create a piece
       ;; without a tempo-map because we need the tempi to calculate
-      ;; start times.  As a solution, create a piece with a
+      ;; start times. As a solution, create a piece with a
       ;; temporary tempo-map of qtr=60 then update it later.
       (setf (tempo-map sc) '((1 60))
             (piece sc) (sc-make-piece sc (warn-ties sc))
@@ -389,7 +389,7 @@
                                                (tempo-curve sc)
                                                (num-bars sc))
             ;; this calls the setf method so it's not as useless as it
-            ;; looks.  
+            ;; looks. 
             (bars-per-system-map sc) (bars-per-system-map sc)))
     (linked (rthm-seq-map sc))
     (link-named-objects (rthm-seq-map sc))
@@ -686,7 +686,7 @@
 ;;;   given slippery-chicken object to the resulting .eps file. If T, the TITLE
 ;;;   slot of the slippery-chicken object will be used. If a string, the
 ;;;   specified string will be used instead. If NIL, no title will be included
-;;;   in the output.  Default = T.
+;;;   in the output. Default = T.
 ;;; - :size. A number to indicate the overall size of the symbols in the CMN
 ;;;   output. Default = 15.
 ;;; - :page-nums. T or NIL to indicate whether page numbers are to be written. 
@@ -716,7 +716,7 @@
 ;;; - :page-height. A number to indicate the height of the page in centimeters.
 ;;;   Default = 29.7.
 ;;; - :page-width. A number to indicate the width of the page in
-;;;   centimeters. Default = 21.0.  
+;;;   centimeters. Default = 21.0. 
 ;;; - :all-output-in-one-file. T or NIL to indicate whether to write a separate
 ;;;   file for each page of the resulting score. T = write all pages to the
 ;;;   same multi-page file. Default = T.
@@ -767,9 +767,9 @@
 ;;; - :add-postscript. NIL or postscript code to be added to the .eps file
 ;;;   after it has been generated. See the add-ps-to-file function for details.
 ;;;   Default = NIL.
-;;; - :auto-open.  Whether to open the .EPS file once written. Currently only
-;;;    available on OSX with SBCL and CCL.  Uses the default app for .EPS
-;;;    files, as if opened with 'open' in the terminal.  Default = Value of
+;;; - :auto-open. Whether to open the .EPS file once written. Currently only
+;;;    available on OSX with SBCL and CCL. Uses the default app for .EPS
+;;;    files, as if opened with 'open' in the terminal. Default = Value of
 ;;;    (get-sc-config cmn-display-auto-open).
 ;;;
 ;;; RETURN VALUE  
@@ -1075,9 +1075,9 @@
 ;;; Called by initialize-instance
 
 ;;; Clone the rthm-seq-map, loop through all the instruments in all the
-;;; sections of the rsm (get-first then thereafter use the next slot).  Get the
+;;; sections of the rsm (get-first then thereafter use the next slot). Get the
 ;;; list of rthm-seq refs, pass this with the section ref and the instrument to
-;;; make-section-for player.  In the rms-clone, replace the data of the current
+;;; make-section-for player. In the rms-clone, replace the data of the current
 ;;; element with a section which is a list of sequenzs made by promoting the
 ;;; rthm-seq to a sequenz.
 
@@ -1085,7 +1085,7 @@
 ;;; write-time-sig slot of each rthm-seq-bar.
 
 ;;; Go through each event of each rthm-seq-bar and update compound-duration to
-;;; reflect tempo.  Then call handle-first-note-ties for each rthm-seq (to
+;;; reflect tempo. Then call handle-first-note-ties for each rthm-seq (to
 ;;; update compound durations of tied first notes of a bar dependent upon tempo
 ;;; also--a tempo could change over a tie between bars). 
 
@@ -1111,7 +1111,7 @@
     (update-slots rsm-clone (tempo-map sc) 0.0 0.0 1 nil nil warn-ties)
     (handle-ties rsm-clone)
     ;; well, not ideal, but we have to do this again because of the
-    ;; ties.  First we need to do it to get bar numbers etc. for the
+    ;; ties. First we need to do it to get bar numbers etc. for the
     ;; sequenzes, then we have to do it after the handle-ties to make
     ;; sure the compound-durations take tempo into consideration
     (update-slots rsm-clone (tempo-map sc) 0.0 0.0 1 nil nil warn-ties)
@@ -1273,13 +1273,13 @@
 
 ;;; Loop through each rthm-seq reference, get the rthm-seq, pull out the
 ;;; associated pitch-seq from the pitch-seq-map (using the 'this' ref of the
-;;; instrument as look-up into the psm).  Get the harmony for this seq, the
+;;; instrument as look-up into the psm). Get the harmony for this seq, the
 ;;; hint-pitch, and for each rthm-seq call sc-make-sequenz
 
 ;;; In order to be able to limit sets, we have to keep count of the number of
-;;; sequences as we process them.  This has to be done on an instrument by
+;;; sequences as we process them. This has to be done on an instrument by
 ;;; instrument basis however, as the piece is not generated seq by seq (all
-;;; instruments in one go).  So seq-count becomes an assoc-list with each
+;;; instruments in one go). So seq-count becomes an assoc-list with each
 ;;; player as keys and the data being the count of sequences.
 
 (let ((seq-count nil))
@@ -2367,7 +2367,7 @@ data: 32
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bar-num is the bar that we start the ties from the last note, not the first
-;; rest bar.  
+;; rest bar. 
 (defmethod tie-over-rest-bars-aux ((sc slippery-chicken) bar-num player
                                    &key (end-bar nil) 
                                      (to-next-attack t)
@@ -2518,7 +2518,7 @@ data: 32
 ;;;   '(2 1).
 ;;; - The ID of the player for whom the current instrument is sought. 
 ;;; - The number of the sequence from which to retrieve the current
-;;;   instrument. This is a 1-based number.  A slippery-chicken object.
+;;;   instrument. This is a 1-based number. A slippery-chicken object.
 ;;;
 ;;; RETURN VALUE
 ;;; An instrument object.
@@ -2705,7 +2705,7 @@ data: NIL
 ;;; ****m* slippery-chicken/num-seqs
 ;;; DESCRIPTION
 ;;; Return the number of sequences (which may contain multiple bars) in a
-;;; specified section of a slippery-chicken object.  
+;;; specified section of a slippery-chicken object. 
 ;;;
 ;;; NB This will return the total number of seqs if there are sub-sections.
 ;;; 
@@ -2861,7 +2861,7 @@ data: NIL
 ;;; (piece sc)) will have previous, this, and next slots all NIL, whereas
 ;;; (get-data '(3 some-instrument) (piece sc)) will return a player-section
 ;;; where the previous, this, and next slots are good (this is all as it should
-;;; be!).  In order to get the references of a number of contiguous sections
+;;; be!). In order to get the references of a number of contiguous sections
 ;;; then, we'll have to use instrument references.
 (defmethod get-section-refs ((sc slippery-chicken) start-section num-sections)
   (let* ((last-player (first (last (players (ensemble sc)))))
@@ -2892,8 +2892,8 @@ data: NIL
 ;;; ****m* slippery-chicken/get-num-sections
 ;;; DESCRIPTION
 ;;; Return the number of sections in the given slippery-chicken object, as
-;;; defined in e.g. in the set-map.  N.B. If the object has subsections these
-;;; are counted also.  
+;;; defined in e.g. in the set-map. N.B. If the object has subsections these
+;;; are counted also. 
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A slippery-chicken object.
@@ -3512,7 +3512,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;; SAR Mon May 14 17:10:09 BST 2012: Thu May 10 12:38:07 BST 2012: Added
 ;;; robodoc entry
 
-;;; 11.4.11: event-num is 1-based.  
+;;; 11.4.11: event-num is 1-based. 
 
 ;;; ****m* slippery-chicken/get-clef
 ;;; DATE
@@ -3575,7 +3575,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;  13.4.11: start and end bar are inclusive.
 ;;; at the moment, we use bass/treble clefs with 8ve signs on to indicate pitch
 ;;; extremes (assuming an instrument has these clefs), but these can be
-;;; converted to octave brackets here.  NB no 15ma/mb handled here.
+;;; converted to octave brackets here. NB no 15ma/mb handled here.
 (defmethod octave-clefs-to-brackets ((sc slippery-chicken)
                                      &key players start-bar end-bar)
   (unless (listp players)
@@ -3861,11 +3861,11 @@ seq-num 5, VN, replacing G3 with B6
 ;;; - :force-velocity. An integer between 0 and 127 (inclusive) that is the
 ;;;   MIDI velocity value which will be given to all notes in the resulting
 ;;;   MIDI file. Default = NIL.
-;;; - :auto-open.  Whether to open the MIDI file once written. Currently only
-;;;    available on OSX with SBCL or CCL.  Uses the default app for MIDI files,
-;;;    as if opened with 'open' in the terminal.  Default = Value of
+;;; - :auto-open. Whether to open the MIDI file once written. Currently only
+;;;    available on OSX with SBCL or CCL. Uses the default app for MIDI files,
+;;;    as if opened with 'open' in the terminal. Default = Value of
 ;;;    (get-sc-config 'midi-play-auto-open).
-;;; - :suffix.  Add some text to the filename just before .mid?.  Default = ""
+;;; - :suffix. Add some text to the filename just before .mid?. Default = ""
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns the path of the file written, as a string.
@@ -3991,7 +3991,7 @@ seq-num 5, VN, replacing G3 with B6
               start-section))
           |#
          ;; do all the program changes for the beginning irrespective of
-         ;; whether the player changes instrument or not.  subsequent program
+         ;; whether the player changes instrument or not. subsequent program
          ;; changes are handled in the event class.
          (midi-setup 
           (loop 
@@ -4112,7 +4112,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   will produce little-endian 24-bit integer; mus-bshort will produce 16-bit
 ;;;   big-endian files, and mus-bfloat will produce 32-bit floating-point
 ;;;   big-endian files. NB: AIFF and AIFC files are not compatible with little
-;;;   endian formats.  The value of this argument defaults to the CLM package
+;;;   endian formats. The value of this argument defaults to the CLM package
 ;;;   globals. See clm.html for more options. 
 ;;;   Default = clm::*clm-data-format*.
 ;;; - :sndfile-extension. NIL or a string that will be the extension of the
@@ -4125,7 +4125,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   stereo and mono sounds from the palette will be randomly panned between
 ;;;   any two adjacent channels. Default = 2.
 ;;; - :rev-amt. A number that determines the amount of reverberation for the
-;;;   resulting sound file, passed to CLM's nrev.  
+;;;   resulting sound file, passed to CLM's nrev. 
 ;;;   NB: 0.1 is a lot. Default = 0.0.
 ;;; - time-offset. A number that is an offset time in seconds. This produces a
 ;;;   lead time of a specified number of seconds of silence prior to the sound
@@ -4244,7 +4244,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   simple list of data so we need to access the nth of the chord
 ;;;   list. Default = NIL.
 ;;; - :clm-ins. The CLM instrument that should be called to generate sound file
-;;;   output.  This must accept required and keyword arguments like samp5 (see
+;;;   output. This must accept required and keyword arguments like samp5 (see
 ;;;   src/samp5.lsp or more simply src/sine.lsp) but can of course choose to
 ;;;   ignore them. Remember that your CLM instruments will (most probably) be
 ;;;   in the CLM package so you'll need the clm:: qualifer. Default =
@@ -4775,7 +4775,7 @@ seq-num 5, VN, replacing G3 with B6
                                     (zerop duration))
                           ;; MDE Mon Nov  4 13:11:08 2013 -- we can now call
                           ;; user-defined CLM instruments (as long as they can
-                          ;; take the following arguments).  We can pass along
+                          ;; take the following arguments). We can pass along
                           ;; further arguments or provide a function that will
                           ;; create these for us.
                           (apply clm-ins
@@ -4812,7 +4812,7 @@ seq-num 5, VN, replacing G3 with B6
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Just calls the -aux method once for each section required.  See comments to
+;;; Just calls the -aux method once for each section required. See comments to
 ;;; that method for parameter explanation.
 
 (defmethod get-events-start-time-duration
@@ -4829,8 +4829,8 @@ seq-num 5, VN, replacing G3 with B6
      (get-time-sig-changes nil)
      ;; MDE Fri May 11 16:18:51 2012 -- note from rsb::get-timings: 8/3/07:
      ;; ignore-rests means the duration of rests will be added to the duration
-     ;; of the previously struck note.  include-rests will make sure rests are
-     ;; collected into the result.  This is somewhat confusing but we need
+     ;; of the previously struck note. include-rests will make sure rests are
+     ;; collected into the result. This is somewhat confusing but we need
      ;; rests when generating midi files (they might have program changes on
      ;; them).
      (include-rests nil))
@@ -4892,9 +4892,9 @@ seq-num 5, VN, replacing G3 with B6
        ;; no longer call get-timings-from-rsp rather get the
        ;; timings directly from the bars of the sequenzes, not
        ;; using a tempo argument any more but using a time-scaler
-       ;; instead.  Now that we're using the piece to get the seqs
+       ;; instead. Now that we're using the piece to get the seqs
        ;; from instead of the rthm-seq-map, we should have updated
-       ;; time information.  What we have to do though is scale
+       ;; time information. What we have to do though is scale
        ;; the times and durations of each event and add the
        ;; durations of rests to the previous note if ignore-rests
        ;; is t.
@@ -5049,7 +5049,7 @@ seq-num 5, VN, replacing G3 with B6
                    (error "slippery-chicken::get-events-with-src: ~%~
                          Pitch is NIL!!!  Probably the reference ~
                          given in :note-number is out of ~%range for ~
-                         the chosen chord.  ~%Current reference is ~
+                         the chosen chord. ~%Current reference is ~
                          ~a into the chord ~a"  
                           n chord))
                  ;; MDE Mon Apr 16 22:03:55 2012 -- remember these events have
@@ -5081,7 +5081,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 10/3/07: the rehearsal-letters slot lists the bar numbers where
-;;; cmn/lilypond should automatically create letters.  Set the rehearsal-letter
+;;; cmn/lilypond should automatically create letters. Set the rehearsal-letter
 ;;; slot of the correct bars for the given player(s).
 ;;; e.g. (set-rehearsal-letters sc (get-groups-top-ins sc)))) 
 ;;;
@@ -5353,7 +5353,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;; DESCRIPTION
 ;;; Check the qualities of the tuplets brackets in a given slippery-chicken
 ;;; object to make sure they are all formatted properly (i.e. each starting
-;;; tuplet bracket has a closing tuplet bracket etc.).  If an error is found,
+;;; tuplet bracket has a closing tuplet bracket etc.). If an error is found,
 ;;; the method will try to fix it, then re-check, and only issue an error then
 ;;; if another is found.
 ;;; 
@@ -5794,7 +5794,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;; NB: This method only produces the .ly files. These must be rendered by the
 ;;;     LilyPond application separately for PDF output. See the slippery
 ;;;     chicken installation web page and the manual page on Output for more
-;;;     detail.  Bear in mind that SBCL and CCL users on OSX can use the
+;;;     detail. Bear in mind that SBCL and CCL users on OSX can use the
 ;;;     lp-display macro to call Lilypond and display the resultant PDF
 ;;;     automatically.
 ;;;
@@ -5850,7 +5850,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   Default = T. NB: This must be set to T when the user would like the
 ;;;   rehearsal letters in all individual LilyPond parts, but printing with CMN
 ;;;   thereafter will result in rehearsal letters in all parts as well.
-;;; - :tempi-all-players.  T or NIL to indicate whether tempo marks are to be
+;;; - :tempi-all-players. T or NIL to indicate whether tempo marks are to be
 ;;;   placed in all parts generated. T = all parts. Default = T.
 ;;; - :all-bar-nums. T o NIL to indicate whether the corresponding bar number
 ;;;   should be printed above every measure in the score (not including
@@ -5870,15 +5870,15 @@ seq-num 5, VN, replacing G3 with B6
 ;;; - :landscape. T or NIL to indicate whether the paper format should be
 ;;;   landscape or portrait. T = landscape. NB: This argument will only adjust
 ;;;   paper layout, but not margins or line widths, which are adjusted using
-;;;   the arguments below.  Default = NIL.
+;;;   the arguments below. Default = NIL.
 ;;; - :barline-thickness. A number that is the relative thickness of the bar
 ;;;   lines. Default = 0.5.
 ;;; - :top-margin. A number that is the margin at the top of the page in
-;;;   millimeters.  Default = 10.
+;;;   millimeters. Default = 10.
 ;;; - :bottom-margin. A number that is the margin at the bottom of the page in
-;;;   millimeters.  Default = 10.
+;;;   millimeters. Default = 10.
 ;;; - :left-margin. A number that is the margin at the left of the page in
-;;;   millimeters.  Default = 20.
+;;;   millimeters. Default = 20.
 ;;; - :line-width. A number that is the width of each line in centimeters.
 ;;;   Default = 17.
 ;;; - :page-turns. T or NIL to indicate if LilyPond should attempt to optimize
@@ -5891,14 +5891,14 @@ seq-num 5, VN, replacing G3 with B6
 ;;; - :use-custom-markup. T or NIL. Set to T when using a number of marks that
 ;;;   are specific to LilyPond, such as 'bartok or any of the marks that use
 ;;;   eps graphics files (whereupon those graphics files would need to be in
-;;;   the same folder as your lilypond files).  Default = T.
+;;;   the same folder as your lilypond files). Default = T.
 ;;; - :lp-version. A string that will be added to each .ly file generated in
 ;;;   conjunction with the LilyPond \version command. Default = "2.17.95"
 ;;; - :process-event-fun. NIL or a user-defined function that will be applied
 ;;;   to every event object in the given slippery-chicken object. If NIL, no
 ;;;   processes will be applied. Default = NIL.
-;;; - :extend-hairpins.  If you want hairpin (cresc/dim) to extend beyond the
-;;;    previous barline (or beyond the note) set to T.  Default = NIL.
+;;; - :extend-hairpins. If you want hairpin (cresc/dim) to extend beyond the
+;;;    previous barline (or beyond the note) set to T. Default = NIL.
 ;;; - :stemlet-length. NIL or a decimal number < 1.0 that indicates the scaled
 ;;;   length of stems over rests in LilyPond output, should this feature be
 ;;;   desired. 0.75 is a recommended value for this. NIL = no stems over
@@ -6356,7 +6356,7 @@ seq-num 5, VN, replacing G3 with B6
              (delete-sequenzes (piece sc) start-bar player)
              (delete-bars seq nth-bar :num num-deleted))
          ;; have to call this here to get proper bar numbers and rthm-seq-bar
-         ;; data.  
+         ;; data. 
          (update-slots sc)
          ;; don't inc start-bar as bar-nums are adjusted via update-slots
          ;; (incf start-bar num-deleted)
@@ -6764,7 +6764,7 @@ duration: 20.0 (20.000)
 #|
 ;;; Create a slippery-chicken object, set all the written-pitch-or-chord 
 ;;; slots to NIL and print the results. Apply the method and print the results 
-;;; again to see the difference.        
+;;; again to see the difference.       
 (let ((mini
        (make-slippery-chicken
         '+mini+
@@ -6912,7 +6912,7 @@ FS4 G4)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken/get-phrases
 ;;; DESCRIPTION
-;;; This returns lists of events that make up phrases.  Its notion of phrases
+;;; This returns lists of events that make up phrases. Its notion of phrases
 ;;; is very simplistic but hopefully useful all the same: it's any sequence of
 ;;; sounding notes surrounded by rests.
 ;;; 
@@ -6923,13 +6923,13 @@ FS4 G4)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :start-bar.  An integer bar number where the process should start.  If
-;;; NIL we'll default to 1.  Default = NIL. 
-;;; - :end-bar.  An integer bar number where the process should end.  If
-;;; NIL we'll default to the last bar.  Default = NIL.
+;;; - :start-bar. An integer bar number where the process should start. If
+;;; NIL we'll default to 1. Default = NIL. 
+;;; - :end-bar. An integer bar number where the process should end. If
+;;; NIL we'll default to the last bar. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; A list of sublists, one for each requested player.  Each player sublist
+;;; A list of sublists, one for each requested player. Each player sublist
 ;;; contains sublists also, with all the events in each phrase.
 ;;; 
 ;;; SYNOPSIS
@@ -7029,7 +7029,7 @@ FS4 G4)
 ;;;   be applied to event objects. Default = 1.
 ;;; - :end-bar. NIL or an integer that is the last bar for which the event
 ;;;   objects should be returned. If NIL, the last bar of the  
-;;;   slippery-chicken object is used. Default = NIL.  
+;;;   slippery-chicken object is used. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of event objects.
@@ -7295,7 +7295,7 @@ NOTE 6200 0.6666667
                        0
                        (midi-note-float (pitch-or-chord event) t))
                    ;; Durations are expressed as fractions/multiples of a beat.
-                   ;; There's no concept of meter, as such, in antescofo.  In
+                   ;; There's no concept of meter, as such, in antescofo. In
                    ;; e.g. 6/8 time the BPM would be entered as e.g. 120 or
                    ;; something (where we'd mean dotted quarter = 120, though
                    ;; antescofo doesn't need to know our beat type), and then
@@ -7306,7 +7306,7 @@ NOTE 6200 0.6666667
                    ;; fraction if reasonable
                    duration (if (is-grace-note event)
                                 ;; MDE Wed May 14 18:07:08 2014 -- see note in
-                                ;; documentation above re. grace notes.  
+                                ;; documentation above re. grace notes. 
                                 (if follower? 0.0 
                                     (/ (grace-note-duration event)
                                        (beat-dur tempo)))
@@ -7486,9 +7486,9 @@ NOTE 6200 0.6666667
 ;;; - :title. A string that will be used as the title of the piece. The value
 ;;;   given for this object will be used as both the header for the printable
 ;;;   output as well as the base for any file names generated by the
-;;;   write-lp-data-for-all method.  Default = "slippery-chicken-piece".
+;;;   write-lp-data-for-all method. Default = "slippery-chicken-piece".
 ;;; - :subtitle. A string that will be used as the subtitle of the piece. Works
-;;;   in Lilypond scores only.  
+;;;   in Lilypond scores only. 
 ;;; - :instrument-palette. An instrument-palette object. This will be the
 ;;;   palette of instrument objects available to the players of in the given
 ;;;   slippery-chicken object's ensemble slot. 
@@ -7563,7 +7563,7 @@ NOTE 6200 0.6666667
 ;;;   used together with :tempo-curve.
 ;;; - :tempo-curve. A list of data that will be used to create tempo objects
 ;;;   within the slippery-chicken object, based on an interpolated list of
-;;;   break-point pairs.  This is one of two options for specifying the
+;;;   break-point pairs. This is one of two options for specifying the
 ;;;   sequence of tempo changes for a given piece (also see tempo-map above.)
 ;;;   The first item in the list will be the number of bars between each new
 ;;;   tempo object. The second item is the beat basis for the tempo objects
@@ -7660,7 +7660,7 @@ NOTE 6200 0.6666667
 ;;;   data. If NIL, no changes will be made. See the robodoc entries for sc-map
 ;;;   for more detail. Default = NIL.
 ;;; - :key-sig. A two-element list indicating starting key signature for the
-;;;   piece, e.g. '(ef minor).  Usual note name symbols apply (e.g. ds = d
+;;;   piece, e.g. '(ef minor). Usual note name symbols apply (e.g. ds = d
 ;;;   sharp, bf - b flat). Implies nothing beyond the signature, i.e. no
 ;;;   conformity to tonality expected. Default '(c major) i.e. no key
 ;;;   signature.
@@ -7946,8 +7946,8 @@ NOTE 6200 0.6666667
 ;;; Adds postscript code to specific pages in a file.
 ;;; e.g. (add-ps-to-file "file.eps" '((1 "blah") (4 "foo") (3 "bar"))) 
 ;;; where the strings will be added to pages 1, 4 and 3, just after the
-;;; "%%Page: x y" line.  Of course, the strings should be legal postscript
-;;; code, not just "blah blah".  The pairs are sorted into ascending page order
+;;; "%%Page: x y" line. Of course, the strings should be legal postscript
+;;; code, not just "blah blah". The pairs are sorted into ascending page order
 ;;; first so that the file only has to be searched once when looking for the
 ;;; pages. 
 
@@ -8003,7 +8003,7 @@ NOTE 6200 0.6666667
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Grace notes have a fixed duration as defined by the rhythm class
-;;; member grace-note-duration.  We subtract this amount from the
+;;; member grace-note-duration. We subtract this amount from the
 ;;; non grace-note rhythm preceding the grace note(s). Of course, if
 ;;; the piece/section/sequence begins with grace notes, we have to add
 ;;; an offset to all the notes to make time for these.
@@ -8111,7 +8111,7 @@ NOTE 6200 0.6666667
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Returns the max number of grace notes that are at the beginning of the
-;;; voices.  voices is one list of rthm-seqs (a list of events) for each voice
+;;; voices. voices is one list of rthm-seqs (a list of events) for each voice
 ;;; in the piece.
 
 (defun grace-notes-at-beg (voices)
@@ -8156,7 +8156,7 @@ NOTE 6200 0.6666667
     (loop for x in stretched by #'cddr and y in (cdr stretched) by #'cddr
        collect x
        ;; convert notes or MIDI note numbers to degrees so that we can
-       ;; interpolate.  Note degrees are in cm::*scale* so this is not the same
+       ;; interpolate. Note degrees are in cm::*scale* so this is not the same
        ;; as MIDI notes.
        collect
        (if (numberp y)
@@ -8200,7 +8200,7 @@ NOTE 6200 0.6666667
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; From the rthm-seq, pitch-seq, set and hint-pitch, get the current
-;;; instrument and then notes for this seq.  With the notes and the rthm-seq,
+;;; instrument and then notes for this seq. With the notes and the rthm-seq,
 ;;; promote the latter to a sequence using the notes (this involves nothing
 ;;; more than changing the rhythm instances in the rthm-seq-bars of the
 ;;; rthm-seq to event instances, adding the pitch or chord information).
@@ -8282,7 +8282,7 @@ NOTE 6200 0.6666667
              (error "~a~%slippery-chicken::sc-make-sequenz: ~
                      Can't set MIDI channel for this object!" n)))
     ;; If there are no notes then it must be that this seq contains
-    ;; only one tied (to) note so none are needed.  In that case we
+    ;; only one tied (to) note so none are needed. In that case we
     ;; have to have the last note from the previous sequence.
     (setf current-note (if notes 
                            (clone (first notes))
@@ -8405,7 +8405,7 @@ NOTE 6200 0.6666667
             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; If we get three notes whose best clef without ledger lines is not the
-;;; current, change it.  If any note has only a best clef that is different to
+;;; current, change it. If any note has only a best clef that is different to
 ;;; current, change it
 
 (defun auto-clefs-handle-last-3 (last-events last-clefs note-count
@@ -8493,7 +8493,7 @@ NOTE 6200 0.6666667
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 24.1.11: convert a tempo-curve to a tempo map, unless tempo-map is not nil,
-;;; whereupon we simply return that.  Remember that the tempo curve's first
+;;; whereupon we simply return that. Remember that the tempo curve's first
 ;;; element is the frequency in bars, second element is the beat rhythm, and
 ;;; the third is the curve itself.
 ;;; NB the curve should start at 0 but the map will start at bar 1
@@ -8548,7 +8548,7 @@ NOTE 6200 0.6666667
 ;;; 
 ;;; RETURN VALUE
 ;;; An integer: the shell's exit code for the PDF open command, usually 0 for
-;;; success.  Second returned value is the patch to the PDF file.
+;;; success. Second returned value is the patch to the PDF file.
 ;;; 
 ;;; SYNOPSIS
 (defun lp-display (&rest args)

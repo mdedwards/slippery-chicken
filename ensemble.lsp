@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 16:05:15 Wed May 28 2014 BST
+;;; $$ Last modified: 19:40:06 Wed Aug 27 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -52,8 +52,7 @@
 (proclaim '(special +slippery-chicken-standard-instrument-palette+))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; id is the ensemble name, data the instruments
+;;; id is the ensemble name, data ist the list of player objects
 
 (defclass ensemble (recursive-assoc-list)
   ;; simple list of instrument names / num instrument pairs that is then used
@@ -431,11 +430,36 @@ ensemble::players-exist: VLA is not a member of the ensemble
     player))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* ensemble/sort-players
+;;; DATE
+;;; 27th August 2013
+;;;
+;;; DESCRIPTION
+;;; Return a hierarchical list of players sorted by e.g. how much they're
+;;; playing. 
+;;; 
+;;; ARGUMENTS
+;;; - An ensemble object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - stats-fun: one of the player methods which tots up statistics,
+;;; i.e. total-notes, total-degrees, total-duration, or total-bars
+;;; 
+;;; RETURN VALUE
+;;; A list of all the players in the ensemble ordered by its statistics.
+;;; 
+;;; SYNOPSIS
+(defmethod sort-players ((e ensemble) &optional (stats-fun #'total-duration))
+  (loop for player in
+       (sort (data e) #'(lambda (p1 p2)
+                          (> (funcall stats-fun p1) (funcall stats-fun p2))))
+     collect (id player)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Wed Apr 18 15:38:32 BST 2012: Added robodoc entry
 ;;; SAR Wed Apr 18 15:38:44 BST 2012: Deleted MDE's original comment here as it
 ;;; was taken verbatim into the entry below.
@@ -526,6 +550,7 @@ NAMED-OBJECT: id: B-FLAT-CLARINET, tag: NIL,
   (make-instance 'ensemble :id id :data ensemble 
                  :bar-line-writers bar-line-writers 
                  :instrument-palette instrument-palette))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

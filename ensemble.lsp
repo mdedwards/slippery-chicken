@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 19:40:06 Wed Aug 27 2014 BST
+;;; $$ Last modified: 20:07:49 Thu Aug 28 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -442,18 +442,57 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;; - An ensemble object
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - stats-fun: one of the player methods which tots up statistics,
-;;; i.e. total-notes, total-degrees, total-duration, or total-bars
+;;; keyword arguments:
+;;; - :stats-fun. One of the player methods which tots up statistics,
+;;;    i.e. total-notes, total-degrees, total-duration, or total-bars
+;;; - :ignore. A list of players (symbols) not to count in the sorting.
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of all the players in the ensemble ordered by its statistics.
 ;;; 
 ;;; SYNOPSIS
-(defmethod sort-players ((e ensemble) &optional (stats-fun #'total-duration))
-  (loop for player in
-       (sort (data e) #'(lambda (p1 p2)
-                          (> (funcall stats-fun p1) (funcall stats-fun p2))))
-     collect (id player)))
+(defmethod sort-players ((e ensemble) &key (stats-fun #'total-duration)
+                                        ignore)
+  (let* ((all-stats (loop for player in (data e) collect
+                         (list (id player) (funcall stats-fun player))))
+         (stats (remove-if #'(lambda (x) (member (first x) ignore)) all-stats))
+         (sorted (sort stats #'(lambda (l1 l2) (> (second l1) (second l2)))))
+         (ids (loop for s in sorted collect (first s)))
+         (nums (loop for s in sorted collect (second s))))
+    (values ids nums)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* ensemble/balanced-load?
+;;; DATE
+;;; 28th August 2014
+;;; 
+;;; DESCRIPTION
+;;; Determine whether the playing load is balanced across the players of the
+;;; ensemble. By default, if the least active player is playing 80% of the time
+;;; that the most active player is playing, we'll return T.
+;;; 
+;;; ARGUMENTS
+;;; - an ensemble instance
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :threshold. A number between 0.0 and 1.0 which represents the lowest
+;;;   ratio between the most and least active players.  
+;;; - :stats-fun. One of the player methods which tots up statistics,
+;;;    i.e. total-notes, total-degrees, total-duration, or total-bars
+;;; - :ignore. A list of players (symbols) not to count in the sorting.
+;;; 
+;;; RETURN VALUE
+;;; T or NIL
+;;; 
+;;; SYNOPSIS
+(defmethod balanced-load? ((e ensemble) &key (threshold .8) 
+                                             (stats-fun #'total-duration)
+                                             ignore)
+;;; ****
+  (let ((stats (nth-value 1 (sort-players e :stats-fun stats-fun
+                                          :ignore ignore))))
+    (>= (first (last stats)) (* threshold (first stats)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

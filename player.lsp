@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 17:00:49 Wed May 28 2014 BST
+;;; $$ Last modified: 12:45:19 Sat Aug 30 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -356,7 +356,6 @@
 
 ;;; ****m* player/total-notes
 ;;; DESCRIPTION
-
 ;;; Get the total number of notes (actually events) played by a specified
 ;;; player (not rests or tied notes, but midi-notes) in the piece which this
 ;;; instrument plays.  A chord counts as 1 note/event.

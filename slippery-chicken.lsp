@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:32:14 Wed Aug 27 2014 BST
+;;; $$ Last modified: 15:02:29 Fri Aug 29 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6927,6 +6927,8 @@ FS4 G4)
 ;;; NIL we'll default to 1. Default = NIL. 
 ;;; - :end-bar. An integer bar number where the process should end. If
 ;;; NIL we'll default to the last bar. Default = NIL.
+;;; - :pad. If a phrase starts or ends mid-bar, pad the first bar with leading
+;;; rests and the last bar with trailing rests to ensure we have full bars.  
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of sublists, one for each requested player. Each player sublist
@@ -6934,7 +6936,7 @@ FS4 G4)
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-phrases ((sc slippery-chicken) players
-                        &key start-bar end-bar)
+                        &key start-bar end-bar pad)
 ;;; ****
   (unless (listp players)
     (setf players (list players)))
@@ -6942,30 +6944,52 @@ FS4 G4)
     (setf start-bar 1))
   (unless end-bar
     (setf end-bar (num-bars sc)))
-  (loop      
-     for player in players do
-     (next-event sc player nil start-bar)
-     collect 
-     (loop 
-        with tmp = '()
-        with result = '()
-        with start-e 
-        for e = (next-event sc player nil nil end-bar) 
-        while e
-        do
-          (if (is-rest e)
-              (progn
-                (when (and tmp start-e)
-                  (push (nreverse tmp) result))
-                (setf tmp '()))
-              (progn
-                (unless start-e
-                  (setf start-e e))
-                (push e tmp)))
-          finally 
-          (when (and tmp start-e)
-            (push (nreverse tmp) result))
-          (return (nreverse result)))))
+  (flet ((finalize (events player)
+           (setf events (nreverse events))
+           (when pad
+             (setf events (pad-phrase sc events player)))
+           events))
+    (loop for player in players do
+         (next-event sc player nil start-bar)
+       collect
+         (loop 
+            with tmp = '()
+            with result = '()
+            with start-e 
+            for e = (next-event sc player nil nil end-bar) 
+            while e
+            do
+              (if (is-rest e)
+                  (progn
+                    (when (and tmp start-e)
+                      (push (finalize tmp player) result))
+                    (setf tmp '()))
+                  (progn
+                    (unless start-e
+                      (setf start-e e))
+                    (push e tmp)))
+            finally 
+              (when (and tmp start-e)
+                (push (finalize tmp player) result))
+              (return (nreverse result))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Aug 29 14:33:05 2014 
+(defmethod pad-phrase ((sc slippery-chicken) phrase parent)
+  (let* ((first-event (first phrase))
+         (last-event (first (last phrase)))
+         (first-bar (get-bar sc (bar-num first-event) parent))
+         (last-bar (get-bar sc (bar-num last-event) parent))
+         (leading-rests (loop for i below (bar-pos first-event) collect
+                             (force-rest (clone (get-nth-event i first-bar)))))
+         (trailing-rests (loop for i from (1+ (bar-pos last-event)) below
+                              (num-rhythms last-bar) collect
+                              (force-rest (clone (get-nth-event i last-bar))))))
+    (when leading-rests
+      (setf phrase (append leading-rests phrase)))
+    (when trailing-rests
+      (setf phrase (append phrase trailing-rests)))
+    phrase))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken/find-boundaries
@@ -7452,6 +7476,13 @@ NOTE 6200 0.6666667
     (+ event-count action-count)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod empty-bars? ((sc slippery-chicken) player start-bar end-bar)
+  (loop for bar-num from start-bar to end-bar 
+     for bar = (get-bar sc bar-num player)
+     unless (is-rest-bar bar) do (return nil)
+       finally (return t)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -7771,7 +7802,8 @@ NOTE 6200 0.6666667
                                      sndfile-palette 
                                      tempo-map 
                                      tempo-curve 
-                                     (snd-output-dir (get-sc-config 'default-dir))
+                                     (snd-output-dir (get-sc-config
+                                                      'default-dir))
                                      instrument-change-map 
                                      instruments-write-bar-nums
                                      bars-per-system-map

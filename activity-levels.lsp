@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 09:46:26 Wed Jun 11 2014 BST
+;;; $$ Last modified: 18:24:22 Fri Aug 29 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -130,7 +130,7 @@
 ;;; The activity-levels object. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; start-at: should be between 1 and 3; it indicates which of the 10-lists
+;;; start-at: should be between 0 and 2; it indicates which of the 10-lists
 ;;; we're going to start with.  Default = 1.
 ;;; 
 ;;; RETURN VALUE
@@ -140,9 +140,9 @@
 (defmethod reset ((al activity-levels) &optional (start-at 1) ignore)
 ;;; ****
   (declare (ignore ignore))
-  (unless (and (>= start-at 1) 
-               (<= start-at 3))
-    (error "activity-levels::reset: <start-at> should be between 1 and 3: ~a"
+  (unless (and (>= start-at 0) 
+               (<= start-at 2))
+    (error "activity-levels::reset: <start-at> should be between 0 and 2: ~a"
            start-at))
   (loop for l in (data al) do 
        (loop for 10-list in (data l) do (reset 10-list))

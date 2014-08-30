@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 20:37:12 Mon May  5 2014 BST
+;;; $$ Last modified: 10:19:39 Fri Aug 29 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -52,11 +52,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -790,7 +785,6 @@ BAR-HOLDER:
        (return (values result result-in-tempo)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; start-bar can be an absolute bar number or a list of the form 
 ;;; '(section sequence bar) (if there a subsections then e.g. '((3 1) 4 2) )
 ;;; you have to fill the number of bars, i.e. you can't just leave the last bar
@@ -799,25 +793,27 @@ BAR-HOLDER:
 (defmethod replace-multi-bar-events ((p piece) 
                                      player start-bar num-bars new-events 
                                      &key
-                                     ;; although a key argument tempo-map is
-                                     ;; required: it is given here as a key arg
-                                     ;; value nil simply so we don't have to
-                                     ;; specify it in the slippery-chicken
-                                     ;; class.
-                                     (tempo-map nil)
-                                     ;; MDE Mon Apr 23 12:36:08 2012 -- changed
-                                     ;; default to nil
-                                     (consolidate-rests nil)
-                                     (sc nil)
-                                     ;; for consolidate rests
-                                     (beat nil)
-                                     ;; MDE Mon Apr 23 12:36:08 2012 -- changed
-                                     ;; default to nil
-                                     (auto-beam nil)
-                                     ;;31.3.11: if this is t, then rthms > a
-                                     ;;beat will case an error 
-                                     (auto-beam-check-dur t)
-                                     (tuplet-bracket nil))
+                                       ;; although a key argument tempo-map is
+                                       ;; required: it is given here as a key arg
+                                       ;; value nil simply so we don't have to
+                                       ;; specify it in the slippery-chicken
+                                       ;; class.
+                                       (tempo-map nil)
+                                       ;; MDE Mon Apr 23 12:36:08 2012 -- changed
+                                       ;; default to nil
+                                       (consolidate-rests nil)
+                                       (sc nil)
+                                       ;; for consolidate rests
+                                       (beat nil)
+                                       ;; MDE Mon Apr 23 12:36:08 2012 -- changed
+                                       ;; default to nil
+                                       (auto-beam nil)
+                                       ;; 31.3.11: if this is t, then rthms > a
+                                       ;; beat will case an error 
+                                       (auto-beam-check-dur t)
+                                       ;; MDE Fri Aug 29 10:18:29 2014 
+                                       (warn t)
+                                       (tuplet-bracket nil))
   (object-is-nil? tempo-map "piece::replace-multi-bar-events" 'tempo-map)
   (object-is-nil? sc "piece::replace-multi-bar-events" 'sc)
   (when (listp start-bar)
@@ -837,57 +833,57 @@ BAR-HOLDER:
        for bar = (get-bar p bar-num player)
        for transposition = (get-transposition-at-bar player bar-num sc)
        do
-       (unless new-events
-         (error "piece::replace-multi-bar-events: ~
+         (unless new-events
+           (error "piece::replace-multi-bar-events: ~
                  no new-events (~a, bar ~a)!" player bar-num))
-       (unless bar
-         (error "piece::replace-multi-bar-events: ~
+         (unless bar
+           (error "piece::replace-multi-bar-events: ~
                  Can't get bar ~a for ~a"
-                bar-num player))
+                  bar-num player))
        ;; (format t "~%piece::replace-multi-bar-events: ~a"
        ;; (length (rhythms bar)))
-       (setf ate-rthms (fill-with-rhythms 
-                        bar new-events 
-                        :transposition transposition
-                        :midi-channel (midi-channel player-obj)
-                        :microtones-midi-channel
-                        (microtones-midi-channel player-obj)))
+         (setf ate-rthms (fill-with-rhythms 
+                          bar new-events :warn warn
+                          :transposition transposition
+                          :midi-channel (midi-channel player-obj)
+                          :microtones-midi-channel
+                          (microtones-midi-channel player-obj)))
        ;; (print ate-rthms)
-       (unless ate-rthms
-         (error "piece::replace-multi-bar-events: ~
+         (unless ate-rthms
+           (error "piece::replace-multi-bar-events: ~
                  Not enough rhythms to fill all the bars!"))
-       (incf total-ate-rthms ate-rthms)
-       (setf new-events (nthcdr ate-rthms new-events))
+         (incf total-ate-rthms ate-rthms)
+         (setf new-events (nthcdr ate-rthms new-events))
        ;; (format t "~%replace-multi-bar-events: before: ~a"
        ;; (length (rhythms bar)))
-       (when consolidate-rests
-         (consolidate-rests bar :beat beat)
-         ;; (format t "~%replace-multi-bar-events: after: ~a" (length
-         ;; (rhythms bar))) 
-         ;;
-         ;; now we've consolidated for the requested beat division,
-         ;; do it again for the natural beat value of the bar to
-         ;; combine e.g. two 1/8 rests into a 1/4 rest when given
-         ;; beat was 1/8 in a 2/4 bar.  but don't consolidate any
-         ;; rthms less than the given beat!
-         ;; MDE Mon Apr 23 12:42:10 2012 -- nip error in the bud
-         (unless (and beat (not (equal beat T)))
-           (setf beat (get-beat-as-rhythm bar)))
-         ;; (error "piece::replace-multi-bar-events: ~
-         ;; Can't consolidate rests without a known beat."))
-         (when (> (beat-duration (get-time-sig bar))
-                  (duration (make-rhythm beat)))
-           ;; 8.12.11 this call is wrong (picked up by CCL)
-           ;; (consolidate-rests bar nil beat)))
-           (consolidate-rests bar)))
-       (delete-beams bar)
-       (delete-tuplets bar)
-       (when auto-beam
-         (auto-beam bar nil auto-beam-check-dur))
-       (when tuplet-bracket
-         (auto-put-tuplet-bracket-on-beats bar tuplet-bracket beat))
-       (gen-stats bar))
-    (when new-events
+         (when consolidate-rests
+           (consolidate-rests bar :beat beat)
+           ;; (format t "~%replace-multi-bar-events: after: ~a" (length
+           ;; (rhythms bar))) 
+           ;;
+           ;; now we've consolidated for the requested beat division,
+           ;; do it again for the natural beat value of the bar to
+           ;; combine e.g. two 1/8 rests into a 1/4 rest when given
+           ;; beat was 1/8 in a 2/4 bar.  but don't consolidate any
+           ;; rthms less than the given beat!
+           ;; MDE Mon Apr 23 12:42:10 2012 -- nip error in the bud
+           (unless (and beat (not (equal beat T)))
+             (setf beat (get-beat-as-rhythm bar)))
+           ;; (error "piece::replace-multi-bar-events: ~
+           ;; Can't consolidate rests without a known beat."))
+           (when (> (beat-duration (get-time-sig bar))
+                    (duration (make-rhythm beat)))
+             ;; 8.12.11 this call is wrong (picked up by CCL)
+             ;; (consolidate-rests bar nil beat)))
+             (consolidate-rests bar)))
+         (delete-beams bar)
+         (delete-tuplets bar)
+         (when auto-beam
+           (auto-beam bar nil auto-beam-check-dur))
+         (when tuplet-bracket
+           (auto-put-tuplet-bracket-on-beats bar tuplet-bracket beat))
+         (gen-stats bar))
+    (when (and warn new-events)
       (warn "piece::replace-multi-bar-events: still some events left over: ~a"
             new-events))
     (update-slots p tempo-map (start-time p) (start-time-qtrs p) (start-bar p))

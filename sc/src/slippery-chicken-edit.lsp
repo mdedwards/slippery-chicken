@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 22:16:55 Tue Aug 26 2014 BST
+;;; $$ Last modified: 13:19:23 Sat Aug 30 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -458,20 +458,22 @@
 (defmethod replace-multi-bar-events ((sc slippery-chicken)
                                      player start-bar num-bars new-events 
                                      &key
-                                     ;; 24.3.11: see above.
-                                     (interleaved t)
-                                     ;; MDE Mon Apr 23 12:36:08 2012 -- changed
-                                     ;; default to nil
-                                     (consolidate-rests nil)
-                                     ;; for consolidate rests
-                                     (beat nil)
-                                     ;; MDE Mon Apr 23 12:36:08 2012 -- changed
-                                     ;; default to nil
-                                     (auto-beam nil)
-                                     ;; 31.3.11: if this is t, then rthms > a
-                                     ;; beat will case an error 
-                                     (auto-beam-check-dur t)
-                                     (tuplet-bracket nil))
+                                       ;; 24.3.11: see above.
+                                       (interleaved t)
+                                       ;; MDE Mon Apr 23 12:36:08 2012 -- changed
+                                       ;; default to nil
+                                       (consolidate-rests nil)
+                                       ;; for consolidate rests
+                                       (beat nil)
+                                       ;; MDE Mon Apr 23 12:36:08 2012 -- changed
+                                       ;; default to nil
+                                       (auto-beam nil)
+                                       ;; MDE Fri Aug 29 10:18:29 2014 
+                                       (warn t)
+                                       ;; 31.3.11: if this is t, then rthms > a
+                                       ;; beat will case an error 
+                                       (auto-beam-check-dur t)
+                                       (tuplet-bracket nil))
 ;;; ****
   ;; 21.3.11 if we're passing note data in lists, rather than events, init them
   ;; here  
@@ -485,7 +487,7 @@
                 (make-events2 (first new-events) (second new-events) mc mmc)))))
   (replace-multi-bar-events (piece sc) player start-bar num-bars new-events
                             :tempo-map (tempo-map sc)
-                            :sc sc
+                            :sc sc :warn warn
                             :beat beat
                             :consolidate-rests consolidate-rests
                             :auto-beam auto-beam
@@ -1239,7 +1241,6 @@ data: (
     event))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Wed Apr 25 13:33:53 BST 2012: Conformed robodoc entry
 
 ;;; ****m* slippery-chicken-edit/change-pitches
@@ -1248,11 +1249,19 @@ data: (
 ;;; specified new pitches. 
 ;;;
 ;;; If the new pitches are passed as a simple flat list, the method will just
-;;; change the pitch of each consecutive event object (with NIL indicating no
-;;; change), moving from bar to bar as necessary, until all of the specified
-;;; new pitches are used up. Also, if a flat list is passed, each new pitch
-;;; specified will be applied to each consecutive attacked note; i.e., ties
-;;; don't count as new pitches.
+;;; change the pitch of each consecutive attacked event object (with NIL
+;;; indicating no change), moving from bar to bar as necessary, until all of
+;;; the specified new pitches are used up. Also, if a flat list is passed, each
+;;; new pitch specified will be applied to each consecutive attacked note;
+;;; i.e., ties don't count as new pitches.
+;;;
+;;; Tied-to events are left with the old pitch information, which is of course
+;;; a potential problem. When generating scores though, we usually call
+;;; respell-notes, which calls check-ties, which corrects spellings of tied-to
+;;; notes and therefore in effect changes those notes too. So generally, we
+;;; don't have to worry about this, but if you explicitly tell slippery chicken
+;;; not to respell notes, you'll need to call check-ties with the first
+;;; optional argument as T.
 ;;;
 ;;; Also see the documentation in the bar-holder class for the method of the
 ;;; same name. 
@@ -1332,7 +1341,7 @@ data: (
            with e = (next-event sc player t start-bar)
            with last
            do
-           (setf e (next-event sc player t))
+           (setf e (next-event sc player t)) ; attacked notes only
            (unless (event-p e)
              (when warn
                (warn "slippery-chicken::change-pitches: couldn't get event no ~
@@ -1341,7 +1350,6 @@ data: (
                      (1+ count) (length new-pitches) last))
              (return))
            (when note
-             ;; (print note)  
              ;; MDE Thu May 30 18:17:24 2013 
              (unless (or (chord-p note) (pitch-p note))
                (when use-last-octave

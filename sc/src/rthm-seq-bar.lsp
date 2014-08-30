@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 15:39:47 Sat Jun 28 2014 BST
+;;; $$ Last modified: 11:45:14 Sat Aug 30 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -506,9 +506,10 @@ data: NIL
                   ;; sounding so we need to go the other way here as all
                   ;; event pitches will be sounding
                   (if (and (pitch-or-chord r) (written-pitch-or-chord r))
-                      (error "rthm-seq-bar::fill-with-rhythms: transposition ~
-                               given but even has written and sounding ~
-                               pitches already: ~a" r)
+                      (when warn
+                        (warn "rthm-seq-bar::fill-with-rhythms: transposition ~
+                               given but event has written and sounding ~
+                               pitches already. Not altering: ~a" r))
                       (set-written r (- transposition))))
                 (set-midi-channel r midi-channel microtones-midi-channel))
               (push r (rhythms rsb))

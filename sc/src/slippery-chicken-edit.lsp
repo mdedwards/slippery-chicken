@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 13:19:23 Sat Aug 30 2014 BST
+;;; $$ Last modified: 16:41:40 Mon Sep  1 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -470,6 +470,9 @@
                                        (auto-beam nil)
                                        ;; MDE Fri Aug 29 10:18:29 2014 
                                        (warn t)
+                                       ;; MDE Mon Sep  1 16:41:02 2014 
+                                       (delete-beams t)
+                                       (delete-tuplets t)
                                        ;; 31.3.11: if this is t, then rthms > a
                                        ;; beat will case an error 
                                        (auto-beam-check-dur t)
@@ -489,6 +492,8 @@
                             :tempo-map (tempo-map sc)
                             :sc sc :warn warn
                             :beat beat
+                            :delete-beams delete-beams
+                            :delete-tuplets delete-tuplets
                             :consolidate-rests consolidate-rests
                             :auto-beam auto-beam
                             :auto-beam-check-dur auto-beam-check-dur

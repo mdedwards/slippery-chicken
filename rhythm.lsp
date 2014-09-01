@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 09:36:06 Tue May 13 2014 BST
+;;; $$ Last modified: 16:57:57 Mon Sep  1 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -860,11 +860,15 @@ NI
 ;;; SYNOPSIS
 (defmethod delete-marks ((r rhythm))
 ;;; ****
-  ;; (print 'dmr)
   (setf (marks r) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Sep  1 16:55:24 2014 
+(defmethod delete-marks-if ((r rhythm) &optional (fun #'stringp))
+  (setf (marks r) (remove-if fun (marks r)))
+  (marks r))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod start-beam ((r rhythm) &optional (warn t))
   (when warn
     (check-beam-ok r))

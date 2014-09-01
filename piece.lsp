@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 10:19:39 Fri Aug 29 2014 BST
+;;; $$ Last modified: 16:42:25 Mon Sep  1 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -811,6 +811,9 @@ BAR-HOLDER:
                                        ;; 31.3.11: if this is t, then rthms > a
                                        ;; beat will case an error 
                                        (auto-beam-check-dur t)
+                                       ;; MDE Mon Sep  1 16:41:02 2014 
+                                       (delete-beams t)
+                                       (delete-tuplets t)
                                        ;; MDE Fri Aug 29 10:18:29 2014 
                                        (warn t)
                                        (tuplet-bracket nil))
@@ -876,8 +879,10 @@ BAR-HOLDER:
              ;; 8.12.11 this call is wrong (picked up by CCL)
              ;; (consolidate-rests bar nil beat)))
              (consolidate-rests bar)))
-         (delete-beams bar)
-         (delete-tuplets bar)
+         (when delete-beams
+           (delete-beams bar))
+         (when delete-tuplets
+           (delete-tuplets bar))
          (when auto-beam
            (auto-beam bar nil auto-beam-check-dur))
          (when tuplet-bracket

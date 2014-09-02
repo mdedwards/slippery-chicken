@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 16:57:57 Mon Sep  1 2014 BST
+;;; $$ Last modified: 18:44:07 Tue Sep  2 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -90,8 +90,8 @@
    ;; be set to grace-note-duration
    (is-grace-note :accessor is-grace-note :type boolean :initform nil)
    (needs-new-note :accessor needs-new-note :type boolean :initform t)
-   ;; if this rhythm (note) starts beaming, beam = 1, if if ends beaming,
-   ;; beam = 0, otherwise nil.
+   ;; if this rhythm starts beaming, beam = 1, if if ends beaming, beam = 0,
+   ;; otherwise nil.
    (beam :accessor beam :initarg :beam :initform nil)
    ;; bracket info is stored in a list.  If an element(s) of a list is another
    ;; (2-element) list, this means a bracket starts; the first element of this

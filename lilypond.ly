@@ -13,7 +13,7 @@
 %%%
 %%% Creation date:    23rd November 2011
 %%%
-%%% $$ Last modified: 20:01:10 Tue Aug 26 2014 BST
+%%% $$ Last modified: 15:11:10 Tue Sep  2 2014 BST
 %%%
 %%% SVN ID: $Id: lilypond.ly 963 2010-04-08 20:58:32Z medward2 $
 %%%
@@ -88,16 +88,16 @@ sing = \markup \sing
         (markup #:general-align Y DOWN  #:epsfile X 4 "high-sine.eps")))
 high-sine = \markup \high-sine
 
-% an outline arrow pointing up and one pointing down, in an oval box
+% two outline arrows pointing left and right, in an oval box
 #(define-markup-command (alternate layout props) () 
  (interpret-markup layout props 
-        (markup #:general-align Y DOWN  #:epsfile X 4 "alternate.eps")))
+        (markup #:general-align Y DOWN  #:epsfile X 3 "alternate.eps")))
 alternate = \markup \alternate
 
 % an two note chord with the upper note much smaller than the lower
 #(define-markup-command (focus layout props) () 
  (interpret-markup layout props 
-        (markup #:general-align Y DOWN  #:epsfile X 3 "focus.eps")))
+        (markup #:general-align Y DOWN  #:epsfile X 2 "focus.eps")))
 focus = \markup \focus
 
 % ragged line

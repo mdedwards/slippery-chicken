@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 11:45:14 Sat Aug 30 2014 BST
+;;; $$ Last modified: 19:01:42 Sun Sep  7 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -586,7 +586,7 @@ data: NIL
 ;;;   rests. T = print warning. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns a list of event/rhythm objects.
+;;; The rthm-seq-bar-object
 ;;; 
 ;;; EXAMPLE
 #|
@@ -615,7 +615,7 @@ data: NIL
        (setf new-rthms (get-rhythm-symbols rsb))
        (unless (setf done (equalp old-rthms new-rthms))
          (setf old-rthms new-rthms)))
-  t)
+  rsb)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  
@@ -648,7 +648,7 @@ data: NIL
 ;;;   rests. T = print warning. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; A list of rhythm/event objects.
+;;; The rthm-seq-bar object
 ;;; 
 ;;; EXAMPLE
 #|
@@ -750,7 +750,15 @@ data: E.
              ;; (print (length beat))
                (if (rhythms-all-rests? beat)
                    ;; 21.7.11
-                   (setf current (list (clone rest-beat)))
+                   ;; MDE Sun Sep  7 18:40:41 2014 -- can't assume that we've
+                   ;; only got a single beat's worth of rests; could be we just
+                   ;; saw a minim rest in 4/4 time  
+                   ;; (setf current (list (clone rest-beat)))
+                   (let ((num-beats (/ (sum-rhythms-duration beat)
+                                       (duration rest-beat))))
+                     (when (and (float-int-p num-beats) (>= num-beats 1))
+                       (setf current (consolidate-rests-aux
+                                      rest-beat num-beats))))
                    (loop for r in beat do
                       ;; (print (data r))
                         (if (is-rest r)
@@ -820,7 +828,7 @@ data: E.
       (auto-tuplets rsb))
     ;; MDE Sat Jun 28 14:36:43 2014
     (update-events-player rsb player)
-    t))
+    rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -936,7 +944,7 @@ data: ((2 4) Q E S S)
 ;;;   beat's worth of rhythms is handled. T = check durations. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
-;;; A rthm-seq-bar object.
+;;; The rthm-seq-bar object.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -5588,8 +5596,9 @@ show-rest: T
                (nreverse result)))
            ;; result))
            (number-error (num)
-             (error "rthm-seq-bar::consolidate-rests-aux: ~a unhandled!"
-                    num)))
+             (error "rthm-seq-bar::consolidate-rests-aux: ~a x ~a rests ~
+                     unhandled!"
+                    num (data rest))))
       (cond ((= number 1) 
              (list rest))
             ((< number 1)
@@ -5597,7 +5606,6 @@ show-rest: T
             ((power-of-2 (duration scaled))
              (list scaled))
             ((>= number 8)
-             ;; (number-error number))
              (consolidate number 8))
             ((>= number 4) 
              (consolidate number 4))

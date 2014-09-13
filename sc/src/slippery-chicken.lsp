@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:02:29 Fri Aug 29 2014 BST
+;;; $$ Last modified: 20:51:57 Thu Sep 11 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6974,7 +6974,9 @@ FS4 G4)
               (return (nreverse result))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Fri Aug 29 14:33:05 2014 
+;;; MDE Fri Aug 29 14:33:05 2014 -- add rests to start/end a bar (bearing in
+;;; mind we don't deal with rthm-seq-bars here, and therefore we can't
+;;; consolidate rests).
 (defmethod pad-phrase ((sc slippery-chicken) phrase parent)
   (let* ((first-event (first phrase))
          (last-event (first (last phrase)))

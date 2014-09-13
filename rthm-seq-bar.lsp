@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 19:01:42 Sun Sep  7 2014 BST
+;;; $$ Last modified: 20:40:55 Thu Sep 11 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -756,9 +756,11 @@ data: E.
                    ;; (setf current (list (clone rest-beat)))
                    (let ((num-beats (/ (sum-rhythms-duration beat)
                                        (duration rest-beat))))
-                     (when (and (float-int-p num-beats) (>= num-beats 1))
-                       (setf current (consolidate-rests-aux
-                                      rest-beat num-beats))))
+                     (when (float-int-p num-beats)
+                       (setf num-beats (round num-beats))
+                       (when (>= num-beats 1)
+                         (setf current (consolidate-rests-aux
+                                        rest-beat num-beats)))))
                    (loop for r in beat do
                       ;; (print (data r))
                         (if (is-rest r)

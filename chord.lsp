@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 18:29:04 Mon Aug 25 2014 BST
+;;; $$ Last modified: 19:12:34 Sat Oct  4 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -843,6 +843,48 @@ data: (
                    (white-octave cp p)
                    (not (is-octave cp p)))
           (return t))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* chord/artificial-harmonic?
+;;; DATE
+;;; October 4th 2014
+;;; 
+;;; DESCRIPTION
+;;; Determine whether a chord represents an artificial harmonic of the type
+;;; that strings play. An artificial harmonic here is defined as a three note
+;;; chord where the second note has a 'flag-head mark (i.e diamond shape) and
+;;; the 1st and 3rd are related in frequency by an interger ratio.
+;;;
+;;; NB What we don't do (yet) is test whether the 2nd note is the correct nodal
+;;; point to produce the given pitch.
+;;; 
+;;; ARGUMENTS
+;;; - a chord object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - cents-tolerance: how many cents the top note can deviate from a pure
+;;;   partial frequency. E.g. the 7th harmonic is about 31 cents from the
+;;;   nearest tempered note.
+;;; 
+;;; RETURN VALUE
+;;; If the chord is an artificial harmonic then the sounding (3rd) note is
+;;; returned, otherwise NIL.
+;;;
+;;; SYNOPSIS
+(defmethod artificial-harmonic? ((c chord) &optional (cents-tolerance 31))
+;;; ****
+  (when (= 3 (sclist-length c))
+    (let* ((f1 (frequency (get-nth 0 c)))
+           (p2 (get-nth 2 c))
+           (multiplier (round (frequency p2) f1))
+           (partial (make-pitch (* f1 multiplier))))
+      (and (member 'flag-head (marks (get-nth 1 c)))
+               ;;   only start with the 8ve+5th harmonic
+           (>= multiplier 3)
+           (<= (abs (pitch- p2 partial))
+               (/ cents-tolerance 100.0))
+           p2))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

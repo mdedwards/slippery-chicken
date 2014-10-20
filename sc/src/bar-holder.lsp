@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> linked-named-object -> bar-holder  
 ;;;
-;;; Version:          1.0.4
+;;; Version:          1.0.5
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

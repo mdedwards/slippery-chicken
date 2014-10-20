@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 19:12:34 Sat Oct  4 2014 BST
+;;; $$ Last modified: 19:25:55 Mon Oct 20 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -854,7 +854,7 @@ data: (
 ;;; Determine whether a chord represents an artificial harmonic of the type
 ;;; that strings play. An artificial harmonic here is defined as a three note
 ;;; chord where the second note has a 'flag-head mark (i.e diamond shape) and
-;;; the 1st and 3rd are related in frequency by an interger ratio.
+;;; the 1st and 3rd are related in frequency by an integer ratio.
 ;;;
 ;;; NB What we don't do (yet) is test whether the 2nd note is the correct nodal
 ;;; point to produce the given pitch.

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 20:51:57 Thu Sep 11 2014 BST
+;;; $$ Last modified: 18:30:17 Wed Oct 15 2014 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6253,7 +6253,8 @@ seq-num 5, VN, replacing G3 with B6
          for pname in players-strings do
            (write-lp-data-for-player 
             sc player 
-            (concatenate 'string path (format nil "~a-~a.ly" title-hyphens pname))
+            (concatenate 'string path (format nil "~a-~a.ly"
+                                              title-hyphens pname))
             :all-bar-nums all-bar-nums
             :extend-hairpins extend-hairpins
             :process-event-fun process-event-fun

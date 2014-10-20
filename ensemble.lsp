@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 20:07:49 Thu Aug 28 2014 BST
+;;; $$ Last modified: 18:11:28 Mon Oct 20 2014 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -453,6 +453,7 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;; SYNOPSIS
 (defmethod sort-players ((e ensemble) &key (stats-fun #'total-duration)
                                         ignore)
+;;; ****
   (let* ((all-stats (loop for player in (data e) collect
                          (list (id player) (funcall stats-fun player))))
          (stats (remove-if #'(lambda (x) (member (first x) ignore)) all-stats))

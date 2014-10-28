@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 19:25:55 Mon Oct 20 2014 BST
+;;; $$ Last modified: 20:26:33 Tue Oct 28 2014 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -379,6 +379,27 @@ data: GQS4
 (defmethod get-pitch ((c chord) ref)
 ;;; ****
   (get-nth (1- ref) c))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* chord/get-highest
+;;; DATE
+;;; 28/10/14
+;;;
+;;; DESCRIPTION
+;;; Assuming the auto-sort slot is T (which it is by default), return the last
+;;; (= highest) pitch in the chord. 
+;;; 
+;;; ARGUMENTS
+;;; - a chord object
+;;; 
+;;; RETURN VALUE
+;;; The highest pitch (object) in the chord.
+;;; 
+;;; SYNOPSIS
+(defmethod get-highest ((c chord))
+;;; ****
+  (get-pitch c (sclist-length c)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Mon Apr 16 16:42:48 BST 2012: Added robodoc entry

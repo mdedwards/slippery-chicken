@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    5.12.00
 ;;;
-;;; $$ Last modified: 15:33:03 Wed Jun 19 2013 BST
+;;; $$ Last modified: 10:51:16 Fri Oct 31 2014 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -128,7 +128,7 @@
    random-amount random-from-list random-loop-points random-rep randomise
    read-from-file recursive-set-palette-from-ring-mod reflect-list remix-in
    remove-all remove-elements remove-more remove-octaves remove-pitches
-   repeat-env replace-elements reverse-env rhythm-list ring-mod ring-mod-bass
+   repeat-env replace-elements rhythm-list ring-mod ring-mod-bass
    round-if-close rsm-count-notes
 
    scale-env secs-to-mins-secs semitones set-palette-from-ring-mod

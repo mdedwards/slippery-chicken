@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:30:17 Wed Oct 15 2014 BST
+;;; $$ Last modified: 14:01:57 Tue Nov  4 2014 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5893,7 +5893,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   eps graphics files (whereupon those graphics files would need to be in
 ;;;   the same folder as your lilypond files). Default = T.
 ;;; - :lp-version. A string that will be added to each .ly file generated in
-;;;   conjunction with the LilyPond \version command. Default = "2.17.95"
+;;;   conjunction with the LilyPond \version command. Default = "2.18.2"
 ;;; - :process-event-fun. NIL or a user-defined function that will be applied
 ;;;   to every event object in the given slippery-chicken object. If NIL, no
 ;;;   processes will be applied. Default = NIL.
@@ -6002,8 +6002,8 @@ seq-num 5, VN, replacing G3 with B6
        ;; signs
        (use-custom-markup t)
        (rehearsal-letters-font-size 18)
-       ;; "2.16.2") "2.14.2") ;"2.12.3")
-       (lp-version "2.17.95") 
+       ;; "2.16.2") "2.14.2") ;"2.12.3") "2.17.95") 
+       (lp-version "2.18.2")
        ;; 24.7.11 (Pula) barlines through whole staff group or just a stave
        (group-barlines t)
        ;; 5.11.11 set to t if you want lilypond to optimize page breaks for

@@ -19,11 +19,11 @@ Prerequisites:
   I think Aquamacs behaves most like a native OSX text editor, so if 
   you've never used Emacs before start with this. 
 * The GNU C compiler (gcc), which comes free with Apple's developer tools
-  (https://developer.apple.com/technologies/tools/). Once you have installed
-  XCode, you'll need to download and install the XCode Command Line Tools from
-  the Downloads Tab of XCode 4's preferences.  You can then verify that gcc
-  works by opening the terminal app and typing gcc -v (whereupon you should see
-  version number information rather than "Command not found").
+  (https://developer.apple.com/xcode/). Install XCode via the App Store. Once
+  you have installed it you'll need to download and install the XCode Command
+  Line Tools from the Downloads Tab of XCode's preferences. You can then verify
+  that gcc works by opening the terminal app and typing gcc -v (whereupon you
+  should see version number information rather than "Command not found").
 
 Known issues: 
 

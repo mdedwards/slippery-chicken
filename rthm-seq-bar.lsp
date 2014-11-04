@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 20:40:55 Thu Sep 11 2014 BST
+;;; $$ Last modified: 16:56:58 Sat Nov  1 2014 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3173,9 +3173,9 @@ data: E
          (incf time-qtrs (duration event))
          (incf time (duration-in-tempo event)))
     (unless (is-rest-bar rsb)
-      (unless (equal-within-tolerance bar-dur (- time start-time) .002)
+      (unless (equal-within-tolerance bar-dur (- time start-time) .003)
         (error "~a~%rthm-seq-bar::update-time: Duration of rhythms don't ~
-                match that of bar: rhythms ~a secs : bar ~a secs"
+                match that of bar: ~%rhythms ~a secs : bar ~a secs"
                rsb (- time start-time) bar-dur)))
     bar-dur))
   

@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 18:22:20 Fri Aug 29 2014 BST
+;;; $$ Last modified: 10:32:08 Tue Nov  4 2014 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -238,6 +238,10 @@
   (let ((beat (get-duration-as-beat (first (first (1-beat-rthms rc))))))
     (when beat
       (setf (beat rc) beat)))
+  ;; MDE Tue Nov  4 10:30:19 2014 
+  (unless (>= (length (rests rc)) 4)
+    (error "rthm-chain::initialize-instance :after: rests slot must have ~
+            at least ~%four elements: ~a" (rests rc)))
   ;; otherwise we can't use references like '(1 pno-rh1)
   (setf (recurse-simple-data rc) nil 
         (rests rc) (loop for r in (rests rc) collect (make-rest r))
@@ -1556,6 +1560,7 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
                     (>= num-full-bars 2)
                     (= numerator-used 2)
                     (> denominator-used 4))
+           ;; (print 'here)
            (setf denominator-used (/ denominator-used 2)
                  numerator-used num-full-bars
                  num-full-bars 1))

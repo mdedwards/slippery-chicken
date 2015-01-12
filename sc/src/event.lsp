@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:10:12 Sat Jun 28 2014 BST
+;;; $$ Last modified: 15:12:39 Mon Jan 12 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2135,27 +2135,36 @@ NIL
           (push (get-lp-data (tempo-change e)) result))
         (unless (is-grace-note e)
           (when (bracket e)
-            (loop for b in (bracket e) do
-                 (if (listp b)
-                     (push 
-                      ;; MDE Fri Apr  4 14:36:48 2014 -- just use the existing
-                      ;; slot rather than case!
-                      (format nil "\\times ~a { " (tuplet-scaler e))
-                      #|
-                      (case (second b)
-                      (2 "3/2")
-                      (3 "2/3")
-                      (4 "3/4")
-                      (5 "4/5")
-                      (6 "4/6")
-                      (7 "4/7")
-                      (9 "8/9")
-                      (t (error "event::get-lp-data: ~
-                                           unhandled tuplet: ~a"
-                      (second b)))))|#
-                      result)
-                     (when (integer>0 b)
-                       (incf close-tuplets)))))
+            ;; MDE Mon Jan 12 14:05:17 2015 -- nested tuplets as with vc at
+            ;; beginning of slippery when wet
+            (cond ((> (length (bracket e)) 1) 
+                   (loop for b in (bracket e) do
+                        (if (listp b)
+                            (push
+                             (format nil "\\times ~a { "
+                                     (case (second b)
+                                       (2 "3/2")
+                                       (3 "2/3")
+                                       (4 "3/4")
+                                       (5 "4/5")
+                                       (6 "4/6")
+                                       (7 "4/7")
+                                       (9 "8/9")
+                                       (t (error "event::get-lp-data: ~
+                                                 unhandled tuplet: ~a"
+                                                 (second b)))))
+                             result)
+                            (when (integer>0 b)
+                              (incf close-tuplets)))))
+                  ;; MDE Mon Jan 12 14:31:51 2015 -- the simple case
+                  ((listp (first (bracket e)))
+                   (push 
+                    ;; MDE Fri Apr  4 14:36:48 2014 -- just use the existing
+                    ;; slot rather than case!
+                    (format nil "\\times ~a { " (tuplet-scaler e))
+                    result))
+                  ((integer>0 (first (bracket e)))
+                   (incf close-tuplets))))
           ;; hack-alert: if we're under two tuplet brackets our rhythm would be
           ;; twice as fast as it should be notated
           (when (> (length (bracket e)) 1)
@@ -2231,8 +2240,8 @@ NIL
                                (move-to-end 'end-8vb (marks e)))
                for lp-mark = (lp-get-mark mark :num-flags (num-flags e))
                do
-               (when lp-mark
-                 (push lp-mark result))))
+                 (when lp-mark
+                   (push lp-mark result))))
           (loop repeat close-tuplets do (push " \} " result))
           ;; (print result)
           (setf result

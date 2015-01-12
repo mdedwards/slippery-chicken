@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 12:33:08 Mon Nov 18 2013 GMT
+;;; $$ Last modified: 13:44:25 Mon Jan 12 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -56,11 +56,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -131,8 +126,8 @@
                 (and (equalp t (time-sig-equal
                                 (get-time-sig b1) (get-time-sig b2)))
                      (write-time-sig b2))
-              (error "rthm-seq::initialize-instance: ~
-                  An unnecessary time signature was given: ~%~a" 
+              (warn "rthm-seq::initialize-instance: ~
+                     An unnecessary time signature was given: ~%~a" 
                      data)))
       ;; Get and set the :pitch-seq-palette and any other given slot-value
       ;; pairs.  

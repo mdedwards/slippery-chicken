@@ -24,6 +24,8 @@ Prerequisites:
   Line Tools from the Downloads Tab of XCode's preferences. You can then verify
   that gcc works by opening the terminal app and typing gcc -v (whereupon you
   should see version number information rather than "Command not found").
+  Or you can install command line tools without XCode if you prefer: 
+  http://osxdaily.com/2014/02/12/install-command-line-tools-mac-os-x/
 
 Known issues: 
 

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 13:44:25 Mon Jan 12 2015 GMT
+;;; $$ Last modified: 16:13:14 Mon Jan 12 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -118,7 +118,7 @@
                         (force-rest-bar rsb))
                     collect rsb)
             (bars rs) bars)
-      ;; Issue an error when an unnecessary time-sig was given!
+      ;; Issue a warning when an unnecessary time-sig was given!
       (loop for b1 in bars and b2 in (cdr bars) do
             (when 
                 ;; MDE Thu May 31 19:31:25 2012 -- remember time-sig-equal will
@@ -126,6 +126,7 @@
                 (and (equalp t (time-sig-equal
                                 (get-time-sig b1) (get-time-sig b2)))
                      (write-time-sig b2))
+              ;; MDE Mon Jan 12 16:13:10 2015 -- used to be an error
               (warn "rthm-seq::initialize-instance: ~
                      An unnecessary time signature was given: ~%~a" 
                      data)))

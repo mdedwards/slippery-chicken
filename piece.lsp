@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 16:42:25 Mon Sep  1 2014 BST
+;;; $$ Last modified: 17:52:53 Sat Jan 17 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -814,6 +814,10 @@ BAR-HOLDER:
                                        ;; MDE Mon Sep  1 16:41:02 2014 
                                        (delete-beams t)
                                        (delete-tuplets t)
+                                       ;; MDE Sat Jan 17 17:52:07 2015 --
+                                       ;; should we update the player slot of
+                                       ;; each event? 
+                                       (write-player nil)
                                        ;; MDE Fri Aug 29 10:18:29 2014 
                                        (warn t)
                                        (tuplet-bracket nil))
@@ -828,6 +832,8 @@ BAR-HOLDER:
     (setf start-bar (get-bar-num-from-ref 
                      p
                      (first start-bar) (second start-bar) (third start-bar))))
+  (when write-player
+    (loop for e in new-events do (setf (player e) player)))
   (let ((total-ate-rthms 0))
     (loop 
        with ate-rthms 

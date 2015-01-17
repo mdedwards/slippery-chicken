@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 16:41:40 Mon Sep  1 2014 BST
+;;; $$ Last modified: 17:54:39 Sat Jan 17 2015 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -473,6 +473,10 @@
                                        ;; MDE Mon Sep  1 16:41:02 2014 
                                        (delete-beams t)
                                        (delete-tuplets t)
+                                       ;; MDE Sat Jan 17 17:52:07 2015 --
+                                       ;; should we update the player slot of
+                                       ;; each event? 
+                                       (write-player nil)
                                        ;; 31.3.11: if this is t, then rthms > a
                                        ;; beat will case an error 
                                        (auto-beam-check-dur t)
@@ -492,6 +496,7 @@
                             :tempo-map (tempo-map sc)
                             :sc sc :warn warn
                             :beat beat
+                            :write-player write-player
                             :delete-beams delete-beams
                             :delete-tuplets delete-tuplets
                             :consolidate-rests consolidate-rests

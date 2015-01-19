@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:24:30 Mon Jan 19 2015 GMT
+;;; $$ Last modified: 19:49:30 Mon Jan 19 2015 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7355,13 +7355,14 @@ NOTE 6200 0.6666667
              (when (asco-msgs event)
                (loop for msg in (reverse (asco-msgs event)) do
                     (incf action-count)
-                    (format stream "~&~a~a" 
+                    (format stream "~&~a~a ~a" 
                             (if group? "          " "      ")
+                            (if messages-first delay 0.0)
                             msg))))
            (write-group-note (p event midi-channel stream write-labels) 
              ;; p = current pitch (of chord or note)
              (format stream "~&          ~a ~a ~a ~a ~a ~a ~a"
-                     delay
+                     (if messages-first 0.0 delay)
                      midi-note-receiver p
                      (min 127 (floor (* 127.0 (amplitude event))))
                      midi-channel
@@ -7462,10 +7463,10 @@ NOTE 6200 0.6666667
                    (setf delay 0)
                    ;; we're not writing group events for the player we're
                    ;; following  
-                   (progn 
-                     (when messages-first
-                       (write-msgs e out t))
-                     (asco-data e nil)))
+                   (progn
+                   (asco-data e nil)
+                   (when messages-first
+                     (write-msgs e out t))))
                (if (listp pitch)
                    (loop for p in pitch and pobj in (data (pitch-or-chord e)) do
                         (incf action-count)

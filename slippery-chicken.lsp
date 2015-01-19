@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:43:43 Sat Jan 17 2015 GMT
+;;; $$ Last modified: 19:24:30 Mon Jan 19 2015 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7197,6 +7197,8 @@ FS4 G4)
 ;;;    events?  (Because labels attached to group event notes can be written
 ;;;    and read, but they won't show up in MaxMSP as cues which you can jump
 ;;;    to.)  Default = T.
+;;; - :messages-first. Write antescofo messages immediately before the note
+;;;    data sent to the midi-note-receiver (T), or after (NIL)? Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; The number of NOTE plus action events we've written. We also print to the
@@ -7284,10 +7286,11 @@ NOTE 6200 0.6666667
 ;;; SYNOPSIS
 (defmethod write-antescofo ((sc slippery-chicken) follow-player
                             &key group-players file (warn t)
-                            (group-duration-in-millisecs nil)
-                            (midi-note-receiver "midi-note")
-                            (bar-num-receiver "antescofo-bar-num"))
-;;; ****
+                              (group-duration-in-millisecs nil)
+                              messages-first
+                              (midi-note-receiver "midi-note")
+                              (bar-num-receiver "antescofo-bar-num"))
+;;; ****                                ;
   (unless (and follow-player (member follow-player (players sc)))
     (error "slippery-chicken::write-antescofo: 2nd argument must be a player ~
             in the ensemble: ~a" follow-player))
@@ -7298,32 +7301,32 @@ NOTE 6200 0.6666667
                        (get-sc-config 'default-dir)
                        (filename-from-title (title sc)))))
   (let ((last-time 0.0)
-        (event-count 0)       ; the events for the player we're following
-        (action-count 0)      ; each event in a group and each receiver we send
-                                        ; something to
+        (event-count 0)     ; the events for the player we're following ;
+        (action-count 0)    ; each event in a group and each receiver we send ;
+                                        ; something to ;
         (top-player (first (players sc)))
-        ;; this should force a new BPM to be written as this tempo will never
-        ;; be used (famous last words) 
+        ;; this should force a new BPM to be written as this tempo will never ;
+        ;; be used (famous last words)  ;
         (tempo (make-tempo -1 :beat 'w))
         (write-tempo nil)
         (bar-num 0)
-        ;; the group number for this bar
+        ;; the group number for this bar ;
         (groupi 0)
-        ;; we'll have to write the } next time we see an event for the
-        ;; follow-player
+        ;; we'll have to write the } next time we see an event for the ;
+        ;; follow-player                ;
         in-group 
         rehearsal-letter pitch duration delay)
     (flet ((asco-data (event follower?)
-             ;; write midi-notes in cents. this will be a list if it's a chord
+             ;; write midi-notes in cents. this will be a list if it's a chord ;
              (setf pitch 
                    (if (is-rest event)
-                       ;; rests don't count in the midi-notes we generate, but
-                       ;; they do count for the followed player
+                       ;; rests don't count in the midi-notes we generate, but ;
+                       ;; they do count for the followed player ;
                        0
                        (midi-note-float (pitch-or-chord event) t))
-                   ;; Durations are expressed as fractions/multiples of a beat.
-                   ;; There's no concept of meter, as such, in antescofo. In
-                   ;; e.g. 6/8 time the BPM would be entered as e.g. 120 or
+                   ;; Durations are expressed as fractions/multiples of a beat. ;
+                   ;; There's no concept of meter, as such, in antescofo. In ;
+                   ;; e.g. 6/8 time the BPM would be entered as e.g. 120 or ;
                    ;; something (where we'd mean dotted quarter = 120, though
                    ;; antescofo doesn't need to know our beat type), and then
                    ;; each 1/8 note would be an antescofo duration of 0.33,
@@ -7349,11 +7352,12 @@ NOTE 6200 0.6666667
                                   (beat-dur tempo))
                                3))))
            (write-msgs (event stream group?)
-             (loop for msg in (reverse (asco-msgs event)) do
-                  (incf action-count)
-                  (format stream "~&~a~a" 
-                          (if group? "          " "      ")
-                          msg)))
+             (when (asco-msgs event)
+               (loop for msg in (reverse (asco-msgs event)) do
+                    (incf action-count)
+                    (format stream "~&~a~a" 
+                            (if group? "          " "      ")
+                            msg))))
            (write-group-note (p event midi-channel stream write-labels) 
              ;; p = current pitch (of chord or note)
              (format stream "~&          ~a ~a ~a ~a ~a ~a ~a"
@@ -7391,83 +7395,89 @@ NOTE 6200 0.6666667
         (loop for e in (get-events-sorted-by-time sc)
            for follow = nil
            do
-           (when (and (tempo-change e)
-                      (not (tempo-equal tempo (tempo-change e))))
-             (setf tempo (tempo-change e)
-                   write-tempo t))
-           (when (and (not in-group) write-tempo)
-             (format out "~&    BPM ~a" (bpm tempo))
-             (setf write-tempo nil))
-           (unless (= (bar-num e) bar-num)
-             (unless (zerop bar-num)
-               ;; remember rehearsal-letters are attached to the previous bar
-               (setf rehearsal-letter (rehearsal-letter
-                                       (get-bar sc bar-num top-player))))
-             (setf bar-num (bar-num e)
-                   groupi 0)
-             (format out "~&;----------------------------------------~%~a ~a"
-                     bar-num-receiver bar-num)
-             (incf action-count))
+             (when (and (tempo-change e)
+                        (not (tempo-equal tempo (tempo-change e))))
+               (setf tempo (tempo-change e)
+                     write-tempo t))
+             (when (and (not in-group) write-tempo)
+               (format out "~&    BPM ~a" (bpm tempo))
+               (setf write-tempo nil))
+             (unless (= (bar-num e) bar-num)
+               (unless (zerop bar-num)
+                 ;; remember rehearsal-letters are attached to the previous bar
+                 (setf rehearsal-letter (rehearsal-letter
+                                         (get-bar sc bar-num top-player))))
+               (setf bar-num (bar-num e)
+                     groupi 0)
+               (format out "~&;----------------------------------------~%~a ~a"
+                       bar-num-receiver bar-num)
+               (incf action-count))
            ;; the following player ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-           (when (and (equalp (player e) follow-player)
-                      ;; remember not to include tied notes, as these are
-                      ;; handled by compound duration when the note is struck
-                      (not (is-tied-to e)))
-             (setf follow t)
-             (asco-data e t)
-             (unless (and (numberp pitch) (zerop pitch))
-               (incf event-count))
-             (when in-group
-               (format out "~&      }")
-               (setf in-group nil))
-             ;; antescofo~ will read a line with two labels but the second one
-             ;; will be ignored
-             (when (and rehearsal-letter (asco-label e))
-               (when (get-sc-config 'asco-two-labels-warning)
-                 (warn "~&slippery-chicken::write-antescofo:  ~
+             (when (and (equalp (player e) follow-player)
+                        ;; remember not to include tied notes, as these are
+                        ;; handled by compound duration when the note is struck
+                        (not (is-tied-to e)))
+               (setf follow t)
+               (when messages-first
+                 (write-msgs e out nil))
+               (asco-data e t)
+               (unless (and (numberp pitch) (zerop pitch))
+                 (incf event-count))
+               (when in-group
+                 (format out "~&      }")
+                 (setf in-group nil))
+               ;; antescofo~ will read a line with two labels but the second one
+               ;; will be ignored
+               (when (and rehearsal-letter (asco-label e))
+                 (when (get-sc-config 'asco-two-labels-warning)
+                   (warn "~&slippery-chicken::write-antescofo:  ~
                         An event can't have a label and a ~%rehearsal letter ~
                         attached; ignoring rehearsal-letter (bar~a , ~a)" 
-                       (bar-num e) (player e)))
-               (setf rehearsal-letter nil))
-             (format out "~&~a ~a ~a ~a" 
-                     (if (listp pitch) "CHORD" "NOTE")
-                     ;; write any labels (e.g. rehearsal letter) after the NOTE
-                     ;; or CHORD 
-                     pitch duration 
-                     (cond (rehearsal-letter
-                            (prog1
-                                (format nil "letter-~a" 
-                                        rehearsal-letter)
-                              (setf rehearsal-letter nil)))
-                           ((asco-label e) (asco-label e))
-                           (t "")))
-             (when (asco-msgs e)
-               (write-msgs e out nil)))
+                         (bar-num e) (player e)))
+                 (setf rehearsal-letter nil))
+               (format out "~&~a ~a ~a ~a" 
+                       (if (listp pitch) "CHORD" "NOTE")
+                       ;; write any labels (e.g. rehearsal letter) after the NOTE
+                       ;; or CHORD 
+                       pitch duration 
+                       (cond (rehearsal-letter
+                              (prog1
+                                  (format nil "letter-~a" 
+                                          rehearsal-letter)
+                                (setf rehearsal-letter nil)))
+                             ((asco-label e) (asco-label e))
+                             (t "")))
+               (unless messages-first
+                 (write-msgs e out nil)))
            ;; the other players ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
            ;; we could include the follow-player in the group-players in order
            ;; to double the live player with something electronic, hence the
            ;; two whens here rather than an if.
-           (when (and (member (player e) group-players)
-                      (needs-new-note e))
-             (unless in-group
-               (setf in-group t)
-               (format out "~&      group bar~a.~a {" bar-num (incf groupi)))
-             (if follow
-                 (setf delay 0)
-               ;; we're not writing group events for the player we're following
-               (asco-data e nil))
-             (if (listp pitch)
-                 (loop for p in pitch and pobj in (data (pitch-or-chord e)) do
-                      (incf action-count)
-                      (write-group-note p e (midi-channel pobj) out
-                                        (not follow)))
-                 (progn
-                   (incf action-count)
-                   (write-group-note pitch e (midi-channel (pitch-or-chord e))
-                                     out (not follow))))
-             (when (and (not follow) (asco-msgs e))
-               (write-msgs e out t)))
-           (setf last-time (start-time e)))
+             (when (and (member (player e) group-players)
+                        (needs-new-note e))
+               (unless in-group
+                 (setf in-group t)
+                 (format out "~&      group bar~a.~a {" bar-num (incf groupi)))
+               (if follow
+                   (setf delay 0)
+                   ;; we're not writing group events for the player we're
+                   ;; following  
+                   (progn 
+                     (when messages-first
+                       (write-msgs e out t))
+                     (asco-data e nil)))
+               (if (listp pitch)
+                   (loop for p in pitch and pobj in (data (pitch-or-chord e)) do
+                        (incf action-count)
+                        (write-group-note p e (midi-channel pobj) out
+                                          (not follow)))
+                   (progn
+                     (incf action-count)
+                     (write-group-note pitch e (midi-channel (pitch-or-chord e))
+                                       out (not follow))))
+               (when (and (not messages-first) (not follow))
+                 (write-msgs e out t)))
+             (setf last-time (start-time e)))
         (when in-group (format out "~&      }"))
         (format out "~&; End of file~%")))
     ;; this statement corresponds to what antescofo~ prints to the max window

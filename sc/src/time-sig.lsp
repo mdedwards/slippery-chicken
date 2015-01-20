@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    12th February 2001
 ;;;
-;;; $$ Last modified: 11:27:41 Sat Apr 20 2013 BST
+;;; $$ Last modified: 21:21:04 Mon Jan 19 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -45,11 +45,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -544,6 +539,12 @@ T
               (setf (is-tied-from e) t)))
       result)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jan 19 20:56:43 2015 -- how many beats does the time signature last
+;;; in the given tempo e.g. 5/8 bar with tempo of 1/4 = 60 would be 2.5 NB The
+;;; actual BPM is not relevant here, just the beat duration of the given tempo.
+(defmethod num-beats-at-tempo ((ts time-sig) (tpo tempo))
+  (* (num ts) (/ (beat-value tpo) (denom ts))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

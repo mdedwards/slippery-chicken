@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:49:30 Mon Jan 19 2015 GMT
+;;; $$ Last modified: 21:47:59 Mon Jan 19 2015 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7290,7 +7290,7 @@ NOTE 6200 0.6666667
                               messages-first
                               (midi-note-receiver "midi-note")
                               (bar-num-receiver "antescofo-bar-num"))
-;;; ****                                ;
+;;; ****                               
   (unless (and follow-player (member follow-player (players sc)))
     (error "slippery-chicken::write-antescofo: 2nd argument must be a player ~
             in the ensemble: ~a" follow-player))
@@ -7301,36 +7301,37 @@ NOTE 6200 0.6666667
                        (get-sc-config 'default-dir)
                        (filename-from-title (title sc)))))
   (let ((last-time 0.0)
-        (event-count 0)     ; the events for the player we're following ;
-        (action-count 0)    ; each event in a group and each receiver we send ;
-                                        ; something to ;
+        (event-count 0)     ; the events for the player we're following
+        (action-count 0)    ; each event in a group and each receiver we send
+                                        ; something to
         (top-player (first (players sc)))
-        ;; this should force a new BPM to be written as this tempo will never ;
-        ;; be used (famous last words)  ;
+        ;; this should force a new BPM to be written as this tempo will never
+        ;; be used (famous last words) 
         (tempo (make-tempo -1 :beat 'w))
         (write-tempo nil)
         (bar-num 0)
-        ;; the group number for this bar ;
+        ;; the group number for this bar
         (groupi 0)
-        ;; we'll have to write the } next time we see an event for the ;
-        ;; follow-player                ;
+        ;; we'll have to write the } next time we see an event for the
+        ;; follow-player               
         in-group 
+        (bar-delay 0.0)
         rehearsal-letter pitch duration delay)
     (flet ((asco-data (event follower?)
-             ;; write midi-notes in cents. this will be a list if it's a chord ;
+             ;; write midi-notes in cents. this will be a list if it's a chord
              (setf pitch 
                    (if (is-rest event)
-                       ;; rests don't count in the midi-notes we generate, but ;
-                       ;; they do count for the followed player ;
+                       ;; rests don't count in the midi-notes we generate, but
+                       ;; they do count for the followed player
                        0
                        (midi-note-float (pitch-or-chord event) t))
-                   ;; Durations are expressed as fractions/multiples of a beat. ;
-                   ;; There's no concept of meter, as such, in antescofo. In ;
-                   ;; e.g. 6/8 time the BPM would be entered as e.g. 120 or ;
-                   ;; something (where we'd mean dotted quarter = 120, though
-                   ;; antescofo doesn't need to know our beat type), and then
-                   ;; each 1/8 note would be an antescofo duration of 0.33,
-                   ;; just as if it were a triplet in 2/4 time. So the duration
+                   ;; Durations are expressed as fractions/multiples of a beat.
+                   ;; There's no concept of meter, as such, in antescofo. In
+                   ;; e.g. 6/8 time the BPM would be entered as e.g. 120 or
+                   ;; something (where we'd mean dotted quarter = 120, though ;
+                   ;; antescofo doesn't need to know our beat type), and then ;
+                   ;; each 1/8 note would be an antescofo duration of 0.33, ;
+                   ;; just as if it were a triplet in 2/4 time. So the duration ;
                    ;; is the event's compound-duration * (tempo's beat-value /
                    ;; 4) MDE Fri May 9 10:40:17 2014 -- express duration as a
                    ;; fraction if reasonable
@@ -7350,7 +7351,10 @@ NOTE 6200 0.6666667
                               (rationalize-if-simple
                                (/ (- (start-time event) last-time)
                                   (beat-dur tempo))
-                               3))))
+                               3)))
+             ;; we'll keep track of how much delay we've had in the current bar
+             ;; so we know how much to delay the next bar-number message
+             (decf bar-delay delay))
            (write-msgs (event stream group?)
              (when (asco-msgs event)
                (loop for msg in (reverse (asco-msgs event)) do
@@ -7395,6 +7399,7 @@ NOTE 6200 0.6666667
         ;; get all the events in the piece, ordered by time
         (loop for e in (get-events-sorted-by-time sc)
            for follow = nil
+             with rsb
            do
              (when (and (tempo-change e)
                         (not (tempo-equal tempo (tempo-change e))))
@@ -7404,14 +7409,26 @@ NOTE 6200 0.6666667
                (format out "~&    BPM ~a" (bpm tempo))
                (setf write-tempo nil))
              (unless (= (bar-num e) bar-num)
+               (setf rsb (get-bar sc (bar-num e) top-player))
                (unless (zerop bar-num)
                  ;; remember rehearsal-letters are attached to the previous bar
-                 (setf rehearsal-letter (rehearsal-letter
+                 (setf rehearsal-letter (rehearsal-letter 
                                          (get-bar sc bar-num top-player))))
                (setf bar-num (bar-num e)
                      groupi 0)
-               (format out "~&;----------------------------------------~%~a ~a"
-                       bar-num-receiver bar-num)
+               ;; MDE Mon Jan 19 20:19:43 2015 -- in each bar we need to keep
+               ;; track of how many delays we've had before any messages, then
+               ;; subtract this from the bar duration and wait that long before
+               ;; sending the bar-num-receiver its new bar-num.
+               (when (< bar-delay 0.0)
+                 (error "slippery-chicken::write-antescofo: bar-delay = ~a"
+                        bar-delay))
+               (format out "~&;----------------------------------------~%~
+                            ~a ~a ~a"
+                       bar-delay bar-num-receiver bar-num)
+               (setf bar-delay (num-beats-at-tempo 
+                                (get-time-sig-from-all-time-sigs rsb)
+                                 tempo))
                (incf action-count))
            ;; the following player ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
              (when (and (equalp (player e) follow-player)
@@ -7453,7 +7470,7 @@ NOTE 6200 0.6666667
            ;; the other players ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
            ;; we could include the follow-player in the group-players in order
            ;; to double the live player with something electronic, hence the
-           ;; two whens here rather than an if.
+           ;; two 'whens' here rather than an if.
              (when (and (member (player e) group-players)
                         (needs-new-note e))
                (unless in-group
@@ -7464,9 +7481,9 @@ NOTE 6200 0.6666667
                    ;; we're not writing group events for the player we're
                    ;; following  
                    (progn
-                   (asco-data e nil)
-                   (when messages-first
-                     (write-msgs e out t))))
+                     (asco-data e nil)
+                     (when messages-first
+                       (write-msgs e out t))))
                (if (listp pitch)
                    (loop for p in pitch and pobj in (data (pitch-or-chord e)) do
                         (incf action-count)

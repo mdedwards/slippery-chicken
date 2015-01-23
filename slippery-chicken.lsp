@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:46:28 Thu Jan 22 2015 GMT
+;;; $$ Last modified: 18:19:24 Fri Jan 23 2015 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7041,7 +7041,6 @@ FS4 G4)
       (decide-boundaries (get-clusters eb) sfm))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* slippery-chicken/get-events-sorted-by-time
 ;;; DESCRIPTION
 ;;; Get all the events of all players between the given bars and then order
@@ -7063,7 +7062,8 @@ FS4 G4)
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-events-sorted-by-time ((sc slippery-chicken)
-                                      &key (start-bar 1) end-bar)
+                                      &key (start-bar 1) end-bar
+                                        include-downbeats)
 ;;; ****
   (unless end-bar
     (setf end-bar (num-bars sc)))
@@ -7315,7 +7315,6 @@ NOTE 6200 0.6666667
         ;; we'll have to write the } next time we see an event for the
         ;; follow-player               
         in-group 
-        (bar-delay 0.0)
         rehearsal-letter pitch duration delay)
     (flet ((asco-data (event follower?)
              ;; write midi-notes in cents. this will be a list if it's a chord
@@ -7351,17 +7350,14 @@ NOTE 6200 0.6666667
                               (rationalize-if-simple
                                (/ (- (start-time event) last-time)
                                   (beat-dur tempo))
-                               3)))
-             ;; we'll keep track of how much delay we've had in the current bar
-             ;; so we know how much to delay the next bar-number message
-             (decf bar-delay delay))
-           (write-msgs (event stream group?)
+                               3))))
+           (write-msgs (event stream group? &optional force-delay?)
              (when (asco-msgs event)
                (loop for msg in (reverse (asco-msgs event)) do
                     (incf action-count)
                     (format stream "~&~a~a ~a" 
                             (if group? "          " "      ")
-                            (if messages-first delay 0.0)
+                            (if (or force-delay? messages-first) delay 0.0)
                             msg))))
            (write-group-note (p event midi-channel stream write-labels) 
              ;; p = current pitch (of chord or note)
@@ -7399,7 +7395,6 @@ NOTE 6200 0.6666667
         ;; get all the events in the piece, ordered by time
         (loop for e in (get-events-sorted-by-time sc)
            for follow = nil
-             with rsb
            do
              (when (and (tempo-change e)
                         (not (tempo-equal tempo (tempo-change e))))
@@ -7408,29 +7403,25 @@ NOTE 6200 0.6666667
              (when (and (not in-group) write-tempo)
                (format out "~&    BPM ~a" (bpm tempo))
                (setf write-tempo nil))
+             ;; new bar
              (unless (= (bar-num e) bar-num)
-               (setf rsb (get-bar sc (bar-num e) top-player))
                (unless (zerop bar-num)
                  ;; remember rehearsal-letters are attached to the previous bar
                  (setf rehearsal-letter (rehearsal-letter 
                                          (get-bar sc bar-num top-player))))
                (setf bar-num (bar-num e)
                      groupi 0)
-               ;; MDE Mon Jan 19 20:19:43 2015 -- in each bar we need to keep
-               ;; track of how many delays we've had before any messages, then
-               ;; subtract this from the bar duration and wait that long before
-               ;; sending the bar-num-receiver its new bar-num.
-               (when (< bar-delay 0.0)
-                 (error "slippery-chicken::write-antescofo: bar-delay = ~a"
-                        bar-delay))
-               ;; bar numbers must come _after_ the first follower event of the
-               ;; bar. 
-               (format out "~&;----------------------------------------~%~
-                            ~a ~a ~a"
-                       bar-delay bar-num-receiver bar-num)
-               (setf bar-delay (num-beats-at-tempo 
-                                (get-time-sig-from-all-time-sigs rsb)
-                                 tempo))
+               (format out "~&;----------------------------------------~%")
+               ;; MDE Fri Jan 23 16:27:41 2015 -- this is just about getting
+               ;; the bar number written with the correct delay
+               (let ((ec (clone e)))    
+                 (asco-data ec nil)
+                 (setf (is-rest ec) nil
+                       (asco-msgs ec) nil)
+                 (push (format nil "~a ~a" bar-num-receiver bar-num)
+                       (asco-msgs ec))
+                 (write-msgs ec out nil t)
+                 (setf last-time (start-time ec)))
                (incf action-count))
            ;; the following player ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
              (when (and (equalp (player e) follow-player)
@@ -7438,9 +7429,9 @@ NOTE 6200 0.6666667
                         ;; handled by compound duration when the note is struck
                         (not (is-tied-to e)))
                (setf follow t)
+               (asco-data e t)
                (when messages-first
                  (write-msgs e out nil))
-               (asco-data e t)
                (unless (and (numberp pitch) (zerop pitch))
                  (incf event-count))
                (when in-group
@@ -7468,7 +7459,8 @@ NOTE 6200 0.6666667
                              ((asco-label e) (asco-label e))
                              (t "")))
                (unless messages-first
-                 (write-msgs e out nil)))
+                 (write-msgs e out nil))
+               (setf last-time (start-time e)))
            ;; the other players ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
            ;; we could include the follow-player in the group-players in order
            ;; to double the live player with something electronic, hence the
@@ -7479,7 +7471,9 @@ NOTE 6200 0.6666667
                  (setf in-group t)
                  (format out "~&      group bar~a.~a {" bar-num (incf groupi)))
                (if follow
-                   (setf delay 0)
+                   ;; because we've already written the follower and now we
+                   ;; just want to 'play' it too
+                   (setf delay 0) 
                    ;; we're not writing group events for the player we're
                    ;; following  
                    (progn
@@ -7496,8 +7490,14 @@ NOTE 6200 0.6666667
                      (write-group-note pitch e (midi-channel (pitch-or-chord e))
                                        out (not follow))))
                (when (and (not messages-first) (not follow))
-                 (write-msgs e out t)))
-             (setf last-time (start-time e)))
+                 (write-msgs e out t))
+               (setf last-time (start-time e)))
+           ;; MDE Fri Jan 23 16:59:37 2015 -- only when the event belongs to
+           ;; one of the voices we're writing
+             ;; (when (or (equalp (player e) follow-player)
+                ;;       (member (player e) group-players))
+               ;; (setf last-time (start-time e))))
+             )
         (when in-group (format out "~&      }"))
         (format out "~&; End of file~%")))
     ;; this statement corresponds to what antescofo~ prints to the max window

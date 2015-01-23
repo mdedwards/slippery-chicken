@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:12:39 Mon Jan 12 2015 GMT
+;;; $$ Last modified: 16:42:43 Fri Jan 23 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2978,7 +2978,7 @@ NIL
                      NIL 
                      T
 
-                     |#
+|#
 ;;; SYNOPSIS
 (defmethod force-rest :after ((e event))
 ;;; **** 

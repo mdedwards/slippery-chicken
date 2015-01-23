@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 11:38:22 Tue Aug 26 2014 BST
+;;; $$ Last modified: 11:41:19 Fri Jan 23 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -48,9 +48,7 @@
 
 (in-package :slippery-chicken)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; To use the markup commands which refer to graphics files, you will need to
 ;;; copy the graphics in doc/media/lilypond-graphics.zip 
 ;;; into the directory containing the lilypond source files you want

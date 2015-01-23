@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 18:44:07 Tue Sep  2 2014 BST
+;;; $$ Last modified: 16:44:47 Fri Jan 23 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -179,7 +179,6 @@
     named-object))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* rhythm/force-rest
 ;;; DESCRIPTION
 ;;; Force the given rhythm object to be a rest.
@@ -209,6 +208,9 @@
         ;; 24.2.11 need to kill the beam too
         (beam r) nil
         (is-tied-from r) nil
+        ;; MDE Fri Jan 23 16:43:44 2015 -- strange this hasn't caused errors
+        ;; before now...anyway, compound-duration only applies to tied notes
+        (compound-duration r) (duration r)
         (is-rest r) t)
   ;; 22.7.11 (Pula)
   (rm-marks r '(beg-sl end-sl) nil)

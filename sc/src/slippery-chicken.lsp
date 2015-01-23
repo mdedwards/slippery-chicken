@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:19:24 Fri Jan 23 2015 GMT
+;;; $$ Last modified: 19:22:48 Fri Jan 23 2015 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7199,6 +7199,9 @@ FS4 G4)
 ;;;    to.)  Default = T.
 ;;; - :messages-first. Write antescofo messages immediately before the note
 ;;;    data sent to the midi-note-receiver (T), or after (NIL)? Default = NIL.
+;;; - :round-tempi. Round tempo values to the nearest integer? (If you don't do
+;;;    this, then MIDI playback could become out of synch with
+;;;    antescofo). Default = T. 
 ;;; 
 ;;; RETURN VALUE
 ;;; The number of NOTE plus action events we've written. We also print to the
@@ -7288,6 +7291,7 @@ NOTE 6200 0.6666667
                             &key group-players file (warn t)
                               (group-duration-in-millisecs nil)
                               messages-first
+                              (round-tempi t)
                               (midi-note-receiver "midi-note")
                               (bar-num-receiver "antescofo-bar-num"))
 ;;; ****                               
@@ -7401,9 +7405,12 @@ NOTE 6200 0.6666667
                (setf tempo (tempo-change e)
                      write-tempo t))
              (when (and (not in-group) write-tempo)
-               (format out "~&    BPM ~a" (bpm tempo))
+               (format out "~&    BPM ~a"
+                       (if round-tempi
+                           (round (bpm tempo))
+                           (bpm tempo)))
                (setf write-tempo nil))
-             ;; new bar
+           ;; new bar
              (unless (= (bar-num e) bar-num)
                (unless (zerop bar-num)
                  ;; remember rehearsal-letters are attached to the previous bar
@@ -7413,7 +7420,11 @@ NOTE 6200 0.6666667
                      groupi 0)
                (format out "~&;----------------------------------------~%")
                ;; MDE Fri Jan 23 16:27:41 2015 -- this is just about getting
-               ;; the bar number written with the correct delay
+               ;; the bar number written with the correct delay. when writing
+               ;; following and group players below we're ignoring rests, but
+               ;; in this block we'll hit the first event of the following
+               ;; player first, whether it's a rest, a tied, or a struck note,
+               ;; so this is the moment to write the bar number.
                (let ((ec (clone e)))    
                  (asco-data ec nil)
                  (setf (is-rest ec) nil
@@ -7421,8 +7432,8 @@ NOTE 6200 0.6666667
                  (push (format nil "~a ~a" bar-num-receiver bar-num)
                        (asco-msgs ec))
                  (write-msgs ec out nil t)
-                 (setf last-time (start-time ec)))
-               (incf action-count))
+                 (setf last-time (start-time ec))))
+             ;; (incf action-count))
            ;; the following player ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
              (when (and (equalp (player e) follow-player)
                         ;; remember not to include tied notes, as these are
@@ -7464,7 +7475,8 @@ NOTE 6200 0.6666667
            ;; the other players ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
            ;; we could include the follow-player in the group-players in order
            ;; to double the live player with something electronic, hence the
-           ;; two 'whens' here rather than an if.
+           ;; two 'whens' here (following player and other players) rather than
+           ;; an if.
              (when (and (member (player e) group-players)
                         (needs-new-note e))
                (unless in-group
@@ -7491,13 +7503,8 @@ NOTE 6200 0.6666667
                                        out (not follow))))
                (when (and (not messages-first) (not follow))
                  (write-msgs e out t))
-               (setf last-time (start-time e)))
-           ;; MDE Fri Jan 23 16:59:37 2015 -- only when the event belongs to
-           ;; one of the voices we're writing
-             ;; (when (or (equalp (player e) follow-player)
-                ;;       (member (player e) group-players))
-               ;; (setf last-time (start-time e))))
-             )
+               (setf last-time (start-time e))))
+        ;; end of event loop
         (when in-group (format out "~&      }"))
         (format out "~&; End of file~%")))
     ;; this statement corresponds to what antescofo~ prints to the max window

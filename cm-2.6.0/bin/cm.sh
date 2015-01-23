@@ -1,4 +1,4 @@
-#!/bin/sh -
+#!/bin/bash -
 #
 # File:           cm.sh
 #
@@ -443,12 +443,12 @@ get_lisp_info () {
       *acl*|*ACL*)
         flv=acl
         vrs=`echo '(lisp-implementation-version)' | "$1" -batch 2>/dev/null \
-	     | sed -n $vre`
+             | sed -n $vre`
         ;;
       *lisp*|*LISP*|*cmucl*|*CMUCL*)
         flv=cmucl
         vrs=`echo '(lisp-implementation-version)' | "$1" -quiet -batch \
-	     | sed -n $vre`
+             | sed -n $vre`
         ;;
       *openmcl*|*OPENMCL*|*dppccl*)
         flv=openmcl

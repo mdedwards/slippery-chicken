@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:22:48 Fri Jan 23 2015 GMT
+;;; $$ Last modified: 17:17:38 Mon Jan 26 2015 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7202,6 +7202,10 @@ FS4 G4)
 ;;; - :round-tempi. Round tempo values to the nearest integer? (If you don't do
 ;;;    this, then MIDI playback could become out of synch with
 ;;;    antescofo). Default = T. 
+;;; - :include-program-changes. If T, we write any programme changes attached
+;;;    to an event as "midi-program-change <programme> <channel>". If this is a
+;;;    symbol or string then that ID will be used instead of
+;;;    "midi-program-change". (Symbols will be made lowercase.) Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; The number of NOTE plus action events we've written. We also print to the
@@ -7291,10 +7295,12 @@ NOTE 6200 0.6666667
                             &key group-players file (warn t)
                               (group-duration-in-millisecs nil)
                               messages-first
+                              ;; could be T, a string, or a symbol
+                              (include-program-changes t)
                               (round-tempi t)
                               (midi-note-receiver "midi-note")
                               (bar-num-receiver "antescofo-bar-num"))
-;;; ****                               
+;;; ****                                ;
   (unless (and follow-player (member follow-player (players sc)))
     (error "slippery-chicken::write-antescofo: 2nd argument must be a player ~
             in the ensemble: ~a" follow-player))
@@ -7305,42 +7311,54 @@ NOTE 6200 0.6666667
                        (get-sc-config 'default-dir)
                        (filename-from-title (title sc)))))
   (let ((last-time 0.0)
-        (event-count 0)     ; the events for the player we're following
-        (action-count 0)    ; each event in a group and each receiver we send
-                                        ; something to
+        (event-count 0)     ; the events for the player we're following ;
+        (action-count 0)    ; each event in a group and each receiver we send ;
+                                        ; something to ;
         (top-player (first (players sc)))
-        ;; this should force a new BPM to be written as this tempo will never
-        ;; be used (famous last words) 
+        ;; this should force a new BPM to be written as this tempo will never ;
+        ;; be used (famous last words)  ;
         (tempo (make-tempo -1 :beat 'w))
-        (write-tempo nil)
         (bar-num 0)
-        ;; the group number for this bar
+        (prog-receiver (cond ((eql T include-program-changes)
+                              "midi-program-change")
+                             ((not include-program-changes)
+                              NIL)
+                             ((symbolp include-program-changes)
+                              (string-downcase
+                               (string include-program-changes)))
+                             ((stringp include-program-changes)
+                              include-program-changes)
+                             (t (error "slippery-chicken::write-antescofo: ~
+                                        ~a is not a valid argument for ~
+                                        :include-program-changes"
+                                       include-program-changes))))
+        ;; the group number for this bar ;
         (groupi 0)
-        ;; we'll have to write the } next time we see an event for the
-        ;; follow-player               
+        ;; we'll have to write the } next time we see an event for the ;
+        ;; follow-player                ;
         in-group 
         rehearsal-letter pitch duration delay)
     (flet ((asco-data (event follower?)
-             ;; write midi-notes in cents. this will be a list if it's a chord
+             ;; write midi-notes in cents. this will be a list if it's a chord ;
              (setf pitch 
                    (if (is-rest event)
-                       ;; rests don't count in the midi-notes we generate, but
-                       ;; they do count for the followed player
+                       ;; rests don't count in the midi-notes we generate, but ;
+                       ;; they do count for the followed player ;
                        0
                        (midi-note-float (pitch-or-chord event) t))
-                   ;; Durations are expressed as fractions/multiples of a beat.
-                   ;; There's no concept of meter, as such, in antescofo. In
-                   ;; e.g. 6/8 time the BPM would be entered as e.g. 120 or
-                   ;; something (where we'd mean dotted quarter = 120, though 
-                   ;; antescofo doesn't need to know our beat type), and then 
-                   ;; each 1/8 note would be an antescofo duration of 0.33, 
-                   ;; just as if it were a triplet in 2/4 time. So the duration 
-                   ;; is the event's compound-duration * (tempo's beat-value /
-                   ;; 4) MDE Fri May 9 10:40:17 2014 -- express duration as a
-                   ;; fraction if reasonable
+                   ;; Durations are expressed as fractions/multiples of a beat. ;
+                   ;; There's no concept of meter, as such, in antescofo. In ;
+                   ;; e.g. 6/8 time the BPM would be entered as e.g. 120 or ;
+                   ;; something (where we'd mean dotted quarter = 120, though ;
+                   ;; antescofo doesn't need to know our beat type), and then ;
+                   ;; each 1/8 note would be an antescofo duration of 0.33, ;
+                   ;; just as if it were a triplet in 2/4 time. So the duration ;
+                   ;; is the event's compound-duration * (tempo's beat-value / ;
+                   ;; 4) MDE Fri May 9 10:40:17 2014 -- express duration as a ;
+                   ;; fraction if reasonable ;
                    duration (if (is-grace-note event)
-                                ;; MDE Wed May 14 18:07:08 2014 -- see note in
-                                ;; documentation above re. grace notes. 
+                                ;; MDE Wed May 14 18:07:08 2014 -- see note in ;
+                                ;; documentation above re. grace notes. ;
                                 (if follower? 0.0 
                                     (/ (grace-note-duration event)
                                        (beat-dur tempo)))
@@ -7354,8 +7372,18 @@ NOTE 6200 0.6666667
                               (rationalize-if-simple
                                (/ (- (start-time event) last-time)
                                   (beat-dur tempo))
-                               3))))
+                               3)))
+             ;; MDE Mon Jan 26 13:28:31 2015 -- don't write chords when we've
+             ;; only got one pitch, even if the pitch slot of the event says
+             ;; it's a chord
+             (when (and (listp pitch) (= 1 (length pitch)))
+               (setf pitch (first pitch))))
            (write-msgs (event stream group? &optional force-delay?)
+             (when prog-receiver
+               (loop for pc in (midi-program-changes event) do
+                    (format stream "~&~a~a ~a ~a" 
+                            (if group? "          " "      ")
+                            prog-receiver (second pc) (first pc))))
              (when (asco-msgs event)
                (loop for msg in (reverse (asco-msgs event)) do
                     (incf action-count)
@@ -7400,16 +7428,6 @@ NOTE 6200 0.6666667
         (loop for e in (get-events-sorted-by-time sc)
            for follow = nil
            do
-             (when (and (tempo-change e)
-                        (not (tempo-equal tempo (tempo-change e))))
-               (setf tempo (tempo-change e)
-                     write-tempo t))
-             (when (and (not in-group) write-tempo)
-               (format out "~&    BPM ~a"
-                       (if round-tempi
-                           (round (bpm tempo))
-                           (bpm tempo)))
-               (setf write-tempo nil))
            ;; new bar
              (unless (= (bar-num e) bar-num)
                (unless (zerop bar-num)
@@ -7431,9 +7449,20 @@ NOTE 6200 0.6666667
                        (asco-msgs ec) nil)
                  (push (format nil "~a ~a" bar-num-receiver bar-num)
                        (asco-msgs ec))
-                 (write-msgs ec out nil t)
+                 (write-msgs ec out in-group t)
                  (setf last-time (start-time ec))))
-             ;; (incf action-count))
+             (when (and (tempo-change e)
+                        (not (tempo-equal tempo (tempo-change e))))
+               (setf tempo (tempo-change e))
+               (incf action-count)
+               ;; don't use BPM, use antescofo::tempo instead so that we can
+               ;; include these in groups and set delays on them, as described
+               ;; by Arshia at http://tinyurl.com/q9pvudx
+               (format out "~&~aantescofo::tempo ~a"
+                       (if in-group "          " "      ")
+                       (if round-tempi
+                           (round (bpm tempo))
+                           (bpm tempo))))
            ;; the following player ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
              (when (and (equalp (player e) follow-player)
                         ;; remember not to include tied notes, as these are
@@ -7492,13 +7521,20 @@ NOTE 6200 0.6666667
                      (asco-data e nil)
                      (when messages-first
                        (write-msgs e out t))))
-               (if (listp pitch)
+               (if (listp pitch) ; i.e. a chord
                    (loop for p in pitch and pobj in (data (pitch-or-chord e)) do
                         (incf action-count)
                         (write-group-note p e (midi-channel pobj) out
                                           (not follow)))
-                   (progn
+                   (progn ; a single pitch
                      (incf action-count)
+                     ;; MDE Mon Jan 26 14:37:23 2015 -- hyperboles always
+                     ;; thinks we've got chords so single pitches are also
+                     ;; chord objects. handle this here rather than lower
+                     ;; down. 
+                     (when (chord-p (pitch-or-chord e))
+                       (setf (slot-value e 'pitch-or-chord) 
+                             (first (data (pitch-or-chord e)))))
                      (write-group-note pitch e (midi-channel (pitch-or-chord e))
                                        out (not follow))))
                (when (and (not messages-first) (not follow))

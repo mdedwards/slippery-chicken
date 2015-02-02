@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 18:18:34 Tue Jul  1 2014 BST
+;;; $$ Last modified: 16:10:00 Sat Jan 31 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3770,12 +3770,12 @@ At revision 3608.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/pdivide
 ;;; DESCRIPTION
-;;; Creates a list of proportional times, dividing a starting duration into a
-;;; number of smaller durations a specified number of times.  We start with a
-;;; proportion as a ratio (e.g. 3/2) and divide the given duration into two
-;;; parts according to that ratio.  Then those two parts will be divided into
-;;; the same ratios.  This will iterate the number of times indicated by the
-;;; second argument.
+;;; Creates a list of proportionally related times, dividing a starting
+;;; duration into a number of smaller durations a specified number of times.
+;;; We start with a proportion as a ratio (e.g. 3/2) and divide the given
+;;; duration into two parts according to that ratio.  Then those two parts will
+;;; be divided into the same ratios.  This will iterate the number of times
+;;; indicated by the second argument.
 ;;;
 ;;; The following are some classical proportions:
 ;;;         Latin        (Greek)

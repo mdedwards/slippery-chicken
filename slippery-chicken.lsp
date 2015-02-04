@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:17:38 Mon Jan 26 2015 GMT
+;;; $$ Last modified: 19:05:48 Wed Feb  4 2015 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2394,7 +2394,6 @@ data: 32
                   (clone (written-pitch-or-chord start-event))))
          (last-event start-event)
          last-bar)
-    ;; (print porc)                     ;
     (unless (zerop (notes-needed bar))
       (unless porc
         (error "slippery-chicken::tie-over-rest-bars-aux: can't tie from last ~
@@ -2417,7 +2416,6 @@ data: 32
       (no-accidental porc)
       (when wporc
         (no-accidental wporc))
-      ;; (format t "~&acc: ~a" (show-accidental porc)) ;;(first (data porc)))) ;
       (flet ((do-it (e)
                (setf (pitch-or-chord e) (clone porc)
                      (written-pitch-or-chord e) (when wporc 
@@ -7206,6 +7204,9 @@ FS4 G4)
 ;;;    to an event as "midi-program-change <programme> <channel>". If this is a
 ;;;    symbol or string then that ID will be used instead of
 ;;;    "midi-program-change". (Symbols will be made lowercase.) Default = T.
+;;; - :makenote-compatible. If T, we'll write midi note information in the
+;;;    following order: midi note (rounded to nearest chromatic note i.e. no
+;;;    longer midi-cents), velocity, duration, channel. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; The number of NOTE plus action events we've written. We also print to the
@@ -7298,6 +7299,7 @@ NOTE 6200 0.6666667
                               ;; could be T, a string, or a symbol
                               (include-program-changes t)
                               (round-tempi t)
+                              makenote-compatible
                               (midi-note-receiver "midi-note")
                               (bar-num-receiver "antescofo-bar-num"))
 ;;; ****                                ;
@@ -7392,30 +7394,36 @@ NOTE 6200 0.6666667
                             (if (or force-delay? messages-first) delay 0.0)
                             msg))))
            (write-group-note (p event midi-channel stream write-labels) 
-             ;; p = current pitch (of chord or note)
-             (format stream "~&          ~a ~a ~a ~a ~a ~a ~a"
-                     (if messages-first 0.0 delay)
-                     midi-note-receiver p
-                     (min 127 (floor (* 127.0 (amplitude event))))
-                     midi-channel
-                     (cond (group-duration-in-millisecs
-                            (format nil "@beat2ms(~a)" duration))
-                           ;; can't have simple fractions here rather they have
-                           ;; to be evaluated e.g. (2/3) 
-                           ((rationalp duration)
-                            (format nil "(~a)" duration))
-                           (t (float duration)))
-                     (if (and write-labels (asco-label event))
-                         (progn
-                           (when warn
-                             (warn "slippery-chicken::write-antescofo: ~
+             (let ((dur
+                    (cond (group-duration-in-millisecs
+                           (format nil "@beat2ms(~a)" duration))
+                          ;; can't have simple fractions here rather they have
+                          ;; to be evaluated e.g. (2/3) 
+                          ((rationalp duration)
+                           (format nil "(~a)" duration))
+                          (t (float duration))))
+                   (vel (min 127 (floor (* 127.0 (amplitude event))))))
+               ;; p = current pitch (of chord or note)
+               ;; don't write rests
+               (unless (zerop p)
+                 (format stream "~&          ~a ~a ~a ~a ~a ~a ~a"
+                         (if messages-first 0.0 delay)
+                         midi-note-receiver 
+                         (if makenote-compatible (floor p 100) p)
+                         vel
+                         (if makenote-compatible dur midi-channel)
+                         (if makenote-compatible midi-channel dur)
+                         (if (and write-labels (asco-label event))
+                             (progn
+                               (when warn
+                                 (warn "slippery-chicken::write-antescofo: ~
                                     Labels attached to group event notes ~
                                     ~%can be written and read, but they will ~
                                     not show up in MaxMSP as cues ~
                                     ~%which you can jump to: ~a, ~a"
-                                   (bar-num event) (player event)))
-                           (asco-label event))
-                         ""))))
+                                       (bar-num event) (player event)))
+                               (asco-label event))
+                             ""))))))
       (with-open-file (out file :direction :output :if-does-not-exist :create
                            :if-exists :rename-and-delete)
         (format out "~&; antescofo~~ score generated by slippery chicken ~

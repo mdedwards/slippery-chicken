@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 12:45:19 Sat Aug 30 2014 BST
+;;; $$ Last modified: 15:08:03 Wed Feb 11 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -921,7 +921,7 @@ data:
                        do (unless ins
                             (error "player::make-doublings-al: ~
                                     All references to ~
-                                    instruments of the instrument-palette ~
+                                    instruments of the ~%instrument-palette ~
                                     in ensemble must be present: ~a"
                                    ref))
                        collect (clone ins))))

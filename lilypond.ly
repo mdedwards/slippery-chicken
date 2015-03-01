@@ -13,7 +13,7 @@
 %%%
 %%% Creation date:    23rd November 2011
 %%%
-%%% $$ Last modified: 15:11:10 Tue Sep  2 2014 BST
+%%% $$ Last modified: 20:15:05 Sat Feb 28 2015 EST
 %%%
 %%% SVN ID: $Id: lilypond.ly 963 2010-04-08 20:58:32Z medward2 $
 %%%
@@ -94,11 +94,17 @@ high-sine = \markup \high-sine
         (markup #:general-align Y DOWN  #:epsfile X 3 "alternate.eps")))
 alternate = \markup \alternate
 
-% an two note chord with the upper note much smaller than the lower
+% a two note chord (blobs) with the upper note much smaller than the lower
 #(define-markup-command (focus layout props) () 
  (interpret-markup layout props 
         (markup #:general-align Y DOWN  #:epsfile X 2 "focus.eps")))
 focus = \markup \focus
+
+% two filled blobs in an ellipse
+#(define-markup-command (balance layout props) () 
+ (interpret-markup layout props 
+        (markup #:general-align Y DOWN  #:epsfile X 2 "balance.eps")))
+balance = \markup \balance
 
 % ragged line
 #(define-markup-command (noise layout props) () 

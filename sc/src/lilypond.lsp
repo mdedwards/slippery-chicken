@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 11:41:19 Fri Jan 23 2015 GMT
+;;; $$ Last modified: 20:17:31 Sat Feb 28 2015 EST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -230,6 +230,7 @@
            (high-sine "^\\high-sine ")
            (noise "^\\noise ")
            (focus "^\\focus ")
+           (balance "^\\balance ")
            (alternate "^\\alternate ")
            (sing-arr "^\\singArr ")
            (arrow-up-down "^\\arrowUpDown ")

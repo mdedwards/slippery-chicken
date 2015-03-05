@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified: 12:44:56 Fri May 30 2014 BST
+;;; $$ Last modified: 19:06:27 Thu Mar  5 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -101,10 +101,10 @@
 ;;; 
 ;;; SYNOPSIS
 (defun osc-call (&key
-                 (listen-port 8000)
+                 (listen-port 8090)
                  (send-ip #(127 0 0 1))
                  (print nil)
-                 (send-port 8001))
+                 (send-port 8091))
 ;;; ****
   (sb-bsd-sockets::osc-call listen-port send-ip send-port print))
 

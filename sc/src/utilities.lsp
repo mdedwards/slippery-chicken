@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 16:10:00 Sat Jan 31 2015 GMT
+;;; $$ Last modified: 14:55:30 Sat Mar  7 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4428,6 +4428,16 @@ RETURNS:
       (format nil "~2,'0D:~2,'0D:~2,'0D on ~a the ~a~a of ~a ~a" hours 
               minutes seconds (day-name day) date (suffix date) 
               (month-name month) year))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Mar  7 14:54:30 2015 
+(defun limit-high-low (value high low)
+  (unless (and (numberp high) (numberp low) (numberp value))
+    (error "utilities::limit-high-low: all three arguments must be numbers: ~
+            ~a ~a ~a" value high low))
+  (cond ((> value high) high)
+        ((< value low) low)
+        (t value)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

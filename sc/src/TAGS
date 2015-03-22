@@ -48,35 +48,35 @@ assoc-list.lsp,855
 (defun check-or-force-named-object 884,29302
 (defun assoc-list-p 903,30009
 
-bar-holder.lsp,1006
-(defclass bar-holder 64,2425
-(defmethod clone 143,5229
-(defmethod clone-with-new-class 148,5387
-(defmethod print-object 167,6291
-(defmethod print-bar-holder-slots 173,6495
-(defmethod statistics 202,7672
-(defmethod update-write-time-sig 212,8225
-(defmethod is-section-without-subsections 232,9154
-(defmethod get-last-bar 238,9359
-(defmethod update-slots 248,9740
-(defmethod transpose-bars 360,14599
-(defmethod get-bar 392,16040
-(defmethod get-note 458,18855
-(defmethod get-rest 500,20817
-(defmethod get-event 516,21449
-(defmethod rest-to-note 527,21937
-(defmethod change-pitch 540,22442
-(defmethod change-pitches 617,25592
-(defmethod add-mark-to-note 635,26381
-(defmethod add-mark-to-event 643,26695
-(defmethod add-mark-before-note 651,26992
-(defmethod delete-all-marks 702,28733
-(defmethod bh-delete-marks 718,29193
-(defmethod delete-marks-before 726,29450
-(defmethod tie 736,29850
-(defun make-bar-holder 754,30651
-(defun is-bar-holder 761,31018
-(defun get-bar-holder 770,31327
+bar-holder.lsp,1005
+(defclass bar-holder 57,2271
+(defmethod clone 136,5075
+(defmethod clone-with-new-class 141,5233
+(defmethod print-object 160,6137
+(defmethod print-bar-holder-slots 166,6341
+(defmethod statistics 195,7518
+(defmethod update-write-time-sig 205,8071
+(defmethod is-section-without-subsections 225,9000
+(defmethod get-last-bar 231,9205
+(defmethod update-slots 241,9586
+(defmethod transpose-bars 353,14450
+(defmethod get-bar 385,15891
+(defmethod get-note 451,18706
+(defmethod get-rest 493,20668
+(defmethod get-event 509,21300
+(defmethod rest-to-note 520,21788
+(defmethod change-pitch 533,22293
+(defmethod change-pitches 610,25443
+(defmethod add-mark-to-note 628,26232
+(defmethod add-mark-to-event 636,26546
+(defmethod add-mark-before-note 644,26843
+(defmethod delete-all-marks 695,28584
+(defmethod bh-delete-marks 711,29044
+(defmethod delete-marks-before 719,29301
+(defmethod tie 729,29701
+(defun make-bar-holder 747,30502
+(defun bar-holder-p 754,30869
+(defun get-bar-holder 763,31177
 
 change-data.lsp,395
 (defclass change-data 76,3134
@@ -107,71 +107,75 @@ change-map.lsp,523
 (defun make-change-map 478,21029
 (defun change-map-p 486,21378
 
-chord.lsp,1604
-(defclass chord 58,2143
-(defmethod delete-marks 99,3427
-(defmethod initialize-instance 106,3633
-(defmethod set-micro-tone 116,4006
-(defmethod (setf 123,4294
-(defmethod print-object 130,4603
-(defmethod verify-and-store 136,4856
-(defmethod clone 145,5212
-(defmethod clone-with-new-class 150,5358
-(defmethod chord=172,6073
-(defmethod add-harmonics 200,7122
-(defmethod set-midi-channel 253,8690
-(defmethod get-midi-channel 292,9711
-(defmethod output-midi-note 333,11162
-(defmethod get-pitch 384,12736
-(defmethod add-mark 418,13548
-(defmethod get-pitch-symbols 451,14308
-(defmethod no-accidental 492,15566
-(defmethod chord-equal 557,17618
-(defmethod lowest 610,19226
-(defmethod highest 677,21187
-(defmethod transpose 746,23091
-(defmethod get-lp-data 764,23781
-(defmethod get-cmn-data 774,24163
-(defmethod sort-pitches 829,26063
-(defmethod also-different-inflection 845,26715
-(defmethod chord-member 941,30118
-(defmethod common-notes 1014,32584
-(defmethod count-accidentals 1028,33066
-(defmethod count-c5ths 1045,33582
-(defmethod bad-intervals 1052,33793
-(defmethod bad-adjacent-intervals 1065,34236
-(defmethod respell-chord 1108,35626
-(defmethod has-notes 1312,44774
-(defmethod pitch- 1362,46243
-(defmethod frequency 1371,46629
-(defmethod enharmonic 1376,46827
-(defmethod print-simple 1381,47053
-(defmethod add-pitches 1431,48524
-(defmethod rm-pitches 1483,50170
-(defmethod rm-duplicates 1493,50602
-(defmethod rm-octaves 1500,50979
-(defmethod rm-marks 1509,51378
-(defmethod get-interval-structure 1514,51601
-(defun make-chord 1609,54814
-(defun chord-p 1634,55954
+chord.lsp,1772
+(defclass chord 53,2059
+(defmethod delete-marks 94,3343
+(defmethod initialize-instance 101,3549
+(defmethod set-micro-tone 111,3922
+(defmethod (setf 118,4210
+(defmethod print-object 125,4519
+(defmethod verify-and-store 131,4772
+(defmethod clone 140,5128
+(defmethod clone-with-new-class 145,5274
+(defmethod chord=167,5989
+(defmethod add-harmonics 195,7038
+(defmethod set-midi-channel 248,8606
+(defmethod get-midi-channel 287,9627
+(defmethod output-midi-note 328,11078
+(defmethod get-pitch 379,12652
+(defmethod get-highest 400,13116
+(defmethod add-mark 434,13937
+(defmethod get-pitch-symbols 467,14697
+(defmethod no-accidental 508,15955
+(defmethod chord-equal 573,18007
+(defmethod lowest 626,19615
+(defmethod highest 693,21576
+(defmethod transpose 762,23480
+(defmethod get-lp-data 780,24170
+(defmethod get-cmn-data 790,24552
+(defmethod sort-pitches 845,26452
+(defmethod also-different-inflection 861,27104
+(defmethod artificial-harmonic? 896,28318
+(defmethod chord-member 999,32018
+(defmethod common-notes 1072,34484
+(defmethod count-accidentals 1086,34966
+(defmethod count-c5ths 1103,35482
+(defmethod bad-intervals 1110,35693
+(defmethod bad-adjacent-intervals 1123,36136
+(defmethod respell-chord 1166,37526
+(defmethod has-notes 1374,46883
+(defmethod pitch- 1424,48352
+(defmethod midi-note-float 1430,48597
+(defmethod frequency 1438,48976
+(defmethod enharmonic 1443,49174
+(defmethod print-simple 1448,49400
+(defmethod add-pitches 1498,50871
+(defmethod rm-pitches 1550,52517
+(defmethod rm-duplicates 1560,52949
+(defmethod rm-octaves 1567,53326
+(defmethod rm-marks 1575,53718
+(defmethod get-interval-structure 1580,53941
+(defmethod micro-but-not-quarter-tone-p 1586,54270
+(defun make-chord 1681,57426
+(defun chord-p 1706,58566
 
 circular-sclist.lsp,344
-(defclass circular-sclist 61,2343
-(defmethod clone 66,2519
-(defmethod clone-with-new-class 71,2691
-(defmethod get-next 117,3844
-(defmethod get-last 162,5076
-(defmethod at-start 203,6087
-(defmethod verify-and-store 211,6339
-(defmethod reset 273,8149
-(defmethod print-object 296,9079
-(defun make-cscl 377,11546
-(defun cscl-p 384,11810
+(defclass circular-sclist 56,2259
+(defmethod clone 61,2435
+(defmethod clone-with-new-class 66,2607
+(defmethod get-next 112,3760
+(defmethod get-last 157,4992
+(defmethod at-start 198,6003
+(defmethod verify-and-store 206,6255
+(defmethod reset 268,8065
+(defmethod print-object 291,8995
+(defun make-cscl 372,11462
+(defun cscl-p 379,11726
 
 clm.lsp,96
 (defun random-loop-points 105,3862
 (defun clm-loops 273,12210
-(defun clm-loops-all 504,22941
+(defun clm-loops-all 504,22926
 
 cm.lsp,1627
 (defun in-scale 93,2937
@@ -215,12 +219,12 @@ cm.lsp,1627
 (defun midi-program-change 992,30017
 (defun midi-program-changes 1003,30390
 (defun process-voices 1017,30931
-(defun event-list-to-midi-file 1033,31629
-(defun parse-midi-file 1087,33882
-(defun midi-file-high-low 1139,35537
-(defun midi-file-to-events-list 1156,36194
-(defun parse-midi-file-aux 1162,36493
-(defun midi-file-one-note 1198,37672
+(defun event-list-to-midi-file 1056,32132
+(defun parse-midi-file 1111,34394
+(defun midi-file-high-low 1163,36049
+(defun midi-file-to-events-list 1180,36706
+(defun parse-midi-file-aux 1186,37005
+(defun midi-file-one-note 1222,38184
 
 cmn-glyphs.lsp,1261
 (defun display-dead-harmonic 60,2165
@@ -305,118 +309,123 @@ cycle-repeats.lsp,170
 (defmethod print-object 84,3288
 (defmethod verify-and-store 89,3492
 
-ensemble.lsp,761
-(defclass ensemble 65,2382
-(defmethod initialize-instance 86,3535
-(defmethod get-player 119,4744
-(defmethod get-players 154,5646
-(defmethod verify-and-store 176,6559
-(defmethod print-object 184,6845
-(defmethod clone 193,7244
-(defmethod clone-with-new-class 198,7396
-(defmethod check-first-bar-ins-for-doubling-players211,7991
-(defmethod score-write-bar-line-all-nil 219,8329
-(defmethod num-notes 259,9507
-(defmethod tessitura 310,11064
-(defmethod num-players 343,11871
-(defmethod players-exist 397,13599
-(defmethod add-player 427,14654
-(defun make-ensemble 529,17982
-(defun num-notes-aux 539,18405
-(defun tessitura-aux 550,18825
-(defun score-write-bar-line-all-nil-aux 563,19360
-(defun ral-to-ensemble 575,19884
-(defun ensemble-p 601,21001
+ensemble.lsp,833
+(defclass ensemble 57,2242
+(defmethod initialize-instance 78,3395
+(defmethod get-player 111,4604
+(defmethod get-players 146,5506
+(defmethod verify-and-store 168,6419
+(defmethod print-object 176,6705
+(defmethod clone 185,7104
+(defmethod clone-with-new-class 190,7256
+(defmethod check-first-bar-ins-for-doubling-players203,7851
+(defmethod score-write-bar-line-all-nil 211,8189
+(defmethod num-notes 251,9367
+(defmethod tessitura 302,10924
+(defmethod num-players 335,11731
+(defmethod players-exist 389,13459
+(defmethod add-player 419,14514
+(defmethod sort-players 454,15654
+(defmethod balanced-load? 490,17088
+(defun make-ensemble 586,20330
+(defun num-notes-aux 597,20762
+(defun tessitura-aux 608,21182
+(defun score-write-bar-line-all-nil-aux 621,21717
+(defun ral-to-ensemble 633,22241
+(defun ensemble-p 659,23358
 
-event.lsp,2855
+event.lsp,2966
 (defclass event 60,2480
-(defmethod scale 121,6229
-(defmethod initialize-instance 168,8721
-(defmethod set-midi-channel 212,9914
-(defmethod get-midi-channel 258,11079
-(defmethod output-midi 317,12855
-(defmethod get-dynamics 419,16424
-(defmethod remove-dynamics 464,17563
-(defmethod add-mark 473,17856
-(defmethod add-mark 481,18146
-(defmethod (setf 549,20068
-(defmethod (setf 619,22178
-(defmethod add-pitches 652,23276
-(defmethod (setf 666,23855
-(defmethod set-written-pitch-or-chord 686,24671
-(defmethod setf-pitch-aux 702,25327
-(defmethod print-object 729,26640
-(defmethod clone 753,27877
-(defmethod clone-with-new-class 758,28023
-(defmethod copy-event-slots 768,28346
-(defmethod porc-equal 801,30123
-(defmethod sharp-p 849,31289
-(defmethod flat-p 896,32347
-(defmethod natural-p 944,33448
-(defmethod enharmonic 1019,35645
-(defmethod pitch- 1107,38884
-(defmethod inc-duration 1171,40699
-(defmethod set-midi-time-sig 1228,42355
-(defmethod add-arrow 1308,45090
-(defmethod end-arrow 1373,47036
-(defmethod add-trill 1483,50093
-(defmethod end-trill 1527,51172
-(defmethod add-mark-before 1533,51325
-(defmethod has-mark-before 1575,52407
-(defmethod add-clef 1628,53832
-(defmethod get-clef 1679,55190
-(defmethod delete-clefs 1745,56806
-(defmethod get-amplitude 1800,58388
-(defmethod get-pitch-symbol 1846,59672
-(defmethod add-bracket-offset 1859,60062
-(defmethod no-accidental 1919,61927
-(defmethod from-8ve-transposing-ins 1928,62256
-(defmethod get-dynamic 1982,63916
-(defmethod has-hairpin 2002,64509
-(defmethod lp-get-ins-change 2012,64791
-(defmethod get-cmn-data 2219,74966
-(defmethod cmn-time 2298,79036
-(defmethod is-chord 2343,80206
-(defmethod is-single-pitch 2387,81318
-(defmethod transpose 2482,84463
-(defmethod set-written 2571,88013
-(defmethod delete-written 2613,89298
-(defmethod lowest 2663,91032
-(defmethod highest 2716,92816
-(defmethod event-distance 2782,94798
-(defmethod bad-interval-p 2802,95505
-(defmethod get-porc 2808,95776
-(defmethod respell 2820,96194
-(defmethod force-rest 2942,100779
-(defmethod reset-8va 2956,101319
-(defmethod force-artificial-harmonic 3013,103357
-(defmethod (setf 3041,104478
-(defmethod delete-marks 3048,104736
-(defmethod src-for-sample-freq 3058,105111
-(defmethod get-degree 3108,106931
-(defmethod replace-mark 3166,108866
-(defmethod force-chord 3177,109291
-(defun make-event-classic 3193,109840
-(defun make-event 3341,116506
-(defun make-rest 3454,121010
-(defun find-next-grace-note 3464,121369
-(defun find-next-non-grace-note 3491,122457
-(defun make-punctuation-events 3545,124614
-(defun make-events 3602,126424
-(defun make-events2 3676,129164
-(defun event-p 3739,131036
-(defun sort-event-list 3774,132020
-(defun wrap-events-list 3837,134392
-(defun is-dynamic 3905,136855
-(defun lp-percussion-clef 3913,137149
-(defun is-clef 3918,137411
+(defmethod scale 135,7270
+(defmethod initialize-instance 185,9913
+(defmethod set-midi-channel 229,11106
+(defmethod get-midi-channel 275,12271
+(defmethod output-midi 334,14047
+(defmethod get-dynamics 436,17616
+(defmethod remove-dynamics 481,18755
+(defmethod add-mark 490,19048
+(defmethod add-mark 498,19338
+(defmethod (setf 566,21260
+(defmethod (setf 580,21871
+(defmethod (setf 644,23830
+(defmethod add-pitches 677,24928
+(defmethod (setf 691,25507
+(defmethod set-written-pitch-or-chord 711,26323
+(defmethod setf-pitch-aux 727,26979
+(defmethod print-object 754,28292
+(defmethod clone 780,29627
+(defmethod clone-with-new-class 785,29773
+(defmethod copy-event-slots 795,30096
+(defmethod porc-equal 831,32020
+(defmethod sharp-p 879,33186
+(defmethod flat-p 926,34244
+(defmethod natural-p 974,35345
+(defmethod enharmonic 1049,37542
+(defmethod pitch- 1137,40781
+(defmethod inc-duration 1201,42596
+(defmethod set-midi-time-sig 1258,44252
+(defmethod add-arrow 1338,46987
+(defmethod end-arrow 1403,48933
+(defmethod add-trill 1513,51990
+(defmethod end-trill 1557,53069
+(defmethod add-mark-before 1563,53222
+(defmethod has-mark-before 1605,54304
+(defmethod add-clef 1658,55729
+(defmethod get-clef 1709,57087
+(defmethod delete-clefs 1775,58703
+(defmethod get-amplitude 1830,60285
+(defmethod get-pitch-symbol 1876,61569
+(defmethod add-bracket-offset 1889,61959
+(defmethod no-accidental 1949,63824
+(defmethod from-8ve-transposing-ins 1958,64153
+(defmethod get-dynamic 2012,65813
+(defmethod has-hairpin 2032,66406
+(defmethod lp-get-ins-change 2042,66688
+(defmethod get-cmn-data 2260,77711
+(defmethod cmn-time 2339,81781
+(defmethod is-chord 2384,82951
+(defmethod is-single-pitch 2428,84063
+(defmethod transpose 2523,87208
+(defmethod set-written 2612,90758
+(defmethod delete-written 2654,92043
+(defmethod lowest 2704,93777
+(defmethod highest 2757,95561
+(defmethod event-distance 2823,97543
+(defmethod bad-interval-p 2843,98250
+(defmethod get-porc 2849,98521
+(defmethod respell 2861,98939
+(defmethod force-rest 2983,103503
+(defmethod reset-8va 2997,104043
+(defmethod force-artificial-harmonic 3054,106081
+(defmethod (setf 3082,107202
+(defmethod delete-marks 3089,107460
+(defmethod src-for-sample-freq 3099,107835
+(defmethod get-degree 3149,109655
+(defmethod replace-mark 3207,111590
+(defmethod force-chord 3218,112015
+(defmethod add-antescofo-message 3229,112505
+(defmethod event-equal 3234,112747
+(defun make-event-classic 3264,114174
+(defun make-event 3412,120840
+(defun make-rest 3525,125344
+(defun find-next-grace-note 3535,125703
+(defun find-next-non-grace-note 3562,126791
+(defun make-punctuation-events 3616,128948
+(defun make-events 3673,130758
+(defun make-events2 3747,133498
+(defun event-p 3810,135370
+(defun sort-event-list 3845,136354
+(defun wrap-events-list 3908,138726
+(defun is-dynamic 3976,141189
+(defun lp-percussion-clef 3984,141483
+(defun is-clef 3989,141745
 
 globals.lsp,215
 (defparameter +slippery-chicken-config-data+58,2218
-(defun get-sc-config 111,4957
-(defun set-sc-config 115,5092
-(defparameter +cmn-open-brackets-for-sc+ 128,5512
-(defparameter +cmn-grace-notes-for-sc+ 129,5569
+(defun get-sc-config 120,5542
+(defun set-sc-config 124,5677
+(defparameter +cmn-open-brackets-for-sc+ 137,6097
+(defparameter +cmn-grace-notes-for-sc+ 138,6154
 
 instrument-change-map.lsp,272
 (defclass instrument-change-map 60,2361
@@ -439,32 +448,32 @@ instrument-palette.lsp,333
 (defun instrument-palette-p 301,11392
 
 instrument.lsp,926
-(defclass instrument 68,2681
-(defmethod initialize-instance 176,8968
-(defmethod (setf 242,11999
-(defmethod (setf 249,12291
-(defmethod (setf 255,12571
-(defmethod (setf 261,12856
-(defmethod (setf 267,13143
-(defmethod clone 276,13537
-(defmethod clone-with-new-class 281,13697
-(defmethod print-object 320,16019
-(defmethod reset-stats 351,17991
-(defmethod check-starting-clef 361,18307
-(defmethod tessitura-degree 369,18637
-(defmethod tessitura-note 378,18927
-(defmethod transposing-instrument-p 443,20857
-(defmethod best-clef 455,21234
-(defmethod set-prefers-low 518,22786
-(defmethod set-prefers-high 576,24045
-(defmethod prefers-low 619,25109
-(defmethod prefers-high 661,26126
-(defmethod in-range 721,28109
-(defmethod force-in-range 772,29632
-(defun check-transposition-against-semitones 793,30284
-(defun make-instrument 994,40895
-(defun default-chord-function 1202,50924
-(defun instrument-p 1226,51909
+(defclass instrument 61,2527
+(defmethod initialize-instance 169,8814
+(defmethod (setf 235,11845
+(defmethod (setf 242,12137
+(defmethod (setf 248,12417
+(defmethod (setf 254,12702
+(defmethod (setf 260,12989
+(defmethod clone 269,13383
+(defmethod clone-with-new-class 274,13543
+(defmethod print-object 313,15865
+(defmethod reset-stats 344,17837
+(defmethod check-starting-clef 354,18153
+(defmethod tessitura-degree 362,18483
+(defmethod tessitura-note 371,18773
+(defmethod transposing-instrument-p 436,20703
+(defmethod best-clef 448,21080
+(defmethod set-prefers-low 511,22632
+(defmethod set-prefers-high 569,23891
+(defmethod prefers-low 612,24955
+(defmethod prefers-high 654,25972
+(defmethod in-range 714,27955
+(defmethod force-in-range 765,29478
+(defun check-transposition-against-semitones 786,30130
+(defun make-instrument 987,40741
+(defun default-chord-function 1195,50770
+(defun instrument-p 1219,51755
 
 instruments.lsp,468
 (defparameter +slippery-chicken-standard-instrument-palette+68,2540
@@ -527,11 +536,11 @@ l-for-lookup.lsp,1197
 (defun count-elements 1404,60467
 
 lilypond.lsp,157
-(defun lp-get-mark 70,2851
-(defun get-lp-key-sig 333,14408
-(defun lp-set-instrument 339,14585
-(defun lp-flat-sign 348,14972
-(defun lp-ml-text 359,15457
+(defun lp-get-mark 68,2849
+(defun get-lp-key-sig 336,14691
+(defun lp-set-instrument 342,14868
+(defun lp-flat-sign 350,15254
+(defun lp-ml-text 361,15739
 
 linked-named-object.lsp,204
 (defclass linked-named-object 60,2264
@@ -542,39 +551,39 @@ linked-named-object.lsp,204
 (defun linked-named-object-p 107,4171
 
 named-object.lsp,655
-(defclass named-object 71,3054
-(defmethod initialize-instance 80,3413
-(defmethod print-object 87,3659
-(defmethod print-object 92,3838
-(defmethod clone 109,4473
-(defmethod clone-with-new-class 116,4733
-(defmethod sc-change-class 136,5690
-(defmethod (setf 141,5868
-(defmethod statistics 146,6042
-(defmethod statistics 151,6221
-(defmethod id-eq 156,6395
-(defmethod combine-ids 169,6914
-(defmethod cmn-display 175,7112
-(defmethod reset 185,7651
-(defun make-named-object 194,7950
-(defun named-object-p 199,8141
-(defun make-named-object-from-derived-class 204,8284
-(defun check-named-object-id-type 213,8557
-(defun basic-copy-object 225,8988
+(defclass named-object 66,2970
+(defmethod initialize-instance 75,3329
+(defmethod print-object 82,3575
+(defmethod print-object 87,3754
+(defmethod clone 104,4389
+(defmethod clone-with-new-class 111,4649
+(defmethod sc-change-class 131,5606
+(defmethod (setf 136,5784
+(defmethod statistics 141,5958
+(defmethod statistics 146,6137
+(defmethod id-eq 151,6311
+(defmethod combine-ids 164,6830
+(defmethod cmn-display 170,7028
+(defmethod reset 180,7567
+(defun make-named-object 189,7866
+(defun named-object-p 194,8057
+(defun make-named-object-from-derived-class 199,8200
+(defun check-named-object-id-type 208,8473
+(defun basic-copy-object 220,8904
 
-osc-sc.lsp,402
-(defun osc-call 102,4528
-(defun osc-send-list 111,4813
-(defparameter +osc-sc-output-stream+ 122,5274
-(defparameter +osc-sc-in-socket+ 123,5316
-(defparameter +osc-sc-out-socket+ 124,5354
-(defun osc-cleanup-sockets 128,5476
-(defun osc-call 140,6015
-(defun make-udp-socket(184,8014
-(defun osc-eval 190,8208
-(defun osc-send-list 212,9172
-(defun osc-apply 224,9566
-(defun handle-number 234,9916
+osc-sc.lsp,403
+(defun osc-call 103,4588
+(defun osc-send-list 113,4908
+(defparameter +osc-sc-output-stream+ 124,5369
+(defparameter +osc-sc-in-socket+ 125,5411
+(defparameter +osc-sc-out-socket+ 126,5449
+(defun osc-cleanup-sockets 130,5571
+(defun osc-call 142,6110
+(defun make-udp-socket(187,8174
+(defun osc-eval 193,8368
+(defun osc-send-list 215,9332
+(defun osc-apply 227,9726
+(defun handle-number 237,10076
 
 osc.lsp,867
 (defpackage :osc43,1504
@@ -625,47 +634,47 @@ permutations.lsp,694
 (defun permutate 418,16066
 (defun shuffle 985,43663
 (defun multi-shuffle 1088,46766
-(defun multi-shuffle-with-perms 1161,48855
-(defun move-repeats 1242,51617
-(defun get-atom 1265,52473
-(defun get-all-pairs 1279,52850
-(defun lazy-lconc 1300,53706
-(defun lazy-tconc 1314,54076
-(defun remove-preserving-tail 1333,54994
-(defun apply-permutations 1349,55569
-(defun find-first-permutation 1371,56427
-(defun count-permutations 1386,57039
-(defun list-permutations 1399,57447
-(defun print-it 1414,57799
-(defun visit-and-print 1419,57877
+(defun multi-shuffle-with-perms 1160,48854
+(defun move-repeats 1241,51616
+(defun get-atom 1264,52472
+(defun get-all-pairs 1278,52849
+(defun lazy-lconc 1299,53705
+(defun lazy-tconc 1313,54075
+(defun remove-preserving-tail 1332,54993
+(defun apply-permutations 1348,55568
+(defun find-first-permutation 1370,56426
+(defun count-permutations 1385,57038
+(defun list-permutations 1398,57446
+(defun print-it 1413,57798
+(defun visit-and-print 1418,57876
 
 piece.lsp,970
-(defclass piece 67,2626
-(defmethod clone 72,2756
-(defmethod print-object 77,2902
-(defmethod cmn-display 83,3072
-(defmethod get-cmn-data 271,12246
-(defmethod insert-bar 442,19820
-(defmethod get-nth-sequenz 561,24580
-(defmethod get-player-section 603,26655
-(defmethod get-bar 616,27137
-(defmethod get-bar-from-ref 633,27811
-(defmethod get-bar-num-from-ref 645,28304
-(defmethod replace-events 656,28686
-(defmethod handle-ties 693,30279
-(defmethod get-tied-durations 759,33327
-(defmethod replace-multi-bar-events 799,34759
-(defmethod add-rest-player-sections 898,39593
-(defmethod add-rest-sequenzes 934,41708
-(defmethod change-time-sig 975,43959
-(defmethod update-write-time-sig2 989,44524
-(defmethod rebar 1046,46876
-(defmethod delete-sequenzes 1181,52582
-(defmethod get-sequenz-from-bar-num 1262,55186
-(defun make-piece 1277,55791
-(defun add-rest-player-sections-aux 1282,55963
-(defun splice-sets-into-staves 1312,57365
-(defun piece-p 1363,59778
+(defclass piece 62,2542
+(defmethod clone 67,2672
+(defmethod print-object 72,2818
+(defmethod cmn-display 78,2988
+(defmethod get-cmn-data 266,12162
+(defmethod insert-bar 437,19736
+(defmethod get-nth-sequenz 556,24496
+(defmethod get-player-section 598,26571
+(defmethod get-bar 611,27053
+(defmethod get-bar-from-ref 628,27727
+(defmethod get-bar-num-from-ref 640,28220
+(defmethod replace-events 651,28602
+(defmethod handle-ties 688,30195
+(defmethod get-tied-durations 754,33243
+(defmethod replace-multi-bar-events 793,34674
+(defmethod add-rest-player-sections 905,40369
+(defmethod add-rest-sequenzes 941,42484
+(defmethod change-time-sig 983,44782
+(defmethod update-write-time-sig2 997,45347
+(defmethod rebar 1054,47699
+(defmethod delete-sequenzes 1189,53405
+(defmethod get-sequenz-from-bar-num 1270,56009
+(defun make-piece 1285,56614
+(defun add-rest-player-sections-aux 1290,56786
+(defun splice-sets-into-staves 1320,58188
+(defun piece-p 1371,60601
 
 pitch-seq-palette.lsp,492
 (defclass pitch-seq-palette 59,2243
@@ -708,88 +717,88 @@ pitch.lsp,3182
 (defmethod output-midi-note 207,10174
 (defmethod force-micro-tone 230,11391
 (defmethod midi-note-float 235,11560
-(defmethod delete-marks 278,12502
-(defmethod transpose 388,16291
-(defmethod pitch-round 464,18728
-(defmethod no-accidental 516,20482
-(defmethod transpose-to-octave 584,22643
-(defmethod pitch=673,25561
-(defmethod enharmonic-equivalents 709,26675
-(defmethod cents-hertz 745,27671
-(defmethod pitch-class-eq 810,29319
-(defmethod note=862,30730
-(defmethod pitch< 935,32782
-(defmethod pitch> 1008,34793
-(defmethod pitch<=1080,36863
-(defmethod pitch>=1153,38950
-(defmethod pitch-in-range 1217,40780
-(defmethod pitch-min 1275,42450
-(defmethod pitch-max 1335,44122
-(defmethod midi- 1380,45304
-(defmethod degree- 1428,46647
-(defmethod pitch- 1473,47673
-(defmethod pitch-inc 1552,50239
-(defmethod is-octave 1561,50576
-(defmethod set-midi-channel 1717,57281
-(defmethod set-white-note 1732,57873
-(defmethod set-score-note 1790,60503
-(defmethod add-mark 1850,62101
-(defmethod add-mark-before 1860,62448
-(defmethod has-mark 1871,62804
-(defmethod has-mark-before 1876,62948
-(defmethod get-cmn-12th-tone-accidentals 1883,63159
-(defmethod get-lp-data 1901,64191
-(defmethod micro-but-not-quarter-tone-p 1940,66171
-(defmethod get-cmn-data 1949,66479
-(defmethod change-cmn-note-pitch 2018,69733
-(defmethod (setf 2036,70442
-(defmethod (setf 2046,70735
-(defmethod (setf 2056,71028
-(defmethod force-white-note 2063,71235
-(defmethod src-for-sample-freq 2074,71647
-(defmethod white-octave 2082,71942
-(defmethod enharmonic 2130,73161
-(defmethod rm-marks 2141,73567
-(defmethod print-simple 2146,73771
-(defun make-pitch 2228,76637
-(defun transpose-pitch-list-force-white-notes 2242,77243
-(defun transpose-pitch-list 2316,79641
-(defun transpose-pitch-list-to-octave 2411,82744
-(defun pitch-list-to-symbols 2458,84337
-(defun sort-pitch-list 2534,86515
-(defun remove-octaves 2622,89902
-(defun invert-pitch-list 2723,93367
-(defun get-ids-from-pitch-list 2739,93983
-(defun print-simple-pitch-list 2769,94685
-(defun remove-accidental-in-parentheses-indicator 2775,94892
-(defun pitch-p 2787,95421
-(defun interval-aux 2792,95550
-(defun count-bad-adjacent-intervals 2804,95985
-(defun bad-interval 2816,96401
-(defun dim2nd 2837,96889
-(defun augunison 2842,97021
-(defun aug2nd 2847,97156
-(defun augaug2nd 2854,97312
-(defun aug3rd 2861,97484
-(defun dim4th 2871,97853
-(defun augaug4th 2878,98008
-(defun aug5th 2885,98177
-(defun dim3rd 2892,98332
-(defun dim6th 2899,98487
-(defun dim7th 2906,98642
-(defun aug7th 2913,98797
-(defun augaug7th 2920,98951
-(defun dim8ve 2927,99121
-(defun aug8ve 2934,99286
-(defun pitch-member 3000,101502
-(defun remove-pitches 3097,104983
-(defun pitch-intersection 3157,106744
-(defun in-octave 3216,108185
-(defun pitch-list=3224,108402
-(defun cmn-display-pitch-list 3252,109403
-(defun rm-bad-intervals 3273,110300
-(defun pitch-list-high-low 3287,110762
-(defun natural-harmonic 3331,112201
+(defmethod delete-marks 279,12579
+(defmethod transpose 389,16368
+(defmethod pitch-round 465,18805
+(defmethod no-accidental 517,20559
+(defmethod transpose-to-octave 585,22720
+(defmethod pitch=674,25638
+(defmethod enharmonic-equivalents 710,26752
+(defmethod cents-hertz 746,27748
+(defmethod pitch-class-eq 811,29396
+(defmethod note=863,30807
+(defmethod pitch< 936,32859
+(defmethod pitch> 1009,34870
+(defmethod pitch<=1081,36940
+(defmethod pitch>=1154,39027
+(defmethod pitch-in-range 1218,40857
+(defmethod pitch-min 1276,42527
+(defmethod pitch-max 1336,44199
+(defmethod midi- 1381,45381
+(defmethod degree- 1429,46724
+(defmethod pitch- 1474,47750
+(defmethod pitch-inc 1553,50316
+(defmethod is-octave 1562,50653
+(defmethod set-midi-channel 1718,57358
+(defmethod set-white-note 1733,57950
+(defmethod set-score-note 1791,60580
+(defmethod add-mark 1851,62178
+(defmethod add-mark-before 1861,62525
+(defmethod has-mark 1872,62881
+(defmethod has-mark-before 1877,63025
+(defmethod get-cmn-12th-tone-accidentals 1884,63236
+(defmethod get-lp-data 1902,64268
+(defmethod micro-but-not-quarter-tone-p 1941,66248
+(defmethod get-cmn-data 1950,66556
+(defmethod change-cmn-note-pitch 2019,69810
+(defmethod (setf 2037,70519
+(defmethod (setf 2047,70812
+(defmethod (setf 2057,71105
+(defmethod force-white-note 2064,71312
+(defmethod src-for-sample-freq 2075,71724
+(defmethod white-octave 2083,72019
+(defmethod enharmonic 2131,73238
+(defmethod rm-marks 2142,73644
+(defmethod print-simple 2147,73848
+(defun make-pitch 2229,76714
+(defun transpose-pitch-list-force-white-notes 2243,77320
+(defun transpose-pitch-list 2317,79718
+(defun transpose-pitch-list-to-octave 2412,82821
+(defun pitch-list-to-symbols 2459,84414
+(defun sort-pitch-list 2535,86592
+(defun remove-octaves 2623,89979
+(defun invert-pitch-list 2724,93444
+(defun get-ids-from-pitch-list 2740,94060
+(defun print-simple-pitch-list 2770,94762
+(defun remove-accidental-in-parentheses-indicator 2776,94969
+(defun pitch-p 2788,95498
+(defun interval-aux 2793,95627
+(defun count-bad-adjacent-intervals 2805,96062
+(defun bad-interval 2817,96478
+(defun dim2nd 2838,96966
+(defun augunison 2843,97098
+(defun aug2nd 2848,97233
+(defun augaug2nd 2855,97389
+(defun aug3rd 2862,97561
+(defun dim4th 2872,97930
+(defun augaug4th 2879,98085
+(defun aug5th 2886,98254
+(defun dim3rd 2893,98409
+(defun dim6th 2900,98564
+(defun dim7th 2907,98719
+(defun aug7th 2914,98874
+(defun augaug7th 2921,99028
+(defun dim8ve 2928,99198
+(defun aug8ve 2935,99363
+(defun pitch-member 3001,101579
+(defun remove-pitches 3098,105060
+(defun pitch-intersection 3158,106821
+(defun in-octave 3217,108262
+(defun pitch-list=3225,108479
+(defun cmn-display-pitch-list 3253,109480
+(defun rm-bad-intervals 3274,110377
+(defun pitch-list-high-low 3288,110839
+(defun natural-harmonic 3332,112278
 
 player-section.lsp,344
 (defclass player-section 63,2439
@@ -803,27 +812,28 @@ player-section.lsp,344
 (defun make-player-section 277,11393
 (defun re-bar-aux 282,11583
 
-player.lsp,749
-(defclass player 54,2105
-(defmethod initialize-instance 77,3399
-(defmethod print-object 126,5721
-(defmethod clone 139,6373
-(defmethod clone-with-new-class 144,6521
-(defmethod plays-transposing-instrument 235,9845
-(defmethod microtonal-chords-p 280,11244
-(defmethod score-write-bar-line 285,11407
-(defmethod set-score-write-bar-line 295,11706
-(defmethod total-notes 347,13355
-(defmethod total-degrees 397,14906
-(defmethod total-bars 441,16122
-(defmethod reset-instrument-stats 469,16855
-(defmethod tessitura-degree 518,18451
-(defmethod tessitura-note 566,19835
-(defmethod total-duration 617,21421
-(defmethod player-get-instrument 711,24793
-(defun make-player 853,30963
-(defun make-doublings-al 865,31493
-(defun player-p 881,32256
+player.lsp,790
+(defclass player 56,2237
+(defmethod initialize-instance 86,4005
+(defmethod handle-staff-names 139,6549
+(defmethod print-object 167,7496
+(defmethod clone 182,8261
+(defmethod clone-with-new-class 187,8409
+(defmethod plays-transposing-instrument 281,11915
+(defmethod microtonal-chords-p 326,13314
+(defmethod score-write-bar-line 331,13477
+(defmethod set-score-write-bar-line 341,13776
+(defmethod total-notes 392,15424
+(defmethod total-degrees 442,16975
+(defmethod total-bars 486,18191
+(defmethod reset-instrument-stats 514,18924
+(defmethod tessitura-degree 563,20520
+(defmethod tessitura-note 611,21904
+(defmethod total-duration 662,23490
+(defmethod player-get-instrument 756,26862
+(defun make-player 904,33409
+(defun make-doublings-al 917,34048
+(defun player-p 933,34813
 
 popcorn.lsp,512
 (defclass popcorn 62,2689
@@ -891,73 +901,74 @@ recursive-assoc-list.lsp,1135
 (defun assoc-list-id-list 1895,69936
 (defun is-ral 1903,70186
 
-rhythm.lsp,2283
-(defclass rhythm 61,2257
-(defmethod initialize-instance 134,6686
-(defmethod clone 148,7202
-(defmethod clone-with-new-class 153,7350
-(defmethod force-rest 207,9619
-(defmethod print-simple 224,10120
-(defmethod print-object 238,10617
-(defmethod change-rhythm 273,12298
-(defmethod scale 351,13994
-(defmethod has-flags 398,15810
-(defmethod rhythm-equal 446,16896
-(defmethod rhythm/ 480,17569
-(defmethod is-multiple 517,18455
-(defmethod add-mark 601,20187
-(defmethod add-mark-once 672,22046
-(defmethod rhythm-add-marks 682,22377
-(defmethod add-mark-in-part 690,22656
-(defmethod enharmonic 696,22865
-(defmethod rm-marks 771,24941
-(defmethod replace-mark 818,26130
-(defmethod delete-marks 866,27334
-(defmethod start-beam 873,27504
-(defmethod end-beam 880,27697
-(defmethod has-mark 920,28641
-(defmethod accented-p 973,29963
-(defmethod begin-slur-p 1021,31181
-(defmethod end-slur-p 1069,32397
-(defmethod begin-phrase-p 1075,32620
-(defmethod end-phrase-p 1080,32770
-(defmethod check-beam-ok 1085,32917
-(defmethod delete-beam 1131,34248
-(defmethod dot-for-triplet? 1141,34567
-(defmethod duration-secs 1184,35692
-(defmethod update-needs-new-note 1192,35946
-(defmethod delete-tuplet-bracket 1197,36141
-(defmethod add-tuplet-bracket 1206,36490
-(defmethod (setf 1215,36906
-(defmethod (setf 1221,37096
-(defmethod (setf 1230,37437
-(defmethod parse-rhythm 1242,37966
-(defmethod (setf 1247,38136
-(defmethod add 1325,40683
-(defmethod subtract 1419,43667
-(defmethod arithmetic 1424,43850
-(defun make-rhythm 1513,47461
-(defun rthm-num-flags 1546,49040
-(defun set-grace-note-duration 1554,49246
-(defun parse-possibly-compound-rhythm 1570,49998
-(defun ties 1606,51603
-(defun dots 1633,52797
-(defun rhythm-p 1643,53195
-(defun quarters 1651,53415
-(defun rationalize-if-necessary 1659,53739
-(defun rationalize-for-division 1700,55751
-(defun get-rhythm-letter-for-duration 1726,56923
-(defun get-rhythm-letter-for-value 1748,57884
-(defun make-tied 1804,59647
-(defun force-rests 1815,59996
-(defun rhythm-list 1890,61965
-(defun rhythms-as-symbols 1920,63166
-(defun validate-mark 1926,63358
-(defun clef-list-p 1942,64157
-(defun cmn-mark-p 1950,64388
-(defun has-mark-aux 1959,64645
-(defun parse-rhythm-symbol 1968,64988
-(defun rm-marks-aux 2065,69761
+rhythm.lsp,2321
+(defclass rhythm 56,2173
+(defmethod initialize-instance 129,6595
+(defmethod clone 143,7111
+(defmethod clone-with-new-class 148,7259
+(defmethod force-rest 201,9527
+(defmethod print-simple 221,10225
+(defmethod print-object 235,10722
+(defmethod change-rhythm 270,12403
+(defmethod scale 348,14099
+(defmethod has-flags 395,15915
+(defmethod rhythm-equal 443,17001
+(defmethod rhythm/ 477,17674
+(defmethod is-multiple 514,18560
+(defmethod add-mark 598,20292
+(defmethod add-mark-once 669,22151
+(defmethod rhythm-add-marks 679,22482
+(defmethod add-mark-in-part 687,22761
+(defmethod enharmonic 693,22970
+(defmethod rm-marks 768,25046
+(defmethod replace-mark 815,26235
+(defmethod delete-marks 863,27439
+(defmethod delete-marks-if 869,27624
+(defmethod start-beam 874,27829
+(defmethod end-beam 881,28022
+(defmethod has-mark 921,28966
+(defmethod accented-p 974,30288
+(defmethod begin-slur-p 1022,31506
+(defmethod end-slur-p 1070,32722
+(defmethod begin-phrase-p 1076,32945
+(defmethod end-phrase-p 1081,33095
+(defmethod check-beam-ok 1086,33242
+(defmethod delete-beam 1132,34573
+(defmethod dot-for-triplet? 1142,34892
+(defmethod duration-secs 1185,36017
+(defmethod update-needs-new-note 1193,36271
+(defmethod delete-tuplet-bracket 1198,36466
+(defmethod add-tuplet-bracket 1207,36815
+(defmethod (setf 1216,37231
+(defmethod (setf 1222,37421
+(defmethod (setf 1231,37762
+(defmethod parse-rhythm 1243,38291
+(defmethod (setf 1248,38461
+(defmethod add 1326,41008
+(defmethod subtract 1420,43992
+(defmethod arithmetic 1425,44175
+(defun make-rhythm 1514,47786
+(defun rthm-num-flags 1547,49365
+(defun set-grace-note-duration 1555,49571
+(defun parse-possibly-compound-rhythm 1571,50323
+(defun ties 1607,51928
+(defun dots 1634,53122
+(defun rhythm-p 1644,53520
+(defun quarters 1652,53740
+(defun rationalize-if-necessary 1660,54064
+(defun rationalize-for-division 1701,56076
+(defun get-rhythm-letter-for-duration 1727,57248
+(defun get-rhythm-letter-for-value 1749,58209
+(defun make-tied 1805,59972
+(defun force-rests 1816,60321
+(defun rhythm-list 1891,62290
+(defun rhythms-as-symbols 1921,63491
+(defun validate-mark 1927,63683
+(defun clef-list-p 1943,64482
+(defun cmn-mark-p 1951,64713
+(defun has-mark-aux 1960,64970
+(defun parse-rhythm-symbol 1969,65313
+(defun rm-marks-aux 2066,70086
 
 rthm-chain-slow.lsp,305
 (defclass rthm-chain-slow 62,2314
@@ -970,155 +981,157 @@ rthm-chain-slow.lsp,305
 (defmethod get-next 191,8488
 (defmethod init-order 223,10205
 
-rthm-chain.lsp,785
+rthm-chain.lsp,822
 (defclass rthm-chain 117,5604
 (defmethod initialize-instance 235,12863
-(defmethod verify-and-store 294,15518
-(defmethod clone 304,15898
-(defmethod clone-with-new-class 310,16090
-(defmethod print-object 351,18383
-(defmethod split 485,24093
-(defmethod fit-curves 558,27972
-(defmethod reset 642,30751
-(defmethod rc-rest 664,31400
-(defmethod stick 672,31707
-(defmethod rthm-chain-gen 745,35517
-(defmethod rthm-chain-gen-aux 764,36314
-(defmethod add-voice 1129,54639
-(defmethod (setf 1155,55772
-(defmethod (setf 1161,55956
-(defun make-rthm-chain 1455,71924
-(defun rthm-chain-get-order 1636,81000
-(defun procession 1740,86336
-(defun hash-least-used 1903,93279
-(defun rthm-chain-seq-name 1933,94570
-(defun rthm-chain-p 1939,94759
-(defun get-duration-as-beat 1945,94958
+(defmethod verify-and-store 298,15720
+(defmethod clone 308,16100
+(defmethod clone-with-new-class 314,16292
+(defmethod print-object 355,18585
+(defmethod split 489,24295
+(defmethod fit-curves 562,28174
+(defmethod reset 646,30953
+(defmethod rc-rest 668,31602
+(defmethod stick 676,31909
+(defmethod rthm-chain-gen 749,35719
+(defmethod rthm-chain-gen-aux 768,36516
+(defmethod add-voice 1133,54841
+(defmethod (setf 1159,55974
+(defmethod (setf 1165,56158
+(defun make-rthm-chain 1459,72126
+(defun rthm-chain-get-order 1641,81230
+(defun procession 1745,86566
+(defun procession-mirror 1869,92383
+(defun hash-least-used 1939,94633
+(defun rthm-chain-seq-name 1969,95924
+(defun rthm-chain-p 1975,96113
+(defun get-duration-as-beat 1981,96312
 
-rthm-seq-bar.lsp,4738
-(defclass rthm-seq-bar 65,2567
-(defmethod initialize-instance 182,9573
-(defmethod is-full 244,12496
-(defmethod rhythms-duration 265,13441
-(defmethod bar-duration 270,13612
-(defmethod delete-marks 318,14981
-(defmethod delete-rhythms 331,15418
-(defmethod add-event 338,15602
-(defmethod fill-with-rhythms 488,21361
-(defmethod all-rests? 559,24150
-(defmethod consolidate-rests-max 614,26104
-(defmethod consolidate-rests 713,29199
-(defmethod force-rest-bar 868,35603
-(defmethod num-notes-tied-from 902,37137
-(defmethod consolidate-notes 964,39408
-(defmethod ties-to-dots 1025,42310
-(defmethod fix-brackets 1099,46385
-(defmethod check-beams 1202,50612
-(defmethod beams-on-rests? 1241,52077
-(defmethod consolidated-rthms-to-events 1250,52350
-(defmethod get-beat-as-rhythm 1304,54496
-(defmethod add-tuplet-bracket 1312,54857
-(defmethod delete-beams 1390,57178
-(defmethod delete-tuplets 1444,58403
-(defmethod check-tuplets 1485,59703
-(defmethod auto-tuplets 1554,62228
-(defmethod figure-out-and-auto-set-tuplets 1578,63106
-(defmethod auto-put-tuplet-bracket-on-beats 1676,66240
-(defmethod auto-beam 1771,69532
-(defmethod get-num-beats 1820,71482
-(defmethod get-beats 1830,72051
-(defmethod gen-stats 1878,74002
-(defmethod update-missing-duration 1910,75369
-(defmethod update-rhythms-beam-info 1920,75721
-(defmethod update-rhythms-bracket-info 1943,76782
-(defmethod clone 1991,79166
-(defmethod clone-with-new-class 1996,79330
-(defmethod sounding-duration 2033,81526
-(defmethod set-sounding-duration 2047,82129
-(defmethod get-nth-non-rest-rhythm 2112,84245
-(defmethod get-nth-rest 2187,86630
-(defmethod get-nth-event 2264,89266
-(defmethod get-last-event 2310,90742
-(defmethod get-nth-attack 2374,92729
-(defmethod scale 2470,95745
-(defmethod set-nth-attack 2599,100395
-(defmethod get-last-attack 2669,102869
-(defmethod get-time-sig-from-all-time-sigs 2680,103340
-(defmethod bar-qtr-duration 2695,103943
-(defmethod update-events-bar-nums 2702,104144
-(defmethod rhythms-to-events 2709,104389
-(defmethod chop 2923,112025
-(defmethod new-bar-from-time-range 2961,113863
-(defmethod get-events 3048,117950
-(defmethod update-time 3138,122315
-(defmethod (setf 3172,123876
-(defmethod (setf 3188,124398
-(defmethod (setf 3194,124586
-(defmethod get-time-sig 3226,125426
-(defmethod get-time-sig-as-list 3252,126037
-(defmethod time-sig-equal 3285,126917
-(defmethod inc-nth-rthm 3315,128148
-(defmethod get-timings 3331,128982
-(defmethod print-simple 3381,131308
-(defmethod print-object 3389,131619
-(defmethod store-time-sig 3439,134311
-(defmethod time-sig-pos 3456,135051
-(defmethod verify-brackets 3467,135546
-(defmethod get-lp-data 3505,136678
-(defmethod lp-rehearsal-letter 3567,139306
-(defmethod lp-rest-bar 3575,139653
-(defmethod lp-time-sig 3587,140114
-(defmethod get-cmn-data 3595,140405
-(defmethod auto-accidentals 3761,149124
-(defmethod transpose 3976,159215
-(defmethod count-c5ths 4002,160379
-(defmethod count-accidentals 4021,160996
-(defmethod enharmonics-exist 4044,161899
-(defmethod respell-bar 4136,165575
-(defmethod enharmonic 4338,173103
-(defmethod replace-first-event 4379,174838
-(defmethod rhythms-to-events 4396,175604
-(defmethod split-longer-rests 4403,175846
-(defmethod split 4506,179601
-(defmethod set-written 4614,183367
-(defmethod delete-written 4664,184934
-(defmethod make-rests 4672,185267
-(defmethod set-midi-channel 4740,187611
-(defmethod reset-8va 4791,189095
-(defmethod set-8va 4852,190778
-(defmethod no-accidental 4863,191190
-(defmethod (setf 4871,191509
-(defmethod get-rhythm-symbols 4902,192304
-(defmethod get-pitch-symbols 4935,193220
-(defmethod set-amplitudes 4972,194384
-(defmethod set-dynamics 5017,195901
-(defmethod total-degrees 5028,196315
-(defun make-rthm-seq-bar 5110,199035
-(defun rthm-seq-bar-p 5118,199282
-(defun make-rest-bar 5174,200973
-(defun parse-rhythms 5218,202924
-(defun get-cmn-notes-from-rqq 5388,211616
-(defun do-rqq 5416,212970
-(defun do-rqq-aux 5486,216140
-(defun handle-rqq 5510,217141
-(defun is-rqq-info 5547,218573
-(defun consolidate-rests-aux 5555,218788
-(defun consolidate-notes-aux 5596,220318
-(defun consolidate-notes-aux2 5665,223617
-(defun consolidate-notes-aux3 5689,224611
-(defun consolidate-notes-aux4 5698,224928
-(defun consolidate-notes-aux5 5732,226205
-(defun get-tied-rthms 5759,227135
-(defun find-repeating-tied-rhythm 5792,228320
-(defun rhythms-all-tied? 5820,229286
-(defun sum-rhythms-duration 5828,229525
-(defun print-rhythms-rqs 5833,229689
-(defun rhythms-to-events-list 5840,229881
-(defun rhythms-all-rests? 5848,230135
-(defun contains-ties 5858,230460
-(defun print-simple-rthm-list 5866,230706
-(defun has-tuplets 5872,230882
-(defun mark-for-note-only 5879,231079
+rthm-seq-bar.lsp,4783
+(defclass rthm-seq-bar 60,2483
+(defmethod initialize-instance 177,9489
+(defmethod is-full 239,12412
+(defmethod rhythms-duration 260,13357
+(defmethod bar-duration 265,13528
+(defmethod delete-marks 313,14897
+(defmethod delete-rhythms 326,15334
+(defmethod add-event 333,15518
+(defmethod fill-with-rhythms 483,21277
+(defmethod all-rests? 555,24116
+(defmethod consolidate-rests-max 610,26054
+(defmethod consolidate-rests 709,29143
+(defmethod force-rest-bar 879,36395
+(defmethod num-notes-tied-from 915,38013
+(defmethod consolidate-notes 977,40286
+(defmethod ties-to-dots 1042,43449
+(defmethod fix-brackets 1116,47524
+(defmethod check-beams 1219,51751
+(defmethod beams-on-rests? 1258,53216
+(defmethod consolidated-rthms-to-events 1267,53489
+(defmethod get-beat-as-rhythm 1321,55635
+(defmethod add-tuplet-bracket 1329,55996
+(defmethod delete-beams 1407,58317
+(defmethod delete-tuplets 1461,59542
+(defmethod check-tuplets 1502,60842
+(defmethod auto-tuplets 1571,63367
+(defmethod figure-out-and-auto-set-tuplets 1595,64245
+(defmethod auto-put-tuplet-bracket-on-beats 1693,67379
+(defmethod auto-beam 1788,70671
+(defmethod get-num-beats 1837,72621
+(defmethod get-beats 1847,73190
+(defmethod gen-stats 1895,75141
+(defmethod update-missing-duration 1927,76508
+(defmethod update-rhythms-beam-info 1937,76860
+(defmethod update-rhythms-bracket-info 1960,77921
+(defmethod clone 2008,80305
+(defmethod clone-with-new-class 2013,80469
+(defmethod sounding-duration 2050,82665
+(defmethod set-sounding-duration 2064,83268
+(defmethod get-nth-non-rest-rhythm 2129,85384
+(defmethod get-nth-rest 2204,87769
+(defmethod get-nth-event 2281,90405
+(defmethod get-last-event 2327,91881
+(defmethod get-nth-attack 2391,93868
+(defmethod scale 2487,96884
+(defmethod set-nth-attack 2616,101534
+(defmethod get-last-attack 2686,104008
+(defmethod get-time-sig-from-all-time-sigs 2697,104479
+(defmethod bar-qtr-duration 2712,105082
+(defmethod update-events-bar-nums 2719,105283
+(defmethod rhythms-to-events 2726,105528
+(defmethod chop 2940,113164
+(defmethod new-bar-from-time-range 2978,115002
+(defmethod get-events 3065,119089
+(defmethod update-time 3155,123454
+(defmethod (setf 3189,125017
+(defmethod (setf 3205,125539
+(defmethod (setf 3211,125727
+(defmethod get-time-sig 3243,126567
+(defmethod get-time-sig-as-list 3269,127178
+(defmethod time-sig-equal 3302,128058
+(defmethod inc-nth-rthm 3332,129289
+(defmethod get-timings 3348,130123
+(defmethod print-simple 3398,132449
+(defmethod print-object 3406,132760
+(defmethod store-time-sig 3456,135452
+(defmethod time-sig-pos 3473,136192
+(defmethod verify-brackets 3484,136687
+(defmethod get-lp-data 3522,137819
+(defmethod lp-rehearsal-letter 3584,140447
+(defmethod lp-rest-bar 3592,140794
+(defmethod lp-time-sig 3604,141255
+(defmethod get-cmn-data 3612,141546
+(defmethod auto-accidentals 3778,150265
+(defmethod transpose 3993,160356
+(defmethod count-c5ths 4019,161520
+(defmethod count-accidentals 4038,162137
+(defmethod enharmonics-exist 4061,163040
+(defmethod respell-bar 4153,166716
+(defmethod enharmonic 4355,174244
+(defmethod replace-first-event 4396,175979
+(defmethod rhythms-to-events 4413,176745
+(defmethod split-longer-rests 4420,176987
+(defmethod split 4523,180742
+(defmethod set-written 4631,184508
+(defmethod delete-written 4681,186075
+(defmethod make-rests 4689,186408
+(defmethod set-midi-channel 4757,188752
+(defmethod reset-8va 4808,190236
+(defmethod set-8va 4869,191919
+(defmethod no-accidental 4880,192331
+(defmethod (setf 4888,192650
+(defmethod get-rhythm-symbols 4919,193445
+(defmethod get-pitch-symbols 4952,194361
+(defmethod set-amplitudes 4989,195525
+(defmethod set-dynamics 5034,197042
+(defmethod total-degrees 5045,197456
+(defmethod update-events-player 5055,197959
+(defun make-rthm-seq-bar 5136,200565
+(defun rthm-seq-bar-p 5144,200812
+(defun make-rest-bar 5200,202503
+(defun parse-rhythms 5244,204454
+(defun get-cmn-notes-from-rqq 5414,213146
+(defun do-rqq 5442,214500
+(defun do-rqq-aux 5512,217670
+(defun handle-rqq 5536,218671
+(defun is-rqq-info 5573,220103
+(defun consolidate-rests-aux 5581,220318
+(defun consolidate-notes-aux 5622,221855
+(defun consolidate-notes-aux2 5692,225175
+(defun consolidate-notes-aux3 5716,226169
+(defun consolidate-notes-aux4 5725,226486
+(defun consolidate-notes-aux5 5759,227763
+(defun get-tied-rthms 5786,228693
+(defun find-repeating-tied-rhythm 5819,229878
+(defun rhythms-all-tied? 5847,230844
+(defun sum-rhythms-duration 5855,231083
+(defun print-rhythms-rqs 5860,231247
+(defun rhythms-to-events-list 5867,231439
+(defun rhythms-all-rests? 5875,231693
+(defun contains-ties 5885,232018
+(defun print-simple-rthm-list 5893,232264
+(defun has-tuplets 5899,232440
+(defun mark-for-note-only 5906,232637
 
 rthm-seq-map.lsp,762
 (defclass rthm-seq-map 69,2974
@@ -1144,95 +1157,95 @@ rthm-seq-map.lsp,762
 (defun make-set-map-ref 1034,41308
 
 rthm-seq-palette.lsp,600
-(defclass rthm-seq-palette 61,2303
-(defmethod print-object 68,2619
-(defmethod verify-and-store 74,2856
-(defmethod clone 80,3066
-(defmethod create-psps 250,10727
-(defmethod reset-psps 349,14841
-(defmethod scale 461,18756
-(defmethod get-cmn-data 481,19362
-(defmethod cmn-display 566,23160
-(defmethod chop 742,29532
-(defmethod print-simple 763,30401
-(defmethod rsp-subseq 795,31402
-(defmethod get-multipliers 937,37620
-(defmethod rsm-from-chopped-rsp 946,37967
-(defmethod split-into-single-bars 999,40431
-(defun make-rsp 1091,43756
-(defun ral-to-rsp 1098,44002
-(defun rsp-p 1120,45008
+(defclass rthm-seq-palette 53,2148
+(defmethod print-object 60,2464
+(defmethod verify-and-store 66,2701
+(defmethod clone 72,2911
+(defmethod create-psps 242,10572
+(defmethod reset-psps 341,14686
+(defmethod scale 453,18601
+(defmethod get-cmn-data 473,19207
+(defmethod cmn-display 558,23005
+(defmethod chop 734,29377
+(defmethod print-simple 755,30246
+(defmethod rsp-subseq 787,31247
+(defmethod get-multipliers 929,37465
+(defmethod rsm-from-chopped-rsp 938,37812
+(defmethod split-into-single-bars 991,40276
+(defun make-rsp 1083,43601
+(defun ral-to-rsp 1090,43847
+(defun rsp-p 1112,44853
 
 rthm-seq.lsp,2509
-(defclass rthm-seq 73,2890
-(defmethod initialize-instance 111,5082
-(defmethod handle-marks 163,7376
-(defmethod gen-stats 184,8128
-(defmethod init-psp 199,8824
-(defmethod reset 226,10038
-(defmethod print-object 232,10250
-(defmethod print-simple 251,11189
-(defmethod clone 259,11461
-(defmethod clone-with-new-class 264,11615
-(defmethod get-nth-non-rest-rhythm 353,15211
-(defmethod get-nth-rhythm 415,17291
-(defmethod get-nth-attack 499,20277
-(defmethod set-nth-attack 619,24237
-(defmethod set-nth-bar 685,26389
-(defmethod get-nth-bar 737,28038
-(defmethod get-last-bar 772,28918
-(defmethod get-last-attack 818,30560
-(defmethod get-last-event 878,32406
-(defmethod insert-bar 974,36015
-(defmethod rthm-seq-check-bounds 1017,37708
-(defmethod get-time-sigs 1098,40498
-(defmethod update-is-tied-from 1110,40873
-(defmethod handle-first-note-ties 1122,41340
-(defmethod handle-first-note-tie 1134,41820
-(defmethod get-score-strings 1157,42872
-(defmethod get-timings 1241,46881
-(defmethod combine 1339,50435
-(defmethod add-bar 1418,53259
-(defmethod get-cmn-data 1451,54836
-(defmethod chop 1690,62435
-(defmethod set-bar-nums 1743,64706
-(defmethod delete-marks 1777,65573
-(defmethod (setf 1790,66061
-(defmethod (setf 1794,66164
-(defmethod add-marks 1802,66423
-(defmethod add-marks-aux 1819,67216
-(defmethod scale 1917,70747
-(defmethod get-multipliers 2002,74184
-(defmethod rhythms-to-events 2027,75215
-(defmethod update-compound-durations 2034,75435
-(defmethod get-rhythms 2109,77632
-(defmethod split-longer-rests 2116,77851
-(defmethod adopt-meters 2128,78383
-(defmethod update-write-time-sig 2168,80210
-(defmethod (setf 2184,80750
-(defmethod get-time-sigs-tag 2190,80929
-(defmethod split 2329,86665
-(defmethod check-beams 2354,87590
-(defmethod beams-on-rests? 2367,88080
-(defmethod no-accidental 2375,88435
-(defmethod get-bar 2427,90258
-(defmethod auto-beam 2434,90470
-(defmethod get-first 2474,91847
-(defmethod get-last 2515,93206
-(defmethod tidy-ties 2526,93541
-(defmethod is-rest-seq 2541,94136
-(defmethod force-rest-seq 2546,94322
-(defmethod split-into-single-bars 2569,94968
-(defmethod rs-subseq 2610,96127
-(defmethod psp-ok? 2642,97502
-(defmethod (setf 2655,98163
-(defmethod clear-ties-beg-end 2678,98971
-(defun make-rthm-seq 2848,104761
-(defun write-seqs-to-score-file 2892,106599
-(defun make-rthm-seq-from-unit-multipliers 2999,111142
-(defun make-rthm-seq-from-fragments 3131,116606
-(defun rthm-seq-p 3155,117732
-(defun make-rhythms 3227,119780
+(defclass rthm-seq 68,2806
+(defmethod initialize-instance 106,4998
+(defmethod handle-marks 159,7364
+(defmethod gen-stats 180,8116
+(defmethod init-psp 195,8812
+(defmethod reset 222,10026
+(defmethod print-object 228,10238
+(defmethod print-simple 247,11177
+(defmethod clone 255,11449
+(defmethod clone-with-new-class 260,11603
+(defmethod get-nth-non-rest-rhythm 349,15199
+(defmethod get-nth-rhythm 411,17279
+(defmethod get-nth-attack 495,20265
+(defmethod set-nth-attack 615,24225
+(defmethod set-nth-bar 681,26377
+(defmethod get-nth-bar 733,28026
+(defmethod get-last-bar 768,28906
+(defmethod get-last-attack 814,30548
+(defmethod get-last-event 874,32394
+(defmethod insert-bar 970,36003
+(defmethod rthm-seq-check-bounds 1013,37696
+(defmethod get-time-sigs 1094,40486
+(defmethod update-is-tied-from 1106,40861
+(defmethod handle-first-note-ties 1118,41328
+(defmethod handle-first-note-tie 1130,41808
+(defmethod get-score-strings 1153,42860
+(defmethod get-timings 1237,46869
+(defmethod combine 1335,50423
+(defmethod add-bar 1414,53247
+(defmethod get-cmn-data 1447,54824
+(defmethod chop 1686,62423
+(defmethod set-bar-nums 1739,64694
+(defmethod delete-marks 1773,65561
+(defmethod (setf 1786,66049
+(defmethod (setf 1790,66152
+(defmethod add-marks 1798,66411
+(defmethod add-marks-aux 1815,67204
+(defmethod scale 1913,70735
+(defmethod get-multipliers 1998,74172
+(defmethod rhythms-to-events 2023,75203
+(defmethod update-compound-durations 2030,75423
+(defmethod get-rhythms 2105,77620
+(defmethod split-longer-rests 2112,77839
+(defmethod adopt-meters 2124,78371
+(defmethod update-write-time-sig 2164,80198
+(defmethod (setf 2180,80738
+(defmethod get-time-sigs-tag 2186,80917
+(defmethod split 2325,86653
+(defmethod check-beams 2350,87578
+(defmethod beams-on-rests? 2363,88068
+(defmethod no-accidental 2371,88423
+(defmethod get-bar 2423,90246
+(defmethod auto-beam 2430,90458
+(defmethod get-first 2470,91835
+(defmethod get-last 2511,93194
+(defmethod tidy-ties 2522,93529
+(defmethod is-rest-seq 2537,94124
+(defmethod force-rest-seq 2542,94310
+(defmethod split-into-single-bars 2565,94956
+(defmethod rs-subseq 2606,96115
+(defmethod psp-ok? 2638,97490
+(defmethod (setf 2651,98151
+(defmethod clear-ties-beg-end 2674,98959
+(defun make-rthm-seq 2844,104749
+(defun write-seqs-to-score-file 2888,106587
+(defun make-rthm-seq-from-unit-multipliers 2995,111130
+(defun make-rthm-seq-from-fragments 3127,116594
+(defun rthm-seq-p 3151,117720
+(defun make-rhythms 3223,119768
 
 samp5.lsp,66
 (defun get-stereo-scalers 78,3095
@@ -1263,48 +1276,48 @@ sc-map.lsp,821
 (defun do-combination 994,37853
 (defun sc-map-p 1007,38324
 
-sc-set.lsp,1431
-(defclass sc-set 60,2197
-(defmethod initialize-instance 92,4153
-(defmethod verify-and-store 101,4523
-(defmethod verify-and-store 107,4719
-(defmethod clone 124,5357
-(defmethod clone-with-new-class 129,5505
-(defmethod print-object 142,6118
-(defmethod (setf 155,6740
-(defmethod (setf 166,7122
-(defmethod (setf 176,7503
-(defmethod reset 182,7706
-(defmethod add-harmonics 224,9027
-(defmethod get-used-notes 233,9297
-(defmethod round-inflections 362,13624
-(defmethod force-micro-tone 470,16571
-(defmethod get-chromatic 575,20145
-(defmethod get-non-chromatic 678,23768
-(defmethod get-semitones 735,25830
-(defmethod get-srts 800,28059
-(defmethod subset-get-srts 846,29705
-(defmethod stack 919,32529
-(defmethod get-interval-structure 985,34928
-(defmethod set-position 1026,36046
-(defmethod get-degrees 1054,36751
-(defmethod get-freqs 1084,37601
-(defmethod get-midi 1112,38248
-(defmethod get-semitones-from-middle-note 1166,40258
-(defmethod add 1228,42128
-(defmethod contains-pitches 1277,43729
-(defmethod create-chord 1313,44574
-(defmethod create-event 1378,46784
-(defmethod pitch-symbols 1410,47569
-(defmethod print-simple 1416,47769
-(defun get-srts-aux 1426,48100
-(defun stack-aux 1440,48728
-(defun make-sc-set 1551,52631
-(defun print-ral-of-pitch-lists 1558,52923
-(defun init-pitch-list 1572,53433
-(defun make-ral-pitch-lists 1585,53940
-(defun check-subsets 1605,54733
-(defun sc-set-p 1626,55554
+sc-set.lsp,1430
+(defclass sc-set 55,2113
+(defmethod initialize-instance 87,4069
+(defmethod verify-and-store 96,4439
+(defmethod verify-and-store 102,4635
+(defmethod clone 119,5273
+(defmethod clone-with-new-class 124,5421
+(defmethod print-object 137,6034
+(defmethod (setf 150,6656
+(defmethod (setf 161,7038
+(defmethod (setf 171,7419
+(defmethod reset 177,7622
+(defmethod add-harmonics 219,8943
+(defmethod get-used-notes 228,9213
+(defmethod round-inflections 357,13540
+(defmethod force-micro-tone 465,16487
+(defmethod get-chromatic 570,20061
+(defmethod get-non-chromatic 673,23684
+(defmethod get-semitones 730,25746
+(defmethod get-srts 795,27975
+(defmethod subset-get-srts 841,29621
+(defmethod stack 914,32445
+(defmethod get-interval-structure 980,34844
+(defmethod set-position 1024,36127
+(defmethod get-degrees 1052,36832
+(defmethod get-freqs 1082,37682
+(defmethod get-midi 1110,38329
+(defmethod get-semitones-from-middle-note 1164,40339
+(defmethod add 1226,42209
+(defmethod contains-pitches 1275,43810
+(defmethod create-chord 1311,44655
+(defmethod create-event 1376,46865
+(defmethod pitch-symbols 1408,47650
+(defmethod print-simple 1414,47850
+(defun get-srts-aux 1424,48181
+(defun stack-aux 1438,48809
+(defun make-sc-set 1549,52712
+(defun print-ral-of-pitch-lists 1556,53032
+(defun init-pitch-list 1570,53542
+(defun make-ral-pitch-lists 1583,54049
+(defun check-subsets 1603,54842
+(defun sc-set-p 1624,55663
 
 sclist.lsp,853
 (defclass sclist 55,2112
@@ -1351,21 +1364,21 @@ section.lsp,442
 (defmethod get-first-section 580,21918
 (defun make-section 591,22273
 
-sequenz.lsp,487
-(defclass sequenz 67,2580
-(defmethod print-object 73,2818
-(defmethod clone 78,3017
-(defmethod clone-with-new-class 83,3167
-(defmethod get-first-bar 91,3458
-(defmethod get-last-bar 96,3599
-(defmethod update-slots 101,3746
-(defmethod get-bar 170,6716
-(defmethod clone-as-rest-sequenz 184,7285
-(defmethod get-quick-notes-indices 223,9175
-(defmethod get-cmn-data 247,10089
-(defmethod delete-bars 297,12615
-(defmethod dynamics-to-amplitudes 307,13105
-(defun sequenz-p 325,13827
+sequenz.lsp,486
+(defclass sequenz 59,2373
+(defmethod print-object 65,2611
+(defmethod clone 70,2810
+(defmethod clone-with-new-class 75,2960
+(defmethod get-first-bar 83,3251
+(defmethod get-last-bar 88,3392
+(defmethod update-slots 93,3539
+(defmethod get-bar 172,7012
+(defmethod clone-as-rest-sequenz 186,7581
+(defmethod get-quick-notes-indices 230,9608
+(defmethod get-cmn-data 254,10522
+(defmethod delete-bars 304,13048
+(defmethod dynamics-to-amplitudes 314,13538
+(defun sequenz-p 332,14260
 
 set-map.lsp,169
 (defclass set-map 63,2320
@@ -1409,199 +1422,209 @@ simple-change-map.lsp,244
 sine.lsp,28
 (definstrument sine55,2226
 
-slippery-chicken-edit.lsp,2971
+slippery-chicken-edit.lsp,3023
 (defmethod replace-tempo-map 97,3550
-(defmethod add-event-to-bar 163,5898
-(defmethod replace-events 229,8439
-(defmethod add-tuplet-bracket-to-bar 296,11016
-(defmethod add-tuplet-brackets-to-beats 353,13331
-(defmethod replace-multi-bar-events 458,18625
-(defmethod auto-accidentals 543,22244
-(defmethod respell-notes 631,25843
-(defmethod enharmonics 712,29270
-(defmethod enharmonic-spellings 834,34869
-(defmethod respell-bars 900,37134
-(defmethod respell-notes-for-player 982,40025
-(defmethod change-pitch 1156,47624
-(defmethod rest-to-note 1227,50108
-(defmethod change-pitches 1318,54167
-(defmethod change-time-sig 1410,57804
-(defmethod add-mark-to-note 1460,59398
-(defmethod add-mark-to-event 1507,60902
-(defmethod add-mark-all-players 1583,63710
-(defmethod note-add-bracket-offset 1663,67014
-(defmethod add-mark-to-notes-from-to 1682,68026
-(defmethod add-marks-to-notes 1766,71644
-(defmethod add-marks-sh 1880,76291
-(defmethod add-marks-to-note 1960,79258
-(defmethod rm-marks-from-note 2018,81132
-(defmethod rm-marks-from-notes 2089,83991
-(defmethod rm-slurs 2174,87446
-(defmethod add-mark-before-note 2225,89216
-(defmethod sc-delete-marks 2270,90625
-(defmethod sc-delete-marks-from-event 2314,92006
-(defmethod sc-delete-marks-before 2366,93755
-(defmethod tie 2428,95783
-(defmethod trill 2487,97720
-(defmethod tie-all-last-notes-over-rests 2575,101456
-(defmethod tie-over-rest-bars 2682,106268
-(defmethod tie-over-all-rests 2759,109703
-(defmethod tie-over-rests 2877,114441
-(defmethod delete-slur 3013,120359
-(defmethod auto-slur 3112,124355
-(defmethod delete-clefs 3259,129951
-(defmethod add-clef 3320,132020
-(defmethod move-clef 3377,134163
-(defmethod auto-clefs 3454,137302
-(defmethod set-rehearsal-letter 3574,142022
-(defmethod delete-rehearsal-letter 3635,144097
-(defmethod re-bar 3717,147518
-(defmethod auto-beam 3823,151523
-(defmethod process-events-by-time 3892,154185
-(defmethod sc-move-dynamic 3960,156662
-(defmethod sc-remove-dynamic 4009,158299
-(defmethod sc-remove-dynamics 4079,161076
-(defmethod remove-extraneous-dynamics 4143,163361
-(defmethod sc-delete-beams 4225,166573
-(defmethod delete-bars 4311,170116
-(defmethod move-events 4401,173634
-(defmethod double-events 4492,177633
-(defmethod delete-events 4618,183004
-(defmethod sc-force-rest 4710,186599
-(defmethod sc-force-rest2 4767,188628
-(defmethod force-rest-bars 4863,191994
-(defmethod force-artificial-harmonics 4927,194403
-(defmethod set-cautionary-accidental 5008,197602
-(defmethod unset-cautionary-accidental 5064,199670
-(defmethod add-arrow-to-events 5126,201907
-(defmethod change-bar-line-type 5174,203658
-(defmethod map-over-bars 5251,206719
-(defmethod consolidate-all-notes 5289,208125
-(defmethod consolidate-all-rests 5318,209350
-(defmethod copy-bars 5384,211944
-(defmethod add-pitches-to-chord 5510,217345
-(defmethod rm-pitches-from-chord 5573,219655
-(defun bars-to-sc 5642,222653
-(defun make-minimal-sc 5690,224811
+(defmethod add-event-to-bar 163,5899
+(defmethod replace-events 229,8440
+(defmethod add-tuplet-bracket-to-bar 296,11017
+(defmethod add-tuplet-brackets-to-beats 353,13332
+(defmethod replace-multi-bar-events 458,18626
+(defmethod auto-accidentals 555,23024
+(defmethod respell-notes 643,26623
+(defmethod enharmonics 724,30050
+(defmethod enharmonic-spellings 846,35649
+(defmethod respell-bars 912,37914
+(defmethod respell-notes-for-player 994,40805
+(defmethod change-pitch 1168,48404
+(defmethod rest-to-note 1239,50888
+(defmethod change-pitches 1337,55445
+(defmethod change-time-sig 1428,59073
+(defmethod add-mark-to-note 1478,60667
+(defmethod add-mark-to-event 1525,62171
+(defmethod add-mark-all-players 1601,64979
+(defmethod note-add-bracket-offset 1681,68283
+(defmethod add-mark-to-notes-from-to 1700,69295
+(defmethod add-marks-to-notes 1784,72913
+(defmethod add-marks-sh 1898,77560
+(defmethod add-marks-to-note 1978,80527
+(defmethod rm-marks-from-note 2036,82401
+(defmethod rm-marks-from-notes 2107,85260
+(defmethod rm-slurs 2192,88715
+(defmethod add-mark-before-note 2243,90485
+(defmethod sc-delete-marks 2288,91894
+(defmethod sc-delete-marks-from-event 2332,93275
+(defmethod sc-delete-marks-before 2384,95024
+(defmethod tie 2446,97052
+(defmethod trill 2505,98989
+(defmethod tie-all-last-notes-over-rests2597,102997
+(defmethod tie-over-rest-bars 2713,107964
+(defmethod tie-over-all-rests 2798,111739
+(defmethod tie-over-rests 2924,116843
+(defmethod delete-slur 3064,122894
+(defmethod auto-slur 3163,126895
+(defmethod delete-clefs 3310,132495
+(defmethod add-clef 3371,134568
+(defmethod move-clef 3428,136713
+(defmethod auto-clefs 3505,139858
+(defmethod set-rehearsal-letter 3625,144582
+(defmethod delete-rehearsal-letter 3686,146661
+(defmethod delete-all-rehearsal-letters 3705,147351
+(defmethod re-bar 3782,150697
+(defmethod auto-beam 3888,154734
+(defmethod process-events-by-time 3956,157343
+(defmethod sc-move-dynamic 4013,159361
+(defmethod sc-remove-dynamic 4062,161002
+(defmethod sc-remove-dynamics 4132,163783
+(defmethod remove-extraneous-dynamics 4196,166072
+(defmethod sc-delete-beams 4278,169288
+(defmethod delete-bars 4364,172835
+(defmethod move-events 4454,176357
+(defmethod double-events 4545,180360
+(defmethod delete-events 4671,185735
+(defmethod sc-force-rest 4763,189202
+(defmethod sc-force-rest2 4820,191213
+(defmethod force-rest-bars 4916,194579
+(defmethod force-artificial-harmonics 4980,196988
+(defmethod set-cautionary-accidental 5061,200187
+(defmethod unset-cautionary-accidental 5117,202255
+(defmethod add-arrow-to-events 5179,204492
+(defmethod change-bar-line-type 5227,206243
+(defmethod map-over-bars 5304,209304
+(defmethod consolidate-all-notes 5342,210710
+(defmethod consolidate-all-rests 5371,211935
+(defmethod copy-bars 5437,214529
+(defmethod add-pitches-to-chord 5563,219741
+(defmethod rm-pitches-from-chord 5626,221862
+(defun bars-to-sc 5695,224860
+(defun make-minimal-sc 5743,227018
 
-slippery-chicken.lsp,4724
-(defclass slippery-chicken 57,2178
-(defmethod sc-init 243,12839
-(defmethod reset-pitch-seq-map 450,23081
-(defmethod initialize-instance 458,23536
-(defmethod print-object 472,24210
-(defmethod clone 539,26876
-(defmethod clone-with-new-class 545,27055
-(defmethod num-notes 618,30238
-(defmethod cmn-display 844,42604
-(defmethod convert-bar-refs-to-numbers 955,47595
-(defmethod (setf 977,48440
-(defmethod (setf 987,48899
-(defmethod (setf 998,49331
-(defmethod (setf 1009,49774
-(defmethod (setf 1014,49972
-(defmethod check-instruments 1021,50217
-(defmethod sc-make-piece 1083,53444
-(defmethod update-slots 1175,57230
-(defmethod update-instrument-slots 1213,58567
-(defmethod update-instruments-total-duration 1219,58761
-(defmethod set-write-bar-num 1241,59805
-(defmethod get-set-limit-high 1340,64998
-(defmethod get-set-limit-low 1346,65244
-(defmethod get-player 1408,67497
-(defmethod num-bars 1448,68603
-(defmethod get-bar-from-ref 1517,71212
-(defmethod get-bar-num-from-ref 1571,73213
-(defmethod get-bar 1649,76416
-(defmethod respell-notes-aux 1662,76893
-(defmethod count-notes 1787,81640
-(defmethod find-note 1920,85717
-(defmethod players 1978,87598
-(defmethod get-note 2170,95192
-(defmethod get-rest 2236,97589
-(defmethod get-event 2327,100825
-(defmethod tie-all-last-notes-over-rests-aux 2335,101094
-(defmethod tie-over-rest-bars-aux 2361,102437
-(defmethod get-current-instrument-for-player 2553,110633
-(defmethod get-instrument-for-player-at-bar 2638,113986
-(defmethod get-transposition-at-bar 2684,115477
-(defmethod num-seqs 2727,116802
-(defmethod get-section-refs 2821,120237
-(defmethod get-section-refs 2853,121786
-(defmethod get-num-sections 2915,123850
-(defmethod get-all-section-refs 2971,125715
-(defmethod statistics 3028,127437
-(defmethod check-instrument-doublings 3034,127629
-(defmethod get-tempo 3077,128919
-(defmethod get-time-sig 3131,130694
-(defmethod update-events-tempo 3141,131123
-(defmethod handle-set-limits 3179,132804
-(defmethod get-set-limits 3200,133636
-(defmethod shorten-large-fast-leaps 3329,138596
-(defmethod get-clef 3553,149413
-(defmethod octave-clefs-to-brackets 3566,149989
-(defmethod split-octave-brackets 3631,152572
-(defmethod start-octave-brackets-notes-only 3681,154714
-(defmethod end-octave-brackets-notes-only 3717,156061
-(defmethod multi-bar-rests 3753,157518
-(defmethod midi-play 3898,164247
-(defmethod clm-play 4305,187423
-(defmethod get-events-start-time-duration4805,213164
-(defmethod get-events-start-time-duration-aux4854,215360
-(defmethod get-events-with-src4911,217911
-(defmethod get-events-with-src-aux 4960,219985
-(defmethod get-groups-top-ins 5053,224233
-(defmethod set-rehearsal-letters 5072,224923
-(defmethod set-write-time-sig 5107,226221
-(defmethod find-rehearsal-letters 5154,227595
-(defmethod check-slurs 5233,229885
-(defmethod check-phrases 5292,231776
-(defmethod check-slurs-aux 5298,231983
-(defmethod check-tuplets 5372,234733
-(defmethod handle-ties 5395,235756
-(defmethod check-ties 5444,237334
-(defmethod rebar 5515,240165
-(defmethod section-num-rthm-seqs 5530,240669
-(defmethod cleanup-rest-bars 5538,240995
-(defmethod check-time-sigs 5622,243500
-(defmethod player-doubles 5677,245051
-(defmethod get-starting-ins 5741,247067
-(defmethod write-lp-data-for-all 5956,258384
-(defmethod write-lp-data-for-player 6271,274911
-(defmethod delete-bars-aux 6326,277473
-(defmethod get-events-from-to 6468,282344
-(defmethod get-all-events 6508,283802
-(defmethod transpose-events 6567,285751
-(defmethod cautionary-accidental-aux 6578,286256
-(defmethod add-mark-to-notes 6600,287246
-(defmethod get-section 6677,288977
-(defmethod get-sequenz-from-section 6702,289394
-(defmethod check-beams 6720,290108
-(defmethod auto-set-written 6792,292685
-(defmethod plays-transposing-instrument 6816,293540
-(defmethod duration 6828,294062
-(defmethod sc-get-chord 6834,294333
-(defmethod get-nearest-event 6868,295518
-(defmethod get-phrases 6931,298217
-(defun make-slippery-chicken 7275,318189
-(defun check-maps 7347,321734
-(defun rsm-to-piece 7391,324024
-(defun add-ps-to-file 7461,327590
-(defun ps-text 7505,329400
-(defun handle-grace-notes 7518,330019
-(defun handle-opening-grace-notes 7601,334248
-(defun grace-notes-at-beg 7624,335298
-(defun voice-grace-notes-at-beg 7631,335579
-(defun count-sequence-refs 7641,335866
-(defun doctor-set-limits-env 7655,336224
-(defun get-set-limit-aux 7675,337063
-(defun count-events-before-max-start 7684,337409
-(defun rm-events-after-max-start 7700,338009
-(defun sc-make-sequenz 7715,338728
-(defun auto-clefs-handle-last-3 7919,349669
-(defun tempo-curve-to-map 8008,353568
-(defun slippery-chicken-p 8032,354717
-(defun lp-display 8062,355988
+slippery-chicken.lsp,5068
+(defclass slippery-chicken 52,2000
+(defmethod sc-init 240,12748
+(defmethod initialized 447,22951
+(defmethod reset-pitch-seq-map 452,23143
+(defmethod initialize-instance 460,23598
+(defmethod print-object 474,24272
+(defmethod clone 541,26938
+(defmethod clone-with-new-class 547,27117
+(defmethod num-notes 621,30350
+(defmethod cmn-display 847,42711
+(defmethod convert-bar-refs-to-numbers 959,47740
+(defmethod (setf 981,48585
+(defmethod (setf 991,49044
+(defmethod (setf 1002,49476
+(defmethod (setf 1013,49919
+(defmethod (setf 1018,50117
+(defmethod (setf 1023,50360
+(defmethod check-instruments 1033,50781
+(defmethod sc-make-piece 1095,54005
+(defmethod update-slots 1187,57790
+(defmethod update-instrument-slots 1225,59127
+(defmethod update-instruments-total-duration 1231,59321
+(defmethod set-write-bar-num 1253,60365
+(defmethod get-set-limit-high 1352,65555
+(defmethod get-set-limit-low 1358,65801
+(defmethod get-player 1420,68054
+(defmethod num-bars 1460,69160
+(defmethod get-bar-from-ref 1529,71769
+(defmethod get-bar-num-from-ref 1583,73770
+(defmethod get-bar 1661,76973
+(defmethod respell-notes-aux 1674,77450
+(defmethod count-notes 1799,82201
+(defmethod find-note 1932,86278
+(defmethod players 1990,88159
+(defmethod get-note 2181,95752
+(defmethod get-rest 2247,98149
+(defmethod get-event 2338,101385
+(defmethod tie-all-last-notes-over-rests-aux 2346,101654
+(defmethod tie-over-rest-bars-aux 2371,102995
+(defmethod get-current-instrument-for-player 2564,111362
+(defmethod get-instrument-for-player-at-bar 2649,114715
+(defmethod get-transposition-at-bar 2695,116206
+(defmethod num-seqs 2738,117530
+(defmethod get-section-refs 2832,120965
+(defmethod get-section-refs 2864,122513
+(defmethod get-num-sections 2926,124575
+(defmethod get-all-section-refs 2982,126440
+(defmethod statistics 3039,128162
+(defmethod check-instrument-doublings 3045,128354
+(defmethod get-tempo 3088,129644
+(defmethod get-time-sig 3142,131419
+(defmethod update-events-tempo 3152,131848
+(defmethod handle-set-limits 3190,133529
+(defmethod get-set-limits 3211,134361
+(defmethod shorten-large-fast-leaps 3340,139321
+(defmethod get-clef 3564,150137
+(defmethod octave-clefs-to-brackets 3577,150712
+(defmethod split-octave-brackets 3642,153295
+(defmethod start-octave-brackets-notes-only 3692,155437
+(defmethod end-octave-brackets-notes-only 3728,156784
+(defmethod multi-bar-rests 3764,158241
+(defmethod midi-play 3909,164965
+(defmethod clm-play 4316,188137
+(defmethod get-events-start-time-duration4816,213876
+(defmethod get-events-start-time-duration-aux4865,216070
+(defmethod get-events-with-src4927,218963
+(defmethod get-events-with-src-aux 4976,221037
+(defmethod get-groups-top-ins 5069,225284
+(defmethod set-rehearsal-letters 5089,225986
+(defmethod set-write-time-sig 5124,227284
+(defmethod find-rehearsal-letters 5171,228761
+(defmethod check-slurs 5250,231217
+(defmethod check-phrases 5309,233274
+(defmethod check-slurs-aux 5315,233481
+(defmethod check-tuplets 5389,236301
+(defmethod handle-ties 5412,237324
+(defmethod check-ties 5461,238902
+(defmethod rebar 5532,241733
+(defmethod section-num-rthm-seqs 5547,242237
+(defmethod cleanup-rest-bars 5555,242563
+(defmethod check-time-sigs 5639,245354
+(defmethod player-doubles 5694,247151
+(defmethod get-starting-ins 5758,249413
+(defmethod write-lp-data-for-all5971,260626
+(defmethod write-lp-data-for-player 6284,275892
+(defmethod delete-bars-aux 6339,278454
+(defmethod get-events-from-to 6481,283572
+(defmethod get-all-events 6521,285030
+(defmethod transpose-events 6580,287139
+(defmethod cautionary-accidental-aux 6591,287644
+(defmethod add-mark-to-notes 6613,288634
+(defmethod get-section 6690,290574
+(defmethod get-sequenz-from-section 6710,290967
+(defmethod check-beams 6728,291681
+(defmethod auto-set-written 6800,294395
+(defmethod plays-transposing-instrument 6824,295250
+(defmethod duration 6836,295772
+(defmethod sc-get-chord 6842,296043
+(defmethod get-nearest-event 6872,297209
+(defmethod get-phrases 6937,300057
+(defmethod pad-phrase 6979,301537
+(defmethod find-boundaries 7015,303164
+(defmethod get-events-sorted-by-time 7062,305247
+(defmethod write-antescofo 7295,316432
+(defmethod empty-bars? 7570,331518
+(defun make-slippery-chicken 7888,350879
+(defun check-maps 7963,354844
+(defun rsm-to-piece 8007,357134
+(defun add-ps-to-file 8077,360698
+(defun ps-text 8121,362508
+(defun handle-grace-notes 8134,363126
+(defun handle-opening-grace-notes 8217,367355
+(defun grace-notes-at-beg 8240,368404
+(defun voice-grace-notes-at-beg 8247,368685
+(defun count-sequence-refs 8257,368972
+(defun doctor-set-limits-env 8271,369330
+(defun get-set-limit-aux 8291,370168
+(defun count-events-before-max-start 8300,370514
+(defun rm-events-after-max-start 8316,371114
+(defun sc-make-sequenz 8331,371832
+(defun auto-clefs-handle-last-3 8534,382802
+(defun tempo-curve-to-map 8623,386700
+(defun slippery-chicken-p 8647,387849
+(defun lp-display 8677,389119
+(defun decide-boundaries-aux 8695,389890
+(defun decide-boundaries 8717,390899
 
 sndfile-ext.lsp,462
 (defclass sndfile-ext 62,2460
@@ -1619,31 +1642,31 @@ sndfile-ext.lsp,462
 (defmethod analyse-followers 575,23792
 (defun make-sndfile-ext 606,24850
 
-sndfile-palette.lsp,873
-(defclass sndfile-palette 66,2680
-(defmethod clone 87,3915
-(defmethod clone-with-new-class 92,4085
-(defmethod print-object 105,4672
-(defmethod verify-and-store 120,5319
-(defmethod combine 160,7420
-(defmethod find-sndfile 211,9261
-(defmethod get-snds 250,10930
-(defmethod get-snd 263,11514
-(defmethod auto-cue-nums 289,12457
-(defmethod osc-send-cue-nums 318,13325
-(defmethod reset 353,14495
-(defmethod get-snd-with-cue-num 381,15293
-(defmethod max-play 415,16374
-(defmethod get-snd-short 431,17060
-(defmethod process-followers 448,17810
-(defmethod analyse-followers 506,20428
-(defmethod count-snds 534,21756
-(defun make-sfp 600,24450
-(defun make-sfp-from-wavelab-marker-file 710,29144
-(defun wavelab-section-to-list 787,32644
-(defun make-sfp-from-groups-in-wavelab-marker-file 859,35388
-(defun get-groups 911,37756
-(defun sndfile-palette-p 939,38947
+sndfile-palette.lsp,872
+(defclass sndfile-palette 59,2526
+(defmethod clone 80,3761
+(defmethod clone-with-new-class 85,3931
+(defmethod print-object 98,4518
+(defmethod verify-and-store 113,5165
+(defmethod combine 153,7266
+(defmethod find-sndfile 204,9107
+(defmethod get-snds 243,10776
+(defmethod get-snd 256,11360
+(defmethod auto-cue-nums 282,12303
+(defmethod osc-send-cue-nums 311,13171
+(defmethod reset 346,14341
+(defmethod get-snd-with-cue-num 374,15139
+(defmethod max-play 408,16220
+(defmethod get-snd-short 424,16906
+(defmethod process-followers 441,17656
+(defmethod analyse-followers 499,20274
+(defmethod count-snds 527,21602
+(defun make-sfp 593,24296
+(defun make-sfp-from-wavelab-marker-file 703,28990
+(defun wavelab-section-to-list 780,32490
+(defun make-sfp-from-groups-in-wavelab-marker-file 852,35234
+(defun get-groups 904,37602
+(defun sndfile-palette-p 932,38793
 
 sndfile.lsp,513
 (defclass sndfile 62,2339
@@ -1673,36 +1696,37 @@ tempo-map.lsp,186
 (defun tempo-map-p 109,4059
 
 tempo.lsp,343
-(defclass tempo 59,2208
-(defmethod clone 77,3097
-(defmethod clone-with-new-class 82,3247
-(defmethod initialize-instance 96,3896
-(defmethod (setf 108,4423
-(defmethod print-object 113,4577
-(defmethod tempo-equal 151,5549
-(defmethod cmn-tempo 162,5868
-(defmethod get-lp-data 171,6234
-(defun make-tempo 244,8383
-(defun tempo-p 254,8769
+(defclass tempo 54,2124
+(defmethod clone 74,3133
+(defmethod clone-with-new-class 79,3283
+(defmethod initialize-instance 94,3993
+(defmethod (setf 107,4554
+(defmethod print-object 114,4794
+(defmethod tempo-equal 153,5822
+(defmethod cmn-tempo 164,6141
+(defmethod get-lp-data 173,6507
+(defun make-tempo 246,8656
+(defun tempo-p 256,9042
 
-time-sig.lsp,599
-(defclass time-sig 62,2348
-(defmethod clone 87,3449
-(defmethod clone-with-new-class 92,3603
-(defmethod print-object 105,4149
-(defmethod verify-and-store 113,4512
-(defmethod rq-duration 141,5774
-(defmethod beat-duration 174,6442
-(defmethod get-beat-as-rhythm 234,8288
-(defmethod score-time-sig 247,8650
-(defmethod scale 314,10521
-(defmethod is-compound 370,12327
-(defmethod time-sig-equal 423,13872
-(defmethod get-whole-bar-rest 491,15968
-(defun make-time-sig 583,19252
-(defun time-sig-p 591,19514
-(defun make-time-sig-from-duration 608,20225
-(defun get-preferred-time-sig 630,21264
+time-sig.lsp,640
+(defclass time-sig 57,2264
+(defmethod clone 82,3365
+(defmethod clone-with-new-class 87,3519
+(defmethod print-object 100,4065
+(defmethod verify-and-store 108,4428
+(defmethod rq-duration 136,5690
+(defmethod beat-duration 169,6358
+(defmethod get-beat-as-rhythm 229,8204
+(defmethod score-time-sig 242,8566
+(defmethod scale 309,10437
+(defmethod is-compound 365,12243
+(defmethod time-sig-equal 418,13788
+(defmethod get-whole-bar-rest 486,15884
+(defmethod num-beats-at-tempo 546,18370
+(defun make-time-sig 584,19593
+(defun time-sig-p 592,19855
+(defun make-time-sig-from-duration 609,20566
+(defun get-preferred-time-sig 631,21605
 
 tl-set.lsp,530
 (defclass tl-set 63,2453
@@ -1718,473 +1742,139 @@ tl-set.lsp,530
 (defmethod limit 326,11854
 (defmethod limit-for-instrument 498,18699
 (defun make-tl-set 660,24921
-(defun limit-get-pitch 672,25449
-(defun limit-ral 681,25664
-(defun limit-aux 692,26069
-(defun transpose-rals 710,26790
+(defun limit-get-pitch 673,25494
+(defun limit-ral 682,25709
+(defun limit-aux 693,26114
+(defun transpose-rals 711,26835
 
-utilities.lsp,4059
-(defun secs-to-mins-secs 79,2401
-(defun mins-secs-to-secs 131,4229
-(defun float-int-p 157,5230
-(defun integer>0 162,5434
-(defun integer>=167,5567
-(defun integer<0 172,5702
-(defun integer<=177,5835
-(defun integer-between 182,5970
-(defun string-replace 212,6736
-(defun strcpy 224,7106
-(defun econs 253,7755
-(defun rm-package 262,8004
-(defun object-is-nil? 269,8209
-(defun get-sublist-indices 298,8978
-(defun get-sublist-lengths 343,10160
-(defun all-members 378,11041
-(defun split-into-sub-groups 441,13056
-(defun split-into-sub-groups2 497,14923
-(defun split-into-sub-groups3 534,15966
-(defun whole-num-p 553,16618
-(defun power-of-2 592,17615
-(defun nearest-power-of-2 630,18263
-(defun flatten 662,19042
-(defun almost-flatten 691,19745
-(defun equal-within-tolerance 762,22102
-(defun decimal-places 794,22848
-(defun almost-zero 824,23525
-(defun round-if-close 865,24522
-(defun minus-last-slash 876,24790
-(defun trailing-slash 881,24949
-(defun sort-symbol-list 909,25678
-(defun list-to-string 964,26881
-(defun simple-listp 978,27415
-(defun list-of-numbers-p 984,27623
-(defun combine-all 996,27962
-(defun semitones 1052,29240
-(defun replace-elements 1140,31793
-(defun splice 1179,32903
-(defun remove-elements 1221,34138
-(defmacro setf-last 1260,35150
-(defmacro mk 1274,35580
-(defun ml 1279,35732
-(defun nconc-sublists 1307,36437
-(defun logarithmic-steps 1348,37823
-(defun interpolate 1402,39429
-(defun interp-aux 1420,40140
-(defun get-interpd-y 1448,41356
-(defun lastx 1459,41910
-(defun new-lastx 1468,42264
-(defun scale-env 1538,44881
-(defun auto-scale-env 1589,46387
-(defun env-y-min 1614,47529
-(defun env-y-max 1617,47603
-(defun decimate-env 1662,49467
-(defun env-symmetrical 1741,52175
-(defun env-plus 1777,53313
-(defun force-length 1832,55433
-(defstruct wavelab-section1894,58329
-(defun parse-wavelab-marker-files-for-sections 1902,58580
-(defun parse-wavelab-marker-file-for-sections1914,59126
-(defun wavelab-markers-to-sampler1977,61793
-(defun wavelab-to-audacity-marker-file 2038,63786
-(defun parse-wavelab-marker-file-for-loops2140,67526
-(defun sort-labels 2216,70900
-(defun parse-audacity-label-file-for-loops 2299,73792
-(defun trim-leading-trailing-whitespace 2345,75469
-(defun get-parameter 2352,75706
-(defun read-audacity-line 2369,76400
-(defun audacity-mid-phrase-loops 2382,76926
-(defun audacity-min-length 2420,78458
-(defun reflect-list 2481,80405
-(defun middle 2518,81286
-(defun hz2ms 2545,81856
-(defun split-groups 2580,82809
-(defun remove-more 2620,83986
-(defun pts2cm 2653,84601
-(defun between 2705,86376
-(defun randomise 2746,87598
-(defun random-amount 2789,89009
-(defun random-from-list 2825,90037
-(defun read-from-file 2865,91611
-(defun wrap-list 2896,92336
-(defun combine-into-symbol 2924,92982
-(defun char2sym 2931,93211
-(defun swap-elements 2961,93829
-(defun factor 2994,94683
-(defun octave-freqs 3042,95742
-(defun partial-freqs 3095,96994
-(defun path-minus-extension 3104,97324
-(defun mods 3116,97689
-(defun get-harmonics 3174,99847
-(defun get-pitch-list-harmonics 3188,100428
-(defmacro db2amp 3219,101272
-(defmacro amp2db 3246,101816
-(defun remove-all 3278,102619
-(defun amplitude-to-dynamic 3311,103436
-(defun dynamic-to-amplitude 3352,104861
-(defun move-elements 3395,106215
-(defun move-to-end 3447,107387
-(defun force-list 3455,107631
-(defun hailstone 3489,108557
-(defun load-from-examples-dir 3501,108910
-(defun load-from-test-suite-dir 3508,109158
-(defun file-from-sc-dir 3516,109496
-(defun safe-subseq 3522,109769
-(defun shell 3531,110106
-(defun system-open-file 3546,110662
-(defun filename-from-title 3556,111041
-(defun update-app-src 3627,113592
-(defun get-date-string 3653,114714
-(defun kontakt-to-coll 3663,115053
-(defun pdivide 3859,123934
-(defun pexpand 4017,130866
-(defun pexpand-letters-to-numbers 4049,132120
-(defun pexpand-find 4072,132813
-(defun pexpand-aux 4085,133268
-(defun pexpand-count 4099,133812
-(defun a-weighting 4188,137694
-(defun a-weighting-aux 4201,138076
-(defun env2gnuplot 4229,138891
+utilities.lsp,4334
+(defun secs-to-mins-secs 94,3313
+(defun mins-secs-to-secs 153,5413
+(defun float-int-p 179,6414
+(defun integer>0 184,6618
+(defun integer>=189,6751
+(defun integer<0 194,6886
+(defun integer<=199,7019
+(defun integer-between 204,7154
+(defun string-replace 234,7920
+(defun strcpy 246,8290
+(defun econs 275,8939
+(defun rm-package 284,9188
+(defun object-is-nil? 291,9393
+(defun get-sublist-indices 320,10162
+(defun get-sublist-lengths 365,11344
+(defun all-members 400,12225
+(defun split-into-sub-groups 463,14240
+(defun split-into-sub-groups2 519,16107
+(defun split-into-sub-groups3 556,17150
+(defun whole-num-p 575,17802
+(defun power-of-2 614,18799
+(defun nearest-power-of-2 652,19447
+(defun flatten 684,20226
+(defun almost-flatten 713,20929
+(defun equal-within-tolerance 784,23286
+(defun decimal-places 816,24032
+(defun almost-zero 846,24709
+(defun round-if-close 887,25706
+(defun minus-last-slash 898,25974
+(defun trailing-slash 903,26133
+(defun sort-symbol-list 931,26862
+(defun list-to-string 986,28065
+(defun simple-listp 1000,28599
+(defun list-of-numbers-p 1006,28807
+(defun combine-all 1018,29146
+(defun semitones 1074,30424
+(defun replace-elements 1162,32977
+(defun splice 1201,34087
+(defun remove-elements 1243,35322
+(defmacro setf-last 1282,36334
+(defmacro mk 1296,36764
+(defun ml 1301,36916
+(defun nconc-sublists 1329,37621
+(defun logarithmic-steps 1370,39015
+(defun interpolate 1424,40621
+(defun interp-aux 1442,41332
+(defun get-interpd-y 1470,42548
+(defun lastx 1481,43102
+(defun new-lastx 1490,43456
+(defun scale-env 1560,46073
+(defun auto-scale-env 1611,47579
+(defun env-y-min 1636,48721
+(defun env-y-max 1639,48795
+(defun decimate-env 1684,50659
+(defun env-symmetrical 1763,53367
+(defun env-plus 1799,54505
+(defun force-length 1854,56625
+(defstruct wavelab-section1916,59521
+(defun parse-wavelab-marker-files-for-sections 1924,59772
+(defun parse-wavelab-marker-file-for-sections1936,60318
+(defun wavelab-markers-to-sampler1999,62985
+(defun wavelab-to-audacity-marker-file 2060,64978
+(defun parse-wavelab-marker-file-for-loops2162,68718
+(defun sort-labels 2238,72092
+(defun parse-audacity-label-file-for-loops 2321,74984
+(defun trim-leading-trailing-whitespace 2367,76661
+(defun get-parameter 2374,76898
+(defun read-audacity-line 2391,77592
+(defun audacity-mid-phrase-loops 2404,78118
+(defun audacity-min-length 2442,79650
+(defun reflect-list 2503,81597
+(defun middle 2540,82478
+(defun hz2ms 2567,83048
+(defun split-groups 2602,84001
+(defun remove-more 2642,85178
+(defun pts2cm 2675,85793
+(defun between 2727,87568
+(defun randomise 2768,88790
+(defun random-amount 2811,90201
+(defun random-from-list 2847,91229
+(defun read-from-file 2887,92803
+(defun wrap-list 2918,93528
+(defun combine-into-symbol 2946,94174
+(defun char2sym 2953,94403
+(defun swap-elements 2983,95021
+(defun factor 3016,95875
+(defun octave-freqs 3064,96934
+(defun partial-freqs 3117,98186
+(defun path-minus-extension 3126,98516
+(defun parent-dir 3138,98914
+(defun mods 3143,99073
+(defun get-harmonics 3201,101231
+(defun get-pitch-list-harmonics 3215,101812
+(defmacro db2amp 3246,102656
+(defmacro amp2db 3273,103200
+(defun remove-all 3305,104003
+(defun amplitude-to-dynamic 3338,104820
+(defun dynamic-to-amplitude 3379,106245
+(defun move-elements 3422,107599
+(defun move-to-end 3474,108771
+(defun force-list 3482,109015
+(defun hailstone 3516,109941
+(defun load-from-examples-dir 3528,110294
+(defun load-from-test-suite-dir 3535,110542
+(defun file-from-sc-dir 3543,110880
+(defun safe-subseq 3549,111153
+(defun shell 3558,111490
+(defun system-open-file 3573,112046
+(defun filename-from-title 3583,112425
+(defun update-app-src 3654,115004
+(defun get-date-string 3680,116126
+(defun kontakt-to-coll 3690,116465
+(defun pdivide 3886,125355
+(defun pexpand 4044,132287
+(defun pexpand-letters-to-numbers 4076,133541
+(defun pexpand-find 4099,134234
+(defun pexpand-aux 4112,134689
+(defun pexpand-count 4126,135233
+(defun a-weighting 4215,139115
+(defun a-weighting-aux 4228,139497
+(defun env2gnuplot 4256,140312
+(defun interleave 4288,141249
+(defun envelope-boundaries 4326,142445
+(defun list-mean 4347,143326
+(defun get-clusters 4384,144699
+(defun get-time 4404,145381
+(defun limit-high-low 4434,146636
+(defun rationalize-if-simple 4444,147014
 
 cm-load.lsp,0
-
-../doc/examples/nouveau-reich.lsp,120
-(defun move-first-to-end 53,2204
-(defun collect-n-rotations 58,2313
-(defun auto-curve-from-indices-and-items 63,2496
-
-../doc/examples/reeling-trains.lsp,54
-(defun place-dyns 45,1861
-(defun place-arts 55,2209
-
-../doc/examples/tonal-algo-example.lsp,32
-(defun pitches-to-pseq 57,2408
-
-../doc/examples/videos-example-25-all.lsp,0
-
-../doc/examples/videos-example-24-a.lsp,0
-
-../doc/examples/videos-example-23-all.lsp,0
-
-../doc/examples/videos-example-22-b.lsp,0
-
-../doc/examples/videos-example-22-a.lsp,0
-
-../doc/examples/videos-example-21-all.lsp,0
-
-../doc/examples/videos-example-20-a.lsp,0
-
-../doc/examples/videos-example-19-a.lsp,0
-
-../doc/examples/videos-example-18-a.lsp,0
-
-../doc/examples/videos-example-14-a.lsp,0
-
-../doc/examples/videos-example-13-a.lsp,0
-
-../doc/examples/videos-example-12-e.lsp,0
-
-../doc/examples/videos-example-12-d.lsp,0
-
-../doc/examples/videos-example-12-c.lsp,0
-
-../doc/examples/videos-example-12-b.lsp,0
-
-../doc/examples/videos-example-12-a.lsp,0
-
-../doc/examples/videos-example-11-b.lsp,0
-
-../doc/examples/videos-example-11-a.lsp,0
-
-../doc/examples/videos-example-10-c.lsp,0
-
-../doc/examples/videos-example-10-b.lsp,0
-
-../doc/examples/videos-example-10-a.lsp,0
-
-../doc/examples/videos-example-09-b.lsp,0
-
-../doc/examples/videos-example-09-a.lsp,0
-
-../doc/examples/videos-example-08-b.lsp,0
-
-../doc/examples/videos-example-08-a.lsp,0
-
-../doc/examples/videos-example-07-d.lsp,0
-
-../doc/examples/videos-example-07-c.lsp,0
-
-../doc/examples/videos-example-07-b.lsp,0
-
-../doc/examples/videos-example-07-a.lsp,0
-
-../doc/examples/videos-example-06-d.lsp,0
-
-../doc/examples/videos-example-06-c.lsp,0
-
-../doc/examples/videos-example-06-b.lsp,0
-
-../doc/examples/videos-example-06-a.lsp,0
-
-../doc/examples/videos-example-05.lsp,0
-
-../doc/examples/videos-example-04-b.lsp,0
-
-../doc/examples/videos-example-04-a.lsp,0
-
-../doc/examples/videos-example-03-b.lsp,0
-
-../doc/examples/videos-example-03-a.lsp,0
-
-../doc/examples/tempus-perfectum.lsp,0
-
-../doc/examples/tempo-examples.lsp,0
-
-../doc/examples/template.lsp,0
-
-../doc/examples/slippery.lsp,0
-
-../doc/examples/second-law.lsp,0
-
-../doc/examples/second-law-clm.lsp,0
-
-../doc/examples/scores-examples.lsp,0
-
-../doc/examples/sc-and-clm-examples.lsp,0
-
-../doc/examples/rsp-rsm-examples.lsp,0
-
-../doc/examples/rhythms-examples.lsp,0
-
-../doc/examples/rhythm-chains-examples.lsp,0
-
-../doc/examples/primary-disposition.lsp,0
-
-../doc/examples/post-gen-editing-examples.lsp,0
-
-../doc/examples/pitches-examples.lsp,0
-
-../doc/examples/permutation-examples.lsp,0
-
-../doc/examples/output-examples.lsp,0
-
-../doc/examples/objects-slots-examples.lsp,0
-
-../doc/examples/o-haupt-voll-blut.lsp,0
-
-../doc/examples/notenames-scales-examples.lsp,0
-
-../doc/examples/marks-examples.lsp,0
-
-../doc/examples/l-systems-examples.lsp,0
-
-../doc/examples/instruments-examples.lsp,0
-
-../doc/examples/fibonacci-examples.lsp,0
-
-../doc/examples/exercises.lsp,0
-
-../doc/examples/ensemble-examples.lsp,0
-
-../doc/examples/enharmonics-examples.lsp,0
-
-../doc/examples/coming-piano-chords.lsp,0
-
-../doc/examples/chords-examples.lsp,0
-
-../doc/examples/chop-examples.lsp,0
-
-../doc/examples/cavatina.lsp,0
-
-../workshops/mini-examples-all.lsp,95
-(defun get-set-pitches 90,3000
-(defun my-get-harmonics 170,6079
-(defun make-rhythm 184,6562
-
-../workshops/workshop-exercises.lsp,0
-
-../test-suite/cheat-sheet.lsp,1274
-(defun get-loops-seqs-aux 29,1074
-(defun get-loops-seqs 53,2123
-(defun guitar-chord 93,4065
-(defparameter +cheat-sheet-set-palette+157,7222
-(defun string-chord-selection-fun 201,9301
-(defun violin-chord-selection-fun 217,10065
-(defun viola-chord-selection-fun 222,10312
-(defun cello-chord-selection-fun 227,10559
-(defun piano-chord-fun 232,10804
-(defparameter +cheat-sheet-rsp-orig+294,13534
-(defparameter +cheat-sheet-rsp+369,17041
-(defparameter +cheat-sheet-rsp-chopped+375,17199
-(defparameter +cheat-sheet-rehearsal-letters+378,17277
-(defun cheat-sheet-letter-bars 383,17516
-(defun cheat-sheet-letter-bar-num 387,17647
-(defparameter +cheat-sheet-ins-groups+395,17980
-(defparameter +cheat-sheet-ins-change-bar-nums+473,20069
-(defparameter +cheat-sheet-chopped-seq-numbers+477,20225
-(defparameter +cheat-sheet-num-rthm-seqs+ 484,20520
-(defun cheat-rsm-ins 493,20996
-(defparameter +cheat-sheet-rsm+527,22308
-(defparameter +cheat-sheet-set-map+541,22724
-(defparameter +cheat-sheet-set-limits-high+592,24942
-(defparameter +cheat-sheet-set-limits-low+599,25332
-(defparameter +cheat-sheet-pno-high+606,25712
-(defparameter +cheat-sheet-pno-low+617,26316
-(defparameter +cheat-sheet-pno-lh-high+635,27108
-(defparameter +cheat-sheet-pno-rh-low+644,27455
-
-../test-suite/coming.lsp,181
-(defparameter +coming-rthm-chain-main+45,1603
-(defparameter +coming-doublings+271,13269
-(defun coming-marimba-chord 337,15858
-(defparameter +coming-instrument-palette+359,16819
-
-../test-suite/sc-test-full.lsp,134
-(defparameter *sc-test-meth-and-func-tests-state-carry-over* 53,2156
-(defparameter *sc-test-webpage-tests-state-carry-over* 72,2805
-
-../test-suite/sc-test-suite-aux.lsp,723
-(defparameter *sc-test-name* 49,2003
-(defparameter *sc-test-all-tests* 50,2037
-(defparameter *sc-test-meth-and-func-tests-state*55,2281
-(defparameter *sc-test-webpage-examples-tests-state*60,2511
-(defmacro sc-test-with-gensyms 63,2608
-(defmacro sc-deftest 71,2940
-(defmacro sc-test-check 82,3485
-(defmacro sc-test-combine-results 88,3732
-(defun sc-test-report-result 97,4083
-(defmacro sc-test-test-all 106,4446
-(defun sc-test-next-test 120,5211
-(defun file-size 128,5505
-(defun file-write-ok 134,5723
-(defun probe-delete 154,6545
-(defun equal-within-less-tolerance 157,6622
-(defun test-suite-file 160,6703
-(defun probe-delete-multi 167,6998
-(defun file-write-ok-multi 172,7163
-(defun float-list=179,7391
-
-../test-suite/sc-test-suite.lsp,109
-(defun test-copy-bars2-aux 9958,411433
-(defun max-play-test 15770,659398
-(defun max-cue-test 15778,659695
-
-../test-suite/skin.lsp,755
-(defparameter +skin-syllables+80,2327
-(defun get-scalers-for-unit 93,2758
-(defparameter +skin-multiplier-rthm-seqs+100,3016
-(defparameter +skin-viol-tunings-normal+ 158,5964
-(defparameter +skin-viol-tunings+ 161,6059
-(defparameter +skin-harmonics+171,6549
-(defun skin-get-rthm-seq-index-long 233,9702
-(defparameter +skin-strg-combos+256,10573
-(defun skin-strg-combos-tally 265,10784
-(defun skin-get-skin-harmonics-ref 277,11227
-(defparameter +skin-strg-combo+ 286,11574
-(defun skin-get-combo-next 302,12380
-(defparameter +skin-set-map+309,12583
-(defparameter +skin-long-rthm-seq-refs+331,13596
-(defparameter +skin-short-rthm-seq-refs+362,15130
-(defparameter +skin-rthm-seq-map+378,15780
-(defparameter +skin-set-sounding-pitches+613,26184
-
-../test-suite/tramontana.lsp,3048
-(defun permutate-permutations 37,1304
-(defun tramontana-transpose-pitch 48,1816
-(defun tramontana-transpose-chord 54,2028
-(defun simple-chord-transpose 86,3529
-(defun get-sounding-note 97,3817
-(defun get-real-note-indices 144,5568
-(defun make-tramontana-harm-events 173,7067
-(defun make-sounding-notes 204,8357
-(defun dh 218,8795
-(defun dead-harmonic 221,8856
-(defun tramontana-symbol 233,9323
-(defun no-head 237,9489
-(defun fist 240,9540
-(defun tailpiece 248,9828
-(defun body1 255,10054
-(defun body2 261,10224
-(defun bridge 267,10406
-(defun ntxt 270,10503
-(defun open-string 274,10661
-(defun clb 277,10702
-(defun cl 280,10733
-(defun hair 283,10762
-(defun spe 286,10795
-(defun ste 289,10826
-(defun vlb 292,10857
-(defun ord 295,10888
-(defun sp 298,10919
-(defun st 301,10948
-(defun pizz 304,10977
-(defun arco 307,11010
-(defun pizz-nail 310,11043
-(defun br 313,11086
-(defun tr3 316,11207
-(defun tr4 319,11282
-(defun text1 322,11357
-(defmacro acmtn 325,11443
-(defun acmtns 328,11544
-(defun acmtnsft 332,11648
-(defmacro rmbe 335,11756
-(defmacro re 340,11965
-(defun treble 344,12153
-(defun alto 347,12261
-(defun perc 350,12365
-(defun mf-d 357,12598
-(defun pp-d 360,12634
-(defun f-d 363,12670
-(defun pp-sub 366,12704
-(defun p-sub 369,12770
-(defun mp-sub 372,12834
-(defun mf-sub 375,12912
-(defun f-sub 378,12990
-(defun up-bow 381,13054
-(defun down-bow 384,13147
-(defun battuto 387,13244
-(defun ah 390,13295
-(defun aux-note 393,13356
-(defun qnp 397,13472
-(defun tup 401,13589
-(defun bm 408,13890
-(defun ttie 415,14158
-(defparameter +tramontana-II-harm+ 429,14845
-(defparameter +tramontana-III-harm+ 431,14925
-(defparameter +tramontana-III-non-harm+ 433,15028
-(defparameter +tramontana-IV-harm+ 435,15114
-(defparameter +tramontana-IV-non-harm+ 437,15216
-(defparameter +tramontana-binary-lfl+445,15558
-(defparameter +tramontana-3perms+ 474,16984
-(defparameter +tramontana-harms+483,17395
-(defparameter +tramontana-harms-with-II+561,21826
-(defparameter +tramontana-harms-with-rests+638,25948
-(defparameter +tramontana-harms-transition+690,28102
-(defparameter +c3+ 757,31192
-(defparameter +c3-7th-harmonic+ 758,31221
-(defparameter +viola-IV+ 759,31265
-(defparameter +viola-III+ 760,31296
-(defparameter +viola-II+ 761,31347
-(defparameter +viola-I+ 762,31397
-(defparameter +tramontana-string-freqs+763,31446
-(defun make-tr-chord 767,31623
-(defparameter +h-iv+ 770,31718
-(defparameter +hc1+ 771,31747
-(defparameter +hc2+ 772,31806
-(defparameter +hc3+ 773,31855
-(defparameter +hc4+ 774,31914
-(defparameter +hc5+ 775,31975
-(defparameter +hc6+ 776,32021
-(defparameter +hc7+ 777,32076
-(defparameter +hc8+ 778,32122
-(defparameter +a4h+ 779,32175
-(defparameter +hc1t+ 802,32851
-(defparameter +hc2t+ 803,32887
-(defparameter +hc3t+ 804,32923
-(defparameter +hc4t+ 805,32959
-(defparameter +hc8t+ 806,32995
-(defparameter +hc9t+ 807,33031
-(defparameter +tramontana-harmonic-lfl+823,33529
-(defparameter +tramontana-chord-order+830,33663
-(defparameter +tramontana-loops+855,34771
-
-../test-suite/sc-test-webpages.lsp,0

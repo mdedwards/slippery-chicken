@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 14:55:30 Sat Mar  7 2015 GMT
+;;; $$ Last modified: 17:32:09 Thu Mar 12 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1623,10 +1623,7 @@
          (new-env-x-range (abs (- x-max x-min)))
          (new-env-y-range (abs (- y-max y-min)))
          (x-scaler (/ new-env-x-range env-x-range))
-         (y-scaler (/ new-env-y-range env-y-range))
-                                        ; (x-diff (- x-min env-x-min))
-                                        ; (y-diff (- y-min env-y-min))
-         )
+         (y-scaler (/ new-env-y-range env-y-range)))
     (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
        collect (float (+ x-min (* (- x env-x-min) x-scaler)))
        collect (float (+ y-min (* (- y env-y-min) y-scaler))))))

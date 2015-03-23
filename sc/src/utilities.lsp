@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:32:09 Thu Mar 12 2015 GMT
+;;; $$ Last modified: 21:43:46 Mon Mar 23 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1609,24 +1609,48 @@
 |#
 ;;; SYNOPSIS
 (defun auto-scale-env (env &key
-                       (x-min 0.0) (x-max 100.0)
-                       (y-min 0.0) (y-max 10.0))
+                             (x-min 0.0) (x-max 100.0)
+                             (y-min 0.0) (y-max 10.0)
+                             (expt 1.0))
 ;;; ****
   (unless (and (> x-max x-min) (> y-max y-min))
     (error "utilities::auto-scale-env: x-max must be > x-min and sim. for y's"))
   (let* ((env-x-min (first env))
          (env-x-max (lastx env))
-         (env-x-range (abs (- env-x-max env-x-min)))
+         ;; (env-x-range (abs (- env-x-max env-x-min)))
+         (env-x-range (- env-x-max env-x-min))
          (env-y-min (env-y-min env))
          (env-y-max (env-y-max env))
-         (env-y-range (abs (- env-y-max env-y-min)))
+         ;; (env-y-range (abs (- env-y-max env-y-min)))
+         (env-y-range (- env-y-max env-y-min))
          (new-env-x-range (abs (- x-max x-min)))
          (new-env-y-range (abs (- y-max y-min)))
          (x-scaler (/ new-env-x-range env-x-range))
          (y-scaler (/ new-env-y-range env-y-range)))
-    (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
+    (loop for x in env by #'cddr and y in (cdr env) by #'cddr
        collect (float (+ x-min (* (- x env-x-min) x-scaler)))
        collect (float (+ y-min (* (- y env-y-min) y-scaler))))))
+
+(defun exaggerate-env (env expt)
+  (let* ((env-y-min (env-y-min env))
+         (env-y-max (env-y-max env))
+         (env-y-range (- env-y-max env-y-min))
+         (env-y-range2 (/ env-y-range 2.0))
+         (env-y-mid (+ env-y-min (* .5 env-y-range))))
+    (loop for x in env by #'cddr and y in (cdr env) by #'cddr
+       ;; current y distance from the overall y mid-point
+       for ydist = (- y env-y-mid)
+       ;; normalised 0. to 1.
+       for ydistf = (print (/ ydist env-y-range2))
+       for ydistfe = (expt (abs ydistf) expt)
+       for newy = (progn
+                    (when (< ydistf 0)
+                      (setf ydistfe (- ydistfe)))
+                    (+ env-y-mid (* ydistfe env-y-range2)))
+       collect x
+       collect newy)))
+
+(exaggerate-env '(0 .1 50 .5 100 .9) 2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1641,20 +1665,24 @@
 ;;; ****f* utilities/decimate-env
 ;;; DESCRIPTION
 
-;;; Reduce the number of x,y pairs in an envelope.  In
-;;; all three, the envelope is first stretched along the x-axis to fit the new
-;;; number of points required.  Then we proceed by one of three methods:
+;;; Reduce the number of x,y pairs in an envelope.  In every case the envelope
+;;; is first stretched along the x-axis to fit the new number of points
+;;; required.  Then we proceed by one of three methods:
+;;; 
 ;;; 1) average: for every new output x value, interpolate 100 times from -0.5
 ;;; to +0.5 around the point, then average the y value.  This will catch
 ;;; clustering but round out spikes caused by them
+;;; 
 ;;; 2) points: also an averaging method but only using the existing points in
 ;;; the original envelope (unless none is present for a new x value, whereupon
 ;;; interpolation is used): Take an average of the (several) points nearest the
 ;;; new output point. This might not recreate the extremes of the original
 ;;; envelope but clustering is captured, albeit averaged.
+;;; 
 ;;; 3) interpolate: for each new output point, interpolate the new y value from
 ;;; the original envelope.  This will leave out details in the case of
 ;;; clustering, but accurately catch peaks if there are enough output points.
+;;; 
 ;;; In each case we create an even spread of x values, rather than clustering
 ;;; where clusters exist in the original.
 ;;; 

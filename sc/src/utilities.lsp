@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 21:43:46 Mon Mar 23 2015 GMT
+;;; $$ Last modified: 18:59:17 Wed Mar 25 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1570,6 +1570,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun env-y-min (env)
+  (loop for y in (cdr env) by #'cddr minimize y))
+
+(defun env-y-max (env)
+  (loop for y in (cdr env) by #'cddr maximize y))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; ****f* utilities/auto-scale-env
 ;;; DATE
 ;;; August 29th 2013
@@ -1631,7 +1639,49 @@
        collect (float (+ x-min (* (- x env-x-min) x-scaler)))
        collect (float (+ y-min (* (- y env-y-min) y-scaler))))))
 
-(defun exaggerate-env (env expt)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****f* utilities/exaggerate-env
+;;; DESCRIPTION
+;;; Makes the y values in an envelope more radically pushed towards its
+;;; extremes. Y values below the mid-point will be pushed downwards; those
+;;; above will be pushed upwards. The opposite can be accomplished by making
+;;; the exponent argument > 1 (see below).
+;;; 
+;;; ARGUMENTS
+;;; - the envelope: a list of numbers representing an envelope: x y pairs
+;;; - the exponent: this determines the amount of
+;;;   exaggeration. Counterintuitively perhaps, the lower values are than 1 the
+;;;   more exaggeration takes place. Values > 1 will mean the opposite:
+;;;   understated y values, if you will.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - easy-expt: because of the counterintuitive nature of the exponent, you
+;;;   can pass values between -10 and +10 if this third argument is T. This
+;;;   will be scaled to useful though not over-extreme exponents of 1.9 (-10)
+;;;   to .1 (+10) with 0 equating to an exponent of 1, i.e. no change.
+;;; 
+;;; RETURN VALUE
+;;; The new exaggerated envelope (a list).
+;;; 
+;;; EXAMPLE
+#|
+(exaggerate-env '(0 0 50 .8 100 1) 1.9)
+--> (0 0.0 50 0.6894338 100 1.0)
+(exaggerate-env '(0 0 50 .8 100 1) .1)
+--> (0 0.0 50 0.9751001 100 1.0)
+(exaggerate-env '(0 0 50 .8 100 1) -10)
+--> (0 0.0 50 83.19083 100 1.0)
+(exaggerate-env '(0 0 50 .8 100 1) -10 t)
+--> (0 0.0 50 0.6894338 100 1.0)
+(exaggerate-env '(0 0 50 .8 100 1) 0 t)
+--> (0 0.0 50 0.8 100 1.0)
+(exaggerate-env '(0 0 50 .8 100 1) 10 t)
+--> (0 0.0 50 0.9751001 100 1.0)
+|#
+;;; SYNOPSIS
+(defun exaggerate-env (env expt &optional easy-expt)
+;;; ****
   (let* ((env-y-min (env-y-min env))
          (env-y-max (env-y-max env))
          (env-y-range (- env-y-max env-y-min))
@@ -1641,24 +1691,24 @@
        ;; current y distance from the overall y mid-point
        for ydist = (- y env-y-mid)
        ;; normalised 0. to 1.
-       for ydistf = (print (/ ydist env-y-range2))
-       for ydistfe = (expt (abs ydistf) expt)
+       for ydistf = (/ ydist env-y-range2)
+       for ydistfe = (expt (abs ydistf) 
+                           (if easy-expt
+                               (progn
+                                 (unless (and (>= expt -10)
+                                              (<= expt 10))
+                                   (error "utilities::exaggerate-env: ~
+                                           when <easy-expt> is T, the exponent
+                                           should be between -10 and 10: ~a"
+                                          expt))
+                                 (fscale expt -10 10 1.9 .1))
+                               expt))
        for newy = (progn
                     (when (< ydistf 0)
                       (setf ydistfe (- ydistfe)))
                     (+ env-y-mid (* ydistfe env-y-range2)))
        collect x
        collect newy)))
-
-(exaggerate-env '(0 .1 50 .5 100 .9) 2)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun env-y-min (env)
-  (loop for y in (cdr env) by #'cddr minimize y))
-
-(defun env-y-max (env)
-  (loop for y in (cdr env) by #'cddr maximize y))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Sep  5 19:02:18 2013
@@ -1790,8 +1840,8 @@
                         (max most-positive-double-float))
 ;;; ****
   "Returns an envelope that is symmetrical around the key variable 'centre'.
-   e.g. (symmetrical '(0 0 30 .2 70 .95 100 .5)) => 
-   (0 1.0 30 0.8 70 0.05 100 0.5)"
+  e.g. (symmetrical '(0 0 30 .2 70 .95 100 .5)) => 
+  (0 1.0 30 0.8 70 0.05 100 0.5)"
   (loop for x in env by #'cddr and y in (cdr env) by #'cddr 
      for new-y = (- (* 2.0 centre) y)
      collect x collect (max min (min new-y max))))
@@ -1883,7 +1933,7 @@
     ;; (format t "~%hey ~a ~a ~a" len new-len diff)
     (when (or (zerop new-len) (>= diff len))
       (error "force-length:: new length must be between 1 and 1 less than ~%~
-              double the original length: ~a ~%(length: ~a, new length: ~a)" 
+  double the original length: ~a ~%(length: ~a, new length: ~a)" 
              list len new-len))
     (if (= len new-len)
         list
@@ -1991,7 +2041,7 @@
                                   sampling-rate)))
              (when (= time last-time)
                (error "utilities::parse-wavelab-marker-file-for-sections: ~
-                          Two markers at same point: ~a"
+  Two markers at same point: ~a"
                       time))
              (setf last-time time)
              (if (oddp count)
@@ -2002,8 +2052,8 @@
                    (unless (or (string= name "*" :end1 1) 
                                (string= name "marker" :end1 6))
                      (warn "parse-wavelab-marker-file-for-sections: ~
-                            Got marker with name \"~a\" ~%at ~a (pos ~a); ~
-                            expected no name."
+  Got marker with name \"~a\" ~%at ~a (pos ~a) ; ~
+  expected no name."
                            name (secs-to-mins-secs time) value))
                    (setf end time)
                    (push (make-wavelab-section :sndfile sndfile 
@@ -2013,7 +2063,7 @@
                          result)
                    (when print
                      (format t "~%(~a ~%~t:description \"~a\" ~
-                                 ~%~t:start ~,5f :end ~,5f)"
+                                      ~%~t:start ~,5f :end ~,5f)"
                              sndfile region-name start end)))))
            (when eof 
              (format t "~&~a markers read from ~a~%" count marker-file)
@@ -2047,11 +2097,11 @@
              (when (string= param "pos")
                (setf time (float (/ (read-from-string value)
                                     sampling-rate)))
-               (format txt "~&~a, ~,6f;" count time))
-             (when eof 
-               (terpri txt)
-               (format t "~%~%~a markers read~%" count)
-               (return t))))))))
+               (format txt "~&~a, ~,6f  ;" count time))
+  (when eof 
+    (terpri txt)
+    (format t "~%~%~a markers read~%" count)
+    (return t))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -4484,5 +4534,16 @@ RETURNS:
                   (return)))
            finally (return result)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Mar 25 16:41:13 2015 
+(defun float-list= (list1 list2 &optional (tolerance 0.000001d0))
+  (every #'(lambda (x y) (equal-within-tolerance x y tolerance)) list1 list2))
+
+;;; (FSCALE 0 -10 10 1.9 .1) means we can map exponents of 1.9 to .1 from -10
+;;; to 10 with a zero point returning an exponent of 1
+(defun fscale (val min max new-min new-max)
+  (float (+ new-min (* (/ (- val min) (- max min))
+                       (- new-max new-min)))))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

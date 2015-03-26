@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:56:51 Thu Mar 26 2015 GMT
+;;; $$ Last modified: 19:19:46 Thu Mar 26 2015 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5909,6 +5909,8 @@ seq-num 5, VN, replacing G3 with B6
 ;;; - :title. Usually T or NIL to include the title of the piece at the top of
 ;;;   the score or not, but could also be a string to specify a new
 ;;;   title. Default = T.
+;;; - :indent. T or NIL to indicate whether the first system in the score
+;;;   should be indented or not. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; The path of the main score file generated.
@@ -6028,6 +6030,8 @@ seq-num 5, VN, replacing G3 with B6
        (extend-hairpins nil)
        ;; MDE Thu Mar 26 18:49:46 2015
        (title t)
+       ;; MDE Thu Mar 26 19:18:03 2015
+       (indent t)
        ;; sim to rehearsal letters
        (tempi-all-players t))
 ;;; ****
@@ -6179,6 +6183,8 @@ seq-num 5, VN, replacing G3 with B6
         (format out "~%  bottom-margin = ~a\\mm" bottom-margin)
         (format out "~%  left-margin = ~a\\mm" left-margin)
         (format out "~%  line-width = ~a\\cm" line-width)
+        (unless indent
+          (format out "~%  indent = 0.0"))
         (when between-system-space 
           (format out "~%  system-system-spacing #'basic-distance  = ~a\\cm"
                   between-system-space))

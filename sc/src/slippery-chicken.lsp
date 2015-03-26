@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:15:22 Wed Feb 11 2015 GMT
+;;; $$ Last modified: 18:56:51 Thu Mar 26 2015 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5906,6 +5906,9 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   starting/ending a beam on a rest and then trying to generate a score with
 ;;;   CMN will fail.
 ;;; - :footer. A string to add to the footer of every score page. Default = NIL.
+;;; - :title. Usually T or NIL to include the title of the piece at the top of
+;;;   the score or not, but could also be a string to specify a new
+;;;   title. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; The path of the main score file generated.
@@ -6023,6 +6026,8 @@ seq-num 5, VN, replacing G3 with B6
        ;; MDE Thu Jan 9 09:20:33 2014 -- if you want hairpin (cresc/dim) to
        ;; extend beyond the note set to T
        (extend-hairpins nil)
+       ;; MDE Thu Mar 26 18:49:46 2015
+       (title t)
        ;; sim to rehearsal letters
        (tempi-all-players t))
 ;;; ****
@@ -6070,9 +6075,11 @@ seq-num 5, VN, replacing G3 with B6
          (def-file-path (concatenate 'string path def-file)))
     (labels ((no-header-footer (stream)
                (format stream 
-                       "~%\\header {~%  title = \"~a\" ~%  subtitle = ~a~
+                       "~%\\header {~%  title = ~a ~%  subtitle = ~a~
                         ~%  tagline = ##f~%  composer = ~a~%}"
-                       (title sc)
+                       (cond ((stringp title) (format nil "\"~a\"" title))
+                             (title (format nil "\"~a\"" (title sc)))
+                             (t "##f"))
                        (if (subtitle sc)
                            (format nil "\"~a\"" (subtitle sc))
                            "##f")

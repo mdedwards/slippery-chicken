@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 18:37:51 Mon Dec 23 2013 WIT
+;;; $$ Last modified: 13:24:18 Tue Mar 24 2015 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -402,7 +402,6 @@ data: BEAM
                             (ral2 recursive-assoc-list))
   (declare (ignore ral1 ral2))
   (let ((result (call-next-method)))
-    ;; (print 'relinking)
     (relink-named-objects result)
     result))
 

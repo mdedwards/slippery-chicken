@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:19:46 Thu Mar 26 2015 GMT
+;;; $$ Last modified: 15:26:37 Thu Apr  9 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4055,7 +4055,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;
 ;;; If instead of the above method the user would like the pitches in the
 ;;; resulting sound file to be transposed to match the pitches of the
-;;; slippery-chicken object, the keyword argument :pitch-synchronous can be set
+;;; players' notes, the keyword argument :pitch-synchronous can be set
 ;;; to T (and do-src should be left set to T as well). This will also work with
 ;;; chords.
 ;;;
@@ -4149,7 +4149,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   given, the method will invoke fibonacci-transitions to transition from
 ;;;   the first specified group of source sound files to this one. If NIL, only
 ;;;   one group of source sound files will be used. Default = NIL.
-;;; - :do-src. T, a number, or a note-name pitch symbol to indicate whether
+;;; - :do-src. T, NIL, a number, or a note-name pitch symbol to indicate whether
 ;;;   transposition of the source sound files for playback will be calculated
 ;;;   such that the perceived fundamental frequencies of those sound files are
 ;;;   shifted to match the pitches of the current set. If do-src is a number
@@ -4158,7 +4158,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   to the events' pitches. NB Whichever is used, after being converted to a
 ;;;   sample rate conversion factor, this is always multiplied by the
 ;;;   src-scaler (see below). T = match sound files' frequencies to set
-;;;   pitches. Default = T.
+;;;   pitches. NIL means no transposition will be performed. Default = T.
 ;;; - :pitch-synchronous: T or NIL to indicate whether the source sound files
 ;;;   are to be transposed to match the pitches of the events in the given
 ;;;   players' part. This will only be effective if the given source sound file

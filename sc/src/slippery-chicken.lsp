@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:26:37 Thu Apr  9 2015 BST
+;;; $$ Last modified: 11:12:48 Wed Apr 22 2015 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4461,7 +4461,8 @@ seq-num 5, VN, replacing G3 with B6
          (srts '())
          (freqs '())
          (srt-freq (cond ((numberp do-src) do-src)
-                         ((and (not (eq do-src t))
+                         ((and do-src
+                               (not (eq do-src t))
                                (symbolp do-src))
                           (note-to-freq do-src))))
          (duration 0.0)
@@ -4661,7 +4662,8 @@ seq-num 5, VN, replacing G3 with B6
                          ;; events to output 
                          (unless (zerop events-before-max-start)
                            (> (random-rep 100.0)
-                              (interpolate event-count-player this-play-chance-env
+                              (interpolate event-count-player 
+                                           this-play-chance-env
                                            :exp play-chance-env-exp)))
                          ;; MDE Mon Nov  4 11:11:07 2013 
                          freqs (let ((f (frequency (pitch-or-chord event))))

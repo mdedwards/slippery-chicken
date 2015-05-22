@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 17:54:39 Sat Jan 17 2015 GMT
+;;; $$ Last modified: 14:10:25 Fri May 22 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -109,6 +109,9 @@
 ;;; Add an event object to a specified bar either at the end of that bar or at
 ;;; a specified position within that bar.
 ;;; 
+;;; It's the user's responsibility to make sure the bar is full and
+;;; update-slots is called after all post-generation editing such as this.
+;;; 
 ;;; ARGUMENTS 
 ;;; - A slippery-chicken object.
 ;;; - An event object.
@@ -178,6 +181,9 @@
 ;;;
 ;;; One or more new event objects can be specified as a replacement for one
 ;;; single original event object.
+;;;
+;;; It's the user's responsibility to make sure the bar is full and
+;;; update-slots is called after all post-generation editing. 
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A slippery-chicken object.

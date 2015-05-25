@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 18:59:17 Wed Mar 25 2015 GMT
+;;; $$ Last modified: 11:32:05 Mon May 25 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4545,5 +4545,30 @@ RETURNS:
   (float (+ new-min (* (/ (- val min) (- max min))
                        (- new-max new-min)))))
   
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon May 25 10:53:49 2015 -- remove the occurrence of a pair of elements
+;;; in a list. Symbols and numbers should work as is but other list element
+;;; types might need an optional test.
+
+(defun remove-pair (list pair &optional (test #'eq))
+  (let ((positions '())
+        (result '())
+        (p1 (first pair))
+        (p2 (second pair)))
+    (loop for e1 in list and e2 in (rest list) and i from 0 do
+         (when (and (funcall test e1 p1) (funcall test e2 p2))
+           (push i positions)
+           (push (1+ i) positions)))
+    (if positions
+        (progn
+          (setf positions (nreverse positions))
+          (loop with pos = (pop positions) for el in list and i from 0 do
+               (if (and pos (= i pos))
+                   (setf pos (pop positions))
+                   (push el result)))
+          (nreverse result))
+        list)))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 10:58:24 Fri May 29 2015 BST
+;;; $$ Last modified: 13:20:58 Fri May 29 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5367,9 +5367,10 @@ show-rest: T
                                               nudge-factor))
                        (prthms (first parsed))
                        (beams (third parsed))
+                       (nr num-rthms)
                        (brackets (fourth parsed)))
-                  ;; (print rthms)
-                  ;; (print beams)
+                  ;; (print prthms)
+                  (print brackets)
                   ;; now just slurp them up into our overall data lists.  bear
                   ;; in mind for now that with RQQ notations there's no
                   ;; mechanism to indicate rests, so they'd have to be created
@@ -5379,8 +5380,14 @@ show-rest: T
                        (incf num-rthms)
                        (setq last-rthm r))
                   ;; beam-positions order shouldn't matter
-                  (loop for b in (nreverse beams) do (push b beam-positions))
-                  (loop for b in brackets do (push b tuplet-positions))))
+                  (loop for b in (nreverse beams) do
+                       (push (list (+ nr (first b)) (+ nr (second b)))
+                             ;; todo: got to offset these values according to
+                             ;; how many rthms we've already seen
+                             beam-positions))
+                  (loop for b in brackets do
+                       (push (list (first b) (+ nr (second b)) (+ nr (third b)))
+                             tuplet-positions))))
                 #| 
                 ;; MDE Fri May 29 10:02:22 2015 -- this is the way we used to
                 ;; do it, relying on CMN: 
@@ -5436,7 +5443,8 @@ show-rest: T
               tuplet-positions (nreverse tuplet-positions))
         ;; MDE Wed Dec 14 14:22:35 2011 -- score-tuplet-positions now nil but
         ;; no need to remove: just keep same data structure so as not to
-        ;; introduce bugs above 
+        ;; introduce bugs above
+        (print rthms)
         (list rthms score-tuplet-positions beam-positions
               tuplet-positions)))))
 
@@ -5468,7 +5476,6 @@ show-rest: T
 ;;; cmn-notes created later by another call to do-rqq when the real notes to be
 ;;; used are available.  N.B. If given, the-notes must be a list of pitch
 ;;; objects.
-;;; 
 
 #+cmn
 (defun do-rqq (rqq &optional the-notes bar-num process-event-fun (in-c t))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 11:39:48 Sat Dec 28 2013 WIT
+;;; $$ Last modified: 16:35:36 Thu May 21 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -433,6 +433,8 @@
                               (apply #'notes note)
                               note))
                       (when rq
+                        ;; MDE Thu May 21 16:28:29 2015 -- quarters is the rq slot
+                        ;; (rq (quarters rq)))
                         (rq rq))
                       (when dots
                         (dots dots))

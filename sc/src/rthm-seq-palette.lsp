@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 18:23:00 Sat Nov  1 2014 GMT
+;;; $$ Last modified: 17:17:12 Thu May 21 2015 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -996,6 +996,22 @@ rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) is required.
     (loop for ref in refs for rs = (get-data ref rsp) do
          (set-data ref (make-rsp (id rs) (split-into-single-bars rs)) rsp)))
   rsp)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May 21 17:07:23 2015 
+(defmethod auto-beam ((rsp rthm-seq-palette) &optional (beat nil) 
+                                               (check-dur #'warn))
+  (rmap rsp #'auto-beam beat check-dur))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May 21 17:07:32 2015 
+(defmethod auto-tuplets ((rsp rthm-seq-palette) &optional (on-fail #'warn))
+  (rmap rsp #'auto-tuplets on-fail))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May 21 17:16:22 2015
+(defmethod delete-rqq-info ((rsp rthm-seq-palette))
+  (rmap rsp #'delete-rqq-info))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

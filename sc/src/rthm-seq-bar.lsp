@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 20:51:43 Mon Jan 19 2015 GMT
+;;; $$ Last modified: 10:58:24 Fri May 29 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5059,6 +5059,11 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
            ;; (format t "~%~a to ~a" (player e) player))
          (setf (player e) player))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May 21 17:16:22 2015 
+(defmethod delete-rqq-info ((rsb rthm-seq-bar))
+  (loop for r in (rhythms rsb) do (setf (rqq-info r) nil)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
@@ -5355,12 +5360,37 @@ show-rest: T
                            (setq get-tuplet nil)
                            (incf expect-right-brackets))
                ((is-rqq-info interned)
+                ;; MDE Fri May 29 10:57:52 2015 -- new way of handling rqq
+                ;; specification of rhythms: don't process with CMN rather,
+                ;; unravel them here and produce normal SC rhythms
+                (let* ((parsed (parse-rhythms (rqq-divide interned)
+                                              nudge-factor))
+                       (prthms (first parsed))
+                       (beams (third parsed))
+                       (brackets (fourth parsed)))
+                  ;; (print rthms)
+                  ;; (print beams)
+                  ;; now just slurp them up into our overall data lists.  bear
+                  ;; in mind for now that with RQQ notations there's no
+                  ;; mechanism to indicate rests, so they'd have to be created
+                  ;; afterwards
+                  (loop for r in prthms do
+                       (push r rthms)
+                       (incf num-rthms)
+                       (setq last-rthm r))
+                  ;; beam-positions order shouldn't matter
+                  (loop for b in (nreverse beams) do (push b beam-positions))
+                  (loop for b in brackets do (push b tuplet-positions))))
+                #| 
+                ;; MDE Fri May 29 10:02:22 2015 -- this is the way we used to
+                ;; do it, relying on CMN: 
                 (multiple-value-bind
                     (rqq-rthms rqq-num-notes rqq-num-rthms)
-                    (do-rqq interned)
+                    (do-rqq interned) ; 
                   (incf num-rthms rqq-num-rthms)
                   (incf num-notes rqq-num-notes)
                   (setf rthms (append (reverse rqq-rthms) rthms))))
+                |#
                ;; finally we saw a rhythm!
                ;; but when it's in parentheses it's a rest so
                ;; it's not going to  increment num-notes
@@ -5399,6 +5429,8 @@ show-rest: T
                   End of beam not specified: saw opening but ~
                   not a closing '-': ~%~a" 
                  rhythms))
+        ;; MDE Fri May 29 10:57:14 2015 -- beam-positions doesn't need to be
+        ;; reversed
         (setf rthms (nreverse rthms)
               ;; score-tuplet-positions (nreverse score-tuplet-positions)
               tuplet-positions (nreverse tuplet-positions))
@@ -5443,73 +5475,78 @@ show-rest: T
   ;; (format t "~%do-rqq: ~a" the-notes)
   (let* ((subdivs (second rqq))
          (aux (loop for i in subdivs
-                  collect (do-rqq-aux (second i))))
+                 collect (do-rqq-aux (if (listp i) (second i) '(1)))))
          (rthms (loop for i in aux appending (first i)))
          (num-notes (loop for r in rthms count (not (is-rest r))))
          (num-cmn-notes 0)
          (were-notes (when the-notes (length the-notes)))
          (stripped (loop 
-                       for i in aux 
-                       for j in subdivs
-                       for k = (second i)
-                       collect (list (first j) k)
-                       do (incf num-cmn-notes (length k))))
+                      for i in aux
+                      for j in subdivs
+                      for k = (second i)
+                      collect (list (if (listp j) (first j) j) k)
+                      do (incf num-cmn-notes (length k))))
          ;; this loops through all the rhythms including rests and grace notes
          ;; but collects only the notes necessary for the rqq i.e. no grace
          ;; notes. 
          (notes (loop 
-                    for r in rthms 
-                    for event = (sc-change-class r 'event)
-                    with cmn-note 
-                    with pitch 
-                    do
-                      (unless (is-rest event)
-                        (setf pitch (if were-notes 
-                                        (pop the-notes)
-                                      (make-pitch 'c4)))
-                        (unless pitch
-                          (error "rthm-seq-bar::do-rqq: pitch is nil!: ~
+                   for r in rthms 
+                   for event = (sc-change-class r 'event)
+                   with cmn-note 
+                   with pitch 
+                   do
+                     (unless (is-rest event)
+                       (setf pitch (if were-notes 
+                                       (pop the-notes)
+                                       (make-pitch 'c4)))
+                       (unless pitch
+                         (error "rthm-seq-bar::do-rqq: pitch is nil!: ~
                                   ~a ~%~a notes given"
-                                 rqq were-notes)))
-                      (unless (is-rest event)
-                        (setf (pitch-or-chord event) (clone pitch)))
-                      ;; if r is a grace-note, cmn-note will be nil.
-                      (setf cmn-note (get-cmn-data event bar-num t 
-                                                   process-event-fun in-c)
-                            bar-num nil)
-                    when cmn-note collect cmn-note))
+                                rqq were-notes)))
+                     (unless (is-rest event)
+                       (setf (pitch-or-chord event) (clone pitch)))
+                   ;; if r is a grace-note, cmn-note will be nil.
+                     (setf cmn-note (get-cmn-data event bar-num t 
+                                                  process-event-fun in-c)
+                           bar-num nil)
+                   when cmn-note collect cmn-note))
          (cmn-notes (cmn::disgorge 
                      (apply #'cmn::rqq 
                             (append 
                              (list (list (first rqq) stripped))
                              notes)))))
     (loop 
-        for r in rthms 
-        with note 
-        with didit
-        for i from 0 do
-          (unless (is-grace-note r)
-            (setf note (pop cmn-notes)
-                  (rqq-note r) (when were-notes note)
-                  ;; store the rqq list in the first
-                  ;; notes of the group and t for all others so
-                  ;; that we can recalculate everything when
-                  ;; we've actually got the notes.
-                  (rqq-info r) (if didit
-                                   t
-                                 (progn
-                                   (setq didit t)
-                                   (copy-list rqq)))
-                  (rq r) (cmn::quarters note)
-                  (duration r) (float (rq r))
-                  (value r) (denominator (rq r))
-                  (id r) (value r)
-                  (data r) (value r))))
+       for r in rthms 
+       with note 
+       with didit
+       for i from 0 do
+         (unless (is-grace-note r)
+           (setf note (pop cmn-notes)
+                 (rqq-note r) (when were-notes note)
+                 ;; store the rqq list in the first
+                 ;; notes of the group and t for all others so
+                 ;; that we can recalculate everything when
+                 ;; we've actually got the notes.
+                 (rqq-info r) (if didit
+                                  t
+                                  (progn
+                                    (setq didit t)
+                                    (copy-list rqq)))
+                 (rq r) (cmn::quarters note)
+                 (duration r) (float (rq r))
+                 (value r) (denominator (rq r))
+                 (id r) (value r)
+                 (data r) (value r))))
     (values rthms num-notes (length rthms))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun do-rqq-aux (list)
+  ;; MDE Thu May 21 14:51:33 2015 -- when there are no subdivisions like (3 (1
+  ;; 1 1)) we've got an int instead so force it to be something like (3 (1))
+  (unless (listp list)
+    (setf list (list list '(1))))
+  ;; (print list)
   (let* ((rthms (loop 
                     for i in list
                     for r = (parse-possibly-compound-rhythm i)
@@ -5530,9 +5567,6 @@ show-rest: T
     (list rthms stripped)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 
-
 (defun handle-rqq (rqq pitches bnum events process-event-fun in-c)
   ;; (print 'handle-rqq)
   ;; (print pitches)
@@ -5546,17 +5580,20 @@ show-rest: T
         (result '()))
     ;; (print cmn-notes)
     (loop 
-        for e in events 
-        for rqqn = (rqq-info e)
-        while cmn-notes
-        do
-          ;; those events not yet handled will have rqq-info as a list or t
-          ;; if they are notes or rests but not grace-notes
-          (when (or (and rqqn (listp rqqn))
-                    (eq t rqqn))
-            (setf (rqq-note e) (pop cmn-notes))
-            (push (get-cmn-data e bnum nil process-event-fun in-c) result)
-            (setf bnum nil)))
+       for e in events 
+       for rqqn = (rqq-info e)
+       while cmn-notes
+       do
+       ;; (print rqqn)
+         ;; (print e)
+       ;; those events not yet handled will have rqq-info as a list or t
+       ;; if they are notes or rests but not grace-notes
+         (when (or (and rqqn (listp rqqn))
+                   (eq t rqqn))
+           (setf (rqq-note e) (pop cmn-notes))
+           (push (get-cmn-data e bnum nil process-event-fun in-c) result)
+           ;; (print 'here)
+           (setf bnum nil)))
     (when cmn-notes
       (error "pitches: ~%~a ~%events:~a~%: ~
               rthm-seq-bar::handle-rqq: Too many cmn notes!"
@@ -5571,10 +5608,13 @@ show-rest: T
 ;;; format of other rhythms etc.
 
 (defun is-rqq-info (thing)
+  ;; (print thing)
   (and (listp thing)
        (numberp (first thing))
        (second thing)
-       (listp (second thing))))
+       ;; MDE Thu May 28 12:16:02 2015 -- we don't have to have sublists...
+       (or (integerp thing)
+           (listp (second thing)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5911,6 +5951,80 @@ show-rest: T
                   beg-sl end-sl airy-head none circled-x trill-f trill-n
                   trill-s x-head square slash triangle arrow-up arrow-down harm
                   triangle-up open))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May 28 12:26:55 2015 -- new rqq handling code to avoid having to
+;;; explicitly call CMN routines, instead turning them into our normal SC
+;;; rhythmic notation instead.
+
+;;; This will put tuplets over a whole RQQ list, rather than dividing into
+;;; beats and bracketing those. If you don't want this, then split the RQQ
+;;; lists into beats. 
+(defun rqq-divide (divisions)
+  (let* ((aux (rqq-divide-aux divisions 4))
+         (faux (flatten aux))
+         (beam-all (beamable faux)))
+    ;; (print faux)
+    (if beam-all
+        ;; if we can put a beam over all rthms, remove beams we've added
+        ;; already and put a beam symbol at the beginning and end. 
+        (beamem faux)                   ;(remove '- faux))
+        (debeamem (remove-pair faux '(- -))))))
+
+(defun rqq-divide-aux (divisions parent-dur)
+  ;; (print divisions)
+  (if (integerp divisions)
+      (let* ((v (/ parent-dur divisions))
+             (r (get-rhythm-letter-for-value v nil)))
+        (if r r v))
+      (let* ((rqqnd (rqq-num-divisions (second divisions)))
+             (pd (/ (* parent-dur rqqnd) (first divisions)))
+             (result (flatten (loop for div in (second divisions) collect
+                                   (rqq-divide-aux div pd))))
+             ;; (beam (beamable (flatten result))))
+             (beam (beamable result)))
+        (if (power-of-2 rqqnd)
+            (if beam (beamem result) result)
+            (progn
+              (setf result (append (list '{ rqqnd) result '(})))
+              (if beam 
+                  (beamem result)
+                  result))))))
+
+(defun beamem (rthms)
+  ;; (print rthms)
+  ;; first remove existing beams
+  (append (cons '- (remove '- rthms)) '(-)))
+
+(defun debeamem (rthms)
+  ;; just the outer beams, unless there are stop/start beams in the middle
+  (let ((db (if (and (eq '- (first rthms))
+                     (eq '- (first (last rthms))))
+                (butlast (rest rthms))
+                rthms)))
+    (if (member '- db)
+        rthms
+        db)))
+
+(defun beamable (rthms)
+  ;; (print rthms)
+  (when (> (length rthms) 1)
+    (loop with last for el in rthms do 
+         (when (and (not (eq last '{))
+                    (numberp el)
+                    (<= el 8))
+           (return nil))
+       (setf last el)
+     finally (return t))))
+
+
+(defun rqq-num-divisions (rqq)
+  (loop for divs in rqq sum
+       (typecase divs
+         (list (first divs))
+         (integer divs)
+         (t (error "rthm-seq::rqq-denom: malformed data: ~a in ~%~a"
+                   divs rqq)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF rthm-seq-bar.lsp

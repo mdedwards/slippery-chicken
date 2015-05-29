@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 16:44:47 Fri Jan 23 2015 GMT
+;;; $$ Last modified: 19:56:01 Thu May 28 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1756,48 +1756,59 @@ data: NIL
         (tuplet "")
         (letter nil)
         (ok t)
+        result
         (num-dots 0))
     (flet 
-     ((parse-error 
-       (hint)
-       (when warn
-         (warn "rhythm::get-rhythm-letter-for-value: can't unparse ~a (~a)"
-               value hint))
-       (setf ok nil)))
-     (unless (whole-num-p value t)
-       (loop for d in (list 1-dot 2-dots 3-dots)
-             and dots from 1 do
+        ((parse-error 
+             (hint)
+           (when warn
+             (warn "rhythm::get-rhythm-letter-for-value: can't unparse ~a (~a)"
+                   value hint))
+           (setf ok nil)))
+      (unless (whole-num-p value t)
+        (loop for d in (list 1-dot 2-dots 3-dots)
+           and dots from 1 do
              (when (whole-num-p d t)
                (setf num-dots dots
                      val d)
                (return))))
-     (when (zerop (mod val 3)) ;; triplet
-       (setf tuplet "t"
-             val (* val 2/3)))
-     (when (zerop (mod val 5)) ;; quintuplet
-       (setf tuplet "f"
-             val (* val 4/5)))
-     ;; (break)
-     ;; (print value)
-     ;; (print val)
-     (unless (whole-num-p val t)
-       (parse-error "tuplet"))
-     (setf letter (case (round val)
-                        (1 'w)
-                        (2 'h)
-                        (4 'q)
-                        (8 'e)
-                        (16 's)
-                        (32 32)
-                        (64 64)))
-     (unless letter
-       (parse-error "letter"))
-     (if ok
-         (values 
-          (read-from-string 
-           (format nil "~a~a~a" 
-                   tuplet letter (make-string num-dots :initial-element #\.))))
-       nil))))
+      ;; MDE Thu May 28 19:55:51 2015 -- both these cases could trigger with a
+      ;; value like 60 but in that case we'll catch the problem below  
+      (when (zerop (mod val 3)) ;; triplet
+        (setf tuplet "t"
+              val (* val 2/3)))
+      (when (zerop (mod val 5)) ;; quintuplet
+        (setf tuplet "f"
+              val (* val 4/5)))
+      ;; (break)
+      ;; (print value)
+      ;; (print val)
+      (unless (whole-num-p val t)
+        (parse-error "tuplet"))
+      (setf letter (case (round val)
+                     (1 'w)
+                     (2 'h)
+                     (4 'q)
+                     (8 'e)
+                     (16 's)
+                     (32 32)
+                     (64 64)))
+      (unless letter
+        (parse-error "letter"))
+      (when ok
+        ;; MDE Thu May 28 19:48:40 2015 -- this used to have a values call in it
+        (setf result (read-from-string 
+                      (format nil "~a~a~a" 
+                              tuplet letter 
+                              (make-string num-dots :initial-element #\.)))))
+      ;; MDE Thu May 28 19:55:09 2015 -- now do a sanity check
+      (when result
+        (unless (= value (value (make-rhythm result)))
+          (when warn
+            (warn "rhythm::get-rhythm-letter-for-value: can't do ~a (got ~a)"
+                  value result))
+          (setf result nil)))
+      result)))
             
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 16:13:14 Mon Jan 12 2015 GMT
+;;; $$ Last modified: 17:16:54 Thu May 21 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2427,9 +2427,14 @@ RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod auto-beam ((rs rthm-seq) &optional (beat nil) (check-dur t))
+(defmethod auto-beam ((rs rthm-seq) &optional (beat nil) (check-dur #'warn))
   (loop for bar in (bars rs) do (auto-beam bar beat check-dur)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May 21 17:04:26 2015 
+(defmethod auto-tuplets ((rs rthm-seq) &optional (on-fail #'warn))
+  (loop for bar in (bars rs) do (auto-tuplets bar on-fail)))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Jul 18 17:41:29 2012 -- get the first rhythm/event in a rthm-seq
 
@@ -2700,6 +2705,11 @@ data: S
             (is-tied-from last-rthm) nil))
     (gen-stats rs)
     changed))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May 21 17:16:22 2015
+(defmethod delete-rqq-info ((rs rthm-seq))
+  (loop for rsb in (bars rs) do (delete-rqq-info rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

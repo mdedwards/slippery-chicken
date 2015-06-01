@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 19:56:01 Thu May 28 2015 BST
+;;; $$ Last modified: 18:01:11 Mon Jun  1 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1780,9 +1780,6 @@ data: NIL
       (when (zerop (mod val 5)) ;; quintuplet
         (setf tuplet "f"
               val (* val 4/5)))
-      ;; (break)
-      ;; (print value)
-      ;; (print val)
       (unless (whole-num-p val t)
         (parse-error "tuplet"))
       (setf letter (case (round val)
@@ -1803,7 +1800,7 @@ data: NIL
                               (make-string num-dots :initial-element #\.)))))
       ;; MDE Thu May 28 19:55:09 2015 -- now do a sanity check
       (when result
-        (unless (= value (value (make-rhythm result)))
+        (unless (equal-within-tolerance value (value (make-rhythm result)))
           (when warn
             (warn "rhythm::get-rhythm-letter-for-value: can't do ~a (got ~a)"
                   value result))

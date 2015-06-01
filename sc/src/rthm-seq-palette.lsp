@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 17:17:12 Thu May 21 2015 BST
+;;; $$ Last modified: 18:46:14 Mon Jun  1 2015 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -593,7 +593,7 @@ rthm-seq SEQ3
      :file file 
      ;; :spacing-hook #'cmn::even-spacing
      :auto-bar-nums nil
-     :size size 
+     :size size
      :page-nums page-nums
      :line-separation line-separation
      :all-output-in-one-file all-output-in-one-file

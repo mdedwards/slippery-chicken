@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 13:20:58 Fri May 29 2015 BST
+;;; $$ Last modified: 18:56:17 Mon Jun  1 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3417,7 +3417,7 @@ data: E
                                   notes-needed: ~a, ~
                   ~%              tuplets: ~a, ~
                                   nudge-factor: ~a, ~
-                                  beams: ~a, ~
+                  ~%              beams: ~a, ~
                   ~%              current-time-sig: ~a, ~
                                   write-time-sig: ~a, ~
                                   num-rests: ~a, ~
@@ -3518,7 +3518,7 @@ data: E
                    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 
+;;; 
 (defmethod get-lp-data ((rsb rthm-seq-bar) &optional
                         in-c (rehearsal-letters-font-size 18)
                         ;; MDE Sat Mar 10 16:55:31 2012 
@@ -4437,7 +4437,7 @@ collect (get-pitch-symbol r))))
     rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  27.1.11
+;;; 27.1.11
 
 ;;; Wed Dec 14 18:04:01 GMT 2011 SAR: Added robodoc info
 ;;; SAR Sat Dec 31 08:58:52 EST 2011: Added DATE back to robodoc info
@@ -5367,10 +5367,10 @@ show-rest: T
                                               nudge-factor))
                        (prthms (first parsed))
                        (beams (third parsed))
-                       (nr num-rthms)
+                       (nr num-rthms) ;(1- num-rthms))
                        (brackets (fourth parsed)))
                   ;; (print prthms)
-                  (print brackets)
+                  ;; (print beams) ;
                   ;; now just slurp them up into our overall data lists.  bear
                   ;; in mind for now that with RQQ notations there's no
                   ;; mechanism to indicate rests, so they'd have to be created
@@ -5390,7 +5390,7 @@ show-rest: T
                              tuplet-positions))))
                 #| 
                 ;; MDE Fri May 29 10:02:22 2015 -- this is the way we used to
-                ;; do it, relying on CMN: 
+                ;; do rqq, relying on CMN: 
                 (multiple-value-bind
                     (rqq-rthms rqq-num-notes rqq-num-rthms)
                     (do-rqq interned) ; 
@@ -5444,7 +5444,7 @@ show-rest: T
         ;; MDE Wed Dec 14 14:22:35 2011 -- score-tuplet-positions now nil but
         ;; no need to remove: just keep same data structure so as not to
         ;; introduce bugs above
-        (print rthms)
+        ;; (print rthms)
         (list rthms score-tuplet-positions beam-positions
               tuplet-positions)))))
 
@@ -5840,7 +5840,7 @@ show-rest: T
                (setf temp nil))))
       (loop 
          for r in rhythms do
-         ;;  MDE Wed Nov 28 14:00:05 2012 -- marks need to stop ties being
+         ;; MDE Wed Nov 28 14:00:05 2012 -- marks need to stop ties being
          ;; consolidated  
          (cond ((or (and (is-tied-from r)
                          (not (is-tied-to r)))
@@ -5990,16 +5990,21 @@ show-rest: T
                                    (rqq-divide-aux div pd))))
              ;; (beam (beamable (flatten result))))
              (beam (beamable result)))
-        (if (power-of-2 rqqnd)
+        ;; (format t "~&~a: beamable: ~a" result beam)
+        ;; (format t "~%~a ~a" rqqnd (first divisions))
+        ;; if for some strange reason we have something like (3 (1 1 1)) then
+        ;; we don't need a tuplet bracket
+        (if (power-of-2 (/ rqqnd (first divisions)))
             (if beam (beamem result) result)
             (progn
               (setf result (append (list '{ rqqnd) result '(})))
+              ;;(setf result (append (list '{ (list rqqnd (first divisions)))
+                ;;                   result '(})))
               (if beam 
                   (beamem result)
                   result))))))
 
 (defun beamem (rthms)
-  ;; (print rthms)
   ;; first remove existing beams
   (append (cons '- (remove '- rthms)) '(-)))
 
@@ -6013,16 +6018,20 @@ show-rest: T
         rthms
         db)))
 
+;;; can the given rhythms (numbers of symbols, with/without  - and { notations)
+;;; to be put under a beam or not?
 (defun beamable (rthms)
-  ;; (print rthms)
   (when (> (length rthms) 1)
-    (loop with last for el in rthms do 
+    (loop with last with val for el in rthms do
+         (setq val (if (numberp el)
+                       el
+                       (parse-rhythm-symbol el :error nil)))
          (when (and (not (eq last '{))
-                    (numberp el)
-                    (<= el 8))
+                    (numberp val)
+                    (< val 8))
            (return nil))
-       (setf last el)
-     finally (return t))))
+         (setf last el)
+       finally (return t))))
 
 
 (defun rqq-num-divisions (rqq)

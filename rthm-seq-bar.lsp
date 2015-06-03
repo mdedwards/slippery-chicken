@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 18:56:17 Mon Jun  1 2015 BST
+;;; $$ Last modified: 18:29:12 Wed Jun  3 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5964,13 +5964,22 @@ show-rest: T
 ;;; explicitly call CMN routines, instead turning them into our normal SC
 ;;; rhythmic notation instead.
 
+;;; We need this because we're using flatten on the recursive lists and rests
+;;; are indicated with () 
+(defstruct rqq-divide-rthm (r) (rest))
+
 ;;; This will put tuplets over a whole RQQ list, rather than dividing into
 ;;; beats and bracketing those. If you don't want this, then split the RQQ
 ;;; lists into beats. 
 (defun rqq-divide (divisions)
   (let* ((aux (rqq-divide-aux divisions 4))
-         (faux (flatten aux))
-         (beam-all (beamable faux)))
+         (faux (loop for r in (flatten aux) collect
+                    (if (typep r 'rqq-divide-rthm)
+                        (if (rqq-divide-rthm-rest r)
+                            (list (rqq-divide-rthm-r r))
+                            (rqq-divide-rthm-r r))
+                        r)))
+         (beam-all (beamable (flatten faux))))
     ;; (print faux)
     (if beam-all
         ;; if we can put a beam over all rthms, remove beams we've added
@@ -5980,29 +5989,35 @@ show-rest: T
 
 (defun rqq-divide-aux (divisions parent-dur)
   ;; (print divisions)
-  (if (integerp divisions)
-      (let* ((v (/ parent-dur divisions))
-             (r (get-rhythm-letter-for-value v nil)))
-        (if r r v))
-      (let* ((rqqnd (rqq-num-divisions (second divisions)))
-             (pd (/ (* parent-dur rqqnd) (first divisions)))
-             (result (flatten (loop for div in (second divisions) collect
-                                   (rqq-divide-aux div pd))))
-             ;; (beam (beamable (flatten result))))
-             (beam (beamable result)))
-        ;; (format t "~&~a: beamable: ~a" result beam)
-        ;; (format t "~%~a ~a" rqqnd (first divisions))
-        ;; if for some strange reason we have something like (3 (1 1 1)) then
-        ;; we don't need a tuplet bracket
-        (if (power-of-2 (/ rqqnd (first divisions)))
-            (if beam (beamem result) result)
-            (progn
-              (setf result (append (list '{ rqqnd) result '(})))
-              ;;(setf result (append (list '{ (list rqqnd (first divisions)))
+  ;; handle rests in the usual way, i.e. those values placed in ()
+  (let ((rest nil))
+    (when (and (listp divisions) (equal 1 (length divisions)))
+      (setf divisions (first divisions)
+            rest t))
+    (if (integerp divisions)
+        (let* ((v (/ parent-dur divisions))
+               (r (get-rhythm-letter-for-value v nil))
+               (result (if r r v)))
+          (make-rqq-divide-rthm :r result :rest rest))
+        (let* ((rqqnd (rqq-num-divisions (second divisions)))
+               (pd (/ (* parent-dur rqqnd) (first divisions)))
+               (result (flatten (loop for div in (second divisions) collect
+                                     (rqq-divide-aux div pd))))
+               ;; (beam (beamable (flatten result))))
+               (beam (beamable result)))
+          ;; (format t "~&~a: beamable: ~a" result beam)
+          ;; (format t "~%~a ~a" rqqnd (first divisions))
+          ;; if for some strange reason we have something like (3 (1 1 1)) then
+          ;; we don't need a tuplet bracket
+          (if (power-of-2 (/ rqqnd (first divisions)))
+              (if beam (beamem result) result)
+              (progn
+                (setf result (append (list '{ rqqnd) result '(})))
+                ;;(setf result (append (list '{ (list rqqnd (first divisions)))
                 ;;                   result '(})))
-              (if beam 
-                  (beamem result)
-                  result))))))
+                (if beam 
+                    (beamem result)
+                    result)))))))
 
 (defun beamem (rthms)
   ;; first remove existing beams
@@ -6021,11 +6036,18 @@ show-rest: T
 ;;; can the given rhythms (numbers of symbols, with/without  - and { notations)
 ;;; to be put under a beam or not?
 (defun beamable (rthms)
+  ;; (print rthms)
   (when (> (length rthms) 1)
-    (loop with last with val for el in rthms do
-         (setq val (if (numberp el)
-                       el
-                       (parse-rhythm-symbol el :error nil)))
+    (loop with last with val 
+       for elraw in rthms
+       for el = (if (typep elraw 'rqq-divide-rthm)
+                    (rqq-divide-rthm-r elraw)
+                    elraw)
+       do
+         (setq val
+               (if (numberp el)
+                   el
+                   (parse-rhythm-symbol el :error nil)))
          (when (and (not (eq last '{))
                     (numberp val)
                     (< val 8))

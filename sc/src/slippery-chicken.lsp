@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:12:48 Wed Apr 22 2015 CEST
+;;; $$ Last modified: 21:42:33 Mon Jun  1 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5351,7 +5351,7 @@ seq-num 5, VN, replacing G3 with B6
 
 ;;; ****m* slippery-chicken/check-tuplets 
 ;;; DESCRIPTION
-;;; Check the qualities of the tuplets brackets in a given slippery-chicken
+;;; Check the qualities of the tuplet brackets in a given slippery-chicken
 ;;; object to make sure they are all formatted properly (i.e. each starting
 ;;; tuplet bracket has a closing tuplet bracket etc.). If an error is found,
 ;;; the method will try to fix it, then re-check, and only issue an error then

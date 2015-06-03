@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 18:47:47 Mon Jun  1 2015 BST
+;;; $$ Last modified: 21:55:32 Mon Jun  1 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -429,7 +429,8 @@
                               (apply #'notes note)
                               note))
                       (when rq
-                        ;; MDE Thu May 21 16:28:29 2015 -- quarters is the rq slot
+                        ;; MDE Thu May 21 16:28:29 2015 -- quarters is the rq
+                        ;; slot  
                         ;; (rq (quarters rq)))
                         (rq rq))
                       (when dots
@@ -461,11 +462,8 @@
                         (sc-cmn-text ins-change)))
                 (cmn-tuplet-brackets brackets)
                 (list (when +cmn-grace-notes-for-sc+
-                        ;; (print +cmn-grace-notes-for-sc+)
                         (apply #'grace-note 
-                               (reverse +cmn-grace-notes-for-sc+))
-                        ;; (print 'didit)
-                        ))))
+                               (reverse +cmn-grace-notes-for-sc+))))))
       (setf +cmn-grace-notes-for-sc+ nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -481,40 +479,46 @@
 (defun cmn-tuplet-brackets (brackets)
   (declare (special +cmn-open-brackets-for-sc+))
   (when brackets
+    (print brackets)
     (loop for bracket in brackets with dy = -0.3 collect
-          (cond ((listp bracket)      
-                 ;; open bracket
-                 (setf (nth (first bracket) +cmn-open-brackets-for-sc+)
-                   (beat-subdivision- (subdivision (second bracket)) 
-                                      ;; (bracketed :up)
-                                      (when (third bracket)
-                                        (dx (third bracket)))
-                                      (if (fourth bracket)
-                                          (dy (+ (incf dy 0.5)
-                                                 (fourth bracket)))
-                                        (dy (incf dy 0.5)))
-                                      (when (fifth bracket)
-                                        (dx0 (fifth bracket)))
-                                      (when (sixth bracket)
-                                        (dy0 (sixth bracket)))
-                                      (if (seventh bracket)
-                                          (dx1 (seventh bracket))
-                                        (dx1 .2))
-                                      ;; 23/1/10: in SBCL (eighth ...) is
-                                      ;; causing some confusion so use nth form
-                                      ;; instead 
-                                      (when (nth 7 bracket)
-                                        (dy1 (nth 7 bracket)))
-                                      )))
-                ((sc::integer<0 bracket)
-                 ;; under bracket
-                 (-beat-subdivision- (nth (abs bracket) 
-                                          +cmn-open-brackets-for-sc+)))
-                ((sc::integer>=0 bracket)
-                 ;; close bracket
-                 (-beat-subdivision (nth bracket +cmn-open-brackets-for-sc+)))
-                (t (error "cmn::cmn-tuplet-brackets: what's this? : ~a"
-                          bracket))))))
+         (cond ((listp bracket)      
+                ;; open bracket
+                (setf (nth (first bracket) +cmn-open-brackets-for-sc+)
+                      ;; MDE Mon Jun  1 21:50:15 2015 -- for things like 3:2
+                      ;; instead of just 3
+                      (if (stringp (third bracket))
+                          (beat-subdivision- 
+                           (subdivision (text (third bracket) (font-size 8))))
+                          (beat-subdivision- (subdivision (second bracket)) 
+                                             ;; (bracketed :up)
+                                             (when (third bracket)
+                                               (dx (third bracket)))
+                                             (if (fourth bracket)
+                                                 (dy (+ (incf dy 0.5)
+                                                        (fourth bracket)))
+                                                 (dy (incf dy 0.5)))
+                                             (when (fifth bracket)
+                                               (dx0 (fifth bracket)))
+                                             (when (sixth bracket)
+                                               (dy0 (sixth bracket)))
+                                             (if (seventh bracket)
+                                                 (dx1 (seventh bracket))
+                                                 (dx1 .2))
+                                             ;; 23/1/10: in SBCL (eighth ...)
+                                             ;; is causing some confusion so
+                                             ;; use nth form instead
+                                             (when (nth 7 bracket)
+                                               (dy1 (nth 7 bracket)))
+                                             ))))
+               ((sc::integer<0 bracket)
+                ;; under bracket
+                (-beat-subdivision- (nth (abs bracket) 
+                                         +cmn-open-brackets-for-sc+)))
+               ((sc::integer>=0 bracket)
+                ;; close bracket
+                (-beat-subdivision (nth bracket +cmn-open-brackets-for-sc+)))
+               (t (error "cmn::cmn-tuplet-brackets: what's this? : ~a"
+                         bracket))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

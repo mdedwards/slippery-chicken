@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 18:29:12 Wed Jun  3 2015 BST
+;;; $$ Last modified: 18:02:47 Thu Jun  4 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -183,7 +183,9 @@
          (ts (cond ((and (simple-listp first) (= 2 (length first)))
                     (make-time-sig first))
                    ((time-sig-p first) first)))
-         (parsed (parse-rhythms (if ts (rest data) data) (nudge-factor rsb)))
+         (rthms (if ts (rest data) data))
+         (just-rqq (and (= 1 (length rthms)) (is-rqq-info (first rthms))))
+         (parsed (parse-rhythms rthms (nudge-factor rsb)))
          (rthm nil)
          (rhythms nil))
     ;; Find out if a time-sig is given, if so, calling setf time-sig will set
@@ -220,6 +222,9 @@
                (duration (get-time-sig-from-all-time-sigs rsb))
                (rhythms-duration rsb)
                data)))
+    ;; MDE Thu Jun  4 16:10:12 2015 
+    (when just-rqq
+      (auto-beam rsb nil 'silent))
     (gen-stats rsb)
     (update-missing-duration rsb)
     (update-rhythms-bracket-info rsb)
@@ -337,8 +342,6 @@ MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not
       (econs (rhythms rsb) event))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;  
 
 ;;; 12.12.11 SAR: Added ROBODoc info
 ;;; SAR Sun Apr 29 16:30:23 BST 2012: Expanded robodoc info
@@ -618,7 +621,6 @@ data: NIL
   rsb)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  
 ;;; SAR Wed May  2 17:22:02 BST 2012: Added robodoc entry
 
 ;;; ****m* rthm-seq-bar/consolidate-rests
@@ -916,8 +918,6 @@ data: ((2 4) Q E S S)
   (loop for r in (rhythms rsb) count (is-tied-from r)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 
-
 ;;; SAR Sat May 19 14:17:40 EDT 2012: Added robodoc entry
 
 ;;; When a bunch of short notes are tied to each other, make one (or a few)
@@ -978,7 +978,7 @@ BF4 E.,
                               ;; MDE Wed Nov 28 11:40:59 2012 -- added auto-beam
                               &optional check-dur beat (auto-beam t))
 ;;; ****
-  ;;  MDE Thu Apr 26 16:26:05 2012 -- tie-over-rests will pass its auto-beam
+  ;; MDE Thu Apr 26 16:26:05 2012 -- tie-over-rests will pass its auto-beam
   ;; arg as our beat arg--this may be a rthm symbol or simply T.  the latter is
   ;; no good to us when used below.
   (when (eq beat t)
@@ -1298,7 +1298,7 @@ BF4 E.,
        ;; MDE Sat Dec 24 16:22:06 2011 -- 
        (when (event-p current-e)
          ;; some slots, e.g. compound-duration will still be wrong but
-         ;; update-slots will take care of that later 
+         ;; update-slots will take care of that later 
          (copy-event-slots current-e new-e))
        ;; 6/6/07 don't need marks when this is tied to!
        ;; MDE Wed Nov 28 14:18:35 2012 -- note true! could be cresc end or
@@ -1744,9 +1744,13 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;;   get beamed together. This value can be either numeric (4, 8 16 etc.) or
 ;;;   alphabetic (q, e, s etc). If no beat is given, the method defaults this
 ;;;   value to NIL and takes the beat from the current time signature.
-;;; - Check-dur. This argument can be set to T or NIL. If T, the method will
-;;;   make sure there is a complete beat of rhythms for each beat of the bar. 
-;;;   Default = T.
+;;; - Check-dur. This can be t, nil, #'warn or #'error, where t is the same as
+;;;   #'error. If T, the method will make sure there is a complete beat of
+;;;   rhythms for each beat of the bar and issue an error if a full beat's
+;;;   worth cannot be returned--this may not mean that your bar is
+;;;   malformed. Or if you pass a symbol like 'silent the 
+;;;   duration will be checked and NIL returned if we can't get an exact beat's
+;;;   worth of rthms. Default = T.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns the rthm-seq-bar-object
@@ -1797,40 +1801,44 @@ data: ((2 4) - S S - S - S S S - S S)
           (ok t)
           (note-num 0))
       ;; 5/4/07: first of all delete any prior beams
-      ;; MDE Thu Nov 29 19:25:00 2012 -- now called here rather than in the loop
-      (delete-beams rsb)
-      (loop for b in beats do
-           (setf start nil
-                 end nil
-                 ok t)
+      ;; MDE Thu Nov 29 19:25:00 2012 -- now called here rather than in the
+      ;; loop
+      ;; MDE Thu Jun  4 15:24:37 2015 -- only proceed if we could split into beats
+      (when beats
+        (delete-beams rsb)
+        (loop for b in beats do
+             (setf start nil
+                   end nil
+                   ok t)
            ;; (print 'beat)
-           (loop for r in b do
-                (setf is-note (not (is-rest r))
-                      flags (and is-note
-                                 (> (num-flags r) 0)))
-                (when (and ok flags (not start))
-                  (setf start note-num))
-                (when (and ok start 
-                           (or
-                            ;; MDE Thu Nov 29 20:42:11 2012 -- no q rests under
-                            ;; beam for LP 
-                            (and (is-rest r) (zerop (num-flags r)))
-                            (and is-note (not flags))))
-                  (setf start nil
-                        end nil
-                        ok nil))
-                (when (and ok flags)
-                  (setf end note-num))
+             (loop for r in b do
+                  (setf is-note (not (is-rest r))
+                        flags (and is-note
+                                   (> (num-flags r) 0)))
+                  (when (and ok flags (not start))
+                    (setf start note-num))
+                  (when (and ok start 
+                             (or
+                              ;; MDE Thu Nov 29 20:42:11 2012 -- no q rests under
+                              ;; beam for LP 
+                              (and (is-rest r) (zerop (num-flags r)))
+                              (and is-note (not flags))))
+                    (setf start nil
+                          end nil
+                          ok nil))
+                  (when (and ok flags)
+                    (setf end note-num))
                 ;; (format t "~%~a: ~a ~a ~a flags ~a"
                 ;;          (data r) start end ok flags)
-              ;; MDE Tue May 29 23:14:16 2012 -- we can now have beams on
-              ;; rests so no longer count notes but all events
-              ;; (when is-note
-                (incf note-num))
-           (when (and start end (/= start end))
-             (push (list start end) result)))
-      (setf (beams rsb) (reverse result))
-      (update-rhythms-beam-info rsb))))
+                ;; MDE Tue May 29 23:14:16 2012 -- we can now have beams on
+                ;; rests so no longer count notes but all events
+                ;; (when is-note
+                  (incf note-num))
+             (when (and start end (/= start end))
+               (push (list start end) result)))
+        (setf (beams rsb) (reverse result))
+        (update-rhythms-beam-info rsb))
+      rsb)))
                 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5301,8 +5309,7 @@ show-rest: T
         (loop for i in rhythms do
              (setf interned (if (symbolp i) (rm-package i) i))
              (cond
-               ((eq interned '{) (setq get-tuplet t)
-                (incf got-left-brackets))
+               ((eq interned '{) (setq get-tuplet t) (incf got-left-brackets))
                ((eq interned '}) (unless (> expect-right-brackets 0)
                                    (error "rthm-seq-bar::parse-rhythms:~%~
                                            Read } without seeing { beforehand:~
@@ -5352,9 +5359,10 @@ show-rest: T
                                (setq get-repeater nil)
                                (loop repeat i do (push last-rthm rthms))))
                ;; get the tuplet number for bracket or beam
-               (get-tuplet (unless (integerp i)
+               (get-tuplet (unless (numberp i) ;(integerp i)
                              (error "rthm-seq-bar::parse-rhythms:~%~
-                                     Expected a tuplet number: ~a~%~a"
+                                     Expected a tuplet number (e.g. 3 or 4/5: ~
+                                     ~a~%~a"
                                     interned rhythms))
                            (push interned tuplets)
                            (setq get-tuplet nil)
@@ -5371,10 +5379,7 @@ show-rest: T
                        (brackets (fourth parsed)))
                   ;; (print prthms)
                   ;; (print beams) ;
-                  ;; now just slurp them up into our overall data lists.  bear
-                  ;; in mind for now that with RQQ notations there's no
-                  ;; mechanism to indicate rests, so they'd have to be created
-                  ;; afterwards
+                  ;; now just slurp them up into our overall data lists.
                   (loop for r in prthms do
                        (push r rthms)
                        (incf num-rthms)
@@ -5389,14 +5394,14 @@ show-rest: T
                        (push (list (first b) (+ nr (second b)) (+ nr (third b)))
                              tuplet-positions))))
                 #| 
-                ;; MDE Fri May 29 10:02:22 2015 -- this is the way we used to
-                ;; do rqq, relying on CMN: 
-                (multiple-value-bind
-                    (rqq-rthms rqq-num-notes rqq-num-rthms)
-                    (do-rqq interned) ; 
-                  (incf num-rthms rqq-num-rthms)
-                  (incf num-notes rqq-num-notes)
-                  (setf rthms (append (reverse rqq-rthms) rthms))))
+                ;; MDE Fri May 29 10:02:22 2015 -- this is the way we used to ;
+                ;; do rqq, relying on CMN: ;
+                  (multiple-value-bind
+               (rqq-rthms rqq-num-notes rqq-num-rthms)
+               (do-rqq interned) ;    ;
+               (incf num-rthms rqq-num-rthms)
+               (incf num-notes rqq-num-notes)
+               (setf rthms (append (reverse rqq-rthms) rthms))))
                 |#
                ;; finally we saw a rhythm!
                ;; but when it's in parentheses it's a rest so
@@ -5980,15 +5985,13 @@ show-rest: T
                             (rqq-divide-rthm-r r))
                         r)))
          (beam-all (beamable (flatten faux))))
-    ;; (print faux)
     (if beam-all
         ;; if we can put a beam over all rthms, remove beams we've added
         ;; already and put a beam symbol at the beginning and end. 
-        (beamem faux)                   ;(remove '- faux))
+        (beamem faux) 
         (debeamem (remove-pair faux '(- -))))))
 
 (defun rqq-divide-aux (divisions parent-dur)
-  ;; (print divisions)
   ;; handle rests in the usual way, i.e. those values placed in ()
   (let ((rest nil))
     (when (and (listp divisions) (equal 1 (length divisions)))
@@ -5997,27 +6000,67 @@ show-rest: T
     (if (integerp divisions)
         (let* ((v (/ parent-dur divisions))
                (r (get-rhythm-letter-for-value v nil))
-               (result (if r r v)))
+               (result (if r r v))
+               ;; when we have something like 3/2 we can just make it 1\.
+               (dotit (and (numberp result) (= 3 (denominator result)))))
+          ;; try and set dots if possible
+          (when dotit
+            ;; strings work as rthms too
+            ;; (print result)
+            (setf result (format nil"~a/~a\." (numerator result) 2)))
           (make-rqq-divide-rthm :r result :rest rest))
         (let* ((rqqnd (rqq-num-divisions (second divisions)))
-               (pd (/ (* parent-dur rqqnd) (first divisions)))
+               (this-dur (first divisions))
+               (ratio (/ this-dur rqqnd))
+               (pd (/ (* parent-dur rqqnd) this-dur))
                (result (flatten (loop for div in (second divisions) collect
                                      (rqq-divide-aux div pd))))
-               ;; (beam (beamable (flatten result))))
+               ;; if we have something like (3 (1 1 1)) then we don't need a
+               ;; tuplet bracket
+               (tuplet (unless (power-of-2 (/ rqqnd this-dur))
+                         ;; (print ratio) (print result)
+                         (cond ((and (or (= 2 (denominator ratio))
+                                         (= 4 (denominator ratio)))
+                                     (all-dotted (print result)))
+                                nil)
+                               ((= ratio 2/3) 3) ; (2 (1 1 1))
+                               ((= ratio 1/3) 3) ; (1 (1 1 1))
+                               ((= ratio 4/3) 3)
+                               ((= ratio 1/10) 5)
+                               ((= ratio 1/5) 5)
+                               ((= ratio 2/5) 5)
+                               ((= ratio 4/5) 5)
+                               (t (if (< ratio 1/2)
+                                      ;; we don't use this-dur as the numerator
+                                      ;; because that might mean we get a ratio
+                                      ;; like 13:2 when the overall duration of
+                                      ;; a minim is divided into 13
+                                      ;; parts. Instead we use the nearest
+                                      ;; power of 2 to the denominator (rqqnd)
+                                      ;; so we get 13:8.
+                                      (/ (nearest-power-of-2 rqqnd) rqqnd)
+                                      ratio)))))
                (beam (beamable result)))
           ;; (format t "~&~a: beamable: ~a" result beam)
           ;; (format t "~%~a ~a" rqqnd (first divisions))
-          ;; if for some strange reason we have something like (3 (1 1 1)) then
-          ;; we don't need a tuplet bracket
-          (if (power-of-2 (/ rqqnd (first divisions)))
-              (if beam (beamem result) result)
+          ;; (format t "~%~a ~a" rqqnd pd)
+          (if tuplet
               (progn
-                (setf result (append (list '{ rqqnd) result '(})))
-                ;;(setf result (append (list '{ (list rqqnd (first divisions)))
-                ;;                   result '(})))
+                (setf result (append (list '{ tuplet) result '(})))
                 (if beam 
                     (beamem result)
-                    result)))))))
+                    result))
+              (if beam (beamem result) result))))))
+
+(defun all-dotted (rthms)
+  (loop for r in rthms do
+       (when (typep r 'rqq-divide-rthm)
+         (let ((rr (rqq-divide-rthm-r r)))
+           (when (or (symbolp rr) (stringp rr))
+             (let ((rrs (string rr)))
+               (unless (char= #\. (elt rrs (1- (length rrs))))
+                 (return nil))))))
+     finally (return t)))
 
 (defun beamem (rthms)
   ;; first remove existing beams
@@ -6036,7 +6079,6 @@ show-rest: T
 ;;; can the given rhythms (numbers of symbols, with/without  - and { notations)
 ;;; to be put under a beam or not?
 (defun beamable (rthms)
-  ;; (print rthms)
   (when (> (length rthms) 1)
     (loop with last with val 
        for elraw in rthms

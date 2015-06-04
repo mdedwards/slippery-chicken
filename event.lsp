@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:42:43 Fri Jan 23 2015 GMT
+;;; $$ Last modified: 11:17:01 Thu Jun  4 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2140,20 +2140,36 @@ NIL
             (cond ((> (length (bracket e)) 1) 
                    (loop for b in (bracket e) do
                         (if (listp b)
-                            (push
-                             (format nil "\\times ~a { "
-                                     (case (second b)
-                                       (2 "3/2")
-                                       (3 "2/3")
-                                       (4 "3/4")
-                                       (5 "4/5")
-                                       (6 "4/6")
-                                       (7 "4/7")
-                                       (9 "8/9")
-                                       (t (error "event::get-lp-data: ~
-                                                 unhandled tuplet: ~a"
-                                                 (second b)))))
-                             result)
+                            (let ((sb (second b)))
+                              (typecase sb
+                                (integer 
+                                 (push
+                                  (format nil "\\times ~a { "
+                                          (case (second b)
+                                            (2 "3/2")
+                                            (3 "2/3")
+                                            (4 "3/4")
+                                            (5 "4/5")
+                                            (6 "4/6")
+                                            (7 "4/7")
+                                            (9 "8/9")
+                                            (t (error "event::get-lp-data: ~
+                                                       unhandled tuplet: ~a"
+                                                      (second b)))))
+                                  result))
+                                ;; MDE Thu Jun 4 11:16:07 2015 -- now allow
+                                ;; explicit ratios that will show up in
+                                ;; brackets as e.g. 5:4 (expressed as 4/5 in
+                                ;; the rthm-seq-bar list of rhythms) instead of
+                                ;; just 5
+                                (rational 
+                                 (format
+                                  nil 
+                                  "\once \override TupletNumber.text = ~
+                                   #tuplet-number::calc-fraction-text ~
+                                   \\times ~a { " sb))
+                                (t (error "event::get-lp-data: ~
+                                           unexpected tuplet: ~a" sb))))
                             (when (integer>0 b)
                               (incf close-tuplets)))))
                   ;; MDE Mon Jan 12 14:31:51 2015 -- the simple case

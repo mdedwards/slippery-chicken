@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 21:55:32 Mon Jun  1 2015 BST
+;;; $$ Last modified: 12:42:45 Thu Jun  4 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -479,37 +479,48 @@
 (defun cmn-tuplet-brackets (brackets)
   (declare (special +cmn-open-brackets-for-sc+))
   (when brackets
-    (print brackets)
+    ;; (print brackets)
     (loop for bracket in brackets with dy = -0.3 collect
          (cond ((listp bracket)      
                 ;; open bracket
                 (setf (nth (first bracket) +cmn-open-brackets-for-sc+)
                       ;; MDE Mon Jun  1 21:50:15 2015 -- for things like 3:2
-                      ;; instead of just 3
+                      ;; instead of just 3. todo: Looks to me now like we need
+                      ;; a proper structure to handle these things as they're
+                      ;; complex and incompatible when in list form.
                       (if (stringp (third bracket))
                           (beat-subdivision- 
                            (subdivision (text (third bracket) (font-size 8))))
-                          (beat-subdivision- (subdivision (second bracket)) 
-                                             ;; (bracketed :up)
-                                             (when (third bracket)
-                                               (dx (third bracket)))
-                                             (if (fourth bracket)
-                                                 (dy (+ (incf dy 0.5)
-                                                        (fourth bracket)))
-                                                 (dy (incf dy 0.5)))
-                                             (when (fifth bracket)
-                                               (dx0 (fifth bracket)))
-                                             (when (sixth bracket)
-                                               (dy0 (sixth bracket)))
-                                             (if (seventh bracket)
-                                                 (dx1 (seventh bracket))
-                                                 (dx1 .2))
-                                             ;; 23/1/10: in SBCL (eighth ...)
-                                             ;; is causing some confusion so
-                                             ;; use nth form instead
-                                             (when (nth 7 bracket)
-                                               (dy1 (nth 7 bracket)))
-                                             ))))
+                          (beat-subdivision-
+                           (subdivision
+                            (let ((sb (second bracket)))
+                              (typecase sb
+                                (integer sb)
+                                (rational (format nil "~a:~a"
+                                                  (denominator sb)
+                                                  (numerator sb)))
+                                (t (error "cmn::cmn-tuplet-brackets: ~
+                                           unexpected tuplet: ~a" sb)))))
+                           ;; (bracketed :up)
+                           (when (third bracket)
+                             (dx (third bracket)))
+                           (if (fourth bracket)
+                               (dy (+ (incf dy 0.5)
+                                      (fourth bracket)))
+                               (dy (incf dy 0.5)))
+                           (when (fifth bracket)
+                             (dx0 (fifth bracket)))
+                           (when (sixth bracket)
+                             (dy0 (sixth bracket)))
+                           (if (seventh bracket)
+                               (dx1 (seventh bracket))
+                               (dx1 .2))
+                           ;; 23/1/10: in SBCL (eighth ...)
+                           ;; is causing some confusion so
+                           ;; use nth form instead
+                           (when (nth 7 bracket)
+                             (dy1 (nth 7 bracket)))
+                           ))))
                ((sc::integer<0 bracket)
                 ;; under bracket
                 (-beat-subdivision- (nth (abs bracket) 

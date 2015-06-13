@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 12:42:45 Thu Jun  4 2015 BST
+;;; $$ Last modified: 18:20:50 Thu Jun 11 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -496,6 +496,12 @@
                             (let ((sb (second bracket)))
                               (typecase sb
                                 (integer sb)
+                                ;; MDE Thu Jun 11 18:20:12 2015 -- better than
+                                ;; the string third element is a fractional
+                                ;; second. This is the way we'll go for now but
+                                ;; we'll leave in the above functionality for
+                                ;; flexibility--shouldn't hurt. At least this
+                                ;; way we can have offsets as arg 3+
                                 (rational (format nil "~a:~a"
                                                   (denominator sb)
                                                   (numerator sb)))

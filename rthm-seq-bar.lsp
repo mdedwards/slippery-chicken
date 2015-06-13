@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 18:02:47 Thu Jun  4 2015 BST
+;;; $$ Last modified: 10:55:47 Sat Jun 13 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6021,7 +6021,7 @@ show-rest: T
                          ;; (print ratio) (print result)
                          (cond ((and (or (= 2 (denominator ratio))
                                          (= 4 (denominator ratio)))
-                                     (all-dotted (print result)))
+                                     (all-dotted result))
                                 nil)
                                ((= ratio 2/3) 3) ; (2 (1 1 1))
                                ((= ratio 1/3) 3) ; (1 (1 1 1))
@@ -6063,8 +6063,36 @@ show-rest: T
      finally (return t)))
 
 (defun beamem (rthms)
-  ;; first remove existing beams
-  (append (cons '- (remove '- rthms)) '(-)))
+  ;; (print '***)(print rthms)
+  (flet ((rest-pos (list)
+           (loop for r in list and i from 0 do
+                (unless (or (and (typep r 'rqq-divide-rthm)
+                                 (rqq-divide-rthm-rest r))
+                            (listp r))
+                  (return i)))))
+    (let* ((bracket-beg (eq '{ (first rthms)))
+           (bracket-end (eq '} (first (last rthms))))
+           ;; first remove existing beams
+           (rs (remove '- (if bracket-beg
+                              (if bracket-end
+                                  (butlast (cddr rthms))
+                                  (cddr rthms))
+                              rthms)))
+           (rslen (length rs))
+           (start (rest-pos rs))
+           (end (- rslen (rest-pos (reverse rs))))
+           (before-beam (subseq rs 0 start))
+           (after-beam (when (< end rslen) (subseq rs end))))
+      (if (< (- end start) 2)
+          rthms
+          (progn
+            (when bracket-beg
+              (setf before-beam (cons '{ (cons (second rthms) before-beam)))
+              (when bracket-end
+                (setf after-beam (econs after-beam '}))))
+            (append before-beam (cons '- (subseq rs start end)) 
+                    (cons '- after-beam)))))))
+
 
 (defun debeamem (rthms)
   ;; just the outer beams, unless there are stop/start beams in the middle

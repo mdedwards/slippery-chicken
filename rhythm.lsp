@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 18:01:11 Mon Jun  1 2015 BST
+;;; $$ Last modified: 17:40:11 Sat Jun 20 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1547,8 +1547,8 @@ data: NIL
 (defun rthm-num-flags (undotted-value)
   (if (< undotted-value 8)
       0
-    (- (floor (log undotted-value 2))
-       2)))
+      (- (floor (log undotted-value 2))
+         2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

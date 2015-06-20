@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 11:32:05 Mon May 25 2015 BST
+;;; $$ Last modified: 18:45:17 Sat Jun 20 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -624,10 +624,15 @@
 ;;; ****f* utilities/nearest-power-of-2
 ;;; DESCRIPTION
 ;;; Return the closest number to the specified value that is a power of two but
-;;; not greater than the specified value.
+;;; not greater than the specified value (unless the optional argument is T:
+;;; see below).
 ;;; 
 ;;; ARGUMENTS
 ;;; - A number.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether we can return a power of 2 greater than the
+;;;   argument, if that is nearer to the argument than the lower power or 2.
 ;;; 
 ;;; RETURN VALUE
 ;;; An integer that is a power of two.
@@ -637,6 +642,10 @@
 (nearest-power-of-2 31)
 
 => 16
+
+(nearest-power-of-2 31 t)
+
+=> 32
 
 (nearest-power-of-2 32)
 
@@ -649,15 +658,19 @@
 |#
 ;;; SYNOPSIS
 
-(defun nearest-power-of-2 (num)
+(defun nearest-power-of-2 (num &optional allow>)
 ;;; ****
   (if (power-of-2 num)
       num
-      (loop with p = 1 do
-           (if (> p num)
-               ;; MDE Mon Nov 26 18:15:59 2012 -- don't return 1/2...
-               (return (max 1 (/ p 2)))
-               (setf p (* p 2))))))                 
+      (let* ((p2 (loop with p = 1 do
+                     (if (> p num)
+                         ;; MDE Mon Nov 26 18:15:59 2012 -- don't return 1/2...
+                         (return (max 1 (/ p 2)))
+                         (setf p (* p 2)))))
+             (p2next (* 2 p2)))
+        (if (and allow> (< (- p2next num) (- num p2)))
+            p2next
+            p2))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

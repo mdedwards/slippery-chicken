@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 18:46:14 Mon Jun  1 2015 BST
+;;; $$ Last modified: 12:24:23 Mon Jun 22 2015 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -100,7 +100,7 @@
 ;;; function. In that case just pass these via :selection-fun-data.
 ;;;
 ;;; ARGUMENTS 
-;;; - A rth-seq-palette object.
+;;; - A rthm-seq-palette object.
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments
@@ -142,7 +142,7 @@
 ;;;                    (2 1 5 1 5 1 6 5 1 5 2 5 1 2 6))))))
 ;;; 
 ;;; RETURN VALUE  
-;;; Always returns T.
+;;; Always returns the rthm-seq-palette argument.
 ;;;
 ;;; EXAMPLE
 
@@ -275,7 +275,7 @@
                (init-psp rs))))
      ;; we only need to pass the pitch-seq data once
        (setf pass-data nil))
-  t)
+  rsp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

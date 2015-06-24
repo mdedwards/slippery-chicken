@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 11:22:06 Sat Nov  9 2013 GMT
+;;; $$ Last modified: 13:44:13 Mon Jun 22 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -302,7 +302,10 @@
                       avoid-used-notes)
 ;;; ****
   (declare (ignore hint-pitch))
+  ;; (print avoid-used-notes)
   ;; (print (id instrument))
+  ;; (print (pitch-symbols (clone set)))
+  ;; (print (get-chromatic set))
   (when (data ps) ;; don't do anything for empty seqs!
     (if (or (not instrument) (not set))
         (setf (notes ps) 
@@ -314,8 +317,11 @@
                (lowest (lowest ps))
                (do-chords (chords instrument))
                (need (1+ (- highest lowest)))
+               ;; MDE Mon Jun 22 13:25:56 2015 -- if sets are 'empty' be
+               ;; careful that they're not all microtones and the instrument
+               ;; cannot play them.  
                (set-pitches-rm (limit-for-instrument (clone set) instrument
-                                                     :upper limit-high 
+                                                     :upper limit-high
                                                      :lower limit-low
                                                      :do-related-sets t))
                ;; get the notes we've already assigned to other instruments ...
@@ -341,6 +347,8 @@
                              (get-data-data (subset-id instrument) 
                                             (subsets set))))
                num-set-pitches offset scaler)
+          ;; (print (pitch-symbols (clone set)))
+          ;; (print set-pitches-rm)
           ;; If (subset-id instrument) was set (to limit the pitches for that 
           ;; instrument to the subset with this id) then use only pitches in
           ;; subset; also set used to be only those that are in the subset.
@@ -399,8 +407,9 @@
           (unless (> num-set-pitches 0)
             (error "~&pitch-seq::get-notes: For ~a at sequence number ~a: ~
                      no pitches in set!  ~%Perhaps your ~
-                     set-limits (high: ~a, low: ~a) are too restrictive?~
-                     ~%set = ~a, set minus used: ~a curve = ~a~%~a" 
+                     set-limits (high: ~a, low: ~a) are too restrictive or ~
+                     your ~%set is microtonal and your instrument isn't??~
+                     ~%set = ~a ~%set minus used: ~a ~%curve = ~a~%~a" 
                    (id instrument) seq-num (when limit-high (id limit-high)) 
                    (when limit-low (id limit-low)) (pitch-symbols set)
                    (get-ids-from-pitch-list set-pitches-rm-used)

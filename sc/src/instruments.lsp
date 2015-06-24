@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 15:11:23 Sat Jan 17 2015 GMT
+;;; $$ Last modified: 10:11:03 Tue Jun 23 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -250,14 +250,14 @@
       (:staff-name "marimba" :staff-short-name "mba"
        :lowest-written c3 :highest-written c7 
        :starting-clef treble :clefs (treble) ; (treble bass) 
-       :chords t
+       :chords t :chord-function mallet-chord-fun
        :microtones nil
        :midi-program 13))
      (vibraphone 
       (:staff-name "vibraphone" :staff-short-name "vib"
        :lowest-written f3 :highest-written f6 
        :starting-clef treble 
-       :chords t 
+       :chords t :chord-function mallet-chord-fun
        :microtones nil
        :midi-program 12))
      ;; MDE Mon Mar 24 20:21:08 2014 -- following three added from data given
@@ -494,6 +494,13 @@
     (if (> (length result) 1)
         (make-chord result)
         (first result))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Jun 23 10:10:15 2015 
+
+(defun mallet-chord-fun (curve-num index pitch-list pitch-seq instrument set)
+  ;; for ease of playing let's restrict chord widths to a perfect 5th
+  (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 2 2 7))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; The following chord selection functions were designed for my piece cheat

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:17:01 Thu Jun  4 2015 BST
+;;; $$ Last modified: 21:05:35 Tue Jun 23 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2058,6 +2058,7 @@ NIL
 (let ((grace-notes '()))
   (defmethod get-lp-data ((e event) &optional in-c ignore1 ignore2)
     (declare (ignore ignore1 ignore2))
+    ;; (print (data e))
     ;; MDE Tue Jan 7 10:30:17 2014 -- hairpin0 has to come before \< (cresc) or
     ;; \> (dim) not at end \!
     (when (and (has-mark e 'hairpin0)
@@ -2142,7 +2143,7 @@ NIL
                         (if (listp b)
                             (let ((sb (second b)))
                               (typecase sb
-                                (integer 
+                                (integer
                                  (push
                                   (format nil "\\times ~a { "
                                           (case (second b)
@@ -2162,17 +2163,19 @@ NIL
                                 ;; brackets as e.g. 5:4 (expressed as 4/5 in
                                 ;; the rthm-seq-bar list of rhythms) instead of
                                 ;; just 5
-                                (rational 
-                                 (format
-                                  nil 
-                                  "\once \override TupletNumber.text = ~
-                                   #tuplet-number::calc-fraction-text ~
-                                   \\times ~a { " sb))
+                                (rational
+                                 (push 
+                                  (format
+                                   nil 
+                                   "\\once \\override TupletNumber.text = ~
+                                    #tuplet-number::calc-fraction-text ~
+                                    \\times ~a { " sb)
+                                  result))
                                 (t (error "event::get-lp-data: ~
                                            unexpected tuplet: ~a" sb))))
                             (when (integer>0 b)
                               (incf close-tuplets)))))
-                  ;; MDE Mon Jan 12 14:31:51 2015 -- the simple case
+                  ;; MDE Mon Jan 12 14:31:51 2015 -- the simple non-nested case
                   ((listp (first (bracket e)))
                    (push 
                     ;; MDE Fri Apr  4 14:36:48 2014 -- just use the existing
@@ -2183,8 +2186,9 @@ NIL
                    (incf close-tuplets))))
           ;; hack-alert: if we're under two tuplet brackets our rhythm would be
           ;; twice as fast as it should be notated
-          (when (> (length (bracket e)) 1)
-            (setf rthm (/ rthm 2)))
+          ;; (when (> (length (bracket e)) 1)
+          ;; (print 'hack-alert)
+          ;; (setf rthm (* rthm 2)))
           (when (and grace-notes (not (is-grace-note e)))
             (setf grace-notes (nreverse grace-notes))
             (case (length grace-notes)
@@ -3342,61 +3346,61 @@ do (add-mark-before e m))
                      (make-event 'c4 4)
 
                      => 
-                     EVENT: start-time: NIL, end-time: NIL, 
-                     duration-in-tempo: 0.0, 
-                     compound-duration-in-tempo: 0.0, 
-                     amplitude: 0.7,
-                     bar-num: -1, marks-before: NIL, 
-                     tempo-change: NIL 
-                     instrument-change: NIL 
-                     display-tempo: NIL, start-time-qtrs: -1, 
-                     midi-time-sig: NIL, midi-program-changes: NIL, 
-                     8va: 0
-                     pitch-or-chord: 
-                     PITCH: frequency: 261.6255569458008, midi-note: 60, midi-channel: NIL 
-                     pitch-bend: 0.0 
-                     degree: 120, data-consistent: T, white-note: C4
-                     nearest-chromatic: C4
-                     src: 1.0, src-ref-pitch: C4, score-note: C4 
-                     qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
-                     micro-tone: NIL, 
-                     sharp: NIL, flat: NIL, natural: T, 
-                     octave: 4, c5ths: 0, no-8ve: C, no-8ve-no-acc: C
-                     show-accidental: T, white-degree: 28, 
-                     accidental: N, 
-                     accidental-in-parentheses: NIL, marks: NIL
-                     LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-                     NAMED-OBJECT: id: C4, tag: NIL, 
-                     data: C4
-                     written-pitch-or-chord: NIL
-                     RHYTHM: value: 4.0, duration: 1.0, rq: 1, is-rest: NIL, score-rthm: 4.0f0, 
-                     undotted-value: 4, num-flags: 0, num-dots: 0, is-tied-to: NIL, 
-                     is-tied-from: NIL, compound-duration: 1.0, is-grace-note: NIL, 
-                     needs-new-note: T, beam: NIL, bracket: NIL, rqq-note: NIL, 
-                     rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 4, 
-                     tuplet-scaler: 1, grace-note-duration: 0.05
-                     LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-                     NAMED-OBJECT: id: 4, tag: NIL, 
-                     data: 4
+EVENT: start-time: NIL, end-time: NIL, 
+duration-in-tempo: 0.0, 
+compound-duration-in-tempo: 0.0, 
+amplitude: 0.7,
+bar-num: -1, marks-before: NIL, 
+tempo-change: NIL 
+instrument-change: NIL 
+display-tempo: NIL, start-time-qtrs: -1, 
+midi-time-sig: NIL, midi-program-changes: NIL, 
+8va: 0
+pitch-or-chord: 
+PITCH: frequency: 261.6255569458008, midi-note: 60, midi-channel: NIL 
+pitch-bend: 0.0 
+degree: 120, data-consistent: T, white-note: C4
+nearest-chromatic: C4
+src: 1.0, src-ref-pitch: C4, score-note: C4 
+qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+micro-tone: NIL, 
+sharp: NIL, flat: NIL, natural: T, 
+octave: 4, c5ths: 0, no-8ve: C, no-8ve-no-acc: C
+show-accidental: T, white-degree: 28, 
+accidental: N, 
+accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: C4, tag: NIL, 
+data: C4
+written-pitch-or-chord: NIL
+RHYTHM: value: 4.0, duration: 1.0, rq: 1, is-rest: NIL, score-rthm: 4.0f0, 
+undotted-value: 4, num-flags: 0, num-dots: 0, is-tied-to: NIL, 
+is-tied-from: NIL, compound-duration: 1.0, is-grace-note: NIL, 
+needs-new-note: T, beam: NIL, bracket: NIL, rqq-note: NIL, 
+rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 4, 
+tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: 4, tag: NIL, 
+data: 4
 
 ;; Create a whole-note (semi-breve) chord, then print its data, value, duration ;
 ;; and pitch content                    ;
-                     (let ((e (make-event '(c4 e4 g4) 4 :duration t)))
+(let ((e (make-event '(c4 e4 g4) 4 :duration t)))
 (print (data e))
 (print (value e))
 (print (duration e))
 (print (loop for p in (data (pitch-or-chord e)) collect (data p))))
 
-                     =>
-                     W 
-                     1.0f0 
-                     4.0 
-                     (C4 E4 G4) 
+=>
+W 
+1.0f0 
+4.0 
+(C4 E4 G4) 
 
 ;; Create a single-pitch quarter-note event which is tied to, plays back on ;
 ;; MIDI channel 1 and has an amplitude of 0.5, then print these values by ;
 ;; accessing the corresponding slots.   ;
-                     (let ((e (make-event 'c4 4 
+(let ((e (make-event 'c4 4 
 :is-tied-to t 
 :midi-channel 1 
 :amplitude 0.5)))
@@ -3404,24 +3408,24 @@ do (add-mark-before e m))
 (print (midi-channel (pitch-or-chord e)))
 (print (amplitude e)))
 
-                     =>
-                     T 
-                     1 
-                     0.5
+=>
+T 
+1 
+0.5
 
 ;; Create an event object that consists of a quarter-note rest and print the ;
 ;; contents of the corresponding slots  ;
-                     (let ((e (make-event nil 'q :is-rest t)))
+(let ((e (make-event nil 'q :is-rest t)))
 (print (pitch-or-chord e))
 (print (data e))
 (print (is-rest e)))
 
-                     =>
-                     NIL 
-                     Q 
-                     T
+=>
+NIL 
+Q 
+T
 
-                     |#
+|#
 
 ;;; 
 ;;; SYNOPSIS

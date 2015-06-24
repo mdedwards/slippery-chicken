@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 10:56:28 Sat Jun 13 2015 BST
+;;; $$ Last modified: 21:01:08 Tue Jun 23 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -213,7 +213,16 @@
             ;; sort the tuplets according to the order of the note on which the
             ;; brackets start.
             (tuplets rsb) (sort (fourth parsed)
-                                #'(lambda (x y) (< (second x) (second y)))))
+                                #'(lambda (x y)
+                                    (let ((x2 (second x))
+                                          (y2 (second y)))
+                                      ;; MDE Tue Jun 23 20:27:42 2015 -- if we
+                                      ;; have nested tuplets then make sure the
+                                      ;; one that spans the most notes comes
+                                      ;; first. 
+                                      (if (= x2 y2)
+                                          (> (third x) (third y))
+                                          (< x2 y2))))))
       (unless (is-full rsb)
         (error "~a~%rthm-seq-bar::initialize-instance:~
                ~%Incorrect number of beats in bar: Expected ~a, got ~a~
@@ -5445,7 +5454,10 @@ show-rest: T
         ;; reversed
         (setf rthms (nreverse rthms)
               ;; score-tuplet-positions (nreverse score-tuplet-positions)
-              tuplet-positions (nreverse tuplet-positions))
+              ;; MDE Tue Jun 23 20:18:40 2015 -- No need to reverse as they're
+              ;; sorted in init-instance
+              ;; tuplet-positions (print (nreverse tuplet-positions))
+              )
         ;; MDE Wed Dec 14 14:22:35 2011 -- score-tuplet-positions now nil but
         ;; no need to remove: just keep same data structure so as not to
         ;; introduce bugs above
@@ -6044,6 +6056,17 @@ show-rest: T
           ;; (format t "~&~a: beamable: ~a" result beam)
           ;; (format t "~%~a ~a" rqqnd (first divisions))
           ;; (format t "~%~a ~a" rqqnd pd)
+          ;; (print result)
+          ;; (format t "~%ratio ~a, tuplet ~a" ratio tuplet)
+          ;; sometimes we'll be under two tuplet brackets but get something
+          ;; like a simple TS as the rthm but then under a 2:3 bracket, which
+          ;; should be turned into a dotted value 
+          (when (and tuplet (= tuplet 3/2))
+            (setf tuplet nil)
+            (loop for r in result
+               for rthm = (make-rhythm (rqq-divide-rthm-r r))
+               do (setf (rqq-divide-rthm-r r) 
+                        (format nil "~a\." (/ 4 2/3 (rq rthm))))))
           (if tuplet
               (progn
                 (setf result (append (list '{ tuplet) result '(})))
@@ -6056,10 +6079,12 @@ show-rest: T
   (loop for r in rthms do
        (when (typep r 'rqq-divide-rthm)
          (let ((rr (rqq-divide-rthm-r r)))
-           (when (or (symbolp rr) (stringp rr))
-             (let ((rrs (string rr)))
-               (unless (char= #\. (elt rrs (1- (length rrs))))
-                 (return nil))))))
+           (if (numberp rr)
+               (return nil)
+               (when (or (symbolp rr) (stringp rr))
+                 (let ((rrs (string rr)))
+                   (unless (char= #\. (elt rrs (1- (length rrs))))
+                     (return nil)))))))
      finally (return t)))
 
 (defun beamem (rthms)

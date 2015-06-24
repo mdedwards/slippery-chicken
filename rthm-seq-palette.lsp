@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 12:24:23 Mon Jun 22 2015 BST
+;;; $$ Last modified: 15:34:50 Mon Jun 22 2015 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -241,11 +241,13 @@
 ;;; SYNOPSIS
 (defmethod create-psps ((rsp rthm-seq-palette) 
                         &key
-                        (selection-fun #'create-psps-default)
-                        (selection-fun-data nil)
-                        ;; MDE Sat Jul 14 17:20:27 2012 -- 
-                        (reinit t)
-                        (pitch-seqs-per-rthm-seq 3))
+                          (selection-fun #'create-psps-default)
+                          (selection-fun-data nil)
+                          ;; MDE Sat Jul 14 17:20:27 2012 -- 
+                          (reinit t)
+                          ;; MDE Mon Jun 22 15:31:48 2015 
+                          (chords t)
+                          (pitch-seqs-per-rthm-seq 3))
 ;;; ****
   ;; 3.2.11: got to reinitialize our cscls so make this reset call here;
   ;; create-psps-default or the user-supplied selection-fun needs to be able to
@@ -254,7 +256,7 @@
   ;; calls.   
   ;; (format t "~&create-psps ~a" (id rsp))
   (when reinit
-    (create-psps-default nil nil)) ; see pitch-seq-palette.lsp
+    (create-psps-default nil nil))      ; see pitch-seq-palette.lsp
   (loop with pass-data = t
      for rs in (data rsp) do
        (if (rsp-p (data rs))
@@ -270,6 +272,12 @@
                                       (num-notes rs)
                                       (when pass-data
                                         selection-fun-data)))))
+               ;; filter out chords (numbers in () ) ?
+               (unless chords
+                 (setf psp (loop for ps in psp collect
+                                (loop for n in ps collect 
+                                     (if (listp n) (first n) n)))))
+               (print psp)
                (setf (pitch-seq-palette rs) psp)
                ;; now turn the lists into a real psp
                (init-psp rs))))

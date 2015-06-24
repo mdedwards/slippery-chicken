@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 13:24:18 Tue Mar 24 2015 GMT
+;;; $$ Last modified: 15:19:12 Mon Jun 22 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -624,7 +624,7 @@ data: TURKEY
 ;;;   named-object from the recursive-assoc-list.
 ;;; 
 ;;; RETURN VALUE
-;;; T
+;;; The recursive-assoc-list object
 ;;; 
 ;;; EXAMPLE
 #|
@@ -676,7 +676,7 @@ T
            (apply function (if arguments
                                (cons thing arguments)
                                (list thing)))))
-  t)
+  ral)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

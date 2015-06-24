@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 12:21:17 Mon Jun 22 2015 BST
+;;; $$ Last modified: 15:21:07 Mon Jun 22 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -564,7 +564,9 @@ data: (C4 F4 A4 C5)
 ;;; ****m* set-palette/force-micro-tone
 ;;; DESCRIPTION
 ;;; Change the value of the MICRO-TONE slot of all pitch objects in a given
-;;; set-palette object to the specified <value>.
+;;; set-palette object to the specified <value>. NB If the pitches are
+;;; microtonal and thus have associated pitch-bends and microtonal frequencies,
+;;; these will not be changed, i.e. only the micro-tone slot is changed. 
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A set-palette object.
@@ -636,6 +638,21 @@ data: (C4 F4 A4 C5)
              (t (error "set-palette::force-micro-tone: can't operate on ~a"
                        set))))
   t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* set-palette/limit
+;;; DESCRIPTION
+;;; Limit all the sets in a palette to a specified range. See the tl-set class
+;;; limit method for details of the this method and its arguments.
+;;; 
+;;; RETURN VALUE
+;;; The set-palette object.
+;;; 
+;;; SYNOPSIS
+(defmethod limit ((sp set-palette) &key upper lower do-related-sets)
+;;; ****
+  (rmap sp #'limit :upper upper :lower lower :do-related-sets do-related-sets))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -937,6 +954,9 @@ data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
 ;;; - :ring-mod-bass-octave. An integer that is the MIDI octave reference
 ;;;   number (such as the 4 in 'C4), indicating the octave from which the bass
 ;;;   note(s) are to be taken.
+;;; - :force-chromatic. T or NIL. If T, force all micro-tone slots of pitch objects
+;;;   to be NIL so that they won't be filtered out when a set is to be used by a
+;;;   chromatic instrument. See sc-set class force-micro-tone for more details.
 ;;; 
 ;;; RETURN VALUE  
 ;;; - A set-palette object (recursive)
@@ -980,13 +1000,15 @@ COMPLETE-SET: complete: NIL
 |#
 
 ;;; SYNOPSIS
-(defun recursive-set-palette-from-ring-mod (reference-notes id &key
-                                            (warn-no-bass t)
-                                            (ring-mod-bass-octave 0)
-                                            (do-bass t)
-                                            remove-octaves
-                                            (min-bass-notes 1)
-                                            (partials '(1 3 5 7)))
+(defun recursive-set-palette-from-ring-mod (reference-notes id
+                                            &key
+                                              (warn-no-bass t)
+                                              (ring-mod-bass-octave 0)
+                                              (do-bass t)
+                                              remove-octaves
+                                              force-chromatic
+                                              (min-bass-notes 1)
+                                              (partials '(1 3 5 7)))
 ;;; ****
   (unless (listp reference-notes)
     (error "set-palette::recursive-set-palette-from-ring-mod: need a list ~
@@ -999,6 +1021,7 @@ COMPLETE-SET: complete: NIL
                rn rn :partials partials :do-bass do-bass 
                :min-bass-notes min-bass-notes
                :remove-octaves remove-octaves
+               :force-chromatic force-chromatic
                :ring-mod-bass-octave ring-mod-bass-octave
                :warn-no-bass warn-no-bass))
           sp))
@@ -1047,6 +1070,9 @@ COMPLETE-SET: complete: NIL
 ;;; - :ring-mod-bass-octave. An integer that is the MIDI octave reference
 ;;;   number (such as the 4 in 'C4), indicating the octave from which the bass
 ;;;   note(s) are to be taken.
+;;; - :force-chromatic. T or NIL. If T, force all micro-tone slots of pitch objects
+;;;   to be NIL so that they won't be filtered out when a set is to be used by a
+;;;   chromatic instrument. See sc-set class force-micro-tone for more details.
 ;;; 
 ;;; RETURN VALUE
 ;;; A set-palette object.
@@ -1113,13 +1139,15 @@ data: (
 
 |#
 ;;; SYNOPSIS
-(defun set-palette-from-ring-mod (reference-note id &key
-                                  (warn-no-bass t)
-                                  (do-bass t)
-                                  remove-octaves
-                                  (min-bass-notes 1)
-                                  (ring-mod-bass-octave 0)
-                                  (partials '(1 3 5 7)))
+(defun set-palette-from-ring-mod (reference-note id 
+                                  &key
+                                    (warn-no-bass t)
+                                    (do-bass t)
+                                    remove-octaves
+                                    force-chromatic
+                                    (min-bass-notes 1)
+                                    (ring-mod-bass-octave 0)
+                                    (partials '(1 3 5 7)))
 ;;; ****
   (let* ((freq (note-to-freq reference-note))
          (highest-partial (loop for p in partials maximize p))
@@ -1154,41 +1182,44 @@ data: (
        do 
        ;; if we can't get a bass from the pair, try it with the whole freq
        ;; set from the ring-modulation
-       (when (and do-bass (< (length rm-bass) min-bass-notes))
-         (let ((rmb (ring-mod-bass 
-                     rm :bass-octave ring-mod-bass-octave
-                     :warn warn-no-bass)))
-           (when (> (length rmb) (length rm-bass))
-             (setf rm-bass rmb)))
-         (when (and warn-no-bass
-                    (< (length rm-bass) min-bass-notes))
-           (warn "set-palette::set-palette-from-ring-mod: can't get bass ~
+         (when (and do-bass (< (length rm-bass) min-bass-notes))
+           (let ((rmb (ring-mod-bass 
+                       rm :bass-octave ring-mod-bass-octave
+                       :warn warn-no-bass)))
+             (when (> (length rmb) (length rm-bass))
+               (setf rm-bass rmb)))
+           (when (and warn-no-bass
+                      (< (length rm-bass) min-bass-notes))
+             (warn "set-palette::set-palette-from-ring-mod: can't get bass ~
                   notes even after 2nd attempt with ~a" rm)))
-       (setf rm-bass (when rm-bass
-                       ;; max three bass notes
-                       (list (first rm-bass)
-                             (nth (floor (length rm-bass) 2) rm-bass)
-                             (first (last rm-bass))))
-             ;; here there's numbers instead of symbols so we can still get
-             ;; duplicates when making the set :/ 
-             set (remove-duplicates (append rm rm-bass))
-             ;; MDE Thu May 3 10:57:21 2012 -- as we removed octaves and
-             ;; duplicates above when looking at freq, when these are resolved
-             ;; to the nearest note, we still might have octaves/duplicates so
-             ;; do this again at the set level, below
-             set (make-complete-set set :id i :subsets `((rm-bass ,rm-bass))
-                                    ;; MDE Mon May 20 12:56:47 2013 -- don't
-                                    ;; warn about duplicate pitches but do
-                                    ;; remove them
-                                    :warn-dups nil :rm-dups t
-                                    :tag (combine-into-symbol 
-                                          (freq-to-note left) '-ringmod- 
-                                          (freq-to-note right))))
+         (setf rm-bass (when rm-bass
+                         ;; max three bass notes
+                         (list (first rm-bass)
+                               (nth (floor (length rm-bass) 2) rm-bass)
+                               (first (last rm-bass))))
+               ;; here there's numbers instead of symbols so we can still get
+               ;; duplicates when making the set :/ 
+               set (remove-duplicates (append rm rm-bass))
+               ;; MDE Thu May 3 10:57:21 2012 -- as we removed octaves and
+               ;; duplicates above when looking at freq, when these are resolved
+               ;; to the nearest note, we still might have octaves/duplicates so
+               ;; do this again at the set level, below
+               set (make-complete-set set :id i :subsets `((rm-bass ,rm-bass))
+                                      ;; MDE Mon May 20 12:56:47 2013 -- don't
+                                      ;; warn about duplicate pitches but do
+                                      ;; remove them
+                                      :warn-dups nil :rm-dups t
+                                      :tag (combine-into-symbol 
+                                            (freq-to-note left) '-ringmod- 
+                                            (freq-to-note right))))
        ;; MDE Thu May  3 10:59:13 2012 
-       (rm-duplicates set t)       ; comparing symbols, not pitch= (freqs etc.)
-       (when remove-octaves
-         (rm-octaves set))
-       (add set sp))
+         (rm-duplicates set t)     ; comparing symbols, not pitch= (freqs etc.)
+         (when remove-octaves
+           (rm-octaves set))
+         (add set sp))
+    ;; MDE Mon Jun 22 13:42:02 2015 
+    (when force-chromatic
+      (force-micro-tone sp nil))
     sp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

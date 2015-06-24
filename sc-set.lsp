@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 14:35:06 Sat Jul 12 2014 BST
+;;; $$ Last modified: 13:37:27 Mon Jun 22 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -396,9 +396,13 @@ data: CS4
 ;;; DESCRIPTION
 ;;; Change the value of the MICRO-TONE slot of all pitch objects in a given
 ;;; sc-set object to the specified <value>.
+;;; 
+;;; NB If the pitches are microtonal and thus have associated pitch-bends and
+;;; microtonal frequencies, these will not be changed, i.e. only the micro-tone
+;;; slot is changed.
 ;;;
 ;;; NB: Although the MICRO-TONE slot is generally used as a boolean, this
-;;;     method allows the user to force-set it to any value.
+;;;     method allows the user to force-set it to any value. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - An sc-set object.

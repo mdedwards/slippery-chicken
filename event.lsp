@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:05:35 Tue Jun 23 2015 BST
+;;; $$ Last modified: 18:19:30 Wed Jun 24 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2115,7 +2115,11 @@ NIL
                       (t (get-lp-data poc)))))
              (result '())
              (rthm (unless (is-grace-note e)
-                     (round (nearest-power-of-2 (undotted-value e)))))
+                     ;; MDE Wed Jun 24 17:17:56 2015 -- we have the
+                     ;; letter-value slot for Lilypond's use so this shouldn't
+                     ;; be necessary.
+                     ;; (round (nearest-power-of-2 (undotted-value e)))))
+                     (letter-value e)))
              ;; so, if the bracket slot is set, and the first element is a
              ;; list, we've got tuplet brackets so loop for each sublist and
              ;; set the e.g. \times 2/3 { to be the second element of the
@@ -2184,6 +2188,8 @@ NIL
                     result))
                   ((integer>0 (first (bracket e)))
                    (incf close-tuplets))))
+          ;; MDE Wed Jun 24 18:19:17 2015 -- we handle this now at the
+          ;; rthm-seq-bar init level.
           ;; hack-alert: if we're under two tuplet brackets our rhythm would be
           ;; twice as fast as it should be notated
           ;; (when (> (length (bracket e)) 1)

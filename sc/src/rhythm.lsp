@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 17:40:11 Sat Jun 20 2015 BST
+;;; $$ Last modified: 17:36:52 Wed Jun 24 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2046,7 +2046,11 @@ data: (
                   (compound-duration rhythm-object) (duration rhythm-object)
                   (num-dots rhythm-object) num-dots
                   ;; 30.1.11 next two for lilypond
-                  (letter-value rhythm-object) letter-value
+                  ;; MDE Wed Jun 24 17:25:41 2015 -- this used to just be
+                  ;; letter-value but as we now want to use the slot for
+                  ;; Lilypond rhythmic values we need powers of 2.
+                  (letter-value rhythm-object) 
+                  (if (zerop letter-value) 0 (nearest-power-of-2 letter-value))
                   ;; invert it now
                   (tuplet-scaler rhythm-object) (/ tuplet-scaler) 
                   (num-flags rhythm-object) (rthm-num-flags undotted-value)

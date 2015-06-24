@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 21:01:08 Tue Jun 23 2015 BST
+;;; $$ Last modified: 20:39:00 Wed Jun 24 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -223,7 +223,7 @@
                                       (if (= x2 y2)
                                           (> (third x) (third y))
                                           (< x2 y2))))))
-      (unless (is-full rsb)
+      (unless (is-full rsb 'warn)
         (error "~a~%rthm-seq-bar::initialize-instance:~
                ~%Incorrect number of beats in bar: Expected ~a, got ~a~
                ~%Perhaps you forgot to change the time signature??? ~%~a~%"
@@ -238,6 +238,7 @@
     (update-missing-duration rsb)
     (update-rhythms-bracket-info rsb)
     (update-rhythms-beam-info rsb)
+    (fix-nested-tuplets rsb)
     ;; 2/04
     ;; 17/5/05: now handled at piece level
     ;; (update-compound-durations rsb)
@@ -263,7 +264,7 @@
                 (and not-enough (< rthms-dur ts-dur))))
       (when error
         (funcall (if (eq error 'warn) #'warn #'error)
-                 "~a: ~%rthm-seq-bar::isfull:~%~
+                 "~a: ~%rthm-seq-bar::is-full:~%~
                    Duration of rhythms (~a) is not the duration of the ~
                    time-sig: (~a)"
                  rsb rthms-dur ts-dur)))
@@ -5082,6 +5083,52 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
   (loop for r in (rhythms rsb) do (setf (rqq-info r) nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Jun 24 18:25:35 2015 -- when we've got nested tuplets we run into
+;;; the problem of how many flags (and therefore, for Lilypond, what the
+;;; letter-value slot should be). E.g. if we have two levels of triplet, then we
+;;; probably need to remove a beam/flag level, whereas if we have 4:5 or
+;;; something, we need to increase it. We can do a good guess by looking at the
+;;; tuplet scaler for now: if it's > 2/3 then we need to increase flags,
+;;; otherwise decrease--but only when there's nested tuplets. NB we might need
+;;; to fiddle with this threshold or come up with a much more rational (haha)
+;;; approach.
+(defmethod fix-nested-tuplets ((rsb rthm-seq-bar))
+  (labels ((get-ratio (tuplet)
+             (typecase tuplet
+               (integer (case tuplet
+                          (3 2/3)
+                          (5 4/5)
+                          (6 2/3)
+                          (7 4/7)
+                          (9 8/9)
+                          (10 8/10)
+                          (11 8/11)
+                          (13 8/13)
+                          (t (error "rsb::fix-nested-tuplets: unhandled: ~a"
+                                    tuplet))))
+               (rational tuplet)
+               (t (error "rsb::fix-nested-tuplets: unhandled: ~a"
+                         tuplet))))
+           (compound-tuplet (r)
+             (loop with result = 1 with pos = (bar-pos r)
+                for ts in (tuplets rsb) do
+                  (when (and (>= pos (second ts))
+                             (<= pos (third ts)))
+                    (setf result (* result (get-ratio (first ts)))))
+                finally (return result))))
+    (loop for r in (rhythms rsb) for ct = (compound-tuplet r) do
+         ;; (format t "~%val = ~a, ct = ~a" (value r) ct)
+         (when (> (length (bracket r)) 1)
+           (if (< ct 1/2)
+               (progn 
+                 (decf (num-flags r))
+                 (setf (letter-value r) (/ (letter-value r) 2)))
+               (when (> ct 1)
+                 (incf (num-flags r))
+                 (setf (letter-value r) (* (letter-value r) 2))))))
+    rsb))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -6019,7 +6066,9 @@ show-rest: T
           (when dotit
             ;; strings work as rthms too
             ;; (print result)
-            (setf result (format nil"~a/~a\." (numerator result) 2)))
+            (if (evenp (numerator result))
+                (setf result (format nil"~a\." (/ (numerator result) 2)))
+                (setf result (format nil"~a/~a\." (numerator result) 2))))
           (make-rqq-divide-rthm :r result :rest rest))
         (let* ((rqqnd (rqq-num-divisions (second divisions)))
                (this-dur (first divisions))

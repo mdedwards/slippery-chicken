@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:48:36 Thu Jun 25 2015 BST
+;;; $$ Last modified: 15:06:04 Thu Jun 25 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2157,7 +2157,7 @@ NIL
                     ;; function now rather than just the tuplet scaler
                     ;; formatted here.  
                     ;; (format nil "\\times ~a { " (tuplet-scaler e))
-                    (get-lp-tuplet (tuplet-scaler e))
+                    (get-lp-tuplet (second (first (bracket e)))) ;(tuplet-scaler e))
                     result))
                   ((integer>0 (first (bracket e)))
                    (incf close-tuplets))))

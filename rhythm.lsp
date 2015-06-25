@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 17:36:52 Wed Jun 24 2015 BST
+;;; $$ Last modified: 10:27:09 Thu Jun 25 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -120,6 +120,12 @@
    (bar-pos :accessor bar-pos :type integer :initform -1)
    ;; 30.1.11 add another couple of slots for lilypond
    (letter-value :accessor letter-value :initform -1)
+   ;; this is the overall scaler that a rhythm might have, whether under nested
+   ;; tuplets or not, i.e. it's the ratio of the letter-value to the value
+   ;; slots. So e.g. if we had a triplet 8th under a nested triplet we'd notate
+   ;; them as 8ths although they're 18ths actuall, so closer to
+   ;; 16ths--i.e. we'll have one beam, not two, despite the value. This would
+   ;; mean a tuplet scaler of 4/9.
    (tuplet-scaler :accessor tuplet-scaler :type rational :initform 1)
    (grace-note-duration :accessor grace-note-duration :initform 0.05
                         :allocation :class)))
@@ -2089,6 +2095,28 @@ data: (
                        (format nil " (bar ~a)" (bar-num object))
                        ""))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jun 25 09:40:21 2015
+
+(defun get-tuplet-ratio (tuplet)
+  (flet ((terr () (error "rhythm::get-tuplet-ratio: unhandled tuplet: ~a"
+                         tuplet)))
+    (typecase tuplet
+      (integer (case tuplet
+                 (2 3/2)
+                 (3 2/3)
+                 (4 3/4)
+                 (5 4/5)
+                 (6 2/3)
+                 (7 4/7)
+                 (8 3/4)
+                 (9 8/9)
+                 (10 8/10)
+                 (11 8/11)
+                 (13 8/13)
+                 (t (terr))))
+      (rational tuplet) ; i.e we've already got something like 7/5 (= 7:5)
+      (t (terr)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF rhythm.lsp

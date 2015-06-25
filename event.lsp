@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:19:30 Wed Jun 24 2015 BST
+;;; $$ Last modified: 10:48:36 Thu Jun 25 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2142,41 +2142,10 @@ NIL
           (when (bracket e)
             ;; MDE Mon Jan 12 14:05:17 2015 -- nested tuplets as with vc at
             ;; beginning of slippery when wet
-            (cond ((> (length (bracket e)) 1) 
+            (cond ((> (length (bracket e)) 1)
                    (loop for b in (bracket e) do
                         (if (listp b)
-                            (let ((sb (second b)))
-                              (typecase sb
-                                (integer
-                                 (push
-                                  (format nil "\\times ~a { "
-                                          (case (second b)
-                                            (2 "3/2")
-                                            (3 "2/3")
-                                            (4 "3/4")
-                                            (5 "4/5")
-                                            (6 "4/6")
-                                            (7 "4/7")
-                                            (9 "8/9")
-                                            (t (error "event::get-lp-data: ~
-                                                       unhandled tuplet: ~a"
-                                                      (second b)))))
-                                  result))
-                                ;; MDE Thu Jun 4 11:16:07 2015 -- now allow
-                                ;; explicit ratios that will show up in
-                                ;; brackets as e.g. 5:4 (expressed as 4/5 in
-                                ;; the rthm-seq-bar list of rhythms) instead of
-                                ;; just 5
-                                (rational
-                                 (push 
-                                  (format
-                                   nil 
-                                   "\\once \\override TupletNumber.text = ~
-                                    #tuplet-number::calc-fraction-text ~
-                                    \\times ~a { " sb)
-                                  result))
-                                (t (error "event::get-lp-data: ~
-                                           unexpected tuplet: ~a" sb))))
+                            (push (get-lp-tuplet (second b)) result)
                             (when (integer>0 b)
                               (incf close-tuplets)))))
                   ;; MDE Mon Jan 12 14:31:51 2015 -- the simple non-nested case
@@ -2184,7 +2153,11 @@ NIL
                    (push 
                     ;; MDE Fri Apr  4 14:36:48 2014 -- just use the existing
                     ;; slot rather than case!
-                    (format nil "\\times ~a { " (tuplet-scaler e))
+                    ;; MDE Thu Jun 25 10:48:11 2015 -- use the dedicated
+                    ;; function now rather than just the tuplet scaler
+                    ;; formatted here.  
+                    ;; (format nil "\\times ~a { " (tuplet-scaler e))
+                    (get-lp-tuplet (tuplet-scaler e))
                     result))
                   ((integer>0 (first (bracket e)))
                    (incf close-tuplets))))
@@ -2456,8 +2429,6 @@ NIL
   (typep (pitch-or-chord e) 'pitch))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 
 
 ;;; SAR Sat Dec 24 15:46:23 EST 2011: Added robodoc info
 ;;; SAR Wed Jun 13 12:16:02 BST 2012: Expanded robodoc

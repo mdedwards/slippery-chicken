@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 13:21:36 Thu Mar  5 2015 GMT
+;;; $$ Last modified: 09:52:55 Thu Jun 25 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -360,6 +360,24 @@
 
 (defun lp-ml-text (&rest strings)
   (format nil "~&\\column {~{~&  \\line{~a}~^~}~&}~%" strings))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jun 25 09:47:59 2015 -- we format a Lilypond string for a tuplet up
+;;; to the opening { When explicit ratios are given, we make sure they're
+;;; printed in the bracket in the score like 5:4, otherwise an integer is
+;;; placed in the bracket without qualification.
+
+(defun get-lp-tuplet (tuplet)
+  (let ((tup (get-tuplet-ratio tuplet)))
+    (typecase tuplet
+      (integer (format nil "\\times ~a { " tup))
+      ;; This code was in the body of event::get-lp-data:
+      ;; MDE Thu Jun 4 11:16:07 2015 -- now allow explicit ratios that will
+      ;; show up in brackets as e.g. 5:4 (expressed as 4/5 in the rthm-seq-bar
+      ;; list of rhythms) instead of just 5
+      (rational
+       (format nil "\\once \\override TupletNumber.text = ~
+                    #tuplet-number::calc-fraction-text \\times ~a { " tup)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

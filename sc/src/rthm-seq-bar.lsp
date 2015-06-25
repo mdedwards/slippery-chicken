@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 19:20:49 Thu Jun 25 2015 BST
+;;; $$ Last modified: 22:18:32 Thu Jun 25 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6067,7 +6067,7 @@ show-rest: T
 
 (defun rqq-divide-aux (divisions parent-dur)
   ;; handle rests in the usual way, i.e. those values placed in ()
-  ;; (print divisions)
+  ;; (format t "~&divs: ~a pd: ~a" divisions parent-dur)
   (let ((rest nil))
     (when (rqq-got-rest divisions)
       (setf divisions (first divisions)
@@ -6077,14 +6077,16 @@ show-rest: T
                (r (get-rhythm-letter-for-value v nil))
                (result (if r r v))
                ;; when we have something like 3/2 we can just make it 1\.
-               (dotit (and (numberp result) (= 3 (denominator result)))))
+               (dotit (and (numberp result) (= 3 (numerator result)))))
           ;; try and set dots if possible
           (when dotit
             ;; strings work as rthms too
             ;; (print result)
-            (if (evenp (numerator result))
-                (setf result (format nil"~a\." (/ (numerator result) 2)))
-                (setf result (format nil"~a/~a\." (numerator result) 2))))
+            (setf result 
+                  ;;(if (print (evenp (numerator result)))
+                      (format nil"~a\." (/ 2 (denominator result)))))
+                    ;;  (format nil"~a/~a\." 
+                      ;;        (numerator result) (denominator result)))))
           (make-rqq-divide-rthm :r result :rest rest))
         (let* ((2divs (second divisions))
                (rqqnd (rqq-num-divisions 2divs))
@@ -6111,7 +6113,8 @@ show-rest: T
                                ((= ratio 1/5) 5)
                                ((= ratio 2/5) 5)
                                ((= ratio 4/5) 5)
-                               (t (if (< ratio 1/2)
+                               ((and (< ratio 1/2) 
+                                     (power-of-2 (denominator ratio)))
                                       ;; we don't use this-dur as the numerator
                                       ;; because that might mean we get a ratio
                                       ;; like 13:2 when the overall duration of
@@ -6119,8 +6122,8 @@ show-rest: T
                                       ;; parts. Instead we use the nearest
                                       ;; power of 2 to the denominator (rqqnd)
                                       ;; so we get 13:8.
-                                      (/ (nearest-power-of-2 rqqnd) rqqnd)
-                                      ratio)))))
+                                      (/ (nearest-power-of-2 rqqnd) rqqnd))
+                               (t ratio))))
                (beam (beamable result)))
           ;; (format t "~&~a: beamable: ~a" result beam)
           ;; (format t "~%~a ~a" rqqnd (first divisions))

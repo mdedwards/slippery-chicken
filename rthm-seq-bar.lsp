@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 12:59:31 Thu Jun 25 2015 BST
+;;; $$ Last modified: 15:26:10 Thu Jun 25 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5100,9 +5100,19 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
                            (<= pos (third ts)))
                   (setf result (* result (get-tuplet-ratio (first ts)))))
               finally (return result))))
-    (loop for r in (rhythms rsb) for ct = (compound-tuplet r) do
+    (loop for r in (rhythms rsb) for ct = (compound-tuplet r)
+       with rqq = (is-rqq-info (second (data rsb))) do
        ;; (format t "~%val = ~a, ct = ~a" (value r) ct)
+       ;; if we get something like (rqq-divide '(1 ((4 (1 (2) (1) 1)) (2 (1 (2)
+       ;; (1) (1) (1)))))) then we'll end up with ({ 2/3 - { 5 30 (FE) 30 } { 3
+       ;; 72 (72/5) } - }) where that FE really needs a dot but by chance the
+       ;; value of 10 returns FE despite it being under 2 tuplets...this still
+       ;; won't catch them all as some will not be symbols...
          (when (> (length (bracket r)) 1)
+           (when (and rqq (under-triplet rsb r) (zerop (num-dots r))
+                      (symbolp (data r))
+                      (not (char= #\T (elt (string (data r)) 0))))
+             (incf (num-dots r)))
            (if (< ct 1/2)
                (progn 
                  (decf (num-flags r))
@@ -5113,6 +5123,20 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
                  (setf (tuplet-scaler r) ct
                        (letter-value r) (* (letter-value r) 2))))))
     rsb))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jun 25 14:08:27 2015 -- 2nd arg is the rhythm index or a rhythm
+;;; object 
+(defmethod under-triplet ((rsb rthm-seq-bar) rhythm-or-index)
+  (loop with pos = (bar-pos (if (integerp rhythm-or-index)
+                                (get-nth-event rhythm-or-index rsb)
+                                rhythm-or-index))
+     for ts in (tuplets rsb) for tsf = (first ts) do
+       (when (and (or (= 3 tsf) (= 2/3 tsf) (= 4/6 tsf) (= 9/6 tsf))
+                  (and (>= pos (second ts))
+                       (<= pos (third ts))))
+         (return t))
+     finally (return nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -6120,24 +6144,35 @@ show-rest: T
 
 (defun consolidate-rqq-rests-p (div)
   ;; todo: this isn't working yet: remove the (or t ) when it is
-  (if (or t (integerp div) (rqq-got-rest div))
+  (if (or (integerp div) (rqq-got-rest div))
       div
       (list (first div) (consolidate-rqq-rests (second div)))))
 
 ;;; make something like ((1) (1) 1 (1) (1) (1)) -> ((2) 1 (3))
 (defun consolidate-rqq-rests (nums)
-  (loop for n in nums with result = '() with total = 0 do
-       (if (and (listp n) (= 1 (length n)))
-           (incf total (first n))
-           (progn
+  (let ((total 0)
+        (result '()))
+    (flet ((doit ()
              (unless (zerop total)
-               (push (list total) result)
-               (setf total 0))
-             (push n result)))
-     finally
-       (unless (zerop total)
-         (push (list total) result))
-       (return (nreverse result))))
+               (if (zerop (mod total 3))
+                   ;; avoid dot complications
+                   (case total
+                     (3 (push '(2) result)
+                        (push '(1) result))
+                     (6 (push '(4) result)
+                        (push '(2) result))
+                     (9 (push '(8) result)
+                        (push '(1) result)))
+                   (push (list total) result))
+               (setf total 0))))
+      (loop for n in nums do
+           (if (and (listp n) (= 1 (length n)))
+               (incf total (first n))
+               (progn
+                 (doit)
+                 (push n result))))
+      (doit)
+      (nreverse result))))
            
 (defun all-dotted (rthms)
   (loop for r in rthms do

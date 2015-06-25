@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 20:39:00 Wed Jun 24 2015 BST
+;;; $$ Last modified: 12:59:31 Thu Jun 25 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5084,48 +5084,34 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Jun 24 18:25:35 2015 -- when we've got nested tuplets we run into
-;;; the problem of how many flags (and therefore, for Lilypond, what the
-;;; letter-value slot should be). E.g. if we have two levels of triplet, then we
-;;; probably need to remove a beam/flag level, whereas if we have 4:5 or
-;;; something, we need to increase it. We can do a good guess by looking at the
-;;; tuplet scaler for now: if it's > 2/3 then we need to increase flags,
-;;; otherwise decrease--but only when there's nested tuplets. NB we might need
-;;; to fiddle with this threshold or come up with a much more rational (haha)
-;;; approach.
+;;; the problem of how many flags we need (and therefore, for Lilypond, what
+;;; the letter-value slot should be). E.g. if we have two levels of triplet,
+;;; then we probably need to remove a beam/flag level, whereas if we have 4:5
+;;; or something, we might need to increase it. 
 (defmethod fix-nested-tuplets ((rsb rthm-seq-bar))
-  (labels ((get-ratio (tuplet)
-             (typecase tuplet
-               (integer (case tuplet
-                          (3 2/3)
-                          (5 4/5)
-                          (6 2/3)
-                          (7 4/7)
-                          (9 8/9)
-                          (10 8/10)
-                          (11 8/11)
-                          (13 8/13)
-                          (t (error "rsb::fix-nested-tuplets: unhandled: ~a"
-                                    tuplet))))
-               (rational tuplet)
-               (t (error "rsb::fix-nested-tuplets: unhandled: ~a"
-                         tuplet))))
-           (compound-tuplet (r)
-             (loop with result = 1 with pos = (bar-pos r)
-                for ts in (tuplets rsb) do
-                  (when (and (>= pos (second ts))
-                             (<= pos (third ts)))
-                    (setf result (* result (get-ratio (first ts)))))
-                finally (return result))))
+  (flet ((compound-tuplet (r)
+           ;; we know when we have a triplet that the duration is 2/3 of the
+           ;; letter value, but here we need to find how many tuplet brackets a
+           ;; rhythm is and found what the total duration scaler will be. NB we
+           ;; have the tuplet
+           (loop with result = 1 with pos = (bar-pos r)
+              for ts in (tuplets rsb) do
+                (when (and (>= pos (second ts))
+                           (<= pos (third ts)))
+                  (setf result (* result (get-tuplet-ratio (first ts)))))
+              finally (return result))))
     (loop for r in (rhythms rsb) for ct = (compound-tuplet r) do
-         ;; (format t "~%val = ~a, ct = ~a" (value r) ct)
+       ;; (format t "~%val = ~a, ct = ~a" (value r) ct)
          (when (> (length (bracket r)) 1)
            (if (< ct 1/2)
                (progn 
                  (decf (num-flags r))
-                 (setf (letter-value r) (/ (letter-value r) 2)))
+                 (setf (tuplet-scaler r) ct
+                       (letter-value r) (/ (letter-value r) 2)))
                (when (> ct 1)
                  (incf (num-flags r))
-                 (setf (letter-value r) (* (letter-value r) 2))))))
+                 (setf (tuplet-scaler r) ct
+                       (letter-value r) (* (letter-value r) 2))))))
     rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6050,10 +6036,14 @@ show-rest: T
         (beamem faux) 
         (debeamem (remove-pair faux '(- -))))))
 
+(defun rqq-got-rest (thing)
+  (and (listp thing) (equal 1 (length thing))))
+
 (defun rqq-divide-aux (divisions parent-dur)
   ;; handle rests in the usual way, i.e. those values placed in ()
+  ;; (print divisions)
   (let ((rest nil))
-    (when (and (listp divisions) (equal 1 (length divisions)))
+    (when (rqq-got-rest divisions)
       (setf divisions (first divisions)
             rest t))
     (if (integerp divisions)
@@ -6070,12 +6060,15 @@ show-rest: T
                 (setf result (format nil"~a\." (/ (numerator result) 2)))
                 (setf result (format nil"~a/~a\." (numerator result) 2))))
           (make-rqq-divide-rthm :r result :rest rest))
-        (let* ((rqqnd (rqq-num-divisions (second divisions)))
+        (let* ((2divs (second divisions))
+               (rqqnd (rqq-num-divisions 2divs))
                (this-dur (first divisions))
                (ratio (/ this-dur rqqnd))
                (pd (/ (* parent-dur rqqnd) this-dur))
-               (result (flatten (loop for div in (second divisions) collect
-                                     (rqq-divide-aux div pd))))
+               (result
+                (flatten 
+                 (loop for div in 2divs collect
+                      (rqq-divide-aux (consolidate-rqq-rests-p div) pd))))
                ;; if we have something like (3 (1 1 1)) then we don't need a
                ;; tuplet bracket
                (tuplet (unless (power-of-2 (/ rqqnd this-dur))
@@ -6086,6 +6079,7 @@ show-rest: T
                                 nil)
                                ((= ratio 2/3) 3) ; (2 (1 1 1))
                                ((= ratio 1/3) 3) ; (1 (1 1 1))
+                               ((= ratio 4/6) 3)
                                ((= ratio 4/3) 3)
                                ((= ratio 1/10) 5)
                                ((= ratio 1/5) 5)
@@ -6124,6 +6118,27 @@ show-rest: T
                     result))
               (if beam (beamem result) result))))))
 
+(defun consolidate-rqq-rests-p (div)
+  ;; todo: this isn't working yet: remove the (or t ) when it is
+  (if (or t (integerp div) (rqq-got-rest div))
+      div
+      (list (first div) (consolidate-rqq-rests (second div)))))
+
+;;; make something like ((1) (1) 1 (1) (1) (1)) -> ((2) 1 (3))
+(defun consolidate-rqq-rests (nums)
+  (loop for n in nums with result = '() with total = 0 do
+       (if (and (listp n) (= 1 (length n)))
+           (incf total (first n))
+           (progn
+             (unless (zerop total)
+               (push (list total) result)
+               (setf total 0))
+             (push n result)))
+     finally
+       (unless (zerop total)
+         (push (list total) result))
+       (return (nreverse result))))
+           
 (defun all-dotted (rthms)
   (loop for r in rthms do
        (when (typep r 'rqq-divide-rthm)
@@ -6178,7 +6193,7 @@ show-rest: T
         rthms
         db)))
 
-;;; can the given rhythms (numbers of symbols, with/without  - and { notations)
+;;; can the given rhythms (numbers or symbols, with/without  - and { notations)
 ;;; to be put under a beam or not?
 (defun beamable (rthms)
   (when (> (length rthms) 1)

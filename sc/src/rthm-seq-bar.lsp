@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 15:26:10 Thu Jun 25 2015 BST
+;;; $$ Last modified: 19:20:49 Thu Jun 25 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6053,7 +6053,9 @@ show-rest: T
                             (list (rqq-divide-rthm-r r))
                             (rqq-divide-rthm-r r))
                         r)))
-         (beam-all (beamable (flatten faux))))
+         ;; (beam-all (beamable (flatten faux))))
+         (beam-all (beamable faux)))
+    ;; (print faux)
     (if beam-all
         ;; if we can put a beam over all rthms, remove beams we've added
         ;; already and put a beam symbol at the beginning and end. 
@@ -6231,23 +6233,35 @@ show-rest: T
 ;;; can the given rhythms (numbers or symbols, with/without  - and { notations)
 ;;; to be put under a beam or not?
 (defun beamable (rthms)
-  (when (> (length rthms) 1)
-    (loop with last with val 
-       for elraw in rthms
-       for el = (if (typep elraw 'rqq-divide-rthm)
-                    (rqq-divide-rthm-r elraw)
-                    elraw)
-       do
-         (setq val
-               (if (numberp el)
-                   el
-                   (parse-rhythm-symbol el :error nil)))
-         (when (and (not (eq last '{))
-                    (numberp val)
-                    (< val 8))
-           (return nil))
-         (setf last el)
-       finally (return t))))
+  ;; (print rthms)
+  (flet ((is-rest (thing)
+           (when thing
+             (if (typep thing 'rqq-divide-rthm)
+                 (rqq-divide-rthm-rest thing)
+                 (and (listp thing) (= 1 (length thing)))))))
+    (when (> (length rthms) 1)
+      (loop with last with val with firstr with lastr with got-rthm
+         for elraw in rthms
+         for struct = (typep elraw 'rqq-divide-rthm)
+         for el = (typecase elraw
+                    (rqq-divide-rthm (rqq-divide-rthm-r elraw))
+                    (list (first elraw))
+                    (t elraw))
+         do
+           (setq val (if (numberp el)
+                         el
+                         (parse-rhythm-symbol el :error nil))
+                 got-rthm (or struct (and (not (eq last '{))
+                                          (numberp val))))
+           (when got-rthm
+             (if firstr
+                 (setq lastr elraw)
+                 (setq firstr elraw)))
+           (when (and got-rthm (< val 8))
+             (return nil))
+           (setf last el)
+         ;; no beams with rests at start or end
+         finally (return (not (or (is-rest firstr) (is-rest lastr))))))))
 
 
 (defun rqq-num-divisions (rqq)

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 13:00:10 Fri Jun 26 2015 BST
+;;; $$ Last modified: 13:43:36 Fri Jun 26 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6089,9 +6089,13 @@ show-rest: T
     (if (integerp divisions)
         (let* ((v (/ parent-dur divisions))
                (r (get-rhythm-letter-for-value v nil))
-               (result (if r r v))
+               ;; some just always create problems...
+               (result (if (and r (not (member r '(fs. fe. fq.))))
+                           r
+                           v))
                ;; when we have something like 3/2 we can just make it 1\.
                (dotit (and (numberp result) (= 3 (numerator result)))))
+          ;; (format t "~%pd ~a div ~a res ~a" parent-dur divisions result)
           ;; try and set dots if possible
           (when dotit
             ;; strings work as rthms too

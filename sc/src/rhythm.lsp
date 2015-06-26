@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 14:08:58 Thu Jun 25 2015 BST
+;;; $$ Last modified: 09:53:32 Fri Jun 26 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -90,7 +90,7 @@
    ;; be set to grace-note-duration
    (is-grace-note :accessor is-grace-note :type boolean :initform nil)
    (needs-new-note :accessor needs-new-note :type boolean :initform t)
-   ;; if this rhythm starts beaming, beam = 1, if if ends beaming, beam = 0,
+   ;; if this rhythm starts beaming, beam = 1, if it ends beaming, beam = 0,
    ;; otherwise nil.
    (beam :accessor beam :initarg :beam :initform nil)
    ;; bracket info is stored in a list.  If an element(s) of a list is another

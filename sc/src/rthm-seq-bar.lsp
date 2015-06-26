@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 22:18:32 Thu Jun 25 2015 BST
+;;; $$ Last modified: 10:16:07 Fri Jun 26 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6114,7 +6114,7 @@ show-rest: T
                                ((= ratio 2/5) 5)
                                ((= ratio 4/5) 5)
                                ((and (< ratio 1/2) 
-                                     (power-of-2 (denominator ratio)))
+                                     (power-of-2 (numerator ratio)))
                                       ;; we don't use this-dur as the numerator
                                       ;; because that might mean we get a ratio
                                       ;; like 13:2 when the overall duration of
@@ -6159,16 +6159,20 @@ show-rest: T
         (result '()))
     (flet ((doit ()
              (unless (zerop total)
-               (if (zerop (mod total 3))
-                   ;; avoid dot complications
-                   (case total
-                     (3 (push '(2) result)
-                        (push '(1) result))
-                     (6 (push '(4) result)
-                        (push '(2) result))
-                     (9 (push '(8) result)
-                        (push '(1) result)))
-                   (push (list total) result))
+               (cond ((zerop (mod total 3))
+                      ;; avoid dot complications
+                      (case total
+                        (3 (push '(2) result)
+                           (push '(1) result))
+                        (6 (push '(4) result)
+                           (push '(2) result))
+                        (9 (push '(8) result)
+                           (push '(1) result))))
+                     ((power-of-2 total)
+                      (push (list total) result))
+                     (t (let ((np2 (nearest-power-of-2 total)))
+                          (push (list np2) result)
+                          (push (list (- total np2)) result))))
                (setf total 0))))
       (loop for n in nums do
            (if (and (listp n) (= 1 (length n)))
@@ -6260,6 +6264,10 @@ show-rest: T
              (if firstr
                  (setq lastr elraw)
                  (setq firstr elraw)))
+         ;; todo: this still means we can end up trying to put a beam over a
+         ;; 1/4 note/rest when it's >8 in duration because of nested tuplets,
+         ;; e.g. (make-rthm-seq-bar '((2 4) (2 ((3 (1 (1) 1 1)) (6 (1 1 1)) (4
+         ;; (1 (1) (1) (1) (1) 1)))))). Lilypond doesn't break though.
            (when (and got-rthm (< val 8))
              (return nil))
            (setf last el)

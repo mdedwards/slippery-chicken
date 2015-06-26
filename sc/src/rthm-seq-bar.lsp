@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 10:16:07 Fri Jun 26 2015 BST
+;;; $$ Last modified: 13:00:10 Fri Jun 26 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5101,27 +5101,41 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
                   (setf result (* result (get-tuplet-ratio (first ts)))))
               finally (return result))))
     (loop for r in (rhythms rsb) for ct = (compound-tuplet r)
-       with rqq = (is-rqq-info (second (data rsb))) do
-       ;; (format t "~%val = ~a, ct = ~a" (value r) ct)
-       ;; if we get something like (rqq-divide '(1 ((4 (1 (2) (1) 1)) (2 (1 (2)
-       ;; (1) (1) (1)))))) then we'll end up with ({ 2/3 - { 5 30 (FE) 30 } { 3
-       ;; 72 (72/5) } - }) where that FE really needs a dot but by chance the
-       ;; value of 10 returns FE despite it being under 2 tuplets...this still
-       ;; won't catch them all as some will not be symbols...
+       ;; with rqq = (is-rqq-info (second (data rsb)))
+       with increase do
+       ;; MDE Fri Jun 26 11:09:12 2015 -- while we're at it, fix non-nested
+       ;; cases where 4:5 might result in too few beams. 
+         (when (> ct 1)
+           ;; this means with a tuplet like 9/4 we'll add two more flags
+           (setq increase (floor ct)))
+         ;; (format t "~%val = ~a, ct = ~a" (value r) ct)
          (when (> (length (bracket r)) 1)
+           ;; if we get something like (rqq-divide '(1 ((4 (1 (2) (1) 1)) (2 (1
+           ;; (2) (1) (1) (1)))))) then we'll end up with ({ 2/3 - { 5 30 (FE)
+           ;; 30 } { 3 72 (72/5) } - }) where that FE really needs a dot but by
+           ;; chance the value of 10 returns FE despite it being under 2
+           ;; tuplets...this still won't catch them all as some will not be
+           ;; symbols...
+           #|
            (when (and rqq (under-triplet rsb r) (zerop (num-dots r))
                       (symbolp (data r))
                       (not (char= #\T (elt (string (data r)) 0))))
+             (print 'inc!)
              (incf (num-dots r)))
-           (if (< ct 1/2)
+           |#
+           ;; (print ct)
+           (if (<= ct 1/2)
                (progn 
                  (decf (num-flags r))
                  (setf (tuplet-scaler r) ct
                        (letter-value r) (/ (letter-value r) 2)))
                (when (> ct 1)
-                 (incf (num-flags r))
-                 (setf (tuplet-scaler r) ct
-                       (letter-value r) (* (letter-value r) 2))))))
+                 (setq increase (floor ct)))))
+         (when increase
+           (incf (num-flags r) increase)
+           (setf (tuplet-scaler r) ct
+                 (letter-value r) (* (letter-value r) 2 increase)
+                 increase nil)))
     rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6044,7 +6058,7 @@ show-rest: T
 
 ;;; This will put tuplets over a whole RQQ list, rather than dividing into
 ;;; beats and bracketing those. If you don't want this, then split the RQQ
-;;; lists into beats. 
+;;; lists into beats.
 (defun rqq-divide (divisions)
   (let* ((aux (rqq-divide-aux divisions 4))
          (faux (loop for r in (flatten aux) collect
@@ -6122,14 +6136,18 @@ show-rest: T
                                       ;; parts. Instead we use the nearest
                                       ;; power of 2 to the denominator (rqqnd)
                                       ;; so we get 13:8.
-                                      (/ (nearest-power-of-2 rqqnd) rqqnd))
+                                (/ (nearest-power-of-2 rqqnd) rqqnd))
+                               ;; MDE Fri Jun 26 11:55:00 2015 -- sometimes we
+                               ;; get weird ones like 9 32nds divided into 3
+                               ;; but there's no way of handling this that I
+                               ;; know of.
                                (t ratio))))
                (beam (beamable result)))
           ;; (format t "~&~a: beamable: ~a" result beam)
           ;; (format t "~%~a ~a" rqqnd (first divisions))
           ;; (format t "~%~a ~a" rqqnd pd)
           ;; (print result)
-          ;; (format t "~%ratio ~a, tuplet ~a" ratio tuplet)
+          ;; (format t "~%ratio ~a tupl ~a this-d ~a" ratio tuplet this-dur)
           ;; sometimes we'll be under two tuplet brackets but get something
           ;; like a simple TS as the rthm but then under a 2:3 bracket, which
           ;; should be turned into a dotted value 

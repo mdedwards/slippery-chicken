@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 15:34:50 Mon Jun 22 2015 BST
+;;; $$ Last modified: 13:05:49 Fri Jun 26 2015 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -277,7 +277,7 @@
                  (setf psp (loop for ps in psp collect
                                 (loop for n in ps collect 
                                      (if (listp n) (first n) n)))))
-               (print psp)
+               ;; (print psp)
                (setf (pitch-seq-palette rs) psp)
                ;; now turn the lists into a real psp
                (init-psp rs))))

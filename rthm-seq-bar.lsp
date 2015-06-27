@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 17:36:38 Sat Jun 27 2015 BST
+;;; $$ Last modified: 22:05:04 Sat Jun 27 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5100,7 +5100,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
               finally (return result))))
     (loop for r in (rhythms rsb) for ct = (compound-tuplet r) do
          (setf (tuplet-scaler r) ct
-               (letter-value r) (floor (* (undotted-value r) ct)))
+               (letter-value r) (round (* (undotted-value r) ct)))
          (when (not (power-of-2 (letter-value r)))
            (error "~arthm-seq-bar::fix-nested-tuplets: bad letter-value:~%~a"
                   rsb r)))

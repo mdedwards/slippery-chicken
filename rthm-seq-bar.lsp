@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 13:28:24 Sat Jun 27 2015 BST
+;;; $$ Last modified: 15:53:21 Sat Jun 27 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5100,7 +5100,10 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
               finally (return result))))
     (loop for r in (rhythms rsb) for ct = (compound-tuplet r) do
          (setf (tuplet-scaler r) ct
-               (letter-value r) (floor (* (undotted-value r) ct))))
+               (letter-value r) (floor (* (undotted-value r) ct)))
+         (when (not (power-of-2 (letter-value r)))
+           (error "~arthm-seq-bar::fix-nested-tuplets: bad letter-value:~%~a"
+                  rsb r)))
     rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6058,18 +6061,20 @@ show-rest: T
                (result (if (and r (not (member r '(fs. fe. fq.))))
                            r
                            v))
-               ;; when we have something like 3/2 we can just make it 1\.
-               (dotit (and (numberp result) (= 3 (numerator result)))))
+               ;; when we have something like 40/3 we can just make it 20\.
+               (dotit (and (numberp result) (or ;(= 3 (numerator result))
+                                                (= 3 (denominator result))))))
           ;; (format t "~%pd ~a div ~a res ~a" parent-dur divisions result)
           ;; try and set dots if possible
           (when dotit
             ;; strings work as rthms too
-            ;; (print result)
+            (print result)
             (setf result 
-                  ;;(if (print (evenp (numerator result)))
-                      (format nil"~a\." (/ 2 (denominator result)))))
-                    ;;  (format nil"~a/~a\." 
-                      ;;        (numerator result) (denominator result)))))
+                  (if (evenp (numerator result))
+                      (format nil"~a\." (/ (numerator result) 2))
+                      (format nil"~a/~a\." (numerator result) 2)))
+                  ;; (format nil"~a\." (/ 2 (denominator result))))
+             (format t "~&result: ~a" result))
           (make-rqq-divide-rthm :r result :rest rest))
         (let* ((2divs (second divisions))
                (rqqnd (rqq-num-divisions 2divs))
@@ -6252,12 +6257,26 @@ show-rest: T
                     (rqq-divide-rthm (rqq-divide-rthm-r elraw))
                     (list (first elraw))
                     (t elraw))
+         with last-tuplet = 1
+         with compound-tuplet = 1
          do
            (setq val (if (numberp el)
                          el
                          (parse-rhythm-symbol el :error nil))
                  got-rthm (or struct (and (not (eq last '{))
                                           (numberp val))))
+         ;; keeping track of tuplet scalers helps decide over a whole bar with
+         ;; tuplet info (e.g. ({ 4/7 { 7/5 - FS (FS) FS (FS) FS - } { 5/6 -
+         ;; 168/5 (42/5) ...) but won't help when we're deciding about the
+         ;; parts in that bar (e.g. (5 (1 (4) 1))), as we must so the todo
+         ;; below still holds
+           (cond ((eq last '{)
+                  (setq last-tuplet (get-tuplet-ratio val)
+                        compound-tuplet (* compound-tuplet last-tuplet)))
+                 ((eq elraw '})
+                  (setq compound-tuplet (/ compound-tuplet last-tuplet))))
+         ;;(format t "~%~a: ct ~a dur ~a" 
+         ;;        val compound-tuplet (when val (* val compound-tuplet)))
            (when got-rthm
              (if firstr
                  (setq lastr elraw)
@@ -6266,7 +6285,7 @@ show-rest: T
          ;; 1/4 note/rest when it's >8 in duration because of nested tuplets,
          ;; e.g. (make-rthm-seq-bar '((2 4) (2 ((3 (1 (1) 1 1)) (6 (1 1 1)) (4
          ;; (1 (1) (1) (1) (1) 1)))))). Lilypond doesn't break though.
-           (when (and got-rthm (< val 8))
+           (when (and got-rthm (< (* compound-tuplet val) 8))
              (return nil))
            (setf last el)
          ;; no beams with rests at start or end

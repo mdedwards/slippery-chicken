@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 09:53:32 Fri Jun 26 2015 BST
+;;; $$ Last modified: 16:02:27 Sat Jun 27 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2031,7 +2031,7 @@ data: (
                               (#\E 8)
                               (#\S 16))))))))
     ;; MDE Sat Jun  8 18:20:53 2013 -- only signal an error if we really want
-    ;; one  
+    ;; one
     (if letter-value
         (progn
           (setf value (float (* letter-value scaler))
@@ -2070,7 +2070,10 @@ data: (
             ;; T in front of a letter value, but we need it to be 3/2 as 12 is a
             ;; te so try and figure it out mathematically
             (when (and (= 1 (tuplet-scaler rhythm-object))
-                       (numberp (data rhythm-object)))
+                       ;; MDE Sat Jun 27 16:02:07 2015 -- should be an int not
+                       ;; just a number as 70/3 is a number... 
+                       ;; (numberp (data rhythm-object)))
+                       (integerp (data rhythm-object)))
               (setf (tuplet-scaler rhythm-object) (rationalize
                                                    (/ (nearest-power-of-2
                                                        (value rhythm-object))

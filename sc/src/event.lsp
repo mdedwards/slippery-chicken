@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:06:04 Thu Jun 25 2015 BST
+;;; $$ Last modified: 13:42:43 Sun Jun 28 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -138,6 +138,7 @@
                           (scale-start-time nil)
                           (time-offset 0.0))
   (declare (ignore clone))
+  ;; (print scaler)
   (let ((rthm (call-next-method))
         (start (start-time e)))
     (setf rthm (clone-with-new-class rthm 'event)
@@ -2157,7 +2158,7 @@ NIL
                     ;; function now rather than just the tuplet scaler
                     ;; formatted here.  
                     ;; (format nil "\\times ~a { " (tuplet-scaler e))
-                    (get-lp-tuplet (second (first (bracket e)))) ;(tuplet-scaler e))
+                    (get-lp-tuplet (second (first (bracket e)))) 
                     result))
                   ((integer>0 (first (bracket e)))
                    (incf close-tuplets))))

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 22:05:04 Sat Jun 27 2015 BST
+;;; $$ Last modified: 14:01:53 Sun Jun 28 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -184,6 +184,10 @@
                     (make-time-sig first))
                    ((time-sig-p first) first)))
          (rthms (if ts (rest data) data))
+         ;; this won't pick up on the mixed cases (rqq for some beats, normally
+         ;; typed rhythms for others) but we'll have to live with that as we
+         ;; only need this for beam checking and we don't want to disrupt
+         ;; explicitly given beams.
          (just-rqq (and (= 1 (length rthms)) (is-rqq-info (first rthms))))
          (parsed (parse-rhythms rthms (nudge-factor rsb)))
          (rthm nil)
@@ -231,9 +235,11 @@
                (duration (get-time-sig-from-all-time-sigs rsb))
                (rhythms-duration rsb)
                data)))
-    ;; MDE Thu Jun  4 16:10:12 2015 
+    ;; MDE Thu Jun  4 16:10:12 2015
     (when just-rqq
-      (auto-beam rsb nil 'silent))
+      (check-beams rsb))
+    ;;    MDE Sun Jun 28 13:03:04 2015 -- no, rqq handling now sets its own beams
+    ;;    (auto-beam rsb nil 'silent))
     (gen-stats rsb)
     (update-missing-duration rsb)
     (update-rhythms-bracket-info rsb)
@@ -1172,7 +1178,10 @@ BF4 E.,
 ;;;   beaming is wrong (and :on-fail is not NIL). T = auto-beam. Default = NIL. 
 ;;; - :print. T or NIL to indicate whether the method should print feedback of
 ;;;   the checking process to the Lisp listener. T = print feedback. Default =
-;;;   NIL. 
+;;;   NIL.
+;;; - :fix. T or NIL to indicate that when a beam has been placed over a rhythm
+;;;    with no flags (e.g. a 1/4 note), then we delete beams over that note and
+;;;    try again. Default = T.
 ;;; - :on-fail. The function that should be applied when the check does not
 ;;;   pass. May be NIL for no warning/error or #'error if processing should
 ;;;   stop. Default = #'warn.  
@@ -1226,43 +1235,65 @@ BF4 E.,
 
 |#
 ;;; SYNOPSIS
-(defmethod check-beams ((rsb rthm-seq-bar) &key auto-beam print
-                        (on-fail #'warn))
+(defmethod check-beams ((rsb rthm-seq-bar) &key auto-beam print (fix t)
+                                             (on-fail #'warn))
 ;;; ****
-  (let ((bad nil))
+  ;; (print (bar-num rsb))
+  (let ((bad nil)
+        (de-beam nil))
     (loop with last-seen = -1 with open
        for r in (rhythms rsb) 
        for current = (beam r)
        do
-       (when (and current (= 1 current))
-         (setf open t))
-       (when (and current (= 1 last-seen) (= 1 current))
-         (setf bad 'two-ones))
-       (when (and current (zerop current) (not open))
-         (setf bad 'not-open))
+         (when (and current (= 1 current))
+           (setf open t))
+         (when (and current (= 1 last-seen) (= 1 current))
+           (setf bad 'two-ones))
+         (when (and current (zerop current) (not open))
+           (setf bad 'not-open))
        ;; MDE Tue Aug 27 15:22:47 2013 -- don't beam over e.g. 1/4 rests
-       (when (and open (zerop (num-flags r)) (not (is-grace-note r)))
-         (setf bad 'beam-over-non-beamed-rhythms))
-       (when bad
-         (return bad))
-       (when (and current (zerop current))
-         (setf open nil))
-       (when current 
-         (setf last-seen current))
+         (when (and open (zerop (num-flags r)) (not (is-grace-note r)))
+           (if fix
+               (progn
+                 (setf de-beam r)
+                 (return))
+               (setf bad 'beam-over-non-beamed-rhythms)))
+         (when bad
+           (return bad))
+         (when (and current (zerop current))
+           (setf open nil))
+         (when current 
+           (setf last-seen current))
        finally (when open
                  (setf bad 'not-closed)))
-    (when (and bad auto-beam)
-      ;; auto-beam calls check-beams too, via update-rhythms-beam-info
-      (setf bad (not (auto-beam rsb nil nil))))
-    (when print
-      (print bad))
-    (when (and on-fail bad)
-      (apply on-fail
-             (list "rthm-seq-bar::check-beams failed with error ~a~%~a"
-                   bad rsb)))
-    (values (not bad) bad)))
+    (if de-beam
+        (de-beam rsb de-beam t)
+        (progn
+          (when (and bad auto-beam)
+            ;; auto-beam calls check-beams too, via update-rhythms-beam-info
+            (setf bad (not (auto-beam rsb nil nil))))
+          (when print
+            (print bad))
+          (when (and on-fail bad)
+            (apply on-fail
+                   (list "rthm-seq-bar::check-beams failed with error ~a~%~a"
+                         bad rsb)))
+          (values (not bad) bad)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sun Jun 28 12:26:56 2015 -- remove beams placed over a given rhythm
+;;; (either a rhythm object or an index) 
+(defmethod de-beam ((rsb rthm-seq-bar) rhythm &optional update)
+  (let ((r (if (rhythm-p rhythm) rhythm (nth rhythm (rhythms rsb)))))
+    (setf (beams rsb)
+          (loop for beam in (beams rsb) unless
+               (and (>= (bar-pos r) (first beam))
+                    (<= (bar-pos r) (second beam)))
+             collect beam))
+    (when update (update-rhythms-beam-info rsb t))
+    rsb))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
 ;;; MDE Fri Apr 19 08:56:49 2013 -- cmn can't handle beams starting/ending on
 ;;; rests (but Lilypond can). 
 (defmethod beams-on-rests? ((rsb rthm-seq-bar))
@@ -1960,15 +1991,18 @@ data: ((2 4) - S S - S - S S S - S S)
     ;; the beams slot contains 2-element sublists the elements being 0-based
     ;; indices of the notes that start and end a beam.
     (loop for data in beams do
-         ;; MDE Tue May 29 22:40:31 2012 -- we now allow beams on rests
-         ;; (start-beam (get-nth-non-rest-rhythm (first data) rsb))
+       ;; MDE Tue May 29 22:40:31 2012 -- we now allow beams on rests
+       ;; (start-beam (get-nth-non-rest-rhythm (first data) rsb))
          (start-beam (get-nth-event (first data) rsb))
-         ;; (end-beam (get-nth-non-rest-rhythm (second data) rsb))
-         (end-beam (get-nth-event (second data) rsb))))
-  ;; MDE Sat Jun  9 15:22:05 2012
-  (check-beams rsb :on-fail #'error)
-  ;; MDE Sat Jun  9 11:28:30 2012 -- return the bar object instead of nil
-  rsb)
+       ;; (end-beam (get-nth-non-rest-rhythm (second data) rsb))
+         (end-beam (get-nth-event (second data) rsb)))
+    ;; MDE Sun Jun 28 12:34:58 2015
+    (when delete-all-beams-first
+      (setf (beams rsb) beams))
+    ;; MDE Sat Jun  9 15:22:05 2012
+    (check-beams rsb :on-fail #'error)
+    ;; MDE Sat Jun  9 11:28:30 2012 -- return the bar object instead of nil
+    rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2506,8 +2540,10 @@ data: E
                   &optional (preserve-meter t) ignore1 ignore2)
 ;;; ****
   (declare (ignore ignore1) (ignore ignore2))
+  ;;(print-simple rsb)
   (let* ((new-time-sig (scale (get-time-sig rsb) scaler preserve-meter))
          (result (make-rest-bar new-time-sig (write-time-sig rsb))))
+    ;; (print new-time-sig)
     (setf (bar-num result) (bar-num rsb)
           (write-bar-num result) (write-bar-num rsb)
           (start-time result) (start-time rsb)
@@ -2567,6 +2603,7 @@ data: E
                         (push (list start end) bm))
                       (return bm))))
     ;; (gen-stats result)
+    ;; (print 'here)
     (update-rhythms-beam-info result t)
     result))
 
@@ -5097,13 +5134,24 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
                 (when (and (>= pos (second ts))
                            (<= pos (third ts)))
                   (setf result (* result (get-tuplet-ratio (first ts)))))
-              finally (return result))))
+              finally (return result)))
+         (lv (r tup) 
+           (setf (letter-value r) (round (* (undotted-value r) tup))
+                 (num-flags r) (rthm-num-flags (letter-value r)))))
     (loop for r in (rhythms rsb) for ct = (compound-tuplet r) do
-         (setf (tuplet-scaler r) ct
-               (letter-value r) (round (* (undotted-value r) ct)))
-         (when (not (power-of-2 (letter-value r)))
-           (error "~arthm-seq-bar::fix-nested-tuplets: bad letter-value:~%~a"
-                  rsb r)))
+         (setf (tuplet-scaler r) ct)
+         (lv r ct)
+         (unless (power-of-2 (letter-value r))
+           ;; dots--esp. those added automatically--might screw things up,
+           ;; e.g. rhythms like 70/3 might result in a letter-value of 24 which
+           ;; is not representable in Lilypond. In that case we probably have
+           ;; added a dot somewhere so remove it.
+           (setf (num-dots r) 0
+                 (undotted-value r) (value r))
+           (lv r ct)
+           ;;(error "~arthm-seq-bar::fix-nested-tuplets: bad letter-value:~%~a"
+           ;;     rsb r)))
+           ))
     rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -5269,6 +5317,7 @@ show-rest: T
                (make-time-sig time-sig)))
          (result (make-rthm-seq-bar 
                   (list ts (get-whole-bar-rest ts)))))
+    ;; (print result)
     (setf ;; (time-sig result) ts
           (show-rest result) show-rest
           (write-time-sig result) write-time-sig
@@ -6058,23 +6107,23 @@ show-rest: T
         (let* ((v (/ parent-dur divisions))
                (r (get-rhythm-letter-for-value v nil))
                ;; some just always create problems...
-               (result (if (and r (not (member r '(fs. fe. fq.))))
+               (result (if r ;(and r (not (member r '(fs. fe. fq.))))
                            r
                            v))
-               ;; when we have something like 40/3 we can just make it 20\.
+               ;; when we have something like 8/3 we can just make it 4\.
+               ;; (a q. is 8/3 or 8/2. or 4.)
                (dotit (and (numberp result) (or ;(= 3 (numerator result))
                                                 (= 3 (denominator result))))))
           ;; (format t "~%pd ~a div ~a res ~a" parent-dur divisions result)
           ;; try and set dots if possible
           (when dotit
-            ;; strings work as rthms too
-            (print result)
+            ;; (print result)
             (setf result 
                   (if (evenp (numerator result))
+                      ;; strings work as rthms too
                       (format nil"~a\." (/ (numerator result) 2))
-                      (format nil"~a/~a\." (numerator result) 2)))
-                  ;; (format nil"~a\." (/ 2 (denominator result))))
-             (format t "~&result: ~a" result))
+                      (format nil"~a/~a\." (numerator result) 2))))
+          ;; (format t "~&result: ~a" result))
           (make-rqq-divide-rthm :r result :rest rest))
         (let* ((2divs (second divisions))
                (rqqnd (rqq-num-divisions 2divs))

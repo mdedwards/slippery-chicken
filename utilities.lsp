@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 18:45:17 Sat Jun 20 2015 BST
+;;; $$ Last modified: 14:02:32 Sun Jun 28 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -613,7 +613,8 @@
 ;;; SYNOPSIS
 (defun power-of-2 (float)
 ;;; ****
-  (whole-num-p (log float 2)))
+  (unless (zerop float) ; would cause division-by-zero error
+    (whole-num-p (log float 2))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

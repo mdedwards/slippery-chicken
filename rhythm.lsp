@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 16:02:27 Sat Jun 27 2015 BST
+;;; $$ Last modified: 13:50:38 Sun Jun 28 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -355,6 +355,7 @@
 ;;; ****
   (declare (ignore ignore1)
            (ignore ignore2))
+  ;; (print scaler)
   (when clone
     (setf r (clone r)))
   (if (or (= 1 scaler) (is-grace-note r))
@@ -383,6 +384,7 @@
         ;; let's see if we can get a new rhythm from this thing all scaled and
         ;; dotted and everything....
         (let ((try (get-rhythm-letter-for-value (value r) nil))) ;; don't warn
+          ;; (print 'here)
           (when try
             (setf try (make-rhythm try)
                   (is-rest try) (is-rest r)
@@ -392,6 +394,7 @@
             ;; MDE Tue Mar 13 11:09:27 2012 
             (when (= (tuplet-scaler r) (tuplet-scaler try))
               (setf (bracket try) (bracket r))))
+          ;; (print 'there)
           (if try
               try
               r)))))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 13:50:38 Sun Jun 28 2015 BST
+;;; $$ Last modified: 16:14:15 Sun Jun 28 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2075,8 +2075,8 @@ data: (
             (when (and (= 1 (tuplet-scaler rhythm-object))
                        ;; MDE Sat Jun 27 16:02:07 2015 -- should be an int not
                        ;; just a number as 70/3 is a number... 
-                       ;; (numberp (data rhythm-object)))
-                       (integerp (data rhythm-object)))
+                       (numberp (data rhythm-object)))
+                       ;; (integerp (data rhythm-object)))
               (setf (tuplet-scaler rhythm-object) (rationalize
                                                    (/ (nearest-power-of-2
                                                        (value rhythm-object))

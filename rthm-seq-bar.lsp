@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 14:01:53 Sun Jun 28 2015 BST
+;;; $$ Last modified: 17:11:27 Sun Jun 28 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1467,7 +1467,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; - A rthm-seq-bar.
 ;;; 
 ;;; RETURN VALUE  
-;;; NIL
+;;; The rthm-seq-bar object
 ;;;
 ;;; EXAMPLE
 #|
@@ -1503,7 +1503,8 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; ****
   (setf (tuplets rsb) nil)
   (loop for r in (rhythms rsb) do
-        (delete-tuplet-bracket r)))
+       (delete-tuplet-bracket r))
+  rsb)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1569,10 +1570,6 @@ data: ((2 4) - S S - S - S S S - S S)
       result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sun May 20 16:26:24 EDT 2012: Added robodoc entry.
-
-
 ;;; MDE Mon May 7 16:38:23 2012 -- this is a better version of
 ;;; figure-out-and-auto-set-tuplets. Way back when I wrote that method we
 ;;; didn't have rhythm's tuplet-scaler slot. Now that's there things should be
@@ -1621,8 +1618,10 @@ data: ((2 4) - S S - S - S S S - S S)
        (push r bag)
        (incf dur (duration r))
        ;; (print dur)
+     ;; (print r)
        (when (or (float-int-p dur 0.00001)
                  (float-int-p (* 2.0 dur) 0.00001)) ; i.e. 0.5
+         ;; (print 'here)
          (when (and (/= 1 (tuplet-scaler (first bag)))
                     (/= 1 (tuplet-scaler (first (last bag)))))
            (setf tuplet (denominator (tuplet-scaler (first (last bag)))))
@@ -5123,7 +5122,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; MDE Wed Jun 24 18:25:35 2015 -- when we've got nested tuplets we run into
 ;;; the problem of how many flags we need (and therefore, for Lilypond, what
 ;;; the letter-value slot should be). 
-(defmethod fix-nested-tuplets ((rsb rthm-seq-bar))
+(defmethod fix-nested-tuplets ((rsb rthm-seq-bar) &optional on-fail)
   (flet ((compound-tuplet (r)
            ;; we know when we have a triplet that the duration is 2/3 of the
            ;; letter value, but here we need to find how many tuplet brackets a
@@ -5149,9 +5148,18 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
            (setf (num-dots r) 0
                  (undotted-value r) (value r))
            (lv r ct)
-           ;;(error "~arthm-seq-bar::fix-nested-tuplets: bad letter-value:~%~a"
-           ;;     rsb r)))
-           ))
+           (unless t;(power-of-2 (letter-value r))
+             ;; for the sake of the chop method we'll still have to force
+             ;; something for cases of e.g. 3/16 bars
+             (setf (letter-value r) (nearest-power-of-2 (letter-value r)))
+             (when on-fail
+               (when (eq on-fail t)
+                 (setq on-fail #'error))
+               (funcall on-fail
+                        "~arthm-seq-bar::fix-nested-tuplets: bad letter-value:~
+                         ~%~a Did you forget to add the tuplet number via ~
+                         e.g. { 5 ... ?"
+                        rsb r)))))
     rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

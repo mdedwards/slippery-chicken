@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 14:57:04 Thu May  8 2014 BST
+;;; $$ Last modified: 11:13:43 Wed Jul  1 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -262,6 +262,7 @@
 (sc-compile-and-load "rthm-chain-slow.lsp")
 (sc-compile-and-load "cycle-repeats.lsp")
 (sc-compile-and-load "activity-levels.lsp")
+(sc-compile-and-load "activity-levels-env.lsp")
 (sc-compile-and-load "recurring-event.lsp")
 (sc-compile-and-load "intervals-mapper.lsp")
 (sc-compile-and-load "instruments.lsp")

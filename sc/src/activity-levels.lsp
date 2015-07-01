@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 18:24:22 Fri Aug 29 2014 BST
+;;; $$ Last modified: 11:10:51 Wed Jul  1 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -163,7 +163,11 @@
 ;;; 
 ;;; ARGUMENTS
 ;;; - the activity-levels object
-;;; - the activity-level number we want to test
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - the activity-level number we want to test. Although optional, it's
+;;;   expected that this argument will usually be defined.  Default = 5.
+;;;
 ;;; RETURN VALUE
 ;;; T or NIL
 ;;; 
@@ -184,8 +188,10 @@
 (T T T T T T T T T T T T T T T)
 |#
 ;;; SYNOPSIS
-(defmethod active ((al activity-levels) level)
+(defmethod active ((al activity-levels) &optional level)
 ;;; ****
+  (unless level
+    (setf level 5)) ; 50/50
   (let ((max (1+ (length (data al))))) ; the 0 and 10 cases are implicit
     (flet ((active-error ()
              (error "activity-levels::active: level must be >=0 and <=~a: ~a"

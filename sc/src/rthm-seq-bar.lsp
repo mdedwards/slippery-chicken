@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 17:11:27 Sun Jun 28 2015 BST
+;;; $$ Last modified: 20:17:20 Thu Jul  2 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5122,6 +5122,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; MDE Wed Jun 24 18:25:35 2015 -- when we've got nested tuplets we run into
 ;;; the problem of how many flags we need (and therefore, for Lilypond, what
 ;;; the letter-value slot should be). 
+;; ;(on-fail #'warn))
 (defmethod fix-nested-tuplets ((rsb rthm-seq-bar) &optional on-fail)
   (flet ((compound-tuplet (r)
            ;; we know when we have a triplet that the duration is 2/3 of the
@@ -5134,13 +5135,15 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
                            (<= pos (third ts)))
                   (setf result (* result (get-tuplet-ratio (first ts)))))
               finally (return result)))
-         (lv (r tup) 
+         (lv (r tup)
            (setf (letter-value r) (round (* (undotted-value r) tup))
                  (num-flags r) (rthm-num-flags (letter-value r)))))
+         ;;    (format t "~&lv: data ~a lv ~a"  (data r) (letter-value r))))
     (loop for r in (rhythms rsb) for ct = (compound-tuplet r) do
          (setf (tuplet-scaler r) ct)
          (lv r ct)
          (unless (power-of-2 (letter-value r))
+           ;; (print r)
            ;; dots--esp. those added automatically--might screw things up,
            ;; e.g. rhythms like 70/3 might result in a letter-value of 24 which
            ;; is not representable in Lilypond. In that case we probably have
@@ -5148,10 +5151,8 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
            (setf (num-dots r) 0
                  (undotted-value r) (value r))
            (lv r ct)
-           (unless t;(power-of-2 (letter-value r))
-             ;; for the sake of the chop method we'll still have to force
-             ;; something for cases of e.g. 3/16 bars
-             (setf (letter-value r) (nearest-power-of-2 (letter-value r)))
+           ;; still not got it so force it 
+           (unless (power-of-2 (letter-value r))
              (when on-fail
                (when (eq on-fail t)
                  (setq on-fail #'error))
@@ -5159,7 +5160,10 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
                         "~arthm-seq-bar::fix-nested-tuplets: bad letter-value:~
                          ~%~a Did you forget to add the tuplet number via ~
                          e.g. { 5 ... ?"
-                        rsb r)))))
+                        rsb r))
+             ;; for the sake of the chop method we'll still have to force
+             ;; something for cases of e.g. 3/16 bars
+             (setf (letter-value r) (nearest-power-of-2 (value r))))))
     rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6121,7 +6125,7 @@ show-rest: T
                ;; when we have something like 8/3 we can just make it 4\.
                ;; (a q. is 8/3 or 8/2. or 4.)
                (dotit (and (numberp result) (or ;(= 3 (numerator result))
-                                                (= 3 (denominator result))))))
+                                             (= 3 (denominator result))))))
           ;; (format t "~%pd ~a div ~a res ~a" parent-dur divisions result)
           ;; try and set dots if possible
           (when dotit
@@ -6139,8 +6143,6 @@ show-rest: T
                ;; the ration of the total number of divisions we have to the
                ;; duration  
                (ratio (/ this-dur rqqnd))
-               (ratio-n (numerator ratio))
-               (ratio-d (denominator ratio))
                (pd (/ (* parent-dur rqqnd) this-dur))
                (result
                 (flatten 
@@ -6149,12 +6151,7 @@ show-rest: T
                ;; if we have something like (3 (1 1 1)) then we don't need a
                ;; tuplet bracket
                (tuplet (unless (power-of-2 (/ rqqnd this-dur))
-                         ;; (print ratio) (print result)
-                         (cond ((and (or (= 2 ratio-d)
-                                         (= 4 ratio-d))
-                                     (all-dotted result))
-                                nil)
-                               ((= ratio 2/3) 3) ; (2 (1 1 1))
+                         (cond ((= ratio 2/3) 3) ; (2 (1 1 1))
                                ((= ratio 1/3) 3) ; (1 (1 1 1))
                                ((= ratio 1/6) 3)
                                ((= ratio 4/6) 3)
@@ -6163,32 +6160,18 @@ show-rest: T
                                ((= ratio 1/5) 5)
                                ((= ratio 2/5) 5)
                                ((= ratio 4/5) 5)
-                               ((and (< ratio 1/2) (power-of-2 ratio-n))
-                                      ;; we don't use this-dur as the numerator
-                                      ;; because that might mean we get a ratio
-                                      ;; like 13:2 when the overall duration of
-                                      ;; a minim is divided into 13
-                                      ;; parts. Instead we use the nearest
-                                      ;; power of 2 to the denominator (rqqnd)
-                                      ;; so we get 13:8.
-                                ;; (/ (nearest-power-of-2 rqqnd) rqqnd))
-                                (calc-tuplet this-dur rqqnd))
-                               ;; MDE Fri Jun 26 11:55:00 2015 -- sometimes we
-                               ;; get weird ones like 9 32nds divided into 3
-                               ;; but there's no way of handling this that I
-                               ;; know of.
-                               (t ratio))))
+                               (t (calc-tuplet this-dur rqqnd)))))
                (beam (beamable result)))
           ;; (format t "~&~a: beamable: ~a" result beam)
           ;; (format t "~%~a ~a" rqqnd (first divisions))
           ;; (format t "~%this-dur ~a rqqnd ~a pd ~a" this-dur rqqnd pd)
           ;; (print result)
           ;;(format t "~%~a~%ratio ~a tupl ~a this-d ~a" 
-          ;;           divisions ratio tuplet this-dur)
+          ;;         divisions ratio tuplet this-dur)
           ;; sometimes we'll be under two tuplet brackets but get something
           ;; like a simple TS as the rthm but then under a 2:3 bracket, which
           ;; should be turned into a dotted value 
-          (when (and tuplet (= tuplet 3/2))
+          (when (and tuplet (or (= tuplet 4/3) (= tuplet 3/2)))
             (setf tuplet nil)
             (loop for r in result
                for rthm = (make-rhythm (rqq-divide-rthm-r r))
@@ -6202,10 +6185,23 @@ show-rest: T
                     result))
               (if beam (beamem result) result))))))
 
+;;; returns a ratio like 3/2 which is triplets: 3 in the time of 2, or 5/4
+;;; (quintuplets). todo: 4/5 (4 in time of 5) is returning 4/5 just like 5 is!
+;;; we don't merely use this-dur as the numerator because that might mean we
+;;; get a ratio like 13:2 when the overall duration of a minim is divided into
+;;; 13 parts. Instead we use the nearest power of 2 to the denominator (rqqnd)
+;;; so we get 13:8.
 (defun calc-tuplet (this-dur num-divisions)
-  (let* ((per-beat (/ num-divisions this-dur))
-         (p2 (nearest-power-of-2 per-beat)))
-    (/ (* this-dur p2) num-divisions)))
+  ;; (format t "~&(calc-tuplet ~a ~a)" this-dur num-divisions)
+  (unless (integerp (/ this-dur num-divisions))
+    (let* ((invert (> this-dur num-divisions))
+           (n (if invert num-divisions this-dur))
+           (d (if invert this-dur num-divisions))
+           (per-beat (/ d this-dur))
+           (p2 (nearest-power-of-2 per-beat))
+           (result (/ (* n p2) d)))
+      (if invert result (/ result)))))
+
 
 (defun consolidate-rqq-rests-p (div)
   ;; todo: this isn't working yet: remove the (or t ) when it is

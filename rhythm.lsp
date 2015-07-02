@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 16:14:15 Sun Jun 28 2015 BST
+;;; $$ Last modified: 16:24:50 Thu Jul  2 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2121,7 +2121,7 @@ data: (
                  (11 8/11)
                  (13 8/13)
                  (t (terr))))
-      (rational tuplet) ; i.e we've already got something like 7/5 (= 7:5)
+      (rational (/ tuplet)) ; i.e we've already got something like 7/5 (= 7:5)
       (t (terr)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

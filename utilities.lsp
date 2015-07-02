@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 14:02:32 Sun Jun 28 2015 BST
+;;; $$ Last modified: 15:46:26 Thu Jul  2 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -663,15 +663,18 @@
 ;;; ****
   (if (power-of-2 num)
       num
-      (let* ((p2 (loop with p = 1 do
-                     (if (> p num)
-                         ;; MDE Mon Nov 26 18:15:59 2012 -- don't return 1/2...
-                         (return (max 1 (/ p 2)))
-                         (setf p (* p 2)))))
-             (p2next (* 2 p2)))
-        (if (and allow> (< (- p2next num) (- num p2)))
-            p2next
-            p2))))
+      (round (nearest-power-of-x num 2 allow>))))
+
+(defun nearest-power-of-x (num x &optional allow>)
+  (let* ((p2 (loop with p = 1 do
+                  (if (> p num)
+                      ;; MDE Mon Nov 26 18:15:59 2012 -- don't return 1/2...
+                      (return (max 1 (/ p x)))
+                      (setf p (* p x)))))
+         (p2next (* x p2)))
+    (if (and allow> (< (- p2next num) (- num p2)))
+        p2next
+        p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:42:43 Sun Jun 28 2015 BST
+;;; $$ Last modified: 15:53:05 Thu Jul  2 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2212,7 +2212,9 @@ NIL
                       result)
                      (push (lp-get-mark thing) result))))
           (push note result)
-          (push (format nil "~a" rthm) result)
+          ;; MDE Thu Jul  2 15:52:52 2015 -- make sure we write an integer
+          ;; instead of something like 32.0 
+          (push (format nil "~a" (round rthm)) result)
           (push (make-string (num-dots e) :initial-element #\.) result)
           (when (and (not (bracket e))  ; tuplets without brackets
                      (/= (tuplet-scaler e) 1))

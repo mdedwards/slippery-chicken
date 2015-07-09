@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 15:21:07 Mon Jun 22 2015 BST
+;;; $$ Last modified: 18:34:17 Mon Jul  6 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1073,6 +1073,8 @@ COMPLETE-SET: complete: NIL
 ;;; - :force-chromatic. T or NIL. If T, force all micro-tone slots of pitch objects
 ;;;   to be NIL so that they won't be filtered out when a set is to be used by a
 ;;;   chromatic instrument. See sc-set class force-micro-tone for more details.
+;;; - :start-id. An integer which represents the ID number for the first
+;;;   set. This will be incremented for each subsequent set generated.
 ;;; 
 ;;; RETURN VALUE
 ;;; A set-palette object.
@@ -1143,6 +1145,9 @@ data: (
                                   &key
                                     (warn-no-bass t)
                                     (do-bass t)
+                                    ;; the start id for the sets; will be
+                                    ;; incremented  
+                                    (start-id 1)
                                     remove-octaves
                                     force-chromatic
                                     (min-bass-notes 1)
@@ -1177,7 +1182,7 @@ data: (
                         pair 
                         :bass-octave ring-mod-bass-octave
                         :warn warn-no-bass))
-       for i from 1
+       for i from start-id
        with set
        do 
        ;; if we can't get a bass from the pair, try it with the whole freq

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:42:33 Mon Jun  1 2015 BST
+;;; $$ Last modified: 10:50:23 Wed Jul  8 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5913,6 +5913,8 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   title. Default = T.
 ;;; - :indent. T or NIL to indicate whether the first system in the score
 ;;;   should be indented or not. Default = T.
+;;; - :force-bracket. T or NIL to indicate whether tuplet numbers on beams
+;;;   should be forced into a bracket. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; The path of the main score file generated.
@@ -6030,6 +6032,9 @@ seq-num 5, VN, replacing G3 with B6
        ;; MDE Thu Jan 9 09:20:33 2014 -- if you want hairpin (cresc/dim) to
        ;; extend beyond the note set to T
        (extend-hairpins nil)
+       ;; MDE Wed Jul  8 10:45:02 2015 -- tuplet numbers on beams don't usually
+       ;; include a bracket but we can force this if we like
+       (force-bracket nil)
        ;; MDE Thu Mar 26 18:49:46 2015
        (title t)
        ;; MDE Thu Mar 26 19:18:03 2015
@@ -6126,6 +6131,9 @@ seq-num 5, VN, replacing G3 with B6
                    (format stream "~%  \\set Staff.minimumPageTurnLength = ~
                                    #(ly:make-moment ~a ~a)"
                            (first min-page-turn) (second min-page-turn)))
+                 (when force-bracket
+                   (format stream "~%  \\override TupletBracket.bracket-~
+                                   visibility = ##t"))
                  (format stream "~%  \\include \"~a-~a.ly\"~%}"
                          title-hyphens (if include-name include-name pname))))
              (score-tag (pname stream &optional new-staff-group end-staff-group)
@@ -6298,15 +6306,15 @@ seq-num 5, VN, replacing G3 with B6
 
 (defmethod write-lp-data-for-player ((sc slippery-chicken) player path
                                      &key start-bar end-bar in-c
-                                     ;; print every bar number unless
-                                     ;; multi-bar-rest?
-                                     all-bar-nums 
-                                     ;; MDE Tue May 29 21:34:53 2012 
-                                     start-bar-numbering
-                                     ;; MDE Sat Mar 10 16:53:16 2012 
-                                     process-event-fun
-                                     extend-hairpins
-                                     rehearsal-letters-font-size)
+                                       ;; print every bar number unless
+                                       ;; multi-bar-rest?
+                                       all-bar-nums 
+                                       ;; MDE Tue May 29 21:34:53 2012 
+                                       start-bar-numbering
+                                       ;; MDE Sat Mar 10 16:53:16 2012 
+                                       process-event-fun
+                                       extend-hairpins
+                                       rehearsal-letters-font-size)
   (unless start-bar
     (setf start-bar 1))
   (unless end-bar
@@ -6342,11 +6350,11 @@ seq-num 5, VN, replacing G3 with B6
                                     rehearsal-letters-font-size
                                     process-event-fun)
          do
-         (format out "~&% bar ~a~%" bar-num)
-         (loop for data in lp-data do
-              (when data
-                ;;(format out "~a " data))))))
-                (format out data))))))
+           (format out "~&% bar ~a~%" bar-num)
+           (loop for data in lp-data do
+                (when data
+                  ;;(format out "~a " data))))))
+                  (format out data))))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

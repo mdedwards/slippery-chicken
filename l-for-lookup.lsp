@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 12:23:28 Thu Jun 13 2013 BST
+;;; $$ Last modified: 18:30:37 Mon Jul  6 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1172,7 +1172,7 @@ data: (
                                 levels)))))
     (when (<= (floor total-items len) 2)
       (error "l-for-lookup::fibonacci-transitions: can't do ~a transitions ~
-              over ~a items." len total-items))
+              over ~a items." total-items len))
     (if (= 1 len)
         (ml 0 total-items)
         (let* ((lop-off (floor total-items len))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 14:10:25 Fri May 22 2015 BST
+;;; $$ Last modified: 11:05:25 Thu Jul 16 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5693,10 +5693,6 @@ g5 a5 b5 c6 d6 e6))))
 ;;; RETURN VALUE
 ;;; A slippery-chicken object.
 ;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defun bars-to-sc (bars &key sc (sc-name '*auto*) (player 'player-one)
                    (instrument-palette 

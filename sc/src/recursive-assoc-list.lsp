@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 15:19:12 Mon Jun 22 2015 BST
+;;; $$ Last modified: 10:25:43 Mon Jul 20 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1641,14 +1641,15 @@ data: RIBBON
 ;;; to <value> NB we setf slot-value here rather than calling the setf method
 ;;; so if a setf method has been explicitly defined it won't be called.
 
-;;; SAR Sat Jun  2 14:17:05 BST 2012: Added robodoc entry
-
-;;; ****m* rthm-seq-palette/set-slot
-
+;;; ****m* recursive-assoc-list/set-slot
 ;;; DESCRIPTION
 ;;; Set the specified slot of an object with a recursive-assoc-list structure
 ;;; to the specified value. This is particularly useful for changing the
 ;;; parameters of instrument objects within an instrument palette, for example.
+;;;
+;;; NB Setting, for instance, the high-sounding slot of an instrument will do
+;;; nothing to the highest-written slot so do take care to set all the slots
+;;; you need to in order to effect pitch selection etc.
 ;;;
 ;;; ARGUMENTS
 ;;; - The name of the slot whose value is to be set.
@@ -1672,6 +1673,24 @@ data: RIBBON
 (defmethod set-slot (slot value id (ral recursive-assoc-list))
 ;;; ****
   (setf (slot-value (get-data id ral) slot) value))
+
+;;; MDE Mon Jul 20 09:56:15 2015 -- convenience method
+;;; ****m* recursive-assoc-list/set-standard-instrument-slot
+;;; DESCRIPTION
+;;; A convenience method to set slots of instruments in the
+;;; +slippery-chicken-standard-instrument-palette+.
+;;;
+;;; DATE
+;;; July 20th 2015
+;;; 
+;;; EXAMPLE
+#|
+(set-standard-instrument-slot 'highest-written 'f4 'double-bass)
+|#
+;;; SYNOPSIS
+(defmethod set-standard-instrument-slot (slot value id)
+;;; ****
+  (set-slot slot value id +slippery-chicken-standard-instrument-palette+))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-simple ((ral recursive-assoc-list) &optional (stream t) ignore)

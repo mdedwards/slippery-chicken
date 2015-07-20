@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 16:02:22 Wed May 28 2014 BST
+;;; $$ Last modified: 10:12:22 Mon Jul 20 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -311,7 +311,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((ins instrument) stream)
-  (format stream "~&INSTRUMENT: lowest-written: ~a, highest-written: ~a~
+  (flet ((pitch-slot (value)
+           (if (pitch-p value)
+               (data value)
+               value)))
+    (format stream "~&INSTRUMENT: lowest-written: ~a, highest-written: ~a~
                   ~%            lowest-sounding: ~a, highest-sounding: ~a~
                   ~%            starting-clef: ~a, clefs: ~a, clefs-in-c: ~a~
                   ~%            prefers-notes: ~a, midi-program: ~a~
@@ -324,20 +328,20 @@
                   ~%            missing-notes: ~a, subset-id: ~a~
                   ~%            staff-name: ~a, staff-short-name: ~a,~
                   ~%            largest-fast-leap: ~a, tessitura: ~a"
-          (when (lowest-written ins) (data (lowest-written ins)))
-          (when (highest-written ins) (data (highest-written ins)))
-          (when (lowest-sounding ins) (data (lowest-sounding ins)))
-          (when (highest-sounding ins) (data (highest-sounding ins)))
-          (starting-clef ins) (clefs ins) (clefs-in-c ins) 
-          (prefers-notes ins) (midi-program ins)
-          (transposition ins) (transposition-semitones ins) 
-          (score-write-in-c ins)  (score-write-bar-line ins)
-          (chords ins) (chord-function ins) (total-bars ins) 
-          (total-notes ins) (secs-to-mins-secs (total-duration ins))
-          (total-degrees ins) (microtones ins) 
-          (pitch-list-to-symbols (missing-notes ins)) (subset-id ins)
-          (staff-name ins) (staff-short-name ins) (largest-fast-leap ins)
-          (tessitura-note ins)))
+            (pitch-slot (lowest-written ins))
+            (pitch-slot (highest-written ins))
+            (pitch-slot (lowest-sounding ins))
+            (pitch-slot  (highest-sounding ins))
+            (starting-clef ins) (clefs ins) (clefs-in-c ins) 
+            (prefers-notes ins) (midi-program ins)
+            (transposition ins) (transposition-semitones ins) 
+            (score-write-in-c ins)  (score-write-bar-line ins)
+            (chords ins) (chord-function ins) (total-bars ins) 
+            (total-notes ins) (secs-to-mins-secs (total-duration ins))
+            (total-degrees ins) (microtones ins) 
+            (pitch-list-to-symbols (missing-notes ins)) (subset-id ins)
+            (staff-name ins) (staff-short-name ins) (largest-fast-leap ins)
+            (tessitura-note ins))))
                            
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Aug 23 09:36:02 2013 

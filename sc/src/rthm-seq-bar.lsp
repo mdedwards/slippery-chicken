@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 20:17:20 Thu Jul  2 2015 BST
+;;; $$ Last modified: 17:36:53 Mon Jul 20 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6079,7 +6079,9 @@ show-rest: T
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May 28 12:26:55 2015 -- new rqq handling code to avoid having to
 ;;; explicitly call CMN routines, instead turning them into our normal SC
-;;; rhythmic notation instead.
+;;; rhythmic notation for further parsing. NB None of these routines are meant
+;;; to be called by the user, rather, when parse-rhythms detects rqq notation
+;;; it calls rqq-divide implicitly.
 
 ;;; We need this because we're using flatten on the recursive lists and rests
 ;;; are indicated with () 
@@ -6204,7 +6206,6 @@ show-rest: T
 
 
 (defun consolidate-rqq-rests-p (div)
-  ;; todo: this isn't working yet: remove the (or t ) when it is
   (if (or (integerp div) (rqq-got-rest div))
       div
       (list (first div) (consolidate-rqq-rests (second div)))))

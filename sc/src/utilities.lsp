@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 15:46:26 Thu Jul  2 2015 BST
+;;; $$ Last modified: 19:37:51 Wed Jul 22 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4163,6 +4163,46 @@ RETURNS:
        ;; the number we produce will be the sum of the proportions ^ (1+ 
        ;; generations)                    
        (first result)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/pexpand-section-length
+;;; DESCRIPTION
+;;; Return the length (integer) of any arbitrary section.
+;;; 
+;;; ARGUMENTS
+;;; - The (rest of) the kind of list returned as the second value of a call to
+;;;   pexpand.
+;;; - The section ID we want the length of, either as a list or single symbol.
+;;; 
+;;; RETURN VALUE
+;;; An integer or NIL if the section can't be found.
+;;; 
+;;; EXAMPLE
+#|
+
+(pexpand-section-length (rest (nth-value 1 (pexpand 2 3 6 4 5))) '(c a b))
+=> 108
+(pexpand-section-length (rest (nth-value 1 (pexpand 2 3 6 4 5))) 'c)
+=> 1296
+|#
+;;; SYNOPSIS
+(defun pexpand-section-length (pexpand-list section)
+;;; ****
+  (when pexpand-list
+    (flet ((do-rest () (pexpand-section-length (rest pexpand-list) section)))
+      (unless (listp section)
+        (setf section (list section)))
+      (let ((fpl (first pexpand-list))
+            (fplr nil))
+        (if (and (listp fpl)
+                 (= 2 (length fpl))
+                 (numberp (second fpl)))
+            (if (equalp (first fpl) section)
+                (second fpl)
+                (do-rest))
+            (if (setf fplr (pexpand-section-length fpl section))
+                fplr
+                (do-rest)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun pexpand-letters-to-numbers (list)

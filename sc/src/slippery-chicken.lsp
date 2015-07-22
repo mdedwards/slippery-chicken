@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:50:23 Wed Jul  8 2015 BST
+;;; $$ Last modified: 17:46:12 Mon Jul 20 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4051,7 +4051,12 @@ seq-num 5, VN, replacing G3 with B6
 ;;; index into the current set of pitches to serve as the lowest voice
 ;;; instead. However, if the number of voices plus this index exceeds the
 ;;; number of pitches in the set, the method will wrap around to the lowest
-;;; pitch of the set.
+;;; pitch of the set. Bear in mind then that in this case the pitch-seq curves
+;;; given in the rthm-seq-palette, and indeed all the carefully chosen pitches
+;;; in the piece, will be ignored in favour of simply representing
+;;; transpositions and therefore intervals present in the set. That might seem
+;;; like a strange thing to (want to) do, but it's served me (Michael Edwards)
+;;; very well on many occasions, so it's still the default.
 ;;;
 ;;; If instead of the above method the user would like the pitches in the
 ;;; resulting sound file to be transposed to match the pitches of the

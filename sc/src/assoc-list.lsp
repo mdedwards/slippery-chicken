@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 15:03:30 Tue Dec  3 2013 GMT
+;;; $$ Last modified: 17:51:40 Wed Jul 22 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -100,7 +100,7 @@
                         2-element sublists." pair (id al)))
                  (unless (assoc-list-id-p (first pair))
                    (error "assoc-list::verify-and-store: ~
-                        assoc-list ids may only be symbols, strings or ~
+                        assoc-list ids may only be symbols, strings,~%or ~
                         numbers: ~a"
                           (first pair)))
                  (setf (nth i data) (make-instance 'named-object 

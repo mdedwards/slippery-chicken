@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 13:44:13 Mon Jun 22 2015 BST
+;;; $$ Last modified: 11:38:57 Thu Jul 23 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -409,11 +409,13 @@
                      no pitches in set!  ~%Perhaps your ~
                      set-limits (high: ~a, low: ~a) are too restrictive or ~
                      your ~%set is microtonal and your instrument isn't??~
-                     ~%set = ~a ~%set minus used: ~a ~%curve = ~a~%~a" 
+                     ~%set = ~a ~%set for ins: ~a~%set minus used: ~a ~%~
+                     curve = ~a~%~a~%~a" 
                    (id instrument) seq-num (when limit-high (id limit-high)) 
                    (when limit-low (id limit-low)) (pitch-symbols set)
+                   (get-ids-from-pitch-list set-pitches-rm)
                    (get-ids-from-pitch-list set-pitches-rm-used)
-                   (data ps) set))
+                   (data ps) set instrument))
           ;; (print-simple-pitch-list set-pitches-rm-used)
           (setf (notes ps)
                 (loop 

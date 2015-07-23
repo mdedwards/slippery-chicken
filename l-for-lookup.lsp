@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 18:30:37 Mon Jul  6 2015 BST
+;;; $$ Last modified: 18:43:06 Thu Jul 23 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1326,7 +1326,7 @@ data: (
 |#
 ;;; SYNOPSIS
 (defun remix-in (list &key (remix-in-fib-seed 13) (mirror nil) (test #'eql)
-                 (replace nil))
+                        (replace nil))
   ;; ****
   (let* ((fib-tran (make-cscl (fibonacci-transition remix-in-fib-seed)))
          (lst (if mirror (append list (reverse (butlast list))) list))
@@ -1341,11 +1341,11 @@ data: (
        for on-it = (and (> i first-third)
                         (not (zerop (get-next fib-tran))))
        do
-       (when (or (and on-it (not replace))
-                 (not on-it))
-         (push p1 result))
-       (when on-it
-         (push (pop copy) result)))
+         (when (or (and on-it (not replace))
+                   (not on-it))
+           (push p1 result))
+         (when on-it
+           (push (pop copy) result)))
     (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

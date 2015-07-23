@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified: 14:31:57 Sat Jul 12 2014 BST
+;;; $$ Last modified: 11:55:29 Thu Jul 23 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -258,6 +258,12 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 ;;; NB: The keyword arguments for which the lower and upper limits are to be
 ;;;     specified are optional arguments, but are required in order for any
 ;;;     effect to be had.
+;;;
+;;; NB: Whether a pitch is higher or lower than the specified pitches is
+;;;     determined by their frequencies. If a pitch happens to be microtonal it
+;;;     could be that the nearest pitch symbol is an approximation, i.e. not
+;;;     quite the same as the frequency, so limiting might appear to be working
+;;;     incorrectly.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A tl-set object.
@@ -336,17 +342,9 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
   tls)
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Feb 11 11:47:54 GMT 2012: Added examples
-
 ;;; SAR Sat Feb 11 11:33:22 GMT 2012: Added an NB to incorporate MDE's comment
 ;;; about microtonal sets returning NIL. Deleted the corresponding comment as
 ;;; it has been incorporated into the doc below.
-
-;;; SAR Fri Feb 10 11:48:35 GMT 2012: Removed MDE's first comment here as it
-;;; has been taken very closely into the doc below.
-
-;;; SAR Fri Feb 10 11:44:14 GMT 2012: Added robodoc entry
 
 ;;; ****m* tl-set/limit-for-instrument
 ;;; DESCRIPTION
@@ -364,6 +362,12 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 ;;; NB: This method will return NIL if the pitch objects of the given tl-set
 ;;;     object are microtonal while the given instrument object is set to be a
 ;;;     non-microtonal instrument (see example).
+;;;
+;;; NB: Whether a pitch is higher or lower than the specified pitches is
+;;;     determined by their frequencies. If a pitch happens to be microtonal it
+;;;     could be that the nearest pitch symbol is an approximation, i.e. not
+;;;     quite the same as the frequency, so limiting might appear to be working
+;;;     incorrectly.
 ;;;
 ;;; ARGUMENTS
 ;;; - A tl-set object.

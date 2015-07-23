@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:46:12 Mon Jul 20 2015 BST
+;;; $$ Last modified: 09:03:27 Thu Jul 23 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4037,26 +4037,33 @@ seq-num 5, VN, replacing G3 with B6
 ;;; or percussion sounds, or a variety of sounds, as desired. See below for an
 ;;; example of a sndfile-palette.
 ;;; 
-;;; By default this method does not attempt to match the pitches of the output
-;;; sound file to those generated for the slippery-chicken object, but rather
-;;; generates its own sequence of pitches based on pitches from the current
-;;; set. Instead of using the pitches of the specified players' parts, which
-;;; might produce extreme sound file transpositions both upwards and downwards,
-;;; it accesses each note of the current set (assigned by the set-map to each
-;;; rthm-seq) from the bottom up, one voice after another. If do-src is T,
-;;; transposition will then be calculated such that the frequency of the sound
-;;; file, if specified, will be shifted to the pitch of the given pitch of the
-;;; set. Since this transposition process may still yield extreme
-;;; transpositions, the note-number keyword can be specified to indicate an
-;;; index into the current set of pitches to serve as the lowest voice
-;;; instead. However, if the number of voices plus this index exceeds the
-;;; number of pitches in the set, the method will wrap around to the lowest
-;;; pitch of the set. Bear in mind then that in this case the pitch-seq curves
-;;; given in the rthm-seq-palette, and indeed all the carefully chosen pitches
-;;; in the piece, will be ignored in favour of simply representing
-;;; transpositions and therefore intervals present in the set. That might seem
-;;; like a strange thing to (want to) do, but it's served me (Michael Edwards)
-;;; very well on many occasions, so it's still the default.
+;;; By default, as :pitch-synchronous default to NIL (see below) this method
+;;; does not attempt to match the pitches of the output sound file to those
+;;; generated for the slippery-chicken object, rather, it generates its own
+;;; sequence of pitches based on pitches from the current set. Instead of using
+;;; the pitches of the specified players' parts--which might produce extreme
+;;; sound file transpositions both upwards and downwards--it accesses each note
+;;; of the current set (assigned by the set-map to each rthm-seq) from the
+;;; bottom up, one voice after another. If do-src is T, transposition will then
+;;; be calculated such that the frequency of the sound file (defaults to C4 in
+;;; the sndfile object) will be shifted to the pitch of the given pitch of the
+;;; set. When the set changes it will play the same respective note number of
+;;; that set, etc. This means that, in effect, any given voice will retain the
+;;; same pitch for the duration of the rthm-seq (set) but as the sound files
+;;; cycle around, and these often have quite different pitch/spectral content,
+;;; there's not necessarily a sense of pitch repetition. If you find that this
+;;; transposition process still yields some extreme transpositions, the
+;;; :note-number keyword can be specified to indicate an index into the current
+;;; set of pitches to serve as the lowest voice. If you increase :note-number
+;;; the transpositions will get higher. If the number of voices plus this index
+;;; exceeds the number of pitches in the set, the method will wrap around to
+;;; the lowest pitch of the set. Bear in mind then that when :pitch-synchronous
+;;; is NIL, the pitch-seq curves given in the rthm-seq-palette--and therefore
+;;; all the carefully chosen pitches in the piece--will be ignored in favour of
+;;; representing the transpositions and therefore intervals present in the
+;;; set. That might seem like a strange thing to (want to) do, but it's served
+;;; me (Michael Edwards) very well on many occasions, so it's still the
+;;; default.
 ;;;
 ;;; If instead of the above method the user would like the pitches in the
 ;;; resulting sound file to be transposed to match the pitches of the

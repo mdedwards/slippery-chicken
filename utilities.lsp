@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 19:37:51 Wed Jul 22 2015 BST
+;;; $$ Last modified: 07:54:30 Thu Jul 23 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4167,7 +4167,8 @@ RETURNS:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/pexpand-section-length
 ;;; DESCRIPTION
-;;; Return the length (integer) of any arbitrary section.
+;;; Return the length (integer) of any arbitrary section in the data returned
+;;; by pexpand. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - The (rest of) the kind of list returned as the second value of a call to
@@ -4182,8 +4183,10 @@ RETURNS:
 
 (pexpand-section-length (rest (nth-value 1 (pexpand 2 3 6 4 5))) '(c a b))
 => 108
+
 (pexpand-section-length (rest (nth-value 1 (pexpand 2 3 6 4 5))) 'c)
 => 1296
+
 |#
 ;;; SYNOPSIS
 (defun pexpand-section-length (pexpand-list section)

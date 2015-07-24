@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 13:37:27 Mon Jun 22 2015 BST
+;;; $$ Last modified: 21:51:12 Fri Jul 24 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1418,6 +1418,47 @@ data: Q
 (defmethod print-simple ((s sc-set) &optional ignore (stream t))
   (declare (ignore ignore))
   (print-simple-pitch-list (data s) stream))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* sc-set/average-pitch
+;;; DATE
+;;; July 24th 2015, Glenferness
+;;;
+;;; DESCRIPTION
+;;; Calculate the average frequency of all the pitches in the chord and return
+;;; this as a new pitch-object. 
+;;; 
+;;; ARGUMENTS
+;;; - the sc-set object
+;;; 
+;;; RETURN VALUE
+;;; a pitch-object
+;;; 
+;;; EXAMPLE
+#|
+(average-pitch (make-complete-set '(c4 cs4  d4 e4 ef4 g4 b4)))
+=>
+PITCH: frequency: 337.015, midi-note: 64, midi-channel: 0 
+       pitch-bend: 0.38 
+       degree: 64, data-consistent: T, white-note: E4
+       nearest-chromatic: E4
+       src: 1.2881585030063512d0, src-ref-pitch: C4, score-note: E4 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: T, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 4, c5ths: 0, no-8ve: E, no-8ve-no-acc: E
+       show-accidental: T, white-degree: 37, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL, 
+       marks-before: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: E4, tag: NIL, 
+data: E4
+|#
+;;; SYNOPSIS
+(defmethod average-pitch ((s sc-set))
+;;; ****
+  (make-pitch (/ (loop for p in (data s) sum (frequency p)) (sclist-length s))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

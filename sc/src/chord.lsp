@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 20:26:33 Tue Oct 28 2014 GMT
+;;; $$ Last modified: 21:36:09 Fri Jul 24 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -178,9 +178,9 @@ NIL
 ;;; ****m* chord/add-harmonics
 ;;; DESCRIPTION
 ;;; Adds pitches to the set which are harmonically related to the existing
-;;; pitches.  The keywords are the same as for the get-harmonics function.  See
-;;; also sc-set method of the same name and get-pitch-list-harmonics.
-;;; NB This will automatically sort all pitches from high to low.
+;;; pitches. The keywords are the same as for the get-harmonics function.  See
+;;; also sc-set method of the same name and get-pitch-list-harmonics. NB This
+;;; will automatically sort all pitches from high to low.
 ;;; 
 ;;; ARGUMENTS
 ;;; - a chord object

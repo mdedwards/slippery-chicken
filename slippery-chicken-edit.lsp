@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 10:19:09 Mon Jul 20 2015 BST
+;;; $$ Last modified: 11:02:15 Fri Jul 24 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4712,7 +4712,7 @@ NIL
 ;;;
 ;;; DESCRIPTION
 ;;; Change the specified event object to a rest.  If events tied from this
-;;; event should automatically be  forced to rests also, use the sc-force-rest2
+;;; event should automatically be forced to rests also, use the sc-force-rest2
 ;;; method instead.
 ;;; 
 ;;; ARGUMENTS

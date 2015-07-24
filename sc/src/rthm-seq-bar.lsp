@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 17:36:53 Mon Jul 20 2015 BST
+;;; $$ Last modified: 12:23:24 Fri Jul 24 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2440,7 +2440,7 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
 |#
 ;;; SYNOPSIS
 (defmethod get-nth-attack (index (rsb rthm-seq-bar) &optional (warn t))
-;;; ****                                ;
+;;; ****
   (if (or (< index 0)
           (>= index (notes-needed rsb)))
       (when warn
@@ -2462,8 +2462,82 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
         (values result event-count))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Jul 24 11:34:32 2015
+;;; ****m* rthm-seq-bar/get-nth-attack-with-tied
+;;; DATE
+;;; July 24th 2015, Glenferness
+;;; 
+;;; DESCRIPTION
+;;; Same as get-nth-attack method but will always return a list of the attacked
+;;; event plus any following events this is tied to.
+;;; 
+;;; ARGUMENTS 
+;;; - The zero-based index number indicating which attack is sought.
+;;; - The given rthm-seq-bar object in which to search.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL indicating whether to print a warning message if the given index
+;;;   is greater than the number of attacks in the RHYTHMS list (minus one to 
+;;;   compensate for the zero-based indexing) (default = T).   
+;;; 
+;;; RETURN VALUE  
+;;; A rhythm object.
+;;;
+;;; Returns NIL if the given index is higher than the highest possible index of
+;;; attacks in the given rthm-seq-bar object.
+;;;
+;;; SYNOPSIS
+(defmethod get-nth-attack-with-tied (index (rsb rthm-seq-bar)
+                                     &optional (warn t))
+;;; ****
+  (let ((e (get-nth-attack index rsb warn)))
+    (when e
+      (if (is-tied-from e)
+          (cons e
+                (loop for i from (1+ (bar-pos e))
+                   for tied = (get-nth-event i rsb)
+                   while (is-tied-to tied)
+                   collect tied))
+          (list e)))))
 
-;;; SAR Thu Mar  1 13:26:26 GMT 2012: Deleted MDE's comments here as they've
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* rthm-seq-bar/get-last-attacks
+;;; DATE
+;;; July 24th 2015, Glenferness
+;;; 
+;;; DESCRIPTION
+;;; Return the last nth attacks in a bar, with any notes tied from them.
+;;; 
+;;; ARGUMENTS
+;;; - a rthm-seq-bar object
+;;; - an integer indicating how many attacks to return
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether a warning should be issued if the required
+;;;   number of attacks cannot be returned.
+;;; 
+;;; RETURN VALUE
+;;; A list of lists of rhythm or event objects. The length of the outer list
+;;; will be the same as the second argument. The sublists will contain the
+;;; attack event with any subsequent events tied from it. NB if a request is
+;;; made for more attacks than the bar contains the method returns NIL (rather
+;;; than all the attacks in the bar).
+;;;
+;;; SYNOPSIS
+(defmethod get-last-attacks ((rsb rthm-seq-bar) how-many &optional (warn t))
+;;; ****
+  (let ((nn (notes-needed rsb)))
+    (if (> how-many nn)
+        (when warn
+          (warn "rthm-seq-bar::get-last-attacks: requested ~a but only ~a ~
+                 attacks in bar." how-many nn))
+        (loop for i from (- nn how-many) repeat how-many collect
+             (get-nth-attack-with-tied i rsb warn)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; SAR Thu Mar 1 13:26:26 GMT 2012: Deleted MDE's comments here as they've
 ;;; been taken nearly verbatim into the doc entry
 
 ;;; SAR Thu Mar  1 13:24:41 GMT 2012: Added robodoc entry
@@ -3367,16 +3441,16 @@ data: E
 ;;; compound duration.  Tied first notes of the bar are handled separately with ;
 ;;; handle-first-note-ties in the rthm-seq class ;
 
-  (defmethod update-compound-durations ((rsb rthm-seq-bar))
-  ;; (print 'update-compound-durations) ;
-  ;; 0 will ensure that if the first note is a tie, this will nevertheless be ;
-  ;; updated                            ;
-(let ((last-struck 0))
-(loop for r in (rest (rhythms rsb)) and i from 1 do
-(when (needs-new-note r)
-(setq last-struck i))
+(defmethod update-compound-durations ((rsb rthm-seq-bar))
+  ;; (print 'update-compound-durations) ; ;
+  ;; 0 will ensure that if the first note is a tie, this will nevertheless be ; ;
+  ;; updated                            ; ;
+    (let ((last-struck 0))
+      (loop for r in (rest (rhythms rsb)) and i from 1 do
+           (when (needs-new-note r)
+             (setq last-struck i))
 (when (is-tied-to r)
-(inc-nth-rthm rsb last-struck (compound-duration r))))))
+  (inc-nth-rthm rsb last-struck (compound-duration r))))))
 
   |#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

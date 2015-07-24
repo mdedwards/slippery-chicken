@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:03:27 Thu Jul 23 2015 BST
+;;; $$ Last modified: 11:04:30 Fri Jul 24 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6541,6 +6541,7 @@ EVENT: start-time: 11.000, end-time: 11.500,
 ;;; ****m* slippery-chicken/get-all-events
 ;;; DATE
 ;;; August 22nd 2013 (Edinburgh)
+;;;
 ;;; DESCRIPTION
 ;;; Return a flat list containing all the events of a slippery-chicken object
 ;;; fo the given player.

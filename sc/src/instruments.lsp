@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 10:03:45 Mon Jul 20 2015 BST
+;;; $$ Last modified: 20:55:42 Fri Jul 24 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -305,6 +305,17 @@
        :clefs (treble bass double-treble double-bass) :starting-clef bass 
        :microtones nil 
        :midi-program 1))
+     ;; MDE Fri Jul 24 20:18:16 2015 -- range typical for modern organ with
+     ;; 61-key manuals and 32-key pedalboard  
+     (organ
+      (:lowest-written c2 :highest-written c7 :staff-name "organ"
+       :staff-short-name "org" :largest-fast-leap 9 :chords t
+       :chord-function piano-chord-fun :clefs (treble bass)
+       :starting-clef treble :microtones nil :midi-program 20))
+     (organ-pedals
+      (:lowest-written c2 :highest-written g4 :staff-name "organ pedals"
+       :staff-short-name "ped" :largest-fast-leap 6 :chords nil
+       :clefs (bass) :starting-clef bass :microtones nil :midi-program 20))
      (tambourine
       (:staff-name "tambourine" :staff-short-name "tmb"
        :lowest-written c4 :highest-written c4
@@ -429,6 +440,20 @@
 (defun chord-fun2 (curve-num index pitch-list pitch-seq instrument set)
 ;;; ****
   (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 3 4 999))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* instruments/play-all
+;;; DESCRIPTION
+;;; A very simple chord function to simply play all the notes in the set, no
+;;; matter which instrument should play them. Useful perhaps for computer
+;;; voices. In any case there's no checking of instrument range as we ignore
+;;; the pitch-list here.
+;;; 
+;;; SYNOPSIS
+(defun play-all (curve-num index pitch-list pitch-seq instrument set)
+;;; ****
+  (declare (ignore curve-num index pitch-list pitch-seq instrument))
+  (make-chord set))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; remember that the index is the desired top note of the chord
@@ -649,6 +674,7 @@
 (defun piano-chord-fun (curve-num index pitch-list pitch-seq instrument set)
 ;;; ****
   (declare (ignore set instrument pitch-seq curve-num))
+  ;; (print 'piano-chord-fun)
   (let* ((start (max 0 (- index 3))) ;; try to get 4 notes
          (at-start (nth start pitch-list))
          (result (list at-start)))

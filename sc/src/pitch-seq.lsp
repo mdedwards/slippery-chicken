@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 11:38:57 Thu Jul 23 2015 BST
+;;; $$ Last modified: 20:41:57 Fri Jul 24 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -50,13 +50,6 @@
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 02.12.11 SEAN: Changed robodoc header to reflect class hierarchy
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -68,7 +61,11 @@
    ;; 5/3/07 we're going to extend the data so that numbers in parentheses
    ;; indicate that a chord should be played.  When the instance is initialized
    ;; though, make a copy of the data list here, then remove parentheses from
-   ;; items in the data
+   ;; items in the data.
+   ;; MDE Fri Jul 24 20:40:56 2015 -- despite being able to have 1 or several
+   ;; pitch-seqs in a palette, hence different levels of nesting, it is
+   ;; possible to have a single note pitch-seq consisting of a chord, e.g.
+   ;; :rthm-seq-palette '((1 ((((4 4) w)) :pitch-seq-palette ((((1)))))))
    (original-data :accessor original-data :type list :initform nil)
    ;; 24/3/07: whether the user specified an id for the pitch seq or whether it
    ;; was auto-generated from the palette name 

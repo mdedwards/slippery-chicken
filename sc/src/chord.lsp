@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 20:07:00 Mon Jul 27 2015 BST
+;;; $$ Last modified: 20:08:31 Mon Jul 27 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1622,14 +1622,13 @@ data: (
 ;;;   from 0.0 to 1.0 and there should be as many as :num-partials. Bear in
 ;;;   mind that this will still give different results for the same chord type
 ;;;   starting on different notes as the perceptual dissonance is based on
-;;;   pitch height as well as interval structure.
+;;;   pitch height as well as interval structure. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; a floating point number.
 ;;; 
 ;;; SYNOPSIS
-(defmethod calculate-dissonance ((c chord) &key (num-partials 12)
-                                             partials
+(defmethod calculate-dissonance ((c chord) &key (num-partials 12) partials
                                              (average t))
 ;;; ****
   (when (> num-partials 12)

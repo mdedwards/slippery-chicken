@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 19:48:04 Mon Jul 27 2015 BST
+;;; $$ Last modified: 20:07:00 Mon Jul 27 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1596,13 +1596,13 @@ data: (
 ;;; 
 ;;; DESCRIPTION
 ;;; Calculates the dissonance of a chord as it would appear when played on the
-;;; piano. This uses a roughness calculation model outlined at
-;;; http://www.acousticslab.org/learnmoresra/moremodel.html. This has
-;;; been perceptually verified.  We use spectral data from the piano range (see
-;;; piano-spectrum.lsp) to sum the roughness of sine pairs up to the first 12
-;;; partials of each tone, i.e. every partial of every tone is calculated in
-;;; relation to all other tones' partials, taking their amplitudes into
-;;; account. 
+;;; piano. This uses a roughness calculation model by Pantelis N. Vassilakis as
+;;; outlined at http://www.acousticslab.org/learnmoresra/moremodel.html. The
+;;; model has been perceptually verified. We use spectral data from the piano
+;;; range (see piano-spectrum.lsp) to sum the roughness of sine pairs up to the
+;;; first 12 partials of each tone, i.e. every partial of every tone is
+;;; calculated in relation to all other tones' partials, taking their
+;;; amplitudes into account.
 ;;;
 ;;; NB If notes are above/below the piano range for which we have data then we
 ;;; use the highest/lowest spectral data available.
@@ -1615,13 +1615,21 @@ data: (
 ;;; - :num-partials. The number of partials we want to use in our
 ;;;   calculation. Default = 12.
 ;;; - :average. T or NIL to indicate whether we want to use the average
-;;;   spectrum for an octave with the current note in the middle. Default = T. 
+;;;   spectrum for an octave with the current note in the middle. Default = T.
+;;; - :partials. Pass a list of partial amplitudes to use instead of the piano
+;;;   data. This should be simply the amplitudes for each partial, without
+;;;   frequency data or partial multipliers. The numbers should be normalised
+;;;   from 0.0 to 1.0 and there should be as many as :num-partials. Bear in
+;;;   mind that this will still give different results for the same chord type
+;;;   starting on different notes as the perceptual dissonance is based on
+;;;   pitch height as well as interval structure.
 ;;; 
 ;;; RETURN VALUE
 ;;; a floating point number.
 ;;; 
 ;;; SYNOPSIS
 (defmethod calculate-dissonance ((c chord) &key (num-partials 12)
+                                             partials
                                              (average t))
 ;;; ****
   (when (> num-partials 12)
@@ -1636,20 +1644,19 @@ data: (
               for freq = (frequency pitch)
               for midi = (midi-note pitch)
               for partial-amps =
-                (if average
-                    ;; average spectra over an octave with our desired note in
-                    ;; the middle?
-                    (average-piano-spectrum (min (max (- midi 6) 24)
-                                                 92))
-                    (progn
+                (cond (partials partials)
+                      (average
+                       ;; average spectra over an octave with our desired note in
+                       ;; the middle?
+                       (average-piano-spectrum (min (max (- midi 6) 24)
+                                                    92)))
                       ;; we have piano partial data from midi notes 24 to 103
                       ;; so if we need lower or higher notes use the
                       ;; lowest/highest data we have.
-                      (if (< midi 24)
-                          (setq midi 24)
-                          (when (> midi 103) (setq midi 103)))
-                      ;; (print (get-data midi +slippery-chicken-piano-spectrum+))
-                      (get-data-data midi +slippery-chicken-piano-spectrum+)))
+                      (t (if (< midi 24)
+                             (setq midi 24)
+                             (when (> midi 103) (setq midi 103)))
+                         (get-data-data midi +slippery-chicken-piano-spectrum+)))
               appending
                 (progn
                   (unless partial-amps

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 07:54:30 Thu Jul 23 2015 BST
+;;; $$ Last modified: 18:06:04 Mon Jul 27 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4629,6 +4629,15 @@ RETURNS:
           (nreverse result))
         list)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jul 27 16:24:23 2015 -- normalise a set of numbers to between 0 and
+;;; 1 (as floats)
+(defun normalise (numbers)
+  (let* ((min (loop for n in numbers minimize n))
+         (max (loop for n in numbers maximize n))
+         (scaler (float (/ (- max min))))
+         (offset (* min scaler)))
+    (loop for n in numbers collect (- (* scaler n) offset))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 21:36:09 Fri Jul 24 2015 BST
+;;; $$ Last modified: 19:48:04 Mon Jul 27 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -184,7 +184,8 @@ NIL
 ;;; 
 ;;; ARGUMENTS
 ;;; - a chord object
-;;; 
+;;;
+;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
 ;;;  see get-harmonics function
 ;;; 
@@ -1588,6 +1589,85 @@ data: (
         (data c)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* chord/calculate-dissonance
+;;; DATE
+;;; 27th July 2015, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Calculates the dissonance of a chord as it would appear when played on the
+;;; piano. This uses a roughness calculation model outlined at
+;;; http://www.acousticslab.org/learnmoresra/moremodel.html. This has
+;;; been perceptually verified.  We use spectral data from the piano range (see
+;;; piano-spectrum.lsp) to sum the roughness of sine pairs up to the first 12
+;;; partials of each tone, i.e. every partial of every tone is calculated in
+;;; relation to all other tones' partials, taking their amplitudes into
+;;; account. 
+;;;
+;;; NB If notes are above/below the piano range for which we have data then we
+;;; use the highest/lowest spectral data available.
+;;; 
+;;; ARGUMENTS
+;;; - the chord object 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :num-partials. The number of partials we want to use in our
+;;;   calculation. Default = 12.
+;;; - :average. T or NIL to indicate whether we want to use the average
+;;;   spectrum for an octave with the current note in the middle. Default = T. 
+;;; 
+;;; RETURN VALUE
+;;; a floating point number.
+;;; 
+;;; SYNOPSIS
+(defmethod calculate-dissonance ((c chord) &key (num-partials 12)
+                                             (average t))
+;;; ****
+  (when (> num-partials 12)
+    (warn "chord::calculate-dissonance: using max. of 12 for :num-partials.")
+    (setq num-partials 12))
+  ;; we're only interested in the ratios of partial amplitudes, rather than
+  ;; fixed amplitude values and differences between instruments, hence we
+  ;; normalise the numbers we're given or use.
+  (let* ((freq-pairs
+          (get-all-pairs
+           (loop for pitch in (data c)
+              for freq = (frequency pitch)
+              for midi = (midi-note pitch)
+              for partial-amps =
+                (if average
+                    ;; average spectra over an octave with our desired note in
+                    ;; the middle?
+                    (average-piano-spectrum (min (max (- midi 6) 24)
+                                                 92))
+                    (progn
+                      ;; we have piano partial data from midi notes 24 to 103
+                      ;; so if we need lower or higher notes use the
+                      ;; lowest/highest data we have.
+                      (if (< midi 24)
+                          (setq midi 24)
+                          (when (> midi 103) (setq midi 103)))
+                      ;; (print (get-data midi +slippery-chicken-piano-spectrum+))
+                      (get-data-data midi +slippery-chicken-piano-spectrum+)))
+              appending
+                (progn
+                  (unless partial-amps
+                    (error "chord::calculate-dissonance: can't get ~
+                            partial data for midi note ~a" midi))
+                  ;; ignore the slight inharmonicities of piano notes
+                  (loop for partial from 1 to num-partials
+                     for amp = (nth (1- partial) partial-amps)
+                     unless (zerop amp)
+                     collect (list (* partial freq) amp)))))))
+    (loop for pair in freq-pairs
+       for n1 = (first pair) for n2 = (second pair)
+       sum (sine-pair-roughness (first n1)
+                                (second n1)
+                                (first n2)
+                                (second n2)))))
+    
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -1705,6 +1785,26 @@ data: F5
 
 (defun chord-p (thing)
   (typep thing 'chord))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jul 27 15:14:15 2015 -- chord dissonance calculation methods
+;;; See http://www.acousticslab.org/learnmoresra/moremodel.html
+(defun sine-pair-roughness (freq1 amp1 freq2 amp2)
+  (let* ((fmin (min freq1 freq2))
+         (fmax (max freq1 freq2))
+         (fmmm (- fmax fmin))
+         (amin (min amp1 amp2))
+         (amax (max amp1 amp2))
+         (s1 0.0207)
+         (s2 18.96)
+         (s (/ 0.24 (+ s2 (* s1 fmin))))
+         (b1 3.5)
+         (b2 5.75)
+         (x (* amin amax))
+         (y (/ (* 2 amin) (+ amin amax)))
+         (z (- (exp (- (* b1 s fmmm)))
+               (exp (- (* b2 s fmmm))))))
+    (* (expt x 0.1) (* 0.5 (expt y 3.11)) z)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

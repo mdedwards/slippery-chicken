@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 11:13:43 Wed Jul  1 2015 BST
+;;; $$ Last modified: 17:22:44 Mon Jul 27 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -225,6 +225,7 @@
 (sc-compile-and-load "rhythm.lsp")
 (sc-compile-and-load "pitch.lsp")
 (sc-compile-and-load "instrument.lsp")
+(sc-compile-and-load "piano-spectrum.lsp" t)
 (sc-compile-and-load "chord.lsp")
 (sc-compile-and-load "event.lsp")
 (sc-compile-and-load "time-sig.lsp")

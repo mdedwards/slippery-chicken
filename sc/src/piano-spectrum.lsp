@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    July 27th 2015
 ;;;
-;;; $$ Last modified: 19:48:21 Mon Jul 27 2015 BST
+;;; $$ Last modified: 11:47:51 Tue Jul 28 2015 BST
 ;;;
 ;;; SVN ID: $Id: piano-spectrum.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
@@ -53,6 +53,10 @@
 
 (in-package :slippery-chicken)                
 
+;;; What we end up with here is an association list with the MIDI note number
+;;; as key and data consisting of two lists, the first being the frequency
+;;; scalars of the partials, the second being the normalised amplitudes of
+;;; these partials.
 (defparameter +slippery-chicken-piano-spectrum+
   (let ((spectr
          '((c1 (1.97 .0326 2.99 .0086 3.95 .0163 4.97 .0178 5.98 .0177 6.95
@@ -601,13 +605,13 @@
            (g7 (1.01 .0298 2.01 .0005)))))
     (make-assoc-list
      'piano-spectrum
-     ;; on SBCL if we use any more than 7 partials we get
-     ;; FLOATING-POINT-INEXACT errors, presumably because numbers are too small
-     ;; :/
      (loop for note in spectr with max-partials = 12 collect
           (list (midi-note (make-pitch (first note)))
-                (let* ((amps (loop for amp in (rest (second note)) by #'cddr
-                                collect (coerce amp 'double-float)))
+                (let* ((freq-scalers '())
+                       (amps (loop for freq-scaler in (second note) by #'cddr
+                                for amp in (rest (second note)) by #'cddr
+                                do (push freq-scaler freq-scalers)
+                                collect amp)) ;(coerce amp 'double-float)))
                        (len (length amps)))
                   ;; we always want <max-partials> amplitudes exactly
                   (if (> len max-partials)
@@ -615,20 +619,7 @@
                       (when (< len max-partials)
                         (setq amps (append amps
                                            (ml 0.0 (- max-partials len))))))
-                  (normalise amps)))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; try to iron out the quite radical differences in spectral data for nearby
-;;; notes by averaging over a complete octave.
-(defun average-piano-spectrum (starting-midi-note)
-  (let* ((result (ml 0.0 12)))
-    (loop for midi from starting-midi-note repeat 12 do
-         (loop for amp in (get-data-data midi +slippery-chicken-piano-spectrum+)
-            for i from 0 do
-              (incf (nth i result) amp)))
-    ;;(setq result (loop for amp in (normalise result) collect (/ amp 12.0))))
-    (normalise result)))
-     
+                  (list (nreverse freq-scalers) (normalise amps))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF piano-spectrum.lsp

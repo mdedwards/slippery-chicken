@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 20:08:31 Mon Jul 27 2015 BST
+;;; $$ Last modified: 16:44:16 Tue Jul 28 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1588,8 +1588,80 @@ data: (
   (some #'(lambda (x) (micro-but-not-quarter-tone-p x))
         (data c)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/get-partials-amps
+;;; DATE
+;;; July 28th 2015, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Return a list containing for every pitch in the chord a list of two lists:
+;;; first the partial frequency scalars (which will be integers or very close
+;;; to integers) then the normalised partial amplitudes.
+;;; Note that if partials are given then average is ignored. if partials is an
+;;; assoc-list then we get the data from it otherwise if it's just a list of
+;;; freq-scalers then amps, it's fixed and we use that repeatedly.
+;;; 
+;;; ARGUMENTS
+;;; - the chord object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :average. Whether to average spectral data over one octave centring around
+;;; each of the pictures in the chord. Default = T.
+;;; - :partials. The partials data. Defaults to the hardcoded data for the piano
+;;; spectrum as detailed in piano-spectrum.lsp. See that file for the format of
+;;; the data lists.
+;;; 
+;;; RETURN VALUE
+;;; A list of two element sublist. of numbers.
+;;; 
+;;; EXAMPLE
+#|
 
+(get-partials-amps (make-chord '(c4 e4 g4)))
+-->
+(((0.99666667 1.9958333 2.9941666 3.9958336 5.002501 6.015 7.0333333 8.049168
+   9.086666 10.125 11.174167 12.234166)
+  (0.9447856 1.0000001 0.22975834 0.13516104 0.1625952 0.05319352 0.12118169
+   2.1978654e-4 0.049031425 0.010756988 0.011732774 0.0))
+ ((0.9966666 1.9958333 2.9966667 4.0025005 5.0133333 6.028333 7.0575004
+   8.085834 9.136668 10.193334 11.264999 12.346667)
+  (0.99999994 0.73724264 0.20146085 0.10752921 0.122650035 0.03613218
+   0.06638182 0.0 0.022111647 0.004390597 0.011441806 5.167861e-4))
+ ((0.9966666 1.995 3.0 4.005834 5.0208335 6.042501 7.08 8.1225 9.185 10.261666
+   11.45 11.405833)
+  (1.0 0.48279247 0.1664997 0.066108614 0.07859015 0.027295936 0.035848983 0.0
+   0.010107763 0.0027390774 0.0040924386 0.0010194636)))
+
+|#
+;;; SYNOPSIS
+(defmethod get-partials-amps ((c chord)
+                              &key (average t)
+                                (partials +slippery-chicken-piano-spectrum+))
+;;; ****
+  (loop for pitch in (data c)
+     for freq = (frequency pitch)
+     ;; bear in mind that midi-note is always an integer even when we're
+     ;; dealing with microtones so we should be safe as long as we have data
+     ;; for all notes
+     for midi = (midi-note pitch)
+     collect
+       (cond ((not (assoc-list-p partials)) partials)
+             (average
+              ;; average spectra over an octave with our desired note in
+              ;; the middle?
+              (average-spectrum (min (max (- midi 6) 24)
+                                     92)
+                                partials))
+             ;; we have piano partial data from midi notes 24 to 103
+             ;; so if we need lower or higher notes use the
+             ;; lowest/highest data we have.
+             (t (if (< midi 24)
+                    (setq midi 24)
+                    (when (> midi 103) (setq midi 103)))
+                (get-data-data midi partials)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/calculate-dissonance
 ;;; DATE
 ;;; 27th July 2015, Edinburgh
@@ -1615,21 +1687,25 @@ data: (
 ;;; - :num-partials. The number of partials we want to use in our
 ;;;   calculation. Default = 12.
 ;;; - :average. T or NIL to indicate whether we want to use the average
-;;;   spectrum for an octave with the current note in the middle. Default = T.
-;;; - :partials. Pass a list of partial amplitudes to use instead of the piano
-;;;   data. This should be simply the amplitudes for each partial, without
-;;;   frequency data or partial multipliers. The numbers should be normalised
-;;;   from 0.0 to 1.0 and there should be as many as :num-partials. Bear in
-;;;   mind that this will still give different results for the same chord type
-;;;   starting on different notes as the perceptual dissonance is based on
-;;;   pitch height as well as interval structure. Default = NIL.
+;;;   spectrum for an octave with the current note of a chord in the middle.
+;;;   Default = T.
+;;; - :partials. Pass a two-element list of partial frequency scalers (list)
+;;;   and amplitudes (list) to use instead of the piano data. The amplitudes
+;;;   should be normalised from 0.0 to 1.0 and there should be as many of these
+;;;   as frequency scalers and :num-partials. Bear in mind that even using the
+;;;   same data for several calls, this will still give different results for
+;;;   the same chord type starting on different notes, as the perceptual
+;;;   dissonance is based on pitch height as well as interval structure.
+;;;   Default = +slippery-chicken-piano-spectrum+ (see piano-spectrum.lsp)
 ;;; 
 ;;; RETURN VALUE
-;;; a floating point number.
+;;; A floating point number representing the dissonance value. Higher values
+;;; are more dissonant.
 ;;; 
 ;;; SYNOPSIS
-(defmethod calculate-dissonance ((c chord) &key (num-partials 12) partials
-                                             (average t))
+(defmethod calculate-dissonance ((c chord)
+                                 &key (num-partials 12) (average t)
+                                   (partials +slippery-chicken-piano-spectrum+))
 ;;; ****
   (when (> num-partials 12)
     (warn "chord::calculate-dissonance: using max. of 12 for :num-partials.")
@@ -1639,33 +1715,19 @@ data: (
   ;; normalise the numbers we're given or use.
   (let* ((freq-pairs
           (get-all-pairs
-           (loop for pitch in (data c)
-              for freq = (frequency pitch)
-              for midi = (midi-note pitch)
-              for partial-amps =
-                (cond (partials partials)
-                      (average
-                       ;; average spectra over an octave with our desired note in
-                       ;; the middle?
-                       (average-piano-spectrum (min (max (- midi 6) 24)
-                                                    92)))
-                      ;; we have piano partial data from midi notes 24 to 103
-                      ;; so if we need lower or higher notes use the
-                      ;; lowest/highest data we have.
-                      (t (if (< midi 24)
-                             (setq midi 24)
-                             (when (> midi 103) (setq midi 103)))
-                         (get-data-data midi +slippery-chicken-piano-spectrum+)))
+           (loop for partials-amps in (get-partials-amps c :partials partials
+                                                         :average average)
+              for pitch in (data c)
               appending
                 (progn
-                  (unless partial-amps
+                  (unless partials-amps
                     (error "chord::calculate-dissonance: can't get ~
-                            partial data for midi note ~a" midi))
-                  ;; ignore the slight inharmonicities of piano notes
-                  (loop for partial from 1 to num-partials
-                     for amp = (nth (1- partial) partial-amps)
+                            partial data: ~&~a" c))
+                  (loop for partial-num from 1 to num-partials
+                     for partial in (first partials-amps)
+                     for amp in (second partials-amps)
                      unless (zerop amp)
-                     collect (list (* partial freq) amp)))))))
+                     collect (list (* partial (frequency pitch)) amp)))))))
     (loop for pair in freq-pairs
        for n1 = (first pair) for n2 = (second pair)
        sum (sine-pair-roughness (first n1)
@@ -1673,6 +1735,77 @@ data: (
                                 (first n2)
                                 (second n2)))))
     
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/calculate-spectral-centroid
+;;; DATE
+;;; July 28th 2015
+;;; 
+;;; DESCRIPTION
+
+;;; Calculate the spectral centroid of a chord, by default using piano spectral
+;;; data as defined in piano-spectrum.lsp. This technique is of course
+;;; usually applied in digital signal processing to an audio signal via a
+;;; Fast Fourier Transform (FFT). It's perhaps a little strange to use this on
+;;; pitch data along, not least of which because we will not be taking into
+;;; account any phase information or interference of possible harmonic partial
+;;; interactions, but nevertheless we get a good indication of the "pitch
+;;; height" of a chord via this method.
+;;; 
+;;; ARGUMENTS
+;;; - the chord object 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :num-partials. The number of partials we want to use in our
+;;;   calculation. Default = 12.
+;;; - :average. T or NIL to indicate whether we want to use the average
+;;;   spectrum for an octave with the current note of a chord in the middle.
+;;;   Default = T.
+;;; - :partials. Pass a two-element list of partial frequency scalers (list)
+;;;   and amplitudes (list) to use instead of the piano data. The amplitudes
+;;;   should be normalised from 0.0 to 1.0 and there should be as many of these
+;;;   as frequency scalers and :num-partials. Bear in mind that even using the
+;;;   same data for several calls, this will still give different results for
+;;;   the same chord type starting on different notes, as the perceptual
+;;;   dissonance is based on pitch height as well as interval structure.
+;;;   Default = +slippery-chicken-piano-spectrum+ (see piano-spectrum.lsp)
+;;; 
+;;; RETURN VALUE
+;;; A floating point value representing the frequency in Hertz of the spectral
+;;; centroid.  
+;;; 
+;;; EXAMPLE
+#|
+
+(calculate-spectral-centroid (make-chord '(fs3 c4 cs4 d4 ds4 e4)))
+ --> 692.3215865354373d0
+(calculate-spectral-centroid (make-chord '(fs3 c4 cs4 d4 ds4 e4 g6)))
+ --> 772.4924013974714d0
+
+|#
+;;; SYNOPSIS
+(defmethod calculate-spectral-centroid ((c chord)
+                                        &key (num-partials 12)
+                                          (average t)
+                                          (partials
+                                           +slippery-chicken-piano-spectrum+))
+;;; ****
+  (let ((numerator 0.0)
+        (denominator 0.0))
+    (loop for partials-amps in (get-partials-amps c :partials partials
+                                                  :average average)
+       for pitch in (data c) do
+         (unless partials-amps
+           (error "chord::calculate-spectral-centroif: can't get partial ~
+                   data: ~&~a" c))
+         (loop for partial-num from 1 to num-partials
+            for partial in (first partials-amps)
+            for amp in (second partials-amps) do
+              (unless (zerop amp)
+                (incf numerator (* amp partial (frequency pitch)))
+                (incf denominator amp))))
+    (/ numerator denominator)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
@@ -1812,6 +1945,25 @@ data: F5
                (exp (- (* b2 s fmmm))))))
     (* (expt x 0.1) (* 0.5 (expt y 3.11)) z)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; try to iron out the quite radical differences in spectral data for nearby
+;;; notes by averaging over a complete octave. Spectrum is a list of freq
+;;; scalers and a list of amplitudes
+(defun average-spectrum (starting-midi-note
+                         &optional (spectrum +slippery-chicken-piano-spectrum+))
+  (let* ((freq-scalers (ml 0.0 12))
+         (amp-scalers (ml 0.0 12)))
+    (loop for midi from starting-midi-note repeat 12 do
+         (loop with data = (get-data-data midi spectrum)
+            for scaler in (first data)
+            for amp in (second data)
+            for i from 0 do
+              (incf (nth i freq-scalers) scaler)
+              (incf (nth i amp-scalers) amp)))
+    ;; we average the frequency scaler but no need to do this with the amp
+    ;; scalers as they have to be normalised anyway.
+    (list (loop for fs in freq-scalers collect (/ fs 12.0))
+          (normalise amp-scalers))))
+     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF chord.lsp

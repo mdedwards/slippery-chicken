@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 21:51:12 Fri Jul 24 2015 BST
+;;; $$ Last modified: 12:37:22 Wed Jul 29 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -52,7 +52,7 @@
 
 ;;; the data slot is the list of pitches.
 
-(defclass sc-set (sclist)
+(defclass sc-set (chord)
   ;; sort the given pitches from lowest to highest.
   ((auto-sort :accessor auto-sort :type boolean :initarg :auto-sort
               :initform t)
@@ -1286,7 +1286,9 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 
 ;;; ****m* sc-set/create-chord
 ;;; DESCRIPTION
-;;; Create a chord object from the pitches of the given sc-set object.
+;;; Create a chord object from the pitches of the given sc-set object. As of
+;;; 1.0.6 sc-set is a subset of chord instead of sc-list so this shouldn't be
+;;; necessary, but it's still here for legacy code purposes.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An sc-set object.

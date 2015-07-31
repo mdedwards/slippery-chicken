@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 16:44:16 Tue Jul 28 2015 BST
+;;; $$ Last modified: 13:30:59 Wed Jul 29 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -54,12 +54,30 @@
   ;; whether the pitches in the chord are sorted (ascending) at initialization.
   ((auto-sort :accessor auto-sort :type boolean :initarg :auto-sort 
               :initform t)
+   ;; MDE Wed Jul 29 13:07:34 2015 -- the dissonance value: see
+   ;; calculate-dissonance method
+   (dissonance :reader dissonance :writer (setf dissonance) :initform nil)
+   ;; MDE Wed Jul 29 13:10:24 2015 -- the spectral centroid of the chord: see
+   ;; calculate-spectral-centroid method
+   (centroid :reader centroid :writer (setf centroid) :initform nil)
    ;; 8.2.11 added slot to say whether there are microtones in the chord or not
    (micro-tone :accessor micro-tone :type boolean :initform nil)
    ;; dynamics, accents etc. exactly the code used by cmn.  These will simply
    ;; be copied over to the event when the chord is bound to an event.  Not
    ;; used by get-lp-data!  
    (marks :accessor marks :type list :initarg :marks :initform nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Jul 29 13:17:00 2015 -- reader
+(defmethod dissonance ((c chord))
+  (with-slots ((d dissonance)) c
+    (if d d (setf d (calculate-dissonance c)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Jul 29 13:17:17 2015 -- reader
+(defmethod centroid ((c chord))
+  (with-slots ((cd centroid)) c
+    (if cd cd (setf cd (calculate-spectral-centroid c)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Mon Apr 16 16:52:53 BST 2012
@@ -123,8 +141,10 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((c chord) stream)
-  (format stream "~%CHORD: auto-sort: ~a, marks: ~a, micro-tone: ~a"
-          (auto-sort c) (marks c) (micro-tone c)))
+  (format stream "~%CHORD: auto-sort: ~a, marks: ~a, micro-tone: ~a, ~
+                  ~%centroid: ~a, dissonance: ~a"
+          (auto-sort c) (marks c) (micro-tone c) (slot-value c 'centroid)
+          (slot-value c 'dissonance)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1678,6 +1698,13 @@ data: (
 ;;;
 ;;; NB If notes are above/below the piano range for which we have data then we
 ;;; use the highest/lowest spectral data available.
+;;;
+;;; NB This will be called automatically the first time you access a chord
+;;; object's dissonance slot. In that case the default keyword arguments will
+;;; be used. If you want to use different arguments or recalculate dissonance
+;;; after the chord has been altered, this method can be used at any time but
+;;; bear in mind that it does not automatically change the dissonance slot so
+;;; use setf for that if necessary.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the chord object 
@@ -1741,7 +1768,6 @@ data: (
 ;;; July 28th 2015
 ;;; 
 ;;; DESCRIPTION
-
 ;;; Calculate the spectral centroid of a chord, by default using piano spectral
 ;;; data as defined in piano-spectrum.lsp. This technique is of course
 ;;; usually applied in digital signal processing to an audio signal via a
@@ -1750,6 +1776,13 @@ data: (
 ;;; account any phase information or interference of possible harmonic partial
 ;;; interactions, but nevertheless we get a good indication of the "pitch
 ;;; height" of a chord via this method.
+;;; 
+;;; NB This will be called automatically the first time you access a chord
+;;; object's centroid slot. In that case the default keyword arguments will be
+;;; used. If you want to use different arguments or recalculate the centroid
+;;; after the chord has been altered, this method can be used at any time but
+;;; bear in mind that it does not automatically change the centroid slot so use
+;;; setf for that if necessary.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the chord object 

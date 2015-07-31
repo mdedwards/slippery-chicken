@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 18:06:04 Mon Jul 27 2015 BST
+;;; $$ Last modified: 11:02:00 Thu Jul 30 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1448,7 +1448,7 @@
         (lasty (first (last env))))
     (cond ((> point lastx)
            (when warn
-             (warn "interpolate: ~a is off the x axis of ~a, returning ~a"
+             (warn "interpolate: ~a is off the x axis of ~%~a~%returning ~a"
                    point env lasty))
            lasty)
           ((< point (car env))
@@ -1601,7 +1601,14 @@
 ;;;
 ;;; DESCRIPTION
 ;;; Automatically scale both the x and y values of an envelope to fit within
-;;; the given ranges.  
+;;; the given ranges. Normally we'll assume that the minimum and maximum Y
+;;; values are present in the original envelope and so the automatically scaled
+;;; envelope will represent these with the new minimum and maximum
+;;; values. However sometimes an envelope doesn't range over the possible
+;;; extremes, for example (0 .3 100 .6) where the y range is from 0 to 1. If
+;;; this is the case and you need a scaled envelope to take this into account,
+;;; then how is the original envelopes minimum and maximum values to the
+;;; keyword argument :orig-y-range.
 ;;; 
 ;;; ARGUMENTS
 ;;; - The envelope: a list of x y pairs
@@ -1612,6 +1619,8 @@
 ;;; - :x-max: The new maximum (last) x value
 ;;; - :y-min: The new minimum (not necessarily starting!) y value
 ;;; - :y-max: The new maximum (not necessarily starting!) y value
+;;; - :orig-y-range: a two-element list specifying the original envelope's
+;;;   minimum and maximum values (see above).
 ;;; 
 ;;; RETURN VALUE
 ;;; The new envelope (list).
@@ -1619,39 +1628,48 @@
 ;;; EXAMPLE
 #|
 
-(AUTO-SCALE-ENV '(0 0 10 1))
+(auto-scale-env '(0 0 10 1))
 =>
 (0.0 0.0 100.0 10.0)
 
-(AUTO-SCALE-ENV '(-1 0 .3 -3 1 1) :y-min 5 :y-max 6 :x-min 2)
+(auto-scale-env '(-1 0 .3 -3 1 1) :y-min 5 :y-max 6 :x-min 2)
 =>
 (2.0 5.75 65.7 5.0 100.0 6.0))
 
-(AUTO-SCALE-ENV '(0 1 5 1.5 7 0 10 1) :y-min -15 :y-max -4)
+(auto-scale-env '(0 1 5 1.5 7 0 10 1) :y-min -15 :y-max -4)
 =>
 (0.0 -7.6666665 50.0 -4.0 70.0 -15.0 100.0 -7.6666665))
+
+(auto-scale-env '(0 .5 100 .5) :y-min 1 :y-max 2)
+=> (0.0 1.0 100.0 1.0)
+
+(auto-scale-env '(0 .5 100 .5) :y-min 1 :y-max 2 :orig-y-range '(0 1))
+=> (0.0 1.5 100.0 1.5)
 
 |#
 ;;; SYNOPSIS
 (defun auto-scale-env (env &key
                              (x-min 0.0) (x-max 100.0)
                              (y-min 0.0) (y-max 10.0)
-                             (expt 1.0))
+                             orig-y-range)
 ;;; ****
   (unless (and (> x-max x-min) (> y-max y-min))
     (error "utilities::auto-scale-env: x-max must be > x-min and sim. for y's"))
   (let* ((env-x-min (first env))
          (env-x-max (lastx env))
-         ;; (env-x-range (abs (- env-x-max env-x-min)))
          (env-x-range (- env-x-max env-x-min))
-         (env-y-min (env-y-min env))
-         (env-y-max (env-y-max env))
-         ;; (env-y-range (abs (- env-y-max env-y-min)))
+         (env-y-min (if orig-y-range (first orig-y-range) (env-y-min env)))
+         (env-y-max (if orig-y-range (second orig-y-range) (env-y-max env)))
          (env-y-range (- env-y-max env-y-min))
          (new-env-x-range (abs (- x-max x-min)))
          (new-env-y-range (abs (- y-max y-min)))
          (x-scaler (/ new-env-x-range env-x-range))
-         (y-scaler (/ new-env-y-range env-y-range)))
+         ;; MDE Wed Jul 29 21:00:23 2015 -- we could have an envelope like (0
+         ;; .5 100 .5) whereupon  there's no y-range at all and we'd get a
+         ;; division-by-zero error
+         (y-scaler (if (zerop env-y-range)
+                       1.0
+                       (/ new-env-y-range env-y-range))))
     (loop for x in env by #'cddr and y in (cdr env) by #'cddr
        collect (float (+ x-min (* (- x env-x-min) x-scaler)))
        collect (float (+ y-min (* (- y env-y-min) y-scaler))))))

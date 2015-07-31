@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 10:25:43 Mon Jul 20 2015 BST
+;;; $$ Last modified: 21:07:56 Wed Jul 29 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -348,7 +348,7 @@ data: VELVET
 
 ;;; ****m* recursive-assoc-list/relink-named-objects
 ;;; DESCRIPTION
-;;; This method is essentially the same as the method link-named objects, but
+;;; This method is essentially the same as the method link-named-objects, but
 ;;; resets the LINKED slot to NIL and forces the link-named-objects method to
 ;;; be applied again.
 ;;; 
@@ -1703,6 +1703,12 @@ data: RIBBON
           (cons (id object) (print-simple data stream))
           (list (id object) (data object))))
    stream))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Jul 29 16:19:33 2015
+(defmethod get-flat-data ((ral recursive-assoc-list))
+  (loop for ref in (get-all-refs ral nil) collect
+       (get-data ref ral)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

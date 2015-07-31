@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 18:34:17 Mon Jul  6 2015 BST
+;;; $$ Last modified: 11:52:37 Fri Jul 31 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -224,7 +224,7 @@
                         (use-octave-signs nil)
                         (automatic-octave-signs nil)
                         (include-missing-chromatic t)
-                        (auto-open (get-sc-config 'cmn-display-auto-open+))
+                        (auto-open (get-sc-config 'cmn-display-auto-open))
                         (include-missing-non-chromatic t))
 ;;; ****
   ;; some defaults above are good for 2-staff display but not 4...
@@ -655,6 +655,264 @@ data: (C4 F4 A4 C5)
   (rmap sp #'limit :upper upper :lower lower :do-related-sets do-related-sets))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Planning notes: In order to sort the chords we will use the normal sort
+;;; function comparing two chords. We'll pass two envelopes to the main
+;;; function, one for the desired dissonance progression, the other for the
+;;; desired pitch height (spectral centroid). These will both range from
+;;; normalised values from 0 to 1. When we are comparing two chords we will
+;;; look at the deviation between the chords' dissonance values and the current
+;;; desired dissonance value from the envelope, similarly with the pitch
+;;; height, and the chord with the smallest deviation will be chosen first.
+;;; 
+;;; We have to make sure when we choose the next chord not to choose one with
+;;; the same bass note as the previous one, so we'll have to sort the chords
+;;; every time we get a new point from the envelopes, then try the first chord
+;;; in the sorted list, see if it has the bass note of the previous chord; if
+;;; it does then choose the second chord and see if it has the same bass
+;;; note... It doesn't matter if two consecutive chords have the same top note.
+
+;;; ****m* set-palette/auto-sequence
+;;; DATE
+;;; July 30th 2015, Edinburgh
+;;; 
+;;; DESCRIPTION
+
+;;; Automatically create an ordering for these sets in a set-palette based on a
+;;; dissonance envelope and a spectral centroid envelope. For a description of
+;;; a set or chord's dissonance or spectral centroid see the
+;;; calculate-spectral-centroid and calculate-dissonance methods in the chord
+;;; class.
+;;;
+;;; The envelopes describe a desired general tendency to, for example, proceed
+;;; from less dissonant to more dissonant sets as the ordering or sequence of
+;;; sets proceeds. Such an envelope would move from lower to higher
+;;; values. Similarly with the spectral centroid envelope: moving from a lower
+;;; to a higher value implies moving from chords with an overall lower pitch
+;;; height to chords with a higher pitch height.
+;;;
+;;; The envelopes should be expressed over any X axis range but with a Y axis
+;;; range of 0 to 1 only. The x-axes will be stretched to fit over the number
+;;; of sets in the palette. The Y axes will be stretched to fit the range of
+;;; dissonance and centroid values to be found in the sets in the palette.
+;;;
+;;; When we are comparing two sets via the sort function, we look at the
+;;; deviation between the sets' dissonance values and the current desired
+;;; dissonance value from the envelope, similarly with the spectral centroid:
+;;; the chord with the smallest combined deviation will be chosen first. If
+;;; either envelope is nil, then the sorting is based on one envelope
+;;; only. Similarly, weighting factors of any arbitrary positive number can be
+;;; passed via :dissonance-weight and :centroid-weight to emphasise or
+;;; deemphasise these properties when sorting. Higher values will mean that
+;;; that property will take precedence over the other property.
+;;;
+;;; Also taken into account when sorting is the lowest note of the set: If
+;;; :repeating-bass is T then the function tries to avoid repeating bass notes
+;;; in two consecutive sets. Repeating highest notes are ignored.
+;;; 
+;;; In any case there is no guarantee that the desired curves will be expressed
+;;; exactly in the return ordering. The function tries to find the best fit but
+;;; success depends very much on the number and variety of sets in the
+;;; palette. Generally you may find that the ordering is better towards the
+;;; beginning and at the end. This is simply because as we proceed there are
+;;; less and less sets to choose from so the best fit may deviate considerably
+;;; from the desired values.
+;;;
+;;; ARGUMENTS
+;;; - the set-palette object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - dissonance-env: The desired dissonance envelope. Default '(0 .1 62 1 100 .3)
+;;; - centroid-env:  The desired spectral centroid envelope.
+;;;   Default '(0 .4 62 1 100 .2) 
+;;; - dissonance-weight: A weighting factor (scaler) applied to
+;;;   dissonance. Higher values result in dissonance playing a larger role in
+;;;   the decision process. Default 1.0
+;;; - centroid-weight: a similar factor for spectral centroid. Default 1.0
+;;; - verbose:  Whether to print data as the decision process proceeds.
+;;;   Default NIL 
+;;; - repeating-bass: Whether to allow base notes to repeat between two
+;;;   consecutive chords. Default NIL
+;;; - silent: Whether to print warnings or not. Default NIL
+;;; 
+;;; RETURN VALUE
+;;; A list of the full references of the sets in the set palette in the
+;;; automatically determined order
+;;; 
+;;; EXAMPLE
+#|
+
+(auto-sequence
+ (recursive-set-palette-from-ring-mod '(a4 b4) 'spfrm-test
+                                      :warn-no-bass nil)
+ :verbose nil :centroid-weight 2 :silent t)
+=>
+'((A4 4) (B4 4) (A4 13) (A4 6) (A4 2) (B4 21) (B4 11) (B4 6) (B4 2) (B4 7)
+  (B4 14) (B4 16) (A4 7) (B4 17) (B4 9) (B4 18) (A4 12) (A4 11) (A4 19)
+  (B4 8) (B4 12) (B4 5) (A4 9) (B4 1) (A4 18) (A4 16) (A4 21) (B4 19)
+  (A4 17) (B4 10) (B4 3) (A4 20) (A4 14) (B4 13) (B4 15) (B4 20) (A4 15)
+  (A4 3) (A4 8) (A4 10) (A4 5) (A4 1)))
+
+|#
+;;; SYNOPSIS
+(defmethod auto-sequence ((sp set-palette) 
+                          &key (dissonance-env '(0 .1 62 1 100 .3))
+                            (centroid-env '(0 .4 62 1 100 .2))
+                            (dissonance-weight 1.0)
+                            (centroid-weight 1.0)
+                            verbose repeating-bass silent)
+;;; ****
+  (link-named-objects sp)
+  (multiple-value-bind (dmin dmax cmin cmax)
+      (quality-extremes sp)
+    (let* ((num-sets (r-count-elements sp))
+           (all-sets (get-flat-data sp))
+           (xmax (1- num-sets))
+           (denv (when dissonance-env
+                   (auto-scale-env dissonance-env :x-min 0 :x-max xmax
+                                   :y-min dmin :y-max dmax
+                                   :orig-y-range '(0 1))))
+           (cenv (when centroid-env
+                   (auto-scale-env centroid-env :x-min 0 :x-max xmax
+                                   :y-min cmin :y-max cmax
+                                   :orig-y-range '(0 1))))
+           (both-envs (and centroid-env dissonance-env))
+           ;; Rather than just directly use the two weights and thus overly
+           ;; skew the calculations and comparisons, we'll adjust the weights
+           ;; so that they stay in the right proportion to each other but sum
+           ;; to 2, just as they would if there was no weighting at all (as
+           ;; both would scalers of 1.0)
+           (weight-scaler (/ 2.0 (+ dissonance-weight centroid-weight)))
+           (dweight (if both-envs (* dissonance-weight weight-scaler) 1.0))
+           (cweight (if both-envs (* centroid-weight weight-scaler) 1.0))
+           (result '())
+           result-len next next-bass last-bass first-set)
+      (when verbose
+        (format t "~&set-pallete's overall dmin ~,3f dmax ~,3f cmin ~,3f ~
+                   cmax ~,3f ~%  denv ~a ~%  cenv ~a"
+                dmin dmax cmin cmax denv cenv)
+        (format t "~&  dweight ~,3f, cweight ~,3,f" dweight cweight))
+      (flet ((deviation (target val d)
+               ;; if we don't have the envelope value (target) then just return
+               ;; 0.0, which is in effect ignoring it
+               (if target
+                   ;; using a weighting scaler means that deviations become
+                   ;; exaggerated so that perhaps if the centroid deviation is
+                   ;; weighted less than one and dissonance is more than one,
+                   ;; then when we sum them in the sort function below the
+                   ;; centroid plays less of a decisive role in the ordering.
+                   (* (if d dweight cweight)
+                      (abs (- (/ val target) 1.0)))
+                   0.0)))
+        (when verbose (format t "~%~%Looping:"))
+        (loop for set-num below num-sets
+           for denv-val = (when dissonance-env (interpolate set-num denv))
+           for cenv-val = (when centroid-env (interpolate set-num cenv))
+           do
+             (when verbose
+               (format t "~&denv-val ~,3f cenv-val ~,3f" denv-val cenv-val))
+             (setq all-sets
+                   (sort
+                    all-sets
+                    #'(lambda (c1 c2)
+                        (let ((d-dev1 (deviation denv-val (dissonance c1) t))
+                              (d-dev2 (deviation denv-val (dissonance c2) t))
+                              (c-dev1 (deviation cenv-val (centroid c1) nil))
+                              (c-dev2 (deviation cenv-val (centroid c2) nil)))
+                          ;; the set with the least deviation from the ideal
+                          ;; envelope values wins
+                          (< (+ d-dev1 c-dev1) (+ d-dev2 c-dev2))))))
+             (unless all-sets
+               (error "set-palette::auto-sequence: all-sets is NIL!"))
+             (setq first-set (first all-sets)
+                   ;; if we don't care that bass-notes will repeat just take the
+                   ;; first in the sorted list
+                   next (if (or (not last-bass) repeating-bass)
+                            first-set
+                            (loop for set in all-sets do
+                                 (unless (auto-sort set)
+                                   ;; game over if for some reason sets aren't
+                                   ;; sorted
+                                   (error "set-palette::auto-sequence: sets ~
+                                           must be :auto-sort'ed: ~a" set))
+                                 (setq next-bass (lowest set))
+                                 (if (pitch= last-bass next-bass t)
+                                     (when verbose
+                                       (format t "~&    Skipping repeating ~
+                                                  bass: ~a :: ~a"
+                                               (this last-bass) (this next-bass)))
+                                     (return set))
+                               ;; we'll only get here if we don't explicitly
+                               ;; call return i.e. if we haven't found a
+                               ;; non-repeating bass note
+                               finally
+                                 (unless silent
+                                   (warn "set-palette::auto-sequence: can't ~
+                                          find non-repeating bass."))
+                                 (setq next-bass (lowest first-set))
+                               ;; so use the first anyway
+                                 (return first-set)))
+                   last-bass (lowest next))
+             (let ((len (length all-sets)))
+               (unless (this next)
+                 (error "set-palette::auto-sequence: next has no <this> slot. ~
+                         Is the set palette linked? next = ~%~a" next))
+               (setq all-sets (remove-if #'(lambda (x)
+                                             (equalp (this x) (this next)))
+                                         all-sets))
+               (unless (= (length all-sets) (1- len))
+                 (error "set-palette::auto-sequence: removed ~a sets! ~%~
+                         next = ~%~a" (- len (length all-sets)) next)))
+             (unless next
+               (error "set-palette::auto-sequence: can't find set."))
+             (when verbose
+               (let ((ddev (deviation denv-val (dissonance next) t))
+                     (cdev (deviation cenv-val (centroid next) nil))
+                     (lowest (lowest next)))
+                 (format t "~&  next ~a: bass ~a (~,3fHz), dissonance ~,3f ~
+                            (deviation ~,3f), ~%  centroid ~,3f ~
+                            (deviation ~,3f, total ~,3f)"
+                         (this next) (data lowest) (frequency lowest)
+                         (dissonance next) ddev
+                         (centroid next) cdev (+ cdev ddev))))
+             (push (this next) result))
+        (setq result-len (length result))
+        (unless (= result-len num-sets)
+          (error "set-palette::auto-sequence: only got ~a sets; should have ~a"
+                 result-len num-sets))
+        (unless (= result-len (length (remove-duplicates result :test #'equal)))
+          (error "set-palette::auto-sequence: Found duplicates!"))
+        (nreverse result)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod quality-extremes ((sp set-palette))
+  (let* ((dmin most-positive-double-float)
+         (dmax most-negative-double-float)
+         (cmin most-positive-double-float)
+         (cmax most-negative-double-float)
+         d c)
+    (loop for s in (data sp) do
+         (typecase s
+           (sc-set 
+            (setq d (dissonance s)
+                  c (centroid s))
+            ;; (format t "~&d = ~a c = ~a" d c)
+            (when (> d dmax)
+              (setq dmax d))
+            (when (< d dmin)
+              (setq dmin d))
+            (when (> c cmax)
+              (setq cmax c))
+            (when (< c cmin)
+              (setq cmin c)))
+           ;; sp must be recursive
+           (named-object (multiple-value-setq (dmin dmax cmin cmax)
+                           (quality-extremes (data s))))
+           (t (error "set-palette:quality-extremes: unexpected: ~a" s))))
+    ;; (format t "~%~a ~a ~a ~a" dmin dmax cmin cmax)
+    (values dmin dmax cmin cmax)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
 ;;;
 ;;; Related functions.
 ;;;
@@ -1025,7 +1283,10 @@ COMPLETE-SET: complete: NIL
                :ring-mod-bass-octave ring-mod-bass-octave
                :warn-no-bass warn-no-bass))
           sp))
-    sp))
+    ;; MDE Wed Jul 29 20:54:31 2015 -- TODO: hmm, somehow we have to do this
+    ;; twice...look into this
+    (relink-named-objects sp)
+    (relink-named-objects sp)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 12:21:22 Fri Jul 31 2015 BST
+;;; $$ Last modified: 15:14:48 Fri Jul 31 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -813,7 +813,7 @@ data: (C4 F4 A4 C5)
              (when verbose
                (format t "~&denv-val ~,3f cenv-val ~,3f" denv-val cenv-val))
              (setq all-sets
-                   (sort
+                   (stable-sort
                     all-sets
                     #'(lambda (c1 c2)
                         (let ((d-dev1 (deviation denv-val (dissonance c1) t))
@@ -841,7 +841,8 @@ data: (C4 F4 A4 C5)
                                      (when verbose
                                        (format t "~&    Skipping repeating ~
                                                   bass: ~a :: ~a"
-                                               (this last-bass) (this next-bass)))
+                                               (data last-bass)
+                                               (data next-bass)))
                                      (return set))
                                ;; we'll only get here if we don't explicitly
                                ;; call return i.e. if we haven't found a

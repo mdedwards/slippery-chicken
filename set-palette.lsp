@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 11:52:37 Fri Jul 31 2015 BST
+;;; $$ Last modified: 12:21:22 Fri Jul 31 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -676,44 +676,45 @@ data: (C4 F4 A4 C5)
 ;;; July 30th 2015, Edinburgh
 ;;; 
 ;;; DESCRIPTION
-
-;;; Automatically create an ordering for these sets in a set-palette based on a
+;;; Automatically create an ordering for the sets in a set-palette based on a
 ;;; dissonance envelope and a spectral centroid envelope. For a description of
 ;;; a set or chord's dissonance or spectral centroid see the
 ;;; calculate-spectral-centroid and calculate-dissonance methods in the chord
 ;;; class.
 ;;;
 ;;; The envelopes describe a desired general tendency to, for example, proceed
-;;; from less dissonant to more dissonant sets as the ordering or sequence of
+;;; from less dissonant to more dissonant sets as the ordering (sequence) of
 ;;; sets proceeds. Such an envelope would move from lower to higher
 ;;; values. Similarly with the spectral centroid envelope: moving from a lower
 ;;; to a higher value implies moving from chords with an overall lower pitch
 ;;; height to chords with a higher pitch height.
 ;;;
 ;;; The envelopes should be expressed over any X axis range but with a Y axis
-;;; range of 0 to 1 only. The x-axes will be stretched to fit over the number
-;;; of sets in the palette. The Y axes will be stretched to fit the range of
-;;; dissonance and centroid values to be found in the sets in the palette.
+;;; range of 0.0 to 1.0 only. The x-axes will be stretched to fit over the
+;;; number of sets in the palette. The Y axes will be stretched to fit the
+;;; range of dissonance and centroid values to be found in the sets in the
+;;; palette (see the quality-extremes method).
 ;;;
 ;;; When we are comparing two sets via the sort function, we look at the
 ;;; deviation between the sets' dissonance values and the current desired
-;;; dissonance value from the envelope, similarly with the spectral centroid:
-;;; the chord with the smallest combined deviation will be chosen first. If
-;;; either envelope is nil, then the sorting is based on one envelope
+;;; dissonance value from the envelope, similarly with the spectral centroid.
+;;; The chord with the smallest combined deviation will be chosen first. If
+;;; either envelope is nil, then the sorting is based on the other envelope
 ;;; only. Similarly, weighting factors of any arbitrary positive number can be
 ;;; passed via :dissonance-weight and :centroid-weight to emphasise or
 ;;; deemphasise these properties when sorting. Higher values will mean that
 ;;; that property will take precedence over the other property.
 ;;;
-;;; Also taken into account when sorting is the lowest note of the set: If
-;;; :repeating-bass is T then the function tries to avoid repeating bass notes
-;;; in two consecutive sets. Repeating highest notes are ignored.
+;;; Also taken into account when sorting is the lowest note of the set. If
+;;; :repeating-bass is NIL (the default) then the function tries to avoid
+;;; repeating bass notes in two consecutive sets. Repeating highest notes are
+;;; allowed.
 ;;; 
 ;;; In any case there is no guarantee that the desired curves will be expressed
-;;; exactly in the return ordering. The function tries to find the best fit but
-;;; success depends very much on the number and variety of sets in the
+;;; exactly in the returned ordering. The function tries to find the best fit
+;;; but success depends very much on the number and variety of sets in the
 ;;; palette. Generally you may find that the ordering is better towards the
-;;; beginning and at the end. This is simply because as we proceed there are
+;;; beginning than at the end. This is simply because as we proceed there are
 ;;; less and less sets to choose from so the best fit may deviate considerably
 ;;; from the desired values.
 ;;;

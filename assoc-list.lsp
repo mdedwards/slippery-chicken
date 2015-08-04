@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 17:51:40 Wed Jul 22 2015 BST
+;;; $$ Last modified: 12:25:12 Tue Aug  4 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -817,6 +817,45 @@ data: (SNOOPY SPOT ROVER)
                          (list no)))))
                          ;;; (list nod)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* assoc-list/get-nearest
+;;; DATE
+;;; 4/8/2015
+;;; 
+;;; DESCRIPTION
+;;; In assoc-lists with numeric IDs, return the object with the closest ID to
+;;; the given key.
+;;; 
+;;; ARGUMENTS
+;;; - they key (number)
+;;; - the assoc-list object
+;;; 
+;;; RETURN VALUE
+;;; a named-object
+;;;
+;;; SYNOPSIS
+(defmethod get-nearest (key (al assoc-list))
+;;; ****
+  (unless (numberp key)
+    (error "assoc-list::get-nearest: key should be numeric: ~a~%~a"
+           key al))
+  (let* ((diff most-positive-double-float)
+         (cdiff diff)
+         it)
+    ;; we can't assume the data is sorted from high to low so we have to look
+    ;; at each datum 
+    (loop for no in (data al) for id = (id no) do
+         (unless (numberp id)
+           (error "assoc-list::get-nearest: all keys should be numeric: ~a~%~a"
+                  id al))
+         (setq diff (abs (- id key)))
+         ;; <= rather than < so that 80.5 rounds to 81
+         (when (<= diff cdiff)
+           (setq it no
+                 cdiff diff)))
+    it))
+   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 15:14:48 Fri Jul 31 2015 BST
+;;; $$ Last modified: 16:01:36 Fri Jul 31 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -787,6 +787,7 @@ data: (C4 F4 A4 C5)
            (dweight (if both-envs (* dissonance-weight weight-scaler) 1.0))
            (cweight (if both-envs (* centroid-weight weight-scaler) 1.0))
            (result '())
+           (deviations '())
            result-len next next-bass last-bass first-set)
       (when verbose
         (format t "~&set-pallete's overall dmin ~,3f dmax ~,3f cmin ~,3f ~
@@ -867,10 +868,11 @@ data: (C4 F4 A4 C5)
                          next = ~%~a" (- len (length all-sets)) next)))
              (unless next
                (error "set-palette::auto-sequence: can't find set."))
-             (when verbose
-               (let ((ddev (deviation denv-val (dissonance next) t))
-                     (cdev (deviation cenv-val (centroid next) nil))
-                     (lowest (lowest next)))
+             (let ((ddev (deviation denv-val (dissonance next) t))
+                   (cdev (deviation cenv-val (centroid next) nil))
+                   (lowest (lowest next)))
+               (push (list ddev cdev (+ ddev cdev)) deviations)
+               (when verbose
                  (format t "~&  next ~a: bass ~a (~,3fHz), dissonance ~,3f ~
                             (deviation ~,3f), ~%  centroid ~,3f ~
                             (deviation ~,3f, total ~,3f)"
@@ -884,7 +886,7 @@ data: (C4 F4 A4 C5)
                  result-len num-sets))
         (unless (= result-len (length (remove-duplicates result :test #'equal)))
           (error "set-palette::auto-sequence: Found duplicates!"))
-        (nreverse result)))))
+        (values (nreverse result) (nreverse deviations))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod quality-extremes ((sp set-palette))

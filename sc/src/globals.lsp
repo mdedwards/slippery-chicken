@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 10:08:03 Tue May 13 2014 BST
+;;; $$ Last modified: 13:56:43 Wed Aug  5 2015 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -136,6 +136,16 @@
 ;;; note are we? :=) 
 (defparameter +cmn-open-brackets-for-sc+ (make-list 20))
 (defparameter +cmn-grace-notes-for-sc+ nil)
+(defconstant +slippery-chicken-spectra+
+  (make-assoc-list
+   'slippery-chicken-spectra
+   '((clm-piano ,(clm-piano-spectra))
+     (akoustik-piano ,(get-spectra-al "/Volumes/NIsamples/Akoustik Piano Library/Samples/ConcertGrand/Samples/*.wav"
+                                      #'akoustik-piano-name))
+     (kontakt-violins ,(get-spectra-al "/Volumes/NIsamples/Kontakt 3 Library/Orchestral/Z - Samples/01 Violin ensemble - 14/VI-14_mV_sus_mf/*.wav"
+                                       #'violin-ensemble-name)))))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF globals.lsp

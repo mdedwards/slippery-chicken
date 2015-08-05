@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 17:22:44 Mon Jul 27 2015 BST
+;;; $$ Last modified: 14:07:49 Wed Aug  5 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -43,16 +43,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 01.12.11 SEAN: Edited ROBODoc header for hierarchy-based TOC
-
-;;; 28.11.11 SEAN: changed item to "all.lsp" so that robodoc will not highlight
-;;; the word "all" in every instance as though it were a class with a doc page.
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :cl-user)

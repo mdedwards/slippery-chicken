@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 12:25:12 Tue Aug  4 2015 BST
+;;; $$ Last modified: 13:43:10 Wed Aug  5 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -73,6 +73,18 @@
   (format stream "~%ASSOC-LIST: warn-not-found ~a, ~
                   data: Not displayed due to clisp bug."
           (warn-not-found al)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Aug  5 13:21:30 2015 -- this assumes the data is something simple
+;;; like a list of numbers 
+(defmethod print-for-init ((al assoc-list) &optional (stream t))
+  (format stream "~&(make-assoc-list '~a~%  '(" (id al))
+  (loop for d in (data al) and i from 1 do
+       (format stream "(~a ~a)" (id d) (data d))
+       (unless (= i (sclist-length al))
+         (format stream "~%    ")))
+  (format stream ")~%  :warn-not-found ~a)~%" (warn-not-found al))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

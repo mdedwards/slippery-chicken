@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 13:30:59 Wed Jul 29 2015 BST
+;;; $$ Last modified: 12:43:19 Wed Aug  5 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1617,7 +1617,8 @@ data: (
 ;;; Return a list containing for every pitch in the chord a list of two lists:
 ;;; first the partial frequency scalars (which will be integers or very close
 ;;; to integers) then the normalised partial amplitudes.
-;;; Note that if partials are given then average is ignored. if partials is an
+;;;
+;;; Note that if partials are given then average is ignored. If partials is an
 ;;; assoc-list then we get the data from it otherwise if it's just a list of
 ;;; freq-scalers then amps, it's fixed and we use that repeatedly.
 ;;; 
@@ -1670,16 +1671,8 @@ data: (
              (average
               ;; average spectra over an octave with our desired note in
               ;; the middle?
-              (average-spectrum (min (max (- midi 6) 24)
-                                     92)
-                                partials))
-             ;; we have piano partial data from midi notes 24 to 103
-             ;; so if we need lower or higher notes use the
-             ;; lowest/highest data we have.
-             (t (if (< midi 24)
-                    (setq midi 24)
-                    (when (> midi 103) (setq midi 103)))
-                (get-data-data midi partials)))))
+              (average-spectrum (- midi 6) partials))
+             (t (get-nearest midi partials)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/calculate-dissonance
@@ -1987,7 +1980,7 @@ data: F5
   (let* ((freq-scalers (ml 0.0 12))
          (amp-scalers (ml 0.0 12)))
     (loop for midi from starting-midi-note repeat 12 do
-         (loop with data = (get-data-data midi spectrum)
+         (loop with data = (data (get-nearest midi spectrum))
             for scaler in (first data)
             for amp in (second data)
             for i from 0 do

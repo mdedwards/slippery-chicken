@@ -1,9 +1,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****h* sc/piano-spectrum
+;;; ****h* sc/spectra
 ;;; NAME 
-;;; piano-spectrum
+;;; spectra
 ;;;
-;;; File:             piano-spectrum.lsp
+;;; File:             spectra.lsp
 ;;;
 ;;; Class Hierarchy:  none (no classes defined)
 ;;;
@@ -23,9 +23,9 @@
 ;;;
 ;;; Creation date:    July 27th 2015
 ;;;
-;;; $$ Last modified: 12:07:12 Tue Aug  4 2015 BST
+;;; $$ Last modified: 13:46:41 Wed Aug  5 2015 BST
 ;;;
-;;; SVN ID: $Id: piano-spectrum.lsp 5359 2015-07-24 20:53:22Z medward2 $
+;;; SVN ID: $Id: spectra.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -622,4 +622,4 @@
                   (list (nreverse freq-scalers) (normalise amps))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; EOF piano-spectrum.lsp
+;;; EOF spectra.lsp

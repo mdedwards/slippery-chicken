@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 11:02:00 Thu Jul 30 2015 BST
+;;; $$ Last modified: 19:35:24 Wed Aug  5 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4653,7 +4653,8 @@ RETURNS:
 (defun normalise (numbers)
   (let* ((min (loop for n in numbers minimize n))
          (max (loop for n in numbers maximize n))
-         (scaler (float (/ (- max min))))
+         (diff (- max min))
+         (scaler (if (zerop diff) 1.0 (float (/ diff))))
          (offset (* min scaler)))
     (loop for n in numbers collect (- (* scaler n) offset))))
 

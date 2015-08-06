@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 16:01:36 Fri Jul 31 2015 BST
+;;; $$ Last modified: 12:47:22 Thu Aug  6 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -717,6 +717,11 @@ data: (C4 F4 A4 C5)
 ;;; beginning than at the end. This is simply because as we proceed there are
 ;;; less and less sets to choose from so the best fit may deviate considerably
 ;;; from the desired values.
+;;;
+;;; NB Unlike the chord methods which calculate dissonance and spectral
+;;; centroid, there is no way to pass spectral data here. If you want to
+;;; override the default spectral data then use (set-sc-config 'default-spectra
+;;; ...). See globals.lsp for more details.
 ;;;
 ;;; ARGUMENTS
 ;;; - the set-palette object

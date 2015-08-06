@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 13:56:43 Wed Aug  5 2015 BST
+;;; $$ Last modified: 12:49:08 Thu Aug  6 2015 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -112,9 +112,21 @@
      ;; letter, we'll get a warning as we can only have one antescofo label per
      ;; NOTE (though it's not an error to have two, the 2nd will be ignored).
      (asco-two-labels-warning t)
+     ;; the default spectral data used in the chord class for things such as
+     ;; dissonance and spectral centroid calcuation. See spectra.lsp for more
+     ;; details about references into +slippery-chicken-spectra+ (such as
+     ;; akoustik-piano-spectra) or see the get-spectrum function in chord.lsp
+     ;; for a description of the format this data can take.
+     (default-spectra akoustik-piano-spectra)
      ;; font size for CMN bar numbers
      (cmn-bar-num-size-for-sc 6))))
 ;;; ****
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; placeholder for various instruments' spectra. This will be filled by
+;;; spectra.lsp  
+(defparameter +slippery-chicken-spectra+
+  (make-ral 'slippery-chicken-spectra nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun get-sc-config (key)
@@ -136,16 +148,6 @@
 ;;; note are we? :=) 
 (defparameter +cmn-open-brackets-for-sc+ (make-list 20))
 (defparameter +cmn-grace-notes-for-sc+ nil)
-(defconstant +slippery-chicken-spectra+
-  (make-assoc-list
-   'slippery-chicken-spectra
-   '((clm-piano ,(clm-piano-spectra))
-     (akoustik-piano ,(get-spectra-al "/Volumes/NIsamples/Akoustik Piano Library/Samples/ConcertGrand/Samples/*.wav"
-                                      #'akoustik-piano-name))
-     (kontakt-violins ,(get-spectra-al "/Volumes/NIsamples/Kontakt 3 Library/Orchestral/Z - Samples/01 Violin ensemble - 14/VI-14_mV_sus_mf/*.wav"
-                                       #'violin-ensemble-name)))))
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF globals.lsp

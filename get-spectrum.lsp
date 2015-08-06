@@ -11,32 +11,33 @@
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
-;;; Purpose:          get-spectrum returns, as a list, the most prominent
-;;;                   frequencies in a sound file.  The list is ordered from the
-;;;                   most prominent to the least prominent frequency (:order-by
-;;;                   'amp) or the highest to lowest frequency (:order-by
-;;;                   'freq) and the number of elements in the list is set by
-;;;                   the <num-partials> parameter.  The instrument spec-an is
-;;;                   called by get-spectrum and is therefore not meant to be
-;;;                   used as a public function (it is written as an instrument
-;;;                   to take advantage of CLM's run-loop efficiency).  The
-;;;                   results of analysis are stored in
-;;;                   *mde-get-spectrum-last-result* so that if you request the
-;;;                   same analysis repeatedly, the analysis will not need to
-;;;                   be reperformed each time.  Be careful though, only the
-;;;                   input file, the ordering, the number of partials
-;;;                   requested and the analysis start time are used to detect
-;;;                   whether analysis has to be reperformed or not.  If you
-;;;                   want to force reanalysis, do (setf
-;;;                   *mde-get-spectrum-last-result* nil) before the call to
-;;;                   get-spectrum.
+;;; Purpose:          Used mainly by spectra.lsp, get-spectrum returns, as a
+;;;                   list, the most prominent frequencies in a sound file.
+;;;                   The list is ordered from the most prominent to the least
+;;;                   prominent frequency (:order-by 'amp) or the highest to
+;;;                   lowest frequency (:order-by 'freq) and the number of
+;;;                   elements in the list is set by the <num-partials>
+;;;                   parameter.  The instrument spec-an is called by
+;;;                   get-spectrum and is therefore not meant to be used as a
+;;;                   public function (it is written as an instrument to take
+;;;                   advantage of CLM's run-loop efficiency).  The results of
+;;;                   analysis are stored in
+;;;                   *slippery-chicken-get-spectrum-last-result* so that if
+;;;                   you request the same analysis repeatedly, the analysis
+;;;                   will not need to be reperformed each time.  Be careful
+;;;                   though, only the input file, the ordering, the number of
+;;;                   partials requested and the analysis start time are used
+;;;                   to detect whether analysis has to be reperformed or not.
+;;;                   If you want to force reanalysis, do (setf
+;;;                   *slippery-chicken-get-spectrum-last-result* nil) before
+;;;                   the call to get-spectrum.
 ;;; 
 ;;; Creation date:    This is very old code but it was added to slippery
 ;;;                   chicken on August 5th 2015
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
-;;; $$ Last modified: 15:44:07 Wed Aug  5 2015 BST
+;;; $$ Last modified: 08:32:38 Thu Aug  6 2015 BST
 ;;;
 ;;; SVN ID: $Id: get-spectrum.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
@@ -72,36 +73,13 @@
 
 (in-package :clm)
 
-(defvar *mde-get-spectrum-peak-freqs* 0)
-(defvar *mde-get-spectrum-peak-amps* 0)
-(defvar *mde-get-spectrum-last-result* nil)
+(defvar *slippery-chicken-get-spectrum-peak-freqs* 0)
+(defvar *slippery-chicken-get-spectrum-peak-amps* 0)
+(defvar *slippery-chicken-get-spectrum-last-result* nil)
 
 (defstruct mde-get-spectrum-partial freq amp)
 
-#|
-
-(create-analysis-data 
- "/music/limine/nuendo/zkm-compressed-reverb-32-16-mono.wav"
- :outputfile "/user/michael/mus/limine/fft-data.lsp" 
- :start-analysis 0
- :end 30
- :interval 1
- :srate 32000
- :num-partials 15)
-
-(read-from-file "/user/michael/mus/limine/fft-data.lsp")
-(read-from-file 
- "/music/limine/nuendo/zkm-compressed-reverb-32-16-mono-segment-min.txt")
-
-(get-spectrum
- "/music/limine/nuendo/zkm-compressed-reverb-32-16-mono.wav"
- :start-analysis 2.3
- :order-by 'freq
- :srate 32000
- :num-partials 8)
-
-|#
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun create-analysis-data (sndfile
                              &key
                              (outputfile nil)
@@ -118,15 +96,15 @@
                              (max-peaks 200)
                              (start-analysis 0.0) 
                              (highest-bin (/ fftsize 2)))
-  (let ((stop (or end (sound-duration sndfile)))
-        (amp-array (make-array num-partials))
-        (freq-array (make-array num-partials))
-        (normalised-amps nil)
-        (times (if (listp interval)
-                   interval
-                 (loop for start from start-analysis below stop by interval 
-                     collect start)))
-        (max-amp 0.0))
+  (let* ((stop (or end (sound-duration sndfile)))
+         (amp-array (make-array num-partials))
+         (freq-array (make-array num-partials))
+         (normalised-amps nil)
+         (times (if (listp interval)
+                    interval
+                    (loop for start from start-analysis below stop by interval 
+                       collect start)))
+         (max-amp 0.0))
     (loop ;; for start from start-analysis below stop by interval do
         for start in times do
           (format t "~&Analysing ~a at time ~a" sndfile start)
@@ -165,7 +143,7 @@
       (create-analysis-data-file outputfile freq-array amp-array))
     (values freq-array amp-array)))
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun create-analysis-data-file (outputfile freq-array amp-array)
   (with-open-file 
@@ -174,15 +152,7 @@
     (format stream "(~a~%~%" freq-array)
     (format stream "~a)~%~%" amp-array)))
 
-#|
-;; now in sc::utilities.lsp
-
-(defun read-from-file (file)
-  (with-open-file
-   (stream file :direction :input :if-does-not-exist :error)
-   (read stream)))
-|#
-                                  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; start-analysis is where in the snd to start freq analysis (in secs)
 ;; num-partials is the number of partials to return.  order-by is whether to
@@ -198,9 +168,9 @@
                           (normalise t)
                           (start-analysis 0.0) 
                           (highest-bin (/ fftsize 2)))
-  (declare (special *mde-get-spectrum-last-result*))
-  (declare (special *mde-get-spectrum-peak-amps*))
-  (declare (special *mde-get-spectrum-peak-freqs*))
+  (declare (special *slippery-chicken-get-spectrum-last-result*))
+  (declare (special *slippery-chicken-get-spectrum-peak-amps*))
+  (declare (special *slippery-chicken-get-spectrum-peak-freqs*))
   
   ;; Make sure the argument to order-by is acceptable.
   (when (not (or (eq order-by 'freq) (eq order-by 'amp)))
@@ -210,25 +180,25 @@
   ;; Test to see if we just called this function with the same file and
   ;; start-analysis values.  If so, return the last result, if not, perform the
   ;; analysis.
-  (if (and *mde-get-spectrum-last-result*
-           (and (stringp (third *mde-get-spectrum-last-result*))
-                (string-equal (third *mde-get-spectrum-last-result*) file))
-           (= (fourth *mde-get-spectrum-last-result*) start-analysis)
-           (eq (fifth *mde-get-spectrum-last-result*) order-by)
-           (= (sixth *mde-get-spectrum-last-result*) num-partials))
+  (if (and *slippery-chicken-get-spectrum-last-result*
+           (and (stringp (third *slippery-chicken-get-spectrum-last-result*))
+                (string-equal (third *slippery-chicken-get-spectrum-last-result*) file))
+           (= (fourth *slippery-chicken-get-spectrum-last-result*) start-analysis)
+           (eq (fifth *slippery-chicken-get-spectrum-last-result*) order-by)
+           (= (sixth *slippery-chicken-get-spectrum-last-result*) num-partials))
       (progn
         (print "Using previous analysis")
-        (values (first *mde-get-spectrum-last-result*)
-                (second *mde-get-spectrum-last-result*)))
+        (values (first *slippery-chicken-get-spectrum-last-result*)
+                (second *slippery-chicken-get-spectrum-last-result*)))
 
     ;; Here beginneth the analysis.
     (progn
 
       ;; Any old bs so we can fill it later (we can't (setf (first nil) x))
-      (setf *mde-get-spectrum-last-result* '(1 2 3 4 5 6)) 
+      (setf *slippery-chicken-get-spectrum-last-result* '(1 2 3 4 5 6)) 
 
       ;; Call the spec-an instrument to get our data stored in
-      ;; *mde-get-spectrum-peak-freqs/amps*
+      ;; *slippery-chicken-get-spectrum-peak-freqs/amps*
       (with-sound (:srate srate :play nil) 
         (spec-an file 
                  :fftsize fftsize 
@@ -246,22 +216,23 @@
         ;; If we're going to normalise the amps to 1.0, get the max amp now.
         (if normalise
             (loop for i from 0 below max-peaks do
-                  (setf amp (aref *mde-get-spectrum-peak-amps* i))
+                  (setf amp (aref *slippery-chicken-get-spectrum-peak-amps* i))
                   (if (> amp max-amp)
                       (setf max-amp amp)))
           (setf max-amp 1.0))
         (when (zerop max-amp)
           (error "get-spectrum: at ~f max-amp is 0!" start-analysis))
-
-        ;; Make the *mde-get-spectrum-partal* structures and store them in the
-        ;; freqs-amps list.
+        ;; Make the *slippery-chicken-get-spectrum-partal* structures and store
+        ;; them in the freqs-amps list.
         (loop for i from 0 below max-peaks do
               (setf tmp (make-mde-get-spectrum-partial 
-                         :freq (aref *mde-get-spectrum-peak-freqs* i) 
-                         :amp (/ (aref *mde-get-spectrum-peak-amps* i) 
+                         :freq (aref *slippery-chicken-get-spectrum-peak-freqs*
+                                     i) 
+                         :amp (/ (aref
+                                  *slippery-chicken-get-spectrum-peak-amps*
+                                  i) 
                                  max-amp)))
               (push tmp freqs-amps))
-
         ;; First sort the list from highest to lowest amp and get the loudest
         ;; <num-partials> elements.
         (setf ordered (subseq 
@@ -277,25 +248,22 @@
                                   ;; order from lowest to highest freq
                                   (< (mde-get-spectrum-partial-freq x)
                                      (mde-get-spectrum-partial-freq y)))))
-
               ;; Now just get the freqs.
               freqs (loop for i from 0 below num-partials collect 
                           (mde-get-spectrum-partial-freq (nth i ordered)))
-              
               ;; and now the amps
               amps (loop for i from 0 below num-partials collect 
                          (mde-get-spectrum-partial-amp (nth i ordered))))
-
         ;; Store the results of the analysis.
-        (setf (first *mde-get-spectrum-last-result*) freqs
-              (second *mde-get-spectrum-last-result*) amps
-              (third *mde-get-spectrum-last-result*) file
-              (fourth *mde-get-spectrum-last-result*) start-analysis
-              (fifth *mde-get-spectrum-last-result*) order-by
-              (sixth *mde-get-spectrum-last-result*) num-partials)
+        (setf (first *slippery-chicken-get-spectrum-last-result*) freqs
+              (second *slippery-chicken-get-spectrum-last-result*) amps
+              (third *slippery-chicken-get-spectrum-last-result*) file
+              (fourth *slippery-chicken-get-spectrum-last-result*) start-analysis
+              (fifth *slippery-chicken-get-spectrum-last-result*) order-by
+              (sixth *slippery-chicken-get-spectrum-last-result*) num-partials)
         (values freqs amps)))))
 
-  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
 ;;; Hacked code from Bill's san.ins 
 (definstrument spec-an
     (file &key (fftsize 4096) (max-peaks 200)
@@ -311,16 +279,18 @@
          (peak-amps (make-double-float-array max-peaks :initial-element 0.0))
          (peak-freqs (make-double-float-array max-peaks :initial-element 0.0))
          (peaks 0))
-    ;;(declare (special *mde-get-spectrum-peak-amps*))
-    ;;(declare (special *mde-get-spectrum-peak-freqs*))
-    (setf *mde-get-spectrum-peak-amps* 
+    ;;(declare (special *slippery-chicken-get-spectrum-peak-amps*))
+    ;;(declare (special *slippery-chicken-get-spectrum-peak-freqs*))
+    (setf *slippery-chicken-get-spectrum-peak-amps* 
       (make-double-float-array max-peaks :initial-element 0.0)
-      *mde-get-spectrum-peak-freqs* 
+      *slippery-chicken-get-spectrum-peak-freqs* 
       (make-double-float-array max-peaks :initial-element 0.0))
-    (format t "~&start: ~a, start-analysis-sample: ~a" 
-            start-analysis start-analysis-sample)
+    (when printing
+      (format t "~&start: ~a, start-analysis-sample: ~a" 
+              start-analysis start-analysis-sample))
     (run* 
-     (*mde-get-spectrum-peak-freqs* *mde-get-spectrum-peak-amps*)
+     (*slippery-chicken-get-spectrum-peak-freqs*
+      *slippery-chicken-get-spectrum-peak-amps*)
      (progn
        (dotimes (k fftsize)
          (setf (aref fdr k) (readin rd)))
@@ -379,19 +349,45 @@
                    (progn
                      (setf (aref peak-freqs peaks) freq) 
                      (setf (aref peak-amps peaks) amp)
-                     (setf (aref *mde-get-spectrum-peak-freqs*
+                     (setf (aref *slippery-chicken-get-spectrum-peak-freqs*
                                  peaks)
                        freq) 
-                     (setf (aref *mde-get-spectrum-peak-amps*
+                     (setf (aref *slippery-chicken-get-spectrum-peak-amps*
                                  peaks) amp)
                      (when printing
                        (clm-print "freq = ~f amp = ~f~&" 
                                   (aref
-                                   *mde-get-spectrum-peak-freqs*
+                                   *slippery-chicken-get-spectrum-peak-freqs*
                                    peaks)
                                   amp))
                      (incf peaks)))))))))
     (close-input fil)))
-                       
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#|
+;;; some examples:
+
+(create-analysis-data 
+ "/music/limine/nuendo/zkm-compressed-reverb-32-16-mono.wav"
+ :outputfile "/user/michael/mus/limine/fft-data.lsp" 
+ :start-analysis 0
+ :end 30
+ :interval 1
+ :srate 32000
+ :num-partials 15)
+
+(read-from-file "/user/michael/mus/limine/fft-data.lsp")
+(read-from-file 
+ "/music/limine/nuendo/zkm-compressed-reverb-32-16-mono-segment-min.txt")
+
+(get-spectrum
+ "/music/limine/nuendo/zkm-compressed-reverb-32-16-mono.wav"
+ :start-analysis 2.3
+ :order-by 'freq
+ :srate 32000
+ :num-partials 8)
+
+|#
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF get-spectrum.lsp

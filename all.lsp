@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 14:07:49 Wed Aug  5 2015 BST
+;;; $$ Last modified: 20:09:16 Wed Aug  5 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -215,7 +215,6 @@
 (sc-compile-and-load "rhythm.lsp")
 (sc-compile-and-load "pitch.lsp")
 (sc-compile-and-load "instrument.lsp")
-(sc-compile-and-load "piano-spectrum.lsp" t)
 (sc-compile-and-load "chord.lsp")
 (sc-compile-and-load "event.lsp")
 (sc-compile-and-load "time-sig.lsp")
@@ -247,7 +246,7 @@
 (sc-compile-and-load "slippery-chicken.lsp")
 (sc-compile-and-load "piece.lsp")
 (sc-compile-and-load "slippery-chicken-edit.lsp")
-(sc-compile-and-load "clm.lsp")
+#+clm (sc-compile-and-load "clm.lsp")
 (sc-compile-and-load "permutations.lsp")
 (sc-compile-and-load "rthm-chain.lsp")
 (sc-compile-and-load "rthm-chain-slow.lsp")
@@ -261,6 +260,7 @@
 (sc-compile-and-load "popcorn.lsp")
 #+(and darwin sbcl) (sc-compile-and-load "osc.lsp")
 #+(and darwin sbcl) (sc-compile-and-load "osc-sc.lsp")
+(sc-compile-and-load "spectra.lsp" t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF all.lsp

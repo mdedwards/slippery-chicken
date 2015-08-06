@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 21:07:56 Wed Jul 29 2015 BST
+;;; $$ Last modified: 10:06:58 Thu Aug  6 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -340,7 +340,8 @@ data: VELVET
                       :warn-not-found (warn-not-found ral)))))
   ;; psp's parse their data later so don't do this here.
   (unless (typep ral 'pitch-seq-palette)
-    (setf (num-data ral) (r-count-elements ral))))
+    (setf (num-data ral) (r-count-elements ral)))
+  ral)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 12:47:22 Thu Aug  6 2015 BST
+;;; $$ Last modified: 11:57:31 Wed Aug 12 2015 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1295,7 +1295,10 @@ COMPLETE-SET: complete: NIL
     ;; MDE Wed Jul 29 20:54:31 2015 -- TODO: hmm, somehow we have to do this
     ;; twice...look into this
     (relink-named-objects sp)
-    (relink-named-objects sp)))
+    (relink-named-objects sp)
+    ;;  MDE Wed Aug 12 11:53:57 2015
+    (setf (num-data sp) (r-count-elements sp))
+    sp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

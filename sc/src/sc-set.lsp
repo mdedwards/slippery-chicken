@@ -5,7 +5,8 @@
 ;;;
 ;;; File:             sc-set.lsp
 ;;;
-;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> sc-set
+;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> chord ->
+;;;                   sc-set
 ;;;
 ;;; Version:          1.0.5
 ;;;
@@ -18,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 12:37:22 Wed Jul 29 2015 BST
+;;; $$ Last modified: 16:23:41 Wed Aug 12 2015 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -684,12 +685,6 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
                  :invert t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Feb  7 18:33:53 GMT 2012: Deleted MDE's original comments here. The
-;;; wording has been changed considerably, but the content is the same.
-
-;;; SAR Tue Feb  7 18:27:46 GMT 2012: Added robodoc entry
-
 ;;; ****m* sc-set/get-semitones
 ;;; DESCRIPTION
 ;;; Get the distances in semitones of each pitch in a given sc-set
@@ -936,70 +931,6 @@ data: (G2 A2 CS4 A4 A4 A5 C6 C6 FS6)
     ;; original set 
     (make-sc-set (if by-freq result (data chord)) :id (if id id (id s)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Feb 11 12:11:13 GMT 2012: Edited MDE's doc comments.
-
-;;; SAR Mon Feb  6 16:02:02 GMT 2012: Added robodoc entry and delete MDE
-;;; comment here as it was taken into the robodoc nearly verbatim
-
-;;; ****m* sc-set/get-interval-structure
-;;; DESCRIPTION
-;;; Get the distances between each pitch in a given sc-set object and the
-;;; lowest pitch in that object in DEGREES (which default to quarter-tones in
-;;; slippery chicken). This method assumes that the given sc-set object is
-;;; sorted from low to high, which is the default action for sc-set objects.
-;;; 
-;;; ARGUMENTS
-;;; - An sc-set object.
-;;;
-;;; OPTIONAL
-;;; - T or NIL indicating whether to return values in semitones or default of
-;;;   degrees. Special case: if this argument is 'frequencies, then the
-;;;   interval structure will be returned as frequency differences. T =
-;;;   semitones. Default = NIL.
-;;; 
-;;; RETURN VALUE
-;;; A list of integers.
-;;; 
-;;; EXAMPLE
-#|
-;;; Returns the distances in degrees (which are quarter-tones by default
-;;; in slippery chicken--use (in-scale :chromatic) at the top of your code to
-;;; set to the chromatic scale):
-
-(let ((mscs (make-sc-set '(c4 e4 g4))))
-  (get-interval-structure mscs))
-
-=> (8 14)
-
-;;; Return semitones
-(let ((mscs (make-sc-set '(c4 e4 g4))))
-  (get-interval-structure mscs t))
-
-=> (4 7)
-
-|#
-;;; SYNOPSIS
-(defmethod get-interval-structure ((s sc-set) &optional in-semitones ignore)
-;;; ****
-  (declare (ignore ignore))
-  (if (zerop (sclist-length s)) ; in case we have a nil chord
-      '(0.0)
-      (let* ((freqs (eq in-semitones 'frequencies))
-             (lowest (if freqs 
-                         (frequency (first (data s)))
-                         (degree (first (data s)))))
-             ;; MDE Sat Feb 11 10:44:46 2012
-             (dps (degrees-per-semitone)))
-        (loop for i in (rest (data s)) 
-           for diff = (float (- (if freqs (frequency i) (degree i))
-                                lowest))
-           collect
-             (if (eq in-semitones t)
-                 (/ diff dps)
-                 diff)))))
-     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Mon Feb  6 16:07:24 GMT 2012: Added robodoc entry

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 12:46:34 Thu Aug  6 2015 BST
+;;; $$ Last modified: 18:40:33 Wed Aug 12 2015 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1101,6 +1101,77 @@ data: (
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Aug 12 13:31:04 2015 -- 
+;;; ****m* chord/similarity
+;;; DATE
+;;; 12th August 2015, Wals, Austria
+;;; 
+;;; DESCRIPTION
+;;; Calculates the similarity of two chord objects on a scale of 0.0-1.0. This
+;;; weights equally the number of common notes and the interval structure
+;;; between adjacent notes.
+;;; 
+;;; ARGUMENTS
+;;; - the first chord object
+;;; - the second chord object
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether enharmonic notes should be treated as
+;;;   equal. Even when NIL, enharmonic equivalents will still score high
+;;;   overall, just not perfect.
+;;; - T or NIL to indicate whether octave equivalents such as f#1 and f#2
+;;;   should result in higher scores.
+;;; 
+;;; RETURN VALUE
+;;; a number between 0.0 and 1.0, with 1.0 being the same exact chord and 0.0
+;;; being two chords with no notes and no adjacent intervals in common.
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+(similarity (make-chord '(c4 e4 g4)) (make-chord '(c4 e4 g4)))
+=> 1.0
+(similarity (make-chord '(c4 e4 g4)) (make-chord '(df4 f4 af4)))
+=> 0.5
+(similarity (make-chord '(c1 cs1 f1 b1)) (make-chord '(d1 e1 fs1 gs1 as1)))
+=> 0.0
+(similarity (make-chord '(cs4 es4 gs4)) (make-chord '(df4 f4 af4)))
+=> 1.0
+(similarity (make-chord '(cs4 es4 gs4)) (make-chord '(df4 f4 af4)) nil)
+=> 0.75
+
+|#
+;;; SYNOPSIS
+(defmethod similarity ((c1 chord) (c2 chord)
+                       &optional (enharmonics-are-equal t)
+                         (octaves-are-true nil))
+
+;;; ****
+  (let* ((common1 (common-notes c1 c2 enharmonics-are-equal octaves-are-true))
+         (common2 (common-notes c1 c2 t t))
+         ;; our common notes are the average of common notes with the caller's
+         ;; optional arguments and the common notes with both optional
+         ;; arguments set to t. If the optional arguments were T anyway,
+         ;; there'll be no difference.
+         (common (/ (+ common1 common2) 2))
+         (c1n (sclist-length c1))
+         (c2n (sclist-length c2))
+         (cscore (if (zerop common)
+                    0.0
+                    ;; average common notes ratio for each of the two chords
+                    (/ (+ (/ common c1n)
+                          (/ common c2n))
+                       2.0)))
+         (is1 (get-interval-structure c1 t t))
+         (is2 (get-interval-structure c2 t t))
+         (isi (intersection is1 is2))
+         (isscore (float (/ (length isi) (1- (max c1n c2n))))))
+    ;; (format t "~%~a ~a: ~a, ~a ~a" is1 is2 isi isscore cscore)
+    ;; max score is 1.0 (min 0.0)
+    (* 0.5 (+ cscore isscore))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; This doesn't count a natural even if it's been told to display
 
@@ -1474,7 +1545,7 @@ data: (
     (format stream "~a" result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  MDE Fri Aug 10 16:17:59 2012 -- pitches can be pitch objects or any data
+;;; MDE Fri Aug 10 16:17:59 2012 -- pitches can be pitch objects or any data
 ;;; that can be passed to make-pitch, or indeed lists of these, as they will be
 ;;; flattened. 
 ;;; e.g.
@@ -1598,9 +1669,72 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jan  9 09:59:43 2014 -- for convenience.
-(defmethod get-interval-structure ((c chord) &optional in-semitones (rm-dups t))
-  ;; just promote to an sc-set and call the method there.
-  (get-interval-structure (make-sc-set c :rm-dups rm-dups) in-semitones))
+;;; just promote to an sc-set and call the method there.
+;;; (get-interval-structure (make-sc-set c :rm-dups rm-dups) in-semitones))
+;;; MDE Wed Aug 12 13:35:55 2015 -- moved the code from the sc-set class into
+;;; the chord class as the former is now a subclass of chord
+
+;;; ****m* chord/get-interval-structure
+;;; DESCRIPTION
+;;; Get the distances between each pitch in a given sc-set object and the
+;;; lowest (or neighbouring) pitch in that object in DEGREES (which default to
+;;; quarter-tones in slippery chicken). This method assumes that the given
+;;; sc-set object is sorted from low to high, which is the default action for
+;;; sc-set objects.
+;;; 
+;;; ARGUMENTS
+;;; - An sc-set object.
+;;;
+;;; OPTIONAL
+;;; - T or NIL indicating whether to return values in semitones or default of
+;;;   degrees. Special case: if this argument is 'frequencies, then the
+;;;   interval structure will be returned as frequency differences. T =
+;;;   semitones. Default = NIL.
+;;; - T or NIL to indicated whether we should return intervals from pitch to
+;;;   pitch (T) or from the lowest to each pitch (NIL). Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; A list of integers.
+;;; 
+;;; EXAMPLE
+#|
+;;; Returns the distances in degrees (which are quarter-tones by default
+;;; in slippery chicken--use (in-scale :chromatic) at the top of your code to
+;;; set to the chromatic scale):
+
+(get-interval-structure (make-chord '(c4 e4 g4)))
+
+=> (8.0 14.0)
+
+;;; Return semitones
+(get-interval-structure (make-chord '(c4 e4 g4)) t))
+
+;;; Interval structure not from lowest but from pitch to pitch (ascending)
+(get-interval-structure (make-chord '(c4 e4 g4 b4)) t t)
+(4.0 3.0 4.0)
+
+=> (4.0 7.0)
+|#
+;;; SYNOPSIS
+(defmethod get-interval-structure ((c chord) &optional in-semitones neighbour)
+;;; ****
+  (if (zerop (sclist-length c))         ; in case we have a nil chord
+      '(0.0)
+      (let* ((freqs (eq in-semitones 'frequencies))
+             (lowest (if freqs 
+                         (frequency (first (data c)))
+                         (degree (first (data c)))))
+             (last lowest)
+             ;; MDE Sat Feb 11 10:44:46 2012
+             (dps (degrees-per-semitone)))
+        (loop for p in (rest (data c))
+           for pd = (if freqs (frequency p) (degree p))
+           for diff = (float (- pd last))
+           collect
+             (if (eq in-semitones t)
+                 (/ diff dps)
+                 diff)
+           do (when neighbour (setq last pd))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Aug 25 18:24:41 2014 

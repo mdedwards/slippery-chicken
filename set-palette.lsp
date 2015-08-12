@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 11:57:31 Wed Aug 12 2015 CEST
+;;; $$ Last modified: 13:26:08 Wed Aug 12 2015 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -893,6 +893,10 @@ data: (C4 F4 A4 C5)
           (error "set-palette::auto-sequence: Found duplicates!"))
         (values (nreverse result) (nreverse deviations))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod remove-similar ((sp set-palette))
+  )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod quality-extremes ((sp set-palette))
   (let* ((dmin most-positive-double-float)

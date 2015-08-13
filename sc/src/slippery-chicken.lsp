@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:09:30 Thu Jul 30 2015 BST
+;;; $$ Last modified: 11:52:50 Thu Aug 13 2015 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -460,6 +460,11 @@
 (defmethod initialize-instance :after ((sc slippery-chicken) &rest initargs)
   (declare (ignore initargs)
            (special +slippery-chicken-standard-instrument-palette+))
+  ;; MDE Thu Aug 13 11:36:48 2015 -- do this here rather than in
+  ;; make-slippery-chicken, so that sc subclasses get the global too:
+  ;; we make the given name a global, which is a bit old-fashioned but handy.
+  (when (id sc)
+    (set (id sc) sc))
   ;; MDE Sat Mar 31 09:27:31 2012 
   (unless (pitch-seq-index-scaler-min sc)
     (setf (pitch-seq-index-scaler-min sc) 0.5))
@@ -7955,40 +7960,38 @@ NOTE 6200 0.6666667
                                      (key-sig '(c major))
                                      (warn-ties t))
 ;;; ****                                
-  ;; we make the given name a global, which is a bit old-fashioned but handy.
-  (set name
-       (make-instance 'slippery-chicken 
-                      :id name
-                      :title title
-                      :subtitle subtitle
-                      :composer composer
-                      :rthm-seq-palette rthm-seq-palette
-                      :rthm-seq-map rthm-seq-map
-                      :rthm-seq-map-replacements rthm-seq-map-replacements
-                      :set-palette set-palette 
-                      :set-map set-map
-                      :set-map-replacements set-map-replacements
-                      :instruments-write-bar-nums instruments-write-bar-nums
-                      :staff-groupings staff-groupings
-                      :rehearsal-letters rehearsal-letters
-                      :instrument-change-map instrument-change-map
-                      :snd-output-dir snd-output-dir
-                      :sndfile-palette sndfile-palette
-                      :instrument-palette instrument-palette
-                      :tempo-map tempo-map
-                      :tempo-curve tempo-curve
-                      :defer defer
-                      :bars-per-system-map bars-per-system-map
-                      :ensemble ensemble
-                      :instruments-hierarchy instruments-hierarchy
-                      :set-limits-low set-limits-low 
-                      :set-limits-high set-limits-high
-                      :fast-leap-threshold fast-leap-threshold
-                      :pitch-seq-index-scaler-min pitch-seq-index-scaler-min
-                      :avoid-melodic-octaves avoid-melodic-octaves
-                      :avoid-used-notes avoid-used-notes
-                      :key-sig key-sig
-                      :warn-ties warn-ties)))
+  (make-instance 'slippery-chicken 
+                 :id name
+                 :title title
+                 :subtitle subtitle
+                 :composer composer
+                 :rthm-seq-palette rthm-seq-palette
+                 :rthm-seq-map rthm-seq-map
+                 :rthm-seq-map-replacements rthm-seq-map-replacements
+                 :set-palette set-palette 
+                 :set-map set-map
+                 :set-map-replacements set-map-replacements
+                 :instruments-write-bar-nums instruments-write-bar-nums
+                 :staff-groupings staff-groupings
+                 :rehearsal-letters rehearsal-letters
+                 :instrument-change-map instrument-change-map
+                 :snd-output-dir snd-output-dir
+                 :sndfile-palette sndfile-palette
+                 :instrument-palette instrument-palette
+                 :tempo-map tempo-map
+                 :tempo-curve tempo-curve
+                 :defer defer
+                 :bars-per-system-map bars-per-system-map
+                 :ensemble ensemble
+                 :instruments-hierarchy instruments-hierarchy
+                 :set-limits-low set-limits-low 
+                 :set-limits-high set-limits-high
+                 :fast-leap-threshold fast-leap-threshold
+                 :pitch-seq-index-scaler-min pitch-seq-index-scaler-min
+                 :avoid-melodic-octaves avoid-melodic-octaves
+                 :avoid-used-notes avoid-used-notes
+                 :key-sig key-sig
+                 :warn-ties warn-ties))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

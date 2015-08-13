@@ -13,15 +13,15 @@
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
-;;; Purpose:          Implementation of the palette class which adds nothing to
-;;;                   its direct superclass assoc-list (as of yet) but spawns a
-;;;                   new base type for more specialised palettes.
+;;; Purpose:          Implementation of the palette class which adds very little
+;;;                   to its direct superclass assoc-list (as of yet) but spawns
+;;;                   a new base type for more specialised palettes.
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 19:45:19 Mon Oct 28 2013 GMT
+;;; $$ Last modified: 18:47:59 Wed Aug 12 2015 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -47,13 +47,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 02.12.11 SEAN: Changed ROBODoc header to reflect class hierarchy
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)

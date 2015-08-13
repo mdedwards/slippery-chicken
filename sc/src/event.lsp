@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:53:05 Thu Jul  2 2015 BST
+;;; $$ Last modified: 12:47:47 Thu Aug 13 2015 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3322,7 +3322,7 @@ do (add-mark-before e m))
 ;;; 
 ;;; EXAMPLE
 #|
-;; A quarter-note (crotchet) C          ;
+;; A quarter-note (crotchet) C          
                      (make-event 'c4 4)
 
                      => 
@@ -3363,13 +3363,13 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: 4, tag: NIL, 
 data: 4
 
-;; Create a whole-note (semi-breve) chord, then print its data, value, duration ;
-;; and pitch content                    ;
+;; Create a whole-note (semi-breve) chord, then print its data, value, duration 
+;; and pitch content                    
 (let ((e (make-event '(c4 e4 g4) 4 :duration t)))
-(print (data e))
-(print (value e))
-(print (duration e))
-(print (loop for p in (data (pitch-or-chord e)) collect (data p))))
+  (print (data e))
+  (print (value e))
+  (print (duration e))
+  (print (loop for p in (data (pitch-or-chord e)) collect (data p))))
 
 =>
 W 
@@ -3377,28 +3377,28 @@ W
 4.0 
 (C4 E4 G4) 
 
-;; Create a single-pitch quarter-note event which is tied to, plays back on ;
-;; MIDI channel 1 and has an amplitude of 0.5, then print these values by ;
-;; accessing the corresponding slots.   ;
+;; Create a single-pitch quarter-note event which is tied to, plays back on 
+;; MIDI channel 1 and has an amplitude of 0.5, then print these values by 
+;; accessing the corresponding slots.   
 (let ((e (make-event 'c4 4 
-:is-tied-to t 
-:midi-channel 1 
-:amplitude 0.5)))
-(print (is-tied-to e))
-(print (midi-channel (pitch-or-chord e)))
-(print (amplitude e)))
+                     :is-tied-to t 
+                     :midi-channel 1 
+                     :amplitude 0.5)))
+  (print (is-tied-to e))
+  (print (midi-channel (pitch-or-chord e)))
+  (print (amplitude e)))
 
 =>
 T 
 1 
 0.5
 
-;; Create an event object that consists of a quarter-note rest and print the ;
-;; contents of the corresponding slots  ;
+;; Create an event object that consists of a quarter-note rest and print the 
+;; contents of the corresponding slots  
 (let ((e (make-event nil 'q :is-rest t)))
-(print (pitch-or-chord e))
-(print (data e))
-(print (is-rest e)))
+  (print (pitch-or-chord e))
+  (print (data e))
+  (print (is-rest e)))
 
 =>
 NIL 

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 12:23:24 Fri Jul 24 2015 BST
+;;; $$ Last modified: 11:14:05 Thu Aug 13 2015 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -637,7 +637,8 @@ data: NIL
   rsb)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Wed May  2 17:22:02 BST 2012: Added robodoc entry
+;;; MDE Thu Aug 13 10:56:20 2015 -- we need an approach for complext tuplets
+;;; here also, as we can't split into beats there. 
 
 ;;; ****m* rthm-seq-bar/consolidate-rests
 ;;; DESCRIPTION
@@ -5195,7 +5196,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Jun 24 18:25:35 2015 -- when we've got nested tuplets we run into
 ;;; the problem of how many flags we need (and therefore, for Lilypond, what
-;;; the letter-value slot should be). 
+;;; the letter-value slot should be). 
 ;; ;(on-fail #'warn))
 (defmethod fix-nested-tuplets ((rsb rthm-seq-bar) &optional on-fail)
   (flet ((compound-tuplet (r)
@@ -5253,6 +5254,19 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
                        (<= pos (third ts))))
          (return t))
      finally (return nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Aug 13 11:11:16 2015  
+(defmethod change-pitches ((rsb rthm-seq-bar) pitch-list start stop
+                           &key written)
+  (loop for i from start below stop
+     for e = (nth i (rhythms rsb))
+     do
+       (when (and e (not (is-rest e)))
+         (if written
+             (set-written-pitch-or-chord e (make-pitch (pop pitch-list)))
+             (setf (pitch-or-chord e) (make-pitch (pop pitch-list))))))
+  pitch-list)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

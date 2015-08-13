@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 13:26:08 Wed Aug 12 2015 CEST
+;;; $$ Last modified: 19:58:49 Wed Aug 12 2015 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -895,8 +895,49 @@ data: (C4 F4 A4 C5)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod remove-similar ((sp set-palette))
-  )
+;;; ****m* set-palette/remove-similar
+;;; DATE
+;;; 12th August 2015, Wals, Austria
+;;; 
+;;; DESCRIPTION
+;;; Remove similar sets from a palette when two sets are deemed
+;;; similar. The set furthest down the data list will remain, whatever the
+;;; ID.
+;;;
+;;; We used the chord method similarity to remove csets from the palette, so
+;;; see that method for further information and for keyword argument
+;;; descriptions.
+;;; 
+;;; ARGUMENTS
+;;; - the set-palette object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :threshold. The lowest value that the chord class's similarity method may
+;;;    return in order to trigger removal. Default = 0.8
+;;; - :clone. Whether to clone the set-palette object before removing sets.
+;;; - :enharmonics-are-equal. See similarity method. Default = T.
+;;; - :octaves-are-true. See similarity method. Default = NIL.
+;;; RETURN VALUE
+;;; the pared-down set-palette object
+;;; 
+;;; SYNOPSIS
+(defmethod remove-similar ((sp set-palette) &key (threshold 0.8)
+                                              (clone nil)
+                                              (enharmonics-are-equal t)
+                                              (octaves-are-true nil))
+;;; ****
+  (when clone (setq sp (clone sp)))
+  (setf (data sp)
+        (remove-duplicates (data sp)
+                           :test #'(lambda (x y)
+                                     (>= (similarity x y enharmonics-are-equal
+                                                     octaves-are-true)
+                                         threshold))))
+  (relink-named-objects sp)
+  (setf (num-data sp) (r-count-elements sp))
+  sp)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod quality-extremes ((sp set-palette))
   (let* ((dmin most-positive-double-float)
@@ -1185,7 +1226,7 @@ data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
   (typep thing 'set-palette))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  Ring Modulation routines
+;;; Ring Modulation routines
 
 ;;; SAR Wed Feb  8 12:48:17 GMT 2012: Edited robodoc entry
 ;;; 
@@ -1300,7 +1341,7 @@ COMPLETE-SET: complete: NIL
     ;; twice...look into this
     (relink-named-objects sp)
     (relink-named-objects sp)
-    ;;  MDE Wed Aug 12 11:53:57 2015
+    ;; MDE Wed Aug 12 11:53:57 2015
     (setf (num-data sp) (r-count-elements sp))
     sp))
 
@@ -1326,7 +1367,7 @@ COMPLETE-SET: complete: NIL
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments
 ;;; - :partials. A list of integers that are the partials which the method uses
-;;;   to ring modulate.  We create partials ascending from the reference-note
+;;;   to ring modulate. We create partials ascending from the reference-note
 ;;;   but also ascending from a fundamental calculated so that reference-note
 ;;;   would be the highest partial in the partials list.  E.g. if
 ;;;   reference-note were 'a4 (440Hz) and :partials was '(1 2) we'd have
@@ -1347,9 +1388,10 @@ COMPLETE-SET: complete: NIL
 ;;; - :ring-mod-bass-octave. An integer that is the MIDI octave reference
 ;;;   number (such as the 4 in 'C4), indicating the octave from which the bass
 ;;;   note(s) are to be taken.
-;;; - :force-chromatic. T or NIL. If T, force all micro-tone slots of pitch objects
-;;;   to be NIL so that they won't be filtered out when a set is to be used by a
-;;;   chromatic instrument. See sc-set class force-micro-tone for more details.
+;;; - :force-chromatic. T or NIL. If T, force all micro-tone slots of pitch
+;;;   objects to be NIL so that they won't be filtered out when a set is to be
+;;;   used by a chromatic instrument. See sc-set class force-micro-tone for
+;;;   more details.
 ;;; - :start-id. An integer which represents the ID number for the first
 ;;;   set. This will be incremented for each subsequent set generated.
 ;;; 

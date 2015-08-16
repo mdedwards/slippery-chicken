@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 12:49:08 Thu Aug  6 2015 BST
+;;; $$ Last modified: 13:52:46 Fri Aug 14 2015 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -116,7 +116,12 @@
      ;; dissonance and spectral centroid calcuation. See spectra.lsp for more
      ;; details about references into +slippery-chicken-spectra+ (such as
      ;; akoustik-piano-spectra) or see the get-spectrum function in chord.lsp
-     ;; for a description of the format this data can take.
+     ;; for a description of the format this data can take. Currently
+     ;; slippery-chicken defines three spectra: akoustik-piano-spectra,
+     ;; clm-piano-spectra, and violin-ensemble-spectra. Bear in mind that if
+     ;; you change this it would be best to start slippery-chicken again (or at
+     ;; least regenerated a piece's data) so that chord's/set's
+     ;; dissonance/centroid values are recalculated with the new spectra.
      (default-spectra akoustik-piano-spectra)
      ;; font size for CMN bar numbers
      (cmn-bar-num-size-for-sc 6))))

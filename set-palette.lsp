@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 19:58:49 Wed Aug 12 2015 CEST
+;;; $$ Last modified: 13:41:03 Fri Aug 14 2015 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -728,7 +728,8 @@ data: (C4 F4 A4 C5)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - dissonance-env: The desired dissonance envelope. Default '(0 .1 62 1 100 .3)
+;;; - dissonance-env: The desired dissonance envelope.
+;;;   Default '(0 .1 62 1 100 .3)
 ;;; - centroid-env:  The desired spectral centroid envelope.
 ;;;   Default '(0 .4 62 1 100 .2) 
 ;;; - dissonance-weight: A weighting factor (scaler) applied to
@@ -742,8 +743,9 @@ data: (C4 F4 A4 C5)
 ;;; - silent: Whether to print warnings or not. Default NIL
 ;;; 
 ;;; RETURN VALUE
-;;; A list of the full references of the sets in the set palette in the
-;;; automatically determined order
+;;; Two values: A list of the full references of the sets in the set palette in
+;;; the automatically determined order, along with a list of the deviations
+;;; from the ideal this order represents.
 ;;; 
 ;;; EXAMPLE
 #|

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified: 11:55:29 Thu Jul 23 2015 BST
+;;; $$ Last modified: 22:29:06 Tue Aug 18 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -49,11 +49,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -339,6 +334,38 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
     (limit-ral (subsets tls) u l)
     (when do-related-sets
       (limit-ral (related-sets tls) u l)))
+  tls)
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Aug 18 21:10:39 2015 -- 
+(defmethod limit-shift-octave ((tls tl-set) &key upper lower
+                                              do-related-sets)
+  (let ((upper (limit-get-pitch upper 'b10)) ;; 'b10 and 'c0 are just defaults
+        (lower (limit-get-pitch lower 'c0))
+        new8ve changes newp)
+    (loop for p in (data tls) and i from 0 do
+         (when (or (pitch> p upper)
+                   (pitch< p lower))
+           ;; (print (data p))
+           (push (clone p) changes)
+           ;; preference notes in higher octaves if there's a tie
+           (setq new8ve (least-used-octave tls :highest-wins t
+                                                  :avoiding (octave p)))
+           ;; make sure moving doesn't take us out of our limits
+           (loop for i in '(0 1 2 3 4 -1 -2 -3 -4) do
+                (setq newp (transpose-to-octave p (+ i new8ve)))
+                (when (and (pitch<= newp upper)
+                           (pitch>= newp lower))
+                  (return))
+              ;; will only trigger if we don't call return
+              finally (error "tl-set::limit-shift-octave: can't fit pitch: ~a"
+                             p))
+           (setf (nth i (data tls)) newp)
+           (push new8ve changes)))
+    (ral-change-pitches (subsets tls) changes)
+    (when do-related-sets
+      (ral-change-pitches (related-sets tls) changes)))
+  (verify-and-store tls)
   tls)
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -678,20 +705,39 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
   (if p
       (if (typep p 'pitch)
           p
-        (make-pitch p))
-    (make-pitch default)))
+          (make-pitch p))
+      (make-pitch default)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun limit-ral (ral upper lower)
   (loop for i in (data ral) and j from 0 do
-        (if (is-ral (data i))
-            (limit-ral (data i) upper lower)
-          (setf (data (nth j (data ral)))
-            (limit-aux (data i) upper lower)))))
+       (if (is-ral (data i))
+           (limit-ral (data i) upper lower)
+           (setf (data (nth j (data ral)))
+                 (limit-aux (data i) upper lower)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Aug 18 21:23:11 2015
+(defun ral-change-pitches (ral changes)
+  (loop for i in (data ral) and j from 0 do
+        (if (is-ral (data i))
+            (ral-change-pitches (data i) changes)
+          (setf (data (nth j (data ral)))
+                (ral-change-pitches-aux (data i) changes)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 
+(defun ral-change-pitches-aux (pitches changes)
+  (loop with pos for p in pitches collect
+       (if (setq pos (position p changes
+                               :test #'(lambda (x y)
+                                         (when (and (pitch-p x) (pitch-p y))
+                                           (pitch= x y)))))
+           (transpose-to-octave p (nth (1+ pos) changes))
+           p)))
+           
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; pitch-list is a list of pitches, lower and upper are both pitch objects.
 
 (defun limit-aux (pitch-list upper lower)
@@ -701,8 +747,8 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
            lower upper))
   (unless (and (listp pitch-list)
                (loop for p in pitch-list
-                   unless (typep p 'pitch) do (return nil)
-                   finally (return t)))
+                  unless (typep p 'pitch) do (return nil)
+                  finally (return t)))
     (error "tl-set::limit-aux: ~
             pitch-list must be a simple list of pitch objects: ~a"
            pitch-list))
@@ -720,5 +766,4 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
             (transpose-pitch-list (data i) semitones)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF tl-set.lsp

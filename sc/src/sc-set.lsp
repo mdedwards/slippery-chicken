@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 16:23:41 Wed Aug 12 2015 CEST
+;;; $$ Last modified: 22:16:56 Tue Aug 18 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1392,6 +1392,33 @@ data: E4
 (defmethod average-pitch ((s sc-set))
 ;;; ****
   (make-pitch (/ (loop for p in (data s) sum (frequency p)) (sclist-length s))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Aug 18 17:12:18 2015 -- 
+(defmethod least-used-octave ((s sc-set) &key (highest-wins t) avoiding)
+  (least-used-octave-aux s (if highest-wins #'<= #'<) avoiding))
+
+(defmethod most-used-octave ((s sc-set) &key (highest-wins t) avoiding)
+  (least-used-octave-aux s (if highest-wins #'>= #'>) avoiding))
+
+(defmethod least-used-octave-aux ((s sc-set) test avoiding)
+  (unless (listp avoiding) (setq avoiding (list avoiding)))
+  (let ((8vecs (ml 0 11))
+        (low8 (octave (lowest s)))
+        (hi8 (octave (highest s)))
+        result)
+    ;; octaves can be as low -1 so 1+ them here
+    (loop for p in (data s) do (incf (nth (1+ (octave p)) 8vecs)))
+    ;; only include those octaves within the highest and lowest notes (so no
+    ;; extremes unless the chord has notes in those extremes)
+    (loop for 8ve from -1 for 8vec in 8vecs with num do
+         (when (and (or (not num) (funcall test 8vec num))
+                    (not (member 8ve avoiding))
+                    (>= 8ve low8)
+                    (<= 8ve hi8))
+           (setq num 8vec
+                 result 8ve)))
+    result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

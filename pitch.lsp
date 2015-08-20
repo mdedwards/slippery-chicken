@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 20:41:34 Mon May  5 2014 BST
+;;; $$ Last modified: 10:34:39 Wed Aug 19 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -587,8 +587,9 @@ data: C5
                                 (as-symbol nil)
                                 (package :sc))
 ;;; ****
-  (unless (integer>=0 new-octave)
-    (error "pitch::transpose-to-octave: octave must be an integer >= 0: ~a"
+  ;; MDE Wed Aug 19 10:33:21 2015 -- octave -1 is the lowest, not 0
+  (unless (and (integerp new-octave) (> new-octave -2)) ;(integer>=0 new-octave)
+    (error "pitch::transpose-to-octave: octave must be an integer >= -1: ~a"
            new-octave))
   (let ((transp (* 12 (- new-octave (octave p)))))
     (transpose p transp :as-symbol as-symbol :package package)))

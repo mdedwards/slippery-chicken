@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 13:41:03 Fri Aug 14 2015 CEST
+;;; $$ Last modified: 17:40:05 Wed Aug 19 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -941,6 +941,8 @@ data: (C4 F4 A4 C5)
   sp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; get the extremes (as four values) of the dissonance (min max) and spectral
+;;; centroid (min max) of a whole set palette.
 (defmethod quality-extremes ((sp set-palette))
   (let* ((dmin most-positive-double-float)
          (dmax most-negative-double-float)
@@ -967,6 +969,55 @@ data: (C4 F4 A4 C5)
            (t (error "set-palette:quality-extremes: unexpected: ~a" s))))
     ;; (format t "~%~a ~a ~a ~a" dmin dmax cmin cmax)
     (values dmin dmax cmin cmax)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* set-palette/limit-shift-octave
+;;; DATE
+;;; 19th August 2015, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Apply the tl-set method of the same name to each set in the palette. See
+;;; that class method description for details. 
+;;; 
+;;; ARGUMENTS
+;;; - the set-palette object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; See descriptions in tl-set limiti-shift-octave method noting that here the
+;;; :upper and :lower arguments can be a single note symbol or pitch object, as
+;;; in tl-set, or an envelope. In the latter case, the x axis can be over any
+;;; arbitrary scale and the y values can either be note symbols or midi note
+;;; numbers. 
+;;; 
+;;; RETURN VALUE
+;;; The set-palette object (modified).
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod limit-shift-octave ((sp set-palette) &key upper lower
+                                                  do-related-sets)
+  (unless upper (setq upper (limit-get-pitch upper 'b8)))
+  (unless lower (setq lower (limit-get-pitch lower 'c-1)))
+  (when (listp upper)
+    (setq upper (doctor-set-limits-env upper (num-data sp))))
+  (when (listp lower)
+    (setq lower (doctor-set-limits-env lower (num-data sp))))
+  (flet ((getp (x data)  ;  data is either an env or a pitch object
+           (if (listp data)
+               (degree-to-note (interpolate x data))
+               data)))
+    (loop for ref in (get-all-refs sp)
+         for set = (get-data ref sp)
+       for i from 1
+       for u = (getp i upper)
+       for l = (getp i lower)
+       do
+         (limit-shift-octave set :upper u :lower l
+                             :do-related-sets do-related-sets)))
+  sp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
 ;;;

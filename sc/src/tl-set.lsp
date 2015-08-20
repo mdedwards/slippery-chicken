@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified: 22:29:06 Tue Aug 18 2015 BST
+;;; $$ Last modified: 17:38:58 Wed Aug 19 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -167,7 +167,7 @@
 ;;; (- additional <ignore> arguments are for internal use only)
 ;;; 
 ;;; RETURN VALUE
-;;; A tl-set object.
+;;; The tl-set object.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -261,7 +261,7 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 ;;;     incorrectly.
 ;;; 
 ;;; ARGUMENTS
-;;; - A tl-set object.
+;;; - The tl-set object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
@@ -337,34 +337,89 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
   tls)
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Tue Aug 18 21:10:39 2015 -- 
+;;; ****m* tl-set/limit-shift-octave
+;;; DATE
+;;; August 18th 2015, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Like the limit method, we restrict pitches in the set to be within
+;;; specified limits, but instead of removing pitches we shift them to octaves
+;;; within the limits. Rather than just putting the outlying pitches up or down
+;;; and octave or two, we put them into the least-used octave of the set so as
+;;; to balance pitch spread.
+;;; 
+;;; ARGUMENTS
+;;; - the tl-set object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :upper. A note-name symbol that is the upper limit for the limiting
+;;;   process.
+;;; - :lower. A note-name symbol that is the lower limit for the limiting
+;;;   process.
+;;; - :do-related-sets. T or NIL to indicate whether the RELATED-SETS slot of
+;;;   the given tl-set object is to be transposed as well or left unhandled. T
+;;;   = transpose. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; The tl-set object.
+;;; 
+;;; EXAMPLE
+#|
+
+;;; the C2 will be shifted to C5 as the 5th octave is the least used in the
+;;; original set. The DS5 will be shifted down to DS2 as once we've shifted the
+;;; C2, the second octave is now the least used, plus it's within range.
+(get-pitch-symbols
+ (limit-shift-octave (make-tl-set '(c2 e2 cs3 f3 g3 d4 a4 ds5))
+                     :upper 'c5 :lower 'd2))
+--> (DS2 E2 CS3 F3 G3 D4 A4 C5)
+
+|#
+;;; SYNOPSIS
 (defmethod limit-shift-octave ((tls tl-set) &key upper lower
                                               do-related-sets)
+;;; ****
   (let ((upper (limit-get-pitch upper 'b10)) ;; 'b10 and 'c0 are just defaults
         (lower (limit-get-pitch lower 'c0))
         new8ve changes newp)
-    (loop for p in (data tls) and i from 0 do
+    ;; (print upper)
+    (loop for i below (sclist-length tls)
+       ;; don't loop in (data tls) as we're modifying that in this loop (would
+       ;; probably be OK, but...)
+       for p = (nth i (data tls)) do
+         (unless (pitch-p p)
+           (error "tl-set::limit-shift-octave: no pitch at position ~a. ~
+                   ~%Should be ~a pitches; data length = ~a"
+                  i (sclist-length tls) (length (data tls))))
          (when (or (pitch> p upper)
                    (pitch< p lower))
            ;; (print (data p))
            (push (clone p) changes)
+           ;; (print (get-pitch-symbols tls))
+           ;; (print (first (data tls)))
            ;; preference notes in higher octaves if there's a tie
            (setq new8ve (least-used-octave tls :highest-wins t
-                                                  :avoiding (octave p)))
+                                           :avoiding (octave p)))
+           ;; (print new8ve)
            ;; make sure moving doesn't take us out of our limits
-           (loop for i in '(0 1 2 3 4 -1 -2 -3 -4) do
-                (setq newp (transpose-to-octave p (+ i new8ve)))
-                (when (and (pitch<= newp upper)
-                           (pitch>= newp lower))
-                  (return))
+           (loop for j in '(0 1 2 3 4 -1 -2 -3 -4)
+              for 8ve = (+ j new8ve) do
+                (when (and (< 8ve 9) (> 8ve -2))
+                  (setq newp (transpose-to-octave p 8ve))
+                  (when (and (pitch<= newp upper)
+                             (pitch>= newp lower))
+                    (return)))
               ;; will only trigger if we don't call return
               finally (error "tl-set::limit-shift-octave: can't fit pitch: ~a"
                              p))
            (setf (nth i (data tls)) newp)
            (push new8ve changes)))
-    (ral-change-pitches (subsets tls) changes)
-    (when do-related-sets
-      (ral-change-pitches (related-sets tls) changes)))
+    (when changes
+      (setq changes (nreverse changes))
+      (ral-change-pitches (subsets tls) changes)
+      (when do-related-sets
+        (ral-change-pitches (related-sets tls) changes))))
   (verify-and-store tls)
   tls)
   

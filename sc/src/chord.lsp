@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 13:51:30 Fri Aug 14 2015 CEST
+;;; $$ Last modified: 11:53:04 Wed Aug 19 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -646,13 +646,14 @@ data: C4
 ;;; SYNOPSIS
 (defmethod lowest ((c chord))
 ;;; ****
-  (loop
-     with first = (first (data c))
-     with result = first
-     for p in (rest (data c)) 
-     do
-     (when (pitch< p first)
-       (setf result p))
+  (lowest-aux c))
+
+;;; we use this so we can have the same algo for highest just with pitch>
+(defmethod lowest-aux ((c chord) &optional (test #'pitch<))
+  (loop with result = (first (data c))
+     for p in (rest (data c)) do
+     (when (funcall test p result)
+       (setq result p))
      finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -713,14 +714,7 @@ data: F5
 ;;; SYNOPSIS
 (defmethod highest ((c chord))
 ;;; ****
-  (loop
-      with first = (first (data c))
-      with result = first
-      for p in (rest (data c)) 
-      do
-        (when (pitch> p first)
-          (setf result p))
-      finally (return result)))
+  (lowest-aux c #'pitch>))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

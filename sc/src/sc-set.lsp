@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 22:16:56 Tue Aug 18 2015 BST
+;;; $$ Last modified: 15:21:28 Wed Aug 19 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1395,20 +1395,71 @@ data: E4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Aug 18 17:12:18 2015 -- 
+;;; ****m* sc-set/least-used-octave
+;;; DATE
+;;; 18th August 2015, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Return the octave with the least notes in it. This includes octaves between
+;;; the lowest and highest notes inclusive, and may include an octave within
+;;; those ranges with no notes at all. 
+;;; 
+;;; ARGUMENTS
+;;; - the sc-set object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :highest-wins. If two octaves share the least number of notes, return the
+;;;    highest when T. Default = T.
+;;; - :avoiding. An integer or list of integers. Don't return any octave in
+;;;    this list or don't return this single integer argument. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; An integer representing the octave with the least notes.
+;;; 
+;;; EXAMPLE
+#|
+
+(least-used-octave (make-sc-set '(cs2 d4 e4 g5)))
+--> 3
+(least-used-octave (make-sc-set '(cs2 d3 ds4 e4 g5)) :highest-wins nil)
+--> 2
+(least-used-octave (make-sc-set '(cs2 d3 ds4 e4 g5)))
+--> 5
+
+|#
+;;; SYNOPSIS
 (defmethod least-used-octave ((s sc-set) &key (highest-wins t) avoiding)
+;;; ****
   (least-used-octave-aux s (if highest-wins #'<= #'<) avoiding))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* sc-set/most-used-octave
+;;; DATE
+;;; 18th August 2015, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Return the octave with the least notes in it. See least-used-octave for
+;;; more details and argument descriptions.
+;;; 
+;;; SYNOPSIS
 (defmethod most-used-octave ((s sc-set) &key (highest-wins t) avoiding)
+;;; ****
   (least-used-octave-aux s (if highest-wins #'>= #'>) avoiding))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod least-used-octave-aux ((s sc-set) test avoiding)
   (unless (listp avoiding) (setq avoiding (list avoiding)))
+  ;; (print (get-pitch-symbols s))
+  ;;     this will hold the count of pitches in each octave starting with -1
   (let ((8vecs (ml 0 11))
         (low8 (octave (lowest s)))
         (hi8 (octave (highest s)))
         result)
     ;; octaves can be as low -1 so 1+ them here
     (loop for p in (data s) do (incf (nth (1+ (octave p)) 8vecs)))
+    ;; (print 8vecs)
+    ;; (print low8)
     ;; only include those octaves within the highest and lowest notes (so no
     ;; extremes unless the chord has notes in those extremes)
     (loop for 8ve from -1 for 8vec in 8vecs with num do

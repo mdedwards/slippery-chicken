@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 11:30:10 Tue Dec 31 2013 WIT
+;;; $$ Last modified: 17:38:24 Wed Aug 19 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -47,11 +47,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -317,15 +312,17 @@
     (list treble-clef bass-clef quad-treble-clef quad-bass-clef)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Thu May  3 10:52:54 2012 
+;;; MDE Thu May  3 10:52:54 2012 
 (defmethod rm-octaves ((cs complete-set))
-  (setf (slot-value cs 'data) (remove-octaves (data cs))))
+  (setf (slot-value cs 'data) (remove-octaves (data cs)))
+  (verify-and-store cs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May  3 10:55:37 2012 -- if symbols-only, just compare the pitch
 ;;; symbols otherwise use pitch= (equal frequencies etc.) 
 (defmethod rm-duplicates ((cs complete-set) &optional symbols-only)
-  (setf (slot-value cs 'data) (rm-pitch-duplicates (data cs) symbols-only)))
+  (setf (slot-value cs 'data) (rm-pitch-duplicates (data cs) symbols-only))
+  (verify-and-store cs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

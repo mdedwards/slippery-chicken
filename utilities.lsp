@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 19:35:24 Wed Aug  5 2015 BST
+;;; $$ Last modified: 15:37:49 Fri Sep  4 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4292,6 +4292,99 @@ RETURNS:
      (setf last el)
      finally
      (return (nreverse result))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/pexpand-reaper-markers
+;;; DATE
+;;; September 4th 2015, Edinburgh
+;;; 
+;;; DESCRIPTION
+
+;;; Using the pexpand function, we write marker information in a format which
+;;; can be read by the Reaper (version 4/5+) DAW software. Though we can think
+;;; of the outputs of pexpand to be in beats, seconds, bars, or any arbitrary
+;;; scale, the timings of Reaper markers are in seconds, hence the need here
+;;; for an initial tempo. In other words, we treat the output of pexpand to be
+;;; beat counts; if you would prefer to interpret these as bars, simply divide
+;;; the tempo by the number of beats per bar. If there are to be tempo changes
+;;; in the mix/piece Reaper itself will update the markers' positions when the
+;;; new tempo is inserted in the project window--this is fine when you are
+;;; thinking in beats/bars but beware of changing tempo in Reaper if you are
+;;; thinking of markers with fixed timings (seconds).
+;;;
+;;; Copy the output of this into the Reaper file verbatim (no enclosing < >
+;;; marks) before the <PROJBAY tag.
+;;; 
+;;; ARGUMENTS
+;;; - the tempo in BPM
+;;; - the number of generations: see the pexpand function
+;;; - (&rest) the proportions: see the pexpand function
+;;; 
+;;; RETURN VALUE
+;;; Always T
+;;; 
+;;; EXAMPLE
+#|
+
+(pexpand-reaper-markers 144 2 6 3 5 4)
+->
+  MARKER 1 7.5 "level 4" 0 0 1
+  MARKER 2 15.0 "level 4" 0 0 1
+  MARKER 3 22.5 "level 4" 0 0 1
+  MARKER 4 30.0 "level 4" 0 0 1
+  MARKER 5 37.5 "level 4" 0 0 1
+...
+  MARKER 108 810.0 "level 1" 0 0 1
+  MARKER 109 817.5 "level 4" 0 0 1
+  MARKER 110 825.0 "level 4" 0 0 1
+  MARKER 111 832.5 "level 4" 0 0 1
+  MARKER 112 840.0 "level 4" 0 0 1
+  MARKER 113 847.5 "level 4" 0 0 1
+  MARKER 114 855.0 "level 3" 0 0 1
+...
+  MARKER 319 2392.5 "level 4" 0 0 1
+  MARKER 320 2400.0 "level 3" 0 0 1
+  MARKER 321 2407.5 "level 4" 0 0 1
+  MARKER 322 2415.0 "level 4" 0 0 1
+  MARKER 323 2422.5 "level 4" 0 0 1
+
+
+Here's where I pasted the data into the .RPP Reaper file:
+
+  <TEMPOENVEX
+    ACT 0
+    VIS 1 0 1
+    LANEHEIGHT 0 0
+    ARM 0
+    DEFSHAPE 1 -1 -1
+  >
+  MARKER 1 7.5 "level 4" 0 0 1
+  MARKER 2 15 "level 4" 0 0 1
+  MARKER 3 22.5 "level 4" 0 0 1
+  MARKER 4 30 "level 4" 0 0 1
+...
+  MARKER 320 2400 "level 3" 0 0 1
+  MARKER 321 2407.5 "level 4" 0 0 1
+  MARKER 322 2415 "level 4" 0 0 1
+  MARKER 323 2422.5 "level 4" 0 0 1
+  <PROJBAY
+  >
+  <TRACK {EBF9837F-BE25-9542-B720-A1862C0DF380}
+
+|#
+;;; SYNOPSIS
+(defun pexpand-reaper-markers (tempo generations &rest proportions)
+;;; ****
+  (loop with pexp = (cddr (apply #'pexpand (cons generations proportions)))
+     with beat-dur = (/ 60.0 tempo)
+     for beat-num in pexp by #'cddr
+     for letters in (rest pexp) by #'cddr
+     for level = (length letters)
+     for i from 1
+     do
+       (format t "~&  MARKER ~a ~a \"level ~a\" 0 0 1"
+               i (* beat-dur (1- beat-num)) level))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/a-weighting

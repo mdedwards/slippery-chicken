@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 13:43:10 Wed Aug  5 2015 BST
+;;; $$ Last modified: 12:13:17 Thu Sep  3 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -830,7 +830,6 @@ data: (SNOOPY SPOT ROVER)
                          ;;; (list nod)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* assoc-list/get-nearest
 ;;; DATE
 ;;; 4/8/2015

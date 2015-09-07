@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:52:50 Thu Aug 13 2015 CEST
+;;; $$ Last modified: 10:26:25 Mon Sep  7 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4082,7 +4082,9 @@ seq-num 5, VN, replacing G3 with B6
 ;;;
 ;;; Event amplitudes are as yet unused by this method.
 ;;;
-;;; NB: CLM's nrev instrument must be loaded before calling this method. 
+;;; NB: CLM's nrev instrument must be loaded before calling this method. If
+;;; you're using the slippery-chicken app, then this is done for you at
+;;; startup. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery chicken object.

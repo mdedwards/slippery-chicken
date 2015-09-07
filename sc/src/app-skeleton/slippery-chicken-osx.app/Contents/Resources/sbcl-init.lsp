@@ -11,6 +11,9 @@
 (unless (probe-file "clm-4/nrev.fasl")
   (compile-file "clm-4/nrev.ins"))
 (load "clm-4/nrev.fasl")
+(unless (probe-file "clm-4/autoc.fasl")
+  (compile-file "clm-4/autoc.ins"))
+(load "clm-4/autoc.fasl")
 (setf *clm-srate* 44100
       *clm-channels* 2
       ;; wave files by default (NB quicktime and itunes on macintel don't

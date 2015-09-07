@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 08:58:24 Thu Jul 23 2015 BST
+;;; $$ Last modified: 11:55:50 Mon Sep  7 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -73,7 +73,9 @@
    ;; some sounds have a prominent fundamental which can be used for
    ;; transposing to specific pitches.  Give this here either in the form of a
    ;; real freq or a note, which will then be converted.
-   (frequency :accessor frequency :initarg :frequency :initform 'c4)
+   ;; MDE Mon Sep  7 11:08:00 2015 -- changed initform to nil from 'c4 as we
+   ;; will now do auto pitch detection.
+   (frequency :accessor frequency :initarg :frequency :initform nil)
    ;; when duration is given, we have to update end and vice-versa.  This slot
    ;; tells us whether this was done and so avoids endless back-and-forths when
    ;; calling the setf methods.
@@ -299,6 +301,11 @@ T
              ;; MDE Sun Dec 16 15:02:34 2012 -- slot-value!
              (setf (slot-value sf 'end) (snd-duration sf))
              (set-dur sf)))
+      ;; MDE Mon Sep  7 11:11:09 2015 -- auto detect frequency using Bret
+      ;; Battey's CLM autocorrelation instrument. If there's no CLM package
+      ;; this will just return the freq for 'c4.
+      (unless (frequency sf)
+        (setf (slot-value sf 'frequency) (autoc-get-fundamental path)))
       (let ((st (start sf))
             (end (end sf)))
         (when (< st 0)
@@ -431,7 +438,7 @@ data: /path/to/sndfile-1.aiff
 |#
 ;;; SYNOPSIS
 (defun make-sndfile (path &key id data duration end (start 0.0)
-                     (frequency 'c4)
+                     (frequency nil)
                      (amplitude 1.0))
 ;;; **** 
   (if (and path (listp path))
@@ -465,6 +472,25 @@ data: /path/to/sndfile-1.aiff
                      :amplitude amplitude)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun autoc-get-fundamental (file)
+  (flet ((warnac ()
+           (warn "sndfile::autoc-get-fundamental: the CLM instrument ~
+                  autoc.ins needs to be loaded in order for this function ~
+                  to work. Returning 'C4 as default")
+           (note-to-freq 'c4)))
+    #+clm
+    (if (fboundp 'clm::autoc)
+        (let* ((penv (clm::autoc file :post-process t :min-freq 30 :dur nil
+                                 :db-floor -60))
+               (y (loop for y in (cdr penv) by #'cddr collect y))
+               (avg (/ (apply #'+ y) (length y))))
+          ;; (format t "~%average pitch: ~F~%" avg)
+          avg)
+        (warnac))
+    #-clm (warnac)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun sndfile-p (candidate)
   (typep candidate 'sndfile))

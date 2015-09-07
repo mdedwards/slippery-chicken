@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 15:37:49 Fri Sep  4 2015 BST
+;;; $$ Last modified: 16:28:45 Sat Sep  5 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -912,7 +912,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun minus-last-slash (string)
+(defun minus-last-slash (string &optional only-at-end)
+  ;; MDE Sat Sep  5 15:56:41 2015 -- 
+  (when only-at-end (setf string (trailing-slash string)))
   (delete #\/ string :count 1 :from-end t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3247,6 +3249,20 @@ WARNING:
 ;;; MDE Tue Jul  1 18:16:53 2014 
 (defun parent-dir (path)
   (subseq path 0 (position #\/ path :from-end t)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 
+(defun get-all-files (dir)
+  (loop for file in (directory (starify dir t))
+     for files = (namestring file)
+     if (is-directory files) append (get-all-files files)
+     else collect files))
+
+(defun is-directory (path)
+  (append (directory (starify path)) (directory (starify path t))))
+
+(defun starify (path &optional (extension))
+  (concatenate 'string (trailing-slash path) (if extension "*.*" "*")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

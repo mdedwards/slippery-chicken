@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 11:01:10 Sat Jan 31 2015 GMT
+;;; $$ Last modified: 17:53:58 Sat Sep  5 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -105,7 +105,6 @@
           (next sfp)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; NB Although this class is a palette and therefore a subclass of
 ;;; recursive-assoc-list, the sound lists in this case cannot be nested!
 
@@ -236,7 +235,6 @@
                string files)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Convenience function as we don't really ever want the named-object as we do
 ;;; with other palettes.
 
@@ -245,7 +243,6 @@
     (when obj (data obj))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; This class is a little different as we can fake association-list type
 ;;; functionality by pulling out a sound with a certain id from the sound
 ;;; list.  If the sound list was a proper assoc-list however, we couldn't have
@@ -474,7 +471,6 @@
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* sndfile-palette/analyse-followers
 ;;; DESCRIPTION
 
@@ -891,7 +887,50 @@ splinter: 2 sounds
     al))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  MDE Sat Sep  5 15:08:06 2015
+;;; todo: use auto-correlate to guess fundamental
+(defun make-sfp-from-folder (folder)
+  (let* ((sfs (get-sndfiles folder))
+         (groups (get-groups-from-paths sfs folder))
+         (pdl (length (trailing-slash folder))))
+    (loop for sf in sfs
+       for sfgroup = (get-group-from-file sf pdl)
+       for pos = (position sfgroup groups :test #'(lambda (x y)
+                                                    (if (atom y)
+                                                      (eq x y)
+                                                      (eq x (first y)))))
+       for group = (nth pos groups)
+       do
+         ;;(print group)
+         (if (atom group)
+             (setf (nth pos groups) (list group (list sf)))
+             (push sf (second (nth pos groups)))))
+    (make-sfp 'auto groups)))
+         
 
+(defun get-sndfiles (folder)
+  (loop for file in (get-all-files folder) 
+     when (member (pathname-type file) '("aif" "wav" "aiff" "snd")
+                  :test #'string=)
+     collect file))
+
+(defun get-groups-from-paths (files parent-dir &optional as-lists)
+  (loop with result = '()
+     with pdl = (length (trailing-slash parent-dir))
+     for file in files
+     for group = (get-group-from-file file pdl)
+     do
+       (pushnew (if as-lists (list group) group) result)
+     finally (return (nreverse result))))
+
+(defun get-group-from-file (file skip)
+  ;; pass the parent-dir instead of the length of the parent-dir, if you like
+  (unless (integerp skip)
+    (setf skip (length (trailing-slash skip))))
+  (let ((result (subseq (parent-dir file) skip)))
+    (read-from-string (substitute #\- #\/ result))))
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; groups are indicated in wavelab marker files by the wording
 ;;; group:g1,g2,g3 etc. The word group can appear anywhere in the
 ;;; marker description; there can be as many groups indicated as
@@ -933,7 +972,6 @@ splinter: 2 sounds
   (typep thing 'sndfile-palette))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF sndfile-palette.lsp
 
 

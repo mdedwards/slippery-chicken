@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 12:13:17 Thu Sep  3 2015 BST
+;;; $$ Last modified: 15:32:36 Mon Sep  7 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -846,8 +846,9 @@ data: (SNOOPY SPOT ROVER)
 ;;; a named-object
 ;;;
 ;;; SYNOPSIS
-(defmethod get-nearest (key (al assoc-list))
+(defmethod get-nearest (key (al assoc-list) &rest ignore)
 ;;; ****
+  (declare (ignore ignore))
   (unless (numberp key)
     (error "assoc-list::get-nearest: key should be numeric: ~a~%~a"
            key al))

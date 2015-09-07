@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 17:53:58 Sat Sep  5 2015 BST
+;;; $$ Last modified: 16:02:29 Mon Sep  7 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -527,6 +527,26 @@
      finally (return result)))
               
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod get-nearest (freq (sfp sndfile-palette) &rest ids)
+  (unless (numberp freq)
+    (error "sndfile-palette::get-nearest: freq should be numeric: ~a~%~a"
+           freq sfp))
+  (unless ids (setq ids (get-all-refs sfp)))
+  (let* ((diff most-positive-double-float)
+         (cdiff diff)
+         it)
+    (loop for id in ids
+       for sflist = (get-data-data id sfp) do
+         (loop for sf in sflist do
+              (when (frequency sf)
+                (setq diff (abs (- 1.0 (/ freq (frequency sf)))))
+                (when (<= diff cdiff)
+                  (setq it sf
+                        cdiff diff)))))
+    it))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -888,8 +908,29 @@ splinter: 2 sounds
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  MDE Sat Sep  5 15:08:06 2015
-;;; todo: use auto-correlate to guess fundamental
+;;; ****f* sndfile-palette/make-sfp-from-folder
+;;; DATE
+;;; 5th September 2015, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Makes a sndfile-palette object from the sound files found in a specific
+;;; folder (directory) on the file system. Allows any arbitrary levels of
+;;; subfolders with the proviso that they'll be converted to a flat list, using
+;;; the subfolders as tags (e.g. dir/subdir1/subdir2 becomes
+;;; dir-subdir1-subdir2).
+;;;
+;;; The folders can contain other files (they'll be ignored). Sound files are
+;;; those with extensions .aif .wav .aiff and .snd
+;;; 
+;;; ARGUMENTS
+;;; - the folder path, as a string.
+;;; 
+;;; RETURN VALUE
+;;; a sndfile-palette object
+;;; 
+;;; SYNOPSIS
 (defun make-sfp-from-folder (folder)
+;;; ****
   (let* ((sfs (get-sndfiles folder))
          (groups (get-groups-from-paths sfs folder))
          (pdl (length (trailing-slash folder))))

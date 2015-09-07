@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:47:47 Thu Aug 13 2015 CEST
+;;; $$ Last modified: 16:16:30 Mon Sep  7 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2364,24 +2364,24 @@ NIL
 ;;; EXAMPLE
 #|
 ;; Returns NIL if not a chord           ;
-                     (let ((e (make-event 'c4 'q)))
-(is-chord e))
+(let ((e (make-event 'c4 'q)))
+  (is-chord e))
 
-                     => NIL
+=> NIL
 
 ;; If a chord, returns the number of notes in the chord ;
-                     (let ((e (make-event '(c4 e4 g4) 'q)))
-(is-chord e))
+(let ((e (make-event '(c4 e4 g4) 'q)))
+  (is-chord e))
 
-                     => 3
+=> 3
 
 ;; A rest is not a chord                ;
-                     (let ((e (make-rest 'q)))
-(is-chord e))
+(let ((e (make-rest 'q)))
+  (is-chord e))
 
-                     => NIL
+=> NIL
 
-                     |#
+|#
 ;;; SYNOPSIS
 (defmethod is-chord ((e event))
 ;;; ****
@@ -2408,24 +2408,24 @@ NIL
 ;;; EXAMPLE
 #|
 ;; Returns T if the event object consists of a single pitch ;
-                     (let ((e (make-event 'c4 'q)))
-(is-single-pitch e))
+(let ((e (make-event 'c4 'q)))
+  (is-single-pitch e))
 
-                     => T
+=> T
 
 ;; Returns NIL if the event object is a chord ;
-                     (let ((e (make-event '(c4 e4 g4) 'q)))
-(is-single-pitch e))
+(let ((e (make-event '(c4 e4 g4) 'q)))
+  (is-single-pitch e))
 
-                     => NIL
+=> NIL
 
 ;; Also returns NIL if the event object is a rest ;
-                     (let ((e (make-rest 'q)))
-(is-single-pitch e))
+(let ((e (make-rest 'q)))
+  (is-single-pitch e))
 
-                     => NIL
+=> NIL
 
-                     |#
+|#
 ;;; SYNOPSIS
 (defmethod is-single-pitch ((e event))
 ;;; ****
@@ -2470,54 +2470,54 @@ NIL
 ;;; EXAMPLE
 #|
 ;; Transpose returns an event object    ;
-                     (let ((e (make-event 'c4 'q)))
-(transpose e 1))
+(let ((e (make-event 'c4 'q)))
+  (transpose e 1))
 
-                     => 
-                     EVENT: start-time: NIL, end-time: NIL, 
-                     duration-in-tempo: 0.0, 
-                     [...]
+=> 
+EVENT: start-time: NIL, end-time: NIL, 
+duration-in-tempo: 0.0, 
+[...]
 
 ;; By default transpose returns a modified clone, leaving the original event ;
 ;; object untouched.                    ;
-                     (let ((e (make-event 'c4 'q)))
-(print (data (pitch-or-chord (transpose e 1))))
-(print (data (pitch-or-chord e))))
+(let ((e (make-event 'c4 'q)))
+  (print (data (pitch-or-chord (transpose e 1))))
+  (print (data (pitch-or-chord e))))
 
-                     =>
-                     CS4 
-                     C4 
+=>
+CS4 
+C4 
 
 ;; When the keyword argument :destructively is set to T, the data of the ;
 ;; original event object is replaced    ;
-                     (let ((e (make-event 'c4 'q)))
-(transpose e 1 :destructively t)
-(data (pitch-or-chord e)))
+(let ((e (make-event 'c4 'q)))
+  (transpose e 1 :destructively t)
+  (data (pitch-or-chord e)))
 
-                     => CS4
+=> CS4
 
 ;; Can transpose by 0 as well (effectively no transposition) ;
-                     (let ((e (make-event 'c4 'q)))
-(transpose e 0 :destructively t)
-(data (pitch-or-chord e)))
+(let ((e (make-event 'c4 'q)))
+  (transpose e 0 :destructively t)
+  (data (pitch-or-chord e)))
 
-                     => C4
+=> C4
 
 ;; ...or by negative intervals          ;
-                     (let ((e (make-event 'c4 'q)))
-(transpose e -3 :destructively t)
-(data (pitch-or-chord e)))
+(let ((e (make-event 'c4 'q)))
+  (transpose e -3 :destructively t)
+  (data (pitch-or-chord e)))
 
-                     => A3
+=> A3
 
 ;; Can transpose chords too             ;
-                     (let ((e (make-event '(c4 e4 g4) 'q)))
-(transpose e -3 :destructively t)
-(loop for p in (data (pitch-or-chord e)) collect (data p)))
+(let ((e (make-event '(c4 e4 g4) 'q)))
+  (transpose e -3 :destructively t)
+  (loop for p in (data (pitch-or-chord e)) collect (data p)))
 
-                     => (A3 CS4 E4)
+=> (A3 CS4 E4)
 
-                     |#
+|#
 ;;; 
 ;;; SYNOPSIS
 (defmethod transpose ((e event) semitones
@@ -2576,38 +2576,38 @@ NIL
 ;;; EXAMPLE
 #|
 ;; Returns a pitch object (here for example for a D Trumpet or Clarinet) ;
-                     (let ((e (make-event 'c4 'q)))
-(set-written e -2))
+(let ((e (make-event 'c4 'q)))
+  (set-written e -2))
 
-                     => 
-                     PITCH: frequency: 233.08186975464196, midi-note: 58, midi-channel: NIL 
-                     pitch-bend: 0.0 
-                     degree: 116, data-consistent: T, white-note: B3
-                     nearest-chromatic: BF3
-                     src: 0.8908987045288086, src-ref-pitch: C4, score-note: BF3 
-                     qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
-                     micro-tone: NIL, 
-                     sharp: NIL, flat: T, natural: NIL, 
-                     octave: 3, c5ths: 1, no-8ve: BF, no-8ve-no-acc: B
-                     show-accidental: T, white-degree: 27, 
-                     accidental: F, 
-                     accidental-in-parentheses: NIL, marks: NIL
-                     LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-                     NAMED-OBJECT: id: BF3, tag: NIL, 
-                     data: BF3
+=> 
+PITCH: frequency: 233.08186975464196, midi-note: 58, midi-channel: NIL 
+pitch-bend: 0.0 
+degree: 116, data-consistent: T, white-note: B3
+nearest-chromatic: BF3
+src: 0.8908987045288086, src-ref-pitch: C4, score-note: BF3 
+qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+micro-tone: NIL, 
+sharp: NIL, flat: T, natural: NIL, 
+octave: 3, c5ths: 1, no-8ve: BF, no-8ve-no-acc: B
+show-accidental: T, white-degree: 27, 
+accidental: F, 
+accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: BF3, tag: NIL, 
+data: BF3
 
 ;; Create a single-pitch event object, set it's written pitch to two half-steps ;
 ;; lower, and print the corresponding data slots ;
-                     (let ((e (make-event 'c4 'q)))
-(set-written e -2)
-(print (data (pitch-or-chord e)))
-(print (data (written-pitch-or-chord e))))
+(let ((e (make-event 'c4 'q)))
+  (set-written e -2)
+  (print (data (pitch-or-chord e)))
+  (print (data (written-pitch-or-chord e))))
 
-                     =>
-                     C4
-                     BF3
+=>
+C4
+BF3
 
-                     |#
+|#
 ;;; SYNOPSIS
 (defmethod set-written ((e event) transposition)
 ;;; ****
@@ -2637,19 +2637,19 @@ NIL
 ;; corresponding slot to see the data of the newly created pitch object, ;
 ;; delete-written, print the contents of the written-pitch-or-chord slot to see ;
 ;; it's empty.                          ;
-                     (let ((e (make-event 'c4 'q)))
-(print (written-pitch-or-chord e))
-(set-written e -2)
-(print (data (written-pitch-or-chord e)))
-(delete-written e)
-(print (written-pitch-or-chord e)))
+(let ((e (make-event 'c4 'q)))
+  (print (written-pitch-or-chord e))
+  (set-written e -2)
+  (print (data (written-pitch-or-chord e)))
+  (delete-written e)
+  (print (written-pitch-or-chord e)))
 
-                     =>
-                     NIL 
-                     BF3 
-                     NIL
+=>
+NIL 
+BF3 
+NIL
 
-                     |#
+|#
 ;;; SYNOPSIS
 (defmethod delete-written ((e event))
 ;;; ****
@@ -2673,33 +2673,33 @@ NIL
 ;;; EXAMPLE
 #|
 ;; Returns a pitch object               ;
-                     (let ((e (make-event 'c4 'q)))
-(lowest e))
+(let ((e (make-event 'c4 'q)))
+  (lowest e))
 
-                     => 
-                     PITCH: frequency: 261.6255569458008, midi-note: 60, midi-channel: NIL 
-                     pitch-bend: 0.0 
-                     degree: 120, data-consistent: T, white-note: C4
-                     nearest-chromatic: C4
-                     src: 1.0, src-ref-pitch: C4, score-note: C4 
-                     qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
-                     micro-tone: NIL, 
-                     sharp: NIL, flat: NIL, natural: T, 
-                     octave: 4, c5ths: 0, no-8ve: C, no-8ve-no-acc: C
-                     show-accidental: T, white-degree: 28, 
-                     accidental: N, 
-                     accidental-in-parentheses: NIL, marks: NIL
-                     LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-                     NAMED-OBJECT: id: C4, tag: NIL, 
-                     data: C4
+=> 
+PITCH: frequency: 261.6255569458008, midi-note: 60, midi-channel: NIL 
+pitch-bend: 0.0 
+degree: 120, data-consistent: T, white-note: C4
+nearest-chromatic: C4
+src: 1.0, src-ref-pitch: C4, score-note: C4 
+qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+micro-tone: NIL, 
+sharp: NIL, flat: NIL, natural: T, 
+octave: 4, c5ths: 0, no-8ve: C, no-8ve-no-acc: C
+show-accidental: T, white-degree: 28, 
+accidental: N, 
+accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: C4, tag: NIL, 
+data: C4
 
 ;; Returns the lowest note of a chord object within an event object ;
-                     (let ((e (make-event '(d4 fs4 a4) 'q)))
-(data (lowest e)))
+(let ((e (make-event '(d4 fs4 a4) 'q)))
+  (data (lowest e)))
 
-                     => D4
+=> D4
 
-                     |#
+|#
 ;;; SYNOPSIS
 (defmethod lowest ((e event))
 ;;; ****
@@ -2725,34 +2725,34 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns a pitch object               ;
-                     (let ((e (make-event 'c4 'q)))
-(highest e))
+;; Returns a pitch object   
+(let ((e (make-event 'c4 'q)))
+  (highest e))
 
-                     => 
-                     PITCH: frequency: 261.6255569458008, midi-note: 60, midi-channel: NIL 
-                     pitch-bend: 0.0 
-                     degree: 120, data-consistent: T, white-note: C4
-                     nearest-chromatic: C4
-                     src: 1.0, src-ref-pitch: C4, score-note: C4 
-                     qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
-                     micro-tone: NIL, 
-                     sharp: NIL, flat: NIL, natural: T, 
-                     octave: 4, c5ths: 0, no-8ve: C, no-8ve-no-acc: C
-                     show-accidental: T, white-degree: 28, 
-                     accidental: N, 
-                     accidental-in-parentheses: NIL, marks: NIL
-                     LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-                     NAMED-OBJECT: id: C4, tag: NIL, 
-                     data: C4
+=> 
+PITCH: frequency: 261.6255569458008, midi-note: 60, midi-channel: NIL 
+pitch-bend: 0.0 
+degree: 120, data-consistent: T, white-note: C4
+nearest-chromatic: C4
+src: 1.0, src-ref-pitch: C4, score-note: C4 
+qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+micro-tone: NIL, 
+sharp: NIL, flat: NIL, natural: T, 
+octave: 4, c5ths: 0, no-8ve: C, no-8ve-no-acc: C
+show-accidental: T, white-degree: 28, 
+accidental: N, 
+accidental-in-parentheses: NIL, marks: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: C4, tag: NIL, 
+data: C4
 
 ;; Returns the highest note of a chord object within an event object ;
                      (let ((e (make-event '(d4 fs4 a4) 'q)))
 (data (highest e)))
 
-                     => A4
+=> A4
 
-                     |#
+|#
 ;;; SYNOPSIS
 (defmethod highest ((e event))
 ;;; ****

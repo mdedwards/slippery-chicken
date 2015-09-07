@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 14:16:14 Sat Sep  5 2015 BST
+;;; $$ Last modified: 12:08:25 Mon Sep  7 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -599,7 +599,7 @@ NIL
 ;;; 
 ;;; SYNOPSIS
 (defun make-sndfile-ext (path &key id data duration end (start 0.0)
-                         (frequency 'c4) (amplitude 1.0) (cue-num -1)
+                         (frequency nil) (amplitude 1.0) (cue-num -1)
                          (use t) (pitch -1) (pitch-curve -1) (bandwidth -1)
                          (bandwidth-curve -1) (continuity -1)
                          (continuity-curve -1) (weight -1) (weight-curve -1)

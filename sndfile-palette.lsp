@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 16:02:29 Mon Sep  7 2015 BST
+;;; $$ Last modified: 18:01:50 Mon Sep  7 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -924,14 +924,31 @@ splinter: 2 sounds
 ;;; 
 ;;; ARGUMENTS
 ;;; - the folder path, as a string.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - a list of folders to skip i.e. just the last folder name, not the
+;;;   complete path 
 ;;; 
 ;;; RETURN VALUE
 ;;; a sndfile-palette object
 ;;; 
 ;;; SYNOPSIS
-(defun make-sfp-from-folder (folder)
+;;;
+;;; 
+;;; EXAMPLE
+#|
+(get-sndfiles "/music/hyperboles/snd/cello/samples/"
+                              '("short-percussive" "weird"))
+("/music/hyperboles/snd/cello/samples/1/g4-III-4-001.aif"
+ "/music/hyperboles/snd/cello/samples/1/g4-III-4-002.aif"
+ "/music/hyperboles/snd/cello/samples/1/g4-III-4-003.aif"
+ "/music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif"
+ "/music/hyperboles/snd/cello/samples/10/cs5-I-5-9-13-4-001.aif"
+ ... 
+|#
+(defun make-sfp-from-folder (folder &optional skip)
 ;;; ****
-  (let* ((sfs (get-sndfiles folder))
+  (let* ((sfs (get-sndfiles folder skip))
          (groups (get-groups-from-paths sfs folder))
          (pdl (length (trailing-slash folder))))
     (loop for sf in sfs
@@ -949,8 +966,8 @@ splinter: 2 sounds
     (make-sfp 'auto groups)))
          
 
-(defun get-sndfiles (folder)
-  (loop for file in (get-all-files folder) 
+(defun get-sndfiles (folder &optional skip)
+  (loop for file in (get-all-files folder skip)
      when (member (pathname-type file) '("aif" "wav" "aiff" "snd")
                   :test #'string=)
      collect file))

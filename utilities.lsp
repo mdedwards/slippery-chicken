@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 16:28:45 Sat Sep  5 2015 BST
+;;; $$ Last modified: 19:02:04 Thu Sep 10 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3251,12 +3251,17 @@ WARNING:
   (subseq path 0 (position #\/ path :from-end t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 
-(defun get-all-files (dir)
+;;;  skip is a list of directories to not include--it's the last directory
+;;; name only we're interested in 
+(defun get-all-files (dir &optional skip)
   (loop for file in (directory (starify dir t))
      for files = (namestring file)
-     if (is-directory files) append (get-all-files files)
-     else collect files))
+     for isdir = (is-directory files)
+     if (and isdir
+             (not (member (first (last (pathname-directory files)))
+                          skip :test #'string=)))
+     append (get-all-files files)
+     else if (not isdir) collect files))
 
 (defun is-directory (path)
   (append (directory (starify path)) (directory (starify path t))))

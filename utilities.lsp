@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 19:02:04 Thu Sep 10 2015 BST
+;;; $$ Last modified: 17:25:52 Wed Sep 16 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4398,13 +4398,15 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; ****
   (loop with pexp = (cddr (apply #'pexpand (cons generations proportions)))
      with beat-dur = (/ 60.0 tempo)
+     ;; hard-coded colours for now: white for level 1, yellow 2, blue 3, red 4
+     with colours = '(33554431 33554176 16777471 0)
      for beat-num in pexp by #'cddr
      for letters in (rest pexp) by #'cddr
      for level = (length letters)
      for i from 1
      do
-       (format t "~&  MARKER ~a ~a \"level ~a\" 0 0 1"
-               i (* beat-dur (1- beat-num)) level))
+       (format t "~&  MARKER ~a ~a \"level ~a\" 0 ~a 1"
+               i (* beat-dur (1- beat-num)) level (nth (1- level) colours)))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

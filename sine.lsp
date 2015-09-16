@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified: 11:23:12 Tue Dec  3 2013 GMT
+;;; $$ Last modified: 20:06:54 Tue Sep 15 2015 BST
 ;;;
 ;;; SVN ID: $Id: samp5.lsp 4223 2013-10-29 10:57:09Z medward2 $
 ;;;

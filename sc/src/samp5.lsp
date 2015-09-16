@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified: 15:30:00 Tue Sep  1 2015 BST
+;;; $$ Last modified: 21:04:55 Tue Sep 15 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -91,22 +91,23 @@
     (values a-a a-b b-a b-b)))
             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(definstrument samp5 (file time &key
-                           (duration 0)
-                           (start 0)
-                           (end 0)
-                           (srt 1.0)
-                           (width 5)
-                           (srt-env '(0 0 100 0))
-                           (srt-scaler 1.0)
-                           (amp 1.0)
-                           (amp-env '(0 1 100 1))
-                           (degree 45)
-                           ;; MDE Mon Nov  4 10:08:45 2013 -- just for
-                           ;; compatibility with clm-play i.e. not used
-                           frequency 
-                           (rev-amt 0)
-                           (printing t))
+(definstrument samp5 ; (samp5 :c-file "../bin/samp5.c") <-- doesn't expand :/
+    (file time &key
+          (duration 0)
+          (start 0)
+          (end 0)
+          (srt 1.0)
+          (width 5)
+          (srt-env '(0 0 100 0))
+          (srt-scaler 1.0)
+          (amp 1.0)
+          (amp-env '(0 1 100 1))
+          (degree 45)
+          ;; MDE Mon Nov  4 10:08:45 2013 -- just for
+          ;; compatibility with clm-play i.e. not used
+          frequency 
+          (rev-amt 0)
+          (printing t))
   (unless (zerop amp)
     (let* ((st (floor (* time *srate*)))
            (stereo-input (= 2 (mus-channels file)))
@@ -125,7 +126,7 @@
                           (setq start 0.0))
                         (if (zerop end)
                             (- snd-dur start)
-                          (- end start))))
+                            (- end start))))
            (start-sample (floor (* *srate* start)))
            (fA (open-input file :start start-sample))
            (fB (when stereo-input 
@@ -133,17 +134,17 @@
            (max-out-dur (/ input-dur srt))
            (dur (if (zerop duration)
                     max-out-dur
-                  (min max-out-dur duration)))
+                    (min max-out-dur duration)))
            ;; force srt
            (do-src (not (= 1 srt)))
            (genA (if do-src
                      (make-src :input fA :srate srt :width width)
-                   ;; got to respecify start sample for some reason....
-                   (make-readin :file fA :start start-sample)))
+                     ;; got to respecify start sample for some reason....
+                     (make-readin :file fA :start start-sample)))
            (genB (when stereo-input
                    (if do-src
                        (make-src :input fB :srate srt :width width)
-                     (make-readin :file fB :start start-sample))))
+                       (make-readin :file fB :start start-sample))))
            (senv (make-env :envelope srt-env :scaler srt-scaler :offset 0.0 
                            :duration dur))
            (ampf (make-env :envelope amp-env :scaler amp :duration dur)) 
@@ -153,7 +154,7 @@
            (out1-chan (random output-chans))
            (out2-chan (if (= out1-chan (1- output-chans))
                           0
-                        (1+ out1-chan)))
+                          (1+ out1-chan)))
            (count 0)
            (sampA 0.0)
            (sampB 0.0)
@@ -162,32 +163,32 @@
            (nd (+ st (floor (* *srate* dur)))))
       (when printing (format t "~&Start time ~a.~%" time))
       (multiple-value-bind
-          (a-a a-b b-a b-b)
+            (a-a a-b b-a b-b)
           (get-stereo-scalers b-scaler)
         (run
          (loop for i from st to nd do
-               (when printing 
-                 (setf count (if (= count *srate*) 1 (1+ count)))
-                 (when (= count *srate*)
-                   (clm-print "~%~d" (round (/ i *srate*)))))
-               (setq sre-val (env senv)
-                     amp-val (env ampf)
-                     sampA (* amp-val (if do-src
-                                          (src genA sre-val)
-                                        (readin genA)))
-                     sampB (when stereo-input (* amp-val 
-                                                 (if do-src
-                                                     (src genB sre-val)
-                                                   (readin genB)))))
-               (when *reverb* (outa i (* rev-amt (* .5 (+ sampA sampB)))
-                                    *reverb*))
-               (if stereo-input
-                   (progn 
-                     (out-any i (+ (* a-a sampA) (* b-a sampB)) out1-chan)
-                     (out-any i (+ (* a-b sampA) (* b-b sampB)) out2-chan))
-                 (progn
-                   (out-any i (* a-scaler sampA) out1-chan)
-                   (out-any i (* b-scaler sampA) out2-chan))))))
+              (when printing 
+                (setf count (if (= count *srate*) 1 (1+ count)))
+                (when (= count *srate*)
+                  (clm-print "~%~d" (round (/ i *srate*)))))
+              (setq sre-val (env senv)
+                    amp-val (env ampf)
+                    sampA (* amp-val (if do-src
+                                         (src genA sre-val)
+                                         (readin genA)))
+                    sampB (when stereo-input (* amp-val 
+                                                (if do-src
+                                                    (src genB sre-val)
+                                                    (readin genB)))))
+              (when *reverb* (outa i (* rev-amt (* .5 (+ sampA sampB)))
+                                   *reverb*))
+              (if stereo-input
+                  (progn 
+                    (out-any i (+ (* a-a sampA) (* b-a sampB)) out1-chan)
+                    (out-any i (+ (* a-b sampA) (* b-b sampB)) out2-chan))
+                  (progn
+                    (out-any i (* a-scaler sampA) out1-chan)
+                    (out-any i (* b-scaler sampA) out2-chan))))))
       (close-input fA)
       (when stereo-input 
         (close-input fB)))))

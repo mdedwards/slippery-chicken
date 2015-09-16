@@ -37,7 +37,7 @@
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
-;;; $$ Last modified: 08:32:38 Thu Aug  6 2015 BST
+;;; $$ Last modified: 20:06:39 Tue Sep 15 2015 BST
 ;;;
 ;;; SVN ID: $Id: get-spectrum.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
@@ -159,15 +159,16 @@
 ;; order the list by frequency ('freq => highest to lowest) or amplitude ('amp
 ;; => highest to lowest) srate is the sampling-rate of the input file.
 
-(defun get-spectrum (file &key
-                          (num-partials 10)
-                          (order-by 'amp)
-                          (srate 44100)
-                          (fftsize 4096) 
-                          (max-peaks 200)
-                          (normalise t)
-                          (start-analysis 0.0) 
-                          (highest-bin (/ fftsize 2)))
+(defun get-spectrum
+    (file &key
+            (num-partials 10)
+            (order-by 'amp)
+            (srate 44100)
+            (fftsize 4096) 
+            (max-peaks 200)
+            (normalise t)
+            (start-analysis 0.0) 
+            (highest-bin (/ fftsize 2)))
   (declare (special *slippery-chicken-get-spectrum-last-result*))
   (declare (special *slippery-chicken-get-spectrum-peak-amps*))
   (declare (special *slippery-chicken-get-spectrum-peak-freqs*))

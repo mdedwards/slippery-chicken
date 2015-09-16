@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 20:09:16 Wed Aug  5 2015 BST
+;;; $$ Last modified: 20:23:34 Tue Sep 15 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -81,6 +81,11 @@
   #+ecl ".fasl"
   #+allegro ".fasl")
 
+;;; MDE Tue Sep 15 20:00:23 2015 -- stop polluting the src directory: write .c
+;;; .so etc. files to the bin directory 
+#+clm (setq clm::*clm-binary-directory*
+            (concatenate 'string +slippery-chicken-home-dir+ "bin"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Jun 21 17:08:42 2013 
 #+(and (or sbcl ccl) darwin)
@@ -128,12 +133,12 @@
     (print in)
     (if just-load
         (load in)
-      (progn
-        (unless (and (probe-file out)
-                     (> (file-write-date out)
-                        (file-write-date (print in))))
-          (compile-file in :output-file out))
-        (load out)))))
+        (progn
+          (unless (and (probe-file out)
+                       (> (file-write-date out)
+                          (file-write-date (print in))))
+            (compile-file in :output-file out))
+          (load out)))))
 
 #+allegro-cl-lite
 (defun sc-compile-and-load (file)

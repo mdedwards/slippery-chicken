@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:16:30 Mon Sep  7 2015 BST
+;;; $$ Last modified: 17:31:27 Thu Sep 17 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -369,7 +369,12 @@
         (store-it (output-midi-note noc
                                     time
                                     (if force-velocity
-                                        force-velocity
+                                        ;; MDE Thu Sep 17 17:31:18 2015 --
+                                        ;; allow functions too 
+                                        (if (functionp force-velocity)
+                                            (funcall force-velocity
+                                                     (amplitude e))
+                                            force-velocity)
                                         (amplitude e))
                                     ;; rhythm's compound-duration is in 
                                     ;; quarters

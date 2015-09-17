@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:26:25 Mon Sep  7 2015 BST
+;;; $$ Last modified: 17:30:10 Thu Sep 17 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3861,9 +3861,10 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   sequence specified in from-sequence. If NIL, all sequences will be
 ;;;   written. NB: This argument can only be used when the num-sections = 1.
 ;;;   Default = NIL.
-;;; - :force-velocity. An integer between 0 and 127 (inclusive) that is the
-;;;   MIDI velocity value which will be given to all notes in the resulting
-;;;   MIDI file. Default = NIL.
+;;; - :force-velocity. Either: an integer between 0 and 127 (inclusive) that is
+;;;   the MIDI velocity value which will be given to all notes in the resulting
+;;;   MIDI file; or a function which takes the events' amplitude and modified
+;;;   it to return a new amplitude (e.g. randomising slightly). Default = NIL.
 ;;; - :auto-open. Whether to open the MIDI file once written. Currently only
 ;;;    available on OSX with SBCL or CCL. Uses the default app for MIDI files,
 ;;;    as if opened with 'open' in the terminal. Default = Value of

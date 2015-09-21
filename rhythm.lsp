@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 08:38:27 Thu Jul 23 2015 BST
+;;; $$ Last modified: 13:21:38 Sat Sep 19 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1255,10 +1255,10 @@ NI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf rq) :after (value (r rhythm))
-  ;; make sure the rq is a rational e.g. 15/2 otherwise cmns spacing
+  ;; make sure the rq is a rational e.g. 15/2 otherwise cmn's spacing
   ;; algorithm will go to hell
   (unless (rationalp value)
-    (error "rhythm::parse-rhythm: RQ Value not a rational.  ~
+    (error "rhythm::parse-rhythm: RQ value not a rational.  ~
             Given rhythm ~a produces RQ ~a"
            r value)))
 
@@ -2046,7 +2046,12 @@ data: (
                          0
                          (* (/ 4 letter-value) (/ tuplet-scaler)
                             (/ (rationalize dots-scaler))))
-                  (rq rhythm-object) rq ;; (cmn::rq rq)
+                  ;; MDE Sat Sep 19 13:19:32 2015 -- allow things like 3.0 to
+                  ;; work as rqs (it's not rationalp but 3 is) 
+                  (rq rhythm-object) (if (and (floatp rq)
+                                              (float-int-p rq))
+                                         (floor rq)
+                                         rq) ;; (cmn::rq rq)
                   (value rhythm-object) value
                   ;; set duration to be the duration in seconds when qtr = 60
                   (duration rhythm-object) (if (zerop value) 

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:30:10 Thu Sep 17 2015 BST
+;;; $$ Last modified: 16:12:10 Tue Sep 22 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2032,7 +2032,7 @@ bar 45
 ;;;   to the last event in the given slippery-chicken object. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
-;;; 
+;;; An event object
 ;;; 
 ;;; EXAMPLE
 #|

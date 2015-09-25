@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 11:55:50 Mon Sep  7 2015 BST
+;;; $$ Last modified: 13:54:59 Fri Sep 25 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -75,7 +75,10 @@
    ;; real freq or a note, which will then be converted.
    ;; MDE Mon Sep  7 11:08:00 2015 -- changed initform to nil from 'c4 as we
    ;; will now do auto pitch detection.
-   (frequency :accessor frequency :initarg :frequency :initform nil)
+   ;; MDE Fri Sep 25 13:44:28 2015 -- changed back to 'c4 and now allow value
+   ;; of 'detect to indicate we want pitch detection (was slowing down make-sfp
+   ;; too much when autoc was default). 
+   (frequency :accessor frequency :initarg :frequency :initform 'c4)
    ;; when duration is given, we have to update end and vice-versa.  This slot
    ;; tells us whether this was done and so avoids endless back-and-forths when
    ;; calling the setf methods.
@@ -270,7 +273,7 @@ T
   (unless (id sf)
     (setf (id sf) (data sf)))
   (let ((given-freq (frequency sf)))
-    (when (and given-freq (symbolp given-freq))
+    (when (and given-freq (symbolp given-freq) (not (eq given-freq 'detect)))
       (let ((freq (note-to-freq given-freq)))
         (unless freq
           (error "sndfile::update: Couldn't get the frequency for note ~a!!!"
@@ -304,7 +307,7 @@ T
       ;; MDE Mon Sep  7 11:11:09 2015 -- auto detect frequency using Bret
       ;; Battey's CLM autocorrelation instrument. If there's no CLM package
       ;; this will just return the freq for 'c4.
-      (unless (frequency sf)
+      (when (eq 'detect (frequency sf))
         (setf (slot-value sf 'frequency) (autoc-get-fundamental path)))
       (let ((st (start sf))
             (end (end sf)))

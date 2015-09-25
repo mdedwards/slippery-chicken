@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 18:01:50 Mon Sep  7 2015 BST
+;;; $$ Last modified: 14:58:33 Fri Sep 25 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -64,6 +64,10 @@
    ;; number of named objects in the ral but each of these may be a list of
    ;; several sndfiles so num-data and num-snds are not necessarily the same.
    (num-snds :accessor num-snds :type integer :initform -1)
+   ;; MDE Fri Sep 25 13:46:28 2015 -- call CLM's autoc for auto detection of
+   ;; frequency of each sndfile where the :frequency slot isn't given?
+   (auto-freq :accessor auto-freq :type boolean :initarg :auto-freq
+              :initform nil)
    ;; the next sndfile-ext object for the purposes of the OSC sndfilenet
    ;; functionality 
    (next :accessor next :initarg :next :initform nil)
@@ -87,6 +91,7 @@
   (let ((palette (call-next-method)))
     (setf (slot-value palette 'paths) (paths sfp)
           (slot-value palette 'num-snds) (num-snds sfp)
+          (slot-value palette 'auto-freq) (auto-freq sfp)
           (slot-value palette 'with-followers) (with-followers sfp)
           (slot-value palette 'next) (when (next sfp)
                                        (clone (next sfp)))
@@ -99,10 +104,11 @@
   (format stream "~%SNDFILE-PALETTE: paths: ~a~
                   ~%                 extensions: ~a~
                   ~%                 num-snds: ~a~
+                  ~%                 auto-freq: ~a~
                   ~%                 with-followers: ~a~
                   ~%                 next: ~a"
-          (paths sfp) (extensions sfp) (num-snds sfp) (with-followers sfp)
-          (next sfp)))
+          (paths sfp) (extensions sfp) (num-snds sfp) (auto-freq sfp)
+          (with-followers sfp) (next sfp)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; NB Although this class is a palette and therefore a subclass of
@@ -134,7 +140,10 @@
                     ;; and the given name which also acts as the id per
                     ;; default. 
                     ;; MDE Sun Dec 16 20:19:30 2012 -- was make-sndfile
-                    (t (make-sndfile-ext (find-sndfile sfp snd) :id snd))))))
+                    (t (make-sndfile-ext
+                        (find-sndfile sfp snd) :id snd
+                        ;; MDE Fri Sep 25 13:49:09 2015 
+                        :frequency (if (auto-freq sfp) 'detect 'c4)))))))
   (auto-cue-nums sfp)
   (reset sfp)
   ;; MDE Sat Dec 22 20:59:44 2012 
@@ -607,12 +616,12 @@
 |#
 ;;; SYNOPSIS
 (defun make-sfp (id sfp &key paths (extensions '("wav" "aiff" "aif" "snd"))
-                 with-followers (warn-not-found t))
+                          auto-freq with-followers (warn-not-found t))
 ;;; ****
   (make-instance 'sndfile-palette :id id :data sfp :paths paths
                  :with-followers with-followers :extensions extensions
+                 :auto-freq auto-freq
                  :warn-not-found warn-not-found))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -927,7 +936,9 @@ splinter: 2 sounds
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - a list of folders to skip i.e. just the last folder name, not the
-;;;   complete path 
+;;;   complete path. Default = NIL.
+;;; - whether to do automatic frequency detection on the sound files. . Default
+;;;   = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; a sndfile-palette object
@@ -937,8 +948,93 @@ splinter: 2 sounds
 ;;; 
 ;;; EXAMPLE
 #|
-(get-sndfiles "/music/hyperboles/snd/cello/samples/"
+(make-sfp-from-folder "/music/hyperboles/snd/cello/samples/"
                               '("short-percussive" "weird"))
+-->
+SNDFILE-PALETTE: paths: NIL
+                 extensions: (wav aiff aif snd)
+                 num-snds: 92
+                 with-followers: NIL
+                 next: NIL
+PALETTE: 
+RECURSIVE-ASSOC-LIST: recurse-simple-data: T
+                      num-data: 16
+                      linked: T
+                      full-ref: NIL
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 16, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: AUTO, tag: NIL, 
+data: (
+LINKED-NAMED-OBJECT: previous: NIL, this: (1), next: (10)
+NAMED-OBJECT: id: 1, tag: NIL, 
+data: (
+
+SNDFILE-EXT: use: T, cue-num: 2, pitch: -1, pitch-curve: -1, bandwidth: -1, 
+             bandwidth-curve: -1, continuity: -1, continuity-curve: -1, 
+             weight: -1, weight-curve: -1, energy: -1, energy-curve: -1, 
+             harmonicity: -1, harmonicity-curve: -1, volume: -1, 
+             volume-curve: -1, loop-it: NIL, bitrate: 24, srate: 96000, 
+             num-frames: 1719753, bytes: 5159314, group-id: (1)
+             followers: NIL
+
+SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif, 
+         snd-duration: 17.914093, channels: 1, frequency: 150.24414
+         start: 0.0, end: 17.914093, amplitude: 1.0, duration 17.914093
+         will-be-used: 0, has-been-used: 0
+         data-consistent: T
+...
+|#
+(defun make-sfp-from-folder (folder &optional skip auto-freq)
+;;; ****
+  (let* ((sfs (get-sndfiles folder skip))
+         (groups (get-groups-from-paths sfs folder))
+         (pdl (length (trailing-slash folder))))
+    ;; (print groups)
+    (unless groups (setq groups '(default-group)))
+    (loop for sf in sfs
+       for sfgroup = (get-group-from-file sf pdl)
+       for pos = (position sfgroup groups :test #'(lambda (x y)
+                                                    (if (atom y)
+                                                      (eq x y)
+                                                      (eq x (first y)))))
+       for group = (progn
+                     (unless pos (setq group 'default-group
+                                         pos 0))
+                     (nth pos groups))
+       do
+         ;; (print group) (print pos) (print (nth pos groups))
+         (if (atom group)
+             (setf (nth pos groups) (list group (list sf)))
+             (push sf (second (nth pos groups)))))
+    ;; (print groups)
+    (make-sfp 'auto groups :auto-freq auto-freq)))
+         
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* sndfile-palette/get-sndfiles
+;;; DATE
+;;; 5th September 2015, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Return a list of the full paths of sound files in the given path. Files
+;;; without the extensions aif, wav, aiff, and snd are ignore.
+;;; 
+;;; ARGUMENTS
+;;; The full path to the folder where the sound files are, as a string
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - a list of folders to skip i.e. just the last folder name, not the
+;;;   complete path 
+;;; 
+;;; RETURN VALUE
+;;; A list of full paths as strings.
+;;; 
+;;; EXAMPLE
+#|
+(get-sndfiles "/music/hyperboles/snd/cello/samples/"
+              '("short-percussive" "weird"))
+-->
 ("/music/hyperboles/snd/cello/samples/1/g4-III-4-001.aif"
  "/music/hyperboles/snd/cello/samples/1/g4-III-4-002.aif"
  "/music/hyperboles/snd/cello/samples/1/g4-III-4-003.aif"
@@ -946,32 +1042,15 @@ splinter: 2 sounds
  "/music/hyperboles/snd/cello/samples/10/cs5-I-5-9-13-4-001.aif"
  ... 
 |#
-(defun make-sfp-from-folder (folder &optional skip)
-;;; ****
-  (let* ((sfs (get-sndfiles folder skip))
-         (groups (get-groups-from-paths sfs folder))
-         (pdl (length (trailing-slash folder))))
-    (loop for sf in sfs
-       for sfgroup = (get-group-from-file sf pdl)
-       for pos = (position sfgroup groups :test #'(lambda (x y)
-                                                    (if (atom y)
-                                                      (eq x y)
-                                                      (eq x (first y)))))
-       for group = (nth pos groups)
-       do
-         ;;(print group)
-         (if (atom group)
-             (setf (nth pos groups) (list group (list sf)))
-             (push sf (second (nth pos groups)))))
-    (make-sfp 'auto groups)))
-         
-
+;;; SYNOPSIS
 (defun get-sndfiles (folder &optional skip)
+  ;;; ****
   (loop for file in (get-all-files folder skip)
      when (member (pathname-type file) '("aif" "wav" "aiff" "snd")
                   :test #'string=)
      collect file))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun get-groups-from-paths (files parent-dir &optional as-lists)
   (loop with result = '()
      with pdl = (length (trailing-slash parent-dir))
@@ -979,14 +1058,17 @@ splinter: 2 sounds
      for group = (get-group-from-file file pdl)
      do
        (pushnew (if as-lists (list group) group) result)
-     finally (return (nreverse result))))
+     finally (return (nreverse (remove nil result)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun get-group-from-file (file skip)
   ;; pass the parent-dir instead of the length of the parent-dir, if you like
   (unless (integerp skip)
     (setf skip (length (trailing-slash skip))))
-  (let ((result (subseq (parent-dir file) skip)))
-    (read-from-string (substitute #\- #\/ result))))
+  (let ((pd (parent-dir file)))
+    (when (> (length pd) skip)
+      (let ((result (subseq pd skip)))
+        (read-from-string (substitute #\- #\/ result))))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; groups are indicated in wavelab marker files by the wording

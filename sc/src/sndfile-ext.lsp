@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 12:08:25 Mon Sep  7 2015 BST
+;;; $$ Last modified: 13:43:16 Fri Sep 25 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -581,7 +581,6 @@ NIL
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****f* sndfile-ext/make-sndfile-ext
 ;;; DESCRIPTION
 ;;; Make a sndfile-ext (extension of sndfile) object which holds the usual

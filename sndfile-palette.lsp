@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 14:58:33 Fri Sep 25 2015 BST
+;;; $$ Last modified: 15:02:44 Fri Sep 25 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -992,6 +992,8 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
          (groups (get-groups-from-paths sfs folder))
          (pdl (length (trailing-slash folder))))
     ;; (print groups)
+    ;; MDE Fri Sep 25 15:02:22 2015 -- if we've got sndfiles in the folder
+    ;; (i.e. not subfolders) then we have to create a default group 
     (unless groups (setq groups '(default-group)))
     (loop for sf in sfs
        for sfgroup = (get-group-from-file sf pdl)

@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 13:43:16 Fri Sep 25 2015 BST
+;;; $$ Last modified: 10:16:34 Wed Sep 30 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -577,6 +577,24 @@ NIL
     (count-elements sfes)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Sep 30 10:10:34 2015 -- see sndfile class doc.
+(defmethod get-slots-list :around ((sfe sndfile-ext))
+  (let ((sf (call-next-method)))
+    (append
+     sf
+     (list :cue-num (cue-num sfe) :use (use sfe) :pitch (pitch sfe)
+           :pitch-curve (pitch-curve sfe) :bandwidth (bandwidth sfe)
+           :bandwidth-curve (bandwidth-curve sfe) :continuity (continuity sfe)
+           :continuity-curve (continuity-curve sfe) :weight (weight sfe)
+           :weight-curve (weight-curve sfe) :energy (energy sfe)
+           :energy-curve (energy-curve sfe) :harmonicity (harmonicity sfe)
+           :harmonicity-curve (harmonicity-curve sfe) :volume (volume sfe)
+           :volume-curve (volume-curve sfe) :loop-it (loop-it sfe)
+           :bitrate (bitrate sfe) :srate (srate sfe)
+           :num-frames (num-frames sfe) :bytes (bytes sfe)
+           :followers (followers sfe) :group-id (group-id sfe)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;

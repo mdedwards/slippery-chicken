@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 15:32:36 Mon Sep  7 2015 BST
+;;; $$ Last modified: 11:23:45 Wed Sep 30 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -75,12 +75,20 @@
           (warn-not-found al)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Wed Aug  5 13:21:30 2015 -- this assumes the data is something simple
-;;; like a list of numbers 
-(defmethod print-for-init ((al assoc-list) &optional (stream t))
-  (format stream "~&(make-assoc-list '~a~%  '(" (id al))
+;;; MDE Wed Aug 5 13:21:30 2015 -- this assumes the data is something simple
+;;; like a list of numbers. In any case we try to print in such a way that
+;;; reading back in will create an assoc-list object with the requisite
+;;; data. Use the data-printer for more complex data (see e.g. sndfile's
+;;; get-slots-list or indeed its class method)
+(defmethod print-for-init ((al assoc-list) &key (stream t)
+                                             (call 'make-assoc-list)
+                                             (data-printer
+                                              #'(lambda (d s) (print d s))))
+  (format stream "~&(~a '~a~%  '(" call (id al))
   (loop for d in (data al) and i from 1 do
-       (format stream "(~a ~a)" (id d) (data d))
+       (format stream "(~a " (id d))
+       (funcall data-printer (data d) stream)
+       (format stream ")")
        (unless (= i (sclist-length al))
          (format stream "~%    ")))
   (format stream ")~%  :warn-not-found ~a)~%" (warn-not-found al))

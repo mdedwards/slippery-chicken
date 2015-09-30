@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 15:02:44 Fri Sep 25 2015 BST
+;;; $$ Last modified: 11:26:11 Wed Sep 30 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -98,8 +98,7 @@
           (slot-value palette 'extensions) (extensions sfp))
     palette))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((sfp sndfile-palette) stream)
   (format stream "~%SNDFILE-PALETTE: paths: ~a~
                   ~%                 extensions: ~a~
@@ -443,8 +442,8 @@
 ;;; their <use> slot is T.  This is perhaps memory intensive but it'll save
 ;;; some CPU cycles by processing here rather than when max asks for the next
 ;;; sndfile.
-
-(defmethod process-followers ((sfp sndfile-palette) &optional (on-fail #'error))
+(defmethod process-followers ((sfp sndfile-palette) &optional
+                                                      (on-fail #'error))
   (let ((refs (get-all-refs sfp))
         (result t))
     (loop for ref in refs 
@@ -556,6 +555,17 @@
     it))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod print-for-init ((sfp sndfile-palette) &key (stream t))
+  (call-next-method ; assoc-list method
+   sfp
+   :data-printer #'(lambda (list stream)
+                     (princ "(" stream)
+                     (loop for sf in list do
+                          (print (get-slots-list sf) stream))
+                     (princ ")" stream))
+   :call 'make-sfp))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;

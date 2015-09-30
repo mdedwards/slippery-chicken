@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 13:54:59 Fri Sep 25 2015 BST
+;;; $$ Last modified: 10:09:58 Wed Sep 30 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -338,6 +338,14 @@ T
     (when (and start dur)
       ;; MDE Sun Dec 16 15:00:27 2012 -- use slot-value
       (setf (slot-value sf 'end) (+ start dur)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  MDE Tue Sep 29 21:43:50 2015 -- for writing sndfile-palette data for
+;;; re-reading (so we an avoid redoing costly frequency analysis)
+(defmethod get-slots-list ((sf sndfile))
+  (list (path sf) :frequency (frequency sf) :id (id sf)
+        :duration (snd-duration sf) :end (end sf) :start (start sf)
+        :amplitude (amplitude sf) :data (data sf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

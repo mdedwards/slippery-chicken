@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 11:26:11 Wed Sep 30 2015 BST
+;;; $$ Last modified: 15:30:19 Wed Sep 30 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -558,6 +558,7 @@
 (defmethod print-for-init ((sfp sndfile-palette) &key (stream t))
   (call-next-method ; assoc-list method
    sfp
+   :stream stream
    :data-printer #'(lambda (list stream)
                      (princ "(" stream)
                      (loop for sf in list do

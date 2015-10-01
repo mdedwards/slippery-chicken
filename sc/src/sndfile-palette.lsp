@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 15:30:19 Wed Sep 30 2015 BST
+;;; $$ Last modified: 21:37:33 Thu Oct  1 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -252,11 +252,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; This class is a little different as we can fake association-list type
-;;; functionality by pulling out a sound with a certain id from the sound
-;;; list.  If the sound list was a proper assoc-list however, we couldn't have
-;;; the same sound twice in the list, which would be inconvenient.  Hence we
-;;; fake it here.
-;;; In this case, we pull out the first sound we see with an id match.
+;;; functionality by pulling out a sound with a certain id from the sound list.
+;;; If the sound list was a proper assoc-list however, we couldn't have the
+;;; same sound twice in the list, which would be inconvenient.  Hence we fake
+;;; it here.  In this case, we pull out the first sound we see with an id
+;;; match.
 
 (defmethod get-snd (id snd-id (sfp sndfile-palette))
   (let* ((list (get-snds id sfp))
@@ -541,18 +541,7 @@
     (error "sndfile-palette::get-nearest: freq should be numeric: ~a~%~a"
            freq sfp))
   (unless ids (setq ids (get-all-refs sfp)))
-  (let* ((diff most-positive-double-float)
-         (cdiff diff)
-         it)
-    (loop for id in ids
-       for sflist = (get-data-data id sfp) do
-         (loop for sf in sflist do
-              (when (frequency sf)
-                (setq diff (abs (- 1.0 (/ freq (frequency sf)))))
-                (when (<= diff cdiff)
-                  (setq it sf
-                        cdiff diff)))))
-    it))
+  (get-nearest-aux freq (loop for id in ids appending (get-data-data id sfp))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-for-init ((sfp sndfile-palette) &key (stream t))
@@ -565,6 +554,28 @@
                           (print (get-slots-list sf) stream))
                      (princ ")" stream))
    :call 'make-sfp))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Oct  1 17:08:33 2015
+(defmethod set-frequency-from-filename
+    ((sfp sndfile-palette)
+     &key groups (name-fun #'akoustik-piano-name) (on-error #'error))
+  (setq groups (if groups (force-list groups)
+                   (get-all-refs sfp)))
+  (loop for ref in groups for group = (get-data-data ref sfp) do
+       (loop for sf in group do
+            (unless (set-frequency-from-filename sf :name-fun name-fun)
+              (when (functionp on-error)
+                (funcall on-error "~&Can't set frequency in ~a" sf)))))
+  sfp)
+
+(defun akoustik-piano-name (name)
+  (when name
+    (let ((zero-octave (char= #\- (elt name 9))))
+      ;; samples notes use middle C = C3
+      (+ (note-to-midi (read-from-string
+                        (subseq name 8 (if zero-octave 11 10))))
+         12))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -946,10 +957,17 @@ splinter: 2 sounds
 ;;; - the folder path, as a string.
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - a list of folders to skip i.e. just the last folder name, not the
+;;; keyword arguments:
+;;; - :skip. a list of folders to skip i.e. just the last folder name, not the
 ;;;   complete path. Default = NIL.
-;;; - whether to do automatic frequency detection on the sound files. . Default
-;;;   = NIL. 
+;;; - :auto-freq. whether to do automatic frequency detection on the sound
+;;;   files. Default = NIL.
+;;; - :insist. A single pattern (string) or list of patterns that the sound
+;;;   file name must have--just the filename, excluding path/folders and
+;;;   extension. If a list then all patterns must be in the file name, not
+;;;   just one of them. Default = NIL.
+;;; - :resist. Sim. to :insist except this/these are patterns none of which can
+;;;   be in the file name. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; a sndfile-palette object
@@ -997,32 +1015,38 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
          data-consistent: T
 ...
 |#
-(defun make-sfp-from-folder (folder &optional skip auto-freq)
+(defun make-sfp-from-folder (folder &key skip auto-freq insist resist
+                                      (default-group 'default-group))
 ;;; ****
-  (let* ((sfs (get-sndfiles folder skip))
+  (let* ((sfs (get-sndfiles folder skip insist resist))
          (groups (get-groups-from-paths sfs folder))
-         (pdl (length (trailing-slash folder))))
+         (pdl (length (trailing-slash folder)))
+         sfgroup pos group)
     ;; (print groups)
     ;; MDE Fri Sep 25 15:02:22 2015 -- if we've got sndfiles in the folder
     ;; (i.e. not subfolders) then we have to create a default group 
-    (unless groups (setq groups '(default-group)))
-    (loop for sf in sfs
-       for sfgroup = (get-group-from-file sf pdl)
-       for pos = (position sfgroup groups :test #'(lambda (x y)
-                                                    (if (atom y)
-                                                      (eq x y)
-                                                      (eq x (first y)))))
-       for group = (progn
-                     (unless pos (setq group 'default-group
-                                         pos 0))
-                     (nth pos groups))
-       do
-         ;; (print group) (print pos) (print (nth pos groups))
-         (if (atom group)
-             (setf (nth pos groups) (list group (list sf)))
-             (push sf (second (nth pos groups)))))
-    ;; (print groups)
-    (make-sfp 'auto groups :auto-freq auto-freq)))
+    (unless groups (setq groups (list default-group)))
+    (if sfs
+        (progn
+          (loop for sf in sfs do
+               (setq sfgroup  (get-group-from-file sf pdl)
+                     pos (position sfgroup groups
+                                   :test #'(lambda (x y)
+                                             (if (atom y)
+                                                 (eq x y)
+                                                 (eq x (first y)))))
+                     group  (progn
+                              (unless pos (setq group default-group
+                                                pos 0))
+                              (nth pos groups)))
+             ;; (print group) (print pos) (print (nth pos groups))
+               (if (atom group)
+                   (setf (nth pos groups) (list group (list sf)))
+                   (push sf (second (nth pos groups)))))
+          ;; (print groups)
+          (make-sfp 'auto groups :auto-freq auto-freq))
+        (warn "sndfile-palette:make-sfp-from-folder: ~a: no sound files."
+              folder))))
          
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* sndfile-palette/get-sndfiles
@@ -1038,7 +1062,13 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - a list of folders to skip i.e. just the last folder name, not the
-;;;   complete path 
+;;;   complete path
+;;; - A single pattern (string) or list of patterns that the sound
+;;;   file name must have--just the filename, excluding path/folders and
+;;;   extension. If a list then all patterns must be in the file name, not
+;;;   just one of them. Default = NIL.
+;;; - Sim. to :insist except this/these are patterns none of which can
+;;;   be in the file name. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of full paths as strings.
@@ -1056,11 +1086,16 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
  ... 
 |#
 ;;; SYNOPSIS
-(defun get-sndfiles (folder &optional skip)
+(defun get-sndfiles (folder &optional skip insist resist)
   ;;; ****
+  (setq insist (force-list insist)
+        resist (force-list resist))
   (loop for file in (get-all-files folder skip)
-     when (member (pathname-type file) '("aif" "wav" "aiff" "snd")
-                  :test #'string=)
+     for name = (pathname-name file) 
+     when (and (member (pathname-type file) '("aif" "wav" "aiff" "snd")
+                       :test #'string=)
+               (seq-has-all insist name)
+               (seq-has-none resist name))
      collect file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1120,7 +1155,20 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
           (nreverse result))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; MDE Thu Oct  1 19:05:16 2015
+(defun get-nearest-aux (freq sflist)
+  (let* ((diff most-positive-double-float)
+         (cdiff diff)
+         it)
+    (loop for sf in sflist do
+         (when (frequency sf)
+           (setq diff (abs (- 1.0 (/ freq (frequency sf)))))
+           (when (<= diff cdiff)
+             (setq it sf
+                   cdiff diff))))
+    it))
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun sndfile-palette-p (thing)
   (typep thing 'sndfile-palette))
 

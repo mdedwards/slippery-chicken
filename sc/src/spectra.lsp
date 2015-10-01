@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    July 27th 2015
 ;;;
-;;; $$ Last modified: 20:41:24 Tue Sep  1 2015 BST
+;;; $$ Last modified: 20:03:40 Thu Oct  1 2015 BST
 ;;;
 ;;; SVN ID: $Id: spectra.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
@@ -235,7 +235,7 @@ data: ((0.9889743194880222d0 2.0263850081954717d0 2.9990610385449314d0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; These functions will receive the file name as a string, with no directory
 ;;; or extension, and return the associated MIDI note number.
-(defun akoustik-piano-name (name)
+(defun akoustik-piano-name120 (name)
   (when name
     (let ((zero-octave (char= #\- (elt name 9))))
       (when (and (string= name "Stein-R(" :end1 8)

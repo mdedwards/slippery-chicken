@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 10:09:58 Wed Sep 30 2015 BST
+;;; $$ Last modified: 18:17:11 Thu Oct  1 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -50,10 +50,8 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; the name (defaults to the given name of the file) is stored in <id>, the
 ;;; given file name (perhaps minus path and extension) in <data>.
-
 (defclass sndfile (linked-named-object)
   ((path :accessor path :initarg :path :initform nil)
    ;; the sound's full duration
@@ -340,12 +338,22 @@ T
       (setf (slot-value sf 'end) (+ start dur)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  MDE Tue Sep 29 21:43:50 2015 -- for writing sndfile-palette data for
+;;; MDE Tue Sep 29 21:43:50 2015 -- for writing sndfile-palette data for
 ;;; re-reading (so we an avoid redoing costly frequency analysis)
 (defmethod get-slots-list ((sf sndfile))
   (list (path sf) :frequency (frequency sf) :id (id sf)
         :duration (snd-duration sf) :end (end sf) :start (start sf)
         :amplitude (amplitude sf) :data (data sf)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  MDE Thu Oct  1 17:08:29 2015 
+(defmethod set-frequency-from-filename
+    ((sf sndfile)
+     &key (name-fun #'akoustik-piano-name))
+  (declare (ignore ignore))
+  (let ((midi (funcall name-fun (pathname-name (path sf)))))
+    (when midi
+      (setf (frequency sf) (midi-to-freq midi)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

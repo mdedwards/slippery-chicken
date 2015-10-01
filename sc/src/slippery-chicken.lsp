@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 20:04:58 Tue Sep 29 2015 BST
+;;; $$ Last modified: 21:10:42 Thu Oct  1 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4373,6 +4373,10 @@ seq-num 5, VN, replacing G3 with B6
                        (output-name-uniquifier "")
                        (sndfile-extension nil)
                        (sndfile-palette nil)
+                       ;; MDE Thu Oct  1 21:03:59 2015 
+                       (pan-min-max nil) ; actually '(15 75) by defauly below
+                       ;; MDE Thu Oct  1 19:13:49 2015
+                       snd-selector 
                        ;; MDE Mon Nov  4 10:10:35 2013 -- the following were 
                        ;; added so we could use instruments other than samp5
                        (clm-ins #'clm::samp5)
@@ -4485,6 +4489,8 @@ seq-num 5, VN, replacing G3 with B6
                                (not (eq do-src t))
                                (symbolp do-src))
                           (note-to-freq do-src))))
+         ;; MDE Thu Oct  1 21:07:00 2015
+         (pan-vals '(15 25 35 45 55 65 75))
          (duration 0.0)
          (wanted-duration 0.0)
          (wanted-duration-string "")
@@ -4551,6 +4557,10 @@ seq-num 5, VN, replacing G3 with B6
          ;; keep going (set to nil when max-start-time is exceeded)
          (happy t)
          (rthm-seqs nil))
+    (when pan-min-max
+      (print (setq pan-vals (loop for p in pan-vals
+                        collect (fscale p 15 75 (first pan-min-max)
+                                        (second pan-min-max))))))
     (when (and sound-file-palette-ref (zerop (sclist-length snds)))
       (error "slippery-chicken::clm-play: <snds>: No sounds for reference ~a"
              sound-file-palette-ref))
@@ -4573,14 +4583,18 @@ seq-num 5, VN, replacing G3 with B6
              (setf snd-trans (copy-list snd-trans))
              (loop for rs in player do
                   (loop 
-                     for evts in rs 
+                     for event in rs 
                      for snd = (when snds
                                  (if (and snds2 (= 1 (pop snd-trans)))
-                                     (get-next snds2)
-                                     (get-next snds)))
+                                     (if snd-selector
+                                         (funcall snd-selector snds2 event)
+                                         (get-next snds2))
+                                     (if snd-selector
+                                         (funcall snd-selector snds event)
+                                         (get-next snds))))
                      do
                      ;; just to avoid the compiler warning...
-                     (progn evts)
+                     ;; (progn event)
                      (unless snd
                        (error "slippery-chicken::clm-play: ~
                                snd is nil (whilst counting)!"))
@@ -4671,9 +4685,18 @@ seq-num 5, VN, replacing G3 with B6
                    ;; (print 'here)
                    (setf snd-group (pop snd-trans)
                          snd (when snds
-                               (if (and snds2 (= 1 snd-group))
-                                   (get-next snds2)
-                                   (get-next snds)))
+                               (if (and snds2 (= 1 (pop snd-trans)))
+                                   (if snd-selector
+                                       ;; todo: got to handle chords properly
+                                       ;; here: by all means use the same sound
+                                       ;; with diff transps, by default, but
+                                       ;; we'll need to get a new snd for
+                                       ;; snd-selector calls
+                                       (funcall snd-selector snds2 event)
+                                       (get-next snds2))
+                                   (if snd-selector
+                                       (funcall snd-selector snds event)
+                                       (get-next snds))))
                          duration (* duration-scaler
                                      (compound-duration-in-tempo event))
                          skip-this-event 
@@ -4814,7 +4837,7 @@ seq-num 5, VN, replacing G3 with B6
                                         ;; is always put between two speakers
                                         ;; but it could be two of any number;
                                         ;; see samp5.lsp for details.
-                                        (nth (random 7) '(15 25 35 45 55 65 75))
+                                        (nth (random 7) pan-vals)
                                         :rev-amt rev-amt
                                         :printing print-secs)
                                   (if (functionp clm-ins-args)

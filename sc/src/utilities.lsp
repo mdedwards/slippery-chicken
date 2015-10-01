@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:25:52 Wed Sep 16 2015 BST
+;;; $$ Last modified: 17:55:48 Thu Oct  1 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3611,9 +3611,12 @@ WARNING:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun force-list (thing)
-  (if (listp thing)
-      thing
-      (list thing)))
+  ;; MDE Thu Oct  1 16:47:36 2015 -- added (when thing so that we don't force
+  ;; NIL into a list
+  (when thing
+    (if (listp thing)
+        thing
+        (list thing))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3819,7 +3822,7 @@ At revision 3608.
 
 ;;; http://www.linuxsampler.org/nkitool/
 (defun kontakt-to-coll (nki &key write-file
-                        (converter "/Users/medward2/bin/nki"))
+                              (converter "/Users/medward2/bin/nki"))
   (flet ((get-value (line &optional (read t))
            (let* ((pos (search "value=" line))
                   (val (subseq line (+ pos 7))))
@@ -3841,29 +3844,29 @@ At revision 3608.
         (loop
            with key with sample
            do
-           (multiple-value-bind
-                 (line eof)
-               (read-line input nil)
-             (cond 
-               ((search "rootKey" line)
-                (setf key (get-value line)))
-               ((search "file_ex2" line)
-                ;; files are the paths with some strange directory delimiter
-                ;; but they all seem to start the actual file name with a
-                ;; 12-char string like F-00010 or F000--this will of course
-                ;; break if the sample file names being with either of these
-                ;; strings
-                (let* ((val (get-value line nil))
-                       (pos1 (or (search "F-00010" val)
-                                 (search "F000" val)))
-                       (pos2 (search "\"/>" val)))
-                  (unless (and pos1 pos2)
-                    (error "utilities::kontakt-to-coll: can't find file in ~%~a"
-                           line))
-                  (setf sample (subseq val (+ pos1 12) pos2))
-                  (push (list key sample) result))))
-             (when eof 
-               (return)))))
+             (multiple-value-bind
+                   (line eof)
+                 (read-line input nil)
+               (cond 
+                 ((search "rootKey" line)
+                  (setf key (get-value line)))
+                 ((search "file_ex2" line)
+                  ;; files are the paths with some strange directory delimiter
+                  ;; but they all seem to start the actual file name with a
+                  ;; 12-char string like F-00010 or F000--this will of course
+                  ;; break if the sample file names being with either of these
+                  ;; strings
+                  (let* ((val (get-value line nil))
+                         (pos1 (or (search "F-00010" val)
+                                   (search "F000" val)))
+                         (pos2 (search "\"/>" val)))
+                    (unless (and pos1 pos2)
+                      (error "utilities::kontakt-to-coll: can't find file ~
+                              in ~%~a" line))
+                    (setf sample (subseq val (+ pos1 12) pos2))
+                    (push (list key sample) result))))
+               (when eof 
+                 (return)))))
       (setf result (sort (nreverse result)
                          #'(lambda (x y) (< (first x) (first y)))))
       (when write-file
@@ -3881,21 +3884,21 @@ At revision 3608.
                       with type = (concatenate 'string "."
                                                (pathname-type sample))
                       do
-                      (format output "~&~a, ~a ~a ~a;"
-                              (+ i index) name type i))))
+                        (format output "~&~a, ~a ~a ~a;"
+                                (+ i index) name type i))))
             (loop with offset = (first (first result))
                with last-key with last-sample
                for pair in result
                for key = (first pair)
                for sample = (second pair)
                do
-               (when last-key
-                 (write-coll-line (- last-key offset) last-sample
-                                  (- key last-key)))
-               (setf last-key key
-                     last-sample sample)
+                 (when last-key
+                   (write-coll-line (- last-key offset) last-sample
+                                    (- key last-key)))
+                 (setf last-key key
+                       last-sample sample)
                finally 
-               (write-coll-line (- key offset) sample 1)))))
+                 (write-coll-line (- key offset) sample 1)))))
       (values result (length result)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4773,6 +4776,27 @@ Here's where I pasted the data into the .RPP Reaper file:
          (scaler (if (zerop diff) 1.0 (float (/ diff))))
          (offset (* min scaler)))
     (loop for n in numbers collect (- (* scaler n) offset))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Oct 1 16:23:43 2015 -- return T or NIL depending on whether
+;;; sequence contains _all_ of the sub sequences in patterns
+;;; e.g. (seq-has-all '("rests" "sdf" "kjr") "sdflkjrestsdf" ) --> T
+(defun seq-has-all (patterns sequence)
+  (loop with count = 0
+     for p in patterns do
+       (when (search p sequence)
+         (incf count))
+     finally (return (= count (length patterns)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Oct  1 16:29:34 2015 -- T or NIL depending on whether sequence has
+;;; _any_ of the patterns.
+;;; (seq-has-none '("rerts" "sadf" "kjrm") "sdflkjrestsdf" ) --> T
+(defun seq-has-none (patterns sequence)
+  (loop for p in patterns do
+       (when (search p sequence)
+         (return nil))
+     finally (return t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

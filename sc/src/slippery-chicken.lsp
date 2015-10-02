@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:10:42 Thu Oct  1 2015 BST
+;;; $$ Last modified: 10:32:05 Fri Oct  2 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4421,16 +4421,15 @@ seq-num 5, VN, replacing G3 with B6
                  (and num-sections (> num-sections 1))))
     (error "slippery-chicken::clm-play: from-sequence keyword should only ~
             be used ~%when num-sections = 1."))
-  #|                                    ;
-  ;; MDE Sat Jun 2 12:51:03 2012 -- actually, we don't need to do this, and it ;
-  ;; just causes problems now we've updated num-seqs to handle sub-sections ;
-  ;; ;                                  ;
+  #| 
+  ;; MDE Sat Jun 2 12:51:03 2012 -- actually, we don't need to do this, and it
+  ;; just causes problems now we've updated num-seqs to handle sub-sections
   (when (and num-sections (= 1 num-sections) (not num-sequences))
-  (let ((ns (num-seqs sc section)))
-  (unless ns 
-  (error "slippery-chicken::clm-play: can't get number of sequences ~
+    (let ((ns (num-seqs sc section)))
+      (unless ns 
+        (error "slippery-chicken::clm-play: can't get number of sequences ~
                 for section ~a." section))
-  (setf num-sequences (- ns (1- from-sequence)))))
+      (setf num-sequences (- ns (1- from-sequence)))))
   |#
   (unless (listp players)
     (setf players (list players)))
@@ -4573,6 +4572,7 @@ seq-num 5, VN, replacing G3 with B6
             (yes-or-no-p "File exists: ~%~a  ~%Overwrite (yes or no) > " 
                          output)))
     ;; (print snd-transitions) (print snds2)
+    ;; this is where we work out how many times we'll use the sndfiles
     (when output-ok
       (format t "~%Output file will be ~%\"~a\"~%~%" output)
       (when inc-start
@@ -4584,21 +4584,18 @@ seq-num 5, VN, replacing G3 with B6
              (loop for rs in player do
                   (loop 
                      for event in rs 
-                     for snd = (when snds
-                                 (if (and snds2 (= 1 (pop snd-trans)))
-                                     (if snd-selector
-                                         (funcall snd-selector snds2 event)
-                                         (get-next snds2))
-                                     (if snd-selector
-                                         (funcall snd-selector snds event)
-                                         (get-next snds))))
+                     for sndl = (when snds
+                                  (get-sndfiles-from-user-fun
+                                   event
+                                   (if (and snds2 (= 1 (pop snd-trans)))
+                                       snds2 snds)
+                                   snd-selector))
                      do
-                     ;; just to avoid the compiler warning...
-                     ;; (progn event)
-                     (unless snd
-                       (error "slippery-chicken::clm-play: ~
-                               snd is nil (whilst counting)!"))
-                     (incf (will-be-used snd)))))
+                       (loop for snd in sndl do
+                            (unless snd
+                              (error "slippery-chicken::clm-play: ~
+                                      snd is nil (whilst counting)!"))
+                            (incf (will-be-used snd))))))
         ;; here we reset them before starting, this is correct!
         (reset snds)
         (when snds2
@@ -4682,54 +4679,47 @@ seq-num 5, VN, replacing G3 with B6
                   (when snds2 (reset snds2)))
                 (loop for event in rs and rs-event-count from 0 while happy
                    do
-                   ;; (print 'here)
-                   (setf snd-group (pop snd-trans)
-                         snd (when snds
-                               (if (and snds2 (= 1 (pop snd-trans)))
-                                   (if snd-selector
-                                       ;; todo: got to handle chords properly
-                                       ;; here: by all means use the same sound
-                                       ;; with diff transps, by default, but
-                                       ;; we'll need to get a new snd for
-                                       ;; snd-selector calls
-                                       (funcall snd-selector snds2 event)
-                                       (get-next snds2))
-                                   (if snd-selector
-                                       (funcall snd-selector snds event)
-                                       (get-next snds))))
-                         duration (* duration-scaler
-                                     (compound-duration-in-tempo event))
-                         skip-this-event 
-                         ;; MDE Sat Nov  9 15:20:11 2013 -- only when we've got
-                         ;; events to output 
-                         (unless (zerop events-before-max-start)
-                           (> (random-rep 100.0)
-                              (interpolate event-count-player 
-                                           this-play-chance-env
-                                           :exp play-chance-env-exp)))
-                         ;; MDE Mon Nov  4 11:11:07 2013 
-                         freqs (let ((f (frequency (pitch-or-chord event))))
-                                 (if (listp f) f (list f)))
-                         ;; MDE Tue Apr 10 13:10:37 2012 -- see note to do-src
-                         ;; keyword above. 
-                         srts (if do-src
-                                  ;; MDE Tue Apr 17 12:52:40 2012 -- update:
-                                  ;; we now have the pitch-synchronous
-                                  ;; option so need to handle chords so
-                                  ;; we'll not call the pitch method here
-                                  ;; but the event. This will return a list,
-                                  ;; even for a single pitch, so we'll have
-                                  ;; to loop through them.
-                                  (src-for-sample-freq 
-                                   (if srt-freq
-                                       srt-freq
-                                       (if snd (frequency snd) 261.626))
-                                   ;; MDE Tue Apr 17 12:54:06 2012 -- see
-                                   ;; comment above. this used to be
-                                   ;; (pitch-or-chord event)
-                                   event)
-                                  '(1.0)))
-                   (loop for srt in srts and freq in freqs do
+                     (setq snd-group (pop snd-trans)
+                           sndl (when snds
+                                  ;; MDE Fri Oct  2 09:48:39 2015 
+                                  (get-sndfiles-from-user-fun
+                                   event
+                                   (if (and snds2 (= 1 (pop snd-trans)))
+                                       snds2 snds)
+                                   snd-selector))
+                           duration (* duration-scaler
+                                       (compound-duration-in-tempo event))
+                           skip-this-event 
+                           ;; MDE Sat Nov 9 15:20:11 2013 -- only when we've
+                           ;; got events to output
+                           (unless (zerop events-before-max-start)
+                             (> (random-rep 100.0)
+                                (interpolate event-count-player 
+                                             this-play-chance-env
+                                             :exp play-chance-env-exp)))
+                           ;; MDE Mon Nov  4 11:11:07 2013 
+                           freqs (let ((f (frequency (pitch-or-chord event))))
+                                   (if (listp f) f (list f)))
+                           ;; MDE Tue Apr 10 13:10:37 2012 -- see note to do-src
+                           ;; keyword above. 
+                           srts (if do-src
+                                    ;; MDE Tue Apr 17 12:52:40 2012 -- update:
+                                    ;; we now have the pitch-synchronous
+                                    ;; option so need to handle chords so
+                                    ;; we'll not call the pitch method here
+                                    ;; but the event. This will return a list,
+                                    ;; even for a single pitch, so we'll have
+                                    ;; to loop through them.
+                                    (src-for-sample-freq 
+                                     (if srt-freq
+                                         srt-freq
+                                         (if snd (frequency snd) 261.626))
+                                     ;; MDE Tue Apr 17 12:54:06 2012 -- see
+                                     ;; comment above. this used to be
+                                     ;; (pitch-or-chord event)
+                                     event)
+                                    '(1.0)))
+                   (loop for srt in srts and freq in freqs and snd in sndl do
                         (setf srt (* src-scaler srt))
                         (when (<= srt 0.0)
                           (error "slippery-chicken::clm-play: illegal sample ~
@@ -4853,7 +4843,6 @@ seq-num 5, VN, replacing G3 with B6
     total-events))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Just calls the -aux method once for each section required. See comments to
 ;;; that method for parameter explanation.
 
@@ -5412,8 +5401,8 @@ beg-ph 4))))
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Create a slippery-chicken object, manually add an error to the tuplet data ;
-;;; and call check-tuplets with #'warn as the on-fail function. ;
+;;; Create a slippery-chicken object, manually add an error to the tuplet data ; ;
+;;; and call check-tuplets with #'warn as the on-fail function. ; ;
   (let* ((mini
 (make-slippery-chicken
 '+mini+
@@ -5484,8 +5473,8 @@ beg-ph 4))))
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Create a slippery-chicken object, manually create a problem with the ties, ;
-;;; and call check-ties with a #'warn as the on-fail function. ;
+;;; Create a slippery-chicken object, manually create a problem with the ties, ; ;
+;;; and call check-ties with a #'warn as the on-fail function. ; ;
   (let* ((mini
 (make-slippery-chicken
 '+mini+
@@ -5641,7 +5630,7 @@ beg-ph 4))))
 ;;; 
 ;;; EXAMPLE
 #|
-;; A successful test                    ;
+;; A successful test                    ; ;
   (let* ((mini
 (make-slippery-chicken
 '+mini+
@@ -5658,7 +5647,7 @@ beg-ph 4))))
 
   => T
 
-;; A failing test                       ;
+;; A failing test                       ; ;
   (let* ((mini
 (make-slippery-chicken
 '+mini+
@@ -5963,7 +5952,7 @@ beg-ph 4))))
 ;;; 
 ;;; EXAMPLE
 #|
-;;; An example with values for the most frequently used arguments ;
+;;; An example with values for the most frequently used arguments ; ;
   (let ((mini
 (make-slippery-chicken
 '+mini+
@@ -6617,7 +6606,7 @@ EVENT: start-time: 11.000, end-time: 11.500,
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Print the pitches before and after applying the method ;
+;;; Print the pitches before and after applying the method ; ;
 (let ((mini
 (make-slippery-chicken
 '+mini+
@@ -6827,9 +6816,9 @@ duration: 20.0 (20.000)
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Create a slippery-chicken object, set all the written-pitch-or-chord ;
-;;; slots to NIL and print the results. Apply the method and print the results ;
-;;; again to see the difference.        ;
+;;; Create a slippery-chicken object, set all the written-pitch-or-chord ; ;
+;;; slots to NIL and print the results. Apply the method and print the results ; ;
+;;; again to see the difference.        ; ;
 (let ((mini
 (make-slippery-chicken
 '+mini+
@@ -7281,7 +7270,7 @@ FS4 G4)
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Follow the violin part and generate group events for all other parts ;
+;;; Follow the violin part and generate group events for all other parts ; ;
 (let* ((mini
 (make-slippery-chicken
 '+mini+
@@ -7296,9 +7285,9 @@ FS4 G4)
 :rthm-seq-map '((1 ((vn (1 1 1))
 (va (1 1 1))
 (vc (1 1 1))))))))
-  ;; Adding a label (probably wouldn't need one in bar 1, but to illustrate) ;
+  ;; Adding a label (probably wouldn't need one in bar 1, but to illustrate) ; ;
 (setf (asco-label (get-event mini 1 1 'vn)) "test-label")
-  ;; start the (fictitious) vocoder when the first cello note in bar 2 is played ;
+  ;; start the (fictitious) vocoder when the first cello note in bar 2 is played ; ;
 (push "max-receiver1 start-vocoder" (asco-msgs (get-event mini 2 1 'vc)))
 (write-antescofo mini 'vn :file "/tmp/asco-test.txt"))
 
@@ -7315,11 +7304,11 @@ Antescofo~ score written successfully with 15 events and 34 actions.
 
 The generated file will begin something like this:
 
-; antescofo~ score generated by slippery chicken version ;
-; 1.0.4 (svn revision 4733 2014-01-15 11:27:10) ;
-; at 12:02:06 on Thursday the 8th of May 2014 ;
+; antescofo~ score generated by slippery chicken version ; ;
+; 1.0.4 (svn revision 4733 2014-01-15 11:27:10) ; ;
+; at 12:02:06 on Thursday the 8th of May 2014 ; ;
 BPM 60
-antescofo-bar-num 1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;
+antescofo-bar-num 1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ; ;
 NOTE 6200 0.6666667 test-label
 group bar1.1 {
 0.0 midi-note 6000 12 2 0.6666667 
@@ -7345,7 +7334,7 @@ NOTE 6200 0.25
 group bar1.5 {
 0.0 midi-note 6000 12 2 0.25 
 0.0 midi-note 6400 12 3 0.25 
-antescofo-bar-num 2 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;
+antescofo-bar-num 2 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ; ;
 }
 NOTE 6200 0.6666667 
 group bar2.1 {
@@ -7861,7 +7850,7 @@ NOTE 6200 0.6666667
 ;;; 
 ;;; EXAMPLE
 #|
-;;; An example using all slots          ;
+;;; An example using all slots          ; ;
 (let ((mini
 (make-slippery-chicken
 '+mini+
@@ -7918,7 +7907,7 @@ NOTE 6200 0.6666667
 (test-sndfile-6.aiff))))
 ("/path/to/test-sndfiles-dir-1"
 "/path/to/test-sndfiles-dir-2"))
-        ;; :tempo-map '((1 (q 84)) (9 (q 72))) ; ;
+        ;; :tempo-map '((1 (q 84)) (9 (q 72))) ; ; ;
 :tempo-curve '(5 q (0 40 25 60 50 80 75 100 100 120))
 :staff-groupings '(2 2 3)
 :instrument-change-map '((1 ((fl ((1 flute) (3 piccolo) (5 flute))))))
@@ -8494,7 +8483,7 @@ NOTE 6200 0.6666667
                                (clone (pitch-or-chord 
                                        last-note-previous-seq))))))
     #|
-    ;; this checks that there are no ties to the first note in a seq ;
+    ;; this checks that there are no ties to the first note in a seq ; ;
 (when (is-tied-to (get-nth-event 0 (get-bar sequenz 0 t)))
     (error "slippery-chicken::sc-make-sequenz: ~
              Tied first note of sequenz not allowed!"))

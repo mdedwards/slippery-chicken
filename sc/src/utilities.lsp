@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:55:48 Thu Oct  1 2015 BST
+;;; $$ Last modified: 09:27:45 Fri Oct  2 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3819,7 +3819,6 @@ At revision 3608.
     (format nil "~d-~2,'0d-~2,'0d-~2,'0d.~2,'0d" year month day hour min)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; http://www.linuxsampler.org/nkitool/
 (defun kontakt-to-coll (nki &key write-file
                               (converter "/Users/medward2/bin/nki"))
@@ -3854,7 +3853,7 @@ At revision 3608.
                   ;; files are the paths with some strange directory delimiter
                   ;; but they all seem to start the actual file name with a
                   ;; 12-char string like F-00010 or F000--this will of course
-                  ;; break if the sample file names being with either of these
+                  ;; break if the sample file names begin with either of these
                   ;; strings
                   (let* ((val (get-value line nil))
                          (pos1 (or (search "F-00010" val)

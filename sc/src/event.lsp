@@ -1,4 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* rhythm/event
 ;;; NAME 
 ;;; event
@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:31:27 Thu Sep 17 2015 BST
+;;; $$ Last modified: 10:32:53 Fri Oct  2 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -51,11 +51,11 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass event (rhythm)
   ((start-time :accessor start-time :initarg :start-time :initform nil)
@@ -130,7 +130,7 @@
    (amplitude :accessor amplitude :type float :initarg :amplitude 
               :initform (get-sc-config 'default-amplitude))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod scale :around ((e event) scaler 
                           &optional
@@ -181,7 +181,7 @@
                                             (clone (tempo-change e))))
     rthm))
   
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod initialize-instance :after ((e event) &rest initargs)
   (declare (ignore initargs))
@@ -189,7 +189,7 @@
   (when (pitch-or-chord e)
     (setf (pitch-or-chord e) (pitch-or-chord e))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 23.12.11 SAR: Added robodoc info
 
@@ -239,7 +239,7 @@
       ;; MDE Sat May 19 20:42:51 2012
       (set-midi-channel noc midi-channel microtonal-midi-channel))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 23.12.11 SAR Added Robodoc info
 
@@ -284,7 +284,7 @@
           (get-midi-channel noc)
           (midi-channel noc)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sun Apr 29 14:05:45 BST 2012: Added robodoc entry
 
@@ -444,7 +444,7 @@
   (remove-if #'(lambda (x) (not (is-dynamic x)))
              (marks e)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* event/remove-dynamics
 ;;; DESCRIPTION
@@ -490,7 +490,7 @@
         (remove-if #'(lambda (x) (is-dynamic x))
                    (marks e))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 5.4.11: remove existing dynamics if we're about to add one
 (defmethod add-mark :before ((e event) mark &optional warn-rest)
@@ -506,7 +506,7 @@
     ;; (remove-dynamics e)
     (setf (slot-value e 'amplitude) (dynamic-to-amplitude mark))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Dec 23 16:54:59 EST 2011 Added robodoc info
 
@@ -581,7 +581,7 @@
     (add-mark e (amplitude-to-dynamic value nil) nil))
   value)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May  8 11:02:36 2014 
 (defmethod (setf asco-msgs) :after (value (e event))
   (when (and (is-rest e) (get-sc-config 'asco-msg-rest-warning))
@@ -656,7 +656,7 @@ data: 132
                or tempo object: ~a" value)))
   value)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* event/add-pitches
 ;;; DESCRIPTION
@@ -692,7 +692,7 @@ data: 132
                   e)))
   e)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf pitch-or-chord) (value (e event))
   ;; 13.2.11 really have to change the written note too
@@ -712,7 +712,7 @@ data: 132
                 nil))))
   value)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May 30 18:49:56 2013 -- auto-sets the pitch-or-chord slot
 (defmethod set-written-pitch-or-chord ((e event) value)
   ;; (print (data value))
@@ -728,7 +728,7 @@ data: 132
             (slot-value e 'pitch-or-chord)
             (transpose (written-pitch-or-chord e) (- diff))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod setf-pitch-aux ((e event) value slot)
   ;; (print '***setf-pitch-aux)  (print e) (print value) (print slot)
@@ -781,12 +781,12 @@ data: 132
           (asco-label i) (asco-msgs i) (pitch-or-chord i)
           (written-pitch-or-chord i)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod clone ((e event))
   (clone-with-new-class e 'event))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod clone-with-new-class :around ((e event) new-class)
   (declare (ignore new-class))
@@ -794,7 +794,7 @@ data: 132
     (copy-event-slots e rthm)
     rthm))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Don't forget to copy slots over in the scale method above as well!
 
@@ -832,7 +832,7 @@ data: 132
                                          (clone (midi-time-sig from))))
   to)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod porc-equal ((e1 event) (e2 event))
   (or (and (is-single-pitch e1)
@@ -842,7 +842,7 @@ data: 132
            (is-chord e2)
            (chord-equal (pitch-or-chord e1) (pitch-or-chord e2)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Dec 23 18:37:45 EST 2011 Added Robodoc info
 
@@ -889,7 +889,7 @@ data: 132
                (written-pitch-or-chord e)
              (pitch-or-chord e)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Dec 23 18:46:59 EST 2011 Added robodoc info
 
@@ -936,7 +936,7 @@ data: 132
               (written-pitch-or-chord e)
             (pitch-or-chord e)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Dec 23 18:52:55 EST 2011 Added robodoc info
 
@@ -984,7 +984,7 @@ data: 132
               (written-pitch-or-chord e)
             (pitch-or-chord e)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Dec 23 20:04:27 EST 2011 Added robodoc info
 
@@ -1104,7 +1104,7 @@ EVENT: start-time: NIL, end-time: NIL,
                     (setf (pitch-or-chord e) new))))
           e))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Dec 23 20:32:23 EST 2011 Added robodoc info
 
@@ -1144,7 +1144,7 @@ EVENT: start-time: NIL, end-time: NIL,
 ;;; ****
   (pitch- (pitch-or-chord e1) (pitch-or-chord e2)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sun Apr 29 14:25:13 BST 2012: Added robodoc entry
 
@@ -1217,7 +1217,7 @@ EVENT: start-time: NIL, end-time: NIL,
               duration-in-tempo, compound-duration-in-tempo, end-time."
              e)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 09:03:26 EST 2011
 
@@ -1363,7 +1363,7 @@ event::add-arrow: add arrow to rest?
   (add-mark-before e (list 'arrow start-text end-text))
   (add-mark e 'start-arrow))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Mar  2 13:40:07 GMT 2012: Added robodoc entry
 
@@ -1410,7 +1410,7 @@ NIL
 ;;; ****
   (add-mark e 'end-arrow))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Dec 30 11:21:12 EST 2011: Added robodoc info
 ;;; SAR Sat Dec 31 09:22:57 EST 2011: Put date in DATE block
@@ -1526,7 +1526,7 @@ WARNING:
   (add-mark-before e 'beg-trill-a)
   (add-mark e (list 'trill-note trill-note)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 10:50:33 EST 2011: Added robodoc info
 ;;; SAR Sat Dec 31 09:18:11 EST 2011: Added DATE back
@@ -1564,7 +1564,7 @@ WARNING:
 ;;; ****
   (add-mark e 'end-trill-a))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod add-mark-before ((e event) mark)
   ;; (print mark)
@@ -1612,7 +1612,7 @@ WARNING:
 ;;; ****
   (has-mark-aux (marks-before e) mark test))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 10:59:52 EST 2011 Added robodoc info
 
@@ -1674,7 +1674,7 @@ WARNING:
       (add-mark-before e cl))))
 ;;; ****
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 11:16:49 EST 2011 Added robodoc info
 
@@ -1719,7 +1719,7 @@ WARNING:
                                     (eq 'clef (first el))))
                    (marks-before e))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 11:47:30 EST 2011
 
@@ -1790,7 +1790,7 @@ NIL
         (warn "event::delete-clefs: no clef to delete: ~a" e))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 12:00:55 EST 2011 Added robodoc info
 
@@ -1840,7 +1840,7 @@ NIL
       (amplitude e)))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 12:13:59 EST 2011
 
@@ -1890,7 +1890,7 @@ NIL
           (id obj)))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod add-bracket-offset ((e event) &key (dx nil) (dy nil) 
                                               (dx0 nil) (dy0 nil) 
@@ -1918,7 +1918,7 @@ NIL
           (eighth result) dy1
           (nth index (bracket e)) result)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 12:28:31 EST 2011 Added robodoc info
 
@@ -1959,7 +1959,7 @@ NIL
     (when (written-pitch-or-chord e)
       (no-accidental (written-pitch-or-chord e)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod from-8ve-transposing-ins ((e event))
   (let* ((porc (pitch-or-chord e))
@@ -1974,7 +1974,7 @@ NIL
     (when written
       (is-octave sounding written))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 31 12:32:24 EST 2011: Add robodoc info
 
@@ -2057,7 +2057,7 @@ NIL
               result)))
     (nreverse result)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  lilypond
 ;;; test nested tuplets
 ;;; grace notes work fine.
@@ -2258,7 +2258,7 @@ NIL
           ;; (print result)
           (list-to-string result ""))))))
     
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; I think cmn should understand the (duration ...) function but seems to fail
 ;;; with this, so use its rq function instead.
@@ -2341,7 +2341,7 @@ NIL
                               (cmn-tempo (tempo-change e)))
                             (first (instrument-change e)))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod cmn-time ((e event))
   (when (start-time e)
@@ -2349,7 +2349,7 @@ NIL
      (secs-to-mins-secs (start-time e))
      :font-size 6)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 15:15:57 EST 2011 Added robodoc info
 
@@ -2394,7 +2394,7 @@ NIL
     (when (typep noc 'chord)
       (sclist-length noc))))
   
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 15:31:18 EST 2011 Added robodoc info
 
@@ -2436,7 +2436,7 @@ NIL
 ;;; ****
   (typep (pitch-or-chord e) 'pitch))
   
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 15:46:23 EST 2011: Added robodoc info
 ;;; SAR Wed Jun 13 12:16:02 BST 2012: Expanded robodoc
@@ -2766,7 +2766,7 @@ data: C4
         (highest porc)
         porc)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 24 19:15:03 EST 2011 Added robodoc info
 
@@ -2843,20 +2843,20 @@ data: C4
         (abs result)
         result)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod bad-interval-p ((e1 event) (e2 event) &optional written)
   (when (and (is-single-pitch e1) (is-single-pitch e2))
     (bad-interval (get-porc e1 written) (get-porc e2 written))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod get-porc ((e event) &optional written)
   (if written
       (written-pitch-or-chord e)
       (pitch-or-chord e)))
     
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; change notes to their enharmonics if the spelling is awkward.
 ;;; if written, act on the written pitches
@@ -2944,7 +2944,7 @@ data: C4
               )
         result))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sun Dec 25 08:23:34 EST 2011 Added robodoc info
 
@@ -2997,13 +2997,13 @@ data: C4
         (marks-before e) (remove-if #'mark-for-note-only
                                           (marks-before e))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 22.9.11 
 (defmethod reset-8va ((e event))
   (rm-marks e '(beg-8va beg-8vb end-8va end-8vb) nil)
   (setf (8va e) 0))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sun Dec 25 08:50:52 EST 2011: Added robodoc info
 ;;; SAR Sat Dec 31 09:20:00 EST 2011: Put date in DATE block
@@ -3082,14 +3082,14 @@ data: C4
       (add-mark p2 'flag-head)
       (setf (pitch-or-chord e) (make-chord (list p1 p2))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf 8va) :before (value (e event))
   (unless (or (= value 0) (= value -1) (= value 1))
     (error "event::(setf 8va): 8va slot can only be -1, 0, or 1"))
   value)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod delete-marks :after ((e event))
   (unless (is-rest e)
@@ -3108,9 +3108,10 @@ data: C4
                      (data (pitch-or-chord e))
                      (list (pitch-or-chord e)))))
     (loop for p in pitches collect
-         (/ (frequency p) freq))))
+         ;; MDE Fri Oct  2 09:38:47 2015 -- use the pitch method
+         (src-for-sample-freq freq p))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Apr 19 11:59:19 2012 
 
 ;;; ****m* event/get-degree
@@ -3168,7 +3169,7 @@ data: C4
           (average (float (/ summed (length list))))
           (t list))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed May  2 14:01:53 BST 2012: Added robodoc entry
 
@@ -3218,7 +3219,7 @@ do (add-mark-before e m))
         (setf (marks-before e) new)
         (setf (marks e) new))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Dec 26 14:12:55 2013
 (defmethod force-chord ((e event))
   (when (is-single-pitch e)
@@ -3228,13 +3229,13 @@ do (add-mark-before e m))
             (make-chord (written-pitch-or-chord e)))))
   e)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May 8 12:58:04 2014 -- do (set-sc-config 'asco-msg-rest-warning
 ;;; nil) if you're getting unnecessary warnings
 (defmethod add-antescofo-message ((e event) receiver message)
   (push (format nil "~a ~a" receiver message) (asco-msgs e)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue May 13 09:30:58 2014 -- 
 (defmethod event-equal ((e1 event) (e2 event))
   (and (rhythm-equal e1 e2)
@@ -3258,11 +3259,30 @@ do (add-mark-before e m))
        (or (and (not (tempo-change e1)) (not (tempo-change e2)))
            (tempo-equal (tempo-change e1) (tempo-change e2)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Oct  2 09:42:28 2015 -- always returns a list. remember sflist is a
+;;; cscl. if user-fun is nil we just use get-next--see below.
+(defmethod get-sndfiles-from-user-fun ((e event) sflist user-fun)
+  (if user-fun
+      (if (is-chord e)
+          ;; so user-fun should act on the pitch, but it is passed the event
+          ;; too, in case that's useful.
+          (loop for p in (data (pitch-or-chord e)) collect
+               (funcall user-fun sflist p e))
+          (list (funcall user-fun sflist (pitch-or-chord e) e)))
+      ;; in the default case, with no user-fun, we cycle through the list, but
+      ;; the same sndfile is used for all the notes in a chord
+      (let ((sf (get-next sflist))
+            (len (if (is-chord e)
+                     (sclist-length (pitch-or-chord e))
+                     1)))
+        (loop repeat len collect sf))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; code from "snow shoes..." days.  Called from the old clm methods.
 
@@ -3272,7 +3292,7 @@ do (add-mark-before e m))
     (setf (duration result) duration)
     result))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Thu Dec 22 17:53:00 EST 2011: Minor layout edits to MDE info 
 
@@ -3459,7 +3479,7 @@ T
         (set-midi-channel e midi-channel microtones-midi-channel))
       e)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Thu Dec 22 20:53:16 EST 2011 SAR: Added robodoc info
 
@@ -3482,57 +3502,55 @@ T
 ;;; 
 ;;; EXAMPLE
 #|
-;; Make an event object consisting of a quarter rest ;
-                     (make-rest 4)
+;; Make an event object consisting of a quarter rest 
+(make-rest 4)
+=> 
+EVENT: start-time: NIL, end-time: NIL, 
+duration-in-tempo: 0.0, 
+compound-duration-in-tempo: 0.0, 
+amplitude: 0.7, 
+bar-num: -1, marks-before: NIL, 
+tempo-change: NIL 
+instrument-change: NIL 
+display-tempo: NIL, start-time-qtrs: -1, 
+midi-time-sig: NIL, midi-program-changes: NIL, 
+8va: 0
+pitch-or-chord: NIL
+written-pitch-or-chord: NIL
+RHYTHM: value: 4.0, duration: 1.0, rq: 1, is-rest: T, score-rthm: 4.0f0, 
+undotted-value: 4, num-flags: 0, num-dots: 0, is-tied-to: NIL, 
+is-tied-from: NIL, compound-duration: 1.0, is-grace-note: NIL, 
+needs-new-note: NIL, beam: NIL, bracket: NIL, rqq-note: NIL, 
+rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 4, 
+tuplet-scaler: 1, grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: 4, tag: NIL, 
+data: 4
 
-                     => 
-                     EVENT: start-time: NIL, end-time: NIL, 
-                     duration-in-tempo: 0.0, 
-                     compound-duration-in-tempo: 0.0, 
-                     amplitude: 0.7, 
-                     bar-num: -1, marks-before: NIL, 
-                     tempo-change: NIL 
-                     instrument-change: NIL 
-                     display-tempo: NIL, start-time-qtrs: -1, 
-                     midi-time-sig: NIL, midi-program-changes: NIL, 
-                     8va: 0
-                     pitch-or-chord: NIL
-                     written-pitch-or-chord: NIL
-                     RHYTHM: value: 4.0, duration: 1.0, rq: 1, is-rest: T, score-rthm: 4.0f0, 
-                     undotted-value: 4, num-flags: 0, num-dots: 0, is-tied-to: NIL, 
-                     is-tied-from: NIL, compound-duration: 1.0, is-grace-note: NIL, 
-                     needs-new-note: NIL, beam: NIL, bracket: NIL, rqq-note: NIL, 
-                     rqq-info: NIL, marks: NIL, marks-in-part: NIL, letter-value: 4, 
-                     tuplet-scaler: 1, grace-note-duration: 0.05
-                     LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-                     NAMED-OBJECT: id: 4, tag: NIL, 
-                     data: 4
+;; Make an event object consisting of 4 seconds of rest (rather than a quarter
+;; indicated by the :duration t) starting at time-point 13.7 seconds, then
+;; print the corresponding slot values. 
+(let ((e (make-rest 4 :start-time 13.7 :duration t)))
+  (print (is-rest e))
+  (print (data e))
+  (print (duration e))
+  (print (value e))
+  (print (start-time e)))
+=>
+T 
+W 
+4.0 
+1.0f0 
+13.7
 
-;; Make an event object consisting of 4 seconds of rest (rather than a quarter; ;
-;; indicated by the :duration t) starting at time-point 13.7 seconds, then ;
-;; print the corresponding slot values. ;
-                     (let ((e (make-rest 4 :start-time 13.7 :duration t)))
-(print (is-rest e))
-(print (data e))
-(print (duration e))
-(print (value e))
-(print (start-time e)))
-
-                     =>
-                     T 
-                     W 
-                     4.0 
-                     1.0f0 
-                     13.7
-
-                     |#
+|#
 ;;; SYNOPSIS
 (defun make-rest (rthm &key start-time duration (tempo 60))
 ;;; ****
   (make-event nil rthm :start-time start-time :duration duration :tempo tempo
               :is-rest t))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; list-of-events can be a simple list or an sclist
 ;;; if invert, then find the next non grace note
@@ -3562,14 +3580,14 @@ T
                grace-note.  start-index = ~a, length = ~a" start-index max)))
     result))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun find-next-non-grace-note (list-of-events start-index 
                                  &optional 
                                  (warn t))
   (find-next-grace-note list-of-events start-index t warn))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 
 ;;; Thu Dec 22 20:53:16 EST 2011 SAR: Added robodoc info
@@ -3598,25 +3616,23 @@ T
 ;;; 
 ;;; EXAMPLE
 #|
-;; Create a list of three groups that are 2, 3, and 5 16th-notes long, with the ;
-;; first note of each grouping being a C4, then print-simple it's contents. ;
-                     (let ((pe (make-punctuation-events '(2 3 5) 's 'c4)))
-(loop for e in pe do (print-simple e)))
+;; Create a list of three groups that are 2, 3, and 5 16th-notes long, with the
+;; first note of each grouping being a C4, then print-simple it's contents.
+(let ((pe (make-punctuation-events '(2 3 5) 's 'c4)))
+  (loop for e in pe do (print-simple e)))
+=>
+C4 S, rest S, C4 S, rest S, rest S, C4 S, rest S, rest S, rest S, rest S,
 
-                     =>
-                     C4 S, rest S, C4 S, rest S, rest S, C4 S, rest S, rest S, rest S, rest S,
+;; Create a list of "punctuated" events using a list of note names. Once the 
+;; final note name is reached, it is repeated for all remaining non-rest
+;; rhythms.        
+(let ((pe (make-punctuation-events '(2 3 5 8) 'q '(c4 e4))))
+  (loop for e in pe do (print-simple e)))
+=>
+C4 Q, rest Q, E4 Q, rest Q, rest Q, E4 Q, rest Q, rest Q, rest Q, rest Q, E4 Q,
+rest Q, rest Q, rest Q, rest Q, rest Q, rest Q, rest Q, 
 
-;; Create a list of "punctuated" events using a list of note names. Once the ;
-;; final note name is reached, it is repeated for all remaining non-rest ;
-;; rhythms.                             ;
-                     (let ((pe (make-punctuation-events '(2 3 5 8) 'q '(c4 e4))))
-(loop for e in pe do (print-simple e)))
-
-                     =>
-                     C4 Q, rest Q, E4 Q, rest Q, rest Q, E4 Q, rest Q, rest Q, rest Q, rest Q, E4 Q,
-                     rest Q, rest Q, rest Q, rest Q, rest Q, rest Q, rest Q, 
-
-                     |#
+|#
 ;;; SYNOPSIS
 (defun make-punctuation-events (distances rhythm notes)
 ;;; ****
@@ -3632,7 +3648,7 @@ T
         (cons (make-event note rhythm)
               (loop repeat (1- d) collect (clone rest)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Dec 23 13:41:36 EST 2011: Added robodoc info
 
@@ -3656,24 +3672,22 @@ T
 ;;; 
 ;;; EXAMPLE
 #|
-;; Create a list of events including a quarter note, two rests, and a chord, ;
-;; then print-simple its contents       ;
-                     (let ((e (make-events '((g4 q) e s ((d4 fs4 a4) s)))))
-(loop for i in e do (print-simple i)))
+;; Create a list of events including a quarter note, two rests, and a chord,
+;; then print-simple its contents     
+(let ((e (make-events '((g4 q) e s ((d4 fs4 a4) s)))))
+  (loop for i in e do (print-simple i)))
+=>
+G4 Q, rest E, rest S, (D4 FS4 A4) S,
 
-                     =>
-                     G4 Q, rest E, rest S, (D4 FS4 A4) S,
+;; Create a list of events to be played on MIDI-channel 3, then check the MIDI
+;; channels of each sounding note    
+(let ((e (make-events '((g4 q) e s (a4 s) q e (b4 s)) 3)))
+  (loop for i in e
+     when (not (is-rest i))
+     collect (midi-channel (pitch-or-chord i))))
+=> (3 3 3)
 
-;; Create a list of events to be played on MIDI-channel 3, then check the MIDI ;
-;; channels of each sounding note       ;
-                     (let ((e (make-events '((g4 q) e s (a4 s) q e (b4 s)) 3)))
-(loop for i in e
-when (not (is-rest i))
-collect (midi-channel (pitch-or-chord i))))
-
-                     => (3 3 3)
-
-                     |#
+|#
 ;;; SYNOPSIS
 (defun make-events (data-list &optional midi-channel microtones-midi-channel)
 ;;; ****
@@ -3701,7 +3715,7 @@ collect (midi-channel (pitch-or-chord i))))
      collect event))
           
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Dec 23 13:41:36 EST 2011: Added robodoc info
 
@@ -3731,23 +3745,21 @@ collect (midi-channel (pitch-or-chord i))))
 #|
 ;; Create a make-events2 list and use the print-simple function to retrieve its
 ;; contents. 
-                     (let ((e (make-events2 '(q e e. h+s 32 q+te) '(cs4 d4 (e4 g4 b5) nil a3 r))))
-(loop for i in e do (print-simple i)))
-
-                     =>
-                     CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
+(let ((e (make-events2 '(q e e. h+s 32 q+te) '(cs4 d4 (e4 g4 b5) nil a3 r))))
+  (loop for i in e do (print-simple i)))
+=>
+CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 
 ;; Create a list of events using make-events2, indicating they be played back
 ;; on MIDI-channel 3, then print the corresponding slots to check it
-                     (let ((e (make-events2 '(q e. h+s 32 q+te) '(cs4 b5 nil a3 r) 3)))
-(loop for i in e
-when (not (is-rest i))
-collect (midi-channel (pitch-or-chord i))))
+(let ((e (make-events2 '(q e. h+s 32 q+te) '(cs4 b5 nil a3 r) 3)))
+  (loop for i in e
+     when (not (is-rest i))
+     collect (midi-channel (pitch-or-chord i))))
+=>
+(3 3 3)
 
-                     =>
-                     (3 3 3)
-
-                     |#
+|#
 ;;; SYNOPSIS
 (defun make-events2 (rhythms pitches
                      &optional midi-channel microtones-midi-channel)
@@ -3769,7 +3781,7 @@ collect (midi-channel (pitch-or-chord i))))
              (make-event poc r :midi-channel midi-channel
                          :microtones-midi-channel microtones-midi-channel)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 23.12.11 SAR Added robodoc info
 
@@ -3786,37 +3798,33 @@ collect (midi-channel (pitch-or-chord i))))
 ;;; EXAMPLE 
 #|
 ;; Create an event and then test whether it is an event object
-                     (let ((e (make-event 'c4 'q)))
-(event-p e))
-
-                     => T
+(let ((e (make-event 'c4 'q)))
+  (event-p e))
+=> T
 
 ;; Create a non-event object and test whether it is an event object
-                     (let ((e (make-rhythm 4)))
-(event-p e))
-
-                     => NIL
+(let ((e (make-rhythm 4)))
+  (event-p e))
+=> NIL
 
 ;; The make-rest function also creates an event
-                     (let ((e (make-rest 4)))
-(event-p e))
-
-                     => T
+(let ((e (make-rest 4)))
+  (event-p e))
+=> T
 
 ;; The make-punctuation-events, make-events and make-events2 functions create
 ;; lists of events, not events themselves.
-                     (let ((e (make-events '((g4 q) e s))))
-(event-p e))
+(let ((e (make-events '((g4 q) e s))))
+  (event-p e))
+=> NIL
 
-                     => NIL
-
-                     |#
+|#
 ;;; SYNOPSIS
 (defun event-p (thing)
 ;;; ****
   (typep thing 'event))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Apr 28 22:47:00 BST 2012: Added robodoc entry
 
@@ -3834,18 +3842,18 @@ collect (midi-channel (pitch-or-chord i))))
 #|
 ;; Create a list of event object with non-sequential start-times, sort them,
 ;; and return the pitches and start times of the newly ordered list.
-                     (let ((e-list (loop repeat 8
-for nn in '(c4 d4 e4 f4 g4 a4 b4 c5)
-for st in '(1.0 3.0 2.0 5.0 8.0 4.0 7.0 6.0)
-collect (make-event nn 'e :start-time st))))
-(sort-event-list e-list)
-(loop for e in e-list 
-collect (get-pitch-symbol e)
-collect (start-time e)))
+(let ((e-list (loop repeat 8
+                 for nn in '(c4 d4 e4 f4 g4 a4 b4 c5)
+                 for st in '(1.0 3.0 2.0 5.0 8.0 4.0 7.0 6.0)
+                 collect (make-event nn 'e :start-time st))))
+  (sort-event-list e-list)
+  (loop for e in e-list 
+     collect (get-pitch-symbol e)
+     collect (start-time e)))
+=> 
+(C4 1.0 E4 2.0 D4 3.0 A4 4.0 F4 5.0 C5 6.0 B4 7.0 G4 8.0)
 
-                     => (C4 1.0 E4 2.0 D4 3.0 A4 4.0 F4 5.0 C5 6.0 B4 7.0 G4 8.0)
-
-                     |#
+|#
 ;;; SYNOPSIS
 (defun sort-event-list (event-list)
 ;;; ****
@@ -3857,7 +3865,7 @@ collect (start-time e)))
                      x y))
             (< (start-time x) (start-time y)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 23.12.11 SAR Added robodoc info
 
@@ -3890,24 +3898,23 @@ collect (start-time e)))
 ;;; Create a list of events of eighth-note durations, specifying start-times at ;
 ;;; 0.5-second intervals and print the pitches and start-times. Then apply the ;
 ;;; function and print the pitches and start-times again to see the change. ;
-                     (let ((e-list (loop for st from 1.0 by 0.5
-for nn in '(c4 d4 e4 f4 g4 a4 b4 c5)
-collect (make-event nn 'e :start-time st))))
-(print
-(loop for e in e-list
-collect (get-pitch-symbol e)
-collect (start-time e)))
-(wrap-events-list e-list 3)
-(print
-(loop for e in e-list
-collect (get-pitch-symbol e)
-collect (start-time e))))
+(let ((e-list (loop for st from 1.0 by 0.5
+                 for nn in '(c4 d4 e4 f4 g4 a4 b4 c5)
+                 collect (make-event nn 'e :start-time st))))
+  (print
+   (loop for e in e-list
+      collect (get-pitch-symbol e)
+      collect (start-time e)))
+  (wrap-events-list e-list 3)
+  (print
+   (loop for e in e-list
+      collect (get-pitch-symbol e)
+      collect (start-time e))))
+=>
+(C4 1.0 D4 1.5 E4 2.0 F4 2.5 G4 3.0 A4 3.5 B4 4.0 C5 4.5) 
+(C4 3.5 D4 4.0 E4 4.5 F4 1.0 G4 1.5 A4 2.0 B4 2.5 C5 3.0)
 
-                     =>
-                     (C4 1.0 D4 1.5 E4 2.0 F4 2.5 G4 3.0 A4 3.5 B4 4.0 C5 4.5) 
-                     (C4 3.5 D4 4.0 E4 4.5 F4 1.0 G4 1.5 A4 2.0 B4 2.5 C5 3.0)
-
-                     |#
+|#
 ;;; 
 ;;; SYNOPSIS
 (defun wrap-events-list (events start-at &key (time nil))
@@ -3949,7 +3956,7 @@ collect (start-time e))))
        (push event result))
     (nreverse result)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 23.12.11 SAR Added Robodoc info
 
@@ -3968,28 +3975,26 @@ collect (start-time e))))
 ;;; 
 ;;; EXAMPLE
 #|
-                     (is-dynamic 'pizz)
+(is-dynamic 'pizz)
+=> NIL
 
-                     => NIL
+(is-dynamic 'f)
+=> (F FF FFF FFFF)
 
-                     (is-dynamic 'f)
-
-                     => (F FF FFF FFFF)
-
-                     |#
+|#
 ;;; SYNOPSIS
 (defun is-dynamic (mark)
 ;;; ****
   (member mark '(niente pppp ppp pp p mp mf f ff fff ffff)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; I like my percussion clef to have middle C as on a treble clef but lilypond
 ;;; has it as with an alto (I think)
 (defun lp-percussion-clef ()
     "\\set Staff.middleCPosition = #-6 \\set Staff.clefGlyph = #\"clefs.percussion\" \\set Staff.clefPosition = #0 ")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sun Dec 25 08:41:20 2011 
 (defun is-clef (mark)
   (let ((clef (typecase mark
@@ -4003,5 +4008,5 @@ collect (start-time e))))
                               percussion soprano baritone)))
       t)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF event.lsp

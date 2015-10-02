@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 21:37:33 Thu Oct  1 2015 BST
+;;; $$ Last modified: 10:47:57 Fri Oct  2 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -541,7 +541,8 @@
     (error "sndfile-palette::get-nearest: freq should be numeric: ~a~%~a"
            freq sfp))
   (unless ids (setq ids (get-all-refs sfp)))
-  (get-nearest-aux freq (loop for id in ids appending (get-data-data id sfp))))
+  (get-nearest-by-freq freq
+                       (loop for id in ids appending (get-data-data id sfp))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-for-init ((sfp sndfile-palette) &key (stream t))
@@ -1156,7 +1157,7 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Oct  1 19:05:16 2015
-(defun get-nearest-aux (freq sflist)
+(defun get-nearest-by-freq (freq sflist)
   (let* ((diff most-positive-double-float)
          (cdiff diff)
          it)

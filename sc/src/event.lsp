@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:32:53 Fri Oct  2 2015 BST
+;;; $$ Last modified: 11:18:18 Fri Oct  2 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3099,17 +3099,32 @@ data: C4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Apr 17 12:52:22 2012.  Works for chords and single pitches.  Always
-;;; returns a list. 
+;;; returns a list.
+;;; MDE Fri Oct  2 11:11:36 2015 -- updated to work for a first argument of a
+;;; list of sndfile objects or freqs
 
 (defmethod src-for-sample-freq (freq (e event))
-  (unless (numberp freq)
-    (setf freq (note-to-freq freq)))
+  (when (symbolp freq) (setq freq (note-to-freq freq)))
   (let ((pitches (if (is-chord e)
                      (data (pitch-or-chord e))
                      (list (pitch-or-chord e)))))
-    (loop for p in pitches collect
+    (flet ((data-error ()
+             (error "event::src-for-sample-freq: first argument should be ~
+                     either a number (frequency), a list of numbers (one for ~
+                     each pitch in the chord), or a list of sndfile objects: ~a"
+                    freq)))
+      (loop for p in pitches and i from 0 collect
          ;; MDE Fri Oct  2 09:38:47 2015 -- use the pitch method
-         (src-for-sample-freq freq p))))
+           (src-for-sample-freq
+            (typecase freq
+              (number freq)
+              (list (let ((f (nth i freq)))
+                      (typecase f
+                        (number f)
+                        (sndfile (frequency f))
+                        (t (data-error)))))
+              (t (data-error)))
+            p)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Apr 19 11:59:19 2012 

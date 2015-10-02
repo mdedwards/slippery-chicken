@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:32:05 Fri Oct  2 2015 BST
+;;; $$ Last modified: 11:11:11 Fri Oct  2 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4374,7 +4374,7 @@ seq-num 5, VN, replacing G3 with B6
                        (sndfile-extension nil)
                        (sndfile-palette nil)
                        ;; MDE Thu Oct  1 21:03:59 2015 
-                       (pan-min-max nil) ; actually '(15 75) by defauly below
+                       (pan-min-max nil) ; actually '(15 75) by default below
                        ;; MDE Thu Oct  1 19:13:49 2015
                        snd-selector 
                        ;; MDE Mon Nov  4 10:10:35 2013 -- the following were 
@@ -4479,10 +4479,11 @@ seq-num 5, VN, replacing G3 with B6
                                  (sndfile-palette sc))))))
          (snd-transitions (loop for num-events in events-per-player collect
                                (fibonacci-transition num-events)))
-         (snd nil)
+         (sndl nil)
          (snd-group nil)
          (srts '())
          (freqs '())
+         ;; will be nil when we're using the events' pitch data
          (srt-freq (cond ((numberp do-src) do-src)
                          ((and do-src
                                (not (eq do-src t))
@@ -4557,9 +4558,9 @@ seq-num 5, VN, replacing G3 with B6
          (happy t)
          (rthm-seqs nil))
     (when pan-min-max
-      (print (setq pan-vals (loop for p in pan-vals
+      (setq pan-vals (loop for p in pan-vals
                         collect (fscale p 15 75 (first pan-min-max)
-                                        (second pan-min-max))))))
+                                        (second pan-min-max)))))
     (when (and sound-file-palette-ref (zerop (sclist-length snds)))
       (error "slippery-chicken::clm-play: <snds>: No sounds for reference ~a"
              sound-file-palette-ref))
@@ -4584,14 +4585,14 @@ seq-num 5, VN, replacing G3 with B6
              (loop for rs in player do
                   (loop 
                      for event in rs 
-                     for sndl = (when snds
-                                  (get-sndfiles-from-user-fun
-                                   event
-                                   (if (and snds2 (= 1 (pop snd-trans)))
-                                       snds2 snds)
-                                   snd-selector))
+                     for sndlist = (when snds
+                                     (get-sndfiles-from-user-fun
+                                      event
+                                      (if (and snds2 (= 1 (pop snd-trans)))
+                                          snds2 snds)
+                                      snd-selector))
                      do
-                       (loop for snd in sndl do
+                       (loop for snd in sndlist do
                             (unless snd
                               (error "slippery-chicken::clm-play: ~
                                       snd is nil (whilst counting)!"))
@@ -4713,13 +4714,14 @@ seq-num 5, VN, replacing G3 with B6
                                     (src-for-sample-freq 
                                      (if srt-freq
                                          srt-freq
-                                         (if snd (frequency snd) 261.626))
+                                         (if sndl sndl 261.626))
                                      ;; MDE Tue Apr 17 12:54:06 2012 -- see
                                      ;; comment above. this used to be
                                      ;; (pitch-or-chord event)
                                      event)
                                     '(1.0)))
-                   (loop for srt in srts and freq in freqs and snd in sndl do
+                     (loop for srt in srts and freq in freqs and snd in sndl do
+                        ;; (print srt) (print src-scaler)
                         (setf srt (* src-scaler srt))
                         (when (<= srt 0.0)
                           (error "slippery-chicken::clm-play: illegal sample ~

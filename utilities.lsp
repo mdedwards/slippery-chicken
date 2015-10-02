@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 18:29:54 Fri Oct  2 2015 BST
+;;; $$ Last modified: 18:38:09 Fri Oct  2 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3918,7 +3918,7 @@ At revision 3608.
        for sndfile = (second pair) do
        ;; there may be several files mapped to a single key--velocity
        ;; differences--so we can filter them here.
-         ;; (print sndfile) (print midi)
+       ;; (print sndfile) (print midi)
          (when (and (seq-has-all insist sndfile)
                     (seq-has-none resist sndfile))
            (push (list sndfile :frequency (midi-to-freq midi)) sfp)))

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 10:34:39 Wed Aug 19 2015 BST
+;;; $$ Last modified: 10:52:30 Fri Oct  2 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2068,7 +2068,6 @@ pitch::add-mark: mark PIZZ already present but adding again!
     (make-pitch (white-note p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; We want to transpose a sample so that it's frequency is that of the
 ;;; <pitch>.  The sample's main frequency is <freq>, return the necessary src.
 ;;; freq can either be a note e.g. c4 or a frequency in hertz.
@@ -2079,16 +2078,12 @@ pitch::add-mark: mark PIZZ already present but adding again!
   (/ (frequency p) freq))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; whether two pitches are an octave apart but one is differently inflected
 (defmethod white-octave ((p1 pitch) (p2 pitch))
   (is-octave (make-pitch (white-note p1))
              (make-pitch (white-note p2))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Jan  3 16:21:34 EST 2012: Added robodoc info
-
 ;;; ****m* pitch/enharmonic
 ;;; DESCRIPTION
 ;;; Get the enharmonic equivalent of the given pitch object. Two chromatically

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 18:17:11 Thu Oct  1 2015 BST
+;;; $$ Last modified: 10:44:55 Sat Oct  3 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -346,11 +346,10 @@ T
         :amplitude (amplitude sf) :data (data sf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  MDE Thu Oct  1 17:08:29 2015 
+;;; MDE Thu Oct  1 17:08:29 2015 - used by the sndfile-palette class method.
 (defmethod set-frequency-from-filename
     ((sf sndfile)
      &key (name-fun #'akoustik-piano-name))
-  (declare (ignore ignore))
   (let ((midi (funcall name-fun (pathname-name (path sf)))))
     (when midi
       (setf (frequency sf) (midi-to-freq midi)))))

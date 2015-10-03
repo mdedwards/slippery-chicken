@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:11:11 Fri Oct  2 2015 BST
+;;; $$ Last modified: 12:20:01 Sat Oct  3 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4271,7 +4271,41 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   pass to each CLM instrument call (e.g. '(:cutoff-freq 2000 :q .6)) or a
 ;;;   function which takes two arguments (the current event and the event
 ;;;   number) and returns a list of keyword arguments perhaps based on
-;;;   those. Default = NIL. 
+;;;   those. Default = NIL.
+;;; - :pan-min-max. Each event is panned randomly between any two adjacent
+;;;   channels in the output sound file. The values used are chosen from the
+;;;   following list of degrees: (15 25 35 45 55 65 75). However, these can be
+;;;   scaled to be within new limits by passing a two-element list to
+;;;   :pan-mix-max. E.g. '(40 50) would limit most values to the middle area of
+;;;   stereo space. NB if stereo soundfiles are used as input the original
+;;;   panning will generally be retained. See samp5.lsp for details of how such
+;;;   files are handled. Default = NIL (i.e. use the list given above).
+;;; - :snd-selector. By default the sound files in the given group are cycled
+;;;   through, one after the other, returning to the beginning when the end is
+;;;   reached. This can be changed by passing a function to :snd-selector. This
+;;;   function must take three arguments: the circular-sclist object that
+;;;   contains the group's sndfile objects (the sndfiles are in a simple list
+;;;   in the data slot); the pitch of the current event (if the event happens
+;;;   to be a chord, each pitch of the chord will be handled separately
+;;;   i.e. the :snd-selector function will be called for each pitch); and the
+;;;   event object. Of course any of these arguments may be ignored by the
+;;;   :snd-selector function; indeed it is imagined that the event object will
+;;;   be mostly ignored and the pitch object used instead, but it is
+;;;   nevertheless passed for completeness. For example, the following
+;;;   function, declared on-the-fly using lambda rather than separately with
+;;;   defun, makes clm-play act as a traditional sampler would: Assuming our
+;;;   sndfile-palette group has a list of sound files whose frequencies really
+;;;   correspond to their perceived fundamentals (e.g. see the
+;;;   set-frequency-from-filename method, and the kontakt-to-sfp function) we
+;;;   choose the nearest sound file in the group to the frequency of the
+;;;   current event's pitch:
+;;;
+;;;            :snd-selector #'(lambda (sflist pitch event)
+;;;                              (declare (ignore event))
+;;;                              (get-nearest-by-freq
+;;;                               (frequency pitch) (data sflist)))
+;;; 
+;;;   Default = NIL i.e. use the circular selection method.
 ;;; 
 ;;; RETURN VALUE
 ;;; Total events generated (integer).

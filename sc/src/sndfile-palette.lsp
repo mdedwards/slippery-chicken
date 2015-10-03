@@ -1,4 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* palette/sndfile-palette
 ;;; NAME 
 ;;; sndfile-palette
@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 10:47:57 Fri Oct  2 2015 BST
+;;; $$ Last modified: 12:14:14 Sat Oct  3 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -48,11 +48,11 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; NB Although this class is a palette and therefore a subclass of
 ;;; recursive-assoc-list, the sound lists in this case cannot be nested.
 
@@ -79,12 +79,12 @@
    (extensions :accessor extensions :type list :initarg :extensions 
                :initform '("wav" "aiff" "aif" "snd"))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod clone ((sfp sndfile-palette))
   (clone-with-new-class sfp 'sndfile-palette))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod clone-with-new-class :around ((sfp sndfile-palette) new-class)
   (declare (ignore new-class))
@@ -109,7 +109,7 @@
           (paths sfp) (extensions sfp) (num-snds sfp) (auto-freq sfp)
           (with-followers sfp) (next sfp)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; NB Although this class is a palette and therefore a subclass of
 ;;; recursive-assoc-list, the sound lists in this case cannot be nested!
 
@@ -152,7 +152,7 @@
   ;; (print 'num-snds)
   (setf (num-snds sfp) (count-snds sfp)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Jan  4 10:49:46 2013 -- must explicitly update the num-snds slot
 ;;; when combining as verify-and-store (which also updates this) will be called
 ;;; before relinking. 
@@ -164,7 +164,7 @@
     (setf (num-snds result) (count-snds result))
     result))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Thu May  3 12:51:13 BST 2012: Added/edited robodoc entry
 
@@ -242,7 +242,7 @@
                 ~%Please give the full path in your sndfile-palette: ~&~a" 
                string files)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Convenience function as we don't really ever want the named-object as we do
 ;;; with other palettes.
 
@@ -250,7 +250,7 @@
   (let ((obj (get-data id sfp)))
     (when obj (data obj))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; This class is a little different as we can fake association-list type
 ;;; functionality by pulling out a sound with a certain id from the sound list.
 ;;; If the sound list was a proper assoc-list however, we couldn't have the
@@ -297,7 +297,7 @@
                 (setf (cue-num snd) (incf cue-num)))))
     cue-num))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* sndfile-palette/osc-send-cue-nums
 ;;; DESCRIPTION
@@ -359,7 +359,7 @@
             (reset snd where warn))))
   t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Dec 21 09:38:52 2012
 
 ;;; ****m* sndfile-palette/get-snd-with-cue-num
@@ -389,7 +389,7 @@
               (return))))
     result))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* sndfile-palette/max-play
 ;;; DESCRIPTION
@@ -423,7 +423,7 @@
       (max-play current fade-dur max-loop start-next))
     (warn "sndfile-palette::max-play: no next!")))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Dec 22 20:42:32 2012 -- if we don't fully reference the group we
 ;;; assume it's in  the same as the current.
 (defmethod get-snd-short ((sfp sndfile-palette) ref (current sndfile-ext))
@@ -436,7 +436,7 @@
                 next-group (first ref))))
     (get-snd next-group snd-id sfp)))
   
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; check that follower references refer to other sndfiles in the palette, then
 ;;; replace the references with the sndfile object themselves, but only when
 ;;; their <use> slot is T.  This is perhaps memory intensive but it'll save
@@ -478,7 +478,7 @@
     (reset sfp)
     result))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* sndfile-palette/analyse-followers
 ;;; DESCRIPTION
 
@@ -534,7 +534,7 @@
      do (incf result (length (get-data-data ref sfp)))
      finally (return result)))
               
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod get-nearest (freq (sfp sndfile-palette) &rest ids)
   (unless (numberp freq)
@@ -544,7 +544,7 @@
   (get-nearest-by-freq freq
                        (loop for id in ids appending (get-data-data id sfp))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-for-init ((sfp sndfile-palette) &key (stream t))
   (call-next-method ; assoc-list method
    sfp
@@ -557,10 +557,49 @@
    :call 'make-sfp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Thu Oct  1 17:08:33 2015
+;;; ****m* sndfile-palette/set-frequency-from-filename
+;;; DATE
+;;; October 1st 2015, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Set the frequency slot of every sound file object in the palate to a value
+;;; extracted from the file name. This is intended but of course not restricted
+;;; to palettes created from sample libraries, where, as is often the case, the
+;;; file name of each sample contains the pitch of the file. For example, from
+;;; the Akoustik Piano sample library we have the file
+;;; Stein-R(A1)-V(220)-dB(2446)-T(MF)-M(123)-P(404-03-01).wav. In this case the
+;;; A1 in the first parentheses indicate the pitch. By writing and passing a
+;;; short parsing function to read the pitch out of such a file name we can
+;;; easily process each sound file in the palette. See akoustik-piano-name
+;;; below for an example of how to process such file names.
+;;;
+;;; See also make-sfp-from-folder.
+;;; 
+;;; ARGUMENTS
+;;; - The sound file palette object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; Keyword arguments:
+;;; - A single group or list of groups (IDs) for the sound files we wish to
+;;;   process.
+;;; - The functionFor processing a single name. Of course the names must be
+;;;   consistent and each sound file must be able to be processed by this
+;;;   single function. NB for reasons of similar usage in get-spectra-al (see
+;;;   spectra.lsp) this function actually must return the MIDI note number (may
+;;;   be a floating point for microtonal applications), which is then converted
+;;;   by the sndfile class to a frequency in Hertz.
+;;; - The function to be called when the name function cannot determine the
+;;;   frequency of the sound file. This could be #'error (the default), #'warn,
+;;;   or nil if nothing is to be done on failure.
+;;; 
+;;; RETURN VALUE
+;;; The sndfile-palette object after processing.
+;;; 
+;;; SYNOPSIS
 (defmethod set-frequency-from-filename
     ((sfp sndfile-palette)
      &key groups (name-fun #'akoustik-piano-name) (on-error #'error))
+;;; ****
   (setq groups (if groups (force-list groups)
                    (get-all-refs sfp)))
   (loop for ref in groups for group = (get-data-data ref sfp) do
@@ -569,7 +608,7 @@
               (when (functionp on-error)
                 (funcall on-error "~&Can't set frequency in ~a" sf)))))
   sfp)
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun akoustik-piano-name (name)
   (when name
     (let ((zero-octave (char= #\- (elt name 9))))
@@ -582,7 +621,7 @@
 ;;;
 ;;; Related functions.
 ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Thu May  3 11:39:21 BST 2012: Added robodoc entry
 
@@ -646,7 +685,7 @@
                  :auto-freq auto-freq
                  :warn-not-found warn-not-found))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Jun 13 17:35:43 BST 2012: Added robodoc entry
 
@@ -821,7 +860,7 @@ data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
               :extensions extensions 
               :warn-not-found warn-not-found)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; the wavelab-section structure is defined in utilities.lsp
 
@@ -831,7 +870,7 @@ data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
         :start (wavelab-section-start wls)
         :end (wavelab-section-end wls)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Thu Jun 14 13:23:14 BST 2012: Added robodoc entry
 
@@ -938,7 +977,7 @@ splinter: 2 sounds
                     (first group) (length (data (get-data group al))))))
     al))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  MDE Sat Sep  5 15:08:06 2015
 ;;; ****f* sndfile-palette/make-sfp-from-folder
 ;;; DATE
@@ -1050,6 +1089,88 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
               folder))))
          
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* sndfile-palette/kontakt-to-sfp
+;;; DATE
+;;; October 2nd 2015, Edinburgh
+;;; 
+;;; DESCRIPTION This function is only available on Mac OSX 64bit Intel machines
+;;; and requires the nki executable which since version 1.0.6 comes with
+;;; slippery-chicken (in the bin directory).
+;;; 
+;;; Using the public-domain C programme "nki tool" from the Linux Sampler
+;;; project (http://www.linuxsampler.org/nkitool/), convert a Kontakt .nki
+;;; sampler file to a sndfile-palette object. This will only include the sound
+;;; file and the MIDI note number it is mapped to, but it will mean that the
+;;; sndfile objects in the palette include the correct frequency. So using such
+;;; a sndfile-palette makes it possible to have clm-play act as a traditional
+;;; sampler, though of course much more is possible too.
+;;;
+;;; The nki file could of course map more than one sample to any MIDI note
+;;; (e.g. for handling different velocities). By default all of these could be
+;;; included in the sndfile-palette, and the :snd-selector function passed to
+;;; clm-play could select the correct file based on velocity, for
+;;; instance. However, you may want to filter out some sound files. This is
+;;; where the :insist and :resist keyword arguments come in handy (see below).
+;;;
+;;; NB If you get the error message "zpipe: invalid or incomplete deflate data"
+;;; then it's probably because the nki file is in Kontakt 4.2.2 (or higher)
+;;; format so can't be converted with this tool. You could try "save as" in
+;;; Kontakt 3 or 4 and rerunning this function, as those older programmes will
+;;; probably save in the older format (worked for me at least once).
+;;; 
+;;; ARGUMENTS
+;;; - the path to the .nki file to process
+;;; - the path to the samples i.e. the sound files which the nki file uses
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; Keyword arguments:
+;;; :insist
+;;; - :insist. A single pattern (string) or list of patterns that the sound
+;;;   file name must have--just the filename, excluding path/folders and
+;;;   extension. If a list then all patterns must be in the file name, not
+;;;   just one of them. Default = NIL i.e. accept all.
+;;; - :resist. Sim. to :insist except this/these are patterns none of which can
+;;;   be in the file name. Default = NIL.
+;;; - :group. The group ID that will be assigned to the sound files. Default =
+;;;   NIL whereby the name of the nki file will be used.
+;;; - :converter. The path to the nki tool executable. Default =
+;;;   /path/to/slippery-chicken/bin/nki 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+#+(and mac-osx X86-64)
+(defun kontakt-to-sfp (nki samples-path
+                       &key insist resist group
+                         (converter
+                          (concatenate 'string
+                                       cl-user::+slippery-chicken-home-dir+
+                                       "bin/nki")))
+;;; ****
+  (setq insist (force-list insist)
+        resist (force-list resist))
+  (unless group (setq group (read-from-string (pathname-name nki))))
+  (let ((mapping (kontakt-to-coll nki :converter converter))
+        (sfp '()))
+    (loop for pair in mapping for midi = (first pair)
+       for sndfile = (second pair)
+       for sfname = (pathname-name sndfile) do
+       ;; there may be several files mapped to a single key--velocity
+       ;; differences--so we can filter them here.
+       ;; (print sndfile) (print midi)
+         (when (and (seq-has-all insist sfname)
+                    (seq-has-none resist sfname))
+           (push (list sndfile :frequency (midi-to-freq midi)) sfp)))
+    (make-sfp 'kontakt-to-sfp
+              (list (list group (reverse sfp)))
+              :paths (list samples-path))))
+         
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* sndfile-palette/get-sndfiles
 ;;; DATE
 ;;; 5th September 2015, Edinburgh
@@ -1119,7 +1240,7 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
       (let ((result (subseq pd skip)))
         (read-from-string (substitute #\- #\/ result))))))
   
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; groups are indicated in wavelab marker files by the wording
 ;;; group:g1,g2,g3 etc. The word group can appear anywhere in the
 ;;; marker description; there can be as many groups indicated as
@@ -1155,9 +1276,26 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
           (get-groups-aux groups)
           (nreverse result))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Thu Oct  1 19:05:16 2015
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* sndfile-palette/get-nearest-by-freq
+;;; DATE
+;;; October 1st 2015, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Given a frequency and a list of sndfile objects, return the sndfile from
+;;; the list whose frequency is closest to the first argument.
+;;; 
+;;; ARGUMENTS
+;;; - a frequency in Hertz (number)
+;;; - a simple list of sndfile objects, such as that contained in the data slot
+;;;  of a sndfile-palette group.
+;;; 
+;;; RETURN VALUE
+;;; the nearest sndfile object
+;;; 
+;;; SYNOPSIS
 (defun get-nearest-by-freq (freq sflist)
+;;; ****
   (let* ((diff most-positive-double-float)
          (cdiff diff)
          it)
@@ -1169,11 +1307,11 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
                    cdiff diff))))
     it))
   
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun sndfile-palette-p (thing)
   (typep thing 'sndfile-palette))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF sndfile-palette.lsp
 
 

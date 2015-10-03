@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:37:08 Sat Oct  3 2015 BST
+;;; $$ Last modified: 18:49:10 Sat Oct  3 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4280,6 +4280,15 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   stereo space. NB if stereo soundfiles are used as input the original
 ;;;   panning will generally be retained. See samp5.lsp for details of how such
 ;;;   files are handled. Default = NIL (i.e. use the list given above).
+;;; - :pan-fun. If you want to take charge of selecting pan positions yourself,
+;;;   pass a function via this keyword. The function must take one argument:
+;;;   the current event, though of course, it can ignore it completely if
+;;;   preferred. The function should return a degree value: a number between 0
+;;;   and 90. Bear in mind if using samp5 with more than 2 output channels that
+;;;   this will still result in the sound moving around multichannel space as
+;;;   all you would be setting is the pan value between any two adjacent
+;;;   channels. If this isn't your cup of tea, pass a new instrument entirely via
+;;;   :clm-ins. Default = NIL.
 ;;; - :snd-selector. By default the sound files in the given group are cycled
 ;;;   through, one after the other, returning to the beginning when the end is
 ;;;   reached. This can be changed by passing a function to :snd-selector. This
@@ -4407,6 +4416,8 @@ seq-num 5, VN, replacing G3 with B6
                        (output-name-uniquifier "")
                        (sndfile-extension nil)
                        (sndfile-palette nil)
+                       ;; MDE Sat Oct  3 18:45:28 2015 -- for Cameron!
+                       pan-fun
                        ;; MDE Thu Oct  1 21:03:59 2015 
                        (pan-min-max nil) ; actually '(15 75) by default below
                        ;; MDE Thu Oct  1 19:13:49 2015
@@ -4591,6 +4602,7 @@ seq-num 5, VN, replacing G3 with B6
          ;; keep going (set to nil when max-start-time is exceeded)
          (happy t)
          (rthm-seqs nil))
+    ;; NB this will be pointless if we've passed a pan-fun
     (when pan-min-max
       (setq pan-vals (loop for p in pan-vals
                         collect (fscale p 15 75 (first pan-min-max)
@@ -4867,7 +4879,11 @@ seq-num 5, VN, replacing G3 with B6
                                         ;; is always put between two speakers
                                         ;; but it could be two of any number;
                                         ;; see samp5.lsp for details.
-                                        (nth (random 7) pan-vals)
+                                        ;; MDE Sat Oct  3 18:48:18 2015 -- we
+                                        ;; now also allow a :pan-fun
+                                        (if pan-fun
+                                            (funcall pan-fun event)
+                                            (nth (random 7) pan-vals))
                                         :rev-amt rev-amt
                                         :printing print-secs)
                                   (if (functionp clm-ins-args)

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 18:38:09 Fri Oct  2 2015 BST
+;;; $$ Last modified: 12:00:15 Sat Oct  3 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3819,13 +3819,12 @@ At revision 3608.
     (format nil "~d-~2,'0d-~2,'0d-~2,'0d.~2,'0d" year month day hour min)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; http://www.linuxsampler.org/nkitool/
-;;; If we get the error message "zpipe: invalid or incomplete deflate data"
-;;; then it's probably because the nki file is in Kontakt 4.2.2 format so can't
-;;; be converted with this tool. You could try "save as" in Kontakt 3 and
-;;; rerunning as it will probably be saved in the older format.
+#+(and mac-osx X86-64)
 (defun kontakt-to-coll (nki &key write-file
-                              (converter "/Users/medward2/bin/nki"))
+                              (converter
+                               (concatenate 'string
+                                            cl-user::+slippery-chicken-home-dir+
+                                            "bin/nki")))
   (flet ((get-value (line &optional (read t))
            (let* ((pos (search "value=" line))
                   (val (subseq line (+ pos 7))))
@@ -3904,29 +3903,6 @@ At revision 3608.
                  (write-coll-line (- key offset) sample 1)))))
       (values result (length result)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Fri Oct  2 18:26:03 2015 
-(defun kontakt-to-sfp (nki samples-path
-                       &key insist resist group
-                         (converter "/Users/medward2/bin/nki"))
-  (setq insist (force-list insist)
-        resist (force-list resist))
-  (unless group (setq group (read-from-string (pathname-name nki))))
-  (let ((mapping (kontakt-to-coll nki :converter converter))
-        (sfp '()))
-    (loop for pair in mapping for midi = (first pair)
-       for sndfile = (second pair) do
-       ;; there may be several files mapped to a single key--velocity
-       ;; differences--so we can filter them here.
-       ;; (print sndfile) (print midi)
-         (when (and (seq-has-all insist sndfile)
-                    (seq-has-none resist sndfile))
-           (push (list sndfile :frequency (midi-to-freq midi)) sfp)))
-    (make-sfp 'kontakt-to-sfp
-              (list (list group (reverse sfp)))
-              :paths (list samples-path))))
-         
-         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/pdivide
 ;;; DESCRIPTION

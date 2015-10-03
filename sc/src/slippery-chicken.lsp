@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:20:01 Sat Oct  3 2015 BST
+;;; $$ Last modified: 16:37:08 Sat Oct  3 2015 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4607,7 +4607,8 @@ seq-num 5, VN, replacing G3 with B6
             (yes-or-no-p "File exists: ~%~a  ~%Overwrite (yes or no) > " 
                          output)))
     ;; (print snd-transitions) (print snds2)
-    ;; this is where we work out how many times we'll use the sndfiles
+    ;; this is where we work out how many times we'll use the sndfiles for when
+    ;; inc-start is T 
     (when output-ok
       (format t "~%Output file will be ~%\"~a\"~%~%" output)
       (when inc-start
@@ -4714,12 +4715,13 @@ seq-num 5, VN, replacing G3 with B6
                   (when snds2 (reset snds2)))
                 (loop for event in rs and rs-event-count from 0 while happy
                    do
+                     ;; (print 'event)
                      (setq snd-group (pop snd-trans)
                            sndl (when snds
                                   ;; MDE Fri Oct  2 09:48:39 2015 
                                   (get-sndfiles-from-user-fun
                                    event
-                                   (if (and snds2 (= 1 (pop snd-trans)))
+                                   (if (and snds2 (= 1 snd-group))
                                        snds2 snds)
                                    snd-selector))
                            duration (* duration-scaler
@@ -4754,8 +4756,10 @@ seq-num 5, VN, replacing G3 with B6
                                      ;; (pitch-or-chord event)
                                      event)
                                     '(1.0)))
+                     ;; (print srts)
                      (loop for srt in srts and freq in freqs and snd in sndl do
                         ;; (print srt) (print src-scaler)
+                        ;; (print snd)
                         (setf srt (* src-scaler srt))
                         (when (<= srt 0.0)
                           (error "slippery-chicken::clm-play: illegal sample ~

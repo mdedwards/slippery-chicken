@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:18:18 Fri Oct  2 2015 BST
+;;; $$ Last modified: 16:37:28 Sat Oct  3 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3104,6 +3104,7 @@ data: C4
 ;;; list of sndfile objects or freqs
 
 (defmethod src-for-sample-freq (freq (e event))
+  ;; (print freq)
   (when (symbolp freq) (setq freq (note-to-freq freq)))
   (let ((pitches (if (is-chord e)
                      (data (pitch-or-chord e))

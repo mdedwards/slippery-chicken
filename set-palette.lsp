@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 17:40:05 Wed Aug 19 2015 BST
+;;; $$ Last modified: 14:49:12 Sat Oct  3 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -906,8 +906,8 @@ data: (C4 F4 A4 C5)
 ;;; similar. The set furthest down the data list will remain, whatever the
 ;;; ID.
 ;;;
-;;; We used the chord method similarity to remove csets from the palette, so
-;;; see that method for further information and for keyword argument
+;;; We use the similarity chord method to remove sets from the palette, so see
+;;; that method for further information and for more keyword argument
 ;;; descriptions.
 ;;; 
 ;;; ARGUMENTS

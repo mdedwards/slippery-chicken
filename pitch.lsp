@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 10:52:30 Fri Oct  2 2015 BST
+;;; $$ Last modified: 16:17:00 Sat Oct  3 2015 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2073,6 +2073,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;; freq can either be a note e.g. c4 or a frequency in hertz.
 
 (defmethod src-for-sample-freq (freq (p pitch))
+  ;; (print freq) (print p)
   (unless (numberp freq)
     (setf freq (note-to-freq freq)))
   (/ (frequency p) freq))

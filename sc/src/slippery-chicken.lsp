@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:49:10 Sat Oct  3 2015 BST
+;;; $$ Last modified: 18:20:22 Wed Oct 21 2015 ICT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6002,67 +6002,72 @@ beg-ph 4))))
 ;;;   should be indented or not. Default = T.
 ;;; - :force-bracket. T or NIL to indicate whether tuplet numbers on beams
 ;;;   should be forced into a bracket. Default = NIL.
+;;; - :two-sided. A two-element list to set the inner and outer margins with
+;;;   layout for two-sided printing and binding. E.g. :two-sided '(30 20) means
+;;;   the left-hand margin will be 30mm and the right-hand will be 20mm. If
+;;;   set, this overrides the :left-margin and :line-width arguments. 
+;;;   Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; The path of the main score file generated.
 ;;; 
 ;;; EXAMPLE
 #|
-;;; An example with values for the most frequently used arguments ; ;
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((fl (flute :midi-channel 1))
-(cl (b-flat-clarinet :midi-channel 2))
-(vc (cello :midi-channel 3))))
-:staff-groupings '(2 1)
-:tempo-map '((1 (q 84)) (9 (q 72)))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1 1 1 1 1 1))
-(2 (1 1 1 1 1 1 1 1))
-(3 (1 1 1 1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
-:pitch-seq-palette ((1 2 3))
-:marks (bartok 1)))
-(2 ((((4 4) (q) e (s) s h))
-:pitch-seq-palette ((1 2 3)))))
-:rthm-seq-map '((1 ((fl (1 2 1 2 1 2 1 2))
-(cl (1 2 1 2 1 2 1 2))
-(vc (1 2 1 2 1 2 1 2))))
-(2 ((fl (1 2 1 2 1 2 1 2))
-(cl (1 2 1 2 1 2 1 2))
-(vc (1 2 1 2 1 2 1 2))))
-(3 ((fl (1 2 1 2 1 2 1 2))
-(cl (1 2 1 2 1 2 1 2))
-(vc (1 2 1 2 1 2 1 2)))))
-:rehearsal-letters '(3 11 19))))
-(write-lp-data-for-all mini 
-:start-bar 7
-:end-bar 23
-:paper "letter"
-:landscape t
-:respell-notes nil
-:auto-clefs nil
-:staff-size 17
-:in-c nil
-:barline-thickness 3.7
-:top-margin 40
-:bottom-margin 60
-:left-margin 40
-:line-width 22
-:page-nums t
-:all-bar-nums t
-:use-custom-markup t
-:rehearsal-letters-font-size 24
-:lp-version "2.12.1"
-:group-barlines nil
-:page-turns t
-:players '(fl cl)
-:tempi-all-players t))
+;;; An example with values for the most frequently used arguments 
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((fl (flute :midi-channel 1))
+                     (cl (b-flat-clarinet :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :staff-groupings '(2 1)
+        :tempo-map '((1 (q 84)) (9 (q 72)))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1 1 1 1))
+                   (2 (1 1 1 1 1 1 1 1))
+                   (3 (1 1 1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+                                :pitch-seq-palette ((1 2 3))
+                                :marks (bartok 1)))
+                            (2 ((((4 4) (q) e (s) s h))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((fl (1 2 1 2 1 2 1 2))
+                            (cl (1 2 1 2 1 2 1 2))
+                            (vc (1 2 1 2 1 2 1 2))))
+                        (2 ((fl (1 2 1 2 1 2 1 2))
+                            (cl (1 2 1 2 1 2 1 2))
+                            (vc (1 2 1 2 1 2 1 2))))
+                        (3 ((fl (1 2 1 2 1 2 1 2))
+                            (cl (1 2 1 2 1 2 1 2))
+                            (vc (1 2 1 2 1 2 1 2)))))
+        :rehearsal-letters '(3 11 19))))
+  (write-lp-data-for-all mini 
+                         :start-bar 7
+                         :end-bar 23
+                         :paper "letter"
+                         :landscape t
+                         :respell-notes nil
+                         :auto-clefs nil
+                         :staff-size 17
+                         :in-c nil
+                         :barline-thickness 3.7
+                         :top-margin 40
+                         :bottom-margin 60
+                         :left-margin 40
+                         :line-width 22
+                         :page-nums t
+                         :all-bar-nums t
+                         :use-custom-markup t
+                         :rehearsal-letters-font-size 24
+                         :lp-version "2.12.1"
+                         :group-barlines nil
+                         :page-turns t
+                         :players '(fl cl)
+                         :tempi-all-players t))
 
   => T
 
-  |#
+|#
 ;;; SYNOPSIS
 (defmethod write-lp-data-for-all
     ((sc slippery-chicken) 
@@ -6124,6 +6129,7 @@ beg-ph 4))))
        (force-bracket nil)
        ;; MDE Thu Mar 26 18:49:46 2015
        (title t)
+       two-sided ; MDE Wed Oct 21 18:15:08 2015 
        ;; MDE Thu Mar 26 19:18:03 2015
        (indent t)
        ;; sim to rehearsal letters
@@ -6278,8 +6284,18 @@ beg-ph 4))))
           (format out "~%  print-page-number = ##f"))   
         (format out "~%  top-margin = ~a\\mm" top-margin)
         (format out "~%  bottom-margin = ~a\\mm" bottom-margin)
-        (format out "~%  left-margin = ~a\\mm" left-margin)
-        (format out "~%  line-width = ~a\\cm" line-width)
+        (if two-sided
+            (if (and (list-of-numbers-p two-sided)
+                     (= 2 (length two-sided)))
+                (progn
+                  (format out "~%  two-sided = ##t")
+                  (format out "~%  inner-margin = ~a\\mm" (first two-sided))
+                  (format out "~%  outer-margin = ~a\\mm" (second two-sided)))
+                (error "slippery-chicken::write-lp-data-for-all: two-sided ~
+                        must be a list of 2 numbers: ~a" two-sided))
+            (progn
+              (format out "~%  left-margin = ~a\\mm" left-margin)
+              (format out "~%  line-width = ~a\\cm" line-width)))
         (unless indent
           (format out "~%  indent = 0.0"))
         (when between-system-space 

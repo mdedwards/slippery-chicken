@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:37:28 Sat Oct  3 2015 BST
+;;; $$ Last modified: 17:14:48 Fri Nov 13 2015 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2049,11 +2049,18 @@ NIL
   (let ((result '()))
     (when (instrument-change e)
       (let ((long (first (instrument-change e)))
-            (short (second (instrument-change e))))
+            (short (second (instrument-change e)))
+            (lines (third (instrument-change e))))
         (push (format nil "~a~%" (lp-set-instrument long)) result)
         (when short
           (push (format nil "~a~%" (lp-set-instrument short t)) result))
         (push (format nil "s1*0\^\\markup { ~a }~%" (lp-flat-sign long))
+              result)
+        ;; MDE Fri Nov 13 16:35:00 2015 -- don't just change the number of
+        ;; staff lines when it's other than 5: could be that the last ins had <
+        ;; 5 and now we're changing back to 5 
+        (push (format nil "\\stopStaff \\override Staff.StaffSymbol.~
+                           line-count = #~a \\startStaff " lines)
               result)))
     (nreverse result)))
 
@@ -2200,7 +2207,7 @@ NIL
                  (if (and (listp thing) (eq (first thing) 'clef))
                      (push 
                       (if (eq 'percussion (second thing))
-                          (format nil "~%~a~%" (lp-percussion-clef))
+                          (format nil "~a~%" (lp-percussion-clef))
                           (format nil "~%\\clef ~a " 
                                   (string-downcase 
                                    (case (second thing)

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 09:52:55 Thu Jun 25 2015 BST
+;;; $$ Last modified: 15:49:25 Fri Nov 13 2015 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -293,7 +293,7 @@
            ;; funny markup code. For instance, we can make a notehead small and
            ;; in parentheses with (add-mark-before <pitch> '(text
            ;; "\\parenthesize \\tweak font-size -2"))))
-           (text (second mark))
+           (text (concatenate 'string (second mark) " "))
            (rgb 
             (let* ((rgb (second mark))
                    (r (first rgb))

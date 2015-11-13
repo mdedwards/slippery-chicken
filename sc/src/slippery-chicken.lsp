@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:20:22 Wed Oct 21 2015 ICT
+;;; $$ Last modified: 17:13:39 Fri Nov 13 2015 ICT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2581,9 +2581,10 @@ data: NIL
                          sequence)
           (setf ins-obj (player-get-instrument player-obj current-ins nil))
           (unless ins-obj
-            (error "slippery-chicken::get-current-instrument-for-player: ~
-                    Couldn't get instrument at section~a, sequence ~a, for ~a"
-                   section sequence player))
+            (error "slippery-chicken::get-current-instrument-for-player: ~%~
+                    Couldn't get instrument at section~a, sequence ~a, for ~a~
+                    ~%Maybe you forget to add ~a to player ~a in the ensemble"
+                   section sequence player current-ins (id player-obj)))
           (values ins-obj changes-here))
         ;; doesn't double
         (values (get-starting-ins sc player) nil))))
@@ -8468,6 +8469,7 @@ NOTE 6200 0.6666667
   (object-is-nil? rthm-seq "slippery-chicken::sc-make-sequenz" 'rthm-seq)
   ;; (object-is-nil? pitch-seq "slippery-chicken::sc-make-sequenz" 'pitch-seq)
   ;; (print instrument-change)
+  ;; (print instrument)
   (let* ((sequenz (clone-with-new-class rthm-seq 'sequenz))
          (player-obj (when player
                        (get-player slippery-chicken player)))
@@ -8507,7 +8509,7 @@ NOTE 6200 0.6666667
          #| MDE Wed Apr 18 10:24:10 2012 -- (iwbns (when slippery-chicken 
          (member player 
          (instruments-write-bar-nums slippery-chicken))))
-|#
+  |#
          (do-prog-changes instrument-change)
          (current-note nil)
          ;; (last-note nil)
@@ -8555,11 +8557,11 @@ NOTE 6200 0.6666667
                                (clone (pitch-or-chord 
                                        last-note-previous-seq))))))
     #|
-    ;; this checks that there are no ties to the first note in a seq ; ;
-(when (is-tied-to (get-nth-event 0 (get-bar sequenz 0 t)))
+    ;; this checks that there are no ties to the first note in a seq ; ; ;
+  (when (is-tied-to (get-nth-event 0 (get-bar sequenz 0 t)))
     (error "slippery-chicken::sc-make-sequenz: ~
-             Tied first note of sequenz not allowed!"))
-|#
+    Tied first note of sequenz not allowed!"))
+  |#
     (loop for bar in (bars sequenz) and bar-num from 1 do
        ;; first of all set all the bars to write--then change in 
        ;; sequenz::update-slots depending upon real bar num
@@ -8595,10 +8597,12 @@ NOTE 6200 0.6666667
                     (when got-ins ;; MDE Thu Jul  5 17:02:03 2012
                       ;; (print (staff-short-name instrument))
                       (setf (instrument-change event)
-                            (if (staff-short-name instrument)
-                                (list (staff-name instrument)
-                                      (staff-short-name instrument))
-                                (list (staff-name instrument))))))
+                            ;; MDE Fri Nov 13 16:32:45 2015 -- always include
+                            ;; staff-short-name as well as the number of
+                            ;; staff-lines 
+                            (list (staff-name instrument)
+                                  (staff-short-name instrument)
+                                  (staff-lines instrument)))))
                   (setf do-prog-changes nil))
                 (unless (is-rest event)
                   (setf (pitch-or-chord event) 

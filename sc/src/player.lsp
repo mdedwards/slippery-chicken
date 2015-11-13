@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 15:08:03 Wed Feb 11 2015 GMT
+;;; $$ Last modified: 17:05:40 Fri Nov 13 2015 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -764,7 +764,7 @@ the instrument you want.
         (progn
           (when (and warn ins)
             (warn "player::player-get-instrument: player ~a has only 1 ~
-                 instrument so optional argument ~a is being ignored"
+                   instrument so optional argument ~a is being ignored"
                   (id p) ins))
           data))))
 

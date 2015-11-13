@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 17:08:41 Fri Nov 13 2015 ICT
+;;; $$ Last modified: 17:23:17 Fri Nov 13 2015 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -387,6 +387,13 @@
     ;; been played 
     (unless (zerop td)
       (degree-to-note td))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Nov 13 17:23:09 2015 -- used in slippery-chicken and peice classes
+(defmethod get-instrument-change-list ((ins instrument))
+  (list (staff-name ins)
+        (staff-short-name ins)
+        (staff-lines ins)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 17:23:17 Fri Nov 13 2015 ICT
+;;; $$ Last modified: 18:10:25 Fri Nov 13 2015 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -937,6 +937,11 @@ D4
 ;;;   need a reference to a function that can select chords for it. NB This
 ;;;   should be a symbol not a function object; thus, 'my-fun not
 ;;;   #'my-fun. Default = NIL.
+;;; - :staff-lines. How many the lines the staff should have when this
+;;;   instrument is playing. When we change instrument mid-piece the number of
+;;;   staff lines will change accordingly. Similarly, if we start with an
+;;;   instrument that doesn't use 5 staff lines, we'll begin a piece with the
+;;;   correct number. Default = 5.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns an instrument object.

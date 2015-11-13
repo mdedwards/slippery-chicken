@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 17:52:53 Sat Jan 17 2015 GMT
+;;; $$ Last modified: 17:23:41 Fri Nov 13 2015 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -969,10 +969,7 @@ BAR-HOLDER:
                               event from cloned rest sequence: ~a" cloned-seq))
                     ;; (print first-event)
                     (setf (instrument-change first-event)
-                          (if (staff-short-name instrument)
-                              (list (staff-name instrument)
-                                    (staff-short-name instrument))
-                              (list (staff-name instrument)))))
+                          (get-instrument-change-list instrument)))
                   ;; (print first-event)
                   ;; (print (bars cloned-seq))
                   (setf (nth i (data player-section)) cloned-seq))))

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:14:48 Fri Nov 13 2015 ICT
+;;; $$ Last modified: 17:45:23 Fri Nov 13 2015 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2051,17 +2051,20 @@ NIL
       (let ((long (first (instrument-change e)))
             (short (second (instrument-change e)))
             (lines (third (instrument-change e))))
-        (push (format nil "~a~%" (lp-set-instrument long)) result)
+        (when long
+          (push (format nil "~a~%" (lp-set-instrument long)) result))
         (when short
           (push (format nil "~a~%" (lp-set-instrument short t)) result))
-        (push (format nil "s1*0\^\\markup { ~a }~%" (lp-flat-sign long))
-              result)
+        (when long
+          (push (format nil "s1*0\^\\markup { ~a }~%" (lp-flat-sign long))
+                result))
         ;; MDE Fri Nov 13 16:35:00 2015 -- don't just change the number of
         ;; staff lines when it's other than 5: could be that the last ins had <
-        ;; 5 and now we're changing back to 5 
-        (push (format nil "\\stopStaff \\override Staff.StaffSymbol.~
-                           line-count = #~a \\startStaff " lines)
-              result)))
+        ;; 5 and now we're changing back to 5
+        (unless (and (= 5 lines) (= 1 (bar-num e)))
+          (push (format nil "\\stopStaff \\override Staff.StaffSymbol.~
+                             line-count = #~a \\startStaff " lines)
+                result))))
     (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4011,7 +4014,6 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
   (member mark '(niente pppp ppp pp p mp mf f ff fff ffff)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; I like my percussion clef to have middle C as on a treble clef but lilypond
 ;;; has it as with an alto (I think)
 (defun lp-percussion-clef ()

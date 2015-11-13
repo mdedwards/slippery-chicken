@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 20:55:42 Fri Jul 24 2015 BST
+;;; $$ Last modified: 16:08:33 Fri Nov 13 2015 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -317,8 +317,10 @@
        :staff-short-name "ped" :largest-fast-leap 6 :chords nil
        :clefs (bass) :starting-clef bass :microtones nil :midi-program 20))
      (tambourine
-      (:staff-name "tambourine" :staff-short-name "tmb"
-       :lowest-written c4 :highest-written c4
+      (:staff-name "tambourine" :staff-short-name "tmb" :staff-lines 1
+       ;; MDE Fri Nov 13 16:05:46 2015 -- put on b4 not c4
+       ;; :lowest-written c4 :highest-written c4
+       :lowest-written b4 :highest-written b4
        :starting-clef percussion
        :midi-program 1))
      (guitar 

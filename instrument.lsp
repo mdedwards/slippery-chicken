@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 10:12:22 Mon Jul 20 2015 BST
+;;; $$ Last modified: 17:08:41 Fri Nov 13 2015 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -63,6 +63,11 @@
   ((staff-name :accessor staff-name :initarg :staff-name :initform nil)
    (staff-short-name :accessor staff-short-name :initarg 
                      :staff-short-name :initform nil)
+   ;; MDE Fri Nov 13 16:07:07 2015 -- how many staff lines do we use? if it's
+   ;; not 5 then using changing the instrument will imply we change the number
+   ;; of staff lines potentially mid-piece
+   (staff-lines :accessor staff-lines :type number :initarg :staff-lines
+                :initform 5)
    ;; the lowest written note of the ins, given as a note symbol, converted to
    ;; pitch object.
    (lowest-written :accessor lowest-written :initarg :lowest-written
@@ -305,6 +310,8 @@
           (slot-value named-object 'total-bars) (total-bars ins) 
           (slot-value named-object 'total-notes) (total-notes ins)
           (slot-value named-object 'total-duration) (total-duration ins)
+          ;; MDE Fri Nov 13 17:08:23 2015 --
+          (slot-value named-object 'staff-lines) (staff-lines ins)
           (slot-value named-object 'total-degrees) (total-degrees ins))
     named-object))
 
@@ -327,6 +334,7 @@
                   ~%            total-degrees: ~a, microtones: ~a~
                   ~%            missing-notes: ~a, subset-id: ~a~
                   ~%            staff-name: ~a, staff-short-name: ~a,~
+                  ~%            staff-lines: ~a,~
                   ~%            largest-fast-leap: ~a, tessitura: ~a"
             (pitch-slot (lowest-written ins))
             (pitch-slot (highest-written ins))
@@ -340,7 +348,8 @@
             (total-notes ins) (secs-to-mins-secs (total-duration ins))
             (total-degrees ins) (microtones ins) 
             (pitch-list-to-symbols (missing-notes ins)) (subset-id ins)
-            (staff-name ins) (staff-short-name ins) (largest-fast-leap ins)
+            (staff-name ins) (staff-short-name ins)
+            (staff-lines ins) (largest-fast-leap ins)
             (tessitura-note ins))))
                            
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -989,30 +998,32 @@ data: NIL
 |#
 ;;; SYNOPSIS
 (defun make-instrument (id &key 
-                        staff-name
-                        staff-short-name
-                        lowest-written
-                        highest-written
-                        lowest-sounding
-                        highest-sounding
-                        transposition
-                        transposition-semitones
-                        (starting-clef 'treble)
-                        clefs
-                        (largest-fast-leap 999)
-                        score-write-in-c
-                        (score-write-bar-line 1)
-                        (midi-program 1)
-                        chords
-                        clefs-in-c
-                        subset-id
-                        microtones
-                        missing-notes
-                        prefers-notes
-                        chord-function)
+                             staff-name
+                             staff-short-name
+                             lowest-written
+                             highest-written
+                             lowest-sounding
+                             highest-sounding
+                             transposition
+                             transposition-semitones
+                             (starting-clef 'treble)
+                             clefs
+                             (largest-fast-leap 999)
+                             score-write-in-c
+                             (score-write-bar-line 1)
+                             (midi-program 1)
+                             (staff-lines 5)
+                             chords
+                             clefs-in-c
+                             subset-id
+                             microtones
+                             missing-notes
+                             prefers-notes
+                             chord-function)
 ;;; ****
   (make-instance 'instrument :id id
                  :staff-name staff-name
+                 :staff-lines staff-lines
                  :staff-short-name staff-short-name
                  :lowest-written lowest-written
                  :largest-fast-leap largest-fast-leap

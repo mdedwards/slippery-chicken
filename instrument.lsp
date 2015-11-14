@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 18:10:25 Fri Nov 13 2015 ICT
+;;; $$ Last modified: 19:34:37 Sat Nov 14 2015 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -65,7 +65,8 @@
                      :staff-short-name :initform nil)
    ;; MDE Fri Nov 13 16:07:07 2015 -- how many staff lines do we use? if it's
    ;; not 5 then using changing the instrument will imply we change the number
-   ;; of staff lines potentially mid-piece
+   ;; of staff lines potentially mid-piece. NB Only works in Lilypond, not yet
+   ;; CMN.  
    (staff-lines :accessor staff-lines :type number :initarg :staff-lines
                 :initform 5)
    ;; the lowest written note of the ins, given as a note symbol, converted to

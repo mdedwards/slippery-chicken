@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 19:34:37 Sat Nov 14 2015 ICT
+;;; $$ Last modified: 20:48:45 Sat Nov 14 2015 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -884,8 +884,8 @@ D4
 ;;;   list of available clefs see the :clefs argument below. 
 ;;;   Default = 'treble.
 ;;; - :clefs. List of symbols. All clefs that a given instrument may use in the
-;;;   course of a piece. Clefs available are treble, alto, tenor, bass,
-;;;   percussion, double-treble, and double-bass. Clefs are to be given in
+;;;   course of a piece. Clefs available are treble, treble-8vb, alto, tenor,
+;;;   bass, percussion, double-treble, and double-bass. Clefs are to be given in
 ;;;   order of preference. Defaults automatically to the value given to
 ;;;   :starting-clef if no other clefs are specified. NB: If a separate list is
 ;;;   indeed given here, the method will automatically add the value for

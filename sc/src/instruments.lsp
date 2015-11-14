@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 16:08:33 Fri Nov 13 2015 ICT
+;;; $$ Last modified: 20:49:01 Sat Nov 14 2015 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -201,9 +201,18 @@
        :missing-notes (bqf1 bqs1 cqs2 dqf2 dqs2 eqf2)
        :largest-fast-leap 13 
        :clefs (bass tenor) :starting-clef bass 
-       :chords nil
-       :microtones t
-       :midi-program 71))
+       :chords nil :microtones t :midi-program 71))
+     (contra-bassoon 
+      (:staff-name "contrabassoon" :staff-short-name "cbsn" 
+       ;; some pieces go up to c5 but let's not
+       :lowest-written bf1 :highest-written a4
+       :transposition-semitones -12
+       ;; Wolfgang Ruediger says all 1/4 tones are OK above low E for the
+       ;; bassoon, so let's assume for now that these work here too. 
+       :missing-notes (bqf1 bqs1 cqs2 dqf2 dqs2 eqf2)
+       :largest-fast-leap 13 
+       :clefs (bass tenor) :starting-clef bass 
+       :chords nil :microtones t :midi-program 71))
      (french-horn
       (:staff-name "french horn" :staff-short-name "hn" 
        :lowest-written c3 :highest-written c6 :transposition-semitones -7 
@@ -342,11 +351,34 @@
        ;; there is no GM programme for mandolin so use either steel string
        ;; guitar (26) or banjo 106 perhaps 
        :microtones nil :midi-program 26))
-     (soprano
-      (:staff-name "soprano" :staff-short-name "s"
+     (soprano ; voice
+      (:staff-name "soprano" :staff-short-name "sop"
        :lowest-written c4 :highest-written c6
-       :starting-clef treble
-       :midi-program 54))
+       :starting-clef treble :midi-program 54))
+     (mezzo  ; voice
+      (:staff-name "mezzo-soprano" :staff-short-name "mez"
+       :lowest-written a3 :highest-written a5
+       :starting-clef treble :midi-program 54))
+     (alto ; voice
+      (:staff-name "alto" :staff-short-name "alt"
+       :lowest-written f3 :highest-written f5
+       :starting-clef treble :midi-program 54))
+     (countertenor ; voice
+      (:staff-name "countertenor" :staff-short-name "ctr"
+       :lowest-written e3 :highest-written e5
+       :starting-clef treble-8vb :midi-program 54))
+     (tenor ; voice
+      (:staff-name "tenor" :staff-short-name "ten"
+       :lowest-written c3 :highest-written c5
+       :starting-clef treble-8vb :midi-program 54))
+     (baritone ; voice
+      (:staff-name "baritone" :staff-short-name "bar"
+       :lowest-written a2 :highest-written a4
+       :starting-clef bass :midi-program 54))
+     (bass ; voice
+      (:staff-name "bass" :staff-short-name "bas"
+       :lowest-written e2 :highest-written e4
+       :starting-clef bass :midi-program 54))
      (violin 
       (:staff-name "violin" :staff-short-name "vln"
        :lowest-written g3 :highest-written c7 

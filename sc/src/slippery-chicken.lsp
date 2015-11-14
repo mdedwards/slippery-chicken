@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:50:57 Fri Nov 13 2015 ICT
+;;; $$ Last modified: 21:17:37 Sat Nov 14 2015 ICT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3579,9 +3579,10 @@ seq-num 5, VN, replacing G3 with B6
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;  13.4.11: start and end bar are inclusive.
-;;; at the moment, we use bass/treble clefs with 8ve signs on to indicate pitch
+;;; at the moment, we use bass/treble clefs with 8va signs on to indicate pitch
 ;;; extremes (assuming an instrument has these clefs), but these can be
-;;; converted to octave brackets here. NB no 15ma/mb handled here.
+;;; converted to octave brackets here. NB no 15ma/mb or tenor-treble handled
+;;; here.
 (defmethod octave-clefs-to-brackets ((sc slippery-chicken)
                                      &key players start-bar end-bar)
   (unless (listp players)
@@ -6449,9 +6450,7 @@ beg-ph 4))))
       (format out "~&\\set Staff.pedalSustainStyle=#'mixed")
       ;; 28.7.11 (Pula)
       (format out "~&\\autoBeamOff")
-      (if (eq clef 'percussion)
-          (format out "~&~a" (lp-percussion-clef))
-          (format out "~&\\clef ~a" (string-downcase (format nil "~a" clef))))
+      (format out "~&~a" (get-lp-clef clef))
       (loop for bar-num from start-bar to end-bar
          for rsb = (get-bar sc bar-num player)
          for lp-data = (get-lp-data rsb (or in-c (not transposing)) 
@@ -8614,8 +8613,8 @@ NOTE 6200 0.6666667
                       ;; (print (staff-short-name instrument))
                       (setf (instrument-change event)
                             ;; MDE Fri Nov 13 16:32:45 2015 -- always include
-                            ;; staff-short-name as well as the number of
-                            ;; staff-lines
+                            ;; staff-short-name (even if it's nil) as well as
+                            ;; the number of staff-lines
                             (get-instrument-change-list instrument))))
                   (setf do-prog-changes nil))
                 (unless (is-rest event)

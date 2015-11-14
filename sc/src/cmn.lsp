@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 18:20:50 Thu Jun 11 2015 BST
+;;; $$ Last modified: 20:52:48 Sat Nov 14 2015 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -661,6 +661,7 @@
 (defun cmn-get-clef (clef)
   (case (sc::rm-package clef :cmn)
     (treble treble)
+    (treble-8vb tenor-treble)
     (alto alto)
     (tenor tenor)
     (bass bass)

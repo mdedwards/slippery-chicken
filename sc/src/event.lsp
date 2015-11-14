@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:45:23 Fri Nov 13 2015 ICT
+;;; $$ Last modified: 21:19:22 Sat Nov 14 2015 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -93,9 +93,9 @@
    (midi-program-changes :accessor midi-program-changes :type list 
                          :initarg :midi-program-changes :initform nil)
    ;; 16.3.11 30,000ft over Turkmenistan :) instead of writing an instrument
-   ;; change as cmn text, indicate it here as plain strings--1 if there's just
-   ;; the long name for the instrument, otherwise 2 if there's a short name
-   ;; too. 
+   ;; change as cmn text, indicate it here as plain strings--1st,
+   ;; long name for the instrument; 2nd short name; 3rd number of staff lines
+   ;; the new instrument uses (usually 5) 
    (instrument-change :accessor instrument-change :type list :initform nil)
    ;; store the tempo when a change is made, otherwise leave at nil.  NB this
    ;; is a tempo object, not a simple bpm number.  
@@ -2043,8 +2043,7 @@ NIL
       (has-mark e 'dim-end)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Mon Jul 23 13:50:04 2012 -- 
-
+;;; MDE Mon Jul 23 13:50:04 2012 
 (defmethod lp-get-ins-change ((e event))
   (let ((result '()))
     (when (instrument-change e)
@@ -2058,9 +2057,10 @@ NIL
         (when long
           (push (format nil "s1*0\^\\markup { ~a }~%" (lp-flat-sign long))
                 result))
-        ;; MDE Fri Nov 13 16:35:00 2015 -- don't just change the number of
-        ;; staff lines when it's other than 5: could be that the last ins had <
-        ;; 5 and now we're changing back to 5
+        ;; MDE Fri Nov 13 16:35:00 2015 -- different numbers of staff lines now
+        ;; working: don't just change the number of staff lines when it's other
+        ;; than 5: could be that the last ins had < 5 and now we're changing
+        ;; back to 5
         (unless (and (= 5 lines) (= 1 (bar-num e)))
           (push (format nil "\\stopStaff \\override Staff.StaffSymbol.~
                              line-count = #~a \\startStaff " lines)
@@ -2068,9 +2068,8 @@ NIL
     (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  lilypond
-;;; test nested tuplets
-;;; grace notes work fine.
+;;; lilypond: grace notes work fine.
+
 (let ((grace-notes '()))
   (defmethod get-lp-data ((e event) &optional in-c ignore1 ignore2)
     (declare (ignore ignore1 ignore2))
@@ -2209,21 +2208,7 @@ NIL
                ;; handle clefs here rather than in lp-get-mark
                  (if (and (listp thing) (eq (first thing) 'clef))
                      (push 
-                      (if (eq 'percussion (second thing))
-                          (format nil "~a~%" (lp-percussion-clef))
-                          (format nil "~%\\clef ~a " 
-                                  (string-downcase 
-                                   (case (second thing)
-                                     (treble 'treble)
-                                     (bass 'bass)
-                                     (alto 'alto)
-                                     (tenor 'tenor)
-                                     ;; (percussion 'percussion)
-                                     (double-treble "\"treble^8\"")
-                                     (double-bass "\"bass_8\"")
-                                     (t (error "event::get-lp-data: ~
-                                                unknown clef: ~a"
-                                               (second thing)))))))
+                      (get-lp-clef (second thing))
                       result)
                      (push (lp-get-mark thing) result))))
           (push note result)
@@ -4028,10 +4013,28 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
                         (second mark)))
                 (symbol mark)
                 (t nil))))
-    (when (and clef
-               (member clef '(treble bass alto tenor double-treble double-bass
-                              percussion soprano baritone)))
-      t)))
+    (and clef
+         (member clef '(treble treble-8vb bass alto tenor double-treble
+                        double-bass percussion soprano baritone)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Nov 14 21:13:18 2015 -- split out from get-lp-data because also
+;;; used at start of score in write-lp-data-for all
+(defun get-lp-clef (clef)
+  (if (eq 'percussion clef)
+      (format nil "~a~%" (lp-percussion-clef))
+      (format nil "~%\\clef ~a "
+              (string-downcase 
+               (case clef
+                 (treble 'treble)
+                 (bass 'bass)
+                 (alto 'alto)
+                 (tenor 'tenor)
+                 (treble-8vb "\"treble_8\"")
+                 ;; (percussion 'percussion)
+                 (double-treble "\"treble^8\"")
+                 (double-bass "\"bass_8\"")
+                 (t (error "event::get-lp-data: unknown clef: ~a" clef)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF event.lsp

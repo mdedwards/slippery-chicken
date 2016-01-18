@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 11:42:02 Mon Jan 18 2016 GMT
+;;; $$ Last modified: 12:09:55 Mon Jan 18 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -224,8 +224,8 @@
              ;; MDE Mon Jan 18 11:41:19 2016
              (beg-15ma (list begin-two-octaves-up))
              (end-15ma (list end-two-octaves-up))
-             (beg-15vb (list begin-two-octaves-down))
-             (end-15vb (list end-two-octaves-down))
+             (beg-15mb (list begin-two-octaves-down))
+             (end-15mb (list end-two-octaves-down))
              (I (list (fingering "I" (dx dx) (dy dy) the-text)))
              (II (list (fingering "II" (dx dx) (dy dy) the-text)))
              (III (list (fingering "III" (dx dx) (dy dy) the-text)))

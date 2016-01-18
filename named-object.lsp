@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  None: base class of all slippery-chicken classes.
 ;;;
-;;; Version:          1.0.5
+;;; Version:          1.0.6
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

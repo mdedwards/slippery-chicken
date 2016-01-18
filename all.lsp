@@ -5,7 +5,7 @@
 ;;;
 ;;; File:             all.lsp
 ;;;
-;;; Version:          1.0.5
+;;; Version:          1.0.6
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -49,7 +49,7 @@
 
 #+sbcl (unlock-package "COMMON-LISP")
 
-(defparameter +slippery-chicken-version+ "1.0.5 (svn revision 5045 2014-10-20 17:52:22)")
+(defparameter +slippery-chicken-version+ "1.0.6 (svn revision 5467 2016-01-18 17:26:27)")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 

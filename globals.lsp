@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 13:52:46 Fri Aug 14 2015 CEST
+;;; $$ Last modified: 15:46:45 Mon Jan 18 2016 GMT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -47,6 +47,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
+
+;;; MDE Mon Jan 18 15:45:32 2016 -- (re)set these to the Lisp defaults so that
+;;; printing and reading in Lisp objects (e.g. sndfile-palettes via
+;;; print-for-init) works i.e. doesn't fail by printing ... instead of all
+;;; objects. 
+(setq *print-length* nil
+      *print-level* nil)
 
 ;;; ****P* globals/+slippery-chicken-config-data+
 ;;; DESCRIPTION

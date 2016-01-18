@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 20:48:45 Sat Nov 14 2015 ICT
+;;; $$ Last modified: 12:56:40 Fri Dec 18 2015 ICT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -811,7 +811,7 @@ D4
     (loop for x from (- myst 24) by 12 repeat 5
         if (= x st) do (return t))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Jan  6 19:06:39 EST 2012: Added robodoc info
 
@@ -821,11 +821,9 @@ D4
 ;;; parameters for describing characteristics of a given instrument, such as
 ;;; lowest and highest pitch, transposition, clefs used by the instrument etc. 
 ;;;
-;;; NB: The user will generally define instruments will in the context of the
-;;; make-instrument-palette function and added directly to the
-;;; +slippery-chicken-standard-instrument-palette+ parameter of the file
-;;; instruments.lsp, using the keyword structure shown below in the OPTIONAL
-;;; ARGUMENTS.
+;;; NB: The user will generally define instruments in the context of
+;;; the :instrument-palette slot of a call to make-slippery-chicken, or an 
+;;; explicit call to the make-instrument-palette function.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A symbol that is the instrument ID.

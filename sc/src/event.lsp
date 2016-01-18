@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:19:22 Sat Nov 14 2015 ICT
+;;; $$ Last modified: 11:53:10 Mon Jan 18 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2237,9 +2237,12 @@ NIL
             ;; note.  we can't move the end to the next note's marks-before
             ;; because that wouldn't work in cmn, so just move it to the end of
             ;; the marks
-            (loop for mark in (move-to-end
+            #|(loop for mark in (move-to-end
                                'end-8va 
-                               (move-to-end 'end-8vb (marks e)))
+                               (move-to-end 'end-8vb (marks e)))|#
+            (loop for mark in (move-all-to-end
+                               '(end-8va end-8vb end-15ma end-15vb)
+                               (marks e))
                for lp-mark = (lp-get-mark mark :num-flags (num-flags e))
                do
                  (when lp-mark

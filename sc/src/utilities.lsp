@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 12:00:15 Sat Oct  3 2015 BST
+;;; $$ Last modified: 11:50:29 Mon Jan 18 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3577,7 +3577,7 @@ WARNING:
 ;;; Move a specified element of a given list to the end of the list, returning
 ;;; the new list. 
 ;;;
-;;; NB: If the element exists more than once in the given list, all but on of
+;;; NB: If the element exists more than once in the given list, all but one of
 ;;;     the occurrences will be removed and only one of them will be placed at
 ;;;     the end.
 ;;; 
@@ -3607,6 +3607,12 @@ WARNING:
   (if (member what list :test test)
       (econs (remove what list :test test) what)
       list))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jan 18 11:46:00 2016 
+(defun move-all-to-end (what list &optional (test #'eql))
+  (loop for el in what do (setf list (move-to-end el list test)))
+  list)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -4090,7 +4096,6 @@ RETURNS:
 ;;; then instead of using letters to denote sections we use numbers instead. 
 ;;; 
 ;;; RETURN VALUE
-
 ;;; 3 values: 
 ;;; 1) a list showing the cumulative count (e.g. bar numbers) of where major
 ;;; and minor sections occur.  Topmost sections will have the labels A, B, C,

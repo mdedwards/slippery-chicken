@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 14:49:12 Sat Oct  3 2015 BST
+;;; $$ Last modified: 10:18:06 Wed Jan 13 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1018,6 +1018,11 @@ data: (C4 F4 A4 C5)
          (limit-shift-octave set :upper u :lower l
                              :do-related-sets do-related-sets)))
   sp)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Jan 13 10:15:48 2016 
+(defmethod delete-subsets ((sp set-palette) &optional related)
+  (rmap sp #'delete-subsets related))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
 ;;;

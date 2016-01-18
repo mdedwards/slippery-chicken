@@ -40,7 +40,7 @@
 (set-variable 'meta-flag 't)
 (set-variable 'inhibit-startup-message' 't)
 (toggle-text-mode-auto-fill)
-(setq-default fill-column 79)
+(setq-default fill-column 80)
 (define-key esc-map "?" 'describe-key-briefly)
 
 (require 'saveplace)

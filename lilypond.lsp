@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 15:49:25 Fri Nov 13 2015 ICT
+;;; $$ Last modified: 11:44:12 Mon Jan 18 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -157,6 +157,11 @@
            (end-8va "\\ottava #0 ")
            (beg-8vb "\\ottava #-1 ")
            (end-8vb "\\ottava #0 ")
+           ;; MDE Mon Jan 18 11:43:43 2016
+           (beg-15ma "\\ottava #2 ")
+           (end-15ma "\\ottava #0 ")
+           (beg-15mb "\\ottava #-2 ")
+           (end-15mb "\\ottava #0 ")
            ;; NB note heads should be added via (add-mark-before ... so if
            ;; adding new, add the mark symbol to the move-elements call in
            ;; event::get-lp-data 

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 15:21:28 Wed Aug 19 2015 BST
+;;; $$ Last modified: 10:18:48 Wed Jan 13 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1394,7 +1394,7 @@ data: E4
   (make-pitch (/ (loop for p in (data s) sum (frequency p)) (sclist-length s))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Tue Aug 18 17:12:18 2015 -- 
+;;; MDE Tue Aug 18 17:12:18 2015 -- 
 ;;; ****m* sc-set/least-used-octave
 ;;; DATE
 ;;; 18th August 2015, Edinburgh
@@ -1470,6 +1470,13 @@ data: E4
            (setq num 8vec
                  result 8ve)))
     result))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Jan 13 10:16:28 2016 
+(defmethod delete-subsets ((s sc-set) &optional related)
+  (setf (subsets s) nil)
+  (when related
+    (setf (related-sets s) nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

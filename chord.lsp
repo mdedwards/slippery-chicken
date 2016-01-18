@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 11:53:04 Wed Aug 19 2015 BST
+;;; $$ Last modified: 12:52:03 Wed Jan 13 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1803,8 +1803,9 @@ data: (
 ;;; 
 ;;; DESCRIPTION
 ;;; Calculates the dissonance of a chord as it would appear when played on the
-;;; piano. This uses a roughness calculation model by Pantelis N. Vassilakis as
-;;; outlined at http://www.acousticslab.org/learnmoresra/moremodel.html. The
+;;; piano (by default; other instruments' spectral data can also be used: see
+;;; below). This uses a roughness calculation model by Pantelis N. Vassilakis
+;;; as outlined at http://www.acousticslab.org/learnmoresra/moremodel.html. The
 ;;; model has been perceptually verified. We use spectral data handled by
 ;;; spectra.lsp to sum the roughness of sine pairs up to the first 12 partials
 ;;; of each tone, i.e. every partial of every tone is calculated in relation to
@@ -1887,7 +1888,7 @@ data: (
 ;;; Calculate the spectral centroid of a chord. This technique is of course
 ;;; usually applied in digital signal processing to an audio signal via a
 ;;; Fast Fourier Transform (FFT). It's perhaps a little strange to use this on
-;;; pitch data along, not least of which because we will not be taking into
+;;; pitch data, not least of which because we will not be taking into
 ;;; account any phase information or interference of possible harmonic partial
 ;;; interactions, but nevertheless we get a good indication of the "pitch
 ;;; height" of a chord via this method.

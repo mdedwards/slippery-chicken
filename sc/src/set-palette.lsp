@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 10:18:06 Wed Jan 13 2016 GMT
+;;; $$ Last modified: 18:06:36 Mon Jan 18 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -991,14 +991,11 @@ data: (C4 F4 A4 C5)
 ;;; 
 ;;; RETURN VALUE
 ;;; The set-palette object (modified).
-;;; 
-;;; EXAMPLE
-#|
-
-|#
+;;;
 ;;; SYNOPSIS
 (defmethod limit-shift-octave ((sp set-palette) &key upper lower
                                                   do-related-sets)
+;;; ****
   (unless upper (setq upper (limit-get-pitch upper 'b8)))
   (unless lower (setq lower (limit-get-pitch lower 'c-1)))
   (when (listp upper)

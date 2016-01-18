@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****h* sc/clm-piano-spectra.lsp
+;;; ****h* sc/clm-akoustik-piano-spectra.lsp
 ;;; NAME
 ;;; globals
 ;;;
@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    5th August 2015
 ;;;
-;;; $$ Last modified: 16:54:16 Thu Aug  6 2015 BST
+;;; $$ Last modified: 18:08:01 Mon Jan 18 2016 GMT
 ;;;
 ;;; SVN ID: $Id: clm-piano-spectra.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;

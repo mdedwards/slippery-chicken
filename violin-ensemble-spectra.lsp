@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****h* sc/clm-piano-spectra.lsp
+;;; ****h* sc/clm-violin-ensemble-spectra.lsp
 ;;; NAME
 ;;; globals
 ;;;
@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    5th August 2015
 ;;;
-;;; $$ Last modified: 17:13:41 Thu Aug  6 2015 BST
+;;; $$ Last modified: 18:07:25 Mon Jan 18 2016 GMT
 ;;;
 ;;; SVN ID: $Id: clm-piano-spectra.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;

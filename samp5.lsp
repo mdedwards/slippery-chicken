@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified: 21:04:55 Tue Sep 15 2015 BST
+;;; $$ Last modified: 09:50:10 Sat Jan 23 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -49,7 +49,8 @@
 (in-package :clm)
 
 ;;; We generally set this to double-float to avoid floating point precision
-;;; errors but CLM uses single-floats.  Change back at the end of this file.
+;;; errors but CLM uses single-floats.  Change back at the end of this file if
+;;; necessary.
 (setf *read-default-float-format* 'single-float)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

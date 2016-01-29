@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 16:00:00 Mon Jul 27 2015 BST
+;;; $$ Last modified: 13:20:38 Fri Jan 29 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -259,7 +259,7 @@
 |#
 ;;; SYNOPSIS
 (defun inefficient-permutations (level &key (max nil) (skip 0) (fix t)
-                                 (if-not-enough #'error))
+                                         (if-not-enough #'error))
 ;;; ****
   (let* ((result '())
          (natural-max (loop for i from 2 to level with j = 1 do 
@@ -279,12 +279,12 @@
               function object like #'error: ~a" if-not-enough))
     (when (and max (> max natural-max))
       (if if-not-enough
-        (funcall if-not-enough
-                 "inefficient-permutations: the number of possible ~
-                  permutations with <level> = ~a is ~a so can't return ~
-                  you the amount you requested (~a)"
-                  level natural-max max)
-        (setf max natural-max)))
+          (funcall if-not-enough
+                   "inefficient-permutations: the number of possible ~
+                    permutations with <level> = ~a ~%is ~a so can't return ~
+                    you the amount you requested (~a)"
+                   level natural-max max)
+          (setf max natural-max)))
     (unless max
       (setf max num-perms))
     (loop while (<= count max) do

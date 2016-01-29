@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 12:52:03 Wed Jan 13 2016 GMT
+;;; $$ Last modified: 17:29:59 Fri Jan 29 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1095,7 +1095,7 @@ data: (
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Wed Aug 12 13:31:04 2015 -- 
+;;; MDE Wed Aug 12 13:31:04 2015 -- 
 ;;; ****m* chord/similarity
 ;;; DATE
 ;;; 12th August 2015, Wals, Austria
@@ -1846,6 +1846,23 @@ data: (
 ;;; A floating point number representing the dissonance value. Higher values
 ;;; are more dissonant.
 ;;; 
+;;; EXAMPLE
+#|
+
+(loop for chord in '((c4 e4 g4)
+                     (d4 fs4 a4)
+                     (c4 ef4 g4)
+                     (c2 e2 g2)
+                     (c3 e3 g3)
+                     (c4 e4 g4 b4)
+                     (c4 e4 g4 b4 cs4))
+   collect (calculate-dissonance (make-chord chord) :num-partials 12))
+-->
+(0.402377778595695d0 0.3699311905936456d0 0.4174836004632471d0
+ 1.8766497834038562d0 1.0522737914732592d0 0.7389679913974341d0
+ 1.59662137873394d0)
+
+|#
 ;;; SYNOPSIS
 (defmethod calculate-dissonance ((c chord)
                                  &key (num-partials 12) (average t)
@@ -1954,6 +1971,11 @@ data: (
                 (incf numerator (* amp partial (frequency pitch)))
                 (incf denominator amp))))
     (/ numerator denominator)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Jan 29 17:27:37 2016
+(defmethod bass-repeat ((c1 chord) (c2 chord))
+  (pitch= (lowest c1) (lowest c2) t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

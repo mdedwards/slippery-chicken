@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 18:06:36 Mon Jan 18 2016 GMT
+;;; $$ Last modified: 18:44:20 Fri Jan 29 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -654,7 +654,7 @@ data: (C4 F4 A4 C5)
 ;;; ****
   (rmap sp #'limit :upper upper :lower lower :do-related-sets do-related-sets))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Planning notes: In order to sort the chords we will use the normal sort
 ;;; function comparing two chords. We'll pass two envelopes to the main
 ;;; function, one for the desired dissonance progression, the other for the
@@ -768,7 +768,7 @@ data: (C4 F4 A4 C5)
                             (centroid-env '(0 .4 62 1 100 .2))
                             (dissonance-weight 1.0)
                             (centroid-weight 1.0)
-                            verbose repeating-bass silent)
+                            permutate verbose repeating-bass silent)
 ;;; ****
   (link-named-objects sp)
   (multiple-value-bind (dmin dmax cmin cmax)
@@ -789,7 +789,7 @@ data: (C4 F4 A4 C5)
            ;; skew the calculations and comparisons, we'll adjust the weights
            ;; so that they stay in the right proportion to each other but sum
            ;; to 2, just as they would if there was no weighting at all (as
-           ;; both would scalers of 1.0)
+           ;; both would be scalers of 1.0)
            (weight-scaler (/ 2.0 (+ dissonance-weight centroid-weight)))
            (dweight (if both-envs (* dissonance-weight weight-scaler) 1.0))
            (cweight (if both-envs (* centroid-weight weight-scaler) 1.0))
@@ -801,6 +801,8 @@ data: (C4 F4 A4 C5)
                    cmax ~,3f ~%  denv ~a ~%  cenv ~a"
                 dmin dmax cmin cmax denv cenv)
         (format t "~&  dweight ~,3f, cweight ~,3,f" dweight cweight))
+      ;;                        val=the dissonance or centroid value of the set
+      ;;                        d=T when using dissonance, NIL when centroid
       (flet ((deviation (target val d)
                ;; if we don't have the envelope value (target) then just return
                ;; 0.0, which is in effect ignoring it
@@ -808,95 +810,151 @@ data: (C4 F4 A4 C5)
                    ;; using a weighting scaler means that deviations become
                    ;; exaggerated so that perhaps if the centroid deviation is
                    ;; weighted less than one and dissonance is more than one,
-                   ;; then when we sum them in the sort function below the
+                   ;; then when we sum them in the sort function below, the
                    ;; centroid plays less of a decisive role in the ordering.
                    (* (if d dweight cweight)
                       (abs (- (/ val target) 1.0)))
-                   0.0)))
+                   0.0))
+             (warn-repeating-bass ()
+               (unless silent
+                 (warn "set-palette::auto-sequence: ~
+                        can't find non-repeating bass.")))
+             (get-env-vals (which)
+               (loop for i below num-sets collect
+                    (if which (interpolate i denv) nil))))
         (when verbose (format t "~%~%Looping:"))
-        (loop for set-num below num-sets
-           for denv-val = (when dissonance-env (interpolate set-num denv))
-           for cenv-val = (when centroid-env (interpolate set-num cenv))
-           do
-             (when verbose
-               (format t "~&denv-val ~,3f cenv-val ~,3f" denv-val cenv-val))
-             (setq all-sets
-                   (stable-sort
-                    all-sets
-                    #'(lambda (c1 c2)
-                        (let ((d-dev1 (deviation denv-val (dissonance c1) t))
-                              (d-dev2 (deviation denv-val (dissonance c2) t))
-                              (c-dev1 (deviation cenv-val (centroid c1) nil))
-                              (c-dev2 (deviation cenv-val (centroid c2) nil)))
-                          ;; the set with the least deviation from the ideal
-                          ;; envelope values wins
-                          (< (+ d-dev1 c-dev1) (+ d-dev2 c-dev2))))))
-             (unless all-sets
-               (error "set-palette::auto-sequence: all-sets is NIL!"))
-             (setq first-set (first all-sets)
-                   ;; if we don't care that bass-notes will repeat just take the
-                   ;; first in the sorted list
-                   next (if (or (not last-bass) repeating-bass)
-                            first-set
-                            (loop for set in all-sets do
-                                 (unless (auto-sort set)
-                                   ;; game over if for some reason sets aren't
-                                   ;; sorted
-                                   (error "set-palette::auto-sequence: sets ~
-                                           must be :auto-sort'ed: ~a" set))
-                                 (setq next-bass (lowest set))
-                                 (if (pitch= last-bass next-bass t)
-                                     (when verbose
-                                       (format t "~&    Skipping repeating ~
+        (if permutate
+            (let* ((refs (get-all-refs sp))
+                   (perms (inefficiently-permutate refs :max 2000 :sublists t
+                                                   :if-not-enough nil))
+                   (denv-vals (get-env-vals denv))
+                   (cenv-vals (get-env-vals cenv))
+                   (scores
+                    (loop for order in perms collect
+                         (loop for ref in order
+                            for set = (get-data ref sp)
+                              ;; these two are the targets
+                            for dt in denv-vals
+                            for ct in cenv-vals
+                            ;; remember: dissonance and centroid are slots
+                            ;; whose values will be calculated the first time
+                            ;; only 
+                            sum (+ (deviation dt (dissonance set) t)
+                                   (deviation ct (centroid set) nil)))))
+                   ;; (lowest (apply #'min scores))
+                   lowest
+                   ;; (pos (position lowest scores)))
+                   ;; scores will be in the same order as perms, now
+                   ;; intermingle them so we can sort based on score but retain
+                   ;; the perm
+                   (mingled (loop for s in scores for p in perms
+                               collect (list s p))))
+              ;; (setq result (nth pos perms)))
+              (setq mingled (sort mingled #'(lambda (x y)
+                                              (< (first x) (first y))))
+                    lowest (second (first mingled)))
+              (setq result (if repeating-bass
+                               lowest
+                               ;; descend through the results from best to
+                               ;; worst and find the first sequence that
+                               ;; doesn't include a repeating bass
+                               (loop for order in mingled
+                                  for seq = (second order) do
+                                    (if (bass-repeat sp seq)
+                                        (when verbose
+                                          (format t "~&Skipping ~a" seq))
+                                        (return seq))
+                                  finally 
+                                    (warn-repeating-bass)
+                                    (return lowest)))))
+            ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; :permutate nil
+            (loop for set-num below num-sets
+               for denv-val = (when dissonance-env (interpolate set-num denv))
+               for cenv-val = (when centroid-env (interpolate set-num cenv))
+               do
+                 (when verbose
+                   (format t "~&denv-val ~,3f cenv-val ~,3f" denv-val cenv-val))
+                 (setq all-sets
+                       (stable-sort
+                        all-sets
+                        #'(lambda (c1 c2)
+                            (let ((d-dev1 (deviation denv-val (dissonance c1)
+                                                     t))
+                                  (d-dev2 (deviation denv-val (dissonance c2)
+                                                     t))
+                                  (c-dev1 (deviation cenv-val (centroid c1)
+                                                     nil))
+                                  (c-dev2 (deviation cenv-val (centroid c2)
+                                                     nil)))
+                              ;; the set with the least deviation from the ideal
+                              ;; envelope values wins
+                              (< (+ d-dev1 c-dev1) (+ d-dev2 c-dev2))))))
+                 (unless all-sets
+                   (error "set-palette::auto-sequence: all-sets is NIL!"))
+                 (setq first-set (first all-sets)
+                       ;; if we don't care that bass-notes will repeat just
+                       ;; take the first in the sorted list
+                       next (if (or (not last-bass) repeating-bass)
+                                first-set
+                                (loop for set in all-sets do
+                                     (unless (auto-sort set)
+                                       ;; game over if for some reason sets
+                                       ;; aren't sorted
+                                       (error "set-palette::auto-sequence: ~
+                                               sets must be :auto-sort'ed: ~a"
+                                              set))
+                                     (setq next-bass (lowest set))
+                                     (if (pitch= last-bass next-bass t)
+                                         (when verbose
+                                           (format t "~&    Skipping repeating ~
                                                   bass: ~a :: ~a"
-                                               (data last-bass)
-                                               (data next-bass)))
-                                     (return set))
-                               ;; we'll only get here if we don't explicitly
-                               ;; call return i.e. if we haven't found a
-                               ;; non-repeating bass note
-                               finally
-                                 (unless silent
-                                   (warn "set-palette::auto-sequence: can't ~
-                                          find non-repeating bass."))
-                                 (setq next-bass (lowest first-set))
-                               ;; so use the first anyway
-                                 (return first-set)))
-                   last-bass (lowest next))
-             (let ((len (length all-sets)))
-               (unless (this next)
-                 (error "set-palette::auto-sequence: next has no <this> slot. ~
-                         Is the set palette linked? next = ~%~a" next))
-               (setq all-sets (remove-if #'(lambda (x)
-                                             (equalp (this x) (this next)))
-                                         all-sets))
-               (unless (= (length all-sets) (1- len))
-                 (error "set-palette::auto-sequence: removed ~a sets! ~%~
+                                                   (data last-bass)
+                                                   (data next-bass)))
+                                         (return set))
+                                   ;; we'll only get here if we don't explicitly
+                                   ;; call return i.e. if we haven't found a
+                                   ;; non-repeating bass note
+                                   finally
+                                     (warn-repeating-bass)
+                                     (setq next-bass (lowest first-set))
+                                   ;; so use the first anyway
+                                     (return first-set)))
+                       last-bass (lowest next))
+                 (let ((len (length all-sets)))
+                   (unless (this next)
+                     (error "set-palette::auto-sequence: next has no <this> ~
+                          slot. Is the set palette linked? next = ~%~a" next))
+                   (setq all-sets (remove-if #'(lambda (x)
+                                                 (equalp (this x) (this next)))
+                                             all-sets))
+                   (unless (= (length all-sets) (1- len))
+                     (error "set-palette::auto-sequence: removed ~a sets! ~%~
                          next = ~%~a" (- len (length all-sets)) next)))
-             (unless next
-               (error "set-palette::auto-sequence: can't find set."))
-             (let ((ddev (deviation denv-val (dissonance next) t))
-                   (cdev (deviation cenv-val (centroid next) nil))
-                   (lowest (lowest next)))
-               (push (list ddev cdev (+ ddev cdev)) deviations)
-               (when verbose
-                 (format t "~&  next ~a: bass ~a (~,3fHz), dissonance ~,3f ~
+                 (unless next
+                   (error "set-palette::auto-sequence: can't find set."))
+                 (let ((ddev (deviation denv-val (dissonance next) t))
+                       (cdev (deviation cenv-val (centroid next) nil))
+                       (lowest (lowest next)))
+                   (push (list ddev cdev (+ ddev cdev)) deviations)
+                   (when verbose
+                     (format t "~&  next ~a: bass ~a (~,3fHz), dissonance ~,3f ~
                             (deviation ~,3f), ~%  centroid ~,3f ~
                             (deviation ~,3f, total ~,3f)"
-                         (this next) (data lowest) (frequency lowest)
-                         (dissonance next) ddev
-                         (centroid next) cdev (+ cdev ddev))))
-             (push (this next) result))
+                             (this next) (data lowest) (frequency lowest)
+                             (dissonance next) ddev
+                             (centroid next) cdev (+ cdev ddev))))
+                 (push (this next) result)))
         (setq result-len (length result))
         (unless (= result-len num-sets)
           (error "set-palette::auto-sequence: only got ~a sets; should have ~a"
                  result-len num-sets))
         (unless (= result-len (length (remove-duplicates result :test #'equal)))
           (error "set-palette::auto-sequence: Found duplicates!"))
-        (values (nreverse result) (nreverse deviations))))))
+        (if permutate
+            result
+            (values (nreverse result) (nreverse deviations)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* set-palette/remove-similar
 ;;; DATE
 ;;; 12th August 2015, Wals, Austria
@@ -1016,16 +1074,29 @@ data: (C4 F4 A4 C5)
                              :do-related-sets do-related-sets)))
   sp)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Jan 13 10:15:48 2016 
 (defmethod delete-subsets ((sp set-palette) &optional related)
   (rmap sp #'delete-subsets related))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Jan 29 17:44:33 2016 -- given a list of IDs (e.g. set-map data) see
+;;; if the sequence would result in any bass repeats between two adjacent
+;;; chords 
+(defmethod bass-repeat ((sp set-palette) refs)
+  (unless (and (listp refs) (> (length refs) 1))
+    (error "set-palette::bass-repeat: 2nd argument should be a list of at ~
+            ~%least two set IDs: ~a" refs))
+  (loop for ref1 in refs and ref2 in (cdr refs) do
+     (when (bass-repeat (get-data ref1 sp) (get-data ref2 sp))
+       (return t))
+     finally (return nil)))
+                          
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun make-sp-name (parents current tag)
   ;; NB parents is the wrong way round

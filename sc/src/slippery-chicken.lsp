@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:17:37 Sat Nov 14 2015 ICT
+;;; $$ Last modified: 11:17:14 Sat Jan 30 2016 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7632,8 +7632,8 @@ NOTE 6200 0.6666667
                  (setf rehearsal-letter nil))
                (format out "~&~a ~a ~a ~a" 
                        (if (listp pitch) "CHORD" "NOTE")
-                       ;; write any labels (e.g. rehearsal letter) after the NOTE
-                       ;; or CHORD 
+                       ;; write any labels (e.g. rehearsal letter) after the
+                       ;; NOTE or CHORD 
                        pitch duration 
                        (cond (rehearsal-letter
                               (prog1

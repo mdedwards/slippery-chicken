@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    March 11th 2010
 ;;;
-;;; $$ Last modified: 19:15:34 Thu Jul 23 2015 BST
+;;; $$ Last modified: 14:06:47 Sat Jan 30 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -101,6 +101,34 @@
                         midi-file (make-tempo 60) nil 0))
   t)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Jan 30 13:07:48 2016 -- can't believe we didn't have this method
+;;; already 
+;;; ****m* set-map/cmn-display
+;;; DATE
+;;; January 30th 2016
+;;; 
+;;; DESCRIPTION
+;;; Generate musical notation of the set-map object using CMN. 
+;;; 
+;;; ARGUMENTS
+;;; a set-map object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; see the set-palette class for a description of the keyword arguments.
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; SYNOPSIS
+(defmethod cmn-display ((sm set-map) &rest keyargs &key &allow-other-keys)
+;;; ****
+  (unless (palette sm)
+    (error "set-map::cmn-display: the palette slot must be set. Use the ~
+            bind-palette method before calling this method."))
+  (apply #'cmn-display-sets (cons (get-all-data-from-palette sm)
+                                  (add-file-keyword sm keyargs))))
+    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((sm set-map) stream)
@@ -116,6 +144,18 @@
 (defmethod clone-with-new-class :around ((sm set-map) new-class)
   (declare (ignore new-class))
   (call-next-method))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Related functions.
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Jan 30 10:10:30 2016 -- never need this explicitly as it's always
+;;; been implicit to make-slippery-chicken.
+(defun make-set-map (id map &key replacements)
+  (clone-with-new-class
+   (make-sc-map id map :replacements replacements :recurse-simple-data nil)
+   'set-map))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF sc-map.lsp

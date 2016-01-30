@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 18:44:20 Fri Jan 29 2016 GMT
+;;; $$ Last modified: 13:58:51 Sat Jan 30 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -205,113 +205,11 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod cmn-display ((sp set-palette)
-                        &key
-                        ;; 10.3.10: display on 4 staves (treble+15 bass-15)?
-                        (4stave nil)
-                        (file 
-                         (format nil "~a~a.eps" 
-                                 (get-sc-config 'default-dir) 
-                                 (string-downcase (id sp))))
-                        (text-x-offset -0.5)
-                        (text-y-offset nil)
-                        (font-size 10.0)
-                        (break-line-each-set t)
-                        (line-separation 3)
-                        (staff-separation nil)
-                        (transposition nil) ;; in semitones
-                        (size 20)
-                        (use-octave-signs nil)
-                        (automatic-octave-signs nil)
-                        (include-missing-chromatic t)
-                        (auto-open (get-sc-config 'cmn-display-auto-open))
-                        (include-missing-non-chromatic t))
+(defmethod cmn-display ((sp set-palette) &rest keyargs &key &allow-other-keys)
 ;;; ****
-  ;; some defaults above are good for 2-staff display but not 4...
-  (unless text-y-offset
-      (setf text-y-offset (if 4stave 1.9 2.1)))
-  (unless staff-separation
-      (setf staff-separation (if 4stave 1.5 3.0)))
-  (let* ((aux (cmn-display-aux sp 4stave text-x-offset text-y-offset
-                               break-line-each-set font-size
-                               include-missing-chromatic
-                               include-missing-non-chromatic transposition
-                               use-octave-signs))
-         (aux2 (loop for set in aux 
-                     appending (first set) into treble
-                     appending (second set) into bass
-                     appending (third set) into quad-treble
-                     appending (fourth set) into quad-bass
-                     finally (return (list treble bass quad-treble 
-                                           quad-bass)))))
-    (cmn::cmn-display 
-     (if 4stave 
-         (cmn::cmn-treble-bass-quad-system (first aux2) (second aux2)
-                                           (third aux2) (fourth aux2))
-         (cmn::cmn-treble-bass-system (first aux2) (second aux2)))
-     :file file :size size :line-separation line-separation
-     :staff-separation staff-separation
-     :automatic-octave-signs automatic-octave-signs
-     :automatic-line-breaks (not break-line-each-set))
-    (when auto-open
-      (system-open-file file))
-    t))
+  (apply #'cmn-display-sets (cons (data sp) (add-file-keyword sp keyargs))))
    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#+cmn
-(defmethod cmn-display-aux ((sp set-palette) 
-                            &optional 
-                            (4stave nil)
-                            (text-x-offset -0.5)
-                            (text-y-offset 2.0)
-                            (break-line-each-set t)
-                            (font-size 10.0)
-                            include-missing-chromatic
-                            include-missing-non-chromatic
-                            transposition
-                            (use-octave-signs t)
-                            ;; leave parents alone, used recursively 
-                            parents)
-  ;; (print parents)
-  (loop for i below (sclist-length sp)
-     for current = (get-nth i sp)
-     if (typep (data current) 'set-palette)
-     ;; keep track of the levels of recursion in the set-palette
-     do (push (id current) parents)
-     and append (cmn-display-aux (data current) 4stave text-x-offset 
-                                 text-y-offset
-                                 break-line-each-set font-size
-                                 include-missing-chromatic
-                                 include-missing-non-chromatic
-                                 transposition use-octave-signs 
-                                 parents)
-     into result
-     and do (pop parents)
-     ;; cmn-treble-bass-system is part of the complete-set class
-     ;; returns a list: treble-clef notes, bass-clef notes
-     else collect (cmn-treble-bass-system 
-                   (if transposition
-                       (transpose (clone current) transposition)
-                       current)
-                   4stave
-                   (make-sp-name parents
-                                 (id current)
-                                 (tag current))
-                   text-x-offset text-y-offset
-                   break-line-each-set
-                   font-size
-                   include-missing-chromatic
-                   include-missing-non-chromatic
-                   use-octave-signs)
-     into result
-     finally (return result)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Feb  7 13:49:36 GMT 2012: Slightly modified MDE's comments
-;;; SAR Tue Feb  7 13:47:11 GMT 2012: Added robodoc entry
-
 ;;; ****m* set-palette/find-sets-with-pitches
 ;;; DESCRIPTION
 ;;; Return a list of sets (as complete-set objects) from a given set-palette
@@ -768,7 +666,7 @@ data: (C4 F4 A4 C5)
                             (centroid-env '(0 .4 62 1 100 .2))
                             (dissonance-weight 1.0)
                             (centroid-weight 1.0)
-                            permutate verbose repeating-bass silent)
+                            map-section permutate verbose repeating-bass silent)
 ;;; ****
   (link-named-objects sp)
   (multiple-value-bind (dmin dmax cmin cmax)
@@ -950,9 +848,18 @@ data: (C4 F4 A4 C5)
                  result-len num-sets))
         (unless (= result-len (length (remove-duplicates result :test #'equal)))
           (error "set-palette::auto-sequence: Found duplicates!"))
+        (unless permutate
+          (setq result (nreverse result)))
+        ;; return something we can pass to make-set-map? If so, then
+        ;; map-section must be a number 
+        (when map-section
+          (unless (integer>0 map-section)
+            (error "set-palette:auto-sequence: map-section must be an ~
+                    integer > 0: ~a" map-section))
+          (setf result (list (cons map-section (list result)))))
         (if permutate
             result
-            (values (nreverse result) (nreverse deviations)))))))
+            (values result (nreverse deviations)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* set-palette/remove-similar
@@ -2038,6 +1945,121 @@ WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
                      (data n)
                      (frequency n))))
       result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Jan 30 13:01:14 2016 -- these two used to be methods but I've now
+;;; generalised the procedure for set lists so that we can use the
+;;; functionality in e.g. set-maps too
+#+cmn
+(defun cmn-display-sets (set-list
+                        &key
+                        ;; 10.3.10: display on 4 staves (treble+15 bass-15)?
+                        (4stave nil)
+                        (file "/tmp/set-list.eps")
+                        (text-x-offset -0.5)
+                        (text-y-offset nil)
+                        (font-size 10.0)
+                        (break-line-each-set t)
+                        (line-separation 3)
+                        (staff-separation nil)
+                        (transposition nil) ;; in semitones
+                        (size 20)
+                        (use-octave-signs nil)
+                        (automatic-octave-signs nil)
+                        (include-missing-chromatic t)
+                        (auto-open (get-sc-config 'cmn-display-auto-open))
+                        (include-missing-non-chromatic t))
+;;; ****
+  ;; some defaults above are good for 2-staff display but not 4...
+  (unless text-y-offset
+      (setf text-y-offset (if 4stave 1.9 2.1)))
+  (unless staff-separation
+      (setf staff-separation (if 4stave 1.5 3.0)))
+  (let* ((aux (cmn-display-sets-aux set-list 4stave text-x-offset text-y-offset
+                               break-line-each-set font-size
+                               include-missing-chromatic
+                               include-missing-non-chromatic transposition
+                               use-octave-signs))
+         (aux2 (loop for set in aux 
+                     appending (first set) into treble
+                     appending (second set) into bass
+                     appending (third set) into quad-treble
+                     appending (fourth set) into quad-bass
+                     finally (return (list treble bass quad-treble 
+                                           quad-bass)))))
+    (cmn::cmn-display 
+     (if 4stave 
+         (cmn::cmn-treble-bass-quad-system (first aux2) (second aux2)
+                                           (third aux2) (fourth aux2))
+         (cmn::cmn-treble-bass-system (first aux2) (second aux2)))
+     :file file :size size :line-separation line-separation
+     :staff-separation staff-separation
+     :automatic-octave-signs automatic-octave-signs
+     :automatic-line-breaks (not break-line-each-set))
+    (when auto-open
+      (system-open-file file))
+    t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+cmn
+(defun cmn-display-sets-aux (set-list
+                             &optional 
+                               (4stave nil)
+                               (text-x-offset -0.5)
+                               (text-y-offset 2.0)
+                               (break-line-each-set t)
+                               (font-size 10.0)
+                               include-missing-chromatic
+                               include-missing-non-chromatic
+                               transposition
+                               (use-octave-signs t)
+                               ;; leave parents alone: used recursively 
+                               parents)
+  ;; (print parents)
+  (loop for i below (length set-list)
+     for current = (nth i set-list)
+     if (set-palette-p (data current))
+     ;; keep track of the levels of recursion in the set-palette
+     do (push (id current) parents)
+     and append (cmn-display-sets-aux (data (data current)) 4stave
+                                      text-x-offset 
+                                      text-y-offset
+                                      break-line-each-set font-size
+                                      include-missing-chromatic
+                                      include-missing-non-chromatic
+                                      transposition use-octave-signs 
+                                      parents)
+     into result
+     and do (pop parents)
+     ;; cmn-treble-bass-system is part of the complete-set class
+     ;; returns a list: treble-clef notes, bass-clef notes
+     else collect (cmn-treble-bass-system 
+                   (if transposition
+                       (transpose (clone current) transposition)
+                       current)
+                   4stave
+                   (make-sp-name parents
+                                 (id current)
+                                 (tag current))
+                   text-x-offset text-y-offset
+                   break-line-each-set
+                   font-size
+                   include-missing-chromatic
+                   include-missing-non-chromatic
+                   use-octave-signs)
+     into result
+     finally (return result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Jan 30 13:29:39 2016 
+(defun add-file-keyword (object keyargs)
+  (unless (member :file keyargs)
+    (push (format nil "~a~a.eps"
+                  (get-sc-config 'default-dir) 
+                  (string-downcase (id object)))
+          keyargs)
+    (push :file keyargs))
+  keyargs)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

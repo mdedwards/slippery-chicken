@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 17:21:35 Mon Feb  1 2016 GMT
+;;; $$ Last modified: 18:38:25 Mon Feb  1 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1034,9 +1034,21 @@ data: (C4 F4 A4 C5)
   sp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; get the extremes (as four values) of the dissonance (min max) and spectral
+;;; ****m* set-palette/quality-extremes
+;;; DESCRIPTION
+;;; Get the extremes (as four values) of the dissonance (min max) and spectral
 ;;; centroid (min max) of a whole set palette.
+;;; 
+;;; ARGUMENTS
+;;; - a set-palette object
+;;; 
+;;; RETURN VALUE
+;;; Four values (i.e. to be used by multiple-value-bind and friends):
+;;; dissonance min, dissonance max, centroid min, centroid max. 
+;;; 
+;;; SYNOPSIS
 (defmethod quality-extremes ((sp set-palette))
+;;; ****
   (let* ((dmin most-positive-double-float)
          (dmax most-negative-double-float)
          (cmin most-positive-double-float)

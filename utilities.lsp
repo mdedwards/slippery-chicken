@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 11:50:29 Mon Jan 18 2016 GMT
+;;; $$ Last modified: 17:29:53 Sat Jan 30 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4804,6 +4804,13 @@ Here's where I pasted the data into the .RPP Reaper file:
        (when (search p sequence)
          (return nil))
      finally (return t)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Jan 30 17:27:50 2016
+(defun factorial (int)
+  (if (= 1 int)
+      1
+      (* int (factorial (1- int)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 13:20:38 Fri Jan 29 2016 GMT
+;;; $$ Last modified: 17:30:34 Sat Jan 30 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -347,9 +347,7 @@
         (warn "permutations::permutations: This call will return ~a ~%~
                results so they are being written to the file ~%~
                '~a'." 
-              (loop for i from 2 to level with j = 1 do 
-                   (setf j (* j i)) 
-                   finally (return j))
+              (factorial level)
               file)
         (permutations-aux level stream)
         (close stream))

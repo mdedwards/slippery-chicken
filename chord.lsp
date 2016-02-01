@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 17:29:59 Fri Jan 29 2016 GMT
+;;; $$ Last modified: 11:22:21 Mon Feb  1 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -78,6 +78,12 @@
 (defmethod centroid ((c chord))
   (with-slots ((cd centroid)) c
     (if cd cd (setf cd (calculate-spectral-centroid c)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod rm-diss-cen ((c chord))
+  (setf (dissonance c) nil
+        (centroid c) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Mon Apr 16 16:52:53 BST 2012
@@ -1818,10 +1824,12 @@ data: (
 ;;; chord object's dissonance slot. In that case the default keyword arguments
 ;;; will be used. If you want to use different arguments or recalculate
 ;;; dissonance after the chord has been altered, this method can be used at any
-;;; time but bear in mind that it does not automatically change the dissonance
-;;; slot so use setf for that if necessary. If you merely want to change the
+;;; time but bear in mind that it does automatically change the dissonance
+;;; slot so use with caution. If you merely want to change the
 ;;; default spectra which are used, then you can do that at startup via
-;;; (set-sc-config 'default-spectra ...)
+;;; (set-sc-config 'default-spectra ...). You can also call rm-diss-cen to
+;;; delete centroid and dissonance slot values (this exists in the set-palette
+;;; class too). 
 ;;; 
 ;;; ARGUMENTS
 ;;; - the chord object 
@@ -1889,12 +1897,13 @@ data: (
                      for amp in (second partials-amps)
                      unless (zerop amp)
                      collect (list (* partial (frequency pitch)) amp)))))))
-    (loop for pair in freq-pairs
-       for n1 = (first pair) for n2 = (second pair)
-       sum (sine-pair-roughness (first n1)
-                                (second n1)
-                                (first n2)
-                                (second n2)))))
+    (setf (dissonance c)
+          (loop for pair in freq-pairs
+             for n1 = (first pair) for n2 = (second pair)
+             sum (sine-pair-roughness (first n1)
+                                      (second n1)
+                                      (first n2)
+                                      (second n2))))))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/calculate-spectral-centroid
@@ -1914,8 +1923,9 @@ data: (
 ;;; object's centroid slot. In that case the default keyword arguments will be
 ;;; used. If you want to use different arguments or recalculate the centroid
 ;;; after the chord has been altered, this method can be used at any time but
-;;; bear in mind that it does not automatically change the centroid slot so use
-;;; setf for that if necessary.
+;;; bear in mind that it does automatically change the centroid slot so use
+;;; with caution. You can call rm-diss-cen to delete centroid and dissonance
+;;; slot values (this exists in the set-palette class too). 
 ;;; 
 ;;; ARGUMENTS
 ;;; - the chord object 
@@ -1962,7 +1972,7 @@ data: (
                                                   :average average)
        for pitch in (data c) do
          (unless partials-amps
-           (error "chord::calculate-spectral-centroif: can't get partial ~
+           (error "chord::calculate-spectral-centroid: can't get partial ~
                    data: ~&~a" c))
          (loop for partial-num from 1 to num-partials
             for partial in (first partials-amps)
@@ -1970,7 +1980,7 @@ data: (
               (unless (zerop amp)
                 (incf numerator (* amp partial (frequency pitch)))
                 (incf denominator amp))))
-    (/ numerator denominator)))
+    (setf (centroid c) (/ numerator denominator))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Jan 29 17:27:37 2016

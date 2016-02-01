@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 13:58:51 Sat Jan 30 2016 GMT
+;;; $$ Last modified: 11:28:44 Mon Feb  1 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -553,6 +553,78 @@ data: (C4 F4 A4 C5)
   (rmap sp #'limit :upper upper :lower lower :do-related-sets do-related-sets))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod calculate-props ((sp set-palette) method
+                            &key (num-partials 12) (average t) sort
+                              (spectrum (get-sc-config 'default-spectra)))
+;;; ****
+  (let ((result (loop for ref in (get-all-refs sp) collect
+                     (list ref (calculate-dissonance (get-data ref sp)
+                                                     :num-partials num-partials
+                                                     :average average
+                                                     :spectrum spectrum)))))
+    (if sort
+        (sort result #'(lambda (x y) (< (second x) (second y))))
+        result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* set-palette/calculate-spectral-centroid
+;;; DATE
+;;; January 30th 2016
+;;; 
+;;; DESCRIPTION
+;;; Calculate the spectral centroid values for each set in a set-palette. This
+;;; will set the centroid slot of each set. 
+;;; 
+;;; ARGUMENTS
+;;; - a set-palette object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; see this method in the chord class for a description
+;;; 
+;;; RETURN VALUE
+;;; a list of two-element lists: the reference to the set within the palette
+;;; and the centroid value.
+;;; 
+;;; SYNOPSIS
+(defmethod calculate-spectral-centroid ((sp set-palette)
+                                        &rest keyargs &key &allow-other-keys)
+;;; ****
+  (apply #'calculate-props (append (list sp #'calculate-spectral-centroid)
+                                   keyargs)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SYNOPSIS
+;;; DATE
+;;; January 30th 2016
+;;; 
+;;; DESCRIPTION
+;;; Calculate the dissonance values for each set in a set-palette. This
+;;; will set the dissonance slot of each set. 
+;;; 
+;;; ARGUMENTS
+;;; - a set-palette object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; see this method in the chord class for a description
+;;; 
+;;; RETURN VALUE
+;;; a list of two-element lists: the reference to the set within the palette
+;;; and the dissonance value.
+;;; 
+;;; SYNOPSIS
+(defmethod calculate-dissonance ((sp set-palette)
+                                 &rest keyargs &key &allow-other-keys)
+;;; ****
+  (apply #'calculate-props (append (list sp #'calculate-dissonance)
+                                   keyargs)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod rm-diss-cen ((sp set-palette))
+  (loop for ref in (get-all-refs sp) do
+       (rm-diss-cen (get-data ref sp))))
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Planning notes: In order to sort the chords we will use the normal sort
 ;;; function comparing two chords. We'll pass two envelopes to the main
 ;;; function, one for the desired dissonance progression, the other for the
@@ -593,29 +665,36 @@ data: (C4 F4 A4 C5)
 ;;; range of dissonance and centroid values to be found in the sets in the
 ;;; palette (see the quality-extremes method).
 ;;;
-;;; When we are comparing two sets via the sort function, we look at the
-;;; deviation between the sets' dissonance values and the current desired
-;;; dissonance value from the envelope, similarly with the spectral centroid.
-;;; The chord with the smallest combined deviation will be chosen first. If
-;;; either envelope is nil, then the sorting is based on the other envelope
-;;; only. Similarly, weighting factors of any arbitrary positive number can be
-;;; passed via :dissonance-weight and :centroid-weight to emphasise or
-;;; deemphasise these properties when sorting. Higher values will mean that
-;;; that property will take precedence over the other property.
-;;;
-;;; Also taken into account when sorting is the lowest note of the set. If
-;;; :repeating-bass is NIL (the default) then the function tries to avoid
-;;; repeating bass notes in two consecutive sets. Repeating highest notes are
-;;; allowed.
+;;; The default method is successive. It selects sets one-by-one via a sort
+;;; function which compares the sets' characteristics to those of the current
+;;; envelope values. Essentially, when we are comparing two sets via the sort
+;;; function, we look at the deviation between the sets' dissonance values and
+;;; the current desired dissonance value from the envelope, similarly with the
+;;; spectral centroid.  The chord with the smallest combined deviation will be
+;;; chosen first. If either envelope is nil, then the sorting is based on the
+;;; other envelope only. Similarly, weighting factors of any arbitrary positive
+;;; number can be passed via :dissonance-weight and :centroid-weight to
+;;; emphasise or deemphasise these properties when sorting. Higher values will
+;;; mean that that property will take precedence over the other property.
 ;;; 
+;;; An alternative method, indicated by :permutate T, is to get all (or at
+;;; least a lot of) permutations of the sets in the palette and then score each
+;;; ordering against the curves, as a form of fitness test. The advantage of
+;;; this approach is that the best solution overall can be found. The
+;;; successive approach, on the other hand will find the best fit at the
+;;; beginning of the process but as it proceeds along the envelope and we run
+;;; out of sets to select from, the fit can become worse and worse.
+;;;
 ;;; In any case there is no guarantee that the desired curves will be expressed
 ;;; exactly in the returned ordering. The function tries to find the best fit
 ;;; but success depends very much on the number and variety of sets in the
-;;; palette. Generally you may find that the ordering is better towards the
-;;; beginning than at the end. This is simply because as we proceed there are
-;;; less and less sets to choose from so the best fit may deviate considerably
-;;; from the desired values.
+;;; palette. 
 ;;;
+;;; Also taken into account when in both methods is the lowest note of the
+;;; set. If :repeating-bass is NIL (the default) then the function tries to
+;;; avoid repeating bass notes in two consecutive sets. Repeating highest notes
+;;; are allowed.
+;;; 
 ;;; NB Unlike the chord methods which calculate dissonance and spectral
 ;;; centroid, there is no way to pass spectral data here. If you want to
 ;;; override the default spectral data then use (set-sc-config 'default-spectra
@@ -639,11 +718,20 @@ data: (C4 F4 A4 C5)
 ;;; - repeating-bass: Whether to allow base notes to repeat between two
 ;;;   consecutive chords. Default NIL
 ;;; - silent: Whether to print warnings or not. Default NIL
+;;; - map-section: if you want a list of references suitable to be passed
+;;;   as a set-map, set this keyword to the integer ID of the section the map
+;;;   will be used for. Default = NIL.
+;;; - permutate: use the permutation rather than the successive approach. This
+;;;   can either be T or an integer to represent the maximum number of
+;;;   permutations we'll try. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; Two values: A list of the full references of the sets in the set palette in
-;;; the automatically determined order, along with a list of the deviations
-;;; from the ideal this order represents.
+;;; If we're using the permutate method then a single list of the sets'
+;;; set-palette references is returned. If we're using the successive method we
+;;; return two values: A list of the full references of the sets in the set
+;;; palette in the automatically determined order, along with a list of the
+;;; deviations from the ideal this order represents. Either method might return
+;;; a list suitable for passing to a set-map (see example below).
 ;;; 
 ;;; EXAMPLE
 #|
@@ -653,11 +741,26 @@ data: (C4 F4 A4 C5)
                                       :warn-no-bass nil)
  :verbose nil :centroid-weight 2 :silent t)
 =>
-'((A4 4) (B4 4) (A4 13) (A4 6) (A4 2) (B4 21) (B4 11) (B4 6) (B4 2) (B4 7)
-  (B4 14) (B4 16) (A4 7) (B4 17) (B4 9) (B4 18) (A4 12) (A4 11) (A4 19)
-  (B4 8) (B4 12) (B4 5) (A4 9) (B4 1) (A4 18) (A4 16) (A4 21) (B4 19)
-  (A4 17) (B4 10) (B4 3) (A4 20) (A4 14) (B4 13) (B4 15) (B4 20) (A4 15)
-  (A4 3) (A4 8) (A4 10) (A4 5) (A4 1)))
+((A4 15) (A4 13) (A4 4) (A4 7) (B4 4) (A4 14) (A4 2) (A4 20) (B4 2) (B4 17)
+ (B4 14) (B4 11) (B4 9) (A4 12) (B4 21) (B4 6) (A4 6) (B4 5) (B4 7) (B4 12)
+ (A4 19) (A4 5) (A4 9) (A4 3) (A4 11) (A4 10) (B4 18) (B4 10) (B4 16) (B4 3)
+ (B4 19) (A4 17) (B4 13) (A4 8) (B4 15) (B4 8) (B4 20) (B4 1) (A4 21) (A4 1)
+ (A4 18) (A4 16))
+((0.3433064594719475d0 0.04460029910249326d0 0.38790675857444074d0)
+ (0.36511199730074173d0 0.10718227303159739d0 0.4722942703323391d0)
+...
+
+(auto-sequence
+ (recursive-set-palette-from-ring-mod '(a4 b4) 'spfrm-test
+                                      :warn-no-bass nil)
+ :verbose nil :centroid-weight 2 :silent t :permutate t :map-section 1)
+=>
+((1
+  ((B4 1) (B4 3) (B4 15) (B4 5) (B4 10) (A4 3) (A4 17) (A4 1) (A4 14) (A4 15)
+   (B4 12) (A4 4) (B4 2) (B4 18) (A4 20) (A4 5) (B4 4) (B4 6) (B4 20) (B4 17)
+   (B4 16) (B4 11) (A4 6) (B4 9) (A4 7) (A4 12) (B4 21) (A4 18) (A4 19) (A4 13)
+   (B4 19) (B4 7) (A4 16) (B4 13) (A4 8) (A4 2) (B4 8) (A4 9) (A4 10) (A4 11)
+   (A4 21) (B4 14))))
 
 |#
 ;;; SYNOPSIS
@@ -718,13 +821,19 @@ data: (C4 F4 A4 C5)
                  (warn "set-palette::auto-sequence: ~
                         can't find non-repeating bass.")))
              (get-env-vals (which)
-               (loop for i below num-sets collect
-                    (if which (interpolate i denv) nil))))
+               (when which
+                 (loop for i below num-sets collect
+                      (if which (interpolate i which) nil)))))
         (when verbose (format t "~%~%Looping:"))
+        ;; MDE Sat Jan 30 15:01:54 2016 -- different selection method now
+        ;; working.  
         (if permutate
             (let* ((refs (get-all-refs sp))
-                   (perms (inefficiently-permutate refs :max 2000 :sublists t
-                                                   :if-not-enough nil))
+                   (perms (inefficiently-permutate
+                           refs
+                           :max (if (integerp permutate) permutate 2000)
+                           :sublists t
+                           :if-not-enough nil))
                    (denv-vals (get-env-vals denv))
                    (cenv-vals (get-env-vals cenv))
                    (scores

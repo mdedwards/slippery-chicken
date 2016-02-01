@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified: 19:06:27 Thu Mar  5 2015 GMT
+;;; $$ Last modified: 10:22:35 Mon Feb  1 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -80,7 +80,7 @@
 ;;; its outlet without causing conflicts with other instances of itself.
 ;;;
 ;;; For an example MaxMSP patch, see osc-test.maxpat in the examples folder of
-;;; the documentation (http://michael-edwards.org/sc/examples/osc-test.maxpat).
+;;; the documentation: http://michael-edwards.org/sc/examples/osc-test.maxpat
 ;;; You'll also need http://michael-edwards.org/sc/examples/osc-sc-eval.maxpat
 ;;; 
 ;;; NB: Currently only works in SBCL.
@@ -90,10 +90,10 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :listen-port. The UDP port to listen to for messages. Default = 8000.
+;;; - :listen-port. The UDP port to listen to for messages. Default = 8090.
 ;;; - :send-ip.  The IP address to send UDP messages back out on. 
 ;;;    Default = #(127 0 0 1))
-;;; - :send-port. The UDP port to send messages back out on. Default = 8001.
+;;; - :send-port. The UDP port to send messages back out on. Default = 8091.
 ;;; - :print. Print messages as they arrive. Default = NIL.
 ;;; 
 ;;; RETURN VALUE

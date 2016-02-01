@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 11:28:44 Mon Feb  1 2016 GMT
+;;; $$ Last modified: 17:21:35 Mon Feb  1 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -558,10 +558,10 @@ data: (C4 F4 A4 C5)
                               (spectrum (get-sc-config 'default-spectra)))
 ;;; ****
   (let ((result (loop for ref in (get-all-refs sp) collect
-                     (list ref (calculate-dissonance (get-data ref sp)
-                                                     :num-partials num-partials
-                                                     :average average
-                                                     :spectrum spectrum)))))
+                     (list ref (funcall method (get-data ref sp)
+                                        :num-partials num-partials
+                                        :average average
+                                        :spectrum spectrum)))))
     (if sort
         (sort result #'(lambda (x y) (< (second x) (second y))))
         result)))
@@ -580,7 +580,10 @@ data: (C4 F4 A4 C5)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; see this method in the chord class for a description
+;;; - sort: If T, sorts the list values from high to low, otherwise the list
+;;;   will be returned with the order of the sets in the palette. Default =
+;;;   NIL. 
+;;; see this method in the chord class for a description of further keywords
 ;;; 
 ;;; RETURN VALUE
 ;;; a list of two-element lists: the reference to the set within the palette
@@ -607,7 +610,10 @@ data: (C4 F4 A4 C5)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; see this method in the chord class for a description
+;;; - sort: If T, sorts the list values from high to low, otherwise the list
+;;;   will be returned with the order of the sets in the palette. Default =
+;;;   NIL. 
+;;; see this method in the chord class for a description of further keywords
 ;;; 
 ;;; RETURN VALUE
 ;;; a list of two-element lists: the reference to the set within the palette
@@ -722,8 +728,9 @@ data: (C4 F4 A4 C5)
 ;;;   as a set-map, set this keyword to the integer ID of the section the map
 ;;;   will be used for. Default = NIL.
 ;;; - permutate: use the permutation rather than the successive approach. This
-;;;   can either be T or an integer to represent the maximum number of
-;;;   permutations we'll try. Default = NIL.
+;;;   can either be T (which will limit to 2000), 'all (get all
+;;;   permutations--could take a very long time), or an integer to represent
+;;;   the maximum number of permutations we'll try. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; If we're using the permutate method then a single list of the sets'
@@ -797,6 +804,12 @@ data: (C4 F4 A4 C5)
            (result '())
            (deviations '())
            result-len next next-bass last-bass first-set)
+      (when (eq permutate 'all)
+        (setq permutate (factorial num-sets))
+        (when (> num-sets 8)
+          (warn "set-palette::auto-sequence: there are ~a sets in the ~
+                 palette, of which ~%there are ~a possible permutations. ~
+                 This is going to take a long time." num-sets permutate)))
       (when verbose
         (format t "~&set-pallete's overall dmin ~,3f dmax ~,3f cmin ~,3f ~
                    cmax ~,3f ~%  denv ~a ~%  cenv ~a"
@@ -821,9 +834,8 @@ data: (C4 F4 A4 C5)
                  (warn "set-palette::auto-sequence: ~
                         can't find non-repeating bass.")))
              (get-env-vals (which)
-               (when which
-                 (loop for i below num-sets collect
-                      (if which (interpolate i which) nil)))))
+               (loop for i below num-sets collect
+                    (if which (interpolate i which) nil))))
         (when verbose (format t "~%~%Looping:"))
         ;; MDE Sat Jan 30 15:01:54 2016 -- different selection method now
         ;; working.  
@@ -837,7 +849,8 @@ data: (C4 F4 A4 C5)
                    (denv-vals (get-env-vals denv))
                    (cenv-vals (get-env-vals cenv))
                    (scores
-                    (loop for order in perms collect
+                    (loop for order in perms
+                         for sum =
                          (loop for ref in order
                             for set = (get-data ref sp)
                               ;; these two are the targets
@@ -845,9 +858,12 @@ data: (C4 F4 A4 C5)
                             for ct in cenv-vals
                             ;; remember: dissonance and centroid are slots
                             ;; whose values will be calculated the first time
-                            ;; only 
+                            ;; only
                             sum (+ (deviation dt (dissonance set) t)
-                                   (deviation ct (centroid set) nil)))))
+                                   (deviation ct (centroid set) nil)))
+                       do (when verbose
+                            (format t "~&~a: score = ~a" order sum))
+                       collect sum))
                    ;; (lowest (apply #'min scores))
                    lowest
                    ;; (pos (position lowest scores)))
@@ -856,10 +872,13 @@ data: (C4 F4 A4 C5)
                    ;; the perm
                    (mingled (loop for s in scores for p in perms
                                collect (list s p))))
+              (when (every #'zerop scores)
+                (error "set-palette::auto-sequence: scores are all zero."))
               ;; (setq result (nth pos perms)))
               (setq mingled (sort mingled #'(lambda (x y)
                                               (< (first x) (first y))))
                     lowest (second (first mingled)))
+              ;; (print mingled)
               (setq result (if repeating-bass
                                lowest
                                ;; descend through the results from best to
@@ -953,7 +972,7 @@ data: (C4 F4 A4 C5)
                  (push (this next) result)))
         (setq result-len (length result))
         (unless (= result-len num-sets)
-          (error "set-palette::auto-sequence: only got ~a sets; should have ~a"
+          (error "set-palette::auto-sequence: got ~a sets; should have ~a"
                  result-len num-sets))
         (unless (= result-len (length (remove-duplicates result :test #'equal)))
           (error "set-palette::auto-sequence: Found duplicates!"))

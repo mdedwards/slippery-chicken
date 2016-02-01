@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 10:06:58 Thu Aug  6 2015 BST
+;;; $$ Last modified: 15:51:53 Mon Feb  1 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1290,6 +1290,37 @@ data: HIVE
           (call-next-method deepest-replace nth new-value deepest-ral)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* recursive-assoc-list/remove-data
+;;; DATE
+;;; February 1st 2016, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Convenience function to allow objects to be removed from a
+;;; recursive-assoc-list (and subclasses e.g. palettes and maps) 
+;;; 
+;;; ARGUMENTS
+;;; - the recursive assoc-list object
+;;; - as many keys as you like for the members of the assoc-list
+;;; 
+;;; RETURN VALUE
+;;; the recursive-assoc-list object's new data list, i.e. with elements removed
+;;; 
+;;; SYNOPSIS
+(defmethod remove-data ((ral recursive-assoc-list) &rest keys)
+;;; ****
+  (loop for k in keys do
+       (typecase k
+         (atom (call-next-method))
+         (list (let ((al (butlast k))
+                     (al-ref (first (last k))))
+                 ;; (print al) (print al-ref)
+                 (call-next-method (get-data-data al ral) al-ref)))
+         (t (error "recursive-assoc-list::remove-data: wrong key type: ~a"
+                   k))))
+  (relink-named-objects ral)
+  (data ral))
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Jan 27 14:42:30 GMT 2012: Added robodoc info
 
@@ -1441,7 +1472,7 @@ data: RIBBON
          (last-data (data last)))
     (if (is-ral last-data)
         (get-last last-data)
-      last)))
+        last)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

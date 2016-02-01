@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 11:23:45 Wed Sep 30 2015 BST
+;;; $$ Last modified: 14:38:27 Mon Feb  1 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -876,6 +876,32 @@ data: (SNOOPY SPOT ROVER)
                  cdiff diff)))
     it))
    
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* assoc-list/remove-elements
+;;; DATE
+;;; February 1st 2016
+;;; 
+;;; DESCRIPTION
+;;; Convenience function to allow objects to be removed from an assoc-list (and
+;;; subclasses e.g. palettes and maps) 
+;;; 
+;;; ARGUMENTS
+;;; - the assoc-list object
+;;; - as many keys as you like for the members of the assoc-list
+;;; 
+;;; RETURN VALUE
+;;; the assoc-list object's new data list, i.e. with elements removed
+;;; 
+;;; SYNOPSIS
+(defmethod remove-data ((al assoc-list) &rest keys)
+;;; ****
+  ;; (print keys)
+  (let ((data (data al)))
+    (loop for k in keys do
+         (setq data (remove k data :test #'id-eq)))
+    (setf (data al) data)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

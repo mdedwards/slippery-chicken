@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    July 27th 2015
 ;;;
-;;; $$ Last modified: 20:03:40 Thu Oct  1 2015 BST
+;;; $$ Last modified: 12:27:57 Tue Feb  2 2016 GMT
 ;;;
 ;;; SVN ID: $Id: spectra.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
@@ -198,7 +198,8 @@ data: ((0.9889743194880222d0 2.0263850081954717d0 2.9990610385449314d0
          (unless (zerop f)
            (setf (nth i amps) (/ a div)
                  (nth i freqs) (/ f div))))
-    (list freqs amps)))
+    ;;     (list freqs amps)))
+    (list freqs (normalise amps))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; take spectra as a list of frequencies in any order plus a list of the
@@ -317,12 +318,12 @@ data: ((0.9889743194880222d0 2.0263850081954717d0 2.9990610385449314d0
   
 (print-for-init
  (get-spectra-al "/Volumes/NIsamples/Akoustik Piano Library/Samples/ConcertGrand/Samples/*.wav" 
-                 #'akoustik-piano-name :id 'akoustik-piano-spectra))
+                 #'akoustik-piano-name120 :id 'akoustik-piano-spectra))
 
 
 (print-for-init
  (get-spectra-al "/Volumes/NIsamples/Kontakt 3 Library/Orchestral/Z - Samples/01 Violin ensemble - 14/VI-14_mV_sus_mf/*.wav"
-                 #'violin-ensemble-name :id 'violin-ensemble)))
+                 #'violin-ensemble-name :id 'violin-ensemble-spectra)))
 
 |#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

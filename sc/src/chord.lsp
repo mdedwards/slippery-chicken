@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 11:22:21 Mon Feb  1 2016 GMT
+;;; $$ Last modified: 10:25:40 Wed Feb  3 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -70,6 +70,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Jul 29 13:17:00 2015 -- reader
 (defmethod dissonance ((c chord))
+  ;; (print "dissonance")
   (with-slots ((d dissonance)) c
     (if d d (setf d (calculate-dissonance c)))))
 
@@ -1884,17 +1885,27 @@ data: (
   ;; normalise the numbers we're given or use.
   (let* ((freq-pairs
           (get-all-pairs
+           ;; first of all this gets all the partials and their amps for all
+           ;; the notes in the chord...
            (loop for partials-amps in (get-partials-amps c :spectrum spectrum
                                                          :average average)
               for pitch in (data c)
+              with pamps
               appending
                 (progn
                   (unless partials-amps
                     (error "chord::calculate-dissonance: can't get ~
                             partial data: ~&~a" c))
+                  ;; MDE Wed Feb 3 10:22:59 2016 -- although our complete lists
+                  ;; of partial amp data should be normalised to 1, we really
+                  ;; have to normalise the amps we're going to use
+                  (setf pamps (normalise
+                               (subseq (second partials-amps) 0 num-partials)))
+                  ;; ... then this is what limits the calculation to
+                  ;; :num-partials
                   (loop for partial-num from 1 to num-partials
                      for partial in (first partials-amps)
-                     for amp in (second partials-amps)
+                     for amp in pamps ; (second partials-amps)
                      unless (zerop amp)
                      collect (list (* partial (frequency pitch)) amp)))))))
     (setf (dissonance c)

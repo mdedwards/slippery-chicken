@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 17:30:34 Sat Jan 30 2016 GMT
+;;; $$ Last modified: 19:59:52 Wed Feb  3 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -316,7 +316,13 @@
 ;;; 
 ;;; ARGUMENTS 
 ;;; An integer that indicates how many consecutive integers from 0 are to be
-;;; used for the process. 
+;;; used for the process.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - allow-file: whether to allow the results to be written to a file rather
+;;; than returned to the interpreter. This will only happen if the length of
+;;; the list is > 8. The advantage is that you can then read in the file rather
+;;; than slowly regenerate the results if you need them again.
 ;;; 
 ;;; RETURN VALUE  
 ;;; A list of sequences (lists), each of which is a permutation of the
@@ -336,9 +342,9 @@
 
 |#
 ;;; SYNOPSIS
-(defun permutations (level)
+(defun permutations (level &optional (allow-file t))
 ;;; ****
-  (if (> level 8)
+  (if (and allow-file (> level 8))
       (let* ((file (concatenate 'string (get-sc-config 'default-dir)
                                 "permutations.txt"))
              (stream (open file
@@ -351,6 +357,7 @@
               file)
         (permutations-aux level stream)
         (close stream))
+      ;; <= 8
       (permutations-aux level)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -383,6 +390,12 @@
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A list with elements of any type.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - allow-file: whether to allow the results to be written to a file rather
+;;; than returned to the interpreter. This will only happen if the length of
+;;; the list is > 8. The advantage is that you can then read in the file rather
+;;; than slowly regenerate the results if you need them again.
 ;;; 
 ;;; RETURN VALUE  
 ;;; A list of lists that are all possible permutations of the original,
@@ -408,11 +421,11 @@ results so they are being written to the file
 
 |#
 ;;; SYNOPSIS
-(defun permutate (list)
+(defun permutate (list &optional (allow-file t))
 ;;; ****
   (unless (listp list)
     (error "permutations::permutate: argument (~a) must be a list." list))
-  (let ((ps (permutations (length list))))
+  (let ((ps (permutations (length list) allow-file)))
     (when (listp ps) ; otherwise there were too many and they're written to a
                      ; file 
       (loop for p in ps collect

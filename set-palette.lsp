@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 18:38:25 Mon Feb  1 2016 GMT
+;;; $$ Last modified: 20:39:11 Wed Feb  3 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -802,14 +802,15 @@ data: (C4 F4 A4 C5)
            (dweight (if both-envs (* dissonance-weight weight-scaler) 1.0))
            (cweight (if both-envs (* centroid-weight weight-scaler) 1.0))
            (result '())
+           (loads-a-perms (> num-sets 8))
            (deviations '())
            result-len next next-bass last-bass first-set)
       (when (eq permutate 'all)
-        (setq permutate (factorial num-sets))
-        (when (> num-sets 8)
+        ;; (setq permutate (factorial num-sets))
+        (when loads-a-perms
           (warn "set-palette::auto-sequence: there are ~a sets in the ~
                  palette, of which ~%there are ~a possible permutations. ~
-                 This is going to take a long time." num-sets permutate)))
+                 This is going to take some time." num-sets permutate)))
       (when verbose
         (format t "~&set-pallete's overall dmin ~,3f dmax ~,3f cmin ~,3f ~
                    cmax ~,3f ~%  denv ~a ~%  cenv ~a"
@@ -841,19 +842,28 @@ data: (C4 F4 A4 C5)
         ;; working.  
         (if permutate
             (let* ((refs (get-all-refs sp))
-                   (perms (inefficiently-permutate
-                           refs
-                           :max (if (integerp permutate) permutate 2000)
-                           :sublists t
-                           :if-not-enough nil))
+                   ;; we'll generally use inefficiently-permutate when we're
+                   ;; not getting all permutations as it returns a less
+                   ;; systematically organised list, which is perhaps more
+                   ;; useful, but we'll use the faster method if we need all as
+                   ;; it will no longer matter
+                   (perms
+                    (if (eq permutate 'all)
+                        (permutate refs nil)
+                        (inefficiently-permutate
+                         refs
+                         :max (if (integerp permutate) permutate 2000)
+                         :sublists t
+                         :if-not-enough nil)))
                    (denv-vals (get-env-vals denv))
                    (cenv-vals (get-env-vals cenv))
                    (scores
                     (loop for order in perms
+                         for i from 1
                          for sum =
                          (loop for ref in order
                             for set = (get-data ref sp)
-                              ;; these two are the targets
+                            ;; these two are the targets
                             for dt in denv-vals
                             for ct in cenv-vals
                             ;; remember: dissonance and centroid are slots
@@ -861,9 +871,11 @@ data: (C4 F4 A4 C5)
                             ;; only
                             sum (+ (deviation dt (dissonance set) t)
                                    (deviation ct (centroid set) nil)))
-                       do (when verbose
+                       do (when (and verbose (< i 100))
                             (format t "~&~a: score = ~a" order sum))
-                       collect sum))
+                       collect sum
+                       finally (when verbose
+                                 (format t "~&Processed ~a permutations" i))))
                    ;; (lowest (apply #'min scores))
                    lowest
                    ;; (pos (position lowest scores)))
@@ -878,7 +890,8 @@ data: (C4 F4 A4 C5)
               (setq mingled (sort mingled #'(lambda (x y)
                                               (< (first x) (first y))))
                     lowest (second (first mingled)))
-              ;; (print mingled)
+              (when verbose
+                (format t "~&First 30 scores: ~a" (subseq mingled 0 30)))
               (setq result (if repeating-bass
                                lowest
                                ;; descend through the results from best to

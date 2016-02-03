@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:29:53 Sat Jan 30 2016 GMT
+;;; $$ Last modified: 10:28:22 Wed Feb  3 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4777,12 +4777,14 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; MDE Mon Jul 27 16:24:23 2015 -- normalise a set of numbers to between 0 and
 ;;; 1 (as floats)
 (defun normalise (numbers)
-  (let* ((min (loop for n in numbers minimize n))
-         (max (loop for n in numbers maximize n))
-         (diff (- max min))
-         (scaler (if (zerop diff) 1.0 (float (/ diff))))
-         (offset (* min scaler)))
-    (loop for n in numbers collect (- (* scaler n) offset))))
+  (if (= (length numbers) 1)
+      '(1.0)
+      (let* ((min (loop for n in numbers minimize n))
+             (max (loop for n in numbers maximize n))
+             (diff (- max min))
+             (scaler (if (zerop diff) 1.0 (float (/ diff))))
+             (offset (* min scaler)))
+        (loop for n in numbers collect (- (* scaler n) offset)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Oct 1 16:23:43 2015 -- return T or NIL depending on whether

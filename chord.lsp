@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 10:25:40 Wed Feb  3 2016 GMT
+;;; $$ Last modified: 15:41:07 Thu Feb  4 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1951,11 +1951,8 @@ data: (
 ;;; - :spectrum. Pass a two-element list of partial frequency scalers (list)
 ;;;   and amplitudes (list) to use instead of the piano data. The amplitudes
 ;;;   should be normalised from 0.0 to 1.0 and there should be as many of these
-;;;   as frequency scalers and :num-partials. Bear in mind that even using the
-;;;   same data for several calls, this will still give different results for
-;;;   the same chord type starting on different notes, as the perceptual
-;;;   dissonance is based on pitch height as well as interval structure.
-;;;   Default = (get-sc-config 'default-spectra) (see globals.lsp)
+;;;   as frequency scalers and :num-partials. Default = (get-sc-config
+;;;   'default-spectra) (see globals.lsp)  
 ;;; 
 ;;; RETURN VALUE
 ;;; A floating point value representing the frequency in Hertz of the spectral

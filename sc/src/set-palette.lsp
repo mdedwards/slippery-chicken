@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 20:39:11 Wed Feb  3 2016 GMT
+;;; $$ Last modified: 11:59:40 Thu Feb  4 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -807,10 +807,11 @@ data: (C4 F4 A4 C5)
            result-len next next-bass last-bass first-set)
       (when (eq permutate 'all)
         ;; (setq permutate (factorial num-sets))
-        (when loads-a-perms
+        (when (and loads-a-perms (not silent))
           (warn "set-palette::auto-sequence: there are ~a sets in the ~
                  palette, of which ~%there are ~a possible permutations. ~
-                 This is going to take some time." num-sets permutate)))
+                 This is going to take some time." 
+                num-sets (factorial num-sets))))
       (when verbose
         (format t "~&set-pallete's overall dmin ~,3f dmax ~,3f cmin ~,3f ~
                    cmax ~,3f ~%  denv ~a ~%  cenv ~a"

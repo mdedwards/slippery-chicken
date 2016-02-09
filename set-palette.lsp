@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 11:59:40 Thu Feb  4 2016 GMT
+;;; $$ Last modified: 12:19:33 Tue Feb  9 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2106,41 +2106,43 @@ WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
 ;;; functionality in e.g. set-maps too
 #+cmn
 (defun cmn-display-sets (set-list
-                        &key
-                        ;; 10.3.10: display on 4 staves (treble+15 bass-15)?
-                        (4stave nil)
-                        (file "/tmp/set-list.eps")
-                        (text-x-offset -0.5)
-                        (text-y-offset nil)
-                        (font-size 10.0)
-                        (break-line-each-set t)
-                        (line-separation 3)
-                        (staff-separation nil)
-                        (transposition nil) ;; in semitones
-                        (size 20)
-                        (use-octave-signs nil)
-                        (automatic-octave-signs nil)
-                        (include-missing-chromatic t)
-                        (auto-open (get-sc-config 'cmn-display-auto-open))
-                        (include-missing-non-chromatic t))
+                         &key
+                           ;; 10.3.10: display on 4 staves (treble+15 bass-15)?
+                           (4stave nil)
+                           (file "/tmp/set-list.eps")
+                           (text-x-offset -0.5)
+                           (text-y-offset nil)
+                           (font-size 10.0)
+                           ;; MDE Tue Feb  9 12:19:09 2016 -- changed default
+                           ;; from T to nil 
+                           (break-line-each-set nil)
+                           (line-separation 3)
+                           (staff-separation nil)
+                           (transposition nil) ;; in semitones
+                           (size 20)
+                           (use-octave-signs nil)
+                           (automatic-octave-signs nil)
+                           (include-missing-chromatic t)
+                           (auto-open (get-sc-config 'cmn-display-auto-open))
+                           (include-missing-non-chromatic t))
 ;;; ****
   ;; some defaults above are good for 2-staff display but not 4...
   (unless text-y-offset
-      (setf text-y-offset (if 4stave 1.9 2.1)))
+    (setf text-y-offset (if 4stave 1.9 2.1)))
   (unless staff-separation
-      (setf staff-separation (if 4stave 1.5 3.0)))
+    (setf staff-separation (if 4stave 1.5 3.0)))
   (let* ((aux (cmn-display-sets-aux set-list 4stave text-x-offset text-y-offset
-                               break-line-each-set font-size
-                               include-missing-chromatic
-                               include-missing-non-chromatic transposition
-                               use-octave-signs))
+                                    break-line-each-set font-size
+                                    include-missing-chromatic
+                                    include-missing-non-chromatic transposition
+                                    use-octave-signs))
          (aux2 (loop for set in aux 
-                     appending (first set) into treble
-                     appending (second set) into bass
-                     appending (third set) into quad-treble
-                     appending (fourth set) into quad-bass
-                     finally (return (list treble bass quad-treble 
-                                           quad-bass)))))
+                  appending (first set) into treble
+                  appending (second set) into bass
+                  appending (third set) into quad-treble
+                  appending (fourth set) into quad-bass
+                  finally (return (list treble bass quad-treble 
+                                        quad-bass)))))
     (cmn::cmn-display 
      (if 4stave 
          (cmn::cmn-treble-bass-quad-system (first aux2) (second aux2)

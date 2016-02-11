@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   sc-map -> change-map -> instrument-change-map
 ;;;
-;;; Version:          1.0.6
+;;; Version:          1.0.5
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    12th April 2002
 ;;;
-;;; $$ Last modified: 18:12:52 Tue Apr  3 2012 BST
+;;; $$ Last modified: 15:37:31 Wed Feb 10 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -76,7 +76,7 @@
                                      player first-section-ref)
   (unless (cm-get-data icm (econs first-section-ref player))
     (error "instrument-change-map::instrument-for-first-bar: ~
-            ~a doubles but the instrument for the first bar has not been set!"
+            ~a doubles but the ~%instrument for the first bar has not been set."
            player)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -99,16 +99,16 @@
 #|
 (let ((mini
        (make-slippery-chicken
-	'+mini+
-	:ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
-		     (db (double-bass :midi-channel 2))))
-	:instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax))))))
-	:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
-	:set-map '((1 (1 1 1 1 1)))
-	:rthm-seq-palette '((1 ((((4 4) h q e s s))
-				:pitch-seq-palette ((1 2 3 4 5)))))
-	:rthm-seq-map '((1 ((sax (1 1 1 1 1))
-			    (db (1 1 1 1 1))))))))
+        '+mini+
+        :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
+                     (db (double-bass :midi-channel 2))))
+        :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax))))))
+        :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((sax (1 1 1 1 1))
+                            (db (1 1 1 1 1))))))))
   (get-first-for-player (instrument-change-map mini) 'sax))
 
 => ALTO-SAX, T

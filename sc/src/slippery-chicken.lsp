@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> slippery-chicken
 ;;;
-;;; Version:          1.0.6
+;;; Version:          1.0.5
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:17:14 Sat Jan 30 2016 GMT
+;;; $$ Last modified: 16:01:07 Wed Feb 10 2016 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -239,6 +239,7 @@
 ;;; SYNOPSIS
 (defmethod sc-init ((sc slippery-chicken) &key (regenerate-pitch-seq-map t))
 ;;; ****
+  (print 'scinit)
   (let ((given-tempo-map (tempo-map sc)))
     (flet ((make-name (name) (format nil "~a-~a" (id sc) name)))
       (setf (instrument-palette sc)
@@ -338,8 +339,14 @@
             (rthm-seq-palette sc)
             (if (rsp-p (rthm-seq-palette sc))
                 (clone (rthm-seq-palette sc))
-                (make-rsp (make-name 'rthm-seq-palette)
-                          (rthm-seq-palette sc)))
+                ;; MDE Wed Feb 10 15:47:35 2016 -- NIL rsp's were not
+                ;; triggering an error until further down the line (which was
+                ;; confusing).
+                (if (print (rthm-seq-palette sc))
+                    (make-rsp (make-name 'rthm-seq-palette)
+                              (rthm-seq-palette sc))
+                    (error "~%slippery-chicken::sc-init:rthm-seq-palette ~
+                             is NIL. Can't proceed.")))
             (rthm-seq-map sc)
             (if (rthm-seq-map-p (rthm-seq-map sc))
                 (let ((clone (clone (rthm-seq-map sc))))
@@ -439,8 +446,6 @@
     (check-tuplets sc)
     ;; MDE Fri Jun 15 08:33:30 2012
     (check-beams sc)
-    ;; MDE Fri Nov 13 17:42:22 2015 
-    (initial-staff-lines sc)
     (set-rehearsal-letters sc (get-groups-top-ins sc)))
   sc)
 
@@ -472,9 +477,13 @@
     (setf (pitch-seq-index-scaler-min sc) 0.5))
   ;; MDE Thu Jan 12 11:15:13 2012 -- in order to clone we need to be able to
   ;; init the object without slot values then setf them afterwards 
-  (when (and (set-map sc) (ensemble sc) (rthm-seq-map sc) (rthm-seq-palette sc)
+  (if (and (set-map sc) (ensemble sc) (rthm-seq-map sc) (rthm-seq-palette sc)
              (not (defer sc)) (set-palette sc))
-    (sc-init sc)))
+      (sc-init sc)
+      (warn "slippery-chicken::initialize-instance: sc-init method is being ~
+             ~%skipped as one of the following slots's data is missing: ~
+             ~%set-map, ensemble, rthm-seq-map, rthm-seq-palette, set-palette. ~
+             ~%Assuming you will call sc-init explicitly later.")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2583,10 +2592,9 @@ data: NIL
                          sequence)
           (setf ins-obj (player-get-instrument player-obj current-ins nil))
           (unless ins-obj
-            (error "slippery-chicken::get-current-instrument-for-player: ~%~
-                    Couldn't get instrument at section~a, sequence ~a, for ~a~
-                    ~%Maybe you forget to add ~a to player ~a in the ensemble"
-                   section sequence player current-ins (id player-obj)))
+            (error "slippery-chicken::get-current-instrument-for-player: ~
+                    Couldn't get instrument at section~a, sequence ~a, for ~a"
+                   section sequence player))
           (values ins-obj changes-here))
         ;; doesn't double
         (values (get-starting-ins sc player) nil))))
@@ -3579,10 +3587,9 @@ seq-num 5, VN, replacing G3 with B6
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;  13.4.11: start and end bar are inclusive.
-;;; at the moment, we use bass/treble clefs with 8va signs on to indicate pitch
+;;; at the moment, we use bass/treble clefs with 8ve signs on to indicate pitch
 ;;; extremes (assuming an instrument has these clefs), but these can be
-;;; converted to octave brackets here. NB no 15ma/mb or tenor-treble handled
-;;; here.
+;;; converted to octave brackets here. NB no 15ma/mb handled here.
 (defmethod octave-clefs-to-brackets ((sc slippery-chicken)
                                      &key players start-bar end-bar)
   (unless (listp players)
@@ -4275,50 +4282,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   pass to each CLM instrument call (e.g. '(:cutoff-freq 2000 :q .6)) or a
 ;;;   function which takes two arguments (the current event and the event
 ;;;   number) and returns a list of keyword arguments perhaps based on
-;;;   those. Default = NIL.
-;;; - :pan-min-max. Each event is panned randomly between any two adjacent
-;;;   channels in the output sound file. The values used are chosen from the
-;;;   following list of degrees: (15 25 35 45 55 65 75). However, these can be
-;;;   scaled to be within new limits by passing a two-element list to
-;;;   :pan-mix-max. E.g. '(40 50) would limit most values to the middle area of
-;;;   stereo space. NB if stereo soundfiles are used as input the original
-;;;   panning will generally be retained. See samp5.lsp for details of how such
-;;;   files are handled. Default = NIL (i.e. use the list given above).
-;;; - :pan-fun. If you want to take charge of selecting pan positions yourself,
-;;;   pass a function via this keyword. The function must take one argument:
-;;;   the current event, though of course, it can ignore it completely if
-;;;   preferred. The function should return a degree value: a number between 0
-;;;   and 90. Bear in mind if using samp5 with more than 2 output channels that
-;;;   this will still result in the sound moving around multichannel space as
-;;;   all you would be setting is the pan value between any two adjacent
-;;;   channels. If this isn't your cup of tea, pass a new instrument entirely via
-;;;   :clm-ins. Default = NIL.
-;;; - :snd-selector. By default the sound files in the given group are cycled
-;;;   through, one after the other, returning to the beginning when the end is
-;;;   reached. This can be changed by passing a function to :snd-selector. This
-;;;   function must take three arguments: the circular-sclist object that
-;;;   contains the group's sndfile objects (the sndfiles are in a simple list
-;;;   in the data slot); the pitch of the current event (if the event happens
-;;;   to be a chord, each pitch of the chord will be handled separately
-;;;   i.e. the :snd-selector function will be called for each pitch); and the
-;;;   event object. Of course any of these arguments may be ignored by the
-;;;   :snd-selector function; indeed it is imagined that the event object will
-;;;   be mostly ignored and the pitch object used instead, but it is
-;;;   nevertheless passed for completeness. For example, the following
-;;;   function, declared on-the-fly using lambda rather than separately with
-;;;   defun, makes clm-play act as a traditional sampler would: Assuming our
-;;;   sndfile-palette group has a list of sound files whose frequencies really
-;;;   correspond to their perceived fundamentals (e.g. see the
-;;;   set-frequency-from-filename method, and the kontakt-to-sfp function) we
-;;;   choose the nearest sound file in the group to the frequency of the
-;;;   current event's pitch:
-;;;
-;;;            :snd-selector #'(lambda (sflist pitch event)
-;;;                              (declare (ignore event))
-;;;                              (get-nearest-by-freq
-;;;                               (frequency pitch) (data sflist)))
-;;; 
-;;;   Default = NIL i.e. use the circular selection method.
+;;;   those. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; Total events generated (integer).
@@ -4383,54 +4347,48 @@ seq-num 5, VN, replacing G3 with B6
 (defmethod clm-play ((sc slippery-chicken) section players 
                      sound-file-palette-ref 
                      &key 
-                       sound-file-palette-ref2
-                       (play-chance-env '(0 100 100 100))
-                       (max-start-time 99999999)
-                       (play-chance-env-exp 0.5)
-                       (time-scaler 1.0)
-                       (normalise .99)
-                       (simulate nil)
-                       (from-sequence 1)
-                       (num-sequences nil)
-                       (num-sections nil)
-                       (ignore-rests t)
-                       (time-offset 0.0)
-                       (chords nil)
-                       (chord-accessor nil)
-                       (note-number 0)
-                       (play nil)
-                       (amp-env '(0 0 5 1 60 1 100 0))
-                       (inc-start nil)
-                       (src-width 20)
-                       (src-scaler 1.0)
-                       (do-src t)
-                       (pitch-synchronous nil)
-                       (rev-amt 0.0)
-                       (duration-scaler 1.0)
-                       (short-file-names nil)
-                       (check-overwrite t)
-                       (reset-snds-each-rs t)
-                       (reset-snds-each-player t)
-                       (duration-run-over nil)
-                       (channels 2)
-                       (srate clm::*clm-srate*)
-                       (header-type clm::*clm-header-type*)
-                       (data-format clm::*clm-data-format*)
-                       (print-secs nil)
-                       (output-name-uniquifier "")
-                       (sndfile-extension nil)
-                       (sndfile-palette nil)
-                       ;; MDE Sat Oct  3 18:45:28 2015 -- for Cameron!
-                       pan-fun
-                       ;; MDE Thu Oct  1 21:03:59 2015 
-                       (pan-min-max nil) ; actually '(15 75) by default below
-                       ;; MDE Thu Oct  1 19:13:49 2015
-                       snd-selector 
-                       ;; MDE Mon Nov  4 10:10:35 2013 -- the following were 
-                       ;; added so we could use instruments other than samp5
-                       (clm-ins #'clm::samp5)
-                       ;; either a list or a function (see above)
-                       clm-ins-args)
+                     sound-file-palette-ref2
+                     (play-chance-env '(0 100 100 100))
+                     (max-start-time 99999999)
+                     (play-chance-env-exp 0.5)
+                     (time-scaler 1.0)
+                     (normalise .99)
+                     (simulate nil)
+                     (from-sequence 1)
+                     (num-sequences nil)
+                     (num-sections nil)
+                     (ignore-rests t)
+                     (time-offset 0.0)
+                     (chords nil)
+                     (chord-accessor nil)
+                     (note-number 0)
+                     (play nil)
+                     (amp-env '(0 0 5 1 60 1 100 0))
+                     (inc-start nil)
+                     (src-width 20)
+                     (src-scaler 1.0)
+                     (do-src t)
+                     (pitch-synchronous nil)
+                     (rev-amt 0.0)
+                     (duration-scaler 1.0)
+                     (short-file-names nil)
+                     (check-overwrite t)
+                     (reset-snds-each-rs t)
+                     (reset-snds-each-player t)
+                     (duration-run-over nil)
+                     (channels 2)
+                     (srate clm::*clm-srate*)
+                     (header-type clm::*clm-header-type*)
+                     (data-format clm::*clm-data-format*)
+                     (print-secs nil)
+                     (output-name-uniquifier "")
+                     (sndfile-extension nil)
+                     (sndfile-palette nil)
+                     ;; MDE Mon Nov  4 10:10:35 2013 -- the following were 
+                     ;; added so we could use instruments other than samp5
+                     (clm-ins #'clm::samp5)
+                     ;; either a list or a function (see above)
+                     clm-ins-args)
 ;;; ****                               
   ;; MDE Tue Apr 17 13:28:16 2012 -- guess the extension if none given
   (unless sndfile-extension
@@ -4470,15 +4428,16 @@ seq-num 5, VN, replacing G3 with B6
                  (and num-sections (> num-sections 1))))
     (error "slippery-chicken::clm-play: from-sequence keyword should only ~
             be used ~%when num-sections = 1."))
-  #| 
+  #|                                    ;
   ;; MDE Sat Jun 2 12:51:03 2012 -- actually, we don't need to do this, and it
   ;; just causes problems now we've updated num-seqs to handle sub-sections
+  ;; ;
   (when (and num-sections (= 1 num-sections) (not num-sequences))
-    (let ((ns (num-seqs sc section)))
-      (unless ns 
-        (error "slippery-chicken::clm-play: can't get number of sequences ~
+  (let ((ns (num-seqs sc section)))
+  (unless ns 
+  (error "slippery-chicken::clm-play: can't get number of sequences ~
                 for section ~a." section))
-      (setf num-sequences (- ns (1- from-sequence)))))
+  (setf num-sequences (- ns (1- from-sequence)))))
   |#
   (unless (listp players)
     (setf players (list players)))
@@ -4528,18 +4487,15 @@ seq-num 5, VN, replacing G3 with B6
                                  (sndfile-palette sc))))))
          (snd-transitions (loop for num-events in events-per-player collect
                                (fibonacci-transition num-events)))
-         (sndl nil)
+         (snd nil)
          (snd-group nil)
          (srts '())
          (freqs '())
-         ;; will be nil when we're using the events' pitch data
          (srt-freq (cond ((numberp do-src) do-src)
                          ((and do-src
                                (not (eq do-src t))
                                (symbolp do-src))
                           (note-to-freq do-src))))
-         ;; MDE Thu Oct  1 21:07:00 2015
-         (pan-vals '(15 25 35 45 55 65 75))
          (duration 0.0)
          (wanted-duration 0.0)
          (wanted-duration-string "")
@@ -4606,11 +4562,6 @@ seq-num 5, VN, replacing G3 with B6
          ;; keep going (set to nil when max-start-time is exceeded)
          (happy t)
          (rthm-seqs nil))
-    ;; NB this will be pointless if we've passed a pan-fun
-    (when pan-min-max
-      (setq pan-vals (loop for p in pan-vals
-                        collect (fscale p 15 75 (first pan-min-max)
-                                        (second pan-min-max)))))
     (when (and sound-file-palette-ref (zerop (sclist-length snds)))
       (error "slippery-chicken::clm-play: <snds>: No sounds for reference ~a"
              sound-file-palette-ref))
@@ -4622,9 +4573,6 @@ seq-num 5, VN, replacing G3 with B6
       (setf output-ok 
             (yes-or-no-p "File exists: ~%~a  ~%Overwrite (yes or no) > " 
                          output)))
-    ;; (print snd-transitions) (print snds2)
-    ;; this is where we work out how many times we'll use the sndfiles for when
-    ;; inc-start is T 
     (when output-ok
       (format t "~%Output file will be ~%\"~a\"~%~%" output)
       (when inc-start
@@ -4635,19 +4583,18 @@ seq-num 5, VN, replacing G3 with B6
              (setf snd-trans (copy-list snd-trans))
              (loop for rs in player do
                   (loop 
-                     for event in rs 
-                     for sndlist = (when snds
-                                     (get-sndfiles-from-user-fun
-                                      event
-                                      (if (and snds2 (= 1 (pop snd-trans)))
-                                          snds2 snds)
-                                      snd-selector))
+                     for evts in rs 
+                     for snd = (when snds
+                                 (if (and snds2 (= 1 (pop snd-trans)))
+                                     (get-next snds2)
+                                     (get-next snds)))
                      do
-                       (loop for snd in sndlist do
-                            (unless snd
-                              (error "slippery-chicken::clm-play: ~
-                                      snd is nil (whilst counting)!"))
-                            (incf (will-be-used snd))))))
+                     ;; just to avoid the compiler warning...
+                     (progn evts)
+                     (unless snd
+                       (error "slippery-chicken::clm-play: ~
+                               snd is nil (whilst counting)!"))
+                     (incf (will-be-used snd)))))
         ;; here we reset them before starting, this is correct!
         (reset snds)
         (when snds2
@@ -4675,8 +4622,10 @@ seq-num 5, VN, replacing G3 with B6
            and snd-trans in snd-transitions
            ;; and events-this-player in events-per-player
            and player-count from 1
-           ;; 15/12/06 this while clause causes a player not to process when
-           ;; the previous overstepped the max-start-time while happy
+           ;; 15/12/06 this while clause causes a player
+           ;; not to process when
+           ;; the previous overstepped the max-start-time
+           ;; while happy
            do
            (setf snd-trans (copy-list snd-trans)
                  event-count-player 0
@@ -4731,51 +4680,45 @@ seq-num 5, VN, replacing G3 with B6
                   (when snds2 (reset snds2)))
                 (loop for event in rs and rs-event-count from 0 while happy
                    do
-                     ;; (print 'event)
-                     (setq snd-group (pop snd-trans)
-                           sndl (when snds
-                                  ;; MDE Fri Oct  2 09:48:39 2015 
-                                  (get-sndfiles-from-user-fun
-                                   event
-                                   (if (and snds2 (= 1 snd-group))
-                                       snds2 snds)
-                                   snd-selector))
-                           duration (* duration-scaler
-                                       (compound-duration-in-tempo event))
-                           skip-this-event 
-                           ;; MDE Sat Nov 9 15:20:11 2013 -- only when we've
-                           ;; got events to output
-                           (unless (zerop events-before-max-start)
-                             (> (random-rep 100.0)
-                                (interpolate event-count-player 
-                                             this-play-chance-env
-                                             :exp play-chance-env-exp)))
-                           ;; MDE Mon Nov  4 11:11:07 2013 
-                           freqs (let ((f (frequency (pitch-or-chord event))))
-                                   (if (listp f) f (list f)))
-                           ;; MDE Tue Apr 10 13:10:37 2012 -- see note to do-src
-                           ;; keyword above. 
-                           srts (if do-src
-                                    ;; MDE Tue Apr 17 12:52:40 2012 -- update:
-                                    ;; we now have the pitch-synchronous
-                                    ;; option so need to handle chords so
-                                    ;; we'll not call the pitch method here
-                                    ;; but the event. This will return a list,
-                                    ;; even for a single pitch, so we'll have
-                                    ;; to loop through them.
-                                    (src-for-sample-freq 
-                                     (if srt-freq
-                                         srt-freq
-                                         (if sndl sndl 261.626))
-                                     ;; MDE Tue Apr 17 12:54:06 2012 -- see
-                                     ;; comment above. this used to be
-                                     ;; (pitch-or-chord event)
-                                     event)
-                                    '(1.0)))
-                     ;; (print srts)
-                     (loop for srt in srts and freq in freqs and snd in sndl do
-                        ;; (print srt) (print src-scaler)
-                        ;; (print snd)
+                   ;; (print 'here)
+                   (setf snd-group (pop snd-trans)
+                         snd (when snds
+                               (if (and snds2 (= 1 snd-group))
+                                   (get-next snds2)
+                                   (get-next snds)))
+                         duration (* duration-scaler
+                                     (compound-duration-in-tempo event))
+                         skip-this-event 
+                         ;; MDE Sat Nov  9 15:20:11 2013 -- only when we've got
+                         ;; events to output 
+                         (unless (zerop events-before-max-start)
+                           (> (random-rep 100.0)
+                              (interpolate event-count-player 
+                                           this-play-chance-env
+                                           :exp play-chance-env-exp)))
+                         ;; MDE Mon Nov  4 11:11:07 2013 
+                         freqs (let ((f (frequency (pitch-or-chord event))))
+                                 (if (listp f) f (list f)))
+                         ;; MDE Tue Apr 10 13:10:37 2012 -- see note to do-src
+                         ;; keyword above. 
+                         srts (if do-src
+                                  ;; MDE Tue Apr 17 12:52:40 2012 -- update:
+                                  ;; we now have the pitch-synchronous
+                                  ;; option so need to handle chords so
+                                  ;; we'll not call the pitch method here
+                                  ;; but the event. This will return a list,
+                                  ;; even for a single pitch, so we'll have
+                                  ;; to loop through them.
+                                  (src-for-sample-freq 
+                                   (if srt-freq
+                                       srt-freq
+                                       (if snd (frequency snd) 261.626))
+                                   ;; MDE Tue Apr 17 12:54:06 2012 -- see
+                                   ;; comment above. this used to be
+                                   ;; (pitch-or-chord event)
+                                   event)
+                                  '(1.0)))
+                   (loop for srt in srts and freq in freqs do
                         (setf srt (* src-scaler srt))
                         (when (<= srt 0.0)
                           (error "slippery-chicken::clm-play: illegal sample ~
@@ -4883,11 +4826,7 @@ seq-num 5, VN, replacing G3 with B6
                                         ;; is always put between two speakers
                                         ;; but it could be two of any number;
                                         ;; see samp5.lsp for details.
-                                        ;; MDE Sat Oct  3 18:48:18 2015 -- we
-                                        ;; now also allow a :pan-fun
-                                        (if pan-fun
-                                            (funcall pan-fun event)
-                                            (nth (random 7) pan-vals))
+                                        (nth (random 7) '(15 25 35 45 55 65 75))
                                         :rev-amt rev-amt
                                         :printing print-secs)
                                   (if (functionp clm-ins-args)
@@ -4903,6 +4842,7 @@ seq-num 5, VN, replacing G3 with B6
     total-events))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Just calls the -aux method once for each section required. See comments to
 ;;; that method for parameter explanation.
 
@@ -5244,18 +5184,18 @@ seq-num 5, VN, replacing G3 with B6
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))))
-:tempo-map '((1 (q 60)))
-:rehearsal-letters '(2 5 7)
-:set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((2 4) (s) (s) e e e))
-:pitch-seq-palette ((1 2 3)))))
-:rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
-(find-rehearsal-letters mini))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :rehearsal-letters '(2 5 7)
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) (s) (s) e e e))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((vn (1 1 1 1 1 1 1))))))))
+  (find-rehearsal-letters mini))
 
   => (2 5 7)
 
@@ -5289,18 +5229,18 @@ seq-num 5, VN, replacing G3 with B6
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))))
-:set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 3 4 5 6 7 8))
-:marks (beg-sl 1 end-sl 4 beg-sl 2 end-sl 3
-beg-sl 4))))
-:rthm-seq-map '((1 ((vn (1 1 1))))))))
-(check-slurs mini))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))
+                                :marks (beg-sl 1 end-sl 4 beg-sl 2 end-sl 3
+                                               beg-sl 4))))
+        :rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (check-slurs mini))
 
   =>
   WARNING:
@@ -5362,18 +5302,18 @@ beg-sl 4))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))))
-:set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 3 4 5 6 7 8))
-:marks (beg-ph 1 end-ph 4 beg-ph 2 end-ph 3
-beg-ph 4))))
-:rthm-seq-map '((1 ((vn (1 1 1))))))))
-(check-phrases mini))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 3 4 5 6 7 8))
+                                :marks (beg-ph 1 end-ph 4 beg-ph 2 end-ph 3
+                                               beg-ph 4))))
+        :rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (check-phrases mini))
 
   =>
   WARNING: 
@@ -5461,19 +5401,19 @@ beg-ph 4))))
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Create a slippery-chicken object, manually add an error to the tuplet data ; ;
-;;; and call check-tuplets with #'warn as the on-fail function. ; ;
-  (let* ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((cl (b-flat-clarinet :midi-channel 1))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1)))
-:rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
-:rthm-seq-map '((1 ((cl (1)))))))
-(e1 (get-event mini 1 1 'cl)))
-(setf (bracket e1) nil)
-(check-tuplets mini #'warn))
+;;; Create a slippery-chicken object, manually add an error to the tuplet data
+;;; and call check-tuplets with #'warn as the on-fail function.
+(let* ((mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((cl (b-flat-clarinet :midi-channel 1))))
+         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+         :set-map '((1 (1)))
+         :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
+         :rthm-seq-map '((1 ((cl (1)))))))
+       (e1 (get-event mini 1 1 'cl)))
+  (setf (bracket e1) nil)
+  (check-tuplets mini #'warn))
 
   => rthm-seq-bar::check-tuplets: Can't close non-existent bracket.
 
@@ -5533,19 +5473,19 @@ beg-ph 4))))
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Create a slippery-chicken object, manually create a problem with the ties, ; ;
-;;; and call check-ties with a #'warn as the on-fail function. ; ;
-  (let* ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((cl (b-flat-clarinet :midi-channel 1))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1)))
-:rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
-:rthm-seq-map '((1 ((cl (1)))))))
-(e4 (get-event mini 1 4 'cl)))
-(setf (is-tied-to e4) nil)
-(check-ties mini nil #'warn))
+;;; Create a slippery-chicken object, manually create a problem with the ties, 
+;;; and call check-ties with a #'warn as the on-fail function. 
+(let* ((mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((cl (b-flat-clarinet :midi-channel 1))))
+         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+         :set-map '((1 (1)))
+         :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
+         :rthm-seq-map '((1 ((cl (1)))))))
+       (e4 (get-event mini 1 4 'cl)))
+  (setf (is-tied-to e4) nil)
+  (check-ties mini nil #'warn))
 
   => WARNING: slippery-chicken::check-ties: bad tie, CL bar 1
 
@@ -5690,44 +5630,44 @@ beg-ph 4))))
 ;;; 
 ;;; EXAMPLE
 #|
-;; A successful test                    ; ;
-  (let* ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))
-(va (viola :midi-channel 2))
-(vc (cello :midi-channel 3))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
-:rthm-seq-map '((1 ((vn (1 1 1))
-(va (1 1 1))
-(vc (1 1 1))))))))
-(check-time-sigs mini))
+;; A successful test 
+(let* ((mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((vn (violin :midi-channel 1))
+                      (va (viola :midi-channel 2))
+                      (vc (cello :midi-channel 3))))
+         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+         :set-map '((1 (1 1 1)))
+         :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
+         :rthm-seq-map '((1 ((vn (1 1 1))
+                             (va (1 1 1))
+                             (vc (1 1 1))))))))
+  (check-time-sigs mini))
 
   => T
 
-;; A failing test                       ; ;
-  (let* ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))
-(va (viola :midi-channel 2))
-(vc (cello :midi-channel 3))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
-:rthm-seq-map '((1 ((vn (1 1 1))
-(va (1 1 1))
-(vc (1 1 1))))))))
-(setf (time-sig (get-bar mini 1 'vn)) '(3 4))
-(check-time-sigs mini))
+;; A failing test  
+(let* ((mini
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((vn (violin :midi-channel 1))
+                      (va (viola :midi-channel 2))
+                      (vc (cello :midi-channel 3))))
+         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+         :set-map '((1 (1 1 1)))
+         :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
+         :rthm-seq-map '((1 ((vn (1 1 1))
+                             (va (1 1 1))
+                             (vc (1 1 1))))))))
+  (setf (time-sig (get-bar mini 1 'vn)) '(3 4))
+  (check-time-sigs mini))
 
   =>
   slippery-chicken::check-time-sigs: time signatures are not the same at bar 1
   [Condition of type SIMPLE-ERROR]
 
-  |#
+|#
 ;;; SYNOPSIS
 (defmethod check-time-sigs ((sc slippery-chicken))
 ;;; ****
@@ -5762,27 +5702,27 @@ beg-ph 4))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
-(db (double-bass :midi-channel 2))))
-:instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
-(2 ((sax ((2 alto-sax) (5 tenor-sax))))))
-:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))
-(2 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))))))
-(player-doubles mini 'sax))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
+                     (db (double-bass :midi-channel 2))))
+        :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+                                 (2 ((sax ((2 alto-sax) (5 tenor-sax))))))
+        :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((sax (1 1 1 1 1))
+                            (db (1 1 1 1 1))))
+                        (2 ((sax (1 1 1 1 1))
+                            (db (1 1 1 1 1))))))))
+  (player-doubles mini 'sax))
 
   => T
 
-  |#
+|#
 ;;; SYNOPSIS
 (defmethod player-doubles ((sc slippery-chicken) player)
 ;;; ****
@@ -5810,23 +5750,23 @@ beg-ph 4))))
 ;;; EXAMPLE
 #|
 
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
-(db (double-bass :midi-channel 2))))
-:instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
-(2 ((sax ((2 alto-sax) (5 tenor-sax))))))
-:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))
-(2 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))))))
-(get-starting-ins mini 'sax))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
+                     (db (double-bass :midi-channel 2))))
+        :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+                                 (2 ((sax ((2 alto-sax) (5 tenor-sax))))))
+        :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((sax (1 1 1 1 1))
+                            (db (1 1 1 1 1))))
+                        (2 ((sax (1 1 1 1 1))
+                            (db (1 1 1 1 1))))))))
+  (get-starting-ins mini 'sax))
 
   => 
   INSTRUMENT: lowest-written: BF3, highest-written: FS6
@@ -5846,7 +5786,7 @@ beg-ph 4))))
   NAMED-OBJECT: id: ALTO-SAX, tag: NIL, 
   data: NIL
 
-  |#
+|#
 ;;; SYNOPSIS
 (defmethod get-starting-ins ((sc slippery-chicken) player) ; symbol
 ;;; ****
@@ -6006,11 +5946,6 @@ beg-ph 4))))
 ;;;   should be indented or not. Default = T.
 ;;; - :force-bracket. T or NIL to indicate whether tuplet numbers on beams
 ;;;   should be forced into a bracket. Default = NIL.
-;;; - :two-sided. A two-element list to set the inner and outer margins with
-;;;   layout for two-sided printing and binding. E.g. :two-sided '(30 20) means
-;;;   the left-hand margin will be 30mm and the right-hand will be 20mm. If
-;;;   set, this overrides the :left-margin and :line-width arguments. 
-;;;   Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; The path of the main score file generated.
@@ -6133,7 +6068,6 @@ beg-ph 4))))
        (force-bracket nil)
        ;; MDE Thu Mar 26 18:49:46 2015
        (title t)
-       two-sided ; MDE Wed Oct 21 18:15:08 2015 
        ;; MDE Thu Mar 26 19:18:03 2015
        (indent t)
        ;; sim to rehearsal letters
@@ -6288,18 +6222,8 @@ beg-ph 4))))
           (format out "~%  print-page-number = ##f"))   
         (format out "~%  top-margin = ~a\\mm" top-margin)
         (format out "~%  bottom-margin = ~a\\mm" bottom-margin)
-        (if two-sided
-            (if (and (list-of-numbers-p two-sided)
-                     (= 2 (length two-sided)))
-                (progn
-                  (format out "~%  two-sided = ##t")
-                  (format out "~%  inner-margin = ~a\\mm" (first two-sided))
-                  (format out "~%  outer-margin = ~a\\mm" (second two-sided)))
-                (error "slippery-chicken::write-lp-data-for-all: two-sided ~
-                        must be a list of 2 numbers: ~a" two-sided))
-            (progn
-              (format out "~%  left-margin = ~a\\mm" left-margin)
-              (format out "~%  line-width = ~a\\cm" line-width)))
+        (format out "~%  left-margin = ~a\\mm" left-margin)
+        (format out "~%  line-width = ~a\\cm" line-width)
         (unless indent
           (format out "~%  indent = 0.0"))
         (when between-system-space 
@@ -6450,7 +6374,7 @@ beg-ph 4))))
       (format out "~&\\set Staff.pedalSustainStyle=#'mixed")
       ;; 28.7.11 (Pula)
       (format out "~&\\autoBeamOff")
-      (format out "~&~a" (get-lp-clef clef))
+      (format out "~&\\clef ~a" (string-downcase (format nil "~a" clef)))
       (loop for bar-num from start-bar to end-bar
          for rsb = (get-bar sc bar-num player)
          for lp-data = (get-lp-data rsb (or in-c (not transposing)) 
@@ -6525,23 +6449,23 @@ beg-ph 4))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
-(db (double-bass :midi-channel 2))))
-:instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
-(2 ((sax ((2 alto-sax) (5 tenor-sax))))))
-:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))
-(2 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))))))
-(get-events-from-to mini 'sax 3 2 5 3))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
+                     (db (double-bass :midi-channel 2))))
+        :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+                                 (2 ((sax ((2 alto-sax) (5 tenor-sax))))))
+        :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((sax (1 1 1 1 1))
+                            (db (1 1 1 1 1))))
+                        (2 ((sax (1 1 1 1 1))
+                            (db (1 1 1 1 1))))))))
+  (get-events-from-to mini 'sax 3 2 5 3))
 
   =>
   (
@@ -6682,25 +6606,25 @@ EVENT: start-time: 11.000, end-time: 11.500,
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Print the pitches before and after applying the method ; ;
+;;; Print the pitches before and after applying the method
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((sax (alto-sax :midi-channel 1))
-(db (double-bass :midi-channel 2))))
-:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
-:set-map '((1 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))))))
-(print 
-(loop for e in (get-events-from-to mini 'sax 3 2 5 3)
-collect (get-pitch-symbol e)))
-(transpose-events mini 'sax 3 2 5 3 11)
-(print 
-(loop for e in (get-events-from-to mini 'sax 3 2 5 3)
-collect (get-pitch-symbol e))))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax (alto-sax :midi-channel 1))
+                     (db (double-bass :midi-channel 2))))
+        :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((sax (1 1 1 1 1))
+                            (db (1 1 1 1 1))))))))
+  (print 
+   (loop for e in (get-events-from-to mini 'sax 3 2 5 3)
+      collect (get-pitch-symbol e)))
+  (transpose-events mini 'sax 3 2 5 3 11)
+  (print 
+   (loop for e in (get-events-from-to mini 'sax 3 2 5 3)
+      collect (get-pitch-symbol e))))
 
 =>
 (EF4 AF4 BF4 EF5 CS4 EF4 AF4 BF4 EF5 CS4 EF4 AF4) 
@@ -6776,20 +6700,20 @@ t)
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((sax (alto-sax :midi-channel 1))
-(db (double-bass :midi-channel 2))))
-:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))
-(2 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))))))
-(get-section mini 2))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax (alto-sax :midi-channel 1))
+                     (db (double-bass :midi-channel 2))))
+        :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((sax (1 1 1 1 1))
+                            (db (1 1 1 1 1))))
+                        (2 ((sax (1 1 1 1 1))
+                            (db (1 1 1 1 1))))))))
+  (get-section mini 2))
 
 => 
 SECTION: 
@@ -6892,33 +6816,33 @@ duration: 20.0 (20.000)
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Create a slippery-chicken object, set all the written-pitch-or-chord ; ;
-;;; slots to NIL and print the results. Apply the method and print the results ; ;
-;;; again to see the difference.        ; ;
+;;; Create a slippery-chicken object, set all the written-pitch-or-chord 
+;;; slots to NIL and print the results. Apply the method and print the results 
+;;; again to see the difference.       
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((hn (french-horn :midi-channel 1))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((hn (1 1 1 1 1))))))))
-(next-event mini 'hn nil 1)
-(loop for ne = (next-event mini 'hn)
-while ne
-do (setf (written-pitch-or-chord ne) nil))
-(next-event mini 'hn nil 1)
-(print
-(loop for ne = (next-event mini 'hn)
-while ne
-collect (written-pitch-or-chord ne)))
-(auto-set-written mini)
-(next-event mini 'hn nil 1)
-(print
-(loop for ne = (next-event mini 'hn)
-while ne
-collect (data (written-pitch-or-chord ne)))))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((hn (french-horn :midi-channel 1))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((hn (1 1 1 1 1))))))))
+  (next-event mini 'hn nil 1)
+  (loop for ne = (next-event mini 'hn)
+     while ne
+     do (setf (written-pitch-or-chord ne) nil))
+  (next-event mini 'hn nil 1)
+  (print
+   (loop for ne = (next-event mini 'hn)
+      while ne
+      collect (written-pitch-or-chord ne)))
+  (auto-set-written mini)
+  (next-event mini 'hn nil 1)
+  (print
+   (loop for ne = (next-event mini 'hn)
+      while ne
+      collect (data (written-pitch-or-chord ne)))))
 
 =>
 (NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL
@@ -7346,26 +7270,26 @@ FS4 G4)
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Follow the violin part and generate group events for all other parts ; ;
+;;; Follow the violin part and generate group events for all other parts
 (let* ((mini
-(make-slippery-chicken
-'+mini+
-:title "antescofo test"
-:ensemble '(((vn (violin :midi-channel 1))
-(va (viola :midi-channel 2))
-(vc (cello :midi-channel 3))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1)))
-:tempo-map '((1 60))
-:rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
-:rthm-seq-map '((1 ((vn (1 1 1))
-(va (1 1 1))
-(vc (1 1 1))))))))
-  ;; Adding a label (probably wouldn't need one in bar 1, but to illustrate) ; ;
-(setf (asco-label (get-event mini 1 1 'vn)) "test-label")
-  ;; start the (fictitious) vocoder when the first cello note in bar 2 is played ; ;
-(push "max-receiver1 start-vocoder" (asco-msgs (get-event mini 2 1 'vc)))
-(write-antescofo mini 'vn :file "/tmp/asco-test.txt"))
+        (make-slippery-chicken
+         '+mini+
+         :title "antescofo test"
+         :ensemble '(((vn (violin :midi-channel 1))
+                      (va (viola :midi-channel 2))
+                      (vc (cello :midi-channel 3))))
+         :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+         :set-map '((1 (1 1 1)))
+         :tempo-map '((1 60))
+         :rthm-seq-palette '((1 ((((4 4) { 3 tq tq tq } +q e (s) s)))))
+         :rthm-seq-map '((1 ((vn (1 1 1))
+                             (va (1 1 1))
+                             (vc (1 1 1))))))))
+  ;; Adding a label (probably wouldn't need one in bar 1, but to illustrate)
+  (setf (asco-label (get-event mini 1 1 'vn)) "test-label")
+  ;; start the (fictitious) vocoder when the first cello note in bar 2 is played
+  (push "max-receiver1 start-vocoder" (asco-msgs (get-event mini 2 1 'vc)))
+  (write-antescofo mini 'vn :file "/tmp/asco-test.txt"))
 
 -->
 ******* section (1)
@@ -7380,44 +7304,44 @@ Antescofo~ score written successfully with 15 events and 34 actions.
 
 The generated file will begin something like this:
 
-; antescofo~ score generated by slippery chicken version ; ;
-; 1.0.4 (svn revision 4733 2014-01-15 11:27:10) ; ;
-; at 12:02:06 on Thursday the 8th of May 2014 ; ;
-BPM 60
-antescofo-bar-num 1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ; ;
+; antescofo~ score generated by slippery chicken version
+; 1.0.4 (svn revision 4733 2014-01-15 11:27:10)
+; at 12:02:06 on Thursday the 8th of May 2014
+    BPM 60
+antescofo-bar-num 1 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 NOTE 6200 0.6666667 test-label
-group bar1.1 {
-0.0 midi-note 6000 12 2 0.6666667 
-0.0 midi-note 6400 12 3 0.6666667 
-}
+      group bar1.1 {
+          0.0 midi-note 6000 12 2 0.6666667 
+          0.0 midi-note 6400 12 3 0.6666667 
+      }
 NOTE 6200 0.6666667 
-group bar1.2 {
-0.0 midi-note 6000 12 2 0.6666667 
-0.0 midi-note 6400 12 3 0.6666667 
-}
+      group bar1.2 {
+          0.0 midi-note 6000 12 2 0.6666667 
+          0.0 midi-note 6400 12 3 0.6666667 
+      }
 NOTE 6200 1.6666667 
-group bar1.3 {
-0.0 midi-note 6000 12 2 1.6666667 
-0.0 midi-note 6400 12 3 1.6666667 
-}
+      group bar1.3 {
+          0.0 midi-note 6000 12 2 1.6666667 
+          0.0 midi-note 6400 12 3 1.6666667 
+      }
 NOTE 6200 0.5 
-group bar1.4 {
-0.0 midi-note 6000 12 2 0.5 
-0.0 midi-note 6400 12 3 0.5 
-}
+      group bar1.4 {
+          0.0 midi-note 6000 12 2 0.5 
+          0.0 midi-note 6400 12 3 0.5 
+      }
 NOTE 0 0.25 
 NOTE 6200 0.25 
-group bar1.5 {
-0.0 midi-note 6000 12 2 0.25 
-0.0 midi-note 6400 12 3 0.25 
-antescofo-bar-num 2 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ; ;
-}
+      group bar1.5 {
+          0.0 midi-note 6000 12 2 0.25 
+          0.0 midi-note 6400 12 3 0.25 
+antescofo-bar-num 2 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      }
 NOTE 6200 0.6666667 
-group bar2.1 {
-0.0 midi-note 6000 12 2 0.6666667 
-0.0 midi-note 6400 12 3 0.6666667 
-max-receiver1 start-vocoder
-}
+      group bar2.1 {
+          0.0 midi-note 6000 12 2 0.6666667 
+          0.0 midi-note 6400 12 3 0.6666667 
+          max-receiver1 start-vocoder
+      }
 NOTE 6200 0.6666667 
 ...
 
@@ -7632,8 +7556,8 @@ NOTE 6200 0.6666667
                  (setf rehearsal-letter nil))
                (format out "~&~a ~a ~a ~a" 
                        (if (listp pitch) "CHORD" "NOTE")
-                       ;; write any labels (e.g. rehearsal letter) after the
-                       ;; NOTE or CHORD 
+                       ;; write any labels (e.g. rehearsal letter) after the NOTE
+                       ;; or CHORD 
                        pitch duration 
                        (cond (rehearsal-letter
                               (prog1
@@ -7703,18 +7627,6 @@ NOTE 6200 0.6666667
      for bar = (get-bar sc bar-num player)
      unless (is-rest-bar bar) do (return nil)
        finally (return t)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Fri Nov 13 17:37:46 2015 -- make sure we start with the right number of
-;;; staff lines
-(defmethod initial-staff-lines ((sc slippery-chicken))
-  (loop for p in (players sc)
-     for ins = (get-starting-ins sc p)
-     for lines = (staff-lines ins)
-     for e1 = (get-event sc 1 1 p)
-     do
-       (unless (= 5 lines)
-         (setf (instrument-change e1) (list nil nil lines)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -7938,7 +7850,7 @@ NOTE 6200 0.6666667
 ;;; 
 ;;; EXAMPLE
 #|
-;;; An example using all slots  
+;;; An example using all slots     
 (let ((mini
        (make-slippery-chicken
         '+mini+
@@ -7995,7 +7907,7 @@ NOTE 6200 0.6666667
                               (test-sndfile-6.aiff))))
                            ("/path/to/test-sndfiles-dir-1"
                             "/path/to/test-sndfiles-dir-2"))
-        ;; :tempo-map '((1 (q 84)) (9 (q 72))) ; ; ; ;
+        ;; :tempo-map '((1 (q 84)) (9 (q 72))) ;
         :tempo-curve '(5 q (0 40 25 60 50 80 75 100 100 120))
         :staff-groupings '(2 2 3)
         :instrument-change-map '((1 ((fl ((1 flute) (3 piccolo) (5 flute))))))
@@ -8484,7 +8396,6 @@ NOTE 6200 0.6666667
   (object-is-nil? rthm-seq "slippery-chicken::sc-make-sequenz" 'rthm-seq)
   ;; (object-is-nil? pitch-seq "slippery-chicken::sc-make-sequenz" 'pitch-seq)
   ;; (print instrument-change)
-  ;; (print instrument)
   (let* ((sequenz (clone-with-new-class rthm-seq 'sequenz))
          (player-obj (when player
                        (get-player slippery-chicken player)))
@@ -8524,7 +8435,7 @@ NOTE 6200 0.6666667
          #| MDE Wed Apr 18 10:24:10 2012 -- (iwbns (when slippery-chicken 
          (member player 
          (instruments-write-bar-nums slippery-chicken))))
-  |#
+         |#
          (do-prog-changes instrument-change)
          (current-note nil)
          ;; (last-note nil)
@@ -8572,11 +8483,11 @@ NOTE 6200 0.6666667
                                (clone (pitch-or-chord 
                                        last-note-previous-seq))))))
     #|
-    ;; this checks that there are no ties to the first note in a seq ; ; ;
-  (when (is-tied-to (get-nth-event 0 (get-bar sequenz 0 t)))
-    (error "slippery-chicken::sc-make-sequenz: ~
-    Tied first note of sequenz not allowed!"))
-  |#
+    ;; this checks that there are no ties to the first note in a seq
+    (when (is-tied-to (get-nth-event 0 (get-bar sequenz 0 t)))
+      (error "slippery-chicken::sc-make-sequenz: ~
+             Tied first note of sequenz not allowed!"))
+    |#
     (loop for bar in (bars sequenz) and bar-num from 1 do
        ;; first of all set all the bars to write--then change in 
        ;; sequenz::update-slots depending upon real bar num
@@ -8612,10 +8523,10 @@ NOTE 6200 0.6666667
                     (when got-ins ;; MDE Thu Jul  5 17:02:03 2012
                       ;; (print (staff-short-name instrument))
                       (setf (instrument-change event)
-                            ;; MDE Fri Nov 13 16:32:45 2015 -- always include
-                            ;; staff-short-name (even if it's nil) as well as
-                            ;; the number of staff-lines
-                            (get-instrument-change-list instrument))))
+                            (if (staff-short-name instrument)
+                                (list (staff-name instrument)
+                                      (staff-short-name instrument))
+                                (list (staff-name instrument))))))
                   (setf do-prog-changes nil))
                 (unless (is-rest event)
                   (setf (pitch-or-chord event) 

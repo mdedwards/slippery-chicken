@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:01:07 Wed Feb 10 2016 GMT
+;;; $$ Last modified: 19:57:45 Wed Feb 24 2016 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4670,9 +4670,15 @@ seq-num 5, VN, replacing G3 with B6
                         ;; section otherwise the rthm-seq count
                         ;; MDE Tue Apr  3 09:54:46 2012 -- make sure we don't
                         ;; crash if the requested instrument is sitting this
-                        ;; section out 
-                        (if (and rthm-seqs (= 1 num-sections))
-                            (id (nth rs-count rthm-seqs)) 
+                        ;; section out
+                        ;; MDE Wed Feb 24 19:54:51 2016 -- now rs is the list
+                        ;; of events but we need to know the id of the original
+                        ;; rthm-seq hence the nth. In any case the following
+                        ;; test was wrong; instead we can just see if we've got
+                        ;; a list of events in rs
+                        (if (and rthm-seqs rs) ; (= 1 num-sections))
+                            (id (nth rs-count rthm-seqs))
+                            ;; (nth rs-count rthm-seqs)
                             (1+ rs-count))
                         events-this-rs)
                 (when reset-snds-each-rs

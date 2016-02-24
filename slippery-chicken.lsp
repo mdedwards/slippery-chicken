@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:57:45 Wed Feb 24 2016 GMT
+;;; $$ Last modified: 21:52:23 Wed Feb 24 2016 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -239,7 +239,7 @@
 ;;; SYNOPSIS
 (defmethod sc-init ((sc slippery-chicken) &key (regenerate-pitch-seq-map t))
 ;;; ****
-  (print 'scinit)
+  ;; (print 'scinit)
   (let ((given-tempo-map (tempo-map sc)))
     (flet ((make-name (name) (format nil "~a-~a" (id sc) name)))
       (setf (instrument-palette sc)
@@ -342,7 +342,7 @@
                 ;; MDE Wed Feb 10 15:47:35 2016 -- NIL rsp's were not
                 ;; triggering an error until further down the line (which was
                 ;; confusing).
-                (if (print (rthm-seq-palette sc))
+                (if (rthm-seq-palette sc)
                     (make-rsp (make-name 'rthm-seq-palette)
                               (rthm-seq-palette sc))
                     (error "~%slippery-chicken::sc-init:rthm-seq-palette ~
@@ -446,6 +446,8 @@
     (check-tuplets sc)
     ;; MDE Fri Jun 15 08:33:30 2012
     (check-beams sc)
+    ;; MDE Fri Nov 13 17:42:22 2015  
+    (initial-staff-lines sc) 
     (set-rehearsal-letters sc (get-groups-top-ins sc)))
   sc)
 
@@ -6380,7 +6382,10 @@ seq-num 5, VN, replacing G3 with B6
       (format out "~&\\set Staff.pedalSustainStyle=#'mixed")
       ;; 28.7.11 (Pula)
       (format out "~&\\autoBeamOff")
-      (format out "~&\\clef ~a" (string-downcase (format nil "~a" clef)))
+      ;; (format out "~&\\clef ~a" (string-downcase (format nil "~a" clef)))
+      (if (eq clef 'percussion) 
+          (format out "~&~a" (lp-percussion-clef)) 
+          (format out "~&\\clef ~a" (string-downcase (format nil "~a" clef))))
       (loop for bar-num from start-bar to end-bar
          for rsb = (get-bar sc bar-num player)
          for lp-data = (get-lp-data rsb (or in-c (not transposing)) 
@@ -7634,6 +7639,18 @@ NOTE 6200 0.6666667
      unless (is-rest-bar bar) do (return nil)
        finally (return t)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;;; MDE Fri Nov 13 17:37:46 2015 -- make sure we start with the right number of 
+;;; staff lines 
+(defmethod initial-staff-lines ((sc slippery-chicken)) 
+  (loop for p in (players sc) 
+     for ins = (get-starting-ins sc p) 
+     for lines = (staff-lines ins) 
+     for e1 = (get-event sc 1 1 p) 
+     do 
+       (unless (= 5 lines) 
+         (setf (instrument-change e1) (list nil nil lines)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
@@ -8529,10 +8546,7 @@ NOTE 6200 0.6666667
                     (when got-ins ;; MDE Thu Jul  5 17:02:03 2012
                       ;; (print (staff-short-name instrument))
                       (setf (instrument-change event)
-                            (if (staff-short-name instrument)
-                                (list (staff-name instrument)
-                                      (staff-short-name instrument))
-                                (list (staff-name instrument))))))
+                            (get-instrument-change-list instrument))))
                   (setf do-prog-changes nil))
                 (unless (is-rest event)
                   (setf (pitch-or-chord event) 

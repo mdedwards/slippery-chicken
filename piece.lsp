@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 17:23:41 Fri Nov 13 2015 ICT
+;;; $$ Last modified: 21:17:09 Wed Feb 24 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -794,18 +794,19 @@ BAR-HOLDER:
                                      player start-bar num-bars new-events 
                                      &key
                                        ;; although a key argument tempo-map is
-                                       ;; required: it is given here as a key arg
+                                       ;; required: it is given here as a key
+                                       ;; arg
                                        ;; value nil simply so we don't have to
                                        ;; specify it in the slippery-chicken
                                        ;; class.
                                        (tempo-map nil)
-                                       ;; MDE Mon Apr 23 12:36:08 2012 -- changed
+                                       ;; MDE Mon Apr 23 12:36:08 2012 --changed
                                        ;; default to nil
                                        (consolidate-rests nil)
                                        (sc nil)
                                        ;; for consolidate rests
                                        (beat nil)
-                                       ;; MDE Mon Apr 23 12:36:08 2012 -- changed
+                                       ;; MDE Mon Apr 23 12:36:08 2012 --changed
                                        ;; default to nil
                                        (auto-beam nil)
                                        ;; 31.3.11: if this is t, then rthms > a

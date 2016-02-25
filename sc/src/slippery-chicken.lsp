@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 21:52:23 Wed Feb 24 2016 GMT
+;;; $$ Last modified: 10:32:58 Thu Feb 25 2016 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4284,7 +4284,50 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   pass to each CLM instrument call (e.g. '(:cutoff-freq 2000 :q .6)) or a
 ;;;   function which takes two arguments (the current event and the event
 ;;;   number) and returns a list of keyword arguments perhaps based on
-;;;   those. Default = NIL. 
+;;;   those. Default = NIL.
+;;; - :pan-min-max. Each event is panned randomly between any two adjacent
+;;;   channels in the output sound file. The values used are chosen from the
+;;;   following list of degrees: (15 25 35 45 55 65 75). However, these can be
+;;;   scaled to be within new limits by passing a two-element list to
+;;;   :pan-mix-max. E.g. '(40 50) would limit most values to the middle area of
+;;;   stereo space. NB if stereo soundfiles are used as input the original
+;;;   panning will generally be retained. See samp5.lsp for details of how such
+;;;   files are handled. Default = NIL (i.e. use the list given above).
+;;; - :pan-fun. If you want to take charge of selecting pan positions yourself,
+;;;   pass a function via this keyword. The function must take one argument:
+;;;   the current event, though of course, it can ignore it completely if
+;;;   preferred. The function should return a degree value: a number between 0
+;;;   and 90. Bear in mind if using samp5 with more than 2 output channels that
+;;;   this will still result in the sound moving around multichannel space as
+;;;   all you would be setting is the pan value between any two adjacent
+;;;   channels. If this isn't your cup of tea, pass a new instrument entirely via
+;;;   :clm-ins. Default = NIL.
+;;; - :snd-selector. By default the sound files in the given group are cycled
+;;;   through, one after the other, returning to the beginning when the end is
+;;;   reached. This can be changed by passing a function to :snd-selector. This
+;;;   function must take three arguments: the circular-sclist object that
+;;;   contains the group's sndfile objects (the sndfiles are in a simple list
+;;;   in the data slot); the pitch of the current event (if the event happens
+;;;   to be a chord, each pitch of the chord will be handled separately
+;;;   i.e. the :snd-selector function will be called for each pitch); and the
+;;;   event object. Of course any of these arguments may be ignored by the
+;;;   :snd-selector function; indeed it is imagined that the event object will
+;;;   be mostly ignored and the pitch object used instead, but it is
+;;;   nevertheless passed for completeness. For example, the following
+;;;   function, declared on-the-fly using lambda rather than separately with
+;;;   defun, makes clm-play act as a traditional sampler would: Assuming our
+;;;   sndfile-palette group has a list of sound files whose frequencies really
+;;;   correspond to their perceived fundamentals (e.g. see the
+;;;   set-frequency-from-filename method, and the kontakt-to-sfp function) we
+;;;   choose the nearest sound file in the group to the frequency of the
+;;;   current event's pitch:
+;;;
+;;;            :snd-selector #'(lambda (sflist pitch event)
+;;;                              (declare (ignore event))
+;;;                              (get-nearest-by-freq
+;;;                               (frequency pitch) (data sflist)))
+;;; 
+;;;   Default = NIL i.e. use the circular selection method.
 ;;; 
 ;;; RETURN VALUE
 ;;; Total events generated (integer).
@@ -4349,48 +4392,54 @@ seq-num 5, VN, replacing G3 with B6
 (defmethod clm-play ((sc slippery-chicken) section players 
                      sound-file-palette-ref 
                      &key 
-                     sound-file-palette-ref2
-                     (play-chance-env '(0 100 100 100))
-                     (max-start-time 99999999)
-                     (play-chance-env-exp 0.5)
-                     (time-scaler 1.0)
-                     (normalise .99)
-                     (simulate nil)
-                     (from-sequence 1)
-                     (num-sequences nil)
-                     (num-sections nil)
-                     (ignore-rests t)
-                     (time-offset 0.0)
-                     (chords nil)
-                     (chord-accessor nil)
-                     (note-number 0)
-                     (play nil)
-                     (amp-env '(0 0 5 1 60 1 100 0))
-                     (inc-start nil)
-                     (src-width 20)
-                     (src-scaler 1.0)
-                     (do-src t)
-                     (pitch-synchronous nil)
-                     (rev-amt 0.0)
-                     (duration-scaler 1.0)
-                     (short-file-names nil)
-                     (check-overwrite t)
-                     (reset-snds-each-rs t)
-                     (reset-snds-each-player t)
-                     (duration-run-over nil)
-                     (channels 2)
-                     (srate clm::*clm-srate*)
-                     (header-type clm::*clm-header-type*)
-                     (data-format clm::*clm-data-format*)
-                     (print-secs nil)
-                     (output-name-uniquifier "")
-                     (sndfile-extension nil)
-                     (sndfile-palette nil)
-                     ;; MDE Mon Nov  4 10:10:35 2013 -- the following were 
-                     ;; added so we could use instruments other than samp5
-                     (clm-ins #'clm::samp5)
-                     ;; either a list or a function (see above)
-                     clm-ins-args)
+                       sound-file-palette-ref2
+                       (play-chance-env '(0 100 100 100))
+                       (max-start-time 99999999)
+                       (play-chance-env-exp 0.5)
+                       (time-scaler 1.0)
+                       (normalise .99)
+                       (simulate nil)
+                       (from-sequence 1)
+                       (num-sequences nil)
+                       (num-sections nil)
+                       (ignore-rests t)
+                       (time-offset 0.0)
+                       (chords nil)
+                       (chord-accessor nil)
+                       (note-number 0)
+                       (play nil)
+                       (amp-env '(0 0 5 1 60 1 100 0))
+                       (inc-start nil)
+                       (src-width 20)
+                       (src-scaler 1.0)
+                       (do-src t)
+                       (pitch-synchronous nil)
+                       (rev-amt 0.0)
+                       (duration-scaler 1.0)
+                       (short-file-names nil)
+                       (check-overwrite t)
+                       (reset-snds-each-rs t)
+                       (reset-snds-each-player t)
+                       (duration-run-over nil)
+                       (channels 2)
+                       (srate clm::*clm-srate*)
+                       (header-type clm::*clm-header-type*)
+                       (data-format clm::*clm-data-format*)
+                       (print-secs nil)
+                       (output-name-uniquifier "")
+                       (sndfile-extension nil)
+                       (sndfile-palette nil)
+                       ;; MDE Sat Oct  3 18:45:28 2015 -- for Cameron!
+                       pan-fun
+                       ;; MDE Thu Oct  1 21:03:59 2015 
+                       (pan-min-max nil) ; actually '(15 75) by default below
+                       ;; MDE Thu Oct  1 19:13:49 2015
+                       snd-selector 
+                       ;; MDE Mon Nov  4 10:10:35 2013 -- the following were 
+                       ;; added so we could use instruments other than samp5
+                       (clm-ins #'clm::samp5)
+                       ;; either a list or a function (see above)
+                       clm-ins-args)
 ;;; ****                               
   ;; MDE Tue Apr 17 13:28:16 2012 -- guess the extension if none given
   (unless sndfile-extension
@@ -4430,16 +4479,15 @@ seq-num 5, VN, replacing G3 with B6
                  (and num-sections (> num-sections 1))))
     (error "slippery-chicken::clm-play: from-sequence keyword should only ~
             be used ~%when num-sections = 1."))
-  #|                                    ;
+  #| 
   ;; MDE Sat Jun 2 12:51:03 2012 -- actually, we don't need to do this, and it
   ;; just causes problems now we've updated num-seqs to handle sub-sections
-  ;; ;
   (when (and num-sections (= 1 num-sections) (not num-sequences))
-  (let ((ns (num-seqs sc section)))
-  (unless ns 
-  (error "slippery-chicken::clm-play: can't get number of sequences ~
+    (let ((ns (num-seqs sc section)))
+      (unless ns 
+        (error "slippery-chicken::clm-play: can't get number of sequences ~
                 for section ~a." section))
-  (setf num-sequences (- ns (1- from-sequence)))))
+      (setf num-sequences (- ns (1- from-sequence)))))
   |#
   (unless (listp players)
     (setf players (list players)))
@@ -4489,15 +4537,18 @@ seq-num 5, VN, replacing G3 with B6
                                  (sndfile-palette sc))))))
          (snd-transitions (loop for num-events in events-per-player collect
                                (fibonacci-transition num-events)))
-         (snd nil)
+         (sndl nil)
          (snd-group nil)
          (srts '())
          (freqs '())
+         ;; will be nil when we're using the events' pitch data
          (srt-freq (cond ((numberp do-src) do-src)
                          ((and do-src
                                (not (eq do-src t))
                                (symbolp do-src))
                           (note-to-freq do-src))))
+         ;; MDE Thu Oct  1 21:07:00 2015
+         (pan-vals '(15 25 35 45 55 65 75))
          (duration 0.0)
          (wanted-duration 0.0)
          (wanted-duration-string "")
@@ -4564,6 +4615,11 @@ seq-num 5, VN, replacing G3 with B6
          ;; keep going (set to nil when max-start-time is exceeded)
          (happy t)
          (rthm-seqs nil))
+    ;; NB this will be pointless if we've passed a pan-fun
+    (when pan-min-max
+      (setq pan-vals (loop for p in pan-vals
+                        collect (fscale p 15 75 (first pan-min-max)
+                                        (second pan-min-max)))))
     (when (and sound-file-palette-ref (zerop (sclist-length snds)))
       (error "slippery-chicken::clm-play: <snds>: No sounds for reference ~a"
              sound-file-palette-ref))
@@ -4575,6 +4631,9 @@ seq-num 5, VN, replacing G3 with B6
       (setf output-ok 
             (yes-or-no-p "File exists: ~%~a  ~%Overwrite (yes or no) > " 
                          output)))
+    ;; (print snd-transitions) (print snds2)
+    ;; this is where we work out how many times we'll use the sndfiles for when
+    ;; inc-start is T 
     (when output-ok
       (format t "~%Output file will be ~%\"~a\"~%~%" output)
       (when inc-start
@@ -4585,18 +4644,19 @@ seq-num 5, VN, replacing G3 with B6
              (setf snd-trans (copy-list snd-trans))
              (loop for rs in player do
                   (loop 
-                     for evts in rs 
-                     for snd = (when snds
-                                 (if (and snds2 (= 1 (pop snd-trans)))
-                                     (get-next snds2)
-                                     (get-next snds)))
+                     for event in rs 
+                     for sndlist = (when snds
+                                     (get-sndfiles-from-user-fun
+                                      event
+                                      (if (and snds2 (= 1 (pop snd-trans)))
+                                          snds2 snds)
+                                      snd-selector))
                      do
-                     ;; just to avoid the compiler warning...
-                     (progn evts)
-                     (unless snd
-                       (error "slippery-chicken::clm-play: ~
-                               snd is nil (whilst counting)!"))
-                     (incf (will-be-used snd)))))
+                       (loop for snd in sndlist do
+                            (unless snd
+                              (error "slippery-chicken::clm-play: ~
+                                      snd is nil (whilst counting)!"))
+                            (incf (will-be-used snd))))))
         ;; here we reset them before starting, this is correct!
         (reset snds)
         (when snds2
@@ -4624,10 +4684,8 @@ seq-num 5, VN, replacing G3 with B6
            and snd-trans in snd-transitions
            ;; and events-this-player in events-per-player
            and player-count from 1
-           ;; 15/12/06 this while clause causes a player
-           ;; not to process when
-           ;; the previous overstepped the max-start-time
-           ;; while happy
+           ;; 15/12/06 this while clause causes a player not to process when
+           ;; the previous overstepped the max-start-time while happy
            do
            (setf snd-trans (copy-list snd-trans)
                  event-count-player 0
@@ -4673,14 +4731,14 @@ seq-num 5, VN, replacing G3 with B6
                         ;; MDE Tue Apr  3 09:54:46 2012 -- make sure we don't
                         ;; crash if the requested instrument is sitting this
                         ;; section out
-                        ;; MDE Wed Feb 24 19:54:51 2016 -- now rs is the list
-                        ;; of events but we need to know the id of the original
-                        ;; rthm-seq hence the nth. In any case the following
-                        ;; test was wrong; instead we can just see if we've got
-                        ;; a list of events in rs
-                        (if (and rthm-seqs rs) ; (= 1 num-sections))
-                            (id (nth rs-count rthm-seqs))
-                            ;; (nth rs-count rthm-seqs)
+                        ;; MDE Wed Feb 24 19:54:51 2016 -- now rs is the list 
+                        ;; of events but we need to know the id of the original 
+                        ;; rthm-seq hence the nth. In any case the following 
+                        ;; test was wrong; instead we can just see if we've got 
+                        ;; a list of events in rs 
+                        (if (and rthm-seqs rs) ; (= 1 num-sections)) 
+                            (id (nth rs-count rthm-seqs)) 
+                            ;; (nth rs-count rthm-seqs) 
                             (1+ rs-count))
                         events-this-rs)
                 (when reset-snds-each-rs
@@ -4688,45 +4746,51 @@ seq-num 5, VN, replacing G3 with B6
                   (when snds2 (reset snds2)))
                 (loop for event in rs and rs-event-count from 0 while happy
                    do
-                   ;; (print 'here)
-                   (setf snd-group (pop snd-trans)
-                         snd (when snds
-                               (if (and snds2 (= 1 snd-group))
-                                   (get-next snds2)
-                                   (get-next snds)))
-                         duration (* duration-scaler
-                                     (compound-duration-in-tempo event))
-                         skip-this-event 
-                         ;; MDE Sat Nov  9 15:20:11 2013 -- only when we've got
-                         ;; events to output 
-                         (unless (zerop events-before-max-start)
-                           (> (random-rep 100.0)
-                              (interpolate event-count-player 
-                                           this-play-chance-env
-                                           :exp play-chance-env-exp)))
-                         ;; MDE Mon Nov  4 11:11:07 2013 
-                         freqs (let ((f (frequency (pitch-or-chord event))))
-                                 (if (listp f) f (list f)))
-                         ;; MDE Tue Apr 10 13:10:37 2012 -- see note to do-src
-                         ;; keyword above. 
-                         srts (if do-src
-                                  ;; MDE Tue Apr 17 12:52:40 2012 -- update:
-                                  ;; we now have the pitch-synchronous
-                                  ;; option so need to handle chords so
-                                  ;; we'll not call the pitch method here
-                                  ;; but the event. This will return a list,
-                                  ;; even for a single pitch, so we'll have
-                                  ;; to loop through them.
-                                  (src-for-sample-freq 
-                                   (if srt-freq
-                                       srt-freq
-                                       (if snd (frequency snd) 261.626))
-                                   ;; MDE Tue Apr 17 12:54:06 2012 -- see
-                                   ;; comment above. this used to be
-                                   ;; (pitch-or-chord event)
-                                   event)
-                                  '(1.0)))
-                   (loop for srt in srts and freq in freqs do
+                     ;; (print 'event)
+                     (setq snd-group (pop snd-trans)
+                           sndl (when snds
+                                  ;; MDE Fri Oct  2 09:48:39 2015 
+                                  (get-sndfiles-from-user-fun
+                                   event
+                                   (if (and snds2 (= 1 snd-group))
+                                       snds2 snds)
+                                   snd-selector))
+                           duration (* duration-scaler
+                                       (compound-duration-in-tempo event))
+                           skip-this-event 
+                           ;; MDE Sat Nov 9 15:20:11 2013 -- only when we've
+                           ;; got events to output
+                           (unless (zerop events-before-max-start)
+                             (> (random-rep 100.0)
+                                (interpolate event-count-player 
+                                             this-play-chance-env
+                                             :exp play-chance-env-exp)))
+                           ;; MDE Mon Nov  4 11:11:07 2013 
+                           freqs (let ((f (frequency (pitch-or-chord event))))
+                                   (if (listp f) f (list f)))
+                           ;; MDE Tue Apr 10 13:10:37 2012 -- see note to do-src
+                           ;; keyword above. 
+                           srts (if do-src
+                                    ;; MDE Tue Apr 17 12:52:40 2012 -- update:
+                                    ;; we now have the pitch-synchronous
+                                    ;; option so need to handle chords so
+                                    ;; we'll not call the pitch method here
+                                    ;; but the event. This will return a list,
+                                    ;; even for a single pitch, so we'll have
+                                    ;; to loop through them.
+                                    (src-for-sample-freq 
+                                     (if srt-freq
+                                         srt-freq
+                                         (if sndl sndl 261.626))
+                                     ;; MDE Tue Apr 17 12:54:06 2012 -- see
+                                     ;; comment above. this used to be
+                                     ;; (pitch-or-chord event)
+                                     event)
+                                    '(1.0)))
+                     ;; (print srts)
+                     (loop for srt in srts and freq in freqs and snd in sndl do
+                        ;; (print srt) (print src-scaler)
+                        ;; (print snd)
                         (setf srt (* src-scaler srt))
                         (when (<= srt 0.0)
                           (error "slippery-chicken::clm-play: illegal sample ~
@@ -4834,7 +4898,11 @@ seq-num 5, VN, replacing G3 with B6
                                         ;; is always put between two speakers
                                         ;; but it could be two of any number;
                                         ;; see samp5.lsp for details.
-                                        (nth (random 7) '(15 25 35 45 55 65 75))
+                                        ;; MDE Sat Oct  3 18:48:18 2015 -- we
+                                        ;; now also allow a :pan-fun
+                                        (if pan-fun
+                                            (funcall pan-fun event)
+                                            (nth (random 7) pan-vals))
                                         :rev-amt rev-amt
                                         :printing print-secs)
                                   (if (functionp clm-ins-args)
@@ -5954,6 +6022,11 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   should be indented or not. Default = T.
 ;;; - :force-bracket. T or NIL to indicate whether tuplet numbers on beams
 ;;;   should be forced into a bracket. Default = NIL.
+;;; - :two-sided. A two-element list to set the inner and outer margins with
+;;;   layout for two-sided printing and binding. E.g. :two-sided '(30 20) means
+;;;   the left-hand margin will be 30mm and the right-hand will be 20mm. If
+;;;   set, this overrides the :left-margin and :line-width arguments. 
+;;;   Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; The path of the main score file generated.
@@ -6076,6 +6149,7 @@ seq-num 5, VN, replacing G3 with B6
        (force-bracket nil)
        ;; MDE Thu Mar 26 18:49:46 2015
        (title t)
+       two-sided ; MDE Wed Oct 21 18:15:08 2015 
        ;; MDE Thu Mar 26 19:18:03 2015
        (indent t)
        ;; sim to rehearsal letters
@@ -6230,8 +6304,18 @@ seq-num 5, VN, replacing G3 with B6
           (format out "~%  print-page-number = ##f"))   
         (format out "~%  top-margin = ~a\\mm" top-margin)
         (format out "~%  bottom-margin = ~a\\mm" bottom-margin)
-        (format out "~%  left-margin = ~a\\mm" left-margin)
-        (format out "~%  line-width = ~a\\cm" line-width)
+        (if two-sided
+            (if (and (list-of-numbers-p two-sided)
+                     (= 2 (length two-sided)))
+                (progn
+                  (format out "~%  two-sided = ##t")
+                  (format out "~%  inner-margin = ~a\\mm" (first two-sided))
+                  (format out "~%  outer-margin = ~a\\mm" (second two-sided)))
+                (error "slippery-chicken::write-lp-data-for-all: two-sided ~
+                        must be a list of 2 numbers: ~a" two-sided))
+            (progn
+              (format out "~%  left-margin = ~a\\mm" left-margin)
+              (format out "~%  line-width = ~a\\cm" line-width)))
         (unless indent
           (format out "~%  indent = 0.0"))
         (when between-system-space 
@@ -6339,7 +6423,6 @@ seq-num 5, VN, replacing G3 with B6
               :extend-hairpins extend-hairpins
               :end-bar end-bar))))
     main-score-file))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 18:43:06 Thu Jul 23 2015 BST
+;;; $$ Last modified: 14:06:18 Thu Mar  3 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -498,18 +498,15 @@
 
 ;;; ****m* l-for-lookup/get-linear-sequence
 ;;; DESCRIPTION
-;;; Instead of creating L-sequences with specified rules, use the given
-;;; sequences to generate a simply sequential list. 
+;;; Instead of creating L-sequences with specified rules, use them
+;;; generate a simple sequential list. 
 ;;;
 ;;; The method first returns the first element in the list whose ID matches the 
 ;;; SEED argument, then that element is used as the ID for the next
-;;; look-up. Each time a sequence is accessed, the next element in the sequence 
+;;; look-up. Each time a rule is accessed, the next element in the rule
 ;;; is returned (if there is more than one), cycling to the head of the list
 ;;; once its end is reached.  
 ;;;
-;;; In order for this method to function properly, no rules can have been
-;;; entered for the given l-for-lookup object (that slot must be set to NIL). 
-;;; 
 ;;; Seen very loosely, this method functions a bit like a first-order Markov
 ;;; chain, but without the randomness. 
 ;;; 
@@ -528,11 +525,12 @@
 ;;; 
 ;;; EXAMPLE
 #|
+
 (let ((lfl (make-l-for-lookup 'lfl-test
-                              '((1 ((2 3)))
-                                (2 ((3 1 2)))
-                                (3 ((1))))
-                              NIL)))
+                              nil
+                              '((1 (2 3))
+                                (2 (3 1 2))
+                                (3 (1))))))
   (get-linear-sequence lfl 1 23))
 
 => (1 2 3 1 3 1 2 1 3 1 2 2 3 1 3 1 2 1 3 1 2 2 3)

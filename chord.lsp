@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 15:41:07 Thu Feb  4 2016 GMT
+;;; $$ Last modified: 16:40:09 Fri Mar  4 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1046,7 +1046,8 @@ data: (
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns an integer that is the number of pitches common to the two chords
-;;; objects. 
+;;; objects. Two further values are returned: the list of common pitches and a
+;;; list of their pitch symbols.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -1095,11 +1096,14 @@ data: (
                          &optional (enharmonics-are-equal t)
                          (octaves-are-true nil))
 ;;; ****
-  (let ((result 0))
+  (let ((result 0)
+        pitches symbols)
     (loop for p in (data c1) do
          (when (chord-member c2 p enharmonics-are-equal octaves-are-true)
+           (push p pitches)
+           (push (id p) symbols)
            (incf result)))
-    result))
+    (values result pitches symbols)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Aug 12 13:31:04 2015 -- 

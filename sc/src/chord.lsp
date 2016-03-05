@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 17:05:44 Sat Mar  5 2016 GMT
+;;; $$ Last modified: 17:47:31 Sat Mar  5 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1651,7 +1651,7 @@ data: (
 ;;; ****
   (setf (data c) (set-difference (data c) (init-pitch-list (flatten pitches))
                                  :test #'pitch=))
-  (initialize-instance c)
+  (init-chord c)
   c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2014,6 +2014,9 @@ data: (
 ;;; same interval to the former lowest pitch as the highest pitch is to the
 ;;; next-to-highest pitch. Then shift the next-to-highest pitch up to the
 ;;; highest pitch.
+;;;
+;;; NB The lowest and highest notes of the chord will always remain the same no
+;;; matter how many times this operation is performed. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A chord object
@@ -2027,7 +2030,6 @@ data: (
 ;;; 
 ;;; EXAMPLE
 #|
-
 (get-pitch-symbols (wrap (make-chord '(c4 e4 g4 b4))))
 => (C4 E4 GS4 B4)
 
@@ -2043,14 +2045,14 @@ data: (
 ;;; SYNOPSIS
 (defmethod wrap ((c chord) &optional (num-times 1))
 ;;; ****
-  (loop repeat num-times do
+  (loop repeat num-times do ; 
        (let* ((intervals (get-interval-structure c t t))
               (top-interval (first (last intervals)))
               (num (sclist-length c)))
          (setq c (rm-pitches c (get-highest c)))
          (unless (= (1- num) (sclist-length c))
            (error "chord::wrap: couldn't remove highest from ~a" c))
-         (setq c (transpose c top-interval)
+         (setf c (transpose c top-interval)
                c (add-pitches c (transpose (clone (lowest c))
                                            (- top-interval))))))
   (respell-chord c)

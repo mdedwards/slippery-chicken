@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified: 16:56:51 Sat Mar  5 2016 GMT
+;;; $$ Last modified: 17:36:37 Sat Mar  5 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -226,20 +226,14 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
                       ignore1 ignore2)
 ;;; ****
   (declare (ignore ignore1) (ignore ignore2))
-  (setf (slot-value tls 'data) (transpose-pitch-list (data tls) semitones)
-        (slot-value tls 'transposition) semitones)
+  (setf (slot-value tls 'data) (transpose-pitch-list (data tls) semitones))
+  (incf (slot-value tls 'transposition) semitones)
   (transpose-rals (subsets tls) semitones)
   (when do-related-sets
     (transpose-rals (related-sets tls) semitones))
   tls)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 
-
-;;; SAR Mon Feb  6 21:23:51 GMT 2012: Added robodoc entry. Deleted MDE's
-;;; comment here as it has been taken into the doc below nearly verbatim. 
-
 ;;; ****m* tl-set/limit
 ;;; DESCRIPTION
 ;;; Remove pitch objects from a given tl-set whose pitch content is higher or

@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 16:56:31 Sat Mar  5 2016 GMT
+;;; $$ Last modified: 17:26:40 Sat Mar  5 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -86,6 +86,12 @@
                              &key do-related-sets
                                ignore1 ignore2)
   (declare (ignore semitones do-related-sets ignore1 ignore2))
+  (check-complete cs))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Mar  5 17:26:03 2016 -- sim
+(defmethod add-pitches :after ((cs complete-set) &rest pitches)
+  (declare (ignore pitches))
   (check-complete cs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

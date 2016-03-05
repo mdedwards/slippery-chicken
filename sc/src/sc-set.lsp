@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 17:28:19 Fri Jan 29 2016 GMT
+;;; $$ Last modified: 16:02:46 Sat Mar  5 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -142,29 +142,33 @@
                   internally they are all ~%pitch-objects.~%~%"
           (auto-sort s) (rm-dups s) (warn-dups s) (used-notes s))
   (format stream "~%    subsets: ")
-  (print-ral-of-pitch-lists (subsets s) stream)
+  (when (subsets s)
+    (print-ral-of-pitch-lists (subsets s) stream))
   (format stream "~%    related-sets: ")
-  (print-ral-of-pitch-lists (related-sets s) stream))
+  (when (related-sets s)
+    (print-ral-of-pitch-lists (related-sets s) stream)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf subsets) :after (value (s sc-set))
   (declare (ignore value))
-  (setf (slot-value s 'subsets) 
-        (make-ral (format nil "sc-set-~a-subsets" (id s))
-                  (subsets s)))
-  (make-ral-pitch-lists (subsets s) (auto-sort s))
-  (check-subsets (subsets s) s)
+  (when (and value (not (assoc-list-p value)))
+    (setf (slot-value s 'subsets) 
+          (make-ral (format nil "sc-set-~a-subsets" (id s))
+                    (subsets s)))
+    (make-ral-pitch-lists (subsets s) (auto-sort s))
+    (check-subsets (subsets s) s))
   (subsets s))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf related-sets) :after (value (s sc-set))
   (declare (ignore value))
-  (setf (slot-value s 'related-sets)
-        (make-ral (format nil "sc-set-~a-related-sets" (id s))
-                  (related-sets s)))
-  (make-ral-pitch-lists (related-sets s) (auto-sort s))
+  (when value
+    (setf (slot-value s 'related-sets)
+          (make-ral (format nil "sc-set-~a-related-sets" (id s))
+                    (related-sets s)))
+    (make-ral-pitch-lists (related-sets s) (auto-sort s)))
   (related-sets s))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -199,7 +203,9 @@
 ;;; 
 ;;; EXAMPLE
 #|
-;;; treat the existing pitches as fundamentals
+;;; treat the existing pitches as fundamentals. Note that the existence of E6
+;;; twice in the result is not a mistake: though E6 is the nearest pitch, the
+;;; frequencies are different.
 (let ((s (make-sc-set '(c4 e4) :id 'test)))
   (add-harmonics s :start-partial 3 :max-results 3))
 =>
@@ -222,6 +228,8 @@ data: (F2 A2 F3 A3 C4 E4)
   (setf (data s)
         (append (data s) 
                 (apply #'get-pitch-list-harmonics (cons (data s) keywords))))
+  ;; MDE Sat Mar  5 11:59:23 2016 -- don't forget this
+  (when (rm-dups s) (rm-duplicates s))
   s)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1310,7 +1318,8 @@ data: Q
 
 |#
 ;;; SYNOPSIS
-(defmethod create-event ((s sc-set) rhythm start-time &optional start-time-qtrs)
+(defmethod create-event ((s sc-set) rhythm start-time
+                         &optional start-time-qtrs)
 ;;; ****
   (unless start-time-qtrs
     (setf start-time-qtrs start-time))
@@ -1393,7 +1402,7 @@ data: E4
 ;;; ****
   (make-pitch (/ (loop for p in (data s) sum (frequency p)) (sclist-length s))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Aug 18 17:12:18 2015 -- 
 ;;; ****m* sc-set/least-used-octave
 ;;; DATE
@@ -1477,6 +1486,15 @@ data: E4
   (setf (subsets s) nil)
   (when related
     (setf (related-sets s) nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  MDE Sat Mar  5 14:02:19 2016 
+(defmethod wrap :before ((s sc-set) &optional (num-times 1))
+  (declare (ignore num-times))
+  (when (subsets s)
+    (error "sc-set::wrap :before : ~a: can't wrap sets with subsets. ~
+            ~%Consider calling the delete-subsets method before wrap."
+           (id s))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

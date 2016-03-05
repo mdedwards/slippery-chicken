@@ -1,4 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* sclist/chord
 ;;; NAME 
 ;;; chord
@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 16:40:09 Fri Mar  4 2016 GMT
+;;; $$ Last modified: 17:05:44 Sat Mar  5 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -44,11 +44,11 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass chord (sclist)
   ;; whether the pitches in the chord are sorted (ascending) at initialization.
@@ -67,28 +67,26 @@
    ;; used by get-lp-data!  
    (marks :accessor marks :type list :initarg :marks :initform nil)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Jul 29 13:17:00 2015 -- reader
 (defmethod dissonance ((c chord))
   ;; (print "dissonance")
   (with-slots ((d dissonance)) c
     (if d d (setf d (calculate-dissonance c)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Jul 29 13:17:17 2015 -- reader
 (defmethod centroid ((c chord))
   (with-slots ((cd centroid)) c
     (if cd cd (setf cd (calculate-spectral-centroid c)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod rm-diss-cen ((c chord))
   (setf (dissonance c) nil
         (centroid c) nil))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Mon Apr 16 16:52:53 BST 2012
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/delete-marks
 ;;; DESCRIPTION
 ;;; Delete all marks from the MARKS slot of the given chord object.
@@ -121,31 +119,36 @@ NIL
   (setf (marks c) nil)
   (loop for pitch in (data c) do (delete-marks pitch)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod initialize-instance :after ((c chord) &rest initargs)
   (declare (ignore initargs))
+  (init-chord c))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod init-chord ((c chord))
   ;; MDE Tue Mar 20 16:11:55 2012 -- remove nils in the pitch list
   (setf (data c) (remove-if #'(lambda (x) (null x)) (data c)))
   (set-micro-tone c)
   (when (auto-sort c)
-    (sort-pitches c)))
+    (sort-pitches c)))  
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod set-micro-tone ((c chord))
   (setf (slot-value c 'micro-tone)
         ;; MDE Tue Mar 20 16:10:09 2012 -- (and p ...
         (loop for p in (data c) do (when (and p (micro-tone p)) (return t)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf micro-tone) :before (value (c chord))
   (declare (ignore value c))
   (error "chord::(setf micro-tone): micro-tone slot cannot be setf'd; ~
           it is handled automatically according to pitches in chord"))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((c chord) stream)
   (format stream "~%CHORD: auto-sort: ~a, marks: ~a, micro-tone: ~a, ~
@@ -153,7 +156,7 @@ NIL
           (auto-sort c) (marks c) (micro-tone c) (slot-value c 'centroid)
           (slot-value c 'dissonance)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod verify-and-store :after ((c chord))
   (let ((data (data c)))
@@ -162,12 +165,12 @@ NIL
            (when p ; MDE Tue Mar 20 16:08:37 2012
              (setf (nth i data) (make-pitch p)))))))
   
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod clone ((c chord))
   (clone-with-new-class c 'chord))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod clone-with-new-class :around ((c chord) new-class)
   (declare (ignore new-class))
@@ -177,7 +180,7 @@ NIL
           (slot-value sclist 'marks) (my-copy-list (marks c)))
     sclist))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/chord=
 ;;; DATE
 ;;; November 11th 2013
@@ -201,7 +204,7 @@ NIL
        while happy
        finally (return happy)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/add-harmonics
 ;;; DESCRIPTION
 ;;; Adds pitches to the set which are harmonically related to the existing
@@ -227,7 +230,7 @@ NIL
                 (apply #'get-pitch-list-harmonics (cons (data c) keywords))))
   c)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Feb 22 17:39:04 GMT 2012: Added robodoc entry
 
@@ -278,7 +281,7 @@ NIL
   (loop for pitch in (data c) do
        (set-midi-channel pitch midi-channel microtones-midi-channel)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Feb 22 17:52:24 GMT 2012: Deleted MDE's comment here as it is taken
 ;;; nearly verbatim into the doc below.
@@ -316,7 +319,7 @@ NIL
 ;;; ****
   (midi-channel (first (data c))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+cm-2
 ;;; SAR Mon Apr 16 15:03:15 BST 2012: Added robodoc entry
@@ -358,7 +361,7 @@ NIL
   (loop for p in (data c) collect
         (output-midi-note p time amplitude duration)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; ref is 1-based and counts from the lowest note up.
 
@@ -408,7 +411,7 @@ data: GQS4
 ;;; ****
   (get-nth (1- ref) c))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* chord/get-highest
 ;;; DATE
@@ -429,7 +432,7 @@ data: GQS4
 ;;; ****
   (get-pitch c (sclist-length c)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Mon Apr 16 16:42:48 BST 2012: Added robodoc entry
 
 ;;; ****m* chord/add-mark
@@ -464,7 +467,7 @@ data: GQS4
   (declare (ignore warn-rest))
   (push mark (marks c)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Feb 22 18:05:57 GMT 2012: Added robodoc entry
 
@@ -497,7 +500,7 @@ data: GQS4
   (declare (ignore ignore))
   (loop for p in (data c) collect (id p)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Mon Apr 16 14:48:42 BST 2012: Added robodoc entry
 ;;; SAR Mon Apr 16 14:49:16 BST 2012: MDE's original comment deleted as it was
@@ -538,7 +541,7 @@ data: GQS4
   (loop for p in (data c) do
         (no-accidental p)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Feb 22 18:10:21 GMT 2012: Added robodoc entry
 
@@ -603,7 +606,7 @@ data: GQS4
   (equal (get-pitch-symbols c1) (get-pitch-symbols c2)))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; usually a chord is auto-sorted so we can return (first (data c)) but check
 ;;; to make sure. 
@@ -663,7 +666,7 @@ data: C4
        (setq result p))
      finally (return result)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Feb 22 18:30:21 GMT 2012: Added robodoc entry
 
@@ -723,7 +726,7 @@ data: F5
 ;;; ****
   (lowest-aux c #'pitch>))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; The ignore field is there because of the transpose method in tl-set
 ;;; Returns a clone of the current chord rather than replacing data
@@ -793,11 +796,11 @@ data: (
           do (setf (marks new) (my-copy-list (marks pitch))
                    (marks-before new) (my-copy-list (marks-before pitch)))
           collect new))
-    ;; 8.2. 11: got to this here too now
+    ;; 8.2.11: got to do this here too now
     (set-micro-tone result)
     result))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod get-lp-data ((c chord) &optional ignore1 ignore2 ignore3)
   (declare (ignore ignore1 ignore2 ignore3))
@@ -806,7 +809,7 @@ data: (
     (setf result (cons '< (append lpchord result)))
     (list-to-string result)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+cmn
 (defmethod get-cmn-data ((c chord) &optional (force-natural nil)
@@ -815,7 +818,7 @@ data: (
   (declare (ignore ignore1 ignore2 ignore3 ignore4 ignore5 ignore6 ignore7))
   (loop for pitch in (data c) collect (get-cmn-data pitch force-natural nil)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; usually we auto-sort so this shouldn't need to be called directly; it's
 ;;; called in init
@@ -878,7 +881,7 @@ data: (
                              (< (frequency x) (frequency y))
                              (> (frequency x) (frequency y)))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod also-different-inflection ((c chord) (p pitch))
   (loop for cp in (data c) do
@@ -887,7 +890,7 @@ data: (
                    (not (is-octave cp p)))
           (return t))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* chord/artificial-harmonic?
 ;;; DATE
@@ -929,7 +932,7 @@ data: (
                (/ cents-tolerance 100.0))
            p2))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Thu Feb 23 19:16:17 GMT 2012: Added robodoc entry
 
@@ -1026,7 +1029,7 @@ data: (
       (and octaves-are-true
            (pitch-member p (data c) enharmonics-are-equal #'is-octave))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Mon Apr 16 14:08:02 BST 2012: Added robodoc entry
 ;;; ****m* chord/common-notes
 ;;; DESCRIPTION
@@ -1105,7 +1108,7 @@ data: (
            (incf result)))
     (values result pitches symbols)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Aug 12 13:31:04 2015 -- 
 ;;; ****m* chord/similarity
 ;;; DATE
@@ -1163,11 +1166,11 @@ data: (
          (c1n (sclist-length c1))
          (c2n (sclist-length c2))
          (cscore (if (zerop common)
-                    0.0
-                    ;; average common notes ratio for each of the two chords
-                    (/ (+ (/ common c1n)
-                          (/ common c2n))
-                       2.0)))
+                     0.0
+                     ;; average common notes ratio for each of the two chords
+                     (/ (+ (/ common c1n)
+                           (/ common c2n))
+                        2.0)))
          (is1 (get-interval-structure c1 t t))
          (is2 (get-interval-structure c2 t t))
          (isi (intersection is1 is2))
@@ -1176,7 +1179,7 @@ data: (
     ;; max score is 1.0 (min 0.0)
     (* 0.5 (+ cscore isscore))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; This doesn't count a natural even if it's been told to display
 
@@ -1191,7 +1194,7 @@ data: (
           (incf count))
       finally (return count)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; This gets the 'desirability' of the spelling of the chord: a bunch b# or
 ;;; f-flats is very undesirable.  Remember microtones don't figure in this
@@ -1202,7 +1205,7 @@ data: (
   (loop 
       for p in (data c) sum (c5ths p)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod bad-intervals ((c chord))
   (loop 
@@ -1215,12 +1218,12 @@ data: (
                 (incf result)))
       finally (return result)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod bad-adjacent-intervals ((c chord))
   (count-bad-adjacent-intervals (data c)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Wed Jun 13 15:26:33 BST 2012: Added robodoc entry
 
@@ -1423,7 +1426,7 @@ data: (
             (format t "~&result: ~a" (when c (get-pitch-symbols c))))
           (rm-enharmonics c)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Mon Apr 16 14:16:13 BST 2012: Added robodoc entry
 ;;; MDE: original comment:
 ;;; checks whether there are notes in this chord or not (make-chord
@@ -1472,7 +1475,7 @@ data: (
 ;;; ****
   (not (zerop (sclist-length c))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Mon Apr 16 14:25:06 BST 2012: Added robodoc entry
 
 ;;; MDE original comment: like the pitch class method, to find out the
@@ -1522,12 +1525,12 @@ data: (
 ;;; ****
   (- (midi-note-float (first (data c1))) (midi-note-float (first (data c2)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon May  5 16:31:06 2014 
 (defmethod midi-note-float ((c chord) &optional in-cents)
   (loop for p in (data c) collect (midi-note-float p in-cents)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Apr 17 13:15:31 2012 -- mainly for printing in the clm-play method:
 ;;; the pitch class has the frequency slot. Mimic this here by returning a list
 ;;; of freqs.
@@ -1535,12 +1538,12 @@ data: (
 (defmethod frequency ((c chord))
   (loop for p in (data c) collect (frequency p)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Apr 23 13:13:49 2012 
 (defmethod enharmonic ((c chord) &key (warn t))
   (loop for p in (data c) collect (enharmonic p :warn warn)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon May 14 15:24:07 2012 
 (defmethod print-simple ((c chord) &optional (stream t) (separator " "))
   (let ((result ""))
@@ -1549,7 +1552,7 @@ data: (
                                    separator)))
     (format stream "~a" result)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Aug 10 16:17:59 2012 -- pitches can be pitch objects or any data
 ;;; that can be passed to make-pitch, or indeed lists of these, as they will be
 ;;; flattened. 
@@ -1598,10 +1601,10 @@ data: (
         (remove-duplicates 
          (append (data c) (init-pitch-list (flatten pitches)))
          :test #'pitch=))
-  (initialize-instance c)
+  (init-chord c)
   c)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Aug 10 16:32:32 2012 -- remove pitches; same criteria apply to
 ;;; <pitches> as in add-pitches.  No warning/error will be signalled if the
 ;;; pitches to be removed are not actually in the chord.
@@ -1651,7 +1654,7 @@ data: (
   (initialize-instance c)
   c)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Nov  2 15:08:33 2013 -- if symbols-only, just compare the pitch
 ;;; symbols otherwise use pitch= (equal frequencies etc.) 
 (defmethod rm-duplicates ((c chord) &optional symbols-only)
@@ -1659,7 +1662,7 @@ data: (
   ;; (setf (slot-value c 'data) (rm-pitch-duplicates (data c) symbols-only)))
   (setf (data c) (rm-pitch-duplicates (data c) symbols-only)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May  3 10:52:54 2012 
 (defmethod rm-octaves ((c chord))
   ;; MDE Mon Dec 2 17:37:36 2013 -- can't remember why we changed slot-value
@@ -1668,11 +1671,11 @@ data: (
   (setf (data c) (remove-octaves (data c)))
   c)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod rm-marks ((c chord) marks &optional (warn t))
   (rm-marks-aux c marks warn))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jan  9 09:59:43 2014 -- for convenience.
 ;;; just promote to an sc-set and call the method there.
 ;;; (get-interval-structure (make-sc-set c :rm-dups rm-dups) in-semitones))
@@ -1721,7 +1724,8 @@ data: (
 => (4.0 7.0)
 |#
 ;;; SYNOPSIS
-(defmethod get-interval-structure ((c chord) &optional in-semitones neighbour)
+(defmethod get-interval-structure ((c chord) &optional
+                                               in-semitones neighbour)
 ;;; ****
   (if (zerop (sclist-length c))         ; in case we have a nil chord
       '(0.0)
@@ -1741,13 +1745,13 @@ data: (
                  diff)
            do (when neighbour (setq last pd))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Aug 25 18:24:41 2014 
 (defmethod micro-but-not-quarter-tone-p ((c chord))
   (some #'(lambda (x) (micro-but-not-quarter-tone-p x))
         (data c)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/get-partials-amps
 ;;; DATE
 ;;; July 28th 2015, Edinburgh
@@ -1807,7 +1811,7 @@ data: (
      collect
        (get-spectrum midi spectrum average)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/calculate-dissonance
 ;;; DATE
 ;;; 27th July 2015, Edinburgh
@@ -1920,7 +1924,7 @@ data: (
                                       (first n2)
                                       (second n2))))))
     
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/calculate-spectral-centroid
 ;;; DATE
 ;;; July 28th 2015
@@ -1999,15 +2003,65 @@ data: (
 (defmethod bass-repeat ((c1 chord) (c2 chord))
   (pitch= (lowest c1) (lowest c2) t))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* chord/wrap
+;;; DATE
+;;; March 5th 2016, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Take the highest pitch and wrap it around to the bottom, placing it at the
+;;; same interval to the former lowest pitch as the highest pitch is to the
+;;; next-to-highest pitch. Then shift the next-to-highest pitch up to the
+;;; highest pitch.
+;;; 
+;;; ARGUMENTS
+;;; - A chord object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the number of times to perform this operation
+;;; 
+;;; RETURN VALUE
+;;; The original chord object with the new pitches (clone in advance if
+;;; necessary) 
+;;; 
+;;; EXAMPLE
+#|
+
+(get-pitch-symbols (wrap (make-chord '(c4 e4 g4 b4))))
+=> (C4 E4 GS4 B4)
+
+(get-pitch-symbols (wrap (make-chord '(c4 fs4 b4 f5))))
+=> (C4 GF4 C5 F5)
+
+(get-pitch-symbols (wrap (make-chord '(df3 c4 fs4 b4 f5))))
+=> (DF3 G3 FS4 C5 F5)
+
+(get-pitch-symbols (wrap (make-chord '(df3 c4 fs4 b4 f5)) 2))
+=> (DF3 GF3 C4 B4 F5)
+|#
+;;; SYNOPSIS
+(defmethod wrap ((c chord) &optional (num-times 1))
+;;; ****
+  (loop repeat num-times do
+       (let* ((intervals (get-interval-structure c t t))
+              (top-interval (first (last intervals)))
+              (num (sclist-length c)))
+         (setq c (rm-pitches c (get-highest c)))
+         (unless (= (1- num) (sclist-length c))
+           (error "chord::wrap: couldn't remove highest from ~a" c))
+         (setq c (transpose c top-interval)
+               c (add-pitches c (transpose (clone (lowest c))
+                                           (- top-interval))))))
+  (respell-chord c)
+  c)
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Feb  8 13:24:15 GMT 2012: Added robodoc entry
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Dec  6 09:35:37 2013 -- changed to (force-midi-channel t) from NIL.
-
 ;;; ****f* chord/make-chord
 ;;; DESCRIPTION
 ;;; Create a chord object from a list of note-name symbols.
@@ -2113,12 +2167,12 @@ data: F5
       (set-midi-channel chord midi-channel microtones-midi-channel))
     chord))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun chord-p (thing)
   (typep thing 'chord))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jul 27 15:14:15 2015 -- chord dissonance calculation methods
 ;;; See http://www.acousticslab.org/learnmoresra/moremodel.html
 (defun sine-pair-roughness (freq1 amp1 freq2 amp2)
@@ -2138,7 +2192,7 @@ data: F5
                (exp (- (* b2 s fmmm))))))
     (* (expt x 0.1) (* 0.5 (expt y 3.11)) z)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; try to iron out the quite radical differences in spectral data for nearby
 ;;; notes by averaging over a complete octave. Spectrum is a list of freq
 ;;; scalers and a list of amplitudes. Not to be confused with average spectra,
@@ -2160,7 +2214,7 @@ data: F5
     (list (loop for fs in freq-scalers collect (/ fs 12.0))
           (normalise amp-scalers))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Aug 6 11:14:49 2015 - The spectrum argument can be either a symbol
 ;;; (whereupon this will be used to look up the spectra stored in
 ;;; +slippery-chicken-spectra+); an assoc-list or recursive-assoc-list with
@@ -2194,5 +2248,5 @@ data: F5
                        +slippery-chicken-spectra+" spectrum))))
         (t (error "chord::get-spectrum: Unkown spectrum arg: ~a" spectrum))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF chord.lsp

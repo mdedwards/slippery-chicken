@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified: 17:38:58 Wed Aug 19 2015 BST
+;;; $$ Last modified: 16:56:51 Sat Mar  5 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -192,7 +192,7 @@ VLA: (G3 BF3 D4)
 MISSING: (FS2 B5)
 SCLIST: sclist-length: 14, bounds-alert: T, copy: T
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-NAMED-OBJECT: id: NIL, tag: NIL, 
+pNAMED-OBJECT: id: NIL, tag: NIL, 
 data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 
 ;; Set the <do-related-sets> argument to T for the RELATED-SETS contents to be
@@ -766,20 +766,22 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun limit-ral (ral upper lower)
-  (loop for i in (data ral) and j from 0 do
-       (if (is-ral (data i))
-           (limit-ral (data i) upper lower)
-           (setf (data (nth j (data ral)))
-                 (limit-aux (data i) upper lower)))))
+  (when ral
+    (loop for i in (data ral) and j from 0 do
+         (if (is-ral (data i))
+             (limit-ral (data i) upper lower)
+             (setf (data (nth j (data ral)))
+                   (limit-aux (data i) upper lower))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Aug 18 21:23:11 2015
 (defun ral-change-pitches (ral changes)
-  (loop for i in (data ral) and j from 0 do
-        (if (is-ral (data i))
-            (ral-change-pitches (data i) changes)
-          (setf (data (nth j (data ral)))
-                (ral-change-pitches-aux (data i) changes)))))
+  (when ral
+    (loop for i in (data ral) and j from 0 do
+         (if (is-ral (data i))
+             (ral-change-pitches (data i) changes)
+             (setf (data (nth j (data ral)))
+                   (ral-change-pitches-aux (data i) changes))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 
@@ -814,11 +816,12 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun transpose-rals (ral semitones)
-  (loop for i in (data ral) and j from 0 do
-        (if (is-ral (data i))
-            (transpose-rals (data i) semitones)
-          (setf (data (nth j (data ral))) 
-            (transpose-pitch-list (data i) semitones)))))
+  (when ral
+    (loop for i in (data ral) and j from 0 do
+         (if (is-ral (data i))
+             (transpose-rals (data i) semitones)
+             (setf (data (nth j (data ral))) 
+                   (transpose-pitch-list (data i) semitones))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF tl-set.lsp

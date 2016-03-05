@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 16:17:00 Sat Oct  3 2015 BST
+;;; $$ Last modified: 12:28:43 Sat Mar  5 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1782,7 +1782,7 @@ data: CQS4
               (octave p) octave
               (no-8ve p) note
               (no-8ve-no-acc p) note-letter
-              ;;  MDE Sun Dec 29 13:59:09 2013 -- 1+ octave because the
+              ;; MDE Sun Dec 29 13:59:09 2013 -- 1+ octave because the
               ;; lowest octave of the midi scale is -1.  Bear in mind that CMN
               ;; can't display pitches in the lowest octave.
               (white-degree p) (+ note-pos (* (1+ octave) 7)))))))

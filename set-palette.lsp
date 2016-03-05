@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 12:19:33 Tue Feb  9 2016 GMT
+;;; $$ Last modified: 15:50:42 Sat Mar  5 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1152,7 +1152,27 @@ data: (C4 F4 A4 C5)
      (when (bass-repeat (get-data ref1 sp) (get-data ref2 sp))
        (return t))
      finally (return nil)))
-                          
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* set-palette/wrap
+;;; DATE
+;;; March 5th 2016, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Applies the wrap method from the chord class to each set in the
+;;; palette. See the chord class method for details.
+;;;
+;;; RETURN VALUE
+;;; The set-palette object, wrapped.
+;;;
+;;; SYNOPSIS
+(defmethod wrap ((sp set-palette) &optional (num-times 1))
+;;; ****
+  (loop for ref in (get-all-refs sp)
+     for set = (get-data ref sp)
+     do (wrap set num-times))
+  sp)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

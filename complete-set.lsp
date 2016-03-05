@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 17:38:24 Wed Aug 19 2015 BST
+;;; $$ Last modified: 16:56:31 Sat Mar  5 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -78,6 +78,14 @@
     (error "complete-set::initialize-instance: ~
             The complete slot of complete-set may only be T NIL or ~
             'CHROMATIC"))
+  (check-complete cs))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Mar  5 16:47:47 2016 -- so that missing and complete are updated
+(defmethod transpose :after ((cs complete-set) semitones 
+                             &key do-related-sets
+                               ignore1 ignore2)
+  (declare (ignore semitones do-related-sets ignore1 ignore2))
   (check-complete cs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -149,8 +157,8 @@
                (not (or (eq complete given-complete)
                         (eq complete t))))
       (error "complete-set::check-complete: ~
-              The complete slot of complete-set ~a was said to be ~a but ~
-              the pitch set is not complete.  The complete slot was ~
+              The complete slot of complete-set ~a ~%was said to be ~a but ~
+              the pitch set is not complete. ~%The complete slot was ~
               determined to be ~a."
              (id cs) given-complete complete))
     (setf (complete cs) complete
@@ -244,7 +252,7 @@
                                           (text "") (offset-offset 0.0))
                (push-aux note-list text 3 offset-offset))
              (do-subsets (subset)
-               (when (data subset)
+               (when (and (named-object-p subset) (data subset))
                  (let (ss sstb label)
                    (loop for i below (sclist-length subset) do
                         (setf ss (get-nth i subset))
@@ -323,6 +331,12 @@
 (defmethod rm-duplicates ((cs complete-set) &optional symbols-only)
   (setf (slot-value cs 'data) (rm-pitch-duplicates (data cs) symbols-only))
   (verify-and-store cs))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Mar  5 15:49:26 2016 -- 
+(defmethod rm-pitches :before ((cs complete-set) &rest pitches)
+  (declare (ignore pitches))
+  (setf (complete cs) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

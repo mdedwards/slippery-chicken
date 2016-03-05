@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified: 17:30:08 Mon May  5 2014 BST
+;;; $$ Last modified: 17:51:47 Sat Mar  5 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -93,6 +93,14 @@
 
 (defmethod initialize-instance :after ((i tempo) &rest initargs)
   (declare (ignore initargs))
+  ;; MDE Sat Mar  5 17:50:56 2016 -- split operations out into a separate
+  ;; method so that potential subclasses don't end up doing potentially
+  ;; destructive stuff
+  (init-tempo i))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Mar  5 17:51:35 2016 -- simply what initialize-instance used to do
+(defmethod init-tempo ((i tempo))
   (setf (beat-value i) (value (make-rhythm (beat i)))
         (beat-dur i) (/ 60.0 (bpm i))
         (qtr-dur i) (* (beat-dur i) (/ (beat-value i) 4.0))

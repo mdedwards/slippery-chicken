@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 10:32:58 Thu Feb 25 2016 GMT
+;;; $$ Last modified: 12:34:05 Tue Mar  8 2016 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3876,8 +3876,9 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   Default = NIL.
 ;;; - :force-velocity. Either: an integer between 0 and 127 (inclusive) that is
 ;;;   the MIDI velocity value which will be given to all notes in the resulting
-;;;   MIDI file; or a function which takes the events' amplitude and modified
-;;;   it to return a new amplitude (e.g. randomising slightly). Default = NIL.
+;;;   MIDI file, or a function which takes an event argument and
+;;;   returns an amplitude from it (e.g. randomising the existing amplitude
+;;;   slightly). Default = NIL.
 ;;; - :auto-open. Whether to open the MIDI file once written. Currently only
 ;;;    available on OSX with SBCL or CCL. Uses the default app for MIDI files,
 ;;;    as if opened with 'open' in the terminal. Default = Value of

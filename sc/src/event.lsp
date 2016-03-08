@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:53:10 Mon Jan 18 2016 GMT
+;;; $$ Last modified: 12:34:52 Tue Mar  8 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -372,8 +372,7 @@
                                         ;; MDE Thu Sep 17 17:31:18 2015 --
                                         ;; allow functions too 
                                         (if (functionp force-velocity)
-                                            (funcall force-velocity
-                                                     (amplitude e))
+                                            (funcall force-velocity e)
                                             force-velocity)
                                         (amplitude e))
                                     ;; rhythm's compound-duration is in 

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 13:21:38 Sat Sep 19 2015 BST
+;;; $$ Last modified: 10:19:48 Wed Mar 16 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1521,7 +1521,7 @@ data: NIL
 |#
 ;;; SYNOPSIS
 (defun make-rhythm (rthm &key (is-rest nil) (is-tied-to nil) (duration nil)
-                    (tempo 60.0))
+                           (tempo 60.0))
 ;;; ****                                
   ;;  (unless rthm                      
   ;;  (error "event::make-rhythm: <rthm> can't be nil")) 

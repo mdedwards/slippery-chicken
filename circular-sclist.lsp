@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    February 19th 2001
 ;;;
-;;; $$ Last modified: 19:59:35 Mon Apr 21 2014 BST
+;;; $$ Last modified: 15:30:25 Mon Mar 14 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -113,7 +113,10 @@
 ;;; ****
   (when (data cscl)
     (prog1
-        (nth (current cscl) (data cscl))
+        ;; MDE Mon Mar 14 15:29:51 2016 -- actually, use the proper method so
+        ;; that bounds checks are made 
+        ;; (nth (current cscl) (data cscl))
+        (get-nth (current cscl) cscl)
       (incf (current cscl))
       (when (= (current cscl) (sclist-length cscl))
         (setf (current cscl) 0)))))

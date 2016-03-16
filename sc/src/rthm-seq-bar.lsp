@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 10:50:36 Wed Mar 16 2016 GMT
+;;; $$ Last modified: 13:57:28 Wed Mar 16 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6155,11 +6155,47 @@ show-rest: T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Mar 16 10:30:04 2016 -- abstracted out of update-time method so we
-;;; can call on a simple list of events 
+;;; can call on a simple list of events
+
+;;; ****f* rthm-seq-bar/events-update-time
+;;; DATE
+;;; March 16th 2016, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Update the start-time and related slots of any events for which timing
+;;; information is missing or out-of-sync. 
+;;; 
+;;; ARGUMENTS
+;;; - a list of event objects
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :start-time. The start time in seconds of the first event
+;;; - :start-time-qtrs. The start time in quarter notes of the first event (used
+;;;   in MIDI files)
+;;; - :tempo. The tempo in beats per minute (or a tempo object)
+;;; 
+;;; RETURN VALUE
+;;; two values: the list of events with their times updated, and the time the
+;;; last event finishes.
+;;; 
+;;; EXAMPLE
+#|
+
+(cm::event-list-to-midi-file
+ (events-update-time (make-events2 '(q q q) '(g4 g4 g4) 1))
+ "/tmp/test.mid" 120 0)
+
+|#
+;;; SYNOPSIS
 (defun events-update-time (events &key (start-time 0.0) (start-time-qtrs 0.0)
                                     (tempo 60.0))
+;;; ****
   (unless (typep tempo 'tempo)
     (setf tempo (make-tempo tempo)))
+  (unless (every #'event-p events)
+    (error "rthm-seq-bar::events-update-time: first argument should be a list ~
+            of event objects: ~a" events))
   (let ((qtr-dur (qtr-dur tempo))
         (time start-time)
         (time-qtrs start-time-qtrs))

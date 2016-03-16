@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 11:54:38 Thu Oct 22 2015 ICT
+;;; $$ Last modified: 10:33:25 Wed Mar 16 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3284,14 +3284,31 @@ data: E
 (defmethod update-time ((rsb rthm-seq-bar) start-time start-time-qtrs tempo)
   (setf (start-time rsb) start-time
         (start-time-qtrs rsb) start-time-qtrs)
-  ;; (print (start-time rsb))
+  (let ((bar-dur (bar-duration rsb tempo)))
+    (multiple-value-bind
+          (new-events end-time)
+        (events-update-time (rhythms rsb) :start-time start-time
+                            :start-time-qtrs
+                            start-time-qtrs :tempo tempo)
+      (setf (rhythms rsb) new-events)
+      (unless (is-rest-bar rsb)
+        (unless (equal-within-tolerance bar-dur (- end-time start-time) .003)
+          (error "~a~%rthm-seq-bar::update-time: Duration of rhythms don't ~
+                  match that of bar: ~%rhythms ~a secs : bar ~a secs"
+                 rsb (- end-time start-time) bar-dur))))
+    bar-dur))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Mar 16 10:30:04 2016 -- abstracted out of update-time method so we
+;;; can call on a simple list of events 
+(defun events-update-time (events &key (start-time 0.0) (start-time-qtrs 0.0)
+                                    (tempo 60.0))
   (unless (typep tempo 'tempo)
     (setf tempo (make-tempo tempo)))
   (let ((qtr-dur (qtr-dur tempo))
         (time start-time)
-        (time-qtrs start-time-qtrs)
-        (bar-dur (bar-duration rsb tempo)))
-    (loop for event in (rhythms rsb) do   
+        (time-qtrs start-time-qtrs))
+    (loop for event in events do   
          (setf (start-time event) time
                (start-time-qtrs event) time-qtrs
                (duration-in-tempo event) (* (duration event) qtr-dur)
@@ -3301,13 +3318,8 @@ data: E
                                    (compound-duration-in-tempo event)))
          (incf time-qtrs (duration event))
          (incf time (duration-in-tempo event)))
-    (unless (is-rest-bar rsb)
-      (unless (equal-within-tolerance bar-dur (- time start-time) .003)
-        (error "~a~%rthm-seq-bar::update-time: Duration of rhythms don't ~
-                match that of bar: ~%rhythms ~a secs : bar ~a secs"
-               rsb (- time start-time) bar-dur)))
-    bar-dur))
-  
+    (values events time)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Set write-time-sig to t (this could change later when we're really writing

@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 10:32:08 Tue Nov  4 2014 GMT
+;;; $$ Last modified: 09:37:17 Sat Mar 19 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -95,13 +95,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 02.12.11 SEAN: changed robodoc header to reflect class hierarchy
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -1983,11 +1976,12 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
   (setf rhythms (rhythm-list rhythms))
   (let ((dur (loop for r in rhythms sum (duration r))))
     (unless (zerop dur)
-      (if (whole-num-p dur)
+      ;; MDE Sat Mar 19 09:36:15 2016 -- t to allow a tolerance (for Owen)
+      (if (whole-num-p dur t)
           (values (round (/ 4 dur)))
           (when on-fail
             (funcall on-fail "rthm-chain::get-duration-as-beat: sum of rhythms ~
-                            should be a ~%whole number: ~a: ~%~a"
+                              should be a ~%whole number: ~a: ~%~a"
                      dur rhythms))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

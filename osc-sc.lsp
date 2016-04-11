@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified: 10:22:35 Mon Feb  1 2016 GMT
+;;; $$ Last modified: 11:16:01 Mon Apr 11 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -140,7 +140,9 @@
 ;;; be in the format #(127 0 0 1) for now.
 
 (defun osc-call (listen-port send-ip send-port print) 
-  (let ((buffer (make-sequence '(vector (unsigned-byte 8)) 512)))
+  ;; (let ((buffer (make-sequence '(vector (unsigned-byte 8)) 512)))
+  ;; MDE Mon Apr 11 11:15:47 2016 -- increased buffer size
+  (let ((buffer (make-sequence '(vector (unsigned-byte 8)) 4096)))
     ;; in case we exited abnormally last time
     (osc-cleanup-sockets)
     (setf +osc-sc-in-socket+ (make-udp-socket)

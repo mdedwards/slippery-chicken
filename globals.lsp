@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 18:34:15 Sat Jan 30 2016 GMT
+;;; $$ Last modified: 12:07:15 Tue Apr 19 2016 WEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -130,6 +130,10 @@
      ;; least regenerated a piece's data) so that chord's/set's
      ;; dissonance/centroid values are recalculated with the new spectra.
      (default-spectra akoustik-piano-spectra)
+     ;; MDE Tue Apr 19 12:05:49 2016 -- for debugging purposes, print info
+     ;; about the selection of pitches for an instrument given a pitch-seq and
+     ;; set etc. (i.e. data passed to pitch-seq's get-notes method
+     (verbose-pitch-selection nil)
      ;; font size for CMN bar numbers
      (cmn-bar-num-size-for-sc 6))))
 ;;; ****

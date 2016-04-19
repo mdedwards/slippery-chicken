@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 20:41:57 Fri Jul 24 2015 BST
+;;; $$ Last modified: 18:41:30 Tue Apr 19 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -290,7 +290,8 @@
 ;;;   selecting notes for this one.
 ;;; 
 ;;; RETURN VALUE  
-;;; Returns a list of pitch objects.
+;;; Returns the list of pitch objects that forms the notes slot of the given
+;;; pitch-seq 
 ;;;
 ;;; SYNOPSIS
 (defmethod get-notes ((ps pitch-seq) instrument set hint-pitch limit-high
@@ -435,7 +436,7 @@
                    with uns-ref = (list seq-num (id instrument))
                    with last = last-note-previous-seq
                    do
-                     ;;(print used-notes)
+                   ;;(print used-notes)
                      (unless note
                        (error "~a~&pitch-seq::get-notes: failed to get a note! ~
                              ~%index = ~a, lowest = ~a, highest = ~a, ~
@@ -496,7 +497,14 @@
                      (used-notes set)))
                      |#
                      (setf last note)
-                   collect note))))))
+                   collect note))))
+        (when (get-sc-config 'verbose-pitch-selection)
+          (format t "~&**** For ~a, with pitch-seq ~a and the set ~a:"
+                  (id instrument) (data ps) (id set))
+          (print-simple set)
+          (format t "~&the following pitches were chosen: ")
+          (print-simple-pitch-list (notes ps)))
+        (notes ps)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -534,18 +542,18 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #|
-;;; No longer necessary, taken care of in get-relative-notes. ; ; ;
+;;; No longer necessary, taken care of in get-relative-notes. ; ; ; ;
 (defmethod relative-int-to-note (int (ps pitch-seq))
-  (let ((len (relative-notes-length ps)))
-    (when (or (> int len) (> (highest ps) len))
-      (error "pitch-seq::relative-int-to-note: ~
+(let ((len (relative-notes-length ps)))
+(when (or (> int len) (> (highest ps) len))
+(error "pitch-seq::relative-int-to-note: ~
               Can only handle relative notes up to ~a at the moment." 
-             len))
-    (let* ((ground-zero (floor (- len (highest ps)) 2))
-           (nth (+ ground-zero (1- int))))
-      (unless (>= nth 0)
-        (error "~a~%~%pitch-seq::relative-int-to-note: nth = ~a!" ps nth))
-      (nth nth (relative-notes ps)))))
+len))
+(let* ((ground-zero (floor (- len (highest ps)) 2))
+(nth (+ ground-zero (1- int))))
+(unless (>= nth 0)
+(error "~a~%~%pitch-seq::relative-int-to-note: nth = ~a!" ps nth))
+(nth nth (relative-notes ps)))))
 |#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -602,49 +610,49 @@
 
 #|
 
-;; The first creation option is using one argument that is a two-item list, 
-;; whereby the first item is a symbol to be used as the pitch-seq object's ID 
-;; and the second is a list of numbers representing the general contour of the 
-;; pitch sequence.  
-                   (make-pitch-seq '(pseq1 (1 2 1 1 3)))
+;; The first creation option is using one argument that is a two-item list, ;
+;; whereby the first item is a symbol to be used as the pitch-seq object's ID ;
+;; and the second is a list of numbers representing the general contour of the ;
+;; pitch sequence.                      ;
+(make-pitch-seq '(pseq1 (1 2 1 1 3)))
 
-                   =>
-                   PITCH-SEQ: notes: NIL
-                   highest: 3
-                   lowest: 1
-                   original-data: (1 2 1 1 3)
-                   user-id: T
-                   instruments: NIL
-                   relative-notes: (not printed for sake of brevity)
-                   relative-notes-length: 25
-                   SCLIST: sclist-length: 5, bounds-alert: T, copy: NIL
-                   LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-                   NAMED-OBJECT: id: PSEQ1, tag: NIL, 
-                   data: (1 2 1 1 3)
+=>
+PITCH-SEQ: notes: NIL
+highest: 3
+lowest: 1
+original-data: (1 2 1 1 3)
+user-id: T
+instruments: NIL
+relative-notes: (not printed for sake of brevity)
+relative-notes-length: 25
+SCLIST: sclist-length: 5, bounds-alert: T, copy: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: PSEQ1, tag: NIL, 
+data: (1 2 1 1 3)
 
-;; The second creation option uses two arguments, the first of which is a list 
-;; of numbers representing the general contour of the pitch sequence, the 
-;; second of which is a symbol which will be used as the pith-seq object's ID.
-                   (make-pitch-seq '(2 1 1 3 1) 'pseq2)
+;; The second creation option uses two arguments, the first of which is a list ;
+;; of numbers representing the general contour of the pitch sequence, the ;
+;; second of which is a symbol which will be used as the pith-seq object's ID. ;
+(make-pitch-seq '(2 1 1 3 1) 'pseq2)
 
-                   => 
-                   PITCH-SEQ: notes: NIL
-                   highest: 3
-                   lowest: 1
-                   original-data: (2 1 1 3 1)
-                   user-id: NIL
-                   instruments: NIL
-                   relative-notes: (not printed for sake of brevity)
-                   relative-notes-length: 25
-                   SCLIST: sclist-length: 5, bounds-alert: T, copy: NIL
-                   LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-                   NAMED-OBJECT: id: PSEQ2, tag: NIL, 
-                   data: (2 1 1 3 1)
+=> 
+PITCH-SEQ: notes: NIL
+highest: 3
+lowest: 1
+original-data: (2 1 1 3 1)
+user-id: NIL
+instruments: NIL
+relative-notes: (not printed for sake of brevity)
+relative-notes-length: 25
+SCLIST: sclist-length: 5, bounds-alert: T, copy: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: PSEQ2, tag: NIL, 
+data: (2 1 1 3 1)
 
-;; An example assigning a pitch-seq only to specific instruments:
+;; An example assigning a pitch-seq only to specific instruments: ;
 (make-pitch-seq '((1 2 1 1 3) violin flute) 'ps1))
 
-|#
+                |#
 ;;; SYNOPSIS
 (defun make-pitch-seq (id-data &optional (id nil))
 ;;; ****

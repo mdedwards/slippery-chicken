@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 18:41:30 Tue Apr 19 2016 WEST
+;;; $$ Last modified: 12:22:51 Sat Apr 23 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -498,13 +498,14 @@
                      |#
                      (setf last note)
                    collect note))))
-        (when (get-sc-config 'verbose-pitch-selection)
-          (format t "~&**** For ~a, with pitch-seq ~a and the set ~a:"
-                  (id instrument) (data ps) (id set))
-          (print-simple set)
-          (format t "~&the following pitches were chosen: ")
-          (print-simple-pitch-list (notes ps)))
-        (notes ps)))
+    (when (get-sc-config 'verbose-pitch-selection)
+      ;;(print (notes ps))
+      (format t "~&**** For ~a, with pitch-seq ~a and the set ~a:"
+              (id instrument) (data ps) (id set))
+      (print-simple set)
+      (format t "~&the following pitches were chosen: ")
+      (print-simple-pitch-list (notes ps)))
+    (notes ps)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -542,7 +543,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #|
-;;; No longer necessary, taken care of in get-relative-notes. ; ; ; ;
+;;; No longer necessary, taken care of in get-relative-notes. ; ; ; ; ;
 (defmethod relative-int-to-note (int (ps pitch-seq))
 (let ((len (relative-notes-length ps)))
 (when (or (> int len) (> (highest ps) len))
@@ -610,10 +611,10 @@ len))
 
 #|
 
-;; The first creation option is using one argument that is a two-item list, ;
-;; whereby the first item is a symbol to be used as the pitch-seq object's ID ;
-;; and the second is a list of numbers representing the general contour of the ;
-;; pitch sequence.                      ;
+;; The first creation option is using one argument that is a two-item list, ; ;
+;; whereby the first item is a symbol to be used as the pitch-seq object's ID ; ;
+;; and the second is a list of numbers representing the general contour of the ; ;
+;; pitch sequence.                      ; ;
 (make-pitch-seq '(pseq1 (1 2 1 1 3)))
 
 =>
@@ -630,9 +631,9 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: PSEQ1, tag: NIL, 
 data: (1 2 1 1 3)
 
-;; The second creation option uses two arguments, the first of which is a list ;
-;; of numbers representing the general contour of the pitch sequence, the ;
-;; second of which is a symbol which will be used as the pith-seq object's ID. ;
+;; The second creation option uses two arguments, the first of which is a list ; ;
+;; of numbers representing the general contour of the pitch sequence, the ; ;
+;; second of which is a symbol which will be used as the pith-seq object's ID. ; ;
 (make-pitch-seq '(2 1 1 3 1) 'pseq2)
 
 => 
@@ -649,7 +650,7 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: PSEQ2, tag: NIL, 
 data: (2 1 1 3 1)
 
-;; An example assigning a pitch-seq only to specific instruments: ;
+;; An example assigning a pitch-seq only to specific instruments: ; ;
 (make-pitch-seq '((1 2 1 1 3) violin flute) 'ps1))
 
                 |#

@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 15:50:42 Sat Mar  5 2016 GMT
+;;; $$ Last modified: 13:57:05 Sat Apr 23 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1387,6 +1387,8 @@ data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
                              (apply #'make-complete-set 
                                     (append (list set :id id)
                                             (rest data)))))))))
+    ;; MDE Sat Apr 23 13:56:52 2016
+    (link-named-objects ral)
     (sc-change-class ral 'set-palette)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 12:22:46 Sat Apr 23 2016 WEST
+;;; $$ Last modified: 19:32:07 Sat Apr 23 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3363,6 +3363,21 @@ SC> (NATURAL-HARMONIC 'b6) ; octave + 5th of high E string
           (setf result (list string-num partial))
           (return)))
      finally (return result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Apr 23 19:28:28 2016 -- NB the pitch-list will be sorted first
+(defun find-nearest-pitch (pitch-list pitch)
+  (setq pitch (make-pitch pitch)
+        pitch-list (init-pitch-list pitch-list t))
+  (loop with distance = 999999 with it with itp
+     for p in pitch-list
+     for d = (abs (pitch- p pitch))
+     for i from 0 do
+       (when (< d distance)
+         (setq it i
+               itp p
+               distance d))
+     finally (return (values itp it))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF pitch.lsp

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 12:56:40 Fri Dec 18 2015 ICT
+;;; $$ Last modified: 19:10:01 Sat Apr 23 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -124,7 +124,7 @@
    ;; if the instrument can play chords then it will need a reference to a
    ;; function that can select chords for the instrument.  NB This should be a
    ;; symbol not a function object, so when making instruments just 'my-fun not
-   ;; #'my-fun.
+   ;; #'my-fun. NB the function must return a chord object.
    ;; MDE Mon Jan  2 16:42:36 2012 
    ;; When defining sets, you can use the subsets assoc-list of a set object to
    ;; assign particular chords to specific instruments.  These could then be
@@ -1218,8 +1218,8 @@ data: NIL
 ;;; A chord object.
 ;;; 
 ;;; SYNOPSIS
-(defun default-chord-function (curve-num index pitch-list pitch-seq instrument
-                               set)
+(defun default-chord-function (curve-num index pitch-list pitch-seq
+                               instrument set)
 ;;; **** 
   (declare (ignore set instrument pitch-seq curve-num))
   (let ((at-index (nth index pitch-list))

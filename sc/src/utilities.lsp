@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 10:28:22 Wed Feb  3 2016 GMT
+;;; $$ Last modified: 16:12:18 Sat Apr 23 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4815,4 +4815,36 @@ Here's where I pasted the data into the .RPP Reaper file:
       (* int (factorial (1- int)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Apr 23 16:07:43 2016 -- 
+;;; ****f* utilities/between-extremes
+;;; DATE
+;;; April 23rd 2016, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Given a <progress> value of between 0 and 1, we'll return whatever that
+;;; proportion is of the difference between <min> and <max> added to min. NB No
+;;; randomness here.
+;;; 
+;;; ARGUMENTS
+;;; - the minimum value (returned when <progress> is 0.0)
+;;; - the maximum value (returned when <progress> is 1.0)
+;;; - a value between 
+;;; 
+;;; RETURN VALUE
+;;; a number between min and max
+;;; 
+;;; EXAMPLE
+#|
+(BETWEEN-EXTREMES 0.5 1 .5)
+==> 0.75
+(BETWEEN-EXTREMES 0.5 1 .9)
+==> 0.95
+|#
+;;; SYNOPSIS
+(defun between-extremes (min max progress)
+  (+ min (* progress (- max min))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp
+
+;;; ****

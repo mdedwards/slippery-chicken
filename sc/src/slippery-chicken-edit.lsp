@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 11:02:15 Fri Jul 24 2015 BST
+;;; $$ Last modified: 19:40:24 Sat Apr 23 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3213,7 +3213,8 @@ NIL
                           ;; without checking that count > 2 this code
                           ;; might actually put a slur over two of the same
                           ;; notes  
-                          ;; MDE Thu Jun  7 18:14:45 2012 -- changed > from 2 to 1
+                          ;; MDE Thu Jun  7 18:14:45 2012 -- changed > from 2
+                          ;; to 1  
                           (and (> count 1)
                                (porc-equal e last-e)))
                       start-e
@@ -5629,8 +5630,8 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 
 |#
 ;;; SYNOPSIS
-(defmethod rm-pitches-from-chord ((sc slippery-chicken) player bar-num note-num 
-                                  &rest pitches)
+(defmethod rm-pitches-from-chord ((sc slippery-chicken) player bar-num
+                                  note-num &rest pitches)
 ;;; ****
   (multiple-value-bind
         (chord event)
@@ -5639,6 +5640,80 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
     ;; do this just to make sure we set the written chord if present
     (setf (pitch-or-chord event) chord)
     chord))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* slippery-chicken-edit/rm-repeated-pitches
+;;; DATE
+;;; April 23rd 2016, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Sometimes even pitch curves without repeated notes
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod rm-repeated-pitches ((sc slippery-chicken) player
+                                &optional (start-bar 1) end-bar)
+;;; ****
+  (next-event sc player t start-bar)
+  (let ((last-event (next-event sc player))
+        last-event-chord event-chord find-new poc)
+    (loop for event = (next-event sc player t nil end-bar) while event do
+       ;; make even single pitches chords so that we can get common notes
+         (setq last-event-chord (make-chord (pitch-or-chord last-event))
+               poc (pitch-or-chord event)
+               event-chord (make-chord poc)
+               find-new nil)
+         (when (common-notes event-chord last-event-chord)
+           ;; if we've got a chord...only ever change the current event, not
+           ;; the last
+           (if (is-chord event)
+               (progn
+                 (if (is-chord last-event)
+                     ;; we've got two chords so remove the common pitches from
+                     ;; the current
+                     (rm-pitches poc
+                                 (data last-event-chord))
+                     ;; remove the last pitch from our current chord
+                     (rm-pitches poc 
+                                 (pitch-or-chord last-event)))
+                 (unless (> (sclist-length poc) 1)
+                   (setq find-new 'chord)))
+               (setq find-new 'pitch)))
+         (when find-new
+           (let* ((set (clone (get-data (set-ref event) (set-palette sc))))
+                  (instrument (get-instrument-for-player-at-bar
+                               (player event) (bar-num event) sc))
+                  index)
+             (limit-for-instrument set instrument)
+             (rm-pitches set (data last-event-chord))
+             (when (> (sclist-length set) 0)
+               (setf index (nth-value 1 (find-nearest-pitch
+                                         (data set)
+                                         (if (is-chord event)
+                                             (first (data poc))
+                                             poc)))
+                     (pitch-or-chord event)
+                     (if (eq find-new 'chord)
+                         (funcall (symbol-function (chord-function instrument))
+                                  1 index (data set) nil nil nil)
+                         (nth index (data set)))))))
+         (setq last-event event))
+    ;; just to make sure the tied-to notes are the same as the attacked
+    (check-ties sc)
+    sc))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -5755,5 +5830,4 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
    :rthm-seq-map `((1 ((,player (1)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF slippery-chicken-edit.lsp

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:16:51 Sat Apr 23 2016 WEST
+;;; $$ Last modified: 18:34:14 Sat Apr 23 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2036,8 +2036,8 @@ bar 45
 ;;; - T or NIL to indicate whether to return only events that consist of
 ;;;   attacked notes (i.e., no ties or rests). T = return only events with
 ;;;   attacked notes. Default = NIL.
-;;; - NIL or an integer to indicate the first bar from which events are to be
-;;;   retrieved. If NIL, the counter is reset to the first event of the
+;;; - T, NIL, or an integer to indicate the first bar from which events are to
+;;;   be retrieved. If T, the counter is reset to the first event of the
 ;;;   player's part. This should be NIL after the first resetting call.
 ;;;   Default = NIL
 ;;; - NIL or an integer to indicate the last bar from which events are to be
@@ -2062,7 +2062,7 @@ bar 45
         :rthm-seq-map '((1 ((cl (1 1 1))
                             (hn (1 1 1))
                             (vc (1 1 1))))))))
-  (next-event mini 'vc nil 1)
+  (next-event mini 'vc nil t)
   (loop for ne = (next-event mini 'vc)
      while ne
      collect (get-pitch-symbol ne)))

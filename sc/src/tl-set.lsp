@@ -5,8 +5,8 @@
 ;;;
 ;;; File:             tl-set.lsp
 ;;;
-;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> sc-set 
-;;;                   -> tl-set
+;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> chord ->
+;;;                   sc-set -> tl-set
 ;;;
 ;;; Version:          1.0.6
 ;;;
@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified: 17:36:37 Sat Mar  5 2016 GMT
+;;; $$ Last modified: 19:19:43 Sat Apr 23 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;

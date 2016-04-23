@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 12:28:43 Sat Mar  5 2016 GMT
+;;; $$ Last modified: 12:22:46 Sat Apr 23 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2735,7 +2735,12 @@ data: EF3
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun get-ids-from-pitch-list (pitch-list)
-  (loop for p in pitch-list collect (id p)))
+  (loop for p in pitch-list collect
+     ;; MDE Sat Apr 23 12:22:25 2016 -- particularly for pitch-seq::get-notes
+     ;; printing  
+       (if (chord-p p)
+           (get-ids-from-pitch-list (data p))
+           (id p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Apr 10 08:07:57 2012 

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:34:05 Tue Mar  8 2016 GMT
+;;; $$ Last modified: 13:51:56 Sat Apr 23 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8551,7 +8551,6 @@ NOTE 6200 0.6666667
          ;; to get the transposition we need to write sounding pitches.
          (transpose (when got-ins
                       (- (transposition-semitones instrument)))))
-    ;; (print (length notes))
     (when (and transpose (zerop transpose))
       (setf transpose nil))
     ;; 31/3/10: copy over the pitch curve for info

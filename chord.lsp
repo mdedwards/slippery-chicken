@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 17:47:31 Sat Mar  5 2016 GMT
+;;; $$ Last modified: 19:22:40 Sat Apr 23 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -282,12 +282,6 @@ NIL
        (set-midi-channel pitch midi-channel microtones-midi-channel)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Feb 22 17:52:24 GMT 2012: Deleted MDE's comment here as it is taken
-;;; nearly verbatim into the doc below.
-
-;;; SAR Wed Feb 22 17:52:14 GMT 2012: Added robodoc entry
-
 ;;; ****m* chord/get-midi-channel
 ;;; DESCRIPTION
 ;;; Get the MIDI channel of the first pitch object contained in a given chord
@@ -501,11 +495,6 @@ data: GQS4
   (loop for p in (data c) collect (id p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Apr 16 14:48:42 BST 2012: Added robodoc entry
-;;; SAR Mon Apr 16 14:49:16 BST 2012: MDE's original comment deleted as it was
-;;; taken over into the entry nearly verbatim.
-
 ;;; ****m* chord/no-accidental
 ;;; DESCRIPTION
 ;;; Set the SHOW-ACCIDENTAL slot of all pitch objects within a given chord
@@ -604,7 +593,6 @@ data: GQS4
 (defmethod chord-equal ((c1 chord) (c2 chord))
 ;;; ****
   (equal (get-pitch-symbols c1) (get-pitch-symbols c2)))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1671,11 +1659,11 @@ data: (
   (setf (data c) (remove-octaves (data c)))
   c)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod rm-marks ((c chord) marks &optional (warn t))
   (rm-marks-aux c marks warn))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jan  9 09:59:43 2014 -- for convenience.
 ;;; just promote to an sc-set and call the method there.
 ;;; (get-interval-structure (make-sc-set c :rm-dups rm-dups) in-semitones))
@@ -1745,13 +1733,13 @@ data: (
                  diff)
            do (when neighbour (setq last pd))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Aug 25 18:24:41 2014 
 (defmethod micro-but-not-quarter-tone-p ((c chord))
   (some #'(lambda (x) (micro-but-not-quarter-tone-p x))
         (data c)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/get-partials-amps
 ;;; DATE
 ;;; July 28th 2015, Edinburgh

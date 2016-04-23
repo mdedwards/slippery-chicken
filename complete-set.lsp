@@ -5,8 +5,8 @@
 ;;;
 ;;; File:             complete-set.lsp
 ;;;
-;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> sc-set ->
-;;;                   tl-set -> complete-set
+;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> chord ->
+;;;                   sc-set -> tl-set -> complete-set
 ;;;
 ;;; Version:          1.0.6
 ;;;
@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 17:26:40 Sat Mar  5 2016 GMT
+;;; $$ Last modified: 19:19:04 Sat Apr 23 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;

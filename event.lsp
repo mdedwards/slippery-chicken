@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:34:52 Tue Mar  8 2016 GMT
+;;; $$ Last modified: 14:07:56 Sat Apr 23 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -126,6 +126,9 @@
    (asco-msgs :accessor asco-msgs :initarg :asco-msgs :type list :initform nil)
    ;; MDE Thu Aug 22 19:26:11 2013 -- the player whose part this event is in
    (player :accessor player :initform nil)
+   ;; MDE Sat Apr 23 14:04:45 2016 -- which set (as a reference to the
+   ;; slippery-chicken object's set-palette) the pitch data came from 
+   (set-ref :accessor set-ref :initform nil)
    ;(rqq-notes :accessor rqq-notes :type list :initform nil :allocation :class)
    (amplitude :accessor amplitude :type float :initarg :amplitude 
               :initform (get-sc-config 'default-amplitude))))
@@ -768,6 +771,7 @@ data: 132
                   ~%       midi-time-sig: ~a, midi-program-changes: ~a, ~
                   ~%       8va: ~a, player: ~a~
                   ~%       asco-label: ~a, asco-msgs: ~a~
+                  ~%       set-ref: ~a~
                   ~%       pitch-or-chord: ~a~
                   ~%       written-pitch-or-chord: ~a"
           (start-time i) (end-time i) (duration-in-tempo i) 
@@ -777,7 +781,7 @@ data: 132
           (when (midi-time-sig i)
             (data (midi-time-sig i)))
           (midi-program-changes i) (8va i) (player i) 
-          (asco-label i) (asco-msgs i) (pitch-or-chord i)
+          (asco-label i) (asco-msgs i) (set-ref i) (pitch-or-chord i)
           (written-pitch-or-chord i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -806,6 +810,8 @@ data: 132
                                          (pitch-or-chord from))
         (slot-value to 'written-pitch-or-chord) 
         (basic-copy-object (written-pitch-or-chord from))
+        ;; MDE Sat Apr 23 14:06:06 2016
+        (slot-value to 'set-ref) (basic-copy-object (set-ref from))
         (slot-value to 'marks-before) (my-copy-list
                                              (marks-before from))
         ;; this is actually from the rhythm class but we need it in any case

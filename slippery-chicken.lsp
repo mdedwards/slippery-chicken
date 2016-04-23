@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:51:56 Sat Apr 23 2016 WEST
+;;; $$ Last modified: 14:16:51 Sat Apr 23 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8607,7 +8607,8 @@ NOTE 6200 0.6666667
          (loop for rhythm in (rhythms bar) and rthm-num from 0 do
               (let ((event (clone-with-new-class rhythm 'event)))
                 ;; MDE Thu Aug 22 19:30:33 2013 
-                (setf (player event) player)
+                (setf (player event) player
+                      (set-ref event) (when (sc-set-p set) (this set)))
                 ;; (print event)
                 ;; 8/3/07: need to change midi programmes if an instrument
                 ;; change was detected; these are stored in the event.

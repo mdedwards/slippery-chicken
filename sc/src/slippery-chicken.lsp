@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 18:34:14 Sat Apr 23 2016 WEST
+;;; $$ Last modified: 11:52:37 Mon Apr 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1142,12 +1142,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Thu May 17 13:52:28 EDT 2012: Conformed robodoc entry
-
-;;;  
 ;;; ****m* slippery-chicken/update-slots
 ;;; DESCRIPTION
-
 ;;; Called by initialize-instance and others. Updates timings of events and
 ;;; statistics. Not generally called by the user but can be useful if
 ;;; post-generation editing has changed something fundamental to the structure.

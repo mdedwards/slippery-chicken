@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 11:45:33 Mon Apr 25 2016 WEST
+;;; $$ Last modified: 11:55:48 Mon Apr 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5707,19 +5707,22 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
                  ;; so we'll need to find a new chord below 
                  (unless (> (sclist-length poc) 1)
                    (setq find-new 'chord)))
-               ;; picked up an supplied below
+               ;; picked up and supplied below
                (setq find-new 'pitch)))
          (when find-new
            (let* ((set (clone (get-data (set-ref event) (set-palette sc))))
                   (instrument (get-instrument-for-player-at-bar
                                (player event) (bar-num event) sc))
                   index)
+             ;; get the pitches the instrument can play and remove the last
+             ;; event's pitch(es)  
              (limit-for-instrument set instrument)
              (rm-pitches set (data last-event-chord))
-             (if (zerop (sclist-length set))
+             (if (zerop (sclist-length set)) ; can't replace repeated
                  (warn "slippery-chicken-edit::rm-repeated-pitches: ~%~
                         Skipping (bar ~a): Couldn't get alternative pitches."
                        (bar-num event))
+                 ;; use the nearest pitch to the existing repeating pitch
                  (setq index (nth-value 1 (find-nearest-pitch
                                            (data set)
                                            (if (is-chord event)
@@ -5730,13 +5733,17 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
                    (setf (pitch-or-chord event)
                          (if (eq find-new 'chord)
                              (funcall
+                              ;; use the instrument's own chord function to
+                              ;; select new pitches
                               (symbol-function (chord-function instrument))
                               1 index (data set) nil nil nil)
-                             ;; single pitch:
+                             ;; single pitch: just the nearest non-repeating
                              (nth index (data set))))
+                   ;; don't forget to set the correct midi channels
                    (set-midi-channel (pitch-or-chord event)
                                      (midi-channel player-obj)
                                      (microtones-midi-channel player-obj)))
+                 ;; index = NIL !!!
                  (warn "slippery-chicken-edit::rm-repeated-pitches: ~%~
                         Skipping (bar ~a): Couldn't find nearest pitch ~
                         (~a) in ~%~a"

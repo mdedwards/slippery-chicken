@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 10:16:42 Mon Apr 25 2016 WEST
+;;; $$ Last modified: 13:25:45 Mon Apr 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3421,17 +3421,18 @@ data: D1
 ;;; SYNOPSIS
 (defun find-nearest-pitch (pitch-list pitch &optional auto-sort)
 ;;; ****
-  (setq pitch (make-pitch pitch)
-        pitch-list (init-pitch-list pitch-list auto-sort))
-  (loop with distance = 999999 with it with itp
-     for p in pitch-list
-     for d = (abs (pitch- p pitch))
-     for i from 0 do
-       (when (< d distance)
-         (setq it i
-               itp p
-               distance d))
-     finally (return (values itp it))))
+  (when (and pitch pitch-list)
+    (setq pitch (make-pitch pitch)
+          pitch-list (init-pitch-list pitch-list auto-sort))
+    (loop with distance = 999999 with it with itp
+       for p in pitch-list
+       for d = (abs (pitch- p pitch))
+       for i from 0 do
+         (when (< d distance)
+           (setq it i
+                 itp p
+                 distance d))
+       finally (return (values itp it)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF pitch.lsp

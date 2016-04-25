@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 11:55:48 Mon Apr 25 2016 WEST
+;;; $$ Last modified: 14:30:48 Mon Apr 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5683,77 +5683,91 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; ****
   (next-event sc player t start-bar)
   (let ((last-event (next-event sc player))
-        last-event-chord event-chord find-new poc)
-    (loop for event = (next-event sc player t nil end-bar) while event do
-       ;; make even single pitches chords so that we can get common notes
-         (setq last-event-chord (make-chord (pitch-or-chord last-event))
-               poc (pitch-or-chord event)
-               event-chord (make-chord poc)
-               find-new nil)
-         (when (common-notes event-chord last-event-chord)
-           ;; if we've got a chord...only ever change the current event, not
-           ;; the last
-           (if (is-chord event)
-               (progn
-                 (if (is-chord last-event)
-                     ;; we've got two chords so remove the common pitches from
-                     ;; the current
-                     (rm-pitches poc
-                                 (data last-event-chord))
-                     ;; remove the last pitch from our current chord
-                     (rm-pitches poc 
-                                 (pitch-or-chord last-event)))
-                 ;; the above removals resulted in something less than 2 notes
-                 ;; so we'll need to find a new chord below 
-                 (unless (> (sclist-length poc) 1)
-                   (setq find-new 'chord)))
-               ;; picked up and supplied below
-               (setq find-new 'pitch)))
-         (when find-new
-           (let* ((set (clone (get-data (set-ref event) (set-palette sc))))
-                  (instrument (get-instrument-for-player-at-bar
-                               (player event) (bar-num event) sc))
-                  index)
-             ;; get the pitches the instrument can play and remove the last
-             ;; event's pitch(es)  
-             (limit-for-instrument set instrument)
-             (rm-pitches set (data last-event-chord))
-             (if (zerop (sclist-length set)) ; can't replace repeated
-                 (warn "slippery-chicken-edit::rm-repeated-pitches: ~%~
-                        Skipping (bar ~a): Couldn't get alternative pitches."
-                       (bar-num event))
-                 ;; use the nearest pitch to the existing repeating pitch
-                 (setq index (nth-value 1 (find-nearest-pitch
-                                           (data set)
-                                           (if (is-chord event)
-                                               (first (data poc))
-                                               poc)))))
-             (if index
-                 (let ((player-obj (get-player (ensemble sc) player)))
-                   (setf (pitch-or-chord event)
-                         (if (eq find-new 'chord)
-                             (funcall
-                              ;; use the instrument's own chord function to
-                              ;; select new pitches
-                              (symbol-function (chord-function instrument))
-                              1 index (data set) nil nil nil)
-                             ;; single pitch: just the nearest non-repeating
-                             (nth index (data set))))
-                   ;; don't forget to set the correct midi channels
-                   (set-midi-channel (pitch-or-chord event)
-                                     (midi-channel player-obj)
-                                     (microtones-midi-channel player-obj)))
-                 ;; index = NIL !!!
-                 (warn "slippery-chicken-edit::rm-repeated-pitches: ~%~
-                        Skipping (bar ~a): Couldn't find nearest pitch ~
-                        (~a) in ~%~a"
-                       (bar-num event)
-                       (print-simple poc nil)
-                       (print-simple-pitch-list (data set) nil)))))
-         (setq last-event event))
-    ;; just to make sure the tied-to notes are the same as the attacked
-    (check-ties sc)
-    sc))
+        last-event-chord event-chord find-new poc new-poc)
+    (flet ((warn-failed (e)
+             (warn "slippery-chicken-edit::rm-repeated-pitches: ~%~
+                            Skipping: Failed to find new pitch(es) at bar ~a."
+                   (bar-num e))))
+      (loop for event = (next-event sc player t nil end-bar) while event do
+         ;; make even single pitches chords so that we can get common notes
+           (setq last-event-chord (make-chord
+                                   (clone (pitch-or-chord last-event)))
+                 poc (pitch-or-chord event)
+                 new-poc (clone poc)
+                 event-chord (make-chord poc)
+                 find-new nil)
+           (when (common-notes event-chord last-event-chord)
+             ;; if we've got a chord...only ever change the current event, not
+             ;; the last
+             (if (is-chord event)
+                 (progn
+                   (rm-pitches new-poc
+                               (if (is-chord last-event)
+                                   ;; we've got two chords so remove the common
+                                   ;; pitches from the current
+                                   (data last-event-chord)
+                                   ;; last is a single pitch: remove the last
+                                   ;; pitch from our current chord
+                                   (pitch-or-chord last-event)))
+                   ;; the above removals resulted in something less than 2
+                   ;; notes so we'll need to find a new chord below
+                   (if (> (sclist-length new-poc) 1)
+                       (setf (pitch-or-chord event) new-poc)
+                       (setq find-new 'chord)))
+                 ;; picked up and supplied below
+                 (setq find-new 'pitch)))
+           (when find-new
+             (let* ((set (clone (get-data (set-ref event) (set-palette sc))))
+                    (instrument (get-instrument-for-player-at-bar
+                                 (player event) (bar-num event) sc))
+                    index)
+               ;; get the pitches the instrument can play and remove the last
+               ;; event's pitch(es)  
+               (limit-for-instrument set instrument)
+               (rm-pitches set (data last-event-chord))
+               (if (zerop (sclist-length set)) ; can't replace repeated
+                   (warn "slippery-chicken-edit::rm-repeated-pitches: ~%~
+                          Skipping (bar ~a): Couldn't get alternative pitches."
+                         (bar-num event))
+                   ;; use the nearest pitch to the existing repeating pitch
+                   (setq index (nth-value 1 (find-nearest-pitch
+                                             (data set)
+                                             (if (is-chord event)
+                                                 (first (data poc))
+                                                 poc)))))
+               (if index
+                   (let* ((player-obj (get-player (ensemble sc) player)))
+                     (setq new-poc
+                           (if (eq find-new 'chord)
+                               (funcall
+                                ;; use the instrument's own chord function to
+                                ;; select new pitches
+                                (symbol-function (chord-function instrument))
+                                1 index (data set) nil nil nil)
+                               ;; single pitch: just the nearest non-repeating
+                               (nth index (data set))))
+                     (unless (or (and (chord-p new-poc)
+                                      (> (sclist-length new-poc) 0))
+                                 (pitch-p new-poc))
+                       (warn-failed event)
+                       (setq new-poc nil))
+                     (when new-poc
+                       (setf (pitch-or-chord event) new-poc)
+                       ;; don't forget to set the correct midi channels
+                       (set-midi-channel (pitch-or-chord event)
+                                         (midi-channel player-obj)
+                                         (microtones-midi-channel player-obj))))
+                   ;; index = NIL !!!
+                   (warn "slippery-chicken-edit::rm-repeated-pitches: ~%~
+                          Skipping (bar ~a): Couldn't find nearest pitch ~
+                          (~a) in ~%~a"
+                         (bar-num event)
+                         (print-simple poc nil)
+                         (print-simple-pitch-list (data set) nil)))))
+           (setq last-event event))
+      ;; just to make sure the tied-to notes are the same as the attacked
+      (check-ties sc)
+      sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

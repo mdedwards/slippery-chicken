@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 14:30:48 Mon Apr 25 2016 WEST
+;;; $$ Last modified: 16:56:47 Mon Apr 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5657,9 +5657,9 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; notes in the generated piece. Often it's the removal of large fast leaps in
 ;;; instrumental parts that ends up creating repeated notes. This method will
 ;;; do its best to replace repeated notes, even in chords, with other notes
-;;; from the current set and within the range of the current instrument. If a
-;;; chord is required, then the current instrument's chord function will be
-;;; used to create the replacement chord.
+;;; from the current set and within the range of the current instrument and any
+;;; set-limits. If a chord is required, then the current instrument's chord
+;;; function will be used to create the replacement chord.
 ;;;
 ;;; NB If you're interested in instrument/players statistics like tessitura
 ;;; you'll have to call update-slots after you're done calling this and rleated
@@ -5682,6 +5682,9 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
                                 &optional (start-bar 1) end-bar)
 ;;; ****
   (next-event sc player t start-bar)
+  ;; our set-limits were stretched to fit the number of sequences in the piece,
+  ;; but we'll need to range over the number of bars, so fix this here 
+  (handle-set-limits sc t)
   (let ((last-event (next-event sc player))
         last-event-chord event-chord find-new poc new-poc)
     (flet ((warn-failed (e)
@@ -5720,10 +5723,14 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
              (let* ((set (clone (get-data (set-ref event) (set-palette sc))))
                     (instrument (get-instrument-for-player-at-bar
                                  (player event) (bar-num event) sc))
+                    (limits (get-set-limits sc player (bar-num event)))
                     index)
                ;; get the pitches the instrument can play and remove the last
                ;; event's pitch(es)  
-               (limit-for-instrument set instrument)
+               (limit-for-instrument set instrument
+                                     :lower (first limits)
+                                     :upper (second limits)
+                                     :do-related-sets t)
                (rm-pitches set (data last-event-chord))
                (if (zerop (sclist-length set)) ; can't replace repeated
                    (warn "slippery-chicken-edit::rm-repeated-pitches: ~%~

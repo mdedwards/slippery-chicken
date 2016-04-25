@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 11:52:37 Mon Apr 25 2016 WEST
+;;; $$ Last modified: 16:54:46 Mon Apr 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -150,6 +150,9 @@
    ;; ranges, they will be scaled to conform to the number of sequences in the
    ;; piee and interpolated once per sequence; so if you need precision it's
    ;; actually better to use sequence numbers as X values, not bars.
+   ;; MDE Mon Apr 25 16:37:09 2016 -- update: if you call the
+   ;; rm-repeated-pitches method these will be stretched to fit the number of
+   ;; bars 
    (set-limits-high :accessor set-limits-high :initarg :set-limits-high 
                     :initform nil)  
    (set-limits-low :accessor set-limits-low :initarg :set-limits-low 
@@ -3200,39 +3203,46 @@ data: (5 8)
     t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defmethod handle-set-limits ((sc slippery-chicken))
-  (flet ((do-limits (set-limits num-sequences)
-           ;; MDE Sat Sep 7 15:51:12 2013 -- only do this when the set-limits
-           ;; aren't already assoc-lists
-           (make-assoc-list 
-            nil
-            (loop for ins in
-                 (if (listp set-limits) set-limits (data set-limits))
-                 collect
-                 (list (first ins)
-                       (doctor-set-limits-env (second ins) num-sequences))))))
-    (let* ((ns (num-sequences sc))
-           (high (do-limits (set-limits-high sc) ns))
-           (low (do-limits (set-limits-low sc) ns)))
+;;; MDE Mon Apr 25 16:32:39 2016 -- added optional arg 
+(defmethod handle-set-limits ((sc slippery-chicken) &optional num-bars)
+  (flet ((do-limits (set-limits x-max)
+           ;; MDE Mon Apr 25 16:49:45 2016 -- have to handle the case where
+           ;; we've already made an assoc-list
+           (typecase set-limits
+                    (list
+                     (make-assoc-list 
+                      'set-limits
+                      (loop for ins in set-limits
+                         collect
+                           (list (first ins) 
+                                 (doctor-set-limits-env (second ins) x-max)))))
+                    (assoc-list
+                     (loop for ins in (data set-limits) do
+                          (setf (data ins)
+                                (doctor-set-limits-env (data ins) x-max)))
+                     set-limits)
+                    (t (error "slippery-chicken::handle-set-limits: ~
+                               unhandled data type: ~a" set-limits)))))
+    (let* ((num-x (if num-bars (num-bars sc) (num-sequences sc)))
+           (high (do-limits (set-limits-high sc) num-x))
+           (low (do-limits (set-limits-low sc) num-x)))
       (setf (set-limits-high sc) high
             (set-limits-low sc) low))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; global-seq-num is 1-based.
 
-;; global-seq-num 1-based.
-
-(defmethod get-set-limits ((sc slippery-chicken) player global-seq-num)
+(defmethod get-set-limits ((sc slippery-chicken) player x)
   (let* ((limit-ins-high
-          (get-set-limit-high sc player global-seq-num))
+          (get-set-limit-high sc player x))
          (limit-ins-low 
-          (get-set-limit-low sc player global-seq-num))
+          (get-set-limit-low sc player x))
          ;; 10/3/07: got to take the global limits into account if an entry for
          ;; 'all was made
          (global-limit-high
-          (get-set-limit-high sc 'all global-seq-num))
+          (get-set-limit-high sc 'all x))
          (global-limit-low
-          (get-set-limit-low sc 'all global-seq-num))
+          (get-set-limit-low sc 'all x))
          (limit-high (cond ((and global-limit-high limit-ins-high)
                             (pitch-min global-limit-high limit-ins-high))
                            (global-limit-high global-limit-high)
@@ -8424,12 +8434,12 @@ NOTE 6200 0.6666667
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun doctor-set-limits-env (env num-sequences)
+(defun doctor-set-limits-env (env x-max)
   ;; MDE Mon Apr  9 13:11:25 2012 
-  (unless (> num-sequences 1)
+  (unless (> x-max 1)
     (error "slippery-chicken::doctor-set-limits-env: Can't apply set ~
             limits envelopes ~%to a piece with only one sequence."))
-  (let ((stretched (new-lastx env num-sequences)))
+  (let ((stretched (new-lastx env x-max)))
     ;; 14/8/07 first x always needs to be 1
     (setf (first stretched) 1)
     (loop for x in stretched by #'cddr and y in (cdr stretched) by #'cddr
@@ -8444,11 +8454,11 @@ NOTE 6200 0.6666667
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun get-set-limit-aux (limits-al instrument seq-num)
-  ;; (print seq-num)
+(defun get-set-limit-aux (limits-al instrument x)
+  ;; (print x)
   (let ((ins-curve (get-data instrument limits-al nil)))
     (when ins-curve
-      (let ((degree (interpolate seq-num (data ins-curve))))
+      (let ((degree (interpolate x (data ins-curve))))
         (make-pitch (degree-to-note degree))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

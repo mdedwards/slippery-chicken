@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 13:57:28 Wed Mar 16 2016 GMT
+;;; $$ Last modified: 20:27:14 Mon Apr 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3636,7 +3636,6 @@ data: E
                    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; 
 (defmethod get-lp-data ((rsb rthm-seq-bar) &optional
                         in-c (rehearsal-letters-font-size 18)
                         ;; MDE Sat Mar 10 16:55:31 2012 

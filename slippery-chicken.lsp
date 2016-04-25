@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:54:46 Mon Apr 25 2016 WEST
+;;; $$ Last modified: 20:48:01 Mon Apr 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7504,16 +7504,16 @@ NOTE 6200 0.6666667
                        ;; they do count for the followed player ;
                        -1
                        (midi-note-float (pitch-or-chord event) t))
-                   ;; Durations are expressed as fractions/multiples of a beat. ;
-                   ;; There's no concept of meter, as such, in antescofo. In ;
-                   ;; e.g. 6/8 time the BPM would be entered as e.g. 120 or ;
-                   ;; something (where we'd mean dotted quarter = 120, though ;
-                   ;; antescofo doesn't need to know our beat type), and then ;
-                   ;; each 1/8 note would be an antescofo duration of 0.33, ;
-                   ;; just as if it were a triplet in 2/4 time. So the duration ;
-                   ;; is the event's compound-duration * (tempo's beat-value / ;
-                   ;; 4) MDE Fri May 9 10:40:17 2014 -- express duration as a ;
-                   ;; fraction if reasonable ;
+                   ;; Durations are expressed as fractions/multiples of a
+                   ;; beat. ; There's no concept of meter, as such, in
+                   ;; antescofo. In ; e.g. 6/8 time the BPM would be entered as
+                   ;; e.g. 120 or ; something (where we'd mean dotted quarter =
+                   ;; 120, though ; antescofo doesn't need to know our beat
+                   ;; type), and then ; each 1/8 note would be an antescofo
+                   ;; duration of 0.33, ; just as if it were a triplet in 2/4
+                   ;; time. So the duration ; is the event's compound-duration
+                   ;; * (tempo's beat-value / ; 4) MDE Fri May 9 10:40:17 2014
+                   ;; -- express duration as a ; fraction if reasonable ;
                    duration (if (is-grace-note event)
                                 ;; MDE Wed May 14 18:07:08 2014 -- see note in ;
                                 ;; documentation above re. grace notes. ;
@@ -7657,8 +7657,8 @@ NOTE 6200 0.6666667
                  (setf rehearsal-letter nil))
                (format out "~&~a ~a ~a ~a" 
                        (if (listp pitch) "CHORD" "NOTE")
-                       ;; write any labels (e.g. rehearsal letter) after the NOTE
-                       ;; or CHORD 
+                       ;; write any labels (e.g. rehearsal letter) after the
+                       ;; NOTE or CHORD
                        pitch duration 
                        (cond (rehearsal-letter
                               (prog1

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 12:09:55 Mon Jan 18 2016 GMT
+;;; $$ Last modified: 20:55:07 Mon Apr 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -507,9 +507,10 @@
                                 ;; we'll leave in the above functionality for
                                 ;; flexibility--shouldn't hurt. At least this
                                 ;; way we can have offsets as arg 3+
-                                (rational (format nil "~a:~a"
-                                                  (denominator sb)
-                                                  (numerator sb)))
+                                ;; MDE Mon Apr 25 20:54:41 2016 -- switched
+                                ;; order of den and num 
+                                (rational (format nil "~a:~a" (numerator sb)
+                                                  (denominator sb)))
                                 (t (error "cmn::cmn-tuplet-brackets: ~
                                            unexpected tuplet: ~a" sb)))))
                            ;; (bracketed :up)

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 11:18:14 Mon Apr 25 2016 WEST
+;;; $$ Last modified: 11:45:33 Mon Apr 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5660,6 +5660,10 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; from the current set and within the range of the current instrument. If a
 ;;; chord is required, then the current instrument's chord function will be
 ;;; used to create the replacement chord.
+;;;
+;;; NB If you're interested in instrument/players statistics like tessitura
+;;; you'll have to call update-slots after you're done calling this and rleated
+;;; methods.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
@@ -5699,8 +5703,11 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
                      ;; remove the last pitch from our current chord
                      (rm-pitches poc 
                                  (pitch-or-chord last-event)))
+                 ;; the above removals resulted in something less than 2 notes
+                 ;; so we'll need to find a new chord below 
                  (unless (> (sclist-length poc) 1)
                    (setq find-new 'chord)))
+               ;; picked up an supplied below
                (setq find-new 'pitch)))
          (when find-new
            (let* ((set (clone (get-data (set-ref event) (set-palette sc))))

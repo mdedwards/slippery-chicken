@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 12:07:15 Tue Apr 19 2016 WEST
+;;; $$ Last modified: 11:03:02 Mon Apr 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -132,7 +132,8 @@
      (default-spectra akoustik-piano-spectra)
      ;; MDE Tue Apr 19 12:05:49 2016 -- for debugging purposes, print info
      ;; about the selection of pitches for an instrument given a pitch-seq and
-     ;; set etc. (i.e. data passed to pitch-seq's get-notes method
+     ;; set etc. (i.e. data passed to pitch-seq's get-notes method). Note that
+     ;; chords will be printed as a sublist (i.e. in parentheses).
      (verbose-pitch-selection nil)
      ;; font size for CMN bar numbers
      (cmn-bar-num-size-for-sc 6))))

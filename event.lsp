@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:07:56 Sat Apr 23 2016 WEST
+;;; $$ Last modified: 11:27:02 Mon Apr 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -599,7 +599,8 @@
 ;;; DESCRIPTION
 ;;; Store the tempo when a change is made. 
 ;;;
-;;; NB: This creates a full tempo object, not just a number representing bpm. 
+;;; NB: This creates a full tempo object, not just a number representing
+;;; bpm. It also sets the display-tempo object to T as a side effect.
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
@@ -656,6 +657,8 @@ data: 132
     (number (setf (slot-value e 'tempo-change) (make-tempo value)))
     (t (error "event::(setf tempo-change): argument should be a number ~
                or tempo object: ~a" value)))
+  ;; MDE Mon Apr 25 11:26:54 2016
+  (setf (display-tempo e) t)
   value)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

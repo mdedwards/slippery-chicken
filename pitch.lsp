@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 19:32:07 Sat Apr 23 2016 WEST
+;;; $$ Last modified: 10:16:42 Mon Apr 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2746,7 +2746,9 @@ data: EF3
 ;;; MDE Tue Apr 10 08:07:57 2012 
 ;;; ****f* pitch/print-simple-pitch-list
 ;;; DESCRIPTION
-;;; Print the data symbols of a list of pitch objects.
+;;; Print the data symbols of a list of pitch objects. NB If you need to print
+;;; these in the context of another printing routine, you can get a string by
+;;; passing NIL as the stream.
 ;;; 
 ;;; DATE
 ;;; April 10th 2012
@@ -2769,9 +2771,9 @@ data: EF3
 (C4 D4 E4)
 |#
 ;;; SYNOPSIS
-(defun print-simple-pitch-list (pitch-list &optional stream)
+(defun print-simple-pitch-list (pitch-list &optional (stream t))
 ;;; ****
-  (print (get-ids-from-pitch-list pitch-list) stream))
+  (format stream "~a" (get-ids-from-pitch-list pitch-list)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3365,10 +3367,62 @@ SC> (NATURAL-HARMONIC 'b6) ; octave + 5th of high E string
      finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Sat Apr 23 19:28:28 2016 -- NB the pitch-list will be sorted first
-(defun find-nearest-pitch (pitch-list pitch)
+;;; MDE Sat Apr 23 19:28:28 2016
+
+;;; ****f* pitch/find-nearest-pitch
+;;; DATE
+;;; April 23rd 2016, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; In a given list of pitches, find the nearest pitch to the pitch given as
+;;; the 2nd argument. 
+;;; 
+;;; ARGUMENTS
+;;; - a list of pitches: either pitch objects or symbols. If symbols they will
+;;;   be convered to pitch objects first and optionally sorted from low to
+;;;   high.
+;;; - the pitch to use in the search for the nearest. Again: either a pitch
+;;;   object or symbol.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether the pitch list should be sorted from low to
+;;;   high before being searched. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; Two values: the pitch from the pitch list which is the nearest to the 2nd
+;;; argument, and the index of this pitch in the list. NB if the 2nd argument
+;;; is equidistant from two pitches in the list, then the first pitch in the
+;;; list will be returned.
+;;; 
+;;; EXAMPLE
+#|
+(find-nearest-pitch '(b0 d1 fs1 a4) 'e1)
+==>
+PITCH: frequency: 36.708, midi-note: 26, midi-channel: 0 
+       pitch-bend: 0.0 
+       degree: 52, data-consistent: T, white-note: D1
+       nearest-chromatic: D1
+       src: 0.14030775, src-ref-pitch: C4, score-note: D1 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 1, c5ths: 0, no-8ve: D, no-8ve-no-acc: D
+       show-accidental: T, white-degree: 15, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL, 
+       marks-before: NIL
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: D1, tag: NIL, 
+data: D1
+**************
+
+1
+|#
+;;; SYNOPSIS
+(defun find-nearest-pitch (pitch-list pitch &optional auto-sort)
+;;; ****
   (setq pitch (make-pitch pitch)
-        pitch-list (init-pitch-list pitch-list t))
+        pitch-list (init-pitch-list pitch-list auto-sort))
   (loop with distance = 999999 with it with itp
      for p in pitch-list
      for d = (abs (pitch- p pitch))

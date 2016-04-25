@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 19:40:24 Sat Apr 23 2016 WEST
+;;; $$ Last modified: 11:18:14 Mon Apr 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3735,7 +3735,13 @@ NIL
 ;;; This method will only combine existing short bars into longer ones; it
 ;;; won't split up longer bars and recombine them.
 ;;;
-;;; NB: This method should not be confused with the rebar method.
+;;; NB: This method should not be confused with the rebar method (which is used
+;;; internally, not directly by the user).
+;;;
+;;; NB: as this reorganises fundamental structures within the slippery-chicken
+;;; object, it may cause methods like clm-play to fail with some arguments
+;;; which seem reasonable to the user. So use immediately before creating the
+;;; score and after creating other outputs.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -5642,27 +5648,31 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
     chord))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* slippery-chicken-edit/rm-repeated-pitches
 ;;; DATE
 ;;; April 23rd 2016, Edinburgh
 ;;; 
 ;;; DESCRIPTION
-;;; Sometimes even pitch curves without repeated notes
+;;; Sometimes, even pitch curves without repeated notes result in repeated
+;;; notes in the generated piece. Often it's the removal of large fast leaps in
+;;; instrumental parts that ends up creating repeated notes. This method will
+;;; do its best to replace repeated notes, even in chords, with other notes
+;;; from the current set and within the range of the current instrument. If a
+;;; chord is required, then the current instrument's chord function will be
+;;; used to create the replacement chord.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - the slippery-chicken object
+;;; - the player (symbol)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - the start bar (integer). Default = 1.
+;;; - the end bar (integer). Default = NIL which means we'll process up to the
+;;;   end of the piece.
 ;;; 
 ;;; RETURN VALUE
+;;; The slippery-chicken object with all possible repeated notes removed.
 ;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defmethod rm-repeated-pitches ((sc slippery-chicken) player
                                 &optional (start-bar 1) end-bar)
@@ -5699,17 +5709,33 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
                   index)
              (limit-for-instrument set instrument)
              (rm-pitches set (data last-event-chord))
-             (when (> (sclist-length set) 0)
-               (setf index (nth-value 1 (find-nearest-pitch
-                                         (data set)
-                                         (if (is-chord event)
-                                             (first (data poc))
-                                             poc)))
-                     (pitch-or-chord event)
-                     (if (eq find-new 'chord)
-                         (funcall (symbol-function (chord-function instrument))
-                                  1 index (data set) nil nil nil)
-                         (nth index (data set)))))))
+             (if (zerop (sclist-length set))
+                 (warn "slippery-chicken-edit::rm-repeated-pitches: ~%~
+                        Skipping (bar ~a): Couldn't get alternative pitches."
+                       (bar-num event))
+                 (setq index (nth-value 1 (find-nearest-pitch
+                                           (data set)
+                                           (if (is-chord event)
+                                               (first (data poc))
+                                               poc)))))
+             (if index
+                 (let ((player-obj (get-player (ensemble sc) player)))
+                   (setf (pitch-or-chord event)
+                         (if (eq find-new 'chord)
+                             (funcall
+                              (symbol-function (chord-function instrument))
+                              1 index (data set) nil nil nil)
+                             ;; single pitch:
+                             (nth index (data set))))
+                   (set-midi-channel (pitch-or-chord event)
+                                     (midi-channel player-obj)
+                                     (microtones-midi-channel player-obj)))
+                 (warn "slippery-chicken-edit::rm-repeated-pitches: ~%~
+                        Skipping (bar ~a): Couldn't find nearest pitch ~
+                        (~a) in ~%~a"
+                       (bar-num event)
+                       (print-simple poc nil)
+                       (print-simple-pitch-list (data set) nil)))))
          (setq last-event event))
     ;; just to make sure the tied-to notes are the same as the attacked
     (check-ties sc)

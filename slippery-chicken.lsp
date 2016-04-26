@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 20:48:01 Mon Apr 25 2016 WEST
+;;; $$ Last modified: 15:27:41 Tue Apr 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7453,12 +7453,13 @@ NOTE 6200 0.6666667
                               (group-duration-in-millisecs nil)
                               messages-first
                               ;; could be T, a string, or a symbol
+                              ;; todo: include control changes also?
                               (include-program-changes t)
                               (round-tempi t)
                               makenote-compatible
                               (midi-note-receiver "midi-note")
                               (bar-num-receiver "antescofo-bar-num"))
-;;; ****                                ;
+;;; ****
   (unless (and follow-player (member follow-player (players sc)))
     (error "slippery-chicken::write-antescofo: 2nd argument must be a player ~
             in the ensemble: ~a" follow-player))

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 10:36:33 Thu Feb 25 2016 GMT
+;;; $$ Last modified: 15:21:55 Tue Apr 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -989,6 +989,13 @@
      ;;     time channel program)
   (new midi-program-change :time time :channel (1- channel)
        :program (1- program)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Apr 26 15:21:26 2016
+#+cm-2
+(defun midi-control-change (time channel controller value)
+  (new midi-control-change :time time :channel (1- channel)
+       :controller controller :value value))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:27:41 Tue Apr 26 2016 WEST
+;;; $$ Last modified: 19:05:55 Tue Apr 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6260,8 +6260,11 @@ seq-num 5, VN, replacing G3 with B6
                (when new-staff-group
                  ;; 24.7.11: to avoid barlines across groups
                  (format stream "~%  \\new ~a <<" staff-group))
-               (format stream "~%    \\tag #'score \\tag #'~a \\new Staff"
-                       pname)
+               ;; MDE Tue Apr 26 19:05:11 2016 -- added the = "pname" so we can
+               ;; refer to other staves in cross-staff notation 
+               (format stream "~%    \\tag #'score \\tag #'~a ~
+                               \\new Staff = \"~a\""
+                       pname pname)
                (format stream "~%    { << \\global #(set-accidental-style ~
                       'modern) \\~a >> }" pname)
                (when end-staff-group

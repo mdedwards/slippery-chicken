@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:05:55 Tue Apr 26 2016 WEST
+;;; $$ Last modified: 15:48:02 Thu Apr 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6033,7 +6033,9 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   layout for two-sided printing and binding. E.g. :two-sided '(30 20) means
 ;;;   the left-hand margin will be 30mm and the right-hand will be 20mm. If
 ;;;   set, this overrides the :left-margin and :line-width arguments. 
-;;;   Default = NIL. 
+;;;   Default = NIL.
+;;; - :dummy-staves. The player name(s) as a symbol or a list for any parts
+;;;   that have been created merely as empty staves to add cross-staff notation.
 ;;; 
 ;;; RETURN VALUE
 ;;; The path of the main score file generated.
@@ -6159,10 +6161,15 @@ seq-num 5, VN, replacing G3 with B6
        two-sided ; MDE Wed Oct 21 18:15:08 2015 
        ;; MDE Thu Mar 26 19:18:03 2015
        (indent t)
+       ;; MDE Thu Apr 28 15:17:36 2016 -- specify the player name(s) as a
+       ;; symbol or in a list for any parts that have been created merely as
+       ;; empty staves to add cross-staff notation.
+       dummy-staves
        ;; sim to rehearsal letters
        (tempi-all-players t))
 ;;; ****
   (declare (special cl-user::+slippery-chicken-src-path+))
+  (setf dummy-staves (force-list dummy-staves))
   (when (and (numberp start-bar) (numberp end-bar) (>= start-bar end-bar))
     (error "slippery-chicken::write-lp-date-for-all: start-bar = ~a, ~
             end-bar = ~a???" start-bar end-bar))
@@ -6256,7 +6263,8 @@ seq-num 5, VN, replacing G3 with B6
                                    visibility = ##t"))
                  (format stream "~%  \\include \"~a-~a.ly\"~%}"
                          title-hyphens (if include-name include-name pname))))
-             (score-tag (pname stream &optional new-staff-group end-staff-group)
+             (score-tag (pname stream player
+                               &optional new-staff-group end-staff-group)
                (when new-staff-group
                  ;; 24.7.11: to avoid barlines across groups
                  (format stream "~%  \\new ~a <<" staff-group))
@@ -6265,8 +6273,13 @@ seq-num 5, VN, replacing G3 with B6
                (format stream "~%    \\tag #'score \\tag #'~a ~
                                \\new Staff = \"~a\""
                        pname pname)
-               (format stream "~%    { << \\global #(set-accidental-style ~
-                      'modern) \\~a >> }" pname)
+               ;; MDE Thu Apr 28 15:20:50 2016 -- it's a bit strange this but
+               ;; experimentation shows that if we leave out this \global
+               ;; statement then a part full of rest bars won't display the
+               ;; whole bar rests, so we can use it for cross-staff notation
+               (unless (member player dummy-staves)
+                 (format stream "~%    { << \\global #(set-accidental-style ~
+                                 'modern) \\~a >> }" pname))
                (when end-staff-group
                  (format stream "~%  >>")))
              (needs-transposition (player) ; symbol
@@ -6322,7 +6335,8 @@ seq-num 5, VN, replacing G3 with B6
                   (format out "~%  inner-margin = ~a\\mm" (first two-sided))
                   (format out "~%  outer-margin = ~a\\mm" (second two-sided)))
                 (error "slippery-chicken::write-lp-data-for-all: two-sided ~
-                        must be a list of 2 numbers: ~a" two-sided))
+                        must be a list of 2 numbers~%(left margin and right ~
+                        margin). You gave ~a" two-sided))
             (progn
               (format out "~%  left-margin = ~a\\mm" left-margin)
               (format out "~%  line-width = ~a\\cm" line-width)))
@@ -6364,10 +6378,10 @@ seq-num 5, VN, replacing G3 with B6
            with gnum = (pop groups)
            with gcount = 1
            for pname in players-strings
+           for player in playrs 
            ;; this must come after 'in players-strings' otherwise we crash
            for end = (= gcount gnum) do
-           ;; (format t "~%~a ~a ~a" pname gcount gnum)
-             (score-tag pname out (= 1 gcount) end)
+             (score-tag pname out player (= 1 gcount) end)
              (if end
                  (setf gnum (pop groups)
                        gcount 1)
@@ -6378,7 +6392,7 @@ seq-num 5, VN, replacing G3 with B6
         (loop for pname in players-strings
            for player in playrs do
              (when (needs-transposition player)
-               (score-tag (written-pname pname) out)))
+               (score-tag (written-pname pname) out player)))
         (format out "~%  >>~%}"))
       ;; write the main score file
       (with-open-file

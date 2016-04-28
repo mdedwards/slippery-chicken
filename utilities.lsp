@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 16:12:18 Sat Apr 23 2016 WEST
+;;; $$ Last modified: 15:20:14 Thu Apr 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3617,7 +3617,7 @@ WARNING:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun force-list (thing)
-  ;; MDE Thu Oct  1 16:47:36 2015 -- added (when thing so that we don't force
+  ;; MDE Thu Oct 1 16:47:36 2015 -- added (when thing ...) so that we don't force
   ;; NIL into a list
   (when thing
     (if (listp thing)

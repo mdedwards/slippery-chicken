@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 20:55:07 Mon Apr 25 2016 WEST
+;;; $$ Last modified: 15:57:08 Thu Apr 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -354,6 +354,7 @@
            (case (sc::rm-package (first mark) :cmn)
              (arrow (no-cmn-mark 'arrow))           ; ignore lilypond arrow
              (trill-note (no-cmn-mark 'trill-note)) ; ignore lilypond trill
+             (staff (no-cmn-mark 'staff)) ; ignore lilypond cross-staff
              ;; this is also for lilypond markup code so ignore
              (text (no-cmn-mark (format nil "lilypond-markup: ~a" mark)))
              (rgb (list (color (second mark))))

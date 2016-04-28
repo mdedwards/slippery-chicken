@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 11:44:12 Mon Jan 18 2016 GMT
+;;; $$ Last modified: 15:56:09 Thu Apr 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -299,6 +299,10 @@
            ;; in parentheses with (add-mark-before <pitch> '(text
            ;; "\\parenthesize \\tweak font-size -2"))))
            (text (concatenate 'string (second mark) " "))
+           ;; the staff name will be the lower case version of your player name
+           ;; with all - and _ characters removed. If in any doubt, look at the
+           ;; "music = { " block in your Lilypond -def.ly file
+           (staff (format nil "\\change Staff = \"~a\"" (second mark)))
            (rgb 
             (let* ((rgb (second mark))
                    (r (first rgb))

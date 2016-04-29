@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 11:01:35 Mon Apr 25 2016 WEST
+;;; $$ Last modified: 20:29:41 Fri Apr 29 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -497,14 +497,14 @@
                      (used-notes set)))
                      |#
                      (setf last note)
-                   collect note))))
-    (when (get-sc-config 'verbose-pitch-selection)
-      ;;(print (notes ps))
-      (format t "~&**** For ~a, with pitch-seq ~a ~%and the set ~a:"
-              (id instrument) (data ps) (id set))
-      (print-simple set)
-      (format t "~&the following pitches were chosen:~%")
-      (print-simple-pitch-list (notes ps)))
+                   collect note))
+          (when (get-sc-config 'verbose-pitch-selection)
+            ;;(print (notes ps))
+            (format t "~&**** For ~a, with pitch-seq ~a ~%and the set ~a:"
+                    (id instrument) (data ps) (id set))
+            (print-simple set)
+            (format t "~&the following pitches were chosen:~%")
+            (print-simple-pitch-list (notes ps)))))
     (notes ps)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

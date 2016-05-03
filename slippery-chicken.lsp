@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 15:48:02 Thu Apr 28 2016 WEST
+;;; $$ Last modified: 08:25:49 Tue May  3 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -165,6 +165,10 @@
    (subtitle :accessor subtitle :initarg :subtitle :initform nil)
    ;; MDE Fri Dec  9 19:43:58 2011 -- for lilypond
    (composer :accessor composer :initarg :composer :initform nil)
+   ;; MDE Tue May  3 08:20:17 2016 -- concatenate the composer and year (if
+   ;; given) in Lilypond output. Nil means nothing will be written otherwise
+   ;; add a string of your choice e.g. "2016" or "2016-17"
+   (year :accessor year :initarg :year :initform nil)
    ;; 10/3/07: simply a list of bar numbers where a rehearsal letter should be
    ;; written (automatically)
    (rehearsal-letters :accessor rehearsal-letters :type list 
@@ -501,6 +505,7 @@
     (format stream "~%SLIPPERY-CHICKEN:~
                   ~%                      title: ~a ~
                   ~%                   composer: ~a ~
+                  ~%                   year: ~a ~
                   ~%                set-palette: ~a ~
                   ~%                    set-map: ~a ~
                   ~%               hint-pitches: ~a ~
@@ -516,7 +521,7 @@
                   ~%      avoid-used-notes: ~a ~
                   ~%     multi-bar-rests-called: ~a ~
                   ~% pitch-seq-index-scaler-min: ~a"
-            (title sc) (composer sc) (get-id (set-palette sc))
+            (title sc) (composer sc) (year sc) (get-id (set-palette sc))
             (get-id (set-map sc))
             (get-id (hint-pitches sc)) (get-id (rthm-seq-map sc))
             (get-id (rthm-seq-palette sc)) (get-id (tempo-map sc))
@@ -595,6 +600,7 @@
           (slot-value no 'title) (title sc)
           (slot-value no 'subtitle) (subtitle sc)
           (slot-value no 'composer) (composer sc)
+          (slot-value no 'year) (year sc)
           (slot-value no 'warn-ties) (warn-ties sc)
           (slot-value no 'set-limits-high) (my-copy-list (set-limits-high sc))
           (slot-value no 'set-limits-low) (my-copy-list (set-limits-low sc))
@@ -6222,7 +6228,10 @@ seq-num 5, VN, replacing G3 with B6
                            (format nil "\"~a\"" (subtitle sc))
                            "##f")
                        (if (composer sc) 
-                           (format nil "\"~a\"" (composer sc))
+                           (format nil "\"~a~a\"" (composer sc)
+                                   (if (year sc)
+                                       (format nil " ~a" (year sc))
+                                       ""))
                            "##f")))
              (new-voice (pname player stream &optional include-name) 
                ;; pname must be the same as the file name we'll write with the
@@ -7233,8 +7242,7 @@ FS4 G4)
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-events-sorted-by-time ((sc slippery-chicken)
-                                      &key (start-bar 1) end-bar
-                                        include-downbeats)
+                                      &key (start-bar 1) end-bar)
 ;;; ****
   (unless end-bar
     (setf end-bar (num-bars sc)))
@@ -7950,6 +7958,9 @@ NOTE 6200 0.6666667
 ;;; - :composer. A string that will be used for the composer portion of the
 ;;;   header on the score's first page in LilyPond output. If NIL, no
 ;;;   composer's name will appear in the score. Default = NIL.
+;;; - :year. A string that will be concatenated with the composer portion of the
+;;;   header on the score's first page in LilyPond output. If NIL, no
+;;;   year will appear in the score. Default = NIL.
 ;;; - :rthm-seq-map-replacements. A list of lists in the format 
 ;;;   '(((1 2 va) 3 2) ((2 3 vn) 4 3)) that indicate changes to individual
 ;;;   elements of lists within the given rthm-seq-map object. Each such list
@@ -8096,7 +8107,7 @@ NOTE 6200 0.6666667
                                      instruments-hierarchy 
                                      (title "slippery chicken piece") 
                                      subtitle
-                                     composer
+                                     composer year
                                      (avoid-melodic-octaves t)
                                      (avoid-used-notes t)
                                      (pitch-seq-index-scaler-min 0.5) 
@@ -8109,7 +8120,7 @@ NOTE 6200 0.6666667
                  :id name
                  :title title
                  :subtitle subtitle
-                 :composer composer
+                 :composer composer :year year
                  :rthm-seq-palette rthm-seq-palette
                  :rthm-seq-map rthm-seq-map
                  :rthm-seq-map-replacements rthm-seq-map-replacements

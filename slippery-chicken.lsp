@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 08:25:49 Tue May  3 2016 WEST
+;;; $$ Last modified: 12:34:25 Tue May  3 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6041,7 +6041,14 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   set, this overrides the :left-margin and :line-width arguments. 
 ;;;   Default = NIL.
 ;;; - :dummy-staves. The player name(s) as a symbol or a list for any parts
-;;;   that have been created merely as empty staves to add cross-staff notation.
+;;;   that have been created merely as empty staves to add cross-staff
+;;;   notation.
+;;; - :between-system-space. The space in cm between systems (groups of
+;;;   staves). Default = NIL (= Lilypond's default distance).
+;;; - :staff-basic-distance. This controls the distance
+;;;   between staffs within a system. It's in Lilypond units (relative to
+;;;   staff size). Setting to 15 creates a good distance between piano
+;;;   staves. Default = NIL (= Lilypond's default distance).
 ;;; 
 ;;; RETURN VALUE
 ;;; The path of the main score file generated.
@@ -6119,12 +6126,17 @@ seq-num 5, VN, replacing G3 with B6
        ;; parts will always be transposed but score can be in in C or not
        (in-c nil)
        (barline-thickness 0.5)
-       (top-margin 10)                                 ; mm
-       (bottom-margin 10)                              ; mm
-       (left-margin 20)                                ;mm
-       (line-width 17)                                 ;cm
+       (top-margin 10)                  ; mm
+       (bottom-margin 10)               ; mm
+       (left-margin 20)                 ; mm
+       (line-width 17)                  ; cm
        ;; if not nil, then in cm
-       between-system-space 
+       between-system-space
+       ;; MDE Tue May  3 12:12:46 2016 -- this one controls the distance
+       ;; between staffs within a system. It's in Lilypond units (relative to
+       ;; staff size). Setting to 15 creates a good distance between piano
+       ;; staves. 
+       staff-basic-distance
        (page-nums t)
        ;; print every bar number unless
        ;; multi-bar-rest?
@@ -6132,8 +6144,7 @@ seq-num 5, VN, replacing G3 with B6
        ;; this has to be T if we're going to get letters in the parts--but CMN
        ;; printing will have all parts all letters too thereafter
        (rehearsal-letters-all-players t)
-       ;; set to t if using bartok pizz and other
-       ;; signs
+       ;; set to t if using bartok pizz and othersigns
        (use-custom-markup t)
        (rehearsal-letters-font-size 18)
        ;; "2.16.2") "2.14.2") ;"2.12.3") "2.17.95") 
@@ -6164,7 +6175,7 @@ seq-num 5, VN, replacing G3 with B6
        (force-bracket nil)
        ;; MDE Thu Mar 26 18:49:46 2015
        (title t)
-       two-sided ; MDE Wed Oct 21 18:15:08 2015 
+       two-sided                        ; MDE Wed Oct 21 18:15:08 2015 
        ;; MDE Thu Mar 26 19:18:03 2015
        (indent t)
        ;; MDE Thu Apr 28 15:17:36 2016 -- specify the player name(s) as a
@@ -6412,7 +6423,14 @@ seq-num 5, VN, replacing G3 with B6
         (no-header-footer out)
         (format out "~%\\score {~%  \\keepWithTag #'score ~
                    \\music")
-        (format out "~%  \\layout { }~%}~%"))
+                       (if staff-basic-distance
+                   ;; MDE Tue May  3 12:16:47 2016 
+                   (format out "~%  \\layout { ~%    \\context {~
+                                ~%      \\Score \\override ~
+                                StaffGrouper.staff-staff-spacing.~
+                                basic-distance = #~a~%    }~%  }~%}"
+                           staff-basic-distance)
+                   (format out "~%  \\layout { }~%}")))
       ;; write the parts
       (loop for player in playrs
          for pname in players-strings do

@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified: 19:19:04 Sat Apr 23 2016 WEST
+;;; $$ Last modified: 14:08:50 Sun May  8 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -343,6 +343,11 @@
 (defmethod rm-pitches :before ((cs complete-set) &rest pitches)
   (declare (ignore pitches))
   (setf (complete cs) nil))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod morph :around ((cs1 complete-set) (cs2 complete-set) amount)
+  (clone-with-new-class (call-next-method) 'complete-set))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

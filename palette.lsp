@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 18:47:59 Wed Aug 12 2015 CEST
+;;; $$ Last modified: 19:06:49 Sat May  7 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -70,6 +70,15 @@
 (defmethod reset :after ((p palette) &optional ignore1 ignore2)
   (declare (ignore ignore1 ignore2))
   (rmap p #'reset))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod get-data :around (ids (p palette) &optional (warn t))
+  ;; MDE Sat May  7 18:57:52 2016 -- handle morphs in set-maps
+  (if (morph-p ids)
+      (morph (call-next-method (morph-i1 ids) p warn)
+             (call-next-method (morph-i2 ids) p warn)
+             (morph-proportion ids))
+      (call-next-method)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

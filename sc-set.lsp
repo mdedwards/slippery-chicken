@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 16:02:46 Sat Mar  5 2016 GMT
+;;; $$ Last modified: 14:21:25 Sun May  8 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -129,6 +129,9 @@
           (slot-value sclist 'used-notes) (my-copy-list (used-notes s))
           (slot-value sclist 'subsets) (when (subsets s)
                                          (clone (subsets s)))
+          ;; MDE Sun May  8 14:20:47 2016 -- we left out warn-dups and rm-dups
+          (slot-value sclist 'warn-dups) (warn-dups s)
+          (slot-value sclist 'rm-dups) (rm-dups s)
           (slot-value sclist 'related-sets) (when (related-sets s) 
                                               (clone (related-sets s))))
     sclist))
@@ -1496,6 +1499,11 @@ data: E4
             ~%Consider calling the delete-subsets method before wrap."
            (id s))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod morph :around ((s1 sc-set) (s2 sc-set) amount)
+  (clone-with-new-class (call-next-method) 'sc-set))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
@@ -1627,7 +1635,8 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 
 |#
 ;;; SYNOPSIS
-(defun make-sc-set (sc-set &key id subsets related-sets (auto-sort t) (rm-dups t))
+(defun make-sc-set (sc-set &key id subsets related-sets (auto-sort t)
+                             (rm-dups t))
 ;;; ****
   (make-instance 'sc-set :id id :data sc-set :subsets subsets :rm-dups rm-dups
                  :related-sets related-sets :auto-sort auto-sort))

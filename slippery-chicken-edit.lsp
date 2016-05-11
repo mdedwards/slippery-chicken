@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 19:43:17 Tue Apr 26 2016 WEST
+;;; $$ Last modified: 14:12:40 Sun May  8 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5720,11 +5720,15 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
                  ;; picked up and supplied below
                  (setq find-new 'pitch)))
            (when find-new
-             (let* ((set (clone (get-data (set-ref event) (set-palette sc))))
+             (let* ((set (get-data (set-ref event) (set-palette sc)))
                     (instrument (get-instrument-for-player-at-bar
                                  (player event) (bar-num event) sc))
                     (limits (get-set-limits sc player (bar-num event)))
                     index)
+               (if (sc-set-p set)
+                   (setq set (clone set))
+                   (error "slippery-chicken-edit::rm-repeated-pitches: ~%~
+                           Couldn't get set with reference ~a" (set-ref event)))
                ;; get the pitches the instrument can play and remove the last
                ;; event's pitch(es)  
                (limit-for-instrument set instrument

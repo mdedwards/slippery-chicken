@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 14:06:18 Thu Mar  3 2016 GMT
+;;; $$ Last modified: 19:40:53 Sat May  7 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -954,56 +954,81 @@ data: (
     (values (subseq series 0 (- (length series) 3))
             (- sum 3))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Sat Jan 14 17:27:09 GMT 2012: Edited robodoc info
-
 ;;; ****f* l-for-lookup/fibonacci-transition
 ;;; DESCRIPTION
 ;;; Uses Fibonacci relationships to produces a sequence that is a gradual
 ;;; transition from one repeating state to a second over n repetitions. The
 ;;; function gradually increases the frequency of the second repeating state
-;;; until it completely dominates. 
+;;; until it completely dominates.
 ;;;
 ;;; NB: The similar but separate function fibonacci-transition-aux1 gradually
 ;;;     decreases state 1 and increases state 2.
-;;; 
-;;; ARGUMENTS 
+;;;
+;;; ARGUMENTS
 ;;; - An integer that is the desired number of elements in the resulting list
 ;;;   (i.e., the number of repetitions over which the transition is to occur).
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - Repeating item 1 (starting state). This can be any Lisp type, including
-;;;   lists. Default = 0.  
-;;; - Repeating item 2 (target state): This can also be any Lisp type. 
-;;;   Default = 1.  
+;;;   lists. Default = 0. 
+;;; - Repeating item 2 (target state): This can also be any Lisp type.
+;;;   Default = 1.
+;;; - T or NIL to make a morph from item1 to item2. This means morphing items
+;;;   will be a morph structure. See below for an example. Default = NIL. 
+;;; - T or NIL to make the morph first go down from item2 to item1 (mainly used
+;;;   by fibobacci-transitions). Default = NIL. 
 ;;;
-;;; RETURN VALUE  
+;;; RETURN VALUE 
 ;;; A list.
-;;; 
+;;;
 ;;; EXAMPLE
 #|
 ;; Defaults to 0 and 1 (no optional arguments)
 (fibonacci-transition 31)
-
 => (0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 1 0 1 1 1 0 1 0 1 1 0 1 1 1 1 1)
-
 ;; Using optional arguments set to numbers
 (fibonacci-transition 23 11 37)
-
-=> (11 11 11 11 37 11 11 37 11 37 11 37 11 37 37 11 37 11 37 11 37 37 37) 
-
+=> (11 11 11 11 37 11 11 37 11 37 11 37 11 37 37 11 37 11 37 11 37 37 37)
 ;; Using lists
 (fibonacci-transition 27 '(1 2 3) '(5 6 7))
-
 => ((1 2 3) (1 2 3) (1 2 3) (1 2 3) (5 6 7) (1 2 3) (1 2 3) (5 6 7) (1 2 3)
     (1 2 3) (5 6 7) (1 2 3) (5 6 7) (1 2 3) (5 6 7) (1 2 3) (5 6 7) (5 6 7)
     (1 2 3) (5 6 7) (5 6 7) (1 2 3) (5 6 7) (5 6 7) (5 6 7) (5 6 7) (5 6 7))
-
+;; with morph: first going up then up/down
+(fibonacci-transition 31 0 1 t) ->
+(0 #S(MORPH :I1 0 :I2 1 :PROPORTION 0.14285714285714285d0)
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.2857142857142857d0)
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.42857142857142855d0)
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.5714285714285714d0)
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.7142857142857142d0)
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.857142857142857d0) 1
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.8) #S(MORPH :I1 0 :I2 1 :PROPORTION 0.6)
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.4) #S(MORPH :I1 0 :I2 1 :PROPORTION 0.7) 1
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.7) #S(MORPH :I1 0 :I2 1 :PROPORTION 0.85) 1
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.75) 1 1 1
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.75) 1
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.75) 1 1
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.75) 1 1 1 1 1)
+;; morph goes down then up
+(fibonacci-transition 31 0 1 t t) -->
+(0 #S(MORPH :I1 0 :I2 1 :PROPORTION 0.6666666666666667d0)
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.3333333333333334d0)
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 1.1102230246251565d-16)
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.25d0)
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.5d0)
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.75d0) 1
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.8) #S(MORPH :I1 0 :I2 1 :PROPORTION 0.6)
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.4) #S(MORPH :I1 0 :I2 1 :PROPORTION 0.7) 1
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.7) #S(MORPH :I1 0 :I2 1 :PROPORTION 0.85) 1
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.75) 1 1 1
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.75) 1
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.75) 1 1
+ #S(MORPH :I1 0 :I2 1 :PROPORTION 0.75) 1 1 1 1 1)
 |#
 ;;; SYNOPSIS
-(defun fibonacci-transition (num-items &optional
-                                       (item1 0)
-                                       (item2 1))
+(defun fibonacci-transition (num-items &optional (item1 0) (item2 1) morph
+                                         first-down)
 ;;; ****
   ;; just some sanity checks
   (unless item1
@@ -1018,7 +1043,8 @@ data: (
          ;; get the two transitions.
          (left (fibonacci-transition-aux1 left-num item1 item2))
          ;; this one will be reversed
-         (right (fibonacci-transition-aux1 right-num item2 item1)))
+         (right (fibonacci-transition-aux1 right-num item2 item1))
+         result)
     ;; avoid two item1s at the crossover. we use equal as it can handle number
     ;; and symbol comparison
     (when (equal (first (last right))
@@ -1030,10 +1056,10 @@ data: (
     ;; append the two lists and return.  we can use nreverse (which is more
     ;; efficient) rather than reverse as we won't need the original version of
     ;; result
-    (append left (nreverse right))))
+    (setq result (append left (nreverse right)))
+    (if morph (morph-list result first-down) result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Say you want a transition between two repeating states over a period of x
 ;;; repetitions; this gives you a gradual break in of the second state using
 ;;; Fibonacci relationships.
@@ -1045,7 +1071,7 @@ data: (
                                   (item2 1))
   ;; local function: usually done with flet but you can't call flet functions
   ;; recursively...
-  (labels ((ftar (num) 
+  (labels ((ftar (num)
              ;; lisp functions can return more than one value (e.g. (floor
              ;; 3.24) usually you will only want the first value (as in the
              ;; case of floor) but we can get them all using
@@ -1064,26 +1090,24 @@ data: (
                      (append series (ftar remainder))
                      ;; we're done so just store the remainder and return
                      (progn
-                       (when (> remainder 0) 
+                       (when (> remainder 0)
                          (push remainder series))
                        series))))))
     ;; we might have something like (2 5 3 2 8 5 3 2) so make sure we sort them
     ;; in descending order.  Note that our sort algorithm takes a function as
     ;; argument.
-    (fibonacci-transition-aux2 
+    (fibonacci-transition-aux2
      (stable-sort (ftar num-items) #'>)
      item1 item2)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; Once we have the numbers e.g. (8 5 3 2 1) we convert into indices e.g. 
+;;; Once we have the numbers e.g. (8 5 3 2 1) we convert into indices e.g.
 ;;; (0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 1 0 1 1)
 ;;;                8         5     3   2 1
 (defun fibonacci-transition-aux2 (list item1 item2)
   (let ((result '()))
-    (loop for num in list do 
+    (loop for num in list do
        ;; so each time we have 'num' items, all but one of which are item1
-         (loop repeat (1- num) do 
+         (loop repeat (1- num) do
               (push item1 result))
          (push item2 result))
     ;; we've used push so we need to reverse the list before returning
@@ -1160,7 +1184,7 @@ data: (
 
 |#
 ;;; SYNOPSIS
-(defun fibonacci-transitions (total-items levels)
+(defun fibonacci-transitions (total-items levels &optional morph)
 ;;; ****
   (let ((len (typecase levels 
                       (list (length levels))
@@ -1175,24 +1199,42 @@ data: (
         (ml 0 total-items)
         (let* ((lop-off (floor total-items len))
                (new-len (- total-items lop-off))
-               (result (fibonacci-transitions-aux new-len len))
-               (add-end (floor (* .618 lop-off)))
+               (result (fibonacci-transitions-aux new-len len morph))
+               ;; MDE Tue May 3 16:33:13 2016 -- (create the golden section
+               ;; with two large fib nums and double-precision)
+               (add-end (floor (* (/ 17711.0d0 28657) lop-off)))
                (add-beg (- total-items new-len add-end))
                (beg (append (ml 0 (1- add-beg)) (list 1)))
                (end (ml (1- len) (1- add-end)))
                (transition (progn
-                             (push (- len 2) end)
-                             (append beg result end))))
+                             (push (if morph
+                                       (make-morph :i1 (- len 2) :i2 (- len 1)
+                                                   :proportion 0.75)
+                                       (- len 2))
+                                   end)
+                             (append (if morph (morph-list beg) beg)
+                                     result end))))
+          ;; (print beg) (print end)
+          ;; convert references to the levels list elements, if given
+          ;; (print transition)
           (if (listp levels)
-              (loop for el in transition collect (nth el levels))
+              (loop for el in transition collect
+                   (if (morph-p el)  ; morphing so must be 3 elements in struct
+                       (progn
+                         (setf (morph-i1 el) (nth (morph-i1 el) levels)
+                               (morph-i2 el) (nth (morph-i2 el) levels))
+                         el)
+                       ;;(list (nth (first el) levels) (nth (second el) levels)
+                       ;;    (third el))
+                       (nth el levels)))
               transition)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun fibonacci-transitions-aux (total-items levels)         
+(defun fibonacci-transitions-aux (total-items levels morph)
   (let ((ipt (items-per-transition total-items levels)))
     (loop for num in ipt and i from 0 appending
-         (fibonacci-transition num i (1+ i)))))
+         (fibonacci-transition num i (1+ i) morph (zerop i)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sun Feb  5 17:14:33 2012 -- brought over from the cheat-sheet project.

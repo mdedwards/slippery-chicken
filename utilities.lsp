@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 15:20:14 Thu Apr 28 2016 WEST
+;;; $$ Last modified: 14:26:56 Sun May  8 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -203,6 +203,13 @@
 
 (defun integer-between (x lower upper)
   (and (integerp x)
+       (>= x lower)
+       (<= x upper)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun number-between (x lower upper)
+  (and (numberp x)
        (>= x lower)
        (<= x upper)))
 
@@ -4519,8 +4526,10 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;;
 ;;; DESCRIPTION
 ;;; Write a data file of x,y envelope values for use with gnuplit.  Once called
-;;; start gnuplot and issue a command such as gnuplot> plot '/tmp/env.txt' with
-;;; lines.
+;;; start gnuplot and issue commands such as:
+;;; gnuplot> set terminal postscript default
+;;; gnuplot> set output '/tmp/env.ps'
+;;; gnuplot> plot '/tmp/env.txt' with lines.
 ;;; 
 ;;; ARGUMENTS
 ;;; - The envelope as the usual list of x y pairs
@@ -4845,6 +4854,99 @@ Here's where I pasted the data into the .RPP Reaper file:
   (+ min (* progress (- max min))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; EOF utilities.lsp
+;;; MDE Tue May  3 20:31:23 2016
+(defun flip (list)
+  (let ((min (apply #'min list))
+        (max (apply #'max list)))
+    (loop for el in list collect (+ min (- max el)))))
+         
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sun May  8 14:26:44 2016 
+(defstruct morph i1 i2 proportion)
 
-;;; ****
+(defun morph-list (list &optional first-down (test #'eq))
+  (let* ((rmd (remove-duplicates list))
+         (el1 (first rmd))
+         (el2 (second rmd))
+         (positions (loop for el in list and i from 0
+                       when (funcall test el el2) collect i))
+         (push-el2 nil)
+         (result '()))
+    (unless (= 2 (length rmd))
+      (error "morph-list: list should only have two distinct elements: ~a"
+             list))
+    ;; (print list)
+    ;; (print positions)
+    (flet ((do-em (&rest amounts)
+             (if push-el2
+                 (push el2 result)
+                 (setq push-el2 t))
+             ;; the float (am) is the proportion of the el2 we want
+             ;; so (3 1 0.1) would mean 10% 1 and 90% 3
+             (loop for am in amounts
+                do (push (make-morph :i1 el1 :i2 el2 :proportion am) result))
+             ;;(print result)
+             ))
+      ;; we need el1 at the beginning not el2
+      (push (if first-down (make-morph :i1 el1 :i2 el2 :proportion .9) el1)
+            result)
+      ;; (push 3 result)
+      ;; (print list)
+      (if (= 1 (first positions))
+          (push (if first-down (make-morph :i1 el1 :i2 el2 :proportion .6) el1)
+                result) 
+          (apply #'do-em (down-up (1- (first positions))
+                                  :down first-down)))
+      ;; (push 4 result)
+      (loop for p1 in positions for p2 in (rest positions)
+         for num = (- p2 p1) do
+           ;;; (print num)
+           (case num
+             (1 (push el2 result))
+             (2 (do-em .75))
+             (3 (do-em .7 .85))
+             (4 (do-em .75 .5 .75))
+             (5 (do-em .8 .6 .4 .7))
+             (6 (do-em .8 .6 .3 .6 .8))
+             (7 (do-em .8 .6 .4 .2 .5 .8))
+             (t (apply #'do-em (down-up (1- num))))))
+      (push el2 result)
+      (nreverse result))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; doesn't include the target at the end by default
+(defun down-up (steps &key (down t) (up t) (start 1.0d0) (target 0.0d0)
+                        (cons nil) (butlast t))
+  (unless (> steps 0)
+    (error "down-up: <steps> should be > 1: ~a" steps))
+  (when butlast (incf steps))
+  (when cons (decf steps))
+  (let* ((fn2 (floor steps 2))
+         (rem (- steps fn2))
+         (both (and down up))
+         (range (abs (- start target)))
+         (inc1 (/ range (if both fn2 steps)))
+         (inc2 (/ range (if both rem steps)))
+         (seq1 (progn
+                 (when (< start target)
+                   (setq inc1 (- inc1)
+                         inc2 (- inc2)))
+                 ;; (format t "~&inc1 ~a inc2 ~a" inc1 inc2)
+                 (when down (loop with am = (- start inc1)
+                               repeat (if both fn2 steps)
+                               collect am ; (+ target am)
+                               ;; have to do it this way as loop's by clause
+                               ;; has to be a positive number
+                               do (decf am inc1)))))
+         (seq2 (when up (loop with am = inc2
+                           repeat (if both rem steps)
+                           collect (+ target am)
+                           do (incf am inc2))))
+         (result (cond (both (append seq1 seq2))
+                       (down seq1)
+                       (up seq2))))
+    (when cons (push (if down start target) result))
+    (if butlast (butlast result) result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; EOF utilities.lsp

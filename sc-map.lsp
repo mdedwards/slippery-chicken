@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 19:58:51 Mon Oct 28 2013 GMT
+;;; $$ Last modified: 19:00:53 Sat May  7 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -934,60 +934,73 @@ data: (SET3 SET1 SET2)
 ;; Check that every reference in sc-map refers to an object in the palette
 
 (defun check-sc-map-refs (sc-map palette &optional (nil-ok t))
-  (loop 
-     for i below (sclist-length sc-map) 
-     for thing = (get-nth i sc-map) 
-     with combo
-     do (cond ((not (typep thing 'named-object))
-               (error "sc-map::check-sc-map-refs: ~
+  (flet ((referr (section-id map-id palette-id ref)
+           (error "sc-map::check-sc-map-refs: In section ~a of ~
+                   sc-map ~a:~%Found illegal reference into palette ~a: ~a"
+                  section-id map-id palette-id ref)))
+    (loop 
+       for i below (sclist-length sc-map) 
+       for thing = (get-nth i sc-map) 
+       with combo
+       do (cond ((not (typep thing 'named-object))
+                 (error "sc-map::check-sc-map-refs: ~
                         In sc-map with id ~a expected a named-object but ~
                         got ~a" 
-                      (id sc-map) thing))
-              ((is-ral (data thing))
-               (check-sc-map-refs (data thing) palette))
-              ((not (listp (data thing)))
-               (error "sc-map::check-sc-map-refs: ~
+                        (id sc-map) thing))
+                ((is-ral (data thing))
+                 (check-sc-map-refs (data thing) palette))
+                ((not (listp (data thing)))
+                 (error "sc-map::check-sc-map-refs: ~
                         In sc-map with id ~a expected ~
                         a named-object with a list as data but got ~a" 
-                      (id sc-map) thing))
-              (t (loop for ref in (data thing) 
-                    and j from 0
-                    do
-                    ;; nil is legal!
-                    ;; 29/3/10: only when nil-ok: nil is fine for
-                    ;; rthm-seq-maps as it indicates a rest, but it's not ok
-                    ;; for set-map 
-                    (when (and (not nil-ok)
-                               (not ref))
-                      (error "~a~%sc-map::check-sc-map-refs::found ~
+                        (id sc-map) thing))
+                (t (loop for ref in (data thing) 
+                      and j from 0
+                      do
+                      ;; nil is legal!
+                      ;; 29/3/10: only when nil-ok: nil is fine for
+                      ;; rthm-seq-maps as it indicates a rest, but it's not ok
+                      ;; for set-map 
+                        (when (and (not nil-ok)
+                                   (not ref))
+                          (error "~a~%sc-map::check-sc-map-refs::found ~
                                 nil reference in map" sc-map))
-                    (when ref
-                      ;; don't warn when not found
-                      (unless (get-data ref palette nil)
-                        ;; Here, when it's a list but not a legal ref
-                        ;; into the palette, then try to make a compound
-                        ;; item out of the references, i.e. each ref in the
-                        ;; list is a ref into the palette, they are all
-                        ;; stuck together to make a super-ref combining all
-                        ;; given refs in the list.
-                        (if (setf combo (do-combination ref palette))
-                            ;; when successful, do-combination combines the
-                            ;; objects referenced into a new object and
-                            ;; returns it; we should now store it in the
-                            ;; palette and replace the list of references in
-                            ;; the sc-map with the new reference of the
-                            ;; created object 
-                            (progn
-                              (setf (nth j (data (nth i (data sc-map))))
-                                    (id combo))
-                              (add combo palette))
-                            (error "sc-map::check-sc-map-refs: ~
-                                      In section ~a of ~
-                                      sc-map ~a:~%Found illegal reference into ~
-                                      palette ~a: ~a"
-                                   (id thing) (id sc-map) (id palette) 
-                                   ref))))))))
-  t)
+                        (when ref
+                          ;; MDE Sat May  7 17:52:21 2016 -- for set-palettes
+                          ;; we now allow a morph of two and these are
+                          ;; indicated by a structure like  #S(MORPH :I1
+                          ;; (12) :I2 (7) :PROPORTION 0.75) (7) 
+                          (if (morph-p ref)
+                              (progn
+                                (unless (get-data (morph-i1 ref) palette nil)
+                                  (referr (id thing) (id sc-map) (id palette)
+                                          (morph-i1 ref)))
+                                (unless (get-data (morph-i2 ref) palette nil)
+                                  (referr (id thing) (id sc-map) (id palette)
+                                          (morph-i2 ref))))
+                              ;; don't warn when not found
+                              (unless (get-data ref palette nil)
+                                ;; Here, when it's a list but not a legal ref
+                                ;; into the palette, then try to make a
+                                ;; compound item out of the references, i.e.
+                                ;; each ref in the list is a ref into the
+                                ;; palette, they are all stuck together to make
+                                ;; a super-ref combining all given refs in the
+                                ;; list.
+                                (if (setf combo (do-combination ref palette))
+                                    ;; when successful, do-combination combines
+                                    ;; the objects referenced into a new object
+                                    ;; and returns it; we should now store it
+                                    ;; in the palette and replace the list of
+                                    ;; references in the sc-map with the new
+                                    ;; reference of the created object
+                                    (progn
+                                      (setf (nth j (data (nth i (data sc-map))))
+                                            (id combo))
+                                      (add combo palette))
+                                    (referr (id thing) (id sc-map) (id palette) 
+                                            ref)))))))))
+    t))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1008,5 +1021,4 @@ data: (SET3 SET1 SET2)
   (typep thing 'sc-map))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF sc-map.lsp

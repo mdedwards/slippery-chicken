@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified: 19:19:43 Sat Apr 23 2016 WEST
+;;; $$ Last modified: 14:08:24 Sun May  8 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -614,6 +614,11 @@ data: C6
                              set-pitches)))
     ;; (print set-pitches)
     set-pitches-rm))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod morph :around ((tls1 tl-set) (tls2 tl-set) amount)
+  (clone-with-new-class (call-next-method) 'tl-set))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

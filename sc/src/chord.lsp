@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 09:57:09 Mon Apr 25 2016 WEST
+;;; $$ Last modified: 14:17:42 Sun May  8 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2046,6 +2046,62 @@ data: (
   (respell-chord c)
   c)
   
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* chord/morph
+;;; DATE
+;;; May 3rd 2016, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Attempt to morph between two chords by selecting some notes from each
+;;; according to the amount given.
+;;; 
+;;; ARGUMENTS
+;;; - the first chord object
+;;; - the second chord object
+;;; - the amount to morph from chord 1 to 2. This should be a number between 0
+;;; and 1 where 0 would mean all chord 1, 1 would mean all chord 2 and anything
+;;; else is an actual morph.
+;;; 
+;;; RETURN VALUE
+;;; A new chord object representing a mixture of pitches from the two
+;;; chords. The length of this will depend on the relative lengths of the two
+;;; chords but the minimum will be the length of the smallest chord and the
+;;; maximum the length of the largest chord (in terms of number of pitches).
+;;;
+;;; NB If you call this method on an sc-set object the subsets and related-sets
+;;; slots will be NIL (i.e. not copied over/morphed from either of the two
+;;; arguments). 
+;;; 
+;;; EXAMPLE
+#|
+
+(print-simple 
+ (morph (make-chord '(c4 e4 g4 b4)) (make-chord '(df4 f4 af4 c5)) 0.5))
+--> C4 F4 G4 C5 
+
+|#
+;;; SYNOPSIS
+(defmethod morph ((c1 chord) (c2 chord) amount)
+;;; ****
+  (unless (number-between amount 0.0 1.0)
+    (error "chord::morph: <amount> must be between 0.0 and 1.0: ~a" amount))
+  (let* ((al (make-al 2))
+         ;; we'll only be accurate up to 1 decimal place but as as there won't
+         ;; be that many notes in the chords anyway I don't think this will be
+         ;; an issue (plus deterministic activity-levels objects are a good way
+         ;; to do this)
+         (level (round (* 10.0 amount))) ; level has to be 0 - 10 for al
+         (c (make-chord
+             (loop for i from 0
+                for p1 = (nth i (data c1))
+                for p2 = (nth i (data c2))
+                for p = (if (and p2 (active al level)) p2 p1)
+                while (or p1 p2)
+                when p collect (clone p)))))
+    (setf (this c) (make-morph :i1 (id c1) :i2 (id c2) :proportion amount))
+    c))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

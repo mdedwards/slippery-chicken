@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 12:37:28 Fri May 13 2016 BST
+;;; $$ Last modified: 14:43:39 Fri May 13 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -263,18 +263,19 @@
                                                             (time-sig rsb))))
          (ok (equal-within-tolerance rthms-dur ts-dur .001)))
     (when (and (not ok)
-               ;; MDE Mon Apr 23 12:56:57 2012 -- not enough rhythms should
+               ;;  MDE Mon Apr 23 12:56:57 2012 -- not enough rhythms should
                ;; signal an error/warning too! 
-               (or 
-                (> rthms-dur ts-dur)
-                (and not-enough (< rthms-dur ts-dur))))
+               (or (> rthms-dur ts-dur)
+                   (and not-enough (< rthms-dur ts-dur))))
       (when error
         (funcall (if (eq error 'warn) #'warn #'error)
                  "~a: ~%rthm-seq-bar::is-full:~%~
                    Duration of rhythms (~a) is not the duration of the ~
                    time-sig: (~a)"
                  rsb rthms-dur ts-dur)))
-    ok))
+    ;; MDE Fri May 13 14:37:57 2016 -- return a second value that shows
+    ;; under/overfill: positive will be underfill, negative overfill
+    (values ok (- ts-dur rthms-dur))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -503,15 +504,15 @@ data: NIL
 ;;; SYNOPSIS
 (defmethod fill-with-rhythms ((rsb rthm-seq-bar) rhythms
                               &key
-                              ;; 24.3.11 add this too to make sure written
-                              ;; pitch is set--this is the instrument
-                              ;; transposition e.g. -14 for bass clarinet
-                              transposition
-                              (midi-channel 0)
-                              (microtones-midi-channel 0)
-                              (new-id "rhythms-inserted-by-fill-with-rhythms")
-                              (warn t)
-                              (is-full-error t))
+                                ;; 24.3.11 add this too to make sure written
+                                ;; pitch is set--this is the instrument
+                                ;; transposition e.g. -14 for bass clarinet
+                                transposition
+                                (midi-channel 0)
+                                (microtones-midi-channel 0)
+                                (new-id "rhythms-inserted-by-fill-with-rhythms")
+                                (warn t)
+                                (is-full-error t))
 ;;; ****
   (delete-rhythms rsb)
   (let ((count 
@@ -534,10 +535,13 @@ data: NIL
                       (set-written r (- transposition))))
                 (set-midi-channel r midi-channel microtones-midi-channel))
               (push r (rhythms rsb))
-            ;; MDE Mon Apr 23 13:04:32 2012 -- don't check for underfull now
+            ;;  MDE Mon Apr 23 13:04:32 2012 -- don't check for underfull now
             ;; we have that option by default
-              (when (is-full rsb is-full-error nil)
-                (return i)))))
+              (multiple-value-bind
+                    (bool spill)
+                  (is-full rsb is-full-error nil)
+              (cond (bool (return i))
+                    ((< spill 0) (return (1- i))))))))
     (when (and warn (not count))
       (warn "rthm-seq-bar::fill-with-rhythms: Couldn't fill bar num ~a!"
             (bar-num rsb)))

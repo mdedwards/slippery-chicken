@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 20:36:27 Mon Apr 25 2016 WEST
+;;; $$ Last modified: 12:17:57 Fri May 13 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5351,10 +5351,9 @@ data: ((2 4) { 3 TE TE TE } Q)
 ;;; ARGUMENTS  
 ;;; - The time signature of the rthm-seq-bar object to be made, as a quoted
 ;;;   list.
-;;; - T or NIL instruction on whether to print the time signature in score
-;;;   output. 
 ;;;
 ;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether to print the time signature in score output.
 ;;; - show-rest. This argument indicates whether or not to print the rest in
 ;;;   the printed score output (CMN/LilyPond). Default = T.
 ;;; 
@@ -5394,11 +5393,12 @@ show-rest: T
 
 |#
 ;;; SYNOPSIS
-(defun make-rest-bar (time-sig write-time-sig &optional 
-                                              (show-rest t)
-                                              missing-duration
-                                              player-section-ref nth-seq
-                                              nth-bar)
+(defun make-rest-bar (time-sig &optional
+                                 write-time-sig
+                                 (show-rest t)
+                                 missing-duration
+                                 player-section-ref nth-seq
+                                 nth-bar)
 ;;; ****
   (let* ((ts (if (typep time-sig 'time-sig) 
                  time-sig

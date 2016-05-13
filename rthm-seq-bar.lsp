@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 14:55:38 Fri May 13 2016 BST
+;;; $$ Last modified: 15:24:41 Fri May 13 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -544,7 +544,10 @@ data: NIL
                     (bool spill)
                   (is-full rsb is-full-error nil)
               (cond (bool (return i))
-                    ((< spill 0) (return (1- i))))))))
+                    ((< spill 0)
+                     (pop (rhythms rsb))
+                     (return (1- i)))))
+              finally (return i))))
     (when (and warn (not count))
       (warn "rthm-seq-bar::fill-with-rhythms: Couldn't fill bar num ~a!"
             (bar-num rsb)))

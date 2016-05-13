@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 14:43:39 Fri May 13 2016 BST
+;;; $$ Last modified: 14:55:38 Fri May 13 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -374,9 +374,12 @@ MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not
 ;;;
 ;;; If there are too many and the last rhythm or event object to be placed in
 ;;; the bar fills out the bar evenly, no warning is printed and the remaining
-;;; rhythm or event objects are discarded. If the last rhythm or event object
-;;; that the method attempts to place in the bar is too long to fit evenly into
-;;; the bar, the method will drop into the debugger with an error.
+;;; rhythm or event objects are ignored. If :is-full-error is T (default) and
+;;; the last rhythm or event object that the method attempts to place in the
+;;; bar is too long to fit evenly into the bar, the method will drop into the
+;;; debugger with an error. If in this case :is-full-error is NIL the bar will
+;;; remain underfull and the index of the last rhythm added before over-filling
+;;; will be returned. 
 ;;;
 ;;; The :transposition, :midi-channel, and :microtones-midi-channel arguments
 ;;; can only be used in conjunction with event objects.

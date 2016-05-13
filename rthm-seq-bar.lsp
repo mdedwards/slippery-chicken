@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 12:17:57 Fri May 13 2016 BST
+;;; $$ Last modified: 12:37:28 Fri May 13 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -414,7 +414,9 @@ MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not
 ;;;   the case. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; The number of rhythm or event objects used.
+;;; The number of rhythm or event objects used, which could be 0. NIL will be
+;;; returned if, for example, an empty list of rhythms were passed, so do check
+;;; for a NIL result. 
 ;;; 
 ;;; EXAMPLE
 #|

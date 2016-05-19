@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 14:17:42 Sun May  8 2016 WEST
+;;; $$ Last modified: 13:06:31 Thu May 19 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1046,7 +1046,6 @@ data: (
 (let ((chrd-1 (make-chord '(c4 e4 g4 b4 d5 f5)))
       (chrd-2 (make-chord '(d3 f3 a3 c4 e4 g4))))
   (common-notes chrd-1 chrd-2))
-
 => 3
 
 ;; By default, enharmonically equivalent pitches are considered to be the same
@@ -1054,7 +1053,6 @@ data: (
 (let ((chrd-1 (make-chord '(c4 e4 g4 b4 d5 f5)))
       (chrd-2 (make-chord '(d3 f3 a3 c4 ff4 g4))))
   (common-notes chrd-1 chrd-2))
-
 => 3
 
 ;; Setting the first optional argument to NIL causes enharmonically equivalent
@@ -1062,7 +1060,6 @@ data: (
 (let ((chrd-1 (make-chord '(c4 e4 g4 b4 d5 f5)))
       (chrd-2 (make-chord '(d3 f3 a3 c4 ff4 g4))))
   (common-notes chrd-1 chrd-2 nil))
-
 => 2
 
 ;; By default, the same pitch class in different octaves is considered to be a
@@ -1070,7 +1067,6 @@ data: (
 (let ((chrd-1 (make-chord '(c4 e4 g4 b4 d5 f5)))
       (chrd-2 (make-chord '(d3 f3 a3 ff4 g4 c5))))
   (common-notes chrd-1 chrd-2 t))
-
 => 2
 
 ;; Setting the second optional argument to T causes all pitches of the same
@@ -1078,7 +1074,6 @@ data: (
 (let ((chrd-1 (make-chord '(c4 e4 g4 b4 d5 f5)))
       (chrd-2 (make-chord '(d3 f3 a3 ff4 g4 c5))))
   (common-notes chrd-1 chrd-2 t t))
-
 => 5
 
 |#

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 13:06:31 Thu May 19 2016 WEST
+;;; $$ Last modified: 14:45:03 Thu May 19 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2089,11 +2089,17 @@ data: (
          (level (round (* 10.0 amount))) ; level has to be 0 - 10 for al
          (c (make-chord
              (loop for i from 0
+                with pitches = '()
                 for p1 = (nth i (data c1))
                 for p2 = (nth i (data c2))
                 for p = (if (and p2 (active al level)) p2 p1)
-                while (or p1 p2)
-                when p collect (clone p)))))
+                while (or p1 p2) do
+                ;; we have the :warn-dups slot of sc-sets (subclasses of
+                ;; chord) but as we're making a brank new chord here we really
+                ;; don't need duplicate pitches
+                  (when (and p (not (member p pitches :test #'pitch=)))
+                    (push (clone p) pitches))
+                finally (return (nreverse pitches))))))
     (setf (this c) (make-morph :i1 (id c1) :i2 (id c2) :proportion amount))
     c))
 

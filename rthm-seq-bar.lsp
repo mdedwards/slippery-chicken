@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 14:26:54 Tue May 24 2016 WEST
+;;; $$ Last modified: 17:16:41 Tue May 24 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4258,20 +4258,20 @@ collect (data (pitch-or-chord p))))
 ;;; pitches of a specified bar within that object. Apply respell-bar and print ;
 ;;; the same pitches again to see the difference. ;
 
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))))
-:set-palette '((1 ((gs4 af4 bf4))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 1 1 1 1 1 1)))))
-:rthm-seq-map '((1 ((vn (1 1 1))))))))
-(print (loop for r in (rhythms (get-bar mini 2 'vn))
-collect (get-pitch-symbol r)))
-(respell-bar (get-bar mini 2 'vn) mini 'vn)
-(print (loop for r in (rhythms (get-bar mini 2 'vn))
-collect (get-pitch-symbol r))))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((gs4 af4 bf4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 1 1 1 1 1 1)))))
+        :rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (print (loop for r in (rhythms (get-bar mini 2 'vn))
+            collect (get-pitch-symbol r)))
+  (respell-bar (get-bar mini 2 'vn) mini 'vn)
+  (print (loop for r in (rhythms (get-bar mini 2 'vn))
+            collect (get-pitch-symbol r))))
   =>
   (GS4 AF4 GS4 GS4 GS4 GS4 GS4 GS4) 
   (GS4 GS4 GS4 GS4 GS4 GS4 GS4 GS4)

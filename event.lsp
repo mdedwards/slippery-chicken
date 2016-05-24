@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:33:41 Tue Apr 26 2016 WEST
+;;; $$ Last modified: 17:05:53 Tue May 24 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -317,8 +317,8 @@
 ;;; OPTIONAL ARGUMENTS
 ;;; - A decimal number that is the number of seconds to offset the timing of
 ;;;   the MIDI output. 
-;;; - A decimal number that is to override any other existing event object data
-;;;   for amplitude.
+;;; - A decimal number or function that is to override any other existing event
+;;;   object data for amplitude.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns the data required for MIDI output. 

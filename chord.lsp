@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 14:45:03 Thu May 19 2016 WEST
+;;; $$ Last modified: 17:10:25 Tue May 24 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2099,7 +2099,8 @@ data: (
                 ;; don't need duplicate pitches
                   (when (and p (not (member p pitches :test #'pitch=)))
                     (push (clone p) pitches))
-                finally (return (nreverse pitches))))))
+                finally (return (nreverse pitches)))
+             :id (format nil "~a-~a-~a" (id c1) (id c2) amount))))
     (setf (this c) (make-morph :i1 (id c1) :i2 (id c2) :proportion amount))
     c))
 

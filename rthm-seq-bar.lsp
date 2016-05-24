@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 15:24:41 Fri May 13 2016 BST
+;;; $$ Last modified: 14:26:54 Tue May 24 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -251,7 +251,6 @@
     ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Sum the rhythms and compare the duration against that of the time sig.
 ;;; error can either be t 'warn or nil; if the latter no warning or error will
 ;;; be issued i.e. it will return nil silently.
@@ -4650,7 +4649,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 |#
 ;;; SYNOPSIS
 (defmethod split ((rsb rthm-seq-bar) &key
-                  (min-beats 2) (max-beats 5) warn ignore)
+                                       (min-beats 2) (max-beats 5) warn ignore)
 ;;; ****
   (declare (ignore ignore))
   (let* ((ts (get-time-sig rsb))
@@ -4661,7 +4660,9 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
          (rthms (my-copy-list (rhythms (split-longer-rests rsb))))
          (new-bars '()))
     ;; first get the new meter structure
-    (loop with got-bar until (zerop num) do
+    (loop with got-bar for i below 1000 until (zerop num) do
+         (when (= i 999)
+           (error "rthm-seq-bar::split: tried 1000 times on ~a" rsb))
          (setf got-bar nil)
          (loop for beats from min-beats to max-beats ;; by num-mult
             for this-num = (* num-mult beats)
@@ -4671,13 +4672,17 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
                        bar rthms :new-id "bar-created-by-split" :warn nil 
                        :is-full-error nil)
             do
-            (when ate
-              ;; lop off the eaten rhythms and proceed
-              (setf got-bar t
-                    rthms (nthcdr ate rthms))
-              (decf num this-num)
-              (push bar new-bars)
-              (return)))
+            ;; (print ate)
+            ;; (print-simple bar)
+            ;;  MDE Tue May 24 12:59:45 2016 -- fill-with-rhythms will now
+            ;; underfill bars so we need to explicitly check for a full bar 
+              (when (and ate (is-full bar nil))
+                ;; lop off the eaten rhythms and proceed
+                (setf got-bar t
+                      rthms (nthcdr ate rthms))
+                (decf num this-num)
+                (push bar new-bars)
+                (return)))
          (unless got-bar
            (return)))
     ;; it could be that we're left with 1 beat over so stuff that in the last
@@ -4696,7 +4701,11 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
           (loop for bar in new-bars do 
              ;; MDE Sat Jun  9 15:40:35 2012 
                (check-beams bar :on-fail nil :auto-beam t)
-               (gen-stats bar))
+               (gen-stats bar)
+             ;; MDE Tue May 24 14:09:34 2016
+               ;; (print bar)
+               (when (and (is-rest-bar bar) (not (rhythms bar)))
+                 (setq bar (force-rest-bar bar))))
           (nreverse new-bars))
         (progn
           (when warn
@@ -5256,7 +5265,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
      finally (return nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Thu Aug 13 11:11:16 2015  
+;;; MDE Thu Aug 13 11:11:16 2015  
 (defmethod change-pitches ((rsb rthm-seq-bar) pitch-list start stop
                            &key written)
   (loop for i from start below stop

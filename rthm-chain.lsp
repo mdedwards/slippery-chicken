@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 09:37:17 Sat Mar 19 2016 GMT
+;;; $$ Last modified: 14:23:43 Tue May 24 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -480,8 +480,9 @@
 |#
 ;;; SYNOPSIS
 (defmethod split ((rc rthm-chain) &key
-                  (min-beats 2) (max-beats 5) warn (clone t))
+                                    (min-beats 2) (max-beats 5) warn (clone t))
 ;;; ****
+  ;; (print 'entering-rc-split)
   (flet ((got-stick-rthm (1-beat-rs slower-rs)
            ;; sticking rthms have ids like STICK-RTHMS-AUTO5 and
            ;; STICK-RTHMS-AUTO-SLOW5
@@ -510,8 +511,9 @@
                          (and (eq 1-beat-name (id 1-beat-rs))
                               (eq slower-name (id slower-rs))))
                    (error "rthm-chain::split: unexpected rthm-seq names.~
-                        ~%Expected ~a and ~a but got ~a and ~a"
-                          1-beat-name slower-name (id 1-beat-rs) (id slower-rs)))
+                           ~%Expected ~a and ~a but got ~a and ~a"
+                          1-beat-name slower-name (id 1-beat-rs)
+                          (id slower-rs)))
                  (unless got-stick
                    (incf rs-main-count))
                ;; (format t "~&before split")
@@ -527,6 +529,7 @@
                         ;; nil 
                         (rs-adopt (adopt-meters 1-beat-rs rs-split
                                                 :is-full-error nil)))
+                   ;; (print rs-split)
                    (if rs-adopt
                        (progn
                          (setf slower-rs rs-split

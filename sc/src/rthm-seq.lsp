@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 17:16:54 Thu May 21 2015 BST
+;;; $$ Last modified: 14:37:56 Tue May 24 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2143,7 +2143,9 @@ RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL,
                            ;;MDE Thu Dec  8 23:55:31 2011 -- changed to key arg
                            ;; :warn nil :is-full-error nil))
                            :warn nil :is-full-error is-full-error))
-               (if temp
+             ;;  MDE Tue May 24 12:59:45 2016 -- fill-with-rhythms will now
+             ;; underfill bars so we need to explicitly check for a full bar 
+               (if (and temp (is-full bar nil))
                    (progn
                      (incf ate temp)
                      (setf (bar-num bar) bar-num ;; (print bar-num)
@@ -2331,7 +2333,7 @@ rthm-seq NIL
              for bar in (bars ret)
              for split-bars = 
                (progn
-                 (unless (and bar (rthm-seq-bar-p bar ))
+                 (unless (and bar (rthm-seq-bar-p bar))
                    (error "bar ~a is not a rthm-seq-bar:~%~a"
                           count bar))
                  (split bar :min-beats min-beats 

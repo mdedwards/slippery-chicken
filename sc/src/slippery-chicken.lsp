@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:08:04 Sat May  7 2016 WEST
+;;; $$ Last modified: 14:31:24 Tue May 24 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8564,10 +8564,17 @@ NOTE 6200 0.6666667
                         last-pitch)
   ;; (print "entering sc-make-sequenz")
   ;; (print instrument-change)
+  ;; (print-simple rthm-seq)
+  ;; (print (bars rthm-seq))
   ;; (print pitch-seq)
   (object-is-nil? rthm-seq "slippery-chicken::sc-make-sequenz" 'rthm-seq)
   ;; (object-is-nil? pitch-seq "slippery-chicken::sc-make-sequenz" 'pitch-seq)
   ;; (print instrument-change)
+  ;; MDE Tue May 24 14:29:01 2016 -- just make sure we've not got any dodgy
+  ;; empty bars
+  (loop for bar in (bars rthm-seq) do
+       (when (and (is-rest-bar bar) (not (rhythms bar)))
+         (force-rest-bar bar)))
   (let* ((sequenz (clone-with-new-class rthm-seq 'sequenz))
          (player-obj (when player
                        (get-player slippery-chicken player)))

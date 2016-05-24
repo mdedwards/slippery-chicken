@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 14:26:56 Sun May  8 2016 WEST
+;;; $$ Last modified: 14:45:13 Tue May 24 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4865,58 +4865,94 @@ Here's where I pasted the data into the .RPP Reaper file:
 (defstruct morph i1 i2 proportion)
 
 (defun morph-list (list &optional first-down (test #'eq))
-  (let* ((rmd (remove-duplicates list))
-         (el1 (first rmd))
-         (el2 (second rmd))
-         (positions (loop for el in list and i from 0
-                       when (funcall test el el2) collect i))
-         (push-el2 nil)
-         (result '()))
-    (unless (= 2 (length rmd))
-      (error "morph-list: list should only have two distinct elements: ~a"
-             list))
-    ;; (print list)
-    ;; (print positions)
-    (flet ((do-em (&rest amounts)
-             (if push-el2
-                 (push el2 result)
-                 (setq push-el2 t))
-             ;; the float (am) is the proportion of the el2 we want
-             ;; so (3 1 0.1) would mean 10% 1 and 90% 3
-             (loop for am in amounts
-                do (push (make-morph :i1 el1 :i2 el2 :proportion am) result))
-             ;;(print result)
-             ))
-      ;; we need el1 at the beginning not el2
-      (push (if first-down (make-morph :i1 el1 :i2 el2 :proportion .9) el1)
-            result)
-      ;; (push 3 result)
-      ;; (print list)
-      (if (= 1 (first positions))
-          (push (if first-down (make-morph :i1 el1 :i2 el2 :proportion .6) el1)
-                result) 
-          (apply #'do-em (down-up (1- (first positions))
-                                  :down first-down)))
-      ;; (push 4 result)
-      (loop for p1 in positions for p2 in (rest positions)
-         for num = (- p2 p1) do
-           ;;; (print num)
-           (case num
-             (1 (push el2 result))
-             (2 (do-em .75))
-             (3 (do-em .7 .85))
-             (4 (do-em .75 .5 .75))
-             (5 (do-em .8 .6 .4 .7))
-             (6 (do-em .8 .6 .3 .6 .8))
-             (7 (do-em .8 .6 .4 .2 .5 .8))
-             (t (apply #'do-em (down-up (1- num))))))
-      (push el2 result)
-      (nreverse result))))
+  (let ((llen (length list)))
+    (if (<= llen 2)
+        list
+        (let* ((rmd (remove-duplicates list))
+               (el1 (first rmd))
+               (el2 (second rmd))
+               (positions (loop for el in list and i from 0
+                             when (funcall test el el2) collect i))
+               (push-el2 nil)
+               (result '()))
+          (unless (= 2 (length rmd))
+            (error "utilities::morph-list: list should only have two distinct ~
+                  elements: ~a" list))
+          ;; (print list)
+          ;; (print positions)
+          (flet ((do-em (&rest amounts)
+                   (if push-el2
+                       (push el2 result)
+                       (setq push-el2 t))
+                   ;; the float (am) is the proportion of the el2 we want
+                   ;; so (3 1 0.1) would mean 10% 1 and 90% 3
+                   (loop for am in amounts
+                      do (push (make-morph :i1 el1 :i2 el2 :proportion am)
+                               result))))
+            ;; we need el1 at the beginning not el2
+            (push (if first-down
+                      (make-morph :i1 el1 :i2 el2 :proportion .9)
+                      el1)
+                  result)
+            ;; (push 3 result)
+            ;; (print list)
+            (if (= 1 (first positions))
+                (push (if first-down
+                          (make-morph :i1 el1 :i2 el2 :proportion .6)
+                          el1)
+                      result)
+                (apply #'do-em (down-up (1- (first positions))
+                                        :down first-down)))
+            ;; (push 4 result)
+            (loop for p1 in positions for p2 in (rest positions)
+               for num = (- p2 p1) do
+               ;; (print num)
+                 (case num
+                   (1 (push el2 result))
+                   (2 (do-em .75))
+                   (3 (do-em .7 .85))
+                   (4 (do-em .75 .5 .75))
+                   (5 (do-em .8 .6 .4 .7))
+                   (6 (do-em .8 .6 .3 .6 .8))
+                   (7 (do-em .8 .6 .4 .2 .5 .8))
+                   (t (apply #'do-em (down-up (1- num))))))
+            (push el2 result)
+            (setq result (reverse result))
+            ;; MDE Tue May 24 11:43:26 2016 -- with lists of length 3, 4, and 5
+            ;; we've not had enough wiggle room to do the morph properly and
+            ;; we'll have one too many el2's at the end of the list so lop them
+            ;; off
+            (unless (= llen (length result))
+              (setq result (subseq result 0 llen)))
+            ;; (format t "~%morph-list: ~a --> ~a" list result)
+            result)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; doesn't include the target at the end by default
+;;; ****f* utilities/down-up
+;;; DATE
+;;; 
+;;; 
+;;; DESCRIPTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defun down-up (steps &key (down t) (up t) (start 1.0d0) (target 0.0d0)
                         (cons nil) (butlast t))
+;;; ****
   (unless (> steps 0)
     (error "down-up: <steps> should be > 1: ~a" steps))
   (when butlast (incf steps))

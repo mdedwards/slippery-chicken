@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 20:29:41 Fri Apr 29 2016 WEST
+;;; $$ Last modified: 17:11:31 Tue May 24 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -439,9 +439,9 @@
                    ;;(print used-notes)
                      (unless note
                        (error "~a~&pitch-seq::get-notes: failed to get a note! ~
-                             ~%index = ~a, lowest = ~a, highest = ~a, ~
-                             num-set-pitches = ~a, offset = ~a, i = ~a, ~
-                             scaler = ~a set = ~a"
+                               ~%index = ~a, lowest = ~a, highest = ~a, ~
+                               num-set-pitches = ~a, offset = ~a, i = ~a, ~
+                               scaler = ~a set = ~a"
                               set-pitches-rm-used index lowest highest 
                               num-set-pitches offset i scaler
                               (pitch-symbols set)))
@@ -483,8 +483,8 @@
                          ((< (1+ index) num-set-pitches)
                           (setf note (nth (1+ index) set-pitches-rm-used)))
                          (t (warn "pitch-seq::get-notes: can't avoid octave; ~
-                                 seq-num: ~a, instrument: ~a, pitches: ~a ~
-                                 used-pitches: ~a, last: ~a"
+                                   seq-num: ~a, instrument: ~a, pitches: ~a ~
+                                   used-pitches: ~a, last: ~a"
                                   seq-num (id instrument) 
                                   (pitch-list-to-symbols 
                                    set-pitches-rm-used)
@@ -500,7 +500,7 @@
                    collect note))
           (when (get-sc-config 'verbose-pitch-selection)
             ;;(print (notes ps))
-            (format t "~&**** For ~a, with pitch-seq ~a ~%and the set ~a:"
+            (format t "~&**** For ~a, with pitch-seq ~a ~%and the set ~a: "
                     (id instrument) (data ps) (id set))
             (print-simple set)
             (format t "~&the following pitches were chosen:~%")

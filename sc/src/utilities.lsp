@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 14:45:13 Tue May 24 2016 WEST
+;;; $$ Last modified: 17:19:01 Tue May 24 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4878,8 +4878,6 @@ Here's where I pasted the data into the .RPP Reaper file:
           (unless (= 2 (length rmd))
             (error "utilities::morph-list: list should only have two distinct ~
                   elements: ~a" list))
-          ;; (print list)
-          ;; (print positions)
           (flet ((do-em (&rest amounts)
                    (if push-el2
                        (push el2 result)
@@ -4894,8 +4892,6 @@ Here's where I pasted the data into the .RPP Reaper file:
                       (make-morph :i1 el1 :i2 el2 :proportion .9)
                       el1)
                   result)
-            ;; (push 3 result)
-            ;; (print list)
             (if (= 1 (first positions))
                 (push (if first-down
                           (make-morph :i1 el1 :i2 el2 :proportion .6)
@@ -4903,10 +4899,8 @@ Here's where I pasted the data into the .RPP Reaper file:
                       result)
                 (apply #'do-em (down-up (1- (first positions))
                                         :down first-down)))
-            ;; (push 4 result)
             (loop for p1 in positions for p2 in (rest positions)
                for num = (- p2 p1) do
-               ;; (print num)
                  (case num
                    (1 (push el2 result))
                    (2 (do-em .75))

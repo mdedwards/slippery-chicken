@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:05:53 Tue May 24 2016 WEST
+;;; $$ Last modified: 14:36:29 Wed May 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -530,7 +530,7 @@
 ;;; that the :before method will similarly remove dynamics so we don't get
 ;;; multiple dynamics attached to a single pitch);
 ;;; b) as of 26/4/16 attach midi controller messages for pedal up/down if you
-;;; attach the marks ped, ped-up, or ped^
+;;; attach the marks ped, ped-up, or ped^, also una corda / tre corde
 ;;; 
 ;;; ARGUMENTS
 ;;; - the event object
@@ -544,20 +544,26 @@
 ;;; 
 ;;; SYNOPSIS
 (defmethod add-mark :after ((e event) mark &optional (update-amplitude t))
-  ;;; ****
+;;; ****
   ;; MDE Tue Apr 26 15:29:55 2016 -- (channel controller-number value)
   ;; with piano pedalling we don't have to worry about the
   ;; microtones-midi-channel as there are no microtones on the piano. so we
   ;; just output on the channel of the first pitch in the case of a chord
-  (flet ((pedal (val)
-           (push (list (get-midi-channel e) 64 val)
+  ;; MDE Wed May 25 12:38:52 2016 -- allow soft and sost pedals also
+  (flet ((pedal (val &optional (controller 64))
+           (push (list (get-midi-channel e) controller val)
                  (midi-control-changes e))))
-    (cond ((eq mark 'ped) (pedal 127))
-          ((eq mark 'ped-up) (pedal 0))
-          ;; up then down
-          ((eq mark 'ped^) (pedal 0) (pedal 127))
-          ((and update-amplitude (is-dynamic mark))
-           (setf (slot-value e 'amplitude) (dynamic-to-amplitude mark)))))
+    (case mark
+      (ped (pedal 127))
+      (ped-up (pedal 0))
+      ;; up then down but we're pushing so reversed
+      (ped^ (pedal 127) (pedal 0))
+      (uc (pedal 127 67))
+      (tc (pedal 0 67))
+      (sost (pedal 127 66))
+      (sost-up (pedal 0 66))
+      (t (when (and update-amplitude (is-dynamic mark))
+           (setf (slot-value e 'amplitude) (dynamic-to-amplitude mark))))))
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

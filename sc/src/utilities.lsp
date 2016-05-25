@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:19:01 Tue May 24 2016 WEST
+;;; $$ Last modified: 19:35:06 Wed May 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1022,15 +1022,16 @@
           nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Returns whether all the elements in the list are atoms (i.e. no sublists)
+;;; Returns whether all the elements in the list are atoms (i.e. no
+;;; sublists). NB passing NIL will result in T 
 (defun simple-listp (list)
   (when (listp list)
     (loop for i in list unless (atom i) do (return nil) finally (return t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; MDE Wed May 25 19:34:59 2016 -- updated so that passing NIL won't return T
 (defun list-of-numbers-p (list)
-  (when (listp list)
+  (when (and list (listp list))
     (loop for i in list
        unless (numberp i) 
        do (return nil)

@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 19:40:53 Sat May  7 2016 WEST
+;;; $$ Last modified: 19:58:02 Wed May 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -977,7 +977,7 @@ data: (
 ;;; - T or NIL to make a morph from item1 to item2. This means morphing items
 ;;;   will be a morph structure. See below for an example. Default = NIL. 
 ;;; - T or NIL to make the morph first go down from item2 to item1 (mainly used
-;;;   by fibobacci-transitions). Default = NIL. 
+;;;   by fibonacci-transitions). Default = NIL. 
 ;;;
 ;;; RETURN VALUE 
 ;;; A list.
@@ -1056,8 +1056,11 @@ data: (
     ;; append the two lists and return.  we can use nreverse (which is more
     ;; efficient) rather than reverse as we won't need the original version of
     ;; result
-    (setq result (append left (nreverse right)))
-    (if morph (morph-list result first-down) result)))
+    (setq result (append left (nreverse right))
+          result (if morph (morph-list result first-down) result))
+    (if (and morph (list-of-numbers-p morph))
+        (morph-env result morph)
+        result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Say you want a transition between two repeating states over a period of x
@@ -1187,11 +1190,11 @@ data: (
 (defun fibonacci-transitions (total-items levels &optional morph)
 ;;; ****
   (let ((len (typecase levels 
-                      (list (length levels))
-                      (integer levels)
-                      (t (error "l-for-lookup::fibonacci-transitions: ~
-                                 levels must be a list or an integer: ~a"
-                                levels)))))
+               (list (length levels))
+               (integer levels)
+               (t (error "l-for-lookup::fibonacci-transitions: ~
+                          levels must be a list or an integer: ~a"
+                         levels)))))
     (when (<= (floor total-items len) 2)
       (error "l-for-lookup::fibonacci-transitions: can't do ~a transitions ~
               over ~a items." total-items len))
@@ -1214,20 +1217,41 @@ data: (
                                    end)
                              (append (if morph (morph-list beg) beg)
                                      result end))))
-          ;; (print beg) (print end)
           ;; convert references to the levels list elements, if given
-          ;; (print transition)
-          (if (listp levels)
-              (loop for el in transition collect
-                   (if (morph-p el)  ; morphing so must be 3 elements in struct
-                       (progn
-                         (setf (morph-i1 el) (nth (morph-i1 el) levels)
-                               (morph-i2 el) (nth (morph-i2 el) levels))
-                         el)
-                       ;;(list (nth (first el) levels) (nth (second el) levels)
-                       ;;    (third el))
-                       (nth el levels)))
+          (setq transition
+                (if (listp levels)
+                    (loop for el in transition collect
+                         (if (morph-p el) ; morphing so 3 elements in struct
+                             (progn
+                               (setf (morph-i1 el) (nth (morph-i1 el) levels)
+                                     (morph-i2 el) (nth (morph-i2 el) levels))
+                               el)
+                             (nth el levels)))
+                    transition))
+          (if (and morph (list-of-numbers-p morph))
+              (morph-env transition morph)
               transition)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed May 25 19:30:04 2016 -- used by fibonacci-transition and
+;;; -transitions to allow morphing to be switched on and off over the course of
+;;; the transition. The envelope can have any x range but the y-range should be
+;;; from 0 to 1. Any value < 1 means the morph object will be ignored and
+;;; either the :i1 or :i2 slot will be used instead, depending on whether the
+;;; :proportion slot is > 0.5
+(defun morph-env (list env)
+  (let* ((len (length list))
+         (envl (new-lastx env (1- len))))
+    (loop for i from 0
+       for v in list
+       for enval = (interpolate i envl)
+       collect (if (morph-p v)
+                   (if (>= enval 1.0)
+                       v
+                       (if (> (morph-proportion v) 0.5)
+                           (morph-i2 v)
+                           (morph-i1 v)))
+                   v))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 15:56:09 Thu Apr 28 2016 WEST
+;;; $$ Last modified: 14:16:05 Wed May 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -247,6 +247,10 @@
            ;; 2.3.11
            ;; write sost. pedal as text (usually held for long time so brackets
            ;; not a good idea)
+           ;; MDE Wed May 25 12:40:57 2016 -- update: do use the LP
+           ;; sost. brackets after all
+           (sost "\\sostenutoOn ")
+           (sost-up "\\sostenutoOff ")
            (ped "\\sustainOn ")
            (ped^ "\\sustainOff\\sustainOn ")
            (ped-up "\\sustainOff ")

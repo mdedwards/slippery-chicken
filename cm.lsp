@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 15:21:55 Tue Apr 26 2016 WEST
+;;; $$ Last modified: 12:51:20 Wed May 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1072,7 +1072,7 @@
 
 ;;; ****f* cm/parse-midi-file
 ;;; DESCRIPTION
-;;; Print the MIDI event slots in the specified file to the Lisp listener.
+;;; Return Common Music MIDI events in the specified file as a list.
 ;;;
 ;;; NB: This is a Common Music function and as such must be called with the
 ;;;     package qualifier cm:: if used within slippery chicken.
@@ -1088,7 +1088,8 @@
 ;;;   "channel" here. 
 ;;;
 ;;; RETURN VALUE  
-;;; The CM data for the MIDI events in the specified file, and the number of events.
+;;; The CM data for the MIDI events in the specified file, and the number of
+;;; events. 
 ;;;
 ;;; EXAMPLE
 #|

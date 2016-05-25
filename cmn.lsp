@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 15:57:08 Thu Apr 28 2016 WEST
+;;; $$ Last modified: 14:17:51 Wed May 25 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -334,6 +334,8 @@
              (ped-up (list (-pedal)))
              (uc (list (sc-cmn-text "una corda")))
              (tc (list (sc-cmn-text "tre corde")))
+             (sost (list (sc-cmn-text "sost.")))
+             (sost-up (list (sc-cmn-text "sost.up")))
              (t (unless silent
                   (error "cmn::get-cmn-marks: unrecognised mark: ~a" mark)))))
           (string (list (sc-cmn-text mark)))

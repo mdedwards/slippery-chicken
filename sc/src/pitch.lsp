@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 16:40:26 Thu May 26 2016 WEST
+;;; $$ Last modified: 17:59:37 Thu May 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3465,23 +3465,30 @@ data: D1
 ;;; MDE Thu May 26 16:03:07 2016 -- pitch-list could also be events
 (defun add-auxiliary-notes-aux (pitch-list &key (num-notes 3) (interval 1)
                                              ignore (activity-level 5)
-                                             destructively)
+                                             destructively verbose)
   (let* ((igns (loop for p in (force-list ignore) collect
                     (frequency (make-pitch p))))
          (most-used (hash-least-useds (pitch-list-stats pitch-list)
                                       :ignore igns :num num-notes
                                       :auto-inc nil :invert t))
          (result '())
-         (als (ml (make-al 2) num-notes)))
+         (als (loop repeat num-notes collect (make-al 2))))
     (loop for thing in pitch-list
        for freq = (get-freq thing)
        for pos = (position freq most-used)
        do
          (push (if (and (atom freq)     ; don't fiddle with chords
-                        (print pos)
-                        (print (active (nth pos als) activity-level)))
+                        pos
+                        (active (nth pos als) activity-level))
                    (if (event-p thing)
-                       (transpose thing interval :destructively destructively)
+                       (prog2
+                         (when verbose
+                           (format t "~&At bar ~a, transposing ~a "
+                                   (bar-num thing) (get-pitch-symbol thing)))
+                           (transpose thing interval
+                                      :destructively destructively)
+                         (when verbose
+                           (format t "to ~a" (get-pitch-symbol thing))))
                        (transpose thing interval))
                    thing)
                result))

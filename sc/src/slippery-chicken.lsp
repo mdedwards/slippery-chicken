@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:03:15 Tue May 24 2016 WEST
+;;; $$ Last modified: 17:54:20 Thu May 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7130,7 +7130,7 @@ FS4 G4)
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
 ;;; - a single symbol or list of symbols representing the players from the
-;;; ensemble. 
+;;; ensemble. If nil all players will be processed.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
@@ -7149,6 +7149,8 @@ FS4 G4)
 (defmethod get-phrases ((sc slippery-chicken) players
                         &key start-bar end-bar pad)
 ;;; ****
+  (unless players
+    (setf players (players sc)))
   (unless (listp players)
     (setf players (list players)))
   (unless start-bar

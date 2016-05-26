@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:45:02 Thu May 26 2016 WEST
+;;; $$ Last modified: 17:57:04 Thu May 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3284,10 +3284,10 @@ data: C4
       0.0
       (let* ((poc (if written
                       (written-pitch-or-chord e)
-                      (pitch-or-chord e)))
-             (if (is-chord e)
-                 (loop for p in (data poc) collect (frequency p)))
-             (if force-list (list (frequency poc)) (frequency poc))))))
+                      (pitch-or-chord e))))
+        (if (is-chord e)
+            (loop for p in (data poc) collect (frequency p))
+            (if force-list (list (frequency poc)) (frequency poc))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

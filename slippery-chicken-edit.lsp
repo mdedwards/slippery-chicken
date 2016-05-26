@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 16:21:59 Thu May 26 2016 WEST
+;;; $$ Last modified: 18:34:41 Thu May 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5784,36 +5784,60 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 
 ;;; ****m* slippery-chicken-edit/add-auxiliary-notes
 ;;; DATE
-;;; 
+;;; May 26th 2016, Edinburgh
 ;;; 
 ;;; DESCRIPTION
-;;; 
+;;; Analyses phrase by phrase to find the most frequent X notes then changes
+;;; some of them (according to an activity-levels object) to auxiliary notes
+;;; (up a semitone by default). Chords are ignored.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - the slippery-chicken object
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments
+;;; - :players. A single player (symbol) or list of players to process. If NIL
+;;;    then all players will be processed.
+;;; - :start-bar. An integer indicating the bar in which the processes should
+;;;    start. Default = NIL which means we'll start at the beginning.
+;;; - :end-bar. An integer indicating the bar in which the processes should
+;;;    stop. Default = NIL which means we'll process through to the end
+;;; - :verbose. T or NIL to print information about the pitch changes during
+;;;    the process. Default = NIL.
+;;; - :ignore. A symbol or pitch-object (or list thereof) to represent pitches
+;;;    which should not be processed. Default = NIL = process (potentially) all
+;;;    pitches. 
+;;; - :activity-level. Whether to change the note is decided by an
+;;;   activity-levels object. This argument determines the 'level' argument used
+;;;   in that class's active method. Default = 5 = 50% of the notes will be
+;;;   changed. NB The activity-levels object will be reinitialised for each
+;;;   phrase so the 50/50 spread might not be obvious.
+;;; - :num-notes. The number of notes to process per phrase. We calculate the
+;;;   most used pitches in every phrase then use this number of pitches to add
+;;;   auxiliaries to. Default = 3.
+;;; - :intervals. The intervals that the original pitches will be transposed by
+;;;   to create the auxiliary notes. This can be a single value in semitones or
+;;;   a list of values. The list does not have to have the same length as
+;;;   :num-notes as it will be cycled through when necessary. Default = 1.
 ;;; 
 ;;; RETURN VALUE
+;;; T
 ;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defmethod add-auxiliary-notes ((sc slippery-chicken)
                                 &key players start-bar end-bar
-                                  num-notes (intervals '(1)))
+                                  verbose ignore (activity-level 5)
+                                  (num-notes 3) (intervals 1))
 ;;; ****
   (let ((phrases (get-phrases sc players :start-bar start-bar
                               :end-bar end-bar))
-        (ints (make-cscl intervals)))
+        (ints (make-cscl (force-list intervals))))
     (loop for player in phrases do
          (loop for phrase in player do
               (add-auxiliary-notes-aux phrase :num-notes num-notes
-                                       :destructively t
+                                       :destructively t :verbose verbose
+                                       :activity-level activity-level
+                                       :ignore ignore
                                        :interval (get-next ints)))))
   t)
 

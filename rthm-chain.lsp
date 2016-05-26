@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 14:23:43 Tue May 24 2016 WEST
+;;; $$ Last modified: 15:09:38 Thu May 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1740,22 +1740,22 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;; SYNOPSIS
 (defun procession (num-results items 
                    &key 
-                   ;; what proportion of the way through should we aim to reach
-                   ;; the max number of items?  NB This is approximate only:
-                   ;; you may find the first occurrence of the highest element
-                   ;; earlier or later depending on the values of the other
-                   ;; arguments.  In particular, with a low number of items the
-                   ;; highest element will be hit very early on, perhaps
-                   ;; nowhere near the peak argument.
-                   (peak 0.7)
-                   ;; for an exponential curve going from 3 to num <items>
-                   (expt 1.3)
-                   ;; these are the orders we'll use at the beginning
-                   ;; (cyclically). They will then be used when we've gone
-                   ;; beyond 3 items by always using the 3 least used items.
-                   ;; NB This must contain the numbers 1, 2, and 3 only but
-                   ;; there can be 1 or any number of sublists. 
-                   (orders '((1 2 1 2 3) (1 2 1 1 3) (1 2 1 3))))
+                     ;; what proportion of the way through should we aim to reach
+                     ;; the max number of items?  NB This is approximate only:
+                     ;; you may find the first occurrence of the highest element
+                     ;; earlier or later depending on the values of the other
+                     ;; arguments.  In particular, with a low number of items the
+                     ;; highest element will be hit very early on, perhaps
+                     ;; nowhere near the peak argument.
+                     (peak 0.7)
+                     ;; for an exponential curve going from 3 to num <items>
+                     (expt 1.3)
+                     ;; these are the orders we'll use at the beginning
+                     ;; (cyclically). They will then be used when we've gone
+                     ;; beyond 3 items by always using the 3 least used items.
+                     ;; NB This must contain the numbers 1, 2, and 3 only but
+                     ;; there can be 1 or any number of sublists. 
+                     (orders '((1 2 1 2 3) (1 2 1 1 3) (1 2 1 3))))
 ;;; ****
   ;; MDE Thu May  9 11:05:05 2013 -- check orders for wrong numbers
   (loop for o in orders do
@@ -1782,7 +1782,6 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
            ;; item is used so we can always select the 3 least used
            (hash (make-hash-table))
            (count 0)
-           (ignore '())
            (3least '())
            (spread '())
            (result '()))
@@ -1796,23 +1795,15 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
          ;; cyclically get the next order from our user-given or default data
          for order = (get-next orders-cscl)
          do
-         ;; once we've got the first least-used item we need to avoid getting
-         ;; it again next time so keep track of this in <ignore>
-           (setf ignore '()
-                 ;; now get the three least used items
-                 3least
+         ;; now get the three least used items
+           (setf 3least
                  ;; as we'll be using each item more than once (see <orders>)
                  ;; don't auto-inc, rather inc each time we use it (below).
-                 (loop for least = (hash-least-used hash :end max :ignore ignore
-                                                    :auto-inc nil)
-                    repeat 3
-                    collect least
-                    do
-                    ;; don't use again
-                      (push least ignore))
-                 ;; we have to sort from highest to lowest so that the use of
-                 ;; <orders> makes sense even when we've gone beyond the first 3
-                 3least (sort 3least #'<))
+                 (sort (hash-least-useds hash :end max :auto-inc nil)
+                       ;; we have to sort from highest to lowest so that the
+                       ;; use of <orders> makes sense even when we've gone
+                       ;; beyond the first 3
+                       #'<))
          ;; now map the 3 least used items onto our current <order>
            (loop for i in order 
               for itemi = (nth (1- i) 3least)
@@ -1873,20 +1864,14 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Jun 12 22:50:17 BST 2012: Started robodoc entry; moved MDE's
-;;; original comments down into the doc.
-;;; SAR Wed Jun 13 11:50:11 BST 2012: Slight mods to the robodoc entry
-;;; SAR Sat Jun 16 22:41:16 BST 2012: Added example from ut
-
 ;;; ****f* rthm-chain/hash-least-used
 ;;; DESCRIPTION
 ;;; Return the least used key in a hash table. This may be used to retrieve the
 ;;; number of times the keys have been used as indices, for example.
 ;;; 
 ;;; ARGUMENTS
-;;; - A hash table. This must be a lisp hash table object whose keys are all
-;;;   integers and whose values are all numbers.
+;;; - A hash table. This must be a lisp hash table object whose keys and values
+;;;   are all numbers.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
@@ -1898,9 +1883,11 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;; - :auto-inc. T or NIL to determine whether the function will automatically
 ;;;   increment the count of the returned key. T = automatically increment. 
 ;;;   Default = T.
+;;; - :invert. T or NIL to invert the functionality i.e. to return the most
+;;;   used rather than the least. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; The hash least used.
+;;; The key of the least used element in the hash table.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -1928,20 +1915,17 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 11 
 2 
 13
-
-
 |#
 ;;; SYNOPSIS
-(defun hash-least-used (hash &key (start 0) end ignore (auto-inc t))
+(defun hash-least-used (hash &key (start 0) end ignore (auto-inc t)
+                               invert)
 ;;; ****
-  (unless end
-    (setf end (hash-table-count hash)))
-  (let ((count most-positive-fixnum)
+  (let ((count (if invert most-negative-fixnum most-positive-fixnum))
         result)
     ;; don't forget that the keys could be in any order i.e. unsorted
     (maphash #'(lambda (key val)
                  (when (and (>= key start)
-                            (<= key end)
+                            (or (not end) (<= key end))
                             (not (member key ignore))
                             ;; MDE Mon Dec 19 19:36:15 2011 -- in order to get
                             ;; the same result across different lisps, and
@@ -1949,15 +1933,37 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
                             ;; order, we choose the key with the lowest value
                             ;; should several have the same value.
                             (or 
-                             (and (= val count)
-                                  (< key result))
-                             (< val count)))
+                             (and count result (= val count) (< key result))
+                             (funcall (if invert #'> #'<) val count)))
                    (setf count val
                          result key)))
              hash)
     (when auto-inc
       (incf (gethash result hash)))
     result))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* rthm-chain/hash-least-useds
+;;; DATE
+;;; Mary 26th 2016, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Same as hash-least-used except it will return the <num> least used items (3
+;;; by default).
+;;; 
+;;; SYNOPSIS
+(defun hash-least-useds (hash &key (start 0) end ignore (auto-inc t)
+                                invert (num 3))
+;;; ****
+  (loop with ign = (copy-list ignore)
+     for least = (hash-least-used hash :start 0 :end end
+                                  :ignore ign :invert invert
+                                  :auto-inc auto-inc)
+     repeat num
+     collect least
+     do
+     ;; don't use again
+       (push least ign)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

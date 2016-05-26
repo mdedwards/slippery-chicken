@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 19:00:53 Sat May  7 2016 WEST
+;;; $$ Last modified: 12:17:21 Thu May 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -238,9 +238,7 @@ WARNING:
 ;;; ****
   (if (palette scm)
       (let ((all-refs (get-all-refs scm)))
-        (loop 
-           for ref in all-refs 
-           append (get-data-from-palette ref scm)))
+        (loop for ref in all-refs append (get-data-from-palette ref scm)))
       (warn "sc-map::get-all-data-from-palette: palette slot is nil so can't ~
            return data from it.")))
 
@@ -338,6 +336,8 @@ data: (SET1 SET3 SET2)
 ;;; ****
   (let* ((palette-ref (get-data ids scm warn))
          (palette-ref-data (when palette-ref (data palette-ref))))
+    (print ids)
+    (print palette-ref)
     (cond ((not (palette scm))
            ;; MDE Thu Feb 23 10:52:44 2012 -- just return the get-data call if
            ;; there's no palette, but indicate something in the second returned
@@ -345,7 +345,7 @@ data: (SET1 SET3 SET2)
            (values palette-ref 'no-palette))
           ;; often an sc-map has multiple references to a palette stored for any
           ;; given key(s) so palette-ref-data is a list of references; if so,
-          ;; give them all back
+          ;; give them all back 
           ((list-of-refs-p palette-ref-data)
            (get-data-from-palette-aux palette-ref-data scm))
           ((assoc-list-id-p palette-ref-data)
@@ -921,13 +921,13 @@ data: (SET3 SET1 SET2)
 (defun list-of-refs-p (candidate)
   (when (listp candidate)
     (loop for i in candidate with ok do
-          (setf ok
-            (if (listp i)
-                (list-of-refs-p i)
-              (assoc-list-id-p i)))
-          (unless ok
-            (return nil))
-        finally (return t))))
+         (setf ok
+               (if (listp i)
+                   (list-of-refs-p i)
+                   (assoc-list-id-p i)))
+         (unless ok
+           (return nil))
+       finally (return t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    February 19th 2001
 ;;;
-;;; $$ Last modified: 15:30:25 Mon Mar 14 2016 GMT
+;;; $$ Last modified: 17:08:23 Thu May 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -120,6 +120,12 @@
       (incf (current cscl))
       (when (= (current cscl) (sclist-length cscl))
         (setf (current cscl) 0)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod get-current ((cscl circular-sclist))
+  (when (data cscl)
+    (get-nth (current cscl) cscl)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

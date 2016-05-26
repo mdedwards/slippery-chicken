@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 14:12:40 Sun May  8 2016 WEST
+;;; $$ Last modified: 16:21:59 Thu May 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5779,6 +5779,43 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
       ;; just to make sure the tied-to notes are the same as the attacked
       (check-ties sc)
       sc)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* slippery-chicken-edit/add-auxiliary-notes
+;;; DATE
+;;; 
+;;; 
+;;; DESCRIPTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod add-auxiliary-notes ((sc slippery-chicken)
+                                &key players start-bar end-bar
+                                  num-notes (intervals '(1)))
+;;; ****
+  (let ((phrases (get-phrases sc players :start-bar start-bar
+                              :end-bar end-bar))
+        (ints (make-cscl intervals)))
+    (loop for player in phrases do
+         (loop for phrase in player do
+              (add-auxiliary-notes-aux phrase :num-notes num-notes
+                                       :destructively t
+                                       :interval (get-next ints)))))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

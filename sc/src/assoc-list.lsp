@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 14:38:27 Mon Feb  1 2016 GMT
+;;; $$ Last modified: 12:17:44 Thu May 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -962,6 +962,8 @@ data: PIG)
   (when id
     (or (symbolp id)
         (stringp id)
+        ;; MDE Thu May 26 12:17:33 2016
+        (morph-p id)
         (numberp id))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

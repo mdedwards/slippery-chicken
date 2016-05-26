@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 11:10:51 Wed Jul  1 2015 BST
+;;; $$ Last modified: 17:29:43 Thu May 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -111,7 +111,8 @@
              (make-cscl (loop for ten in level 
                            collect (make-cscl ten)))))
   ;; got to do this so get-last returns the first ... doh!
-  (loop for l in (data al) do (reset l 1)))
+  ;; (loop for l in (data al) do (reset l 1)))
+  )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -131,13 +132,13 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; start-at: should be between 0 and 2; it indicates which of the 10-lists
-;;; we're going to start with.  Default = 1.
+;;; we're going to start with.  Default = 0.
 ;;; 
 ;;; RETURN VALUE
 ;;; T
 ;;;
 ;;; SYNOPSIS
-(defmethod reset ((al activity-levels) &optional (start-at 1) ignore)
+(defmethod reset ((al activity-levels) &optional (start-at 0) ignore)
 ;;; ****
   (declare (ignore ignore))
   (unless (and (>= start-at 0) 
@@ -206,8 +207,9 @@
             ((and (>= level 0)
                   (<= level max))
              (let* ((l (nth (1- level) (data al))) ; the cscl with 3 sublists
-                    (lcurrent (get-last l))        ; the 10 1s or 0s
+                    (lcurrent (get-current l))      ; the 10 1s or 0s
                     (result (get-next lcurrent)))
+               ;;(print (data lcurrent))
                (when (at-start lcurrent)
                  ;; we don't actually use the value this returns, we just make
                  ;; sure we go to the next list of 10 1s/0s 
@@ -238,7 +240,7 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; start-at (default NIL): which of the three 10-element lists to start with
-;;; (reset to).  Should be 1, 2, or 3 though if NIL will default to 1.
+;;; (reset to).  Should be 0, 1, or 2 though if NIL will default to 1.
 ;;; 
 ;;; RETURN VALUE
 ;;; The activities-level object.

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 17:10:25 Tue May 24 2016 WEST
+;;; $$ Last modified: 17:28:18 Thu May 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2081,7 +2081,7 @@ data: (
 ;;; ****
   (unless (number-between amount 0.0 1.0)
     (error "chord::morph: <amount> must be between 0.0 and 1.0: ~a" amount))
-  (let* ((al (make-al 2))
+  (let* ((al (make-al 1))
          ;; we'll only be accurate up to 1 decimal place but as as there won't
          ;; be that many notes in the chords anyway I don't think this will be
          ;; an issue (plus deterministic activity-levels objects are a good way

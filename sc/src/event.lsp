@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:36:29 Wed May 25 2016 WEST
+;;; $$ Last modified: 13:45:02 Thu May 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3253,6 +3253,41 @@ data: C4
     (cond (sum summed)
           (average (float (/ summed (length list))))
           (t list))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* event/get-frequency
+;;; DATE
+;;; May 26th 2016, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Return the frequency of the event's pitch, or a list of frequencies if it's
+;;; a chord.
+;;; 
+;;; ARGUMENTS
+;;; - the event object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :written. T or NIL to indicate whether to use the written (in the case of
+;;;   transposing instruments) or sounding pitches. T = written. Default = NIL.
+;;; - :force-list. T or NIL to force a single pitch's frequency into a
+;;;   list. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; A single frequency (float) or list of frequencies in the case of a chord.
+;;; 
+;;; SYNOPSIS
+(defmethod get-frequency ((e event) &key written force-list)
+;;; ****
+  (if (is-rest e)
+      0.0
+      (let* ((poc (if written
+                      (written-pitch-or-chord e)
+                      (pitch-or-chord e)))
+             (if (is-chord e)
+                 (loop for p in (data poc) collect (frequency p)))
+             (if force-list (list (frequency poc)) (frequency poc))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

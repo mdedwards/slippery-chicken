@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 13:25:45 Mon Apr 25 2016 WEST
+;;; $$ Last modified: 16:40:26 Thu May 26 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3433,6 +3433,60 @@ data: D1
                  itp p
                  distance d))
        finally (return (values itp it)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun get-freq (thing)
+  (typecase thing
+    (integer (midi-to-freq thing))
+    (float thing)
+    (symbol (frequency (make-pitch thing)))
+    (pitch (frequency thing))
+    (event (get-frequency thing))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May 26 12:51:38 2016. Handles note symbols, pitch objects, and
+;;; events (chords or single pitches) and treats integers as MIDI pitch and
+;;; floats as frequencies
+(defun pitch-list-stats (pitch-list)
+  (let ((hash (make-hash-table))
+        (freqs '()))
+    (loop for thing in pitch-list
+       for freq = (get-freq thing)
+       do (if (listp freq)              ; chords
+              (loop for f in freq do (push f freqs))
+              (push freq freqs)))
+    (loop for freq in freqs do
+         (if (gethash freq hash)
+             (incf (gethash freq hash))
+             (setf (gethash freq hash) 1)))
+    hash))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu May 26 16:03:07 2016 -- pitch-list could also be events
+(defun add-auxiliary-notes-aux (pitch-list &key (num-notes 3) (interval 1)
+                                             ignore (activity-level 5)
+                                             destructively)
+  (let* ((igns (loop for p in (force-list ignore) collect
+                    (frequency (make-pitch p))))
+         (most-used (hash-least-useds (pitch-list-stats pitch-list)
+                                      :ignore igns :num num-notes
+                                      :auto-inc nil :invert t))
+         (result '())
+         (als (ml (make-al 2) num-notes)))
+    (loop for thing in pitch-list
+       for freq = (get-freq thing)
+       for pos = (position freq most-used)
+       do
+         (push (if (and (atom freq)     ; don't fiddle with chords
+                        (print pos)
+                        (print (active (nth pos als) activity-level)))
+                   (if (event-p thing)
+                       (transpose thing interval :destructively destructively)
+                       (transpose thing interval))
+                   thing)
+               result))
+    (nreverse result)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF pitch.lsp

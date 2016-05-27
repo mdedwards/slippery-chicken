@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 19:58:02 Wed May 25 2016 WEST
+;;; $$ Last modified: 17:16:29 Fri May 27 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -977,7 +977,8 @@ data: (
 ;;; - T or NIL to make a morph from item1 to item2. This means morphing items
 ;;;   will be a morph structure. See below for an example. Default = NIL. 
 ;;; - T or NIL to make the morph first go down from item2 to item1 (mainly used
-;;;   by fibonacci-transitions). Default = NIL. 
+;;;   by fibonacci-transitions). This can also be an envelope (see
+;;;   fibonacci-transitions for details). Default = NIL. 
 ;;;
 ;;; RETURN VALUE 
 ;;; A list.
@@ -1157,6 +1158,15 @@ data: (
 ;;;   - A list of items of any type (including lists) through which the
 ;;;     function is to transition.
 ;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to make a morph from item1 to item2, 2 to 3, etc.. This means
+;;;   morphing items will be a morph structure. This can also be an envelope
+;;;   which thus allows morphing to be switched on and off over the course of
+;;;   the transition. The envelope can have any x range but the y-range should
+;;;   be from 0 to 1. Any value < 1 means the morph object will be ignored and
+;;;   either the :i1 or :i2 slot will be used instead, depending on whether the
+;;;   :proportion slot is > 0.5
+;;;
 ;;; RETURN VALUE  
 ;;; A list.
 ;;; 
@@ -1185,6 +1195,45 @@ data: (
     (3 2 1) (4 5 4) (3 2 1) (4 5 4) (3 2 1) (4 5 4) (3 2 1) (3 2 1) (3 2 1)
     (4 5 4) (3 2 1) (3 2 1) (3 2 1) (3 2 1) (3 2 1) (3 2 1) (3 2 1) (3 2 1))
 
+;; using morph
+(fibonacci-transitions 52 '(1 2 3) t)
+=> (1 #S(MORPH :I1 1 :I2 2 :PROPORTION 0.16666666666666666d0)
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.3333333333333333d0)
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.5d0)
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.6666666666666666d0)
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.8333333333333333d0) 2
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.9) 
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.5d0)
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.0d0)
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.5d0) 2
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.7) 
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.85) 2
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.75) 2 2 2
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.75) 2
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.75) 2 2 2 2
+      #S(MORPH :I1 2 :I2 3 :PROPORTION 0.25d0)
+      #S(MORPH :I1 2 :I2 3 :PROPORTION 0.5d0)
+      #S(MORPH :I1 2 :I2 3 :PROPORTION 0.75d0) 3
+      #S(MORPH :I1 2 :I2 3 :PROPORTION 0.7) 
+      #S(MORPH :I1 2 :I2 3 :PROPORTION 0.85) 3
+      #S(MORPH :I1 2 :I2 3 :PROPORTION 0.75) 3 3
+      #S(MORPH :I1 2 :I2 3 :PROPORTION 0.75) 3
+      #S(MORPH :I1 2 :I2 3 :PROPORTION 0.75) 3 3 3
+      #S(MORPH :I1 2 :I2 3 :PROPORTION 0.75) 3 3 3 3 3 3 3 3 3)
+
+;; using morph and a morph envelope
+(fibonacci-transitions 52 '(1 2 3 3)  '(0 0 10 1 52 1))
+=> (1 1 1 1 2 2 2 2 1 1 1 2 #S(MORPH :I1 1 :I2 2 :PROPORTION 0.7)
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.85) 2
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.75) 2 2 2
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.75) 2
+      #S(MORPH :I1 1 :I2 2 :PROPORTION 0.75) 2 2 2 2 2 2 3 3
+      #S(MORPH :I1 2 :I2 3 :PROPORTION 0.7) 
+      #S(MORPH :I1 2 :I2 3 :PROPORTION 0.85) 3
+      #S(MORPH :I1 2 :I2 3 :PROPORTION 0.75) 3 3
+      #S(MORPH :I1 2 :I2 3 :PROPORTION 0.75) 3
+      #S(MORPH :I1 2 :I2 3 :PROPORTION 0.75) 3 3 3
+      #S(MORPH :I1 2 :I2 3 :PROPORTION 0.75) 3 3 3 3 3 3 3 3 3)
 |#
 ;;; SYNOPSIS
 (defun fibonacci-transitions (total-items levels &optional morph)

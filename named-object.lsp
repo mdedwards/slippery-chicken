@@ -31,7 +31,7 @@
 ;;;
 ;;; Creation date:    4th December 2000
 ;;;
-;;; $$ Last modified: 17:47:23 Mon Aug 25 2014 BST
+;;; $$ Last modified: 17:04:44 Fri May 27 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -179,7 +179,11 @@
 ;;; define it for some. 
 (defmethod reset ((no named-object) &optional ignore1 ignore2)
   (declare (ignore no ignore1 ignore2)))
-  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod morph ((no1 named-object) (no2 named-object) amount)
+  (warn "No morph method defined for objects such as ~&~a" no1))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

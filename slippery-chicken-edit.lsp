@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 18:34:41 Thu May 26 2016 WEST
+;;; $$ Last modified: 17:44:29 Fri May 27 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5781,7 +5781,6 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
       sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* slippery-chicken-edit/add-auxiliary-notes
 ;;; DATE
 ;;; May 26th 2016, Edinburgh

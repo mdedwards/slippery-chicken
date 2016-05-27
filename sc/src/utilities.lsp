@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 19:35:06 Wed May 25 2016 WEST
+;;; $$ Last modified: 17:35:48 Fri May 27 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4852,6 +4852,7 @@ Here's where I pasted the data into the .RPP Reaper file:
 |#
 ;;; SYNOPSIS
 (defun between-extremes (min max progress)
+;;; ****  
   (+ min (* progress (- max min))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

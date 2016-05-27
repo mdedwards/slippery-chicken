@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 12:17:21 Thu May 26 2016 WEST
+;;; $$ Last modified: 17:01:40 Fri May 27 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -969,7 +969,9 @@ data: (SET3 SET1 SET2)
                           ;; MDE Sat May  7 17:52:21 2016 -- for set-palettes
                           ;; we now allow a morph of two and these are
                           ;; indicated by a structure like  #S(MORPH :I1
-                          ;; (12) :I2 (7) :PROPORTION 0.75) (7) 
+                          ;; (12) :I2 (7) :PROPORTION 0.75) (7). If there's a
+                          ;; morph method defined for other classes then that
+                          ;; will work transparently also. 
                           (if (morph-p ref)
                               (progn
                                 (unless (get-data (morph-i1 ref) palette nil)

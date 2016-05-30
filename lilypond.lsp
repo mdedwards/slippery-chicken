@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 14:16:05 Wed May 25 2016 WEST
+;;; $$ Last modified: 18:13:57 Mon May 30 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -251,6 +251,7 @@
            ;; sost. brackets after all
            (sost "\\sostenutoOn ")
            (sost-up "\\sostenutoOff ")
+           (sost^ "\\sostenutoOff\\sostenutoOn ")
            (ped "\\sustainOn ")
            (ped^ "\\sustainOff\\sustainOn ")
            (ped-up "\\sustainOff ")

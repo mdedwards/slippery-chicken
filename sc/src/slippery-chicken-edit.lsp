@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 17:44:29 Fri May 27 2016 WEST
+;;; $$ Last modified: 19:06:02 Mon May 30 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5662,7 +5662,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; function will be used to create the replacement chord.
 ;;;
 ;;; NB If you're interested in instrument/players statistics like tessitura
-;;; you'll have to call update-slots after you're done calling this and rleated
+;;; you'll have to call update-slots after you're done calling this and related
 ;;; methods.
 ;;; 
 ;;; ARGUMENTS
@@ -5689,7 +5689,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
         last-event-chord event-chord find-new poc new-poc)
     (flet ((warn-failed (e)
              (warn "slippery-chicken-edit::rm-repeated-pitches: ~%~
-                            Skipping: Failed to find new pitch(es) at bar ~a."
+                    Skipping: Failed to find new pitch(es) at bar ~a."
                    (bar-num e))))
       (loop for event = (next-event sc player t nil end-bar) while event do
          ;; make even single pitches chords so that we can get common notes
@@ -5699,9 +5699,10 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
                  new-poc (clone poc)
                  event-chord (make-chord poc)
                  find-new nil)
-           (when (common-notes event-chord last-event-chord)
+           (unless (zerop (common-notes event-chord last-event-chord))
              ;; if we've got a chord...only ever change the current event, not
              ;; the last
+             ;; (print (bar-num event))
              (if (is-chord event)
                  (progn
                    (rm-pitches new-poc

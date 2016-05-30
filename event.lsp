@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:57:04 Thu May 26 2016 WEST
+;;; $$ Last modified: 14:35:47 Mon May 30 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3273,12 +3273,13 @@ data: C4
 ;;;   transposing instruments) or sounding pitches. T = written. Default = NIL.
 ;;; - :force-list. T or NIL to force a single pitch's frequency into a
 ;;;   list. Default = NIL.
+;;; - :average. T or NIL to make chords average their frequency.
 ;;; 
 ;;; RETURN VALUE
 ;;; A single frequency (float) or list of frequencies in the case of a chord.
 ;;; 
 ;;; SYNOPSIS
-(defmethod get-frequency ((e event) &key written force-list)
+(defmethod get-frequency ((e event) &key written force-list average)
 ;;; ****
   (if (is-rest e)
       0.0
@@ -3286,7 +3287,11 @@ data: C4
                       (written-pitch-or-chord e)
                       (pitch-or-chord e))))
         (if (is-chord e)
-            (loop for p in (data poc) collect (frequency p))
+            (if average
+                (/ (loop for p in (data poc) sum (frequency p))
+                   (sclist-length poc))
+                (loop for p in (data poc) collect (frequency p)))
+            ;; single pitch
             (if force-list (list (frequency poc)) (frequency poc))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

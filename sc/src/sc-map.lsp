@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 17:01:40 Fri May 27 2016 WEST
+;;; $$ Last modified: 17:30:57 Mon Jun  6 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -243,17 +243,11 @@ WARNING:
            return data from it.")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; See comment at head of class.
-
-;;; SAR Sun Mar  4 10:31:07 GMT 2012: Edited robodoc entry
-;;; SAR Wed Feb  8 16:08:21 GMT 2012: Added robodoc entry
-
 ;;; ****m* sc-map/get-data-from-palette
 ;;; DESCRIPTION
 ;;; Given an sc-map object that has been bound to a palette object of any type,
-;;; return the palette data contained allocated to the location within the
-;;; given sc-map object as specified by the <IDs> argument.
+;;; return the palette data contained at the location within the given sc-map
+;;; object as specified by the <IDs> argument. 
 ;;; 
 ;;; Deeper levels of the map can be accessed by specifying a path of IDs into
 ;;; the given sc-map object.

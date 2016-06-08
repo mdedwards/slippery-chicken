@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:54:20 Thu May 26 2016 WEST
+;;; $$ Last modified: 14:16:48 Tue Jun  7 2016 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3900,7 +3900,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   Default = NIL.
 ;;; - :force-velocity. Either: an integer between 0 and 127 (inclusive) that is
 ;;;   the MIDI velocity value which will be given to all notes in the resulting
-;;;   MIDI file, or a function which takes an event argument and
+;;;   MIDI file, or a function which takes an event object argument and
 ;;;   returns an amplitude from it (e.g. randomising the existing amplitude
 ;;;   slightly). Default = NIL.
 ;;; - :auto-open. Whether to open the MIDI file once written. Currently only
@@ -3946,6 +3946,13 @@ seq-num 5, VN, replacing G3 with B6
              :midi-file "/tmp/md-test.mid"
              :voices '(cl vc)
              :start-section 2))
+
+;;; An example that passes a (lambda) function to :force-velocity. Usually, by
+;;; default event amplitudes between 0.0 and 1.0 will map onto MIDI velocities
+;;; of 0 to 127. Here we map them to velocities of 0 to 100 instead.
+(midi-play +jitterbug+ :force-velocity
+           #'(lambda (event)
+               (floor (* (amplitude event) 100))))
 
 |#
 ;;; SYNOPSIS

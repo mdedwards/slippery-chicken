@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:35:48 Fri May 27 2016 WEST
+;;; $$ Last modified: 11:26:38 Wed Jun  8 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4979,6 +4979,45 @@ Here's where I pasted the data into the .RPP Reaper file:
                        (up seq2))))
     (when cons (push (if down start target) result))
     (if butlast (butlast result) result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/rescale
+;;; DATE
+;;; June 8th 2016, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Given a value within an original range, return its value withing a new range
+;;; 
+;;; ARGUMENTS
+;;; - the value we want to rescale
+;;; - the original minimum
+;;; - the original maximum
+;;; - the new minimum
+;;; - the new maximum
+;;; 
+;;; RETURN VALUE
+;;; The value within the new range (a number)
+;;; 
+;;; EXAMPLE
+#|
+(rescale .5 0 1 0 100)
+==> 50.0
+|#
+;;; SYNOPSIS
+(defun rescale (val min max new-min new-max)
+;;; ****
+  (when (or (>= min max)
+            (>= new-min new-max))
+    (error "utilities::rescale: argument 2 (~a) must be < argument 3 (~a) ~
+            ~%and sim. for argument 4 (~a) and 5 (~a)" min max new-min new-max))
+  (unless (and (>= val min)
+               (<= val max))
+    (error "utilities::rescale: first argument (~a) must be within original ~
+            range (~a to ~a)" val min max))
+  (let* ((range1 (float (- max min)))
+         (range2 (float (- new-max new-min)))
+         (prop (float (/ (- val min) range1))))
+    (+ new-min (* prop range2))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

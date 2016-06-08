@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 19:49:10 Thu Jun  2 2016 WEST
+;;; $$ Last modified: 12:15:10 Wed Jun  8 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4792,7 +4792,6 @@ NIL
 
 ;;; ****m* slippery-chicken-edit/sc-force-rest2
 ;;; DESCRIPTION
-
 ;;; Turn events into rests, doing the same with any following tied events.  
 ;;; NB As it is foreseen that this method may be called many times iteratively,
 ;;; there is no call to check-ties, auto-beam, consolidate-rests, or

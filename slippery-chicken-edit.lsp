@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 19:06:02 Mon May 30 2016 WEST
+;;; $$ Last modified: 19:49:10 Thu Jun  2 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5846,7 +5846,6 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; The structure of a slippery-chicken object is as follows:
 ;;; slippery-chicken -> piece -> section (plus subsections where appropriate) ->
 ;;; player-section ->  sequenz -> rthm-seq-bar -> event
@@ -5854,6 +5853,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; (Remember that the the data slot of the piece object is a list of
 ;;; named-objects the data of which are the sections. The data slot of a
 ;;; section is simply a list of player-sections.)
+;;; 
 ;;; So we can create an sc object on-the-fly by stuffing a single section
 ;;; containing a single player-section containing a single sequenz with all the
 ;;; given bars.
@@ -5888,7 +5888,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; - :instrument.  The id (symbol) of an already existing instrument in the
 ;;;    instrument-palette. Default = 'flute.
 ;;; - :update. Whether to call update-slots on the new slippery-chicken
-;;;   object.  Default = t.
+;;;   object (to update timing info. etc.).  Default = T.
 ;;; - :section-id.  The section id.  Default = 1.
 ;;; 
 ;;; RETURN VALUE

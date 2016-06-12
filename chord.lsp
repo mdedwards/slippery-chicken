@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 17:01:50 Fri May 27 2016 WEST
+;;; $$ Last modified: 11:11:10 Thu Jun  9 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1987,7 +1987,6 @@ data: (
   (pitch= (lowest c1) (lowest c2) t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* chord/wrap
 ;;; DATE
 ;;; March 5th 2016, Edinburgh
@@ -1995,8 +1994,8 @@ data: (
 ;;; DESCRIPTION
 ;;; Take the highest pitch and wrap it around to the bottom, placing it at the
 ;;; same interval to the former lowest pitch as the highest pitch is to the
-;;; next-to-highest pitch. Then shift the next-to-highest pitch up to the
-;;; highest pitch.
+;;; next-to-highest pitch. Then we shift (transpose) the chord so that the
+;;; next-to-highest pitch is the former highest pitch.
 ;;;
 ;;; NB The lowest and highest notes of the chord will always remain the same no
 ;;; matter how many times this operation is performed. 

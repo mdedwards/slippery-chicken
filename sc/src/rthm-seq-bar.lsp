@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 17:16:41 Tue May 24 2016 WEST
+;;; $$ Last modified: 13:56:45 Fri Jun 10 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1904,7 +1904,29 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; where t is the same as #'error, or if you pass a symbol like 'silent the
 ;;; duration will be checked and NIL returned if we can't get an exact beat's
 ;;; worth of rthms.
+;;; ****m* rthm-seq-bar/get-beats
+;;; DATE
+;;; 
+;;; 
+;;; DESCRIPTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod get-beats ((rsb rthm-seq-bar) &optional beat check-dur)
+;;; ****
   (let ((beat-dur (if (and beat (not (eq beat t)))
                       (duration (make-rhythm beat))
                       (beat-duration (get-time-sig rsb))))

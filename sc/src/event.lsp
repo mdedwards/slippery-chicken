@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:35:47 Mon May 30 2016 WEST
+;;; $$ Last modified: 09:51:18 Sun Jun 12 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3620,7 +3620,11 @@ T
 ;;; - :start-time. A number that is the start-time of the event in seconds.
 ;;; - :duration. T or NIL. T indicates that the duration given is a value of
 ;;;   absolute seconds rather than a known rhythm (e.g. 'e). Default = NIL.
-;;; - :tempo. Beats per minute. Default = 60.
+;;; - :tempo. Beats per minute. Note that this slot is used for duration
+;;;   calculations. If you're making events 'by hand' and you want a new tempo to
+;;;   be written to MIDI files you'll need to set the tempo-change slot with
+;;;   either a number or tempo object. If you then want the tempo to be written
+;;;   to the score, set display-tempo to T. Default = 60.
 ;;; 
 ;;; RETURN VALUE
 ;;; - An event object.

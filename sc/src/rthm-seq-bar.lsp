@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 13:56:45 Fri Jun 10 2016 WEST
+;;; $$ Last modified: 13:21:30 Mon Jun 13 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5223,6 +5223,25 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; MDE Thu May 21 17:16:22 2015 
 (defmethod delete-rqq-info ((rsb rthm-seq-bar))
   (loop for r in (rhythms rsb) do (setf (rqq-info r) nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rthm-seq-bar/remove-dynamics
+;;; DATE
+;;; June 13th
+;;; 
+;;; DESCRIPTION
+;;; remove all dynamics attached to events in the bar
+;;; 
+;;; ARGUMENTS
+;;; - a rthm-seq-bar object
+;;; 
+;;; RETURN VALUE
+;;; t
+;;; SYNOPSIS
+(defmethod remove-dynamics ((rsb rthm-seq-bar))
+;;; ****
+  (loop for e in (rhythms rsb) do (remove-dynamics e))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Jun 24 18:25:35 2015 -- when we've got nested tuplets we run into

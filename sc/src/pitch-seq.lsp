@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 17:11:31 Tue May 24 2016 WEST
+;;; $$ Last modified: 13:35:51 Mon Jun 13 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -117,7 +117,7 @@
                             (first i)
                           i))
         (highest ps)
-        (loop for i in (data ps) unless (integerp i) do
+        (loop for i in (data ps) unless (numberp i) do
               (error "pitch-seq::initialise-instance: ~
                       Elements of the pitch-seq data list should all be ~
                       integers: ~a"

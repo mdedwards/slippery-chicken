@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:16:48 Tue Jun  7 2016 BST
+;;; $$ Last modified: 14:45:33 Mon Jun 13 2016 WEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3898,6 +3898,18 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   sequence specified in from-sequence. If NIL, all sequences will be
 ;;;   written. NB: This argument can only be used when the num-sections = 1.
 ;;;   Default = NIL.
+;;; - :update-amplitudes. T or NIL to indicate whether events should have their
+;;;   amplitude slots updated to ensure that any dynamic marks that have been
+;;;   added (and therefore amplitude slots updated as a side-effect) reflect
+;;;   the subsequent events' amplitudes also. This will override any amplitude
+;;;   slots that have been changed other than by (setf (amplitude ...)) or
+;;;   (add-mark ... 'some-dynamic). Also, if T, then hairpins (cresc, dim) will
+;;;   result in increasing/decreasing amplitudes over their extent (but this
+;;;   will only work if the amplitude/dynamic of the hairpins' starting and
+;;;   ending events are correct, and in that case intervening events'
+;;;   amplitudes will be overwritten no matter how they've been set; also this
+;;;   won't handle cases where there's a hairpin end and a new hairpin
+;;;   beginning on the same event ). Default  = T
 ;;; - :force-velocity. Either: an integer between 0 and 127 (inclusive) that is
 ;;;   the MIDI velocity value which will be given to all notes in the resulting
 ;;;   MIDI file, or a function which takes an event object argument and
@@ -3959,29 +3971,34 @@ seq-num 5, VN, replacing G3 with B6
 #+cm-2
 (defmethod midi-play ((sc slippery-chicken)
                       &key 
-                      ;; no subsection refs: use from-sequence instead
-                      (start-section 1) 
-                      ;; these voices are used to get the actual sequence
-                      ;; orders i.e. each voice will be appended to <section>
-                      ;; when calling get-data.
-                      ;; if nil then all voices.
-                      (voices nil)
-                      ;; add something to the filename just before .mid?
-                      (suffix "")
-                      (midi-file
-                       (format nil "~a~a~a.mid"
-                               (get-sc-config 'default-dir)
-                               (filename-from-title (title sc))
-                               suffix))
-                      (from-sequence 1)
-                      (num-sequences nil)
-                      ;; if nil we'll write all the sections
-                      (num-sections nil)
-                      ;; MDE Tue Jun  4 19:06:11 2013 -- 
-                      (auto-open (get-sc-config 'midi-play-auto-open))
-                      ;; if this is a 7-bit number we'll use this for all notes
-                      (force-velocity nil))
+                        ;; no subsection refs: use from-sequence instead
+                        (start-section 1) 
+                        ;; these voices are used to get the actual sequence
+                        ;; orders i.e. each voice will be appended to <section>
+                        ;; when calling get-data.
+                        ;; if nil then all voices.
+                        (voices nil)
+                        ;; add something to the filename just before .mid?
+                        (suffix "")
+                        (midi-file
+                         (format nil "~a~a~a.mid"
+                                 (get-sc-config 'default-dir)
+                                 (filename-from-title (title sc))
+                                 suffix))
+                        (from-sequence 1)
+                        (num-sequences nil)
+                        ;; if nil we'll write all the sections
+                        (num-sections nil)
+                        ;; MDE Mon Jun 13 12:30:55 2016
+                        (update-amplitudes t)
+                        ;; MDE Tue Jun  4 19:06:11 2013
+                        (auto-open (get-sc-config 'midi-play-auto-open))
+                        ;; if this is a 7-bit number we'll use this for all notes
+                        (force-velocity nil))
 ;;; ****
+  (when update-amplitudes ; MDE Mon Jun 13 12:32:30 2016 
+    (update-amplitudes sc)
+    (handle-hairpins sc))
   (setf voices
         (cond ((and voices (listp voices)) voices)
               ((and voices (atom voices)) (list voices))
@@ -3995,10 +4012,10 @@ seq-num 5, VN, replacing G3 with B6
   ;; MDE Fri May 11 13:02:06 2012 -- 
   ;; MDE Mon May 14 18:46:01 BST 2012 -- we no longer have this keyword
   #|
-(when (> time-scaler 1.0)
+  (when (> time-scaler 1.0)
   (error "slippery-chicken::midi-play: scaling durations by more than 1.0 ~
-           would ~%interfere with MIDI note-on/note-off combinations."))
-|#
+             would ~%interfere with MIDI note-on/note-off combinations."))
+  |#
   (unless (integer>0 from-sequence)
     (error "slippery-chicken::midi-play: ~
             from-sequence must be an integer >= 1."))
@@ -4035,10 +4052,10 @@ seq-num 5, VN, replacing G3 with B6
          ;; MDE Thu Oct 17 19:10:27 2013 -- the following doesn't work if there
          ;; are sub-sub-sections!  
           #|
-         (if (has-subsections secobj)
+  (if (has-subsections secobj)
          (full-ref (print (data (first (data secobj)))))
          start-section))
-|#
+         |#
          ;; do all the program changes for the beginning irrespective of
          ;; whether the player changes instrument or not. subsequent program
          ;; changes are handled in the event class.
@@ -6699,8 +6716,11 @@ EVENT: start-time: 11.000, end-time: 11.500,
 (defmethod get-events-from-to ((sc slippery-chicken) player start-bar
                                start-event end-bar &optional end-event)
 ;;; ****
+  ;; MDE Mon Jun 13 12:15:23 2016
+  (unless end-bar
+    (setq end-bar (num-bars sc)))
   (unless end-event
-    (setf end-event (num-rhythms (get-bar sc end-bar player))))
+    (setq end-event (num-rhythms (get-bar sc end-bar player))))
   (let ((result '()))
     (loop for bar-num from start-bar to end-bar 
        for bar = (get-bar sc bar-num player)
@@ -6740,6 +6760,14 @@ EVENT: start-time: 11.000, end-time: 11.500,
 (defmethod get-all-events ((sc slippery-chicken) player)
 ;;; ****
   (get-events-from-to sc player 1 1 (num-bars sc)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jun 13 12:22:04 2016 
+(defmethod update-amplitudes ((sc slippery-chicken))
+  (loop for player in (players sc)
+     for events = (get-all-events sc player)
+     do (update-events-amplitudes events))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -7806,11 +7834,48 @@ NOTE 6200 0.6666667
        (unless (= 5 lines) 
          (setf (instrument-change e1) (list nil nil lines)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jun 13 12:33:24 2016 -- called by midi-play by default
+(defmethod handle-hairpins ((sc slippery-chicken) &key players (start-bar 1)
+                                                    end-bar)
+  (unless players (setq players (players sc)))
+  (force-list players)
+  (loop for p in players do
+       (handle-hairpins-aux sc p start-bar end-bar))
+  t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod handle-hairpins-aux ((sc slippery-chicken) player start-bar end-bar)
+  (next-event sc player nil start-bar end-bar)
+  (let* ((hairpins '())
+         (start 0.0)
+         (inside nil)
+         (events '()))
+    (loop for event = (next-event sc player nil nil end-bar)
+       while event do
+         ;; (print event)
+         (cond ((or (has-mark event 'cresc-beg)
+                    (has-mark event 'dim-beg))
+                (push event events)
+                (setq inside t
+                      start (amplitude event)))
+               ((or (has-mark event 'cresc-end)
+                    (has-mark event 'dim-end))
+                (push event events)
+                (push (list start (amplitude event) (reverse events))
+                      hairpins)
+                (setq inside nil
+                      events nil))
+               (inside (push event events))))
+    ;; (print hairpins)
+    (loop for hairpin in (reverse hairpins) do
+         (handle-hairpins-aux2 hairpin))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Wed May 16 19:31:21 EDT 2012: Added robodoc entry
 
@@ -8959,4 +9024,16 @@ NOTE 6200 0.6666667
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun handle-hairpins-aux2 (hp)
+  (let* ((amp1 (first hp))
+         (amp2 (second hp))
+         (events (third hp))
+         (num (length events))
+         (env (list 0 amp1 (1- num) amp2)))
+    ;; (print env)
+    (when (> num 1)
+      (loop for e in events for i from 0 do
+           (setf (slot-value e 'amplitude) (interpolate i env))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken.lsp

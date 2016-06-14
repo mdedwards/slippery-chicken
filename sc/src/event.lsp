@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 09:51:18 Sun Jun 12 2016 WEST
+;;; $$ Last modified: 14:09:18 Mon Jun 13 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -94,7 +94,10 @@
                          :initarg :midi-program-changes :initform nil)
    ;; MDE Tue Apr 26 15:13:54 2016 -- each message should be a 3-element list
    ;; of the form (channel controller-number value). The user can (push ) these
-   ;; directly for now.
+   ;; directly for now. So if you wanted a crescendo on one note, you'd push an
+   ;; aftertouch or breath control change here (with a corresponding value on
+   ;; the note that terminutes the cresc.) and hope/expect the host application
+   ;; to do the interpolation for you.
    ;; todo: as with prog changes write control out to antescofo files too.
    (midi-control-changes :accessor midi-control-changes :type list
                          :initarg :midi-control-changes :initform nil)
@@ -4086,9 +4089,22 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
     (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jun 13 12:22:04 2016 -- if an event has a dynamic mark use that as
+;;; the amplitude for all successive events, until we see another dynamic
+(defun update-events-amplitudes (event-list)
+  (loop
+     with current = (get-sc-config 'default-amplitude)
+     for event in event-list
+     for dynamic = (get-dynamic event)
+     do
+       (when dynamic
+         ;; don't just query the amplitude slot as this is a caretaker method
+         ;; that overwrites amplitudes from dynamics which means we can't
+         ;; necessarily trust the anplitude slot
+         (setq current (dynamic-to-amplitude dynamic)))
+       (setf (slot-value event 'amplitude) current)))
 
-;;; 23.12.11 SAR Added Robodoc info
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* event/is-dynamic
 ;;; DESCRIPTION
 ;;; Determine whether a specified symbol belongs to the list of predefined

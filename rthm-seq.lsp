@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 14:37:56 Tue May 24 2016 WEST
+;;; $$ Last modified: 12:06:04 Mon Jun 13 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -143,7 +143,9 @@
                data (nth 0 bars)))
       ;; Collect some handy data.
       (gen-stats rs)
-      ;; these come after gen-stats!
+      ;; these come after gen-stats! we don't update amplitude slots from
+      ;; dynamics here, rather that's done in sc-make-sequenz by calling
+      ;; dynamics-to-amplitudes 
       (handle-marks rs)
       (add-marks rs)
       (init-psp rs))))

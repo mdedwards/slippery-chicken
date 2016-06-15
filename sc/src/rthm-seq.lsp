@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified: 12:06:04 Mon Jun 13 2016 WEST
+;;; $$ Last modified: 18:38:25 Tue Jun 14 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -281,9 +281,6 @@
     sclist))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Dec 27 19:55:22 EST 2011: Added robodoc info
-
 ;;; ****m* rthm-seq/get-nth-non-rest-rhythm
 ;;; DESCRIPTION
 ;;; Get the nth non-rest rhythm object stored in the given rthm-seq object. 

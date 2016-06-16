@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 13:55:36 Thu Jun 16 2016 BST
+;;; $$ Last modified: 17:58:50 Thu Jun 16 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -392,7 +392,7 @@ D4
                       ignore)
 ;;; ****
   (declare (ignore ignore))
-  (let ((new-note (transpose-note (id p) semitones))
+  (let ((new-note (transpose-note (data p) semitones))
         new-pitch)
     (unless new-note
       (error "pitch::transpose: Couldn't transpose ~a by ~a semitones" 
@@ -1582,6 +1582,7 @@ data: CQS4
   (defmethod update-pitch ((p pitch))
     (let* ((id (id p))
            (f (frequency p))
+           (note-octave (when id (force-octave id)))
            (no-brackets (remove-accidental-in-parentheses-indicator id))
            (freq (when f (coerce f 'double-float))))
       (when (and (numberp freq)
@@ -1606,10 +1607,10 @@ data: CQS4
             (unless note
               (error "pitch::update-pitch: ~
                       Couldn't get the note for frequency ~a!!!" freq))
-            (setf (id p) note)))
+            (setf (id p) note
+                  note-octave note)))
         (when (and id (not freq))
-          (let ((cm-freq (note-to-freq id)))
-            (print 'here)
+          (let ((cm-freq (note-to-freq note-octave)))
             (unless cm-freq
               (error "pitch::update-pitch: ~
                       Couldn't get the frequency for pitch ~a!!!" id))
@@ -1629,6 +1630,10 @@ data: CQS4
               (qtr-tone p) (or (qtr-sharp p) (qtr-flat p)))
         (set-score-note p)
         (set-white-note p)
+        ;; MDE Thu Jun 16 17:07:00 2016 -- if we haven't passed an octave then
+        ;; the note-to-freq call above will use the CM scale's default octave,
+        ;; so just correct that here
+
         ;; MDE Sat Jan 7 17:00:35 2012 -- freq-to-note will get the nearest
         ;; note; if the freq of that is > our given freq, we'll end up with the
         ;; note above our freq _and_ a high pitch-bend (get-pitch-bend always
@@ -1643,7 +1648,7 @@ data: CQS4
             (error "pitch::update-pitch: pitch-bend is ~a!" pb))
           (setf (pitch-bend p) pb
                 (micro-tone p) (not (zerop pb))))
-        (setf (data p) (id p)
+        (setf (data p) note-octave
               ;; MDE Sun Jan  1 13:02:37 2012 -- otherwise it's single float so
               ;; causes comparison errors
               (frequency p) (coerce (frequency p) 'double-float)
@@ -1652,7 +1657,7 @@ data: CQS4
               (midi-note p) (note-to-midi
                              (if (micro-tone p)
                                  (nearest-chromatic p)
-                                 (id p)))
+                                 note-octave))
               (c5ths p) (cond ((flat p) 
                                ;; MDE Wed Feb 13 11:55:47 2013 -- must call
                                ;; rm-package as this method might be called
@@ -1732,7 +1737,7 @@ data: CQS4
             midi-channel)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; also sets accidental, nearest chromatic, and white-degree as a side effect.
+;;; also sets other slots by default--see below
 
 (defmethod set-white-note ((p pitch))
   ;; MDE Thu Apr 18 13:56:19 2013 -- only when we've got some data!
@@ -2130,7 +2135,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;; SYNOPSIS
 (defmethod enharmonic ((p pitch) &key (warn t))
 ;;; ****
-  (let ((pn (make-pitch (enharmonic-equivalent (id p) warn))))
+  (let ((pn (make-pitch (enharmonic-equivalent (data p) warn))))
     ;; MDE Mon Nov 11 11:01:14 2013 -- we'll lose marks (e.g. in octaves)
     ;; unless we do this.
     (when pn

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 13:25:59 Thu Jun 16 2016 BST
+;;; $$ Last modified: 17:16:27 Thu Jun 16 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -757,6 +757,15 @@
 (defun join-note-octave (note octave)
   (read-from-string (format nil "~a~a" note octave)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; if no octave given in note use the last octave and return a symbol that
+;;; includes it 
+(defun force-octave (note)
+  (multiple-value-bind
+        (n o)
+      (get-note-octave note t)
+    (join-note-octave n o)))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (let ((last-octave nil))

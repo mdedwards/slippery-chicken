@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:21:05 Thu Jun 16 2016 BST
+;;; $$ Last modified: 17:51:40 Thu Jun 16 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1961,8 +1961,7 @@ NIL
     (when obj
       (if (chord-p obj)
           (get-pitch-symbols obj)
-          (id obj)))))
-
+          (data obj)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

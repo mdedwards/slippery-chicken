@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 17:51:40 Thu Jun 16 2016 WEST
+;;; $$ Last modified: 19:29:16 Thu Jun 16 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3830,7 +3830,8 @@ G4 Q, rest E, rest S, (D4 FS4 A4) S,
 
 |#
 ;;; SYNOPSIS
-(defun make-events (data-list &optional midi-channel microtones-midi-channel)
+(defun make-events (data-list &optional (midi-channel 1)
+                                (microtones-midi-channel 2))
 ;;; ****
   (loop for data in data-list 
      for event =
@@ -3903,7 +3904,7 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 |#
 ;;; SYNOPSIS
 (defun make-events2 (rhythms pitches
-                     &optional midi-channel microtones-midi-channel)
+                     &optional (midi-channel 1) (microtones-midi-channel 2))
 ;;; ****
   (let ((rhythms (rhythm-list rhythms))
         (ps (my-copy-list pitches))

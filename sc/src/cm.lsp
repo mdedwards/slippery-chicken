@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 12:51:20 Wed May 25 2016 WEST
+;;; $$ Last modified: 13:25:59 Thu Jun 16 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -928,6 +928,43 @@
        
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; nothing more than an alias to this files cm package function really.
+;;; ****f* cm/event-list-to-midi-file
+;;; DESCRIPTION
+;;; Write the events in a list to a mid-file.
+;;; 
+;;; ARGUMENTS
+;;; - A list of events objects
+;;; - the path to the midi-file
+;;; - the starting tempo (integer: BPM)
+;;; - a time-offset for the events (seconds)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - whether to overwrite events' amplitude slots and use a single
+;;; velocity/amplitude value given here (0-1.0 (float) or 0-127 (integer) 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defun event-list-to-midi-file (event-list 
+                                &key (midi-file "/tmp/tmp.mid")
+                                  (start-tempo 120) (time-offset 0)
+                                  (auto-open (get-sc-config
+                                              'midi-play-auto-open))
+                                  force-velocity)
+;;; ****
+  (cm::event-list-to-midi-file event-list midi-file start-tempo time-offset
+                               force-velocity)
+  (when auto-open
+    (system-open-file midi-file))
+  midi-file)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :cm)
 
@@ -1030,34 +1067,8 @@
    midi-file :tempo (sc::qtr-bpm start-tempo)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; start-tempo is a bpm
-
-;;; ****f* cm/event-list-to-midi-file
-;;; DESCRIPTION
-;;; Write the events in a list to a mid-file.
-;;; 
-;;; ARGUMENTS
-;;; - A list of events objects
-;;; - the path to the midi-file
-;;; - the starting tempo (integer: BPM)
-;;; - a time-offset for the events (seconds)
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; - whether to overwrite events' amplitude slots and use a single
-;;; velocity/amplitude value given here (0-1.0 (float) or 0-127 (integer) 
-;;; 
-;;; RETURN VALUE
-;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
-;;; SYNOPSIS
 (defun event-list-to-midi-file (event-list midi-file start-tempo time-offset
                                 &optional force-velocity)
-;;; ****
   (events
    (new seq :name (gensym) :time 0.0 :subobjects
         (loop for event in (sc::sort-event-list event-list)

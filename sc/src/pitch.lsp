@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 17:59:37 Thu May 26 2016 WEST
+;;; $$ Last modified: 13:55:36 Thu Jun 16 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -80,6 +80,8 @@
    (frequency :accessor frequency :initarg :frequency :initform nil)
    (midi-channel :accessor midi-channel :initarg :midi-channel :initform 0)
    (octave :accessor octave :type integer :initform -1)
+   ;; MDE Thu Jun 16 13:35:02 2016 -- remember the last octave we saw so we
+   ;; don't have to always type octaves  
    (natural :accessor natural :type boolean :initform nil)
    (qtr-sharp :accessor qtr-sharp :initform nil)
    (sharp :accessor sharp :type boolean :initform nil)
@@ -1607,14 +1609,15 @@ data: CQS4
             (setf (id p) note)))
         (when (and id (not freq))
           (let ((cm-freq (note-to-freq id)))
+            (print 'here)
             (unless cm-freq
               (error "pitch::update-pitch: ~
                       Couldn't get the frequency for pitch ~a!!!" id))
             (setf (frequency p) cm-freq)))
         (unless (frequency p)
           (error "pitch::update-pitch: ~
-                A pitch symbol or frequency must be given to initialize ~
-                a pitch: ~a" p))
+                  A pitch symbol or frequency must be given to initialize ~
+                  a pitch: ~a" p))
         (unless (src p)
           (setf (src p) (/ (frequency p)
                            (note-to-freq (src-ref-pitch p)))))
@@ -1736,7 +1739,7 @@ data: CQS4
   (when (id p)
     (multiple-value-bind
           (note octave)
-        (get-note-octave (id p)) 
+        (get-note-octave (id p) t) 
       ;; MDE Tue Jul 24 19:51:41 2012 
       (unless octave
         (error "~%pitch::set-white-note: no octave given for pitch ~a." (id p)))

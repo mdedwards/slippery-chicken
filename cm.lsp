@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 17:16:27 Thu Jun 16 2016 WEST
+;;; $$ Last modified: 19:34:02 Thu Jun 16 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -669,7 +669,7 @@
     (let ((n note))
       (when (listp n) ;; could be (c1 natural)
         (setf n (first n)))
-      (setf n (rm-package n :sc))
+      (setf n (force-octave (rm-package n :sc)))
       (let* ((degrees-per-semitone (degrees-per-semitone))
              (degrees (floor (* semitones degrees-per-semitone)))
              (degree (note-to-degree n)))

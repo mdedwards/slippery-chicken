@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 17:58:50 Thu Jun 16 2016 WEST
+;;; $$ Last modified: 20:41:38 Thu Jun 16 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1593,8 +1593,8 @@ data: CQS4
       ;; straight after the notes e.g.  cbs2 or dbqf4, once this is detected it
       ;; disappears from the id etc.
       (when no-brackets
-        (setf (id p) no-brackets
-              id no-brackets
+        (setf (data p) (force-octave no-brackets)
+              note-octave (data p) 
               (accidental-in-parentheses p) t))
       ;; MDE Wed Feb 13 11:30:58 2013 -- the (= (degree p)) seems to be a typo
       ;; and I can no longer remember what we wanted to test here.  (= [any
@@ -1622,12 +1622,13 @@ data: CQS4
         (unless (src p)
           (setf (src p) (/ (frequency p)
                            (note-to-freq (src-ref-pitch p)))))
-        (setf (qtr-sharp p) (is-qtr-sharp (id p))
-              (sharp p) (is-sharp (id p))
-              (qtr-flat p) (is-qtr-flat (id p))
-              (natural p) (is-natural (id p))
-              (flat p) (is-flat (id p))
+        (setf (qtr-sharp p) (is-qtr-sharp note-octave)
+              (sharp p) (is-sharp note-octave)
+              (qtr-flat p) (is-qtr-flat note-octave)
+              (natural p) (is-natural note-octave)
+              (flat p) (is-flat note-octave)
               (qtr-tone p) (or (qtr-sharp p) (qtr-flat p)))
+        (setf (data p) note-octave)
         (set-score-note p)
         (set-white-note p)
         ;; MDE Thu Jun 16 17:07:00 2016 -- if we haven't passed an octave then
@@ -1648,8 +1649,7 @@ data: CQS4
             (error "pitch::update-pitch: pitch-bend is ~a!" pb))
           (setf (pitch-bend p) pb
                 (micro-tone p) (not (zerop pb))))
-        (setf (data p) note-octave
-              ;; MDE Sun Jan  1 13:02:37 2012 -- otherwise it's single float so
+        (setf ;; MDE Sun Jan  1 13:02:37 2012 -- otherwise it's single float so
               ;; causes comparison errors
               (frequency p) (coerce (frequency p) 'double-float)
               ;; degree in the current scale
@@ -1740,11 +1740,12 @@ data: CQS4
 ;;; also sets other slots by default--see below
 
 (defmethod set-white-note ((p pitch))
+  ;; (print p)
   ;; MDE Thu Apr 18 13:56:19 2013 -- only when we've got some data!
-  (when (id p)
+  (when (data p)
     (multiple-value-bind
           (note octave)
-        (get-note-octave (id p) t) 
+        (get-note-octave (data p) t) 
       ;; MDE Tue Jul 24 19:51:41 2012 
       (unless octave
         (error "~%pitch::set-white-note: no octave given for pitch ~a." (id p)))

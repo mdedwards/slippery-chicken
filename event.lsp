@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 14:09:18 Mon Jun 13 2016 WEST
+;;; $$ Last modified: 13:21:05 Thu Jun 16 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3457,7 +3457,10 @@ do (add-mark-before e m))
 ;;;   (silent) to maximum of 1.0. Default = (get-sc-config 'default-amplitude).
 ;;; - :tempo. A number to indicate the tempo of the event as a normal bpm
 ;;;   value. Default = 60. This argument is only used when creating the rhythm
-;;;   slots (e.g. duration) not for setting duration-in-tempo.
+;;;   from a given duration rather than from a letter value.
+;;; - :tempo-change. A number of tempo-object to attach a tempo change to the
+;;;   event. This is the argument you need to set in order to change playback
+;;;   speed. 
 ;;; - :midi-channel. A number from 0 to 127 indicating the MIDI channel on
 ;;;   which the event should be played back. Default = NIL.
 ;;; - :microtones-midi-channel. If the event is microtonal, this argument
@@ -3562,21 +3565,25 @@ T
 
 ;;; 
 ;;; SYNOPSIS
-(defun make-event (pitch-or-chord rthm &key 
-                   start-time
-                   is-rest
-                   is-tied-to
-                   duration
-                   midi-channel
-                   microtones-midi-channel
-                   ;; MDE Thu May 31 19:03:59 2012 -- allow us to auto-set the
-                   ;; written-pitch-or-chord slot   
-                   transposition
-                   ;; MDE Sat Apr 20 15:13:41 2013 -- allow us to create
-                   ;; written pitch events and auto-set sounding
-                   written
-                   (amplitude (get-sc-config 'default-amplitude))
-                   (tempo 60))
+(defun make-event (pitch-or-chord rthm
+                   &key 
+                     start-time
+                     is-rest
+                     is-tied-to
+                     duration
+                     ;; MDE Wed Jun 15 20:39:05 2016 -- defaults to 1 and 2
+                     (midi-channel 1)
+                     (microtones-midi-channel 2)
+                     ;; MDE Thu May 31 19:03:59 2012 -- allow us to auto-set the
+                     ;; written-pitch-or-chord slot   
+                     transposition
+                     ;; MDE Sat Apr 20 15:13:41 2013 -- allow us to create
+                     ;; written pitch events and auto-set sounding
+                     written
+                     (amplitude (get-sc-config 'default-amplitude))
+                     ;; MDE Thu Jun 16 13:05:21 2016
+                     tempo-change
+                     (tempo 60))
 ;;; **** 
   ;; MDE Mon Apr 23 13:52:07 2012 -- allow r to indicate a rest
   (when (equalp 'r pitch-or-chord)
@@ -3605,6 +3612,9 @@ T
         (set-written e (- transposition)))
       (when midi-channel
         (set-midi-channel e midi-channel microtones-midi-channel))
+      ;; MDE Thu Jun 16 13:06:24 2016 
+      (when tempo-change
+        (setf (tempo-change e) tempo-change))
       e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

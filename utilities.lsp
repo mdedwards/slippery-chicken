@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 11:26:38 Wed Jun  8 2016 WEST
+;;; $$ Last modified: 16:32:39 Sun Jun 19 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2488,21 +2488,19 @@ WARNING:
    (string-trim '(#\Space #\Tab #\Newline) string))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; aux function for parse-wavelab-marker-file-for...
 
 (defun get-parameter (string &optional (separator #\=))
   (flet ((trim-whitespace (string)
-                          (string-downcase
-                           (string-trim '(#\Space #\Tab #\Newline) string))))
-        (let ((sep-pos (position separator string)))
-          (when sep-pos
-            (let ((param (trim-whitespace (subseq string 0 sep-pos)))
-                  (value (trim-whitespace (subseq string (1+ sep-pos)))))
-              (values param value))))))
+           (string-downcase
+            (string-trim '(#\Space #\Tab #\Newline) string))))
+    (let ((sep-pos (position separator string)))
+      (when sep-pos
+        (let ((param (trim-whitespace (subseq string 0 sep-pos)))
+              (value (trim-whitespace (subseq string (1+ sep-pos)))))
+          (values param value))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; aux function for parse-wavelab-marker-file-for...
 
 ;;; (read-audacity-line "3.777420        loop")

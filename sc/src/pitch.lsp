@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 20:41:38 Thu Jun 16 2016 WEST
+;;; $$ Last modified: 16:31:46 Sun Jun 19 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1677,9 +1677,6 @@ data: CQS4
                 p))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Jan  3 10:22:16 EST 2012: Added robodoc info
-
 ;;; ****m* pitch/set-midi-channel
 ;;; DESCRIPTION
 ;;; Set the MIDI-CHANNEL slot of the given pitch object. 

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 19:34:02 Thu Jun 16 2016 WEST
+;;; $$ Last modified: 11:55:05 Tue Jun 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -132,9 +132,9 @@
 
 |#
 ;;; SYNOPSIS
-(defun degrees-per-octave ()
+(defun degrees-per-octave (&optional (scale cm::*scale*))
 ;;; ****
-  (- (cm::keynum 'cm::c5) (cm::keynum 'cm::c4)))
+  (- (cm::keynum 'cm::c5 :in scale) (cm::keynum 'cm::c4 :in scale)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -215,9 +215,9 @@
 
 |#
 ;;; SYNOPSIS
-(defun midi-to-degree (midi-note)
+(defun midi-to-degree (midi-note &optional (scale cm::*scale*))
 ;;; ****
-  (* midi-note (/ (degrees-per-octave) 12)))
+  (* midi-note (/ (degrees-per-octave scale) 12)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -226,10 +226,12 @@
 ;;; ****f* cm/midi-to-note
 ;;; DESCRIPTION
 ;;; Get the note-name pitch symbol equivalent of the specified MIDI note
-;;; number.
+;;; number. 
 ;;; 
 ;;; ARGUMENTS
-;;; - An integer that is a MIDI note number.
+;;; - a MIDI note number: integer or float. If float, appropriate microtones
+;;; will be returned if the current scale is microtonal (e.g. (in-scale
+;;; :quarter-tone)) 
 ;;; 
 ;;; RETURN VALUE
 ;;; A note-name pitch symbol.
@@ -237,14 +239,15 @@
 ;;; EXAMPLE
 #|
 (midi-to-note 67)
-
 => G4
-
+(midi-to-note 60.5)
+=>CQS4
 |#
 ;;; SYNOPSIS
-(defun midi-to-note (midi-note)
+(defun midi-to-note (midi-note &optional (scale cm::*scale*))
 ;;; ****
-  (degree-to-note midi-note cm::*chromatic-scale*))
+  ;; (degree-to-note midi-note cm::*chromatic-scale*))
+  (degree-to-note (midi-to-degree midi-note scale) scale))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

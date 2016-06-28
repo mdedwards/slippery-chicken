@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 16:31:46 Sun Jun 19 2016 WEST
+;;; $$ Last modified: 11:57:24 Tue Jun 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -464,20 +464,18 @@ C4
 
 |#
 ;;; SYNOPSIS
-(defmethod pitch-round ((p pitch) 
-                        &key
-                        (as-symbol nil)
-                        (package :sc))
+(defmethod pitch-round ((p pitch) &key (as-symbol nil) (package :sc))
 ;;; ****
   ;; we can't use lisp's round function as in the case of x.5 it
   ;; rounds to the nearest even number so (round 1.5) => 2 and 
   ;; (round 2.5) => 2 
   (let ((sym (midi-to-note (cond ((qtr-sharp p) (midi-note p))
                                  ((qtr-flat p) (1+ (midi-note p)))
-                                 (t (midi-note-float p))))))
+                                 (t (midi-note-float p)))
+                           cm::*chromatic-scale*)))
     (if as-symbol
         (rm-package sym package)
-      (make-pitch sym))))
+        (make-pitch sym))))
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

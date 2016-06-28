@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 16:09:27 Tue Jun 28 2016 WEST
+;;; $$ Last modified: 18:01:12 Tue Jun 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3487,11 +3487,16 @@ data: D1
          (push (if (and (atom freq)     ; don't fiddle with chords
                         pos
                         (active (nth pos als) activity-level))
-                   (if (event-p thing)
+                   (if (and (event-p thing)
+                            ;; thanks to Dan Ross for this; a further
+                            ;; improvement might be to change the tied notes if
+                            ;; this is tied-from but hey ho...
+                            (not (is-tied-to thing))
+                            (not (is-tied-from thing)))
                        (prog2
-                         (when verbose
-                           (format t "~&At bar ~a, transposing ~a "
-                                   (bar-num thing) (get-pitch-symbol thing)))
+                           (when verbose
+                             (format t "~&At bar ~a, transposing ~a "
+                                     (bar-num thing) (get-pitch-symbol thing)))
                            (transpose thing interval
                                       :destructively destructively)
                          (when verbose

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 12:19:37 Tue Jun 28 2016 WEST
+;;; $$ Last modified: 17:43:43 Tue Jun 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -975,6 +975,60 @@
   (when auto-open
     (system-open-file midi-file))
   midi-file)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  won't (yet) import microtones as indicated by pitch-bend messages
+;;; ****f* cm/midi-file-to-events
+;;; DATE
+;;; 28/6/16, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Read in a MIDI file and convert notes to event objects.
+;;; 
+;;; ARGUMENTS
+;;; the path to the midi file
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :track. The track number to read. Default = NIL which means read all
+;;; tracks.  
+;;; 
+;;; RETURN VALUE
+;;; a list of event objects
+;;; 
+;;; SYNOPSIS
+(defun midi-file-to-events (file &key track)
+;;; ****
+  (let* ((cm-midi (cm::parse-midi-file file track))
+         (tempo (make-tempo 120.0))
+         (start-qtrs (cm::object-time (first cm-midi)))
+         (tempo-change nil)
+         (result '()))
+    (loop for m in cm-midi do
+         (typecase m
+           (cm::midi (let* ((dur (cm::midi-duration m))
+                            (e (make-event (midi-to-note (cm::midi-keynum m))
+                                           dur :duration t :tempo (bpm tempo))))
+                       ;; (print e)
+                       (when tempo-change ; assume last change was on this chan
+                         (setf (tempo-change e) tempo
+                               (display-tempo e) t
+                               tempo-change nil))
+                       (setf (amplitude e) (cm::midi-amplitude m)
+                             (start-time e) (cm::object-time m)
+                             (start-time-qtrs e) start-qtrs
+                             (duration-in-tempo e) (* (duration e)
+                                                      (qtr-dur tempo))
+                             (compound-duration-in-tempo e)
+                             (duration-in-tempo e))
+                       (set-midi-channel e (1+ (cm::midi-channel m)))
+                       (incf start-qtrs (duration e))
+                       (push e result)))
+           (cm::midi-tempo-change
+            (setq tempo-change t
+                  ;;                 that's the usecs slot
+                  tempo (make-tempo (cm::midi-event-data1 m))))))
+    (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

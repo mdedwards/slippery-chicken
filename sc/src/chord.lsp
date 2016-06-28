@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 11:11:10 Thu Jun  9 2016 WEST
+;;; $$ Last modified: 16:05:42 Tue Jun 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -276,7 +276,8 @@ NIL
 |#
 ;;;
 ;;; SYNOPSIS
-(defmethod set-midi-channel ((c chord) midi-channel microtones-midi-channel)
+(defmethod set-midi-channel ((c chord) midi-channel
+                             &optional microtones-midi-channel)
 ;;; ****
   (loop for pitch in (data c) do
        (set-midi-channel pitch midi-channel microtones-midi-channel)))

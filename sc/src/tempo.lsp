@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified: 17:51:47 Sat Mar  5 2016 GMT
+;;; $$ Last modified: 16:21:17 Tue Jun 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -205,6 +205,11 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun usecs-to-bpm (usecs)
+  (round (/ 60.0 (/ usecs 1000000.0))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; SAR Thu Dec 29 19:21:44 EST 2011: Added robodoc info
 
 ;;; ****f* tempo/make-tempo
@@ -212,7 +217,10 @@
 ;;; Make a tempo object.
 ;;; 
 ;;; ARGUMENTS
-;;; - A number indicating beats per minute.
+;;; - A number indicating beats per minute. If this is >= 10000 we'll treat the
+;;; argument as a usecs slot (number of microseconds quarter note) and calcuate
+;;; the BPM from that. That gives us a maximum BPM of 5999 before we start
+;;; thinking these are usecs (should be fine).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
@@ -253,6 +261,9 @@ data: 60
 ;;; SYNOPSIS
 (defun make-tempo (bpm &key (beat 4) id description)
 ;;; ****
+  ;; MDE Tue Jun 28 16:20:35 2016 -- see ARGUMENTS description
+  (when (>= bpm 10000)
+    (setq bpm (usecs-to-bpm bpm)))
   (if (listp bpm)
       (make-instance 'tempo :bpm (first bpm) :beat (second bpm) 
                      :description (third bpm) :id id)

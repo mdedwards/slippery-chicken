@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 10:19:48 Wed Mar 16 2016 GMT
+;;; $$ Last modified: 17:32:09 Tue Jun 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1545,9 +1545,17 @@ data: NIL
                    (if (and rthm-letter (= 1 (length rthm-letter)))
                        (data (first rthm-letter))
                        nil)))
+           ;; MDE Tue Jun 28 17:30:17 2016 -- again...
+           (unless (symbolp rthm-letter)
+             (setq rthm-letter nil))
+           ;; (format t "~&rthm-letter: ~a" rthm-letter)
            (make-instance 'rhythm 
                           :data rthm-letter ;(when rthm-letter rthm-letter)
-                          :duration (if rthm-letter -1 rthm)
+                          ;; MDE Tue Jun 28 17:15:31 2016 -- do use the tempo
+                          ;; if it's been given and we haven't been able to
+                          ;; find a rthm-letter 
+                          ;; :duration (if rthm-letter -1 rthm)
+                          :duration (if rthm-letter -1 (* rthm (/ tempo 60.0)))
                           :is-rest is-rest :is-tied-to is-tied-to)))
         (t nil)))
 

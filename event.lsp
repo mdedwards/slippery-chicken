@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 19:29:16 Thu Jun 16 2016 WEST
+;;; $$ Last modified: 16:22:44 Tue Jun 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -241,8 +241,11 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod set-midi-channel ((e event) midi-channel microtonal-midi-channel)
+(defmethod set-midi-channel ((e event) midi-channel
+                             &optional microtonal-midi-channel)
 ;;; ****
+  ;; MDE Tue Jun 28 16:04:01 2016 -- made microtonal-midi-channel optional and
+  ;; if NIL defaulting to midi-channel (see pitch class method)
   (let ((noc (pitch-or-chord e)))
     (when noc
       #|
@@ -3457,7 +3460,7 @@ do (add-mark-before e m))
 ;;; - :tempo. A number to indicate the tempo of the event as a normal bpm
 ;;;   value. Default = 60. This argument is only used when creating the rhythm
 ;;;   from a given duration rather than from a letter value.
-;;; - :tempo-change. A number of tempo-object to attach a tempo change to the
+;;; - :tempo-change. A number or tempo-object to attach a tempo change to the
 ;;;   event. This is the argument you need to set in order to change playback
 ;;;   speed. 
 ;;; - :midi-channel. A number from 0 to 127 indicating the MIDI channel on

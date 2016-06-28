@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 11:57:24 Tue Jun 28 2016 WEST
+;;; $$ Last modified: 16:09:27 Tue Jun 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1719,14 +1719,17 @@ data: CQS4
 
 |#
 ;;; SYNOPSIS
-(defmethod set-midi-channel ((p pitch) midi-channel microtones-midi-channel)
+(defmethod set-midi-channel ((p pitch) midi-channel
+                              &optional microtones-midi-channel)
 ;;; ****
+  (unless microtones-midi-channel
+    (setq microtones-midi-channel midi-channel))
   (setf (midi-channel p) 
         (if (micro-tone p)
             (progn
               (unless (integer>0 microtones-midi-channel)
                 (error "~a~&pitch::set-midi-channel: need ~
-                         microtones-midi-channel (not 0)!"
+                        microtones-midi-channel (not 0)!"
                        p))
               microtones-midi-channel)
             midi-channel)))

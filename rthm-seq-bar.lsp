@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 11:16:16 Tue Jun 28 2016 WEST
+;;; $$ Last modified: 16:07:42 Tue Jun 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4915,7 +4915,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 |#
 ;;; SYNOPSIS
 (defmethod set-midi-channel ((rsb rthm-seq-bar) midi-channel
-                             microtonal-midi-channel)
+                             &optional microtonal-midi-channel)
 ;;; ****
   (loop for e in (rhythms rsb) do
        (set-midi-channel e midi-channel microtonal-midi-channel)))

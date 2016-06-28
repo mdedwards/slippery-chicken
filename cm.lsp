@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 11:55:05 Tue Jun 28 2016 WEST
+;;; $$ Last modified: 12:19:37 Tue Jun 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -991,7 +991,7 @@
   ;; (output (new midimsg time time msg 
   ;; (format t "~&set-pitch-bend: time ~a channel ~a bend ~a" time channel bend)
   (new midi-pitch-bend :time time :channel channel
-       :bend (if (zerop bend) 0 (rescale bend -2 2 -8192 8191))))
+       :bend (if (zerop bend) 0 (round (rescale bend -2 2 -8192 8191)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1003,15 +1003,16 @@
 
 #+cm-2
 (defun output-midi-note (midi-note pitch-bend time amplitude duration
-                                   channel)  
+                         channel)  
   (declare (special midi keynum))
-  (set-pitch-bend time channel pitch-bend)
-  (new midi 
-       :time time 
-       :keynum midi-note
-       :amplitude amplitude
-       :duration duration  
-       :channel channel))
+  (list 
+   (set-pitch-bend time channel pitch-bend)
+   (new midi 
+     :time time 
+     :keynum midi-note
+     :amplitude amplitude
+     :duration duration  
+     :channel channel)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1072,10 +1073,10 @@
          (loop for voice in voices collect
               (new seq :name (gensym) :time 0.0 :subobjects
                    (loop for rs in voice appending
-                        (loop for event in rs 
+                        (sc::flatten (loop for event in rs 
                            appending
-                           (sc::output-midi event time-offset 
-                                            force-velocity))))))
+                             (sc::output-midi event time-offset 
+                                              force-velocity)))))))
    midi-file :tempo (sc::qtr-bpm start-tempo)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

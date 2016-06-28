@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 13:21:30 Mon Jun 13 2016 WEST
+;;; $$ Last modified: 11:16:16 Tue Jun 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6243,9 +6243,9 @@ show-rest: T
 ;;; EXAMPLE
 #|
 
-(cm::event-list-to-midi-file
+(event-list-to-midi-file
  (events-update-time (make-events2 '(q q q) '(g4 g4 g4) 1))
- "/tmp/test.mid" 120 0)
+ :midi-file "/tmp/test.mid" :start-tempo 120)
 
 |#
 ;;; SYNOPSIS

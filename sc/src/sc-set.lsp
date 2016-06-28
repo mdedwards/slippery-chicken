@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 14:21:25 Sun May  8 2016 WEST
+;;; $$ Last modified: 11:49:40 Tue Jun 28 2016 WEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -250,14 +250,8 @@ data: (F2 A2 F3 A3 C4 E4)
            (loop for ins in (data (data ups)) appending (data ins)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; MDE:
 ;;; Move all pitches to <octave> if not nil.
-
-;;; SAR Tue Jan 31 21:21:00 GMT 2012: Delete MDE's original comment here as it
-;;; has been taken into the robodoc below nearly verbatim
-
-;;; SAR Tue Jan 31 21:20:49 GMT 2012: Added robodoc info
 
 ;;; ****m* sc-set/round-inflections
 ;;; DESCRIPTION

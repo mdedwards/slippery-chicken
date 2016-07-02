@@ -11,7 +11,7 @@
 ;;;                   named-object -> linked-named-object -> bar-holder
 ;;;                   -> sequenz
 ;;;
-;;; Version:          
+;;; Version:          1.0.7
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

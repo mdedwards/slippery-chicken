@@ -49,7 +49,7 @@
 
 #+sbcl (unlock-package "COMMON-LISP")
 
-(defparameter +slippery-chicken-version+ "1.0.7 (svn revision 5892 2016-07-02 10:18:22)")
+(defparameter +slippery-chicken-version+ "1.0.7 (svn revision 5893 2016-07-02 10:18:22)")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 

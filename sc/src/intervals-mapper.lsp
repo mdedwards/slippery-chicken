@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist ->
 ;;;                   intervals-mapper  
 ;;;
-;;; Version:          
+;;; Version:          1.0.7
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    July 6th 2016, Essen Werden, Germany
 ;;;
-;;; $$ Last modified: 21:29:54 Mon Jul 11 2016 CEST
+;;; $$ Last modified: 21:49:13 Mon Jul 11 2016 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -124,9 +124,17 @@
   (unless (or (frequency cw) (period cw))
     (error "control-wave::init: a period or frequency value must be given."))
   ;; don't go above the nyquist
-  (when (> (frequency cw) (/ (rate cw) 2))
-    (error "control-wave::init: frequency (~a) should not be > half the ~
-            rate (~a)" (frequency cw) (rate cw)))
+  (let ((nyq (/ (rate cw) 2)))
+    (when (and (frequency cw)
+               (or (and (numberp (frequency cw))
+                        (> (frequency cw) nyq))
+                   (and (listp (frequency cw))
+                        (every #'(lambda (x)
+                                   (> x nyq))
+                               (loop for x in (frequency cw) by #'cddr
+                                  collect x)))))
+      (error "control-wave::init: no frequency (~a) should not be > half the ~
+            rate (~a)" (frequency cw) (rate cw))))
   (setf (data cw)
         (let (array
               (types '(sine cosine sawtooth triangle square pulse)))
@@ -145,8 +153,6 @@
                                :rescale (list (minimum cw) (maximum cw))
                                :initial-phase (initial-phase cw))))
           array)))
-
-;;; todo: header block, print-method, make-control-wave
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((cw control-wave) stream)

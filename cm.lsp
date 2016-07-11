@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 17:43:43 Tue Jun 28 2016 WEST
+;;; $$ Last modified: 19:06:50 Sun Jul 10 2016 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -505,9 +505,34 @@
 
 |#
 ;;; SYNOPSIS
-(defun freq-to-degree (degree &optional (scale cm::*scale*))
+(defun freq-to-degree (freq &optional (scale cm::*scale*))
 ;;; ****
-  (cm::keynum degree :hz t :in (find-scale scale)))
+  (cm::keynum freq :hz t :in (find-scale scale)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****f* cm/freq-to-midi
+;;; DATE
+;;; 10th July 2016, Essen Werden
+;;; 
+;;; DESCRIPTION
+;;; convert a frequency in Hertz to a MIDI note number (possibly floating
+;;; point, indicating microtonality).  
+;;; 
+;;; ARGUMENTS
+;;; a frequency in Hertz
+;;; 
+;;; RETURN VALUE
+;;; a floating point value representing the MIDI note number of the given frequency
+;;; 
+;;; EXAMPLE
+#|
+(freq-to-midi 260) --> 59.892094
+(freq-to-midi (midi-to-freq 60)) --> 60.0
+|#
+;;; SYNOPSIS
+(defun freq-to-midi (freq)
+  (freq-to-degree freq cm::*chromatic-scale*))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -554,6 +579,7 @@
         ;; MDE Sat Jan  7 00:39:10 2012 -- instead of the above try
         ;; rounding to 0.01 (1 cent) 
         (/ (round rem 0.01) 100.0))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #|

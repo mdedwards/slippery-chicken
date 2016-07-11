@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 10:35:19 Thu Feb 25 2016 GMT
+;;; $$ Last modified: 11:54:37 Fri Jul  8 2016 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1018,7 +1018,7 @@ splinter: 2 sounds
 ;;; EXAMPLE
 #|
 (make-sfp-from-folder "/music/hyperboles/snd/cello/samples/"
-                              '("short-percussive" "weird"))
+                      :skip '("short-percussive" "weird"))
 -->
 SNDFILE-PALETTE: paths: NIL
                  extensions: (wav aiff aif snd)

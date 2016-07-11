@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    February 19th 2001
 ;;;
-;;; $$ Last modified: 17:08:23 Thu May 26 2016 WEST
+;;; $$ Last modified: 17:50:44 Wed Jul  6 2016 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -106,7 +106,6 @@
 2 
 3 
 4
-
 |#
 ;;; SYNOPSIS
 (defmethod get-next ((cscl circular-sclist))

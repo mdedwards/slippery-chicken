@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 16:32:39 Sun Jun 19 2016 WEST
+;;; $$ Last modified: 13:08:07 Sun Jul 10 2016 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4992,6 +4992,13 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; - the original maximum
 ;;; - the new minimum
 ;;; - the new maximum
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; :out-of-range. The function to call when the first argument is not within
+;;; the range of arguments two and three. This would normally be #'error,
+;;; #'warn or NIL. If #'warn or NIL, argument 1 will be hard-limited to the
+;;; original range. Default = #'error
 ;;; 
 ;;; RETURN VALUE
 ;;; The value within the new range (a number)
@@ -5002,20 +5009,25 @@ Here's where I pasted the data into the .RPP Reaper file:
 ==> 50.0
 |#
 ;;; SYNOPSIS
-(defun rescale (val min max new-min new-max)
+(defun rescale (val min max new-min new-max &optional (out-of-range #'error))
 ;;; ****
-  (when (or (>= min max)
-            (>= new-min new-max))
-    (error "utilities::rescale: argument 2 (~a) must be < argument 3 (~a) ~
-            ~%and sim. for argument 4 (~a) and 5 (~a)" min max new-min new-max))
-  (unless (and (>= val min)
-               (<= val max))
-    (error "utilities::rescale: first argument (~a) must be within original ~
-            range (~a to ~a)" val min max))
-  (let* ((range1 (float (- max min)))
-         (range2 (float (- new-max new-min)))
-         (prop (float (/ (- val min) range1))))
-    (+ new-min (* prop range2))))
+  (flet ((oor () ; in case we need to call it on more than one occasion...
+           (when (functionp out-of-range)
+             (funcall out-of-range
+                      "utilities::rescale: first argument (~a) should be within ~
+                       original range (~a to ~a)" val min max))))
+    (when (or (>= min max)
+              (>= new-min new-max))
+      (error "utilities::rescale: argument 2 (~a) must be < argument 3 (~a) ~
+              ~%and sim. for argument 4 (~a) and 5 (~a)" min max new-min new-max))
+    (unless (and (>= val min)
+                 (<= val max))
+      (oor)
+      (setf val (if (> val max) max min)))
+    (let* ((range1 (float (- max min)))
+           (range2 (float (- new-max new-min)))
+           (prop (float (/ (- val min) range1))))
+      (+ new-min (* prop range2)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

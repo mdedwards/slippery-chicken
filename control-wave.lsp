@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    July 6th 2016, Essen Werden, Germany
 ;;;
-;;; $$ Last modified: 21:49:13 Mon Jul 11 2016 CEST
+;;; $$ Last modified: 14:09:46 Tue Jul 12 2016 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -83,15 +83,16 @@
    ;; type of waveform to use. one of sine, cosine, sawtooth, triangle,
    ;; square, pulse (single sample of 1.0 follwed by zeros)
    (type :accessor type :type symbol :initarg :type :initform 'sine)
-   ;; waveshaping transfer function. x vals from -1 to 1 (and usually y
-   ;; values also) otherwise there's a strong chance we'll fail. this is only
-   ;; used by the get-data method i.e. not during the generation of the wave
-   ;; (thus we can change this slot on the fly).
+   ;; waveshaping transfer function. x vals from -1 to 1 (and usually y values
+   ;; also) otherwise there's a strong chance we'll fail. this is only used by
+   ;; the get-data and get-last methods i.e. not during the generation of the
+   ;; wave (thus we can change this slot on the fly).
    (transfer :accessor transfer :type list :initarg :transfer :initform nil)
    ;; amplitude scaler for the whole waveform
    (amp :accessor amp :type number :initarg :amp :initform 1.0)
    ;; amplitude envelope to map over the whole waveform. as usual any x axis
-   ;; range is fine. amp is the scaler for this env
+   ;; range is fine. amp is the scaler for this env. bear in mind that this
+   ;; envelope is applied before we scale to within minimum/maximum slots.
    (amp-env :accessor amp-env :type list :initarg :amp-env 
             :initform '(0 1 100 1))))
 
@@ -177,11 +178,17 @@
         y)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod get-last ((cw control-wave))
+  (let ((y (aref (data cw) (1- (array-dimension (data cw) 0)))))
+    (if (transfer cw)
+        (interpolate y (transfer cw))
+        y)))    
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun make-control-sine (&rest args)
   (apply #'make-instance 'control-sine args))
 (defun make-control-cosine (&rest args)
@@ -196,7 +203,6 @@
   (apply #'make-instance 'control-pulse args))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (in-package :clm)
 
 (definstrument ctlwav

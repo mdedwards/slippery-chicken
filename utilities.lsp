@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 14:50:39 Wed Jul 13 2016 CEST
+;;; $$ Last modified: 19:05:20 Wed Jul 13 2016 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2857,8 +2857,10 @@ WARNING:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/randomise
 ;;; DESCRIPTION
-;;; Return a random decimal number close to the number specified (within a
-;;; certain percentage of that number's value).
+;;; Return a random decimal number close to (+ or -) the number specified
+;;; (within a certain percentage of that number's value). Note that if you want
+;;; the result to go from 0 to 2x the argument, then <percent> needs to be 200,
+;;; not 100.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A number.
@@ -2927,9 +2929,11 @@ WARNING:
 ;;; SYNOPSIS
 (defun random-amount (number &optional (percent 5))
 ;;; ****
-  (let ((pc (float (/ percent 100.0))))
-    (* number (+ (- (/ pc 2.0))
-                 (random pc)))))
+  (if (zerop percent)
+      0.0
+      (let ((pc (float (/ percent 100.0))))
+        (* number (+ (- (/ pc 2.0))
+                     (random pc))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3256,7 +3260,7 @@ WARNING:
   (subseq path 0 (position #\/ path :from-end t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  skip is a list of directories to not include--it's the last directory
+;;; skip is a list of directories to not include--it's the last directory
 ;;; name only we're interested in 
 (defun get-all-files (dir &optional skip)
   (loop for file in (directory (starify dir t))
@@ -3357,9 +3361,6 @@ WARNING:
      #'pitch<)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 23:42:18 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/db2amp 
 ;;; DESCRIPTION
 ;;; Convert a decibel value to a standard digital amplitude value (>0.0 to 1.0),
@@ -4842,9 +4843,9 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; 
 ;;; EXAMPLE
 #|
-(BETWEEN-EXTREMES 0.5 1 .5)
+(BETWEEN-EXTREMES 0.5 1 0.5)
 ==> 0.75
-(BETWEEN-EXTREMES 0.5 1 .9)
+(BETWEEN-EXTREMES 0.5 1 0.9)
 ==> 0.95
 |#
 ;;; SYNOPSIS

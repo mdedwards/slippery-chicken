@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    July 6th 2016, Essen Werden, Germany
 ;;;
-;;; $$ Last modified: 14:09:46 Tue Jul 12 2016 CEST
+;;; $$ Last modified: 10:39:27 Wed Jul 13 2016 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -223,7 +223,9 @@
   (unless (listp frequency)
     (setf frequency (list 0 frequency 100 frequency)))
   (let* ((beg (floor (* time *srate*)))
-         (dur-samps (floor (* duration *srate*)))
+         ;; 1+ so we can access the value at <duration>
+         (dur-samps (1+ (ceiling (* duration *srate*))))
+         ;; (dur-samps (floor (* duration *srate*)))
          (end (+ beg dur-samps))
          (samples (make-double-float-array dur-samps))
          (samp 0.0)

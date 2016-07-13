@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    July 6th 2016, Essen Werden, Germany
 ;;;
-;;; $$ Last modified: 10:39:27 Wed Jul 13 2016 CEST
+;;; $$ Last modified: 18:49:29 Wed Jul 13 2016 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -53,7 +53,13 @@
 ;;; Always make sure to compile then load this file (rather than just a plain
 ;;; load) so that the CLM instrument below is properly compiled in C etc.
 
-;;; The sample data are in the data slot as a 1D array
+;;; The sample data are in the data slot as a 1D array.
+
+;;; Sample generation order: 1. wave form; 2. amplitude envelope (with
+;;; amplitude as scaler)--sound file written at this point; 3. rescaling to
+;;; minimum/maximum--data stored in an array at this point; 4. waveshaping via
+;;; transfer function (done only when get-data or get-last is called).
+
 (defclass control-wave (named-object)
   ;; over how many points/samples should a waveform period be mapped. use
   ;; either this or frequency but not both.
@@ -71,7 +77,7 @@
    (rate :accessor rate :type integer :initarg :rate :initform 1000)
    ;; in seconds
    (duration :accessor duration :type number :initarg :duration :initform 1)
-   ;; minimum value for the wave to achieve (before scaling with amp and/or
+   ;; minimum value for the wave to achieve (after scaling with amp and/or
    ;; amp-env) 
    (minimum :accessor minimum :type number :initarg :minimum :initform -1)
    ;; maximum value to achieve
@@ -211,7 +217,7 @@
                ;; (make-fun #'make-oscil)
                ;; (gen-fun #'oscil)
                (time 0.0)
-               ;; case in the run loop can't handle symbols hence integers here
+               ;; case in the run loop can't handle symbols hence integers here:
                ;; 1=sine, 2=cosine, 3=sawtooth, 4=triangle, 5=square,
                ;; 6=pulse(single sample of 1.0 follwed by zeros)
                (type 1)
@@ -223,20 +229,21 @@
   (unless (listp frequency)
     (setf frequency (list 0 frequency 100 frequency)))
   (let* ((beg (floor (* time *srate*)))
-         ;; 1+ so we can access the value at <duration>
+         ;; 1+ so we can access the value at <duration> if necessary...it's
+         ;; just one sample extra
          (dur-samps (1+ (ceiling (* duration *srate*))))
-         ;; (dur-samps (floor (* duration *srate*)))
          (end (+ beg dur-samps))
          (samples (make-double-float-array dur-samps))
          (samp 0.0)
          (rsamp 0.0)
          (indx 0)
          (prop 0.0)
+         (fm 0.0)
          (start-freq (second frequency))
          (fenv (make-env :envelope frequency :duration duration
                          :offset (- start-freq)))
          ;; square and pulse go from 0 to 1, the rest -1 to 1
-         (wav-min (if (member type '(5 6)) 0.0 -1.0)) 
+         (wav-min (if (member type '(5 6)) 0.0 -1.0))
          (wav-range (if (zerop wav-min) 1 2))
          (out-min (when rescale (first rescale)))
          (out-max (when rescale (second rescale)))
@@ -254,18 +261,23 @@
                          :duration duration)))
     (when (= type 2)                     ; cosine
       (setf (mus-phase wav) (mod (+ initial-phase (/ pi 2)) pi)))
+    ;; save some computation in the run loop if we're not actually rescaling.
+    (when (and (= wav-min out-min)
+               (= out-max 1.0))
+      (setf rescale nil))
     (run* (samples)
           (loop for i from beg to end do
-               (setf samp (* (env ampf)
+               (setf fm (hz->radians (env fenv))
+                     samp (* (env ampf)
                              ;; can't use funcall in run though apply should
                              ;; work (but doesn't for me here)
                              (case type
-                               (1 (oscil wav (hz->radians (env fenv))))
-                               (2 (oscil wav (hz->radians (env fenv))))
-                               (3 (sawtooth-wave wav (hz->radians (env fenv))))
-                               (4 (triangle-wave wav (hz->radians (env fenv))))
-                               (5 (square-wave wav (hz->radians (env fenv))))
-                               (6 (pulse-train wav (hz->radians (env fenv))))))
+                               (1 (oscil wav fm))
+                               (2 (oscil wav fm))
+                               (3 (sawtooth-wave wav fm))
+                               (4 (triangle-wave wav fm))
+                               (5 (square-wave wav fm))
+                               (6 (pulse-train wav fm))))
                      rsamp samp)
                (when rescale
                  (setf prop (/ (- samp wav-min) wav-range)

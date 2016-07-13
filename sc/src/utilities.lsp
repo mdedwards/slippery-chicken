@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 13:08:07 Sun Jul 10 2016 CEST
+;;; $$ Last modified: 14:50:39 Wed Jul 13 2016 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2855,9 +2855,6 @@ WARNING:
                       (- high low)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 19:37:44 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/randomise
 ;;; DESCRIPTION
 ;;; Return a random decimal number close to the number specified (within a
@@ -2885,8 +2882,10 @@ WARNING:
 ;;; SYNOPSIS
 (defun randomise (number &optional (percent 5))
 ;;; ****
-  (let ((room (* number (/ percent 200.0))))
-    (between (- number room) (+ number room))))
+  (if (zerop percent)
+      number
+      (let ((room (* number (/ percent 200.0))))
+        (between (- number room) (+ number room)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

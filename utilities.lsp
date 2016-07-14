@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 19:05:20 Wed Jul 13 2016 CEST
+;;; $$ Last modified: 21:30:11 Thu Jul 14 2016 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1453,17 +1453,20 @@
   "e.g. (interpolate 50 '(0 0 100 1) :scaler .5 :exp 2)
    => 0.0625
    The :EXP arg is the exponent that the interpolation result should
-   be raised to." 
-  (let ((lastx (lastx env))
-        (lasty (first (last env))))
-    (cond ((> point lastx)
-           (when warn
-             (warn "interpolate: ~a is off the x axis of ~%~a~%returning ~a"
-                   point env lasty))
-           lasty)
-          ((< point (car env))
-           (error "interpolate: Can't interpolate ~a in ~a" point env))
-          (t (interp-aux point env scaler exp)))))
+   be raised to."
+  ;; MDE Thu Jul 14 21:29:59 2016 -- could happen...
+  (if (not env)
+      point
+      (let ((lastx (lastx env))
+            (lasty (first (last env))))
+        (cond ((> point lastx)
+               (when warn
+                 (warn "interpolate: ~a is off the x axis of ~%~a~%returning ~a"
+                       point env lasty))
+               lasty)
+              ((< point (car env))
+               (error "interpolate: Can't interpolate ~a in ~a" point env))
+              (t (interp-aux point env scaler exp))))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun interp-aux (point env scaler exp)

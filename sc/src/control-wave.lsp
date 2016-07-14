@@ -13,13 +13,15 @@
 ;;;
 ;;; Purpose:          The creation of waveforms such as sine, cosine, sawtooth,
 ;;;                   triangle, square, and pulse train, for the control of
-;;;                   musical parameters.
+;;;                   musical parameters. See
+;;;                   http://michael-edwards.org/wp/?p=977 for context and
+;;;                   example code.
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    July 6th 2016, Essen Werden, Germany
 ;;;
-;;; $$ Last modified: 18:49:29 Wed Jul 13 2016 CEST
+;;; $$ Last modified: 00:43:19 Thu Jul 14 2016 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -141,7 +143,7 @@
                                (loop for x in (frequency cw) by #'cddr
                                   collect x)))))
       (error "control-wave::init: no frequency (~a) should not be > half the ~
-            rate (~a)" (frequency cw) (rate cw))))
+              rate (~a)" (frequency cw) (rate cw))))
   (setf (data cw)
         (let (array
               (types '(sine cosine sawtooth triangle square pulse)))

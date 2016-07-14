@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    July 6th 2016, Essen Werden, Germany
 ;;;
-;;; $$ Last modified: 00:43:19 Thu Jul 14 2016 CEST
+;;; $$ Last modified: 21:33:24 Thu Jul 14 2016 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -181,16 +181,13 @@
 (defmethod get-data (where (cw control-wave) &optional (seconds t))
   (declare (ignore ignore))
   (let ((y (aref (data cw) (if seconds (floor (* where (rate cw))) where))))
-    (if (transfer cw)
-        (interpolate y (transfer cw))
-        y)))
+    ;; have updated interpolate to return arg1 if arg2 is nil
+    (interpolate y (transfer cw))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod get-last ((cw control-wave))
   (let ((y (aref (data cw) (1- (array-dimension (data cw) 0)))))
-    (if (transfer cw)
-        (interpolate y (transfer cw))
-        y)))    
+    (interpolate y (transfer cw))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

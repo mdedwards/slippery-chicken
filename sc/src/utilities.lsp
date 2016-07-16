@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 17:40:52 Fri Jul 15 2016 CEST
+;;; $$ Last modified: 19:54:11 Sat Jul 16 2016 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5033,5 +5033,19 @@ Here's where I pasted the data into the .RPP Reaper file:
            (prop (float (/ (- val min) range1))))
       (+ new-min (* prop range2)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmacro popnew (list avoid &key (test #'eq))
+  (let ((index (gensym))
+        (result (gensym)))
+    `(let* ((,index (loop for i in ,list and j from 0
+                       unless (funcall ,test i ,avoid) return j))
+            (,result (when ,index (nth ,index ,list))))
+       (if ,result
+           (progn (setf ,list (append (subseq ,list 0 ,index)
+                                      (subseq ,list (1+ ,index))))
+                  ,result)
+           ;; <avoid> wasn't in <list>
+           (pop ,list)))))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

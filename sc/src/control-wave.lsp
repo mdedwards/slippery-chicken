@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    July 6th 2016, Essen Werden, Germany
 ;;;
-;;; $$ Last modified: 21:33:24 Thu Jul 14 2016 CEST
+;;; $$ Last modified: 12:49:21 Fri Jul 15 2016 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -180,8 +180,10 @@
 ;;; our duration is long enough to accommodate it.
 (defmethod get-data (where (cw control-wave) &optional (seconds t))
   (declare (ignore ignore))
-  (let ((y (aref (data cw) (if seconds (floor (* where (rate cw))) where))))
-    ;; have updated interpolate to return arg1 if arg2 is nil
+  (let ((y (aref (data cw) (if seconds
+                               (floor (* where (rate cw)))
+                               where))))
+    ;; have updated interpolate to return arg1 if arg2 (envelope) is nil
     (interpolate y (transfer cw))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -229,7 +231,7 @@
     (setf frequency (list 0 frequency 100 frequency)))
   (let* ((beg (floor (* time *srate*)))
          ;; 1+ so we can access the value at <duration> if necessary...it's
-         ;; just one sample extra
+         ;; just one (or two max.) extra sample 
          (dur-samps (1+ (ceiling (* duration *srate*))))
          (end (+ beg dur-samps))
          (samples (make-double-float-array dur-samps))

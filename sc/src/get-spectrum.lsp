@@ -37,7 +37,7 @@
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
-;;; $$ Last modified: 20:06:39 Tue Sep 15 2015 BST
+;;; $$ Last modified: 13:01:27 Sat Jul 16 2016 CEST
 ;;;
 ;;; SVN ID: $Id: get-spectrum.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
@@ -69,7 +69,6 @@
 ;;; instrument call. (It works every other time because the second time the
 ;;; spec-an instrument doesn't actually get called--the data is cached the
 ;;; first time and returned the second.)
-;;;
 
 (in-package :clm)
 
@@ -172,18 +171,17 @@
   (declare (special *slippery-chicken-get-spectrum-last-result*))
   (declare (special *slippery-chicken-get-spectrum-peak-amps*))
   (declare (special *slippery-chicken-get-spectrum-peak-freqs*))
-  
   ;; Make sure the argument to order-by is acceptable.
   (when (not (or (eq order-by 'freq) (eq order-by 'amp)))
     (error 
      "get-spectrum: Argument to :order-by must be either 'freq or 'amp."))
-
   ;; Test to see if we just called this function with the same file and
   ;; start-analysis values.  If so, return the last result, if not, perform the
   ;; analysis.
   (if (and *slippery-chicken-get-spectrum-last-result*
            (and (stringp (third *slippery-chicken-get-spectrum-last-result*))
-                (string-equal (third *slippery-chicken-get-spectrum-last-result*) file))
+                (string-equal (third *slippery-chicken-get-spectrum-last-result*)
+                              file))
            (= (fourth *slippery-chicken-get-spectrum-last-result*) start-analysis)
            (eq (fifth *slippery-chicken-get-spectrum-last-result*) order-by)
            (= (sixth *slippery-chicken-get-spectrum-last-result*) num-partials))
@@ -191,13 +189,10 @@
         (print "Using previous analysis")
         (values (first *slippery-chicken-get-spectrum-last-result*)
                 (second *slippery-chicken-get-spectrum-last-result*)))
-
     ;; Here beginneth the analysis.
     (progn
-
       ;; Any old bs so we can fill it later (we can't (setf (first nil) x))
       (setf *slippery-chicken-get-spectrum-last-result* '(1 2 3 4 5 6)) 
-
       ;; Call the spec-an instrument to get our data stored in
       ;; *slippery-chicken-get-spectrum-peak-freqs/amps*
       (with-sound (:srate srate :play nil) 
@@ -213,7 +208,6 @@
             (freqs nil)
             (amps nil)
             (freqs-amps '()))
-
         ;; If we're going to normalise the amps to 1.0, get the max amp now.
         (if normalise
             (loop for i from 0 below max-peaks do

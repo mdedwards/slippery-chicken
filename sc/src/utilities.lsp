@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 21:30:11 Thu Jul 14 2016 CEST
+;;; $$ Last modified: 17:40:52 Fri Jul 15 2016 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3664,10 +3664,11 @@ WARNING:
 ;;; SYNOPSIS
 (defun hailstone (n)
 ;;; ****
-  (loop collect n while (> n 1) 
-     do (setf n (if (oddp n)
-                    (1+ (* 3 n))
-                    (/ n 2)))))
+  (let ((result (loop collect n while (> n 1) 
+                   do (setf n (if (oddp n)
+                                  (1+ (* 3 n))
+                                  (/ n 2))))))
+    (values result (apply #'+ result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Dec 15 15:57:32 2011

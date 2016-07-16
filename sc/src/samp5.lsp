@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified: 09:50:10 Sat Jan 23 2016 GMT
+;;; $$ Last modified: 16:34:47 Sat Jul 16 2016 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -92,7 +92,9 @@
     (values a-a a-b b-a b-b)))
             
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(definstrument samp5 ; (samp5 :c-file "../bin/samp5.c") <-- doesn't expand :/
+;;; (defparameter +c-file+ (format nil "~a/bin/samp5.c"
+;;;                                cl-user::+slippery-chicken-home-dir+))
+(definstrument samp5 ;:c-file +c-file+)
     (file time &key
           (duration 0)
           (start 0)

@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 17:16:29 Fri May 27 2016 WEST
+;;; $$ Last modified: 02:14:51 Sat Jul 16 2016 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -583,9 +583,6 @@
       t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Jan 14 12:10:43 GMT 2012: Edited robodoc info
-
 ;;; ****m* l-for-lookup/get-l-sequence
 ;;; DESCRIPTION
 ;;; Return an L-sequence of the key-ids for the rules of a given l-for-lookup

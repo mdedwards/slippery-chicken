@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified: 20:06:54 Tue Sep 15 2015 BST
+;;; $$ Last modified: 10:41:46 Sun Jul 17 2016 CEST
 ;;;
 ;;; SVN ID: $Id: samp5.lsp 4223 2013-10-29 10:57:09Z medward2 $
 ;;;
@@ -52,7 +52,7 @@
 
 ;;; The instrument defines all the parameters that will be used in clm-play but
 ;;; ignores some of them as they're not relevant to sinewave playback.
-(definstrument sine
+(defscins sine
     (ignore time &key       
             (duration 5)
             (frequency 440)

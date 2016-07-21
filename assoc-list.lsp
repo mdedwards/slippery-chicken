@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 12:17:44 Thu May 26 2016 WEST
+;;; $$ Last modified: 22:50:41 Mon Jul 18 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -196,7 +196,7 @@
   (loop for obj in (data al) and i from 0 
      when (get-position (id obj) al (1+ i)) do
      (error "assoc-list::all-ids-unique: ~
-                All ids in an assoc-list must be unique.  Found duplicate: ~
+                All ids in an assoc-list must be unique. ~%Found duplicate: ~
                 ~a in ~%~a" (id obj) al)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

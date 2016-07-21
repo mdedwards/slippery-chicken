@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    July 6th 2016, Essen Werden, Germany
 ;;;
-;;; $$ Last modified: 12:49:21 Fri Jul 15 2016 CEST
+;;; $$ Last modified: 21:28:28 Mon Jul 18 2016 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -107,20 +107,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defclass control-sine (control-wave)
   ((type :initform 'sine)))
-
 (defclass control-cosine (control-wave)
   ((type :initform 'cosine)))
-
 (defclass control-sawtooth (control-wave)
   ((type :initform 'sawtooth)))
-
 (defclass control-triangle (control-wave)
   ((type :initform 'triangle)))
-
 (defclass control-square (control-wave)
   ((type :initform 'square)
    (minimum :initform 0.0)))
-
 (defclass control-pulse (control-wave)
   ((type :initform 'pulse)
    (minimum :initform 0.0)))
@@ -212,7 +207,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (in-package :clm)
 
-(definstrument ctlwav
+(defscins ctlwav
     ;; frequency can also be an envelope
     (frequency duration &key
                ;; (make-fun #'make-oscil)

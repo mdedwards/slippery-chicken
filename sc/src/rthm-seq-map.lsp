@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 18:24:55 Mon Dec 23 2013 WIT
+;;; $$ Last modified: 22:44:02 Mon Jul 18 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -790,6 +790,11 @@ data: (
                       (loop for j below num-ins do
                            (setf current-rs (nth i (nth j rthm-seqs)))
                            (when current-rs
+                             ;; MDE Mon Jul 18 22:36:07 2016 
+                             (unless (rthm-seq-p current-rs)
+                               (error "rthm-seq-map::check-rthm-seq-durations: ~
+                                       should have a rthm-seq but got ~a"
+                                      current-rs))
                              (if duration
                                  (unless (equal-within-tolerance
                                           duration (duration current-rs))

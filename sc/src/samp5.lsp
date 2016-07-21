@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified: 16:34:47 Sat Jul 16 2016 CEST
+;;; $$ Last modified: 10:40:52 Sun Jul 17 2016 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -91,10 +91,21 @@
             b-b (/ b-b max)))
     (values a-a a-b b-a b-b)))
             
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; (defparameter +c-file+ (format nil "~a/bin/samp5.c"
-;;;                                cl-user::+slippery-chicken-home-dir+))
-(definstrument samp5 ;:c-file +c-file+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sun Jul 17 10:11:23 2016 -- write .c .o .so etc. files in the bin
+;;; directory. definstrument can handle a :c-file keyword only when a direct
+;;; path is given, i.e. nothing with format or any other function call. Hence
+;;; this macro.
+
+(defmacro defscins (name (&rest args) &body body); &environment env)
+  (let ((sccfile (format nil "~abin/~a.c"
+                         cl-user::+slippery-chicken-home-dir+
+                         name)))
+    `(definstrument (,name :c-file ,sccfile)
+         ,args ,@body)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defscins samp5
     (file time &key
           (duration 0)
           (start 0)

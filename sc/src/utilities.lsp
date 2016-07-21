@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 19:54:11 Sat Jul 16 2016 CEST
+;;; $$ Last modified: 22:54:22 Mon Jul 18 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1038,7 +1038,6 @@
        finally (return t))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; N.B. we have to define a combine method for any classes where we need a
 ;;; combine-all call 
 

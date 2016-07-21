@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 17:30:57 Mon Jun  6 2016 WEST
+;;; $$ Last modified: 22:59:47 Mon Jul 18 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -924,7 +924,6 @@ data: (SET3 SET1 SET2)
        finally (return t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; Check that every reference in sc-map refers to an object in the palette
 
 (defun check-sc-map-refs (sc-map palette &optional (nil-ok t))

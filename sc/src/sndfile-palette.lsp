@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 11:54:37 Fri Jul  8 2016 CEST
+;;; $$ Last modified: 15:11:25 Mon Jul 25 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -298,7 +298,6 @@
     cue-num))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* sndfile-palette/osc-send-cue-nums
 ;;; DESCRIPTION
 ;;; Send via OSC the cue number of each sound file in a form that a Max sflist~
@@ -622,9 +621,6 @@
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May  3 11:39:21 BST 2012: Added robodoc entry
-
 ;;; ****f* sndfile-palette/make-sfp
 ;;; DESCRIPTION
 ;;; Make a sndfile-palette object. This object is a simple palette which checks
@@ -686,9 +682,6 @@
                  :warn-not-found warn-not-found))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Jun 13 17:35:43 BST 2012: Added robodoc entry
-
 ;;; ****f* sndfile-palette/make-sfp-from-wavelab-marker-file
 ;;; DESCRIPTION
 ;;; Automatically create a sndfile-palette object from the specified wavelab
@@ -861,7 +854,6 @@ data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
               :warn-not-found warn-not-found)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; the wavelab-section structure is defined in utilities.lsp
 
 (defun wavelab-section-to-list (wls)
@@ -871,10 +863,6 @@ data: /Volumes/JIMMY/SlipperyChicken/sc/test-suite/24-7.wav
         :end (wavelab-section-end wls)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu Jun 14 13:23:14 BST 2012: Added robodoc entry
-
-;;; MDE original comment:
 ;;; See get-groups below for description of format string in markers.
 
 ;;; ****f* sndfile-palette/make-sfp-from-groups-in-wavelab-marker-file
@@ -978,7 +966,6 @@ splinter: 2 sounds
     al))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  MDE Sat Sep  5 15:08:06 2015
 ;;; ****f* sndfile-palette/make-sfp-from-folder
 ;;; DATE
 ;;; 5th September 2015, Edinburgh

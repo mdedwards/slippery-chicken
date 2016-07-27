@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    July 6th 2016, Essen Werden, Germany
 ;;;
-;;; $$ Last modified: 21:28:28 Mon Jul 18 2016 BST
+;;; $$ Last modified: 16:10:40 Mon Jul 25 2016 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;

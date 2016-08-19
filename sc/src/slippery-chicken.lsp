@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 13:25:48 Thu Jun 16 2016 BST
+;;; $$ Last modified: 12:00:11 Fri Aug 19 2016 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1542,20 +1542,19 @@
 (3 ((cl (1 1 1 1 1))
 (vc (1 1 1 1 1))))))))
 (get-bar-from-ref mini 2 'vc 3 2))
-
-                             =>
-                             RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 23, 
-                             old-bar-nums: NIL, write-bar-num: NIL, start-time: 88.000, 
-                             start-time-qtrs: 88.0, is-rest-bar: NIL, multi-bar-rest: NIL, 
-                             show-rest: T, notes-needed: 5, 
-                             tuplets: NIL, nudge-factor: 0.35, beams: NIL, 
-                             current-time-sig: 2, write-time-sig: NIL, num-rests: 0, 
-                             num-rhythms: 5, num-score-notes: 5, parent-start-end: NIL, 
-                             missing-duration: NIL, bar-line-type: 0, 
-                             player-section-ref: (2 VC), nth-seq: 2, nth-bar: 1, 
-                             rehearsal-letter: NIL, all-time-sigs: (too long to print) 
-                             sounding-duration: 4.000, 
-                             rhythms: (
+=>
+RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 23, 
+old-bar-nums: NIL, write-bar-num: NIL, start-time: 88.000, 
+start-time-qtrs: 88.0, is-rest-bar: NIL, multi-bar-rest: NIL, 
+show-rest: T, notes-needed: 5, 
+tuplets: NIL, nudge-factor: 0.35, beams: NIL, 
+current-time-sig: 2, write-time-sig: NIL, num-rests: 0, 
+num-rhythms: 5, num-score-notes: 5, parent-start-end: NIL, 
+missing-duration: NIL, bar-line-type: 0, 
+player-section-ref: (2 VC), nth-seq: 2, nth-bar: 1, 
+rehearsal-letter: NIL, all-time-sigs: (too long to print) 
+sounding-duration: 4.000, 
+rhythms: (
 [...]
 
 |#
@@ -2797,13 +2796,9 @@ data: NIL
             (sclist-length sec))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed May  9 22:12:32 BST 2012: Added robodoc entry
-
 ;;; MDE Mon May  7 09:32:10 2012 -- NB num-sections refers to the number of
 ;;; top-level sections so if any section has subsections they'll all be slurped
 ;;; up and only count as 1.
-
 
 ;;; ****m* slippery-chicken/get-section-refs
 ;;; DATE

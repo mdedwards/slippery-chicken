@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified: 14:46:00 Sat Jul 16 2016 CEST
+;;; $$ Last modified: 18:59:15 Tue Aug 16 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -265,7 +265,7 @@
 (sc-compile-and-load "popcorn.lsp")
 #+(and darwin sbcl) (sc-compile-and-load "osc.lsp")
 #+(and darwin sbcl) (sc-compile-and-load "osc-sc.lsp")
-(sc-compile-and-load "get-spectrum.lsp")
+#+clm (sc-compile-and-load "get-spectrum.lsp")
 (sc-compile-and-load "spectra.lsp")
 #+clm (sc-compile-and-load "control-wave.lsp")
 

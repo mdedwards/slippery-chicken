@@ -88,6 +88,7 @@
           (terpri)
           (values)))
 
+#-ecl
 (defun warning (&rest args)
   (let ((str (apply #'format nil args)) (pad ";          "))
     (terpri)

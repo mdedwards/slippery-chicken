@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 12:15:10 Wed Jun  8 2016 WEST
+;;; $$ Last modified: 13:16:35 Fri Aug 19 2016 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5841,6 +5841,29 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/rehearsal-letters-at-sections
+;;; DATE
+;;; August 19th 2016, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Place a rehearsal letter at the beginning of every section (and subsection)
+;;; in the piece. 
+;;; 
+;;; ARGUMENTS
+;;; - a slippery chicken object
+;;; 
+;;; RETURN VALUE
+;;; A list of the bar numbers where rehearsal letters will appear.
+;;; 
+;;; SYNOPSIS
+(defmethod rehearsal-letters-at-sections ((sc slippery-chicken))
+  (let* ((refs (get-section-refs sc 1 9999))
+         ;;                         don't need letter at bar 1
+         (bar-nums (loop for ref in (rest refs) collect
+                        (start-bar (get-section sc ref)))))
+    (setf (rehearsal-letters sc) bar-nums)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -5939,6 +5962,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
     (check-tuplets sc)
     (check-beams sc)
     sc))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Apr 19 15:03:05 2013 -- make a dummy (pretty empty) sc structure

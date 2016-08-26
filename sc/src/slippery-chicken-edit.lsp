@@ -5864,6 +5864,34 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
     (setf (rehearsal-letters sc) bar-nums)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/add-half-beat-rest
+;;; DATE
+;;; August 26th 2016, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Calls the method of the same name on each rthm-seq-bar object at the given
+;;; bar number. Adds a half beat rest at the end of the bar. This is a
+;;; destructive method. It will change the time signature, so a 2/4 bar
+;;; becomes a 5/8 bar, with an 1/8th rest at the end. This is done for all the
+;;; players in the ensemble (so that scores can be correctly written)
+;;; 
+;;; ARGUMENTS
+;;; - a slippery-chicken object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the bar number to modify. Default = 1.
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; SYNOPSIS
+(defmethod add-half-beat-rest ((sc slippery-chicken) &optional (bar-num 1))
+;;; ****
+  (loop for bar in (get-bar sc bar-num) ; gets all players' bars at bar-num
+     do (add-half-beat-rest bar))
+  t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;

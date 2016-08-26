@@ -2142,7 +2142,7 @@ RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL,
                            ;;MDE Thu Dec  8 23:55:31 2011 -- changed to key arg
                            ;; :warn nil :is-full-error nil))
                            :warn nil :is-full-error is-full-error))
-             ;;  MDE Tue May 24 12:59:45 2016 -- fill-with-rhythms will now
+             ;; MDE Tue May 24 12:59:45 2016 -- fill-with-rhythms will now
              ;; underfill bars so we need to explicitly check for a full bar 
                (if (and temp (is-full bar nil))
                    (progn
@@ -2639,7 +2639,7 @@ data: S
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  MDE Mon Sep 30 17:29:49 2013 -- check whether all pitch-seqs in the psp
+;;; MDE Mon Sep 30 17:29:49 2013 -- check whether all pitch-seqs in the psp
 ;;; have the same number of notes as the rthm-seq.
 (defmethod psp-ok? ((rs rthm-seq) &optional (on-error #'error))
   (loop with ok = t with nn = (num-notes rs)

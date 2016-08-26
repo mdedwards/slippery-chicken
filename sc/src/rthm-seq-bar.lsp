@@ -262,7 +262,7 @@
                                                             (time-sig rsb))))
          (ok (equal-within-tolerance rthms-dur ts-dur .001)))
     (when (and (not ok)
-               ;;  MDE Mon Apr 23 12:56:57 2012 -- not enough rhythms should
+               ;; MDE Mon Apr 23 12:56:57 2012 -- not enough rhythms should
                ;; signal an error/warning too! 
                (or (> rthms-dur ts-dur)
                    (and not-enough (< rthms-dur ts-dur))))
@@ -350,12 +350,42 @@ MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rthm-seq-bar/add-half-beat-rest
+;;; DATE
+;;; August 25th 2016, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Adds a half beat rest at the end of the bar. This is a destructive
+;;; method. It will change the time signature, so a 2/4 bar becomes a 5/8
+;;; bar, with an 1/8th rest at the end.
+;;; 
+;;; ARGUMENTS
+;;; - rthm-seq-bar object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - ignore: don't pass this; it's only there so we can have a bar number
+;;; passed in the slippery-chicken class.
+;;; 
+;;; RETURN VALUE
+;;; The modified rthm-seq-bar object passed as an argument
+;;; 
+;;; SYNOPSIS
+(defmethod add-half-beat-rest ((rsb rthm-seq-bar) &optional ignore)
+  (declare (ignore ignore))
+  (let* ((ts (get-time-sig rsb))
+         (denom2 (* 2 (denom ts))))
+    (setf (time-sig rsb) (list (1+ (* 2 (num ts))) denom2))
+    (add-event rsb (make-rest denom2))
+    (gen-stats rsb)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod add-event ((rsb rthm-seq-bar) event &key (position nil))
   (setf (rhythms rsb)
-    (if position
-        (splice (list event) (rhythms rsb) position)
-      (econs (rhythms rsb) event))))
+        (if position
+            (splice (list event) (rhythms rsb) position)
+            (econs (rhythms rsb) event))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -537,7 +567,7 @@ data: NIL
                       (set-written r (- transposition))))
                 (set-midi-channel r midi-channel microtones-midi-channel))
               (push r (rhythms rsb))
-            ;;  MDE Mon Apr 23 13:04:32 2012 -- don't check for underfull now
+            ;; MDE Mon Apr 23 13:04:32 2012 -- don't check for underfull now
             ;; we have that option by default
               (multiple-value-bind
                     (bool spill)
@@ -4696,7 +4726,7 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
             do
             ;; (print ate)
             ;; (print-simple bar)
-            ;;  MDE Tue May 24 12:59:45 2016 -- fill-with-rhythms will now
+            ;; MDE Tue May 24 12:59:45 2016 -- fill-with-rhythms will now
             ;; underfill bars so we need to explicitly check for a full bar 
               (when (and ate (is-full bar nil))
                 ;; lop off the eaten rhythms and proceed

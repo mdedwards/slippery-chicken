@@ -1653,27 +1653,27 @@ rhythms: (
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-(vc (cello :midi-channel 2))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1))
-(3 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s)
-(q e s s h)
-(e s s q h))
-:pitch-seq-palette ((1 2 3 4 5 
-1 3 2 4 5 
-3 5 2 4 1))))) 
-:rthm-seq-map '((1 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(2 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(3 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))))))
-(get-bar mini 17 'cl))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s)
+                                 (q e s s h)
+                                 (e s s q h))
+                                :pitch-seq-palette ((1 2 3 4 5 
+                                                       1 3 2 4 5 
+                                                       3 5 2 4 1))))) 
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (3 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
+  (get-bar mini 17 'cl))
 
 =>
 RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: NIL, bar-num: 17, 
@@ -1727,9 +1727,6 @@ rhythms: (
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed May  9 18:25:47 BST 2012: Conformed robodoc entry
-
 ;;; ****m* slippery-chicken/count-notes
 ;;; DESCRIPTION
 ;;; Returns the number of notes between start-bar and end-bar (both

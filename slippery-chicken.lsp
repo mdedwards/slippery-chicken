@@ -58,14 +58,10 @@
    ;; specify it as part of the sc class.
    (fast-leap-threshold :accessor fast-leap-threshold 
                         :initarg :fast-leap-threshold :initform 0.125)
-   ;;****S* slippery-chicken/rthm-seq-map-replacements 
-   ;; NAME
-   ;; rthm-seq-map-replacements 
    ;; These are replacements for the map (which may be generated
    ;; algorithmically); they take the form (section-reference
    ;; sequence-number (1-based) replacement) e.g.
    ;;  '(((1 1 vla) 2 20a) ((1 1 vla) 3 1a) ((1 1 vla) 4 9a) ((1 1 vla) ...
-   ;; ****
    (rthm-seq-map-replacements :accessor rthm-seq-map-replacements 
                               :initarg :rthm-seq-map-replacements
                               :initform nil)

@@ -68,8 +68,6 @@ snapPizzicato = \markup \snappizz
         (markup #:general-align Y DOWN  #:epsfile X 1.5 "aeolian-light.eps")))
 aeolianLight = \markup \aeolianLight
 
-
-
 % Similar to the above but a darkly filled circle, implying more tone.
 #(define-markup-command (aeolianDark layout props) () 
  (interpret-markup layout props 

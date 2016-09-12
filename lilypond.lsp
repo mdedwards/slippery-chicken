@@ -178,7 +178,7 @@
            ;; MDE Sat Nov  9 20:21:19 2013 -- in CMN it's :breath-in: a
            ;; triangle on its side (pointing left)
            (wedge "\\once \\override NoteHead #'style = #'fa ")
-           (square "\\once \\override NoteHead #'style = #'la ") 
+           (square "\\once \\override NoteHead #'style = #'la ")
            ;; (mensural "\\once \\override NoteHead #'style = #'slash ")
            ;;(flag-head "\\once \\override NoteHead #'style = #'harmonic-mixed
            ;;")  

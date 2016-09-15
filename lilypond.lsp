@@ -65,7 +65,10 @@
 ;;; generally called by the user but the list of symbols that can be used will
 ;;; be useful.  If <silent> then non-existing marks will not produce
 ;;; warnings/errors (but we'll return nil). 
-(defun lp-get-mark (mark &key (num-flags 0) silent)
+(defun lp-get-mark (mark &key (num-flags 0)
+                           ;; MDE Thu Sep 15 10:50:47 2016 -- default to the
+                           ;; config setting 
+                           (silent (not (get-sc-config 'warn-no-lp-mark))))
   (flet ((no-lp-mark (mark)
            (when silent
              (warn "lilypond:lp-get-mark: Sorry but ~a is not yet available ~

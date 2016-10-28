@@ -28,7 +28,7 @@
 ;;;
 ;;; Creation date:    August 3rd 2010 Edinburgh
 ;;;
-;;; $$ Last modified: 16:49:52 Mon Jun 18 2012 BST
+;;; $$ Last modified:  12:57:04 Fri Sep 23 2016 BST
 ;;;
 ;;;
 ;;; SVN ID: $Id$
@@ -416,7 +416,9 @@ data: E4
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; SAR Thu May  3 17:24:55 BST 2012: Added robodoc entry
+;;; TODO: incorporate Dan's scale stuff from
+;;; https://vitruviandan.wordpress.com/2016/09/23/make-scale-lsp/ e.g. allow
+;;; out <notes> argument to be a symbol like 'harmonic-minor
 
 ;;; ****f* intervals-mapper/make-intervals-mapper
 ;;; DESCRIPTION

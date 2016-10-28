@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified: 22:54:22 Mon Jul 18 2016 BST
+;;; $$ Last modified:  21:30:32 Mon Oct 24 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1666,7 +1666,8 @@
                              orig-y-range)
 ;;; ****
   (unless (and (> x-max x-min) (> y-max y-min))
-    (error "utilities::auto-scale-env: x-max must be > x-min and sim. for y's"))
+    (error "utilities::auto-scale-env: x-max (~a) must be > x-min (~a) and sim.~
+            ~%for y-max (~a) and y-min (~a): ~%~a" x-max x-min y-max y-min env))
   (let* ((env-x-min (first env))
          (env-x-max (lastx env))
          (env-x-range (- env-x-max env-x-min))

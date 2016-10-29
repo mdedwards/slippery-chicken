@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified: 11:16:01 Mon Apr 11 2016 WEST
+;;; $$ Last modified:  14:48:48 Sat Oct 29 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;

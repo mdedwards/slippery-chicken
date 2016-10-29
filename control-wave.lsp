@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    July 6th 2016, Essen Werden, Germany
 ;;;
-;;; $$ Last modified: 16:10:40 Mon Jul 25 2016 BST
+;;; $$ Last modified:  13:00:48 Sat Oct 29 2016 BST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -144,7 +144,8 @@
               (types '(sine cosine sawtooth triangle square pulse)))
           (unless (member (type cw) types)
             (error "control-wave::init: unrecognised type: ~a" (type cw)))
-          (clm::with-sound (:channels 1 :srate (rate cw) :output (sndfile cw))
+          (clm::with-sound (:channels 1 :srate (rate cw) :output (sndfile cw)
+                                      :play nil)
             (setf array
                   (clm::ctlwav (if (period cw)
                                    ;; frequency = sampling rate / period
@@ -284,4 +285,4 @@
     samples))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; EOF 
+;;; EOF control-wave.lsp

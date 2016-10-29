@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 16:22:44 Tue Jun 28 2016 WEST
+;;; $$ Last modified:  11:15:54 Sat Oct 29 2016 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -139,7 +139,7 @@
    ;; slippery-chicken object's set-palette) the pitch data came from 
    (set-ref :accessor set-ref :initform nil)
    ;(rqq-notes :accessor rqq-notes :type list :initform nil :allocation :class)
-   (amplitude :accessor amplitude :type float :initarg :amplitude 
+   (amplitude :accessor amplitude :type number :initarg :amplitude 
               :initform (get-sc-config 'default-amplitude))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  11:14:53 Thu Nov 10 2016 GMT
+;;; $$ Last modified:  11:30:56 Thu Nov 10 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1078,7 +1078,7 @@
 ;;; - (&rest) the numbers of the tracks you'd like to convert, starting from 1.
 ;;; 
 ;;; RETURN VALUE
-;;; The number of notes written.
+;;; The number of notes written (integer)
 ;;; 
 ;;; SYNOPSIS
 (defun midi2qlist (midi-file qlist-file &rest tracks)

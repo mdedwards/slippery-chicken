@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  10:22:08 Thu Nov 10 2016 GMT
+;;; $$ Last modified:  11:14:53 Thu Nov 10 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1058,6 +1058,56 @@
                   ;;                 that's the usecs slot
                   tempo (make-tempo (cm::midi-event-data1 m))))))
     (nreverse result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* cm/midi2qlist
+;;; DATE
+;;; 10th November 2016, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Convert a midi-file to qlist text format, for sequencing in PD or MaxMSP.
+;;; If you don't want specific tracks from the file, just pass two arguments so
+;;; <tracks> remains nil.
+;;; 
+;;; ARGUMENTS
+;;; - the path to the midi file you want to convert (string)
+;;; - the path to the qlist text file you'd like to write (string). If this is
+;;;   nil then we'll write to the same patch as the midi file with the extension
+;;;   .txt added. NB If this file exists it will be overwritten, no questions
+;;;   asked.
+;;; - (&rest) the numbers of the tracks you'd like to convert, starting from 1.
+;;; 
+;;; RETURN VALUE
+;;; The number of notes written.
+;;; 
+;;; SYNOPSIS
+(defun midi2qlist (midi-file qlist-file &rest tracks)
+;;; ****
+  (unless qlist-file
+    (setq qlist-file (concatenate 'string midi-file ".txt")))
+  (let* ((events (if tracks
+                     (loop for tr in tracks appending
+                          (midi-file-to-events midi-file :track tr))
+                     (midi-file-to-events midi-file))))
+    ;; there might be some nil events so remove them then intermingle the
+    ;; tracks, sorting by start time (might as well do this even when there are
+    ;; no tracks as who knows...)
+    (setq events (sort (remove-if #'not events)
+                       #'(lambda (x y)
+                           (< (start-time x) (start-time y)))))
+    (with-open-file (qlist qlist-file :direction :output
+                           :if-does-not-exist :create
+                           :if-exists :overwrite)
+      (loop for e in events with last-time = 0.0 do
+           ;; qlist line format is the delay before the message is sent; the
+           ;; receiver; the data; a semi-colon at the end of the line
+           (format qlist "~&~,3f qlmidinote ~a ~a;"
+                   ;; delay is in millisecs
+                   (* 1000.0 (-  (start-time e) last-time))
+                   (midi-note (pitch-or-chord e))
+                   (floor (* 127 (amplitude e))))
+           (setf last-time (start-time e))))
+    (length events)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

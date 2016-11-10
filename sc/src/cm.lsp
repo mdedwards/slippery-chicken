@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified: 19:06:50 Sun Jul 10 2016 CEST
+;;; $$ Last modified:  10:22:08 Thu Nov 10 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1033,23 +1033,26 @@
     (loop for m in cm-midi do
          (typecase m
            (cm::midi (let* ((dur (cm::midi-duration m))
-                            (e (make-event (midi-to-note (cm::midi-keynum m))
-                                           dur :duration t :tempo (bpm tempo))))
+                            (e (unless (zerop dur)
+                                 (make-event (midi-to-note (cm::midi-keynum m))
+                                             dur :duration t 
+                                             :tempo (bpm tempo)))))
                        ;; (print e)
-                       (when tempo-change ; assume last change was on this chan
-                         (setf (tempo-change e) tempo
-                               (display-tempo e) t
-                               tempo-change nil))
-                       (setf (amplitude e) (cm::midi-amplitude m)
-                             (start-time e) (cm::object-time m)
-                             (start-time-qtrs e) start-qtrs
-                             (duration-in-tempo e) (* (duration e)
-                                                      (qtr-dur tempo))
-                             (compound-duration-in-tempo e)
-                             (duration-in-tempo e))
-                       (set-midi-channel e (1+ (cm::midi-channel m)))
-                       (incf start-qtrs (duration e))
-                       (push e result)))
+                       (when e
+                         (when tempo-change ; assume last change was on this chan
+                           (setf (tempo-change e) tempo
+                                 (display-tempo e) t
+                                 tempo-change nil))
+                         (setf (amplitude e) (cm::midi-amplitude m)
+                               (start-time e) (cm::object-time m)
+                               (start-time-qtrs e) start-qtrs
+                               (duration-in-tempo e) (* (duration e)
+                                                        (qtr-dur tempo))
+                               (compound-duration-in-tempo e)
+                               (duration-in-tempo e))
+                         (set-midi-channel e (1+ (cm::midi-channel m)))
+                         (incf start-qtrs (duration e))
+                         (push e result))))
            (cm::midi-tempo-change
             (setq tempo-change t
                   ;;                 that's the usecs slot

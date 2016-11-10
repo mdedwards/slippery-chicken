@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified: 20:49:01 Sat Nov 14 2015 ICT
+;;; $$ Last modified:  15:34:43 Tue Nov  8 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -240,6 +240,7 @@
        :chords nil 
        :midi-program 57))
      ;; SAR Fri Jan 20 12:17:24 GMT 2012: Added tenor trombone from Adler
+     ;; todo: need bass trombone
      (tenor-trombone
       (:staff-name "trombone" :staff-short-name "tbn" 
        :lowest-written e2 :highest-written bf4

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified: 16:07:42 Tue Jun 28 2016 WEST
+;;; $$ Last modified:  10:46:56 Thu Nov 24 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1928,31 +1928,34 @@ data: ((2 4) - S S - S - S S S - S S)
   (num-beats (get-time-sig rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; If beat is nil, we'll get the beat from the time-sig; if check-dur we'll
-;;; make sure we get a complete beat of rhythms for each beat of the bar MDE
-;;; Tue May 1 19:05:35 2012 -- check-dur can now be t, nil, #'warn or #'error,
-;;; where t is the same as #'error, or if you pass a symbol like 'silent the
-;;; duration will be checked and NIL returned if we can't get an exact beat's
-;;; worth of rthms.
 ;;; ****m* rthm-seq-bar/get-beats
-;;; DATE
-;;; 
-;;; 
 ;;; DESCRIPTION
-;;; 
-;;; 
+;;; Try to organise the events of a bar into sublists of a beat's worth of
+;;; events. 
+;;;
+;;; If beat is nil, we'll get the beat from the time-sig. If check-dur is T
+;;; we'll make sure we get a complete beat of rhythms for each beat of the bar
+;;; Since May 1 2012, check-dur can be T, NIL, #'warn or #'error, where t is
+;;; the same as #'error. If you pass a symbol like 'silent the duration will be
+;;; checked and NIL returned if we can't get an exact beat's worth of rthms.
 ;;; ARGUMENTS
-;;; 
+;;; - a rthm-seq-bar object
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - the beat, as a symbol or rhythm object (see above)
+;;; - whether to check the duration of the beats to see if they're full (see
+;;; above) 
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of lists of event/rhythm objects
 ;;; 
 ;;; EXAMPLE
 #|
-
+NB the elements returned will actually be rhythm objects but I'll just show the
+rhythm symbol for clarity:  
+(get-beats (make-rthm-seq-bar '((4 4) s x 4 q e e s e.)))
+-->
+((s s s s) (q) (e e) (s e.))
 |#
 ;;; SYNOPSIS
 (defmethod get-beats ((rsb rthm-seq-bar) &optional beat check-dur)

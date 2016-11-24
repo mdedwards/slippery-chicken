@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  11:30:56 Thu Nov 10 2016 GMT
+;;; $$ Last modified:  14:52:48 Sat Nov 12 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1099,13 +1099,13 @@
                            :if-does-not-exist :create
                            :if-exists :overwrite)
       (loop for e in events with last-time = 0.0 do
-           ;; qlist line format is the delay before the message is sent; the
-           ;; receiver; the data; a semi-colon at the end of the line
+         ;; qlist line format is the delay before the message is sent; the
+         ;; receiver; the data; a semi-colon at the end of the line
            (format qlist "~&~,3f qlmidinote ~a ~a;"
                    ;; delay is in millisecs
                    (* 1000.0 (-  (start-time e) last-time))
                    (midi-note (pitch-or-chord e))
-                   (floor (* 127 (amplitude e))))
+                   (floor (* 127.0 (amplitude e))))
            (setf last-time (start-time e))))
     (length events)))
 

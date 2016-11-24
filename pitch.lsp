@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 18:24:22 Tue Jun 28 2016 WEST
+;;; $$ Last modified:  17:04:47 Sat Nov 12 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3243,7 +3243,8 @@ data: F4
 ;;; Use CMN to display a list of pitch objects.
 ;;; 
 ;;; ARGUMENTS
-;;; The list of pitch objects
+;;; The list of pitch objects. This could also contain cmn objects if
+;;; needed, e.g. cmn::bar, cmn::interior-double-bar, cmn::line-mark, etc.  
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
@@ -3266,14 +3267,25 @@ data: F4
      (auto-open (get-sc-config 'cmn-display-auto-open))
      (file (concatenate 'string (get-sc-config 'default-dir) "pitches.eps")))
 ;;; ****
-  (if (and pitches (every #'pitch-p pitches))
+  ;; (if (and pitches (every #'pitch-p pitches))
+  ;; MDE Sat Nov 12 15:15:59 2016 -- allow cmn bar lines to be mixed in
+  (if (and pitches
+           (every #'(lambda (x)
+                      ;; (member (type-of x) '(pitch
+                      ;; cmn::write-protected-bar)))
+                      (or (typep x 'pitch)
+                          (typep x 'cmn::visible-mixin)))
+                  pitches))
       (prog1 
           (cmn::cmn (cmn::output-file file) (cmn::size size)
                     (cmn::all-output-in-one-file t)
                     cmn::staff staff
                     (cmn::engorge
-                     (loop for p in pitches collect 
-                          (eval (econs (get-cmn-data p) cmn::q)))))
+                     (loop for p in pitches collect
+                          (if (pitch-p p)
+                              (eval (econs (get-cmn-data p) cmn::q))
+                              ;; something else like cmn::bar
+                              p))))
         ;; MDE Thu Aug 22 10:56:44 2013
         (when auto-open
           (system-open-file file)))

@@ -113,7 +113,7 @@
      (oboe
       (:staff-name "oboe" :staff-short-name "ob" 
        :lowest-written bf3 :highest-written a6
-       :largest-fast-leap 19
+       :largest-fast-leap 12
        :starting-clef treble 
        :chords nil 
        :midi-program 69))

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified: 12:00:11 Fri Aug 19 2016 BST
+;;; $$ Last modified:  13:25:36 Sat Nov 26 2016 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4519,13 +4519,13 @@ seq-num 5, VN, replacing G3 with B6
   #| 
   ;; MDE Sat Jun 2 12:51:03 2012 -- actually, we don't need to do this, and it ;
   ;; just causes problems now we've updated num-seqs to handle sub-sections ;
-(when (and num-sections (= 1 num-sections) (not num-sequences))
+  (when (and num-sections (= 1 num-sections) (not num-sequences))
   (let ((ns (num-seqs sc section)))
   (unless ns 
   (error "slippery-chicken::clm-play: can't get number of sequences ~
                 for section ~a." section))
   (setf num-sequences (- ns (1- from-sequence)))))
-|#
+  |#
   (unless (listp players)
     (setf players (list players)))
   ;; MDE Mon Apr  2 09:34:36 2012 
@@ -8608,7 +8608,6 @@ NOTE 6200 0.6666667
                   collect event))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; From the rthm-seq, pitch-seq, set and hint-pitch, get the current
 ;;; instrument and then notes for this seq. With the notes and the rthm-seq,
 ;;; promote the latter to a sequence using the notes (this involves nothing
@@ -8676,7 +8675,7 @@ NOTE 6200 0.6666667
          #| MDE Wed Apr 18 10:24:10 2012 -- (iwbns (when slippery-chicken 
          (member player 
          (instruments-write-bar-nums slippery-chicken))))
-|#
+         |#
          (do-prog-changes instrument-change)
          (current-note nil)
          ;; (last-note nil)
@@ -8724,10 +8723,10 @@ NOTE 6200 0.6666667
                                        last-note-previous-seq))))))
     #|
     ;; this checks that there are no ties to the first note in a seq ;
-(when (is-tied-to (get-nth-event 0 (get-bar sequenz 0 t)))
+    (when (is-tied-to (get-nth-event 0 (get-bar sequenz 0 t)))
     (error "slippery-chicken::sc-make-sequenz: ~
              Tied first note of sequenz not allowed!"))
-|#
+    |#
     (loop for bar in (bars sequenz) and bar-num from 1 do
        ;; first of all set all the bars to write--then change in 
        ;; sequenz::update-slots depending upon real bar num

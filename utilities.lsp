@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  21:30:32 Mon Oct 24 2016 BST
+;;; $$ Last modified:  14:46:53 Sat Nov 26 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4091,6 +4091,32 @@ RETURNS:
        (loop for l in resultd collect (cumulative l))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun pdivide-reaper-markers (&rest args)
+;;; ****
+  (multiple-value-bind
+        (times durations generations)
+      (apply #'pdivide args)
+    (declare (ignore durations))
+    (flet ((find-level (time)
+             (loop for g in (reverse generations) and i from 1 do
+                  (when (member time g
+                                :test #'(lambda (x y)
+                                          (equal-within-tolerance x y .001)))
+                    (return i)))))
+      (loop
+         ;; hard-coded colours for now: white for level 1, yellow 2, blue 3,
+         ;; red 4  
+         with colours = '(33554431 33554176 16777471 0)
+         for time in (rest times)
+         for level = (find-level time)
+         for i from 1
+         do
+           (format t "~&  MARKER ~a ~,3f \"level ~a\" 0 ~a 1"
+                   i time level (nth (min 3 (1- level)) colours)))
+      t)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/pexpand
 ;;; DESCRIPTION
 ;;; Instead of dividing an overall duration (pdivide) we start with a
@@ -4340,7 +4366,6 @@ RETURNS:
 ;;; September 4th 2015, Edinburgh
 ;;; 
 ;;; DESCRIPTION
-
 ;;; Using the pexpand function, we write marker information in a format which
 ;;; can be read by the Reaper (version 4/5+) DAW software. Though we can think
 ;;; of the outputs of pexpand to be in beats, seconds, bars, or any arbitrary

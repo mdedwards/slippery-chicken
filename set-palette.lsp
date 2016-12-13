@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified: 13:57:05 Sat Apr 23 2016 WEST
+;;; $$ Last modified:  10:46:34 Tue Dec 13 2016 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1171,6 +1171,18 @@ data: (C4 F4 A4 C5)
   (loop for ref in (get-all-refs sp)
      for set = (get-data ref sp)
      do (wrap set num-times))
+  sp)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod transpose ((sp set-palette) semitones 
+                      &key do-related-sets
+                        ignore1 ignore2)
+  (declare (ignore ignore1) (ignore ignore2))
+  (let ((keys (get-all-refs sp)))
+    (loop for key in keys collect
+         (transpose (get-data key sp) semitones
+                    :do-related-sets do-related-sets)))
   sp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

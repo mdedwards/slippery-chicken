@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  10:46:56 Thu Nov 24 2016 GMT
+;;; $$ Last modified:  16:02:56 Sat Dec  3 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -288,6 +288,11 @@
     (setf tempo (make-tempo tempo)))
   (* (qtr-dur tempo)
      (duration (get-time-sig rsb))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod player ((rsb rthm-seq-bar))
+  (player (get-nth-event 0 rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

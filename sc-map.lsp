@@ -26,7 +26,7 @@
 ;;;                   the palette and the resulting objects are returned in a
 ;;;                   list.   
 ;;;
-;;;                   When in a list of references, perhaps the rthm-seq
+;;;                   TODO: When in a list of references, perhaps the rthm-seq
 ;;;                   references for a section, a single reference is also a
 ;;;                   list this can be one of two things: the reference is to a
 ;;;                   recursive palette, whereupon the data will simply be
@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 22:59:47 Mon Jul 18 2016 BST
+;;; $$ Last modified:  13:25:57 Sat Nov 26 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -729,7 +729,6 @@ data: (1 NIL 3 4 5)
 ;;;   therefore remaining as a list. For example, this data would normally
 ;;;   result in a recursive call: (y ((2 23) (7 28) (18 2))).  
 ;;;   T = recurse. Default = T.
-
 ;;; - :replacements. A list of lists in the format '(((1 2 vla) 3 20b) ((2 3
 ;;;   vln) 4 16a)) that indicate changes to individual elements of lists within
 ;;;   the given sc-map object. (Often sc-map data is generated algorithmically,
@@ -738,7 +737,6 @@ data: (1 NIL 3 4 5)
 ;;;   into the sc-map (the viola voice of section 1 subsection 2 in the first
 ;;;   element here, for example), the second element being the nth of the data
 ;;;   list to change for this key, and the third being the new data.
-
 ;;; - :palette. A palette object or NIL. If a palette object is specified or
 ;;;   defined here, it will be automatically bound to the given sc-map
 ;;;   object. Default = NIL

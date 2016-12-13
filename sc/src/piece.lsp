@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 21:17:09 Wed Feb 24 2016 GMT
+;;; $$ Last modified:  13:17:18 Sat Nov 26 2016 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -684,11 +684,11 @@ BAR-HOLDER:
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; 
 (defmethod handle-ties ((p piece))
   (loop for player in (players p) do
        (loop 
-          for bar-num from 1 to (num-bars p)
+          for bar-num from 1 to (print (num-bars p))
           for bar = (get-bar p bar-num player)
           with last-event 
           do

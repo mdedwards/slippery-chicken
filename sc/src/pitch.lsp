@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  17:04:47 Sat Nov 12 2016 GMT
+;;; $$ Last modified:  21:23:45 Fri Dec  9 2016 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1914,8 +1914,8 @@ pitch::add-mark: mark PIZZ already present but adding again!
   (when (micro-but-not-quarter-tone-p p)
     (when (zerop (lp-resolutions p))
       (warn "pitch::get-lp-data: Lilypond cannot display ~a. ~
-             Resolving to the nearest ~%quarter tone. (Warning issued only once;~
-             other pitches may resolve~%automatically.)"  
+             Resolving to the nearest ~%quarter tone. (Warning issued only ~
+             once; other pitches may resolve~%automatically.)"  
             (data p)))
     (incf (lp-resolutions p))
     (setf p (make-pitch (freq-to-note (frequency p) 'quarter-tone))))

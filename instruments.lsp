@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  15:34:43 Tue Nov  8 2016 GMT
+;;; $$ Last modified:  16:00:39 Thu Dec 15 2016 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -315,6 +315,14 @@
        :clefs (treble bass double-treble double-bass) :starting-clef bass 
        :microtones nil 
        :midi-program 1))
+     (harp
+      (:staff-name "harp" :staff-short-name "hp"
+       :lowest-written b0 :highest-written gs7
+       :largest-fast-leap 12
+       :clefs (treble bass) :starting-clef treble
+       :chords t 
+       :microtones nil 
+       :midi-program 47))
      ;; MDE Fri Jul 24 20:18:16 2015 -- range typical for modern organ with
      ;; 61-key manuals and 32-key pedalboard  
      (organ

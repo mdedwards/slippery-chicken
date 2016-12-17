@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:25:36 Sat Nov 26 2016 GMT
+;;; $$ Last modified:  14:07:16 Sat Dec 17 2016 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1026,10 +1026,16 @@
   (setf (slot-value sc 'sndfile-palette)
         (if (sndfile-palette-p sfp)
             (clone sfp)
-            (make-sfp (format nil "~a-~a" (id sc) 'sound-file-palette)
-                      (first sfp) 
-                      :paths (second sfp)
-                      :extensions (third sfp)))))
+            ;; MDE Sat Dec 17 13:38:48 2016 -- don't make :extensions nil if no
+            ;; third element to sndfile-palette slot--the default would be
+            ;; overwritten and it's usually good enough
+            (let ((id (format nil "~a-~a" (id sc) 'sound-file-palette))
+                  (pal (first sfp))
+                  (paths (second sfp))
+                  (ext (third sfp)))
+              (if ext
+                  (make-sfp id pal :paths paths :extensions ext)
+                  (make-sfp id pal :paths paths))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1117,7 +1123,7 @@
 
 (defmethod sc-make-piece ((sc slippery-chicken) &optional (warn-ties t))
   ;; MDE Mon Oct 28 17:24:54 2013 -- to delete the used-notes slot of each set
-  ;; in the palette 
+  ;; in the palette
   (reset (set-palette sc))
   (reset (pitch-seq-map sc))
   (reset (rthm-seq-palette sc))
@@ -6788,23 +6794,23 @@ EVENT: start-time: 11.000, end-time: 11.500,
 #|
 ;;; Print the pitches before and after applying the method ;
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((sax (alto-sax :midi-channel 1))
-(db (double-bass :midi-channel 2))))
-:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
-:set-map '((1 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))))))
-(print 
-(loop for e in (get-events-from-to mini 'sax 3 2 5 3)
-collect (get-pitch-symbol e)))
-(transpose-events mini 'sax 3 2 5 3 11)
-(print 
-(loop for e in (get-events-from-to mini 'sax 3 2 5 3)
-collect (get-pitch-symbol e))))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax (alto-sax :midi-channel 1))
+                     (db (double-bass :midi-channel 2))))
+        :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((sax (1 1 1 1 1))
+                            (db (1 1 1 1 1))))))))
+  (print 
+   (loop for e in (get-events-from-to mini 'sax 3 2 5 3)
+      collect (get-pitch-symbol e)))
+  (transpose-events mini 'sax 3 2 5 3 11)
+  (print 
+   (loop for e in (get-events-from-to mini 'sax 3 2 5 3)
+      collect (get-pitch-symbol e))))
 
 =>
 (EF4 AF4 BF4 EF5 CS4 EF4 AF4 BF4 EF5 CS4 EF4 AF4) 
@@ -7000,28 +7006,28 @@ duration: 20.0 (20.000)
 ;;; slots to NIL and print the results. Apply the method and print the results ;
 ;;; again to see the difference.        ;
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((hn (french-horn :midi-channel 1))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((hn (1 1 1 1 1))))))))
-(next-event mini 'hn nil 1)
-(loop for ne = (next-event mini 'hn)
-while ne
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((hn (french-horn :midi-channel 1))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((hn (1 1 1 1 1))))))))
+  (next-event mini 'hn nil 1)
+  (loop for ne = (next-event mini 'hn)
+     while ne
 do (setf (written-pitch-or-chord ne) nil))
-(next-event mini 'hn nil 1)
-(print
-(loop for ne = (next-event mini 'hn)
-while ne
+  (next-event mini 'hn nil 1)
+  (print
+   (loop for ne = (next-event mini 'hn)
+      while ne
 collect (written-pitch-or-chord ne)))
-(auto-set-written mini)
-(next-event mini 'hn nil 1)
-(print
-(loop for ne = (next-event mini 'hn)
-while ne
+  (auto-set-written mini)
+  (next-event mini 'hn nil 1)
+  (print
+   (loop for ne = (next-event mini 'hn)
+      while ne
 collect (data (written-pitch-or-chord ne)))))
 
 =>

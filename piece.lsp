@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  13:17:18 Sat Nov 26 2016 GMT
+;;; $$ Last modified:  14:07:38 Sat Dec 17 2016 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -404,8 +404,7 @@
   (fill-with-rhythms new-bar (loop for r in '(h q. e) 
                                 for p in '(c4 e4 g4)
                                 collect (make-event p r)))
-  ;; slippery-chicken object has 15 bars
-  (print (num-bars mini))
+  ;; slippery-chicken object has 15 bars  (print (num-bars mini))
   ;; print the number of bars in the sequenz in piece=mini, section=2,
   ;; seq=2 (0=based), player='hn.
   ;; has 1 bar
@@ -688,7 +687,7 @@ BAR-HOLDER:
 (defmethod handle-ties ((p piece))
   (loop for player in (players p) do
        (loop 
-          for bar-num from 1 to (print (num-bars p))
+          for bar-num from 1 to (num-bars p)
           for bar = (get-bar p bar-num player)
           with last-event 
           do

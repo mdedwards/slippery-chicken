@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  16:02:56 Sat Dec  3 2016 GMT
+;;; $$ Last modified:  11:56:27 Fri Dec 23 2016 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3710,7 +3710,7 @@ data: E
 (defmethod get-lp-data ((rsb rthm-seq-bar) &optional
                         in-c (rehearsal-letters-font-size 18)
                         ;; MDE Sat Mar 10 16:55:31 2012 
-                        process-event-fun)
+                                             process-event-fun)
   ;; 25.7.11 (Pula): why consolidate here?
   ;; (consolidate-rests rsb)
   (let ((result '())

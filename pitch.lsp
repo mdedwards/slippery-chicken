@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  21:23:45 Fri Dec  9 2016 CET
+;;; $$ Last modified:  14:44:09 Sat Dec 24 2016 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1905,7 +1905,6 @@ pitch::add-mark: mark PIZZ already present but adding again!
                      what pitch was that?" p)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; lilypond output
 (defmethod get-lp-data ((p pitch) &optional ignore1 ignore2 ignore3)
   (declare (ignore ignore1 ignore2 ignore3))

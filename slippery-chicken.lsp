@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:07:16 Sat Dec 17 2016 CET
+;;; $$ Last modified:  11:55:31 Fri Dec 23 2016 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6500,7 +6500,8 @@ data: NIL
               sc player 
               (format nil "~a~a-~a-written.ly" path title-hyphens pname)
               :all-bar-nums all-bar-nums :in-c nil :start-bar start-bar
-              :start-bar-numbering start-bar-numbering 
+              :start-bar-numbering start-bar-numbering
+              :rehearsal-letters-font-size rehearsal-letters-font-size
               :extend-hairpins extend-hairpins
               :end-bar end-bar))))
     main-score-file))

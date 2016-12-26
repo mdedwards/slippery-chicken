@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:55:31 Fri Dec 23 2016 CET
+;;; $$ Last modified:  15:11:17 Sat Dec 24 2016 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6079,6 +6079,8 @@ data: NIL
 ;;;   between staffs within a system. It's in Lilypond units (relative to
 ;;;   staff size). Setting to 15 creates a good distance between piano
 ;;;   staves. Default = NIL (= Lilypond's default distance).
+;;; - :accidental-style. String. See the lilypond documentation for details of
+;;;   applicable styles and their results. Default = 'modern.
 ;;; 
 ;;; RETURN VALUE
 ;;; The path of the main score file generated.
@@ -6205,7 +6207,10 @@ data: NIL
        (force-bracket nil)
        ;; MDE Thu Mar 26 18:49:46 2015
        (title t)
-       two-sided                        ; MDE Wed Oct 21 18:15:08 2015 
+       two-sided                        ; MDE Wed Oct 21 18:15:08 2015
+       ;; MDE Sat Dec 24 14:54:34 2016 -- try also 'dodecaphonic if you want
+       ;; accidentals before every pitch 
+       (accidental-style "modern")
        ;; MDE Thu Mar 26 19:18:03 2015
        (indent t)
        ;; MDE Thu Apr 28 15:17:36 2016 -- specify the player name(s) as a
@@ -6329,7 +6334,7 @@ data: NIL
                ;; whole bar rests, so we can use it for cross-staff notation
                (unless (member player dummy-staves)
                  (format stream "~%    { << \\global #(set-accidental-style ~
-                                 'modern) \\~a >> }" pname))
+                                 '~a) \\~a >> }" accidental-style pname))
                (when end-staff-group
                  (format stream "~%  >>")))
              (needs-transposition (player) ; symbol

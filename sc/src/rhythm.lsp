@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified: 17:32:09 Tue Jun 28 2016 WEST
+;;; $$ Last modified:  18:14:23 Mon Jan 30 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2133,6 +2133,8 @@ data: (
                  (10 8/10)
                  (11 8/11)
                  (13 8/13)
+                 (14 8/14)
+                 (15 8/15)
                  (t (terr))))
       (rational (/ tuplet)) ; i.e we've already got something like 7/5 (= 7:5)
       (t (terr)))))

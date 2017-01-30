@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:20:37 Sat Dec 24 2016 CET
+;;; $$ Last modified:  20:04:46 Mon Jan 30 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3413,6 +3413,22 @@ do (add-mark-before e m))
                      (sclist-length (pitch-or-chord e))
                      1)))
         (loop repeat len collect sf))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jan 30 18:54:56 2017 
+(defmethod microtonal ((e event) &optional force-number)
+  (let ((count 0)
+        (num-pitches 1))
+    (unless (is-rest e)
+      (if (is-chord e)
+          (progn (loop for p in (data (pitch-or-chord e)) do
+                      (when (micro-tone p) (incf count)))
+                 (setq num-pitches (sclist-length (pitch-or-chord e))))
+          (when (micro-tone (pitch-or-chord e))
+            (setq count 1))))
+    (if (and (zerop count) (not force-number))
+        nil
+        (values count num-pitches))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  10:46:34 Tue Dec 13 2016 CET
+;;; $$ Last modified:  19:58:09 Mon Jan 30 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1186,6 +1186,12 @@ data: (C4 F4 A4 C5)
   sp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jan 30 19:57:32 2017 
+(defmethod round-to-nearest ((sp set-palette))
+  (loop for ref in (get-all-refs sp)
+     do (round-to-nearest (get-data ref sp))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -1761,6 +1767,7 @@ data: (
          (rm-duplicates set t)     ; comparing symbols, not pitch= (freqs etc.)
          (when remove-octaves
            (rm-octaves set))
+         ;; (print (data set))
          (add set sp))
     ;; MDE Mon Jun 22 13:42:02 2015 
     (when force-chromatic

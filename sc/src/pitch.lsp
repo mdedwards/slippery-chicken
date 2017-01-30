@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  14:44:09 Sat Dec 24 2016 CET
+;;; $$ Last modified:  19:56:29 Mon Jan 30 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2151,6 +2151,13 @@ pitch::add-mark: mark PIZZ already present but adding again!
   (declare (ignore ignore))
   (format stream "~a" (data p)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jan 30 19:54:44 2017 -- using the symbol in the data slot, force
+;;; freq, pitch bend etc. to conform to this pitch 
+(defmethod round-to-nearest ((p pitch))
+  ;; setf method updates other related slots
+  (setf (frequency p) (note-to-freq (data p))))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

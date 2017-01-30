@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified: 11:49:40 Tue Jun 28 2016 WEST
+;;; $$ Last modified:  19:54:22 Mon Jan 30 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -386,6 +386,11 @@ data: CS4
          :as-symbols as-symbols :package package 
          :remove-duplicates remove-duplicates)
         result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jan 30 19:53:58 2017 -- in the current scale
+(defmethod round-to-nearest ((s sc-set))
+  (loop for p in (data s) do (round-to-nearest p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  20:18:33 Mon Jan 30 2017 GMT
+;;; $$ Last modified:  16:24:13 Thu Feb  2 2017 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6079,6 +6079,12 @@ data: NIL
 ;;;   between staffs within a system. It's in Lilypond units (relative to
 ;;;   staff size). Setting to 15 creates a good distance between piano
 ;;;   staves. Default = NIL (= Lilypond's default distance).
+;;; - :fixed-width. Set to a rhythmic value (e.g. 1/32) in order to create
+;;;   fixed width rhythmic spacing. This makes it easier, for some, to read
+;;;   complex rhythms as you can see how long rhythms last by the horizontal
+;;;   space they occupy. The shorter the value given the more space is
+;;;   allocated, so experimentation might be necessary. Default = NIL (usual
+;;;   engraver's spacing algorithm used, according to context).
 ;;; - :accidental-style. String. See the lilypond documentation for details of
 ;;;   applicable styles and their results. Default = 'modern.
 ;;; 
@@ -6217,6 +6223,8 @@ data: NIL
        ;; symbol or in a list for any parts that have been created merely as
        ;; empty staves to add cross-staff notation.
        dummy-staves
+       ;; MDE Thu Feb  2 14:45:21 2017 -- fixed width rhythmic notation
+       fixed-width
        ;; sim to rehearsal letters
        (tempi-all-players t))
 ;;; ****
@@ -6342,15 +6350,41 @@ data: NIL
                           (get-data player (ensemble sc)))))
              (written-pname (pname)
                (concatenate 'string pname "Written"))
+             ;;  MDE Thu Feb  2 14:58:22 2017 
+             (make-fixed-width ()
+               (format nil "~%      proportionalNotationDuration = ~
+                            #(ly:make-moment ~a)~
+                            ~%      \\override SpacingSpanner.~
+                            uniform-stretching = ##t"
+                       fixed-width))
+             (score-block (stream &optional
+                                  (pname "score") (score-tag-var "music"))
+               (format stream "~%\\score {~%  \\keepWithTag #'~a \\~a"
+                       pname score-tag-var)
+               (if staff-basic-distance
+                   ;; MDE Tue May  3 12:16:47 2016 
+                   (format stream "~%  \\layout { ~%    \\context {~
+                         ~%      \\Score \\override ~
+                         StaffGrouper.staff-staff-spacing.~
+                         basic-distance = #~a~a~%    }~%  }~%}"
+                           staff-basic-distance
+                           (if fixed-width (make-fixed-width) ""))
+                   (if fixed-width
+                       (format stream "~%  \\layout {~%    \\context {~
+                                       ~%      \\Score ~a
+                                       ~%    }~%  }~%}"
+                               (make-fixed-width))
+                       (format stream "~%  \\layout { }~%}"))))
              (part (pname stream &optional (score-tag-var "music"))
                (format stream "~&\\version \"~a\"" lp-version)
                (format stream "~&\\include \"~a\"~%" def-file)
                (no-header-footer stream)
                (terpri stream)
-               (princ "\\score {" stream)
-               (format stream "~&  \\new ~a \\keepWithTag #'~a \\~a"
-                       staff-group pname score-tag-var)
-               (format stream "~%  \\layout { }~%}")))
+               ;; (princ "\\score {" stream)
+               ;; (format stream "~&  \\new ~a \\keepWithTag #'~a \\~a"
+               ;;            staff-group pname score-tag-var)
+               ;; (format stream "~%  \\layout { }~%}")))
+               (score-block stream pname score-tag-var)))
       (when respell-notes
         (respell-notes sc respell-notes))
       (when auto-clefs
@@ -6456,16 +6490,7 @@ data: NIL
         (format out "~&\\version \"~a\"" lp-version)
         (format out "~%\\include \"~a\"" def-file)
         (no-header-footer out)
-        (format out "~%\\score {~%  \\keepWithTag #'score ~
-                   \\music")
-                       (if staff-basic-distance
-                   ;; MDE Tue May  3 12:16:47 2016 
-                   (format out "~%  \\layout { ~%    \\context {~
-                                ~%      \\Score \\override ~
-                                StaffGrouper.staff-staff-spacing.~
-                                basic-distance = #~a~%    }~%  }~%}"
-                           staff-basic-distance)
-                   (format out "~%  \\layout { }~%}")))
+        (score-block out))
       ;; write the parts
       (loop for player in playrs
          for pname in players-strings do

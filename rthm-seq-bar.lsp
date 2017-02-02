@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  11:56:27 Fri Dec 23 2016 CET
+;;; $$ Last modified:  11:57:17 Thu Feb  2 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1992,10 +1992,10 @@ rhythm symbol for clarity:
                ;; possibility for check-dur 
                (when (functionp check-dur)
                  (funcall check-dur
-                          "~a ~%rthm-seq-bar::get-beats: ~
+                          "rthm-seq-bar::get-beats: ~
                            Can't find an exact beat of rhythms ~%~
-                           (dur: ~a beat-dur: ~a)!" 
-                          rsb dur beat-dur))
+                           (dur: ~a beat-dur: ~a)! ~%~a" 
+                          dur beat-dur rsb))
                ;; MDE Mon Nov 26 20:14:29 2012 -- these were under the above
                ;; when 
                (setf failed t)

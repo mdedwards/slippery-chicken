@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  11:57:17 Thu Feb  2 2017 GMT
+;;; $$ Last modified:  13:58:47 Mon Feb  6 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -773,7 +773,7 @@ data: E.
 ;;; SYNOPSIS
 (defmethod consolidate-rests ((rsb rthm-seq-bar) &key beat min warn)
 ;;; ****
-  ;; (print 'consolidate-rests)
+  ;;  (print 'consolidate-rests)
   ;; (print (length (rhythms rsb)))
   ;; MDE Mon Nov 26 20:18:12 2012 -- added 'silent to make sure we don't get
   ;; more than a beat's worth of rthms 
@@ -1595,8 +1595,8 @@ data: ((2 4) - S S - S - S S S - S S)
     (flet ((damn (msg)
              (setf result nil)
              (when on-fail
-               (funcall on-fail "~a~%rthm-seq-bar::check-tuplets: ~a" 
-                        rsb msg))))
+               (funcall on-fail "~&rthm-seq-bar::check-tuplets: ~a:~%~a" 
+                        msg rsb))))
       (loop for r in (rhythms rsb) do
            (if (bracket r)
                (loop for b in (bracket r) do
@@ -1933,6 +1933,13 @@ data: ((2 4) - S S - S - S S S - S S)
   (num-beats (get-time-sig rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Feb  3 16:21:31 2017
+(defmethod get-events-under-tuplets ((rsb rthm-seq-bar))
+  (loop for tgroup in (tuplets rsb) collect
+       ;; first in group is the actual tuplet
+       (subseq (rhythms rsb) (second tgroup) (1+ (third tgroup)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* rthm-seq-bar/get-beats
 ;;; DESCRIPTION
 ;;; Try to organise the events of a bar into sublists of a beat's worth of
@@ -2090,9 +2097,9 @@ rhythm symbol for clarity:
                       nth = ~a" rsb nth))
             (let ((result (nth nth rhythms)))
               (unless result
-                (error "~a~%rthm-seq-bar::update-rhythms-bracket-info: ~
-                         Couldn't get rhythm with index ~a in bar ~a"
-                       rhythms nth (bar-num rsb)))
+                (error "~&rthm-seq-bar::update-rhythms-bracket-info: ~
+                         Couldn't get rhythm with index ~a in bar ~a:~%~a"
+                       nth (bar-num rsb) rhythms))
               result)))
       ;; the tuplets slot contains 3-element sublists, first is the number to
       ;; be placed in the bracket, the second is the index of the start-note,
@@ -3364,9 +3371,9 @@ data: E
       (setf (rhythms rsb) new-events)
       (unless (is-rest-bar rsb)
         (unless (equal-within-tolerance bar-dur (- end-time start-time) .003)
-          (error "~a~%rthm-seq-bar::update-time: Duration of rhythms don't ~
-                  match that of bar: ~%rhythms ~a secs : bar ~a secs"
-                 rsb (- end-time start-time) bar-dur))))
+          (error "~&rthm-seq-bar::update-time: Duration of rhythms don't ~
+                  match that of bar: ~%rhythms ~a secs : bar ~a secs:~%~a"
+                 (- end-time start-time) bar-dur rsb))))
     bar-dur))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6213,12 +6220,13 @@ show-rest: T
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun rhythms-all-rests? (rthms)
-  (loop for r in rthms do
-        (unless (rhythm-p r)
-          (error "~a~%rthm-seq-bar::rhythms-all-rests?: not a rhythm!" r))
-        (unless (is-rest r)
-          (return nil))
-      finally (return t)))
+  (when rthms
+    (loop for r in rthms do
+         (unless (rhythm-p r)
+           (error "~a~%rthm-seq-bar::rhythms-all-rests?: not a rhythm!" r))
+         (unless (is-rest r)
+           (return nil))
+       finally (return t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

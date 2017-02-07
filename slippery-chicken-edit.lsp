@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified: 13:16:35 Fri Aug 19 2016 BST
+;;; $$ Last modified:  16:19:20 Fri Feb  3 2017 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5342,7 +5342,8 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
 ;;; - the first bar number in which consolidation should take place
-;;; - the last bar number in which consolidation should take place (inclusive)
+;;; - the last bar number in which consolidation should take place
+;;;   (inclusive). If NIL then the process will run until the last bar.  
 ;;; - A list of the IDs of the players to whose parts the consolidation should 
 ;;;   be applied.   Can also be a single symbol.
 ;;; 
@@ -5366,7 +5367,8 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
 ;;; - the first bar number in which consolidation should take place
-;;; - the last bar number in which consolidation should take place (inclusive)
+;;; - the last bar number in which consolidation should take place
+;;;   (inclusive).  If NIL then the process will run until the last bar.  
 ;;; - A list of the IDs of the players to whose parts the consolidation should 
 ;;;   be applied.   Can also be a single symbol.
 ;;; 

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  18:14:23 Mon Jan 30 2017 GMT
+;;; $$ Last modified:  20:41:04 Tue Feb  7 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -362,6 +362,8 @@
       r
       (progn
         (setf (value r) (/ (value r) scaler)
+              ;; MDE Tue Feb  7 20:40:40 2017
+              (letter-value r) (/ (letter-value r) scaler)
               (duration r) (* (duration r) scaler)
               (compound-duration r) (* (compound-duration r) scaler)
               (rq r) (rationalize (* (rq r) scaler))
@@ -1440,6 +1442,13 @@ NIL
           ;; warn returns nil
           (warn "rhythm::arithmetic: new duration is ~a; can't create rhythm"
                 dur)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod has-tuplet-ratio ((r rhythm) ratio)
+  (loop for el in (bracket r) do
+       (when (and (listp el) (= ratio (second el)))
+         (return t))
+     finally (return nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

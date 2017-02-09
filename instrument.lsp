@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 19:10:01 Sat Apr 23 2016 WEST
+;;; $$ Last modified:  19:52:37 Thu Feb  9 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -165,7 +165,7 @@
    ;;; piece. 
    (total-duration :accessor total-duration :type float :initform 0.0)
    ;;; Each time an event is played, this slot will be incremented by the
-   ;;; degree of the note (in the scale for the piece).  Then, at the end, we
+   ;;; degree of the note (in the scale for the piece). Then, at the end, we
    ;;; can divide this by total-notes and have the mean note (tessitura).  In
    ;;; the case of chords, the average is used.
    (total-degrees :accessor total-degrees :type number :initform 0)))

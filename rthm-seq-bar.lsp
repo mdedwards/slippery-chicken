@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  13:58:47 Mon Feb  6 2017 GMT
+;;; $$ Last modified:  11:17:50 Thu Feb  9 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -104,7 +104,8 @@
    ;; discerned by the function are stored here.  These are indices and
    ;; 0-based. 
    ;; (score-tuplets :accessor score-tuplets :type list :initform nil)
-   ;; the above is for SCORE, the following for CMN (see parse-rhythms)
+   ;; the above is for SCORE (long defunct, sadly), the following for CMN (see
+   ;; parse-rhythms)  
    (tuplets :accessor tuplets :type list :initform nil)
    ;; In SCORE, how far to extend tuplet brackets when it's over a rest at
    ;; either end.  
@@ -1890,7 +1891,8 @@ data: ((2 4) - S S - S - S S S - S S)
       ;; 5/4/07: first of all delete any prior beams
       ;; MDE Thu Nov 29 19:25:00 2012 -- now called here rather than in the
       ;; loop
-      ;; MDE Thu Jun  4 15:24:37 2015 -- only proceed if we could split into beats
+      ;; MDE Thu Jun  4 15:24:37 2015 -- only proceed if we could split into
+      ;; beats 
       (when beats
         (delete-beams rsb)
         (loop for b in beats do
@@ -1906,8 +1908,8 @@ data: ((2 4) - S S - S - S S S - S S)
                     (setf start note-num))
                   (when (and ok start 
                              (or
-                              ;; MDE Thu Nov 29 20:42:11 2012 -- no q rests under
-                              ;; beam for LP 
+                              ;; MDE Thu Nov 29 20:42:11 2012 -- no q rests
+                              ;; under beam for LP
                               (and (is-rest r) (zerop (num-flags r)))
                               (and is-note (not flags))))
                     (setf start nil
@@ -5287,6 +5289,26 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; ****
   (loop for e in (rhythms rsb) do (remove-dynamics e))
   t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Feb  8 09:48:17 2017 
+(defmethod remove-rhythms ((rsb rthm-seq-bar) start how-many)
+  ;; this assumes that any start/closing tuplets in the rthms to be removed
+  ;; have already been moved to other existing or added rthms. all we're
+  ;; interested in doing here is taking care of the tuplets slot of the
+  ;; rthm-seq-bar itself, not its rthms
+  (setf (rhythms rsb) (remove-elements (rhythms rsb) start how-many))
+  (setf (tuplets rsb)
+        (loop for tup in (tuplets rsb)
+           for tstart = (second tup)
+           for tend = (third tup)
+           for i from 0 do
+             (when (> tstart start)
+               (decf tstart how-many))
+             (when (> tend start)
+               (decf tend how-many))
+           collect (list (first tup) tstart tend)))
+  (rhythms rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Jun 24 18:25:35 2015 -- when we've got nested tuplets we run into

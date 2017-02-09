@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified: 19:55:43 Tue Apr 26 2016 WEST
+;;; $$ Last modified:  11:41:24 Thu Feb  9 2017 GMT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -110,6 +110,11 @@
      ;; Bar number offsets for CMN
      (cmn-bar-num-dx-for-sc -0.2)
      (cmn-bar-num-dy-for-sc 1.2)
+     ;; MDE Wed Feb  8 16:50:31 2017 -- string-chord-selection-fun (used by
+     ;; default for selecting chords for violin, viola, cello) will call
+     ;; best-string-diad. This tries to find a diad within a certain
+     ;; range. These are the min/max
+     (best-string-diad-range (7 11))
      ;; MDE Sat May 10 12:47:25 2014 -- whether to issue warning when we set
      ;; the asco-msgs slot of a rest event (because they will only be written
      ;; to an antescofo~ file if this happens to be a rest in the part we're

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  16:00:39 Thu Dec 15 2016 CET
+;;; $$ Last modified:  16:54:34 Wed Feb  8 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -577,16 +577,21 @@
 (defun best-string-diad (pitch-list)
   ;; pitch list is either ascending or descending
   (let* ((p1 (first pitch-list))
+         (range (get-sc-config 'best-string-diad-range))
+         (min (first range))
+         (max (second range))
          ;; (rest-sorted (sort (rest pitch-list) #'pitch<))
          (possible (loop for p in (rest pitch-list) 
                       for diff = (abs (pitch- p p1))
                       do
                       ;; must be above a perfect fifth, and let's avoid
                       ;; microtonal chords for ease of playing
-                      (when (and (not (micro-tone p))
-                                 (>  diff 7)
-                                 (<= diff 11))
-                        (return p)))))
+                      ;; MDE Wed Feb  8 16:53:24 2017 -- now using
+                      ;; best-string-diad-range
+                        (when (and (not (micro-tone p))
+                                   (> diff min)
+                                   (<= diff max))
+                          (return p)))))
     (when possible 
       ;; so we might return nil, which should be useful for decision making
       ;; lower down

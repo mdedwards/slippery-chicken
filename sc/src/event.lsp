@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  20:04:46 Mon Jan 30 2017 GMT
+;;; $$ Last modified:  20:05:58 Thu Feb  9 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1970,6 +1970,20 @@ NIL
       (if (chord-p obj)
           (get-pitch-symbols obj)
           (data obj)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  MDE Thu Feb  9 19:59:45 2017 
+(defmethod get-pitch-high-low ((e event) fun written)
+  (let ((porc (get-porc e written)))
+    (if (chord-p porc)
+        (funcall fun porc)
+        porc)))
+
+(defmethod get-pitch-highest ((e event) &optional written)
+  (get-pitch-high-low e #'highest written))
+
+(defmethod get-pitch-lowest ((e event) &optional written)
+  (get-pitch-high-low e #'lowest written))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

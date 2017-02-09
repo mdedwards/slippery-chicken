@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  20:41:04 Tue Feb  7 2017 GMT
+;;; $$ Last modified:  12:14:52 Wed Feb  8 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -363,7 +363,7 @@
       (progn
         (setf (value r) (/ (value r) scaler)
               ;; MDE Tue Feb  7 20:40:40 2017
-              (letter-value r) (/ (letter-value r) scaler)
+              (letter-value r) (/ (letter-value r) (nearest-power-of-2 scaler))
               (duration r) (* (duration r) scaler)
               (compound-duration r) (* (compound-duration r) scaler)
               (rq r) (rationalize (* (rq r) scaler))

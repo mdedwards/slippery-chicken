@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  19:56:29 Mon Jan 30 2017 GMT
+;;; $$ Last modified:  11:13:37 Mon Feb 13 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1905,7 +1905,9 @@ pitch::add-mark: mark PIZZ already present but adding again!
                      what pitch was that?" p)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; lilypond output
+;;; lilypond output.
+;;; MDE Mon Feb 13 11:13:00 2017 -- though we don't use 3/4 sharp or flat, in
+;;; English lilypond nomenclature they're -tqs and -tqf
 (defmethod get-lp-data ((p pitch) &optional ignore1 ignore2 ignore3)
   (declare (ignore ignore1 ignore2 ignore3))
   ;; MDE Mon Jun 25 17:05:24 2012 

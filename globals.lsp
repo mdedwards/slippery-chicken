@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  11:41:24 Thu Feb  9 2017 GMT
+;;; $$ Last modified:  16:47:56 Sat Feb 11 2017 GMT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -115,6 +115,7 @@
      ;; best-string-diad. This tries to find a diad within a certain
      ;; range. These are the min/max
      (best-string-diad-range (7 11))
+     (best-string-diad-microtones nil)
      ;; MDE Sat May 10 12:47:25 2014 -- whether to issue warning when we set
      ;; the asco-msgs slot of a rest event (because they will only be written
      ;; to an antescofo~ file if this happens to be a rest in the part we're

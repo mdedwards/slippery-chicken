@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified: 17:55:41 Wed Jul  6 2016 CEST
+;;; $$ Last modified:  20:25:34 Mon Feb 13 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -501,6 +501,35 @@ data: (0 1 2 3 4 5 6 7 8 9)
 
 (defmethod 10th ((scl sclist))
   (get-nth 9 scl))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Feb 13 20:24:45 2017 -- move from assoc-list to sclist
+;;; ****m* sclist/get-last
+;;; DESCRIPTION
+;;; Returns the last element in the data list of a given sclist.
+;;; 
+;;; ARGUMENTS
+;;; - An sclist.
+;;; 
+;;; RETURN VALUE 
+;;; The last object in the data list.
+;;; 
+;;; EXAMPLE
+#|
+(let ((al (make-assoc-list 'test '((jim beam)
+                                   (four roses)
+                                   (wild turkey)))))
+  (get-last al))
+
+=> 
+NAMED-OBJECT: id: WILD, tag: NIL,
+data TURKEY
+;;; 
+;;; SYNOPSIS
+|#
+(defmethod get-last ((scl sclist))
+;;; ****
+  (first (last (data scl))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

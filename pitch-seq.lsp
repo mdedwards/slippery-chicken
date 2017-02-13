@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 13:35:51 Mon Jun 13 2016 WEST
+;;; $$ Last modified:  16:45:40 Sat Feb 11 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -304,6 +304,7 @@
   ;; (print (id instrument))
   ;; (print (pitch-symbols (clone set)))
   ;; (print (get-chromatic set))
+  ;; (print (data limit-low)) (print (data limit-high))
   (when (data ps) ;; don't do anything for empty seqs!
     (if (or (not instrument) (not set))
         (setf (notes ps) 
@@ -345,6 +346,7 @@
                              (get-data-data (subset-id instrument) 
                                             (subsets set))))
                num-set-pitches offset scaler)
+          ;; (print (pitch-list-to-symbols set-pitches-rm))
           ;; (print (pitch-symbols (clone set)))
           ;; (print set-pitches-rm)
           ;; If (subset-id instrument) was set (to limit the pitches for that 
@@ -371,6 +373,7 @@
                             (>= lowest 
                                 (get-sc-config 
                                  'pitch-seq-lowest-equals-prefers-high)))
+                        ;; (print 'here)
                         (- num-set-pitches need 
                            lowest))
                        ;; if the lowest given is 1 always use the
@@ -387,7 +390,6 @@
                      (if (> need num-set-pitches)
                          (/ num-set-pitches need)
                          1))
-             ;; (format t "~%~a ~a" seq-num scaler)
              ;; add pitches from those used already to try and get more
              ;; available to fit our pitch curve
                (if (or (not used-cp)
@@ -402,6 +404,9 @@
                                                 set-pitches-rm-used)
                                           t))))
           ;; (break)
+          #|(format t "~%seq-num: ~a, num-set-pitches: ~a, need: ~a, ~
+                     offset: ~a, scaler: ~a"
+                  seq-num num-set-pitches need offset scaler)|#
           (unless (> num-set-pitches 0)
             (error "~&pitch-seq::get-notes: For ~a at sequence number ~a: ~
                      no pitches in set!  ~%Perhaps your ~
@@ -500,10 +505,14 @@
                    collect note))
           (when (get-sc-config 'verbose-pitch-selection)
             ;;(print (notes ps))
-            (format t "~&**** For ~a, with pitch-seq ~a ~%and the set ~a: "
-                    (id instrument) (data ps) (id set))
+            (format t "~&**** For ~a at seq-num ~a, with pitch-seq ~a ~
+                       ~%and the set ~a, "
+                    (id instrument) seq-num (original-data ps) (id set))
+            (format t "the following pitches were available for the ~
+                       instrument:~%")
+            (pitch-list-to-symbols set-pitches-rm-used)
             (print-simple set)
-            (format t "~&the following pitches were chosen:~%")
+            (format t "~&and the following pitches were chosen:~%")
             (print-simple-pitch-list (notes ps)))))
     (notes ps)))
 

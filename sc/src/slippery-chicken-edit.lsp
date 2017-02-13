@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  16:19:20 Fri Feb  3 2017 GMT
+;;; $$ Last modified:  16:07:34 Mon Feb 13 2017 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5579,7 +5579,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; ****
   (multiple-value-bind
         (chord event)
-      (sc-get-chord sc bar-num note-num player)
+      (sc-get-chord sc bar-num note-num player 'force)
     (add-pitches chord pitches)
     ;; do this just to make sure we set the written chord if present
     (setf (pitch-or-chord event) chord)

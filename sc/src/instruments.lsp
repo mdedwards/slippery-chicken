@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  16:54:34 Wed Feb  8 2017 GMT
+;;; $$ Last modified:  11:46:50 Mon Feb 13 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -587,11 +587,15 @@
                       ;; must be above a perfect fifth, and let's avoid
                       ;; microtonal chords for ease of playing
                       ;; MDE Wed Feb  8 16:53:24 2017 -- now using
-                      ;; best-string-diad-range
-                        (when (and (not (micro-tone p))
+                      ;; best-string-diad-range and best-string-diad-microtones
+                      ;; to control these  
+                        (when (and (or (get-sc-config
+                                        'best-string-diad-microtones)
+                                       (not (micro-tone p)))
                                    (> diff min)
                                    (<= diff max))
                           (return p)))))
+    ;; (when (and possible p1) (print (list (data p1) (data possible))))
     (when possible 
       ;; so we might return nil, which should be useful for decision making
       ;; lower down
@@ -636,19 +640,26 @@
                      (diad-up diad-up)
                      (t default)))
          (high (when (> (sclist-length diad) 1)
-                 (second (data diad)))))
-    (if (or (micro-tone diad) ; default could be microtonal
-            (and high
-                 ;; can't have any 2-note chords where highest note is < open
-                 ;; III 
-                 (pitch< high string-III)))
-        ;; MDE Mon Jun 11 17:50:06 2012 -- 
-        (make-chord
-         (if high
-             ;; just return the highest note
-             high
-             (first (data diad))))
-        diad)))
+                 (second (data diad))))
+         (result
+          (if (or (and (not (get-sc-config 'best-string-diad-microtones))
+                       (micro-tone diad)) ; default could be microtonal
+                  (and high
+                       ;; can't have any 2-note chords where highest note is <
+                       ;; open III
+                       (pitch< high string-III)))
+              ;; MDE Mon Jun 11 17:50:06 2012 -- 
+              (make-chord
+               (if high
+                   ;; just return the highest note
+                   high
+                   (first (data diad))))
+              diad)))
+    ;; MDE Mon Feb 13 11:46:45 2017 -- don't return 1-note chord objects, it's
+    ;; silly ;)
+    (if (= 1 (sclist-length result))
+        (first (data result))
+        result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 

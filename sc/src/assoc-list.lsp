@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified: 22:50:41 Mon Jul 18 2016 BST
+;;; $$ Last modified:  20:24:24 Mon Feb 13 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -233,37 +233,6 @@ data BEAM
 (defmethod get-first ((al assoc-list))
 ;;; ****
   (first (data al)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 28.11.11 SEAN: Added info for ROBODoc
-;;; 07.12.11 SEAN: modified example
-;;; ****m* assoc-list/get-last
-;;; DESCRIPTION
-;;; Returns the last named-object in the data list of a given assoc-list.
-;;; 
-;;; ARGUMENTS
-;;; - An assoc-list.
-;;; 
-;;; RETURN VALUE 
-;;; The last object in the data list of a given assoc-list.
-;;; 
-;;; EXAMPLE
-#|
-(let ((al (make-assoc-list 'test '((jim beam)
-                                   (four roses)
-                                   (wild turkey)))))
-  (get-last al))
-
-=> 
-NAMED-OBJECT: id: WILD, tag: NIL,
-data TURKEY
-;;; 
-;;; SYNOPSIS
-|#
-(defmethod get-last ((al assoc-list))
-;;; ****
-  (first (last (data al))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

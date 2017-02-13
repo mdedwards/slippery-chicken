@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  20:30:57 Thu Feb  9 2017 GMT
+;;; $$ Last modified:  15:36:00 Mon Feb 13 2017 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3472,7 +3472,7 @@ seq-num 5, VN, replacing G3 with B6
                         (flet ((doit (event)
                                  (when verbose
                                    (format t "~&seq-num ~a, ~a, ~
-                                                        replacing ~a with ~a"
+                                              replacing ~a with ~a"
                                            seq-num player
                                            (id new-pitch)
                                            (id (pitch-or-chord e2))))
@@ -3529,10 +3529,10 @@ seq-num 5, VN, replacing G3 with B6
                                          (setf happy nil)))
                                      (setf happy nil))))))
                         (warn "~&slippery-chicken::~
-                                       shorten-large-fast-leaps: ~
-                                       Couldn't get new pitch for ~a, section ~
-                                       ~a, seq-num ~a, e1 ~a, e2 ~a! ~
-                                       ~%pitches: ~a" 
+                               shorten-large-fast-leaps: ~
+                               ~%Couldn't get new pitch for ~a, section ~
+                               ~a, seq-num ~a, e1 ~a, e2 ~a! ~
+                               ~%pitches: ~a" 
                               player section (1+ seq-num)
                               (id (pitch-or-chord e1))
                               (id (pitch-or-chord e2))
@@ -7109,16 +7109,19 @@ FS4 G4)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Aug 10 17:22:54 2012 -- works on the sounding pitches (written
-;;; pitches will be updated if appropriate)  
+;;; pitches will be updated if appropriate)
+;;; MDE Mon Feb 13 15:31:21 2017 -- updated to force an existing single pitch
+;;; into a chord so we can add notes to it if necessary 
 (defmethod sc-get-chord ((sc slippery-chicken) bar-num note-num player 
                          &optional (on-fail #'error))
   (let* ((event (get-note sc bar-num note-num player))
          (chord (when event (pitch-or-chord event))))
     (if (chord-p chord)
         (values chord event)
-        (when on-fail
-          (funcall on-fail "slippery-chicken::get-chord: no chord at bar ~a, ~
-                            note ~a for ~a" bar-num note-num player)))))
+        (if (and (eq 'force on-fail) (pitch-p chord))
+            (values (make-chord chord) event)
+            (funcall on-fail "slippery-chicken::get-chord: no chord at bar ~a, ~
+                              note ~a for ~a" bar-num note-num player)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken/get-nearest-event
@@ -7940,6 +7943,12 @@ NOTE 6200 0.6666667
       (format t "~&high: ~a low: ~a" (data high) (data low)))
     (values low high)))
               
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Feb 11 16:11:05 2017 
+(defmethod add-clef ((sc slippery-chicken) clef
+                     &optional bar-num event-num player)
+  (add-clef (get-event sc bar-num event-num player) clef))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

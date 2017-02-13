@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  11:17:50 Thu Feb  9 2017 GMT
+;;; $$ Last modified:  16:33:26 Sat Feb 11 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4379,14 +4379,7 @@ collect (data (pitch-or-chord p))))
                      (written-pitch-or-chord e)
                      (pitch-or-chord e))
                ;; p-enh (enharmonic p nil)
-               next-attack (get-nth-attack (1+ attack-num) rsb nil)
-               #|
-  next-attack-p (when next-attack
-               (if written
-               (written-pitch-or-chord next-attack)
-               (pitch-or-chord next-attack)))
-  |#
-                 )
+               next-attack (get-nth-attack (1+ attack-num) rsb nil))
            ;; 9.2.11
            (unless p
              (error "rthm-seq-bar::respell-bar: expected a pitch in this ~
@@ -4395,12 +4388,6 @@ collect (data (pitch-or-chord p))))
                      assign both written and sounding pitches for notes ~
                      played on a transposing ~%instrument: ~%~a!" rsb))
            (when (enharmonics-exist rsb p t written)
-             #|
-  (or (or (chord-p last-attack-p)
-             (not (bad-interval p-enh last-attack-p)))
-             (or (chord-p next-attack-p)
-             (not (bad-interval p-enh next-attack-p)))))
-         |#
              (enharmonic e :written written)
              ;; don't need p as it was anymore so get the (enharmonic) pitch
              (setf p (if written

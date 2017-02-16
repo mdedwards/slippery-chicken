@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:36:00 Mon Feb 13 2017 GMT
+;;; $$ Last modified:  19:19:04 Wed Feb 15 2017 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1704,7 +1704,6 @@ rhythms: (
         (loop for p in players collect (get-bar (piece sc) bar-num p)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; This will only work for single notes, not chords.
 
 (defmethod respell-notes-aux ((sc slippery-chicken) &optional corrections)
@@ -6213,7 +6212,7 @@ data: NIL
        ;; MDE Thu Mar 26 18:49:46 2015
        (title t)
        two-sided                        ; MDE Wed Oct 21 18:15:08 2015
-       ;; MDE Sat Dec 24 14:54:34 2016 -- try also 'dodecaphonic if you want
+       ;; MDE Sat Dec 24 14:54:34 2016 -- try also "dodecaphonic" if you want
        ;; accidentals before every pitch 
        (accidental-style "modern")
        ;; MDE Thu Mar 26 19:18:03 2015

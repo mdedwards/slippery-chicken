@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  16:07:34 Mon Feb 13 2017 GMT
+;;; $$ Last modified:  19:10:55 Wed Feb 15 2017 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -466,13 +466,13 @@
                                      &key
                                        ;; 24.3.11: see above.
                                        (interleaved t)
-                                       ;; MDE Mon Apr 23 12:36:08 2012 -- changed
-                                       ;; default to nil
+                                       ;; MDE Mon Apr 23 12:36:08 2012 --
+                                       ;; changed default to nil
                                        (consolidate-rests nil)
                                        ;; for consolidate rests
                                        (beat nil)
-                                       ;; MDE Mon Apr 23 12:36:08 2012 -- changed
-                                       ;; default to nil
+                                       ;; MDE Mon Apr 23 12:36:08 2012 --
+                                       ;; changed default to nil
                                        (auto-beam nil)
                                        ;; MDE Fri Aug 29 10:18:29 2014 
                                        (warn t)

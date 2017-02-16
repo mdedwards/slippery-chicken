@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  16:33:26 Sat Feb 11 2017 GMT
+;;; $$ Last modified:  11:20:47 Thu Feb 16 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -377,6 +377,7 @@ MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not
 ;;; 
 ;;; SYNOPSIS
 (defmethod add-half-beat-rest ((rsb rthm-seq-bar) &optional ignore)
+;;; ****  
   (declare (ignore ignore))
   (let* ((ts (get-time-sig rsb))
          (denom2 (* 2 (denom ts))))
@@ -391,7 +392,6 @@ MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not
         (if position
             (splice (list event) (rhythms rsb) position)
             (econs (rhythms rsb) event))))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1814,15 +1814,13 @@ data: ((2 4) - S S - S - S S S - S S)
       t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 12.12.11 SAR: Added ROBODoc info
 ;;; ****m* rthm-seq-bar/auto-beam
 ;;; DESCRIPTION
 ;;; Automatically add beaming indications to the rhythm objects of the given
 ;;; rthm-seq-bar object.  This will only set one beam group per beat.
 ;;;
-;;; NB: This method does not modify the DATA slot of the rthm-seq-bar object
-;;;     itself. Instead, it modifies the BEAM value for the individual RHYTHMs.
+;;; NB: This method does not modify the data slot of the rthm-seq-bar object
+;;;     itself. Instead, it modifies the beam value for the individual rhythms.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-bar object.
@@ -1912,14 +1910,18 @@ data: ((2 4) - S S - S - S S S - S S)
                               ;; under beam for LP
                               (and (is-rest r) (zerop (num-flags r)))
                               (and is-note (not flags))))
-                    (setf start nil
-                          end nil
-                          ok nil))
+                    ;; MDE Thu Feb 16 11:19:33 2017 -- don't just give up if we
+                    ;; hit a 1/4+ note/rest, rather beam up until that point by
+                    ;; simply exiting out of the loop.
+                    #|(setf start nil
+                            end nil
+                            ok nil))|#
+                    (return))
                   (when (and ok flags)
                     (setf end note-num))
                 ;; (format t "~%~a: ~a ~a ~a flags ~a"
                 ;;          (data r) start end ok flags)
-                ;; MDE Tue May 29 23:14:16 2012 -- we can now have beams on
+                ;; MDE Tue May 29 23:14:16 2012 -- we can now have beams over
                 ;; rests so no longer count notes but all events
                 ;; (when is-note
                   (incf note-num))
@@ -2220,9 +2222,9 @@ rhythm symbol for clarity:
 ;;; 
 ;;; EXAMPLE
 #|
-;; The method returns a rhythm object when successful ;
+;; The method returns a rhythm object when successful ; ;
 (let ((rsb (make-rthm-seq-bar '((2 4) e (e) s s (s) s))))
-  (get-nth-non-rest-rhythm 0 rsb))
+(get-nth-non-rest-rhythm 0 rsb))
 
 => 
 RHYTHM: value: 8.0, duration: 0.5, rq: 1/2, is-rest: NIL, score-rthm: 8.0, 
@@ -2238,12 +2240,12 @@ NAMED-OBJECT: id: E, tag: NIL,
 data: E
 
 (let ((rsb (make-rthm-seq-bar '((2 4) e (e) s s (s) s))))
-  (data (get-nth-non-rest-rhythm 1 rsb)))
+(data (get-nth-non-rest-rhythm 1 rsb)))
 
 => S
 
 (let ((rsb (make-rthm-seq-bar '((2 4) e (e) s s (s) s))))
-  (data (get-nth-non-rest-rhythm 4 rsb)))
+(data (get-nth-non-rest-rhythm 4 rsb)))
 
 =>
 Evaluation aborted on #<SIMPLE-ERROR>
@@ -2252,7 +2254,7 @@ rthm-seq-bar::get-nth-non-rest-rhythm: Couldn't get non-rest rhythm with index
 [Condition of type SIMPLE-ERROR]
 
 (let ((rsb (make-rthm-seq-bar '((2 4) e (e) s s (s) s))))
-  (get-nth-non-rest-rhythm 4 rsb nil))
+(get-nth-non-rest-rhythm 4 rsb nil))
 
 => NIL
 
@@ -2299,7 +2301,7 @@ rthm-seq-bar::get-nth-non-rest-rhythm: Couldn't get non-rest rhythm with index
 ;;; EXAMPLE
 #|
 (let ((rsb (make-rthm-seq-bar '((3 4) e (e) s s (s) s (q)))))
-  (get-nth-rest 0 rsb))
+(get-nth-rest 0 rsb))
 
 =>
 RHYTHM: value: 8.0, duration: 0.5, rq: 1/2, is-rest: T, score-rthm: 8.0, 
@@ -2315,19 +2317,19 @@ NAMED-OBJECT: id: E, tag: NIL,
 data: E
 
 (let ((rsb (make-rthm-seq-bar '((3 4) e (e) s s (s) s (q)))))
-  (data (get-nth-rest 2 rsb)))
+(data (get-nth-rest 2 rsb)))
 
 => Q
 
 (let ((rsb (make-rthm-seq-bar '((3 4) e (e) s s (s) s (q)))))
-  (get-nth-rest 3 rsb t))
+(get-nth-rest 3 rsb t))
 
 Evaluation aborted on #<SIMPLE-ERROR>
 rthm-seq-bar::get-nth-rest: Couldn't get rest with index 3
 [Condition of type SIMPLE-ERROR]
 
 (let ((rsb (make-rthm-seq-bar '((3 4) e (e) s s (s) s (q)))))
-  (get-nth-rest 3 rsb nil))
+(get-nth-rest 3 rsb nil))
 
 => NIL
 
@@ -2377,9 +2379,9 @@ rthm-seq-bar::get-nth-rest: Couldn't get rest with index 3
 ;;; 
 ;;; EXAMPLE
 #|
-;; Zero-based indexing. Returns a rhythm object when successful. ;
+;; Zero-based indexing. Returns a rhythm object when successful. ; ;
 (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
-  (get-nth-event 0 rsb))
+(get-nth-event 0 rsb))
 
 => 
 RHYTHM: value: 4.000, duration: 1.000, rq: 1, is-rest: NIL, 
@@ -2392,19 +2394,19 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: Q, tag: NIL, 
 data: Q
 
-;; Interrupts with an error and drops into the debugger by default if the ;
-;; specified index number is greater than the number of events in the ;
-;; rthm-seq-bar.                        ;
+;; Interrupts with an error and drops into the debugger by default if the ; ;
+;; specified index number is greater than the number of events in the ; ;
+;; rthm-seq-bar.                        ; ;
 (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
-  (get-nth-event 4 rsb))
+(get-nth-event 4 rsb))
 
 =>
 rthm-seq-bar::get-nth-event: Couldn't get event with index 4
 [Condition of type SIMPLE-ERROR]
 
-;; The error can be suppressed by setting the optional argument to NIL ;
+;; The error can be suppressed by setting the optional argument to NIL ; ;
 (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
-  (get-nth-event 4 rsb nil))
+(get-nth-event 4 rsb nil))
 
 => NIL
 
@@ -2439,9 +2441,9 @@ rthm-seq-bar::get-nth-event: Couldn't get event with index 4
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns a rhythm object.             
+;; Returns a rhythm object.             ;
 (let ((rsb (make-rthm-seq-bar '((2 4) s s e q))))
-  (get-last-event rsb))
+(get-last-event rsb))
 
 => 
 RHYTHM: value: 4.000, duration: 1.000, rq: 1, is-rest: NIL, 
@@ -2485,9 +2487,9 @@ data: Q
 ;;; 
 ;;; EXAMPLE
 #|
-;; The method returns a rhythm object when successful ;
+;; The method returns a rhythm object when successful ; ;
 (let ((rsb (make-rthm-seq-bar '((3 4) q+e (e) s (s) e))))
-  (get-nth-attack 0 rsb))
+(get-nth-attack 0 rsb))
 
 => 
 RHYTHM: value: 4.0, duration: 1.0, rq: 1, is-rest: NIL, score-rthm: 4.0, 
@@ -2503,18 +2505,18 @@ NAMED-OBJECT: id: "Q", tag: NIL,
 data: Q
 
 (let ((rsb (make-rthm-seq-bar '((3 4) q+e (e) s (s) e))))
-  (data (get-nth-attack 1 rsb)))
+(data (get-nth-attack 1 rsb)))
 
 => S
 
 (Let ((rsb (make-rthm-seq-bar '((3 4) q+e (e) s (s) e))))
-  (get-nth-attack 3 rsb))
+(get-nth-attack 3 rsb))
 
 => NIL
 WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
 
 (Let ((rsb (make-rthm-seq-bar '((3 4) q+e (e) s (s) e))))
-  (get-nth-attack 3 rsb nil))
+(get-nth-attack 3 rsb nil))
 
 => NIL
 
@@ -2646,10 +2648,10 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Create a rthm-seq-bar object and scale its durations by a fact of ;
-;;; 2. Returns a rthm-seq-bar object.   ;
+;;; Create a rthm-seq-bar object and scale its durations by a fact of ; ;
+;;; 2. Returns a rthm-seq-bar object.   ; ;
 (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
-  (scale rsb 2))
+(scale rsb 2))
 
 => 
 RTHM-SEQ-BAR: time-sig: 19 (2 2), time-sig-given: T, bar-num: -1, 
@@ -2671,18 +2673,18 @@ RHYTHM: value: 8.000, duration: 0.500, rq: 1/2, is-rest: NIL,
 data: E
 [...]
 
-;;; Use the print-simple method to see formatted results
+;;; Use the print-simple method to see formatted results ;
 (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
-  (print-simple (scale rsb .5)))
+(print-simple (scale rsb .5)))
 
 =>
 (2 8): note E, note S, note 32, note 32,
 
-;;; Set the optional <preserve-meter> argument to NIL to allow the method to
-;;; return results in a different metric quality (this returns a quadruple
-;;; meter rather than a duple)
+;;; Set the optional <preserve-meter> argument to NIL to allow the method to ;
+;;; return results in a different metric quality (this returns a quadruple ;
+;;; meter rather than a duple)          ;
 (let ((rsb (make-rthm-seq-bar '((6 8) q e q s s))))
-  (print-simple (scale rsb 2 nil)))
+(print-simple (scale rsb 2 nil)))
 
 =>
 (12 8): note H, note Q, note H, note E, note E,
@@ -2789,7 +2791,7 @@ data: E
 ;;; EXAMPLE
 #|
 (let ((rsb (make-rthm-seq-bar '((2 4) q+e s s))))
-  (set-nth-attack 1 (make-event 'e4 'q) rsb))
+(set-nth-attack 1 (make-event 'e4 'q) rsb))
 
 =>
 EVENT: start-time: NIL, end-time: NIL, 
@@ -2805,19 +2807,19 @@ NAMED-OBJECT: id: Q, tag: NIL,
 data: Q
 
 (let ((rsb (make-rthm-seq-bar '((2 4) q+e s s))))
-  (set-nth-attack 2 (make-event 'e4 'q) rsb)
-  (loop for r in (rhythms rsb) collect (data r)))
+(set-nth-attack 2 (make-event 'e4 'q) rsb)
+(loop for r in (rhythms rsb) collect (data r)))
 
 => ("Q" "E" S Q)
 
 (let ((rsb (make-rthm-seq-bar '((2 4) q+e s s))))
-  (set-nth-attack 3 (make-event 'e4 'q) rsb))
+(set-nth-attack 3 (make-event 'e4 'q) rsb))
 
 => NIL
 rthm-seq-bar::set-nth-attack: index (3) < 0 or >= notes-needed (3)
 
 (let ((rsb (make-rthm-seq-bar '((2 4) q+e s s))))
-  (set-nth-attack 3 (make-event 'e4 'q) rsb nil))
+(set-nth-attack 3 (make-event 'e4 'q) rsb nil))
 
 => NIL
 |#
@@ -2875,7 +2877,7 @@ rthm-seq-bar::set-nth-attack: index (3) < 0 or >= notes-needed (3)
 ;;; EXAMPLE
 #|
 (let ((rsb (make-rthm-seq-bar '((3 4) q+e (e) s (s) e))))
-  (get-last-attack rsb))
+(get-last-attack rsb))
 
 =>
 RHYTHM: value: 8.0, duration: 0.5, rq: 1/2, is-rest: NIL, score-rthm: 8.0, 
@@ -2890,7 +2892,7 @@ next: NIL
 NAMED-OBJECT: id: E, tag: NIL, 
 data: E
 
-  |#
+|#
 ;;; SYNOPSIS
 (defmethod get-last-attack ((rsb rthm-seq-bar) &optional (warn t))
 ;;; ****
@@ -3010,23 +3012,23 @@ data: E
 ;;; 
 ;;; EXAMPLE
 #|
-;; Systematically subdivide each quarter-note of a 2/4 bar containing two ;
-;; quarter-notes into all possible segments whose durations are multiples of a ;
-;; sixteenth-note unit, and print-simple the resulting list. The quarter-note ;
-;; subdivision is re-specified here sightly differently to the default for the ;
-;; sake of systematic clarity. Only those segments whose start point coincide ;
-;; with an attack in the original bar, i.e. those that begin on the first ;
-;; sixteenth of each  beat, will be assigned a NIL (which will later become ;
-;; a sounding note); all others are assigned a rest. ;
+;; Systematically subdivide each quarter-note of a 2/4 bar containing two ; ;
+;; quarter-notes into all possible segments whose durations are multiples of a ; ;
+;; sixteenth-note unit, and print-simple the resulting list. The quarter-note ; ;
+;; subdivision is re-specified here sightly differently to the default for the ; ;
+;; sake of systematic clarity. Only those segments whose start point coincide ; ;
+;; with an attack in the original bar, i.e. those that begin on the first ; ;
+;; sixteenth of each  beat, will be assigned a NIL (which will later become ; ;
+;; a sounding note); all others are assigned a rest. ; ;
 
 (let* ((rsb (make-rthm-seq-bar '((2 4) q q)))
-       (ch (chop rsb 
-                 '((1 4) (1 3) (1 2) (1 1) 
-                   (2 4) (2 3) (2 2) 
-                   (3 4) (3 3) 
-                   (4 4))   
-                 's))) 
-  (loop for b in ch do (print-simple b)))
+(ch (chop rsb 
+'((1 4) (1 3) (1 2) (1 1) 
+(2 4) (2 3) (2 2) 
+(3 4) (3 3) 
+(4 4))   
+'s))) 
+(loop for b in ch do (print-simple b)))
 
 =>
 (1 4): NIL Q, 
@@ -3050,13 +3052,13 @@ data: E
 (1 16): rest 16, 
 (1 16): rest 16,
 
-;; The same thing, but returning all possible segments within the bounds of a ;
-;; quarter-note whose durations that are multiple of an 8th-note unit ;
+;; The same thing, but returning all possible segments within the bounds of a ; ;
+;; quarter-note whose durations that are multiple of an 8th-note unit ; ;
 (let* ((rsb (make-rthm-seq-bar '((2 4) q q)))
-       (choprsb (chop rsb 
-                      '((1 2) (1 1) (2 2))
-                      'e)))
-  (loop for b in choprsb do (print-simple b)))
+(choprsb (chop rsb 
+'((1 2) (1 1) (2 2))
+'e)))
+(loop for b in choprsb do (print-simple b)))
 
 =>
 (1 4): NIL Q, 
@@ -3066,19 +3068,19 @@ data: E
 (1 8): NIL E, 
 (1 8): rest 8,
 
-;; Adapt the 16th-note example above to a starting rthm-seq-bar object with ;
-;; more complex rhythmic content. Note here, too, that the rthm-seq-bar object ;
-;; being segmented contains rhythmic durations smaller than the <unit> ;
-;; argument.                            ;
+;; Adapt the 16th-note example above to a starting rthm-seq-bar object with ; ;
+;; more complex rhythmic content. Note here, too, that the rthm-seq-bar object ; ;
+;; being segmented contains rhythmic durations smaller than the <unit> ; ;
+;; argument.                            ; ;
 (let* ((rsb (make-rthm-seq-bar '((4 4) - (s) (32) 32 (s) s - - +s+32 (32) (e) -
-                                 (q) (s) s (e))))  
-       (choprsb (chop rsb 
-                      '((1 4) (1 3) (1 2) (1 1) 
-                        (2 4) (2 3) (2 2) 
-                        (3 4) (3 3) 
-                        (4 4))
-                      's)))
-  (loop for b in choprsb do (print-simple b)))
+(q) (s) s (e))))  
+(choprsb (chop rsb 
+'((1 4) (1 3) (1 2) (1 1) 
+(2 4) (2 3) (2 2) 
+(3 4) (3 3) 
+(4 4))
+'s)))
+(loop for b in choprsb do (print-simple b)))
 
 =>
 (1 4): rest S, rest 32, NIL 32, rest S, NIL S, 
@@ -3122,13 +3124,13 @@ data: E
 (1 16): rest 16, 
 (1 16): rest 16,
 
-;; The same again with a <unit> of eighths ;
+;; The same again with a <unit> of eighths ; ;
 (let* ((rsb (make-rthm-seq-bar '((4 4) - (s) (32) 32 (s) s - - +s+32 (32) (e) -
-                                 (q) (s) s (e))))  
-       (choprsb (chop rsb 
-                      '((1 2) (1 1) (2 2))
-                      'e)))
-  (loop for b in choprsb do (print-simple b)))
+(q) (s) s (e))))  
+(choprsb (chop rsb 
+'((1 2) (1 1) (2 2))
+'e)))
+(loop for b in choprsb do (print-simple b)))
 
 =>
 (1 4): rest S, rest 32, NIL 32, rest S, NIL S, 
@@ -3163,11 +3165,11 @@ data: E
                        (list (* unit-dur (1- (first point)))
                              (* unit-dur (second point))))))
     #|                                  
-    (when (and (not chop-points)
+(when (and (not chop-points)
     (/= denom 4))
     (error "rthm-seq-bar::chop-bar: You have to supply chop-points for ~
       time signatures that are not x/4 (e.g. 3/8)"))
-    |#
+|#
     (loop for beat below num appending
           (loop 
               for point in qstimes 
@@ -3256,10 +3258,10 @@ data: E
       (auto-beam result beat)
       (setf (time-sig-given result) t)
       #|
-    (format t "~%get-events: ~a->~a: num-notes: ~a, ~a"
+(format t "~%get-events: ~a->~a: num-notes: ~a, ~a"
       start-time end-time (notes-needed result)
       (parent-start-end result))
-      |#
+|#
       (loop for r in (rhythms result) do
             (when (and (is-rest r)
                        (marks r))
@@ -3388,10 +3390,10 @@ data: E
   (unless (time-sig-p value)
     (setf value (make-time-sig value)))
   #|
-    (error "rthm-seq-bar::time-sig: Only time-sig objects may be setf'd ~
+(error "rthm-seq-bar::time-sig: Only time-sig objects may be setf'd ~
             here: ~a"
   value))
-  |#
+        |#
   (let ((current (store-time-sig rsb value)))
     (setf (slot-value rsb 'time-sig) current
           (time-sig-given rsb) t
@@ -3425,18 +3427,18 @@ data: E
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
+        (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
 (get-time-sig rsb))
 
-  => 
-  TIME-SIG: num: 2, denom: 4, duration: 2.0, compound: NIL, midi-clocks: 24, 
-  num-beats: 2 
-  SCLIST: sclist-length: 2, bounds-alert: T, copy: T
-  LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-  NAMED-OBJECT: id: "0204", tag: NIL, 
-  data: (2 4)
+        => 
+        TIME-SIG: num: 2, denom: 4, duration: 2.0, compound: NIL, midi-clocks: 24, 
+        num-beats: 2 
+        SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+        LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+        NAMED-OBJECT: id: "0204", tag: NIL, 
+        data: (2 4)
 
-  |#
+        |#
 ;;; SYNOPSIS
 (defmethod get-time-sig ((rsb rthm-seq-bar) &optional ignore)
 ;;; ****
@@ -3458,11 +3460,11 @@ data: E
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
+        (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
 (get-time-sig-as-list rsb))
 
-  => (2 4)
-  |#
+        => (2 4)
+        |#
 ;;; SYNOPSIS
 (defmethod get-time-sig-as-list ((rsb rthm-seq-bar))
 ;;; ****
@@ -3484,18 +3486,18 @@ data: E
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((rsb1 (make-rthm-seq-bar '((2 4) q e s s)))
+        (let ((rsb1 (make-rthm-seq-bar '((2 4) q e s s)))
 (rsb2 (make-rthm-seq-bar '((2 4) s s e q))))
 (time-sig-equal rsb1 rsb2))
 
-  => T
+        => T
 
-  (let ((rsb1 (make-rthm-seq-bar '((2 4) q e s s)))
+        (let ((rsb1 (make-rthm-seq-bar '((2 4) q e s s)))
 (rsb2 (make-rthm-seq-bar '((3 4) q+e e s s s s))))
 (time-sig-equal rsb1 rsb2))
 
-  => NIL
-  |#
+        => NIL
+        |#
 ;;; SYNOPSIS
 (defmethod time-sig-equal ((rsb1 rthm-seq-bar) (rsb2 rthm-seq-bar))
 ;;; ****
@@ -3505,24 +3507,24 @@ data: E
 
 #| 17/7/05: obsolete code as ties are handled now at the piece level
 
-;;; Usually only struck (non-tied and non-rest) notes will have their ;
-;;; compound-duration set to include any following tied notes, but when the ;
-;;; first note of the bar is tied, this has to be the one to get the updated ;
-;;; compound duration.  Tied first notes of the bar are handled separately with ;
-;;; handle-first-note-ties in the rthm-seq class ;
+;;; Usually only struck (non-tied and non-rest) notes will have their ; ;
+;;; compound-duration set to include any following tied notes, but when the ; ;
+;;; first note of the bar is tied, this has to be the one to get the updated ; ;
+;;; compound duration.  Tied first notes of the bar are handled separately with ; ;
+;;; handle-first-note-ties in the rthm-seq class ; ;
 
-(defmethod update-compound-durations ((rsb rthm-seq-bar))
-  ;; (print 'update-compound-durations) ; ;
-  ;; 0 will ensure that if the first note is a tie, this will nevertheless be ; ;
-  ;; updated                            ; ;
-    (let ((last-struck 0))
-      (loop for r in (rest (rhythms rsb)) and i from 1 do
-           (when (needs-new-note r)
-             (setq last-struck i))
+        (defmethod update-compound-durations ((rsb rthm-seq-bar))
+  ;; (print 'update-compound-durations) ; ; ;
+  ;; 0 will ensure that if the first note is a tie, this will nevertheless be ; ; ;
+  ;; updated                            ; ; ;
+(let ((last-struck 0))
+(loop for r in (rest (rhythms rsb)) and i from 1 do
+(when (needs-new-note r)
+(setq last-struck i))
 (when (is-tied-to r)
-  (inc-nth-rthm rsb last-struck (compound-duration r))))))
+(inc-nth-rthm rsb last-struck (compound-duration r))))))
 
-  |#
+        |#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; NB Only increments the COMPOUND-DURATION slot, nothing else!!!
@@ -4158,10 +4160,10 @@ data: E
 ;;; 
 ;;; EXAMPLE
 #|
-;; Create a rthm-seq-bar object using make-event, transpose the contained ;
-;; pitches destructively, and read the values of the corresponding slots to see ;
-;; the change.                          ;
-  (let ((rsb (make-rthm-seq-bar 
+;; Create a rthm-seq-bar object using make-event, transpose the contained ; ;
+;; pitches destructively, and read the values of the corresponding slots to see ; ;
+;; the change.                          ; ;
+        (let ((rsb (make-rthm-seq-bar 
 (list 
 '(3 8) 
 (make-event 'cs4 'e)
@@ -4171,10 +4173,10 @@ data: E
 (loop for p in (rhythms rsb)
 collect (data (pitch-or-chord p))))
 
-  => (EF4 EF4 EF4)
+        => (EF4 EF4 EF4)
 
-;; Do the same thing without the :destructively keyword being set to T ;
-  (let ((rsb (make-rthm-seq-bar 
+;; Do the same thing without the :destructively keyword being set to T ; ;
+        (let ((rsb (make-rthm-seq-bar 
 (list
 '(3 8) 
 (make-event 'cs4 'e)
@@ -4184,8 +4186,8 @@ collect (data (pitch-or-chord p))))
 (loop for p in (rhythms rsb)
 collect (data (pitch-or-chord p))))
 
-  => (C4 C4 C4)
-  |#
+        => (C4 C4 C4)
+        |#
 ;;; SYNOPSIS
 (defmethod transpose ((rsb rthm-seq-bar) semitones
                       &key
@@ -4323,29 +4325,29 @@ collect (data (pitch-or-chord p))))
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Create a slippery-chicken object using pitches GS4 and AF4, print the ;
-;;; pitches of a specified bar within that object. Apply respell-bar and print ;
-;;; the same pitches again to see the difference. ;
+;;; Create a slippery-chicken object using pitches GS4 and AF4, print the ; ;
+;;; pitches of a specified bar within that object. Apply respell-bar and print ; ;
+;;; the same pitches again to see the difference. ; ;
 
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vn (violin :midi-channel 1))))
-        :set-palette '((1 ((gs4 af4 bf4))))
-        :set-map '((1 (1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-                                :pitch-seq-palette ((1 2 1 1 1 1 1 1)))))
-        :rthm-seq-map '((1 ((vn (1 1 1))))))))
-  (print (loop for r in (rhythms (get-bar mini 2 'vn))
-            collect (get-pitch-symbol r)))
-  (respell-bar (get-bar mini 2 'vn) mini 'vn)
-  (print (loop for r in (rhythms (get-bar mini 2 'vn))
-            collect (get-pitch-symbol r))))
-  =>
-  (GS4 AF4 GS4 GS4 GS4 GS4 GS4 GS4) 
-  (GS4 GS4 GS4 GS4 GS4 GS4 GS4 GS4)
+        (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vn (violin :midi-channel 1))))
+:set-palette '((1 ((gs4 af4 bf4))))
+:set-map '((1 (1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 2 1 1 1 1 1 1)))))
+:rthm-seq-map '((1 ((vn (1 1 1))))))))
+(print (loop for r in (rhythms (get-bar mini 2 'vn))
+collect (get-pitch-symbol r)))
+(respell-bar (get-bar mini 2 'vn) mini 'vn)
+(print (loop for r in (rhythms (get-bar mini 2 'vn))
+collect (get-pitch-symbol r))))
+        =>
+        (GS4 AF4 GS4 GS4 GS4 GS4 GS4 GS4) 
+        (GS4 GS4 GS4 GS4 GS4 GS4 GS4 GS4)
 
-  |#
+        |#
 ;;; SYNOPSIS
 (defmethod respell-bar ((rsb rthm-seq-bar) sc player 
                         &optional written last-attack-previous-bar)
@@ -4463,78 +4465,78 @@ collect (data (pitch-or-chord p))))
 ;;; 
 ;;; EXAMPLE
 #|
-;; The method returns T.                
-(let ((rsb (make-rthm-seq-bar 
-            (list '(3 8) 
-                  (make-event 'cs4 'e)
-                  (make-event 'cs4 'e)
-                  (make-event 'cs4 'e)))))
-  (enharmonic rsb))
+;; The method returns T.                ;
+        (let ((rsb (make-rthm-seq-bar 
+(list '(3 8) 
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)))))
+(enharmonic rsb))
 
-=> T
+        => T
 
-;; Create a rthm-seq-bar object with events, apply the enharmonic method, and 
-;; print the corresponding slots to see the changes ;
-(let ((rsb (make-rthm-seq-bar 
-            (list
-             '(3 8) 
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e))))) 
-  (enharmonic rsb)
-  (loop for p in (rhythms rsb)
-     collect (get-pitch-symbol p)))
+;; Create a rthm-seq-bar object with events, apply the enharmonic method, and ;
+;; print the corresponding slots to see the changes ; ;
+        (let ((rsb (make-rthm-seq-bar 
+(list
+'(3 8) 
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)
+(make-event 'cs4 'e))))) 
+(enharmonic rsb)
+(loop for p in (rhythms rsb)
+collect (get-pitch-symbol p)))
 
-=> (DF4 DF4 DF4)
+        => (DF4 DF4 DF4)
 
-;; By default, the method will not change white-key pitches 
-(let ((rsb (make-rthm-seq-bar 
-            (list
-             '(3 8) 
-             (make-event 'c4 'e)
-             (make-event 'c4 'e)
-             (make-event 'c4 'e)))))
-  (enharmonic rsb)
-  (loop for p in (rhythms rsb)
-     collect (get-pitch-symbol p)))
+;; By default, the method will not change white-key pitches ;
+        (let ((rsb (make-rthm-seq-bar 
+(list
+'(3 8) 
+(make-event 'c4 'e)
+(make-event 'c4 'e)
+(make-event 'c4 'e)))))
+(enharmonic rsb)
+(loop for p in (rhythms rsb)
+collect (get-pitch-symbol p)))
 
-=> (C4 C4 C4)
+        => (C4 C4 C4)
 
-;; This can be forced by setting the :force-naturals argument to T 
-(let ((rsb (make-rthm-seq-bar 
-            (list
-             '(3 8) 
-             (make-event 'c4 'e)
-             (make-event 'c4 'e)
-             (make-event 'c4 'e)))))
-  (enharmonic rsb :force-naturals t)
-  (loop for p in (rhythms rsb)
-     collect (get-pitch-symbol p)))
+;; This can be forced by setting the :force-naturals argument to T ;
+        (let ((rsb (make-rthm-seq-bar 
+(list
+'(3 8) 
+(make-event 'c4 'e)
+(make-event 'c4 'e)
+(make-event 'c4 'e)))))
+(enharmonic rsb :force-naturals t)
+(loop for p in (rhythms rsb)
+collect (get-pitch-symbol p)))
 
-=> (BS3 BS3 BS3)
+        => (BS3 BS3 BS3)
 
-;; Apply the set-written method to fill the WRITTEN-PITCH-OR-CHORD slot, print 
-;; its contents, apply the enharmonic method with the :written keyword argument 
-;; set to T, then print the pitch data of the same slot again to see the 
-;; change.                              
-(let ((rsb (make-rthm-seq-bar 
-            (list
-             '(3 8) 
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)))))
-  (set-written rsb -3)
-  (print (loop for p in (rhythms rsb)
-            collect (get-pitch-symbol p)))
-  (enharmonic rsb :written t)
-  (print (loop for p in (rhythms rsb)
-            collect (get-pitch-symbol p))))
+;; Apply the set-written method to fill the WRITTEN-PITCH-OR-CHORD slot, print ;
+;; its contents, apply the enharmonic method with the :written keyword argument ;
+;; set to T, then print the pitch data of the same slot again to see the ;
+;; change.                              ;
+        (let ((rsb (make-rthm-seq-bar 
+(list
+'(3 8) 
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)))))
+(set-written rsb -3)
+(print (loop for p in (rhythms rsb)
+collect (get-pitch-symbol p)))
+(enharmonic rsb :written t)
+(print (loop for p in (rhythms rsb)
+collect (get-pitch-symbol p))))
 
-=>
-(BF3 BF3 BF3) 
-(AS3 AS3 AS3)
+        =>
+        (BF3 BF3 BF3) 
+        (AS3 AS3 AS3)
 
-|#
+        |#
 ;;; SYNOPSIS
 (defmethod enharmonic ((rsb rthm-seq-bar) &key written force-naturals
                        ;; MDE Wed Apr 18 11:34:01 2012
@@ -4593,12 +4595,12 @@ collect (data (pitch-or-chord p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #|
-;;; MDE Thu Apr 19 11:32:37 2012 -- this was defined twice! ;
-(defmethod rhythms-to-events ((rsb rthm-seq-bar))
-  (setf (rhythms rsb)
-        (loop for r in (rhythms rsb) collect (clone-with-new-class r 'event)))
-  rsb)
-|#
+;;; MDE Thu Apr 19 11:32:37 2012 -- this was defined twice! ; ;
+        (defmethod rhythms-to-events ((rsb rthm-seq-bar))
+(setf (rhythms rsb)
+(loop for r in (rhythms rsb) collect (clone-with-new-class r 'event)))
+rsb)
+        |#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod split-longer-rests ((rsb rthm-seq-bar))
@@ -4671,38 +4673,38 @@ collect (data (pitch-or-chord p))))
 ;;; 
 ;;; EXAMPLE
 #|
-(let* ((rsb (make-rthm-seq-bar '((7 4) h. e e +e. e. e q)))
-       (rsb-splt (split rsb)))
-  (loop for i in rsb-splt collect
-       (loop for r in (rhythms i) collect (data r))))
+        (let* ((rsb (make-rthm-seq-bar '((7 4) h. e e +e. e. e q)))
+(rsb-splt (split rsb)))
+(loop for i in rsb-splt collect
+(loop for r in (rhythms i) collect (data r))))
 
-=> ((H.) (E E "E." E. E Q))
+        => ((H.) (E E "E." E. E Q))
 
-(let* ((rsb (make-rthm-seq-bar '((7 4) h. e e +e. e. e q)))
-       (rsb-splt (split rsb)))
-  (loop for i in rsb-splt do (print-simple i)))
+        (let* ((rsb (make-rthm-seq-bar '((7 4) h. e e +e. e. e q)))
+(rsb-splt (split rsb)))
+(loop for i in rsb-splt do (print-simple i)))
 
-=>
-(3 4): note H., 
-(4 4): note E, note E, note E., note E., note E, note Q,
+        =>
+        (3 4): note H., 
+        (4 4): note E, note E, note E., note E., note E, note Q,
 
-(let* ((rsb (make-rthm-seq-bar '((7 4) h. e e +e. e. e q)))
-       (rsb-splt (split rsb :min-beats 1 :max-beats 3)))
-  (loop for i in rsb-splt do (print-simple i)))
+        (let* ((rsb (make-rthm-seq-bar '((7 4) h. e e +e. e. e q)))
+(rsb-splt (split rsb :min-beats 1 :max-beats 3)))
+(loop for i in rsb-splt do (print-simple i)))
 
-=>
-(3 4): note H., 
-(1 4): note E, note E, 
-(2 4): note E., note E., note E, 
-(1 4): note Q, 
+        =>
+        (3 4): note H., 
+        (1 4): note E, note E, 
+        (2 4): note E., note E., note E, 
+        (1 4): note Q, 
 
-(let ((rsb (make-rthm-seq-bar '((7 4) h. e e +e. e. e q))))
-  (split rsb :max-beats 1 :warn t))
+        (let ((rsb (make-rthm-seq-bar '((7 4) h. e e +e. e. e q))))
+(split rsb :max-beats 1 :warn t))
 
-=> NIL
-WARNING: rthm-seq-bar::split: couldn't split bar:
+        => NIL
+        WARNING: rthm-seq-bar::split: couldn't split bar:
 
-|#
+        |#
 ;;; SYNOPSIS
 (defmethod split ((rsb rthm-seq-bar) &key
                                        (min-beats 2) (max-beats 5) warn ignore)
@@ -4794,33 +4796,33 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 
 ;;; EXAMPLE
 #|
-;; The method returns NIL 
-(let ((rsb (make-rthm-seq-bar 
-            (list
-             '(3 8) 
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)))))
-  (set-written rsb -2))
+;; The method returns NIL               ;
+        (let ((rsb (make-rthm-seq-bar 
+(list
+'(3 8) 
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)))))
+(set-written rsb -2))
 
-=> T
+        => T
 
-;; Set the written pitch transposition to 2 semitones lower, then check the
-;; data of the WRITTEN-PITCH-OR-CHORD slot of each event to see the
-;; corresponding pitches  
-(let ((rsb (make-rthm-seq-bar 
-            (list
-             '(3 8) 
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)))))
-  (set-written rsb -2)
-  (loop for p in (rhythms rsb)
-     collect (get-pitch-symbol p)))
+;; Set the written pitch transposition to 2 semitones lower, then check the ;
+;; data of the WRITTEN-PITCH-OR-CHORD slot of each event to see the ;
+;; corresponding pitches                ;
+        (let ((rsb (make-rthm-seq-bar 
+(list
+'(3 8) 
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)))))
+(set-written rsb -2)
+(loop for p in (rhythms rsb)
+collect (get-pitch-symbol p)))
 
-=> (B3 B3 B3)
+        => (B3 B3 B3)
 
-|#
+        |#
 ;;; SYNOPSIS
 (defmethod set-written ((rsb rthm-seq-bar) transposition)
 ;;; ****
@@ -4844,33 +4846,33 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 
 ;;; EXAMPLE
 #|
-;; Create a rthm-seq-bar object consisting of events and print the contents of ;
-;; the WRITTEN-PITCH-OR-CHORD slots to see they're set to NIL. Apply the ;
-;; set-written method with a value of -2 and print the contents of the ;
-;; WRITTEN-PITCH-OR-CHORD slots to see the data of the newly created pitch ;
-;; objects. Apply the delete-written method and print the contents of the ;
-;; WRITTEN-PITCH-OR-CHORD slots to see they're empty. ;
-(let ((rsb (make-rthm-seq-bar 
-            (list
-             '(3 8) 
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)))))
-  (print (loop for p in (rhythms rsb)
-            collect (written-pitch-or-chord p)))
-  (set-written rsb -2)
-  (print (loop for p in (rhythms rsb)
-            collect (get-pitch-symbol p)))
-  (delete-written rsb)
-  (print (loop for p in (rhythms rsb)
-            collect (written-pitch-or-chord p))))
+;; Create a rthm-seq-bar object consisting of events and print the contents of ; ;
+;; the WRITTEN-PITCH-OR-CHORD slots to see they're set to NIL. Apply the ; ;
+;; set-written method with a value of -2 and print the contents of the ; ;
+;; WRITTEN-PITCH-OR-CHORD slots to see the data of the newly created pitch ; ;
+;; objects. Apply the delete-written method and print the contents of the ; ;
+;; WRITTEN-PITCH-OR-CHORD slots to see they're empty. ; ;
+        (let ((rsb (make-rthm-seq-bar 
+(list
+'(3 8) 
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)))))
+(print (loop for p in (rhythms rsb)
+collect (written-pitch-or-chord p)))
+(set-written rsb -2)
+(print (loop for p in (rhythms rsb)
+collect (get-pitch-symbol p)))
+(delete-written rsb)
+(print (loop for p in (rhythms rsb)
+collect (written-pitch-or-chord p))))
 
-=>
-(NIL NIL NIL) 
-(B3 B3 B3) 
-(NIL NIL NIL)
+        =>
+        (NIL NIL NIL) 
+        (B3 B3 B3) 
+        (NIL NIL NIL)
 
-|#
+        |#
 ;;; SYNOPSIS
 (defmethod delete-written ((rsb rthm-seq-bar))
 ;;; ****
@@ -4918,35 +4920,35 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 
 ;;; EXAMPLE
 #|
-;; Create a rthm-seq-bar using event objects and check the MIDI-CHANNEL slots ;
-;; of those event objects to see that they are NIL by default. ;
-(let ((rsb (make-rthm-seq-bar 
-            (list
-             '(3 8) 
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)))))
-  (loop for p in (rhythms rsb)
-     collect (midi-channel (pitch-or-chord p))))
+;; Create a rthm-seq-bar using event objects and check the MIDI-CHANNEL slots ; ;
+;; of those event objects to see that they are NIL by default. ; ;
+        (let ((rsb (make-rthm-seq-bar 
+(list
+'(3 8) 
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)))))
+(loop for p in (rhythms rsb)
+collect (midi-channel (pitch-or-chord p))))
 
-=> (NIL NIL NIL)
+        => (NIL NIL NIL)
 
-;; Apply the set-midi-channel method to the rthm-seq-bar object and read and ;
-;; print the MIDI-CHANNEL slots of each of the individual events to see that ;
-;; they've been set.                    ;
-(let ((rsb (make-rthm-seq-bar 
-            (list
-             '(3 8) 
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)))))
-  (set-midi-channel rsb 13 14)
-  (loop for p in (rhythms rsb)
-     collect (midi-channel (pitch-or-chord p))))
+;; Apply the set-midi-channel method to the rthm-seq-bar object and read and ; ;
+;; print the MIDI-CHANNEL slots of each of the individual events to see that ; ;
+;; they've been set.                    ; ;
+        (let ((rsb (make-rthm-seq-bar 
+(list
+'(3 8) 
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)))))
+(set-midi-channel rsb 13 14)
+(loop for p in (rhythms rsb)
+collect (midi-channel (pitch-or-chord p))))
 
-=> (13 13 13)
+        => (13 13 13)
 
-|#
+        |#
 ;;; SYNOPSIS
 (defmethod set-midi-channel ((rsb rthm-seq-bar) midi-channel
                              &optional microtonal-midi-channel)
@@ -4975,29 +4977,29 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 
 ;;; EXAMPLE
 #|
-;; Create a rthm-seq-bar object consisting of event objects, print the default ;
-;; value of the 8VA slots for those events. Set the 8VA slots to 1 and print ;
-;; the value of those slots to see the change. Apply the reset-8va method to ;
-;; remove any values and reset the slots to NIL, and print the results. ;
+;; Create a rthm-seq-bar object consisting of event objects, print the default ; ;
+;; value of the 8VA slots for those events. Set the 8VA slots to 1 and print ; ;
+;; the value of those slots to see the change. Apply the reset-8va method to ; ;
+;; remove any values and reset the slots to NIL, and print the results. ; ;
 
-(let ((rsb (make-rthm-seq-bar 
-            (list
-             '(3 8) 
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)))))
-  (print (loop for e in (rhythms rsb) collect (8va e)))
-  (set-8va rsb 1)
-  (print (loop for e in (rhythms rsb) collect (8va e)))
-  (reset-8va rsb)
-  (print (loop for e in (rhythms rsb) collect (8va e))))
+        (let ((rsb (make-rthm-seq-bar 
+(list
+'(3 8) 
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)))))
+(print (loop for e in (rhythms rsb) collect (8va e)))
+(set-8va rsb 1)
+(print (loop for e in (rhythms rsb) collect (8va e)))
+(reset-8va rsb)
+(print (loop for e in (rhythms rsb) collect (8va e))))
 
-=>
-(0 0 0) 
-(1 1 1) 
-(0 0 0)
+        =>
+        (0 0 0) 
+        (1 1 1) 
+        (0 0 0)
 
-|#
+        |#
 ;;; SYNOPSIS
 (defmethod reset-8va ((rsb rthm-seq-bar))
 ;;; ****
@@ -5032,33 +5034,33 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 
 ;;; EXAMPLE
 #|
-;; The method returns NIL 
+;; The method returns NIL               ;
 
-(let ((rsb (make-rthm-seq-bar 
-            (list
-             '(3 8) 
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)))))
-  (set-8va rsb 1))
+        (let ((rsb (make-rthm-seq-bar 
+(list
+'(3 8) 
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)))))
+(set-8va rsb 1))
 
-=> NIL
+        => NIL
 
-;; Create a rthm-seq-bar object with event objects, set the 8va slot to 1, and 
-;; access and print it to see it's new value.
+;; Create a rthm-seq-bar object with event objects, set the 8va slot to 1, and ;
+;; access and print it to see it's new value. ;
 
-(let ((rsb (make-rthm-seq-bar 
-            (list
-             '(3 8) 
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)
-             (make-event 'cs4 'e)))))
-  (set-8va rsb 1)
-  (loop for e in (rhythms rsb) collect (8va e)))
+        (let ((rsb (make-rthm-seq-bar 
+(list
+'(3 8) 
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)
+(make-event 'cs4 'e)))))
+(set-8va rsb 1)
+(loop for e in (rhythms rsb) collect (8va e)))
 
-=> (1 1 1)
+        => (1 1 1)
 
-|#
+        |#
 ;;; SYNOPSIS
 (defmethod set-8va ((rsb rthm-seq-bar) 8va)
 ;;; ****
@@ -5103,12 +5105,12 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((rsb (make-rthm-seq-bar '((4 4) q e s s q. e))))
-  (get-rhythm-symbols rsb))
+        (let ((rsb (make-rthm-seq-bar '((4 4) q e s s q. e))))
+(get-rhythm-symbols rsb))
 
-=> (Q E S S Q. E)
+        => (Q E S S Q. E)
 
-|#
+        |#
 ;;; SYNOPSIS
 (defmethod get-rhythm-symbols ((rsb rthm-seq-bar))
 ;;; ****
@@ -5129,19 +5131,19 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((mini
-       (make-slippery-chicken
-        '+mini+
-        :ensemble '(((vn (violin :midi-channel 1))))
-        :set-palette '((1 ((gs4 bf4 c4))))
-        :set-map '((1 (1 1 1)))
-        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-                                :pitch-seq-palette ((1 2 1 2 1 1 3 1)))))
-        :rthm-seq-map '((1 ((vn (1 1 1))))))))
-  (get-pitch-symbols (get-bar mini 1 'vn)))
-=>
-(C4 GS4 C4 GS4 C4 C4 BF4 C4)
-|#
+        (let ((mini
+(make-slippery-chicken
+'+mini+
+:ensemble '(((vn (violin :midi-channel 1))))
+:set-palette '((1 ((gs4 bf4 c4))))
+:set-map '((1 (1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+:pitch-seq-palette ((1 2 1 2 1 1 3 1)))))
+:rthm-seq-map '((1 ((vn (1 1 1))))))))
+(get-pitch-symbols (get-bar mini 1 'vn)))
+        =>
+        (C4 GS4 C4 GS4 C4 C4 BF4 C4)
+        |#
 ;;; SYNOPSIS
 (defmethod get-pitch-symbols ((rsb rthm-seq-bar) &optional written)
 ;;; ****
@@ -5166,19 +5168,19 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 
 ;;; EXAMPLE
 #|
-(let* ((mini
-        (make-slippery-chicken
-         '+sc-object+
-         :ensemble '(((va (viola :midi-channel 2))))
-         :set-palette '((1 ((c3 d3 e3 f3 g3 a3 b3 c4))))
-         :set-map '((1 (1 1 1)))
-         :rthm-seq-palette '((1 ((((4 4) e (e) e (e) (e) e e e))
-                                 :pitch-seq-palette ((1 2 3 4 5)))))
-         :rthm-seq-map '((1 ((va (1 1 1))))))))
-  (set-amplitudes (get-bar mini 2 'va) 0.9)
-  (cmn-display mini))
+        (let* ((mini
+(make-slippery-chicken
+'+sc-object+
+:ensemble '(((va (viola :midi-channel 2))))
+:set-palette '((1 ((c3 d3 e3 f3 g3 a3 b3 c4))))
+:set-map '((1 (1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) e (e) e (e) (e) e e e))
+:pitch-seq-palette ((1 2 3 4 5)))))
+:rthm-seq-map '((1 ((va (1 1 1))))))))
+(set-amplitudes (get-bar mini 2 'va) 0.9)
+(cmn-display mini))
 
-|#
+        |#
 ;;; SYNOPSIS
 (defmethod set-amplitudes ((rsb rthm-seq-bar) amp)
 ;;; ****
@@ -5210,20 +5212,20 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 
 ;;; EXAMPLE
 #|
-(let* ((mini
-        (make-slippery-chicken
-         '+sc-object+
-         :ensemble '(((va (viola :midi-channel 2))))
-         :set-palette '((1 ((c3 d3 e3 f3 g3 a3 b3 c4))))
-         :set-map '((1 (1 1 1)))
-         :rthm-seq-palette '((1 ((((4 4) e (e) e (e) (e) e e e))
-                                 :pitch-seq-palette ((1 2 3 4 5)))))
-         :rthm-seq-map '((1 ((va (1 1 1))))))))
-  (set-dynamics (get-bar mini 2 'va) 'ppp))
+        (let* ((mini
+(make-slippery-chicken
+'+sc-object+
+:ensemble '(((va (viola :midi-channel 2))))
+:set-palette '((1 ((c3 d3 e3 f3 g3 a3 b3 c4))))
+:set-map '((1 (1 1 1)))
+:rthm-seq-palette '((1 ((((4 4) e (e) e (e) (e) e e e))
+:pitch-seq-palette ((1 2 3 4 5)))))
+:rthm-seq-map '((1 ((va (1 1 1))))))))
+(set-dynamics (get-bar mini 2 'va) 'ppp))
 
-=> PPP
+        => PPP
 
-|#
+        |#
 ;;; SYNOPSIS
 (defmethod set-dynamics ((rsb rthm-seq-bar) dynamic)
 ;;; ****
@@ -5416,35 +5418,35 @@ WARNING: rthm-seq-bar::split: couldn't split bar:
 ;;; 
 ;;; EXAMPLE
 #|
-(make-rthm-seq-bar '((2 4) q e s s))
+        (make-rthm-seq-bar '((2 4) q e s s))
 
-=> 
-RTHM-SEQ-BAR:
-[...]
-NAMED-OBJECT: id: NIL, tag: NIL, 
-data: ((2 4) Q E S S)
+        => 
+        RTHM-SEQ-BAR:
+        [...]
+        NAMED-OBJECT: id: NIL, tag: NIL, 
+        data: ((2 4) Q E S S)
 
-(make-rthm-seq-bar '((2 4) q e s s) 'test)
-=> 
-RTHM-SEQ-BAR:
-[...]
-NAMED-OBJECT: id: TEST, tag: NIL, 
-data: ((2 4) Q E S S)
+        (make-rthm-seq-bar '((2 4) q e s s) 'test)
+        => 
+        RTHM-SEQ-BAR:
+        [...]
+        NAMED-OBJECT: id: TEST, tag: NIL, 
+        data: ((2 4) Q E S S)
 
-(make-rthm-seq-bar '((2 4) q \+16\.+32 e))
-=> 
-RTHM-SEQ-BAR:
-[...]
-NAMED-OBJECT: id: NIL, tag: NIL, 
-data: ((2 4) Q +16.+32 E)
+        (make-rthm-seq-bar '((2 4) q \+16\.+32 e))
+        => 
+        RTHM-SEQ-BAR:
+        [...]
+        NAMED-OBJECT: id: NIL, tag: NIL, 
+        data: ((2 4) Q +16.+32 E)
 
-(make-rthm-seq-bar '((2 4) { 3 te te te } q)) 
-=> 
-RTHM-SEQ-BAR:
-[...]
-NAMED-OBJECT: id: NIL, tag: NIL, 
-data: ((2 4) { 3 TE TE TE } Q)
-|#
+        (make-rthm-seq-bar '((2 4) { 3 te te te } q)) 
+        => 
+        RTHM-SEQ-BAR:
+        [...]
+        NAMED-OBJECT: id: NIL, tag: NIL, 
+        data: ((2 4) { 3 TE TE TE } Q)
+        |#
 ;;; SYNOPSIS
 (defun make-rthm-seq-bar (rhythms &optional name)
 ;;; ****
@@ -5487,27 +5489,27 @@ data: ((2 4) { 3 TE TE TE } Q)
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((rsb-rb (make-rest-bar '(2 4) nil t)))
-  (format t "~%time-sig: ~a~%is-rest-bar: ~a~%write-time-sig: ~
+        (let ((rsb-rb (make-rest-bar '(2 4) nil t)))
+(format t "~%time-sig: ~a~%is-rest-bar: ~a~%write-time-sig: ~
              ~a~%show-rest: ~a~%"
-          (data (get-time-sig rsb-rb))
-          (is-rest-bar rsb-rb)
-          (write-time-sig rsb-rb)
-          (show-rest rsb-rb))
-  (print-simple rsb-rb)
-  rsb-rb)
+(data (get-time-sig rsb-rb))
+(is-rest-bar rsb-rb)
+(write-time-sig rsb-rb)
+(show-rest rsb-rb))
+(print-simple rsb-rb)
+rsb-rb)
 
-=>
-RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: T, bar-num: -1, 
-[...]
+        =>
+        RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: T, bar-num: -1, 
+        [...]
 
-time-sig: (2 4)
-is-rest-bar: T
-write-time-sig: NIL
-show-rest: T
-(2 4): rest 2,
+        time-sig: (2 4)
+        is-rest-bar: T
+        write-time-sig: NIL
+        show-rest: T
+        (2 4): rest 2,
 
-|#
+        |#
 ;;; SYNOPSIS
 (defun make-rest-bar (time-sig &optional
                                  write-time-sig
@@ -5619,7 +5621,7 @@ show-rest: T
                 (decf expect-right-brackets)
                 (let ((tuplet-num (pop tuplets)))
                   #| MDE Wed Dec 14 14:21:27 2011 -- obsolete
-                  (push (list tuplet-num
+        (push (list tuplet-num
                   (pop 
                   score-left-bracket-positions) 
                   (+ num-notes -1 
@@ -5627,7 +5629,7 @@ show-rest: T
                   0
                   nudge-factor))) 
                   score-tuplet-positions)
-                  |#
+        |#
                                    (push (list tuplet-num 
                                                (pop left-bracket-positions)
                                                (1- num-rthms))
@@ -5695,15 +5697,15 @@ show-rest: T
                        (push (list (first b) (+ nr (second b)) (+ nr (third b)))
                              tuplet-positions))))
                 #| 
-                ;; MDE Fri May 29 10:02:22 2015 -- this is the way we used to ;
-                ;; do rqq, relying on CMN: ;
-                  (multiple-value-bind
+                ;; MDE Fri May 29 10:02:22 2015 -- this is the way we used to ; ;
+                ;; do rqq, relying on CMN: ; ;
+        (multiple-value-bind
                (rqq-rthms rqq-num-notes rqq-num-rthms)
-               (do-rqq interned) ;    ;
+               (do-rqq interned) ;    ; ;
                (incf num-rthms rqq-num-rthms)
                (incf num-notes rqq-num-notes)
                (setf rthms (append (reverse rqq-rthms) rthms))))
-                |#
+      |#
                ;; finally we saw a rhythm!
                ;; but when it's in parentheses it's a rest so
                ;; it's not going to  increment num-notes
@@ -6298,11 +6300,11 @@ show-rest: T
 ;;; EXAMPLE
 #|
 
-(event-list-to-midi-file
- (events-update-time (make-events2 '(q q q) '(g4 g4 g4) 1))
- :midi-file "/tmp/test.mid" :start-tempo 120)
+      (event-list-to-midi-file
+(events-update-time (make-events2 '(q q q) '(g4 g4 g4) 1))
+:midi-file "/tmp/test.mid" :start-tempo 120)
 
-|#
+      |#
 ;;; SYNOPSIS
 (defun events-update-time (events &key (start-time 0.0) (start-time-qtrs 0.0)
                                     (tempo 60.0))

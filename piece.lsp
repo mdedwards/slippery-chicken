@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  14:07:38 Sat Dec 17 2016 CET
+;;; $$ Last modified:  17:49:47 Thu Feb 16 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -644,42 +644,18 @@ BAR-HOLDER:
       (bar-num bar))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; all refs are 1-based.
 
 (defmethod replace-events ((p piece) player bar-num start-event
                            replace-num-events new-events
                            &optional (auto-beam nil) ignore)
   (declare (ignore ignore))
-  (let* ((bar (get-bar p bar-num player))
-         (rthms nil)
-         (nth (1- start-event)))
-    ;; those events that were previously start or end points for brackets may
-    ;; be replaced here leaving the events in between with references to now
-    ;; deleted brackets (they have bracket slots with negative numbers which
-    ;; indicate which bracket they are under when abs'ed).  Delete all tuplets
-    ;; and beams here to avoid errors in cmn
-    (delete-tuplets bar)
-    (delete-beams bar)
-    (when bar 
-      (setf rthms (my-copy-list (rhythms bar))))
-    (unless bar
-      (error "piece::replace-events: Couldn't get bar number ~a"
-             bar-num))
-    ;; a rest bar has no rhythms but we may want to fill it with some so fake
-    ;; the rthms here.  
-    (unless rthms
-      ;; doesn't matter what's in the list as all elements will be replaced.
-      (setf rthms (ml nil replace-num-events)))
-    (setf rthms (remove-elements rthms nth replace-num-events)
-          rthms (splice new-events rthms nth))
-    ;; of course, the stats for the sequenz and whole piece are now incorrect,
-    ;; but we leave that update to the user, we don't want to always call it
-    ;; here.
-    (setf (rhythms bar) rthms)
-    (when auto-beam
-      (auto-beam bar auto-beam))
-    (is-full bar))
+  (let* ((bar (get-bar p bar-num player)))
+    (if bar
+        (replace-rhythms bar start-event replace-num-events new-events
+                         auto-beam)
+        (error "piece::replace-events: Couldn't get bar number ~a"
+               bar-num)))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

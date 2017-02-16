@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  12:14:52 Wed Feb  8 2017 GMT
+;;; $$ Last modified:  10:07:42 Thu Feb 16 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -295,7 +295,10 @@
 ;;; ****m* rhythm/scale
 ;;; DESCRIPTION
 ;;; Change the value of a rhythm object's duration value by a specified
-;;; scaling factor. 
+;;; scaling factor. Bear in mind that after scaling, depending on the
+;;; complexity of the rhythm, the data slot may no longer accurately represent
+;;; the new rhythmic value (though of course the value, duration, and rq, etc.,
+;;; slots will). 
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rhythm object.

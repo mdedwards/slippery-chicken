@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  10:07:42 Thu Feb 16 2017 GMT
+;;; $$ Last modified:  15:01:34 Thu Feb 16 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -221,6 +221,11 @@
   ;; 22.7.11 (Pula)
   (rm-marks r '(beg-sl end-sl) nil)
   r)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Feb 16 15:01:32 2017 
+(defmethod not-rest ((r rhythm))
+  (not (is-rest r)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

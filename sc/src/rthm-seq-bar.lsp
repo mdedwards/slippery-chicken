@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  11:20:47 Thu Feb 16 2017 GMT
+;;; $$ Last modified:  17:48:58 Thu Feb 16 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5375,12 +5375,40 @@ collect (midi-channel (pitch-or-chord p))))
   pitch-list)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Feb 16 17:44:58 2017 -- moved most of the functionality of
+;;; replace-events from the piece class over here, where it should have been in
+;;; the first place.
+(defmethod replace-rhythms ((rsb rthm-seq-bar) start-event replace-num-events
+                            new-events &optional auto-beam)
+  (let* ((rthms (my-copy-list (rhythms rsb)))
+         (nth (1- start-event)))
+    ;; those events that were previously start or end points for brackets may
+    ;; be replaced here leaving the events in between with references to now
+    ;; deleted brackets (they have bracket slots with negative numbers which
+    ;; indicate which bracket they are under when abs'ed).  Delete all tuplets
+    ;; and beams here to avoid errors in cmn
+    (delete-tuplets rsb)
+    (delete-beams rsb)
+    ;; a rest bar has no rhythms but we may want to fill it with some so fake
+    ;; the rthms here.  
+    (unless rthms
+      ;; doesn't matter what's in the list as all elements will be replaced.
+      (setf rthms (ml nil replace-num-events)))
+    (setf rthms (remove-elements rthms nth replace-num-events)
+          rthms (splice new-events rthms nth))
+    ;; of course, the stats for the sequenz and whole piece are now incorrect,
+    ;; but we leave that update to the user, we don't want to always call it
+    ;; here.
+    (setf (rhythms rsb) rthms)
+    (when auto-beam
+      (auto-beam rsb auto-beam))
+    (is-full rsb)))
+                           
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 09.12.11 SEAN: Added ROBODoc info
 ;;; ****f* rthm-seq-bar/make-rthm-seq-bar
 ;;; DESCRIPTION
 ;;; Public interface for creating a rthm-seq-bar object, each instance of which

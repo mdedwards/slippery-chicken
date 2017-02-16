@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  19:19:04 Wed Feb 15 2017 GMT
+;;; $$ Last modified:  14:13:52 Thu Feb 16 2017 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7119,8 +7119,11 @@ FS4 G4)
         (values chord event)
         (if (and (eq 'force on-fail) (pitch-p chord))
             (values (make-chord chord) event)
-            (funcall on-fail "slippery-chicken::get-chord: no chord at bar ~a, ~
-                              note ~a for ~a" bar-num note-num player)))))
+            ;; this means rests will simply be ignored
+            (when (functionp on-fail)
+              (funcall on-fail "slippery-chicken::get-chord: no chord at ~
+                               bar ~a, note ~a for ~a"
+                       bar-num note-num player))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken/get-nearest-event

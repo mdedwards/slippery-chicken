@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  17:49:47 Thu Feb 16 2017 GMT
+;;; $$ Last modified:  17:31:30 Mon Feb 20 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -612,8 +612,8 @@ BAR-HOLDER:
       (progn
         (unless (= 3 (length bar-num-or-ref))
           (error "piece::get-bar: ~
-                  bar-num-or-ref is either an absolute bar ~
-                  number or a reference of the form (section sequence bar): ~a"
+                  bar-num-or-ref is either an absolute bar number ~
+                  or a reference of the form ~% (section sequence bar): ~a"
                  bar-num-or-ref))
         (get-bar-from-ref p (first bar-num-or-ref) player 
                           (second bar-num-or-ref) 
@@ -654,8 +654,8 @@ BAR-HOLDER:
     (if bar
         (replace-rhythms bar start-event replace-num-events new-events
                          auto-beam)
-        (error "piece::replace-events: Couldn't get bar number ~a"
-               bar-num)))
+        (error "piece::replace-events: Couldn't get bar number ~a for ~a"
+               bar-num player)))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

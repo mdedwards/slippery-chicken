@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified: 18:12:08 Mon May 30 2016 WEST
+;;; $$ Last modified:  16:15:34 Fri Feb 17 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -361,6 +361,7 @@
              ;; this is also for lilypond markup code so ignore
              (text (no-cmn-mark (format nil "lilypond-markup: ~a" mark)))
              (rgb (list (color (second mark))))
+             (gliss-map (no-cmn-mark 'gliss-map))
              ;; MDE Sat Jun 30 12:06:08 2012 -- key signatures
              (key ;;(no-cmn-mark 'key))
               ;;#|

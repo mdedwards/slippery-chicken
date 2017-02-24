@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:10:11 Sat Feb 11 2017 GMT
+;;; $$ Last modified:  14:02:23 Mon Feb 20 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2172,8 +2172,13 @@ NIL
     ;; MDE Tue Jan 7 10:30:17 2014 -- hairpin0 has to come before \< (cresc) or
     ;; \> (dim) not at end \!
     (when (and (has-mark e 'hairpin0)
-               (or (has-mark e 'cresc-end)
-                   (has-mark e 'dim-end)))
+               ;; MDE Sat Feb 18 17:46:24 2017 -- we might well have a dim-end
+               ;; but also a dim-beg on the same event, so what's crucial is
+               ;; that there's a *-beg
+               ;; (or (has-mark e 'cresc-end)
+               ;; (has-mark e 'dim-end)))
+               (not (or (has-mark e 'cresc-beg)
+                        (has-mark e 'dim-beg))))
       (error "event::get-lp-data: the mark 'hairpin0 should be attached to ~
              the event ~%with the cresc-beg or dim-beg mark, not at the end of ~
              the hairpin: ~a" e))
@@ -2187,7 +2192,8 @@ NIL
         ;; 13.4.11 the start of 8va marks need to be before the note, but the
         ;; end comes after the note in order to include it under the bracket 
         (move-elements '(circled-x x-head triangle beg-8va beg-8vb wedge square
-                         hairpin0 beg-trill-a triangle-up mensural << rgb)
+                         gliss-map hairpin0 beg-trill-a triangle-up mensural
+                         << rgb)
                        (marks e) (marks-before e)
                        ;; MDE Thu Nov 14 11:52:26 2013 -- got to be able to
                        ;; handle marks as lists so #'eq not a sufficient member
@@ -3837,7 +3843,7 @@ rest Q, rest Q, rest Q, rest Q, rest Q, rest Q, rest Q,
 ;;; note (or chord) and its rhythm and a single datum is the rhythm of a rest.
 ;;; 
 ;;; ARGUMENTS
-;;; - A list.
+;;; - A list of symbols and/or sublists; see below for examples.
 ;;;  
 ;;; OPTIONAL ARGUMENTS
 ;;; - A whole number indicating the MIDI channel on which the event is to be
@@ -3893,9 +3899,27 @@ G4 Q, rest E, rest S, (D4 FS4 A4) S,
                          microtones-midi-channel)))
          (make-rest data))
      collect event))
-          
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Feb 16 18:03:56 2017 - data list as make-events, tuplets is a
+;;; single or list of numbers suitable to be passed to get-tuplet-ratio or
+;;; ratios like 5/4 (5 in the time of 4, not a scaler).
+;;; this doesn't set the tuplet-scaler or bracket slot of the events but does
+;;; set the duration slot correctly
+(defun make-tuplet-events (data-list tuplets &optional (midi-channel 1)
+                                               (microtones-midi-channel 2))
+  (let* ((events (make-events data-list midi-channel microtones-midi-channel))
+         (scaler 1))
+    (loop for ts in (force-list tuplets) do
+         (setq scaler (* scaler (get-tuplet-ratio ts))))
+    ;;(print scaler)
+    (loop for e in events do
+         (setf (tuplet-scaler e) scaler
+               (duration e) (* scaler (duration e))))
+    events))
+    
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;;; SAR Fri Dec 23 13:41:36 EST 2011: Added robodoc info
 

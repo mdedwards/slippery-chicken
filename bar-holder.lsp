@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified: 15:22:20 Sat Jun 28 2014 BST
+;;; $$ Last modified:  15:12:25 Mon Feb 20 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -471,11 +471,11 @@
           (progn
             (unless is-chord
               (error "bar-holder::get-note: requested bar num ~a note num ~a ~
-                    for player ~a ~%but that note is not a chord!"
+                      for player ~a ~%but that note is not a chord!"
                      bar-num note-num player))
             (unless (= 2 (length note-num))
               (error "bar-holder::get-note: when accessing a chord, note-num ~
-                    must be a 2 element list of integers: ~a"
+                    must be a 2 element list of integers:~%~a"
                      note-num))
             (unless (< chord-nth is-chord)
               (warn "bar-holder::get-note requested bar num ~a note num ~a ~
@@ -506,7 +506,8 @@
 
 ;; bar-num and note-num are 1-based
 
-(defmethod get-event ((bh bar-holder) bar-num event-num player &optional (error t))
+(defmethod get-event ((bh bar-holder) bar-num event-num player
+                      &optional (error t))
   (let ((bar (get-bar bh bar-num player)))
     (unless bar
       (warn "bar-holder::get-event: couldn't get bar number ~a ~

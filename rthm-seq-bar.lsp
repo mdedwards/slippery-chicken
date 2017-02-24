@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  17:48:58 Thu Feb 16 2017 GMT
+;;; $$ Last modified:  13:05:25 Mon Feb 20 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -269,10 +269,10 @@
                    (and not-enough (< rthms-dur ts-dur))))
       (when error
         (funcall (if (eq error 'warn) #'warn #'error)
-                 "~a: ~%rthm-seq-bar::is-full:~%~
+                 "~%rthm-seq-bar::is-full:~%~
                    Duration of rhythms (~a) is not the duration of the ~
-                   time-sig: (~a)"
-                 rsb rthms-dur ts-dur)))
+                   time-sig: (~a)~%~a"
+                 rthms-dur ts-dur rsb)))
     ;; MDE Fri May 13 14:37:57 2016 -- return a second value that shows
     ;; under/overfill: positive will be underfill, negative overfill
     (values ok (- ts-dur rthms-dur))))
@@ -774,7 +774,7 @@ data: E.
 ;;; SYNOPSIS
 (defmethod consolidate-rests ((rsb rthm-seq-bar) &key beat min warn)
 ;;; ****
-  ;;  (print 'consolidate-rests)
+  ;; (print 'consolidate-rests)
   ;; (print (length (rhythms rsb)))
   ;; MDE Mon Nov 26 20:18:12 2012 -- added 'silent to make sure we don't get
   ;; more than a beat's worth of rthms 
@@ -3427,18 +3427,17 @@ data: E
 ;;; 
 ;;; EXAMPLE
 #|
-        (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
-(get-time-sig rsb))
+(let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
+  (get-time-sig rsb))
+=> 
+TIME-SIG: num: 2, denom: 4, duration: 2.0, compound: NIL, midi-clocks: 24, 
+num-beats: 2 
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
+NAMED-OBJECT: id: "0204", tag: NIL, 
+data: (2 4)
 
-        => 
-        TIME-SIG: num: 2, denom: 4, duration: 2.0, compound: NIL, midi-clocks: 24, 
-        num-beats: 2 
-        SCLIST: sclist-length: 2, bounds-alert: T, copy: T
-        LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-        NAMED-OBJECT: id: "0204", tag: NIL, 
-        data: (2 4)
-
-        |#
+|#
 ;;; SYNOPSIS
 (defmethod get-time-sig ((rsb rthm-seq-bar) &optional ignore)
 ;;; ****
@@ -3460,11 +3459,10 @@ data: E
 ;;; 
 ;;; EXAMPLE
 #|
-        (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
-(get-time-sig-as-list rsb))
-
-        => (2 4)
-        |#
+(let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
+  (get-time-sig-as-list rsb))
+=> (2 4)
+|#
 ;;; SYNOPSIS
 (defmethod get-time-sig-as-list ((rsb rthm-seq-bar))
 ;;; ****
@@ -3486,18 +3484,17 @@ data: E
 ;;; 
 ;;; EXAMPLE
 #|
-        (let ((rsb1 (make-rthm-seq-bar '((2 4) q e s s)))
-(rsb2 (make-rthm-seq-bar '((2 4) s s e q))))
-(time-sig-equal rsb1 rsb2))
+(let ((rsb1 (make-rthm-seq-bar '((2 4) q e s s)))
+      (rsb2 (make-rthm-seq-bar '((2 4) s s e q))))
+  (time-sig-equal rsb1 rsb2))
 
-        => T
+=> T
 
-        (let ((rsb1 (make-rthm-seq-bar '((2 4) q e s s)))
-(rsb2 (make-rthm-seq-bar '((3 4) q+e e s s s s))))
-(time-sig-equal rsb1 rsb2))
-
-        => NIL
-        |#
+(let ((rsb1 (make-rthm-seq-bar '((2 4) q e s s)))
+      (rsb2 (make-rthm-seq-bar '((3 4) q+e e s s s s))))
+  (time-sig-equal rsb1 rsb2))
+=> NIL
+|#
 ;;; SYNOPSIS
 (defmethod time-sig-equal ((rsb1 rthm-seq-bar) (rsb2 rthm-seq-bar))
 ;;; ****
@@ -5280,24 +5277,32 @@ collect (midi-channel (pitch-or-chord p))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Wed Feb  8 09:48:17 2017 
-(defmethod remove-rhythms ((rsb rthm-seq-bar) start how-many)
-  ;; this assumes that any start/closing tuplets in the rthms to be removed
-  ;; have already been moved to other existing or added rthms. all we're
-  ;; interested in doing here is taking care of the tuplets slot of the
-  ;; rthm-seq-bar itself, not its rthms
-  (setf (rhythms rsb) (remove-elements (rhythms rsb) start how-many))
-  (setf (tuplets rsb)
-        (loop for tup in (tuplets rsb)
-           for tstart = (second tup)
-           for tend = (third tup)
-           for i from 0 do
-             (when (> tstart start)
-               (decf tstart how-many))
-             (when (> tend start)
-               (decf tend how-many))
-           collect (list (first tup) tstart tend)))
-  (rhythms rsb))
+;;;  MDE Wed Feb  8 09:48:17 2017 - start is 0-based
+(defmethod remove-rhythms ((rsb rthm-seq-bar) start how-many
+                           &optional (update-tuplets t)
+                             (inherit-last-tuplet t))
+  ;; unless inherit-last-tuplet, this assumes that any start/closing tuplets in
+  ;; the rthms to be removed have already been moved to other existing or added
+  ;; rthms. all we're interested in doing here is taking care of the tuplets
+  ;; slot of the rthm-seq-bar itself, not its rthms
+  (let ((e1 (get-nth-event (1- start) rsb))
+        (e2 (get-nth-event (+ start how-many -1) rsb)))
+    (setf (rhythms rsb) (remove-elements (rhythms rsb) start how-many))
+    (when update-tuplets
+      (setf (tuplets rsb)
+            (loop for tup in (tuplets rsb)
+               for tstart = (second tup)
+               for tend = (third tup)
+               for i from 0 do
+                 (when (> tstart start)
+                   (decf tstart how-many))
+                 (when (> tend start)
+                   (decf tend how-many))
+               collect (list (first tup) tstart tend))))
+    (when inherit-last-tuplet
+      (setf (bracket e1) (pos4neg (bracket e1) (bracket e2))))
+    (check-tuplets rsb)
+    (rhythms rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Jun 24 18:25:35 2015 -- when we've got nested tuplets we run into

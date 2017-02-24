@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified: 18:13:57 Mon May 30 2016 WEST
+;;; $$ Last modified:  16:17:51 Fri Feb 17 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -299,6 +299,9 @@
                 stencil-align-dir-y) = #CENTER ~%~
             \\override TextSpanner #'(bound-details left ~
                 stencil-align-dir-y) = #CENTER~%" current target)))
+           ;; MDE Fri Feb 17 16:01:04 2017 -- for getting lines to go to the
+           ;; right places in gliss chords; see http://tinyurl.com/jopurj7
+           (gliss-map (format nil "\\set glissandoMap = #'~a " (second mark)))
            (trill-note
             (format nil "\\startTrillSpan ~a "
                     (get-lp-data (make-pitch (second mark)))))

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  14:46:53 Sat Nov 26 2016 GMT
+;;; $$ Last modified:  15:26:31 Fri Feb 17 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5043,12 +5043,13 @@ Here's where I pasted the data into the .RPP Reaper file:
   (flet ((oor () ; in case we need to call it on more than one occasion...
            (when (functionp out-of-range)
              (funcall out-of-range
-                      "utilities::rescale: first argument (~a) should be within ~
-                       original range (~a to ~a)" val min max))))
+                      "utilities::rescale: first argument (~a) should be ~
+                       within original range (~a to ~a)" val min max))))
     (when (or (>= min max)
               (>= new-min new-max))
       (error "utilities::rescale: argument 2 (~a) must be < argument 3 (~a) ~
-              ~%and sim. for argument 4 (~a) and 5 (~a)" min max new-min new-max))
+              ~%and sim. for argument 4 (~a) and 5 (~a)"
+             min max new-min new-max))
     (unless (and (>= val min)
                  (<= val max))
       (oor)
@@ -5072,5 +5073,16 @@ Here's where I pasted the data into the .RPP Reaper file:
            ;; <avoid> wasn't in <list>
            (pop ,list)))))
   
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; good for closing tuplets: if list1 has negative numbers whose absolute
+;;; value is in list2, change neg for pos, e.g.
+;;; (pos4neg '(-1 -3) '(-1 3)) -> (-1 3) 
+;;; (pos4neg '(-1 (3 3)) '(-1 3)) -> (-1 (3 3))
+(defun pos4neg (list1 list2)
+  (loop for i in list1 for ai = (when (numberp i) (abs i)) collect
+       (if (and ai (member ai list2))
+           ai
+           i)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:13:52 Thu Feb 16 2017 GMT
+;;; $$ Last modified:  10:21:09 Fri Mar  3 2017 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -165,6 +165,11 @@
    ;; given) in Lilypond output. Nil means nothing will be written otherwise
    ;; add a string of your choice e.g. "2016" or "2016-17"
    (year :accessor year :initarg :year :initform nil)
+   ;; MDE Fri Mar 3 10:14:47 2017 -- A string to add dedications to Lilypond
+   ;; scores (only) such as "for Mieko Kanno". This will appear centered,
+   ;; directly above the title, in a smaller font.  Default = NIL (no
+   ;; dedication).
+   (dedication :accessor dedication :initarg :dedication :initform nil)
    ;; 10/3/07: simply a list of bar numbers where a rehearsal letter should be
    ;; written (automatically)
    (rehearsal-letters :accessor rehearsal-letters :type list 
@@ -6272,12 +6277,16 @@ data: NIL
     (labels ((no-header-footer (stream)
                (format stream 
                        "~%\\header {~%  title = ~a ~%  subtitle = ~a~
-                        ~%  tagline = ##f~%  composer = ~a~%}"
+                        ~%  dedication = ~a~%  tagline = ##f~
+                        ~%  composer = ~a~%}"
                        (cond ((stringp title) (format nil "\"~a\"" title))
                              (title (format nil "\"~a\"" (title sc)))
                              (t "##f"))
                        (if (subtitle sc)
                            (format nil "\"~a\"" (subtitle sc))
+                           "##f")
+                       (if (dedication sc)
+                           (format nil "\"~a\"" (dedication sc))
                            "##f")
                        (if (composer sc) 
                            (format nil "\"~a~a\"" (composer sc)

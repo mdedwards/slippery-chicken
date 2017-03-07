@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified:  16:15:34 Fri Feb 17 2017 GMT
+;;; $$ Last modified:  18:15:13 Sat Mar  4 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -328,6 +328,8 @@
              (open (list (open-note)))
              ;; there is no short pause in CMN so just use pause i.e. //
              (short-pause (list (pause))) ;(list (martellato (scale 2 2))))
+             ;; ditto
+             (long-pause (list (pause))) ;(list (martellato (scale 2 2))))
              ;; 2.3.11
              (ped (list (pedal-)))
              (ped^ (list (-pedal-)))
@@ -362,6 +364,7 @@
              (text (no-cmn-mark (format nil "lilypond-markup: ~a" mark)))
              (rgb (list (color (second mark))))
              (gliss-map (no-cmn-mark 'gliss-map))
+             (sub (no-cmn-mark 'sub))
              ;; MDE Sat Jun 30 12:06:08 2012 -- key signatures
              (key ;;(no-cmn-mark 'key))
               ;;#|

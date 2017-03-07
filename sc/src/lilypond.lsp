@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  16:17:51 Fri Feb 17 2017 GMT
+;;; $$ Last modified:  18:14:41 Sat Mar  4 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -220,6 +220,7 @@
            (hairpin0 "\\once \\override Hairpin #'circled-tip = ##t ")
            ;; (dim0-beg "\\once \\override Hairpin #'circled-tip = ##t \\> ")
            (pause "\\fermata ")
+           (long-pause "\\longfermata ")
            (short-pause
             "^\\markup { \\musicglyph #\"scripts.ushortfermata\" } ")
            ;; MDE Thu Apr  5 16:17:11 2012 -- these need the graphics files in
@@ -290,18 +291,22 @@
               (format 
                nil
                "~%\\override TextSpanner #'bound-padding = #1.0 ~
-            ~%\\override TextSpanner #'style = #'line ~%~
-            \\override TextSpanner #'(bound-details right arrow) = ##t ~%~
-            \\override TextSpanner #'(bound-details left text) = #\"~a\" ~%~
-            \\override TextSpanner #'(bound-details right text) = #\"~a\"~%~
-            \\override TextSpanner #'(bound-details right padding) = #0.6 ~%~
-            \\override TextSpanner #'(bound-details right ~
-                stencil-align-dir-y) = #CENTER ~%~
-            \\override TextSpanner #'(bound-details left ~
-                stencil-align-dir-y) = #CENTER~%" current target)))
+               ~%\\override TextSpanner #'style = #'line ~%~
+               \\override TextSpanner #'(bound-details right arrow) = ##t ~%~
+               \\override TextSpanner #'(bound-details left text) = #\"~a\" ~%~
+               \\override TextSpanner #'(bound-details right text) = #\"~a\"~%~
+               \\override TextSpanner #'(bound-details right padding) = #0.6 ~%~
+               \\override TextSpanner #'(bound-details right ~
+                   stencil-align-dir-y) = #CENTER ~%~
+               \\override TextSpanner #'(bound-details left ~
+                   stencil-align-dir-y) = #CENTER~%" current target)))
            ;; MDE Fri Feb 17 16:01:04 2017 -- for getting lines to go to the
            ;; right places in gliss chords; see http://tinyurl.com/jopurj7
            (gliss-map (format nil "\\set glissandoMap = #'~a " (second mark)))
+           ;; MDE Sat Mar  4 11:30:35 2017 -- subito
+           (sub (string-downcase
+                 (format nil "_\\markup { \\dynamic ~a \\italic sub. } "
+                         (second mark))))
            (trill-note
             (format nil "\\startTrillSpan ~a "
                     (get-lp-data (make-pitch (second mark)))))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified: 16:05:42 Tue Jun 28 2016 WEST
+;;; $$ Last modified:  10:28:35 Tue Mar 14 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1548,7 +1548,10 @@ data: (
 
 ;;; ****m* chord/add-pitches
 ;;; DESCRIPTION
-;;; Add the specified pitches to the given chord object. 
+;;; Add the specified pitches to the given chord object. This can include
+;;; duplicate pitches for things like violin fingered and open string
+;;; unisons. If you don't want pitch duplications, call the rm-duplicates
+;;; method after calling this method.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A chord object.
@@ -1581,10 +1584,13 @@ data: (
 ;;; SYNOPSIS
 (defmethod add-pitches ((c chord) &rest pitches)
 ;;; ****
-  (setf (data c) 
-        (remove-duplicates 
-         (append (data c) (init-pitch-list (flatten pitches)))
-         :test #'pitch=))
+  (setf (data c)
+        ;; MDE Tue Mar 14 10:25:29 2017 -- don't remove duplicates by default
+        ;; as this would mean we couldn't have stay string chords with fingered
+        ;; and open unisons. See note above.
+        ;; (remove-duplicates 
+         (append (data c) (init-pitch-list (flatten pitches))))
+         ;; :test #'pitch=))
   (init-chord c)
   c)
 

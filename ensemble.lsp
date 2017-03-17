@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified: 18:11:28 Mon Oct 20 2014 BST
+;;; $$ Last modified:  13:41:59 Fri Mar 17 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -203,8 +203,11 @@
 (defmethod check-first-bar-ins-for-doubling-players
     ((e ensemble) (icm instrument-change-map) first-section-ref)
   (loop for player in (data e) do
-        (when (doubles player)
-          (instrument-for-first-bar icm (id player) first-section-ref))))
+       (setf (first-ins player)
+             (if (doubles player)
+                 ;; this'll throw an error if it's not set
+                 (instrument-for-first-bar icm (id player) first-section-ref)
+                 (id (data player))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

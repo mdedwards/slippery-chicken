@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified: 17:05:40 Fri Nov 13 2015 ICT
+;;; $$ Last modified:  13:53:04 Fri Mar 17 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -78,6 +78,9 @@
    ;; channel for the microtones, so that chords can be played.  
    (microtones-midi-channel :accessor microtones-midi-channel :type integer
                             :initarg :microtones-midi-channel :initform -1)
+   ;; this is set automatically during sc-init; useful for doubling players,
+   ;; otherwise it'll be the id of the only ins played
+   (first-ins :accessor first-ins :type symbol :initform nil)
    ;; whether the player plays more than one instrument or not
    (doubles :accessor doubles :type boolean :initform nil)))
 
@@ -169,13 +172,15 @@
     (format stream "~&PLAYER: (id instrument-palette): ~a ~%doubles: ~a, ~
                     cmn-staff-args: ~a, total-notes: ~a, total-degrees: ~a, ~
                     ~%total-duration: ~a, total-bars: ~a, tessitura: ~a ~
-                    ~%staff-names: ~a, staff-short-names: ~a"
+                    ~%midi-channel: ~a, microtones-midi-channel: ~a ~
+                    ~%staff-names: ~a, staff-short-names: ~a, first-ins: ~a"
             (when ip (id ip)) (doubles p) (cmn-staff-args p)
             ;; MDE Thu Apr 19 13:31:06 2012 -- 
             (total-notes p) (total-degrees p)
             (secs-to-mins-secs (total-duration p))
-            (total-bars p) (tessitura-note p) (staff-names p)
-            (staff-short-names p))))
+            (total-bars p) (tessitura-note p) (midi-channel p)
+            (microtones-midi-channel p) (staff-names p)
+            (staff-short-names p) (first-ins p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -191,6 +196,7 @@
     ;; certain not to be garbage-collected
     (setf (slot-value named-object 'instrument-palette) (instrument-palette p)
           (slot-value named-object 'doubles) (doubles p)
+          (slot-value named-object 'first-ins) (first-ins p)
           (slot-value named-object 'midi-channel) (midi-channel p)
           (slot-value named-object 'microtones-midi-channel)
           (microtones-midi-channel p)
@@ -690,7 +696,9 @@
 ;;;   symbol that is the ID of the sought-after instrument object, as it
 ;;;   appears in the instrument-palette with which the player object which
 ;;;   made. If the given player object consists of only one instrument object,
-;;;   this argument is disregarded and a warning is printed.
+;;;   this argument is disregarded and a warning is printed. If this argument
+;;;   is simply T then the first instrument is returned (in the assoc-list, not
+;;;   the piece, of which we have no knowledge).
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns an instrument object.
@@ -758,7 +766,9 @@ the instrument you want.
   (let* ((data (data p)))
     (if (doubles p) ; (typep data 'assoc-list) ; doubles
         (if ins
-            (get-data ins data)
+            (if (eq ins T)
+                (get-first data)
+                (get-data ins data))
             (error "player::player-get-instrument: ~a doubles so you need to ~
                     pass the ID of the instrument you want." (id p)))
         (progn
@@ -768,11 +778,40 @@ the instrument you want.
                   (id p) ins))
           data))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Mar 17 12:59:47 2017 -- the score part ID that we'll write and then
+;;; need for writing the part's notes is simply the player's ID (upper case)
+(defmethod xml-score-part ((p player) &optional stream)
+  (let ((ins (player-get-instrument p (first-ins p) nil)))
+    (format stream "~&    <score-part id=\"~a\">" (id p))
+    (format stream "~&      <part-name>~a</part-name>" (staff-name ins))
+    (format stream "~&      <part-name-display>")
+    (format stream "~&        <display-text>~a</display-text>" (staff-name ins))
+    (format stream "~&      </part-name-display>")
+    (format stream "~&      <part-abbreviation>~a</part-abbreviation>"
+            (staff-short-name ins))
+    (format stream "~&      <part-abbreviation-display>")
+    (format stream "~&        <display-text>~a</display-text>"
+            (staff-short-name ins))
+    (format stream "~&      </part-abbreviation-display>")
+    (format stream "~&      <score-instrument id=\"~a-ins\">" (id p))
+    (format stream "~&        <instrument-name>~a</instrument-name>" (id ins))
+    (format stream "~&      </score-instrument>")
+    (format stream "~&      <midi-instrument id=\"~a-ins\">" (id ins))
+    ;; NB no functionality for microtones-midi-channel here
+    (format stream "~&        <midi-channel>~a</midi-channel>" (midi-channel p))
+    (format stream "~&        <midi-program>~a</midi-program>"
+            (midi-program ins))
+    (format stream "~&        <volume>79</volume>") ; whatever...
+    (format stream "~&        <pan>0</pan>")        ; ditto
+    (format stream "~&      </midi-instrument>")
+    (format stream "~&    </score-part>")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****f* player/make-player
 ;;; DESCRIPTION

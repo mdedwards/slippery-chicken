@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  19:10:55 Wed Feb 15 2017 GMT
+;;; $$ Last modified:  20:22:20 Wed Mar 15 2017 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2976,6 +2976,8 @@ NIL
             (delete-marks porc))
           (when wporc
             (delete-marks wporc))
+          ;; (print bar-num)
+          ;; (print porc)
           (loop 
              for e = (next-event sc player)
              for bnum = (next-event sc nil)
@@ -3669,7 +3671,8 @@ NIL
 ;;;   rehearsal letter is to be deleted.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns NIL.
+;;; Returns the deleted rehearsal letter from the last player which had one
+;;; attached.  
 ;;; 
 ;;; EXAMPLE
 #|
@@ -3698,13 +3701,50 @@ NIL
   ;; MDE Fri Apr 20 14:25:54 2012 
   (unless (listp players)
     (setf players (list players)))
-  (loop 
-      for p in players 
-               ;; remember the letter is actually placed on the bar-line of the
-               ;; previous bar
-      for bar = (get-bar sc (1- bar-num) p)
-      do 
-        (setf (rehearsal-letter bar) nil)))
+  (let (bar rl tmp)
+    (loop for p in players do
+       ;; remember the letter is actually placed on the bar-line of the
+       ;; previous bar
+         (setf bar (get-bar sc (1- bar-num) p)
+               tmp (rehearsal-letter bar)
+               (rehearsal-letter bar) nil)
+         (when tmp (setq rl tmp)))
+    rl))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* slippery-chicken-edit/move-rehearsal-letter
+;;; DATE
+;;; March 15th 2017, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Move a rehearsal letter for those players who have one at <from-bar> to
+;;; <to-bar> 
+;;; 
+;;; ARGUMENTS
+;;; - a slippery-chicken object
+;;; - the bar number (integer) to move the letter from
+;;; - the bar number (integer) to move the letter to
+;;; 
+;;; RETURN VALUE
+;;; The last rehearsal-letter that was seen (in the lowest player in the
+;;; ensemble) 
+;;; 
+;;; SYNOPSIS
+(defmethod move-rehearsal-letter ((sc slippery-chicken) from-bar to-bar)
+  (let* ((from (get-bar sc (1- from-bar)))
+         (to (get-bar sc (1- to-bar)))
+         rl last)
+    (loop for fbar in from for tbar in to do
+         (setq rl (rehearsal-letter fbar))
+         (when rl
+           (setf last rl
+                 (rehearsal-letter fbar) nil
+                 (rehearsal-letter tbar) rl)))
+    (unless last
+      (error "slippery-chicken::move-rehearsal-letter: no rehearsal letter ~
+              at bar ~a" from-bar))
+    last))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue May 27 17:38:24 2014 -- called by (setf rehearsal-letters) :after

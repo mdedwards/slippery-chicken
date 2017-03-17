@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified:  18:15:13 Sat Mar  4 2017 GMT
+;;; $$ Last modified:  11:05:27 Tue Mar 14 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -301,6 +301,7 @@
              (batt (list (sc-cmn-text "batt")))
              (spe (list (sc-cmn-text "spe")))
              (sp (list (sc-cmn-text "sul pont.")))
+             (st (list (sc-cmn-text "sul tasto")))
              (sv (list (sc-cmn-text "senza vib")))
              (mv (list (sc-cmn-text "molto vib")))
              (poco-crini (list (sc-cmn-text "poco crini")))

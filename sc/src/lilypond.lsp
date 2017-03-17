@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  18:14:41 Sat Mar  4 2017 GMT
+;;; $$ Last modified:  11:05:54 Tue Mar 14 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -96,6 +96,7 @@
            (batt "^\"batt.\" ")
            (spe "^\"spe\" ")
            (sp "^\"sul pont.\" ")
+           (st "^\"sul tasto\" ")
            (mv "^\"molto vib.\" ")
            (sv "^\"senza vib.\" ")
            (poco-crini "^\"poco crini\" ")

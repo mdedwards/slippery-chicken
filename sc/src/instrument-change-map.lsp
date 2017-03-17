@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    12th April 2002
 ;;;
-;;; $$ Last modified: 15:37:31 Wed Feb 10 2016 GMT
+;;; $$ Last modified:  13:40:34 Fri Mar 17 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -74,10 +74,12 @@
 
 (defmethod instrument-for-first-bar ((icm instrument-change-map)
                                      player first-section-ref)
-  (unless (cm-get-data icm (econs first-section-ref player))
-    (error "instrument-change-map::instrument-for-first-bar: ~
+  (let ((result (cm-get-data icm (econs first-section-ref player))))
+    (unless result
+      (error "instrument-change-map::instrument-for-first-bar: ~
             ~a doubles but the ~%instrument for the first bar has not been set."
-           player)))
+             player))
+    result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

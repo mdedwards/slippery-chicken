@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:02:23 Mon Feb 20 2017 GMT
+;;; $$ Last modified:  17:40:42 Mon Mar 13 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1373,7 +1373,8 @@ data: (3 4)
 ;;; to be attached to the start and end of the given arrow for LilyPond
 ;;; output. This is a little more complex than the usual mark adding process,
 ;;; hence this separate method and it not being possible to add arrows to
-;;; rthm-seq objects.  Not available for CMN.
+;;; rthm-seq objects.  Not available for CMN. See also the slippery-chicken
+;;; class method add-arrow-to-events 
 ;;;
 ;;; NB: A separate end-arrow mark should be attached to the note where the end
 ;;;     text is to appear.  Use end-arrow for this or (add-mark e 'end-arrow).

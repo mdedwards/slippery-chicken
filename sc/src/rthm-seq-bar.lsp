@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  13:05:25 Mon Feb 20 2017 GMT
+;;; $$ Last modified:  15:09:34 Fri Mar 17 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3713,6 +3713,87 @@ data: (2 4)
              rsb))
     t))
                    
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod xml-time-sig ((rsb rthm-seq-bar) stream
+                         &optional time-sig) ; if we have it
+  (unless time-sig 
+    (setf time-sig (get-time-sig rsb)))
+  (format stream "~&        <time><beats>~a</beats><beat-type>~a</beat-type>~
+                  </time>"
+          (num time-sig) (denom time-sig)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Mar 17 14:42:00 2017
+;;; spec says "If maximum compatibility with Standard MIDI 1.0 files is
+;;; important, do not have the divisions value exceed 16383." so we'll use that
+(defmethod write-xml ((rsb rthm-seq-bar) &key stream)
+  (print "~&    <!--=======================================================-->"
+         stream)
+  (format stream "~&    <measure number=\"~a\"> <!-- ~a -->"
+          (bar-num rsb) (player-section-ref rsb))
+  (let ((ts (get-time-sig rsb)))
+    (format stream "~&      <attributes>")
+    (when (= (bar-num rsb) 1)
+      ;; just try the max for now
+      (format stream "~&        <divisions>16383</divisions>")
+      ;; todo: sc can have a key-sig but we're not writing one for now
+      (format stream "~&        <key><fifths>0</fifths></key>")
+      (format stream "~&        <clef><sign>~a</sign><line>2</line></clef>"
+              ;; here: how to get starting clef? from sc? the ins?
+              clef))
+    (when (write-time-sig rsb)
+      (xml-time-sig rsb stream))
+    (format stream "~&        </attributes>")
+    ;; is this a rest bar? what about the show-rest slot?
+    (if (is-rest-bar rsb)
+        (let* ((e1 (first (rhythms rsb))))
+          (when (display-tempo e1)
+            (unless (tempo-change e1)
+              (error "rthm-seq-bar::get-lp-data: display tempo but no ~
+                      tempo-change: ~a" rsb))
+            (push (get-lp-data (tempo-change e1)) result))
+          ;; MDE Mon Jul 23 14:01:44 2012 -- 
+          (loop for s in (lp-get-ins-change e1) do (push s result))
+          ;; MDE Sat Sep 22 16:01:03 2012 -- e.g. key sigs on rest bars
+          (when (marks-before e1)
+            (loop for m in (marks-before e1)
+               for lpm = (lp-get-mark m)
+               do
+                 (push lpm result)))
+          (push (lp-rest-bar rsb ts) result)
+          (when (marks e1)
+            (loop for m in (marks e1)
+               ;; lilypond has a special fermata markup for rest bars...
+               for lpm = (if (eq m 'pause)
+                             "^\\fermataMarkup"
+                             (lp-get-mark m))
+               do
+               (push lpm result))))
+        ;; not a rest bar
+        (loop for event in (rhythms rsb) do
+           ;; MDE Sat Mar 10 17:03:07 2012 
+             (when process-event-fun
+               (funcall process-event-fun event))
+             (push (get-lp-data event in-c) result)))
+    ;; attach the given rehearsal letter
+    (when (rehearsal-letter rsb)
+      (push (lp-rehearsal-letter rsb rehearsal-letters-font-size) result))
+    ;; special bar line
+    (push (case (bar-line-type rsb)
+            (0 " | ")
+            (1 " \\bar \"||\" ")
+            (2 " \\bar \"|.\" ")
+            ;; MDE Wed Mar 21 07:44:10 2012 -- added repeat barlines
+            (3 " \\bar \"|:\" ")        ; begin repeat
+            (4 " \\bar \":|.|:\" ")     ; begin & end repeat 
+            (5 " \\bar \":|\" ")        ; end repeat
+            (t (error "rthm-seq-bar::get-lsp-data: ~
+                       unhandled barline at bar ~a: ~a"
+                      (bar-num rsb) (bar-line-type rsb))))
+          result)
+    (format stream "~&      </measure>")))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod get-lp-data ((rsb rthm-seq-bar) &optional

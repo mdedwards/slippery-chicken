@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  11:53:00 Sat Mar  4 2017 GMT
+;;; $$ Last modified:  11:30:06 Mon Mar 20 2017 GMT
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -107,6 +107,7 @@
      (warn-no-cmn-mark t)
      ;; sim for Lilypond
      (warn-no-lp-mark t)
+     (warn-no-xml-mark t)
      ;; Bar number offsets for CMN
      (cmn-bar-num-dx-for-sc -0.2)
      (cmn-bar-num-dy-for-sc 1.2)

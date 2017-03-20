@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    12th February 2001
 ;;;
-;;; $$ Last modified: 21:21:04 Mon Jan 19 2015 GMT
+;;; $$ Last modified:  17:48:57 Sat Mar 18 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -545,6 +545,20 @@ T
 ;;; actual BPM is not relevant here, just the beat duration of the given tempo.
 (defmethod num-beats-at-tempo ((ts time-sig) (tpo tempo))
   (* (num ts) (/ (beat-value tpo) (denom ts))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Mar 18 17:22:22 2017
+(defmethod xml-time-sig ((ts time-sig) stream &optional ignore)
+  (declare (ignore ignore))
+  (format stream "~&        <time><beats>~a</beats><beat-type>~a</beat-type>~
+                  </time>"
+          (num ts) (denom ts)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod xml-whole-bar-rest ((ts time-sig) divisions stream)
+  (format stream "~&      <note><rest measure=\"yes\"/><duration>~a</duration>~
+                          </note>" (floor (* divisions (duration ts)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

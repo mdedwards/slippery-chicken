@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  19:52:37 Thu Feb  9 2017 GMT
+;;; $$ Last modified:  13:53:28 Sat Mar 18 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -394,7 +394,35 @@
 (defmethod get-instrument-change-list ((ins instrument))
   (list (staff-name ins)
         (staff-short-name ins)
-        (staff-lines ins)))
+        (staff-lines ins)
+        ;; MDE Sat Mar 18 13:11:26 2017 -- add 4th element: the ins object
+        ins))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Mar 18 12:01:26 2017 -- for musicxml
+(defmethod diatonic-transposition ((ins instrument))
+  (if (transposing-instrument-p ins nil)
+      (let ((dtransp
+             (case (transposition ins)
+               (c -7) (f -4) (g -3) (bf -1) (a -2) (ef -5) (d -6)
+               (t (error "diatonic-transposition: unhandled case: ~a for ~a"
+                         (transposition ins) ins))))
+            ;; for transps > octave
+            (offset (* 12 (1- (abs (floor (transposition-semitones ins) 12))))))
+        (if (> (transposition-semitones ins) 0)
+          (+ offset (- dtransp))
+          (- dtransp offset)))
+      0))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Mar 18 13:44:30 2017
+(defmethod xml-staffname ((ins instrument) &optional short)
+  (let* ((result (xml-flat-sign
+                  (format nil "<display-text>~a</display-text>"
+                          (if short (staff-short-name ins) (staff-name ins)))))
+         ;; in case -flat comes at end
+         (rpl (string-replace "<display-text></display-text>" "" result)))
+    (if rpl rpl result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

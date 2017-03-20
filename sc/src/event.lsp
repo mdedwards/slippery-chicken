@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:40:42 Mon Mar 13 2017 GMT
+;;; $$ Last modified:  17:47:01 Sat Mar 18 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -104,7 +104,8 @@
    ;; 16.3.11 30,000ft over Turkmenistan :) instead of writing an instrument
    ;; change as cmn text, indicate it here as plain strings--1st,
    ;; long name for the instrument; 2nd short name; 3rd number of staff lines
-   ;; the new instrument uses (usually 5) 
+   ;; the new instrument uses (usually 5)
+   ;; MDE Sat Mar 18 13:12:06 2017 -- added 4th element: the instrument object 
    (instrument-change :accessor instrument-change :type list :initform nil)
    ;; store the tempo when a change is made, otherwise leave at nil.  NB this
    ;; is a tempo object, not a simple bpm number.  
@@ -2137,6 +2138,34 @@ NIL
       (has-mark e 'dim-beg)
       (has-mark e 'cresc-end)
       (has-mark e 'dim-end)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod write-xml ((e event) &key stream divisions)
+  (format stream "~&<note><pitch><step>C</step><octave>5</octave></pitch>~
+                  ~&<duration>~a</duration></note>" (floor (* 3 divisions)))
+  )
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod write-xml-ins-change ((e event) stream &optional part)
+  (when (instrument-change e)
+    (let ((ins (fourth (instrument-change e))))
+      (format stream "~&       <print>~
+                      ~&         <part-name-display>~
+                      ~&           ~a~
+                      ~&         </part-name-display>~
+                      ~&         <part-abbreviation-display>~
+                      ~&           ~a~
+                      ~&         </part-abbreviation-display>~
+                      ~&       </print>"
+              (xml-staffname ins) (xml-staffname ins t))
+      (when part
+        (format stream "~&       <sound>~
+                        ~&         <midi-instrument id=\"~a\">~
+                        ~&         <midi-channel>~a</midi-channel>~
+                        ~&         <midi-program>~a</midi-program>~
+                        ~&         </midi-instrument>~
+                        ~&       </sound>"
+                part (get-midi-channel e) (midi-program ins)))))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jul 23 13:50:04 2012 

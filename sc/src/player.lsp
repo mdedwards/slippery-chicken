@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified:  13:53:04 Fri Mar 17 2017 GMT
+;;; $$ Last modified:  17:36:21 Sat Mar 18 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -795,9 +795,11 @@ the instrument you want.
             (staff-short-name ins))
     (format stream "~&      </part-abbreviation-display>")
     (format stream "~&      <score-instrument id=\"~a-ins\">" (id p))
-    (format stream "~&        <instrument-name>~a</instrument-name>" (id ins))
+    (format stream "~&        <instrument-name>~a</instrument-name>"
+            (staff-name ins))
     (format stream "~&      </score-instrument>")
-    (format stream "~&      <midi-instrument id=\"~a-ins\">" (id ins))
+    ;; id must match score-instrument
+    (format stream "~&      <midi-instrument id=\"~a-ins\">" (id p))
     ;; NB no functionality for microtones-midi-channel here
     (format stream "~&        <midi-channel>~a</midi-channel>" (midi-channel p))
     (format stream "~&        <midi-program>~a</midi-program>"

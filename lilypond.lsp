@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  11:05:54 Tue Mar 14 2017 GMT
+;;; $$ Last modified:  15:26:32 Mon Mar 20 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -272,6 +272,7 @@
            (2 "-2 ")
            (3 "-3 ")
            (4 "-4 ")
+           (5 "-5 ")
            (t (warning "lilypond::lp-get-mark: adding fingering ~a, hope your ~
                         musicians have more than 4 fingers and a thumb!."
                        mark)

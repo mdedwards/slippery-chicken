@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified: 16:21:17 Tue Jun 28 2016 WEST
+;;; $$ Last modified:  10:28:44 Mon Mar 20 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -198,6 +198,28 @@
                 "")
             bv
             (round (bpm tpo)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Mar 18 10:40:23 2017
+(defmethod write-xml ((tpo tempo) &key stream)
+  (format stream "~&      <direction directive=\"yes\" placement=\"above\">")
+  (when (description tpo)
+    (format stream "~&        <direction-type>~
+                    ~&           <words default-y=\"29\">~
+                    ~&             ~a~
+                    ~&           </words>~
+                    ~&        </direction-type>"
+          (description tpo)))
+  (format stream "~&        <direction-type>~
+                  ~&          <metronome default-y=\"29\">~
+                  ~&            <beat-unit>~a</beat-unit>~
+                  ~&            <per-minute>~a</per-minute>~
+                  ~&          </metronome>~
+                  ~&        </direction-type>~
+                  ~&        <sound tempo=\"~a\"/>~
+                  ~&      </direction>"
+          (xml-simple-rhythm (beat-value tpo))
+          (bpm tpo) (bpm tpo)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

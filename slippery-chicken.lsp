@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:58:31 Fri Mar 17 2017 GMT
+;;; $$ Last modified:  11:46:38 Mon Mar 20 2017 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6601,7 +6601,161 @@ data: NIL
                   (format out data))))))
   t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 17/3 17
+;;; todo: doubling players
+;;; there'll be no :in-c as we can leave such things to the notation programme
+(defmethod write-xml ((sc slippery-chicken)
+                      &key
+                        (staff-height 7)  ; mm
+                        (page-width 210)  ; mm = a4
+                        (page-height 297) ; mm = a4
+                        (tenths 40)       ; see below
+                        ;; left right top bottom, all mm
+                        (left-page-margins '(20 20 20 20))
+                        (right-page-margins '(20 20 20 20))
+                        players start-bar end-bar
+                        (file (format nil "~a~a.xml"
+                                      (get-sc-config 'default-dir)
+                                      (filename-from-title (title sc)))))
+  (unless start-bar
+    (setq start-bar 1))
+  (unless end-bar
+    (setq end-bar (num-bars sc)))
+  (with-open-file 
+      (xml file :direction :output :if-does-not-exist :create
+           :if-exists :rename-and-delete)
+    (format xml "~&<?xml version=\"1.0\" encoding=\"UTF-8\" ~
+                 standalone=\"no\"?>")
+    (format xml "~&<!DOCTYPE score-partwise PUBLIC ~
+                \"-//Recordare//DTD MusicXML 3.0 Partwise//EN\" ~
+                \"http://www.musicxml.org/dtds/partwise.dtd\">")
+    (format xml "~&<score-partwise version=\"3.0\">")
+    (format xml "~&  <work>~
+                 ~&    <work-title>~
+                 ~&      ~a~
+                 ~&      ~a~
+                 ~&    </work-title>~
+                 ~&  </work>" (title sc) (if (subtitle sc) (subtitle sc) ""))
+    (format xml "~&  <identification>")
+    (format xml "~&    <creator type=\"composer\">~a ~a</creator>"
+            (composer sc) (if (year sc) (year sc) ""))
+    (format xml "~&    <encoding>")
+    (format xml "~&      <software>~
+                 ~&        slippery chicken ~a~
+                 ~&      </software>"
+            +slippery-chicken-version+)
+    (format xml "~&      <encoding-date>2017-03-16</encoding-date>")
+    (format xml "~&      <supports attribute=\"new-system\" element=\"print\" ~
+                       type=\"yes\" value=\"yes\"/>")
+    (format xml "~&      <supports attribute=\"new-page\" element=\"print\" ~
+                       type=\"yes\" value=\"yes\"/>")
+    (format xml "~&      <supports element=\"accidental\" type=\"yes\"/>")
+    (format xml "~&      <supports element=\"beam\" type=\"yes\"/>")
+    (format xml "~&      <supports element=\"stem\" type=\"yes\"/>")
+    (format xml "~&    </encoding>")
+    (format xml "~&  </identification>")
+    (format xml "~&  <defaults>")
+    (format xml "~&    <scaling>")
+    ;; this sets staff height
+    (format xml "~&      <millimeters>~a</millimeters>" staff-height)
+    ;; see comments to defun xml-mm2tenths
+    (format xml "~&      <tenths>40</tenths>")
+    (format xml "~&    </scaling>")
+    (format xml "~&    <page-layout>")
+    ;; so this is a pain: these values are in 'tenths'
+    (format xml "~&      <page-height>~a</page-height>"
+            (xml-mm2tenths page-height staff-height tenths))
+    (format xml "~&      <page-width>~a</page-width>"
+            (xml-mm2tenths page-width staff-height tenths))
+    (format xml "~&      <page-margins type=\"even\">")
+    (format xml "~&        <left-margin>~a</left-margin>"
+            (xml-mm2tenths (first left-page-margins) staff-height tenths))
+    (format xml "~&        <right-margin>~a</right-margin>"
+            (xml-mm2tenths (second left-page-margins) staff-height tenths))
+    (format xml "~&        <top-margin>~a</top-margin>"
+            (xml-mm2tenths (third left-page-margins) staff-height tenths))
+    (format xml "~&        <bottom-margin>~a</bottom-margin>"
+            (xml-mm2tenths (fourth left-page-margins) staff-height tenths))
+    (format xml "~&      </page-margins>")
+    (format xml "~&      <page-margins type=\"odd\">")
+    (format xml "~&        <left-margin>~a</left-margin>"
+            (xml-mm2tenths (first right-page-margins) staff-height tenths))
+    (format xml "~&        <right-margin>~a</right-margin>"
+            (xml-mm2tenths (second right-page-margins) staff-height tenths))
+    (format xml "~&        <top-margin>~a</top-margin>"
+            (xml-mm2tenths (third right-page-margins) staff-height tenths))
+    (format xml "~&        <bottom-margin>~a</bottom-margin>"
+            (xml-mm2tenths (fourth right-page-margins) staff-height tenths))
+    (format xml "~&      </page-margins>")
+    (format xml "~&    </page-layout>")
+    (format xml "~&  </defaults>")
+    (format xml "~&  <credit page=\"1\">~
+                 ~&    <credit-type>composer</credit-type>~
+                 ~&      <credit-words justify=\"right\" ~
+                          valign=\"top\">~
+                 ~&       ~a~
+                 ~&      </credit-words>~
+                 ~&    </credit>~
+                 ~&  <credit page=\"1\">~
+                 ~&    <credit-type>title</credit-type>~
+                 ~&       <credit-words font-size=\"20\" justify=\"center\" ~
+                           valign=\"top\">~
+                 ~&        ~a~
+                 ~&       </credit-words>~
+                 ~&    </credit>" (composer sc) (title sc))
+    (when (subtitle sc)
+      (format xml "~&  <credit page=\"1\">~
+                   ~&    <credit-type>subtitle</credit-type>~
+                   ~&      <credit-words font-size=\"20\" justify=\"center\" ~
+                            valign=\"top\">~
+                   ~&       ~a~
+                   ~&      </credit-words>~
+                   ~&  </credit>" (subtitle sc)))
+    (format xml "~&  <part-list>")
+    (let ((the-players (if players (force-list players) (players sc))))
+      (loop for p in the-players do
+           (xml-score-part (get-player sc p) xml))
+      (format xml "~&  </part-list>")
+      (loop for p in the-players do
+           (write-xml-for-player sc p start-bar end-bar xml)))
+    (format xml "~&</score-partwise>~%<!-- EOF -->~%")
+    file))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 17/3 17
+;;; would be right and proper to have this in the player class but as we need
+;;; access to the sc object and player is just a symbol, so...
+(defmethod write-xml-for-player ((sc slippery-chicken) player start-bar end-bar
+                                 stream)
+  ;; we handle transposing players by writing the written pitches, with correct
+  ;; transposition data, and let the notation software/user decide on the final
+  ;; format of the score
+  (let* ((player-obj (get-data player (ensemble sc)))
+         (clef (starting-clef (get-starting-ins sc player)))
+         start-repeat    ; xml needs a start-repeat barline at the beginning of
+                                        ; the measure
+         (transp 0))
+    (unless player-obj
+      (error "slippery-chicken::write-xml-for-player: couldn't get player ~a"
+             player))
+    (format stream "~&  <part id=\"~a\">" (id player-obj))
+    (loop for bar-num from start-bar to end-bar
+       for rsb = (get-bar sc bar-num player) do
+         (setq start-repeat
+               (write-xml rsb :stream stream :starting-clef clef
+                          :start-repeat start-repeat
+                          :transposition
+                          (let* ((ins (get-instrument-for-player-at-bar
+                                       player (bar-num rsb) sc))
+                                 (ts (transposition-semitones ins)))
+                            (when (and ts (/= ts transp))
+                              (setq transp ts)
+                              (list ts (diatonic-transposition ins)))))))
+    (format stream "~&    </part>")
+    t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod delete-bars-aux ((sc slippery-chicken) start-bar num-bars player
                             print)

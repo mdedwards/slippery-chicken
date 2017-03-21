@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  19:59:39 Mon Mar 20 2017 GMT
+;;; $$ Last modified:  20:09:07 Mon Mar 20 2017 GMT
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -121,6 +121,12 @@
           (xml-placement placement))
   (xml-direction-type stream tag content tag-options)
   (format stream "~&        </direction>"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun xml-rehearsal (stream letter)
+  (xml-direction stream "rehearsal" letter
+                 "default-x=\"-5\" default-y=\"40\" font-weight=\"bold\""))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; for strings connected to notes, although according to

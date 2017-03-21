@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  11:46:03 Mon Mar 20 2017 GMT
+;;; $$ Last modified:  21:29:58 Mon Mar 20 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3768,28 +3768,16 @@ data: (2 4)
                       tempo-change: ~a" rsb))
             (write-xml (tempo-change e1) :stream stream))
           (write-xml-ins-change e1 stream (player rsb))
+          ;; there's no need for marks before in xml right?
           (xml-whole-bar-rest ts divisions stream)
-          #|(when (marks-before e1)
-          (loop for m in (marks-before e1)
-          for lpm = (lp-get-mark m)
-          do
-          (push lpm result)))
-        (push (lp-rest-bar rsb ts) result)
-        (when (marks e1)
-          (loop for m in (marks e1)
-               ;; lilypond has a special fermata markup for rest bars... ; ;
-          for lpm = (if (eq m 'pause)
-          "^\\fermataMarkup"
-          (lp-get-mark m))
-          do
-          (push lpm result))))|#
-          )
+          (loop for m in (append (marks-before e1) (marks e1))
+             do (xml-get-mark m stream)))
         ;; not a rest bar
         (loop for event in (last (rhythms rsb)) do
              (write-xml event :stream stream :divisions divisions)))
     ;; attach the given rehearsal letter
-    ;(when (rehearsal-letter rsb)
-     ; (push (lp-rehearsal-letter rsb rehearsal-letters-font-size) result))
+    (when (rehearsal-letter rsb)
+      (xml-rehearsal stream (rehearsal-letter rsb)))
     (xml-barline (bar-line-type rsb) stream)
     (format stream "~&    </measure>")
     ;; return whether or not to open next bar with a start-repeat barline

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  11:13:37 Mon Feb 13 2017 GMT
+;;; $$ Last modified:  22:29:04 Mon Mar 20 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2159,7 +2159,31 @@ pitch::add-mark: mark PIZZ already present but adding again!
 (defmethod round-to-nearest ((p pitch))
   ;; setf method updates other related slots
   (setf (frequency p) (note-to-freq (data p))))
-  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Mar 20 21:42:07 2017
+(defmethod write-xml ((p pitch) &key stream)
+  (format stream "~&        <pitch>~
+                  ~&           <step>~a</step>" (no-8ve-no-acc p))
+  (when (and (accidental p)
+             (not (eq 'n (accidental p))))
+    (format stream "~&           <alter>~a</alter>"
+            (case  (accidental p)
+              (f -1) (s 1) (qs 0.5) (qf -0.5)
+              (t (error "pitch::write-xml: only 1/4 tone accidentals ~
+                         implemented up to now: ~a" p)))))
+  (format stream "~&           <octave>~a</octave>~
+                  ~&         </pitch>"
+          (octave p))
+  (when (show-accidental p)
+    (format stream "~&         <accidental~a>~a</accidental>"
+            (if (accidental-in-parentheses p) " parentheses=\"yes\"" "")
+            (case (accidental p)
+              (f "flat") (s "sharp") (n "natural") (qs "quarter-sharp")
+              (qf "quarter-flat"))))
+  (loop for m in (append (marks-before p) (marks p)) do
+       (xml-get-mark m stream)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

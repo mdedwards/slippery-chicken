@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  22:29:04 Mon Mar 20 2017 GMT
+;;; $$ Last modified:  11:57:16 Mon Mar 27 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2161,28 +2161,29 @@ pitch::add-mark: mark PIZZ already present but adding again!
   (setf (frequency p) (note-to-freq (data p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Mon Mar 20 21:42:07 2017
+;;; MDE Mon Mar 20 21:42:07 2017 -- we leave it to the event class to write the
+;;; <note> tags as the pitches might be part of a chord
 (defmethod write-xml ((p pitch) &key stream)
+  (xml-write-marks (marks-before p) stream)
   (format stream "~&        <pitch>~
-                  ~&           <step>~a</step>" (no-8ve-no-acc p))
+                  ~&          <step>~a</step>" (no-8ve-no-acc p))
   (when (and (accidental p)
              (not (eq 'n (accidental p))))
-    (format stream "~&           <alter>~a</alter>"
+    (format stream "~&          <alter>~a</alter>"
             (case  (accidental p)
               (f -1) (s 1) (qs 0.5) (qf -0.5)
               (t (error "pitch::write-xml: only 1/4 tone accidentals ~
                          implemented up to now: ~a" p)))))
-  (format stream "~&           <octave>~a</octave>~
-                  ~&         </pitch>"
+  (format stream "~&          <octave>~a</octave>~
+                  ~&        </pitch>"
           (octave p))
+  (xml-write-marks (marks p) stream)
   (when (show-accidental p)
-    (format stream "~&         <accidental~a>~a</accidental>"
+    (format nil "~&        <accidental~a>~a</accidental>"
             (if (accidental-in-parentheses p) " parentheses=\"yes\"" "")
             (case (accidental p)
               (f "flat") (s "sharp") (n "natural") (qs "quarter-sharp")
-              (qf "quarter-flat"))))
-  (loop for m in (append (marks-before p) (marks p)) do
-       (xml-get-mark m stream)))
+              (qf "quarter-flat")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

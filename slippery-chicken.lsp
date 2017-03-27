@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:46:38 Mon Mar 20 2017 GMT
+;;; $$ Last modified:  11:01:02 Sat Mar 25 2017 GMT
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6615,7 +6615,7 @@ data: NIL
                         (left-page-margins '(20 20 20 20))
                         (right-page-margins '(20 20 20 20))
                         players start-bar end-bar
-                        (file (format nil "~a~a.xml"
+                        (file (format nil "~a_~a.xml"
                                       (get-sc-config 'default-dir)
                                       (filename-from-title (title sc)))))
   (unless start-bar
@@ -6631,21 +6631,24 @@ data: NIL
                 \"-//Recordare//DTD MusicXML 3.0 Partwise//EN\" ~
                 \"http://www.musicxml.org/dtds/partwise.dtd\">")
     (format xml "~&<score-partwise version=\"3.0\">")
-    (format xml "~&  <work>~
-                 ~&    <work-title>~
-                 ~&      ~a~
-                 ~&      ~a~
-                 ~&    </work-title>~
-                 ~&  </work>" (title sc) (if (subtitle sc) (subtitle sc) ""))
+    (when (title sc)
+      (format xml "~&  <work>~
+                   ~&    <work-title>~
+                   ~&      ~a" (title sc)))
+    (when (subtitle sc)
+      (format xml "~&      (~a)" (subtitle sc)))
+    (format xml "~&    </work-title>~
+                 ~&  </work>")
     (format xml "~&  <identification>")
-    (format xml "~&    <creator type=\"composer\">~a ~a</creator>"
-            (composer sc) (if (year sc) (year sc) ""))
+    (when (composer sc)
+      (format xml "~&    <creator type=\"composer\">~a ~a</creator>"
+              (composer sc) (if (year sc) (year sc) "")))
     (format xml "~&    <encoding>")
     (format xml "~&      <software>~
                  ~&        slippery chicken ~a~
                  ~&      </software>"
             +slippery-chicken-version+)
-    (format xml "~&      <encoding-date>2017-03-16</encoding-date>")
+    (format xml "~&      <encoding-date>~a</encoding-date>" (get-date-string))
     (format xml "~&      <supports attribute=\"new-system\" element=\"print\" ~
                        type=\"yes\" value=\"yes\"/>")
     (format xml "~&      <supports attribute=\"new-page\" element=\"print\" ~
@@ -6690,20 +6693,22 @@ data: NIL
     (format xml "~&      </page-margins>")
     (format xml "~&    </page-layout>")
     (format xml "~&  </defaults>")
-    (format xml "~&  <credit page=\"1\">~
-                 ~&    <credit-type>composer</credit-type>~
-                 ~&      <credit-words justify=\"right\" ~
+    (when (composer sc)
+      (format xml "~&  <credit page=\"1\">~
+                   ~&    <credit-type>composer</credit-type>~
+                   ~&    <credit-words justify=\"right\" ~
                           valign=\"top\">~
-                 ~&       ~a~
-                 ~&      </credit-words>~
-                 ~&    </credit>~
-                 ~&  <credit page=\"1\">~
-                 ~&    <credit-type>title</credit-type>~
-                 ~&       <credit-words font-size=\"20\" justify=\"center\" ~
-                           valign=\"top\">~
-                 ~&        ~a~
-                 ~&       </credit-words>~
-                 ~&    </credit>" (composer sc) (title sc))
+                   ~&     ~a~
+                   ~&    </credit-words>~
+                   ~&  </credit>" (composer sc) ))
+    (when (title sc)
+      (format xml "~&  <credit page=\"1\">~
+                   ~&    <credit-type>title</credit-type>~
+                   ~&    <credit-words font-size=\"20\" justify=\"center\" ~
+                          valign=\"top\">~
+                   ~&     ~a~
+                   ~&    </credit-words>~
+                   ~&  </credit>" (title sc)))
     (when (subtitle sc)
       (format xml "~&  <credit page=\"1\">~
                    ~&    <credit-type>subtitle</credit-type>~
@@ -6733,7 +6738,7 @@ data: NIL
   ;; format of the score
   (let* ((player-obj (get-data player (ensemble sc)))
          (clef (starting-clef (get-starting-ins sc player)))
-         start-repeat    ; xml needs a start-repeat barline at the beginning of
+         start-repeat     ; xml needs a start-repeat barline at the beginning of
                                         ; the measure
          (transp 0))
     (unless player-obj
@@ -6742,6 +6747,7 @@ data: NIL
     (format stream "~&  <part id=\"~a\">" (id player-obj))
     (loop for bar-num from start-bar to end-bar
        for rsb = (get-bar sc bar-num player) do
+         ;; (print-simple rsb)
          (setq start-repeat
                (write-xml rsb :stream stream :starting-clef clef
                           :start-repeat start-repeat

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  21:29:58 Mon Mar 20 2017 GMT
+;;; $$ Last modified:  18:22:45 Mon Mar 27 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3745,19 +3745,23 @@ data: (2 4)
     (when (= (bar-num rsb) 1)
       (format stream "~&        <divisions>~a</divisions>" divisions)
       ;; todo: sc can have a key-sig but we're not writing one for now
-      (format stream "~&        <key><fifths>0</fifths></key>")
-      (xml-clef starting-clef stream))
+      (format stream "~&        <key><fifths>0</fifths></key>"))
+    ;; strange: time sig has to come before clef in Finale otherwise you get a
+    ;; bogus error message
     (when (write-time-sig rsb)
       (xml-time-sig rsb stream ts))
+    (when (= (bar-num rsb) 1)
+      (xml-clef starting-clef stream))
     ;; if transposing instrument at bar1 or changes to transp ins later. this
     ;; is separate from change of instrument as text and midi programe (comes
     ;; below) 
     (when transposition
+      ;; what a drag: finale _demands_ diatonic then chromatic...why?
       (format stream "~&        <transpose>~
-                      ~&          <chromatic>~a</chromatic>~
                       ~&          <diatonic>~a</diatonic>~
+                      ~&          <chromatic>~a</chromatic>~
                       ~&        </transpose>"
-              (first transposition) (second transposition)))
+              (second transposition) (first transposition)))
     (format stream "~&      </attributes>")
     ;; is this a rest bar? what about the show-rest slot?
     (if (is-rest-bar rsb)
@@ -3768,12 +3772,11 @@ data: (2 4)
                       tempo-change: ~a" rsb))
             (write-xml (tempo-change e1) :stream stream))
           (write-xml-ins-change e1 stream (player rsb))
-          ;; there's no need for marks before in xml right?
+          (xml-write-marks (marks-before e1) stream)
           (xml-whole-bar-rest ts divisions stream)
-          (loop for m in (append (marks-before e1) (marks e1))
-             do (xml-get-mark m stream)))
-        ;; not a rest bar
-        (loop for event in (last (rhythms rsb)) do
+          (xml-write-marks (marks e1) stream))
+        ;; not a rest bar ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (loop for event in (rhythms rsb) do
              (write-xml event :stream stream :divisions divisions)))
     ;; attach the given rehearsal letter
     (when (rehearsal-letter rsb)

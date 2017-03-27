@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  11:27:43 Mon Mar 20 2017 GMT
+;;; $$ Last modified:  12:12:05 Mon Mar 27 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -127,6 +127,12 @@
    ;; 16ths--i.e. we'll have one beam, not two, despite the value. This would
    ;; mean a tuplet scaler of 4/9.
    (tuplet-scaler :accessor tuplet-scaler :type rational :initform 1)
+   ;; MDE Wed Mar 22 14:42:55 2017 -- for music xml
+   (open-tuplets :accessor open-tuplets :type list :initform (make-list 20)
+                 :allocation :class)
+   ;; MDE Sat Mar 25 16:06:01 2017 -- also for xml
+   (continue-beam :accessor continue-beam :type boolean :initform nil
+                  :allocation :class)
    (grace-note-duration :accessor grace-note-duration :initform 0.05
                         :allocation :class)))
 
@@ -1458,6 +1464,137 @@ NIL
        (when (and (listp el) (= ratio (second el)))
          (return t))
      finally (return nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Mar 22 14:44:28 2017 -- tuplet is a rational e.g. 3/2 or 3 for
+;;; triplet (whereupon we need to convert to rational)
+(defmethod store-open-tuplet ((r rhythm) tuplet index) ; 1-based
+  ;; remember open-tuplets is class allocated so available to all
+  (setf nth (1- index) (open-tuplets r)
+        (typecase tuplet
+          (integer (/ (get-tuplet-ratio tuplet)))
+          (rational tuplet)
+          (t (error "rhythm::store-open-tuplet: unexpected tuplet: ~a~%~a"
+                    tuplet r)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Mar 23 11:59:16 2017 
+(defmethod starts-multiple-tuplets ((r rhythm))
+  (let ((count 0))
+    (loop for b in (bracket r) do
+         (when (listp b)
+           (incf count)))
+    (> count 1)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  MDE Tue Mar 21 20:16:41 2017
+;;; So the xml <duration> is the *actual* duration, whereas the <type> is what
+;;; it looks like. <duration> we can get by multiplying our duration slot by
+;;; divisions. <type> we can get from the letter-value slot (already prepared
+;;; for Lilypond). There are of course also ties, grace notes, beams, brackets
+;;; (tuplets), dots, and rest indications to take care of in this
+;;; class. marks are handled in the event class because they come after
+;;; </note>. if <basic> is T then we don't write beam and tuplet data (e.g. for
+;;; chord notes).
+;;;
+;;; bit annoying but it seems finale forces tag order and to avoid error
+;;; messages, accidentals must come just after the <type>, hence we pass an
+;;; accidental string here. see event class for more details and change order
+;;; at your own peril ;) 
+(defmethod write-xml ((r rhythm) &key stream (divisions 16383) basic accidental
+                                   notehead)
+  (let ((bracket (bracket r))
+        (beam (beam r))
+        (xml-rthm (xml-simple-rhythm (letter-value r))))
+    (if (is-grace-note r)
+        (format stream "~&        <grace />~
+                        ~&        <type>eighth</type>~
+                        ~&        <stem default-y=\"3\">up</stem>")
+        (progn 
+          (when (is-rest r)
+            (format stream "~&        <rest />"))
+          (format stream "~&        <duration>~a</duration>"
+                  (floor (* (duration r) divisions)))
+          (when (is-tied-to r)
+            ;; tied is for notation, tie is for sound
+            (format stream "~&        <tie type=\"stop\" />")
+            ;; the <tied> tag needs to come later, in <notations> :/
+            ;; (format stream "~&        <tied type=\"stop\" />") 
+            )
+          (when (is-tied-from r)
+            (format stream "~&        <tie type=\"start\" />")
+            ;; the <tied> tag needs to come later, in <notations> :/
+            ;; (format stream "~&        <tied type=\"start\" />")
+            )
+          (format stream "~&        <type>~a</type>" xml-rthm)
+          (loop repeat (num-dots r) do
+               (format stream "~&        <dot />"))   
+          (when accidental
+            (format  stream "~&~a"  accidental))
+          ;; only the first note in the chord has beam and tuplet data
+          (unless basic
+            ;; although finale imports correctly whether time-modification
+            ;; comes before or after <tuplet> it throws an error unless
+            ;; time-mod comes first. so bit of a chicken before the egg
+            ;; situation here
+            (loop for b in bracket do
+                 (when (listp b)
+                   ;; we might need this down the line (but not used as of yet)
+                   (store-open-tuplet r (second b) (first b))))
+            (when bracket  ; anything in bracket indicates we're under a tuplet
+              ;; NB time-mods need to happen for each rhythm under the
+              ;; bracket. start/stop brackets need <notations> and <tuplet
+              ;; ...>.  time modification _is_ the cumulative effect of all
+              ;; nested tuplets.
+              (format stream "~&        <time-modification>~
+                        ~&          <actual-notes>~a</actual-notes>~
+                        ~&          <normal-notes>~a</normal-notes>~
+                        ~&        </time-modification>"
+                      ;; (numerator tuplet) (denominator tuplet))))
+                      (denominator (tuplet-scaler r))
+                      (numerator (tuplet-scaler r)))))
+          (when notehead
+            (xml-write-marks notehead stream))
+          (unless basic
+            ;; so we can really control beams exactly, starting/stopping main
+            ;; and secondary beams at will, but in SC up to now we only start
+            ;; and stop the main beam. Seems that this will work fine in XML
+            ;; too.
+            (when (or beam (continue-beam r))
+              ;; every note under a beam needs "continue". we can change the
+              ;; "num" arg if we need to control secondary beaming
+              (format stream "~&        <beam number=\"1\">~a</beam>"
+                      (if (continue-beam r)
+                          "continue"
+                          (when (numberp beam)
+                            (cond ((zerop beam) "end")
+                                  ((= 1 beam) "begin")
+                                  (t (error "rhythm::write-xml: strange beam: ~
+                                             ~a~%~a" beam r))))))
+              (when beam
+                (setf (continue-beam r) (not (zerop beam)))))
+            ;; when multiple tuplets start we have a special case where we have
+            ;; to write <tuplet-actual> and <tuplet-normal> tags
+            (loop for b in bracket do
+                 (if (listp b)
+                     (let* ((tup (second b)))
+                       (when (integerp tup)
+                         (setq tup (/ (get-tuplet-ratio tup))))
+                       (format stream "~&        <notations>")
+                       (xml-tuplet (numerator tup) (denominator tup) (first b)
+                                   stream
+                                   ;; here! tuplet-type=T???
+                                   ;; (when (starts-multiple-tuplets r)
+                                   ;; xml-rthm))
+                                   xml-rthm)
+                       (format stream "~&        </notations>"))
+                     ;; so a positive int means close, negative ints are the
+                     ;; indices into the currently open brackets
+                     (when (> b 0)      ; close
+                       (format stream "~&        <notations>")
+                       (xml-tuplet nil nil b stream)
+                       (format stream "~&        </notations>"))))))))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

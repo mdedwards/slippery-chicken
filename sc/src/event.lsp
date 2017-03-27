@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  21:42:32 Mon Mar 20 2017 GMT
+;;; $$ Last modified:  18:35:54 Mon Mar 27 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1974,7 +1974,7 @@ NIL
           (data obj)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  MDE Thu Feb  9 19:59:45 2017 
+;;; MDE Thu Feb  9 19:59:45 2017 
 (defmethod get-pitch-high-low ((e event) fun written)
   (let ((porc (get-porc e written)))
     (if (chord-p porc)
@@ -2140,10 +2140,102 @@ NIL
       (has-mark e 'dim-end)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defmethod write-xml ((e event) &key stream divisions)
-  (format stream "~&<note><pitch><step>C</step><octave>5</octave></pitch>~
-                  ~&<duration>~a</duration></note>" (floor (* 3 divisions)))
-  )
+;;; finale's xml tag order within <note>is not arbitrary; unless you get it
+;;; right you'll get error messages :/ it's pitch, duration, type, dot,
+;;; accidental, time-mod, notehead, beam, notations
+(defmethod write-xml :around ((e event) &key stream (divisions 16383))
+  ;; marks-before and marks slots are really just for CMN and lilypond. clefs
+  ;; &c (marks-before) must come before <note>, <notehead> within <note>,
+  ;; <direction> before note
+  (let ((before '())
+        (during '()) ; e.g. <notations>
+        (notehead '())
+        (after '())
+        ;; score not in C
+        (poc (if (written-pitch-or-chord e)
+                 (written-pitch-or-chord e)
+                 (pitch-or-chord e)))
+        accidental
+        ;; these must come before </note> i.e. in <during>
+        (notations '(beg-sl end-sl beg-phrase end-phrase beg-gliss end-gliss
+                     a s te ts as at c1 c2 c3 c4 c5 c6 pause short-pause
+                     long-pause t3 arp lhp bartok nail flag downbow upbow open
+                     harm))
+        ;;(directions '(beg-8va end-8va beg-8vb end-8vb beg-15ma beg-15mb
+        ;;            end-15ma end15mb cresc-beg cresc-end dim-beg dim-end
+        ;;          ped ped^ ped-up uc tc sost^
+        (noteheads '(circled-x x-head triangle wedge square triangle-up
+                     improvOn flag-head)))
+    (macrolet ((separate (marks syms syms-holder rest)
+                 `(loop for m in ,marks do
+                       ;; this will also have the effect of removing double
+                       ;; marks, which is fine.
+                       (when (member m ,rest)
+                         (setq ,rest (remove m ,rest)))
+                       (if (member m ,syms)
+                           (push m ,syms-holder)
+                           (push m ,rest)))))
+      (separate (marks-before e) noteheads notehead before)
+      (separate (marks e) noteheads notehead after)
+      ;; of course <after> might have some <notations> in it now, hence <when>
+      ;; in separate above
+      (separate (marks e) notations during after))
+    ;; (print '****)
+    ;; (print before) (print during) (print notehead) (print after)
+    ;; we've got the problem of short-pause and long-pause not having symbols
+    ;; in xml, so we add a normal fermata with words (e.g. "lunga") above. but
+    ;; we can't have those in the same place due to xml tag order...what a
+    ;; faff! 
+    (macrolet ((mreplace (mark replacement string list)
+                 `(when (member ,mark ,list)
+                    (setf ,list (substitute ,replacement ,mark ,list))
+                    (push ,string after))))
+      (mreplace 'long-pause 'pause "lunga" during)
+      (mreplace 'short-pause 'pause "breva" during))
+    (when (> (length notehead) 1)
+      (error "event::write-xml: can only have one notehead mark, you have ~a ~
+              ~&~a" notehead e))
+    (when (and (tempo-change e) (display-tempo e))
+      (write-xml (tempo-change e) :stream stream))
+    ;; make sure end-gliss comes before beg-gliss, just in case we have end and
+    ;; beg gliss on same note
+    (setq during (move-to-end 'beg-gliss (reverse during))
+          before (reverse before)
+          after (reverse after))
+    (xml-write-marks before stream)
+    ;; here: todo: looks like <notations> (e.g. slurs) really do need to come
+    ;; before </note> so we will need a <during> var to process
+    (format stream "~&      <note> <!-- - - - - - - - - - - - - - - - - -->")
+    (if (or (not poc) (pitch-p poc))    ; single pitch or rest
+        (progn
+          (when poc                     ; single pitch
+            (setq accidental (write-xml poc :stream stream)))
+                                        ; rhythm class
+          (call-next-method e :stream stream :divisions divisions
+                            :accidental accidental :notehead notehead))
+        ;; it's a chord
+        (loop for p in (data poc) and i from 0 do
+             (when (> i 0)
+               (format stream "~&      </note>~
+                               ~&      <note>~
+                               ~&        <chord />"))
+             (setq accidental (write-xml p :stream stream))
+           ;; (write-xml p :stream stream)
+           ;; chord notes need all the rhythm info of a non-chord note :/
+           ;; rhythm class:
+             (call-next-method e :stream stream :divisions divisions
+                               :basic (> i 0) :accidental accidental
+                               :notehead notehead)))
+    (when (is-tied-to e)
+      (xml-notation-with-args stream "tied" "type=\"stop\""))
+    (when (is-tied-from e)
+      (xml-notation-with-args stream "tied" "type=\"start\""))
+    (xml-write-marks during stream)
+    ;; now in rhythm class because of enforced tag order :/
+    ;; (xml-write-marks notehead stream)
+    (format stream "~&      </note>")
+    (xml-write-marks after stream)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod write-xml-ins-change ((e event) stream &optional part)
   (when (instrument-change e)
@@ -2231,6 +2323,8 @@ NIL
                        #'(lambda (x y) (if (listp y)
                                            (eq x (first y))
                                            (eq x y))))
+      ;; MDE Fri Mar 24 10:49:38 2017 -- todo: really shouldn't be changing
+      ;; slots, rather, creating local vars for these to be processed here
       (setf (marks e) from
             (marks-before e) to))
     (flet ((get-poc ()
@@ -3803,8 +3897,6 @@ W
   (find-next-grace-note list-of-events start-index t warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 
 ;;; Thu Dec 22 20:53:16 EST 2011 SAR: Added robodoc info
 
 ;;; ****f* event/make-punctuation-events

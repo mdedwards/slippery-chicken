@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  14:52:48 Sat Nov 12 2016 GMT
+;;; $$ Last modified:  15:31:53 Tue Mar 21 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1039,7 +1039,8 @@
                                              :tempo (bpm tempo)))))
                        ;; (print e)
                        (when e
-                         (when tempo-change ; assume last change was on this chan
+                         ;; assume last change was on this chan
+                         (when tempo-change 
                            (setf (tempo-change e) tempo
                                  (display-tempo e) t
                                  tempo-change nil))

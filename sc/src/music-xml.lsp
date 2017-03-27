@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  20:09:07 Mon Mar 20 2017 GMT
+;;; $$ Last modified:  18:37:41 Mon Mar 27 2017 BST
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -46,7 +46,15 @@
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; todo:
+;;; check instrument changes are happening in slippery-when-wet
+;;; check harmonic signs are being added in mieko
+;;; see further inline todos below
+
 (in-package :slippery-chicken)
+
+;;; requirements for a decent test: start/stop/start+stop repeat signs; grace
+;;; notes; microtones; lots of marks (all?);
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun xml-placement (placement)
@@ -61,7 +69,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; placement: a="above", b="below"
-(defun xml-mark-aux (tag stream mark placement &optional data) 
+(defun xml-mark-aux (tag stream mark placement &optional data)
+  (unless (and mark (not (equal mark "")))
+    (error "music-xml::xml-mark-aux: no mark for ~a" tag))
   (format stream "~&        <notations>")
   (format stream "~&          <~a>~
                   ~&            <~a~a~a~
@@ -115,12 +125,11 @@
   (xml-mark-aux "technical" stream tech placement data))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun xml-direction (stream tag &optional content
-                                       (tag-options "") (placement 'a))
-  (format stream "~&        <direction~a>"
+(defun xml-direction (stream tag &optional content tag-options (placement 'a))
+  (format stream "~&      <direction~a>"
           (xml-placement placement))
   (xml-direction-type stream tag content tag-options)
-  (format stream "~&        </direction>"))
+  (format stream "~&      </direction>"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -133,17 +142,19 @@
 ;;; https://usermanuals.musicxml.com/MusicXML/Content/EL-MusicXML-direction.htm
 ;;; "A direction is a musical indication that is not attached to a specific
 ;;; note."
-(defun xml-direction-type (stream tag &optional content
-                                       (tag-options ""))
-  (unless tag-options (setq tag-options "")) ; allow nil
-  (format stream "~&          <direction-type>")
+(defun xml-direction-type (stream tag &optional content tag-options)
+  ;; (unless tag-options (setq tag-options "")) ; allow nil
+  (setq tag-options (if tag-options
+                        (concatenate 'string " " tag-options) ; leading space
+                        ""))
+  (format stream "~&        <direction-type>")
   (if content
-      (format stream "~&            <~a ~a>~a</~a>" tag tag-options content tag)
-      (format stream "~&            <~a ~a />" tag tag-options))
-  (format stream "~&          </direction-type>"))
+      (format stream "~&          <~a~a>~a</~a>" tag tag-options content tag)
+      (format stream "~&          <~a~a />" tag tag-options))
+  (format stream "~&        </direction-type>"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun xml-words (stream words &optional (tag-options "") (placement 'a))
+(defun xml-words (stream words &optional tag-options (placement 'a))
   (xml-direction stream "words" words tag-options placement))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -156,10 +167,14 @@
   (format stream "~&        <direction~a>" (xml-placement 'b))
   (xml-direction-type stream "words" "subito"
                       "font-style=\"italic\" halign=\"right\"")
-  (xml-direction-type stream "dynamics" (format nil "<~a />" dyn) nil)
+  (xml-direction-type stream "dynamics"
+                      (string-downcase (format nil "<~a />" dyn))
+                      nil)
   (format stream "~&        </direction>"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Mar 27 13:09:21 2017 -- text no longer needed/possible due to
+;;; required tag order 
 (defun xml-pause (stream &optional text)
   (xml-notation-with-args stream "fermata"
                           "default-x=\"-5\" default-y=\"10\" type=\"upright\"")
@@ -183,7 +198,7 @@
            (when silent
              (warn "music-xml:xml-get-mark: Sorry but ~a is not yet available ~
                     for sc->Music-Xml; ignoring" mark))
-           ""))
+           nil))
     (let ((xml-mark
            (when mark
              (typecase mark
@@ -195,13 +210,18 @@
                   ;; also possible: (art "accent" "below") or a list of
                   ;; strings, in which case there'll be 2+ xml-articulation
                   (a "accent")       ; accent
+                  (s "staccato")
+                  (as '("accent" "staccato"))
+                  (at '("accent" "tenuto"))
+                  (ts "detached-legato")
+                  (te "tenuto")
                   ;; tech means xml-technical will be called
-                  (lhp '(tech "stopped" 'a))
-                  (bartok '(tech "snap-pizzicato" 'a))
+                  (lhp '(tech "stopped" a))
+                  (bartok '(tech "snap-pizzicato" a))
                   ;; todo: could also add the <sound> tag here to change
                   ;; midi-programme (see MozartTrio.xml for e.g.)
                   ;; dir means xml-direction will be called
-                  (pizz '(wds "pizz." 'a))
+                  (pizz '(wds "pizz." a))
                   (ord '(wds "ord."))
                   (pizzp '(wds "(pizz.)"))
                   (clb '(wds "clb"))
@@ -216,16 +236,11 @@
                   (mv '(wds "molto vib"))
                   (sv '(wds "senza vib"))
                   (poco-crini '(wds "poco crini"))
-                  (s "staccato")
-                  (nail '(tech "fingernails" 'a))
+                  (nail '(tech "fingernails" a))
                   (stopped (no-xml-mark 'stopped))
-                  (as '("accent" "staccato"))
-                  (at '("accent" "tenuto"))
-                  (ts "detached-legato")
-                  (te "tenuto")
                   ;; so unmeasured tremolo is implicit
                   (t3 '(orn "tremolo" nil 3))
-                  (flag '(tech "harmonic" 'a))
+                  (flag '(tech "harmonic" a))
                   (niente '(wds "niente"))
                   (pppp  '(dyn "pppp"))
                   (ppp  '(dyn "ppp"))
@@ -250,8 +265,8 @@
                   (fff-p '(dyn "fff"))
                   (ffff-p '(dyn "ffff"))
                   (sfz '(dyn "sfz"))
-                  (downbow '(tech "down-bow" 'a))
-                  (upbow '(tech "up-bow" 'a))
+                  (downbow '(tech "down-bow" a))
+                  (upbow '(tech "up-bow" a))
                   (open '(tech "fingering" a 0))
                   (I '(wds "I"))
                   (II '(wds "II"))
@@ -301,6 +316,8 @@
                   (improvOff nil)
                   (wedge '(hd "fa"))
                   (square '(hd "la"))
+                  ;; todo: look at xml doc for harmonic and sort out a way of
+                  ;; representing artificial harms in xml
                   (flag-head '(hd "diamond"))
                   (flag-dots-on (no-xml-mark 'flag-dots-on))
                   (flag-dots-off (no-xml-mark 'flag-dots-off))
@@ -314,13 +331,13 @@
                   (arrow-up (no-xml-mark 'arrow-up))
                   (arrow-down (no-xml-mark 'arrow-down))
                   (cresc-beg '(dir "wedge" nil
-                               "spread=\"0\" type=\"crescendo\"" 'b))
+                               "spread=\"0\" type=\"crescendo\"" b))
                   (cresc-end '(dir "wedge" nil
-                               "spread=\"15\" type=\"stop\"" 'b))
+                               "spread=\"15\" type=\"stop\"" b))
                   (dim-beg '(dir "wedge" nil
-                             "spread=\"15\" type=\"diminuendo\"" 'b))
+                             "spread=\"15\" type=\"diminuendo\"" b))
                   (dim-end '(dir "wedge" nil
-                             "spread=\"0\" type=\"stop\"" 'b))
+                             "spread=\"0\" type=\"stop\"" b))
                   (<< (no-xml-mark '<<))
                   (>> (no-xml-mark '>>))
                   ;; we could faff around with lexical variables and manipulate
@@ -330,8 +347,9 @@
                   (pause (xml-pause stream))
                   ;; seems there is a fermata-shape element but damned if I can
                   ;; find out where it could go and be interpreted correctly.
-                  (long-pause (xml-pause stream "lunga"))
-                  (short-pause (xml-pause stream "breva"))
+                  ;; MDE Mon Mar 27 13:09:50 2017 -- see xml-pause above
+                  (long-pause (xml-pause stream)); "lunga"))
+                  (short-pause (xml-pause stream)); "breva"))
                   (aeolian-light (no-xml-mark 'aeolianLight))
                   (aeolian-dark (no-xml-mark 'aeolianDark))
                   ;; this one uses the graphic for close bracket
@@ -353,15 +371,15 @@
                   ;; no? 
                   (start-arrow (no-xml-mark 'start-arrow))
                   (end-arrow (no-xml-mark 'end-arrow))
-                  (harm '(tech "harmonic" 'a))
+                  (harm '(tech "harmonic" a))
                   (sost '(wds "sost."))
                   (sost-up '(wds "sost.*"))
-                  (sost^ "\\sostenutoOff\\sostenutoOn ")
+                  (sost^ (no-xml-mark 'sost^)) ;"\\sostenutoOff\\sostenutoOn ")
                   (ped '(dir "pedal" nil "line=\"yes\" type=\"start\""))
                   (ped^ '(dir "pedal" nil "line=\"yes\" type=\"change\""))
                   (ped-up '(dir "pedal" nil "line=\"yes\" type=\"stop\""))
-                  (uc '(wds "una corda" nil 'b))
-                  (tc '(wds "tre corde" nil 'b))
+                  (uc '(wds "una corda" nil b))
+                  (tc '(wds "tre corde" nil b))
 ;;; ****
                   (t (unless silent
                        (error "music-xml::xml-get-mark: unrecognised mark: ~a"
@@ -374,13 +392,14 @@
                               and a thumb!."
                              mark)
                     ;; todo: is there a special mark for an open string?
-                    '(tech "fingering" 'a mark))))
+                    '(tech "fingering" a mark))))
                ;; 25.6.11 a 2 element list will generate a 'transition arrow'
                ;; with the first element as the starting text and the second as
                ;; end text.  The elements will be converted to lowercase
                ;; strings unless they're already strings
                (list 
                 (case (first mark)
+                  (clef (xml-clef (second mark) stream t))
                   (arrow (no-xml-mark 'arrow))
                   (gliss-map (no-xml-mark 'gliss-map))
                   (sub (xml-subito-dynamic stream (second mark)))
@@ -439,12 +458,11 @@
     (nth (floor pos) '("whole" "half" "quarter" "eighth" "16th" "32nd" "64th"
                        "128th"))))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun xml-barline (type stream &optional (location "right")
                                   (repeat-direction "backward"))
-  (unless (zerop type)
+  (unless (zerop type) ; <barline> not needed in regular bars
     (format stream "~&        <barline location=\"~a\">~
                     ~&          <bar-style>~a</bar-style>"
             location
@@ -464,7 +482,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun xml-clef (clef stream)
+(defun xml-clef (clef stream &optional write-attributes)
+  (when write-attributes
+      (format stream "~&      <attributes>"))
   (format stream "~&        <clef><sign>~a</sign>"
           (case clef (treble 'g) (bass 'f) (tenor 'c) (alto 'c) (treble-8vb 'g)
                 (double-treble 'g) (double-bass 'f) (percussion "percussion")))
@@ -475,7 +495,9 @@
   (when (member clef '(double-treble double-bass treble-8vb))
     (format stream "~&          <clef-octave-change>~a</clef-octave-change>"
             (case clef (double-treble 8) (double-bass -1) (treble-8vb -1))))
-  (format stream "~&        </clef>"))
+  (format stream "~&        </clef>")
+  (when write-attributes
+    (format stream "~&      </attributes>")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; https://usermanuals.musicxml.com/MusicXML/Content/EL-MusicXML-scaling.htm
@@ -503,5 +525,36 @@
     (if handle-flat handle-flat name)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun xml-tuplet (actual normal bracket-number stream
+                   ;;        this should be the tuplet-type e.g. "eighth" or nil
+                   &optional write-actual-normal)
+  (let* ((show-number (if (member (list actual normal)
+                                  '((5 4) (3 2) (6 4))
+                                  :test #'equal)
+                          "actual" "both")))
+    (if actual                          ; if arg1=nil then it's a stop tuplet
+        (progn
+          (format stream "~&          <tuplet type=\"start\" bracket=\"yes\" ~
+                                       number=\"~a\" show-number=\"~a\"~a"
+                  bracket-number show-number
+                  (if write-actual-normal ">" " />"))
+          (when write-actual-normal
+            (format stream "~&          <tuplet-actual>~
+                            ~&            <tuplet-number>~a</tuplet-number>~
+                            ~&            <tuplet-type>~a</tuplet-type>~
+                            ~&          </tuplet-actual>~
+                            ~&          <tuplet-normal>~
+                            ~&            <tuplet-number>~a</tuplet-number>~
+                            ~&            <tuplet-type>~a</tuplet-type>~
+                            ~&          </tuplet-normal>~
+                            ~&          </tuplet>"
+                    actual write-actual-normal normal write-actual-normal)))
+        (format stream "~&          <tuplet type=\"stop\" number=\"~a\" />"
+                bracket-number))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun xml-write-marks (list stream)
+  (loop for m in list do (xml-get-mark m stream)))
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF music-xml.lsp

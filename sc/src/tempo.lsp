@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 11th 2001
 ;;;
-;;; $$ Last modified:  10:28:44 Mon Mar 20 2017 GMT
+;;; $$ Last modified:  17:29:22 Fri Mar 24 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -205,10 +205,12 @@
   (format stream "~&      <direction directive=\"yes\" placement=\"above\">")
   (when (description tpo)
     (format stream "~&        <direction-type>~
-                    ~&           <words default-y=\"29\">~
-                    ~&             ~a~
-                    ~&           </words>~
-                    ~&        </direction-type>"
+                    ~&          <words default-y=\"29\">~
+                    ~&            ~a~
+                    ~&          </words>~
+                    ~&        </direction-type>~
+                    ~&      </direction>~
+                    ~&      <direction>"
           (description tpo)))
   (format stream "~&        <direction-type>~
                   ~&          <metronome default-y=\"29\">~

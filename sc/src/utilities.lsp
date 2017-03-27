@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  13:46:27 Sat Mar 18 2017 GMT
+;;; $$ Last modified:  17:13:14 Fri Mar 24 2017 GMT
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3832,7 +3832,7 @@ At revision 3608.
         (sec min hour day month year)
       (get-decoded-time)
     (declare (ignore sec))
-    (format nil "~d-~2,'0d-~2,'0d-~2,'0d.~2,'0d" year month day hour min)))
+    (format nil "~d-~2,'0d-~2,'0d, ~2,'0d:~2,'0d" year month day hour min)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+(and mac-osx X86-64)

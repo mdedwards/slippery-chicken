@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  18:37:41 Mon Mar 27 2017 BST
+;;; $$ Last modified:  20:48:10 Tue Mar 28 2017 BST
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -390,9 +390,9 @@
                     (warning "music-xml::xml-get-mark: adding fingering ~a, ~
                               hope your musicians have more than 4 fingers ~
                               and a thumb!."
-                             mark)
-                    ;; todo: is there a special mark for an open string?
-                    '(tech "fingering" a mark))))
+                             mark))
+                  ;; todo: is there a special mark for an open string?
+                  `(tech "fingering" a ,mark)))
                ;; 25.6.11 a 2 element list will generate a 'transition arrow'
                ;; with the first element as the starting text and the second as
                ;; end text.  The elements will be converted to lowercase

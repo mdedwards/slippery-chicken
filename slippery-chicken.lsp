@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:01:02 Sat Mar 25 2017 GMT
+;;; $$ Last modified:  20:39:10 Tue Mar 28 2017 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6603,8 +6603,9 @@ data: NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 17/3 17
-;;; todo: doubling players
 ;;; there'll be no :in-c as we can leave such things to the notation programme
+;;; known problems: Sibelius 7.5 messes up some transposing instrument, getting
+;;; octave transpositions wrong and adding generally unwanted key signatures.
 (defmethod write-xml ((sc slippery-chicken)
                       &key
                         (staff-height 7)  ; mm
@@ -6757,7 +6758,7 @@ data: NIL
                                  (ts (transposition-semitones ins)))
                             (when (and ts (/= ts transp))
                               (setq transp ts)
-                              (list ts (diatonic-transposition ins)))))))
+                              (xml-transposition ins))))))
     (format stream "~&    </part>")
     t))
 

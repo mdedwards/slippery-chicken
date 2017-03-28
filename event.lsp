@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:35:54 Mon Mar 27 2017 BST
+;;; $$ Last modified:  20:49:30 Tue Mar 28 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -139,6 +139,12 @@
    ;; MDE Sat Apr 23 14:04:45 2016 -- which set (as a reference to the
    ;; slippery-chicken object's set-palette) the pitch data came from 
    (set-ref :accessor set-ref :initform nil)
+   ;; MDE Tue Mar 28 14:27:02 2017 -- keep track of the last midi channel seen
+   ;; for an event of any/every player. that way we can always know or guess
+   ;; the midi channel of even a rest, e.g. when changing instrument and
+   ;; writing midi info for music xml
+   (midi-channels :accessor midi-channels :type assoc-list :allocation :class
+                  :initform (make-assoc-list 'event-midi-channels nil))
    ;(rqq-notes :accessor rqq-notes :type list :initform nil :allocation :class)
    (amplitude :accessor amplitude :type number :initarg :amplitude 
               :initform (get-sc-config 'default-amplitude))))
@@ -270,7 +276,8 @@
 ;;; - An event object.
 ;;; 
 ;;; RETURN VALUE
-;;; An integer representing the given midi-channel value.
+;;; An integer representing the given midi-channel value or NIL if there isn't
+;;; one.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -2140,6 +2147,22 @@ NIL
       (has-mark e 'dim-end)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Mar 28 14:29:37 2017 
+(defmethod get-last-midi-channel ((e event))
+  (let ((no (get-data (player e) (midi-channels e) nil)))
+    (when no (data no))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Mar 28 14:29:37 2017 
+(defmethod set-last-midi-channel ((e event)); player channel)
+  (let ((player (player e))
+        (channel (get-midi-channel e)))
+    (when channel ; so rests are ignored as they don't have channel data
+      (if (get-data player (midi-channels e) nil)
+          (set-data player (list player channel) (midi-channels e))
+          (add (list player channel) (midi-channels e))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; finale's xml tag order within <note>is not arbitrary; unless you get it
 ;;; right you'll get error messages :/ it's pitch, duration, type, dot,
 ;;; accidental, time-mod, notehead, beam, notations
@@ -2160,12 +2183,14 @@ NIL
         (notations '(beg-sl end-sl beg-phrase end-phrase beg-gliss end-gliss
                      a s te ts as at c1 c2 c3 c4 c5 c6 pause short-pause
                      long-pause t3 arp lhp bartok nail flag downbow upbow open
-                     harm))
+                     harm 0 1 2 3 4 5))
         ;;(directions '(beg-8va end-8va beg-8vb end-8vb beg-15ma beg-15mb
         ;;            end-15ma end15mb cresc-beg cresc-end dim-beg dim-end
         ;;          ped ped^ ped-up uc tc sost^
         (noteheads '(circled-x x-head triangle wedge square triangle-up
                      improvOn flag-head)))
+    (write-xml-ins-change e stream) ; if it exists
+    (set-last-midi-channel e)
     (macrolet ((separate (marks syms syms-holder rest)
                  `(loop for m in ,marks do
                        ;; this will also have the effect of removing double
@@ -2203,8 +2228,6 @@ NIL
           before (reverse before)
           after (reverse after))
     (xml-write-marks before stream)
-    ;; here: todo: looks like <notations> (e.g. slurs) really do need to come
-    ;; before </note> so we will need a <during> var to process
     (format stream "~&      <note> <!-- - - - - - - - - - - - - - - - - -->")
     (if (or (not poc) (pitch-p poc))    ; single pitch or rest
         (progn
@@ -2237,9 +2260,15 @@ NIL
     (xml-write-marks after stream)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Mar 28 16:01:48 2017 -- todo: add "To piccolo" or whatever, as
+;;; words in the score.
 (defmethod write-xml-ins-change ((e event) stream &optional part)
   (when (instrument-change e)
-    (let ((ins (fourth (instrument-change e))))
+    (let* ((ins (fourth (instrument-change e)))
+           (midi-channel (get-midi-channel e))
+           (xml-name (xml-staffname ins)))
+      (unless midi-channel              ; could be a rest
+        (setq midi-channel (get-last-midi-channel e)))
       (format stream "~&       <print>~
                       ~&         <part-name-display>~
                       ~&           ~a~
@@ -2248,15 +2277,26 @@ NIL
                       ~&           ~a~
                       ~&         </part-abbreviation-display>~
                       ~&       </print>"
-              (xml-staffname ins) (xml-staffname ins t))
-      (when part
+              xml-name (xml-staffname ins t))
+      (when (or part (player e))
         (format stream "~&       <sound>~
                         ~&         <midi-instrument id=\"~a\">~
                         ~&         <midi-channel>~a</midi-channel>~
                         ~&         <midi-program>~a</midi-program>~
                         ~&         </midi-instrument>~
                         ~&       </sound>"
-                part (get-midi-channel e) (midi-program ins)))))
+                (if part part (player e))
+                midi-channel
+                (midi-program ins)))
+      (format stream "~&       <direction placement=\"above\">~
+                      ~&         <direction-type>~
+                      ~&           <words>~a</words>~
+                      ~&         </direction-type>~
+                      ~&       </direction>"
+              ;; would like to use xml-name here to get e.g. flat turned into
+              ;; the musical flat sign, but music xml doesn't allow any tags
+              ;; e.g. <display-text> inside <words>
+              (staff-name ins))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

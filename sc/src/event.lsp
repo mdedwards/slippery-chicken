@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  20:49:30 Tue Mar 28 2017 BST
+;;; $$ Last modified:  20:56:37 Tue Mar 28 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2228,7 +2228,8 @@ NIL
           before (reverse before)
           after (reverse after))
     (xml-write-marks before stream)
-    (format stream "~&      <note> <!-- - - - - - - - - - - - - - - - - -->")
+    (format stream "~&      <note> <!-- bar-pos=~a - - - - - - - - - - - - -->"
+            (bar-pos e))
     (if (or (not poc) (pitch-p poc))    ; single pitch or rest
         (progn
           (when poc                     ; single pitch

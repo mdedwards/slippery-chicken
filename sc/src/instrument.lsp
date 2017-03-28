@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  13:53:28 Sat Mar 18 2017 GMT
+;;; $$ Last modified:  20:19:04 Tue Mar 28 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -399,20 +399,32 @@
         ins))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Sat Mar 18 12:01:26 2017 -- for musicxml
-(defmethod diatonic-transposition ((ins instrument))
-  (if (transposing-instrument-p ins nil)
+;;; MDE Sat Mar 18 12:01:26 2017 -- for musicxml, returns a 3-element list:
+;;; diatonic transposition, octaves of transposition, and semitone
+;;; transposition minus the octaves. returns nil if not a transposing ins.
+(defmethod xml-transposition ((ins instrument))
+  (when (transposing-instrument-p ins nil)
       (let ((dtransp
              (case (transposition ins)
-               (c -7) (f -4) (g -3) (bf -1) (a -2) (ef -5) (d -6)
+               (c 0) (f -4) (g -3) (bf -1) (a -2) (ef -5) (d -6)
                (t (error "diatonic-transposition: unhandled case: ~a for ~a"
                          (transposition ins) ins))))
             ;; for transps > octave
-            (offset (* 12 (1- (abs (floor (transposition-semitones ins) 12))))))
+            ;; (offset (* 12 (1- (abs (floor (transposition-semitones ins) 12
+            (octaves (1- (abs (floor (transposition-semitones ins) 12)))))
+        #|(if (> (transposition-semitones ins) 0)
+            ;; (+ offset (- dtransp))   ;
+            ;; (- dtransp offset)))     ;
+        (values  (- dtransp))
+        (values dtransp offset)))|#
         (if (> (transposition-semitones ins) 0)
-          (+ offset (- dtransp))
-          (- dtransp offset)))
-      0))
+            (progn
+              (setq dtransp (- dtransp))
+              (when (zerop dtransp) (incf octaves)))
+            (progn
+              (setq octaves (- octaves))
+              (when (zerop dtransp) (decf octaves))))
+        (list dtransp octaves (rem (transposition-semitones ins) 12)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Mar 18 13:44:30 2017
@@ -448,39 +460,39 @@
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns NIL if the instrument is not a transposing instrument
-(let ((i1 (make-instrument 'instrument-one)))
-  (transposing-instrument-p i1))
+;; Returns NIL if the instrument is not a transposing instrument ;
+  (let ((i1 (make-instrument 'instrument-one)))
+(transposing-instrument-p i1))
 
-=> NIL
+  => NIL
 
-;; Returns T if the instrument object has been defined using a non-NIL value
-;; for :transposition
-(let ((i2 (make-instrument 'instrument-two :transposition 'bf)))
-  (transposing-instrument-p i2))
+;; Returns T if the instrument object has been defined using a non-NIL value ;
+;; for :transposition                   ;
+  (let ((i2 (make-instrument 'instrument-two :transposition 'bf)))
+(transposing-instrument-p i2))
 
-=> T
+  => T
 
-;; Returns T if the instrument object has been defined using a non-0 value for
-;; :transposition-semitones 
-(let ((i3 (make-instrument 'instrument-two :transposition-semitones -3)))
-  (transposing-instrument-p i3))
+;; Returns T if the instrument object has been defined using a non-0 value for ;
+;; :transposition-semitones             ;
+  (let ((i3 (make-instrument 'instrument-two :transposition-semitones -3)))
+(transposing-instrument-p i3))
 
-=> T
+  => T
 
-;; Setting the optional argument to NIL causes instruments that transpose at
-;; the octave to return T.
-(let ((i3 (make-instrument 'instrument-two :transposition-semitones -12)))
-  (transposing-instrument-p i3))
+;; Setting the optional argument to NIL causes instruments that transpose at ;
+;; the octave to return T.              ;
+  (let ((i3 (make-instrument 'instrument-two :transposition-semitones -12)))
+(transposing-instrument-p i3))
 
-=> NIL
+  => NIL
 
-(let ((i3 (make-instrument 'instrument-two :transposition-semitones -12)))
-  (transposing-instrument-p i3 nil))
+  (let ((i3 (make-instrument 'instrument-two :transposition-semitones -12)))
+(transposing-instrument-p i3 nil))
 
-=> T
+  => T
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod transposing-instrument-p ((ins instrument) 
                                      &optional (ignore-octaves t))
@@ -527,35 +539,35 @@
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns symbol LOW by default
-(let ((i1 (make-instrument 'inst)))
-  (set-prefers-low i1))
+;; Returns symbol LOW by default        ;
+  (let ((i1 (make-instrument 'inst)))
+(set-prefers-low i1))
 
-=> LOW
+  => LOW
 
-;; Create an instrument object with only an ID, print the PREFERS-NOTES slot to
-;; see that it is NIL by default, apply the set-prefers-low, and print the
-;; slot again to see the changes
-(let ((i1 (make-instrument 'inst)))
-  (print (prefers-notes i1))
-  (set-prefers-low i1)
-  (print (prefers-notes i1)))
+;; Create an instrument object with only an ID, print the PREFERS-NOTES slot to ;
+;; see that it is NIL by default, apply the set-prefers-low, and print the ;
+;; slot again to see the changes        ;
+  (let ((i1 (make-instrument 'inst)))
+(print (prefers-notes i1))
+(set-prefers-low i1)
+(print (prefers-notes i1)))
 
-=> 
-NIL 
-LOW
+  => 
+  NIL 
+  LOW
 
-;; Reset to LOW from HIGH
-(let ((i1 (make-instrument 'inst :prefers-notes 'high)))
-  (print (prefers-notes i1))
-  (set-prefers-low i1)
-  (print (prefers-notes i1)))
+;; Reset to LOW from HIGH               ;
+  (let ((i1 (make-instrument 'inst :prefers-notes 'high)))
+(print (prefers-notes i1))
+(set-prefers-low i1)
+(print (prefers-notes i1)))
 
-=>
-HIGH 
-LOW
+  =>
+  HIGH 
+  LOW
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod set-prefers-low ((ins instrument) &optional ignore)
 ;;; **** 
@@ -585,35 +597,35 @@ LOW
 ;;; EXAMPLE
 #|
 
-;; Returns symbol HIGH by default
-(let ((i1 (make-instrument 'inst)))
-  (set-prefers-high i1))
+;; Returns symbol HIGH by default       ;
+  (let ((i1 (make-instrument 'inst)))
+(set-prefers-high i1))
 
-=> HIGH
+  => HIGH
 
-;; Create an instrument object with only an ID, print the PREFERS-NOTES slot to
-;; see that it is NIL by default, apply the set-prefers-high, and print the
-;; slot again to see the changes
-(let ((i1 (make-instrument 'inst)))
-  (print (prefers-notes i1))
-  (set-prefers-high i1)
-  (print (prefers-notes i1)))
+;; Create an instrument object with only an ID, print the PREFERS-NOTES slot to ;
+;; see that it is NIL by default, apply the set-prefers-high, and print the ;
+;; slot again to see the changes        ;
+  (let ((i1 (make-instrument 'inst)))
+(print (prefers-notes i1))
+(set-prefers-high i1)
+(print (prefers-notes i1)))
 
-=> 
-NIL 
-HIGH
+  => 
+  NIL 
+  HIGH
 
-;; Reset to HIGH from LOW
-(let ((i1 (make-instrument 'inst :prefers-notes 'low)))
-  (print (prefers-notes i1))
-  (set-prefers-high i1)
-  (print (prefers-notes i1)))
+;; Reset to HIGH from LOW               ;
+  (let ((i1 (make-instrument 'inst :prefers-notes 'low)))
+(print (prefers-notes i1))
+(set-prefers-high i1)
+(print (prefers-notes i1)))
 
-=>
-LOW
-HIGH 
+  =>
+  LOW
+  HIGH 
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod set-prefers-high ((ins instrument) &optional ignore) 
 ;;; ****
@@ -638,25 +650,25 @@ HIGH
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns T if the PREFERS-NOTES slot of the given instrument object is set to
-;; 'LOW 
-(let ((i1 (make-instrument 'inst :prefers-notes 'low)))
-  (prefers-low i1))
+;; Returns T if the PREFERS-NOTES slot of the given instrument object is set to ;
+;; 'LOW                                 ;
+  (let ((i1 (make-instrument 'inst :prefers-notes 'low)))
+(prefers-low i1))
 
-=> T
+  => T
 
-;; Returns NIL if the PREFERS-NOTES slot of the given instrument object is not
-;; set to 'LOW
-(let ((i1 (make-instrument 'inst1))
-      (i2 (make-instrument 'inst2 :prefers-notes 'high)))
-  (print (prefers-low i1))
-  (print (prefers-low i2)))
+;; Returns NIL if the PREFERS-NOTES slot of the given instrument object is not ;
+;; set to 'LOW                          ;
+  (let ((i1 (make-instrument 'inst1))
+(i2 (make-instrument 'inst2 :prefers-notes 'high)))
+(print (prefers-low i1))
+(print (prefers-low i2)))
 
-=>
-NIL 
-NIL 
+  =>
+  NIL 
+  NIL 
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod prefers-low ((ins instrument))
 ;;; ****
@@ -680,25 +692,25 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns T if the PREFERS-NOTES slot of the given instrument object is set to
-;; 'HIGH
-(let ((i1 (make-instrument 'inst :prefers-notes 'high)))
-  (prefers-high i1))
+;; Returns T if the PREFERS-NOTES slot of the given instrument object is set to ;
+;; 'HIGH                                ;
+  (let ((i1 (make-instrument 'inst :prefers-notes 'high)))
+(prefers-high i1))
 
-=> T
+  => T
 
-;; Returns NIL if the PREFERS-NOTES slot of the given instrument object is not
-;; set to 'HIGH
-(let ((i1 (make-instrument 'inst1))
-      (i2 (make-instrument 'inst2 :prefers-notes 'low)))
-  (print (prefers-high i1))
-  (print (prefers-high i2)))
+;; Returns NIL if the PREFERS-NOTES slot of the given instrument object is not ;
+;; set to 'HIGH                         ;
+  (let ((i1 (make-instrument 'inst1))
+(i2 (make-instrument 'inst2 :prefers-notes 'low)))
+(print (prefers-high i1))
+(print (prefers-high i2)))
 
-=>
-NIL 
-NIL 
+  =>
+  NIL 
+  NIL 
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod prefers-high ((ins instrument))
 ;;; ****
@@ -735,29 +747,29 @@ NIL
 ;;; EXAMPLE
 
 #|
-;; Determine if a pitch provided as a note-name symbol falls within the written
-;; range of a non-transposing instrument
-(let ((i1 (make-instrument 'inst1 :lowest-written 'bf3 :highest-written 'a6)))
-  (in-range i1 'c4))
+;; Determine if a pitch provided as a note-name symbol falls within the written ;
+;; range of a non-transposing instrument ;
+  (let ((i1 (make-instrument 'inst1 :lowest-written 'bf3 :highest-written 'a6)))
+(in-range i1 'c4))
 
-=> T, NIL
+  => T, NIL
 
-;; Determine if a pitch provided as a note-name symbol falls within the
-;; sounding range of a transposing instrument, using the optional argument T
-(let ((i2 (make-instrument 'inst1 :lowest-written 'fs3 :highest-written 'c6
-                           :transposition 'BF)))
-  (in-range i2 'c6 T))
+;; Determine if a pitch provided as a note-name symbol falls within the ;
+;; sounding range of a transposing instrument, using the optional argument T ;
+  (let ((i2 (make-instrument 'inst1 :lowest-written 'fs3 :highest-written 'c6
+:transposition 'BF)))
+(in-range i2 'c6 T))
 
-=> NIL, 1
+  => NIL, 1
 
-;; A pitch object can be used as the specified pitch
-(let ((i2 (make-instrument 'inst1 :lowest-written 'fs3 :highest-written 'c6
-                           :transposition 'BF)))
-  (in-range i2 (make-pitch 'd6)))
+;; A pitch object can be used as the specified pitch ;
+  (let ((i2 (make-instrument 'inst1 :lowest-written 'fs3 :highest-written 'c6
+:transposition 'BF)))
+(in-range i2 (make-pitch 'd6)))
 
-=> NIL, 1
+  => NIL, 1
 
-|#
+  |#
 ;;; 
 ;;; SYNOPSIS
 (defmethod in-range ((ins instrument) pitch &optional sounding)
@@ -791,25 +803,25 @@ NIL
 ;;; 
 ;;; EXAMPLE
 #|
-(let ((cl (get-data 'b-flat-clarinet
-                    +slippery-chicken-standard-instrument-palette+)))
+  (let ((cl (get-data 'b-flat-clarinet
++slippery-chicken-standard-instrument-palette+)))
 
-  ;; needs to go down 1 octave
-  (print (data (force-in-range cl (make-pitch 'e7))))
-  ;; needs to go up 2 octaves
-  (print (data (force-in-range cl (make-pitch 'g1))))
-  ;; the t indicates we're dealing with sounding pitches so here there's no
-  ;; transposition...  
-  (print (data (force-in-range cl (make-pitch 'd3) t)))
-  ;; ... but here there is
-  (print (data (force-in-range cl (make-pitch 'd3)))))
-=>
-E6 
-G3 
-D3 
-D4 
+  ;; needs to go down 1 octave          ;
+(print (data (force-in-range cl (make-pitch 'e7))))
+  ;; needs to go up 2 octaves           ;
+(print (data (force-in-range cl (make-pitch 'g1))))
+  ;; the t indicates we're dealing with sounding pitches so here there's no ;
+  ;; transposition...                   ;
+(print (data (force-in-range cl (make-pitch 'd3) t)))
+  ;; ... but here there is              ;
+(print (data (force-in-range cl (make-pitch 'd3)))))
+  =>
+  E6 
+  G3 
+  D3 
+  D4 
 
-|#
+  |#
 ;;; SYNOPSIS
 (defmethod force-in-range ((ins instrument) pitch &optional sounding)
 ;;; ****
@@ -976,65 +988,65 @@ D4
 ;;; EXAMPLE
 
 #|
-;; Make-instrument for the flute:
-(make-instrument 'flute :staff-name "Flute" :staff-short-name "Fl."
-                 :lowest-written 'c4 :highest-written 'd7 
-                 :starting-clef 'treble :midi-program 74 :chords nil
-                 :microtones t :missing-notes '(cqs4 dqf4))
+;; Make-instrument for the flute:       ;
+  (make-instrument 'flute :staff-name "Flute" :staff-short-name "Fl."
+:lowest-written 'c4 :highest-written 'd7 
+:starting-clef 'treble :midi-program 74 :chords nil
+:microtones t :missing-notes '(cqs4 dqf4))
 
-=> 
-INSTRUMENT: lowest-written: 
-PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
-[...]
-, highest-written:
-PITCH: frequency: 2349.318, midi-note: 98, midi-channel: 0 
-[...]
-lowest-sounding: 
-PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
-[...]
-, highest-sounding: 
-PITCH: frequency: 2349.318, midi-note: 98, midi-channel: 0 
-            starting-clef: TREBLE, clefs: (TREBLE), clefs-in-c: (TREBLE)
-            prefers-notes: NIL, midi-program: 74
-            transposition: C, transposition-semitones: 0
-            score-write-in-c: NIL, score-write-bar-line: 1
-            chords: NIL, chord-function: NIL, 
-            total-bars: 0 total-notes: 0, total-duration: 0.0
-            total-degrees: 0, microtones: T
-            missing-notes: (CQS4 DQF4), subset-id: NIL
-            staff-name: Flute, staff-short-name : Fl.,
-            largest-fast-leap: 999
-[...]
-NAMED-OBJECT: id: FLUTE, tag: NIL, 
-data: NIL
+  => 
+  INSTRUMENT: lowest-written: 
+  PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
+  [...]
+  , highest-written:
+  PITCH: frequency: 2349.318, midi-note: 98, midi-channel: 0 
+  [...]
+  lowest-sounding: 
+  PITCH: frequency: 261.626, midi-note: 60, midi-channel: 0 
+  [...]
+  , highest-sounding: 
+  PITCH: frequency: 2349.318, midi-note: 98, midi-channel: 0 
+  starting-clef: TREBLE, clefs: (TREBLE), clefs-in-c: (TREBLE)
+  prefers-notes: NIL, midi-program: 74
+  transposition: C, transposition-semitones: 0
+  score-write-in-c: NIL, score-write-bar-line: 1
+  chords: NIL, chord-function: NIL, 
+  total-bars: 0 total-notes: 0, total-duration: 0.0
+  total-degrees: 0, microtones: T
+  missing-notes: (CQS4 DQF4), subset-id: NIL
+  staff-name: Flute, staff-short-name : Fl.,
+  largest-fast-leap: 999
+  [...]
+  NAMED-OBJECT: id: FLUTE, tag: NIL, 
+  data: NIL
 
-;; A make-instrument for the b-flat bass clarinet
-(make-instrument 'bass-clarinet :staff-name "Bass Clarinet" :lowest-written 'c3 
-                 :highest-written 'g6 :staff-short-name "Bass Cl." 
-                 :chords nil :midi-program 72 :starting-clef 'treble
-                 :microtones t :prefers-notes 'low
-                 :missing-notes '(aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3 eqf3
-                                  dqs3 dqf3 cqs3)
-                 :clefs '(treble) :clefs-in-c '(treble bass)
-                 :transposition-semitones -14)
+;; A make-instrument for the b-flat bass clarinet ;
+  (make-instrument 'bass-clarinet :staff-name "Bass Clarinet" :lowest-written 'c3 
+:highest-written 'g6 :staff-short-name "Bass Cl." 
+:chords nil :midi-program 72 :starting-clef 'treble
+:microtones t :prefers-notes 'low
+:missing-notes '(aqs4 bqf4 bqs4 cqs5 dqf5 gqf3 fqs3 fqf3 eqf3
+dqs3 dqf3 cqs3)
+:clefs '(treble) :clefs-in-c '(treble bass)
+:transposition-semitones -14)
 
-=> 
-INSTRUMENT: lowest-written: 
-PITCH: frequency: 130.813, midi-note: 48, midi-channel: 0 
-[...]
-, highest-written: 
-PITCH: frequency: 1567.982, midi-note: 91, midi-channel: 0 
-[...]
-            lowest-sounding: 
-PITCH: frequency: 58.270, midi-note: 34, midi-channel: 0 
-[...]
-, highest-sounding: 
-PITCH: frequency: 698.456, midi-note: 77, midi-channel: 0 
-[...]
-NAMED-OBJECT: id: BASS-CLARINET, tag: NIL, 
-data: NIL
+  => 
+  INSTRUMENT: lowest-written: 
+  PITCH: frequency: 130.813, midi-note: 48, midi-channel: 0 
+  [...]
+  , highest-written: 
+  PITCH: frequency: 1567.982, midi-note: 91, midi-channel: 0 
+  [...]
+  lowest-sounding: 
+  PITCH: frequency: 58.270, midi-note: 34, midi-channel: 0 
+  [...]
+  , highest-sounding: 
+  PITCH: frequency: 698.456, midi-note: 77, midi-channel: 0 
+  [...]
+  NAMED-OBJECT: id: BASS-CLARINET, tag: NIL, 
+  data: NIL
 
-|#
+  |#
 ;;; SYNOPSIS
 (defun make-instrument (id &key 
                              staff-name

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  20:24:24 Mon Feb 13 2017 GMT
+;;; $$ Last modified:  15:55:41 Tue Mar 28 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -576,7 +576,7 @@ data: WILBUR
 ;;; SYNOPSIS
 (defmethod set-data (key new-value (al assoc-list))
 ;;; ****
-  (setf new-value (check-or-force-named-object new-value))
+  (setq new-value (check-or-force-named-object new-value))
   (let ((pos (get-position key al)))
     (when (and (not pos) (warn-not-found al))
       (warn "assoc-list::set-data: ~

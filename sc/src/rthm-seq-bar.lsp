@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  18:22:45 Mon Mar 27 2017 BST
+;;; $$ Last modified:  20:26:27 Tue Mar 28 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -239,8 +239,8 @@
     ;; MDE Thu Jun  4 16:10:12 2015
     (when just-rqq
       (check-beams rsb))
-    ;;    MDE Sun Jun 28 13:03:04 2015 -- no, rqq handling now sets its own beams
-    ;;    (auto-beam rsb nil 'silent))
+    ;;    MDE Sun Jun 28 13:03:04 2015 -- no, rqq handling now sets its own
+    ;;    beams (auto-beam rsb nil 'silent))
     (gen-stats rsb)
     (update-missing-duration rsb)
     (update-rhythms-bracket-info rsb)
@@ -3753,15 +3753,17 @@ data: (2 4)
     (when (= (bar-num rsb) 1)
       (xml-clef starting-clef stream))
     ;; if transposing instrument at bar1 or changes to transp ins later. this
-    ;; is separate from change of instrument as text and midi programe (comes
+    ;; is separate from change of instrument as text and midi programme (comes
     ;; below) 
     (when transposition
       ;; what a drag: finale _demands_ diatonic then chromatic...why?
       (format stream "~&        <transpose>~
                       ~&          <diatonic>~a</diatonic>~
                       ~&          <chromatic>~a</chromatic>~
+                      ~&          <octave-change>~a</octave-change>~
                       ~&        </transpose>"
-              (second transposition) (first transposition)))
+              (first transposition) (third transposition)
+              (second transposition)))
     (format stream "~&      </attributes>")
     ;; is this a rest bar? what about the show-rest slot?
     (if (is-rest-bar rsb)

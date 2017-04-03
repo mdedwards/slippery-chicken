@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  20:56:37 Tue Mar 28 2017 BST
+;;; $$ Last modified:  09:59:14 Wed Mar 29 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2228,6 +2228,7 @@ NIL
           before (reverse before)
           after (reverse after))
     (xml-write-marks before stream)
+    (xml-write-marks after stream)
     (format stream "~&      <note> <!-- bar-pos=~a - - - - - - - - - - - - -->"
             (bar-pos e))
     (if (or (not poc) (pitch-p poc))    ; single pitch or rest
@@ -2257,8 +2258,9 @@ NIL
     (xml-write-marks during stream)
     ;; now in rhythm class because of enforced tag order :/
     ;; (xml-write-marks notehead stream)
-    (format stream "~&      </note>")
-    (xml-write-marks after stream)))
+    (format stream "~&      </note>")))
+    ;; MDE Wed Mar 29 09:58:54 2017 -- after was here
+;; (xml-write-marks after stream)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Mar 28 16:01:48 2017 -- todo: add "To piccolo" or whatever, as

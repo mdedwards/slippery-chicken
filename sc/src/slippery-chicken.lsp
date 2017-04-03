@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  20:39:10 Tue Mar 28 2017 BST
+;;; $$ Last modified:  13:36:29 Sat Apr  1 2017 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6649,7 +6649,9 @@ data: NIL
                  ~&        slippery chicken ~a~
                  ~&      </software>"
             +slippery-chicken-version+)
-    (format xml "~&      <encoding-date>~a</encoding-date>" (get-date-string))
+    ;; just date, no time allowed; must be in yyyy-mm-dd format
+    (format xml "~&      <encoding-date>~a</encoding-date>"
+            (get-date-string nil))
     (format xml "~&      <supports attribute=\"new-system\" element=\"print\" ~
                        type=\"yes\" value=\"yes\"/>")
     (format xml "~&      <supports attribute=\"new-page\" element=\"print\" ~

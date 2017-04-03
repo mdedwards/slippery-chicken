@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  12:12:05 Mon Mar 27 2017 BST
+;;; $$ Last modified:  18:43:11 Mon Apr  3 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1574,19 +1574,21 @@ NIL
               (when beam
                 (setf (continue-beam r) (not (zerop beam)))))
             ;; when multiple tuplets start we have a special case where we have
-            ;; to write <tuplet-actual> and <tuplet-normal> tags
+            ;; to write <tuplet-actual> and <tuplet-normal> tags?
             (loop for b in bracket do
                  (if (listp b)
-                     (let* ((tup (second b)))
-                       (when (integerp tup)
+                     (let* ((tup (second b))
+                            (double-up 1))
+                       (when (integerp tup) ; 
+                         ;; MDE Mon Apr  3 16:54:30 2017 -- see note to
+                         ;; rsb::fix-tuplets-for-xml
+                         (when (or (= tup 6) (= tup 8))
+                           (setq double-up 2))
                          (setq tup (/ (get-tuplet-ratio tup))))
                        (format stream "~&        <notations>")
-                       (xml-tuplet (numerator tup) (denominator tup) (first b)
-                                   stream
-                                   ;; here! tuplet-type=T???
-                                   ;; (when (starts-multiple-tuplets r)
-                                   ;; xml-rthm))
-                                   xml-rthm)
+                       (xml-tuplet (* double-up (numerator tup))
+                                   (* double-up (denominator tup))
+                                   (first b) stream xml-rthm)
                        (format stream "~&        </notations>"))
                      ;; so a positive int means close, negative ints are the
                      ;; indices into the currently open brackets

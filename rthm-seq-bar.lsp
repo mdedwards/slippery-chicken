@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  20:26:27 Tue Mar 28 2017 BST
+;;; $$ Last modified:  18:55:05 Mon Apr  3 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1594,28 +1594,37 @@ data: ((2 4) - S S - S - S S S - S S)
   (let ((open '())
         (result t))
     (flet ((damn (msg)
-             (setf result nil)
+             (setq result nil)
              (when on-fail
                (funcall on-fail "~&rthm-seq-bar::check-tuplets: ~a:~%~a" 
                         msg rsb))))
-      (loop for r in (rhythms rsb) do
-           (if (bracket r)
-               (loop for b in (bracket r) do
-                    (cond ((listp b) (push (first b) open))
-                          ((integer>0 b) 
-                           (if (member b open)
-                               (setf open (remove b open))
-                               (damn "Can't close non-existent bracket.")))
-                          ((integer<0 b) 
-                           (unless (member (abs b) open)
-                             (damn "Note under a non-existent bracket.")))
-                          (t (damn "Bad bracket."))))
-               (when open
-                 (damn "got a nil bracket when brackets still open."))))
-      ;; MDE Wed Jul  4 13:42:51 2012
-      (when open
-        (damn "bracket still open at end of bar."))
-      result)))
+      ;; first check the tuplets slot of the rsb
+      (loop with max = (1- (num-rhythms rsb))
+         for tuplet in (tuplets rsb)
+         for st = (second tuplet)
+         for nd = (third tuplet) do
+           (when (or (< st 0) (< nd 0) (> st max) (> nd max))
+             (damn "tuplets slot contains out-of-bounds indices")))
+      ;; now if the above loop didn't fail, check individual rthms
+      (when result 
+        (loop for r in (rhythms rsb) do
+             (if (bracket r)
+                 (loop for b in (bracket r) do
+                      (cond ((listp b) (push (first b) open))
+                            ((integer>0 b) 
+                             (if (member b open)
+                                 (setf open (remove b open))
+                                 (damn "Can't close non-existent bracket.")))
+                            ((integer<0 b) 
+                             (unless (member (abs b) open)
+                               (damn "Note under a non-existent bracket.")))
+                            (t (damn "Bad bracket."))))
+                 (when open
+                   (damn "got a nil bracket when brackets still open."))))
+        ;; MDE Wed Jul  4 13:42:51 2012
+        (when open
+          (damn "bracket still open at end of bar."))
+        result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon May 7 16:38:23 2012 -- this is a better version of
@@ -3721,6 +3730,33 @@ data: (2 4)
     (setf time-sig (get-time-sig rsb)))
   (xml-time-sig time-sig stream))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Apr  3 16:41:27 2017 -- this is really a pain in the backside:
+;;; seems like Finale/Sibelius/Dorico all end a tuplet bracket after the number
+;;; of notes/rests indicated by the tuplet, instead of waiting for the <tuplet
+;;; type="stop"> tag. So if we want a 3 above say 6 1/16s it will display end
+;;; the tuplet bracket after 3 instead of 6 1/16ths :/ In that case, double up
+;;; the tuplet number. NB this will mean tuplets are really changed, so will
+;;; look different in Lilypond etc. so don't generate XML (first) if you want
+;;; those. 
+(defmethod fix-tuplets-for-xml ((rsb rthm-seq-bar))
+  (let ((tuplets 
+         (loop for tuplet in (tuplets rsb)
+            for tup = (first tuplet)    ; the tuplet number
+            ;; how many events it spans
+            for start = (second tuplet)
+            for stop = (third tuplet)
+            for num = (- stop start)
+            collect
+              (if (and (integerp tup) (> num tup))
+                  (list (* 2 tup) start stop)
+                  tuplet))))
+    ;; if we don't delete them we potentially get a 3plet _and_ 6plet bracket
+    ;; where we only wanted the latter
+    (delete-tuplets rsb)
+    (setf (tuplets rsb) tuplets)
+    (update-rhythms-bracket-info rsb)))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Mar 17 14:42:00 2017
 ;;; spec says "If maximum compatibility with Standard MIDI 1.0 files is
@@ -3740,6 +3776,7 @@ data: (2 4)
           (bar-num rsb))
   (when start-repeat
     (xml-barline 3 stream "left" "forward"))
+  (fix-tuplets-for-xml rsb)
   (let ((ts (get-time-sig rsb)))
     (format stream "~&      <attributes>")
     (when (= (bar-num rsb) 1)
@@ -5360,6 +5397,8 @@ collect (midi-channel (pitch-or-chord p))))
   ;; the rthms to be removed have already been moved to other existing or added
   ;; rthms. all we're interested in doing here is taking care of the tuplets
   ;; slot of the rthm-seq-bar itself, not its rthms
+  ;; (when (= 140 (bar-num rsb)) (print rsb))
+  ;; (print start) (print how-many)
   (let ((e1 (get-nth-event (1- start) rsb))
         (e2 (get-nth-event (+ start how-many -1) rsb)))
     (setf (rhythms rsb) (remove-elements (rhythms rsb) start how-many))
@@ -5371,12 +5410,14 @@ collect (midi-channel (pitch-or-chord p))))
                for i from 0 do
                  (when (> tstart start)
                    (decf tstart how-many))
-                 (when (> tend start)
+               ;; MDE Mon Apr  3 18:37:10 2017 -- has to be >= right? (was >)
+                 (when (>= tend start)
                    (decf tend how-many))
                collect (list (first tup) tstart tend))))
     (when inherit-last-tuplet
       (setf (bracket e1) (pos4neg (bracket e1) (bracket e2))))
     (check-tuplets rsb)
+    ;; (when (= 140 (bar-num rsb)) (print rsb))
     (rhythms rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  20:48:10 Tue Mar 28 2017 BST
+;;; $$ Last modified:  13:41:40 Wed Mar 29 2017 BST
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -215,7 +215,8 @@
                   (at '("accent" "tenuto"))
                   (ts "detached-legato")
                   (te "tenuto")
-                  ;; tech means xml-technical will be called
+                  ;; tech means xml-technical will be called; see bottom of
+                  ;; this function
                   (lhp '(tech "stopped" a))
                   (bartok '(tech "snap-pizzicato" a))
                   ;; todo: could also add the <sound> tag here to change
@@ -306,7 +307,7 @@
                   (circled-x '(hd "circle-x"))
                   (x-head '(hd "x"))
                   (triangle '(hd "triangle"))
-                  (triangle-up '(hd "inverted-triangle"))
+                  (triangle-up '(hd "inverted triangle"))
                   (airy-head (no-xml-mark 'airy-head))
                   (none '(hd "none"))
                   ;; the On and Off versions were for lilypond; here we only

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  17:13:14 Fri Mar 24 2017 GMT
+;;; $$ Last modified:  13:37:27 Sat Apr  1 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3827,12 +3827,16 @@ At revision 3608.
          with SBCL or CCL on Mac OSX"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun get-date-string ()
+;;; (get-date-string) --> "2017-04-01, 13:35"
+;;; (get-date-string nil) --> "2017-04-01"
+(defun get-date-string (&optional (time t))
   (multiple-value-bind
         (sec min hour day month year)
       (get-decoded-time)
     (declare (ignore sec))
-    (format nil "~d-~2,'0d-~2,'0d, ~2,'0d:~2,'0d" year month day hour min)))
+    (if time
+        (format nil "~d-~2,'0d-~2,'0d, ~2,'0d:~2,'0d" year month day hour min)
+        (format nil "~d-~2,'0d-~2,'0d" year month day))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+(and mac-osx X86-64)

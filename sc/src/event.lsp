@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:59:14 Wed Mar 29 2017 BST
+;;; $$ Last modified:  11:44:23 Tue Apr  4 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2166,12 +2166,13 @@ NIL
 ;;; finale's xml tag order within <note>is not arbitrary; unless you get it
 ;;; right you'll get error messages :/ it's pitch, duration, type, dot,
 ;;; accidental, time-mod, notehead, beam, notations
-(defmethod write-xml :around ((e event) &key stream (divisions 16383))
+(defmethod write-xml :around ((e event) &key stream (divisions 16383)
+                                          tuplet-actual-normals)
   ;; marks-before and marks slots are really just for CMN and lilypond. clefs
   ;; &c (marks-before) must come before <note>, <notehead> within <note>,
   ;; <direction> before note
   (let ((before '())
-        (during '()) ; e.g. <notations>
+        (during '())                    ; e.g. <notations>
         (notehead '())
         (after '())
         ;; score not in C
@@ -2189,12 +2190,12 @@ NIL
         ;;          ped ped^ ped-up uc tc sost^
         (noteheads '(circled-x x-head triangle wedge square triangle-up
                      improvOn flag-head)))
-    (write-xml-ins-change e stream) ; if it exists
+    (write-xml-ins-change e stream)     ; if it exists
     (set-last-midi-channel e)
     (macrolet ((separate (marks syms syms-holder rest)
                  `(loop for m in ,marks do
-                       ;; this will also have the effect of removing double
-                       ;; marks, which is fine.
+                     ;; this will also have the effect of removing double
+                     ;; marks, which is fine.
                        (when (member m ,rest)
                          (setq ,rest (remove m ,rest)))
                        (if (member m ,syms)
@@ -2237,7 +2238,8 @@ NIL
             (setq accidental (write-xml poc :stream stream)))
                                         ; rhythm class
           (call-next-method e :stream stream :divisions divisions
-                            :accidental accidental :notehead notehead))
+                            :accidental accidental :notehead notehead
+                            :tuplet-actual-normals tuplet-actual-normals))
         ;; it's a chord
         (loop for p in (data poc) and i from 0 do
              (when (> i 0)
@@ -2250,6 +2252,7 @@ NIL
            ;; rhythm class:
              (call-next-method e :stream stream :divisions divisions
                                :basic (> i 0) :accidental accidental
+                               :tuplet-actual-normals tuplet-actual-normals
                                :notehead notehead)))
     (when (is-tied-to e)
       (xml-notation-with-args stream "tied" "type=\"stop\""))
@@ -2259,12 +2262,9 @@ NIL
     ;; now in rhythm class because of enforced tag order :/
     ;; (xml-write-marks notehead stream)
     (format stream "~&      </note>")))
-    ;; MDE Wed Mar 29 09:58:54 2017 -- after was here
-;; (xml-write-marks after stream)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Tue Mar 28 16:01:48 2017 -- todo: add "To piccolo" or whatever, as
-;;; words in the score.
+;;; MDE Tue Mar 28 16:01:48 2017 --
 (defmethod write-xml-ins-change ((e event) stream &optional part)
   (when (instrument-change e)
     (let* ((ins (fourth (instrument-change e)))
@@ -2291,9 +2291,10 @@ NIL
                 (if part part (player e))
                 midi-channel
                 (midi-program ins)))
+      ;; add "To piccolo" or whatever, as words in the score.
       (format stream "~&       <direction placement=\"above\">~
                       ~&         <direction-type>~
-                      ~&           <words>~a</words>~
+                      ~&           <words>Take ~a</words>~
                       ~&         </direction-type>~
                       ~&       </direction>"
               ;; would like to use xml-name here to get e.g. flat turned into

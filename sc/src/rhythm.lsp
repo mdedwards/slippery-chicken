@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  18:43:11 Mon Apr  3 2017 BST
+;;; $$ Last modified:  11:49:47 Tue Apr  4 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1487,7 +1487,7 @@ NIL
     (> count 1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  MDE Tue Mar 21 20:16:41 2017
+;;; MDE Tue Mar 21 20:16:41 2017
 ;;; So the xml <duration> is the *actual* duration, whereas the <type> is what
 ;;; it looks like. <duration> we can get by multiplying our duration slot by
 ;;; divisions. <type> we can get from the letter-value slot (already prepared
@@ -1500,12 +1500,17 @@ NIL
 ;;; bit annoying but it seems finale forces tag order and to avoid error
 ;;; messages, accidentals must come just after the <type>, hence we pass an
 ;;; accidental string here. see event class for more details and change order
-;;; at your own peril ;) 
+;;; at your own peril ;)
+;;;
+;;; tuplet-actual-normals come from rthm-seq-bar and contain data for all the
+;;; tuplets in a given bar. see comments to tuplet-actual-normals method in rsb
+;;; class 
 (defmethod write-xml ((r rhythm) &key stream (divisions 16383) basic accidental
-                                   notehead)
+                                   notehead tuplet-actual-normals)
   (let ((bracket (bracket r))
         (beam (beam r))
         (xml-rthm (xml-simple-rhythm (letter-value r))))
+    ;; (print 'here) (print tuplet-actual-normals)
     (if (is-grace-note r)
         (format stream "~&        <grace />~
                         ~&        <type>eighth</type>~
@@ -1546,10 +1551,14 @@ NIL
               ;; bracket. start/stop brackets need <notations> and <tuplet
               ;; ...>.  time modification _is_ the cumulative effect of all
               ;; nested tuplets.
+              ;; remember the tuplet slot is a list; if an element is a sublist
+              ;; then it starts a tuplet (tuplet-number tuplet-ratio); if a
+              ;; positive integer, then close that tuplet-number; if a negative
+              ;; int, then the note is under the tuplet.
               (format stream "~&        <time-modification>~
-                        ~&          <actual-notes>~a</actual-notes>~
-                        ~&          <normal-notes>~a</normal-notes>~
-                        ~&        </time-modification>"
+                              ~&          <actual-notes>~a</actual-notes>~
+                              ~&          <normal-notes>~a</normal-notes>~
+                              ~&        </time-modification>"
                       ;; (numerator tuplet) (denominator tuplet))))
                       (denominator (tuplet-scaler r))
                       (numerator (tuplet-scaler r)))))
@@ -1578,17 +1587,13 @@ NIL
             (loop for b in bracket do
                  (if (listp b)
                      (let* ((tup (second b))
-                            (double-up 1))
-                       (when (integerp tup) ; 
-                         ;; MDE Mon Apr  3 16:54:30 2017 -- see note to
-                         ;; rsb::fix-tuplets-for-xml
-                         (when (or (= tup 6) (= tup 8))
-                           (setq double-up 2))
+                            (tan (nth (1- (first b)) tuplet-actual-normals)))
+                       (when (integerp tup) 
                          (setq tup (/ (get-tuplet-ratio tup))))
                        (format stream "~&        <notations>")
-                       (xml-tuplet (* double-up (numerator tup))
-                                   (* double-up (denominator tup))
-                                   (first b) stream xml-rthm)
+                       (xml-tuplet (first tan)
+                                   (second tan)
+                                   (first b) stream (third tan)) ;xml-rthm)
                        (format stream "~&        </notations>"))
                      ;; so a positive int means close, negative ints are the
                      ;; indices into the currently open brackets

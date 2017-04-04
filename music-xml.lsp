@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  13:41:40 Wed Mar 29 2017 BST
+;;; $$ Last modified:  11:02:23 Tue Apr  4 2017 BST
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -529,6 +529,9 @@
 (defun xml-tuplet (actual normal bracket-number stream
                    ;;        this should be the tuplet-type e.g. "eighth" or nil
                    &optional write-actual-normal)
+  #|(unless (and actual normal bracket-number)
+    (error "music-xml::xml-tuplet: <actual>, <normal>, and <bracket-number> ~
+            all need values: ~a ~a ~a" actual normal bracket-number))|#
   (let* ((show-number (if (member (list actual normal)
                                   '((5 4) (3 2) (6 4))
                                   :test #'equal)

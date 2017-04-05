@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  11:02:23 Tue Apr  4 2017 BST
+;;; $$ Last modified:  17:08:10 Wed Apr  5 2017 BST
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -45,11 +45,6 @@
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; todo:
-;;; check instrument changes are happening in slippery-when-wet
-;;; check harmonic signs are being added in mieko
-;;; see further inline todos below
 
 (in-package :slippery-chicken)
 
@@ -392,12 +387,9 @@
                               hope your musicians have more than 4 fingers ~
                               and a thumb!."
                              mark))
-                  ;; todo: is there a special mark for an open string?
+                  ;; is there a special mark for an open string? I can't find
+                  ;; one in xml 
                   `(tech "fingering" a ,mark)))
-               ;; 25.6.11 a 2 element list will generate a 'transition arrow'
-               ;; with the first element as the starting text and the second as
-               ;; end text.  The elements will be converted to lowercase
-               ;; strings unless they're already strings
                (list 
                 (case (first mark)
                   (clef (xml-clef (second mark) stream t))
@@ -415,9 +407,9 @@
                   (t (unless silent
                        (error "music-xml::xml-get-mark: unrecognised mark as ~
                                list: ~a" mark)))))
-               ;; 27.5.11: use expicit \markup command instead of ^ and here's
-               ;; a quick hack: put all strings up or down according to whether
-               ;; there's a ^ or _ as first char, or if neither, it's up (^)
+               ;; put given string above an event. put all strings up or down
+               ;; according to whether there's a ^ or _ as first char, or if
+               ;; neither, it's up (^)
                (string (let* ((char1 (elt mark 0))
                               (up (char= char1 #\^))
                               (down (char= char1 #\_))

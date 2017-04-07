@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  11:55:14 Tue Apr  4 2017 BST
+;;; $$ Last modified:  10:47:28 Fri Apr  7 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2096,6 +2096,21 @@ rhythm symbol for clarity:
     rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Apr  7 10:21:59 2017 -- sometimes the tuplets slot of the rsb gets
+;;; screwed up so recreate it from the rhythms 
+(defmethod recreate-tuplets ((rsb rthm-seq-bar))
+  (let ((tuplets (ml nil 6)))
+    (loop for r in (rhythms rsb) and i from 0 do
+         (when (bracket r)
+           (loop for b in (bracket r) do
+                (if (listp b)
+                    (setf (nth (1- (first b)) tuplets)
+                          (list (second b) i nil))
+                    (when (integer>0 b)
+                      (setf (third (nth (1- b) tuplets)) i))))))
+    (setf (tuplets rsb) (remove nil tuplets))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Call this when the tuplets slot of the rsb has been altered: it will update
 ;;; the tuplets info of the rhythms accordingly.
@@ -3750,6 +3765,10 @@ data: (2 4)
 ;;; with durchhaltevermoegen (Mieko's violin piece) and slippery when wet as
 ;;; (pretty complex) test cases.
 (defmethod tuplet-actual-normals ((rsb rthm-seq-bar))
+  ;; MDE Fri Apr 7 10:47:26 2017 -- could be that the rsb's tuplet slot got
+  ;; messed up so recreate if nil
+  (unless (tuplets rsb)
+    (recreate-tuplets rsb))
   (let ((eut (get-events-under-tuplets rsb)))
     (loop for tuplet in (tuplets rsb)
        for tevents in eut

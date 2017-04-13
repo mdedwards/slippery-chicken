@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified: 02:14:51 Sat Jul 16 2016 CEST
+;;; $$ Last modified:  16:25:27 Thu Apr 13 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -265,7 +265,12 @@
 ;;; DESCRIPTION
 ;;; Generate an L-sequence from the rules of the specified l-for-lookup object
 ;;; and use it to perform the Fibonacci-based transitioning look-up of values in
-;;; the specified sequences. 
+;;; the specified sequences.
+;;;
+;;; NB As this accesses the rules as circular lists whose states are not reset
+;;; before starting, you may get (desired) different results if you call the
+;;; routine more than once. In order to avoid that call (reset lflu) before
+;;; do-lookup. 
 ;;; 
 ;;; ARGUMENTS 
 ;;; - An l-for-lookup object.

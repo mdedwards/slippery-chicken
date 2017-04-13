@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  11:57:16 Mon Mar 27 2017 BST
+;;; $$ Last modified:  19:22:27 Fri Apr  7 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2171,7 +2171,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
              (not (eq 'n (accidental p))))
     (format stream "~&          <alter>~a</alter>"
             (case  (accidental p)
-              (f -1) (s 1) (qs 0.5) (qf -0.5)
+              (f -1) (s 1) (qs 0.5) (qf -0.5) (tqs 1.5) (tqf -1.5)
               (t (error "pitch::write-xml: only 1/4 tone accidentals ~
                          implemented up to now: ~a" p)))))
   (format stream "~&          <octave>~a</octave>~
@@ -2183,6 +2183,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
             (if (accidental-in-parentheses p) " parentheses=\"yes\"" "")
             (case (accidental p)
               (f "flat") (s "sharp") (n "natural") (qs "quarter-sharp")
+              (tqs "three-quarters-sharp") (tqf "three-quarters-flat")
               (qf "quarter-flat")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

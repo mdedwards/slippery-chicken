@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  10:47:28 Fri Apr  7 2017 BST
+;;; $$ Last modified:  20:53:31 Tue Apr 18 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3745,7 +3745,7 @@ data: (2 4)
     (setf time-sig (get-time-sig rsb)))
   (xml-time-sig time-sig stream))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Apr 3 21:18:47 2017 -- got to get the actual and normal tuplet data
 ;;; from the sum of the events under the tuplet bracket :/
 ;;;
@@ -3759,13 +3759,9 @@ data: (2 4)
 ;;; we can't do this from existing rhythm slots. We have to look at all the
 ;;; rhythms under a tuplet bracket in order to determine their duration sum,
 ;;; then work out what e.g. 13/12 means in the context, 13 in the time of 12
-;;; 1/16ths or 1/8ths or what? That's what we do here. I feel a little uneasy
-;;; about using nearest-power-of-2 but given that we have nested tuplets I
-;;; don't see a better way of doing this right now. Plus it seems to work both
-;;; with durchhaltevermoegen (Mieko's violin piece) and slippery when wet as
-;;; (pretty complex) test cases.
+;;; 1/16ths or 1/8ths or what? That's what we do here. 
 (defmethod tuplet-actual-normals ((rsb rthm-seq-bar))
-  ;; MDE Fri Apr 7 10:47:26 2017 -- could be that the rsb's tuplet slot got
+  ;;  MDE Fri Apr 7 10:47:26 2017 -- could be that the rsb's tuplet slot got
   ;; messed up so recreate if nil
   (unless (tuplets rsb)
     (recreate-tuplets rsb))
@@ -3774,13 +3770,11 @@ data: (2 4)
        for tevents in eut
        for tdur = (loop for e in tevents sum (duration e))
        for ratio = (get-tuplet-ratio (first tuplet))
-       collect (list (denominator ratio) (numerator ratio)
-                     (xml-simple-rhythm
-                      (nearest-power-of-2
-                       (* 4 (/ (numerator ratio) tdur))))))))
-                     
+       collect (jiggle-tuplet-actual-normal
+                tdur (denominator ratio) (numerator ratio)                
+                (* 4 (/ (numerator ratio) tdur))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Mar 17 14:42:00 2017
 ;;; spec says "If maximum compatibility with Standard MIDI 1.0 files is
 ;;; important, do not have the divisions value exceed 16383." so we'll use that
@@ -4129,8 +4123,8 @@ data: (2 4)
              (let* ((wd (white-degree pitch))
                     (acc (accidental pitch))
                     (last (nth wd scale))
-                    (last-pos (when last (first last)))
-                    (last-acc (when last (second last))))
+                    (last-pos (if last (first last) -1)) ; -1 to avoid warning
+                    (last-acc (if last (second last) -1)))
                (if last
                    (when (eq acc last-acc)
                      (if (> (- note-pos last-pos) cautionary-distance)
@@ -6503,6 +6497,43 @@ rsb-rb)
          (incf time (duration-in-tempo event)))
     (values events time)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  MDE Fri Apr 14 07:05:07 2017 -- rthm is a power-of-two. Sometimes we
+;;; have a simple tuplet like 5, meaning of course 5 in the time of 4, but this
+;;; could be over a whole of bar e.g. 3/4. In that case the
+;;; tuplet-actual-normals method would think 5 qs in the time of 4, which is
+;;; clearly wrong, so we need to try various multiples and rhythms in order to
+;;; discover that what is in fact meant is 15 in the time of 12 1/16ths.
+(defun jiggle-tuplet-actual-normal (duration num time-of rthm
+                                    &optional (warn t))
+  (let* ((np2 (nearest-power-of-2 (round rthm)))
+         (target (if (and (float-int-p duration)
+                          (power-of-2 time-of))
+                     duration
+                     (* duration (/ rthm np2))))
+         (count 0)
+         (max 10)
+         n tof r)
+    (flet ((reset ()
+             (setq n num
+                   tof time-of
+                   r (make-rhythm (floor np2)))))
+      (reset)
+      ;;(format t "~&duration ~a num ~a time-of ~a rthm ~a target ~a"
+      ;;      duration num time-of rthm target)
+      (loop until (or (= (incf count) max) ; no floating point errors please
+                      (equal-within-tolerance target (* tof (duration r))))
+         do
+           (incf n num)
+           (incf tof time-of)
+           (scale r .5 nil))
+      (when (= count max)
+        (when warn
+          (warn "~&rthm-seq-bar::jiggle-tuplet-actual-normal: couldn't find ~
+                 ideal values after ~a tries." max))
+        (reset))
+      (list n tof (xml-simple-rhythm (value r))))))
+    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May 28 12:26:55 2015 -- new rqq handling code to avoid having to
 ;;; explicitly call CMN routines, instead turning them into our normal SC

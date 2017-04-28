@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:44:23 Tue Apr  4 2017 BST
+;;; $$ Last modified:  15:45:53 Wed Apr 26 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3604,7 +3604,59 @@ do (add-mark-before e m))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jan 30 18:54:56 2017 
+;;; ****m* event/microtonal
+;;; DATE
+;;; January 30th 2017 
+;;; 
+;;; DESCRIPTION
+;;; Return numerical information about the microtonality of an event,
+;;; essentially how many microtonal pitches there are.
+;;; 
+;;; ARGUMENTS
+;;; - the event object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; T or NIL to determine whether numbers should always be returned (i.e. zeros
+;;; when there are no microtonal pitches or any pitches at all in the case of
+;;; rests) 
+;;; 
+;;; RETURN VALUE
+;;; NIL if the event is a rest (or there are no microtones and <force-number>
+;;; is nil), otherwise two values: the number of microtonal pitches in the
+;;; event (0, 1, or more if it's a chord), the number of pitches in the event
+;;; (2+ for chords otherwise 0 for a rest and 1 for a non-chord).
+;;; 
+;;; EXAMPLE
+#|
+(microtonal (make-event 'cs4 'q))
+NIL
+
+(microtonal (make-event 'cs4 'q) t)
+0
+1
+
+(microtonal (make-event 'cqs4 'q) t)
+1
+1
+
+(microtonal (make-event 'cqs4 'q))
+1
+1
+
+(microtonal (make-event '(cqs4 e4 g4) 'q))
+1
+3
+
+(microtonal (make-event nil 'q))
+NIL
+
+(microtonal (make-event nil 'q) t)
+0
+1
+|#
+;;; SYNOPSIS
 (defmethod microtonal ((e event) &optional force-number)
+;;; ****
   (let ((count 0)
         (num-pitches 1))
     (unless (is-rest e)

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  20:53:31 Tue Apr 18 2017 BST
+;;; $$ Last modified:  09:39:04 Fri Apr 28 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3761,7 +3761,7 @@ data: (2 4)
 ;;; then work out what e.g. 13/12 means in the context, 13 in the time of 12
 ;;; 1/16ths or 1/8ths or what? That's what we do here. 
 (defmethod tuplet-actual-normals ((rsb rthm-seq-bar))
-  ;;  MDE Fri Apr 7 10:47:26 2017 -- could be that the rsb's tuplet slot got
+  ;; MDE Fri Apr 7 10:47:26 2017 -- could be that the rsb's tuplet slot got
   ;; messed up so recreate if nil
   (unless (tuplets rsb)
     (recreate-tuplets rsb))
@@ -5259,16 +5259,16 @@ collect (midi-channel (pitch-or-chord p))))
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))))
-:set-palette '((1 ((gs4 bf4 c4))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
-:pitch-seq-palette ((1 2 1 2 1 1 3 1)))))
-:rthm-seq-map '((1 ((vn (1 1 1))))))))
-(get-pitch-symbols (get-bar mini 1 'vn)))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :set-palette '((1 ((gs4 bf4 c4))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) e e e e e e e e))
+                                :pitch-seq-palette ((1 2 1 2 1 1 3 1)))))
+        :rthm-seq-map '((1 ((vn (1 1 1))))))))
+  (get-pitch-symbols (get-bar mini 1 'vn)))
   =>
   (C4 GS4 C4 GS4 C4 C4 BF4 C4)
   |#
@@ -5409,18 +5409,39 @@ collect (midi-channel (pitch-or-chord p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Feb  8 09:48:17 2017 - start is 0-based
+;;; ****m* rthm-seq-bar/remove-rhythms
+;;; DATE
+;;; February 8th 2017
+;;; 
+;;; DESCRIPTION
+;;; remove a specified number of rhythms/events from a rthm-seq-bar object.
+;;; 
+;;; ARGUMENTS
+;;; - the rthm-seq-bar object
+;;; - the rhythm/event to start removing at (1-based)
+;;; - how many rhythms/events to remove
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether the tuplets slot of the rthm-seq-bar should
+;;;   be updated to reflect changes. Default = T.
+;;; - T or NIL to indicated whether the bracket slot of the starting
+;;;   rhythm/event should take the value of the last rhythm/event removed
+;;; 
+;;; RETURN VALUE
+;;; the list of rhythm/event objects from the rhythms slot of the rthm-seq-bar
+;;; 
+;;; SYNOPSIS
 (defmethod remove-rhythms ((rsb rthm-seq-bar) start how-many
                            &optional (update-tuplets t)
                              (inherit-last-tuplet t))
+;;; ****
   ;; unless inherit-last-tuplet, this assumes that any start/closing tuplets in
   ;; the rthms to be removed have already been moved to other existing or added
   ;; rthms. all we're interested in doing here is taking care of the tuplets
   ;; slot of the rthm-seq-bar itself, not its rthms
-  ;; (when (= 140 (bar-num rsb)) (print rsb))
   ;; (print start) (print how-many)
   (let ((e1 (get-nth-event (1- start) rsb))
-        (e2 (get-nth-event (+ start how-many -1) rsb)))
-    (setf (rhythms rsb) (remove-elements (rhythms rsb) start how-many))
+        (e2 (get-nth-event (+ start how-many -2) rsb)))
+    (setf (rhythms rsb) (remove-elements (rhythms rsb) (1- start) how-many))
     (when update-tuplets
       (setf (tuplets rsb)
             (loop for tup in (tuplets rsb)
@@ -5436,7 +5457,6 @@ collect (midi-channel (pitch-or-chord p))))
     (when inherit-last-tuplet
       (setf (bracket e1) (pos4neg (bracket e1) (bracket e2))))
     (check-tuplets rsb)
-    ;; (when (= 140 (bar-num rsb)) (print rsb))
     (rhythms rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -5518,10 +5538,36 @@ collect (midi-channel (pitch-or-chord p))))
 ;;; MDE Thu Feb 16 17:44:58 2017 -- moved most of the functionality of
 ;;; replace-events from the piece class over here, where it should have been in
 ;;; the first place.
-(defmethod replace-rhythms ((rsb rthm-seq-bar) start-event replace-num-events
-                            new-events &optional auto-beam)
+;;; ****m* rthm-seq-bar/replace-rhythms
+;;; DATE
+;;; February 16th 2017, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Replace the rhythms/events in a rthm-seq-bar object, with an option to
+;;; automatically beam the result. The bar is checked to make sure it is full
+;;; after replacing and an error will be issued if it is not.
+;;; 
+;;; ARGUMENTS
+;;; - a rthm-seq-bar object
+;;; - the index (1-based) of the rhythm/events to start at (integer)
+;;; - the number of rhythms/events to replace (integer)
+;;; - a list of the new rhythm/event objects
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; T or NIL to indicate whether the automatic beaming routine should be called
+;;; after the replacement
+;;; 
+;;; RETURN VALUE
+;;; What the is-full method returns: two values: T or NIL to indicate whether
+;;; the bar is full, and the difference between the duration of the time
+;;; signature and the rhythms (usually a small floating-point error difference)
+;;; 
+;;; SYNOPSIS
+(defmethod replace-rhythms ((rsb rthm-seq-bar) start-rhythm replace-num-rhythms
+                            new-rhythms &optional auto-beam)
+;;; ****
   (let* ((rthms (my-copy-list (rhythms rsb)))
-         (nth (1- start-event)))
+         (nth (1- start-rhythm)))
     ;; those events that were previously start or end points for brackets may
     ;; be replaced here leaving the events in between with references to now
     ;; deleted brackets (they have bracket slots with negative numbers which
@@ -5533,9 +5579,9 @@ collect (midi-channel (pitch-or-chord p))))
     ;; the rthms here.  
     (unless rthms
       ;; doesn't matter what's in the list as all elements will be replaced.
-      (setf rthms (ml nil replace-num-events)))
-    (setf rthms (remove-elements rthms nth replace-num-events)
-          rthms (splice new-events rthms nth))
+      (setf rthms (ml nil replace-num-rhythms)))
+    (setf rthms (remove-elements rthms nth replace-num-rhythms)
+          rthms (splice new-rhythms rthms nth))
     ;; of course, the stats for the sequenz and whole piece are now incorrect,
     ;; but we leave that update to the user, we don't want to always call it
     ;; here.
@@ -6500,10 +6546,10 @@ rsb-rb)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  MDE Fri Apr 14 07:05:07 2017 -- rthm is a power-of-two. Sometimes we
 ;;; have a simple tuplet like 5, meaning of course 5 in the time of 4, but this
-;;; could be over a whole of bar e.g. 3/4. In that case the
+;;; could be over a whole bar e.g. 3/4. In that case the
 ;;; tuplet-actual-normals method would think 5 qs in the time of 4, which is
 ;;; clearly wrong, so we need to try various multiples and rhythms in order to
-;;; discover that what is in fact meant is 15 in the time of 12 1/16ths.
+;;; discover that what is in fact meant is e.g. 15 in the time of 12 1/16ths.
 (defun jiggle-tuplet-actual-normal (duration num time-of rthm
                                     &optional (warn t))
   (let* ((np2 (nearest-power-of-2 (round rthm)))

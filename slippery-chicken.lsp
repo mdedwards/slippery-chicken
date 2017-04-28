@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:36:29 Sat Apr  1 2017 BST
+;;; $$ Last modified:  18:38:59 Thu Apr 27 2017 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8073,7 +8073,43 @@ NOTE 6200 0.6666667
          (handle-hairpins-aux2 hairpin))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  MDE Mon Jan 30 18:38:43 2017 
+;;; MDE Mon Jan 30 18:38:43 2017 
+;;; ****m* slippery-chicken/count-microtones
+;;; DATE
+;;; January 30th 2017 
+;;; 
+;;; DESCRIPTION
+;;; Count the number of microtonal pitches in the slippery-chicken object. 
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :players. the players for whom the count should be executed; either a
+;;;   single player symbol or a list of symbols
+;;; - :start-bar. The bar number in which the counting should begin. Default =
+;;;   1
+;;; - :end-bar. The bar number in which counting should end. Default = NIL
+;;;   which means count through the final bar.
+;;; 
+;;; RETURN VALUE
+;;; Four values: the number of microtones, the number of non-microtones, the
+;;; total number of pitches, the percentage of microtonal pitches.
+;;;
+;;; Note that the total number of pitches will almost certainly be different
+;;; from the number of events as some events will be rests, others single pitch
+;;; notes, yet others chords.
+;;; 
+;;; EXAMPLE
+#|
+(count-microtones +jitterbug+)
+1420
+2312
+3732
+38.049305
+|#
+;;; SYNOPSIS
 (defmethod count-microtones ((sc slippery-chicken) &key players (start-bar 1)
                                                      end-bar)
   (unless players (setq players (players sc)))
@@ -8116,13 +8152,8 @@ NOTE 6200 0.6666667
     (when print
       (format t "~&high: ~a low: ~a" (data high) (data low)))
     (values low high)))
+;;; ****
               
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Sat Feb 11 16:11:05 2017 
-(defmethod add-clef ((sc slippery-chicken) clef
-                     &optional bar-num event-num player)
-  (add-clef (get-event sc bar-num event-num player) clef))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

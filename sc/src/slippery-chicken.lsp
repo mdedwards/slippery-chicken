@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:38:59 Thu Apr 27 2017 BST
+;;; $$ Last modified:  09:41:41 Fri Apr 28 2017 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8112,6 +8112,7 @@ NOTE 6200 0.6666667
 ;;; SYNOPSIS
 (defmethod count-microtones ((sc slippery-chicken) &key players (start-bar 1)
                                                      end-bar)
+;;; ****
   (unless players (setq players (players sc)))
   (let ((chromatic 0)
         (micro 0)
@@ -8137,6 +8138,7 @@ NOTE 6200 0.6666667
 ;;;  MDE Thu Feb  9 19:56:22 2017 
 (defmethod player-ambitus ((sc slippery-chicken) player &key written print
                                                           (start-bar 1) end-bar)
+  
   (let (high low e-high e-low)
     (next-event sc player nil start-bar)
     (loop for e = (next-event sc player t nil end-bar)
@@ -8152,7 +8154,6 @@ NOTE 6200 0.6666667
     (when print
       (format t "~&high: ~a low: ~a" (data high) (data low)))
     (values low high)))
-;;; ****
               
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

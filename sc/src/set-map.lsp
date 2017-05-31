@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    March 11th 2010
 ;;;
-;;; $$ Last modified: 14:06:47 Sat Jan 30 2016 GMT
+;;; $$ Last modified:  19:41:48 Thu May 25 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -57,6 +57,20 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defmethod midi-play ((sm set-map)
+                      &key
+                        (auto-open (get-sc-config 'midi-play-auto-open))
+                        (midi-file
+                         (format nil "~a~a.mid"
+                                 (get-sc-config 'default-dir)
+                                 (string-downcase (string (id sm))))))
+;;; ****
+  (gen-midi-chord-seq sm midi-file)
+  (when auto-open
+    (system-open-file midi-file)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Sun Apr 29 18:21:09 BST 2012: Added robodoc entry
 
 ;;; ****m* set-map/gen-midi-chord-seq

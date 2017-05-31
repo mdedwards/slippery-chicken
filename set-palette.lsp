@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  19:58:09 Mon Jan 30 2017 GMT
+;;; $$ Last modified:  19:42:11 Thu May 25 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -393,7 +393,40 @@ data: (C4 F4 A4 C5)
      finally (return i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* set-palette/midi-play
+;;; DATE
+;;; 25th May 2017, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Write a MIDI file containing the sets in the set-palette
+;;; 
+;;; ARGUMENTS
+;;; - the set-palette object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword argument:
+;;; - :midi-file. The path (string) of the midi file to write. Default is to
+;;; use the ID of the set-palette and write it into the default directory.
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; SYNOPSIS
+(defmethod midi-play ((sp set-palette)
+                      &key
+                        (auto-open (get-sc-config 'midi-play-auto-open))
+                        (midi-file
+                         (format nil "~a~a.mid"
+                                 (get-sc-config 'default-dir)
+                                 (string-downcase (string (id sp))))))
+;;; ****
+  (gen-midi-chord-seq sp midi-file)
+  (when auto-open
+    (system-open-file midi-file)))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Tue Feb  7 14:28:07 GMT 2012: Edited robodoc entry
 
 ;;; ****m* set-palette/gen-midi-chord-seq
@@ -1121,12 +1154,12 @@ data: (C4 F4 A4 C5)
     (setq upper (doctor-set-limits-env upper (num-data sp))))
   (when (listp lower)
     (setq lower (doctor-set-limits-env lower (num-data sp))))
-  (flet ((getp (x data)  ;  data is either an env or a pitch object
+  (flet ((getp (x data)            ;  data is either an env or a pitch object
            (if (listp data)
                (degree-to-note (interpolate x data))
                data)))
     (loop for ref in (get-all-refs sp)
-         for set = (get-data ref sp)
+       for set = (get-data ref sp)
        for i from 1
        for u = (getp i upper)
        for l = (getp i lower)
@@ -1190,6 +1223,11 @@ data: (C4 F4 A4 C5)
 (defmethod round-to-nearest ((sp set-palette))
   (loop for ref in (get-all-refs sp)
      do (round-to-nearest (get-data ref sp))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod add-harmonics ((sp set-palette) &rest keywords)
+  (rmap sp #'add-harmonics keywords))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -1618,7 +1656,8 @@ COMPLETE-SET: complete: NIL
 ;;; - :force-chromatic. T or NIL. If T, force all micro-tone slots of pitch
 ;;;   objects to be NIL so that they won't be filtered out when a set is to be
 ;;;   used by a chromatic instrument. See sc-set class force-micro-tone for
-;;;   more details.
+;;;   more details. If you want truly chromatic sets make sure to be (in-scale
+;;;   :chromatic)  
 ;;; - :start-id. An integer which represents the ID number for the first
 ;;;   set. This will be incremented for each subsequent set generated.
 ;;; 

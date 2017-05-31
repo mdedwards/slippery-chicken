@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:41:41 Fri Apr 28 2017 BST
+;;; $$ Last modified:  19:41:28 Thu May 25 2017 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3991,7 +3991,8 @@ seq-num 5, VN, replacing G3 with B6
                         (update-amplitudes t)
                         ;; MDE Tue Jun  4 19:06:11 2013
                         (auto-open (get-sc-config 'midi-play-auto-open))
-                        ;; if this is a 7-bit number we'll use this for all notes
+                        ;; if this is a 7-bit number we'll use this for all
+                        ;; notes  
                         (force-velocity nil))
 ;;; ****
   (when update-amplitudes ; MDE Mon Jun 13 12:32:30 2016 

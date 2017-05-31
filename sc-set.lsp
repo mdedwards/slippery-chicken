@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  19:54:22 Mon Jan 30 2017 GMT
+;;; $$ Last modified:  19:02:40 Thu May 25 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -228,6 +228,8 @@ data: (F2 A2 F3 A3 C4 E4)
 ;;; SYNOPSIS
 (defmethod add-harmonics ((s sc-set) &rest keywords)
 ;;; ****
+  (when (= 1 (length keywords)) ; sequence of & rest causes nested list prob
+    (setq keywords (first keywords)))
   (setf (data s)
         (append (data s) 
                 (apply #'get-pitch-list-harmonics (cons (data s) keywords))))

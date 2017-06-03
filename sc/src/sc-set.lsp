@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  19:02:40 Thu May 25 2017 BST
+;;; $$ Last modified:  13:30:01 Fri Jun  2 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1504,6 +1504,93 @@ data: E4
 
 (defmethod morph :around ((s1 sc-set) (s2 sc-set) amount)
   (clone-with-new-class (call-next-method) 'sc-set))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* sc-set/subsets-remove
+;;; DATE
+;;; June 2nd 2017, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Remove pitches from all subsets of an sc-set object
+;;; 
+;;; ARGUMENTS
+;;; - the sc-set object
+;;; - &rest the pitches to remove, as pitch objects or symbols
+;;; 
+;;; RETURN VALUE
+;;; the sc-set
+;;; 
+;;; SYNOPSIS
+(defmethod subsets-remove ((s sc-set) &rest pitches)
+;;; ****
+  (when (subsets s)
+    (when (listp (first pitches))       ; pitches was already a list
+      (setq pitches (first pitches)))
+    (setq pitches (loop for p in pitches collect (make-pitch p)))
+    (map-data (subsets s)
+              #'(lambda (ss)
+                  (setf (data ss) (remove-if
+                                   #'(lambda (p)
+                                       (member p pitches :test #'pitch=))
+                                   (data ss))))))
+  s)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* sc-set/thin
+;;; DATE
+;;; June 1st, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Remove pitches from a set using a deterministic algorithm. From top to
+;;; bottom pitches will be selected or rejected using the activity-levels
+;;; class, to which the strength (1-10) is passed. The pitches removed are also
+;;; removed from any subsets.
+;;;
+;;; By default the set will be reduced by 1/3 of its pitches but it is expected
+;;; that either the :remove or :target keyword will be used (see below).
+;;; 
+;;; ARGUMENTS
+;;; - an sc-set object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :strength. An integer from 1-10 indicating the likelihood of removing
+;;;   individual pitches. 1 would be 10%, 10, 100%. Default = 5.
+;;; - :remove. An integer indicating how many pitches to remove. Default = NIL
+;;; - :target. An integer indicating how many pitches the set should be left
+;;;   with. Default = NIL
+;;; 
+;;; RETURN VALUE
+;;; The (thinned) sc-set object.
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod thin ((s sc-set) &key (strength 5) remove target)
+;;; ****
+  (unless (integer-between strength 1 10)
+    (error "sc-set::thin: :strength should be between 1 and 10: ~a" strength))
+  (when (and remove target)
+    (error "sc-set::thin: use either :remove or :target but not both."))
+  (unless (or remove target)
+    (setq remove (floor (sclist-length s) 3)))
+  (unless remove (setq remove (- (sclist-length s) target)))
+  (let ((al (make-al))
+        (removed 0)
+        (rm '()))
+    (loop repeat 1000 until (= removed remove) do
+         (loop for p in (data s) do
+              (when (and (< removed remove)
+                         (not (member p rm :test #'pitch=))
+                         (active al strength))
+                (push p rm)
+                (incf removed))))
+    (setf (data s) (set-difference (data s) rm :test #'pitch=))
+    (subsets-remove s rm)
+    s))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

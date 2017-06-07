@@ -12,13 +12,18 @@
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
-;;; Purpose:          Implementation of the wolfram class for 
+;;; Purpose:          Implementation of the wolfram class for one-dimensional
+;;;                   binary cellular automata introduced by Stephen Wolfram in
+;;;                   1983. The rule number is the decimal representation of
+;;;                   the binary number indicated by the eight transition rules
+;;;                   (i.e. the results given the triplet test cases; see the
+;;;                   rules slot below).
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    7th June 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  17:04:36 Wed Jun  7 2017 BST
+;;; $$ Last modified:  17:11:03 Wed Jun  7 2017 BST
 ;;;
 ;;; SVN ID: $Id: wolfram.lsp 6210 2017-04-07 11:42:29Z medward2 $
 ;;;
@@ -797,8 +802,12 @@ then the last 5 lines repeat
 ;;; June 7th 2017, Edinburgh. 
 ;;; 
 ;;; DESCRIPTION
-;;; This is the one Wolfram suggests might be Turing complete.
 ;;; #b01101110 = 110
+;;; This is the one Wolfram suggests might be Turing complete. This was proved
+;;; in 2000. "Rule 110, like the Game of Life, exhibits what Wolfram calls
+;;; "Class 4 behavior", which is neither completely stable nor completely
+;;; chaotic. Localized structures appear and interact in various
+;;; complicated-looking ways" (https://en.wikipedia.org/wiki/Rule_110)
 ;;; 
 ;;; ARGUMENTS
 ;;; none required

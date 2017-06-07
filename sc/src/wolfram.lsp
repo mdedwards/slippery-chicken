@@ -1,4 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****c* assoc-list/wolfram
 ;;; NAME 
 ;;; rhythm
@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    7th June 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  09:43:38 Wed Jun  7 2017 BST
+;;; $$ Last modified:  17:04:36 Wed Jun  7 2017 BST
 ;;;
 ;;; SVN ID: $Id: wolfram.lsp 6210 2017-04-07 11:42:29Z medward2 $
 ;;;
@@ -44,11 +44,11 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defclass wolfram (assoc-list)
   ;; the data slot holds the indexed generations
   ;; the rules for the next state, given the current and left and right
@@ -63,14 +63,46 @@
    (initial-state :accessor initial-state :type integer :initarg :initial-state
                   :initform 0)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((w wolfram) stream)
   (format stream "~&WOLFRAM: rules: ~a~
                   ~%         width: ~a, initial-state: ~a"
           (rules w) (width w) (initial-state w)))
 
-;;; start is the middle cell of a row; all cells to the left and right of it
-;;; will be initial-state
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod verify-and-store :after ((w wolfram))
+  (unless (integer>0 (width w))
+    (error "wolfram::verify-and-store: the width slot should be an integer ~
+            greater than zero, not ~a" (width w)))
+  (state-check (initial-state w)))
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* wolfram/generate
+;;; DATE
+;;; June 6th, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Generate the cellular automata rows using the given rules.
+;;; 
+;;; ARGUMENTS
+;;; - the wolfram object
+;;; - the number of generations (rows) to generate
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; <start> is the value of the middle cell of the first row (or just to the
+;;; left of middle, if width is an even number). All cells to the left and
+;;; right of it will be in <initial-state>. This should be 0 or 1 only.
+;;; 
+;;; RETURN VALUE
+;;; The data slot, which will be the rows in the form of a list of
+;;; named-objects containing the ID (starting from 1) and the list of cell
+;;; values.
+;;; 
+;;; SYNOPSIS
 (defmethod generate ((w wolfram) generations &optional (start 1))
+;;; ****
+  (state-check start)
+  (remove-data w)
   ;; this will always be the current row (i.e. change through each
   ;; generation). it will be copied into the data slot with an index.
   (let ((row (ml (initial-state w) (width w)))
@@ -90,26 +122,111 @@
          for rowi = (loop for c below (width w) collect (next c))
          do
            (add (list (1+ i) (copy-list row)) w)
-           (setq row rowi)))))
+           (setq row rowi))))
+  (data w))
 
-;;; on and off could be any object
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* wolfram/print-matrix
+;;; DATE
+;;; June 6th, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Print the state of the cells to the terminal. On and off could
+;;; theoretically be any object but of course single characters are
+;;; clearest. See the defwolfram definitions below for examples.
+;;; 
+;;; ARGUMENTS
+;;; - the wolfram object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :stream the stream to print to. Default t which means it prints to the
+;;;   terminal. 
+;;; - :on. what to print when a cell has the value 1. Default: the . character
+;;; - :off. what to print when a cell has the value 0. Default: space
+;;; - :row-number: whether to print row numbers. Default t.
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; SYNOPSIS
 (defmethod print-matrix ((w wolfram) &key (stream t) (on #\.) (off #\ )
                                        (row-number t))
+;;; ****
   (loop for row in (data w) do
        (if row-number
            (format stream "~&~3,'0d: " (id row))
            (terpri stream))
        (loop for cell in (data row) do (princ (if (zerop cell) off on)
-                                              stream))))
+                                              stream)))
+  t)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Related functions.
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun state-check (arg)
+  (unless (and (integerp arg)
+               (or (zerop arg)
+                   (= 1 arg)))
+    (error "wolfram::state-check: this value should be either 0 or 1, ~
+            as an integer, not ~a" arg)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* wolfram/defwolfram
+;;; DATE
+;;; June 6th, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Define your own Wolfram function to create an object with the flavour in the
+;;; rules passed. See below for several examples.
+;;; 
+;;; ARGUMENTS
+;;; - the name of the function you're defining (symbol)
+;;; - the list of rules
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the default width (integer>0) for the Wolfram object that will be created 
+;;; - the default initial-state: 1 or 0.
+;;; 
+;;; RETURN VALUE
+;;; the name of the function (symbol), just as with defun.
+;;; 
+;;; SYNOPSIS
 (defmacro defwolfram (fun rules &optional (w 100) (is 0))
+;;; ****
   `(defun ,fun (&optional (width ,w) (initial-state ,is))
      (make-instance 'wolfram :rules ,rules
                     :width width
                     :initial-state initial-state)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* wolfram/make-wolfram-r30
+;;; DATE
+;;; June 6th 2017, Edinburgh.
+;;; 
+;;; DESCRIPTION
+;;; This is the default Wolfgram object: #b00011110 = 30
+;;; 
+;;; ARGUMENTS
+;;; none required
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the width of a row. Default = 100.
+;;; - the initial state of the object. Default = 0.
+;;; 
+;;; RETURN VALUE
+;;; the function name as a symbol but when called a wolfram object with the
+;;; given rules. 
+;;; 
+;;; EXAMPLE
 #|
+;; so width: 12, initial-state: 0
+(let ((w (make-wolfram-r30 12 0)))
+  (generate w 100)
+  (print-matrix w :row-number nil :off "." :on 'X)
+  (print-matrix w :row-number nil))
       .     
      ...    
     ..  .   
@@ -144,12 +261,33 @@
 . . . . . ..   
 then last two rows repeat
 |#
-(defwolfram make-wolfram-r30 ; the default: #b00011110
+;;; SYNOPSIS
+(defwolfram make-wolfram-r30 
     '(((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 1)
       ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
-
-
+;;; ****
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* wolfram/make-wolfram-r25
+;;; DATE
+;;; June 6th 2017, Edinburgh. 
+;;; 
+;;; DESCRIPTION
+;;; #b00011001 = 25
+;;; 
+;;; ARGUMENTS
+;;; none required
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the width of a row. Default = 100.
+;;; - the initial state of the object. Default = 0.
+;;; 
+;;; RETURN VALUE
+;;; the function name as a symbol but when called a wolfram object with the
+;;; given rules. 
+;;; 
+;;; EXAMPLE
 #|
+width: 12, initial-state: 0
       .     
 .....  .....
 .    . .    
@@ -179,13 +317,74 @@ then last two rows repeat
   . .  ...  
 .    . .  .. 
 then last four rows repeat
-|#
 
-(defwolfram make-wolfram-r25 ; #b00011001 = 25. 
+also very nice starting with 0 instead of 1 (no obvious repeats):
+(generate w 100 0)
+............
+.           
+ ...........
+ .          
+  ..........
+. .         
+   .........
+.. .        
+.   ........
+ .. .       
+ .   .......
+  .. .      
+. .   ......
+   .. .     
+.. .   .....
+.   .. .    
+ .. .   ....
+ .   .. .   
+  .. .   ...
+. .   .. .  
+   .. .   ..
+.. .   .. . 
+.   .. .   .
+ .. .   ..  
+ .   .. . ..
+  .. .    . 
+. .   ...  .
+   .. .  .  
+.. .   .  ..
+.   ..  . . 
+ .. . .    .
+ .     ...  
+  .... .  ..
+. .     . . 
+   ....    .
+.. .   ...  
+
+|#
+;;; SYNOPSIS
+(defwolfram make-wolfram-r25
     '(((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1)
       ((0 1 1) 1) ((0 1 0) 0) ((0 0 1) 0) ((0 0 0) 1)))
-
+;;; ****
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* wolfram/make-wolfram-r190
+;;; DATE
+;;; June 6th 2017, Edinburgh. 
+;;; 
+;;; DESCRIPTION
+;;; #b10111110 = 190
+;;; 
+;;; ARGUMENTS
+;;; none required
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the width of a row. Default = 100.
+;;; - the initial state of the object. Default = 0.
+;;; 
+;;; RETURN VALUE
+;;; the function name as a symbol but when called a wolfram object with the
+;;; given rules. 
+;;; 
+;;; EXAMPLE
 #|
+width: 12, initial-state: 0
       .     
      ...    
     ... .   
@@ -205,26 +404,33 @@ then last four rows repeat
 . .. .. .. .    
 then last three rows repeat
 |#
-(defwolfram make-wolfram-r190 ; #b10111110 = 190
+;;; SYNOPSIS
+(defwolfram make-wolfram-r190 
     '(((1 1 1) 1) ((1 1 0) 0) ((1 0 1) 1) ((1 0 0) 1) ((0 1 1) 1)
       ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
-
+;;; ****
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* wolfram/make-wolfram-r126
+;;; DATE
+;;; June 6th 2017, Edinburgh. 
+;;; 
+;;; DESCRIPTION
+;;; #b01111110 = 126
+;;; 
+;;; ARGUMENTS
+;;; none required
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the width of a row. Default = 100.
+;;; - the initial state of the object. Default = 0.
+;;; 
+;;; RETURN VALUE
+;;; the function name as a symbol but when called a wolfram object with the
+;;; given rules. 
+;;; 
+;;; EXAMPLE
 #|
-using 1, the following repeats but not forever
-............
-            
-.          .
-..        ..
- ..      .. 
-....    ....
-   ..  ..   
-. ........ .
-...      ...
-  ..    ..  
-.....  .....
-    ....    
-.  ..  ..  .
-or using 0:
+width: 12, initial-state: 0
       .     
      ...    
     .. ..   
@@ -241,14 +447,49 @@ or using 0:
 .   ....   .
 .. ..  .. ..
 ............
-
+using 1, the following repeats but not forever
+............
+            
+.          .
+..        ..
+ ..      .. 
+....    ....
+   ..  ..   
+. ........ .
+...      ...
+  ..    ..  
+.....  .....
+    ....    
+.  ..  ..  .
 |#
-(defwolfram make-wolfram-r126 ; #b01111110
+;;; SYNOPSIS
+(defwolfram make-wolfram-r126 
     '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 1) ((1 0 0) 1) ((0 1 1) 1)
       ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
-
+;;; ****
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* wolfram/make-wolfram-r82
+;;; DATE
+;;; June 6th 2017, Edinburgh. 
+;;; 
+;;; DESCRIPTION
+;;; #b01010010 = 82
+;;; 
+;;; ARGUMENTS
+;;; none required
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the width of a row. Default = 100.
+;;; - the initial state of the object. Default = 0.
+;;; 
+;;; RETURN VALUE
+;;; the function name as a symbol but when called a wolfram object with the
+;;; given rules. 
+;;; 
+;;; EXAMPLE
 #|
-non-repeating but lovely patterns
+width: 12, initial-state: 0 
+non-repeating  but lovely patterns
       .     
      . .    
     .   .   
@@ -284,14 +525,373 @@ non-repeating but lovely patterns
 .           
  .          
 . .         
+|#
+;;; SYNOPSIS
+(defwolfram make-wolfram-r82 
+    '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 0)
+      ((0 1 0) 0) ((0 0 1) 1) ((0 0 0) 0)))
+;;; ****
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* wolfram/make-wolfram-r150
+;;; DATE
+;;; June 7th 2017, Edinburgh. 
+;;; 
+;;; DESCRIPTION
+;;; #b10010110 = 150
+;;; 
+;;; ARGUMENTS
+;;; none required
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the width of a row. Default = 100.
+;;; - the initial state of the object. Default = 0.
+;;; 
+;;; RETURN VALUE
+;;; the function name as a symbol but when called a wolfram object with the
+;;; given rules. 
+;;; 
+;;; EXAMPLE
 #|
-(defwolfram make-wolfram-r82 ; #b01010010
-    '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 0)
-      ((0 1 0) 0) ((0 0 1) 1) ((0 0 0) 0)))
+width: 12, initial-state: 0 
+non-repeating  but lovely patterns
+      .     
+     ...    
+    . . .   
+   .. . ..  
+  .   .   . 
+ ... ... ...
+. .   .   . 
+. .. ... ...
+.     .   . 
+..   ... ...
+  . . .   . 
+ .. . .. ...
+.   .     . 
+.. ...   ...
+    . . . . 
+   .. . . ..
+  .   . .   
+ ... .. ..  
+. .       . 
+. ..     ...
+.   .   . . 
+.. ... .. ..
+    .       
+   ...      
+  . . .     
+ .. . ..    
+.   .   .   
+.. ... ...  
+    .   . . 
+   ... .. ..
+  . .       
+ .. ..      
+.     .     
+..   ...    
+  . . . .   
+ .. . . ..  
+.   . .   . 
+.. .. .. ...
+          . 
+         ...
+        . . 
+       .. ..
+      .     
+     ...    
+    . . .   
+   .. . ..  
+  .   .   . 
+ ... ... ...
+|#
+;;; SYNOPSIS
+(defwolfram make-wolfram-r150 
+    '(((1 1 1) 1) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 0)
+      ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
+;;; ****
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* wolfram/make-wolfram-r151
+;;; DATE
+;;; June 7th 2017, Edinburgh. 
+;;; 
+;;; DESCRIPTION
+;;; #b10010111 = 151
+;;; 
+;;; ARGUMENTS
+;;; none required
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the width of a row. Default = 100.
+;;; - the initial state of the object. Default = 0.
+;;; 
+;;; RETURN VALUE
+;;; the function name as a symbol but when called a wolfram object with the
+;;; given rules. 
+;;; 
+;;; EXAMPLE
+#|
+      .     
+............
+ .......... 
+. ........ .
+.  ......  .
+... .... ...
+ .   ..   . 
+.....  .....
+ ... .. ... 
+. .      . .
+. ........ .
+.  ......  .
+then the last 7 lines repeat
+|#
+(defwolfram make-wolfram-r151
+    '(((1 1 1) 1) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 0)
+      ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 1)))
+;;; ****
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* wolfram/make-wolfram-r159
+;;; DATE
+;;; June 7th 2017, Edinburgh. 
+;;; 
+;;; DESCRIPTION
+;;; #b10011111 = 159
+;;; 
+;;; ARGUMENTS
+;;; none required
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the width of a row. Default = 100.
+;;; - the initial state of the object. Default = 0.
+;;; 
+;;; RETURN VALUE
+;;; the function name as a symbol but when called a wolfram object with the
+;;; given rules. 
+;;; 
+;;; EXAMPLE
+#|
+      .     
+............
+........... 
+.......... .
+.........  .
+........ ...
+.......  .. 
+...... ... .
+.....  ..  .
+.... ... ...
+...  ..  .. 
+.. ... ... .
+.  ..  ..  .
+then the last 4 lines repeat
+|#
+(defwolfram make-wolfram-r159
+    '(((1 1 1) 1) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 1)
+      ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 1)))
+;;; ****
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* wolfram/make-wolfram-r62
+;;; DATE
+;;; June 7th 2017, Edinburgh. 
+;;; 
+;;; DESCRIPTION
+;;; #b00111110 = 62
+;;; 
+;;; ARGUMENTS
+;;; none required
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the width of a row. Default = 100.
+;;; - the initial state of the object. Default = 0.
+;;; 
+;;; RETURN VALUE
+;;; the function name as a symbol but when called a wolfram object with the
+;;; given rules. 
+;;; 
+;;; EXAMPLE
+#|
+      .     
+     ...    
+    ..  .   
+   .. ....  
+  .. ..   . 
+ .. .. . ...
+.. .. ....  
+. .. ..   . 
+... .. . ...
+.  .. ....  
+.... ..   . 
+.   .. . ...
+.. .. ....  
+. .. ..   . 
+... .. . ...
+.  .. .... 
+then the last 6 lines repeat
+|#
+(defwolfram make-wolfram-r62
+    '(((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 1) ((1 0 0) 1) ((0 1 1) 1)
+      ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
+;;; ****
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* wolfram/make-wolfram-r93
+;;; DATE
+;;; June 7th 2017, Edinburgh. 
+;;; 
+;;; DESCRIPTION
+;;; #b01011101 = 93
+;;; 
+;;; ARGUMENTS
+;;; none required
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the width of a row. Default = 100.
+;;; - the initial state of the object. Default = 0.
+;;; 
+;;; RETURN VALUE
+;;; the function name as a symbol but when called a wolfram object with the
+;;; given rules. 
+;;; 
+;;; EXAMPLE
+#|
+      .     
+..... ......
+.   ...    .
+... . .... .
+. .....  ...
+...   .. . .
+. ... ......
+... ...    .
+. ... .... .
+... ...  ...
+. ... .. . .
+... ........
+. ...      .
+... ...... .
+. ...    ...
+... .... . .
+. ...  .....
+... .. .   .
+. ........ .
+...      ...
+. ...... . .
+...    .....
+. .... .   .
+...  ..... .
+. .. .   ...
+........ . .
+.      .....
+...... .   .
+.    ..... .
+.... .   ...
+.  ..... . .
+.. .   .....
+...... .   .
+.    ..... .
+then the last 5 lines repeat
+|#
+(defwolfram make-wolfram-r93
+    '(((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 1)
+      ((0 1 0) 1) ((0 0 1) 0) ((0 0 0) 1)))
+;;; ****
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* wolfram/make-wolfram-r110
+;;; DATE
+;;; June 7th 2017, Edinburgh. 
+;;; 
+;;; DESCRIPTION
+;;; This is the one Wolfram suggests might be Turing complete.
+;;; #b01101110 = 110
+;;; 
+;;; ARGUMENTS
+;;; none required
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the width of a row. Default = 100.
+;;; - the initial state of the object. Default = 0.
+;;; 
+;;; RETURN VALUE
+;;; the function name as a symbol but when called a wolfram object with the
+;;; given rules. 
+;;; 
+;;; EXAMPLE
+#|
+so this one only goes up to column 7 when called with width of 12:
+      .     
+     ..     
+    ...     
+   .. .     
+  .....     
+ ..   .     
+...  ..     
+. . ...     
+..... .     
+.   ...     
+.  .. .     
+. .....     
+...   .     
+. .  ..     
+... ...     
+. ... .      
+then the last 2 lines repeat
 
-(defwolfram make-wolfram-rx ; #b01010010
-    '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 0)
-      ((0 1 0) 0) ((0 0 1) 1) ((0 0 0) 0)))
-
+but called with width of 60:
+                              .                             
+                             ..                             
+                            ...                             
+                           .. .                             
+                          .....                             
+                         ..   .                             
+                        ...  ..                             
+                       .. . ...                             
+                      ....... .                             
+                     ..     ...                             
+                    ...    .. .                             
+                   .. .   .....                             
+                  .....  ..   .                             
+                 ..   . ...  ..                             
+                ...  .... . ...                             
+               .. . ..  ..... .                             
+              ........ ..   ...                             
+             ..      ....  .. .                             
+            ...     ..  . .....                             
+           .. .    ... ....   .                             
+          .....   .. ...  .  ..                             
+         ..   .  ..... . .. ...                             
+        ...  .. ..   ........ .                             
+       .. . ......  ..      ...                             
+      .......    . ...     .. .                             
+     ..     .   .... .    .....                             
+    ...    ..  ..  ...   ..   .                             
+   .. .   ... ... .. .  ...  ..                             
+  .....  .. ... ...... .. . ...                             
+ ..   . ..... ...    ........ .                             
+...  ....   ... .   ..      ...                             
+. . ..  .  .. ...  ...     .. .                             
+...... .. ..... . .. .    .....                             
+.    ......   ........   ..   .                             
+.   ..    .  ..      .  ...  ..                             
+.  ...   .. ...     .. .. . ...                             
+. .. .  ..... .    .......... .                             
+...... ..   ...   ..        ...                             
+.    ....  .. .  ...       .. .                             
+.   ..  . ..... .. .      .....                             
+.  ... ....   ......     ..   .                             
+. .. ...  .  ..    .    ...  ..                             
+...... . .. ...   ..   .. . ...                             
+.    ........ .  ...  ....... .                             
+.   ..      ... .. . ..     ...                             
+.  ...     .. .........    .. .                             
+. .. .    .....       .   .....                             
+......   ..   .      ..  ..   .                             
+.    .  ...  ..     ... ...  ..                             
+.   .. .. . ...    .. ... . ...                             
+.  .......... .   ..... ..... .                             
+. ..        ...  ..   ...   ...                             
+....       .. . ...  .. .  .. .                             
+.  .      ....... . ..... .....                             
+. ..     ..     .....   ...   .                             
+|#
+(defwolfram make-wolfram-r110
+    '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 1) ((1 0 0) 0) ((0 1 1) 1)
+      ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
+;;; ****
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF wolfram.lsp

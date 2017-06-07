@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified: 15:51:53 Mon Feb  1 2016 GMT
+;;; $$ Last modified:  10:38:28 Wed Jun  7 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1300,14 +1300,16 @@ data: HIVE
 ;;; 
 ;;; ARGUMENTS
 ;;; - the recursive assoc-list object
-;;; - as many keys as you like for the members of the assoc-list
+;;; - as many keys as you like. If none are passed then all are removed. 
 ;;; 
 ;;; RETURN VALUE
-;;; the recursive-assoc-list object's new data list, i.e. with elements removed
+;;; The recursive-assoc-list object's new data list, i.e. with elements
+;;; removed. Could of course be NIL if you've not passed any keys.
 ;;; 
 ;;; SYNOPSIS
 (defmethod remove-data ((ral recursive-assoc-list) &rest keys)
 ;;; ****
+  (unless keys (setq keys (get-keys al)))
   (loop for k in keys do
        (typecase k
          (atom (call-next-method))

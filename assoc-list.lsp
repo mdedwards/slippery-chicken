@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  15:55:41 Tue Mar 28 2017 BST
+;;; $$ Last modified:  10:38:32 Wed Jun  7 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -847,7 +847,7 @@ data: (SNOOPY SPOT ROVER)
    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; ****m* assoc-list/remove-elements
+;;; ****m* assoc-list/remove-data
 ;;; DATE
 ;;; February 1st 2016
 ;;; 
@@ -857,15 +857,18 @@ data: (SNOOPY SPOT ROVER)
 ;;; 
 ;;; ARGUMENTS
 ;;; - the assoc-list object
-;;; - as many keys as you like for the members of the assoc-list
+;;; - as many keys as you like for the members of the assoc-list. If none are
+;;;   passed then all are removed. 
 ;;; 
 ;;; RETURN VALUE
-;;; the assoc-list object's new data list, i.e. with elements removed
+;;; The assoc-list object's new data list, i.e. with elements removed. Could of
+;;; course be NIL if you've not passed any keys.
 ;;; 
 ;;; SYNOPSIS
 (defmethod remove-data ((al assoc-list) &rest keys)
 ;;; ****
   ;; (print keys)
+  (unless keys (setq keys (get-keys al)))
   (let ((data (data al)))
     (loop for k in keys do
          (setq data (remove k data :test #'id-eq)))

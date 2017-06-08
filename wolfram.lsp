@@ -57,9 +57,9 @@
 (defclass wolfram (assoc-list)
   ;; the data slot holds the indexed generations
   ;; the rules for the next state, given the current and left and right
-  ;; neighbours. our default rules our Wolfram's Rule 30 (remember the rule
+  ;; neighbours. Our default rules are Wolfram's Rule 30 (remember the rule
   ;; number is the binary number indicated by the new cells, in this case 
-  ;; 00011110. the triplet first element of each sublist is the state of
+  ;; 00011110). the triplet first element of each sublist is the state of
   ;; left|current|right and the integer second element is the result.
   ((rules :accessor rules :type list :initarg :rules :initform
           '(((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 1)

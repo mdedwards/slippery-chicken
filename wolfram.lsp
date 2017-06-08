@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    7th June 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  16:51:55 Thu Jun  8 2017 BST
+;;; $$ Last modified:  16:52:07 Thu Jun  8 2017 BST
 ;;;
 ;;; SVN ID: $Id: wolfram.lsp 6210 2017-04-07 11:42:29Z medward2 $
 ;;;
@@ -944,4 +944,4 @@ then the last 2 lines repeat
       ((0 1 0) 0) ((0 0 1) 0) ((0 0 0) 1)))
 ;;; ****
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; EOF wolfram.lsp and
+;;; EOF wolfram.lsp

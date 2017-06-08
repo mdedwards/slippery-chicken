@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    7th June 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  17:11:03 Wed Jun  7 2017 BST
+;;; $$ Last modified:  16:01:10 Thu Jun  8 2017 BST
 ;;;
 ;;; SVN ID: $Id: wolfram.lsp 6210 2017-04-07 11:42:29Z medward2 $
 ;;;
@@ -901,6 +901,47 @@ but called with width of 60:
 (defwolfram make-wolfram-r110
     '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 1) ((1 0 0) 0) ((0 1 1) 1)
       ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
+;;; ****
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* wolfram/make-wolfram-r73
+;;; DATE
+;;; June 8th 2017, Edinburgh. 
+;;; 
+;;; DESCRIPTION
+;;; #b01001001 = 73
+;;; Suggested by Orestis Papadopoulos
+;;; 
+;;; ARGUMENTS
+;;; none required
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the width of a row. Default = 100.
+;;; - the initial state of the object. Default = 0.
+;;; 
+;;; RETURN VALUE
+;;; the function name as a symbol but when called a wolfram object with the
+;;; given rules. 
+;;; 
+;;; EXAMPLE
+#|
+      .     
+.....   ....
+.   . . .  .
+  .         
+.   ........
+  . .      .
+.     ....  
+  ... .  . .
+. . .       
+      ......
+..... .    .
+.   .   ..  
+  .   . .. .
+then the last 2 lines repeat
+|#
+(defwolfram make-wolfram-r73
+    '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 0) ((1 0 0) 0) ((0 1 1) 1)
+      ((0 1 0) 0) ((0 0 1) 0) ((0 0 0) 1)))
 ;;; ****
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF wolfram.lsp

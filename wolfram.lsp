@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    7th June 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  16:52:07 Thu Jun  8 2017 BST
+;;; $$ Last modified:  17:40:25 Thu Jun  8 2017 BST
 ;;;
 ;;; SVN ID: $Id: wolfram.lsp 6210 2017-04-07 11:42:29Z medward2 $
 ;;;
@@ -87,7 +87,9 @@
 ;;; June 6th, Edinburgh
 ;;; 
 ;;; DESCRIPTION
-;;; Generate the cellular automata rows using the given rules.
+;;; Generate the cellular automata rows using the given rules. N.B. Each time
+;;; this method is called, the results (data slot) of the previous calls are
+;;; deleted. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - the wolfram object
@@ -178,21 +180,21 @@
     (error "wolfram::state-check: this value should be either 0 or 1, ~
             as an integer, not ~a" arg)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* wolfram/defwolfram
 ;;; DATE
 ;;; June 6th, Edinburgh
 ;;; 
 ;;; DESCRIPTION
-;;; Define your own Wolfram function to create an object with the flavour in the
-;;; rules passed. See below for several examples.
+;;; Define your own Wolfram function to create an object with the flavour in
+;;; the rules passed. See below for several examples.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the name of the function you're defining (symbol)
 ;;; - the list of rules
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - the default width (integer>0) for the Wolfram object that will be created 
+;;; - the default width (integer>0) for the Wolfram object that will be created
 ;;; - the default initial-state: 1 or 0.
 ;;; 
 ;;; RETURN VALUE

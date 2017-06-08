@@ -3,7 +3,7 @@
 ;;; NAME
 ;;; globals
 ;;;
-;;; File:             clm-piano-spectra.lsp
+;;; File:             violin-ensemble-spectra.lsp
 ;;;
 ;;; Class Hierarchy:  None: no classes defined.
 ;;;
@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    5th August 2015
 ;;;
-;;; $$ Last modified: 12:20:08 Tue Feb  2 2016 GMT
+;;; $$ Last modified:  19:36:36 Thu Jun  8 2017 BST
 ;;;
 ;;; SVN ID: $Id: clm-piano-spectra.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;

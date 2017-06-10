@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    7th June 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  17:40:25 Thu Jun  8 2017 BST
+;;; $$ Last modified:  13:51:17 Sat Jun 10 2017 BST
 ;;;
 ;;; SVN ID: $Id: wolfram.lsp 6210 2017-04-07 11:42:29Z medward2 $
 ;;;
@@ -64,6 +64,10 @@
   ((rules :accessor rules :type list :initarg :rules :initform
           '(((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 1)
             ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
+   ;; MDE Sat Jun 10 13:20:10 2017 -- when we call defwolfram, keep track of
+   ;; the new function so we can try all at once with the same parameters, in
+   ;; order to compare
+   (functions :accessor functions :type list :initform nil :allocation :class)
    (width :accessor width :type integer :initarg :width :initform 100)
    (initial-state :accessor initial-state :type integer :initarg :initial-state
                   :initform 0)))
@@ -147,7 +151,7 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :stream the stream to print to. Default t which means it prints to the
+;;; - :stream. The stream to print to. Default t which means it prints to the
 ;;;   terminal. 
 ;;; - :on. what to print when a cell has the value 1. Default: the . character
 ;;; - :off. what to print when a cell has the value 0. Default: space
@@ -158,7 +162,7 @@
 ;;; 
 ;;; SYNOPSIS
 (defmethod print-matrix ((w wolfram) &key (stream t) (on #\.) (off #\ )
-                                       (row-number t))
+                                       (row-number nil))
 ;;; ****
   (loop for row in (data w) do
        (if row-number
@@ -188,6 +192,10 @@
 ;;; DESCRIPTION
 ;;; Define your own Wolfram function to create an object with the flavour in
 ;;; the rules passed. See below for several examples.
+;;;
+;;; In addition, the name of the newly created function will be added to an
+;;; internal list of all functions defined by this macro, so that (try-all) can
+;;; be called (see below).
 ;;; 
 ;;; ARGUMENTS
 ;;; - the name of the function you're defining (symbol)
@@ -203,11 +211,55 @@
 ;;; SYNOPSIS
 (defmacro defwolfram (fun rules &optional (w 100) (is 0))
 ;;; ****
+  ;; just to keep track of the new function so we can call in (try-all)
+  (let ((tmp (make-instance 'wolfram)))
+    (pushnew fun (functions tmp)))
   `(defun ,fun (&optional (width ,w) (initial-state ,is))
      (make-instance 'wolfram :rules ,rules
                     :width width
                     :initial-state initial-state)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* wolfram/try-all
+;;; DATE
+;;; June 10th 2017, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Try all of the Wolfram rules defined via defwolfram. An instance of each
+;;; rule set defined will be created, the rows will be generated, and
+;;; print-matrix will be called. This allows you to see and compare the results
+;;; of each rule set using the same parameters.
+;;; 
+;;; ARGUMENTS
+;;; none required
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; :width. The width slot (number of columns) for the Wolfram objects. Any
+;;; positive ingeger. Default = 100.
+;;; :initial-state. The initial-state (i.e. default) slot for the Wolfram
+;;;  objects. 0 or 1. Default = 0.
+;;; :start. The value of the middle cell of the first row. See generate method
+;;; for more details. 0 or 1. Default = 1.
+;;; :generations. The number of rows to generate. Any positive integer. Default
+;;; = 30.
+;;; :stream, :on, :off, :row-number: see print-matrix method.
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; SYNOPSIS
+(defun try-all (&key (width 100) (initial-state 0) (start 1) (generations 30)
+                  (stream t) (on #\.) (off #\ ) (row-number nil))
+  (let ((w (make-instance 'wolfram)))
+    (loop for fun in (functions w) do
+         (format t "~&~a:" fun)
+         (setq w (funcall (symbol-function fun) width initial-state))
+         (generate w generations start)
+         (print-matrix w :row-number row-number :off off :on on
+                       :stream stream)))
+  t)
+       
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* wolfram/make-wolfram-r30
 ;;; DATE
@@ -272,6 +324,7 @@ then last two rows repeat
 (defwolfram make-wolfram-r30 
     '(((1 1 1) 0) ((1 1 0) 0) ((1 0 1) 0) ((1 0 0) 1) ((0 1 1) 1)
       ((0 1 0) 1) ((0 0 1) 1) ((0 0 0) 0)))
+;;; ****
 ;;; ****
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* wolfram/make-wolfram-r25

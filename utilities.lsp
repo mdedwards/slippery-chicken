@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  16:13:59 Tue Jun  6 2017 BST
+;;; $$ Last modified:  15:05:05 Wed Jun 14 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -175,48 +175,41 @@
                     list)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; NB check whether a floating point number is very close to an integer. NB
+;;; returns T also with an integer.
 (defun float-int-p (x &optional (tolerance 0.000001d0))
-  (equal-within-tolerance 0.0 (nth-value 1 (round x)) tolerance))
+  (and (numberp x)
+       (equal-within-tolerance 0.0 (nth-value 1 (round x)) tolerance)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun integer>0 (x)
   (and (integerp x) (> x 0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun integer>=0 (x)
   (and (integerp x) (>= x 0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun integer<0 (x)
   (and (integerp x) (< x 0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun integer<=0 (x)
   (and (integerp x) (<= x 0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun integer-between (x lower upper)
   (and (integerp x)
        (>= x lower)
        (<= x upper)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun number-between (x lower upper)
   (and (numberp x)
        (>= x lower)
        (<= x upper)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 12:15:03 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/string-replace
 ;;; DESCRIPTION
 ;;; Replace specified segments of a string with a new specified string.
@@ -5087,6 +5080,14 @@ Here's where I pasted the data into the .RPP Reaper file:
        (if (and ai (member ai list2))
            ai
            i)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Jun 13 18:36:30 2017 -- divide a list of integers by their greatest
+;;; common divisor e.g. (/gcd '(21 12 6)) -> (7 4 2) or (/gcd '(20 12 6)) ->
+;;; (10 6 3)
+(defun /gcd (list)
+  (let ((gcd (apply #'gcd list)))
+    (mapcar #'(lambda (x) (/ x gcd)) list)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

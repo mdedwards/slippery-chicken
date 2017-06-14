@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  09:40:45 Wed Jun  7 2017 BST
+;;; $$ Last modified:  18:52:59 Sat Jun 10 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -269,7 +269,7 @@
 (sc-compile-and-load "spectra.lsp")
 #+clm (sc-compile-and-load "control-wave.lsp")
 (sc-compile-and-load "music-xml.lsp")
-(sc-compile-and-load "wolfram.lsp")
+(sc-compile-and-load "wolfram.lsp" t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF all.lsp

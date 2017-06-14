@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  19:41:28 Thu May 25 2017 BST
+;;; $$ Last modified:  18:43:28 Wed Jun 14 2017 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2026,7 +2026,8 @@ bar 45
 ;;; SYNOPSIS
 (defmethod players ((sc slippery-chicken))
 ;;; ****
-  (players (piece sc)))
+  (when (piece-p (piece sc))
+    (players (piece sc))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -8939,8 +8940,12 @@ NOTE 6200 0.6666667
          (midi-channel (if player
                            (midi-channel player-obj)
                            1))
-         (microtones-midi-channel (when player
-                                    (microtones-midi-channel player-obj)))
+         ;; MDE Wed Jun 14 18:30:24 2017 -- use midi-channel if microtones
+         ;; channel not given.
+         (microtones-midi-channel
+          (if (and player-obj (> (microtones-midi-channel player-obj) 0))
+              (microtones-midi-channel player-obj)
+              midi-channel))
          ;; MDE Thu Jul  5 17:00:45 2012 
          (got-ins (instrument-p instrument))
          (midi-prog (when got-ins (midi-program instrument)))

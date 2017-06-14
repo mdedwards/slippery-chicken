@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  10:38:32 Wed Jun  7 2017 BST
+;;; $$ Last modified:  18:19:17 Wed Jun 14 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -875,11 +875,34 @@ data: (SNOOPY SPOT ROVER)
     (setf (data al) data)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* assoc-list/reindex
+;;; DATE
+;;; 14th June 2017, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Re-index the named-objects to consecutive integers starting from a given
+;;; number.  
+;;; 
+;;; ARGUMENTS
+;;; - the assoc-list object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the integer to start reindexing at
+;;; 
+;;; RETURN VALUE
+;;; the assoc-list object
+;;; 
+;;; SYNOPSIS
+(defmethod reindex ((al assoc-list) &optional (start 1))
+  (loop for thing in (data al) and i from start do (setf (id thing) i))
+  al)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; 01.12.11 SEAN: Added ROBODoc info
 ;; ****f* assoc-list/make-assoc-list
 ;; DESCRIPTION
@@ -925,6 +948,7 @@ data: PIG)
 (defun make-assoc-list (id al &key (warn-not-found t))
 ;;; ****
   (make-instance 'assoc-list :data al :id id :warn-not-found warn-not-found))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

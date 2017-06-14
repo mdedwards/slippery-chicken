@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified: 13:05:49 Fri Jun 26 2015 BST
+;;; $$ Last modified:  20:37:20 Tue Jun 13 2017 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -1022,11 +1022,52 @@ rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) is required.
   (rmap rsp #'delete-rqq-info))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rthm-seq-palette/rs-equal-durations?
+;;; DATE
+;;; June 13th 2017, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; See if all the rthm-seqs in a palette (or sub-palette) have the same
+;;; duration. 
+;;; 
+;;; ARGUMENTS
+;;; - the rthm-seq-palette object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - a reference (symbol or list) into the rthm-seq-palette to examine a
+;;; sub-palette 
+;;; 
+;;; RETURN VALUE
+;;; If all rthm-seqs in the palette have the same duration, then their duration
+;;; in quarter notes, otherwise nil.
+;;; 
+;;; SYNOPSIS
+(defmethod rs-equal-durations? ((rsp rthm-seq-palette) &optional ref)
+;;; ****
+  (setq ref (force-list ref))
+  (let* ((all-refs (get-all-refs rsp))
+         (refs (if ref
+                   (loop for r in all-refs
+                      for s = (search ref r)
+                        ;; ideally we'd just get the refs from the sub-rsp but
+                        ;; because references are full relative to the parent
+                        ;; this doesn't work 
+                      when (and s (zerop s)) collect r)
+                   all-refs))
+         dur)
+    (loop for r in refs for rsdur = (duration (get-data r rsp)) do
+         (if dur 
+             (unless (equal-within-tolerance dur rsdur)
+               (setq dur nil)
+               (return))
+             (setq dur rsdur)))
+    dur))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Sat Jan 28 11:18:46 GMT 2012: Added robodoc info
 
 ;;; ****f* rthm-seq-palette/make-rsp

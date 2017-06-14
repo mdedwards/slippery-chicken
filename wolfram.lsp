@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    7th June 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  13:51:17 Sat Jun 10 2017 BST
+;;; $$ Last modified:  18:53:05 Sat Jun 10 2017 BST
 ;;;
 ;;; SVN ID: $Id: wolfram.lsp 6210 2017-04-07 11:42:29Z medward2 $
 ;;;
@@ -238,7 +238,7 @@
 ;;; :width. The width slot (number of columns) for the Wolfram objects. Any
 ;;; positive ingeger. Default = 100.
 ;;; :initial-state. The initial-state (i.e. default) slot for the Wolfram
-;;;  objects. 0 or 1. Default = 0.
+;;; objects. 0 or 1. Default = 0.
 ;;; :start. The value of the middle cell of the first row. See generate method
 ;;; for more details. 0 or 1. Default = 1.
 ;;; :generations. The number of rows to generate. Any positive integer. Default

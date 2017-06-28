@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  09:49:51 Wed Jun 28 2017 BST
+;;; $$ Last modified:  10:26:14 Wed Jun 28 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1334,7 +1334,7 @@ data: HIVE
   (data ral))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  returns a list of the keys removed
+;;; returns a list of the keys removed
 (defmethod remove-when ((ral recursive-assoc-list) test)
   (remove-when-aux ral #'get-all-refs test))
 

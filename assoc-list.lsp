@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  09:52:20 Wed Jun 28 2017 BST
+;;; $$ Last modified:  10:43:20 Wed Jun 28 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -882,9 +882,35 @@ data: (SNOOPY SPOT ROVER)
   (verify-and-store al))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  returns a list of the keys removed
+;;; returns a list of the keys removed
+;;; ****m* assoc-list/remove-when
+;;; DATE
+;;; June 28th 2017, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Use a function to test each object in an assoc-list and if the test returns
+;;; T, then remove the object. Works in recursive-assoc-list class too. 
+;;; 
+;;; ARGUMENTS
+;;; - an assoc-list object
+;;; - a function that returns T or NIL after interrogating a named-object or
+;;;   subclass's slots
+;;; 
+;;; RETURN VALUE
+;;; a list of the IDs of the objects removed.
+;;; 
+;;; EXAMPLE
+#|
+(let ((al (make-assoc-list 'mixed-bag 
+                            '((jim beam)
+                              (wild turkey)
+                              (four roses)))))
+  (remove-when al #'(lambda (x) (eq (data x) 'roses))))
+|#
+;;; SYNOPSIS
 (defmethod remove-when ((al assoc-list) test)
-  (remove-when-aux ral #'get-keys test))
+;;; ****
+  (remove-when-aux al #'get-keys test))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* assoc-list/reindex
@@ -906,6 +932,7 @@ data: (SNOOPY SPOT ROVER)
 ;;; 
 ;;; SYNOPSIS
 (defmethod reindex ((al assoc-list) &optional (start 1))
+  ;;; ****
   (loop for thing in (data al) and i from start do (setf (id thing) i))
   al)
 
@@ -959,7 +986,6 @@ data: PIG)
 (defun make-assoc-list (id al &key (warn-not-found t))
 ;;; ****
   (make-instance 'assoc-list :data al :id id :warn-not-found warn-not-found))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

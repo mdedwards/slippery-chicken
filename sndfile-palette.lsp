@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified: 15:11:25 Mon Jul 25 2016 BST
+;;; $$ Last modified:  19:10:12 Wed Jun 21 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -149,7 +149,6 @@
   (when (with-followers sfp)
     (process-followers sfp))
   ;; MDE Fri Jan  4 10:10:22 2013 
-  ;; (print 'num-snds)
   (setf (num-snds sfp) (count-snds sfp)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -159,7 +158,6 @@
 
 (defmethod combine :around ((sfp1 sndfile-palette) (sfp2 sndfile-palette))
   (declare (ignore sfp1 sfp2))
-  ;; (print 'sfp-combine)
   (let ((result (call-next-method)))
     (setf (num-snds result) (count-snds result))
     result))
@@ -1049,7 +1047,6 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
          (groups (get-groups-from-paths sfs folder))
          (pdl (length (trailing-slash folder)))
          sfgroup pos group)
-    ;; (print groups)
     ;; MDE Fri Sep 25 15:02:22 2015 -- if we've got sndfiles in the folder
     ;; (i.e. not subfolders) then we have to create a default group 
     (unless groups (setq groups (list default-group)))
@@ -1066,11 +1063,9 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
                               (unless pos (setq group default-group
                                                 pos 0))
                               (nth pos groups)))
-             ;; (print group) (print pos) (print (nth pos groups))
                (if (atom group)
                    (setf (nth pos groups) (list group (list sf)))
                    (push sf (second (nth pos groups)))))
-          ;; (print groups)
           (make-sfp 'auto groups :auto-freq auto-freq))
         (warn "sndfile-palette:make-sfp-from-folder: ~a: no sound files."
               folder))))
@@ -1149,7 +1144,6 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
        for sfname = (pathname-name sndfile) do
        ;; there may be several files mapped to a single key--velocity
        ;; differences--so we can filter them here.
-       ;; (print sndfile) (print midi)
          (when (and (seq-has-all insist sfname)
                     (seq-has-none resist sfname))
            (push (list sndfile :frequency (midi-to-freq midi)) sfp)))

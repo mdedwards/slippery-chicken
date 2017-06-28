@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  11:57:40 Sat Mar 18 2017 GMT
+;;; $$ Last modified:  10:44:31 Fri Jun 16 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -334,6 +334,11 @@
       (:lowest-written c2 :highest-written g4 :staff-name "organ pedals"
        :staff-short-name "ped" :largest-fast-leap 6 :chords nil
        :clefs (bass) :starting-clef bass :microtones nil :midi-program 20))
+     (percussion
+      (:staff-name "percussion" :staff-short-name "perc" :staff-lines 5
+       :lowest-written e4 :highest-written f5
+       :starting-clef percussion
+       :midi-program 1))
      (tambourine
       (:staff-name "tambourine" :staff-short-name "tmb" :staff-lines 1
        ;; MDE Fri Nov 13 16:05:46 2015 -- put on b4 not c4

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  18:19:17 Wed Jun 14 2017 BST
+;;; $$ Last modified:  09:52:20 Wed Jun 28 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -126,8 +126,7 @@
                  (setf (nth i data) (make-instance 'named-object 
                                                    :id (first pair)
                                                    :data (second pair))))))))
-  (unless 
-      (typep al 'pitch-seq-palette)
+  (unless (typep al 'pitch-seq-palette)
     (all-ids-unique al)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -867,15 +866,27 @@ data: (SNOOPY SPOT ROVER)
 ;;; SYNOPSIS
 (defmethod remove-data ((al assoc-list) &rest keys)
 ;;; ****
-  ;; (print keys)
+  ;; (print 'remove-data) (print keys) ;(print al)
   (unless keys (setq keys (get-keys al)))
   (let ((data (data al)))
     (loop for k in keys do
+         ;; MDE Wed Jun 28 09:50:39 2017 -- mainly for ral's
+         (when (id-as-list k) 
+           (setq k (first k)))
          (setq data (remove k data :test #'id-eq)))
     (setf (data al) data)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod (setf data) :after (value (al assoc-list))
+  (declare (ignore value))
+  (verify-and-store al))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  returns a list of the keys removed
+(defmethod remove-when ((al assoc-list) test)
+  (remove-when-aux ral #'get-keys test))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* assoc-list/reindex
 ;;; DATE
 ;;; 14th June 2017, Edinburgh
@@ -985,6 +996,23 @@ data: PIG)
 
 (defun assoc-list-p (candidate)
   (typep candidate 'assoc-list))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Jun 27 10:53:04 2017 -- used by this and ral class, the
+;;; key-accessor is either get-keys or get-all-refs, according to class 
+(defun remove-when-aux (assoc-list key-accessor test)
+  (let* ((all-keys (funcall key-accessor assoc-list))
+         ;; we can use the remove-data method (assoc-list and ral classes) to
+         ;; remove the data so just find the refs of the data to remove first
+         (rm-keys
+          (loop for key in all-keys
+             for thing = (get-data key assoc-list)
+             when (funcall test thing)
+             collect key)))
+    ;; (print rm-keys)
+    (apply #'remove-data (cons assoc-list rm-keys))
+    (verify-and-store assoc-list)
+    rm-keys))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

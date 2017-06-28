@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  19:42:11 Thu May 25 2017 BST
+;;; $$ Last modified:  17:18:34 Sun Jun 25 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1230,6 +1230,10 @@ data: (C4 F4 A4 C5)
   (rmap sp #'add-harmonics keywords))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod thin ((sp set-palette) &rest keywords &key &allow-other-keys)
+  (apply #'rmap (cons sp (cons #'thin keywords))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -1407,7 +1411,6 @@ data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
     ;; hence it's called god.
     (unless god
       (setf god ral))
-    ;; (print (data ral))
     (loop for i in (data ral) and j from 0 do
          (if (is-ral (data i))
              (setf (data (nth j (data ral)))
@@ -1420,7 +1423,6 @@ data: (B2 E3 AQS3 CS4 F4 GQS4 AQF4 D5 EF5 AF5 BF5 DQF6 DQS6 A6 C7)
                    ;; we've probably made a set without an id so copy it over
                    (setf (id (data i)) (id i)
                          (nth j (data ral)) (data i)))
-                 ;; (print i)
                  (let* ((id (id i))
                         (data (data i))
                         (set (first data))
@@ -1806,7 +1808,6 @@ data: (
          (rm-duplicates set t)     ; comparing symbols, not pitch= (freqs etc.)
          (when remove-octaves
            (rm-octaves set))
-         ;; (print (data set))
          (add set sp))
     ;; MDE Mon Jun 22 13:42:02 2015 
     (when force-chromatic
@@ -1904,7 +1905,6 @@ data: (
   ;; different lisps
   (setf pitch1 (decimal-places pitch1 2)
         pitch2 (decimal-places pitch2 2))
-  ;; (print pitch1) (print pitch2)
   (let* ((pitch1p (cons pitch1 (loop for i from 2 to pitch1-partials collect 
                                   (* pitch1 i))))
          (pitch2p (cons pitch2 (loop for i from 2 to pitch2-partials collect
@@ -1942,7 +1942,6 @@ data: (
                       :as-symbol t :allow remove-octaves))
           (setf rmod (remove-octaves rmod :as-symbol nil 
                                      :allow remove-octaves))))
-    ;; (print rmod)
     (if return-notes
         notes
         rmod)))
@@ -2251,7 +2250,6 @@ WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
                                (use-octave-signs t)
                                ;; leave parents alone: used recursively 
                                parents)
-  ;; (print parents)
   (loop for i below (length set-list)
      for current = (nth i set-list)
      if (set-palette-p (data current))

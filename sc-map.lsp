@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  13:25:57 Sat Nov 26 2016 GMT
+;;; $$ Last modified:  19:32:14 Wed Jun 21 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -240,7 +240,7 @@ WARNING:
       (let ((all-refs (get-all-refs scm)))
         (loop for ref in all-refs append (get-data-from-palette ref scm)))
       (warn "sc-map::get-all-data-from-palette: palette slot is nil so can't ~
-           return data from it.")))
+             return data from it.")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* sc-map/get-data-from-palette
@@ -330,8 +330,6 @@ data: (SET1 SET3 SET2)
 ;;; ****
   (let* ((palette-ref (get-data ids scm warn))
          (palette-ref-data (when palette-ref (data palette-ref))))
-    (print ids)
-    (print palette-ref)
     (cond ((not (palette scm))
            ;; MDE Thu Feb 23 10:52:44 2012 -- just return the get-data call if
            ;; there's no palette, but indicate something in the second returned

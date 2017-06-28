@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  09:39:04 Fri Apr 28 2017 BST
+;;; $$ Last modified:  14:35:52 Sun Jun 25 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -684,8 +684,8 @@ data: NIL
   rsb)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Thu Aug 13 10:56:20 2015 -- we need an approach for complext tuplets
-;;; here also, as we can't split into beats there. 
+;;; MDE Thu Aug 13 10:56:20 2015 -- we need an approach for complex/nested
+;;; tuplets here also, as we can't split into beats there.
 
 ;;; ****m* rthm-seq-bar/consolidate-rests
 ;;; DESCRIPTION
@@ -712,6 +712,11 @@ data: NIL
 ;;; - :warn. T or NIL to indicate whether the method should print a warning to
 ;;;   the Lisp listener if it is mathematically unable to consolidate the
 ;;;   rests. T = print warning. Default = NIL.
+;;; - :auto-tuplets. Whether to force a call to the auto-tuplets method before
+;;;   returning. This will happen by default anyway if check-tuplets fails, but
+;;;   sometimes that doesn't fail, exactly, but auto-tuplets still makes
+;;;   sense. If, for example, Lilypond fails with strange error messages,
+;;;   setting this to T might help. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; The rthm-seq-bar object
@@ -772,8 +777,9 @@ data: E.
 
 |#
 ;;; SYNOPSIS
-(defmethod consolidate-rests ((rsb rthm-seq-bar) &key beat min warn)
-;;; ****
+(defmethod consolidate-rests ((rsb rthm-seq-bar)
+                              &key beat min warn auto-tuplets)
+;;; ****
   ;; (print 'consolidate-rests)
   ;; (print (length (rhythms rsb)))
   ;; MDE Mon Nov 26 20:18:12 2012 -- added 'silent to make sure we don't get
@@ -892,7 +898,7 @@ data: E.
                       (sum-rhythms-duration cbeats)
                       (rhythms-duration rsb) cbeats)))))
     ;; MDE Mon May  7 17:45:59 2012
-    (unless (check-tuplets rsb nil)
+    (when (or auto-tuplets (not (check-tuplets rsb nil)))
       (auto-tuplets rsb))
     ;; MDE Sat Jun 28 14:36:43 2014
     (update-events-player rsb player)
@@ -1567,6 +1573,10 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; tuplet bracket has a closing tuplet bracket etc.). If an error is found,
 ;;; the method will try to fix it, then re-check, and only issue an error then
 ;;; if another is found.
+;;;
+;;; NB this won't check whether tuplet brackets start and stop on notes
+;;; spanning a whole beat (as that wouldn't make sense with nested tuplets) so
+;;; it won't guarantee that a bar can be notated without errors.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A rthm-seq-bar object.
@@ -1685,6 +1695,7 @@ data: ((2 4) - S S - S - S S S - S S)
            (add-tuplet-bracket rsb (list tuplet start count))
            (setf tuplet nil))
          (setf bag nil)))
+  ;; (print rsb)
   (check-tuplets rsb on-fail))
          
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6544,7 +6555,7 @@ rsb-rb)
     (values events time)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  MDE Fri Apr 14 07:05:07 2017 -- rthm is a power-of-two. Sometimes we
+;;; MDE Fri Apr 14 07:05:07 2017 -- rthm is a power-of-two. Sometimes we
 ;;; have a simple tuplet like 5, meaning of course 5 in the time of 4, but this
 ;;; could be over a whole bar e.g. 3/4. In that case the
 ;;; tuplet-actual-normals method would think 5 qs in the time of 4, which is

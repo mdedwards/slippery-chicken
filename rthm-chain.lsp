@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 15:09:38 Thu May 26 2016 WEST
+;;; $$ Last modified:  18:29:23 Mon Jun 19 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1740,13 +1740,13 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;; SYNOPSIS
 (defun procession (num-results items 
                    &key 
-                     ;; what proportion of the way through should we aim to reach
-                     ;; the max number of items?  NB This is approximate only:
-                     ;; you may find the first occurrence of the highest element
-                     ;; earlier or later depending on the values of the other
-                     ;; arguments.  In particular, with a low number of items the
-                     ;; highest element will be hit very early on, perhaps
-                     ;; nowhere near the peak argument.
+                     ;; what proportion of the way through should we aim to
+                     ;; reach the max number of items?  NB This is approximate
+                     ;; only: you may find the first occurrence of the highest
+                     ;; element earlier or later depending on the values of the
+                     ;; other arguments.  In particular, with a low number of
+                     ;; items the highest element will be hit very early on,
+                     ;; perhaps nowhere near the peak argument.
                      (peak 0.7)
                      ;; for an exponential curve going from 3 to num <items>
                      (expt 1.3)

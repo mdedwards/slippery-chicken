@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  13:30:01 Fri Jun  2 2017 BST
+;;; $$ Last modified:  10:06:21 Wed Jun 28 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -930,7 +930,6 @@ data: (G2 A2 CS4 A4 A4 A5 C6 C6 FS6)
          chord)
     (loop repeat num-stacks do
          (setf result (stack-aux result distances by-freq up down)))
-    ;; (print result)
     (unless by-freq
       (setf result (degrees-to-notes result))
       ;; MDE Sat Jan 14 10:25:25 2012 -- try and get better spellings
@@ -1463,7 +1462,6 @@ data: E4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod least-used-octave-aux ((s sc-set) test avoiding)
   (unless (listp avoiding) (setq avoiding (list avoiding)))
-  ;; (print (get-pitch-symbols s))
   ;;     this will hold the count of pitches in each octave starting with -1
   (let ((8vecs (ml 0 11))
         (low8 (octave (lowest s)))
@@ -1471,8 +1469,6 @@ data: E4
         result)
     ;; octaves can be as low -1 so 1+ them here
     (loop for p in (data s) do (incf (nth (1+ (octave p)) 8vecs)))
-    ;; (print 8vecs)
-    ;; (print low8)
     ;; only include those octaves within the highest and lowest notes (so no
     ;; extremes unless the chord has notes in those extremes)
     (loop for 8ve from -1 for 8vec in 8vecs with num do
@@ -1536,7 +1532,6 @@ data: E4
   s)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* sc-set/thin
 ;;; DATE
 ;;; June 1st, Edinburgh
@@ -1571,6 +1566,7 @@ data: E4
 ;;; SYNOPSIS
 (defmethod thin ((s sc-set) &key (strength 5) remove target)
 ;;; ****
+  ;; (print strength) (print remove) (print target)
   (unless (integer-between strength 1 10)
     (error "sc-set::thin: :strength should be between 1 and 10: ~a" strength))
   (when (and remove target)
@@ -1578,7 +1574,7 @@ data: E4
   (unless (or remove target)
     (setq remove (floor (sclist-length s) 3)))
   (unless remove (setq remove (- (sclist-length s) target)))
-  (let ((al (make-al))
+  (let ((al (make-al 1))
         (removed 0)
         (rm '()))
     (loop repeat 1000 until (= removed remove) do
@@ -1779,10 +1775,6 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun check-subsets (subsets sc-set)
-  ;; (print 'check-subsets------------------------)
-  ;; (print (data sc-set))
-  ;; (print 'subsets----------)
-  ;; (print subsets)
   (when (and subsets (is-ral subsets))
     (loop 
        for ss in (data subsets) 
@@ -1791,7 +1783,6 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
        (if (is-ral pitches)
            (check-subsets pitches sc-set)
            (loop for pitch in (data ss) do
-                ;; (print pitch)
                 (unless (pitch-member pitch (data sc-set))
                   (error "sc-set::check-subsets: Note ~a given in subset ~a ~
                           ~%of set ~a is not part of the main set: ~a"
@@ -1803,6 +1794,5 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
   (typep thing 'sc-set))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        
 ;;; EOF sc-set.lsp
 

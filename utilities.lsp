@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:05:05 Wed Jun 14 2017 BST
+;;; $$ Last modified:  09:50:02 Wed Jun 28 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1599,7 +1599,38 @@
   (loop for y in (cdr env) by #'cddr maximize y))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jun 15 15:05:02 2017
+;;; ****f* utilities/invert-env
+;;; DATE
+;;; June 15th 2017, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Invert an envelope so that its maximum value becomes its minimum,
+;;; vice-versa, and everything inbetween.
+;;; 
+;;; ARGUMENTS
+;;; A list of X-Y breakpoint pairs
+;;; 
+;;; RETURN VALUE
+;;; A list of X-Y breakpoint pairs exhibiting the inversion.
+;;; 
+;;; EXAMPLE
+#|
+(invert-env '(0 0 100 1)) -> (0 1.0 100 0.0)
+(invert-env '(0 .3 40 .4 100 .9)) -> (0 0.9 40 0.79999995 100 0.3)
+(invert-env '(0 -.9 40 .4 100 .9)) -> (0 0.9 40 -0.39999998 100 -0.9)
+|#
+;;; SYNOPSIS
+(defun invert-env (env)
+;;; ****
+  (let* ((min (env-y-min env))
+         (max (env-y-max env))
+         (range (- max min)))
+    (loop for x in env by #'cddr and y in (cdr env) by #'cddr
+       for d = (/ (- y min) range)
+       collect x collect (between-extremes min max (- 1.0 d)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/auto-scale-env
 ;;; DATE
 ;;; August 29th 2013
@@ -3724,10 +3755,7 @@ WARNING:
 ;;; MDE Sat Jun  1 11:21:10 2013 -- get a file name from a piece title by
 ;;; replacing spaces with hyphens etc. 
 (defun filename-from-title (title)
-  (string-downcase
-   (remove
-    #\'
-    (substitute #\- #\  title))))
+  (string-downcase (remove #\: (remove #\' (substitute #\- #\  title)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5088,6 +5116,11 @@ Here's where I pasted the data into the .RPP Reaper file:
 (defun /gcd (list)
   (let ((gcd (apply #'gcd list)))
     (mapcar #'(lambda (x) (/ x gcd)) list)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun id-as-list (thing)
+  (and (listp thing) (= 1 (length thing))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

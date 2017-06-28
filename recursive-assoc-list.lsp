@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  10:38:28 Wed Jun  7 2017 BST
+;;; $$ Last modified:  09:49:51 Wed Jun 28 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -329,18 +329,19 @@ data: VELVET
 
 (defmethod verify-and-store :after ((ral recursive-assoc-list))
   (loop for i in (data ral) do
-        (when (and (typep i 'named-object) 
-                   (lisp-assoc-listp (data i)
-                                     (recurse-simple-data ral)))
-          (setf (data i) 
-            (make-ral (format nil "sub-ral-of-~a" (id ral))
-                      (data i)
-                      :full-ref (econs (full-ref ral) (id i))
-                      :recurse-simple-data (recurse-simple-data ral)
-                      :warn-not-found (warn-not-found ral)))))
+       (when (and (typep i 'named-object) 
+                  (lisp-assoc-listp (data i)
+                                    (recurse-simple-data ral)))
+         (setf (data i) 
+               (make-ral (format nil "sub-ral-of-~a" (id ral))
+                         (data i)
+                         :full-ref (econs (full-ref ral) (id i))
+                         :recurse-simple-data (recurse-simple-data ral)
+                         :warn-not-found (warn-not-found ral)))))
   ;; psp's parse their data later so don't do this here.
   (unless (typep ral 'pitch-seq-palette)
     (setf (num-data ral) (r-count-elements ral)))
+  ;; (print 'ral-vs) (print (num-data ral))
   ral)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -669,6 +670,11 @@ T
 ;;; SYNOPSIS
 (defmethod rmap ((ral recursive-assoc-list) function &rest arguments)
 ;;; ****
+  (when (and (= 1 (length arguments))
+             (not (first arguments)))
+    ;; we've got '(nil) as arguments
+    (setq arguments nil))
+  ;; (print arguments)
   (loop for thing in (data ral) do
        (if (is-ral (data thing))
            (if arguments
@@ -1309,13 +1315,18 @@ data: HIVE
 ;;; SYNOPSIS
 (defmethod remove-data ((ral recursive-assoc-list) &rest keys)
 ;;; ****
-  (unless keys (setq keys (get-keys al)))
+  (unless keys (setq keys (get-keys ral)))
   (loop for k in keys do
+     ;; MDE Tue Jun 27 11:29:10 2017 -- got to handle case where one ref is in a
+     ;; list
+       (when (id-as-list k)
+         (setq k (first k)))
+       ;; (print k)
        (typecase k
          (atom (call-next-method))
          (list (let ((al (butlast k))
                      (al-ref (first (last k))))
-                 ;; (print al) (print al-ref)
+                 ;; (format t "~&list: ~a ~a" al al-ref)
                  (call-next-method (get-data-data al ral) al-ref)))
          (t (error "recursive-assoc-list::remove-data: wrong key type: ~a"
                    k))))
@@ -1323,7 +1334,11 @@ data: HIVE
   (data ral))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  returns a list of the keys removed
+(defmethod remove-when ((ral recursive-assoc-list) test)
+  (remove-when-aux ral #'get-all-refs test))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Fri Jan 27 14:42:30 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/get-first

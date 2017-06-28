@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified: 15:33:14 Sat Jun 28 2014 BST
+;;; $$ Last modified:  19:20:50 Wed Jun 21 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -101,7 +101,6 @@
                            (warn-ties t)
                            (update-write-bar-nums nil))
   (declare (ignore current-section warn-ties update-write-bar-nums))
-  ;; (print 'sequenz-update-slots)
   (setf (start-bar s) start-bar
         (start-time s) start-time
         (start-time-qtrs s) start-time-qtrs
@@ -333,5 +332,4 @@
   (typep thing 'sequenz))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF sequenz.lsp

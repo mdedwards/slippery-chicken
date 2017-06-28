@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified:  10:20:51 Tue Dec 13 2016 CET
+;;; $$ Last modified:  16:12:14 Sun Jun 25 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -328,6 +328,8 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
     (limit-ral (subsets tls) u l)
     (when do-related-sets
       (limit-ral (related-sets tls) u l)))
+  ;; MDE Sun Jun 25 16:12:13 2017
+  (verify-and-store tls)
   tls)
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -377,7 +379,6 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
   (let ((upper (limit-get-pitch upper 'b10)) ;; 'b10 and 'c0 are just defaults
         (lower (limit-get-pitch lower 'c0))
         new8ve changes newp)
-    ;; (print upper)
     (loop for i below (sclist-length tls)
        ;; don't loop in (data tls) as we're modifying that in this loop (would
        ;; probably be OK, but...)
@@ -388,14 +389,10 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
                   i (sclist-length tls) (length (data tls))))
          (when (or (pitch> p upper)
                    (pitch< p lower))
-           ;; (print (data p))
            (push (clone p) changes)
-           ;; (print (get-pitch-symbols tls))
-           ;; (print (first (data tls)))
            ;; preference notes in higher octaves if there's a tie
            (setq new8ve (least-used-octave tls :highest-wins t
                                            :avoiding (octave p)))
-           ;; (print new8ve)
            ;; make sure moving doesn't take us out of our limits
            (loop for j in '(0 1 2 3 4 -1 -2 -3 -4)
               for 8ve = (+ j new8ve) do
@@ -612,7 +609,6 @@ data: C6
                                              :enharmonics-are-equal t
                                              :return-symbols nil)
                              set-pitches)))
-    ;; (print set-pitches)
     set-pitches-rm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

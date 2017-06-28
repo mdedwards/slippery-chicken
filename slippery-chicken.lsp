@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:43:28 Wed Jun 14 2017 BST
+;;; $$ Last modified:  15:02:40 Thu Jun 15 2017 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2562,22 +2562,22 @@ data: 32
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
-(db (double-bass :midi-channel 2))))
-:instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
-(2 ((sax ((2 alto-sax) (5 tenor-sax))))))
-:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))
-(2 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))))))
-(get-current-instrument-for-player 2 'sax 3 mini))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
+                     (db (double-bass :midi-channel 2))))
+        :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+                                 (2 ((sax ((2 alto-sax) (5 tenor-sax))))))
+        :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((sax (1 1 1 1 1))
+                            (db (1 1 1 1 1))))
+                        (2 ((sax (1 1 1 1 1))
+                            (db (1 1 1 1 1))))))))
+  (get-current-instrument-for-player 2 'sax 3 mini))
 
 => 
 INSTRUMENT: lowest-written: BF3, highest-written: FS6
@@ -2647,22 +2647,22 @@ data: NIL
 ;;; EXAMPLE
 #|
 (let* ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
-(db (double-bass :midi-channel 2))))
-:instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
-(2 ((sax ((2 alto-sax) (5 tenor-sax))))))
-:set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))
-(2 ((sax (1 1 1 1 1))
-(db (1 1 1 1 1))))))))
-(get-instrument-for-player-at-bar 'sax 3 mini))
+        (make-slippery-chicken
+         '+mini+
+         :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))
+                      (db (double-bass :midi-channel 2))))
+         :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+                                  (2 ((sax ((2 alto-sax) (5 tenor-sax))))))
+         :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+         :set-map '((1 (1 1 1 1 1))
+                    (2 (1 1 1 1 1)))
+         :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                 :pitch-seq-palette ((1 2 3 4 5)))))
+         :rthm-seq-map '((1 ((sax (1 1 1 1 1))
+                             (db (1 1 1 1 1))))
+                         (2 ((sax (1 1 1 1 1))
+                             (db (1 1 1 1 1))))))))
+  (get-instrument-for-player-at-bar 'sax 3 mini))
 
 => 
 INSTRUMENT: lowest-written: BF3, highest-written: FS6
@@ -2681,7 +2681,6 @@ largest-fast-leap: 999, tessitura: FS3
 LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: TENOR-SAX, tag: NIL, 
 data: NIL
-
 |#
 ;;; SYNOPSIS
 (defmethod get-instrument-for-player-at-bar (player bar (sc slippery-chicken))
@@ -2716,18 +2715,17 @@ data: NIL
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((sax (alto-sax :midi-channel 1))))
-:set-palette '((1 ((e3 fs3 b3 cs4 fs4 gs4 ds5 f5)))) 
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((sax (1 1 1))))))))
-(get-transposition-at-bar 'sax 2 mini))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax (alto-sax :midi-channel 1))))
+        :set-palette '((1 ((e3 fs3 b3 cs4 fs4 gs4 ds5 f5)))) 
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((sax (1 1 1))))))))
+  (get-transposition-at-bar 'sax 2 mini))
 
 => -9
-
 |#
 ;;; SYNOPSIS
 (defmethod get-transposition-at-bar (player bar (sc slippery-chicken))
@@ -2755,19 +2753,19 @@ data: NIL
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((sax (alto-sax :midi-channel 1))))
-:set-palette '((1 ((e3 fs3 b3 cs4 fs4 gs4 ds5 f5)))) 
-:set-map '((1 (1 1 1 1))
-(2 (1 1 1))
-(3 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((sax (1 1 1 1))))
-(2 ((sax (1 1 1))))
-(3 ((sax (1 1 1 1 1))))))))
-(num-seqs mini 2))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax (alto-sax :midi-channel 1))))
+        :set-palette '((1 ((e3 fs3 b3 cs4 fs4 gs4 ds5 f5)))) 
+        :set-map '((1 (1 1 1 1))
+                   (2 (1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((sax (1 1 1 1))))
+                        (2 ((sax (1 1 1))))
+                        (3 ((sax (1 1 1 1 1))))))))
+  (num-seqs mini 2))
 
 => 3
 
@@ -2798,6 +2796,22 @@ data: NIL
                              nil)))
           (when sec
             (sclist-length sec))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/num-players
+;;; DESCRIPTION
+;;; Get the number of players in a slippery chicken object's ensemble object.
+;;; 
+;;; ARGUMENTS
+;;; - A slippery chicken object
+;;; 
+;;; RETURN VALUE
+;;; - An integer.
+;;; 
+;;; SYNOPSIS
+(defmethod num-players ((sc slippery-chicken))
+;;; ****
+  (num-players (ensemble sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon May  7 09:32:10 2012 -- NB num-sections refers to the number of
@@ -2886,25 +2900,25 @@ data: NIL
               else collect (this s))))))
 
 #|
-;;; MDE Mon May  7 09:31:17 2012 -- this is the old version ;
-;;; The linking of the rthm-seq-map (and hence piece) slot only works at the ;
-;;; instrument level so we don't get a pointer to the next section, rather, ;
-;;; only when we ask for instrument data do we get the points. E.g. (get-data 3 ;
-;;; (piece sc)) will have previous, this, and next slots all NIL, whereas ;
-;;; (get-data '(3 some-instrument) (piece sc)) will return a player-section ;
-;;; where the previous, this, and next slots are good (this is all as it should ;
-;;; be!). In order to get the references of a number of contiguous sections ;
-;;; then, we'll have to use instrument references. ;
+;;; MDE Mon May  7 09:31:17 2012 -- this is the old version
+;;; The linking of the rthm-seq-map (and hence piece) slot only works at the
+;;; instrument level so we don't get a pointer to the next section, rather,
+;;; only when we ask for instrument data do we get the points. E.g. (get-data 3 
+;;; (piece sc)) will have previous, this, and next slots all NIL, whereas
+;;; (get-data '(3 some-instrument) (piece sc)) will return a player-section
+;;; where the previous, this, and next slots are good (this is all as it should
+;;; be!). In order to get the references of a number of contiguous sections
+;;; then, we'll have to use instrument references.
 (defmethod get-section-refs ((sc slippery-chicken) start-section num-sections)
-(let* ((last-player (first (last (players (ensemble sc)))))
-(section-list (if (listp start-section) 
-start-section
-(list start-section)))
-(ref section-list))
-(unless num-sections
-(setf num-sections (get-num-sections sc)))
-(loop with player-ref with data
-repeat num-sections
+  (let* ((last-player (first (last (players (ensemble sc)))))
+         (section-list (if (listp start-section) 
+                           start-section
+                           (list start-section)))
+         (ref section-list))
+    (unless num-sections
+      (setf num-sections (get-num-sections sc)))
+    (loop with player-ref with data
+       repeat num-sections
        ;; MDE Mon Apr 16 21:36:44 2012 -- do this only while we can get a ref ;
        ;; because if we start beyond section 1 but don't give num-sections ;
        ;; we'll be in trouble otherwise. ;
@@ -2912,8 +2926,8 @@ while ref
 collect ref
 do 
 (setf player-ref (econs ref last-player)
-data (get-data player-ref (piece sc))
-ref (when data (butlast (next data)))))))
+      data (get-data player-ref (piece sc))
+      ref (when data (butlast (next data)))))))
 
 |#
 
@@ -2925,10 +2939,14 @@ ref (when data (butlast (next data)))))))
 ;;; DESCRIPTION
 ;;; Return the number of sections in the given slippery-chicken object, as
 ;;; defined in e.g. in the set-map. N.B. If the object has subsections these
-;;; are counted also. 
+;;; are counted also, unless the optional argument is NIL.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A slippery-chicken object.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - count-subsections: if T (default) count all sections and subsections. If
+;;; NIL just the top-level sections.
 ;;; 
 ;;; RETURN VALUE  
 ;;; An integer that is the number of section.
@@ -2936,30 +2954,34 @@ ref (when data (butlast (next data)))))))
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((sax (alto-sax :midi-channel 1))))
-:set-palette '((1 ((e3 fs3 b3 cs4 fs4 gs4 ds5 f5)))) 
-:set-map '((1 ((a (1 1 1 1))
-(b (1 1 1 1))))
-(2 (1 1 1))
-(3 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((a ((sax (1 1 1 1))))
-(b ((sax (1 1 1 1))))))
-(2 ((sax (1 1 1))))
-(3 ((sax (1 1 1 1 1))))))))
-(get-num-sections mini))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax (alto-sax :midi-channel 1))))
+        :set-palette '((1 ((e3 fs3 b3 cs4 fs4 gs4 ds5 f5)))) 
+        :set-map '((1 ((a (1 1 1 1))
+                       (b (1 1 1 1))))
+                   (2 (1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((a ((sax (1 1 1 1))))
+                            (b ((sax (1 1 1 1))))))
+                        (2 ((sax (1 1 1))))
+                        (3 ((sax (1 1 1 1 1))))))))
+  (get-num-sections mini))
 
 => 4
 
 |#
 ;;; 
 ;;; SYNOPSIS
-(defmethod get-num-sections ((sc slippery-chicken))
+(defmethod get-num-sections ((sc slippery-chicken)
+                             &optional (count-subsections t))
 ;;; ****
-  (num-data (set-map sc)))
+  (if count-subsections
+      (num-data (set-map sc))
+      ;; MDE Thu Jun 15 14:54:24 2017 
+      (sclist-length (rthm-seq-map sc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2979,35 +3001,35 @@ ref (when data (butlast (next data)))))))
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((sax (alto-sax :midi-channel 1))))
-:set-palette '((1 ((e3 fs3 b3 cs4 fs4 gs4 ds5 f5)))) 
-:set-map '((1 (1 1 1))
-(2 (1 1 1))
-(3 ((a (1 1 1))
-(b ((x (1 1 1))
-(y (1 1 1))))))
-(4 ((a (1 1 1))
-(b (1 1 1))
-(c (1 1 1 1))))
-(5 (1 1 1))
-(6 (1 1 1))
-(7 (1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((sax (1 1 1))))
-(2 ((sax (1 1 1))))
-(3 ((a ((sax (1 1 1))))
-(b ((x ((sax (1 1 1))))
-(y ((sax (1 1 1))))))))
-(4 ((a ((sax (1 1 1))))
-(b ((sax (1 1 1))))
-(c ((sax (1 1 1 1))))))
-(5 ((sax (1 1 1))))
-(6 ((sax (1 1 1))))
-(7 ((sax (1 1 1))))))))
-(get-all-section-refs mini))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((sax (alto-sax :midi-channel 1))))
+        :set-palette '((1 ((e3 fs3 b3 cs4 fs4 gs4 ds5 f5)))) 
+        :set-map '((1 (1 1 1))
+                   (2 (1 1 1))
+                   (3 ((a (1 1 1))
+                       (b ((x (1 1 1))
+                           (y (1 1 1))))))
+                   (4 ((a (1 1 1))
+                       (b (1 1 1))
+                       (c (1 1 1 1))))
+                   (5 (1 1 1))
+                   (6 (1 1 1))
+                   (7 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((sax (1 1 1))))
+                        (2 ((sax (1 1 1))))
+                        (3 ((a ((sax (1 1 1))))
+                            (b ((x ((sax (1 1 1))))
+                                (y ((sax (1 1 1))))))))
+                        (4 ((a ((sax (1 1 1))))
+                            (b ((sax (1 1 1))))
+                            (c ((sax (1 1 1 1))))))
+                        (5 ((sax (1 1 1))))
+                        (6 ((sax (1 1 1))))
+                        (7 ((sax (1 1 1))))))))
+  (get-all-section-refs mini))
 
 => ((1) (2) (3 A) (3 B X) (3 B Y) (4 A) (4 B) (4 C) (5) (6) (7))
 

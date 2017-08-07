@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  19:22:27 Fri Apr  7 2017 BST
+;;; $$ Last modified:  11:51:50 Wed Jun 28 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1669,7 +1669,8 @@ data: CQS4
                               (t 0))
               (data-consistent p) t)
         ;; MDE Thu May 30 20:12:17 2013 
-        (when (> (midi-note p) 119)
+        (when (and (get-sc-config 'warn-high-pitch)
+                   (> (midi-note p) 119))
           (warn "pitch::update-pitch: midi-note is > 119: ~
                  probably won't be able ~%to display in score format: ~a" 
                 p))))))

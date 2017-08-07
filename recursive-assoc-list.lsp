@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  10:26:14 Wed Jun 28 2017 BST
+;;; $$ Last modified:  15:45:41 Thu Jul 13 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -407,6 +407,11 @@ data: BEAM
     (relink-named-objects result)
     result))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jul 13 15:45:02 2017
+(defmethod reindex :after ((ral recursive-assoc-list) &optional (start 1))
+  (declare (ignore start))
+  (relink-named-objects ral))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; MDE's original comment:

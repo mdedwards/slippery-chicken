@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  10:06:21 Wed Jun 28 2017 BST
+;;; $$ Last modified:  15:20:25 Mon Aug  7 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -112,6 +112,7 @@
                pitches in ~&~a"
               (pitch-list-to-symbols pl))))
     (setf (slot-value s 'data) plrd)
+    (set-micro-tone s)
     ;;(check-subsets (subsets s) s)
     ))
 
@@ -392,7 +393,9 @@ data: CS4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jan 30 19:53:58 2017 -- in the current scale
 (defmethod round-to-nearest ((s sc-set))
-  (loop for p in (data s) do (round-to-nearest p)))
+  (loop for p in (data s) do (round-to-nearest p))
+  (set-micro-tone s)
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1223,6 +1226,36 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
   (all-members (data s) (init-pitch-list pitches nil) #'pitch=))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* sc-set/has-pitches-in-range
+;;; DATE
+;;; June 28th 2017, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Tests whether a set has pitches within a certain range.
+;;; 
+;;; ARGUMENTS
+;;; - the sc-set object
+;;; - the lower pitch of the range (pitch object or symbol)
+;;; - the upper pitch of the range (pitch object or symbol)
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate that only chromatic pitches count, i.e. not
+;;;   microtones  
+;;; 
+;;; RETURN VALUE
+;;; T or NIL
+;;; 
+;;; SYNOPSIS
+(defmethod has-pitches-in-range ((s sc-set) lower upper &optional chromatic)
+  (setq lower (make-pitch lower)
+        upper (make-pitch upper))
+  (loop for p in (data s) do
+       (when (and (or (not chromatic) (not (micro-tone p)))
+                  (pitch-in-range p lower upper))
+         (return t))
+       finally (return nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Mon Feb  6 17:32:38 GMT 2012: Added robodoc entry
 
@@ -1259,6 +1292,7 @@ PITCH: frequency: 73.416, midi-note: 38, midi-channel: 0
 (defmethod create-chord ((s sc-set))
 ;;; ****
   (make-chord (data s)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

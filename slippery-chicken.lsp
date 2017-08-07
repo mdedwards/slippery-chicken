@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:02:40 Thu Jun 15 2017 BST
+;;; $$ Last modified:  18:33:07 Sat Aug  5 2017 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8176,9 +8176,27 @@ NOTE 6200 0.6666667
                (when (or (not low) (pitch< e-low low))
                  (setq low e-low)))))
     (when print
-      (format t "~&high: ~a low: ~a" (data high) (data low)))
+      (format t "~&~a: high: ~a low: ~a" player (data high) (data low)))
     (values low high)))
-              
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Aug  5 18:09:57 2017 -- 
+(defmethod players-ambitus ((sc slippery-chicken)
+                            &key written print (start-bar 1) end-bar)
+  (let (high low)
+    (loop for p in (players sc) do
+         (multiple-value-bind
+               (l h)
+             (player-ambitus sc p :written written :print print
+                             :start-bar start-bar :end-bar end-bar)
+           (when (or (not high) (pitch> h high))
+             (setq high h))
+           (when (or (not low) (pitch< l low))
+             (setq low l))))
+    (when print
+      (format t "~&all players: high: ~a low: ~a" (data high) (data low)))
+    (values low high)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

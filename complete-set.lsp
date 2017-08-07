@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified:  19:32:12 Mon Jan 30 2017 GMT
+;;; $$ Last modified:  11:51:54 Sun Aug  6 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -226,9 +226,14 @@
     ;; things so it doesn't overlap subset names etc. 
     (labels ((push-aux (note-list text where &optional (offset-offset 0.0))
                (let ((cmn-ch (cmn::cmn-stemless-chord
-                              note-list 
-                              :chord-text text
-                              :font-size font-size
+                              note-list
+                              ;; MDE Thu Jul 13 21:34:55 2017 -- little hack to
+                              ;; avoid labels 
+                              :chord-text (if (zerop font-size) "" text)
+                              ;; bit counterintuitive this one but correct: a 0
+                              ;; font-size will result in warnings, so so to 10
+                              ;; if we're displaying ""
+                              :font-size (if (zerop font-size) 10 font-size)
                               :text-x-offset text-x-offset
                               :text-y-offset 
                               (+ offset-offset text-y-offset)
@@ -318,11 +323,6 @@
     (when 4stave
       (setf quad-treble-clef (reverse quad-treble-clef)
             quad-bass-clef (reverse quad-bass-clef)))
-    ;; (cmn::cmn-treble-bass-system treble-clef bass-clef)
-    ;;(format t "~%~a ~a ~a ~a" (length treble-clef) (length bass-clef)
-    ;;        (length quad-treble-clef) (length quad-bass-clef))
-    ;; (print bass-clef)
-    ;; (print treble-clef)
     (list treble-clef bass-clef quad-treble-clef quad-bass-clef)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

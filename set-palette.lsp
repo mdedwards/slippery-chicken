@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  17:18:34 Sun Jun 25 2017 BST
+;;; $$ Last modified:  10:31:37 Mon Aug  7 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -141,7 +141,7 @@
 ;;;   offset of any text in the output.
 ;;; - :font-size. A number indicating the size of any text font used in the
 ;;;   output. This affects text only and not the music (see :size below for
-;;;   changing the size of the music).
+;;;   changing the size of the music). If 0 then no text will be displayed.
 ;;; - :break-line-each-set. T or NIL to indicate whether each set-palette
 ;;;   object should be printed on a separate staff or consecutively on the same
 ;;;   staff. T = one staff per set-palette object. Default = T.
@@ -469,6 +469,8 @@ data: (C4 F4 A4 C5)
     (cm::process-voices (list (list events))
                         midi-file (make-tempo 60) nil 0)
     t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod gen-midi-chord-seq-aux ((sp set-palette) time)
   (reset sp)
@@ -1242,7 +1244,8 @@ data: (C4 F4 A4 C5)
 (defun make-sp-name (parents current tag)
   ;; NB parents is the wrong way round
   (setf parents (reverse parents))
-  (format nil "~{~a.~}~a   ~a" parents current (if tag tag "")))
+  (trim-leading-trailing-whitespace
+   (format nil "~{~a.~}~a   ~a" parents current (if tag tag ""))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1783,7 +1786,7 @@ data: (
            (when (and warn-no-bass
                       (< (length rm-bass) min-bass-notes))
              (warn "set-palette::set-palette-from-ring-mod: can't get bass ~
-                  notes even after 2nd attempt with ~a" rm)))
+                    notes even after 2nd attempt with ~a" rm)))
          (setf rm-bass (when rm-bass
                          ;; max three bass notes
                          (list (first rm-bass)
@@ -1808,8 +1811,11 @@ data: (
          (rm-duplicates set t)     ; comparing symbols, not pitch= (freqs etc.)
          (when remove-octaves
            (rm-octaves set))
+       ;; (print set)
+       ;; (print (micro-tonality set))
          (add set sp))
-    ;; MDE Mon Jun 22 13:42:02 2015 
+    ;; MDE Mon Jun 22 13:42:02 2015
+    (print (micro-tonality (get-data 1 sp)))
     (when force-chromatic
       (force-micro-tone sp nil))
     sp))

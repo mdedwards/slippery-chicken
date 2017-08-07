@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  10:44:31 Fri Jun 16 2017 BST
+;;; $$ Last modified:  18:42:04 Sat Aug  5 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -336,7 +336,7 @@
        :clefs (bass) :starting-clef bass :microtones nil :midi-program 20))
      (percussion
       (:staff-name "percussion" :staff-short-name "perc" :staff-lines 5
-       :lowest-written e4 :highest-written f5
+       :lowest-written d4 :highest-written g5
        :starting-clef percussion
        :midi-program 1))
      (tambourine
@@ -453,6 +453,8 @@
       (:staff-name "computer" :staff-short-name "comp"
        :lowest-sounding C-1 :highest-sounding bf8
        :clefs (treble bass double-treble double-bass)
+       ;; MDE Sat Aug  5 18:42:03 2017 -- 
+       :microtones t 
        :starting-clef treble)))))
        ;;; ****
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

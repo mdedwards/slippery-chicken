@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  11:22:27 Thu Mar 23 2017 GMT
+;;; $$ Last modified:  15:07:45 Mon Aug  7 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -62,6 +62,9 @@
    (centroid :reader centroid :writer (setf centroid) :initform nil)
    ;; 8.2.11 added slot to say whether there are microtones in the chord or not
    (micro-tone :accessor micro-tone :type boolean :initform nil)
+   ;; MDE Sat Aug  5 18:58:17 2017 -- proportion of notes which are microtones
+   ;; (0.0-1.0)  
+   (micro-tonality :accessor micro-tonality :type float :initform -1.0)
    ;; dynamics, accents etc. exactly the code used by cmn.  These will simply
    ;; be copied over to the event when the chord is bound to an event.  Not
    ;; used by get-lp-data!  
@@ -130,16 +133,26 @@ NIL
 (defmethod init-chord ((c chord))
   ;; MDE Tue Mar 20 16:11:55 2012 -- remove nils in the pitch list
   (setf (data c) (remove-if #'(lambda (x) (null x)) (data c)))
-  (set-micro-tone c)
+  ;; (set-micro-tone c) <-- now in verify-and-store
   (when (auto-sort c)
     (sort-pitches c)))  
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod set-micro-tone ((c chord))
-  (setf (slot-value c 'micro-tone)
-        ;; MDE Tue Mar 20 16:10:09 2012 -- (and p ...
-        (loop for p in (data c) do (when (and p (micro-tone p)) (return t)))))
+  ;; (print 'set-micro-tone)
+  ;; (print (get-pitch-symbols c))
+  (let ((mt 0.0))
+    ;; MDE Tue Mar 20 16:10:09 2012 -- (and p ...
+    (loop for p in (data c) do
+         (when (and p (micro-tone p))
+           (incf mt)))
+    (setf (slot-value c 'micro-tone) (> mt 0)
+          (micro-tonality c) (if (data c)
+                                 (/ mt (sclist-length c))
+                                 0.0)))
+  ;; (print c)
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -152,8 +165,9 @@ NIL
 
 (defmethod print-object :before ((c chord) stream)
   (format stream "~%CHORD: auto-sort: ~a, marks: ~a, micro-tone: ~a, ~
-                  ~%centroid: ~a, dissonance: ~a"
-          (auto-sort c) (marks c) (micro-tone c) (slot-value c 'centroid)
+                  micro-tonality: ~a~%centroid: ~a, dissonance: ~a"
+          (auto-sort c) (marks c) (micro-tone c) (micro-tonality c)
+          (slot-value c 'centroid)
           (slot-value c 'dissonance)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -163,7 +177,8 @@ NIL
     (when (and data (not (typep (first data) 'pitch)))
       (loop for p in data and i from 0 do
            (when p ; MDE Tue Mar 20 16:08:37 2012
-             (setf (nth i data) (make-pitch p)))))))
+             (setf (nth i data) (make-pitch p)))))
+    (set-micro-tone c))) ; MDE Sun Aug  6 11:26:18 2017 
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -177,6 +192,7 @@ NIL
   (let ((sclist (call-next-method)))
     (setf (slot-value sclist 'auto-sort) (auto-sort c)
           (slot-value sclist 'micro-tone) (micro-tone c)
+          (slot-value sclist 'micro-tonality) (micro-tonality c)
           (slot-value sclist 'marks) (my-copy-list (marks c)))
     sclist))
 
@@ -204,7 +220,7 @@ NIL
        while happy
        finally (return happy)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/add-harmonics
 ;;; DESCRIPTION
 ;;; Adds pitches to the set which are harmonically related to the existing
@@ -493,7 +509,7 @@ data: GQS4
 (defmethod get-pitch-symbols ((c chord) &optional ignore)
 ;;; ****
   (declare (ignore ignore))
-  (loop for p in (data c) collect (id p)))
+  (loop for p in (data c) when (and p (pitch-p p)) collect (id p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/no-accidental
@@ -647,7 +663,9 @@ data: C4
 ;;; ****
   (lowest-aux c))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; we use this so we can have the same algo for highest just with pitch>
+;;; works on sorted and unsorted pitch lists alike
 (defmethod lowest-aux ((c chord) &optional (test #'pitch<))
   (loop with result = (first (data c))
      for p in (rest (data c)) do
@@ -718,7 +736,6 @@ data: F5
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; The ignore field is there because of the transpose method in tl-set
-;;; Returns a clone of the current chord rather than replacing data
 
 ;;; SAR Mon Apr 16 14:39:14 BST 2012: Added robodoc entry
 
@@ -737,7 +754,7 @@ data: F5
 ;;;   transposed.
 ;;; 
 ;;; RETURN VALUE  
-;;; Returns a chord object.
+;;; Returns a clone of the current chord object rather than replacing data.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -773,21 +790,36 @@ data: (
 |#
 ;;; 
 ;;; SYNOPSIS
-(defmethod transpose ((c chord) semitones &key ignore1 ignore2 ignore3)
+(defmethod transpose ((c chord) semitones
+                      &key (destructively t) do-related-sets)
 ;;; ****
-  (declare (ignore ignore1) (ignore ignore2) (ignore ignore3))
-  (let ((result (clone c)))
-    (setf (data result)
-      (loop 
-          for pitch in (data c)
-          for new = (transpose pitch semitones)
-                    ;; copy over the cmn marks (like special note heads etc.)
-          do (setf (marks new) (my-copy-list (marks pitch))
-                   (marks-before new) (my-copy-list (marks-before pitch)))
-          collect new))
-    ;; 8.2.11: got to do this here too now
-    (set-micro-tone result)
-    result))
+  (declare (ignore destructively) (ignore do-related-sets))
+  ;; (print 'primary)
+  (setf (data c)
+        ;; (setf (slot-value result 'data)
+        (loop 
+           for pitch in (data c)
+           for new = (transpose (make-pitch pitch) semitones)
+           ;; copy over the cmn marks (like special note heads etc.)
+           do (setf (marks new) (my-copy-list (marks pitch))
+                    (marks-before new) (my-copy-list (marks-before pitch)))
+           collect new))
+  ;; 8.2.11: got to do this here too now
+  ;; MDE Sun Aug  6 11:26:39 2017 -- no, added to verify-and-store instead
+  ;; (set-micro-tone result)
+  c)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod transpose :around ((c chord) semitones
+                              &key (destructively t) do-related-sets ignore)
+  (declare (ignore ignore))
+  ;; (print 'around)
+  ;; (print 'transpose)
+  ;; (print destructively)
+  ;; we're interested in the tl-set :before method here
+  (call-next-method (if destructively c (clone c)) semitones
+                    :destructively destructively
+                    :do-related-sets do-related-sets))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  13:22:38 Sat Nov 26 2016 GMT
+;;; $$ Last modified:  18:25:52 Sat Aug  5 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -806,7 +806,8 @@ data: (
                                       ~%(current-rs id = ~a)"
                                     (id section)
                                     (1+ i) (duration current-rs) duration
-                                    (id current-rs)))
+                                    ;; (id current-rs)))
+                                    (this current-rs)))
                                  (setf duration (duration current-rs)))))
                       (setf duration nil)))))))
   t)

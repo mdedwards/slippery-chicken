@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified:  16:12:14 Sun Jun 25 2017 BST
+;;; $$ Last modified:  15:06:39 Mon Aug  7 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -85,11 +85,11 @@
   (let ((set (call-next-method)))
     (setf (slot-value set 'transposition) (transposition tls)
           (slot-value set 'limit-upper) (when (limit-upper tls) 
-                                          ;; we know it's a pitch instance so
-                                          ;; clone is safe.
-                                          (clone (limit-upper tls)))
+                                          (clone
+                                           (make-pitch (limit-upper tls))))
           (slot-value set 'limit-lower) (when (limit-lower tls) 
-                                          (clone (limit-lower tls))))
+                                          (clone
+                                           (make-pitch (limit-lower tls)))))
     set))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -221,12 +221,12 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 
 |#
 ;;; SYNOPSIS
-(defmethod transpose ((tls tl-set) semitones 
-                      &key do-related-sets
-                      ignore1 ignore2)
+(defmethod transpose :before ((tls tl-set) semitones 
+                             &key destructively do-related-sets ignore)
 ;;; ****
-  (declare (ignore ignore1) (ignore ignore2))
-  (setf (slot-value tls 'data) (transpose-pitch-list (data tls) semitones))
+  (declare (ignore ignore) (ignore destructively))
+  ;; (print 'here)
+  ;; (setf (slot-value tls 'data) (transpose-pitch-list (data tls) semitones))
   (incf (slot-value tls 'transposition) semitones)
   (transpose-rals (subsets tls) semitones)
   (when do-related-sets

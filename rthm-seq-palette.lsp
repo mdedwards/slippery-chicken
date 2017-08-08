@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  20:37:20 Tue Jun 13 2017 BST
+;;; $$ Last modified:  18:33:59 Mon Aug  7 2017 BST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -1035,7 +1035,7 @@ rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) is required.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - a reference (symbol or list) into the rthm-seq-palette to examine a
-;;; sub-palette 
+;;;   sub-palette 
 ;;; 
 ;;; RETURN VALUE
 ;;; If all rthm-seqs in the palette have the same duration, then their duration

@@ -20,9 +20,9 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified: 10:41:46 Sun Jul 17 2016 CEST
+;;; $$ Last modified:  15:44:36 Tue Aug  8 2017 BST
 ;;;
-;;; SVN ID: $Id: samp5.lsp 4223 2013-10-29 10:57:09Z medward2 $
+;;; SVN ID: $Id: sine.lsp 4223 2013-10-29 10:57:09Z medward2 $
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards

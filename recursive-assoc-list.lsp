@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  15:45:41 Thu Jul 13 2017 BST
+;;; $$ Last modified:  18:15:28 Mon Aug  7 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1747,17 +1747,21 @@ data: RIBBON
   (set-slot slot value id +slippery-chicken-standard-instrument-palette+))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defmethod print-simple ((ral recursive-assoc-list) &optional (stream t) ignore)
-  (declare (ignore ignore))
+;;; <for-data> is good for printing rthm-seq-maps, e.g. when you just want to
+;;; see who's playing when: e.g. (print-simple (rthm-seq-map +transfix+) t 'x) 
+(defmethod print-simple ((ral recursive-assoc-list) &optional (stream t)
+                                                      for-data)
   (print
    (loop for object in (data ral) 
       for data = (data object)
       collect
-      (if (is-ral data)
-          (cons (id object) (print-simple data stream))
-          (list (id object) (data object))))
+        (if (is-ral data)
+            (cons (id object) (print-simple data stream for-data))
+            (list (id object) (if for-data
+                                  (loop for d in data collect
+                                       (if d for-data '-))
+                                  (data object)))))
    stream))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Jul 29 16:19:33 2015
 (defmethod get-flat-data ((ral recursive-assoc-list))
@@ -1769,9 +1773,6 @@ data: RIBBON
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Jan 25 11:36:51 GMT 2012: Added robodoc info
-
 ;;; ****f* recursive-assoc-list/make-ral
 ;;; DESCRIPTION
 ;;; Create a recursive-assoc-list object, which allows and automatically

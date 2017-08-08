@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:33:07 Sat Aug  5 2017 BST
+;;; $$ Last modified:  17:44:13 Tue Aug  8 2017 BST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4819,13 +4819,19 @@ seq-num 5, VN, replacing G3 with B6
                    do
                      ;; (print 'event)
                      (setq snd-group (pop snd-trans)
-                           sndl (when snds
+                           ;; MDE Mon Nov  4 11:11:07 2013 
+                           freqs (let ((f (frequency (pitch-or-chord event))))
+                                   (if (listp f) f (list f)))
+                           sndl (if snds
                                   ;; MDE Fri Oct  2 09:48:39 2015 
                                   (get-sndfiles-from-user-fun
                                    event
                                    (if (and snds2 (= 1 snd-group))
                                        snds2 snds)
-                                   snd-selector))
+                                   snd-selector)
+                                  ;; MDE Tue Aug  8 16:21:34 2017 -- anything
+                                  ;; so long as we can make the loop below work
+                                  (ml nil (length freqs)))
                            duration (* duration-scaler
                                        (compound-duration-in-tempo event))
                            skip-this-event 
@@ -4836,9 +4842,6 @@ seq-num 5, VN, replacing G3 with B6
                                 (interpolate event-count-player 
                                              this-play-chance-env
                                              :exp play-chance-env-exp)))
-                           ;; MDE Mon Nov  4 11:11:07 2013 
-                           freqs (let ((f (frequency (pitch-or-chord event))))
-                                   (if (listp f) f (list f)))
                            ;; MDE Tue Apr 10 13:10:37 2012 -- see note to do-src
                            ;; keyword above. 
                            srts (if do-src
@@ -4852,13 +4855,16 @@ seq-num 5, VN, replacing G3 with B6
                                     (src-for-sample-freq 
                                      (if srt-freq
                                          srt-freq
-                                         (if sndl sndl 261.626))
+                                         (if (and sndl
+                                                  (not (every #'not sndl)))
+                                             sndl 261.626))
                                      ;; MDE Tue Apr 17 12:54:06 2012 -- see
                                      ;; comment above. this used to be
                                      ;; (pitch-or-chord event)
                                      event)
                                     '(1.0)))
                      ;; (print srts)
+                     ;; (print freqs)
                      (loop for srt in srts and freq in freqs and snd in sndl do
                         ;; (print srt) (print src-scaler)
                         ;; (print snd)
@@ -4909,7 +4915,7 @@ seq-num 5, VN, replacing G3 with B6
                             (setf duration available-dur)))
                         (when (< duration 0)
                           (warn "slippery-chicken::clm-play: ~
-                                  Duration < 0  ?????~%"))
+                                 Duration < 0  ?????~%"))
                         (unless (start-time event)
                           (error "~a~%slippery-chicken::clm-play: ~
                                    no start time!!!" event))
@@ -4926,7 +4932,7 @@ seq-num 5, VN, replacing G3 with B6
                                  ~,3f, ~
                                  ~%             duration ~,3f~a, ~
                                  ~%             amp ~,2f, srt ~,2f ~
-                                 (pitch-or-chord ~,3f, sample freq ~,3f)~%"
+                                 (pitch-or-chord ~,3fHz, sample freq ~,3f)~%"
                                   event-count total-events
                                   (if skip-this-event "Skipped" 
                                       "Written (not skipped)")
@@ -4940,7 +4946,7 @@ seq-num 5, VN, replacing G3 with B6
                                   (if snd (amplitude snd) 1.0) 
                                   srt 
                                   ;; MDE Tue Apr 17 13:14:45 2012 -- added
-                                  ;; frequency method to chord so that this
+                                  ;; frequency method to chord also so that this
                                   ;; doesn't fail
                                   (frequency (pitch-or-chord event))
                                   ;; freq
@@ -8176,7 +8182,7 @@ NOTE 6200 0.6666667
                (when (or (not low) (pitch< e-low low))
                  (setq low e-low)))))
     (when print
-      (format t "~&~a: high: ~a low: ~a" player (data high) (data low)))
+      (format t "~&~a: low: ~a high: ~a" player (data low) (data high)))
     (values low high)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

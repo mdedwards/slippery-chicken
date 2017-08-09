@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  18:42:04 Sat Aug  5 2017 BST
+;;; $$ Last modified:  11:39:20 Wed Aug  9 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -237,8 +237,7 @@
        :lowest-written fs3 :highest-written d6 :transposition-semitones -2 
        :largest-fast-leap 9
        :starting-clef treble 
-       :chords nil 
-       :midi-program 57))
+       :chords nil :midi-program 57))
      ;; SAR Fri Jan 20 12:17:24 GMT 2012: Added tenor trombone from Adler
      ;; todo: need bass trombone
      (tenor-trombone
@@ -246,30 +245,33 @@
        :lowest-written e2 :highest-written bf4
        :largest-fast-leap 7
        :clefs (bass tenor) :starting-clef bass 
-       :chords nil 
-       :midi-program 58))
+       :chords nil :midi-program 58))
      ;;; SAR Fri Jul 13 12:35:35 BST 2012
      (tuba
       (:staff-name "tuba" :staff-short-name "tba"
        :lowest-written d1 :highest-written g4
        :largest-fast-leap 5
        :clefs (bass) :starting-clef bass
-       :chords nil
-       :midi-program 59))
+       :chords nil :midi-program 59))
      (marimba 
       (:staff-name "marimba" :staff-short-name "mba"
        :lowest-written c3 :highest-written c7 
        :starting-clef treble :clefs (treble) ; (treble bass) 
        :chords t :chord-function mallet-chord-fun
-       :microtones nil
-       :midi-program 13))
+       :microtones nil :midi-program 13))
      (vibraphone 
       (:staff-name "vibraphone" :staff-short-name "vib"
        :lowest-written f3 :highest-written f6 
        :starting-clef treble 
        :chords t :chord-function mallet-chord-fun
-       :microtones nil
-       :midi-program 12))
+       :microtones nil :midi-program 12))
+     (accordion
+      (:staff-name "accordion" :staff-short-name "acc"
+       :lowest-written e1 :highest-written bf7
+       :starting-clef treble
+       ;; clearly a better function should be provided at some point
+       :chords t :chord-function mallet-chord-fun 
+       :microtones nil :midi-program 22))
      ;; MDE Mon Mar 24 20:21:08 2014 -- following three added from data given
      ;; by Zach Howell (thanks).  
      (glockenspiel

@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  19:10:12 Wed Jun 21 2017 BST
+;;; $$ Last modified:  09:32:29 Tue Oct 24 2017 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -48,7 +48,7 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
 
@@ -68,14 +68,6 @@
    ;; frequency of each sndfile where the :frequency slot isn't given?
    (auto-freq :accessor auto-freq :type boolean :initarg :auto-freq
               :initform nil)
-   ;; the next sndfile-ext object for the purposes of the OSC sndfilenet
-   ;; functionality 
-   (next :accessor next :initarg :next :initform nil)
-   ;; whether we'll have the followers slots for the sndfiles i.e. whether
-   ;; we're going to call max-play (and hence process-followers) for this
-   ;; palette.  Leave at nil if you don't want to use with max-play.
-   (with-followers :accessor with-followers :type boolean
-                   :initarg :with-followers :initform nil)
    (extensions :accessor extensions :type list :initarg :extensions 
                :initform '("wav" "aiff" "aif" "snd"))))
 
@@ -92,9 +84,6 @@
     (setf (slot-value palette 'paths) (paths sfp)
           (slot-value palette 'num-snds) (num-snds sfp)
           (slot-value palette 'auto-freq) (auto-freq sfp)
-          (slot-value palette 'with-followers) (with-followers sfp)
-          (slot-value palette 'next) (when (next sfp)
-                                       (clone (next sfp)))
           (slot-value palette 'extensions) (extensions sfp))
     palette))
 
@@ -103,11 +92,8 @@
   (format stream "~%SNDFILE-PALETTE: paths: ~a~
                   ~%                 extensions: ~a~
                   ~%                 num-snds: ~a~
-                  ~%                 auto-freq: ~a~
-                  ~%                 with-followers: ~a~
-                  ~%                 next: ~a"
-          (paths sfp) (extensions sfp) (num-snds sfp) (auto-freq sfp)
-          (with-followers sfp) (next sfp)))
+                  ~%                 auto-freq: ~a"
+          (paths sfp) (extensions sfp) (num-snds sfp) (auto-freq sfp)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; NB Although this class is a palette and therefore a subclass of
@@ -143,11 +129,6 @@
                         (find-sndfile sfp snd) :id snd
                         ;; MDE Fri Sep 25 13:49:09 2015 
                         :frequency (if (auto-freq sfp) 'detect 'c4)))))))
-  (auto-cue-nums sfp)
-  (reset sfp)
-  ;; MDE Sat Dec 22 20:59:44 2012 
-  (when (with-followers sfp)
-    (process-followers sfp))
   ;; MDE Fri Jan  4 10:10:22 2013 
   (setf (num-snds sfp) (count-snds sfp)))
 
@@ -253,7 +234,7 @@
 ;;; functionality by pulling out a sound with a certain id from the sound list.
 ;;; If the sound list was a proper assoc-list however, we couldn't have the
 ;;; same sound twice in the list, which would be inconvenient.  Hence we fake
-;;; it here.  In this case, we pull out the first sound we see with an id
+;;; it here. In this case, we pull out the first sound we see with an id
 ;;; match.
 
 (defmethod get-snd (id snd-id (sfp sndfile-palette))
@@ -299,7 +280,8 @@
 ;;; ****m* sndfile-palette/osc-send-cue-nums
 ;;; DESCRIPTION
 ;;; Send via OSC the cue number of each sound file in a form that a Max sflist~
-;;; can process and store.
+;;; can process and store (which will include the path and start/stop data: see
+;;; sndfile-ext::max-cue for details).
 ;;; 
 ;;; ARGUMENTS
 ;;; - the sndfile-palette object.
@@ -320,110 +302,16 @@
          do
          (loop for snd in snds do
               (when (use snd)
+                ;; something like ("preload" 2 "/path/to/snd.wav" 300.0 1100.0)
                 (sb-bsd-sockets::osc-send-list (max-cue snd) nil) ; no warning 
                 (incf cue-nums))))
     cue-nums))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Fri Dec 21 09:38:46 2012 
-
-;;; ****m* sndfile-palette/reset
-;;; DESCRIPTION
-;;; Reset the followers' slot circular list to the beginning or to <where>
-;;; 
-;;; ARGUMENTS
-;;; - the sndfile-palette object.
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; - an integer to set the point at which to restart.  This can be higher than
-;;;   the number of followers as it will wrap.  Default = nil (which equates to
-;;;   0 lower down in the class hierarchy).
-;;; - whether to issue a warning if <where> is greater than the number of
-;;;   followers (i.e. that wrapping will occur).  Default = T.
-;;; 
-;;; RETURN VALUE
-;;; T
-;;; 
-;;; SYNOPSIS
-(defmethod reset ((sfp sndfile-palette) &optional where (warn t))
-;;; ****
-  (let ((refs (get-all-refs sfp)))
-    (loop for ref in refs 
-       for snds = (get-data-data ref sfp)
-       do
-       (loop for snd in snds do
-            (setf (group-id snd) ref)
-            (reset snd where warn))))
-  t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Fri Dec 21 09:38:52 2012
-
-;;; ****m* sndfile-palette/get-snd-with-cue-num
-;;; DESCRIPTION
-;;; Return the (first, but generally unique) sndfile object which has the
-;;; given cue-num slot.
-;;; 
-;;; ARGUMENTS
-;;; - the sndfile-palette object.
-;;; - the cue number (integer).
-;;; 
-;;; RETURN VALUE
-;;; The sndfile/sndfile-ext object with the given cue number or NIL if it can't
-;;; be found.
-;;; 
-;;; SYNOPSIS
-(defmethod get-snd-with-cue-num ((sfp sndfile-palette) cue-num)
-;;; ****
-  (let ((refs (get-all-refs sfp))
-        (result nil))
-    (loop for ref in refs 
-       for snds = (get-data-data ref sfp)
-       do
-       (loop for snd in snds do
-            (when (= (cue-num snd) cue-num)
-              (setf result snd)
-              (return))))
-    result))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; ****m* sndfile-palette/max-play
-;;; DESCRIPTION
-;;; This generates the data necessary to play the next sound in the current
-;;; sound's followers list.  See the sndfile-ext method for details.
-;;; 
-;;; ARGUMENTS
-;;; - The sndfile-palette object.
-;;; - The fade (in/out) duration in seconds.
-;;; - The maximum loop duration in seconds.
-;;; - The time to trigger the next file, as a percentage of the current
-;;;   sndfile-ext's duration.
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; - whether to print data to the listener as it is generated. Default = NIL.
-;;; 
-;;; RETURN VALUE
-;;; A list of values returned by the sndfile-ext method.
-;;;
-;;; SYNOPSIS
-(defmethod max-play ((sfp sndfile-palette) fade-dur max-loop start-next
-                     &optional print)
-;;; ****
-  (if (next sfp)
-    (let* ((current (next sfp))
-           (next (get-next current)))
-      (setf (next sfp) next)
-      (when print
-        (format t "~&cue ~a (~a): ~a --> ~a"
-                (cue-num current) (id current) (start current) (end current)))
-      (max-play current fade-dur max-loop start-next))
-    (warn "sndfile-palette::max-play: no next!")))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Dec 22 20:42:32 2012 -- if we don't fully reference the group we
 ;;; assume it's in  the same as the current.
 (defmethod get-snd-short ((sfp sndfile-palette) ref (current sndfile-ext))
+  ;; (print '*****) (print ref)
   (let* ((snd-id ref)
          (next-group (group-id current)))
     (when (listp ref)
@@ -431,94 +319,9 @@
           (setf snd-id (first ref))
           (setf snd-id (second ref)
                 next-group (first ref))))
+    ;; (print next-group) (print snd-id)
     (get-snd next-group snd-id sfp)))
   
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; check that follower references refer to other sndfiles in the palette, then
-;;; replace the references with the sndfile object themselves, but only when
-;;; their <use> slot is T.  This is perhaps memory intensive but it'll save
-;;; some CPU cycles by processing here rather than when max asks for the next
-;;; sndfile.
-(defmethod process-followers ((sfp sndfile-palette) &optional
-                                                      (on-fail #'error))
-  (let ((refs (get-all-refs sfp))
-        (result t))
-    (loop for ref in refs 
-       for snds = (get-data-data ref sfp)
-       do
-       (loop for snd in snds with follower with fsnd do
-            (if (followers snd)
-                (setf (followers snd)
-                      (loop for i below (sclist-length (followers snd)) do
-                           (setf fsnd nil)
-                           (loop for j from i
-                              below (sclist-length (followers snd))
-                              do
-                              (setf follower (get-nth j (followers snd))
-                                    fsnd (get-snd-short sfp follower snd))
-                              ;; MDE Sat Dec 22 20:36:14 2012 -- got to make
-                              ;; sure the user actually wants to use this sound
-                              ;; in this piece
-                              (when (and fsnd (use fsnd))
-                                (return fsnd)))
-                           (when (and follower (not fsnd))
-                             (setf result nil)
-                             (when on-fail
-                               (funcall 
-                                on-fail "sndfile-palette::process-followers: ~
-                                         No such sound file: ~a"
-                                follower)))
-                           when (and fsnd (use fsnd)) collect fsnd))
-                (warn "sndfile-palette::process-followers: ~a has no followers ~
-                       so if triggered will cause max-play to stop."
-                      (id snd)))))
-    (reset sfp)
-    result))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* sndfile-palette/analyse-followers
-;;; DESCRIPTION
-
-;;; Using the followers slots of each sndfile in the palette, go through each
-;;; sndfile in the palette and generate a large number of following sounds,
-;;; i.e. emulate the max-play.  The results of the follow-on process are then
-;;; analysed and a warning will be issued if any sndfile seems to dominate
-;;; (defined as being present at least twice as many times as its 'fair share',
-;;; where 'fair share' would mean an even spread for all the sound files in the
-;;; palette).
-;;; 
-;;; ARGUMENTS
-;;; - The sndfile-palette object.
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; How many times to repeat the generation process.  Default = 1000.
-;;; 
-;;; RETURN VALUE
-;;; T or NIL depending on whether the analysis detects an even spread or not.
-;;; 
-;;; SYNOPSIS
-(defmethod analyse-followers ((sfp sndfile-palette) &optional (depth 1000))
-;;; ****
-  (loop with ok = t
-     with refs = (get-all-refs sfp)
-     ;; an equal spread of all sndfiles in the palette would be ideal but let's
-     ;; not worry until one of those is played twice as many times as that 
-     with threshold = (round (* 2.0 (/ depth (num-snds sfp))))
-     for ref in refs
-     for snds = (get-data-data ref sfp)
-     do
-     (loop for snd in snds
-        for sndaf = (analyse-followers snd depth)
-        for max = (second (first sndaf))
-        for this-ok = (<= max threshold)
-        do
-        (unless this-ok
-          (warn "sndfile-palette::analyse-followers: (~a ~a) ~%generates ~
-                 unbalanced results, e.g. ~a ~%occurs more than ~a times: ~&~a"
-                ref (id snd) (first (first sndaf)) threshold sndaf)
-          (setf ok nil)))
-     finally (return ok)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jan  3 17:32:32 2013 -- generally used transparently by
 ;;; e.g. verify-and-store to set the num-snds slot, but can of course be called
@@ -577,17 +380,17 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; Keyword arguments:
-;;; - A single group or list of groups (IDs) for the sound files we wish to
-;;;   process.
-;;; - The functionFor processing a single name. Of course the names must be
-;;;   consistent and each sound file must be able to be processed by this
-;;;   single function. NB for reasons of similar usage in get-spectra-al (see
-;;;   spectra.lsp) this function actually must return the MIDI note number (may
-;;;   be a floating point for microtonal applications), which is then converted
-;;;   by the sndfile class to a frequency in Hertz.
-;;; - The function to be called when the name function cannot determine the
-;;;   frequency of the sound file. This could be #'error (the default), #'warn,
-;;;   or nil if nothing is to be done on failure.
+;;; - :groups. A single group or list of groups (IDs) for the sound files we
+;;;   wish to process.
+;;; - :name-fun.The function for processing a single name. Of course the names
+;;; must be consistent and each sound file must be able to be processed by this
+;;; single function. NB for reasons of similar usage in get-spectra-al (see
+;;; spectra.lsp) this function actually must return the MIDI note number (may
+;;; be a floating point for microtonal applications), which is then converted
+;;; by the sndfile class to a frequency in Hertz.
+;;; - :on-error. The function to be called when the name function cannot
+;;;   determine the frequency of the sound file. This could be #'error (the
+;;;   default), #'warn, or nil if nothing is to be done on failure.
 ;;; 
 ;;; RETURN VALUE
 ;;; The sndfile-palette object after processing.
@@ -605,15 +408,6 @@
               (when (functionp on-error)
                 (funcall on-error "~&Can't set frequency in ~a" sf)))))
   sfp)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun akoustik-piano-name (name)
-  (when name
-    (let ((zero-octave (char= #\- (elt name 9))))
-      ;; samples notes use middle C = C3
-      (+ (note-to-midi (read-from-string
-                        (subseq name 8 (if zero-octave 11 10))))
-         12))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
@@ -672,10 +466,10 @@
 |#
 ;;; SYNOPSIS
 (defun make-sfp (id sfp &key paths (extensions '("wav" "aiff" "aif" "snd"))
-                          auto-freq with-followers (warn-not-found t))
+                          auto-freq (warn-not-found t))
 ;;; ****
   (make-instance 'sndfile-palette :id id :data sfp :paths paths
-                 :with-followers with-followers :extensions extensions
+                 :extensions extensions
                  :auto-freq auto-freq
                  :warn-not-found warn-not-found))
 
@@ -1008,8 +802,6 @@ splinter: 2 sounds
 SNDFILE-PALETTE: paths: NIL
                  extensions: (wav aiff aif snd)
                  num-snds: 92
-                 with-followers: NIL
-                 next: NIL
 PALETTE: 
 RECURSIVE-ASSOC-LIST: recurse-simple-data: T
                       num-data: 16
@@ -1288,6 +1080,15 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
                    cdiff diff))))
     it))
   
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun akoustik-piano-name (name)
+  (when name
+    (let ((zero-octave (char= #\- (elt name 9))))
+      ;; samples notes use middle C = C3
+      (+ (note-to-midi (read-from-string
+                        (subseq name 8 (if zero-octave 11 10))))
+         12))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun sndfile-palette-p (thing)
   (typep thing 'sndfile-palette))

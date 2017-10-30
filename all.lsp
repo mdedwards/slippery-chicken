@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  18:52:59 Sat Jun 10 2017 BST
+;;; $$ Last modified:  18:19:03 Mon Oct 23 2017 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -237,6 +237,7 @@
 (sc-compile-and-load "sndfile.lsp")
 (sc-compile-and-load "sndfile-ext.lsp")
 (sc-compile-and-load "sndfile-palette.lsp")
+(sc-compile-and-load "sndfilenet.lsp")
 (sc-compile-and-load "rthm-seq.lsp")
 (sc-compile-and-load "rthm-seq-palette.lsp")
 (sc-compile-and-load "rthm-seq-map.lsp")

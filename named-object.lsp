@@ -31,7 +31,7 @@
 ;;;
 ;;; Creation date:    4th December 2000
 ;;;
-;;; $$ Last modified: 17:04:44 Fri May 27 2016 WEST
+;;; $$ Last modified:  10:06:04 Sat Oct 21 2017 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -206,7 +206,6 @@
                        (basic-copy-object (data no)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; NIL is a valid id!
 
 (defun check-named-object-id-type (arg)

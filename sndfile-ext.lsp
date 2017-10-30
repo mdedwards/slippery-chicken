@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified: 10:16:34 Wed Sep 30 2015 BST
+;;; $$ Last modified:  09:49:07 Sat Oct 21 2017 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -216,7 +216,7 @@
 (defmethod (setf followers) :after (value (sfe sndfile-ext))
   (declare (ignore value))
   (when (and (followers sfe) (listp (followers sfe)))
-    (setf (followers sfe) 
+    (setf (slot-value sfe 'followers) 
           (make-cscl (followers sfe)
                      :id (format nil "~a-followers"
                                  (id sfe))
@@ -312,6 +312,7 @@
 ;;; SYNOPSIS
 (defmethod get-next ((sfe sndfile-ext))
 ;;; ****
+  ;; (print (followers sfe))
   (when (followers sfe)
     (get-next (followers sfe))))
 
@@ -467,7 +468,6 @@ NIL
           nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* sndfile-ext/max-play
 ;;; DESCRIPTION
 ;;; Generate the data necessary for MaxMSP to play the sndfile using the
@@ -483,7 +483,7 @@ NIL
 ;;;   sndfile-ext's duration.
 ;;; 
 ;;; RETURN VALUE
-;;; A list of values to be passed via OSC to sndfilenet-aux.maxpath:
+;;; A list of values to be passed via OSC to sndfilenet-aux.maxpat:
 ;;; cue-number number-of-channels loop speed fade-dururation
 ;;; fade-out-start-time delay-to-next-snfile-start amplitude
 ;;; 
@@ -565,15 +565,20 @@ NIL
                  "sndfile-ext::max-cue: cue-num slot must be an integer > 1: ~a"
                  sfe))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod analyse-followers ((sfe sndfile-ext) &optional (depth 1000))
+(defmethod analyse-followers ((sfe sndfile-ext) &optional (depth 1000) ignore)
+  (declare (ignore ignore))
   (let ((sfes (loop with sf = sfe
                  repeat depth 
                  while sf
                  collect (id sf)
                  do
-                 (setf sf (get-next sf)))))
+                   (setf sf (get-next sf)))))
+    ;; MDE Fri Oct 20 11:34:08 2017 
+    (unless (= depth (length sfes))
+      (warn "sndfile-ext::analyse-followers: couldn't get ~a results:~%~a"
+            depth sfes))
     (count-elements sfes)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

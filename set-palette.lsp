@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  10:31:37 Mon Aug  7 2017 BST
+;;; $$ Last modified:  15:45:15 Fri Aug 11 2017 BST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1815,7 +1815,7 @@ data: (
        ;; (print (micro-tonality set))
          (add set sp))
     ;; MDE Mon Jun 22 13:42:02 2015
-    (print (micro-tonality (get-data 1 sp)))
+    ;; (print (micro-tonality (get-data 1 sp)))
     (when force-chromatic
       (force-micro-tone sp nil))
     sp))

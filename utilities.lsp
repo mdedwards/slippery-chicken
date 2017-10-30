@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  09:50:02 Wed Jun 28 2017 BST
+;;; $$ Last modified:  12:31:05 Fri Oct 27 2017 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2794,6 +2794,15 @@ WARNING:
      finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Oct 20 20:55:52 2017 -- the remove function copies its sequences
+;;; whereas with a list of objects we often don't want things copying so remove
+;;; 'by hand'
+(defun remove-with-id (list id)
+  (if (every #'named-object-p list)
+      (loop for no in list unless (id-eq id no) collect no)
+      list))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Mon May  7 19:12:20 BST 2012: Added robodoc entry
 
@@ -3856,7 +3865,9 @@ At revision 3608.
       (get-decoded-time)
     (declare (ignore sec))
     (if time
-        (format nil "~d-~2,'0d-~2,'0d, ~2,'0d:~2,'0d" year month day hour min)
+        ;; (format nil "~d-~2,'0d-~2,'0d, ~2,'0d:~2,'0d" year month day hour
+        ;; min)
+        (format nil "~d-~2,'0d-~2,'0d-~2,'0d.~2,'0d" year month day hour min)
         (format nil "~d-~2,'0d-~2,'0d" year month day))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 10th 2002
 ;;;
-;;; $$ Last modified: 09:18:07 Wed May 16 2012 BST
+;;; $$ Last modified:  20:31:38 Fri Oct 20 2017 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -44,13 +44,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 02.12.11 SEAN: Changed ROBODoc header to reflect class hierarchy
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)

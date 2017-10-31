@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  18:19:03 Mon Oct 23 2017 CEST
+;;; $$ Last modified:  16:28:30 Tue Oct 31 2017 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -46,6 +46,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :cl-user)
+(require "asdf")
+(asdf:load-system :sb-bsd-sockets)
+(asdf:load-system :sb-posix)
 
 #+sbcl (unlock-package "COMMON-LISP")
 
@@ -197,7 +200,6 @@
 (pushnew :slippery-chicken *features*)
 
 (sc-compile-and-load "package.lsp")
-;; (sc-compile-and-load "globals.lsp")
 #+cmn (sc-compile-and-load "cmn.lsp")
 #+cmn (sc-compile-and-load "cmn-glyphs.lsp")
 #+cm (sc-compile-and-load "cm.lsp")

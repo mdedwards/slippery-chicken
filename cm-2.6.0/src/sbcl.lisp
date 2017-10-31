@@ -28,7 +28,7 @@
           )
         :cm)
 
-(require :sb-posix)
+(require "sb-posix")
 (import '(sb-posix:chdir) :cm)
 
 (defun quit () (sb-ext:quit))
@@ -37,10 +37,10 @@
 ;(defun class-subclasses (c)
 ;  (let ((subs (sb-pcl:class-direct-subclasses c)))
 ;    (if (null subs)
-;	'()
+;       '()
 ;      (loop for s in subs
-;	append (cons s (class-subclasses s))))))
-	  
+;       append (cons s (class-subclasses s))))))
+          
 (defun finalize-class (class) 
   (sb-pcl:finalize-inheritance class))
 

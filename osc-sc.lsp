@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified:  14:48:48 Sat Oct 29 2016 BST
+;;; $$ Last modified:  16:22:07 Tue Oct 31 2017 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -44,9 +44,11 @@
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; (require "asdf")
+(require :sb-posix)
 (require :sb-bsd-sockets)
-(use-package :osc)
-(use-package :sb-bsd-sockets)
+;; (use-package :osc)
+;; (use-package :sb-bsd-sockets)
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

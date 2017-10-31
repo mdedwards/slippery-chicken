@@ -23,7 +23,7 @@
 
 (defparameter os-directory-delim
   (let ((str (namestring (make-pathname :defaults this-file
-					:name nil :type nil))))
+                                        :name nil :type nil))))
     (elt str (- (length str) 1))))
 
 (defun reldir (path &rest subs)
@@ -117,24 +117,24 @@
 (defvar midishare-installed? nil)
 
 (defun make-cm (&key (bin-directory t rdp)
-		(scheme t )
-		(save-image nil) ; t, nil, :if-no-compile
-		(delete-fasls t)
-		(force nil)
-		(verbose t)
-		(extensions nil)
-		(midishare t)
-		&aux 
-		(usr-directory nil)
-		(src-directory (reldir this-file ))
-		;; SAR Sun Apr 29 12:49:55 BST 2012: commented out due to CCL
-		;; compatibility 
-		;; (build-plotter nil)
-		)
+                (scheme t )
+                (save-image nil) ; t, nil, :if-no-compile
+                (delete-fasls t)
+                (force nil)
+                (verbose t)
+                (extensions nil)
+                (midishare t)
+                &aux 
+                (usr-directory nil)
+                (src-directory (reldir this-file ))
+                ;; SAR Sun Apr 29 12:49:55 BST 2012: commented out due to CCL
+                ;; compatibility 
+                ;; (build-plotter nil)
+                )
 
   (if (find-package ':cm)
       (if (not force)
-	  (return-from make-cm nil)))
+          (return-from make-cm nil)))
 
   (when extensions
     (unless (consp extensions)
@@ -147,13 +147,13 @@
   ;; test user specified bin-directory.
   (if bin-directory
       (if (eql bin-directory t)
-	  (setq bin-directory (reldir src-directory -1 "bin"))
-	  (let ((dir (is-directory? bin-directory)))
-	    (if dir
-		(setq bin-directory dir) ; use filtered dir spec.
-		(error ":bin-directory '~A' is not a directory."
-		       bin-directory))
-	    (setq usr-directory t)))
+          (setq bin-directory (reldir src-directory -1 "bin"))
+          (let ((dir (is-directory? bin-directory)))
+            (if dir
+                (setq bin-directory dir) ; use filtered dir spec.
+                (error ":bin-directory '~A' is not a directory."
+                       bin-directory))
+            (setq usr-directory t)))
       ;; user explicitly says no bin-directory.
       (if rdp (setq writable-p ':no)))
   
@@ -166,8 +166,8 @@
   (setq *cm-root* (reldir this-file -1))
   (setq .fasl-name (syscmd :fasl))
   (setq binary-dir (if usr-directory
-		       bin-directory
-		       (fasl-directory bin-directory)))
+                       bin-directory
+                       (fasl-directory bin-directory)))
 
   (tell-user "~%; Installation directory: ~S"
              (namestring *cm-root*))
@@ -175,8 +175,8 @@
   ;; not writable if user explicitly says no run dir
   ;; or no privledges in run dir.
   (setq writable-p (if (eql writable-p ':no) 
-		       nil
-		       (syscmd :fw? bin-directory)))
+                       nil
+                       (syscmd :fw? bin-directory)))
   (when writable-p
     ;; cache runtime dir in global
     ;; insure binary subdir if writable
@@ -312,18 +312,18 @@
                (and (eql save-image ':if-no-compile)
                     (not compiled-p))))
       (progn
-	(tell-user "~%; Saving application image.~%; Bye!~%")
-	(force-output)
-	(let ((app (merge-pathnames (syscmd ':image) binary-dir)))
-	  (cm-call :save-cm app)
-	  (syscmd :bye)))
+        (tell-user "~%; Saving application image.~%; Bye!~%")
+        (force-output)
+        (let ((app (merge-pathnames (syscmd ':image) binary-dir)))
+          (cm-call :save-cm app)
+          (syscmd :bye)))
       (progn
-	;; if not saving leave user in cm package with
-	;; initfile loaded.
-	(cm-call :load-cminit (reldir *cm-root* "etc"))
-	(terpri)
-	(force-output)
-	))
+        ;; if not saving leave user in cm package with
+        ;; initfile loaded.
+        (cm-call :load-cminit (reldir *cm-root* "etc"))
+        (terpri)
+        (force-output)
+        ))
   (values))
 
 (defun cm ()
@@ -399,13 +399,13 @@
              srcf))
     (when (make-file? binf srcf)
       (if (not writable-p)
-	  ;; if we cant write fasls then just load source
-	  (setq binf srcf)
-	(progn
-	  (tell-user "~%; Compiling ~S" 
+          ;; if we cant write fasls then just load source
+          (setq binf srcf)
+        (progn
+          (tell-user "~%; Compiling ~S" 
                      (enough-namestring srcf *cm-root*))
-	  (compile-file srcf :output-file binf :verbose nil)
-	  (setf compiled-p t))))
+          (compile-file srcf :output-file binf :verbose nil)
+          (setf compiled-p t))))
     (tell-user "~%; Loading ~S"
                (enough-namestring binf *cm-root*))
     (load binf :verbose nil)))
@@ -619,7 +619,7 @@
     ;; if one release version is greater than another
     (let ((fn (find-symbol "UNLOCK-ALL-PACKAGES")))
       (when (and fn (symbol-function fn))
-	(funcall fn)))
+        (funcall fn)))
     (setf extensions::*gc-verbose* nil)
 
     ;; check for midishare libs, if exist then load FFI
@@ -668,9 +668,9 @@
                (get-cmu-version (lisp-implementation-version))))
       (:os-arch
        (or (cdr (assoc ':cm_platform ext:*environment-list*))
-	   (stream-line
-	    (ext:process-output
-	     (ext:run-program (cm.sh) '("-q") :output :stream)))))
+           (stream-line
+            (ext:process-output
+             (ext:run-program (cm.sh) '("-q") :output :stream)))))
       (:fasl (c:backend-fasl-file-type c:*backend*))
       (:image "cm.img")
       (:exec  (first ext:*command-line-strings*))
@@ -708,7 +708,8 @@
       (or (probe-file "/bin/test")
           (probe-file "/usr/bin/test")
           (error "Fixme: can't find unix command 'test' on this system.")))
-    (require :sb-posix))
+    (require :sb-posix)
+    )
 
   (defun syscmd (op &rest args)
     (declare (special %sb-cp %sb-test %sb-mkdir))
@@ -837,7 +838,7 @@
        (setf *package* (find-package :cm))
        (setf *readtable* (cm-var :*cm-readtable*)))
       (:bye ;(quit)
-	    )))
+            )))
   )
 
 #+openmcl

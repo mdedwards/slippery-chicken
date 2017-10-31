@@ -14,6 +14,9 @@ export SC_ARCH="intel"
 export SC_RUNTIME="${TOP}/sbcl/bin/sbcl"
 export SC_RUNTIME_CORE="${TOP}/sbcl/lib/sbcl/sbcl.core"
 export SC_RUNTIME_INIT="${TOP}/sbcl-init.lsp"
+# we need this for the asdf system (sockets, posix, ...)
+export SC_RUNTIME_HOME="${TOP}/sbcl/lib/sbcl/"
+# export SC_RUNTIME_CONTRIB="${TOP}/sbcl/lib/sbcl/contrib/"
 export SC_RUNTIME_FLAVOR="sbcl"
 export SC_RUNTIME_VERSION="1.0.0"
 

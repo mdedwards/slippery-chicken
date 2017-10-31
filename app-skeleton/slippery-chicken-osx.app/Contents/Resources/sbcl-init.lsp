@@ -1,19 +1,18 @@
+(require "asdf")
 (setf *default-pathname-defaults*
       (truename (sb-unix::posix-getenv "SC_RESOURCES_DIR")))
+
 (load "cmn/cmn-all.lisp")
-(load "clm-4/all.lisp")
-(load "sbcl/lib/sbcl/asdf/asdf.fasl")
-(load "sbcl/lib/sbcl/sb-posix/sb-posix.fasl")
-(load "sbcl/lib/sbcl/sb-bsd-sockets/sb-bsd-sockets.fasl")
+(load "clm-5/all.lisp")
 (load "sc/src/all.lsp")
 
 (in-package :clm)
-(unless (probe-file "clm-4/nrev.fasl")
-  (compile-file "clm-4/nrev.ins"))
-(load "clm-4/nrev.fasl")
-(unless (probe-file "clm-4/autoc.fasl")
-  (compile-file "clm-4/autoc.ins"))
-(load "clm-4/autoc.fasl")
+(unless (probe-file "clm-5/nrev.fasl")
+  (compile-file "clm-5/nrev.ins"))
+(load "clm-5/nrev.fasl")
+(unless (probe-file "clm-5/autoc.fasl")
+  (compile-file "clm-5/autoc.ins"))
+(load "clm-5/autoc.fasl")
 (setf *clm-srate* 44100
       *clm-channels* 2
       ;; wave files by default (NB quicktime and itunes on macintel don't

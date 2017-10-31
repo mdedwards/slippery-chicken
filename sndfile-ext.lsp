@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  09:49:07 Sat Oct 21 2017 CEST
+;;; $$ Last modified:  12:11:58 Mon Oct 30 2017 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -231,7 +231,8 @@
   (when (path sfe)
     (setf (bitrate sfe) (* 8 (clm::sound-datum-size (path sfe)))
           (srate sfe) (clm::sound-srate (path sfe))
-          (num-frames sfe) (clm::sound-frames (path sfe))
+          ;; (num-frames sfe) (clm::sound-frames (path sfe))
+          (num-frames sfe) (clm::sound-framples (path sfe))
           (bytes sfe) (clm::sound-length (path sfe)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

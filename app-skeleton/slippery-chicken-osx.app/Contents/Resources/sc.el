@@ -2,11 +2,16 @@
 (add-hook 'lisp-mode-hook (lambda () (slime-mode t)))
 (add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
 
-(setq inferior-lisp-program
-      (concat (getenv "SC_RUNTIME") " --core " (getenv "SC_RUNTIME_CORE")
-              " --sysinit " (getenv "SC_RUNTIME_INIT")))
+(setq slime-lisp-implementations
+      `((sbcl (,(getenv "SC_RUNTIME") "--core"
+               ,(getenv "SC_RUNTIME_CORE")
+               "--dynamic-space-size" "2147" "--sysinit"
+               ,(getenv "SC_RUNTIME_INIT"))
+              ;; we need this for the asdf system (sockets, posix, ...)
+              :env (,(concat "SBCL_HOME=" (getenv "SC_RUNTIME_HOME"))))))
 
 (slime-setup '(slime-fancy))
+;; (slime-contribs '(slime-fancy))
 
 ;; (global-unset-key (kbd "C-3"))
 ;; (global-set-key (kbd "C-3") '(lambda() (interactive) (insert-string "#")))

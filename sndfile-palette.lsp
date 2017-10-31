@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  09:32:29 Tue Oct 24 2017 CEST
+;;; $$ Last modified:  13:44:09 Tue Oct 31 2017 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -275,37 +275,6 @@
               (when (use snd)
                 (setf (cue-num snd) (incf cue-num)))))
     cue-num))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* sndfile-palette/osc-send-cue-nums
-;;; DESCRIPTION
-;;; Send via OSC the cue number of each sound file in a form that a Max sflist~
-;;; can process and store (which will include the path and start/stop data: see
-;;; sndfile-ext::max-cue for details).
-;;; 
-;;; ARGUMENTS
-;;; - the sndfile-palette object.
-;;; 
-;;; RETURN VALUE
-;;; The number of cue numbers sent.  NB This is not the same as the last cue
-;;; number as cues start from 2.
-;;; 
-;;; SYNOPSIS
-#+(and darwin sbcl)
-(defmethod osc-send-cue-nums ((sfp sndfile-palette))
-;;; ****
-  ;; to be sure: don't assume we'll always have non-nested data.
-  (let ((refs (get-all-refs sfp)) 
-        (cue-nums 0))
-    (loop for ref in refs 
-         for snds = (get-data-data ref sfp)
-         do
-         (loop for snd in snds do
-              (when (use snd)
-                ;; something like ("preload" 2 "/path/to/snd.wav" 300.0 1100.0)
-                (sb-bsd-sockets::osc-send-list (max-cue snd) nil) ; no warning 
-                (incf cue-nums))))
-    cue-nums))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Dec 22 20:42:32 2012 -- if we don't fully reference the group we

@@ -17,6 +17,7 @@ http://www.michael-edwards.org/s
 
 NB If you're installing this 'by hand' by cloning/downloading
 directly from github, be sure to create a directory called
-'bin' in the directory holding these source files.
+'bin' in the parent of the directory holding these source 
+files.
 
 Michael Edwards

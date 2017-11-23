@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  none: no classes defined
 ;;;
-;;; Version:          1.0.7
+;;; Version:          1.0.8
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -3773,6 +3773,7 @@ WARNING:
 ;;; June 1st 2013
 ;;;
 ;;; DESCRIPTION
+;;; TEMPORARILY DISABLED DUE TO SVN SERVER ACCESS RESTRICTIONS.
 ;;; NB This function currently works in SBCL and CCL on UNIX systems only.
 ;;; 
 ;;; For users of the slippery chicken app, this function will update the source

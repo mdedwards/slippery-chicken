@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   palette -> sndfile-palette
 ;;;
-;;; Version:          1.0.7
+;;; Version:          1.0.8
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  13:44:09 Tue Oct 31 2017 CET
+;;; $$ Last modified:  17:38:01 Mon Nov  6 2017 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -248,35 +248,6 @@
     result))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Wed Dec 19 14:29:35 2012 -- for MaxMSP/OSC interface
-
-;;; ****m* sndfile-palette/auto-cue-nums
-;;; DESCRIPTION
-;;; Set the cue-num slot of every sndfile-ext object in the palette to be an
-;;; ascending integer starting at 2. NB If a sndfile has it's :use slot set to
-;;; NIL it won't be given a cue number.
-;;; 
-;;; ARGUMENTS
-;;; - a sndfile-palette object.
-;;; 
-;;; RETURN VALUE
-;;; The cue number of the last sndfile-ext object.
-;;; 
-;;; SYNOPSIS
-(defmethod auto-cue-nums ((sfp sndfile-palette))
-;;; ****
-  ;; to be sure: don't assume we'll always have non-nested data.
-  (let ((refs (get-all-refs sfp)) 
-        (cue-num 1))
-    (loop for ref in refs 
-         for snds = (get-data-data ref sfp)
-         do
-         (loop for snd in snds do
-              (when (use snd)
-                (setf (cue-num snd) (incf cue-num)))))
-    cue-num))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Dec 22 20:42:32 2012 -- if we don't fully reference the group we
 ;;; assume it's in  the same as the current.
 (defmethod get-snd-short ((sfp sndfile-palette) ref (current sndfile-ext))
@@ -314,7 +285,8 @@
                        (loop for id in ids appending (get-data-data id sfp))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defmethod print-for-init ((sfp sndfile-palette) &key (stream t))
+(defmethod print-for-init ((sfp sndfile-palette)
+                           &key (stream t) (call 'make-sfp))
   (call-next-method ; assoc-list method
    sfp
    :stream stream
@@ -323,7 +295,7 @@
                      (loop for sf in list do
                           (print (get-slots-list sf) stream))
                      (princ ")" stream))
-   :call 'make-sfp))
+   :call call))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* sndfile-palette/set-frequency-from-filename

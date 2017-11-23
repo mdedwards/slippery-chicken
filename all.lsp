@@ -5,7 +5,7 @@
 ;;;
 ;;; File:             all.lsp
 ;;;
-;;; Version:          1.0.7
+;;; Version:          1.0.8
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  16:28:30 Tue Oct 31 2017 CET
+;;; $$ Last modified:  18:22:36 Sat Nov 18 2017 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -47,12 +47,12 @@
 
 (in-package :cl-user)
 (require "asdf")
-(asdf:load-system :sb-bsd-sockets)
-(asdf:load-system :sb-posix)
+#+sbcl (asdf:load-system :sb-bsd-sockets)
+#+sbcl (asdf:load-system :sb-posix)
 
 #+sbcl (unlock-package "COMMON-LISP")
 
-(defparameter +slippery-chicken-version+ "1.0.7 (svn revision 5894 2016-07-02 10:18:22)")
+(defparameter +slippery-chicken-version+ "1.0.8")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 

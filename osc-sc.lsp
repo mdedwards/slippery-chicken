@@ -4,7 +4,7 @@
 ;;;
 ;;; Class Hierarchy:  None, no classes defined.
 ;;;
-;;; Version:          1.0.7
+;;; Version:          1.0.8
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -210,7 +210,7 @@
     ;; MDE Wed Dec 19 17:38:01 2012 -- don't send T or NIL, rather 1 or 0
     (unless (or (not result) (equal result T))
       (unless (listp result)
-        (setf result (list result)))
+        (setq result (list result)))
       ;; stuff our id back into the list and send back
       (osc-send-list (append (list '/osc-sc id) result) stream))))
 

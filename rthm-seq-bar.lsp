@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> 
 ;;;                   rthm-seq-bar 
 ;;;
-;;; Version:          1.0.7
+;;; Version:          1.0.8
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  14:35:52 Sun Jun 25 2017 BST
+;;; $$ Last modified:  16:33:23 Sat Nov 18 2017 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -779,7 +779,7 @@ data: E.
 ;;; SYNOPSIS
 (defmethod consolidate-rests ((rsb rthm-seq-bar)
                               &key beat min warn auto-tuplets)
-;;; ****
+;;; ****
   ;; (print 'consolidate-rests)
   ;; (print (length (rhythms rsb)))
   ;; MDE Mon Nov 26 20:18:12 2012 -- added 'silent to make sure we don't get

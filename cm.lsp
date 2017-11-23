@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  none (no classes defined)
 ;;;
-;;; Version:          1.0.7
+;;; Version:          1.0.8
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  15:31:53 Tue Mar 21 2017 GMT
+;;; $$ Last modified:  16:34:57 Sat Nov 18 2017 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -532,6 +532,7 @@
 |#
 ;;; SYNOPSIS
 (defun freq-to-midi (freq)
+;;; ****  
   (freq-to-degree freq cm::*chromatic-scale*))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

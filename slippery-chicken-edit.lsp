@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> slippery-chicken
 ;;;
-;;; Version:          1.0.7
+;;; Version:          1.0.8
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  20:22:20 Wed Mar 15 2017 GMT
+;;; $$ Last modified:  16:34:02 Sat Nov 18 2017 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3732,6 +3732,7 @@ NIL
 ;;; 
 ;;; SYNOPSIS
 (defmethod move-rehearsal-letter ((sc slippery-chicken) from-bar to-bar)
+;;; ****  
   (let* ((from (get-bar sc (1- from-bar)))
          (to (get-bar sc (1- to-bar)))
          rl last)
@@ -5899,6 +5900,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; 
 ;;; SYNOPSIS
 (defmethod rehearsal-letters-at-sections ((sc slippery-chicken))
+;;; ****  
   (let* ((refs (get-section-refs sc 1 9999))
          ;;                         don't need letter at bar 1
          (bar-nums (loop for ref in (rest refs) collect

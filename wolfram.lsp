@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist ->
 ;;;                   circular-sclist -> assoc-list -> wolfram
 ;;;
-;;; Version:          1.0.7
+;;; Version:          1.0.8
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    7th June 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  18:53:05 Sat Jun 10 2017 BST
+;;; $$ Last modified:  19:49:18 Sat Nov 18 2017 CET
 ;;;
 ;;; SVN ID: $Id: wolfram.lsp 6210 2017-04-07 11:42:29Z medward2 $
 ;;;
@@ -251,6 +251,7 @@
 ;;; SYNOPSIS
 (defun try-all (&key (width 100) (initial-state 0) (start 1) (generations 30)
                   (stream t) (on #\.) (off #\ ) (row-number nil))
+;;; ****
   (let ((w (make-instance 'wolfram)))
     (loop for fun in (functions w) do
          (format t "~&~a:" fun)
@@ -998,5 +999,5 @@ then the last 2 lines repeat
     '(((1 1 1) 0) ((1 1 0) 1) ((1 0 1) 0) ((1 0 0) 0) ((0 1 1) 1)
       ((0 1 0) 0) ((0 0 1) 0) ((0 0 0) 1)))
 ;;; ****
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF wolfram.lsp

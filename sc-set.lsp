@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> chord ->
 ;;;                   sc-set
 ;;;
-;;; Version:          1.0.7
+;;; Version:          1.0.8
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  15:20:25 Mon Aug  7 2017 BST
+;;; $$ Last modified:  16:34:30 Sat Nov 18 2017 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1247,6 +1247,7 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 ;;; 
 ;;; SYNOPSIS
 (defmethod has-pitches-in-range ((s sc-set) lower upper &optional chromatic)
+;;; ****  
   (setq lower (make-pitch lower)
         upper (make-pitch upper))
   (loop for p in (data s) do

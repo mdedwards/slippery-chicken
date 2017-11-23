@@ -34,6 +34,14 @@ Prerequisites:
 
 Known issues: 
 
+- NB Apple is becoming more and more inventive at crippling apps not downloaded
+  from its App Store. If you're using the OSX app and can't get it to run
+  (e.g. you see an error message about a "read-only file system"), open the
+  terminal app and issue the following command, changing /path/to/... to the
+  directory you've put the app:
+  
+  sudo xattr -r -d com.apple.quarantine /path/to/slippery-chicken-OSX.app
+
 - If the app is in a folder whose name (or parents' names) has spaces
   it might just hang forever.
 - SBCL spits out loads of (really unhelpful) warnings--just ignore

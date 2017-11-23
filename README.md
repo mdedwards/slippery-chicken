@@ -13,11 +13,11 @@ following external for Max/MSP.
 The source code is available here in github. For more details 
 about installation, including pre-compiled binaries and an 
 OSX app, as well as extensive documentation see
-http://www.michael-edwards.org/s
+http://www.michael-edwards.org/sc
 
 NB If you're installing this 'by hand' by cloning/downloading
 directly from github, be sure to create a directory called
 'bin' in the parent of the directory holding these source 
-files.
+files. See also http://tinyurl.com/yclwbjx8
 
 Michael Edwards

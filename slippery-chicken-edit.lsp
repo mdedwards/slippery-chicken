@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  16:34:02 Sat Nov 18 2017 CET
+;;; $$ Last modified:  11:54:28 Mon Dec 11 2017 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5963,8 +5963,8 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;;
 ;;; NB Bear in mind that if you want to use midi-play, then the events in the
 ;;;    bars will need to have their midi-channel set (e.g. via make-event).
-;;;    It's the caller's responsibility that any parts added have the same
-;;;    time-signature structure as any existing part.
+;;;    It's also the caller's responsibility to ensure that the parts added have
+;;;    the same time-signature structure as any existing part.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A list of rthm-seq-bars

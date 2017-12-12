@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified: 19:59:52 Wed Feb  3 2016 GMT
+;;; $$ Last modified:  14:46:21 Tue Dec 12 2017 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1362,7 +1362,9 @@ WARNING:
                              (remove-preserving-tail i remaining)
                              (cons i current-perm))))
                (t
-                (funcall visit current-perm)))))
+                ;; MDE Tue Dec 12 14:45:54 2017 -- copy-list here so that we can
+                ;; e.g. sort elements without list structure getting screwed up 
+                (funcall visit (copy-list current-perm))))))
     (when (<= limit (length objects))
       (apply-rec limit objects nil))))
 
@@ -1389,7 +1391,7 @@ WARNING:
 ;;                       (equal perm (reverse perm))))
 ;; --> 1152
 (defun count-permutations (objects limit &optional (predicate
-(constantly t)))
+                                                    (constantly t)))
   (declare (optimize (speed 2))
            (function predicate))
   (let ((count 0))
@@ -1402,7 +1404,7 @@ WARNING:
     count))
 
 (defun list-permutations (objects limit &optional (predicate
-(constantly t)))
+                                                   (constantly t)))
   (let (perms)
     (apply-permutations objects
                         limit

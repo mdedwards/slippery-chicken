@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  16:34:57 Sat Nov 18 2017 CET
+;;; $$ Last modified:  13:31:22 Sat Nov 25 2017 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1346,7 +1346,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; btw the time slot is cm::object-time, midi note number cm::midi-keynum
 (defun parse-midi-file-aux (file &optional track)
-  (let ((midi-stream (import-events file)))
+  ;; MDE Sat Nov 25 13:31:12 2017 -- ignore MIDI meta messages
+  (let ((midi-stream (import-events file :meta-exclude nil)))
     (when track
       (setf midi-stream (nth track midi-stream)))
     midi-stream))

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  15:01:51 Thu Jun 15 2017 BST
+;;; $$ Last modified:  18:17:01 Thu Dec 28 2017 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -92,8 +92,25 @@
             (error "ensemble::initialize-instance: ~
                     bar-line-writers: reference to instrument ~
                     not in the ensemble: ~a" ins))
-          (set-score-write-bar-line player num)))
+         (set-score-write-bar-line player num)))
+  ;; MDE Thu Dec 28 18:06:58 2017 
+  (auto-midi-channels e)
   (get-players e))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Dec 28 17:56:32 2017 -- called automatically at init
+(defmethod auto-midi-channels ((e ensemble) &optional force)
+  ;; only do this when channels haven't been explicitly set
+  (when (or force
+            (and (> (num-players e) 1)
+                 (every #'(lambda (player)
+                            (and (= 1 (midi-channel player))
+                                 (= 1 (microtones-midi-channel player))))
+                        (data e))))
+    (loop for player in (data e) and i from 1 do
+         (setf (midi-channel player) i
+               (microtones-midi-channel player) i)
+       finally (return i))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Apr 20 12:34:54 2013 

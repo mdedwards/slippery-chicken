@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:45:53 Wed Apr 26 2017 BST
+;;; $$ Last modified:  17:18:59 Sun Dec 31 2017 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -792,7 +792,7 @@ data: 132
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May 30 18:49:56 2013 -- auto-sets the pitch-or-chord slot
 ;;; MDE Sat Dec 24 13:16:07 2016 -- optional instrument means the transposition
-;;; will be set from its data rather than from existing soundind and written
+;;; will be set from its data rather than from existing sounding and written
 ;;; pitches. 
 (defmethod set-written-pitch-or-chord ((e event) value &optional instrument)
   ;; (print (data value))
@@ -801,6 +801,7 @@ data: 132
          (diff (if instrument
                    (transposition-semitones instrument)
                    (when wporc (pitch- porc wporc)))))
+    ;; (print diff)
     (setf-pitch-aux e value 'written-pitch-or-chord)
     (when (written-pitch-or-chord e)
       (setf (is-rest e) nil
@@ -808,7 +809,7 @@ data: 132
             ;; long!  
             (is-whole-bar-rest e) nil
             (slot-value e 'pitch-or-chord)
-            (transpose (written-pitch-or-chord e) diff)))))
+            (transpose (clone (written-pitch-or-chord e)) diff)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

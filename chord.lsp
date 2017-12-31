@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  15:07:45 Mon Aug  7 2017 BST
+;;; $$ Last modified:  17:16:59 Sun Dec 31 2017 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -754,7 +754,7 @@ data: F5
 ;;;   transposed.
 ;;; 
 ;;; RETURN VALUE  
-;;; Returns a clone of the current chord object rather than replacing data.
+;;; the transposed chord object
 ;;; 
 ;;; EXAMPLE
 #|

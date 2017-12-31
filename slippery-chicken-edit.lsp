@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  11:54:28 Mon Dec 11 2017 CET
+;;; $$ Last modified:  18:46:46 Thu Dec 28 2017 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1342,7 +1342,7 @@ data: (
 ;;; SYNOPSIS
 (defmethod change-pitches ((sc slippery-chicken) player start-bar new-pitches
                            &key (use-last-octave t) marks written
-                           (warn t))
+                             (warn t))
 ;;; ****
   (if (simple-listp new-pitches)
       (progn
@@ -1357,28 +1357,28 @@ data: (
            with e = (next-event sc player t start-bar)
            with last
            do
-           (setf e (next-event sc player t)) ; attacked notes only
-           (unless (event-p e)
-             (when warn
-               (warn "slippery-chicken::change-pitches: couldn't get event no ~
-                      ~a ~%(ran out of bars with ~a new pitches?). ~
-                      ~%Last event was ~&~a."
-                     (1+ count) (length new-pitches) last))
-             (return))
-           (when note
-             ;; MDE Thu May 30 18:17:24 2013 
-             (unless (or (chord-p note) (pitch-p note))
-               (when use-last-octave
-                 (multiple-value-bind
-                       (n o)
-                     (get-note-octave note t)
-                   (setf note (join-note-octave n o)))))
-             (if written
-                 (set-written-pitch-or-chord e note)
-                 (setf (pitch-or-chord e) note)))
+             (setf e (next-event sc player t)) ; attacked notes only
+             (unless (event-p e)
+               (when warn
+                 (warn "slippery-chicken::change-pitches: couldn't get event ~
+                        no ~a ~%(ran out of bars with ~a new pitches?). ~
+                        ~%Last event was ~&~a."
+                       (1+ count) (length new-pitches) last))
+               (return))
+             (when note
+               ;; MDE Thu May 30 18:17:24 2013 
+               (unless (or (chord-p note) (pitch-p note))
+                 (when use-last-octave
+                   (multiple-value-bind
+                         (n o)
+                       (get-note-octave note t)
+                     (setf note (join-note-octave n o)))))
+               (if written
+                   (set-written-pitch-or-chord e note)
+                   (setf (pitch-or-chord e) note)))
            ;; NB note might be nil but mark not hence this isn't in the when 
-           (rhythm-add-marks e (nth count marks))
-           (setf last e))
+             (rhythm-add-marks e (nth count marks))
+             (setf last e))
         ;; this hack gets the current bar number so we return where we left off
         (next-event sc nil))
       ;; the bar-holder method

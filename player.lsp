@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified:  17:36:21 Sat Mar 18 2017 GMT
+;;; $$ Last modified:  17:50:16 Thu Dec 28 2017 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -294,15 +294,14 @@
              (return t)))
       (transposing-instrument-p (data p) ignore-octaves)))
     
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Jan  7 18:46:02 EST 2012: Added robodoc info
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* player/microtonal-chords-p
 ;;; DESCRIPTION
+
 ;;; Determines whether the MICROTONES-MIDI-CHANNEL slot of the given player
-;;; object is set to a value greater than 0, indicating that the player and its
-;;; instrument are capable of performing microtonal chords.
+;;; object is set to a value greater than 0 and is different to the midi-channel
+;;; slot, indicating that the player and its instrument are capable of
+;;; performing microtonal chords.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A player object.
@@ -330,7 +329,11 @@
 |#
 ;;; SYNOPSIS
 (defmethod microtonal-chords-p ((p player))
-  (> (microtones-midi-channel p) 0))
+  ;; MDE Thu Dec 28 17:49:36 2017 -- updated as now make-player sets microtones
+  ;; channel to midi-channel if it's not explicitly set
+  (and (integer>0 (microtones-midi-channel p))
+       (/= (microtones-midi-channel p)
+           (midi-channel p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -826,7 +829,8 @@ the instrument you want.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A symbol which will be the ID of the resulting player object.
-;;; - An instrument-palette object.
+;;; - An instrument-palette object. If NIL then
+;;;   +slippery-chicken-standard-instrument-palette+ will be used 
 ;;; - A symbol or a list of symbols that are the instruments from the
 ;;;   specified instrument-palette object that the given player will play, as
 ;;;   spelled and defined within the instrument-palette object. NB: If only one
@@ -949,9 +953,16 @@ data:
   (make-instance 'player :id id :data instruments 
                  :midi-channel midi-channel
                  :staff-names staff-names :staff-short-names staff-short-names
-                 :microtones-midi-channel microtones-midi-channel
+                 :microtones-midi-channel
+                 ;; MDE Thu Dec 28 17:38:09 2017 
+                 (if (integer>0 microtones-midi-channel)
+                     microtones-midi-channel
+                     midi-channel)
                  :cmn-staff-args cmn-staff-args
-                 :instrument-palette instrument-palette))
+                 :instrument-palette
+                 (if instrument-palette
+                     instrument-palette
+                     +slippery-chicken-standard-instrument-palette+)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

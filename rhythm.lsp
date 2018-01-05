@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  10:39:46 Fri Jan  5 2018 CET
+;;; $$ Last modified:  10:53:17 Fri Jan  5 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1255,7 +1255,8 @@ NI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf is-tied-from) :after (value (i rhythm))
-  ;; MDE Sun Nov 18 18:42:54 2012 
+  ;; MDE Sun Nov 18 18:42:54 2012
+  ;; (print 'here)
   (when (and value (is-rest i))
     (warn "rhythm::(setf is-tied-from): this rhythm is a rest so shouldn't ~
            be tied from: ~%~a" i)))
@@ -1682,7 +1683,7 @@ data: NIL
 
 |#
 ;;; SYNOPSIS
-(defun make-rhythm (rthm &key is-rest is-tied-to  is-tied-from duration
+(defun make-rhythm (rthm &key is-rest is-tied-to is-tied-from duration
                            (tempo 60.0))
 ;;; ****                                
   ;;  (unless rthm                      
@@ -1691,7 +1692,7 @@ data: NIL
   (cond ((rhythm-p rthm) (clone rthm))
         ((and rthm (not duration))
          (make-instance 'rhythm :data rthm :is-rest is-rest 
-                        :is-tied-to is-tied-to))
+                        :is-tied-from is-tied-from :is-tied-to is-tied-to))
         ((and (numberp duration) rthm)
          (error "rhythm::make-rhythm: can't process both a <rthm> (~a) and ~
                  <duration> (~a) (duration should be T or NIL)" rthm duration))

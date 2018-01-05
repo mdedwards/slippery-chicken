@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:18:59 Sun Dec 31 2017 CET
+;;; $$ Last modified:  10:38:56 Fri Jan  5 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3424,17 +3424,17 @@ data: C4
 #|
 ;;; NB This uses the quarter-tone scale so degrees are double what they would ;
 ;;;    be in the chromatic-scale.       ;
-                     (let ((event (make-event '(cs4 d4) 'e))
-(rest (make-rest 'e)))
-(print (get-degree event))
-(print (get-degree rest))
-(print (get-degree event :average t))
-(get-degree event :sum t))
-                     (122 124) 
-                     (0)
-                     123.0
-                     246
-                     |#
+(let ((event (make-event '(cs4 d4) 'e))
+      (rest (make-rest 'e)))
+  (print (get-degree event))
+  (print (get-degree rest))
+  (print (get-degree event :average t))
+  (get-degree event :sum t))
+(122 124) 
+(0)
+123.0
+246
+|#
 ;;; SYNOPSIS
 (defmethod get-degree ((e event) &key written sum average)
 ;;; ****      
@@ -3834,6 +3834,8 @@ T
                      start-time
                      is-rest
                      is-tied-to
+                     ;; MDE Fri Jan  5 10:38:22 2018 -- added
+                     is-tied-from
                      duration
                      ;; MDE Wed Jun 15 20:39:05 2016 -- defaults to 1 and 2
                      (midi-channel 1)
@@ -3857,6 +3859,7 @@ T
     (error "event::make-event: an rest can't have pitch data (~a):"
            pitch-or-chord))
   (let* ((r (make-rhythm rthm :is-rest is-rest :is-tied-to is-tied-to
+                         :is-tied-from is-tied-from
                          :duration duration :tempo tempo))
          (e (when r (clone-with-new-class r 'event))))
     (when e

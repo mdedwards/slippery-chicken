@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  10:17:21 Fri Apr  7 2017 BST
+;;; $$ Last modified:  10:39:46 Fri Jan  5 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1682,7 +1682,7 @@ data: NIL
 
 |#
 ;;; SYNOPSIS
-(defun make-rhythm (rthm &key (is-rest nil) (is-tied-to nil) (duration nil)
+(defun make-rhythm (rthm &key is-rest is-tied-to  is-tied-from duration
                            (tempo 60.0))
 ;;; ****                                
   ;;  (unless rthm                      
@@ -1718,7 +1718,8 @@ data: NIL
                           ;; find a rthm-letter 
                           ;; :duration (if rthm-letter -1 rthm)
                           :duration (if rthm-letter -1 (* rthm (/ tempo 60.0)))
-                          :is-rest is-rest :is-tied-to is-tied-to)))
+                          :is-rest is-rest :is-tied-to is-tied-to
+                          :is-tied-from is-tied-from)))
         (t nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

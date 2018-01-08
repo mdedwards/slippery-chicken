@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:38:56 Fri Jan  5 2018 CET
+;;; $$ Last modified:  16:16:56 Mon Jan  8 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2233,6 +2233,8 @@ NIL
     (xml-write-marks after stream)
     (format stream "~&      <note> <!-- bar-pos=~a - - - - - - - - - - - - -->"
             (bar-pos e))
+    (when (is-grace-note e)
+      (format stream "~&        <grace />"))
     (if (or (not poc) (pitch-p poc))    ; single pitch or rest
         (progn
           (when poc                     ; single pitch
@@ -2245,8 +2247,10 @@ NIL
         (loop for p in (data poc) and i from 0 do
              (when (> i 0)
                (format stream "~&      </note>~
-                               ~&      <note>~
-                               ~&        <chord />"))
+                               ~&      <note>")
+               (when (is-grace-note e)
+                 (format stream "~&        <grace />"))
+               (format stream "~&        <chord />"))
              (setq accidental (write-xml p :stream stream))
            ;; (write-xml p :stream stream)
            ;; chord notes need all the rhythm info of a non-chord note :/
@@ -2262,7 +2266,8 @@ NIL
     (xml-write-marks during stream)
     ;; now in rhythm class because of enforced tag order :/
     ;; (xml-write-marks notehead stream)
-    (format stream "~&      </note>")))
+    (format stream "~&      </note>"))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Mar 28 16:01:48 2017 --

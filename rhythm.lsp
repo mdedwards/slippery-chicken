@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  10:53:17 Fri Jan  5 2018 CET
+;;; $$ Last modified:  12:02:39 Mon Jan  8 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1513,8 +1513,11 @@ NIL
         (xml-rthm (xml-simple-rhythm (letter-value r))))
     ;; (print 'here) (print tuplet-actual-normals)
     (if (is-grace-note r)
-        (format stream "~&        <grace />~
-                        ~&        <type>eighth</type>~
+        ;; MDE Mon Jan  8 11:52:34 2018 -- Dorico expects the <grace /> tag
+        ;; immediately after the <mnote> tag i.e. before <pitch> etc. so we'll
+        ;; have to write <grace /> in the event class, not here
+        ;; (format stream "~&        <grace />~
+        (format stream "~&        <type>eighth</type>~
                         ~&        <stem default-y=\"3\">up</stem>")
         (progn 
           (when (is-rest r)

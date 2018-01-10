@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  15:44:36 Tue Aug  8 2017 BST
+;;; $$ Last modified:  09:58:49 Tue Jan  9 2018 CET
 ;;;
 ;;; SVN ID: $Id: sine.lsp 4223 2013-10-29 10:57:09Z medward2 $
 ;;;
@@ -52,6 +52,9 @@
 
 ;;; The instrument defines all the parameters that will be used in clm-play but
 ;;; ignores some of them as they're not relevant to sinewave playback.
+;;; If you get weird distortion effects, try dropping :amp-env-scaler to 0.05 or
+;;; so, and maybe making a more gentle amp-env (though the :amp-env argument to
+;;; clm-play rather than via :clm-ins-args)
 (defscins sine
     (ignore time &key       
             (duration 5)
@@ -85,8 +88,10 @@
                              :duration duration))
          (loc (make-locsig :degree degree :distance distance 
                            :reverb rev-amt)))
+    (print amp-env)
+    (print ampw)
     (run (loop for i from beg to end do
-              (clm-print i)
+            ;;  (clm-print i)
               (locsig loc i (* (env envelope) (oscil sinewave)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

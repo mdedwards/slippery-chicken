@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  16:33:23 Sat Nov 18 2017 CET
+;;; $$ Last modified:  17:21:12 Wed Jan 10 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3788,9 +3788,19 @@ data: (2 4)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Mar 17 14:42:00 2017
 ;;; spec says "If maximum compatibility with Standard MIDI 1.0 files is
-;;; important, do not have the divisions value exceed 16383." so we'll use that
+;;; important, do not have the divisions value exceed 16383" (divisions per
+;;; quarter note)
+;;; 
+;;; MDE Wed Jan 10 17:17:56 2018 -- however, this odd number creates xml import
+;;; problems with Dorico (not Finale!) when we have a a 5/8 rest bar as that's
+;;; 2.5 quarter notes and 2.5 * 16383 is 40957.5. XML durations should be
+;;; integers however, hence we use 16382 and all is well. At some point though
+;;; it might be worth investigating setting the best number of divisions based
+;;; on the actual rhythms in a bar and not just setting for all and sundry
+;;; bars/pieces as we do now when we call this method via the slippery chicken
+;;; class (and friends).
 (defmethod write-xml ((rsb rthm-seq-bar)
-                      &key stream (starting-clef 'treble) (divisions 16383)
+                      &key stream (starting-clef 'treble) (divisions 16382)
                         ;; list of semitones and diatonic transpositions; this
                         ;; will be nil if the instrument hasn't changed
                         ;; from the previous bar

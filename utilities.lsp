@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  12:31:05 Fri Oct 27 2017 CEST
+;;; $$ Last modified:  09:48:26 Wed Jan 10 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1140,7 +1140,6 @@
     (unless (= octave-size last8vesize)
       (setf last8vesize octave-size
             log8ve (log octave-size 10.0)))
-
     (let ((result (/ (* divisions-per-octave (log srt 10.0))
                      log8ve)))
       (if round-to

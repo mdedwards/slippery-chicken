@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  18:17:01 Thu Dec 28 2017 CET
+;;; $$ Last modified:  19:47:58 Wed Jan 10 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -64,6 +64,9 @@
   ;; MDE Wed Apr 18 12:27:47 2012 -- now obsolete
   ((bar-line-writers :accessor bar-line-writers :type list 
                      :initarg :bar-line-writers :initform nil)
+   ;; MDE Wed Jan 10 19:46:31 2018 -- do this otherwise if we have doubling
+   ;; players with two instruments we get errors from auto-midi-channels 
+   (recurse-simple-data :initform nil)
    ;; a simple list of the player IDs
    (players :accessor players :type list :initform nil)
    ;; an instrument-palette that contains the instrument objects to be
@@ -101,6 +104,7 @@
 ;;; MDE Thu Dec 28 17:56:32 2017 -- called automatically at init
 (defmethod auto-midi-channels ((e ensemble) &optional force)
   ;; only do this when channels haven't been explicitly set
+  ;; (print 'here)
   (when (or force
             (and (> (num-players e) 1)
                  (every #'(lambda (player)

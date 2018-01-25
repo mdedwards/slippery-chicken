@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  19:32:14 Wed Jun 21 2017 BST
+;;; $$ Last modified:  16:04:24 Fri Jan 19 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -71,11 +71,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -137,7 +132,10 @@
 (defmethod clone-with-new-class :around ((scm sc-map) new-class)
   (declare (ignore new-class))
   (let ((ral (call-next-method)))
-    (setf (slot-value ral 'palette) (palette scm))
+    ;; if new-class is a section (as when rsm-to-piece is called) then we can't
+    ;; do this, but usually we do, if new-class is a map
+    (when (slot-exists-p ral 'palette)
+      (setf (slot-value ral 'palette) (palette scm)))
     ral))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -337,7 +335,7 @@ data: (SET1 SET3 SET2)
            (values palette-ref 'no-palette))
           ;; often an sc-map has multiple references to a palette stored for any
           ;; given key(s) so palette-ref-data is a list of references; if so,
-          ;; give them all back 
+          ;; give them all back 
           ((list-of-refs-p palette-ref-data)
            (get-data-from-palette-aux palette-ref-data scm))
           ((assoc-list-id-p palette-ref-data)

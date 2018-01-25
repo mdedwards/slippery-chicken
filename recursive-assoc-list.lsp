@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  18:15:28 Mon Aug  7 2017 BST
+;;; $$ Last modified:  11:21:29 Sat Jan 20 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -691,6 +691,19 @@ T
   ral)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Jan 19 12:32:32 2018 - for instance in making sure that
+;;; rthm-seq-maps with subsections have rthm-seq-map subobjects instead of just
+;;; ral's 
+(defmethod promote ((ral recursive-assoc-list) new-class)
+  (unless (typep (make-instance new-class) 'recursive-assoc-list)
+    (error "recursive-assoc-list::promote: <new-class> must be a subclass ~
+            of recursive-assoc-list"))
+  (loop for thing in (data ral) for dthing = (data thing) do
+       (when (is-ral dthing)
+         (setf (data thing) (promote dthing new-class))))
+  (sc-change-class ral new-class))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Thu Jan 26 20:59:03 GMT 2012: Added robodoc info
 
@@ -1125,7 +1138,7 @@ data: BEAM
 
 ;;; ****m* recursive-assoc-list/add-empty-parcel
 ;;; DESCRIPTION
-;;; Add an recursive-assoc-list object with NIL data (an empty level of
+;;; Add a recursive-assoc-list object with NIL data (an empty level of
 ;;; recursion) to the end of the top-level of a given recursive-assoc-list
 ;;; object. 
 ;;;

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:44:13 Tue Aug  8 2017 BST
+;;; $$ Last modified:  13:33:09 Fri Jan 19 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8633,7 +8633,7 @@ NOTE 6200 0.6666667
                                ~% In set-map: ~a, in rthm-seq-map: ~a" 
                               (this sm-sec) len-sm-sec len-rsm-sec))))))))
               
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun rsm-to-piece (rsm sc)
   ;; do this to reset the seq count
@@ -8669,33 +8669,33 @@ NOTE 6200 0.6666667
                         with result = (ml nil (length data-data))
                         for pl in (instruments-hierarchy sc)
                         do
-                        (loop 
-                           for player in data-data 
-                           for player-name = (first (last (this player)))
-                           for player-section = 
-                           (when (eq player-name pl)
-                             (format t "~&Getting notes for ~a" player-name)
-                             (make-section-for-player player sc last-event
-                                                      last-pitch-seen))
-                           ;; collect player-section
-                           for i from 0
-                           do
-                           (when player-section
-                             (setf (nth i result) player-section)
-                             (unless (zerop (num-bars player-section))
-                               ;; last-event is used for ties over to the
-                               ;; beginning of bar 1 in a new seq
-                               (setf last-event
-                                     (get-last-event 
-                                      (get-last-bar player-section)))
-                               (when (pitch-or-chord last-event)
-                                 ;; this one is used to avoid 8ves
-                                 (setf last-pitch-seen 
-                                       (pitch-or-chord last-event))))))
+                          (loop 
+                             for player in data-data 
+                             for player-name = (first (last (this player)))
+                             for player-section = 
+                               (when (eq player-name pl)
+                                 (format t "~&Getting notes for ~a" player-name)
+                                 (make-section-for-player player sc last-event
+                                                          last-pitch-seen))
+                             ;; collect player-section
+                             for i from 0
+                             do
+                               (when player-section
+                                 (setf (nth i result) player-section)
+                                 (unless (zerop (num-bars player-section))
+                                   ;; last-event is used for ties over to the
+                                   ;; beginning of bar 1 in a new seq
+                                   (setf last-event
+                                         (get-last-event 
+                                          (get-last-bar player-section)))
+                                   (when (pitch-or-chord last-event)
+                                     ;; this one is used to avoid 8ves
+                                     (setf last-pitch-seen 
+                                           (pitch-or-chord last-event))))))
                         finally (return result)))))))
   rsm)
             
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Adds postscript code to specific pages in a file.
 ;;; e.g. (add-ps-to-file "file.eps" '((1 "blah") (4 "foo") (3 "bar"))) 

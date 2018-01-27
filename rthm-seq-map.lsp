@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  15:08:43 Thu Jan 25 2018 CET
+;;; $$ Last modified:  14:13:56 Fri Jan 26 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -591,28 +591,39 @@ data: (5 3 2)
 ;;; January 18th 2018, Essen
 ;;; 
 ;;; DESCRIPTION
-;;; Add a player to a rthm-seq-map. See optional arguments below for details of
-;;; which rthm-seq-palette references will be used for the new player.
+
+;;; Add a player to a rthm-seq-map. The data (3rd) argument defines the rthm-seq
+;;; references (IDs) to be used for the new player. This is a very flexible
+;;; argument: 
 ;;; 
+;;; If not given, then NIL will be added to the map, resulting in the new player
+;;; not playing at all.
+;;;
+;;; If a single reference ID is given, then that will be used throughout each
+;;; section of the map.
+;;;
+;;; If a list of references is given, then items will be popped out of the list
+;;; sequentially and used for the new player. In this case the length of the
+;;; list does not matter as if it's too long the last elements will simply be
+;;; unused, and if it's too short then NIL will be returned when the list is
+;;; exhausted, resulting in the new player not playing from that point
+;;; onwards. The exception here is if the cycle (4th) argument is T, whereupon
+;;; the list of references will be used circularly, restarting the list when the
+;;; end is reached.
+;;;
+;;; Otherwise a function can be passed: this function should take three
+;;; arguments: the rthm-seq-map object (which it can then analyse/query to make
+;;; decisions); the full reference to the current (sub)section for which
+;;; references should be provided; and the number of references which are needed
+;;; for this (sub)section.
+;;;
 ;;; ARGUMENTS
 ;;; - the rthm-seq-map object
 ;;; - the new player to add (ID only: the same which will be referenced in the
 ;;;   ensemble slot of a slippery-chicken object)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - the rthm-seq-palette references to use for the new player. If not given,
-;;; then NIL will be added to the map, resulting in the new player not playing
-;;; at all. If a single reference ID is given, then that will be used throughout
-;;; each section of the map. If a list of references is given, then items will
-;;; be popped out of the list sequentially and used for the new player. (In this
-;;; case the length of the list does not matter as if it's too long the last
-;;; elements will simply be unused, and if it's too short then NIL will be
-;;; returned when the list is exhausted, resulting in the new player not playing
-;;; from that point onwards). Otherwise a function can be passed: this function
-;;; should take three arguments: the rthm-seq-map object (which it can then
-;;; analyse/query to make decisions); the full reference to the current
-;;; (sub)section for which references should be provided; and the number of
-;;; references which are needed for this (sub)section.
+;;; - the rthm-seq-palette references to use for the new player. See above.
 ;;; 
 ;;; RETURN VALUE
 ;;; the same rthm-seq-map object but with the new player now added.
@@ -623,6 +634,10 @@ data: (5 3 2)
 (add-player m 'cl 1)
 ;; will use 1 2 3 4 5 then nil thereafter
 (add-player m 'ob '(1 2 3 4 5))
+;; forcing a reference into a recursive rthm-seq-palette to be used just once
+(add-player m 'db '((bass dense 1)))
+;; forcing it to be used repeatedly
+(add-player m 'db '((bass dense 1)) t)
 ;; a simple example with a function: rs1 for section 1, rs3 for section three
 ;;; otherwise rs1a 
 (add-player m 'bsn #'(lambda (rsm section-ref num-refs)
@@ -637,13 +652,15 @@ data: (5 3 2)
 
 |#
 ;;; SYNOPSIS
-(defmethod add-player ((rsm rthm-seq-map) player &optional data ignore)
+(defmethod add-player ((rsm rthm-seq-map) player &optional data cycle)
 ;;; ****
-  (declare (ignore ignore))
   ;; (print '*****************************************) (print rsm)
   (when (member player (players rsm))
     (error "rthm-seq-map::add-player: ~a already in the map: can't add."
            player))
+  (when (and cycle data (listp data))
+    (setf data (make-cscl data)))
+  ;; (print data)
   (loop for section in (data rsm)
      for player-refs = (data (data section))
      with refs with num-refs do
@@ -655,6 +672,8 @@ data: (5 3 2)
                    refs
                    (cond ((functionp data)
                           (funcall data rsm (full-ref (data section)) num-refs))
+                         ((cscl-p data)
+                          (loop repeat num-refs collect (get-next data)))
                          ((atom data)   ; #'nth is an atom hence functionp first
                           ;; nil (which is a rest seq) or a single ref
                           (ml data num-refs))

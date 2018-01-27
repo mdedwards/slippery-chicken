@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  18:33:59 Mon Aug  7 2017 BST
+;;; $$ Last modified:  21:05:19 Fri Jan 26 2018 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -65,7 +65,9 @@
 
 (defmethod verify-and-store :after ((rsp rthm-seq-palette))
   (ral-to-rsp rsp (psp-inversions rsp))
-  (link-named-objects rsp))
+  (link-named-objects rsp)
+  ;; MDE Fri Jan 26 21:04:58 2018 
+  (rmap rsp #'update-rsp-ids))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

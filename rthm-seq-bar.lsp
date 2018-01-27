@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  17:21:12 Wed Jan 10 2018 CET
+;;; $$ Last modified:  20:50:34 Fri Jan 26 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -165,6 +165,9 @@
    ;; (e.g. (whole-measure-rest 5)) does not increment cmn's measure count
    ;; accordingly; the var we need is probably *cmn-measure-number* 
    (multi-bar-rest :accessor multi-bar-rest :initform nil)
+   ;; MDE Fri Jan 26 20:46:11 2018 -- so we know where it came from: the
+   ;; reference into the rthm-seq-palette to the seq where the bar arose
+   (rsp-id :accessor rsp-id ::initform nil)
    ;; when we generate an rsb with chop, we need to keep track of the attack
    ;; number of the start and end note that the new bar was extracted from in
    ;; the old bar.
@@ -2209,6 +2212,7 @@ rhythm symbol for clarity:
           (copy-list (parent-start-end rsb))
           (slot-value sclist 'multi-bar-rest) (multi-bar-rest rsb)
           (slot-value sclist 'nth-seq) (nth-seq rsb)
+          (slot-value sclist 'rsp-id) (rsp-id rsb)
           (slot-value sclist 'sounding-duration) (sounding-duration rsb)
           (slot-value sclist 'nth-bar) (nth-bar rsb))
     sclist))
@@ -3649,7 +3653,7 @@ data: (2 4)
                                   notes-needed: ~a, ~
                   ~%              tuplets: ~a, ~
                                   nudge-factor: ~a, ~
-                  ~%              beams: ~a, ~
+                  ~%              beams: ~a, rsp-id: ~a ~
                   ~%              current-time-sig: ~a, ~
                                   write-time-sig: ~a, ~
                                   num-rests: ~a, ~
@@ -3669,7 +3673,8 @@ data: (2 4)
           (old-bar-nums i) (write-bar-num i)
           (start-time i) (start-time-qtrs i) (is-rest-bar i) (multi-bar-rest i)
           (show-rest i) (notes-needed i) (tuplets i)
-          (nudge-factor i) (beams i) (current-time-sig i) (write-time-sig i) 
+          (nudge-factor i) (beams i) (rsp-id i) (current-time-sig i)
+          (write-time-sig i) 
           (num-rests i) (num-rhythms i) (num-score-notes i) (parent-start-end i)
           (missing-duration i) (bar-line-type i) (player-section-ref i)
           (nth-seq i) (nth-bar i) (rehearsal-letter i) 

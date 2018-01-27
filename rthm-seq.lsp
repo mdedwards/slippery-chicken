@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified:  21:26:00 Thu Jul 13 2017 BST
+;;; $$ Last modified:  21:03:02 Fri Jan 26 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -108,10 +108,11 @@
   (let* ((data (basic-copy-object (data rs)))
          (bars '()))
     (when data
+      ;; (print  'here) (print (id rs))
       (setf bars (loop for bar in (first data) and i from 1
-                      for rsb = (make-rthm-seq-bar 
-                                 bar (format nil "~a-bar~a" (id rs) i))
-                    do 
+                    for rsb = (make-rthm-seq-bar 
+                               bar (format nil "~a-bar~a" (id rs) i))
+                    do                 
                     ;; 2.2.11 make sure rest bars are made here 
                     ;; MDE Sun Mar 11 18:48:06 2012 -- only when all are rests
                       (when (all-rests? rsb)
@@ -120,21 +121,21 @@
             (bars rs) bars)
       ;; Issue a warning when an unnecessary time-sig was given!
       (loop for b1 in bars and b2 in (cdr bars) do
-            (when 
-                ;; MDE Thu May 31 19:31:25 2012 -- remember time-sig-equal will
-                ;; return 'time-sig-equal-duration for e.g. 3/4 and 6/8 
-                (and (equalp t (time-sig-equal
-                                (get-time-sig b1) (get-time-sig b2)))
-                     (write-time-sig b2))
-              ;; MDE Mon Jan 12 16:13:10 2015 -- used to be an error
-              (warn "rthm-seq::initialize-instance: ~
+           (when 
+               ;; MDE Thu May 31 19:31:25 2012 -- remember time-sig-equal will
+               ;; return 'time-sig-equal-duration for e.g. 3/4 and 6/8 
+               (and (equalp t (time-sig-equal
+                               (get-time-sig b1) (get-time-sig b2)))
+                    (write-time-sig b2))
+             ;; MDE Mon Jan 12 16:13:10 2015 -- used to be an error
+             (warn "rthm-seq::initialize-instance: ~
                      An unnecessary time signature was given: ~%~a" 
-                     data)))
+                   data)))
       ;; Get and set the :pitch-seq-palette and any other given slot-value
       ;; pairs.  
       (loop for slot in (cdr data) by #'cddr 
-          and value in (cddr data) by #'cddr do
-            (setf (slot-value rs (rm-package slot)) value))
+         and value in (cddr data) by #'cddr do
+           (setf (slot-value rs (rm-package slot)) value))
       ;; The first bar of a rthm-seq must have a time-sig!
       (unless (time-sig-given (nth 0 bars))
         (error "rthm-seq::initialize-instance: ~
@@ -148,7 +149,14 @@
       ;; dynamics-to-amplitudes 
       (handle-marks rs)
       (add-marks rs)
+      (update-rsp-ids rs)
       (init-psp rs))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Jan 26 21:01:59 2018 
+(defmethod update-rsp-ids ((rs rthm-seq))
+  (loop for bar in (bars rs) do
+       (setf (rsp-id bar) (if (this rs) (this rs) (id rs)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

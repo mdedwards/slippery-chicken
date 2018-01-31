@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified:  11:05:27 Tue Mar 14 2017 GMT
+;;; $$ Last modified:  20:01:06 Wed Jan 31 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -145,11 +145,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun get-all-cmn-marks (marks)
+(defun get-all-cmn-marks (marks &optional silent)
   ;; 13.4.11 we've pushed marks in so reverse them here
   ;; (print marks)
   (loop for mark in (reverse marks) ;appending
-       for cmn-marks = (get-cmn-marks mark)
+       for cmn-marks = (get-cmn-marks mark :silent silent)
        when (and cmn-marks (listp cmn-marks))
        append cmn-marks))
 
@@ -167,8 +167,10 @@
   ;; (declare (special accent staccato tenuto))
   ;; (print text)
   (flet ((no-cmn-mark (mark)
-           (unless silent
-             (warn "cmn:get-cmn-marks: Sorry but ~a is not yet available ~
+           (when (and (not silent)
+                      ;; MDE Wed Jan 31 18:04:36 2018 
+                      (sc::get-sc-config 'warn-no-cmn-mark))
+             (warn "cmn::get-cmn-marks: Sorry but ~a is not yet available ~
                     for cmn output; ignoring" mark))
            ;; ""))
            nil))
@@ -398,8 +400,9 @@
   ;; (when marks (print 'marks))
   (push note +cmn-grace-notes-for-sc+)
   (loop for m in marks do
-        (loop for cmn-mark in (get-cmn-marks m) do
-              (push cmn-mark +cmn-grace-notes-for-sc+)))
+       (loop for cmn-mark in (get-cmn-marks m)
+          do
+            (push cmn-mark +cmn-grace-notes-for-sc+)))
   ;; the 1/8th note rhythm makes sure only 1 beam is placed over multiple grace
   ;; notes.
   ;; (push e +cmn-grace-notes-for-sc+)

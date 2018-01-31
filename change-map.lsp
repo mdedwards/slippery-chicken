@@ -96,7 +96,7 @@
 ;;;
 ;;; Creation date:    2nd April 2001
 ;;;
-;;; $$ Last modified: 21:14:11 Thu Dec  8 2011 ICT
+;;; $$ Last modified:  10:02:06 Mon Jan 29 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -122,11 +122,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -165,6 +160,11 @@
   (let ((map (call-next-method)))
     (setf (slot-value map 'last-ref-required) (last-ref-required cm))
     map))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jan 29 10:00:59 2018
+(defmethod num-sequences ((cm change-map))
+  (error "change-map::num-sequences: method not applicable in this class."))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -212,17 +212,17 @@
         '+mini+
         :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
         :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
-				 (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
-				 (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
+                                 (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
+                                 (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
         :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
         :set-map '((1 (1 1 1 1 1))
-		   (2 (1 1 1 1 1))
-		   (3 (1 1 1 1 1)))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
         :rthm-seq-palette '((1 ((((4 4) h q e s s))
-				:pitch-seq-palette ((1 2 3 4 5)))))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
         :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
-			(2 ((sax (1 1 1 1 1))))
-			(3 ((sax (1 1 1 1 1))))))))
+                        (2 ((sax (1 1 1 1 1))))
+                        (3 ((sax (1 1 1 1 1))))))))
   (cm-get-data (instrument-change-map mini) '(2 sax) 4))
 
 => ALTO-SAX
@@ -271,17 +271,17 @@
         '+mini+
         :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
         :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
-				 (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
-				 (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
+                                 (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
+                                 (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
         :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
         :set-map '((1 (1 1 1 1 1))
-		   (2 (1 1 1 1 1))
-		   (3 (1 1 1 1 1)))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
         :rthm-seq-palette '((1 ((((4 4) h q e s s))
-				:pitch-seq-palette ((1 2 3 4 5)))))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
         :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
-			(2 ((sax (1 1 1 1 1))))
-			(3 ((sax (1 1 1 1 1))))))))
+                        (2 ((sax (1 1 1 1 1))))
+                        (3 ((sax (1 1 1 1 1))))))))
   (find-nearest '(4 sax) (instrument-change-map mini)))
 
 => 
@@ -310,16 +310,16 @@ data: ((3 1 ALTO-SAX) (4 1 TENOR-SAX))
     ;; some such.  That's why we don't use the latter in the following loop if
     ;; it's there.
     (loop for ref = (pop refs) while ref do
-	 (let ((temp (get-data ref nearest nil)))
-	   (cond ((and temp (is-ral (data temp)))
-		  (setf nearest (data temp)))
-		 ;; is temp a change-data? if so save it, if not, then leave
-		 ;; at what it was last time through.
-		 (temp (when temp (setf nearest temp))
-		       (return))
-		 ;; didn't get data for this ref, remember it
-		 (t (setf failed-ref ref)
-		    (return)))))
+         (let ((temp (get-data ref nearest nil)))
+           (cond ((and temp (is-ral (data temp)))
+                  (setf nearest (data temp)))
+                 ;; is temp a change-data? if so save it, if not, then leave
+                 ;; at what it was last time through.
+                 (temp (when temp (setf nearest temp))
+                       (return))
+                 ;; didn't get data for this ref, remember it
+                 (t (setf failed-ref ref)
+                    (return)))))
     ;; Sometimes, when we give a subsection that doesn't exist, for instance,
     ;; we haven't got a failed-ref as such, but there's still a ref or refs
     ;; left to be gotten so set failed-ref to be this.
@@ -347,14 +347,14 @@ data: ((3 1 ALTO-SAX) (4 1 TENOR-SAX))
     (cond ((typep nearest 'change-data)
            (if last-ref
                (get-nearest-by-last-ref cm nearest last-ref)
-	       nearest))
+               nearest))
           ((typep nearest 'change-map)
            (cond (last-ref
                   (let ((temp (get-data last-ref nearest nil)))
                     (if temp
                         temp
-			(get-nearest-by-last-ref cm (get-first nearest)
-						 last-ref))))
+                        (get-nearest-by-last-ref cm (get-first nearest)
+                                                 last-ref))))
                  ;; we got all the given refs for the section but there's still
                  ;; subsections.  
                  ((null refs) (get-last nearest))

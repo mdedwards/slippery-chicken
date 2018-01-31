@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  15:45:15 Fri Aug 11 2017 BST
+;;; $$ Last modified:  17:47:04 Sat Jan 27 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -746,9 +746,9 @@ data: (C4 F4 A4 C5)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - dissonance-env: The desired dissonance envelope.
+;;; - dissonance-env: The desired dissonance envelope. Y values: 0.0 to 1.0
 ;;;   Default '(0 .1 62 1 100 .3)
-;;; - centroid-env:  The desired spectral centroid envelope.
+;;; - centroid-env:  The desired spectral centroid envelope.Y values: 0.0 to 1.0
 ;;;   Default '(0 .4 62 1 100 .2) 
 ;;; - dissonance-weight: A weighting factor (scaler) applied to
 ;;;   dissonance. Higher values result in dissonance playing a larger role in

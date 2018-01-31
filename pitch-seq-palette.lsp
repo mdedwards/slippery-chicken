@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  20:39:47 Wed Jun 21 2017 BST
+;;; $$ Last modified:  18:57:54 Wed Jan 31 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -448,7 +448,8 @@ Each pitch sequence must have 5 notes (you have 6):
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(let ((seqs '((1 (((3)) ((3)) ((1)) ((25))))
+;; (let ((seqs '((1 (((3)) ((3)) ((1)) ((25))))
+(let ((seqs '((1 ((((3))) (((3))) (((1))) (((25)))))
               (2 ((3 4) (5 2) ((25) 25) (1 25)))
               (3 (((3) 4 (3)) (5 (9) 6) (1 2 4) (5 2 (2)) (6 2 3)))
               (4 ((3 4 3 4) (5 3 6 4) ((9) 4 5 (11)) (2 (10) 4 8)))
@@ -499,12 +500,12 @@ Each pitch sequence must have 5 notes (you have 6):
     (unless (or num-notes data-lists)
       ;; (print 'resetting)
       (setf seqs-al nil))
-    ;; (print data-lists)
     (when (or data-lists (not seqs-al))
       (let ((dl (if (and data-lists (listp data-lists))
                     data-lists
                     ;; e.g. if data-lists is t, we'll use the default data again
                     seqs)))
+        ;; (print dl)
         ;; make an assoc-list of circular sc-lists out of the sequences.
         (setf dl
               (loop

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  19:47:58 Wed Jan 10 2018 CET
+;;; $$ Last modified:  18:29:57 Sat Jan 27 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -111,10 +111,16 @@
                             (and (= 1 (midi-channel player))
                                  (= 1 (microtones-midi-channel player))))
                         (data e))))
-    (loop for player in (data e) and i from 1 do
-         (setf (midi-channel player) i
-               (microtones-midi-channel player) i)
-       finally (return i))))
+    (loop 
+       ;; no channel 10 (percussion)
+       with chans = (make-cscl (remove 10
+                                       (loop for i from 1 to 16 collect i)))
+       for player in (data e)
+       for chan = (get-next chans)
+       do
+         (setf (midi-channel player) chan
+               (microtones-midi-channel player) chan)
+       finally (return chan))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Apr 20 12:34:54 2013 

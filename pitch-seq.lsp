@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  16:45:40 Sat Feb 11 2017 GMT
+;;; $$ Last modified:  19:03:26 Wed Jan 31 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -119,7 +119,7 @@
         (highest ps)
         (loop for i in (data ps) unless (numberp i) do
               (error "pitch-seq::initialise-instance: ~
-                      Elements of the pitch-seq data list should all be ~
+                      Elements of the pitch-seq data list should ~%all be ~
                       integers: ~a"
                      (data ps))
             maximize i)
@@ -452,6 +452,7 @@
                               (pitch-symbols set)))
                      (if (and (listp j) do-chords) ;; should be a chord!
                          (progn
+                           ;; (print 'chord!)
                            ;; the chord-function defined should take six
                            ;; arguments: the current number from the curve; the 
                            ;; index that this was translated into by the offset 
@@ -465,6 +466,7 @@
                            (setf note (funcall chord-fun i index
                                                set-pitches-rm-used ps
                                                instrument set))
+                           ;; (print note)
                            ;; store the pitches we've used
                            (loop for pitch in 
                                 (if (chord-p note)

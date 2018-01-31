@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  14:13:56 Fri Jan 26 2018 CET
+;;; $$ Last modified:  12:08:00 Tue Jan 30 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -611,11 +611,11 @@ data: (5 3 2)
 ;;; the list of references will be used circularly, restarting the list when the
 ;;; end is reached.
 ;;;
-;;; Otherwise a function can be passed: this function should take three
+;;; Otherwise a function can be passed: this function should take four
 ;;; arguments: the rthm-seq-map object (which it can then analyse/query to make
 ;;; decisions); the full reference to the current (sub)section for which
-;;; references should be provided; and the number of references which are needed
-;;; for this (sub)section.
+;;; references should be provided; the number of references which are needed
+;;; for this (sub)section; and the player being added.
 ;;;
 ;;; ARGUMENTS
 ;;; - the rthm-seq-map object
@@ -640,7 +640,7 @@ data: (5 3 2)
 (add-player m 'db '((bass dense 1)) t)
 ;; a simple example with a function: rs1 for section 1, rs3 for section three
 ;;; otherwise rs1a 
-(add-player m 'bsn #'(lambda (rsm section-ref num-refs)
+(add-player m 'bsn #'(lambda (rsm section-ref num-refs player)
                              (ml (case section-ref
                                    (sec1 'rs1)
                                    (sec3 'rs3)
@@ -671,7 +671,8 @@ data: (5 3 2)
              (setf num-refs (length (data (first player-refs)))
                    refs
                    (cond ((functionp data)
-                          (funcall data rsm (full-ref (data section)) num-refs))
+                          (funcall data rsm (full-ref (data section)) num-refs
+                                   player))
                          ((cscl-p data)
                           (loop repeat num-refs collect (get-next data)))
                          ((atom data)   ; #'nth is an atom hence functionp first
@@ -687,6 +688,19 @@ data: (5 3 2)
                    (econs player-refs (make-named-object player refs)))
              (incf (sclist-length (data section))))))
   rsm)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jan 29 09:58:20 2018 -- we'll use sc-maps num-sequences method but
+;;; the method for calculating this is different here 
+(defmethod num-sequences-aux ((rsm rthm-seq-map))
+  (let* ((refs (get-all-refs rsm))
+         (top-player (first (last (first refs)))))
+    (setf refs (remove-if-not #'(lambda (ref)
+                                  (eq top-player (first (last ref))))
+                              refs))
+    (loop for ref in refs
+       for section = (get-data-data ref rsm)
+       sum (length section))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified:  11:51:54 Sun Aug  6 2017 BST
+;;; $$ Last modified:  17:19:03 Sat Jan 27 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -535,7 +535,7 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
          (setf (id copy) id))
        copy))
     ;; MDE Tue Aug 27 19:46:05 2013 
-    (chord (make-complete-set (data set)))
+    (chord (make-complete-set (data set) :id id :tag tag))
     (t
      (make-instance 'complete-set :id id :tag tag :data set :subsets subsets 
                     :related-sets related-sets :auto-sort auto-sort

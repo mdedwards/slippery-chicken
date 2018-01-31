@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:33:09 Fri Jan 19 2018 CET
+;;; $$ Last modified:  19:04:49 Sat Jan 27 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1076,7 +1076,7 @@
                     contains duplicates!: ~a" hierarchy))
           (unless (= (length hierarchy) ensemble-players-len)
             (error "slippery-chicken::check-instruments: instrument-hierarchy ~
-                    ~a must contain all the players of the ensemble ~a."
+                    ~%~a ~%must contain all the players of the ensemble ~a."
                    hierarchy ensemble-players))
           (loop for ins in hierarchy do
                (unless (member ins ensemble-players)

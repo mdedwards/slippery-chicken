@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  16:04:24 Fri Jan 19 2018 CET
+;;; $$ Last modified:  10:00:49 Mon Jan 29 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -79,6 +79,9 @@
 
 (defclass sc-map (recursive-assoc-list)
   ((palette :accessor palette :initarg :palette :initform nil)
+   ;; MDE Mon Jan 29 09:35:05 2018
+   (num-sequences :reader num-sequences :writer (setf num-sequences)
+                  :initform nil)
    ;; often sc-map data is generated algorithmically but individual elements of
    ;; the lists need to be changed; this can be done here with a list of lists
    ;; of the type (((1 2 vla) 3 20b) ((2 3 vln) 4 16a)); each list is a change,
@@ -90,7 +93,6 @@
                  :initform nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; See above
 
 (defmethod initialize-instance :after ((scm sc-map) &rest initargs)
@@ -114,6 +116,13 @@
 (defmethod (setf replacements) :after (rplmts (scm sc-map))
   (declare (ignore rplmts))
   (do-replacements scm))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jan 29 09:49:49 2018 -- so that if the data changes we calculate the
+;;; number of sequences next time the slot value is requested.
+(defmethod (setf data) :after (value (scm sc-map))
+  (declare (ignore value))
+  (setf (slot-value scm 'num-sequences) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -696,6 +705,19 @@ data: (1 NIL 3 4 5)
        (when (and (>= id start) (<= id end))
          (incf (id no) inc)))
   scm)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  MDE Sat Jan 27 19:12:32 2018 -
+(defmethod num-sequences ((scm sc-map))
+  (if (slot-value scm 'num-sequences)
+      (slot-value scm 'num-sequences)
+      (setf (slot-value scm 'num-sequences) (num-sequences-aux scm))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod num-sequences-aux ((scm sc-map))
+  (loop for ref in (get-all-refs scm)
+     for section = (get-data-data ref scm)
+     sum (length section)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

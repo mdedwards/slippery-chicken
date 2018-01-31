@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  18:46:46 Thu Dec 28 2017 CET
+;;; $$ Last modified:  12:18:19 Sat Jan 27 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1314,7 +1314,7 @@ data: (
 ;;;   Default = T.  
 ;;; 
 ;;; RETURN VALUE  
-;;; If a the new pitches are passed as a simple flat list, the method returns
+;;; If the new pitches are passed as a simple flat list, the method returns
 ;;; the number of the bar in which the pitches were changed; 
 ;;; otherwise returns T. 
 ;;;

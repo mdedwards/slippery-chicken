@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  19:03:26 Wed Jan 31 2018 CET
+;;; $$ Last modified:  15:44:13 Fri Feb  2 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -579,6 +579,11 @@ len))
     (setf (instruments result) (copy-list (instruments ps))
           (id result) (format nil "~a-post-ps-subseq-~a-~a" (id ps) start end))
     result))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Feb  2 15:42:53 2018
+(defmethod flat-line ((ps pitch-seq))
+  (= (highest ps) (lowest ps)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

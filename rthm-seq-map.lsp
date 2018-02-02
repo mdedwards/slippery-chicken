@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  12:08:00 Tue Jan 30 2018 CET
+;;; $$ Last modified:  16:12:36 Fri Feb  2 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -624,6 +624,8 @@ data: (5 3 2)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - the rthm-seq-palette references to use for the new player. See above.
+;;;   Default NIL.
+;;; - T or NIL to cycle the references. See above. Default NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; the same rthm-seq-map object but with the new player now added.

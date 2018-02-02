@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  18:57:54 Wed Jan 31 2018 CET
+;;; $$ Last modified:  15:59:41 Fri Feb  2 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -352,6 +352,10 @@ data: (5 1 3 2 4 3 2 1 5 4)
     new-psp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod flat-line ((psp pitch-seq-palette))
+  (every #'flat-line (data psp)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ;;;
 ;;; Related functions.
 ;;;

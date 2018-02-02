@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  17:16:59 Sun Dec 31 2017 CET
+;;; $$ Last modified:  15:50:17 Thu Feb  1 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2141,6 +2141,34 @@ data: (
              :id (format nil "~a-~a-~a" (id c1) (id c2) amount))))
     (setf (this c) (make-morph :i1 (id c1) :i2 (id c2) :proportion amount))
     c))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* chord/collapse
+;;; DATE
+;;; February 1st 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Collapse or shift all the pitches of a chord until a single octave.
+;;; 
+;;; ARGUMENTS
+;;; - a chord object
+;;; - the octave to shift the pitches into (integer)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; none
+;;; 
+;;; RETURN VALUE
+;;; a new chord object with the pitches in the given object
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod collapse ((c chord) octave)
+  (make-chord (transpose-pitch-list-to-octave (my-copy-list (data c)) octave)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  18:42:09 Wed Jan 31 2018 CET
+;;; $$ Last modified:  16:04:50 Fri Feb  2 2018 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -122,6 +122,8 @@
 ;;;   first item of the list. They need not be in ascending order. When this
 ;;;   argument is passed a value of T, the selection function will reinitialize
 ;;;   its default data and use that.
+;;; - :overwrite. If NIL and a pitch-seq-palette was given for a particular
+;;;   rthm-seq, then a new one won't be created. Default = T.
 ;;; - :reinit. Used internally.  Do not change.
 ;;;
 ;;;   At the moment, the default data are:
@@ -247,6 +249,8 @@
                           (selection-fun-data nil)
                           ;; MDE Sat Jul 14 17:20:27 2012 -- 
                           (reinit t)
+                          ;; MDE Thu Feb  1 17:34:42 2018
+                          (overwrite t)
                           ;; MDE Mon Jun 22 15:31:48 2015 
                           (chords t)
                           (pitch-seqs-per-rthm-seq 3))
@@ -268,7 +272,10 @@
                         :selection-fun-data 
                         (when pass-data
                           selection-fun-data))
-           (unless (zerop (num-notes rs))
+           (when (and (> (num-notes rs) 0)
+                      (or overwrite
+                          (flat-line (pitch-seq-palette rs))))
+             ;; todo: make overwrite work here
              (let ((psp (loop repeat pitch-seqs-per-rthm-seq collect
                              (funcall selection-fun 
                                       (num-notes rs)

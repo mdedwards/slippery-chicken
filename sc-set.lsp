@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  16:34:30 Sat Nov 18 2017 CET
+;;; $$ Last modified:  15:02:47 Thu Feb  1 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -876,9 +876,7 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;; original set symmetrically; i.e., with the identical interval structure
 ;;; above the original set and inverted interval structure below.
 ;;;
-;;; The optional <num-stacks> argument indicates how many new sets are to be
-;;; added to both ends. 
-;;;
+;;; The second argument indicates how times this procedure is carried out.
 ;;;
 ;;; NB: The method assumes that the pitch content of the original sc-set object
 ;;;     is sorted from low to high. 
@@ -903,7 +901,9 @@ PITCH: frequency: 190.418, midi-note: 54, midi-channel: 0
 ;;; - :down. Apply the process downwards in pitch space. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; An sc-set object.
+;;; A new sc-set object. This will have the same tag and id (unless given as a
+;;; keyword argument here) slots as the original sc-set but not subsets,
+;;; related-sets, used-notes, etc.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -943,7 +943,8 @@ data: (G2 A2 CS4 A4 A4 A5 C6 C6 FS6)
       (respell-chord chord))
     ;; return a new set, using the given id or if not given, the same id as the
     ;; original set 
-    (make-sc-set (if by-freq result (data chord)) :id (if id id (id s)))))
+    (make-sc-set (if by-freq result (data chord)) :tag (tag s)
+                 :id (if id id (id s)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1754,11 +1755,11 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 
 |#
 ;;; SYNOPSIS
-(defun make-sc-set (sc-set &key id subsets related-sets (auto-sort t)
+(defun make-sc-set (sc-set &key id subsets related-sets (auto-sort t) tag
                              (rm-dups t))
 ;;; ****
   (make-instance 'sc-set :id id :data sc-set :subsets subsets :rm-dups rm-dups
-                 :related-sets related-sets :auto-sort auto-sort))
+                 :tag tag :related-sets related-sets :auto-sort auto-sort))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

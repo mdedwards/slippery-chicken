@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    18th March 2002
 ;;;
-;;; $$ Last modified: 15:18:15 Fri Apr 19 2013 BST
+;;; $$ Last modified:  19:05:48 Fri Feb  2 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -49,11 +49,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)

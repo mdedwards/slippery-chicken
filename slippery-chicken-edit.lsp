@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  12:18:19 Sat Jan 27 2018 CET
+;;; $$ Last modified:  11:53:00 Sat Feb  3 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5372,6 +5372,89 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
           for bar = (get-bar sc bnum player)
           collect
             (apply function (cons bar further-args)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/map-over-sequenzes
+;;; DATE
+;;; February 2nd 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Apply a function to each sequenz object in a slippery-chicken piece. Note
+;;; that as a sequenz is a subclass of rthm-seq (and bar-holder) and that
+;;; rthm-seq has its rthm-seq-bars in the bars slot, we've got access to all
+;;; kinds of data which we can switch on in the function passed here,
+;;; e.g. player-section-ref, rsp-id
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the player(s) to process (single or list of symbols)
+;;; - the function to apply to each sequenz. This should accept a sequenz object
+;;;   as its first argument.  
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; &rest: further arguments to be passed to the given function
+;;; 
+;;; RETURN VALUE
+;;; T
+;;;
+;;; EXAMPLE
+#|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((hn (french-horn :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5))))
+                            (2 ((((4 4) h h))
+                                :pitch-seq-palette ((1 2)))))
+        :rthm-seq-map '((1 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((hn (2 2 2 2 2))
+                            (vc (2 2 2 2 2))))
+                        (3 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
+  (map-over-sequenzes mini 'hn 
+                      #'(lambda (seq) (print (player-section-ref seq)))))
+=> 
+(1 HN) 
+(1 HN) 
+(1 HN) 
+(1 HN) 
+(1 HN) 
+(2 HN) 
+(2 HN) 
+(2 HN) 
+(2 HN) 
+(2 HN) 
+(3 HN) 
+(3 HN) 
+(3 HN) 
+(3 HN) 
+(3 HN) 
+T
+|#
+;;; SYNOPSIS
+(defmethod map-over-sequenzes ((sc slippery-chicken) players function
+                               &rest further-args)
+;;; ****
+  (unless players
+    (setf players (players sc)))
+  (unless (listp players)
+    (setf players (list players)))
+  (let* ((section-refs (get-section-refs sc 1 1000)))
+    (loop for player in players do
+         (loop for section in section-refs 
+            for player-section = (get-player-section section player (piece sc))
+            do
+              (loop for sequenz in (data player-section) do
+                   ;; (print (this sequenz))
+                   (apply function (cons sequenz further-args))))))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 11 18:36:51 2012 

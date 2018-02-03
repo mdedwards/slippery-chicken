@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  16:04:50 Fri Feb  2 2018 CET
+;;; $$ Last modified:  17:45:12 Fri Feb  2 2018 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -268,7 +268,7 @@
        (if (rsp-p (data rs))
            (create-psps (data rs) :selection-fun selection-fun 
                         :pitch-seqs-per-rthm-seq pitch-seqs-per-rthm-seq
-                        :reinit nil
+                        :reinit nil :overwrite overwrite
                         :selection-fun-data 
                         (when pass-data
                           selection-fun-data))

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified:  21:03:02 Fri Jan 26 2018 CET
+;;; $$ Last modified:  11:47:40 Sat Feb  3 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2433,6 +2433,14 @@ RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1,
 ;;; ****
   (declare (ignore ignore))
   (nth (1- bar-num) (bars rs)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Feb  3 11:05:29 2018 -- couple of helper methods
+(defmethod player-section-ref ((rs rthm-seq))
+  (player-section-ref (first (bars rs))))
+
+(defmethod rsp-id ((rs rthm-seq))
+  (rsp-id (first (bars rs))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

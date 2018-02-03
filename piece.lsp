@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  17:31:30 Mon Feb 20 2017 GMT
+;;; $$ Last modified:  18:47:54 Fri Feb  2 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1190,24 +1190,24 @@ BAR-HOLDER:
 ;;; 
 ;;; EXAMPLE
 #|
-             (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((hn (french-horn :midi-channel 1))
-(vc (cello :midi-channel 2))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1))
-(3 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5)))))
-:rthm-seq-map '((1 ((hn (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(2 ((hn (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(3 ((hn (1 1 1 1 1))
-(vc (1 1 1 1 1))))))))
-(get-sequenz-from-bar-num (piece mini) 7 'vc))
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((hn (french-horn :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5)))))
+        :rthm-seq-map '((1 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (3 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
+  (get-sequenz-from-bar-num (piece mini) 7 'vc))
 
              =>
              SEQUENZ: pitch-curve: (1 2 3 4 5)

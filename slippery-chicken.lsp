@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  19:04:49 Sat Jan 27 2018 CET
+;;; $$ Last modified:  18:42:24 Fri Feb  2 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7168,15 +7168,16 @@ duration: 20.0 (20.000)
 
 ;;; ****m* slippery-chicken/get-sequenz-from-section
 ;;; DESCRIPTION
-;;; 
+;;; Get the sequenz object specified by the section, player and sequenz number
+;;; given. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; 
+;;; - a slippery-chicken object
+;;; - the player (symbol)
+;;; - the sequenz number, counting from 1
 ;;; 
 ;;; RETURN VALUE
+;;; the respective sequenz object
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-sequenz-from-section ((sc slippery-chicken)

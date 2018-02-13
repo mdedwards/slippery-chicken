@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  11:21:29 Sat Jan 20 2018 CET
+;;; $$ Last modified:  13:56:26 Tue Feb 13 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -615,7 +615,6 @@ data: TURKEY
     len))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* recursive-assoc-list/rmap
 ;;; DESCRIPTION
 ;;; Recurse over the objects in a recursive-assoc-list and call the given

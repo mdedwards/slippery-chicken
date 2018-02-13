@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  09:48:26 Wed Jan 10 2018 CET
+;;; $$ Last modified:  13:23:43 Tue Feb  6 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3045,6 +3045,9 @@ WARNING:
   (with-open-file
       (stream file :direction :input :if-does-not-exist :error)
     (read stream)))
+
+(defun read-from-default-dir-file (file)
+  (read-from-file (concatenate 'string (get-sc-config 'default-dir) file)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified:  11:47:40 Sat Feb  3 2018 CET
+;;; $$ Last modified:  15:45:30 Sat Feb  3 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2441,6 +2441,48 @@ RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1,
 
 (defmethod rsp-id ((rs rthm-seq))
   (rsp-id (first (bars rs))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Feb  3 14:47:55 2018 
+;;; ****m* rthm-seq/change-pitches
+;;; DATE
+;;; February 3rd 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Change the pitches in a rthm-seq. The replacement pitches list can contain
+;;; fewer pitches than in the seq: the method stops when it runs out. If there
+;;; are more pitches than necessary, a list of unused pitches will be returned. 
+;;; 
+;;; ARGUMENTS
+;;; - the rthm-seq object
+;;; - a list of pitch objects or symbols as replacements
+;;; - the bar within the sequence to start at (counting from 1)
+;;; - the event within the start bar to start at (counting from 1)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; :written: whether to change the written or sounding pitches. Default = NIL =
+;;; sounding pitches.
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; if all pitches given are used, then NIL, otherwise the unused pitches as a
+;;; list. 
+;;; 
+;;; SYNOPSIS
+(defmethod change-pitches ((rs rthm-seq)
+                           pitch-list 
+                           (start-bar integer) ; don't used bar-holder method
+                           start-event 
+                           &key written)
+;;; ****
+  (loop for bar in (nthcdr (1- start-bar) (bars rs)) do
+       (setq pitch-list (change-pitches bar pitch-list
+                                        (if start-event (1- start-event) 0)
+                                        100000
+                                        :written written)
+             start-event nil))
+  pitch-list)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

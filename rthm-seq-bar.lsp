@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  19:57:38 Wed Jan 31 2018 CET
+;;; $$ Last modified:  16:32:22 Mon Feb  5 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5548,17 +5548,23 @@ collect (midi-channel (pitch-or-chord p))))
      finally (return nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Thu Aug 13 11:11:16 2015  
+;;; MDE Thu Aug 13 11:11:16 2015  -- start is 0-based
 (defmethod change-pitches ((rsb rthm-seq-bar) pitch-list start stop
                            &key written)
-  (loop for i from start below stop
-     for e = (nth i (rhythms rsb))
-     do
-       (when (and e (not (is-rest e)))
-         (if written
-             (set-written-pitch-or-chord e (make-pitch (pop pitch-list)))
-             (setf (pitch-or-chord e) (make-pitch (pop pitch-list))))))
-  pitch-list)
+  (flet ((get-one ()
+           (let ((one (pop pitch-list)))
+             (if (chord-p one)
+                 one
+                 (make-pitch one)))))
+    (loop for i from start below (min stop (num-rhythms rsb))
+       for e = (nth i (rhythms rsb))
+       while pitch-list
+       do
+         (when (and e (not (is-rest e)))
+           (if written
+               (set-written-pitch-or-chord e (get-one))
+               (setf (pitch-or-chord e) (get-one)))))
+    pitch-list))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Feb 16 17:44:58 2017 -- moved most of the functionality of

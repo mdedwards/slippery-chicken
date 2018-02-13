@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:16:56 Mon Jan  8 2018 CET
+;;; $$ Last modified:  17:23:32 Tue Feb 13 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -818,16 +818,20 @@ data: 132
   (typecase value
     (pitch (setf (slot-value e slot) (clone value)))
     (chord (setf (slot-value e slot) (clone value))
-           ;; the cmn-data for a chord should be added to the event (whereas ;
-           ;; the cmn-data for a pitch is only added to that pitch, probably ;
-           ;; just a note-head change) ;
+           ;; the cmn-data for a chord should be added to the event (whereas
+           ;; the cmn-data for a pitch is only added to that pitch, probably
+           ;; just a note-head change)
            (loop for m in (marks value) do
-                (add-mark e m)))
-    ;; 26/3/07: nil shouldn't result in making a chord! ;
+              ;; MDE Tue Feb 13 17:21:58 2018 -- we don't need the checking of
+              ;; add-mark because that will already have been done with the
+              ;; original chord, so just push directly 
+              ;; (add-mark e m)))
+                (push m (marks e))))
+    ;; 26/3/07: nil shouldn't result in making a chord!
     (list (setf (slot-value e slot)
                 (if value
                     (make-chord value :midi-channel (get-midi-channel e))
-                    ;; 23.3.11 nil needs to set is-rest slot too! ;
+                    ;; 23.3.11 nil needs to set is-rest slot too!
                     (progn 
                       (setf (is-rest e) t)
                       ;; MDE Sat Nov  9 10:52:57 2013 -- and the tied-* slots?

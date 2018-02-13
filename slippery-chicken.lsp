@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:42:24 Fri Feb  2 2018 CET
+;;; $$ Last modified:  16:49:07 Tue Feb 13 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5625,8 +5625,8 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Create a slippery-chicken object, manually create a problem with the ties, ;
-;;; and call check-ties with a #'warn as the on-fail function. ;
+;;; Create a slippery-chicken object, manually create a problem with the ties,
+;;; and call check-ties with a #'warn as the on-fail function.
 (let* ((mini
         (make-slippery-chicken
          '+mini+

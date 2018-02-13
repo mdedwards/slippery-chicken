@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  10:00:49 Mon Jan 29 2018 CET
+;;; $$ Last modified:  17:36:07 Tue Feb 13 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -689,7 +689,6 @@ data: (1 NIL 3 4 5)
     (loop for ref in palette-refs collect (get-data ref p nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; 1.3.11
 (defmethod incf-ids ((scm sc-map) inc &key start end) ; inclusive!
   (unless start
@@ -718,6 +717,33 @@ data: (1 NIL 3 4 5)
   (loop for ref in (get-all-refs scm)
      for section = (get-data-data ref scm)
      sum (length section)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* sc-map/count-ref
+;;; DATE
+;;; February 13th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Count the number of times a map reference occurs, e.g. how often a
+;;; particular rthm-seq or set is used in a piece.
+;;; 
+;;; ARGUMENTS
+;;; - the sc-map reference
+;;; - the reference we're counting
+;;; 
+;;; RETURN VALUE
+;;; an integer reflecting the number of occurences of <ref>
+;;; 
+;;; SYNOPSIS
+(defmethod count-ref ((scm sc-map) ref)
+;;; ****
+  (let ((count 0))
+    (rmap scm
+          #'(lambda (no)
+              (loop for r in (data no) do
+                   (when (equalp ref r)
+                     (incf count)))))
+    count))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

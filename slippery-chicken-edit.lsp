@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  11:53:00 Sat Feb  3 2018 CET
+;;; $$ Last modified:  15:56:40 Tue Feb  6 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5387,7 +5387,8 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
-;;; - the player(s) to process (single or list of symbols)
+;;; - the player(s) to process (single or list of symbols). If nil then all
+;;;   players will be processed. 
 ;;; - the function to apply to each sequenz. This should accept a sequenz object
 ;;;   as its first argument.  
 ;;; 

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:23:32 Tue Feb 13 2018 CET
+;;; $$ Last modified:  17:03:22 Thu Feb 15 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -782,6 +782,7 @@ data: 132
             ;; MDE Thu Mar 20 15:55:52 2014 -- can't believe it's taken this
             ;; long!  
             (is-whole-bar-rest e) nil))
+    ;; (print diff)
     (when wporc
       (setf (slot-value e 'written-pitch-or-chord)
             (if (pitch-or-chord e)

@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  16:12:36 Fri Feb  2 2018 CET
+;;; $$ Last modified:  15:36:19 Mon Feb 19 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -82,9 +82,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod update-rsm ((rsm rthm-seq-map))
-  ;; MDE Fri Jan 19 12:38:56 2018 -- to make sure the subsections are also rsm's
-  ;; instead of just ral's 
-  (promote rsm 'rthm-seq-map) 
+  ;; MDE Mon Feb 19 15:34:56 2018 -- piece objects are made from rsm (hence
+  ;; rsm-to-piece function) but as they're also bar-holders we don't want pieces
+  ;; being promoted as that'll get into all kinds of bar-holder slot problems
+  (unless (piece-p rsm)
+    ;; MDE Fri Jan 19 12:38:56 2018 -- to make sure the subsections are also
+    ;; rsm's instead of just ral's
+    (promote rsm 'rthm-seq-map))
   (setf (players rsm) (get-rsm-players rsm)
         (num-players rsm) (length (players rsm)))
   (check-num-sequences rsm))    
@@ -588,10 +592,9 @@ data: (5 3 2)
 ;;; MDE Thu Jan 18 18:53:18 2018 
 ;;; ****m* rthm-seq-map/add-player
 ;;; DATE
-;;; January 18th 2018, Essen
+;;; January 18th 2018, Heidhausen
 ;;; 
 ;;; DESCRIPTION
-
 ;;; Add a player to a rthm-seq-map. The data (3rd) argument defines the rthm-seq
 ;;; references (IDs) to be used for the new player. This is a very flexible
 ;;; argument: 
@@ -615,7 +618,8 @@ data: (5 3 2)
 ;;; arguments: the rthm-seq-map object (which it can then analyse/query to make
 ;;; decisions); the full reference to the current (sub)section for which
 ;;; references should be provided; the number of references which are needed
-;;; for this (sub)section; and the player being added.
+;;; for this (sub)section; and the player being added. It must return a list of
+;;; references for each given section. 
 ;;;
 ;;; ARGUMENTS
 ;;; - the rthm-seq-map object

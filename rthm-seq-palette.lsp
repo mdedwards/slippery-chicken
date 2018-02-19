@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  17:45:12 Fri Feb  2 2018 CET
+;;; $$ Last modified:  15:54:11 Thu Feb 15 2018 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -275,7 +275,6 @@
            (when (and (> (num-notes rs) 0)
                       (or overwrite
                           (flat-line (pitch-seq-palette rs))))
-             ;; todo: make overwrite work here
              (let ((psp (loop repeat pitch-seqs-per-rthm-seq collect
                              (funcall selection-fun 
                                       (num-notes rs)

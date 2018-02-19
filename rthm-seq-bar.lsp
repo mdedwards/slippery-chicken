@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  16:32:22 Mon Feb  5 2018 CET
+;;; $$ Last modified:  16:15:47 Thu Feb 15 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5621,7 +5621,12 @@ collect (midi-channel (pitch-or-chord p))))
     (when auto-beam
       (auto-beam rsb auto-beam))
     (is-full rsb)))
-                           
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Feb 15 16:15:30 2018 
+(defmethod set-ref ((rsb rthm-seq-bar))
+  (set-ref (first (rhythms rsb))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

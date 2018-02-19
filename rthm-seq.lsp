@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified:  15:45:30 Sat Feb  3 2018 CET
+;;; $$ Last modified:  16:20:48 Thu Feb 15 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2442,6 +2442,12 @@ RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1,
 (defmethod rsp-id ((rs rthm-seq))
   (rsp-id (first (bars rs))))
 
+(defmethod player ((rs rthm-seq))
+  (player (first (bars rs))))
+
+(defmethod set-ref ((rs rthm-seq))
+  (set-ref (first (bars rs))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Feb  3 14:47:55 2018 
 ;;; ****m* rthm-seq/change-pitches
@@ -2472,7 +2478,7 @@ RTHM-SEQ-BAR: time-sig: 0 (2 4), time-sig-given: NIL, bar-num: -1,
 ;;; SYNOPSIS
 (defmethod change-pitches ((rs rthm-seq)
                            pitch-list 
-                           (start-bar integer) ; don't used bar-holder method
+                           (start-bar integer) ; don't use bar-holder method
                            start-event 
                            &key written)
 ;;; ****

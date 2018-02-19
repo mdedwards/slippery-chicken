@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  13:32:07 Fri Aug 11 2017 BST
+;;; $$ Last modified:  19:40:08 Thu Feb 15 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -115,7 +115,8 @@
        :lowest-written bf3 :highest-written a6
        :largest-fast-leap 12
        :starting-clef treble 
-       :chords nil 
+       :chords nil :microtones t
+       :missing-notes (bqf3 bqs3 cqs4 dqf4) 
        :midi-program 69))
      (e-flat-clarinet 
       (:staff-name "E-flat clarinet" :staff-short-name "E-flat cl"
@@ -217,7 +218,8 @@
       (:staff-name "french horn" :staff-short-name "hn" 
        :lowest-written c3 :highest-written c6 :transposition-semitones -7 
        :largest-fast-leap 9
-       :clefs (treble bass) :starting-clef treble
+       ;; :clefs (treble bass) :starting-clef treble
+       :clefs (treble)
        :chords nil 
        :microtones t
        :midi-program 61))

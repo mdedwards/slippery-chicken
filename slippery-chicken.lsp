@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:49:07 Tue Feb 13 2018 CET
+;;; $$ Last modified:  12:17:48 Tue Feb 20 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -197,6 +197,8 @@
    ;; MDE Mon Jul  2 16:16:19 2012 -- NB Working in Lilypond but not yet
    ;; implemented in CMN  
    (key-sig :accessor key-sig :type list :initarg :key-sig :initform '(c major))
+   ;; MDE Mon Feb 19 18:53:42 2018 -- did we run sc-init yet?
+   (did-init :accessor did-init :type boolean :initform nil)
    ;; MDE Mon Mar 26 13:10:15 2012 -- This one defines the lowest scaler we'll
    ;; accept before adding notes from those used i.e. if our pitch-seq needs 6
    ;; notes and only 3 are available, there would be note repetition but as
@@ -456,7 +458,9 @@
     (check-beams sc)
     ;; MDE Fri Nov 13 17:42:22 2015  
     (initial-staff-lines sc) 
-    (set-rehearsal-letters sc (get-groups-top-ins sc)))
+    (set-rehearsal-letters sc (get-groups-top-ins sc))
+    ;; MDE Mon Feb 19 18:57:28 2018
+    (setf (did-init sc) t))
   sc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -519,7 +523,8 @@
                   ~%      instruments-hierarchy: ~a ~
                   ~%        fast-leap-threshold: ~a ~
                   ~%      avoid-melodic-octaves: ~a ~
-                  ~%      avoid-used-notes: ~a ~
+                  ~%           avoid-used-notes: ~a ~
+                  ~%                   did-init: ~a ~
                   ~%     multi-bar-rests-called: ~a ~
                   ~% pitch-seq-index-scaler-min: ~a"
             (title sc) (composer sc) (year sc) (get-id (set-palette sc))
@@ -530,7 +535,7 @@
             (get-id (instrument-palette sc)) (get-id (ensemble sc))
             (instruments-hierarchy sc) (fast-leap-threshold sc) 
             (avoid-melodic-octaves sc) (avoid-used-notes sc) 
-            (multi-bar-rests-called sc) 
+            (did-init sc) (multi-bar-rests-called sc) 
             (pitch-seq-index-scaler-min sc))
     (when (piece-p (piece sc))
       (statistics sc stream))))
@@ -608,7 +613,8 @@
           (slot-value no 'rehearsal-letters) 
           (my-copy-list (rehearsal-letters sc))
           (slot-value no 'avoid-melodic-octaves) (avoid-melodic-octaves sc) 
-          (slot-value no 'avoid-used-notes) (avoid-used-notes sc) 
+          (slot-value no 'avoid-used-notes) (avoid-used-notes sc)
+          (slot-value no 'did-init) (did-init sc) 
           (slot-value no 'pitch-seq-index-scaler-min)
           (pitch-seq-index-scaler-min sc)
           (slot-value no 'multi-bar-rests-called) (multi-bar-rests-called sc)
@@ -3242,31 +3248,36 @@ data: (5 8)
     t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Mon Apr 25 16:32:39 2016 -- added optional arg 
-(defmethod handle-set-limits ((sc slippery-chicken) &optional num-bars)
-  (flet ((do-limits (set-limits x-max)
-           ;; MDE Mon Apr 25 16:49:45 2016 -- have to handle the case where
-           ;; we've already made an assoc-list
-           (typecase set-limits
-                    (list
-                     (make-assoc-list 
-                      'set-limits
-                      (loop for ins in set-limits
-                         collect
-                           (list (first ins) 
-                                 (doctor-set-limits-env (second ins) x-max)))))
-                    (assoc-list
-                     (loop for ins in (data set-limits) do
-                          (setf (data ins)
-                                (doctor-set-limits-env (data ins) x-max)))
-                     set-limits)
-                    (t (error "slippery-chicken::handle-set-limits: ~
+;;; MDE Mon Apr 25 16:32:39 2016 -- added optional arg: can be T or an int
+(defmethod handle-set-limits ((sc slippery-chicken) &optional num-bars force)
+  ;; don't do this twice as degree y values might be reprocessed as midi,
+  ;; causing errors
+  (when (or force (not (did-init sc)))
+    (flet ((do-limits (set-limits x-max)
+             ;; MDE Mon Apr 25 16:49:45 2016 -- have to handle the case where
+             ;; we've already made an assoc-list
+             (typecase set-limits
+               (list
+                (make-assoc-list 
+                 'set-limits
+                 (loop for ins in set-limits
+                    collect
+                      (list (first ins) 
+                            (doctor-set-limits-env (second ins) x-max)))))
+               (assoc-list
+                (loop for ins in (data set-limits) do
+                     (setf (data ins)
+                           (doctor-set-limits-env (data ins) x-max)))
+                set-limits)
+               (t (error "slippery-chicken::handle-set-limits: ~
                                unhandled data type: ~a" set-limits)))))
-    (let* ((num-x (if num-bars (num-bars sc) (num-sequences sc)))
-           (high (do-limits (set-limits-high sc) num-x))
-           (low (do-limits (set-limits-low sc) num-x)))
-      (setf (set-limits-high sc) high
-            (set-limits-low sc) low))))
+      (let* ((num-x (if num-bars
+                        (if (integer>0 num-bars) num-bars (num-bars sc))
+                        (num-sequences sc)))
+             (high (do-limits (set-limits-high sc) num-x))
+             (low (do-limits (set-limits-low sc) num-x)))
+        (setf (set-limits-high sc) high
+              (set-limits-low sc) low)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; global-seq-num is 1-based.
@@ -8899,13 +8910,14 @@ NOTE 6200 0.6666667
     count))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun doctor-set-limits-env (env x-max)
+;;; MDE Tue Feb 20 12:15:31 2018 -- if x-max is nil, don't stretch, just process
+;;; pitch/y values
+(defun doctor-set-limits-env (env &optional x-max)
   ;; MDE Mon Apr  9 13:11:25 2012 
-  (unless (> x-max 1)
+  (when (and x-max (<= x-max 1))
     (error "slippery-chicken::doctor-set-limits-env: Can't apply set ~
             limits envelopes ~%to a piece with only one sequence."))
-  (let ((stretched (new-lastx env x-max)))
+  (let ((stretched (if x-max (new-lastx env x-max) env)))
     ;; 14/8/07 first x always needs to be 1
     (setf (first stretched) 1)
     (loop for x in stretched by #'cddr and y in (cdr stretched) by #'cddr

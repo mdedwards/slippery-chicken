@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:16:17 Mon Feb 19 2018 CET
+;;; $$ Last modified:  12:18:17 Tue Feb 20 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6019,6 +6019,57 @@ T
      do (add-half-beat-rest bar))
   t)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* slippery-chicken-edit/set-limits-by-section
+;;; DATE
+;;; February 20th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; For each section/subsection of a piece, set the highest or lowest pitch,
+;;; i.e. create the curve for one player in the set-limits-high or
+;;; set-limits-low slot
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the pitches: a list of pitch symbols or MIDI note numbers. Note that these
+;;;   will be used cyclically if there aren't enough pitches for the number of
+;;;   sections/subsections in the piece.
+;;; - 'set-limits-high or 'set-limits-low to set the desired curve
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - which player (symbol) to set the curve for. Default = 'all, which means
+;;;   the curve will apply to all players.
+;;; 
+;;; RETURN VALUE
+;;; The curve created (list)
+;;;
+;;; SYNOPSIS
+(defmethod set-limits-by-section ((sc slippery-chicken) pitches which
+                                  &optional (player 'all))
+;;; ****
+  (unless (or (eq player 'all) (member player (players sc)))
+    (error "slippery-chicken::set-limits-by-section: player argument (~a) ~
+            ~%should be 'all or a player from the ensemble: ~a"
+           player (players sc)))
+  (let* ((top (make-cscl pitches))
+         (seq-num 1)
+         (slot (slot-value sc which))
+         (curve (when slot (get-data player slot nil)))
+         (result
+          (doctor-set-limits-env
+           (loop for section in (get-all-section-refs sc)
+              for p = (get-next top)
+              appending (list seq-num p
+                              (1- (incf seq-num (num-seqs sc section)))
+                              p)))))
+    (if curve
+        (setf (data curve) result)
+        (if slot
+            (add (list player result) slot)
+            (setf (slot-value sc which) (list (list player result)))))
+    result))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

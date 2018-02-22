@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  19:40:08 Thu Feb 15 2018 CET
+;;; $$ Last modified:  19:47:00 Tue Feb 20 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -118,6 +118,25 @@
        :chords nil :microtones t
        :missing-notes (bqf3 bqs3 cqs4 dqf4) 
        :midi-program 69))
+     ;; MDE Tue Feb 20 19:43:50 2018 -- 
+     (cor-anglais
+      (:staff-name "cor anglais" :staff-short-name "c.a." 
+       :lowest-written bf3 :highest-written a6
+       :transposition-semitones -7
+       :largest-fast-leap 12
+       :starting-clef treble 
+       :chords nil :microtones t
+       :missing-notes (bqf3 bqs3 cqs4 dqf4) 
+       :midi-program 70))
+     (oboe-d-amore
+      (:staff-name "oboe d'amore" :staff-short-name "ob d'am" 
+       :lowest-written bf3 :highest-written a6
+       :transposition-semitones -3
+       :largest-fast-leap 12
+       :starting-clef treble 
+       :chords nil :microtones t
+       :missing-notes (bqf3 bqs3 cqs4 dqf4) 
+       :midi-program 70))
      (e-flat-clarinet 
       (:staff-name "E-flat clarinet" :staff-short-name "E-flat cl"
        :lowest-written e3 :highest-written a6 :transposition-semitones 3

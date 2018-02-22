@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  18:47:54 Fri Feb  2 2018 CET
+;;; $$ Last modified:  12:02:12 Thu Feb 22 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -613,7 +613,7 @@ BAR-HOLDER:
         (unless (= 3 (length bar-num-or-ref))
           (error "piece::get-bar: ~
                   bar-num-or-ref is either an absolute bar number ~
-                  or a reference of the form ~% (section sequence bar): ~a"
+                  ~%or a reference of the form ~% (section sequence bar): ~a"
                  bar-num-or-ref))
         (get-bar-from-ref p (first bar-num-or-ref) player 
                           (second bar-num-or-ref) 

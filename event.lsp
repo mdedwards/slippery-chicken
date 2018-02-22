@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:03:22 Thu Feb 15 2018 CET
+;;; $$ Last modified:  12:26:56 Thu Feb 22 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2190,7 +2190,8 @@ NIL
         (notations '(beg-sl end-sl beg-phrase end-phrase beg-gliss end-gliss
                      a s te ts as at c1 c2 c3 c4 c5 c6 pause short-pause
                      long-pause t3 arp lhp bartok nail flag downbow upbow open
-                     harm 0 1 2 3 4 5))
+                     ;; harm 0 1 2 3 4 5)) ; fingerings now handled by integerp
+                     harm))
         ;;(directions '(beg-8va end-8va beg-8vb end-8vb beg-15ma beg-15mb
         ;;            end-15ma end15mb cresc-beg cresc-end dim-beg dim-end
         ;;          ped ped^ ped-up uc tc sost^
@@ -2199,12 +2200,14 @@ NIL
     (write-xml-ins-change e stream)     ; if it exists
     (set-last-midi-channel e)
     (macrolet ((separate (marks syms syms-holder rest)
-                 `(loop for m in ,marks do
+                 `(loop for m in ,marks
+                     for int = (integerp m) ; fingerings
+                     do
                      ;; this will also have the effect of removing double
                      ;; marks, which is fine.
-                       (when (member m ,rest)
+                       (when (or (member m ,rest) int)
                          (setq ,rest (remove m ,rest)))
-                       (if (member m ,syms)
+                       (if (or (member m ,syms) int)
                            (push m ,syms-holder)
                            (push m ,rest)))))
       (separate (marks-before e) noteheads notehead before)

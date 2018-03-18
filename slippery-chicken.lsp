@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:17:48 Tue Feb 20 2018 CET
+;;; $$ Last modified:  14:57:37 Wed Mar 14 2018 +07
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6643,10 +6643,31 @@ data: NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 17/3 17
+;;; 17/3/17
 ;;; there'll be no :in-c as we can leave such things to the notation programme
 ;;; known problems: Sibelius 7.5 messes up some transposing instrument, getting
 ;;; octave transpositions wrong and adding generally unwanted key signatures.
+;;; ****m* slippery-chicken/write-xml
+;;; DATE
+;;; March 17th 2017, Edinburgh
+;;; 
+;;; DESCRIPTION
+;;; Write a MusicXML file for import into Sibelius, Finale, Dorico, etc.
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod write-xml ((sc slippery-chicken)
                       &key
                         (staff-height 7)  ; mm
@@ -6657,13 +6678,17 @@ data: NIL
                         (left-page-margins '(20 20 20 20))
                         (right-page-margins '(20 20 20 20))
                         players start-bar end-bar
+                        (respell-notes t)
                         (file (format nil "~a_~a.xml"
                                       (get-sc-config 'default-dir)
                                       (filename-from-title (title sc)))))
+;;; ****
   (unless start-bar
     (setq start-bar 1))
   (unless end-bar
     (setq end-bar (num-bars sc)))
+  (when respell-notes
+    (respell-notes sc respell-notes))
   (with-open-file 
       (xml file :direction :output :if-does-not-exist :create
            :if-exists :rename-and-delete)

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  17:08:10 Wed Apr  5 2017 BST
+;;; $$ Last modified:  16:17:28 Sun Mar 18 2018 +07
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -382,7 +382,8 @@
                               mark)))))
                (integer
                 (progn
-                  (when (or (< mark 0) (> mark 5))
+                  (when (and (get-sc-config 'warn-fingering)
+                             (or (< mark 0) (> mark 5)))
                     (warning "music-xml::xml-get-mark: adding fingering ~a, ~
                               hope your musicians have more than 4 fingers ~
                               and a thumb!."

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:26:56 Thu Feb 22 2018 CET
+;;; $$ Last modified:  16:55:22 Sun Mar 18 2018 +07
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -818,7 +818,12 @@ data: 132
   ;; (print '***setf-pitch-aux)  (print e) (print value) (print slot)
   (typecase value
     (pitch (setf (slot-value e slot) (clone value)))
-    (chord (setf (slot-value e slot) (clone value))
+    (chord (setf (slot-value e slot) (let ((c (clone value)))
+                                       ;; MDE Sun Mar 18 16:43:14 2018 -- we
+                                       ;; don't want the marks duplicated in the
+                                       ;; event and the chord
+                                       (setf (marks c) nil)
+                                       c))
            ;; the cmn-data for a chord should be added to the event (whereas
            ;; the cmn-data for a pitch is only added to that pitch, probably
            ;; just a note-head change)
@@ -2227,7 +2232,11 @@ NIL
                     (push ,string after))))
       (mreplace 'long-pause 'pause "lunga" during)
       (mreplace 'short-pause 'pause "breva" during))
+    ;; MDE Sun Mar 18 16:12:34 2018, Bangkok -- fingerings are in notehead now
+    ;; so remove
+    (setq notehead (remove-if #'integerp notehead))
     (when (> (length notehead) 1)
+    ;; (when (> (count-if #'symbolp notehead) 1)
       (error "event::write-xml: can only have one notehead mark, you have ~a ~
               ~&~a" notehead e))
     (when (and (tempo-change e) (display-tempo e))
@@ -2295,7 +2304,10 @@ NIL
                       ~&         </part-abbreviation-display>~
                       ~&       </print>"
               xml-name (xml-staffname ins t))
-      (when (or part (player e))
+      ;; MDE Wed Mar 14 14:18:59 2018 -- if this is the first event of the bar
+      ;; and happens to be a rest then we can't gewt the midi-channel but we
+      ;; don't need to write this info. again anyway.
+      (when (and midi-channel (or part (player e)))
         (format stream "~&       <sound>~
                         ~&         <midi-instrument id=\"~a\">~
                         ~&         <midi-channel>~a</midi-channel>~

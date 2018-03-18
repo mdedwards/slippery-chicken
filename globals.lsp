@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  19:02:38 Wed Jan 31 2018 CET
+;;; $$ Last modified:  16:17:04 Sun Mar 18 2018 +07
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -110,6 +110,7 @@
      (warn-no-xml-mark t)
      ;; warn if a pitch goes above midi note 119?
      (warn-high-pitch t)
+     (warn-fingering t)
      ;; Bar number offsets for CMN
      (cmn-bar-num-dx-for-sc -0.2)
      (cmn-bar-num-dy-for-sc 1.2)

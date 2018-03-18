@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  14:02:41 Thu Mar 23 2017 GMT
+;;; $$ Last modified:  16:52:07 Sat Mar 10 2018 +07
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -274,7 +274,7 @@
            (4 "-4 ")
            (5 "-5 ")
            (t (warning "lilypond::lp-get-mark: adding fingering ~a, hope your ~
-                        musicians have more than 4 fingers and a thumb!."
+                        ~%musicians have more than 4 fingers and a thumb!."
                        mark)
               (format nil "^\\markup{\\finger ~a}" mark))))
         ;; 25.6.11 a 2 element list will generate a 'transition arrow' with the

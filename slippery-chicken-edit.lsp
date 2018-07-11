@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  12:18:17 Tue Feb 20 2018 CET
+;;; $$ Last modified:  09:09:58 Tue Jun 12 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5305,7 +5305,8 @@ NIL
 ;;; - A number that is the first bar to which the function should be applied. 
 ;;; - A number that is the last bar to which the function should be applied.
 ;;; - A list of the IDs of the players to whose parts the function should be
-;;;   applied.   Can also be a single symbol.
+;;;   applied. Can also be a single symbol. If NIL then all players will be
+;;;   processed.  
 ;;; - The method or function itself. This can be a user-defined function or the
 ;;;   name of an existing method or function.  It should take at least one
 ;;;   argument, a rthm-seq-bar, and any other arguments as supplied. 

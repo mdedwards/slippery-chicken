@@ -37,7 +37,7 @@
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
-;;; $$ Last modified: 10:41:31 Sun Jul 17 2016 CEST
+;;; $$ Last modified:  12:57:53 Wed Jul 11 2018 CEST
 ;;;
 ;;; SVN ID: $Id: get-spectrum.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
@@ -81,62 +81,63 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun create-analysis-data (sndfile
                              &key
-                             (outputfile nil)
-                             ;; How ofen to perform freq analysis (secs)
-                             ;; or if a list then these are times to
-                             ;; do the analysis at  
-                             (interval 0.01)
-                             ;; Where to end in the sound file, if nil, analyse
-                             ;; it all  
-                             (end nil) 
-                             (num-partials 30)
-                             (srate 44100)
-                             (fftsize 2048) 
-                             (max-peaks 200)
-                             (start-analysis 0.0) 
-                             (highest-bin (/ fftsize 2)))
+                               (outputfile nil)
+                               ;; How ofen to perform freq analysis (secs)
+                               ;; or if a list then these are times to
+                               ;; do the analysis at  
+                               (interval 0.01)
+                               ;; Where to end in the sound file, if nil,
+                               ;; analyse it all
+                               (end nil) 
+                               (num-partials 30)
+                               (srate 44100)
+                               (fftsize 2048) 
+                               (max-peaks 200)
+                               (start-analysis 0.0) 
+                               (highest-bin (/ fftsize 2)))
   (let* ((stop (or end (sound-duration sndfile)))
-         (amp-array (make-array num-partials))
-         (freq-array (make-array num-partials))
+         (amp-array (make-array num-partials :initial-element nil))
+         (freq-array (make-array num-partials :initial-element nil))
          (normalised-amps nil)
          (times (if (listp interval)
                     interval
                     (loop for start from start-analysis below stop by interval 
                        collect start)))
          (max-amp 0.0))
+    ;; (print amp-array)
     (loop ;; for start from start-analysis below stop by interval do
-        for start in times do
-          (format t "~&Analysing ~a at time ~a" sndfile start)
-          (multiple-value-bind (freqs amps)
-              (get-spectrum sndfile 
-                            :start-analysis start
-                            :num-partials num-partials
-                            :order-by 'freq
-                            :srate srate
-                            :fftsize fftsize
-                            :normalise nil
-                            :max-peaks max-peaks
-                            :highest-bin highest-bin)
-            (loop for f in freqs and a in amps and i from 0 do 
-                  (push start (aref freq-array i))
-                  (push f (aref freq-array i))
-                  (push start (aref amp-array i))
-                  (push a (aref amp-array i))
-                  (when (> a max-amp) (setf max-amp a)))))
+       for start in times do
+         (format t "~&Analysing ~a at time ~a" sndfile start)
+         (multiple-value-bind (freqs amps)
+             (get-spectrum sndfile 
+                           :start-analysis start
+                           :num-partials num-partials
+                           :order-by 'freq
+                           :srate srate
+                           :fftsize fftsize
+                           :normalise nil
+                           :max-peaks max-peaks
+                           :highest-bin highest-bin)
+           (loop for f in freqs and a in amps and i from 0 do 
+                (push start (aref freq-array i))
+                (push f (aref freq-array i))
+                (push start (aref amp-array i))
+                (push a (aref amp-array i))
+                (when (> a max-amp) (setf max-amp a)))))
+    ;; (print amp-array) (print 'here) (print normalised-amps) 
     (loop for i below num-partials do
-
-          ;; max-amp now holds the maximum amp we found in the whole analysis
-          ;; over all the partials so now we can normalise.  N.B. At this point
-          ;; the amps are in reverse order, with time the second value in each
-          ;; amp/time pair.
-          (setf normalised-amps (if (zerop max-amp)
-                                    (aref amp-array i)
-                                  (loop for a in (aref amp-array i)
+       ;; max-amp now holds the maximum amp we found in the whole analysis
+       ;; over all the partials so now we can normalise.  N.B. At this point
+       ;; the amps are in reverse order, with time the second value in each
+       ;; amp/time pair.
+         (setf normalised-amps (if (zerop max-amp)
+                                   (aref amp-array i)
+                                   (loop for a in (aref amp-array i)
                                       and time in (cdr (aref amp-array i)) 
                                       by #'cddr collect (/ a max-amp) 
                                       collect time))
-                (aref amp-array i) (nreverse normalised-amps)
-                (aref freq-array i) (nreverse (aref freq-array i))))
+               (aref amp-array i) (nreverse normalised-amps)
+               (aref freq-array i) (nreverse (aref freq-array i))))
     (when outputfile 
       (format t "~&Writing data file '~a'" outputfile)
       (create-analysis-data-file outputfile freq-array amp-array))

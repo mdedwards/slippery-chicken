@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:57:37 Wed Mar 14 2018 +07
+;;; $$ Last modified:  17:49:18 Mon Jul  2 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3945,7 +3945,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;; - :force-velocity. Either: an integer between 0 and 127 (inclusive) that is
 ;;;   the MIDI velocity value which will be given to all notes in the resulting
 ;;;   MIDI file, or a function which takes an event object argument and
-;;;   returns an amplitude from it (e.g. randomising the existing amplitude
+;;;   returns a velocity from it (e.g. randomising the existing amplitude
 ;;;   slightly). Default = NIL.
 ;;; - :auto-open. Whether to open the MIDI file once written. Currently only
 ;;;    available on OSX with SBCL or CCL. Uses the default app for MIDI files,
@@ -4290,7 +4290,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   that a given event from the source player's part will be reflected in the
 ;;;   new sound file. It is determined by random selection but uses a fixed
 ;;;   seed that is re-initialized each time clm-play is called. The following
-;;;   default ensures every note will play. Default = '(0 100 100 100).
+;;;   default ensures every note will play: '(0 100 100 100).
 ;;; - :play-chance-env-exp. A number that will be applied as the exponent to
 ;;;   the play-chance-env's y values to create an exponential interpolation
 ;;;   between break-point pairs. Default = 0.5.
@@ -4807,6 +4807,8 @@ seq-num 5, VN, replacing G3 with B6
              (when snds2 (reset snds2)))
            (loop for rs in player and rs-count from 0 while happy do
                 (setf events-this-rs (length rs))
+              ;; (print rs)
+                ;; (print rthm-seqs) (print rs-count)
                 (format t "~%    Processing rthm-seq ~a (~a events)~%"
                         ;; print the rthm-seq id if we're only doing one
                         ;; section otherwise the rthm-seq count
@@ -4817,11 +4819,12 @@ seq-num 5, VN, replacing G3 with B6
                         ;; of events but we need to know the id of the original 
                         ;; rthm-seq hence the nth. In any case the following 
                         ;; test was wrong; instead we can just see if we've got 
-                        ;; a list of events in rs 
-                        (if (and rthm-seqs rs) ; (= 1 num-sections)) 
-                            (id (nth rs-count rthm-seqs)) 
-                            ;; (nth rs-count rthm-seqs) 
-                            (1+ rs-count))
+                        ;; a list of events in rs
+                        (let ((tmp (when (and rthm-seqs rs)
+                                     (nth rs-count rthm-seqs))))
+                          (if tmp 
+                              (id tmp)
+                              (1+ rs-count)))
                         events-this-rs)
                 (when reset-snds-each-rs
                   (when snds (reset snds))

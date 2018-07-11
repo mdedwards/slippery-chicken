@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  16:15:47 Thu Feb 15 2018 CET
+;;; $$ Last modified:  18:18:13 Mon Jun  4 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5948,8 +5948,8 @@ rsb-rb)
                        (push (list (first b) (+ nr (second b)) (+ nr (third b)))
                              tuplet-positions))))
                 #| 
-                ;; MDE Fri May 29 10:02:22 2015 -- this is the way we used to ; ; ; ; ; ;
-                ;; do rqq, relying on CMN: ; ; ; ; ; ;
+                ;; MDE Fri May 29 10:02:22 2015 -- this is the way we used to
+                ;; do rqq, relying on CMN:
   (multiple-value-bind
                (rqq-rthms rqq-num-notes rqq-num-rthms)
                (do-rqq interned) ;    ; ; ; ; ; ;
@@ -6670,6 +6670,7 @@ rsb-rb)
                (dotit (and (numberp result) (or ;(= 3 (numerator result))
                                              (= 3 (denominator result))))))
           ;; (format t "~%pd ~a div ~a res ~a" parent-dur divisions result)
+          (format t "~%v ~a r ~a result ~a" v r result)
           ;; try and set dots if possible
           (when dotit
             ;; (print result)
@@ -6708,9 +6709,9 @@ rsb-rb)
           ;; (format t "~&~a: beamable: ~a" result beam)
           ;; (format t "~%~a ~a" rqqnd (first divisions))
           ;; (format t "~%this-dur ~a rqqnd ~a pd ~a" this-dur rqqnd pd)
-          ;; (print result)
-          ;;(format t "~%~a~%ratio ~a tupl ~a this-d ~a" 
-          ;;         divisions ratio tuplet this-dur)
+          (print result)
+          (format t "~%~a~%ratio ~a tupl ~a this-d ~a" 
+                           divisions ratio tuplet this-dur)
           ;; sometimes we'll be under two tuplet brackets but get something
           ;; like a simple TS as the rthm but then under a 2:3 bracket, which
           ;; should be turned into a dotted value 
@@ -6720,6 +6721,9 @@ rsb-rb)
                for rthm = (make-rhythm (rqq-divide-rthm-r r))
                do (setf (rqq-divide-rthm-r r) 
                         (format nil "~a\." (/ 4 2/3 (rq rthm))))))
+          ;;; MDE Mon Jun  4 18:17:21 2018 -- this more simple case should start
+          ;;; with e. or start the triplet on the 2nd note :/
+          ;;; (rqq-divide '(1 (3 1 1 1)))
           (if tuplet
               (progn
                 (setf result (append (list '{ tuplet) result '(})))

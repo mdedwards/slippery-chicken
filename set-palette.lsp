@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  17:47:04 Sat Jan 27 2018 CET
+;;; $$ Last modified:  10:31:38 Tue Jul  3 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1224,7 +1224,8 @@ data: (C4 F4 A4 C5)
 ;;; MDE Mon Jan 30 19:57:32 2017 
 (defmethod round-to-nearest ((sp set-palette))
   (loop for ref in (get-all-refs sp)
-     do (round-to-nearest (get-data ref sp))))
+     do (round-to-nearest (get-data ref sp)))
+  sp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1826,8 +1827,8 @@ data: (
 
 ;;; ****f* set-palette/ring-mod
 ;;; DESCRIPTION
-;;; Ring modulate two frequencies and return the resulting pitch and harmonic
-;;; partials thereof. 
+;;; Ring modulate (sum and difference tones) two pitches and return the
+;;; resulting pitch and harmonic partials thereof.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A first pitch, either as a numeric hertz frequencey or a note-name

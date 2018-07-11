@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  18:29:57 Sat Jan 27 2018 CET
+;;; $$ Last modified:  17:31:18 Mon Jun 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -510,7 +510,7 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;; - :threshold. A number between 0.0 and 1.0 which represents the lowest
 ;;;   ratio between the most and least active players.  
 ;;; - :stats-fun. One of the player methods which tots up statistics,
-;;;    i.e. total-notes, total-degrees, total-duration, or total-bars
+;;;   i.e. total-notes, total-degrees, total-duration, or total-bars
 ;;; - :ignore. A list of players (symbols) not to count in the sorting.
 ;;; 
 ;;; RETURN VALUE

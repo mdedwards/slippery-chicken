@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  13:23:43 Tue Feb  6 2018 CET
+;;; $$ Last modified:  15:25:36 Tue May  8 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3675,7 +3675,7 @@ WARNING:
 ;;; ****f* utilities/hailstone
 ;;; DESCRIPTION
 ;;; Implementation of the Collatz conjecture (see
-;;; http://en.wikipedia.org/wiki/Collatz_conjecture )
+;;; http://en.wikipedia.org/wiki/Collatz_conjecture)
 ;;;
 ;;; The Collatz conjecture suggests that by starting with a given number, and
 ;;; if it is even dividing it by two or if it is odd multiplying it by three

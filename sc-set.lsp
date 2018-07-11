@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  15:02:47 Thu Feb  1 2018 CET
+;;; $$ Last modified:  12:57:36 Mon Jul  2 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -394,7 +394,7 @@ data: CS4
 ;;; MDE Mon Jan 30 19:53:58 2017 -- in the current scale
 (defmethod round-to-nearest ((s sc-set))
   (loop for p in (data s) do (round-to-nearest p))
-  (set-micro-tone s)
+  (set-micro-tone s) ; stats
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  17:38:01 Mon Nov  6 2017 CET
+;;; $$ Last modified:  19:39:45 Tue May  1 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -142,6 +142,12 @@
   (let ((result (call-next-method)))
     (setf (num-snds result) (count-snds result))
     result))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod add :after (named-object (sfp sndfile-palette) &optional ignore)
+  (declare (ignore named-object ignore))
+  (verify-and-store sfp)
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

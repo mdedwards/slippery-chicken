@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  16:27:51 Mon Feb  5 2018 CET
+;;; $$ Last modified:  09:58:09 Tue May  8 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2726,6 +2726,11 @@ data: G3
 ;;; 
 ;;; EXAMPLE
 #|
+;; Simple example returning pitch symbols:
+(invert-pitch-list '(c4 cs4 f4 b4) t)
+=>
+(C4 B3 G3 CS3)
+
 ;; The function returns a list of pitch objects by default
 (let ((pl))
   (setf pl (loop for m in '(E4 G4 A4 C4) collect (make-pitch m)))

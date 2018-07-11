@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified:  16:25:27 Thu Apr 13 2017 BST
+;;; $$ Last modified:  15:49:48 Mon Jun 18 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -728,7 +728,10 @@
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :auto-check-redundancy. Default = NIL.
+;;; - :auto-check-redundancy. Some rules (e.g. in simplest form, a set of keys
+;;;   that return only one result each) we'll get a result of the same length no
+;;;   matter how many results we ask for. This can sometimes be problematic so
+;;;   do a check if requested. Default = NIL.
 ;;; - :scaler. Factor by which to scale the values returned by
 ;;;   do-lookup. Default = 1. Does not modify the original data.
 ;;; - :offset. Number to be added to values returned by do-lookup (after they

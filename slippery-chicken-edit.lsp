@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  09:09:58 Tue Jun 12 2018 CEST
+;;; $$ Last modified:  14:45:42 Tue Jul 17 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6181,7 +6181,7 @@ T
    sc-name
    :instrument-palette instrument-palette
    :ensemble `(((,player (,instrument :midi-channel 1))))
-   :set-palette '((1 ((c4))))
+   :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
    :set-map '((1 (1)))
    :rthm-seq-palette '((1 ((((4 4) w)))))
    :rthm-seq-map `((1 ((,player (1)))))))

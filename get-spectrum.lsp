@@ -37,7 +37,7 @@
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
-;;; $$ Last modified:  12:57:53 Wed Jul 11 2018 CEST
+;;; $$ Last modified:  10:36:08 Thu Jul 19 2018 CEST
 ;;;
 ;;; SVN ID: $Id: get-spectrum.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
@@ -180,84 +180,91 @@
   ;; start-analysis values.  If so, return the last result, if not, perform the
   ;; analysis.
   (if (and *slippery-chicken-get-spectrum-last-result*
-           (and (stringp (third *slippery-chicken-get-spectrum-last-result*))
-                (string-equal (third *slippery-chicken-get-spectrum-last-result*)
+           (and
+            (stringp (third *slippery-chicken-get-spectrum-last-result*))
+            (string-equal (third *slippery-chicken-get-spectrum-last-result*)
                               file))
-           (= (fourth *slippery-chicken-get-spectrum-last-result*) start-analysis)
+           (= (fourth *slippery-chicken-get-spectrum-last-result*)
+              start-analysis)
            (eq (fifth *slippery-chicken-get-spectrum-last-result*) order-by)
            (= (sixth *slippery-chicken-get-spectrum-last-result*) num-partials))
       (progn
         (print "Using previous analysis")
         (values (first *slippery-chicken-get-spectrum-last-result*)
                 (second *slippery-chicken-get-spectrum-last-result*)))
-    ;; Here beginneth the analysis.
-    (progn
-      ;; Any old bs so we can fill it later (we can't (setf (first nil) x))
-      (setf *slippery-chicken-get-spectrum-last-result* '(1 2 3 4 5 6)) 
-      ;; Call the spec-an instrument to get our data stored in
-      ;; *slippery-chicken-get-spectrum-peak-freqs/amps*
-      (with-sound (:srate srate :play nil) 
-        (spec-an file 
-                 :fftsize fftsize 
-                 :max-peaks max-peaks 
-                 :start-analysis start-analysis
-                 :highest-bin highest-bin))
-      (let ((max-amp 0.0)
-            (amp 0.0)
-            (tmp nil)
-            (ordered nil)
-            (freqs nil)
-            (amps nil)
-            (freqs-amps '()))
-        ;; If we're going to normalise the amps to 1.0, get the max amp now.
-        (if normalise
-            (loop for i from 0 below max-peaks do
-                  (setf amp (aref *slippery-chicken-get-spectrum-peak-amps* i))
-                  (if (> amp max-amp)
-                      (setf max-amp amp)))
-          (setf max-amp 1.0))
-        (when (zerop max-amp)
-          (error "get-spectrum: at ~f max-amp is 0!" start-analysis))
-        ;; Make the *slippery-chicken-get-spectrum-partal* structures and store
-        ;; them in the freqs-amps list.
-        (loop for i from 0 below max-peaks do
-              (setf tmp (make-mde-get-spectrum-partial 
-                         :freq (aref *slippery-chicken-get-spectrum-peak-freqs*
+      ;; Here beginneth the analysis.
+      (progn
+        ;; Any old bs so we can fill it later (we can't (setf (first nil) x))
+        (setf *slippery-chicken-get-spectrum-last-result* '(1 2 3 4 5 6)) 
+        ;; Call the spec-an instrument to get our data stored in
+        ;; *slippery-chicken-get-spectrum-peak-freqs/amps*
+        (with-sound (:srate srate :play nil) 
+          (spec-an file 
+                   :fftsize fftsize 
+                   :max-peaks max-peaks 
+                   :start-analysis start-analysis
+                   :highest-bin highest-bin))
+        (let ((max-amp 0.0)
+              (amp 0.0)
+              (tmp nil)
+              (ordered nil)
+              (freqs nil)
+              (amps nil)
+              (freqs-amps '()))
+          ;; If we're going to normalise the amps to 1.0, get the max amp now.
+          (if normalise
+              (loop for i from 0 below max-peaks do
+                   (setf amp (aref *slippery-chicken-get-spectrum-peak-amps* i))
+                   (if (> amp max-amp)
+                       (setf max-amp amp)))
+              (setf max-amp 1.0))
+          (when (zerop max-amp)
+            (error "get-spectrum: at ~f max-amp is 0!" start-analysis))
+          ;; Make the *slippery-chicken-get-spectrum-partal* structures and
+          ;; store them in the freqs-amps list.
+          (loop for i from 0 below max-peaks
+             ;; MDE Thu Jul 19 10:34:17 2018
+             for f = (aref *slippery-chicken-get-spectrum-peak-freqs* i) 
+             do
+               (when (> f 0.0)
+                 (setf tmp (make-mde-get-spectrum-partial 
+                            :freq f
+                            :amp (/ (aref
+                                     *slippery-chicken-get-spectrum-peak-amps*
                                      i) 
-                         :amp (/ (aref
-                                  *slippery-chicken-get-spectrum-peak-amps*
-                                  i) 
-                                 max-amp)))
-              (push tmp freqs-amps))
-        ;; First sort the list from highest to lowest amp and get the loudest
-        ;; <num-partials> elements.
-        (setf ordered (subseq 
-                       (sort (copy-list freqs-amps)
-                             #'(lambda (x y)
-                                 (> (mde-get-spectrum-partial-amp x)
-                                    (mde-get-spectrum-partial-amp y))))
-                       0 num-partials)
-              ordered (if (eq order-by 'amp)
-                          ordered
-                        (sort (copy-list ordered)
-                              #'(lambda (x y)
-                                  ;; order from lowest to highest freq
-                                  (< (mde-get-spectrum-partial-freq x)
-                                     (mde-get-spectrum-partial-freq y)))))
-              ;; Now just get the freqs.
-              freqs (loop for i from 0 below num-partials collect 
-                          (mde-get-spectrum-partial-freq (nth i ordered)))
-              ;; and now the amps
-              amps (loop for i from 0 below num-partials collect 
-                         (mde-get-spectrum-partial-amp (nth i ordered))))
-        ;; Store the results of the analysis.
-        (setf (first *slippery-chicken-get-spectrum-last-result*) freqs
-              (second *slippery-chicken-get-spectrum-last-result*) amps
-              (third *slippery-chicken-get-spectrum-last-result*) file
-              (fourth *slippery-chicken-get-spectrum-last-result*) start-analysis
-              (fifth *slippery-chicken-get-spectrum-last-result*) order-by
-              (sixth *slippery-chicken-get-spectrum-last-result*) num-partials)
-        (values freqs amps)))))
+                                    max-amp)))
+                 (push tmp freqs-amps)))
+          ;; First sort the list from highest to lowest amp and get the loudest
+          ;; <num-partials> elements.
+          (setf ordered (subseq 
+                         (sort (copy-list freqs-amps)
+                               #'(lambda (x y)
+                                   (> (mde-get-spectrum-partial-amp x)
+                                      (mde-get-spectrum-partial-amp y))))
+                         0 num-partials)
+                ordered (if (eq order-by 'amp)
+                            ordered
+                            (sort (copy-list ordered)
+                                  #'(lambda (x y)
+                                      ;; order from lowest to highest freq
+                                      (< (mde-get-spectrum-partial-freq x)
+                                         (mde-get-spectrum-partial-freq y)))))
+                ;; Now just get the freqs.
+                freqs (loop for i from 0 below num-partials collect 
+                           (mde-get-spectrum-partial-freq (nth i ordered)))
+                ;; and now the amps
+                amps (loop for i from 0 below num-partials collect 
+                          (mde-get-spectrum-partial-amp (nth i ordered))))
+          ;; Store the results of the analysis.
+          (setf (first *slippery-chicken-get-spectrum-last-result*) freqs
+                (second *slippery-chicken-get-spectrum-last-result*) amps
+                (third *slippery-chicken-get-spectrum-last-result*) file
+                (fourth *slippery-chicken-get-spectrum-last-result*)
+                start-analysis
+                (fifth *slippery-chicken-get-spectrum-last-result*) order-by
+                (sixth *slippery-chicken-get-spectrum-last-result*)
+                num-partials)
+          (values freqs amps)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
 ;;; Hacked code from Bill's san.ins 

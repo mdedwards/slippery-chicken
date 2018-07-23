@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  09:58:09 Tue May  8 2018 CEST
+;;; $$ Last modified:  11:30:57 Mon Jul 23 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2194,6 +2194,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Sat Dec 31 12:19:46 EST 2011: Added robodoc info
+;;; MDE Mon Jul 23 11:30:20 2018 -- changed default midi channel from 0 to 1
 
 ;;; ****f* pitch/make-pitch
 ;;; DESCRIPTION
@@ -2215,9 +2216,9 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;; keyword arguments:
 ;;; - :src-ref-pitch. A note-name symbol indicating the perceived fundamental
 ;;;   pitch of a given digital audio file, to allow for later transposition of
-;;;   that audio file using note-names.
+;;;   that audio file using note-names. Default: C4
 ;;; - :midi-channel. An integer indicating which MIDI channel is to be used for
-;;;   playback of this pitch.
+;;;   playback of this pitch. Default: 1
 ;;; 
 ;;; RETURN VALUE
 ;;; - A pitch object.
@@ -2265,7 +2266,7 @@ C4
 
 |#
 ;;; SYNOPSIS
-(defun make-pitch (note &key (src-ref-pitch 'c4) (midi-channel 0))
+(defun make-pitch (note &key (src-ref-pitch 'c4) (midi-channel 1))
 ;;; ****
   (when note
     (typecase note

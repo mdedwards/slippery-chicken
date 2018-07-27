@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  20:19:04 Tue Mar 28 2017 BST
+;;; $$ Last modified:  17:17:14 Fri Jul 27 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -837,6 +837,26 @@
            (if (in-range ins p sounding)
                (return p)
                (incf transp inc))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* instrument/auto-set-subset-id
+;;; DATE
+;;; July 27th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Set the subset-id slot to be the same as the id slot.
+;;; 
+;;; ARGUMENTS
+;;; - an instrument instance
+;;; 
+;;; RETURN VALUE
+;;; - the instrument instance
+;;; 
+;;; SYNOPSIS
+(defmethod auto-set-subset-id ((ins instrument))
+;;; ****
+  (setf (subset-id ins) (id ins))
+  ins)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

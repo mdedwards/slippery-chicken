@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  15:44:13 Fri Feb  2 2018 CET
+;;; $$ Last modified:  17:34:46 Fri Jul 27 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -342,9 +342,13 @@
                (set-pitches-rm-used (remove-pitches set-pitches-rm used
                                                     :enharmonics-are-equal t
                                                     :return-symbols nil))
-               (ins-subset (when (subset-id instrument)
-                             (get-data-data (subset-id instrument) 
-                                            (subsets set))))
+               ;; MDE Fri Jul 27 17:33:12 2018 -- updated so that no error is
+               ;; issued when there's a subset-id for the ins but not for the
+               ;; set 
+               (ins-subset (let* ((sid (subset-id instrument))
+                                  (is (when (and sid (subsets set))
+                                        (get-data sid (subsets set) nil))))
+                             (when is (data is))))
                num-set-pitches offset scaler)
           ;; (print (pitch-list-to-symbols set-pitches-rm))
           ;; (print (pitch-symbols (clone set)))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  19:47:00 Tue Feb 20 2018 CET
+;;; $$ Last modified:  17:18:06 Fri Jul 27 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -315,7 +315,15 @@
                   :transposition-semitones +12
                   :starting-clef treble
                   :chords t :microtones nil :missing-notes nil
-                  :midi-program 9))
+       :midi-program 9))
+     (crotales
+      (:staff-name "crotales" :staff-short-name "crt"
+       :lowest-written c4 :highest-written c6
+       :starting-clef treble
+       :transposition-semitones 24
+       :chords t :chord-function mallet-chord-fun
+       ;; no crotales in GM set so use glockenspiel
+       :microtones nil :midi-program 10))
      (piano
       (:staff-name "piano" :staff-short-name "pno"
        :lowest-written a0 :highest-written c8 

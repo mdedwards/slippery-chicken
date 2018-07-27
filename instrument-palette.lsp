@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    6th September 2001
 ;;;
-;;; $$ Last modified: 21:57:31 Wed Jul 18 2012 BST
+;;; $$ Last modified:  17:15:42 Fri Jul 27 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -47,11 +47,6 @@
 ;;;                   Free Software Foundation, Inc., 59 Temple Place, Suite
 ;;;                   330, Boston, MA 02111-1307 USA
 ;;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package :slippery-chicken)
@@ -229,6 +224,26 @@ e.g.
       (error "instrument-palette::set-largest-fast-leap: Couldn't get ~
               ~a from ~a" instrument (id ip)))
     (setf (largest-fast-leap ins) value)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* instrument/auto-set-subset-id
+;;; DATE
+;;; July 27th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Set the subset-id slot to be the same as the id slot for each instrument in
+;;; the palette.  
+;;; 
+;;; ARGUMENTS
+;;; - an instrument-palette instance
+;;; 
+;;; RETURN VALUE
+;;; - the instrument instance
+;;; 
+;;; SYNOPSIS
+(defmethod auto-set-subset-id ((ip instrument-palette))
+;;; ****
+  (rmap ip #'auto-set-subset-id))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

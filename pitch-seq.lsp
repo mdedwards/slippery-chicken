@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  17:34:46 Fri Jul 27 2018 CEST
+;;; $$ Last modified:  19:12:58 Fri Jul 27 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -217,9 +217,9 @@
 ;;;    important role.  This can be skipped if the <avoid-used-notes> argument
 ;;;    is nil.
 ;;; 
-;;; 3) If there is a subset with the same ID as the subset-id slot for this
-;;;    instrument, use only those pitches common to that subset and those in
-;;;    step 2.
+;;; 3) If there is a subset with the same ID as the ID slot for the
+;;;    player, use only those pitches common to that subset and those in
+;;;    step 2. If not, try again using the subset-id of the instrument.
 ;;; 
 ;;; 4) If the ratio between the number of pitches now available and the number
 ;;;    of different numbers in the pitch-seq is less than the slippery-chicken
@@ -274,6 +274,7 @@
 ;;; ARGUMENTS 
 ;;; - A pitch-seq object.
 ;;; - An instrument object.
+;;; - A player object.
 ;;; - An sc-set object.
 ;;; - A hint pitch (ignored for now).
 ;;; - A pitch-object defining the highest possible note.
@@ -294,7 +295,7 @@
 ;;; pitch-seq 
 ;;;
 ;;; SYNOPSIS
-(defmethod get-notes ((ps pitch-seq) instrument set hint-pitch limit-high
+(defmethod get-notes ((ps pitch-seq) instrument player set hint-pitch limit-high
                       limit-low seq-num last-note-previous-seq
                       pitch-seq-index-scaler-min avoid-melodic-octaves
                       avoid-used-notes)
@@ -344,11 +345,17 @@
                                                     :return-symbols nil))
                ;; MDE Fri Jul 27 17:33:12 2018 -- updated so that no error is
                ;; issued when there's a subset-id for the ins but not for the
-               ;; set 
-               (ins-subset (let* ((sid (subset-id instrument))
-                                  (is (when (and sid (subsets set))
-                                        (get-data sid (subsets set) nil))))
-                             (when is (data is))))
+               ;; set. 
+               (subset (let* ((sid (subset-id instrument))
+                              (ps (when (subsets set)
+                                    (get-data (id player) (subsets set) nil)))
+                              (is (when (and (not ps) sid (subsets set))
+                                    (get-data sid (subsets set) nil)))
+                              ;; MDE Fri Jul 27 19:12:29 2018 -- if there's a
+                              ;; subset with the ID of the player, use that,
+                              ;; otherwise try for the subset-id of the ins
+                              (s (if ps ps is)))
+                         (when s (data s))))
                num-set-pitches offset scaler)
           ;; (print (pitch-list-to-symbols set-pitches-rm))
           ;; (print (pitch-symbols (clone set)))
@@ -356,10 +363,10 @@
           ;; If (subset-id instrument) was set (to limit the pitches for that 
           ;; instrument to the subset with this id) then use only pitches in
           ;; subset; also set used to be only those that are in the subset.
-          (when ins-subset
+          (when subset
             (setf set-pitches-rm-used (pitch-intersection set-pitches-rm-used
-                                                          ins-subset)
-                  used (pitch-intersection used ins-subset)))
+                                                          subset)
+                  used (pitch-intersection used subset)))
           ;; try to use our pitch curve with only notes not already used but if 
           ;; that would result in too few pitches then add notes from used one
           ;; by one until we're happy.  NB By not re-using already-used pitches 

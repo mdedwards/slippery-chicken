@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:49:18 Mon Jul  2 2018 CEST
+;;; $$ Last modified:  19:00:38 Fri Jul 27 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -9047,8 +9047,8 @@ NOTE 6200 0.6666667
          ;; below. 
          (notes-from-pitch-seq
           (when pitch-seq
-            (get-notes pitch-seq instrument set hint-pitch (second set-limits) 
-                       (first set-limits) global-seq-num 
+            (get-notes pitch-seq instrument player-obj set hint-pitch
+                       (second set-limits) (first set-limits) global-seq-num 
                        last-pitch 
                        ;; MDE Mon Mar 26 13:21:29 2012
                        (if slippery-chicken

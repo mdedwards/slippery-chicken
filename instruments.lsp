@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  17:18:06 Fri Jul 27 2018 CEST
+;;; $$ Last modified:  10:33:25 Sat Jul 28 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -488,6 +488,10 @@
        :microtones t 
        :starting-clef treble)))))
        ;;; ****
+
+;;; MDE Sat Jul 28 10:33:12 2018 -- can't harm
+(auto-set-subset-id +slippery-chicken-standard-instrument-palette+)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Thu May  3 14:02:38 BST 2012: Added robodoc entry

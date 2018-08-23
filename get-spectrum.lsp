@@ -37,7 +37,7 @@
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
-;;; $$ Last modified:  10:36:08 Thu Jul 19 2018 CEST
+;;; $$ Last modified:  11:03:26 Thu Aug 23 2018 CEST
 ;;;
 ;;; SVN ID: $Id: get-spectrum.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
@@ -163,9 +163,10 @@
     (file &key
             (num-partials 10)
             (order-by 'amp)
+            (freq-min 20.0) (freq-max 100000.0)
             (srate 44100)
             (fftsize 4096) 
-            (max-peaks 200)
+            (max-peaks 200) ; passed to spec-an instrument
             (normalise t)
             (start-analysis 0.0) 
             (highest-bin (/ fftsize 2)))
@@ -206,6 +207,7 @@
                    :highest-bin highest-bin))
         (let ((max-amp 0.0)
               (amp 0.0)
+              (got-partials 0)
               (tmp nil)
               (ordered nil)
               (freqs nil)
@@ -226,7 +228,7 @@
              ;; MDE Thu Jul 19 10:34:17 2018
              for f = (aref *slippery-chicken-get-spectrum-peak-freqs* i) 
              do
-               (when (> f 0.0)
+               (when (and (>= f freq-min) (<= f freq-max))
                  (setf tmp (make-mde-get-spectrum-partial 
                             :freq f
                             :amp (/ (aref
@@ -236,12 +238,13 @@
                  (push tmp freqs-amps)))
           ;; First sort the list from highest to lowest amp and get the loudest
           ;; <num-partials> elements.
-          (setf ordered (subseq 
+           (setf got-partials (min (length freqs-amps) num-partials)
+                 ordered (subseq 
                          (sort (copy-list freqs-amps)
                                #'(lambda (x y)
                                    (> (mde-get-spectrum-partial-amp x)
                                       (mde-get-spectrum-partial-amp y))))
-                         0 num-partials)
+                         0 got-partials)
                 ordered (if (eq order-by 'amp)
                             ordered
                             (sort (copy-list ordered)
@@ -250,10 +253,10 @@
                                       (< (mde-get-spectrum-partial-freq x)
                                          (mde-get-spectrum-partial-freq y)))))
                 ;; Now just get the freqs.
-                freqs (loop for i from 0 below num-partials collect 
+                freqs (loop for i from 0 below got-partials collect 
                            (mde-get-spectrum-partial-freq (nth i ordered)))
                 ;; and now the amps
-                amps (loop for i from 0 below num-partials collect 
+                amps (loop for i from 0 below got-partials collect 
                           (mde-get-spectrum-partial-amp (nth i ordered))))
           ;; Store the results of the analysis.
           (setf (first *slippery-chicken-get-spectrum-last-result*) freqs
@@ -263,7 +266,7 @@
                 start-analysis
                 (fifth *slippery-chicken-get-spectrum-last-result*) order-by
                 (sixth *slippery-chicken-get-spectrum-last-result*)
-                num-partials)
+                got-partials)
           (values freqs amps)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  

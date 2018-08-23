@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  18:18:13 Mon Jun  4 2018 CEST
+;;; $$ Last modified:  19:32:31 Tue Aug 21 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4314,34 +4314,34 @@ data: (2 4)
 ;;; 
 ;;; EXAMPLE
 #|
-;; Create a rthm-seq-bar object using make-event, transpose the contained ; ; ; ; ; ;
-;; pitches destructively, and read the values of the corresponding slots to see ; ; ; ; ; ;
-;; the change.                          ; ; ; ; ; ;
-  (let ((rsb (make-rthm-seq-bar 
-(list 
-'(3 8) 
-(make-event 'cs4 'e)
-(make-event 'cs4 'e)
-(make-event 'cs4 'e)))))
-(transpose rsb 3 :destructively 3)
-(loop for p in (rhythms rsb)
-collect (data (pitch-or-chord p))))
+;; Create a rthm-seq-bar object using make-event, transpose the contained 
+;; pitches destructively, and read the values of the corresponding slots to see 
+;; the change.
+(let ((rsb (make-rthm-seq-bar 
+            (list 
+             '(3 8) 
+             (make-event 'cs4 'e)
+             (make-event 'cs4 'e)
+             (make-event 'cs4 'e)))))
+  (transpose rsb 3 :destructively t)
+  (loop for p in (rhythms rsb)
+     collect (data (pitch-or-chord p))))
 
-  => (EF4 EF4 EF4)
+=> (E4 E4 E4)
 
-;; Do the same thing without the :destructively keyword being set to T ; ; ; ; ; ;
-  (let ((rsb (make-rthm-seq-bar 
-(list
-'(3 8) 
-(make-event 'cs4 'e)
-(make-event 'cs4 'e)
-(make-event 'cs4 'e)))))
-(transpose rsb 3)
-(loop for p in (rhythms rsb)
-collect (data (pitch-or-chord p))))
+;; Do the same thing without the :destructively keyword being set to T 
+(let ((rsb (make-rthm-seq-bar 
+            (list
+             '(3 8) 
+             (make-event 'cs4 'e)
+             (make-event 'cs4 'e)
+             (make-event 'cs4 'e)))))
+  (transpose rsb 3)
+  (loop for p in (rhythms rsb)
+     collect (data (pitch-or-chord p))))
 
-  => (C4 C4 C4)
-  |#
+=> (CS4 CS4 CS4)
+|#
 ;;; SYNOPSIS
 (defmethod transpose ((rsb rthm-seq-bar) semitones
                       &key

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    March 11th 2010
 ;;;
-;;; $$ Last modified:  19:41:48 Thu May 25 2017 BST
+;;; $$ Last modified:  18:06:09 Tue Aug 21 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -59,13 +59,14 @@
 
 (defmethod midi-play ((sm set-map)
                       &key
+                        (tempo 60.0)
                         (auto-open (get-sc-config 'midi-play-auto-open))
                         (midi-file
                          (format nil "~a~a.mid"
                                  (get-sc-config 'default-dir)
                                  (string-downcase (string (id sm))))))
 ;;; ****
-  (gen-midi-chord-seq sm midi-file)
+  (gen-midi-chord-seq sm midi-file tempo)
   (when auto-open
     (system-open-file midi-file)))
 
@@ -103,7 +104,7 @@
 |#
 ;;; 
 ;;; SYNOPSIS
-(defmethod gen-midi-chord-seq ((sm set-map) midi-file)
+(defmethod gen-midi-chord-seq ((sm set-map) midi-file &optional (tempo 60.0))
 ;;; ****
   (reset sm)
   (let* ((sets (get-all-data-from-palette sm))
@@ -112,7 +113,7 @@
                     for s in sets
                     collect (create-event s rthm start-time))))
     (cm::process-voices (list (list events))
-                        midi-file (make-tempo 60) nil 0))
+                        midi-file (make-tempo tempo) nil 0))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

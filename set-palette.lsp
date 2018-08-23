@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  10:32:30 Thu Jul 19 2018 CEST
+;;; $$ Last modified:  16:33:42 Wed Aug 22 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -415,13 +415,14 @@ data: (C4 F4 A4 C5)
 ;;; SYNOPSIS
 (defmethod midi-play ((sp set-palette)
                       &key
+                        (tempo 60.0)
                         (auto-open (get-sc-config 'midi-play-auto-open))
                         (midi-file
                          (format nil "~a~a.mid"
                                  (get-sc-config 'default-dir)
                                  (string-downcase (string (id sp))))))
 ;;; ****
-  (gen-midi-chord-seq sp midi-file)
+  (gen-midi-chord-seq sp midi-file tempo)
   (when auto-open
     (system-open-file midi-file)))
 
@@ -463,11 +464,12 @@ data: (C4 F4 A4 C5)
 |#
 ;;; 
 ;;; SYNOPSIS
-(defmethod gen-midi-chord-seq ((sp set-palette) midi-file)
+(defmethod gen-midi-chord-seq ((sp set-palette) midi-file
+                               &optional (tempo 60.0))
 ;;; ****
   (let ((events (gen-midi-chord-seq-aux sp 0)))
     (cm::process-voices (list (list events))
-                        midi-file (make-tempo 60) nil 0)
+                        midi-file (make-tempo tempo) nil 0)
     t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1211,13 +1213,12 @@ data: (C4 F4 A4 C5)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod transpose ((sp set-palette) semitones 
-                      &key do-related-sets
-                        ignore1 ignore2)
-  (declare (ignore ignore1) (ignore ignore2))
+                      &key do-related-sets lowest highest)
   (let ((keys (get-all-refs sp)))
     (loop for key in keys collect
          (transpose (get-data key sp) semitones
-                    :do-related-sets do-related-sets)))
+                    :do-related-sets do-related-sets :lowest lowest
+                    :highest highest)))
   sp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

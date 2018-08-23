@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified:  15:06:39 Mon Aug  7 2017 BST
+;;; $$ Last modified:  09:57:16 Wed Aug 22 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -222,15 +222,17 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
 |#
 ;;; SYNOPSIS
 (defmethod transpose :before ((tls tl-set) semitones 
-                             &key destructively do-related-sets ignore)
+                              &key destructively do-related-sets
+                                ;; MDE Wed Aug 22 09:43:29 2018
+                                lowest highest)
 ;;; ****
   (declare (ignore ignore) (ignore destructively))
   ;; (print 'here)
   ;; (setf (slot-value tls 'data) (transpose-pitch-list (data tls) semitones))
   (incf (slot-value tls 'transposition) semitones)
-  (transpose-rals (subsets tls) semitones)
+  (transpose-rals (subsets tls) semitones lowest highest)
   (when do-related-sets
-    (transpose-rals (related-sets tls) semitones))
+    (transpose-rals (related-sets tls) semitones lowest highest))
   tls)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -809,14 +811,15 @@ data: (F2 AF2 C3 EF3 G3 BF3 D4 F4 A4 CS5 E5 AF5 B5 EF6)
              pitch-list))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun transpose-rals (ral semitones)
+;;; MDE Wed Aug 22 09:44:13 2018 -- added lowest and highest
+(defun transpose-rals (ral semitones lowest highest)
   (when ral
     (loop for i in (data ral) and j from 0 do
          (if (is-ral (data i))
-             (transpose-rals (data i) semitones)
+             (transpose-rals (data i) semitones lowest highest)
              (setf (data (nth j (data ral))) 
-                   (transpose-pitch-list (data i) semitones))))))
+                   (transpose-pitch-list (data i) semitones :lowest lowest
+                                         :highest highest))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF tl-set.lsp

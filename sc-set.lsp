@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  12:57:36 Mon Jul  2 2018 CEST
+;;; $$ Last modified:  15:13:54 Wed Aug 22 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -87,6 +87,7 @@
 
 (defmethod initialize-instance :after ((s sc-set) &rest initargs)
   (declare (ignore initargs))
+  ;; (print s)
   ;; MDE Sat Oct 26 11:35:23 2013 -- just to trigger the setf method
   (setf (subsets s) (subsets s)
         (related-sets s) (related-sets s))
@@ -156,12 +157,14 @@
 
 (defmethod (setf subsets) :after (value (s sc-set))
   (declare (ignore value))
+  ;; (print 'setf-subsets)
   (when (and value (not (assoc-list-p value)))
     (setf (slot-value s 'subsets) 
           (make-ral (format nil "sc-set-~a-subsets" (id s))
                     (subsets s)))
     (make-ral-pitch-lists (subsets s) (auto-sort s))
     (check-subsets (subsets s) s))
+  ;; (print (subsets s))
   (subsets s))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1765,8 +1768,8 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 
 (defun print-ral-of-pitch-lists (ral stream)
   (unless (is-ral ral)
-    (error "sc-set::print-ral-of-pitch-lists: first argument must be a ~
-            recursive-association-list: ~a" ral))
+    (error "sc-set::print-ral-of-pitch-lists: first argument must be a ~%~
+            recursive-association-list:~%~a" ral))
   (let ((all-refs (get-all-refs ral)))
     (loop 
         for ref in all-refs
@@ -1811,18 +1814,22 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun check-subsets (subsets sc-set)
+  ;; (print subsets)
+  ;; (print sc-set)
   (when (and subsets (is-ral subsets))
     (loop 
        for ss in (data subsets) 
        for pitches = (data ss)
        for i from 0 do
-       (if (is-ral pitches)
-           (check-subsets pitches sc-set)
-           (loop for pitch in (data ss) do
-                (unless (pitch-member pitch (data sc-set))
-                  (error "sc-set::check-subsets: Note ~a given in subset ~a ~
-                          ~%of set ~a is not part of the main set: ~a"
-                         (id pitch) (id ss) (id sc-set) sc-set)))))))
+         ;; (print ss)
+         (if (is-ral pitches)
+             (check-subsets pitches sc-set)
+             (loop for pitch in pitches do
+                  (unless (pitch-member pitch (data sc-set))
+                    (error "sc-set::check-subsets: Note ~a given in subset ~a~
+                            ~%of set ~a is not part of the main set ~a"
+                           (id pitch) (id ss) (id sc-set)
+                           (pitch-list-to-symbols (data sc-set)))))))))
         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

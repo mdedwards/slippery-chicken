@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  15:50:17 Thu Feb  1 2018 CET
+;;; $$ Last modified:  14:42:02 Wed Aug 22 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -752,6 +752,19 @@ data: F5
 ;;; - A positive or negative integer or decimal number indicating the number of
 ;;;   semitones by which the pitches of the given chord object are to be
 ;;;   transposed.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments
+;;; - :destructively. Whether to change the internal structure of the first
+;;;   argument or leave it unchanged, returning a new transposed chord object
+;;;   instead. Default = T. 
+;;; - :do-related-sets. T or NIL to indicate whether to transpose any contents
+;;;   of the RELATED-SETS slot as well. T = transpose.  Default = NIL.
+;;; - :lowest. Don't transpose pitches in the original chord which are lower
+;;;   than  this argument. Default = NIL but eventually via the
+;;;   transpose-pitch-list function C-1 (midi note 0) 
+;;; - :highest. Don't transpose pitches in the original chord which are higher
+;;;   than this argument. Default = NIL but eventually B8 (midi note 119)
 ;;; 
 ;;; RETURN VALUE  
 ;;; the transposed chord object
@@ -791,19 +804,20 @@ data: (
 ;;; 
 ;;; SYNOPSIS
 (defmethod transpose ((c chord) semitones
-                      &key (destructively t) do-related-sets)
+                      &key (destructively t) ; do-related-sets
+                        ;; MDE Tue Aug 21 19:49:47 2018
+                        lowest highest)
+  ;; (lowest (make-pitch 'c-1)) (highest (make-pitch 'b8)))
 ;;; ****
-  (declare (ignore destructively) (ignore do-related-sets))
+  ;; :destructively handled first by the :around method below, :do-related sets
+  ;; only for subclasses
+  (declare (ignore destructively)) ; (ignore do-related-sets))
   ;; (print 'primary)
-  (setf (data c)
-        ;; (setf (slot-value result 'data)
-        (loop 
-           for pitch in (data c)
-           for new = (transpose (make-pitch pitch) semitones)
-           ;; copy over the cmn marks (like special note heads etc.)
-           do (setf (marks new) (my-copy-list (marks pitch))
-                    (marks-before new) (my-copy-list (marks-before pitch)))
-           collect new))
+  (setq lowest (make-pitch lowest)
+        highest (make-pitch highest))
+  (setf (slot-value c 'data)
+        (transpose-pitch-list (data c) semitones
+                              :lowest lowest :highest highest))
   ;; 8.2.11: got to do this here too now
   ;; MDE Sun Aug  6 11:26:39 2017 -- no, added to verify-and-store instead
   ;; (set-micro-tone result)
@@ -811,13 +825,15 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod transpose :around ((c chord) semitones
-                              &key (destructively t) do-related-sets ignore)
+                              &key (destructively t) do-related-sets
+                                lowest highest (make-pitch 'b8))
   (declare (ignore ignore))
   ;; (print 'around)
   ;; (print 'transpose)
   ;; (print destructively)
   ;; we're interested in the tl-set :before method here
   (call-next-method (if destructively c (clone c)) semitones
+                    :lowest lowest :highest highest
                     :destructively destructively
                     :do-related-sets do-related-sets))
 
@@ -2168,7 +2184,6 @@ data: (
 ;;; SYNOPSIS
 (defmethod collapse ((c chord) octave)
   (make-chord (transpose-pitch-list-to-octave (my-copy-list (data c)) octave)))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

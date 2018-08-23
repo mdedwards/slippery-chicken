@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  11:30:57 Mon Jul 23 2018 CEST
+;;; $$ Last modified:  15:19:02 Wed Aug 22 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2266,22 +2266,24 @@ C4
 
 |#
 ;;; SYNOPSIS
-(defun make-pitch (note &key (src-ref-pitch 'c4) (midi-channel 1))
+(defun make-pitch (pitch &key (src-ref-pitch 'c4) (midi-channel 1))
 ;;; ****
-  (when note
-    (typecase note
-      (pitch note) ; ignore midi-channel here
-      (symbol (make-instance 'pitch :id note :midi-channel midi-channel
+  (when pitch
+    (typecase pitch
+      (pitch pitch) ; ignore midi-channel here
+      (symbol (make-instance 'pitch :id pitch :midi-channel midi-channel
                              :src-ref-pitch src-ref-pitch))
-      (number (make-instance 'pitch :frequency note :midi-channel midi-channel
+      (number (make-instance 'pitch :frequency pitch :midi-channel midi-channel
                              :src-ref-pitch src-ref-pitch))
       (t (error "pitch::make-pitch: invalid argument to make-pitch: ~a" 
-                note)))))
+                pitch)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun transpose-pitch-list-force-white-notes (pitch-list semitones)
-  (loop for p in (transpose-pitch-list pitch-list semitones) 
+(defun transpose-pitch-list-force-white-notes (pitch-list semitones
+                                               &optional lowest highest)
+  (loop for p in (transpose-pitch-list pitch-list semitones :lowest lowest
+                                       :highest highest)
       collect (force-white-note p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2299,10 +2301,16 @@ C4
 ;;;   transposed. 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL indicating whether the method is to return a list of pitch
-;;;   objects or a list of note-name symbols for those pitch objects. T = 
-;;;   note-name symbols. Default = NIL.
-;;; - The name of the package to perform the transpositions. Default = :sc. 
+;;; keyword arguments
+;;; - :return-symbols. T or NIL indicating whether the method is to return a
+;;;   list of pitch  objects or a list of note-name symbols for those pitch
+;;;   objects. T = note-name symbols. Default = NIL.
+;;; - :package. The name of the package to perform the transpositions. Default =
+;;;   :sc.
+;;; - :lowest. Don't transpose pitches which are lower than this
+;;;   argument. Default = C-1 (midi note 0)  
+;;; - :lowest. Don't transpose pitches which are higher than this
+;;;   argument. Default = B8 (midi note 119) 
 ;;; 
 ;;; RETURN VALUE
 ;;; By default, the method returns a list of pitch objects. When the first
@@ -2354,12 +2362,35 @@ PITCH: frequency: 554.365, midi-note: 73, midi-channel: 0
 
 |#
 ;;; SYNOPSIS
-(defun transpose-pitch-list (pitch-list semitones &optional 
-                             (return-symbols nil)
-                             (package :sc))
+(defun transpose-pitch-list (pitch-list semitones
+                             &key
+                               (return-symbols nil)
+                               (package :sc)
+                               lowest highest)
 ;;; ****
+  (setq lowest (make-pitch lowest)
+        highest (make-pitch highest))
+  (unless lowest (setq lowest (make-pitch 'c-1)))
+  (unless highest (setq highest (make-pitch 'b8)))
   (let* ((pl (loop for p in pitch-list collect (make-pitch p)))
-         (result (loop for p in pl collect (transpose p semitones))))
+         ;; MDE Wed Aug 22 09:56:03 2018 -- taken from chord and integrated here
+         ;; to avoid code duplication
+         (result
+          (loop 
+           for pitch in pl
+           for pir = (pitch-in-range pitch lowest highest)
+           for new = (if pir
+                         (transpose (make-pitch pitch) semitones)
+                         pitch)
+           ;; copy over the cmn marks (like special note heads etc.) if a list
+           ;; of actual pitch objects was passed (make-pitch above will return
+           ;; the original pitch unchanged); if not, no problem.
+           do (when pir
+                (setf (marks new) (my-copy-list (marks pitch))
+                      (marks-before new) (my-copy-list (marks-before pitch))))
+           collect new)))
+    ;;      (result (loop for p in pl collect (transpose p semitones))))
+    (setq result (sort-pitch-list result))
     (if return-symbols
         (pitch-list-to-symbols result package)
         result)))

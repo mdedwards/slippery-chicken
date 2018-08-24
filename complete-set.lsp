@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified:  17:19:03 Sat Jan 27 2018 CET
+;;; $$ Last modified:  15:00:30 Fri Aug 24 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -406,6 +406,9 @@
 ;;;   printed. If the set is neither T nor 'CHROMATIC at init, then no warning
 ;;;   will be issued. In both cases the COMPLETE slot of the given complete-set
 ;;;   object will be set after checking the set.
+;;; - :midi-channel. The channel to set chromatic pitches to. Default = 1.
+;;; - :microtones-midi-channel The channel to set microtonal pitches to.
+;;;   Default = 2.
 ;;; 
 ;;; RETURN VALUE
 ;;; A complete-set object.
@@ -512,38 +515,45 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 |#
 ;;; SYNOPSIS
 (defun make-complete-set (set &key id tag subsets related-sets 
-                          (transposition 0) (auto-sort t) (warn-dups t)
-                          (rm-dups t) limit-upper limit-lower complete)
+                                (transposition 0) (auto-sort t) (warn-dups t)
+                                (rm-dups t) limit-upper limit-lower complete
+                                ;; MDE Fri Aug 24 14:56:50 2018 
+                                (midi-channel 1) (microtones-midi-channel 2))
 ;;; ****
   ;; (print 'make-complete-set----------------------------------------------)
   ;; (print set)
   ;; (print '-----subsets)
   ;; (print subsets)
-  (typecase set
-    (sc-set
-     (let ((copy (clone set)))
-       (when (or subsets related-sets (not auto-sort) complete)
-         (error "complete-set::make-complete-set: When the set argument is a ~
-                 complete-set, then the new set will be cloned ~
-                 from the given and the arguments id, subsets, ~
-                 related-sets, auto-sort, and complete are meaningless"))
-       (unless (zerop transposition)
-         (transpose copy transposition))
-       (when (or limit-upper limit-lower)
-         (limit copy :upper limit-upper :lower limit-lower))
-       (when id
-         (setf (id copy) id))
-       copy))
-    ;; MDE Tue Aug 27 19:46:05 2013 
-    (chord (make-complete-set (data set) :id id :tag tag))
-    (t
-     (make-instance 'complete-set :id id :tag tag :data set :subsets subsets 
-                    :related-sets related-sets :auto-sort auto-sort
-                    :limit-upper limit-upper :limit-lower limit-lower
-                    :transposition transposition
-                    ;; MDE Mon May 20 12:57:54 2013 
-                    :warn-dups warn-dups :rm-dups rm-dups
-                    :complete complete))))
+  (let ((s
+         (typecase set
+           (sc-set
+            (let ((copy (clone set)))
+              (when (or subsets related-sets (not auto-sort) complete)
+                (error "complete-set::make-complete-set: When the set argument ~
+                        is a complete-set,~%then the new set will be cloned ~
+                        from the given and the arguments id, ~%subsets, ~
+                        related-sets, auto-sort, and complete are meaningless"))
+              (unless (zerop transposition)
+                (transpose copy transposition))
+              (when (or limit-upper limit-lower)
+                (limit copy :upper limit-upper :lower limit-lower))
+              (when id
+                (setf (id copy) id))
+              copy))
+           ;; MDE Tue Aug 27 19:46:05 2013 
+           (chord (make-complete-set (data set) :id id :tag tag))
+           (t
+            (make-instance 'complete-set :id id :tag tag :data set
+                           :subsets subsets :related-sets related-sets
+                           :auto-sort auto-sort
+                           :limit-upper limit-upper :limit-lower limit-lower
+                           :transposition transposition
+                           ;; MDE Mon May 20 12:57:54 2013 
+                           :warn-dups warn-dups :rm-dups rm-dups
+                           :complete complete)))))
+    ;; MDE Fri Aug 24 14:56:56 2018 -- from the chord method
+    (set-midi-channel s midi-channel microtones-midi-channel)
+    s))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* complete-set/make-stack

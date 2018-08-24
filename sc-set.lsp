@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  15:13:54 Wed Aug 22 2018 CEST
+;;; $$ Last modified:  15:25:58 Fri Aug 24 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1398,10 +1398,13 @@ data: Q
   (get-ids-from-pitch-list (data s)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#|
 ;;; MDE Sat Oct 26 13:08:28 2013 
+;;; MDE Fri Aug 24 15:25:53 2018 -- use chord class method instead
 (defmethod print-simple ((s sc-set) &optional ignore (stream t))
   (declare (ignore ignore))
   (print-simple-pitch-list (data s) stream))
+|# 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* sc-set/average-pitch
@@ -1576,10 +1579,11 @@ data: E4
 ;;; June 1st, Edinburgh
 ;;; 
 ;;; DESCRIPTION
-;;; Remove pitches from a set using a deterministic algorithm. From top to
-;;; bottom pitches will be selected or rejected using the activity-levels
-;;; class, to which the strength (1-10) is passed. The pitches removed are also
-;;; removed from any subsets.
+
+;;; Remove pitches from a set using a deterministic algorithm. From bottom to
+;;; top (or vice-versa) pitches will be selected or rejected using the
+;;; activity-levels class, to which the strength (1-10) is passed. The pitches
+;;; removed are also removed from any subsets.
 ;;;
 ;;; By default the set will be reduced by 1/3 of its pitches but it is expected
 ;;; that either the :remove or :target keyword will be used (see below).
@@ -1594,6 +1598,8 @@ data: E4
 ;;; - :remove. An integer indicating how many pitches to remove. Default = NIL
 ;;; - :target. An integer indicating how many pitches the set should be left
 ;;;   with. Default = NIL
+;;; - :invert. T or NIL to remove pitches starting at the top or bottom. T =
+;;;   from top, NIL = from bottom. Default = NIL 
 ;;; 
 ;;; RETURN VALUE
 ;;; The (thinned) sc-set object.
@@ -1603,7 +1609,7 @@ data: E4
 
 |#
 ;;; SYNOPSIS
-(defmethod thin ((s sc-set) &key (strength 5) remove target)
+(defmethod thin ((s sc-set) &key (strength 5) remove target invert)
 ;;; ****
   ;; (print strength) (print remove) (print target)
   (unless (integer-between strength 1 10)
@@ -1617,7 +1623,7 @@ data: E4
         (removed 0)
         (rm '()))
     (loop repeat 1000 until (= removed remove) do
-         (loop for p in (data s) do
+         (loop for p in (if invert (reverse (data s)) (data s)) do
               (when (and (< removed remove)
                          (not (member p rm :test #'pitch=))
                          (active al strength))
@@ -1779,13 +1785,23 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
                    (get-ids-from-pitch-list (data no))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun init-pitch-list (pitches &optional auto-sort)
-  (let ((result (loop for pitch in pitches do
+;;; MDE Fri Aug 24 14:23:49 2018 -- added midi-channel and microtone-midi-
+(defun init-pitch-list (pitches &optional auto-sort midi-channel
+                                  microtone-midi-channel)
+  (let ((result (loop with p for pitch in pitches do
                    (unless pitch
                      (error "~a~&sc-set::init-pitch-list: pitch is nil!"
                             pitches))
-                   collect (make-pitch pitch))))
+                     (setq p (make-pitch pitch))
+                     ;; MDE Fri Aug 24 14:24:12 2018
+                     (if (micro-tone p)
+                         (if microtone-midi-channel
+                             (setf (midi-channel p) microtone-midi-channel)
+                             (when midi-channel
+                               (setf (midi-channel p) midi-channel)))
+                         (when midi-channel
+                           (setf (midi-channel p) midi-channel)))
+                   collect p)))
     (if auto-sort
         (sort (copy-list result)
               #'(lambda (x y) (< (frequency x) (frequency y))))

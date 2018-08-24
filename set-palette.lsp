@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  16:33:42 Wed Aug 22 2018 CEST
+;;; $$ Last modified:  15:39:14 Fri Aug 24 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -107,6 +107,13 @@
 
 (defmethod clone ((sp set-palette))
   (clone-with-new-class sp 'set-palette))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Aug 24 15:37:26 2018
+(defmethod print-simple ((sp set-palette) &optional (stream t) (separator " "))
+  (let ((refs (get-all-refs sp)))
+    (loop for ref in refs do
+         (print-simple (get-data ref sp) stream separator))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1222,8 +1229,23 @@ data: (C4 F4 A4 C5)
   sp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Mon Jan 30 19:57:32 2017 
+;;; ****m* set-palette/round-to-nearest
+;;; DATE
+;;; January 30th 2017
+;;; 
+;;; DESCRIPTION
+;;; Rounds all pitch objects to the nearest pitch in the current scale. See also
+;;; sc-set and pitch class methods. 
+;;; 
+;;; ARGUMENTS
+;;; - a set-palette object
+;;; 
+;;; RETURN VALUE
+;;; the set-palette, rounded.
+;;; 
+;;; SYNOPSIS
 (defmethod round-to-nearest ((sp set-palette))
+;;; ****
   (loop for ref in (get-all-refs sp)
      do (round-to-nearest (get-data ref sp)))
   sp)
@@ -2302,6 +2324,95 @@ WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
           keyargs)
     (push :file keyargs))
   keyargs)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* set-palette/set-palette-from-spectra
+;;; DATE
+;;; August 24th 2018
+;;; 
+;;; DESCRIPTION
+;;; Create a set-palette by analysing a sound file at regular intervals and
+;;; using the detected frequency components as pitches in a set.
+;;; 
+;;; ARGUMENTS
+;;; - the sndfile to analyse
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments
+;;; - :start. The time in seconds to start the analysis. Default = 0
+;;; - :stop. The time in seconds to stop the analysis. If nil then analysis will
+;;;   continue until one millisecond before the end of the sound file. Default =
+;;;   NIL.
+;;; - :interval. The time increment in seconds for the analysis start
+;;;   point. Default = 0.1
+;;; - :min-pitches. The minimum number of pitches a set may contain. Analyses
+;;;   returning less than this number of frequencies will be skipped. Default
+;;;   = 5.
+;;; - :pitch-min. The lowest pitch of any set. Pitch object or symbol. Default
+;;;   = c1. 
+;;; - :pitch-max. The highest pitch of any set. Pitch object or symbol. Default
+;;;   = g7.
+;;; - :gs-keys. Any other keyword arguments to be passed to the get-spectrum
+;;;   call (get-spectrum.lsp). In particular :fftsize will be useful here as
+;;;   larger windows will result in lower pitches being detected. In any case
+;;;   it's worth experimenting with :fftsize. Default: various but :fftsize of
+;;;   1024 
+;;; 
+;;; RETURN VALUE
+;;; a set-palette object. Each set in the palette has a numerically ascending
+;;; integer ID, starting from 1.
+;;; 
+;;; EXAMPLE
+#|
+(let ((sp (set-palette-from-spectra 
+           (concatenate 'string cl-user::+slippery-chicken-home-dir+ 
+                        "test-suite/test-sndfiles-dir-1/test-sndfile-3.aiff"))))
+  (print-simple sp))
+=>
+1: DQS2 E5 DQS6 AQF6 AQS6 B6 CQS7 DQF7 
+2: E5 GQS5 AQS5 B5 CQS6 AQS6 
+4: EQF3 FQS4 E5 AQS5 CS6 AQS6 
+5: EQS2 AF3 EQF4 A4 DQF5 E5 AQF5 BQF5 AQS6 
+6: B4 EQF5 BF5 CQS6 DQS6 EQS6 GQS6 AQS6 
+7: F4 A4 CQS5 EQF5 GQS5 BQS5 CS6 AQS6 
+23: E5 BF6 D7 EQF7 E7 FQS7 
+NIL
+|#
+;;; SYNOPSIS
+(defun set-palette-from-spectra (sndfile
+                                 &key
+                                   (start 0)
+                                   stop
+                                   (interval 0.1)
+                                   (min-pitches 5)
+                                   (pitch-min 'c1)
+                                   (pitch-max 'g7)
+                                   (gs-keys
+                                    `(:fftsize 1024 
+                                               :order-by clm::freq
+                                               :freq-min 20
+                                               :freq-max ,(note-to-freq 'b8))))
+;;; ****
+  (unless stop
+    (setq stop (- (clm::sound-duration sndfile) .001))) ; last millisec
+  (let* ((spectra
+          (loop for st from start to stop by interval collect
+               (apply
+                #'clm::get-spectrum
+                (cons sndfile
+                      (append gs-keys
+                              (list :start-analysis st
+                                    :srate (clm::sound-srate sndfile)))))))
+         (sp (make-set-palette 'spectra nil)))
+    (loop for spectrum in spectra and i from 1
+       for set = (make-complete-set spectrum :id i)
+       do     
+         (limit set :lower pitch-min :upper pitch-max)
+         (unless (<= (sclist-length set) min-pitches)
+           ;; (print (data set))
+           (add set sp)))
+    ;; (round-to-nearest sp)
+    sp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

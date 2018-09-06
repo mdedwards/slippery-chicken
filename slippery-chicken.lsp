@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  19:00:38 Fri Jul 27 2018 CEST
+;;; $$ Last modified:  15:11:54 Thu Sep  6 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -152,7 +152,10 @@
    (set-limits-high :accessor set-limits-high :initarg :set-limits-high 
                     :initform nil)  
    (set-limits-low :accessor set-limits-low :initarg :set-limits-low 
-                   :initform nil)  
+                   :initform nil)
+   ;; MDE Thu Sep  6 12:34:45 2018 -- set transposition curve
+   (transposition-curve :accessor transposition-curve :type list
+                        :initarg :transposition-curve :initform '(0 0 100 0))
    ;; 31.1.11: this title will be used in lilypond file names. Any spaces will
    ;; be turned into hyphens when creating file names (but not the title in the
    ;; score of course).
@@ -392,6 +395,7 @@
       (setf (sndfile-palette sc) (sndfile-palette sc)
             (num-sequences sc) (count-sequence-refs (set-map sc)))
       (handle-set-limits sc)
+      (handle-transposition-curve sc)
       ;; (print (set-limits-low sc))
       ;; we have a chicken before the egg situation here: we can't
       ;; create a tempo-map without a piece because we need
@@ -610,6 +614,8 @@
           (slot-value no 'warn-ties) (warn-ties sc)
           (slot-value no 'set-limits-high) (my-copy-list (set-limits-high sc))
           (slot-value no 'set-limits-low) (my-copy-list (set-limits-low sc))
+          (slot-value no 'transposition-curve)
+          (my-copy-list (transposition-curve sc))
           (slot-value no 'rehearsal-letters) 
           (my-copy-list (rehearsal-letters sc))
           (slot-value no 'avoid-melodic-octaves) (avoid-melodic-octaves sc) 
@@ -1353,7 +1359,7 @@
                                                              seq-num
                                                              (pitch-seq-map
                                                               sc)))
-                                ;;  MDE Thu May  5 10:04:48 2016 -- this is
+                                ;; MDE Thu May  5 10:04:48 2016 -- this is
                                 ;; where we would morph sets if needed
                                 (set (get-nth-from-palette section-ref seq-num
                                                            (set-map sc)))
@@ -1894,25 +1900,25 @@ rhythms: (
 #|
 ;;; Prints the bar number for all occurrences in the entire piece by default ;
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-(vc (cello :midi-channel 2))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1))
-(3 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
-(q (e) s +s h)
-((e) s (s) (q) h))
-:pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
-:rthm-seq-map '((1 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(2 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(3 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))))))
-(find-note mini 'vc 'f4))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
+                                 (q (e) s +s h)
+                                 ((e) s (s) (q) h))
+                                :pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (3 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
+  (find-note mini 'vc 'f4))
 
 =>
 bar 1
@@ -1948,27 +1954,27 @@ bar 45
 
 ;;; Examples of use specifying the optional arguments ;
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-(vc (cello :midi-channel 2))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1))
-(3 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
-(q (e) s +s h)
-((e) s (s) (q) h))
-:pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
-:rthm-seq-map '((1 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(2 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(3 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))))))
-(find-note mini 'cl 'f3)
-(find-note mini 'cl 'f3 :written t)
-(find-note mini 'vc 'f4 :start-bar 3 :end-bar 17))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
+                                 (q (e) s +s h)
+                                 ((e) s (s) (q) h))
+                                :pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (3 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
+  (find-note mini 'cl 'f3)
+  (find-note mini 'cl 'f3 :written t)
+  (find-note mini 'vc 'f4 :start-bar 3 :end-bar 17))
 
 |#
 ;;; SYNOPSIS
@@ -2012,19 +2018,19 @@ bar 45
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-(hn (french-horn :midi-channel 2))
-(vc (cello :midi-channel 3))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
-:pitch-seq-palette ((1 2 3)))))
-:rthm-seq-map '((1 ((cl (1 1 1))
-(hn (1 1 1))
-(vc (1 1 1))))))))
-(players mini))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (hn (french-horn :midi-channel 2))
+                     (vc (cello :midi-channel 3))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s))
+                                :pitch-seq-palette ((1 2 3)))))
+        :rthm-seq-map '((1 ((cl (1 1 1))
+                            (hn (1 1 1))
+                            (vc (1 1 1))))))))
+  (players mini))
 
 => (CL HN VC)
 
@@ -2199,20 +2205,20 @@ bar 45
 ;;; EXAMPLE
 #|
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((vn (violin :midi-channel 1))))
-:tempo-map '((1 (q 60)))
-:set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1)))
-:rthm-seq-palette '((1 ((((2 4) (e) e+e. 32 (32)))
-:pitch-seq-palette (((1) 2)))))
-:rthm-seq-map '((1 ((vn (1))))))))
-(print (data (get-rest mini 1 2 'vn)))
-(print (data (get-note mini 1 2 'vn)))
-(print (data (get-note mini 1 '(2 1) 'vn)))
-(print (data (get-note mini 1 '(2 2) 'vn)))
-(print (is-tied-from (get-note mini 1 1 'vn))))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((vn (violin :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1)))
+        :rthm-seq-palette '((1 ((((2 4) (e) e+e. 32 (32)))
+                                :pitch-seq-palette (((1) 2)))))
+        :rthm-seq-map '((1 ((vn (1))))))))
+  (print (data (get-rest mini 1 2 'vn)))
+  (print (data (get-note mini 1 2 'vn)))
+  (print (data (get-note mini 1 '(2 1) 'vn)))
+  (print (data (get-note mini 1 '(2 2) 'vn)))
+  (print (is-tied-from (get-note mini 1 1 'vn))))
 
 =>
 32 
@@ -3263,14 +3269,14 @@ data: (5 8)
                  (loop for ins in set-limits
                     collect
                       (list (first ins) 
-                            (doctor-set-limits-env (second ins) x-max)))))
+                            (doctor-env (second ins) x-max)))))
                (assoc-list
                 (loop for ins in (data set-limits) do
                      (setf (data ins)
-                           (doctor-set-limits-env (data ins) x-max)))
+                           (doctor-env (data ins) x-max)))
                 set-limits)
                (t (error "slippery-chicken::handle-set-limits: ~
-                               unhandled data type: ~a" set-limits)))))
+                          unhandled data type: ~a" set-limits)))))
       (let* ((num-x (if num-bars
                         (if (integer>0 num-bars) num-bars (num-bars sc))
                         (num-sequences sc)))
@@ -3278,6 +3284,16 @@ data: (5 8)
              (low (do-limits (set-limits-low sc) num-x)))
         (setf (set-limits-high sc) high
               (set-limits-low sc) low)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Sep  6 13:48:07 2018 
+(defmethod handle-transposition-curve ((sc slippery-chicken) &optional num-bars)
+  (let* ((num-x (if num-bars
+                    (if (integer>0 num-bars) num-bars (num-bars sc))
+                    (num-sequences sc))))
+    (when (> num-x 1)
+      (setf (transposition-curve sc)
+            (doctor-env (transposition-curve sc) num-x nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; global-seq-num is 1-based.
@@ -3644,7 +3660,7 @@ seq-num 5, VN, replacing G3 with B6
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;  13.4.11: start and end bar are inclusive.
+;;; 13.4.11: start and end bar are inclusive.
 ;;; at the moment, we use bass/treble clefs with 8ve signs on to indicate pitch
 ;;; extremes (assuming an instrument has these clefs), but these can be
 ;;; converted to octave brackets here. NB no 15ma/mb handled here.
@@ -5211,6 +5227,8 @@ seq-num 5, VN, replacing G3 with B6
                      (1- from-sequence)
                      (1- (+ from-sequence num-sequences)))))
                (loop for ref in chord-refs collect
+                    ;; MDE Thu Sep  6 14:01:59 2018 -- bear in mind this won't
+                    ;; use the new transposition-curve slot  
                     (data (get-data ref (set-palette sc))))))))
     (when chord-accessor
       (setf chds (loop for i in chds collect (nth chord-accessor i))))
@@ -5971,12 +5989,10 @@ data: NIL
                            ins-ref nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Wed May 16 11:45:56 EDT 2012: Added robodoc entry
 ;;; SAR Tue Jun  5 12:17:53 BST 2012: A bit of conforming
 
-;;;  lilypond
-
+;;; lilypond
 ;;; ****m* slippery-chicken/write-lp-data-for-all
 ;;; DESCRIPTION
 ;;; Generate all of the .ly files required by the LilyPond application for
@@ -6401,7 +6417,7 @@ data: NIL
                           (get-data player (ensemble sc)))))
              (written-pname (pname)
                (concatenate 'string pname "Written"))
-             ;;  MDE Thu Feb  2 14:58:22 2017 
+             ;; MDE Thu Feb  2 14:58:22 2017 
              (make-fixed-width ()
                (format nil "~%      proportionalNotationDuration = ~
                             #(ly:make-moment ~a)~
@@ -8205,7 +8221,7 @@ NOTE 6200 0.6666667
             (* (/ micro total) 100.0))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  MDE Thu Feb  9 19:56:22 2017 
+;;; MDE Thu Feb  9 19:56:22 2017 
 (defmethod player-ambitus ((sc slippery-chicken) player &key written print
                                                           (start-bar 1) end-bar)
   
@@ -8459,6 +8475,9 @@ NOTE 6200 0.6666667
 ;;;   sharp, bf - b flat). Implies nothing beyond the signature, i.e. no
 ;;;   conformity to tonality expected. Default '(c major) i.e. no key
 ;;;   signature.
+;;; - :transposition-curve. An envelope describing over the duration of the
+;;;   piece (but using any arbitrary x-axis range) what transpositions in
+;;;   semitones should be applied to the sets. Default = (0 0 100 0) 
 ;;; (- :warn-ties. This slot is now obsolete, but is left here for backwards
 ;;;    compatibility with pieces composed with earlier versions of
 ;;;    slippery-chicken. Default = T.)
@@ -8590,6 +8609,8 @@ NOTE 6200 0.6666667
                                      defer
                                      ;; MDE Mon Jul  2 16:08:42 2012
                                      (key-sig '(c major))
+                                     ;; MDE Thu Sep  6 14:34:14 2018
+                                     (transposition-curve '(0 0 100 0))
                                      (warn-ties t))
 ;;; ****                                
   (make-instance 'slippery-chicken 
@@ -8623,6 +8644,7 @@ NOTE 6200 0.6666667
                  :avoid-melodic-octaves avoid-melodic-octaves
                  :avoid-used-notes avoid-used-notes
                  :key-sig key-sig
+                 :transposition-curve transposition-curve
                  :warn-ties warn-ties))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -8940,11 +8962,11 @@ NOTE 6200 0.6666667
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Feb 20 12:15:31 2018 -- if x-max is nil, don't stretch, just process
 ;;; pitch/y values
-(defun doctor-set-limits-env (env &optional x-max)
+(defun doctor-env (env &optional x-max (process-ys t))
   ;; MDE Mon Apr  9 13:11:25 2012 
   (when (and x-max (<= x-max 1))
-    (error "slippery-chicken::doctor-set-limits-env: Can't apply set ~
-            limits envelopes ~%to a piece with only one sequence."))
+    (error "slippery-chicken::doctor-env: Can't doctor envelopes in a piece ~
+            ~%with only one sequence."))
   (let ((stretched (if x-max (new-lastx env x-max) env)))
     ;; 14/8/07 first x always needs to be 1
     (setf (first stretched) 1)
@@ -8954,9 +8976,11 @@ NOTE 6200 0.6666667
        ;; interpolate. Note degrees are in cm::*scale* so this is not the same
        ;; as MIDI notes.
        collect
-       (if (numberp y)
-           (midi-to-degree (floor y))
-           (note-to-degree y)))))
+         (if process-ys
+             (if (numberp y)
+                 (midi-to-degree (floor y))
+                 (note-to-degree y))
+             y))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -9044,12 +9068,21 @@ NOTE 6200 0.6666667
                                        global-seq-num)))
          ;; these would have to be chords or notes once we get the
          ;; pitch-choosing algorithm going, also the midi-channel setting loop
-         ;; below. 
+         ;; below.
+         ;;  MDE Thu Sep  6 14:03:27 2018
+         (set-transp (if slippery-chicken
+                         (interpolate global-seq-num
+                                      (transposition-curve slippery-chicken))
+                         0.0))
          (notes-from-pitch-seq
           (when pitch-seq
-            (get-notes pitch-seq instrument player-obj set hint-pitch
-                       (second set-limits) (first set-limits) global-seq-num 
-                       last-pitch 
+            (get-notes pitch-seq instrument player-obj
+                       ;; MDE Thu Sep  6 14:11:50 2018
+                       (if (zerop set-transp)
+                           set
+                           (transpose set set-transp :destructively nil))
+                       hint-pitch (second set-limits) (first set-limits)
+                       global-seq-num last-pitch 
                        ;; MDE Mon Mar 26 13:21:29 2012
                        (if slippery-chicken
                            (pitch-seq-index-scaler-min slippery-chicken)

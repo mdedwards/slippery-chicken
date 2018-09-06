@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  15:39:14 Fri Aug 24 2018 CEST
+;;; $$ Last modified:  14:47:22 Thu Sep  6 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -765,7 +765,7 @@ data: (C4 F4 A4 C5)
 ;;; - centroid-weight: a similar factor for spectral centroid. Default 1.0
 ;;; - verbose:  Whether to print data as the decision process proceeds.
 ;;;   Default NIL 
-;;; - repeating-bass: Whether to allow base notes to repeat between two
+;;; - repeating-bass: Whether to allow bass notes to repeat between two
 ;;;   consecutive chords. Default NIL
 ;;; - silent: Whether to print warnings or not. Default NIL
 ;;; - map-section: if you want a list of references suitable to be passed
@@ -1162,9 +1162,9 @@ data: (C4 F4 A4 C5)
   (unless upper (setq upper (limit-get-pitch upper 'b8)))
   (unless lower (setq lower (limit-get-pitch lower 'c-1)))
   (when (listp upper)
-    (setq upper (doctor-set-limits-env upper (num-data sp))))
+    (setq upper (doctor-env upper (num-data sp))))
   (when (listp lower)
-    (setq lower (doctor-set-limits-env lower (num-data sp))))
+    (setq lower (doctor-env lower (num-data sp))))
   (flet ((getp (x data)            ;  data is either an env or a pitch object
            (if (listp data)
                (degree-to-note (interpolate x data))
@@ -2231,9 +2231,9 @@ WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
                            (size 20)
                            (use-octave-signs nil)
                            (automatic-octave-signs nil)
-                           (include-missing-chromatic t)
+                           (include-missing-chromatic nil)
                            (auto-open (get-sc-config 'cmn-display-auto-open))
-                           (include-missing-non-chromatic t))
+                           (include-missing-non-chromatic nil))
 ;;; ****
   ;; some defaults above are good for 2-staff display but not 4...
   (unless text-y-offset
@@ -2339,6 +2339,8 @@ WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments
+;;; - :id. The ID for the set-palette object to return. If NIL a suitable symbol
+;;;   will be created from the sndfile path. Default = NIL.
 ;;; - :start. The time in seconds to start the analysis. Default = 0
 ;;; - :stop. The time in seconds to stop the analysis. If nil then analysis will
 ;;;   continue until one millisecond before the end of the sound file. Default =
@@ -2352,6 +2354,12 @@ WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
 ;;;   = c1. 
 ;;; - :pitch-max. The highest pitch of any set. Pitch object or symbol. Default
 ;;;   = g7.
+;;; - :round. Round the generated pitches to the nearest in the current scale?
+;;;   Default = NIL.
+;;; - :reject-fun. A function that takes a set as an argument and returns T if
+;;;   it should be rejected, or NIL if not. Default = NIL.
+;;; - :warn-dups. T or NIL to warn if duplicate pitches are found when calling
+;;;   make-complete-set. Default = T. 
 ;;; - :gs-keys. Any other keyword arguments to be passed to the get-spectrum
 ;;;   call (get-spectrum.lsp). In particular :fftsize will be useful here as
 ;;;   larger windows will result in lower pitches being detected. In any case
@@ -2381,12 +2389,16 @@ NIL
 ;;; SYNOPSIS
 (defun set-palette-from-spectra (sndfile
                                  &key
+                                   id
                                    (start 0)
                                    stop
                                    (interval 0.1)
                                    (min-pitches 5)
                                    (pitch-min 'c1)
                                    (pitch-max 'g7)
+                                   (round t)
+                                   reject-fun
+                                   (warn-dups t)
                                    (gs-keys
                                     `(:fftsize 1024 
                                                :order-by clm::freq
@@ -2403,15 +2415,19 @@ NIL
                       (append gs-keys
                               (list :start-analysis st
                                     :srate (clm::sound-srate sndfile)))))))
-         (sp (make-set-palette 'spectra nil)))
+         (sp (make-set-palette
+              (if id id (read-from-string
+                         (format nil "~a-spectra" (pathname-name sndfile))))
+              nil)))
     (loop for spectrum in spectra and i from 1
-       for set = (make-complete-set spectrum :id i)
+       for set = (make-complete-set spectrum :id i :warn-dups warn-dups)
        do     
          (limit set :lower pitch-min :upper pitch-max)
-         (unless (<= (sclist-length set) min-pitches)
-           ;; (print (data set))
+         (unless (or (<= (sclist-length set) min-pitches)
+                     (and reject-fun (funcall reject-fun set)))
            (add set sp)))
-    ;; (round-to-nearest sp)
+    (when round
+      (round-to-nearest sp))
     sp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

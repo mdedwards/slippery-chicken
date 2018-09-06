@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  14:45:42 Tue Jul 17 2018 CEST
+;;; $$ Last modified:  15:13:27 Thu Sep  6 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5812,6 +5812,7 @@ T
   ;; our set-limits were stretched to fit the number of sequences in the piece,
   ;; but we'll need to range over the number of bars, so fix this here 
   (handle-set-limits sc t)
+  (handle-transposition-curve sc t) ; MDE Thu Sep  6 14:25:02 2018 
   (let ((last-event (next-event sc player))
         last-event-chord event-chord find-new poc new-poc)
     (flet ((warn-failed (e)
@@ -5852,11 +5853,17 @@ T
                     (instrument (get-instrument-for-player-at-bar
                                  (player event) (bar-num event) sc))
                     (limits (get-set-limits sc player (bar-num event)))
+                    (set-transp (interpolate (bar-num event)
+                                             (transposition-curve sc)))
                     index)
                (if (sc-set-p set)
                    (setq set (clone set))
                    (error "slippery-chicken-edit::rm-repeated-pitches: ~%~
                            Couldn't get set with reference ~a" (set-ref event)))
+               ;; MDE Thu Sep  6 14:19:23 2018 -- don't forget the new
+               ;; transposition-curve!
+               (unless (zerop set-transp)
+                 (transpose set set-transp))
                ;; get the pitches the instrument can play and remove the last
                ;; event's pitch(es)  
                (limit-for-instrument set instrument
@@ -6058,7 +6065,7 @@ T
          (slot (slot-value sc which))
          (curve (when slot (get-data player slot nil)))
          (result
-          (doctor-set-limits-env
+          (doctor-env
            (loop for section in (get-all-section-refs sc)
               for p = (get-next top)
               appending (list seq-num p
@@ -6126,9 +6133,10 @@ T
 ;;; 
 ;;; SYNOPSIS
 (defun bars-to-sc (bars &key sc (sc-name '*auto*) (player 'player-one)
-                   (instrument-palette 
-                    +slippery-chicken-standard-instrument-palette+)
-                   (instrument 'flute) (section-id 1) (update t))
+                          (instrument-palette 
+                           +slippery-chicken-standard-instrument-palette+)
+                          (tempo 60) (instrument 'flute) (section-id 1)
+                          (update t))
 ;;; ****
   (unless (and bars (listp bars) (rthm-seq-bar-p (first bars)))
     (error "slippery-chicken-edit::bars-to-sc: first argument should be a ~
@@ -6161,6 +6169,8 @@ T
           (setf sc (make-minimal-sc sc-name player instrument
                                     instrument-palette)
                 (piece sc) piece)))
+    ;; MDE Wed Aug 29 17:16:56 2018 
+    (setf (tempo-map sc) `((1 (q ,tempo))))
     (when update
       (update-slots sc nil 0 0 1 nil nil t t)
       (update-write-time-sig2 (piece sc)))
@@ -6170,19 +6180,19 @@ T
     (check-tuplets sc)
     (check-beams sc)
     sc))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Apr 19 15:03:05 2013 -- make a dummy (pretty empty) sc structure
-(defun make-minimal-sc (sc-name player instrument &optional
-                        (instrument-palette
-                         +slippery-chicken-standard-instrument-palette+))
+(defun make-minimal-sc (sc-name player instrument
+                        &optional
+                          (instrument-palette
+                           +slippery-chicken-standard-instrument-palette+))
   (make-slippery-chicken
    sc-name
    :instrument-palette instrument-palette
    :ensemble `(((,player (,instrument :midi-channel 1))))
    :set-palette '((1 ((c4 d4 e4 f4 g4 a4 b4 c5))))
-   :set-map '((1 (1)))
+   :set-map '((1 (1)))  
    :rthm-seq-palette '((1 ((((4 4) w)))))
    :rthm-seq-map `((1 ((,player (1)))))))
 

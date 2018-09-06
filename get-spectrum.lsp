@@ -37,7 +37,7 @@
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
-;;; $$ Last modified:  11:03:26 Thu Aug 23 2018 CEST
+;;; $$ Last modified:  10:21:02 Tue Aug 28 2018 CEST
 ;;;
 ;;; SVN ID: $Id: get-spectrum.lsp 5359 2015-07-24 20:53:22Z medward2 $
 ;;;
@@ -199,7 +199,8 @@
         (setf *slippery-chicken-get-spectrum-last-result* '(1 2 3 4 5 6)) 
         ;; Call the spec-an instrument to get our data stored in
         ;; *slippery-chicken-get-spectrum-peak-freqs/amps*
-        (with-sound (:srate srate :play nil) 
+        (with-sound (:srate srate :play nil :statistics nil
+                            :output "/tmp/ignore.wav") 
           (spec-an file 
                    :fftsize fftsize 
                    :max-peaks max-peaks 

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified:  20:25:34 Mon Feb 13 2017 GMT
+;;; $$ Last modified:  14:59:33 Sat Aug 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -432,9 +432,7 @@ remove-elements: arguments 2 and 3 must be integers < the length of argument 1:
                                    
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Thu Jan 12 23:01:18 GMT 2012: Added robodoc info
-
 ;;; ****m* sclist/combine
 ;;; DESCRIPTION
 ;;; Combine the contents of two given sclist objects into one list.  NB This

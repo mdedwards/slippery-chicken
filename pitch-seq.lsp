@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  19:12:58 Fri Jul 27 2018 CEST
+;;; $$ Last modified:  14:13:24 Wed Aug 29 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -347,7 +347,9 @@
                ;; issued when there's a subset-id for the ins but not for the
                ;; set. 
                (subset (let* ((sid (subset-id instrument))
-                              (ps (when (subsets set)
+                              ;; MDE Wed Aug 29 14:13:14 2018 -- make sure we've
+                              ;; got a player object too before doing this 
+                              (ps (when (and (player-p player) (subsets set))
                                     (get-data (id player) (subsets set) nil)))
                               (is (when (and (not ps) sid (subsets set))
                                     (get-data sid (subsets set) nil)))
@@ -638,10 +640,10 @@ len))
 
 #|
 
-;; The first creation option is using one argument that is a two-item list, ; ;
-;; whereby the first item is a symbol to be used as the pitch-seq object's ID ; ;
-;; and the second is a list of numbers representing the general contour of the ; ;
-;; pitch sequence.                      ; ;
+;; The first creation option is using one argument that is a two-item list,
+;; whereby the first item is a symbol to be used as the pitch-seq object's ID 
+;; and the second is a list of numbers representing the general contour of the 
+;; pitch sequence.
 (make-pitch-seq '(pseq1 (1 2 1 1 3)))
 
 =>
@@ -658,9 +660,9 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: PSEQ1, tag: NIL, 
 data: (1 2 1 1 3)
 
-;; The second creation option uses two arguments, the first of which is a list ; ;
-;; of numbers representing the general contour of the pitch sequence, the ; ;
-;; second of which is a symbol which will be used as the pith-seq object's ID. ; ;
+;; The second creation option uses two arguments, the first of which is a list
+;; of numbers representing the general contour of the pitch sequence, the 
+;; second of which is a symbol which will be used as the pith-seq object's ID. 
 (make-pitch-seq '(2 1 1 3 1) 'pseq2)
 
 => 

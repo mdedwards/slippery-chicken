@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  13:31:22 Sat Nov 25 2017 CET
+;;; $$ Last modified:  10:26:08 Wed Aug 29 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -983,12 +983,8 @@
 ;;; velocity/amplitude value given here (0-1.0 (float) or 0-127 (integer) 
 ;;; 
 ;;; RETURN VALUE
+;;; The MIDI file path
 ;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defun event-list-to-midi-file (event-list 
                                 &key (midi-file "/tmp/tmp.mid")

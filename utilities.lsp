@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:25:36 Tue May  8 2018 CEST
+;;; $$ Last modified:  08:23:22 Thu Sep  6 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -570,6 +570,48 @@
                     last))
           (butlast sub-groups))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/split-into-sub-groups4
+;;; DATE
+;;; August 28th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Split into sub-groups with lengths defined by the integers in the second
+;;; argument list. The difference here to related functions is that the given
+;;; lengths will repeat circularly until no more elements of the first argument
+;;; remain. 
+;;; 
+;;; ARGUMENTS
+;;; - the list to split into sub-groups
+;;; - a list of lengths, to be repeated
+;;; 
+;;; RETURN VALUE
+;;; a list of sublists
+;;; 
+;;; EXAMPLE
+#|
+
+(split-into-sub-groups4 '(1 2 3 4 5 6 7 8 9 10 11 12) '(3 4))
+==> ((1 2 3) (4 5 6 7) (8 9 10) (11 12))
+
+(split-into-sub-groups4 '(1 2 3 4 5 6 7 8 9 10 11 12 13 14) '(3 4))
+==> ((1 2 3) (4 5 6 7) (8 9 10) (11 12 13 14))
+
+(split-into-sub-groups4 '(1 2 3 4 5 6 7 8 9 10 11 12) '(1 2 3 4))
+==> '((1) (2 3) (4 5 6) (7 8 9 10) (11) (12))
+
+|#
+;;; SYNOPSIS
+(defun split-into-sub-groups4 (list lengths)
+;;; ****
+  (let ((cscl (make-cscl lengths)))
+    (loop while list 
+       for n = (get-next cscl)
+       collect
+         (safe-subseq list 0 n)
+       do
+         (setq list (nthcdr n list)))))
+    
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun whole-num-p (float &optional (allow-tolerance nil))
@@ -3767,6 +3809,11 @@ WARNING:
 ;;; replacing spaces with hyphens etc. 
 (defun filename-from-title (title)
   (string-downcase (remove #\: (remove #\' (substitute #\- #\  title)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun sc-name-from-title (title)
+  (read-from-string (format nil "+~a+" (filename-from-title title))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  13:56:26 Tue Feb 13 2018 CET
+;;; $$ Last modified:  17:02:25 Mon Aug 27 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -396,6 +396,10 @@ data: BEAM
 (defmethod relink-named-objects ((ral recursive-assoc-list))
 ;;; ****
   (setf (linked ral) nil)
+  (link-named-objects ral)
+  ;; MDE Mon Aug 27 17:02:08 2018 -- for some reason, in some cases this needs
+  ;; to be done twice...should investigate: todo 
+  (setf (linked ral) nil)
   (link-named-objects ral))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -412,6 +416,7 @@ data: BEAM
 (defmethod reindex :after ((ral recursive-assoc-list) &optional (start 1))
   (declare (ignore start))
   (relink-named-objects ral))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; MDE's original comment:
@@ -829,7 +834,6 @@ WARNING:
             nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Thu Jan 26 21:28:54 GMT 2012: Added robodoc info
 
 ;;; ****m* recursive-assoc-list/add
@@ -860,7 +864,6 @@ WARNING:
 ;;; 
 ;;; EXAMPLE
 #|
-
 ;; Adding an element while specifying no optional argument results in the new
 ;; element being placed at the end of the top level by default (evident here by
 ;; the fact that the ref for (MAKERS) is a single-item list) 

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    7th June 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  19:49:18 Sat Nov 18 2017 CET
+;;; $$ Last modified:  10:33:48 Wed Aug 29 2018 CEST
 ;;;
 ;;; SVN ID: $Id: wolfram.lsp 6210 2017-04-07 11:42:29Z medward2 $
 ;;;
@@ -75,8 +75,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((w wolfram) stream)
   (format stream "~&WOLFRAM: rules: ~a~
-                  ~%         width: ~a, initial-state: ~a"
-          (rules w) (width w) (initial-state w)))
+                  ~%         width: ~a, initial-state: ~a~
+                  ~%         functions: ~a"
+          (rules w) (width w) (initial-state w) (functions w)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod verify-and-store :after ((w wolfram))
@@ -88,7 +89,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* wolfram/generate
 ;;; DATE
-;;; June 6th, Edinburgh
+;;; June 6th 2017, Edinburgh
 ;;; 
 ;;; DESCRIPTION
 ;;; Generate the cellular automata rows using the given rules. N.B. Each time
@@ -139,7 +140,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* wolfram/print-matrix
 ;;; DATE
-;;; June 6th, Edinburgh
+;;; June 6th 2017, Edinburgh
 ;;; 
 ;;; DESCRIPTION
 ;;; Print the state of the cells to the terminal. On and off could
@@ -187,7 +188,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* wolfram/defwolfram
 ;;; DATE
-;;; June 6th, Edinburgh
+;;; June 6th 2017, Edinburgh
 ;;; 
 ;;; DESCRIPTION
 ;;; Define your own Wolfram function to create an object with the flavour in

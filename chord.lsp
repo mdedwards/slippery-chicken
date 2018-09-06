@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  15:37:09 Fri Aug 24 2018 CEST
+;;; $$ Last modified:  19:12:06 Mon Sep  3 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1206,7 +1206,8 @@ data: (
          (is1 (get-interval-structure c1 t t))
          (is2 (get-interval-structure c2 t t))
          (isi (intersection is1 is2))
-         (isscore (float (/ (length isi) (1- (max c1n c2n))))))
+         ;; MDE Mon Sep  3 19:11:49 2018 -- added max to avoid divide by 0
+         (isscore (float (/ (length isi) (max 1 (1- (max c1n c2n)))))))
     ;; (format t "~%~a ~a: ~a, ~a ~a" is1 is2 isi isscore cscore)
     ;; max score is 1.0 (min 0.0)
     (* 0.5 (+ cscore isscore))))

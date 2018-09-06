@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    March 11th 2010
 ;;;
-;;; $$ Last modified:  18:06:09 Tue Aug 21 2018 CEST
+;;; $$ Last modified:  12:03:07 Thu Sep  6 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -72,8 +72,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Sun Apr 29 18:21:09 BST 2012: Added robodoc entry
-
 ;;; ****m* set-map/gen-midi-chord-seq
 ;;; DESCRIPTION
 ;;; Write a midi file with each set in the set-map played as a chord at 1

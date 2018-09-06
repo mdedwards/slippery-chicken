@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:55:22 Sun Mar 18 2018 +07
+;;; $$ Last modified:  16:38:05 Wed Aug 29 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4166,10 +4166,8 @@ G4 Q, rest E, rest S, (D4 FS4 A4) S,
     events))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 ;;; SAR Fri Dec 23 13:41:36 EST 2011: Added robodoc info
-
+;;; 
 ;;; ****f* event/make-events2
 ;;; DESCRIPTION
 ;;; Like make-events, but rhythms and pitches are given in separate lists to

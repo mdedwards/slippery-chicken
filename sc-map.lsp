@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  17:36:07 Tue Feb 13 2018 CET
+;;; $$ Last modified:  15:02:04 Wed Aug 29 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -288,8 +288,8 @@ WARNING:
 ;;; through the data of the named objects in the list returned and return them
 ;;; as note-name symbols. 
 (let* ((sp (make-set-palette 'set-pal '((set1 ((c2 b2 a3 g4 f5 e6)))
-                                       (set2 ((d2 c3 b3 a4 g5 f6)))
-                                       (set3 ((e2 d3 c4 b4 a5 g6))))))
+                                        (set2 ((d2 c3 b3 a4 g5 f6)))
+                                        (set3 ((e2 d3 c4 b4 a5 g6))))))
       (scm (make-sc-map 'sc-m '((sec1
                                  ((vn (set1 set3 set2))
                                   (va (set2 set3 set1))
@@ -744,6 +744,41 @@ data: (1 NIL 3 4 5)
                    (when (equalp ref r)
                      (incf count)))))
     count))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* sc-map/remove-ref
+;;; DATE
+;;; August 24th 2018
+;;; 
+;;; DESCRIPTION
+;;; Remove or replace a reference from a map. If there's no replacement then the
+;;; data list will be shorter (if the reference is present) thereafter (which
+;;; could cause problems .
+;;; 
+;;; ARGUMENTS
+;;; - an sc-map object
+;;; - the section reference (symbol, list, etc.)
+;;; - the reference in the data list that should be removed
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the replacement reference, if any. If, for example in a rthm-seq-map, you
+;;;   want to replace a rthm-seq reference with nil, so that the player sits out
+;;;   a sequence, then pass '(nil) as the replacement.
+;;; 
+;;; RETURN VALUE
+;;; The sc-map object.
+;;; 
+;;; SYNOPSIS
+(defmethod remove-ref ((scm sc-map) section ref &optional replacement)
+;;; ****
+  (let ((no (get-data section scm)))
+    (setf (data no)
+          (if replacement
+              ;; should be able to handle symbols, lists, and numbers
+              (substitute replacement ref (data no) :test #'equalp)
+              (remove ref (data no) :test #'equalp))))
+  scm)
+      
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  17:31:18 Mon Jun 25 2018 CEST
+;;; $$ Last modified:  16:25:12 Sat Aug 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -111,7 +111,8 @@
                             (and (= 1 (midi-channel player))
                                  (= 1 (microtones-midi-channel player))))
                         (data e))))
-    (loop 
+    (loop
+       with chromatic = (= 12 (degrees-per-octave))
        ;; no channel 10 (percussion)
        with chans = (make-cscl (remove 10
                                        (loop for i from 1 to 16 collect i)))
@@ -119,7 +120,10 @@
        for chan = (get-next chans)
        do
          (setf (midi-channel player) chan
-               (microtones-midi-channel player) chan)
+               ;; MDE Sat Aug 25 16:18:20 2018 -- detect microtonal scale and
+               ;; handle accordingly 
+               (microtones-midi-channel player)
+               (if chromatic chan (setq chan (get-next chans))))
        finally (return chan))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

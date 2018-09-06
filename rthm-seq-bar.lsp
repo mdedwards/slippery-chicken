@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  19:32:31 Tue Aug 21 2018 CEST
+;;; $$ Last modified:  13:36:45 Thu Sep  6 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -152,7 +152,7 @@
    ;; 31.1.11 NB in LilyPond this will be attached to the last note in the bar
    ;; and actually goes on the bar line at the end of this bar.
    (rehearsal-letter :accessor rehearsal-letter :initform nil)
-   ;; which sequenz number of the section is this?  definitely 0-based
+   ;; which sequenz number of the whole piece is this? 0-based
    (nth-seq :accessor nth-seq :initform nil)
    ;; which bar number of the sequenz is this?
    (nth-bar :accessor nth-bar :initform nil)

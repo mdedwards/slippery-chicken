@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  10:33:25 Sat Jul 28 2018 CEST
+;;; $$ Last modified:  14:27:17 Wed Aug 29 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -917,4 +917,31 @@
       chord)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* instruments/get-standard-ins
+;;; DATE
+;;; August 29th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Convenience function for get-data from the standard instrument palette
+;;; 
+;;; ARGUMENTS
+;;; - the ID of the instrument (symbol)
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - either NIL (no error/warning) or a function (object) to call if the
+;;;   instrument isn't found. Default = #'error
+;;;
+;;; RETURN VALUE
+;;; the instrument object
+;;; 
+;;; SYNOPSIS
+(defun get-standard-ins (ins &optional (on-fail #'error))
+  (let ((i (get-data ins +slippery-chicken-standard-instrument-palette+ nil)))
+    (when (and on-fail (not i)) ; trust the caller to provide a function object
+      (funcall on-fail "get-standard-ins::can't find ~a" ins))
+    i))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF instruments.lsp
+
+;;; ****

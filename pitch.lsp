@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  15:01:08 Sat Sep  8 2018 CEST
+;;; $$ Last modified:  15:04:40 Sat Sep  8 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -172,7 +172,8 @@
         (slot-value to 'marks) (my-copy-list (marks from))
         (slot-value to 'marks-before) (my-copy-list (marks-before from))
         (slot-value to 'src-ref-pitch) (src-ref-pitch from)
-        (slot-value to 'data-consistent) (data-consistent from)))
+        (slot-value to 'data-consistent) (data-consistent from))
+  to)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -475,8 +476,8 @@ C4
                            cm::*chromatic-scale*)))
     (if as-symbol
         (rm-package sym package)
-        (make-pitch sym :midi-channel (midi-channel p)))))
-;;; ****
+        ;; MDE Sat Sep  8 15:02:28 2018 -- used original pitch's midi-channel
+        (copy-secondary-slots p (make-pitch sym)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

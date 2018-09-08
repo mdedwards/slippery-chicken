@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  15:19:02 Wed Aug 22 2018 CEST
+;;; $$ Last modified:  15:01:08 Sat Sep  8 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -475,7 +475,7 @@ C4
                            cm::*chromatic-scale*)))
     (if as-symbol
         (rm-package sym package)
-        (make-pitch sym))))
+        (make-pitch sym :midi-channel (midi-channel p)))))
 ;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

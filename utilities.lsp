@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  08:23:22 Thu Sep  6 2018 CEST
+;;; $$ Last modified:  17:18:28 Mon Sep 17 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2880,8 +2880,8 @@ WARNING:
 
 ;;; ****f* utilities/between
 ;;; DESCRIPTION
-;;; Return a random number between two specified numbers. If the two numbers
-;;; are integers, the random selection is inclusive. If either are floating-point
+;;; Return a random number between two specified numbers. If the two numbers are
+;;; integers, the random selection is inclusive. If either are floating-point
 ;;; (decimal) numbers, the result will be a float between the first (inclusive)
 ;;; and just less than the second (i.e. exclusive).
 ;;; 

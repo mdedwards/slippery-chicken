@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:45:32 Fri Sep  7 2018 CEST
+;;; $$ Last modified:  18:43:09 Thu Sep 13 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1242,6 +1242,8 @@
                     (if tempo-map tempo-map (tempo-map sc))
                     start-time start-time-qtrs start-bar current-section nth
                     warn-ties)
+    ;; MDE Thu Sep 13 18:42:59 2018 -- surely!
+    (handle-ties sc)
     (when update-write-bar-nums
       (set-write-bar-num sc))))
 
@@ -3321,8 +3323,8 @@ data: (5 8)
                           ;; ditto
                           (t limit-ins-low))))
     ;; (format t "~&hi ~a low ~a ins-hi ~a ins-low ~a"
-       ;;      (id global-limit-high) (id global-limit-low) 
-          ;;  (id limit-ins-high) (id limit-ins-low))
+    ;;      (id global-limit-high) (id global-limit-low) 
+    ;;  (id limit-ins-high) (id limit-ins-low))
     (list limit-low limit-high)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3447,7 +3449,11 @@ seq-num 5, VN, replacing G3 with B6
                for set = (get-nth-from-palette section seq-num (set-map sc))
                ;; MDE Fri Sep  7 10:36:46 2018
                for set-transp = (interpolate global-seq-num
-                                             (transposition-curve sc))
+                                             ;; MDE Wed Sep 12 10:15:58 2018 --
+                                             ;; no need to warn when we run
+                                             ;; 1-seq over: it'll be picked up
+                                             ;; below  
+                                             (transposition-curve sc) :warn nil)
                for first-bar-num = (when seq
                                      (bar-num (first (bars seq))))
                for ins = (get-current-instrument-for-player

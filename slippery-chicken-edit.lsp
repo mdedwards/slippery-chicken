@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:13:27 Thu Sep  6 2018 CEST
+;;; $$ Last modified:  14:45:08 Wed Sep 19 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1099,7 +1099,6 @@
                                   (pitch-or-chord this)))
                     (setf last-tied e))
                   (progn
-                    ;;  
                     ;; this sets the counter back one so we next compare
                     ;; the last tied note to the first attacked
                     ;; note after the tie
@@ -2616,7 +2615,7 @@ NIL
 ;;; ****               
   (unless (listp players)
     (setf players (list players)))
-  #| MDE Thu Apr 26 17:15:29 2012 -- update: allow this so we can tie _into_ the ;
+  #| MDE Thu Apr 26 17:15:29 2012 -- update: allow this so we can tie _into_ the
   last bar but don't try and tie from it in tie-over-rest-bars-aux 
   ;; MDE Wed Apr 25 16:25:21 2012 -- 
   (when (= end-bar (num-bars sc))
@@ -2752,7 +2751,8 @@ NIL
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
-;;; - The ID of the player whose part is to be changed.
+;;; - The ID of the player whose part is to be changed, or a list of players or
+;;;   NIL to indicate that we should process all players 
 ;;; - An integer that is the number of the first bar in which notes are to be
 ;;;   tied over rests.
 ;;; - An integer that is the number of the last bar in which notes are to be
@@ -2801,7 +2801,7 @@ NIL
 
   |#
 ;;; SYNOPSIS
-(defmethod tie-over-all-rests ((sc slippery-chicken) player
+(defmethod tie-over-all-rests ((sc slippery-chicken) players
                                start-bar end-bar 
                                &key 
                                  (start-note 1)
@@ -2810,53 +2810,57 @@ NIL
                                  (update t)
                                  (consolidate-notes nil))
 ;;; ****
-  (next-event sc player nil start-bar)
-  (let ((refs '()))
-    (loop 
-       for bnum from start-bar to end-bar 
-       for bar = (get-bar sc bnum player)
-       ;; always one ahead
-       with next-event = (progn 
-                           (next-event sc player)
-                           (next-event sc player))
-       with note-num
-       with event-num
-       do
-         (setf note-num (if (= bnum start-bar)
-                            (1- start-note)
-                            0))
-         (setf ;;; SAR Wed Jul 11 14:12:28 BST 2012: commented this out:
-          ;; note-num 0
-          event-num 0)
+  ;; MDE Fri Sep 14 14:31:15 2018 -- make it possible for all players
+  (setq players (if (not players)
+                    (players sc)
+                    (force-list players)))
+  (unless end-bar (setq end-bar (num-bars sc)))
+  (loop for player in players do
+       (next-event sc player nil start-bar)
+       (let ((refs '()))
          (loop 
-            while (< event-num (num-rhythms bar))
-            for event = (get-nth-event event-num bar)
+            for bnum from start-bar to end-bar 
+            for bar = (get-bar sc bnum player)
+            ;; always one ahead
+            with next-event = (progn 
+                                (next-event sc player)
+                                (next-event sc player))
+            with note-num
+            with event-num
             do
-            ;; (format t "~&~a ~a" bnum note-num)
-            ;; SAR Wed Jul 18 12:50:55 BST 2012: Added this safety clause to
-            ;; allow users to specify ties into the last bar but not past the
-            ;; penultimate event.
-              (when (and (= bnum (num-bars sc))
-                         (= event-num (1- (num-rhythms bar))))
-                (return))
-              (unless (is-rest event)
-                (incf note-num))
-              (when (and (not (is-rest event))
-                         (is-rest next-event)
-                         (or (> bnum start-bar)
-                             (>= note-num start-note))
-                         (or (< bnum end-bar)
-                             (<= note-num end-note)))
-                (push (list bnum note-num) refs))
-              (incf event-num)
-              (setf next-event (next-event sc player))))
-    ;; always do this starting with the highest bar num otherwise we the refs
-    ;; get screwed up as we add notes
-    ;; (print refs)
-    (loop for ref in refs do
-         (tie-over-rests sc (first ref) (second ref) player 
-                         :auto-beam auto-beam
-                         :consolidate-notes consolidate-notes)))
+              (setf note-num (if (= bnum start-bar)
+                                 (1- start-note)
+                                 0))
+              (setf ;;; SAR Wed Jul 11 14:12:28 BST 2012: commented this out:
+               ;; note-num 0
+               event-num 0)
+              (loop 
+                 while (< event-num (num-rhythms bar))
+                 for event = (get-nth-event event-num bar)
+                 do
+                 ;; (format t "~&~a ~a" bnum note-num) SAR Wed Jul 18 12:50:55
+                 ;; BST 2012: Added this safety clause to allow users to specify
+                 ;; ties into the last bar but not past the penultimate event.
+                   (when (and (= bnum (num-bars sc))
+                              (= event-num (1- (num-rhythms bar))))
+                     (return))
+                   (unless (is-rest event)
+                     (incf note-num))
+                   (when (and (not (is-rest event))
+                              (is-rest next-event)
+                              (or (> bnum start-bar)
+                                  (>= note-num start-note))
+                              (or (< bnum end-bar)
+                                  (<= note-num end-note)))
+                     (push (list bnum note-num) refs))
+                   (incf event-num)
+                   (setf next-event (next-event sc player))))
+         ;; always do this starting with the highest bar num otherwise we the
+         ;; refs get screwed up as we add notes (print refs)
+         (loop for ref in refs do
+              (tie-over-rests sc (first ref) (second ref) player 
+                              :auto-beam auto-beam
+                              :consolidate-notes consolidate-notes))))
   (when update
     (update-slots sc))
   t)
@@ -4815,7 +4819,7 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod sc-force-rest ((sc slippery-chicken) bar-num note-num player
-                          &optional (auto-beam nil))
+                          &optional auto-beam)
 ;;; ****
   (let* ((bar (get-bar sc bar-num player))
          (event (when bar (get-nth-non-rest-rhythm (1- note-num) bar))))
@@ -4834,12 +4838,15 @@ NIL
 ;;; ****m* slippery-chicken-edit/sc-force-rest2
 ;;; DESCRIPTION
 ;;; Turn events into rests, doing the same with any following tied events.  
+
 ;;; NB As it is foreseen that this method may be called many times iteratively,
 ;;; there is no call to check-ties, auto-beam, consolidate-rests, or
 ;;; update-instrument-slots (for statistics)--it is advised that these methods
 ;;; are called once the last call to this method has been made.  gen-stats is
 ;;; however called for each affected bar, so the number of rests vs. notes
 ;;; should be consistent with the new data.
+;;;
+;;; NB This fill trigger an error if attempted with grace-notes
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object
@@ -4892,6 +4899,8 @@ NIL
              (init-error "No such event."))
             ((is-rest start-event)
              (init-error "Event is already a rest."))
+            ((is-grace-note start-event)
+             (init-error "Event is a grace note."))
             ((is-tied-to start-event)
              (init-error "Event is tied to: ~
                           call this method with an attacked note only."))))
@@ -5313,7 +5322,8 @@ NIL
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - Any additional argument values the specified method/function may
-;;;   take or require.
+;;;   take or require. See the thin method below for an example that uses
+;;;   additional arguments. 
 ;;; 
 ;;; RETURN VALUE
 ;;; - A list of the rthm-seq-bar objects that were modified.  NB This might be
@@ -5374,6 +5384,59 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
           collect
             (apply function (cons bar further-args)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/thin
+;;; DATE
+;;; 19th September 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Thin out events in a slippery-chicken object using an activity curve. This
+;;; turns existing notes into rests. As this is an expensive method but may be
+;;; called more than once, it is up to the user to call consolidate-rests and/or
+;;; update-slots when ready.
+;;; 
+;;; ARGUMENTS
+;;; - the (fully-initialised) slippery-chicken object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments
+;;; - :start-bar. The bar to start at. Default = NIL = 1
+;;; - :end-bar. The bar to end at. Default = NIL = last bar in piece/object
+;;; - :players. A symbol or list of symbols for the players to be processed.
+;;; - :curve. A list of breakpoints representing the level of activity. Y-values
+;;;   should range over 0 (all events forced to rests) to 10 (no rests
+;;;   created). X-values may range over any arbitrary scale but NB that this
+;;;   will be rescaled to map over the number of bars in the whole piece,
+;;;   despite the start-bar/end-bar arguments. However this rescaling can be
+;;;   avoided via the next argument. Default = '(0 1 100 10)
+;;; :rescale-curve. Whether to process the x-values of :curve to range over the
+;;; number of bars in the piece. Default = T = rescale.
+;;; 
+;;; RETURN VALUE
+;;; - the processed slippery-chicken object
+;;; 
+;;; SYNOPSIS
+(defmethod thin ((sc slippery-chicken) &key start-bar end-bar players
+                                         (curve '(0 1 100 10))
+                                         (rescale-curve t))
+  (let* ((al (make-al))
+         (cve (if rescale-curve
+                  (new-lastx curve (1- (num-bars sc)))
+                  curve)))
+    (map-over-bars
+     sc start-bar end-bar players
+     #'(lambda (bar acurve)
+         ;;  (print bar) (print acurve)
+         (loop with anum = (interpolate (1- (bar-num bar)) acurve)
+            for e in (rhythms bar) do
+              (when (and (needs-new-note e) (not (active al anum)))
+                ;; note that this is a pretty inefficient way of doing things
+                ;; but we need to take care of ties properly so canceling
+                ;; individual events via force-rest won't work
+                (sc-force-rest2 sc (bar-num bar) (1+ (bar-pos e)) (player e)))))
+     cve))
+  sc)
+           
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/map-over-sequenzes
 ;;; DATE
@@ -5471,7 +5534,7 @@ T
 ;;; - the last bar number in which consolidation should take place
 ;;;   (inclusive). If NIL then the process will run until the last bar.  
 ;;; - A list of the IDs of the players to whose parts the consolidation should 
-;;;   be applied.   Can also be a single symbol.
+;;;   be applied. Can also be a single symbol.
 ;;; 
 ;;; RETURN VALUE
 ;;; - A list of the rthm-seq-bar objects that were modified.  See map-over-bars
@@ -6138,9 +6201,14 @@ T
                           (tempo 60) (instrument 'flute) (section-id 1)
                           (update t))
 ;;; ****
-  (unless (and bars (listp bars) (rthm-seq-bar-p (first bars)))
+  ;; (unless (and bars (listp bars) (rthm-seq-bar-p (first bars)))
+  ;; MDE Wed Sep 19 13:41:36 2018 -- every!
+  (unless (and bars (listp bars) (every #'rthm-seq-bar-p bars))
     (error "slippery-chicken-edit::bars-to-sc: first argument should be a ~
             list of rthm-seq-bar objects: ~&~a" bars))
+  ;; MDE Wed Sep 19 13:39:54 2018 --
+  (loop for bar in bars do 
+     (update-events-player bar player))
   (let* ((seq (clone-with-new-class (make-rthm-seq bars) 'sequenz))
          (ps (make-player-section (list seq) player))
          (section (if sc

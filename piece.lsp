@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  12:02:12 Thu Feb 22 2018 CET
+;;; $$ Last modified:  18:43:26 Thu Sep 13 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -659,7 +659,7 @@ BAR-HOLDER:
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 
+;;; 
 (defmethod handle-ties ((p piece))
   (loop for player in (players p) do
        (loop 
@@ -692,10 +692,10 @@ BAR-HOLDER:
                ;; MDE Sun Nov 18 18:26:40 2012 -- 
                (unless (and (pitch-or-chord event)
                             (pitch-or-chord last-event))
-                 (error "~a~&piece::handle-ties: in bar ~a, ~a,~
+                 (error "~&piece::handle-ties: in bar ~a, ~a,~
                          there's a tie from/to a rest. ~
-                         ~%current event: ~a~%last event: ~a"
-                        bar bar-num player event last-event))
+                         ~%current event: ~a~%last event: ~a ~%~a"
+                        bar-num player event last-event bar))
                (setf tie-ok
                      (if (is-single-pitch event)
                          (pitch= (pitch-or-chord event)
@@ -704,10 +704,10 @@ BAR-HOLDER:
                          (chord-equal (pitch-or-chord event)
                                       (pitch-or-chord last-event))))
                (unless tie-ok
-                 (error "~a~&piece::handle-ties: in bar ~a, ~a, tied ~
-                                notes/chords not the same: ~a ~a!"
-                        bar bar-num player (get-pitch-symbol last-event)
-                        (get-pitch-symbol event))))
+                 (error "~&piece::handle-ties: in bar ~a, ~a, tied ~
+                          notes/chords not the same: ~a ~a!~%~a"
+                        bar-num player (get-pitch-symbol last-event)
+                        (get-pitch-symbol event) bar)))
              (setf last-event event)
              (when (and (not (is-tied-to event))
                         (is-tied-from event))
@@ -1125,39 +1125,38 @@ BAR-HOLDER:
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Print the number of sequenz objects contained in section 2 of each player's ; ; ;
-;;; part, delete two sequenz objects from each part in that section, and print ; ; ;
-;;; the number of sequenz objects again to see the difference. Update the slots ; ; ;
-;;; and call cmn-display for printable output. ; ; ;
-             (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((hn (french-horn :midi-channel 1))
-(vc (cello :midi-channel 2))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1))
-(3 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h q e s s))
-:pitch-seq-palette ((1 2 3 4 5))))
-(2 ((((4 4) h h))
-:pitch-seq-palette ((1 2)))))
-:rthm-seq-map '((1 ((hn (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(2 ((hn (2 2 2 2 2))
-(vc (2 2 2 2 2))))
-(3 ((hn (1 1 1 1 1))
-(vc (1 1 1 1 1))))))))
-(print (length (get-data-data 'hn (get-section mini 2))))
-(print (length (get-data-data 'vc (get-section mini 2))))
-(delete-sequenzes (piece mini) 8 'hn 2)
-(delete-sequenzes (piece mini) 8 'vc 2)
-(print (length (get-data-data 'hn (get-section mini 2))))
-(print (length (get-data-data 'vc (get-section mini 2))))
-(update-slots mini)
-(cmn-display mini))
-
-             |#
+;;; Print the number of sequenz objects contained in section 2 of each player's
+;;; part, delete two sequenz objects from each part in that section, and print 
+;;; the number of sequenz objects again to see the difference. Update the slots
+;;; and call cmn-display for printable output. 
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((hn (french-horn :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                :pitch-seq-palette ((1 2 3 4 5))))
+                            (2 ((((4 4) h h))
+                                :pitch-seq-palette ((1 2)))))
+        :rthm-seq-map '((1 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((hn (2 2 2 2 2))
+                            (vc (2 2 2 2 2))))
+                        (3 ((hn (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
+  (print (length (get-data-data 'hn (get-section mini 2))))
+  (print (length (get-data-data 'vc (get-section mini 2))))
+  (delete-sequenzes (piece mini) 8 'hn 2)
+  (delete-sequenzes (piece mini) 8 'vc 2)
+  (print (length (get-data-data 'hn (get-section mini 2))))
+  (print (length (get-data-data 'vc (get-section mini 2))))
+  (update-slots mini)
+  (cmn-display mini))
+|#
 ;;; SYNOPSIS
 (defmethod delete-sequenzes ((p piece) bar-num player &optional (how-many 1))
 ;;; ****

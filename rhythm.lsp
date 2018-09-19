@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  17:19:29 Tue Feb 13 2018 CET
+;;; $$ Last modified:  14:17:50 Fri Sep 14 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1606,6 +1606,85 @@ NIL
                        (xml-tuplet nil nil b stream)
                        (format stream "~&        </notations>"))))))))
   t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rhythm/in-tie
+;;; DATE
+;;; September 14th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; return T or NIL depending on whether the rhythm/event is part of a tie
+;;; (either tied-from or tied-to)  
+;;; 
+;;; ARGUMENTS
+;;; the rhythm/event object
+;;; 
+;;; RETURN VALUE
+;;; T or NIL
+;;; 
+;;; SYNOPSIS
+(defmethod in-tie ((r rhythm))
+;;; ****
+  (or (is-tied-to r) (is-tied-from r)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rhythm/mid-tie
+;;; DATE
+;;; September 14th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION return T or NIL depending on whether the rhythm/event is in the
+;;; middle of a tie (i.e. both tied-from or tied-to are T)
+;;; 
+;;; ARGUMENTS
+;;; the rhythm/event object
+;;; 
+;;; RETURN VALUE
+;;; T or NIL
+;;; 
+;;; SYNOPSIS
+(defmethod mid-tie ((r rhythm))
+;;; ****
+  (and (is-tied-to r) (is-tied-from r)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rhythm/start-tie
+;;; DATE
+;;; September 14th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; return T or NIL depending on whether the rhythm/event is the start of a tie
+;;; (tied-from but not tied-to)  
+;;; 
+;;; ARGUMENTS
+;;; the rhythm/event object
+;;; 
+;;; RETURN VALUE
+;;; T or NIL
+;;; 
+;;; SYNOPSIS
+(defmethod start-tie ((r rhythm))
+;;; ****
+  (and (not (is-tied-to r)) (is-tied-from r)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rhythm/end-tie
+;;; DATE
+;;; September 14th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; return T or NIL depending on whether the rhythm/event is the end of a tie
+;;; (tied-to but not tied-from)  
+;;; 
+;;; ARGUMENTS
+;;; the rhythm/event object
+;;; 
+;;; RETURN VALUE
+;;; T or NIL
+;;; 
+;;; SYNOPSIS
+(defmethod end-tie ((r rhythm))
+;;; ****
+  (and (not (is-tied-from r)) (is-tied-to r)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  14:13:24 Wed Aug 29 2018 CEST
+;;; $$ Last modified:  15:01:20 Mon Sep 17 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -306,13 +306,13 @@
   ;; (print (pitch-symbols (clone set)))
   ;; (print (get-chromatic set))
   ;; (print (data limit-low)) (print (data limit-high))
+  ;; (print instrument) (print set)
   (when (data ps) ;; don't do anything for empty seqs!
     (if (or (not instrument) (not set))
         (setf (notes ps) 
-              (get-relative-notes ps 
-                                  (if instrument
-                                      (starting-clef instrument)
-                                      'treble)))
+              (get-relative-notes ps (if instrument
+                                         (starting-clef instrument)
+                                         'treble)))
         (let* ((highest (highest ps))
                (lowest (lowest ps))
                (do-chords (chords instrument))

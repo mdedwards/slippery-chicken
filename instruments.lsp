@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  14:27:17 Wed Aug 29 2018 CEST
+;;; $$ Last modified:  12:52:52 Wed Sep 12 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -265,6 +265,7 @@
       (:staff-name "trombone" :staff-short-name "tbn" 
        :lowest-written e2 :highest-written bf4
        :largest-fast-leap 7
+       :microtones t
        :clefs (bass tenor) :starting-clef bass 
        :chords nil :midi-program 58))
      ;;; SAR Fri Jul 13 12:35:35 BST 2012
@@ -346,6 +347,16 @@
        :clefs (treble bass double-treble double-bass) :starting-clef bass 
        :microtones nil 
        :midi-program 1))
+     ;; MDE Wed Sep 12 12:51:00 2018 -- the 5 octave instrument...range varies
+     ;; according to model of course 
+     (harpsichord
+      (:staff-name "harpsichord" :staff-short-name "hpd"
+       :lowest-written f1 :highest-written f6
+       :largest-fast-leap 9
+       :clefs (treble bass) :starting-clef treble
+       :chords t :chord-function piano-chord-fun
+       :microtones nil 
+       :midi-program 7))
      (harp
       (:staff-name "harp" :staff-short-name "hp"
        :lowest-written b0 :highest-written gs7

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified:  17:50:16 Thu Dec 28 2017 CET
+;;; $$ Last modified:  09:58:27 Thu Sep 20 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -75,7 +75,9 @@
    (staff-short-names :accessor staff-short-names :initarg :staff-short-names
                       :initform nil)
    ;; when an instrument can play microtonal chords we generally need an extra
-   ;; channel for the microtones, so that chords can be played.  
+   ;; channel for the microtones, so that chords can be played.
+   ;; MDE Thu Sep 20 09:57:39 2018 -- via ensemble::auto-midi-channels this will
+   ;; now be set automatically according to current scale 
    (microtones-midi-channel :accessor microtones-midi-channel :type integer
                             :initarg :microtones-midi-channel :initform -1)
    ;; this is set automatically during sc-init; useful for doubling players,

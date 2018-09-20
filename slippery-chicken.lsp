@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:43:09 Thu Sep 13 2018 CEST
+;;; $$ Last modified:  13:07:10 Thu Sep 20 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6682,30 +6682,60 @@ data: NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 17/3/17
-;;; there'll be no :in-c as we can leave such things to the notation programme
-;;; known problems: Sibelius 7.5 messes up some transposing instrument, getting
-;;; octave transpositions wrong and adding generally unwanted key signatures.
 ;;; ****m* slippery-chicken/write-xml
 ;;; DATE
 ;;; March 17th 2017, Edinburgh
 ;;; 
 ;;; DESCRIPTION
-;;; Write a MusicXML file for import into Sibelius, Finale, Dorico, etc.
+;;; Write a MusicXML file for import into Sibelius, Finale, Dorico, etc. All
+;;; voices for the score and parts are written into one file. As it is assumed
+;;; that editing will take place in the notation software of choice, there are
+;;; only very basic arguments to this method, some of which may even be ignored
+;;; upon import. For example, the :in-c keyword argument of other methods is
+;;; missing here, as switching between sounding and transposing scores is
+;;; assumed to be the job of the notation software used for MusicXML import.
+;;;
+;;; NB Sibelius 7.5 messes up some transposing instruments, getting octave
+;;; transpositions wrong and adding generally unwanted key signatures.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - the slippery-chicken object
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments
+;;; - :staff-height.  The suggested height of the staff, in millimetres. Default
+;;;   = 7.
+;;; - :page-width. The page width in millimetres. Default = 210 = A4
+;;; - :page-height The page height in millimetres. Default = 297 = A4
+;;; - :tenths. A number representing tenths of interline staff space (positive
+;;;   or negative). Both integer and decimal values are allowed, such as 5 for a
+;;;   half space and 2.5 for a quarter space. Interline space is measured from
+;;;   the middle of a staff line. Distances in a MusicXML file are measured in
+;;;   tenths of staff space. Tenths are then scaled to millimeters within the
+;;;   scaling element, used in the defaults element at the start of a score. See
+;;;   https://usermanuals.musicxml.com/MusicXML/Content/EL-MusicXML-scaling.htm
+;;;   for more detail. Default = 40.
+;;; - :left-page-margins. A 4-element list specifying for left pages in the
+;;;   score the left, right, top, and bottom margins, all in
+;;;   millimetres. Default = '(20 20 20 20) 
+;;; - :right-page-margins. Similar to :left-page-margins but for right pages.
+;;; - :players . Default = NIL = process all players.
+;;; - :start-bar . Default = NIL = 1.
+;;; - :end-bar . Default = NIL = the last bar in the slippery-chicken object.
+;;; - :respell-notes. NIL, T or a list to indicate whether the method should
+;;;   also call the respell-notes method on the given slippery-chicken object
+;;;   before generating the output to undertake enharmonic changes. If a list,
+;;;   then these are the specific enharmonic corrections to be undertaken. If
+;;;   this is T, the method will process all pitches for potential
+;;;   respelling. If NIL, no respelling will be undertaken. See the
+;;;   documentation for the respell-notes method for more detail. Default = T.
+;;; - :file. The full path of the file to write. Default will be derived from
+;;;   the title slot of the slippery-chicken object and will be written into the
+;;;   default directory e.g. (set-sc-config 'default-dir "~/Desktop") 
 ;;; 
 ;;; RETURN VALUE
+;;; The file name written, as a string.
 ;;; 
-;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defmethod write-xml ((sc slippery-chicken)
                       &key

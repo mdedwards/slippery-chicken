@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  19:12:06 Mon Sep  3 2018 CEST
+;;; $$ Last modified:  12:23:19 Thu Sep 20 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2160,7 +2160,6 @@ data: (
     c))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* chord/collapse
 ;;; DATE
 ;;; February 1st 2018, Heidhausen
@@ -2184,6 +2183,7 @@ data: (
 |#
 ;;; SYNOPSIS
 (defmethod collapse ((c chord) octave)
+;;; **** 
   (make-chord (transpose-pitch-list-to-octave (my-copy-list (data c)) octave)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

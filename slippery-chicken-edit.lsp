@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  14:45:08 Wed Sep 19 2018 CEST
+;;; $$ Last modified:  12:21:27 Thu Sep 20 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5419,6 +5419,7 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 (defmethod thin ((sc slippery-chicken) &key start-bar end-bar players
                                          (curve '(0 1 100 10))
                                          (rescale-curve t))
+;;; **** 
   (let* ((al (make-al))
          (cve (if rescale-curve
                   (new-lastx curve (1- (num-bars sc)))

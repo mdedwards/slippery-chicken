@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    6th September 2001
 ;;;
-;;; $$ Last modified:  17:15:42 Fri Jul 27 2018 CEST
+;;; $$ Last modified:  12:22:46 Thu Sep 20 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -226,7 +226,7 @@ e.g.
     (setf (largest-fast-leap ins) value)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* instrument/auto-set-subset-id
+;;; ****m* instrument-palette/auto-set-subset-id
 ;;; DATE
 ;;; July 27th 2018, Heidhausen
 ;;; 

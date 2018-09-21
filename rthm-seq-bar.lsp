@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  13:39:37 Wed Sep 19 2018 CEST
+;;; $$ Last modified:  13:42:34 Fri Sep 21 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1051,6 +1051,7 @@ BF4 E.,
                               ;; MDE Wed Nov 28 11:40:59 2012 -- added auto-beam
                               &optional check-dur beat (auto-beam t))
 ;;; ****
+  ;; (print check-dur) (print beat) (print auto-beam)
   ;; MDE Thu Apr 26 16:26:05 2012 -- tie-over-rests will pass its auto-beam
   ;; arg as our beat arg--this may be a rthm symbol or simply T.  the latter is
   ;; no good to us when used below.

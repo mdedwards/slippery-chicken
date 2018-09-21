@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  12:21:27 Thu Sep 20 2018 CEST
+;;; $$ Last modified:  13:34:14 Fri Sep 21 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5538,14 +5538,18 @@ T
 ;;;   be applied. Can also be a single symbol.
 ;;; 
 ;;; RETURN VALUE
-;;; - A list of the rthm-seq-bar objects that were modified.  See map-over-bars
+;;; A list of the rthm-seq-bar objects that were modified. See map-over-bars
 ;;; for more details. 
 ;;; 
 ;;; SYNOPSIS
 (defmethod consolidate-all-notes ((sc slippery-chicken) start-bar end-bar
-                                  players)
+                                  players
+                                  ;; MDE Fri Sep 21 09:08:09 2018 -- added
+                                  ;; consolidate-notes' optional args  
+                                  &optional check-dur beat (auto-beam t))
 ;;; ****
-  (map-over-bars sc start-bar end-bar players #'consolidate-notes nil 'q))
+  (map-over-bars sc start-bar end-bar players
+                 #'consolidate-notes check-dur beat auto-beam))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 11 18:36:51 2012 

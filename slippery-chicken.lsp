@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:07:10 Thu Sep 20 2018 CEST
+;;; $$ Last modified:  13:57:07 Fri Sep 21 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4094,7 +4094,7 @@ seq-num 5, VN, replacing G3 with B6
                  (and num-sections (> num-sections 1))))
     (error "slippery-chicken::midi-play: num-sequences keyword should only ~
             be used ~%when num-sections = 1."))
-  ;; MDE Fri May 11 11:58:17 2012 -- 
+  ;; MDE Fri May 11 11:58:17 2012
   (when (and from-sequence (/= 1 from-sequence)
              (or (not num-sections)
                  (and num-sections (> num-sections 1))))

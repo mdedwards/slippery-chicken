@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified:  14:59:33 Sat Aug 25 2018 CEST
+;;; $$ Last modified:  17:56:00 Fri Sep 21 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -430,6 +430,77 @@ remove-elements: arguments 2 and 3 must be integers < the length of argument 1:
   (decf (sclist-length scl) how-many)
   scl)
                                    
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* sclist/max-items
+;;; DATE
+;;; September 21st 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; A destructive method to reduce the number of items in the list to a maximum
+;;; of the 2nd argument. The remaining elements can be from either the beginning
+;;; of the list, the middle, or the end. If the list has fewer then or the same
+;;; number of elements as the 2nd argument, the list will remain unchanged.
+;;; 
+;;; ARGUMENTS
+;;; - the sclist object
+;;; - the number of elements the list should be reduced to (integer, >= 0)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - a symbol ('start 'middle or 'end) to indicate which elements remain. See
+;;;   examples below. Default = 'start
+;;; 
+;;; RETURN VALUE
+;;; the (potentially) modified sclist object (NB this method is destructive!)
+;;; 
+;;; EXAMPLE
+#|
+(max-items (make-sclist '(1 2 3 4 5 6 7)) 3)
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, 
+                     this: NIL, 
+                     next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (1 2 3)
+**************
+
+(max-items (make-sclist '(1 2 3 4 5 6 7)) 3 'end)
+
+
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, 
+                     this: NIL, 
+                     next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (5 6 7)
+**************
+
+(max-items (make-sclist '(1 2 3 4 5 6 7)) 3 'middle)
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, 
+                     this: NIL, 
+                     next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (3 4 5)
+**************
+
+|#
+;;; SYNOPSIS
+(defmethod max-items ((scl sclist) max &optional (from 'start))
+;;; ****
+  (let ((len (sclist-length scl)))
+    (when (> len max)
+      (let ((st (case from
+                  (start 0)
+                  (end (- len max))
+                  (middle (let ((mid (floor len 2))
+                                (m2 (floor max 2)))
+                            (- mid m2)))
+                  (t (error "sclist::max-items: optional third argument ~
+                             should be 'start 'end or 'middle, not ~a" from)))))
+        ;; (print st)
+        (setf (data scl) (subseq (data scl) st (+ st max))))))
+  scl)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Thu Jan 12 23:01:18 GMT 2012: Added robodoc info

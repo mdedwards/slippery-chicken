@@ -23,6 +23,6 @@ http://www.michael-edwards.org/sc
 NB If you're installing this 'by hand' by cloning/downloading
 directly from github, be sure to create a directory called
 'bin' in the parent of the directory holding these source 
-files. See also http://tinyurl.com/yclwbjx8
+files. See also https://tinyurl.com/y9sb5w4z
 
 Michael Edwards

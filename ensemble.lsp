@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   ensemble
 ;;;
-;;; Version:          1.0.8
+;;; Version:          1.09
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

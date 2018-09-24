@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  15:25:58 Fri Aug 24 2018 CEST
+;;; $$ Last modified:  10:47:24 Mon Sep 24 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -395,7 +395,26 @@ data: CS4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jan 30 19:53:58 2017 -- in the current scale
+;;; ****m* sc-set/round-to-nearest
+;;; DATE
+;;; January 30th 2017
+;;; 
+;;; DESCRIPTION
+;;; round the (potentially very microtonal) pieces in the set to the nearest
+;;; pitch of the current scale. Note that this is a destructive operation.
+;;; 
+;;; ARGUMENTS
+;;; - the sc-set object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; none
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; SYNOPSIS
 (defmethod round-to-nearest ((s sc-set))
+;;; ****
   (loop for p in (data s) do (round-to-nearest p))
   (set-micro-tone s) ; stats
   t)

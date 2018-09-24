@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  14:47:22 Thu Sep  6 2018 CEST
+;;; $$ Last modified:  10:48:42 Mon Sep 24 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2423,13 +2423,13 @@ NIL
        for set = (make-complete-set spectrum :id i :warn-dups warn-dups)
        do     
          (limit set :lower pitch-min :upper pitch-max)
+         (when round
+           (round-to-nearest set))
+         (rm-duplicates set)
          (unless (or (<= (sclist-length set) min-pitches)
                      (and reject-fun (funcall reject-fun set)))
            (add set sp)))
-    (when round
-      (round-to-nearest sp))
     sp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF set-palette.lsp

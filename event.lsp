@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:38:05 Wed Aug 29 2018 CEST
+;;; $$ Last modified:  15:26:42 Mon Sep 24 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3368,9 +3368,9 @@ data: C4
       (unless (and (in-range instrument p1)
                    (in-range instrument p2))
         (setf happy nil)
-        (warn "~a~%event::force-artificial-harmonic: creating an artificial ~
+        (warn "event::force-artificial-harmonic: creating an artificial ~
                harmonic for this ~%event would go out of the instrument's ~
-               range." e)))
+               range: ~%~a" e)))
     (when happy
       (add-mark p2 'flag-head)
       (setf (pitch-or-chord e) (make-chord (list p1 p2))))))

@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  17:02:25 Mon Aug 27 2018 CEST
+;;; $$ Last modified:  18:01:19 Mon Sep 24 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1718,7 +1718,8 @@ data: RIBBON
 ;;;
 ;;; NB Setting, for instance, the high-sounding slot of an instrument will do
 ;;; nothing to the highest-written slot so do take care to set all the slots
-;;; you need to in order to effect pitch selection etc.
+;;; you need to in order to effect pitch selection etc. Or better still use the
+;;; set-standard-range function.
 ;;;
 ;;; ARGUMENTS
 ;;; - The name of the slot whose value is to be set.
@@ -1743,6 +1744,7 @@ data: RIBBON
 ;;; ****
   (setf (slot-value (get-data id ral) slot) value))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jul 20 09:56:15 2015 -- convenience method
 ;;; ****m* recursive-assoc-list/set-standard-instrument-slot
 ;;; DESCRIPTION

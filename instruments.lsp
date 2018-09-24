@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  12:52:52 Wed Sep 12 2018 CEST
+;;; $$ Last modified:  17:21:08 Mon Sep 24 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -953,6 +953,49 @@
     i))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; EOF instruments.lsp
+;;; ****f* instruments/set-standard-range
+;;; DATE
+;;; September 24th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Set the lowest and highest pitches of an instrument in the standard
+;;; instrument palette. Use this function to correctly set the highest sounding
+;;; and written slots of transposing and non-transposing instruments alike.
+;;; 
+;;; ARGUMENTS
+;;; - the instrument id (symbol)
+;;; - the lowest pitch (symbol or pitch object). This can also be NIL, whereupon
+;;;   no change will be made to the current slot's value.
+;;; - the highest pitch (symbol or pitch object). Can also be NIL.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicated whether the pitches given are to be interpreted as
+;;;   written or sounding pitches. In either case, both written and sounding
+;;;   pitches will be set for the instrument. Default = NIL = written.
+;;; 
+;;; RETURN VALUE
+;;; The instrument object for which the changes were made.
+;;; 
+;;; EXAMPLE
+#|
 
+|#
+;;; SYNOPSIS
+(defun set-standard-range (ins low high &optional sounding)
 ;;; ****
+  (let ((i (get-standard-ins ins)))
+    (when low
+      (if sounding
+          ;; take advantage of the setf methods of instrument to update the
+          ;; other slot 
+          (setf (lowest-sounding i) low)
+          (setf (lowest-written i) low)))
+    (when high
+      (if sounding
+          (setf (highest-sounding i) high)
+          (setf (highest-written i) high)))
+    i))
+    
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; EOF instruments.lsp

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  13:34:14 Fri Sep 21 2018 CEST
+;;; $$ Last modified:  15:35:01 Mon Sep 24 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5002,6 +5002,9 @@ NIL
 ;;; is out of the range of the instrument, a warning will be printed to the
 ;;; Listener, the pitch will not be transposed, and the harmonic diamond will
 ;;; not be added.
+;;;
+;;; NB This method assumes the player doesn't change instrument during the bars
+;;; to be processed. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.

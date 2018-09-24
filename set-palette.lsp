@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  10:48:42 Mon Sep 24 2018 CEST
+;;; $$ Last modified:  11:55:53 Mon Sep 24 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -815,8 +815,9 @@ data: (C4 F4 A4 C5)
 
 |#
 ;;; SYNOPSIS
-(defmethod auto-sequence ((sp set-palette) 
-                          &key (dissonance-env '(0 .1 62 1 100 .3))
+(defmethod auto-sequence ((sp set-palette)
+                          &key
+                            (dissonance-env '(0 .1 62 1 100 .3))
                             (centroid-env '(0 .4 62 1 100 .2))
                             (dissonance-weight 1.0)
                             (centroid-weight 1.0)
@@ -828,10 +829,16 @@ data: (C4 F4 A4 C5)
     (let* ((num-sets (r-count-elements sp))
            (all-sets (get-flat-data sp))
            (xmax (1- num-sets))
-           (denv (when dissonance-env
-                   (auto-scale-env dissonance-env :x-min 0 :x-max xmax
-                                   :y-min dmin :y-max dmax
-                                   :orig-y-range '(0 1))))
+           (denv
+            (progn
+              ;; MDE Mon Sep 24 11:28:23 2018 -- won't be able to auto-scale
+              (when (zerop num-sets)
+                (error "set-palette:: auto-sequence: palette has zero ~
+                        sets! ~%~a" sp))
+              (when dissonance-env
+                (auto-scale-env dissonance-env :x-min 0 :x-max xmax
+                                :y-min dmin :y-max dmax
+                                :orig-y-range '(0 1)))))
            (cenv (when centroid-env
                    (auto-scale-env centroid-env :x-min 0 :x-max xmax
                                    :y-min cmin :y-max cmax
@@ -904,8 +911,8 @@ data: (C4 F4 A4 C5)
                    (cenv-vals (get-env-vals cenv))
                    (scores
                     (loop for order in perms
-                         for i from 1
-                         for sum =
+                       for i from 1
+                       for sum =
                          (loop for ref in order
                             for set = (get-data ref sp)
                             ;; these two are the targets
@@ -951,7 +958,7 @@ data: (C4 F4 A4 C5)
                                   finally 
                                     (warn-repeating-bass)
                                     (return lowest)))))
-            ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; :permutate nil
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; :permutate nil
             (loop for set-num below num-sets
                for denv-val = (when dissonance-env (interpolate set-num denv))
                for cenv-val = (when centroid-env (interpolate set-num cenv))

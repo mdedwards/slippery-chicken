@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:57:07 Fri Sep 21 2018 CEST
+;;; $$ Last modified:  13:49:46 Mon Sep 24 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1754,8 +1754,10 @@ rhythms: (
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A slippery-chicken object.
-;;; - An integer that is the first bar in which notes will be counted. 
-;;; - An integer that is the last bar in which notes will be counted.
+;;; - An integer that is the first bar in which notes will be counted. If NIL,
+;;;   then 1 
+;;; - An integer that is the last bar in which notes will be counted. If NIL,
+;;;   then the last bar of the piece.
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether to count just the number of attacked notes
@@ -1772,75 +1774,75 @@ rhythms: (
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Using defaults                      ;
+;;; Using defaults
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-(vc (cello :midi-channel 2))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1))
-(3 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
-(q (e) s +s h)
-((e) s (s) (q) h))
-:pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
-:rthm-seq-map '((1 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(2 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(3 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))))))
-(count-notes mini 2 11))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
+                                 (q (e) s +s h)
+                                 ((e) s (s) (q) h))
+                                :pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (3 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
+  (count-notes mini 2 11))
 
 => 62
 
 ;;; Counting all notes just for player 'vc ;
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-(vc (cello :midi-channel 2))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1))
-(3 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
-(q (e) s +s h)
-((e) s (s) (q) h))
-:pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
-:rthm-seq-map '((1 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(2 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(3 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))))))
-(count-notes mini 2 11 nil 'vc))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
+                                 (q (e) s +s h)
+                                 ((e) s (s) (q) h))
+                                :pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (3 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
+  (count-notes mini 2 11 nil 'vc))
 
 => 31
 
 ;;; Counting just the attacked notes for player 'vc ;
 (let ((mini
-(make-slippery-chicken
-'+mini+
-:ensemble '(((cl (b-flat-clarinet :midi-channel 1))
-(vc (cello :midi-channel 2))))
-:set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
-:set-map '((1 (1 1 1 1 1))
-(2 (1 1 1 1 1))
-(3 (1 1 1 1 1)))
-:rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
-(q (e) s +s h)
-((e) s (s) (q) h))
-:pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
-:rthm-seq-map '((1 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(2 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))
-(3 ((cl (1 1 1 1 1))
-(vc (1 1 1 1 1))))))))
-(count-notes mini 2 11 t 'vc))
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+                     (vc (cello :midi-channel 2))))
+        :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
+        :set-map '((1 (1 1 1 1 1))
+                   (2 (1 1 1 1 1))
+                   (3 (1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
+                                 (q (e) s +s h)
+                                 ((e) s (s) (q) h))
+                                :pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
+        :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (2 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))
+                        (3 ((cl (1 1 1 1 1))
+                            (vc (1 1 1 1 1))))))))
+  (count-notes mini 2 11 t 'vc))
 
 => 27
 
@@ -1854,6 +1856,9 @@ rhythms: (
     (setf players (players sc)))
   (unless (listp players)
     (setf players (list players)))
+  ;; MDE Mon Sep 24 13:48:47 2018 -- 
+  (unless start-bar (setq start-bar 1))
+  (unless end-bar (setq end-bar (num-bars sc)))
   (loop 
      with count = 0
      for bnum from start-bar to end-bar do

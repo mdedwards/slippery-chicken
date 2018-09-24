@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    March 11th 2010
 ;;;
-;;; $$ Last modified:  12:03:07 Thu Sep  6 2018 CEST
+;;; $$ Last modified:  12:04:05 Mon Sep 24 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -68,8 +68,8 @@
 ;;; ****
   (gen-midi-chord-seq sm midi-file tempo)
   (when auto-open
-    (system-open-file midi-file)))
-
+    (system-open-file midi-file))
+  midi-file)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* set-map/gen-midi-chord-seq

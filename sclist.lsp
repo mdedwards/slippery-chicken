@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified:  17:56:00 Fri Sep 21 2018 CEST
+;;; $$ Last modified:  10:53:13 Mon Sep 24 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -497,12 +497,12 @@ data: (3 4 5)
                                 (m2 (floor max 2)))
                             (- mid m2)))
                   (t (error "sclist::max-items: optional third argument ~
-                             should be 'start 'end or 'middle, not ~a" from)))))
-        ;; (print st)
+                             should be 'start 'end or 'middle, not ~a"
+                            from)))))
         (setf (data scl) (subseq (data scl) st (+ st max))))))
   scl)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Thu Jan 12 23:01:18 GMT 2012: Added robodoc info
 ;;; ****m* sclist/combine
 ;;; DESCRIPTION

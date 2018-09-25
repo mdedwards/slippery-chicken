@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:26:42 Mon Sep 24 2018 CEST
+;;; $$ Last modified:  18:21:23 Mon Sep 24 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3355,6 +3355,9 @@ data: C4
          (p2 (transpose p1 5))
          ;; MDE Mon Apr 23 09:20:44 2012 -- 
          (happy t))
+    ;; MDE Mon Sep 24 18:18:37 2018 -- keep it a P4th
+    (when (bad-interval p1 p2)
+      (setq p2 (enharmonic p2)))
     ;; MDE Mon Apr 23 09:17:24 2012 
     (unless (is-single-pitch e)
       (setf happy nil)

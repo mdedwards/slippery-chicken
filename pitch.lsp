@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  15:04:40 Sat Sep  8 2018 CEST
+;;; $$ Last modified:  18:21:12 Mon Sep 24 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2100,7 +2100,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;; Get the enharmonic equivalent of the given pitch object. Two chromatically
 ;;; consecutive "white-note" pitches (e.g. B-sharp/C-natural) are considered
 ;;; enharmonically equivalent. If there is no enharmonic equivalent, the
-;;; method just returns the same note.
+;;; method just returns the same note. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A pitch object.
@@ -2109,7 +2109,7 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;; - T or NIL to print a warning when no enharmonic can be found. Default = T. 
 ;;; 
 ;;; RETURN VALUE
-;;; A pitch object.
+;;; A new pitch object i.e. this method is non-destructive.
 ;;; 
 ;;; EXAMPLE
 

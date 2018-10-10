@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  15:01:20 Mon Sep 17 2018 CEST
+;;; $$ Last modified:  17:21:36 Wed Oct 10 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -257,10 +257,11 @@
 ;;;    that's considered acceptable; anything below this would result in more
 ;;;    notes being added.
 ;;; 
-;;; 5) If at this point there are no available pitches, the function will
-;;;    trigger an error and exit. This could happen if the value of set-limits,
-;;;    both high and low, took the available pitches outside of the
-;;;    instrument's range, for instance.
+;;; 5) If at this point there are no available pitches, the function will by
+;;;    default trigger an error and exit (see however pitch-seq-no-pitches-error
+;;;    in globals.lsp). This could happen if the value of set-limits, both high
+;;;    and low, took the available pitches outside of the instrument's range,
+;;;    for instance.
 ;;; 
 ;;; 6) The pitch-seq numbers are now offset and scaled, then rounded in order
 ;;;    to use them as indices into the pitch list. If a number is in
@@ -421,62 +422,68 @@
                      offset: ~a, scaler: ~a"
                   seq-num num-set-pitches need offset scaler)|#
           (unless (> num-set-pitches 0)
-            (error "~&pitch-seq::get-notes: For ~a at sequence number ~a: ~
-                     no pitches in set!  ~%Perhaps your ~
-                     set-limits (high: ~a, low: ~a) are too restrictive or ~
-                     your ~%set is microtonal and your instrument isn't??~
-                     ~%set = ~a ~%set for ins: ~a~%set minus used: ~a ~%~
-                     curve = ~a~%~a~%~a" 
-                   (id instrument) seq-num (when limit-high (id limit-high)) 
-                   (when limit-low (id limit-low)) (pitch-symbols set)
-                   (get-ids-from-pitch-list set-pitches-rm)
-                   (get-ids-from-pitch-list set-pitches-rm-used)
-                   (data ps) set instrument))
+            ;; MDE Wed Oct 10 16:48:06 2018 -- allow warning instead of error
+            (apply
+             (if (get-sc-config 'pitch-seq-no-pitches-error)
+                 #'error #'warn)
+             (list
+              "~&pitch-seq::get-notes: For ~a at sequence number ~a: ~
+               no pitches in set!  ~%Perhaps your ~
+               set-limits (high: ~a, low: ~a) are too restrictive or ~
+               your ~%set is microtonal and your instrument isn't??~
+               ~%set = ~a ~%set for ins: ~a~%set minus used: ~a ~%~
+               curve = ~a~%~a~%~a"
+             (id instrument) seq-num (when limit-high (id limit-high)) 
+             (when limit-low (id limit-low)) (pitch-symbols set)
+             (get-ids-from-pitch-list set-pitches-rm)
+             (get-ids-from-pitch-list set-pitches-rm-used)
+             (data ps) set instrument)))
           ;; (print-simple-pitch-list set-pitches-rm-used)
-          (setf (notes ps)
-                (loop 
-                   ;; remember: the pitch curve is stored in the data slot but 
-                   ;; this has had parentheses removed from all elements; ()
-                   ;; indicate that a chord should happen and these are still 
-                   ;; intact in the original-data slot.
-                   for i in (data ps)
-                   for j in (original-data ps)
-                   ;; 31/3/10: try rounding instead of floor...
-                   for index = (round (* (+ offset i) scaler))
-                   for note = (nth (if (= index num-set-pitches)
-                                       (1- index)
-                                       index)
-                                   set-pitches-rm-used)
-                   with chord-fun = (when (chords instrument)
-                                      (symbol-function
-                                       (chord-function instrument)))
-                   with used-notes = (used-notes set)
-                   with uns-ref = (list seq-num (id instrument))
-                   with last = last-note-previous-seq
-                   do
-                   ;;(print used-notes)
-                     (unless note
-                       (error "~a~&pitch-seq::get-notes: failed to get a note! ~
+          (when (> num-set-pitches 0)
+            (setf (notes ps)
+                  (loop 
+                     ;; remember: the pitch curve is stored in the data slot but 
+                     ;; this has had parentheses removed from all elements; ()
+                     ;; indicate that a chord should happen and these are still 
+                     ;; intact in the original-data slot.
+                     for i in (data ps)
+                     for j in (original-data ps)
+                     ;; 31/3/10: try rounding instead of floor...
+                     for index = (round (* (+ offset i) scaler))
+                     for note = (nth (if (= index num-set-pitches)
+                                         (1- index)
+                                         index)
+                                     set-pitches-rm-used)
+                     with chord-fun = (when (chords instrument)
+                                        (symbol-function
+                                         (chord-function instrument)))
+                     with used-notes = (used-notes set)
+                     with uns-ref = (list seq-num (id instrument))
+                     with last = last-note-previous-seq
+                     do
+                     ;;(print used-notes)
+                       (unless note
+                         (error "~a~&pitch-seq::get-notes: no note! ~
                                ~%index = ~a, lowest = ~a, highest = ~a, ~
                                num-set-pitches = ~a, offset = ~a, i = ~a, ~
                                scaler = ~a set = ~a"
-                              set-pitches-rm-used index lowest highest 
-                              num-set-pitches offset i scaler
-                              (pitch-symbols set)))
-                     (if (and (listp j) do-chords) ;; should be a chord!
-                         (progn
-                           ;; (print 'chord!)
-                           ;; the chord-function defined should take six
-                           ;; arguments: the current number from the curve; the 
-                           ;; index that this was translated into by the offset 
-                           ;; and scaler (based on trying to get a best fit for 
-                           ;; the instrument and set); the pitch-list that we
-                           ;; created from the set, taking the instrument's
-                           ;; range and other notes already played by other
-                           ;; instruments; the pitch-seq object; the instrument
-                           ;; object; the set object.  It must return a chord
-                           ;; object.
-                           (setf note (funcall chord-fun i index
+                                set-pitches-rm-used index lowest highest 
+                                num-set-pitches offset i scaler
+                                (pitch-symbols set)))
+                       (if (and (listp j) do-chords) ;; should be a chord!
+                           (progn
+                             ;; (print 'chord!)
+                             ;; the chord-function defined should take six
+                             ;; arguments: the current number from the curve;
+                             ;; the index that this was translated into by the
+                             ;; offset and scaler (based on trying to get a best
+                             ;; fit for the instrument and set); the pitch-list
+                             ;; that we created from the set, taking the
+                             ;; instrument's range and other notes already
+                             ;; played by other instruments; the pitch-seq
+                             ;; object; the instrument object; the set object.
+                             ;; It must return a chord object.
+                             (setf note (funcall chord-fun i index
                                                set-pitches-rm-used ps
                                                instrument set))
                            ;; (print note)
@@ -517,7 +524,7 @@
                      (used-notes set)))
                      |#
                      (setf last note)
-                   collect note))
+                   collect note)))
           (when (get-sc-config 'verbose-pitch-selection)
             ;;(print (notes ps))
             (format t "~&**** For ~a at seq-num ~a, with pitch-seq ~a ~

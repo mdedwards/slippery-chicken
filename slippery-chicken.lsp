@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:49:46 Mon Sep 24 2018 CEST
+;;; $$ Last modified:  17:14:37 Wed Oct 10 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -9179,7 +9179,10 @@ NOTE 6200 0.6666667
     (setf current-note (if notes 
                            (clone (first notes))
                            (progn
-                             (unless (zerop (num-score-notes rthm-seq))
+                             (unless (or (zerop (num-score-notes rthm-seq))
+                                         ;; MDE Wed Oct 10 16:48:54 2018 
+                                         (not (get-sc-config
+                                               'pitch-seq-no-pitches-error)))
                                (unless 
                                    ;; eg when called from (cmn-display
                                    ;; rthm-seq-pallette  
@@ -9213,6 +9216,9 @@ NOTE 6200 0.6666667
          (setf (player-section-ref bar) player-section-ref
                (nth-seq bar) seq-num
                (nth-bar bar) (1- bar-num))
+         ;; MDE Wed Oct 10 17:12:14 2018 
+         (unless notes-from-pitch-seq
+           (force-rest-bar bar))
        ;; Here the rhythms in the rthm-seq-bar are upgraded to events
          (loop for rhythm in (rhythms bar) and rthm-num from 0 do
               (let ((event (clone-with-new-class rhythm 'event)))

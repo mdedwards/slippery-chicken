@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  14:06:03 Wed Sep 19 2018 CEST
+;;; $$ Last modified:  16:46:24 Wed Oct 10 2018 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -80,6 +80,10 @@
      ;; algorithm should select the lowest notes possible for the
      ;; instrument/set.
      (pitch-seq-lowest-equals-prefers-low 1)
+     ;; MDE Wed Oct 10 16:35:10 2018 -- until October 2018 an error was
+     ;; signalled if the were no pitches in a set for an instrument which should
+     ;; be playing. We can now have a rest-sequence generated instead
+     (pitch-seq-no-pitches-error t)
      ;; Whether to automatically open EPS files generated with CMN via
      ;; cmn-display.  Currently only works with SBCL and CCL on Mac OSX.
      (cmn-display-auto-open #+sc-auto-open T #-sc-auto-open nil)

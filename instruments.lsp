@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  17:21:08 Mon Sep 24 2018 CEST
+;;; $$ Last modified:  14:15:05 Thu Oct  4 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -362,7 +362,7 @@
        :lowest-written b0 :highest-written gs7
        :largest-fast-leap 12
        :clefs (treble bass) :starting-clef treble
-       :chords t 
+       :chords t :chord-function piano-chord-fun
        :microtones nil 
        :midi-program 47))
      ;; MDE Fri Jul 24 20:18:16 2015 -- range typical for modern organ with

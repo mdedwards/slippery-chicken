@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  13:42:34 Fri Sep 21 2018 CEST
+;;; $$ Last modified:  08:58:29 Fri Oct 12 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -146,7 +146,7 @@
    ;; time-sig or not.
    (write-time-sig :accessor write-time-sig :type boolean :initform nil)
    ;; which section and player did this bar come from?  i.e. which section and
-   ;; which player within the whole piece
+   ;; which player within the whole piece e.g. (1 fl)
    (player-section-ref :accessor player-section-ref :type list :initform nil)
    ;; attach a rehearsal letter to the bar line?
    ;; 31.1.11 NB in LilyPond this will be attached to the last note in the bar

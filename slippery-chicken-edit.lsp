@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:35:01 Mon Sep 24 2018 CEST
+;;; $$ Last modified:  09:01:29 Fri Oct 12 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6215,8 +6215,11 @@ T
     (error "slippery-chicken-edit::bars-to-sc: first argument should be a ~
             list of rthm-seq-bar objects: ~&~a" bars))
   ;; MDE Wed Sep 19 13:39:54 2018 --
-  (loop for bar in bars do 
-     (update-events-player bar player))
+  (loop for bar in bars with psf = (list section-id player) do
+     ;; MDE Fri Oct 12 08:59:02 2018 -- don't forget this or multi-bar-rests
+     ;; will fail miserably
+       (setf (player-section-ref bar) psf)
+       (update-events-player bar player))
   (let* ((seq (clone-with-new-class (make-rthm-seq bars) 'sequenz))
          (ps (make-player-section (list seq) player))
          (section (if sc

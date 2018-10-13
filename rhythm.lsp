@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  14:17:50 Fri Sep 14 2018 CEST
+;;; $$ Last modified:  10:56:35 Sat Oct 13 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1526,15 +1526,11 @@ NIL
                   (floor (* (duration r) divisions)))
           (when (is-tied-to r)
             ;; tied is for notation, tie is for sound
-            (format stream "~&        <tie type=\"stop\" />")
-            ;; the <tied> tag needs to come later, in <notations> :/
-            ;; (format stream "~&        <tied type=\"stop\" />") 
-            )
+            ;; the <tied> tag needs to come later, in <notations> (event class
+            ;; method)  :/
+            (format stream "~&        <tie type=\"stop\" />"))
           (when (is-tied-from r)
-            (format stream "~&        <tie type=\"start\" />")
-            ;; the <tied> tag needs to come later, in <notations> :/
-            ;; (format stream "~&        <tied type=\"start\" />")
-            )
+            (format stream "~&        <tie type=\"start\" />"))
           (format stream "~&        <type>~a</type>" xml-rthm)
           (loop repeat (num-dots r) do
                (format stream "~&        <dot />"))   

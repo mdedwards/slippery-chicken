@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  18:21:12 Mon Sep 24 2018 CEST
+;;; $$ Last modified:  10:55:27 Sat Oct 13 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2179,14 +2179,24 @@ pitch::add-mark: mark PIZZ already present but adding again!
   (format stream "~&          <octave>~a</octave>~
                   ~&        </pitch>"
           (octave p))
-  (xml-write-marks (marks p) stream)
-  (when (show-accidental p)
-    (format nil "~&        <accidental~a>~a</accidental>"
-            (if (accidental-in-parentheses p) " parentheses=\"yes\"" "")
-            (case (accidental p)
-              (f "flat") (s "sharp") (n "natural") (qs "quarter-sharp")
-              (tqs "three-quarters-sharp") (tqf "three-quarters-flat")
-              (qf "quarter-flat")))))
+  ;; MDE Sat Oct 13 10:27:33 2018 -- got to avoid writing the notehead tag
+  ;; before duration and tie so we'll return it rather than write it here
+  (let (notehead not accidental)
+    (loop for m in (marks p) do
+         (if (is-notehead m)
+             (setq notehead m)
+             (push m not)))
+    (xml-write-marks not stream)
+    (when (show-accidental p)
+      (setq accidental
+            (format nil "~&        <accidental~a>~a</accidental>"
+                    (if (accidental-in-parentheses p) " parentheses=\"yes\"" "")
+                    (case (accidental p)
+                      (f "flat") (s "sharp") (n "natural") (qs "quarter-sharp")
+                      (tqs "three-quarters-sharp") (tqf "three-quarters-flat")
+                      (qf "quarter-flat")))))
+    ;; MDE Sat Oct 13 10:34:46 2018 -- return the notehead too, if there was one
+    (values accidental notehead)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

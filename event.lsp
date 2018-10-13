@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:21:23 Mon Sep 24 2018 CEST
+;;; $$ Last modified:  10:56:27 Sat Oct 13 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2190,7 +2190,7 @@ NIL
         (poc (if (written-pitch-or-chord e)
                  (written-pitch-or-chord e)
                  (pitch-or-chord e)))
-        accidental
+        accidental pitch-notehead
         ;; these must come before </note> i.e. in <during>
         (notations '(beg-sl end-sl beg-phrase end-phrase beg-gliss end-gliss
                      a s te ts as at c1 c2 c3 c4 c5 c6 pause short-pause
@@ -2236,7 +2236,7 @@ NIL
     ;; so remove
     (setq notehead (remove-if #'integerp notehead))
     (when (> (length notehead) 1)
-    ;; (when (> (count-if #'symbolp notehead) 1)
+      ;; (when (> (count-if #'symbolp notehead) 1)
       (error "event::write-xml: can only have one notehead mark, you have ~a ~
               ~&~a" notehead e))
     (when (and (tempo-change e) (display-tempo e))
@@ -2255,10 +2255,21 @@ NIL
     (if (or (not poc) (pitch-p poc))    ; single pitch or rest
         (progn
           (when poc                     ; single pitch
-            (setq accidental (write-xml poc :stream stream)))
+            ;; MDE Sat Oct 13 10:40:09 2018 -- got to write notehead tag after
+            ;; duration and tie---as the rhythm class does---so the pitch method
+            ;; now removes noteheads before writing other marks, and instead
+            ;; returns it here
+            (multiple-value-setq (accidental pitch-notehead)
+              (write-xml poc :stream stream)))
                                         ; rhythm class
           (call-next-method e :stream stream :divisions divisions
-                            :accidental accidental :notehead notehead
+                            :accidental accidental
+                            ;; MDE Sat Oct 13 10:51:38 2018 -- so the notehead
+                            ;; var is the one we grabbed from the event's marks,
+                            ;; but pitch-notehead may have arrived via the
+                            ;; pitch's marks...prefer the event's but do use the
+                            ;; pitch's if given
+                            :notehead (or notehead pitch-notehead)
                             :tuplet-actual-normals tuplet-actual-normals))
         ;; it's a chord
         (loop for p in (data poc) and i from 0 do
@@ -2268,14 +2279,20 @@ NIL
                (when (is-grace-note e)
                  (format stream "~&        <grace />"))
                (format stream "~&        <chord />"))
-             (setq accidental (write-xml p :stream stream))
+           ;; MDE Sat Oct 13 10:40:09 2018 
+             (multiple-value-setq (accidental pitch-notehead)
+               (write-xml p :stream stream))
+           ;; (setq accidental (write-xml p :stream stream))
            ;; (write-xml p :stream stream)
            ;; chord notes need all the rhythm info of a non-chord note :/
            ;; rhythm class:
              (call-next-method e :stream stream :divisions divisions
                                :basic (> i 0) :accidental accidental
                                :tuplet-actual-normals tuplet-actual-normals
-                               :notehead notehead)))
+                               :notehead (or notehead pitch-notehead))))
+    ;; NB these are the visual elements of the tie. The tie tag is the sonic
+    ;; element (i.e. that the note is not restruck) and comes in the rhythm
+    ;; class method
     (when (is-tied-to e)
       (xml-notation-with-args stream "tied" "type=\"stop\""))
     (when (is-tied-from e)
@@ -4489,6 +4506,12 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
                  (double-treble "\"treble^8\"")
                  (double-bass "\"bass_8\"")
                  (t (error "event::get-lp-data: unknown clef: ~a" clef)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Oct 13 10:23:22 2018
+(defun is-notehead (sym)
+  (first (member sym '(circled-x x-head triangle wedge square triangle-up
+                       improvOn flag-head))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF event.lsp

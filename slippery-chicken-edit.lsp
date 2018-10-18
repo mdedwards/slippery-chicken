@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  16:10:27 Thu Oct 18 2018 CEST
+;;; $$ Last modified:  17:00:33 Thu Oct 18 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6156,6 +6156,18 @@ T
   (map-over-bars sc start-bar end-bar players
                  #'(lambda (bar)
                      (loop for e in (rhythms bar) do (round-to-nearest e)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod set-midi-channels ((sc slippery-chicken) channel-info
+                              &optional (start-bar 1) end-bar)
+  (loop for ci in channel-info
+     for player = (first ci)
+     for mc = (second ci)
+     for mmc = (third ci)
+     do
+       (next-event sc player nil start-bar)
+       (loop for e = (next-event sc player nil nil end-bar) while e do
+            (set-midi-channel e mc mmc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

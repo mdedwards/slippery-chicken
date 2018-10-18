@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:47:59 Thu Oct 18 2018 CEST
+;;; $$ Last modified:  17:14:18 Thu Oct 18 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3959,6 +3959,9 @@ seq-num 5, VN, replacing G3 with B6
 ;;; - :voices. NIL or a list of player IDs indicating which of the players'
 ;;;   parts are to be included in the resulting MIDI file. If NIL, all players'
 ;;;   parts will be included. Default = NIL.
+;;; - :players. A synonym for voices. This is the preferred keyword as it aligns
+;;;   better with other classes, but :voices is retained for older code
+;;;   compatibility. 
 ;;; - :start-section. An integer that is the number of the first section for
 ;;;   which the MIDI file is to be generated. Default = 1.
 ;;; - :num-sections. An integer that is the number of sections to produce MIDI
@@ -4052,6 +4055,10 @@ seq-num 5, VN, replacing G3 with B6
                         ;; when calling get-data.
                         ;; if nil then all voices.
                         (voices nil)
+                        ;; MDE Thu Oct 18 17:07:57 2018 -- players is a more
+                        ;; appropriate keyword than voices but keep the latter
+                        ;; for historical code and make the two equivalent
+                        (players nil)
                         ;; add something to the filename just before .mid?
                         (suffix "")
                         (midi-file
@@ -4074,6 +4081,10 @@ seq-num 5, VN, replacing G3 with B6
   (when update-amplitudes ; MDE Mon Jun 13 12:32:30 2016 
     (update-amplitudes sc)
     (handle-hairpins sc))
+  (when (and players voices)
+    (error "slippery-chicken::midi-play: please use either voices or players, ~
+            not both." voices))
+  (when players (setq voices players))
   (setf voices
         (cond ((and voices (listp voices)) voices)
               ((and voices (atom voices)) (list voices))

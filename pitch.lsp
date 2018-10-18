@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  10:55:27 Sat Oct 13 2018 CEST
+;;; $$ Last modified:  16:33:49 Thu Oct 18 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2158,9 +2158,15 @@ pitch::add-mark: mark PIZZ already present but adding again!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jan 30 19:54:44 2017 -- using the symbol in the data slot, force
 ;;; freq, pitch bend etc. to conform to this pitch 
-(defmethod round-to-nearest ((p pitch))
+(defmethod round-to-nearest ((p pitch) &key ignore)
+  (declare (ignore ignore))
   ;; setf method updates other related slots
-  (setf (frequency p) (note-to-freq (data p))))
+  ;; MDE Thu Oct 18 16:14:17 2018 -- don't use note-to-freq as the note may no
+  ;; longer exist in the current scale
+  ;; (setf (frequency p) (note-to-freq (data p)))
+  (setf (id p) (freq-to-note (frequency p)))
+  ;;           (midi-to-freq (round (midi-note-float p))))
+  p)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Mar 20 21:42:07 2017 -- we leave it to the event class to write the

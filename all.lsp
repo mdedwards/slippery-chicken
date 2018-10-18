@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  16:30:52 Mon Feb  5 2018 CET
+;;; $$ Last modified:  11:50:02 Thu Oct 18 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -208,6 +208,7 @@
 (sc-compile-and-load "cm-load.lsp" t)
 (sc-compile-and-load "utilities.lsp")
 (sc-compile-and-load "named-object.lsp")
+(sc-compile-and-load "music-xml.lsp")
 (sc-compile-and-load "linked-named-object.lsp")
 (sc-compile-and-load "sclist.lsp")
 (sc-compile-and-load "circular-sclist.lsp")
@@ -271,7 +272,7 @@
 #+clm (sc-compile-and-load "get-spectrum.lsp")
 (sc-compile-and-load "spectra.lsp")
 #+clm (sc-compile-and-load "control-wave.lsp")
-(sc-compile-and-load "music-xml.lsp")
+;; (sc-compile-and-load "music-xml.lsp")
 (sc-compile-and-load "wolfram.lsp" t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

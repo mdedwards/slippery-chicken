@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  11:55:53 Mon Sep 24 2018 CEST
+;;; $$ Last modified:  16:03:14 Thu Oct 18 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1251,8 +1251,9 @@ data: (C4 F4 A4 C5)
 ;;; the set-palette, rounded.
 ;;; 
 ;;; SYNOPSIS
-(defmethod round-to-nearest ((sp set-palette))
+(defmethod round-to-nearest ((sp set-palette) &key ignore)
 ;;; ****
+  (declare (ignore ignore))
   (loop for ref in (get-all-refs sp)
      do (round-to-nearest (get-data ref sp)))
   sp)

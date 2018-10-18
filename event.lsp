@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:56:27 Sat Oct 13 2018 CEST
+;;; $$ Last modified:  16:09:08 Thu Oct 18 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -810,7 +810,8 @@ data: 132
             ;; long!  
             (is-whole-bar-rest e) nil
             (slot-value e 'pitch-or-chord)
-            (transpose (clone (written-pitch-or-chord e)) diff)))))
+            (transpose (clone (written-pitch-or-chord e)) diff))))
+  e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3715,6 +3716,15 @@ NIL
     (if (and (zerop count) (not force-number))
         nil
         (values count num-pitches))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod round-to-nearest ((e event) &key ignore)
+  (declare (ignore ignore))
+  (when (pitch-or-chord e)
+    (round-to-nearest (pitch-or-chord e)))
+  (when (written-pitch-or-chord e)
+    (round-to-nearest (written-pitch-or-chord e)))
+  e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

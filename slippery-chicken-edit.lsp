@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  09:01:29 Fri Oct 12 2018 CEST
+;;; $$ Last modified:  16:10:27 Thu Oct 18 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6149,6 +6149,14 @@ T
             (setf (slot-value sc which) (list (list player result)))))
     result))
   
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod round-to-nearest ((sc slippery-chicken)
+                             &key start-bar end-bar players)
+  (map-over-bars sc start-bar end-bar players
+                 #'(lambda (bar)
+                     (loop for e in (rhythms bar) do (round-to-nearest e)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

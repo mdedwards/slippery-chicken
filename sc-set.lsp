@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  10:47:24 Mon Sep 24 2018 CEST
+;;; $$ Last modified:  16:09:57 Thu Oct 18 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -413,8 +413,9 @@ data: CS4
 ;;; T
 ;;; 
 ;;; SYNOPSIS
-(defmethod round-to-nearest ((s sc-set))
+(defmethod round-to-nearest ((s sc-set) &key ignore)
 ;;; ****
+  (declare (ignore ignore))
   (loop for p in (data s) do (round-to-nearest p))
   (set-micro-tone s) ; stats
   t)

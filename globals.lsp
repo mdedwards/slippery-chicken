@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  16:46:24 Wed Oct 10 2018 CEST
+;;; $$ Last modified:  11:47:43 Thu Oct 18 2018 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -149,6 +149,10 @@
      ;; set etc. (i.e. data passed to pitch-seq's get-notes method). Note that
      ;; chords will be printed as a sublist (i.e. in parentheses).
      (verbose-pitch-selection nil)
+     ;; MDE Thu Oct 18 11:46:46 2018 -- since Sept. 18 the slippery-chicken
+     ;; method update-slots also calls handle-ties. This will break some older
+     ;; pieces so allow that to be skipped if necessary.
+     (update-slots-handles-ties t)
      ;; font size for CMN bar numbers
      (cmn-bar-num-size-for-sc 6))))
 ;;; ****

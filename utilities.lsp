@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  17:18:28 Mon Sep 17 2018 CEST
+;;; $$ Last modified:  15:40:22 Thu Oct 18 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -842,9 +842,10 @@
 ;;; SYNOPSIS
 (defun equal-within-tolerance (a b &optional (tolerance 0.000001d0))
 ;;; ****
-  ;; BTW coercing a and b to 'double-float doesn't help if they are of
-  ;; different float types to begin with.
-  (<= (abs (- a b)) tolerance))
+  (when (and (numberp a) (numberp b))
+    ;; BTW coercing a and b to 'double-float doesn't help if they are of
+    ;; different float types to begin with.
+    (<= (abs (- a b)) tolerance)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Mar 19 19:39:55 2012 
@@ -1730,9 +1731,9 @@
                              (y-min 0.0) (y-max 10.0)
                              orig-y-range)
 ;;; ****
-  (unless (and (> x-max x-min) (> y-max y-min))
-    (error "utilities::auto-scale-env: x-max (~a) must be > x-min (~a) and sim.~
-            ~%for y-max (~a) and y-min (~a): ~%~a" x-max x-min y-max y-min env))
+  (unless (and (> x-max x-min) (>= y-max y-min))
+    (error "utilities::auto-scale-env: x-max (~a) must be > x-min (~a) and ~
+            ~%y-max (~a) >= y-min (~a): ~%~a" x-max x-min y-max y-min env))
   (let* ((env-x-min (first env))
          (env-x-max (lastx env))
          (env-x-range (- env-x-max env-x-min))

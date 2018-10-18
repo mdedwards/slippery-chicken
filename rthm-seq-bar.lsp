@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  08:58:29 Fri Oct 12 2018 CEST
+;;; $$ Last modified:  10:28:48 Tue Oct 16 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6671,7 +6671,7 @@ rsb-rb)
                (dotit (and (numberp result) (or ;(= 3 (numerator result))
                                              (= 3 (denominator result))))))
           ;; (format t "~%pd ~a div ~a res ~a" parent-dur divisions result)
-          (format t "~%v ~a r ~a result ~a" v r result)
+          ;; (format t "~%v ~a r ~a result ~a" v r result)
           ;; try and set dots if possible
           (when dotit
             ;; (print result)
@@ -6710,9 +6710,9 @@ rsb-rb)
           ;; (format t "~&~a: beamable: ~a" result beam)
           ;; (format t "~%~a ~a" rqqnd (first divisions))
           ;; (format t "~%this-dur ~a rqqnd ~a pd ~a" this-dur rqqnd pd)
-          (print result)
-          (format t "~%~a~%ratio ~a tupl ~a this-d ~a" 
-                           divisions ratio tuplet this-dur)
+          ;; (print result)
+          ;;(format t "~%~a~%ratio ~a tupl ~a this-d ~a"
+                ;;  divisions ratio tuplet this-dur)
           ;; sometimes we'll be under two tuplet brackets but get something
           ;; like a simple TS as the rthm but then under a 2:3 bracket, which
           ;; should be turned into a dotted value 

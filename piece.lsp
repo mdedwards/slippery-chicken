@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  18:43:26 Thu Sep 13 2018 CEST
+;;; $$ Last modified:  11:29:45 Thu Oct 18 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -659,7 +659,6 @@ BAR-HOLDER:
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 
 (defmethod handle-ties ((p piece))
   (loop for player in (players p) do
        (loop 

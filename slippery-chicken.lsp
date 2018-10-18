@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:14:37 Wed Oct 10 2018 CEST
+;;; $$ Last modified:  11:47:59 Thu Oct 18 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1228,22 +1228,23 @@
 ;;; SYNOPSIS
 (defmethod update-slots ((sc slippery-chicken) 
                          &optional
-                         (tempo-map nil)
-                         (start-time 0.0)
-                         (start-time-qtrs 0.0)
-                         (start-bar 1)
-                         (current-section nil)
-                         (nth nil)
-                         (warn-ties t)
-                         (update-write-bar-nums nil))
+                           (tempo-map nil)
+                           (start-time 0.0)
+                           (start-time-qtrs 0.0)
+                           (start-bar 1)
+                           (current-section nil)
+                           (nth nil)
+                           (warn-ties t)
+                           (update-write-bar-nums nil))
 ;;; ****
   (prog1
       (update-slots (piece sc) 
                     (if tempo-map tempo-map (tempo-map sc))
                     start-time start-time-qtrs start-bar current-section nth
                     warn-ties)
-    ;; MDE Thu Sep 13 18:42:59 2018 -- surely!
-    (handle-ties sc)
+    (when (get-sc-config 'update-slots-handles-ties)
+      ;; MDE Thu Sep 13 18:42:59 2018 -- surely!
+      (handle-ties sc))
     (when update-write-bar-nums
       (set-write-bar-num sc))))
 

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  12:23:19 Thu Sep 20 2018 CEST
+;;; $$ Last modified:  16:02:03 Thu Oct 18 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -218,7 +218,20 @@ NIL
        (setf happy (pitch= p1 p2 enharmonics-are-equal frequency-tolerance))
                                         ; src-tolerance))
        while happy
-       finally (return happy)))
+     finally (return happy)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Oct 18 11:10:26 2018 -- just in case we're asked to compare apples
+;;; and oranges
+(defmethod pitch= ((p pitch) (c chord) &optional enharmonics-are-equal
+                                         (frequency-tolerance 0.01))
+  (declare (ignore p c enharmonics-are-equal frequency-tolerance))
+  nil)
+
+(defmethod pitch= ((c chord) (p pitch) &optional enharmonics-are-equal
+                                         (frequency-tolerance 0.01))
+  (declare (ignore p c enharmonics-are-equal frequency-tolerance))
+  nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/add-harmonics
@@ -2185,6 +2198,14 @@ data: (
 (defmethod collapse ((c chord) octave)
 ;;; **** 
   (make-chord (transpose-pitch-list-to-octave (my-copy-list (data c)) octave)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Oct 18 15:00:59 2018 -- round chord pitches to nearest in current
+;;; scale  
+(defmethod round-to-nearest ((c chord) &key ignore)
+  (declare (ignore ignore))
+  (loop for p in (data c) do (round-to-nearest p))
+  c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  17:17:14 Fri Jul 27 2018 CEST
+;;; $$ Last modified:  16:24:43 Fri Oct 19 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -722,12 +722,14 @@
 
 ;;; ****m* instrument/in-range
 ;;; DESCRIPTION
-;;; Checks whether a specified pitch falls within the defined range of a given
-;;; instrument object or not.
+
+;;; Checks whether a specified pitch/chord falls within the defined range of a
+;;; given instrument object or not.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - An instrument object.
-;;; - A pitch item (pitch object or note-name symbol).
+;;; - A pitch or chord item (either a chord object, pitch object, or note-name
+;;;   symbol). Chords are handled by a separate method (of the same name).
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether the pitch specified is to be compared with
@@ -796,34 +798,33 @@
 ;;; - the piece object
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - whether the pitch should be considered a sounding pitch.  Default = NIL.
+;;; keyword argument:
+;;; - :sounding. Whether the pitch should be considered a sounding pitch.
+;;;   Default = NIL. 
 ;;; 
 ;;; RETURN VALUE
 ;;; A pitch object within the instrument's range.
 ;;; 
 ;;; EXAMPLE
 #|
-  (let ((cl (get-data 'b-flat-clarinet
-+slippery-chicken-standard-instrument-palette+)))
-
-  ;; needs to go down 1 octave          ;
-(print (data (force-in-range cl (make-pitch 'e7))))
-  ;; needs to go up 2 octaves           ;
-(print (data (force-in-range cl (make-pitch 'g1))))
-  ;; the t indicates we're dealing with sounding pitches so here there's no ;
-  ;; transposition...                   ;
-(print (data (force-in-range cl (make-pitch 'd3) t)))
-  ;; ... but here there is              ;
-(print (data (force-in-range cl (make-pitch 'd3)))))
+(let ((cl (get-standard-ins 'b-flat-clarinet)))
+  ;; needs to go down 1 octave
+  (print (data (force-in-range cl (make-pitch 'e7))))
+  ;; needs to go up 2 octaves 
+  (print (data (force-in-range cl (make-pitch 'g1))))
+  ;; the t indicates we're dealing with sounding pitches so here there's no 
+  ;; transposition...  
+  (print (data (force-in-range cl (make-pitch 'd3) :sounding t)))
+  ;; ... but here there is   
+  (print (data (force-in-range cl (make-pitch 'd3)))))
   =>
   E6 
   G3 
   D3 
   D4 
-
-  |#
+|#
 ;;; SYNOPSIS
-(defmethod force-in-range ((ins instrument) pitch &optional sounding)
+(defmethod force-in-range ((ins instrument) pitch &key sounding)
 ;;; ****
   (multiple-value-bind (in direction)
       (in-range ins pitch sounding)
@@ -837,6 +838,21 @@
            (if (in-range ins p sounding)
                (return p)
                (incf transp inc))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Oct 19 16:13:47 2018 
+(defmethod force-in-range ((ins instrument) (c chord) &key sounding)
+    (setf (data c) (loop for p in (data c) collect
+                        (force-in-range ins p :sounding sounding)))
+    c)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Oct 19 16:22:11 2018
+(defmethod force-in-range ((ins instrument) (e event) &key ignore)
+  (declare (ignore ignore))
+  (unless (is-rest e)
+    (setf (pitch-or-chord e) (force-in-range ins (pitch-or-chord e))))
+  e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* instrument/auto-set-subset-id

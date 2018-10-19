@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  14:21:12 Fri Oct 19 2018 CEST
+;;; $$ Last modified:  17:46:12 Fri Oct 19 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5444,6 +5444,46 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
   sc)
            
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/force-in-range
+;;; DATE
+;;; October 19th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Force all pitches (and chords) to be within the range of the instruments who
+;;; play them. Of course this is usually a part of the slippery-chicken pitch
+;;; selection algorithm but sometimes we change pitches (algorithmically in
+;;; particular) and this might bring them out of range. Notes that are out of
+;;; range will be transposed up and down the required number of octaves. This
+;;; applies to single pitches in chords also. Instrument changes will be
+;;; respected on a bar-by-bar basis. See also the three force-in-range methods
+;;; in instrument.lsp 
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - a symbol or list of symbols for the players to be processed. Default = NIL
+;;;   = all players.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :start-bar. The bar to start at. Default = NIL = 1
+;;; - :end-bar. The bar to end at. Default = NIL = last bar in piece/object
+;;; 
+;;; RETURN VALUE
+;;; the modified slippery-chicken object
+;;; 
+;;; SYNOPSIS
+(defmethod force-in-range ((sc slippery-chicken) players &key start-bar end-bar)
+;;; ****
+  (map-over-bars
+     sc start-bar end-bar players
+     #'(lambda (bar sc)
+         (let ((ins (get-instrument-for-player-at-bar (player bar) bar sc)))
+           (loop for e in (rhythms bar) do
+                (force-in-range ins e))))
+     sc)
+  sc)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/map-over-sequenzes
 ;;; DATE
 ;;; February 2nd 2018, Heidhausen
@@ -6157,13 +6197,12 @@ T
 ;;; October 18th 2018, Heidhausen
 ;;; 
 ;;; DESCRIPTION
-
 ;;; For the given bars and players, round the events' pitch data to the nearest
 ;;; in the current or given scale. For example, a slippery-chicken object could
 ;;; be generated in the :quarter-tone scale, then the scale changed to
 ;;; :chromatic (or the keyword argument :scale 'chromatic-scale given), this
-;;; method then called, and all pitches would be rounded to the nearest chromatic
-;;; pitch. See the pitch class method for more details.
+;;; method then called, and all pitches would be rounded to the nearest
+;;; chromatic pitch. See the pitch class method for more details.
 ;;; 
 ;;; ARGUMENTS
 ;;; the slippery-chicken argument

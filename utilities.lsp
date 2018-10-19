@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:40:22 Thu Oct 18 2018 CEST
+;;; $$ Last modified:  15:25:49 Fri Oct 19 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3423,6 +3423,11 @@ WARNING:
                       (start-freq-is-partial 1) (max-freq 20000) (skip 1)
                       (max-results most-positive-fixnum))
 ;;; ****
+  (unless (and (integer>0 start-partial)
+               (integer>0 start-freq-is-partial))
+    (error "utilities::get-harmonics: :start-partial (~a) and/or ~
+            :start-freq-is-partial (~a) ~%need to be integers >= 1"
+           start-partial start-freq-is-partial))
   (loop with fundamental = (float (/ start-freq start-freq-is-partial))
      for h from start-partial by skip
      for freq = (* fundamental h)

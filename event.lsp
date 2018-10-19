@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:09:08 Thu Oct 18 2018 CEST
+;;; $$ Last modified:  13:33:33 Fri Oct 19 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3718,12 +3718,30 @@ NIL
         (values count num-pitches))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defmethod round-to-nearest ((e event) &key ignore)
-  (declare (ignore ignore))
+;;; ****m* event/round-to-nearest
+;;; DESCRIPTION
+;;; Round the written and sounding pitch/chord objects to the nearest in the
+;;; current or given scale. 
+;;; 
+;;; ARGUMENTS
+;;; the event object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword argument:
+;;; :scale. The scale to use when rounding. (Common Music tuning object or
+;;; symbol). If a symbol, then 'chromatic-scale, 'twelfth-tone, or 'quarter-tone
+;;; only at present. Default is the current scale as set by (in-scale :...).
+;;; 
+;;; RETURN VALUE
+;;; the modified event object
+;;; 
+;;; SYNOPSIS
+(defmethod round-to-nearest ((e event) &key (scale cm::*scale*))
+;;; ****
   (when (pitch-or-chord e)
-    (round-to-nearest (pitch-or-chord e)))
+    (round-to-nearest (pitch-or-chord e) :scale scale))
   (when (written-pitch-or-chord e)
-    (round-to-nearest (written-pitch-or-chord e)))
+    (round-to-nearest (written-pitch-or-chord e) :scale scale))
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

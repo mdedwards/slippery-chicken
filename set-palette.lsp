@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  16:03:14 Thu Oct 18 2018 CEST
+;;; $$ Last modified:  13:34:58 Fri Oct 19 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1241,21 +1241,27 @@ data: (C4 F4 A4 C5)
 ;;; January 30th 2017
 ;;; 
 ;;; DESCRIPTION
-;;; Rounds all pitch objects to the nearest pitch in the current scale. See also
-;;; sc-set and pitch class methods. 
+;;; Rounds all pitch objects to the nearest pitch in the current or given
+;;; scale. See also sc-set, chord, slippery-chicken, event, and pitch class
+;;; methods.  
 ;;; 
 ;;; ARGUMENTS
 ;;; - a set-palette object
 ;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword argument:
+;;; :scale. The scale to use when rounding. (Common Music tuning object or
+;;; symbol). If a symbol, then 'chromatic-scale, 'twelfth-tone, or 'quarter-tone
+;;; only at present. Default is the current scale as set by (in-scale :...).
+;;; 
 ;;; RETURN VALUE
-;;; the set-palette, rounded.
+;;; the modified set-palette
 ;;; 
 ;;; SYNOPSIS
-(defmethod round-to-nearest ((sp set-palette) &key ignore)
+(defmethod round-to-nearest ((sp set-palette) &key (scale cm::*scale*))
 ;;; ****
-  (declare (ignore ignore))
   (loop for ref in (get-all-refs sp)
-     do (round-to-nearest (get-data ref sp)))
+     do (round-to-nearest (get-data ref sp) :scale scale))
   sp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  16:02:03 Thu Oct 18 2018 CEST
+;;; $$ Last modified:  13:33:27 Fri Oct 19 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2202,9 +2202,30 @@ data: (
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Oct 18 15:00:59 2018 -- round chord pitches to nearest in current
 ;;; scale  
-(defmethod round-to-nearest ((c chord) &key ignore)
-  (declare (ignore ignore))
-  (loop for p in (data c) do (round-to-nearest p))
+;;; ****m* chord/round-to-nearest
+;;; DATE
+;;; October 18th 2018
+;;; 
+;;; DESCRIPTION
+;;; Round the pitches in the chord to the nearest pitches in the current
+;;; or given scale. See the pitch class for more details. 
+;;; 
+;;; ARGUMENTS
+;;; the chord object
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; keyword argument:
+;;; :scale. The scale to use when rounding. (Common Music tuning object or
+;;; symbol). If a symbol, then 'chromatic-scale, 'twelfth-tone, or 'quarter-tone
+;;; only at present. Default is the current scale as set by (in-scale :...).
+;;; 
+;;; RETURN VALUE
+;;; the modified chord object
+;;; 
+;;; SYNOPSIS
+(defmethod round-to-nearest ((c chord) &key (scale cm::*scale*))
+;;; ****
+  (loop for p in (data c) do (round-to-nearest p :scale scale))
   c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

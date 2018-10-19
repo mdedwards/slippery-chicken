@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  16:33:49 Thu Oct 18 2018 CEST
+;;; $$ Last modified:  14:35:32 Fri Oct 19 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2156,15 +2156,99 @@ pitch::add-mark: mark PIZZ already present but adding again!
   (format stream "~a" (data p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Mon Jan 30 19:54:44 2017 -- using the symbol in the data slot, force
-;;; freq, pitch bend etc. to conform to this pitch 
-(defmethod round-to-nearest ((p pitch) &key ignore)
-  (declare (ignore ignore))
+;;; MDE Mon Jan 30 19:54:44 2017
+;;; ****m* pitch/round-to-nearest
+;;; DATE
+;;; January 30th 2017
+;;; 
+;;; DESCRIPTION
+;;; Round the pitch object to the nearest pitch in the current or given scale,
+;;; i.e. force frequency, midi-note, pitch bend, etc. to conform to this nearest
+;;; pitch.
+;;;
+;;; NB rounding to the nearest using a microtonal :scale argument might cause
+;;; errors if the global (in-scale ...) scale is :chromatic because although
+;;; chromatic-scale is a subset of quarter-tone and twelfth-tone (so all
+;;; chromatic-pitches work) if you have microtonal pitches generated e.g. by
+;;; frequency arguments to make-pitch the note symbol in the microtonal scale
+;;; doesn't exist in :chromatic. E.g. the following breaks:
+;;;
+;;; (in-scale :chromatic)
+;;; 264Hz is approx. c 1/12 sharp
+;;; (round-to-nearest (make-pitch 264) :scale 'twelfth-tone)
+;;; -> fails because rounding in 1/12 tone scale gives us CTS4, which doesn't
+;;; exist in the global chromatic scale. Of course all is well if we do this
+;;; beforehand: 
+;;; (in-scale :twelfth-tone)
+;;; 
+;;; ARGUMENTS
+;;; the pitch object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword argument:
+;;; :scale. The scale to use when rounding. (Common Music tuning object or
+;;; symbol). If a symbol, then 'chromatic-scale, 'twelfth-tone, or 'quarter-tone
+;;; only at present. Default is the current scale as set by (in-scale :...).
+;;; 
+;;; RETURN VALUE
+;;; the modified pitch object
+;;; 
+;;; EXAMPLE
+#|
+(make-pitch 443)
+-->
+PITCH: frequency: 443.000, midi-note: 69, midi-channel: 1 
+       pitch-bend: 0.12 
+       degree: 138, data-consistent: T, white-note: A4
+       nearest-chromatic: A4
+       src: 1.6932597032572d0, src-ref-pitch: C4, score-note: A4 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: T, 
+...
+
+(round-to-nearest (make-pitch 443)) 
+-->
+PITCH: frequency: 440.000, midi-note: 69, midi-channel: 1 
+       pitch-bend: 0.0 
+       degree: 138, data-consistent: T, white-note: A4
+       nearest-chromatic: A4
+       src: 1.6817929, src-ref-pitch: C4, score-note: A4 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+...
+
+;;; exact quarter tones round down, not up (true for quarter-sharps and flats):
+(round-to-nearest (make-pitch 'dqs7) :scale 'chromatic-scale)
+-->
+PITCH: frequency: 2349.318, midi-note: 98, midi-channel: 1 
+       pitch-bend: 0.0 
+       degree: 196, data-consistent: T, white-note: D7
+       nearest-chromatic: D7
+       src: 8.979696, src-ref-pitch: C4, score-note: D7 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 7, c5ths: 0, no-8ve: D, no-8ve-no-acc: D
+       show-accidental: T, white-degree: 57, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL, 
+       marks-before: NIL
+LINKED-NAMED-OBJECT: previous: NIL, 
+                     this: NIL, 
+                     next: NIL
+NAMED-OBJECT: id: D7, tag: NIL, 
+data: D7
+**************
+
+|#
+;;; SYNOPSIS
+(defmethod round-to-nearest ((p pitch) &key (scale cm::*scale*))
+;;; ****
   ;; setf method updates other related slots
   ;; MDE Thu Oct 18 16:14:17 2018 -- don't use note-to-freq as the note may no
   ;; longer exist in the current scale
   ;; (setf (frequency p) (note-to-freq (data p)))
-  (setf (id p) (freq-to-note (frequency p)))
+  (setf (id p) (freq-to-note (frequency p) scale))
   ;;           (midi-to-freq (round (midi-note-float p))))
   p)
 

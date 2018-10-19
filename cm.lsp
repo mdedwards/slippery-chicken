@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  10:26:08 Wed Aug 29 2018 CEST
+;;; $$ Last modified:  10:02:05 Fri Oct 19 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -67,7 +67,7 @@
 ;;; - A scale (tuning) designation.
 ;;; 
 ;;; RETURN VALUE
-;;; Lisp REPL feedback on the tuning now set.
+;;; the (new) Common Music scale object
 ;;; 
 ;;; EXAMPLE
 #|
@@ -361,7 +361,9 @@
 ;;; A number that is a frequency in Hertz.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - The scale in which the note-name pitch equivalent is to be sought.
+;;; - The scale in which the note-name pitch equivalent is to be sought (Common
+;;; Music scale object or symbol). If a symbol, then 'chromatic-scale,
+;;; 'twelfth-tone, or 'quarter-tone only at present.
 ;;; 
 ;;; RETURN VALUE
 ;;; A note-name pitch symbol.

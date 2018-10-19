@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  17:00:33 Thu Oct 18 2018 CEST
+;;; $$ Last modified:  14:21:12 Fri Oct 19 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5314,8 +5314,10 @@ NIL
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
-;;; - A number that is the first bar to which the function should be applied. 
-;;; - A number that is the last bar to which the function should be applied.
+;;; - A number that is the first bar to which the function should be
+;;;   applied. Default = NIL in which case 1 will be used. 
+;;; - A number that is the last bar to which the function should be
+;;;   applied. Default = NIL in which case all bars will be processed. 
 ;;; - A list of the IDs of the players to whose parts the function should be
 ;;;   applied. Can also be a single symbol. If NIL then all players will be
 ;;;   processed.  
@@ -6150,12 +6152,48 @@ T
     result))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/round-to-nearest
+;;; DATE
+;;; October 18th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
 
+;;; For the given bars and players, round the events' pitch data to the nearest
+;;; in the current or given scale. For example, a slippery-chicken object could
+;;; be generated in the :quarter-tone scale, then the scale changed to
+;;; :chromatic (or the keyword argument :scale 'chromatic-scale given), this
+;;; method then called, and all pitches would be rounded to the nearest chromatic
+;;; pitch. See the pitch class method for more details.
+;;; 
+;;; ARGUMENTS
+;;; the slippery-chicken argument
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :start-bar. A number that is the first bar which should be
+;;;   processed. Default = NIL in which case 1 will be used.
+;;; - :end-bar. A number that is the last bar which should be processed. Default
+;;;   = NIL in which case all bars will be processed.
+;;; - :players. A list of the IDs of the players to whose parts the function
+;;;   should be applied. Can also be a single symbol. If NIL then all players
+;;;   will be processed.  
+;;; - :scale. The scale to use when rounding. (Common Music tuning object or
+;;;   symbol). If a symbol, then 'chromatic-scale, 'twelfth-tone, or
+;;;   'quarter-tone only at present. Default is the current scale as set by
+;;;   (in-scale :...). 
+;;; 
+;;; RETURN VALUE
+;;; the modified slippery-chicken object
+;;; 
+;;; SYNOPSIS
 (defmethod round-to-nearest ((sc slippery-chicken)
-                             &key start-bar end-bar players)
+                             &key start-bar end-bar players (scale cm::*scale*))
+;;; ****
   (map-over-bars sc start-bar end-bar players
                  #'(lambda (bar)
-                     (loop for e in (rhythms bar) do (round-to-nearest e)))))
+                     (loop for e in (rhythms bar) do
+                          (round-to-nearest e :scale scale))))
+  sc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod set-midi-channels ((sc slippery-chicken) channel-info

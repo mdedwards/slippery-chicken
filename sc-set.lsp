@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  16:09:57 Thu Oct 18 2018 CEST
+;;; $$ Last modified:  13:33:46 Fri Oct 19 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -400,25 +400,28 @@ data: CS4
 ;;; January 30th 2017
 ;;; 
 ;;; DESCRIPTION
-;;; round the (potentially very microtonal) pieces in the set to the nearest
-;;; pitch of the current scale. Note that this is a destructive operation.
+;;; Round the (potentially very microtonal) pitches in the set to the nearest
+;;; pitch of the current or given scale. Note that this is a destructive
+;;; operation.  
 ;;; 
 ;;; ARGUMENTS
 ;;; - the sc-set object
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; none
+;;; keyword argument:
+;;; :scale. The scale to use when rounding. (Common Music tuning object or
+;;; symbol). If a symbol, then 'chromatic-scale, 'twelfth-tone, or 'quarter-tone
+;;; only at present. Default is the current scale as set by (in-scale :...).
 ;;; 
 ;;; RETURN VALUE
-;;; T
+;;; the modified sc-set object
 ;;; 
 ;;; SYNOPSIS
-(defmethod round-to-nearest ((s sc-set) &key ignore)
+(defmethod round-to-nearest ((s sc-set) &key (scale cm::*scale*))
 ;;; ****
-  (declare (ignore ignore))
-  (loop for p in (data s) do (round-to-nearest p))
+  (loop for p in (data s) do (round-to-nearest p :scale scale))
   (set-micro-tone s) ; stats
-  t)
+  s)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  13:34:58 Fri Oct 19 2018 CEST
+;;; $$ Last modified:  18:01:20 Thu Oct 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1265,12 +1265,26 @@ data: (C4 F4 A4 C5)
   sp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; ****m* set-palette/add-harmonics
+;;; DESCRIPTION
+;;; Add harmonically-related pitches to each set in the palette. See the sc-set
+;;; class method for details and the get-harmonics function (utilities.lsp) for
+;;; keyword arguments.
+;;; 
+;;; SYNOPSIS
 (defmethod add-harmonics ((sp set-palette) &rest keywords)
+;;; ****
   (rmap sp #'add-harmonics keywords))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* set-palette/thin
+;;; DESCRIPTION
+;;; Apply the thin method to each set in the palette. See the sc-set class
+;;; method for details, including keyword arguments.
+;;; 
+;;; SYNOPSIS
 (defmethod thin ((sp set-palette) &rest keywords &key &allow-other-keys)
+;;; ****
   (apply #'rmap (cons sp (cons #'thin keywords))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

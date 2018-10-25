@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  17:22:51 Thu Oct 25 2018 CEST
+;;; $$ Last modified:  17:58:46 Thu Oct 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1599,7 +1599,7 @@ data: E4
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* sc-set/thin
 ;;; DATE
-;;; June 1st, Edinburgh
+;;; June 1st 2017, Edinburgh
 ;;; 
 ;;; DESCRIPTION
 ;;; Remove pitches from a set using a deterministic algorithm. From bottom to

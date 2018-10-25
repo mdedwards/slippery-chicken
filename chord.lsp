@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  17:09:05 Thu Oct 25 2018 CEST
+;;; $$ Last modified:  17:55:33 Thu Oct 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2230,8 +2230,17 @@ data: (
   c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Thu Oct 25 17:08:12 2018
+;;; ****m* chord/thin
+;;; DATE
+;;; October 25th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Reduce the number of notes in a chord. See the sc-set class method for
+;;; details. 
+;;; 
+;;; SYNOPSIS
 (defmethod thin ((c chord) &key (strength 5) remove target invert)
+;;; ****
   (setf (data c) (thin-aux (data c) strength remove target invert))
   c)
 

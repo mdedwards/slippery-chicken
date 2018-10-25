@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  14:15:05 Thu Oct  4 2018 CEST
+;;; $$ Last modified:  17:56:32 Thu Oct 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -947,6 +947,7 @@
 ;;; 
 ;;; SYNOPSIS
 (defun get-standard-ins (ins &optional (on-fail #'error))
+;;; ****
   (let ((i (get-data ins +slippery-chicken-standard-instrument-palette+ nil)))
     (when (and on-fail (not i)) ; trust the caller to provide a function object
       (funcall on-fail "get-standard-ins::can't find ~a" ins))

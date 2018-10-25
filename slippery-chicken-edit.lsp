@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  17:46:12 Fri Oct 19 2018 CEST
+;;; $$ Last modified:  11:02:41 Thu Oct 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6235,8 +6235,45 @@ T
   sc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* slippery-chicken-edit/set-midi-channels
+;;; DATE
+;;; October 25th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Change the midi-channels of events in the slippery-chicken object. All
+;;; events' pitch objects' midi-channel slots will be destructively overwritten
+;;; when using this method. The second argument is a list of lists. Each sublist
+;;; has the player (not instrument) ID symbol as its first element, followed by
+;;; one or two channel numbers. If only one channel is given (i.e. it's a
+;;; two-element list e.g. (vln 1)) then it will be used for both chromatic and
+;;; microtonal pitches (i.e. all the players' pitches will be written to the one
+;;; given midi channel). Otherwise if a second channel is given (e.g. (vln 1 2))
+;;; then microtonal pitches will be written on the second channel.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object.
+;;; - a list of player and channel info (see above and example below).
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the start-bar in which events should begin to be processed. Default = 1
+;;; - the end bar (inclusive) in which the last events should be
+;;;   processed. Default = NIL = the last bar of the slippery-chicken object. 
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; EXAMPLE
+#|
+(set-midi-channels +sc-obj+ '((solo 1) (computer-a 2) (computer-b 3)
+                              ;; this one uses separate midi channels for
+                              ;; chromatic and microtonal pitches
+                              (computer-c 4 5)))
+|#
+;;; SYNOPSIS
 (defmethod set-midi-channels ((sc slippery-chicken) channel-info
                               &optional (start-bar 1) end-bar)
+;;; ****
   (loop for ci in channel-info
      for player = (first ci)
      for mc = (second ci)
@@ -6244,7 +6281,8 @@ T
      do
        (next-event sc player nil start-bar)
        (loop for e = (next-event sc player nil nil end-bar) while e do
-            (set-midi-channel e mc mmc))))
+            (set-midi-channel e mc mmc)))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

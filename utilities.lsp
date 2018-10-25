@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:25:49 Fri Oct 19 2018 CEST
+;;; $$ Last modified:  14:22:58 Sat Oct 20 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5136,7 +5136,7 @@ Here's where I pasted the data into the .RPP Reaper file:
            (when (functionp out-of-range)
              (funcall out-of-range
                       "utilities::rescale: first argument (~a) should be ~
-                       within original range (~a to ~a)" val min max))))
+                       within the ~%original range (~a to ~a)" val min max))))
     (when (or (>= min max)
               (>= new-min new-max))
       (error "utilities::rescale: argument 2 (~a) must be < argument 3 (~a) ~

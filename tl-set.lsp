@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified:  09:57:16 Wed Aug 22 2018 CEST
+;;; $$ Last modified:  15:05:48 Sat Oct 20 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -322,7 +322,9 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 ;;; SYNOPSIS
 (defmethod limit ((tls tl-set) &key upper lower do-related-sets)
 ;;; ****
-  (let ((u (limit-get-pitch upper 'b10)) ;; 'b10 and 'c0 are just defaults
+  ;; MDE Sat Oct 20 15:05:33 2018 -- use 'b8 instead of 'b10 so we don't get
+  ;; warnings when limiting just lower 
+  (let ((u (limit-get-pitch upper 'b8)) ;; 'b8 and 'c0 are just defaults
         (l (limit-get-pitch lower 'c0)))
     (setf (slot-value tls 'limit-upper) u
           (slot-value tls 'limit-lower) l

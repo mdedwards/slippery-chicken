@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  14:35:32 Fri Oct 19 2018 CEST
+;;; $$ Last modified:  09:26:54 Thu Oct 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1694,9 +1694,13 @@ data: CQS4
 ;;; - A pitch object.
 ;;; - A number indicating the MIDI channel which is to be used to play back
 ;;;   non-microtonal pitches.
+;;;
+;;; OPTIONAL ARGUMENTS
 ;;; - A number indicating the MIDI channel which is to be used to play back
 ;;;   microtonal pitches. NB: See player.lsp/make-player for details on
-;;;   microtones in MIDI output. 
+;;;   microtones in MIDI output. Default = NIL which means it will take on the
+;;;   value of the second argument (all pitches on the same channel, whether
+;;;   microtonal or not). 
 ;;; 
 ;;; RETURN VALUE
 ;;; A number indicating which value has been set to the given pitch object's

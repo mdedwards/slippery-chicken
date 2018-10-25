@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  13:33:27 Fri Oct 19 2018 CEST
+;;; $$ Last modified:  17:09:05 Thu Oct 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1075,6 +1075,7 @@ data: (
                          &optional (enharmonics-are-equal t)
                                    (octaves-are-true nil))
 ;;; ****
+  ;; (print c) (print p)
   (or (pitch-member p (data c) enharmonics-are-equal)
       (and octaves-are-true
            (pitch-member p (data c) enharmonics-are-equal #'is-octave))))
@@ -2229,9 +2230,38 @@ data: (
   c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Oct 25 17:08:12 2018
+(defmethod thin ((c chord) &key (strength 5) remove target invert)
+  (setf (data c) (thin-aux (data c) strength remove target invert))
+  c)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Oct 25 16:59:59 2018 - returns the pitches we've removed and the
+;;; pitches argument after they've been removed 
+(defun thin-aux (pitches strength remove target invert)
+  (unless (integer-between strength 1 10)
+    (error "sc-set::thin: :strength should be between 1 and 10: ~a" strength))
+  (when (and remove target)
+    (error "sc-set::thin: use either :remove or :target but not both."))
+  (unless (or remove target) (setq remove (floor (length pitches) 3)))
+  (unless remove (setq remove (- (length pitches) target)))
+  (let ((al (make-al 1))
+        (removed 0)
+        (rm '()))
+    (loop repeat 1000 until (= removed remove) do
+         (loop for p in (if invert (reverse pitches) pitches) do
+              (when (and (< removed remove)
+                         (not (member p rm :test #'pitch=))
+                         (active al strength))
+                (push p rm)
+                (incf removed))))
+    (values (set-difference pitches rm :test #'pitch=)
+            rm)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Dec  6 09:35:37 2013 -- changed to (force-midi-channel t) from NIL.
 ;;; ****f* chord/make-chord

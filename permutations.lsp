@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified:  14:46:21 Tue Dec 12 2017 CET
+;;; $$ Last modified:  14:46:03 Thu Oct 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -48,12 +48,6 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Jan 16 21:14:16 GMT 2012: Deleted MDE's comment, as it was taken
-;;; nearly verbatim into the robodoc info below.
-
-;;; SAR Mon Jan 16 17:11:38 GMT 2012: Added robodoc info
-
 ;;; ****f* permutations/inefficiently-permutate
 ;;; DESCRIPTION
 ;;; Return a shuffled, non-systematically ordered list of all possible
@@ -1244,25 +1238,26 @@ WARNING:
 
 |#
 ;;; SYNOPSIS
-(defun move-repeats (list &optional (test #'eq))
+(defun move-repeats (list &key (warn t) (test #'eq))
 ;;; ****
   (let ((result (list (first list)))
         (rest (rest list)))
     (loop
        for last-last = (get-atom (first result) t)
        while rest do
-       (loop for i in rest and j from 0 do
-            (unless (funcall test last-last (get-atom i))
-              (setf rest (remove i rest :start j :count 1))
-              (push i result)
-              (return))
-          ;; this only gets triggered when we can't find a place for i.
-            finally 
-            (warn "move-repeats: can't find non-repeating place! ~
+         (loop for i in rest and j from 0 do
+              (unless (funcall test last-last (get-atom i))
+                (setf rest (remove i rest :start j :count 1))
+                (push i result)
+                (return))
+            ;; this only gets triggered when we can't find a place for i.
+            finally
+              (when warn
+                (warn "move-repeats: can't find non-repeating place! ~
                    Present element: ~a, elements left: ~a"
-                  i (length rest))
-            (setf result (append rest result)
-                  rest nil)))
+                      i (length rest)))
+              (setf result (append rest result)
+                    rest nil)))
     (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

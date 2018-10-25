@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified:  15:05:48 Sat Oct 20 2018 CEST
+;;; $$ Last modified:  14:00:40 Thu Oct 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -380,7 +380,7 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 (defmethod limit-shift-octave ((tls tl-set) &key upper lower
                                               do-related-sets)
 ;;; ****
-  (let ((upper (limit-get-pitch upper 'b10)) ;; 'b10 and 'c0 are just defaults
+  (let ((upper (limit-get-pitch upper 'b8)) ;; 'b8 and 'c0 are just defaults
         (lower (limit-get-pitch lower 'c0))
         new8ve changes newp)
     (loop for i below (sclist-length tls)
@@ -397,24 +397,28 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
            ;; preference notes in higher octaves if there's a tie
            (setq new8ve (least-used-octave tls :highest-wins t
                                            :avoiding (octave p)))
-           ;; make sure moving doesn't take us out of our limits
-           (loop for j in '(0 1 2 3 4 -1 -2 -3 -4)
-              for 8ve = (+ j new8ve) do
-                (when (and (< 8ve 9) (> 8ve -2))
-                  (setq newp (transpose-to-octave p 8ve))
-                  (when (and (pitch<= newp upper)
-                             (pitch>= newp lower))
-                    (return)))
-              ;; will only trigger if we don't call return
-              finally (error "tl-set::limit-shift-octave: can't fit pitch: ~a"
-                             p))
-           (setf (nth i (data tls)) newp)
-           (push new8ve changes)))
+           (when new8ve
+             ;; make sure moving doesn't take us out of our limits
+             (loop for j in '(0 1 2 3 4 -1 -2 -3 -4)
+                for 8ve = (+ j new8ve) do
+                  (when (and (< 8ve 9) (> 8ve -2))
+                    (setq newp (transpose-to-octave p 8ve))
+                    (when (and (pitch<= newp upper)
+                               (pitch>= newp lower))
+                      (return)))
+                ;; will only trigger if we don't call return
+                finally (error "tl-set::limit-shift-octave: can't fit pitch: ~a"
+                               p))
+             (setf (nth i (data tls)) newp)
+             (push new8ve changes))))
     (when changes
       (setq changes (nreverse changes))
       (ral-change-pitches (subsets tls) changes)
       (when do-related-sets
         (ral-change-pitches (related-sets tls) changes))))
+  ;; MDE Thu Oct 25 12:19:59 2018 -- do this here to avoid warning if our 8ve
+  ;; transposition has caused pitch duplications
+  (rm-duplicates tls)
   (verify-and-store tls)
   tls)
   

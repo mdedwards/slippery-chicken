@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  09:26:54 Thu Oct 25 2018 CEST
+;;; $$ Last modified:  14:51:24 Thu Oct 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1669,6 +1669,12 @@ data: CQS4
                                              c5s)))
                               (t 0))
               (data-consistent p) t)
+        ;; MDE Thu Oct 25 14:49:15 2018
+        (when (and (get-sc-config 'warn-low-pitch)
+                   (< (octave p) -1))
+          (warn "pitch::update-pitch: octave is < -1 ~
+                 probably won't be able ~%to display in score format: ~a" 
+                p))
         ;; MDE Thu May 30 20:12:17 2013 
         (when (and (get-sc-config 'warn-high-pitch)
                    (> (midi-note p) 119))
@@ -1754,10 +1760,13 @@ data: CQS4
       (unless octave
         (error "~%pitch::set-white-note: no octave given for pitch ~a." (id p)))
       ;; MDE Mon May 14 14:32:17 2012 
-      (unless (and (integerp octave) (>= octave -1))
-        (warn "~a~%pitch::set-white-note: octave is either not an integer ~
-             or less than -1.  ~%~
-             Pitch probably won't display or play correctly." p))
+      (unless (integerp octave)
+        (warn "~a~%pitch::set-white-note: octave is not an integer. ~%~
+               Probably won't display or play correctly." p))
+      (when (and (get-sc-config 'warn-low-pitch)
+                 (<= octave -1))
+        (warn "~a~%pitch::set-white-note: octave is less than -1.  ~%~
+               Pitch probably won't display or play correctly." p))
       (let* ((str (string note))
              (note-letter (read-from-string (subseq str 0 1)))
              (white (read-from-string 

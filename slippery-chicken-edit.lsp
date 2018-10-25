@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  11:02:41 Thu Oct 25 2018 CEST
+;;; $$ Last modified:  11:48:17 Thu Oct 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6243,13 +6243,15 @@ T
 ;;; DESCRIPTION
 ;;; Change the midi-channels of events in the slippery-chicken object. All
 ;;; events' pitch objects' midi-channel slots will be destructively overwritten
-;;; when using this method. The second argument is a list of lists. Each sublist
-;;; has the player (not instrument) ID symbol as its first element, followed by
-;;; one or two channel numbers. If only one channel is given (i.e. it's a
-;;; two-element list e.g. (vln 1)) then it will be used for both chromatic and
-;;; microtonal pitches (i.e. all the players' pitches will be written to the one
-;;; given midi channel). Otherwise if a second channel is given (e.g. (vln 1 2))
-;;; then microtonal pitches will be written on the second channel.
+;;; when using this method.
+;;;
+;;; The second argument is a list of lists. Each sublist has the player (not
+;;; instrument) ID symbol as its first element, followed by one or two channel
+;;; numbers. If only one channel is given (i.e. it's a two-element list
+;;; e.g. (vln 1)) then it will be used for both chromatic and microtonal pitches
+;;; (i.e. all the players' pitches will be written to the one given midi
+;;; channel). Otherwise if a second channel is given (e.g. (vln 1 2)) then
+;;; microtonal pitches will be written on the second channel.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object.

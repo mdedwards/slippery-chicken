@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  13:33:46 Fri Oct 19 2018 CEST
+;;; $$ Last modified:  17:22:51 Thu Oct 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1602,7 +1602,6 @@ data: E4
 ;;; June 1st, Edinburgh
 ;;; 
 ;;; DESCRIPTION
-
 ;;; Remove pitches from a set using a deterministic algorithm. From bottom to
 ;;; top (or vice-versa) pitches will be selected or rejected using the
 ;;; activity-levels class, to which the strength (1-10) is passed. The pitches
@@ -1635,25 +1634,12 @@ data: E4
 (defmethod thin ((s sc-set) &key (strength 5) remove target invert)
 ;;; ****
   ;; (print strength) (print remove) (print target)
-  (unless (integer-between strength 1 10)
-    (error "sc-set::thin: :strength should be between 1 and 10: ~a" strength))
-  (when (and remove target)
-    (error "sc-set::thin: use either :remove or :target but not both."))
-  (unless (or remove target)
-    (setq remove (floor (sclist-length s) 3)))
-  (unless remove (setq remove (- (sclist-length s) target)))
-  (let ((al (make-al 1))
-        (removed 0)
-        (rm '()))
-    (loop repeat 1000 until (= removed remove) do
-         (loop for p in (if invert (reverse (data s)) (data s)) do
-              (when (and (< removed remove)
-                         (not (member p rm :test #'pitch=))
-                         (active al strength))
-                (push p rm)
-                (incf removed))))
-    (setf (data s) (set-difference (data s) rm :test #'pitch=))
+  (multiple-value-bind 
+        (rmd rm)
+      (thin-aux (data s) strength remove target invert)
+    (setf (slot-value s 'data) rmd)
     (subsets-remove s rm)
+    (verify-and-store s)
     s))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

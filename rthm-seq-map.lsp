@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  15:36:19 Mon Feb 19 2018 CET
+;;; $$ Last modified:  18:00:51 Tue Oct 30 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -694,6 +694,15 @@ data: (5 3 2)
                    (econs player-refs (make-named-object player refs)))
              (incf (sclist-length (data section))))))
   rsm)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Oct 29 17:07:56 2018 -- surely we must do this too?
+(defmethod add-player :after ((rsm rthm-seq-map) player &optional data cycle)
+  (declare (ignore data cycle))
+  (add-player-to-players rsm player))
+
+(defmethod add-player-to-players ((rsm rthm-seq-map) player)
+  (setf (players rsm) (econs (players rsm) player)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jan 29 09:58:20 2018 -- we'll use sc-maps num-sequences method but

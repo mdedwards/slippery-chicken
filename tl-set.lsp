@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified:  14:00:40 Thu Oct 25 2018 CEST
+;;; $$ Last modified:  18:32:38 Thu Oct 25 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -380,8 +380,8 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 (defmethod limit-shift-octave ((tls tl-set) &key upper lower
                                               do-related-sets)
 ;;; ****
-  (let ((upper (limit-get-pitch upper 'b8)) ;; 'b8 and 'c0 are just defaults
-        (lower (limit-get-pitch lower 'c0))
+  (let ((uppr (limit-get-pitch upper 'b8)) ;; 'b8 and 'c0 are just defaults
+        (lowr (limit-get-pitch lower 'c0))
         new8ve changes newp)
     (loop for i below (sclist-length tls)
        ;; don't loop in (data tls) as we're modifying that in this loop (would
@@ -391,26 +391,36 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
            (error "tl-set::limit-shift-octave: no pitch at position ~a. ~
                    ~%Should be ~a pitches; data length = ~a"
                   i (sclist-length tls) (length (data tls))))
-         (when (or (pitch> p upper)
-                   (pitch< p lower))
+         (when (or (pitch> p uppr)
+                   (pitch< p lowr))
            (push (clone p) changes)
            ;; preference notes in higher octaves if there's a tie
            (setq new8ve (least-used-octave tls :highest-wins t
                                            :avoiding (octave p)))
-           (when new8ve
-             ;; make sure moving doesn't take us out of our limits
-             (loop for j in '(0 1 2 3 4 -1 -2 -3 -4)
-                for 8ve = (+ j new8ve) do
-                  (when (and (< 8ve 9) (> 8ve -2))
-                    (setq newp (transpose-to-octave p 8ve))
-                    (when (and (pitch<= newp upper)
-                               (pitch>= newp lower))
-                      (return)))
-                ;; will only trigger if we don't call return
-                finally (error "tl-set::limit-shift-octave: can't fit pitch: ~a"
-                               p))
-             (setf (nth i (data tls)) newp)
-             (push new8ve changes))))
+           (unless new8ve
+             (setq new8ve (octave (if upper uppr lowr))))
+           ;; MDE Thu Oct 25 18:21:38 2018 -- if all pitches are in the same
+           ;; octave and too high then nothing will happen...so force it
+           (if (>= new8ve (octave uppr))
+               ;; this still means we might exceed the actual upper pitch, but
+               ;; not by much
+               (setq new8ve (octave uppr))
+               (when (<= new8ve (octave lowr))
+                 ;; sim. here...
+                 (setq new8ve (octave lowr))))
+           ;; make sure moving doesn't take us out of our limits
+           (loop for j in '(0 1 2 3 4 -1 -2 -3 -4)
+              for 8ve = (+ j new8ve) do
+                (when (and (< 8ve 9) (> 8ve -2))
+                  (setq newp (transpose-to-octave p 8ve))
+                  (when (and (pitch<= newp uppr)
+                             (pitch>= newp lowr))
+                    (return)))
+              ;; will only trigger if we don't call return
+              finally (error "tl-set::limit-shift-octave: can't fit pitch: ~a"
+                             p))
+           (setf (nth i (data tls)) newp)
+           (push new8ve changes)))
     (when changes
       (setq changes (nreverse changes))
       (ral-change-pitches (subsets tls) changes)

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified:  21:25:54 Thu Jul 13 2017 BST
+;;; $$ Last modified:  18:08:15 Mon Oct 29 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -183,9 +183,10 @@
 ;;; bars we create. 
 
 (defmethod clone-as-rest-sequenz ((s sequenz) &optional
-                                  (show-rests t)
-                                  missing-duration
-                                  player-ref)
+                                                (show-rests t)
+                                                missing-duration
+                                                player-ref)
+  ;;   (print 'cars)
   (let ((seq (make-instance 'sequenz)))
     ;; from the rthm-seq class
     (setf (slot-value seq 'num-bars) (num-bars s)
@@ -194,20 +195,20 @@
           (slot-value seq 'bars)
           (loop for b in (bars s) and i from 1 
              for rb = 
-             (make-rest-bar (get-time-sig b)
-                            (write-time-sig b)
-                            show-rests
-                            (when (= i 1)
-                              missing-duration)
-                            (let ((psr (copy-list (player-section-ref b))))
-                              (when psr
-                                (setf-last psr player-ref))
-                              psr)
-                            (nth-seq b)
-                            (nth-bar b))
+               (make-rest-bar (get-time-sig b)
+                              (write-time-sig b)
+                              show-rests
+                              (when (= i 1)
+                                missing-duration)
+                              (let ((psr (copy-list (player-section-ref b))))
+                                (when psr
+                                  (setf-last psr player-ref))
+                                psr)
+                              (nth-seq b)
+                              (nth-bar b))
              do
              ;; MDE Mon May  5 20:33:24 2014 
-             (setf (player (first (rhythms rb))) player-ref)
+               (setf (player (first (rhythms rb))) player-ref)
              collect rb)
           ;; from the bar-holder class
           (slot-value seq 'start-bar) (start-bar s) 

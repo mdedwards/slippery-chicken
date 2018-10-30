@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  11:48:17 Thu Oct 25 2018 CEST
+;;; $$ Last modified:  18:02:05 Tue Oct 30 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4946,12 +4946,12 @@ NIL
 ;;; - An integer that is the number of the first bar to change to a full bar of
 ;;;   rest. 
 ;;; - An integer that is the number of the last bar to change to a full bar of
-;;;   rest. 
+;;;   rest. If NIL then we process all bars.
 ;;; - A list containing the IDs of the players in whose parts the full-bar
-;;;   rests are to be forced.
+;;;   rests are to be forced. If NIL then all players will be processed.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns NIL.
+;;; Returns the number of bars processed (integer).
 ;;; 
 ;;; EXAMPLE
 #|
@@ -4977,18 +4977,21 @@ NIL
 ;;; SYNOPSIS
 (defmethod force-rest-bars ((sc slippery-chicken) start-bar end-bar players)
 ;;; ****
-  (unless players
-    (setf players (players sc)))
-  (unless (listp players)
-    (setf players (list players)))
-  (loop for bar-num from start-bar to end-bar do
+  (unless players (setq players (players sc)))
+  (unless (listp players) (setq players (list players)))
+  ;; MDE Mon Oct 29 12:40:52 2018 
+  (unless end-bar (setq end-bar (num-bars sc)))
+  (loop with processed = 0
+     for bar-num from start-bar to end-bar do
        (loop for player in players 
-            for bar = (get-bar sc bar-num player)
-            do
+          for bar = (get-bar sc bar-num player)
+          do
             (unless bar
               (error "slippery-chicken::force-rest-bars: no bar ~a for ~a"
                      bar-num player))
-            (force-rest-bar bar))))
+            (force-rest-bar bar)
+            (incf processed))
+     finally (return processed)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Tue Apr 24 19:46:02 BST 2012: Conformed robodoc entry
@@ -6287,6 +6290,64 @@ T
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Oct 30 08:12:47 2018 -- which is 1-based
+(defmethod staff-groupings-inc ((sc slippery-chicken) &optional which)
+  (let ((len (length (staff-groupings sc))))
+    (if which
+        (when (> which len)
+          (error "slippery-chicken::staff-groupings-inc: can't increment at ~
+                  position ~a in staff groupings ~a"
+                 which (staff-groupings sc)))
+        (setq which len)) ; 1-based!
+    (incf (nth (1- which) (staff-groupings sc))))
+  (staff-groupings sc))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/add-player
+;;; DATE
+;;; October 30th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Add a player to the ensemble and piece slots/objects of the given
+;;; slippery-chicken object. This clones the section/sub-section structure of
+;;; the slippery-chicken object, creating all the necessary data structures for
+;;; empty bars in the right meter, tempo etc.
+;;;
+;;; NB As this method may be called several times successively, it's the
+;;; caller's duty to call (update slots sc) in order to have timing and other
+;;; data updated correctly.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - a symbol ID for the new player
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - a symbol ID for an existing instrument in the instrument-palette (the next
+;;;   argument). This is actually required unless the default of 'computer is
+;;;   acceptable.
+;;; - an instrument-palette object in which the instrument exists. Default is
+;;;   the standard palette.
+;;; 
+;;; RETURN VALUE
+;;; the new player object from the ensemble slot of the slippery-chicken object
+;;; 
+;;; SYNOPSIS
+(defmethod add-player ((sc slippery-chicken) player
+                       &optional (instrument 'computer)
+                         (instrument-palette
+                          +slippery-chicken-standard-instrument-palette+))
+;;; ****
+  (add-player (ensemble sc) player instrument instrument-palette)
+  ;; this calls the rthm-seq-map method
+  (add-player-to-players (piece sc) player)
+  ;; we pass all players so that new ones can clone existing ones (the existing
+  ;; ones won't be replaced) 
+  (add-rest-player-sections-aux (piece sc) (players sc))
+  (staff-groupings-inc sc)
+  ;; todo: check the new player's events have the right player slot
+  (get-player (ensemble sc) player))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -6376,7 +6437,9 @@ T
           (add-player (ensemble sc) player instrument instrument-palette)
           (setf (players piece) (econs (players piece) player))
           ;; we add to the last staff group by default
-          (incf (first (last (staff-groupings sc))))
+          ;; MDE Tue Oct 30 08:20:23 2018 -- use the new method
+          (staff-groupings-inc sc)
+          ;; (incf (first (last (staff-groupings sc))))
           (incf (num-players piece)))
         (progn
           (unless sc-name

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:53:04 Sat Oct 20 2018 CEST
+;;; $$ Last modified:  17:12:58 Mon Oct 29 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -9136,7 +9136,7 @@ NOTE 6200 0.6666667
          ;; these would have to be chords or notes once we get the
          ;; pitch-choosing algorithm going, also the midi-channel setting loop
          ;; below.
-         ;;  MDE Thu Sep  6 14:03:27 2018
+         ;; MDE Thu Sep  6 14:03:27 2018
          (set-transp (if slippery-chicken
                          (interpolate global-seq-num
                                       (transposition-curve slippery-chicken))

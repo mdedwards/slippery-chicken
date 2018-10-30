@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  11:29:45 Thu Oct 18 2018 CEST
+;;; $$ Last modified:  08:28:02 Tue Oct 30 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -202,6 +202,7 @@
                                          (list (cmn::staff-size .7))))
             ;; *** see above
             staff-groupings (econs staff-groupings 2)))
+    ;;(setf staff-groupings '(2))
     (format t "~&Inserting line breaks...")
     ;; cmn-data is a list containing a list for each instrument of a list
     ;; of bars for the whole piece.

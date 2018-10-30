@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    23rd March 2002
 ;;;
-;;; $$ Last modified:  12:54:47 Fri Jan 19 2018 CET
+;;; $$ Last modified:  17:17:48 Mon Oct 29 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -52,7 +52,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; The player sections are in the data slot.
+;;; The player sections are in the data slot as a simple list of player-section
+;;; objects, one for each player. 
 (defclass section (bar-holder recursive-assoc-list)
   ())
 

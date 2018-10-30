@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  14:51:24 Thu Oct 25 2018 CEST
+;;; $$ Last modified:  12:58:08 Sat Oct 27 2018 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1764,7 +1764,7 @@ data: CQS4
         (warn "~a~%pitch::set-white-note: octave is not an integer. ~%~
                Probably won't display or play correctly." p))
       (when (and (get-sc-config 'warn-low-pitch)
-                 (<= octave -1))
+                 (< octave -1))
         (warn "~a~%pitch::set-white-note: octave is less than -1.  ~%~
                Pitch probably won't display or play correctly." p))
       (let* ((str (string note))

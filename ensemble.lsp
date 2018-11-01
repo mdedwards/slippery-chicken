@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  16:25:12 Sat Aug 25 2018 CEST
+;;; $$ Last modified:  10:34:26 Thu Nov  1 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -144,9 +144,6 @@
   (get-data player e nil)) ; no warning
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Apr 18 16:00:01 BST 2012: Added robodoc entry
-
 ;;; ****m* ensemble/get-players
 ;;; DESCRIPTION
 ;;; Return the IDs of the players from a given ensemble object.
@@ -247,9 +244,6 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed May  2 12:28:10 BST 2012: Added robodoc entry
-
 ;;; ****m* ensemble/num-notes
 ;;; DESCRIPTION
 ;;; Get the number of attacked notes in a given slippery-chicken object. This
@@ -287,9 +281,6 @@
   (num-notes-aux e))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed May  2 12:40:52 BST 2012: Added robodoc entry
-
 ;;; ****m* ensemble/tessitura
 ;;; DESCRIPTION
 ;;;
@@ -370,9 +361,6 @@
 ;;; ****
   (num-data e))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Apr 18 16:50:46 BST 2012: Added robodoc entry
-
 ;;; ****m* ensemble/players-exist
 ;;; DESCRIPTION
 ;;; Produce an error message and drop into the debugger if the specified
@@ -528,6 +516,22 @@ ensemble::players-exist: VLA is not a member of the ensemble
   (let ((stats (nth-value 1 (sort-players e :stats-fun stats-fun
                                           :ignore ignore))))
     (>= (first (last stats)) (* threshold (first stats)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Nov  1 10:32:07 2018 -- take a list of lists of player IDs and
+;;; return an assoc-list where the IDs are the number of players in the combo
+;;; and the data is a list of the x-player combos
+(defmethod organise-combos ((e ensemble) combos)
+  (let* ((al (make-assoc-list 'combos nil)))
+    (loop for combo in combos do
+         (players-exist e combo) ; check all player IDs are in the ensemble
+         
+  )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod combo-chord-possible? ((e ensemble) (c chord) combo)
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

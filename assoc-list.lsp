@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  19:38:33 Tue May  1 2018 CEST
+;;; $$ Last modified:  11:04:31 Thu Nov  1 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -803,7 +803,47 @@ data: (SNOOPY SPOT ROVER)
      (apply function (if further-arguments
                          (cons nod further-arguments)
                          (list no)))))
-                         ;;; (list nod)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* assoc-list/nmap-data
+;;; DATE
+;;; November 1st 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; A destructive version of map-data
+;;; 
+;;; ARGUMENTS
+;;; See the map-data method in this class.
+;;; 
+;;; RETURN VALUE
+;;; the assoc-list object with modified data in its elements.
+;;; 
+;;; EXAMPLE
+#|
+(let ((al (make-assoc-list 'test '((1 (2 3))
+                                   (2 (4 5 6))
+                                   (3 (7))))))
+  (nmap-data al #'(lambda (no) (length (data no))))
+  al)
+...
+data: (
+NAMED-OBJECT: id: 1, tag: NIL, 
+data: 2
+**************
+NAMED-OBJECT: id: 2, tag: NIL, 
+data: 3
+**************
+NAMED-OBJECT: id: 3, tag: NIL, 
+data: 1
+...
+|#
+;;; SYNOPSIS
+(defmethod nmap-data ((al assoc-list) function &optional further-arguments)
+;;; ****
+  (let ((new-data (map-data al function further-arguments)))
+    (loop for no in (data al) and nd in new-data do
+         (setf (data no) nd))
+    al))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* assoc-list/get-nearest

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:12:58 Mon Oct 29 2018 CET
+;;; $$ Last modified:  10:16:11 Thu Nov  1 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8170,11 +8170,36 @@ NOTE 6200 0.6666667
     (+ event-count action-count)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defmethod empty-bars? ((sc slippery-chicken) player start-bar end-bar)
-  (loop for bar-num from start-bar to end-bar 
-     for bar = (get-bar sc bar-num player)
-     unless (is-rest-bar bar) do (return nil)
-       finally (return t)))
+;;; ****m* slippery-chicken/empty-bars?
+;;; DESCRIPTION
+;;; Test whether players have rest/empty bars within a given range.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the start bar (integer, inclusive)
+;;; - the end bar (integer, inclusive)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the players we want to test. Either a list of player IDs, a single ID, or
+;;;   nil if all players should be tested. Default = NIL = all players.
+;;; 
+;;; RETURN VALUE
+;;; T if all players have rest bars within the given range, NIL if no.
+;;; 
+;;; SYNOPSIS
+(defmethod empty-bars? ((sc slippery-chicken) start-bar end-bar
+                        &optional players)
+;;; ****
+  (unless players (setq players (players sc)))
+  (unless (listp players) (setq players (list players)))
+  (loop for player in players
+     for empty = 
+       (loop for bar-num from start-bar to end-bar 
+          for bar = (get-bar sc bar-num player)
+          unless (is-rest-bar bar) do (return nil)
+          finally (return t))
+     do (unless empty (return nil))
+     finally (return t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ;;; MDE Fri Nov 13 17:37:46 2015 -- make sure we start with the right number of 
@@ -8289,8 +8314,35 @@ NOTE 6200 0.6666667
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Feb  9 19:56:22 2017 
+;;; ****m* slippery-chicken/player-ambitus
+;;; DATE
+;;; February 9th 2017
+;;; 
+;;; DESCRIPTION
+;;; Find the highest and lowest events in the (given bars of the) piece,
+;;; printing if requested.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the player ID (generally symbol)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :written. T or NIL to indicate if the written (as opposed to sounding)
+;;;   pitches of the events should be handled/returned/printed. Default = NIL =
+;;;   sounding pitches
+;;; - :print. Whether to print results to the Lisp interpreter.
+;;; - :start-bar. The bar number to start processing. Default = 1.
+;;; - :start-bar. The bar number to stop processing (inclusive). Default = NIL =
+;;;   the last bar.
+;;; 
+;;; RETURN VALUE
+;;; two values: the lowest event and the highest event.
+;;; 
+;;; SYNOPSIS
 (defmethod player-ambitus ((sc slippery-chicken) player &key written print
                                                           (start-bar 1) end-bar)
+;;; ****
   
   (let (high low e-high e-low)
     (next-event sc player nil start-bar)
@@ -8310,8 +8362,24 @@ NOTE 6200 0.6666667
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Aug  5 18:09:57 2017 -- 
+;;; ****m* slippery-chicken/players-ambitus
+;;; DATE
+;;; August 5th 2017
+;;; 
+;;; DESCRIPTION
+;;; Call the player-ambitus method for each player in the slippery-chicken
+;;; object. 
+;;; 
+;;; ARGUMENTS
+;;; see player-ambitus method
+;;; 
+;;; RETURN VALUE
+;;; the lowest and highest events of all the players
+;;; 
+;;; SYNOPSIS
 (defmethod players-ambitus ((sc slippery-chicken)
                             &key written print (start-bar 1) end-bar)
+;;; ****
   (let (high low)
     (loop for p in (players sc) do
          (multiple-value-bind
@@ -8325,6 +8393,9 @@ NOTE 6200 0.6666667
     (when print
       (format t "~&all players: high: ~a low: ~a" (data high) (data low)))
     (values low high)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

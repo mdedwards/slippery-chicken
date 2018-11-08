@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  17:58:46 Thu Oct 25 2018 CEST
+;;; $$ Last modified:  11:24:38 Thu Nov  1 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1588,12 +1588,19 @@ data: E4
     (when (listp (first pitches))       ; pitches was already a list
       (setq pitches (first pitches)))
     (setq pitches (loop for p in pitches collect (make-pitch p)))
-    (map-data (subsets s)
+    ;; MDE Thu Nov  1 11:22:49 2018 -- use nmap-data instead now
+    (nmap-data (subsets s)
+              #'(lambda (plist)
+                  (remove-if
+                   #'(lambda (p)
+                       (member p pitches :test #'pitch=))
+                   plist))))
+    #|(map-data (subsets s)
               #'(lambda (ss)
                   (setf (data ss) (remove-if
                                    #'(lambda (p)
                                        (member p pitches :test #'pitch=))
-                                   (data ss))))))
+                                   (data ss)))))) |#
   s)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

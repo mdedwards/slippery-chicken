@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  16:27:02 Fri Oct 19 2018 CEST
+;;; $$ Last modified:  12:09:58 Mon Nov  5 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -214,6 +214,8 @@
 (sc-compile-and-load "circular-sclist.lsp")
 (sc-compile-and-load "assoc-list.lsp")
 (sc-compile-and-load "recursive-assoc-list.lsp")
+(sc-compile-and-load "activity-levels.lsp")
+(sc-compile-and-load "activity-levels-env.lsp")
 (sc-compile-and-load "palette.lsp")
 (sc-compile-and-load "pitch-seq-palette.lsp")
 (sc-compile-and-load "globals.lsp")
@@ -260,8 +262,6 @@
 (sc-compile-and-load "rthm-chain.lsp")
 (sc-compile-and-load "rthm-chain-slow.lsp")
 (sc-compile-and-load "cycle-repeats.lsp")
-(sc-compile-and-load "activity-levels.lsp")
-(sc-compile-and-load "activity-levels-env.lsp")
 (sc-compile-and-load "recurring-event.lsp")
 (sc-compile-and-load "intervals-mapper.lsp")
 (sc-compile-and-load "instruments.lsp")

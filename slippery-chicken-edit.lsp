@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  18:02:05 Tue Oct 30 2018 CET
+;;; $$ Last modified:  18:18:50 Thu Nov  8 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1142,7 +1142,7 @@
 ;;; - A slippery-chicken object.
 ;;; - An integer that is the bar number in which the pitch is to be changed.
 ;;; - An integer that is the number of the note in the specified bar whose
-;;;   pitch is to be changed.
+;;;   pitch is to be changed (1-based).
 ;;; - The ID of the player for whom the pitch is to be changed.
 ;;; - A note-name symbol that is the new pitch.
 ;;;
@@ -4558,7 +4558,7 @@ NIL
 ;;;   to be copied.
 ;;; - NIL or an integer that is the number of the last event to be copied from
 ;;;   the specified end bar. This number is 1-based and counts rests and
-;;;   ties. If NIL, all event from the given bar will be copied.
+;;;   ties. If NIL, all events from the given bar will be copied.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
@@ -4604,7 +4604,7 @@ NIL
                           start-bar start-event end-bar end-event
                           &key transposition (consolidate-rests t) (update t))
 ;;; ****
-  (setf doubling-players (force-list doubling-players))
+  (setq doubling-players (force-list doubling-players))
   (loop for doubling-player in doubling-players do       
      ;; clone the master players bars
        (let* ((player-obj (get-data doubling-player (ensemble sc)))
@@ -4994,8 +4994,6 @@ NIL
      finally (return processed)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Tue Apr 24 19:46:02 BST 2012: Conformed robodoc entry
-
 ;;; ****m* slippery-chicken-edit/force-artificial-harmonics
 ;;; DESCRIPTION
 ;;; For string scoring purposes only: Transpose the pitch of the given event
@@ -5059,17 +5057,13 @@ NIL
          (force-artificial-harmonic e ins)))
     t))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; A post-generation editing method
-
-;;; SAR Fri Apr 27 12:41:30 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken-edit/set-cautionary-accidental
 ;;; DATE
 ;;; 28-Sep-2011
 ;;;
 ;;; DESCRIPTION
-;;; Place a cautionary accidental (sharp/flat/natural sign in parentheses)
-;;; before a specified note. 
+;;; A post-generation editing method: Place a cautionary accidental
+;;; (sharp/flat/natural sign in parentheses) before a specified note. 
 ;;;
 ;;; NB: Adding cautionary accidentals to pitches within chords is currently
 ;;;     only possible in LilyPond output. Adding cautionary accidentals to
@@ -5132,15 +5126,11 @@ NIL
   (cautionary-accidental-aux sc bar-num note-num player t written))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; A post-generation editing method
-
-;;; SAR Thu Apr 26 15:05:24 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken-edit/unset-cautionary-accidental
 ;;; DESCRIPTION
-;;; Remove the parentheses from a cautionary accidental (leaving the accidental
-;;; itself) by setting the ACCIDENTAL-IN-PARENTHESES slot of the contained
-;;; pitch object to NIL.
+;;; A post-generation editing method: Remove the parentheses from a cautionary
+;;; accidental (leaving the accidental itself) by setting the
+;;; ACCIDENTAL-IN-PARENTHESES slot of the contained pitch object to NIL.
 ;;;
 ;;; NB: Since respell-notes is called by default within cmn-display and
 ;;;     write-lp-data-for-all, that option must be explicitly set to NIL for
@@ -5188,9 +5178,6 @@ NIL
   (cautionary-accidental-aux sc bar-num note-num player nil written))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu Apr 19 11:14:57 BST 2012: Conforming MDE robodoc entry
-
 ;;; ****m* slippery-chicken-edit/add-arrow-to-events
 ;;; DATE
 ;;; April 9th 2012
@@ -5435,7 +5422,6 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
     (map-over-bars
      sc start-bar end-bar players
      #'(lambda (bar acurve)
-         ;;  (print bar) (print acurve)
          (loop with anum = (interpolate (1- (bar-num bar)) acurve)
             for e in (rhythms bar) do
               (when (and (needs-new-note e) (not (active al anum)))
@@ -6319,12 +6305,12 @@ T
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
-;;; - a symbol ID for the new player
+;;; - a player object or symbol ID for the new player
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; - a symbol ID for an existing instrument in the instrument-palette (the next
 ;;;   argument). This is actually required unless the default of 'computer is
-;;;   acceptable.
+;;;   acceptable or a player object is passed as second argument.
 ;;; - an instrument-palette object in which the instrument exists. Default is
 ;;;   the standard palette.
 ;;; 
@@ -6337,21 +6323,202 @@ T
                          (instrument-palette
                           +slippery-chicken-standard-instrument-palette+))
 ;;; ****
-  (add-player (ensemble sc) player instrument instrument-palette)
-  ;; this calls the rthm-seq-map method
-  (add-player-to-players (piece sc) player)
-  ;; we pass all players so that new ones can clone existing ones (the existing
-  ;; ones won't be replaced) 
-  (add-rest-player-sections-aux (piece sc) (players sc))
-  (staff-groupings-inc sc)
-  ;; todo: check the new player's events have the right player slot
-  (get-player (ensemble sc) player))
+  (let ((player-id (if (player-p player) (id player) player)))
+    (add-player (ensemble sc) player instrument instrument-palette)
+    ;; this calls the rthm-seq-map method
+    (add-player-to-players (piece sc) player-id)
+    ;; we pass all players so that new ones can clone existing ones (the
+    ;; existing ones won't be replaced)
+    (add-rest-player-sections-aux (piece sc) (players sc))
+    (staff-groupings-inc sc)
+    ;; todo: check the new player's events have the right player slot
+    (get-player (ensemble sc) player-id)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Nov  3 10:14:39 2018 
+(defmethod add-ensemble-players ((sc slippery-chicken) (ens ensemble))
+  (loop for player in (data ens) do (add-player sc player))
+  (players sc))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/orchestrate
+;;; DATE
+;;; November 2nd 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; 'Orchestrate' the chords and single pitches in an existing slippery-chicken
+;;; object. 
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object whose existing players and event data will be
+;;;   used to orchestrate onto new players
+;;; - a new ensemble, the players/instruments of which will be used for the new
+;;;   orchestration. (This shouldn't be a nested ensemble but that's a rarity.)
+;;;   This can either be an ensemble object or a list structure that can be made
+;;;   into one (as used for most calls to make-slippery-chicken).
+;;; - a list of player IDs indicating the original music to be re-orchestrated.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :combos. A list of lists indicating the player groupings to be
+;;;   used to orchestrate the events. Default = NIL whereupon the <new-ensemble>
+;;;   will be used to generate groupings via the lotsa-combos method.
+;;; - :start-bar. The bar number to start orchestrating. Default = NIL which
+;;;   will in turn default to 1
+;;; - :end-bar. The bar number to stop orchestrating (inclusive). Default = NIL
+;;;   which will in turn default to the last bar of the slippery-chicken object.
+;;; - :combo-change-fun. A function which should return T or NIL to indicate
+;;;   whether we should change combo on any given event. This should take two
+;;;   arguments (the combo as a list of player IDs and an assoc-list of all
+;;;   possible combos (as created by the organise-combos method using the
+;;;   <combos> argument given here) plus two further optional arguments which
+;;;   are free to define. The function should also provide "reset" functionality
+;;;   or do nothing if one of the two required arguments is NIL. Default =
+;;;   combo-change? (defined in event.lsp). 
+;;; 
+;;; RETURN VALUE
+;;; The (modified) slippery-chicken object.
+;;; 
+;;; SYNOPSIS
+(defmethod orchestrate ((sc slippery-chicken) new-ensemble original-players
+                        &key
+                          combos start-bar end-bar (artificial-harmonics t)
+                          (combo-change-fun #'combo-change?))
+;;;  ****
+  ;; reset our activity-levels object or whatever the given function does to
+  ;; reset 
+  (funcall combo-change-fun nil nil) 
+  (setq new-ensemble (make-ensemble nil new-ensemble) ; clone or instantiate
+        original-players (force-list original-players))
+  (unless combos (setq combos (lotsa-combos new-ensemble)))
+  (let* ((phrases (get-phrases sc original-players :start-bar start-bar
+                               :end-bar end-bar :pad nil))
+         (combos-al (organise-combos new-ensemble combos))
+         combo)
+    (add-ensemble-players sc new-ensemble)
+    (loop for pphrase in phrases and player in original-players do
+       ;; strictly speaking phrases have no meaning here as combos can change
+       ;; at any point but keep the phrase processing in place for now in case
+       ;; we do want to somehow differentiate phrases in the future.
+         (loop for phrase in pphrase do
+            ;; duplicate the events, with all chord notes. we then change
+            ;; notes afterwards
+            ;; number of notes in each chord/event can vary from event to
+            ;; event. within a phrase we'll re-use a combo if the number of
+            ;; notes in a chord reoccurs and our combo-change? function tells us
+            ;; not to change
+              (loop for event in phrase do 
+                 ;; NB event is from the original player
+                   (unless (is-rest event)
+                     ;; not only will this get a combo that can play the chord
+                     ;; (if one exists) but it will also see if our combo is
+                     ;; free for this event. nb if it's a rest bar, we need to
+                     ;; double the events of the phrase but force them into
+                     ;; rests then we can change individual rests back into
+                     ;; notes. so there are side effects here but all good ones.
+                     (unless (is-tied-to event)
+                       (setq combo (get-combo sc event combos-al
+                                              combo-change-fun)))
+                     ;; (print-simple event) 
+                     ;; (print-simple (second (first combo)))
+                     ;; (terpri)
+                     ;; combo should now be as described below at 
+                     (loop for p in combo
+                        for e = (get-event sc (bar-num event)
+                                           (1+ (bar-pos event)) (first p))
+                        do
+                        ;;                       pitch obj  ins obj
+                          (set-pitch-or-chord e (second p) (third p))
+                          (when (is-tied-from event)
+                            (setf (is-tied-from e) t))
+                          (when (is-tied-to event)
+                            (setf (is-tied-to e) t))))))))
+  (update-slots sc)
+  sc)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; returns a combo that can play the chord __and__ is free (has rests) to play
+;;; it 
+(defmethod get-combo ((sc slippery-chicken) (e event) (combos assoc-list)
+                      &optional 
+                        (combo-change-fun #'combo-change?)
+                        (artificial-harmonics t))
+  ;; (print '***********************)
+  (let* ((num-notes (num-notes e))
+         (cscl (get-data-data num-notes combos))
+         (current-combo (get-current cscl))
+         (change (funcall combo-change-fun current-combo combos)))
+    (when change
+      ;; (print 'change)
+      (setq current-combo (get-next cscl)))
+    ;; (print (data cscl))
+    ;; (print cscl)
+    (loop for i to (sclist-length cscl)
+       ;;            event method, so player IDs convert to instrument objects
+       for possible = (combo-chord-possible? e current-combo
+                                             artificial-harmonics sc)
+       for free = (when possible
+                    (loop for player in current-combo do
+                       ;; for player = (nth (first p) current-combo) do
+                         (unless (free-to-double? sc e player)
+                           (return nil))
+                       finally (return t)))
+       do
+       ;;  so we return a list of 3-element sublists: the player (symbol), the
+       ;; pitch or artificial harmonic that they can play and the instrument
+       ;; object
+         (if free
+             (return (loop for p in possible collect ; this has to happen!
+                        ;; convert the index to player ID
+                          (cons (nth (first p) current-combo)
+                                (rest p))))
+             (setq current-combo (get-next cscl)))
+       finally (error "slippery-chicken::get-combo: no combo can play ~a.~
+                       ~%Chord ~apossible, free: ~a~%~a"
+                      (get-pitch-symbol e) (if possible "" "im") free e))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; <e> is an event from another player but is <player> free to double that
+;;; event i.e. does it have a rest bar or another rest at that point? in the
+;;; latter case and for now we merely check that there's a rest of the same
+;;; rhythmic duration of <e> at the same bar position. returns to or nil
+(defmethod free-to-double? ((sc slippery-chicken) (e event) player)
+  (let* ((bar (get-bar sc (bar-num e) player))    ; the player we're querying
+         (ne (get-nth-event (bar-pos e) bar nil)) ; ditto
+         ;; if player's bar is empty then we'll be calling double-events
+         ;; below. in that case we have to see if there's a tie into the next
+         ;; bar. if so we'll need to double-events in that (and perhaps
+         ;; subsequent bars) also.
+         (last-event (get-last-event
+                      (get-bar sc (bar-num e) (player e))))
+         (end-bar (if (is-tied-from last-event)
+                      (bar-num (find-end-tie sc last-event))
+                      (bar-num e))))
+    ;; (format t "~a" ne)
+    (if (empty-bars? sc (bar-num e) end-bar player) ;(is-rest-bar bar)
+        ;; if the last event in the bar we'll copy from is tied, then we have to
+        ;; double events in the next bar, maybe even more
+        (progn
+          (double-events sc (player e) player (bar-num e) 1 end-bar nil
+                         :consolidate-rests nil :update nil)
+          (loop for bar-num from (bar-num e) to end-bar do
+               (force-all-rests (get-bar sc bar-num player)))
+          t)
+        ;; have we already copied over skeleton events or is there (by chance
+        ;; even) a rest of the same duration at the same point in the bar?
+        ;; todo: an improvement would be to check following rests if <e> is tied
+        ;; from. that way we could use this method outside of the
+        ;; orchestrate/get-combo context. for now we're assuming rests have been
+        ;; created over whole bars
+        (and ne (is-rest ne)
+             (equal-within-tolerance (start-time e) (start-time ne))
+             (equal-within-tolerance (duration e) (duration ne))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; The structure of a slippery-chicken object is as follows:
 ;;; slippery-chicken -> piece -> section (plus subsections where appropriate) ->
 ;;; player-section ->  sequenz -> rthm-seq-bar -> event

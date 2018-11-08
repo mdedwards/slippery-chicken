@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  10:28:48 Tue Oct 16 2018 CEST
+;;; $$ Last modified:  11:54:35 Thu Nov  8 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -279,6 +279,12 @@
     ;; MDE Fri May 13 14:37:57 2016 -- return a second value that shows
     ;; under/overfill: positive will be underfill, negative overfill
     (values ok (- ts-dur rthms-dur))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Nov  8 11:53:13 2018 -- whether the last event in the bar is tied
+;;; from?
+(defmethod is-tied-from ((rsb rthm-seq-bar))
+  (is-tied-from (get-last-event rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -908,9 +914,7 @@ data: E.
     rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* rthm-seq-bar/force-rest-bar
-;;; 12.12.11 SAR: Added ROBODoc info
 ;;; DESCRIPTION
 ;;; Force all rhythms of a rthm-seq-bar object to be replaced by rest.
 ;;; 
@@ -984,6 +988,28 @@ data: ((2 4) Q E S S)
           (tuplets rsb) nil
           (beams rsb) nil)
     (gen-stats rsb)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Nov  7 16:45:50 2018
+;;; ****m* rthm-seq-bar/force-all-rests
+;;; DATE
+;;; November 7th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Makes all events in the bar rests. This differs from force-rest-bar in that
+;;; it doesn't replace the events with a single full-bar rest  
+;;; 
+;;; ARGUMENTS
+;;; - a rthm-seq-bar object
+;;; 
+;;; RETURN VALUE
+;;; the modified rthm-seq-bar object
+;;; 
+;;; SYNOPSIS
+(defmethod force-all-rests ((rsb rthm-seq-bar))
+;;; ****
+  (setf (rhythms rsb) (mapcar #'force-rest (rhythms rsb)))
+  rsb)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

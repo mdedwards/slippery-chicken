@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  11:04:31 Thu Nov  1 2018 CET
+;;; $$ Last modified:  11:21:10 Thu Nov  1 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -786,8 +786,7 @@ data: (SNOOPY SPOT ROVER)
                              (2 (5 6 7 8))
                              (3 (9 10 11 12))))))
   (map-data al #'(lambda (y) 
-                   (loop for i in (data y) collect
-                        (* i 2)))))
+                   (loop for i in y collect (* i 2)))))
 
 => ((2 4 6 8) (10 12 14 16) (18 20 22 24))
 |#
@@ -802,7 +801,10 @@ data: (SNOOPY SPOT ROVER)
      else collect 
      (apply function (if further-arguments
                          (cons nod further-arguments)
-                         (list no)))))
+                         ;; MDE Thu Nov  1 11:20:02 2018 -- this was an error:
+                         ;; we should pass nod not no 
+                         ;; (list no)))))
+                         (list nod)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* assoc-list/nmap-data

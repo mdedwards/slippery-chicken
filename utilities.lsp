@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  14:22:58 Sat Oct 20 2018 CEST
+;;; $$ Last modified:  07:54:08 Tue Nov  6 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5188,6 +5188,18 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 (defun id-as-list (thing)
   (and (listp thing) (= 1 (length thing))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Nov  5 11:57:45 2018 -- constrain any given integer to within a
+;;; range (inclusive). Works with negative numbers too. 
+(defun constrain-int (int min max)
+  (unless (and (integerp int) (integerp min) (integerp max))
+    (error "utilities::constrain-int: all three arguments should be integers."))
+  (unless (> max min)
+    (error "utilities::constrain-int: 3rd (~a) arg must be > 2nd (~a)" max min))
+  (let* ((range (1+ (- max min)))
+         (im (mod (- int min) range)))
+    (+ min im)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

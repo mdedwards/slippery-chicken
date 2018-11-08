@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  10:34:26 Thu Nov  1 2018 CET
+;;; $$ Last modified:  18:06:01 Thu Nov  8 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -143,7 +143,37 @@
 ;;; ****
   (get-data player e nil)) ; no warning
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* ensemble/get-instrument
+;;; DATE
+;;; November 2nd 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Get the instrument object for a player in the ensemble. If the player
+;;; doubles, then the optional <ins> argument is required and should be the ID
+;;; of the instrument as defined in the ensemble's instrument palette
+;;; (e.g. 'flute)  
+;;; 
+;;; ARGUMENTS
+;;; - the ensemble object
+;;; - the ID of a player in the ensemble
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the ID of an instrument if the given player doubles
+;;; - T or NIL to issue a warning should the instrument not be found.
+;;; 
+;;; RETURN VALUE
+;;; The instrument object.
+;;; 
+;;; SYNOPSIS
+(defmethod get-instrument ((e ensemble) player &optional ins (warn t))
+  (let ((plyr (get-player e player)))
+    (unless plyr
+      (error "ensemble::get-instrument: no player ~a in ensemble: ~a" player e))
+    (player-get-instrument plyr ins warn)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* ensemble/get-players
 ;;; DESCRIPTION
 ;;; Return the IDs of the players from a given ensemble object.
@@ -190,6 +220,7 @@
           (error "ensemble::get-players: Found duplicate names for players in ~
               ensemble with id ~a" (id e)))
         (setf (players e) players)))))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -420,7 +451,7 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;; MDE Sat Apr 20 12:16:58 2013 
 ;;; ****m* ensemble/add-player
 ;;; DESCRIPTION
-;;; Add a player to an existing ensemble.  It will be added at the end of the
+;;; Add a player to an existing ensemble. It will be added at the end of the
 ;;; list. 
 ;;; 
 ;;; ARGUMENTS
@@ -517,31 +548,46 @@ ensemble::players-exist: VLA is not a member of the ensemble
                                           :ignore ignore))))
     (>= (first (last stats)) (* threshold (first stats)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Thu Nov  1 10:32:07 2018 -- take a list of lists of player IDs and
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Nov 1 10:32:07 2018 -- take a list of lists of player IDs and
 ;;; return an assoc-list where the IDs are the number of players in the combo
-;;; and the data is a list of the x-player combos
+;;; and the data is a circular list of the x-player combos
 (defmethod organise-combos ((e ensemble) combos)
   (let* ((al (make-assoc-list 'combos nil)))
-    (loop for combo in combos do
-         (players-exist e combo) ; check all player IDs are in the ensemble
-         
-  )
+    (loop for combo in combos
+       for len = (length combo)
+       for no = (get-data len al nil) 
+       do
+         (unless (equalp combo (remove-duplicates combo))
+           (error "ensemble::organise-combos: duplicate players in ~a" combo))
+         (players-exist e combo)      ; check all player IDs are in the ensemble
+         (if no
+             (push combo (data no))
+             (add (list len (list combo)) al)))
+    (nmap-data al #'(lambda (l) (make-cscl (reverse l))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Nov  8 17:06:40 2018
+(defmethod lotsa-combos ((e ensemble) &optional (try 7))
+  (random-rep 10 t)
+  (let* ((np (num-players e))
+         (players (copy-list (players e)))
+         ;; first of all the whole ensemble, then single players
+         (result (cons (copy-list players)
+                       (loop for p in players collect (list p))))
+         tmp)
+    (loop for i from 2 below np do
+         (loop repeat try do
+              (setq tmp (nthcdr (- np i)
+                                (shuffle players :fix t :copy t :reset nil)))
+             (pushnew tmp result :test #'equalp)))
+    result))
 
-(defmethod combo-chord-possible? ((e ensemble) (c chord) combo)
-  )
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Wed Apr 18 15:38:32 BST 2012: Added robodoc entry
-;;; SAR Wed Apr 18 15:38:44 BST 2012: Deleted MDE's original comment here as it
-;;; was taken verbatim into the entry below.
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* ensemble/make-ensemble
 ;;; DESCRIPTION
 ;;; Make an ensemble object, specifying the players and associated
@@ -552,13 +598,13 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;;     (fl1 ((piccolo violin) :midi-channel 1)) works but 
 ;;;     (fl1 ((piccolo violin))) thinks that piccolo is a nested ensemble!!!
 ;;;
-;;; NB: The argument :instrument-palette is a required argument although it is
-;;;     a keyword argument.
-;;; 
 ;;; ARGUMENTS
 ;;; - An ID consisting of a symbol, string or number.
 ;;; - A list of 2-element sublists that define the ensemble. See the above
-;;;   comment on adding a keyword argument for doubling players.
+;;;   comment on adding a keyword argument for doubling players. An existing
+;;;   ensemble object can be passed here whereupon it will be cloned and the ID
+;;;   will be changed to the (new) given ID if it's not NIll. In this case
+;;;   however the keyword arguments will be ignored.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
@@ -621,14 +667,20 @@ NAMED-OBJECT: id: B-FLAT-CLARINET, tag: NIL,
 
 |#
 ;;; SYNOPSIS
-(defun make-ensemble (id ensemble &key bar-line-writers
-                      (instrument-palette 
-                       +slippery-chicken-standard-instrument-palette+))
+(defun make-ensemble (id ensemble
+                      &key bar-line-writers
+                        (instrument-palette 
+                         +slippery-chicken-standard-instrument-palette+))
 ;;; ****
-  (make-instance 'ensemble :id id :data ensemble 
-                 :bar-line-writers bar-line-writers 
-                 :instrument-palette instrument-palette))
-;;; ****
+  ;; MDE Fri Nov  2 19:20:56 2018 -- allow existing ensemble objects to be
+  ;; passed 
+  (if (ensemble-p ensemble)
+      (let ((ens (clone ensemble)))
+        (when id (setf (id ens) id))
+        ens)
+      (make-instance 'ensemble :id id :data ensemble 
+                     :bar-line-writers bar-line-writers 
+                     :instrument-palette instrument-palette)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

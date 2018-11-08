@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  17:56:32 Thu Oct 25 2018 CEST
+;;; $$ Last modified:  17:43:19 Thu Nov  1 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -363,7 +363,7 @@
        :largest-fast-leap 12
        :clefs (treble bass) :starting-clef treble
        :chords t :chord-function piano-chord-fun
-       :microtones nil 
+       :microtones nil :harmonics t
        :midi-program 47))
      ;; MDE Fri Jul 24 20:18:16 2015 -- range typical for modern organ with
      ;; 61-key manuals and 32-key pedalboard  
@@ -394,7 +394,7 @@
        :largest-fast-leap 31
        :starting-clef treble 
        :chords t :chord-function guitar-chord-selection-fun 
-       :microtones nil
+       :microtones nil :harmonics t
        :midi-program 25))
      ;; MDE Wed Oct  9 12:21:22 2013 
      (mandolin 
@@ -441,7 +441,7 @@
        :largest-fast-leap 13
        :starting-clef treble 
        :chords t :chord-function violin-chord-selection-fun 
-       :microtones t
+       :microtones t :harmonics t
        :midi-program 41))
      (viola 
       (:staff-name "viola" :staff-short-name "vla"
@@ -449,7 +449,7 @@
        :largest-fast-leap 13 
        :clefs (alto treble) :starting-clef alto 
        :chords t :chord-function viola-chord-selection-fun 
-       :microtones t
+       :microtones t :harmonics t
        :midi-program 42))
      (viola-d-amore 
       (:staff-name "viola d'amore" :staff-short-name "vla d'am"
@@ -457,7 +457,7 @@
        :largest-fast-leap 13
        :clefs (alto treble) :starting-clef alto 
        :chords t :chord-function nil 
-       :microtones t
+       :microtones t :harmonics t
        :midi-program 41))
      (cello 
       (:staff-name "cello" :staff-short-name "vc"
@@ -467,7 +467,7 @@
        :largest-fast-leap 12
        :clefs (bass tenor treble) :starting-clef bass
        :chords t :chord-function cello-chord-selection-fun 
-       :microtones t 
+       :microtones t :harmonics t
        :midi-program 43))
      (double-bass 
       (:staff-name "double bass" :staff-short-name "db"
@@ -476,7 +476,7 @@
        :largest-fast-leap 10
        :clefs (bass tenor treble) :starting-clef bass
        :chords nil 
-       :microtones t 
+       :microtones t :harmonics t
        :midi-program 44))
      (bass-guitar
       (:staff-name "bass guitar" :staff-short-name "b. gtr"
@@ -485,7 +485,7 @@
        :largest-fast-leap 10
        :clefs (bass treble) :starting-clef bass
        :chords t
-       :microtones nil
+       :microtones nil :harmonics t
        :midi-program 33))
      ;; SAR Thu Apr 12 18:19:21 BST 2012: Added "computer" part for "silent"
      ;; parts in case the user would like to create rhythmically independent

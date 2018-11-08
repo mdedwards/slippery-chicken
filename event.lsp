@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:16:35 Fri Oct 19 2018 CEST
+;;; $$ Last modified:  15:49:13 Thu Nov  8 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -794,7 +794,7 @@ data: 132
 ;;; MDE Thu May 30 18:49:56 2013 -- auto-sets the pitch-or-chord slot
 ;;; MDE Sat Dec 24 13:16:07 2016 -- optional instrument means the transposition
 ;;; will be set from its data rather than from existing sounding and written
-;;; pitches. 
+;;; pitches.
 (defmethod set-written-pitch-or-chord ((e event) value &optional instrument)
   ;; (print (data value))
   (let* ((wporc (written-pitch-or-chord e))
@@ -811,6 +811,25 @@ data: 132
             (is-whole-bar-rest e) nil
             (slot-value e 'pitch-or-chord)
             (transpose (clone (written-pitch-or-chord e)) diff))))
+  e)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Wed Nov 7 18:34:08 2018 -- for times when e.g. there's no existing pitch
+;;; data and we've got a transposing instrument, e.g. for turning a rest into a
+;;; note. if <value> is a pitch object it wil be cloned in setf-pitch-aux.
+(defmethod set-pitch-or-chord ((e event) value &optional instrument)
+  (let* ((wporc (written-pitch-or-chord e)) ; if we have it
+         (porc (pitch-or-chord e))
+         (diff (if instrument
+                   (transposition-semitones instrument)
+                   (when wporc (pitch- porc wporc)))))
+    ;; (print diff)
+    (setf-pitch-aux e value 'pitch-or-chord)
+    (setf (is-rest e) nil
+          (is-whole-bar-rest e) nil)
+    (when (and diff (not (zerop diff)))
+      (setf (slot-value e 'written-pitch-or-chord)
+            (transpose (clone (pitch-or-chord e)) (- diff)))))
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3337,6 +3356,9 @@ data: C4
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - an instrument object
 ;;; 
 ;;; RETURN VALUE
 ;;; The chord object which creates the harmonic.
@@ -3365,36 +3387,20 @@ data: C4
 
                      => (NIL (FLAG-HEAD))
 
-                     |#
+|#
 ;;; SYNOPSIS
-(defmethod force-artificial-harmonic ((e event) &optional instrument)
+(defmethod force-artificial-harmonic ((e event) &optional instrument (warn t))
 ;;; ****
-  (let* ((p1 (transpose (pitch-or-chord e) -24))
-         (p2 (transpose p1 5))
-         ;; MDE Mon Apr 23 09:20:44 2012 -- 
-         (happy t))
-    ;; MDE Mon Sep 24 18:18:37 2018 -- keep it a P4th
-    (when (bad-interval p1 p2)
-      (setq p2 (enharmonic p2)))
-    ;; MDE Mon Apr 23 09:17:24 2012 
-    (unless (is-single-pitch e)
-      (setf happy nil)
-      (warn "~a~%event::force-artificial-harmonic: event is a chord: skipping."
-            e))
-    ;; MDE Mon Apr 23 09:16:34 2012
-    (when instrument
-      (unless (instrument-p instrument)
-        (error "~a~%event::force-artificial-harmonic: argument should be an ~
-                instrument object" instrument))
-      (unless (and (in-range instrument p1)
-                   (in-range instrument p2))
-        (setf happy nil)
-        (warn "event::force-artificial-harmonic: creating an artificial ~
-               harmonic for this ~%event would go out of the instrument's ~
-               range: ~%~a" e)))
-    (when happy
-      (add-mark p2 'flag-head)
-      (setf (pitch-or-chord e) (make-chord (list p1 p2))))))
+  ;; MDE Thu Nov 1 18:27:48 2018 -- moved most of the logic over to the pitch
+  ;; class
+  (let ((chord (if (is-single-pitch e)
+                   ;; we don't bother with written pitches (yet?)
+                   (force-artificial-harmonic (pitch-or-chord e) instrument)
+                   (when warn
+                     (warn "~a~%event::force-artificial-harmonic: event is a ~
+                            chord or rest: skipping."
+                           e)))))
+    (when chord (setf (pitch-or-chord e) chord))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3745,9 +3751,77 @@ NIL
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* event/num-notes
+;;; DATE
+;;; November 6th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Return the number of notes in the event object i.e. the number of notes in
+;;; the chord, 1 if it's a single pitch or 0 if it's a rest. 
+;;; 
+;;; ARGUMENTS
+;;; - the event object
+;;; 
+;;; RETURN VALUE
+;;; An integer value for the number of notes in the event.
+;;; 
+;;; SYNOPSIS
+(defmethod num-notes ((e event))
+;;; ****
+  (cond ((is-rest e) 0)
+        ((is-single-pitch e) 1)
+        (t (sclist-length (pitch-or-chord e)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; if combo is a list of player IDS then we need the (optional)
+;;; slippery-chicken object, otherwise it should be a list of instruments. See
+;;; chord method for what it returns.
+(defmethod combo-chord-possible? ((e event) combo
+                                  &optional artificial-harmonics sc)
+  (let ((instruments combo))
+    (cond ((is-rest e)
+           (error "slippery-chicken::combo-chord-possible: event must be a ~
+                   chord: ~a" e))
+          ;; allow single pitches
+          ((is-single-pitch e) (force-chord (setq e (clone e)))))
+    (unless (every #'instrument-p instruments)
+      (unless (slippery-chicken-p sc)
+        (error "event::combo-chord-possible?: combo is ~
+                either a list of instrument objects or a ~
+                list of player IDs. If IDs then we need ~
+                a slippery-chicken object as third argument."))
+      ;; this handles instrument changes and means we only search for the
+      ;; current instrument once per player instead of potentially hundreds of
+      ;; times when trying the combos in the chord class method
+      (setq instruments (get-instruments-for-players-at-bar
+                         sc combo (bar-num e))))
+    ;; (print instruments)
+    (combo-chord-possible? (pitch-or-chord e) instruments
+                           artificial-harmonics)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; The SC orchestrate method needs to change combos fairly regularly and it
+;;; needs a function to do this. This is the default. It uses an activity-levels
+;;; object to decide, using <levels> of between 2 and 8 (or the optional args)
+;;; according to the size of the ensemble. If either argument is NIL then we
+;;; just reset the activity-levels object and return. <combo> is the current
+;;; combo which we can decide to keep or change. <combo-al> is the assoc-list
+;;; object with all the combos stored and organised according to size.
+(let ((al (make-al)))
+  (defun combo-change? (combo combo-al &optional (min-level 2) (max-level 8))
+    (if (and combo combo-al)
+        (let* ((lenc (length combo))
+               (level (constrain-int lenc min-level max-level)))
+          (unless (get-data lenc combo-al)
+            (error "slippery-chicken-edit::combo-change? no ~a-player combos ~
+                    in ~%~a" lenc combo-al))
+          (active al level))
+        (reset al))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; code from "snow shoes..." days.  Called from the old clm methods.
@@ -3810,6 +3884,8 @@ NIL
 ;;; - :written.  The given pitch or chord is the written value.  In this case
 ;;;   the sounding value will be set according to the (required) transposition
 ;;;   argument.  Default = NIL.
+;;; - :bar-num. Set the bar-num slot of the event. Usually maintained by various
+;;;   classes that contain events. Default = -1. 
 ;;; 
 ;;; RETURN VALUE  
 ;;; - An event object.
@@ -3922,6 +3998,8 @@ T
                      (amplitude (get-sc-config 'default-amplitude))
                      ;; MDE Thu Jun 16 13:05:21 2016
                      tempo-change
+                     ;; MDE Fri Nov  2 16:37:05 2018
+                     (bar-num -1)
                      (tempo 60))
 ;;; **** 
   ;; MDE Mon Apr 23 13:52:07 2012 -- allow r to indicate a rest
@@ -3938,6 +4016,8 @@ T
     (when e
       (setf (start-time e) start-time
             (pitch-or-chord e) pitch-or-chord
+            ;; MDE Fri Nov  2 16:37:25 2018
+            (bar-num e) bar-num
             ;; 24.3.11 if we directly setf amp then we add a mark
             (slot-value e 'amplitude) amplitude)
       ;; MDE Sat Apr 20 15:16:22 2013

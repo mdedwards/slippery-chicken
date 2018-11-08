@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  16:24:43 Fri Oct 19 2018 CEST
+;;; $$ Last modified:  19:00:37 Thu Nov  1 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -153,6 +153,11 @@
    ;;            :initform -1)
    (midi-program :accessor midi-program :type integer :initarg :midi-program
                  :initform 1)
+   ;; MDE Thu Nov  1 17:36:01 2018 -- for string instruments: in the first
+   ;; instance just whether an ins can play harmonics in generally, whether
+   ;; natural or artificial
+   (harmonics :accessor harmonics :type boolean :initarg :harmonics
+              :initform nil)
    
    ;; All the following are used for statistics and hence have no initarg
 
@@ -307,7 +312,7 @@
           (slot-value named-object 'chord-function) (chord-function ins)
           (slot-value named-object 'subset-id) (subset-id ins)
           (slot-value named-object 'microtones) (microtones ins)
-          ;; (slot-value named-object 'chord-max) (chord-max ins)
+          (slot-value named-object 'harmonics) (harmonics ins)
           (slot-value named-object 'total-bars) (total-bars ins) 
           (slot-value named-object 'total-notes) (total-notes ins)
           (slot-value named-object 'total-duration) (total-duration ins)
@@ -335,7 +340,7 @@
                   ~%            total-degrees: ~a, microtones: ~a~
                   ~%            missing-notes: ~a, subset-id: ~a~
                   ~%            staff-name: ~a, staff-short-name: ~a,~
-                  ~%            staff-lines: ~a,~
+                  ~%            staff-lines: ~a, harmonics: ~a~
                   ~%            largest-fast-leap: ~a, tessitura: ~a"
             (pitch-slot (lowest-written ins))
             (pitch-slot (highest-written ins))
@@ -350,7 +355,7 @@
             (total-degrees ins) (microtones ins) 
             (pitch-list-to-symbols (missing-notes ins)) (subset-id ins)
             (staff-name ins) (staff-short-name ins)
-            (staff-lines ins) (largest-fast-leap ins)
+            (staff-lines ins) (harmonics ins) (largest-fast-leap ins)
             (tessitura-note ins))))
                            
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -539,15 +544,15 @@
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns symbol LOW by default        ;
+;; Returns symbol LOW by default 
   (let ((i1 (make-instrument 'inst)))
 (set-prefers-low i1))
 
   => LOW
 
-;; Create an instrument object with only an ID, print the PREFERS-NOTES slot to ;
-;; see that it is NIL by default, apply the set-prefers-low, and print the ;
-;; slot again to see the changes        ;
+;; Create an instrument object with only an ID, print the PREFERS-NOTES slot to
+;; see that it is NIL by default, apply the set-prefers-low, and print the
+;; slot again to see the changes
   (let ((i1 (make-instrument 'inst)))
 (print (prefers-notes i1))
 (set-prefers-low i1)
@@ -557,7 +562,7 @@
   NIL 
   LOW
 
-;; Reset to LOW from HIGH               ;
+;; Reset to LOW from HIGH 
   (let ((i1 (make-instrument 'inst :prefers-notes 'high)))
 (print (prefers-notes i1))
 (set-prefers-low i1)
@@ -566,8 +571,7 @@
   =>
   HIGH 
   LOW
-
-  |#
+|#
 ;;; SYNOPSIS
 (defmethod set-prefers-low ((ins instrument) &optional ignore)
 ;;; **** 
@@ -717,12 +721,8 @@
   (eq (prefers-notes ins) 'high))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Jan  7 12:20:15 EST 2012: Added robodoc info
-
 ;;; ****m* instrument/in-range
 ;;; DESCRIPTION
-
 ;;; Checks whether a specified pitch/chord falls within the defined range of a
 ;;; given instrument object or not.
 ;;; 
@@ -733,56 +733,65 @@
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether the pitch specified is to be compared with
-;;;   the given pitch object's sounding or written range. T = Sounding. 
+;;;   the given instrument object's sounding or written range. T = Sounding. 
 ;;;   Default = NIL. If T, a secondary NIL is also returned to indicate that
 ;;;   the specified pitch is neither too high nor too low.
+;;; - T or NIL to indiciate whether an artificial harmonic should be tried if
+;;;   the pitch is too high for an instrument whose :harmonics slot is
+;;;   T. Default = NIL.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns T if the specified pitch falls between the
 ;;; lowest-sounding/lowest-written and the highest-sounding/highest-written
-;;; pitches of the given pitch object.
+;;; pitches of the given pitch object, otherwise NIL.
 ;;;
 ;;; If the specified pitch is outside of the range, an additional value of 0 or
 ;;; 1 is also returned to indicate whether the specified pitch is too high (1)
-;;; or too low (0).
+;;; or too low (0). If it's out of range but could be achieved by an artificial
+;;; harmonic (just the perfect 4th variety) on an instrument with :harmonics T,
+;;; then the additional value will be a chord object instead (the two pitches,
+;;; including diamond notehead for the second, which would achieve the desired
+;;; pitch.
 ;;;
 ;;; EXAMPLE
 
 #|
-;; Determine if a pitch provided as a note-name symbol falls within the written ;
-;; range of a non-transposing instrument ;
-  (let ((i1 (make-instrument 'inst1 :lowest-written 'bf3 :highest-written 'a6)))
-(in-range i1 'c4))
-
+;; Determine if a pitch provided as a note-name symbol falls within the written
+;; range of a non-transposing instrument
+(let ((i1 (make-instrument 'inst1 :lowest-written 'bf3 :highest-written 'a6)))
+  (in-range i1 'c4))
   => T, NIL
 
-;; Determine if a pitch provided as a note-name symbol falls within the ;
-;; sounding range of a transposing instrument, using the optional argument T ;
-  (let ((i2 (make-instrument 'inst1 :lowest-written 'fs3 :highest-written 'c6
-:transposition 'BF)))
-(in-range i2 'c6 T))
-
+;; Determine if a pitch provided as a note-name symbol falls within the
+;; sounding range of a transposing instrument, using the optional argument T
+(let ((i2 (make-instrument 'inst1 :lowest-written 'fs3 :highest-written 'c6
+                           :transposition 'BF)))
+  (in-range i2 'c6 T))
   => NIL, 1
 
-;; A pitch object can be used as the specified pitch ;
-  (let ((i2 (make-instrument 'inst1 :lowest-written 'fs3 :highest-written 'c6
-:transposition 'BF)))
-(in-range i2 (make-pitch 'd6)))
-
+;; A pitch object can be used as the specified pitch 
+(let ((i2 (make-instrument 'inst1 :lowest-written 'fs3 :highest-written 'c6
+                           :transposition 'BF)))
+  (in-range i2 (make-pitch 'd6)))
   => NIL, 1
-
-  |#
-;;; 
+|#
 ;;; SYNOPSIS
-(defmethod in-range ((ins instrument) pitch &optional sounding)
+(defmethod in-range ((ins instrument) pitch
+                     &optional sounding try-artificial-harmonic)
 ;;; ****
   (let* ((p (make-pitch pitch))
          (low (if sounding (lowest-sounding ins) (lowest-written ins)))
          (high (if sounding (highest-sounding ins) (highest-written ins)))
          (too-high (pitch> p high))
          (too-low (pitch< p low))
-         (out (not (or too-high too-low))))
-    (values out (cond (too-high 1) (too-low 0)))))
+         (result (not (or too-high too-low)))
+         chord)
+    ;; MDE Thu Nov  1 18:02:05 2018 -- try with artificial harmonics
+    (when (and (not result) try-artificial-harmonic (harmonics ins))
+      ;; (print 'here)
+      (setq chord (force-artificial-harmonic p ins nil)))
+    (values result (cond (chord chord) (too-high 1) (too-low 0)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* instrument/force-in-range
@@ -1106,7 +1115,7 @@ dqs3 dqf3 cqs3)
                              microtones
                              missing-notes
                              prefers-notes
-                             chord-function)
+                             chord-function harmonics)
 ;;; ****
   (make-instance 'instrument :id id
                  :staff-name staff-name
@@ -1121,6 +1130,7 @@ dqs3 dqf3 cqs3)
                  :highest-sounding highest-sounding
                  :subset-id subset-id
                  :clefs clefs
+                 :harmonics harmonics
                  :prefers-notes prefers-notes
                  :clefs-in-c clefs-in-c
                  :transposition transposition

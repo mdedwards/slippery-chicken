@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  17:55:33 Thu Oct 25 2018 CEST
+;;; $$ Last modified:  18:20:14 Wed Nov  7 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -561,9 +561,6 @@ data: GQS4
         (no-accidental p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Feb 22 18:10:21 GMT 2012: Added robodoc entry
-
 ;;; ****m* chord/chord-equal
 ;;; DESCRIPTION
 ;;; Test to see if two chords are equal.
@@ -2243,6 +2240,52 @@ data: (
 ;;; ****
   (setf (data c) (thin-aux (data c) strength remove target invert))
   c)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Nov  2 07:57:55 2018 -- here combo is a list of instrument
+;;; objects. If successful returns a list of 3-element sublists: the index into
+;;; the combo, the pitch or artificial harmonic that they can play, and the
+;;; instrument object.
+(defmethod combo-chord-possible? ((c chord) combo
+                                  &optional artificial-harmonics ignore)
+  (declare (ignore ignore))
+  (let ((lenc (length combo))
+        perms pitch result ins)
+    (unless (every #'instrument-p combo)
+      (error "chord::combo-chord-possible: combo should be a list of ~
+              instrument objects: ~a" combo))
+    (unless (= (sclist-length c) lenc)
+      (error "chord::combo-chord-possible: number of notes in ~
+              chord (~a) should be the ~%same as the number of players in ~
+              <combo> (~a)."
+             (sclist-length c) lenc))
+    (setq perms (if (> lenc 6)          ; 6=720 perms
+                    ;; this might mean we have the first element more than once
+                    ;; but that's no big deal: we really do want to try the
+                    ;; order of the given combo first
+                    (cons (loop for i below lenc collect i)
+                          (inefficient-permutations lenc :max 500))
+                    (permutations lenc)))
+    ;; (print perms)
+    ;; (print c) (print combo)
+    ;; (print '****************go)
+    (loop for comb in perms do
+         (setq result nil)
+         ;; (print comb)
+         (loop for instrument-index in comb and i from 0 do
+              (setq pitch (get-nth i c)
+                    ins (nth instrument-index combo))
+              (multiple-value-bind
+                    (in harm)
+                  ;;     sounding pitches and artificial harmonics, if allowed!
+                  (in-range ins pitch t artificial-harmonics)
+                (cond (in (push (list instrument-index pitch ins) result))
+                      ((chord-p harm) (push (list instrument-index harm ins)
+                                            result))
+                      (t (return)))))
+         (when (= lenc (length result))
+           (return (reverse result)))
+       finally (return nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:16:11 Thu Nov  1 2018 CET
+;;; $$ Last modified:  14:45:10 Thu Nov  8 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2555,9 +2555,6 @@ data: 32
                  (check-beams bar :auto-beam t)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed May  9 21:37:48 BST 2012: Added robodoc entry
-
 ;;; MDE original comment:
 ;;; N.B. Instruments cannot be changed mid-sequence and sequence is 1-based so
 ;;; we have to 1+ elsewhere if necessary
@@ -4168,7 +4165,7 @@ seq-num 5, VN, replacing G3 with B6
       (system-open-file midi-file))
     midi-file))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Thu May 10 13:52:19 BST 2012: Conformed robodoc entry
 
@@ -8396,6 +8393,55 @@ NOTE 6200 0.6666667
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defmethod get-instruments-for-players-at-bar ((sc slippery-chicken)
+                                               players bar-num)
+  (loop for player in players collect
+       (get-instrument-for-player-at-bar player bar-num sc)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/find-end-tie
+;;; DATE
+;;; November 8th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Find the event which is the last in a group of tied notes.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the event object at the start or in the middle of a the group of tied
+;;;   notes  
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the function, generally some kind of error, to call if the given event is
+;;;   not tied from. Default = #'error.
+;;; 
+;;; RETURN VALUE
+;;; the last event object which is tied to or NIL if the given event is not tied
+;;; from. 
+;;; 
+;;; SYNOPSIS
+(defmethod find-end-tie ((sc slippery-chicken) (e event)
+                         &optional (on-fail #'error))
+;;; ****
+  (if (is-tied-from e)
+      (let ((bar-num (bar-num e))
+            (e-num (+ 2 (bar-pos e)))
+            current done)
+        ;; no endless loops; surely < 10000 notes are tied?
+        (loop repeat 10000 do
+           ;;                                                     no error
+             (setq current (get-event sc bar-num e-num (player e) nil)) 
+             (if current
+                 (if (is-tied-from current)
+                     (incf e-num)
+                     (return))
+                 (progn
+                   (setq e-num 1)
+                   (incf bar-num))))
+        current)
+      (when (functionp on-fail)
+        (funcall on-fail "slippery-chicken::find-end-tie: event is not ~
+                          tied-from: ~a" e))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

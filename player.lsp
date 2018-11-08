@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified:  09:58:27 Thu Sep 20 2018 CEST
+;;; $$ Last modified:  08:38:38 Fri Nov  2 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -679,9 +679,6 @@
       (total-duration data))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu Jan 12 18:36:07 GMT 2012: Added robodoc info
-
 ;;; ****m* player/player-get-instrument
 ;;; DESCRIPTION
 ;;; Get the instrument object assigned to a single-instrument player object or

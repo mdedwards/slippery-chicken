@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    30th June 2015
 ;;;
-;;; $$ Last modified: 12:56:46 Wed Jul  1 2015 BST
+;;; $$ Last modified:  16:31:45 Mon Nov  5 2018 CET
 ;;;
 ;;; SVN ID: $Id: activity-levels.lsp 5048 2014-10-20 17:10:38Z medward2 $
 ;;;
@@ -175,7 +175,6 @@ current: 0 level: 0.0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* activity-levels-env/make-ale
 ;;; DESCRIPTION
-
 ;;; For an overview of what this might be used for and how it's done in its
 ;;; basic form, see the description to make-al in the parent class
 ;;; 'activity-levels'

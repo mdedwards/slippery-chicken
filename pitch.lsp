@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  12:58:08 Sat Oct 27 2018 CEST
+;;; $$ Last modified:  17:57:44 Fri Nov  2 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2302,6 +2302,34 @@ data: D7
     (values accidental notehead)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Nov  1 18:05:15 2018 -- taken over functionality from event class
+(defmethod force-artificial-harmonic ((p pitch) &optional instrument (warn t))
+;;; ****
+  (let* ((p1 (transpose (clone p) -24))
+         (p2 (transpose p1 5))
+         ;; MDE Mon Apr 23 09:20:44 2012 -- 
+         (happy t))
+    ;; MDE Mon Sep 24 18:18:37 2018 -- keep it a P4th
+    ;; (print p1) (print p2)
+    (when (bad-interval p1 p2)
+      (setq p2 (enharmonic p2)))
+    ;; MDE Mon Apr 23 09:16:34 2012
+    (when instrument
+      (unless (instrument-p instrument)
+        (error "~a~%pitch::force-artificial-harmonic: argument should be an ~
+                instrument object" instrument))
+      (unless (and (in-range instrument p1)
+                   (in-range instrument p2))
+        (setf happy nil)
+        (when warn
+          (warn "pitch::force-artificial-harmonic: creating an artificial ~
+                 harmonic for this ~%pitch would go out of the instrument's ~
+                 range: ~%~a" p))))
+    (when happy
+      (add-mark p2 'flag-head)
+      (make-chord (list p1 p2)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -2986,7 +3014,9 @@ data: EF3
   (typep thing 'pitch))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; two pitches (objects or symbols), the number of semitones between the two
+;;; and the number of steps between the white-degrees of the pitches (a unison
+;;; would be 0, a 2nd 1, a 3rd 2, etc.)
 (defun interval-aux (p1 p2 semitones white)
   (when (and p1 p2)
     (unless (pitch-p p1)
@@ -3019,6 +3049,8 @@ data: EF3
       (aug3rd p1 p2)
       (dim4th p1 p2)
       (augaug4th p1 p2)
+      ;; MDE Thu Nov  1 18:19:41 2018
+      (dimdim5th p1 p2)
       (aug5th p1 p2)
       (dim3rd p1 p2)
       (dim6th p1 p2)
@@ -3075,6 +3107,11 @@ data: EF3
 
 (defun augaug4th (p1 p2)
   (interval-aux p1 p2 7 3))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Nov  1 18:14:11 2018 -- e.g. ds-af better as ds-gs or P4th
+(defun dimdim5th (p1 p2)
+  (interval-aux p1 p2 5 4))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

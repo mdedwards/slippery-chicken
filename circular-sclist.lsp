@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    February 19th 2001
 ;;;
-;;; $$ Last modified: 17:50:44 Wed Jul  6 2016 CEST
+;;; $$ Last modified:  11:25:44 Sat Nov  3 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -70,9 +70,6 @@
     sclist))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Jan 13 12:36:30 GMT 2012: Added robodoc info
-
 ;;; ****m* circular-sclist/get-next
 ;;; DESCRIPTION
 ;;; Get the next item in a given circular-sclist object. The class
@@ -121,8 +118,35 @@
         (setf (current cscl) 0)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; ****m* circular-sclist/get-current
+;;; DESCRIPTION
+;;; Return the current list element without incrementing the current slot.
+;;; 
+;;; ARGUMENTS
+;;; - The circular-sclist object
+;;; 
+;;; RETURN VALUE
+;;; The current list element, which can be of any type.
+;;; 
+;;; EXAMPLE
+#|
+(let ((cscl (make-cscl '(0 1 2 3 4))))
+  (loop for i below 10 do
+     (print (if (oddp i) (get-next cscl) (get-current cscl)))))
+0 
+0 
+1 
+1 
+2 
+2 
+3 
+3 
+4 
+4 
+|#
+;;; SYNOPSIS
 (defmethod get-current ((cscl circular-sclist))
+;;; ****
   (when (data cscl)
     (get-nth (current cscl) cscl)))
 

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  19:00:37 Thu Nov  1 2018 CET
+;;; $$ Last modified:  14:53:37 Fri Nov 16 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -739,6 +739,9 @@
 ;;; - T or NIL to indiciate whether an artificial harmonic should be tried if
 ;;;   the pitch is too high for an instrument whose :harmonics slot is
 ;;;   T. Default = NIL.
+;;; - T or NIL to indicate whether a microtonal pitch should be considered
+;;;  'in-range' when the instrument can't play microtones. Default = T (as
+;;;  theoretically it's within the range even though not playable).
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns T if the specified pitch falls between the
@@ -777,7 +780,8 @@
 |#
 ;;; SYNOPSIS
 (defmethod in-range ((ins instrument) pitch
-                     &optional sounding try-artificial-harmonic)
+                     &optional sounding try-artificial-harmonic
+                       (impossible-microtones t))
 ;;; ****
   (let* ((p (make-pitch pitch))
          (low (if sounding (lowest-sounding ins) (lowest-written ins)))
@@ -790,7 +794,12 @@
     (when (and (not result) try-artificial-harmonic (harmonics ins))
       ;; (print 'here)
       (setq chord (force-artificial-harmonic p ins nil)))
-    (values result (cond (chord chord) (too-high 1) (too-low 0)))))
+    ;; MDE Wed Nov 14 16:33:21 2018
+    (if (and (not impossible-microtones)
+             (micro-tone p)
+             (not (microtones ins)))
+        nil
+        (values result (cond (chord chord) (too-high 1) (too-low 0))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -800,7 +809,9 @@
 ;;; 
 ;;; DESCRIPTION
 ;;; Forces a pitch to be within an instrument's range by transposing up or down
-;;; the required number of octaves. 
+;;; the required number of octaves. NB it doesn't force a microtonal pitch to
+;;; the nearest chromatic pitch so whether it's playable on an instrument is not
+;;; checked here.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the instrument object
@@ -862,6 +873,24 @@
   (unless (is-rest e)
     (setf (pitch-or-chord e) (force-in-range ins (pitch-or-chord e))))
   e)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Nov 13 17:00:53 2018 -- helper method for combo-chord-possible?: see
+;;; what the instrument's chord function returns from the given chord. If a
+;;; chord is possible, make sure it has the given pitch in it. If none of that
+;;; works just return the given pitch.
+(defmethod try-ins-chord ((ins instrument) (c chord) (p pitch))
+  (if (chords ins)
+      (let* ((tls (clone-with-new-class c 'tl-set))
+             (chd (progn
+                    (limit-for-instrument tls ins)
+                    (funcall (symbol-function (chord-function ins))
+                             0 0 (data tls) nil nil nil))))
+        (if (and (chord-p chd) (> (sclist-length chd) 1)
+                 (chord-member chd p t nil))
+            chd
+            p))
+      p))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* instrument/auto-set-subset-id

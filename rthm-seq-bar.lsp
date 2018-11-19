@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  11:54:35 Thu Nov  8 2018 CET
+;;; $$ Last modified:  11:01:38 Mon Nov 19 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -201,7 +201,8 @@
     (if ts
         (setf (time-sig rsb) ts)
       ;; If not given given, set the time-sig from the current-time-sig slot.
-      (setf (slot-value rsb 'time-sig) (current-time-sig rsb)))
+        (setf (slot-value rsb 'time-sig) (current-time-sig rsb)))
+    ;; (print parsed)
     (when parsed 
       ;; Loop through the given rthms and parse them (appending a call to
       ;; parse-possible-compound-rhythm).  
@@ -248,7 +249,9 @@
     (update-missing-duration rsb)
     (update-rhythms-bracket-info rsb)
     (update-rhythms-beam-info rsb)
+    ;; this fixes dot problems under tuplets too
     (fix-nested-tuplets rsb)
+    ;; (print (rhythms rsb))
     ;; 2/04
     ;; 17/5/05: now handled at piece level
     ;; (update-compound-durations rsb)
@@ -305,7 +308,13 @@
   (player (get-nth-event 0 rsb)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Nov 10 12:27:58 2018
+(defmethod set-player ((rsb rthm-seq-bar) player)
+  (loop for e in (rhythms rsb) do
+       (when (event-p e) ; rhythms don't have the player slot
+         (setf (player e) player))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* rthm-seq-bar/delete-marks
 ;;; DESCRIPTION
 ;;; Delete all marks from the rhythm (or event) objects contained within a given
@@ -2486,14 +2495,12 @@ rthm-seq-bar::get-nth-event: Couldn't get event with index 4
   (let ((events (rhythms rsb)))
     (when error
       (unless (< index (num-rhythms rsb))
-        (error "~a~%~a~%rthm-seq-bar::get-nth-event: Couldn't get event with ~
-                index ~a"
-               rsb events index)))
+        (error "~&rthm-seq-bar::get-nth-event: Couldn't get event with ~
+                index ~a~&~a"
+               index rsb)))
     (nth index events)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sun Dec 25 21:07:00 EST 2011 Added robodoc info
 ;;; ****m* rthm-seq-bar/get-last-event
 ;;; DESCRIPTION
 ;;; Get the last event object (or rhythm object) of a given rthm-seq-bar
@@ -3659,10 +3666,12 @@ data: (2 4)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-simple ((rsb rthm-seq-bar) &optional written (stream t))
-  (format stream "~&bar ~a: ~a: " (bar-num rsb) (get-time-sig-as-list rsb))
+  (format stream "~&~a: bar ~a: ~a: "
+          (player rsb) (bar-num rsb) (get-time-sig-as-list rsb))
   (loop for r in (rhythms rsb) do
        (print-simple r written stream))
-  t)
+  ;; MDE Fri Nov  9 16:16:56 2018 -- return rsb instead of T
+  rsb)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5529,16 +5538,26 @@ collect (midi-channel (pitch-or-chord p))))
                            (<= pos (third ts)))
                   (setf result (* result (get-tuplet-ratio (first ts)))))
               finally (return result)))
-         (lv (r tup)
+         ;; MDE Mon Nov 19 10:56:48 2018 -- this is a very specific situation:
+         ;; when we need e.g. an h. under a 6:7 tuplet, the duration becomes 3.5
+         ;; (3*7/6) which in handling rqq rhythms can end up being turned into
+         ;; an h... That screws up MusicXML at the very least
+         (too-many-dots (r)
+           (when (and (= 7/6 (tuplet-scaler r))
+                      (= 2 (num-dots r)))
+             (setf (num-dots r) 1)))
+         (lv (r tup) ; fix letter-value
            (setf (letter-value r) (round (* (undotted-value r) tup))
                  (num-flags r) (rthm-num-flags (letter-value r)))))
-         ;;    (format t "~&lv: data ~a lv ~a"  (data r) (letter-value r))))
+    ;;    (format t "~&lv: data ~a lv ~a"  (data r) (letter-value r))))
     (loop for r in (rhythms rsb) for ct = (compound-tuplet r) do
          (setf (tuplet-scaler r) ct)
+       ;; MDE Mon Nov 19 11:00:49 2018
+         (too-many-dots r)
          (lv r ct)
+         ;; (print r)
          (unless (power-of-2 (letter-value r))
-           ;; (print r)
-           ;; dots--esp. those added automatically--might screw things up,
+           ;;  dots--esp. those added automatically--might screw things up,
            ;; e.g. rhythms like 70/3 might result in a letter-value of 24 which
            ;; is not representable in Lilypond. In that case we probably have
            ;; added a dot somewhere so remove it.
@@ -5977,13 +5996,13 @@ rsb-rb)
                 #| 
                 ;; MDE Fri May 29 10:02:22 2015 -- this is the way we used to
                 ;; do rqq, relying on CMN:
-  (multiple-value-bind
+               (multiple-value-bind
                (rqq-rthms rqq-num-notes rqq-num-rthms)
                (do-rqq interned) ;    ; ; ; ; ; ;
                (incf num-rthms rqq-num-rthms)
                (incf num-notes rqq-num-notes)
                (setf rthms (append (reverse rqq-rthms) rthms))))
-  |#
+               |#
                ;; finally we saw a rhythm!
                ;; but when it's in parentheses it's a rest so
                ;; it's not going to  increment num-notes
@@ -6685,13 +6704,25 @@ rsb-rb)
     (when (rqq-got-rest divisions)
       (setf divisions (first divisions)
             rest t))
+    ;; (print parent-dur)
     (if (integerp divisions)
         (let* ((v (/ parent-dur divisions))
                (r (get-rhythm-letter-for-value v nil))
-               ;; some just always create problems...
-               (result (if r ;(and r (not (member r '(fs. fe. fq.))))
-                           r
-                           v))
+               ;; in Sebastian Wendt's problem case we have a h. rest but inside
+               ;; a 6:7 tuplet. h. has a duration of 3 (quarters) but 3*7/6=3/5
+               ;; which is h.. :/ that can't work under a tuplet like this.
+               ;; 
+               ;; This would be the bar's rqq data (meter = 4/2):
+               ;; 
+               ;; ((4 2) Q (7 (1 (1) 1 (3))))
+               (result
+                ;; some just always create problems...
+                (if r r v))
+                #|(let ((rr (when r (make-rhythm r))))
+                  (if (or (not r)
+                          (and rr (> (num-dots rr) 1)))
+                      v
+                      r)))|#
                ;; when we have something like 8/3 we can just make it 4\.
                ;; (a q. is 8/3 or 8/2. or 4.)
                (dotit (and (numberp result) (or ;(= 3 (numerator result))
@@ -6706,8 +6737,9 @@ rsb-rb)
                       ;; strings work as rthms too
                       (format nil"~a\." (/ (numerator result) 2))
                       (format nil"~a/~a\." (numerator result) 2))))
-          ;; (format t "~&result: ~a" result))
+          ;; (format t "~&result: ~a" result)
           (make-rqq-divide-rthm :r result :rest rest))
+        ;; divisions is not an integer:
         (let* ((2divs (second divisions))
                (rqqnd (rqq-num-divisions 2divs))
                (this-dur (first divisions))

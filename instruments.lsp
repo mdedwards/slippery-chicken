@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  17:43:19 Thu Nov  1 2018 CET
+;;; $$ Last modified:  19:32:43 Thu Nov  8 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -260,10 +260,18 @@
        :starting-clef treble 
        :chords nil :midi-program 57))
      ;; SAR Fri Jan 20 12:17:24 GMT 2012: Added tenor trombone from Adler
-     ;; todo: need bass trombone
      (tenor-trombone
       (:staff-name "trombone" :staff-short-name "tbn" 
        :lowest-written e2 :highest-written bf4
+       :largest-fast-leap 7
+       :microtones t
+       :clefs (bass tenor) :starting-clef bass 
+       :chords nil :midi-program 58))
+     ;; MDE Thu Nov  8 19:32:19 2018 -- 
+     (bass-trombone
+      (:staff-name "bass trombone" :staff-short-name "btbn"
+       ;; these are of course not true for every instrument/player
+       :lowest-written e1 :highest-written g4
        :largest-fast-leap 7
        :microtones t
        :clefs (bass tenor) :starting-clef bass 

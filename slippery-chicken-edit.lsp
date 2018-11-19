@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  18:18:50 Thu Nov  8 2018 CET
+;;; $$ Last modified:  17:44:40 Fri Nov 16 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4572,6 +4572,8 @@ NIL
 ;;;   T = consolidate. Default = T.
 ;;; - :update. T or NIL to indicate whether to update the slots of the given
 ;;;   slippery-chicken object after copying. T = update. Default = T.
+;;; - :auto-beam. T or NIL to indicate whether to call auto-beam on the doubled
+;;;   notes. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns T
@@ -4602,7 +4604,8 @@ NIL
 ;;; SYNOPSIS
 (defmethod double-events ((sc slippery-chicken) master-player doubling-players
                           start-bar start-event end-bar end-event
-                          &key transposition (consolidate-rests t) (update t))
+                          &key transposition (consolidate-rests t) (update t)
+                            (auto-beam t))
 ;;; ****
   (setq doubling-players (force-list doubling-players))
   (loop for doubling-player in doubling-players do       
@@ -4647,9 +4650,12 @@ NIL
              (make-rests sb 1 (1- start-event)))
            (when (<= exit nrs)
              (make-rests eb exit))
-           (auto-beam sb)
-           (unless (= start-bar end-bar)
-             (auto-beam eb))
+           ;; MDE Thu Nov  8 19:35:33 2018 -- it's now an option; before it was
+           ;; always called.
+           (when auto-beam
+             (auto-beam sb)
+             (unless (= start-bar end-bar)
+               (auto-beam eb)))
            (if consolidate-rests 
                (progn
                  (consolidate-rests sb)
@@ -4664,7 +4670,9 @@ NIL
             for mb in mbars
             for db = (get-bar sc bn doubling-player) 
             do
-            (setf (rhythms db) (rhythms mb)))
+              (setf (rhythms db) (rhythms mb))
+              ;; MDE Sat Nov 10 12:30:42 2018 
+              (set-player db doubling-player))
          (when update                   ; could be called elsewhere
            (update-slots sc))))
   t)
@@ -6363,10 +6371,15 @@ T
 ;;; - :combos. A list of lists indicating the player groupings to be
 ;;;   used to orchestrate the events. Default = NIL whereupon the <new-ensemble>
 ;;;   will be used to generate groupings via the lotsa-combos method.
+;;; - :add-more-combos. T or NIL to indicate whether the :combos slot should be
+;;;   expanded via the lotsa-combos method. If T then whatever is passed to
+;;;   :combos will be retained. Default = NIL.
 ;;; - :start-bar. The bar number to start orchestrating. Default = NIL which
 ;;;   will in turn default to 1
 ;;; - :end-bar. The bar number to stop orchestrating (inclusive). Default = NIL
 ;;;   which will in turn default to the last bar of the slippery-chicken object.
+;;; - :auto-beam. T or NIL to indicate whether to call auto-beam in the new
+;;;   parts. Default = T.
 ;;; - :combo-change-fun. A function which should return T or NIL to indicate
 ;;;   whether we should change combo on any given event. This should take two
 ;;;   arguments (the combo as a list of player IDs and an assoc-list of all
@@ -6382,20 +6395,24 @@ T
 ;;; SYNOPSIS
 (defmethod orchestrate ((sc slippery-chicken) new-ensemble original-players
                         &key
-                          combos start-bar end-bar (artificial-harmonics t)
-                          (combo-change-fun #'combo-change?))
+                          combos add-more-combos start-bar end-bar verbose
+                          (artificial-harmonics t) (relax 0)
+                          (auto-beam t) (combo-change-fun #'combo-change?))
 ;;;  ****
   ;; reset our activity-levels object or whatever the given function does to
   ;; reset 
   (funcall combo-change-fun nil nil) 
   (setq new-ensemble (make-ensemble nil new-ensemble) ; clone or instantiate
         original-players (force-list original-players))
-  (unless combos (setq combos (lotsa-combos new-ensemble)))
   (let* ((phrases (get-phrases sc original-players :start-bar start-bar
                                :end-bar end-bar :pad nil))
-         (combos-al (organise-combos new-ensemble combos))
-         combo)
+         (lotsa (when (or (not combos) add-more-combos)
+                  (lotsa-combos new-ensemble 100)))
+         (all-combos (append combos lotsa))
+         (combos-al (organise-combos new-ensemble all-combos))
+         combo combo-players)
     (add-ensemble-players sc new-ensemble)
+    (update-slots sc)                   ; so that bar-nums are correct
     (loop for pphrase in phrases and player in original-players do
        ;; strictly speaking phrases have no meaning here as combos can change
        ;; at any point but keep the phrase processing in place for now in case
@@ -6418,21 +6435,39 @@ T
                      ;; notes. so there are side effects here but all good ones.
                      (unless (is-tied-to event)
                        (setq combo (get-combo sc event combos-al
-                                              combo-change-fun)))
+                                              combo-change-fun
+                                              artificial-harmonics
+                                              relax)
+                             combo-players (mapcar #'first combo))
+                       (when verbose
+                         (format t "~&bar ~a: ~a plays ~a"
+                                 (bar-num event) combo-players
+                                 (get-pitch-symbol event))))
                      ;; (print-simple event) 
                      ;; (print-simple (second (first combo)))
                      ;; (terpri)
+                     #|(when (is-rest-bar (get-bar sc (bar-num event)
+                     (first (first combo))))
+                     (break))
+                     (print (mapcar #'(lambda (x)
+                                        (let ((p (second x)))
+                                          (when p (get-pitch-symbols p))))
+                                    combo))|#
                      ;; combo should now be as described below at 
                      (loop for p in combo
                         for e = (get-event sc (bar-num event)
                                            (1+ (bar-pos event)) (first p))
                         do
+                          ;; if an instrument can't play a note the second in
+                          ;; the list will be nil 
+                          (when (second p)
                         ;;                       pitch obj  ins obj
-                          (set-pitch-or-chord e (second p) (third p))
-                          (when (is-tied-from event)
-                            (setf (is-tied-from e) t))
-                          (when (is-tied-to event)
-                            (setf (is-tied-to e) t))))))))
+                            (set-pitch-or-chord e (second p) (third p))
+                            (when (is-tied-from event)
+                              (setf (is-tied-from e) t))
+                            (when (is-tied-to event)
+                              (setf (is-tied-to e) t)))))))))
+  (when auto-beam (auto-beam sc))
   (update-slots sc)
   sc)
 
@@ -6442,7 +6477,7 @@ T
 (defmethod get-combo ((sc slippery-chicken) (e event) (combos assoc-list)
                       &optional 
                         (combo-change-fun #'combo-change?)
-                        (artificial-harmonics t))
+                        (artificial-harmonics t) (relax 0))
   ;; (print '***********************)
   (let* ((num-notes (num-notes e))
          (cscl (get-data-data num-notes combos))
@@ -6454,9 +6489,11 @@ T
     ;; (print (data cscl))
     ;; (print cscl)
     (loop for i to (sclist-length cscl)
-       ;;            event method, so player IDs convert to instrument objects
+       ;; NB the chord method (called by event) goes through the combo
+       ;; permutations  
+       ;;              event method, so player IDs convert to instrument objects
        for possible = (combo-chord-possible? e current-combo
-                                             artificial-harmonics sc)
+                                             artificial-harmonics sc relax)
        for free = (when possible
                     (loop for player in current-combo do
                        ;; for player = (nth (first p) current-combo) do
@@ -6468,14 +6505,17 @@ T
        ;; pitch or artificial harmonic that they can play and the instrument
        ;; object
          (if free
-             (return (loop for p in possible collect ; this has to happen!
-                        ;; convert the index to player ID
-                          (cons (nth (first p) current-combo)
-                                (rest p))))
+             (return                    ; convert the index to player ID
+               (mapcar #'(lambda (p) (cons (nth (first p) current-combo)
+                                           (rest p)))
+                       possible))
              (setq current-combo (get-next cscl)))
-       finally (error "slippery-chicken::get-combo: no combo can play ~a.~
-                       ~%Chord ~apossible, free: ~a~%~a"
-                      (get-pitch-symbol e) (if possible "" "im") free e))))
+       finally (funcall
+                (if (zerop relax) #'error #'warn)
+                "slippery-chicken::get-combo: bar ~a: no combo can play ~a.~
+                 ~%Chord ~apossible for ~a, free: ~a"
+                (bar-num e) (get-pitch-symbol e) (if possible "" "im")
+                current-combo free))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; <e> is an event from another player but is <player> free to double that
@@ -6488,20 +6528,32 @@ T
          ;; if player's bar is empty then we'll be calling double-events
          ;; below. in that case we have to see if there's a tie into the next
          ;; bar. if so we'll need to double-events in that (and perhaps
-         ;; subsequent bars) also.
+         ;; subsequent bars) also. 
          (last-event (get-last-event
                       (get-bar sc (bar-num e) (player e))))
          (end-bar (if (is-tied-from last-event)
                       (bar-num (find-end-tie sc last-event))
                       (bar-num e))))
-    ;; (format t "~a" ne)
-    (if (empty-bars? sc (bar-num e) end-bar player) ;(is-rest-bar bar)
+    (if (empty-bars? sc (bar-num e) end-bar player)
         ;; if the last event in the bar we'll copy from is tied, then we have to
-        ;; double events in the next bar, maybe even more
+        ;; double events in the next bar, maybe even more to the end of the tie
         (progn
+          ;; It's actually not enough to find which bar the current event
+          ;; finishes its tie in, as that bar could have a last event which ties
+          ;; into the next bar--in that case we need to keep going until we find
+          ;; a last event which doesn't tie.
+          (loop
+             ;;                                 NB end-bar now, not (bar-num e)
+             (setq last-event (get-last-event (get-bar sc end-bar (player e))))
+             (if (is-tied-from last-event)
+                 (setq end-bar (bar-num (find-end-tie sc last-event)))
+                 (return end-bar)))
           (double-events sc (player e) player (bar-num e) 1 end-bar nil
-                         :consolidate-rests nil :update nil)
+                         :auto-beam nil :consolidate-rests nil :update nil)
+          ;; we have to turn them into rests because another ensemble might play
+          ;; the following chords
           (loop for bar-num from (bar-num e) to end-bar do
+             ;; (print-simple (force-all-rests (get-bar sc bar-num player))))
                (force-all-rests (get-bar sc bar-num player)))
           t)
         ;; have we already copied over skeleton events or is there (by chance

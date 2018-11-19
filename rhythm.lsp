@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  10:56:35 Sat Oct 13 2018 CEST
+;;; $$ Last modified:  18:44:34 Fri Nov 16 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1523,7 +1523,8 @@ NIL
           (when (is-rest r)
             (format stream "~&        <rest />"))
           (format stream "~&        <duration>~a</duration>"
-                  (floor (* (duration r) divisions)))
+                  ;; (floor (* (duration r) divisions)))
+                  (round (* (duration r) divisions)))
           (when (is-tied-to r)
             ;; tied is for notation, tie is for sound
             ;; the <tied> tag needs to come later, in <notations> (event class

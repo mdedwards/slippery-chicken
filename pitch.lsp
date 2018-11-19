@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  17:57:44 Fri Nov  2 2018 CET
+;;; $$ Last modified:  17:48:19 Thu Nov 15 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1918,6 +1918,13 @@ pitch::add-mark: mark PIZZ already present but adding again!
           ((search "SF" idstr) 'cmn::natural-down)    ;; natural 6th flat
           (t (error "~a ~%pitch::cmn-get-cmn-12th-tone-accidentals: ~
                      what pitch was that?" p)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Nov 15 17:47:39 2018 -- just for convenience so we have the same
+;;; method as the chord class
+(defmethod get-pitch-symbols ((p pitch) &optional ignore)
+  (declare (ignore ignore))
+  (id p))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; lilypond output.

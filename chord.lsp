@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  18:20:14 Wed Nov  7 2018 CET
+;;; $$ Last modified:  17:44:04 Fri Nov 16 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2247,45 +2247,72 @@ data: (
 ;;; the combo, the pitch or artificial harmonic that they can play, and the
 ;;; instrument object.
 (defmethod combo-chord-possible? ((c chord) combo
-                                  &optional artificial-harmonics ignore)
+                                  &optional artificial-harmonics (relax 0)
+                                    ignore)
   (declare (ignore ignore))
   (let ((lenc (length combo))
-        perms pitch result ins)
-    (unless (every #'instrument-p combo)
-      (error "chord::combo-chord-possible: combo should be a list of ~
+        perms pitch result ins got best)
+    (flet ((got-pitches (list)
+             (let (ps)
+               (loop for ins in list
+                  for pitch = (second ins)
+                  for pitch-list = (if (pitch-p pitch) (list pitch)
+                                       (data pitch)) ; must be a chord
+                  do
+                    (loop for p in pitch-list do
+                         (pushnew p ps :test #'pitch=)))
+               (length ps))))
+      (unless (every #'instrument-p combo)
+        (error "chord::combo-chord-possible: combo should be a list of ~
               instrument objects: ~a" combo))
-    (unless (= (sclist-length c) lenc)
-      (error "chord::combo-chord-possible: number of notes in ~
+      (unless (= (sclist-length c) lenc)
+        (error "chord::combo-chord-possible: number of notes in ~
               chord (~a) should be the ~%same as the number of players in ~
               <combo> (~a)."
-             (sclist-length c) lenc))
-    (setq perms (if (> lenc 6)          ; 6=720 perms
-                    ;; this might mean we have the first element more than once
-                    ;; but that's no big deal: we really do want to try the
-                    ;; order of the given combo first
-                    (cons (loop for i below lenc collect i)
-                          (inefficient-permutations lenc :max 500))
-                    (permutations lenc)))
-    ;; (print perms)
-    ;; (print c) (print combo)
-    ;; (print '****************go)
-    (loop for comb in perms do
-         (setq result nil)
+               (sclist-length c) lenc))
+      (setq perms (if (> lenc 6)        ; 6=720 perms
+                      ;; this might mean we have the first element more than
+                      ;; once but that's no big deal: we really do want to try
+                      ;; the order of the given combo first
+                      (cons (loop for i below lenc collect i)
+                            (inefficient-permutations lenc :max 500))
+                      (permutations lenc)))
+      ;; (print perms)
+      ;; (print c) (print combo)
+      ;; (print '****************go)
+      (loop for comb in perms do
+           (setq result nil
+                 got 0)
          ;; (print comb)
-         (loop for instrument-index in comb and i from 0 do
-              (setq pitch (get-nth i c)
-                    ins (nth instrument-index combo))
-              (multiple-value-bind
-                    (in harm)
-                  ;;     sounding pitches and artificial harmonics, if allowed!
-                  (in-range ins pitch t artificial-harmonics)
-                (cond (in (push (list instrument-index pitch ins) result))
-                      ((chord-p harm) (push (list instrument-index harm ins)
-                                            result))
-                      (t (return)))))
-         (when (= lenc (length result))
-           (return (reverse result)))
-       finally (return nil))))
+           (loop for instrument-index in comb and i from 0 do
+                (setq pitch (get-nth i c)
+                      ins (nth instrument-index combo))
+                (multiple-value-bind
+                      (in harm)
+                    ;;     sounding pitches and artificial harmonics, if allowed!
+                    (in-range ins pitch t artificial-harmonics nil)
+                  (when (or in (chord-p harm)) (incf got))
+                  (cond (in (push
+                             (list instrument-index (try-ins-chord ins c pitch)
+                                   ins)
+                             result))
+                        ((chord-p harm) (push (list instrument-index harm ins)
+                                              result))
+                        (t (return))))) ; ins cannae do it
+           (when (> (got-pitches result) (got-pitches best))
+             (setq best result))
+           (when (= got lenc)
+             (return (reverse result)))
+         finally (setq result nil))
+      (if result
+          result
+          (case relax
+            (0 nil)
+            ;; an ins that can play chords can provide the missing note(s)
+            (1 (when (= lenc (got-pitches best))
+                 best))
+            (2 best)
+            (3 nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

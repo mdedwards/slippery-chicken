@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:25:51 Fri Nov 16 2018 CET
+;;; $$ Last modified:  17:52:06 Tue Nov 20 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -775,7 +775,12 @@ data: 132
   ;; 13.2.11 really have to change the written note too
   (let* ((wporc (written-pitch-or-chord e))
          (porc (pitch-or-chord e))
-         (diff (when wporc (pitch- wporc porc))))
+         ;; MDE Tue Nov 20 17:51:34 2018 -- diff should actually always be an
+         ;; integer but just for safety allow more accuracy; however don't allow
+         ;; rounding errors to screw up low pitch transpositions in
+         ;; :twelfth-tone scale (see test suite)
+         (diff (when wporc (decimal-places (pitch- wporc porc) 4))))
+    ;; (print diff)
     (setf-pitch-aux e value 'pitch-or-chord)
     (when (pitch-or-chord e)
       (setf (is-rest e) nil
@@ -801,7 +806,7 @@ data: 132
          (porc (pitch-or-chord e))
          (diff (if instrument
                    (transposition-semitones instrument)
-                   (when wporc (pitch- porc wporc)))))
+                   (when wporc (decimal-places (pitch- porc wporc) 4)))))
     ;; (print diff)
     (setf-pitch-aux e value 'written-pitch-or-chord)
     (when (written-pitch-or-chord e)
@@ -822,7 +827,7 @@ data: 132
          (porc (pitch-or-chord e))
          (diff (if instrument
                    (transposition-semitones instrument)
-                   (when wporc (pitch- porc wporc)))))
+                   (when wporc (decimal-places (pitch- porc wporc) 4)))))
     ;; (print diff)
     (setf-pitch-aux e value 'pitch-or-chord)
     (setf (is-rest e) nil
@@ -3796,6 +3801,7 @@ NIL
       (setq instruments (get-instruments-for-players-at-bar
                          sc combo (bar-num e))))
     ;; (print instruments)
+    ;; (print (get-pitch-symbols (pitch-or-chord e)))
     (combo-chord-possible? (pitch-or-chord e) instruments
                            artificial-harmonics relax)))
 

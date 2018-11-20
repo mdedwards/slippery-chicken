@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  11:24:38 Thu Nov  1 2018 CET
+;;; $$ Last modified:  09:04:20 Tue Nov 20 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -109,6 +109,7 @@
                    pl)))
     (unless (= (length pl) (length plrd))
       (when (warn-dups s)
+        ;; (break)
         (warn "sc-set::verify-and-store: found and removed duplicate ~
                pitches in ~&~a"
               (pitch-list-to-symbols pl))))

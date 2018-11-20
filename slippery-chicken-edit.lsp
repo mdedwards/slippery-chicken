@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  17:44:40 Fri Nov 16 2018 CET
+;;; $$ Last modified:  13:46:10 Tue Nov 20 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6434,14 +6434,15 @@ T
                      ;; rests then we can change individual rests back into
                      ;; notes. so there are side effects here but all good ones.
                      (unless (is-tied-to event)
+                       ;; (print (get-pitch-symbols (pitch-or-chord event)))
                        (setq combo (get-combo sc event combos-al
                                               combo-change-fun
                                               artificial-harmonics
                                               relax)
                              combo-players (mapcar #'first combo))
                        (when verbose
-                         (format t "~&bar ~a: ~a plays ~a"
-                                 (bar-num event) combo-players
+                         (format t "~&bar ~a: ~a plays set ~a: ~a"
+                                 (bar-num event) combo-players (set-ref event)
                                  (get-pitch-symbol event))))
                      ;; (print-simple event) 
                      ;; (print-simple (second (first combo)))
@@ -6469,6 +6470,7 @@ T
                               (setf (is-tied-to e) t)))))))))
   (when auto-beam (auto-beam sc))
   (update-slots sc)
+  (check-ties sc)
   sc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6488,6 +6490,7 @@ T
       (setq current-combo (get-next cscl)))
     ;; (print (data cscl))
     ;; (print cscl)
+    ;; (print (get-pitch-symbols (pitch-or-chord e)))
     (loop for i to (sclist-length cscl)
        ;; NB the chord method (called by event) goes through the combo
        ;; permutations  

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  17:44:04 Fri Nov 16 2018 CET
+;;; $$ Last modified:  08:04:44 Tue Nov 20 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2289,7 +2289,8 @@ data: (
                       ins (nth instrument-index combo))
                 (multiple-value-bind
                       (in harm)
-                    ;;     sounding pitches and artificial harmonics, if allowed!
+                    ;;     sounding pitches and artificial harmonics, if
+                    ;;     allowed!
                     (in-range ins pitch t artificial-harmonics nil)
                   (when (or in (chord-p harm)) (incf got))
                   (cond (in (push

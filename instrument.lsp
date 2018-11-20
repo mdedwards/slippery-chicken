@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  14:53:37 Fri Nov 16 2018 CET
+;;; $$ Last modified:  08:09:59 Tue Nov 20 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -880,6 +880,7 @@
 ;;; chord is possible, make sure it has the given pitch in it. If none of that
 ;;; works just return the given pitch.
 (defmethod try-ins-chord ((ins instrument) (c chord) (p pitch))
+  ;; (print (get-pitch-symbols c))
   (if (chords ins)
       (let* ((tls (clone-with-new-class c 'tl-set))
              (chd (progn

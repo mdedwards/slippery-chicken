@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  16:56:19 Sun Dec 31 2017 CET
+;;; $$ Last modified:  09:52:26 Thu Nov 22 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -529,7 +529,6 @@
     rest))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; bar-num & note-num are one-based; can't handle chords
 (defmethod change-pitch ((bh bar-holder) bar-num note-num player new-pitch
                          &optional written)

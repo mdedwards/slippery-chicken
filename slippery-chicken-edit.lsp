@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  13:46:10 Tue Nov 20 2018 CET
+;;; $$ Last modified:  10:09:57 Thu Nov 22 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1134,9 +1134,11 @@
 ;;; Change the pitch of a specified event to a new specified pitch. The new
 ;;; pitch is not required to be a member of the current set.
 ;;;
-;;; NB The new pitch is the sounding pitch if a transposing instrument.
+;;; NB The new pitch is the sounding pitch if a transposing instrument, unless
+;;; optional argument is set to T.
 ;;;
-;;; NB This doesn't update following tied-to notes.
+;;; NB This doesn't update following tied-to notes but see note to
+;;; change-pitches method below (or call check-ties, which fixes them too).
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -4606,7 +4608,7 @@ NIL
                           start-bar start-event end-bar end-event
                           &key transposition (consolidate-rests t) (update t)
                             (auto-beam t))
-;;; ****
+;;;  ****
   (setq doubling-players (force-list doubling-players))
   (loop for doubling-player in doubling-players do       
      ;; clone the master players bars
@@ -5824,9 +5826,7 @@ T
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Aug 10 17:22:54 2012 -- works with sounding pitches (written
 ;;; pitches will be updated if appropriate)  
-
-;;; SAR Fri Oct  5 13:44:09 BST 2012. Added robodoc entry.
-
+;;; 
 ;;; ****m* slippery-chicken-edit/rm-pitches-from-chord
 ;;; DESCRIPTION
 ;;; Remove the specified pitches from an existing chord object.
@@ -6398,7 +6398,7 @@ T
                           combos add-more-combos start-bar end-bar verbose
                           (artificial-harmonics t) (relax 0)
                           (auto-beam t) (combo-change-fun #'combo-change?))
-;;;  ****
+;;; ****
   ;; reset our activity-levels object or whatever the given function does to
   ;; reset 
   (funcall combo-change-fun nil nil) 
@@ -6470,7 +6470,7 @@ T
                               (setf (is-tied-to e) t)))))))))
   (when auto-beam (auto-beam sc))
   (update-slots sc)
-  (check-ties sc)
+  ;;  (check-ties sc)
   sc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6504,6 +6504,10 @@ T
                            (return nil))
                        finally (return t)))
        do
+         #|(when (= 251 (bar-num e))
+           (print current-combo) (print free)
+           (loop for p in current-combo do
+                (print-simple (get-bar sc (bar-num e) p))))|#
        ;;  so we return a list of 3-element sublists: the player (symbol), the
        ;; pitch or artificial harmonic that they can play and the instrument
        ;; object
@@ -6537,10 +6541,18 @@ T
          (end-bar (if (is-tied-from last-event)
                       (bar-num (find-end-tie sc last-event))
                       (bar-num e))))
+    ;; (when (= (bar-num e) 250)
+    ;;(break))
+    ;; (print end-bar)
+    #|(when (= 251 (bar-num e))
+      (let ((b (get-bar sc (bar-num e) player)))
+        (print (is-rest-bar b))
+        (print-simple b)))|#
     (if (empty-bars? sc (bar-num e) end-bar player)
         ;; if the last event in the bar we'll copy from is tied, then we have to
         ;; double events in the next bar, maybe even more to the end of the tie
         (progn
+          ;; (print 'empty)
           ;; It's actually not enough to find which bar the current event
           ;; finishes its tie in, as that bar could have a last event which ties
           ;; into the next bar--in that case we need to keep going until we find
@@ -6555,9 +6567,11 @@ T
                          :auto-beam nil :consolidate-rests nil :update nil)
           ;; we have to turn them into rests because another ensemble might play
           ;; the following chords
-          (loop for bar-num from (bar-num e) to end-bar do
+          (loop for bar-num from (bar-num e) to end-bar
+             for bar = (get-bar sc bar-num player) do
              ;; (print-simple (force-all-rests (get-bar sc bar-num player))))
-               (force-all-rests (get-bar sc bar-num player)))
+               (force-all-rests bar)
+               (setf (is-rest-bar bar) nil))
           t)
         ;; have we already copied over skeleton events or is there (by chance
         ;; even) a rest of the same duration at the same point in the bar?
@@ -6565,7 +6579,7 @@ T
         ;; from. that way we could use this method outside of the
         ;; orchestrate/get-combo context. for now we're assuming rests have been
         ;; created over whole bars
-        (and ne (is-rest ne)
+        (and ne (is-rest ne) 
              (equal-within-tolerance (start-time e) (start-time ne))
              (equal-within-tolerance (duration e) (duration ne))))))
 

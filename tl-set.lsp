@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified:  08:17:17 Tue Nov 20 2018 CET
+;;; $$ Last modified:  19:30:46 Wed Nov 21 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -627,7 +627,10 @@ data: C6
                                              :enharmonics-are-equal t
                                              :return-symbols nil)
                              set-pitches)))
-    set-pitches-rm))
+    ;; MDE Wed Nov 21 19:29:04 2018 -- this wasn't actually destructively
+    ;; changing the set, now it is 
+    ;; set-pitches-rm))
+    (setf (data tls) set-pitches-rm)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

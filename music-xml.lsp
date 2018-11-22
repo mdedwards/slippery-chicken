@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  10:56:52 Sat Oct 13 2018 CEST
+;;; $$ Last modified:  09:39:14 Thu Nov 22 2018 CET
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -140,7 +140,7 @@
 (defun xml-direction-type (stream tag &optional content tag-options)
   ;; (unless tag-options (setq tag-options "")) ; allow nil
   (setq tag-options (if tag-options
-                        (concatenate 'string " " tag-options) ; leading space
+                        (format nil " ~a" tag-options) ; leading space
                         ""))
   (format stream "~&        <direction-type>")
   (if content
@@ -149,7 +149,9 @@
   (format stream "~&        </direction-type>"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun xml-words (stream words &optional tag-options (placement 'a))
+(defun xml-words (stream words &optional (placement 'a) tag-options)
+  ;; (break)
+  ;; (print stream) (print words) (print tag-options) (print placement)
   (xml-direction stream "words" words tag-options placement))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -417,7 +419,7 @@
                               (mk (if (or up down)
                                       (subseq mark 1)
                                       mark)))
-                         (xml-words stream mk nil (if down 'b 'a))))
+                         (xml-words stream mk (if down 'b 'a))))
                ;; if it's a list then it's a bunch of arguments to sc-cmn-text
                ;; otherwise it might be a mark (e.g. text) already
                ;; ignore cmn stuff but warn

@@ -5,7 +5,7 @@
 ;;;
 ;;; Class Hierarchy:  none, no classes defined
 ;;;
-;;; Version:          1.09
+;;; Version:          1.09 try this
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  09:39:14 Thu Nov 22 2018 CET
+;;; $$ Last modified:  10:28:54 Thu Nov 22 2018 CET
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;

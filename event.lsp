@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:52:06 Tue Nov 20 2018 CET
+;;; $$ Last modified:  10:13:49 Fri Nov 23 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3782,7 +3782,7 @@ NIL
 ;;; slippery-chicken object, otherwise it should be a list of instruments. See
 ;;; chord method for what it returns.
 (defmethod combo-chord-possible? ((e event) combo
-                                  &optional artificial-harmonics sc relax)
+                                  &optional artificial-harmonics sc)
   (let ((instruments combo))
     (cond ((is-rest e)
            (error "slippery-chicken::combo-chord-possible: event must be a ~
@@ -3803,7 +3803,7 @@ NIL
     ;; (print instruments)
     ;; (print (get-pitch-symbols (pitch-or-chord e)))
     (combo-chord-possible? (pitch-or-chord e) instruments
-                           artificial-harmonics relax)))
+                           artificial-harmonics)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

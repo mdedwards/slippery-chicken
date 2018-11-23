@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  08:04:44 Tue Nov 20 2018 CET
+;;; $$ Last modified:  16:46:48 Fri Nov 23 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2245,10 +2245,10 @@ data: (
 ;;; MDE Fri Nov  2 07:57:55 2018 -- here combo is a list of instrument
 ;;; objects. If successful returns a list of 3-element sublists: the index into
 ;;; the combo, the pitch or artificial harmonic that they can play, and the
-;;; instrument object.
+;;; instrument object. Incomplete success will however still return
+;;; possibilities. 
 (defmethod combo-chord-possible? ((c chord) combo
-                                  &optional artificial-harmonics (relax 0)
-                                    ignore)
+                                  &optional artificial-harmonics ignore)
   (declare (ignore ignore))
   (let ((lenc (length combo))
         perms pitch result ins got best)
@@ -2258,9 +2258,8 @@ data: (
                   for pitch = (second ins)
                   for pitch-list = (if (pitch-p pitch) (list pitch)
                                        (data pitch)) ; must be a chord
-                  do
-                    (loop for p in pitch-list do
-                         (pushnew p ps :test #'pitch=)))
+                  do (loop for p in pitch-list do
+                          (pushnew p ps :test #'pitch=)))
                (length ps))))
       (unless (every #'instrument-p combo)
         (error "chord::combo-chord-possible: combo should be a list of ~
@@ -2277,9 +2276,6 @@ data: (
                       (cons (loop for i below lenc collect i)
                             (inefficient-permutations lenc :max 500))
                       (permutations lenc)))
-      ;; (print perms)
-      ;; (print c) (print combo)
-      ;; (print '****************go)
       (loop for comb in perms do
            (setq result nil
                  got 0)
@@ -2293,27 +2289,37 @@ data: (
                     ;;     allowed!
                     (in-range ins pitch t artificial-harmonics nil)
                   (when (or in (chord-p harm)) (incf got))
-                  (cond (in (push
-                             (list instrument-index (try-ins-chord ins c pitch)
-                                   ins)
-                             result))
+                  (cond (in (push (list instrument-index
+                                        ;; if we can play a single pitch, try
+                                        ;; for a chord
+                                        (try-ins-chord ins c pitch)
+                                        ins)
+                                  result))
                         ((chord-p harm) (push (list instrument-index harm ins)
-                                              result))
-                        (t (return))))) ; ins cannae do it
-           (when (> (got-pitches result) (got-pitches best))
-             (setq best result))
+                                              result)))))
+                        ;; (t (return))))) ; ins cannae do it but keep going
+           (let ((gpr (got-pitches result))
+                 (gpb (got-pitches best)))
+             (when (or (> gpr gpb)
+                       ;; got the same number of pitches but more instruments
+                       ;; playing them
+                     (and (= gpr gpb) (> (length result) (length best))))
+               (setq best result)))
            (when (= got lenc)
-             (return (reverse result)))
+             (return))
          finally (setq result nil))
+      ;; (print best)
+      ;; if we've got something to return then we'll return the 'relax' level as
+      ;; a second value. 0 is all notes were possible using separate notes on
+      ;; the given instruments; 1 is all notes poss but only using a chord ins
+      ;; and leaving one or more instruments out; 2 is note all notes were
+      ;; possible; 3 we won't actually return as the method will return NIL
+      ;; (nowt possible)
       (if result
-          result
-          (case relax
-            (0 nil)
-            ;; an ins that can play chords can provide the missing note(s)
-            (1 (when (= lenc (got-pitches best))
-                 best))
-            (2 best)
-            (3 nil))))))
+          (values (reverse result) 0)
+          ;;                <= because with artificial harmonics we'd have twice
+          ;;                as many pitches in best
+          (values (reverse best) (if (<= lenc (got-pitches best)) 1 2))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

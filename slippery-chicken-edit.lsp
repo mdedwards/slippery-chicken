@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  10:09:57 Thu Nov 22 2018 CET
+;;; $$ Last modified:  15:34:41 Fri Nov 23 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6349,6 +6349,26 @@ T
   (players sc))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; called by orchestrate. combo is a list as described below at 
+(defmethod copy-to-combo ((sc slippery-chicken) event combo)
+  (loop for p in combo
+     for e = (get-event sc (bar-num event)
+                        (1+ (bar-pos event)) (first p))
+     do
+     ;; if an instrument can't play a note the second in
+     ;; the list will be nil 
+       (when (second p)
+         ;;                       pitch obj  ins obj
+         (set-pitch-or-chord e (second p) (third p))
+         (when (is-tied-from event)
+           (setf (is-tied-from e) t))
+         ;; this shouldn't trigger as changing tied notes is handled by
+         ;; check-ties: 
+         ;; (when (is-tied-to event)
+         ;; (setf (is-tied-to e) t))
+         )))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/orchestrate
 ;;; DATE
 ;;; November 2nd 2018, Heidhausen
@@ -6410,8 +6430,9 @@ T
                   (lotsa-combos new-ensemble 100)))
          (all-combos (append combos lotsa))
          (combos-al (organise-combos new-ensemble all-combos))
-         combo combo-players)
+         combo combo-players pitches combo-relax-val)
     (add-ensemble-players sc new-ensemble)
+    ;; (print combos-al)
     (update-slots sc)                   ; so that bar-nums are correct
     (loop for pphrase in phrases and player in original-players do
        ;; strictly speaking phrases have no meaning here as combos can change
@@ -6435,94 +6456,91 @@ T
                      ;; notes. so there are side effects here but all good ones.
                      (unless (is-tied-to event)
                        ;; (print (get-pitch-symbols (pitch-or-chord event)))
-                       (setq combo (get-combo sc event combos-al
-                                              combo-change-fun
-                                              artificial-harmonics
-                                              relax)
-                             combo-players (mapcar #'first combo))
+                       (multiple-value-setq
+                           (combo combo-relax-val)
+                         (get-combo sc event combos-al combo-change-fun
+                                    artificial-harmonics))
+                       (setq combo-players (mapcar #'first combo)
+                             pitches (get-pitch-symbol event))
+                       (when (or (not combo) (> combo-relax-val relax))
+                         (print combo) (print combo-relax-val)
+                         (error "slippery-chicken::get-combo: bar ~a: no ~
+                                 combo can play ~a."
+                                (bar-num event) (get-pitch-symbol event)))
                        (when verbose
-                         (format t "~&bar ~a: ~a plays set ~a: ~a"
-                                 (bar-num event) combo-players (set-ref event)
-                                 (get-pitch-symbol event))))
-                     ;; (print-simple event) 
-                     ;; (print-simple (second (first combo)))
-                     ;; (terpri)
-                     #|(when (is-rest-bar (get-bar sc (bar-num event)
-                     (first (first combo))))
-                     (break))
-                     (print (mapcar #'(lambda (x)
-                                        (let ((p (second x)))
-                                          (when p (get-pitch-symbols p))))
-                                    combo))|#
-                     ;; combo should now be as described below at 
-                     (loop for p in combo
-                        for e = (get-event sc (bar-num event)
-                                           (1+ (bar-pos event)) (first p))
-                        do
-                          ;; if an instrument can't play a note the second in
-                          ;; the list will be nil 
-                          (when (second p)
-                        ;;                       pitch obj  ins obj
-                            (set-pitch-or-chord e (second p) (third p))
-                            (when (is-tied-from event)
-                              (setf (is-tied-from e) t))
-                            (when (is-tied-to event)
-                              (setf (is-tied-to e) t)))))))))
+                         (format t "~&bar ~a: " (bar-num event))
+                         (case combo-relax-val
+                           (0 (format t "~a plays set ~a: ~a"
+                                      combo-players (set-ref event) pitches))
+                           (1 (format t "All pitches of chord will be ~
+                                         played but chord-playing instrument ~
+                                         ~%filling the gaps."))
+                           (2 (format t "Some pitches missing."))
+                           (3 (format t "Chord will be skipped."))))
+                       (copy-to-combo sc event combo)))))))
   (when auto-beam (auto-beam sc))
   (update-slots sc)
-  ;;  (check-ties sc)
+  (check-ties sc) ; we have to do this to make sure tied notes are updated
   sc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; returns a combo that can play the chord __and__ is free (has rests) to play
-;;; it 
+;;; it, along with 
 (defmethod get-combo ((sc slippery-chicken) (e event) (combos assoc-list)
                       &optional 
                         (combo-change-fun #'combo-change?)
-                        (artificial-harmonics t) (relax 0))
+                        (artificial-harmonics t))
   ;; (print '***********************)
   (let* ((num-notes (num-notes e))
          (cscl (get-data-data num-notes combos))
          (current-combo (get-current cscl))
-         (change (funcall combo-change-fun current-combo combos)))
-    (when change
-      ;; (print 'change)
-      (setq current-combo (get-next cscl)))
-    ;; (print (data cscl))
-    ;; (print cscl)
-    ;; (print (get-pitch-symbols (pitch-or-chord e)))
-    (loop for i to (sclist-length cscl)
-       ;; NB the chord method (called by event) goes through the combo
-       ;; permutations  
-       ;;              event method, so player IDs convert to instrument objects
-       for possible = (combo-chord-possible? e current-combo
-                                             artificial-harmonics sc relax)
-       for free = (when possible
-                    (loop for player in current-combo do
-                       ;; for player = (nth (first p) current-combo) do
-                         (unless (free-to-double? sc e player)
-                           (return nil))
-                       finally (return t)))
-       do
-         #|(when (= 251 (bar-num e))
-           (print current-combo) (print free)
-           (loop for p in current-combo do
-                (print-simple (get-bar sc (bar-num e) p))))|#
-       ;;  so we return a list of 3-element sublists: the player (symbol), the
-       ;; pitch or artificial harmonic that they can play and the instrument
-       ;; object
-         (if free
-             (return                    ; convert the index to player ID
-               (mapcar #'(lambda (p) (cons (nth (first p) current-combo)
-                                           (rest p)))
-                       possible))
-             (setq current-combo (get-next cscl)))
-       finally (funcall
-                (if (zerop relax) #'error #'warn)
-                "slippery-chicken::get-combo: bar ~a: no combo can play ~a.~
-                 ~%Chord ~apossible for ~a, free: ~a"
-                (bar-num e) (get-pitch-symbol e) (if possible "" "im")
-                current-combo free))))
+         (change (funcall combo-change-fun current-combo combos))
+         best best-combo best-success free possible success)
+    (flet ((finalize (result combo fsuccess)
+                                        ; convert the index to player ID
+             (values (mapcar #'(lambda (p) (cons (nth (first p) combo)
+                                                 (rest p)))
+                             result)
+                     fsuccess)))
+      (when change
+        ;; (print 'change)
+        (setq current-combo (get-next cscl)))
+      ;; (print (data cscl))
+      ;; (print cscl)
+      ;; (print (get-pitch-symbols (pitch-or-chord e)))
+      (loop for i to (sclist-length cscl) do
+         ;; NB the chord method (called by event) goes through the combo
+         ;; permutations
+           (multiple-value-setq (possible success)
+             ;; event method, so player IDs convert to instrument objects
+             (combo-chord-possible? e current-combo artificial-harmonics sc))
+           (setq free (when possible
+                        ;; current-combo is a simple list of player IDs
+                        (loop for player in current-combo do
+                           ;; for player = (nth (first p) current-combo) do
+                             (unless (free-to-double? sc e player)
+                               ;; always remember: return just exits this loop,
+                               ;; not the outer loop too 
+                               (return nil))
+                           finally (return t))))
+         ;;  so we return a list of 3-element sublists: the player (symbol),
+         ;; the pitch or artificial harmonic that they can play and the
+         ;; instrument object
+           (if free
+               ;; we got one where each instrument can play a note
+               (if (zerop success) 
+                   (return)
+                   ;; we got one but we might get a better one
+                   (setq best possible
+                         best-combo current-combo
+                         best-success success
+                         current-combo (get-next cscl)))
+               (setq current-combo (get-next cscl)))
+         finally (setq possible nil))
+      (if possible
+          (finalize possible current-combo success)
+          ;; couldn't get the perfect fit so return the best we could get
+          (finalize best best-combo best-success)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; <e> is an event from another player but is <player> free to double that
@@ -6545,9 +6563,9 @@ T
     ;;(break))
     ;; (print end-bar)
     #|(when (= 251 (bar-num e))
-      (let ((b (get-bar sc (bar-num e) player)))
-        (print (is-rest-bar b))
-        (print-simple b)))|#
+    (let ((b (get-bar sc (bar-num e) player)))
+    (print (is-rest-bar b))
+    (print-simple b)))|#
     (if (empty-bars? sc (bar-num e) end-bar player)
         ;; if the last event in the bar we'll copy from is tied, then we have to
         ;; double events in the next bar, maybe even more to the end of the tie

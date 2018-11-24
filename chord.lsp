@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  16:46:48 Fri Nov 23 2018 CET
+;;; $$ Last modified:  15:46:34 Sat Nov 24 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2252,79 +2252,84 @@ data: (
   (declare (ignore ignore))
   (let ((lenc (length combo))
         perms pitch result ins got best)
-    (flet ((got-pitches (list)
-             (let (ps)
-               (loop for ins in list
-                  for pitch = (second ins)
-                  for pitch-list = (if (pitch-p pitch) (list pitch)
-                                       (data pitch)) ; must be a chord
-                  do (loop for p in pitch-list do
-                          (pushnew p ps :test #'pitch=)))
-               (length ps))))
-      (unless (every #'instrument-p combo)
-        (error "chord::combo-chord-possible: combo should be a list of ~
+    (unless (every #'instrument-p combo)
+      (error "chord::combo-chord-possible: combo should be a list of ~
               instrument objects: ~a" combo))
-      (unless (= (sclist-length c) lenc)
-        (error "chord::combo-chord-possible: number of notes in ~
+    (unless (= (sclist-length c) lenc)
+      (error "chord::combo-chord-possible: number of notes in ~
               chord (~a) should be the ~%same as the number of players in ~
               <combo> (~a)."
-               (sclist-length c) lenc))
-      (setq perms (if (> lenc 6)        ; 6=720 perms
-                      ;; this might mean we have the first element more than
-                      ;; once but that's no big deal: we really do want to try
-                      ;; the order of the given combo first
-                      (cons (loop for i below lenc collect i)
-                            (inefficient-permutations lenc :max 500))
-                      (permutations lenc)))
-      (loop for comb in perms do
-           (setq result nil
-                 got 0)
-         ;; (print comb)
-           (loop for instrument-index in comb and i from 0 do
-                (setq pitch (get-nth i c)
-                      ins (nth instrument-index combo))
-                (multiple-value-bind
-                      (in harm)
-                    ;;     sounding pitches and artificial harmonics, if
-                    ;;     allowed!
-                    (in-range ins pitch t artificial-harmonics nil)
-                  (when (or in (chord-p harm)) (incf got))
-                  (cond (in (push (list instrument-index
-                                        ;; if we can play a single pitch, try
-                                        ;; for a chord
-                                        (try-ins-chord ins c pitch)
-                                        ins)
-                                  result))
-                        ((chord-p harm) (push (list instrument-index harm ins)
-                                              result)))))
-                        ;; (t (return))))) ; ins cannae do it but keep going
-           (let ((gpr (got-pitches result))
-                 (gpb (got-pitches best)))
-             (when (or (> gpr gpb)
-                       ;; got the same number of pitches but more instruments
-                       ;; playing them
+             (sclist-length c) lenc))
+    (setq perms (if (> lenc 6)          ; 6=720 perms
+                    ;; this might mean we have the first element more than
+                    ;; once but that's no big deal: we really do want to try
+                    ;; the order of the given combo first
+                    (cons (loop for i below lenc collect i)
+                          (inefficient-permutations lenc :max 500))
+                    (permutations lenc)))
+    (loop for comb in perms do
+         (setq result nil
+               got 0)
+       ;; (print comb)
+         (loop for instrument-index in comb and i from 0 do
+              (setq pitch (get-nth i c)
+                    ins (nth instrument-index combo))
+              (multiple-value-bind
+                    (in harm)
+                  ;;     sounding pitches and artificial harmonics, if
+                  ;;     allowed!
+                  (in-range ins pitch t artificial-harmonics nil)
+                (when (or in (chord-p harm)) (incf got))
+                (cond (in (push (list instrument-index
+                                      ;; if we can play a single pitch, try
+                                      ;; for a chord
+                                      (try-ins-chord ins c pitch)
+                                      ins)
+                                result))
+                      ((chord-p harm) (push (list instrument-index harm ins)
+                                            result)))))
+       ;; (t (return))))) ; ins cannae do it but keep going
+         (let ((gpr (count-combo-pitches result))
+               (gpb (count-combo-pitches best)))
+           (when (or (> gpr gpb)
+                     ;; got the same number of pitches but more instruments
+                     ;; playing them
                      (and (= gpr gpb) (> (length result) (length best))))
-               (setq best result)))
-           (when (= got lenc)
-             (return))
-         finally (setq result nil))
-      ;; (print best)
-      ;; if we've got something to return then we'll return the 'relax' level as
-      ;; a second value. 0 is all notes were possible using separate notes on
-      ;; the given instruments; 1 is all notes poss but only using a chord ins
-      ;; and leaving one or more instruments out; 2 is note all notes were
-      ;; possible; 3 we won't actually return as the method will return NIL
-      ;; (nowt possible)
-      (if result
-          (values (reverse result) 0)
-          ;;                <= because with artificial harmonics we'd have twice
-          ;;                as many pitches in best
-          (values (reverse best) (if (<= lenc (got-pitches best)) 1 2))))))
+             (setq best result)))
+         (when (= got lenc)
+           (return))
+       finally (setq result nil))
+    ;; (print best)
+    ;; if we've got something to return then we'll return the 'relax' level as
+    ;; a second value. 0 is all notes were possible using separate notes on
+    ;; the given instruments; 1 is all notes poss but only using a chord ins
+    ;; and leaving one or more instruments out; 2 is note all notes were
+    ;; possible; 3 we won't actually return as the method will return NIL
+    ;; (nowt possible)
+    (if result
+        (values (reverse result) 0)
+        ;;                <= because with artificial harmonics we'd have twice
+        ;;                as many pitches in best
+        (values (reverse best) (if (<= lenc (count-combo-pitches best)) 1 2)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Nov 24 15:28:59 2018 -- used in combo-chord-possible? and SC's
+;;; get-combo. The combo is a list of lists as described at  in
+;;; slippery-chicken-edit.lsp 
+(defun count-combo-pitches (combo)
+  (let (ps)
+    (loop for ins in combo
+       for pitch = (second ins)
+       for pitch-list = (when pitch (if (pitch-p pitch) (list pitch)
+                                        (data pitch))) ; must be a chord
+       do (loop for p in pitch-list do
+               (pushnew p ps :test #'pitch=)))
+    (length ps)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Oct 25 16:59:59 2018 - returns the pitches we've removed and the
 ;;; pitches argument after they've been removed 

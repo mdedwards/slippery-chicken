@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:34:41 Fri Nov 23 2018 CET
+;;; $$ Last modified:  18:04:43 Sat Nov 24 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4940,10 +4940,6 @@ NIL
   count))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; A post-generation editing method
-
-;;; SAR Fri Apr 20 16:45:57 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken-edit/force-rest-bars
 ;;; DESCRIPTION
 ;;; Delete all notes from the specified bars and replace them with full-bar
@@ -4959,7 +4955,11 @@ NIL
 ;;;   rest. If NIL then we process all bars.
 ;;; - A list containing the IDs of the players in whose parts the full-bar
 ;;;   rests are to be forced. If NIL then all players will be processed.
-;;; 
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate that only bars containing exclusively rests should be
+;;;   processed.
+;;;
 ;;; RETURN VALUE
 ;;; Returns the number of bars processed (integer).
 ;;; 
@@ -4985,7 +4985,8 @@ NIL
 
 |#
 ;;; SYNOPSIS
-(defmethod force-rest-bars ((sc slippery-chicken) start-bar end-bar players)
+(defmethod force-rest-bars ((sc slippery-chicken) start-bar end-bar players
+                            &optional only-if-all-rests)
 ;;; ****
   (unless players (setq players (players sc)))
   (unless (listp players) (setq players (list players)))
@@ -4999,8 +5000,10 @@ NIL
             (unless bar
               (error "slippery-chicken::force-rest-bars: no bar ~a for ~a"
                      bar-num player))
-            (force-rest-bar bar)
-            (incf processed))
+            (when (or (not only-if-all-rests)
+                      (and only-if-all-rests (all-rests? bar)))
+              (force-rest-bar bar)
+              (incf processed)))
      finally (return processed)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6362,11 +6365,8 @@ T
          (set-pitch-or-chord e (second p) (third p))
          (when (is-tied-from event)
            (setf (is-tied-from e) t))
-         ;; this shouldn't trigger as changing tied notes is handled by
-         ;; check-ties: 
-         ;; (when (is-tied-to event)
-         ;; (setf (is-tied-to e) t))
-         )))
+         (when (is-tied-to event)
+           (setf (is-tied-to e) t)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/orchestrate
@@ -6416,7 +6416,7 @@ T
 (defmethod orchestrate ((sc slippery-chicken) new-ensemble original-players
                         &key
                           combos add-more-combos start-bar end-bar verbose
-                          (artificial-harmonics t) (relax 0)
+                          (artificial-harmonics t) (relax 0) (auto-clefs t)
                           (auto-beam t) (combo-change-fun #'combo-change?))
 ;;; ****
   ;; reset our activity-levels object or whatever the given function does to
@@ -6432,7 +6432,6 @@ T
          (combos-al (organise-combos new-ensemble all-combos))
          combo combo-players pitches combo-relax-val)
     (add-ensemble-players sc new-ensemble)
-    ;; (print combos-al)
     (update-slots sc)                   ; so that bar-nums are correct
     (loop for pphrase in phrases and player in original-players do
        ;; strictly speaking phrases have no meaning here as combos can change
@@ -6455,7 +6454,6 @@ T
                      ;; rests then we can change individual rests back into
                      ;; notes. so there are side effects here but all good ones.
                      (unless (is-tied-to event)
-                       ;; (print (get-pitch-symbols (pitch-or-chord event)))
                        (multiple-value-setq
                            (combo combo-relax-val)
                          (get-combo sc event combos-al combo-change-fun
@@ -6463,39 +6461,43 @@ T
                        (setq combo-players (mapcar #'first combo)
                              pitches (get-pitch-symbol event))
                        (when (or (not combo) (> combo-relax-val relax))
-                         (print combo) (print combo-relax-val)
-                         (error "slippery-chicken::get-combo: bar ~a: no ~
+                         (error "slippery-chicken::orchestrate: bar ~a: no ~
                                  combo can play ~a."
                                 (bar-num event) (get-pitch-symbol event)))
                        (when verbose
-                         (format t "~&bar ~a: " (bar-num event))
+                         (format t "~&bar ~a: ~a plays set ~a: ~a"
+                                 (bar-num event) combo-players (set-ref event)
+                                 pitches)
                          (case combo-relax-val
-                           (0 (format t "~a plays set ~a: ~a"
-                                      combo-players (set-ref event) pitches))
-                           (1 (format t "All pitches of chord will be ~
-                                         played but chord-playing instrument ~
-                                         ~%filling the gaps."))
-                           (2 (format t "Some pitches missing."))
-                           (3 (format t "Chord will be skipped."))))
-                       (copy-to-combo sc event combo)))))))
+                           (1 (format t ":~%All pitches will be ~
+                                         played, chord-playing instrument ~
+                                         filling the gaps."))
+                           (2 (format t ": Some pitches missing."))
+                           (3 (format t ": Chord will be skipped.")))))
+                     ;; this must be done for attacked notes and tied-to notes
+                     (copy-to-combo sc event combo))))))
+  ;; todo: remove cresc/dim from rests
   (when auto-beam (auto-beam sc))
+  (when auto-clefs (auto-clefs sc))
+  (force-rest-bars sc 1 nil nil t)
   (update-slots sc)
   (check-ties sc) ; we have to do this to make sure tied notes are updated
   sc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; returns a combo that can play the chord __and__ is free (has rests) to play
-;;; it, along with 
+;;; it, along with a second value which is the success (value of 1|2|3)
 (defmethod get-combo ((sc slippery-chicken) (e event) (combos assoc-list)
                       &optional 
                         (combo-change-fun #'combo-change?)
                         (artificial-harmonics t))
-  ;; (print '***********************)
   (let* ((num-notes (num-notes e))
          (cscl (get-data-data num-notes combos))
          (current-combo (get-current cscl))
          (change (funcall combo-change-fun current-combo combos))
-         best best-combo best-success free possible success)
+         best best-combo best-success best-count partial partial-combo
+         partial-success partial-count free frees possible success
+         possible-count)
     (flet ((finalize (result combo fsuccess)
                                         ; convert the index to player ID
              (values (mapcar #'(lambda (p) (cons (nth (first p) combo)
@@ -6503,50 +6505,74 @@ T
                              result)
                      fsuccess)))
       (when change
-        ;; (print 'change)
         (setq current-combo (get-next cscl)))
-      ;; (print (data cscl))
-      ;; (print cscl)
-      ;; (print (get-pitch-symbols (pitch-or-chord e)))
       (loop for i to (sclist-length cscl) do
          ;; NB the chord method (called by event) goes through the combo
          ;; permutations
            (multiple-value-setq (possible success)
              ;; event method, so player IDs convert to instrument objects
              (combo-chord-possible? e current-combo artificial-harmonics sc))
-           (setq free (when possible
+           (setq frees nil
+                 free (when possible
                         ;; current-combo is a simple list of player IDs
                         (loop for player in current-combo do
                            ;; for player = (nth (first p) current-combo) do
-                             (unless (free-to-double? sc e player)
-                               ;; always remember: return just exits this loop,
-                               ;; not the outer loop too 
-                               (return nil))
-                           finally (return t))))
-         ;;  so we return a list of 3-element sublists: the player (symbol),
-         ;; the pitch or artificial harmonic that they can play and the
-         ;; instrument object
+                             (push (free-to-double? sc e player) frees)
+                           finally (return (every #'values frees)))))
+           (unless (and free (zerop success))
+             (setq possible-count (count-combo-pitches possible)))
+         ;;  so we return as the first value a list of 3-element sublists: the
+         ;; player (symbol), the pitch or artificial harmonic that they can play
+         ;; and the instrument object
            (if free
                ;; we got one where each instrument can play a note
                (if (zerop success) 
                    (return)
                    ;; we got one but we might get a better one
-                   (setq best possible
-                         best-combo current-combo
-                         best-success success
-                         current-combo (get-next cscl)))
-               (setq current-combo (get-next cscl)))
+                   (progn
+                     (when (or (not best)
+                               (and best (> possible-count best-count)))
+                       (setq best possible
+                             best-combo current-combo
+                             best-success success
+                             best-count possible-count))
+                     (setq current-combo (get-next cscl))))
+               (progn
+                 (loop for f in frees for p in possible do
+                    ;; if the player isn't free, remove its note so it's not
+                    ;; used or counted 
+                      (unless f (setf (second p) nil)))
+                 (when (and (> possible-count 0)
+                            (or (not partial)
+                                (and partial (> possible-count partial-count))))
+                   (setq partial possible
+                         partial-combo current-combo
+                         partial-count possible-count
+                         ;;                  >= because of artificial harms
+                         partial-success (if (>= possible-count num-notes)
+                                             1 2)))
+                 (setq current-combo (get-next cscl))))
          finally (setq possible nil))
-      (if possible
-          (finalize possible current-combo success)
-          ;; couldn't get the perfect fit so return the best we could get
-          (finalize best best-combo best-success)))))
+      (cond (possible (finalize possible current-combo success))
+            ;; couldn't get the perfect fit so return the best we could get. the
+            ;; best* vars have notes for the whole combo, the partial* vars for
+            ;; just part of the combo, but even so, the latter could have more
+            ;; notes. in any case if both have the same success prefer the combo
+            ;; with all players playing.
+            ((and partial-success (not best-success))
+             (finalize partial partial-combo partial-success))
+            ((and (not partial-success) best-success)
+             (finalize best best-combo best-success))
+            (t (if (>= best-success partial-success)
+                   (finalize best best-combo best-success)
+                   (finalize partial partial-combo partial-success)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; <e> is an event from another player but is <player> free to double that
 ;;; event i.e. does it have a rest bar or another rest at that point? in the
 ;;; latter case and for now we merely check that there's a rest of the same
-;;; rhythmic duration of <e> at the same bar position. returns to or nil
+;;; rhythmic duration of <e> at the same bar position, so if that's not true
+;;; then the whole bar will have to be free. returns t or nil
 (defmethod free-to-double? ((sc slippery-chicken) (e event) player)
   (let* ((bar (get-bar sc (bar-num e) player))    ; the player we're querying
          (ne (get-nth-event (bar-pos e) bar nil)) ; ditto
@@ -6559,18 +6585,10 @@ T
          (end-bar (if (is-tied-from last-event)
                       (bar-num (find-end-tie sc last-event))
                       (bar-num e))))
-    ;; (when (= (bar-num e) 250)
-    ;;(break))
-    ;; (print end-bar)
-    #|(when (= 251 (bar-num e))
-    (let ((b (get-bar sc (bar-num e) player)))
-    (print (is-rest-bar b))
-    (print-simple b)))|#
-    (if (empty-bars? sc (bar-num e) end-bar player)
+    (if (empty-bars? sc (bar-num e) end-bar player t)
         ;; if the last event in the bar we'll copy from is tied, then we have to
         ;; double events in the next bar, maybe even more to the end of the tie
         (progn
-          ;; (print 'empty)
           ;; It's actually not enough to find which bar the current event
           ;; finishes its tie in, as that bar could have a last event which ties
           ;; into the next bar--in that case we need to keep going until we find
@@ -6587,7 +6605,6 @@ T
           ;; the following chords
           (loop for bar-num from (bar-num e) to end-bar
              for bar = (get-bar sc bar-num player) do
-             ;; (print-simple (force-all-rests (get-bar sc bar-num player))))
                (force-all-rests bar)
                (setf (is-rest-bar bar) nil))
           t)

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:44:31 Tue Nov 20 2018 CET
+;;; $$ Last modified:  19:04:00 Fri Nov 23 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4080,7 +4080,7 @@ seq-num 5, VN, replacing G3 with B6
     (handle-hairpins sc))
   (when (and players voices)
     (error "slippery-chicken::midi-play: please use either voices or players, ~
-            not both." voices))
+            not both."))
   (when players (setq voices players))
   (setf voices
         (cond ((and voices (listp voices)) voices)
@@ -8179,13 +8179,15 @@ NOTE 6200 0.6666667
 ;;; OPTIONAL ARGUMENTS
 ;;; - the players we want to test. Either a list of player IDs, a single ID, or
 ;;;   nil if all players should be tested. Default = NIL = all players.
+;;; - T or NIL to indicate whether a bar of only rests (instead of a full bar
+;;;   rest) should be considered empty. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; T if all players have rest bars within the given range, NIL if no.
 ;;; 
 ;;; SYNOPSIS
 (defmethod empty-bars? ((sc slippery-chicken) start-bar end-bar
-                        &optional players)
+                        &optional players all-rests)
 ;;; ****
   (unless players (setq players (players sc)))
   (unless (listp players) (setq players (list players)))
@@ -8193,7 +8195,9 @@ NOTE 6200 0.6666667
      for empty = 
        (loop for bar-num from start-bar to end-bar 
           for bar = (get-bar sc bar-num player)
-          unless (is-rest-bar bar) do (return nil)
+            ;; MDE Fri Nov 23 18:58:40 2018 -- all-rests?
+          unless (or (is-rest-bar bar) (and all-rests (all-rests? bar)))
+          do (return nil)
           finally (return t))
      do (unless empty (return nil))
      finally (return t)))

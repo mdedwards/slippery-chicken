@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  18:04:43 Sat Nov 24 2018 CET
+;;; $$ Last modified:  11:56:15 Mon Nov 26 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4134,17 +4134,13 @@ NIL
      finally (return (first dynamics))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; A post-generation editing method
-
-;;; SAR Wed Apr 25 17:03:04 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken-edit/sc-remove-dynamics
 ;;; DATE 
 ;;; 16-Mar-2011
 ;;;
 ;;; DESCRIPTION
 ;;; Remove all dynamic marks from the MARKS slots of all consecutive event
-;;; objects within a specified region of bars. 
+;;; objects (or just rests, if preferred) within a specified region of bars. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -4161,7 +4157,12 @@ NIL
 ;;;   bar from which the dynamics will be removed, in the form '(bar-num
 ;;;   note-num). Note numbers are 1-based and count ties but not rests.
 ;;; - A single ID or a list of IDs of the players from whose parts the dynamics
-;;;   are to be removed.
+;;;   are to be removed. If NIL then all players will be processed. Default =
+;;;   NIL = all players.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate that dynamics should be removed only from
+;;;   rests. Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns T.
@@ -4189,10 +4190,11 @@ NIL
 
   |#
 ;;; SYNOPSIS
-(defmethod sc-remove-dynamics ((sc slippery-chicken) start end players)
+(defmethod sc-remove-dynamics ((sc slippery-chicken) start end players
+                               &optional just-rests)
 ;;; ****
-  (unless (listp players)
-    (setf players (list players)))
+  (unless players (setq players (players sc)))
+  (unless (listp players) (setq players (list players)))
   (let* ((stlist (listp start))
          (ndlist (listp end))
          (stbar (if stlist (first start) start))
@@ -4207,7 +4209,9 @@ NIL
                 for i from (1- start-note) below end-note 
                 for e = (get-nth-non-rest-rhythm i bar)
                 do
-                  (remove-dynamics e))))
+                  ;; MDE Mon Nov 26 11:48:41 2018 -- just-rests? 
+                  (when (or (not just-rests) (is-rest e))
+                    (remove-dynamics e t)))))
       (if (= stbar ndbar)
           (loop for p in players do
                (do-bar stbar stnote ndnote p))
@@ -6375,7 +6379,50 @@ T
 ;;; 
 ;;; DESCRIPTION
 ;;; 'Orchestrate' the chords and single pitches in an existing slippery-chicken
-;;; object. 
+;;; object. This involves mapping the existing players' pitch events
+;;; onto a group of new players (a 'combo'). The procedure is fairly
+;;; complex and by no means perfect (in fact it may exit with an error,
+;;; especially if your requirements are :strict (see below)), but it works
+;;; like this:
+;;; 
+;;; First, we assume that your existing music is more horizontal/harmonic than
+;;; linear/melodic, particularly because the mapping process treats each 'chord'
+;;; separately and potentially maps each chord onto different players---the
+;;; choice of whether to change ensemble is decided by an activity-levels object
+;;; by default (see :combo-change-fun below) but also by the number of notes in
+;;; any given chord and whether it's possible to play any subsequent chord on
+;;; the same instruments. The method also assumes that each 'player' in the
+;;; existing slippery-chicken object has a sequence of one or more chords which
+;;; can be separated into 'phrases' using the get-phrases method; that the new
+;;; ensemble uses player IDs that don't exist in the original ensemble (though
+;;; any player can use the same instruments, of course); and that using the
+;;; player IDs from the new ensemble we provide lists of sublists of possible
+;;; 'combos' that should be used to play the existing chords. These combos
+;;; should range from 2 players to however many we'll need to play the existing
+;;; chords. We pass these combos to the method and/or allow them to be created
+;;; by the 'lotsa-combos' ensemble method (see :combos below)
+;;;
+;;; Whether a chord is playable by a given combo is determined by the range of
+;;; the chord and the instruments of any given combo, along with those
+;;; instruments' abilities to play chords and/or microtones (if the chord is
+;;; microtonal). When trying to determine whether a given combo can play a
+;;; chord, we permutate the possible instrument orderings to see if the pitches
+;;; are in range. If :artificial-harmonics is T we also try for such on notes
+;;; normally considered too high for any given string instrument. If we can't
+;;; find a combo for any given chord we'll keep track of the best match and if
+;;; our :relax argument allows, use that instead of backing out completely.
+;;;
+;;; One of the complexities we face, after determining that a chord is playable
+;;; by a particular combo, is whether the players are free (i.e. not already
+;;; playing) at the time the chord needs to be played. We take ties into account
+;;; of course, but one limitiation, presently, is that in order be deemed 'free'
+;;; each instrument of the combo must have a complete bar free for the start and
+;;; end of any given chord.
+;;;
+;;; As we select the current instrument using the instrument-change-map slot of
+;;; the slippery-chicken object (which may have been changed after the original
+;;; data was generated) this method works with players who double on two or more
+;;; instruments.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object whose existing players and event data will be
@@ -6388,18 +6435,23 @@ T
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :combos. A list of lists indicating the player groupings to be
-;;;   used to orchestrate the events. Default = NIL whereupon the <new-ensemble>
-;;;   will be used to generate groupings via the lotsa-combos method.
+;;; - :combos. A list of lists indicating the player groupings to be used to
+;;;   orchestrate the events. Default = NIL whereupon the <new-ensemble> will be
+;;;   used to generate groupings via the 'lotsa-combos' ensemble class method.
 ;;; - :add-more-combos. T or NIL to indicate whether the :combos slot should be
-;;;   expanded via the lotsa-combos method. If T then whatever is passed to
-;;;   :combos will be retained. Default = NIL.
+;;;   expanded via the 'lotsa-combos' method. If T then whatever is passed to
+;;;   :combos will nevertheless be retained after the expansion. Default = NIL.
 ;;; - :start-bar. The bar number to start orchestrating. Default = NIL which
 ;;;   will in turn default to 1
 ;;; - :end-bar. The bar number to stop orchestrating (inclusive). Default = NIL
 ;;;   which will in turn default to the last bar of the slippery-chicken object.
 ;;; - :auto-beam. T or NIL to indicate whether to call auto-beam in the new
 ;;;   parts. Default = T.
+;;; - :chords. Whether individual instruments capable of playing chords should
+;;;   attempt to do so. This may determine whether a given combo is determined
+;;;   to be capable of playing one of the original slippery-chicken object's
+;;;   chords, and also whether under some circumstances some notes will be
+;;;   doubled across different instruments. Default = T.
 ;;; - :combo-change-fun. A function which should return T or NIL to indicate
 ;;;   whether we should change combo on any given event. This should take two
 ;;;   arguments (the combo as a list of player IDs and an assoc-list of all
@@ -6407,7 +6459,21 @@ T
 ;;;   <combos> argument given here) plus two further optional arguments which
 ;;;   are free to define. The function should also provide "reset" functionality
 ;;;   or do nothing if one of the two required arguments is NIL. Default =
-;;;   combo-change? (defined in event.lsp). 
+;;;   combo-change? (defined in event.lsp).
+;;; - :verbose. T or NIL to turn on the printing of orchestration decisions as
+;;;   the algorithm is run.
+;;; - :artificial-harmonics. T or NIL to allow the selection of string
+;;;   artificial harmonics in order to reach high notes outwith normal ranges.
+;;; - :relax. An integer between 0 and 3 inclusive to indicate how strict the
+;;;   algorithm should when allocating chord pitches to instruments. The values
+;;;   have the following meanings with degrees of relaxedness ascending:
+;;;   0: each pitch in the chord has to be playable by at least one instrument
+;;;   in the combo; no instrument can sit this chord out but instruments can
+;;;   play chords that include notes found in other instruments.
+;;;   1. instruments may sit out a chord if a chord-playing instrument can fill
+;;;   in the notes (all notes of chord must still be played)
+;;;   2. notes can be left out and instruments can sit out a chord
+;;;   3. whole chords can be left out
 ;;; 
 ;;; RETURN VALUE
 ;;; The (modified) slippery-chicken object.
@@ -6417,8 +6483,12 @@ T
                         &key
                           combos add-more-combos start-bar end-bar verbose
                           (artificial-harmonics t) (relax 0) (auto-clefs t)
-                          (auto-beam t) (combo-change-fun #'combo-change?))
+                          (auto-beam t) (combo-change-fun #'combo-change?)
+                          (chords t))
 ;;; ****
+  (unless (integer-between relax 0 3)
+    (error "slippery-chicken::orchestrate: :relax should be between 0 and 3 ~
+            inclusive, not ~a" relax))
   ;; reset our activity-levels object or whatever the given function does to
   ;; reset 
   (funcall combo-change-fun nil nil) 
@@ -6457,7 +6527,7 @@ T
                        (multiple-value-setq
                            (combo combo-relax-val)
                          (get-combo sc event combos-al combo-change-fun
-                                    artificial-harmonics))
+                                    artificial-harmonics chords))
                        (setq combo-players (mapcar #'first combo)
                              pitches (get-pitch-symbol event))
                        (when (or (not combo) (> combo-relax-val relax))
@@ -6482,6 +6552,7 @@ T
   (force-rest-bars sc 1 nil nil t)
   (update-slots sc)
   (check-ties sc) ; we have to do this to make sure tied notes are updated
+  (sc-remove-dynamics sc 1 (num-bars sc) nil t)
   sc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6490,7 +6561,7 @@ T
 (defmethod get-combo ((sc slippery-chicken) (e event) (combos assoc-list)
                       &optional 
                         (combo-change-fun #'combo-change?)
-                        (artificial-harmonics t))
+                        (artificial-harmonics t) (chords t))
   (let* ((num-notes (num-notes e))
          (cscl (get-data-data num-notes combos))
          (current-combo (get-current cscl))
@@ -6511,7 +6582,8 @@ T
          ;; permutations
            (multiple-value-setq (possible success)
              ;; event method, so player IDs convert to instrument objects
-             (combo-chord-possible? e current-combo artificial-harmonics sc))
+             (combo-chord-possible? e current-combo artificial-harmonics sc
+                                    chords))
            (setq frees nil
                  free (when possible
                         ;; current-combo is a simple list of player IDs

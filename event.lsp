@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:13:49 Fri Nov 23 2018 CET
+;;; $$ Last modified:  11:43:39 Mon Nov 26 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -490,11 +490,14 @@
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to remove hairpin marks too (e.g. cresc-beg). Default = NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns the modified list of marks attached to the given event object if
-;;; the specified dynamic was initially present in that list and successfully
-;;; removed, otherwise returns NIL.
+;;; Returns the modified list of marks (which could be empty) attached to the
+;;; given event object if the specified dynamic was initially present in that
+;;; list and successfully removed, otherwise returns NIL.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -519,10 +522,12 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod remove-dynamics ((e event))
+(defmethod remove-dynamics ((e event) &optional hairpins)
 ;;; ****
   (setf (marks e) 
-        (remove-if #'(lambda (x) (is-dynamic x))
+        (remove-if #'(lambda (x) (or (and hairpins (or (is-hairpin x)
+                                                       (eq x 'hairpin0)))
+                                     (is-dynamic x)))
                    (marks e))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3782,7 +3787,7 @@ NIL
 ;;; slippery-chicken object, otherwise it should be a list of instruments. See
 ;;; chord method for what it returns.
 (defmethod combo-chord-possible? ((e event) combo
-                                  &optional artificial-harmonics sc)
+                                  &optional artificial-harmonics sc chords)
   (let ((instruments combo))
     (cond ((is-rest e)
            (error "slippery-chicken::combo-chord-possible: event must be a ~
@@ -3803,7 +3808,7 @@ NIL
     ;; (print instruments)
     ;; (print (get-pitch-symbols (pitch-or-chord e)))
     (combo-chord-possible? (pitch-or-chord e) instruments
-                           artificial-harmonics)))
+                           artificial-harmonics chords)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -3830,6 +3835,10 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun is-hairpin (sym)
+  (member sym '(cresc-beg dim-beg cresc-end dim-end)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; code from "snow shoes..." days.  Called from the old clm methods.
 
 (defun make-event-classic (pitch-or-chord start-time duration)

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  11:01:38 Mon Nov 19 2018 CET
+;;; $$ Last modified:  11:28:39 Mon Nov 26 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5461,12 +5461,16 @@ collect (midi-channel (pitch-or-chord p))))
 ;;; ARGUMENTS
 ;;; - a rthm-seq-bar object
 ;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to remove hairpin marks too (e.g. cresc-beg). Default = NIL.
+;;; 
 ;;; RETURN VALUE
-;;; t
+;;; T
+;;; 
 ;;; SYNOPSIS
-(defmethod remove-dynamics ((rsb rthm-seq-bar))
+(defmethod remove-dynamics ((rsb rthm-seq-bar) &optional hairpins)
 ;;; ****
-  (loop for e in (rhythms rsb) do (remove-dynamics e))
+  (loop for e in (rhythms rsb) do (remove-dynamics e hairpins))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

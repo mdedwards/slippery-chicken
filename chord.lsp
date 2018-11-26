@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  15:46:34 Sat Nov 24 2018 CET
+;;; $$ Last modified:  11:04:46 Mon Nov 26 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2248,7 +2248,7 @@ data: (
 ;;; instrument object. Incomplete success will however still return
 ;;; possibilities. 
 (defmethod combo-chord-possible? ((c chord) combo
-                                  &optional artificial-harmonics ignore)
+                                  &optional artificial-harmonics chords ignore)
   (declare (ignore ignore))
   (let ((lenc (length combo))
         perms pitch result ins got best)
@@ -2283,7 +2283,9 @@ data: (
                 (cond (in (push (list instrument-index
                                       ;; if we can play a single pitch, try
                                       ;; for a chord
-                                      (try-ins-chord ins c pitch)
+                                      (if chords
+                                          (try-ins-chord ins c pitch)
+                                          pitch)
                                       ins)
                                 result))
                       ((chord-p harm) (push (list instrument-index harm ins)

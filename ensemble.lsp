@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  18:06:01 Thu Nov  8 2018 CET
+;;; $$ Last modified:  10:15:59 Mon Nov 26 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -568,7 +568,80 @@ ensemble::players-exist: VLA is not a member of the ensemble
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Nov  8 17:06:40 2018
+;;; ****m* ensemble/lotsa-combos
+;;; DATE
+;;; November 8th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Get various permutations of the ensemble players, ranging from a single
+;;; player up to one less than the number of players in the ensemble. This uses
+;;; the shuffle method so is random, but as we use fixed-seed randomness we get
+;;; repeatable results.
+;;; 
+;;; ARGUMENTS
+;;; - the ensemble object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - an integer to determine the number of times we permutate for any given
+;;; number of players. Note that depending on the number of players in the
+;;; ensemble and the number we're looking to put into a combo, we might not
+;;; always be able to hit this target (e.g. there are only 6 possible
+;;; permutations of three values). Default = 7.
+;;; 
+;;; RETURN VALUE
+;;; a list of lists of player IDs.
+;;; 
+;;; EXAMPLE
+#|
+(lotsa-combos (make-ensemble 
+              'ens
+              '((flt ((flute piccolo)))
+                (clr ((b-flat-clarinet)))
+                (bsn bassoon)
+                (tpt ((b-flat-trumpet c-trumpet))) 
+                (trb tenor-trombone)
+                (tb tuba)
+                (vln ((violin))))))
+-->
+((CLR FLT TRB BSN TB VLN) (TRB FLT CLR BSN TB TPT) (TB TRB FLT VLN TPT BSN)
+ (CLR BSN TPT TB TRB FLT) (FLT TPT VLN BSN TRB TB) (FLT TPT BSN VLN TB CLR)
+ (TPT FLT VLN CLR TB TRB) (BSN CLR TB TRB FLT) (TB FLT BSN VLN TPT)
+ (FLT TPT BSN CLR TB) (FLT TRB CLR VLN TB) (BSN CLR VLN TPT TRB)
+ (BSN TRB FLT TB CLR) (FLT CLR TPT TB VLN) (TRB CLR TPT TB) (FLT VLN TB TRB)
+ (TRB VLN TB CLR) (TB VLN TRB BSN) (TPT TRB CLR BSN) (CLR FLT TRB VLN)
+ (FLT TPT TRB CLR) (TPT CLR FLT) (TB TRB FLT) (TRB VLN FLT) (TB TPT CLR)
+ (FLT BSN TPT) (FLT VLN BSN) (TB TPT TRB) (TPT FLT) (CLR TRB) (FLT CLR)
+ (TRB CLR) (BSN CLR) (TRB TB) (BSN TPT) (FLT CLR BSN TPT TRB TB VLN) (FLT)
+ (CLR) (BSN) (TPT) (TRB) (TB) (VLN))
+
+(lotsa-combos (make-ensemble 
+              'ens
+              '((flt ((flute piccolo)))
+                (clr ((b-flat-clarinet)))
+                (bsn bassoon)
+                (tpt ((b-flat-trumpet c-trumpet))) 
+                (trb tenor-trombone)
+                (tb tuba)
+                (vln ((violin))))) 
+              10) ; <<--- get more combos
+-->
+((CLR TPT TB FLT TRB VLN) (BSN TRB VLN TB TPT CLR) (TB CLR FLT TRB BSN TPT)
+ (TPT CLR BSN FLT VLN TRB) (VLN BSN TPT CLR TB TRB) (TRB BSN VLN TPT TB CLR)
+ (TB TRB CLR VLN FLT BSN) (CLR TPT VLN TB FLT TRB) (TRB BSN VLN CLR FLT TPT)
+ (TPT FLT CLR TB TRB VLN) (TPT TRB VLN BSN CLR) (BSN TB VLN TPT FLT)
+ (BSN FLT TRB CLR TPT) (BSN TPT FLT CLR TB) (VLN TB TRB TPT FLT)
+ (FLT TRB BSN TB VLN) (FLT CLR BSN TB TPT) (TRB FLT VLN TPT BSN)
+ (BSN TPT TB TRB FLT) (TPT VLN BSN TRB TB) (BSN VLN TB CLR) (VLN CLR TB TRB)
+ (CLR TB TRB FLT) (FLT BSN VLN TPT) (TPT BSN CLR TB) (TRB CLR VLN TB)
+ (CLR VLN TPT TRB) (TRB FLT TB CLR) (CLR TPT TB VLN) (TRB CLR TPT TB)
+ (VLN TB TRB) (VLN TB CLR) (VLN TRB BSN) (TRB CLR BSN) (FLT TRB VLN)
+ (TPT TRB CLR) (TPT CLR FLT) (TB TRB FLT) (TRB VLN FLT) (TB TPT CLR) (VLN BSN)
+ (TPT TRB) (TPT FLT) (CLR TRB) (FLT CLR) (TRB CLR) (BSN CLR) (TRB TB) (BSN TPT)
+ (FLT CLR BSN TPT TRB TB VLN) (FLT) (CLR) (BSN) (TPT) (TRB) (TB) (VLN))
+|#
+;;; SYNOPSIS
 (defmethod lotsa-combos ((e ensemble) &optional (try 7))
+;;; ****
   (random-rep 10 t)
   (let* ((np (num-players e))
          (players (copy-list (players e)))
@@ -580,7 +653,7 @@ ensemble::players-exist: VLA is not a member of the ensemble
          (loop repeat try do
               (setq tmp (nthcdr (- np i)
                                 (shuffle players :fix t :copy t :reset nil)))
-             (pushnew tmp result :test #'equalp)))
+              (pushnew tmp result :test #'equalp)))
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

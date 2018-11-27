@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  08:09:59 Tue Nov 20 2018 CET
+;;; $$ Last modified:  08:32:59 Tue Nov 27 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -791,7 +791,7 @@
          (result (not (or too-high too-low)))
          chord)
     ;; MDE Thu Nov  1 18:02:05 2018 -- try with artificial harmonics
-    (when (and (not result) try-artificial-harmonic (harmonics ins))
+    (when (and (not result) too-high try-artificial-harmonic (harmonics ins))
       ;; (print 'here)
       (setq chord (force-artificial-harmonic p ins nil)))
     ;; MDE Wed Nov 14 16:33:21 2018

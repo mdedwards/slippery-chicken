@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  07:54:08 Tue Nov  6 2018 CET
+;;; $$ Last modified:  08:08:36 Tue Nov 27 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3814,7 +3814,8 @@ WARNING:
 ;;; MDE Sat Jun  1 11:21:10 2013 -- get a file name from a piece title by
 ;;; replacing spaces with hyphens etc. 
 (defun filename-from-title (title)
-  (string-downcase (remove #\: (remove #\' (substitute #\- #\  title)))))
+  (string-downcase
+   (remove #\, (remove #\: (remove #\' (substitute #\- #\  title))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

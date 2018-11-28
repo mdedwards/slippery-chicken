@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  10:02:05 Fri Oct 19 2018 CEST
+;;; $$ Last modified:  18:29:27 Wed Nov 28 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1143,6 +1143,8 @@
    (new midi 
      :time time 
      :keynum midi-note
+     ;; CM dict says: "A floating-point logical amplitude 0.0-1.0, or an integer
+     ;; velocity 0-127"  
      :amplitude amplitude
      :duration duration  
      :channel channel)))

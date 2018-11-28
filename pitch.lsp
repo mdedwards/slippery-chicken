@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  13:43:12 Tue Nov 20 2018 CET
+;;; $$ Last modified:  18:49:55 Wed Nov 28 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -116,6 +116,11 @@
    ;; MDE Tue Apr 17 12:44:57 2012 -- not currently used by any method.
    (src-ref-pitch :accessor src-ref-pitch :type symbol :initarg :src-ref-pitch
                   :initform 'c4)
+   ;; MDE Wed Nov 28 18:30:39 2018 -- by setting this slot we can override the
+   ;; event's amplitude, so as to 'voice' notes in chords with different
+   ;; amplitudes.  For MIDI output this would have to be a floating-point number
+   ;; 0.0-1.0, or an integer velocity 0-127  
+   (amplitude :accessor amplitude :initarg :amplitude :initform nil)
    ;; when frequency is given, we have to update id and vice-versa.  This slot
    ;; tells us whether this was done and so avoids endless back-and-forths when
    ;; calling the setf methods.
@@ -137,7 +142,7 @@
                   ~%       show-accidental: ~a, white-degree: ~a, ~
                   ~%       accidental: ~a, ~
                   ~%       accidental-in-parentheses: ~a, marks: ~a, ~
-                  ~%       marks-before: ~a"
+                  ~%       marks-before: ~a, amplitude: ~a"
           (frequency i) (midi-note i) (midi-channel i) 
           (pitch-bend i)
           (degree i) (data-consistent i) (white-note i)
@@ -149,7 +154,8 @@
           (octave i) (c5ths i) (no-8ve i) (no-8ve-no-acc i)
           (show-accidental i) (white-degree i) 
           (accidental i)
-          (accidental-in-parentheses i) (marks i) (marks-before i)))
+          (accidental-in-parentheses i) (marks i) (marks-before i)
+          (amplitude i)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -172,7 +178,8 @@
         (slot-value to 'marks) (my-copy-list (marks from))
         (slot-value to 'marks-before) (my-copy-list (marks-before from))
         (slot-value to 'src-ref-pitch) (src-ref-pitch from)
-        (slot-value to 'data-consistent) (data-consistent from))
+        (slot-value to 'data-consistent) (data-consistent from)
+        (slot-value to 'amplitude) (amplitude from))
   to)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -222,7 +229,7 @@
                         ;; it this way (better than nothing).
                         (pitch-bend p)
                         time
-                        amplitude
+                        (if (amplitude p) (amplitude p) amplitude)
                         duration  
                         ;; 1- because cm channels start at 0
                         (1- (midi-channel p))))

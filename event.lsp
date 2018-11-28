@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:43:39 Mon Nov 26 2018 CET
+;;; $$ Last modified:  19:19:13 Wed Nov 28 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -145,7 +145,9 @@
    ;; writing midi info for music xml
    (midi-channels :accessor midi-channels :type assoc-list :allocation :class
                   :initform (make-assoc-list 'event-midi-channels nil))
-   ;(rqq-notes :accessor rqq-notes :type list :initform nil :allocation :class)
+   ;;(rqq-notes :accessor rqq-notes :type list :initform nil :allocation :class)
+   ;; For MIDI output this would have to be a floating-point number 0.0-1.0, or
+   ;; an integer velocity 0-127  
    (amplitude :accessor amplitude :type number :initarg :amplitude 
               :initform (get-sc-config 'default-amplitude))))
 
@@ -310,17 +312,16 @@
           (midi-channel noc)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sun Apr 29 14:05:45 BST 2012: Added robodoc entry
-
 ;;; MDE original comment:
 ;;; this should work even in rests, i.e. time sigs, tempo changes, and program
 ;;; changes will all be written despite no new pitches.
-
 #+cm-2
 ;;; ****m* event/output-midi
 ;;; DESCRIPTION
-;;; Generate the data necessary for MIDI output for a given event object.
+;;; Generate the data necessary for MIDI output for a given event object. Note
+;;; that for events that contain chords, the event's amplitude slot will be used
+;;; for all pitches unless each individual pitch object in the chord has its
+;;; amplitude slot set to a number.
 ;;;
 ;;; NB: The given event object must contain data for start-time and
 ;;;     midi-channel. 
@@ -1971,11 +1972,53 @@ NIL
       (round (* (amplitude e) 127))
       (amplitude e)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* event/voice-chord
+;;; DATE
+;;; November 28th 2018, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Set the amplitudes of the individual pitches in a chord event. Amplitude
+;;; values should either be integers 0-127 or floating-point 0.0-1.0.
+;;; 
+;;; ARGUMENTS
+;;; - the event object
+;;; - either a list or a function: if a list, it will be cycled through
+;;;   (returning to the beginning if necessary) to set the amplitudes of the
+;;;   pitches of the chord from bottom to top; if a function then the function
+;;;   is passed the event object and it should return a list of amplitudes which
+;;;   will then be used to set the pitch objects' amplitudes similarly.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; None
+;;; 
+;;; RETURN VALUE
+;;; The (modified) event object
+;;; 
+;;; EXAMPLE
+#|
+(let ((e (make-event '(c4 d4 e4 f4 g5 a4 b4) 4 :start-time 0.0)))
+  (print (voice-chord e '(50 60 70))) ; velocities 
+  (voice-chord e #'(lambda (e)
+                     (loop for p in (get-pitch-symbol e) collect
+                          (case p ; amplitude floats 
+                            (c4 .1) (d4 .2) (e4 .3) (f4 .4) (t .5))))))
+|#
+;;; SYNOPSIS
+(defmethod voice-chord ((e event) processor)
+;;; ****
+  (when (is-chord e)
+    (typecase processor
+      (function (voice-chord e (funcall processor e)))
+      (list (let ((cscl (make-cscl processor)))
+              ;; written-pitch-or-chord slot can't help us here
+              (loop for p in (data (pitch-or-chord e)) do
+                   (setf (amplitude p) (get-next cscl)))))
+      (t (error "event::voice-chord: second argument should be a function or ~
+                 list, not ~a" processor))))
+  e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Dec 24 12:13:59 EST 2011
-
 ;;; ****m* event/get-pitch-symbol
 ;;; DESCRIPTION
 ;;; Retrieve the pitch symbol (CM/CMN note-name notation) of a given event
@@ -2020,6 +2063,10 @@ NIL
       (if (chord-p obj)
           (get-pitch-symbols obj)
           (data obj)))))
+
+;;; MDE Wed Nov 28 19:15:04 2018 -- for consistency
+(defmethod get-pitch-symbols ((e event) &optional (written t))
+  (get-pitch-symbol e written))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Feb  9 19:59:45 2017 

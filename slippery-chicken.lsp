@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  19:04:00 Fri Nov 23 2018 CET
+;;; $$ Last modified:  18:34:55 Wed Nov 28 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3942,7 +3942,10 @@ seq-num 5, VN, replacing G3 with B6
 ;;; ****m* slippery-chicken/midi-play
 ;;; DESCRIPTION
 ;;; Generate a MIDI file from the data of the specified slippery-chicken
-;;; object. 
+;;; object. Note that for events that contain chords, the event's amplitude slot
+;;; will be used for all pitches unless each individual pitch object in the
+;;; chord has its amplitude slot set to a number (in which case the event's
+;;; amplitude slot will be ignored.)  
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.

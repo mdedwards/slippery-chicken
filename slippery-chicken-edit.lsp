@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  21:43:34 Tue Nov 27 2018 CET
+;;; $$ Last modified:  18:23:44 Wed Nov 28 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6504,12 +6504,17 @@ T
                   (lotsa-combos new-ensemble 100)))
          (all-combos (append combos lotsa))
          (combos-al (organise-combos new-ensemble all-combos))
-         combo combo-players pitches combo-relax-val)
+         (successes (ml 0 5))       ; for stats
+         (num-passes (length phrases))
+         combo combo-players combo-relax-val)
     (add-ensemble-players sc new-ensemble)
     (update-slots sc)                   ; so that bar-nums are correct
-    (loop for pphrase in phrases and player in original-players do
+    (loop for pphrase in phrases
+       for player in original-players
+       for pass from 1 do
          (when verbose
-           (format t "~&****** Orchestrating original player ~a ******" player))
+           (format t "~&****** Orchestrating original player ~a/~a: ~a ******"
+                   pass num-passes player))
        ;; strictly speaking phrases have no meaning here as combos can change
        ;; at any point but keep the phrase processing in place for now in case
        ;; we do want to somehow differentiate phrases in the future.
@@ -6534,35 +6539,53 @@ T
                            (combo combo-relax-val)
                          (get-combo sc event combos-al combo-change-fun
                                     artificial-harmonics chords))
-                       (setq combo-players (mapcar #'first combo)
-                             pitches (get-pitch-symbol event))
+                       (setq combo-players (mapcar #'first combo))
                        (when (or (and (not combo) (/= relax 3))
                                  (and combo (> combo-relax-val relax)))
                          (error "slippery-chicken::orchestrate: bar ~a: no ~
                                  combo can play ~a."
                                 (bar-num event) (get-pitch-symbol event)))
+                       (incf (nth combo-relax-val successes))
+                       (incf (nth 4 successes)) ; overall total 
                        (when verbose
-                         (format t "~&bar ~a: ~a plays set ~a: ~a"
-                                 (bar-num event) combo-players (set-ref event)
-                                 pitches)
+                         (format t "~&bar ~a (pass ~a/~a): set ID ~a, ~a: ~
+                                    ~%    tried ~a, got ~a~%    "
+                                 (bar-num event) pass num-passes
+                                 (set-ref event)
+                                 (if combo-players combo-players "no players")
+                                 (get-pitch-symbol event)
+                                 (let ((ps (mapcar
+                                            #'(lambda (p)
+                                                (when (second p)
+                                                  (get-pitch-symbols
+                                                   (second p))))
+                                            combo)))
+                                   (if ps ps "nothing")))
                          (case combo-relax-val
-                           (1 (format t ":~%All pitches will be ~
-                                         played, chord-playing instrument ~
-                                         filling the gaps."))
-                           (2 (format t ": Some pitches missing."))
-                           (3 (format t ": Chord will be skipped.")))))
+                           (0 (format t "(all pitches played)"))
+                           (1 (format t "(all pitches played, chord-playing ~
+                                         instrument filling the gaps."))
+                           (2 (format t "(some pitches missing.)"))
+                           (3 (format t "(chord will be skipped.)")))))
                      ;; this must be done for attacked notes and tied-to notes
                      (when combo
-                       (copy-to-combo sc event combo)))))))
-  ;; todo: remove cresc/dim from rests
-  ;; todo: stats: number of relax states 0-3  and total chords orchestrated
-  (when auto-beam (auto-beam sc))
-  (when auto-clefs (auto-clefs sc))
-  (force-rest-bars sc 1 nil nil t)
-  (update-slots sc)
-  (check-ties sc) ; we have to do this to make sure tied notes are updated
-  (sc-remove-dynamics sc 1 (num-bars sc) nil t)
-  sc)
+                       (copy-to-combo sc event combo))))))
+    ;; todo: remove cresc/dim from rests
+    ;; todo: stats: number of relax states 0-3  and total chords orchestrated
+    (when auto-beam (auto-beam sc))
+    (when auto-clefs (auto-clefs sc))
+    (force-rest-bars sc 1 nil nil t)
+    (update-slots sc)
+    (check-ties sc)     ; we have to do this to make sure tied notes are updated
+    (sc-remove-dynamics sc 1 (num-bars sc) nil t)
+    (when verbose
+      (format t "~&Total of ~a chords orchestrated: ~%    ~a with all pitches ~
+                 and every instrument of the combo, ~%    ~a with all pitches ~
+                 but some combo instruments missing, ~%    ~a with some ~
+                 pitches and instruments missing, ~%    ~a left out completely."
+              (fifth successes) (first successes) (second successes)
+              (third successes) (fourth successes)))
+    sc))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; returns a combo that can play the chord __and__ is free (has rests) to play
@@ -6583,7 +6606,7 @@ T
              (values (mapcar #'(lambda (p) (cons (nth (first p) combo)
                                                  (rest p)))
                              result)
-                     fsuccess)))
+                     (if (mapcar #'first result) fsuccess 3))))
       (when change
         (setq current-combo (get-next cscl)))
       (loop for i to (sclist-length cscl) do
@@ -6649,10 +6672,14 @@ T
              (finalize partial partial-combo partial-success))
             ((and (not partial-success) best-success)
              (finalize best best-combo best-success))
-            ((and best-success partial-success)
-             (if (>= best-success partial-success)
+            ((and best-success partial-success
+                  ;;                              each should be 1 or 2
+                  (integer-between (+ best-success partial-success) 2 4))
+             ;; remember: the lower the success the better here, like UNIX
+             (if (<= best-success partial-success)
                  (finalize best best-combo best-success)
-                 (finalize partial partial-combo partial-success)))))))
+                 (finalize partial partial-combo partial-success)))
+            (t (finalize nil nil 3))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; <e> is an event from another player but is <player> free to double that

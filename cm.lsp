@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  18:29:27 Wed Nov 28 2018 CET
+;;; $$ Last modified:  09:06:47 Fri Nov 30 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1221,8 +1221,10 @@
    (new seq :name (gensym) :time 0.0 :subobjects
         (loop for event in (sc::sort-event-list event-list)
            appending
-           (sc::output-midi event time-offset 
-                            force-velocity)))
+           ;; MDE Fri Nov 30 09:06:39 2018 -- have to flatten because of chords,
+           ;; just like process-voices does above when called from midi-play  
+             (sc::flatten (sc::output-midi event time-offset 
+                                           force-velocity))))
    midi-file :tempo start-tempo))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

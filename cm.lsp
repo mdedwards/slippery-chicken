@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  09:06:47 Fri Nov 30 2018 CET
+;;; $$ Last modified:  09:10:55 Fri Nov 30 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1193,8 +1193,7 @@
        (loop for v in voices collect
              (midi-program-change time (first v) (second v)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; voices is the type of list structure returned by
 ;;; slippery-chicken::get-events-start-time-duration  
 ;;; midi-setup are the channels and program numbers for the different
@@ -1209,12 +1208,12 @@
               (new seq :name (gensym) :time 0.0 :subobjects
                    (loop for rs in voice appending
                         (sc::flatten (loop for event in rs 
-                           appending
-                             (sc::output-midi event time-offset 
-                                              force-velocity)))))))
+                                        appending
+                                          (sc::output-midi event time-offset 
+                                                           force-velocity)))))))
    midi-file :tempo (sc::qtr-bpm start-tempo)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun event-list-to-midi-file (event-list midi-file start-tempo time-offset
                                 &optional force-velocity)
   (events

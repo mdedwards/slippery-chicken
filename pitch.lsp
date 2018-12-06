@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  18:49:55 Wed Nov 28 2018 CET
+;;; $$ Last modified:  10:44:34 Thu Dec  6 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2317,7 +2317,11 @@ data: D7
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Nov  1 18:05:15 2018 -- taken over functionality from event class
-(defmethod force-artificial-harmonic ((p pitch) &optional instrument (warn t))
+(defmethod force-artificial-harmonic ((p pitch)
+                                      &optional instrument (warn t)
+                                        ;; MDE Thu Dec 6 10:24:12 2018 -- for
+                                        ;; checking against ins range
+                                        sounding)
 ;;; ****
   (let* ((p1 (transpose (clone p) -24))
          (p2 (transpose p1 5))
@@ -2332,8 +2336,14 @@ data: D7
       (unless (instrument-p instrument)
         (error "~a~%pitch::force-artificial-harmonic: argument should be an ~
                 instrument object" instrument))
-      (unless (and (in-range instrument p1)
-                   (in-range instrument p2))
+      ;; MDE Thu Dec  6 10:38:02 2018 -- deal with e.g. double-bass
+      (when sounding
+        (let ((tr (- (transposition-semitones instrument))))
+          (setq p1 (transpose p1 tr)
+                p2 (transpose p2 tr))))
+      ;; (print p2)
+      (unless (and (in-range instrument p1 nil)
+                   (in-range instrument p2 nil))
         (setf happy nil)
         (when warn
           (warn "pitch::force-artificial-harmonic: creating an artificial ~

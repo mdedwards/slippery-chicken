@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified: 17:29:43 Thu May 26 2016 WEST
+;;; $$ Last modified:  20:00:20 Tue Dec  4 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -109,11 +109,7 @@
                 (1 1 1 1 1 1 1 1 0 1)))
              collect
              (make-cscl (loop for ten in level 
-                           collect (make-cscl ten)))))
-  ;; got to do this so get-last returns the first ... doh!
-  ;; (loop for l in (data al) do (reset l 1)))
-  )
-
+                           collect (make-cscl ten))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

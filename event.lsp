@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:25:35 Fri Nov 30 2018 CET
+;;; $$ Last modified:  10:28:59 Thu Dec  6 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3424,37 +3424,36 @@ data: C4
 ;;; 
 ;;; EXAMPLE
 #|
-;; The method returns NIL.              ;
-                     (let ((e (make-event 'c7 'q)))
-(force-artificial-harmonic e))
+;; The method returns NIL.
+(let ((e (make-event 'c7 'q)))
+  (force-artificial-harmonic e))
+=> NIL
 
-                     => NIL
+;; Create an event object, apply force-artificial-harmonic, then get the new
+;; pitch material
+(let ((e (make-event 'c7 'q)))
+  (force-artificial-harmonic e)
+  (loop for p in (data (pitch-or-chord e)) collect (data p)))
+=> (C5 F5)
 
-;; Create an event object, apply force-artificial-harmonic, then get the new ;
-;; pitch material                       ;
-                     (let ((e (make-event 'c7 'q)))
-(force-artificial-harmonic e)
-(loop for p in (data (pitch-or-chord e)) collect (data p)))
-
-                     => (C5 F5)
-
-;; Create an event object, apply force-artificial-harmonic, then get the marks ;
-;; attached to each note in the object to see the 'flag-head ;
-                     (let ((e (make-event 'c7 'q)))
-(force-artificial-harmonic e)
-(loop for p in (data (pitch-or-chord e)) collect (marks p)))
-
-                     => (NIL (FLAG-HEAD))
+;; Create an event object, apply force-artificial-harmonic, then get the marks
+;; attached to each note in the object to see the 'flag-head
+(let ((e (make-event 'c7 'q)))
+  (force-artificial-harmonic e)
+  (loop for p in (data (pitch-or-chord e)) collect (marks p)))
+=> (NIL (FLAG-HEAD))
 
 |#
 ;;; SYNOPSIS
-(defmethod force-artificial-harmonic ((e event) &optional instrument (warn t))
+(defmethod force-artificial-harmonic ((e event)
+                                      &optional instrument (warn t) ignore)
 ;;; ****
+  (declare (ignore ignore))
   ;; MDE Thu Nov 1 18:27:48 2018 -- moved most of the logic over to the pitch
   ;; class
   (let ((chord (if (is-single-pitch e)
-                   ;; we don't bother with written pitches (yet?)
-                   (force-artificial-harmonic (pitch-or-chord e) instrument)
+                   (force-artificial-harmonic (pitch-or-chord e) instrument
+                                              warn t)
                    (when warn
                      (warn "~a~%event::force-artificial-harmonic: event is a ~
                             chord or rest: skipping."
@@ -3871,7 +3870,7 @@ NIL
 ;;; just reset the activity-levels object and return. <combo> is the current
 ;;; combo which we can decide to keep or change. <combo-al> is the assoc-list
 ;;; object with all the combos stored and organised according to size.
-(let ((al (make-al)))
+(let ((al (make-al 1))) ;; <== 1 tends not to change first of all
   (defun combo-change? (combo combo-al &optional (min-level 2) (max-level 8))
     (if (and combo combo-al)
         (let* ((lenc (length combo))
@@ -3880,7 +3879,7 @@ NIL
             (error "slippery-chicken-edit::combo-change? no ~a-player combos ~
                     in ~%~a" lenc combo-al))
           (active al level))
-        (reset al))))
+        (reset al 1))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  11:04:46 Mon Nov 26 2018 CET
+;;; $$ Last modified:  11:17:41 Thu Dec  6 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -938,7 +938,6 @@ data: (
           (return t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* chord/artificial-harmonic?
 ;;; DATE
 ;;; October 4th 2014
@@ -2276,8 +2275,7 @@ data: (
                     ins (nth instrument-index combo))
               (multiple-value-bind
                     (in harm)
-                  ;;     sounding pitches and artificial harmonics, if
-                  ;;     allowed!
+                  ;; sounding pitches and artificial harmonics, if allowed!
                   (in-range ins pitch t artificial-harmonics nil)
                 (when (or in (chord-p harm)) (incf got))
                 (cond (in (push (list instrument-index
@@ -2288,8 +2286,16 @@ data: (
                                           pitch)
                                       ins)
                                 result))
-                      ((chord-p harm) (push (list instrument-index harm ins)
-                                            result)))))
+                      ((chord-p harm)
+                       ;; MDE Thu Dec  6 11:15:01 2018 -- although we make sure
+                       ;; the sounding pitches are in range of e.g. double-bass,
+                       ;; force-artificial-harmonic returns the written pitches
+                       ;; so we have to transpose back to 'sounding'
+                       (let ((tr (transposition-semitones ins)))
+                         (unless (zerop tr)
+                           (setq harm (transpose harm tr)))
+                         (push (list instrument-index harm ins)
+                               result))))))
        ;; (t (return))))) ; ins cannae do it but keep going
          (let ((gpr (count-combo-pitches result))
                (gpb (count-combo-pitches best)))

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  08:32:59 Tue Nov 27 2018 CET
+;;; $$ Last modified:  10:25:17 Thu Dec  6 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -792,8 +792,8 @@
          chord)
     ;; MDE Thu Nov  1 18:02:05 2018 -- try with artificial harmonics
     (when (and (not result) too-high try-artificial-harmonic (harmonics ins))
-      ;; (print 'here)
-      (setq chord (force-artificial-harmonic p ins nil)))
+      ;; this checks that the harmonic notes are in range too
+      (setq chord (force-artificial-harmonic p ins nil sounding))) ; no warning
     ;; MDE Wed Nov 14 16:33:21 2018
     (if (and (not impossible-microtones)
              (micro-tone p)
@@ -801,7 +801,7 @@
         nil
         (values result (cond (chord chord) (too-high 1) (too-low 0))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; ****m* instrument/force-in-range
 ;;; DATE

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  10:44:34 Thu Dec  6 2018 CET
+;;; $$ Last modified:  15:41:00 Thu Dec  6 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2342,8 +2342,8 @@ data: D7
           (setq p1 (transpose p1 tr)
                 p2 (transpose p2 tr))))
       ;; (print p2)
-      (unless (and (in-range instrument p1 nil)
-                   (in-range instrument p2 nil))
+      (unless (and (in-range instrument p1 nil nil nil t)
+                   (in-range instrument p2 nil nil nil t))
         (setf happy nil)
         (when warn
           (warn "pitch::force-artificial-harmonic: creating an artificial ~

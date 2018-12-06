@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  10:25:17 Thu Dec  6 2018 CET
+;;; $$ Last modified:  16:41:12 Thu Dec  6 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -742,6 +742,9 @@
 ;;; - T or NIL to indicate whether a microtonal pitch should be considered
 ;;;  'in-range' when the instrument can't play microtones. Default = T (as
 ;;;  theoretically it's within the range even though not playable).
+;;; - T or NIL to indicate whether pitches the instrument can't play (the
+;;;   missing-notes slot) should cause the method to return NIL. Default = NIL =
+;;;   even 'missing notes' will be considered in range.
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns T if the specified pitch falls between the
@@ -781,7 +784,7 @@
 ;;; SYNOPSIS
 (defmethod in-range ((ins instrument) pitch
                      &optional sounding try-artificial-harmonic
-                       (impossible-microtones t))
+                       (impossible-microtones t) no-missing-notes)
 ;;; ****
   (let* ((p (make-pitch pitch))
          (low (if sounding (lowest-sounding ins) (lowest-written ins)))
@@ -791,13 +794,24 @@
          (result (not (or too-high too-low)))
          chord)
     ;; MDE Thu Nov  1 18:02:05 2018 -- try with artificial harmonics
-    (when (and (not result) too-high try-artificial-harmonic (harmonics ins))
-      ;; this checks that the harmonic notes are in range too
-      (setq chord (force-artificial-harmonic p ins nil sounding))) ; no warning
+    (when (and (not result) too-high try-artificial-harmonic
+               (harmonics ins))
+      ;; this checks that the harmonic notes are in range too.  No warning
+      (setq chord (force-artificial-harmonic p ins nil sounding))) 
     ;; MDE Wed Nov 14 16:33:21 2018
-    (if (and (not impossible-microtones)
-             (micro-tone p)
-             (not (microtones ins)))
+    (if (or (and (not impossible-microtones)
+                 (micro-tone p)
+                 (not (microtones ins)))
+            ;; MDE Thu Dec  6 16:08:42 2018
+            (and no-missing-notes
+                 ;; the missing-notes slot is a list of pitch objects and
+                 ;; they're sounding not written pitches, even though they're
+                 ;; entered into the slot as written
+                 (member (if sounding
+                             p
+                             (transpose p (transposition-semitones ins)))
+                         (missing-notes ins)
+                         :test #'(lambda (p1 p2) (pitch= p1 p2 t)))))
         nil
         (values result (cond (chord chord) (too-high 1) (too-low 0))))))
 

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  11:17:41 Thu Dec  6 2018 CET
+;;; $$ Last modified:  15:39:08 Thu Dec  6 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -866,7 +866,6 @@ data: (
   (loop for pitch in (data c) collect (get-cmn-data pitch force-natural nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; usually we auto-sort so this shouldn't need to be called directly; it's
 ;;; called in init
 
@@ -889,7 +888,7 @@ data: (
 ;;;   Default = 'ASCENDING. 
 ;;; 
 ;;; RETURN VALUE  
-;;; Returns a list of pitch objects.
+;;; Returns the chord with its pitches sorted.
 ;;; 
 ;;; EXAMPLE
 #|
@@ -926,7 +925,10 @@ data: (
                      #'(lambda (x y)
                          (if (eq order 'ascending)
                              (< (frequency x) (frequency y))
-                             (> (frequency x) (frequency y)))))))
+                             (> (frequency x) (frequency y))))))
+  ;; MDE Thu Dec  6 14:23:53 2018 -- return the chord instead of the pitch list,
+  ;; as prior to this date
+  c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2276,7 +2278,7 @@ data: (
               (multiple-value-bind
                     (in harm)
                   ;; sounding pitches and artificial harmonics, if allowed!
-                  (in-range ins pitch t artificial-harmonics nil)
+                  (in-range ins pitch t artificial-harmonics nil t)
                 (when (or in (chord-p harm)) (incf got))
                 (cond (in (push (list instrument-index
                                       ;; if we can play a single pitch, try

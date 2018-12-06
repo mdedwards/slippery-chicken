@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  09:10:19 Tue Nov 20 2018 CET
+;;; $$ Last modified:  15:15:24 Thu Dec  6 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -616,7 +616,6 @@
        for i from start by skip
        for p = (nth i pitch-list)
        do
-       ;; (print (data p))
          (when (and p (<= (pitch- p at-start) max-span)
                     (not (member p result :test #'note=)))
            (push p result)))
@@ -625,11 +624,50 @@
         (first result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun two-hands (one-hand-fun curve-num index pitch-list pitch-seq instrument
+                  set)
+  (let* ((left (funcall one-hand-fun curve-num index pitch-list pitch-seq
+                        instrument set))
+         (right (funcall
+                 one-hand-fun curve-num index
+                 (remove-if #'(lambda (p)
+                                (cond ((chord-p left)
+                                       (member p (data left) :test #'pitch=))
+                                      ((pitch-p left) (pitch= p left))
+                                      (t nil)))
+                            pitch-list)
+                 pitch-seq instrument set))
+         (result (cond ((and (chord-p left) (chord-p right))
+                        (sort-pitches (combine left right)))
+                       ((and (chord-p left) (pitch-p right))
+                        (add-pitches left right)) ; auto-sorts
+                       ((and (chord-p right) (pitch-p left))
+                        (add-pitches right left))
+                       ((and (pitch-p right) (pitch-p left))
+                        (make-chord (list left right)))
+                       (left (make-chord left)) ; in case it's just a pitch
+                       (t (make-chord right)))))
+    (if (> (sclist-length result) 1)
+        result
+        (first (data result)))))
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Jun 23 10:10:15 2015 
 
 (defun mallet-chord-fun (curve-num index pitch-list pitch-seq instrument set)
   ;; for ease of playing let's restrict chord widths to a perfect 5th
   (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 2 2 7))
+
+;;; MDE Thu Dec  6 14:10:10 2018 -- don't skip any notes
+(defun mallet-chord-fun-narrow
+    (curve-num index pitch-list pitch-seq instrument set)
+  (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 1 2 7))
+
+;;; MDE Thu Dec  6 14:25:36 2018 -- two pitches each hand
+(defun mallet-chord-fun-both-hands
+    (curve-num index pitch-list pitch-seq instrument set)
+  (two-hands #'mallet-chord-fun-narrow curve-num index pitch-list pitch-seq
+             instrument set))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; The following chord selection functions were designed for my piece cheat
@@ -810,6 +848,11 @@
         (make-chord result)
         (first result))))
 
+(defun piano-chord-fun-both-hands
+    (curve-num index pitch-list pitch-seq instrument set)
+  (two-hands #'piano-chord-fun curve-num index pitch-list pitch-seq
+             instrument set))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; returns the index into the pitch-list of the first note playable on an
 ;; open-string (pitch object) and the fret number of the first playable note
@@ -985,10 +1028,6 @@
 ;;; RETURN VALUE
 ;;; The instrument object for which the changes were made.
 ;;; 
-;;; EXAMPLE
-#|
-
-|#
 ;;; SYNOPSIS
 (defun set-standard-range (ins low high &optional sounding)
 ;;; ****

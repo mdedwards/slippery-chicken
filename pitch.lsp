@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  15:41:00 Thu Dec  6 2018 CET
+;;; $$ Last modified:  13:13:05 Fri Dec  7 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1878,9 +1878,9 @@ pitch::add-mark: mark PIZZ already present but adding again!
 
 |#
 ;;; SYNOPSIS
-(defmethod add-mark ((p pitch) mark &optional warn-rest)
+(defmethod add-mark ((p pitch) mark &optional warn-rest warn-again)
 ;;; ****
-  (declare (ignore warn-rest))
+  (declare (ignore warn-rest warn-again))
   (when (has-mark p mark)
     (warn "~a~&pitch::add-mark: mark ~a already present but adding again!"
           p mark))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  10:30:01 Thu Nov 22 2018 CET
+;;; $$ Last modified:  18:12:01 Fri Dec  7 2018 CET
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -239,6 +239,8 @@
                   ;; so unmeasured tremolo is implicit
                   (t3 '(orn "tremolo" nil 3))
                   (flag '(tech "harmonic" a))
+                  ;; MDE Fri Dec  7 18:11:29 2018 -- dorico still doesn't handle
+                  ;; the little circles to start/end a hairpin 
                   (niente '(wds "niente"))
                   (pppp  '(dyn "pppp"))
                   (ppp  '(dyn "ppp"))

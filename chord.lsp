@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  15:39:08 Thu Dec  6 2018 CET
+;;; $$ Last modified:  13:12:55 Fri Dec  7 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -486,9 +486,9 @@ data: GQS4
 |#
 ;;; 
 ;;; SYNOPSIS
-(defmethod add-mark ((c chord) mark &optional warn-rest)
+(defmethod add-mark ((c chord) mark &optional warn-rest warn-again)
 ;;; ****
-  (declare (ignore warn-rest))
+  (declare (ignore warn-rest warn-again))
   (push mark (marks c)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

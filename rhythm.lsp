@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  18:44:34 Fri Nov 16 2018 CET
+;;; $$ Last modified:  16:39:55 Fri Dec  7 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -620,13 +620,13 @@ rhythm::add-mark: add AT to rest?
 
 |#
 ;;; SYNOPSIS
-(defmethod add-mark ((r rhythm) mark &optional warn-rest)
+(defmethod add-mark ((r rhythm) mark &optional warn-rest warn-again)
 ;;; ****
   (when mark
     (when (and warn-rest (is-rest r))
       (warn "~a~&rhythm::add-mark: add ~a to rest?" r mark))
     ;; 9.4.11 check we haven't already got the mark
-    (when (has-mark r mark)
+    (when (and warn-again (has-mark r mark))
       (warn "~a~&rhythm::add-mark: mark ~a already present but adding again!"
             r mark))
     ;; MDE Fri Dec 23 18:44:20 2011 -- check marks exist now, so as to avoid
@@ -636,6 +636,13 @@ rhythm::add-mark: add AT to rest?
     (validate-mark mark)
     (push mark (marks r))
     t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod add-marks ((r rhythm) &optional marks warn-rest warn-again)
+  (loop for mark in marks do
+       (add-mark r mark warn-rest warn-again))
+  r)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

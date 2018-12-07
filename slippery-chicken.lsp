@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:34:55 Wed Nov 28 2018 CET
+;;; $$ Last modified:  16:55:02 Fri Dec  7 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5506,9 +5506,6 @@ begin-slur without matching end-slur:
   (check-slurs-aux sc "slurs" #'begin-slur-p #'end-slur-p))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May 14 17:24:07 BST 2012: Added robodoc entry
-
 ;;; DESCRIPTION
 ;;; Print warnings to the Lisp listener if the method finds nested phrase
 ;;; markings, beg-ph marks without corresponding end-ph marks, or end-ph marks
@@ -5568,7 +5565,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 
 (defmethod check-slurs-aux ((sc slippery-chicken) name test-beg test-end)
   (loop with ok = t for player in (players sc) do
-       ;; reset to the first event      ;
+       ;; reset to the first event
        (next-event sc player nil t)
        (loop
           with in-slur

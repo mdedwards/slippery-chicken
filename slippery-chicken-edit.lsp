@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  18:23:44 Wed Nov 28 2018 CET
+;;; $$ Last modified:  18:06:47 Fri Dec  7 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4022,9 +4022,6 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Apr 25 16:30:06 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken-edit/sc-move-dynamic
 ;;; DESCRIPTION
 ;;; Move the dynamic attached to a specified event object to another specified
@@ -4079,10 +4076,34 @@ NIL
   (let ((dyn (sc-remove-dynamic sc bar-num player from)))
     (add-mark (get-event sc to-bar to player) dyn)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  MDE Fri Dec  7 13:02:26 2018 -- mainly for the orchestrate method
+(defmethod move-dynamics-from-rests ((sc slippery-chicken) 
+                                     &optional players start-bar end-bar)
+  (unless players (setq players (players sc)))
+  (unless (listp players) (setq players (list players)))
+  (unless start-bar (setq start-bar 1))
+  (unless end-bar (setq end-bar (num-bars sc)))
+  (loop for player in players with last-note with last-dynamics do
+     ;; reset to the first event
+       (next-event sc player nil t)
+     ;; put all the dynamics found on a rest back onto the last note seen
+       (loop for e = (next-event sc player nil nil end-bar)
+          for dynamics = (when e (get-dynamics e t))
+          while e do
+            (if (is-rest e)
+                (progn
+                  (when (and dynamics last-note)
+                    (add-marks last-note dynamics t nil))
+                  ;; if we've just hit a rest but the last note had the start of
+                  ;; a hairpin, remove it 
+                  (when (and last-note
+                             (intersection (marks last-note)
+                                           '(cresc-beg dim-beg)))
+                    (rm-marks last-note '(cresc-beg dim-beg) nil)))
+                (setq last-note e)))))
+       
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Apr 25 16:41:35 BST 2012: Added robodoc entry.
-
 ;;; ****m* slippery-chicken-edit/sc-remove-dynamic
 ;;; DESCRIPTION
 ;;; Remove all dynamics from the MARKS slot of one or more specified event
@@ -4126,11 +4147,11 @@ NIL
   ;; event-nums  
   (setf event-nums (flatten event-nums))
   (loop for en in event-nums 
-       for event = (get-event sc bar-num en player)
-       for dynamics = (get-dynamics event)
+     for event = (get-event sc bar-num en player)
+     for dynamics = (get-dynamics event)
      do
        (remove-dynamics event)
-       ;; returns the first dynamic removed from the last requested event
+     ;; returns the first dynamic removed from the last requested event
      finally (return (first dynamics))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4200,14 +4221,15 @@ NIL
          (stbar (if stlist (first start) start))
          (ndbar (if ndlist (first end) end))
          (stnote (if stlist (second start) 1))
-         ;; NB this means we'll add marks to tied notes too
          (ndnote (when ndlist (second end)))) ; nil processed in do-bar
     (flet ((do-bar (bar-num start-note end-note player)
              (unless end-note
-               (setf end-note (num-score-notes (get-bar sc bar-num player))))
+               ;; (setf end-note (num-score-notes (get-bar sc bar-num player))))
+               (setf end-note (num-rhythms (get-bar sc bar-num player))))
              (loop with bar = (get-bar sc bar-num player)
                 for i from (1- start-note) below end-note 
-                for e = (get-nth-non-rest-rhythm i bar)
+                ;; for e = (get-nth-non-rest-rhythm i bar)
+                for e = (get-nth-event i bar)
                 do
                   ;; MDE Mon Nov 26 11:48:41 2018 -- just-rests?
                   (when (or (not just-rests) (is-rest e))
@@ -4687,7 +4709,6 @@ NIL
          (when update                   ; could be called elsewhere
            (update-slots sc))))
   t)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; A post-generation editing method
@@ -6570,14 +6591,18 @@ T
                      ;; this must be done for attacked notes and tied-to notes
                      (when combo
                        (copy-to-combo sc event combo))))))
+    ;; (break)
+    ;; (print (get-dynamics (get-note sc 34 1 'vln2) t))
     ;; todo: remove cresc/dim from rests
-    ;; todo: stats: number of relax states 0-3  and total chords orchestrated
     (when auto-beam (auto-beam sc))
     (when auto-clefs (auto-clefs sc))
     (force-rest-bars sc 1 nil nil t)
     (update-slots sc)
-    (check-ties sc)     ; we have to do this to make sure tied notes are updated
+    (move-dynamics-from-rests sc)
+    ;; remove dynamics from rests, as we'll probably still have some since we no
+    ;; longer delete them when force-rest is called
     (sc-remove-dynamics sc 1 (num-bars sc) nil t)
+    (check-ties sc)     ; we have to do this to make sure tied notes are updated
     (when verbose
       (format t "~&Total of ~a chords orchestrated: ~%    ~a with all pitches ~
                  and every instrument of the combo, ~%    ~a with all pitches ~
@@ -6718,7 +6743,7 @@ T
           ;; the following chords
           (loop for bar-num from (bar-num e) to end-bar
              for bar = (get-bar sc bar-num player) do
-               (force-all-rests bar)
+               (force-all-rests bar t)
                (setf (is-rest-bar bar) nil))
           t)
         ;; have we already copied over skeleton events or is there (by chance

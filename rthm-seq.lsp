@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified:  16:20:48 Thu Feb 15 2018 CET
+;;; $$ Last modified:  13:15:16 Fri Dec  7 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1802,7 +1802,8 @@ NIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Thu Dec 29 12:09:16 EST 2011: Removed robodoc info
 
-(defmethod add-marks ((rs rthm-seq))
+(defmethod add-marks ((rs rthm-seq) &optional ignore1 ignore2 ignore3)
+  (declare (ignore ignore1 ignore2 ignore3))
   (loop for i in (marks rs) do
         ;; when the list is like (a 1 4) it means accent on notes 1 to 4
         ;; (a 1) means accent on note 1

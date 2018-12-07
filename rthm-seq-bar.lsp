@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  11:28:39 Mon Nov 26 2018 CET
+;;; $$ Last modified:  17:01:22 Fri Dec  7 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1010,15 +1010,39 @@ data: ((2 4) Q E S S)
 ;;; 
 ;;; ARGUMENTS
 ;;; - a rthm-seq-bar object
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate that any marks (e.g. dynamics) should be retained,
+;;;   whether or not these make sense on rests. The exception is that slurs
+;;;   won't be retained.  Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; the modified rthm-seq-bar object
 ;;; 
 ;;; SYNOPSIS
-(defmethod force-all-rests ((rsb rthm-seq-bar))
+(defmethod force-all-rests ((rsb rthm-seq-bar) &optional retain-marks)
 ;;; ****
-  (setf (rhythms rsb) (mapcar #'force-rest (rhythms rsb)))
-  rsb)
+  ;; (setf (rhythms rsb) (mapcar #'force-rest (rhythms rsb)))
+  (loop with m with mb with mp
+     for r in (rhythms rsb) do
+     ;; MDE Fri Dec  7 17:01:07 2018 -- force-rest in the event class deletes
+     ;; marks like dynamics which isn't always what we want (esp. with
+     ;; orchestrate method).
+       (when retain-marks
+         (setq m (marks r)
+               mp (marks-in-part r))
+         (when (event-p r)
+           (setq mb (marks-before r))))
+       ;; (print 'far) (print m)
+       (force-rest r)
+       (when retain-marks
+         (setf (marks r) m 
+               (marks-in-part r) mp)
+         (when (event-p r)
+           (setf (marks-before r) mb))
+         ;; slurs can still cause a problem so best delete
+         (rm-marks r '(beg-sl end-sl) nil)))
+  (gen-stats rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

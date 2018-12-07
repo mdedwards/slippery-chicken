@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:28:59 Thu Dec  6 2018 CET
+;;; $$ Last modified:  13:12:40 Fri Dec  7 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -418,9 +418,6 @@
       result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 23.12.11 SAR Added robodoc info
-
 ;;; ****m* event/get-dynamics
 ;;; DESCRIPTION
 ;;; Get the list of dynamic marks from a given event object, assuming there are
@@ -475,9 +472,14 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod get-dynamics ((e event))
+(defmethod get-dynamics ((e event) &optional hairpins)
 ;;; ****
-  (remove-if #'(lambda (x) (not (is-dynamic x)))
+  (remove-if-not #'(lambda (x)
+                     ;; (not (is-dynamic x)))
+                     (or (and hairpins (or (is-hairpin x)
+                                           (eq x 'hairpin0)))
+                         (is-dynamic x)))
+                 ;; NB remove-if and remove-if-not are not destructive.
              (marks e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -534,7 +536,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; 5.4.11: remove existing dynamics if we're about to add one
-(defmethod add-mark :before ((e event) mark &optional warn-rest)
+(defmethod add-mark :before ((e event) mark &optional warn-rest warn-again)
   (declare (ignore warn-rest))
   (when (is-dynamic mark)
     (remove-dynamics e)))
@@ -563,8 +565,10 @@
 ;;; RETURN VALUE
 ;;; 
 ;;; SYNOPSIS
-(defmethod add-mark :after ((e event) mark &optional (update-amplitude t))
+(defmethod add-mark :after ((e event) mark
+                            &optional (update-amplitude t) warn-again)
 ;;; ****
+  (declare (ignore warn-again))
   ;; MDE Tue Apr 26 15:29:55 2016 -- (channel controller-number value)
   ;; with piano pedalling we don't have to worry about the
   ;; microtones-midi-channel as there are no microtones on the piano. so we

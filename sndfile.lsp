@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified: 10:44:55 Sat Oct  3 2015 BST
+;;; $$ Last modified:  15:10:09 Sat Dec 15 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -75,7 +75,10 @@
    ;; will now do auto pitch detection.
    ;; MDE Fri Sep 25 13:44:28 2015 -- changed back to 'c4 and now allow value
    ;; of 'detect to indicate we want pitch detection (was slowing down make-sfp
-   ;; too much when autoc was default). 
+   ;; too much when autoc was default).
+   ;; MDE Sat Dec 15 14:53:02 2018 -- this can also be a function whereupon it
+   ;; will be called with the path slot as argument. The idea is that the
+   ;; fundamental can be extracted from the file name.
    (frequency :accessor frequency :initarg :frequency :initform 'c4)
    ;; when duration is given, we have to update end and vice-versa.  This slot
    ;; tells us whether this was done and so avoids endless back-and-forths when
@@ -302,11 +305,14 @@ T
              ;; MDE Sun Dec 16 15:02:34 2012 -- slot-value!
              (setf (slot-value sf 'end) (snd-duration sf))
              (set-dur sf)))
-      ;; MDE Mon Sep  7 11:11:09 2015 -- auto detect frequency using Bret
-      ;; Battey's CLM autocorrelation instrument. If there's no CLM package
-      ;; this will just return the freq for 'c4.
-      (when (eq 'detect (frequency sf))
-        (setf (slot-value sf 'frequency) (autoc-get-fundamental path)))
+      ;; MDE Sat Dec 15 14:50:53 2018 
+      (if (functionp (frequency sf))
+          (setf (slot-value sf 'frequency) (funcall (frequency sf) (path sf)))
+          ;; MDE Mon Sep 7 11:11:09 2015 -- auto detect frequency using Bret
+          ;; Battey's CLM autocorrelation instrument. If there's no CLM package
+          ;; this will just return the freq for 'c4.
+          (when (eq 'detect (frequency sf)) ;(frequency sf))
+            (setf (slot-value sf 'frequency) (autoc-get-fundamental path))))
       (let ((st (start sf))
             (end (end sf)))
         (when (< st 0)

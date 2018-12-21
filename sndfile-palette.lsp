@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  19:39:45 Tue May  1 2018 CEST
+;;; $$ Last modified:  18:23:12 Fri Dec 21 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -66,6 +66,10 @@
    (num-snds :accessor num-snds :type integer :initform -1)
    ;; MDE Fri Sep 25 13:46:28 2015 -- call CLM's autoc for auto detection of
    ;; frequency of each sndfile where the :frequency slot isn't given?
+   ;; 
+   ;; MDE Sat Dec 15 14:58:04 2018 -- this can also be a function whereupon it
+   ;; will be called with the path slot of each sndfile as argument. The idea is
+   ;; that the fundamental can be extracted from the file name.
    (auto-freq :accessor auto-freq :type boolean :initarg :auto-freq
               :initform nil)
    (extensions :accessor extensions :type list :initarg :extensions 
@@ -105,9 +109,11 @@
                        collect (trailing-slash path))
         ;; MDE Wed Jun 12 13:49:33 2013 -- to avoid duplicate path errors
         (paths sfp) (remove-duplicates (paths sfp) :test #'string=))
-  (loop for sflist in (data sfp) and i from 0 do
+  (loop with sfe
+     for sflist in (data sfp)
+     for i from 0 do
        (loop for snd in (data sflist) and j from 0 do 
-            (setf (nth j (data (nth i (data sfp))))
+            (setf sfe
                   ;; MDE Fri Oct  5 13:57:51 2012 -- if it's already a sndfile
                   ;; (as when combining palettes) then don't try to re-parse it 
                   (typecase snd
@@ -128,7 +134,16 @@
                     (t (make-sndfile-ext
                         (find-sndfile sfp snd) :id snd
                         ;; MDE Fri Sep 25 13:49:09 2015 
-                        :frequency (if (auto-freq sfp) 'detect 'c4)))))))
+                        :frequency (cond
+                                     ((functionp (auto-freq sfp))
+                                      (auto-freq sfp))
+                                     ((auto-freq sfp) 'detect)
+                                     (t 'c4))))))
+            (when sfe
+              (setf (nth j (data (nth i (data sfp)))) sfe))))
+  ;; MDE Fri Dec 21 17:59:02 2018 -- if we couldn't find a sndfile, remove it
+  (loop for sflist in (data sfp) do
+       (setf (data sflist) (remove-if-not #'sndfile-p (data sflist))))
   ;; MDE Fri Jan  4 10:10:22 2013 
   (setf (num-snds sfp) (count-snds sfp)))
 
@@ -150,7 +165,6 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Thu May  3 12:51:13 BST 2012: Added/edited robodoc entry
 
 ;;; MDE's original comment:
@@ -218,8 +232,8 @@
     (case (length files)
       ;; MDE Mon Apr 9 12:29:26 2012 -- changing from warn to error as this
       ;; is a show-stopper if we call clm-play.
-      (0 (error "sndfile-palette::find-sndfile: ~
-                 Cannot find sound file '~a'"
+      (0 (warn "sndfile-palette::find-sndfile: ~
+                Cannot find sound file '~a'. Will skip."
                 string))
       (1 (first files))
       (t (warn "sndfile-palette::find-sndfile: Sound file '~a' exists in ~
@@ -281,14 +295,36 @@
      finally (return result)))
               
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defmethod get-nearest (freq (sfp sndfile-palette) &rest ids)
+;;; MDE Fri Dec 21 14:35:20 2018 -- was &rest ids but now this should be a list
+;;; ****m* sndfile-palette/get-nearest
+;;; DESCRIPTION
+;;; Get the sndfile whose frequency slot is nearest to the first argument.
+;;; 
+;;; ARGUMENTS
+;;; - the frequency we're looking for, in Hertz (a number)
+;;; - the sndfile-palette object we'll search
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the IDs of the sndfile groups we'll search. Either a list of ids or a
+;;; single id. If NIL then all groups will be searched. Default = NIL.
+;;; - if more than one sndfile is very close in frequency, select one at random
+;;; (see also the get-nearest-by-freq function)
+;;; 
+;;; RETURN VALUE
+;;; the nearest sndfile object
+;;; 
+;;; SYNOPSIS
+(defmethod get-nearest (freq (sfp sndfile-palette) &optional ids random)
+;;; ****
+  (setq ids (force-list ids))
+  (unless ids (setq ids (get-all-refs sfp)))
   (unless (numberp freq)
     (error "sndfile-palette::get-nearest: freq should be numeric: ~a~%~a"
            freq sfp))
-  (unless ids (setq ids (get-all-refs sfp)))
-  (get-nearest-by-freq freq
-                       (loop for id in ids appending (get-data-data id sfp))))
+  (get-nearest-by-freq
+   freq
+   (loop for id in ids appending (get-data-data id sfp))
+   random))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-for-init ((sfp sndfile-palette)
@@ -389,6 +425,11 @@
 ;;;   specified sound files. The default initialization for this slot of the
 ;;;   sndfile-palette already contains ("wav" "aiff" "aif" "snd"), so this
 ;;;   argument can often be left unspecified.
+;;; - :auto-freq. whether to do automatic frequency detection on the sound
+;;;   files. T would mean using a pitch detection routine, or a function can
+;;;   also be passed, whereupon it will be called with the path slot as
+;;;   argument (the idea is that the fundamental can be extracted from the file
+;;;   name). Default = NIL.
 ;;; - :warn-not-found. T or NIL to indicate whether a warning should be printed
 ;;;   to the Lisp listener if the specified sound file cannot be found. 
 ;;;   T = print warning. Default = T.
@@ -1009,12 +1050,19 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
 ;;; - a frequency in Hertz (number)
 ;;; - a simple list of sndfile objects, such as that contained in the data slot
 ;;;  of a sndfile-palette group.
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether a random file should be chosen when there are
+;;;   several sndfiles with the same frequency. (NB the function random-rep will
+;;;   be used so if you wanted repeatable results call (random-rep 1 t) in order
+;;;   to reset the random seed before calling clm-play or whatever context uses
+;;;   this function.) Default = NIL.
 ;;; 
 ;;; RETURN VALUE
 ;;; the nearest sndfile object
 ;;; 
 ;;; SYNOPSIS
-(defun get-nearest-by-freq (freq sflist)
+(defun get-nearest-by-freq (freq sflist &optional random)
 ;;; ****
   (let* ((diff most-positive-double-float)
          (cdiff diff)
@@ -1022,7 +1070,11 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
     (loop for sf in sflist do
          (when (frequency sf)
            (setq diff (abs (- 1.0 (/ freq (frequency sf)))))
-           (when (<= diff cdiff)
+           ;; MDE Fri Dec 21 14:07:06 2018 -- do the random thing too
+           (when (or (<= diff cdiff)
+                     (and random
+                          (zerop (random-rep 2)) ; 50/50 chance
+                          (equal-within-tolerance 0.0 diff 0.001)))
              (setq it sf
                    cdiff diff))))
     it))

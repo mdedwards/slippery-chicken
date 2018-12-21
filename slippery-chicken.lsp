@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:55:02 Fri Dec  7 2018 CET
+;;; $$ Last modified:  13:10:51 Fri Dec 21 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4429,14 +4429,14 @@ seq-num 5, VN, replacing G3 with B6
 ;;;   panning will generally be retained. See samp5.lsp for details of how such
 ;;;   files are handled. Default = NIL (i.e. use the list given above).
 ;;; - :pan-fun. If you want to take charge of selecting pan positions yourself,
-;;;   pass a function via this keyword. The function must take one argument:
-;;;   the current event, though of course, it can ignore it completely if
+;;;   pass a function via this keyword. The function must take one argument: the
+;;;   current event, though of course, it can ignore it completely if
 ;;;   preferred. The function should return a degree value: a number between 0
 ;;;   and 90. Bear in mind if using samp5 with more than 2 output channels that
 ;;;   this will still result in the sound moving around multichannel space as
 ;;;   all you would be setting is the pan value between any two adjacent
-;;;   channels. If this isn't your cup of tea, pass a new instrument entirely via
-;;;   :clm-ins. Default = NIL.
+;;;   channels. If this isn't your cup of tea, pass a new instrument entirely
+;;;   via :clm-ins. Default = NIL.
 ;;; - :snd-selector. By default the sound files in the given group are cycled
 ;;;   through, one after the other, returning to the beginning when the end is
 ;;;   reached. This can be changed by passing a function to :snd-selector. This

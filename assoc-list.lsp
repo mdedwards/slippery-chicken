@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  11:21:10 Thu Nov  1 2018 CET
+;;; $$ Last modified:  14:39:08 Fri Dec 21 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -864,9 +864,9 @@ data: 1
 ;;; a named-object
 ;;;
 ;;; SYNOPSIS
-(defmethod get-nearest (key (al assoc-list) &rest ignore)
+(defmethod get-nearest (key (al assoc-list) &optional ignore1 ignore2)
 ;;; ****
-  (declare (ignore ignore))
+  (declare (ignore ignore1 ignore2))
   (unless (numberp key)
     (error "assoc-list::get-nearest: key should be numeric: ~a~%~a"
            key al))

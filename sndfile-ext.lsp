@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  12:11:58 Mon Oct 30 2017 CET
+;;; $$ Last modified:  18:22:37 Fri Dec 21 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -618,58 +618,60 @@ NIL
 ;;; See defclass slot descriptions
 ;;; 
 ;;; RETURN VALUE
-;;; A sndfile-ext object.
+;;; A sndfile-ext object or NIL if path is NIL
 ;;; 
 ;;; SYNOPSIS
 (defun make-sndfile-ext (path &key id data duration end (start 0.0)
-                         (frequency nil) (amplitude 1.0) (cue-num -1)
-                         (use t) (pitch -1) (pitch-curve -1) (bandwidth -1)
-                         (bandwidth-curve -1) (continuity -1)
-                         (continuity-curve -1) (weight -1) (weight-curve -1)
-                         (energy -1) (energy-curve -1) (harmonicity -1)
-                         (harmonicity-curve -1) (volume -1) (volume-curve -1)
-                         (loop-it nil) (bitrate -1) (srate -1) (num-frames -1)
-                         (bytes -1) followers group-id)
+                                (frequency nil) (amplitude 1.0) (cue-num -1)
+                                (use t) (pitch -1) (pitch-curve -1) (bandwidth -1)
+                                (bandwidth-curve -1) (continuity -1)
+                                (continuity-curve -1) (weight -1) (weight-curve -1)
+                                (energy -1) (energy-curve -1) (harmonicity -1)
+                                (harmonicity-curve -1) (volume -1)
+                                (volume-curve -1) (loop-it nil) (bitrate -1)
+                                (srate -1) (num-frames -1)
+                                (bytes -1) followers group-id)
 ;;; ****
-  (let (sf)
-    (if (and path (listp path))         ; all slots will be in the list
-        (setf sf (make-sndfile (cons 'sndfile-ext path)))
-        (progn 
-          (setf sf (make-sndfile path :id id :data data :duration duration
-                                 :end end :start start :frequency frequency
-                                 :amplitude amplitude))
-          ;; remember that this goes back to named-object which calls
-          ;; make-instance 'sndfile-ext with all slots NIL, so we'll have to
-          ;; call update below.
-          (setf sf (clone-with-new-class sf 'sndfile-ext))
-          (setf (use sf) use 
-                (cue-num sf) cue-num
-                (pitch sf) pitch
-                (pitch-curve sf) pitch-curve
-                (bandwidth sf) bandwidth
-                (bandwidth-curve sf) bandwidth-curve
-                (continuity sf) continuity
-                (continuity-curve sf) continuity-curve
-                (weight sf) weight
-                (weight-curve sf) weight-curve
-                (energy sf) energy
-                (energy-curve sf) energy-curve
-                (harmonicity sf) harmonicity 
-                (harmonicity-curve sf) harmonicity-curve
-                (volume sf) volume
-                (volume-curve sf) volume-curve
-                (loop-it sf) loop-it
-                ;; bear in mind that these data will be changed by the update
-                ;; method  
-                (bitrate sf) bitrate
-                (srate sf) srate
-                (num-frames sf) num-frames
-                (bytes sf) bytes
-                (group-id sf) group-id
-                (followers sf) followers)))
-    ;; have to call this here because clone init'ed with all slots NIL
-    (update sf)
-    sf))
+  (when path
+    (let (sf)
+      (if (and path (listp path))       ; all slots will be in the list
+          (setf sf (make-sndfile (cons 'sndfile-ext path)))
+          (progn 
+            (setf sf (make-sndfile path :id id :data data :duration duration
+                                   :end end :start start :frequency frequency
+                                   :amplitude amplitude))
+            ;; remember that this goes back to named-object which calls
+            ;; make-instance 'sndfile-ext with all slots NIL, so we'll have to
+            ;; call update below.
+            (setf sf (clone-with-new-class sf 'sndfile-ext))
+            (setf (use sf) use 
+                  (cue-num sf) cue-num
+                  (pitch sf) pitch
+                  (pitch-curve sf) pitch-curve
+                  (bandwidth sf) bandwidth
+                  (bandwidth-curve sf) bandwidth-curve
+                  (continuity sf) continuity
+                  (continuity-curve sf) continuity-curve
+                  (weight sf) weight
+                  (weight-curve sf) weight-curve
+                  (energy sf) energy
+                  (energy-curve sf) energy-curve
+                  (harmonicity sf) harmonicity 
+                  (harmonicity-curve sf) harmonicity-curve
+                  (volume sf) volume
+                  (volume-curve sf) volume-curve
+                  (loop-it sf) loop-it
+                  ;; bear in mind that these data will be changed by the update
+                  ;; method  
+                  (bitrate sf) bitrate
+                  (srate sf) srate
+                  (num-frames sf) num-frames
+                  (bytes sf) bytes
+                  (group-id sf) group-id
+                  (followers sf) followers)))
+      ;; have to call this here because clone init'ed with all slots NIL
+      (update sf)
+      sf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF sndfile-ext.lsp

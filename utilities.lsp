@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  08:08:36 Tue Nov 27 2018 CET
+;;; $$ Last modified:  16:37:29 Sat Dec 15 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -235,11 +235,13 @@
 ;;; **** ; all strings
   (let ((pos (search what string))
         (wlen (length what)))
-    (when pos 
+    (if pos 
       (concatenate 'string
                    (subseq string 0 pos)
                    with
-                   (subseq string (+ pos wlen))))))
+                   (subseq string (+ pos wlen)))
+      ;; MDE Sat Dec 15 16:37:20 2018 -- return unmodified if what not found
+      string)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  13:13:05 Fri Dec  7 2018 CET
+;;; $$ Last modified:  13:57:06 Sat Dec 15 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2437,6 +2437,10 @@ C4
   (when pitch
     (typecase pitch
       (pitch pitch) ; ignore midi-channel here
+      ;; MDE Sat Dec 15 13:56:36 2018
+      (string (make-instance 'pitch :id (read-from-string pitch)
+                             :midi-channel midi-channel
+                             :src-ref-pitch src-ref-pitch))
       (symbol (make-instance 'pitch :id pitch :midi-channel midi-channel
                              :src-ref-pitch src-ref-pitch))
       (number (make-instance 'pitch :frequency pitch :midi-channel midi-channel

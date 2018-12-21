@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  18:22:37 Fri Dec 21 2018 CET
+;;; $$ Last modified:  18:43:20 Fri Dec 21 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -634,8 +634,9 @@ NIL
 ;;; ****
   (when path
     (let (sf)
-      (if (and path (listp path))       ; all slots will be in the list
-          (setf sf (make-sndfile (cons 'sndfile-ext path)))
+      (if (and path (listp path))     ; all slots will be in the list
+          (when (first path)          ; will be NIL if we couldn't find the file
+            (setf sf (make-sndfile (cons 'sndfile-ext path))))
           (progn 
             (setf sf (make-sndfile path :id id :data data :duration duration
                                    :end end :start start :frequency frequency
@@ -670,7 +671,7 @@ NIL
                   (group-id sf) group-id
                   (followers sf) followers)))
       ;; have to call this here because clone init'ed with all slots NIL
-      (update sf)
+      (when sf (update sf))
       sf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

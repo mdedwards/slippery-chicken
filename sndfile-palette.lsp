@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  18:23:12 Fri Dec 21 2018 CET
+;;; $$ Last modified:  18:55:17 Fri Dec 21 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -833,7 +833,7 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
     (if sfs
         (progn
           (loop for sf in sfs do
-               (setq sfgroup  (get-group-from-file sf pdl)
+               (setq sfgroup (get-group-from-file sf pdl)
                      pos (position sfgroup groups
                                    :test #'(lambda (x y)
                                              (if (atom y)
@@ -927,6 +927,7 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
          (when (and (seq-has-all insist sfname)
                     (seq-has-none resist sfname))
            (push (list sndfile :frequency (midi-to-freq midi)) sfp)))
+    ;; (print sfp)
     (make-sfp 'kontakt-to-sfp
               (list (list group (reverse sfp)))
               :paths (list samples-path))))

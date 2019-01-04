@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  18:01:19 Mon Sep 24 2018 CEST
+;;; $$ Last modified:  15:57:25 Thu Dec 27 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -815,6 +815,7 @@ WARNING:
 (defmethod get-data :around (ids (ral recursive-assoc-list) 
                                  &optional (warn t))
 ;;; ****
+  ;; (print warn)
   (unless (listp ids)
     (setf ids (list ids)))
   (let* ((next (call-next-method (first ids) ral warn))

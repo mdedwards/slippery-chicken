@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  14:39:08 Fri Dec 21 2018 CET
+;;; $$ Last modified:  15:50:22 Thu Dec 27 2018 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -438,11 +438,11 @@ WARNING:
   (let ((pos (get-position key al)))
     (if pos
         (get-nth pos al)
-      (when (or warn 
-                (and warn (warn-not-found al)))
-        (warn "assoc-list::get-data: ~
+        (when (or warn 
+                  (and warn (warn-not-found al)))
+          (warn "assoc-list::get-data: ~
                Could not find data with key ~a ~%in assoc-list with id ~a"
-              key (id al))))))
+                key (id al))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

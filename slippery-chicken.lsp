@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:10:51 Fri Dec 21 2018 CET
+;;; $$ Last modified:  17:44:17 Fri Jan  4 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1447,7 +1447,6 @@
                             (tp (1 1 1 1 1))
                             (vn (1 1 1 1 1))))))))
   (get-player mini 'vn))
-
 => 
 PLAYER: (id instrument-palette): SLIPPERY-CHICKEN-STANDARD-INSTRUMENT-PALETTE 
 doubles: NIL, cmn-staff-args: NIL, total-notes: 25, total-degrees: 3548, 
@@ -1456,27 +1455,12 @@ LINKED-NAMED-OBJECT: previous: (TP), this: (VN), next: NIL
 NAMED-OBJECT: id: VN, tag: NIL, 
 data: 
 INSTRUMENT: lowest-written: G3, highest-written: C7
-lowest-sounding: G3, highest-sounding: C7
-starting-clef: TREBLE, clefs: (TREBLE), clefs-in-c: (TREBLE)
-prefers-notes: NIL, midi-program: 41
-transposition: C, transposition-semitones: 0
-score-write-in-c: NIL, score-write-bar-line: NIL
-chords: T, chord-function: VIOLIN-CHORD-SELECTION-FUN, 
-total-bars: 5 total-notes: 25, total-duration: 20.000
-total-degrees: 3548, microtones: T
-missing-notes: NIL, subset-id: NIL
-staff-name: violin, staff-short-name: vln,
-                  
-largest-fast-leap: 13, tessitura: B4
-LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-NAMED-OBJECT: id: VIOLIN, tag: NIL, 
-data: NIL
-
+...
 |#
 ;;; SYNOPSIS
 (defmethod get-player ((sc slippery-chicken) player)
 ;;; ****
-  (get-data player (ensemble sc)))
+  (get-player (ensemble sc) player))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -4798,10 +4782,16 @@ seq-num 5, VN, replacing G3 with B6
           (reset snds)))
       ;; MDE Tue Apr 17 18:53:36 2012 -- get the lowest start time of all the
       ;; players. events only includes sounding events here, not rests.
+      ;; (print events)
+      ;; (print (first (first events)))
       (setf first-event-start 
             (loop
-               for player in events 
-               for ffv = (first (first player))
+               for player in events
+               ;; MDE Fri Jan  4 17:43:44 2019 -- bug fix: single players with
+               ;; bars-rest at beginning don't pick up the minimum start time
+               ;; unless we remove nils and flatten 
+               ;; for ffv = (print (first (first player)))
+               for ffv = (first (remove-if-not #'event-p (flatten player)))
                if ffv minimize (start-time ffv)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
       (clm::with-sound (:scaled-to normalise 
@@ -9313,7 +9303,11 @@ NOTE 6200 0.6666667
                            (clone (first notes))
                            (progn
                              (unless (or (zerop (num-score-notes rthm-seq))
-                                         ;; MDE Wed Oct 10 16:48:54 2018 
+                                         ;; MDE Wed Oct 10 16:48:54 2018 -- this
+                                         ;; is where we allow auto-creation of
+                                         ;; rest sequences if no notes available
+                                         ;; for an instrument, rather than
+                                         ;; signalling an error, as previously
                                          (not (get-sc-config
                                                'pitch-seq-no-pitches-error)))
                                (unless 

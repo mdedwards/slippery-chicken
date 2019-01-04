@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  18:06:47 Fri Dec  7 2018 CET
+;;; $$ Last modified:  16:15:36 Thu Dec 27 2018 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6378,7 +6378,13 @@ T
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Nov  3 10:14:39 2018 
 (defmethod add-ensemble-players ((sc slippery-chicken) (ens ensemble))
-  (loop for player in (data ens) do (add-player sc player))
+  (loop for player in (data ens) do
+     ;; MDE Thu Dec 27 15:44:12 2018 -- don't add an existing player: we might
+     ;; want to call the orchestrate method several times for different parts
+     ;; of the piece and with different ensembles, so need to be able to
+     ;; reference players more than once
+       (unless (get-player sc (id player))
+         (add-player sc player)))
   (players sc))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

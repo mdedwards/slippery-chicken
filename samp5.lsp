@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    12th June 2004
 ;;;
-;;; $$ Last modified:  17:52:17 Mon Nov 26 2018 CET
+;;; $$ Last modified:  11:19:15 Sat Jan  5 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -52,8 +52,6 @@
 ;;; errors but CLM uses single-floats.  Change back at the end of this file if
 ;;; necessary.
 (setf *read-default-float-format* 'single-float)
-
-(load (compile-file "/lisp/clm-5/moog.lisp"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Places a sound in stereo space no matter whether input is stereo or mono.

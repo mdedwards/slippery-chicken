@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  09:10:55 Fri Nov 30 2018 CET
+;;; $$ Last modified:  11:48:10 Sat Jan  5 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1155,6 +1155,10 @@
 
 (defun output-midi-tempo-change (time tempo)
   ;; (print tempo)
+  (when (< (sc::bpm tempo) 4)
+    (warn "cm::output-midi-tempo-change: Tempi < 4 will probably result in ~
+           ~%incorrect playback in your MIDI software. (Time: ~a, tempo: ~a)"
+          time (sc::bpm tempo)))
   (new midi-tempo-change :time time :usecs (sc::usecs tempo)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

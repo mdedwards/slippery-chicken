@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:12:40 Fri Dec  7 2018 CET
+;;; $$ Last modified:  13:50:59 Tue Jan  8 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3397,7 +3397,6 @@ data: C4
   (setf (8va e) 0))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Sun Dec 25 08:50:52 EST 2011: Added robodoc info
 ;;; SAR Sat Dec 31 09:20:00 EST 2011: Put date in DATE block
 

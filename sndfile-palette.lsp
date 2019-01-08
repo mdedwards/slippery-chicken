@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  18:55:17 Fri Dec 21 2018 CET
+;;; $$ Last modified:  08:20:36 Tue Jan  8 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -366,11 +366,11 @@
 ;;; - :groups. A single group or list of groups (IDs) for the sound files we
 ;;;   wish to process.
 ;;; - :name-fun.The function for processing a single name. Of course the names
-;;; must be consistent and each sound file must be able to be processed by this
-;;; single function. NB for reasons of similar usage in get-spectra-al (see
-;;; spectra.lsp) this function actually must return the MIDI note number (may
-;;; be a floating point for microtonal applications), which is then converted
-;;; by the sndfile class to a frequency in Hertz.
+;;;   must be consistent and each sound file must be able to be processed by
+;;;   this single function. NB for reasons of similar usage in get-spectra-al
+;;;   (see spectra.lsp) this function actually must return the MIDI note number
+;;;   (may be a floating point for microtonal applications), which is then
+;;;   converted by the sndfile class to a frequency in Hertz.
 ;;; - :on-error. The function to be called when the name function cannot
 ;;;   determine the frequency of the sound file. This could be #'error (the
 ;;;   default), #'warn, or nil if nothing is to be done on failure.

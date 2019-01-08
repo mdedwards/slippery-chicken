@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  16:41:12 Thu Dec  6 2018 CET
+;;; $$ Last modified:  19:30:47 Tue Jan  8 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -153,14 +153,27 @@
    ;;            :initform -1)
    (midi-program :accessor midi-program :type integer :initarg :midi-program
                  :initform 1)
-   ;; MDE Thu Nov  1 17:36:01 2018 -- for string instruments: in the first
-   ;; instance just whether an ins can play harmonics in generally, whether
-   ;; natural or artificial
+   ;; MDE Thu Nov 1 17:36:01 2018 -- for string instruments: whether an ins can
+   ;; play harmonics in generally, whether natural or artificial
    (harmonics :accessor harmonics :type boolean :initarg :harmonics
               :initform nil)
-   
+   ;; MDE Tue Jan  8 16:42:46 2019 -- if a string instrument, what are the
+   ;; pitches of the open strings? go from highest to lowest for best results
+   ;; with natural-harmonic? method
+   (open-strings :accessor open-strings :initarg :open-strings :initform nil)
+   ;; e.g. '(i ii iii iv) for orch. strings, or '(c1 ... c6) for guitars
+   (open-string-marks :accessor open-string-marks :type list
+                      :initarg :open-string-marks :initform nil)
+   ;; Pairs: first element is semitones above open string where the node is, and
+   ;; second is the partial number. NB not complete, just the easy ones
+   (nodes :accessor nodes :type list :initarg :nodes
+          :initform '((12 2) (7 3) (5 4) (4 5) (3 6)))
+   ;; pitch objects: list of lists (one per open-string from lowest) generated
+   ;; from the open-strings and nodes slots. each element is a list of two
+   ;; pitches: the node and the sounding pitch.
+   (harmonic-pitches :accessor harmonic-pitches :type list :initform nil)
+   ;; 
    ;; All the following are used for statistics and hence have no initarg
-
    ;;; The total number of bars in the piece in which this instrument plays.
    (total-bars :accessor total-bars :type integer :initform 0)
    ;;; The total number of notes (actually events, not rests or tied notes,
@@ -175,6 +188,94 @@
    ;;; the case of chords, the average is used.
    (total-degrees :accessor total-degrees :type number :initform 0)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Jan  8 16:53:14 2019
+(defmethod (setf nodes) :after (new-value (ins instrument))
+  (declare (ignore new-value))
+  (gen-harmonic-pitches ins))
+
+(defmethod (setf open-strings) :after (new-value (ins instrument))
+  (setf (slot-value ins 'open-strings)
+        (loop for p in new-value collect (make-pitch p)))
+  (gen-harmonic-pitches ins))
+
+(defmethod (setf harmonic-pitches) (new-value (ins instrument))
+  (declare (ignore new-value))
+  (error "instrument::(setf harmonic-pitches): Don't set this slot directly, ~
+          rather, set the open-strings or nodes slot in order to update ~
+          harmonic-pitches automatically"))
+
+(defmethod gen-harmonic-pitches ((ins instrument))
+  (setf (slot-value ins 'harmonic-pitches)
+        (loop for open in (open-strings ins) collect
+             ;; note that the nodes are not sorted by pitch so that we can pass
+             ;; them in a preferred order, e.g. for selecting first the easiest
+             ;; harmonics 
+             (loop for node in (nodes ins) collect
+                  (list (transpose open (first node))
+                        (make-pitch (* (second node) (frequency open))))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* instrument/natural-harmonic?
+;;; DATE
+;;; 8th January 2019, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Determine whether a note can be played as a natural harmonic.
+;;; 
+;;; ARGUMENTS
+;;; - an instrument object
+;;; - a note, either as a pitch symbol or object. This should be the written
+;;; pitch in the case of transposing instruments such as the guitar or double
+;;; bass.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - frequency tolerance in cents. A natural major third (5th partial) is 14
+;;;   cents from its nearest equal-tempered neighbour. Default = 15.
+;;; 
+;;; RETURN VALUE
+;;; a pitch object with marks attached for the harmonic (circle) and string
+;;; 
+;;; EXAMPLE
+#|
+(natural-harmonic? (get-standard-ins 'violin) 'b5)
+
+PITCH: frequency: 987.767, midi-note: 83, midi-channel: 1 
+       pitch-bend: 0.0 
+       degree: 166, data-consistent: T, white-note: B5
+       nearest-chromatic: B5
+       src: 3.7754972, src-ref-pitch: C4, score-note: B5 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 5, c5ths: 0, no-8ve: B, no-8ve-no-acc: B
+       show-accidental: T, white-degree: 48, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: (IV HARM), 
+...    
+|#
+;;; SYNOPSIS
+(defmethod natural-harmonic? ((ins instrument) note &optional (tolerance 15))
+;;; ****
+  (let* ((n (make-pitch note))
+         (deviation (cents-hertz n tolerance))
+        result)
+    (when (and (harmonics ins) (harmonic-pitches ins))
+      ;; strings ascend in pitch but down in number, of course
+      (loop for i from 0 for harms in (harmonic-pitches ins) do
+           (setq result 
+                 (loop for harm in harms do
+                      (when (<= (abs (- (frequency (second harm))
+                                        (frequency n)))
+                                deviation)
+                        ;; (pitch= (second harm) n t)
+                        (add-mark n 'harm)
+                        (add-mark n (nth i (open-string-marks ins)))
+                        (return n))))
+           (when result (return)))
+      result)))
+       
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod initialize-instance :after ((ins instrument) &rest initargs)
@@ -236,6 +337,9 @@
           (error "~a~&instrument::initialize-instance: prefers-notes should be ~
                   either nil, 'high or 'low"
                  ins)))
+      ;; MDE Tue Jan  8 17:42:43 2019 -- trigger the setf method and
+      ;; gen-harmonic-pitches 
+      (setf (open-strings ins) (open-strings ins))
       (when (and (chords ins)
                  (not (chord-function ins)))
         (setf (chord-function ins) 'default-chord-function)))))
@@ -341,6 +445,8 @@
                   ~%            missing-notes: ~a, subset-id: ~a~
                   ~%            staff-name: ~a, staff-short-name: ~a,~
                   ~%            staff-lines: ~a, harmonics: ~a~
+                  ~%            open-strings: ~a, open-string-marks: ~a~
+                  ~%            nodes: ~a, ~%harmonic-pitches: ~a~
                   ~%            largest-fast-leap: ~a, tessitura: ~a"
             (pitch-slot (lowest-written ins))
             (pitch-slot (highest-written ins))
@@ -355,7 +461,11 @@
             (total-degrees ins) (microtones ins) 
             (pitch-list-to-symbols (missing-notes ins)) (subset-id ins)
             (staff-name ins) (staff-short-name ins)
-            (staff-lines ins) (harmonics ins) (largest-fast-leap ins)
+            (staff-lines ins) (harmonics ins)
+            (pitch-list-to-symbols (open-strings ins)) (open-string-marks ins)
+            (nodes ins) (loop for string in (harmonic-pitches ins) collect
+                             (pitch-list-to-symbols (mapcar #'second string)))
+            (largest-fast-leap ins)
             (tessitura-note ins))))
                            
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1159,7 +1269,9 @@ dqs3 dqf3 cqs3)
                              microtones
                              missing-notes
                              prefers-notes
-                             chord-function harmonics)
+                             chord-function harmonics open-strings
+                             open-string-marks
+                             (nodes '((12 2) (7 3) (5 4) (4 5) (3 6))))
 ;;; ****
   (make-instance 'instrument :id id
                  :staff-name staff-name
@@ -1184,6 +1296,8 @@ dqs3 dqf3 cqs3)
                  :score-write-bar-line score-write-bar-line
                  :microtones microtones
                  :chords chords
+                 :open-strings open-strings :open-string-marks open-string-marks
+                 :nodes nodes
                  :chord-function chord-function))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  16:15:36 Thu Dec 27 2018 CET
+;;; $$ Last modified:  08:57:19 Tue Jan  8 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5037,6 +5037,8 @@ NIL
      finally (return processed)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; TODO build in warn arg
+
 ;;; ****m* slippery-chicken-edit/force-artificial-harmonics
 ;;; DESCRIPTION
 ;;; For string scoring purposes only: Transpose the pitch of the given event
@@ -6495,6 +6497,9 @@ T
 ;;;   the algorithm is run.
 ;;; - :artificial-harmonics. T or NIL to allow the selection of string
 ;;;   artificial harmonics in order to reach high notes outwith normal ranges.
+;;; - :sticky-stats. T or NIL to indicate whether the statistics collected and
+;;;   returned by the method should be reset or retained between calls. Default
+;;;   = NIL = reset.
 ;;; - :relax. An integer between 0 and 3 inclusive to indicate how strict the
 ;;;   algorithm should when allocating chord pitches to instruments. The values
 ;;;   have the following meanings with degrees of relaxedness ascending:
@@ -6507,116 +6512,127 @@ T
 ;;;   3. whole chords can be left out
 ;;; 
 ;;; RETURN VALUE
-;;; The (modified) slippery-chicken object.
+;;; Five statistics values representing the number of chords where: 1. all
+;;; pitches & every player used; 2. all pitches but some players tacit; 3. some
+;;; pitches and instruments missing; 4. chords completely left out; 5. total
+;;; chords attempted
 ;;; 
 ;;; SYNOPSIS
-(defmethod orchestrate ((sc slippery-chicken) new-ensemble original-players
-                        &key
-                          combos add-more-combos start-bar end-bar verbose
-                          (artificial-harmonics t) (relax 0) (auto-clefs t)
-                          (auto-beam t) (combo-change-fun #'combo-change?)
-                          (chords t))
+(let (successes)                        ; for stats
+  (defmethod orchestrate ((sc slippery-chicken) new-ensemble original-players
+                          &key
+                            combos add-more-combos start-bar end-bar verbose
+                            (artificial-harmonics t) (relax 0) (auto-clefs t)
+                            (auto-beam t) (combo-change-fun #'combo-change?)
+                            (chords t) sticky-stats)
 ;;; ****
-  (unless (integer-between relax 0 3)
-    (error "slippery-chicken::orchestrate: :relax should be between 0 and 3 ~
+    (when (or (not sticky-stats) (not successes))
+      (setq successes (ml 0 5)))
+    (unless (integer-between relax 0 3)
+      (error "slippery-chicken::orchestrate: :relax should be between 0 and 3 ~
             inclusive, not ~a" relax))
-  ;; reset our activity-levels object or whatever the given function does to
-  ;; reset 
-  (funcall combo-change-fun nil nil) 
-  (setq new-ensemble (make-ensemble nil new-ensemble) ; clone or instantiate
-        original-players (force-list original-players))
-  (let* ((phrases (get-phrases sc original-players :start-bar start-bar
-                               :end-bar end-bar :pad nil))
-         (lotsa (when (or (not combos) add-more-combos)
-                  (lotsa-combos new-ensemble 100)))
-         (all-combos (append combos lotsa))
-         (combos-al (organise-combos new-ensemble all-combos))
-         (successes (ml 0 5))       ; for stats
-         (num-passes (length phrases))
-         combo combo-players combo-relax-val)
-    (add-ensemble-players sc new-ensemble)
-    (update-slots sc)                   ; so that bar-nums are correct
-    (loop for pphrase in phrases
-       for player in original-players
-       for pass from 1 do
-         (when verbose
-           (format t "~&****** Orchestrating original player ~a/~a: ~a ******"
-                   pass num-passes player))
-       ;; strictly speaking phrases have no meaning here as combos can change
-       ;; at any point but keep the phrase processing in place for now in case
-       ;; we do want to somehow differentiate phrases in the future.
-         (loop for phrase in pphrase do
-            ;; duplicate the events, with all chord notes. we then change
-            ;; notes afterwards
-            ;; number of notes in each chord/event can vary from event to
-            ;; event. within a phrase we'll re-use a combo if the number of
-            ;; notes in a chord reoccurs and our combo-change? function tells us
-            ;; not to change
-              (loop for event in phrase do 
-                 ;; NB event is from the original player
-                   (unless (is-rest event)
-                     ;; not only will this get a combo that can play the chord
-                     ;; (if one exists) but it will also see if our combo is
-                     ;; free for this event. nb if it's a rest bar, we need to
-                     ;; double the events of the phrase but force them into
-                     ;; rests then we can change individual rests back into
-                     ;; notes. so there are side effects here but all good ones.
-                     (unless (is-tied-to event)
-                       (multiple-value-setq
-                           (combo combo-relax-val)
-                         (get-combo sc event combos-al combo-change-fun
-                                    artificial-harmonics chords))
-                       (setq combo-players (mapcar #'first combo))
-                       (when (or (and (not combo) (/= relax 3))
-                                 (and combo (> combo-relax-val relax)))
-                         (error "slippery-chicken::orchestrate: bar ~a: no ~
+    ;; reset our activity-levels object or whatever the given function does to
+    ;; reset 
+    (funcall combo-change-fun nil nil) 
+    (setq new-ensemble (make-ensemble nil new-ensemble) ; clone or instantiate
+          original-players (force-list original-players))
+    (let* ((phrases (get-phrases sc original-players :start-bar start-bar
+                                 :end-bar end-bar :pad nil))
+           (lotsa (when (or (not combos) add-more-combos)
+                    (lotsa-combos new-ensemble 100)))
+           (all-combos (append combos lotsa))
+           (combos-al (organise-combos new-ensemble all-combos))
+           (num-passes (length phrases))
+           combo combo-players combo-relax-val)
+      (add-ensemble-players sc new-ensemble)
+      (update-slots sc)                 ; so that bar-nums are correct
+      (loop for pphrase in phrases
+         for player in original-players
+         for pass from 1 do
+           (when verbose
+             (format t "~&****** Orchestrating original player ~a/~a: ~a ******"
+                     pass num-passes player)
+             (format t "~&        Ensemble: ~a" (players new-ensemble)))
+         ;; strictly speaking phrases have no meaning here as combos can change
+         ;; at any point but keep the phrase processing in place for now in case
+         ;; we do want to somehow differentiate phrases in the future.
+           (loop for phrase in pphrase do
+              ;; duplicate the events, with all chord notes. we then change
+              ;; notes afterwards
+              ;; number of notes in each chord/event can vary from event to
+              ;; event. within a phrase we'll re-use a combo if the number of
+              ;; notes in a chord reoccurs and our combo-change? function tells
+              ;; us not to change
+                (loop for event in phrase do 
+                   ;; NB event is from the original player
+                     (unless (is-rest event)
+                       ;; not only will this get a combo that can play the chord
+                       ;; (if one exists) but it will also see if our combo is
+                       ;; free for this event. nb if it's a rest bar, we need to
+                       ;; double the events of the phrase but force them into
+                       ;; rests then we can change individual rests back into
+                       ;; notes. so there are side effects here but all good
+                       ;; ones.
+                       (unless (is-tied-to event)
+                         (multiple-value-setq
+                             (combo combo-relax-val)
+                           (get-combo sc event combos-al combo-change-fun
+                                      artificial-harmonics chords))
+                         (setq combo-players (mapcar #'first combo))
+                         (when (or (and (not combo) (/= relax 3))
+                                   (and combo (> combo-relax-val relax)))
+                           (error "slippery-chicken::orchestrate: bar ~a: no ~
                                  combo can play ~a."
-                                (bar-num event) (get-pitch-symbol event)))
-                       (incf (nth combo-relax-val successes))
-                       (incf (nth 4 successes)) ; overall total 
-                       (when verbose
-                         (format t "~&bar ~a (pass ~a/~a): set ID ~a, ~a: ~
+                                  (bar-num event) (get-pitch-symbol event)))
+                         (incf (nth combo-relax-val successes))
+                         (incf (nth 4 successes)) ; overall total 
+                         (when verbose
+                           (format t "~&bar ~a (pass ~a/~a): set ID ~a, ~a: ~
                                     ~%    tried ~a, got ~a~%    "
-                                 (bar-num event) pass num-passes
-                                 (set-ref event)
-                                 (if combo-players combo-players "no players")
-                                 (get-pitch-symbol event)
-                                 (let ((ps (mapcar
-                                            #'(lambda (p)
-                                                (when (second p)
-                                                  (get-pitch-symbols
-                                                   (second p))))
-                                            combo)))
-                                   (if ps ps "nothing")))
-                         (case combo-relax-val
-                           (0 (format t "(all pitches played)"))
-                           (1 (format t "(all pitches played, chord-playing ~
+                                   (bar-num event) pass num-passes
+                                   (set-ref event)
+                                   (if combo-players combo-players "no players")
+                                   (get-pitch-symbol event)
+                                   (let ((ps (mapcar
+                                              #'(lambda (p)
+                                                  (when (second p)
+                                                    (get-pitch-symbols
+                                                     (second p))))
+                                              combo)))
+                                     (if ps ps "nothing")))
+                           (case combo-relax-val
+                             (0 (format t "(all pitches played)"))
+                             (1 (format t "(all pitches played, chord-playing ~
                                          instrument filling the gaps."))
-                           (2 (format t "(some pitches missing.)"))
-                           (3 (format t "(chord will be skipped.)")))))
-                     ;; this must be done for attacked notes and tied-to notes
-                     (when combo
-                       (copy-to-combo sc event combo))))))
-    ;; (break)
-    ;; (print (get-dynamics (get-note sc 34 1 'vln2) t))
-    ;; todo: remove cresc/dim from rests
-    (when auto-beam (auto-beam sc))
-    (when auto-clefs (auto-clefs sc))
-    (force-rest-bars sc 1 nil nil t)
-    (update-slots sc)
-    (move-dynamics-from-rests sc)
-    ;; remove dynamics from rests, as we'll probably still have some since we no
-    ;; longer delete them when force-rest is called
-    (sc-remove-dynamics sc 1 (num-bars sc) nil t)
-    (check-ties sc)     ; we have to do this to make sure tied notes are updated
-    (when verbose
-      (format t "~&Total of ~a chords orchestrated: ~%    ~a with all pitches ~
-                 and every instrument of the combo, ~%    ~a with all pitches ~
-                 but some combo instruments missing, ~%    ~a with some ~
-                 pitches and instruments missing, ~%    ~a left out completely."
-              (fifth successes) (first successes) (second successes)
-              (third successes) (fourth successes)))
-    sc))
+                             (2 (format t "(some pitches missing.)"))
+                             (3 (format t "(chord will be skipped.)")))))
+                       ;; this must be done for attacked notes and tied-to notes
+                       (when combo
+                         (copy-to-combo sc event combo))))))
+      ;; (break)
+      ;; (print (get-dynamics (get-note sc 34 1 'vln2) t))
+      ;; todo: remove cresc/dim from rests
+      (when auto-beam (auto-beam sc))
+      (when auto-clefs (auto-clefs sc))
+      (force-rest-bars sc 1 nil nil t)
+      (update-slots sc)
+      (move-dynamics-from-rests sc)
+      ;; remove dynamics from rests, as we'll probably still have some since we
+      ;; no longer delete them when force-rest is called
+      (sc-remove-dynamics sc 1 (num-bars sc) nil t)
+      (check-ties sc)   ; we have to do this to make sure tied notes are updated
+      (when verbose
+        (format
+         t "~&Total of ~a chords orchestrated: ~%    ~a with all pitches ~
+            and every instrument of the combo, ~%    ~a with all pitches ~
+            but some combo instruments missing, ~%    ~a with some ~
+            pitches and instruments missing, ~%    ~a left out completely."
+         (fifth successes) (first successes) (second successes)
+         (third successes) (fourth successes)))
+      ;; 1. all pitches & every player, 2. all pitches but some players tacit,
+      ;; 3. some pitches and instruments missing, 4. completely left out,
+      ;; 5. total chords
+      (values-list successes))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; returns a combo that can play the chord __and__ is free (has rests) to play

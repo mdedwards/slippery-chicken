@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  15:15:24 Thu Dec  6 2018 CET
+;;; $$ Last modified:  19:21:24 Tue Jan  8 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -403,6 +403,8 @@
        :starting-clef treble 
        :chords t :chord-function guitar-chord-selection-fun 
        :microtones nil :harmonics t
+       :open-strings (e5 b4 g4 d4 a3 a3) ; written!
+       :open-string-marks (c1 c2 c3 c4 c5 c6)
        :midi-program 25))
      ;; MDE Wed Oct  9 12:21:22 2013 
      (mandolin 
@@ -411,9 +413,11 @@
        :largest-fast-leap 25
        :starting-clef treble 
        ;; mandolin has same tuning as the violin
+       :open-strings (e5 a4 d4 g3)
+       :open-string-marks (c1 c2 c3 c4) ; assuming guitar numbering strategy
        :chords t :chord-function violin-chord-selection-fun 
        ;; there is no GM programme for mandolin so use either steel string
-       ;; guitar (26) or banjo 106 perhaps 
+       ;; guitar (26) or banjo 106 perhaps
        :microtones nil :midi-program 26))
      (soprano ; voice
       (:staff-name "soprano" :staff-short-name "sop"
@@ -450,6 +454,8 @@
        :starting-clef treble 
        :chords t :chord-function violin-chord-selection-fun 
        :microtones t :harmonics t
+       :open-strings (e5 a4 d4 g3) 
+       :open-string-marks (i ii iii iv)
        :midi-program 41))
      (viola 
       (:staff-name "viola" :staff-short-name "vla"
@@ -458,6 +464,8 @@
        :clefs (alto treble) :starting-clef alto 
        :chords t :chord-function viola-chord-selection-fun 
        :microtones t :harmonics t
+       :open-strings (a4 d4 g3 c3) 
+       :open-string-marks (i ii iii iv)
        :midi-program 42))
      (viola-d-amore 
       (:staff-name "viola d'amore" :staff-short-name "vla d'am"
@@ -476,6 +484,8 @@
        :clefs (bass tenor treble) :starting-clef bass
        :chords t :chord-function cello-chord-selection-fun 
        :microtones t :harmonics t
+       :open-strings (a3 d3 g2 c2) 
+       :open-string-marks (i ii iii iv)
        :midi-program 43))
      (double-bass 
       (:staff-name "double bass" :staff-short-name "db"
@@ -485,6 +495,8 @@
        :clefs (bass tenor treble) :starting-clef bass
        :chords nil 
        :microtones t :harmonics t
+       :open-strings (g3 d3 a2 e2) ; written!
+       :open-string-marks (i ii iii iv)
        :midi-program 44))
      (bass-guitar
       (:staff-name "bass guitar" :staff-short-name "b. gtr"
@@ -494,6 +506,8 @@
        :clefs (bass treble) :starting-clef bass
        :chords t
        :microtones nil :harmonics t
+       :open-strings (g3 d3 a2 e2) ; written!
+       :open-string-marks (c1 c2 c3 c4)
        :midi-program 33))
      ;; SAR Thu Apr 12 18:19:21 BST 2012: Added "computer" part for "silent"
      ;; parts in case the user would like to create rhythmically independent

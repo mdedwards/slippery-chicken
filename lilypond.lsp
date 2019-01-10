@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  16:52:07 Sat Mar 10 2018 +07
+;;; $$ Last modified:  09:04:40 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -188,7 +188,7 @@
            ;;")  
            ;; MDE Mon Apr 30 20:46:06 2012 -- see event::get-lp-data for how
            ;; this is handled 
-           (flag-head "\\harmonic ")
+           (flag-head "\\harmonic ") ; diamond
            ;; MDE Mon Apr 30 20:46:31 2012 -- flag-heads by default don't
            ;; display dots so we need to add-mark-before to get these to
            ;; display or turn them off again

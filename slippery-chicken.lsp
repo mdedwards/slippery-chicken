@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:44:17 Fri Jan  4 2019 CET
+;;; $$ Last modified:  09:34:05 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8420,7 +8420,7 @@ NOTE 6200 0.6666667
   (if (is-tied-from e)
       (let ((bar-num (bar-num e))
             (e-num (+ 2 (bar-pos e)))
-            current done)
+            current)
         ;; no endless loops; surely < 10000 notes are tied?
         (loop repeat 10000 do
            ;;                                                     no error

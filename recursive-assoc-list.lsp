@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  15:57:25 Thu Dec 27 2018 CET
+;;; $$ Last modified:  09:22:32 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1762,6 +1762,7 @@ data: RIBBON
 ;;; SYNOPSIS
 (defmethod set-standard-instrument-slot (slot value id)
 ;;; ****
+  (declare (special +slippery-chicken-standard-instrument-palette+))
   (set-slot slot value id +slippery-chicken-standard-instrument-palette+))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  17:58:03 Tue Sep 11 2018 CEST
+;;; $$ Last modified:  09:37:32 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1956,7 +1956,7 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
                                 invert (num 3))
 ;;; ****
   (loop with ign = (copy-list ignore)
-     for least = (hash-least-used hash :start 0 :end end
+     for least = (hash-least-used hash :start start :end end
                                   :ignore ign :invert invert
                                   :auto-inc auto-inc)
      repeat num

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  19:30:47 Tue Jan  8 2019 CET
+;;; $$ Last modified:  10:10:53 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -189,94 +189,6 @@
    (total-degrees :accessor total-degrees :type number :initform 0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Tue Jan  8 16:53:14 2019
-(defmethod (setf nodes) :after (new-value (ins instrument))
-  (declare (ignore new-value))
-  (gen-harmonic-pitches ins))
-
-(defmethod (setf open-strings) :after (new-value (ins instrument))
-  (setf (slot-value ins 'open-strings)
-        (loop for p in new-value collect (make-pitch p)))
-  (gen-harmonic-pitches ins))
-
-(defmethod (setf harmonic-pitches) (new-value (ins instrument))
-  (declare (ignore new-value))
-  (error "instrument::(setf harmonic-pitches): Don't set this slot directly, ~
-          rather, set the open-strings or nodes slot in order to update ~
-          harmonic-pitches automatically"))
-
-(defmethod gen-harmonic-pitches ((ins instrument))
-  (setf (slot-value ins 'harmonic-pitches)
-        (loop for open in (open-strings ins) collect
-             ;; note that the nodes are not sorted by pitch so that we can pass
-             ;; them in a preferred order, e.g. for selecting first the easiest
-             ;; harmonics 
-             (loop for node in (nodes ins) collect
-                  (list (transpose open (first node))
-                        (make-pitch (* (second node) (frequency open))))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; ****m* instrument/natural-harmonic?
-;;; DATE
-;;; 8th January 2019, Heidhausen
-;;; 
-;;; DESCRIPTION
-;;; Determine whether a note can be played as a natural harmonic.
-;;; 
-;;; ARGUMENTS
-;;; - an instrument object
-;;; - a note, either as a pitch symbol or object. This should be the written
-;;; pitch in the case of transposing instruments such as the guitar or double
-;;; bass.
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; - frequency tolerance in cents. A natural major third (5th partial) is 14
-;;;   cents from its nearest equal-tempered neighbour. Default = 15.
-;;; 
-;;; RETURN VALUE
-;;; a pitch object with marks attached for the harmonic (circle) and string
-;;; 
-;;; EXAMPLE
-#|
-(natural-harmonic? (get-standard-ins 'violin) 'b5)
-
-PITCH: frequency: 987.767, midi-note: 83, midi-channel: 1 
-       pitch-bend: 0.0 
-       degree: 166, data-consistent: T, white-note: B5
-       nearest-chromatic: B5
-       src: 3.7754972, src-ref-pitch: C4, score-note: B5 
-       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
-       micro-tone: NIL, 
-       sharp: NIL, flat: NIL, natural: T, 
-       octave: 5, c5ths: 0, no-8ve: B, no-8ve-no-acc: B
-       show-accidental: T, white-degree: 48, 
-       accidental: N, 
-       accidental-in-parentheses: NIL, marks: (IV HARM), 
-...    
-|#
-;;; SYNOPSIS
-(defmethod natural-harmonic? ((ins instrument) note &optional (tolerance 15))
-;;; ****
-  (let* ((n (make-pitch note))
-         (deviation (cents-hertz n tolerance))
-        result)
-    (when (and (harmonics ins) (harmonic-pitches ins))
-      ;; strings ascend in pitch but down in number, of course
-      (loop for i from 0 for harms in (harmonic-pitches ins) do
-           (setq result 
-                 (loop for harm in harms do
-                      (when (<= (abs (- (frequency (second harm))
-                                        (frequency n)))
-                                deviation)
-                        ;; (pitch= (second harm) n t)
-                        (add-mark n 'harm)
-                        (add-mark n (nth i (open-string-marks ins)))
-                        (return n))))
-           (when result (return)))
-      result)))
-       
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod initialize-instance :after ((ins instrument) &rest initargs)
   (declare (ignore initargs))
@@ -344,6 +256,144 @@ PITCH: frequency: 987.767, midi-note: 83, midi-channel: 1
                  (not (chord-function ins)))
         (setf (chord-function ins) 'default-chord-function)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Jan  8 16:53:14 2019
+(defmethod gen-harmonic-pitches ((ins instrument))
+  (setf (slot-value ins 'harmonic-pitches)
+        (loop for open in (open-strings ins) collect
+             ;; note that the nodes are not sorted by pitch so that we can pass
+             ;; them in a preferred order, e.g. for selecting first the easiest
+             ;; harmonics 
+             (loop for node in (nodes ins) collect
+                  (list (transpose open (first node))
+                        (make-pitch (* (second node) (frequency open))))))))
+
+(defmethod (setf nodes) :after (new-value (ins instrument))
+  (declare (ignore new-value))
+  (gen-harmonic-pitches ins))
+
+(defmethod (setf open-strings) (new-value (ins instrument))
+  (setf (slot-value ins 'open-strings)
+        (loop for p in new-value collect (make-pitch p)))
+  (when new-value
+    (unless (apply #'> (mapcar #'frequency (open-strings ins)))
+      (error "instrument::(setf open-strings): strings should descend in ~
+              pitch, as with ~%string number: ~a~%~a" new-value ins))
+    (gen-harmonic-pitches ins)))
+
+(defmethod (setf harmonic-pitches) (new-value (ins instrument))
+  (declare (ignore new-value))
+  (error "instrument::(setf harmonic-pitches): Don't set this slot directly, ~
+          rather, set the open-strings or nodes slot in order to update ~
+          harmonic-pitches automatically"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* instrument/natural-harmonic?
+;;; DATE
+;;; 8th January 2019, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Determine whether a note can be played as a natural harmonic.
+;;;
+;;; NB The note returned is the 'written'note (in the case of e.g. double-bass)
+;;; but won't be transposed down an octave for e.g. harp notation.
+;;; 
+;;; ARGUMENTS
+;;; - an instrument object
+;;; - a note, either as a pitch symbol or object. This should be the written
+;;;   pitch in the case of transposing instruments such as the guitar or double
+;;;   bass.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - frequency tolerance in cents. (A natural major third (5th partial) is 14
+;;;   cents from its nearest equal-tempered neighbour.) Default = 15.
+;;; 
+;;; RETURN VALUE
+;;; a pitch object with marks attached for the harmonic (circle) and string,
+;;; plus, as a second value, the note at the nodal point, with a diamond
+;;; note-head mark. These could be combined into a chord for notation purposes.
+;;; 
+;;; EXAMPLE
+#|
+(natural-harmonic? (get-standard-ins 'violin) 'b5)
+-->
+PITCH: frequency: 987.767, midi-note: 83, midi-channel: 1 
+       pitch-bend: 0.0 
+       degree: 166, data-consistent: T, white-note: B5
+       nearest-chromatic: B5
+       src: 3.7754972, src-ref-pitch: C4, score-note: B5 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 5, c5ths: 0, no-8ve: B, no-8ve-no-acc: B
+       show-accidental: T, white-degree: 48, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: (IV HARM), 
+...    
+
+;;; or with scordatura:
+
+(let ((vln (get-standard-ins 'violin)))
+  (setf (open-strings vln) '(eqs5 a4 d4 g3))
+  (prog1 
+      (natural-harmonic? vln 'eqs6)
+    (setf (open-strings vln) '(e5 a4 d4 g3)))) ; reset
+-->
+PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1 
+       pitch-bend: 0.5 
+       degree: 177, data-consistent: T, white-note: E6
+       nearest-chromatic: E6
+       src: 5.1873584, src-ref-pitch: C4, score-note: ES6 
+       qtr-sharp: 1, qtr-flat: NIL, qtr-tone: 1,  
+       micro-tone: T, 
+       sharp: NIL, flat: NIL, natural: NIL, 
+       octave: 6, c5ths: 0, no-8ve: EQS, no-8ve-no-acc: E
+       show-accidental: T, white-degree: 51, 
+       accidental: QS, 
+       accidental-in-parentheses: NIL, marks: (I HARM), 
+...
+|#
+;;; SYNOPSIS
+(defmethod natural-harmonic? ((ins instrument) note &optional (tolerance 15))
+;;; ****
+  (when (and note (not (chord-p note)))
+    (let* ((n (make-pitch note))
+           (deviation (cents-hertz n tolerance))
+           result string node)
+      (when (harmonics ins) ; (harmonic-pitches ins))
+        (if (and (nodes ins) (not (open-strings ins))) ; e.g. harp
+            ;; this means we'll only ever use one partial, the lowest, probably
+            ;; the 8ve but for now that's all we need.
+            (let* ((lowest-partial (first (sort (mapcar #'second (nodes ins))
+                                                #'<)))
+                   ;; get the string we'll play the harmonic on, probably the
+                   ;; 8ve below
+                   (string (transpose n (- (srt lowest-partial)))))
+              (when (in-range ins string nil nil t t)
+                ;; (setq result (transpose n -12))))
+                (setq result n)))
+            ;; violin etc.: strings ascend in pitch but down in number, of
+            ;; course 
+            (loop for i from 0 for harms in (harmonic-pitches ins) do
+                 (setq result 
+                       (loop for j from 0 for harm in harms do
+                          ;; are frequencies within tolerance of each other?
+                            (when (<= (abs (- (frequency (second harm))
+                                              (frequency n)))
+                                      deviation)
+                              (setq string i
+                                    ;; get the note at the nodal point
+                                    node (transpose
+                                          (nth i (open-strings ins))
+                                          (first (nth j (nodes ins)))))
+                              (return n))))
+                 (when result (return))))
+        (when result (add-mark result 'harm))
+        (when string
+          (add-mark result (nth string (open-string-marks ins)))
+          (add-mark node 'flag-head))
+        (values result node)))))
+       
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; MDE Fri Dec  9 13:20:20 2011

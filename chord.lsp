@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  13:12:55 Fri Dec  7 2018 CET
+;;; $$ Last modified:  09:28:09 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -817,11 +817,11 @@ data: (
                       &key (destructively t) ; do-related-sets
                         ;; MDE Tue Aug 21 19:49:47 2018
                         lowest highest)
-  ;; (lowest (make-pitch 'c-1)) (highest (make-pitch 'b8)))
 ;;; ****
+  ;; (lowest (make-pitch 'c-1)) (highest (make-pitch 'b8)))
   ;; :destructively handled first by the :around method below, :do-related sets
   ;; only for subclasses
-  (declare (ignore destructively)) ; (ignore do-related-sets))
+  (declare (ignore destructively))      ; (ignore do-related-sets))
   ;; (print 'primary)
   (setq lowest (make-pitch lowest)
         highest (make-pitch highest))
@@ -836,7 +836,7 @@ data: (
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod transpose :around ((c chord) semitones
                               &key (destructively t) do-related-sets
-                                lowest highest (make-pitch 'b8))
+                                lowest highest)
   (declare (ignore ignore))
   ;; (print 'around)
   ;; (print 'transpose)

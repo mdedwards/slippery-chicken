@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:50:59 Tue Jan  8 2019 CET
+;;; $$ Last modified:  09:29:24 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -537,7 +537,7 @@
 
 ;;; 5.4.11: remove existing dynamics if we're about to add one
 (defmethod add-mark :before ((e event) mark &optional warn-rest warn-again)
-  (declare (ignore warn-rest))
+  (declare (ignore warn-rest warn-again))
   (when (is-dynamic mark)
     (remove-dynamics e)))
 

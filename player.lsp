@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    7th September 2001
 ;;;
-;;; $$ Last modified:  08:38:38 Fri Nov  2 2018 CET
+;;; $$ Last modified:  09:31:33 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -949,6 +949,7 @@ data:
                     &key (cmn-staff-args nil) staff-names staff-short-names
                          (microtones-midi-channel -1) (midi-channel 1))
 ;;; ****
+  (declare (special +slippery-chicken-standard-instrument-palette+))
   (make-instance 'player :id id :data instruments 
                  :midi-channel midi-channel
                  :staff-names staff-names :staff-short-names staff-short-names

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  19:21:24 Tue Jan  8 2019 CET
+;;; $$ Last modified:  10:08:06 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -372,6 +372,7 @@
        :clefs (treble bass) :starting-clef treble
        :chords t :chord-function piano-chord-fun
        :microtones nil :harmonics t
+       :open-strings nil :nodes ((12 2))
        :midi-program 47))
      ;; MDE Fri Jul 24 20:18:16 2015 -- range typical for modern organ with
      ;; 61-key manuals and 32-key pedalboard  
@@ -403,7 +404,7 @@
        :starting-clef treble 
        :chords t :chord-function guitar-chord-selection-fun 
        :microtones nil :harmonics t
-       :open-strings (e5 b4 g4 d4 a3 a3) ; written!
+       :open-strings (e5 b4 g4 d4 a3 e3) ; written!
        :open-string-marks (c1 c2 c3 c4 c5 c6)
        :midi-program 25))
      ;; MDE Wed Oct  9 12:21:22 2013 

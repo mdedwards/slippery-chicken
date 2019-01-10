@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  18:22:18 Tue Jan  8 2019 CET
+;;; $$ Last modified:  08:49:10 Wed Jan  9 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3580,7 +3580,8 @@ data: F4
 ;;; MDE Tue Jan 8 18:22:09 2019 -- This function is retained for historical
 ;;; reasons but has been superseded by the instrument method natural-harmonic?
 ;;; along with the associated instrument slots open-strings, open-string-marks,
-;;; and nodes.
+;;; and nodes (which altogether are more flexible and efficient than this
+;;; function alone)  
 ;;; 
 ;;; ARGUMENTS
 ;;; - the pitch (symbol or pitch object)

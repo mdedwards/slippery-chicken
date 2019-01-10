@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  16:39:55 Fri Dec  7 2018 CET
+;;; $$ Last modified:  09:24:46 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1478,7 +1478,7 @@ NIL
 ;;; triplet (whereupon we need to convert to rational)
 (defmethod store-open-tuplet ((r rhythm) tuplet index) ; 1-based
   ;; remember open-tuplets is class allocated so available to all
-  (setf nth (1- index) (open-tuplets r)
+  (setf (nth (1- index) (open-tuplets r))
         (typecase tuplet
           (integer (/ (get-tuplet-ratio tuplet)))
           (rational tuplet)

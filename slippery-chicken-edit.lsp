@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  08:57:19 Tue Jan  8 2019 CET
+;;; $$ Last modified:  09:35:12 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4084,7 +4084,7 @@ NIL
   (unless (listp players) (setq players (list players)))
   (unless start-bar (setq start-bar 1))
   (unless end-bar (setq end-bar (num-bars sc)))
-  (loop for player in players with last-note with last-dynamics do
+  (loop for player in players with last-note do
      ;; reset to the first event
        (next-event sc player nil t)
      ;; put all the dynamics found on a rest back onto the last note seen

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  09:04:20 Tue Nov 20 2018 CET
+;;; $$ Last modified:  09:30:03 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -157,7 +157,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf subsets) :after (value (s sc-set))
-  (declare (ignore value))
   ;; (print 'setf-subsets)
   (when (and value (not (assoc-list-p value)))
     (setf (slot-value s 'subsets) 

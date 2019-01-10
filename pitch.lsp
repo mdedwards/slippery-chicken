@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  08:49:10 Wed Jan  9 2019 CET
+;;; $$ Last modified:  15:31:40 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2321,18 +2321,25 @@ data: D7
                                       &optional instrument (warn t)
                                         ;; MDE Thu Dec 6 10:24:12 2018 -- for
                                         ;; checking against ins range
-                                        sounding)
+                                        sounding
+                                        ;; MDE Thu Jan 10 13:03:14 2019 --
+                                        ;; overwrite natural harmonics?
+                                        (naturals t))
 ;;; ****
   (let* ((p1 (transpose (clone p) -24))
          (p2 (transpose p1 5))
-         ;; MDE Mon Apr 23 09:20:44 2012 -- 
+         ;; MDE Thu Jan 10 15:22:52 2019 
+         (nats (or naturals (not (has-mark p 'harm))))
+         ;; MDE Mon Apr 23 09:20:44 2012 
          (happy t))
     ;; MDE Mon Sep 24 18:18:37 2018 -- keep it a P4th
     ;; (print p1) (print p2)
     (when (bad-interval p1 p2)
       (setq p2 (enharmonic p2)))
-    ;; MDE Mon Apr 23 09:16:34 2012
-    (when instrument
+    ;; MDE Mon Apr 23 09:16:34 2012 -- instrument
+    ;; MDE Thu Jan 10 11:44:13 2019 -- don't overwrite natural harmonics
+    (when (and instrument nats)
+      ;; (print 'here)
       (unless (instrument-p instrument)
         (error "~a~%pitch::force-artificial-harmonic: argument should be an ~
                 instrument object" instrument))
@@ -2341,6 +2348,7 @@ data: D7
         (let ((tr (- (transposition-semitones instrument))))
           (setq p1 (transpose p1 tr)
                 p2 (transpose p2 tr))))
+      ;; (when (and p1 p2) (setq happy t))
       ;; (print p2)
       (unless (and (in-range instrument p1 nil nil nil t)
                    (in-range instrument p2 nil nil nil t))
@@ -2349,9 +2357,26 @@ data: D7
           (warn "pitch::force-artificial-harmonic: creating an artificial ~
                  harmonic for this ~%pitch would go out of the instrument's ~
                  range: ~%~a" p))))
-    (when happy
+    (when (and happy nats)
+      (rm-marks p1 '(harm) nil)
       (add-mark p2 'flag-head)
       (make-chord (list p1 p2)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jan 10 13:32:28 2019 -- instrument actually required
+(defmethod force-natural-harmonic ((p pitch)
+                                   &optional instrument (warn t)
+                                     (tolerance 15))
+  (unless (instrument-p instrument)
+    (error "pitch::force-natural-harmonic: instrument must be an object: ~a"
+           instrument))
+  ;; (print instrument)
+  (multiple-value-bind
+        (harm node)
+      (natural-harmonic? instrument p tolerance)
+    ;; (when harm (print (id harm)))
+    ;; for now at least we do nothing with the node pitch
+    harm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -3574,7 +3599,7 @@ data: F4
 ;;; December 24th 2013
 ;;;
 ;;; DESCRIPTION
-;;; Determine whether a pitch can be played as a natural harmonic on a string
+;;; Determine whether a pitch can be played as a natural harmonic on a (string)
 ;;; instrument (with the guitar as default).
 ;;;
 ;;; MDE Tue Jan 8 18:22:09 2019 -- This function is retained for historical

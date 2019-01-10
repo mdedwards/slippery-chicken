@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  10:10:53 Thu Jan 10 2019 CET
+;;; $$ Last modified:  15:09:46 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -167,7 +167,9 @@
    ;; Pairs: first element is semitones above open string where the node is, and
    ;; second is the partial number. NB not complete, just the easy ones
    (nodes :accessor nodes :type list :initarg :nodes
-          :initform '((12 2) (7 3) (5 4) (4 5) (3 6)))
+          ;; dont' use the 6th partial by default as it's a bit tricky to play
+          ;; at speed 
+          :initform '((12 2) (7 3) (5 4) (4 5))) ; (3 6)))
    ;; pitch objects: list of lists (one per open-string from lowest) generated
    ;; from the open-strings and nodes slots. each element is a list of two
    ;; pitches: the node and the sounding pitch.
@@ -293,10 +295,26 @@
 ;;; 8th January 2019, Heidhausen
 ;;; 
 ;;; DESCRIPTION
-;;; Determine whether a note can be played as a natural harmonic.
+;;; Determine whether a note can be played as a natural harmonic. If so, then we
+;;; return the appropriate pitch object with harmonic marks, etc. (see below).
 ;;;
-;;; NB The note returned is the 'written'note (in the case of e.g. double-bass)
+;;; In order for this to work, the :harmonics slot of the instrument
+;;; will need to be T and the open-strings, nodes, and open-string-marks slots
+;;; must be set appropriately. The default nodes are ((12 2) (7 3) (5 4) (4 5)
+;;; (3 6)) where the first of each pair is the nodal point in semitones above
+;;; the open string pitch and the second is the partial number produced. The
+;;; open-strings slot should be a list of descending pitches (symbols or
+;;; objects) and the open-strings-marks is something like (i ii iii iv) for
+;;; orchestral strings or (c1 c2 c3 c4 c5 c6) for guitar. Note that these two
+;;; slots must be in the same order and also that the marks must be recognised
+;;; by the output score routine if they are to be meaningful.
+;;;
+;;; NB The note returned is the 'written' note (in the case of e.g. double-bass)
 ;;; but won't be transposed down an octave for e.g. harp notation.
+;;;
+;;; See also the natural-harmonic function in pitch.lsp for an on-the-fly (and
+;;; thus less efficient) routine that works with any arbitrary string tuning
+;;; independently of instrument objects.
 ;;; 
 ;;; ARGUMENTS
 ;;; - an instrument object
@@ -309,12 +327,19 @@
 ;;;   cents from its nearest equal-tempered neighbour.) Default = 15.
 ;;; 
 ;;; RETURN VALUE
-;;; a pitch object with marks attached for the harmonic (circle) and string,
-;;; plus, as a second value, the note at the nodal point, with a diamond
-;;; note-head mark. These could be combined into a chord for notation purposes.
+;;; A pitch object with marks attached for the harmonic (circle) and string,
+;;; where appropriate, plus, as a second value, and only for instruments with
+;;; open-strings (e.g. orchestral strings) the note at the nodal point, with a
+;;; diamond note-head mark. These could be combined into a chord for notation
+;;; purposes.
 ;;; 
 ;;; EXAMPLE
 #|
+(natural-harmonic? (get-standard-ins 'violin) 'bf5) 
+-->
+NIL
+NIL
+
 (natural-harmonic? (get-standard-ins 'violin) 'b5)
 -->
 PITCH: frequency: 987.767, midi-note: 83, midi-channel: 1 
@@ -332,7 +357,6 @@ PITCH: frequency: 987.767, midi-note: 83, midi-channel: 1
 ...    
 
 ;;; or with scordatura:
-
 (let ((vln (get-standard-ins 'violin)))
   (setf (open-strings vln) '(eqs5 a4 d4 g3))
   (prog1 
@@ -466,10 +490,19 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
           (slot-value named-object 'chord-function) (chord-function ins)
           (slot-value named-object 'subset-id) (subset-id ins)
           (slot-value named-object 'microtones) (microtones ins)
-          (slot-value named-object 'harmonics) (harmonics ins)
           (slot-value named-object 'total-bars) (total-bars ins) 
           (slot-value named-object 'total-notes) (total-notes ins)
           (slot-value named-object 'total-duration) (total-duration ins)
+          (slot-value named-object 'harmonics) (harmonics ins)
+          ;; MDE Thu Jan 10 14:38:13 2019
+          (slot-value named-object 'open-strings)
+          (my-copy-list (open-strings ins))
+          (slot-value named-object 'open-string-marks)
+          (my-copy-list (open-string-marks ins))
+          (slot-value named-object 'nodes)
+          (my-copy-list (nodes ins))
+          (slot-value named-object 'harmonic-pitches)
+          (my-copy-list (harmonic-pitches ins))
           ;; MDE Fri Nov 13 17:08:23 2015 --
           (slot-value named-object 'staff-lines) (staff-lines ins)
           (slot-value named-object 'total-degrees) (total-degrees ins))
@@ -1321,7 +1354,7 @@ dqs3 dqf3 cqs3)
                              prefers-notes
                              chord-function harmonics open-strings
                              open-string-marks
-                             (nodes '((12 2) (7 3) (5 4) (4 5) (3 6))))
+                             (nodes '((12 2) (7 3) (5 4) (4 5))))
 ;;; ****
   (make-instance 'instrument :id id
                  :staff-name staff-name

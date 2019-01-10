@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  09:28:09 Thu Jan 10 2019 CET
+;;; $$ Last modified:  15:47:21 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -979,6 +979,30 @@ data: (
            (<= (abs (pitch- p2 partial))
                (/ cents-tolerance 100.0))
            p2))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/artificial-harmonic-simple?
+;;; DATE
+;;; January 10th 2019, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Tests a chord to see if it's an artificial harmonic such as that created by
+;;; force-artificial-harmonic. Unlike artificial-harmonic? this looks for
+;;; two-note chords, the second of which has the flag-head marks and is a fourth
+;;; away i.e. this is the simplest double-octave type.
+;;; 
+;;; ARGUMENTS
+;;; - a chord object
+;;; 
+;;; RETURN VALUE
+;;; T or NIL
+;;; 
+;;; SYNOPSIS
+(defmethod artificial-harmonic-simple? ((c chord))
+;;; ****
+  (when (= 2 (sclist-length c))
+    (and (has-mark (get-nth 1 c) 'flag-head)
+         (equal-within-tolerance 5.0 (pitch- (get-nth 1 c) (get-nth 0 c))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

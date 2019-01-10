@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:29:24 Thu Jan 10 2019 CET
+;;; $$ Last modified:  14:35:28 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3449,19 +3449,40 @@ data: C4
 |#
 ;;; SYNOPSIS
 (defmethod force-artificial-harmonic ((e event)
-                                      &optional instrument (warn t) ignore)
+                                      &optional instrument (warn t)
+                                        (naturals t) ignore)
 ;;; ****
   (declare (ignore ignore))
   ;; MDE Thu Nov 1 18:27:48 2018 -- moved most of the logic over to the pitch
   ;; class
   (let ((chord (if (is-single-pitch e)
                    (force-artificial-harmonic (pitch-or-chord e) instrument
-                                              warn t)
+                                              warn t naturals)
                    (when warn
                      (warn "~a~%event::force-artificial-harmonic: event is a ~
                             chord or rest: skipping."
                            e)))))
     (when chord (setf (pitch-or-chord e) chord))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod force-natural-harmonic ((e event)
+                                   &optional instrument (warn t) (tolerance 15))
+;;; ****
+  (let ((result (if (is-single-pitch e)
+                    (force-natural-harmonic
+                     (if (written-pitch-or-chord e)
+                         (written-pitch-or-chord e)
+                         (pitch-or-chord e))
+                     instrument warn tolerance)
+                    (when warn
+                      (warn "~a~%event::force-natural-harmonic: event is a ~
+                             chord or rest: skipping."
+                            e)))))
+    (when result
+      ;; (print (get-pitch-symbol e))
+      (if (written-pitch-or-chord e)
+          (setf (written-pitch-or-chord e) result)
+          (setf (pitch-or-chord e) result)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

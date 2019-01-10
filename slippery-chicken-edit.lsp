@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  09:35:12 Thu Jan 10 2019 CET
+;;; $$ Last modified:  15:31:10 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5037,8 +5037,6 @@ NIL
      finally (return processed)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; TODO build in warn arg
-
 ;;; ****m* slippery-chicken-edit/force-artificial-harmonics
 ;;; DESCRIPTION
 ;;; For string scoring purposes only: Transpose the pitch of the given event
@@ -5066,6 +5064,9 @@ NIL
 ;;; - An integer that is the number of the first event in that bar that is to
 ;;;   be changed into an artificial harmonic. If no end-event is specified, all
 ;;;   event objects in the last bar will be changed to artificial harmonics.
+;;; - T or NIL to trigger warnings when forcing would take a fingered pitch out
+;;;   of the instrument's range, or when we encounter chords or rests
+;;; - T or NIL to force natural-harmonics to become artificial. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; Returns T.
@@ -5089,7 +5090,9 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod force-artificial-harmonics ((sc slippery-chicken) player start-bar
-                                       start-event end-bar &optional end-event)
+                                       start-event end-bar
+                                       &optional end-event (warn t)
+                                         (naturals t))
 ;;; ****
   ;; MDE Mon Apr 23 09:10:09 2012 -- assumes we don't change player in the
   ;; midst of making these changes.  Uses instrument to ensure we don't go out
@@ -5099,8 +5102,35 @@ NIL
                                        end-event)
        do
        (unless (is-rest e)
-         (force-artificial-harmonic e ins)))
+         (force-artificial-harmonic e ins warn naturals)))
     t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod force-natural-harmonics ((sc slippery-chicken) player start-bar
+                                    &optional start-event end-bar end-event
+                                      (warn t) (tolerance 15))
+  ;; assumes we don't change player in the midst of making these changes.  Uses
+  ;; instrument to ensure we don't go out of range.
+  (let ((ins (get-instrument-for-player-at-bar player start-bar sc)))
+    (loop for e in (get-events-from-to sc player start-bar start-event end-bar
+                                       end-event)
+       do
+         (unless (is-rest e)
+           (force-natural-harmonic e ins warn tolerance)))
+    t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod force-harmonics ((sc slippery-chicken) player start-bar
+                            &key (start-event 1) end-bar end-event warn
+                              (tolerance 15))
+  (force-natural-harmonics sc player start-bar start-event end-bar end-event
+                              ;; don't replace the new natural harmonics
+                              warn tolerance)  
+  (force-artificial-harmonics sc player start-bar start-event end-bar end-event
+                              ;; don't replace the new natural harmonics
+                              warn nil)
+  t)
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/set-cautionary-accidental
 ;;; DATE

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:34:05 Thu Jan 10 2019 CET
+;;; $$ Last modified:  14:05:04 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7050,11 +7050,11 @@ EVENT: start-time: 11.000, end-time: 11.500,
 (defmethod get-events-from-to ((sc slippery-chicken) player start-bar
                                start-event end-bar &optional end-event)
 ;;; ****
+  ;; MDE Thu Jan 10 14:04:38 2019
+  (unless start-event (setq start-event 1))
   ;; MDE Mon Jun 13 12:15:23 2016
-  (unless end-bar
-    (setq end-bar (num-bars sc)))
-  (unless end-event
-    (setq end-event (num-rhythms (get-bar sc end-bar player))))
+  (unless end-bar (setq end-bar (num-bars sc)))
+  (unless end-event (setq end-event (num-rhythms (get-bar sc end-bar player))))
   (let ((result '()))
     (loop for bar-num from start-bar to end-bar 
        for bar = (get-bar sc bar-num player)

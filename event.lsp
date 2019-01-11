@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:35:28 Thu Jan 10 2019 CET
+;;; $$ Last modified:  08:48:47 Fri Jan 11 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2274,7 +2274,7 @@ NIL
                  (written-pitch-or-chord e)
                  (pitch-or-chord e)))
         accidental pitch-notehead
-        ;; these must come before </note> i.e. in <during>
+        ;; these must come before </note> i.e. in during var
         (notations '(beg-sl end-sl beg-phrase end-phrase beg-gliss end-gliss
                      a s te ts as at c1 c2 c3 c4 c5 c6 pause short-pause
                      long-pause t3 arp lhp bartok nail flag downbow upbow open
@@ -3468,7 +3468,10 @@ data: C4
 (defmethod force-natural-harmonic ((e event)
                                    &optional instrument (warn t) (tolerance 15))
 ;;; ****
-  (let ((result (if (is-single-pitch e)
+  (let* ((ins (when instrument (if (instrument-p instrument)
+                                  instrument
+                                  (get-standard-ins instrument))))
+         (result (if (is-single-pitch e)
                     (force-natural-harmonic
                      (if (written-pitch-or-chord e)
                          (written-pitch-or-chord e)
@@ -3480,6 +3483,18 @@ data: C4
                             e)))))
     (when result
       ;; (print (get-pitch-symbol e))
+      ;; grab the marks and move them to the event
+      (add-marks e (marks result))
+      ;; now remove the marks from the pitch object
+      (if ins
+          (rm-marks result (cons 'harm (open-string-marks ins)) nil)
+          ;; NB this might remove previously added marks but without the
+          ;; instrument object there's not a lot else we can do 
+          (delete-marks result))
+      ;; don't need to repeat the string number on tied notes
+      (when (and ins (open-string-marks ins) (is-tied-to e))
+        ;; (print (bar-num e))
+        (rm-marks e (open-string-marks ins) nil))
       (if (written-pitch-or-chord e)
           (setf (written-pitch-or-chord e) result)
           (setf (pitch-or-chord e) result)))))

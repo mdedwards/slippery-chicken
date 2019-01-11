@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  15:09:46 Thu Jan 10 2019 CET
+;;; $$ Last modified:  19:10:03 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -412,6 +412,8 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
                                           (first (nth j (nodes ins)))))
                               (return n))))
                  (when result (return))))
+        ;; actually, the 'harm mark needs to be on the event, not the pitch, but
+        ;; we'll set them here and move them over later, because that's easiest
         (when result (add-mark result 'harm))
         (when string
           (add-mark result (nth string (open-string-marks ins)))

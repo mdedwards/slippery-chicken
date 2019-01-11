@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:31:10 Thu Jan 10 2019 CET
+;;; $$ Last modified:  08:21:42 Fri Jan 11 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5101,8 +5101,9 @@ NIL
     (loop for e in (get-events-from-to sc player start-bar start-event end-bar
                                        end-event)
        do
-       (unless (is-rest e)
-         (force-artificial-harmonic e ins warn naturals)))
+         (unless (or (is-rest e) (is-chord e))
+           (when (or naturals (not (has-mark e 'harm)))
+             (force-artificial-harmonic e ins warn naturals))))
     t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -5115,7 +5116,7 @@ NIL
     (loop for e in (get-events-from-to sc player start-bar start-event end-bar
                                        end-event)
        do
-         (unless (is-rest e)
+         (unless (or (is-rest e) (is-chord e))
            (force-natural-harmonic e ins warn tolerance)))
     t))
 
@@ -5124,8 +5125,7 @@ NIL
                             &key (start-event 1) end-bar end-event warn
                               (tolerance 15))
   (force-natural-harmonics sc player start-bar start-event end-bar end-event
-                              ;; don't replace the new natural harmonics
-                              warn tolerance)  
+                           warn tolerance)
   (force-artificial-harmonics sc player start-bar start-event end-bar end-event
                               ;; don't replace the new natural harmonics
                               warn nil)

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  18:12:01 Fri Dec  7 2018 CET
+;;; $$ Last modified:  18:59:26 Thu Jan 10 2019 CET
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -371,7 +371,7 @@
                   ;; no? 
                   (start-arrow (no-xml-mark 'start-arrow))
                   (end-arrow (no-xml-mark 'end-arrow))
-                  (harm '(tech "harmonic" a))
+                  (harm '(tech "harmonic" a "<natural />"))
                   (sost '(wds "sost."))
                   (sost-up '(wds "sost.*"))
                   (sost^ (no-xml-mark 'sost^)) ;"\\sostenutoOff\\sostenutoOn ")

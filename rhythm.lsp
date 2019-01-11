@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  09:24:46 Thu Jan 10 2019 CET
+;;; $$ Last modified:  08:13:12 Fri Jan 11 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2351,14 +2351,14 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun rm-marks-aux (object marks warn)
-    (unless (listp marks)
+  (unless (listp marks)
     (setf marks (list marks)))
   (loop for m in marks do
        (if (member m (marks object))
            ;; #'equal so that sub-lists can be removed too
            (setf (marks object) (remove m (marks object) :test #'equal))
            (when warn
-             (warn "rhythm::rm-marks: no mark ~a in ~a ~a"
+             (warn "rhythm::rm-marks-aux: no mark ~a in ~a ~a"
                    m (marks object)
                    (if (event-p object)
                        (format nil " (bar ~a)" (bar-num object))

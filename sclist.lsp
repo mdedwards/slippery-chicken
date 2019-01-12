@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified:  10:53:13 Mon Sep 24 2018 CEST
+;;; $$ Last modified:  16:10:51 Sat Jan 12 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -601,11 +601,74 @@ data TURKEY
   (first (last (data scl))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* sclist/limits
+;;; DATE
+;;; January 12th 2019, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Get the lowest and highest values of the list
+;;; 
+;;; ARGUMENTS
+;;; - an sclist object
+;;; 
+;;; RETURN VALUE
+;;; two values: the minimum and maximum values in the list
+;;;
+;;; SYNOPSIS
+(defmethod limits ((scl sclist))
+;;; ****
+  (let ((min most-positive-double-float)
+        (max most-negative-double-float))
+    (loop for el in (data scl) do
+         (unless (numberp el)
+           (error "sclist::limits: all list elements should be numbers: ~a"
+                  el))
+         (if (< el min)
+             (setq min el)
+             (when (> el max)
+               (setq max el))))
+    (values min max)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* sclist/new-limits
+;;; DATE
+;;; January 12th 2019, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Rescale the numbers in the list to be within a new range.
+;;; 
+;;; ARGUMENTS
+;;; - an sclist object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the new minimum value. Default = 0.0
+;;; - the new maximum value. Default = 100.0
+;;; 
+;;; RETURN VALUE
+;;; the new data list
+;;; 
+;;; EXAMPLE
+#|
+(new-limits (make-sclist '(-1.4 5 6 2.3 7.3 -2.1)))
+-->
+(7.4468083 75.53192 86.17022 46.80851 100.0 0.0)
+|#
+;;; SYNOPSIS
+(defmethod new-limits ((scl sclist) &optional (new-min 0.0) (new-max 100.0))
+;;; ****
+  (multiple-value-bind (min max) (limits scl)
+    (setf (data scl)
+          (loop for el in (data scl) do
+               (unless (numberp el)
+                 (error "sclist::limits: all list elements should be numbers: ~
+                         ~a" el))
+             collect (rescale el min max new-min new-max)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****f* sclist/make-sclist
 ;;; DESCRIPTION
 ;;; Create an sclist object with the specified list.
@@ -671,6 +734,5 @@ data: (1 2 3 4 5 6 7)
   (typep thing 'sclist))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF sclist.lsp
 

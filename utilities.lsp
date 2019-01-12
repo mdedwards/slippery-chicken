@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  16:37:29 Sat Dec 15 2018 CET
+;;; $$ Last modified:  15:44:13 Sat Jan 12 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1830,7 +1830,6 @@
 ;;; MDE Thu Sep  5 19:02:18 2013
 ;;; ****f* utilities/decimate-env
 ;;; DESCRIPTION
-
 ;;; Reduce the number of x,y pairs in an envelope.  In every case the envelope
 ;;; is first stretched along the x-axis to fit the new number of points
 ;;; required.  Then we proceed by one of three methods:

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:05:04 Thu Jan 10 2019 CET
+;;; $$ Last modified:  16:44:19 Sat Jan 12 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8438,6 +8438,43 @@ NOTE 6200 0.6666667
                           tied-from: ~a" e))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/section-densities
+;;; DATE
+;;; January 12th 2019, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Calculate the densities of notes or rests in the sections of a
+;;; slippery-chicken object. Density is the average number of notes/rests per
+;;; bar across a section.
+;;; 
+;;; ARGUMENTS
+;;; - a slippery-chicken object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :slot. The section slot to use. 'num-score-notes is the default and makes
+;;;   sense in that ties indicate a higher level of density than just attacked
+;;;   notes by themselves, but further useful slots could be 'num-notes
+;;;   (attacks) or indeed 'num-rests
+;;; - :percent. Whether to return values as percentages (where 0 would be the
+;;;   least dense section and 100 the most). If NIL the actual average notes per
+;;;   bar in each section would be returned. Default = T.
+;;; 
+;;; RETURN VALUE
+;;; a list of density numbers, one per section/subsection.
+;;; 
+;;; SYNOPSIS
+(defmethod section-densities ((sc slippery-chicken)
+                              &key (slot 'num-score-notes) (percent t))
+  (let ((densities (loop for ref in (get-section-refs sc 1 (num-bars sc))
+                      for section = (get-data-data ref (piece sc))
+                      collect (float (/ (slot-value section slot)
+                                        (num-bars section))))))
+    (if percent
+        (new-limits (make-sclist densities))
+        densities)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -8824,6 +8861,7 @@ NOTE 6200 0.6666667
                  :key-sig key-sig
                  :transposition-curve transposition-curve
                  :warn-ties warn-ties))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

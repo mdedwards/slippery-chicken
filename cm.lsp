@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  14:41:40 Wed Jan 30 2019 CET
+;;; $$ Last modified:  18:56:01 Wed Jan 30 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1057,7 +1057,24 @@
             (setq tempo-change t
                   ;;                 that's the usecs slot
                   tmpo (make-tempo (cm::midi-event-data1 m))))))
-    (nreverse result)))
+    ;; result is in reverse order but the following function will effectively
+    ;; reverse for us so save some consing.
+    (midi-file-to-events-handle-chords result nil)))
+
+;;; this assumes all events are single pitches. todo: something still doesn't
+;;; seem 100% correct about MIDI file importing
+(defun midi-file-to-events-handle-chords (events &optional (reverse t))
+  (let* ((last (first events))
+         (time (start-time last))
+         result)
+    (loop for e in (rest events) do
+         (if (equal-within-tolerance time (start-time e) .001)
+             (add-pitches last (pitch-or-chord e))
+             (progn
+               (push last result)
+               (setq last e
+                     time (start-time e)))))
+    (if reverse (nreverse result) result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* cm/midi2qlist

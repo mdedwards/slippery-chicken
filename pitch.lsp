@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  08:03:32 Fri Jan 11 2019 CET
+;;; $$ Last modified:  09:52:24 Tue Jan 22 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2401,7 +2401,8 @@ data: D7
 ;;;    temperaments can retain exact frequencies and show nearest notes etc.
 ;;; 
 ;;; ARGUMENTS
-;;; - A note, either as a alphanumeric note name or a numeric hertz frequency.  
+;;; - A note, either as an alphanumeric note name (e.g. cs4) or a numeric hertz
+;;;   frequency.  
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  11:48:10 Sat Jan  5 2019 CET
+;;; $$ Last modified:  14:41:40 Wed Jan 30 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1022,10 +1022,10 @@
 ;;; a list of event objects
 ;;; 
 ;;; SYNOPSIS
-(defun midi-file-to-events (file &key track)
+(defun midi-file-to-events (file &key track (tempo 120.0))
 ;;; ****
   (let* ((cm-midi (cm::parse-midi-file file track))
-         (tempo (make-tempo 120.0))
+         (tmpo (make-tempo tempo))
          (start-qtrs (cm::object-time (first cm-midi)))
          (tempo-change nil)
          (result '()))
@@ -1035,19 +1035,19 @@
                             (e (unless (zerop dur)
                                  (make-event (midi-to-note (cm::midi-keynum m))
                                              dur :duration t 
-                                             :tempo (bpm tempo)))))
+                                             :tempo (bpm tmpo)))))
                        ;; (print e)
                        (when e
                          ;; assume last change was on this chan
                          (when tempo-change 
-                           (setf (tempo-change e) tempo
+                           (setf (tempo-change e) tmpo
                                  (display-tempo e) t
                                  tempo-change nil))
                          (setf (amplitude e) (cm::midi-amplitude m)
                                (start-time e) (cm::object-time m)
                                (start-time-qtrs e) start-qtrs
                                (duration-in-tempo e) (* (duration e)
-                                                        (qtr-dur tempo))
+                                                        (qtr-dur tmpo))
                                (compound-duration-in-tempo e)
                                (duration-in-tempo e))
                          (set-midi-channel e (1+ (cm::midi-channel m)))
@@ -1056,7 +1056,7 @@
            (cm::midi-tempo-change
             (setq tempo-change t
                   ;;                 that's the usecs slot
-                  tempo (make-tempo (cm::midi-event-data1 m))))))
+                  tmpo (make-tempo (cm::midi-event-data1 m))))))
     (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1352,6 +1352,8 @@
 ;;; btw the time slot is cm::object-time, midi note number cm::midi-keynum
 (defun parse-midi-file-aux (file &optional track)
   ;; MDE Sat Nov 25 13:31:12 2017 -- ignore MIDI meta messages
+  ;; MDE Wed Jan 30 14:21:24 2019 -- TODO: allow track to be T whereupon we
+  ;; would get them all  
   (let ((midi-stream (import-events file :meta-exclude nil)))
     (when track
       (setf midi-stream (nth track midi-stream)))

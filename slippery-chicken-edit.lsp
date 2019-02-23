@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  08:21:42 Fri Jan 11 2019 CET
+;;; $$ Last modified:  13:10:32 Sat Feb 23 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5328,9 +5328,12 @@ NIL
 ;;; - the slippery-chicken object
 ;;; - the bar number at the end of which you want the bar line to change
 ;;; - bar line type: 0 = normal, 1 = double bar, 2 = final double bar, 3 =
-;;;   begin repeat, 4 = begin and end repeat, 5 = end repeat 
+;;;   begin repeat, 4 = begin and end repeat, 5 = end repeat. As remembering
+;;;   these numbers is a bit arbitrary, you can also just pass symbols, if you
+;;;   prefer: 'normal, 'double-bar, 'final-double, 'begin-repeat,
+;;;   'begin-end-repeat, 'end-repeat
 ;;; RETURN VALUE  
-;;; always T
+;;; returns the bar-line type 
 ;;; 
 ;;; EXAMPLE
 #|
@@ -5345,7 +5348,7 @@ NIL
         :rthm-seq-map '((1 ((fl (1))))))))
 ;; this piece only has one bar so the bar line will be 2 by default ;
   (print (bar-line-type (get-bar min 1 'fl)))
-  (change-bar-line-type min 1 1)
+  (change-bar-line-type min 1 'double-bar)
   (bar-line-type (get-bar min 1 'fl)))
 => 
 ...
@@ -5356,10 +5359,14 @@ NIL
 ;;; SYNOPSIS
 (defmethod change-bar-line-type ((sc slippery-chicken) bar-num type)
 ;;; ****
-  (let ((players-bars (get-bar sc bar-num)))
-    (loop for bar in players-bars do
-      (setf (bar-line-type bar) type)))
-  t)
+  (let ((types '(normal double-bar final-double begin-repeat begin-end-repeat
+                 end-repeat)))
+    (when (symbolp type)
+      (setq type (position type types)))
+    (let ((players-bars (get-bar sc bar-num)))
+      (loop for bar in players-bars do
+           (setf (bar-line-type bar) type)))
+    (values (nth type types) type)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 11 18:22:24 2012 -- returns a flat list of the results of
@@ -6255,23 +6262,26 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Sat 23 Feb 2019 12:17:29 CET
-(defmethod pause-last ((sc slippery-chicken) players
-		       &key
-			 (bar-num (num-bars sc))
-			 ;; add final double bar line?
-			 final-double-bar-line) 
+;;; MDE Sat Feb 23 12:52:15 2019 -- making players a key arg instead of required
+(defmethod pause-last ((sc slippery-chicken) 
+                       &key
+                         players
+                         (bar-num (num-bars sc))
+                         ;; add final double bar line?
+                         (bar-line final-double-bar-line) 
   "add a pause mark to the last note of every part"
   (unless players (setf players (players sc)))
   (when (typep players 'atom) (setf players (list players)))
-  (loop for player in players do
+  (loop with count = 0 for player in players do
        (let ((bar (get-bar sc bar-num player)))
-	 (unless (is-rest-bar bar)
-	   (let ((e (get-last-event bar)))
-	     (unless (is-rest e)
-	       (when e
-		 (add-mark e 'pause))
-	       (when final-double-bar-line
-		 (change-bar-line-type sc bar-num 2))))))))
+         (unless (is-rest-bar bar)
+           (let ((e (get-last-event bar)))
+             (when e
+               (incf count)
+               (add-mark e 'pause))
+             (when final-double-bar-line
+               (change-bar-line-type sc bar-num 2)))))
+     finally (return count)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/round-to-nearest

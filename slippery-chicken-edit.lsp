@@ -6252,7 +6252,27 @@ T
             (add (list player result) slot)
             (setf (slot-value sc which) (list (list player result)))))
     result))
-  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Sat 23 Feb 2019 12:17:29 CET
+(defmethod pause-last ((sc slippery-chicken) players
+		       &key
+			 (bar-num (num-bars sc))
+			 ;; add final double bar line?
+			 final-double-bar-line) 
+  "add a pause mark to the last note of every part"
+  (unless players (setf players (players sc)))
+  (when (typep players 'atom) (setf players (list players)))
+  (loop for player in players do
+       (let ((bar (get-bar sc bar-num player)))
+	 (unless (is-rest-bar bar)
+	   (let ((e (get-last-event bar)))
+	     (unless (is-rest e)
+	       (when e
+		 (add-mark e 'pause))
+	       (when final-double-bar-line
+		 (change-bar-line-type sc bar-num 2))))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/round-to-nearest
 ;;; DATE

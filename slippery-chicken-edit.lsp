@@ -6265,5 +6265,27 @@ T
    :rthm-seq-palette '((1 ((((4 4) w)))))
    :rthm-seq-map `((1 ((,player (1)))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Sat 23 Feb 2019 11:43:47 CET -- add a pause mark to the last note of a player's part
+
+(defmethod pause-last ((sc slippery-chicken) players
+		       &key
+			 (bar-num (num-bars sc))
+			 ;; add final double bar line?
+			 final-double-bar-line) 
+  "add a pause mark to the last note of every part"
+  (unless players (setf players (players sc)))
+  (when (typep players 'atom) (setf players (list players)))
+  (loop for player in players do
+       (let ((bar (get-bar sc bar-num player)))
+	 (unless (is-rest-bar bar)
+	   (let ((e (get-last-event bar)))
+	     (unless (is-rest e)
+	       (when e
+		 (add-mark e 'pause))
+	       (when final-double-bar-line
+		 (change-bar-line-type sc bar-num 2))))))))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken-edit.lsp

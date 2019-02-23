@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  13:10:32 Sat Feb 23 2019 CET
+;;; $$ Last modified:  13:17:33 Sat Feb 23 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6263,12 +6263,34 @@ T
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Sat 23 Feb 2019 12:17:29 CET
 ;;; MDE Sat Feb 23 12:52:15 2019 -- making players a key arg instead of required
+;;; ****m* slippery-chicken-edit/pause-last
+;;; DATE
+;;; 
+;;; 
+;;; DESCRIPTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod pause-last ((sc slippery-chicken) 
                        &key
                          players
                          (bar-num (num-bars sc))
                          ;; add final double bar line?
-                         (bar-line final-double-bar-line) 
+                         bar-line)
+;;; ****
   "add a pause mark to the last note of every part"
   (unless players (setf players (players sc)))
   (when (typep players 'atom) (setf players (list players)))
@@ -6279,8 +6301,8 @@ T
              (when e
                (incf count)
                (add-mark e 'pause))
-             (when final-double-bar-line
-               (change-bar-line-type sc bar-num 2)))))
+             (when bar-line
+               (change-bar-line-type sc bar-num bar-line)))))
      finally (return count)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

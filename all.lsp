@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  09:50:21 Thu Jan 10 2019 CET
+;;; $$ Last modified:  19:57:56 Mon Feb 25 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -205,6 +205,7 @@
 #+cm (sc-compile-and-load "cm.lsp")
 #+clm (sc-compile-and-load "samp5.lsp")
 #+clm (sc-compile-and-load "sine.lsp")
+#+clm (sc-compile-and-load "autoc.lsp")
 (sc-compile-and-load "cm-load.lsp" t)
 (sc-compile-and-load "utilities.lsp")
 (sc-compile-and-load "named-object.lsp")

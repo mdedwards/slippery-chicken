@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  10:55:38 Thu Jan 10 2019 CET
+;;; $$ Last modified:  11:11:34 Sun Feb 24 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -863,6 +863,7 @@
         (make-chord result)
         (first result))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun piano-chord-fun-both-hands
     (curve-num index pitch-list pitch-seq instrument set)
   (two-hands #'piano-chord-fun curve-num index pitch-list pitch-seq

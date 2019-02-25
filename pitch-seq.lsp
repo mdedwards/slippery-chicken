@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  17:21:36 Wed Oct 10 2018 CEST
+;;; $$ Last modified:  19:22:18 Mon Feb 25 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -304,7 +304,7 @@
   (declare (ignore hint-pitch))
   ;; (print avoid-used-notes)
   ;; (print (id instrument))
-  ;; (print (pitch-symbols (clone set)))
+  ;; (when set (print '-------------) (print (pitch-symbols (clone set))))
   ;; (print (get-chromatic set))
   ;; (print (data limit-low)) (print (data limit-high))
   ;; (print instrument) (print set)

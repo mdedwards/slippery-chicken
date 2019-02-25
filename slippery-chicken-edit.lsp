@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  13:17:33 Sat Feb 23 2019 CET
+;;; $$ Last modified:  11:40:43 Sun Feb 24 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1137,8 +1137,9 @@
 ;;; NB The new pitch is the sounding pitch if a transposing instrument, unless
 ;;; optional argument is set to T.
 ;;;
-;;; NB This doesn't update following tied-to notes but see note to
-;;; change-pitches method below (or call check-ties, which fixes them too).
+;;; NB In the case of ties, this doesn't update the following 'tied-to' notes
+;;; but see the documentation for the change-pitches method below (or call
+;;; check-ties, which fixes them too).
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified:  09:30:46 Thu Jan 10 2019 CET
+;;; $$ Last modified:  19:20:39 Mon Feb 25 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -329,7 +329,9 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
     (setf (slot-value tls 'limit-upper) u
           (slot-value tls 'limit-lower) l
           (slot-value tls 'data) (limit-aux (data tls) u l))
-    (limit-ral (subsets tls) u l)
+    ;; MDE Mon Feb 25 19:20:18 2019 -- need to setf the slot, not just call
+    ;; limit-ral otherwise check-subsets will fail 
+    (setf (subsets tls) (limit-ral (subsets tls) u l))
     (when do-related-sets
       (limit-ral (related-sets tls) u l)))
   ;; MDE Sun Jun 25 16:12:13 2017

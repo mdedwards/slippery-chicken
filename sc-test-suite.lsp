@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:34:11 Mon Feb 25 2019 CET
+;;; $$ Last modified:  20:00:21 Mon Feb 25 2019 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -7743,7 +7743,8 @@
 ;;; in general
 #+clm
 (sc-deftest test-sndfile-autoc ()
-  (load (compile-file "/Users/michael/ins/autoc.ins"))
+  ;; MDE Mon Feb 25 20:00:13 2019 -- autoc is as of today part of SC
+  ;; (load (compile-file "/Users/michael/ins/autoc.ins"))
   (flet ((msf (dir sf)
            (make-sndfile 
             (get-test-sf-path

@@ -6261,37 +6261,61 @@ T
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; DJR Sat 23 Feb 2019 12:17:29 CET
-;;; MDE Sat Feb 23 12:52:15 2019 -- making players a key arg instead of required
 ;;; ****m* slippery-chicken-edit/pause-last
+;;; AUTHOR
+;;; DJR (mr.danielross@gmail.com)
+;;;
 ;;; DATE
-;;; 
+;;; 23 September 2016, London
 ;;; 
 ;;; DESCRIPTION
-;;; 
+;;; Add a pause mark to the last note of every (any) player's part. It defaults
+;;; to the last bar but this can be changed with the :bar-num keyword arg. You
+;;; also have the option to change the bar line type in the same bar using the
+;;; :bar-line keyword arg. See (change-bar-line-type) for details.
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - the slippery chicken object
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
-;;; 
+;;; - the player or list of players that will be effected
+;;; - the bar number to add the pause mark
+;;; - the bar line type of the bar
+;;;
 ;;; RETURN VALUE
-;;; 
+;;; - the number of pause marks added 
 ;;; 
 ;;; EXAMPLE
 #|
+(let ((mini
+       (make-slippery-chicken
+        '+mini+
+        :ensemble '(((pno (piano :midi-channel 1))))
+        :tempo-map '((1 (q 60)))
+        :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6))))
+        :set-map '((1 (1 1 1 1 1 1 1 1)))
+        :rthm-seq-palette '((1 ((((2 4) q q))
+                                :pitch-seq-palette ((1 (2))))))
+        :rthm-seq-map '((1 ((pno (1 1 1 1 1 1 1 1))))))))
+  (pause-last mini))
+
+=> 1
 
 |#
 ;;; SYNOPSIS
 (defmethod pause-last ((sc slippery-chicken) 
                        &key
+			 ;; MDE Sat Feb 23 12:52:15 2019 -- making players a key
+			 ;; arg instead of required  
                          players
+			 ;; we might want the pause mark somehere else
                          (bar-num (num-bars sc))
-                         ;; add final double bar line?
+			 ;; also change the bar line?
+			 ;; '(normal double-bar final-double begin-repeat
+			 ;; begin-end-repeat end-repeat) 
                          bar-line)
 ;;; ****
-  "add a pause mark to the last note of every part"
+  "Add a pause mark to the last note of every part"
   (unless players (setf players (players sc)))
   (when (typep players 'atom) (setf players (list players)))
   (loop with count = 0 for player in players do

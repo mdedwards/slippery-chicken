@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  09:02:17 Tue Feb 26 2019 CET
+;;; $$ Last modified:  09:09:18 Tue Feb 26 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6279,9 +6279,16 @@ T
 ;;; - the slippery chicken object
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - the player or list of players that will be effected
-;;; - the bar number to add the pause mark
-;;; - the bar line type of the bar
+;;; keyword arguments:
+;;; - :players. The player (symbol) or list of players that will be
+;;;   effected. Default = NIL = all players.
+;;; - :bar-num. The bar number to add the pause mark. Default = last bar of
+;;;   piece. 
+;;; - :bar-line. The bar line type of the bar we'll add a pause to (symbol). Can
+;;;   be one of 'normal 'double-bar 'final-double 'begin-repeat
+;;;   'begin-end-repeat or 'end-repeat. Default = NIL = no change.
+;;; - :pause. The type of pause to add (symbol). Can be one of 'pause
+;;;   'long-pause or 'short-pause. Default = 'pause
 ;;;
 ;;; RETURN VALUE
 ;;; - the number of pause marks added 
@@ -6306,14 +6313,14 @@ T
 ;;; SYNOPSIS
 (defmethod pause-last ((sc slippery-chicken) 
                        &key
+                         ;; MDE Tue Feb 26 09:07:43 2019 -- type of pause added
+                         ;; can vary
+                         (pause 'pause)
                          ;; MDE Sat Feb 23 12:52:15 2019 -- making players a key
                          ;; arg instead of required  
                          players
                          ;; we might want the pause mark somehere else
                          (bar-num (num-bars sc))
-                         ;; also change the bar line?
-                         ;; '(normal double-bar final-double begin-repeat
-                         ;; begin-end-repeat end-repeat) 
                          bar-line)
 ;;; ****
   "Add a pause mark to the last note of every part"
@@ -6325,7 +6332,7 @@ T
            (let ((e (get-last-event bar)))
              (when e
                (incf count)
-               (add-mark e 'pause))
+               (add-mark e pause))
              (when bar-line
                (change-bar-line-type sc bar-num bar-line)))))
      finally (return count)))

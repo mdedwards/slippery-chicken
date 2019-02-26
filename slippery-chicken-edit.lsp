@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  11:40:43 Sun Feb 24 2019 CET
+;;; $$ Last modified:  09:02:17 Tue Feb 26 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6264,7 +6264,7 @@ T
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/pause-last
 ;;; AUTHOR
-;;; DJR (mr.danielross@gmail.com)
+;;; Daniel Ross (mr.danielross@gmail.com)
 ;;;
 ;;; DATE
 ;;; 23 September 2016, London
@@ -6306,14 +6306,14 @@ T
 ;;; SYNOPSIS
 (defmethod pause-last ((sc slippery-chicken) 
                        &key
-			 ;; MDE Sat Feb 23 12:52:15 2019 -- making players a key
-			 ;; arg instead of required  
+                         ;; MDE Sat Feb 23 12:52:15 2019 -- making players a key
+                         ;; arg instead of required  
                          players
-			 ;; we might want the pause mark somehere else
+                         ;; we might want the pause mark somehere else
                          (bar-num (num-bars sc))
-			 ;; also change the bar line?
-			 ;; '(normal double-bar final-double begin-repeat
-			 ;; begin-end-repeat end-repeat) 
+                         ;; also change the bar line?
+                         ;; '(normal double-bar final-double begin-repeat
+                         ;; begin-end-repeat end-repeat) 
                          bar-line)
 ;;; ****
   "Add a pause mark to the last note of every part"

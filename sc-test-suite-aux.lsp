@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    15th December 2011
 ;;;
-;;; $$ Last modified:  09:32:41 Thu Sep 20 2018 CEST
+;;; $$ Last modified:  18:48:36 Tue Feb 26 2019 CET
 ;;;
 ;;; SVN ID: $Id: rthm-seq-bar.lsp 509 2011-12-14 20:35:27Z reed@seanreed.ie $
 ;;;
@@ -136,6 +136,25 @@
   (let ((age (- (get-universal-time) (file-write-date file)))
         (size (file-size file))
         (result nil))
+    (setq result (probe-file file))
+    (unless result
+      (warn "sc-test-suite-aux::file-write-ok: file ~a doesn't exist" file))
+    (when result (setq result (< age max-secs-ago)))
+    (unless result
+      (warn "sc-test-suite-aux::file-write-ok: file ~a is ~a seconds old ~
+             ~%(expected maximum ~a)"
+            file age max-secs-ago))
+    (when result (setq result (when (numberp size) (>= size min-size))))
+    (unless result
+      (warn "sc-test-suite-aux::file-write-ok: file ~a has size ~a ~
+             (expected minimum ~a)" file size min-size))
+    result))
+
+#|
+(defun file-write-ok (file &optional (min-size 1) (max-secs-ago 120)) 
+  (let ((age (- (get-universal-time) (file-write-date file)))
+        (size (file-size file))
+        (result nil))
     (setf result (probe-file file))
     (unless result
       (warn "sc-test-suite-aux::file-write-ok: file ~a doesn't exist" file))
@@ -149,6 +168,7 @@
       (warn "sc-test-suite-aux::file-write-ok: file ~a has size ~a ~
              (expected minimum ~a)" file size min-size))
     result))
+|#
 
 
 ;;; SAR Fri Mar 16 10:07:50 GMT 2012 -- probe a file and delete if it exists
@@ -168,7 +188,9 @@
 (defun probe-delete-multi (directory files)
   (notany #'not
           (loop for f in files
-             collect (probe-delete (concatenate 'string directory f)))))
+             collect (probe-delete (concatenate 'string
+                                                (trailing-slash directory)
+                                                f)))))
 
 (defun file-write-ok-multi (directory files sizes-list)
   (notany #'not

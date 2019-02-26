@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  11:06:04 Tue Feb 26 2019 CET
+;;; $$ Last modified:  18:54:04 Tue Feb 26 2019 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -14038,14 +14038,14 @@
 #+clm
 (sc-deftest test-sndfile-palette-make-sfp-from-folder ()
   (let ((sfp1 (make-sfp-from-folder
-              (concatenate 'string
-                           cl-user::+slippery-chicken-home-dir+
-                           "test-suite/test-sndfiles-dir-1")))
+               (concatenate 'string
+                            cl-user::+slippery-chicken-home-dir+
+                            "test-suite/test-sndfiles-dir-1")))
         (sfp2 (make-sfp-from-folder
-              (concatenate 'string
-                           cl-user::+slippery-chicken-home-dir+
-                           "test-suite/test-sndfiles-dir-1")
-              :auto-freq t)))
+               (concatenate 'string
+                            cl-user::+slippery-chicken-home-dir+
+                            "test-suite/test-sndfiles-dir-1")
+               :auto-freq t)))
     (sc-test-check
       (= 3 (num-snds sfp1))
       (equal-within-tolerance
@@ -14055,17 +14055,19 @@
       (equal-within-tolerance
        2.1594558
        (snd-duration (third (data (first (data sfp1))))))
-      (when (probe-file "/music/hyperboles/snd/cello/samples/11/")
-        (setq sfp1 (make-sfp-from-folder
-                    "/music/hyperboles/snd/cello/samples/11/"
-                    :auto-freq
-                    #'(lambda (path)
-                        (let* ((pnn (pathname-name path))
-                               (dash-pos (position #\- pnn))
-                               (note (subseq pnn 0 dash-pos)))
-                          (frequency (make-pitch note))))))
-        (equal-within-tolerance (frequency (first (data (first (data sfp1)))))
-                                554.365234)))))
+      (if (probe-file "/music/hyperboles/snd/cello/samples/11/")
+          (progn
+            (setq sfp1 (make-sfp-from-folder
+                        "/music/hyperboles/snd/cello/samples/11/"
+                        :auto-freq
+                        #'(lambda (path)
+                            (let* ((pnn (pathname-name path))
+                                   (dash-pos (position #\- pnn))
+                                   (note (subseq pnn 0 dash-pos)))
+                              (frequency (make-pitch note))))))
+            (equal-within-tolerance (frequency (first (data (first (data sfp1)))))
+                                    554.365234))
+          t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Oct 24 09:33:20 2017 -- sndfilenet tests. Some functionality of
@@ -17024,21 +17026,25 @@
                           (2 ((vn (1 1 1))))
                           (3 ((vn (1 1 1))
                               (vc (1 1 1))))))))
-    (probe-delete-multi "/tmp" 
+    (probe-delete-multi "/tmp/" 
                         '("mini.eps"
-                          "mini-1-vn-vc-sines-seq1-3.aif"
-                          "mini-1-vn-vc-sines-to-sines2-seq1-3-psync.aif"
-                          "mini-1-vn-sines-to-sines2-seq1-3-psync.aif"))
+                          "mini-1-vn-sines-to-sines2-seq1-3-psync.wav"
+                          "mini-1-vn-vc-sines-seq1-3.wav"
+                          "mini-1-vn-vc-sines-to-sines2-seq1-3-psync.wav"
+                          "sine1mini-1-vn-vc-seq1-3.wav"
+                          "sine2mini-2-vn-vc-seq1-3.wav"))
     #+cmn (cmn-display mini)
     (clm-play mini 1 nil 'sines :num-sections 3 :play nil :check-overwrite nil
               :data-format clm::mus-l24int :src-width 5
               :header-type clm::mus-riff)
     ;; test the output name when transitioning from sndfile group to group
     (clm-play mini 1 nil 'sines :num-sections 1 :play nil :pitch-synchronous t
+              :data-format clm::mus-l24int
               ;; check extension guessing works
               :header-type clm::mus-riff  :src-width 5
               :sound-file-palette-ref2 'sines2 :check-overwrite nil)
     (clm-play mini 1 'vn 'sines :num-sections 1 :play nil :pitch-synchronous t
+              :data-format clm::mus-l24int
               :sound-file-palette-ref2 'sines2 :check-overwrite nil
               :src-width 5 :header-type clm::mus-riff)
     (setf (sndfile-palette mini) nil)
@@ -17060,11 +17066,11 @@
       ;; it would be best to verify these by eye and ear.  the pitch
       ;; synchronous files should match the score
       #+cmn (file-write-ok "/tmp/mini.eps" 30000)
+      (file-write-ok "/tmp/mini-1-vn-sines-to-sines2-seq1-3-psync.wav" 2000000)
       (file-write-ok "/tmp/mini-1-vn-vc-sines-seq1-3.wav" 2000000)
-      (file-write-ok "/tmp/mini-1-vn-vc-sines-to-sines2-seq1-3-psync.wav"
-                     2000000)
-      (file-write-ok "/tmp/mini-1-vn-sines-to-sines2-seq1-3-psync.wav"
-                     2000000))))
+      (file-write-ok "/tmp/mini-1-vn-vc-sines-to-sines2-seq1-3-psync.wav" 2000000)
+      (file-write-ok "/tmp/sine1mini-1-vn-vc-seq1-3.wav" 2000000)
+      (file-write-ok "/tmp/sine2mini-2-vn-vc-seq1-3.wav" 2000000))))
 
 ;;; MDE Sat Jun  2 12:52:38 2012 
 #+clm

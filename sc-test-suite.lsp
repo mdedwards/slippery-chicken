@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  20:00:21 Mon Feb 25 2019 CET
+;;; $$ Last modified:  09:10:09 Tue Feb 26 2019 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -11927,8 +11927,8 @@
       (= (num-players mini) (pause-last mini :bar-num 2 :bar-line
                                         'begin-repeat))
       (= 3 (bar-line-type (get-bar mini 2 'pc)))
-      (= (num-players mini) (pause-last mini :bar-num 3))
-      (has-mark (get-last-event (get-bar mini 3 'vc)) 'pause)
+      (= (num-players mini) (pause-last mini :bar-num 3 :pause 'long-pause))
+      (has-mark (get-last-event (get-bar mini 3 'vc)) 'long-pause)
       (= (num-players mini) (pause-last mini))
       (every #'(lambda (x) (eq x 'pause))
              (loop for i in (players mini) collect

@@ -3,7 +3,7 @@ Regression test routines for checking the functionality of the slippery-chicken 
 
 There are two main files that can be loaded into Lisp once it has been freshly started and slippery-chicken loaded: sc-test-suite.lsp and sc-test-full.lsp. Be sure not to run one after the other, in either direction, unless you've restarted Lisp.
 
-sc-test-suite.lsp is the workhorse. I run it regularly whilst developing. It's pretty quick and pretty thorough but doesn't try complete, complex pieces. That's where sc-test-full.lsp comes into play. This loads lots of legacy pieces with all kinds of complexities and dusty corners, as well as code from workshops, web pages, etc. It takes a lot longer to run, hence I don't do it so often.
+sc-test-suite.lsp is the workhorse. I run it regularly whilst developing. It's pretty quick and pretty thorough but doesn't try complete, complex pieces. That's where sc-test-full.lsp comes into play. This loads lots of legacy pieces with all kinds of complexities and dusty corners, as well as code from workshops, web pages, etc. It takes a lot longer to run, hence I don't do it as often.
 
 sc-test-full.lsp assumes that you've got the full documentation (downloaded from http://michael-edwards.org/sc/source.html) and that the doc and test-suite directories are at the same level as src i.e wherever you've got slippery chicken you'll have the following directories all in the same folder: src, bin, doc, test-suite (probably slippery-chicken.wiki also). (The test-suite directory will be called slippery-chicken-RTs unless you change the directory name to test-suite after cloning from git, which I do.)
 

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  09:10:09 Tue Feb 26 2019 CET
+;;; $$ Last modified:  11:06:04 Tue Feb 26 2019 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -14063,9 +14063,9 @@
                         (let* ((pnn (pathname-name path))
                                (dash-pos (position #\- pnn))
                                (note (subseq pnn 0 dash-pos)))
-                          (frequency (make-pitch note)))))))
-      (equal-within-tolerance (frequency (first (data (first (data sfp1)))))
-                              554.365234))))
+                          (frequency (make-pitch note))))))
+        (equal-within-tolerance (frequency (first (data (first (data sfp1)))))
+                                554.365234)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Oct 24 09:33:20 2017 -- sndfilenet tests. Some functionality of

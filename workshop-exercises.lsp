@@ -190,7 +190,7 @@
                              (bn (1 2 2 1 3 3 1 1 3 2 3)))))
          :snd-output-dir "/tmp/"
          :sndfile-palette 
-         '(((developing-group
+         `(((developing-group
              ((test-sndfile-1.aiff)
               (test-sndfile-2.aiff)
               (test-sndfile-3.aiff)))
@@ -198,8 +198,12 @@
              ((test-sndfile-4.aiff)
               (test-sndfile-5.aiff)
               (test-sndfile-6.aiff))))
-           ("/Users/michael/sc/test-suite/test-sndfiles-dir-1/"
-            "/Users/michael/sc/test-suite/test-sndfiles-dir-2/")))))
+           ,(list (concatenate
+                  'string cl-user::+slippery-chicken-home-dir+ 
+                  "test-suite/test-sndfiles-dir-1/")
+                 (concatenate
+                  'string cl-user::+slippery-chicken-home-dir+ 
+                  "test-suite/test-sndfiles-dir-2/"))))))
   (midi-play mini)
   (cmn-display mini)
   (write-lp-data-for-all mini)

@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:08:45 Thu Sep 20 2018 CEST
+;;; $$ Last modified:  10:01:45 Wed Feb 27 2019 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 2976 2012-07-24 10:06:19Z sreed23 $
 ;;;
@@ -222,8 +222,9 @@
        (loop for ne = (next-event slippery-chicken-piece 'pn)
           while ne
           collect (get-pitch-symbol ne))
-       '(C4 (C4 D4 E4 F4) E4 F4 (D4 E4 F4 G4) (E4 F4 G4 A4) (F4 G4 A4 B4)
-         C5)))))
+       ;;'((C4 (C4 D4 E4 F4) E4 F4 (D4 E4 F4 G4) (E4 F4 G4 A4) (F4 G4 A4 B4) C5))
+       '(C4 (C4 D4 E4 F4) E4 F4 (D4 E4 F4 G4) (E4 F4 G4 A4) (F4 G4 A4 B4) C5)
+       ))))
 
 ;;; SAR Fri Jul  6 12:37:39 BST 2012
 (sc-deftest test-webpage-chords-set-slot ()

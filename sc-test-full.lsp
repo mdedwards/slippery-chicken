@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    11th December 2011 (Bangkok)
 ;;;
-;;; $$ Last modified:  19:31:01 Tue Feb 26 2019 CET
+;;; $$ Last modified:  08:34:55 Wed Feb 27 2019 CET
 ;;;
 ;;; SVN ID: $Id: bar-holder.lsp 431 2011-12-08 14:44:30Z medward2 $
 ;;;
@@ -271,7 +271,7 @@
         (= 949 (total-notes player))
         ;; MDE Mon May  5 20:48:19 2014 -- Write the antescofo file in the /tmp
         ;; directory  
-        (> (write-antescofo +slippery-when-wet+ 'solo :file asco) 5500)
+        (> (print (write-antescofo +slippery-when-wet+ 'solo :file asco)) 5500)
         (file-write-ok asco 240000)
         (file-write-ok mid 40000)
         #+cmn (file-write-ok eps 3600000)

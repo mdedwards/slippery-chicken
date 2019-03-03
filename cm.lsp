@@ -1002,7 +1002,7 @@
   midi-file)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  won't (yet) import microtones as indicated by pitch-bend messages
+;;; won't (yet) import microtones as indicated by pitch-bend messages
 ;;; ****f* cm/midi-file-to-events
 ;;; DATE
 ;;; 28/6/16, Edinburgh
@@ -1016,7 +1016,9 @@
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
 ;;; - :track. The track number to read. Default = NIL which means read all
-;;; tracks.  
+;;; tracks.
+;;; - :tempo. The tempo of the track in crotchets (quarter notes) per
+;;; minute. Default, q = 120.
 ;;; 
 ;;; RETURN VALUE
 ;;; a list of event objects

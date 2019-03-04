@@ -9,17 +9,14 @@
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
-;;; Purpose:          Load all the lisp files associated with slippery-chicken
-;;;                   export of  its symbols.
+;;; Purpose:          Load all the lisp files associated with slippery-chicken.
 ;;;                   No public interface envisaged (so no robodoc entries).
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  19:57:56 Mon Feb 25 2019 CET
-;;;
-;;; SVN ID: $Id$
+;;; $$ Last modified:  10:07:50 Tue Feb 26 2019 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -273,7 +270,6 @@
 #+clm (sc-compile-and-load "get-spectrum.lsp")
 (sc-compile-and-load "spectra.lsp")
 #+clm (sc-compile-and-load "control-wave.lsp")
-;; (sc-compile-and-load "music-xml.lsp")
 (sc-compile-and-load "wolfram.lsp" t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

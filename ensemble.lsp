@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  15:54:01 Thu Dec 27 2018 CET
+;;; $$ Last modified:  10:58:13 Sat Mar 23 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -168,6 +168,7 @@
 ;;; 
 ;;; SYNOPSIS
 (defmethod get-instrument ((e ensemble) player &optional ins (warn t))
+;;; ****
   (let ((plyr (get-player e player)))
     (unless plyr
       (error "ensemble::get-instrument: no player ~a in ensemble: ~a" player e))
@@ -220,7 +221,6 @@
           (error "ensemble::get-players: Found duplicate names for players in ~
               ensemble with id ~a" (id e)))
         (setf (players e) players)))))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

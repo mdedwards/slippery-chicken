@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:44:19 Sat Jan 12 2019 CET
+;;; $$ Last modified:  10:57:25 Sat Mar 23 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8466,6 +8466,7 @@ NOTE 6200 0.6666667
 ;;; SYNOPSIS
 (defmethod section-densities ((sc slippery-chicken)
                               &key (slot 'num-score-notes) (percent t))
+;;; ****
   (let ((densities (loop for ref in (get-section-refs sc 1 (num-bars sc))
                       for section = (get-data-data ref (piece sc))
                       collect (float (/ (slot-value section slot)
@@ -8861,7 +8862,6 @@ NOTE 6200 0.6666667
                  :key-sig key-sig
                  :transposition-curve transposition-curve
                  :warn-ties warn-ties))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

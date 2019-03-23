@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  09:09:18 Tue Feb 26 2019 CET
+;;; $$ Last modified:  10:57:44 Sat Mar 23 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4638,7 +4638,7 @@ NIL
                           start-bar start-event end-bar end-event
                           &key transposition (consolidate-rests t) (update t)
                             (pitches t) (auto-beam t))
-;;;  ****
+;;; ****
   (setq doubling-players (force-list doubling-players))
   (loop for doubling-player in doubling-players do       
      ;; clone the master players bars

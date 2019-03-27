@@ -123,7 +123,7 @@
    ;; this is the overall scaler that a rhythm might have, whether under nested
    ;; tuplets or not, i.e. it's the ratio of the letter-value to the value
    ;; slots. So e.g. if we had a triplet 8th under a nested triplet we'd notate
-   ;; them as 8ths although they're 18ths actuall, so closer to
+   ;; them as 8ths although they're 18ths actually, so closer to
    ;; 16ths--i.e. we'll have one beam, not two, despite the value. This would
    ;; mean a tuplet scaler of 4/9.
    (tuplet-scaler :accessor tuplet-scaler :type rational :initform 1)

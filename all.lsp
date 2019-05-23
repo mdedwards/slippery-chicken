@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  10:07:50 Tue Feb 26 2019 CET
+;;; $$ Last modified:  09:31:36 Thu May 23 2019 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -271,6 +271,7 @@
 (sc-compile-and-load "spectra.lsp")
 #+clm (sc-compile-and-load "control-wave.lsp")
 (sc-compile-and-load "wolfram.lsp" t)
+(sc-compile-and-load "afu.lsp")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF all.lsp

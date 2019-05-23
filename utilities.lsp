@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:44:13 Sat Jan 12 2019 CET
+;;; $$ Last modified:  08:06:04 Tue May 21 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1355,7 +1355,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #+cmn
-;;; ****
 (defmacro mk (mark &rest data)
   `(cmn::get-cmn-marks ',mark ,@data))
 
@@ -5202,6 +5201,21 @@ Here's where I pasted the data into the .RPP Reaper file:
   (let* ((range (1+ (- max min)))
          (im (mod (- int min) range)))
     (+ min im)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue May 21 07:55:42 2019 -- interleave elements from a list but starting
+;;; in the middle and working forwards and backwards 
+(defun middle-out (list)
+  (let* ((len (length list))
+         (len2 (floor len 2))
+         (mup (subseq list len2))
+         (mdown (reverse (subseq list 0 len2)))
+         (il (interleave mup mdown)))
+    ;; interleave ignores last element of one list if they're not of the same
+    ;; length (see above)
+    (if (evenp len)
+        il
+        (append il (last list)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

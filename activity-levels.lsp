@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  20:00:20 Tue Dec  4 2018 CET
+;;; $$ Last modified:  17:39:33 Tue May 21 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -163,7 +163,8 @@
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - the activity-level number we want to test. Although optional, it's
-;;;   expected that this argument will usually be defined.  Default = 5.
+;;;   expected that this argument will usually be defined.  Between 0 and 10.
+;;;   Default = 5.
 ;;;
 ;;; RETURN VALUE
 ;;; T or NIL
@@ -218,10 +219,8 @@
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****f* activity-levels/make-al
 ;;; DESCRIPTION
-
 ;;; Make an activities-level object for determining (deterministically) on a
 ;;; call-by-call basis whether a process is active or not (boolean).  This is
 ;;; determined by nine 10-element lists (actually three versions of each) of

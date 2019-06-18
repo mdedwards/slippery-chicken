@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    February 19th 2001
 ;;;
-;;; $$ Last modified:  11:25:44 Sat Nov  3 2018 CET
+;;; $$ Last modified:  17:46:38 Tue May 21 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -195,9 +195,6 @@
       (nth index (data cscl)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Jan 13 12:53:41 GMT 2012: Added robodoc info
-
 ;;; ****m* circular-sclist/at-start
 ;;; DESCRIPTION
 ;;; Determines whether the pointer for the given circular-sclist object is at
@@ -245,7 +242,6 @@
   (setf (current cscl) 0))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* circular-sclist/reset
 ;;; DESCRIPTION
 ;;; Reset the pointer of a given circular-sclist object. The pointer is reset

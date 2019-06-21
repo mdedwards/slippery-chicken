@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th August 2001
 ;;;
-;;; $$ Last modified:  19:20:39 Mon Feb 25 2019 CET
+;;; $$ Last modified:  09:57:02 Fri Jun 21 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -362,6 +362,9 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 ;;; - :do-related-sets. T or NIL to indicate whether the RELATED-SETS slot of
 ;;;   the given tl-set object is to be transposed as well or left unhandled. T
 ;;;   = transpose. Default = NIL.
+;;; - :highest-wins. T or NIL to indicate whether in the case of a tie when
+;;;   searching for the least used octave in a set, the highest octave will be
+;;;   used to move notes into. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; The tl-set object.
@@ -379,8 +382,9 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 
 |#
 ;;; SYNOPSIS
-(defmethod limit-shift-octave ((tls tl-set) &key upper lower
-                                              do-related-sets)
+(defmethod limit-shift-octave ((tls tl-set)
+                               &key upper lower (highest-wins t)
+                                 do-related-sets)
 ;;; ****
   (let ((uppr (limit-get-pitch upper 'b8)) ;; 'b8 and 'c0 are just defaults
         (lowr (limit-get-pitch lower 'c0))
@@ -396,8 +400,10 @@ data: (C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
          (when (or (pitch> p uppr)
                    (pitch< p lowr))
            (push (clone p) changes)
-           ;; preference notes in higher octaves if there's a tie
-           (setq new8ve (least-used-octave tls :highest-wins t
+           ;; preference notes in higher octaves if there's a tie, by default
+           ;; MDE Fri Jun 21 09:56:53 2019 -- made this a key arg rather than a
+           ;; hard T
+           (setq new8ve (least-used-octave tls :highest-wins highest-wins
                                            :avoiding (octave p)))
            (unless new8ve
              (setq new8ve (octave (if upper uppr lowr))))

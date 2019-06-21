@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  08:48:47 Fri Jan 11 2019 CET
+;;; $$ Last modified:  17:25:46 Thu Jun 20 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -584,6 +584,8 @@
       (ped^ (pedal 127) (pedal 0))
       (uc (pedal 127 67))
       (tc (pedal 0 67))
+      ;; MDE Thu Jun 20 17:24:08 2019 -- sost doesn't react with Disklavier
+      ;; Enspire 3.10.00 
       (sost (pedal 127 66))
       (sost-up (pedal 0 66))
       (t (when (and update-amplitude (is-dynamic mark))

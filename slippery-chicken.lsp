@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:26:32 Fri May 31 2019 CEST
+;;; $$ Last modified:  15:36:17 Sat Jun 22 2019 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4021,7 +4021,7 @@ seq-num 5, VN, replacing G3 with B6
              :start-section 2))
 
 ;;; An example that passes a (lambda) function to :force-velocity. Usually, by
-;;; default event amplitudes between 0.0 and 1.0 will map onto MIDI velocities
+;;; default, event amplitudes between 0.0 and 1.0 will map onto MIDI velocities
 ;;; of 0 to 127. Here we map them to velocities of 0 to 100 instead.
 (midi-play +jitterbug+ :force-velocity
            #'(lambda (event)

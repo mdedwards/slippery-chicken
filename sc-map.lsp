@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  15:02:04 Wed Aug 29 2018 CEST
+;;; $$ Last modified:  17:47:08 Mon Jul  1 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -94,7 +94,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; See above
-
 (defmethod initialize-instance :after ((scm sc-map) &rest initargs)
   (declare (ignore initargs))
   (do-replacements scm))
@@ -127,9 +126,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-object :before ((scm sc-map) stream)
-  (format stream "~%SC-MAP: palette id: ~a"
+  (format stream "~%SC-MAP: palette id: ~a, num-sequences: ~a~
+                  ~%        replacements: ~a"
           (when (palette scm)
-            (id (palette scm)))))
+            (id (palette scm)))
+          (num-sequences scm) (replacements scm)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -706,8 +707,27 @@ data: (1 NIL 3 4 5)
   scm)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  MDE Sat Jan 27 19:12:32 2018 -
+;;; ****m* sc-map/num-sequences
+;;; DATE
+;;; January 27th 2018
+;;; 
+;;; DESCRIPTION
+;;; Return the number of sequences in the map as a whole (i.e. counting all
+;;; sections and subsections). This method also works on subsections. Note that
+;;; the first time this method is used it sets the :num-sequences slot which
+;;; will then be used in subsequent queries until the data is changed. However,
+;;; if you've not specifically called this method on a subsection, its slot will
+;;; not yet be set.
+;;; 
+;;; ARGUMENTS
+;;; - an sc-map object
+;;; 
+;;; RETURN VALUE
+;;; An integer
+;;; 
+;;; SYNOPSIS
 (defmethod num-sequences ((scm sc-map))
+;;; ****
   (if (slot-value scm 'num-sequences)
       (slot-value scm 'num-sequences)
       (setf (slot-value scm 'num-sequences) (num-sequences-aux scm))))

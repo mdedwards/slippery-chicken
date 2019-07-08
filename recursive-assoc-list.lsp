@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  09:22:32 Thu Jan 10 2019 CET
+;;; $$ Last modified:  15:34:57 Fri Jul  5 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1527,7 +1527,8 @@ data: RIBBON
 ;;; returned as individual symbols rather than lists.
 ;;;
 ;;; NB This will only work on the top-level object due to the creation of
-;;;    references when linking.  
+;;;    references when linking. If you're interested in the full refs of a
+;;;    sub-ral, try ths get-this-refs method. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A recursive-assoc-list object.
@@ -1584,7 +1585,7 @@ data: RIBBON
     (loop 
         with ref = (get-first-ref ral)
         while ref
-        for current = (get-data ref ral)
+        for current = (get-data ref ral nil)
         for this = (when current (this current))
         do 
          ;; (print ref)
@@ -1592,7 +1593,31 @@ data: RIBBON
                     (= 1 (length this)))
            (setf this (first this)))
         collect this
-        do (setf ref (when current (next current))))))
+       do (setf ref (when current (next current))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* recursive-assoc-list/get-this-refs
+;;; DATE
+;;; 5th July 2019, Essen Werden
+;;; 
+;;; DESCRIPTION
+;;; Get the <this> slots of each named-object (or subclass) in a
+;;; recursive-assoc-list (ral). This should work on top-level rals and sub-rals
+;;; alike, though rals with only sub-rals probably won't return anything. Unlike
+;;; get-all-refs, this doesn't traverse recursive objects.
+;;; 
+;;; ARGUMENTS
+;;; - the recursive-assoc-list object
+;;; 
+;;; RETURN VALUE
+;;; a list of references (most probably simple lists)
+;;; 
+;;; SYNOPSIS
+(defmethod get-this-refs ((ral recursive-assoc-list))
+;;; ****
+  (loop for thing in (data ral)
+     for this = (when (linked-named-object-p thing) (this thing))
+     when this collect this))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

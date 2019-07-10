@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  08:48:47 Fri Jan 11 2019 CET
+;;; $$ Last modified:  18:02:37 Sat Jun 22 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -311,7 +311,7 @@
           (get-midi-channel noc)
           (midi-channel noc)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE original comment:
 ;;; this should work even in rests, i.e. time sigs, tempo changes, and program
 ;;; changes will all be written despite no new pitches.
@@ -575,8 +575,13 @@
   ;; just output on the channel of the first pitch in the case of a chord
   ;; MDE Wed May 25 12:38:52 2016 -- allow soft and sost pedals also
   (flet ((pedal (val &optional (controller 64))
-           (push (list (get-midi-channel e) controller val)
-                 (midi-control-changes e))))
+           (let ((channel (get-midi-channel e)))
+             (unless channel
+               (error "add-mark: can't add pedal to an event with no midi ~
+                       channel. ~%Did you add pedal marks to a rest by ~
+                       mistake?: ~a" e))
+             (push (list channel controller val)
+                   (midi-control-changes e)))))
     (case mark
       (ped (pedal 127))
       (ped-up (pedal 0))
@@ -584,6 +589,8 @@
       (ped^ (pedal 127) (pedal 0))
       (uc (pedal 127 67))
       (tc (pedal 0 67))
+      ;; MDE Thu Jun 20 17:24:08 2019 -- sost doesn't react with Disklavier
+      ;; Enspire 3.10.00 
       (sost (pedal 127 66))
       (sost-up (pedal 0 66))
       (t (when (and update-amplitude (is-dynamic mark))

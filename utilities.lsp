@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  08:06:04 Tue May 21 2019 CEST
+;;; $$ Last modified:  13:58:25 Mon Jul  1 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1235,9 +1235,7 @@
     (append before new after)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Sat May  5 16:15:26 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/splice
 ;;; DESCRIPTION
 ;;; Insert the elements of a first list into a second list beginning at a
@@ -1277,9 +1275,7 @@
     (append before elements after)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Sat May  5 16:21:11 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/remove-elements
 ;;; DESCRIPTION
 ;;; Remove a specified number of elements from a given list starting at a

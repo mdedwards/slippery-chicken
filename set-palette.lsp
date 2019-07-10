@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  18:01:20 Thu Oct 25 2018 CEST
+;;; $$ Last modified:  20:37:37 Sun Jun 30 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1055,6 +1055,27 @@ data: (C4 F4 A4 C5)
             (values result (nreverse deviations)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* set-palette/stack
+;;; DATE
+;;; 30th June 2019, Corfu 
+;;; 
+;;; DESCRIPTION
+;;; Call the stack method for each set in the palette. See the method
+;;; description in the sc-set class for details of arguments etc. 
+;;; 
+;;; RETURN VALUE
+;;; - the set-palette with new stacked sets (clone before calling if necessary)
+;;; 
+;;; SYNOPSIS
+(defmethod stack ((sp set-palette) num-stacks &key id by-freq (up t) (down t))
+;;; ****
+  (loop for ref in (get-all-refs sp) do
+       (set-data ref (stack (get-data ref sp) num-stacks :id id :by-freq by-freq
+                            :up up :down down)
+                 sp))
+  sp)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* set-palette/remove-similar
 ;;; DATE
 ;;; 12th August 2015, Wals, Austria
@@ -1286,6 +1307,21 @@ data: (C4 F4 A4 C5)
 (defmethod thin ((sp set-palette) &rest keywords &key &allow-other-keys)
 ;;; ****
   (apply #'rmap (cons sp (cons #'thin keywords))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri Jun 21 18:31:15 2019 -- note that this won't (yet) work for
+;;; recursive data and merely prints pitch symbols so pitch-bends et al will be
+;;; lost 
+(defmethod print-for-init ((sp set-palette)
+                           &key (stream t) (call 'make-set-palette))
+  (print "not yet implemented for this class"))
+
+#|(call-next-method ; assoc-list method
+   sp
+   :stream stream
+   :data-printer #'(lambda (set stream)
+                     (format stream "(~a)" (pitch-symbols set)))
+   :call call))|#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

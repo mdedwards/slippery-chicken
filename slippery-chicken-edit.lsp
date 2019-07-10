@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  10:57:44 Sat Mar 23 2019 CET
+;;; $$ Last modified:  09:54:02 Mon Jun 24 2019 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5659,11 +5659,11 @@ T
 ;;; for more details. 
 ;;; 
 ;;; SYNOPSIS
-(defmethod consolidate-all-notes ((sc slippery-chicken) start-bar end-bar
-                                  players
+(defmethod consolidate-all-notes ((sc slippery-chicken)
+                                  &optional (start-bar 1) end-bar players
                                   ;; MDE Fri Sep 21 09:08:09 2018 -- added
                                   ;; consolidate-notes' optional args  
-                                  &optional check-dur beat (auto-beam t))
+                                    check-dur beat (auto-beam t))
 ;;; ****
   (map-over-bars sc start-bar end-bar players
                  #'consolidate-notes check-dur beat auto-beam))
@@ -5681,7 +5681,7 @@ T
 ;;; - the last bar number in which consolidation should take place
 ;;;   (inclusive).  If NIL then the process will run until the last bar.  
 ;;; - A list of the IDs of the players to whose parts the consolidation should 
-;;;   be applied.   Can also be a single symbol.
+;;;   be applied. Can also be a single symbol.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; T or NIL to indicate whether the method should print a warning to the Lisp
@@ -5693,8 +5693,8 @@ T
 ;;; for more details. 
 ;;; 
 ;;; SYNOPSIS
-(defmethod consolidate-all-rests ((sc slippery-chicken) start-bar end-bar
-                                  players &optional warn)
+(defmethod consolidate-all-rests ((sc slippery-chicken)
+                                  &optional (start-bar 1) end-bar players warn)
 ;;; ****
   (map-over-bars sc start-bar end-bar players #'consolidate-rests-max
                  :warn warn))

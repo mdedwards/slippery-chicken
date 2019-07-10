@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  09:30:03 Thu Jan 10 2019 CET
+;;; $$ Last modified:  20:26:57 Sun Jun 30 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1526,9 +1526,10 @@ data: E4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod least-used-octave-aux ((s sc-set) test avoiding)
+  ;; (print (get-pitch-symbols s))
   (unless (listp avoiding) (setq avoiding (list avoiding)))
   ;;     this will hold the count of pitches in each octave starting with -1
-  (let ((8vecs (ml 0 11))
+  (let ((8vecs (ml 0 20))
         (low8 (octave (lowest s)))
         (hi8 (octave (highest s)))
         result)

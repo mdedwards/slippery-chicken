@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  15:47:21 Thu Jan 10 2019 CET
+;;; $$ Last modified:  16:06:15 Sat Jun 22 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2265,6 +2265,27 @@ data: (
 ;;; ****
   (setf (data c) (thin-aux (data c) strength remove target invert))
   c)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* chord/num-note
+;;; DATE
+;;; June 22nd 2019, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; A helper function to return the number of notes in a chord (which is merely
+;;; the sclist-length slot as a chord is a child class of sclist) 
+;;; 
+;;; ARGUMENTS
+;;; - the chord object
+;;; 
+;;; RETURN VALUE
+;;; an integer
+;;; 
+;;; SYNOPSIS
+(defmethod num-notes ((c chord))
+;;; ****
+  (sclist-length c))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Nov  2 07:57:55 2018 -- here combo is a list of instrument

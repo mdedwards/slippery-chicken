@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  18:00:51 Tue Oct 30 2018 CET
+;;; $$ Last modified:  17:31:07 Mon Jul  1 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -710,12 +710,16 @@ data: (5 3 2)
 (defmethod num-sequences-aux ((rsm rthm-seq-map))
   (let* ((refs (get-all-refs rsm))
          (top-player (first (last (first refs)))))
-    (setf refs (remove-if-not #'(lambda (ref)
-                                  (eq top-player (first (last ref))))
-                              refs))
-    (loop for ref in refs
-       for section = (get-data-data ref rsm)
-       sum (length section))))
+    (if (first refs)
+        (progn 
+          (setf refs (remove-if-not #'(lambda (ref)
+                                        (eq top-player (first (last ref))))
+                                    refs))
+          (loop for ref in refs
+             for section = (get-data-data ref rsm)
+             sum (length section)))
+        ;; MDE Mon Jul  1 14:45:43 2019 -- so that we can query sub-sections
+        (length (data (first (data rsm)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

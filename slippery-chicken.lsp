@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:57:25 Sat Mar 23 2019 CET
+;;; $$ Last modified:  15:36:17 Sat Jun 22 2019 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4021,7 +4021,7 @@ seq-num 5, VN, replacing G3 with B6
              :start-section 2))
 
 ;;; An example that passes a (lambda) function to :force-velocity. Usually, by
-;;; default event amplitudes between 0.0 and 1.0 will map onto MIDI velocities
+;;; default, event amplitudes between 0.0 and 1.0 will map onto MIDI velocities
 ;;; of 0 to 127. Here we map them to velocities of 0 to 100 instead.
 (midi-play +jitterbug+ :force-velocity
            #'(lambda (event)
@@ -8480,9 +8480,6 @@ NOTE 6200 0.6666667
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; Wed May 16 19:31:21 EDT 2012: Added robodoc entry
-
 ;;; MDE Sat Mar 31 09:56:33 2012 -- If any of the sc slots have defaults it's
 ;;; best to make them the default args here too. But the init method also sets
 ;;; a couple of them in case they've been made nil and would thus cause an
@@ -8495,6 +8492,12 @@ NOTE 6200 0.6666667
 ;;; its slots require full objects of other classes rather than just straight
 ;;; data. These objects, such as rthm-seq-palette, rthm-seq-map etc, are also
 ;;; documented in detail elsewhere in the robodoc and the user's manual.
+;;;
+;;; NB Usually, when no set pitches are available for an instrument, an error
+;;; will be signalled. As of October 2018, you can instead allocate an 'empty
+;;; sequence' (rests) in such cases by setting the following before calling
+;;; make-slippery-chicken:
+;;; (set-sc-config 'pitch-seq-no-pitches-error nil)
 ;;; 
 ;;; ARGUMENTS
 ;;; - A symbol that is the name/ID of the object. The value passed to this

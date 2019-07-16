@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  09:39:01 Fri Jun 21 2019 CEST
+;;; $$ Last modified:  11:23:19 Tue Jul 16 2019 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -84,6 +84,9 @@
      ;; signalled if the were no pitches in a set for an instrument which should
      ;; be playing. We can now have a rest-sequence generated instead
      (pitch-seq-no-pitches-error t)
+     ;; MDE Tue Jul 16 11:17:23 2019 -- if NIL don't even warn about no pitches
+     ;; being available
+     (pitch-seq-no-pitches-warning t)
      ;; Whether to automatically open EPS files generated with CMN via
      ;; cmn-display.  Currently only works with SBCL and CCL on Mac OSX.
      (cmn-display-auto-open #+sc-auto-open T #-sc-auto-open nil)

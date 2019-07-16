@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  13:58:25 Mon Jul  1 2019 CEST
+;;; $$ Last modified:  13:52:50 Mon Jul 15 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5213,5 +5213,22 @@ Here's where I pasted the data into the .RPP Reaper file:
         il
         (append il (last list)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jul 15 13:50:12 2019
+(defun auto-set-default-dir (&optional subdir)
+  (set-sc-config 'default-dir
+                 (trailing-slash
+                  (concatenate 'string
+                               (directory-namestring (truename *load-pathname*))
+                               (if subdir subdir "")))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jul 15 13:50:21 2019
+(defun load-from-same-dir (file)  
+  (load (concatenate 'string
+                     (trailing-slash
+                      (directory-namestring (truename *load-pathname*)))
+                     file)))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

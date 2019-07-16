@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    7th June 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  15:30:19 Sat May 18 2019 CEST
+;;; $$ Last modified:  13:56:38 Mon Jul 15 2019 CEST
 ;;;
 ;;; SVN ID: $Id: wolfram.lsp 6210 2017-04-07 11:42:29Z medward2 $
 ;;;
@@ -83,7 +83,7 @@
 (defmethod verify-and-store :after ((w wolfram))
   (unless (integer>0 (width w))
     (error "wolfram::verify-and-store: the width slot should be an integer ~
-            greater than zero, not ~a" (width w)))
+            greater than ~%zero, not ~a" (width w)))
   (state-check (initial-state w)))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  19:18:14 Thu Jul 11 2019 CEST
+;;; $$ Last modified:  16:44:30 Sat Aug  3 2019 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3315,10 +3315,6 @@ data: (5 8)
     (list limit-low limit-high)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May 10 12:11:54 BST 2012: Conformed robodoc entry
-
-
 ;;; ****m* slippery-chicken/shorten-large-fast-leaps
 ;;; DESCRIPTION
 ;;; Modify the pitches of each part in a slippery-chicken object to avoid large
@@ -3589,20 +3585,23 @@ seq-num 5, VN, replacing G3 with B6
                                                (unless (is-tied-from e)
                                                  (setf happy nil)))
                                              (setf happy nil))))))
-                              (warn "~&slippery-chicken::~
-                                    shorten-large-fast-leaps: ~
-                                    ~%Couldn't get new pitch for ~a, section ~
-                                    ~a, seq-num ~a, e1 ~a, e2 ~a! ~
-                                    ~%pitches: ~a" 
+                              ;; (if new-pitch ... else:
+                              (when (get-sc-config
+                                     'shorten-large-fast-leaps-warning)
+                                (warn "~&slippery-chicken::~
+                                       shorten-large-fast-leaps: ~
+                                       ~%Couldn't get new pitch for ~a, ~
+                                       section ~a, seq-num ~a, e1 ~a, e2 ~a! ~
+                                       ~%pitches: ~a" 
                                     player section (1+ seq-num)
                                     (id (pitch-or-chord e1))
                                     (id (pitch-or-chord e2))
-                                    (pitch-list-to-symbols pitches))))))
+                                    (pitch-list-to-symbols pitches)))))))
                  (setf last-seq seq)
                  (incf global-seq-num)))
      finally (return count)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Mon May 14 17:10:09 BST 2012: Thu May 10 12:38:07 BST 2012: Added
 ;;; robodoc entry

@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  19:22:18 Mon Feb 25 2019 CET
+;;; $$ Last modified:  11:31:57 Tue Jul 16 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -420,12 +420,14 @@
           ;; (break)
           #|(format t "~%seq-num: ~a, num-set-pitches: ~a, need: ~a, ~
                      offset: ~a, scaler: ~a"
-                  seq-num num-set-pitches need offset scaler)|#
+          seq-num num-set-pitches need offset scaler)|#
           (unless (> num-set-pitches 0)
             ;; MDE Wed Oct 10 16:48:06 2018 -- allow warning instead of error
             (apply
-             (if (get-sc-config 'pitch-seq-no-pitches-error)
-                 #'error #'warn)
+             (cond ((get-sc-config 'pitch-seq-no-pitches-error) #'error)
+                   ((get-sc-config 'pitch-seq-no-pitches-warning) #'warn)
+                   ;; don't even warn...
+                   (t #'(lambda (&rest args))))
              (list
               "~&pitch-seq::get-notes: For ~a at sequence number ~a: ~
                no pitches in set!  ~%Perhaps your ~

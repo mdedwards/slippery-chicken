@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified:  18:08:15 Mon Oct 29 2018 CET
+;;; $$ Last modified:  19:30:29 Thu Jul 11 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -312,16 +312,14 @@
 ;;; added via the :marks slot during the creation of the rthm-seq-palette are
 ;;; reflected in the amplitudes of the events.
 (defmethod dynamics-to-amplitudes ((s sequenz))
-  (loop with dynamic for bar in (bars s) do
-       (loop for e in (rhythms bar) do
-            (loop for m in (marks e) do
-               ;; make sure that once we've had a dynamic that we set the
-               ;; amplitude of all following notes until we see another dynamic
-                 (when (is-dynamic m)
-                   (setf dynamic m)))
-            (when dynamic
-              (setf (slot-value e 'amplitude)
-                    (dynamic-to-amplitude dynamic))))))
+  (loop for bar in (bars s) do
+       (dynamics-to-amplitudes bar)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jul 11 19:20:27 2019
+(defmethod pedals-to-controllers ((s sequenz) &optional (update-amplitude t))
+  (loop for bar in (bars s) do
+       (pedals-to-controllers bar update-amplitude)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

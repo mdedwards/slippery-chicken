@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  17:01:22 Fri Dec  7 2018 CET
+;;; $$ Last modified:  19:31:37 Thu Jul 11 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5700,6 +5700,26 @@ collect (midi-channel (pitch-or-chord p))))
 ;;; MDE Thu Feb 15 16:15:30 2018 
 (defmethod set-ref ((rsb rthm-seq-bar))
   (set-ref (first (rhythms rsb))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jul 11 19:22:35 2019 -- moved over from sequenz class
+(defmethod dynamics-to-amplitudes ((rsb rthm-seq-bar))
+  (loop with dynamic for e in (rhythms rsb) do
+       (loop for m in (marks e) do
+          ;; make sure that once we've had a dynamic that we set the
+          ;; amplitude of all following notes until we see another dynamic
+            (when (is-dynamic m)
+              (setf dynamic m)))
+       (when dynamic
+         (setf (slot-value e 'amplitude)
+               (dynamic-to-amplitude dynamic)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jul 11 19:23:27 2019
+(defmethod pedals-to-controllers ((rsb rthm-seq-bar)
+                                  &optional (update-amplitude t))
+  (loop for event in (rhythms rsb) do
+       (pedals-to-controllers event update-amplitude)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

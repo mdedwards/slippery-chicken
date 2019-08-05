@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:36:17 Sat Jun 22 2019 CEST
+;;; $$ Last modified:  19:18:14 Thu Jul 11 2019 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -9460,6 +9460,8 @@ NOTE 6200 0.6666667
              rthm-seq pitch-seq (length notes)))
     ;; MDE Fri May 17 21:45:26 2013
     (dynamics-to-amplitudes sequenz)
+    ;; MDE Thu Jul 11 19:17:55 2019
+    (pedals-to-controllers sequenz)
     ;; the marks given in the rthm-seq were not interpreted in that class,
     ;; first here when all the rhythms have been converted to events.
     ;; 19/2/07: move this method over to the rthm-seq class and call it there

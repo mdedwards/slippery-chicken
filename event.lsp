@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:02:37 Sat Jun 22 2019 CEST
+;;; $$ Last modified:  18:16:11 Fri Jul 12 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -542,6 +542,39 @@
     (remove-dynamics e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Jul 11 19:19:32 2019 -- this used to be in add-mark :after but we
+;;; need it in sc-make-sequenz bzw. sequenz::pedals-to-controllers too
+(defmethod pedals-to-controllers ((e event) &optional (update-amplitude t))
+  ;; MDE Tue Apr 26 15:29:55 2016 -- (channel controller-number value) with
+  ;; piano pedalling we don't have to worry about the microtones-midi-channel as
+  ;; there are no microtones on the piano. so we just output on the channel of
+  ;; the first pitch in the case of a chord MDE Wed May 25 12:38:52 2016 --
+  ;; allow soft and sost pedals also
+  (flet ((pedal (val &optional (controller 64))
+           (let ((channel (get-midi-channel e)))
+             (unless channel
+               (error "add-mark: can't add pedal to an event with no midi ~
+                       channel. ~%Did you add pedal marks to a rest by ~
+                       mistake?: ~a" e))
+             (push (list channel controller val)
+                   (midi-control-changes e)))))
+    (loop for mark in (marks e) do
+         (case mark
+           (ped (pedal 127))
+           (ped-up (pedal 0))
+           ;; up then down but we're pushing so reversed
+           (ped^ (pedal 127) (pedal 0))
+           (uc (pedal 127 67))
+           (tc (pedal 0 67))
+           ;; MDE Thu Jun 20 17:24:08 2019 -- sost doesn't react with Disklavier
+           ;; Enspire 3.10.00 
+           (sost (pedal 127 66))
+           (sost-up (pedal 0 66))
+           (t (when (and update-amplitude (is-dynamic mark))
+                (setf (slot-value e 'amplitude)
+                      (dynamic-to-amplitude mark))))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* event/add-mark
 ;;; DATE
 ;;; March 15th 2011
@@ -569,32 +602,8 @@
                             &optional (update-amplitude t) warn-again)
 ;;; ****
   (declare (ignore warn-again))
-  ;; MDE Tue Apr 26 15:29:55 2016 -- (channel controller-number value)
-  ;; with piano pedalling we don't have to worry about the
-  ;; microtones-midi-channel as there are no microtones on the piano. so we
-  ;; just output on the channel of the first pitch in the case of a chord
-  ;; MDE Wed May 25 12:38:52 2016 -- allow soft and sost pedals also
-  (flet ((pedal (val &optional (controller 64))
-           (let ((channel (get-midi-channel e)))
-             (unless channel
-               (error "add-mark: can't add pedal to an event with no midi ~
-                       channel. ~%Did you add pedal marks to a rest by ~
-                       mistake?: ~a" e))
-             (push (list channel controller val)
-                   (midi-control-changes e)))))
-    (case mark
-      (ped (pedal 127))
-      (ped-up (pedal 0))
-      ;; up then down but we're pushing so reversed
-      (ped^ (pedal 127) (pedal 0))
-      (uc (pedal 127 67))
-      (tc (pedal 0 67))
-      ;; MDE Thu Jun 20 17:24:08 2019 -- sost doesn't react with Disklavier
-      ;; Enspire 3.10.00 
-      (sost (pedal 127 66))
-      (sost-up (pedal 0 66))
-      (t (when (and update-amplitude (is-dynamic mark))
-           (setf (slot-value e 'amplitude) (dynamic-to-amplitude mark))))))
+  (pedals-to-controllers e update-amplitude)
+  ;; (print mark)
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

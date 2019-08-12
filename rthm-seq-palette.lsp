@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  15:54:11 Thu Feb 15 2018 CET
+;;; $$ Last modified:  15:26:26 Fri Aug  9 2019 CEST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -1076,8 +1076,6 @@ rthm-seq-palette::get-multipliers: third argument (rthm-seq ID) is required.
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Sat Jan 28 11:18:46 GMT 2012: Added robodoc info
-
 ;;; ****f* rthm-seq-palette/make-rsp
 ;;; DESCRIPTION
 ;;; Create a rthm-seq-palette object.

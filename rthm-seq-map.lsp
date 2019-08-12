@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  17:31:07 Mon Jul  1 2019 CEST
+;;; $$ Last modified:  15:30:06 Fri Aug  9 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -726,9 +726,6 @@ data: (5 3 2)
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu Apr 26 17:20:57 BST 2012: Added robodoc entry
-
 ;;; ****f* rthm-seq-map/make-rthm-seq-map
 ;;; DESCRIPTION
 ;;; Make a rthm-seq-map object.
@@ -877,8 +874,6 @@ data: (
 ;;;   (typep (first (data (data (get-data 4 rsm)))) 'named-object) -> t
 ;;;   (typep (data (first (data (data (get-data 4 rsm))))) 
 ;;;          'recursive-assoc-list) -> t
-;;;
-;;; 
 
 (defun get-rsm-players (rsm)
   (let ((players '()))
@@ -1187,6 +1182,4 @@ Each instrument must have the same number of sequences for any given section:
       (list section player)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF rthm-seq-map.lsp
-

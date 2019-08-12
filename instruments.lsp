@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  11:11:34 Sun Feb 24 2019 CET
+;;; $$ Last modified:  15:36:24 Sun Aug  4 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -834,21 +834,11 @@
                                 vc-III)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May  3 14:45:38 BST 2012: Added robodoc entry
-
-;;; ****f* instruments/piano-chord-fun
-;;; DESCRIPTION
-;;; Generate four-note chords, where possible, from consecutive notes in the
-;;; current set, with the number enclosed in parentheses in the pitch-seq being
-;;; the top note of that chord, where possible.
-;;; 
-;;; SYNOPSIS
-(defun piano-chord-fun (curve-num index pitch-list pitch-seq instrument set)
-;;; ****
+(defun piano-chord-fun-aux (curve-num index pitch-list pitch-seq instrument set
+                            offset)
   (declare (ignore set instrument pitch-seq curve-num))
   ;; (print 'piano-chord-fun)
-  (let* ((start (max 0 (- index 3))) ;; try to get 4 notes
+  (let* ((start (max 0 (- index offset))) ;; try to get 4 notes
          (at-start (nth start pitch-list))
          (result (list at-start)))
     (loop 
@@ -858,10 +848,37 @@
          (when (and p (<= (pitch- p at-start) 12)
                     (not (member p result :test #'note=)))
            (push p result)))
-    ;; (print (pitch-list-to-symbols result))
     (if (> (length result) 1)
         (make-chord result)
         (first result))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* instruments/piano-chord-fun
+;;; DESCRIPTION
+;;; Generate four-note chords, where possible, from consecutive notes in the
+;;; current set, with the number enclosed in parentheses in the pitch-seq being
+;;; the top note of that chord, where possible.
+;;; 
+;;; SYNOPSIS
+(defun piano-chord-fun (curve-num index pitch-list pitch-seq instrument set)
+;;; ****
+  (piano-chord-fun-aux curve-num index pitch-list pitch-seq instrument set 3))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* instruments/piano-chord-fun3
+;;; DATE
+;;; August 2rd 2019, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Almost exactly the same as piano-chord-fun but generally get just three
+;;; notes rather than four. If we want to force a maximum of three notes, it
+;;; will need to be done with subseq or similar. I find this 'usually three
+;;; notes' preferable though as some four-note chords are returned, for variety.
+;;; 
+;;; SYNOPSIS
+(defun piano-chord-fun3 (curve-num index pitch-list pitch-seq instrument set)
+;;; ****
+  (piano-chord-fun-aux curve-num index pitch-list pitch-seq instrument set 2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun piano-chord-fun-both-hands

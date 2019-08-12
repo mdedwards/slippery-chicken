@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:13:43 Tue Jul 16 2019 CEST
+;;; $$ Last modified:  17:48:32 Sat Aug  3 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3176,9 +3176,6 @@ data: C4
         porc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Dec 24 19:15:03 EST 2011 Added robodoc info
-
 ;;; ****m* event/event-distance
 ;;; DESCRIPTION
 ;;; Get the distance (interval) in semitones between the pitch level of one

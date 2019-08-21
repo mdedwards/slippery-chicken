@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  09:37:47 Thu May 23 2019 CEST
+;;; $$ Last modified:  15:21:51 Tue Jul 16 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2366,7 +2366,6 @@ data: (
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Jun 25 09:40:21 2015
-
 (defun get-tuplet-ratio (tuplet)
   (flet ((terr () (error "rhythm::get-tuplet-ratio: unhandled tuplet: ~a"
                          tuplet)))
@@ -2385,6 +2384,7 @@ data: (
                  (13 8/13)
                  (14 8/14)
                  (15 8/15)
+                 ;; (49 49/16)
                  (t (terr))))
       (rational (/ tuplet)) ; i.e we've already got something like 7/5 (= 7:5)
       (t (terr)))))

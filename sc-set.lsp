@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  20:26:57 Sun Jun 30 2019 CEST
+;;; $$ Last modified:  13:01:04 Tue Jul 16 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1211,46 +1211,6 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
       (make-sc-set notes :id (when (and (id s1) (id s2))
                                (format nil "~a-plus-~a"
                                        (get-id s1) (get-id s2)))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Feb  6 16:59:16 GMT 2012: Added robodoc info
-
-;;; ****m* sc-set/contains-pitches
-;;; DESCRIPTION
-;;; Check to see if a given sc-set object contains pitch objects for all of the
-;;; specified note-names. The method returns NIL if any one of the specified
-;;; pitches is not found in the given sc-set object.
-;;; 
-;;; ARGUMENTS
-;;; - An sc-set object.
-;;; - A list of note-name symbols. NB: If checking for only one pitch, that
-;;;   pitch must be passed as a single-item list.
-;;; 
-;;; RETURN VALUE
-;;; T or NIL.
-;;; 
-;;; EXAMPLE
-#|
-;; Returns T when all specified pitches are contained in the given sc-set
-;; object 
-(let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
-  (contains-pitches mscs '(d2 e3 gf4 af5)))
-
-=> T
-
-;; Returns NIL if any one of the specified pitches is not contained in the
-;; given sc-set object.
-(let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
-  (contains-pitches mscs '(d2 e3 gf4 b4 af5)))
-
-=> NIL
-
-|#
-;;; SYNOPSIS
-(defmethod contains-pitches ((s sc-set) pitches)
-;;; ****
-  (all-members (data s) (init-pitch-list pitches nil) #'pitch=))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* sc-set/has-pitches-in-range

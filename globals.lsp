@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  11:23:19 Tue Jul 16 2019 CEST
+;;; $$ Last modified:  16:42:47 Sat Aug  3 2019 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -84,6 +84,9 @@
      ;; signalled if the were no pitches in a set for an instrument which should
      ;; be playing. We can now have a rest-sequence generated instead
      (pitch-seq-no-pitches-error t)
+     ;; MDE Sat Aug  3 16:39:40 2019 -- should shorten-large-fast-leaps issue a
+     ;; warning or not?
+     (shorten-large-fast-leaps-warning t)
      ;; MDE Tue Jul 16 11:17:23 2019 -- if NIL don't even warn about no pitches
      ;; being available
      (pitch-seq-no-pitches-warning t)

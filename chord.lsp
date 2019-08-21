@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  16:06:15 Sat Jun 22 2019 CEST
+;;; $$ Last modified:  14:28:25 Tue Jul 16 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1494,6 +1494,49 @@ data: (
             (format t "~&try2: ~a" (when try2 (get-pitch-symbols try2)))
             (format t "~&result: ~a" (when c (get-pitch-symbols c))))
           (rm-enharmonics c)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Jul 16 13:02:05 2019 -- moved over from sc-set class
+;;; ****m* chord/contains-pitches
+;;; DESCRIPTION
+;;; Check to see if a given chord object contains pitch objects for all of the
+;;; specified note-names. The method returns NIL if any one of the specified
+;;; pitches is not found in the given chord object.
+;;; 
+;;; ARGUMENTS
+;;; - An chord object.
+;;; - A list of note-name symbols or pitch objects. NB: If checking for only one
+;;;   pitch, that pitch must be passed as a single-item list.
+;;; 
+;;; RETURN VALUE
+;;; T or NIL.
+;;; 
+;;; EXAMPLE
+#|
+;; Returns T when all specified pitches are contained in the given chord
+;; object 
+(let ((c (make-chord '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
+  (contains-pitches c '(d2 e3 gf4 af5)))
+
+=> T
+
+;; Returns NIL if any one of the specified pitches is not contained in the
+;; given chord object.
+(let ((c (make-chord '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
+  (contains-pitches c '(d2 e3 gf4 b4 af5)))
+
+=> NIL
+
+|#
+;;; SYNOPSIS
+(defmethod contains-pitches ((c chord) pitches
+                             &optional enharmonics-are-equal octaves-are-true)
+;;; ****
+  (all-members (data c) (init-pitch-list pitches nil)
+               #'(lambda (p1 p2)
+                   (or (pitch= p1 p2 enharmonics-are-equal)
+                       (when octaves-are-true
+                         (is-octave p1 p2))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Mon Apr 16 14:16:13 BST 2012: Added robodoc entry

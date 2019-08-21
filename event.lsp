@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:16:11 Fri Jul 12 2019 CEST
+;;; $$ Last modified:  17:48:32 Sat Aug  3 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3176,9 +3176,6 @@ data: C4
         porc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Dec 24 19:15:03 EST 2011 Added robodoc info
-
 ;;; ****m* event/event-distance
 ;;; DESCRIPTION
 ;;; Get the distance (interval) in semitones between the pitch level of one
@@ -3912,6 +3909,32 @@ NIL
     ;; (print (get-pitch-symbols (pitch-or-chord e)))
     (combo-chord-possible? (pitch-or-chord e) instruments
                            artificial-harmonics chords)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod common-notes ((e1 event) (e2 event)
+                         &optional (enharmonics-are-equal t)
+                           (octaves-are-true nil))
+  (if (or (is-rest e1) (is-rest e2))
+      0
+      (let ((poc1 (pitch-or-chord e1))
+            (poc2 (pitch-or-chord e2)))
+        (cond ((and (is-chord e1) (is-chord e2))
+               (common-notes poc1 poc2 enharmonics-are-equal octaves-are-true))
+              ((and (is-single-pitch e1) (is-single-pitch e2))
+               (let ((p= (pitch= poc1 poc2 enharmonics-are-equal)))
+                 (if p=
+                     1
+                     (if octaves-are-true
+                         (if (is-octave poc1 poc2) 1 0)
+                         0))))
+              ((is-single-pitch e1)
+               (if (contains-pitches poc2 (list poc1)
+                                     enharmonics-are-equal octaves-are-true)
+                   1 0))
+              ((is-single-pitch e2)
+               (if (contains-pitches poc1 (list poc2)
+                                     enharmonics-are-equal octaves-are-true)
+                   1 0))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

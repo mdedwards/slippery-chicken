@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  13:52:50 Mon Jul 15 2019 CEST
+;;; $$ Last modified:  13:05:47 Mon Aug 12 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -623,6 +623,31 @@
             (equal-within-tolerance 1.0 test))
         (values (zerop test)
                 float))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/prime
+;;; DATE
+;;; August 5th 2019, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Taken from dlocsig.lisp by Fernando Lopez Lezcano (in the CLM package):
+;;; Return T or NIL to indicated whether the argument is a prime number or not.
+;;; 
+;;; ARGUMENTS
+;;; an integer (all other types, including floats, will trigger an error)
+;;;
+;;; RETURN VALUE
+;;; T or NIL
+;;; 
+;;; SYNOPSIS
+(defun prime (val)
+  ;;; ****
+  (or (= val 2)
+      (and (oddp val)
+           (do ((i 3 (+ i 2))
+                (lim (sqrt val)))
+               ((or (= 0 (mod val i)) (> i lim))
+                (> i lim))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2571,7 +2596,7 @@ WARNING:
 ;;; (read-audacity-line "3.777420        loop")
 ;;; (read-audacity-line "3.777420")
 
-(defun read-audacity-line (string &optional (separator #\Space))
+(defun read-audacity-line-old (string &optional (separator #\Space))
   (flet ((trim-whitespace (string)
            (string-downcase
             (string-trim '(#\Space #\Tab #\Newline) string))))
@@ -2581,6 +2606,62 @@ WARNING:
       (when sep-pos
         (setf label (trim-whitespace (subseq string (1+ sep-pos)))))
       (values label time))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; aux function for parse-wavelab-marker-file-for...updated 2019 for new format
+;;; (start \tab end \tab label) 
+
+(defun read-audacity-line (string &optional (separator #\Tab))
+  (flet ((trim-whitespace (str)
+           (string-downcase
+            (string-trim '(#\Space #\Tab #\Newline) str))))
+    (let* ((sep-pos1 (position separator string))
+           (sep-pos2 (when sep-pos1
+                       (position separator (subseq string (1+ sep-pos1)))))
+           start end label)
+      (when sep-pos1
+        (setq start (read-from-string
+                     (trim-whitespace (subseq string 0 sep-pos1)))
+              end (read-from-string
+                   (trim-whitespace
+                    (subseq string (1+ sep-pos1) (+ sep-pos1 sep-pos2))))
+              label (trim-whitespace
+                     (subseq string (+ 1 sep-pos1 sep-pos2)))))
+      (list start end label))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/parse-audacity-label-file
+;;; DATE
+;;; August 12th 2019
+;;; 
+;;; DESCRIPTION
+;;; Parse a labels file exported from Audacity and return a list of (start end
+;;; label) triplets. Times are in seconds.
+;;; 
+;;; ARGUMENTS
+;;; - the path to the label file
+;;; 
+;;; RETURN VALUE
+;;; a list
+;;; 
+;;; SYNOPSIS
+(defun parse-audacity-label-file (label-file)
+;;; ****
+  (with-open-file 
+          (mrk label-file :direction :input :if-does-not-exist :error)
+        (loop
+           with count = 0 with labels with marker
+           do
+             (multiple-value-bind
+                   (line eof)
+                 (read-line mrk nil)
+               (setq marker (read-audacity-line line))
+               (unless (not (first marker))
+                 (push marker labels)
+                 (incf count))
+               (when eof 
+                 (format t "~%~%~a markers read~%" count)
+                 (return (nreverse labels)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

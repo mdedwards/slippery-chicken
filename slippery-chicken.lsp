@@ -4446,6 +4446,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;                               (frequency pitch) (data sflist)))
 ;;; 
 ;;;   Default = NIL i.e. use the circular selection method.
+;;;   :decay-time. Reverb decay time. By default this is 3 seconds.
 ;;; 
 ;;; RETURN VALUE
 ;;; Total events generated (integer).
@@ -4557,7 +4558,11 @@ seq-num 5, VN, replacing G3 with B6
                        ;; added so we could use instruments other than samp5
                        (clm-ins #'clm::samp5)
                        ;; either a list or a function (see above)
-                       clm-ins-args)
+                       clm-ins-args
+		       ;; DJR Thu 22 Aug 2019 15:08:39 BST
+		       ;; clm::with-sound let's us set this, so why doesn't 
+		       ;; clm-play? Voila!
+		       (decay-time 3))
 ;;; ****                               
   ;; MDE Tue Apr 17 13:28:16 2012 -- guess the extension if none given
   (unless sndfile-extension
@@ -4795,7 +4800,7 @@ seq-num 5, VN, replacing G3 with B6
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
       (clm::with-sound (:scaled-to normalise 
                          :reverb clm::nrev
-                         :decay-time 3
+                         :decay-time decay-time
                          :output output
                          ;; these things should be default anyway but
                          ;; somehow they're not...

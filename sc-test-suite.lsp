@@ -16924,6 +16924,14 @@
       ;; (not (sleep 1))
       (file-write-ok "/tmp/mini-1-vn-vc-audio-1-seq1-3.aif" 6000000)
       (probe-delete "/tmp/mini-1-vn-vc-audio-1-seq1-3.aif")
+      ;; DJR Thu 22 Aug 2019 15:17:56 BST
+      ;; test decay-time arg
+      (clm-play mini 1 'vn 'audio-1 :num-sections 2 :check-overwrite nil
+                :do-src nil
+		:decay-time 10
+                :play nil :header-type clm::mus-aiff)
+      (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.aif" 6000000)
+      (probe-delete "/tmp/mini-1-vn-audio-1-seq1-3.aif")
       ;; and should work with nil
       (clm-play mini 1 'vn 'audio-1 :num-sections 2 :check-overwrite nil
                 :do-src nil
@@ -18852,6 +18860,41 @@
     (sc-test-check
       (is-rest-bar (get-bar mini 1 'vn)))
     (set-sc-config 'pitch-seq-no-pitches-error t)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Thu 22 Aug 2019 15:48:52 BST
+;;; sc-test-swap-marks
+(sc-deftest test-swap-marks ()
+  (let* ((mini (make-slippery-chicken  
+		'+mini+ 
+		:ensemble '(((flt (flute :midi-channel 1))))
+		:staff-groupings '(1)
+		:tempo-map '((1 (q 60)))
+		:set-palette '((set1 ((fs2 b2 d4 a4 d5 e5 a5 d6))) 
+			       (set2 ((b2 fs3 d4 e4 a4 d5 e5 a5 d6))))
+		:set-map '((1 (set1 set1 set2 set1 set1 set2)))
+		:rthm-seq-palette
+		'((seq1 ((((4 4) (q) (q) q q))   
+			 :pitch-seq-palette (1 2)
+			 :marks (pp 1)))  
+		  (seq2 ((((4 4) (e) e q h)) 
+			 :pitch-seq-palette (1 2 3)
+			 :marks (p 1 a 1 s 1))))
+		:rthm-seq-map '((1 ((flt (seq1 seq1 seq2 seq1 seq1 seq2))))))))
+    (sc-test-check
+      (not (has-mark (get-note mini 1 1 'flt) 'fff))
+      (not (has-mark (get-note mini 6 1 'flt) 'f))
+      (not (has-mark (get-note mini 6 1 'flt) 'te))
+      (not (has-mark (get-note mini 6 1 'flt) 'pause))
+      (= (swap-marks mini nil nil nil 'pp 'fff) 4)
+      (zerop (swap-marks mini nil nil nil 'pp 'fff))
+      (= (swap-marks mini 1 6 'flt '(p a s) '(f te pause)) 6)
+      (zerop (swap-marks mini 1 6 'flt '(p a s) '(f te pause)))
+      (has-mark (get-note mini 1 1 'flt) 'fff)
+      (has-mark (get-note mini 6 1 'flt) 'f)
+      (has-mark (get-note mini 6 1 'flt) 'te)
+      (has-mark (get-note mini 6 1 'flt) 'pause))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*

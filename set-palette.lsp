@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  20:37:37 Sun Jun 30 2019 CEST
+;;; $$ Last modified:  10:15:31 Thu Aug 22 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1874,7 +1874,7 @@ data: (
            (when (and warn-no-bass
                       (< (length rm-bass) min-bass-notes))
              (warn "set-palette::set-palette-from-ring-mod: can't get bass ~
-                    notes even after 2nd attempt with ~a" rm)))
+                    notes ~%  even after 2nd attempt with ~a" rm)))
          (setf rm-bass (when rm-bass
                          ;; max three bass notes
                          (list (first rm-bass)
@@ -2195,7 +2195,7 @@ WARNING: set-palette::ring-mod-bass: can't get bass from (261.63)!
                   (setf result (loop for f in result collect (round f)))))
             (remove-duplicates result))
           (when warn
-            (warn "set-palette::ring-mod-bass: can't get bass from ~a!"
+            (warn "set-palette::ring-mod-bass: can't get bass from ~%  ~a!"
                   freqs))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

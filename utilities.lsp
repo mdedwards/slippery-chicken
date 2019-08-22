@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  13:05:47 Mon Aug 12 2019 CEST
+;;; $$ Last modified:  14:57:39 Mon Aug 12 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2534,17 +2534,17 @@ WARNING:
         (result '()))
     (flet ((write-loop-points ()
              (when loop-points
-               (setf loop-points (nreverse loop-points))
+               (setq loop-points (nreverse loop-points))
                (when (< (length loop-points) 5)
                  (error "too few loop points at ~a" (first loop-points)))
                ;; the ~^ adds a space after the element only
                ;; when this isn't the last one.
                ;; (format t "~%(~{~a~^ ~})" loop-points)
                (push (copy-list loop-points) result)
-               (setf loop-points nil))))
+               (setq loop-points nil))))
       (with-open-file 
           (mrk label-file :direction :input :if-does-not-exist :error)
-        (loop
+        (loop with label with time
            with count = 0 
            with num-loops = 0 
            do
@@ -2552,25 +2552,24 @@ WARNING:
                    (line eof)
                  (read-line mrk nil)
                ;; (print line)
-               (multiple-value-bind
-                     (label time)
-                   (read-audacity-line line)
-                 ;; (format t "~&~a ~a" label time)
-                 (incf count)
-                 (when (string= label "loop")
-                   (incf num-loops)
-                   (write-loop-points))
-                 (setf time (read-from-string time))
-                 (when time
-                   (push time loop-points)))
+               ;; (multiple-value-bind
+               ;;   (label time)
+               (setq label (read-audacity-line line))
+               ;; (format t "~&~a ~a" label time)
+               (incf count)
+               (when (string= (third label) "loop")
+                 ;; (print 'here)
+                 (incf num-loops)
+                 (write-loop-points))
+               (setq time (first label))
+               (when time
+                 (push time loop-points))
                (when eof 
                  (write-loop-points)
                  (format t "~%~%~a markers, ~a loops read~%"
                          count num-loops)
                  (return))))))
     (nreverse result)))
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2624,10 +2623,11 @@ WARNING:
                      (trim-whitespace (subseq string 0 sep-pos1)))
               end (read-from-string
                    (trim-whitespace
-                    (subseq string (1+ sep-pos1) (+ sep-pos1 sep-pos2))))
+                    (subseq string (1+ sep-pos1) (+ sep-pos1 sep-pos2)))
+                   nil)
               label (trim-whitespace
                      (subseq string (+ 1 sep-pos1 sep-pos2)))))
-      (list start end label))))))
+      (list start end label))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/parse-audacity-label-file
@@ -2673,32 +2673,31 @@ WARNING:
                      (directory-namestring file)
                      (pathname-name file)
                      (pathname-type file))
-         :direction :output :if-exists :error)
+             :direction :output :if-exists :error)
       (flet ((split-phrase (time-list)
                (when time-list
                  (let ((subs (split-into-sub-groups3 time-list 7)))
                    (loop for sl in subs do
-                         (format out "~&~,6f        loop" (first sl))
-                         (loop for time in (cdr sl) do
-                               (format out "~&~,6f" time)))))))
+                        (format out "~&~,6f        loop" (first sl))
+                        (loop for time in (cdr sl) do
+                             (format out "~&~,6f" time)))))))
         (loop 
-            with phrase = '()
-            do
-              (multiple-value-bind
-                  (line eof)
-                  (read-line in nil)
-                (when line
-                  (multiple-value-bind
-                      (label time)
-                      (read-audacity-line line)
-                    (if (string= label "loop")  
-                        (progn
-                          (split-phrase (nreverse phrase))
-                          (setf phrase '()))
-                      (push (read-from-string time) phrase))))
-                (when eof
-                  (split-phrase (nreverse phrase))
-                  (return t))))))))
+           with phrase = '() with label do
+             (multiple-value-bind
+                   (line eof)
+                 (read-line in nil)
+               (when line
+                 ;;(multiple-value-bind
+                 ;;  (label time)
+                 (setq label (read-audacity-line line))
+                 (if (string= (third label) "loop")  
+                     (progn
+                       (split-phrase (nreverse phrase))
+                       (setf phrase '()))
+                     (push (first label) phrase))))
+             (when eof
+               (split-phrase (nreverse phrase))
+               (return t)))))))
                     
                       
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2711,27 +2710,25 @@ WARNING:
                      (directory-namestring file)
                      (pathname-name file)
                      (pathname-type file))
-         :direction :output :if-exists :error)
-      (loop 
-          with last = -999999.0
-          do
-            (multiple-value-bind
-                (line eof)
-                (read-line in nil)
-              (when line
-                (multiple-value-bind
-                    (label time)
-                    (read-audacity-line line)
-                  ;; don't check length if this is a loop begin
-                  (if (string= label "loop")
-                      (format out "~&~a" line)
-                    (progn
-                      (setf time (read-from-string line))
-                      (when (> (- time last) min)
-                        (setf last time)
-                        (format out "~&~a" line))))))
-              (when eof
-                (return t)))))))
+             :direction :output :if-exists :error)
+      (loop with last = -999999.0 with label do
+           (multiple-value-bind
+                 (line eof)
+               (read-line in nil)
+             (when line
+               ;; (multiple-value-bind
+               ;;(label time)
+               (setq label (read-audacity-line line))
+               ;; don't check length if this is a loop begin
+               (if (string= (third label) "loop")
+                   (format out "~&~a" line)
+                   (progn
+                     (setq time (first label))
+                     (when (> (- time last) min)
+                       (setq last time)
+                       (format out "~&~a" line))))))
+           (when eof
+             (return t))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

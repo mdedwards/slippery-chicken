@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  18:54:04 Tue Feb 26 2019 CET
+;;; $$ Last modified:  13:14:37 Thu May 23 2019 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -15843,7 +15843,15 @@
              (filename-from-title "more   spaces than_planned"))
     (eq '+1-2-3+ (sc-name-from-title "1 2 3"))
     (eq '+the-dog-and-bone+ (sc-name-from-title "the dog and bone"))))
-    
+
+
+;;; MDE Tue May 21 07:56:14 2019
+(sc-deftest test-middle-out ()
+  (sc-test-check
+    (equalp (middle-out '(1 2 3 4 5 6)) '(4 3 5 2 6 1))
+    (equalp (middle-out '(1 2 3 4 5 6 7)) '(4 3 5 2 6 1 7))
+    ))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue May  8 21:14:56 2012 -- other random tests
 
@@ -18824,6 +18832,28 @@
     (event-list-to-midi-file events :start-tempo 60)
     (sc-test-check
       (file-write-ok "/tmp/tmp.mid" 13000))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  MDE Thu May 23 12:01:49 2019 -- afu tests
+(sc-deftest test-afu ()
+  (let ((afu (make-afu :level 3 :minimum -3 :maximum 3)))
+    (sc-test-check
+      (= 3 (maximum afu))
+      (= -3 (minimum afu))
+      (= 113 (period afu))
+      (= 32 (num-unique afu))
+      (setf (minimum afu) 0.0)
+      (setf (maximum afu) 1.0)
+      (listp (setf (binlist afu) '(1 0 0 1 0 1 0 1 0 0 0)))
+      (= 12 (num-unique afu))
+      (= 11 (period afu))
+      (equal-within-tolerance 1.0 (progn (get-next afu) (get-next afu)))
+      (equalp (binlist-to-proportions '(1 0 0 1 0 1 0 1 0 0 0))
+              '(3 2 2 4))
+      (equalp (binlist-to-proportions '(1 0 0 1 0 1 0 1 0 0 0 1))
+              '(3 2 2 4 1))
+      (equalp (binlist-to-proportions '(0 0 0 1 0 0 1 0 1 0 1 0 0 0 1))
+              '(3 2 2 4 1)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Jul 16 19:06:02 2016 -- utilities macro

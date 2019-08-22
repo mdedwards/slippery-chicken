@@ -6840,6 +6840,49 @@ T
              (if (<= best-success partial-success)
                  (finalize best best-combo best-success)
                  (finalize partial partial-combo partial-success)))
+;;; ****m* slippery-chicken-edit/(defmethod free-to-double? ((sc slippery-chicken) (e event) player)
+  (let* ((bar (get-bar sc (bar-num e) player))    ; the player we're querying
+         (ne (get-nth-event (bar-pos e) bar nil)) ; ditto
+         last-event
+         (end-bar (bar-num e)))
+    ;; If player's bar is empty then we'll be calling double-events
+    ;; below. in that case we have to see if there's a tie into the next
+    ;; bar. if so we'll need to double-events in that (and perhaps
+    ;; subsequent bars) also. 
+    ;; 
+    ;; It's actually not enough to find which bar the current event finishes its
+    ;; tie in, as that bar could have a last event which ties into the next
+    ;; bar--in that case we need to keep going until we find a last event which
+    ;; doesn't tie.
+    (setq end-bar
+          (loop
+             (setq last-event (get-last-event (get-bar sc end-bar (player e))))
+             (if (is-tied-from last-event)
+                 (setq end-bar (bar-num (find-end-tie sc last-event)))
+                 (return end-bar))))
+    (if (empty-bars? sc (bar-num e) end-bar player t)
+        ;; if the last event in the bar we'll copy from is tied, then we have to
+        ;; double events in the next bar, maybe even more to the end of the tie
+        (progn
+          (double-events sc (player e) player (bar-num e) 1 end-bar nil
+                         :auto-beam nil :consolidate-rests nil :update nil
+                         :pitches nil)
+          ;; we have to turn them into rests because another ensemble might play
+          ;; the following chords
+          (loop for bar-num from (bar-num e) to end-bar
+             for bar = (get-bar sc bar-num player) do
+               (force-all-rests bar t)
+               (setf (is-rest-bar bar) nil))
+          t)
+        ;; have we already copied over skeleton events or is there (by chance
+        ;; even) a rest of the same duration at the same point in the bar?
+        ;; todo: an improvement would be to check following rests if <e> is tied
+        ;; from. that way we could use this method outside of the
+        ;; orchestrate/get-combo context. for now we're assuming rests have been
+        ;; created over whole bars
+        (and ne (is-rest ne)
+             (equal-within-tolerance (start-time e) (start-time ne))
+             (equal-within-tolerance (duration e) (duration ne))))))
             (t (finalize nil nil 3))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6891,6 +6934,83 @@ T
         (and ne (is-rest ne)
              (equal-within-tolerance (start-time e) (start-time ne))
              (equal-within-tolerance (duration e) (duration ne))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ****m* slippery-chicken-edit/swap-marks
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Thu 22 Aug 2019 17:12:27 BST
+;;; 
+;;; DESCRIPTION
+;;; Replace one dynamic mark with another, or a list of marks with another
+;;; list.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery chicken object which contains marks to be swapped
+;;; - start-bar: the first bar to start swapping
+;;; - end-bar: the last bar to end swapping
+;;; - players: the player or players
+;;; - old-marks: a single mark or a list of marks
+;;; - new-marks: a single mark to a list. NB if a list it must be the same
+;;; length as the old-marks list. Maybe I should change this?
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; nil
+;;; 
+;;; RETURN VALUE
+;;; The number of swapped marks
+;;; 
+;;; EXAMPLE
+#|
+(let* ((mini (make-slippery-chicken  
+	       '+mini+ 
+	       :ensemble '(((flt (flute :midi-channel 1))))
+	       :staff-groupings '(1)
+	       :tempo-map '((1 (q 60)))
+	       :set-palette '((set1 ((fs2 b2 d4 a4 d5 e5 a5 d6))) 
+			      (set2 ((b2 fs3 d4 e4 a4 d5 e5 a5 d6))))
+	       :set-map '((1 (set1 set1 set2 set1 set1 set2)))
+	       :rthm-seq-palette
+	       '((seq1 ((((4 4) (q) (q) q q))   
+			:pitch-seq-palette (1 2)
+			:marks (pp 1)))  
+		 (seq2 ((((4 4) (e) e q h)) 
+			:pitch-seq-palette (1 2 3)
+			:marks (p 1 a 1 s 1))))
+	       :rthm-seq-map '((1 ((flt (seq1 seq1 seq2 seq1 seq1 seq2))))))))
+   (has-mark (get-note mini 1 1 'flt) 'fff)
+   (swap-marks mini nil nil nil 'pp 'fff)
+   (has-mark (get-note mini 1 1 'flt) 'fff))
+|#
+;;; SYNOPSIS
+(defmethod swap-marks ((sc slippery-chicken) start-bar end-bar
+		       players old-marks new-marks)
+;;; ****
+  (let ((count 0)) ; for return testing
+    (unless end-bar (setf end-bar (num-bars sc)))
+    (unless start-bar (setf start-bar 1))
+    (unless players (setf players (players sc)))
+    (setf players (force-list players))
+    (setf old-marks (force-list old-marks))
+    (setf new-marks (force-list new-marks))
+    (unless (= (length old-marks)(length new-marks))
+      (error (format t "~%swap-marks: old-marks and new-marks must be the same
+		       length")))
+    (loop for player in players do
+	 (loop for bn from start-bar to end-bar
+	    for bar = (get-bar sc bn player)
+	    do
+	      (loop for e in (rhythms bar) do
+		   (loop for om in old-marks
+		      for nm in new-marks do
+			(when (has-mark e om)
+			  (rm-marks e om)
+			  (add-mark-once e nm)
+			  (incf count))))))
+    count))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -7004,6 +7124,7 @@ T
     (check-tuplets sc)
     (check-beams sc)
     sc))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Apr 19 15:03:05 2013 -- make a dummy (pretty empty) sc structure

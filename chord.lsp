@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  14:28:25 Tue Jul 16 2019 CEST
+;;; $$ Last modified:  11:16:36 Thu Aug 22 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -324,7 +324,7 @@ NIL
 ;;; - A chord object.
 ;;; 
 ;;; RETURN VALUE  
-;;; An integer.
+;;; An integer: the midi channel
 ;;; 
 ;;; EXAMPLE
 #|

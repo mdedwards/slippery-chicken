@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:48:32 Sat Aug  3 2019 CEST
+;;; $$ Last modified:  11:33:56 Thu Aug 22 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -760,13 +760,18 @@ data: 132
   value)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* event/add-pitches
 ;;; DESCRIPTION
-;;; Add pitches to a non-rest event.  This works whether the event is a single
-;;; pitch or a chord.  NB This adds to the sounding pitches, not written
-;;; pitches of transposing instruments.  The midi-channel of the pitch is
-;;; presumed to be correct before this method is called. 
+;;; Add pitches to a non-rest event. This works whether the event is a single
+;;; pitch or a chord.
+;;;
+;;; NB This adds to the sounding pitches, not written pitches
+;;; of transposing instruments. Events attached to transposing instruments will
+;;; not yet work with this method. 
+;;;
+;;; If pitch objects are given, then the midi-channel of the pitch is presumed
+;;; to be correct before this method is called. Symbols will default to MIDI
+;;; channel 1.
 ;;; 
 ;;; ARGUMENTS
 ;;; - The event object
@@ -790,7 +795,9 @@ data: 132
                             (add-pitches (pitch-or-chord e) pitches)))
         ((is-single-pitch e) (setf (pitch-or-chord e)
                                    (make-chord
-                                    (cons (pitch-or-chord e) pitches))))
+                                    (cons (pitch-or-chord e) pitches)
+                                    ;; MDE Thu Aug 22 11:13:04 2019
+                                    :force-midi-channel nil)))
         (t (error "event::add-pitches: Can't add pitches to this event: ~a"
                   e)))
   e)
@@ -3070,9 +3077,6 @@ NIL
   (setf (written-pitch-or-chord e) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Dec 24 17:32:15 EST 2011 Added robodoc info
-
 ;;; ****m* event/lowest
 ;;; DESCRIPTION
 ;;; Get the lowest pitch (of a chord) in a given event object. If the given
@@ -3123,9 +3127,6 @@ data: C4
       porc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Dec 24 19:08:03 EST 2011 Added robodoc info
-
 ;;; ****m* event/highest
 ;;; DESCRIPTION
 ;;; Get the highest pitch (of a chord) in a given event object. If the given
@@ -3935,6 +3936,28 @@ NIL
                (if (contains-pitches poc1 (list poc2)
                                      enharmonics-are-equal octaves-are-true)
                    1 0))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* event/midi-control-change
+;;; DATE
+;;; August 21st 2019, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Add a MIDI control change to the midi-control-changes list slot
+;;; 
+;;; ARGUMENTS
+;;; - the event
+;;; - the MIDI channel (integer)
+;;; - the MIDI channel (integer)
+;;; - the control change value (integer)
+;;; 
+;;; RETURN VALUE
+;;; The list of control-changes, including the new ones
+;;; 
+;;; SYNOPSIS
+(defmethod midi-control-change ((e event) channel controller-number value)
+;;; ****
+  (push (list channel controller-number value) (midi-control-changes e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

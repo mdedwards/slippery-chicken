@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  15:26:26 Fri Aug  9 2019 CEST
+;;; $$ Last modified:  10:09:39 Thu Aug 22 2019 CEST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -75,9 +75,6 @@
   (clone-with-new-class rsp 'rthm-seq-palette))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Jan 28 13:16:35 GMT 2012: Edited robodoc info
-
 ;;; ****m* rthm-seq-palette/create-psps
 ;;; DATE 
 ;;; 30 Mar 2006

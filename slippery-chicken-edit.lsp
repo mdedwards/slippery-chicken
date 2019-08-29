@@ -6840,49 +6840,6 @@ T
              (if (<= best-success partial-success)
                  (finalize best best-combo best-success)
                  (finalize partial partial-combo partial-success)))
-;;; ****m* slippery-chicken-edit/(defmethod free-to-double? ((sc slippery-chicken) (e event) player)
-  (let* ((bar (get-bar sc (bar-num e) player))    ; the player we're querying
-         (ne (get-nth-event (bar-pos e) bar nil)) ; ditto
-         last-event
-         (end-bar (bar-num e)))
-    ;; If player's bar is empty then we'll be calling double-events
-    ;; below. in that case we have to see if there's a tie into the next
-    ;; bar. if so we'll need to double-events in that (and perhaps
-    ;; subsequent bars) also. 
-    ;; 
-    ;; It's actually not enough to find which bar the current event finishes its
-    ;; tie in, as that bar could have a last event which ties into the next
-    ;; bar--in that case we need to keep going until we find a last event which
-    ;; doesn't tie.
-    (setq end-bar
-          (loop
-             (setq last-event (get-last-event (get-bar sc end-bar (player e))))
-             (if (is-tied-from last-event)
-                 (setq end-bar (bar-num (find-end-tie sc last-event)))
-                 (return end-bar))))
-    (if (empty-bars? sc (bar-num e) end-bar player t)
-        ;; if the last event in the bar we'll copy from is tied, then we have to
-        ;; double events in the next bar, maybe even more to the end of the tie
-        (progn
-          (double-events sc (player e) player (bar-num e) 1 end-bar nil
-                         :auto-beam nil :consolidate-rests nil :update nil
-                         :pitches nil)
-          ;; we have to turn them into rests because another ensemble might play
-          ;; the following chords
-          (loop for bar-num from (bar-num e) to end-bar
-             for bar = (get-bar sc bar-num player) do
-               (force-all-rests bar t)
-               (setf (is-rest-bar bar) nil))
-          t)
-        ;; have we already copied over skeleton events or is there (by chance
-        ;; even) a rest of the same duration at the same point in the bar?
-        ;; todo: an improvement would be to check following rests if <e> is tied
-        ;; from. that way we could use this method outside of the
-        ;; orchestrate/get-combo context. for now we're assuming rests have been
-        ;; created over whole bars
-        (and ne (is-rest ne)
-             (equal-within-tolerance (start-time e) (start-time ne))
-             (equal-within-tolerance (duration e) (duration ne))))))
             (t (finalize nil nil 3))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -6936,7 +6893,6 @@ T
              (equal-within-tolerance (duration e) (duration ne))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* slippery-chicken-edit/swap-marks
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
@@ -7124,7 +7080,6 @@ T
     (check-tuplets sc)
     (check-beams sc)
     sc))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Apr 19 15:03:05 2013 -- make a dummy (pretty empty) sc structure

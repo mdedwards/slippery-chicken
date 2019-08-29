@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  17:07:16 Thu Aug 29 2019 CEST
+;;; $$ Last modified:  17:24:54 Thu Aug 29 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -135,7 +135,7 @@
 ;;; seconds) or three-item list in the form '(minutes seconds milliseconds)
 ;;; 
 ;;; ARGUMENTS
-;;; - A two-item list of integers in the form '(minutes seconds).
+;;; - A time in minutes and seconds, as described above.
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; - if a string is to be passed, then a character that denotes the separator

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  13:14:37 Thu May 23 2019 CEST
+;;; $$ Last modified:  11:56:30 Thu Aug 22 2019 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -1527,7 +1527,8 @@
         (mtonal e1 '(0 1) t) ; force numbers
         (mtonal e2 '(0 3) t)
         (mtonal e2m '(2 3))
-        ;; MDE Sat Apr 20 15:09:52 2013 
+        ;; MDE Sat Apr 20 15:09:52 2013 - so sounding pitch was given (cs4) but
+        ;; transposition is -14 so written pitch must be a 9th higher: ds5/ef5 
         (= 75 (midi-note (written-pitch-or-chord e5)))
         ;; (print e5)
         (equalp (data e2) 'W)
@@ -1546,7 +1547,11 @@
         (add-pitches e1 'cs3 'd5)
         (add-pitches e2 'cs2)
         (chord= (pitch-or-chord e1) (make-chord '(c4 cs3 d5)))
-        (chord= (pitch-or-chord e2) (make-chord '(c4 e4 g4 cs2)))))))
+        (chord= (pitch-or-chord e2) (make-chord '(c4 e4 g4 cs2)))
+        ;; MDE Thu Aug 22 11:21:44 2019 -- make sure midi channel is retained
+        (add-pitches e2 (make-pitch 'c1 :midi-channel 16))
+        (chord= (pitch-or-chord e2) (make-chord '(c1 c4 e4 g4 cs2)))
+        (= 16 (midi-channel (lowest e2)))))))
 
 ;;; SAR Thu Dec 22 21:07:38 EST 2011
 (sc-deftest test-event-make-rest ()
@@ -2213,6 +2218,27 @@
         <stem default-y=\"3\">up</stem>
       </note>"))))
 
+;;; MDE Tue Jul 16 13:10:42 2019 
+(sc-deftest test-event-common-notes ()
+  (let ((e1 (make-event '(c3 cs4 d5) 'q))
+        (e2 (make-event '(c3 cs4 ds5) 'q))
+        (e3 (make-event 'c3 'q))
+        (e4 (make-event 'c3 'q))
+        (e5 (make-event 'cs3 'q))
+        (e6 (make-event 'bs2 'q))
+        (e7 (make-event 'c5 'q))
+        (r (make-rest 'e))
+        )
+    (sc-test-check
+      (= 2 (common-notes e1 e2))
+      (zerop (common-notes e1 r))
+      (zerop (common-notes e2 r))
+      (zerop (common-notes e3 e5))
+      (= 1 (common-notes e4 e6 t))
+      (= 1 (common-notes e1 e7 nil t))
+      (= 1 (common-notes e1 e3))
+      (= 1 (common-notes e4 e3))
+      (= 1 (common-notes e3 e1)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rthm-seq tests
@@ -4593,6 +4619,29 @@
        (apply '+ (fibonacci-start-at-2 18)))
     (equalp (fibonacci-start-at-2 18) '(8 5 3 2))))
 
+;;; MDE Mon Aug  5 16:15:03 2019
+(sc-deftest test-l-for-lookup-fibonacci-divide ()
+  (sc-test-check
+   (equalp (fibonacci-divide 400 nil nil)
+           '(145 234 289 323 344 357 365 370 373 375 376 377))
+   (equalp (fibonacci-divide 400)
+           '(154 248 307 343 365 379 387 393 396 398 399 400))
+   (equalp (fibonacci-divide 40)
+           '(16 26 32 35 38 39 40))
+   (equalp (fibonacci-divide 10)
+           '(5 8 9 10))
+   (equalp (fibonacci-divide 2)
+           '(1 2))
+   (equalp (fibonacci-divide 20000)
+           '(7640 12362 15280 17083 18198 18887 19312 19575 19738 19839 19901
+             19939 19963 19977 19986 19992 19995 19998 19999 20000))
+   (equalp (fibonacci-divide 200 nil)
+           '(56 90 111 124 132 137 140 142 143 144))
+   (float-list= (fibonacci-divide 200 t nil)
+                 '(77.77777 124.99999 154.16666 172.22221 183.33333 190.27777
+                   194.44444 197.22221 198.6111 200.0))))
+
+
 ;;; SAR Sat Jan 14 17:46:05 GMT 2012
 (sc-deftest test-l-for-lookup-fibonacci-transition ()
   (sc-test-check
@@ -5895,15 +5944,22 @@
                      (+h { 3 +tq th }) ({ 3 +tq tq tq } +h))))
                 (d ((((4 4) (w)) ((h) (q) q) (- +e. s - +h.) (+s q.. +q.. s)
                      (+q. e+q - +s e. -) (+w) (+e q. +s q..) (h.. e)
-                     (+w)))))))))))
+                     (+w))))))))
+            (top ((((4 4) q x 4)))))))
         bar)
     ;; (print rsp)
     ;; (print (get-data '(long 1 a) rsp))
     (sc-test-check
+     ;; MDE Fri Jul  5 15:40:56 2019
+      ;; (not (get-this-refs rsp))
+      (equalp '((top)) (get-this-refs rsp))
+      (not (get-this-refs (get-data-data 'long rsp)))
+      (equalp '((LONG 3 A) (LONG 3 B) (LONG 3 C) (LONG 3 D))
+              (get-this-refs (get-data-data '(long 3) rsp)))
       (equal '(long 1 a) (rsp-id (get-nth-bar 0 (get-data '(long 1 a) rsp))))
       (equal '(long 2 a) (rsp-id (get-nth-bar 4 (get-data '(long 2 a) rsp))))
       (equal '(long 3 d) (rsp-id (get-nth-bar 8 (get-data '(long 3 d) rsp))))
-      (rsp-subseq rsp 2 6)
+      (rsp-subseq (get-data-data 'long rsp) 2 6)
       (= 5 (num-bars (get-data '(long 1 a) rsp)))
       (= 5 (num-bars (get-data '(long 3 d) rsp)))
       (setf bar (get-bar (get-data '(long 3 c) rsp) 1))
@@ -5986,10 +6042,15 @@
                                        (viola (cs4 e4)))
                             :related-sets '((missing (ds2 e2 b3 cs6 d6))))) 
         (mscs3 (make-sc-set '(af5 cs4 cs3 e4 fs3 ef6 d2 c5)))
-        (mscs4 (make-sc-set '(af5 cs4 cs3 e4 fs3 ef6 d2 c5) :auto-sort nil)))
+        (mscs4 (make-sc-set '(af5 cs4 cs3 e4 fs3 ef6 d2 c5) :auto-sort nil))
+        ;; MDE Fri Jun 21 09:52:07 2019
+        (s5 (make-sc-set '(F0 AF1 EF2 BF3 DF4 C6 C7 G8 BF8 A10))))
     (sc-test-check
       (equalp (loop for po in (data mscs1) collect (data po))
               '(d2 cs3 fs3 cs4 e4 c5 af5 ef6))
+      ;; MDE Fri Jun 21 09:52:16 2019 -- test it works with very high 8ves
+      (= 5 (least-used-octave s5 :highest-wins nil))
+      (= 9 (least-used-octave s5 :highest-wins t))
       ;; MDE Tue Aug 18 17:23:05 2015 -- 
       (= 2 (least-used-octave mscs1 :highest-wins nil))
       (= 3 (most-used-octave mscs1 :highest-wins nil))
@@ -6245,6 +6306,9 @@
 (sc-deftest test-sc-set-contains-pitches ()
   (let ((mscs (make-sc-set '(d2 f2 a2 c3 e3 g3 b3 d4 gf4 bf4 df5 f5 af5 c6))))
     (sc-test-check
+      ;; MDE Tue Jul 16 13:06:29 2019 -- actually now in chord class but
+      ;; makes no difference 
+      (contains-pitches mscs (list (make-pitch 'f2)))
       (contains-pitches mscs '(d2 e3 gf4 af5))
       (not (contains-pitches mscs '(d2 e3 gf4 b4 af5))))))
 
@@ -8244,8 +8308,12 @@
           :set-palette '((1 ((c4 d4 f4 g4 a4 c5 d5 f5 g5 a5 c6))))
           :set-map '((1 (1 1 1 1 1 1)))
           :rthm-seq-palette '((1 ((((2 4) q (e) s s))
-                                  :pitch-seq-palette ((1 2 3)))))
-          :rthm-seq-map '((1 ((vn (1 1 1 1 1 1))))))))
+                                  :pitch-seq-palette ((1 2 3))))
+                              ;; MDE Fri Jul 12 18:16:25 2019 -- pedals now work
+                              ;; in :marks not just via add-mark post-gen 
+                              (2 ((((2 4) q e s s))
+                                  :marks (uc 1 ped 2 ped-up 3 tc 4))))
+          :rthm-seq-map '((1 ((vn (1 1 1 1 1 2))))))))
     (flet ((amtn (bar note mark)
              (add-mark-to-note mini bar note 'vn mark))
            (cc= (bar note cc)
@@ -8272,7 +8340,13 @@
         (cc= 3 1 '((1 66 127)))
         (cc= 3 3 '((1 66 0)))
         (cc= 4 1 '((1 67 127)))
-        (cc= 4 3 '((1 67 0)))))))
+        (cc= 4 3 '((1 67 0)))
+        ;; MDE Fri Jul 12 18:17:00 2019 -- sim. for those added via :marks
+        (cc= 6 2 '((1 64 127)))
+        (cc= 6 3 '((1 64 0)))
+        (cc= 6 1 '((1 67 127)))
+        (cc= 6 4 '((1 67 0)))        
+        ))))
 
 ;;; SAR Thu Apr 19 14:09:46 BST 2012
 (sc-deftest test-sc-edit-add-marks-sh ()
@@ -12270,7 +12344,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SC-map tests
+;;; sc-map tests
 
 ;;; SAR Sun Mar  4 11:27:03 GMT 2012: Replaced ut
 (sc-deftest test-sc-map-make-sc-map ()
@@ -15691,14 +15765,14 @@
        cl-user::+slippery-chicken-home-dir+
        "test-suite/24-7loops1.txt"))
      '((25.674559 25.829296 26.116327 26.649048 27.038843)
-       (32.211884 32.33669 32.481815 32.618233 32.716915 32.902676 33.227757 
+       (32.211884 32.336697 32.481815 32.618233 32.716915 32.902676 33.227757
         33.61959)
        (36.893604 37.059048 37.160633 37.27383 37.439274 37.4683 37.627937)
        (39.52907 39.81932 39.999275 40.2634 40.338867 40.605896)
        (45.612698 45.818775 46.050976 46.145306 46.275192)
        (46.4566 46.644535 46.76934 46.886894 46.971066 47.16553)
        (84.15927 84.260864 84.292786 84.355194 84.47274 84.52789 84.556915
-        84.65415)
+        84.65415) 
        (85.10694 85.227394 85.36236 85.48281 85.5873)
        (91.270386 91.521454 91.627396 91.78993 91.910385 92.04681)
        (121.0224 121.16608 121.26476 121.45197 121.650795 121.882996)
@@ -15717,7 +15791,7 @@
         278.79037)
        (279.22433 279.5044 279.59293 279.72498 279.9006 280.0312)
        (282.38083 282.5883 282.77988 282.82776 282.95258 283.08173)
-       (283.28055 283.40244 283.50403 283.60126 283.70142 283.87122 284.1092) 
+       (283.28055 283.40244 283.50403 283.60126 283.70142 283.87122 284.1092)
        (296.73215 296.83954 297.10657 297.21832 297.55646 297.8177)
        (297.93088 298.23856 298.5999 298.86115 298.92352 299.0977)
        (299.7101 300.02792 300.2645 300.34866 300.48654)
@@ -15727,10 +15801,10 @@
        (364.94077 365.09314 365.20346 365.33698 365.59674 365.70413)
        (365.9073 366.0379 366.17725 366.2643 366.60098 366.7316 366.91736)
        (367.90277 368.02612 368.1074 368.18866 368.2525 368.39474 368.5297
-        368.71692)
+        368.71692) 
        (418.9025 419.29868 419.3843 419.49023 419.72534 419.81244 419.9764)
        (441.9962 442.19647 442.3358 442.3924 442.59555 442.66812 442.87854)
-       (472.27356 472.48834 472.61606 472.68716 472.83228 472.97885 473.06015) 
+       (472.27356 472.48834 472.61606 472.68716 472.83228 472.97885 473.06015)
        (474.20227 474.33722 474.47366 474.53604 474.7436 474.81613 474.9482
         475.31247)
        (490.34595 490.5796 490.72617 490.96854 491.09332 491.26312)
@@ -15738,7 +15812,7 @@
         523.38794 523.5998)
        (523.83057 524.0541 524.13824 524.30804 524.41833 524.5301 524.7405)
        (547.6397 548.07935 548.57764 548.8325 549.11066)
-       (588.2641 588.53064 588.7392 589.11 589.44604 589.87476)
+       (588.2641 588.5306 588.7392 589.11 589.44604 589.87476)
        (595.7032 596.37524 596.90826 597.4297 597.9048)
        (598.47253 599.04034 599.7703 600.4076 601.18396)
        (610.70874 611.25336 611.7632 612.33093 613.2126 614.4746)
@@ -17498,8 +17572,8 @@
     (wavelab-to-audacity-marker-file (test-suite-file "24-7loops1.mrk"))
     (sc-test-check
       (file-write-ok af 800)
-      (= 540 (length limine-loops))
-      (= 7 (length (first limine-loops)))
+      (= 540 (print (length limine-loops)))
+      (= 7 (print (length (first limine-loops))))
       t)))
 
 ;;; SAR Wed May 16 17:17:04 EDT 2012

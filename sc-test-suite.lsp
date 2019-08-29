@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  11:56:30 Thu Aug 22 2019 CEST
+;;; $$ Last modified:  16:15:17 Thu Aug 29 2019 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -15098,7 +15098,16 @@
 ;;; SAR Sat May  5 12:12:49 BST 2012
 (sc-deftest test-utilities-mins-secs-to-secs ()
   (sc-test-check
-    (= 121.0 (mins-secs-to-secs '(2 1)))))
+    (= 121.0 (mins-secs-to-secs '(2 1)))
+    (equal-within-less-tolerance 1019.534 (mins-secs-to-secs '(16 59 534)))
+    ;; MDE Thu Aug 29 13:21:36 2019 -- test case of string
+    (equal-within-tolerance 0.0 (mins-secs-to-secs "0:00.000"))
+    (equal-within-tolerance 18.118 (mins-secs-to-secs "0:18.118"))
+    (equal-within-tolerance 186.829 (mins-secs-to-secs "3:06.829"))
+    (equal-within-tolerance 216.29 (mins-secs-to-secs "3-36.29" #\-) 0.0001)
+    (equal-within-tolerance 1619.8 (mins-secs-to-secs "26:59.8"))
+    (equal-within-tolerance 7440.00002 (mins-secs-to-secs "124:0.00002"))
+    ))
 
 ;;; SAR Sat May  5 12:17:59 BST 2012
 (sc-deftest test-utilities-string-replace ()
@@ -15764,20 +15773,19 @@
        'string 
        cl-user::+slippery-chicken-home-dir+
        "test-suite/24-7loops1.txt"))
-     '((25.674559 25.829296 26.116327 26.649048 27.038843)
-       (32.211884 32.336697 32.481815 32.618233 32.716915 32.902676 33.227757
-        33.61959)
-       (36.893604 37.059048 37.160633 37.27383 37.439274 37.4683 37.627937)
-       (39.52907 39.81932 39.999275 40.2634 40.338867 40.605896)
-       (45.612698 45.818775 46.050976 46.145306 46.275192)
-       (46.4566 46.644535 46.76934 46.886894 46.971066 47.16553)
-       (84.15927 84.260864 84.292786 84.355194 84.47274 84.52789 84.556915
-        84.65415) 
-       (85.10694 85.227394 85.36236 85.48281 85.5873)
-       (91.270386 91.521454 91.627396 91.78993 91.910385 92.04681)
-       (121.0224 121.16608 121.26476 121.45197 121.650795 121.882996)
+     '((25.674559 25.82929 26.11632 26.64904 27.03884)
+       (32.211884 32.33669 32.48181 32.61823 32.71691 32.90267 33.22775
+        33.61959) 
+       (36.893604 37.05904 37.16063 37.27383 37.43927 37.4683 37.62793)
+       (39.52907 39.81932 39.99927 40.2634 40.33886 40.60589)
+       (45.612698 45.81877 46.05097 46.1453 46.27519)
+       (46.4566 46.64453 46.76934 46.88689 46.97106 47.16553)
+       (84.15927 84.26086 84.29278 84.35519 84.47274 84.52789 84.55691 84.65415)
+       (85.10694 85.22739 85.36236 85.48281 85.5873)
+       (91.270386 91.52145 91.62739 91.78993 91.91038 92.04681)
+       (121.0224 121.16608 121.26476 121.45197 121.65079 121.88299)
        (159.98549 160.1727 160.4107 160.52681 160.61533 160.74304 160.99411
-        161.05505 161.24953 161.50784)
+        161.05505  161.24953 161.50784)
        (169.48535 169.57097 169.76979 169.84961 170.19937 170.29515)
        (170.50122 170.72182 171.11655 171.41551 171.68254)
        (218.33723 218.50703 218.6391 218.79582 218.89597 219.14413)
@@ -15812,7 +15820,7 @@
         523.38794 523.5998)
        (523.83057 524.0541 524.13824 524.30804 524.41833 524.5301 524.7405)
        (547.6397 548.07935 548.57764 548.8325 549.11066)
-       (588.2641 588.5306 588.7392 589.11 589.44604 589.87476)
+       (588.2641 588.53064 588.7392 589.11 589.44604 589.87476)
        (595.7032 596.37524 596.90826 597.4297 597.9048)
        (598.47253 599.04034 599.7703 600.4076 601.18396)
        (610.70874 611.25336 611.7632 612.33093 613.2126 614.4746)
@@ -17010,7 +17018,7 @@
       ;; test decay-time arg
       (clm-play mini 1 'vn 'audio-1 :num-sections 2 :check-overwrite nil
                 :do-src nil
-		:decay-time 10
+                :decay-time 10
                 :play nil :header-type clm::mus-aiff)
       (file-write-ok "/tmp/mini-1-vn-audio-1-seq1-3.aif" 6000000)
       (probe-delete "/tmp/mini-1-vn-audio-1-seq1-3.aif")
@@ -18970,21 +18978,21 @@
 ;;; sc-test-swap-marks
 (sc-deftest test-swap-marks ()
   (let* ((mini (make-slippery-chicken  
-		'+mini+ 
-		:ensemble '(((flt (flute :midi-channel 1))))
-		:staff-groupings '(1)
-		:tempo-map '((1 (q 60)))
-		:set-palette '((set1 ((fs2 b2 d4 a4 d5 e5 a5 d6))) 
-			       (set2 ((b2 fs3 d4 e4 a4 d5 e5 a5 d6))))
-		:set-map '((1 (set1 set1 set2 set1 set1 set2)))
-		:rthm-seq-palette
-		'((seq1 ((((4 4) (q) (q) q q))   
-			 :pitch-seq-palette (1 2)
-			 :marks (pp 1)))  
-		  (seq2 ((((4 4) (e) e q h)) 
-			 :pitch-seq-palette (1 2 3)
-			 :marks (p 1 a 1 s 1))))
-		:rthm-seq-map '((1 ((flt (seq1 seq1 seq2 seq1 seq1 seq2))))))))
+                '+mini+ 
+                :ensemble '(((flt (flute :midi-channel 1))))
+                :staff-groupings '(1)
+                :tempo-map '((1 (q 60)))
+                :set-palette '((set1 ((fs2 b2 d4 a4 d5 e5 a5 d6))) 
+                               (set2 ((b2 fs3 d4 e4 a4 d5 e5 a5 d6))))
+                :set-map '((1 (set1 set1 set2 set1 set1 set2)))
+                :rthm-seq-palette
+                '((seq1 ((((4 4) (q) (q) q q))   
+                         :pitch-seq-palette (1 2)
+                         :marks (pp 1)))  
+                  (seq2 ((((4 4) (e) e q h)) 
+                         :pitch-seq-palette (1 2 3)
+                         :marks (p 1 a 1 s 1))))
+                :rthm-seq-map '((1 ((flt (seq1 seq1 seq2 seq1 seq1 seq2))))))))
     (sc-test-check
       (not (has-mark (get-note mini 1 1 'flt) 'fff))
       (not (has-mark (get-note mini 6 1 'flt) 'f))

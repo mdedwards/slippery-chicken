@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  14:57:39 Mon Aug 12 2019 CEST
+;;; $$ Last modified:  17:07:16 Thu Aug 29 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -128,16 +128,18 @@
           result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 12:08:59 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/mins-secs-to-secs
 ;;; DESCRIPTION
 ;;; Derive the number of seconds from a minutes-seconds value that is indicated
-;;; as a two-item list in the form '(minutes seconds).
+;;; as a string of the form "0:00.000" or a two-item list in the form '(minutes
+;;; seconds) or three-item list in the form '(minutes seconds milliseconds)
 ;;; 
 ;;; ARGUMENTS
 ;;; - A two-item list of integers in the form '(minutes seconds).
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; - if a string is to be passed, then a character that denotes the separator
+;;; between minutes and seconds. Default = #\:
 ;;; 
 ;;; RETURN VALUE
 ;;; A decimal number that is a number in seconds.
@@ -150,29 +152,37 @@
 
 |#
 ;;; SYNOPSIS
-(defun mins-secs-to-secs (list)
+(defun mins-secs-to-secs (time &optional (post-mins #\:))
 ;;; ****
   (flet ((secs-msecs (secs msecs)
            (when (or (> secs 60)
                      (> msecs 1000))
              (error "utilities::mins-secs-to-secs: secs = ~a ~
                                millisecs = ~a???" secs msecs))))
-    (cond ((not list) nil)
-          ((numberp list) list)
-          ((= 2 (length list))
-           (let ((mins (first list))
-                 (secs (second list)))
+    (cond ((not time) nil)
+          ((numberp time) time)
+          ;; MDE Thu Aug 29 13:30:34 2019 -- allow strings like "12:36.23"
+          ((stringp time) (mins-secs-to-secs-aux time post-mins))
+          ((= 2 (length time))
+           (let ((mins (first time))
+                 (secs (second time)))
              (secs-msecs secs 0)
              (+ secs (* 60.0 mins))))
-          ((= 3 (length list))
-           (let ((mins (first list))
-                 (secs (second list))
-                 (msecs (third list)))
+          ((= 3 (length time))
+           (let ((mins (first time))
+                 (secs (second time))
+                 (msecs (third time)))
              (secs-msecs secs msecs)
              (+ secs (/ msecs 1000.0) (* 60.0 mins))))
           (t (error "utilities::mins-secs-to-secs: arg must be a 2- or ~
                          3-element list (mins secs [millisecs]): ~a"
-                    list)))))
+                    time)))))
+
+(defun mins-secs-to-secs-aux (string &optional (post-mins ":"))
+  (let* ((pos (position post-mins string))
+         (mins (read-from-string (subseq string 0 pos)))
+         (secs (read-from-string (subseq string (1+ pos)))))
+    (+ (* 60.0 mins) secs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; NB check whether a floating point number is very close to an integer. NB

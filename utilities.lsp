@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  17:24:54 Thu Aug 29 2019 CEST
+;;; $$ Last modified:  17:26:51 Thu Aug 29 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -147,9 +147,14 @@
 ;;; EXAMPLE
 #|
 (mins-secs-to-secs '(2 1))
-
 => 121.0
-
+(mins-secs-to-secs '(16 59 534)))
+=> 1019.534 
+(mins-secs-to-secs "3:06.829"))
+=> 186.829
+;; using a different separator character between minutes and seconds
+(mins-secs-to-secs "3-36.29" #\-) 0.0001)
+=> 216.29
 |#
 ;;; SYNOPSIS
 (defun mins-secs-to-secs (time &optional (post-mins #\:))

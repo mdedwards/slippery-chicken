@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  17:26:51 Thu Aug 29 2019 CEST
+;;; $$ Last modified:  10:38:47 Fri Aug 30 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2294,7 +2294,8 @@
       (loop 
          with name 
          with time 
-         with count = 0 
+         with count = 0
+         with tab = #\tab
          do
          (multiple-value-bind
                (line eof)
@@ -2313,8 +2314,8 @@
                (setf time (float (/ (read-from-string value)
                                     sampling-rate)))
                (if name
-                   (format txt "~&~,6f        ~a" time name)
-                   (format txt "~&~,6f" time)))
+                   (format txt "~&~,6f~c~,6f~c~a" time tab time tab name)
+                   (format txt "~&~,6f~c~,6f~c" time tab time tab)))
              (when eof 
                (terpri txt)
                (format t "~%~%~a markers read~%" count)

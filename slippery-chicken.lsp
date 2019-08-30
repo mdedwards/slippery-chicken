@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:44:30 Sat Aug  3 2019 CEST
+;;; $$ Last modified:  11:34:18 Fri Aug 30 2019 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4559,10 +4559,10 @@ seq-num 5, VN, replacing G3 with B6
                        (clm-ins #'clm::samp5)
                        ;; either a list or a function (see above)
                        clm-ins-args
-		       ;; DJR Thu 22 Aug 2019 15:08:39 BST
-		       ;; clm::with-sound let's us set this, so why doesn't 
-		       ;; clm-play? Voila!
-		       (decay-time 3))
+                       ;; DJR Thu 22 Aug 2019 15:08:39 BST
+                       ;; clm::with-sound let's us set this, so why doesn't 
+                       ;; clm-play? Voila!
+                       (decay-time 3))
 ;;; ****                               
   ;; MDE Tue Apr 17 13:28:16 2012 -- guess the extension if none given
   (unless sndfile-extension
@@ -9631,11 +9631,12 @@ NOTE 6200 0.6666667
     (print lp-file)
     (if (zerop success)
         (values
-	 ;; DJR Fri 30 Aug 2019 10:09:13 BST
-	 ;; Changed the (when) to an (if) so that if 'lp-display-auto-open is
-	 ;; set to nil the RTs will still pass.
+         ;; DJR Fri 30 Aug 2019 10:09:13 BST
+         ;; Changed the (when) to an (if) so that if 'lp-display-auto-open is
+         ;; set to nil the RTs will still pass.
          (if (get-sc-config 'lp-display-auto-open)
-	     (system-open-file pdf-file) t)
+             (system-open-file pdf-file)
+             t)
          pdf-file)
         (error "slippery-chicken::lp-display: Call to Lilypond failed."))))
 

@@ -9630,9 +9630,12 @@ NOTE 6200 0.6666667
                          lp-file)))
     (print lp-file)
     (if (zerop success)
-        (values 
-         (when (get-sc-config 'lp-display-auto-open)
-           (system-open-file pdf-file))
+        (values
+	 ;; DJR Fri 30 Aug 2019 10:09:13 BST
+	 ;; Changed the (when) to an (if) so that if 'lp-display-auto-open is
+	 ;; set to nil the RTs will still pass.
+         (if (get-sc-config 'lp-display-auto-open)
+	     (system-open-file pdf-file) t)
          pdf-file)
         (error "slippery-chicken::lp-display: Call to Lilypond failed."))))
 

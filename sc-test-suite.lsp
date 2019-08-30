@@ -52,6 +52,8 @@
 (set-sc-config 'cmn-display-auto-open nil)
 (set-sc-config 'midi-play-auto-open nil)
 (set-sc-config 'default-dir "/tmp/")
+;;; DJR Fri 30 Aug 2019 10:08:28 BST
+(set-sc-config 'lp-display-auto-open nil)
 
 ;;; Thu Dec 15 10:01:31 GMT 2011 SAR: Changed intro
 ;;; Load this file in the Lisp prompt while in the slippery-chicken package.

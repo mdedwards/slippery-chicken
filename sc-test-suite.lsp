@@ -16818,6 +16818,35 @@
       (= 8 (value (get-last-event (get-bar mini 4 'cl))))
       (is-rest (get-last-event (get-bar mini 4 'vc))))))
 
+;;; DJR Sun  1 Sep 2019 10:34:29 BST
+(sc-deftest test-map-over-notes ()
+  (let* ((mini
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
+           :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+                                    (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
+                                    (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
+           :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
+           :set-map '((1 (1 1 1 1 1))
+                      (2 (1 1 1 1 1))
+                      (3 (1 1 1 1 1)))
+           :rthm-seq-palette '((1 ((((4 4) h e (s) (s) e+s+s))
+                                   :pitch-seq-palette ((1 2 3)))))
+           :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
+                           (2 ((sax (1 1 1 1 1))))
+                           (3 ((sax (1 1 1 1 1)))))))
+         (mon (map-over-notes mini 1 nil nil #'add-pitches 'c4 'd4)))
+    (sc-test-check
+      (equalp (num-notes mini)
+	      (first mon))
+      (is-chord (get-event mini 1 1 'sax))
+      (is-chord (get-note mini (num-bars mini) 3 'sax))
+      (setf mon (map-over-notes mini 1 2 nil #'force-rest))
+      (equalp 6 (first mon))
+      (is-rest (get-event mini 1 1 'sax))
+      (is-rest (get-event mini 2 5 'sax)))))
+
 ;;; MDE Mon Jun 11 18:26:47 2012 -- 
 (sc-deftest test-map-over-bars ()
   (let* ((mini

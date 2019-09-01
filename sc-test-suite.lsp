@@ -16412,7 +16412,14 @@
       (setq tmp (next-event mini 'hn t))
       (eq 'h (data tmp))
       (= 3 (bar-num tmp))
-      )))
+      ;; DJR Sun  1 Sep 2019 10:17:39 BST -- let's test that next-event ends
+      ;; where it's supposed to
+      (not (next-event mini 'cl nil 2))
+      (equalp
+       (loop for ne = (next-event mini 'cl nil nil 2)
+          while ne
+          collect (get-pitch-symbol ne))
+       '(G3 NIL A3 NIL B3)))))
 
 ;;; SAR Wed May  9 21:20:39 BST 2012
 (sc-deftest test-sc-get-note ()

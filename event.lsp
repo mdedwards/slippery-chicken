@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:33:56 Thu Aug 22 2019 CEST
+;;; $$ Last modified:  17:28:34 Mon Sep  2 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3943,7 +3943,7 @@ NIL
 ;;; August 21st 2019, Heidhausen
 ;;; 
 ;;; DESCRIPTION
-;;; Add a MIDI control change to the midi-control-changes list slot
+;;; Add a MIDI control change to the midi-control-changes list slot.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the event
@@ -3951,6 +3951,21 @@ NIL
 ;;; - the MIDI channel (integer)
 ;;; - the control change value (integer)
 ;;; 
+;;; EXAMPLE
+#|
+;;; sustain pedal down
+(midi-control-change (make-event 'c4 'q) 1 64 127)
+;;; sustain pedal half down
+(midi-control-change (make-event 'c4 'q) 1 64 63)
+;;; sustain pedal up
+(midi-control-change (make-event 'c4 'q) 1 64 0)
+;;; una corda
+(midi-control-change (make-event 'c4 'q) 1 67 127)
+;;; tre corde
+(midi-control-change (make-event 'c4 'q) 1 67 0)
+;;; sost. (middle) pedal down
+(midi-control-change (make-event 'c4 'q) 1 66 127)
+|#
 ;;; RETURN VALUE
 ;;; The list of control-changes, including the new ones
 ;;; 

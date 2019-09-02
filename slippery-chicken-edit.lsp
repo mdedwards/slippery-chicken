@@ -5423,8 +5423,14 @@ NIL
            :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
                            (2 ((sax (1 1 1 1 1))))
                            (3 ((sax (1 1 1 1 1))))))))
-	(map-over-notes mini 1 nil nil #'add-pitches 'c4 'd4)
+	(print (is-chord (get-note mini (num-bars mini) 3 'sax)))
+        (print (map-over-notes mini 1 nil nil #'add-pitches 'c4 'd4))
 	(is-chord (get-note mini (num-bars mini) 3 'sax)))
+
+NIL
+(45)
+=> 3
+
 |#
 ;;; SYNOPSIS
 (defmethod map-over-notes ((sc slippery-chicken) start-bar end-bar players
@@ -5500,8 +5506,14 @@ NIL
            :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
                            (2 ((sax (1 1 1 1 1))))
                            (3 ((sax (1 1 1 1 1))))))))
-	(map-over-events mini 1 nil nil #'force-rest)
+        (print (is-rest (get-event mini (num-bars mini) 2 'sax)))
+	(print (map-over-events mini 1 nil nil #'force-rest))
 	(is-rest (get-event mini (num-bars mini) 3 'sax)))
+
+NIL
+(105)
+=> T
+
 |#
 ;;; SYNOPSIS
 (defmethod map-over-events ((sc slippery-chicken) start-bar end-bar players
@@ -7094,9 +7106,13 @@ T
 			:pitch-seq-palette (1 2 3)
 			:marks (p 1 a 1 s 1))))
 	       :rthm-seq-map '((1 ((flt (seq1 seq1 seq2 seq1 seq1 seq2))))))))
-   (has-mark (get-note mini 1 1 'flt) 'fff)
-   (swap-marks mini nil nil nil 'pp 'fff)
+   (print (has-mark (get-note mini 1 1 'flt) 'fff))
+   (print (swap-marks mini nil nil nil 'pp 'fff))
    (has-mark (get-note mini 1 1 'flt) 'fff))
+
+NIL
+4
+=> (FFF)
 |#
 ;;; SYNOPSIS
 (defmethod swap-marks ((sc slippery-chicken) start-bar end-bar

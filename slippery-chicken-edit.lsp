@@ -5369,6 +5369,175 @@ NIL
            (setf (bar-line-type bar) type)))
     (values (nth type types) type)))
 
+
+;;; ****m* slippery-chicken-edit/map-over-notes
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; 1 September 2019, London
+;;; 
+;;; DESCRIPTION
+;;; A simple method that mimics the behaviour of map-over-bars but on notes
+;;; instead. At its heart is a next-event loop. Use this method to apply an
+;;; arbitrary function to every note within a specific range of bars.
+;;; NB This works on NOTES only, rests will be skipped!
+;;; 
+;;; ARGUMENTS
+;;; - A slippery chicken object
+;;; - A number that is the first bar to which the function should be
+;;;   applied. Default = NIL in which case 1 will be used. 
+;;; - A number that is the last bar to which the function should be
+;;;   applied. Default = NIL in which case all bars will be processed. 
+;;; - A list of the IDs of the players to whose parts the function should be
+;;;   applied. Can also be a single symbol. If NIL then all players will be
+;;;   processed.  
+;;; - The method or function itself. This can be a user-defined function or the
+;;;   name of an existing method or function.  It should take at least one
+;;;   argument, a note event (can be a single pitch or a chord), and any other
+;;; arguments as supplied.  
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - Any additional argument values the specified method/function may
+;;;   take or require. See the thin method below for an example that uses
+;;;   additional arguments. 
+;;; 
+;;; RETURN VALUE
+;;; - A list containing the number of notes changed per instrument
+;;; 
+;;; EXAMPLE
+#|
+(let* ((mini
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
+           :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+                                    (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
+                                    (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
+           :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
+           :set-map '((1 (1 1 1 1 1))
+                      (2 (1 1 1 1 1))
+                      (3 (1 1 1 1 1)))
+           :rthm-seq-palette '((1 ((((4 4) h e (s) (s) e+s+s))
+                                   :pitch-seq-palette ((1 2 3)))))
+           :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
+                           (2 ((sax (1 1 1 1 1))))
+                           (3 ((sax (1 1 1 1 1))))))))
+	(print (is-chord (get-note mini (num-bars mini) 3 'sax)))
+        (print (map-over-notes mini 1 nil nil #'add-pitches 'c4 'd4))
+	(is-chord (get-note mini (num-bars mini) 3 'sax)))
+
+NIL
+(45)
+=> 3
+
+|#
+;;; SYNOPSIS
+(defmethod map-over-notes ((sc slippery-chicken) start-bar end-bar players
+			   function &rest further-args)
+;;; ****
+  (unless end-bar
+    (setf end-bar (num-bars sc)))
+  (unless start-bar
+    (setf start-bar 1))
+  (unless players
+    (setf players (players sc)))
+  (force-list players)
+  (let ((count-list '()))
+    (loop for player in players do
+	 (next-event sc player t start-bar)
+	 (loop for ne = (next-event sc player t nil end-bar)
+	    with count = 0
+	    while ne
+	    do
+	      (apply function (cons ne further-args))
+	      (incf count)
+       finally (push count count-list)))
+    (nreverse count-list)))
+
+;;; ****m* slippery-chicken-edit/map-over-events
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; 1 September 2019, London
+;;; 
+;;; DESCRIPTION
+;;; A simple method that mimics the behaviour of map-over-bars but on events
+;;; instead. At its heart is a next-event loop. Use this method to apply an
+;;; arbitrary function to every event within a specific range of bars.
+;;; 
+;;; ARGUMENTS
+;;; - A slippery chicken object
+;;; - A number that is the first bar to which the function should be
+;;;   applied. Default = NIL in which case 1 will be used. 
+;;; - A number that is the last bar to which the function should be
+;;;   applied. Default = NIL in which case all bars will be processed. 
+;;; - A list of the IDs of the players to whose parts the function should be
+;;;   applied. Can also be a single symbol. If NIL then all players will be
+;;;   processed.  
+;;; - The method or function itself. This can be a user-defined function or the
+;;;   name of an existing method or function.  It should take at least one
+;;;   argument, an event, and any other arguments as supplied.  
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - Any additional argument values the specified method/function may
+;;;   take or require. See the thin method below for an example that uses
+;;;   additional arguments. 
+;;; 
+;;; RETURN VALUE
+;;; - A list containing the number of events changed per instrument
+;;; 
+;;; EXAMPLE
+#|
+(let* ((mini
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((sax ((alto-sax tenor-sax) :midi-channel 1))))
+           :instrument-change-map '((1 ((sax ((1 alto-sax) (3 tenor-sax)))))
+                                    (2 ((sax ((2 alto-sax) (5 tenor-sax)))))
+                                    (3 ((sax ((3 alto-sax) (4 tenor-sax))))))
+           :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5))))
+           :set-map '((1 (1 1 1 1 1))
+                      (2 (1 1 1 1 1))
+                      (3 (1 1 1 1 1)))
+           :rthm-seq-palette '((1 ((((4 4) h e (s) (s) e+s+s))
+                                   :pitch-seq-palette ((1 2 3)))))
+           :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
+                           (2 ((sax (1 1 1 1 1))))
+                           (3 ((sax (1 1 1 1 1))))))))
+        (print (is-rest (get-event mini (num-bars mini) 2 'sax)))
+	(print (map-over-events mini 1 nil nil #'force-rest))
+	(is-rest (get-event mini (num-bars mini) 3 'sax)))
+
+NIL
+(105)
+=> T
+
+|#
+;;; SYNOPSIS
+(defmethod map-over-events ((sc slippery-chicken) start-bar end-bar players
+			   function &rest further-args)
+;;; ****
+  (unless end-bar
+    (setf end-bar (num-bars sc)))
+  (unless start-bar
+    (setf start-bar 1))
+  (unless players
+    (setf players (players sc)))
+  (force-list players)
+  (let ((count-list '()))
+    (loop for player in players do
+	 (next-event sc player nil start-bar)
+	 (loop for ne = (next-event sc player nil nil end-bar)
+	    with count = 0
+	    while ne
+	    do
+	      (apply function (cons ne further-args))
+	      (incf count)
+       finally (push count count-list)))
+    (nreverse count-list)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 11 18:22:24 2012 -- returns a flat list of the results of
 ;;; calling the function on all of the bars for each instrument.
@@ -6937,9 +7106,13 @@ T
 			:pitch-seq-palette (1 2 3)
 			:marks (p 1 a 1 s 1))))
 	       :rthm-seq-map '((1 ((flt (seq1 seq1 seq2 seq1 seq1 seq2))))))))
-   (has-mark (get-note mini 1 1 'flt) 'fff)
-   (swap-marks mini nil nil nil 'pp 'fff)
+   (print (has-mark (get-note mini 1 1 'flt) 'fff))
+   (print (swap-marks mini nil nil nil 'pp 'fff))
    (has-mark (get-note mini 1 1 'flt) 'fff))
+
+NIL
+4
+=> (FFF)
 |#
 ;;; SYNOPSIS
 (defmethod swap-marks ((sc slippery-chicken) start-bar end-bar

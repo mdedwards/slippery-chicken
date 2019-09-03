@@ -2067,6 +2067,11 @@ bar 45
 ;;; - NIL or an integer to indicate the last bar from which events are to be
 ;;;   retrieved. If NIL, all events will be retrieved from the starting point
 ;;;   to the last event in the given slippery-chicken object. Default = NIL.
+;;;   NB This arg should be used in the second call to next-event.
+;;;   E.g.: (next-event sc player nil start-bar)
+;;;	    (loop for ne = (next-event sc player nil nil end-bar)
+;;;	          while ne
+;;;	          etc...
 ;;; 
 ;;; RETURN VALUE  
 ;;; An event object

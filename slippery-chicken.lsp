@@ -8484,6 +8484,63 @@ NOTE 6200 0.6666667
         (new-limits (make-sclist densities))
         densities)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/map-over-events-aux
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE 
+;;; 3 September 2019, London
+;;; 
+;;; DESCRIPTION
+;;; Auxilliary function for map-over-notes and map-over-events. Saves
+;;; duplicating code.
+;;; 
+;;; ARGUMENTS
+;;; - A slippery chicken object
+;;; - A number that is the first bar to which the function should be
+;;;   applied. Default = NIL in which case 1 will be used. 
+;;; - A number that is the last bar to which the function should be
+;;;   applied. Default = NIL in which case all bars will be processed. 
+;;; - A list of the IDs of the players to whose parts the function should be
+;;;   applied. Can also be a single symbol. If NIL then all players will be
+;;;   processed.
+;;; - T or NIL to indicate whether or not rests will be ignored.
+;;;   T = attacked notes only (i.e. no rests), NIL = include rests.
+;;; - The method or function itself. This can be a user-defined function or the
+;;;   name of an existing method or function.  It should take at least one
+;;;   argument, an event, and any other arguments as supplied.  
+;;; - Any additional argument values the specified method/function may
+;;;   take or require. See the thin method below for an example that uses
+;;;   additional arguments.
+;;; 
+;;; RETURN VALUE
+;;; - A list containing the number of events changed per instrument
+;;; 
+;;; SYNOPSIS
+(defun map-over-events-aux (sc start-bar end-bar players attacked-notes-only
+			    function further-args)
+;;; ****
+  (print further-args)
+  (unless end-bar
+    (setf end-bar (num-bars sc)))
+  (unless start-bar
+    (setf start-bar 1))
+  (unless players
+    (setf players (players sc)))
+  (force-list players)
+  (let ((count-list '()))
+    (loop for player in players do
+	 (next-event sc player attacked-notes-only start-bar)
+	 (loop for ne = (next-event sc player attacked-notes-only nil end-bar)
+	    with count = 0
+	    while ne
+	    do
+	      (apply function (cons ne further-args))
+	      (incf count)
+	    finally (push count count-list)))
+    (nreverse count-list)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

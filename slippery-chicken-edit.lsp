@@ -5369,7 +5369,7 @@ NIL
            (setf (bar-line-type bar) type)))
     (values (nth type types) type)))
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/map-over-notes
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
@@ -5436,25 +5436,11 @@ NIL
 (defmethod map-over-notes ((sc slippery-chicken) start-bar end-bar players
 			   function &rest further-args)
 ;;; ****
-  (unless end-bar
-    (setf end-bar (num-bars sc)))
-  (unless start-bar
-    (setf start-bar 1))
-  (unless players
-    (setf players (players sc)))
-  (force-list players)
-  (let ((count-list '()))
-    (loop for player in players do
-	 (next-event sc player t start-bar)
-	 (loop for ne = (next-event sc player t nil end-bar)
-	    with count = 0
-	    while ne
-	    do
-	      (apply function (cons ne further-args))
-	      (incf count)
-       finally (push count count-list)))
-    (nreverse count-list)))
+  ;; DJR Tue  3 Sep 2019 17:30:32 BST
+  ;; Changed to use aux method
+  (map-over-events-aux sc start-bar end-bar players t function further-args))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/map-over-events
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
@@ -5517,26 +5503,11 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod map-over-events ((sc slippery-chicken) start-bar end-bar players
-			   function &rest further-args)
+			    function &rest further-args)
 ;;; ****
-  (unless end-bar
-    (setf end-bar (num-bars sc)))
-  (unless start-bar
-    (setf start-bar 1))
-  (unless players
-    (setf players (players sc)))
-  (force-list players)
-  (let ((count-list '()))
-    (loop for player in players do
-	 (next-event sc player nil start-bar)
-	 (loop for ne = (next-event sc player nil nil end-bar)
-	    with count = 0
-	    while ne
-	    do
-	      (apply function (cons ne further-args))
-	      (incf count)
-       finally (push count count-list)))
-    (nreverse count-list)))
+  ;; DJR Tue  3 Sep 2019 17:30:32 BST
+  ;; Changed to use aux method
+  (map-over-events-aux sc start-bar end-bar players nil function further-args))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 11 18:22:24 2012 -- returns a flat list of the results of

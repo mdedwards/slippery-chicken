@@ -7113,7 +7113,8 @@ NIL
     count))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ****m* slippery-chicken-edit/fast-microtone-to-chromatic
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/fast-microtone-to-chromatic
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
 ;;; 

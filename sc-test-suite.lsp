@@ -19080,6 +19080,73 @@
       (has-mark (get-note mini 6 1 'flt) 'te)
       (has-mark (get-note mini 6 1 'flt) 'pause))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Wed  4 Sep 2019 18:11:36 BST - test fast-microtone-to-chromatic
+(sc-deftest test-fast-microtone-to-chromatic ()
+  (set-standard-instrument-slot 'chords t 'computer)
+  (set-standard-instrument-slot 'chord-function 'piano-chord-fun 'computer)
+  (let ((mini (make-slippery-chicken  
+	       '+mini+
+	       :ensemble '(((one (computer :midi-channel 1))
+			    (two (computer :midi-channel 2))))
+	       :set-limits-high '((one (0 f5 100 f5)))
+	       :set-limits-low '((two (0 f4 100 f4)))
+	       :avoid-used-notes t
+	       :staff-groupings '(2)
+	       :tempo-map '((1 (q 120)))
+	       :set-palette '((set1 ((C2 CQS2 D2 DQS2 E2 F2 FQS2 G2 GQS2 A2 AQS2
+					 B2 C3 CQS3 D3 DQS3 E3 F3 FQS3 G3 GQS3
+					 A3 AQS3 B3 C4 CQS4 D4 DQS4 E4 F4 FQS4
+					 G4 GQS4 A4 AQS4 B4 C5))) 
+			      (set2 ((D2 EF2 E2 F2 GF2 G2 AF2 A2 BF2 B2 C3 CQS3
+					 D3 EF3 E3 F3 GF3 G3 AF3 A3 BF3 B3 C4
+					 CQS4 D4 EF4 E4 F4 GF4 G4 AF4 A4 BF4 B4
+					 C5 CQS5 D5))))  
+	       :set-map `((1 ,(fibonacci-transitions 10 '(set1 set2))))
+	       :rthm-seq-palette
+	       '((seq1 ((((4 4) { 3 - te (te) te - - te te te -
+			  - te (te) te - - te te te - })
+			 ({ 3 - te te te - - te te te -
+			    - te te te - - te te te - }))
+			:pitch-seq-palette (((1) 3 (1) 2 3 (1) 2 3 (1) 2 3
+					     (1) 2 3 (1) 2 3 (1) 3 (1) 2 3))))
+		 (seq2 ((((4 4) q (q) q q)(e. (s) s s e q. e))
+			:pitch-seq-palette (((1) (3) 4 1 (2) 4 5 6 7)))))
+	       :rthm-seq-map `((1 ((one ,(fibonacci-transitions
+					  10
+					  '(seq1 seq1)))
+				   (two ,(fibonacci-transitions
+					  10
+					  '(seq2 seq2)))))))))
+    (sc-test-check
+      (equalp
+       (let* ((count 0))
+	 (map-over-notes mini nil nil nil
+			 #'(lambda (ev)
+			     (if (is-chord ev)
+				 (loop for p in (data (pitch-or-chord ev)) do
+				      (when (micro-tone p)
+					(incf count)))
+				 (progn
+				   (when (micro-tone (pitch-or-chord ev))
+				     (incf count))))))
+	 count)
+	      93)
+      (equalp '(66 27) (fast-microtone-to-chromatic mini nil :threshold 10))
+      (zerop
+       (let* ((count 0))
+	 (map-over-notes mini nil nil nil
+			 #'(lambda (ev)
+			     (if (is-chord ev)
+				 (loop for p in (data (pitch-or-chord ev)) do
+				      (when (micro-tone p)
+					(incf count)))
+				 (progn
+				   (when (micro-tone (pitch-or-chord ev))
+				     (incf count))))))
+	 count))
+      (equalp '(0 0) (fast-microtone-to-chromatic mini nil :threshold 10)))))
+    
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*

@@ -7112,6 +7112,95 @@ NIL
 			  (incf count))))))
     count))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ****m* slippery-chicken-edit/fast-microtone-to-chromatic
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; 4 September 2019, London
+;;; 
+;;; DESCRIPTION
+;;; Round microtonal pitches to their nearest chromatic pitch if the time
+;;; between successive events is less than or equal to a specified threshold in
+;;; seconds. This method is intended to make playing fast pasages in microtonal
+;;; music easier for human players. 
+;;; 
+;;; ARGUMENTS
+;;; - The slippery chiocken object containing the pitches to be tested.
+;;; - The player or players to be tested
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - start-bar: the first bar to start testing in. Default = 1
+;;; - end-bar: the last bar to test in. Default = (num-bars sc)
+;;; - threshold: the time in seconds between successive events that determines
+;;; whether or not a pitch should be rounded to its nearest chromatic. Default =
+;;; (fast-leap-threshold sc).
+;;; 
+;;; RETURN VALUE
+;;; A list containing the number of rounded pitches per instrument.
+;;; 
+;;; EXAMPLE
+#|
+(let ((mini (make-slippery-chicken  
+		 '+mini+ 
+		 :title "Your Title Here" 
+		 :composer "Your Name Here"
+		 :ensemble '(((flt (flute :midi-channel 1 :microtones-midi-channel 2))))
+		 :staff-groupings '(1)
+		 :tempo-map '((1 (q 60)))
+		 :set-palette '((set1 ((fqs2 b2 dqs4 aqf4 dqs5 e5 a5 d6))))
+		 :set-map '((1 (set1 set1 set1 set1 set1 set1)))
+		 :rthm-seq-palette
+		 '((seq1 ((((4 4) q - s s s s -  - e e - q))   
+			  :pitch-seq-palette (1 2 3 4 5 6 7 8))))
+		 :rthm-seq-map
+		 '((1 ((flt (seq1 seq1 seq1 seq1 seq1 seq1))))))))
+      (fast-microtone-to-chromatic mini nil :threshold 10)
+      (cmn-display mini))
+|#
+;;; SYNOPSIS
+(defmethod fast-microtone-to-chromatic ((sc slippery-chicken) players
+					&key
+					  (start-bar 1)
+					  end-bar
+					  ;; threshold in secs
+					  threshold)
+  (unless players (setf players (players sc)))
+  (unless end-bar (setf end-bar (num-bars sc)))
+  (unless threshold (setf threshold (fast-leap-threshold sc)))
+  (setf players (force-list players))
+  (let ((count-list '()))
+    (loop for player in players do
+	 (next-event sc player t start-bar)
+	 (loop for ne = (next-event sc player t nil end-bar)
+	    with le
+	    with count = 0
+	    while ne
+	    do
+	      (when (and le
+			 (<= (- (start-time ne)
+				(start-time le))
+			     threshold))
+		(if (is-chord le)
+		    (loop for p in (data (pitch-or-chord le))
+		       with new-pitches = '() do
+			 (if (micro-tone p)
+			   (progn (push (pitch-round p) new-pitches)
+				  (incf count))
+			   (push p new-pitches))
+		       finally
+			 (setf (pitch-or-chord le) new-pitches))
+		    (progn
+		      (when (micro-tone (pitch-or-chord le))
+			(if (written-pitch-or-chord le)
+			    (set-written-pitch-or-chord le (pitch-round (pitch-or-chord le)))
+			    (setf (pitch-or-chord le) (pitch-round (pitch-or-chord le))))
+			(incf count)))))
+	      (setf le ne)
+	    finally (push count count-list)))
+    (nreverse count-list)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
@@ -7224,6 +7313,7 @@ NIL
     (check-tuplets sc)
     (check-beams sc)
     sc))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Apr 19 15:03:05 2013 -- make a dummy (pretty empty) sc structure

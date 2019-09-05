@@ -4627,6 +4627,11 @@ seq-num 5, VN, replacing G3 with B6
   ;; 10/1/07 remove the events with a start-time after max-start-time at this
   ;; stage rather than rejecting them later (otherwise play-chance-env will
   ;; range over the full event list instead of those below max-start-time)
+  ;;
+  ;; DJR Thu  5 Sep 2019 12:42:07 BST
+  ;; (force-list) the soundfile-palette-refs so we can use multiple refs later.
+  (setf sound-file-palette-ref (force-list sound-file-palette-ref))
+  (setf sound-file-palette-ref2 (force-list sound-file-palette-ref2))
   (let* ((events (get-events-with-src sc section players 
                                       ;; these have 0 duration so we must ignore
                                       ;; them for now 
@@ -4652,17 +4657,22 @@ seq-num 5, VN, replacing G3 with B6
                           for len = (loop for rs in player sum (length rs))
                           do (setf (nth i events-per-player) len)
                           sum len))
+	 ;; DJR Thu  5 Sep 2019 12:41:00 BST
+	 ;; Update snds and snds2 to accept multiple sound-file-palette-refs
          (snds (when sound-file-palette-ref
-                 (make-cscl (get-snds sound-file-palette-ref
+                 (make-cscl
+		  (loop for sfpr in sound-file-palette-ref
+		     append (get-snds sfpr
                                       (if sndfile-palette
                                           sndfile-palette
-                                          (sndfile-palette sc))))))
+                                          (sndfile-palette sc)))))))
          (snds2 (when sound-file-palette-ref2
-                  (make-cscl 
-                   (get-snds sound-file-palette-ref2 
+                  (make-cscl
+		   (loop for sfpr in sound-file-palette-ref2
+                   append (get-snds sfpr
                              (if sndfile-palette
                                  sndfile-palette
-                                 (sndfile-palette sc))))))
+                                 (sndfile-palette sc)))))))
          (snd-transitions (loop for num-events in events-per-player collect
                                (fibonacci-transition num-events)))
          (sndl nil)

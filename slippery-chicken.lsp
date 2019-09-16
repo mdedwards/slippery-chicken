@@ -4567,7 +4567,13 @@ seq-num 5, VN, replacing G3 with B6
                        ;; DJR Thu 22 Aug 2019 15:08:39 BST
                        ;; clm::with-sound let's us set this, so why doesn't 
                        ;; clm-play? Voila!
-                       (decay-time 3))
+                       (decay-time 3)
+		       ;; DJR Mon 16 Sep 2019 01:26:11 BST
+		       ;; We can now set snd-transitions with a custom envelope,
+		       ;; e.g. '(0 0 100 1). x-values are arbitrary, y-values
+		       ;; are from 0 (for sound-file-palette-ref) and 1 (for
+		       ;; sound-file-palette-ref2).
+		       snd-transitions)
 ;;; ****                               
   ;; MDE Tue Apr 17 13:28:16 2012 -- guess the extension if none given
   (unless sndfile-extension
@@ -4673,8 +4679,12 @@ seq-num 5, VN, replacing G3 with B6
                              (if sndfile-palette
                                  sndfile-palette
                                  (sndfile-palette sc)))))))
+	 #|
+	 ;; DJR Mon 16 Sep 2019 01:26:11 BST
+	 ;; We'll sort this later. See below.
          (snd-transitions (loop for num-events in events-per-player collect
                                (fibonacci-transition num-events)))
+	 |#
          (sndl nil)
          (snd-group nil)
          (srts '())
@@ -4765,6 +4775,19 @@ seq-num 5, VN, replacing G3 with B6
                (error "slippery-chicken::clm-play: <snds2>: ~
                        No sounds for reference ~a"
                       sound-file-palette-ref2)))
+    ;; DJR Mon 16 Sep 2019 01:26:11 BST
+    ;; are we setting snd-transitions by default with finonacci-transitions or
+    ;; with a custom envelope?
+    (if (and snd-transitions sound-file-palette-ref2)
+	  (setf snd-transitions
+		(loop for num-events in events-per-player
+		   collect
+		     (loop for n below num-events
+			collect
+			  (round (interpolate n (new-lastx snd-transitions
+						    num-events))))))
+	  (setf snd-transitions (loop for num-events in events-per-player collect
+                               (fibonacci-transition num-events))))
     (when (and check-overwrite (probe-file output))
       (setf output-ok 
             (yes-or-no-p "File exists: ~%~a  ~%Overwrite (yes or no) > " 
@@ -4812,6 +4835,7 @@ seq-num 5, VN, replacing G3 with B6
                ;; for ffv = (print (first (first player)))
                for ffv = (first (remove-if-not #'event-p (flatten player)))
                if ffv minimize (start-time ffv)))
+      
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
       (clm::with-sound (:scaled-to normalise 
                          :reverb clm::nrev

@@ -4451,7 +4451,12 @@ seq-num 5, VN, replacing G3 with B6
 ;;;                               (frequency pitch) (data sflist)))
 ;;; 
 ;;;   Default = NIL i.e. use the circular selection method.
-;;;   :decay-time. Reverb decay time. By default this is 3 seconds.
+;;; - :decay-time. Reverb decay time. Default = 3 seconds.
+;;; - :snd-transitions. Set the transition from sound-file-ref to sound-file-ref
+;;;   over the course of the call to clm-play using a custom envelope instead of
+;;;   the default fibonacci-transitions method, e.g. '(0 0 100 1). x-axis is
+;;;   arbitrary, y-axis should range from 0 to 1. When reading, y-values will be
+;;;   rounded. 
 ;;; 
 ;;; RETURN VALUE
 ;;; Total events generated (integer).

@@ -7180,6 +7180,9 @@ NIL
 	    while ne
 	    do
 	      (when (and le
+			 ;; DJR Wed 18 Sep 2019 15:15:06 BST
+			 ;; accounting for tied notes
+			 (not (is-tied-to ne))
 			 (<= (- (start-time ne)
 				(start-time le))
 			     threshold))
@@ -7195,11 +7198,23 @@ NIL
 		    (progn
 		      (when (micro-tone (pitch-or-chord le))
 			(if (written-pitch-or-chord le)
-			    (set-written-pitch-or-chord le (pitch-round (pitch-or-chord le)))
-			    (setf (pitch-or-chord le) (pitch-round (pitch-or-chord le))))
+			    (set-written-pitch-or-chord
+			     le
+			     (pitch-round (pitch-or-chord le)))
+			    (setf (pitch-or-chord le)
+				  (pitch-round (pitch-or-chord le))))
 			(incf count)))))
-	      (setf le ne)
-	    finally (push count count-list)))
+	    ;; DJR Wed 18 Sep 2019 15:15:06 BST
+	    ;; accounting for tied notes
+	      (unless (is-tied-to ne)
+		(setf le ne))
+	    finally
+	      (push count count-list)))
+    ;; DJR Wed 18 Sep 2019 15:15:06 BST
+    ;; add some checks
+    (check-ties sc)
+    (check-beams sc :start-bar start-bar :end-bar end-bar :players players
+		 :auto-beam t :print t)
     (nreverse count-list)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

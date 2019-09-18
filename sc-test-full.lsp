@@ -63,6 +63,9 @@
 (set-sc-config 'cmn-display-auto-open nil)
 (set-sc-config 'midi-play-auto-open nil)
 (set-sc-config 'default-dir "/tmp/")
+;;; DJR Mon 16 Sep 2019 16:14:35 BST
+(set-sc-config 'lp-display-auto-open nil)
+
 
 
 ;;; SAR Mon Jan 16 13:38:51 GMT 2012: Transferring the results from

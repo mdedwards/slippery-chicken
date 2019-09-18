@@ -216,7 +216,7 @@ NIL
   (loop with happy = t 
      for p1 in (data c1) for p2 in (data c2) do
      ;; DJR Wed 18 Sep 2019 15:12:00 BST
-     ;; Make sure that different sized chords do not treated as the same.
+     ;; Make sure that different sized chords are not treated as the same,
      ;; i.e. (make-chord '(a4 c5)) does NOT equal (make-chord '(a4 c5 e5))
        (if (= (length (data c1))
 	      (length (data c2)))
@@ -238,6 +238,96 @@ NIL
                                          (frequency-tolerance 0.01))
   (declare (ignore p c enharmonics-are-equal frequency-tolerance))
   nil)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/pitch-or-chord=
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Wed 18 Sep 2019 17:37:39 BST - London
+;;; 
+;;; DESCRIPTION
+;;; Convenience method, test to see if the pitch-or-chord slots of two event
+;;; objects are the same.
+;;; 
+;;; ARGUMENTS
+;;; - a pitch or chord object
+;;; - a pitch or chord object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether or not enharmonic pitches are considered 
+;;;   equal. T = enharmonic pitches are considered equal. Default = NIL. 
+;;; - a number to indicate the frequency deviation allowed before returning NIL.
+;;; 
+;;; RETURN VALUE
+;;; T if the values of the two specified pitch or chord objects are equal, otherwise
+;;; NIL. 
+;;; 
+;;; EXAMPLE
+#|
+;; Comparison of equal pitch objects created using note-name symbols returns T 
+(let ((p1 (make-pitch 'C4))
+      (p2 (make-pitch 'C4)))
+  (pitch-or-chord= p1 p2))
+
+=> T 
+
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'bs3)))
+  (pitch-or-chord= p1 p2))
+
+=> NIL
+
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'bs3)))
+  (pitch-or-chord= p1 p2 t))
+
+=> T
+
+(let ((p1 (make-pitch 'c4))
+      (c1 (make-chord '(c4 e4 g4))))
+  (pitch-or-chord= p1 c1))
+
+=> NIL
+
+(let ((c1 (make-chord '(c4 e4 g4)))
+      (c2 (make-chord '(c4 e4))))
+  (pitch-or-chord= c1 c2))
+
+=> NIL
+
+(let ((c1 (make-chord '(c4 e4 g4)))
+      (c2 (make-chord '(bs4 ff4 g4))))
+  (pitch-or-chord= c1 c2))
+
+=> NIL
+
+(let ((c1 (make-chord '(c4 e4 g4)))
+      (c2 (make-chord '(bs3 ff4 g4))))
+  (pitch-or-chord= c1 c2 t))
+
+=> T
+
+|#
+;;; SYNOPSIS
+(defmethod pitch-or-chord= (p1 p2 &optional enharmonics-are-equal
+				  (frequency-tolerance 0.01))
+;;; ****
+  (unless (pitch-or-chord-p p1)
+    (error (format t "~%pitch-or-chord=: p1 is not a pitch or chord")))
+  (unless (pitch-or-chord-p p2)
+    (error (format t "~%pitch-or-chord=: p2 is not a pitch or chord")))
+  (cond ((and (pitch-p p1)
+	      (pitch-p p2))
+	 (pitch= p1 p2 enharmonics-are-equal frequency-tolerance))
+	((and (chord-p p1)
+	      (chord-p p2))
+	 (chord= p1 p2 enharmonics-are-equal frequency-tolerance))
+	;; We could put pitch= here instead but I'm not sure it's useful in
+	;; this case.
+	(t nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/add-harmonics
@@ -2568,6 +2658,13 @@ data: F5
 
 (defun chord-p (thing)
   (typep thing 'chord))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Wed 18 Sep 2019 17:36:07 BST
+;;; DOn't think we need comprehensive documentation for this, do we?
+(defun pitch-or-chord-p (thing)
+  (or (pitch-p thing)
+      (chord-p thing)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jul 27 15:14:15 2015 -- chord dissonance calculation methods

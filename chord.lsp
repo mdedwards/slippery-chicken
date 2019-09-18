@@ -214,9 +214,15 @@ NIL
                    (frequency-tolerance 0.01)) ; (src-tolerance 0.0001))
 ;;; ****
   (loop with happy = t 
-       for p1 in (data c1) for p2 in (data c2) do
+     for p1 in (data c1) for p2 in (data c2) do
+     ;; DJR Wed 18 Sep 2019 15:12:00 BST
+     ;; Make sure that different sized chords do not treated as the same.
+     ;; i.e. (make-chord '(a4 c5)) does NOT equal (make-chord '(a4 c5 e5))
+       (if (= (length (data c1))
+	      (length (data c2)))
        (setf happy (pitch= p1 p2 enharmonics-are-equal frequency-tolerance))
                                         ; src-tolerance))
+       (setf happy nil))
        while happy
      finally (return happy)))
 

@@ -8560,14 +8560,16 @@ NOTE 6200 0.6666667
 (defun map-over-events-aux (sc start-bar end-bar players attacked-notes-only
 			    function further-args)
 ;;; ****
-  (print further-args)
+;  (print further-args)
   (unless end-bar
     (setf end-bar (num-bars sc)))
   (unless start-bar
     (setf start-bar 1))
   (unless players
     (setf players (players sc)))
-  (force-list players)
+  ;; DJR Wed 18 Sep 2019 08:15:15 BST
+  ;; Forgot to setf this!
+  (setf players (force-list players))
   (let ((count-list '()))
     (loop for player in players do
 	 (next-event sc player attacked-notes-only start-bar)

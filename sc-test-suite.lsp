@@ -19081,7 +19081,8 @@
       (has-mark (get-note mini 6 1 'flt) 'pause))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; DJR Wed  4 Sep 2019 18:11:36 BST - test fast-microtone-to-chromatic
+;;; DJR Wed  4 Sep 2019 18:11:36 BST
+;;; test fast-microtone-to-chromatic
 (sc-deftest test-fast-microtone-to-chromatic ()
   (set-standard-instrument-slot 'chords t 'computer)
   (set-standard-instrument-slot 'chord-function 'piano-chord-fun 'computer)
@@ -19148,6 +19149,7 @@
       (equalp '(0 0) (fast-microtone-to-chromatic mini nil :threshold 10)))))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Wed 18 Sep 2019 18:35:36 BST
 ;;; test-pitch-or-chord=
 (sc-deftest test-pitch-or-chord= ()
 	    (let ((p1 (make-pitch 'c4))
@@ -19161,6 +19163,27 @@
 	       (null (pitch-or-chord= c1 c2))
 	       (null (pitch-or-chord= c1 c3))
 	       (null (pitch-or-chord= c1 c3)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Wed 18 Sep 2019 18:53:41 BST
+;;; test-tie-repeated-notes
+(sc-deftest test-tie-repeated-notes ()
+	    (let* ((mini (make-slippery-chicken  
+			  '+mini+ 
+			  :ensemble '(((pno (piano :midi-channel 1))))
+			  :staff-groupings '(1)
+			  :tempo-map '((1 (q 60)))
+			  :set-palette '((set1 ((fs2 b2 d4 a4 d5 e5 a5 d6))) 
+					 (set2 ((b2 fs3 d4 e4 a4 d5 e5 a5 d6))))
+			  :set-map '((1 (set1 set1 set2 set1 set1 set2)))
+			  :rthm-seq-palette
+			  '((seq1 ((((4 4) q (q) q q))   
+				   :pitch-seq-palette (1 1 1)))  
+			    (seq2 ((((4 4) (e) e q e (e) e e)) 
+				   :pitch-seq-palette (1 1 1 (1) (1)))))
+			  :rthm-seq-map '((1 ((pno (seq1 seq1 seq2 seq1 seq1 seq2))))))))
+	      (sc-test-check
+	       (equalp (tie-repeated-notes mini nil nil nil) '(12)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*

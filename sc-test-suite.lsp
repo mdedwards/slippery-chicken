@@ -19147,6 +19147,20 @@
 	 count))
       (equalp '(0 0) (fast-microtone-to-chromatic mini nil :threshold 10)))))
     
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; test-pitch-or-chord=
+(sc-deftest test-pitch-or-chord= ()
+	    (let ((p1 (make-pitch 'c4))
+		  (p2 (make-pitch 'bs3))
+		  (c1 (make-chord '(c4 e4 g4)))
+		  (c2 (make-chord '(c4 e4)))
+		  (c3 (make-chord '(bs3 ff4 g4))))
+	      (sc-test-check
+	       (null (pitch-or-chord= p1 p2))
+	       (pitch-or-chord= p1 p2 t)
+	       (null (pitch-or-chord= c1 c2))
+	       (null (pitch-or-chord= c1 c3))
+	       (null (pitch-or-chord= c1 c3)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*

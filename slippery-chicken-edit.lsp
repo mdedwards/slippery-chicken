@@ -7214,7 +7214,7 @@ NIL
     ;; add some checks
     (check-ties sc)
     (check-beams sc :start-bar start-bar :end-bar end-bar :players players
-		 :auto-beam t :print t)
+		 :auto-beam t :print nil)
     (nreverse count-list)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -3034,6 +3034,85 @@ NIL
             (update-slots sc)))))
   t)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/tie-repeated-notes
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Wed 18 Sep 2019 18:56:39 BST
+;;; 
+;;; DESCRIPTION
+;;; Tie adjacent notes if they are the same pitch or chord.
+;;; NB: this method works on pitches and chords
+;;; 
+;;; ARGUMENTS
+;;; - a slippery chicken object
+;;; - the first bar to start looking
+;;; - the last bar to look in
+;;; - the player or players to tie
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - :consolidate - call consolidate-all-notes at the end? Default = t 
+;;; 
+;;; RETURN VALUE
+;;; A list of the total number of ties between notes per instrument
+;;; 
+;;; EXAMPLE
+#|
+(let* ((mini (make-slippery-chicken  
+                '+mini+ 
+                :ensemble '(((pno (piano :midi-channel 1))))
+                :staff-groupings '(1)
+                :tempo-map '((1 (q 60)))
+                :set-palette '((set1 ((fs2 b2 d4 a4 d5 e5 a5 d6))) 
+                               (set2 ((b2 fs3 d4 e4 a4 d5 e5 a5 d6))))
+                :set-map '((1 (set1 set1 set2 set1 set1 set2)))
+                :rthm-seq-palette
+                '((seq1 ((((4 4) q (q) q q))   
+                         :pitch-seq-palette (1 1 1)))  
+                  (seq2 ((((4 4) (e) e q e (e) e e)) 
+                         :pitch-seq-palette (1 1 1 (1) (1)))))
+                :rthm-seq-map '((1 ((pno (seq1 seq1 seq2 seq1 seq1 seq2))))))))
+      (tie-repeated-notes mini nil nil nil))
+
+=> (12)
+|#
+;;; SYNOPSIS
+(defmethod tie-repeated-notes ((sc slippery-chicken) start-bar end-bar players
+			       &key (consolidate t))
+;;; ****
+  (unless players (setf players (players sc)))
+  (unless start-bar (setf start-bar 1))
+  (unless end-bar (setf end-bar (num-bars sc)))
+  (setf players (force-list players))
+  (let ((count-list '()))
+    (loop for player in players do
+	 (next-event sc player nil start-bar)
+	 (loop for ne = (next-event sc player nil nil end-bar)
+	    with le
+	    with count = 0
+	    while ne
+	    do
+	      (when le
+		(unless (or (is-rest ne)
+			    (is-rest le))
+		  (when (pitch-or-chord= (pitch-or-chord ne)
+					 (pitch-or-chord le))
+		    (setf (is-tied-from le) t
+			  (is-tied-to ne) t
+			  count (incf count)))))
+	      (setf le ne)
+	    finally
+	      (push count count-list))
+       finally
+	 (when consolidate
+	   (consolidate-all-notes sc start-bar end-bar players))
+	 (update-slots sc))
+    count-list))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Apr 20 13:42:14 BST 2012: Added robodoc entry

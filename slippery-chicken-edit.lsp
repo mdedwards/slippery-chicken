@@ -5427,9 +5427,9 @@ NIL
         (print (map-over-notes mini 1 nil nil #'add-pitches 'c4 'd4))
 	(is-chord (get-note mini (num-bars mini) 3 'sax)))
 
-NIL
-(45)
-=> 3
+=> NIL
+   (45)
+   3
 
 |#
 ;;; SYNOPSIS
@@ -5496,9 +5496,9 @@ NIL
 	(print (map-over-events mini 1 nil nil #'force-rest))
 	(is-rest (get-event mini (num-bars mini) 3 'sax)))
 
-NIL
-(105)
-=> T
+=> NIL
+   (105)
+   T
 
 |#
 ;;; SYNOPSIS

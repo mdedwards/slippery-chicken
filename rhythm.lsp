@@ -236,7 +236,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod print-simple ((r rhythm) &optional written (stream t))
-  (format stream "~a~a ~a~a, "
+  ;; DJR Thu 19 Sep 2019 14:03:02 BST
+  ;; Added a ~% to make things more legible.
+  (format stream "~%~a~a ~a~a, "
           (if (is-tied-to r) "+" "")
           (cond ((is-rest r) "rest")
                 ((and (event-p r) (pitch-or-chord r))

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:09:44 Mon Sep 30 2019 CEST
+;;; $$ Last modified:  15:13:36 Mon Sep 30 2019 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5448,11 +5448,7 @@ NIL
            (setf (bar-line-type bar) type)))
     (values (nth type types) type)))
 
-<<<<<<< HEAD
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-=======
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
->>>>>>> 3bc3d8db9922f1754289758098539d11f348ea33
 ;;; ****m* slippery-chicken-edit/map-over-notes
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
@@ -5524,7 +5520,6 @@ NIL
   (map-over-events-aux sc start-bar end-bar players t function further-args))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
->>>>>>> 3bc3d8db9922f1754289758098539d11f348ea33
 ;;; ****m* slippery-chicken-edit/map-over-events
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 

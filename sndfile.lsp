@@ -110,7 +110,8 @@
           (basic-copy-object (frequency sf))
           (slot-value named-object 'data-consistent ) (data-consistent sf)     
           (slot-value named-object 'will-be-used ) (will-be-used sf)
-          (slot-value named-object 'has-been-used ) (has-been-used sf))
+          (slot-value named-object 'has-been-used ) (has-been-used sf)
+	  (slot-value named-object 'description ) (description sf))
     ;; (print 'sndfile-clone-wnc) (print (data sf))
     named-object))
 
@@ -136,10 +137,10 @@
                     ~%         snd-duration: ~a, channels: ~a, frequency: ~a~
                     ~%         start: ~a, end: ~a, amplitude: ~a, duration ~a~
                     ~%         will-be-used: ~a, has-been-used: ~a~
-                    ~%         data-consistent: ~a"
+                    ~%         data-consistent: ~a, description: ~a"
           (path sf) (snd-duration sf) (channels sf) (frequency sf) (start sf)
           (end sf) (amplitude sf) (duration sf) (will-be-used sf)
-          (has-been-used sf) (data-consistent sf)))
+          (has-been-used sf) (data-consistent sf) (description sf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -226,6 +227,14 @@ T
 
 (defmethod (setf path) :after (value (sf sndfile))
   (declare (ignore value))
+  (update sf))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Mon 30 Sep 2019 14:56:33 BST
+;;; Not usre why this was never here
+(defmethod (setf description) :after (value (sf sndfile))
+  (declare (ignore value))
+  (setf (slot-value sf 'description) value)
   (update sf))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

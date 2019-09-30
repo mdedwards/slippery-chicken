@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:38:47 Fri Aug 30 2019 CEST
+;;; $$ Last modified:  15:05:07 Mon Sep 30 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5137,30 +5137,46 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;; doesn't include the target at the end by default
 ;;; ****f* utilities/down-up
 ;;; DATE
-;;; 
+;;; May 8th 2016
 ;;; 
 ;;; DESCRIPTION
-;;; 
+;;; This is a routine used in morphing maps but may be useful elsewhere. It
+;;; interpolates between two numbers over a given number of steps before
+;;; returning back to the first number. 
 ;;; 
 ;;; ARGUMENTS
-;;; 
+;;; - the number of steps over which the procedure should interpolate
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; 
+;;; keyword arguments:
+;;; - :down. T or NIL: whether to first descend before ascending. Default = T
+;;; - :up. T or NIL: whether to ascend after descending. Default = T
+;;; - :start. The number to start at. Default = 1.0
+;;; - :target. The number to interpolate towards. Default = 0.0.
+;;; - :cons. Whether to return :start as the first number in the result list.
+;;; - :butlast. Whether to omit the :start when ascending. Default = T.
 ;;; 
 ;;; RETURN VALUE
-;;; 
+;;; A list of numbers.
 ;;; 
 ;;; EXAMPLE
 #|
-
+(mapcar #'(lambda (x) (decimal-places x 2)) (down-up 20))
+--> (0.9 0.8 0.7 0.6 0.5 0.4 0.3 0.2 0.1 0.0 0.09 0.18 0.27 0.36 0.45 0.55 0.64
+     0.73 0.82 0.91)
+(mapcar #'(lambda (x) (decimal-places x 2)) (down-up 20 :cons t))
+--> (1.0 0.9 0.8 0.7 0.6 0.5 0.4 0.3 0.2 0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8
+     0.9)
+(mapcar #'(lambda (x) (decimal-places x 2)) (down-up 20 :butlast nil))
+--> (0.9 0.8 0.7 0.6 0.5 0.4 0.3 0.2 0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
+     1.0)
 |#
 ;;; SYNOPSIS
 (defun down-up (steps &key (down t) (up t) (start 1.0d0) (target 0.0d0)
                         (cons nil) (butlast t))
 ;;; ****
   (unless (> steps 0)
-    (error "down-up: <steps> should be > 1: ~a" steps))
+    (error "utilities::down-up: <steps> should be > 1: ~a" steps))
   (when butlast (incf steps))
   (when cons (decf steps))
   (let* ((fn2 (floor steps 2))

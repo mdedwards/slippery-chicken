@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:34:18 Fri Aug 30 2019 CEST
+;;; $$ Last modified:  17:48:51 Sat Sep 28 2019 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2069,9 +2069,9 @@ bar 45
 ;;;   to the last event in the given slippery-chicken object. Default = NIL.
 ;;;   NB This arg should be used in the second call to next-event.
 ;;;   E.g.: (next-event sc player nil start-bar)
-;;;	    (loop for ne = (next-event sc player nil nil end-bar)
-;;;	          while ne
-;;;	          etc...
+;;;         (loop for ne = (next-event sc player nil nil end-bar)
+;;;               while ne
+;;;               etc...
 ;;; 
 ;;; RETURN VALUE  
 ;;; An event object
@@ -7506,6 +7506,7 @@ FS4 G4)
     (first events)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; todo: this needs an RT
 ;;; ****m* slippery-chicken/get-phrases
 ;;; DESCRIPTION
 ;;; This returns lists of events that make up phrases. Its notion of phrases

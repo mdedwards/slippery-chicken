@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  14:53:29 Wed Aug 21 2019 CEST
+;;; $$ Last modified:  15:29:56 Tue Sep  3 2019 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5369,7 +5369,7 @@ NIL
            (setf (bar-line-type bar) type)))
     (values (nth type types) type)))
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/map-over-notes
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
@@ -5423,9 +5423,9 @@ NIL
            :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
                            (2 ((sax (1 1 1 1 1))))
                            (3 ((sax (1 1 1 1 1))))))))
-	(print (is-chord (get-note mini (num-bars mini) 3 'sax)))
+        (print (is-chord (get-note mini (num-bars mini) 3 'sax)))
         (print (map-over-notes mini 1 nil nil #'add-pitches 'c4 'd4))
-	(is-chord (get-note mini (num-bars mini) 3 'sax)))
+        (is-chord (get-note mini (num-bars mini) 3 'sax)))
 
 NIL
 (45)
@@ -5434,7 +5434,7 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod map-over-notes ((sc slippery-chicken) start-bar end-bar players
-			   function &rest further-args)
+                           function &rest further-args)
 ;;; ****
   (unless end-bar
     (setf end-bar (num-bars sc)))
@@ -5445,16 +5445,17 @@ NIL
   (force-list players)
   (let ((count-list '()))
     (loop for player in players do
-	 (next-event sc player t start-bar)
-	 (loop for ne = (next-event sc player t nil end-bar)
-	    with count = 0
-	    while ne
-	    do
-	      (apply function (cons ne further-args))
-	      (incf count)
+         (next-event sc player t start-bar)
+         (loop for ne = (next-event sc player t nil end-bar)
+            with count = 0
+            while ne
+            do
+              (apply function (cons ne further-args))
+              (incf count)
        finally (push count count-list)))
     (nreverse count-list)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/map-over-events
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
@@ -5507,8 +5508,8 @@ NIL
                            (2 ((sax (1 1 1 1 1))))
                            (3 ((sax (1 1 1 1 1))))))))
         (print (is-rest (get-event mini (num-bars mini) 2 'sax)))
-	(print (map-over-events mini 1 nil nil #'force-rest))
-	(is-rest (get-event mini (num-bars mini) 3 'sax)))
+        (print (map-over-events mini 1 nil nil #'force-rest))
+        (is-rest (get-event mini (num-bars mini) 3 'sax)))
 
 NIL
 (105)
@@ -5517,7 +5518,7 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod map-over-events ((sc slippery-chicken) start-bar end-bar players
-			   function &rest further-args)
+                           function &rest further-args)
 ;;; ****
   (unless end-bar
     (setf end-bar (num-bars sc)))
@@ -5528,13 +5529,13 @@ NIL
   (force-list players)
   (let ((count-list '()))
     (loop for player in players do
-	 (next-event sc player nil start-bar)
-	 (loop for ne = (next-event sc player nil nil end-bar)
-	    with count = 0
-	    while ne
-	    do
-	      (apply function (cons ne further-args))
-	      (incf count)
+         (next-event sc player nil start-bar)
+         (loop for ne = (next-event sc player nil nil end-bar)
+            with count = 0
+            while ne
+            do
+              (apply function (cons ne further-args))
+              (incf count)
        finally (push count count-list)))
     (nreverse count-list)))
 
@@ -7091,21 +7092,21 @@ T
 ;;; EXAMPLE
 #|
 (let* ((mini (make-slippery-chicken  
-	       '+mini+ 
-	       :ensemble '(((flt (flute :midi-channel 1))))
-	       :staff-groupings '(1)
-	       :tempo-map '((1 (q 60)))
-	       :set-palette '((set1 ((fs2 b2 d4 a4 d5 e5 a5 d6))) 
-			      (set2 ((b2 fs3 d4 e4 a4 d5 e5 a5 d6))))
-	       :set-map '((1 (set1 set1 set2 set1 set1 set2)))
-	       :rthm-seq-palette
-	       '((seq1 ((((4 4) (q) (q) q q))   
-			:pitch-seq-palette (1 2)
-			:marks (pp 1)))  
-		 (seq2 ((((4 4) (e) e q h)) 
-			:pitch-seq-palette (1 2 3)
-			:marks (p 1 a 1 s 1))))
-	       :rthm-seq-map '((1 ((flt (seq1 seq1 seq2 seq1 seq1 seq2))))))))
+               '+mini+ 
+               :ensemble '(((flt (flute :midi-channel 1))))
+               :staff-groupings '(1)
+               :tempo-map '((1 (q 60)))
+               :set-palette '((set1 ((fs2 b2 d4 a4 d5 e5 a5 d6))) 
+                              (set2 ((b2 fs3 d4 e4 a4 d5 e5 a5 d6))))
+               :set-map '((1 (set1 set1 set2 set1 set1 set2)))
+               :rthm-seq-palette
+               '((seq1 ((((4 4) (q) (q) q q))   
+                        :pitch-seq-palette (1 2)
+                        :marks (pp 1)))  
+                 (seq2 ((((4 4) (e) e q h)) 
+                        :pitch-seq-palette (1 2 3)
+                        :marks (p 1 a 1 s 1))))
+               :rthm-seq-map '((1 ((flt (seq1 seq1 seq2 seq1 seq1 seq2))))))))
    (print (has-mark (get-note mini 1 1 'flt) 'fff))
    (print (swap-marks mini nil nil nil 'pp 'fff))
    (has-mark (get-note mini 1 1 'flt) 'fff))
@@ -7116,7 +7117,7 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod swap-marks ((sc slippery-chicken) start-bar end-bar
-		       players old-marks new-marks)
+                       players old-marks new-marks)
 ;;; ****
   (let ((count 0)) ; for return testing
     (unless end-bar (setf end-bar (num-bars sc)))
@@ -7127,18 +7128,18 @@ NIL
     (setf new-marks (force-list new-marks))
     (unless (= (length old-marks)(length new-marks))
       (error (format t "~%swap-marks: old-marks and new-marks must be the same
-		       length")))
+                       length")))
     (loop for player in players do
-	 (loop for bn from start-bar to end-bar
-	    for bar = (get-bar sc bn player)
-	    do
-	      (loop for e in (rhythms bar) do
-		   (loop for om in old-marks
-		      for nm in new-marks do
-			(when (has-mark e om)
-			  (rm-marks e om)
-			  (add-mark-once e nm)
-			  (incf count))))))
+         (loop for bn from start-bar to end-bar
+            for bar = (get-bar sc bn player)
+            do
+              (loop for e in (rhythms bar) do
+                   (loop for om in old-marks
+                      for nm in new-marks do
+                        (when (has-mark e om)
+                          (rm-marks e om)
+                          (add-mark-once e nm)
+                          (incf count))))))
     count))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

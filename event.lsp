@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:28:34 Mon Sep  2 2019 CEST
+;;; $$ Last modified:  16:36:14 Sat Sep 28 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -563,7 +563,10 @@
            (ped (pedal 127))
            (ped-up (pedal 0))
            ;; up then down but we're pushing so reversed
-           (ped^ (pedal 127) (pedal 0))
+           ;; (ped^ (pedal 127) (pedal 0))
+           ;; MDE Sat Sep 28 16:36:05 2019 -- changed the order as no longer
+           ;; working when reversed 
+           (ped^ (pedal 0) (pedal 127))
            (uc (pedal 127 67))
            (tc (pedal 0 67))
            ;; MDE Thu Jun 20 17:24:08 2019 -- sost doesn't react with Disklavier

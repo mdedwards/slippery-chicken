@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:13:36 Mon Sep 30 2019 CEST
+;;; $$ Last modified:  17:55:57 Mon Sep 30 2019 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -57,8 +57,6 @@
 (proclaim '(special +slippery-chicken-standard-instrument-palette+))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Sun Apr 22 09:08:44 BST 2012: Conformed robodoc entry
-
 ;;; ****m* slippery-chicken-edit/replace-tempo-map
 ;;; DESCRIPTION
 ;;; Replace the tempo data for a given slippery-chicken object with new

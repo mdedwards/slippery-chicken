@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:36:14 Sat Sep 28 2019 CEST
+;;; $$ Last modified:  18:22:55 Mon Sep 30 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -548,10 +548,12 @@
   ;; MDE Tue Apr 26 15:29:55 2016 -- (channel controller-number value) with
   ;; piano pedalling we don't have to worry about the microtones-midi-channel as
   ;; there are no microtones on the piano. so we just output on the channel of
-  ;; the first pitch in the case of a chord MDE Wed May 25 12:38:52 2016 --
-  ;; allow soft and sost pedals also
+  ;; the first pitch in the case of a chord
+  ;; MDE Wed May 25 12:38:52 2016 -- allow soft and sost pedals also
   (flet ((pedal (val &optional (controller 64))
            (let ((channel (get-midi-channel e)))
+             (unless channel
+               (setq channel (get-last-midi-channel e)))
              (unless channel
                (error "add-mark: can't add pedal to an event with no midi ~
                        channel. ~%Did you add pedal marks to a rest by ~
@@ -2277,7 +2279,10 @@ NIL
 (defmethod set-last-midi-channel ((e event)); player channel)
   (let ((player (player e))
         (channel (get-midi-channel e)))
-    (when channel ; so rests are ignored as they don't have channel data
+    ;; so rests are ignored as they don't have channel data, but midi-channels
+    ;; slot is class allocation so data should still be available for the last
+    ;; notes we saw
+    (when channel 
       (if (get-data player (midi-channels e) nil)
           (set-data player (list player channel) (midi-channels e))
           (add (list player channel) (midi-channels e))))))

@@ -671,12 +671,12 @@ NIL
 => T
 
 ;; Comparison of pitch objects created using frequencies with those created
-;; using note-name symbols return NIL
+;; using note-name symbols returns T
 (let ((p1 (make-pitch 'C4))
       (p2 (make-pitch 261.63)))
   (pitch= p1 p2))
 
-=> NIL
+=> T
 
 |#
 ;;; SYNOPSIS

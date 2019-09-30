@@ -1766,11 +1766,11 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 (defun init-pitch-list (pitches &optional auto-sort midi-channel
                                   microtone-midi-channel)
   (let ((result (loop with p for pitch in pitches do
-                   (unless pitch
-                     (error "~a~&sc-set::init-pitch-list: pitch is nil!"
-                            pitches))
+		     (unless pitch
+		       (error "~a~&sc-set::init-pitch-list: pitch is nil!"
+			      pitches))
                      (setq p (make-pitch pitch))
-                     ;; MDE Fri Aug 24 14:24:12 2018
+		   ;; MDE Fri Aug 24 14:24:12 2018
                      (if (micro-tone p)
                          (if microtone-midi-channel
                              (setf (midi-channel p) microtone-midi-channel)

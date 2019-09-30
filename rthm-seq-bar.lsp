@@ -1074,7 +1074,7 @@ data: ((2 4) Q E S S)
 ;;; - A rthm-seq-bar object.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - T or NIL to indicate whether the method sure make sure that an exact
+;;; - T or NIL to indicate whether the method should make sure that an exact
 ;;;   beat's worth of rhythms is handled. T = check durations. Default = NIL. 
 ;;; 
 ;;; RETURN VALUE

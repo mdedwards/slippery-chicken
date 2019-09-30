@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:29:56 Tue Sep  3 2019 CEST
+;;; $$ Last modified:  15:09:44 Mon Sep 30 2019 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3034,6 +3034,85 @@ NIL
             (update-slots sc)))))
   t)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/tie-repeated-notes
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Wed 18 Sep 2019 18:56:39 BST
+;;; 
+;;; DESCRIPTION
+;;; Tie adjacent notes if they are the same pitch or chord.
+;;; NB: this method works on pitches and chords
+;;; 
+;;; ARGUMENTS
+;;; - a slippery chicken object
+;;; - the first bar to start looking
+;;; - the last bar to look in
+;;; - the player or players to tie
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - :consolidate - call consolidate-all-notes at the end? Default = t 
+;;; 
+;;; RETURN VALUE
+;;; A list of the total number of ties between notes per instrument
+;;; 
+;;; EXAMPLE
+#|
+(let* ((mini (make-slippery-chicken  
+                '+mini+ 
+                :ensemble '(((pno (piano :midi-channel 1))))
+                :staff-groupings '(1)
+                :tempo-map '((1 (q 60)))
+                :set-palette '((set1 ((fs2 b2 d4 a4 d5 e5 a5 d6))) 
+                               (set2 ((b2 fs3 d4 e4 a4 d5 e5 a5 d6))))
+                :set-map '((1 (set1 set1 set2 set1 set1 set2)))
+                :rthm-seq-palette
+                '((seq1 ((((4 4) q (q) q q))   
+                         :pitch-seq-palette (1 1 1)))  
+                  (seq2 ((((4 4) (e) e q e (e) e e)) 
+                         :pitch-seq-palette (1 1 1 (1) (1)))))
+                :rthm-seq-map '((1 ((pno (seq1 seq1 seq2 seq1 seq1 seq2))))))))
+      (tie-repeated-notes mini nil nil nil))
+
+=> (12)
+|#
+;;; SYNOPSIS
+(defmethod tie-repeated-notes ((sc slippery-chicken) start-bar end-bar players
+                               &key (consolidate t))
+;;; ****
+  (unless players (setf players (players sc)))
+  (unless start-bar (setf start-bar 1))
+  (unless end-bar (setf end-bar (num-bars sc)))
+  (setf players (force-list players))
+  (let ((count-list '()))
+    (loop for player in players do
+         (next-event sc player nil start-bar)
+         (loop for ne = (next-event sc player nil nil end-bar)
+            with le
+            with count = 0
+            while ne
+            do
+              (when le
+                (unless (or (is-rest ne)
+                            (is-rest le))
+                  (when (pitch-or-chord= (pitch-or-chord ne)
+                                         (pitch-or-chord le))
+                    (setf (is-tied-from le) t
+                          (is-tied-to ne) t
+                          count (incf count)))))
+              (setf le ne)
+            finally
+              (push count count-list))
+       finally
+         (when consolidate
+           (consolidate-all-notes sc start-bar end-bar players))
+         (update-slots sc))
+    count-list))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Apr 20 13:42:14 BST 2012: Added robodoc entry
@@ -5369,7 +5448,11 @@ NIL
            (setf (bar-line-type bar) type)))
     (values (nth type types) type)))
 
+<<<<<<< HEAD
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+=======
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+>>>>>>> 3bc3d8db9922f1754289758098539d11f348ea33
 ;;; ****m* slippery-chicken-edit/map-over-notes
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
@@ -5427,35 +5510,21 @@ NIL
         (print (map-over-notes mini 1 nil nil #'add-pitches 'c4 'd4))
         (is-chord (get-note mini (num-bars mini) 3 'sax)))
 
-NIL
-(45)
-=> 3
+=> NIL
+   (45)
+   3
 
 |#
 ;;; SYNOPSIS
 (defmethod map-over-notes ((sc slippery-chicken) start-bar end-bar players
                            function &rest further-args)
 ;;; ****
-  (unless end-bar
-    (setf end-bar (num-bars sc)))
-  (unless start-bar
-    (setf start-bar 1))
-  (unless players
-    (setf players (players sc)))
-  (force-list players)
-  (let ((count-list '()))
-    (loop for player in players do
-         (next-event sc player t start-bar)
-         (loop for ne = (next-event sc player t nil end-bar)
-            with count = 0
-            while ne
-            do
-              (apply function (cons ne further-args))
-              (incf count)
-       finally (push count count-list)))
-    (nreverse count-list)))
+  ;; DJR Tue  3 Sep 2019 17:30:32 BST
+  ;; Changed to use aux method
+  (map-over-events-aux sc start-bar end-bar players t function further-args))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+>>>>>>> 3bc3d8db9922f1754289758098539d11f348ea33
 ;;; ****m* slippery-chicken-edit/map-over-events
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
@@ -5511,33 +5580,18 @@ NIL
         (print (map-over-events mini 1 nil nil #'force-rest))
         (is-rest (get-event mini (num-bars mini) 3 'sax)))
 
-NIL
-(105)
-=> T
+=> NIL
+   (105)
+   T
 
 |#
 ;;; SYNOPSIS
 (defmethod map-over-events ((sc slippery-chicken) start-bar end-bar players
                            function &rest further-args)
 ;;; ****
-  (unless end-bar
-    (setf end-bar (num-bars sc)))
-  (unless start-bar
-    (setf start-bar 1))
-  (unless players
-    (setf players (players sc)))
-  (force-list players)
-  (let ((count-list '()))
-    (loop for player in players do
-         (next-event sc player nil start-bar)
-         (loop for ne = (next-event sc player nil nil end-bar)
-            with count = 0
-            while ne
-            do
-              (apply function (cons ne further-args))
-              (incf count)
-       finally (push count count-list)))
-    (nreverse count-list)))
+  ;; DJR Tue  3 Sep 2019 17:30:32 BST
+  ;; Changed to use aux method
+  (map-over-events-aux sc start-bar end-bar players nil function further-args))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 11 18:22:24 2012 -- returns a flat list of the results of
@@ -7142,6 +7196,111 @@ NIL
                           (incf count))))))
     count))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/fast-microtone-to-chromatic
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; 4 September 2019, London
+;;; 
+;;; DESCRIPTION
+;;; Round microtonal pitches to their nearest chromatic pitch if the time
+;;; between successive events is less than or equal to a specified threshold in
+;;; seconds. This method is intended to make playing fast pasages in microtonal
+;;; music easier for human players. 
+;;; 
+;;; ARGUMENTS
+;;; - The slippery chiocken object containing the pitches to be tested.
+;;; - The player or players to be tested
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - start-bar: the first bar to start testing in. Default = 1
+;;; - end-bar: the last bar to test in. Default = (num-bars sc)
+;;; - threshold: the time in seconds between successive events that determines
+;;; whether or not a pitch should be rounded to its nearest chromatic. Default =
+;;; (fast-leap-threshold sc).
+;;; 
+;;; RETURN VALUE
+;;; A list containing the number of rounded pitches per instrument.
+;;; 
+;;; EXAMPLE
+#|
+(let ((mini (make-slippery-chicken  
+                 '+mini+ 
+                 :title "Your Title Here" 
+                 :composer "Your Name Here"
+                 :ensemble '(((flt (flute :midi-channel 1 :microtones-midi-channel 2))))
+                 :staff-groupings '(1)
+                 :tempo-map '((1 (q 60)))
+                 :set-palette '((set1 ((fqs2 b2 dqs4 aqf4 dqs5 e5 a5 d6))))
+                 :set-map '((1 (set1 set1 set1 set1 set1 set1)))
+                 :rthm-seq-palette
+                 '((seq1 ((((4 4) q - s s s s -  - e e - q))   
+                          :pitch-seq-palette (1 2 3 4 5 6 7 8))))
+                 :rthm-seq-map
+                 '((1 ((flt (seq1 seq1 seq1 seq1 seq1 seq1))))))))
+      (fast-microtone-to-chromatic mini nil :threshold 10)
+      (cmn-display mini))
+|#
+;;; SYNOPSIS
+(defmethod fast-microtone-to-chromatic ((sc slippery-chicken) players
+                                        &key
+                                          (start-bar 1)
+                                          end-bar
+                                          ;; threshold in secs
+                                          threshold)
+  (unless players (setf players (players sc)))
+  (unless end-bar (setf end-bar (num-bars sc)))
+  (unless threshold (setf threshold (fast-leap-threshold sc)))
+  (setf players (force-list players))
+  (let ((count-list '()))
+    (loop for player in players do
+         (next-event sc player t start-bar)
+         (loop for ne = (next-event sc player t nil end-bar)
+            with le
+            with count = 0
+            while ne
+            do
+              (when (and le
+                         ;; DJR Wed 18 Sep 2019 15:15:06 BST
+                         ;; accounting for tied notes
+                         (not (is-tied-to ne))
+                         (<= (- (start-time ne)
+                                (start-time le))
+                             threshold))
+                (if (is-chord le)
+                    (loop for p in (data (pitch-or-chord le))
+                       with new-pitches = '() do
+                         (if (micro-tone p)
+                           (progn (push (pitch-round p) new-pitches)
+                                  (incf count))
+                           (push p new-pitches))
+                       finally
+                         (setf (pitch-or-chord le) new-pitches))
+                    (progn
+                      (when (micro-tone (pitch-or-chord le))
+                        (if (written-pitch-or-chord le)
+                            (set-written-pitch-or-chord
+                             le
+                             (pitch-round (pitch-or-chord le)))
+                            (setf (pitch-or-chord le)
+                                  (pitch-round (pitch-or-chord le))))
+                        (incf count)))))
+            ;; DJR Wed 18 Sep 2019 15:15:06 BST
+            ;; accounting for tied notes
+              (unless (is-tied-to ne)
+                (setf le ne))
+            finally
+              (push count count-list)))
+    ;; DJR Wed 18 Sep 2019 15:15:06 BST
+    ;; add some checks
+    (check-ties sc)
+    (check-beams sc :start-bar start-bar :end-bar end-bar :players players
+                 :auto-beam t :print nil)
+    (nreverse count-list)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
@@ -7254,6 +7413,7 @@ NIL
     (check-tuplets sc)
     (check-beams sc)
     sc))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Apr 19 15:03:05 2013 -- make a dummy (pretty empty) sc structure

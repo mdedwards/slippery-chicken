@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  08:20:36 Tue Jan  8 2019 CET
+;;; $$ Last modified:  08:45:34 Thu Sep 19 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -939,7 +939,7 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
 ;;; 
 ;;; DESCRIPTION
 ;;; Return a list of the full paths of sound files in the given path. Files
-;;; without the extensions aif, wav, aiff, and snd are ignore.
+;;; without the extensions aif, wav, aiff, and snd are ignored.
 ;;; 
 ;;; ARGUMENTS
 ;;; The full path to the folder where the sound files are, as a string

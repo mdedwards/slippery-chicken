@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  13:00:10 Sat Feb 23 2019 CET
+;;; $$ Last modified:  12:17:42 Mon Sep 16 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2282,6 +2282,10 @@ data: D7
 ;;; MDE Mon Mar 20 21:42:07 2017 -- we leave it to the event class to write the
 ;;; <note> tags as the pitches might be part of a chord
 (defmethod write-xml ((p pitch) &key stream)
+  ;; Dorico (at least) has problems with the lowest octave
+  (when (< (octave p) 0)
+    (warn "pitch::write-xml: Octaves lower than 0 might cause problems in ~
+           notation software: ~a" p))
   (xml-write-marks (marks-before p) stream)
   (format stream "~&        <pitch>~
                   ~&          <step>~a</step>" (no-8ve-no-acc p))

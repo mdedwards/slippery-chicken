@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  15:36:24 Sun Aug  4 2019 CEST
+;;; $$ Last modified:  09:30:37 Tue Oct  1 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -867,7 +867,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* instruments/piano-chord-fun3
 ;;; DATE
-;;; August 2rd 2019, Heidhausen
+;;; August 2nd 2019, Heidhausen
 ;;; 
 ;;; DESCRIPTION
 ;;; Almost exactly the same as piano-chord-fun but generally get just three

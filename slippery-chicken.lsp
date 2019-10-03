@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:48:51 Sat Sep 28 2019 CEST
+;;; $$ Last modified:  11:14:17 Tue Oct  1 2019 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4573,12 +4573,12 @@ seq-num 5, VN, replacing G3 with B6
                        ;; clm::with-sound let's us set this, so why doesn't 
                        ;; clm-play? Voila!
                        (decay-time 3)
-		       ;; DJR Mon 16 Sep 2019 01:26:11 BST
-		       ;; We can now set snd-transitions with a custom envelope,
-		       ;; e.g. '(0 0 100 1). x-values are arbitrary, y-values
-		       ;; are from 0 (for sound-file-palette-ref) and 1 (for
-		       ;; sound-file-palette-ref2).
-		       snd-transitions)
+                       ;; DJR Mon 16 Sep 2019 01:26:11 BST
+                       ;; We can now set snd-transitions with a custom envelope,
+                       ;; e.g. '(0 0 100 1). x-values are arbitrary, y-values
+                       ;; are from 0 (for sound-file-palette-ref) and 1 (for
+                       ;; sound-file-palette-ref2).
+                       snd-transitions)
 ;;; ****                               
   ;; MDE Tue Apr 17 13:28:16 2012 -- guess the extension if none given
   (unless sndfile-extension
@@ -4668,28 +4668,28 @@ seq-num 5, VN, replacing G3 with B6
                           for len = (loop for rs in player sum (length rs))
                           do (setf (nth i events-per-player) len)
                           sum len))
-	 ;; DJR Thu  5 Sep 2019 12:41:00 BST
-	 ;; Update snds and snds2 to accept multiple sound-file-palette-refs
+         ;; DJR Thu  5 Sep 2019 12:41:00 BST
+         ;; Update snds and snds2 to accept multiple sound-file-palette-refs
          (snds (when sound-file-palette-ref
                  (make-cscl
-		  (loop for sfpr in sound-file-palette-ref
-		     append (get-snds sfpr
+                  (loop for sfpr in sound-file-palette-ref
+                     append (get-snds sfpr
                                       (if sndfile-palette
                                           sndfile-palette
                                           (sndfile-palette sc)))))))
          (snds2 (when sound-file-palette-ref2
                   (make-cscl
-		   (loop for sfpr in sound-file-palette-ref2
+                   (loop for sfpr in sound-file-palette-ref2
                    append (get-snds sfpr
                              (if sndfile-palette
                                  sndfile-palette
                                  (sndfile-palette sc)))))))
-	 #|
-	 ;; DJR Mon 16 Sep 2019 01:26:11 BST
-	 ;; We'll sort this later. See below.
+         #|
+         ;; DJR Mon 16 Sep 2019 01:26:11 BST
+         ;; We'll sort this later. See below.
          (snd-transitions (loop for num-events in events-per-player collect
                                (fibonacci-transition num-events)))
-	 |#
+         |#
          (sndl nil)
          (snd-group nil)
          (srts '())
@@ -4784,14 +4784,14 @@ seq-num 5, VN, replacing G3 with B6
     ;; are we setting snd-transitions by default with finonacci-transitions or
     ;; with a custom envelope?
     (if (and snd-transitions sound-file-palette-ref2)
-	  (setf snd-transitions
-		(loop for num-events in events-per-player
-		   collect
-		     (loop for n below num-events
-			collect
-			  (round (interpolate n (new-lastx snd-transitions
-						    num-events))))))
-	  (setf snd-transitions (loop for num-events in events-per-player collect
+          (setf snd-transitions
+                (loop for num-events in events-per-player
+                   collect
+                     (loop for n below num-events
+                        collect
+                          (round (interpolate n (new-lastx snd-transitions
+                                                    num-events))))))
+          (setf snd-transitions (loop for num-events in events-per-player collect
                                (fibonacci-transition num-events))))
     (when (and check-overwrite (probe-file output))
       (setf output-ok 
@@ -8524,65 +8524,6 @@ NOTE 6200 0.6666667
         (new-limits (make-sclist densities))
         densities)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* slippery-chicken-edit/map-over-events-aux
-;;; AUTHOR
-;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
-;;; 
-;;; DATE 
-;;; 3 September 2019, London
-;;; 
-;;; DESCRIPTION
-;;; Auxilliary function for map-over-notes and map-over-events. Saves
-;;; duplicating code.
-;;; 
-;;; ARGUMENTS
-;;; - A slippery chicken object
-;;; - A number that is the first bar to which the function should be
-;;;   applied. Default = NIL in which case 1 will be used. 
-;;; - A number that is the last bar to which the function should be
-;;;   applied. Default = NIL in which case all bars will be processed. 
-;;; - A list of the IDs of the players to whose parts the function should be
-;;;   applied. Can also be a single symbol. If NIL then all players will be
-;;;   processed.
-;;; - T or NIL to indicate whether or not rests will be ignored.
-;;;   T = attacked notes only (i.e. no rests), NIL = include rests.
-;;; - The method or function itself. This can be a user-defined function or the
-;;;   name of an existing method or function.  It should take at least one
-;;;   argument, an event, and any other arguments as supplied.  
-;;; - Any additional argument values the specified method/function may
-;;;   take or require. See the thin method below for an example that uses
-;;;   additional arguments.
-;;; 
-;;; RETURN VALUE
-;;; - A list containing the number of events changed per instrument
-;;; 
-;;; SYNOPSIS
-(defun map-over-events-aux (sc start-bar end-bar players attacked-notes-only
-			    function further-args)
-;;; ****
-;  (print further-args)
-  (unless end-bar
-    (setf end-bar (num-bars sc)))
-  (unless start-bar
-    (setf start-bar 1))
-  (unless players
-    (setf players (players sc)))
-  ;; DJR Wed 18 Sep 2019 08:15:15 BST
-  ;; Forgot to setf this!
-  (setf players (force-list players))
-  (let ((count-list '()))
-    (loop for player in players do
-	 (next-event sc player attacked-notes-only start-bar)
-	 (loop for ne = (next-event sc player attacked-notes-only nil end-bar)
-	    with count = 0
-	    while ne
-	    do
-	      (apply function (cons ne further-args))
-	      (incf count)
-	    finally (push count count-list)))
-    (nreverse count-list)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
@@ -9786,6 +9727,65 @@ NOTE 6200 0.6666667
     (when (> num 1)
       (loop for e in events for i from 0 do
            (setf (slot-value e 'amplitude) (interpolate i env))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/map-over-events-aux
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE 
+;;; 3 September 2019, London
+;;; 
+;;; DESCRIPTION
+;;; Auxilliary function for map-over-notes and map-over-events. Saves
+;;; duplicating code.
+;;; 
+;;; ARGUMENTS
+;;; - A slippery chicken object
+;;; - A number that is the first bar to which the function should be
+;;;   applied. Default = NIL in which case 1 will be used. 
+;;; - A number that is the last bar to which the function should be
+;;;   applied. Default = NIL in which case all bars will be processed. 
+;;; - A list of the IDs of the players to whose parts the function should be
+;;;   applied. Can also be a single symbol. If NIL then all players will be
+;;;   processed.
+;;; - T or NIL to indicate whether or not rests will be ignored.
+;;;   T = attacked notes only (i.e. no rests), NIL = include rests.
+;;; - The method or function itself. This can be a user-defined function or the
+;;;   name of an existing method or function.  It should take at least one
+;;;   argument, an event, and any other arguments as supplied.  
+;;; - Any additional argument values the specified method/function may
+;;;   take or require. See the thin method below for an example that uses
+;;;   additional arguments.
+;;; 
+;;; RETURN VALUE
+;;; - A list containing the number of events changed per instrument
+;;; 
+;;; SYNOPSIS
+(defun map-over-events-aux (sc start-bar end-bar players attacked-notes-only
+                            function further-args)
+;;; ****
+;  (print further-args)
+  (unless end-bar
+    (setf end-bar (num-bars sc)))
+  (unless start-bar
+    (setf start-bar 1))
+  (unless players
+    (setf players (players sc)))
+  ;; DJR Wed 18 Sep 2019 08:15:15 BST
+  ;; Forgot to setf this!
+  (setf players (force-list players))
+  (let ((count-list '()))
+    (loop for player in players do
+         (next-event sc player attacked-notes-only start-bar)
+         (loop for ne = (next-event sc player attacked-notes-only nil end-bar)
+            with count = 0
+            while ne
+            do
+              (apply function (cons ne further-args))
+              (incf count)
+            finally (push count count-list)))
+    (nreverse count-list)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken.lsp

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  19:31:37 Thu Jul 11 2019 CEST
+;;; $$ Last modified:  18:22:06 Mon Sep 30 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6662,7 +6662,12 @@ rsb-rb)
   (let ((qtr-dur (qtr-dur tempo))
         (time start-time)
         (time-qtrs start-time-qtrs))
-    (loop for event in events do   
+    (loop for event in events do
+       ;; MDE Mon Sep 30 18:18:34 2019 -- do this here too so that we can access
+       ;; most probable midi channels of rests (for pedals etc.). This is a good
+       ;; place as this gets called eventually via update-slots, which is called
+       ;; at init
+         (set-last-midi-channel event)
          (setf (start-time event) time
                (start-time-qtrs event) time-qtrs
                (duration-in-tempo event) (* (duration event) qtr-dur)

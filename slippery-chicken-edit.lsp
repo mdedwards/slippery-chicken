@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  17:55:57 Mon Sep 30 2019 CEST
+;;; $$ Last modified:  16:24:48 Fri Oct  4 2019 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7292,6 +7292,90 @@ NIL
     (check-ties sc)
     (check-beams sc :start-bar start-bar :end-bar end-bar :players players
                  :auto-beam t :print nil)
+    (nreverse count-list)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/make-hammer-friendly
+;;; DATE
+;;; October 4th 2019
+;;; 
+;;; DESCRIPTION
+;;; Yamaha Disklavier pianos can't play a note immediately after a note-off. The
+;;; hammer needs a little time to return to its 'off' position before it can be
+;;; used to restrike a note. Tests show this time to be around 60
+;;; milliseconds. of course this will be instrument-dependent, so a little
+;;; experimentation might be needed.
+;;;
+;;; This method will go through each event and decrement those events on the
+;;; same MIDI channel which start < 'min-time' after the end-time of the
+;;; previous event.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - either a single symbol or a list of symbols for the players to be
+;;;   processed
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments
+;;; - :start-bar. The bar at which to begin processing (integer). Default = 1.
+;;; - :end-bar. The bar at which to end processing (integer). Default = NIL =
+;;;   last bar
+;;; - :min-gap. The minimum time the hammer needs to return, in
+;;;   milliseconds. Default = 60.
+;;; - :min-dur. The minimum duration of a note in milliseconds, after reducing
+;;;   duration. Default = 50 milliseconds.
+;;; 
+;;; RETURN VALUE
+;;; A list of the number of notes affected per player.
+;;; 
+;;; SYNOPSIS
+(defmethod make-hammer-friendly ((sc slippery-chicken) players
+                                 &key
+                                   (warn t)
+                                   (start-bar 1)
+                                   end-bar
+                                   (min-gap 60)
+                                   (min-dur 50))
+;;; ****
+  (unless players (setf players (players sc)))
+  (unless end-bar (setf end-bar (num-bars sc)))
+  (setq players (force-list players))
+  (let ((count-list '())
+        (min-gap-secs (/ min-gap 1000.0))
+        (min-dur-secs (/ min-dur 1000.0))
+        last)
+    (loop for player in players do
+         (next-event sc player t start-bar)
+         (setq last (next-event sc player t nil end-bar))
+         (loop for this = (next-event sc player t nil end-bar)
+            with count = 0 while this do
+              (when (and (> (common-notes last this) 0)
+                         (= (get-midi-channel last) (get-midi-channel this))
+                         (< (- (start-time this) (end-time last))
+                            min-gap-secs))
+                ;; work out decrement, leaving at least min-dur-secs
+                (let* ((new-dur (- (compound-duration-in-tempo last)
+                                   min-gap-secs))
+                       (inc-for-min (- (compound-duration-in-tempo last)
+                                       min-dur-secs))
+                       (inc (if (> new-dur min-dur-secs)
+                                ;; if our dur is long enough, just decrement the
+                                ;; miniumum 
+                                (- min-gap-secs)
+                                ;; otherwise decrement just enough to achieve
+                                ;; min-dur, if that's possible...
+                                (if (>= inc-for-min 0)
+                                    (- inc-for-min)
+                                    (when warn
+                                      (warn "make-hammer-friendly: ~
+                                             duration is too short to handle: ~
+                                             ~%~a" last))))))
+                  (when inc
+                    ;; use this method as it updates other slots too
+                    (inc-duration last inc)
+                    (incf count))))
+              (setq last this)
+            finally (push count count-list)))
     (nreverse count-list)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

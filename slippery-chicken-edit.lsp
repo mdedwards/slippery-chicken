@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> slippery-chicken
 ;;;
-;;; Version:          1.09
+;;; Version:          1.0.10
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  16:24:48 Fri Oct  4 2019 CEST
+;;; $$ Last modified:  11:55:51 Thu Oct 10 2019 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7244,6 +7244,7 @@ NIL
                                           end-bar
                                           ;; threshold in secs
                                           threshold)
+;;; ****
   (unless players (setf players (players sc)))
   (unless end-bar (setf end-bar (num-bars sc)))
   (unless threshold (setf threshold (fast-leap-threshold sc)))

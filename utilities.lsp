@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  none: no classes defined
 ;;;
-;;; Version:          1.09
+;;; Version:          1.0.10
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:05:07 Mon Sep 30 2019 CEST
+;;; $$ Last modified:  19:15:01 Wed Oct  9 2019 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3799,8 +3799,8 @@ WARNING:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun force-list (thing)
-  ;; MDE Thu Oct 1 16:47:36 2015 -- added (when thing ...) so that we don't force
-  ;; NIL into a list
+  ;; MDE Thu Oct 1 16:47:36 2015 -- added (when thing ...) so that we don't
+  ;; force NIL into a list
   (when thing
     (if (listp thing)
         thing

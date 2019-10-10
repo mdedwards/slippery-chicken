@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> control-wave
 ;;;
-;;; Version:          1.09
+;;; Version:          1.0.10
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;

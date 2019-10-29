@@ -2528,6 +2528,23 @@ data: (
         ;;                as many pitches in best
         (values (reverse best) (if (<= lenc (count-combo-pitches best)) 1 2)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Tue 29 Oct 2019 12:32:47 GMT -- change sharps to flats or flats to sharps
+(defmethod sharps-to-flats ((c chord))
+  (let ((c-list '()))
+    (loop for cc in (data c) do
+	 (push (sharp-to-flat cc) c-list)
+	 (setf (data c) (reverse c-list)))
+    (nreverse c-list)))
+
+(defmethod flats-to-sharps ((c chord))
+  (let ((c-list '()))
+    (loop for cc in (data c) do
+	 (push (flat-to-sharp cc) c-list)
+	 (setf (data c) (reverse c-list)))
+    (nreverse c-list)))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

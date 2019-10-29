@@ -2467,6 +2467,18 @@ data: D7
     harm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Tue 29 Oct 2019 11:42:44 GMT -- change sharp to flat or flat to sharp
+(defmethod sharp-to-flat ((p pitch))
+  (if (sharp p)
+      (enharmonic p)
+      p))
+
+(defmethod flat-to-sharp ((p pitch))
+  (if (flat p)
+      (enharmonic p)
+      p))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;

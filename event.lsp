@@ -1268,6 +1268,27 @@ EVENT: start-time: NIL, end-time: NIL,
                     (setf (pitch-or-chord e) new))))
           e))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Tue 29 Oct 2019 12:37:29 GMT -- change sharps to flats or flats to sharps
+(defmethod sharps-to-flats ((e event))
+  (let ((c-list '()))
+    (if (is-chord e)
+	(loop for cc in (pitch-or-chord (data c)) do
+	     (push (sharp-to-flat cc) c-list)
+	     (setf (pitch-or-chord (data c)) (reverse c-list)))
+	(progn (sharp-to-flat (pitch-or-chord e))
+	       (push (sharp-to-flat (pitch-or-chord e)) c-list)))
+    (nreverse c-list)))
+
+(defmethod flats-to-sharps ((c chord))
+  (let ((c-list '()))
+    (if (is-chord e)
+	(loop for cc in (pitch-or-chord (data c)) do
+	     (push (flat-to-sharp cc) c-list)
+	     (setf (pitch-or-chord (data c)) (reverse c-list)))
+	(progn (flat-to-sharp (pitch-or-chord e))
+	       (push (flat-to-sharp (pitch-or-chord e)) c-list)))
+    (nreverse c-list)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Dec 23 20:32:23 EST 2011 Added robodoc info

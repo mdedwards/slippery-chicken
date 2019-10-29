@@ -5339,6 +5339,13 @@ Here's where I pasted the data into the .RPP Reaper file:
                      (trailing-slash
                       (directory-namestring (truename *load-pathname*)))
                      file)))
-  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Tue 29 Oct 2019 10:41:08 GMT -- why was this never here? Get rhythm
+;;; duration from a given bpm
+(defun bpmdur (bpm notedivision)
+  (/ 240.0 bpm notedivision))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

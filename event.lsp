@@ -3982,6 +3982,85 @@ NIL
 ;;; ****
   (push (list channel controller-number value) (midi-control-changes e)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/pitch-or-chord=
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Tue 29 Oct 2019 08:59:59 GMT - Warwick
+;;; 
+;;; DESCRIPTION
+;;; Convenience method, test to see if the pitch-or-chord slots of two event
+;;; objects are the same.
+;;; 
+;;; ARGUMENTS
+;;; - a pitch or chord object
+;;; - a pitch or chord object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether or not enharmonic pitches are considered 
+;;;   equal. T = enharmonic pitches are considered equal. Default = NIL. 
+;;; - a number to indicate the frequency deviation allowed before returning NIL.
+;;; 
+;;; RETURN VALUE
+;;; T if the values of the two specified pitch or chord objects are equal, otherwise
+;;; NIL. 
+;;; 
+;;; EXAMPLE
+#|
+;; Comparison of equal pitch objects created using note-name symbols returns T 
+(let ((p1 (make-pitch 'C4))
+      (p2 (make-pitch 'C4)))
+  (pitch-or-chord= p1 p2))
+
+=> T 
+
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'bs3)))
+  (pitch-or-chord= p1 p2))
+
+=> NIL
+
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'bs3)))
+  (pitch-or-chord= p1 p2 t))
+
+=> T
+
+(let ((p1 (make-pitch 'c4))
+      (c1 (make-chord '(c4 e4 g4))))
+  (pitch-or-chord= p1 c1))
+
+=> NIL
+
+(let ((c1 (make-chord '(c4 e4 g4)))
+      (c2 (make-chord '(c4 e4))))
+  (pitch-or-chord= c1 c2))
+
+=> NIL
+
+(let ((c1 (make-chord '(c4 e4 g4)))
+      (c2 (make-chord '(bs4 ff4 g4))))
+  (pitch-or-chord= c1 c2))
+
+=> NIL
+
+(let ((c1 (make-chord '(c4 e4 g4)))
+      (c2 (make-chord '(bs3 ff4 g4))))
+  (pitch-or-chord= c1 c2 t))
+
+=> T
+
+|#
+;;; SYNOPSIS
+(defmethod pitch-or-chord= ((e1 event) (e2 event)
+			    &optional enharmonics-are-equal
+			      (frequency-tolerance 0.01))
+;;; ****
+  (pitch-or-chord=-aux (pitch-or-chord e1) (pitch-or-chord e2)
+		       enharmonics-are-equal frequency-tolerance))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

@@ -9788,4 +9788,27 @@ NOTE 6200 0.6666667
     (nreverse count-list)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Tue 29 Oct 2019 08:58:30 GMT -- aux function for pitch-or-chord=
+(defun pitch-or-chord=-aux (p1 p2 enharmonics-are-equal frequency-tolerance)
+  (cond ((null (pitch-or-chord-p p1))
+	 (warn "~%pitch-or-chord=: p1 is not a pitch or chord: ~a" p1)
+	 nil)
+	((null (pitch-or-chord-p p2))
+	 (warn "~%pitch-or-chord=: p2 is not a pitch or chord: ~a" p2)
+	 nil)
+	((and (pitch-p p1)
+	      (chord-p p2))
+	 (single-pitch-chord= p1 p2 enharmonics-are-equal frequency-tolerance))
+	((and (chord-p p1)
+	      (pitch-p p2))
+	 (single-pitch-chord= p1 p2 enharmonics-are-equal frequency-tolerance))
+	((and (pitch-p p1)
+	      (pitch-p p2))
+	 (pitch= p1 p2 enharmonics-are-equal frequency-tolerance))
+	((and (chord-p p1)
+	      (chord-p p2))
+	 (chord= p1 p2 enharmonics-are-equal frequency-tolerance))
+	(t nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken.lsp

@@ -5341,17 +5341,4 @@ Here's where I pasted the data into the .RPP Reaper file:
                      file)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; DJR Tue 29 Oct 2019 10:41:08 GMT -- why was this never here? Get rhythm
-;;; duration from a given bpm
-(defun bpmdur (bpm notedivision)
-  (/ 240.0 bpm notedivision))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; DJR Tue 29 Oct 2019 10:41:08 GMT -- why was this never here?
-;;; Convert semitones to sample-rate transposition values
-(defun st2srt (st &optional (octave-size 2.0) (divisions-per-octave 12)) 
-  (expt octave-size (/ st divisions-per-octave)))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

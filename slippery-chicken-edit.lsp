@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  11:55:51 Thu Oct 10 2019 CEST
+;;; $$ Last modified:  16:35:05 Thu Oct 10 2019 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7307,9 +7307,9 @@ NIL
 ;;; milliseconds. of course this will be instrument-dependent, so a little
 ;;; experimentation might be needed.
 ;;;
-;;; This method will go through each event and decrement those events on the
-;;; same MIDI channel which start < 'min-time' after the end-time of the
-;;; previous event.
+;;; This method will go through each event and decrement those events which
+;;; repeat a note on the same MIDI channel which start < 'min-time' after the
+;;; end-time of the previous event.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object

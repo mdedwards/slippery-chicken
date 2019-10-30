@@ -238,7 +238,25 @@ NIL
                                          (frequency-tolerance 0.01))
   (declare (ignore p c enharmonics-are-equal frequency-tolerance))
   nil)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Tue 29 Oct 2019 08:55:09 GMT -- are chord objects containing only one
+;;; pitch the same as single pitches?
 
+(defmethod single-pitch-chord= ((p pitch) (c chord)
+				&optional enharmonics-are-equal
+				  (frequency-tolerance 0.01))
+  (if (pitch= p (lowest c) ; only one note in chord so lowest should always work
+	      enharmonics-are-equal frequency-tolerance)
+      t
+      nil))
+
+(defmethod single-pitch-chord= ((c chord) (p pitch)
+				&optional enharmonics-are-equal
+				  (frequency-tolerance 0.01))
+  (if (pitch= p (lowest c) ; only one note in chord so lowest should always work
+	      enharmonics-are-equal frequency-tolerance)
+      t
+      nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/pitch-or-chord=
@@ -268,8 +286,8 @@ NIL
 ;;; EXAMPLE
 #|
 ;; Comparison of equal pitch objects created using note-name symbols returns T 
-(let ((p1 (make-pitch 'C4))
-      (p2 (make-pitch 'C4)))
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'c4)))
   (pitch-or-chord= p1 p2))
 
 => T 
@@ -310,24 +328,30 @@ NIL
 
 => T
 
+;; Chords with only one pitch are the same as pitch object with the same pitch.
+(let ((c (make-chord '(c4)))
+      (p (make-pitch 'c4)))
+  (pitch-or-chord= c p))
+
+=> T
+
 |#
 ;;; SYNOPSIS
-(defmethod pitch-or-chord= (p1 p2 &optional enharmonics-are-equal
-				  (frequency-tolerance 0.01))
+(defmethod pitch-or-chord= ((c1 chord) (c2 chord)
+			    &optional enharmonics-are-equal
+			      (frequency-tolerance 0.01))
 ;;; ****
-  (unless (pitch-or-chord-p p1)
-    (error (format t "~%pitch-or-chord=: p1 is not a pitch or chord")))
-  (unless (pitch-or-chord-p p2)
-    (error (format t "~%pitch-or-chord=: p2 is not a pitch or chord")))
-  (cond ((and (pitch-p p1)
-	      (pitch-p p2))
-	 (pitch= p1 p2 enharmonics-are-equal frequency-tolerance))
-	((and (chord-p p1)
-	      (chord-p p2))
-	 (chord= p1 p2 enharmonics-are-equal frequency-tolerance))
-	;; We could put pitch= here instead but I'm not sure it's useful in
-	;; this case.
-	(t nil)))
+  (pitch-or-chord=-aux c1 c2 enharmonics-are-equal frequency-tolerance))
+
+(defmethod pitch-or-chord= ((p pitch) (c chord)
+			    &optional enharmonics-are-equal
+			      (frequency-tolerance 0.01))
+  (pitch-or-chord=-aux c p enharmonics-are-equal frequency-tolerance))
+
+(defmethod pitch-or-chord= ((c chord) (p pitch)
+			    &optional enharmonics-are-equal
+			      (frequency-tolerance 0.01))
+  (pitch-or-chord=-aux c p enharmonics-are-equal frequency-tolerance))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/add-harmonics
@@ -356,9 +380,7 @@ NIL
   c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Wed Feb 22 17:39:04 GMT 2012: Added robodoc entry
-
 ;;; ****m* chord/set-midi-channel
 ;;; DESCRIPTION
 ;;; Set the MIDI channel of the pitch objects in a given chord object to the
@@ -2505,6 +2527,23 @@ data: (
         ;;                <= because with artificial harmonics we'd have twice
         ;;                as many pitches in best
         (values (reverse best) (if (<= lenc (count-combo-pitches best)) 1 2)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Tue 29 Oct 2019 12:32:47 GMT -- change sharps to flats or flats to sharps
+(defmethod sharps-to-flats ((c chord))
+  (let ((c-list '()))
+    (loop for cc in (data c) do
+	 (push (sharp-to-flat cc) c-list)
+	 (setf (data c) (reverse c-list)))
+    (nreverse c-list)))
+
+(defmethod flats-to-sharps ((c chord))
+  (let ((c-list '()))
+    (loop for cc in (data c) do
+	 (push (flat-to-sharp cc) c-list)
+	 (setf (data c) (reverse c-list)))
+    (nreverse c-list)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

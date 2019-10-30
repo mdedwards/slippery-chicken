@@ -5339,6 +5339,6 @@ Here's where I pasted the data into the .RPP Reaper file:
                      (trailing-slash
                       (directory-namestring (truename *load-pathname*)))
                      file)))
-  
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

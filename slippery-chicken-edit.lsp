@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  16:35:05 Thu Oct 10 2019 CEST
+;;; $$ Last modified:  09:28:43 Fri Nov  8 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7428,12 +7428,17 @@ NIL
 ;;; - :update. Whether to call update-slots on the new slippery-chicken
 ;;;   object (to update timing info. etc.).  Default = T.
 ;;; - :section-id.  The section id.  Default = 1.
+;;; - :tempo. The tempo in BPM for the whole slippery-chicken object (piece).
+;;; - :midi-channels. A 2-element list specifying the midi-channels for the
+;;;   chromatic and microtonal notes of the player. This will not change
+;;;   channels of the events in the bars but is assumed to correspond to those.
 ;;; 
 ;;; RETURN VALUE
 ;;; A slippery-chicken object.
 ;;; 
 ;;; SYNOPSIS
 (defun bars-to-sc (bars &key sc (sc-name '*auto*) (player 'player-one)
+                          (midi-channels '(1 2))
                           (instrument-palette 
                            +slippery-chicken-standard-instrument-palette+)
                           (tempo 60) (instrument 'flute) (section-id 1)
@@ -7463,11 +7468,19 @@ NIL
                     (piece sc)
                     (make-piece
                      (list (make-named-object section-id section))
-                     sc-name))))
+                     sc-name)))
+         ;; MDE Thu Nov  7 18:42:54 2019 
+         player-obj midi-channel)
     (if sc 
         (progn
-          (add-player (ensemble sc) player instrument instrument-palette)
-          (setf (players piece) (econs (players piece) player))
+          (setf player-obj (add-player (ensemble sc) player instrument
+                                       instrument-palette)
+                ;; MDE Thu Nov 7 18:44:23 2019 -- set the player's midi-channel
+                ;; otherwise we'll put programme changes on channel 1
+                (midi-channel player-obj) (first midi-channels)
+                (microtones-midi-channel player-obj) (second midi-channels)
+                (players piece) (econs (players piece) player))
+          ;; (print midi-channel)
           ;; we add to the last staff group by default
           ;; MDE Tue Oct 30 08:20:23 2018 -- use the new method
           (staff-groupings-inc sc)
@@ -7480,8 +7493,9 @@ NIL
           (setf sc (make-minimal-sc sc-name player instrument
                                     instrument-palette)
                 (piece sc) piece)))
-    ;; MDE Wed Aug 29 17:16:56 2018 
-    (setf (tempo-map sc) `((1 (q ,tempo))))
+    ;; MDE Wed Aug 29 17:16:56 2018
+    (when tempo ; MDE Thu Nov  7 17:19:23 2019 -- only when given
+      (setf (tempo-map sc) `((1 (q ,tempo)))))
     (when update
       (update-slots sc nil 0 0 1 nil nil t t)
       (update-write-time-sig2 (piece sc)))

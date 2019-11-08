@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:22:55 Mon Sep 30 2019 CEST
+;;; $$ Last modified:  09:24:48 Fri Nov  8 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -311,7 +311,7 @@
           (get-midi-channel noc)
           (midi-channel noc)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE original comment:
 ;;; this should work even in rests, i.e. time sigs, tempo changes, and program
 ;;; changes will all be written despite no new pitches.
@@ -1273,21 +1273,21 @@ EVENT: start-time: NIL, end-time: NIL,
 (defmethod sharps-to-flats ((e event))
   (let ((c-list '()))
     (if (is-chord e)
-	(loop for cc in (pitch-or-chord (data c)) do
-	     (push (sharp-to-flat cc) c-list)
-	     (setf (pitch-or-chord (data c)) (reverse c-list)))
-	(progn (sharp-to-flat (pitch-or-chord e))
-	       (push (sharp-to-flat (pitch-or-chord e)) c-list)))
+        (loop for cc in (pitch-or-chord (data c)) do
+             (push (sharp-to-flat cc) c-list)
+             (setf (pitch-or-chord (data c)) (reverse c-list)))
+        (progn (sharp-to-flat (pitch-or-chord e))
+               (push (sharp-to-flat (pitch-or-chord e)) c-list)))
     (nreverse c-list)))
 
 (defmethod flats-to-sharps ((c chord))
   (let ((c-list '()))
     (if (is-chord e)
-	(loop for cc in (pitch-or-chord (data c)) do
-	     (push (flat-to-sharp cc) c-list)
-	     (setf (pitch-or-chord (data c)) (reverse c-list)))
-	(progn (flat-to-sharp (pitch-or-chord e))
-	       (push (flat-to-sharp (pitch-or-chord e)) c-list)))
+        (loop for cc in (pitch-or-chord (data c)) do
+             (push (flat-to-sharp cc) c-list)
+             (setf (pitch-or-chord (data c)) (reverse c-list)))
+        (progn (flat-to-sharp (pitch-or-chord e))
+               (push (flat-to-sharp (pitch-or-chord e)) c-list)))
     (nreverse c-list)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -4076,11 +4076,11 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod pitch-or-chord= ((e1 event) (e2 event)
-			    &optional enharmonics-are-equal
-			      (frequency-tolerance 0.01))
+                            &optional enharmonics-are-equal
+                              (frequency-tolerance 0.01))
 ;;; ****
   (pitch-or-chord=-aux (pitch-or-chord e1) (pitch-or-chord e2)
-		       enharmonics-are-equal frequency-tolerance))
+                       enharmonics-are-equal frequency-tolerance))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

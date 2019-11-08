@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  15:50:22 Thu Dec 27 2018 CET
+;;; $$ Last modified:  09:19:15 Fri Nov  8 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -514,9 +514,12 @@ data: MARK
     (error "assoc-list::add: Can't add ~a to assoc-list with id ~%~a ~
             ~%because key already exists!"
            (id named-object) (id al)))
-  (setf (slot-value al 'data) (econs (data al) (clone named-object)))
+  ;; MDE Fri Nov  8 09:18:41 2019 -- until today we used to clone the
+  ;; named-object but this would make all changes to it after adding null and
+  ;; void 
+  ;; (setf (slot-value al 'data) (econs (data al) (clone named-object)))
+  (setf (slot-value al 'data) (econs (data al) named-object))
   (incf (sclist-length al))
-  ;; (push (clone named-object) (data al))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  18:22:06 Mon Sep 30 2019 CEST
+;;; $$ Last modified:  09:25:09 Fri Nov  8 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2376,7 +2376,6 @@ rthm-seq-bar::get-nth-non-rest-rhythm: Couldn't get non-rest rhythm with index
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; 12.12.11 SAR: Added ROBODoc info
 ;;; ****m* rthm-seq-bar/get-nth-rest
 ;;; DESCRIPTION

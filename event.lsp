@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:24:48 Fri Nov  8 2019 CET
+;;; $$ Last modified:  07:34:31 Tue Nov 12 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1341,11 +1341,12 @@ EVENT: start-time: NIL, end-time: NIL,
 ;;; ****m* event/inc-duration
 ;;; DESCRIPTION
 ;;; Increase the duration of a given event object by a specified time in
-;;; seconds. This will result in new values for the end-time,
-;;; duration-in-tempo, and compound-duration-in-tempo slots. 
+;;; seconds. This will also result in new values for the end-time,
+;;; duration-in-tempo, compound-duration, and compound-duration-in-tempo slots. 
 ;;;
 ;;; NB: Changing this value directly could result in incorrect timing info in a
-;;;     bar.
+;;;     bar. Also, the *-in-duration slots are changed by the same amount as the
+;;;     other slots, i.e. tempo does not play a role here 
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
@@ -1393,10 +1394,12 @@ EVENT: start-time: NIL, end-time: NIL,
 ;;; ****
   (if (and (numberp (duration-in-tempo e))
            (numberp (compound-duration-in-tempo e))
+           (numberp (compound-duration e))
            (numberp (end-time e)))
       (progn
         (incf (duration-in-tempo e) inc)
         (incf (compound-duration-in-tempo e) inc)
+        (incf (compound-duration e) inc)
         (incf (end-time e) inc))
       (error "~a~%~%event::inc-duration: can't increment non-number slots ~
               duration-in-tempo, compound-duration-in-tempo, end-time."

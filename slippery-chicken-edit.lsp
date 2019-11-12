@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  09:28:43 Fri Nov  8 2019 CET
+;;; $$ Last modified:  07:34:55 Tue Nov 12 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7372,8 +7372,10 @@ NIL
                                              duration is too short to handle: ~
                                              ~%~a" last))))))
                   (when inc
+                    ;; (print (compound-duration last))
                     ;; use this method as it updates other slots too
                     (inc-duration last inc)
+                    ;; (print (compound-duration last))
                     (incf count))))
               (setq last this)
             finally (push count count-list)))

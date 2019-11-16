@@ -4082,6 +4082,41 @@ NIL
   (pitch-or-chord=-aux (pitch-or-chord e1) (pitch-or-chord e2)
 		       enharmonics-are-equal frequency-tolerance))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/single-pitch-chord-to-pitch
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Thu 14 Nov 2019 07:44:02 GMT London
+;;; 
+;;; DESCRIPTION
+;;; Turn a chord object with only one pitch in its chord slot into a pitch
+;;; object.
+;;; 
+;;; ARGUMENTS
+;;; An event object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; NIL
+;;; 
+;;; RETURN VALUE
+;;; An event object containing a new pitch object, if the original chord
+;;; contained a single pitch, or the original event object. 
+;;; 
+;;; EXAMPLE
+#|
+(data (single-pitch-chord-to-pitch (make-event '(a4) 'e)))
+=> A4
+|#
+;;; SYNOPSIS
+(defmethod single-pitch-chord-to-pitch ((e event))
+;;; ****
+  (when (is-chord e)
+    (when (= (length (data (pitch-or-chord e))) 1)
+	  (setf (pitch-or-chord e) (first (data (pitch-or-chord e))))))
+  e)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:22:55 Mon Sep 30 2019 CEST
+;;; $$ Last modified:  07:34:31 Tue Nov 12 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -311,7 +311,7 @@
           (get-midi-channel noc)
           (midi-channel noc)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE original comment:
 ;;; this should work even in rests, i.e. time sigs, tempo changes, and program
 ;;; changes will all be written despite no new pitches.
@@ -1273,21 +1273,21 @@ EVENT: start-time: NIL, end-time: NIL,
 (defmethod sharps-to-flats ((e event))
   (let ((c-list '()))
     (if (is-chord e)
-	(loop for cc in (pitch-or-chord (data c)) do
-	     (push (sharp-to-flat cc) c-list)
-	     (setf (pitch-or-chord (data c)) (reverse c-list)))
-	(progn (sharp-to-flat (pitch-or-chord e))
-	       (push (sharp-to-flat (pitch-or-chord e)) c-list)))
+        (loop for cc in (pitch-or-chord (data c)) do
+             (push (sharp-to-flat cc) c-list)
+             (setf (pitch-or-chord (data c)) (reverse c-list)))
+        (progn (sharp-to-flat (pitch-or-chord e))
+               (push (sharp-to-flat (pitch-or-chord e)) c-list)))
     (nreverse c-list)))
 
 (defmethod flats-to-sharps ((c chord))
   (let ((c-list '()))
     (if (is-chord e)
-	(loop for cc in (pitch-or-chord (data c)) do
-	     (push (flat-to-sharp cc) c-list)
-	     (setf (pitch-or-chord (data c)) (reverse c-list)))
-	(progn (flat-to-sharp (pitch-or-chord e))
-	       (push (flat-to-sharp (pitch-or-chord e)) c-list)))
+        (loop for cc in (pitch-or-chord (data c)) do
+             (push (flat-to-sharp cc) c-list)
+             (setf (pitch-or-chord (data c)) (reverse c-list)))
+        (progn (flat-to-sharp (pitch-or-chord e))
+               (push (flat-to-sharp (pitch-or-chord e)) c-list)))
     (nreverse c-list)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1341,11 +1341,12 @@ EVENT: start-time: NIL, end-time: NIL,
 ;;; ****m* event/inc-duration
 ;;; DESCRIPTION
 ;;; Increase the duration of a given event object by a specified time in
-;;; seconds. This will result in new values for the end-time,
-;;; duration-in-tempo, and compound-duration-in-tempo slots. 
+;;; seconds. This will also result in new values for the end-time,
+;;; duration-in-tempo, compound-duration, and compound-duration-in-tempo slots. 
 ;;;
 ;;; NB: Changing this value directly could result in incorrect timing info in a
-;;;     bar.
+;;;     bar. Also, the *-in-duration slots are changed by the same amount as the
+;;;     other slots, i.e. tempo does not play a role here 
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
@@ -1393,10 +1394,12 @@ EVENT: start-time: NIL, end-time: NIL,
 ;;; ****
   (if (and (numberp (duration-in-tempo e))
            (numberp (compound-duration-in-tempo e))
+           (numberp (compound-duration e))
            (numberp (end-time e)))
       (progn
         (incf (duration-in-tempo e) inc)
         (incf (compound-duration-in-tempo e) inc)
+        (incf (compound-duration e) inc)
         (incf (end-time e) inc))
       (error "~a~%~%event::inc-duration: can't increment non-number slots ~
               duration-in-tempo, compound-duration-in-tempo, end-time."
@@ -4076,11 +4079,11 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod pitch-or-chord= ((e1 event) (e2 event)
-			    &optional enharmonics-are-equal
-			      (frequency-tolerance 0.01))
+                            &optional enharmonics-are-equal
+                              (frequency-tolerance 0.01))
 ;;; ****
   (pitch-or-chord=-aux (pitch-or-chord e1) (pitch-or-chord e2)
-		       enharmonics-are-equal frequency-tolerance))
+                       enharmonics-are-equal frequency-tolerance))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/single-pitch-chord-to-pitch

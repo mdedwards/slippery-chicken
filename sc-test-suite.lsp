@@ -19156,15 +19156,20 @@
 (sc-deftest test-pitch-or-chord= ()
   (let ((p1 (make-pitch 'c4))
 	(p2 (make-pitch 'bs3))
+	(p3 (make-pitch 'a4))
 	(c1 (make-chord '(c4 e4 g4)))
 	(c2 (make-chord '(c4 e4)))
-	(c3 (make-chord '(bs3 ff4 g4))))
+	(c3 (make-chord '(bs3 ff4 g4)))
+	(c4 (make-chord '(a4)))
+	(e1 (make-event '(a4) 'e))
+	(e2 (make-event 'a4 'e)))
     (sc-test-check
       (null (pitch-or-chord= p1 p2))
       (pitch-or-chord= p1 p2 t)
       (null (pitch-or-chord= c1 c2))
       (null (pitch-or-chord= c1 c3))
-      (null (pitch-or-chord= c1 c3)))))
+      (null (pitch-or-chord= c1 c3))
+      (pitch-or-chord= p3 c4))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Wed 18 Sep 2019 18:53:41 BST

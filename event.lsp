@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  07:34:31 Tue Nov 12 2019 CET
+;;; $$ Last modified:  16:02:07 Tue Dec  3 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2442,7 +2442,7 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MDE Tue Mar 28 16:01:48 2017 --
+;;; MDE Tue Mar 28 16:01:48 2017
 (defmethod write-xml-ins-change ((e event) stream &optional part)
   (when (instrument-change e)
     (let* ((ins (fourth (instrument-change e)))

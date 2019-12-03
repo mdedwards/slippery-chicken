@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  16:49:14 Sat Jun 22 2019 CEST
+;;; $$ Last modified:  10:53:48 Thu Nov 14 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1002,13 +1002,13 @@
   midi-file)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; won't (yet) import microtones as indicated by pitch-bend messages
 ;;; ****f* cm/midi-file-to-events
 ;;; DATE
 ;;; 28/6/16, Edinburgh
 ;;; 
 ;;; DESCRIPTION
 ;;; Read in a MIDI file and convert notes to event objects.
+;;; NB This won't (yet) import microtones as indicated by pitch-bend messages
 ;;; 
 ;;; ARGUMENTS
 ;;; the path to the midi file

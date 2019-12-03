@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  08:01:40 Fri Oct 11 2019 CEST
+;;; $$ Last modified:  17:24:50 Tue Dec  3 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8250,8 +8250,10 @@ NOTE 6200 0.6666667
      for lines = (staff-lines ins) 
      for e1 = (get-event sc 1 1 p) 
      do 
-       (unless (= 5 lines) 
-         (setf (instrument-change e1) (list nil nil lines)))))
+       (unless (= 5 lines)
+         ;; MDE Tue Dec  3 17:24:39 2019 -- 4th element should be the instrument
+         ;; object 
+         (setf (instrument-change e1) (list nil nil lines ins)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 13 12:33:24 2016 -- called by midi-play by default
@@ -9791,24 +9793,24 @@ NOTE 6200 0.6666667
 ;;; DJR Tue 29 Oct 2019 08:58:30 GMT -- aux function for pitch-or-chord=
 (defun pitch-or-chord=-aux (p1 p2 enharmonics-are-equal frequency-tolerance)
   (cond ((null (pitch-or-chord-p p1))
-	 (warn "~%pitch-or-chord=: p1 is not a pitch or chord: ~a" p1)
-	 nil)
-	((null (pitch-or-chord-p p2))
-	 (warn "~%pitch-or-chord=: p2 is not a pitch or chord: ~a" p2)
-	 nil)
-	((and (pitch-p p1)
-	      (chord-p p2))
-	 (single-pitch-chord= p1 p2 enharmonics-are-equal frequency-tolerance))
-	((and (chord-p p1)
-	      (pitch-p p2))
-	 (single-pitch-chord= p1 p2 enharmonics-are-equal frequency-tolerance))
-	((and (pitch-p p1)
-	      (pitch-p p2))
-	 (pitch= p1 p2 enharmonics-are-equal frequency-tolerance))
-	((and (chord-p p1)
-	      (chord-p p2))
-	 (chord= p1 p2 enharmonics-are-equal frequency-tolerance))
-	(t nil)))
+         (warn "~%pitch-or-chord=: p1 is not a pitch or chord: ~a" p1)
+         nil)
+        ((null (pitch-or-chord-p p2))
+         (warn "~%pitch-or-chord=: p2 is not a pitch or chord: ~a" p2)
+         nil)
+        ((and (pitch-p p1)
+              (chord-p p2))
+         (single-pitch-chord= p1 p2 enharmonics-are-equal frequency-tolerance))
+        ((and (chord-p p1)
+              (pitch-p p2))
+         (single-pitch-chord= p1 p2 enharmonics-are-equal frequency-tolerance))
+        ((and (pitch-p p1)
+              (pitch-p p2))
+         (pitch= p1 p2 enharmonics-are-equal frequency-tolerance))
+        ((and (chord-p p1)
+              (chord-p p2))
+         (chord= p1 p2 enharmonics-are-equal frequency-tolerance))
+        (t nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken.lsp

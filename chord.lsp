@@ -245,19 +245,26 @@ NIL
 (defmethod single-pitch-chord= ((p pitch) (c chord)
 				&optional enharmonics-are-equal
 				  (frequency-tolerance 0.01))
-  (if (pitch= p (lowest c) ; only one note in chord so lowest should always work
-	      enharmonics-are-equal frequency-tolerance)
-      t
+  ;; DJR Thu 14 Nov 2019 08:32:47 GMT
+  ;; Forgot to add this very necessary if clause.
+  (if (= (length (data c)) 1) 
+      (if (pitch= p (lowest c) ; only one note in chord so lowest should always work
+		  enharmonics-are-equal frequency-tolerance)
+	  t
+	  nil)
       nil))
 
 (defmethod single-pitch-chord= ((c chord) (p pitch)
 				&optional enharmonics-are-equal
 				  (frequency-tolerance 0.01))
-  (if (pitch= p (lowest c) ; only one note in chord so lowest should always work
-	      enharmonics-are-equal frequency-tolerance)
-      t
+  ;; DJR Thu 14 Nov 2019 08:32:47 GMT
+  ;; Forgot to add this very necessary if clause.
+  (if (= (length (data c)) 1)
+      (if (pitch= p (lowest c) ; only one note in chord so lowest should always work
+		  enharmonics-are-equal frequency-tolerance)
+	  t
+	  nil)
       nil))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/pitch-or-chord=
 ;;; AUTHOR
@@ -2544,6 +2551,40 @@ data: (
 	 (setf (data c) (reverse c-list)))
     (nreverse c-list)))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/single-pitch-chord-to-pitch
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Thu 14 Nov 2019 07:44:02 GMT London
+;;; 
+;;; DESCRIPTION
+;;; Turn a chord object with only one pitch in its chord slot into a pitch
+;;; object.
+;;; 
+;;; ARGUMENTS
+;;; A chord object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; NIL
+;;; 
+;;; RETURN VALUE
+;;; The new pitch object if the original chord contained a single pitch,
+;;; otherwise the original chord object. 
+;;; 
+;;; EXAMPLE
+#|
+(data (single-pitch-chord-to-pitch (make-chord '(a4))))
+=> A4
+|#
+;;; SYNOPSIS
+(defmethod single-pitch-chord-to-pitch ((c chord))
+;;; ****
+	(when (= (length (data c)) 1)
+	  (setf c (first (data c))))
+	c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:15:53 Mon Sep 30 2019 CEST
+;;; $$ Last modified:  15:00:47 Wed Dec  4 2019 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -1229,8 +1229,19 @@
 (sc-deftest test-rhythm-make-rhythm ()
   (let ((r1 (make-rhythm 16))
         (r2 (make-rhythm 8 :is-rest t :is-tied-to t))
-        (r3 (make-rhythm .23 :duration t)))
+        (r3 (make-rhythm .23 :duration t))
+        (r4 (make-rhythm 'b)) ; brevis
+        (r5 (make-rhythm 'l)) ; longa
+        (r6 (make-rhythm 'm))) ; maxima
     (sc-test-check
+      ;; MDE Wed Dec  4 14:55:44 2019 -- test the long ones
+      (equal-within-tolerance 0.5 (value r4))
+      (equal-within-tolerance 0.25 (value r5))
+      (equal-within-tolerance 0.125 (value r6))
+      (write-xml r4)
+      (write-xml r5)
+      (write-xml r6)
+      (get-cmn-data (make-event 'c4 'm))
       (rhythm-p r1)
       (not (is-rest r1))
       (not (is-tied-to r1))
@@ -19133,7 +19144,7 @@
                                    (when (micro-tone (pitch-or-chord ev))
                                      (incf count))))))
          count)
-              93)
+       93)
       (equalp '(66 27) (fast-microtone-to-chromatic mini nil :threshold 10))
       (zerop
        (let* ((count 0))
@@ -19153,38 +19164,68 @@
 ;;; DJR Wed 18 Sep 2019 18:35:36 BST
 ;;; test-pitch-or-chord=
 (sc-deftest test-pitch-or-chord= ()
-            (let ((p1 (make-pitch 'c4))
-                  (p2 (make-pitch 'bs3))
-                  (c1 (make-chord '(c4 e4 g4)))
-                  (c2 (make-chord '(c4 e4)))
-                  (c3 (make-chord '(bs3 ff4 g4))))
-              (sc-test-check
-               (null (pitch-or-chord= p1 p2))
-               (pitch-or-chord= p1 p2 t)
-               (null (pitch-or-chord= c1 c2))
-               (null (pitch-or-chord= c1 c3))
-               (null (pitch-or-chord= c1 c3)))))
+  (let ((p1 (make-pitch 'c4))
+        (p2 (make-pitch 'bs3))
+        (c1 (make-chord '(c4 e4 g4)))
+        (c2 (make-chord '(c4 e4)))
+        (c3 (make-chord '(bs3 ff4 g4))))
+    (sc-test-check
+      (null (pitch-or-chord= p1 p2))
+      (pitch-or-chord= p1 p2 t)
+      (null (pitch-or-chord= c1 c2))
+      (null (pitch-or-chord= c1 c3))
+      (null (pitch-or-chord= c1 c3)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Wed 18 Sep 2019 18:53:41 BST
 ;;; test-tie-repeated-notes
 (sc-deftest test-tie-repeated-notes ()
-            (let* ((mini (make-slippery-chicken  
-                          '+mini+ 
-                          :ensemble '(((pno (piano :midi-channel 1))))
-                          :staff-groupings '(1)
-                          :tempo-map '((1 (q 60)))
-                          :set-palette '((set1 ((fs2 b2 d4 a4 d5 e5 a5 d6))) 
-                                         (set2 ((b2 fs3 d4 e4 a4 d5 e5 a5 d6))))
-                          :set-map '((1 (set1 set1 set2 set1 set1 set2)))
-                          :rthm-seq-palette
-                          '((seq1 ((((4 4) q (q) q q))   
-                                   :pitch-seq-palette (1 1 1)))  
-                            (seq2 ((((4 4) (e) e q e (e) e e)) 
-                                   :pitch-seq-palette (1 1 1 (1) (1)))))
-                          :rthm-seq-map '((1 ((pno (seq1 seq1 seq2 seq1 seq1 seq2))))))))
-              (sc-test-check
-               (equalp (tie-repeated-notes mini nil nil nil) '(12)))))
+  (let* ((mini (make-slippery-chicken  
+                '+mini+ 
+                :ensemble '(((pno (piano :midi-channel 1))))
+                :staff-groupings '(1)
+                :tempo-map '((1 (q 60)))
+                :set-palette '((set1 ((fs2 b2 d4 a4 d5 e5 a5 d6))) 
+                               (set2 ((b2 fs3 d4 e4 a4 d5 e5 a5 d6))))
+                :set-map '((1 (set1 set1 set2 set1 set1 set2)))
+                :rthm-seq-palette
+                '((seq1 ((((4 4) q (q) q q))   
+                         :pitch-seq-palette (1 1 1)))  
+                  (seq2 ((((4 4) (e) e q e (e) e e)) 
+                         :pitch-seq-palette (1 1 1 (1) (1)))))
+                :rthm-seq-map '((1 ((pno (seq1 seq1 seq2 seq1 seq1 seq2))))))))
+    (sc-test-check
+      (equalp (tie-repeated-notes mini nil nil nil) '(12)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(sc-deftest test-hammer-friendly ()
+  (let* ((mini (make-slippery-chicken  
+                '+mini+ 
+                :ensemble '(((pno (piano :midi-channel 1))))
+                :staff-groupings '(1)
+                :tempo-map '((1 (q 60)))
+                :set-palette '((set1 ((fs2))) 
+                               (set2 ((b2))))
+                :set-map '((1 (set1 set2 set1 set2)))
+                :rthm-seq-palette
+                '((seq1 ((((4 4) s x 16)))))
+                :rthm-seq-map '((1 ((pno (seq1 seq1 seq1 seq1))))))))
+    (flet ((check (bnum enum &optional invert)
+             (let ((e1 (get-event mini bnum enum 'pno))
+                   (e2 (get-event mini bnum (1+ enum) 'pno)))
+               (funcall (if invert #'> #'<)
+                        (- (start-time e2) (end-time e1))) .03)))
+      (sc-test-check
+        (check 1 1)
+        (check 1 2)
+        (check 2 5)
+        (check 4 15)
+        (midi-play mini :midi-file "/tmp/before.mid")
+        (equalp '(60) (make-hammer-friendly mini 'pno))
+        (midi-play mini :midi-file "/tmp/after.mid")
+        (check 3 15 t)
+        (check 2 2 t)
+        ))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  14:53:52 Wed Dec  4 2019 CET
+;;; $$ Last modified:  17:09:12 Wed Dec  4 2019 CET
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -452,7 +452,7 @@
   (let ((pos (+ 3 (log num 2))))
     (unless (float-int-p pos)
       (error "rhythm::xml-simple-rhythm: argument must be a power of 2 ~
-              between 1 and 128: ~a" num))
+              between 0.125 and 128: ~a" num))
     (nth (floor pos) '("maxima" "long" "breve" "whole" "half" "quarter" "eighth"
                        "16th" "32nd" "64th"  "128th"))))
 

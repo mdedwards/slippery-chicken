@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  15:21:51 Tue Jul 16 2019 CEST
+;;; $$ Last modified:  14:49:22 Wed Dec  4 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2288,6 +2288,11 @@ data: (
                               (#\G (when rhythm-object
                                      (setf (is-grace-note rhythm-object) t))
                                    0)
+                              ;; MDE Wed Dec  4 14:44:03 2019 -- double wholes
+                              ;; etc.  ?
+                              (#\M 0.125)
+                              (#\L 0.25)                              
+                              (#\B 0.5)
                               (#\W 1)
                               (#\H 2)
                               (#\Q 4)

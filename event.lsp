@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:02:07 Tue Dec  3 2019 CET
+;;; $$ Last modified:  11:38:31 Thu Dec  5 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2664,7 +2664,20 @@ NIL
           (push note result)
           ;; MDE Thu Jul  2 15:52:52 2015 -- make sure we write an integer
           ;; instead of something like 32.0 
-          (push (format nil "~a" (round rthm)) result)
+          (push (format nil "~a"
+                        ;; MDE Thu Dec  5 11:34:00 2019 -- special cases for
+                        ;; breva, longa, maxima. 
+                        (cond ((equal-within-tolerance rthm 0.5)
+                               "\\breve")
+                              ((equal-within-tolerance rthm 0.25)
+                               "\\longa")
+                              ((equal-within-tolerance rthm 0.125)
+                               (warn "event::get-lp-data: in Lilypond, ~
+                                      \\maxima is only possible in ~%ancient ~
+                                      music notation.")
+                               "\\maxima")
+                              (t (round rthm))))
+                result)
           (push (make-string (num-dots e) :initial-element #\.) result)
           (when (and (not (bracket e))  ; tuplets without brackets
                      (/= (tuplet-scaler e) 1))
@@ -4117,7 +4130,7 @@ NIL
 ;;; ****
   (when (is-chord e)
     (when (= (length (data (pitch-or-chord e))) 1)
-	  (setf (pitch-or-chord e) (first (data (pitch-or-chord e))))))
+          (setf (pitch-or-chord e) (first (data (pitch-or-chord e))))))
   e)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

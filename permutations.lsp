@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified:  17:27:27 Thu Nov  8 2018 CET
+;;; $$ Last modified:  14:32:47 Fri Dec  6 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1194,7 +1194,7 @@ START
 ;;; for repetition with the first element of the next sublist. See the first
 ;;; example below.
 ;;;
-;;; NB: This function only move elements further along the list; it won't place
+;;; NB: This function only moves elements further along the list; it won't place
 ;;;     them earlier than their original position.  Thus:
 ;;;     
 ;;;     (move-repeats '(3 3 1)) 
@@ -1259,6 +1259,69 @@ WARNING:
               (setf result (append rest result)
                     rest nil)))
     (nreverse result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* permutations/avoid-common-elements
+;;; DATE
+;;; December 6th 2019, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Taking a list of sublists, move the sublists around to try and avoid
+;;; consecutive sublists having common elements. Note that even if it's not
+;;; possible to completely solve this problem, a re-ordered list will be
+;;; returned along with a warning detailing where things were no longer
+;;; possible. No further, more complex attempts are made at that point. NB In
+;;; that case shuffling before calling this function might help
+;;; 
+;;; ARGUMENTS
+;;; - the list of sublists (of any element type)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :test. The function to be passed to (intersection) for testing equivalence
+;;;   amongst list elements. Default = #'eq
+;;; - :accept. The number of common elements to accept amongst sublists. Default
+;;;   = 0
+;;; 
+;;; RETURN VALUE
+;;; a list: the first argument with re-ordered sublists.
+;;; 
+;;; EXAMPLE
+#|
+(avoid-common-elements
+ '((1 2 3) (4 5 6) (5 4 6) (4 6 1) (2 3 4) (2 3 1) (1 3 2)))
+-->
+WARNING: permutations::avoid-common-elements: did 4 but can't complete. 
+Current: (1 3 2)
+Rest: ((4 6 1) (2 3 4))
+((1 2 3) (4 5 6) (2 3 1) (5 4 6) (1 3 2) (4 6 1) (2 3 4))
+
+(avoid-common-elements
+ '((1 2 3) (4 5 6) (5 4 6) (3 2 1) (2 3 1) (6 5 4) (3 1 2)))
+-->
+((1 2 3) (4 5 6) (3 2 1) (5 4 6) (2 3 1) (6 5 4) (3 1 2))
+|#
+;;; SYNOPSIS
+(defun avoid-common-elements (lists &key (test #'eq) (accept 0))
+;;; ****
+  (let* ((rest (copy-list lists))
+         (result (list (pop rest)))
+         last)
+    (loop for count from 0 while rest do
+         (setq last (first result))
+         (loop for l in rest and i from 0 do
+              (when (<= (length (intersection l last :test test)) accept)
+                (push l result)
+                (setq rest (remove-elements rest i 1))
+                (return))
+            finally
+              (warn "permutations::avoid-common-elements: did ~a but can't ~
+                     complete. ~%Current: ~a~%Rest: ~a" count last rest)
+              (setq result (append (reverse rest) result)
+                    rest nil)
+              (return)))
+    (nreverse result)))
+         
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1390,7 +1453,7 @@ WARNING:
   (declare (optimize (speed 2))
            (function predicate))
   (let ((count 0))
-    (declare (integer count))
+o    (declare (integer count))
     (apply-permutations objects
                         limit
                         (lambda (perm)

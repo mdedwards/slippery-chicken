@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  19:15:01 Wed Oct  9 2019 CEST
+;;; $$ Last modified:  13:27:05 Fri Dec  6 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1348,8 +1348,8 @@
                (integer>=0 how-many)
                (<= (+ start how-many) (length list)))
     (error "remove-elements: arguments 2 and 3 must be integers < the ~
-            length of argument 1: ~a ~a ~a"
-           start how-many (length list)))
+            length ~%of argument 1: ~a ~a ~a ~%~a"
+           start how-many (length list) list))
   (append (subseq list 0 start)
           (nthcdr (+ start how-many) list)))
 

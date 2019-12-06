@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  09:25:09 Fri Nov  8 2019 CET
+;;; $$ Last modified:  09:47:51 Fri Dec  6 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5964,20 +5964,10 @@ rsb-rb)
                                           rhythms))
                 (decf expect-right-brackets)
                 (let ((tuplet-num (pop tuplets)))
-                  #| MDE Wed Dec 14 14:21:27 2011 -- obsolete
-  (push (list tuplet-num
-                  (pop 
-                  score-left-bracket-positions) 
-                  (+ num-notes -1 
-                  (if (atom last-rthm)
-                  0
-                  nudge-factor))) 
-                  score-tuplet-positions)
-  |#
-                                   (push (list tuplet-num 
-                                               (pop left-bracket-positions)
-                                               (1- num-rthms))
-                                         tuplet-positions)))
+                  (push (list tuplet-num 
+                              (pop left-bracket-positions)
+                              (1- num-rthms))
+                        tuplet-positions)))
                ((eq interned '-) (if start-beam 
                                      (progn 
                                        ;; MDE Tue May 29 22:39:29 2012 -- we
@@ -6022,7 +6012,7 @@ rsb-rb)
                                               nudge-factor))
                        (prthms (first parsed))
                        (beams (third parsed))
-                       (nr num-rthms) ;(1- num-rthms))
+                       (nr num-rthms)   ;(1- num-rthms))
                        (brackets (fourth parsed)))
                   ;; (print prthms)
                   ;; (print beams) ;
@@ -6040,15 +6030,15 @@ rsb-rb)
                   (loop for b in brackets do
                        (push (list (first b) (+ nr (second b)) (+ nr (third b)))
                              tuplet-positions))))
-                #| 
-                ;; MDE Fri May 29 10:02:22 2015 -- this is the way we used to
-                ;; do rqq, relying on CMN:
-               (multiple-value-bind
-               (rqq-rthms rqq-num-notes rqq-num-rthms)
-               (do-rqq interned) ;    ; ; ; ; ; ;
-               (incf num-rthms rqq-num-rthms)
-               (incf num-notes rqq-num-notes)
-               (setf rthms (append (reverse rqq-rthms) rthms))))
+               #| 
+                ;; MDE Fri May 29 10:02:22 2015 -- this is the way we used to ;
+                ;; do rqq, relying on CMN: ;
+               (multiple-value-bind     ;
+               (rqq-rthms rqq-num-notes rqq-num-rthms) ;
+               (do-rqq interned) ;    ; ; ; ; ; ; ;
+               (incf num-rthms rqq-num-rthms) ;
+               (incf num-notes rqq-num-notes) ;
+               (setf rthms (append (reverse rqq-rthms) rthms)))) ;
                |#
                ;; finally we saw a rhythm!
                ;; but when it's in parentheses it's a rest so
@@ -6057,15 +6047,15 @@ rsb-rb)
                          (num-tied-rthms (num-tied-rthms i)))
                     (unless (zerop got-left-brackets)
                       (loop 
-                          with score-pos = (- num-notes
-                                              (if note 
-                                                  0 
-                                                nudge-factor))
-                          with pos = num-rthms
-                          repeat got-left-brackets 
-                          do (push score-pos 
-                                   score-left-bracket-positions)
-                             (push pos left-bracket-positions))
+                         with score-pos = (- num-notes
+                                             (if note 
+                                                 0 
+                                                 nudge-factor))
+                         with pos = num-rthms
+                         repeat got-left-brackets 
+                         do (push score-pos 
+                                  score-left-bracket-positions)
+                           (push pos left-bracket-positions))
                       (setq got-left-brackets 0))
                     (when note
                       (incf num-notes num-tied-rthms))

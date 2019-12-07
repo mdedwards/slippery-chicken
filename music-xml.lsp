@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  17:09:12 Wed Dec  4 2019 CET
+;;; $$ Last modified:  11:35:16 Sat Dec  7 2019 CET
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -272,6 +272,10 @@
                   (II '(wds "II"))
                   (III '(wds "III"))
                   (IV '(wds "IV"))
+                  (V '(wds "V"))
+                  (VI '(wds "VI"))
+                  (VII '(wds "VII"))
+                  (VIII '(wds "VIII"))
                   ;; guitar string numbers; todo: find a way of circling them
                   (c1 "1")
                   (c2 "2")

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified:  14:32:47 Fri Dec  6 2019 CET
+;;; $$ Last modified:  14:53:35 Fri Dec  6 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1282,7 +1282,11 @@ WARNING:
 ;;;   amongst list elements. Default = #'eq
 ;;; - :accept. The number of common elements to accept amongst sublists. Default
 ;;;   = 0
-;;; 
+;;; - :warn. Issue a warning if we can't complete? Default = T
+;;; - :all-on-fail. Return the unprocessed (failing) elements if we can't
+;;;   complete? If NIL then we'll return less sublists than given but there will
+;;;   be no common elements, at least. Default = T.
+;;;
 ;;; RETURN VALUE
 ;;; a list: the first argument with re-ordered sublists.
 ;;; 
@@ -1302,23 +1306,26 @@ Rest: ((4 6 1) (2 3 4))
 ((1 2 3) (4 5 6) (3 2 1) (5 4 6) (2 3 1) (6 5 4) (3 1 2))
 |#
 ;;; SYNOPSIS
-(defun avoid-common-elements (lists &key (test #'eq) (accept 0))
+(defun avoid-common-elements (lists &key (test #'eq) (accept 0) (warn t)
+                                      (all-on-fail t))
 ;;; ****
   (let* ((rest (copy-list lists))
          (result (list (pop rest)))
          last)
-    (loop for count from 0 while rest do
+    (loop for count from 1 while rest do
          (setq last (first result))
          (loop for l in rest and i from 0 do
               (when (<= (length (intersection l last :test test)) accept)
                 (push l result)
                 (setq rest (remove-elements rest i 1))
                 (return))
-            finally
-              (warn "permutations::avoid-common-elements: did ~a but can't ~
-                     complete. ~%Current: ~a~%Rest: ~a" count last rest)
-              (setq result (append (reverse rest) result)
-                    rest nil)
+            finally                     ; we'll only get here if we fail
+              (when warn
+                (warn "permutations::avoid-common-elements: did ~a but can't ~
+                       complete. ~%Current: ~a~%Rest: ~a" count last rest))
+              (when all-on-fail
+                (setq result (append (reverse rest) result)))
+              (setq rest nil)
               (return)))
     (nreverse result)))
          

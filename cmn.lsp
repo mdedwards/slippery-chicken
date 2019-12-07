@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified:  11:41:43 Mon Nov 26 2018 CET
+;;; $$ Last modified:  11:36:21 Sat Dec  7 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -232,6 +232,10 @@
              (II (list (fingering "II" (dx dx) (dy dy) the-text)))
              (III (list (fingering "III" (dx dx) (dy dy) the-text)))
              (IV (list (fingering "IV" (dx dx) (dy dy) the-text)))
+             (V (list (fingering "V" (dx dx) (dy dy) the-text)))
+             (VI (list (fingering "VI" (dx dx) (dy dy) the-text)))
+             (VII (list (fingering "VII" (dx dx) (dy dy) the-text)))
+             (VIII (list (fingering "VIII" (dx dx) (dy dy) the-text)))
              (I-II (list (fingering "I" "II" (dx dx) (dy dy) the-text)))
              (I-II-III (list (fingering "I" "II" "III" (dx dx) (dy dy)
                                         the-text)))

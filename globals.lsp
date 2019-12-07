@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  16:42:47 Sat Aug  3 2019 CEST
+;;; $$ Last modified:  12:03:54 Sat Dec  7 2019 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -99,6 +99,9 @@
      ;; Whether to automatically open MIDI files generated with via midi-play.
      ;; Currently only works with SBCL and CCL on Mac OSX.
      (midi-play-auto-open #+sc-auto-open T #-sc-auto-open nil)
+     ;; MDE Sat Dec  7 11:56:24 2019 -- if a pitch has a mark included in this
+     ;; list, it will be ignored  
+     (midi-play-ignore-marks nil)
      ;; The default directory for output of sound files, EPS files, and
      ;; Lilypond files. Don't forget the trailing slash (i.e. "/tmp/" not
      ;; "/tmp").  Bear in mind that on OSX the /tmp directory is emptied upon

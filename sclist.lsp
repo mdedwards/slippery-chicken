@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified:  16:25:20 Sat May 18 2019 CEST
+;;; $$ Last modified:  11:28:03 Sat Dec 14 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -663,6 +663,69 @@ data TURKEY
                  (error "sclist::limits: all list elements should be numbers: ~
                          ~a" el))
              collect (rescale el min max new-min new-max)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Dec 14 11:19:38 2019 -- bringing this over from the popcorn class
+
+;;; ****m* sclist/plot
+;;; DESCRIPTION
+;;; Create text and data files suitable for plotting with gnuplot. The file
+;;; name should be given without extension, as the method will create a .txt
+;;; and a .data file, for the command and data files respectively. It is assumed
+;;; that the data to be plotted is a list of numbers. An error will be triggered
+;;; if not.
+;;;
+;;; The user must then call gnuplot in a terminal, in a manner such as "gnuplot
+;;; sclist.txt; open sclist.ps". 
+;;;
+;;; The method will create files that draw data points connected by lines by
+;;; default.
+;;; 
+;;; ARGUMENTS
+;;; - An sclist object.
+;;; - A string that is the directory path and base file name (without
+;;;   extension) of the files to create.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - The slot to plot. By default this will be the data slot, but derived
+;;;   classes may want to plot a different list slot, e.g. the kernels slot of
+;;;   the popcorn class.
+;;; - T or NIL to indicate whether to connect points by lines. T = draw
+;;;   lines. Default = T.
+;;; 
+;;; RETURN VALUE
+;;; Returns the number of points plotted.
+;;; 
+;;; EXAMPLE
+#|
+(let ((ppcn (make-popcorn '(0.01 0.02) :min-spike 3.0 :max-spike 5.0)))
+  (fit-to-length ppcn 100)
+  (plot ppcn "/tmp/ppcn" 'kernels))
+
+then in a terminal:
+gnuplot ppcn.txt
+
+this will create the postscript file ppcn.ps
+|#
+;;; SYNOPSIS
+(defmethod plot ((scl sclist) file &optional (slot 'data) (lines t))
+;;; ****
+  (with-open-file 
+      (command (concatenate 'string file ".txt")
+               :direction :output :if-does-not-exist :create
+               :if-exists :rename-and-delete)
+    (format command "~&set terminal postscript default ~%set output \"~a.ps\"~
+                  ~%plot \"~a.data\" notitle ~a~%~%" file file 
+                  (if lines "with linespoints" "")))
+  (with-open-file 
+      (data (concatenate 'string file ".data")
+               :direction :output :if-does-not-exist :create
+               :if-exists :rename-and-delete)
+    (loop for d in (slot-value scl slot) and x from 0 do
+         (unless (numberp d)
+           (error "sclist::plot: all data elements should be numbers."))
+         (format data "~%~a ~a" x d)
+         finally (return (1+ x)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

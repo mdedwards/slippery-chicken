@@ -12,17 +12,17 @@
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
-;;; Purpose:          AFU = Alternativ fuer Unentschiedener (a little play on the
-;;;                   rather silly German political party). This translates to
-;;;                   Alternative for the Undecided. Building on the
+;;; Purpose:          AFU = Alternativ fuer Unentschiedener (a little play on
+;;;                   the rather silly German political party).  This translates
+;;;                   to Alternative for the Undecided. Building on the
 ;;;                   circular-sclist and activity-levels class, it's meant as a
-;;;                   deterministic alternative to randomness. 
+;;;                   deterministic alternative to randomness.
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    May 18th 2019
 ;;;
-;;; $$ Last modified:  13:19:43 Thu May 23 2019 CEST
+;;; $$ Last modified:  11:47:52 Sat Dec 14 2019 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -60,7 +60,7 @@
    ;; the level argument to be passed to the activity-levels' active method (0
    ;; to 10 whereby 0 and 10 would be useless for this class)
    (level :accessor level :type integer :initarg :level :initform 3)
-   ;; the is the number of times we'll call the active method of the default
+   ;; this is the number of times we'll call the active method of the default
    ;; activity-levels object. if we pass a binlist explicitly this will be
    ;; overwritten by its length. Note that the number of numbers then generated
    ;; and stored in the data slot will be about twice the period, if the level

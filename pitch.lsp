@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  12:07:09 Sat Dec  7 2019 CET
+;;; $$ Last modified:  13:23:10 Fri Dec 13 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -251,9 +251,6 @@
     (if in-cents (round (* 100.0 mnf)) mnf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Jan  2 11:59:06 EST 2012: Added robodoc info
-
 ;;; ****m* pitch/delete-marks
 ;;; DESCRIPTION
 ;;; Delete all marks stored in the MARKS slot of the given pitch object and
@@ -295,18 +292,13 @@ NIL
   (setf (marks p) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; the ignore fields are there because of the transpose method in tl-set,
-;;; chord and event.  
-
-;;; SAR Mon Jan  2 12:52:40 EST 2012: Added robodoc info
-
 ;;; ****m* pitch/transpose
 ;;; DESCRIPTION
 ;;; Transpose the pitch information (frequency, note-name, midi-note etc.) of a
 ;;; given pitch object by a specified number of semitones. The number of
 ;;; semitones specified can be fractional; however, all fractional values will
-;;; be rounded to the nearest quarter-tone frequency.
+;;; be rounded to the nearest quarter-tone frequency (or default smallest step
+;;; for the current scale).  
 ;;;
 ;;; NB: This method returns a new pitch object rather than altering the values
 ;;;     of the current pitch object.

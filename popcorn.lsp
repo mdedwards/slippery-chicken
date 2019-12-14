@@ -24,7 +24,7 @@
 ;;;
 ;;; Creation date:    3rd February 2011 (Ko Lanta, Thailand)
 ;;;
-;;; $$ Last modified: 17:33:40 Thu Dec 26 2013 WIT
+;;; $$ Last modified:  12:06:22 Sat Dec 14 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -72,7 +72,7 @@
    (fixed-random :accessor fixed-random :initarg :fixed-random
                  :initform t)
    ;; the min/max multipliers we'll use to scale the average when creating
-   ;; spikes
+   ;; spikes. Lowering these will generally result in more kernels.
    (min-spike :accessor min-spike :initarg :min-spike :initform 2.0)
    (max-spike :accessor max-spike :initarg :max-spike :initform 4.0)
    ;; the min/max value of the kernels so far
@@ -222,9 +222,6 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
   (reinit pc))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Apr 28 19:18:56 BST 2012: Added robodoc entry
-
 ;;; ****m* popcorn/scale
 ;;; DESCRIPTION
 ;;; Scale the list of number values in the KERNEL slot of a given popcorn
@@ -338,9 +335,6 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
                (+ min (* scaler (- k (mink pc))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Apr 28 18:56:46 BST 2012: Added robodoc entry
-
 ;;; ****m* popcorn/fit-to-length
 ;;; DESCRIPTION
 ;;; Change the length of the list of kernels contained in a given popcorn
@@ -374,9 +368,6 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Apr 28 20:09:29 BST 2012: Added robodoc entry
-
 ;;; ****m* popcorn/get-kernel
 ;;; DESCRIPTION
 ;;; Generate the next value for the KERNELS slot of a given popcorn object and
@@ -420,70 +411,10 @@ POPCORN: kernels: (0.01 0.02 0.015828498 0.015408514 0.015781755 0.01670348
         (between (mean pc) (maxk pc) (fixed-random pc)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Jun 13 12:00:35 BST 2012: Added robodoc entry
-
-;;; ****m* popcorn/plot
-;;; DESCRIPTION
-;;; Create text and data files suitable for plotting with gnuplot. The file
-;;; name should be given without extension, as the method will create a .txt
-;;; and a .data file, for the command and data files respectively. 
-;;;
-;;; The user must then call gnuplot in a terminal, in a manner such as "gnuplot
-;;; popcorn.txt; open popcorn.ps". 
-;;;
-;;; The method will create files that draw data points connected by lines by
-;;; default.
-;;; 
-;;; ARGUMENTS
-;;; - A popcorn object.
-;;; - A string that is the directory path and base file name (without
-;;;   extension) of the files to create.
-;;; 
-;;; OPTIONAL ARGUMENTS
-;;; - T or NIL to indicate whether to connect points by lines. T = draw
-;;;   lines. Default = T.
-;;; 
-;;; RETURN VALUE
-;;; Returns T.
-;;; 
-;;; EXAMPLE
-#|
-(let ((ppcn (make-popcorn '(0.01 0.02) :min-spike 3.0 :max-spike 5.0)))
-  (fit-to-length ppcn 100)
-  (plot ppcn "/tmp/ppcn"))
-
-then in a terminal:
-gnuplot ppcn.txt
-
-this will create the postscript file ppcn.ps
-|#
-;;; SYNOPSIS
-(defmethod plot ((pc popcorn) file &optional (lines t))
-;;; ****
-  (with-open-file 
-      (command (concatenate 'string file ".txt")
-               :direction :output :if-does-not-exist :create
-               :if-exists :rename-and-delete)
-    (format command "~&set terminal postscript default ~%set output \"~a.ps\"~
-                  ~%plot \"~a.data\" notitle ~a~%~%" file file 
-                  (if lines "with linespoints" "")))
-  (with-open-file 
-      (data (concatenate 'string file ".data")
-               :direction :output :if-does-not-exist :create
-               :if-exists :rename-and-delete)
-    (loop for k in (kernels pc) and x from 0 do
-         (format data "~%~a ~a" x k)))
-  t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Apr 28 11:35:43 BST 2012: Added robodoc entry
-
 ;;; ****f* popcorn/make-popcorn
 ;;; DESCRIPTION
 ;;; Make a popcorn object. This method uses the heat method internally to

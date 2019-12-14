@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  13:27:05 Fri Dec  6 2019 CET
+;;; $$ Last modified:  17:45:35 Fri Dec 13 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3492,11 +3492,16 @@ WARNING:
 ;;;    most-positive-fixnum  
 ;;; - :skip. The increment for the harmonics.  If 1, then we ascend the
 ;;;    harmonics series one partial at a time; 2 would mean skipping every other
-;;;    Default = 1. 
+;;;    Default = 1.
+;;; - :pitches. Return a list of pitch objects instead of frequencies. Default =
+;;;   NIL. 
+;;; - :notes. Return a list of 2-element sublists: note symbols in the
+;;;   chromatics scale, with cent deviations 
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of numbers that are the frequencies in Hertz of harmonic partials
-;;; above the same fundamental frequency.
+;;; above the same fundamental frequency, or with the respective keyword, as
+;;; pitch objects or note symbols 
 ;;; 
 ;;; EXAMPLE
 #|
@@ -3510,21 +3515,41 @@ WARNING:
 |#
 ;;; SYNOPSIS
 (defun get-harmonics (start-freq &key (start-partial 1) (min-freq 20)
-                      (start-freq-is-partial 1) (max-freq 20000) (skip 1)
-                      (max-results most-positive-fixnum))
+                                   (start-freq-is-partial 1) (max-freq 20000)
+                                   (skip 1)
+                                   pitches notes
+                                   (max-results most-positive-fixnum))
 ;;; ****
   (unless (and (integer>0 start-partial)
                (integer>0 start-freq-is-partial))
     (error "utilities::get-harmonics: :start-partial (~a) and/or ~
             :start-freq-is-partial (~a) ~%need to be integers >= 1"
            start-partial start-freq-is-partial))
-  (loop with fundamental = (float (/ start-freq start-freq-is-partial))
-     for h from start-partial by skip
-     for freq = (* fundamental h)
-     while (<= freq max-freq)
-     repeat max-results
-     if (>= freq min-freq)
-     collect freq))
+  (when (and pitches notes)
+    (error "utilities::get-harmonics: either :pitches or :notes but not both."))
+  (let ((result
+         (loop with fundamental = (float (/ start-freq start-freq-is-partial))
+            for h from start-partial by skip
+            for freq = (* fundamental h)
+            while (<= freq max-freq)
+            repeat max-results
+            if (>= freq min-freq)
+            collect freq))
+        (scale cm::*scale*))
+    (cond (pitches
+           (mapcar #'(lambda (f) (make-pitch f)) result))
+          (notes
+           (prog2
+               ;; only get pitches and their cent devitions in the
+               ;; chromatic scale
+               (in-scale :chromatic)
+               (mapcar #'(lambda (f)
+                           (let ((p (make-pitch f)))
+                             (list (data p)
+                                   (floor (pitch-bend p) 0.01))))
+                       result)
+             (in-scale scale)))
+          (t result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; keywords same as get-harmonics (above)
@@ -3807,9 +3832,6 @@ WARNING:
         (list thing))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue May  8 00:32:05 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/hailstone
 ;;; DESCRIPTION
 ;;; Implementation of the Collatz conjecture (see

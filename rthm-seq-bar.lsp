@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  09:47:51 Fri Dec  6 2019 CET
+;;; $$ Last modified:  15:31:28 Mon Dec 16 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5719,6 +5719,48 @@ collect (midi-channel (pitch-or-chord p))))
                                   &optional (update-amplitude t))
   (loop for event in (rhythms rsb) do
        (pedals-to-controllers event update-amplitude)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rthm-seq-bar/get-nearest-by-start-time
+;;; DATE
+;;; December 16th 2019, Essen Werden
+;;; 
+;;; DESCRIPTION
+;;; Find the event with the closest start-time to a given target.
+;;; 
+;;; ARGUMENTS
+;;; - a rthm-seq-bar object, with times appropriately initialised (e.g. by
+;;;  make-slippery-chicken)
+;;; - the target: either start time in seconds (float) or an event object
+;;; 
+;;; RETURN VALUE
+;;; two values: the closest event and it's position in the bar (0-based)
+;;; 
+;;; SYNOPSIS
+(defmethod get-nearest-by-start-time ((rsb rthm-seq-bar) target)
+;;; ****
+  (when (event-p target) (setq target (start-time target)))
+  (when (or (not target) (equal-within-tolerance -1.0 (start-time rsb)))
+    (error "rthm-seq-bar::get-nearest-by-start-time: rthm-seq-bar and event ~
+            objects need to have valid start-times:~%~a~%~a" rsb e))
+  (when (rhythms rsb)
+    (let ((smallest most-positive-double-float)
+          nth event)
+      ;; it would be nice to do this with the sort function as it would probably
+      ;; be quicker, but that's a destructive operation
+      (loop for r in (rhythms rsb)
+         for diff = (abs (- target (start-time r)))
+         for i from 0
+         do
+         ;; as all start-times in the rsb must be increasing, it stands to
+         ;; reason that the difference between the current start-time and that
+         ;; of our sought-for start-time decreases until we find the closest,
+         ;; then increases
+           (if (< diff smallest)
+               (setq nth i
+                     event r)
+               (return)))
+      (values event nth))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

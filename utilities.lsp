@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  17:45:35 Fri Dec 13 2019 CET
+;;; $$ Last modified:  13:26:00 Sat Dec 14 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2027,9 +2027,6 @@
      collect x collect (+ y add)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 11:28:13 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/force-length
 ;;; DATE
 ;;; 03-FEB-2011

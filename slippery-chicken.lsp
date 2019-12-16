@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:24:50 Tue Dec  3 2019 CET
+;;; $$ Last modified:  09:42:01 Mon Dec 16 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7493,7 +7493,7 @@ FS4 G4)
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
 ;;; - the reference event object that we want to find the nearest event to in
-;;; another player 
+;;;   another player 
 ;;; - the player we want to find the nearest event in (symbol).
 ;;;
 ;;; OPTIONAL ARGUMENTS

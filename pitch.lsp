@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  13:23:10 Fri Dec 13 2019 CET
+;;; $$ Last modified:  11:05:16 Thu Jan  2 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2458,9 +2458,8 @@ data: D7
   (multiple-value-bind
         (harm node)
       (natural-harmonic? instrument p tolerance)
-    ;; (when harm (print (id harm)))
-    ;; for now at least we do nothing with the node pitch
-    harm))
+    ;; MDE Wed Dec 18 13:39:17 2019 -- we now return the node pitch too
+    (values harm node)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Tue 29 Oct 2019 11:42:44 GMT -- change sharp to flat or flat to sharp
@@ -3608,6 +3607,36 @@ data: F4
 ;;; MDE Mon Feb 13 15:19:57 2012 
 (defun pitch-list= (pl1 pl2)
   (every #'pitch= pl1 pl2))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* pitch/midi-play-pitch-list
+;;; DATE
+;;; January 2nd 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Generate a MIDI file from a list of pitches.
+;;; 
+;;; ARGUMENTS
+;;; the pitch list: either pitch objects or symbols
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :rhythm. The rhythm (symbol or object) to be used for all pitches. Default
+;;;   = 'e (eighth note) 
+;;; - :tempo. The MIDI file tempo. Default = 120BPM.
+;;; - :file. The patch of the MIDI file to write. Default = "/tmp/tmp.mid"
+;;; 
+;;; RETURN VALUE
+;;; the MIDI file path (string)
+;;; 
+;;; SYNOPSIS
+(defun midi-play-pitch-list (pitches
+                             &key (rhythm 'e) (tempo 120) (file "/tmp/tmp.mid"))
+;;; ****
+  (let ((events (loop for p in pitches collect
+                     (make-event p rhythm))))
+    (events-update-time events)
+    (event-list-to-midi-file events :midi-file file :start-tempo tempo)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Apr  3 20:53:55 2013 -- 

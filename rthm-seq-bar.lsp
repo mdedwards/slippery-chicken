@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  15:31:28 Mon Dec 16 2019 CET
+;;; $$ Last modified:  17:00:37 Tue Dec 17 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -233,13 +233,11 @@
                                           (> (third x) (third y))
                                           (< x2 y2))))))
       (unless (is-full rsb 'warn)
-        (error "~a~%rthm-seq-bar::initialize-instance:~
+        (error "~&rthm-seq-bar::initialize-instance:~
                ~%Incorrect number of beats in bar: Expected ~a, got ~a~
-               ~%Perhaps you forgot to change the time signature??? ~%~a~%"
-               rhythms
+               ~%Perhaps you forgot to change the time signature??? ~%~a~%~a"
                (duration (get-time-sig-from-all-time-sigs rsb))
-               (rhythms-duration rsb)
-               data)))
+               (rhythms-duration rsb) data rhythms)))
     ;; MDE Thu Jun  4 16:10:12 2015
     (when just-rqq
       (check-beams rsb))

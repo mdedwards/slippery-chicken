@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:42:01 Mon Dec 16 2019 CET
+;;; $$ Last modified:  15:04:01 Fri Dec 20 2019 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1857,16 +1857,15 @@ rhythms: (
      finally (return count)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed May  9 18:43:27 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken/find-note
 ;;; DATE
 ;;; 09-Apr-2011
 ;;;
 ;;; DESCRIPTION
 ;;; Print to the Listener the numbers of all bars in a specified player's part
-;;; of a given slippery-chicken object in which the specified pitch is found. 
+;;; of a given slippery-chicken object in which the specified pitch is
+;;; found. Note that pitch symbols rather than objects are searched for so
+;;; that small microtonal variations are be ignored. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -1985,10 +1984,14 @@ bar 45
     (loop for e = (next-event sc player) while e do
          (when (> (bar-num e) end-bar)
            (return))
-         (setf p (if written (written-pitch-or-chord e) (pitch-or-chord e)))
+         (setq p (if written (written-pitch-or-chord e) (pitch-or-chord e)))
          (when (and p (if chord?
+                          ;; chord-equal compares symbols, chord= the objects
                           (and (chord-p find) (chord-p p) (chord-equal find p))
-                          (and (pitch-p find) (pitch-p p) (pitch= find p))))
+                          ;; MDE Fri Dec 20 15:01:33 2019 -- symbol comparison
+                          ;; (and (pitch-p find) (pitch-p p) (pitch= find p))))
+                          (and (pitch-p find) (pitch-p p) (eq (data find)
+                                                              (data p)))))
            (push e result)
            (format t "~&bar ~a" (bar-num e))))
     (nreverse result)))

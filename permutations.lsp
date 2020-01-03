@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified:  14:53:35 Fri Dec  6 2019 CET
+;;; $$ Last modified:  17:09:57 Mon Dec 30 2019 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1460,7 +1460,7 @@ Rest: ((4 6 1) (2 3 4))
   (declare (optimize (speed 2))
            (function predicate))
   (let ((count 0))
-o    (declare (integer count))
+    (declare (integer count))
     (apply-permutations objects
                         limit
                         (lambda (perm)

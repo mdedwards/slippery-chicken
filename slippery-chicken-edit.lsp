@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  07:34:55 Tue Nov 12 2019 CET
+;;; $$ Last modified:  16:49:26 Wed Jan  1 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5704,8 +5704,8 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
 ;;;   will be rescaled to map over the number of bars in the whole piece,
 ;;;   despite the start-bar/end-bar arguments. However this rescaling can be
 ;;;   avoided via the next argument. Default = '(0 1 100 10)
-;;; :rescale-curve. Whether to process the x-values of :curve to range over the
-;;; number of bars in the piece. Default = T = rescale.
+;;; - :rescale-curve. Whether to process the x-values of :curve to range over 
+;;;   the number of bars in the piece. Default = T = rescale.
 ;;; 
 ;;; RETURN VALUE
 ;;; - the processed slippery-chicken object
@@ -5724,7 +5724,10 @@ RTHM-SEQ-BAR: time-sig: 2 (4 4), time-sig-given: T, bar-num: 4,
      #'(lambda (bar acurve)
          (loop with anum = (interpolate (1- (bar-num bar)) acurve)
             for e in (rhythms bar) do
-              (when (and (needs-new-note e) (not (active al anum)))
+              (when (and (needs-new-note e)
+                         (not (active al anum))
+                         ;; MDE Wed Jan  1 16:48:57 2020
+                         (not (is-grace-note e)))
                 ;; note that this is a pretty inefficient way of doing things
                 ;; but we need to take care of ties properly so canceling
                 ;; individual events via force-rest won't work

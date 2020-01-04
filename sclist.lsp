@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    February 11th 2001
 ;;;
-;;; $$ Last modified:  11:28:03 Sat Dec 14 2019 CET
+;;; $$ Last modified:  14:20:05 Sat Jan  4 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -669,11 +669,11 @@ data TURKEY
 
 ;;; ****m* sclist/plot
 ;;; DESCRIPTION
-;;; Create text and data files suitable for plotting with gnuplot. The file
-;;; name should be given without extension, as the method will create a .txt
-;;; and a .data file, for the command and data files respectively. It is assumed
-;;; that the data to be plotted is a list of numbers. An error will be triggered
-;;; if not.
+;;; Create text and data files suitable for plotting the numbers in the data (or
+;;; other) slot with gnuplot. The file name should be given without extension,
+;;; as the method will create a .txt and a .data file, for the command and data
+;;; files respectively. It is assumed that the data to be plotted is a list of
+;;; numbers. An error will be triggered if not.
 ;;;
 ;;; The user must then call gnuplot in a terminal, in a manner such as "gnuplot
 ;;; sclist.txt; open sclist.ps". 

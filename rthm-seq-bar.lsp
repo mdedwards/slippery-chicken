@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  17:00:37 Tue Dec 17 2019 CET
+;;; $$ Last modified:  14:13:08 Sat Jan  4 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5728,7 +5728,7 @@ collect (midi-channel (pitch-or-chord p))))
 ;;; 
 ;;; ARGUMENTS
 ;;; - a rthm-seq-bar object, with times appropriately initialised (e.g. by
-;;;  make-slippery-chicken)
+;;;   make-slippery-chicken)
 ;;; - the target: either start time in seconds (float) or an event object
 ;;; 
 ;;; RETURN VALUE
@@ -5740,7 +5740,7 @@ collect (midi-channel (pitch-or-chord p))))
   (when (event-p target) (setq target (start-time target)))
   (when (or (not target) (equal-within-tolerance -1.0 (start-time rsb)))
     (error "rthm-seq-bar::get-nearest-by-start-time: rthm-seq-bar and event ~
-            objects need to have valid start-times:~%~a~%~a" rsb e))
+            objects need to have valid start-times:~%~a~%~a" rsb target))
   (when (rhythms rsb)
     (let ((smallest most-positive-double-float)
           nth event)
@@ -5756,7 +5756,8 @@ collect (midi-channel (pitch-or-chord p))))
          ;; then increases
            (if (< diff smallest)
                (setq nth i
-                     event r)
+                     event r
+                     smallest diff)
                (return)))
       (values event nth))))
 

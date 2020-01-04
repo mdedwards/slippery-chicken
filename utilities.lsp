@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  13:26:00 Sat Dec 14 2019 CET
+;;; $$ Last modified:  13:54:17 Sat Jan  4 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2707,11 +2707,10 @@ WARNING:
                      (progn
                        (split-phrase (nreverse phrase))
                        (setf phrase '()))
-                     (push (first label) phrase))))
-             (when eof
-               (split-phrase (nreverse phrase))
-               (return t)))))))
-                    
+                     (push (first label) phrase)))
+               (when eof
+                 (split-phrase (nreverse phrase))
+                 (return t))))))))
                       
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2724,7 +2723,7 @@ WARNING:
                      (pathname-name file)
                      (pathname-type file))
              :direction :output :if-exists :error)
-      (loop with last = -999999.0 with label do
+      (loop with last = -999999.0 with label with time do
            (multiple-value-bind
                  (line eof)
                (read-line in nil)
@@ -2739,9 +2738,9 @@ WARNING:
                      (setq time (first label))
                      (when (> (- time last) min)
                        (setq last time)
-                       (format out "~&~a" line))))))
-           (when eof
-             (return t))))))
+                       (format out "~&~a" line)))))
+             (when eof
+               (return t)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

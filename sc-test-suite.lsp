@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  17:24:59 Wed Dec  4 2019 CET
+;;; $$ Last modified:  14:20:16 Sat Jan  4 2020 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -1222,6 +1222,34 @@
         (test-last bar2 8)
         (test-last bar3 16)))))
 
+;;; MDE Mon Dec 16 09:57:29 2019
+(sc-deftest test-get-nearest-by-start-time ()
+  (let ((mini
+         (make-slippery-chicken
+          '+sc-object+
+          :ensemble '(((va (viola :midi-channel 2))))
+          :set-palette '((1 ((c3 d3 e3 f3 g3 a3 b3 c4))))
+          :set-map '((1 (1 1 1)))
+          :rthm-seq-palette '((1 ((((4 4) 32 x 32)))))
+          :rthm-seq-map '((1 ((va (1 1 1))))))))
+    (flet ((test-it (bar time etime)
+             (equal-within-tolerance
+              etime
+              (start-time
+               (get-nearest-by-start-time
+                (get-bar mini bar 'va)
+                (make-event 'c4 'e :start-time time))))))
+      (sc-test-check
+        (test-it 1 1.1 1.125)
+        (test-it 3 7.9 8.0)
+        (test-it 2 7.9 7.875)
+        ;; (print (get-bar mini 2 'va))
+        (test-it 2 7.1 7.125)
+        (test-it 2 3.1 4.0)
+        (test-it 1 0.05 0.0)
+        (test-it 1 0.15 0.125)))))
+                                 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rhythm tests
 
@@ -1241,7 +1269,11 @@
       (write-xml r4)
       (write-xml r5)
       (write-xml r6)
+      (get-lp-data (make-event 'c4 'e) t)
       (get-cmn-data (make-event 'c4 'm))
+      (get-lp-data (make-event 'c4 'm) t)
+      (get-lp-data (make-event 'c4 'l) t)
+      (get-lp-data (make-event 'c4 'b) t)
       (rhythm-p r1)
       (not (is-rest r1))
       (not (is-tied-to r1))
@@ -5079,6 +5111,27 @@
   (sc-test-check
     (equalp '((3 2) (3 1) (3 2) (2 1) (3 1) (2 1))
             (chord-combine2 '(1 2 3) 2))))
+
+(sc-deftest test-avoid-common-elements ()
+  (let (tmp)
+    (sc-test-check
+      (equalp (avoid-common-elements
+               '((1 2 3) (4 5 6) (5 4 6) (4 6 1) (2 3 4) (2 3 1) (1 3 2)))
+              '((1 2 3) (4 5 6) (2 3 1) (5 4 6) (1 3 2) (4 6 1) (2 3 4)))
+      (equalp (avoid-common-elements
+               '((1 2 3) (4 5 6) (5 4 6) (3 2 1) (2 3 1) (6 5 4) (3 1 2)))
+              '((1 2 3) (4 5 6) (3 2 1) (5 4 6) (2 3 1) (6 5 4) (3 1 2)))
+      (setq tmp (avoid-common-elements
+                 (shuffle (list-permutations '(1 2 3 4 5 6 7) 3) :fix t)))
+      (= 210 (length tmp))
+      (equalp (first tmp) '(7 3 1))
+      (setq tmp (avoid-common-elements
+                 (list-permutations '(1 2 3 4 5 6 7) 3)
+                 :all-on-fail nil))
+      (= 161 (length tmp))
+      (setq tmp (avoid-common-elements (list-permutations '(1 2 3 4 5 6 7) 3)
+                                       :accept 2))
+      (equalp (first tmp) '(5 6 7)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; recursive-assoc-list tests
@@ -13864,7 +13917,7 @@
       (heat ppcn)
       ;; (print (mean ppcn))
       (setf numk3 (numk ppcn))
-      (plot ppcn "/tmp/ppcn")
+      (plot ppcn "/tmp/ppcn" 'kernels)
       (file-write-ok "/tmp/ppcn.data" 1000)
       (file-write-ok "/tmp/ppcn.txt" 50)
       (/= numk1 numk2 numk3))))
@@ -15541,6 +15594,13 @@
     (equalp 
      (get-harmonics 63 :start-partial 2 :max-freq 10100 :max-results 10)
      '(126.0 189.0 252.0 315.0 378.0 441.0 504.0 567.0 630.0 693.0))
+    ;; MDE Thu Dec 12 17:19:41 2019 -- test new keywords
+    (equalp (get-harmonics (note-to-freq 'c3) :notes t
+                           :max-freq (note-to-freq 'f6))
+            '((C3 0) (C4 0) (G4 2) (C5 0) (E5 -14) (G5 2) (BF5 -31) (C6 0)
+              (D6 4) (E6 -14)))
+    (pitch-p (first (get-harmonics (note-to-freq 'c3)
+                                   :pitches t :max-results 15)))
     (equalp
      (get-harmonics 100 :start-partial 2 :max-results 10
                     :start-freq-is-partial 2)
@@ -17832,7 +17892,7 @@
   (let ((mini
          (make-slippery-chicken
           '+mini+
-          :ensemble '(((cl (b-flat-clarinet :midi-channel 1))
+          :ensemble '(((pno (piano :midi-channel 1))
                        (vc (cello :midi-channel 2))))
           :set-palette '((1 ((f3 g3 a3 b3 c4 d4 e4 f4 g4 a4 b4 c5))))
           :set-map '((1 (1 1 1 1 1))
@@ -17841,15 +17901,21 @@
           :rthm-seq-palette '((1 ((((4 4) h (q) e (s) s)
                                    (q (e) s +s h)
                                    ((e) s (s) (q) h))
-                                  :pitch-seq-palette ((1 2 3 4 5 1 3 2)))))
-          :rthm-seq-map '((1 ((cl (1 1 1 1 1))
+                                  :pitch-seq-palette ((1 2 3 4 5 1 3 2))))
+                              (2 ((((4 4) h (q) e s s)
+                                   (q e s +s h)
+                                   ((e) q. h))
+                                  :pitch-seq-palette
+                                  ((1 2 (3) 4 5 (1) 3 2 1 4)))))
+          :rthm-seq-map '((1 ((pno (2 2 2 1 2))
                               (vc (1 1 1 1 1))))
-                          (2 ((cl (1 1 1 1 1))
+                          (2 ((pno (2 2 2 1 2))
                               (vc (1 1 1 1 1))))
-                          (3 ((cl (1 1 1 1 1))
+                          (3 ((pno (2 2 2 1 2))
                               (vc (1 1 1 1 1))))))))
     (sc-test-check
       (listp (find-note mini 'vc 'f4))
+      (= 24 (length (find-note mini 'pno '(f3 g3 a3 b3))))
       (equalp
        (loop for e in (find-note mini 'vc 'f4) 
           collect (get-pitch-symbol e)

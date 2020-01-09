@@ -7460,37 +7460,61 @@ NIL
      ;; will fail miserably
        (setf (player-section-ref bar) psf)
        (update-events-player bar player))
+  ;; DJR Thu 9 Jan 2020 16:15:25 GMT
+  ;; Safety check if we're adding a new section to an exisiting part, then the
+  ;; numbering must sequential.
+  (loop for i from 1 to section-id do
+       (when (and (< i section-id)
+		  (null (get-section sc i)))
+	 (error "slippery-chicken-edit::bars-to-sc: section ids must be sequential")))
   (let* ((seq (clone-with-new-class (make-rthm-seq bars) 'sequenz))
          (ps (make-player-section (list seq) player))
+	 ;; DJR Thu  9 Jan 2020 10:12:48 GMT
+	 new-section ; for use when adding a new section
          (section (if sc
                       (let ((s (get-section sc section-id)))
-                        (unless s 
-                          (error "slippery-chicken-edit::bars-to-sc: ~
-                                  Can't get section ~a" section-id))
-                        (push ps (data s)))
+			(if s
+			    (progn
+			      (print "old-section")
+			      (push ps (data s)))
+			    (progn
+			      ;; DJR Thu 9 Jan 2020 10:13:36 GMT
+			      ;; generate new section if we're adding one to an
+			      ;; existing sc object with the same player.
+			      (setf new-section t)
+			      (print "new-section")
+			      (make-section (list ps) section-id))))
                       (make-section (list ps) section-id)))
          (piece (if sc
-                    (piece sc)
+		    (piece sc)
                     (make-piece
                      (list (make-named-object section-id section))
                      sc-name)))
          ;; MDE Thu Nov  7 18:42:54 2019 
          player-obj midi-channel)
-    (if sc 
-        (progn
-          (setf player-obj (add-player (ensemble sc) player instrument
-                                       instrument-palette)
-                ;; MDE Thu Nov 7 18:44:23 2019 -- set the player's midi-channel
-                ;; otherwise we'll put programme changes on channel 1
-                (midi-channel player-obj) (first midi-channels)
-                (microtones-midi-channel player-obj) (second midi-channels)
-                (players piece) (econs (players piece) player))
-          ;; (print midi-channel)
-          ;; we add to the last staff group by default
-          ;; MDE Tue Oct 30 08:20:23 2018 -- use the new method
-          (staff-groupings-inc sc)
-          ;; (incf (first (last (staff-groupings sc))))
-          (incf (num-players piece)))
+    ;; DJR Thu 9 Jan 2020 16:14:49 GMT
+    ;; If we're adding a new section to an existing part
+    (when new-section
+      (add (make-named-object section-id section) (piece sc))
+      (link-named-objects (piece sc)))
+    (if sc
+	;; DJR Thu 9 Jan 2020 16:14:49 GMT
+	;; We don't need to do this if we've already added a new section.
+	(unless new-section
+	  (progn
+	    (setf player-obj (add-player (ensemble sc) player instrument
+					 instrument-palette)
+		  ;; MDE Thu Nov 7 18:44:23 2019 -- set the player's midi-channel
+		  ;; otherwise we'll put programme changes on channel 1
+		  (midi-channel player-obj) (first midi-channels)
+		  (microtones-midi-channel player-obj) (second midi-channels)
+		  (players piece) (econs (players piece) player))
+	    ;; (print midi-channel)
+	    ;; we add to the last staff group by default
+	    ;; MDE Tue Oct 30 08:20:23 2018 -- use the new method
+	    (staff-groupings-inc sc)
+	    ;; (incf (first (last (staff-groupings sc))))
+	    (incf (num-players piece))))
         (progn
           (unless sc-name
             (error "slippery-chicken-edit::bars-to-sc: sc-name cannot be NIL"))
@@ -7511,6 +7535,7 @@ NIL
     (check-beams sc)
     sc))
 ;;; ****
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Apr 19 15:03:05 2013 -- make a dummy (pretty empty) sc structure

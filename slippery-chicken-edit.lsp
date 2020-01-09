@@ -7404,12 +7404,23 @@ NIL
 ;;; ****f* slippery-chicken-edit/bars-to-sc
 ;;; DESCRIPTION
 ;;; Take a list of rthm-seq-bars and add them to a new or existing
-;;; slippery-chicken object.  If already existing, we assume it's one you're
-;;; creating part by part with this function, as it's not currently possible to
+;;; slippery-chicken object. It works in three different ways:
+;;;    1. Create a new slippery chicken object with one player and one section.
+;;;    2. Add new parts to an already existing section in an already exisiting
+;;;       slippery chicken object. 
+;;;    3. Add a new section to an already exisiting part in and already
+;;;       exisiting object.
+
+;;; In the second case, we assume you are creating a slippery chicken object
+;;; part by part with this function. It is not currently possible to
 ;;; add a part like this in the middle of the score--the new part will be added
 ;;; to the end of the last group of the ensemble (bottom of score) so make sure
 ;;; to add parts in the order you want them.
 ;;;
+
+;;; In the third case, you can add a new section to an exisitng part, but you
+;;; cannot add a new section to a part that does not exist.
+
 ;;; NB Bear in mind that if you want to use midi-play, then the events in the
 ;;;    bars will need to have their midi-channel set (e.g. via make-event).
 ;;;    It's also the caller's responsibility to ensure that the parts added have

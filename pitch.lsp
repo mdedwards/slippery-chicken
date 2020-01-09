@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  11:05:16 Thu Jan  2 2020 CET
+;;; $$ Last modified:  09:55:42 Thu Jan  9 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1873,8 +1873,10 @@ data: CQS4
                      (qs nil)
                      (qf 'f)
                      ;; twelfth-tone scale
-                     (ts nil) (ss nil) (ssf nil) (stf nil) (sts 's) (fts 'f)
-                     (sss 's) (fss 'f) (sf 'f) (tf 'f)
+                     ;; MDE Thu Jan  9 08:41:13 2020 -- changed ssf and stf from
+                     ;; nil to 's
+                     (ts nil) (ss nil) (ssf 's) (stf 's) (sts 's) (fts 'f)
+                     (sss 's) (ssf 's) (fss 'f) (sf nil) (tf nil)
                      (t (error "pitch::set-white-note: unrecognised ~
                                 accidental ~a"
                                accidental))))

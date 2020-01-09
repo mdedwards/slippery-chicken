@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:20:16 Sat Jan  4 2020 CET
+;;; $$ Last modified:  10:06:49 Thu Jan  9 2020 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -3608,6 +3608,36 @@
       (equal-within-tolerance 60.0 (midi-note-float pc4))
       (equal-within-tolerance 97.5 (midi-note-float pdqf7))
       (equal-within-tolerance 60.5 (midi-note-float pcqs4)))))
+
+;; MDE Thu Jan  9 08:53:05 2020 -- test those 12th tones!
+(sc-deftest test-nearest-chromatic-12th ()
+  (let ((scale cm::*scale*))
+    (in-scale :twelfth-tone)
+    (let ((t1 (make-pitch 'cts4))
+          (t2 (make-pitch 'css7))
+          (t3 (make-pitch 'fssf1))
+          (t4 (make-pitch 'astf5))
+          (t5 (make-pitch 'csts4))
+          (t6 (make-pitch 'gfts1))
+          (t7 (make-pitch 'fsss8))
+          (t8 (make-pitch 'assf6))
+          (t9 (make-pitch 'dfss3))
+          (t10 (make-pitch 'fsf0))
+          (t11 (make-pitch 'ftf1)))
+      (sc-test-check
+        (equal (nearest-chromatic t1) 'c4)
+        (equal (nearest-chromatic t2) 'c7)
+        (equal (nearest-chromatic t3) 'fs1)
+        (equal (nearest-chromatic t4) 'as5)
+        (equal (nearest-chromatic t5) 'cs4)
+        (equal (nearest-chromatic t6) 'gf1)
+        (equal (nearest-chromatic t7) 'fs8)
+        (equal (nearest-chromatic t8) 'as6)
+        (equal (nearest-chromatic t9) 'df3)
+        (equal (nearest-chromatic t10) 'f0)
+        (equal (nearest-chromatic t11) 'f1))
+      (in-scale scale))))
+
 
 ;;; MDE Wed Aug  7 10:01:08 2013 
 (sc-deftest test-rm-bad-intervals ()

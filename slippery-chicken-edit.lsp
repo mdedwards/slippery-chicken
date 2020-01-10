@@ -7473,7 +7473,7 @@ NIL
        (update-events-player bar player))
   ;; DJR Thu 9 Jan 2020 16:15:25 GMT
   ;; Safety check if we're adding a new section to an exisiting part, then the
-  ;; numbering must sequential.
+  ;; numbering must be sequential.
   (loop for i from 1 to section-id do
        (when (and (< i section-id)
                   (null (get-section sc i nil)))
@@ -7486,15 +7486,12 @@ NIL
          (section (if sc
                       (let ((s (get-section sc section-id nil)))
                         (if s
-                            (progn
-                              (print "old-section")
-                              (push ps (data s)))
+			    (push ps (data s))
                             (progn
                               ;; DJR Thu 9 Jan 2020 10:13:36 GMT
                               ;; generate new section if we're adding one to an
                               ;; existing sc object with the same player.
                               (setf new-section t)
-                              (print "new-section")
                               (make-section (list ps) section-id))))
                       (make-section (list ps) section-id)))
          (piece (if sc

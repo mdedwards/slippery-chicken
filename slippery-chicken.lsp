@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  10:03:49 Fri Jan 10 2020 CET
+;;; $$ Last modified:  15:28:45 Fri Jan 10 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2892,13 +2892,23 @@ data: NIL
     (error "slippery-chicken::get-section-refs: start-section (~a) and ~
             num-sections (~a) must both be integers."
            start-section num-sections))
+  (relink-named-objects (piece sc))
   (labels ((do-subsection (ss)
              (loop for no in (data ss) 
-                if (is-ral (data no)) append (do-subsection (data no))
-                else collect (this no))))
-    (loop with nd = (+ start-section num-sections)
+                if (is-ral (data no))
+                ;; if (section-p (data no))
+                append (do-subsection (data no))
+                else collect (butlast (this no)))))
+    ;; MDE Fri Jan 10 15:27:44 2020 -- we used to look at the set-map but since
+    ;; we can now use bars-to-sc we'll have to look at the piece. We
+    ;; remove-duplicates because we'd get a section ref for each of the players
+    ;; playing in a section and this will probably create duplicates (though not
+    ;; necessarily) 
+    (remove-duplicates
+     (loop with nd = (+ start-section num-sections)
        for sn from 1
-       for section in (data (set-map sc))
+       ;; for section in (data (set-map sc))
+       for section in (data (piece sc))
        when (and (>= sn start-section) (< sn nd))
        collect section into sections
        finally
@@ -2906,7 +2916,8 @@ data: NIL
            (loop for s in sections
               if (is-ral (data s))
               append (do-subsection (data s))
-              else collect (this s))))))
+              else collect (this s))))
+     :test #'equalp)))
 
 #|
 ;;; MDE Mon May  7 09:31:17 2012 -- this is the old version
@@ -2987,10 +2998,16 @@ do
 (defmethod get-num-sections ((sc slippery-chicken)
                              &optional (count-subsections t))
 ;;; ****
-  (if count-subsections
-      (num-data (set-map sc))
-      ;; MDE Thu Jun 15 14:54:24 2017 
-      (sclist-length (rthm-seq-map sc))))
+  ;; MDE Fri Jan 10 15:01:21 2020 -- when we create an sc object via bars-to-sc
+  ;; we do have maps and palettes butthe number of sections in the piece is
+  ;; more accurate 
+  (let ((piece-sections (sclist-length (piece sc)))
+        (map-sections
+         (if count-subsections
+             (num-data (set-map sc))
+             ;; MDE Thu Jun 15 14:54:24 2017 
+             (sclist-length (rthm-seq-map sc)))))
+    (max piece-sections map-sections)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -4114,6 +4131,7 @@ seq-num 5, VN, replacing G3 with B6
         (error "slippery-chicken::midi-play: can't get number of sequences ~
                 for section ~a." start-section))
       (setf num-sequences (- ns (1- from-sequence)))))
+  (print num-sections)
   (let* ((voices-events (get-events-start-time-duration 
                          sc start-section voices 
                          :time-scaler 1.0

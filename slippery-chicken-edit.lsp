@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  10:05:09 Fri Jan 10 2020 CET
+;;; $$ Last modified:  11:15:42 Fri Jan 10 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7486,7 +7486,7 @@ NIL
          (section (if sc
                       (let ((s (get-section sc section-id nil)))
                         (if s
-			    (push ps (data s))
+                            (push ps (data s))
                             (progn
                               ;; DJR Thu 9 Jan 2020 10:13:36 GMT
                               ;; generate new section if we're adding one to an
@@ -7543,8 +7543,6 @@ NIL
     (check-tuplets sc)
     (check-beams sc)
     sc))
-;;; ****
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Apr 19 15:03:05 2013 -- make a dummy (pretty empty) sc structure

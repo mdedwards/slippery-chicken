@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:02:13 Fri Jan 10 2020 CET
+;;; $$ Last modified:  16:23:21 Fri Jan 10 2020 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -12027,35 +12027,6 @@
       (cmn-display sc)
       sc)))
 
-;;; MDE Mon Feb 19 15:22:21 2018 -- from the wiki: just run it
-(sc-deftest test-sc-edit-bars-to-sc2 ()
-  (let* ((chord '(c1 a1 ds2 cs3 g3 d4 f4 bf4 e5 b5 gs6 fs7))
-         (chord-len (length chord))
-         ;; generate enough 32nd-note events to fill 16 4/4 bars
-         (events (loop repeat (* 16 32) collect
-                      (make-event (nth (random chord-len) chord) 32)))
-         (bars '())
-         (ate 0)
-         bar
-         sc)
-    (loop while events do
-         (setq bar (make-rthm-seq-bar '((4 4))) ; make an empty bar
-               ;; fill the bar with the events we made. This method will stop
-               ;; once the bar is full and will return the number of
-               ;; rhythms/events it 'ate'.
-               ate (fill-with-rhythms bar events)
-               ;; ate should always be 32 but best to check
-               events (when ate (nthcdr ate events)))
-       ;; we could reverse this after the loop if order was important
-         (push bar bars))
-    (sc-test-check
-      (setq sc (bars-to-sc bars))
-      ;; test midi-output
-      (midi-play sc)
-      ;; test Lilypond output. We could call auto-beam and/or auto-clefs here
-      ;; also
-      (lp-display sc))))
-
 ;;; MDE Thu Dec  6 14:05:53 2018 
 (sc-deftest test-mallet-chord-funs ()
   (let ((c1 (init-pitch-list '(g3 b3 c4 e4)))
@@ -12133,7 +12104,28 @@
              (loop for i in (players mini) collect
                   (first (has-mark (get-last-event (get-bar mini 4 i))
                                    'pause)))))))
-  
+
+;;; MDE Fri Jan 10 16:20:51 2020 -- using Dan's new code for generating new
+;;; sections  
+(sc-deftest test-bars-to-sc-with-section-id ()
+  (declare (special *auto*))
+  (let* ((ev-list (loop repeat 4 collect (make-event 'a4 'q)))
+         (ev-list2 (loop repeat 4 collect (make-event 'c5 'q)))
+         (bar (make-rthm-seq-bar '((4 4))))
+         (bar2 (make-rthm-seq-bar '((4 4))))
+         tmp)
+    (sc-test-check
+      (fill-with-rhythms bar ev-list)
+      (fill-with-rhythms bar2 ev-list2)
+      (bars-to-sc (loop repeat 4 collect bar))
+      (bars-to-sc (loop repeat 4 collect bar2) :sc *auto* :section-id 2)
+      (update-slots *auto*)
+      ;; with just one section we should have 252 bytes, with both 460
+      (setq tmp (nth-value
+                 1 (file-write-ok (midi-play *auto* :num-sections 1) 200)))
+      (integer-between tmp 200 300)
+      (setq tmp (nth-value 1 (file-write-ok (midi-play *auto*) 400)))
+      (integer-between tmp 400 500))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rthm-seq-map tests

@@ -14,7 +14,7 @@
 ;;;
 ;;; Creation date:    15th December 2011
 ;;;
-;;; $$ Last modified:  10:05:46 Wed Feb 27 2019 CET
+;;; $$ Last modified:  16:19:24 Fri Jan 10 2020 CET
 ;;;
 ;;; SVN ID: $Id: rthm-seq-bar.lsp 509 2011-12-14 20:35:27Z reed@seanreed.ie $
 ;;;
@@ -151,7 +151,9 @@
     (unless result
       (warn "sc-test-suite-aux::file-write-ok: file ~a has size ~a ~
              (expected minimum ~a)" file size min-size))
-    result))
+    ;; MDE Fri Jan 10 16:18:08 2020 -- return file size as wel instead of just T
+    ;; or NIL result))
+    (values result size)))
 
 
 ;;; SAR Fri Mar 16 10:07:50 GMT 2012 -- probe a file and delete if it exists

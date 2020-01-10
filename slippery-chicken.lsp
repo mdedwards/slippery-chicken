@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:28:45 Fri Jan 10 2020 CET
+;;; $$ Last modified:  16:16:01 Fri Jan 10 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4131,7 +4131,6 @@ seq-num 5, VN, replacing G3 with B6
         (error "slippery-chicken::midi-play: can't get number of sequences ~
                 for section ~a." start-section))
       (setf num-sequences (- ns (1- from-sequence)))))
-  (print num-sections)
   (let* ((voices-events (get-events-start-time-duration 
                          sc start-section voices 
                          :time-scaler 1.0

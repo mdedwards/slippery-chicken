@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:06:49 Thu Jan  9 2020 CET
+;;; $$ Last modified:  10:02:13 Fri Jan 10 2020 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -11998,6 +11998,34 @@
                                "slippery-chicken-piece-playertwo-part.ly"
                                "slippery-chicken-piece-playertwo.ly")
                              '(190 900 200 2900 200 2900))))))
+
+;;; MDE Fri Jan 10 10:00:50 2020
+(sc-deftest test-sc-edit-bars-to-sc-wiki ()
+  (let* ((chord '(c1 a1 ds2 cs3 g3 d4 f4 bf4 e5 b5 gs6 fs7))
+         (chord-len (length chord))
+         ;; generate enough 32nd-note events to fill 16 4/4 bars
+         (events (loop repeat (* 16 32) collect
+                      (make-event (nth (random chord-len) chord) 32)))
+         (bars '())
+         (ate 0)
+         bar
+         sc)
+    (loop while events do
+         (setq bar (make-rthm-seq-bar '((4 4))) ; make an empty bar
+               ;; fill the bar with the events we made. This method will stop
+               ;; once the bar is full and will return the number of
+               ;; rhythms/events it 'ate'.
+               ate (fill-with-rhythms bar events)
+               ;; ate should always be 32 but best to check
+               events (when ate (nthcdr ate events)))
+       ;; we could reverse this after the loop if order was important
+         (push bar bars))
+    ;; automatically create a slippery-chicken object with the bars we made
+    (sc-test-check
+      (setq sc (bars-to-sc bars))
+      (midi-play sc)
+      (cmn-display sc)
+      sc)))
 
 ;;; MDE Mon Feb 19 15:22:21 2018 -- from the wiki: just run it
 (sc-deftest test-sc-edit-bars-to-sc2 ()

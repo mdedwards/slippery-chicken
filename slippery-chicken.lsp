@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:04:01 Fri Dec 20 2019 CET
+;;; $$ Last modified:  10:03:49 Fri Jan 10 2020 CET
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7319,9 +7319,9 @@ duration: 20.0 (20.000)
 
 |#
 ;;; SYNOPSIS
-(defmethod get-section ((sc slippery-chicken) reference)
+(defmethod get-section ((sc slippery-chicken) reference &optional (warn t))
 ;;; ****
-  (get-data-data reference (piece sc)))
+  (get-data-data reference (piece sc) warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Apr 25 12:18:25 2012 

@@ -8546,6 +8546,92 @@ NOTE 6200 0.6666667
         (new-limits (make-sclist densities))
         densities)))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/get-section-bar-nums
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Mon 13 Jan 2020 15:23:17 GMT
+;;; 
+;;; DESCRIPTION
+;;; Get the start and end bar numbers of each section of a slippery chicken
+;;; piece, handlily formatted in an assoc list.
+;;; 
+;;; ARGUMENTS
+;;; A slippery chicken object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; Keyword args:
+;;; :start - the first section to look at. (Default = 1)
+;;; :end - the last section to look at. (Default = nil, look to the end.)
+;;; 
+;;; RETURN VALUE
+;;; An assoc list where each key is a section number and its data is a list
+;;; containing the start and end bar numbers of that section.
+;;;
+;;; EXAMPLE
+#|
+(let ((mini
+         (make-slippery-chicken
+          '+mini+
+          :ensemble '(((sax (alto-sax :midi-channel 1))))
+          :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+          :set-map '((1 (1 1 1 1 1))
+                     (2 (1 1 1 1 1))
+                     (3 (1 1 1 1 1)))
+          :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                  :pitch-seq-palette ((1 2 3 4 5)))))
+          :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
+                          (2 ((sax (1 1 1 1 1))))
+                          (3 ((sax (1 1 1 1 1))))))))
+      (get-section-bar-nums mini))
+
+=> 
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, 
+                     this: NIL, 
+                     next: NIL
+NAMED-OBJECT: id: SECTION-BAR-NUMS, tag: NIL, 
+data: (
+NAMED-OBJECT: id: 1, tag: NIL, 
+data: (1 5)
+**************
+
+       
+NAMED-OBJECT: id: 2, tag: NIL, 
+data: (6 10)
+**************
+
+       
+NAMED-OBJECT: id: 3, tag: NIL, 
+data: (11 15)
+**************
+)
+**************
+|#
+;;; SYNOPSIS
+(defmethod get-section-bar-nums ((sc slippery-chicken)
+				 &key (start 1) (end nil)
+				   (assoc-list-id 'section-bar-nums))
+;;; ****
+  (unless end (setf end (get-num-sections sc)))
+  (when (< end start)
+    (error "slippery-chicken::get-section-bar-nums: End bar (~a) cannot ~
+            be lower than start bar (~a)" end start))
+  (let ((section-assoc-list
+	 (make-assoc-list
+	  'sc-list
+	  (loop for s from start to end
+	     for section = (get-section sc s)
+	     collect
+	       (list s (list (start-bar section) (end-bar section)))))))
+    (setf (id section-assoc-list) assoc-list-id)
+    section-assoc-list))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

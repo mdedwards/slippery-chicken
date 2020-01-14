@@ -169,7 +169,10 @@
             (max-peaks 200) ; passed to spec-an instrument
             (normalise t)
             (start-analysis 0.0) 
-            (highest-bin (/ fftsize 2)))
+            (highest-bin (/ fftsize 2))
+	    ;; DJR Mon 13 Jan 2020 14:34:06 GMT
+	    ;; Force new analysis?
+	    (perform-new-analysis? nil))
   (declare (special *slippery-chicken-get-spectrum-last-result*))
   (declare (special *slippery-chicken-get-spectrum-peak-amps*))
   (declare (special *slippery-chicken-get-spectrum-peak-freqs*))
@@ -188,7 +191,8 @@
            (= (fourth *slippery-chicken-get-spectrum-last-result*)
               start-analysis)
            (eq (fifth *slippery-chicken-get-spectrum-last-result*) order-by)
-           (= (sixth *slippery-chicken-get-spectrum-last-result*) num-partials))
+           (= (sixth *slippery-chicken-get-spectrum-last-result*) num-partials)
+	   (null perform-new-analysis?))
       (progn
         (print "Using previous analysis")
         (values (first *slippery-chicken-get-spectrum-last-result*)

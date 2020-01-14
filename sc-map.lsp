@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  17:47:08 Mon Jul  1 2019 CEST
+;;; $$ Last modified:  17:32:49 Tue Jan 14 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -130,7 +130,8 @@
                   ~%        replacements: ~a"
           (when (palette scm)
             (id (palette scm)))
-          (num-sequences scm) (replacements scm)))
+          (num-sequences scm)
+          (replacements scm)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

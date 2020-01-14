@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  11:16:36 Thu Aug 22 2019 CEST
+;;; $$ Last modified:  18:39:01 Tue Jan 14 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -219,7 +219,7 @@ NIL
      ;; Make sure that different sized chords are not treated as the same,
      ;; i.e. (make-chord '(a4 c5)) does NOT equal (make-chord '(a4 c5 e5))
        (if (= (length (data c1))
-	      (length (data c2)))
+              (length (data c2)))
        (setf happy (pitch= p1 p2 enharmonics-are-equal frequency-tolerance))
                                         ; src-tolerance))
        (setf happy nil))
@@ -243,28 +243,31 @@ NIL
 ;;; pitch the same as single pitches?
 
 (defmethod single-pitch-chord= ((p pitch) (c chord)
-				&optional enharmonics-are-equal
-				  (frequency-tolerance 0.01))
-  ;; DJR Thu 14 Nov 2019 08:32:47 GMT
-  ;; Forgot to add this very necessary if clause.
-  (if (= (length (data c)) 1) 
-      (if (pitch= p (lowest c) ; only one note in chord so lowest should always work
-		  enharmonics-are-equal frequency-tolerance)
-	  t
-	  nil)
-      nil))
-
-(defmethod single-pitch-chord= ((c chord) (p pitch)
-				&optional enharmonics-are-equal
-				  (frequency-tolerance 0.01))
+                                &optional enharmonics-are-equal
+                                  (frequency-tolerance 0.01))
   ;; DJR Thu 14 Nov 2019 08:32:47 GMT
   ;; Forgot to add this very necessary if clause.
   (if (= (length (data c)) 1)
-      (if (pitch= p (lowest c) ; only one note in chord so lowest should always work
-		  enharmonics-are-equal frequency-tolerance)
-	  t
-	  nil)
+      ;; only one note in chord so lowest should always work
+      (if (pitch= p (lowest c) 
+                  enharmonics-are-equal frequency-tolerance)
+          t
+          nil)
       nil))
+
+(defmethod single-pitch-chord= ((c chord) (p pitch)
+                                &optional enharmonics-are-equal
+                                  (frequency-tolerance 0.01))
+  ;; DJR Thu 14 Nov 2019 08:32:47 GMT
+  ;; Forgot to add this very necessary if clause.
+  (if (= (length (data c)) 1)
+      ;; only one note in chord so lowest should always work
+      (if (pitch= p (lowest c) 
+                  enharmonics-are-equal frequency-tolerance)
+          t
+          nil)
+      nil))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/pitch-or-chord=
 ;;; AUTHOR
@@ -287,8 +290,8 @@ NIL
 ;;; - a number to indicate the frequency deviation allowed before returning NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; T if the values of the two specified pitch or chord objects are equal, otherwise
-;;; NIL. 
+;;; T if the values of the two specified pitch or chord objects are equal,
+;;; otherwise NIL. 
 ;;; 
 ;;; EXAMPLE
 #|
@@ -345,19 +348,19 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod pitch-or-chord= ((c1 chord) (c2 chord)
-			    &optional enharmonics-are-equal
-			      (frequency-tolerance 0.01))
+                            &optional enharmonics-are-equal
+                              (frequency-tolerance 0.01))
 ;;; ****
   (pitch-or-chord=-aux c1 c2 enharmonics-are-equal frequency-tolerance))
 
 (defmethod pitch-or-chord= ((p pitch) (c chord)
-			    &optional enharmonics-are-equal
-			      (frequency-tolerance 0.01))
+                            &optional enharmonics-are-equal
+                              (frequency-tolerance 0.01))
   (pitch-or-chord=-aux c p enharmonics-are-equal frequency-tolerance))
 
 (defmethod pitch-or-chord= ((c chord) (p pitch)
-			    &optional enharmonics-are-equal
-			      (frequency-tolerance 0.01))
+                            &optional enharmonics-are-equal
+                              (frequency-tolerance 0.01))
   (pitch-or-chord=-aux c p enharmonics-are-equal frequency-tolerance))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1712,7 +1715,7 @@ data: (
 ;;; ****
   (not (zerop (sclist-length c))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Mon Apr 16 14:25:06 BST 2012: Added robodoc entry
 
 ;;; MDE original comment: like the pitch class method, to find out the
@@ -1780,7 +1783,7 @@ data: (
 (defmethod enharmonic ((c chord) &key (warn t))
   (loop for p in (data c) collect (enharmonic p :warn warn)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon May 14 15:24:07 2012 
 (defmethod print-simple ((c chord) &optional (stream t) (separator " "))
   (let ((result (format nil "~a: " (id c))))
@@ -2536,19 +2539,20 @@ data: (
         (values (reverse best) (if (<= lenc (count-combo-pitches best)) 1 2)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; DJR Tue 29 Oct 2019 12:32:47 GMT -- change sharps to flats or flats to sharps
+;;; DJR Tue 29 Oct 2019 12:32:47 GMT -- change sharps to flats or flats to
+;;; sharps
 (defmethod sharps-to-flats ((c chord))
   (let ((c-list '()))
     (loop for cc in (data c) do
-	 (push (sharp-to-flat cc) c-list)
-	 (setf (data c) (reverse c-list)))
+         (push (sharp-to-flat cc) c-list)
+         (setf (data c) (reverse c-list)))
     (nreverse c-list)))
 
 (defmethod flats-to-sharps ((c chord))
   (let ((c-list '()))
     (loop for cc in (data c) do
-	 (push (flat-to-sharp cc) c-list)
-	 (setf (data c) (reverse c-list)))
+         (push (flat-to-sharp cc) c-list)
+         (setf (data c) (reverse c-list)))
     (nreverse c-list)))
 
 
@@ -2582,9 +2586,9 @@ data: (
 ;;; SYNOPSIS
 (defmethod single-pitch-chord-to-pitch ((c chord))
 ;;; ****
-	(when (= (length (data c)) 1)
-	  (setf c (first (data c))))
-	c)
+        (when (= (length (data c)) 1)
+          (setf c (first (data c))))
+        c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -2766,7 +2770,7 @@ data: F5
                (exp (- (* b2 s fmmm))))))
     (* (expt x 0.1) (* 0.5 (expt y 3.11)) z)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; try to iron out the quite radical differences in spectral data for nearby
 ;;; notes by averaging over a complete octave. Spectrum is a list of freq
 ;;; scalers and a list of amplitudes. Not to be confused with average spectra,
@@ -2788,7 +2792,7 @@ data: F5
     (list (loop for fs in freq-scalers collect (/ fs 12.0))
           (normalise amp-scalers))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Aug 6 11:14:49 2015 - The spectrum argument can be either a symbol
 ;;; (whereupon this will be used to look up the spectra stored in
 ;;; +slippery-chicken-spectra+); an assoc-list or recursive-assoc-list with

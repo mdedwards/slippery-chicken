@@ -19348,6 +19348,27 @@
         (check 3 15 t)
         (check 2 2 t)))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Mon 13 Jan 2020 17:07:53 GMT
+(sc-deftest test-get-section-bar-nums ()
+  (let ((mini
+         (make-slippery-chicken
+          '+mini+
+          :ensemble '(((sax (alto-sax :midi-channel 1))))
+          :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+          :set-map '((1 (1 1 1 1 1))
+                     (2 (1 1 1 1 1))
+                     (3 (1 1 1 1 1)))
+          :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                  :pitch-seq-palette ((1 2 3 4 5)))))
+          :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
+                          (2 ((sax (1 1 1 1 1))))
+                          (3 ((sax (1 1 1 1 1))))))))
+    (sc-test-check
+     (get-section-bar-nums mini :end nil :start 2)
+     (get-section-bar-nums mini)
+     (null (ignore-errors (get-section-bar-nums mini :end -1))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*
 ;;; (setf *sc-test-all-tests* (remove 'test-rs-chop *sc-test-all-tests*)) 
 

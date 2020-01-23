@@ -7293,7 +7293,9 @@ NIL
               (push count count-list)))
     ;; DJR Wed 18 Sep 2019 15:15:06 BST
     ;; add some checks
-    (check-ties sc)
+    ;; DJR Wed 22 Jan 2020 11:34:10 GMT
+    ;; Add t
+    (check-ties sc t) 
     (check-beams sc :start-bar start-bar :end-bar end-bar :players players
                  :auto-beam t :print nil)
     (nreverse count-list)))

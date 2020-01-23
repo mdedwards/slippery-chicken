@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified:  16:22:07 Tue Oct 31 2017 CET
+;;; $$ Last modified:  12:00:13 Thu Jan 23 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -138,7 +138,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; The main function we call to process lisp code and other messages sent via
-;;; OSC .  Listens on a given port and sends out on another.  NB ip#s need to
+;;; OSC. Listens on a given port and sends out on another. NB ip#s need to
 ;;; be in the format #(127 0 0 1) for now.
 
 (defun osc-call (listen-port send-ip send-port print) 
@@ -208,11 +208,13 @@
              (first result)))
     (setf result (eval (third result)))
     ;; MDE Wed Dec 19 17:38:01 2012 -- don't send T or NIL, rather 1 or 0
-    (unless (or (not result) (equal result T))
-      (unless (listp result)
-        (setq result (list result)))
-      ;; stuff our id back into the list and send back
-      (osc-send-list (append (list '/osc-sc id) result) stream))))
+    ;; MDE Thu Jan 23 11:58:07 2020 -- ^ meant our functions should return 1 or
+    ;; 0 but let's actually allow T or NIL byt convert to 1 or 0
+    (cond ((not result) (setq result '(0)))
+          ((equal result T) (setq result '(1)))
+          ((not (listp result)) (setq result (list result))))
+    ;; stuff our id back into the list and send back
+    (osc-send-list (append (list '/osc-sc id) result) stream)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

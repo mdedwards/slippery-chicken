@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  13:54:17 Sat Jan  4 2020 CET
+;;; $$ Last modified:  10:13:01 Fri Jan 24 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3913,9 +3913,13 @@ WARNING:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed May 29 14:54:14 2013 
 (defun system-open-file (file)
-  #+darwin
-  (shell "/usr/bin/open" file)
-  #-darwin
+  #+darwin (shell "/usr/bin/open" file)
+  #+linux
+  (let ((xdg "/usr/bin/xdg-open"))
+    (if (probe-file xdg)
+        (shell xdg file)
+        (warn "utilities::qsystem-open-file: Can't open witout ~a" xdg)))
+  #-(or darwin linux)
   (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
            file))
   

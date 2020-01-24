@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:13:01 Fri Jan 24 2020 CET
+;;; $$ Last modified:  10:52:09 Fri Jan 24 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3918,7 +3918,7 @@ WARNING:
   (let ((xdg "/usr/bin/xdg-open"))
     (if (probe-file xdg)
         (shell xdg file)
-        (warn "utilities::qsystem-open-file: Can't open witout ~a" xdg)))
+        (warn "utilities::system-open-file: Can't open witout ~a" xdg)))
   #-(or darwin linux)
   (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
            file))
@@ -3936,7 +3936,6 @@ WARNING:
   (read-from-string (format nil "+~a+" (filename-from-title title))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****f* utilities/update-app-src
 ;;; DATE
 ;;; June 1st 2013

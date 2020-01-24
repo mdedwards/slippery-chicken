@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  09:31:36 Thu May 23 2019 CEST
+;;; $$ Last modified:  08:04:49 Fri Jan 24 2020 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -265,8 +265,8 @@
 (sc-compile-and-load "instruments.lsp")
 (sc-compile-and-load "lilypond.lsp")
 (sc-compile-and-load "popcorn.lsp")
-#+(and darwin sbcl) (sc-compile-and-load "osc.lsp")
-#+(and darwin sbcl) (sc-compile-and-load "osc-sc.lsp")
+#+(and (or linux darwin) sbcl) (sc-compile-and-load "osc.lsp")
+#+(and (or linux darwin) sbcl) (sc-compile-and-load "osc-sc.lsp")
 #+clm (sc-compile-and-load "get-spectrum.lsp")
 (sc-compile-and-load "spectra.lsp")
 #+clm (sc-compile-and-load "control-wave.lsp")

@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified:  12:00:13 Thu Jan 23 2020 CET
+;;; $$ Last modified:  17:07:10 Thu Jan 23 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -171,7 +171,7 @@
                      (if (char= #\( (elt (third oscuff) 0))
                          'lisp
                          (read-from-string (third oscuff))))))
-             (when print ; MDE Mon May 26 10:39:48 2014
+             (when print                ; MDE Mon May 26 10:39:48 2014
                (format t "~&osc-->message: ~a" oscuff))
              (finish-output t)
              (case (sc::rm-package soscuff :sb-bsd-sockets)

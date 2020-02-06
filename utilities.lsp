@@ -5442,4 +5442,16 @@ WARNING: utilities::list-member: At least 1 common item in (A B C) and (1 2 C).
 	     (values common unique)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Thu 6 Feb 2020 17:41:19 GMT
+;;; Taken from Stackoverflow, many thanks Barmar
+;;; stackoverflow.com/questions/42867749/reading-lisp-objects-from-a-string 
+
+(defun string-to-list (string)
+  (with-input-from-string (stream string)
+    (loop with eof-marker = '#:eof
+       for object = (read stream nil eof-marker)
+       until (eq object eof-marker)
+       collect object)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

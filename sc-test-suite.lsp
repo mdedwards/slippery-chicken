@@ -19369,6 +19369,14 @@
      (null (ignore-errors (get-section-bar-nums mini :end -1))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Thu 6 Feb 2020 13:33:33 GMT
+(sc-deftest test-list-member ()
+	    (sc-test-check
+	     (list-member '(a b c) '(a b c))
+	     (null (list-member '(a b c) '(1 2 3)))
+	     (list-member '(a b c) '(1 2 c))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*
 ;;; (setf *sc-test-all-tests* (remove 'test-rs-chop *sc-test-all-tests*)) 
 

@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  14:13:08 Sat Jan  4 2020 CET
+;;; $$ Last modified:  13:04:59 Sat Feb  8 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6825,8 +6825,13 @@ rsb-rb)
         ;; divisions is not an integer:
         (let* ((2divs (second divisions))
                (rqqnd (rqq-num-divisions 2divs))
-               (this-dur (first divisions))
-               ;; the ration of the total number of divisions we have to the
+               ;; MDE Sat Feb  8 13:04:05 2020 -- Dan and Jolon discovered that
+               ;; if we try this (make-rthm-seq-bar '((3 8) (1.5 (1 1 1 1 1))))
+               ;; then it doesn't work, but if that 1.5 is expressed as 3/2,
+               ;; then it does (floating-point precision problem perhaps?). So
+               ;; force the duration to be a rational
+               (this-dur (rational (first divisions)))
+               ;; the ratio of the total number of divisions we have to the
                ;; duration  
                (ratio (/ this-dur rqqnd))
                (pd (/ (* parent-dur rqqnd) this-dur))

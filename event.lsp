@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:01:12 Sat Dec  7 2019 CET
+;;; $$ Last modified:  14:52:51 Mon Feb 10 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1293,6 +1293,7 @@ EVENT: start-time: NIL, end-time: NIL,
         (progn (flat-to-sharp (pitch-or-chord e))
                (push (flat-to-sharp (pitch-or-chord e)) c-list)))
     (nreverse c-list)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Dec 23 20:32:23 EST 2011 Added robodoc info

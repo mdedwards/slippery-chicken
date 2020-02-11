@@ -3108,6 +3108,7 @@ NIL
          (when consolidate
            (consolidate-all-notes sc start-bar end-bar players))
          (update-slots sc))
+    (check-ties sc t)
     count-list))
 
 

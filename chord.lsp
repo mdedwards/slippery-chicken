@@ -2544,16 +2544,16 @@ data: (
 (defmethod sharps-to-flats ((c chord))
   (let ((c-list '()))
     (loop for cc in (data c) do
-         (push (sharp-to-flat cc) c-list)
-         (setf (data c) (reverse c-list)))
-    (nreverse c-list)))
+         (push (sharp-to-flat cc) c-list))
+    (setf c (make-chord (reverse c-list)))
+    c))
 
 (defmethod flats-to-sharps ((c chord))
   (let ((c-list '()))
     (loop for cc in (data c) do
-         (push (flat-to-sharp cc) c-list)
-         (setf (data c) (reverse c-list)))
-    (nreverse c-list)))
+         (push (flat-to-sharp cc) c-list))
+    (setf c (make-chord (reverse c-list)))
+    c))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

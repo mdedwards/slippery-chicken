@@ -1273,26 +1273,127 @@ EVENT: start-time: NIL, end-time: NIL,
           e))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; DJR Tue 29 Oct 2019 12:37:29 GMT -- change sharps to flats or flats to sharps
-(defmethod sharps-to-flats ((e event))
-  (let ((c-list '()))
-    (if (is-chord e)
-        (loop for cc in (pitch-or-chord (data c)) do
-             (push (sharp-to-flat cc) c-list)
-             (setf (pitch-or-chord (data c)) (reverse c-list)))
-        (progn (sharp-to-flat (pitch-or-chord e))
-               (push (sharp-to-flat (pitch-or-chord e)) c-list)))
-    (nreverse c-list)))
+;;; DJR Tue 29 Oct 2019 12:37:29 GMT -- change sharps to flats or flats to
+;;; sharps
+;;; DJR Mon 10 Feb 2020 18:27:40 GMT -- changed both the following so that there
+;;; is no duplicated code. The method passes the pitch-or-chord slot of the
+;;; event to either the method by the sme name for the chord class, or to the
+;;; simplfied method for the pitch class.
+;;; NB Both the following methods are non-destructive.
+;;;
+;;; ****m* event/sharps-to-flats
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Mon 10 Feb 2020 18:31:17 GMT - London
+;;; 
+;;; DESCRIPTION
+;;; Clone an event but with all of the sharps (or the single sharp if not a
+;;; chord) turned to flats.
+;;; NB This method is non-destructove
+;;; 
+;;; ARGUMENTS
+;;; An event object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; None
+;;; 
+;;; RETURN VALUE
+;;; An event object.
+;;; 
+;;; EXAMPLE
+#|
+(let ((e (make-event 'as4 'q)))
+      (print-simple (sharps-to-flats e)))
 
-(defmethod flats-to-sharps ((c chord))
-  (let ((c-list '()))
+=> BF4 Q, 
+NIL
+
+(let ((e (make-event '(bf4 as4) 'q)))
+      (print-simple (sharps-to-flats e)))
+
+=> (BF4 BF4) Q, 
+NIL
+
+;;; NB This method is non-destructove
+(let ((e (make-event 'as4 'q)))
+      (print-simple (sharps-to-flats e))
+      (print-simple e))
+
+=> BF4 Q, 
+AS4 Q, 
+NIL
+
+|#
+;;; SYNOPSIS
+(defmethod sharps-to-flats ((e event))
+;;; ****
+  (let ((c (pitch-or-chord e))
+	e2)
     (if (is-chord e)
-        (loop for cc in (pitch-or-chord (data c)) do
-             (push (flat-to-sharp cc) c-list)
-             (setf (pitch-or-chord (data c)) (reverse c-list)))
-        (progn (flat-to-sharp (pitch-or-chord e))
-               (push (flat-to-sharp (pitch-or-chord e)) c-list)))
-    (nreverse c-list)))
+        (setf c (sharps-to-flats c))
+        (setf c (sharp-to-flat c)))
+    (setf e2 (clone e)
+	  (pitch-or-chord e2) c)
+    e2))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* event/flats-to-sharps
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Mon 10 Feb 2020 18:41:40 GMT - London
+;;; 
+;;; DESCRIPTION
+;;; Clone an event but with all of the flats (or the single flats if not a
+;;; chord) turned to sharps.
+;;; NB This method is non-destructove
+;;; 
+;;; ARGUMENTS
+;;; An event object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; None
+;;; 
+;;; RETURN VALUE
+;;; An event object
+;;; 
+;;; EXAMPLE
+#|
+(let ((e (make-event 'bf4 'q)))
+      (print-simple (flats-to-sharps e)))
+
+=> AS4 Q, 
+NIL
+
+(let ((e (make-event '(as4 bf4) 'q)))
+      (print-simple (flats-to-sharps e)))
+
+=> (AS4 AS4) Q, 
+NIL
+
+;;; NB This method is non-destructive
+(let ((e (make-event 'bf4 'q)))
+      (print-simple (flats-to-sharps e))
+      (print-simple e))
+
+=> AS4 Q, 
+BF4 Q, 
+NIL
+|#
+;;; SYNOPSIS
+(defmethod flats-to-sharps ((e event))
+;;; ****
+  (let ((c (pitch-or-chord e))
+	e2)
+    (if (is-chord e)
+        (setf c (flats-to-sharps c))
+        (setf c (flat-to-sharp c)))
+    (setf e2 (clone e)
+	  (pitch-or-chord e2) c)
+    e2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1333,6 +1434,7 @@ EVENT: start-time: NIL, end-time: NIL,
 (defmethod pitch- ((e1 event) (e2 event))
 ;;; ****
   (pitch- (pitch-or-chord e1) (pitch-or-chord e2)))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

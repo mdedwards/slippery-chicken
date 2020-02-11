@@ -19289,14 +19289,19 @@
         (c3 (make-chord '(bs3 ff4 g4)))
         (c4 (make-chord '(a4)))
         (e1 (make-event '(a4) 'e))
-        (e2 (make-event 'a4 'e)))
+        (e2 (make-event 'a4 'e))
+	(e3 (make-event 'as4 'e))
+	(e4 (make-event 'bf4 'e)))
     (sc-test-check
       (null (pitch-or-chord= p1 p2))
       (pitch-or-chord= p1 p2 t)
       (null (pitch-or-chord= c1 c2))
       (null (pitch-or-chord= c1 c3))
       (null (pitch-or-chord= c1 c3))
-      (pitch-or-chord= p3 c4))))
+      (pitch-or-chord= p3 c4)
+      ;; DJR Mon 10 Feb 2020 16:28:07 GMT
+      ;; test eharmonics again
+      (pitch-or-chord= e3 e4 t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Wed 18 Sep 2019 18:53:41 BST
@@ -19375,6 +19380,41 @@
 	     (list-member '(a b c) '(a b c))
 	     (null (list-member '(a b c) '(1 2 3)))
 	     (list-member '(a b c) '(1 2 c))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Mon 10 Feb 2020 18:27:15 GMT
+(sc-deftest test-sharps-to-flats ()
+	    (let ((e1 (make-event 'as4 'q))
+		  (e2 (make-event 'bf4 'e))
+		  (c1 (make-event '(as4 bf5) 'q))
+		  (c2 (make-chord '(df3 cs3)))
+		  (c3 (make-chord '(df3 df3))))
+	      (sc-test-check
+	       (pitch-or-chord= e1 (sharps-to-flats e1) t)
+	       (pitch-or-chord= e2 (sharps-to-flats e1) nil)
+	       (not (pitch-or-chord= e1 (sharps-to-flats e2) nil))
+	       (not (pitch-or-chord= c1 (sharps-to-flats c1) nil))
+	       (chord= c2 (sharps-to-flats c2) t)
+	       (chord= c3 (sharps-to-flats c3) nil))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Mon 10 Feb 2020 14:22:22 GMT
+
+(sc-deftest test-flats-to-sharps ()
+	    (let ((e1 (make-event 'as4 'q))
+		  (e2 (make-event 'bf4 'e))
+		  (c1 (make-event '(as4 bf5) 'q))
+		  (c2 (make-chord '(df3 cs3)))
+		  (c3 (make-chord '(cs3 cs3))))
+	      (sc-test-check
+	       (pitch-or-chord= e1 (flats-to-sharps e1) t)
+	       (pitch-or-chord= e1 (flats-to-sharps e2) nil)
+	       (not (pitch-or-chord= e2 (flats-to-sharps e2) nil))
+	       (not (pitch-or-chord= c1 (flats-to-sharps c1) nil))
+	       (chord= c2 (flats-to-sharps c2) t)
+	       (chord= c3 (flats-to-sharps c2) nil))))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*

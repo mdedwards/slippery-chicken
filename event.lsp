@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:52:51 Mon Feb 10 2020 CET
+;;; $$ Last modified:  12:47:22 Tue Feb 11 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1330,12 +1330,12 @@ NIL
 (defmethod sharps-to-flats ((e event))
 ;;; ****
   (let ((c (pitch-or-chord e))
-	e2)
+        e2)
     (if (is-chord e)
         (setf c (sharps-to-flats c))
         (setf c (sharp-to-flat c)))
     (setf e2 (clone e)
-	  (pitch-or-chord e2) c)
+          (pitch-or-chord e2) c)
     e2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1349,7 +1349,7 @@ NIL
 ;;; DESCRIPTION
 ;;; Clone an event but with all of the flats (or the single flats if not a
 ;;; chord) turned to sharps.
-;;; NB This method is non-destructove
+;;; NB This method is non-destructive
 ;;; 
 ;;; ARGUMENTS
 ;;; An event object
@@ -1387,12 +1387,12 @@ NIL
 (defmethod flats-to-sharps ((e event))
 ;;; ****
   (let ((c (pitch-or-chord e))
-	e2)
+        e2)
     (if (is-chord e)
         (setf c (flats-to-sharps c))
         (setf c (flat-to-sharp c)))
     (setf e2 (clone e)
-	  (pitch-or-chord e2) c)
+          (pitch-or-chord e2) c)
     e2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

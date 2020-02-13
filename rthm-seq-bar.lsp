@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  13:04:59 Sat Feb  8 2020 CET
+;;; $$ Last modified:  14:47:45 Thu Feb 13 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6663,9 +6663,11 @@ rsb-rb)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :start-time. The start time in seconds of the first event
+;;; - :start-time. The start time in seconds of the first event. Default = 0.0
 ;;; - :start-time-qtrs. The start time in quarter notes of the first event (used
-;;;   in MIDI files)
+;;;   in MIDI files). If NIL, then this will be calculated as a function of
+;;;   :start-time and :tempo. If not NIL, this will mean start-time is ignored
+;;;   when writing MIDI files. Default = nil.
 ;;; - :tempo. The tempo in beats per minute (or a tempo object)
 ;;; 
 ;;; RETURN VALUE
@@ -6675,13 +6677,12 @@ rsb-rb)
 ;;; EXAMPLE
 #|
 
-  (event-list-to-midi-file
-(events-update-time (make-events2 '(q q q) '(g4 g4 g4) 1))
-:midi-file "/tmp/test.mid" :start-tempo 120)
-
-  |#
+(event-list-to-midi-file
+  (events-update-time (make-events2 '(q q q) '(g4 g4 g4) 1))
+  :midi-file "/tmp/test.mid" :start-tempo 120)
+|#
 ;;; SYNOPSIS
-(defun events-update-time (events &key (start-time 0.0) (start-time-qtrs 0.0)
+(defun events-update-time (events &key (start-time 0.0) start-time-qtrs
                                     (tempo 60.0))
 ;;; ****
   (unless (typep tempo 'tempo)
@@ -6691,7 +6692,11 @@ rsb-rb)
             of event objects: ~a" events))
   (let ((qtr-dur (qtr-dur tempo))
         (time start-time)
-        (time-qtrs start-time-qtrs))
+        (time-qtrs (if start-time-qtrs
+                       start-time-qtrs
+                       (/ start-time (if (tempo-p tempo)
+                                         (beat-dur tempo)
+                                         (/ 60.0 tempo))))))
     (loop for event in events do
        ;; MDE Mon Sep 30 18:18:34 2019 -- do this here too so that we can access
        ;; most probable midi channels of rests (for pedals etc.). This is a good

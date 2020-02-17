@@ -324,7 +324,7 @@ T
             (setf (slot-value sf 'frequency) (autoc-get-fundamental path))))
       ;; MDE Mon Feb 17 15:03:12 2020 -- don't allow freqs of 0 otherwise
       ;; we'll get division-vy-zero errors in clm-play (thanks Dan) 
-      (when (equal-within-less-tolerance (frequency sf) 0.0)
+      (when (equal-within-tolerance (frequency sf) 0.0 0.0001)
         (warn "sndfile::update: can't have a frequency of zero; setting to 'c4")
         (setf (slot-value sf 'frequency) (note-to-freq 'c4)))
       (let ((st (start sf))

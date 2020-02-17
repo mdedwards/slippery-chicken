@@ -19383,36 +19383,32 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Mon 10 Feb 2020 18:27:15 GMT
-(sc-deftest test-sharps-to-flats ()
-	    (let ((e1 (make-event 'as4 'q))
-		  (e2 (make-event 'bf4 'e))
-		  (c1 (make-event '(as4 bf5) 'q))
-		  (c2 (make-chord '(df3 cs3)))
-		  (c3 (make-chord '(df3 df3))))
+(sc-deftest test-sharp-to-flat ()
+	    (let ((e1 (make-event 'bf4 'e))
+		  (e2 (make-event 'as4 'q))
+		  (c1 (make-chord '(bf4 bf5)))
+		  (c2 (make-chord '(as4 bf5)))
+		  (p1 (make-pitch 'df3))
+		  (p2 (make-pitch 'cs3)))
 	      (sc-test-check
-	       (pitch-or-chord= e1 (sharps-to-flats e1) t)
-	       (pitch-or-chord= e2 (sharps-to-flats e1) nil)
-	       (not (pitch-or-chord= e1 (sharps-to-flats e2) nil))
-	       (not (pitch-or-chord= c1 (sharps-to-flats c1) nil))
-	       (chord= c2 (sharps-to-flats c2) t)
-	       (chord= c3 (sharps-to-flats c3) nil))))
+	       (pitch-or-chord= e1 (sharp-to-flat e2))
+	       (chord= c1 (sharp-to-flat c2))
+	       (pitch= p1 (sharp-to-flat p2)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Mon 10 Feb 2020 14:22:22 GMT
 
-(sc-deftest test-flats-to-sharps ()
-	    (let ((e1 (make-event 'as4 'q))
-		  (e2 (make-event 'bf4 'e))
-		  (c1 (make-event '(as4 bf5) 'q))
-		  (c2 (make-chord '(df3 cs3)))
-		  (c3 (make-chord '(cs3 cs3))))
+(sc-deftest test-flat-to-sharp ()
+	    (let ((e1 (make-event 'bf4 'e))
+		  (e2 (make-event 'as4 'q))
+		  (c1 (make-chord '(as4 bf5)))
+		  (c2 (make-chord '(as4 as5)))
+		  (p1 (make-pitch 'df3))
+		  (p2 (make-pitch 'cs3)))
 	      (sc-test-check
-	       (pitch-or-chord= e1 (flats-to-sharps e1) t)
-	       (pitch-or-chord= e1 (flats-to-sharps e2) nil)
-	       (not (pitch-or-chord= e2 (flats-to-sharps e2) nil))
-	       (not (pitch-or-chord= c1 (flats-to-sharps c1) nil))
-	       (chord= c2 (flats-to-sharps c2) t)
-	       (chord= c3 (flats-to-sharps c2) nil))))
+	       (pitch-or-chord= e2 (flat-to-sharp e1))
+	       (chord= c2 (flat-to-sharp c1))
+	       (pitch= p2 (flat-to-sharp p1)))))
 
 
 

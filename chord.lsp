@@ -2541,17 +2541,19 @@ data: (
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Tue 29 Oct 2019 12:32:47 GMT -- change sharps to flats or flats to
 ;;; sharps
-(defmethod sharps-to-flats ((c chord))
+(defmethod sharp-to-flat ((c chord) &optional clone written)
+  (declare (ignore clone written))
   (let ((c-list '()))
     (loop for cc in (data c) do
-         (push (sharp-to-flat cc) c-list))
+	 (push (sharp-to-flat cc) c-list))
     (setf c (make-chord (reverse c-list)))
     c))
-
-(defmethod flats-to-sharps ((c chord))
+  
+(defmethod flat-to-sharp ((c chord) &optional clone written)
+  (declare (ignore clone written))
   (let ((c-list '()))
     (loop for cc in (data c) do
-         (push (flat-to-sharp cc) c-list))
+	 (push (flat-to-sharp cc) c-list))
     (setf c (make-chord (reverse c-list)))
     c))
 

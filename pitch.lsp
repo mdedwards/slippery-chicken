@@ -2465,14 +2465,16 @@ data: D7
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Tue 29 Oct 2019 11:42:44 GMT -- change sharp to flat or flat to sharp
-(defmethod sharp-to-flat ((p pitch))
+(defmethod sharp-to-flat ((p pitch) &optional clone written)
+  (declare (ignore clone written))
   (if (sharp p)
-      (enharmonic p)
+      (setf p (enharmonic p))
       p))
 
-(defmethod flat-to-sharp ((p pitch))
+(defmethod flat-to-sharp ((p pitch) &optional clone written)
+  (declare (ignore clone written))
   (if (flat p)
-      (enharmonic p)
+      (setf p (enharmonic p))
       p))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

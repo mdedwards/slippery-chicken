@@ -1281,7 +1281,7 @@ EVENT: start-time: NIL, end-time: NIL,
 ;;; simplfied method for the pitch class.
 ;;; NB Both the following methods are non-destructive.
 ;;;
-;;; ****m* event/sharps-to-flats
+;;; ****m* event/sharp-to-flat
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
 ;;; 
@@ -1289,9 +1289,7 @@ EVENT: start-time: NIL, end-time: NIL,
 ;;; Mon 10 Feb 2020 18:31:17 GMT - London
 ;;; 
 ;;; DESCRIPTION
-;;; Clone an event but with all of the sharps (or the single sharp if not a
-;;; chord) turned to flats.
-;;; NB This method is non-destructove
+;;; Change the sharp (or sharps) in an event to a flat (or flats).
 ;;; 
 ;;; ARGUMENTS
 ;;; An event object
@@ -1305,20 +1303,20 @@ EVENT: start-time: NIL, end-time: NIL,
 ;;; EXAMPLE
 #|
 (let ((e (make-event 'as4 'q)))
-      (print-simple (sharps-to-flats e)))
+      (print-simple (sharp-to-flat e)))
 
 => BF4 Q, 
 NIL
 
 (let ((e (make-event '(bf4 as4) 'q)))
-      (print-simple (sharps-to-flats e)))
+      (print-simple (sharp-to-flat e)))
 
 => (BF4 BF4) Q, 
 NIL
 
 ;;; NB This method is non-destructove
 (let ((e (make-event 'as4 'q)))
-      (print-simple (sharps-to-flats e))
+      (print-simple (sharp-to-flat e))
       (print-simple e))
 
 => BF4 Q, 
@@ -1327,19 +1325,19 @@ NIL
 
 |#
 ;;; SYNOPSIS
-(defmethod sharps-to-flats ((e event))
-;;; ****
-  (let ((c (pitch-or-chord e))
-        e2)
-    (if (is-chord e)
-        (setf c (sharps-to-flats c))
-        (setf c (sharp-to-flat c)))
-    (setf e2 (clone e)
-          (pitch-or-chord e2) c)
-    e2))
+(defmethod sharp-to-flat ((e event) &optional clone written)
+;;;****
+  (let* ((event (if clone (clone e) e))
+         (slot (if written
+                   'written-pitch-or-chord
+                   'pitch-or-chord))
+         (poc (slot-value event slot))
+         (fts (sharp-to-flat poc)))
+    (setf (slot-value event slot) fts)
+    event))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* event/flats-to-sharps
+;;; ****m* event/flat-to-sharp
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
 ;;; 
@@ -1347,15 +1345,14 @@ NIL
 ;;; Mon 10 Feb 2020 18:41:40 GMT - London
 ;;; 
 ;;; DESCRIPTION
-;;; Clone an event but with all of the flats (or the single flats if not a
-;;; chord) turned to sharps.
-;;; NB This method is non-destructive
+;;; Change the flat (or flats) in an event to a sharp or (sharps).
 ;;; 
 ;;; ARGUMENTS
 ;;; An event object
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; None
+;;; - clone: clone the evnet. DEFAULT = nil
+;;; - written: apply to written or sounding pitch? DEFAULT = nil (sounding)
 ;;; 
 ;;; RETURN VALUE
 ;;; An event object
@@ -1363,20 +1360,20 @@ NIL
 ;;; EXAMPLE
 #|
 (let ((e (make-event 'bf4 'q)))
-      (print-simple (flats-to-sharps e)))
+      (print-simple (flat-to-sharp e)))
 
 => AS4 Q, 
 NIL
 
 (let ((e (make-event '(as4 bf4) 'q)))
-      (print-simple (flats-to-sharps e)))
+      (print-simple (flat-to-sharp e)))
 
 => (AS4 AS4) Q, 
 NIL
 
 ;;; NB This method is non-destructive
 (let ((e (make-event 'bf4 'q)))
-      (print-simple (flats-to-sharps e))
+      (print-simple (flat-to-sharp e))
       (print-simple e))
 
 => AS4 Q, 
@@ -1384,17 +1381,16 @@ BF4 Q,
 NIL
 |#
 ;;; SYNOPSIS
-(defmethod flats-to-sharps ((e event))
-;;; ****
-  (let ((c (pitch-or-chord e))
-        e2)
-    (if (is-chord e)
-        (setf c (flats-to-sharps c))
-        (setf c (flat-to-sharp c)))
-    (setf e2 (clone e)
-          (pitch-or-chord e2) c)
-    e2))
-
+(defmethod flat-to-sharp ((e event) &optional clone written)
+;;;****
+  (let* ((event (if clone (clone e) e))
+         (slot (if written
+                   'written-pitch-or-chord
+                   'pitch-or-chord))
+         (poc (slot-value event slot))
+         (fts (flat-to-sharp poc)))
+    (setf (slot-value event slot) fts)
+    event))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; SAR Fri Dec 23 20:32:23 EST 2011 Added robodoc info

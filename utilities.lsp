@@ -5453,5 +5453,69 @@ WARNING: utilities::list-member: At least 1 common item in (A B C) and (1 2 C).
        until (eq object eof-marker)
        collect object)))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/write-list-to-coll
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Tue 18 Feb 2020 15:38:40 GMT
+;;; 
+;;; DESCRIPTION
+;;; Turn a list of lists into a text file, formatted to be read by the MaxMSP
+;;; [coll] object. This is a bit like gen-max-coll-file (see set-palette.lsp)
+;;; but instead works with any data in a list.
+;;; 
+;;; ARGUMENTS
+;;; - A list of lists in the form '((a b c)(d e f))
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments
+;;; :file - the output file. Default = "/tmp/sc-max-coll.txt"
+;;; :base - the minimum number for coll indexing. In the resulting output file,
+;;; each list in the list of lists will be preceeded by an (increasing) integer
+;;; and a comma. This argument sets the base value of that integer. Default = 0.
+;;; :capitalize - Should any outputted text be capitalized or not?
+;;; Default = nil.
+;;; :if-exists - what to do if the file already exists. This argument is passed
+;;; to with-open-file. More info here: http://clhs.lisp.se/Body/m_w_open.htm
+;;; Default = :supercede
+;;;
+;;; RETURN VALUE
+;;; The output file location
+;;; 
+;;; EXAMPLE
+#|
+(let ((l '((hello!)(how are you?)(very well thank you.)(1 2 3 4))))
+      (write-list-to-coll l :base 6))
+
+=> "/tmp/sc-max-coll.txt" 
+
+The resulting text file will looks like this when opened:
+
+6, hello!;
+7, how are you?;
+8, very well thank you.;
+9, 1 2 3 4;
+
+|#
+;;; SYNOPSIS
+(defun write-list-to-coll (data-list &key file (base 0) (capitalize nil)
+				       (if-exists :supersede))
+;;; ****
+  (unless file (setf file "/tmp/sc-max-coll.txt"))
+  (with-open-file
+      (stream file
+	      :direction :output :if-exists if-exists
+	      :if-does-not-exist :create)
+    (loop for i in data-list
+       for count from base do
+	 (if capitalize
+	     (format stream "~&~a, ~a;" count (list-to-string i))
+	     (format stream "~&~a, ~(~a~);" count (list-to-string i))))
+    file))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp
+

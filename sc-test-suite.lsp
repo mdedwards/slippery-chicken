@@ -19410,7 +19410,16 @@
 	       (chord= c2 (flat-to-sharp c1))
 	       (pitch= p2 (flat-to-sharp p1)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; test write-list-to-coll
+;;; DJR Tue 18 Feb 2020 15:58:07 GMT
 
+(sc-deftest test-write-to-coll ()
+  (let ((l '((hello!)(how are you?)(very well thank you.)(1 2 3 4))))
+    (probe-delete "/tmp/sc-max-coll.txt")
+    (sc-test-check
+      (write-list-to-coll l :base 6)
+      (file-write-ok "/tmp/sc-max-coll.txt" 64))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*

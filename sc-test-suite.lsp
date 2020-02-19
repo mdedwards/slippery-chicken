@@ -19291,14 +19291,19 @@
         (c3 (make-chord '(bs3 ff4 g4)))
         (c4 (make-chord '(a4)))
         (e1 (make-event '(a4) 'e))
-        (e2 (make-event 'a4 'e)))
+        (e2 (make-event 'a4 'e))
+	(e3 (make-event 'as4 'e))
+	(e4 (make-event 'bf4 'e)))
     (sc-test-check
       (null (pitch-or-chord= p1 p2))
       (pitch-or-chord= p1 p2 t)
       (null (pitch-or-chord= c1 c2))
       (null (pitch-or-chord= c1 c3))
       (null (pitch-or-chord= c1 c3))
-      (pitch-or-chord= p3 c4))))
+      (pitch-or-chord= p3 c4)
+      ;; DJR Mon 10 Feb 2020 16:28:07 GMT
+      ;; test eharmonics again
+      (pitch-or-chord= e3 e4 t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Wed 18 Sep 2019 18:53:41 BST
@@ -19369,6 +19374,54 @@
      (get-section-bar-nums mini :end nil :start 2)
      (get-section-bar-nums mini)
      (null (ignore-errors (get-section-bar-nums mini :end -1))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Thu 6 Feb 2020 13:33:33 GMT
+(sc-deftest test-list-member ()
+	    (sc-test-check
+	     (list-member '(a b c) '(a b c))
+	     (null (list-member '(a b c) '(1 2 3)))
+	     (list-member '(a b c) '(1 2 c))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Mon 10 Feb 2020 18:27:15 GMT
+(sc-deftest test-sharp-to-flat ()
+	    (let ((e1 (make-event 'bf4 'e))
+		  (e2 (make-event 'as4 'q))
+		  (c1 (make-chord '(bf4 bf5)))
+		  (c2 (make-chord '(as4 bf5)))
+		  (p1 (make-pitch 'df3))
+		  (p2 (make-pitch 'cs3)))
+	      (sc-test-check
+	       (pitch-or-chord= e1 (sharp-to-flat e2))
+	       (chord= c1 (sharp-to-flat c2))
+	       (pitch= p1 (sharp-to-flat p2)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Mon 10 Feb 2020 14:22:22 GMT
+
+(sc-deftest test-flat-to-sharp ()
+	    (let ((e1 (make-event 'bf4 'e))
+		  (e2 (make-event 'as4 'q))
+		  (c1 (make-chord '(as4 bf5)))
+		  (c2 (make-chord '(as4 as5)))
+		  (p1 (make-pitch 'df3))
+		  (p2 (make-pitch 'cs3)))
+	      (sc-test-check
+	       (pitch-or-chord= e2 (flat-to-sharp e1))
+	       (chord= c2 (flat-to-sharp c1))
+	       (pitch= p2 (flat-to-sharp p1)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; test write-list-to-coll
+;;; DJR Tue 18 Feb 2020 15:58:07 GMT
+
+(sc-deftest test-write-to-coll ()
+  (let ((l '((hello!)(how are you?)(very well thank you.)(1 2 3 4))))
+    (probe-delete "/tmp/sc-max-coll.txt")
+    (sc-test-check
+      (write-list-to-coll l :base 6)
+      (file-write-ok "/tmp/sc-max-coll.txt" 64))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*

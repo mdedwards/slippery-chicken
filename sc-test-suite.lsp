@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  17:26:07 Tue Jan 14 2020 CET
+;;; $$ Last modified:  09:43:52 Wed Feb 19 2020 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -13981,7 +13981,9 @@
          (make-slippery-chicken
           '+mini+
           :ensemble '(((vn (violin :midi-channel 1))))
-          :set-palette '((1 ((c3 e3 g3 a3 c4 d4 g4 a4 b4 e5))))
+          :set-palette '(((1 ((c3 e3 g3 a3 c4 d4 g4 a4 b4 e5)))
+                          (2 ((d4 ef5))))
+                         :recurse-simple-data nil)
           :set-map '((1 (1 1 1)))
           :rthm-seq-palette '((1 ((((2 4) q e s s))
                                   :pitch-seq-palette ((1 2 3 4)))))

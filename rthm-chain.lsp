@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  19:00:00 Fri Jun 21 2019 CEST
+;;; $$ Last modified:  09:25:23 Thu Feb 27 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -281,7 +281,10 @@
                     :num-beats (num-beats rc))
     (when (split-data rc)
       (split rc :min-beats (first (split-data rc)) 
-             :max-beats (second (split-data rc))))))
+             :max-beats (second (split-data rc)))))
+  ;; MDE Thu Feb 27 09:24:56 2020 -- so that we can call get-all-refs on the
+  ;; palette
+  (relink-named-objects (palette rc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #|

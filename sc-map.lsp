@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  17:32:49 Tue Jan 14 2020 CET
+;;; $$ Last modified:  10:55:51 Thu Feb 27 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -146,7 +146,10 @@
     ;; if new-class is a section (as when rsm-to-piece is called) then we can't
     ;; do this, but usually we do, if new-class is a map
     (when (slot-exists-p ral 'palette)
-      (setf (slot-value ral 'palette) (palette scm)))
+      ;; (setf (slot-value ral 'palette) (palette scm)))
+      ;; MDE Thu Feb 27 10:55:42 2020 -- clone if it exists
+      (setf (slot-value ral 'palette)
+            (when (palette scm) (clone (palette scm)))))
     ral))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

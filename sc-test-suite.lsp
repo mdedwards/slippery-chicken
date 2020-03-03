@@ -19416,12 +19416,21 @@
 ;;; test write-list-to-coll
 ;;; DJR Tue 18 Feb 2020 15:58:07 GMT
 
-(sc-deftest test-write-to-coll ()
+(sc-deftest test-write-list-to-coll ()
   (let ((l '((hello!)(how are you?)(very well thank you.)(1 2 3 4))))
     (probe-delete "/tmp/sc-max-coll.txt")
+    (probe-delete "/tmp/sc-max-coll-1.txt")
     (sc-test-check
       (write-list-to-coll l :base 6)
-      (file-write-ok "/tmp/sc-max-coll.txt" 64))))
+      (file-write-ok "/tmp/sc-max-coll.txt" 64)
+      ;; Update DJR Tue 3 Mar 2020 13:56:30 GMT
+      (write-list-to-coll l :base 15 
+			  :alt-label #'(lambda (count)
+					 (let ((l '(foo bar)))
+					   (nth (mod count 2) l)))
+			  :prefix "yes_"
+			  :file "/tmp/sc-max-coll-1.txt")
+      (file-write-ok "/tmp/sc-max-coll-1.txt" 64))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; *sc-test-all-tests*

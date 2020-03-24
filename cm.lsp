@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    1st March 2001
 ;;;
-;;; $$ Last modified:  10:53:48 Thu Nov 14 2019 CET
+;;; $$ Last modified:  12:31:19 Sat Mar 14 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -972,7 +972,8 @@
 ;;; nothing more than an alias to this files cm package function really.
 ;;; ****f* cm/event-list-to-midi-file
 ;;; DESCRIPTION
-;;; Write the events in a list to a mid-file.
+;;; Write the events in a list to a midi-file. events-update-time is a related
+;;; function useful for preparind ad-hoc events for midi-file-writing. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A list of events objects

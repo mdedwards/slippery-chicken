@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  12:32:33 Fri Jan 24 2020 CET
+;;; $$ Last modified:  12:36:40 Tue Mar 24 2020 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -272,6 +272,20 @@
 #+clm (sc-compile-and-load "control-wave.lsp")
 (sc-compile-and-load "wolfram.lsp" t)
 (sc-compile-and-load "afu.lsp")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package :sc)
+
+;;; MDE Tue Mar 24 11:08:08 2020
+(let ((package (find-package :sc)))
+  (do-all-symbols (symb package)
+    (when (and (or (find-class symb nil)
+                   (fboundp symb))
+               (eql (symbol-package symb) package))
+      (export symb))))
+
+(export '+slippery-chicken-config-data+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF all.lsp

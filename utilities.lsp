@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:52:09 Fri Jan 24 2020 CET
+;;; $$ Last modified:  09:39:30 Thu Mar 12 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5415,31 +5415,31 @@ WARNING: utilities::list-member: At least 1 common item in (A B C) and (1 2 C).
 (defun list-member (list1 list2 &key (test #'equal) (warn t))
 ;;; ****
   (let ((unique '())
-	(common '()))
+        (common '()))
     (loop for l in list1 do
-	 (if (member l list2 :test test)
-	     (push l common)
-	     (push l unique)))
+         (if (member l list2 :test test)
+             (push l common)
+             (push l unique)))
     (loop for l in list2 do
-	 (if (member l list1 :test test)
-	     (push l common)
-	     (push l unique)))
+         (if (member l list1 :test test)
+             (push l common)
+             (push l unique)))
     (setf common (nreverse (remove-duplicates common :test test))
-	  unique (nreverse (remove-duplicates unique :test test)))
+          unique (nreverse (remove-duplicates unique :test test)))
     (cond ((and common (null unique))
-	   (when warn
-	     (warn "utilities::list-member: No unique items in ~a and ~a."
-		   list1 list2))
-	   (values common unique))
-	  ((and unique (null common))
-	   (when warn
-	     (warn "utilities::list-member: All items in ~a and ~a are unique."
-		   list1 list2)) 
-	  (values common unique))
-	  (t (when warn
-	       (warn "utilities::list-member: At least 1 common item in ~a and ~a." 
-		     list1 list2))
-	     (values common unique)))))
+           (when warn
+             (warn "utilities::list-member: No unique items in ~a and ~a."
+                   list1 list2))
+           (values common unique))
+          ((and unique (null common))
+           (when warn
+             (warn "utilities::list-member: All items in ~a and ~a are unique."
+                   list1 list2)) 
+          (values common unique))
+          (t (when warn
+               (warn "utilities::list-member: At least 1 common item in ~a and ~a." 
+                     list1 list2))
+             (values common unique)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Thu 6 Feb 2020 17:41:19 GMT
@@ -5502,18 +5502,18 @@ The resulting text file will looks like this when opened:
 |#
 ;;; SYNOPSIS
 (defun write-list-to-coll (data-list &key file (base 0) (capitalize nil)
-				       (if-exists :supersede))
+                                       (if-exists :supersede))
 ;;; ****
   (unless file (setf file "/tmp/sc-max-coll.txt"))
   (with-open-file
       (stream file
-	      :direction :output :if-exists if-exists
-	      :if-does-not-exist :create)
+              :direction :output :if-exists if-exists
+              :if-does-not-exist :create)
     (loop for i in data-list
        for count from base do
-	 (if capitalize
-	     (format stream "~&~a, ~a;" count (list-to-string i))
-	     (format stream "~&~a, ~(~a~);" count (list-to-string i))))
+         (if capitalize
+             (format stream "~&~a, ~a;" count (list-to-string i))
+             (format stream "~&~a, ~(~a~);" count (list-to-string i))))
     file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

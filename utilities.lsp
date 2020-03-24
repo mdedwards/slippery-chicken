@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  09:39:30 Thu Mar 12 2020 CET
+;;; $$ Last modified:  15:29:26 Tue Mar 24 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5481,6 +5481,11 @@ WARNING: utilities::list-member: At least 1 common item in (A B C) and (1 2 C).
 ;;; :if-exists - what to do if the file already exists. This argument is passed
 ;;; to with-open-file. More info here: http://clhs.lisp.se/Body/m_w_open.htm
 ;;; Default = :supercede
+;;; :prefix - add a string prefix to the item number. DEfault = nil.
+;;; :alt-label - if you do not want the items labels to be consecutive numbers,
+;;; then you can here either provide a list of lists or a function. If a list of
+;;; lists, this must be the same length as the first argument. If a function, it
+;;; must be called with the item number (which increases incrementally from base).
 ;;;
 ;;; RETURN VALUE
 ;;; The output file location
@@ -5499,10 +5504,31 @@ The resulting text file will looks like this when opened:
 8, very well thank you.;
 9, 1 2 3 4;
 
+;; DJR Tue 3 Mar 2020 13:52:34 GMT
+(let ((l '((hello!)(how are you?)(very well thank you.)(1 2 3 4))))
+      (write-list-to-coll l :base 15 
+                          :alt-label #'(lambda (count)
+                                         (let ((l '(foo bar)))
+                                           (nth (mod count 2) l)))
+                          :prefix "yes_"))
+
+=> "/tmp/sc-max-coll.txt" 
+
+The resulting text file will looks like this when opened:
+
+yes_bar, hello!;
+yes_foo, how are you?;
+yes_bar, very well thank you.;
+yes_foo, 1 2 3 4;
+
 |#
 ;;; SYNOPSIS
-(defun write-list-to-coll (data-list &key file (base 0) (capitalize nil)
-                                       (if-exists :supersede))
+(defun write-list-to-coll (data-list &key file (base 0)
+                                       (capitalize nil)
+                                       (if-exists :supersede)
+                                       ;; DJR Tue 3 Mar 2020 13:52:34 GMT
+                                       (prefix "")
+                                       alt-label)
 ;;; ****
   (unless file (setf file "/tmp/sc-max-coll.txt"))
   (with-open-file
@@ -5510,12 +5536,27 @@ The resulting text file will looks like this when opened:
               :direction :output :if-exists if-exists
               :if-does-not-exist :create)
     (loop for i in data-list
-       for count from base do
+       for count from base
+       with item
+       do
+         (cond ((and alt-label (listp alt-label))
+                (if (= (length data-list) (length alt-label))
+                    (setf item (nth count alt-label))
+                    (error "~%utilities::write-list-to-coll: If you provide ~
+                           alt-label as a list, ~%it must be the same length ~
+                           as the data-list.")))
+               ((functionp alt-label)
+                (setf item (funcall alt-label count)))
+               (t (setf item count)))
+         (when (null item)
+             (error "~%utilities::write-list-to-coll: Items set to 'nil'. ~
+                    Check the value of 'base' or ~%the output of 'alt-list'. ~
+                    ~%base: ~a~%count: ~a~%list-item: ~a" base count i))
          (if capitalize
-             (format stream "~&~a, ~a;" count (list-to-string i))
-             (format stream "~&~a, ~(~a~);" count (list-to-string i))))
+             (format stream "~&~a~a, ~a;" prefix item (list-to-string i))
+             (format stream "~&~(~a~)~(~a~), ~(~a~);" prefix item
+                     (list-to-string i))))
     file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp
-

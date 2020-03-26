@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  08:58:52 Thu Mar 26 2020 CET
+;;; $$ Last modified:  13:42:22 Thu Mar 26 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5524,8 +5524,7 @@ yes_foo, 1 2 3 4;
 
 |#
 ;;; SYNOPSIS
-(defun write-list-to-coll (data-list &key (base 0)
-																			 (file "/tmp/sc-max-coll.txt")
+(defun write-list-to-coll (data-list &key (base 0)                                                                                                                                                       (file "/tmp/sc-max-coll.txt")
                                        (capitalize nil)
                                        (if-exists :supersede)
                                        ;; DJR Tue 3 Mar 2020 13:52:34 GMT
@@ -5550,7 +5549,7 @@ yes_foo, 1 2 3 4;
                 (setf item (funcall alt-label count)))
                (t (setf item count)))
          (when (null item)
-             (error "~%utilities::write-list-to-coll: Items set to 'nil'. ~
+           (error "~%utilities::write-list-to-coll: Items set to 'nil'. ~
                     Check the value of 'base' or ~%the output of 'alt-list'. ~
                     ~%base: ~a~%count: ~a~%list-item: ~a" base count i))
          (if capitalize

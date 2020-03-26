@@ -12,13 +12,15 @@
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
 ;;; Purpose:          Definition of the user-changeable configuration data and
-;;;                   globals for internal programme use.
+;;;                   globals for internal programme use. See top of cmn.lsp and
+;;;                   osc-sc-bsd.lsp for a few more globals relevant to
+;;;                   functionality in their respective packages.  
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  12:03:54 Sat Dec  7 2019 CET
+;;; $$ Last modified:  08:49:11 Thu Mar 26 2020 CET
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -185,18 +187,6 @@
 
 (defun default-dir-file (name)
   (concatenate 'string (get-sc-config 'default-dir) name))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; cmn.lsp
-(in-package :cmn)
-
-(declaim (special *cmn-units*))
-(setf *cmn-units* :cm)
-
-;;; We're not going to have more than 20 nested brackets applied to a single
-;;; note are we? :=) 
-(defparameter +cmn-open-brackets-for-sc+ (make-list 20))
-(defparameter +cmn-grace-notes-for-sc+ nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF globals.lsp

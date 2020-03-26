@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  12:36:40 Tue Mar 24 2020 CET
+;;; $$ Last modified:  08:46:18 Thu Mar 26 2020 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -46,7 +46,6 @@
 (require "asdf")
 #+sbcl (asdf:load-system :sb-bsd-sockets)
 #+sbcl (asdf:load-system :sb-posix)
-
 #+sbcl (unlock-package "COMMON-LISP")
 
 (defparameter +slippery-chicken-version+ "1.0.10")
@@ -68,13 +67,13 @@
 ;;; CLM's short-float 
 ;;; (setf *read-default-float-format* 'double-float)
 
-(defparameter +sc-dir-separator+
+(defparameter +slippery-chicken-dir-separator+
   ;; sbcl and ccl uses /
   #+(and (not sbcl) (not ccl) (or windows mswindows win32 win64)) #\\
   ;; #+mcl #\: ; back in pre-OSX days
   #+(or sbcl ccl ecl unix) #\/)
 
-(defparameter +sc-fasl-extension+
+(defparameter +slippery-chicken-fasl-extension+
   #+clisp ".fas"
   #+openmcl ".dfsl"
   #+sbcl ".fasl"
@@ -106,8 +105,8 @@
 ;;; old stuff; could have used pathname functions for this....
 (defun get-path-minus-file-and-last-dir (file)
   (flet ((till-last-slash (x)
-                          (subseq x 0 (position +sc-dir-separator+ x
-                                                :from-end t))))
+           (subseq x 0 (position +slippery-chicken-dir-separator+ x
+                                 :from-end t))))
     (till-last-slash (till-last-slash file))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -123,12 +122,13 @@
     (setf *default-pathname-defaults* +slippery-chicken-src-path+))
   (let ((out (format nil "~a~abin~a~a~a"
                      (get-path-minus-file-and-last-dir dir)
-                     +sc-dir-separator+
-                     +sc-dir-separator+
+                     +slippery-chicken-dir-separator+
+                     +slippery-chicken-dir-separator+
                      (pathname-name file)
-                     +sc-fasl-extension+))
+                     +slippery-chicken-fasl-extension+))
         (in (format nil "~a~asrc~a~a" (get-path-minus-file-and-last-dir dir)
-                    +sc-dir-separator+ +sc-dir-separator+ file)))
+                    +slippery-chicken-dir-separator+
+                    +slippery-chicken-dir-separator+ file)))
     (print out)
     (print in)
     (if just-load
@@ -200,6 +200,7 @@
 #+cmn (sc-compile-and-load "cmn.lsp")
 #+cmn (sc-compile-and-load "cmn-glyphs.lsp")
 #+cm (sc-compile-and-load "cm.lsp")
+#+cm (sc-compile-and-load "cm-cm.lsp")
 #+clm (sc-compile-and-load "samp5.lsp")
 #+clm (sc-compile-and-load "sine.lsp")
 #+clm (sc-compile-and-load "autoc.lsp")
@@ -267,25 +268,25 @@
 (sc-compile-and-load "popcorn.lsp")
 #+(and (or linux darwin) sbcl) (sc-compile-and-load "osc.lsp")
 #+(and (or linux darwin) sbcl) (sc-compile-and-load "osc-sc.lsp")
+#+(and (or linux darwin) sbcl) (sc-compile-and-load "osc-sc-bsd.lsp")
 #+clm (sc-compile-and-load "get-spectrum.lsp")
 (sc-compile-and-load "spectra.lsp")
 #+clm (sc-compile-and-load "control-wave.lsp")
+#+clm (sc-compile-and-load "control-wave-ins.lsp")
 (sc-compile-and-load "wolfram.lsp" t)
 (sc-compile-and-load "afu.lsp")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(in-package :sc)
 
 ;;; MDE Tue Mar 24 11:08:08 2020
 (let ((package (find-package :sc)))
   (do-all-symbols (symb package)
     (when (and (or (find-class symb nil)
                    (fboundp symb))
+               ;; globals such as +slippery-chicken-config-data+ won't be
+               ;; exported but that's just as it should be 
                (eql (symbol-package symb) package))
-      (export symb))))
-
-(export '+slippery-chicken-config-data+)
+      (export symb package))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF all.lsp

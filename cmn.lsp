@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified:  11:36:21 Sat Dec  7 2019 CET
+;;; $$ Last modified:  08:42:38 Thu Mar 26 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -46,6 +46,14 @@
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (in-package :cmn)
+
+(declaim (special *cmn-units*))
+(setf *cmn-units* :cm)
+
+;;; We're not going to have more than 20 nested brackets applied to a single
+;;; note are we? :=) 
+(defparameter +cmn-open-brackets-for-sc+ (make-list 20))
+(defparameter +cmn-grace-notes-for-sc+ nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

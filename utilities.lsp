@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:29:26 Tue Mar 24 2020 CET
+;;; $$ Last modified:  08:58:52 Thu Mar 26 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5468,7 +5468,7 @@ WARNING: utilities::list-member: At least 1 common item in (A B C) and (1 2 C).
 ;;; but instead works with any data in a list.
 ;;; 
 ;;; ARGUMENTS
-;;; - A list of lists in the form '((a b c)(d e f))
+;;; - A list of lists in the form '((a b c) (d e f))
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments
@@ -5477,15 +5477,16 @@ WARNING: utilities::list-member: At least 1 common item in (A B C) and (1 2 C).
 ;;; each list in the list of lists will be preceeded by an (increasing) integer
 ;;; and a comma. This argument sets the base value of that integer. Default = 0.
 ;;; :capitalize - Should any outputted text be capitalized or not?
-;;; Default = nil.
+;;; Default = NIL.
 ;;; :if-exists - what to do if the file already exists. This argument is passed
 ;;; to with-open-file. More info here: http://clhs.lisp.se/Body/m_w_open.htm
 ;;; Default = :supercede
-;;; :prefix - add a string prefix to the item number. DEfault = nil.
+;;; :prefix - add a string prefix to the item number. Default = NIL.
 ;;; :alt-label - if you do not want the items labels to be consecutive numbers,
 ;;; then you can here either provide a list of lists or a function. If a list of
 ;;; lists, this must be the same length as the first argument. If a function, it
-;;; must be called with the item number (which increases incrementally from base).
+;;; must be called with the item number (which increases incrementally from
+;;; base). 
 ;;;
 ;;; RETURN VALUE
 ;;; The output file location

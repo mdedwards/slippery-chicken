@@ -5524,14 +5524,14 @@ yes_foo, 1 2 3 4;
 
 |#
 ;;; SYNOPSIS
-(defun write-list-to-coll (data-list &key file (base 0)
+(defun write-list-to-coll (data-list &key (base 0)
+																			 (file "/tmp/sc-max-coll.txt")
                                        (capitalize nil)
                                        (if-exists :supersede)
                                        ;; DJR Tue 3 Mar 2020 13:52:34 GMT
                                        (prefix "")
                                        alt-label)
 ;;; ****
-  (unless file (setf file "/tmp/sc-max-coll.txt"))
   (with-open-file
       (stream file
               :direction :output :if-exists if-exists

@@ -5524,7 +5524,8 @@ yes_foo, 1 2 3 4;
 
 |#
 ;;; SYNOPSIS
-(defun write-list-to-coll (data-list &key (base 0)                                                                                                                                                       (file "/tmp/sc-max-coll.txt")
+(defun write-list-to-coll (data-list &key (base 0)
+				       (file "/tmp/sc-max-coll.txt")
                                        (capitalize nil)
                                        (if-exists :supersede)
                                        ;; DJR Tue 3 Mar 2020 13:52:34 GMT
@@ -5557,6 +5558,56 @@ yes_foo, 1 2 3 4;
              (format stream "~&~(~a~)~(~a~), ~(~a~);" prefix item
                      (list-to-string i))))
     file))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/now-string
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Sat 28 Mar 2020 13:21:08 GMT - London
+;;; 
+;;; DESCRIPTION
+;;; Return a string representing the current time in the format:
+;;; YEAR MONTH DAY - HOURS MINUTES SECONDS
+;;; e.g. "20200328-132227"
+;;;
+;;; It is thought that this function might be useful when outputing multiple
+;;; files during the test phase of a piece. E.g.
+;;; (cmn-display +mini+
+;;;              :file (concatenate 'string "my-piece" (now-string) ".eps"))
+;;; 
+;;; ARGUMENTS
+;;; None
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; None
+;;; 
+;;; RETURN VALUE
+;;; A string
+;;; 
+;;; EXAMPLE
+#|
+(now-string)
+
+=> "20200328-132227"
+
+(concatenate 'string "my-piece_" (now-string) ".eps")
+
+=> "my-piece_20200328-133357.eps"
+|#
+;;; SYNOPSIS
+(defun now-string ()
+;;; ****
+  (let ((d (multiple-value-list (get-decoded-time))))
+    (format nil "~a~2,'0d~2,'0d-~2,'0d~2,'0d~2,'0d"
+	    (sixth d)
+	    (fifth d)
+	    (fourth d)
+	    (third d)
+	    (second d)
+	    (first d))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

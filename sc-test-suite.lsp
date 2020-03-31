@@ -19376,14 +19376,6 @@
      (null (ignore-errors (get-section-bar-nums mini :end -1))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; DJR Thu 6 Feb 2020 13:33:33 GMT
-(sc-deftest test-list-member ()
-	    (sc-test-check
-	     (list-member '(a b c) '(a b c))
-	     (null (list-member '(a b c) '(1 2 3)))
-	     (list-member '(a b c) '(1 2 c))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Mon 10 Feb 2020 18:27:15 GMT
 (sc-deftest test-sharp-to-flat ()
 	    (let ((e1 (make-event 'bf4 'e))

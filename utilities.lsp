@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  13:42:22 Thu Mar 26 2020 CET
+;;; $$ Last modified:  11:41:29 Tue Mar 31 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5017,7 +5017,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jul 27 16:24:23 2015 -- normalise a set of numbers to between 0 and
-;;; 1 (as floats)
+;;; 1 (as floats). NB this is not the same as normalising a set of amplitudes as
+;;; they only conform to a max of 1.0 and shouldn't descend to 0.0
 (defun normalise (numbers)
   (if (= (length numbers) 1)
       '(1.0)

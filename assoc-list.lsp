@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  10:03:36 Fri Jan 10 2020 CET
+;;; $$ Last modified:  12:39:26 Tue Mar 31 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -452,15 +452,17 @@ WARNING:
 
 ;;; ****m* assoc-list/add
 ;;; DESCRIPTION
-;;; Add a new element to the given assoc-list object.
+;;; Add a new element to the given assoc-list object. By default the new element
+;;; is added at the end of the data list but the optional argument can change
+;;; this. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A key/data pair as a list, or a named-object.
 ;;; - The assoc-list object to which it is to be added.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - (This optional argument will be ignored; it exists only because of its use
-;;;   in the recursive-assoc-list class).
+;;; - T or NIL to add items to the front of the data list. Default = NIL = to
+;;; the end
 ;;; 
 ;;; RETURN VALUE 
 ;;; Returns T if the specified named-object is successfully added to the given
@@ -504,9 +506,8 @@ data: MARK
 => T
 |#
 ;;; SYNOPSIS
-(defmethod add (named-object (al assoc-list) &optional ignore)
+(defmethod add (named-object (al assoc-list) &optional front)
 ;;; ****
-  (declare (ignore ignore))  
   (unless named-object
     (error "assoc-list::add: named-object is NIL!"))
   (setf named-object (check-or-force-named-object named-object))
@@ -518,7 +519,10 @@ data: MARK
   ;; named-object but this would make all changes to it after adding null and
   ;; void 
   ;; (setf (slot-value al 'data) (econs (data al) (clone named-object)))
-  (setf (slot-value al 'data) (econs (data al) named-object))
+  ;; MDE Tue Mar 31 12:38:33 2020 -- allow items to be added to the front
+  (setf (slot-value al 'data) (if front
+                                  (cons named-object (data al))
+                                  (econs (data al) named-object)))
   (incf (sclist-length al))
   t)
 
@@ -1053,15 +1057,19 @@ data: PIG)
           (error "~a~%assoc-list::check-or-force-named-object: ~
                   thing must have an id!" thing))
         thing)
-    (progn
-      (unless (and (listp thing)
-                   (= 2 (length thing)))
-        (error "assoc-list::check-or-force-named-object: Expected a ~
-                named-object or at least ~%a 2-element list that can be ~
-                turned into one.....~%~a"
-               thing))
-      (make-named-object (first thing) 
-                         (second thing)))))
+      (let ((len (length thing)))
+        (unless (and (listp thing)
+                     ;; MDE Tue Mar 31 12:16:11 2020 -- allow tags to be passed
+                     (or (= 3 len) (= 2 len)))
+          (error "assoc-list::check-or-force-named-object: Expected a ~
+                  named-object or at least ~%a 2- or 3-element list that can ~
+                  be turned into one: ~%~a"
+                 thing))
+        (make-named-object (first thing) 
+                           (second thing)
+                           ;; MDE Tue Mar 31 12:16:11 2020 -- allow tags to be
+                           ;; passed
+                           (third thing)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

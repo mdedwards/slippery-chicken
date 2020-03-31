@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  15:34:57 Fri Jul  5 2019 CEST
+;;; $$ Last modified:  12:37:44 Tue Mar 31 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -846,6 +846,10 @@ WARNING:
 ;;; added at the end of the top level. The optional argument allows for the
 ;;; FULL-REF to be specified, i.e. a recursive path of keys down to the nested
 ;;; level where the new element is to be placed.
+;;;
+;;; N.B. All new items are added to the end of the data list, unlike in
+;;; assoc-list where that is the default but can be changed. Here it cannot be
+;;; changed. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A key/data pair.

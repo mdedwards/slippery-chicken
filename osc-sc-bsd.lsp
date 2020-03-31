@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified:  08:48:24 Thu Mar 26 2020 CET
+;;; $$ Last modified:  15:07:38 Tue Mar 31 2020 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -72,7 +72,8 @@
 (defun osc-call (listen-port send-ip send-port print) 
   ;; (let ((buffer (make-sequence '(vector (unsigned-byte 8)) 512)))
   ;; MDE Mon Apr 11 11:15:47 2016 -- increased buffer size
-  (let ((buffer (make-sequence '(vector (unsigned-byte 8)) 4096)))
+  ;; MDE Tue Mar 31 15:07:24 2020 -- increased again
+  (let ((buffer (make-sequence '(vector (unsigned-byte 8)) 16384))) ;4096)))
     ;; in case we exited abnormally last time
     (osc-cleanup-sockets)
     (setf +osc-sc-in-socket+ (make-udp-socket)

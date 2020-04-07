@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    30th June 2015
 ;;;
-;;; $$ Last modified:  16:31:45 Mon Nov  5 2018 CET
+;;; $$ Last modified:  11:18:40 Tue Apr  7 2020 CEST
 ;;;
 ;;; SVN ID: $Id: activity-levels.lsp 5048 2014-10-20 17:10:38Z medward2 $
 ;;;

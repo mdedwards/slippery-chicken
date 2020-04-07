@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  17:39:33 Tue May 21 2019 CEST
+;;; $$ Last modified:  14:38:54 Tue Apr  7 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -241,9 +241,9 @@
 ;;; The activities-level object.
 ;;;
 ;;; SYNOPSIS
-(defun make-al (&optional start-at)
+(defun make-al (&optional start-at id)
 ;;; ****
-  (let ((al (make-instance 'activity-levels)))
+  (let ((al (make-instance 'activity-levels :id id)))
     (when start-at
       (reset al start-at))
     al))

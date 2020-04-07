@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  09:43:52 Wed Feb 19 2020 CET
+;;; $$ Last modified:  14:40:48 Tue Apr  7 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -135,7 +135,11 @@
       (eq (id (get-data 'makers al)) 'makers)
       (eq (data (get-data 'makers al)) 'mark)
       (eq (get-position 'makers al) 3)
-      (add '(knob creek) al '(jack daniels)))))
+      (add '(knob creek) al)
+      (eq 4 (get-position 'knob al))
+      (add '(jack daniels) al t)
+      (eq 0 (get-position 'jack al))
+      (eq 5 (get-position 'knob al)))))
 
 ;; this one is supposed to produce a warning on the 3rd EQ boolean
 (sc-deftest test-al-set-data ()
@@ -19292,8 +19296,8 @@
         (c4 (make-chord '(a4)))
         (e1 (make-event '(a4) 'e))
         (e2 (make-event 'a4 'e))
-	(e3 (make-event 'as4 'e))
-	(e4 (make-event 'bf4 'e)))
+        (e3 (make-event 'as4 'e))
+        (e4 (make-event 'bf4 'e)))
     (sc-test-check
       (null (pitch-or-chord= p1 p2))
       (pitch-or-chord= p1 p2 t)
@@ -19377,40 +19381,42 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Thu 6 Feb 2020 13:33:33 GMT
+;;; MDE Tue Apr  7 14:40:40 2020 -- now defunct
+#|
 (sc-deftest test-list-member ()
-	    (sc-test-check
-	     (list-member '(a b c) '(a b c))
-	     (null (list-member '(a b c) '(1 2 3)))
-	     (list-member '(a b c) '(1 2 c))))
-
+            (sc-test-check
+             (list-member '(a b c) '(a b c))
+             (null (list-member '(a b c) '(1 2 3)))
+             (list-member '(a b c) '(1 2 c))))
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Mon 10 Feb 2020 18:27:15 GMT
 (sc-deftest test-sharp-to-flat ()
-	    (let ((e1 (make-event 'bf4 'e))
-		  (e2 (make-event 'as4 'q))
-		  (c1 (make-chord '(bf4 bf5)))
-		  (c2 (make-chord '(as4 bf5)))
-		  (p1 (make-pitch 'df3))
-		  (p2 (make-pitch 'cs3)))
-	      (sc-test-check
-	       (pitch-or-chord= e1 (sharp-to-flat e2))
-	       (chord= c1 (sharp-to-flat c2))
-	       (pitch= p1 (sharp-to-flat p2)))))
+            (let ((e1 (make-event 'bf4 'e))
+                  (e2 (make-event 'as4 'q))
+                  (c1 (make-chord '(bf4 bf5)))
+                  (c2 (make-chord '(as4 bf5)))
+                  (p1 (make-pitch 'df3))
+                  (p2 (make-pitch 'cs3)))
+              (sc-test-check
+               (pitch-or-chord= e1 (sharp-to-flat e2))
+               (chord= c1 (sharp-to-flat c2))
+               (pitch= p1 (sharp-to-flat p2)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Mon 10 Feb 2020 14:22:22 GMT
 
 (sc-deftest test-flat-to-sharp ()
-	    (let ((e1 (make-event 'bf4 'e))
-		  (e2 (make-event 'as4 'q))
-		  (c1 (make-chord '(as4 bf5)))
-		  (c2 (make-chord '(as4 as5)))
-		  (p1 (make-pitch 'df3))
-		  (p2 (make-pitch 'cs3)))
-	      (sc-test-check
-	       (pitch-or-chord= e2 (flat-to-sharp e1))
-	       (chord= c2 (flat-to-sharp c1))
-	       (pitch= p2 (flat-to-sharp p1)))))
+            (let ((e1 (make-event 'bf4 'e))
+                  (e2 (make-event 'as4 'q))
+                  (c1 (make-chord '(as4 bf5)))
+                  (c2 (make-chord '(as4 as5)))
+                  (p1 (make-pitch 'df3))
+                  (p2 (make-pitch 'cs3)))
+              (sc-test-check
+               (pitch-or-chord= e2 (flat-to-sharp e1))
+               (chord= c2 (flat-to-sharp c1))
+               (pitch= p2 (flat-to-sharp p1)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; test write-list-to-coll

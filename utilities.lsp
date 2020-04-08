@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  11:41:29 Tue Mar 31 2020 CEST
+;;; $$ Last modified:  14:59:10 Wed Apr  8 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -3176,6 +3176,13 @@ WARNING:
       (stream file :direction :input :if-does-not-exist :error)
     (read stream)))
 
+(defun write-to-file (file data)
+;;; ****
+  (with-open-file
+      (stream file :direction :output :if-exists :supersede
+              :if-does-not-exist :create)
+    (print data stream)))
+
 (defun read-from-default-dir-file (file)
   (read-from-file (concatenate 'string (get-sc-config 'default-dir) file)))
 
@@ -5449,7 +5456,7 @@ yes_foo, 1 2 3 4;
 |#
 ;;; SYNOPSIS
 (defun write-list-to-coll (data-list &key (base 0)
-				       (file "/tmp/sc-max-coll.txt")
+                                       (file "/tmp/sc-max-coll.txt")
                                        (capitalize nil)
                                        (if-exists :supersede)
                                        ;; DJR Tue 3 Mar 2020 13:52:34 GMT
@@ -5526,12 +5533,12 @@ yes_foo, 1 2 3 4;
 ;;; ****
   (let ((d (multiple-value-list (get-decoded-time))))
     (format nil "~a~2,'0d~2,'0d-~2,'0d~2,'0d~2,'0d"
-	    (sixth d)
-	    (fifth d)
-	    (fourth d)
-	    (third d)
-	    (second d)
-	    (first d))))
+            (sixth d)
+            (fifth d)
+            (fourth d)
+            (third d)
+            (second d)
+            (first d))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

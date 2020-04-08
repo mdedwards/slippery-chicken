@@ -31,7 +31,7 @@
 ;;;
 ;;; Creation date:    4th December 2000
 ;;;
-;;; $$ Last modified:  10:06:04 Sat Oct 21 2017 CEST
+;;; $$ Last modified:  16:51:08 Wed Apr  8 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -215,7 +215,7 @@
                 (numberp arg))
       (error "named-object::check-named-object-id-type: ~
               The id slot of named-object ~%(or it's subclasses) must ~
-              be a string, a symbol or a number. Your id is ~a" arg)))
+              be a string, a symbol or a number. Your id is ~%~a" arg)))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

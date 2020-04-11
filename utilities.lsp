@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  14:59:10 Wed Apr  8 2020 CEST
+;;; $$ Last modified:  14:35:32 Sat Apr 11 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5539,6 +5539,13 @@ yes_foo, 1 2 3 4;
             (third d)
             (second d)
             (first d))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; for convenience, precision is fraction of a tone not a semitone
+(defun semitones-precision (semitones &optional (precision 1/4))
+  (setq precision (/ precision 2))
+  (float (/ (round semitones precision) (/ precision))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

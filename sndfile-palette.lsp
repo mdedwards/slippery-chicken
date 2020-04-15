@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    18th March 2001
 ;;;
-;;; $$ Last modified:  17:17:36 Thu Apr  9 2020 CEST
+;;; $$ Last modified:  11:15:12 Wed Apr 15 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -971,7 +971,11 @@ SNDFILE: path: /music/hyperboles/snd/cello/samples/1/g4-III-4-004.aif,
 |#
 ;;; SYNOPSIS
 (defun get-sndfiles (folder &optional skip insist resist)
-  ;;; ****
+;;; ****
+  ;; MDE Wed Apr 15 11:14:59 2020 -- handle pathnames if we've used
+  ;; e.g. merge-pathnames  
+  (when (typep folder 'pathname)
+    (setq folder (directory-namestring folder)))
   (setq insist (force-list insist)
         resist (force-list resist))
   (loop for file in (get-all-files folder skip)

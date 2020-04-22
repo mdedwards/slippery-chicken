@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified:  15:00:30 Fri Aug 24 2018 CEST
+;;; $$ Last modified:  11:37:34 Tue Apr 21 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -569,8 +569,8 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 ;;;
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :by-freq. Use the frequencies of the pitches to create the stack instead of
-;;;    the interval structure. Default = NIL.
+;;; - :by-freq. Use the frequencies of the pitches to create the stack instead
+;;;   of the interval structure. Default = NIL.  
 ;;; - :up. Apply the process upwards in pitch space. Default = T.
 ;;; - :down. Apply the process downwards in pitch space. Default = T.
 ;;; 

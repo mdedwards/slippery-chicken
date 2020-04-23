@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  09:34:41 Wed Apr  8 2020 CEST
+;;; $$ Last modified:  14:47:30 Thu Apr 23 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -15432,6 +15432,10 @@
 ;;; SAR Mon May  7 10:08:36 BST 2012
 (sc-deftest test-utilities-interpolate ()
   (sc-test-check
+    (= 1.0 (interpolate 50 '(0 0 4 10 15 22 27 3 43 9 50 1 60 2 84 5 100 0)))
+    (= 8.3 (interpolate 50 '(0 0 4 10 15 22 27 3 43 9 53 8 60 2 84 5 100 0)))
+    (zerop (interpolate 150 '(0 0 4 10 15 22 27 3 43 9 53 8 60 2 84 5 100 0)))
+    (= 1 (interpolate 2 '(5 1 8 10 15 22 27 3 43 9 53 8 60 2 84 5 100 0)))
     (= 0.5 (interpolate 50 '(0 0 100 1)))
     (= 1.0 (interpolate 50 '(0 0 100 1) :scaler 2))
     (= 0.25 (interpolate 50 '(0 0 100 1) :exp 2))))

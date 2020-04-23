@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  14:35:32 Sat Apr 11 2020 CEST
+;;; $$ Last modified:  09:54:18 Thu Apr 23 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1435,9 +1435,6 @@
                                 collect (nth i (nth j lists))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 09:51:05 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/logarithmic-steps
 ;;; DESCRIPTION
 ;;; Create a list of numbers progressing from the first specified argument to
@@ -1474,9 +1471,6 @@
        (interpolate i curve :exp exponent)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 09:58:22 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/interpolate
 ;;; DESCRIPTION
 ;;; Get the interpolated value at a specified point within an envelope. The
@@ -1537,17 +1531,20 @@
                        point env lasty))
                lasty)
               ((< point (car env))
-               (error "interpolate: Can't interpolate ~a in ~a" point env))
+               ;; (error "interpolate: Can't interpolate ~a in ~a" point env))
+               ;; MDE Thu Apr 23 09:48:57 2020, Heidhausen -- if our x values
+               ;; start > the point we're looking for, return the first y value
+               (warn "utilities::interp-aux: envelope starts later than point!")
+               (second env))
               (t (interp-aux point env scaler exp))))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun interp-aux (point env scaler exp)
   (let ((here (loop for i in env by #'cddr and j from 1 do
                    (if (<= point i) (return (+ j j -2))))))
-    ;; rounding in making the new-env with new-lastx can cause the
-    ;; very last event to be just a little bigger than the last x
-    ;; value in the new-env.  If this is the case, <here> will be nil
-    ;; so we better deal with this: 
+    ;; rounding in making the new-env with new-lastx can cause the very last
+    ;; event to be just a little bigger than the last x value in the new-env.
+    ;; If this is the case, <here> will be nil so we better deal with this:
     (unless here 
       (setq here (- (length env) 2)))
     (when (zerop here)
@@ -1557,10 +1554,12 @@
           (x2 (nth here env)))
       ;; MDE Mon May 14 12:26:16 2012 
       (unless (and (numberp x1) (numberp x2))
-        (error "utilities::interp-aux: y values in envelope must be numbers: ~a"
+        (error "utilities::interp-aux: y values in envelope must be ~
+                    numbers: ~a"
                env))
       (when (= x1 x2)
-        (error "utilities::interp-aux: can't interpolate ~a in ~a." point env))
+        (error "utilities::interp-aux: can't interpolate ~a in ~a."
+               point env))
       (get-interpd-y point 
                      x1 
                      (* scaler (nth (- here 1) env))
@@ -1583,10 +1582,12 @@
 (defun lastx (env)
   "lastx returns the last x value in the given envelope.
    e.g. (lastx '(0 0 20 4 30 5 100 0)) => 100"
+  (unless env
+    (warn "utilities::lastx: env should not be nil."))
   (let ((len (length env)))
     (when (oddp len) 
         (error "utilities::lastx: Wrong number of elements in ~a." env))
-    (nth (- len 2) env)))
+    (when env (nth (- len 2) env))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun new-lastx (env x)
@@ -1602,9 +1603,6 @@
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 10:11:28 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/scale-env
 ;;; DESCRIPTION
 ;;; Scale either the x-axis values, the data values, or both of a list of

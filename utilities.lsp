@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  09:54:18 Thu Apr 23 2020 CEST
+;;; $$ Last modified:  14:48:37 Thu Apr 23 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1527,15 +1527,18 @@
             (lasty (first (last env))))
         (cond ((> point lastx)
                (when warn
-                 (warn "interpolate: ~a is off the x axis of ~%~a~%returning ~a"
+                 (warn "interpolate: ~a is off the x axis of ~%~a~
+                        ~%returning last y value: ~a"
                        point env lasty))
                lasty)
               ((< point (car env))
-               ;; (error "interpolate: Can't interpolate ~a in ~a" point env))
-               ;; MDE Thu Apr 23 09:48:57 2020, Heidhausen -- if our x values
-               ;; start > the point we're looking for, return the first y value
-               (warn "utilities::interp-aux: envelope starts later than point!")
-               (second env))
+               (let (y1)
+                 ;; (error "interpolate: Can't interpolate ~a in ~a" point env))
+                 ;; MDE Thu Apr 23 09:48:57 2020, Heidhausen -- if our x values
+                 ;; start > the point we're looking for, return the first y value
+                 (warn "utilities::interp-aux: envelope starts later than point!~
+                      ~%Returning first y value: ~a" (setq y1 (second env)))
+                 y1))
               (t (interp-aux point env scaler exp))))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1555,7 +1558,7 @@
       ;; MDE Mon May 14 12:26:16 2012 
       (unless (and (numberp x1) (numberp x2))
         (error "utilities::interp-aux: y values in envelope must be ~
-                    numbers: ~a"
+                numbers: ~a"
                env))
       (when (= x1 x2)
         (error "utilities::interp-aux: can't interpolate ~a in ~a."

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  11:32:10 Fri May  1 2020 CEST
+;;; $$ Last modified:  14:30:55 Fri May  1 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -514,11 +514,6 @@ NIL
         (output-midi-note p time amplitude duration)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; ref is 1-based and counts from the lowest note up.
-
-;;; SAR Wed Feb 22 17:56:55 GMT 2012: Added robodoc info
-
 ;;; ****m* chord/get-pitch
 ;;; DESCRIPTION
 ;;; Get the pitch object located at the specified index within the given chord
@@ -564,6 +559,7 @@ data: GQS4
   (get-nth (1- ref) c))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#| use the highest method instead!
 
 ;;; ****m* chord/get-highest
 ;;; DATE
@@ -583,10 +579,8 @@ data: GQS4
 (defmethod get-highest ((c chord))
 ;;; ****
   (get-pitch c (sclist-length c)))
-
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Mon Apr 16 16:42:48 BST 2012: Added robodoc entry
-
 ;;; ****m* chord/add-mark
 ;;; DESCRIPTION
 ;;; Add the specified mark to the MARKS slot of the given chord object.
@@ -620,9 +614,6 @@ data: GQS4
   (push mark (marks c)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Feb 22 18:05:57 GMT 2012: Added robodoc entry
-
 ;;; ****m* chord/get-pitch-symbols
 ;;; DESCRIPTION
 ;;; Return the data of the pitch objects from a given chord object as a list of
@@ -750,12 +741,8 @@ data: GQS4
   (equal (get-pitch-symbols c1) (get-pitch-symbols c2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; usually a chord is auto-sorted so we can return (first (data c)) but check
 ;;; to make sure. 
-
-;;; SAR Wed Feb 22 18:24:38 GMT 2012: Added robodoc entry
-
 ;;; ****m* chord/lowest
 ;;; DESCRIPTION
 ;;; Return the pitch object from the given chord object that has the lowest
@@ -812,9 +799,6 @@ data: C4
      finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Feb 22 18:30:21 GMT 2012: Added robodoc entry
-
 ;;; ****m* chord/highest
 ;;; DESCRIPTION
 ;;; Return the pitch object from the given chord object that has the highest
@@ -1790,7 +1774,8 @@ data: (
     (loop for p in (data c) do
          (setf result (concatenate 'string result (print-simple p nil)
                                    separator)))
-    (format stream "~&~a" result)))
+    (format stream "~&~a" result)
+    c))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Aug 10 16:17:59 2012 -- pitches can be pitch objects or any data
@@ -2294,7 +2279,7 @@ data: (
        (let* ((intervals (get-interval-structure c t t))
               (top-interval (first (last intervals)))
               (num (sclist-length c)))
-         (setq c (rm-pitches c (get-highest c)))
+         (setq c (rm-pitches c (highest c)))
          (unless (= (1- num) (sclist-length c))
            (error "chord::wrap: couldn't remove highest from ~a" c))
          (setf c (transpose c top-interval)
@@ -2304,7 +2289,44 @@ data: (
   c)
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod invert ((c chord) &optional top-to-bottom)
+  (let ((result (make-chord (invert-pitch-list (data c)))))
+    (if top-to-bottom
+        (top-to-bottom result)
+        result)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/top-to-bottom
+;;; DATE
+;;; May 1st 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Transpose a chord so that it's current top note is the new bottom note. NB
+;;; This is destructive by default
+;;; 
+;;; ARGUMENTS
+;;; - a chord object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keywords arguments:
+;;; - :destructively. Whether to modify the chord object or return a new
+;;; chord. Default = T
+;;; 
+;;; RETURN VALUE
+;;; the modified chord object
+;;; 
+;;; EXAMPLE
+#|
+(print-simple (top-to-bottom (make-chord '(c4 e4 g4 b4))))
+--> NIL: B4 EF5 FS5 BF5 
+|#
+;;; SYNOPSIS
+(defmethod top-to-bottom ((c chord) &key (destructively t))
+;;; ****
+  (let* ((distance (pitch- (highest c) (lowest c) )))
+    (transpose c distance :destructively destructively)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/morph
 ;;; DATE
 ;;; May 3rd 2016, Edinburgh
@@ -2386,7 +2408,8 @@ data: (
 ;;; 
 ;;; EXAMPLE
 #|
-
+(print-simple (collapse (make-chord '(d4 f4 bf4 e5 b5)) 2))
+--> NIL: D2 E2 F2 BF2 B2 
 |#
 ;;; SYNOPSIS
 (defmethod collapse ((c chord) octave)

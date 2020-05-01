@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  09:55:42 Thu Jan  9 2020 CET
+;;; $$ Last modified:  14:03:50 Fri May  1 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2909,9 +2909,6 @@ data: E4
       result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Jan  3 12:40:02 EST 2012: Edited MDE robodoc info
-
 ;;; ****f* pitch/remove-octaves
 ;;; DESCRIPTION
 ;;; Removes all but one of any pitch items in a given list that have the same
@@ -3018,11 +3015,6 @@ data: G3
        finally (return (nreverse result)))))
               
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 
-
-;;; SAR Tue Jan  3 13:58:09 EST 2012: Added robodoc info
-
 ;;; ****f* pitch/invert-pitch-list
 ;;; DESCRIPTION
 ;;; Using the lowest note in the list as the reference point, invert the rest

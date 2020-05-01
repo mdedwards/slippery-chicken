@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  14:30:55 Fri May  1 2020 CEST
+;;; $$ Last modified:  17:52:55 Fri May  1 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2289,7 +2289,36 @@ data: (
   c)
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/invert
+;;; DATE
+;;; May 1st 2020, Heidhaisen
+;;; 
+;;; DESCRIPTION
+;;; Invert the interval structure of a chord. By default the given bottom note
+;;; becomes the new top note, as the intervals are mirrored around it, but if
+;;; the optional argument is non-NIL then the result will be transposed so that
+;;; the chord has the original range.
+;;; 
+;;; ARGUMENTS
+;;; - a chord object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; T or NIL to indicate whether the retain the original range or not
+;;; 
+;;; RETURN VALUE
+;;; a new chord object which is the interval inversion of the argument
+;;; 
+;;; EXAMPLE
+#|
+(get-pitch-symbols (invert (make-chord '(d4 f4 bf4 e5 b5))))
+--> (F2 C3 FS3 B3 D4)
+
+(get-pitch-symbols (invert (make-chord '(d4 f4 bf4 e5 b5)) t))
+--> (D4 A4 EF5 AF5 B5)
+|#
+;;; SYNOPSIS
 (defmethod invert ((c chord) &optional top-to-bottom)
+;;; ****
   (let ((result (make-chord (invert-pitch-list (data c)))))
     (if top-to-bottom
         (top-to-bottom result)

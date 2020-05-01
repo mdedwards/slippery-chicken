@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  11:34:26 Tue Apr  7 2020 CEST
+;;; $$ Last modified:  18:05:24 Fri May  1 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1238,11 +1238,11 @@ data: (C4 F4 A4 C5)
 ;;; The set-palette object, wrapped.
 ;;;
 ;;; SYNOPSIS
-(defmethod wrap ((sp set-palette) &optional (num-times 1))
+(defmethod wrap ((sp set-palette) &optional (num-times 1) (transpose t))
 ;;; ****
   (loop for ref in (get-all-refs sp)
      for set = (get-data ref sp)
-     do (wrap set num-times))
+     do (wrap set num-times transpose))
   sp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  17:52:55 Fri May  1 2020 CEST
+;;; $$ Last modified:  18:08:08 Fri May  1 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2242,11 +2242,12 @@ data: (
 ;;; DESCRIPTION
 ;;; Take the highest pitch and wrap it around to the bottom, placing it at the
 ;;; same interval to the former lowest pitch as the highest pitch is to the
-;;; next-to-highest pitch. Then we shift (transpose) the chord so that the
-;;; next-to-highest pitch is the former highest pitch.
+;;; next-to-highest pitch. Then, by default, we shift (transpose) the chord so
+;;; that the next-to-highest pitch is the former highest pitch.
 ;;;
-;;; NB The lowest and highest notes of the chord will always remain the same no
-;;; matter how many times this operation is performed. 
+;;; NB If the <transpose> optional argument is T, then the lowest and highest
+;;; notes of the chord will always remain the same no matter how many times this
+;;; operation is performed.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A chord object
@@ -2271,19 +2272,22 @@ data: (
 
 (get-pitch-symbols (wrap (make-chord '(df3 c4 fs4 b4 f5)) 2))
 => (DF3 GF3 C4 B4 F5)
+
+(get-pitch-symbols (wrap (make-chord '(d4 f4 bf4 e5 b5)) 1 nil))
+=> (G3 D4 F4 BF4 E5)
 |#
 ;;; SYNOPSIS
-(defmethod wrap ((c chord) &optional (num-times 1))
+(defmethod wrap ((c chord) &optional (num-times 1) (transpose t))
 ;;; ****
-  (loop repeat num-times do ; 
+  (loop repeat num-times do
        (let* ((intervals (get-interval-structure c t t))
               (top-interval (first (last intervals)))
               (num (sclist-length c)))
          (setq c (rm-pitches c (highest c)))
          (unless (= (1- num) (sclist-length c))
            (error "chord::wrap: couldn't remove highest from ~a" c))
-         (setf c (transpose c top-interval)
-               c (add-pitches c (transpose (clone (lowest c))
+         (when transpose (setq c (transpose c top-interval)))
+         (setq c (add-pitches c (transpose (clone (lowest c))
                                            (- top-interval))))))
   (respell-chord c)
   c)

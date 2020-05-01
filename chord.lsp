@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  18:39:01 Tue Jan 14 2020 CET
+;;; $$ Last modified:  11:32:10 Fri May  1 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2545,7 +2545,7 @@ data: (
   (declare (ignore clone written))
   (let ((c-list '()))
     (loop for cc in (data c) do
-	 (push (sharp-to-flat cc) c-list))
+         (push (sharp-to-flat cc) c-list))
     (setf c (make-chord (reverse c-list)))
     c))
   
@@ -2553,7 +2553,7 @@ data: (
   (declare (ignore clone written))
   (let ((c-list '()))
     (loop for cc in (data c) do
-	 (push (flat-to-sharp cc) c-list))
+         (push (flat-to-sharp cc) c-list))
     (setf c (make-chord (reverse c-list)))
     c))
 
@@ -2739,6 +2739,45 @@ data: F5
     (when (or force-midi-channel (not (pitch-p (first nl))))
       (set-midi-channel chord midi-channel microtones-midi-channel))
     chord))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* chord/make-chord-from-intervals
+;;; DATE
+;;; May 1st 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Make a chord object from a starting pitch and a list of intervals in
+;;; semitones.  
+;;; 
+;;; ARGUMENTS
+;;; - the starting pitch: symbol or pitch object
+;;; - the list of intervals in semitones (may be fractional if current scale is
+;;; microtonal) 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; any keyword argument accepted by make-chord
+;;; 
+;;; RETURN VALUE
+;;; a chord object
+;;; 
+;;; EXAMPLE
+#|
+(get-pitch-symbols (make-chord-from-intervals 'c4 '(6 5 7.5) :midi-channel 7))
+--> (C4 FS4 B4 GQF5)
+|#
+;;; SYNOPSIS
+(defun make-chord-from-intervals (start-pitch intervals
+                                  &rest keyargs &key &allow-other-keys)
+;;; ****
+  (setq start-pitch (make-pitch start-pitch))
+  (apply #'make-chord
+         (cons 
+          (cons (data start-pitch)
+                (loop with midi = (midi-note start-pitch)
+                   for i in intervals
+                   do (incf midi i)
+                   collect (midi-to-note midi)))
+          keyargs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  14:47:30 Thu Apr 23 2020 CEST
+;;; $$ Last modified:  18:10:10 Fri May  1 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -7808,6 +7808,8 @@
             '(C4 GF4 C5 F5))
     (equalp (get-pitch-symbols (wrap (make-chord '(df3 c4 fs4 b4 f5)) 2))
             '(DF3 GF3 C4 B4 F5))
+    (equalp (get-pitch-symbols (wrap (make-chord '(d4 f4 bf4 e5 b5)) 1 nil))
+            '(G3 D4 F4 BF4 E5))
     (equalp (get-pitch-symbols (wrap (make-sc-set '(df3 c4 fs4 b4 f5))))
             '(DF3 G3 FS4 C5 F5))))
 

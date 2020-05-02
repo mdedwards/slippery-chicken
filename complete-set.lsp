@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified:  10:33:13 Sat May  2 2020 CEST
+;;; $$ Last modified:  12:41:50 Sat May  2 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -354,14 +354,6 @@
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Feb 11 12:33:15 GMT 2012: Removed MDE's original comment here as it
-;;; has now been taken into the doc entry below.
-
-;;; SAR Sat Feb 11 12:33:00 GMT 2012: Extended robodoc entry
-
-;;; SAR Tue Feb  7 10:45:09 GMT 2012: Added robodoc entry
-
 ;;; ****f* complete-set/make-complete-set
 ;;; DESCRIPTION
 ;;; Create a complete-set object, which as an extension of the tl-set class
@@ -421,34 +413,7 @@
 
 =>
 COMPLETE-SET: complete: NIL
-              num-missing-non-chromatic: 12
-              num-missing-chromatic: 1
-              missing-non-chromatic: (BQS BQF AQS AQF GQS GQF FQS EQS EQF DQS
-                                      DQF CQS)
-              missing-chromatic: (EF)
-TL-SET: transposition: 0
-        limit-upper: NIL
-        limit-lower: NIL
-SC-SET: auto-sort: T, used-notes: 
-RECURSIVE-ASSOC-LIST: recurse-simple-data: T
-                      num-data: 0
-                      linked: NIL
-                      full-ref: NIL
-ASSOC-LIST: warn-not-found T
-CIRCULAR-SCLIST: current 0
-SCLIST: sclist-length: 0, bounds-alert: T, copy: T
-LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-NAMED-OBJECT: id: USED-NOTES, tag: NIL, 
-data: NIL
-
-N.B. All pitches printed as symbols only, internally they are all 
-pitch-objects.
-
-    subsets: 
-    related-sets: 
-SCLIST: sclist-length: 14, bounds-alert: T, copy: T
-LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-NAMED-OBJECT: id: NIL, tag: NIL, 
+... 
 data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 
 ;; A new complete-set object can be created from tl-set and sc-set objects
@@ -476,54 +441,18 @@ data: (D2 F2 A2 C3 E3 G3 B3 D4 GF4 BF4 DF5 F5 AF5 C6)
 
 => 
 COMPLETE-SET: complete: NIL
-              num-missing-non-chromatic: 12
-              num-missing-chromatic: 3
-              missing-non-chromatic: (BQS BQF AQS AQF GQS GQF FQS EQS EQF DQS
-                                      DQF CQS)
-              missing-chromatic: (B FS EF)
-TL-SET: transposition: 3
-        limit-upper: 
-PITCH: frequency: 783.991, midi-note: 79, midi-channel: 0 
-[...]
-data: G5
-        limit-lower: 
-PITCH: frequency: 82.407, midi-note: 40, midi-channel: 0 
-[...]
-data: E2
-SC-SET: auto-sort: T, used-notes: 
-RECURSIVE-ASSOC-LIST: recurse-simple-data: T
-[...]
-ASSOC-LIST: warn-not-found T
-CIRCULAR-SCLIST: current 0
-SCLIST: sclist-length: 0, bounds-alert: T, copy: T
-LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-NAMED-OBJECT: id: USED-NOTES, tag: NIL, 
-data: NIL
-
-N.B. All pitches printed as symbols only, internally they are all 
-pitch-objects.
-    subsets: 
-LOW: (F2 AF2 C3)
-MID: (D4 F4)
-    related-sets: 
-NOT-PLAYABLE: (DQS2 EQF3)
-SCLIST: sclist-length: 12, bounds-alert: T, copy: T
-LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
-NAMED-OBJECT: id: CSSET, tag: NIL, 
+... 
 data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
 
 |#
 ;;; SYNOPSIS
-(defun make-complete-set (set &key id tag subsets related-sets 
-                                (transposition 0) (auto-sort t) (warn-dups t)
-                                (rm-dups t) limit-upper limit-lower complete
-                                ;; MDE Fri Aug 24 14:56:50 2018 
-                                (midi-channel 1) (microtones-midi-channel 2))
+(defun make-complete-set (set &rest keys
+                          &key id tag subsets related-sets 
+                            (transposition 0) (auto-sort t) (warn-dups t)
+                            (rm-dups t) limit-upper limit-lower complete
+                            ;; MDE Fri Aug 24 14:56:50 2018 
+                            (midi-channel 1) (microtones-midi-channel 2))
 ;;; ****
-  ;; (print 'make-complete-set----------------------------------------------)
-  ;; (print set)
-  ;; (print '-----subsets)
-  ;; (print subsets)
   (let ((s
          (typecase set
            (sc-set
@@ -539,18 +468,22 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
                 (limit copy :upper limit-upper :lower limit-lower))
               (when id
                 (setf (id copy) id))
+              ;; replace with those given here, if
+              (setf (rm-dups copy) rm-dups
+                    (warn-dups copy) warn-dups)
+              (when tag (setf (tag copy) tag))
               copy))
            ;; MDE Tue Aug 27 19:46:05 2013 
-           (chord (make-complete-set (data set) :id id :tag tag))
+           (chord (apply #'make-instance
+                         (append (list 'complete-set
+                                       :data (data set))
+                                 ;; MDE Sat May 2 12:11:01 2020, Heidhausen --
+                                 ;; don't forget other slots! Hence the &rest
+                                 ;; keys above
+                                 keys)))
            (t
-            (make-instance 'complete-set :id id :tag tag :data set
-                           :subsets subsets :related-sets related-sets
-                           :auto-sort auto-sort
-                           :limit-upper limit-upper :limit-lower limit-lower
-                           :transposition transposition
-                           ;; MDE Mon May 20 12:57:54 2013 
-                           :warn-dups warn-dups :rm-dups rm-dups
-                           :complete complete)))))
+            (apply #'make-instance (append (list 'complete-set :data set)
+                                           keys))))))
     ;; MDE Fri Aug 24 14:56:56 2018 -- from the chord method
     (set-midi-channel s midi-channel microtones-midi-channel)
     s))

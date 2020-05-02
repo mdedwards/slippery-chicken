@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  14:03:50 Fri May  1 2020 CEST
+;;; $$ Last modified:  11:06:37 Sat May  2 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -689,7 +689,6 @@ NIL
        ;; (equal-within-tolerance (src p1) (src p2) src-tolerance)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* pitch/enharmonic-equivalents
 ;;; DATE
 ;;; 25th December 2013
@@ -717,7 +716,6 @@ NIL
   (pitch= p1 (enharmonic p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* pitch/cents-hertz
 ;;; DATE
 ;;; December 24th 2013
@@ -754,9 +752,6 @@ NIL
      (frequency p) ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Jan  2 17:05:31 EST 2012: Added robodoc info
-
 ;;; ****m* pitch/pitch-class-eq
 ;;; DATE 
 ;;; 14 Aug 2010

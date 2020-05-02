@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  13:01:04 Tue Jul 16 2019 CEST
+;;; $$ Last modified:  12:42:44 Sat May  2 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -114,9 +114,7 @@
                pitches in ~&~a"
               (pitch-list-to-symbols pl))))
     (setf (slot-value s 'data) plrd)
-    (set-micro-tone s)
-    ;;(check-subsets (subsets s) s)
-    ))
+    (set-micro-tone s)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -157,14 +155,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf subsets) :after (value (s sc-set))
-  ;; (print 'setf-subsets)
   (when (and value (not (assoc-list-p value)))
     (setf (slot-value s 'subsets) 
           (make-ral (format nil "sc-set-~a-subsets" (id s))
                     (subsets s)))
     (make-ral-pitch-lists (subsets s) (auto-sort s))
     (check-subsets (subsets s) s))
-  ;; (print (subsets s))
   (subsets s))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -182,7 +178,6 @@
 
 (defmethod (setf data) :after (value (s sc-set))
   (declare (ignore value))
-  ;; (break)
   (check-subsets (subsets s) s))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

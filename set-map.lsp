@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    March 11th 2010
 ;;;
-;;; $$ Last modified:  12:04:05 Mon Sep 24 2018 CEST
+;;; $$ Last modified:  18:42:21 Fri May  1 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -137,7 +137,7 @@
 (defmethod cmn-display ((sm set-map) &rest keyargs &key &allow-other-keys)
 ;;; ****
   (unless (palette sm)
-    (error "set-map::cmn-display: the palette slot must be set. Use the ~
+    (error "set-map::cmn-display: the palette slot must be set. ~%Use the ~
             bind-palette method before calling this method."))
   (apply #'cmn-display-sets (cons (get-all-data-from-palette sm)
                                   (add-file-keyword sm keyargs))))

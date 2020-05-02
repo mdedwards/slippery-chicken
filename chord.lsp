@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  18:08:08 Fri May  1 2020 CEST
+;;; $$ Last modified:  10:30:20 Sat May  2 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -387,6 +387,7 @@ NIL
   (setf (data c) 
         (append (data c) 
                 (apply #'get-pitch-list-harmonics (cons (data c) keywords))))
+  (rm-duplicates c)
   c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

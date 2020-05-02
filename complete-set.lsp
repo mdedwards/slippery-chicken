@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    10th August 2001
 ;;;
-;;; $$ Last modified:  11:37:34 Tue Apr 21 2020 CEST
+;;; $$ Last modified:  10:33:13 Sat May  2 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -645,7 +645,9 @@ data: (F2 AF2 C3 G3 BF3 D4 F4 A4 CS5 E5)
   (remove-duplicates pitch-list
                      :test (if symbols-only 
                                #'(lambda (p1 p2) (equalp (data p1) (data p2)))
-                               #'pitch=)))
+                               ;; MDE Sat May  2 10:33:04 2020, Heidhausen --
+                               ;; added t for enharmonics-are-equal! 
+                               #'(lambda (p1 p2) (pitch= p1 p2 t)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

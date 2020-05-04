@@ -6864,6 +6864,31 @@ T
 ;;; pitches & every player used; 2. all pitches but some players tacit; 3. some
 ;;; pitches and instruments missing; 4. chords completely left out; 5. total
 ;;; chords attempted
+;;;
+;;; EXAMPLE
+#|
+(let* ((mini (make-slippery-chicken  
+               '+mini+ 
+               :ensemble '(((flt (flute :midi-channel 1))))
+               :staff-groupings '(1)
+               :tempo-map '((1 (q 60)))
+               :set-palette '((set1 ((fs2 b2 d4 a4 d5 e5 a5 d6))) 
+                              (set2 ((b2 fs3 d4 e4 a4 d5 e5 a5 d6))))
+               :set-map '((1 (set1 set1 set2 set1 set1 set2)))
+               :rthm-seq-palette
+               '((seq1 ((((4 4) q q q q))   
+                        :pitch-seq-palette (1 2 1 3)))  
+                 (seq2 ((((4 4) (e) e q h)) 
+                        :pitch-seq-palette (1 2 3))))
+               :rthm-seq-map '((1 ((flt (seq1 seq1 seq2 seq1 seq1 seq2)))))))
+       (new-ens (make-ensemble 'new-ens
+			       '((vln (violin :midi-channel 2))
+				 (clr (b-flat-clarinet :midi-channel 3))))))
+  (orchestrate mini new-ens 'flt)
+  (cmn-display mini))
+
+=> T
+|#
 ;;; 
 ;;; SYNOPSIS
 (let (successes)                        ; for stats

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:16:01 Fri Jan 10 2020 CET
+;;; $$ Last modified:  15:44:59 Fri May  8 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7508,7 +7508,7 @@ FS4 G4)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken/get-nearest-event
 ;;; DESCRIPTION
-;;; Find the nearest event to <reference-event> in the <search-player>
+;;; Find the nearest event by time to <reference-event> in the <search-player>.  
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
@@ -8615,20 +8615,20 @@ data: (11 15)
 |#
 ;;; SYNOPSIS
 (defmethod get-section-bar-nums ((sc slippery-chicken)
-				 &key (start 1) (end nil)
-				   (assoc-list-id 'section-bar-nums))
+                                 &key (start 1) (end nil)
+                                   (assoc-list-id 'section-bar-nums))
 ;;; ****
   (unless end (setf end (get-num-sections sc)))
   (when (< end start)
     (error "slippery-chicken::get-section-bar-nums: End bar (~a) cannot ~
             be lower than start bar (~a)" end start))
   (let ((section-assoc-list
-	 (make-assoc-list
-	  'sc-list
-	  (loop for s from start to end
-	     for section = (get-section sc s)
-	     collect
-	       (list s (list (start-bar section) (end-bar section)))))))
+         (make-assoc-list
+          'sc-list
+          (loop for s from start to end
+             for section = (get-section sc s)
+             collect
+               (list s (list (start-bar section) (end-bar section)))))))
     (setf (id section-assoc-list) assoc-list-id)
     section-assoc-list))
 

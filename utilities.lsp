@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  14:48:37 Thu Apr 23 2020 CEST
+;;; $$ Last modified:  15:34:00 Fri May  8 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2743,6 +2743,24 @@ WARNING:
                        (format out "~&~a" line)))))
              (when eof
                (return t)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri May  8 15:33:52 2020, Heidhausen 
+;;; at the moment this will fail on non-ascii chars
+(defun file-to-string (file)
+  (let (result)
+    (with-open-file 
+        (in file :direction :input :if-does-not-exist :error)
+      (loop 
+         (multiple-value-bind
+               (line eof)
+             (read-line in nil)
+           (when line
+             (push line result))
+           ;; (print line)
+           (when eof
+             (return))))
+      (list-to-string (nreverse result)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

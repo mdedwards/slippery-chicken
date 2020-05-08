@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  11:15:42 Fri Jan 10 2020 CET
+;;; $$ Last modified:  15:35:37 Fri May  8 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -743,67 +743,67 @@
   (setf pitches (init-pitch-list pitches))
   (loop for player in players do
        (let* ((stlist (listp start))
-	      (ndlist (listp end))
-	      (stbar (if stlist (first start) start))
-	      (ndbar (if ndlist (first end) end))
-	      (stnote (if stlist (second start) 1))
-	      ;; NB this means we'll add marks to tied notes too
-	      (ndnote (when ndlist (second end)))) ; nil processed in do-bar
-	 (flet ((do-bar (bar-num start-note end-note)
-		  (let ((bar (get-bar sc bar-num player))
-			;; MDE Tue Apr 24 18:02:25 2012 -- 
-			(transp (transposition-semitones
-				 (get-instrument-for-player-at-bar
-				  player bar-num sc))))
-		    ;; MDE Tue Apr 24 18:02:30 2012 -- 
-		    (when (zerop transp)
-		      (setf transp nil))
-		    (unless end-note
-		      (setf end-note (num-score-notes bar)))
-		    (loop for i from start-note to end-note 
-		       for e = (get-nth-non-rest-rhythm (1- i) bar)
-		       do
-		       ;; MDE Mon Apr 23 13:21:16 2012 -- handle chords too
-			 (when (and (event-p e) (is-chord e))
-			   (when (and transp written (not (written-pitch-or-chord e)))
-			     (warn "~a~%slippery-chicken-edit::enharmonics: ~
+              (ndlist (listp end))
+              (stbar (if stlist (first start) start))
+              (ndbar (if ndlist (first end) end))
+              (stnote (if stlist (second start) 1))
+              ;; NB this means we'll add marks to tied notes too
+              (ndnote (when ndlist (second end)))) ; nil processed in do-bar
+         (flet ((do-bar (bar-num start-note end-note)
+                  (let ((bar (get-bar sc bar-num player))
+                        ;; MDE Tue Apr 24 18:02:25 2012 -- 
+                        (transp (transposition-semitones
+                                 (get-instrument-for-player-at-bar
+                                  player bar-num sc))))
+                    ;; MDE Tue Apr 24 18:02:30 2012 -- 
+                    (when (zerop transp)
+                      (setf transp nil))
+                    (unless end-note
+                      (setf end-note (num-score-notes bar)))
+                    (loop for i from start-note to end-note 
+                       for e = (get-nth-non-rest-rhythm (1- i) bar)
+                       do
+                       ;; MDE Mon Apr 23 13:21:16 2012 -- handle chords too
+                         (when (and (event-p e) (is-chord e))
+                           (when (and transp written (not (written-pitch-or-chord e)))
+                             (warn "~a~%slippery-chicken-edit::enharmonics: ~
                              no written-pitch-or-chord (bar ~a, ~a)." 
-				   e bar-num player))
-			   (loop for p in (data (if (and written transp
-							 (written-pitch-or-chord e))
-						    (written-pitch-or-chord e)
-						    (pitch-or-chord e)))
-			      and chord-note-ref from 1
-			      do
-				(when 
-				    (or (not pitches)
-					;; enharmonics not equal!
-					(pitch-member p pitches nil))
-				  (enharmonic e :written (and transp written)
-					      ;; MDE Tue May 28 11:04:42 2013 --
-					      ;; :force-naturals added
-					      :force-naturals force-naturals
-					      :chord-note-ref chord-note-ref))))
-		       ;; MDE Wed Apr 18 12:08:51 2012 
-			 (when (and (event-p e)
-				    (is-single-pitch e)
-				    (or (not pitches)
-					(pitch-member (if (and transp written)
-							  (written-pitch-or-chord e)
-							  (pitch-or-chord e))
-						      ;; enharmonics not equal!
-						      pitches nil)))
-			   ;; MDE Tue May 28 11:04:42 2013 -- :force-naturals
-			   (enharmonic e :force-naturals force-naturals
-				       :written (and transp written)))))))
-	   (if (= stbar ndbar)
-	       (do-bar stbar stnote ndnote)
-	       (progn 
-		 (do-bar stbar stnote nil)
-		 (do-bar ndbar 1 ndnote)
-		 ;; now the bars in the middle
-		 (loop for bnum from (1+ stbar) to (1- ndbar) do
-		      (do-bar bnum 1 nil)))))))
+                                   e bar-num player))
+                           (loop for p in (data (if (and written transp
+                                                         (written-pitch-or-chord e))
+                                                    (written-pitch-or-chord e)
+                                                    (pitch-or-chord e)))
+                              and chord-note-ref from 1
+                              do
+                                (when 
+                                    (or (not pitches)
+                                        ;; enharmonics not equal!
+                                        (pitch-member p pitches nil))
+                                  (enharmonic e :written (and transp written)
+                                              ;; MDE Tue May 28 11:04:42 2013 --
+                                              ;; :force-naturals added
+                                              :force-naturals force-naturals
+                                              :chord-note-ref chord-note-ref))))
+                       ;; MDE Wed Apr 18 12:08:51 2012 
+                         (when (and (event-p e)
+                                    (is-single-pitch e)
+                                    (or (not pitches)
+                                        (pitch-member (if (and transp written)
+                                                          (written-pitch-or-chord e)
+                                                          (pitch-or-chord e))
+                                                      ;; enharmonics not equal!
+                                                      pitches nil)))
+                           ;; MDE Tue May 28 11:04:42 2013 -- :force-naturals
+                           (enharmonic e :force-naturals force-naturals
+                                       :written (and transp written)))))))
+           (if (= stbar ndbar)
+               (do-bar stbar stnote ndnote)
+               (progn 
+                 (do-bar stbar stnote nil)
+                 (do-bar ndbar 1 ndnote)
+                 ;; now the bars in the middle
+                 (loop for bnum from (1+ stbar) to (1- ndbar) do
+                      (do-bar bnum 1 nil)))))))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -7416,7 +7416,7 @@ NIL
 ;;; So we can create an sc object on-the-fly by stuffing a single section
 ;;; containing a single player-section containing a single sequenz with all the
 ;;; given bars.
-
+;;;
 ;;; ****f* slippery-chicken-edit/bars-to-sc
 ;;; DESCRIPTION
 ;;; Take a list of rthm-seq-bars and add them to a new or existing
@@ -7426,17 +7426,17 @@ NIL
 ;;;       slippery chicken object. 
 ;;;    3. Add a new section to an already exisiting part in and already
 ;;;       exisiting object.
-
+;;; 
 ;;; In the second case, we assume you are creating a slippery chicken object
 ;;; part by part with this function. It is not currently possible to
 ;;; add a part like this in the middle of the score--the new part will be added
 ;;; to the end of the last group of the ensemble (bottom of score) so make sure
 ;;; to add parts in the order you want them.
 ;;;
-
+;;;
 ;;; In the third case, you can add a new section to an exisitng part, but you
 ;;; cannot add a new section to a part that does not exist.
-
+;;;
 ;;; NB Bear in mind that if you want to use midi-play, then the events in the
 ;;;    bars will need to have their midi-channel set (e.g. via make-event).
 ;;;    It's also the caller's responsibility to ensure that the parts added have

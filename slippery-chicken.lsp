@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:44:59 Fri May  8 2020 CEST
+;;; $$ Last modified:  09:55:48 Sat May  9 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3944,9 +3944,6 @@ seq-num 5, VN, replacing G3 with B6
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May 10 12:55:50 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken/midi-play
 ;;; DESCRIPTION
 ;;; Generate a MIDI file from the data of the specified slippery-chicken

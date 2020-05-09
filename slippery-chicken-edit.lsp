@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:35:37 Fri May  8 2020 CEST
+;;; $$ Last modified:  16:54:06 Fri May  8 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6882,8 +6882,8 @@ T
                         :pitch-seq-palette (1 2 3))))
                :rthm-seq-map '((1 ((flt (seq1 seq1 seq2 seq1 seq1 seq2)))))))
        (new-ens (make-ensemble 'new-ens
-			       '((vln (violin :midi-channel 2))
-				 (clr (b-flat-clarinet :midi-channel 3))))))
+                               '((vln (violin :midi-channel 2))
+                                 (clr (b-flat-clarinet :midi-channel 3))))))
   (orchestrate mini new-ens 'flt)
   (cmn-display mini))
 
@@ -7425,6 +7425,17 @@ NIL
             finally (push count count-list)))
     (nreverse count-list)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#|
+(defmethod quantise ((sc1 slippery-chicken) (sc2 slippery-chicken))
+  ;; ....
+  )
+
+(defmethod quantise ((sc slippery-chicken) rhythm)
+  (let ((sc2 (clone-and-fill-with-rests sc rhythm)))
+    (quantise sc sc2)))
+
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

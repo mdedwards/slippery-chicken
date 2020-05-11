@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  14:47:45 Thu Feb 13 2020 CET
+;;; $$ Last modified:  19:14:00 Mon May 11 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1214,9 +1214,15 @@ BF4 E.,
                                 (let* ((letter (get-rhythm-letter-for-duration
                                                 (duration new)))
                                        (lr (make-rhythm letter)))
-                                  (setf (undotted-value new) (undotted-value lr)
-                                        (value new) (value lr)
-                                        (data new) letter))
+                                  ;; MDE Mon May 11 19:13:18 2020, Heidhausen --
+                                  ;; if we don't get a letter (lr) then we can't
+                                  ;; do the following, but things should still
+                                  ;; be ok so the error isn't helpful
+                                  (when lr
+                                    (setf (undotted-value new)
+                                          (undotted-value lr)
+                                          (value new) (value lr)
+                                          (data new) letter)))
                                 (unless (is-tied-from r2)
                                   (setf (is-tied-from new) nil))
                                 (setf (num-flags new) 

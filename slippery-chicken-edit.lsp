@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  16:54:06 Fri May  8 2020 CEST
+;;; $$ Last modified:  19:07:29 Mon May 11 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6445,7 +6445,6 @@ T
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* slippery-chicken-edit/set-limits-by-section
 ;;; DATE
 ;;; February 20th 2018, Heidhausen

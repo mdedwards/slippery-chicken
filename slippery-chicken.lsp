@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  09:55:48 Sat May  9 2020 CEST
+;;; $$ Last modified:  15:25:53 Tue May 12 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -211,7 +211,6 @@
                                :initform 0.5)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* slippery-chicken/sc-init
 ;;; DESCRIPTION
 ;;; Explicitly initialize the slippery-chicken object. This is usually called
@@ -219,7 +218,8 @@
 ;;; make-slippery-chicken) but there could be circumstances (e.g. in subclasses
 ;;; of slippery-chicken) where you'd like to defer initialization and call this
 ;;; method explicitly instead. In that case set :defer to t when making the
-;;; slippery-chicken object.
+;;; slippery-chicken object. This can also be called with using :defer, to
+;;;regenerated the piece after e.g. calling set-limits-by-section. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object

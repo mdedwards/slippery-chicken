@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:10:04 Tue May 12 2020 CEST
+;;; $$ Last modified:  15:13:03 Tue May 12 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6504,6 +6504,37 @@ T
     (sc-init mini)
     ;; note the new (repeating) pitches
     (print-em)))
+
+---->>
+
+******* section (1)
+Getting notes for VC
+******* section (2)
+Getting notes for VC
+******* section (3)
+Getting notes for VC
+WARNING:
+   slippery-chicken::tempo-curve-to-map: No tempo-map or tempo-curve given. 
+Using default of crotchet/quarter = 60.
+Shortening short, fast leaps...
+Shortened 0 large fast leaps
+(F3 G3 A3 B3 C4) 
+(F3 G3 A3 B3 C4) 
+(F3 G3 A3 B3 C4) 
+(1 110 5 110 6 114 10 114 11 120 15 120) 
+******* section (1)
+Getting notes for VC
+******* section (2)
+Getting notes for VC
+******* section (3)
+Getting notes for VC
+Shortening short, fast leaps...
+Shortened 0 large fast leaps
+(F3 F3 G3 G3 G3) 
+(F3 G3 G3 A3 A3) 
+(F3 G3 A3 B3 C4) 
+NIL
+
 |#      
 ;;; SYNOPSIS
 (defmethod set-limits-by-section ((sc slippery-chicken) pitches which

@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  11:06:37 Sat May  2 2020 CEST
+;;; $$ Last modified:  08:42:14 Tue May 12 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -816,9 +816,6 @@ NIL
            (eq (no-8ve p1) (no-8ve (enharmonic p2))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Jan  2 18:23:01 EST 2012: Added robodoc info
-
 ;;; ****m* pitch/note=
 ;;; DESCRIPTION
 ;;; Tests to see the note-name symbols (values in the DATA slots) of two given

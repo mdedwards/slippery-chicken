@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:06:37 Tue May 12 2020 CEST
+;;; $$ Last modified:  15:10:04 Tue May 12 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6455,7 +6455,7 @@ T
 ;;; set-limits-low slot.
 ;;; 
 ;;; N.B.1 As well as returning the generated list, the respective slot value
-;;; (<which>)is also changed.
+;;; (<which>) is also changed.
 ;;;
 ;;; N.B.2 As the internal structure of the slippery-chicken object is modified
 ;;; here, and this has implications for pitch-selection, i.e. constraints for an

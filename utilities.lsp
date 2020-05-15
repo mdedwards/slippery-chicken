@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:34:00 Fri May  8 2020 CEST
+;;; $$ Last modified:  15:05:14 Fri May 15 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -223,6 +223,12 @@
   (and (numberp x)
        (>= x lower)
        (<= x upper)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun nearest (num list)
+  (unless (every #'numberp (cons num list))
+    (error "utilities::nearest: first argument and list must be numbers"))
+  (first (sort list #'(lambda (x y) (< (abs (- x num)) (abs (- y num)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/string-replace
@@ -701,11 +707,6 @@
     (whole-num-p (log float 2))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 14:16:28 BST 2012: Added robodoc entry
-
-;; returns the power of 2 <= num
-
 ;;; ****f* utilities/nearest-power-of-2
 ;;; DESCRIPTION
 ;;; Return the closest number to the specified value that is a power of two but
@@ -1183,9 +1184,6 @@
   (expt octave-size (/ st divisions-per-octave)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 16:03:22 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/srt
 ;;; DESCRIPTION
 ;;; Return the semitone transposition for a given sampling rate conversion
@@ -1947,9 +1945,6 @@
       (t (error "utilities::decimate-env: unknown method: ~a" method)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 11:17:05 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/env-symmetrical
 ;;; DESCRIPTION
 ;;; Create a new list of break-point pairs that is symmetrical to the original

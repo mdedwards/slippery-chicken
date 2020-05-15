@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:05:14 Fri May 15 2020 CEST
+;;; $$ Last modified:  15:18:32 Fri May 15 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -225,7 +225,28 @@
        (<= x upper)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/nearest
+;;; DATE
+;;; 15th May 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Return the nearest number in a list to the first argument
+;;; 
+;;; ARGUMENTS
+;;; - the number we're looking to get the closest to
+;;; - the list of numbers we'll search
+;;; 
+;;; RETURN VALUE
+;;; the element of the list that's closest to the first argument
+;;; 
+;;; EXAMPLE
+#|
+(nearest 1.21 '(4 2 5 3 5 4 1.2 1.3 1.1999))
+--> 1.2
+|#
+;;; SYNOPSIS
 (defun nearest (num list)
+;;; ****
   (unless (every #'numberp (cons num list))
     (error "utilities::nearest: first argument and list must be numbers"))
   (first (sort list #'(lambda (x y) (< (abs (- x num)) (abs (- y num)))))))

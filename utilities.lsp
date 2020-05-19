@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  10:45:03 Sat May 16 2020 CEST
+;;; $$ Last modified:  11:01:35 Sat May 16 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -237,8 +237,12 @@
 ;;; - the list of numbers we'll search
 ;;; 
 ;;; RETURN VALUE
-;;; the element of the list that's closest to the first argument and the list
-;;; sorted by nearest to the number. 
+;;; the element of the list that's closest to the first argument, the list
+;;; sorted by nearest to the number, the distances to the number for the sorted
+;;; list. 
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; none
 ;;; 
 ;;; EXAMPLE
 #|
@@ -250,9 +254,12 @@
 ;;; ****
   (unless (every #'numberp (cons num list))
     (error "utilities::nearest: first argument and list must be numbers"))
-  (let ((sorted (sort list #'(lambda (x y)
-                               (< (abs (- x num)) (abs (- y num)))))))
-    (values (first sorted) sorted)))
+  (let* ((lds (loop for n in list collect (list n (abs (- num n)))))
+         (sorted (sort lds #'(lambda (x y)
+                               (< (second x) (second y)))))
+         (ls (mapcar #'first sorted))
+         (deltas (mapcar #'second sorted)))
+    (values (first ls) ls deltas)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/string-replace

@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  18:05:24 Fri May  1 2020 CEST
+;;; $$ Last modified:  17:06:17 Fri Jun  5 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1083,7 +1083,7 @@ data: (C4 F4 A4 C5)
 ;;; DESCRIPTION
 ;;; Remove similar sets from a palette when two sets are deemed
 ;;; similar. The set furthest down the data list will remain, whatever the
-;;; ID.
+;;; ID. Note that this is a destructive operation.
 ;;;
 ;;; We use the similarity chord method to remove sets from the palette, so see
 ;;; that method for further information and for more keyword argument

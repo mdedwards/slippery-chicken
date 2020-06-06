@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified:  17:09:57 Mon Dec 30 2019 CET
+;;; $$ Last modified:  10:26:32 Sat Jun  6 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1168,14 +1168,6 @@ START
           
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;; SAR Tue Jan 17 13:35:46 GMT 2012: Removed MDE's comments as they were
-;;; repeated nearly verbatim in the robodoc below. Also moved MDE's examples to
-;;; the EXAMPLES block.
-
-;;; SAR Tue Jan 17 13:35:32 GMT 2012: Added robodoc info
-
 ;;; ****f* permutations/move-repeats
 ;;; DESCRIPTION
 ;;; Move, when possible, any elements within a given list that are repeated

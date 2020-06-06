@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified:  13:15:16 Fri Dec  7 2018 CET
+;;; $$ Last modified:  12:50:19 Sat Jun  6 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -435,9 +435,6 @@ data: E
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Dec 27 20:13:33 EST 2011: Added robodoc info
-
 ;;; ****m* rthm-seq/get-nth-attack
 ;;; DESCRIPTION
 ;;; Gets the rhythm object for the nth note in a given rthm-seq object that
@@ -1926,12 +1923,7 @@ rthm-seq NIL
   rs)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; e.g. (get-multipliers '(e. s q e e) 's) -> (3 1 4 2 2)
-
-;;;|#
-;;; SAR Tue Jan 31 13:13:56 GMT 2012: Added robodoc info
-
+#|
 ;;; ****m* rthm-seq/get-multipliers
 ;;; DESCRIPTION
 ;;; Get a list of factors by which a specified rhythmic unit must be multiplied
@@ -1960,7 +1952,6 @@ rthm-seq NIL
 ;;; A list of numbers.
 ;;; 
 ;;; EXAMPLE
-#|
 ;;; By default the method returns the list of multipliers un-rounded
 (let ((rs (make-rthm-seq '(seq1 ((((2 4) q e s s))
                                  :pitch-seq-palette ((1 2 3 4)))))))
@@ -2982,8 +2973,6 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
                     (fourth score-strings)))))) ; ties |#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Tue Dec 27 16:58:57 EST 2011: Added robodoc info
-
 ;;; ****f* rthm-seq/make-rthm-seq-from-unit-multipliers
 ;;; DESCRIPTION
 ;;; Given a rhythmic unit, e.g. 32, a list of multipliers (e.g. '(7 9 16)),
@@ -3070,12 +3059,12 @@ rthm-seq from-multipliers
 ;;; SYNOPSIS
 (defun make-rthm-seq-from-unit-multipliers (unit multipliers time-sig 
                                             &key
-                                            ;; a number for brackets over
-                                            ;; each beat.
-                                            (tuplet nil)
-                                            (tag nil)
-                                            (auto-beam nil) ; see above
-                                            (id "from-multipliers"))
+                                              ;; a number for brackets over
+                                              ;; each beat.
+                                              (tuplet nil)
+                                              (tag nil)
+                                              (auto-beam nil) ; see above
+                                              (id "from-multipliers"))
 ;;; ****
   ;; (print 'make-rthm-seq-from-unit-multipliers)
   (let* ((tsig (if (time-sig-p time-sig)
@@ -3105,7 +3094,7 @@ rthm-seq from-multipliers
                         (- units-per-bar (mod length units-per-bar))
                         units-per-bar))
          (bars '()))
-    (setf all (flatten all)
+    (setq all (flatten all)
           bars (loop with index = 0
                   with end = units-per-bar
                   for bar = (make-rest-bar tsig nil)
@@ -3131,6 +3120,7 @@ rthm-seq from-multipliers
                     (incf index units-per-bar)
                     (incf end units-per-bar)
                   collect bar))
+    ;; (print (length bars))
     ;; have to make a 2-element list, the first is the id, the second the bars,
     ;; but the bars have to be in a list themselves....
     (let ((result (make-rthm-seq (list id (list bars)))))

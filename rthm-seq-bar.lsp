@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  19:14:00 Mon May 11 2020 CEST
+;;; $$ Last modified:  12:48:49 Sat Jun  6 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -303,7 +303,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod player ((rsb rthm-seq-bar))
-  (player (get-nth-event 0 rsb)))
+  (let ((r (get-nth-event 0 rsb)))
+    ;; MDE Sat Jun 6 12:48:46 2020, Heidhausen -- only get the player slot if
+    ;; it's an event (rhythm's don't have it)
+    (when (event-p r) (player r))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Nov 10 12:27:58 2018

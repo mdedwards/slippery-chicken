@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    12th February 2001
 ;;;
-;;; $$ Last modified:  17:48:57 Sat Mar 18 2017 GMT
+;;; $$ Last modified:  14:41:40 Tue Jun  2 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -565,9 +565,6 @@ T
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu Dec 29 20:21:17 EST 2011
-
 ;;; ****f* time-sig/make-time-sig
 ;;; DESCRIPTION
 ;;; Create a time-sig object. In addition to the numerator and denominator

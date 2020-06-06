@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  15:30:06 Fri Aug  9 2019 CEST
+;;; $$ Last modified:  10:39:30 Sat Jun  6 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -238,17 +238,13 @@ data: (RS2 RS3 RS2)
             rsm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Apr 27 13:49:01 BST 2012: Conformed robodoc entry
-;;; SAR Wed Jun 13 12:22:11 BST 2012: Revisited robodoc entry
-
 ;;; ****m* rthm-seq-map/add-repeats
 ;;; DATE 
 ;;; 30-Dec-2010
 ;;; 
 ;;; DESCRIPTION
 ;;; Generate repeating sequences at given cycle points using recurring-event
-;;; data. This process modifies the number of beats.
+;;; data. This extends the number of items in the map.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-map object.

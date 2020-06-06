@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  11:01:35 Sat May 16 2020 CEST
+;;; $$ Last modified:  16:58:44 Tue Jun  2 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -702,9 +702,6 @@
                 (> i lim))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 14:09:30 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/power-of-2
 ;;; DESCRIPTION
 ;;; Test whether the specified number is a power of two and return the
@@ -793,9 +790,6 @@
         p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 14:28:28 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/flatten
 ;;; DESCRIPTION
 ;;; Return a list of nested lists of any depth as a flat list.

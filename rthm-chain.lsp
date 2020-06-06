@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  10:50:24 Thu Feb 27 2020 CET
+;;; $$ Last modified:  10:26:16 Sat Jun  6 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -681,10 +681,6 @@
         (values rthm repeats)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Apr 30 11:29:17 BST 2012: Conforming robodoc entry
-;;; SAR Tue Jun 12 17:34:40 BST 2012: Expanding the robodoc entry
-
 ;;; ****m* rthm-chain/rthm-chain-gen
 ;;; DESCRIPTION
 ;;; Generate a chain of rhythms using the procession function (internally). 
@@ -1837,7 +1833,6 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
        spread))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****f* rthm-chain/procession-mirror
 ;;; DESCRIPTION
 ;;; Perform the same operation as the procession function, but instead of just

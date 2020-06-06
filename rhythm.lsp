@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  17:19:43 Wed Dec  4 2019 CET
+;;; $$ Last modified:  15:13:49 Sat Jun  6 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -302,9 +302,6 @@
     r))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu Mar  1 13:24:14 GMT 2012: Edited robodoc entry
-
 ;;; ****m* rhythm/scale
 ;;; DESCRIPTION
 ;;; Change the value of a rhythm object's duration value by a specified

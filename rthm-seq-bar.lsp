@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  12:48:49 Sat Jun  6 2020 CEST
+;;; $$ Last modified:  17:08:36 Sat Jun  6 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -328,9 +328,7 @@
 ;;; Always returns NIL.
 ;;; 
 ;;; EXAMPLE
-
 #|
-
 ;; Create a rthm-seq-bar object and print the contents of the MARKS slots of
 ;; the contained event objects to see they're set to NIL by default. Fill them
 ;; each with a 's (staccato) mark and print the results. Apply the delete-marks
@@ -352,17 +350,15 @@
 (NIL NIL NIL) 
 ((S) (S) (S)) 
 (NIL NIL NIL)
-
 |#
-
 ;;; SYNOPSIS
 (defmethod delete-marks ((rsb rthm-seq-bar))
 ;;; ****
   (loop for r in (rhythms rsb) do
        (delete-marks r)))
 
-#|
-MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not only event objects but rhythms too lose their marks
+#| MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that
+not only event objects but rhythms too lose their marks
   (loop for event in (rhythms rsb) do
         (when (event-p event)
           (delete-marks event))))
@@ -2484,7 +2480,7 @@ rthm-seq-bar::get-nth-rest: Couldn't get rest with index 3
 ;;; 
 ;;; EXAMPLE
 #|
-;; Zero-based indexing. Returns a rhythm object when successful. ; ;
+;; Zero-based indexing. Returns a rhythm object when successful.
 (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
 (get-nth-event 0 rsb))
 
@@ -2499,9 +2495,9 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: Q, tag: NIL, 
 data: Q
 
-;; Interrupts with an error and drops into the debugger by default if the ; ;
-;; specified index number is greater than the number of events in the ; ;
-;; rthm-seq-bar.                        ; ;
+;; Interrupts with an error and drops into the debugger by default if the
+;; specified index number is greater than the number of events in the
+;; rthm-seq-bar.                       
 (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
 (get-nth-event 4 rsb))
 
@@ -2509,7 +2505,7 @@ data: Q
 rthm-seq-bar::get-nth-event: Couldn't get event with index 4
 [Condition of type SIMPLE-ERROR]
 
-;; The error can be suppressed by setting the optional argument to NIL ; ;
+;; The error can be suppressed by setting the optional argument to NIL
 (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
 (get-nth-event 4 rsb nil))
 
@@ -2544,7 +2540,7 @@ rthm-seq-bar::get-nth-event: Couldn't get event with index 4
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns a rhythm object.             ;
+;; Returns a rhythm object.            
 (let ((rsb (make-rthm-seq-bar '((2 4) s s e q))))
 (get-last-event rsb))
 
@@ -2590,7 +2586,7 @@ data: Q
 ;;; 
 ;;; EXAMPLE
 #|
-;; The method returns a rhythm object when successful ; ;
+;; The method returns a rhythm object when successful
 (let ((rsb (make-rthm-seq-bar '((3 4) q+e (e) s (s) e))))
 (get-nth-attack 0 rsb))
 
@@ -2751,8 +2747,8 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Create a rthm-seq-bar object and scale its durations by a fact of ; ;
-;;; 2. Returns a rthm-seq-bar object.   ; ;
+;;; Create a rthm-seq-bar object and scale its durations by a fact of
+;;; 2. Returns a rthm-seq-bar object.  
 (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
 (scale rsb 2))
 
@@ -2776,16 +2772,16 @@ RHYTHM: value: 8.000, duration: 0.500, rq: 1/2, is-rest: NIL,
 data: E
 [...]
 
-;;; Use the print-simple method to see formatted results ;
+;;; Use the print-simple method to see formatted results
 (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
 (print-simple (scale rsb .5)))
 
 =>
 (2 8): note E, note S, note 32, note 32,
 
-;;; Set the optional <preserve-meter> argument to NIL to allow the method to ;
-;;; return results in a different metric quality (this returns a quadruple ;
-;;; meter rather than a duple)          ;
+;;; Set the optional <preserve-meter> argument to NIL to allow the method to
+;;; return results in a different metric quality (this returns a quadruple
+;;; meter rather than a duple)         
 (let ((rsb (make-rthm-seq-bar '((6 8) q e q s s))))
 (print-simple (scale rsb 2 nil)))
 
@@ -3603,20 +3599,26 @@ data: (2 4)
 ;;; ****
   (time-sig-equal (get-time-sig rsb1) (get-time-sig rsb2)))
 
+(defmethod time-sig-equal ((rsb1 rthm-seq-bar) (ts time-sig))
+  (time-sig-equal (get-time-sig rsb1) ts))
+
+(defmethod time-sig-equal ((rsb1 rthm-seq-bar) time-sig) ; as list
+  (time-sig-equal (get-time-sig rsb1) (make-time-sig time-sig)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #| 17/7/05: obsolete code as ties are handled now at the piece level
 
-;;; Usually only struck (non-tied and non-rest) notes will have their ; ;
-;;; compound-duration set to include any following tied notes, but when the ; ;
-;;; first note of the bar is tied, this has to be the one to get the updated ; ;
-;;; compound duration.  Tied first notes of the bar are handled separately with ; ;
-;;; handle-first-note-ties in the rthm-seq class ; ;
+;;; Usually only struck (non-tied and non-rest) notes will have their
+;;; compound-duration set to include any following tied notes, but when the
+;;; first note of the bar is tied, this has to be the one to get the updated
+;;; compound duration.  Tied first notes of the bar are handled separately with
+;;; handle-first-note-ties in the rthm-seq class
 
         (defmethod update-compound-durations ((rsb rthm-seq-bar))
-  ;; (print 'update-compound-durations) ; ; ;
-  ;; 0 will ensure that if the first note is a tie, this will nevertheless be ; ; ;
-  ;; updated                            ; ; ;
+  ;; (print 'update-compound-durations)
+  ;; 0 will ensure that if the first note is a tie, this will nevertheless be ;
+  ;; updated                           
 (let ((last-struck 0))
 (loop for r in (rest (rhythms rsb)) and i from 1 do
 (when (needs-new-note r)
@@ -6760,6 +6762,52 @@ rsb-rb)
         (reset))
       (list n tof (xml-simple-rhythm (value r))))))
     
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* rthm-seq-bar/make-rsb-from-unit-multipliers
+;;; DATE
+;;; Jun 6th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Make a rthm-seq-bar using multiples of a single unit e.g. '(2 2 1) would
+;;; result in an automatic time signature of 5/8 if passed a unit of 'e (or
+;;; 8). In that case the rhythms would be q q e. Rests may be created by passing
+;;; a number in parentheses. 
+;;; 
+;;; ARGUMENTS
+;;; - the rhythm unit (symbol, number or rhythm object)
+;;; - the list of multipliers
+;;; 
+;;; RETURN VALUE
+;;; a rthm-seq-bar object
+;;; 
+;;; EXAMPLE
+#|
+(print-simple (make-rsb-from-unit-multipliers 'e '(3 4 (1) 2)))
+-->
+NIL: bar -1: (10 8): 
+note Q., 
+note H, 
+rest E, 
+note Q, 
+|#
+;;; SYNOPSIS
+(defun make-rsb-from-unit-multipliers (unit multipliers)
+;;; ****
+  (let* ((urthm (make-rhythm unit))
+         (time-sig (list (apply #'+ (flatten multipliers))
+                         (floor (value urthm)))))
+    (unless (power-of-2 (second time-sig))
+      (error "rthm-seq-bar::make-rsb-from-unit-multipliers: ~a is not (yet) ~
+              a valid time signature" time-sig))
+    (make-rthm-seq-bar
+     (cons time-sig
+           (loop for mult in multipliers collect
+                (let* ((rest (listp mult))
+                       (m (if rest (first mult) mult))
+                       (r (scale urthm m t)))
+                  (when rest (setf (is-rest r) t))
+                  r))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May 28 12:26:55 2015 -- new rqq handling code to avoid having to
 ;;; explicitly call CMN routines, instead turning them into our normal SC

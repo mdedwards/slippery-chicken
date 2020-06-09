@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:25:48 Fri May 15 2020 CEST
+;;; $$ Last modified:  17:21:45 Tue Jun  9 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1416,9 +1416,6 @@
   (get-set-limit-aux (set-limits-low sc) player seq-num))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed May  9 15:40:56 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken/get-player
 ;;; DESCRIPTION
 ;;; Return the player object for the specified player.

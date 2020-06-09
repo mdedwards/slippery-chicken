@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  17:12:46 Sat Jun  6 2020 CEST
+;;; $$ Last modified:  17:40:56 Mon Jun  8 2020 CEST
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -1182,7 +1182,6 @@ RTHM-SEQ: num-bars: 3
 ;;; June 6th 2020
 ;;; 
 ;;; DESCRIPTION
-
 ;;; Make a rthm-seq-palette using lists of lists of multiples of a single unit
 ;;; e.g. '(2 2 1) would result in an automatic time signature of 5/8 if passed a
 ;;; unit of 'e (or 8). In that case the rhythms would be q q e. Rests may be

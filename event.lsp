@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:47:22 Tue Feb 11 2020 CET
+;;; $$ Last modified:  17:55:05 Tue Jun  9 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -266,13 +266,11 @@
       (set-midi-channel noc midi-channel microtonal-midi-channel))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 23.12.11 SAR Added Robodoc info
-
 ;;; ****m* event/get-midi-channel
 ;;; DESCRIPTION
 ;;; Retrieve the value set for the midi-channel slot of the pitch object within
-;;; a given event object.
+;;; a given event object. Beware that if the pitch-or-chord slots is a chord, we
+;;; will merely return the channel of the first pitch in the chord.  
 ;;; 
 ;;; ARGUMENTS
 ;;; - An event object.
@@ -3122,9 +3120,6 @@ C4
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Dec 24 16:51:34 EST 2011 Added robodoc info
-
 ;;; ****m* event/set-written
 ;;; DESCRIPTION
 ;;; Set the written pitch (as opposed to sounding; i.e., for transposing

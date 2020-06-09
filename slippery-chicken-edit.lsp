@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:13:03 Tue May 12 2020 CEST
+;;; $$ Last modified:  17:59:54 Tue Jun  9 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1270,8 +1270,6 @@ data: (
     event))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Wed Apr 25 13:33:53 BST 2012: Conformed robodoc entry
-
 ;;; ****m* slippery-chicken-edit/change-pitches
 ;;; DESCRIPTION
 ;;; Change the pitches of the specified event objects for a given player to the
@@ -1293,7 +1291,17 @@ data: (
 ;;; optional argument as T.
 ;;;
 ;;; Also see the documentation in the bar-holder class for the method of the
-;;; same name. 
+;;; same name.
+;;;
+;;; NB As various methods (e.g. transposition, change-pitch(es)) in various
+;;; classes (slippery-chicken, bar-holder, rthm-seq-bar, rthm-seq) may change
+;;; pitch information and midi-channels stored in events, chords, pitches,
+;;; etc. it is recommended to call the slippery-chicken reset-midi-channels
+;;; method before calling midi-play, if any of those methods have been
+;;; used. This way midi channels for pitches belonging to particular players
+;;; will use channels originally allocated in the ensemble for chromatic and
+;;; microtonal pitches, no matter where they originated or how they were
+;;; changed.
 ;;;
 ;;; ARGUMENTS 
 ;;; - A slippery-chicken object.
@@ -5199,9 +5207,31 @@ NIL
     t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/force-natural-harmonics
+;;; DATE
+;;; 
+;;; 
+;;; DESCRIPTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod force-natural-harmonics ((sc slippery-chicken) player start-bar
                                     &optional start-event end-bar end-event
                                       (warn t) (tolerance 15))
+;;; ****
   ;; assumes we don't change player in the midst of making these changes.  Uses
   ;; instrument to ensure we don't go out of range.
   (let ((ins (get-instrument-for-player-at-bar player start-bar sc)))
@@ -5213,9 +5243,31 @@ NIL
     t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/force-harmonics
+;;; DATE
+;;; 
+;;; 
+;;; DESCRIPTION
+;;; 
+;;; 
+;;; ARGUMENTS
+;;; 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; 
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
 (defmethod force-harmonics ((sc slippery-chicken) player start-bar
                             &key (start-event 1) end-bar end-event warn
                               (tolerance 15))
+;;; ****
   (force-natural-harmonics sc player start-bar start-event end-bar end-event
                            warn tolerance)
   (force-artificial-harmonics sc player start-bar start-event end-bar end-event
@@ -6682,7 +6734,6 @@ NIL
   sc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* slippery-chicken-edit/set-midi-channels
 ;;; DATE
 ;;; October 25th 2018, Heidhausen
@@ -6734,6 +6785,42 @@ NIL
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/reset-midi-channels
+;;; DATE
+;;; June 9th 2020
+;;; 
+;;; DESCRIPTION
+;;; Reset players' event objects to use the midi-channels given in the ensemble
+;;; rather than those inherited created elsewhere.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object to process
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - a symbol or list of symbols representing the players we want to process
+;;;   (i.e. the same player symbols found in the ensemble slot, not
+;;;   instruments). Default = NIL = all players
+;;; - the start-bar in which events should begin to be processed. Default = 1
+;;; - the end bar (inclusive) in which the last events should be
+;;;   processed. Default = NIL = the last bar of the slippery-chicken object. 
+;;; 
+;;; RETURN VALUE
+;;; T
+;;; 
+;;; SYNOPSIS
+;;; ****
+(defmethod reset-midi-channels ((sc slippery-chicken) 
+                                &optional players (start-bar 1) end-bar)
+  (set-midi-channels  sc
+                      (loop for player in (if players (force-list players)
+                                              (players sc))
+                         for player-obj = (get-player sc player)
+                         collect
+                           (list player (midi-channel player-obj)
+                                 (microtones-midi-channel player-obj)))
+                      start-bar end-bar))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Oct 30 08:12:47 2018 -- which is 1-based
 (defmethod staff-groupings-inc ((sc slippery-chicken) &optional which)
   (let ((len (length (staff-groupings sc))))
@@ -6745,6 +6832,7 @@ NIL
         (setq which len)) ; 1-based!
     (incf (nth (1- which) (staff-groupings sc))))
   (staff-groupings sc))
+;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/add-player

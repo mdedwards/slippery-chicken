@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  17:08:36 Sat Jun  6 2020 CEST
+;;; $$ Last modified:  09:43:10 Tue Jun  9 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6794,8 +6794,11 @@ note Q,
 (defun make-rsb-from-unit-multipliers (unit multipliers)
 ;;; ****
   (let* ((urthm (make-rhythm unit))
-         (time-sig (list (apply #'+ (flatten multipliers))
-                         (floor (value urthm)))))
+         (num (apply #'+ (flatten multipliers)))
+         (time-sig (list (floor num) (floor (value urthm)))))
+    (unless (or (integerp num) (float-int-p num))
+      (error "rthm-seq-bar::make-rsb-from-unit-multipliers: ~a is not (yet) ~
+              a valid numerator for a time signature" num))
     (unless (power-of-2 (second time-sig))
       (error "rthm-seq-bar::make-rsb-from-unit-multipliers: ~a is not (yet) ~
               a valid time signature" time-sig))

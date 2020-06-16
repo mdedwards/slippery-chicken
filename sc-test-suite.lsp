@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  18:31:07 Tue Jun 16 2020 CEST
+;;; $$ Last modified:  23:44:31 Tue Jun 16 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -19057,7 +19057,7 @@
     ;; MDE Tue Jun 16 12:26:55 2020, Heidhausen -- make sure changing one
     ;; notehead works, particularly x-head which seems to be the only lilypond
     ;; notehead that __needs__ to be case sensitive 
-    #+cmn (cmn-display mini)
+    ;; #+cmn (cmn-display mini)
     (add-mark p1 'circled-x)
     (add-mark p2 'x-head)
     (setf (pitch-or-chord e1) (make-chord (list p1 p2)))
@@ -19065,10 +19065,14 @@
     (add-mark p3 'wedge)
     (add-mark p4 'square)
     (setf (pitch-or-chord e3) (make-chord (list p3 p4)))
+    (add-mark e3 '(rgb (0 0 1)))
     (change-pitch mini 1 4 'vn '(c6 ef7))
     ;; access chord notes
-    (add-mark-to-note mini 1 '(4 2) 'vn 'triangle-up)
+    (add-mark-to-note mini 1 '(4 1) 'vn 'triangle-up)
+    (add-mark-to-note mini 1 '(4 1) 'vn '(rgb (.5 .5 .5)))
+    (add-mark-to-note mini 1 '(4 2) 'vn '(rgb (0 1 0)))
     (add-mark-to-note mini 1 5 'vn 'flag-head)
+    (add-mark-to-note mini 1 6 'vn '(rgb (0 0 1)))
     (lp-display mini)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

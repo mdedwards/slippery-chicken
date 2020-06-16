@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  08:42:14 Tue May 12 2020 CEST
+;;; $$ Last modified:  12:28:28 Tue Jun 16 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2041,10 +2041,13 @@ pitch::add-mark: mark PIZZ already present but adding again!
          (note (if (eq (accidental p) 'n)
                    (no-8ve-no-acc p)
                    (no-8ve p))))
-    (string-downcase (format nil "~a~a~a~a~a"
-                             marks-before note lp8ve 
-                             (if (accidental-in-parentheses p) "?" "")
-                             marks))))
+    ;; MDE Tue Jun 16 12:28:07 2020, Heidhausen -- stringdowncase used to be
+    ;; applied to the whole string but because of xNote (x-head mark) we can't
+    ;; do that 
+    (format nil "~a~a~a~a~a"
+            marks-before (string-downcase (string note)) lp8ve 
+            (if (accidental-in-parentheses p) "?" "")
+            marks)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

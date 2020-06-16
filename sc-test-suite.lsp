@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  18:10:10 Fri May  1 2020 CEST
+;;; $$ Last modified:  17:26:12 Tue Jun 16 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -251,6 +251,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rthm-seq-bar tests
 
+;;; MDE Sat Jun  6 15:15:09 2020, Heidhausen
+(sc-deftest test-make-rsb-from-unit-multipliers ()
+  (let ((b1 (make-rsb-from-unit-multipliers 'e '(3 4 1 2)))
+        (b2 (make-rsb-from-unit-multipliers 's '(3)))
+        (b3 (make-rsb-from-unit-multipliers 'h '(2 1))))
+    (sc-test-check
+      (time-sig-equal b1 '(10 8))
+      (time-sig-equal b2 '(3 16))
+      (eq 'e. (data (get-nth-event 0 b2)))
+      (eq 'w (data (get-nth-event 0 b3)))
+      (eq 'h (data (get-nth-event 1 b1)))
+      (time-sig-equal b3 '(3 2)))))
+
 ;;; 09.12.11 SAR
 ;;; MDE Thu Aug 22 18:18:10 2013 -- made some changes for more detailed tests
 (sc-deftest test-rsb-make-rthm-seq-bar ()
@@ -265,6 +278,12 @@
       (make-rthm-seq-bar '((2 4) 4\. 8))
       (make-rthm-seq-bar '((2 4) q +16.+32 e))
       (make-rthm-seq-bar '((2 4) q +16\.+32 e))
+      ;; MDE Thu Jun  4 09:44:28 2020, Heidhausen -- test the tuplet as rational
+      ;; case  
+      (= 7/6 (first
+              (first
+               (tuplets
+                (make-rthm-seq-bar '((3 4) { 7/6 (28/3) - 28/3 x 6 - }))))))
       (setf bar (make-rthm-seq-bar '((2 4) q \+16\.+32 e)))
       (= 2 (notes-needed bar))
       (= 2 (bar-pos (get-nth-event 2 bar)))
@@ -474,6 +493,8 @@
         (rsb3 (make-rthm-seq-bar '((3 4) q+e e s s s s))))
     (sc-test-check
       (time-sig-equal rsb1 rsb2)
+      (time-sig-equal rsb1 '(2 4))
+      (time-sig-equal rsb3 (make-time-sig '(3 4)))
       (not (time-sig-equal rsb2 rsb3)))))
 
 ;;; 13.12.11 SAR
@@ -2292,6 +2313,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rthm-seq tests
 
+;;; MDE Sat Jun  6 15:49:53 2020, Heidhausen
+(sc-deftest test-make-rthm-seq-from-unit-multipliers-simp ()
+  (let ((rs1 (make-rthm-seq-from-unit-multipliers-simp 1 'e
+                                                       '((3 4 1 2) (2 1 2)))))
+    (sc-test-check
+      (time-sig-equal (first (bars rs1)) '(10 8))
+      (eq 'h (data (get-nth-event 1 (first (bars rs1))))))))
+
 ;;; MDE Fri Apr 19 14:52:44 2013 -- make sure we can make a seq with a list of
 ;;; rthm-seq-bars  
 (sc-deftest test-make-rthm-seq-with-rsbs ()
@@ -2739,6 +2768,7 @@
   (let ((rs (make-rthm-seq-from-unit-multipliers 'te '(7 9 16) '(4 4)
                                                  :tuplet 3)))
     (sc-test-check
+      (print-simple rs)
       (equalp
        (loop for b in (bars rs)
           collect (loop for r in (rhythms b) collect (bracket r)))
@@ -3822,6 +3852,37 @@
       (equalp (first 4s)
               (data (get-next (pitch-seq-palette (get-data '(4 c) rsp))))))))
 
+;;; MDE Wed Jun 10 17:48:39 2020, Heidhausen -- do pitch-seqs assignment to
+;;; specific instruments work?
+(sc-deftest test-instrument-pitch-seq ()
+  (let ((mini
+         (make-slippery-chicken
+          '+mini+
+          :ensemble '(((vn (violin :midi-channel 1))
+                       (va (viola :midi-channel 2))
+                       (vc (cello :midi-channel 3))))
+          :set-palette '((1 ((gs3 as3 b3 cs4 ds4 e4 fs4 gs4 as4 b4 cs5)))) 
+          :set-map '((1 (1 1 1 1 1)))
+          :rthm-seq-palette '((1 ((((2 4) q (e) s (32) 32))
+                                  :pitch-seq-palette (((1 2 3) violin)
+                                                      (3 1 2)
+                                                      ((3 2 1) viola)))))
+          :rthm-seq-map '((1 ((vn (1 1 1 1 1))
+                              (va (1 1 1 1 1))
+                              (vc (1 1 1 1 1))))))))
+    (sc-test-check
+      ;; (cmn-display mini)
+      ;; violin (instrument, not player!) gets 1 2 3
+      (equalp '(GS3 NIL AS3 NIL B3) (get-pitch-symbols (get-bar mini 1 'vn)))
+      (equalp '(GS3 NIL AS3 NIL B3) (get-pitch-symbols (get-bar mini 5 'vn)))
+      ;; viola (instrument, not player!) gets 3 2 1
+      (equalp '(e4 NIL ds4 NIL cs4) (get-pitch-symbols (get-bar mini 1 'va)))
+      (equalp '(e4 NIL ds4 NIL cs4) (get-pitch-symbols (get-bar mini 4 'va)))
+      ;; the cello isn't mentioned in the pitc-seq-palette so it can only use 3
+      ;; 1 2
+      (equalp '(as4 NIL fs4 NIL gs4) (get-pitch-symbols (get-bar mini 2 'vc)))
+      (equalp '(as4 NIL fs4 NIL gs4) (get-pitch-symbols
+                                      (get-bar mini 3 'vc))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; instrument tests
@@ -5686,6 +5747,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rthm-seq-palette tests
 
+;;; MDE Sat Jun  6 16:53:58 2020, Heidhausen 
+(sc-deftest test-make-rsp-from-unit-multipliers-simp ()
+  (let ((rsp (make-rsp-from-unit-multipliers-simp
+              'test-unit-mults 's
+              '(((3 4 1 2) (2 1 2))
+                ((2 1 2 1) (3) (4))
+                (((3) 4 1) (3 4 1) (2 3) (2 3) (2)))))
+        (rsp2 (make-rsp-from-unit-multipliers-simp
+               'test-unit-mults 's
+               '(((3 4 1 2) (2 (1) 2))
+                 ((2 1 2 1) (3) ((4)) (1.5 1.5 1.5 1.5 1))
+                 (((3) 4 1) (3 4 1) ((2) 3) (2 3) (2))))))
+    (sc-test-check
+      (= 3 (num-data rsp))
+      (= 2 (num-bars (get-data 1 rsp)))
+      (= 7 (num-notes (get-data 1 rsp)))
+      (= 3 (num-bars (get-data 2 rsp)))
+      (= 5 (num-bars (get-data 3 rsp)))
+      (time-sig-equal (fourth (bars (get-data 2 rsp2)))
+                      '(7 16))
+      (is-rest (get-first (get-data 3 rsp))))))
+          
 ;;; SAR Sat Jan 28 12:30:26 GMT 2012
 (sc-deftest test-rsp-make-rsp ()
   (let* ((mrsp1 (make-rsp 'rsp-test 
@@ -7129,6 +7212,13 @@
             (midi-events num-midi-events)
           (cm::parse-midi-file "/tmp/mini-template.mid")
         (sc-test-check
+          ;; MDE Tue Jun  9 17:52:51 2020, Heidhausen -- this is as good a place
+          ;; as any to try out reset-midi-channels
+          (= 5 (get-midi-channel (get-note mini 1 1 'cl)))
+          (set-midi-channel (get-note mini 1 1 'cl) 1)
+          (= 1 (get-midi-channel (get-note mini 1 1 'cl)))
+          (reset-midi-channels mini)
+          (= 5 (get-midi-channel (get-note mini 1 1 'cl)))
           (file-write-ok "/tmp/sp.eps" 900000)
           (file-write-ok "/tmp/_mini-template-score.ly" 160)
           (file-write-ok "/tmp/mini-template.mid" 700)
@@ -18956,9 +19046,24 @@
                                                   beg-8vb 9 end-8vb 10
                                                   beg-15ma 3 end-15ma 5
                                                   beg-15mb 7 end-15mb 8))))
-           :rthm-seq-map '((1 ((vn (1 1 1))))))))
-    #+cmn (cmn-display mini)
-    (lp-display mini)))
+           :rthm-seq-map '((1 ((vn (1 1 1)))))))
+         (e1 (get-event mini 1 1 'vn))
+         (e2 (get-event mini 1 2 'vn))
+         (p1 (make-pitch 'c5))
+         (p2 (make-pitch 'e5)))
+    ;; MDE Tue Jun 16 12:26:55 2020, Heidhausen -- make sure changing one
+    ;; notehead works, particularly x-head which seems to be the only lilypond
+    ;; notehead that __needs__ to be case sensitive 
+    ;; #+cmn (cmn-display mini)
+    (add-mark p2 'x-head)
+    (add-mark p1 'flag-head)
+    (add-mark e2 'circled-x)
+    ;; (change-pitch mini 1 1 'vn (make-chord (list p1 p2)))
+    (setf (pitch-or-chord e1) (make-chord (list p1 p2)))
+    ;; (print (get-lp-data e1 t))
+    ;; (add-mark (get-event mini 1 1 'vn) 'x-head)
+    (lp-display mini)
+    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 13 14:43:21 2016 -- handles hairpins and updating amps

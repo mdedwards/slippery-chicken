@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  09:04:40 Thu Jan 10 2019 CET
+;;; $$ Last modified:  13:35:07 Tue Jun 16 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -171,7 +171,7 @@
            ;; event::get-lp-data 
            (circled-x "\\once \\override NoteHead #'style = #'xcircle ")
            ;; (x-head "\\once \\override NoteHead #'style = #'cross ")
-           (x-head " \\xNote ")
+           (x-head "\\xNote ")
            (triangle "\\once \\override NoteHead #'style = #'triangle ")
            (triangle-up "\\once \\override NoteHead #'style = #'do ")
            (airy-head (no-lp-mark 'airy-head)) 

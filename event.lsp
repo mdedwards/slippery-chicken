@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:55:05 Tue Jun  9 2020 CEST
+;;; $$ Last modified:  13:50:28 Tue Jun 16 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2612,7 +2612,6 @@ NIL
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; lilypond: grace notes work fine.
-
 (let ((grace-notes '()))
   (defmethod get-lp-data ((e event) &optional in-c ignore1 ignore2)
     (declare (ignore ignore1 ignore2))
@@ -2637,18 +2636,7 @@ NIL
     ;; lilypond but with the note in cmn; so move these over here 
     (multiple-value-bind 
           (from to)
-        ;; 13.4.11 the start of 8va marks need to be before the note, but the
-        ;; end comes after the note in order to include it under the bracket 
-        (move-elements '(circled-x x-head triangle beg-8va beg-8vb wedge square
-                         gliss-map hairpin0 beg-trill-a triangle-up mensural
-                         << rgb)
-                       (marks e) (marks-before e)
-                       ;; MDE Thu Nov 14 11:52:26 2013 -- got to be able to
-                       ;; handle marks as lists so #'eq not a sufficient member
-                       ;; test
-                       #'(lambda (x y) (if (listp y)
-                                           (eq x (first y))
-                                           (eq x y))))
+        (separate-marks-before (marks e) (marks-before e))
       ;; MDE Fri Mar 24 10:49:38 2017 -- todo: really shouldn't be changing
       ;; slots, rather, creating local vars for these to be processed here
       (setf (marks e) from
@@ -5056,6 +5044,23 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 (defun is-notehead (sym)
   (first (member sym '(circled-x x-head triangle wedge square triangle-up
                        improvOn flag-head))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Tue Jun 16 13:47:17 2020, Heidhausen -- abstracted out of get-lp-data
+;;; above so that we can also use in the pitch class 
+(defun separate-marks-before (marks marks-before)
+  ;; 13.4.11 the start of 8va marks need to be before the note, but the
+  ;; end comes after the note in order to include it under the bracket 
+  (move-elements '(circled-x x-head triangle beg-8va beg-8vb wedge square
+                   gliss-map hairpin0 beg-trill-a triangle-up mensural
+                   << rgb)
+                 marks marks-before
+                 ;; MDE Thu Nov 14 11:52:26 2013 -- got to be able to
+                 ;; handle marks as lists so #'eq not a sufficient member
+                 ;; test
+                 #'(lambda (x y) (if (listp y)
+                                     (eq x (first y))
+                                     (eq x y)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF event.lsp

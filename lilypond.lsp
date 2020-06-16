@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  13:35:07 Tue Jun 16 2020 CEST
+;;; $$ Last modified:  18:23:43 Tue Jun 16 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -166,14 +166,19 @@
            (end-15ma "\\ottava #0 ")
            (beg-15mb "\\ottava #-2 ")
            (end-15mb "\\ottava #0 ")
-           ;; NB note heads should be added via (add-mark-before ... so if
-           ;; adding new, add the mark symbol to the move-elements call in
-           ;; event::get-lp-data 
-           (circled-x "\\once \\override NoteHead #'style = #'xcircle ")
+           ;; NB note heads used to be added via (add-mark-before) but can now
+           ;; be added by add-mark and friends (16.6.20) so if adding new heads
+           ;; , make sure to add the mark symbol to the move-elements call in
+           ;; event::separate-marks-before
+           ;; 
+           ;; (circled-x "\\once \\override NoteHead #'style = #'xcircle ")
+           (circled-x "\\tweak #'style #'xcircle ")
            ;; (x-head "\\once \\override NoteHead #'style = #'cross ")
            (x-head "\\xNote ")
-           (triangle "\\once \\override NoteHead #'style = #'triangle ")
-           (triangle-up "\\once \\override NoteHead #'style = #'do ")
+           ;; (triangle "\\once \\override NoteHead #'style = #'triangle ")
+           (triangle "\\tweak #'style #'triangle ")
+           ;; (triangle-up "\\once \\override NoteHead #'style = #'do ")
+           (triangle-up "\\tweak #'style #'do ")
            (airy-head (no-lp-mark 'airy-head)) 
            ;; this has to be added to the event _before_ the one which needs to
            ;; start with these noteheads.
@@ -181,8 +186,10 @@
            (improvOff "\\improvisationOff ")
            ;; MDE Sat Nov  9 20:21:19 2013 -- in CMN it's :breath-in: a
            ;; triangle on its side (pointing left)
-           (wedge "\\once \\override NoteHead #'style = #'fa ")
-           (square "\\once \\override NoteHead #'style = #'la ")
+           ;; (wedge "\\once \\override NoteHead #'style = #'fa ")
+           (wedge "\\tweak #'style #'fa ")
+           ;; (square "\\once \\override NoteHead #'style = #'la ")
+           (square "\\tweak #'style #'la ")
            ;; (mensural "\\once \\override NoteHead #'style = #'slash ")
            ;;(flag-head "\\once \\override NoteHead #'style = #'harmonic-mixed
            ;;")  

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  12:39:26 Tue Mar 31 2020 CEST
+;;; $$ Last modified:  18:21:55 Tue Jun  9 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -592,7 +592,6 @@ data: WILBUR
       (setf (nth pos (data al)) new-value))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* assoc-list/replace-data
 ;;; DATE 19th June 2013
 ;;; 

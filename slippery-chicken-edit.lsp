@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  17:59:54 Tue Jun  9 2020 CEST
+;;; $$ Last modified:  18:19:37 Tue Jun 16 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1457,9 +1457,6 @@ data: (
   (change-time-sig (piece sc) bar-num-or-ref new-time-sig))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu Apr 19 13:35:00 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken-edit/add-mark-to-note
 ;;; DESCRIPTION
 ;;; Add the specified mark to the specified note of a given slippery-chicken
@@ -1471,7 +1468,9 @@ data: (
 ;;; - A slippery-chicken object.
 ;;; - An integer that is the bar number to which to add the mark
 ;;; - An integer that is the note number two which to add the mark. This is
-;;;   1-based, and counts notes not events; i.e., not rests.
+;;;   1-based, and counts notes not events; i.e., not rests. If a list, then it
+;;;   is of the form (note-num chord-note), where chord-note is 1-based and
+;;;   counts from the lowest note up.
 ;;; - The ID of the player to whose part the mark is to be added.
 ;;; - The mark to add.
 ;;; 
@@ -1957,9 +1956,6 @@ NIL
                 note nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu Apr 19 16:41:09 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken-edit/add-marks-to-note
 ;;; DESCRIPTION
 ;;; Add one or more specified marks to a specified note within a given

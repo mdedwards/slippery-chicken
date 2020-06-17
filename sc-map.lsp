@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  10:55:51 Thu Feb 27 2020 CET
+;;; $$ Last modified:  18:23:20 Tue Jun  9 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -121,6 +121,13 @@
 ;;; number of sequences next time the slot value is requested.
 (defmethod (setf data) :after (value (scm sc-map))
   (declare (ignore value))
+  (setf (slot-value scm 'num-sequences) nil))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jan 29 09:49:49 2018 -- so that if the data changes we calculate the
+;;; number of sequences next time the slot value is requested.
+(defmethod set-data :after (key value (scm sc-map))
+  (declare (ignore value key))
   (setf (slot-value scm 'num-sequences) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

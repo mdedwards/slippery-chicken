@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  08:42:14 Tue May 12 2020 CEST
+;;; $$ Last modified:  13:52:02 Tue Jun 16 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2023,6 +2023,15 @@ pitch::add-mark: mark PIZZ already present but adding again!
             (data p)))
     (incf (lp-resolutions p))
     (setf p (make-pitch (freq-to-note (frequency p) 'quarter-tone))))
+  ;; MDE Tue Jun 16 13:50:43 2020, Heidhausen -- if we don't do this then we
+  ;; can't have different noteheads in chords
+  (multiple-value-bind 
+        (from to)
+      (separate-marks-before (marks p) (marks-before p))
+    ;; MDE Fri Mar 24 10:49:38 2017 -- todo: really shouldn't be changing
+    ;; slots, rather, creating local vars for these to be processed here
+    (setf (marks p) from
+          (marks-before p) to))
   (let* ((octave (octave p))
          (lp8ve (cond
                   ((= octave 3) "")
@@ -2041,10 +2050,13 @@ pitch::add-mark: mark PIZZ already present but adding again!
          (note (if (eq (accidental p) 'n)
                    (no-8ve-no-acc p)
                    (no-8ve p))))
-    (string-downcase (format nil "~a~a~a~a~a"
-                             marks-before note lp8ve 
-                             (if (accidental-in-parentheses p) "?" "")
-                             marks))))
+    ;; MDE Tue Jun 16 12:28:07 2020, Heidhausen -- stringdowncase used to be
+    ;; applied to the whole string but because of xNote (x-head mark) we can't
+    ;; do that 
+    (format nil "~a~a~a~a~a"
+            marks-before (string-downcase (string note)) lp8ve 
+            (if (accidental-in-parentheses p) "?" "")
+            marks)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

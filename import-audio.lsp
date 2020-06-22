@@ -1,9 +1,9 @@
 (in-package :slippery-chicken)
 
 ;;; Make a small class to hold data from the call to clm::get-spectrum. Later, a
-;;; hacked version of clm::create-analysis-data makes an assoc-list hash table
-;;; populated with instances of this class. This is so freq and amp data are not held in
-;;; separate arrays and are intrinsically linked.
+;;; hacked version of clm::create-analysis-data makes a hash table
+;;; populated with instances of this class. This is so freq,  amp and other data
+;;; are intrinsically linked.
 ;;; The hashtable is then converted into a list of events, which are ordered
 ;;; into sublists, and from there into bars, before a final call to bars-to-sc.
 
@@ -231,7 +231,7 @@ EXAMPLE
 		      
 
 (defun bar-list-to-bars (bar-list &key (time-sig '(4 4)) (tempo 60)
-				    :midi-channel 1 :microtones-midi-channel 2)
+				    (midi-channel 1) (microtones-midi-channel) 2)
   (let* ((bars '()))
     (loop for bar in bar-list
        for count from 1

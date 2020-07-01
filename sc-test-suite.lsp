@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  23:44:31 Tue Jun 16 2020 CEST
+;;; $$ Last modified:  15:25:36 Tue Jun 23 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -16158,8 +16158,27 @@
 (sc-deftest test-middle-out ()
   (sc-test-check
     (equalp (middle-out '(1 2 3 4 5 6)) '(4 3 5 2 6 1))
-    (equalp (middle-out '(1 2 3 4 5 6 7)) '(4 3 5 2 6 1 7))
-    ))
+    (equalp (middle-out '(1 2 3 4 5 6 7)) '(4 3 5 2 6 1 7))))
+
+;;; MDE Tue Jun 23 15:23:27 2020, Heidhausen
+(sc-deftest test-one-to-many ()
+  (sc-test-check 
+    (float-list= (one-to-many .8 7)
+                 '(0.045112778 0.082706764 0.12030074 0.15789473 0.19548872
+                   0.21804512 0.18045112))
+    (float-list=  (one-to-many .8 7 .7)
+                  '(0.06509622 0.09950039 0.1293403 0.15646003 0.18169008
+                    0.19612299 0.17178996))
+    (float-list= (one-to-many .8 7 1.3) 
+                 '(0.030845987 0.06782856 0.11039718 0.15721251 0.20752355
+                   0.23917702 0.1870151))
+    ;; passing 5 points: these don't have to have min/max of 0 and 1 ...
+    (float-list= (one-to-many .8 '(0 .1 .35 .7 .92))
+                 '(0.07067137 0.10600708 0.19434628 0.3180212 0.31095406))
+    ;; ... and they don't have to be in ascending order either
+    (float-list= (one-to-many .8 '(0 .1 .35 .7 .2))
+                 '(0.08510638 0.12765959 0.23404254 0.38297874 0.17021276))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue May  8 21:14:56 2012 -- other random tests

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  16:58:44 Tue Jun  2 2020 CEST
+;;; $$ Last modified:  15:32:16 Tue Jun 23 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5029,7 +5029,12 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Mar 25 16:41:13 2015 
 (defun float-list= (list1 list2 &optional (tolerance 0.000001d0))
-  (every #'(lambda (x y) (equal-within-tolerance x y tolerance)) list1 list2))
+  ;; MDE Tue Jun 23 15:30:08 2020, Heidhausen -- every backs out when the
+  ;; shortest list is exhausted, meaning one could have more elements than the
+  ;; other but we'd still return T
+  (and (= (length list1) (length list2))
+       (every #'(lambda (x y) (equal-within-tolerance x y tolerance))
+              list1 list2)))
 
 ;;; (FSCALE 0 -10 10 1.9 .1) means we can map exponents of 1.9 to .1 from -10
 ;;; to 10 with a zero point returning an exponent of 1
@@ -5585,6 +5590,78 @@ yes_foo, 1 2 3 4;
 (defun semitones-precision (semitones &optional (precision 1/4))
   (setq precision (/ precision 2))
   (float (/ (round semitones precision) (/ precision))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/one-to-many
+;;; DATE
+;;; June 23rd 2020
+;;; 
+;;; DESCRIPTION
+;;; Find a one-to-many relationship between the first argument and a number of
+;;; equally-spaced points given in the second argument. The first argument is a
+;;; number between 0.0 and 1.0 (inclusive). We calculate the proximities from
+;;; this point to the number of points given and return them as a list,
+;;; optionally raised to a given exponent. The list returned is scaled so that
+;;; all values sum to 1.0, so this is particularly useful for, say, calculating
+;;; a number of amplitude scalers for a multi-voice synthesis process.
+;;; 
+;;; ARGUMENTS
+;;; - the point: a number between 0.0 and 1.0 inclusive
+;;; - the number of points to use in the calculation. This will also be the
+;;;   number of results returned. Alternatively this can be a list of numbers
+;;;   between 0.0 and 1.0. This way you can pass your own points for e.g. an
+;;;   unequally-spaced set. In this case though the proximity is still
+;;;   determined from a maximum of 1.0, not the highest number in the given
+;;;   list. 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the exponent to raise proximities to. 1.0 will return a linear
+;;;   relationship. > 1.0 will exaggerate the relationships so that those points
+;;;   further away from the first argument will be pushed further away than a
+;;;   linear relationship. < 1.0 will lessen the distances.
+;;; 
+;;; RETURN VALUE
+;;; a list of numbers the length of which is the same as the 2nd argument and
+;;; the sum of which is 1.0
+;;; 
+;;; EXAMPLE
+#|
+(one-to-many .8 7) -->
+(0.045112778 0.082706764 0.12030074 0.15789473 0.19548872 0.21804512 0.18045112)
+(one-to-many .8 7 .7) -->
+(0.06509622 0.09950039 0.1293403 0.15646003 0.18169008 0.19612299 0.17178996)
+(one-to-many .8 7 1.3)  -->
+(0.030845987 0.06782856 0.11039718 0.15721251 0.20752355 0.23917702 0.1870151)
+;;; passing 5 points: these don't have to have min/max of 0 and 1 ...
+(one-to-many .8 '(0 .1 .35 .7 .92)) -->
+(0.07067137 0.10600708 0.19434628 0.3180212 0.31095406)
+;;; ... and they don't have to be in ascending order either
+(one-to-many .8 '(0 .1 .35 .7 .2)) -->
+(0.08510638 0.12765959 0.23404254 0.38297874 0.17021276)
+|#
+;;; SYNOPSIS
+(defun one-to-many (one how-many &optional (expt 1.0))
+;;; ****
+  (unless (number-between one 0.0 1.0)
+    (error "utilities::one-to-many: first argument (~a) should be between ~
+            0.0 and 1.0" one))
+  (unless (or (and (integerp how-many) (> how-many 1))
+              (and (listp how-many)
+                   (every #'(lambda (x)
+                              (and (numberp x)
+                                   (>= x 0.0)
+                                   (<= x 1.0)))
+                          how-many)))
+    (error "utilities::one-to-many: second argument (~a) ~%should either be ~
+            an integer > 1 or a list of numbers between 0.0 and 1.0"
+           how-many))
+  (let* ((points (if (integerp how-many)
+                     (loop for i to 1 by (/ (1- how-many)) collect i)
+                     how-many))
+         (proximities (loop for p in points collect
+                           (expt (- 1.0 (abs (- one p))) expt)))
+         (sum (apply #'+ proximities)))
+    (loop for p in proximities collect (/ p sum))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  10:30:20 Sat May  2 2020 CEST
+;;; $$ Last modified:  13:09:29 Wed Jul  1 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2495,8 +2495,7 @@ data: (
   c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; ****m* chord/num-note
+;;; ****m* chord/num-notes
 ;;; DATE
 ;;; June 22nd 2019, Heidhausen
 ;;; 
@@ -2548,29 +2547,32 @@ data: (
          (loop for instrument-index in comb and i from 0 do
               (setq pitch (get-nth i c)
                     ins (nth instrument-index combo))
-              (multiple-value-bind
-                    (in harm)
-                  ;; sounding pitches and artificial harmonics, if allowed!
-                  (in-range ins pitch t artificial-harmonics nil t)
-                (when (or in (chord-p harm)) (incf got))
-                (cond (in (push (list instrument-index
-                                      ;; if we can play a single pitch, try
-                                      ;; for a chord
-                                      (if chords
-                                          (try-ins-chord ins c pitch)
-                                          pitch)
-                                      ins)
-                                result))
-                      ((chord-p harm)
-                       ;; MDE Thu Dec  6 11:15:01 2018 -- although we make sure
-                       ;; the sounding pitches are in range of e.g. double-bass,
-                       ;; force-artificial-harmonic returns the written pitches
-                       ;; so we have to transpose back to 'sounding'
-                       (let ((tr (transposition-semitones ins)))
-                         (unless (zerop tr)
-                           (setq harm (transpose harm tr)))
-                         (push (list instrument-index harm ins)
-                               result))))))
+            ;; MDE Fri Jun 26 15:52:10 2020, Heidhausen 
+              (when (and ins pitch)
+                (multiple-value-bind
+                      (in harm)
+                    ;; sounding pitches and artificial harmonics, if allowed!
+                    (in-range ins pitch t artificial-harmonics nil t)
+                  (when (or in (chord-p harm)) (incf got))
+                  (cond (in (push (list instrument-index
+                                        ;; if we can play a single pitch, try
+                                        ;; for a chord
+                                        (if chords
+                                            (try-ins-chord ins c pitch)
+                                            pitch)
+                                        ins)
+                                  result))
+                        ((chord-p harm)
+                         ;; MDE Thu Dec 6 11:15:01 2018 -- although we make sure
+                         ;; the sounding pitches are in range of
+                         ;; e.g. double-bass, force-artificial-harmonic returns
+                         ;; the written pitches so we have to transpose back to
+                         ;; 'sounding'
+                         (let ((tr (transposition-semitones ins)))
+                           (unless (zerop tr)
+                             (setq harm (transpose harm tr)))
+                           (push (list instrument-index harm ins)
+                                 result)))))))
        ;; (t (return))))) ; ins cannae do it but keep going
          (let ((gpr (count-combo-pitches result))
                (gpb (count-combo-pitches best)))

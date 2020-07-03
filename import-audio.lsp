@@ -231,8 +231,7 @@ EXAMPLE
                       
 
 (defun bar-list-to-bars (bar-list &key (time-sig '(4 4)) (tempo 60)
-                                    (midi-channel 1)
-                                    (microtones-midi-channel 2))
+                                    (midi-channel 1) (microtones-midi-channel 2))
   (let* ((bars '()))
     (loop for bar in bar-list
        for count from 1
@@ -327,7 +326,8 @@ EXAMPLE
                                   microtones-midi-channel))
          (sc (bars-to-sc bl :sc-name sc-name :instrument instrument
                             :player player :tempo tempo
-                            :midi-channels (list midi-channel microtones-midi-channel))))
+                            :midi-channels (list midi-channel
+                                                 microtones-midi-channel))))
     (when trim-offcuts
       (map-over-notes sc 1 nil nil
                       #'(lambda (n) (when (and (<= (duration n) 0.1)

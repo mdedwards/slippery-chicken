@@ -94,13 +94,21 @@
 
 (defun sc (&optional (logo t))
   (setf *package* (find-package :sc))
-  (let ((title (format nil "slippery chicken ~a"
-                       +slippery-chicken-version+)))
-    (if logo
-        (format t "(\\  }\\   ~%(  \\_('> ~a~%(__(=_)  ~%   -\"=   ~%" title)
-        (print title)))
+  (let* ((title (format nil "slippery chicken ~a"
+                       +slippery-chicken-version+))
+	(sc-logo (concatenate 'string +slippery-chicken-src-path+
+			      "sc-ascii-logo.txt"))
+	 (in (open sc-logo :if-does-not-exist nil)))
+    (when logo
+      (if in 
+	  (progn
+	    (loop for line = (read-line in nil)
+		  while line do (format t "~a~%" line))
+	     (close in))
+	  (format t "(\\  }\\   ~%(  \\_('> ~a~%(__(=_)  ~%   -\"=   ~%"
+		  title)))
   #+sbcl t
-  #-sbcl (values))
+  #-sbcl (values)))
 
 ;;; old stuff; could have used pathname functions for this....
 (defun get-path-minus-file-and-last-dir (file)

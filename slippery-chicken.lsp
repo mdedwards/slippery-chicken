@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:21:45 Tue Jun  9 2020 CEST
+;;; $$ Last modified:  17:38:58 Sat Jul  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5777,7 +5777,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
               (when on-fail
                 (funcall on-fail
                          "slippery-chicken::check-ties (~a): <this> is tied-to ~
-                          but <last> has no pitch.~%THIS:~%~a~%LAST:~%~a"
+                          but ~%<last> has no pitch.~%THIS:~%~a~%LAST:~%~a"
                          player this last)))
             (setf (pitch-or-chord this) (clone (pitch-or-chord last)))
             (when (written-pitch-or-chord this)

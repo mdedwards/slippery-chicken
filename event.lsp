@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:25:19 Tue Jun 16 2020 CEST
+;;; $$ Last modified:  17:32:35 Wed Jul  8 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2443,6 +2443,8 @@ NIL
                      improvOn flag-head)))
     (write-xml-ins-change e stream)     ; if it exists
     (set-last-midi-channel e)
+    ;; if the <marks> are in <syms> (or an int=fingering) they'll be removed
+    ;; from <rest> and pushed into <syms-holder>
     (macrolet ((separate (marks syms syms-holder rest)
                  `(loop for m in ,marks
                      for int = (integerp m) ; fingerings
@@ -2454,11 +2456,16 @@ NIL
                        (if (or (member m ,syms) int)
                            (push m ,syms-holder)
                            (push m ,rest)))))
+      ;; (print '**************)
+      ;; (print before) (print during) (print notehead) (print after)
       (separate (marks-before e) noteheads notehead before)
       (separate (marks e) noteheads notehead after)
       ;; of course <after> might have some <notations> in it now, hence <when>
       ;; in separate above
-      (separate (marks e) notations during after))
+      ;; (separate (marks e) notations during after))
+      ;; MDE Wed Jul  8 17:30:29 2020, Heidhausen -- we've handled noteheads now
+      ;; so don't pass them again
+      (separate (set-difference (marks e) noteheads) notations during after))
     ;; (print '****)
     ;; (print before) (print during) (print notehead) (print after)
     ;; we've got the problem of short-pause and long-pause not having symbols
@@ -2474,6 +2481,8 @@ NIL
     ;; MDE Sun Mar 18 16:12:34 2018, Bangkok -- fingerings are in notehead now
     ;; so remove
     (setq notehead (remove-if #'integerp notehead))
+    ;; this will mean we can't have a fingering with an alt. notehead, which may
+    ;; need to change 
     (when (> (length notehead) 1)
       ;; (when (> (count-if #'symbolp notehead) 1)
       (error "event::write-xml: can only have one notehead mark, you have ~a ~

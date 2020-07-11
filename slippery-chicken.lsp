@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:00:30 Sat Jul 11 2020 CEST
+;;; $$ Last modified:  14:10:51 Sat Jul 11 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8636,28 +8636,24 @@ data: (11 15)
 ;;; - the slippery-chicken object
 ;;; - the bar number (integer)
 ;;; 
-;;; OPTIONAL ARGUMENTS
-;;; - a player (symbol). This won't usually be necessary but in case the first
-;;; player has no events passing another here should help. Default = NIL = use
-;;; the first player in the ensemble.
-;;; 
 ;;; RETURN VALUE
 ;;; a complete-set object or NIL if the bar doesn't exist or the first event of
-;;; the bar has no set-ref slot, for some reason (e.g. not initialized by
-;;; make-slippery-chicken) 
+;;; the bar has no set-ref slot value, for any of the players, for some reason
+;;; (e.g. not initialized by make-slippery-chicken)
 ;;; 
 ;;; SYNOPSIS
-(defmethod get-set-for-bar-num ((sc slippery-chicken) bar-num &optional player)
+(defmethod get-set-for-bar-num ((sc slippery-chicken) bar-num)
 ;;; ****
-  (let* ((player (if player player (first (players sc))))
-         (bar (get-bar sc bar-num player))
-         ;; if sc objects have been initialised normally then even rests will
-         ;; have a correct set-ref slot 
-         (e1 (when bar (first (rhythms bar)))))
-    (if (and e1 (set-ref e1))
+  (let* ((e1 (loop for player in (players sc)
+               for bar = (get-bar sc bar-num player)
+               for event = (when bar (first (rhythms bar)))
+               do
+                 (when (and event (set-ref event))
+                   (return event)))))
+    (if e1
         (get-data (set-ref e1) (set-palette sc))
-        (warn "slippery-chicken::get-set-for-bar-num: no set-ref found for ~%~
-                ~a at bar ~a" player bar-num))))
+        (warn "slippery-chicken::get-set-for-bar-num: no set-ref found ~%~
+                at bar ~a" bar-num))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

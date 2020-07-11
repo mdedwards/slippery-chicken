@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  13:09:29 Wed Jul  1 2020 CEST
+;;; $$ Last modified:  14:39:39 Sat Jul 11 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2322,8 +2322,9 @@ data: (
 --> (D4 A4 EF5 AF5 B5)
 |#
 ;;; SYNOPSIS
-(defmethod invert ((c chord) &optional top-to-bottom)
+(defmethod invert ((c chord) &optional top-to-bottom ignore)
 ;;; ****
+  (declare (ignore ignore))
   (let ((result (make-chord (invert-pitch-list (data c)))))
     (if top-to-bottom
         (top-to-bottom result)

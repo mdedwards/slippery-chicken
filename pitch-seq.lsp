@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  14:26:47 Fri May  1 2020 CEST
+;;; $$ Last modified:  14:39:26 Sat Jul 11 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -167,9 +167,9 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod invert ((ps pitch-seq) &optional ignore)
+(defmethod invert ((ps pitch-seq) &optional ignore1 ignore2)
 ;;; ****
-  (declare (ignore ignore))
+  (declare (ignore ignore1 ignore2))
   (let* ((sorted (sort (remove-duplicates (data ps))
                        #'<))
          (len-1 (1- (length sorted)))

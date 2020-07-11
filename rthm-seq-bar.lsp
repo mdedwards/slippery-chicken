@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  09:43:10 Tue Jun  9 2020 CEST
+;;; $$ Last modified:  15:42:45 Sat Jul 11 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5771,6 +5771,83 @@ collect (midi-channel (pitch-or-chord p))))
                      smallest diff)
                (return)))
       (values event nth))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rthm-seq-bar/invert
+;;; DATE
+;;; 11th July 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Turn all the rests in a rthm-seq-bar into notes and all the notes/chords
+;;; into rests. NB this method is destructive.
+;;; 
+;;; ARGUMENTS
+;;; - the rthm-seq-bar object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - a list of pitches/chords (either objects or symbols/lists of symbols) to
+;;;   replace the rests with. This will be used cyclically if there aren't
+;;;   enough for the number of generated rests. They will not all be used up if
+;;;   there aren't enough rests. If NIL then all rests will be replaced with
+;;;   middle Cs.
+;;; - T or NIL to tie notes rather than use new ones when more than one
+;;;   consecutive rest is created.
+;;; RETURN VALUE
+;;; the modified rthm-seq-bar object
+;;; 
+;;; EXAMPLE
+#|
+(let ((r (make-rest 'e))) (setf (pitch-or-chord r) '(c4 e4)) r)
+--->
+EVENT: start-time: NIL, end-time: NIL, 
+       duration-in-tempo: 0.000, 
+       compound-duration-in-tempo: 0.000, 
+       amplitude: 0.300 
+       bar-num: -1, marks-before: NIL, 
+       tempo-change: NIL 
+       instrument-change: NIL 
+       display-tempo: NIL, start-time-qtrs: -1.000, 
+       midi-time-sig: NIL, midi-program-changes: NIL, 
+       midi-control-changes: NIL, 
+       8va: 0, player: NIL
+       asco-label: NIL, asco-msgs: NIL
+       set-ref: NIL
+       pitch-or-chord: 
+CHORD: auto-sort: T, marks: NIL, micro-tone: NIL, micro-tonality: 0.0
+centroid: NIL, dissonance: NIL
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, 
+                     this: NIL, 
+                     next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (
+PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL 
+...
+|#
+;;; SYNOPSIS
+(defmethod invert ((rsb rthm-seq-bar) &optional pitch-list tie)
+;;; ****
+  (unless (every #'event-p (rhythms rsb))
+    (error "~a~%rthm-seq-bar::invert: this method only works with event (not ~
+            rhythm) objects." rsb))
+  (let* ((plist (if pitch-list (make-cscl pitch-list) (make-cscl '(c4))))
+         last pitch)
+    (loop for e in (rhythms rsb) do
+         (if (is-rest e)
+             (progn
+               (when (or (not pitch) (not tie))
+                 (setq pitch (get-next plist)))
+               (setf (pitch-or-chord e) pitch))
+             (progn 
+               (force-rest e)
+               (setq pitch nil)))       ; force get-next
+       ;; last and e can only be non-rests if they were converted from rests
+         (when (and tie last (pitch-or-chord e) (pitch-or-chord last))
+           (setf (is-tied-from last) t
+                 (is-tied-to e) t))
+         (setq last e))
+    (consolidate-rests rsb)
+    rsb))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

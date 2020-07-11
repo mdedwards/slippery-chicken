@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  18:23:20 Tue Jun  9 2020 CEST
+;;; $$ Last modified:  17:09:17 Fri Jul 10 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -131,7 +131,33 @@
   (setf (slot-value scm 'num-sequences) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;; ****m* sc-map/shorten
+;;; DATE
+;;; July 10th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; shorten the length of the map for a given section
+;;; 
+;;; ARGUMENTS
+;;; - the section reference
+;;; - the new length (integer)
+;;; - the sc-map object
+;;; 
+;;; RETURN VALUE
+;;; the shortened sc-map object
+;;; 
+;;; SYNOPSIS
+(defmethod shorten (section new-length (scm sc-map))
+;;; ****
+  (let* ((map (get-data-data section scm))
+         (len (length map)))
+    (if (< len new-length)
+        (error "sc-map::truncate: new-length (~a) < existing length (~a)"
+               new-length len)
+        (set-data section (list section (subseq map 0 new-length)) scm)))
+  scm)
+    
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((scm sc-map) stream)
   (format stream "~%SC-MAP: palette id: ~a, num-sequences: ~a~
                   ~%        replacements: ~a"
@@ -683,8 +709,10 @@ data: (1 NIL 3 4 5)
 
 (defmethod delete-from-to-in-map (map-ref from to (scm sc-map))
 ;;; ****
+  (unless to (setq to (1- (length (get-data-data map-ref scm)))))
   (loop for n from from to to do
-       (delete-nth-in-map map-ref n scm)))
+       (delete-nth-in-map map-ref n scm))
+  scm)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

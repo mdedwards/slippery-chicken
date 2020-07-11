@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:38:58 Sat Jul  4 2020 CEST
+;;; $$ Last modified:  13:00:30 Sat Jul 11 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8624,6 +8624,42 @@ data: (11 15)
     section-assoc-list))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/get-set-for-bar-num
+;;; DATE
+;;; July 11th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Get the complete-set object from the set-palette that was used in the
+;;; generation of a specific bar.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the bar number (integer)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - a player (symbol). This won't usually be necessary but in case the first
+;;; player has no events passing another here should help. Default = NIL = use
+;;; the first player in the ensemble.
+;;; 
+;;; RETURN VALUE
+;;; a complete-set object or NIL if the bar doesn't exist or the first event of
+;;; the bar has no set-ref slot, for some reason (e.g. not initialized by
+;;; make-slippery-chicken) 
+;;; 
+;;; SYNOPSIS
+(defmethod get-set-for-bar-num ((sc slippery-chicken) bar-num &optional player)
+;;; ****
+  (let* ((player (if player player (first (players sc))))
+         (bar (get-bar sc bar-num player))
+         ;; if sc objects have been initialised normally then even rests will
+         ;; have a correct set-ref slot 
+         (e1 (when bar (first (rhythms bar)))))
+    (if (and e1 (set-ref e1))
+        (get-data (set-ref e1) (set-palette sc))
+        (warn "slippery-chicken::get-set-for-bar-num: no set-ref found for ~%~
+                ~a at bar ~a" player bar-num))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -9057,7 +9093,7 @@ data: (11 15)
                                                (get-nth 0 (data rsm-sec))))))
                      (unless (= len-sm-sec len-rsm-sec)
                        (error "slippery-chicken::check-maps: In section ~
-                               ~a the number of references in the maps ~
+                               ~a the number of references ~%in the maps ~
                                is not equal.~
                                ~% In set-map: ~a, in rthm-seq-map: ~a" 
                               (this sm-sec) len-sm-sec len-rsm-sec))))))))

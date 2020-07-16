@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  18:19:37 Tue Jun 16 2020 CEST
+;;; $$ Last modified:  15:20:16 Wed Jul 15 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4735,6 +4735,10 @@ NIL
                             (pitches t) (auto-beam t))
 ;;; ****
   (setq doubling-players (force-list doubling-players))
+  (unless start-bar (setq start-bar 1))
+  (unless start-event (setq start-event 1))
+  (unless end-bar (setq end-bar (num-bars sc)))
+  ;; end-event handled below
   (loop for doubling-player in doubling-players do       
      ;; clone the master players bars
        (let* ((player-obj (get-data doubling-player (ensemble sc)))
@@ -6381,6 +6385,63 @@ T
       sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken-edit/octavise-repeated-notes
+;;; DATE
+;;; July 13th 2020, Heidhausen (though taken from earlier projects)
+;;; 
+;;; DESCRIPTION
+;;; Transpose fast repeated notes by given intervals, typically, as in piano
+;;; music, by an octave. Note that if there are several fast repeated notes then
+;;; there will be multiple transpositions e.g. (c4 c4 c4 c4 c4) would become by
+;;; default (c4 c5 c4 c5 c4).
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the player to process (symbol)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :start-bar. The bar to start processing at (integer). Default = 1.
+;;; - :end-bar. The bar to stop processing at (inclusive). Default = NIL = last
+;;;   bar of the piece.
+;;; - :intervals. A list of semitone intervals. Default = '(12) = only transpose
+;;;   up one octave. A list of any length may be used for variation; it will be
+;;;   used cyclically.
+;;; - :threshold. The maximum time difference in seconds between events that
+;;;   will result in the 'octavisation'. Default = the slippery-chicken
+;;;   object's fast-leap-threshold (0.125 seconds by default).
+;;; - :verbose. Print bar numbers where processing takes place. Default = NIL.
+;;; 
+;;; RETURN VALUE
+;;; the (modified) slippery-chicken object.
+;;; 
+;;; SYNOPSIS
+(defmethod octavise-repeated-notes ((sc slippery-chicken) player
+                                    &key (start-bar 1) end-bar verbose
+                                      (intervals '(12))
+                                      (threshold (fast-leap-threshold sc)))
+;;; ****
+  (let ((transps (make-cscl intervals))
+        last time-diff)
+    (unless end-bar (setq end-bar (num-bars sc)))
+    (next-event sc player t start-bar)
+    (loop for event = (next-event sc player t nil end-bar) while event do
+         (when last
+           (setq time-diff (- (start-time event) (start-time last)))
+           ;; fast repeated notes cause jump of octave +/-
+           (when (and (< time-diff threshold)
+                      (> (common-notes event last) 0))
+             (when verbose (format t "~&octavise-repeated-notes: bar ~a, ~
+                                      last: ~a, this: ~a, diff: ~,3f"
+                                   (bar-num event)
+                                   (get-pitch-symbol last)
+                                   (get-pitch-symbol event) 
+                                   time-diff))
+             (transpose event (get-next transps) :destructively t)))
+         (setq last event)))
+  sc)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken-edit/add-auxiliary-notes
 ;;; DATE
 ;;; May 26th 2016, Edinburgh
@@ -6855,6 +6916,8 @@ NIL
 ;;;   acceptable or a player object is passed as second argument.
 ;;; - an instrument-palette object in which the instrument exists. Default is
 ;;;   the standard palette.
+;;; - the midi-channel for the new player
+;;; - the microtones-midi-channel for the new player
 ;;; 
 ;;; RETURN VALUE
 ;;; the new player object from the ensemble slot of the slippery-chicken object
@@ -6863,10 +6926,14 @@ NIL
 (defmethod add-player ((sc slippery-chicken) player
                        &optional (instrument 'computer)
                          (instrument-palette
-                          +slippery-chicken-standard-instrument-palette+))
+                          +slippery-chicken-standard-instrument-palette+)
+                         ;; MDE Tue Jul 14 19:08:15 2020, Heidhausen
+                         (midi-channel 1)
+                         (microtones-midi-channel -1))
 ;;; ****
   (let ((player-id (if (player-p player) (id player) player)))
-    (add-player (ensemble sc) player instrument instrument-palette)
+    (add-player (ensemble sc) player instrument instrument-palette
+                midi-channel microtones-midi-channel)
     ;; this calls the rthm-seq-map method
     (add-player-to-players (piece sc) player-id)
     ;; we pass all players so that new ones can clone existing ones (the
@@ -7577,16 +7644,86 @@ NIL
     (nreverse count-list)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#|
-(defmethod quantise ((sc1 slippery-chicken) (sc2 slippery-chicken))
-  ;; ....
-  )
+;;; ****m* slippery-chicken-edit/double-player-inverted
+;;; DATE
+;;; July 14th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Add a new player to the ensemble/piece, double the events of an existing
+;;; player, then use the invert method for each bars within the given range to
+;;; turn rests into notes and vice-versa. To choose new notes we use curves to
+;;; limit high and low, using the sets (from the map) used to generate the
+;;; existing voices.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the ID of a new player (symbol)
+;;; - the instrument for the new player (must be in the instrument-palette)
+;;; - the ID of the existing player whose events are inverted (symbol)
+;;; - a curve for the maximum upper notes
+;;; - a curve for the maximum lower notes. Both these curves can have any
+;;;   arbitrary x range but the y values should use MIDI note numbers or note
+;;;   symbols. Note that the x range will be stretched over the number of bars
+;;;   in the piece, not the given bar range, so that the bar number can be used
+;;;   for interpolation.
+;;; - a curve to decide whether to actually play a note in the new part or
+;;;   not. This can also have any arbitrary x range and will also be stretched
+;;;   over the number of bars in the piece, but the y range should be from 0 to
+;;;   10 as the interpolated value for the notes in each bar is passed to an
+;;;   activity-levels object to determine whether to play or not.
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; :start-bar :start-event :end-bar :end-event. These are passed to
+;;; double-events. See that method for details but note that the defaults for
+;;; the end-* arguments are NIL which in turn default to the last bar/event.
+;;; :reset-midi-channels. T or NIL to reset all events in the slippery-chicken
+;;; object to the 
+;;; 
+;;; RETURN VALUE
+;;; the (modified) slippery-chicken object
+;;; 
+;;; SYNOPSIS
+(defmethod double-player-inverted ((sc slippery-chicken) new-player new-ins
+                                   existing-player upper-curve lower-curve
+                                   &key (start-bar 1) (start-event 1)
+                                     (activity-curve '(0 10 100 10))
+                                     end-bar end-event
+                                     (reset-midi-channels t) (update-slots t)
+                                     (midi-channel 1)
+                                     (microtones-midi-channel -1))
+;;; ****
+  (add-player sc new-player new-ins (instrument-palette sc) midi-channel
+              microtones-midi-channel)
+  (double-events sc existing-player new-player start-bar start-event end-bar
+                 end-event :consolidate-rests nil :auto-beam nil)
+  (let ((upper (doctor-env upper-curve (num-bars sc)))
+        (lower (doctor-env lower-curve (num-bars sc)))
+        (al (make-al))
+        (ac (new-lastx activity-curve (num-bars sc)))
+        last-set)
+    (map-over-bars
+     sc start-bar end-bar new-player
+     #'(lambda (bar)
+       (let* ((set (get-set-for-bar-num sc (bar-num bar)))
+              (notes
+               (limit-for-instrument
+                (clone (if set (setq last-set set) last-set))
+                ;; (get-standard-ins 'piano)
+                (get-data new-ins (instrument-palette sc))
+                :upper (midi-to-note
+                        (round (interpolate (1- (bar-num bar)) upper)))
+                :lower (midi-to-note
+                        (round (interpolate (1- (bar-num bar)) lower))))))
+         (invert bar notes t)
+         ;; now use the activity curve to turn notes back off if necessary
+         (loop with level = (interpolate (1- (bar-num bar)) ac)
+            for e in (rhythms bar)
+            for active = (active al level)
+            do (unless active (force-rest e)))))))
+  (when reset-midi-channels (reset-midi-channels sc))
+  (when update-slots (update-slots sc)))
 
-(defmethod quantise ((sc slippery-chicken) rhythm)
-  (let ((sc2 (clone-and-fill-with-rests sc rhythm)))
-    (quantise sc sc2)))
-
-|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.

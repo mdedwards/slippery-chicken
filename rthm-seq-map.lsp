@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  10:39:30 Sat Jun  6 2020 CEST
+;;; $$ Last modified:  19:19:54 Tue Jul 14 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -654,8 +654,10 @@ data: (5 3 2)
 
 |#
 ;;; SYNOPSIS
-(defmethod add-player ((rsm rthm-seq-map) player &optional data cycle)
+(defmethod add-player ((rsm rthm-seq-map) player &optional data cycle
+                                                   ignore1 ignore2)
 ;;; ****
+  (declare (ignore ignore1 ignore2))
   ;; (print '*****************************************) (print rsm)
   (when (member player (players rsm))
     (error "rthm-seq-map::add-player: ~a already in the map: can't add."
@@ -693,8 +695,9 @@ data: (5 3 2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Oct 29 17:07:56 2018 -- surely we must do this too?
-(defmethod add-player :after ((rsm rthm-seq-map) player &optional data cycle)
-  (declare (ignore data cycle))
+(defmethod add-player :after ((rsm rthm-seq-map) player &optional data cycle
+                                                          ignore1 ignore2)
+  (declare (ignore data cycle ignore1 ignore2))
   (add-player-to-players rsm player))
 
 (defmethod add-player-to-players ((rsm rthm-seq-map) player)

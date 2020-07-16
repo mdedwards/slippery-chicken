@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  10:58:13 Sat Mar 23 2019 CET
+;;; $$ Last modified:  19:12:31 Tue Jul 14 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -464,6 +464,8 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;;   This is required if the player argument is a symbol.  Default NIL.
 ;;; - An instrument-palette object.  Default =
 ;;;   +slippery-chicken-standard-instrument-palette+.
+;;; - the midi-channel for the new player
+;;; - the microtones-midi-channel for the new player
 ;;;
 ;;; RETURN VALUE
 ;;; The player object added.
@@ -471,13 +473,19 @@ ensemble::players-exist: VLA is not a member of the ensemble
 ;;; SYNOPSIS
 (defmethod add-player ((e ensemble) player 
                        &optional
-                       instrument-id
-                       (instrument-palette
-                        +slippery-chicken-standard-instrument-palette+))
+                         instrument-id
+                         (instrument-palette
+                          +slippery-chicken-standard-instrument-palette+)
+                         ;; MDE Tue Jul 14 19:08:15 2020, Heidhausen
+                         (midi-channel 1)
+                         (microtones-midi-channel -1))
 ;;; ****
   (let ((player (if (player-p player)
                     player
-                    (make-player player instrument-palette instrument-id))))
+                    (make-player player instrument-palette instrument-id
+                                 :midi-channel midi-channel
+                                 :microtones-midi-channel
+                                 microtones-midi-channel))))
     (add player e)
     (setf (players e) (econs (players e) (id player)))
     player))

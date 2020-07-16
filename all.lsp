@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  17:07:58 Tue Jun  9 2020 CEST
+;;; $$ Last modified:  19:16:27 Tue Jul 14 2020 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -96,17 +96,17 @@
   (setf *package* (find-package :sc))
   (let* ((title (format nil "slippery chicken ~a"
                        +slippery-chicken-version+))
-	(sc-logo (concatenate 'string +slippery-chicken-src-path+
-			      "sc-ascii-logo.txt"))
-	 (in (open sc-logo :if-does-not-exist nil)))
+        (sc-logo (concatenate 'string +slippery-chicken-src-path+
+                              "sc-ascii-logo.txt"))
+         (in (open sc-logo :if-does-not-exist nil)))
     (when logo
       (if in 
-	  (progn
-	    (loop for line = (read-line in nil)
-		  while line do (format t "~a~%" line))
-	     (close in))
-	  (format t "(\\  }\\   ~%(  \\_('> ~a~%(__(=_)  ~%   -\"=   ~%"
-		  title)))
+          (progn
+            (loop for line = (read-line in nil)
+                  while line do (format t "~a~%" line))
+             (close in))
+          (format t "(\\  }\\   ~%(  \\_('> ~a~%(__(=_)  ~%   -\"=   ~%"
+                  title)))
   #+sbcl t
   #-sbcl (values)))
 
@@ -254,6 +254,7 @@
 (sc-compile-and-load "rthm-seq-palette.lsp")
 (sc-compile-and-load "rthm-seq-map.lsp")
 (sc-compile-and-load "instrument-palette.lsp")
+(sc-compile-and-load "instruments.lsp")
 (sc-compile-and-load "player.lsp")
 (sc-compile-and-load "bar-holder.lsp")
 (sc-compile-and-load "sequenz.lsp")
@@ -271,7 +272,6 @@
 (sc-compile-and-load "cycle-repeats.lsp")
 (sc-compile-and-load "recurring-event.lsp")
 (sc-compile-and-load "intervals-mapper.lsp")
-(sc-compile-and-load "instruments.lsp")
 (sc-compile-and-load "lilypond.lsp")
 (sc-compile-and-load "popcorn.lsp")
 #+(and (or linux darwin) sbcl) (sc-compile-and-load "osc.lsp")

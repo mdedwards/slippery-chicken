@@ -3096,7 +3096,7 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod tie-repeated-notes ((sc slippery-chicken) start-bar end-bar players
-                               &key (consolidate t))
+                               &key (consolidate t) (check-ties? t))
 ;;; ****
   (unless players (setf players (players sc)))
   (unless start-bar (setf start-bar 1))
@@ -3125,7 +3125,8 @@ NIL
          (when consolidate
            (consolidate-all-notes sc start-bar end-bar players))
          (update-slots sc))
-    (check-ties sc t)
+    (when check-ties?
+      (check-ties sc t))
     count-list))
 
 

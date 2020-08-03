@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:19:07 Mon Jul 13 2020 CEST
+;;; $$ Last modified:  19:02:51 Mon Aug  3 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3489,9 +3489,8 @@ seq-num 5, VN, replacing G3 with B6
                                       :upper (second limits)
                                       :lower (first limits))
                       for qni in qnis
-                      ;; a zero means we got a fast note from
-                      ;; the last note last seq to the first
-                      ;; note this seq
+                      ;; a zero means we got a fast note from the last note last
+                      ;; seq to the first note this seq
                       for e1 = (if (zerop qni)
                                    (get-last-attack last-seq)
                                    (get-nth-attack (1- qni) seq))
@@ -3500,48 +3499,49 @@ seq-num 5, VN, replacing G3 with B6
                       with new-pitch with pos with compare
                       do
                         (when (> (abs distance) lfl)
-                          (if (> distance 0) ;; leap up
-                              (progn
-                                (setf compare (lowest e1)
-                                      pos (position (highest e2) 
-                                                    pitches
-                                                    :test #'pitch=))
-                                (unless pos
-                                  (error "slippery-chicken::~
-                                        shorten-large-fast-leaps: ~
-                                        pitch ~a not in set: ~a ~%pitches:~a"
-                                         (data (highest e2)) (data set)
-                                         (pitch-list-to-symbols pitches)))
-                                (setf new-pitch
-                                      (loop 
-                                         for i downfrom pos to 0 
-                                         for p = (nth i pitches)
-                                         do
-                                           (when (<= (pitch- p compare)
-                                                     lfl)
-                                             ;; a side-effect here is that
-                                             ;; quick leaps to chords are
-                                             ;; replaced with single pitches 
-                                             (return p)))))
-                              (progn ;; leap down
-                                (setf compare (highest e1)
-                                      pos (position (lowest e2) pitches
-                                                    :test #'pitch=))
-                                (unless pos
-                                  (error "slippery-chicken::~
-                                          shorten-large-fast-leaps: ~
-                                          pitch not in set: ~a" (highest e2)))
-                                (setf new-pitch
-                                      (loop 
-                                         for i from pos to (1- (length pitches))
-                                         for p = (nth i pitches)
-                                         do
-                                           (when (<= (pitch- compare p)
-                                                     lfl)
-                                             ;; a side-effect here is that
-                                             ;; quick leaps to chords are
-                                             ;; replaced with single pitches 
-                                             (return p))))))
+                          ;; MDE Mon Aug  3 18:32:37 2020, Heidhausen -- warn
+                          ;; rather than error (below) but also neated code to
+                          ;; avoid duplication 
+                          (flet ((get-new-pitch (up) ; if nil then down
+                                   (setq compare (if up
+                                                     (lowest e1)
+                                                     (highest e1))
+                                         pos (position (if up
+                                                           (highest e2)
+                                                           (lowest e2))
+                                                       pitches
+                                                       :test #'pitch=))
+                                   (if pos
+                                       (loop
+                                          with 1-len = (1- (length pitches))
+                                          with i = pos
+                                          for p = (nth i pitches)
+                                          do
+                                            (when (<= (pitch-
+                                                       (if up p compare)
+                                                       (if up compare p))
+                                                      lfl)
+                                              ;; a side-effect here is that
+                                              ;; quick leaps to chords are
+                                              ;; replaced with single pitches 
+                                              (return p))
+                                            (if up
+                                                (if (zerop i)
+                                                    (return)
+                                                    (decf i))
+                                                (if (= i 1-len)
+                                                    (return)
+                                                    (incf i))))
+                                       (when (get-sc-config
+                                              'shorten-large-fast-leaps-warning)
+                                         (warn "slippery-chicken::~
+                                                shorten-large-fast-leaps: ~
+                                                pitch ~a not in set: ~a ~
+                                                ~%pitches:~a"
+                                             (data (highest e2)) (data set)
+                                             (pitch-list-to-symbols
+                                              pitches))))))
+                            (setq new-pitch (get-new-pitch (> distance 0))))
                           (if new-pitch
                               (flet ((doit (event)
                                        (when verbose
@@ -3576,7 +3576,7 @@ seq-num 5, VN, replacing G3 with B6
                                       (error
                                        "~a~&slippery-chicken::shorten-large-~
                                         fast-leaps: couldn't get-nth-attack"
-                                             seq))
+                                       seq))
                                     (unless first-bar-num
                                       (error
                                        "slippery-chicken::shorten-large-fast-~
@@ -3612,10 +3612,10 @@ seq-num 5, VN, replacing G3 with B6
                                        ~%Couldn't get new pitch for ~a, ~
                                        section ~a, seq-num ~a, e1 ~a, e2 ~a! ~
                                        ~%pitches: ~a" 
-                                    player section (1+ seq-num)
-                                    (id (pitch-or-chord e1))
-                                    (id (pitch-or-chord e2))
-                                    (pitch-list-to-symbols pitches)))))))
+                                      player section (1+ seq-num)
+                                      (id (pitch-or-chord e1))
+                                      (id (pitch-or-chord e2))
+                                      (pitch-list-to-symbols pitches)))))))
                  (setf last-seq seq)
                  (incf global-seq-num)))
      finally (return count)))

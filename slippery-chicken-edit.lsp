@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:20:16 Wed Jul 15 2020 CEST
+;;; $$ Last modified:  19:06:25 Mon Aug  3 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3131,9 +3131,6 @@ NIL
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Apr 20 13:42:14 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken-edit/delete-slur
 ;;; DESCRIPTION
 ;;; Delete a slur mark that starts on a specified note within a specified bar

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:18:26 Tue Aug  4 2020 CEST
+;;; $$ Last modified:  14:47:10 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -8643,16 +8643,15 @@ data: (11 15)
 ;;; SYNOPSIS
 (defmethod get-set-for-bar-num ((sc slippery-chicken) bar-num)
 ;;; ****
-  (let* ((e1 (loop for player in (players sc)
-               for bar = (get-bar sc bar-num player)
-               for event = (when bar (first (rhythms bar)))
-               do
-                 (when (and event (set-ref event))
-                   (return event)))))
-    (if e1
-        (get-data (set-ref e1) (set-palette sc))
+  (let* ((bar (get-bar sc bar-num (first (players sc))))
+         (section-ref (when bar (butlast (player-section-ref bar))))
+         (section (when section-ref (get-data-data section-ref (set-map sc))))
+         (set-ref (when section (nth (nth-seq bar) section)))
+         (set (get-data set-ref (set-palette sc))))
+    (if set
+        set
         (warn "slippery-chicken::get-set-for-bar-num: no set-ref found ~%~
-                at bar ~a" bar-num))))
+               at bar ~a" bar-num))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

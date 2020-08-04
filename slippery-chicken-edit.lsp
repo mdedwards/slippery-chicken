@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  12:02:19 Tue Aug  4 2020 CEST
+;;; $$ Last modified:  14:27:38 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7716,6 +7716,7 @@ NIL
         (al (make-al))
         (ac (new-lastx activity-curve (num-bars sc)))
         last-set)
+    (print upper) (print lower)
     (map-over-bars
      sc start-bar end-bar new-player
      #'(lambda (bar)
@@ -7726,9 +7727,9 @@ NIL
                 ;; (get-standard-ins 'piano)
                 (get-data new-ins (instrument-palette sc))
                 :upper (midi-to-note
-                        (round (interpolate (1- (bar-num bar)) upper)))
+                        (round (interpolate (bar-num bar) upper)))
                 :lower (midi-to-note
-                        (round (interpolate (1- (bar-num bar)) lower))))))
+                        (round (interpolate (bar-num bar) lower))))))
          (invert bar notes t)
          ;; now use the activity curve to turn notes back off if necessary
          (loop with level = (interpolate (1- (bar-num bar)) ac)

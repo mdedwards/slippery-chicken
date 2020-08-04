@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:42:35 Wed Jul  8 2020 CEST
+;;; $$ Last modified:  12:04:35 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4052,9 +4052,30 @@ NIL
                            artificial-harmonics chords)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* event/common-notes
+;;; DESCRIPTION
+;;; Return the number of pitches common to two events. Note that the chord
+;;; method returns more information, including the common pitches and pitch
+;;; symbols. 
+;;; 
+;;; ARGUMENTS
+;;; - first event object
+;;; - second event object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to treat enharmonic equivalents as equal
+;;; - T or NIL to treat the same pitches in different octaves as equal
+;;; 
+;;; RETURN VALUE
+;;; the number of common pitches (integer). 2nd (and 3rd) returned values will
+;;; be the list of common pitch(es), also as a 3rd value: a list of symbols if
+;;; both events are chords).
+;;; 
+;;; SYNOPSIS
 (defmethod common-notes ((e1 event) (e2 event)
                          &optional (enharmonics-are-equal t)
                            (octaves-are-true nil))
+;;; ****
   (if (or (is-rest e1) (is-rest e2))
       0
       (let ((poc1 (pitch-or-chord e1))
@@ -4064,18 +4085,18 @@ NIL
               ((and (is-single-pitch e1) (is-single-pitch e2))
                (let ((p= (pitch= poc1 poc2 enharmonics-are-equal)))
                  (if p=
-                     1
+                     (values 1 (list poc1))
                      (if octaves-are-true
-                         (if (is-octave poc1 poc2) 1 0)
+                         (if (is-octave poc1 poc2) (values 1 (list poc1)) 0)
                          0))))
               ((is-single-pitch e1)
                (if (contains-pitches poc2 (list poc1)
                                      enharmonics-are-equal octaves-are-true)
-                   1 0))
+                   (values 1 (list poc1)) 0))
               ((is-single-pitch e2)
                (if (contains-pitches poc1 (list poc2)
                                      enharmonics-are-equal octaves-are-true)
-                   1 0))))))
+                   (values 1 (list poc2)) 0))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* event/midi-control-change

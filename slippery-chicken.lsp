@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  19:02:51 Mon Aug  3 2020 CEST
+;;; $$ Last modified:  11:08:41 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -3435,14 +3435,13 @@ seq-num 5, VN, replacing G3 with B6
                                      &key threshold (verbose t))
 ;;; ****
   ;; 24.3.11 get threshold from class if not given
-  (unless threshold
-    (setf threshold (fast-leap-threshold sc)))
+  (unless threshold (setq threshold (fast-leap-threshold sc)))
   (loop 
      for player in (get-players (ensemble sc))
      with global-seq-num 
      with count = 0
      do
-       (setf global-seq-num 1)
+       (setq global-seq-num 1)
        (loop for section in (get-all-section-refs sc) do
             (loop 
                for seq-num from 0
@@ -3496,52 +3495,49 @@ seq-num 5, VN, replacing G3 with B6
                                    (get-nth-attack (1- qni) seq))
                       for e2 = (get-nth-attack qni seq)
                       for distance = (event-distance e1 e2)
+                      for up = (> distance 0)
                       with new-pitch with pos with compare
                       do
                         (when (> (abs distance) lfl)
                           ;; MDE Mon Aug  3 18:32:37 2020, Heidhausen -- warn
                           ;; rather than error (below) but also neated code to
                           ;; avoid duplication 
-                          (flet ((get-new-pitch (up) ; if nil then down
-                                   (setq compare (if up
-                                                     (lowest e1)
-                                                     (highest e1))
-                                         pos (position (if up
-                                                           (highest e2)
-                                                           (lowest e2))
-                                                       pitches
-                                                       :test #'pitch=))
-                                   (if pos
-                                       (loop
-                                          with 1-len = (1- (length pitches))
-                                          with i = pos
-                                          for p = (nth i pitches)
-                                          do
-                                            (when (<= (pitch-
-                                                       (if up p compare)
-                                                       (if up compare p))
-                                                      lfl)
-                                              ;; a side-effect here is that
-                                              ;; quick leaps to chords are
-                                              ;; replaced with single pitches 
-                                              (return p))
-                                            (if up
-                                                (if (zerop i)
-                                                    (return)
-                                                    (decf i))
-                                                (if (= i 1-len)
-                                                    (return)
-                                                    (incf i))))
-                                       (when (get-sc-config
-                                              'shorten-large-fast-leaps-warning)
-                                         (warn "slippery-chicken::~
-                                                shorten-large-fast-leaps: ~
-                                                pitch ~a not in set: ~a ~
-                                                ~%pitches:~a"
-                                             (data (highest e2)) (data set)
-                                             (pitch-list-to-symbols
-                                              pitches))))))
-                            (setq new-pitch (get-new-pitch (> distance 0))))
+                          (setq
+                           compare (if up
+                                       (lowest e1)
+                                       (highest e1))
+                           pos (position (if up
+                                             (highest e2)
+                                             (lowest e2))
+                                         pitches
+                                         :test #'pitch=)
+                           new-pitch 
+                           (if pos
+                               (loop
+                                  with 1-len = (1- (length pitches))
+                                  with i = pos
+                                  for p = (nth i pitches)
+                                  do
+                                    (when (<= (pitch- (if up p compare)
+                                                      (if up compare p))
+                                              lfl)
+                                      ;; a side-effect here is that quick leaps
+                                      ;; to chords are replaced with single
+                                      ;; pitches
+                                      (return p))
+                                    (if up
+                                        (if (zerop i) (return) (decf i))
+                                        (if (= i 1-len) (return) (incf i))))
+                               (when (get-sc-config
+                                      'shorten-large-fast-leaps-warning)
+                                 (warn "slippery-chicken::~
+                                        shorten-large-fast-leaps: ~
+                                        for ~a at bar ~a: skipping ~
+                                        ~&pitch ~a: not in set ~a ~%pitches:~a"
+                                       player (bar-num e1)
+                                       (data (highest e2))
+                                       (pitch-list-to-symbols (data set))
+                                       (pitch-list-to-symbols pitches)))))
                           (if new-pitch
                               (flet ((doit (event)
                                        (when verbose

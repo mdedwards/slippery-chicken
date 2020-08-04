@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  19:06:25 Mon Aug  3 2020 CEST
+;;; $$ Last modified:  12:02:19 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6409,6 +6409,9 @@ T
 ;;;   will result in the 'octavisation'. Default = the slippery-chicken
 ;;;   object's fast-leap-threshold (0.125 seconds by default).
 ;;; - :verbose. Print bar numbers where processing takes place. Default = NIL.
+;;; - :whole-chords. T or NIL to transpose whole chords or just the repeated
+;;;   notes in chords (could result in unplayable chords if NIL). Default = T =
+;;;   transpose whole chord.
 ;;; 
 ;;; RETURN VALUE
 ;;; the (modified) slippery-chicken object.
@@ -6416,11 +6419,11 @@ T
 ;;; SYNOPSIS
 (defmethod octavise-repeated-notes ((sc slippery-chicken) player
                                     &key (start-bar 1) end-bar verbose
-                                      (intervals '(12))
+                                      (intervals '(12)) (whole-chords t)
                                       (threshold (fast-leap-threshold sc)))
 ;;; ****
   (let ((transps (make-cscl intervals))
-        last time-diff)
+        last time-diff common-pitches transp)
     (unless end-bar (setq end-bar (num-bars sc)))
     (next-event sc player t start-bar)
     (loop for event = (next-event sc player t nil end-bar) while event do
@@ -6428,14 +6431,27 @@ T
            (setq time-diff (- (start-time event) (start-time last)))
            ;; fast repeated notes cause jump of octave +/-
            (when (and (< time-diff threshold)
-                      (> (common-notes event last) 0))
+                      ;; if there are notes in common, then the 2nd value
+                      ;; returned will be the list of pitch objects in common
+                      (setq common-pitches
+                            (nth-value 1 (common-notes event last))))
              (when verbose (format t "~&octavise-repeated-notes: bar ~a, ~
                                       last: ~a, this: ~a, diff: ~,3f"
                                    (bar-num event)
                                    (get-pitch-symbol last)
                                    (get-pitch-symbol event) 
                                    time-diff))
-             (transpose event (get-next transps) :destructively t)))
+             ;; (transpose event (get-next transps) :destructively t)))
+             (setq transp (get-next transps))
+             (if (or whole-chords (is-single-pitch event))
+                 (transpose event (get-next transps) :destructively t)
+                 ;; MDE Tue Aug  4 11:56:17 2020, Heidhausen -- don't transpose
+                 ;; the whole chord, rather, just the repeated notes 
+                 (setf (pitch-or-chord event) ; has to be a chord!
+                       (loop for p in (data (pitch-or-chord event)) collect
+                            (if (member p common-pitches :test #'pitch=)
+                                (transpose p transp)
+                                p))))))
          (setq last event)))
   sc)
 

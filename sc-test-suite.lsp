@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:25:36 Tue Jun 23 2020 CEST
+;;; $$ Last modified:  21:20:53 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -1273,7 +1273,70 @@
         (test-it 2 3.1 4.0)
         (test-it 1 0.05 0.0)
         (test-it 1 0.15 0.125)))))
-                                 
+
+;;; MDE Sat Jul 11 14:23:42 2020, Heidhausen
+(sc-deftest test-invert-rsb ()
+  (let* ((r (make-rest 'e))
+         (mini
+          (make-slippery-chicken
+           '+sc-object+
+           :ensemble '(((va (viola :midi-channel 2))))
+           :set-palette '((1 ((c3 d3 e3 f3 g3 a3 b3 c4))))
+           :set-map '((1 (1 1 1)))
+           :rthm-seq-palette '((1 ((((4 4) (32) 32 x 7 (16) s (16) (16) e (e)
+                                     (s) s (e))))))
+           :rthm-seq-map '((1 ((va (1 1 1)))))))
+         (rsb1 (get-bar mini 1 'va))
+         (rsb (clone rsb1)))
+    (setf (pitch-or-chord r) '(c4 e4))
+    ;; (print-simple rsb)
+    (sc-test-check
+      (invert rsb)
+      (is-rest (get-nth-event 1 rsb))
+      (is-rest (get-nth-event 2 rsb))
+      (is-rest (get-nth-event 3 rsb))
+      (is-rest (get-nth-event 5 rsb))
+      (pitch-or-chord (get-nth-event 0 rsb))
+      (pitch-or-chord (get-nth-event 4 rsb))
+      (pitch-or-chord (get-nth-event 6 rsb))
+      (pitch-or-chord (get-nth-event 7 rsb))
+      (pitch-or-chord (get-nth-event 9 rsb))
+      (pitch-or-chord (get-nth-event 10 rsb))
+      (pitch-or-chord (get-nth-event 12 rsb))
+      (setq rsb (clone rsb1))
+      (invert rsb '(c4 d4 e4) nil)
+      ;; (print-simple rsb)
+      (is-rest (get-nth-event 1 rsb))
+      (is-rest (get-nth-event 2 rsb))
+      (is-rest (get-nth-event 3 rsb))
+      (is-rest (get-nth-event 5 rsb))
+      (eq 'c4 (get-pitch-symbol (get-nth-event 0 rsb)))
+      (eq 'd4 (get-pitch-symbol (get-nth-event 4 rsb)))
+      (eq 'e4 (get-pitch-symbol (get-nth-event 6 rsb)))
+      (eq 'c4 (get-pitch-symbol (get-nth-event 7 rsb)))
+      (eq 'd4 (get-pitch-symbol (get-nth-event 9 rsb)))
+      (eq 'e4 (get-pitch-symbol (get-nth-event 10 rsb)))
+      (eq 'c4 (get-pitch-symbol (get-nth-event 12 rsb)))
+      (setq rsb (clone rsb1))
+      (invert rsb '(c4 d4 e4) t)        ; with ties
+      (is-rest (get-nth-event 1 rsb))
+      (is-rest (get-nth-event 2 rsb))
+      (is-rest (get-nth-event 3 rsb))
+      (is-rest (get-nth-event 5 rsb))
+      (eq 'c4 (get-pitch-symbol (get-nth-event 0 rsb)))
+      (eq 'd4 (get-pitch-symbol (get-nth-event 4 rsb)))
+      (eq 'e4 (get-pitch-symbol (get-nth-event 6 rsb)))
+      (eq 'e4 (get-pitch-symbol (get-nth-event 7 rsb)))
+      (eq 'c4 (get-pitch-symbol (get-nth-event 9 rsb)))
+      (eq 'c4 (get-pitch-symbol (get-nth-event 10 rsb)))
+      (eq 'd4 (get-pitch-symbol (get-nth-event 12 rsb)))
+      (is-tied-from (get-nth-event 6 rsb))
+      (is-tied-to (get-nth-event 7 rsb))
+      (is-tied-from (get-nth-event 9 rsb))
+      (is-tied-to (get-nth-event 10 rsb))
+      ;; (print-simple rsb)
+      (not (is-rest r))
+      (equalp '(c4 e4) (get-pitch-symbols r)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rhythm tests
@@ -2301,10 +2364,14 @@
         )
     (sc-test-check
       (= 2 (common-notes e1 e2))
+      (nth-value 1 (common-notes e1 e2))
+      (equalp '(cs4 c3) (nth-value 2 (common-notes e1 e2)))
       (zerop (common-notes e1 r))
       (zerop (common-notes e2 r))
       (zerop (common-notes e3 e5))
+      (not (nth-value 1 (common-notes e3 e5)))
       (= 1 (common-notes e4 e6 t))
+      (pitch= (make-pitch 'c3) (first (nth-value 1 (common-notes e4 e6 t))))
       (= 1 (common-notes e1 e7 nil t))
       (= 1 (common-notes e1 e3))
       (= 1 (common-notes e4 e3))
@@ -16813,17 +16880,18 @@
          (make-slippery-chicken
           '+mini+
           :ensemble '(((sax (alto-sax :midi-channel 1))))
-          :set-palette '((1 ((e3 fs3 b3 cs4 fs4 gs4 ds5 f5)))) 
-          :set-map '((1 (1 1 1))
-                     (2 (1 1 1))
-                     (3 ((a (1 1 1))
-                         (b ((x (1 1 1))
-                             (y (1 1 1))))))
+          :set-palette '((1 ((e3 fs3 b3 cs4 fs4 gs4 ds5 f5)))
+                         (2 ((ef3 fs3 b3 cs4 fs4 gs4 ds5 f5))))
+          :set-map '((1 (1 1 2))
+                     (2 (1 1 2))
+                     (3 ((a (1 2 1))
+                         (b ((x (1 2 1))
+                             (y (1 1 2))))))
                      (4 ((a (1 1 1))
                          (b (1 1 1))
                          (c (1 1 1 1))))
                      (5 (1 1 1))
-                     (6 (1 1 1))
+                     (6 (1 1 2))
                      (7 (1 1 1)))
           :rthm-seq-palette '((1 ((((4 4) h q e s s))
                                   :pitch-seq-palette ((1 2 3 4 5)))))
@@ -16839,12 +16907,15 @@
                           (6 ((sax (1 1 1))))
                           (7 ((sax (1 1 1))))))))
     (sc-test-check
+      (= 1 (id (get-set-for-bar-num mini 13)))
+      (= 2 (id (get-set-for-bar-num mini 11)))
       (= 34 (num-sequences (rthm-seq-map mini)))
       (= 34 (num-sequences (set-map mini)))
       (= 34 (num-sequences (set-map mini)))
       ;; MDE Tue Feb 13 14:55:00 2018
       (= 34 (count-ref (rthm-seq-map mini) 1))
-      (= 34 (count-ref (set-map mini) 1))
+      (= 28 (count-ref (set-map mini) 1))
+      (= 6 (count-ref (set-map mini) 2))
       (equalp
        (get-section-refs mini 2 4)
        '((2) (3 A) (3 B X) (3 B Y) (4 A) (4 B) (4 C) (5))))))
@@ -16997,19 +17068,19 @@
       (equalp
        (loop for ne = (next-event mini 'vn t)
           while ne
-          collect (get-pitch-symbol ne))
-       '(G3 B6 G3 G3 G3 G3 G3 B6 B6 B6 B6 B6 G3 G3 G3 G3 G3 B6 B6 B6 B6 B6 G3
-         G3 G3 G3 G3 B6 B6 B6 B6 B6 G3 G3 G3 G3 G3 B6 B6 B6 B6 B6 G3 G3 G3 G3
-         G3 B6 B6 B6 B6 B6 G3 G3 G3 G3 G3 B6 B6 B6))
+                 collect (get-pitch-symbol ne))
+       '(G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3
+          B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6
+          G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6))
       (shorten-large-fast-leaps mini :threshold 0.25 :verbose nil)
       (not (next-event mini 'vn nil 1))
       (equalp
        (loop for ne = (next-event mini 'vn t)
           while ne
-          collect (get-pitch-symbol ne))
-       '(G3 B6 B6 B6 B6 B6 G3 G3 G3 G3 G3 B6 B6 B6 B6 B6 G3 G3 G3 G3 G3 B6 B6
-         B6 B6 B6 G3 G3 G3 G3 G3 B6 B6 B6 B6 B6 G3 G3 G3 G3 G3 B6 B6 B6 B6 B6
-         G3 G3 G3 G3 G3 B6 B6 B6 B6 B6 G3 G3 G3 G3)))))
+                 collect (get-pitch-symbol ne))
+       '(G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6
+         G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6
+         G3 B6 G3 B6 G3 B6 G3 B6 G3 B6 G3 B6)))))
 
 ;;; SAR Thu May 10 13:50:31 BST 2012
 ;;; UT'S FOR MIDI FILE ARGUMENTS GO HERE ONCE TICKETS 299-302 HAVE BEEN
@@ -19092,6 +19163,7 @@
     (add-mark-to-note mini 1 '(4 2) 'vn '(rgb (0 1 0)))
     (add-mark-to-note mini 1 5 'vn 'flag-head)
     (add-mark-to-note mini 1 6 'vn '(rgb (0 0 1)))
+    (write-xml mini)
     (lp-display mini)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

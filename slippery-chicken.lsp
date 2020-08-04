@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:08:41 Tue Aug  4 2020 CEST
+;;; $$ Last modified:  14:18:26 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -444,12 +444,15 @@
     (update-instruments-total-duration sc)
     ;; (print (get-data 1 (set-palette sc)))
     ;; 25.3.11 the make-slippery-chicken function might set this to nil thus
-    ;; overriding the class default 
-    (unless (fast-leap-threshold sc)
-      (setf (fast-leap-threshold sc) 0.125))
-    (format t "~&Shortening short, fast leaps...")
-    (format t "~&Shortened ~a large fast leaps"
-            (shorten-large-fast-leaps sc :verbose nil))
+    ;; overriding the class default
+    ;; MDE Tue Aug  4 14:14:20 2020, Heidhausen -- actually, let's allow this to
+    ;; be nil so we can avoid calling shorten-large-fast-leaps
+    ;; (unless (fast-leap-threshold sc)
+    ;; (setf (fast-leap-threshold sc) 0.125))
+    (when (fast-leap-threshold sc)
+      (format t "~&Shortening short, fast leaps...")
+      (format t "~&Shortened ~a large fast leaps"
+              (shorten-large-fast-leaps sc :verbose nil)))
     ;; make sure tempo changes get registered in midi output
     (update-events-tempo sc)
     ;; 28.1.11

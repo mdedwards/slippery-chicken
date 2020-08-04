@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  14:27:38 Tue Aug  4 2020 CEST
+;;; $$ Last modified:  20:53:45 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6395,7 +6395,7 @@ T
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
-;;; - the player to process (symbol)
+;;; - the player (symbol) or players (list) to process
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
@@ -6412,47 +6412,55 @@ T
 ;;; - :whole-chords. T or NIL to transpose whole chords or just the repeated
 ;;;   notes in chords (could result in unplayable chords if NIL). Default = T =
 ;;;   transpose whole chord.
+;;; - :check-ties. Whether to call the check-ties method, which as a side-effect
+;;;   makes sure tied notes are of the same pitch. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; the (modified) slippery-chicken object.
 ;;; 
 ;;; SYNOPSIS
-(defmethod octavise-repeated-notes ((sc slippery-chicken) player
+(defmethod octavise-repeated-notes ((sc slippery-chicken) players
                                     &key (start-bar 1) end-bar verbose
                                       (intervals '(12)) (whole-chords t)
+                                      (check-ties t)
                                       (threshold (fast-leap-threshold sc)))
 ;;; ****
-  (let ((transps (make-cscl intervals))
-        last time-diff common-pitches transp)
-    (unless end-bar (setq end-bar (num-bars sc)))
-    (next-event sc player t start-bar)
-    (loop for event = (next-event sc player t nil end-bar) while event do
-         (when last
-           (setq time-diff (- (start-time event) (start-time last)))
-           ;; fast repeated notes cause jump of octave +/-
-           (when (and (< time-diff threshold)
-                      ;; if there are notes in common, then the 2nd value
-                      ;; returned will be the list of pitch objects in common
-                      (setq common-pitches
-                            (nth-value 1 (common-notes event last))))
-             (when verbose (format t "~&octavise-repeated-notes: bar ~a, ~
-                                      last: ~a, this: ~a, diff: ~,3f"
-                                   (bar-num event)
-                                   (get-pitch-symbol last)
-                                   (get-pitch-symbol event) 
-                                   time-diff))
-             ;; (transpose event (get-next transps) :destructively t)))
-             (setq transp (get-next transps))
-             (if (or whole-chords (is-single-pitch event))
-                 (transpose event (get-next transps) :destructively t)
-                 ;; MDE Tue Aug  4 11:56:17 2020, Heidhausen -- don't transpose
-                 ;; the whole chord, rather, just the repeated notes 
-                 (setf (pitch-or-chord event) ; has to be a chord!
-                       (loop for p in (data (pitch-or-chord event)) collect
-                            (if (member p common-pitches :test #'pitch=)
-                                (transpose p transp)
-                                p))))))
-         (setq last event)))
+  (loop for player in (force-list players) do
+       (let ((transps (make-cscl intervals))
+             last time-diff common-pitches transp)
+         (unless end-bar (setq end-bar (num-bars sc)))
+         (next-event sc player t start-bar)
+         (loop for event = (next-event sc player t nil end-bar) while event do
+              (when last
+                (setq time-diff (- (start-time event) (start-time last)))
+                ;; fast repeated notes cause jump of octave +/-
+                (when (and (< time-diff threshold)
+                           ;; if there are notes in common, then the 2nd value
+                           ;; returned will be the list of pitch objects in
+                           ;; common
+                           (setq common-pitches
+                                 (nth-value 1 (common-notes event last))))
+                  (setq transp (get-next transps))
+                  (when verbose (format t "~&octavise-repeated-notes: bar ~a, ~
+                                           last: ~a, this: ~a, diff: ~,3f ~
+                                           transp: ~,3f"
+                                        (bar-num event)
+                                        (get-pitch-symbol last)
+                                        (get-pitch-symbol event) 
+                                        time-diff transp))
+                  ;; (transpose event (get-next transps) :destructively t)))
+                  (if (or whole-chords (is-single-pitch event))
+                      (transpose event transp :destructively t)
+                      ;; MDE Tue Aug 4 11:56:17 2020, Heidhausen -- don't
+                      ;; transpose the whole chord, rather, just the repeated
+                      ;; notes
+                      (setf (pitch-or-chord event) ; has to be a chord!
+                            (loop for p in (data (pitch-or-chord event)) collect
+                                 (if (member p common-pitches :test #'pitch=)
+                                     (transpose p transp)
+                                     p))))))
+              (setq last event))))
+  (when check-ties (check-ties sc t nil)) ; no error or warnings
   sc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -7692,7 +7700,7 @@ NIL
 ;;; double-events. See that method for details but note that the defaults for
 ;;; the end-* arguments are NIL which in turn default to the last bar/event.
 ;;; :reset-midi-channels. T or NIL to reset all events in the slippery-chicken
-;;; object to the 
+;;; object to the original midi channels of the parent player. Default = T.
 ;;; 
 ;;; RETURN VALUE
 ;;; the (modified) slippery-chicken object
@@ -7702,7 +7710,7 @@ NIL
                                    existing-player upper-curve lower-curve
                                    &key (start-bar 1) (start-event 1)
                                      (activity-curve '(0 10 100 10))
-                                     end-bar end-event
+                                     end-bar end-event 
                                      (reset-midi-channels t) (update-slots t)
                                      (midi-channel 1)
                                      (microtones-midi-channel -1))
@@ -7716,7 +7724,7 @@ NIL
         (al (make-al))
         (ac (new-lastx activity-curve (num-bars sc)))
         last-set)
-    (print upper) (print lower)
+    ;; (print upper) (print lower)
     (map-over-bars
      sc start-bar end-bar new-player
      #'(lambda (bar)

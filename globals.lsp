@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  08:49:11 Thu Mar 26 2020 CET
+;;; $$ Last modified:  14:55:01 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -118,6 +118,10 @@
      ;; The default amplitude for all events that don't have amplitude/dynamic
      ;; set via some means such as marks.
      (default-amplitude 0.7)
+     ;; in init-instance of sc class, warn if we can't call sc-init (because it
+     ;; will be called explicitly later)
+     (warn-no-sc-init t)
+     (warn-unused-instruments t)
      ;; whether to warn when there's no CMN mark for a given Lilypond mark
      (warn-no-cmn-mark t)
      ;; sim for Lilypond

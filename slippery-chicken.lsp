@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:47:10 Tue Aug  4 2020 CEST
+;;; $$ Last modified:  21:05:54 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -499,12 +499,14 @@
   ;; MDE Thu Jan 12 11:15:13 2012 -- in order to clone we need to be able to
   ;; init the object without slot values then setf them afterwards 
   (if (and (set-map sc) (ensemble sc) (rthm-seq-map sc) (rthm-seq-palette sc)
-             (not (defer sc)) (set-palette sc))
+           (not (defer sc)) (set-palette sc))
       (sc-init sc)
-      (warn "slippery-chicken::initialize-instance: sc-init method is being ~
-             ~%skipped as one of the following slots's data is missing: ~
-             ~%set-map, ensemble, rthm-seq-map, rthm-seq-palette, set-palette. ~
-             ~%Assuming you will call sc-init explicitly later.")))
+      (when (get-sc-config 'warn-no-sc-init)
+        (warn "slippery-chicken::initialize-instance: sc-init method is being ~
+               ~%skipped as one of the following slots's data is missing: ~
+               ~%set-map, ensemble, rthm-seq-map, rthm-seq-palette, ~
+               set-palette. ~
+               ~%Assuming you will call sc-init explicitly later."))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1101,8 +1103,11 @@
                         hierarchy ensemble-players ins))))
         (setf (instruments-hierarchy sc) (copy-list ensemble-players)))
     (unless (= (length rsm-players) ensemble-players-len)
-      (warn "slippery-chicken::check-instruments: ~%Number of instruments ~
-             in the rthm-seq-map is not the same ~%as that in the ensemble!"))
+      ;; MDE Tue Aug  4 14:53:55 2020, Heidhausen -- now an option
+      (when (get-sc-config 'warn-unused-instruments)
+        (warn "slippery-chicken::check-instruments: ~%Number of instruments ~
+               in the rthm-seq-map is not the same ~%as that in the ~
+               ensemble!")))
     (if (instruments-write-bar-nums sc)
         (loop for bw in (instruments-write-bar-nums sc)
            unless (member bw ensemble-players) do
@@ -3520,10 +3525,11 @@ seq-num 5, VN, replacing G3 with B6
                                   with 1-len = (1- (length pitches))
                                   with i = pos
                                   for p = (nth i pitches)
+                                  for interval = (abs (pitch- p compare))
                                   do
-                                    (when (<= (pitch- (if up p compare)
-                                                      (if up compare p))
-                                              lfl)
+                                  ;; MDE Tue Aug 4 20:58:48 2020, Heidhausen --
+                                  ;; don't create fast repeated notes!
+                                    (when (integer-between interval 1 lfl)
                                       ;; a side-effect here is that quick leaps
                                       ;; to chords are replaced with single
                                       ;; pitches
@@ -5712,9 +5718,6 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
   (handle-ties (piece sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May 17 14:51:33 EDT 2012: Added robodoc entry
-
 ;;; Just for checking really but if same-spellings all ties will be forced to
 ;;; the same spellings. 
 ;;; 
@@ -5732,6 +5735,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether to force all tied pitches to have the same
 ;;;   enharmonic spellings.
+;;; - a function to call on error, or NIL for no action.
 ;;; 
 ;;; RETURN VALUE 
 ;;; T if all tie data is ok, otherwise performs the on-fail function and

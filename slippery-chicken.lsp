@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  21:05:54 Tue Aug  4 2020 CEST
+;;; $$ Last modified:  14:32:51 Wed Aug  5 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -2038,8 +2038,7 @@ bar 45
 ;;; SYNOPSIS
 (defmethod players ((sc slippery-chicken))
 ;;; ****
-  (when (piece-p (piece sc))
-    (players (piece sc))))
+  (when (piece-p (piece sc)) (players (piece sc))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -7744,7 +7743,8 @@ FS4 G4)
                                        (instruments-hierarchy sc))))
                    (unless (and pos1 pos2)
                      (error "slippery-chicken::get-events-sorted-by-time: ~
-                                     event must be lacking a player slot."))
+                             event must be lacking a player slot or it's not ~
+                             in the instruments-hierarchy slot of sc."))
                    (< pos1 pos2))
                  (< (start-time e1) (start-time e2))))))
      appending events))

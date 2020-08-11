@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  12:42:44 Sat May  2 2020 CEST
+;;; $$ Last modified:  12:47:00 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -965,6 +965,10 @@ data: (G2 A2 CS4 A4 A4 A5 C6 C6 FS6)
     ;; return a new set, using the given id or if not given, the same id as the
     ;; original set 
     (make-sc-set (if by-freq result (data chord)) :tag (tag s)
+                 ;; MDE Tue Aug  4 12:46:23 2020, Heidhausen -- more slots!
+                 :auto-sort (auto-sort s) :warn-dups (warn-dups s)
+                 :rm-dups (rm-dups s)
+                 :subsets (subsets s) :related-sets (related-sets s)
                  :id (if id id (id s)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1737,9 +1741,10 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 |#
 ;;; SYNOPSIS
 (defun make-sc-set (sc-set &key id subsets related-sets (auto-sort t) tag
-                             (rm-dups t))
+                             (warn-dups t) (rm-dups t))
 ;;; ****
   (make-instance 'sc-set :id id :data sc-set :subsets subsets :rm-dups rm-dups
+                 :warn-dups warn-dups
                  :tag tag :related-sets related-sets :auto-sort auto-sort))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

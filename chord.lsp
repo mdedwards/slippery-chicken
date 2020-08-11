@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  14:39:39 Sat Jul 11 2020 CEST
+;;; $$ Last modified:  11:20:52 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1648,8 +1648,7 @@ data: (
   (all-members (data c) (init-pitch-list pitches nil)
                #'(lambda (p1 p2)
                    (or (pitch= p1 p2 enharmonics-are-equal)
-                       (when octaves-are-true
-                         (is-octave p1 p2))))))
+                       (when octaves-are-true (is-octave p1 p2))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Mon Apr 16 14:16:13 BST 2012: Added robodoc entry

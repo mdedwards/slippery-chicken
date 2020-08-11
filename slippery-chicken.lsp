@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:19:07 Mon Jul 13 2020 CEST
+;;; $$ Last modified:  21:05:54 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -444,12 +444,15 @@
     (update-instruments-total-duration sc)
     ;; (print (get-data 1 (set-palette sc)))
     ;; 25.3.11 the make-slippery-chicken function might set this to nil thus
-    ;; overriding the class default 
-    (unless (fast-leap-threshold sc)
-      (setf (fast-leap-threshold sc) 0.125))
-    (format t "~&Shortening short, fast leaps...")
-    (format t "~&Shortened ~a large fast leaps"
-            (shorten-large-fast-leaps sc :verbose nil))
+    ;; overriding the class default
+    ;; MDE Tue Aug  4 14:14:20 2020, Heidhausen -- actually, let's allow this to
+    ;; be nil so we can avoid calling shorten-large-fast-leaps
+    ;; (unless (fast-leap-threshold sc)
+    ;; (setf (fast-leap-threshold sc) 0.125))
+    (when (fast-leap-threshold sc)
+      (format t "~&Shortening short, fast leaps...")
+      (format t "~&Shortened ~a large fast leaps"
+              (shorten-large-fast-leaps sc :verbose nil)))
     ;; make sure tempo changes get registered in midi output
     (update-events-tempo sc)
     ;; 28.1.11
@@ -496,12 +499,14 @@
   ;; MDE Thu Jan 12 11:15:13 2012 -- in order to clone we need to be able to
   ;; init the object without slot values then setf them afterwards 
   (if (and (set-map sc) (ensemble sc) (rthm-seq-map sc) (rthm-seq-palette sc)
-             (not (defer sc)) (set-palette sc))
+           (not (defer sc)) (set-palette sc))
       (sc-init sc)
-      (warn "slippery-chicken::initialize-instance: sc-init method is being ~
-             ~%skipped as one of the following slots's data is missing: ~
-             ~%set-map, ensemble, rthm-seq-map, rthm-seq-palette, set-palette. ~
-             ~%Assuming you will call sc-init explicitly later.")))
+      (when (get-sc-config 'warn-no-sc-init)
+        (warn "slippery-chicken::initialize-instance: sc-init method is being ~
+               ~%skipped as one of the following slots's data is missing: ~
+               ~%set-map, ensemble, rthm-seq-map, rthm-seq-palette, ~
+               set-palette. ~
+               ~%Assuming you will call sc-init explicitly later."))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1098,8 +1103,11 @@
                         hierarchy ensemble-players ins))))
         (setf (instruments-hierarchy sc) (copy-list ensemble-players)))
     (unless (= (length rsm-players) ensemble-players-len)
-      (warn "slippery-chicken::check-instruments: ~%Number of instruments ~
-             in the rthm-seq-map is not the same ~%as that in the ensemble!"))
+      ;; MDE Tue Aug  4 14:53:55 2020, Heidhausen -- now an option
+      (when (get-sc-config 'warn-unused-instruments)
+        (warn "slippery-chicken::check-instruments: ~%Number of instruments ~
+               in the rthm-seq-map is not the same ~%as that in the ~
+               ensemble!")))
     (if (instruments-write-bar-nums sc)
         (loop for bw in (instruments-write-bar-nums sc)
            unless (member bw ensemble-players) do
@@ -3435,14 +3443,13 @@ seq-num 5, VN, replacing G3 with B6
                                      &key threshold (verbose t))
 ;;; ****
   ;; 24.3.11 get threshold from class if not given
-  (unless threshold
-    (setf threshold (fast-leap-threshold sc)))
+  (unless threshold (setq threshold (fast-leap-threshold sc)))
   (loop 
      for player in (get-players (ensemble sc))
      with global-seq-num 
      with count = 0
      do
-       (setf global-seq-num 1)
+       (setq global-seq-num 1)
        (loop for section in (get-all-section-refs sc) do
             (loop 
                for seq-num from 0
@@ -3489,59 +3496,57 @@ seq-num 5, VN, replacing G3 with B6
                                       :upper (second limits)
                                       :lower (first limits))
                       for qni in qnis
-                      ;; a zero means we got a fast note from
-                      ;; the last note last seq to the first
-                      ;; note this seq
+                      ;; a zero means we got a fast note from the last note last
+                      ;; seq to the first note this seq
                       for e1 = (if (zerop qni)
                                    (get-last-attack last-seq)
                                    (get-nth-attack (1- qni) seq))
                       for e2 = (get-nth-attack qni seq)
                       for distance = (event-distance e1 e2)
+                      for up = (> distance 0)
                       with new-pitch with pos with compare
                       do
                         (when (> (abs distance) lfl)
-                          (if (> distance 0) ;; leap up
-                              (progn
-                                (setf compare (lowest e1)
-                                      pos (position (highest e2) 
-                                                    pitches
-                                                    :test #'pitch=))
-                                (unless pos
-                                  (error "slippery-chicken::~
+                          ;; MDE Mon Aug  3 18:32:37 2020, Heidhausen -- warn
+                          ;; rather than error (below) but also neated code to
+                          ;; avoid duplication 
+                          (setq
+                           compare (if up
+                                       (lowest e1)
+                                       (highest e1))
+                           pos (position (if up
+                                             (highest e2)
+                                             (lowest e2))
+                                         pitches
+                                         :test #'pitch=)
+                           new-pitch 
+                           (if pos
+                               (loop
+                                  with 1-len = (1- (length pitches))
+                                  with i = pos
+                                  for p = (nth i pitches)
+                                  for interval = (abs (pitch- p compare))
+                                  do
+                                  ;; MDE Tue Aug 4 20:58:48 2020, Heidhausen --
+                                  ;; don't create fast repeated notes!
+                                    (when (integer-between interval 1 lfl)
+                                      ;; a side-effect here is that quick leaps
+                                      ;; to chords are replaced with single
+                                      ;; pitches
+                                      (return p))
+                                    (if up
+                                        (if (zerop i) (return) (decf i))
+                                        (if (= i 1-len) (return) (incf i))))
+                               (when (get-sc-config
+                                      'shorten-large-fast-leaps-warning)
+                                 (warn "slippery-chicken::~
                                         shorten-large-fast-leaps: ~
-                                        pitch ~a not in set: ~a ~%pitches:~a"
-                                         (data (highest e2)) (data set)
-                                         (pitch-list-to-symbols pitches)))
-                                (setf new-pitch
-                                      (loop 
-                                         for i downfrom pos to 0 
-                                         for p = (nth i pitches)
-                                         do
-                                           (when (<= (pitch- p compare)
-                                                     lfl)
-                                             ;; a side-effect here is that
-                                             ;; quick leaps to chords are
-                                             ;; replaced with single pitches 
-                                             (return p)))))
-                              (progn ;; leap down
-                                (setf compare (highest e1)
-                                      pos (position (lowest e2) pitches
-                                                    :test #'pitch=))
-                                (unless pos
-                                  (error "slippery-chicken::~
-                                          shorten-large-fast-leaps: ~
-                                          pitch not in set: ~a" (highest e2)))
-                                (setf new-pitch
-                                      (loop 
-                                         for i from pos to (1- (length pitches))
-                                         for p = (nth i pitches)
-                                         do
-                                           (when (<= (pitch- compare p)
-                                                     lfl)
-                                             ;; a side-effect here is that
-                                             ;; quick leaps to chords are
-                                             ;; replaced with single pitches 
-                                             (return p))))))
+                                        for ~a at bar ~a: skipping ~
+                                        ~&pitch ~a: not in set ~a ~%pitches:~a"
+                                       player (bar-num e1)
+                                       (data (highest e2))
+                                       (pitch-list-to-symbols (data set))
+                                       (pitch-list-to-symbols pitches)))))
                           (if new-pitch
                               (flet ((doit (event)
                                        (when verbose
@@ -3576,7 +3581,7 @@ seq-num 5, VN, replacing G3 with B6
                                       (error
                                        "~a~&slippery-chicken::shorten-large-~
                                         fast-leaps: couldn't get-nth-attack"
-                                             seq))
+                                       seq))
                                     (unless first-bar-num
                                       (error
                                        "slippery-chicken::shorten-large-fast-~
@@ -3612,10 +3617,10 @@ seq-num 5, VN, replacing G3 with B6
                                        ~%Couldn't get new pitch for ~a, ~
                                        section ~a, seq-num ~a, e1 ~a, e2 ~a! ~
                                        ~%pitches: ~a" 
-                                    player section (1+ seq-num)
-                                    (id (pitch-or-chord e1))
-                                    (id (pitch-or-chord e2))
-                                    (pitch-list-to-symbols pitches)))))))
+                                      player section (1+ seq-num)
+                                      (id (pitch-or-chord e1))
+                                      (id (pitch-or-chord e2))
+                                      (pitch-list-to-symbols pitches)))))))
                  (setf last-seq seq)
                  (incf global-seq-num)))
      finally (return count)))
@@ -5717,9 +5722,6 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
   (handle-ties (piece sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May 17 14:51:33 EDT 2012: Added robodoc entry
-
 ;;; Just for checking really but if same-spellings all ties will be forced to
 ;;; the same spellings. 
 ;;; 
@@ -5737,6 +5739,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether to force all tied pitches to have the same
 ;;;   enharmonic spellings.
+;;; - a function to call on error, or NIL for no action.
 ;;; 
 ;;; RETURN VALUE 
 ;;; T if all tie data is ok, otherwise performs the on-fail function and
@@ -8648,16 +8651,15 @@ data: (11 15)
 ;;; SYNOPSIS
 (defmethod get-set-for-bar-num ((sc slippery-chicken) bar-num)
 ;;; ****
-  (let* ((e1 (loop for player in (players sc)
-               for bar = (get-bar sc bar-num player)
-               for event = (when bar (first (rhythms bar)))
-               do
-                 (when (and event (set-ref event))
-                   (return event)))))
-    (if e1
-        (get-data (set-ref e1) (set-palette sc))
+  (let* ((bar (get-bar sc bar-num (first (players sc))))
+         (section-ref (when bar (butlast (player-section-ref bar))))
+         (section (when section-ref (get-data-data section-ref (set-map sc))))
+         (set-ref (when section (nth (nth-seq bar) section)))
+         (set (get-data set-ref (set-palette sc))))
+    (if set
+        set
         (warn "slippery-chicken::get-set-for-bar-num: no set-ref found ~%~
-                at bar ~a" bar-num))))
+               at bar ~a" bar-num))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

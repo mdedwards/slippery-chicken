@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  20:53:45 Tue Aug  4 2020 CEST
+;;; $$ Last modified:  14:35:38 Wed Aug  5 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -6956,6 +6956,9 @@ NIL
   (let ((player-id (if (player-p player) (id player) player)))
     (add-player (ensemble sc) player instrument instrument-palette
                 midi-channel microtones-midi-channel)
+    ;; MDE Wed Aug  5 14:34:43 2020, Heidhausen -- ins-hier!
+    (setf (instruments-hierarchy sc)
+          (econs (instruments-hierarchy sc) player-id))
     ;; this calls the rthm-seq-map method
     (add-player-to-players (piece sc) player-id)
     ;; we pass all players so that new ones can clone existing ones (the
@@ -7881,6 +7884,10 @@ NIL
                   ;; channel 1
                   (midi-channel player-obj) (first midi-channels)
                   (microtones-midi-channel player-obj) (second midi-channels)
+                  ;; MDE Wed Aug  5 14:30:39 2020, Heidhausen -- also add player
+                  ;; to ins-hier  
+                  (instruments-hierarchy sc)
+                  (econs (instruments-hierarchy sc) player)
                   (players piece) (econs (players piece) player))
             ;; we add to the last staff group by default
             ;; MDE Tue Oct 30 08:20:23 2018 -- use the new method

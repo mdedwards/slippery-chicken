@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    May 18th 2019
 ;;;
-;;; $$ Last modified:  11:47:52 Sat Dec 14 2019 CET
+;;; $$ Last modified:  10:30:25 Tue Aug 11 2020 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -206,7 +206,7 @@
 ;;; May 23rd 2019, Heidhausen
 ;;; 
 ;;; DESCRIPTION
-;;; Make an afu object
+;;; Make an afu object. See https://michael-edwards.org/wp/?p=1227 for examples.
 ;;; 
 ;;; ARGUMENTS
 ;;; Any keyword arguments that make-instance would accept i.e. slots such as

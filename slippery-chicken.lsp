@@ -4542,6 +4542,8 @@ seq-num 5, VN, replacing G3 with B6
                        (play-chance-env-exp 0.5)
                        (time-scaler 1.0)
                        (normalise .99)
+		       scaled-by
+		       scaled-to
                        (simulate nil)
                        (from-sequence 1)
                        (num-sequences nil)
@@ -4866,7 +4868,9 @@ seq-num 5, VN, replacing G3 with B6
                          :srate srate
                          :data-format data-format
                          :header-type header-type
-                         :play play :channels channels :statistics t)
+                         :play play :channels channels :statistics t
+			 :scaled-to scaled-to
+			 :scaled-by scaled-by)
         (loop 
            for player in events and player-name in players 
            and snd-trans in snd-transitions
@@ -4891,7 +4895,7 @@ seq-num 5, VN, replacing G3 with B6
                             ;; the first event into consideration, not just
                             ;; max-start-time...
                             events-before-max-start))
-           (format t "~%Processing player ~a/~a: ~a (resting players will ~
+	   (format t "~%Processing player ~a/~a: ~a (resting players will ~
                           not be processed)~%"
                    player-count num-players (nth (1- player-count) players))
            (when (and (numberp num-sections) (= 1 num-sections))
@@ -4915,7 +4919,7 @@ seq-num 5, VN, replacing G3 with B6
                 (setf events-this-rs (length rs))
               ;; (print rs)
                 ;; (print rthm-seqs) (print rs-count)
-                (format t "~%    Processing rthm-seq ~a (~a events)~%"
+		(format t "~%    Processing rthm-seq ~a (~a events)~%"
                         ;; print the rthm-seq id if we're only doing one
                         ;; section otherwise the rthm-seq count
                         ;; MDE Tue Apr  3 09:54:46 2012 -- make sure we don't

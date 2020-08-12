@@ -7929,5 +7929,197 @@ NIL
    :rthm-seq-palette '((1 ((((4 4) w)))))
    :rthm-seq-map `((1 ((,player (1)))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* get-nearest-note/player
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Tue 11 Aug 2020 17:16:10 BST
+;;; 
+;;; DESCRIPTION
+;;; Like get-note, but will return the nearest note before or after the
+;;; specified bar / event number place from, potentially, any bar.
+;;; 
+;;; ARGUMENTS
+;;; - an sc object
+;;; - the bar number to start looking
+;;; - the event number within the bar to start looking
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; None.
+;;; 
+;;; RETURN VALUE
+;;; If found, the nearest sounding event in the stated player's part and the
+;;; number of events away (positive for forwards, negative for backwards),
+;;; otherwise NIL.
+;;; 
+;;; EXAMPLE
+#|
+(let ((mini
+          (make-slippery-chicken
+           '+mini+
+           :ensemble '(((sax (alto-sax :midi-channel 1))
+			(vn (violin :midi-channel 1))))
+           :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+           :set-map '((1 (1 1 1 1 1))
+                      (2 (1 1 1 1 1))
+                      (3 (1 1 1 1 1)))
+           :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                   :pitch-seq-palette ((1 2 3 4 5))))
+			       (2 ((((4 4) (w)))))
+			       (3 ((((4 4) (h) q e (s) s))
+				   :pitch-seq-palette ((1 2 5)))))
+	   :rthm-seq-map '((1 ((sax (1 1 1 1 1))
+			       (vn (2 2 2 2 2))))
+			   (2 ((sax (2 2 2 2 2))
+			       (vn (2 2 2 2 2))))
+			   (3 ((sax (3 3 3 3 3))
+			       (vn (2 2 2 2 2))))))))
+    (get-nearest-note mini 11 1 'sax))
+=>
+EVENT: start-time: 42.000, end-time: 43.000, 
+       duration-in-tempo: 1.000, 
+       compound-duration-in-tempo: 1.000, 
+       amplitude: 0.700 
+       bar-num: 11, marks-before: NIL, 
+       tempo-change: NIL 
+       instrument-change: NIL 
+       display-tempo: NIL, start-time-qtrs: 42.000, 
+       midi-time-sig: NIL, midi-program-changes: NIL, 
+       midi-control-changes: NIL, 
+       8va: 0, player: SAX
+       asco-label: NIL, asco-msgs: NIL
+       set-ref: (1)
+       pitch-or-chord: 
+PITCH: frequency: 164.814, midi-note: 52, midi-channel: 1 
+       pitch-bend: 0.0 
+       degree: 104, data-consistent: T, white-note: E3
+       nearest-chromatic: E3
+       src: 0.62996054, src-ref-pitch: C4, score-note: E3 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: NIL, flat: NIL, natural: T, 
+       octave: 3, c5ths: 0, no-8ve: E, no-8ve-no-acc: E
+       show-accidental: T, white-degree: 30, 
+       accidental: N, 
+       accidental-in-parentheses: NIL, marks: NIL, 
+       marks-before: NIL, amplitude: NIL
+LINKED-NAMED-OBJECT: previous: NIL, 
+                     this: NIL, 
+                     next: NIL
+NAMED-OBJECT: id: E3, tag: NIL, 
+data: E3
+**************
+
+       written-pitch-or-chord: 
+PITCH: frequency: 277.183, midi-note: 61, midi-channel: 1 
+       pitch-bend: 0.0 
+       degree: 122, data-consistent: T, white-note: C4
+       nearest-chromatic: CS4
+       src: 1.0594631, src-ref-pitch: C4, score-note: CS4 
+       qtr-sharp: NIL, qtr-flat: NIL, qtr-tone: NIL,  
+       micro-tone: NIL, 
+       sharp: T, flat: NIL, natural: NIL, 
+       octave: 4, c5ths: 2, no-8ve: CS, no-8ve-no-acc: C
+       show-accidental: T, white-degree: 35, 
+       accidental: S, 
+       accidental-in-parentheses: NIL, marks: NIL, 
+       marks-before: NIL, amplitude: NIL
+LINKED-NAMED-OBJECT: previous: NIL, 
+                     this: NIL, 
+                     next: NIL
+NAMED-OBJECT: id: CS4, tag: NIL, 
+data: CS4
+**************
+RHYTHM: value: 4.000, duration: 1.000, rq: 1, is-rest: NIL, 
+        is-whole-bar-rest: NIL, 
+        score-rthm: 4.0, undotted-value: 4, num-flags: 0, num-dots: 0, 
+        is-tied-to: NIL, is-tied-from: NIL, compound-duration: 1.000, 
+        is-grace-note: NIL, needs-new-note: T, beam: NIL, bracket: NIL, 
+        rqq-note: NIL, rqq-info: NIL, marks: NIL, marks-in-part: NIL, 
+        letter-value: 4, tuplet-scaler: 1, bar-pos: 1, 
+        grace-note-duration: 0.05
+LINKED-NAMED-OBJECT: previous: NIL, 
+                     this: NIL, 
+                     next: NIL
+NAMED-OBJECT: id: Q, tag: NIL, 
+data: Q
+**************
+
+1
+|#
+
+;;; SYNOPSIS
+(defmethod get-nearest-note ((sc slippery-chicken) bar-num event-num player)
+  ;;; ****
+  (let (nearest-note)
+    (multiple-value-bind (ev-a num-a) ; find nearest note after
+	(get-nearest-note-after sc bar-num event-num player)
+      (multiple-value-bind (ev-b num-b) ; find nearest note after
+	  (get-nearest-note-before sc bar-num event-num player)
+	(if (>= num-a (abs num-b))
+	    (setf nearest-note (list ev-b num-b))
+	    (setf nearest-note (list ev-a num-a)))))
+    (if nearest-note
+	(values-list nearest-note)
+	(error "~%get-nearest-note:: no nearest note for ~a at bar ~a ev ~a"
+	       player bar-num event-num))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Tue 11 Aug 2020 17:56:59 BST
+;;; See get-nearest-note, above. It works the same but only ever goes forwards
+;;; in time.
+(defmethod get-nearest-note-after ((sc slippery-chicken)
+				   bar-num event-num player)
+  (let (nearest-note-after (nea-count 0))
+    (loop named up-loop
+	  for bn from bar-num to (num-bars sc)
+	  for bar = (get-bar sc bn player)
+	  with first-e
+	  do 
+	     (if (= bn bar-num)
+	       (setf first-e event-num)
+	       (setf first-e 1))
+	     (loop for en from first-e to (num-rhythms bar)
+		   for e = (get-nth-event (1- en) bar nil) ; 0 based
+		   do
+		      (when (and e (not (is-rest e)))
+			(setf nearest-note-after e)
+			(return-from up-loop))
+		      (incf nea-count))
+	    thereis nearest-note-after)
+    (if nearest-note-after
+	(values nearest-note-after nea-count)
+	(error "~%get-nearest-note-after:: no note after for ~a at bar ~a ev ~a"
+	       player bar-num event-num))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Tue 11 Aug 2020 17:56:59 BST
+;;; See get-nearest-note, above. It works the same but only ever goes backwards
+;;; in time.
+(defmethod get-nearest-note-before ((sc slippery-chicken)
+				   bar-num event-num player)
+  (let (nearest-note-before (neb-count 0))
+    (loop named down-loop
+	  for bn from bar-num downto 1
+	  for bar = (get-bar sc bn player)
+	  with first-e
+	  do
+	     (if (= bn bar-num)
+	       (setf first-e event-num)
+	       (setf first-e (num-rhythms bar)))
+	     (loop for en from first-e above 0
+		   for e = (get-nth-event (1- en) bar nil) ; 0 based
+		   do
+		      (when (and e (not (is-rest e)))
+			(setf nearest-note-before e)
+			(return-from down-loop))
+		      (decf neb-count))
+	    thereis nearest-note-before)
+    (if nearest-note-before
+	(values nearest-note-before neb-count)
+	(error "~%get-nearest-note-after:: no note after for ~a at bar ~a ev ~a"
+	       player bar-num event-num))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken-edit.lsp

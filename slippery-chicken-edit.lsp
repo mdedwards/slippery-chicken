@@ -8049,11 +8049,19 @@ data: Q
   (let (nearest-note)
     (multiple-value-bind (ev-a num-a) ; find nearest note after
 	(get-nearest-note-after sc bar-num event-num player)
+      ;(print (list ev-a num-a))
       (multiple-value-bind (ev-b num-b) ; find nearest note after
 	  (get-nearest-note-before sc bar-num event-num player)
-	(if (>= num-a (abs num-b))
-	    (setf nearest-note (list ev-b num-b))
-	    (setf nearest-note (list ev-a num-a)))))
+	      ;(print (list ev-b num-b))
+	(cond ((null ev-a)
+	       (setf nearest-note (list ev-b num-b)))
+	      ((null ev-b)
+	       (setf nearest-note (list ev-a num-a)))
+	      ((>= num-a (abs num-b))
+	       (setf nearest-note (list ev-b num-b)))
+	      ((> (abs num-b) num-a)
+	       (setf nearest-note (list ev-a num-a)))
+	      (t nil))))
     (if nearest-note
 	(values-list nearest-note)
 	(error "~%get-nearest-note:: no nearest note for ~a at bar ~a ev ~a"
@@ -8084,8 +8092,9 @@ data: Q
 	    thereis nearest-note-after)
     (if nearest-note-after
 	(values nearest-note-after nea-count)
-	(error "~%get-nearest-note-after:: no note after for ~a at bar ~a ev ~a"
-	       player bar-num event-num))))
+	(progn (warn "~%get-nearest-note-after:: no note after for ~a at bar ~a ev ~a"
+		     player bar-num event-num)
+	       nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Tue 11 Aug 2020 17:56:59 BST
@@ -8112,7 +8121,8 @@ data: Q
 	    thereis nearest-note-before)
     (if nearest-note-before
 	(values nearest-note-before neb-count)
-	(error "~%get-nearest-note-after:: no note after for ~a at bar ~a ev ~a"
-	       player bar-num event-num))))
+	(progn (warn "~%get-nearest-note-before:: no note before for ~a at bar ~a ev ~a"
+		     player bar-num event-num)
+	       nil))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken-edit.lsp

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified:  15:07:38 Tue Mar 31 2020 CEST
+;;; $$ Last modified:  16:19:49 Sat Aug 22 2020 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -108,7 +108,7 @@
                (int (handle-number +osc-sc-output-stream+ (second oscuff)))
                (quit (setf happy nil))
                ;; save opening ( so evaluate lisp code
-               (lisp (osc-eval +osc-sc-output-stream+ oscuff))
+               (lisp (osc-eval +osc-sc-output-stream+ oscuff print))
                (t (warn "osc-sc::osc-call: Don't understand ~a. Ignoring."
                         soscuff)
                   (finish-output)))))))
@@ -123,7 +123,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; evaluate lisp code
-(defun osc-eval (stream expr)
+(defun osc-eval (stream expr &optional print)
   ;; (format t "~&osc-eval: ~a ~a" expr (stringp (first expr)))
   ;; (finish-output t)
   (unless stream
@@ -142,6 +142,8 @@
     (cond ((not result) (setq result '(0)))
           ((equal result T) (setq result '(1)))
           ((not (listp result)) (setq result (list result))))
+    ;; MDE Sat Aug 22 16:18:26 2020, Heidhausen -- print results
+    (when print (format t "~&osc-eval: ~a" result))
     ;; stuff our id back into the list and send back
     (osc-send-list (append (list '/osc-sc id) result) stream)))
 

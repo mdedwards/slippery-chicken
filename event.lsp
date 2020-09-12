@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  12:04:35 Tue Aug  4 2020 CEST
+;;; $$ Last modified:  18:28:23 Sat Sep 12 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4604,8 +4604,6 @@ W
   (find-next-grace-note list-of-events start-index t warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Thu Dec 22 20:53:16 EST 2011 SAR: Added robodoc info
-
 ;;; ****f* event/make-punctuation-events
 ;;; DESCRIPTION
 ;;; Given a list of numbers, a rhythm, and a note name or list of note names,
@@ -4663,9 +4661,6 @@ rest Q, rest Q, rest Q, rest Q, rest Q, rest Q, rest Q,
               (loop repeat (1- d) collect (clone rest)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Dec 23 13:41:36 EST 2011: Added robodoc info
-
 ;;; ****f* event/make-events
 ;;; DESCRIPTION
 ;;; Make a list of events using the specified data, whereby a list indicates a
@@ -4748,8 +4743,6 @@ G4 Q, rest E, rest S, (D4 FS4 A4) S,
     events))
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Fri Dec 23 13:41:36 EST 2011: Added robodoc info
-;;; 
 ;;; ****f* event/make-events2
 ;;; DESCRIPTION
 ;;; Like make-events, but rhythms and pitches are given in separate lists to
@@ -4813,9 +4806,76 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
                          :microtones-midi-channel microtones-midi-channel)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* event/make-events3
+;;; DATE
+;;; September 12th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Make a list of events using various approaches. Either with separate lists
+;;; of pitches and rhythms make-events and make-events2 will be called according
+;;; to the type of arguments given. Note that when specifying pitches, octaves
+;;; don't have to be retyped if they don't change.
+;;; 
+;;; ARGUMENTS
+;;; Two required arguments but their type and function vary according to
+;;; requirements. See examples below. 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - A whole number value to indicate the MIDI channel on which to play back
+;;;   the event.
+;;; - A whole number value to indicate the MIDI channel on which to play back
+;;;   microtonal pitch material for the event. NB: See player.lsp/make-player
+;;;   for details on microtones in MIDI output. 
+;;; 
+;;; RETURN VALUE
+;;; a list of events
+;;; 
+;;; EXAMPLE
 
-;;; 23.12.11 SAR Added robodoc info
+;; simple list of pitch/rhythm pairs but no chords or rests (so no need for list
+;; pairs)
+(make-events3 '(g4 s a s b 32 c 32) nil)
+;; pitch and rhythms in pairs in a single list, including chords and rests
+(make-events3 '((g4 q) e s ((d4 fs4 a4) s)) nil)
+;; using separate lists for rhythms and pitches, tied rhythms, single pitches, a
+;; chord, and both nil and r to indicate rests
+(make-events3 '(q e e. h+s 32 q+te) '(cs4 d4 (e4 g4 b5) nil a3 r))
+;; just one pitch but various rhythms (but here we can't use tied rhythms) 
+(make-events3 '(q e e. s e s s s s) 'cs6)
+;; just one rhythm but various pitches/chords and all in octave 4 without having
+;; to retype (here we can't use tied rhythms either)
+(make-events3 's '(c4 d e (f a) bf))
+#|
 
+|#
+;;; SYNOPSIS
+(defun make-events3 (data1 data2 &key (midi-channel 1)
+                                   (microtones-midi-channel 2))
+;;; ****
+  ;;    list of rhythms and list of pitches
+  (cond ((and (consp data1) (consp data2))
+         (make-events2 data1 data2 midi-channel microtones-midi-channel))
+        ;; list of rhythms but only one pitch
+        ((and (consp data1) data2 (symbolp data2))
+         (make-events2 data1 (ml data2 (length data1))
+                       midi-channel microtones-midi-channel))
+        ;; list of pitches but only one rhythm
+        ((and (consp data2) data1 (symbolp data1))
+         (make-events2 (ml data1 (length data2)) data2
+                       midi-channel microtones-midi-channel))
+        ;; simple list of pitch/rhythm pairs but no chords or rests thus no need
+        ;; for 2-element sublists
+        ((and (simple-listp data1) (not data2))
+         (make-events (split-into-sub-groups2 data1 2)
+                      midi-channel microtones-midi-channel))
+        ;; list of pitch/rhythm pairs e.g. quarter note, two rests, and a
+        ;; chord: '((g4 q) e s ((d4 fs4 a4) s)). if you need rests this is the
+        ;; way to go.
+        ((and (consp data1) (not data2))
+         (make-events data1 midi-channel microtones-midi-channel))
+        (t (error "make-snippet: can't make events from ~a and ~a"
+                  data1 data2))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* event/event-p
 ;;; DESCRIPTION
 ;;; Test to confirm that a given object is an event object.

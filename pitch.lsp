@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  13:52:02 Tue Jun 16 2020 CEST
+;;; $$ Last modified:  17:18:49 Sat Sep 12 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -935,9 +935,6 @@ NIL
   (< (frequency p1) (frequency p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Jan  2 20:21:17 EST 2012: Added robodoc info
-
 ;;; ****m* pitch/pitch>
 ;;; DESCRIPTION
 ;;; Test to see if the frequency value of one specified pitch object is greater
@@ -2486,10 +2483,6 @@ data: D7
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Dec 31 12:19:46 EST 2011: Added robodoc info
-;;; MDE Mon Jul 23 11:30:20 2018 -- changed default midi channel from 0 to 1
-
 ;;; ****f* pitch/make-pitch
 ;;; DESCRIPTION
 ;;; Create a pitch object, specifying a note as either a symbol or a
@@ -2505,7 +2498,9 @@ data: D7
 ;;; 
 ;;; ARGUMENTS
 ;;; - A note, either as an alphanumeric note name (e.g. cs4) or a numeric hertz
-;;;   frequency.  
+;;;   frequency. Note that if one or more pitche objects have been initialised
+;;;   then it is not necessary to specify the octave as the last octave will be
+;;;   used 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
@@ -2559,6 +2554,15 @@ C4
 
 => 0.5946035487490308
 
+;;  make two pitch objects; the 2nd uses the octave of the first
+(progn (make-pitch 'cs6)
+       (make-pitch 'a))
+=>
+PITCH: frequency: 1760.000, midi-note: 93, midi-channel: 1 
+       pitch-bend: 0.0 
+       degree: 186, data-consistent: T, white-note: A6
+       nearest-chromatic: A6
+...
 |#
 ;;; SYNOPSIS
 (defun make-pitch (pitch &key (src-ref-pitch 'c4) (midi-channel 1))

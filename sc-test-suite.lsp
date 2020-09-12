@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  21:20:53 Tue Aug  4 2020 CEST
+;;; $$ Last modified:  18:30:45 Sat Sep 12 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -1775,6 +1775,23 @@
                  when (not (is-rest i))
                  collect (midi-channel (pitch-or-chord i)))
               '(3 3 3)))))
+
+;;; MDE Sat Sep 12 18:30:43 2020, Heidhausen 
+(sc-deftest test-event-make-events3 ()
+  (sc-test-check 
+    (= 4 (length (make-events3 '(g4 s a s b 32 c 32) nil)))
+    ;; pitch and rhythms in pairs in a single list, including chords and rests
+    (= 4 (length (make-events3 '((g4 q) e s ((d4 fs4 a4) s)) nil)))
+    ;; using separate lists for rhythms and pitches, tied rhythms, single
+    ;; pitches, a chord, and both nil and r to indicate rests
+    (= 8 (length
+          (make-events3 '(q e e. h+s 32 q+te) '(cs4 d4 (e4 g4 b5) nil a3 r))))
+    ;; just one pitch but various rhythms (but here we can't use tied rhythms) 
+    (= 9 (length (make-events3 '(q e e. s e s s s s) 'cs6)))
+    ;; just one rhythm but various pitches/chords and all in octave 4 without
+    ;; having to retype (here we can't use tied rhythms either)
+    (= 5 (length (make-events3 's '(c4 d e (f a) bf))))))
+
 
 (sc-deftest test-event-make-tuplet-events ()
   (let ((events1 (make-tuplet-events '((g4 q) e s s e q) '(7/3 3)))

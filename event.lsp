@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:28:23 Sat Sep 12 2020 CEST
+;;; $$ Last modified:  18:32:29 Sat Sep 12 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4831,7 +4831,7 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 ;;; a list of events
 ;;; 
 ;;; EXAMPLE
-
+#|
 ;; simple list of pitch/rhythm pairs but no chords or rests (so no need for list
 ;; pairs)
 (make-events3 '(g4 s a s b 32 c 32) nil)
@@ -4845,8 +4845,6 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 ;; just one rhythm but various pitches/chords and all in octave 4 without having
 ;; to retype (here we can't use tied rhythms either)
 (make-events3 's '(c4 d e (f a) bf))
-#|
-
 |#
 ;;; SYNOPSIS
 (defun make-events3 (data1 data2 &key (midi-channel 1)

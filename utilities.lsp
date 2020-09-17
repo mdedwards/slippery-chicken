@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:32:16 Tue Jun 23 2020 CEST
+;;; $$ Last modified:  18:00:44 Thu Sep 17 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5662,6 +5662,24 @@ yes_foo, 1 2 3 4;
                            (expt (- 1.0 (abs (- one p))) expt)))
          (sum (apply #'+ proximities)))
     (loop for p in proximities collect (/ p sum))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun minlen4 (list &optional (warn t))
+  (let* ((e1 (first list))
+         (e2 (second list))
+         (e3 (third list))
+         (len (length list))
+         (result (case len
+                   (1 (list e1 e1 e1 e1))
+                   (2 (list e1 e2 e1 e2))
+                   (3 (list e1 e2 e3 e2))
+                   (t list))))
+    (when (and warn (< len 4))
+      (warn "utilities::minlen4: the caller needs at least  ~
+                        4 list elements.~%Using ~a instead of ~a"
+            result list))
+    result))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:32:29 Sat Sep 12 2020 CEST
+;;; $$ Last modified:  16:02:42 Tue Sep 15 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4858,7 +4858,7 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
          (make-events2 data1 (ml data2 (length data1))
                        midi-channel microtones-midi-channel))
         ;; list of pitches but only one rhythm
-        ((and (consp data2) data1 (symbolp data1))
+        ((and (consp data2) data1 (atom data1))
          (make-events2 (ml data1 (length data2)) data2
                        midi-channel microtones-midi-channel))
         ;; simple list of pitch/rhythm pairs but no chords or rests thus no need

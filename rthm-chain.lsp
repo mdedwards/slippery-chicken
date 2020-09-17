@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  16:13:02 Thu Sep 10 2020 CEST
+;;; $$ Last modified:  16:14:15 Thu Sep 17 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1670,8 +1670,8 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;; ARGUMENTS
 ;;; - An integer that is the number of items in the list to be generated.
 ;;; - A list of at least 4 starting items or an integer >=4. If an integer is
-;;;   given rather than a list, the method will process a list of consecutive
-;;;   numbers from 1 to the specified integer.
+;;;   given rather than a list, the method will process a list of <integer>
+;;;   consecutive numbers from 1 (by default).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
@@ -1687,6 +1687,8 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;;   determines the intervals at which each successive element of the initial
 ;;;   list is introduced to the new list. A higher number indicates a steeper
 ;;;   exponential curve. Default = 1.3.
+;;; - :start-at. The number to start counting from if the 2nd argument is an
+;;;   integer instead of a list. Default = 1.
 ;;; - :orders. The patterns by which the elements are added. The method
 ;;;   cyclically applies these orders, the numbers 1, 2, and 3 representing the
 ;;;   three least used elements at each pass. These orders must therefore
@@ -1750,6 +1752,9 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
                      (peak 0.7)
                      ;; for an exponential curve going from 3 to num <items>
                      (expt 1.3)
+                     ;; MDE Thu Sep 17 16:11:03 2020, Heidhausen -- allow
+                     ;; counting from another number if items is an integer
+                     (start-at 1)
                      ;; these are the orders we'll use at the beginning
                      ;; (cyclically). They will then be used when we've gone
                      ;; beyond 3 items by always using the 3 least used items.
@@ -1817,7 +1822,7 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
                 (incf count)))
       ;; we want to return a 1-based list (not 0) if <items> was simply a number
       (unless (listp items)
-        (setf items (loop for i from 1 to num-items collect i)))
+        (setf items (loop for i from start-at repeat num-items collect i)))
       ;; just for statistics: get the usage data out of the hash
       (maphash #'(lambda (key val) 
                    (let ((skey (nth key items)))

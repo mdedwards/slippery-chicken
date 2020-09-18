@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  14:32:51 Wed Aug  5 2020 CEST
+;;; $$ Last modified:  13:43:44 Fri Sep 18 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -4542,8 +4542,8 @@ seq-num 5, VN, replacing G3 with B6
                        (play-chance-env-exp 0.5)
                        (time-scaler 1.0)
                        (normalise .99)
-		       scaled-by
-		       scaled-to
+                       scaled-by
+                       scaled-to
                        (simulate nil)
                        (from-sequence 1)
                        (num-sequences nil)
@@ -4869,8 +4869,8 @@ seq-num 5, VN, replacing G3 with B6
                          :data-format data-format
                          :header-type header-type
                          :play play :channels channels :statistics t
-			 :scaled-to scaled-to
-			 :scaled-by scaled-by)
+                         :scaled-to scaled-to
+                         :scaled-by scaled-by)
         (loop 
            for player in events and player-name in players 
            and snd-trans in snd-transitions
@@ -4895,7 +4895,7 @@ seq-num 5, VN, replacing G3 with B6
                             ;; the first event into consideration, not just
                             ;; max-start-time...
                             events-before-max-start))
-	   (format t "~%Processing player ~a/~a: ~a (resting players will ~
+           (format t "~%Processing player ~a/~a: ~a (resting players will ~
                           not be processed)~%"
                    player-count num-players (nth (1- player-count) players))
            (when (and (numberp num-sections) (= 1 num-sections))
@@ -4919,7 +4919,7 @@ seq-num 5, VN, replacing G3 with B6
                 (setf events-this-rs (length rs))
               ;; (print rs)
                 ;; (print rthm-seqs) (print rs-count)
-		(format t "~%    Processing rthm-seq ~a (~a events)~%"
+                (format t "~%    Processing rthm-seq ~a (~a events)~%"
                         ;; print the rthm-seq id if we're only doing one
                         ;; section otherwise the rthm-seq count
                         ;; MDE Tue Apr  3 09:54:46 2012 -- make sure we don't
@@ -6291,7 +6291,7 @@ data: NIL
                          :all-bar-nums t
                          :use-custom-markup t
                          :rehearsal-letters-font-size 24
-                         :lp-version "2.12.1"
+                         :lp-version "2.20.0"
                          :group-barlines nil
                          :page-turns t
                          :players '(fl cl)
@@ -6338,7 +6338,7 @@ data: NIL
        (use-custom-markup t)
        (rehearsal-letters-font-size 18)
        ;; "2.16.2") "2.14.2") ;"2.12.3") "2.17.95") 
-       (lp-version "2.18.2")
+       (lp-version "2.20.0")
        ;; 24.7.11 (Pula) barlines through whole staff group or just a stave
        (group-barlines t)
        ;; 5.11.11 set to t if you want lilypond to optimize page breaks for

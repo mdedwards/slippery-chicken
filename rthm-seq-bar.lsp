@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  16:38:17 Wed Sep 23 2020 CEST
+;;; $$ Last modified:  19:28:24 Wed Sep 23 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1721,7 +1721,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; - A function to be performed on fail. Default = #'error.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns T if successful. 
+;;; Returns T if successful, and the rsb as a second value in any case
 ;;; 
 ;;; EXAMPLE
 #|
@@ -1750,8 +1750,9 @@ data: ((2 4) - S S - S - S S S - S S)
          (setf start count))
        (push r bag)
        (incf dur (duration r))
-       ;; these tests avoid placing tuplets at arbitrary points in the bar
-       ;; e.g. after an opening 32nd 
+     ;; these tests avoid placing tuplets at arbitrary points in the bar
+     ;; e.g. after an opening 32nd
+       ;; (print dur)
        (when (or (float-int-p dur 0.00001)
                  (float-int-p (* 2.0 dur) 0.00001) ; i.e. 0.5
                  ;; MDE Wed Sep 23 16:37:37 2020, Heidhausen
@@ -1762,7 +1763,8 @@ data: ((2 4) - S S - S - S S S - S S)
            (add-tuplet-bracket rsb (list tuplet start count))
            (setf tuplet nil))
          (setf bag nil)))
-  (check-tuplets rsb on-fail))
+  ;; MDE Wed Sep 23 18:01:59 2020, Heidhausen -- return rsb also
+  (values (check-tuplets rsb on-fail) rsb))
          
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

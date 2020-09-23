@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  18:30:45 Sat Sep 12 2020 CEST
+;;; $$ Last modified:  16:37:22 Wed Sep 23 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -247,6 +247,21 @@
       (= 2 (r-count-elements ral))
       (not (get-data '(four violets red fox) ral nil))
       (eq 'den (get-data-data '(four violets red dragon) ral)))))
+
+;; MDE Sat Sep 19 11:32:07 2020, Heidhausen
+(sc-deftest test-assoc-list-ascending-ids? ()
+  (sc-test-check
+    (ascending-ids? (make-assoc-list 'test '((1 dog) (2 cat) (3 horse))))
+    ;;; 3 is missing
+    (not (ascending-ids? (make-assoc-list 'test '((1 dog) (2 cat) (4 horse)))))
+    ;; doesn't start at 2
+    (not (ascending-ids? (make-assoc-list 'test '((1 dog) (2 cat) (3 horse)))
+                         2))
+    ;; missing several integers
+    (not (ascending-ids? (make-assoc-list 'test '((4 dog) (2 cat) (7 horse)))
+                         2))
+    (ascending-ids? (make-assoc-list 'test '((4 dog) (2 cat) (3 horse))) 2)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rthm-seq-bar tests

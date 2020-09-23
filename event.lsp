@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:02:42 Tue Sep 15 2020 CEST
+;;; $$ Last modified:  16:08:31 Mon Sep 21 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4844,7 +4844,7 @@ CS4 Q, D4 E, (E4 G4 B5) E., rest H, rest S, A3 32, rest Q, rest TE,
 (make-events3 '(q e e. s e s s s s) 'cs6)
 ;; just one rhythm but various pitches/chords and all in octave 4 without having
 ;; to retype (here we can't use tied rhythms either)
-(make-events3 's '(c4 d e (f a) bf))
+(make-events3 's '(c4 d e (f a) r bf)) ; r = rest here too
 |#
 ;;; SYNOPSIS
 (defun make-events3 (data1 data2 &key (midi-channel 1)

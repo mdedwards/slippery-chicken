@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  18:21:55 Tue Jun  9 2020 CEST
+;;; $$ Last modified:  14:56:23 Sat Sep 19 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -199,11 +199,50 @@
                 ~a in ~%~a" (id obj) al)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* assoc-list/ascending-ids?
+;;; DATE
+;;; September 19th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Check whether all IDs are ascending integers (though order can be any), none
+;;; missing, optionally starting from particular integer.
+;;; 
+;;; ARGUMENTS
+;;; - the assoc-list object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - an integer representing the lowest required ID
+;;; 
+;;; RETURN VALUE
+;;; T or NIL
+;;; 
+;;; EXAMPLE
+#|
 
-;;; SAR Fri Jan 27 14:43:08 GMT 2012: Edited robodoc info to sync with ral
-;;; 28.11.11 SEAN: Added info for ROBODoc
-;;; 07.12.11 SEAN: modified example
+(ascending-ids? (make-assoc-list 'test '((1 dog) (2 cat) (3 horse)))) -> T
+;;; 3 is missing
+(ascending-ids? (make-assoc-list 'test '((1 dog) (2 cat) (4 horse)))) -> NIL
+;; doesn't start at 2
+(ascending-ids? (make-assoc-list 'test '((1 dog) (2 cat) (3 horse))) 2) -> NIL
+;; missing several integers
+(ascending-ids? (make-assoc-list 'test '((4 dog) (2 cat) (7 horse))) 2) -> NIL
+(ascending-ids? (make-assoc-list 'test '((4 dog) (2 cat) (3 horse))) 2) -> T
+|#
+;;; SYNOPSIS
+(defmethod ascending-ids? ((al assoc-list) &optional starting-from)
+;;; ****
+  ;; we know that there are no duplicate ids
+  (let* ((keys (get-keys al))
+         (len (length keys))
+         first last)
+    (when (every #'integerp keys)
+      (setq keys (sort (get-keys al) #'<)
+            first (first keys)
+            last (first (last keys)))
+      (when (= len (1+ (- last first)))
+        (or (not starting-from) (= first starting-from))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* assoc-list/get-first
 ;;; DESCRIPTION
 ;;; Returns the first named-object in the DATA slot of the given assoc-list
@@ -764,15 +803,13 @@ data: (SNOOPY SPOT ROVER)
       (setf (nth nth (data (nth pos (data al)))) new-value))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 01.12.11 SEAN: Added ROBODoc info
-;;; 08.12.11 SEAN: Modified example
 ;;; ****m* assoc-list/map-data
 ;;; DESCRIPTION
-;;; Map a function over the data in the assoc-list.  See also
-;;; recursive-assoc-list's rmap method which does pretty much the same but
-;;; acting recursively on each named-object (unless it is itself recursive),
-;;; rather than the named-object's data.
+;;; Map a function over the data in the assoc-list, i.e. call the given
+;;; function/method on each data slot of each named-object in the assoc-list
+;;; data slot. See also recursive-assoc-list's rmap method which does pretty
+;;; much the same but acting recursively on each named-object (unless it is
+;;; itself recursive), rather than the named-object's data.
 ;;; 
 ;;; ARGUMENTS
 ;;; - The assoc-list to which the function is to be applied.
@@ -818,7 +855,9 @@ data: (SNOOPY SPOT ROVER)
 ;;; November 1st 2018, Heidhausen
 ;;; 
 ;;; DESCRIPTION
-;;; A destructive version of map-data
+;;; A destructive version of map-data: replace the data slot with the
+;;; named-object returned by the 2nd argument after it is passed one
+;;; named-object after another. 
 ;;; 
 ;;; ARGUMENTS
 ;;; See the map-data method in this class.

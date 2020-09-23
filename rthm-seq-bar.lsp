@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  15:42:45 Sat Jul 11 2020 CEST
+;;; $$ Last modified:  16:38:17 Wed Sep 23 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1705,7 +1705,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon May 7 16:38:23 2012 -- this is a better version of
 ;;; figure-out-and-auto-set-tuplets. Way back when I wrote that method we
-;;; didn't have rhythm's tuplet-scaler slot. Now that's there things should be
+;;; didn't have rhythm's tuplet-scaler slot. Now that's there, things should be
 ;;; easier. This still won't handle all tuplet possibilities, especially nested
 ;;; tuplets, but should still be useful.
 
@@ -1750,18 +1750,18 @@ data: ((2 4) - S S - S - S S S - S S)
          (setf start count))
        (push r bag)
        (incf dur (duration r))
-       ;; (print dur)
-     ;; (print r)
+       ;; these tests avoid placing tuplets at arbitrary points in the bar
+       ;; e.g. after an opening 32nd 
        (when (or (float-int-p dur 0.00001)
-                 (float-int-p (* 2.0 dur) 0.00001)) ; i.e. 0.5
-         ;; (print 'here)
+                 (float-int-p (* 2.0 dur) 0.00001) ; i.e. 0.5
+                 ;; MDE Wed Sep 23 16:37:37 2020, Heidhausen
+                 (float-int-p (* 4.0 dur) 0.00001)) ; i.e. 0.25 or 0.75
          (when (and (/= 1 (tuplet-scaler (first bag)))
                     (/= 1 (tuplet-scaler (first (last bag)))))
            (setf tuplet (denominator (tuplet-scaler (first (last bag)))))
            (add-tuplet-bracket rsb (list tuplet start count))
            (setf tuplet nil))
          (setf bag nil)))
-  ;; (print rsb)
   (check-tuplets rsb on-fail))
          
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

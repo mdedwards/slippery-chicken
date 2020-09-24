@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  16:37:22 Wed Sep 23 2020 CEST
+;;; $$ Last modified:  19:06:07 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -12316,11 +12316,13 @@
       (bars-to-sc (loop repeat 4 collect bar2) :sc *auto* :section-id 2)
       (update-slots *auto*)
       ;; with just one section we should have 252 bytes, with both 460
+      ;; MDE Thu Sep 24 19:03:16 2020, Heidhausen -- we've now attached tempo
+      ;; changes so file sizes are a little bigger: 280, 516 bytes   
       (setq tmp (nth-value
                  1 (file-write-ok (midi-play *auto* :num-sections 1) 200)))
       (integer-between tmp 200 300)
       (setq tmp (nth-value 1 (file-write-ok (midi-play *auto*) 400)))
-      (integer-between tmp 400 500))))
+      (integer-between tmp 450 550))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rthm-seq-map tests
@@ -13277,6 +13279,28 @@
    (= -11 (constrain-int -11 -11 -1))
    (= -1 (constrain-int -12 -11 -1))
    (= 0 (constrain-int 6 0 5))))
+
+;; MDE Thu Sep 24 13:56:03 2020, Heidhausen
+(sc-deftest test-utilities-positions ()
+  (sc-test-check
+    (not (positions '9 '(a b c / d e / f / /)))
+    (equalp '(3 6 8 9) (positions '/ '(a b c / d e / f / /)))
+    (equalp '(1 4) (positions '(1 2) '(0 (1 2) 3 4 (1 2)) :test #'equalp))
+    (equalp '((A B C) (D E) (F))
+            (subseqs '(a b c / d e / f / /)  '(3 6 8 9) t))
+    (equalp (subseqs '(A B C / D E / F / /) '(3 6 8 9))
+            '((A B C) (/ D E) (/ F) (/) (/)))
+    (equalp (subseqs '(A B C / D E / F / /) '(3 6 8 9) t)
+            '((A B C) (D E) (F)))
+    (equalp (subseqs '(a b c / d e / f)  '(3 6) t)
+            '((A B C) (D E) (F)))
+    (equalp (subseqs '(a b c / d e / f)  '(3) t)
+            '((A B C) (D E / F)))
+    (equalp (subseqs '(a b c / d e / f)  '(3) nil)
+            '((A B C) (/ D E / F)))
+    (equalp (subseqs '(a b c / d e / f)  '(3 6) nil)
+            '((A B C) (/ D E) (/ F)))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Dec 19 19:45:20 2011 -- rthm-chain methods

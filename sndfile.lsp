@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  16:08:08 Mon Feb 17 2020 CET
+;;; $$ Last modified:  19:18:35 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -275,7 +275,8 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod update ((sf sndfile))
+(defmethod update ((sf sndfile) &key ignore)
+  (declare (ignore ignore))
   ;; an id will generally only be given when two instances of the same file are
   ;; in the same list in a sndfile-palette, so in the usual case where it's not
   ;; specified set id to simply the given sound file name.

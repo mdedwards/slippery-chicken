@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  08:22:17 Tue Apr 21 2020 CEST
+;;; $$ Last modified:  19:18:46 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -224,7 +224,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod update :after ((sfe sndfile-ext))
+(defmethod update :after ((sfe sndfile-ext) &key ignore)
+  (declare (ignore ignore))
   ;; just to call the setf method and update to a cscl
   (setf (followers sfe) (followers sfe))
   #+clm 

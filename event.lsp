@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:59:26 Wed Sep 23 2020 CEST
+;;; $$ Last modified:  16:23:07 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -4710,7 +4710,7 @@ G4 Q, rest E, rest S, (D4 FS4 A4) S,
              (unless (= 2 (length data))
                (error "event::make-events: ~
                           Only single rhythms (for rests) or ~
-                          (note/chord,rhythm) 2-element sublists are ~
+                          (note/chord,rhythm) ~%2-element sublists are ~
                           acceptable: ~a"
                       data))
              (make-event (if (typep p 'named-object)

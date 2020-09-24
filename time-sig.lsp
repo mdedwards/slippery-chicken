@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    12th February 2001
 ;;;
-;;; $$ Last modified:  15:22:54 Sat Sep 19 2020 CEST
+;;; $$ Last modified:  16:54:19 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -637,7 +637,7 @@ data: (2 4)
   (let* ((quarters (quarters dur-secs tempo)))
     (unless (almost-zero (rem quarters 0.125))
       (error "time-sig::make-time-sig-from-duration: can't make a time ~
-              signature from ~a (tempo ~a, quarters ~a)"
+              signature from ~%~a (tempo ~a, quarters ~a)"
              dur-secs tempo quarters))
     (loop ;; this has to get to the return statement, no?!!
         for div in '(2.0 1.0 0.5 0.25 0.125)
@@ -660,10 +660,10 @@ data: (2 4)
                                ;; substitute second 
                                (preferred '(((1 16) (2 32))
                                             ;; SAR Fri Jun 22 13:15:16 BST 2012
-                                            ((1 8) (2 16))
+                                            ;; ((1 8) (2 16))
                                             ;; SAR Tue Oct  9 13:55:17 BST 2012
                                             ;; ((2 8) (4 16))
-                                            ((1 4) (4 16))
+                                            ;; ((1 4) (4 16))
                                             ((3 8) (6 16))
                                             ((5 8) (10 16))
                                             ((7 8) (14 16))
@@ -671,7 +671,7 @@ data: (2 4)
                                             ;; SAR Sat Aug 18 18:50:24 BST 2012
                                             ((9 8) (18 16))
                                             ;; MDE Sat Dec 24 13:00:09 2011
-                                            ((1 4) (2 8))
+                                            ;; ((1 4) (2 8))
                                             ((2 4) (4 8))
                                             ((4 4) (8 8))
                                             ((5 4) (10 8))

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  18:00:44 Thu Sep 17 2020 CEST
+;;; $$ Last modified:  15:40:26 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -465,9 +465,6 @@
          (return t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 12:45:48 BST 2012: Added robodoc entry
-
 ;;; e.g (split-into-sub-groups '(1 2 3 4 5 6 7 8 9 10) '(2 2 3 2 1)) ->
 ;;; ((1 2) (3 4) (5 6 7) (8 9) (10))
 
@@ -5680,6 +5677,27 @@ yes_foo, 1 2 3 4;
             result list))
     result))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Sep 24 15:22:11 2020, Heidhausen
+(defun positions (item sequence &key (test #'eq))
+  (loop with start = 0
+     for pos = (position item sequence :test test :start start)
+     while pos
+     collect pos
+     do (setq start (1+ pos))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Sep 24 15:22:17 2020, Heidhausen
+;;; positions starts with the first end point, not with 0
+;;; if skip, the positions refer to markers in the list that shouldn't be
+;;; returned  
+(defun subseqs (list positions &optional skip) 
+  (loop for i1 in (cons (if skip -1 0) positions)
+     for i2 in (econs positions nil) ; so we go to the end
+       ;; skip the elements at the positions
+     for subseq = (subseq list (if skip (1+ i1) i1) i2)
+     when subseq collect subseq))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

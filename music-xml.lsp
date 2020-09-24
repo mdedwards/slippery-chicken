@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    March 20th 2017, Edinburgh
 ;;;
-;;; $$ Last modified:  19:19:57 Wed Sep 23 2020 CEST
+;;; $$ Last modified:  11:37:32 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id: music-xml.lsp 6147 2017-03-17 16:48:09Z medward2 $
 ;;;
@@ -538,7 +538,7 @@
                                   :test #'equal)
                           "actual" "both")))
     ;; MDE Wed Sep 23 19:05:44 2020, Heidhausen -- according to Dorico 3, you
-    ;; can't actually havae more than 6 tuplets in a bar! However it does
+    ;; can't actually have more than 6 tuplets in a bar! However it does
     ;; display them if there are more. According to the musicxml spec. "The
     ;; number attribute is used to distinguish nested tuplets." 
     (if actual                          ; if arg1=nil then it's a stop tuplet

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    April 7th 2012
 ;;;
-;;; $$ Last modified:  15:45:24 Wed Sep 23 2020 CEST
+;;; $$ Last modified:  19:00:17 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -7831,6 +7831,8 @@ NIL
   (unless (and bars (listp bars) (every #'rthm-seq-bar-p bars))
     (error "slippery-chicken-edit::bars-to-sc: first argument should be a ~
             list of rthm-seq-bar objects: ~&~a" bars))
+  ;; MDE Thu Sep 24 18:51:20 2020, Heidhausen -- attach tempo to first event
+  (setf (tempo-change (get-nth-event 0 (first bars))) tempo)
   ;; MDE Wed Sep 19 13:39:54 2018 --
   (loop for bar in bars with psf = (list section-id player) do
      ;; MDE Fri Oct 12 08:59:02 2018 -- don't forget this or multi-bar-rests

@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:23:07 Thu Sep 24 2020 CEST
+;;; $$ Last modified:  18:49:05 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -697,9 +697,6 @@
            ~%they will not be written into the antescofo score." e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Dec 23 18:07:41 EST 2011 Added robodoc info
-
 ;;; ****m* event/setf tempo-change
 ;;; DESCRIPTION
 ;;; Store the tempo when a change is made. 

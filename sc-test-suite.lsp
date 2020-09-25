@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  19:06:07 Thu Sep 24 2020 CEST
+;;; $$ Last modified:  15:11:54 Fri Sep 25 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -192,9 +192,9 @@
     (sc-test-check
       ;; MDE Wed Aug  5 13:43:52 2015 
       (print-for-init al)
-      (equal (map-data al #'(lambda (y)
-                              (loop for i in y collect (* i 2)))) 
-             '((4 6) (6 8) (10 12)))
+      (equalp (map-data al #'(lambda (y)
+                               (loop for i in y collect (* i 2)))) 
+              '((4 6) (6 8) (10 12)))
       ;; MDE Thu Nov  1 10:51:15 2018
       (assoc-list-p (nmap-data al #'(lambda (l) (length l))))
       ;; (print-for-init al)

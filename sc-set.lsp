@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  14:56:12 Fri Sep 25 2020 CEST
+;;; $$ Last modified:  14:58:36 Fri Sep 25 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1554,7 +1554,7 @@ data: E4
                    (remove-if
                     #'(lambda (p)
                         (member p pitches :test #'pitch=))
-                    plist))))
+                    plist)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* sc-set/thin

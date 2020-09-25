@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  14:56:23 Sat Sep 19 2020 CEST
+;;; $$ Last modified:  15:10:57 Fri Sep 25 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -817,7 +817,7 @@ data: (SNOOPY SPOT ROVER)
 ;;;   a first argument. 
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - Optional argument(s): Further arguments for the function.
+;;; - &rest: Further arguments for the function.
 ;;; 
 ;;; RETURN VALUE 
 ;;; Returns a list of the values returned by the function call on the data.
@@ -834,7 +834,7 @@ data: (SNOOPY SPOT ROVER)
 => ((2 4 6 8) (10 12 14 16) (18 20 22 24))
 |#
 ;;; SYNOPSIS
-(defmethod map-data ((al assoc-list) function &optional further-arguments)
+(defmethod map-data ((al assoc-list) function &rest further-arguments)
 ;;; ****
   (loop for no in (data al) 
      for nod = (data no)
@@ -885,9 +885,10 @@ data: 1
 ...
 |#
 ;;; SYNOPSIS
-(defmethod nmap-data ((al assoc-list) function &optional further-arguments)
+(defmethod nmap-data ((al assoc-list) function &rest further-arguments)
 ;;; ****
-  (let ((new-data (map-data al function further-arguments)))
+  (let ((new-data (apply #'map-data
+                         (cons al (cons function further-arguments)))))
     (loop for no in (data al) and nd in new-data do
          (setf (data no) nd))
     al))

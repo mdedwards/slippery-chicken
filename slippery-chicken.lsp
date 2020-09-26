@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  13:43:44 Fri Sep 18 2020 CEST
+;;; $$ Last modified:  16:03:46 Sat Sep 26 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -1295,6 +1295,8 @@
             ;; (print (total-degrees ins))
             (when and-other-slots
               (unless (is-rest-bar bar)
+                ;; MDE Sat Sep 26 16:03:20 2020, Heidhausen
+                (update-lowest-highest-played ins (lowest bar) (highest bar))
                 (incf (total-bars ins))
                 (incf (total-notes ins) (notes-needed bar))
                 (incf (total-degrees ins) (total-degrees bar))))

@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  19:10:03 Thu Jan 10 2019 CET
+;;; $$ Last modified:  16:41:01 Sat Sep 26 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -188,10 +188,14 @@
    ;;; degree of the note (in the scale for the piece). Then, at the end, we
    ;;; can divide this by total-notes and have the mean note (tessitura).  In
    ;;; the case of chords, the average is used.
-   (total-degrees :accessor total-degrees :type number :initform 0)))
+   (total-degrees :accessor total-degrees :type number :initform 0)
+   ;; MDE Sat Sep 26 15:29:47 2020, Heidhausen -- high/low pitches of whole
+   ;; piece. Note that the slippery-chicken method update-instrument-slots will
+   ;; need to be called before these are generated.
+   (lowest-played :accessor lowest-played :initform nil)
+   (highest-played :accessor highest-played :initform nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod initialize-instance :after ((ins instrument) &rest initargs)
   (declare (ignore initargs))
   (check-starting-clef ins)
@@ -257,6 +261,18 @@
       (when (and (chords ins)
                  (not (chord-function ins)))
         (setf (chord-function ins) 'default-chord-function)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Sep 26 16:00:55 2020, Heidhausen
+(defmethod update-lowest-highest-played ((ins instrument) (low-candidate pitch)
+                                         (high-candidate pitch))
+  (when (or (not (lowest-played ins))
+            (pitch< low-candidate (lowest-played ins)))
+    (setf (lowest-played ins) low-candidate))
+  (when (or (not (highest-played ins))
+            (pitch> high-candidate (highest-played ins)))
+    (setf (highest-played ins) high-candidate))
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Jan  8 16:53:14 2019
@@ -507,7 +523,11 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
           (my-copy-list (harmonic-pitches ins))
           ;; MDE Fri Nov 13 17:08:23 2015 --
           (slot-value named-object 'staff-lines) (staff-lines ins)
-          (slot-value named-object 'total-degrees) (total-degrees ins))
+          (slot-value named-object 'total-degrees) (total-degrees ins)
+          (slot-value named-object 'lowest-played)
+          (when (lowest-played ins) (clone (lowest-played ins)))
+          (slot-value named-object 'highest-played)
+          (when (highest-played ins) (clone (highest-played ins))))
     named-object))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -519,7 +539,8 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
                value)))
     (format stream "~&INSTRUMENT: lowest-written: ~a, highest-written: ~a~
                   ~%            lowest-sounding: ~a, highest-sounding: ~a~
-                  ~%            starting-clef: ~a, clefs: ~a, clefs-in-c: ~a~
+                  ~%            starting-clef: ~a, clefs: ~a, ~
+                  ~%            clefs-in-c: ~a~
                   ~%            prefers-notes: ~a, midi-program: ~a~
                   ~%            transposition: ~a, transposition-semitones: ~a~
                   ~%            score-write-in-c: ~a, score-write-bar-line: ~a~
@@ -531,8 +552,10 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
                   ~%            staff-name: ~a, staff-short-name: ~a,~
                   ~%            staff-lines: ~a, harmonics: ~a~
                   ~%            open-strings: ~a, open-string-marks: ~a~
-                  ~%            nodes: ~a, ~%harmonic-pitches: ~a~
-                  ~%            largest-fast-leap: ~a, tessitura: ~a"
+                  ~%            nodes: ~a, ~
+                  ~%            harmonic-pitches: ~a~
+                  ~%            largest-fast-leap: ~a, tessitura: ~a~
+                  ~%            lowest played: ~a, highest played: ~a"
             (pitch-slot (lowest-written ins))
             (pitch-slot (highest-written ins))
             (pitch-slot (lowest-sounding ins))
@@ -551,7 +574,9 @@ PITCH: frequency: 1357.146, midi-note: 88, midi-channel: 1
             (nodes ins) (loop for string in (harmonic-pitches ins) collect
                              (pitch-list-to-symbols (mapcar #'second string)))
             (largest-fast-leap ins)
-            (tessitura-note ins))))
+            (tessitura-note ins)
+            (when (lowest-played ins) (data (lowest-played ins)))
+            (when (highest-played ins) (data (highest-played ins))))))
                            
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Aug 23 09:36:02 2013 

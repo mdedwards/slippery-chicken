@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  19:28:24 Wed Sep 23 2020 CEST
+;;; $$ Last modified:  16:39:41 Sat Sep 26 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5469,6 +5469,26 @@ collect (midi-channel (pitch-or-chord p))))
      ;; sc::update-instruments-total-duration was called.
      when (and (needs-new-note e) (event-p e))
      sum (get-degree e :average t)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Sep 26 15:18:45 2020, Heidhausen
+(defmethod lowest ((rsb rthm-seq-bar))
+  ;; need to call lowest e because e could be a chord
+  (loop with lowest for e in (rhythms rsb) for lp = (lowest e) do
+       (unless (is-rest e)
+         (when (or (not lowest) (pitch< lp lowest))
+           (setq lowest lp)))
+       finally (return lowest)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Sep 26 15:18:45 2020, Heidhausen
+(defmethod highest ((rsb rthm-seq-bar))
+  ;; need to call highest e because e could be a chord
+  (loop with highest for e in (rhythms rsb) for hp = (highest e) do
+       (unless (is-rest e)
+         (when (or (not highest) (pitch> hp highest))
+           (setq highest hp)))
+     finally (return highest)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Jun 28 14:21:50 2014 -- called by consolidate-notes

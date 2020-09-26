@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    February 19th 2001
 ;;;
-;;; $$ Last modified:  17:46:38 Tue May 21 2019 CEST
+;;; $$ Last modified:  11:26:03 Sat Sep 26 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -89,20 +89,9 @@
 ;; given circular-sclist object. When the list has been exhausted, retrieval
 ;; begins again from the head of the list.
 (let ((cscl (make-cscl '(0 1 2 3 4))))
-  (loop repeat 10 
-     do (print (get-next cscl))))
-
+  (loop repeat 10 collect (get-next cscl)))
 =>
-0 
-1 
-2 
-3 
-4 
-0 
-1 
-2 
-3 
-4
+(0 1 2 3 4 0 1 2 3 4)
 |#
 ;;; SYNOPSIS
 (defmethod get-next ((cscl circular-sclist))
@@ -133,16 +122,11 @@
 (let ((cscl (make-cscl '(0 1 2 3 4))))
   (loop for i below 10 do
      (print (if (oddp i) (get-next cscl) (get-current cscl)))))
-0 
-0 
-1 
-1 
-2 
-2 
-3 
-3 
-4 
-4 
+(let ((cscl (make-cscl '(0 1 2 3 4))))
+  (loop for i below 10 
+     collect (if (oddp i) (get-next cscl) (get-current cscl))))
+=>
+(0 0 1 1 2 2 3 3 4 4)
 |#
 ;;; SYNOPSIS
 (defmethod get-current ((cscl circular-sclist))
@@ -173,7 +157,6 @@
 ;; Retrieves the final item in the list at creation
 (let ((cscl (make-cscl '(0 1 2 3 4))))
   (get-last cscl))
-
 => 4
 
 ;; Get and print a number of items from the list using get-next, then return
@@ -181,7 +164,6 @@
 (let ((cscl (make-cscl '(0 1 2 3 4))))
   (loop repeat 7 do (print (get-next cscl)))
   (get-last cscl))
-
 => 1
 
 |#
@@ -211,7 +193,6 @@
 ;; At creation the pointer is located at the start of the list
 (let ((cscl (make-cscl '(0 1 2 3 4))))
   (at-start cscl))
-
 => T
 
 ;; Retrieve a number of the items using get-next, then determine whether the
@@ -219,9 +200,7 @@
 (let ((cscl (make-cscl '(0 1 2 3 4))))
   (loop repeat 7 do (get-next cscl))
   (at-start cscl))
-
 => NIL
-
 |#
 ;;; SYNOPSIS
 (defmethod at-start ((cscl circular-sclist))
@@ -271,7 +250,6 @@
   (loop repeat 8 do (print (get-next cscl)))
   (reset cscl)
   (get-next cscl))
-
 => 0
 
 ;; Reset to a specified index
@@ -279,7 +257,6 @@
   (loop repeat 8 do (print (get-next cscl)))
   (reset cscl 3)
   (get-next cscl))
-
 => 3
 
 ;; By default, get-last will then retrieve the item at index one less than the
@@ -288,7 +265,6 @@
   (loop repeat 8 do (print (get-next cscl)))
   (reset cscl 3)
   (get-last cscl))
-
 => 2
 
 |#

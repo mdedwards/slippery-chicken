@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  16:39:41 Sat Sep 26 2020 CEST
+;;; $$ Last modified:  17:00:26 Sat Sep 26 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -2119,6 +2119,10 @@ rhythm symbol for clarity:
     (sounding-duration rsb)
     (setf (num-rhythms rsb) (length rhythms)
           (is-rest-bar rsb)
+          ;; bear in mind that a list of rhythms with no pitch-or-chord (whether
+          ;; is-rest it T or NIL for each rhythm)  will result in is-rest-bar
+          ;; being NIL. This is so that events can be made in various ways,
+          ;; filling in pitch info later perhaps, then udpating
           (if (not rhythms)
               t
               (when (and (= 1 (num-rhythms rsb))

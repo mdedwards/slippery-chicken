@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    4th September 2001
 ;;;
-;;; $$ Last modified:  16:41:01 Sat Sep 26 2020 CEST
+;;; $$ Last modified:  17:01:58 Sat Sep 26 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -191,7 +191,8 @@
    (total-degrees :accessor total-degrees :type number :initform 0)
    ;; MDE Sat Sep 26 15:29:47 2020, Heidhausen -- high/low pitches of whole
    ;; piece. Note that the slippery-chicken method update-instrument-slots will
-   ;; need to be called before these are generated.
+   ;; need to be called before these are generated. This is now the default in
+   ;; make-slippery-chicken 
    (lowest-played :accessor lowest-played :initform nil)
    (highest-played :accessor highest-played :initform nil)))
 
@@ -273,6 +274,11 @@
             (pitch> high-candidate (highest-played ins)))
     (setf (highest-played ins) high-candidate))
   t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod update-lowest-highest-played ((ins instrument) low high)
+  (when (and low high)
+    (update-lowest-highest-played (make-pitch low) (make-pitch high))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Jan  8 16:53:14 2019

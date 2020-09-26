@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:03:46 Sat Sep 26 2020 CEST
+;;; $$ Last modified:  16:50:54 Sat Sep 26 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -441,7 +441,9 @@
     (change-bar-line-type sc (num-bars (piece sc)) 2)
     ;; have to call this again now that we've got the real tempo-map
     (update-slots sc (tempo-map sc) 0.0 0.0 1 nil nil (warn-ties sc))
-    (update-instruments-total-duration sc)
+    ;; MDE Sat Sep 26 16:48:21 2020, Heidhausen -- now also generate other stats
+    ;; such as lowest/highest pitch played (2nd arg was default nil previously) 
+    (update-instruments-total-duration sc t)
     ;; (print (get-data 1 (set-palette sc)))
     ;; 25.3.11 the make-slippery-chicken function might set this to nil thus
     ;; overriding the class default
@@ -4545,7 +4547,6 @@ seq-num 5, VN, replacing G3 with B6
                        (time-scaler 1.0)
                        (normalise .99)
                        scaled-by
-                       scaled-to
                        (simulate nil)
                        (from-sequence 1)
                        (num-sequences nil)
@@ -4871,7 +4872,8 @@ seq-num 5, VN, replacing G3 with B6
                          :data-format data-format
                          :header-type header-type
                          :play play :channels channels :statistics t
-                         :scaled-to scaled-to
+                         ;; we have normalise so don't need scaled-to 
+                         ;; :scaled-to scaled-to
                          :scaled-by scaled-by)
         (loop 
            for player in events and player-name in players 

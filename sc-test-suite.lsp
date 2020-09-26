@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  15:11:54 Fri Sep 25 2020 CEST
+;;; $$ Last modified:  17:15:28 Sat Sep 26 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -4448,7 +4448,8 @@
                while ne
                unless (not (get-pitch-symbol ne))
                collect (degree (pitch-or-chord ne))))
-      (= (tessitura-degree (get-data 'vn (ensemble mini)))
+      ;; (print degs)
+      (equal-within-tolerance (tessitura-degree (get-data 'vn (ensemble mini)))
          (/ (apply #'+ degs) (length degs)))
       (not (next-event mini 'va nil 1))
       (setf degs
@@ -4456,7 +4457,7 @@
                while ne
                unless (not (get-pitch-symbol ne))
                collect (degree (pitch-or-chord ne))))
-      (= (tessitura-degree (get-data 'va (ensemble mini)))
+      (equal-within-tolerance (tessitura-degree (get-data 'va (ensemble mini)))
          (/ (apply #'+ degs) (length degs)))
       (not (next-event mini 'vc nil 1))
       (setf degs
@@ -4464,7 +4465,7 @@
                while ne
                unless (not (get-pitch-symbol ne))
                collect (degree (pitch-or-chord ne))))
-      (= (tessitura-degree (get-data 'vc (ensemble mini)))
+      (equal-within-tolerance (tessitura-degree (get-data 'vc (ensemble mini)))
          (/ (apply #'+ degs) (length degs))))))
 
 ;;; SAR Sun Apr 29 16:08:47 BST 2012
@@ -18175,7 +18176,7 @@
     (equalp '(FL CL HN TP VN VA VC) (sort-players (ensemble mini)))
     (equalp '(CL HN TP VA VC) (sort-players (ensemble mini)
                                             :ignore '(fl vn)))
-    (equalp '(FL vn TP CL HN VA VC)
+    (equalp '(VN FL TP CL HN VA VC)
             (sort-players (ensemble mini) :stats-fun #'total-degrees))
     ;; letters only on instruments at top of groups
     (not (rehearsal-letter (get-bar mini 2 'cl)))

@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:50:54 Sat Sep 26 2020 CEST
+;;; $$ Last modified:  15:35:23 Mon Sep 28 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -5121,6 +5121,44 @@ seq-num 5, VN, replacing G3 with B6
               total-skipped total-events 
               (* 100.0 (/ total-skipped total-events))))
     total-events))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/get-last-bar
+;;; DATE
+;;; September 28th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Get the last bars for each of the players
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; 
+;;; RETURN VALUE
+;;; a list of rthm-seq-bar objects
+;;; 
+;;; SYNOPSIS
+(defmethod get-last-bar ((sc slippery-chicken))
+;;; ****
+  (get-bar sc (num-bars sc)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/get-last-event
+;;; DATE
+;;; September 28th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Get the last events (of the last bars) for each of the players
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; 
+;;; RETURN VALUE
+;;; a list of event objects
+;;; 
+;;; SYNOPSIS
+(defmethod get-last-event ((sc slippery-chicken))
+;;; ****
+  (mapcar #'get-last-event (get-last-bar sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

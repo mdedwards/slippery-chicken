@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  09:30:37 Tue Oct  1 2019 CEST
+;;; $$ Last modified:  11:44:37 Tue Sep 29 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -527,9 +527,6 @@
 (auto-set-subset-id +slippery-chicken-standard-instrument-palette+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May  3 14:02:38 BST 2012: Added robodoc entry
-
 ;;; MDE Tue Mar 20 15:55:39 2012 -- add some more default chord functions for
 ;;; the user to choose from.
 
@@ -546,9 +543,6 @@
   (chord-fun-aux curve-num index pitch-list pitch-seq instrument set 2 3 12))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May  3 14:13:12 BST 2012: Added robodoc entry
-
 ;;; ****f* instruments/chord-fun2
 ;;; DESCRIPTION
 ;;; Generates 4-note chords where possible, using every third pitch from the

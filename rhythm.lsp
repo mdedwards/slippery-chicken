@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  15:13:49 Sat Jun  6 2020 CEST
+;;; $$ Last modified:  10:45:36 Tue Sep 29 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -327,50 +327,23 @@
 #|
 (let ((r (make-rhythm 4)))
   (data (scale r 2)))
-
 => H
 
 (let ((r (make-rhythm 4)))
   (data (scale r 3)))
-
 => H.
 
 (let ((r (make-rhythm 4)))
   (data (scale r .5)))
-
 => E
-
-(let ((r (make-rhythm 4)))
-  (dotimes (i 5) 
-    (print (value (scale r .5)))))
-
-=>
-8.0 
-8.0 
-8.0 
-8.0 
-8.0
-
-(let ((r (make-rhythm 4)))
-  (dotimes (i 5)
-    (print (value (scale r .5 nil)))))
-
-=>
-8.0 
-16.0 
-32.0 
-64.0 
-128.0
-
 |#
 ;;; SYNOPSIS
 (defmethod scale ((r rhythm) scaler &optional (clone t) ignore1 ignore2)
 ;;; ****
   (declare (ignore ignore1)
            (ignore ignore2))
-  ;; (print scaler)
   (when clone
-    (setf r (clone r)))
+    (setq r (clone r)))
   (if (or (= 1 scaler) (is-grace-note r))
       r
       (progn
@@ -415,7 +388,35 @@
               r)))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rhythm/scale-as-rests
+;;; DATE
+;;; September 29th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Sometimes you don't want to actually scale a rhythm/event's duration rather
+;;; stretch it out with rests. This method will leave the rhythm object intact
+;;; (or cloned) before then cloning it a given number of times but as a rest.
+;;; 
+;;; ARGUMENTS
+;;; - the rhythm object
+;;; - the scaler (integer)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL: whether to clone the first argument
+;;; 
+;;; RETURN VALUE
+;;; a list of rhythm objects
+;;; 
+;;; SYNOPSIS
+(defmethod scale-as-rests ((r rhythm) scaler &optional (clone t))
+;;; ****
+  (unless (and (integerp scaler) (> scaler 1))
+    (error "rhythm::scale-as-rests: scaler must be an integer > 1: ~a" scaler))
+  (when clone
+    (setq r (clone r)))
+  (cons r (loop repeat (1- scaler) collect (force-rest (clone r)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod has-flags ((r rhythm))
   (> (num-flags r) 0))
 

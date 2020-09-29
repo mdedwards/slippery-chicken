@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  18:49:05 Thu Sep 24 2020 CEST
+;;; $$ Last modified:  17:41:47 Mon Sep 28 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -213,9 +213,6 @@
     (setf (pitch-or-chord e) (pitch-or-chord e))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 23.12.11 SAR: Added robodoc info
-
 ;;; ****m* event/set-midi-channel
 ;;; DESCRIPTION
 ;;; Set the MIDI-channel and microtonal MIDI-channel for the pitch object
@@ -3794,9 +3791,6 @@ data: C4
             (if force-list (list (frequency poc)) (frequency poc))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed May  2 14:01:53 BST 2012: Added robodoc entry
-
 ;;; ****m* event/replace-mark
 ;;; DESCRIPTION
 ;;; Replace a specified mark of a given event object with a second specified

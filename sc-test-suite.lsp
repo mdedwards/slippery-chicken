@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  17:15:28 Sat Sep 26 2020 CEST
+;;; $$ Last modified:  10:48:09 Tue Sep 29 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -1397,9 +1397,14 @@
 
 ;;; Wed Dec 14 21:33:25 GMT 2011 SAR
 (sc-deftest test-rhythm-scale ()
-  (let ((r (make-rhythm 4)))
+  (let ((r (make-rhythm 4))
+        ;; MDE Tue Sep 29 10:46:20 2020, Heidhausen -- test the new method
+        (sar (scale-as-rests (make-event '(cs4 e4) 's) 7)))
     (sc-test-check
       (= (value (scale r 2)) 2.0)
+      (is-chord (first sar))
+      (is-rest (first (last sar)))
+      (= 7 (length sar))
       ;; MDE Mon Mar 19 17:56:18 2012
       ;; (= (value (scale r 3)) (/ 4 3.0))
       (equal-within-tolerance (value (scale r 3)) 4/3)

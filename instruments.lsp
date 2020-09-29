@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  11:44:37 Tue Sep 29 2020 CEST
+;;; $$ Last modified:  14:54:20 Tue Sep 29 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -49,9 +49,6 @@
 (in-package :slippery-chicken)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May  3 13:55:22 BST 2012: Editing robodoc entry
-
 ;;; ****P* instruments/+slippery-chicken-standard-instrument-palette+
 ;;; DESCRIPTION
 ;;; A palette of standard instruments (by no means exhaustive...) for use
@@ -528,7 +525,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Tue Mar 20 15:55:39 2012 -- add some more default chord functions for
-;;; the user to choose from.
+;;; the user to choose from. See
+;;; http://michael-edwards.org/sc/manual/chords.html#chord-aux
 
 ;;; ****f* instruments/chord-fun1
 ;;; DESCRIPTION
@@ -536,6 +534,8 @@
 ;;; the list of pitches currently available to the given instrument from the
 ;;; current set, and ensuring that none of the chords it makes span more than
 ;;; an octave.
+;;;
+;;; In all functions that take this format curve-num is the 
 ;;; 
 ;;; SYNOPSIS
 (defun chord-fun1 (curve-num index pitch-list pitch-seq instrument set)
@@ -571,8 +571,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; remember that the index is the desired top note of the chord
 
-;;; SAR Thu May  3 14:15:16 BST 2012: Added robodoc entry
-
 ;;; ****f* instruments/chord-fun-aux
 ;;; DESCRIPTION
 ;;; An auxiliary function that allows users to create moderately tailored chord
@@ -588,7 +586,7 @@
 ;;; instrument, and set -- are inherited and not required to be directly
 ;;; accessed by the user.
 ;;; 
-;;; - An integer that is the step by which the function skips through the
+;;; - skip: An integer that is the step by which the function skips through the
 ;;;   subset of currently available pitches. A value of 2, for example, will
 ;;;   instruct the method to build chords from every second pitch in that
 ;;;   subset.
@@ -710,9 +708,6 @@
       (make-chord (list p1 possible)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May  3 14:52:30 BST 2012: Added robodoc entry
-
 ;;; ****f* instruments/string-chord-selection-fun
 ;;; DESCRIPTION
 ;;; This is the core function for creating instances of double-stop chords for
@@ -792,9 +787,6 @@
                                 vln-III)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May  3 15:20:55 BST 2012: Added robodoc entry
-
 ;;; ****f* instruments/viola-chord-selection-fun
 ;;; DESCRIPTION
 ;;; Create a double-stop chord object using the core string-chord-selection-fun
@@ -875,8 +867,21 @@
   (piano-chord-fun-aux curve-num index pitch-list pitch-seq instrument set 2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; if calling this explicitly it's fine to pass nil as the first and last three
+;;; arguments argument, but index (2nd arg) must usually be be a positive
+;;; integer. If NIL however, we'll try to get a chord from the middle of the
+;;; pitch-list, but results are dependent on how many notes are available (the
+;;; chord still might end up low). NB the notes are taken from pitch-list not
+;;; set.
 (defun piano-chord-fun-both-hands
     (curve-num index pitch-list pitch-seq instrument set)
+  ;; MDE Tue Sep 29 12:21:27 2020, Heidhausen -- get a middling chord ;)
+  (unless index
+    (setq index
+          (let ((len (length pitch-list)))
+            (if (> len 5)
+                (- (floor len 2) 2)
+                0)))) ; start at the bottom if we don't have enough notes
   (two-hands #'piano-chord-fun curve-num index pitch-list pitch-seq
              instrument set))
 
@@ -917,7 +922,7 @@
     (setf result (loop for n in result collect (data n)))
     result))
        
-;;; see default-chord-function above for description of arguments.
+;;; see default-chord-function (instrument.lsp) for description of arguments.
 (defun guitar-chord-from-arbitrary-pitches (curve-num index pitch-list
                                             pitch-seq instrument set)
   (declare (ignore set instrument pitch-seq index curve-num))

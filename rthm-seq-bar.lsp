@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  17:00:26 Sat Sep 26 2020 CEST
+;;; $$ Last modified:  13:52:41 Wed Oct  7 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -6783,6 +6783,8 @@ rsb-rb)
 ;;;   :start-time and :tempo. If not NIL, this will mean start-time is ignored
 ;;;   when writing MIDI files. Default = nil.
 ;;; - :tempo. The tempo in beats per minute (or a tempo object)
+;;; - :max-start-time. A maximum time in seconds above which we stop processing
+;;;   (and returning) events. 
 ;;; 
 ;;; RETURN VALUE
 ;;; two values: the list of events with their times updated, and the time the
@@ -6797,7 +6799,7 @@ rsb-rb)
 |#
 ;;; SYNOPSIS
 (defun events-update-time (events &key (start-time 0.0) start-time-qtrs
-                                    (tempo 60.0))
+                                    max-start-time (tempo 60.0))
 ;;; ****
   (unless (typep tempo 'tempo)
     (setf tempo (make-tempo tempo)))
@@ -6810,23 +6812,29 @@ rsb-rb)
                        start-time-qtrs
                        (/ start-time (if (tempo-p tempo)
                                          (beat-dur tempo)
-                                         (/ 60.0 tempo))))))
+                                         (/ 60.0 tempo)))))
+        result)
     (loop for event in events do
        ;; MDE Mon Sep 30 18:18:34 2019 -- do this here too so that we can access
        ;; most probable midi channels of rests (for pedals etc.). This is a good
        ;; place as this gets called eventually via update-slots, which is called
        ;; at init
          (set-last-midi-channel event)
-         (setf (start-time event) time
-               (start-time-qtrs event) time-qtrs
-               (duration-in-tempo event) (* (duration event) qtr-dur)
-               (compound-duration-in-tempo event) 
-               (* (compound-duration event) qtr-dur)
-               (end-time event) (+ (start-time event) 
-                                   (compound-duration-in-tempo event)))
-         (incf time-qtrs (duration event))
-         (incf time (duration-in-tempo event)))
-    (values events time)))
+         (if (or (not max-start-time) (<= time max-start-time))
+             (progn
+               (setf (start-time event) time
+                     (start-time-qtrs event) time-qtrs
+                     (duration-in-tempo event) (* (duration event) qtr-dur)
+                     (compound-duration-in-tempo event) 
+                     (* (compound-duration event) qtr-dur)
+                     (end-time event) (+ (start-time event) 
+                                         (compound-duration-in-tempo event)))
+               (push event result)
+               (incf time-qtrs (duration event))
+               (incf time (duration-in-tempo event)))
+             ;; we've reached max-start-time
+             (return)))
+    (values (nreverse result) time)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Apr 14 07:05:07 2017 -- rthm is a power-of-two. Sometimes we

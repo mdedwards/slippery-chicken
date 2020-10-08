@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:48:09 Tue Sep 29 2020 CEST
+;;; $$ Last modified:  17:05:22 Thu Oct  8 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -2413,6 +2413,20 @@
       (= 1 (common-notes e1 e3))
       (= 1 (common-notes e4 e3))
       (= 1 (common-notes e3 e1)))))
+
+(sc-deftest test-event-add-pcs ()
+  (let ((e (make-event 'c4 'e)))
+    (sc-test-check
+      ;;                   channel | change
+      (add-midi-program-changes e 1 2)
+      ;; check it worked
+      (equalp '(1 2) (first (midi-program-changes e)))
+      ;; check they're returned; remember existing changes remain
+      (equalp '((12 5) (11 5) (1 2))
+              (add-midi-program-changes e '(11 12) 5))
+      (equalp '(4 66) ; prog change 66 is sax
+              (first (add-midi-program-changes e 4 'alto-sax)))
+      )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rthm-seq tests

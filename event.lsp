@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  17:41:47 Mon Sep 28 2020 CEST
+;;; $$ Last modified:  16:54:08 Thu Oct  8 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -89,7 +89,8 @@
    ;; these will be set automatically in sc-make-sequenz; this is a list of
    ;; two-element lists specifying the channel and the program; should be 1 or
    ;; two of them, depending on whether an instrument who generated this event
-   ;; plays microtonal chords (i.e. plays on two midi channels).
+   ;; plays microtonal chords (i.e. plays on two midi channels). See also
+   ;; add-midi-program-changes method 
    (midi-program-changes :accessor midi-program-changes :type list 
                          :initarg :midi-program-changes :initform nil)
    ;; MDE Tue Apr 26 15:13:54 2016 -- each message should be a 3-element list
@@ -4239,6 +4240,50 @@ NIL
     (when (= (length (data (pitch-or-chord e))) 1)
           (setf (pitch-or-chord e) (first (data (pitch-or-chord e))))))
   e)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* event/add-midi-program-changes
+;;; DATE
+;;; 8th October 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Add programme change data to an event.
+;;; 
+;;; ARGUMENTS
+;;; - the event object to add to
+;;; - the MIDI channel to add the program change to. This can either by a single
+;;;   integer or a list of (usually 2) integers (for microtonal channels)
+;;; - the program change. If a number, just use this directly. If a symbol, get
+;;;   the program change for the instrument associated with this ID in the given
+;;;   instrument-palette
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the instrument-palette object to get the program change numbers from for
+;;;   the given instrument if a symbol is passed as the 3rd argument. Default: 
+;;;   +slippery-chicken-standard-instrument-palette+
+;;; 
+;;; RETURN VALUE
+;;; 
+;;; 
+;;; EXAMPLE
+#|
+
+|#
+;;; SYNOPSIS
+(defmethod add-midi-program-changes
+    ((e event) chan pc
+     &optional (ins-palette +slippery-chicken-standard-instrument-palette+))
+;;; ****
+  (let ((change (typecase pc
+                  (integer pc)
+                  (symbol (let ((ins (get-data pc ins-palette)))
+                            (when ins (midi-program ins))))
+                  (t (error "event::add-midi-program-changes: ~a is invalid"
+                            pc))))
+        (chans (force-list chan)))
+    (loop for c in chans do
+         (push (list c change) (midi-program-changes e))))
+  (midi-program-changes e))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  10:45:36 Tue Sep 29 2020 CEST
+;;; $$ Last modified:  16:29:10 Thu Oct  8 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -365,9 +365,10 @@
                   (1.875 3)
                   (t 0))))
         ;; (when (< (value r) 1.0)
-        (when (< (value r) 0.1)
+        (when (and (get-sc-config 'rhythm-scale-warning)
+                   (< (value r) 0.1))
           (warn "~a rhythm::scale: ~
-            attempt to scale (~a times) a rhythm above 10x a whole note!"
+                 attempt to scale (~a times) a rhythm above 10x a whole note!"
                 r scaler))
         ;; let's see if we can get a new rhythm from this thing all scaled and
         ;; dotted and everything....

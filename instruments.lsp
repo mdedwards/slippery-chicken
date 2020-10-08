@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th December 2010
 ;;;
-;;; $$ Last modified:  16:39:55 Thu Oct  8 2020 CEST
+;;; $$ Last modified:  17:13:44 Thu Oct  8 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -515,6 +515,8 @@
       (:staff-name "computer" :staff-short-name "comp"
        :lowest-sounding C-1 :highest-sounding bf8
        :clefs (treble bass double-treble double-bass)
+       ;; MDE Thu Oct  8 17:13:35 2020, Heidhausen -- FX 4 (atmosphere)
+       :midi-program 100
        ;; MDE Sat Aug  5 18:42:03 2017 -- 
        :microtones t 
        :starting-clef treble)))))

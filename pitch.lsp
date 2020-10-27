@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  17:18:49 Sat Sep 12 2020 CEST
+;;; $$ Last modified:  15:57:34 Tue Oct 27 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1150,7 +1150,7 @@ NIL
   (>= (frequency p1) (frequency p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* chord/pitch-or-chord=
+;;; ****m* pitch/pitch-or-chord=
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
 ;;; 

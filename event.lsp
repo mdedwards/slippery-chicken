@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  15:52:02 Tue Oct 27 2020 CET
+;;; $$ Last modified:  15:55:32 Tue Oct 27 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1146,9 +1146,6 @@ data: 132
             (pitch-or-chord e)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Dec 23 20:04:27 EST 2011 Added robodoc info
-
 ;;; ****m* event/enharmonic
 ;;; DESCRIPTION
 ;;; Change the pitch of the pitch object within the given event object to its
@@ -1375,7 +1372,7 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod flat-to-sharp ((e event) &optional clone written)
-;;;****
+;;; ****
   (let* ((event (if clone (clone e) e))
          (slot (if written
                    'written-pitch-or-chord
@@ -1384,10 +1381,8 @@ NIL
          (fts (flat-to-sharp poc)))
     (setf (slot-value event slot) fts)
     event))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Dec 23 20:32:23 EST 2011 Added robodoc info
-
 ;;; ****m* event/pitch-
 ;;; DESCRIPTION
 ;;; Determine the interval in half-steps between two pitches. 

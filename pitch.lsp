@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> linked-named-object -> pitch
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  12:17:42 Mon Sep 16 2019 CEST
+;;; $$ Last modified:  15:57:34 Tue Oct 27 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -218,21 +218,25 @@
   ;; 14.3.11 can't output without midi channel
   (unless (midi-channel p)
     (error "pitch::output-midi-note: midi-channel nil: ~%~a:" p))
-  (cm::output-midi-note (midi-note p) 
-                        ;; MDE Tue Jun 26 12:30:09 2012 -- the pitch bend is
-                        ;; set for every output MIDI note, just to be sure.
-                        ;; This means we can have e.g. 1/8th and 1/4 tones on
-                        ;; one channel.  NB When creating events, we put
-                        ;; microtones on one channel and chromatic tones on
-                        ;; another so we can have microtonal chords.  But we
-                        ;; can only have one type of microtone in a chord doing
-                        ;; it this way (better than nothing).
-                        (pitch-bend p)
-                        time
-                        (if (amplitude p) (amplitude p) amplitude)
-                        duration  
-                        ;; 1- because cm channels start at 0
-                        (1- (midi-channel p))))
+  ;; MDE Sat Dec 7 11:58:42 2019 -- if certain marks (such as flag-head for
+  ;; harmonics node) mean a note shouldn't be played, we ignore it
+  (unless (intersection (get-sc-config 'midi-play-ignore-marks)
+                      (marks p))
+    (cm::output-midi-note (midi-note p) 
+                          ;; MDE Tue Jun 26 12:30:09 2012 -- the pitch bend is
+                          ;; set for every output MIDI note, just to be sure.
+                          ;; This means we can have e.g. 1/8th and 1/4 tones on
+                          ;; one channel.  NB When creating events, we put
+                          ;; microtones on one channel and chromatic tones on
+                          ;; another so we can have microtonal chords.  But we
+                          ;; can only have one type of microtone in a chord
+                          ;; doing it this way (better than nothing).
+                          (pitch-bend p)
+                          time
+                          (if (amplitude p) (amplitude p) amplitude)
+                          duration  
+                          ;; 1- because cm channels start at 0
+                          (1- (midi-channel p)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -247,9 +251,6 @@
     (if in-cents (round (* 100.0 mnf)) mnf)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Jan  2 11:59:06 EST 2012: Added robodoc info
-
 ;;; ****m* pitch/delete-marks
 ;;; DESCRIPTION
 ;;; Delete all marks stored in the MARKS slot of the given pitch object and
@@ -291,18 +292,13 @@ NIL
   (setf (marks p) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; the ignore fields are there because of the transpose method in tl-set,
-;;; chord and event.  
-
-;;; SAR Mon Jan  2 12:52:40 EST 2012: Added robodoc info
-
 ;;; ****m* pitch/transpose
 ;;; DESCRIPTION
 ;;; Transpose the pitch information (frequency, note-name, midi-note etc.) of a
 ;;; given pitch object by a specified number of semitones. The number of
 ;;; semitones specified can be fractional; however, all fractional values will
-;;; be rounded to the nearest quarter-tone frequency.
+;;; be rounded to the nearest quarter-tone frequency (or default smallest step
+;;; for the current scale).  
 ;;;
 ;;; NB: This method returns a new pitch object rather than altering the values
 ;;;     of the current pitch object.
@@ -693,7 +689,6 @@ NIL
        ;; (equal-within-tolerance (src p1) (src p2) src-tolerance)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* pitch/enharmonic-equivalents
 ;;; DATE
 ;;; 25th December 2013
@@ -721,7 +716,6 @@ NIL
   (pitch= p1 (enharmonic p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* pitch/cents-hertz
 ;;; DATE
 ;;; December 24th 2013
@@ -758,9 +752,6 @@ NIL
      (frequency p) ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Jan  2 17:05:31 EST 2012: Added robodoc info
-
 ;;; ****m* pitch/pitch-class-eq
 ;;; DATE 
 ;;; 14 Aug 2010
@@ -825,9 +816,6 @@ NIL
            (eq (no-8ve p1) (no-8ve (enharmonic p2))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Jan  2 18:23:01 EST 2012: Added robodoc info
-
 ;;; ****m* pitch/note=
 ;;; DESCRIPTION
 ;;; Tests to see the note-name symbols (values in the DATA slots) of two given
@@ -947,9 +935,6 @@ NIL
   (< (frequency p1) (frequency p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Jan  2 20:21:17 EST 2012: Added robodoc info
-
 ;;; ****m* pitch/pitch>
 ;;; DESCRIPTION
 ;;; Test to see if the frequency value of one specified pitch object is greater
@@ -1163,6 +1148,91 @@ NIL
 (defmethod pitch>= ((p1 pitch) (p2 pitch))
 ;;; ****
   (>= (frequency p1) (frequency p2)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* pitch/pitch-or-chord=
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Tue 29 Oct 2019 08:57:53 GMT - Warwick
+;;; 
+;;; DESCRIPTION
+;;; Convenience method, test to see if the pitch-or-chord slots of two event
+;;; objects are the same.
+;;; 
+;;; ARGUMENTS
+;;; - a pitch or chord object
+;;; - a pitch or chord object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL to indicate whether or not enharmonic pitches are considered 
+;;;   equal. T = enharmonic pitches are considered equal. Default = NIL. 
+;;; - a number to indicate the frequency deviation allowed before returning NIL.
+;;; 
+;;; RETURN VALUE
+;;; T if the values of the two specified pitch or chord objects are equal, otherwise
+;;; NIL. 
+;;; 
+;;; EXAMPLE
+#|
+;; Comparison of equal pitch objects created using note-name symbols returns T 
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'c4)))
+  (pitch-or-chord= p1 p2))
+
+=> T 
+
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'bs3)))
+  (pitch-or-chord= p1 p2))
+
+=> NIL
+
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'bs3)))
+  (pitch-or-chord= p1 p2 t))
+
+=> T
+
+(let ((p1 (make-pitch 'c4))
+      (c1 (make-chord '(c4 e4 g4))))
+  (pitch-or-chord= p1 c1))
+
+=> NIL
+
+(let ((c1 (make-chord '(c4 e4 g4)))
+      (c2 (make-chord '(c4 e4))))
+  (pitch-or-chord= c1 c2))
+
+=> NIL
+
+(let ((c1 (make-chord '(c4 e4 g4)))
+      (c2 (make-chord '(bs4 ff4 g4))))
+  (pitch-or-chord= c1 c2))
+
+=> NIL
+
+(let ((c1 (make-chord '(c4 e4 g4)))
+      (c2 (make-chord '(bs3 ff4 g4))))
+  (pitch-or-chord= c1 c2 t))
+
+=> T
+
+;; Chords with only one pitch are the same as pitch object with the same pitch.
+(let ((c (make-chord '(c4)))
+      (p (make-pitch 'c4)))
+  (pitch-or-chord= c p))
+
+=> T
+
+|#
+;;; SYNOPSIS
+(defmethod pitch-or-chord= ((p1 pitch) (p2 pitch)
+                            &optional enharmonics-are-equal
+                              (frequency-tolerance 0.01))
+;;; ****
+  (pitch-or-chord=-aux p1 p2 enharmonics-are-equal frequency-tolerance))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1792,8 +1862,10 @@ data: CQS4
                      (qs nil)
                      (qf 'f)
                      ;; twelfth-tone scale
-                     (ts nil) (ss nil) (ssf nil) (stf nil) (sts 's) (fts 'f)
-                     (sss 's) (fss 'f) (sf 'f) (tf 'f)
+                     ;; MDE Thu Jan  9 08:41:13 2020 -- changed ssf and stf from
+                     ;; nil to 's
+                     (ts nil) (ss nil) (ssf 's) (stf 's) (sts 's) (fts 'f)
+                     (sss 's) (ssf 's) (fss 'f) (sf nil) (tf nil)
                      (t (error "pitch::set-white-note: unrecognised ~
                                 accidental ~a"
                                accidental))))
@@ -1948,6 +2020,15 @@ pitch::add-mark: mark PIZZ already present but adding again!
             (data p)))
     (incf (lp-resolutions p))
     (setf p (make-pitch (freq-to-note (frequency p) 'quarter-tone))))
+  ;; MDE Tue Jun 16 13:50:43 2020, Heidhausen -- if we don't do this then we
+  ;; can't have different noteheads in chords
+  (multiple-value-bind 
+        (from to)
+      (separate-marks-before (marks p) (marks-before p))
+    ;; MDE Fri Mar 24 10:49:38 2017 -- todo: really shouldn't be changing
+    ;; slots, rather, creating local vars for these to be processed here
+    (setf (marks p) from
+          (marks-before p) to))
   (let* ((octave (octave p))
          (lp8ve (cond
                   ((= octave 3) "")
@@ -1966,10 +2047,13 @@ pitch::add-mark: mark PIZZ already present but adding again!
          (note (if (eq (accidental p) 'n)
                    (no-8ve-no-acc p)
                    (no-8ve p))))
-    (string-downcase (format nil "~a~a~a~a~a"
-                             marks-before note lp8ve 
-                             (if (accidental-in-parentheses p) "?" "")
-                             marks))))
+    ;; MDE Tue Jun 16 12:28:07 2020, Heidhausen -- stringdowncase used to be
+    ;; applied to the whole string but because of xNote (x-head mark) we can't
+    ;; do that 
+    (format nil "~a~a~a~a~a"
+            marks-before (string-downcase (string note)) lp8ve 
+            (if (accidental-in-parentheses p) "?" "")
+            marks)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2377,19 +2461,28 @@ data: D7
   (multiple-value-bind
         (harm node)
       (natural-harmonic? instrument p tolerance)
-    ;; (when harm (print (id harm)))
-    ;; for now at least we do nothing with the node pitch
-    harm))
+    ;; MDE Wed Dec 18 13:39:17 2019 -- we now return the node pitch too
+    (values harm node)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Tue 29 Oct 2019 11:42:44 GMT -- change sharp to flat or flat to sharp
+(defmethod sharp-to-flat ((p pitch) &optional clone written)
+  (declare (ignore clone written))
+  (if (sharp p)
+      (setf p (enharmonic p))
+      p))
+
+(defmethod flat-to-sharp ((p pitch) &optional clone written)
+  (declare (ignore clone written))
+  (if (flat p)
+      (setf p (enharmonic p))
+      p))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Dec 31 12:19:46 EST 2011: Added robodoc info
-;;; MDE Mon Jul 23 11:30:20 2018 -- changed default midi channel from 0 to 1
-
 ;;; ****f* pitch/make-pitch
 ;;; DESCRIPTION
 ;;; Create a pitch object, specifying a note as either a symbol or a
@@ -2405,7 +2498,9 @@ data: D7
 ;;; 
 ;;; ARGUMENTS
 ;;; - A note, either as an alphanumeric note name (e.g. cs4) or a numeric hertz
-;;;   frequency.  
+;;;   frequency. Note that if one or more pitche objects have been initialised
+;;;   then it is not necessary to specify the octave as the last octave will be
+;;;   used 
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
@@ -2459,6 +2554,15 @@ C4
 
 => 0.5946035487490308
 
+;;  make two pitch objects; the 2nd uses the octave of the first
+(progn (make-pitch 'cs6)
+       (make-pitch 'a))
+=>
+PITCH: frequency: 1760.000, midi-note: 93, midi-channel: 1 
+       pitch-bend: 0.0 
+       degree: 186, data-consistent: T, white-note: A6
+       nearest-chromatic: A6
+...
 |#
 ;;; SYNOPSIS
 (defun make-pitch (pitch &key (src-ref-pitch 'c4) (midi-channel 1))
@@ -2813,9 +2917,6 @@ data: E4
       result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Jan  3 12:40:02 EST 2012: Edited MDE robodoc info
-
 ;;; ****f* pitch/remove-octaves
 ;;; DESCRIPTION
 ;;; Removes all but one of any pitch items in a given list that have the same
@@ -2922,11 +3023,6 @@ data: G3
        finally (return (nreverse result)))))
               
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 
-
-;;; SAR Tue Jan  3 13:58:09 EST 2012: Added robodoc info
-
 ;;; ****f* pitch/invert-pitch-list
 ;;; DESCRIPTION
 ;;; Using the lowest note in the list as the reference point, invert the rest
@@ -3515,6 +3611,36 @@ data: F4
 ;;; MDE Mon Feb 13 15:19:57 2012 
 (defun pitch-list= (pl1 pl2)
   (every #'pitch= pl1 pl2))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* pitch/midi-play-pitch-list
+;;; DATE
+;;; January 2nd 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Generate a MIDI file from a list of pitches.
+;;; 
+;;; ARGUMENTS
+;;; the pitch list: either pitch objects or symbols
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :rhythm. The rhythm (symbol or object) to be used for all pitches. Default
+;;;   = 'e (eighth note) 
+;;; - :tempo. The MIDI file tempo. Default = 120BPM.
+;;; - :file. The patch of the MIDI file to write. Default = "/tmp/tmp.mid"
+;;; 
+;;; RETURN VALUE
+;;; the MIDI file path (string)
+;;; 
+;;; SYNOPSIS
+(defun midi-play-pitch-list (pitches
+                             &key (rhythm 'e) (tempo 120) (file "/tmp/tmp.mid"))
+;;; ****
+  (let ((events (loop for p in pitches collect
+                     (make-event p rhythm))))
+    (events-update-time events)
+    (event-list-to-midi-file events :midi-file file :start-tempo tempo)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Apr  3 20:53:55 2013 -- 

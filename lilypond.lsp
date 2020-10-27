@@ -5,7 +5,7 @@
 ;;;
 ;;; Class Hierarchy:  none, no classes defined
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    30th January 2011
 ;;;
-;;; $$ Last modified:  09:04:40 Thu Jan 10 2019 CET
+;;; $$ Last modified:  23:39:20 Tue Jun 16 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -166,14 +166,19 @@
            (end-15ma "\\ottava #0 ")
            (beg-15mb "\\ottava #-2 ")
            (end-15mb "\\ottava #0 ")
-           ;; NB note heads should be added via (add-mark-before ... so if
-           ;; adding new, add the mark symbol to the move-elements call in
-           ;; event::get-lp-data 
-           (circled-x "\\once \\override NoteHead #'style = #'xcircle ")
+           ;; NB note heads used to be added via (add-mark-before) but can now
+           ;; be added by add-mark and friends (16.6.20) so if adding new heads
+           ;; , make sure to add the mark symbol to the move-elements call in
+           ;; event::separate-marks-before
+           ;; 
+           ;; (circled-x "\\once \\override NoteHead #'style = #'xcircle ")
+           (circled-x "\\tweak #'style #'xcircle ")
            ;; (x-head "\\once \\override NoteHead #'style = #'cross ")
-           (x-head " \\xNote ")
-           (triangle "\\once \\override NoteHead #'style = #'triangle ")
-           (triangle-up "\\once \\override NoteHead #'style = #'do ")
+           (x-head "\\xNote ")
+           ;; (triangle "\\once \\override NoteHead #'style = #'triangle ")
+           (triangle "\\tweak #'style #'triangle ")
+           ;; (triangle-up "\\once \\override NoteHead #'style = #'do ")
+           (triangle-up "\\tweak #'style #'do ")
            (airy-head (no-lp-mark 'airy-head)) 
            ;; this has to be added to the event _before_ the one which needs to
            ;; start with these noteheads.
@@ -181,8 +186,10 @@
            (improvOff "\\improvisationOff ")
            ;; MDE Sat Nov  9 20:21:19 2013 -- in CMN it's :breath-in: a
            ;; triangle on its side (pointing left)
-           (wedge "\\once \\override NoteHead #'style = #'fa ")
-           (square "\\once \\override NoteHead #'style = #'la ")
+           ;; (wedge "\\once \\override NoteHead #'style = #'fa ")
+           (wedge "\\tweak #'style #'fa ")
+           ;; (square "\\once \\override NoteHead #'style = #'la ")
+           (square "\\tweak #'style #'la ")
            ;; (mensural "\\once \\override NoteHead #'style = #'slash ")
            ;;(flag-head "\\once \\override NoteHead #'style = #'harmonic-mixed
            ;;")  
@@ -217,7 +224,9 @@
            (<< "<< ")
            (>> ">> ")
            ;; NB this override has to come exactly before the note/dynamic it
-           ;; applies to 
+           ;; applies to. MDE Tue Jun 16 23:38:57 2020, Heidhausen -- again this
+           ;; override should be OK (rather than tweak) as it's below the staff
+           ;; rather than a property of a note (in a chord)
            (hairpin0 "\\once \\override Hairpin #'circled-tip = ##t ")
            ;; (dim0-beg "\\once \\override Hairpin #'circled-tip = ##t \\> ")
            (pause "\\fermata ")
@@ -292,6 +301,9 @@
                 (setf target (string-downcase target)))
               (format 
                nil
+               ;; MDE Tue Jun 16 23:37:43 2020, Heidhausen -- leave arrows with
+               ;; override rather than tweak as these are above the staff and
+               ;; not linked (yet?) to single notes in a chord
                "~%\\override TextSpanner #'bound-padding = #1.0 ~
                ~%\\override TextSpanner #'style = #'line ~%~
                \\override TextSpanner #'(bound-details right arrow) = ##t ~%~
@@ -321,18 +333,29 @@
            ;; with all - and _ characters removed. If in any doubt, look at the
            ;; "music = { " block in your Lilypond -def.ly file
            (staff (format nil "\\change Staff = \"~a\"" (second mark)))
-           (rgb 
+           (rgb ; list of three rgb values between 0.0 and 1.0
             (let* ((rgb (second mark))
                    (r (first rgb))
                    (g (second rgb))
                    (b (third rgb)))
               (format 
                  nil
-                 "\\once \\override NoteHead #'color = #(rgb-color ~a ~a ~a) ~
+                 #|"\\once \\override NoteHead #'color = #(rgb-color ~a ~a ~a) ~
                   \\once \\override Beam #'color = #(rgb-color ~a ~a ~a) ~
                   \\once \\override Accidental #'color = #(rgb-color ~a ~a ~a) ~
                   \\once \\override Flag #'color = #(rgb-color ~a ~a ~a) ~
-                  \\once \\override Stem #'color = #(rgb-color ~a ~a ~a) "
+                 \\once \\override Stem #'color = #(rgb-color ~a ~a ~a) "|#
+                 ;; MDE Tue Jun 16 23:33:15 2020, Heidhausen -- use tweak
+                 ;; instead and set individual properties rather tweaking the
+                 ;; whole note as that causes things like text to change color
+                 ;; too, I believe. NB if you set the rgb of a note in a chord,
+                 ;; whether the beam, flag etc. are that colour depends on which
+                 ;; note those are attached to.
+                 "\\tweak NoteHead.color #(rgb-color ~a ~a ~a) 
+                  \\tweak Beam.color #(rgb-color ~a ~a ~a) ~
+                  \\tweak Accidental.color #(rgb-color ~a ~a ~a) ~
+                  \\tweak Flag.color #(rgb-color ~a ~a ~a) ~
+                  \\tweak Stem.color  #(rgb-color ~a ~a ~a) "
                  r g b r g b r g b r g b r g b)))
            ;; MDE Sat Jun 30 12:06:08 2012 -- key signatures 
            ;; e.g. '(key fs major), but note that they will appear _after_ the
@@ -403,6 +426,8 @@
       ;; show up in brackets as e.g. 5:4 (expressed as 4/5 in the rthm-seq-bar
       ;; list of rhythms) instead of just 5
       (rational
+       ;; MDE Tue Jun 16 23:37:05 2020, Heidhausen -- shouldn't need tweak here
+       ;; as this won't need to work on separate notes in a chord
        (format nil "\\once \\override TupletNumber.text = ~
                     #tuplet-number::calc-fraction-text \\times ~a { " tup)))))
 

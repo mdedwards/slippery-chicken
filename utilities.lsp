@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  none: no classes defined
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  19:15:01 Wed Oct  9 2019 CEST
+;;; $$ Last modified:  15:40:26 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -225,6 +225,43 @@
        (<= x upper)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/nearest
+;;; DATE
+;;; 15th May 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Return the nearest number in a list to the first argument
+;;; 
+;;; ARGUMENTS
+;;; - the number we're looking to get the closest to
+;;; - the list of numbers we'll search
+;;; 
+;;; RETURN VALUE
+;;; the element of the list that's closest to the first argument, the list
+;;; sorted by nearest to the number, the distances to the number for the sorted
+;;; list. 
+;;;
+;;; OPTIONAL ARGUMENTS
+;;; none
+;;; 
+;;; EXAMPLE
+#|
+(nearest 1.21 '(4 2 5 3 5 4 1.2 1.3 1.1999))
+--> 1.2
+|#
+;;; SYNOPSIS
+(defun nearest (num list)
+;;; ****
+  (unless (every #'numberp (cons num list))
+    (error "utilities::nearest: first argument and list must be numbers"))
+  (let* ((lds (loop for n in list collect (list n (abs (- num n)))))
+         (sorted (sort lds #'(lambda (x y)
+                               (< (second x) (second y)))))
+         (ls (mapcar #'first sorted))
+         (deltas (mapcar #'second sorted)))
+    (values (first ls) ls deltas)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****f* utilities/string-replace
 ;;; DESCRIPTION
 ;;; Replace specified segments of a string with a new specified string.
@@ -428,9 +465,6 @@
          (return t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 12:45:48 BST 2012: Added robodoc entry
-
 ;;; e.g (split-into-sub-groups '(1 2 3 4 5 6 7 8 9 10) '(2 2 3 2 1)) ->
 ;;; ((1 2) (3 4) (5 6 7) (8 9) (10))
 
@@ -665,9 +699,6 @@
                 (> i lim))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 14:09:30 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/power-of-2
 ;;; DESCRIPTION
 ;;; Test whether the specified number is a power of two and return the
@@ -701,11 +732,6 @@
     (whole-num-p (log float 2))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 14:16:28 BST 2012: Added robodoc entry
-
-;; returns the power of 2 <= num
-
 ;;; ****f* utilities/nearest-power-of-2
 ;;; DESCRIPTION
 ;;; Return the closest number to the specified value that is a power of two but
@@ -761,9 +787,6 @@
         p2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 14:28:28 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/flatten
 ;;; DESCRIPTION
 ;;; Return a list of nested lists of any depth as a flat list.
@@ -808,6 +831,7 @@
 #|
 
 (almost-flatten '((1 (2 3 4) (5 (6 7) (8 9 10 (11) 12)) 13) 14 15 (16 17)))
+=> (1 (2 3 4) 5 (6 7) 8 9 10 (11) (12) (13) 14 15 (16 17))
 
 |#
 ;;; SYNOPSIS
@@ -1182,9 +1206,6 @@
   (expt octave-size (/ st divisions-per-octave)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 16:03:22 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/srt
 ;;; DESCRIPTION
 ;;; Return the semitone transposition for a given sampling rate conversion
@@ -1348,8 +1369,8 @@
                (integer>=0 how-many)
                (<= (+ start how-many) (length list)))
     (error "remove-elements: arguments 2 and 3 must be integers < the ~
-            length of argument 1: ~a ~a ~a"
-           start how-many (length list)))
+            length ~%of argument 1: ~a ~a ~a ~%~a"
+           start how-many (length list) list))
   (append (subseq list 0 start)
           (nthcdr (+ start how-many) list)))
 
@@ -1434,9 +1455,6 @@
                                 collect (nth i (nth j lists))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 09:51:05 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/logarithmic-steps
 ;;; DESCRIPTION
 ;;; Create a list of numbers progressing from the first specified argument to
@@ -1473,9 +1491,6 @@
        (interpolate i curve :exp exponent)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 09:58:22 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/interpolate
 ;;; DESCRIPTION
 ;;; Get the interpolated value at a specified point within an envelope. The
@@ -1532,21 +1547,27 @@
             (lasty (first (last env))))
         (cond ((> point lastx)
                (when warn
-                 (warn "interpolate: ~a is off the x axis of ~%~a~%returning ~a"
+                 (warn "interpolate: ~a is off the x axis of ~%~a~
+                        ~%returning last y value: ~a"
                        point env lasty))
                lasty)
               ((< point (car env))
-               (error "interpolate: Can't interpolate ~a in ~a" point env))
+               (let (y1)
+                 ;; (error "interpolate: Can't interpolate ~a in ~a" point env))
+                 ;; MDE Thu Apr 23 09:48:57 2020, Heidhausen -- if our x values
+                 ;; start > the point we're looking for, return the first y value
+                 (warn "utilities::interp-aux: envelope starts later than point!~
+                      ~%Returning first y value: ~a" (setq y1 (second env)))
+                 y1))
               (t (interp-aux point env scaler exp))))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun interp-aux (point env scaler exp)
   (let ((here (loop for i in env by #'cddr and j from 1 do
                    (if (<= point i) (return (+ j j -2))))))
-    ;; rounding in making the new-env with new-lastx can cause the
-    ;; very last event to be just a little bigger than the last x
-    ;; value in the new-env.  If this is the case, <here> will be nil
-    ;; so we better deal with this: 
+    ;; rounding in making the new-env with new-lastx can cause the very last
+    ;; event to be just a little bigger than the last x value in the new-env.
+    ;; If this is the case, <here> will be nil so we better deal with this:
     (unless here 
       (setq here (- (length env) 2)))
     (when (zerop here)
@@ -1556,10 +1577,12 @@
           (x2 (nth here env)))
       ;; MDE Mon May 14 12:26:16 2012 
       (unless (and (numberp x1) (numberp x2))
-        (error "utilities::interp-aux: y values in envelope must be numbers: ~a"
+        (error "utilities::interp-aux: y values in envelope must be ~
+                numbers: ~a"
                env))
       (when (= x1 x2)
-        (error "utilities::interp-aux: can't interpolate ~a in ~a." point env))
+        (error "utilities::interp-aux: can't interpolate ~a in ~a."
+               point env))
       (get-interpd-y point 
                      x1 
                      (* scaler (nth (- here 1) env))
@@ -1582,10 +1605,12 @@
 (defun lastx (env)
   "lastx returns the last x value in the given envelope.
    e.g. (lastx '(0 0 20 4 30 5 100 0)) => 100"
+  (unless env
+    (warn "utilities::lastx: env should not be nil."))
   (let ((len (length env)))
     (when (oddp len) 
         (error "utilities::lastx: Wrong number of elements in ~a." env))
-    (nth (- len 2) env)))
+    (when env (nth (- len 2) env))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun new-lastx (env x)
@@ -1601,9 +1626,6 @@
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 10:11:28 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/scale-env
 ;;; DESCRIPTION
 ;;; Scale either the x-axis values, the data values, or both of a list of
@@ -1945,9 +1967,6 @@
       (t (error "utilities::decimate-env: unknown method: ~a" method)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 11:17:05 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/env-symmetrical
 ;;; DESCRIPTION
 ;;; Create a new list of break-point pairs that is symmetrical to the original
@@ -2027,9 +2046,6 @@
      collect x collect (+ y add)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon May  7 11:28:13 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/force-length
 ;;; DATE
 ;;; 03-FEB-2011
@@ -2710,11 +2726,10 @@ WARNING:
                      (progn
                        (split-phrase (nreverse phrase))
                        (setf phrase '()))
-                     (push (first label) phrase))))
-             (when eof
-               (split-phrase (nreverse phrase))
-               (return t)))))))
-                    
+                     (push (first label) phrase)))
+               (when eof
+                 (split-phrase (nreverse phrase))
+                 (return t))))))))
                       
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2727,7 +2742,7 @@ WARNING:
                      (pathname-name file)
                      (pathname-type file))
              :direction :output :if-exists :error)
-      (loop with last = -999999.0 with label do
+      (loop with last = -999999.0 with label with time do
            (multiple-value-bind
                  (line eof)
                (read-line in nil)
@@ -2742,9 +2757,27 @@ WARNING:
                      (setq time (first label))
                      (when (> (- time last) min)
                        (setq last time)
-                       (format out "~&~a" line))))))
+                       (format out "~&~a" line)))))
+             (when eof
+               (return t)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Fri May  8 15:33:52 2020, Heidhausen 
+;;; at the moment this will fail on non-ascii chars
+(defun file-to-string (file)
+  (let (result)
+    (with-open-file 
+        (in file :direction :input :if-does-not-exist :error)
+      (loop 
+         (multiple-value-bind
+               (line eof)
+             (read-line in nil)
+           (when line
+             (push line result))
+           ;; (print line)
            (when eof
-             (return t))))))
+             (return))))
+      (list-to-string (nreverse result)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3179,6 +3212,13 @@ WARNING:
       (stream file :direction :input :if-does-not-exist :error)
     (read stream)))
 
+(defun write-to-file (file data)
+;;; ****
+  (with-open-file
+      (stream file :direction :output :if-exists :supersede
+              :if-does-not-exist :create)
+    (print data stream)))
+
 (defun read-from-default-dir-file (file)
   (read-from-file (concatenate 'string (get-sc-config 'default-dir) file)))
 
@@ -3492,11 +3532,16 @@ WARNING:
 ;;;    most-positive-fixnum  
 ;;; - :skip. The increment for the harmonics.  If 1, then we ascend the
 ;;;    harmonics series one partial at a time; 2 would mean skipping every other
-;;;    Default = 1. 
+;;;    Default = 1.
+;;; - :pitches. Return a list of pitch objects instead of frequencies. Default =
+;;;   NIL. 
+;;; - :notes. Return a list of 2-element sublists: note symbols in the
+;;;   chromatics scale, with cent deviations 
 ;;; 
 ;;; RETURN VALUE
 ;;; A list of numbers that are the frequencies in Hertz of harmonic partials
-;;; above the same fundamental frequency.
+;;; above the same fundamental frequency, or with the respective keyword, as
+;;; pitch objects or note symbols 
 ;;; 
 ;;; EXAMPLE
 #|
@@ -3510,21 +3555,41 @@ WARNING:
 |#
 ;;; SYNOPSIS
 (defun get-harmonics (start-freq &key (start-partial 1) (min-freq 20)
-                      (start-freq-is-partial 1) (max-freq 20000) (skip 1)
-                      (max-results most-positive-fixnum))
+                                   (start-freq-is-partial 1) (max-freq 20000)
+                                   (skip 1)
+                                   pitches notes
+                                   (max-results most-positive-fixnum))
 ;;; ****
   (unless (and (integer>0 start-partial)
                (integer>0 start-freq-is-partial))
     (error "utilities::get-harmonics: :start-partial (~a) and/or ~
             :start-freq-is-partial (~a) ~%need to be integers >= 1"
            start-partial start-freq-is-partial))
-  (loop with fundamental = (float (/ start-freq start-freq-is-partial))
-     for h from start-partial by skip
-     for freq = (* fundamental h)
-     while (<= freq max-freq)
-     repeat max-results
-     if (>= freq min-freq)
-     collect freq))
+  (when (and pitches notes)
+    (error "utilities::get-harmonics: either :pitches or :notes but not both."))
+  (let ((result
+         (loop with fundamental = (float (/ start-freq start-freq-is-partial))
+            for h from start-partial by skip
+            for freq = (* fundamental h)
+            while (<= freq max-freq)
+            repeat max-results
+            if (>= freq min-freq)
+            collect freq))
+        (scale cm::*scale*))
+    (cond (pitches
+           (mapcar #'(lambda (f) (make-pitch f)) result))
+          (notes
+           (prog2
+               ;; only get pitches and their cent devitions in the
+               ;; chromatic scale
+               (in-scale :chromatic)
+               (mapcar #'(lambda (f)
+                           (let ((p (make-pitch f)))
+                             (list (data p)
+                                   (floor (pitch-bend p) 0.01))))
+                       result)
+             (in-scale scale)))
+          (t result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; keywords same as get-harmonics (above)
@@ -3807,9 +3872,6 @@ WARNING:
         (list thing))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue May  8 00:32:05 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/hailstone
 ;;; DESCRIPTION
 ;;; Implementation of the Collatz conjecture (see
@@ -3894,9 +3956,13 @@ WARNING:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed May 29 14:54:14 2013 
 (defun system-open-file (file)
-  #+darwin
-  (shell "/usr/bin/open" file)
-  #-darwin
+  #+darwin (shell "/usr/bin/open" file)
+  #+linux
+  (let ((xdg "/usr/bin/xdg-open"))
+    (if (probe-file xdg)
+        (shell xdg file)
+        (warn "utilities::system-open-file: Can't open witout ~a" xdg)))
+  #-(or darwin linux)
   (warning "utilities::system-open-file: Can't open ~a on your system. Sorry."
            file))
   
@@ -3913,7 +3979,6 @@ WARNING:
   (read-from-string (format nil "+~a+" (filename-from-title title))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****f* utilities/update-app-src
 ;;; DATE
 ;;; June 1st 2013
@@ -4961,7 +5026,12 @@ Here's where I pasted the data into the .RPP Reaper file:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Mar 25 16:41:13 2015 
 (defun float-list= (list1 list2 &optional (tolerance 0.000001d0))
-  (every #'(lambda (x y) (equal-within-tolerance x y tolerance)) list1 list2))
+  ;; MDE Tue Jun 23 15:30:08 2020, Heidhausen -- every backs out when the
+  ;; shortest list is exhausted, meaning one could have more elements than the
+  ;; other but we'd still return T
+  (and (= (length list1) (length list2))
+       (every #'(lambda (x y) (equal-within-tolerance x y tolerance))
+              list1 list2)))
 
 ;;; (FSCALE 0 -10 10 1.9 .1) means we can map exponents of 1.9 to .1 from -10
 ;;; to 10 with a zero point returning an exponent of 1
@@ -4995,7 +5065,8 @@ Here's where I pasted the data into the .RPP Reaper file:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jul 27 16:24:23 2015 -- normalise a set of numbers to between 0 and
-;;; 1 (as floats)
+;;; 1 (as floats). NB this is not the same as normalising a set of amplitudes as
+;;; they only conform to a max of 1.0 and shouldn't descend to 0.0
 (defun normalise (numbers)
   (if (= (length numbers) 1)
       '(1.0)
@@ -5339,6 +5410,294 @@ Here's where I pasted the data into the .RPP Reaper file:
                      (trailing-slash
                       (directory-namestring (truename *load-pathname*)))
                      file)))
-  
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Thu 6 Feb 2020 17:41:19 GMT
+;;; Taken from Stackoverflow, many thanks Barmar
+;;; stackoverflow.com/questions/42867749/reading-lisp-objects-from-a-string 
+
+(defun string-to-list (string)
+  (with-input-from-string (stream string)
+    (loop with eof-marker = '#:eof
+       for object = (read stream nil eof-marker)
+       until (eq object eof-marker)
+       collect object)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/write-list-to-coll
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Tue 18 Feb 2020 15:38:40 GMT
+;;; 
+;;; DESCRIPTION
+;;; Turn a list of lists into a text file, formatted to be read by the MaxMSP
+;;; [coll] object. This is a bit like gen-max-coll-file (see set-palette.lsp)
+;;; but instead works with any data in a list.
+;;; 
+;;; ARGUMENTS
+;;; - A list of lists in the form '((a b c) (d e f))
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments
+;;; :file - the output file. Default = "/tmp/sc-max-coll.txt"
+;;; :base - the minimum number for coll indexing. In the resulting output file,
+;;; each list in the list of lists will be preceeded by an (increasing) integer
+;;; and a comma. This argument sets the base value of that integer. Default = 0.
+;;; :capitalize - Should any outputted text be capitalized or not?
+;;; Default = NIL.
+;;; :if-exists - what to do if the file already exists. This argument is passed
+;;; to with-open-file. More info here: http://clhs.lisp.se/Body/m_w_open.htm
+;;; Default = :supercede
+;;; :prefix - add a string prefix to the item number. Default = NIL.
+;;; :alt-label - if you do not want the items labels to be consecutive numbers,
+;;; then you can here either provide a list of lists or a function. If a list of
+;;; lists, this must be the same length as the first argument. If a function, it
+;;; must be called with the item number (which increases incrementally from
+;;; base). 
+;;;
+;;; RETURN VALUE
+;;; The output file location
+;;; 
+;;; EXAMPLE
+#|
+(let ((l '((hello!)(how are you?)(very well thank you.)(1 2 3 4))))
+      (write-list-to-coll l :base 6))
+
+=> "/tmp/sc-max-coll.txt" 
+
+The resulting text file will looks like this when opened:
+
+6, hello!;
+7, how are you?;
+8, very well thank you.;
+9, 1 2 3 4;
+
+;; DJR Tue 3 Mar 2020 13:52:34 GMT
+(let ((l '((hello!)(how are you?)(very well thank you.)(1 2 3 4))))
+      (write-list-to-coll l :base 15 
+                          :alt-label #'(lambda (count)
+                                         (let ((l '(foo bar)))
+                                           (nth (mod count 2) l)))
+                          :prefix "yes_"))
+
+=> "/tmp/sc-max-coll.txt" 
+
+The resulting text file will looks like this when opened:
+
+yes_bar, hello!;
+yes_foo, how are you?;
+yes_bar, very well thank you.;
+yes_foo, 1 2 3 4;
+
+|#
+;;; SYNOPSIS
+(defun write-list-to-coll (data-list &key (base 0)
+                                       (file "/tmp/sc-max-coll.txt")
+                                       (capitalize nil)
+                                       (if-exists :supersede)
+                                       ;; DJR Tue 3 Mar 2020 13:52:34 GMT
+                                       (prefix "")
+                                       alt-label)
+;;; ****
+  (with-open-file
+      (stream file
+              :direction :output :if-exists if-exists
+              :if-does-not-exist :create)
+    (loop for i in data-list
+       for count from base
+       with item
+       do
+         (cond ((and alt-label (listp alt-label))
+                (if (= (length data-list) (length alt-label))
+                    (setf item (nth count alt-label))
+                    (error "~%utilities::write-list-to-coll: If you provide ~
+                           alt-label as a list, ~%it must be the same length ~
+                           as the data-list.")))
+               ((functionp alt-label)
+                (setf item (funcall alt-label count)))
+               (t (setf item count)))
+         (when (null item)
+           (error "~%utilities::write-list-to-coll: Items set to 'nil'. ~
+                    Check the value of 'base' or ~%the output of 'alt-list'. ~
+                    ~%base: ~a~%count: ~a~%list-item: ~a" base count i))
+         (if capitalize
+             (format stream "~&~a~a, ~a;" prefix item (list-to-string i))
+             (format stream "~&~(~a~)~(~a~), ~(~a~);" prefix item
+                     (list-to-string i))))
+    file))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/now-string
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Sat 28 Mar 2020 13:21:08 GMT - London
+;;; 
+;;; DESCRIPTION
+;;; Return a string representing the current time in the format:
+;;; YEAR MONTH DAY - HOURS MINUTES SECONDS
+;;; e.g. "20200328-132227"
+;;;
+;;; It is thought that this function might be useful when outputing multiple
+;;; files during the test phase of a piece. E.g.
+;;; (cmn-display +mini+
+;;;              :file (concatenate 'string "my-piece" (now-string) ".eps"))
+;;; 
+;;; ARGUMENTS
+;;; None
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; None
+;;; 
+;;; RETURN VALUE
+;;; A string
+;;; 
+;;; EXAMPLE
+#|
+(now-string)
+
+=> "20200328-132227"
+
+(concatenate 'string "my-piece_" (now-string) ".eps")
+
+=> "my-piece_20200328-133357.eps"
+|#
+;;; SYNOPSIS
+(defun now-string ()
+;;; ****
+  (let ((d (multiple-value-list (get-decoded-time))))
+    (format nil "~a~2,'0d~2,'0d-~2,'0d~2,'0d~2,'0d"
+            (sixth d)
+            (fifth d)
+            (fourth d)
+            (third d)
+            (second d)
+            (first d))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; for convenience, precision is fraction of a tone not a semitone
+(defun semitones-precision (semitones &optional (precision 1/4))
+  (setq precision (/ precision 2))
+  (float (/ (round semitones precision) (/ precision))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* utilities/one-to-many
+;;; DATE
+;;; June 23rd 2020
+;;; 
+;;; DESCRIPTION
+;;; Find a one-to-many relationship between the first argument and a number of
+;;; equally-spaced points given in the second argument. The first argument is a
+;;; number between 0.0 and 1.0 (inclusive). We calculate the proximities from
+;;; this point to the number of points given and return them as a list,
+;;; optionally raised to a given exponent. The list returned is scaled so that
+;;; all values sum to 1.0, so this is particularly useful for, say, calculating
+;;; a number of amplitude scalers for a multi-voice synthesis process.
+;;; 
+;;; ARGUMENTS
+;;; - the point: a number between 0.0 and 1.0 inclusive
+;;; - the number of points to use in the calculation. This will also be the
+;;;   number of results returned. Alternatively this can be a list of numbers
+;;;   between 0.0 and 1.0. This way you can pass your own points for e.g. an
+;;;   unequally-spaced set. In this case though the proximity is still
+;;;   determined from a maximum of 1.0, not the highest number in the given
+;;;   list. 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - the exponent to raise proximities to. 1.0 will return a linear
+;;;   relationship. > 1.0 will exaggerate the relationships so that those points
+;;;   further away from the first argument will be pushed further away than a
+;;;   linear relationship. < 1.0 will lessen the distances.
+;;; 
+;;; RETURN VALUE
+;;; a list of numbers the length of which is the same as the 2nd argument and
+;;; the sum of which is 1.0
+;;; 
+;;; EXAMPLE
+#|
+(one-to-many .8 7) -->
+(0.045112778 0.082706764 0.12030074 0.15789473 0.19548872 0.21804512 0.18045112)
+(one-to-many .8 7 .7) -->
+(0.06509622 0.09950039 0.1293403 0.15646003 0.18169008 0.19612299 0.17178996)
+(one-to-many .8 7 1.3)  -->
+(0.030845987 0.06782856 0.11039718 0.15721251 0.20752355 0.23917702 0.1870151)
+;;; passing 5 points: these don't have to have min/max of 0 and 1 ...
+(one-to-many .8 '(0 .1 .35 .7 .92)) -->
+(0.07067137 0.10600708 0.19434628 0.3180212 0.31095406)
+;;; ... and they don't have to be in ascending order either
+(one-to-many .8 '(0 .1 .35 .7 .2)) -->
+(0.08510638 0.12765959 0.23404254 0.38297874 0.17021276)
+|#
+;;; SYNOPSIS
+(defun one-to-many (one how-many &optional (expt 1.0))
+;;; ****
+  (unless (number-between one 0.0 1.0)
+    (error "utilities::one-to-many: first argument (~a) should be between ~
+            0.0 and 1.0" one))
+  (unless (or (and (integerp how-many) (> how-many 1))
+              (and (listp how-many)
+                   (every #'(lambda (x)
+                              (and (numberp x)
+                                   (>= x 0.0)
+                                   (<= x 1.0)))
+                          how-many)))
+    (error "utilities::one-to-many: second argument (~a) ~%should either be ~
+            an integer > 1 or a list of numbers between 0.0 and 1.0"
+           how-many))
+  (let* ((points (if (integerp how-many)
+                     (loop for i to 1 by (/ (1- how-many)) collect i)
+                     how-many))
+         (proximities (loop for p in points collect
+                           (expt (- 1.0 (abs (- one p))) expt)))
+         (sum (apply #'+ proximities)))
+    (loop for p in proximities collect (/ p sum))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun minlen4 (list &optional (warn t))
+  (let* ((e1 (first list))
+         (e2 (second list))
+         (e3 (third list))
+         (len (length list))
+         (result (case len
+                   (1 (list e1 e1 e1 e1))
+                   (2 (list e1 e2 e1 e2))
+                   (3 (list e1 e2 e3 e2))
+                   (t list))))
+    (when (and warn (< len 4))
+      (warn "utilities::minlen4: the caller needs at least  ~
+                        4 list elements.~%Using ~a instead of ~a"
+            result list))
+    result))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Sep 24 15:22:11 2020, Heidhausen
+(defun positions (item sequence &key (test #'eq))
+  (loop with start = 0
+     for pos = (position item sequence :test test :start start)
+     while pos
+     collect pos
+     do (setq start (1+ pos))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Thu Sep 24 15:22:17 2020, Heidhausen
+;;; positions starts with the first end point, not with 0
+;;; if skip, the positions refer to markers in the list that shouldn't be
+;;; returned  
+(defun subseqs (list positions &optional skip) 
+  (loop for i1 in (cons (if skip -1 0) positions)
+     for i2 in (econs positions nil) ; so we go to the end
+       ;; skip the elements at the positions
+     for subseq = (subseq list (if skip (1+ i1) i1) i2)
+     when subseq collect subseq))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF utilities.lsp

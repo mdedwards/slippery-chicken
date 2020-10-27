@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist ->
 ;;;                   circular-sclist -> assoc-list 
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    February 18th 2001
 ;;;
-;;; $$ Last modified:  15:50:22 Thu Dec 27 2018 CET
+;;; $$ Last modified:  15:10:57 Fri Sep 25 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;; ****
@@ -199,11 +199,50 @@
                 ~a in ~%~a" (id obj) al)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* assoc-list/ascending-ids?
+;;; DATE
+;;; September 19th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Check whether all IDs are ascending integers (though order can be any), none
+;;; missing, optionally starting from particular integer.
+;;; 
+;;; ARGUMENTS
+;;; - the assoc-list object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - an integer representing the lowest required ID
+;;; 
+;;; RETURN VALUE
+;;; T or NIL
+;;; 
+;;; EXAMPLE
+#|
 
-;;; SAR Fri Jan 27 14:43:08 GMT 2012: Edited robodoc info to sync with ral
-;;; 28.11.11 SEAN: Added info for ROBODoc
-;;; 07.12.11 SEAN: modified example
+(ascending-ids? (make-assoc-list 'test '((1 dog) (2 cat) (3 horse)))) -> T
+;;; 3 is missing
+(ascending-ids? (make-assoc-list 'test '((1 dog) (2 cat) (4 horse)))) -> NIL
+;; doesn't start at 2
+(ascending-ids? (make-assoc-list 'test '((1 dog) (2 cat) (3 horse))) 2) -> NIL
+;; missing several integers
+(ascending-ids? (make-assoc-list 'test '((4 dog) (2 cat) (7 horse))) 2) -> NIL
+(ascending-ids? (make-assoc-list 'test '((4 dog) (2 cat) (3 horse))) 2) -> T
+|#
+;;; SYNOPSIS
+(defmethod ascending-ids? ((al assoc-list) &optional starting-from)
+;;; ****
+  ;; we know that there are no duplicate ids
+  (let* ((keys (get-keys al))
+         (len (length keys))
+         first last)
+    (when (every #'integerp keys)
+      (setq keys (sort (get-keys al) #'<)
+            first (first keys)
+            last (first (last keys)))
+      (when (= len (1+ (- last first)))
+        (or (not starting-from) (= first starting-from))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* assoc-list/get-first
 ;;; DESCRIPTION
 ;;; Returns the first named-object in the DATA slot of the given assoc-list
@@ -452,15 +491,17 @@ WARNING:
 
 ;;; ****m* assoc-list/add
 ;;; DESCRIPTION
-;;; Add a new element to the given assoc-list object.
+;;; Add a new element to the given assoc-list object. By default the new element
+;;; is added at the end of the data list but the optional argument can change
+;;; this. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A key/data pair as a list, or a named-object.
 ;;; - The assoc-list object to which it is to be added.
 ;;; 
 ;;; OPTIONAL ARGUMENTS
-;;; - (This optional argument will be ignored; it exists only because of its use
-;;;   in the recursive-assoc-list class).
+;;; - T or NIL to add items to the front of the data list. Default = NIL = to
+;;; the end
 ;;; 
 ;;; RETURN VALUE 
 ;;; Returns T if the specified named-object is successfully added to the given
@@ -504,9 +545,8 @@ data: MARK
 => T
 |#
 ;;; SYNOPSIS
-(defmethod add (named-object (al assoc-list) &optional ignore)
+(defmethod add (named-object (al assoc-list) &optional front)
 ;;; ****
-  (declare (ignore ignore))  
   (unless named-object
     (error "assoc-list::add: named-object is NIL!"))
   (setf named-object (check-or-force-named-object named-object))
@@ -514,9 +554,15 @@ data: MARK
     (error "assoc-list::add: Can't add ~a to assoc-list with id ~%~a ~
             ~%because key already exists!"
            (id named-object) (id al)))
-  (setf (slot-value al 'data) (econs (data al) (clone named-object)))
+  ;; MDE Fri Nov  8 09:18:41 2019 -- until today we used to clone the
+  ;; named-object but this would make all changes to it after adding null and
+  ;; void 
+  ;; (setf (slot-value al 'data) (econs (data al) (clone named-object)))
+  ;; MDE Tue Mar 31 12:38:33 2020 -- allow items to be added to the front
+  (setf (slot-value al 'data) (if front
+                                  (cons named-object (data al))
+                                  (econs (data al) named-object)))
   (incf (sclist-length al))
-  ;; (push (clone named-object) (data al))
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -585,7 +631,6 @@ data: WILBUR
       (setf (nth pos (data al)) new-value))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* assoc-list/replace-data
 ;;; DATE 19th June 2013
 ;;; 
@@ -758,15 +803,13 @@ data: (SNOOPY SPOT ROVER)
       (setf (nth nth (data (nth pos (data al)))) new-value))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; 01.12.11 SEAN: Added ROBODoc info
-;;; 08.12.11 SEAN: Modified example
 ;;; ****m* assoc-list/map-data
 ;;; DESCRIPTION
-;;; Map a function over the data in the assoc-list.  See also
-;;; recursive-assoc-list's rmap method which does pretty much the same but
-;;; acting recursively on each named-object (unless it is itself recursive),
-;;; rather than the named-object's data.
+;;; Map a function over the data in the assoc-list, i.e. call the given
+;;; function/method on each data slot of each named-object in the assoc-list
+;;; data slot. See also recursive-assoc-list's rmap method which does pretty
+;;; much the same but acting recursively on each named-object (unless it is
+;;; itself recursive), rather than the named-object's data.
 ;;; 
 ;;; ARGUMENTS
 ;;; - The assoc-list to which the function is to be applied.
@@ -774,7 +817,7 @@ data: (SNOOPY SPOT ROVER)
 ;;;   a first argument. 
 ;;;
 ;;; OPTIONAL ARGUMENTS
-;;; - Optional argument(s): Further arguments for the function.
+;;; - &rest: Further arguments for the function.
 ;;; 
 ;;; RETURN VALUE 
 ;;; Returns a list of the values returned by the function call on the data.
@@ -791,7 +834,7 @@ data: (SNOOPY SPOT ROVER)
 => ((2 4 6 8) (10 12 14 16) (18 20 22 24))
 |#
 ;;; SYNOPSIS
-(defmethod map-data ((al assoc-list) function &optional further-arguments)
+(defmethod map-data ((al assoc-list) function &rest further-arguments)
 ;;; ****
   (loop for no in (data al) 
      for nod = (data no)
@@ -812,7 +855,9 @@ data: (SNOOPY SPOT ROVER)
 ;;; November 1st 2018, Heidhausen
 ;;; 
 ;;; DESCRIPTION
-;;; A destructive version of map-data
+;;; A destructive version of map-data: replace the data slot with the
+;;; named-object returned by the 2nd argument after it is passed one
+;;; named-object after another. 
 ;;; 
 ;;; ARGUMENTS
 ;;; See the map-data method in this class.
@@ -840,9 +885,10 @@ data: 1
 ...
 |#
 ;;; SYNOPSIS
-(defmethod nmap-data ((al assoc-list) function &optional further-arguments)
+(defmethod nmap-data ((al assoc-list) function &rest further-arguments)
 ;;; ****
-  (let ((new-data (map-data al function further-arguments)))
+  (let ((new-data (apply #'map-data
+                         (cons al (cons function further-arguments)))))
     (loop for no in (data al) and nd in new-data do
          (setf (data no) nd))
     al))
@@ -1050,15 +1096,19 @@ data: PIG)
           (error "~a~%assoc-list::check-or-force-named-object: ~
                   thing must have an id!" thing))
         thing)
-    (progn
-      (unless (and (listp thing)
-                   (= 2 (length thing)))
-        (error "assoc-list::check-or-force-named-object: Expected a ~
-                named-object or at least ~%a 2-element list that can be ~
-                turned into one.....~%~a"
-               thing))
-      (make-named-object (first thing) 
-                         (second thing)))))
+      (let ((len (length thing)))
+        (unless (and (listp thing)
+                     ;; MDE Tue Mar 31 12:16:11 2020 -- allow tags to be passed
+                     (or (= 3 len) (= 2 len)))
+          (error "assoc-list::check-or-force-named-object: Expected a ~
+                  named-object or at least ~%a 2- or 3-element list that can ~
+                  be turned into one: ~%~a"
+                 thing))
+        (make-named-object (first thing) 
+                           (second thing)
+                           ;; MDE Tue Mar 31 12:16:11 2020 -- allow tags to be
+                           ;; passed
+                           (third thing)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

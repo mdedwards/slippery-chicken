@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   sc-map
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  17:47:08 Mon Jul  1 2019 CEST
+;;; $$ Last modified:  17:18:41 Fri Sep 18 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -123,14 +123,48 @@
   (declare (ignore value))
   (setf (slot-value scm 'num-sequences) nil))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Mon Jan 29 09:49:49 2018 -- so that if the data changes we calculate the
+;;; number of sequences next time the slot value is requested.
+(defmethod set-data :after (key value (scm sc-map))
+  (declare (ignore value key))
+  (setf (slot-value scm 'num-sequences) nil))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* sc-map/shorten
+;;; DATE
+;;; July 10th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; shorten the length of the map for a given section
+;;; 
+;;; ARGUMENTS
+;;; - the section reference
+;;; - the new length (integer)
+;;; - the sc-map object
+;;; 
+;;; RETURN VALUE
+;;; the shortened sc-map object
+;;; 
+;;; SYNOPSIS
+(defmethod shorten (section new-length (scm sc-map))
+;;; ****
+  (let* ((map (get-data-data section scm))
+         (len (length map)))
+    (if (< len new-length)
+        (error "sc-map::truncate: new-length (~a) < existing length (~a)"
+               new-length len)
+        (set-data section (list section (subseq map 0 new-length)) scm)))
+  scm)
+    
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod print-object :before ((scm sc-map) stream)
   (format stream "~%SC-MAP: palette id: ~a, num-sequences: ~a~
                   ~%        replacements: ~a"
           (when (palette scm)
             (id (palette scm)))
-          (num-sequences scm) (replacements scm)))
+          (num-sequences scm)
+          (replacements scm)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -145,7 +179,10 @@
     ;; if new-class is a section (as when rsm-to-piece is called) then we can't
     ;; do this, but usually we do, if new-class is a map
     (when (slot-exists-p ral 'palette)
-      (setf (slot-value ral 'palette) (palette scm)))
+      ;; (setf (slot-value ral 'palette) (palette scm)))
+      ;; MDE Thu Feb 27 10:55:42 2020 -- clone if it exists
+      (setf (slot-value ral 'palette)
+            (when (palette scm) (clone (palette scm)))))
     ral))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -162,9 +199,6 @@
   (setf (palette scm) p))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat Mar  3 18:37:04 GMT 2012: Added robodoc entry
-
 ;;; ****m* sc-map/get-all-data-from-palette
 ;;; DESCRIPTION
 ;;; Given an sc-map object that has been bound to a palette object of any type,
@@ -547,9 +581,6 @@ data: (C2 B2 A3 G4 F5 E6)
       (get-data (nth nth (data refs)) p nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Feb 22 17:07:42 GMT 2012: Added robodoc entry
-
 ;;; ****m* sc-map/get-nth-from-map
 ;;; DESCRIPTION
 ;;; Get the element located at the nth position within a given sc-map
@@ -672,8 +703,10 @@ data: (1 NIL 3 4 5)
 
 (defmethod delete-from-to-in-map (map-ref from to (scm sc-map))
 ;;; ****
+  (unless to (setq to (1- (length (get-data-data map-ref scm)))))
   (loop for n from from to to do
-       (delete-nth-in-map map-ref n scm)))
+       (delete-nth-in-map map-ref n scm))
+  scm)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -13,7 +13,7 @@
 ;;;                   named-object -> linked-named-object -> bar-holder ->
 ;;;                   piece  
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -26,7 +26,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  08:28:02 Tue Oct 30 2018 CET
+;;; $$ Last modified:  14:31:11 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1169,9 +1169,6 @@ BAR-HOLDER:
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri May  4 13:37:12 BST 2012: Added robodoc entry
-
 ;;; ****m* piece/get-sequenz-from-bar-num
 ;;; DESCRIPTION
 ;;; Get the specified sequenz object located at a specified bar-number location

@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   sc-map -> rthm-seq-map
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -34,7 +34,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  15:30:06 Fri Aug  9 2019 CEST
+;;; $$ Last modified:  19:19:54 Tue Jul 14 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -238,17 +238,13 @@ data: (RS2 RS3 RS2)
             rsm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Apr 27 13:49:01 BST 2012: Conformed robodoc entry
-;;; SAR Wed Jun 13 12:22:11 BST 2012: Revisited robodoc entry
-
 ;;; ****m* rthm-seq-map/add-repeats
 ;;; DATE 
 ;;; 30-Dec-2010
 ;;; 
 ;;; DESCRIPTION
 ;;; Generate repeating sequences at given cycle points using recurring-event
-;;; data. This process modifies the number of beats.
+;;; data. This extends the number of items in the map.
 ;;; 
 ;;; ARGUMENTS 
 ;;; - A rthm-seq-map object.
@@ -658,8 +654,10 @@ data: (5 3 2)
 
 |#
 ;;; SYNOPSIS
-(defmethod add-player ((rsm rthm-seq-map) player &optional data cycle)
+(defmethod add-player ((rsm rthm-seq-map) player &optional data cycle
+                                                   ignore1 ignore2)
 ;;; ****
+  (declare (ignore ignore1 ignore2))
   ;; (print '*****************************************) (print rsm)
   (when (member player (players rsm))
     (error "rthm-seq-map::add-player: ~a already in the map: can't add."
@@ -697,8 +695,9 @@ data: (5 3 2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Oct 29 17:07:56 2018 -- surely we must do this too?
-(defmethod add-player :after ((rsm rthm-seq-map) player &optional data cycle)
-  (declare (ignore data cycle))
+(defmethod add-player :after ((rsm rthm-seq-map) player &optional data cycle
+                                                          ignore1 ignore2)
+  (declare (ignore data cycle ignore1 ignore2))
   (add-player-to-players rsm player))
 
 (defmethod add-player-to-players ((rsm rthm-seq-map) player)

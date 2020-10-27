@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> slippery-chicken
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  11:14:17 Tue Oct  1 2019 CEST
+;;; $$ Last modified:  15:35:23 Mon Sep 28 2020 CEST
 ;;;
 ;;; SVN ID: $Id$ 
 ;;;
@@ -211,7 +211,6 @@
                                :initform 0.5)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* slippery-chicken/sc-init
 ;;; DESCRIPTION
 ;;; Explicitly initialize the slippery-chicken object. This is usually called
@@ -219,7 +218,8 @@
 ;;; make-slippery-chicken) but there could be circumstances (e.g. in subclasses
 ;;; of slippery-chicken) where you'd like to defer initialization and call this
 ;;; method explicitly instead. In that case set :defer to t when making the
-;;; slippery-chicken object.
+;;; slippery-chicken object. This can also be called with using :defer, to
+;;;regenerated the piece after e.g. calling set-limits-by-section. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
@@ -441,15 +441,20 @@
     (change-bar-line-type sc (num-bars (piece sc)) 2)
     ;; have to call this again now that we've got the real tempo-map
     (update-slots sc (tempo-map sc) 0.0 0.0 1 nil nil (warn-ties sc))
-    (update-instruments-total-duration sc)
+    ;; MDE Sat Sep 26 16:48:21 2020, Heidhausen -- now also generate other stats
+    ;; such as lowest/highest pitch played (2nd arg was default nil previously) 
+    (update-instruments-total-duration sc t)
     ;; (print (get-data 1 (set-palette sc)))
     ;; 25.3.11 the make-slippery-chicken function might set this to nil thus
-    ;; overriding the class default 
-    (unless (fast-leap-threshold sc)
-      (setf (fast-leap-threshold sc) 0.125))
-    (format t "~&Shortening short, fast leaps...")
-    (format t "~&Shortened ~a large fast leaps"
-            (shorten-large-fast-leaps sc :verbose nil))
+    ;; overriding the class default
+    ;; MDE Tue Aug  4 14:14:20 2020, Heidhausen -- actually, let's allow this to
+    ;; be nil so we can avoid calling shorten-large-fast-leaps
+    ;; (unless (fast-leap-threshold sc)
+    ;; (setf (fast-leap-threshold sc) 0.125))
+    (when (fast-leap-threshold sc)
+      (format t "~&Shortening short, fast leaps...")
+      (format t "~&Shortened ~a large fast leaps"
+              (shorten-large-fast-leaps sc :verbose nil)))
     ;; make sure tempo changes get registered in midi output
     (update-events-tempo sc)
     ;; 28.1.11
@@ -496,12 +501,14 @@
   ;; MDE Thu Jan 12 11:15:13 2012 -- in order to clone we need to be able to
   ;; init the object without slot values then setf them afterwards 
   (if (and (set-map sc) (ensemble sc) (rthm-seq-map sc) (rthm-seq-palette sc)
-             (not (defer sc)) (set-palette sc))
+           (not (defer sc)) (set-palette sc))
       (sc-init sc)
-      (warn "slippery-chicken::initialize-instance: sc-init method is being ~
-             ~%skipped as one of the following slots's data is missing: ~
-             ~%set-map, ensemble, rthm-seq-map, rthm-seq-palette, set-palette. ~
-             ~%Assuming you will call sc-init explicitly later.")))
+      (when (get-sc-config 'warn-no-sc-init)
+        (warn "slippery-chicken::initialize-instance: sc-init method is being ~
+               ~%skipped as one of the following slots's data is missing: ~
+               ~%set-map, ensemble, rthm-seq-map, rthm-seq-palette, ~
+               set-palette. ~
+               ~%Assuming you will call sc-init explicitly later."))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1098,8 +1105,11 @@
                         hierarchy ensemble-players ins))))
         (setf (instruments-hierarchy sc) (copy-list ensemble-players)))
     (unless (= (length rsm-players) ensemble-players-len)
-      (warn "slippery-chicken::check-instruments: ~%Number of instruments ~
-             in the rthm-seq-map is not the same ~%as that in the ensemble!"))
+      ;; MDE Tue Aug  4 14:53:55 2020, Heidhausen -- now an option
+      (when (get-sc-config 'warn-unused-instruments)
+        (warn "slippery-chicken::check-instruments: ~%Number of instruments ~
+               in the rthm-seq-map is not the same ~%as that in the ~
+               ensemble!")))
     (if (instruments-write-bar-nums sc)
         (loop for bw in (instruments-write-bar-nums sc)
            unless (member bw ensemble-players) do
@@ -1287,6 +1297,8 @@
             ;; (print (total-degrees ins))
             (when and-other-slots
               (unless (is-rest-bar bar)
+                ;; MDE Sat Sep 26 16:03:20 2020, Heidhausen
+                (update-lowest-highest-played ins (lowest bar) (highest bar))
                 (incf (total-bars ins))
                 (incf (total-notes ins) (notes-needed bar))
                 (incf (total-degrees ins) (total-degrees bar))))
@@ -1416,9 +1428,6 @@
   (get-set-limit-aux (set-limits-low sc) player seq-num))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed May  9 15:40:56 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken/get-player
 ;;; DESCRIPTION
 ;;; Return the player object for the specified player.
@@ -1857,16 +1866,15 @@ rhythms: (
      finally (return count)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed May  9 18:43:27 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken/find-note
 ;;; DATE
 ;;; 09-Apr-2011
 ;;;
 ;;; DESCRIPTION
 ;;; Print to the Listener the numbers of all bars in a specified player's part
-;;; of a given slippery-chicken object in which the specified pitch is found. 
+;;; of a given slippery-chicken object in which the specified pitch is
+;;; found. Note that pitch symbols rather than objects are searched for so
+;;; that small microtonal variations are be ignored. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A slippery-chicken object.
@@ -1985,10 +1993,14 @@ bar 45
     (loop for e = (next-event sc player) while e do
          (when (> (bar-num e) end-bar)
            (return))
-         (setf p (if written (written-pitch-or-chord e) (pitch-or-chord e)))
+         (setq p (if written (written-pitch-or-chord e) (pitch-or-chord e)))
          (when (and p (if chord?
+                          ;; chord-equal compares symbols, chord= the objects
                           (and (chord-p find) (chord-p p) (chord-equal find p))
-                          (and (pitch-p find) (pitch-p p) (pitch= find p))))
+                          ;; MDE Fri Dec 20 15:01:33 2019 -- symbol comparison
+                          ;; (and (pitch-p find) (pitch-p p) (pitch= find p))))
+                          (and (pitch-p find) (pitch-p p) (eq (data find)
+                                                              (data p)))))
            (push e result)
            (format t "~&bar ~a" (bar-num e))))
     (nreverse result)))
@@ -2030,8 +2042,7 @@ bar 45
 ;;; SYNOPSIS
 (defmethod players ((sc slippery-chicken))
 ;;; ****
-  (when (piece-p (piece sc))
-    (players (piece sc))))
+  (when (piece-p (piece sc)) (players (piece sc))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2889,13 +2900,23 @@ data: NIL
     (error "slippery-chicken::get-section-refs: start-section (~a) and ~
             num-sections (~a) must both be integers."
            start-section num-sections))
+  (relink-named-objects (piece sc))
   (labels ((do-subsection (ss)
              (loop for no in (data ss) 
-                if (is-ral (data no)) append (do-subsection (data no))
-                else collect (this no))))
-    (loop with nd = (+ start-section num-sections)
+                if (is-ral (data no))
+                ;; if (section-p (data no))
+                append (do-subsection (data no))
+                else collect (butlast (this no)))))
+    ;; MDE Fri Jan 10 15:27:44 2020 -- we used to look at the set-map but since
+    ;; we can now use bars-to-sc we'll have to look at the piece. We
+    ;; remove-duplicates because we'd get a section ref for each of the players
+    ;; playing in a section and this will probably create duplicates (though not
+    ;; necessarily) 
+    (remove-duplicates
+     (loop with nd = (+ start-section num-sections)
        for sn from 1
-       for section in (data (set-map sc))
+       ;; for section in (data (set-map sc))
+       for section in (data (piece sc))
        when (and (>= sn start-section) (< sn nd))
        collect section into sections
        finally
@@ -2903,7 +2924,8 @@ data: NIL
            (loop for s in sections
               if (is-ral (data s))
               append (do-subsection (data s))
-              else collect (this s))))))
+              else collect (this s))))
+     :test #'equalp)))
 
 #|
 ;;; MDE Mon May  7 09:31:17 2012 -- this is the old version
@@ -2984,10 +3006,16 @@ do
 (defmethod get-num-sections ((sc slippery-chicken)
                              &optional (count-subsections t))
 ;;; ****
-  (if count-subsections
-      (num-data (set-map sc))
-      ;; MDE Thu Jun 15 14:54:24 2017 
-      (sclist-length (rthm-seq-map sc))))
+  ;; MDE Fri Jan 10 15:01:21 2020 -- when we create an sc object via bars-to-sc
+  ;; we do have maps and palettes butthe number of sections in the piece is
+  ;; more accurate 
+  (let ((piece-sections (sclist-length (piece sc)))
+        (map-sections
+         (if count-subsections
+             (num-data (set-map sc))
+             ;; MDE Thu Jun 15 14:54:24 2017 
+             (sclist-length (rthm-seq-map sc)))))
+    (max piece-sections map-sections)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3108,9 +3136,6 @@ duration: 24.0 (24.000)
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May 10 11:49:59 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken/get-tempo
 ;;; DESCRIPTION
 ;;; Return the tempo object in effect for a specified bar of a given
@@ -3421,14 +3446,13 @@ seq-num 5, VN, replacing G3 with B6
                                      &key threshold (verbose t))
 ;;; ****
   ;; 24.3.11 get threshold from class if not given
-  (unless threshold
-    (setf threshold (fast-leap-threshold sc)))
+  (unless threshold (setq threshold (fast-leap-threshold sc)))
   (loop 
      for player in (get-players (ensemble sc))
      with global-seq-num 
      with count = 0
      do
-       (setf global-seq-num 1)
+       (setq global-seq-num 1)
        (loop for section in (get-all-section-refs sc) do
             (loop 
                for seq-num from 0
@@ -3475,59 +3499,57 @@ seq-num 5, VN, replacing G3 with B6
                                       :upper (second limits)
                                       :lower (first limits))
                       for qni in qnis
-                      ;; a zero means we got a fast note from
-                      ;; the last note last seq to the first
-                      ;; note this seq
+                      ;; a zero means we got a fast note from the last note last
+                      ;; seq to the first note this seq
                       for e1 = (if (zerop qni)
                                    (get-last-attack last-seq)
                                    (get-nth-attack (1- qni) seq))
                       for e2 = (get-nth-attack qni seq)
                       for distance = (event-distance e1 e2)
+                      for up = (> distance 0)
                       with new-pitch with pos with compare
                       do
                         (when (> (abs distance) lfl)
-                          (if (> distance 0) ;; leap up
-                              (progn
-                                (setf compare (lowest e1)
-                                      pos (position (highest e2) 
-                                                    pitches
-                                                    :test #'pitch=))
-                                (unless pos
-                                  (error "slippery-chicken::~
+                          ;; MDE Mon Aug  3 18:32:37 2020, Heidhausen -- warn
+                          ;; rather than error (below) but also neated code to
+                          ;; avoid duplication 
+                          (setq
+                           compare (if up
+                                       (lowest e1)
+                                       (highest e1))
+                           pos (position (if up
+                                             (highest e2)
+                                             (lowest e2))
+                                         pitches
+                                         :test #'pitch=)
+                           new-pitch 
+                           (if pos
+                               (loop
+                                  with 1-len = (1- (length pitches))
+                                  with i = pos
+                                  for p = (nth i pitches)
+                                  for interval = (abs (pitch- p compare))
+                                  do
+                                  ;; MDE Tue Aug 4 20:58:48 2020, Heidhausen --
+                                  ;; don't create fast repeated notes!
+                                    (when (integer-between interval 1 lfl)
+                                      ;; a side-effect here is that quick leaps
+                                      ;; to chords are replaced with single
+                                      ;; pitches
+                                      (return p))
+                                    (if up
+                                        (if (zerop i) (return) (decf i))
+                                        (if (= i 1-len) (return) (incf i))))
+                               (when (get-sc-config
+                                      'shorten-large-fast-leaps-warning)
+                                 (warn "slippery-chicken::~
                                         shorten-large-fast-leaps: ~
-                                        pitch ~a not in set: ~a ~%pitches:~a"
-                                         (data (highest e2)) (data set)
-                                         (pitch-list-to-symbols pitches)))
-                                (setf new-pitch
-                                      (loop 
-                                         for i downfrom pos to 0 
-                                         for p = (nth i pitches)
-                                         do
-                                           (when (<= (pitch- p compare)
-                                                     lfl)
-                                             ;; a side-effect here is that
-                                             ;; quick leaps to chords are
-                                             ;; replaced with single pitches 
-                                             (return p)))))
-                              (progn ;; leap down
-                                (setf compare (highest e1)
-                                      pos (position (lowest e2) pitches
-                                                    :test #'pitch=))
-                                (unless pos
-                                  (error "slippery-chicken::~
-                                          shorten-large-fast-leaps: ~
-                                          pitch not in set: ~a" (highest e2)))
-                                (setf new-pitch
-                                      (loop 
-                                         for i from pos to (1- (length pitches))
-                                         for p = (nth i pitches)
-                                         do
-                                           (when (<= (pitch- compare p)
-                                                     lfl)
-                                             ;; a side-effect here is that
-                                             ;; quick leaps to chords are
-                                             ;; replaced with single pitches 
-                                             (return p))))))
+                                        for ~a at bar ~a: skipping ~
+                                        ~&pitch ~a: not in set ~a ~%pitches:~a"
+                                       player (bar-num e1)
+                                       (data (highest e2))
+                                       (pitch-list-to-symbols (data set))
+                                       (pitch-list-to-symbols pitches)))))
                           (if new-pitch
                               (flet ((doit (event)
                                        (when verbose
@@ -3562,7 +3584,7 @@ seq-num 5, VN, replacing G3 with B6
                                       (error
                                        "~a~&slippery-chicken::shorten-large-~
                                         fast-leaps: couldn't get-nth-attack"
-                                             seq))
+                                       seq))
                                     (unless first-bar-num
                                       (error
                                        "slippery-chicken::shorten-large-fast-~
@@ -3598,10 +3620,10 @@ seq-num 5, VN, replacing G3 with B6
                                        ~%Couldn't get new pitch for ~a, ~
                                        section ~a, seq-num ~a, e1 ~a, e2 ~a! ~
                                        ~%pitches: ~a" 
-                                    player section (1+ seq-num)
-                                    (id (pitch-or-chord e1))
-                                    (id (pitch-or-chord e2))
-                                    (pitch-list-to-symbols pitches)))))))
+                                      player section (1+ seq-num)
+                                      (id (pitch-or-chord e1))
+                                      (id (pitch-or-chord e2))
+                                      (pitch-list-to-symbols pitches)))))))
                  (setf last-seq seq)
                  (incf global-seq-num)))
      finally (return count)))
@@ -3924,9 +3946,6 @@ seq-num 5, VN, replacing G3 with B6
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May 10 12:55:50 BST 2012: Added robodoc entry
-
 ;;; ****m* slippery-chicken/midi-play
 ;;; DESCRIPTION
 ;;; Generate a MIDI file from the data of the specified slippery-chicken
@@ -4527,6 +4546,7 @@ seq-num 5, VN, replacing G3 with B6
                        (play-chance-env-exp 0.5)
                        (time-scaler 1.0)
                        (normalise .99)
+                       scaled-by
                        (simulate nil)
                        (from-sequence 1)
                        (num-sequences nil)
@@ -4851,7 +4871,10 @@ seq-num 5, VN, replacing G3 with B6
                          :srate srate
                          :data-format data-format
                          :header-type header-type
-                         :play play :channels channels :statistics t)
+                         :play play :channels channels :statistics t
+                         ;; we have normalise so don't need scaled-to 
+                         ;; :scaled-to scaled-to
+                         :scaled-by scaled-by)
         (loop 
            for player in events and player-name in players 
            and snd-trans in snd-transitions
@@ -5098,6 +5121,44 @@ seq-num 5, VN, replacing G3 with B6
               total-skipped total-events 
               (* 100.0 (/ total-skipped total-events))))
     total-events))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/get-last-bar
+;;; DATE
+;;; September 28th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Get the last bars for each of the players
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; 
+;;; RETURN VALUE
+;;; a list of rthm-seq-bar objects
+;;; 
+;;; SYNOPSIS
+(defmethod get-last-bar ((sc slippery-chicken))
+;;; ****
+  (get-bar sc (num-bars sc)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/get-last-event
+;;; DATE
+;;; September 28th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Get the last events (of the last bars) for each of the players
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; 
+;;; RETURN VALUE
+;;; a list of event objects
+;;; 
+;;; SYNOPSIS
+(defmethod get-last-event ((sc slippery-chicken))
+;;; ****
+  (mapcar #'get-last-event (get-last-bar sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5702,9 +5763,6 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
   (handle-ties (piece sc)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu May 17 14:51:33 EDT 2012: Added robodoc entry
-
 ;;; Just for checking really but if same-spellings all ties will be forced to
 ;;; the same spellings. 
 ;;; 
@@ -5722,6 +5780,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
 ;;; OPTIONAL ARGUMENTS
 ;;; - T or NIL to indicate whether to force all tied pitches to have the same
 ;;;   enharmonic spellings.
+;;; - a function to call on error, or NIL for no action.
 ;;; 
 ;;; RETURN VALUE 
 ;;; T if all tie data is ok, otherwise performs the on-fail function and
@@ -5766,7 +5825,7 @@ rhythm::validate-mark: no CMN mark for BEG-PH (but adding anyway).
               (when on-fail
                 (funcall on-fail
                          "slippery-chicken::check-ties (~a): <this> is tied-to ~
-                          but <last> has no pitch.~%THIS:~%~a~%LAST:~%~a"
+                          but ~%<last> has no pitch.~%THIS:~%~a~%LAST:~%~a"
                          player this last)))
             (setf (pitch-or-chord this) (clone (pitch-or-chord last)))
             (when (written-pitch-or-chord this)
@@ -6274,7 +6333,7 @@ data: NIL
                          :all-bar-nums t
                          :use-custom-markup t
                          :rehearsal-letters-font-size 24
-                         :lp-version "2.12.1"
+                         :lp-version "2.20.0"
                          :group-barlines nil
                          :page-turns t
                          :players '(fl cl)
@@ -6321,7 +6380,7 @@ data: NIL
        (use-custom-markup t)
        (rehearsal-letters-font-size 18)
        ;; "2.16.2") "2.14.2") ;"2.12.3") "2.17.95") 
-       (lp-version "2.18.2")
+       (lp-version "2.20.0")
        ;; 24.7.11 (Pula) barlines through whole staff group or just a stave
        (group-barlines t)
        ;; 5.11.11 set to t if you want lilypond to optimize page breaks for
@@ -7316,9 +7375,9 @@ duration: 20.0 (20.000)
 
 |#
 ;;; SYNOPSIS
-(defmethod get-section ((sc slippery-chicken) reference)
+(defmethod get-section ((sc slippery-chicken) reference &optional (warn t))
 ;;; ****
-  (get-data-data reference (piece sc)))
+  (get-data-data reference (piece sc) warn))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Wed Apr 25 12:18:25 2012 
@@ -7488,12 +7547,12 @@ FS4 G4)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* slippery-chicken/get-nearest-event
 ;;; DESCRIPTION
-;;; Find the nearest event to <reference-event> in the <search-player>
+;;; Find the nearest event by time to <reference-event> in the <search-player>.  
 ;;; 
 ;;; ARGUMENTS
 ;;; - the slippery-chicken object
 ;;; - the reference event object that we want to find the nearest event to in
-;;; another player 
+;;;   another player 
 ;;; - the player we want to find the nearest event in (symbol).
 ;;;
 ;;; OPTIONAL ARGUMENTS
@@ -7730,7 +7789,8 @@ FS4 G4)
                                        (instruments-hierarchy sc))))
                    (unless (and pos1 pos2)
                      (error "slippery-chicken::get-events-sorted-by-time: ~
-                                     event must be lacking a player slot."))
+                             event must be lacking a player slot or it's not ~
+                             in the instruments-hierarchy slot of sc."))
                    (< pos1 pos2))
                  (< (start-time e1) (start-time e2))))))
      appending events))
@@ -7988,18 +8048,18 @@ NOTE 6200 0.6666667
                        -1
                        (midi-note-float (pitch-or-chord event) t))
                    ;; Durations are expressed as fractions/multiples of a
-                   ;; beat. ; There's no concept of meter, as such, in
-                   ;; antescofo. In ; e.g. 6/8 time the BPM would be entered as
-                   ;; e.g. 120 or ; something (where we'd mean dotted quarter =
-                   ;; 120, though ; antescofo doesn't need to know our beat
-                   ;; type), and then ; each 1/8 note would be an antescofo
-                   ;; duration of 0.33, ; just as if it were a triplet in 2/4
-                   ;; time. So the duration ; is the event's compound-duration
-                   ;; * (tempo's beat-value / ; 4) MDE Fri May 9 10:40:17 2014
-                   ;; -- express duration as a ; fraction if reasonable ;
+                   ;; beat. There's no concept of meter, as such, in
+                   ;; antescofo. In e.g. 6/8 time the BPM would be entered as
+                   ;; e.g. 120 or something (where we'd mean dotted quarter =
+                   ;; 120, though antescofo doesn't need to know our beat type),
+                   ;; and then each 1/8 note would be an antescofo duration of
+                   ;; 0.33, just as if it were a triplet in 2/4 time. So the
+                   ;; duration is the event's compound-duration * (tempo's
+                   ;; beat-value / 4) MDE Fri May 9 10:40:17 2014 -- express
+                   ;; duration as a fraction if reasonable ;
                    duration (if (is-grace-note event)
-                                ;; MDE Wed May 14 18:07:08 2014 -- see note in ;
-                                ;; documentation above re. grace notes. ;
+                                ;; MDE Wed May 14 18:07:08 2014 -- see note in
+                                ;; documentation above re. grace notes.
                                 (if follower? 0.0 
                                     (/ (grace-note-duration event)
                                        (beat-dur tempo)))
@@ -8250,8 +8310,10 @@ NOTE 6200 0.6666667
      for lines = (staff-lines ins) 
      for e1 = (get-event sc 1 1 p) 
      do 
-       (unless (= 5 lines) 
-         (setf (instrument-change e1) (list nil nil lines)))))
+       (unless (= 5 lines)
+         ;; MDE Tue Dec  3 17:24:39 2019 -- 4th element should be the instrument
+         ;; object 
+         (setf (instrument-change e1) (list nil nil lines ins)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jun 13 12:33:24 2016 -- called by midi-play by default
@@ -8523,6 +8585,123 @@ NOTE 6200 0.6666667
     (if percent
         (new-limits (make-sclist densities))
         densities)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/get-section-bar-nums
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Mon 13 Jan 2020 15:23:17 GMT
+;;; 
+;;; DESCRIPTION
+;;; Get the start and end bar numbers of each section of a slippery chicken
+;;; piece, handlily formatted in an assoc list.
+;;; 
+;;; ARGUMENTS
+;;; A slippery chicken object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; Keyword args:
+;;; :start - the first section to look at. (Default = 1)
+;;; :end - the last section to look at. (Default = nil, look to the end.)
+;;; 
+;;; RETURN VALUE
+;;; An assoc list where each key is a section number and its data is a list
+;;; containing the start and end bar numbers of that section.
+;;;
+;;; EXAMPLE
+#|
+(let ((mini
+         (make-slippery-chicken
+          '+mini+
+          :ensemble '(((sax (alto-sax :midi-channel 1))))
+          :set-palette '((1 ((c2 d2 g2 a2 e3 fs3 b3 cs4 fs4 gs4 ds5 f5 bf5)))) 
+          :set-map '((1 (1 1 1 1 1))
+                     (2 (1 1 1 1 1))
+                     (3 (1 1 1 1 1)))
+          :rthm-seq-palette '((1 ((((4 4) h q e s s))
+                                  :pitch-seq-palette ((1 2 3 4 5)))))
+          :rthm-seq-map '((1 ((sax (1 1 1 1 1))))
+                          (2 ((sax (1 1 1 1 1))))
+                          (3 ((sax (1 1 1 1 1))))))))
+      (get-section-bar-nums mini))
+
+=> 
+ASSOC-LIST: warn-not-found T
+CIRCULAR-SCLIST: current 0
+SCLIST: sclist-length: 3, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, 
+                     this: NIL, 
+                     next: NIL
+NAMED-OBJECT: id: SECTION-BAR-NUMS, tag: NIL, 
+data: (
+NAMED-OBJECT: id: 1, tag: NIL, 
+data: (1 5)
+**************
+
+       
+NAMED-OBJECT: id: 2, tag: NIL, 
+data: (6 10)
+**************
+
+       
+NAMED-OBJECT: id: 3, tag: NIL, 
+data: (11 15)
+**************
+)
+**************
+|#
+;;; SYNOPSIS
+(defmethod get-section-bar-nums ((sc slippery-chicken)
+                                 &key (start 1) (end nil)
+                                   (assoc-list-id 'section-bar-nums))
+;;; ****
+  (unless end (setf end (get-num-sections sc)))
+  (when (< end start)
+    (error "slippery-chicken::get-section-bar-nums: End bar (~a) cannot ~
+            be lower than start bar (~a)" end start))
+  (let ((section-assoc-list
+         (make-assoc-list
+          'sc-list
+          (loop for s from start to end
+             for section = (get-section sc s)
+             collect
+               (list s (list (start-bar section) (end-bar section)))))))
+    (setf (id section-assoc-list) assoc-list-id)
+    section-assoc-list))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* slippery-chicken/get-set-for-bar-num
+;;; DATE
+;;; July 11th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Get the complete-set object from the set-palette that was used in the
+;;; generation of a specific bar.
+;;; 
+;;; ARGUMENTS
+;;; - the slippery-chicken object
+;;; - the bar number (integer)
+;;; 
+;;; RETURN VALUE
+;;; a complete-set object or NIL if the bar doesn't exist or the first event of
+;;; the bar has no set-ref slot value, for any of the players, for some reason
+;;; (e.g. not initialized by make-slippery-chicken)
+;;; 
+;;; SYNOPSIS
+(defmethod get-set-for-bar-num ((sc slippery-chicken) bar-num)
+;;; ****
+  (let* ((bar (get-bar sc bar-num (first (players sc))))
+         (section-ref (when bar (butlast (player-section-ref bar))))
+         (section (when section-ref (get-data-data section-ref (set-map sc))))
+         (set-ref (when section (nth (nth-seq bar) section)))
+         (set (get-data set-ref (set-palette sc))))
+    (if set
+        set
+        (warn "slippery-chicken::get-set-for-bar-num: no set-ref found ~%~
+               at bar ~a" bar-num))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -8958,7 +9137,7 @@ NOTE 6200 0.6666667
                                                (get-nth 0 (data rsm-sec))))))
                      (unless (= len-sm-sec len-rsm-sec)
                        (error "slippery-chicken::check-maps: In section ~
-                               ~a the number of references in the maps ~
+                               ~a the number of references ~%in the maps ~
                                is not equal.~
                                ~% In set-map: ~a, in rthm-seq-map: ~a" 
                               (this sm-sec) len-sm-sec len-rsm-sec))))))))
@@ -9786,6 +9965,29 @@ NOTE 6200 0.6666667
               (incf count)
             finally (push count count-list)))
     (nreverse count-list)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Tue 29 Oct 2019 08:58:30 GMT -- aux function for pitch-or-chord=
+(defun pitch-or-chord=-aux (p1 p2 enharmonics-are-equal frequency-tolerance)
+  (cond ((null (pitch-or-chord-p p1))
+         (warn "~%pitch-or-chord=: p1 is not a pitch or chord: ~a" p1)
+         nil)
+        ((null (pitch-or-chord-p p2))
+         (warn "~%pitch-or-chord=: p2 is not a pitch or chord: ~a" p2)
+         nil)
+        ((and (pitch-p p1)
+              (chord-p p2))
+         (single-pitch-chord= p1 p2 enharmonics-are-equal frequency-tolerance))
+        ((and (chord-p p1)
+              (pitch-p p2))
+         (single-pitch-chord= p1 p2 enharmonics-are-equal frequency-tolerance))
+        ((and (pitch-p p1)
+              (pitch-p p2))
+         (pitch= p1 p2 enharmonics-are-equal frequency-tolerance))
+        ((and (chord-p p1)
+              (chord-p p2))
+         (chord= p1 p2 enharmonics-are-equal frequency-tolerance))
+        (t nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF slippery-chicken.lsp

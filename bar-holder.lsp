@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> linked-named-object -> bar-holder  
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    16th February 2002
 ;;;
-;;; $$ Last modified:  09:52:26 Thu Nov 22 2018 CET
+;;; $$ Last modified:  16:08:50 Tue Jun  9 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -543,11 +543,7 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu Jun 14 14:37:08 BST 2012: Added robodoc entry
-
 ;;; ****m* bar-holder/change-pitches
-
 ;;; DESCRIPTION
 ;;; Change the pitches in the specified bars to the specified new pitches. 
 ;;;

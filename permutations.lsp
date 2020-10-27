@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  none, no classes defined.
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    10th November 2002
 ;;;
-;;; $$ Last modified:  17:27:27 Thu Nov  8 2018 CET
+;;; $$ Last modified:  10:26:32 Sat Jun  6 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1168,14 +1168,6 @@ START
           
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;; SAR Tue Jan 17 13:35:46 GMT 2012: Removed MDE's comments as they were
-;;; repeated nearly verbatim in the robodoc below. Also moved MDE's examples to
-;;; the EXAMPLES block.
-
-;;; SAR Tue Jan 17 13:35:32 GMT 2012: Added robodoc info
-
 ;;; ****f* permutations/move-repeats
 ;;; DESCRIPTION
 ;;; Move, when possible, any elements within a given list that are repeated
@@ -1194,7 +1186,7 @@ START
 ;;; for repetition with the first element of the next sublist. See the first
 ;;; example below.
 ;;;
-;;; NB: This function only move elements further along the list; it won't place
+;;; NB: This function only moves elements further along the list; it won't place
 ;;;     them earlier than their original position.  Thus:
 ;;;     
 ;;;     (move-repeats '(3 3 1)) 
@@ -1259,6 +1251,76 @@ WARNING:
               (setf result (append rest result)
                     rest nil)))
     (nreverse result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* permutations/avoid-common-elements
+;;; DATE
+;;; December 6th 2019, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Taking a list of sublists, move the sublists around to try and avoid
+;;; consecutive sublists having common elements. Note that even if it's not
+;;; possible to completely solve this problem, a re-ordered list will be
+;;; returned along with a warning detailing where things were no longer
+;;; possible. No further, more complex attempts are made at that point. NB In
+;;; that case shuffling before calling this function might help
+;;; 
+;;; ARGUMENTS
+;;; - the list of sublists (of any element type)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keyword arguments:
+;;; - :test. The function to be passed to (intersection) for testing equivalence
+;;;   amongst list elements. Default = #'eq
+;;; - :accept. The number of common elements to accept amongst sublists. Default
+;;;   = 0
+;;; - :warn. Issue a warning if we can't complete? Default = T
+;;; - :all-on-fail. Return the unprocessed (failing) elements if we can't
+;;;   complete? If NIL then we'll return less sublists than given but there will
+;;;   be no common elements, at least. Default = T.
+;;;
+;;; RETURN VALUE
+;;; a list: the first argument with re-ordered sublists.
+;;; 
+;;; EXAMPLE
+#|
+(avoid-common-elements
+ '((1 2 3) (4 5 6) (5 4 6) (4 6 1) (2 3 4) (2 3 1) (1 3 2)))
+-->
+WARNING: permutations::avoid-common-elements: did 4 but can't complete. 
+Current: (1 3 2)
+Rest: ((4 6 1) (2 3 4))
+((1 2 3) (4 5 6) (2 3 1) (5 4 6) (1 3 2) (4 6 1) (2 3 4))
+
+(avoid-common-elements
+ '((1 2 3) (4 5 6) (5 4 6) (3 2 1) (2 3 1) (6 5 4) (3 1 2)))
+-->
+((1 2 3) (4 5 6) (3 2 1) (5 4 6) (2 3 1) (6 5 4) (3 1 2))
+|#
+;;; SYNOPSIS
+(defun avoid-common-elements (lists &key (test #'eq) (accept 0) (warn t)
+                                      (all-on-fail t))
+;;; ****
+  (let* ((rest (copy-list lists))
+         (result (list (pop rest)))
+         last)
+    (loop for count from 1 while rest do
+         (setq last (first result))
+         (loop for l in rest and i from 0 do
+              (when (<= (length (intersection l last :test test)) accept)
+                (push l result)
+                (setq rest (remove-elements rest i 1))
+                (return))
+            finally                     ; we'll only get here if we fail
+              (when warn
+                (warn "permutations::avoid-common-elements: did ~a but can't ~
+                       complete. ~%Current: ~a~%Rest: ~a" count last rest))
+              (when all-on-fail
+                (setq result (append (reverse rest) result)))
+              (setq rest nil)
+              (return)))
+    (nreverse result)))
+         
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

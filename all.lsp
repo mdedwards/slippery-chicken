@@ -5,7 +5,7 @@
 ;;;
 ;;; File:             all.lsp
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    5th December 2000
 ;;;
-;;; $$ Last modified:  09:31:36 Thu May 23 2019 CEST
+;;; $$ Last modified:  19:16:27 Tue Jul 14 2020 CEST
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -46,10 +46,9 @@
 (require "asdf")
 #+sbcl (asdf:load-system :sb-bsd-sockets)
 #+sbcl (asdf:load-system :sb-posix)
-
 #+sbcl (unlock-package "COMMON-LISP")
 
-(defparameter +slippery-chicken-version+ "1.0.10")
+(defparameter +slippery-chicken-version+ "1.0.11")
 
 ;;; MDE Thu Dec  8 23:19:01 2011 -- get the cwd automatically now, rather
 ;;; than from user's global 
@@ -68,13 +67,13 @@
 ;;; CLM's short-float 
 ;;; (setf *read-default-float-format* 'double-float)
 
-(defparameter +sc-dir-separator+
+(defparameter +slippery-chicken-dir-separator+
   ;; sbcl and ccl uses /
   #+(and (not sbcl) (not ccl) (or windows mswindows win32 win64)) #\\
   ;; #+mcl #\: ; back in pre-OSX days
   #+(or sbcl ccl ecl unix) #\/)
 
-(defparameter +sc-fasl-extension+
+(defparameter +slippery-chicken-fasl-extension+
   #+clisp ".fas"
   #+openmcl ".dfsl"
   #+sbcl ".fasl"
@@ -88,26 +87,34 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Jun 21 17:08:42 2013 
-#+(and (or sbcl ccl) darwin)
+#+(and (or sbcl ccl) (or linux darwin))
 (pushnew :sc-auto-open *features*)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun sc (&optional (logo t))
   (setf *package* (find-package :sc))
-  (let ((title (format nil "slippery chicken ~a"
-                       +slippery-chicken-version+)))
-    (if logo
-        (format t "(\\  }\\   ~%(  \\_('> ~a~%(__(=_)  ~%   -\"=   ~%" title)
-        (print title)))
+  (let* ((title (format nil "slippery chicken ~a"
+                       +slippery-chicken-version+))
+        (sc-logo (concatenate 'string +slippery-chicken-src-path+
+                              "sc-ascii-logo.txt"))
+         (in (open sc-logo :if-does-not-exist nil)))
+    (when logo
+      (if in 
+          (progn
+            (loop for line = (read-line in nil)
+                  while line do (format t "~a~%" line))
+             (close in))
+          (format t "(\\  }\\   ~%(  \\_('> ~a~%(__(=_)  ~%   -\"=   ~%"
+                  title)))
   #+sbcl t
-  #-sbcl (values))
+  #-sbcl (values)))
 
 ;;; old stuff; could have used pathname functions for this....
 (defun get-path-minus-file-and-last-dir (file)
   (flet ((till-last-slash (x)
-                          (subseq x 0 (position +sc-dir-separator+ x
-                                                :from-end t))))
+           (subseq x 0 (position +slippery-chicken-dir-separator+ x
+                                 :from-end t))))
     (till-last-slash (till-last-slash file))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -123,12 +130,13 @@
     (setf *default-pathname-defaults* +slippery-chicken-src-path+))
   (let ((out (format nil "~a~abin~a~a~a"
                      (get-path-minus-file-and-last-dir dir)
-                     +sc-dir-separator+
-                     +sc-dir-separator+
+                     +slippery-chicken-dir-separator+
+                     +slippery-chicken-dir-separator+
                      (pathname-name file)
-                     +sc-fasl-extension+))
+                     +slippery-chicken-fasl-extension+))
         (in (format nil "~a~asrc~a~a" (get-path-minus-file-and-last-dir dir)
-                    +sc-dir-separator+ +sc-dir-separator+ file)))
+                    +slippery-chicken-dir-separator+
+                    +slippery-chicken-dir-separator+ file)))
     (print out)
     (print in)
     (if just-load
@@ -200,6 +208,7 @@
 #+cmn (sc-compile-and-load "cmn.lsp")
 #+cmn (sc-compile-and-load "cmn-glyphs.lsp")
 #+cm (sc-compile-and-load "cm.lsp")
+#+cm (sc-compile-and-load "cm-cm.lsp")
 #+clm (sc-compile-and-load "samp5.lsp")
 #+clm (sc-compile-and-load "sine.lsp")
 #+clm (sc-compile-and-load "autoc.lsp")
@@ -245,6 +254,7 @@
 (sc-compile-and-load "rthm-seq-palette.lsp")
 (sc-compile-and-load "rthm-seq-map.lsp")
 (sc-compile-and-load "instrument-palette.lsp")
+(sc-compile-and-load "instruments.lsp")
 (sc-compile-and-load "player.lsp")
 (sc-compile-and-load "bar-holder.lsp")
 (sc-compile-and-load "sequenz.lsp")
@@ -262,16 +272,29 @@
 (sc-compile-and-load "cycle-repeats.lsp")
 (sc-compile-and-load "recurring-event.lsp")
 (sc-compile-and-load "intervals-mapper.lsp")
-(sc-compile-and-load "instruments.lsp")
 (sc-compile-and-load "lilypond.lsp")
 (sc-compile-and-load "popcorn.lsp")
-#+(and darwin sbcl) (sc-compile-and-load "osc.lsp")
-#+(and darwin sbcl) (sc-compile-and-load "osc-sc.lsp")
+#+(and (or linux darwin) sbcl) (sc-compile-and-load "osc.lsp")
+#+(and (or linux darwin) sbcl) (sc-compile-and-load "osc-sc.lsp")
+#+(and (or linux darwin) sbcl) (sc-compile-and-load "osc-sc-bsd.lsp")
 #+clm (sc-compile-and-load "get-spectrum.lsp")
 (sc-compile-and-load "spectra.lsp")
 #+clm (sc-compile-and-load "control-wave.lsp")
+#+clm (sc-compile-and-load "control-wave-ins.lsp")
 (sc-compile-and-load "wolfram.lsp" t)
 (sc-compile-and-load "afu.lsp")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; MDE Tue Mar 24 11:08:08 2020
+(let ((package (find-package :sc)))
+  (do-all-symbols (symb package)
+    (when (and (or (find-class symb nil)
+                   (fboundp symb))
+               ;; globals such as +slippery-chicken-config-data+ won't be
+               ;; exported but that's just as it should be 
+               (eql (symbol-package symb) package))
+      (export symb package))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF all.lsp

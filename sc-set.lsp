@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> chord ->
 ;;;                   sc-set
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    August 10th 2001
 ;;;
-;;; $$ Last modified:  13:01:04 Tue Jul 16 2019 CEST
+;;; $$ Last modified:  14:58:36 Fri Sep 25 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -114,9 +114,7 @@
                pitches in ~&~a"
               (pitch-list-to-symbols pl))))
     (setf (slot-value s 'data) plrd)
-    (set-micro-tone s)
-    ;;(check-subsets (subsets s) s)
-    ))
+    (set-micro-tone s)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -157,14 +155,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf subsets) :after (value (s sc-set))
-  ;; (print 'setf-subsets)
   (when (and value (not (assoc-list-p value)))
     (setf (slot-value s 'subsets) 
           (make-ral (format nil "sc-set-~a-subsets" (id s))
                     (subsets s)))
     (make-ral-pitch-lists (subsets s) (auto-sort s))
     (check-subsets (subsets s) s))
-  ;; (print (subsets s))
   (subsets s))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -182,7 +178,6 @@
 
 (defmethod (setf data) :after (value (s sc-set))
   (declare (ignore value))
-  ;; (break)
   (check-subsets (subsets s) s))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -970,6 +965,10 @@ data: (G2 A2 CS4 A4 A4 A5 C6 C6 FS6)
     ;; return a new set, using the given id or if not given, the same id as the
     ;; original set 
     (make-sc-set (if by-freq result (data chord)) :tag (tag s)
+                 ;; MDE Tue Aug  4 12:46:23 2020, Heidhausen -- more slots!
+                 :auto-sort (auto-sort s) :warn-dups (warn-dups s)
+                 :rm-dups (rm-dups s)
+                 :subsets (subsets s) :related-sets (related-sets s)
                  :id (if id id (id s)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1515,8 +1514,8 @@ data: E4
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  MDE Sat Mar  5 14:02:19 2016 
-(defmethod wrap :before ((s sc-set) &optional (num-times 1))
-  (declare (ignore num-times))
+(defmethod wrap :before ((s sc-set) &optional (num-times 1) (transpose t))
+  (declare (ignore num-times transpose))
   (when (subsets s)
     (error "sc-set::wrap :before : ~a: can't wrap sets with subsets. ~
             ~%Consider calling the delete-subsets method before wrap."
@@ -1551,18 +1550,11 @@ data: E4
     (setq pitches (loop for p in pitches collect (make-pitch p)))
     ;; MDE Thu Nov  1 11:22:49 2018 -- use nmap-data instead now
     (nmap-data (subsets s)
-              #'(lambda (plist)
-                  (remove-if
-                   #'(lambda (p)
-                       (member p pitches :test #'pitch=))
-                   plist))))
-    #|(map-data (subsets s)
-              #'(lambda (ss)
-                  (setf (data ss) (remove-if
-                                   #'(lambda (p)
-                                       (member p pitches :test #'pitch=))
-                                   (data ss)))))) |#
-  s)
+               #'(lambda (plist)
+                   (remove-if
+                    #'(lambda (p)
+                        (member p pitches :test #'pitch=))
+                    plist)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* sc-set/thin
@@ -1742,9 +1734,10 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 |#
 ;;; SYNOPSIS
 (defun make-sc-set (sc-set &key id subsets related-sets (auto-sort t) tag
-                             (rm-dups t))
+                             (warn-dups t) (rm-dups t))
 ;;; ****
   (make-instance 'sc-set :id id :data sc-set :subsets subsets :rm-dups rm-dups
+                 :warn-dups warn-dups
                  :tag tag :related-sets related-sets :auto-sort auto-sort))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1766,11 +1759,11 @@ data: (D2 CS3 FS3 CS4 E4 C5 AF5 EF6)
 (defun init-pitch-list (pitches &optional auto-sort midi-channel
                                   microtone-midi-channel)
   (let ((result (loop with p for pitch in pitches do
-		     (unless pitch
-		       (error "~a~&sc-set::init-pitch-list: pitch is nil!"
-			      pitches))
+                     (unless pitch
+                       (error "~a~&sc-set::init-pitch-list: pitch is nil!"
+                              pitches))
                      (setq p (make-pitch pitch))
-		   ;; MDE Fri Aug 24 14:24:12 2018
+                   ;; MDE Fri Aug 24 14:24:12 2018
                      (if (micro-tone p)
                          (if microtone-midi-channel
                              (setf (midi-channel p) microtone-midi-channel)

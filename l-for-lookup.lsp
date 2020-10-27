@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> 
 ;;;                   circular-sclist -> assoc-list -> l-for-lookup
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -45,7 +45,7 @@
 ;;;
 ;;; Creation date:    15th February 2002
 ;;;
-;;; $$ Last modified:  16:11:50 Mon Aug  5 2019 CEST
+;;; $$ Last modified:  17:07:59 Thu May 28 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -958,6 +958,7 @@ data: (
     ;; subseq returns a sequence out of our list
     (values (subseq series 0 (- (length series) 3))
             (- sum 3))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Sat Jan 14 17:27:09 GMT 2012: Edited robodoc info
 ;;; ****f* l-for-lookup/fibonacci-transition

@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  None: no classes defined.
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2002
 ;;;
-;;; $$ Last modified:  11:41:43 Mon Nov 26 2018 CET
+;;; $$ Last modified:  08:42:38 Thu Mar 26 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -46,6 +46,14 @@
 ;;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (in-package :cmn)
+
+(declaim (special *cmn-units*))
+(setf *cmn-units* :cm)
+
+;;; We're not going to have more than 20 nested brackets applied to a single
+;;; note are we? :=) 
+(defparameter +cmn-open-brackets-for-sc+ (make-list 20))
+(defparameter +cmn-grace-notes-for-sc+ nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -232,6 +240,10 @@
              (II (list (fingering "II" (dx dx) (dy dy) the-text)))
              (III (list (fingering "III" (dx dx) (dy dy) the-text)))
              (IV (list (fingering "IV" (dx dx) (dy dy) the-text)))
+             (V (list (fingering "V" (dx dx) (dy dy) the-text)))
+             (VI (list (fingering "VI" (dx dx) (dy dy) the-text)))
+             (VII (list (fingering "VII" (dx dx) (dy dy) the-text)))
+             (VIII (list (fingering "VIII" (dx dx) (dy dy) the-text)))
              (I-II (list (fingering "I" "II" (dx dx) (dy dy) the-text)))
              (I-II-III (list (fingering "I" "II" "III" (dx dx) (dy dy)
                                         the-text)))

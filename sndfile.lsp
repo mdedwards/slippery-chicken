@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sndfile
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    March 21st 2001
 ;;;
-;;; $$ Last modified:  15:10:09 Sat Dec 15 2018 CET
+;;; $$ Last modified:  19:18:35 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -111,7 +111,7 @@
           (slot-value named-object 'data-consistent ) (data-consistent sf)     
           (slot-value named-object 'will-be-used ) (will-be-used sf)
           (slot-value named-object 'has-been-used ) (has-been-used sf)
-	  (slot-value named-object 'description ) (description sf))
+          (slot-value named-object 'description ) (description sf))
     ;; (print 'sndfile-clone-wnc) (print (data sf))
     named-object))
 
@@ -275,7 +275,8 @@ T
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod update ((sf sndfile))
+(defmethod update ((sf sndfile) &key ignore)
+  (declare (ignore ignore))
   ;; an id will generally only be given when two instances of the same file are
   ;; in the same list in a sndfile-palette, so in the usual case where it's not
   ;; specified set id to simply the given sound file name.
@@ -322,6 +323,11 @@ T
           ;; this will just return the freq for 'c4.
           (when (eq 'detect (frequency sf)) ;(frequency sf))
             (setf (slot-value sf 'frequency) (autoc-get-fundamental path))))
+      ;; MDE Mon Feb 17 15:03:12 2020 -- don't allow freqs of 0 otherwise
+      ;; we'll get division-vy-zero errors in clm-play (thanks Dan) 
+      (when (equal-within-tolerance (frequency sf) 0.0)
+        (warn "sndfile::update: can't have a frequency of zero; setting to 'c4")
+        (setf (slot-value sf 'frequency) (note-to-freq 'c4)))
       (let ((st (start sf))
             (end (end sf)))
         (when (< st 0)
@@ -529,5 +535,4 @@ data: /path/to/sndfile-1.aiff
   (typep candidate 'sndfile))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; EOF sndfile.lsp

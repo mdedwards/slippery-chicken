@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> rthm-seq
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -30,7 +30,7 @@
 ;;;
 ;;; Creation date:    14th February 2001
 ;;;
-;;; $$ Last modified:  13:15:16 Fri Dec  7 2018 CET
+;;; $$ Last modified:  17:08:54 Sat Jun  6 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -88,6 +88,12 @@
    ;; we don't want to increment first notes of a seq more than once!
    (handled-first-note-tie :accessor handled-first-note-tie :type boolean 
                            :initform nil)
+   ;; MDE Sat Jun  6 16:48:00 2020, Heidhausen -- added this slot as well as to
+   ;; make-rthm-seq so that repeated time-sigs can be ignored and not warned in
+   ;; init-instance. Assumed is that update-write-time-sig will be called
+   ;; explicitly later in the process
+   (warn-time-sigs :accessor warn-time-sigs :type boolean :initarg
+                   :warn-time-sigs :initform t)
    ;; 25.1.11 another id/tag made up of the time signatures of the bars, so if
    ;; we had a 2/4 and a 3/4 bar, this would be "02040304" NB this is only
    ;; created and stored if we call get-time-sigs-tag
@@ -121,10 +127,12 @@
             (bars rs) bars)
       ;; Issue a warning when an unnecessary time-sig was given!
       (loop for b1 in bars and b2 in (cdr bars) do
-           (when 
-               ;; MDE Thu May 31 19:31:25 2012 -- remember time-sig-equal will
-               ;; return 'time-sig-equal-duration for e.g. 3/4 and 6/8 
-               (and (equalp t (time-sig-equal
+           (when
+               ;;    MDE Sat Jun  6 16:49:38 2020, Heidhausen
+               (and (update-write-time-sig rs)
+                    ;; MDE Thu May 31 19:31:25 2012 -- remember time-sig-equal
+                    ;; will return 'time-sig-equal-duration for e.g. 3/4 and 6/8
+                    (equalp t (time-sig-equal
                                (get-time-sig b1) (get-time-sig b2)))
                     (write-time-sig b2))
              ;; MDE Mon Jan 12 16:13:10 2015 -- used to be an error
@@ -435,9 +443,6 @@ data: E
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Tue Dec 27 20:13:33 EST 2011: Added robodoc info
-
 ;;; ****m* rthm-seq/get-nth-attack
 ;;; DESCRIPTION
 ;;; Gets the rhythm object for the nth note in a given rthm-seq object that
@@ -1926,12 +1931,7 @@ rthm-seq NIL
   rs)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; e.g. (get-multipliers '(e. s q e e) 's) -> (3 1 4 2 2)
-
-;;;|#
-;;; SAR Tue Jan 31 13:13:56 GMT 2012: Added robodoc info
-
+#|
 ;;; ****m* rthm-seq/get-multipliers
 ;;; DESCRIPTION
 ;;; Get a list of factors by which a specified rhythmic unit must be multiplied
@@ -1960,7 +1960,6 @@ rthm-seq NIL
 ;;; A list of numbers.
 ;;; 
 ;;; EXAMPLE
-#|
 ;;; By default the method returns the list of multipliers un-rounded
 (let ((rs (make-rthm-seq '(seq1 ((((2 4) q e s s))
                                  :pitch-seq-palette ((1 2 3 4)))))))
@@ -2179,7 +2178,9 @@ RHYTHM: value: 16.000, duration: 0.250, rq: 1/4, is-rest: NIL,
      for ts-this = (get-time-sig bar)
      do
        (setf (write-time-sig bar)
-             (if (time-sig-equal ts-last ts-this)
+             ;; MDE Sat Jun 6 16:42:33 2020, Heidhausen -- equalp so that 3/4
+             ;; 6/8 will still be written
+             (if (equalp t (time-sig-equal ts-last ts-this))
                  nil
                  t))
        (setf ts-last ts-this))
@@ -2800,6 +2801,8 @@ data: S
 ;;; - :psp-inversions. T or NIL to indicate whether to also automatically
 ;;;   generate and add inverted forms of the specified pitch-seq objects.
 ;;;   T = generate and add. Default = NIL.
+;;; - :warn-time-sigs. T or NIL to indicate whether to issue a warning when a
+;;;   time-signature is given where it's not needed (i.e. two bars of 4/4)
 ;;; 
 ;;; RETURN VALUE  
 ;;; Returns a rthm-seq object.
@@ -2917,7 +2920,7 @@ data: (4 3 2 1)
 
 |#
 ;;; SYNOPSIS
-(defun make-rthm-seq (rs &key (psp-inversions nil))
+(defun make-rthm-seq (rs &key (psp-inversions nil) (warn-time-sigs t))
 ;;; ****
   ;; if a list then it should be two-elements long, the first the id, the
   ;; second the data.  
@@ -2926,7 +2929,7 @@ data: (4 3 2 1)
            ((typep rs 'rthm-seq) rs)
            ;; MDE Fri Apr 19 14:32:29 2013 -- list of rthm-seq-bars?
            ((and (listp rs) (rthm-seq-bar-p (first rs)))
-            (let ((tmp (make-rthm-seq nil)))
+            (let ((tmp (make-rthm-seq nil :warn-time-sigs warn-time-sigs )))
               (setf (bars tmp) rs)
               tmp))
            ;; MDE Tue Sep  3 12:37:50 2013 a list containing an id and any
@@ -2934,7 +2937,7 @@ data: (4 3 2 1)
            ((and (listp rs)
                  (assoc-list-id-p (first rs))
                  (every #'rthm-seq-bar-p (rest rs)))
-            (let ((tmp (make-rthm-seq nil)))
+            (let ((tmp (make-rthm-seq nil :warn-time-sigs warn-time-sigs)))
               (setf (bars tmp) (rest rs)
                     (id tmp) (first rs))
               tmp))
@@ -2942,19 +2945,20 @@ data: (4 3 2 1)
             ;; 4.8.10 if it's just a list of rthms, there's no id, otherwise
             ;; it's a 2-element list: (id (rthms....))  
             (if (and (second rs) (listp (second rs)))
-                (make-instance 'rthm-seq :id (first rs) :data (second rs))
-                (make-instance 'rthm-seq :id nil :data rs)))
+                (make-instance 'rthm-seq :id (first rs) :data (second rs)
+                               :warn-time-sigs warn-time-sigs)
+                (make-instance 'rthm-seq :id nil :data rs
+                               :warn-time-sigs warn-time-sigs)))
            ;; otherwise it's already a named-object with a list as data...
            ((and (typep rs 'named-object) (listp (data rs)))
-            (make-instance 'rthm-seq :id (id rs) 
-                           :data (copy-list (data rs))))
+            (make-instance 'rthm-seq :id (id rs) :data (copy-list (data rs))
+                           :warn-time-sigs warn-time-sigs))
            (t (error "rthm-seq::make-rthm-seq: Can't make a rthm-seq from ~a"
                      rs)))))
     (when psp-inversions
       (setf (psp-inversions result) t)
       (add-inversions (pitch-seq-palette result)))
     result))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2982,8 +2986,6 @@ MDE Mon Dec 12 08:59:36 2011 -- obsolete code from the SCORE days
                     (fourth score-strings)))))) ; ties |#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Tue Dec 27 16:58:57 EST 2011: Added robodoc info
-
 ;;; ****f* rthm-seq/make-rthm-seq-from-unit-multipliers
 ;;; DESCRIPTION
 ;;; Given a rhythmic unit, e.g. 32, a list of multipliers (e.g. '(7 9 16)),
@@ -3070,12 +3072,12 @@ rthm-seq from-multipliers
 ;;; SYNOPSIS
 (defun make-rthm-seq-from-unit-multipliers (unit multipliers time-sig 
                                             &key
-                                            ;; a number for brackets over
-                                            ;; each beat.
-                                            (tuplet nil)
-                                            (tag nil)
-                                            (auto-beam nil) ; see above
-                                            (id "from-multipliers"))
+                                              ;; a number for brackets over
+                                              ;; each beat.
+                                              (tuplet nil)
+                                              (tag nil)
+                                              (auto-beam nil) ; see above
+                                              (id "from-multipliers"))
 ;;; ****
   ;; (print 'make-rthm-seq-from-unit-multipliers)
   (let* ((tsig (if (time-sig-p time-sig)
@@ -3105,7 +3107,7 @@ rthm-seq from-multipliers
                         (- units-per-bar (mod length units-per-bar))
                         units-per-bar))
          (bars '()))
-    (setf all (flatten all)
+    (setq all (flatten all)
           bars (loop with index = 0
                   with end = units-per-bar
                   for bar = (make-rest-bar tsig nil)
@@ -3131,20 +3133,65 @@ rthm-seq from-multipliers
                     (incf index units-per-bar)
                     (incf end units-per-bar)
                   collect bar))
+    ;; (print (length bars))
     ;; have to make a 2-element list, the first is the id, the second the bars,
     ;; but the bars have to be in a list themselves....
     (let ((result (make-rthm-seq (list id (list bars)))))
       (when tag
         (setf (tag result) tag))
       result)))
-              
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* rthm-seq/make-rthm-seq-from-unit-multipliers-simp
+;;; DATE
+;;; June 6th 2020
+;;; 
+;;; DESCRIPTION
+;;; Make a rthm-seq using lists of multiples of a single unit e.g. '(2 2 1)
+;;; would result in an automatic time signature of 5/8 if passed a unit of 'e
+;;; (or 8). In that case the rhythms would be q q e. Rests may be created by
+;;; passing a number in parentheses.
+;;;
+;;; See also make-rthm-seq-from-unit-multipliers for a related method.
+;;; 
+;;; ARGUMENTS
+;;; - the ID for the rthm-seq
+;;; - the rhythm unit (symbol, number or rhythm object)
+;;; - the lists of multipliers, each sublist representing a bar
+;;; 
+;;; RETURN VALUE
+;;; a rthm-seq object
+;;; 
+;;; EXAMPLE
+#|
+(print-simple (make-rthm-seq-from-unit-multipliers-simp 1 'e
+                  '((3 4 1 2) (2 1 2))))
+-->
+rthm-seq 1
+NIL: bar -1: (10 8): 
+note Q., 
+note H, 
+note E, 
+note Q, 
+NIL: bar -1: (5 8): 
+note Q, 
+note E, 
+note Q, 
+|#
+;;; SYNOPSIS
+(defun make-rthm-seq-from-unit-multipliers-simp (id unit multipliers)
+;;; ****
+  (let ((rs (make-rthm-seq
+             (list id (list (loop for bar in multipliers collect
+                                 (make-rsb-from-unit-multipliers unit bar))))
+             :warn-time-sigs nil)))
+    (update-write-time-sig rs)
+    rs))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Jun 13 14:06:31 BST 2012: Added robodoc entry
-
 ;;; ****f* rthm-seq/make-rthm-seq-from-fragments
 ;;; DATE
-;;; Jan-2010
+;;; January 2010
 ;;; 
 ;;; DESCRIPTION
 ;;; Make a rthm-seq object from a predefined list of rhythm fragments.

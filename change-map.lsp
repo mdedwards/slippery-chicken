@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   sc-map -> change-map
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -96,7 +96,7 @@
 ;;;
 ;;; Creation date:    2nd April 2001
 ;;;
-;;; $$ Last modified:  10:02:06 Mon Jan 29 2018 CET
+;;; $$ Last modified:  17:34:14 Tue Jan 14 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -164,7 +164,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon Jan 29 10:00:59 2018
 (defmethod num-sequences ((cm change-map))
-  (error "change-map::num-sequences: method not applicable in this class."))
+  ;; MDE Tue Jan 14 17:33:44 2020 -- don't signal an error otherwise we can't
+  ;; print a tempo-map, rather just return nil 
+  ;; (error "change-map::num-sequences: method not applicable in this class."))
+  nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

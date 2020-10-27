@@ -7,18 +7,20 @@
 ;;;
 ;;; Class Hierarchy:  None: no classes defined.
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
 ;;; Purpose:          Definition of the user-changeable configuration data and
-;;;                   globals for internal programme use.
+;;;                   globals for internal programme use. See top of cmn.lsp and
+;;;                   osc-sc-bsd.lsp for a few more globals relevant to
+;;;                   functionality in their respective packages.  
 ;;;
 ;;; Author:           Michael Edwards: m@michael-edwards.org
 ;;;
 ;;; Creation date:    30th May 2013
 ;;;
-;;; $$ Last modified:  16:42:47 Sat Aug  3 2019 CEST
+;;; $$ Last modified:  16:28:22 Thu Oct  8 2020 CEST
 ;;;
 ;;; SVN ID: $Id: sclist.lsp 963 2010-04-08 20:58:32Z medward2 $
 ;;;
@@ -84,6 +86,9 @@
      ;; signalled if the were no pitches in a set for an instrument which should
      ;; be playing. We can now have a rest-sequence generated instead
      (pitch-seq-no-pitches-error t)
+     ;; MDE Thu Oct  8 16:27:19 2020, Heidhausen -- issue a warning if we scale
+     ;; a rhythm/event to longer than 10xwhole?
+     (rhythm-scale-warning t)
      ;; MDE Sat Aug  3 16:39:40 2019 -- should shorten-large-fast-leaps issue a
      ;; warning or not?
      (shorten-large-fast-leaps-warning t)
@@ -99,6 +104,9 @@
      ;; Whether to automatically open MIDI files generated with via midi-play.
      ;; Currently only works with SBCL and CCL on Mac OSX.
      (midi-play-auto-open #+sc-auto-open T #-sc-auto-open nil)
+     ;; MDE Sat Dec  7 11:56:24 2019 -- if a pitch has a mark included in this
+     ;; list, it will be ignored  
+     (midi-play-ignore-marks nil)
      ;; The default directory for output of sound files, EPS files, and
      ;; Lilypond files. Don't forget the trailing slash (i.e. "/tmp/" not
      ;; "/tmp").  Bear in mind that on OSX the /tmp directory is emptied upon
@@ -113,6 +121,10 @@
      ;; The default amplitude for all events that don't have amplitude/dynamic
      ;; set via some means such as marks.
      (default-amplitude 0.7)
+     ;; in init-instance of sc class, warn if we can't call sc-init (because it
+     ;; will be called explicitly later)
+     (warn-no-sc-init t)
+     (warn-unused-instruments t)
      ;; whether to warn when there's no CMN mark for a given Lilypond mark
      (warn-no-cmn-mark t)
      ;; sim for Lilypond
@@ -182,18 +194,6 @@
 
 (defun default-dir-file (name)
   (concatenate 'string (get-sc-config 'default-dir) name))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; cmn.lsp
-(in-package :cmn)
-
-(declaim (special *cmn-units*))
-(setf *cmn-units* :cm)
-
-;;; We're not going to have more than 20 nested brackets applied to a single
-;;; note are we? :=) 
-(defparameter +cmn-open-brackets-for-sc+ (make-list 20))
-(defparameter +cmn-grace-notes-for-sc+ nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF globals.lsp

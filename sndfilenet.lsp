@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   palette -> sndfile-palette -> sndfilenet
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    23rd October 2017, Essen
 ;;;
-;;; $$ Last modified:  18:09:33 Sat Nov 18 2017 CET
+;;; $$ Last modified:  14:02:11 Mon Apr 13 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -64,7 +64,7 @@
    (with-followers :accessor with-followers :type boolean
                    :initarg :with-followers :initform t)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod clone ((sfn sndfilenet))
   (clone-with-new-class sfn 'sndfilenet))

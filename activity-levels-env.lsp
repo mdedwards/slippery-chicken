@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> activity-levels -> activity-levels-env
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    30th June 2015
 ;;;
-;;; $$ Last modified:  16:31:45 Mon Nov  5 2018 CET
+;;; $$ Last modified:  19:28:37 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id: activity-levels.lsp 5048 2014-10-20 17:10:38Z medward2 $
 ;;;
@@ -189,8 +189,8 @@ current: 0 level: 0.0
 ;;; - the cycle length: the envelope repeats after a specified cycle length, so
 ;;;   that no matter how many times you call 'active' you always get results.
 ;;; - start-at (default NIL): which of the three 10-element lists in the parent
-;;;   class to start with (reset to).  Should be 1, 2, or 3 though if NIL will
-;;;   default to 1.
+;;;   class to start with (reset to).  Should be 0, 1, or 2, though if NIL will
+;;;   default to 0.
 ;;; 
 ;;; RETURN VALUE
 ;;; The activities-level-env object.

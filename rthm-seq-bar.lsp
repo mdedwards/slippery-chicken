@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> 
 ;;;                   rthm-seq-bar 
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    13th February 2001
 ;;;
-;;; $$ Last modified:  18:22:06 Mon Sep 30 2019 CEST
+;;; $$ Last modified:  13:52:41 Wed Oct  7 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -233,13 +233,11 @@
                                           (> (third x) (third y))
                                           (< x2 y2))))))
       (unless (is-full rsb 'warn)
-        (error "~a~%rthm-seq-bar::initialize-instance:~
+        (error "~&rthm-seq-bar::initialize-instance:~
                ~%Incorrect number of beats in bar: Expected ~a, got ~a~
-               ~%Perhaps you forgot to change the time signature??? ~%~a~%"
-               rhythms
+               ~%Perhaps you forgot to change the time signature??? ~%~a~%~a"
                (duration (get-time-sig-from-all-time-sigs rsb))
-               (rhythms-duration rsb)
-               data)))
+               (rhythms-duration rsb) data rhythms)))
     ;; MDE Thu Jun  4 16:10:12 2015
     (when just-rqq
       (check-beams rsb))
@@ -305,7 +303,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod player ((rsb rthm-seq-bar))
-  (player (get-nth-event 0 rsb)))
+  (let ((r (get-nth-event 0 rsb)))
+    ;; MDE Sat Jun 6 12:48:46 2020, Heidhausen -- only get the player slot if
+    ;; it's an event (rhythm's don't have it)
+    (when (event-p r) (player r))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Nov 10 12:27:58 2018
@@ -327,9 +328,7 @@
 ;;; Always returns NIL.
 ;;; 
 ;;; EXAMPLE
-
 #|
-
 ;; Create a rthm-seq-bar object and print the contents of the MARKS slots of
 ;; the contained event objects to see they're set to NIL by default. Fill them
 ;; each with a 's (staccato) mark and print the results. Apply the delete-marks
@@ -351,17 +350,15 @@
 (NIL NIL NIL) 
 ((S) (S) (S)) 
 (NIL NIL NIL)
-
 |#
-
 ;;; SYNOPSIS
 (defmethod delete-marks ((rsb rthm-seq-bar))
 ;;; ****
   (loop for r in (rhythms rsb) do
        (delete-marks r)))
 
-#|
-MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that not only event objects but rhythms too lose their marks
+#| MDE Thu Dec 29 11:51:19 2011 -- changed the code below to that above so that
+not only event objects but rhythms too lose their marks
   (loop for event in (rhythms rsb) do
         (when (event-p event)
           (delete-marks event))))
@@ -1216,9 +1213,15 @@ BF4 E.,
                                 (let* ((letter (get-rhythm-letter-for-duration
                                                 (duration new)))
                                        (lr (make-rhythm letter)))
-                                  (setf (undotted-value new) (undotted-value lr)
-                                        (value new) (value lr)
-                                        (data new) letter))
+                                  ;; MDE Mon May 11 19:13:18 2020, Heidhausen --
+                                  ;; if we don't get a letter (lr) then we can't
+                                  ;; do the following, but things should still
+                                  ;; be ok so the error isn't helpful
+                                  (when lr
+                                    (setf (undotted-value new)
+                                          (undotted-value lr)
+                                          (value new) (value lr)
+                                          (data new) letter)))
                                 (unless (is-tied-from r2)
                                   (setf (is-tied-from new) nil))
                                 (setf (num-flags new) 
@@ -1702,7 +1705,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon May 7 16:38:23 2012 -- this is a better version of
 ;;; figure-out-and-auto-set-tuplets. Way back when I wrote that method we
-;;; didn't have rhythm's tuplet-scaler slot. Now that's there things should be
+;;; didn't have rhythm's tuplet-scaler slot. Now that's there, things should be
 ;;; easier. This still won't handle all tuplet possibilities, especially nested
 ;;; tuplets, but should still be useful.
 
@@ -1718,7 +1721,7 @@ data: ((2 4) - S S - S - S S S - S S)
 ;;; - A function to be performed on fail. Default = #'error.
 ;;; 
 ;;; RETURN VALUE
-;;; Returns T if successful. 
+;;; Returns T if successful, and the rsb as a second value in any case
 ;;; 
 ;;; EXAMPLE
 #|
@@ -1747,19 +1750,21 @@ data: ((2 4) - S S - S - S S S - S S)
          (setf start count))
        (push r bag)
        (incf dur (duration r))
+     ;; these tests avoid placing tuplets at arbitrary points in the bar
+     ;; e.g. after an opening 32nd
        ;; (print dur)
-     ;; (print r)
        (when (or (float-int-p dur 0.00001)
-                 (float-int-p (* 2.0 dur) 0.00001)) ; i.e. 0.5
-         ;; (print 'here)
+                 (float-int-p (* 2.0 dur) 0.00001) ; i.e. 0.5
+                 ;; MDE Wed Sep 23 16:37:37 2020, Heidhausen
+                 (float-int-p (* 4.0 dur) 0.00001)) ; i.e. 0.25 or 0.75
          (when (and (/= 1 (tuplet-scaler (first bag)))
                     (/= 1 (tuplet-scaler (first (last bag)))))
            (setf tuplet (denominator (tuplet-scaler (first (last bag)))))
            (add-tuplet-bracket rsb (list tuplet start count))
            (setf tuplet nil))
          (setf bag nil)))
-  ;; (print rsb)
-  (check-tuplets rsb on-fail))
+  ;; MDE Wed Sep 23 18:01:59 2020, Heidhausen -- return rsb also
+  (values (check-tuplets rsb on-fail) rsb))
          
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -2114,6 +2119,10 @@ rhythm symbol for clarity:
     (sounding-duration rsb)
     (setf (num-rhythms rsb) (length rhythms)
           (is-rest-bar rsb)
+          ;; bear in mind that a list of rhythms with no pitch-or-chord (whether
+          ;; is-rest it T or NIL for each rhythm)  will result in is-rest-bar
+          ;; being NIL. This is so that events can be made in various ways,
+          ;; filling in pitch info later perhaps, then udpating
           (if (not rhythms)
               t
               (when (and (= 1 (num-rhythms rsb))
@@ -2376,7 +2385,6 @@ rthm-seq-bar::get-nth-non-rest-rhythm: Couldn't get non-rest rhythm with index
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; 12.12.11 SAR: Added ROBODoc info
 ;;; ****m* rthm-seq-bar/get-nth-rest
 ;;; DESCRIPTION
@@ -2478,7 +2486,7 @@ rthm-seq-bar::get-nth-rest: Couldn't get rest with index 3
 ;;; 
 ;;; EXAMPLE
 #|
-;; Zero-based indexing. Returns a rhythm object when successful. ; ;
+;; Zero-based indexing. Returns a rhythm object when successful.
 (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
 (get-nth-event 0 rsb))
 
@@ -2493,9 +2501,9 @@ LINKED-NAMED-OBJECT: previous: NIL, this: NIL, next: NIL
 NAMED-OBJECT: id: Q, tag: NIL, 
 data: Q
 
-;; Interrupts with an error and drops into the debugger by default if the ; ;
-;; specified index number is greater than the number of events in the ; ;
-;; rthm-seq-bar.                        ; ;
+;; Interrupts with an error and drops into the debugger by default if the
+;; specified index number is greater than the number of events in the
+;; rthm-seq-bar.                       
 (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
 (get-nth-event 4 rsb))
 
@@ -2503,7 +2511,7 @@ data: Q
 rthm-seq-bar::get-nth-event: Couldn't get event with index 4
 [Condition of type SIMPLE-ERROR]
 
-;; The error can be suppressed by setting the optional argument to NIL ; ;
+;; The error can be suppressed by setting the optional argument to NIL
 (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
 (get-nth-event 4 rsb nil))
 
@@ -2538,7 +2546,7 @@ rthm-seq-bar::get-nth-event: Couldn't get event with index 4
 ;;; 
 ;;; EXAMPLE
 #|
-;; Returns a rhythm object.             ;
+;; Returns a rhythm object.            
 (let ((rsb (make-rthm-seq-bar '((2 4) s s e q))))
 (get-last-event rsb))
 
@@ -2584,7 +2592,7 @@ data: Q
 ;;; 
 ;;; EXAMPLE
 #|
-;; The method returns a rhythm object when successful ; ;
+;; The method returns a rhythm object when successful
 (let ((rsb (make-rthm-seq-bar '((3 4) q+e (e) s (s) e))))
 (get-nth-attack 0 rsb))
 
@@ -2745,8 +2753,8 @@ WARNING: rthm-seq-bar::get-nth-attack:  index (3) < 0 or >= notes-needed (3)
 ;;; 
 ;;; EXAMPLE
 #|
-;;; Create a rthm-seq-bar object and scale its durations by a fact of ; ;
-;;; 2. Returns a rthm-seq-bar object.   ; ;
+;;; Create a rthm-seq-bar object and scale its durations by a fact of
+;;; 2. Returns a rthm-seq-bar object.  
 (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
 (scale rsb 2))
 
@@ -2770,16 +2778,16 @@ RHYTHM: value: 8.000, duration: 0.500, rq: 1/2, is-rest: NIL,
 data: E
 [...]
 
-;;; Use the print-simple method to see formatted results ;
+;;; Use the print-simple method to see formatted results
 (let ((rsb (make-rthm-seq-bar '((2 4) q e s s))))
 (print-simple (scale rsb .5)))
 
 =>
 (2 8): note E, note S, note 32, note 32,
 
-;;; Set the optional <preserve-meter> argument to NIL to allow the method to ;
-;;; return results in a different metric quality (this returns a quadruple ;
-;;; meter rather than a duple)          ;
+;;; Set the optional <preserve-meter> argument to NIL to allow the method to
+;;; return results in a different metric quality (this returns a quadruple
+;;; meter rather than a duple)         
 (let ((rsb (make-rthm-seq-bar '((6 8) q e q s s))))
 (print-simple (scale rsb 2 nil)))
 
@@ -3597,20 +3605,26 @@ data: (2 4)
 ;;; ****
   (time-sig-equal (get-time-sig rsb1) (get-time-sig rsb2)))
 
+(defmethod time-sig-equal ((rsb1 rthm-seq-bar) (ts time-sig))
+  (time-sig-equal (get-time-sig rsb1) ts))
+
+(defmethod time-sig-equal ((rsb1 rthm-seq-bar) time-sig) ; as list
+  (time-sig-equal (get-time-sig rsb1) (make-time-sig time-sig)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 #| 17/7/05: obsolete code as ties are handled now at the piece level
 
-;;; Usually only struck (non-tied and non-rest) notes will have their ; ;
-;;; compound-duration set to include any following tied notes, but when the ; ;
-;;; first note of the bar is tied, this has to be the one to get the updated ; ;
-;;; compound duration.  Tied first notes of the bar are handled separately with ; ;
-;;; handle-first-note-ties in the rthm-seq class ; ;
+;;; Usually only struck (non-tied and non-rest) notes will have their
+;;; compound-duration set to include any following tied notes, but when the
+;;; first note of the bar is tied, this has to be the one to get the updated
+;;; compound duration.  Tied first notes of the bar are handled separately with
+;;; handle-first-note-ties in the rthm-seq class
 
         (defmethod update-compound-durations ((rsb rthm-seq-bar))
-  ;; (print 'update-compound-durations) ; ; ;
-  ;; 0 will ensure that if the first note is a tie, this will nevertheless be ; ; ;
-  ;; updated                            ; ; ;
+  ;; (print 'update-compound-durations)
+  ;; 0 will ensure that if the first note is a tie, this will nevertheless be ;
+  ;; updated                           
 (let ((last-struck 0))
 (loop for r in (rest (rhythms rsb)) and i from 1 do
 (when (needs-new-note r)
@@ -5461,6 +5475,26 @@ collect (midi-channel (pitch-or-chord p))))
      sum (get-degree e :average t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Sep 26 15:18:45 2020, Heidhausen
+(defmethod lowest ((rsb rthm-seq-bar))
+  ;; need to call lowest e because e could be a chord
+  (loop with lowest for e in (rhythms rsb) for lp = (lowest e) do
+       (unless (is-rest e)
+         (when (or (not lowest) (pitch< lp lowest))
+           (setq lowest lp)))
+       finally (return lowest)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MDE Sat Sep 26 15:18:45 2020, Heidhausen
+(defmethod highest ((rsb rthm-seq-bar))
+  ;; need to call highest e because e could be a chord
+  (loop with highest for e in (rhythms rsb) for hp = (highest e) do
+       (unless (is-rest e)
+         (when (or (not highest) (pitch> hp highest))
+           (setq highest hp)))
+     finally (return highest)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Sat Jun 28 14:21:50 2014 -- called by consolidate-notes
 (defmethod update-events-player ((rsb rthm-seq-bar) player)
   (loop for e in (rhythms rsb) do
@@ -5722,6 +5756,126 @@ collect (midi-channel (pitch-or-chord p))))
        (pedals-to-controllers event update-amplitude)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rthm-seq-bar/get-nearest-by-start-time
+;;; DATE
+;;; December 16th 2019, Essen Werden
+;;; 
+;;; DESCRIPTION
+;;; Find the event with the closest start-time to a given target.
+;;; 
+;;; ARGUMENTS
+;;; - a rthm-seq-bar object, with times appropriately initialised (e.g. by
+;;;   make-slippery-chicken)
+;;; - the target: either start time in seconds (float) or an event object
+;;; 
+;;; RETURN VALUE
+;;; two values: the closest event and it's position in the bar (0-based)
+;;; 
+;;; SYNOPSIS
+(defmethod get-nearest-by-start-time ((rsb rthm-seq-bar) target)
+;;; ****
+  (when (event-p target) (setq target (start-time target)))
+  (when (or (not target) (equal-within-tolerance -1.0 (start-time rsb)))
+    (error "rthm-seq-bar::get-nearest-by-start-time: rthm-seq-bar and event ~
+            objects need to have valid start-times:~%~a~%~a" rsb target))
+  (when (rhythms rsb)
+    (let ((smallest most-positive-double-float)
+          nth event)
+      ;; it would be nice to do this with the sort function as it would probably
+      ;; be quicker, but that's a destructive operation
+      (loop for r in (rhythms rsb)
+         for diff = (abs (- target (start-time r)))
+         for i from 0
+         do
+         ;; as all start-times in the rsb must be increasing, it stands to
+         ;; reason that the difference between the current start-time and that
+         ;; of our sought-for start-time decreases until we find the closest,
+         ;; then increases
+           (if (< diff smallest)
+               (setq nth i
+                     event r
+                     smallest diff)
+               (return)))
+      (values event nth))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rthm-seq-bar/invert
+;;; DATE
+;;; 11th July 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Turn all the rests in a rthm-seq-bar into notes and all the notes/chords
+;;; into rests. NB this method is destructive.
+;;; 
+;;; ARGUMENTS
+;;; - the rthm-seq-bar object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - a list of pitches/chords (either objects or symbols/lists of symbols) to
+;;;   replace the rests with. This will be used cyclically if there aren't
+;;;   enough for the number of generated rests. They will not all be used up if
+;;;   there aren't enough rests. If NIL then all rests will be replaced with
+;;;   middle Cs.
+;;; - T or NIL to tie notes rather than use new ones when more than one
+;;;   consecutive rest is created.
+;;; RETURN VALUE
+;;; the modified rthm-seq-bar object
+;;; 
+;;; EXAMPLE
+#|
+(let ((r (make-rest 'e))) (setf (pitch-or-chord r) '(c4 e4)) r)
+--->
+EVENT: start-time: NIL, end-time: NIL, 
+       duration-in-tempo: 0.000, 
+       compound-duration-in-tempo: 0.000, 
+       amplitude: 0.300 
+       bar-num: -1, marks-before: NIL, 
+       tempo-change: NIL 
+       instrument-change: NIL 
+       display-tempo: NIL, start-time-qtrs: -1.000, 
+       midi-time-sig: NIL, midi-program-changes: NIL, 
+       midi-control-changes: NIL, 
+       8va: 0, player: NIL
+       asco-label: NIL, asco-msgs: NIL
+       set-ref: NIL
+       pitch-or-chord: 
+CHORD: auto-sort: T, marks: NIL, micro-tone: NIL, micro-tonality: 0.0
+centroid: NIL, dissonance: NIL
+SCLIST: sclist-length: 2, bounds-alert: T, copy: T
+LINKED-NAMED-OBJECT: previous: NIL, 
+                     this: NIL, 
+                     next: NIL
+NAMED-OBJECT: id: NIL, tag: NIL, 
+data: (
+PITCH: frequency: 261.626, midi-note: 60, midi-channel: NIL 
+...
+|#
+;;; SYNOPSIS
+(defmethod invert ((rsb rthm-seq-bar) &optional pitch-list tie)
+;;; ****
+  (unless (every #'event-p (rhythms rsb))
+    (error "~a~%rthm-seq-bar::invert: this method only works with event (not ~
+            rhythm) objects." rsb))
+  (let* ((plist (if pitch-list (make-cscl pitch-list) (make-cscl '(c4))))
+         last pitch)
+    (loop for e in (rhythms rsb) do
+         (if (is-rest e)
+             (progn
+               (when (or (not pitch) (not tie))
+                 (setq pitch (get-next plist)))
+               (setf (pitch-or-chord e) pitch))
+             (progn 
+               (force-rest e)
+               (setq pitch nil)))       ; force get-next
+       ;; last and e can only be non-rests if they were converted from rests
+         (when (and tie last (pitch-or-chord e) (pitch-or-chord last))
+           (setf (is-tied-from last) t
+                 (is-tied-to e) t))
+         (setq last e))
+    (consolidate-rests rsb)
+    rsb))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Related functions.
 ;;;
@@ -5965,20 +6119,10 @@ rsb-rb)
                                           rhythms))
                 (decf expect-right-brackets)
                 (let ((tuplet-num (pop tuplets)))
-                  #| MDE Wed Dec 14 14:21:27 2011 -- obsolete
-  (push (list tuplet-num
-                  (pop 
-                  score-left-bracket-positions) 
-                  (+ num-notes -1 
-                  (if (atom last-rthm)
-                  0
-                  nudge-factor))) 
-                  score-tuplet-positions)
-  |#
-                                   (push (list tuplet-num 
-                                               (pop left-bracket-positions)
-                                               (1- num-rthms))
-                                         tuplet-positions)))
+                  (push (list tuplet-num 
+                              (pop left-bracket-positions)
+                              (1- num-rthms))
+                        tuplet-positions)))
                ((eq interned '-) (if start-beam 
                                      (progn 
                                        ;; MDE Tue May 29 22:39:29 2012 -- we
@@ -6023,7 +6167,7 @@ rsb-rb)
                                               nudge-factor))
                        (prthms (first parsed))
                        (beams (third parsed))
-                       (nr num-rthms) ;(1- num-rthms))
+                       (nr num-rthms)   ;(1- num-rthms))
                        (brackets (fourth parsed)))
                   ;; (print prthms)
                   ;; (print beams) ;
@@ -6041,15 +6185,15 @@ rsb-rb)
                   (loop for b in brackets do
                        (push (list (first b) (+ nr (second b)) (+ nr (third b)))
                              tuplet-positions))))
-                #| 
-                ;; MDE Fri May 29 10:02:22 2015 -- this is the way we used to
-                ;; do rqq, relying on CMN:
-               (multiple-value-bind
-               (rqq-rthms rqq-num-notes rqq-num-rthms)
-               (do-rqq interned) ;    ; ; ; ; ; ;
-               (incf num-rthms rqq-num-rthms)
-               (incf num-notes rqq-num-notes)
-               (setf rthms (append (reverse rqq-rthms) rthms))))
+               #| 
+                ;; MDE Fri May 29 10:02:22 2015 -- this is the way we used to ;
+                ;; do rqq, relying on CMN: ;
+               (multiple-value-bind     ;
+               (rqq-rthms rqq-num-notes rqq-num-rthms) ;
+               (do-rqq interned) ;    ; ; ; ; ; ; ;
+               (incf num-rthms rqq-num-rthms) ;
+               (incf num-notes rqq-num-notes) ;
+               (setf rthms (append (reverse rqq-rthms) rthms)))) ;
                |#
                ;; finally we saw a rhythm!
                ;; but when it's in parentheses it's a rest so
@@ -6058,15 +6202,15 @@ rsb-rb)
                          (num-tied-rthms (num-tied-rthms i)))
                     (unless (zerop got-left-brackets)
                       (loop 
-                          with score-pos = (- num-notes
-                                              (if note 
-                                                  0 
-                                                nudge-factor))
-                          with pos = num-rthms
-                          repeat got-left-brackets 
-                          do (push score-pos 
-                                   score-left-bracket-positions)
-                             (push pos left-bracket-positions))
+                         with score-pos = (- num-notes
+                                             (if note 
+                                                 0 
+                                                 nudge-factor))
+                         with pos = num-rthms
+                         repeat got-left-brackets 
+                         do (push score-pos 
+                                  score-left-bracket-positions)
+                           (push pos left-bracket-positions))
                       (setq got-left-brackets 0))
                     (when note
                       (incf num-notes num-tied-rthms))
@@ -6633,10 +6777,14 @@ rsb-rb)
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
-;;; - :start-time. The start time in seconds of the first event
+;;; - :start-time. The start time in seconds of the first event. Default = 0.0
 ;;; - :start-time-qtrs. The start time in quarter notes of the first event (used
-;;;   in MIDI files)
+;;;   in MIDI files). If NIL, then this will be calculated as a function of
+;;;   :start-time and :tempo. If not NIL, this will mean start-time is ignored
+;;;   when writing MIDI files. Default = nil.
 ;;; - :tempo. The tempo in beats per minute (or a tempo object)
+;;; - :max-start-time. A maximum time in seconds above which we stop processing
+;;;   (and returning) events. 
 ;;; 
 ;;; RETURN VALUE
 ;;; two values: the list of events with their times updated, and the time the
@@ -6645,14 +6793,13 @@ rsb-rb)
 ;;; EXAMPLE
 #|
 
-  (event-list-to-midi-file
-(events-update-time (make-events2 '(q q q) '(g4 g4 g4) 1))
-:midi-file "/tmp/test.mid" :start-tempo 120)
-
-  |#
+(event-list-to-midi-file
+  (events-update-time (make-events2 '(q q q) '(g4 g4 g4) 1))
+  :midi-file "/tmp/test.mid" :start-tempo 120)
+|#
 ;;; SYNOPSIS
-(defun events-update-time (events &key (start-time 0.0) (start-time-qtrs 0.0)
-                                    (tempo 60.0))
+(defun events-update-time (events &key (start-time 0.0) start-time-qtrs
+                                    max-start-time (tempo 60.0))
 ;;; ****
   (unless (typep tempo 'tempo)
     (setf tempo (make-tempo tempo)))
@@ -6661,23 +6808,33 @@ rsb-rb)
             of event objects: ~a" events))
   (let ((qtr-dur (qtr-dur tempo))
         (time start-time)
-        (time-qtrs start-time-qtrs))
+        (time-qtrs (if start-time-qtrs
+                       start-time-qtrs
+                       (/ start-time (if (tempo-p tempo)
+                                         (beat-dur tempo)
+                                         (/ 60.0 tempo)))))
+        result)
     (loop for event in events do
        ;; MDE Mon Sep 30 18:18:34 2019 -- do this here too so that we can access
        ;; most probable midi channels of rests (for pedals etc.). This is a good
        ;; place as this gets called eventually via update-slots, which is called
        ;; at init
          (set-last-midi-channel event)
-         (setf (start-time event) time
-               (start-time-qtrs event) time-qtrs
-               (duration-in-tempo event) (* (duration event) qtr-dur)
-               (compound-duration-in-tempo event) 
-               (* (compound-duration event) qtr-dur)
-               (end-time event) (+ (start-time event) 
-                                   (compound-duration-in-tempo event)))
-         (incf time-qtrs (duration event))
-         (incf time (duration-in-tempo event)))
-    (values events time)))
+         (if (or (not max-start-time) (<= time max-start-time))
+             (progn
+               (setf (start-time event) time
+                     (start-time-qtrs event) time-qtrs
+                     (duration-in-tempo event) (* (duration event) qtr-dur)
+                     (compound-duration-in-tempo event) 
+                     (* (compound-duration event) qtr-dur)
+                     (end-time event) (+ (start-time event) 
+                                         (compound-duration-in-tempo event)))
+               (push event result)
+               (incf time-qtrs (duration event))
+               (incf time (duration-in-tempo event)))
+             ;; we've reached max-start-time
+             (return)))
+    (values (nreverse result) time)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Apr 14 07:05:07 2017 -- rthm is a power-of-two. Sometimes we
@@ -6716,6 +6873,55 @@ rsb-rb)
         (reset))
       (list n tof (xml-simple-rhythm (value r))))))
     
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* rthm-seq-bar/make-rsb-from-unit-multipliers
+;;; DATE
+;;; Jun 6th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Make a rthm-seq-bar using multiples of a single unit e.g. '(2 2 1) would
+;;; result in an automatic time signature of 5/8 if passed a unit of 'e (or
+;;; 8). In that case the rhythms would be q q e. Rests may be created by passing
+;;; a number in parentheses. 
+;;; 
+;;; ARGUMENTS
+;;; - the rhythm unit (symbol, number or rhythm object)
+;;; - the list of multipliers
+;;; 
+;;; RETURN VALUE
+;;; a rthm-seq-bar object
+;;; 
+;;; EXAMPLE
+#|
+(print-simple (make-rsb-from-unit-multipliers 'e '(3 4 (1) 2)))
+-->
+NIL: bar -1: (10 8): 
+note Q., 
+note H, 
+rest E, 
+note Q, 
+|#
+;;; SYNOPSIS
+(defun make-rsb-from-unit-multipliers (unit multipliers)
+;;; ****
+  (let* ((urthm (make-rhythm unit))
+         (num (apply #'+ (flatten multipliers)))
+         (time-sig (list (floor num) (floor (value urthm)))))
+    (unless (or (integerp num) (float-int-p num))
+      (error "rthm-seq-bar::make-rsb-from-unit-multipliers: ~a is not (yet) ~
+              a valid numerator for a time signature" num))
+    (unless (power-of-2 (second time-sig))
+      (error "rthm-seq-bar::make-rsb-from-unit-multipliers: ~a is not (yet) ~
+              a valid time signature" time-sig))
+    (make-rthm-seq-bar
+     (cons time-sig
+           (loop for mult in multipliers collect
+                (let* ((rest (listp mult))
+                       (m (if rest (first mult) mult))
+                       (r (scale urthm m t)))
+                  (when rest (setf (is-rest r) t))
+                  r))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu May 28 12:26:55 2015 -- new rqq handling code to avoid having to
 ;;; explicitly call CMN routines, instead turning them into our normal SC
@@ -6795,8 +7001,13 @@ rsb-rb)
         ;; divisions is not an integer:
         (let* ((2divs (second divisions))
                (rqqnd (rqq-num-divisions 2divs))
-               (this-dur (first divisions))
-               ;; the ration of the total number of divisions we have to the
+               ;; MDE Sat Feb  8 13:04:05 2020 -- Dan and Jolon discovered that
+               ;; if we try this (make-rthm-seq-bar '((3 8) (1.5 (1 1 1 1 1))))
+               ;; then it doesn't work, but if that 1.5 is expressed as 3/2,
+               ;; then it does (floating-point precision problem perhaps?). So
+               ;; force the duration to be a rational
+               (this-dur (rational (first divisions)))
+               ;; the ratio of the total number of divisions we have to the
                ;; duration  
                (ratio (/ this-dur rqqnd))
                (pd (/ (* parent-dur rqqnd) this-dur))

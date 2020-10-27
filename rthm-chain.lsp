@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   sc-map -> rthm-seq-map -> rthm-chain
 ;;; 
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -69,7 +69,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  19:00:00 Fri Jun 21 2019 CEST
+;;; $$ Last modified:  16:14:15 Thu Sep 17 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -281,7 +281,11 @@
                     :num-beats (num-beats rc))
     (when (split-data rc)
       (split rc :min-beats (first (split-data rc)) 
-             :max-beats (second (split-data rc))))))
+             :max-beats (second (split-data rc)))))
+  ;; MDE Thu Feb 27 09:24:56 2020 -- so that we can call get-all-refs on the
+  ;; palette
+  (when (palette rc)
+    (relink-named-objects (palette rc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #|
@@ -677,10 +681,6 @@
         (values rthm repeats)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Mon Apr 30 11:29:17 BST 2012: Conforming robodoc entry
-;;; SAR Tue Jun 12 17:34:40 BST 2012: Expanding the robodoc entry
-
 ;;; ****m* rthm-chain/rthm-chain-gen
 ;;; DESCRIPTION
 ;;; Generate a chain of rhythms using the procession function (internally). 
@@ -1670,8 +1670,8 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;; ARGUMENTS
 ;;; - An integer that is the number of items in the list to be generated.
 ;;; - A list of at least 4 starting items or an integer >=4. If an integer is
-;;;   given rather than a list, the method will process a list of consecutive
-;;;   numbers from 1 to the specified integer.
+;;;   given rather than a list, the method will process a list of <integer>
+;;;   consecutive numbers from 1 (by default).
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; keyword arguments:
@@ -1687,6 +1687,8 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
 ;;;   determines the intervals at which each successive element of the initial
 ;;;   list is introduced to the new list. A higher number indicates a steeper
 ;;;   exponential curve. Default = 1.3.
+;;; - :start-at. The number to start counting from if the 2nd argument is an
+;;;   integer instead of a list. Default = 1.
 ;;; - :orders. The patterns by which the elements are added. The method
 ;;;   cyclically applies these orders, the numbers 1, 2, and 3 representing the
 ;;;   three least used elements at each pass. These orders must therefore
@@ -1750,6 +1752,9 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
                      (peak 0.7)
                      ;; for an exponential curve going from 3 to num <items>
                      (expt 1.3)
+                     ;; MDE Thu Sep 17 16:11:03 2020, Heidhausen -- allow
+                     ;; counting from another number if items is an integer
+                     (start-at 1)
                      ;; these are the orders we'll use at the beginning
                      ;; (cyclically). They will then be used when we've gone
                      ;; beyond 3 items by always using the 3 least used items.
@@ -1817,7 +1822,7 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
                 (incf count)))
       ;; we want to return a 1-based list (not 0) if <items> was simply a number
       (unless (listp items)
-        (setf items (loop for i from 1 to num-items collect i)))
+        (setf items (loop for i from start-at repeat num-items collect i)))
       ;; just for statistics: get the usage data out of the hash
       (maphash #'(lambda (key val) 
                    (let ((skey (nth key items)))
@@ -1833,7 +1838,6 @@ SC-MAP: palette id: RTHM-CHAIN-RSP
        spread))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****f* rthm-chain/procession-mirror
 ;;; DESCRIPTION
 ;;; Perform the same operation as the procession function, but instead of just

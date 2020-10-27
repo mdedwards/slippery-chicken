@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   palette -> rthm-seq-palette
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  10:09:39 Thu Aug 22 2019 CEST
+;;; $$ Last modified:  15:49:30 Tue Oct 27 2020 CET
 ;;; 
 ;;; SVN ID: $Id$
 ;;;
@@ -819,9 +819,6 @@ rthm-seq 9
   rsp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu Feb  2 14:30:02 GMT 2012: Added robodoc entry
- 
 ;;; ****m* rthm-seq-palette/get-multipliers
 ;;; DESCRIPTION
 ;;; Get a list of factors by which a specified rhythmic unit must be multiplied
@@ -1180,6 +1177,79 @@ RTHM-SEQ: num-bars: 3
 (defun rsp-p (thing)
   (typep thing 'rthm-seq-palette))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* rthm-seq-palette/make-rthm-seq-from-unit-multipliers-simp
+;;; June 6th 2020
+;;; 
+;;; DESCRIPTION
+;;; Make a rthm-seq-palette using lists of lists of multiples of a single unit
+;;; e.g. '(2 2 1) would result in an automatic time signature of 5/8 if passed a
+;;; unit of 'e (or 8). In that case the rhythms would be q q e. Rests may be
+;;; created by passing a number in parentheses.
+;;;
+;;; 
+;;; ARGUMENTS
+;;; - the ID for the rthm-seq-plaette
+;;; - the rhythm unit (symbol, number or rhythm object)
+;;; - the lists of lists multipliers, each sublist representing a rthm-seq and
+;;;   each sublist of that representing a bar. 
+;;; 
+;;; RETURN VALUE
+;;; a rthm-seq-palette object
+;;; 
+;;; EXAMPLE
+#|
+(print-simple (make-rsp-from-unit-multipliers-simp
+              'test-unit-mults 's
+              '(((3 4 1 2) (2 (1) 2))
+                ((2 1 2 1) (3) ((4)))
+                (((3) 4 1) (3 4 1) ((2) 3) (2 3) (2)))))
+rthm-seq-palette TEST-UNIT-MULTS
+rthm-seq 1
+NIL: bar -1: (10 16): 
+note E., 
+note Q, 
+note S, 
+note E, 
+NIL: bar -1: (5 16): 
+note E, 
+rest S, 
+note E, 
+rthm-seq 2
+NIL: bar -1: (6 16): 
+note E, 
+note S, 
+note E, 
+note S, 
+NIL: bar -1: (3 16): 
+note E., 
+NIL: bar -1: (4 16): 
+rest 4, 
+rthm-seq 3
+NIL: bar -1: (8 16): 
+rest E., 
+note Q, 
+note S, 
+NIL: bar -1: (8 16): 
+note E., 
+note Q, 
+note S, 
+NIL: bar -1: (5 16): 
+rest E, 
+note E., 
+NIL: bar -1: (5 16): 
+note E, 
+note E., 
+NIL: bar -1: (2 16): 
+note E, 
+T
+|#
+;;; SYNOPSIS
+(defun make-rsp-from-unit-multipliers-simp (id unit seqs)
+;;; ****
+  (make-rsp id (loop for seq in seqs and id from 1 collect
+                    (make-rthm-seq-from-unit-multipliers-simp id unit seq))))
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF rthm-seq-palette.lsp
 

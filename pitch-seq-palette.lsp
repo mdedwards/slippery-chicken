@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   palette -> pitch-seq-palette
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  15:59:41 Fri Feb  2 2018 CET
+;;; $$ Last modified:  14:01:06 Sat Jul 11 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -451,8 +451,6 @@ Each pitch sequence must have 5 notes (you have 6):
                  :num-notes num-notes))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (let ((seqs '((1 (((3)) ((3)) ((1)) ((25))))
 (let ((seqs '((1 ((((3))) (((3))) (((1))) (((25)))))
               (2 ((3 4) (5 2) ((25) 25) (1 25)))
               (3 (((3) 4 (3)) (5 (9) 6) (1 2 4) (5 2 (2)) (6 2 3)))
@@ -474,9 +472,6 @@ Each pitch sequence must have 5 notes (you have 6):
               (15 ((1 2 5 5 5 5 5 5 5 5 4 5 2 1 2) 
                    (2 1 5 1 5 1 6 5 1 5 2 5 1 2 6)))))
       (seqs-al nil))
-
-  ;; SAR Tue Jan 31 18:09:46 GMT 2012: Edited robodoc info
-
   ;; ****f* rthm-seq-palette/create-psps-default
   ;; FUNCTION
   ;; Create pitch-sequences for the create-psps method. This is the callback

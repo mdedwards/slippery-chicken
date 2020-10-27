@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> 
 ;;;                   pitch-seq
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    19th February 2001
 ;;;
-;;; $$ Last modified:  11:31:57 Tue Jul 16 2019 CEST
+;;; $$ Last modified:  14:39:26 Sat Jul 11 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -167,8 +167,9 @@
 
 |#
 ;;; SYNOPSIS
-(defmethod invert ((ps pitch-seq))
+(defmethod invert ((ps pitch-seq) &optional ignore1 ignore2)
 ;;; ****
+  (declare (ignore ignore1 ignore2))
   (let* ((sorted (sort (remove-duplicates (data ps))
                        #'<))
          (len-1 (1- (length sorted)))

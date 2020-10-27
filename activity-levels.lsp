@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> activity-levels
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -19,7 +19,7 @@
 ;;;
 ;;; Creation date:    4th February 2010
 ;;;
-;;; $$ Last modified:  17:39:33 Tue May 21 2019 CEST
+;;; $$ Last modified:  19:28:24 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -235,15 +235,15 @@
 ;;; 
 ;;; OPTIONAL ARGUMENTS
 ;;; start-at (default NIL): which of the three 10-element lists to start with
-;;; (reset to).  Should be 0, 1, or 2 though if NIL will default to 1.
+;;; (reset to).  Should be 0, 1, or 2 though if NIL will default to 0.
 ;;; 
 ;;; RETURN VALUE
 ;;; The activities-level object.
 ;;;
 ;;; SYNOPSIS
-(defun make-al (&optional start-at)
+(defun make-al (&optional start-at id)
 ;;; ****
-  (let ((al (make-instance 'activity-levels)))
+  (let ((al (make-instance 'activity-levels :id id)))
     (when start-at
       (reset al start-at))
     al))

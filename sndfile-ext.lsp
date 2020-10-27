@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sndfile ->
 ;;;                   sndfile-ext 
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  18:43:20 Fri Dec 21 2018 CET
+;;; $$ Last modified:  19:18:46 Thu Sep 24 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -224,7 +224,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod update :after ((sfe sndfile-ext))
+(defmethod update :after ((sfe sndfile-ext) &key ignore)
+  (declare (ignore ignore))
   ;; just to call the setf method and update to a cscl
   (setf (followers sfe) (followers sfe))
   #+clm 
@@ -623,9 +624,11 @@ NIL
 ;;; SYNOPSIS
 (defun make-sndfile-ext (path &key id data duration end (start 0.0)
                                 (frequency nil) (amplitude 1.0) (cue-num -1)
-                                (use t) (pitch -1) (pitch-curve -1) (bandwidth -1)
+                                (use t) (pitch -1) (pitch-curve -1)
+                                (bandwidth -1)
                                 (bandwidth-curve -1) (continuity -1)
-                                (continuity-curve -1) (weight -1) (weight-curve -1)
+                                (continuity-curve -1) (weight -1)
+                                (weight-curve -1)
                                 (energy -1) (energy-curve -1) (harmonicity -1)
                                 (harmonicity-curve -1) (volume -1)
                                 (volume-curve -1) (loop-it nil) (bitrate -1)

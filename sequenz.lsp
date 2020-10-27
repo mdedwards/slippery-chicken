@@ -11,7 +11,7 @@
 ;;;                   named-object -> linked-named-object -> bar-holder
 ;;;                   -> sequenz
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -23,7 +23,7 @@
 ;;;
 ;;; Creation date:    March 15th 2002
 ;;;
-;;; $$ Last modified:  19:30:29 Thu Jul 11 2019 CEST
+;;; $$ Last modified:  14:12:35 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -220,7 +220,6 @@
     seq))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; This assumes that the start-time slot of each event has been correctly set
 ;;; according to the tempo, hence it's this class and not rthm-seq.  threshold
 ;;; is the max duration of a fast note, in seconds.  Returns a list of those
@@ -229,7 +228,9 @@
 
 (defmethod get-quick-notes-indices ((s sequenz) 
                                     &optional last-seq (threshold 0.125))
-  (unless (zerop (num-notes s))
+  ;; MDE Tue Aug 4 14:12:16 2020, Heidhausen -- don't do this if threshold is
+  ;; nil
+  (when (and (numberp threshold) (> (num-notes s) 0))
     (loop 
         with last = (if last-seq 
                         (get-last-attack last-seq nil)

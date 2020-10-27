@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> bar-holder 
 ;;;                   -> section
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -20,7 +20,7 @@
 ;;;
 ;;; Creation date:    23rd March 2002
 ;;;
-;;; $$ Last modified:  17:17:48 Mon Oct 29 2018 CET
+;;; $$ Last modified:  15:20:01 Fri Jan 10 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -589,4 +589,8 @@ data: ((4 4) E S S H Q)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun section-p (thing)
+  (typep thing 'section))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EOF section.lsp

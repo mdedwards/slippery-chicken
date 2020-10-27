@@ -9,7 +9,7 @@
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list ->
 ;;;                   palette -> set-palette
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -56,7 +56,7 @@
 ;;;
 ;;; Creation date:    August 14th 2001
 ;;;
-;;; $$ Last modified:  10:15:31 Thu Aug 22 2019 CEST
+;;; $$ Last modified:  17:06:17 Fri Jun  5 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1083,7 +1083,7 @@ data: (C4 F4 A4 C5)
 ;;; DESCRIPTION
 ;;; Remove similar sets from a palette when two sets are deemed
 ;;; similar. The set furthest down the data list will remain, whatever the
-;;; ID.
+;;; ID. Note that this is a destructive operation.
 ;;;
 ;;; We use the similarity chord method to remove sets from the palette, so see
 ;;; that method for further information and for more keyword argument
@@ -1238,11 +1238,11 @@ data: (C4 F4 A4 C5)
 ;;; The set-palette object, wrapped.
 ;;;
 ;;; SYNOPSIS
-(defmethod wrap ((sp set-palette) &optional (num-times 1))
+(defmethod wrap ((sp set-palette) &optional (num-times 1) (transpose t))
 ;;; ****
   (loop for ref in (get-all-refs sp)
      for set = (get-data ref sp)
-     do (wrap set num-times))
+     do (wrap set num-times transpose))
   sp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

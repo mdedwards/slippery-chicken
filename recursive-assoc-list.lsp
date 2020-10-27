@@ -8,7 +8,7 @@
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> 
 ;;;                   circular-sclist -> assoc-list -> recursive-assoc-list
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  15:34:57 Fri Jul  5 2019 CEST
+;;; $$ Last modified:  11:04:58 Sat Sep 19 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -708,9 +708,6 @@ T
   (sc-change-class ral new-class))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu Jan 26 20:59:03 GMT 2012: Added robodoc info
-
 ;;; ****m* recursive-assoc-list/get-data
 ;;; DESCRIPTION
 ;;; Return the named-object (or linked-named-object) that is identified by a
@@ -846,6 +843,10 @@ WARNING:
 ;;; added at the end of the top level. The optional argument allows for the
 ;;; FULL-REF to be specified, i.e. a recursive path of keys down to the nested
 ;;; level where the new element is to be placed.
+;;;
+;;; N.B. All new items are added to the end of the data list, unlike in
+;;; assoc-list where that is the default but can be changed. Here it cannot be
+;;; changed. 
 ;;; 
 ;;; ARGUMENTS
 ;;; - A key/data pair.
@@ -1064,8 +1065,6 @@ NIL
   data)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Fri Jan 27 16:41:42 GMT 2012: Added robodoc info
-
 ;;; ****m* recursive-assoc-list/parcel-data
 ;;; DATE
 ;;; 10 Apr 2010
@@ -1133,9 +1132,6 @@ data: BEAM
             :tag (if (tag ral) (tag ral) 'from-parcel-data)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Jan 27 17:07:27 GMT 2012: Add robodoc info
-
 ;;; MDE comment:
 ;;; add an empty level of recursion
 
@@ -1201,9 +1197,6 @@ Mark set
     sub-ral))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Jan 27 15:33:01 GMT 2012: Added robodoc info
-
 ;;; ****m* recursive-assoc-list/set-data
 ;;; DESCRIPTION
 ;;; Replace the named-object associated with a specified key within a given
@@ -1360,8 +1353,6 @@ data: HIVE
   (remove-when-aux ral #'get-all-refs test))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Fri Jan 27 14:42:30 GMT 2012: Added robodoc info
-
 ;;; ****m* recursive-assoc-list/get-first
 ;;; DESCRIPTION
 ;;; Returns the first named-object in the DATA slot of the given
@@ -1402,12 +1393,6 @@ data: BEAM
       first)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Jan 27 14:53:30 GMT 2012: Deleted MDE's comment here, as it has
-;;; been placed nearly verbatim into the robodoc info below.
-
-;;; SAR Fri Jan 27 14:53:18 GMT 2012: Added robodoc info
-
 ;;; ****m* recursive-assoc-list/get-first-ref
 ;;; DESCRIPTION
 ;;; Get the full reference into the given recursive-assoc-list object of the
@@ -1466,9 +1451,6 @@ data: BEAM
           (econs (full-ref ral) (id first))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Jan 27 14:59:57 GMT 2012: Added robodoc info
-
 ;;; ****m* recursive-assoc-list/get-last
 ;;; DESCRIPTION
 ;;; Get the last named-object in a given recursive-assoc-list object. 
@@ -1620,9 +1602,6 @@ data: RIBBON
      when this collect this))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Jan 27 15:16:47 GMT 2012: Added robodoc info
-
 ;;; ****m* recursive-assoc-list/get-last-ref
 ;;; DESCRIPTION
 ;;; Get the last REF (path of nested keys) of the given recursive-assoc-list

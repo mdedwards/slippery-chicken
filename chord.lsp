@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> linked-named-object -> sclist -> chord
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    July 28th 2001
 ;;;
-;;; $$ Last modified:  11:16:36 Thu Aug 22 2019 CEST
+;;; $$ Last modified:  11:20:52 Tue Aug  4 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -219,7 +219,7 @@ NIL
      ;; Make sure that different sized chords are not treated as the same,
      ;; i.e. (make-chord '(a4 c5)) does NOT equal (make-chord '(a4 c5 e5))
        (if (= (length (data c1))
-	      (length (data c2)))
+              (length (data c2)))
        (setf happy (pitch= p1 p2 enharmonics-are-equal frequency-tolerance))
                                         ; src-tolerance))
        (setf happy nil))
@@ -238,7 +238,35 @@ NIL
                                          (frequency-tolerance 0.01))
   (declare (ignore p c enharmonics-are-equal frequency-tolerance))
   nil)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Tue 29 Oct 2019 08:55:09 GMT -- are chord objects containing only one
+;;; pitch the same as single pitches?
 
+(defmethod single-pitch-chord= ((p pitch) (c chord)
+                                &optional enharmonics-are-equal
+                                  (frequency-tolerance 0.01))
+  ;; DJR Thu 14 Nov 2019 08:32:47 GMT
+  ;; Forgot to add this very necessary if clause.
+  (if (= (length (data c)) 1)
+      ;; only one note in chord so lowest should always work
+      (if (pitch= p (lowest c) 
+                  enharmonics-are-equal frequency-tolerance)
+          t
+          nil)
+      nil))
+
+(defmethod single-pitch-chord= ((c chord) (p pitch)
+                                &optional enharmonics-are-equal
+                                  (frequency-tolerance 0.01))
+  ;; DJR Thu 14 Nov 2019 08:32:47 GMT
+  ;; Forgot to add this very necessary if clause.
+  (if (= (length (data c)) 1)
+      ;; only one note in chord so lowest should always work
+      (if (pitch= p (lowest c) 
+                  enharmonics-are-equal frequency-tolerance)
+          t
+          nil)
+      nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/pitch-or-chord=
@@ -262,14 +290,14 @@ NIL
 ;;; - a number to indicate the frequency deviation allowed before returning NIL.
 ;;; 
 ;;; RETURN VALUE
-;;; T if the values of the two specified pitch or chord objects are equal, otherwise
-;;; NIL. 
+;;; T if the values of the two specified pitch or chord objects are equal,
+;;; otherwise NIL. 
 ;;; 
 ;;; EXAMPLE
 #|
 ;; Comparison of equal pitch objects created using note-name symbols returns T 
-(let ((p1 (make-pitch 'C4))
-      (p2 (make-pitch 'C4)))
+(let ((p1 (make-pitch 'c4))
+      (p2 (make-pitch 'c4)))
   (pitch-or-chord= p1 p2))
 
 => T 
@@ -310,24 +338,30 @@ NIL
 
 => T
 
+;; Chords with only one pitch are the same as pitch object with the same pitch.
+(let ((c (make-chord '(c4)))
+      (p (make-pitch 'c4)))
+  (pitch-or-chord= c p))
+
+=> T
+
 |#
 ;;; SYNOPSIS
-(defmethod pitch-or-chord= (p1 p2 &optional enharmonics-are-equal
-				  (frequency-tolerance 0.01))
+(defmethod pitch-or-chord= ((c1 chord) (c2 chord)
+                            &optional enharmonics-are-equal
+                              (frequency-tolerance 0.01))
 ;;; ****
-  (unless (pitch-or-chord-p p1)
-    (error (format t "~%pitch-or-chord=: p1 is not a pitch or chord")))
-  (unless (pitch-or-chord-p p2)
-    (error (format t "~%pitch-or-chord=: p2 is not a pitch or chord")))
-  (cond ((and (pitch-p p1)
-	      (pitch-p p2))
-	 (pitch= p1 p2 enharmonics-are-equal frequency-tolerance))
-	((and (chord-p p1)
-	      (chord-p p2))
-	 (chord= p1 p2 enharmonics-are-equal frequency-tolerance))
-	;; We could put pitch= here instead but I'm not sure it's useful in
-	;; this case.
-	(t nil)))
+  (pitch-or-chord=-aux c1 c2 enharmonics-are-equal frequency-tolerance))
+
+(defmethod pitch-or-chord= ((p pitch) (c chord)
+                            &optional enharmonics-are-equal
+                              (frequency-tolerance 0.01))
+  (pitch-or-chord=-aux c p enharmonics-are-equal frequency-tolerance))
+
+(defmethod pitch-or-chord= ((c chord) (p pitch)
+                            &optional enharmonics-are-equal
+                              (frequency-tolerance 0.01))
+  (pitch-or-chord=-aux c p enharmonics-are-equal frequency-tolerance))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/add-harmonics
@@ -353,12 +387,11 @@ NIL
   (setf (data c) 
         (append (data c) 
                 (apply #'get-pitch-list-harmonics (cons (data c) keywords))))
+  (rm-duplicates c)
   c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; SAR Wed Feb 22 17:39:04 GMT 2012: Added robodoc entry
-
 ;;; ****m* chord/set-midi-channel
 ;;; DESCRIPTION
 ;;; Set the MIDI channel of the pitch objects in a given chord object to the
@@ -482,11 +515,6 @@ NIL
         (output-midi-note p time amplitude duration)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; ref is 1-based and counts from the lowest note up.
-
-;;; SAR Wed Feb 22 17:56:55 GMT 2012: Added robodoc info
-
 ;;; ****m* chord/get-pitch
 ;;; DESCRIPTION
 ;;; Get the pitch object located at the specified index within the given chord
@@ -532,6 +560,7 @@ data: GQS4
   (get-nth (1- ref) c))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#| use the highest method instead!
 
 ;;; ****m* chord/get-highest
 ;;; DATE
@@ -551,10 +580,8 @@ data: GQS4
 (defmethod get-highest ((c chord))
 ;;; ****
   (get-pitch c (sclist-length c)))
-
+|#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SAR Mon Apr 16 16:42:48 BST 2012: Added robodoc entry
-
 ;;; ****m* chord/add-mark
 ;;; DESCRIPTION
 ;;; Add the specified mark to the MARKS slot of the given chord object.
@@ -588,9 +615,6 @@ data: GQS4
   (push mark (marks c)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Feb 22 18:05:57 GMT 2012: Added robodoc entry
-
 ;;; ****m* chord/get-pitch-symbols
 ;;; DESCRIPTION
 ;;; Return the data of the pitch objects from a given chord object as a list of
@@ -718,12 +742,8 @@ data: GQS4
   (equal (get-pitch-symbols c1) (get-pitch-symbols c2)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; usually a chord is auto-sorted so we can return (first (data c)) but check
 ;;; to make sure. 
-
-;;; SAR Wed Feb 22 18:24:38 GMT 2012: Added robodoc entry
-
 ;;; ****m* chord/lowest
 ;;; DESCRIPTION
 ;;; Return the pitch object from the given chord object that has the lowest
@@ -780,9 +800,6 @@ data: C4
      finally (return result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Wed Feb 22 18:30:21 GMT 2012: Added robodoc entry
-
 ;;; ****m* chord/highest
 ;;; DESCRIPTION
 ;;; Return the pitch object from the given chord object that has the highest
@@ -1631,8 +1648,7 @@ data: (
   (all-members (data c) (init-pitch-list pitches nil)
                #'(lambda (p1 p2)
                    (or (pitch= p1 p2 enharmonics-are-equal)
-                       (when octaves-are-true
-                         (is-octave p1 p2))))))
+                       (when octaves-are-true (is-octave p1 p2))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Mon Apr 16 14:16:13 BST 2012: Added robodoc entry
@@ -1683,7 +1699,7 @@ data: (
 ;;; ****
   (not (zerop (sclist-length c))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SAR Mon Apr 16 14:25:06 BST 2012: Added robodoc entry
 
 ;;; MDE original comment: like the pitch class method, to find out the
@@ -1751,14 +1767,15 @@ data: (
 (defmethod enharmonic ((c chord) &key (warn t))
   (loop for p in (data c) collect (enharmonic p :warn warn)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Mon May 14 15:24:07 2012 
 (defmethod print-simple ((c chord) &optional (stream t) (separator " "))
   (let ((result (format nil "~a: " (id c))))
     (loop for p in (data c) do
          (setf result (concatenate 'string result (print-simple p nil)
                                    separator)))
-    (format stream "~&~a" result)))
+    (format stream "~&~a" result)
+    c))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Aug 10 16:17:59 2012 -- pitches can be pitch objects or any data
@@ -2225,11 +2242,12 @@ data: (
 ;;; DESCRIPTION
 ;;; Take the highest pitch and wrap it around to the bottom, placing it at the
 ;;; same interval to the former lowest pitch as the highest pitch is to the
-;;; next-to-highest pitch. Then we shift (transpose) the chord so that the
-;;; next-to-highest pitch is the former highest pitch.
+;;; next-to-highest pitch. Then, by default, we shift (transpose) the chord so
+;;; that the next-to-highest pitch is the former highest pitch.
 ;;;
-;;; NB The lowest and highest notes of the chord will always remain the same no
-;;; matter how many times this operation is performed. 
+;;; NB If the <transpose> optional argument is T, then the lowest and highest
+;;; notes of the chord will always remain the same no matter how many times this
+;;; operation is performed.
 ;;; 
 ;;; ARGUMENTS
 ;;; - A chord object
@@ -2254,25 +2272,95 @@ data: (
 
 (get-pitch-symbols (wrap (make-chord '(df3 c4 fs4 b4 f5)) 2))
 => (DF3 GF3 C4 B4 F5)
+
+(get-pitch-symbols (wrap (make-chord '(d4 f4 bf4 e5 b5)) 1 nil))
+=> (G3 D4 F4 BF4 E5)
 |#
 ;;; SYNOPSIS
-(defmethod wrap ((c chord) &optional (num-times 1))
+(defmethod wrap ((c chord) &optional (num-times 1) (transpose t))
 ;;; ****
-  (loop repeat num-times do ; 
+  (loop repeat num-times do
        (let* ((intervals (get-interval-structure c t t))
               (top-interval (first (last intervals)))
               (num (sclist-length c)))
-         (setq c (rm-pitches c (get-highest c)))
+         (setq c (rm-pitches c (highest c)))
          (unless (= (1- num) (sclist-length c))
            (error "chord::wrap: couldn't remove highest from ~a" c))
-         (setf c (transpose c top-interval)
-               c (add-pitches c (transpose (clone (lowest c))
+         (when transpose (setq c (transpose c top-interval)))
+         (setq c (add-pitches c (transpose (clone (lowest c))
                                            (- top-interval))))))
   (respell-chord c)
   c)
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/invert
+;;; DATE
+;;; May 1st 2020, Heidhaisen
+;;; 
+;;; DESCRIPTION
+;;; Invert the interval structure of a chord. By default the given bottom note
+;;; becomes the new top note, as the intervals are mirrored around it, but if
+;;; the optional argument is non-NIL then the result will be transposed so that
+;;; the chord has the original range.
+;;; 
+;;; ARGUMENTS
+;;; - a chord object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; T or NIL to indicate whether the retain the original range or not
+;;; 
+;;; RETURN VALUE
+;;; a new chord object which is the interval inversion of the argument
+;;; 
+;;; EXAMPLE
+#|
+(get-pitch-symbols (invert (make-chord '(d4 f4 bf4 e5 b5))))
+--> (F2 C3 FS3 B3 D4)
 
+(get-pitch-symbols (invert (make-chord '(d4 f4 bf4 e5 b5)) t))
+--> (D4 A4 EF5 AF5 B5)
+|#
+;;; SYNOPSIS
+(defmethod invert ((c chord) &optional top-to-bottom ignore)
+;;; ****
+  (declare (ignore ignore))
+  (let ((result (make-chord (invert-pitch-list (data c)))))
+    (if top-to-bottom
+        (top-to-bottom result)
+        result)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/top-to-bottom
+;;; DATE
+;;; May 1st 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Transpose a chord so that it's current top note is the new bottom note. NB
+;;; This is destructive by default
+;;; 
+;;; ARGUMENTS
+;;; - a chord object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; keywords arguments:
+;;; - :destructively. Whether to modify the chord object or return a new
+;;; chord. Default = T
+;;; 
+;;; RETURN VALUE
+;;; the modified chord object
+;;; 
+;;; EXAMPLE
+#|
+(print-simple (top-to-bottom (make-chord '(c4 e4 g4 b4))))
+--> NIL: B4 EF5 FS5 BF5 
+|#
+;;; SYNOPSIS
+(defmethod top-to-bottom ((c chord) &key (destructively t))
+;;; ****
+  (let* ((distance (pitch- (highest c) (lowest c) )))
+    (transpose c distance :destructively destructively)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ****m* chord/morph
 ;;; DATE
 ;;; May 3rd 2016, Edinburgh
@@ -2354,7 +2442,8 @@ data: (
 ;;; 
 ;;; EXAMPLE
 #|
-
+(print-simple (collapse (make-chord '(d4 f4 bf4 e5 b5)) 2))
+--> NIL: D2 E2 F2 BF2 B2 
 |#
 ;;; SYNOPSIS
 (defmethod collapse ((c chord) octave)
@@ -2406,8 +2495,7 @@ data: (
   c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; ****m* chord/num-note
+;;; ****m* chord/num-notes
 ;;; DATE
 ;;; June 22nd 2019, Heidhausen
 ;;; 
@@ -2459,29 +2547,32 @@ data: (
          (loop for instrument-index in comb and i from 0 do
               (setq pitch (get-nth i c)
                     ins (nth instrument-index combo))
-              (multiple-value-bind
-                    (in harm)
-                  ;; sounding pitches and artificial harmonics, if allowed!
-                  (in-range ins pitch t artificial-harmonics nil t)
-                (when (or in (chord-p harm)) (incf got))
-                (cond (in (push (list instrument-index
-                                      ;; if we can play a single pitch, try
-                                      ;; for a chord
-                                      (if chords
-                                          (try-ins-chord ins c pitch)
-                                          pitch)
-                                      ins)
-                                result))
-                      ((chord-p harm)
-                       ;; MDE Thu Dec  6 11:15:01 2018 -- although we make sure
-                       ;; the sounding pitches are in range of e.g. double-bass,
-                       ;; force-artificial-harmonic returns the written pitches
-                       ;; so we have to transpose back to 'sounding'
-                       (let ((tr (transposition-semitones ins)))
-                         (unless (zerop tr)
-                           (setq harm (transpose harm tr)))
-                         (push (list instrument-index harm ins)
-                               result))))))
+            ;; MDE Fri Jun 26 15:52:10 2020, Heidhausen 
+              (when (and ins pitch)
+                (multiple-value-bind
+                      (in harm)
+                    ;; sounding pitches and artificial harmonics, if allowed!
+                    (in-range ins pitch t artificial-harmonics nil t)
+                  (when (or in (chord-p harm)) (incf got))
+                  (cond (in (push (list instrument-index
+                                        ;; if we can play a single pitch, try
+                                        ;; for a chord
+                                        (if chords
+                                            (try-ins-chord ins c pitch)
+                                            pitch)
+                                        ins)
+                                  result))
+                        ((chord-p harm)
+                         ;; MDE Thu Dec 6 11:15:01 2018 -- although we make sure
+                         ;; the sounding pitches are in range of
+                         ;; e.g. double-bass, force-artificial-harmonic returns
+                         ;; the written pitches so we have to transpose back to
+                         ;; 'sounding'
+                         (let ((tr (transposition-semitones ins)))
+                           (unless (zerop tr)
+                             (setq harm (transpose harm tr)))
+                           (push (list instrument-index harm ins)
+                                 result)))))))
        ;; (t (return))))) ; ins cannae do it but keep going
          (let ((gpr (count-combo-pitches result))
                (gpb (count-combo-pitches best)))
@@ -2505,6 +2596,60 @@ data: (
         ;;                <= because with artificial harmonics we'd have twice
         ;;                as many pitches in best
         (values (reverse best) (if (<= lenc (count-combo-pitches best)) 1 2)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DJR Tue 29 Oct 2019 12:32:47 GMT -- change sharps to flats or flats to
+;;; sharps
+(defmethod sharp-to-flat ((c chord) &optional clone written)
+  (declare (ignore clone written))
+  (let ((c-list '()))
+    (loop for cc in (data c) do
+         (push (sharp-to-flat cc) c-list))
+    (setf c (make-chord (reverse c-list)))
+    c))
+  
+(defmethod flat-to-sharp ((c chord) &optional clone written)
+  (declare (ignore clone written))
+  (let ((c-list '()))
+    (loop for cc in (data c) do
+         (push (flat-to-sharp cc) c-list))
+    (setf c (make-chord (reverse c-list)))
+    c))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* chord/single-pitch-chord-to-pitch
+;;; AUTHOR
+;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
+;;; 
+;;; DATE
+;;; Thu 14 Nov 2019 07:44:02 GMT London
+;;; 
+;;; DESCRIPTION
+;;; Turn a chord object with only one pitch in its chord slot into a pitch
+;;; object.
+;;; 
+;;; ARGUMENTS
+;;; A chord object
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; NIL
+;;; 
+;;; RETURN VALUE
+;;; The new pitch object if the original chord contained a single pitch,
+;;; otherwise the original chord object. 
+;;; 
+;;; EXAMPLE
+#|
+(data (single-pitch-chord-to-pitch (make-chord '(a4))))
+=> A4
+|#
+;;; SYNOPSIS
+(defmethod single-pitch-chord-to-pitch ((c chord))
+;;; ****
+        (when (= (length (data c)) 1)
+          (setf c (first (data c))))
+        c)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -2655,6 +2800,45 @@ data: F5
     chord))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****f* chord/make-chord-from-intervals
+;;; DATE
+;;; May 1st 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Make a chord object from a starting pitch and a list of intervals in
+;;; semitones.  
+;;; 
+;;; ARGUMENTS
+;;; - the starting pitch: symbol or pitch object
+;;; - the list of intervals in semitones (may be fractional if current scale is
+;;; microtonal) 
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; any keyword argument accepted by make-chord
+;;; 
+;;; RETURN VALUE
+;;; a chord object
+;;; 
+;;; EXAMPLE
+#|
+(get-pitch-symbols (make-chord-from-intervals 'c4 '(6 5 7.5) :midi-channel 7))
+--> (C4 FS4 B4 GQF5)
+|#
+;;; SYNOPSIS
+(defun make-chord-from-intervals (start-pitch intervals
+                                  &rest keyargs &key &allow-other-keys)
+;;; ****
+  (setq start-pitch (make-pitch start-pitch))
+  (apply #'make-chord
+         (cons 
+          (cons (data start-pitch)
+                (loop with midi = (midi-note start-pitch)
+                   for i in intervals
+                   do (incf midi i)
+                   collect (midi-to-note midi)))
+          keyargs)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun chord-p (thing)
   (typep thing 'chord))
@@ -2686,7 +2870,7 @@ data: F5
                (exp (- (* b2 s fmmm))))))
     (* (expt x 0.1) (* 0.5 (expt y 3.11)) z)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; try to iron out the quite radical differences in spectral data for nearby
 ;;; notes by averaging over a complete octave. Spectrum is a list of freq
 ;;; scalers and a list of amplitudes. Not to be confused with average spectra,
@@ -2708,7 +2892,7 @@ data: F5
     (list (loop for fs in freq-scalers collect (/ fs 12.0))
           (normalise amp-scalers))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Thu Aug 6 11:14:49 2015 - The spectrum argument can be either a symbol
 ;;; (whereupon this will be used to look up the spectra stored in
 ;;; +slippery-chicken-spectra+); an assoc-list or recursive-assoc-list with

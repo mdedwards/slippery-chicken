@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> linked-named-object -> rhythm
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -18,7 +18,7 @@
 ;;;
 ;;; Creation date:    11th February 2001
 ;;;
-;;; $$ Last modified:  15:21:51 Tue Jul 16 2019 CEST
+;;; $$ Last modified:  16:29:10 Thu Oct  8 2020 CEST
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -302,9 +302,6 @@
     r))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Thu Mar  1 13:24:14 GMT 2012: Edited robodoc entry
-
 ;;; ****m* rhythm/scale
 ;;; DESCRIPTION
 ;;; Change the value of a rhythm object's duration value by a specified
@@ -330,50 +327,23 @@
 #|
 (let ((r (make-rhythm 4)))
   (data (scale r 2)))
-
 => H
 
 (let ((r (make-rhythm 4)))
   (data (scale r 3)))
-
 => H.
 
 (let ((r (make-rhythm 4)))
   (data (scale r .5)))
-
 => E
-
-(let ((r (make-rhythm 4)))
-  (dotimes (i 5) 
-    (print (value (scale r .5)))))
-
-=>
-8.0 
-8.0 
-8.0 
-8.0 
-8.0
-
-(let ((r (make-rhythm 4)))
-  (dotimes (i 5)
-    (print (value (scale r .5 nil)))))
-
-=>
-8.0 
-16.0 
-32.0 
-64.0 
-128.0
-
 |#
 ;;; SYNOPSIS
 (defmethod scale ((r rhythm) scaler &optional (clone t) ignore1 ignore2)
 ;;; ****
   (declare (ignore ignore1)
            (ignore ignore2))
-  ;; (print scaler)
   (when clone
-    (setf r (clone r)))
+    (setq r (clone r)))
   (if (or (= 1 scaler) (is-grace-note r))
       r
       (progn
@@ -395,9 +365,10 @@
                   (1.875 3)
                   (t 0))))
         ;; (when (< (value r) 1.0)
-        (when (< (value r) 0.1)
+        (when (and (get-sc-config 'rhythm-scale-warning)
+                   (< (value r) 0.1))
           (warn "~a rhythm::scale: ~
-            attempt to scale (~a times) a rhythm above 10x a whole note!"
+                 attempt to scale (~a times) a rhythm above 10x a whole note!"
                 r scaler))
         ;; let's see if we can get a new rhythm from this thing all scaled and
         ;; dotted and everything....
@@ -418,7 +389,35 @@
               r)))))
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ****m* rhythm/scale-as-rests
+;;; DATE
+;;; September 29th 2020, Heidhausen
+;;; 
+;;; DESCRIPTION
+;;; Sometimes you don't want to actually scale a rhythm/event's duration rather
+;;; stretch it out with rests. This method will leave the rhythm object intact
+;;; (or cloned) before then cloning it a given number of times but as a rest.
+;;; 
+;;; ARGUMENTS
+;;; - the rhythm object
+;;; - the scaler (integer)
+;;; 
+;;; OPTIONAL ARGUMENTS
+;;; - T or NIL: whether to clone the first argument
+;;; 
+;;; RETURN VALUE
+;;; a list of rhythm objects
+;;; 
+;;; SYNOPSIS
+(defmethod scale-as-rests ((r rhythm) scaler &optional (clone t))
+;;; ****
+  (unless (and (integerp scaler) (> scaler 1))
+    (error "rhythm::scale-as-rests: scaler must be an integer > 1: ~a" scaler))
+  (when clone
+    (setq r (clone r)))
+  (cons r (loop repeat (1- scaler) collect (force-rest (clone r)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod has-flags ((r rhythm))
   (> (num-flags r) 0))
 
@@ -2288,6 +2287,11 @@ data: (
                               (#\G (when rhythm-object
                                      (setf (is-grace-note rhythm-object) t))
                                    0)
+                              ;; MDE Wed Dec 4 14:44:03 2019 -- added double
+                              ;; whole etc.
+                              (#\M 0.125) ; maxima
+                              (#\L 0.25) ; longa                      
+                              (#\B 0.5) ; brevis
                               (#\W 1)
                               (#\H 2)
                               (#\Q 4)

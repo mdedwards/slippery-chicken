@@ -7,7 +7,7 @@
 ;;;
 ;;; Class Hierarchy:  named-object -> linked-named-object -> rhythm -> event
 ;;;
-;;; Version:          1.0.10
+;;; Version:          1.0.11
 ;;;
 ;;; Project:          slippery chicken (algorithmic composition)
 ;;;
@@ -25,7 +25,7 @@
 ;;;
 ;;; Creation date:    March 19th 2001
 ;;;
-;;; $$ Last modified:  16:54:08 Thu Oct  8 2020 CEST
+;;; $$ Last modified:  15:52:02 Tue Oct 27 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1319,7 +1319,7 @@ NIL
 |#
 ;;; SYNOPSIS
 (defmethod sharp-to-flat ((e event) &optional clone written)
-;;;****
+;;; ****
   (let* ((event (if clone (clone e) e))
          (slot (if written
                    'written-pitch-or-chord
@@ -1423,7 +1423,6 @@ NIL
 (defmethod pitch- ((e1 event) (e2 event))
 ;;; ****
   (pitch- (pitch-or-chord e1) (pitch-or-chord e2)))
-;;; ****
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -4128,7 +4127,7 @@ NIL
   (push (list channel controller-number value) (midi-control-changes e)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* chord/pitch-or-chord=
+;;; ****m* event/pitch-or-chord=
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
 ;;; 
@@ -4207,7 +4206,7 @@ NIL
                        enharmonics-are-equal frequency-tolerance))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* chord/single-pitch-chord-to-pitch
+;;; ****m* event/single-pitch-chord-to-pitch
 ;;; AUTHOR
 ;;; Daniel Ross (mr.danielross[at]gmail[dot]com) 
 ;;; 

@@ -2012,14 +2012,15 @@ pitch::add-mark: mark PIZZ already present but adding again!
   (declare (ignore ignore1 ignore2 ignore3))
   ;; MDE Mon Jun 25 17:05:24 2012 
   ;; MDE Tue Aug 27 14:23:09 2013 issue a warning instead of an error.
-  (when (micro-but-not-quarter-tone-p p)
-    (when (zerop (lp-resolutions p))
-      (warn "pitch::get-lp-data: Lilypond cannot display ~a. ~
-             Resolving to the nearest ~%quarter tone. (Warning issued only ~
-             once; other pitches may resolve~%automatically.)"  
-            (data p)))
-    (incf (lp-resolutions p))
-    (setf p (make-pitch (freq-to-note (frequency p) 'quarter-tone))))
+  ; => use ekmelily to notate 72 EDO
+  ; (when (micro-but-not-quarter-tone-p p)
+  ;   (when (zerop (lp-resolutions p))
+  ;     (warn "pitch::get-lp-data: Lilypond cannot display ~a. ~
+  ;            Resolving to the nearest ~%quarter tone. (Warning issued only ~
+  ;            once; other pitches may resolve~%automatically.)"  
+  ;           (data p)))
+  ;   (incf (lp-resolutions p))
+  ;   (setf p (make-pitch (freq-to-note (frequency p) 'quarter-tone))))
   ;; MDE Tue Jun 16 13:50:43 2020, Heidhausen -- if we don't do this then we
   ;; can't have different noteheads in chords
   (multiple-value-bind 

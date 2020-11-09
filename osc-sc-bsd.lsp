@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified:  16:19:49 Sat Aug 22 2020 CEST
+;;; $$ Last modified:  13:24:51 Mon Nov  9 2020 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -73,7 +73,7 @@
   ;; (let ((buffer (make-sequence '(vector (unsigned-byte 8)) 512)))
   ;; MDE Mon Apr 11 11:15:47 2016 -- increased buffer size
   ;; MDE Tue Mar 31 15:07:24 2020 -- increased again
-  (let ((buffer (make-sequence '(vector (unsigned-byte 8)) 16384))) ;4096)))
+  (let ((buffer (make-sequence '(vector (unsigned-byte 8)) 16384)))
     ;; in case we exited abnormally last time
     (osc-cleanup-sockets)
     (setf +osc-sc-in-socket+ (make-udp-socket)
@@ -129,7 +129,8 @@
   (unless stream
     (error "sc-sc::osc-eval: stream not open."))
   (let* ((result (read-from-string (sc::list-to-string expr)))
-         (id (second result)))
+         (id (second result))
+         (result-list))
     ;; MDE Sat Jun 15 12:23:57 2013 -- make sure we've got legal input and an
     ;; ID to send back 
     (unless (string= (first result) "/OSC-SC")
@@ -138,14 +139,19 @@
     (setf result (eval (third result)))
     ;; MDE Wed Dec 19 17:38:01 2012 -- don't send T or NIL, rather 1 or 0
     ;; MDE Thu Jan 23 11:58:07 2020 -- ^ meant our functions should return 1 or
-    ;; 0 but let's actually allow T or NIL byt convert to 1 or 0
-    (cond ((not result) (setq result '(0)))
-          ((equal result T) (setq result '(1)))
-          ((not (listp result)) (setq result (list result))))
+    ;; 0 but let's actually allow T or NIL by converting to 1 or 0
+    (cond ((not result) (setq result-list '((0))))
+          ((equal result T) (setq result-list '((1))))
+          ((not (listp result)) (setq result-list (list (list result))))
+          ;; we got a list
+          (t (setq result-list result)))
     ;; MDE Sat Aug 22 16:18:26 2020, Heidhausen -- print results
-    (when print (format t "~&osc-eval: ~a" result))
+    (when print (format t "~&osc-eval: ~a" result-list))
+    ;; MDE Mon Nov  9 13:11:15 2020, Heidhausen -- in case our function returns
+    ;; a list, then iteratively send the list back via osc 
     ;; stuff our id back into the list and send back
-    (osc-send-list (append (list '/osc-sc id) result) stream)))
+    (loop for r in result-list do 
+         (osc-send-list (append (list '/osc-sc id) r) stream))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    23rd October 2017, Essen
 ;;;
-;;; $$ Last modified:  14:02:11 Mon Apr 13 2020 CEST
+;;; $$ Last modified:  13:27:34 Mon Nov  9 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -162,14 +162,15 @@
   (let ((refs (get-all-refs sfn)) 
         (cue-nums 0))
     (loop for ref in refs 
-         for snds = (get-data-data ref sfn)
-         do
-         (loop for snd in snds do
-              (when (use snd)
-                ;; something like ("preload" 2 "/path/to/snd.wav" 300.0 1100.0)
-                (osc-send-list (max-cue snd) nil) ; no warning 
-                (incf cue-nums))))
-    cue-nums))
+       for snds = (get-data-data ref sfn)
+       appending
+         (loop for snd in snds
+            when (use snd)
+            collect
+            ;; something like ("preload" 2 "/path/to/snd.wav" 300.0 100.0)
+              (prog1
+                  (max-cue snd)
+                (incf cue-nums))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri Dec 21 09:38:46 2012 

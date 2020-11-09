@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  19:18:46 Thu Sep 24 2020 CEST
+;;; $$ Last modified:  13:34:13 Mon Nov  9 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -522,8 +522,8 @@ NIL
          (fade-out (- dur fd)))
     ;; for now speed is just 1.0
     ;; sn is in ms but fs and fade-out are in secs
-  (list (cue-num sfe) (channels sfe) (if (loop-it sfe) 1 0) 1.0
-        (* 1000.0 fd) (* 1000.0 fade-out) sn (amplitude sfe))))
+    (list (list (cue-num sfe) (channels sfe) (if (loop-it sfe) 1 0) 1.0
+                (* 1000.0 fd) (* 1000.0 fade-out) sn (amplitude sfe)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

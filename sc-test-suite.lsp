@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  17:05:22 Thu Oct  8 2020 CEST
+;;; $$ Last modified:  13:45:26 Mon Nov  9 2020 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 6249 2017-06-07 16:05:15Z medward2 $
 ;;;
@@ -14539,7 +14539,7 @@
       ;; (print sfn)
       ;; 5 because 4 and 5 aren't :use(d)
       (= 5 (cue-num (get-snd 'sndfile-group-3 'test-sndfile-6 sfn)))
-      (= 4 (osc-send-cue-nums sfn))
+      (= 4 (length (osc-send-cue-nums sfn)))
       ;; MDE Fri Jan  4 11:24:14 2013 -- remember two of the above have :use
       ;; nil so won't be issued a cue num
       (equalp 'test-sndfile-6 (id (get-snd-with-cue-num sfn 5)))
@@ -18826,6 +18826,27 @@
          A3 E3 FS3 G3 NIL A3)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; define this as a separate normal function so we can also test it from
+;;; within maxmsp 
+(defun max-play-test ()
+  (let* ((sf1 (make-sndfile-ext 
+              (concatenate 'string
+                           cl-user::+slippery-chicken-home-dir+ 
+                           "test-suite/sndfile-1.aiff")
+              :start 0.3 :end 1.1 :frequency 653)))
+    (max-play sf1 20 100 10)))
+
+(defun max-cue-test ()
+  (let* ((sf1 (make-sndfile-ext 
+              (concatenate 'string
+                           cl-user::+slippery-chicken-home-dir+ 
+                           "test-suite/sndfile-1.aiff")
+              :cue-num 2 :start 0.3 :end 1.1 :frequency 653
+              :followers '(blah wah))))
+    ;; (print sf1)
+    (max-cue sf1)))
+
+
 ;;; MDE Sun Dec 16 13:37:20 2012, Koh Mak, Thailand :)
 #+clm
 (sc-deftest test-sndfile-ext ()
@@ -18889,29 +18910,9 @@
       (= 2 (second mct))
       (= 300.0 (fourth mct))
       (= 1100.0 (fifth mct))
-      (= -1 (first mpt))
-      (equal-within-tolerance 320.0 (fifth mpt) .0001) ; fade duration
-      (equal-within-tolerance 480.0 (sixth mpt) .0001)))) ; begin fade out
-
-;;; define this as a separate normal function so we can also test it from
-;;; within maxmsp 
-(defun max-play-test ()
-  (let* ((sf1 (make-sndfile-ext 
-              (concatenate 'string
-                           cl-user::+slippery-chicken-home-dir+ 
-                           "test-suite/sndfile-1.aiff")
-              :start 0.3 :end 1.1 :frequency 653)))
-    (max-play sf1 20 100 10)))
-
-(defun max-cue-test ()
-  (let* ((sf1 (make-sndfile-ext 
-              (concatenate 'string
-                           cl-user::+slippery-chicken-home-dir+ 
-                           "test-suite/sndfile-1.aiff")
-              :cue-num 2 :start 0.3 :end 1.1 :frequency 653
-              :followers '(blah wah))))
-    ;; (print sf1)
-    (max-cue sf1)))
+      (= -1 (first (first mpt)))
+      (equal-within-tolerance 320.0 (fifth (first mpt)) .0001) ;fade duration
+      (equal-within-tolerance 480.0 (sixth (first mpt)) .0001))));begin fade out
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MDE Fri May 17 21:55:39 2013 -- arising from the Essen workshops: make sure

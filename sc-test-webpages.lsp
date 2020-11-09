@@ -16,7 +16,7 @@
 ;;;
 ;;; Creation date:    7th December 2011 (Edinburgh)
 ;;;
-;;; $$ Last modified:  10:01:45 Wed Feb 27 2019 CET
+;;; $$ Last modified:  11:44:14 Tue Oct 27 2020 CET
 ;;;
 ;;; SVN ID: $Id: sc-test-suite.lsp 2976 2012-07-24 10:06:19Z sreed23 $
 ;;;
@@ -97,7 +97,10 @@
       (equalp
        (loop for b from 1 to (num-bars sc-chopped-example)
           collect (data (get-time-sig (get-bar sc-chopped-example b 'vn))))
-       '((1 4) (3 16) (3 16) (1 4) (3 16)))
+       ;; MDE Tue Oct 27 11:13:20 2020, Heidhausen -- changing this slightly
+       ;; because of new meter preferences (2/8 instead of 1/4)
+       ;; '((1 4) (3 16) (3 16) (1 4) (3 16)))
+       '((2 8) (3 16) (3 16) (2 8) (3 16)))
       (not (next-event sc-chopped-example 'vn nil 1))
       (equalp 
        (loop for ne = (next-event sc-chopped-example 'vn)
@@ -1909,7 +1912,7 @@
                     "slippery-chicken-piece-def.ly"
                     "slippery-chicken-piece-vn-part.ly"
                     "slippery-chicken-piece-vn.ly"))
-         (o-files-sizes '(190 #+cmn 7000 120 670 200 270))
+         (o-files-sizes '(190 #+cmn 7000 120 670 200 240))
          (marks-list (loop for m in '(circled-x flag-head triangle-up x-head)  
                         for r from 1
                         collect m
@@ -2002,7 +2005,7 @@
       (write-lp-data-for-all slippery-chicken)
       (notany #'not
               (loop for f in o-files
-                 for s in '(190 120 670 200 223)
+                 for s in '(190 120 670 200 200)
                  collect 
                    (file-write-ok (concatenate 'string "/tmp/" f) s))))))
 

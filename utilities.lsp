@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  15:40:26 Thu Sep 24 2020 CEST
+;;; $$ Last modified:  14:38:40 Tue Nov 10 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -5410,8 +5410,6 @@ Here's where I pasted the data into the .RPP Reaper file:
                      (trailing-slash
                       (directory-namestring (truename *load-pathname*)))
                      file)))
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DJR Thu 6 Feb 2020 17:41:19 GMT

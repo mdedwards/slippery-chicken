@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    23rd October 2017, Essen
 ;;;
-;;; $$ Last modified:  13:27:34 Mon Nov  9 2020 CET
+;;; $$ Last modified:  18:56:28 Tue Nov 10 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -158,7 +158,8 @@
 #+(and darwin sbcl)
 (defmethod osc-send-cue-nums ((sfn sndfilenet))
 ;;; ****
-  ;; to be sure: don't assume we'll always have non-nested data.
+  ;; to be sure: don't assume we'll always have non-nested data, even though
+  ;; that's a requirement of our parent class 
   (let ((refs (get-all-refs sfn)) 
         (cue-nums 0))
     (loop for ref in refs 
@@ -288,15 +289,15 @@
 (defmethod max-play ((sfn sndfilenet) fade-dur max-loop start-next
                      &optional print)
 ;;; ****
-  (if (next-sfe sfn) ; next-sfe is a sndfile-ext object
+  (if (next-sfe sfn)                    ; next-sfe is a sndfile-ext object
       (let* ((current (next-sfe sfn))
              (next (get-next current)))
         ;; (print current)
         (setf (next-sfe sfn) next)
         (when print
-          (format t "~&cue ~a (~a): ~a --> ~a"
+          (format t "~&sndfilenet::max-play: cue ~a (~a): ~a --> ~a"
                   (cue-num current) (id current) (start current) (end current)))
-        (max-play current fade-dur max-loop start-next))
+        (max-play current fade-dur max-loop start-next print))
       (warn "sndfilenet::max-play: no next-sfe!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -306,39 +307,39 @@
 ;;; some CPU cycles by processing here rather than when max asks for the next
 ;;; sndfile.
 (defmethod process-followers ((sfn sndfilenet) &optional
-                                                      (on-fail #'error))
+                                                 (on-fail #'error))
   (let ((refs (get-all-refs sfn))
         (result t))
     (loop for ref in refs 
        for snds = (get-data-data ref sfn)
        do
-       (loop for snd in snds with follower with fsnd do
-            (if (followers snd)
-                (setf (followers snd)
-                      (loop for i below (sclist-length (followers snd)) do
-                           (setf fsnd nil)
-                           (loop for j from i
-                              below (sclist-length (followers snd))
-                              do
-                              (setf follower (get-nth j (followers snd))
-                                    fsnd (get-snd-short sfn follower snd))
-                              ;;(print follower) (print fsnd)
-                              ;; MDE Sat Dec 22 20:36:14 2012 -- got to make
-                              ;; sure the user actually wants to use this sound
-                              ;; in this piece
-                              (when (and fsnd (use fsnd))
-                                (return fsnd)))
-                           (when (and follower (not fsnd))
-                             (setf result nil)
-                             (when on-fail
-                               (funcall 
-                                on-fail "sndfilenet::process-followers: ~
-                                         No such sound file: ~a"
-                                follower)))
+         (loop for snd in snds with follower with fsnd do
+              (if (followers snd)
+                  (setf (followers snd)
+                        (loop for i below (sclist-length (followers snd)) do
+                             (setf fsnd nil)
+                             (loop for j from i
+                                below (sclist-length (followers snd))
+                                do
+                                  (setf follower (get-nth j (followers snd))
+                                        fsnd (get-snd-short sfn follower snd))
+                                ;;(print follower) (print fsnd)
+                                ;; MDE Sat Dec 22 20:36:14 2012 -- got to make
+                                ;; sure the user actually wants to use this
+                                ;; sound in this piece
+                                  (when (and fsnd (use fsnd))
+                                    (return fsnd)))
+                             (when (and follower (not fsnd))
+                               (setf result nil)
+                               (when on-fail
+                                 (funcall 
+                                  on-fail "sndfilenet::process-followers: ~
+                                           No such sound file (~a)~%in group ~a"
+                                  follower ref)))
                            when (and fsnd (use fsnd)) collect fsnd))
-                (warn "sndfilenet::process-followers: ~a has no followers ~
+                  (warn "sndfilenet::process-followers: ~a has no followers ~
                        so if triggered will cause max-play to stop."
-                      (id snd)))))
+                        (id snd)))))
     (reset sfn)
     result))
 

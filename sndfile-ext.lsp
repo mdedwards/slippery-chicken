@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  09:53:12 Tue Nov 10 2020 CET
+;;; $$ Last modified:  19:33:27 Tue Nov 10 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -286,7 +286,7 @@
                     ~%             volume-curve: ~a, loop-it: ~a, ~
                     bitrate: ~a, srate: ~a, ~
                     ~%             num-frames: ~a, bytes: ~a, group-id: ~a~
-                    ~%             followers: ~a"
+                    ~%             followers (ids): ~a"
           (use sfe) (cue-num sfe) (pitch sfe) (pitch-curve sfe) (bandwidth sfe)
           (bandwidth-curve sfe) (continuity sfe) (continuity-curve sfe)
           (weight sfe) (weight-curve sfe) (energy sfe) (energy-curve sfe)
@@ -319,7 +319,6 @@
     (get-next (followers sfe))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; ****m* sndfile-ext/reset
 ;;; DESCRIPTION
 ;;; Reset the <followers> circular list to the first or any other following

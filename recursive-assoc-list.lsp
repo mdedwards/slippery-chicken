@@ -35,7 +35,7 @@
 ;;;
 ;;; Creation date:    March 18th 2001
 ;;;
-;;; $$ Last modified:  11:04:58 Sat Sep 19 2020 CEST
+;;; $$ Last modified:  20:06:42 Tue Nov 10 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1495,9 +1495,6 @@ data: RIBBON
         last)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Fri Jan 27 15:05:18 GMT 2012: Added robodoc info
-
 ;;; ****m* recursive-assoc-list/get-all-refs
 ;;; DESCRIPTION
 ;;; Return a list of all the keys (REFS) in a given recursive-assoc-list

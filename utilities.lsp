@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    June 24th 2002
 ;;;
-;;; $$ Last modified:  14:38:40 Tue Nov 10 2020 CET
+;;; $$ Last modified:  15:04:00 Fri Nov 20 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -1253,9 +1253,6 @@
           result))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; SAR Sat May  5 16:09:37 BST 2012: Added robodoc entry
-
 ;;; ****f* utilities/replace-elements
 ;;; DESCRIPTION
 ;;; Replace the elements in list between start and end (inclusive) with the new

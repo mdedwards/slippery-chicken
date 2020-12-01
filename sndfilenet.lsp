@@ -21,7 +21,7 @@
 ;;;
 ;;; Creation date:    23rd October 2017, Essen
 ;;;
-;;; $$ Last modified:  20:43:36 Tue Nov 10 2020 CET
+;;; $$ Last modified:  12:27:02 Thu Nov 12 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -139,34 +139,23 @@
     cue-num))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* sndfilenet/osc-send-cue-nums
+;;; ****m* sndfilenet/preload-cues
 ;;; DESCRIPTION
-;;; Send via OSC the cue number of each sound file in a form that a Max sflist~
-;;; can process and store (which will include the path and start/stop data: see
-;;; sndfile-ext::max-cue for details).
+;;; Return a list of preload commands for each sound file in a form that a Max
+;;; sflist~ can process and store (which will include the path and start/stop
+;;; data: see sndfile-ext::max-cue for details).
 ;;; 
 ;;; E.g. preload 231 triplet-mphonic-001.wav 0. 3300.612305 0 1. 
-;;; 
-;;; Note that the individual preload data is sent by this method explicitly over
-;;; the UDP network. This means you'll need a [udpreceive] somewhere in the max
-;;; patch to catch these and that [osc-sc-eval] won't send these out of its
-;;; outlet, rather the number of cues will be output there. Also note that the
-;;; usual IDs prepended to results from osc-eval are not included in the preload
-;;; sent over UDP so a separate parser looking for this data will be needed,
-;;; e.g. 
-;;;
-;;; [udpreceive 8091][fromsymbol][route preload][prepend preload][sflist~ mysfl]
 ;;; 
 ;;; ARGUMENTS
 ;;; - the sndfilenet object.
 ;;; 
 ;;; RETURN VALUE
-;;; The number of cue numbers sent.  NB This is not the same as the last cue
-;;; number as cues start from 2.
+;;; The list of preload strings that osc-call can then pass on to the sflist~
 ;;; 
 ;;; SYNOPSIS
 #+(and darwin sbcl)
-(defmethod osc-send-cue-nums ((sfn sndfilenet))
+(defmethod preload-cues ((sfn sndfilenet))
 ;;; ****
   ;; to be sure: don't assume we'll always have non-nested data, even though
   ;; that's a requirement of our parent class 
@@ -186,7 +175,8 @@
 ;;; MDE Fri Dec 21 09:38:46 2012 
 ;;; ****m* sndfilenet/reset
 ;;; DESCRIPTION
-;;; Reset the followers' slot circular list to the beginning or to <where>
+;;; Reset the followers' slot circular list to the beginning or to <where> and
+;;; the starting sounds for each group also.
 ;;; 
 ;;; ARGUMENTS
 ;;; - the sndfilenet object.
@@ -284,7 +274,7 @@
     result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ****m* sndfilenet/max-play
+;;; ****m* sndfilenet/max-play-from-id
 ;;; DESCRIPTION
 ;;; This generates the data necessary to play the next sound in the current
 ;;; sound's followers list. See the sndfile-ext method for details.
@@ -305,20 +295,22 @@
 ;;; A list of values returned by the sndfile-ext method.
 ;;;
 ;;; SYNOPSIS
-(defmethod max-play-group ((sfn sndfilenet) id fade-dur max-loop start-next
-                           &optional print)
+(defmethod max-play-from-id ((sfn sndfilenet) id fade-dur max-loop start-next
+                             &optional print)
 ;;; ****
   ;; NB next-sfes is a list of sndfile-ext objects
   (if (next-sfes sfn)                    
-      (let* ((id-pos (position id (all-refs sfn)))
-             (current (nth id-pos (next-sfes sfn)))
-             (next (get-next current)))
-        ;; (print current)
-        (setf (nth id-pos (next-sfes sfn)) next)
-        (when print
-          (format t "~&sndfilenet::max-play: cue ~a (~a): ~a --> ~a"
-                  (cue-num current) (id current) (start current) (end current)))
-        (max-play current fade-dur max-loop start-next print))
+      (let* ((id-pos (position id (all-refs sfn))))
+        (if id-pos
+            (let* ((current (nth id-pos (next-sfes sfn)))
+                   (next (get-next current)))
+              (setf (nth id-pos (next-sfes sfn)) next)
+              (when print
+                (format t "~&sndfilenet::max-play: cue ~a (~a): ~a --> ~a"
+                        (cue-num current) (id current) (start current)
+                        (end current)))
+              (max-play current fade-dur max-loop start-next print))
+            (warn "max-play-from-id: can't find ~a in ~a" id (id sfn))))
       (warn "sndfilenet::max-play: no next-sfes!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

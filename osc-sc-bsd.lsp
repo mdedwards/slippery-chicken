@@ -17,7 +17,7 @@
 ;;;
 ;;; Creation date:    13th December 2012, Bangkok
 ;;;
-;;; $$ Last modified:  13:24:51 Mon Nov  9 2020 CET
+;;; $$ Last modified:  10:53:16 Sat Nov 14 2020 CET
 ;;;
 ;;; ****
 ;;; Licence:          Copyright (c) 2010 Michael Edwards
@@ -142,6 +142,10 @@
     ;; 0 but let's actually allow T or NIL by converting to 1 or 0
     (cond ((not result) (setq result-list '((0))))
           ((equal result T) (setq result-list '((1))))
+          ;; MDE Sat Nov 14 10:47:29 2020, Heidhausen -- try and handle a list
+          ;; of atoms, as returned by functions before we started iteratively
+          ;; sending lists 
+          ((sc::simple-listp result) (setq result-list (list result)))
           ((not (listp result)) (setq result-list (list (list result))))
           ;; we got a list
           (t (setq result-list result)))

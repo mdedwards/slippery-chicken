@@ -22,7 +22,7 @@
 ;;;
 ;;; Creation date:    16th December 2012, Koh Mak, Thailand
 ;;;
-;;; $$ Last modified:  19:33:27 Tue Nov 10 2020 CET
+;;; $$ Last modified:  11:55:04 Wed Nov 11 2020 CET
 ;;;
 ;;; SVN ID: $Id$
 ;;;
@@ -511,7 +511,7 @@ NIL
   ;; max-loop arg does.
   (let* ((dur (if (loop-it sfe) max-loop (duration sfe)))
          ;; fade is 40% duration if sndfile not long enough
-         (loop (if (loop-it sfe) 1 0))
+         (loop-val (if (loop-it sfe) 1 0))
          (min-ramp (* .4 dur))
          (fits (>= dur (* 2.0 fade-dur)))
          (fd (if fits fade-dur min-ramp))
@@ -525,8 +525,8 @@ NIL
     ;; list as one entity in osc-eval
     (when print
       (format t "~&sndfile-ext::max-play: dur: ~a, channels: ~a, loop: ~a, ~
-                 fade: ~a" dur (channels sfe) loop fd))
-    (list (list (cue-num sfe) (channels sfe) loop 1.0
+                 fade: ~a" dur (channels sfe) loop-val fd))
+    (list (list (cue-num sfe) (channels sfe) loop-val 1.0
                 (* 1000.0 fd) (* 1000.0 fade-out) sn (amplitude sfe)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
